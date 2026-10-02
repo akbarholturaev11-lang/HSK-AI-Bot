@@ -1,0 +1,694 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 137,
+  "source_lesson": 18,
+  "part_no": 1,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "我学会了包饺子",
+  "subtitle": {
+    "uz": "Hayotdagi o‘zgarish va ulg‘ayish tajribalarini tasvirlash; taxminiy miqdorni aytish; “只要……就……” bilan yetarli shart va natijani ifodalash; Xitoyning an’anaviy Bahor bayrami odatlari bilan tanishish.",
+    "ru": "Описывать изменения в жизни и опыт взросления; выражать приблизительное количество; использовать “只要……就……” для достаточного условия и результата; познакомиться с обычаями традиционного китайского праздника Весны.",
+    "tj": "Тағйироти зиндагӣ ва таҷрибаи калон шуданро тавсиф кардан; миқдори тахминиро ифода кардан; бо “只要……就……” шарти кофӣ ва натиҷаро гуфтан; бо одатҳои ҷашни анъанавии Баҳори Чин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "怎样",
+      "pinyin": "zěnyàng",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qanday; qanday qilib",
+        "ru": "как; каким образом",
+        "tj": "чӣ хел; чӣ гуна"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "过节",
+      "pinyin": "guòjié",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bayramni nishonlamoq",
+        "ru": "праздновать праздник",
+        "tj": "идро ҷашн гирифтан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "节",
+      "pinyin": "jié",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bayram",
+        "ru": "праздник",
+        "tj": "ид"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "节日",
+      "pinyin": "jiérì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bayram kuni; bayram",
+        "ru": "праздник; праздничный день",
+        "tj": "ид; рӯзи ид"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Taxminiy sonni ifodalash",
+        "ru": "Выражение приблизительного количества",
+        "tj": "Ифодаи миқдори тахминӣ"
+      },
+      "title_zh": "概数表达法",
+      "rule": {
+        "uz": "Ikki yaqin son yonma-yon kelib aniq bo‘lmagan taxminiy miqdorni bildiradi: 七八天 — “yetti-sakkiz kun”, 五六个 — “besh-olti dona”.",
+        "ru": "Два соседних числительных ставятся рядом, чтобы выразить приблизительное количество: 七八天 — «семь-восемь дней», 五六个 — «пять-шесть».",
+        "tj": "Ду адади наздик паҳлуи ҳам омада миқдори тахминиро ифода мекунанд: 七八天 — «ҳафт-ҳашт рӯз», 五六个 — «панҷ-шаш»."
+      },
+      "examples": [
+        {
+          "zh": "春节大概放七八天假。",
+          "pinyin": "Chūnjié dàgài fàng qī bā tiān jià.",
+          "translation": {
+            "uz": "Bahor bayramida taxminan yetti-sakkiz kun ta’til bo‘ladi.",
+            "ru": "На Праздник Весны обычно дают примерно семь-восемь дней выходных.",
+            "tj": "Дар Иди Баҳор тақрибан ҳафт-ҳашт рӯз таътил мешавад."
+          }
+        },
+        {
+          "zh": "教室里来了五六个学生。",
+          "pinyin": "Jiàoshì lǐ lái le wǔ liù ge xuéshēng.",
+          "translation": {
+            "uz": "Sinfga besh-olti talaba keldi.",
+            "ru": "В класс пришло пять-шесть студентов.",
+            "tj": "Ба синф панҷ-шаш донишҷӯ омад."
+          }
+        },
+        {
+          "zh": "这些照片是三四年前照的吧？",
+          "pinyin": "Zhèxiē zhàopiàn shì sān sì nián qián zhào de ba?",
+          "translation": {
+            "uz": "Bu suratlar uch-to‘rt yil oldin olingan-a?",
+            "ru": "Эти фотографии сделаны года три-четыре назад, да?",
+            "tj": "Ин суратҳо се-чор сол пеш гирифта шудаанд, дуруст?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Samolyotda Bai Jiayue va Li Wen suhbatlashmoqda.",
+        "ru": "В самолёте Бай Цзяюэ и Ли Вэнь разговаривают.",
+        "tj": "Дар ҳавопаймо Бай Ҷяюэ ва Ли Вэн суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "你们怎样过节？",
+          "pinyin": "Nǐmen zěnyàng guòjié?",
+          "text": {
+            "uz": "Sizlar bayramni qanday nishonlaysizlar?",
+            "ru": "Как вы отмечаете праздник?",
+            "tj": "Шумо идро чӣ тавр ҷашн мегиред?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "那你跟家人会一起做什么？",
+          "pinyin": "Nà nǐ gēn jiārén huì yìqǐ zuò shénme?",
+          "text": {
+            "uz": "Unda oilang bilan birga nimalar qilasizlar?",
+            "ru": "А что вы обычно делаете вместе с семьёй?",
+            "tj": "Пас бо оилаатон якҷо чӣ кор мекунед?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida Bai Jiayue uning ota-onasini Yangi yil bilan tabriklamoqda.",
+        "ru": "Дома у Ли Вэня Бай Цзяюэ поздравляет его родителей с Новым годом.",
+        "tj": "Дар хонаи Ли Вэн Бай Ҷяюэ падару модари ӯро бо Соли нав табрик мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "李叔叔",
+          "zh": "谢谢家月，你太客气了！",
+          "pinyin": "Xièxie Jiāyuè, nǐ tài kèqi le!",
+          "text": {
+            "uz": "Rahmat, Jiayue, juda ovora bo‘libsan!",
+            "ru": "Спасибо, Цзяюэ, не стоило так церемониться!",
+            "tj": "Раҳмат, Ҷяюэ, ин қадар таоруф лозим набуд!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida uning onasi va Bai Jiayue suhbatlashmoqda.",
+        "ru": "Дома у Ли Вэня его мама и Бай Цзяюэ разговаривают.",
+        "tj": "Дар хонаи Ли Вэн модараш ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "那是三四年前吧？",
+          "pinyin": "Nà shì sān sì nián qián ba?",
+          "text": {
+            "uz": "Bu uch-to‘rt yil oldin bo‘lgan-a?",
+            "ru": "Это было года три-четыре назад, да?",
+            "tj": "Ин се-чор сол пеш буд, дуруст?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "怎样",
+            "pinyin": "zěnyàng",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qanday; qanday qilib",
+              "ru": "как; каким образом",
+              "tj": "чӣ хел; чӣ гуна"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "怎样",
+          "pinyin": "zěnyàng",
+          "translation": {
+            "uz": "qanday; qanday qilib",
+            "ru": "как; каким образом",
+            "tj": "чӣ хел; чӣ гуна"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zěnyàng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zěnyàng?",
+            "tj": "zěnyàng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "过节",
+            "节日",
+            "节",
+            "怎样"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "怎样 = qanday; qanday qilib (zěnyàng)",
+            "ru": "怎样 = как; каким образом (zěnyàng)",
+            "tj": "怎样 = чӣ хел; чӣ гуна (zěnyàng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "过节",
+            "pinyin": "guòjié",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bayramni nishonlamoq",
+              "ru": "праздновать праздник",
+              "tj": "идро ҷашн гирифтан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "过节 talaffuzini tanlang:",
+            "ru": "Выберите произношение 过节:",
+            "tj": "Талаффузи 过节-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zěnyàng",
+            "jiérì",
+            "jié",
+            "guòjié"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "过节 — guòjié",
+            "ru": "过节 — guòjié",
+            "tj": "过节 — guòjié"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "节",
+            "pinyin": "jié",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bayram",
+              "ru": "праздник",
+              "tj": "ид"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bayram' xitoycha qaysi?",
+            "ru": "'праздник' по-китайски?",
+            "tj": "'ид' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "过节",
+            "节日",
+            "怎样",
+            "节"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "bayram = 节 (jié)",
+            "ru": "праздник = 节 (jié)",
+            "tj": "ид = 节 (jié)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "节日",
+            "pinyin": "jiérì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bayram kuni; bayram",
+              "ru": "праздник; праздничный день",
+              "tj": "ид; рӯзи ид"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "节日",
+          "pinyin": "jiérì",
+          "options": [
+            "节日",
+            "怎样",
+            "过节",
+            "节"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "节日 — bayram kuni; bayram (jiérì)",
+            "ru": "节日 — праздник; праздничный день (jiérì)",
+            "tj": "节日 — ид; рӯзи ид (jiérì)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "怎样 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 怎样:",
+            "tj": "Маънои калимаи 怎样-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bayramni nishonlamoq",
+              "ru": "праздновать праздник",
+              "tj": "идро ҷашн гирифтан"
+            },
+            {
+              "uz": "bayram kuni; bayram",
+              "ru": "праздник; праздничный день",
+              "tj": "ид; рӯзи ид"
+            },
+            {
+              "uz": "qanday; qanday qilib",
+              "ru": "как; каким образом",
+              "tj": "чӣ хел; чӣ гуна"
+            },
+            {
+              "uz": "bayram",
+              "ru": "праздник",
+              "tj": "ид"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "怎样 = qanday; qanday qilib (zěnyàng)",
+            "ru": "怎样 = как; каким образом (zěnyàng)",
+            "tj": "怎样 = чӣ хел; чӣ гуна (zěnyàng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "怎样",
+              {
+                "uz": "qanday; qanday qilib",
+                "ru": "как; каким образом",
+                "tj": "чӣ хел; чӣ гуна"
+              }
+            ],
+            [
+              "过节",
+              {
+                "uz": "bayramni nishonlamoq",
+                "ru": "праздновать праздник",
+                "tj": "идро ҷашн гирифтан"
+              }
+            ],
+            [
+              "节",
+              {
+                "uz": "bayram",
+                "ru": "праздник",
+                "tj": "ид"
+              }
+            ],
+            [
+              "节日",
+              {
+                "uz": "bayram kuni; bayram",
+                "ru": "праздник; праздничный день",
+                "tj": "ид; рӯзи ид"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Taxminiy sonni ifodalash",
+              "ru": "Выражение приблизительного количества",
+              "tj": "Ифодаи миқдори тахминӣ"
+            },
+            "title_zh": "概数表达法",
+            "rule": {
+              "uz": "Ikki yaqin son yonma-yon kelib aniq bo‘lmagan taxminiy miqdorni bildiradi: 七八天 — “yetti-sakkiz kun”, 五六个 — “besh-olti dona”.",
+              "ru": "Два соседних числительных ставятся рядом, чтобы выразить приблизительное количество: 七八天 — «семь-восемь дней», 五六个 — «пять-шесть».",
+              "tj": "Ду адади наздик паҳлуи ҳам омада миқдори тахминиро ифода мекунанд: 七八天 — «ҳафт-ҳашт рӯз», 五六个 — «панҷ-шаш»."
+            },
+            "examples": [
+              {
+                "zh": "春节大概放七八天假。",
+                "pinyin": "Chūnjié dàgài fàng qī bā tiān jià.",
+                "translation": {
+                  "uz": "Bahor bayramida taxminan yetti-sakkiz kun ta’til bo‘ladi.",
+                  "ru": "На Праздник Весны обычно дают примерно семь-восемь дней выходных.",
+                  "tj": "Дар Иди Баҳор тақрибан ҳафт-ҳашт рӯз таътил мешавад."
+                }
+              },
+              {
+                "zh": "教室里来了五六个学生。",
+                "pinyin": "Jiàoshì lǐ lái le wǔ liù ge xuéshēng.",
+                "translation": {
+                  "uz": "Sinfga besh-olti talaba keldi.",
+                  "ru": "В класс пришло пять-шесть студентов.",
+                  "tj": "Ба синф панҷ-шаш донишҷӯ омад."
+                }
+              },
+              {
+                "zh": "这些照片是三四年前照的吧？",
+                "pinyin": "Zhèxiē zhàopiàn shì sān sì nián qián zhào de ba?",
+                "translation": {
+                  "uz": "Bu suratlar uch-to‘rt yil oldin olingan-a?",
+                  "ru": "Эти фотографии сделаны года три-четыре назад, да?",
+                  "tj": "Ин суратҳо се-чор сол пеш гирифта шудаанд, дуруст?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Sinfga besh-olti talaba keldi.",
+            "ru": "В класс пришло пять-шесть студентов.",
+            "tj": "Ба синф панҷ-шаш донишҷӯ омад."
+          },
+          "tokens": [
+            "过节",
+            "教室",
+            "里",
+            "怎样",
+            "了",
+            "来",
+            "学生",
+            "五",
+            "个",
+            "六"
+          ],
+          "answer_tokens": [
+            "教室",
+            "里",
+            "来",
+            "了",
+            "五",
+            "六",
+            "个",
+            "学生"
+          ],
+          "explanation": {
+            "uz": "教室里来了五六个学生。 — Jiàoshì lǐ lái le wǔ liù ge xuéshēng.",
+            "ru": "教室里来了五六个学生。 — Jiàoshì lǐ lái le wǔ liù ge xuéshēng.",
+            "tj": "教室里来了五六个学生。 — Jiàoshì lǐ lái le wǔ liù ge xuéshēng."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bahor bayramida taxminan yetti-sakkiz kun ta’til bo‘ladi.» — xitoychada qaysi biri?",
+            "ru": "«На Праздник Весны обычно дают примерно семь-восемь дней выходных.» — какое предложение по-китайски?",
+            "tj": "«Дар Иди Баҳор тақрибан ҳафт-ҳашт рӯз таътил мешавад.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "春节大概放七八天假。",
+            "这些照片是三四年前照的吧？",
+            "教室里来了五六个学生。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "春节大概放七八天假。 — Chūnjié dàgài fàng qī bā tiān jià.",
+            "ru": "春节大概放七八天假。 — Chūnjié dàgài fàng qī bā tiān jià.",
+            "tj": "春节大概放七八天假。 — Chūnjié dàgài fàng qī bā tiān jià."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "怎样",
+          "pinyin": "zěnyàng",
+          "options": [
+            "过节",
+            "节",
+            "怎样",
+            "节日"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "怎样 — qanday; qanday qilib (zěnyàng)",
+            "ru": "怎样 — как; каким образом (zěnyàng)",
+            "tj": "怎样 — чӣ хел; чӣ гуна (zěnyàng)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "怎样",
+          "pinyin": "zěnyàng",
+          "translation": {
+            "uz": "qanday; qanday qilib",
+            "ru": "как; каким образом",
+            "tj": "чӣ хел; чӣ гуна"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "向 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 向:",
+            "tj": "Маънои калимаи 向-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bayram",
+              "ru": "праздник",
+              "tj": "ид"
+            },
+            {
+              "uz": "bayramni nishonlamoq",
+              "ru": "праздновать праздник",
+              "tj": "идро ҷашн гирифтан"
+            },
+            {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            },
+            {
+              "uz": "qanday; qanday qilib",
+              "ru": "как; каким образом",
+              "tj": "чӣ хел; чӣ гуна"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "向 = tomon; ...dan o‘rganmoq (xiàng)",
+            "ru": "向 = к; по направлению к; у кого-либо (xiàng)",
+            "tj": "向 = ба сӯи; аз касе омӯхтан (xiàng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "向",
+            "pinyin": "xiàng",
+            "meaning": {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qanday; qanday qilib' xitoycha qaysi?",
+            "ru": "'как; каким образом' по-китайски?",
+            "tj": "'чӣ хел; чӣ гуна' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "过节",
+            "节日",
+            "节",
+            "怎样"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "qanday; qanday qilib = 怎样 (zěnyàng)",
+            "ru": "как; каким образом = 怎样 (zěnyàng)",
+            "tj": "чӣ хел; чӣ гуна = 怎样 (zěnyàng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "怎样",
+            "pinyin": "zěnyàng",
+            "meaning": {
+              "uz": "qanday; qanday qilib",
+              "ru": "как; каким образом",
+              "tj": "чӣ хел; чӣ гуна"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

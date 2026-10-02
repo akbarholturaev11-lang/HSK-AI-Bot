@@ -1,0 +1,726 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 36,
+  "source_lesson": 6,
+  "part_no": 4,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "你的手机号是多少？",
+  "subtitle": {
+    "uz": "Telefon raqamini tushunish va aytish; “想” bilan xohish/niyatni ifodalash; ketma-ket fe’lli gaplarda maqsad va usulni ifodalash; “怎么” bilan harakat usulini so‘rash.",
+    "ru": "Понимать и называть номера телефонов; выражать желание и намерение с “想”; использовать последовательности глаголов для цели и способа действия; спрашивать о способе действия с “怎么”.",
+    "tj": "Рақами телефонро фаҳмидан ва гуфтан; бо “想” хоҳишу ниятро ифода кардан; ҷумлаҳои пайдарпайи феълӣ барои мақсад ва тарзи амал; бо “怎么” тарзи амалро пурсидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "吃",
+      "pinyin": "chī",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yemoq",
+        "ru": "есть",
+        "tj": "хӯрдан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "晚饭",
+      "pinyin": "wǎnfàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kechki ovqat",
+        "ru": "ужин",
+        "tj": "хӯроки шом"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "那边",
+      "pinyin": "nàbian",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "u yer; o‘sha tomon",
+        "ru": "там; та сторона",
+        "tj": "он ҷо; он тараф"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "包子",
+      "pinyin": "bāozi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bug‘da pishirilgan bulochka",
+        "ru": "баоцзы; булочка с начинкой",
+        "tj": "баоцзы; кулчаи буғӣ"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen Bai Jiayuedan telefon raqamini so‘ramoqda.",
+        "ru": "В кампусе Ли Вэнь спрашивает у Бай Цзяюэ номер мобильного телефона.",
+        "tj": "Дар кампус Ли Вэн аз Бай Ҷяюэ рақами телефонашро мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "家月，你的手机号是多少？",
+          "pinyin": "Jiāyuè, nǐ de shǒujīhào shì duōshao?",
+          "text": {
+            "uz": "Jiayue, mobil raqaming nechchi?",
+            "ru": "Цзяюэ, какой у тебя номер мобильного?",
+            "tj": "Ҷяюэ, рақами мобилиат чанд аст?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我的手机号是+33 601493190。",
+          "pinyin": "Wǒ de shǒujīhào shì +33 601493190.",
+          "text": {
+            "uz": "Mening mobil raqamim +33 601493190.",
+            "ru": "Мой номер мобильного +33 601493190.",
+            "tj": "Рақами мобилии ман +33 601493190 аст."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "我的手机号是+86 13552721160。",
+          "pinyin": "Wǒ de shǒujīhào shì +86 13552721160.",
+          "text": {
+            "uz": "Mening mobil raqamim +86 13552721160.",
+            "ru": "Мой номер мобильного +86 13552721160.",
+            "tj": "Рақами мобилии ман +86 13552721160 аст."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "好的。",
+          "pinyin": "Hǎo de.",
+          "text": {
+            "uz": "Xo‘p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsdan keyin sinfda Bai Jiayue va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "После занятия Бай Цзяюэ и Чэнь Тяньчжун разговаривают в аудитории.",
+        "tj": "Пас аз дарс Бай Ҷяюэ ва Чэн Тянҷун дар синф суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "家月，明天你去哪儿？",
+          "pinyin": "Jiāyuè, míngtiān nǐ qù nǎr?",
+          "text": {
+            "uz": "Jiayue, ertaga qayerga borasan?",
+            "ru": "Цзяюэ, куда ты пойдёшь завтра?",
+            "tj": "Ҷяюэ, фардо ба куҷо меравӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我想去超市买东西。",
+          "pinyin": "Wǒ xiǎng qù chāoshì mǎi dōngxi.",
+          "text": {
+            "uz": "Men supermarketga narsa sotib olish uchun bormoqchiman.",
+            "ru": "Я хочу пойти в супермаркет купить продукты.",
+            "tj": "Ман мехоҳам ба супермаркет рафта чиз харам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "你去超市买什么？",
+          "pinyin": "Nǐ qù chāoshì mǎi shénme?",
+          "text": {
+            "uz": "Supermarketga nima sotib olish uchun borasan?",
+            "ru": "Что ты собираешься купить в супермаркете?",
+            "tj": "Дар супермаркет чӣ мехарӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我想买些牛奶。",
+          "pinyin": "Wǒ xiǎng mǎi xiē niúnǎi.",
+          "text": {
+            "uz": "Men biroz sut sotib olmoqchiman.",
+            "ru": "Я хочу купить немного молока.",
+            "tj": "Ман мехоҳам каме шир харам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Wang Yixue oilasi dam olish kunidagi kechki ovqat rejasini muhokama qilmoqda.",
+        "ru": "Дома семья Ван Исюэ обсуждает планы на ужин в выходной.",
+        "tj": "Дар хона оилаи Ван Исюэ нақшаи хӯроки шоми рӯзҳои истироҳатро муҳокима мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "星期天我们去哪儿吃晚饭？",
+          "pinyin": "Xīngqītiān wǒmen qù nǎr chī wǎnfàn?",
+          "text": {
+            "uz": "Yakshanba kuni kechki ovqatni qayerda yeymiz?",
+            "ru": "Куда мы пойдём ужинать в воскресенье?",
+            "tj": "Рӯзи якшанбе барои шом ба куҷо меравем?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "吃",
+            "pinyin": "chī",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yemoq",
+              "ru": "есть",
+              "tj": "хӯрдан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "吃 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 吃:",
+            "tj": "Маънои калимаи 吃-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "telefon; qo‘ng‘iroq",
+              "ru": "телефон; звонок",
+              "tj": "телефон; занг"
+            },
+            {
+              "uz": "mobil telefon",
+              "ru": "мобильный телефон",
+              "tj": "телефони мобилӣ"
+            },
+            {
+              "uz": "yemoq",
+              "ru": "есть",
+              "tj": "хӯрдан"
+            },
+            {
+              "uz": "raqam",
+              "ru": "номер",
+              "tj": "рақам"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "吃 = yemoq (chī)",
+            "ru": "吃 = есть (chī)",
+            "tj": "吃 = хӯрдан (chī)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "晚饭",
+            "pinyin": "wǎnfàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kechki ovqat",
+              "ru": "ужин",
+              "tj": "хӯроки шом"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wǎnfàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wǎnfàn?",
+            "tj": "wǎnfàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "晚饭",
+            "电话",
+            "手机",
+            "号"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "晚饭 = kechki ovqat (wǎnfàn)",
+            "ru": "晚饭 = ужин (wǎnfàn)",
+            "tj": "晚饭 = хӯроки шом (wǎnfàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "那边",
+            "pinyin": "nàbian",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "u yer; o‘sha tomon",
+              "ru": "там; та сторона",
+              "tj": "он ҷо; он тараф"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "那边 talaffuzini tanlang:",
+            "ru": "Выберите произношение 那边:",
+            "tj": "Талаффузи 那边-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shǒujī",
+            "diànhuà",
+            "nàbian",
+            "hào"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "那边 — nàbian",
+            "ru": "那边 — nàbian",
+            "tj": "那边 — nàbian"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "包子",
+            "pinyin": "bāozi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bug‘da pishirilgan bulochka",
+              "ru": "баоцзы; булочка с начинкой",
+              "tj": "баоцзы; кулчаи буғӣ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "包子",
+          "pinyin": "bāozi",
+          "translation": {
+            "uz": "bug‘da pishirilgan bulochka",
+            "ru": "баоцзы; булочка с начинкой",
+            "tj": "баоцзы; кулчаи буғӣ"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bug‘da pishirilgan bulochka' xitoycha qaysi?",
+            "ru": "'баоцзы; булочка с начинкой' по-китайски?",
+            "tj": "'баоцзы; кулчаи буғӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "包子",
+            "手机",
+            "号",
+            "电话"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "bug‘da pishirilgan bulochka = 包子 (bāozi)",
+            "ru": "баоцзы; булочка с начинкой = 包子 (bāozi)",
+            "tj": "баоцзы; кулчаи буғӣ = 包子 (bāozi)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "吃",
+          "pinyin": "chī",
+          "options": [
+            "吃",
+            "电话",
+            "号",
+            "手机"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "吃 — yemoq (chī)",
+            "ru": "吃 — есть (chī)",
+            "tj": "吃 — хӯрдан (chī)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "吃",
+              {
+                "uz": "yemoq",
+                "ru": "есть",
+                "tj": "хӯрдан"
+              }
+            ],
+            [
+              "晚饭",
+              {
+                "uz": "kechki ovqat",
+                "ru": "ужин",
+                "tj": "хӯроки шом"
+              }
+            ],
+            [
+              "那边",
+              {
+                "uz": "u yer; o‘sha tomon",
+                "ru": "там; та сторона",
+                "tj": "он ҷо; он тараф"
+              }
+            ],
+            [
+              "包子",
+              {
+                "uz": "bug‘da pishirilgan bulochka",
+                "ru": "баоцзы; булочка с начинкой",
+                "tj": "баоцзы; кулчаи буғӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "包子",
+          "pinyin": "bāozi",
+          "options": [
+            "包子",
+            "号",
+            "手机",
+            "电话"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "包子 — bug‘da pishirilgan bulochka (bāozi)",
+            "ru": "包子 — баоцзы; булочка с начинкой (bāozi)",
+            "tj": "包子 — баоцзы; кулчаи буғӣ (bāozi)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Yakshanba kuni kechki ovqatni qayerda yeymiz?",
+            "ru": "Куда мы пойдём ужинать в воскресенье?",
+            "tj": "Рӯзи якшанбе барои шом ба куҷо меравем?"
+          },
+          "tokens": [
+            "晚饭",
+            "哪儿",
+            "去",
+            "星期天",
+            "手机",
+            "我们",
+            "电话",
+            "吃"
+          ],
+          "answer_tokens": [
+            "星期天",
+            "我们",
+            "去",
+            "哪儿",
+            "吃",
+            "晚饭"
+          ],
+          "explanation": {
+            "uz": "星期天我们去哪儿吃晚饭？ — Xīngqītiān wǒmen qù nǎr chī wǎnfàn?",
+            "ru": "星期天我们去哪儿吃晚饭？ — Xīngqītiān wǒmen qù nǎr chī wǎnfàn?",
+            "tj": "星期天我们去哪儿吃晚饭？ — Xīngqītiān wǒmen qù nǎr chī wǎnfàn?"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "星期天我们去哪儿吃晚饭？",
+          "pinyin": "Xīngqītiān wǒmen qù nǎr chī wǎnfàn?",
+          "translation": {
+            "uz": "Yakshanba kuni kechki ovqatni qayerda yeymiz?",
+            "ru": "Куда мы пойдём ужинать в воскресенье?",
+            "tj": "Рӯзи якшанбе барои шом ба куҷо меравем?"
+          },
+          "tokens": {
+            "uz": [
+              "ovqatni",
+              "Yakshanba",
+              "yeymiz",
+              "kechki",
+              "qayerda",
+              "kuni"
+            ],
+            "ru": [
+              "мы",
+              "воскресенье",
+              "Куда",
+              "ужинать",
+              "в",
+              "пойдём"
+            ],
+            "tj": [
+              "Рӯзи",
+              "барои",
+              "ба",
+              "меравем",
+              "куҷо",
+              "якшанбе",
+              "шом"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Yakshanba",
+              "kuni",
+              "kechki",
+              "ovqatni",
+              "qayerda",
+              "yeymiz"
+            ],
+            "ru": [
+              "Куда",
+              "мы",
+              "пойдём",
+              "ужинать",
+              "в",
+              "воскресенье"
+            ],
+            "tj": [
+              "Рӯзи",
+              "якшанбе",
+              "барои",
+              "шом",
+              "ба",
+              "куҷо",
+              "меравем"
+            ]
+          },
+          "explanation": {
+            "uz": "星期天我们去哪儿吃晚饭？ — Yakshanba kuni kechki ovqatni qayerda yeymiz?",
+            "ru": "星期天我们去哪儿吃晚饭？ — Куда мы пойдём ужинать в воскресенье?",
+            "tj": "星期天我们去哪儿吃晚饭？ — Рӯзи якшанбе барои шом ба куҷо меравем?"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "吃",
+              {
+                "uz": "yemoq",
+                "ru": "есть",
+                "tj": "хӯрдан"
+              }
+            ],
+            [
+              "晚饭",
+              {
+                "uz": "kechki ovqat",
+                "ru": "ужин",
+                "tj": "хӯроки шом"
+              }
+            ],
+            [
+              "那边",
+              {
+                "uz": "u yer; o‘sha tomon",
+                "ru": "там; та сторона",
+                "tj": "он ҷо; он тараф"
+              }
+            ],
+            [
+              "包子",
+              {
+                "uz": "bug‘da pishirilgan bulochka",
+                "ru": "баоцзы; булочка с начинкой",
+                "tj": "баоцзы; кулчаи буғӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "包子",
+          "pinyin": "bāozi",
+          "translation": {
+            "uz": "bug‘da pishirilgan bulochka",
+            "ru": "баоцзы; булочка с начинкой",
+            "tj": "баоцзы; кулчаи буғӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "牛奶 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 牛奶:",
+            "tj": "Маънои калимаи 牛奶-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mobil telefon",
+              "ru": "мобильный телефон",
+              "tj": "телефони мобилӣ"
+            },
+            {
+              "uz": "raqam",
+              "ru": "номер",
+              "tj": "рақам"
+            },
+            {
+              "uz": "sut",
+              "ru": "молоко",
+              "tj": "шир"
+            },
+            {
+              "uz": "telefon; qo‘ng‘iroq",
+              "ru": "телефон; звонок",
+              "tj": "телефон; занг"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "牛奶 = sut (niúnǎi)",
+            "ru": "牛奶 = молоко (niúnǎi)",
+            "tj": "牛奶 = шир (niúnǎi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "牛奶",
+            "pinyin": "niúnǎi",
+            "meaning": {
+              "uz": "sut",
+              "ru": "молоко",
+              "tj": "шир"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bug‘da pishirilgan bulochka' xitoycha qaysi?",
+            "ru": "'баоцзы; булочка с начинкой' по-китайски?",
+            "tj": "'баоцзы; кулчаи буғӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "电话",
+            "手机",
+            "号",
+            "包子"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "bug‘da pishirilgan bulochka = 包子 (bāozi)",
+            "ru": "баоцзы; булочка с начинкой = 包子 (bāozi)",
+            "tj": "баоцзы; кулчаи буғӣ = 包子 (bāozi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "包子",
+            "pinyin": "bāozi",
+            "meaning": {
+              "uz": "bug‘da pishirilgan bulochka",
+              "ru": "баоцзы; булочка с начинкой",
+              "tj": "баоцзы; кулчаи буғӣ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

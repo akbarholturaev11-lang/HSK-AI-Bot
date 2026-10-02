@@ -12,6 +12,7 @@ from app.services.entitlements.engine import EntitlementEngine
 from app.services.entitlements.state import EntitlementState, resolve_state
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService, COURSE_DAILY_EVENT_NAME
 from app.services.course_access_policy_service import CourseAccessPolicyService
+from app.services.course_track_service import CourseTrackService
 
 
 class LessonAccessService:
@@ -42,6 +43,52 @@ class LessonAccessService:
         reference = self.reference(level, lesson_order)
         if resolve_state(user) == EntitlementState.BLOCKED:
             return payload
+
+        normalized_level = str(level or "").strip().lower()
+        if normalized_level.startswith("nhsk"):
+            track_service = CourseTrackService(self.session)
+            hsk30_access = await track_service.hsk30_access(user)
+            access_payload = hsk30_access.payload()
+            if not hsk30_access.allowed:
+                return {
+                    **payload,
+                    "ok": False,
+                    "allowed": False,
+                    "error": hsk30_access.reason,
+                    "hsk30_access": access_payload,
+                    "limit": None,
+                    "remaining": None,
+                    "window": "none",
+                    "reset_at": None,
+                }
+            if not await track_service.hsk30_feature.is_level_live(normalized_level):
+                return {
+                    **payload,
+                    "ok": False,
+                    "allowed": False,
+                    "error": "hsk30_level_not_live",
+                    "hsk30_access": {
+                        **access_payload,
+                        "level_live": False,
+                    },
+                    "limit": None,
+                    "remaining": None,
+                    "window": "none",
+                    "reset_at": None,
+                }
+            return {
+                **payload,
+                "ok": True,
+                "allowed": True,
+                "hsk30_access": {
+                    **access_payload,
+                    "level_live": True,
+                },
+                "limit": None,
+                "remaining": None,
+                "window": "none",
+                "reset_at": None,
+            }
         if (await CourseAccessPolicyService(self.session).get_policy()).free_active:
             return {**payload, "ok": True, "allowed": True, "policy_free": True,
                     "limit": None, "remaining": None, "window": "none", "reset_at": None}

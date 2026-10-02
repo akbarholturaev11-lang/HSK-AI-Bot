@@ -1,0 +1,62 @@
+name: HSK30 Build N2 Source Bundle
+
+on:
+  push:
+    branches:
+      - codex/local-ai
+    paths:
+      - ".github/workflows/hsk30_build_nhsk2.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: codex/local-ai
+          fetch-depth: 1
+
+      - name: Validate N2 source
+        run: python scripts/hsk30/verify_nhsk2_source.py
+
+      - name: Build N2 normalized bundle
+        run: python scripts/hsk30/build_nhsk2_source_bundle.py
+
+      - name: Validate generated manifest
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("scripts/hsk30/generated/nhsk2/manifest.json")
+          data = json.loads(p.read_text(encoding="utf-8"))
+          assert data["lesson_count"] == 15
+          assert data["lesson_vocabulary_rows"] == 211
+          assert data["syllabus_rows"] == 200
+          assert data["grammar_points"] == 45
+          assert data["dialogue_blocks"] == 60
+          assert data["dialogue_lines"] == 308
+          print(data)
+          PY
+
+      - name: Commit generated bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "hsk-ai-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add scripts/hsk30/generated/nhsk2
+          if git diff --cached --quiet; then
+            echo "No generated changes"
+            exit 0
+          fi
+          git commit -m "feat: generate HSK 3.0 N2 source bundle"
+          git push origin HEAD:codex/local-ai
+
+# retry-after-validator-fix-2

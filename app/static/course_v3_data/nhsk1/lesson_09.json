@@ -1,0 +1,778 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 9,
+  "source_lesson": 2,
+  "part_no": 5,
+  "part_count": 5,
+  "checkpoint": true,
+  "title": "我叫李文",
+  "subtitle": {
+    "uz": "Boshqalarning o'zini tanishtirishini tushunish va xitoycha ism bilan o'zini tanishtirish; 对不起 va 没关系 orqali uzr so'rash va javob berish; xitoy tilidagi asosiy so'z tartibini tushunish.",
+    "ru": "Понимать самопрезентацию собеседника и представляться с китайским именем; извиняться с 对不起 и отвечать 没关系; освоить базовый порядок слов в китайском языке.",
+    "tj": "Худмуаррифии дигаронро фаҳмидан ва бо номи чинӣ худро муаррифӣ кардан; бо 对不起 узр пурсидан ва бо 没关系 ҷавоб додан; тартиби асосии калимаҳои забони чиниро аз худ кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "请问",
+      "pinyin": "qǐngwèn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kechirasiz, so'rasam",
+        "ru": "разрешите спросить; извините",
+        "tj": "мебахшед, пурсам"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "你",
+      "pinyin": "nǐ",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "sen",
+        "ru": "ты",
+        "tj": "ту"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "叫",
+      "pinyin": "jiào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "deb atalmoq; ismi bo'lmoq",
+        "ru": "зваться; называться",
+        "tj": "ном доштан; номида шудан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "什么",
+      "pinyin": "shénme",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "nima; qanday",
+        "ru": "что; какой",
+        "tj": "чӣ; кадом"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "名字",
+      "pinyin": "míngzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ism",
+        "ru": "имя",
+        "tj": "ном"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "我",
+      "pinyin": "wǒ",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "men; meni",
+        "ru": "я; меня",
+        "tj": "ман; маро"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "不",
+      "pinyin": "bù",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "emas; yo'q; -ma",
+        "ru": "не; нет",
+        "tj": "не; нест"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "是",
+      "pinyin": "shì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bo'lmoq; ...dir",
+        "ru": "быть; являться",
+        "tj": "будан; ...аст"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "对不起",
+      "pinyin": "duìbuqǐ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kechirasiz; uzr",
+        "ru": "извините; простите",
+        "tj": "мебахшед; узр"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "没关系",
+      "pinyin": "méi guānxi",
+      "pos": "phrase",
+      "meaning": {
+        "uz": "hechqisi yo'q; mayli",
+        "ru": "ничего страшного; всё в порядке",
+        "tj": "ҳеҷ гап не; майлаш"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "没事",
+      "pinyin": "méishì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "hechqisi yo'q; muammo emas",
+        "ru": "ничего; неважно",
+        "tj": "ҳеҷ гап не; мушкиле нест"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "很",
+      "pinyin": "hěn",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "juda",
+        "ru": "очень",
+        "tj": "хеле"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "高兴",
+      "pinyin": "gāoxìng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "xursand",
+        "ru": "рад; счастлив",
+        "tj": "хурсанд"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "认识",
+      "pinyin": "rènshi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tanimoq; tanishmoq",
+        "ru": "знать; знакомиться",
+        "tj": "шинохтан; шинос шудан"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "也",
+      "pinyin": "yě",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "ham",
+        "ru": "тоже; также",
+        "tj": "ҳам"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Xitoy tilidagi asosiy so'z tartibi",
+        "ru": "Базовый порядок слов в китайском языке",
+        "tj": "Тартиби асосии калимаҳо дар забони чинӣ"
+      },
+      "title_zh": "汉语的基本语序",
+      "rule": {
+        "uz": "Xitoy tilidagi asosiy tartib: ega + kesim + to'ldiruvchi.",
+        "ru": "Базовый порядок слов: подлежащее + сказуемое + дополнение.",
+        "tj": "Тартиби асосӣ: мубтадо + хабар + пуркунанда."
+      },
+      "examples": [
+        {
+          "zh": "你叫什么名字？",
+          "pinyin": "Nǐ jiào shénme míngzi?",
+          "translation": {
+            "uz": "Sening isming nima?",
+            "ru": "Как тебя зовут?",
+            "tj": "Номи ту чист?"
+          }
+        },
+        {
+          "zh": "我叫白家月。",
+          "pinyin": "Wǒ jiào Bái Jiāyuè.",
+          "translation": {
+            "uz": "Mening ismim Bai Jiayue.",
+            "ru": "Меня зовут Бай Цзяюэ.",
+            "tj": "Номи ман Бай Ҷяюэ аст."
+          }
+        },
+        {
+          "zh": "我是学生。",
+          "pinyin": "Wǒ shì xuésheng.",
+          "translation": {
+            "uz": "Men talabaman.",
+            "ru": "Я студент.",
+            "tj": "Ман донишҷӯ ҳастам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda Wang Yifei talabalar bilan tanishmoqda.",
+        "ru": "В аудитории Ван Ифэй знакомится со студентами.",
+        "tj": "Дар синф Ван Ифэй бо донишҷӯён шинос мешавад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "请问，你叫什么名字？",
+          "pinyin": "Qǐngwèn, nǐ jiào shénme míngzi?",
+          "text": {
+            "uz": "Kechirasiz, ismingiz nima?",
+            "ru": "Разрешите спросить, как вас зовут?",
+            "tj": "Мебахшед, номи шумо чист?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我叫陈天中。",
+          "pinyin": "Wǒ jiào Chén Tiānzhōng.",
+          "text": {
+            "uz": "Mening ismim Chen Tianzhong.",
+            "ru": "Меня зовут Чэнь Тяньчжун.",
+            "tj": "Номи ман Чэн Тянҷун аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Chen Tianzhong Bai Jiayue bilan salomlashayotib uni boshqa odam deb o'ylab qoladi.",
+        "ru": "В кампусе Чэнь Тяньчжун здоровается с Бай Цзяюэ, но принимает её за другого человека.",
+        "tj": "Дар кампус Чэн Тянҷун бо Бай Ҷяюэ салом мекунад, вале ӯро бо шахси дигар иштибоҳ мегирад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "你好，安妮！",
+          "pinyin": "Nǐ hǎo, Ānnī!",
+          "text": {
+            "uz": "Salom, Annie!",
+            "ru": "Привет, Энни!",
+            "tj": "Салом, Энни!"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "你好，陈天中！我不是安妮，我是白家月。",
+          "pinyin": "Nǐ hǎo, Chén Tiānzhōng! Wǒ bú shì Ānnī, wǒ shì Bái Jiāyuè.",
+          "text": {
+            "uz": "Salom, Chen Tianzhong! Men Annie emasman, men Bai Jiayueman.",
+            "ru": "Привет, Чэнь Тяньчжун! Я не Энни, я Бай Цзяюэ.",
+            "tj": "Салом, Чэн Тянҷун! Ман Энни нестам, ман Бай Ҷяюэ ҳастам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "对不起！",
+          "pinyin": "Duìbuqǐ!",
+          "text": {
+            "uz": "Kechirasiz!",
+            "ru": "Извините!",
+            "tj": "Мебахшед!"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "没关系！",
+          "pinyin": "Méi guānxi!",
+          "text": {
+            "uz": "Hechqisi yo'q!",
+            "ru": "Ничего страшного!",
+            "tj": "Ҳеҷ гап не!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen va Bai Jiayue birinchi marta uchrashadilar.",
+        "ru": "В кампусе Ли Вэнь и Бай Цзяюэ впервые встречаются.",
+        "tj": "Дар кампус Ли Вэн ва Бай Ҷяюэ бори аввал вомехӯранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "你好！我叫李文。",
+          "pinyin": "Nǐ hǎo! Wǒ jiào Lǐ Wén.",
+          "text": {
+            "uz": "Salom! Mening ismim Li Wen.",
+            "ru": "Привет! Меня зовут Ли Вэнь.",
+            "tj": "Салом! Номи ман Ли Вэн аст."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "你好！我叫白家月。",
+          "pinyin": "Nǐ hǎo! Wǒ jiào Bái Jiāyuè.",
+          "text": {
+            "uz": "Salom! Mening ismim Bai Jiayue.",
+            "ru": "Привет! Меня зовут Бай Цзяюэ.",
+            "tj": "Салом! Номи ман Бай Ҷяюэ аст."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "很高兴认识你。",
+          "pinyin": "Hěn gāoxìng rènshi nǐ.",
+          "text": {
+            "uz": "Siz bilan tanishganimdan xursandman.",
+            "ru": "Рад познакомиться с вами.",
+            "tj": "Аз шиносоӣ бо шумо хурсанд ҳастам."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "认识你我也很高兴。",
+          "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng.",
+          "text": {
+            "uz": "Men ham siz bilan tanishganimdan xursandman.",
+            "ru": "Я тоже рада знакомству.",
+            "tj": "Ман ҳам аз шиносоӣ бо шумо хурсанд ҳастам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "没事 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 没事:",
+            "tj": "Маънои калимаи 没事-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kechirasiz, so'rasam",
+              "ru": "разрешите спросить; извините",
+              "tj": "мебахшед, пурсам"
+            },
+            {
+              "uz": "hechqisi yo'q; muammo emas",
+              "ru": "ничего; неважно",
+              "tj": "ҳеҷ гап не; мушкиле нест"
+            },
+            {
+              "uz": "sen",
+              "ru": "ты",
+              "tj": "ту"
+            },
+            {
+              "uz": "deb atalmoq; ismi bo'lmoq",
+              "ru": "зваться; называться",
+              "tj": "ном доштан; номида шудан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "没事 = hechqisi yo'q; muammo emas (méishì)",
+            "ru": "没事 = ничего; неважно (méishì)",
+            "tj": "没事 = ҳеҷ гап не; мушкиле нест (méishì)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "请问",
+              {
+                "uz": "kechirasiz, so'rasam",
+                "ru": "разрешите спросить; извините",
+                "tj": "мебахшед, пурсам"
+              }
+            ],
+            [
+              "你",
+              {
+                "uz": "sen",
+                "ru": "ты",
+                "tj": "ту"
+              }
+            ],
+            [
+              "叫",
+              {
+                "uz": "deb atalmoq; ismi bo'lmoq",
+                "ru": "зваться; называться",
+                "tj": "ном доштан; номида шудан"
+              }
+            ],
+            [
+              "什么",
+              {
+                "uz": "nima; qanday",
+                "ru": "что; какой",
+                "tj": "чӣ; кадом"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Men talabaman.» — xitoychada qaysi biri?",
+            "ru": "«Я студент.» — какое предложение по-китайски?",
+            "tj": "«Ман донишҷӯ ҳастам.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我是学生。",
+            "我叫白家月。",
+            "你叫什么名字？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我是学生。 — Wǒ shì xuésheng.",
+            "ru": "我是学生。 — Wǒ shì xuésheng.",
+            "tj": "我是学生。 — Wǒ shì xuésheng."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "对不起",
+          "pinyin": "duìbuqǐ",
+          "options": [
+            "对不起",
+            "你",
+            "叫",
+            "请问"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "对不起 — kechirasiz; uzr (duìbuqǐ)",
+            "ru": "对不起 — извините; простите (duìbuqǐ)",
+            "tj": "对不起 — мебахшед; узр (duìbuqǐ)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "高兴 talaffuzini tanlang:",
+            "ru": "Выберите произношение 高兴:",
+            "tj": "Талаффузи 高兴-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "gāoxìng",
+            "nǐ",
+            "qǐngwèn",
+            "jiào"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "高兴 — gāoxìng",
+            "ru": "高兴 — gāoxìng",
+            "tj": "高兴 — gāoxìng"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "很高兴认识你。",
+          "pinyin": "Hěn gāoxìng rènshi nǐ.",
+          "translation": {
+            "uz": "Siz bilan tanishganimdan xursandman.",
+            "ru": "Рад познакомиться с вами.",
+            "tj": "Аз шиносоӣ бо шумо хурсанд ҳастам."
+          },
+          "tokens": {
+            "uz": [
+              "ismingiz",
+              "bilan",
+              "xursandman",
+              "Kechirasiz",
+              "Siz",
+              "tanishganimdan"
+            ],
+            "ru": [
+              "спросить",
+              "Разрешите",
+              "Рад",
+              "с",
+              "познакомиться",
+              "вами"
+            ],
+            "tj": [
+              "номи",
+              "бо",
+              "Мебахшед",
+              "шумо",
+              "Аз",
+              "хурсанд",
+              "ҳастам",
+              "шиносоӣ"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Siz",
+              "bilan",
+              "tanishganimdan",
+              "xursandman"
+            ],
+            "ru": [
+              "Рад",
+              "познакомиться",
+              "с",
+              "вами"
+            ],
+            "tj": [
+              "Аз",
+              "шиносоӣ",
+              "бо",
+              "шумо",
+              "хурсанд",
+              "ҳастам"
+            ]
+          },
+          "explanation": {
+            "uz": "很高兴认识你。 — Siz bilan tanishganimdan xursandman.",
+            "ru": "很高兴认识你。 — Рад познакомиться с вами.",
+            "tj": "很高兴认识你。 — Аз шиносоӣ бо шумо хурсанд ҳастам."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "名字",
+              {
+                "uz": "ism",
+                "ru": "имя",
+                "tj": "ном"
+              }
+            ],
+            [
+              "我",
+              {
+                "uz": "men; meni",
+                "ru": "я; меня",
+                "tj": "ман; маро"
+              }
+            ],
+            [
+              "不",
+              {
+                "uz": "emas; yo'q; -ma",
+                "ru": "не; нет",
+                "tj": "не; нест"
+              }
+            ],
+            [
+              "是",
+              {
+                "uz": "bo'lmoq; ...dir",
+                "ru": "быть; являться",
+                "tj": "будан; ...аст"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "请问，你叫什么名字？",
+          "pinyin": "Qǐngwèn, nǐ jiào shénme míngzi?",
+          "options": [
+            "我叫陈天中。",
+            "请问，你叫什么名字？",
+            "你好，安妮！",
+            "你好，陈天中！我不是安妮，我是白家月。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "请问，你叫什么名字？ — Kechirasiz, ismingiz nima?",
+            "ru": "请问，你叫什么名字？ — Разрешите спросить, как вас зовут?",
+            "tj": "请问，你叫什么名字？ — Мебахшед, номи шумо чист?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida Chen Tianzhong nima deydi?",
+            "ru": "Что Chen Tianzhong говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ Chen Tianzhong чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "你好，陈天中！我不是安妮，我是白家月。",
+            "我叫陈天中。",
+            "你好，安妮！",
+            "请问，你叫什么名字？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 我叫陈天中。",
+            "ru": "Правильный ответ: 我叫陈天中。",
+            "tj": "Ҷавоби дуруст: 我叫陈天中。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda Wang Yifei avval nima deydi?",
+            "ru": "Что Wang Yifei говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ Wang Yifei аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "我叫陈天中。",
+            "你好，陈天中！我不是安妮，我是白家月。",
+            "请问，你叫什么名字？",
+            "你好，安妮！"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 请问，你叫什么名字？",
+            "ru": "Правильный ответ: 请问，你叫什么名字？",
+            "tj": "Ҷавоби дуруст: 请问，你叫什么名字？"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "Wang Yifei",
+              "zh": "请问，你叫什么名字？",
+              "blank": false
+            },
+            {
+              "speaker": "Chen Tianzhong",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "你好，陈天中！我不是安妮，我是白家月。",
+            "请问，你叫什么名字？",
+            "你好，安妮！",
+            "我叫陈天中。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 我叫陈天中。",
+            "ru": "Правильный ответ: 我叫陈天中。",
+            "tj": "Ҷавоби дуруст: 我叫陈天中。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____问，你叫什么名字？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "不",
+            "请",
+            "么",
+            "也"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 请 — 请问，你叫什么名字？ (Kechirasiz, ismingiz nima?)",
+            "ru": "Верно: 请 — 请问，你叫什么名字？ (Разрешите спросить, как вас зовут?)",
+            "tj": "Дуруст: 请 — 请问，你叫什么名字？ (Мебахшед, номи шумо чист?)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你好，安妮！",
+          "pinyin": "Nǐ hǎo, Ānnī!",
+          "translation": {
+            "uz": "Salom, Annie!",
+            "ru": "Привет, Энни!",
+            "tj": "Салом, Энни!"
+          }
+        }
+      ]
+    }
+  ]
+}

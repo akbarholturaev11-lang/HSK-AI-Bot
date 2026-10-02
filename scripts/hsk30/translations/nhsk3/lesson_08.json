@@ -1,0 +1,496 @@
+{
+  "schema_version": 1,
+  "lesson": 8,
+  "source_title_hanzi": "今天我出院了",
+  "translation_origin": "assistant_authored_from_source_verified_chinese",
+  "goal": {
+    "uz": "Kasallik, shifoxona va dori qabul qilish tajribasini tasvirlash; sog‘liq odatlari haqida gaplashish; vaqt davomiyligi to‘ldiruvchisi bilan holatning hozirgacha qancha vaqt davom etganini ifodalash.",
+    "ru": "Описывать болезнь, лечение в больнице и приём лекарств; говорить о здоровье и привычках; выражать длительность состояния до настоящего момента с дополнением времени.",
+    "tj": "Таҷрибаи беморӣ, бистарӣ шудан ва истеъмоли доруро тавсиф кардан; дар бораи саломатӣ ва одатҳо суҳбат кардан; бо пуркунандаи давомнокӣ муддати то ҳозир идома ёфтани ҳолатро ифода кардан."
+  },
+  "intro_text": {
+    "uz": "Dars sport odatlari, shamollash, shifoxonada yotish va dori ichish haqidagi suhbatlar orqali yo‘nalish to‘ldiruvchisining ko‘chma ma’nosi, ajraluvchi fe’llar, vaqt davomiyligi va “以前/以后/前/后” tuzilmalarini o‘rgatadi.",
+    "ru": "Урок через спортивные привычки, простуду, госпитализацию и приём лекарств вводит переносное употребление направительных дополнений, разделяемые глаголы, дополнение длительности и конструкции “以前/以后/前/后”.",
+    "tj": "Дарс тавассути одатҳои варзишӣ, шамолхӯрӣ, бистарӣ шудан ва дорухӯрӣ истифодаи маҷозии пуркунандаи самт, феълҳои ҷудошаванда, давомнокии вақт ва сохторҳои “以前/以后/前/后”-ро меомӯзонад."
+  },
+  "vocabulary": [
+    {
+      "hanzi": "最近",
+      "pinyin": "zuìjìn",
+      "uz": "yaqinda; so‘nggi paytlarda",
+      "ru": "в последнее время",
+      "tj": "вақтҳои охир"
+    },
+    {
+      "hanzi": "常",
+      "pinyin": "cháng",
+      "uz": "tez-tez; ko‘pincha",
+      "ru": "часто",
+      "tj": "зуд-зуд"
+    },
+    {
+      "hanzi": "体育馆",
+      "pinyin": "tǐyùguǎn",
+      "uz": "sport zali; sport saroyi",
+      "ru": "спортивный зал; спорткомплекс",
+      "tj": "толори варзиш; маҷмааи варзишӣ"
+    },
+    {
+      "hanzi": "习惯",
+      "pinyin": "xíguàn",
+      "uz": "odat; odatlanmoq",
+      "ru": "привычка; привыкать",
+      "tj": "одат; одат кардан"
+    },
+    {
+      "hanzi": "胖",
+      "pinyin": "pàng",
+      "uz": "semiz; semirmoq",
+      "ru": "полный; толстеть",
+      "tj": "фарбеҳ; фарбеҳ шудан"
+    },
+    {
+      "hanzi": "健康",
+      "pinyin": "jiànkāng",
+      "uz": "sog‘lom; salomatlik",
+      "ru": "здоровый; здоровье",
+      "tj": "солим; саломатӣ"
+    },
+    {
+      "hanzi": "以后",
+      "pinyin": "yǐhòu",
+      "uz": "keyin; bundan keyin",
+      "ru": "после; впоследствии",
+      "tj": "баъд; баъд аз ин"
+    },
+    {
+      "hanzi": "羽毛球",
+      "pinyin": "yǔmáoqiú",
+      "uz": "badminton",
+      "ru": "бадминтон",
+      "tj": "бадминтон"
+    },
+    {
+      "hanzi": "耳朵",
+      "pinyin": "ěrduo",
+      "uz": "quloq",
+      "ru": "ухо",
+      "tj": "гӯш"
+    },
+    {
+      "hanzi": "感冒",
+      "pinyin": "gǎnmào",
+      "uz": "shamollamoq; shamollash",
+      "ru": "простудиться; простуда",
+      "tj": "шамол хӯрдан; шамолхӯрӣ"
+    },
+    {
+      "hanzi": "发烧",
+      "pinyin": "fāshāo",
+      "uz": "isitmasi chiqmoq",
+      "ru": "температурить; иметь жар",
+      "tj": "таб кардан"
+    },
+    {
+      "hanzi": "低",
+      "pinyin": "dī",
+      "uz": "past",
+      "ru": "низкий",
+      "tj": "паст"
+    },
+    {
+      "hanzi": "关心",
+      "pinyin": "guānxīn",
+      "uz": "g‘amxo‘rlik qilmoq; holidan xabar olmoq",
+      "ru": "заботиться; интересоваться состоянием",
+      "tj": "ғамхорӣ кардан; аҳвол пурсидан"
+    },
+    {
+      "hanzi": "注意",
+      "pinyin": "zhùyì",
+      "uz": "e’tibor bermoq; ehtiyot bo‘lmoq",
+      "ru": "обращать внимание; быть внимательным",
+      "tj": "диққат додан; эҳтиёт кардан"
+    },
+    {
+      "hanzi": "突然",
+      "pinyin": "tūrán",
+      "uz": "to‘satdan",
+      "ru": "внезапно",
+      "tj": "ногаҳон"
+    },
+    {
+      "hanzi": "住院",
+      "pinyin": "zhùyuàn",
+      "uz": "shifoxonada yotmoq",
+      "ru": "лежать в больнице; госпитализироваться",
+      "tj": "дар беморхона бистарӣ шудан"
+    },
+    {
+      "hanzi": "担心",
+      "pinyin": "dānxīn",
+      "uz": "xavotirlanmoq",
+      "ru": "беспокоиться",
+      "tj": "ташвиш кашидан"
+    },
+    {
+      "hanzi": "腿",
+      "pinyin": "tuǐ",
+      "uz": "oyoq",
+      "ru": "нога",
+      "tj": "пой"
+    },
+    {
+      "hanzi": "病人",
+      "pinyin": "bìngrén",
+      "uz": "bemor",
+      "ru": "пациент; больной",
+      "tj": "бемор"
+    },
+    {
+      "hanzi": "差不多",
+      "pinyin": "chàbuduō",
+      "uz": "deyarli; taxminan",
+      "ru": "почти; примерно",
+      "tj": "қариб; тақрибан"
+    },
+    {
+      "hanzi": "得",
+      "pinyin": "děi",
+      "uz": "kerak; majbur bo‘lmoq",
+      "ru": "нужно; приходится",
+      "tj": "бояд; лозим"
+    },
+    {
+      "hanzi": "开心",
+      "pinyin": "kāixīn",
+      "uz": "xursand",
+      "ru": "радостный",
+      "tj": "хурсанд"
+    },
+    {
+      "hanzi": "出院",
+      "pinyin": "chūyuàn",
+      "uz": "shifoxonadan chiqmoq",
+      "ru": "выписываться из больницы",
+      "tj": "аз беморхона ҷавоб шудан"
+    },
+    {
+      "hanzi": "开",
+      "pinyin": "kāi",
+      "uz": "yozib bermoq (dori); ochmoq",
+      "ru": "выписывать (лекарство); открывать",
+      "tj": "навишта додан (дору); кушодан"
+    },
+    {
+      "hanzi": "种",
+      "pinyin": "zhǒng",
+      "uz": "tur; xil",
+      "ru": "вид; разновидность",
+      "tj": "навъ"
+    },
+    {
+      "hanzi": "方法",
+      "pinyin": "fāngfǎ",
+      "uz": "usul",
+      "ru": "способ; метод",
+      "tj": "усул"
+    },
+    {
+      "hanzi": "其他",
+      "pinyin": "qítā",
+      "uz": "boshqa",
+      "ru": "другие; прочие",
+      "tj": "дигар"
+    },
+    {
+      "hanzi": "心里",
+      "pinyin": "xīnlǐ",
+      "uz": "ichida; ko‘nglida",
+      "ru": "в душе; внутри",
+      "tj": "дар дил; дар ботин"
+    }
+  ],
+  "grammar": [
+    {
+      "label": "趋向补语的引申用法（1）",
+      "title_uz": "Yo‘nalish to‘ldiruvchisining ko‘chma ma’nosi (1)",
+      "title_ru": "Переносное употребление направительного дополнения (1)",
+      "title_tj": "Истифодаи маҷозии пуркунандаи самт (1)",
+      "rule_uz": "“下去” fe’ldan keyin kelib harakat yoki holatning bundan keyin ham davom etishini bildirishi mumkin. Bu holatda u real yo‘nalishni emas, davomiylikni ifodalaydi.",
+      "rule_ru": "“下去” после глагола может обозначать продолжение действия или состояния в дальнейшем. Здесь оно выражает не физическое направление, а продолжительность.",
+      "rule_tj": "“下去” баъди феъл омада метавонад идома ёфтани амал ё ҳолатро нишон диҳад. Дар ин ҷо маънои самти воқеӣ надорад, балки давомнокиро ифода мекунад.",
+      "examples": [
+        {
+          "hanzi": "我今年胖了十多斤，不能再胖下去了。",
+          "uz": "Bu yil o‘n jindan ko‘proq semirdim, bundan ortiq semirish mumkin emas.",
+          "ru": "В этом году я набрал больше десяти цзиней, дальше толстеть нельзя.",
+          "tj": "Имсол зиёда аз даҳ ҷин фарбеҳ шудам, дигар ин тавр фарбеҳ шудан мумкин нест."
+        },
+        {
+          "hanzi": "她读完了第一个问题，后面的你读下去。",
+          "uz": "U birinchi savolni o‘qib bo‘ldi, qolganini sen davom ettirib o‘qi.",
+          "ru": "Она прочитала первый вопрос, дальше читай ты.",
+          "tj": "Ӯ саволи аввалро хонд, боқимондаашро ту идома деҳ."
+        },
+        {
+          "hanzi": "这几天天太热了，如果再热下去就不能出门了。",
+          "uz": "Shu kunlarda havo juda issiq, yana shunday davom etsa tashqariga chiqib bo‘lmaydi.",
+          "ru": "В эти дни слишком жарко; если так будет продолжаться, выйти из дома будет нельзя.",
+          "tj": "Ин чанд рӯз ҳаво хеле гарм аст, агар ҳамин тавр давом кунад, берун баромадан намешавад."
+        }
+      ]
+    },
+    {
+      "label": "离合词（2）",
+      "title_uz": "Ajraluvchi fe’llar (2)",
+      "title_ru": "Разделяемые глаголы (2)",
+      "title_tj": "Феълҳои ҷудошаванда (2)",
+      "rule_uz": "Ajraluvchi fe’l ichiga vaqt, son yoki boshqa grammatik elementlar kirishi mumkin. Masalan, 游泳 → 游完泳, 下雨 → 下了两次雨, 结婚 esa bir butun fe’l sifatida ham ishlatiladi.",
+      "rule_ru": "В разделяемый глагол могут вставляться показатели результата, количества или времени. Например: 游泳 → 游完泳, 下雨 → 下了两次雨.",
+      "rule_tj": "Дар дохили феъли ҷудошаванда нишондиҳандаи натиҷа, шумора ё вақт омада метавонад. Масалан: 游泳 → 游完泳, 下雨 → 下了两次雨.",
+      "examples": [
+        {
+          "hanzi": "昨天游完泳以后，我的耳朵一直有点儿疼。",
+          "uz": "Kecha suzib bo‘lgach, qulog‘im doim biroz og‘rib turdi.",
+          "ru": "После вчерашнего плавания у меня всё время немного болело ухо.",
+          "tj": "Дирӯз баъди шино кардан гӯшам пайваста каме дард мекард."
+        },
+        {
+          "hanzi": "今年夏天下了两次雨。",
+          "uz": "Bu yoz ikki marta yomg‘ir yog‘di.",
+          "ru": "Этим летом дождь шёл два раза.",
+          "tj": "Имсол тобистон ду бор борон борид."
+        },
+        {
+          "hanzi": "小张下个月跟他女朋友结婚。",
+          "uz": "Xiao Zhang keyingi oy qiz do‘sti bilan turmush quradi.",
+          "ru": "Сяо Чжан в следующем месяце женится на своей девушке.",
+          "tj": "Сяо Чжан моҳи оянда бо дӯстдухтараш издивоҷ мекунад."
+        }
+      ]
+    },
+    {
+      "label": "时量补语（2）",
+      "title_uz": "Vaqt davomiyligi to‘ldiruvchisi (2)",
+      "title_ru": "Дополнение длительности (2)",
+      "title_tj": "Пуркунандаи давомнокӣ (2)",
+      "rule_uz": "Harakat yoki holat ma’lum vaqtdan beri davom etayotganini aytishda davomiylik ifodasi va gap oxiridagi “了” ishlatiladi. Bu “qancha vaqtdan beri” ma’nosini beradi.",
+      "rule_ru": "Чтобы показать, сколько времени действие или состояние продолжается до настоящего момента, используется выражение длительности и “了” в конце предложения.",
+      "rule_tj": "Барои нишон додани он ки амал ё ҳолат то ҳозир чанд вақт идома дорад, ифодаи давомнокӣ ва “了” дар охири ҷумла истифода мешавад.",
+      "examples": [
+        {
+          "hanzi": "我上次来医院已经过去差不多两年了。",
+          "uz": "Shifoxonaga oxirgi kelganimdan beri deyarli ikki yil o‘tdi.",
+          "ru": "С моего прошлого визита в больницу прошло почти два года.",
+          "tj": "Аз бори охир ба беморхона омаданам қариб ду сол гузашт."
+        },
+        {
+          "hanzi": "她回家两个月了。",
+          "uz": "U uyiga qaytganiga ikki oy bo‘ldi.",
+          "ru": "Она уже два месяца как вернулась домой.",
+          "tj": "Ду моҳ шуд, ки ӯ ба хона баргаштааст."
+        },
+        {
+          "hanzi": "开学已经三个多星期了。",
+          "uz": "O‘qish boshlanganiga uch haftadan oshdi.",
+          "ru": "С начала учёбы прошло уже больше трёх недель.",
+          "tj": "Аз оғози таҳсил зиёда аз се ҳафта гузашт."
+        }
+      ]
+    },
+    {
+      "label": "固定格式“……以前/以后/前/后”",
+      "title_uz": "“以前 / 以后 / 前 / 后” bilan vaqtni ifodalash",
+      "title_ru": "Выражение времени с “以前 / 以后 / 前 / 后”",
+      "title_tj": "Ифодаи вақт бо “以前 / 以后 / 前 / 后”",
+      "rule_uz": "Fe’l yoki voqeadan oldin/ketin bo‘ladigan vaqtni ifodalash uchun “以前/以后” yoki qisqa “前/后” ishlatiladi: “uxlashdan oldin”, “ishdan keyin”, “imtihondan so‘ng” kabi.",
+      "rule_ru": "Для указания времени до или после действия используются “以前/以后” либо краткие “前/后”: «перед сном», «после работы», «после экзамена».",
+      "rule_tj": "Барои нишон додани вақти пеш ё баъд аз амал “以前/以后” ё шаклҳои кӯтоҳи “前/后” истифода мешаванд: «пеш аз хоб», «баъди кор», «пас аз имтиҳон».",
+      "examples": [
+        {
+          "hanzi": "这种药需要每天睡前吃一次。",
+          "uz": "Bu dorini har kuni uxlashdan oldin bir marta ichish kerak.",
+          "ru": "Это лекарство нужно принимать один раз в день перед сном.",
+          "tj": "Ин доруро ҳар рӯз пеш аз хоб як бор гирифтан лозим."
+        },
+        {
+          "hanzi": "我们决定下班后一起去看个电影。",
+          "uz": "Ishdan keyin birga film ko‘rishga borishga qaror qildik.",
+          "ru": "Мы решили после работы вместе сходить в кино.",
+          "tj": "Мо қарор кардем баъди кор якҷо кино бинем."
+        },
+        {
+          "hanzi": "考完试以后，咱们一起去旅游吧。",
+          "uz": "Imtihondan keyin birga sayohatga boraylik.",
+          "ru": "После экзамена давай вместе поедем путешествовать.",
+          "tj": "Баъди имтиҳон биё якҷо саёҳат равем."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene_zh": "在学校的体育馆，李文遇到了陈天中。",
+      "scene_uz": "Maktab sport zalida Li Wen Chen Tianzhongni uchratdi.",
+      "scene_ru": "В школьном спортзале Ли Вэнь встретил Чэнь Тяньчжуна.",
+      "scene_tj": "Дар толори варзишии мактаб Ли Вэн бо Чэн Тянҷун вохӯрд.",
+      "turns": [
+        {
+          "hanzi": "天中，最近常看见你来体育馆。",
+          "uz": "Tianzhong, so‘nggi paytlarda seni sport zalida tez-tez ko‘ryapman.",
+          "ru": "Тяньчжун, в последнее время я часто вижу тебя в спортзале.",
+          "tj": "Тянҷун, вақтҳои охир туро зуд-зуд дар толори варзиш мебинам."
+        },
+        {
+          "hanzi": "我每天下午都来跑一个小时步。",
+          "uz": "Har kuni tushdan keyin bir soat yugurishga kelaman.",
+          "ru": "Каждый день после обеда я прихожу бегать один час.",
+          "tj": "Ҳар рӯз баъд аз нисфирӯзӣ як соат давидан меоям."
+        },
+        {
+          "hanzi": "你的运动习惯真不错。",
+          "uz": "Sport odating juda yaxshi ekan.",
+          "ru": "У тебя отличная спортивная привычка.",
+          "tj": "Одати варзишиат хеле хуб аст."
+        },
+        {
+          "hanzi": "因为我今年胖了十多斤，不能再胖下去了，有点儿不健康。",
+          "uz": "Chunki bu yil o‘n jindan ko‘proq semirdim, yana semirish mumkin emas, bu sog‘lom emas.",
+          "ru": "Потому что в этом году я набрал больше десяти цзиней. Дальше толстеть нельзя, это уже нездорово.",
+          "tj": "Чунки имсол зиёда аз даҳ ҷин фарбеҳ шудам, дигар набояд фарбеҳ шавам, ин каме носолим аст."
+        },
+        {
+          "hanzi": "我下课以后常去打羽毛球，你也来玩吧。",
+          "uz": "Men darsdan keyin tez-tez badminton o‘ynayman, sen ham kel.",
+          "ru": "После занятий я часто играю в бадминтон, приходи тоже.",
+          "tj": "Ман баъди дарс зуд-зуд бадминтон бозӣ мекунам, ту ҳам биё."
+        },
+        {
+          "hanzi": "我知道，但是你们的水平太高了，我打得不怎么样。",
+          "uz": "Bilaman, lekin sizlarning darajangiz juda yuqori, men uncha yaxshi o‘ynamayman.",
+          "ru": "Знаю, но у вас слишком высокий уровень, а я играю не очень.",
+          "tj": "Медонам, аммо сатҳи шумо хеле баланд аст, ман он қадар хуб бозӣ намекунам."
+        },
+        {
+          "hanzi": "没关系，我可以教你。",
+          "uz": "Hechqisi yo‘q, men senga o‘rgataman.",
+          "ru": "Ничего, я могу тебя научить.",
+          "tj": "Ҳеҷ гап нест, ман метавонам ба ту омӯзонам."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在教室，安妮问候陈天中。",
+      "scene_uz": "Sinfda Annie Chen Tianzhongning holidan xabar olmoqda.",
+      "scene_ru": "В классе Энни спрашивает Чэнь Тяньчжуна о самочувствии.",
+      "scene_tj": "Дар синф Энни аҳволи Чэн Тянҷунро мепурсад.",
+      "turns": [
+        {
+          "hanzi": "你怎么了？看上去有点儿不舒服。",
+          "uz": "Senga nima bo‘ldi? O‘zingni biroz yomon his qilayotgandek ko‘rinyapsan.",
+          "ru": "Что с тобой? Выглядишь так, будто тебе нехорошо.",
+          "tj": "Ба ту чӣ шуд? Ба назар каме худро бад ҳис мекунӣ."
+        },
+        {
+          "hanzi": "昨天游完泳以后，耳朵一直有点儿疼。",
+          "uz": "Kecha suzib bo‘lgandan keyin qulog‘im doim biroz og‘riyapti.",
+          "ru": "После вчерашнего плавания у меня всё время немного болит ухо.",
+          "tj": "Дирӯз баъди шино кардан гӯшам ҳамеша каме дард мекунад."
+        },
+        {
+          "hanzi": "是不是感冒了？发烧吗？",
+          "uz": "Shamolladingmi? Isitmang bormi?",
+          "ru": "Ты простудился? Температура есть?",
+          "tj": "Шамол хӯрдӣ? Таб дорӣ?"
+        },
+        {
+          "hanzi": "好像发低烧了。",
+          "uz": "Shekilli, yengil isitmam bor.",
+          "ru": "Кажется, небольшая температура.",
+          "tj": "Ба назар табам каме баланд шудааст."
+        },
+        {
+          "hanzi": "我送你去医院，让医生检查一下吧。",
+          "uz": "Men seni shifoxonaga olib boraman, shifokor tekshirib ko‘rsin.",
+          "ru": "Я отвезу тебя в больницу, пусть врач осмотрит.",
+          "tj": "Ман туро ба беморхона мебарам, бигзор духтур муоина кунад."
+        },
+        {
+          "hanzi": "我先回去睡一觉，可能休息休息就好了。",
+          "uz": "Avval qaytib bir uxlab olay, balki dam olsam tuzalarman.",
+          "ru": "Сначала пойду посплю. Может, после отдыха станет лучше.",
+          "tj": "Аввал баргашта каме хоб мекунам, шояд баъди истироҳат беҳтар шавам."
+        },
+        {
+          "hanzi": "好吧，如果下午还发烧，就一定要去看医生。",
+          "uz": "Mayli, agar tushdan keyin ham isitma bo‘lsa, albatta shifokorga bor.",
+          "ru": "Хорошо. Если днём температура останется, обязательно иди к врачу.",
+          "tj": "Хуб, агар баъд аз нисфирӯзӣ ҳам таб дошта бошӣ, ҳатман ба духтур рав."
+        },
+        {
+          "hanzi": "谢谢关心，我会注意的。",
+          "uz": "G‘amxo‘rliging uchun rahmat, e’tibor beraman.",
+          "ru": "Спасибо за заботу, я буду внимателен.",
+          "tj": "Раҳмат барои ғамхорӣ, эҳтиёт мекунам."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在医院病房，安妮探望陈天中。",
+      "scene_uz": "Shifoxona palatasida Annie Chen Tianzhongni ko‘rgani keldi.",
+      "scene_ru": "В больничной палате Энни пришла навестить Чэнь Тяньчжуна.",
+      "scene_tj": "Дар палатаи беморхона Энни барои дидани Чэн Тянҷун омадааст.",
+      "turns": [
+        {
+          "hanzi": "你怎么突然住院了？大家都很担心你。",
+          "uz": "Nega birdan shifoxonaga yotib qolding? Hamma sendan xavotirda.",
+          "ru": "Почему ты вдруг попал в больницу? Все за тебя переживают.",
+          "tj": "Чаро ногаҳон дар беморхона бистарӣ шудӣ? Ҳама барои ту хавотиранд."
+        },
+        {
+          "hanzi": "我的腿疼了几个星期了，医生说需要住院做检查。",
+          "uz": "Oyog‘im bir necha haftadan beri og‘riyapti, shifokor tekshiruv uchun yotishim kerakligini aytdi.",
+          "ru": "Нога болит уже несколько недель, врач сказал, что нужно лечь в больницу на обследование.",
+          "tj": "Поям чанд ҳафта боз дард мекунад, духтур гуфт барои санҷиш бояд бистарӣ шавам."
+        },
+        {
+          "hanzi": "你看起来一点儿也不像病人。",
+          "uz": "Senga qaraganda umuman bemorga o‘xshamaysan.",
+          "ru": "Ты совсем не выглядишь больным.",
+          "tj": "Ту тамоман ба бемор монанд нестӣ."
+        },
+        {
+          "hanzi": "是啊，我很少生病。我上次来医院已经过去差不多两年了。",
+          "uz": "Ha, men kam kasal bo‘laman. Shifoxonaga oxirgi kelganimga deyarli ikki yil bo‘ldi.",
+          "ru": "Да, я редко болею. С прошлого визита в больницу прошло почти два года.",
+          "tj": "Ҳа, ман кам бемор мешавам. Аз бори охир ба беморхона омаданам қариб ду сол гузашт."
+        },
+        {
+          "hanzi": "你每天跑步，有时候还去游泳，是不是运动太多了？",
+          "uz": "Har kuni yugurasan, ba’zan suzishga ham borasan, balki sportni ortiqcha qilyapsan?",
+          "ru": "Ты каждый день бегаешь, иногда ещё плаваешь — может, нагрузки слишком много?",
+          "tj": "Ҳар рӯз медавӣ, баъзан шино ҳам мекунӣ, шояд машқат аз ҳад зиёд аст?"
+        },
+        {
+          "hanzi": "医生也这么说，但是还得做完检查才能知道。",
+          "uz": "Shifokor ham shunday dedi, lekin aniq bilish uchun tekshiruvni tugatish kerak.",
+          "ru": "Врач тоже так сказал, но узнать точно можно только после обследования.",
+          "tj": "Духтур ҳам ҳаминро гуфт, аммо танҳо баъди анҷоми санҷиш маълум мешавад."
+        },
+        {
+          "hanzi": "别担心！听医生的话，好好休息，你的腿一定能好。",
+          "uz": "Xavotir olma! Shifokorning gapiga quloq solib, yaxshi dam ol, oyog‘ing albatta tuzaladi.",
+          "ru": "Не переживай! Слушай врача, хорошо отдыхай — нога обязательно пройдёт.",
+          "tj": "Хавотир нашав! Ба гапи духтур гӯш деҳ, хуб истироҳат кун, поят ҳатман сиҳат мешавад."
+        },
+        {
+          "hanzi": "谢谢。有人来看我，我就开心多了。",
+          "uz": "Rahmat. Kimdir meni ko‘rgani kelsa, ancha xursand bo‘laman.",
+          "ru": "Спасибо. Когда кто-то приходит меня навестить, мне намного веселее.",
+          "tj": "Раҳмат. Вақте касе ба диданам меояд, хеле хурсандтар мешавам."
+        }
+      ]
+    }
+  ]
+}

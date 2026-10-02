@@ -2,6 +2,7 @@ import json
 import re
 from typing import Any
 from app.services.ai_service import AIService
+from app.services.course_levels import ai_level_context
 
 COURSE_MODEL = "o4-mini"
 
@@ -620,9 +621,15 @@ QOIDALAR:
         user_message: str = "",
         history: list = None,
     ) -> str:
-        prompt, _ = self._build_prompt_for_step(lesson, step, user_language, user_level)
+        level_context = ai_level_context(user_level)
+        prompt, _ = self._build_prompt_for_step(
+            lesson,
+            step,
+            user_language,
+            level_context,
+        )
 
-        full_text = f"{prompt}\n{_LEVEL_CEILING_RULE}"
+        full_text = f"{prompt}\n{_LEVEL_CEILING_RULE}\nANIQ DARAJA: {level_context}"
         if user_message:
             full_text += f"\n\nFOYDALANUVCHI XABARI:\n{user_message}"
 
@@ -699,7 +706,13 @@ RULES:
         if not submission_text:
             return {"score": 0, "passed": False, "feedback_text": "Empty submission."}
 
-        prompt = self._build_homework_evaluation_prompt(user_language, user_level, lesson, submission_text)
+        level_context = ai_level_context(user_level)
+        prompt = self._build_homework_evaluation_prompt(
+            user_language,
+            level_context,
+            lesson,
+            submission_text,
+        )
 
         self.last_ai_result = await self.ai_service.generate_reply_with_usage(
             text=prompt,

@@ -1,0 +1,712 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 40,
+  "source_lesson": 8,
+  "part_no": 4,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "虽然你忘了，但是我记得",
+  "subtitle": {
+    "uz": "“比” bilan taqqoslash; 比 gaplarida 很/非常 o‘rniga 更/还 bilan darajani kuchaytirish; “虽然……但是……” bilan qarama-qarshilikni ifodalash; narx, kino va tug‘ilgan kun haqida gaplashish.",
+    "ru": "Сравнивать с “比”; усиливать степень в сравнении с 更/还 вместо 很/非常; выражать уступительно-противительные отношения через “虽然……但是……”；обсуждать цену, кино и день рождения.",
+    "tj": "Бо “比” муқоиса кардан; дар ҷумлаҳои муқоисавӣ ба ҷойи 很/非常 бо 更/还 дараҷаро қавӣ кардан; бо “虽然……但是……” зиддиятро ифода кардан; дар бораи нарх, кино ва зодрӯз суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "花",
+      "pinyin": "huā",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sarflamoq",
+        "ru": "тратить",
+        "tj": "сарф кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "妻子",
+      "pinyin": "qīzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xotin; turmush o‘rtoq",
+        "ru": "жена",
+        "tj": "ҳамсар; зан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "丈夫",
+      "pinyin": "zhàngfu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "er; turmush o‘rtoq",
+        "ru": "муж",
+        "tj": "шавҳар"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "饭馆",
+      "pinyin": "fànguǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "restoran; oshxona",
+        "ru": "ресторан; закусочная",
+        "tj": "тарабхона"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Savdo markazida Wang Yixue va Liu Ming xarid qilmoqda.",
+        "ru": "В торговом центре Ван Исюэ и Лю Мин делают покупки.",
+        "tj": "Дар маркази савдо Ван Исюэ ва Лю Мин харид мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你看，这两块手表怎么样？",
+          "pinyin": "Nǐ kàn, zhè liǎng kuài shǒubiǎo zěnmeyàng?",
+          "text": {
+            "uz": "Qara, bu ikki qo‘l soati qanday?",
+            "ru": "Посмотри, как тебе эти двое часов?",
+            "tj": "Бин, ин ду соат чӣ хеланд?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "都不错！",
+          "pinyin": "Dōu búcuò!",
+          "text": {
+            "uz": "Ikkalasi ham yomon emas!",
+            "ru": "Оба неплохие!",
+            "tj": "Ҳардуяш ҳам бад нест!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我喜欢左边这个。",
+          "pinyin": "Wǒ xǐhuan zuǒbian zhège.",
+          "text": {
+            "uz": "Menga chapdagisi yoqdi.",
+            "ru": "Мне нравится тот, что слева.",
+            "tj": "Ба ман тарафи чап писанд аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "我也觉得左边的比右边的好看。",
+          "pinyin": "Wǒ yě juéde zuǒbian de bǐ yòubian de hǎokàn.",
+          "text": {
+            "uz": "Menimcha ham chapdagisi o‘ngdagidan chiroyliroq.",
+            "ru": "Мне тоже кажется, что левый красивее правого.",
+            "tj": "Ба назари ман ҳам чапаш аз росташ зеботар аст."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你看看要多少钱！",
+          "pinyin": "Nǐ kànkan yào duōshao qián!",
+          "text": {
+            "uz": "Narxiga qara!",
+            "ru": "Посмотри, сколько стоит!",
+            "tj": "Нархашро бин!"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "真不便宜！八千八！",
+          "pinyin": "Zhēn bù piányi! Bā qiān bā!",
+          "text": {
+            "uz": "Juda qimmat ekan! Sakkiz ming sakkiz yuz!",
+            "ru": "Совсем недёшево! Восемь тысяч восемьсот!",
+            "tj": "Хеле гарон будааст! Ҳашт ҳазору ҳаштсад!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kinoteatr tashqarisida Wang Yixue va Liu Ming suhbatlashmoqda.",
+        "ru": "Снаружи кинотеатра Ван Исюэ и Лю Мин разговаривают.",
+        "tj": "Берун аз кинотеатр Ван Исюэ ва Лю Мин суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "今天有不少电影，我们看个电影吧。",
+          "pinyin": "Jīntiān yǒu bù shǎo diànyǐng, wǒmen kàn ge diànyǐng ba.",
+          "text": {
+            "uz": "Bugun ancha film bor, bir film ko‘raylik.",
+            "ru": "Сегодня много фильмов, давай посмотрим один.",
+            "tj": "Имрӯз филмҳо бисёранд, биё як филм бинем."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "好啊！我们看哪个？",
+          "pinyin": "Hǎo a! Wǒmen kàn nǎge?",
+          "text": {
+            "uz": "Mayli! Qaysinisini ko‘ramiz?",
+            "ru": "Хорошо! Какой посмотрим?",
+            "tj": "Хуб! Кадомашро мебинем?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "我记得你喜欢看爱情片，我们看那个爱情片，怎么样？",
+          "pinyin": "Wǒ jìde nǐ xǐhuan kàn àiqíngpiàn, wǒmen kàn nàge àiqíngpiàn, zěnmeyàng?",
+          "text": {
+            "uz": "Esimda, sen romantik filmlarni yoqtirasan. O‘sha romantik filmni ko‘rsak qanday?",
+            "ru": "Я помню, ты любишь романтические фильмы. Как насчёт того?",
+            "tj": "Дар хотир дорам, ту филмҳои ошиқонаро дӯст медорӣ. Он филмро бинем, чӣ хел?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "还是看这个吧，我看网上说这个电影比那个爱情片更有意思。",
+          "pinyin": "Háishi kàn zhège ba, wǒ kàn wǎngshang shuō zhège diànyǐng bǐ nàge àiqíngpiàn gèng yǒu yìsi.",
+          "text": {
+            "uz": "Yaxshisi bunisini ko‘raylik. Internetda bu film o‘sha romantik filmdan qiziqroq deyilgan.",
+            "ru": "Лучше посмотрим этот. В интернете пишут, что он интереснее того романтического.",
+            "tj": "Беҳтараш ҳаминро бинем. Дар интернет гуфтаанд, ки ин аз он филми ошиқона ҷолибтар аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "好。我去买票。",
+          "pinyin": "Hǎo. Wǒ qù mǎi piào.",
+          "text": {
+            "uz": "Xo‘p. Men chipta olaman.",
+            "ru": "Хорошо. Я куплю билеты.",
+            "tj": "Хуб. Ман чипта мехарам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "到网上买吧，网上买比在这里买便宜。",
+          "pinyin": "Dào wǎngshang mǎi ba, wǎngshang mǎi bǐ zài zhèlǐ mǎi piányi.",
+          "text": {
+            "uz": "Internetdan ol, onlayn olish bu yerdan olishdan arzonroq.",
+            "ru": "Купи онлайн, в интернете дешевле, чем здесь.",
+            "tj": "Аз интернет бихар, онлайниаш аз ин ҷо арзонтар аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda Wang Yixue va Liu Ming taom buyurtma qilmoqda.",
+        "ru": "В ресторане Ван Исюэ и Лю Мин заказывают блюда.",
+        "tj": "Дар тарабхона Ван Исюэ ва Лю Мин хӯрок фармоиш медиҳанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "您好！就要这几个菜吧，谢谢！",
+          "pinyin": "Nín hǎo! Jiù yào zhè jǐ ge cài ba, xièxie!",
+          "text": {
+            "uz": "Salom! Shu bir nechta taomni olamiz, rahmat!",
+            "ru": "Здравствуйте! Возьмём эти блюда, спасибо!",
+            "tj": "Салом! Ҳамин чанд хӯрокро мегирем, раҳмат!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "怎么点这么多菜？",
+          "pinyin": "Zěnme diǎn zhème duō cài?",
+          "text": {
+            "uz": "Nega buncha ko‘p taom buyurtma qilding?",
+            "ru": "Зачем заказал столько блюд?",
+            "tj": "Чаро ин қадар хӯрок фармоиш додӣ?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "你想想，今天是几月几号？",
+          "pinyin": "Nǐ xiǎngxiang, jīntiān shì jǐ yuè jǐ hào?",
+          "text": {
+            "uz": "O‘ylab ko‘r, bugun nechanchi sana?",
+            "ru": "Подумай, какое сегодня число?",
+            "tj": "Фикр кун, имрӯз чандуми моҳ аст?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "8月27号。啊！我的生日！",
+          "pinyin": "Bā yuè èrshíqī hào. A! Wǒ de shēngrì!",
+          "text": {
+            "uz": "27-avgust. Voy! Tug‘ilgan kunim!",
+            "ru": "27 августа. А! Мой день рождения!",
+            "tj": "27-уми август. Оҳ! Зодрӯзи ман!"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "生日快乐！虽然你忘了，但是我记得。看看这是什么？",
+          "pinyin": "Shēngrì kuàilè! Suīrán nǐ wàng le, dànshì wǒ jìde. Kànkan zhè shì shénme?",
+          "text": {
+            "uz": "Tug‘ilgan kuning bilan! Sen unutgan bo‘lsang ham, men esladim. Qara, bu nima?",
+            "ru": "С днём рождения! Хотя ты забыла, я помнил. Посмотри, что это?",
+            "tj": "Зодрӯз муборак! Гарчанде ту фаромӯш кардӣ, ман дар хотир доштам. Бин, ин чист?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "手表！吃饭、看电影、买手表，今天花了不少钱吧？",
+          "pinyin": "Shǒubiǎo! Chī fàn, kàn diànyǐng, mǎi shǒubiǎo, jīntiān huāle bù shǎo qián ba?",
+          "text": {
+            "uz": "Qo‘l soati! Ovqat, kino, soat — bugun ancha pul sarflading-a?",
+            "ru": "Часы! Ужин, кино, часы — сегодня ты потратил немало денег, да?",
+            "tj": "Соат! Хӯрок, кино, соат — имрӯз пули зиёд сарф кардӣ, ҳамин тавр?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "虽然花了一些钱，但是我们过了一个快乐的生日。",
+          "pinyin": "Suīrán huāle yìxiē qián, dànshì wǒmen guòle yí ge kuàilè de shēngrì.",
+          "text": {
+            "uz": "Bir oz pul sarflagan bo‘lsak ham, quvonchli tug‘ilgan kun o‘tkazdik.",
+            "ru": "Хотя потратили немного денег, зато отметили счастливый день рождения.",
+            "tj": "Гарчанде каме пул сарф кардем, зодрӯзи хушҳол гузарондем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xiaoyu Wang Yixue va Liu Mingning bir kunini hikoya qilmoqda.",
+        "ru": "Сяоюй рассказывает об одном дне Ван Исюэ и Лю Мина.",
+        "tj": "Сяоюй як рӯзи Ван Исюэ ва Лю Минро нақл мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Narration",
+          "zh": "虽然妻子忘了今天是自己的生日，但是丈夫记得。丈夫请妻子去饭馆吃饭、去电影院看电影，还给妻子买了一块非常漂亮的手表。妻子觉得今天很快乐。",
+          "pinyin": "Suīrán qīzi wàngle jīntiān shì zìjǐ de shēngrì, dànshì zhàngfu jìde. Zhàngfu qǐng qīzi qù fànguǎn chī fàn, qù diànyǐngyuàn kàn diànyǐng, hái gěi qīzi mǎile yí kuài fēicháng piàoliang de shǒubiǎo. Qīzi juéde jīntiān hěn kuàilè.",
+          "text": {
+            "uz": "Xotin bugun o‘zining tug‘ilgan kuni ekanini unutgan bo‘lsa-da, eri esladi. Eri uni restoranga ovqatga, kinoteatrga film ko‘rgani olib bordi va unga juda chiroyli qo‘l soati sotib oldi. Xotin bugun juda xursand bo‘ldi.",
+            "ru": "Хотя жена забыла, что сегодня её день рождения, муж помнил. Он пригласил её в ресторан, затем в кино и купил ей очень красивые часы. Жена была очень счастлива.",
+            "tj": "Гарчанде зан фаромӯш карда буд, ки имрӯз зодрӯзаш аст, шавҳар дар хотир дошт. Ӯ занашро ба тарабхона ва кино бурд ва барояш соати хеле зебо харид. Зан имрӯз хеле хушҳол буд."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "花",
+            "pinyin": "huā",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sarflamoq",
+              "ru": "тратить",
+              "tj": "сарф кардан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "花",
+          "pinyin": "huā",
+          "options": [
+            "左边",
+            "左",
+            "手表",
+            "花"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "花 — sarflamoq (huā)",
+            "ru": "花 — тратить (huā)",
+            "tj": "花 — сарф кардан (huā)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "妻子",
+            "pinyin": "qīzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xotin; turmush o‘rtoq",
+              "ru": "жена",
+              "tj": "ҳамсар; зан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "妻子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 妻子:",
+            "tj": "Маънои калимаи 妻子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chap",
+              "ru": "лево; левый",
+              "tj": "чап"
+            },
+            {
+              "uz": "xotin; turmush o‘rtoq",
+              "ru": "жена",
+              "tj": "ҳамсар; зан"
+            },
+            {
+              "uz": "chap tomon",
+              "ru": "левая сторона",
+              "tj": "тарафи чап"
+            },
+            {
+              "uz": "qo‘l soati",
+              "ru": "наручные часы",
+              "tj": "соати дастӣ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "妻子 = xotin; turmush o‘rtoq (qīzi)",
+            "ru": "妻子 = жена (qīzi)",
+            "tj": "妻子 = ҳамсар; зан (qīzi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "丈夫",
+            "pinyin": "zhàngfu",
+            "pos": "n.",
+            "meaning": {
+              "uz": "er; turmush o‘rtoq",
+              "ru": "муж",
+              "tj": "шавҳар"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhàngfu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhàngfu?",
+            "tj": "zhàngfu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "左边",
+            "丈夫",
+            "左",
+            "手表"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "丈夫 = er; turmush o‘rtoq (zhàngfu)",
+            "ru": "丈夫 = муж (zhàngfu)",
+            "tj": "丈夫 = шавҳар (zhàngfu)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "饭馆",
+            "pinyin": "fànguǎn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "restoran; oshxona",
+              "ru": "ресторан; закусочная",
+              "tj": "тарабхона"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "饭馆",
+          "pinyin": "fànguǎn",
+          "translation": {
+            "uz": "restoran; oshxona",
+            "ru": "ресторан; закусочная",
+            "tj": "тарабхона"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "饭馆 talaffuzini tanlang:",
+            "ru": "Выберите произношение 饭馆:",
+            "tj": "Талаффузи 饭馆-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "fànguǎn",
+            "zuǒ",
+            "shǒubiǎo",
+            "zuǒbian"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "饭馆 — fànguǎn",
+            "ru": "饭馆 — fànguǎn",
+            "tj": "饭馆 — fànguǎn"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sarflamoq' xitoycha qaysi?",
+            "ru": "'тратить' по-китайски?",
+            "tj": "'сарф кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "左边",
+            "左",
+            "手表",
+            "花"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "sarflamoq = 花 (huā)",
+            "ru": "тратить = 花 (huā)",
+            "tj": "сарф кардан = 花 (huā)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "花",
+              {
+                "uz": "sarflamoq",
+                "ru": "тратить",
+                "tj": "сарф кардан"
+              }
+            ],
+            [
+              "妻子",
+              {
+                "uz": "xotin; turmush o‘rtoq",
+                "ru": "жена",
+                "tj": "ҳамсар; зан"
+              }
+            ],
+            [
+              "丈夫",
+              {
+                "uz": "er; turmush o‘rtoq",
+                "ru": "муж",
+                "tj": "шавҳар"
+              }
+            ],
+            [
+              "饭馆",
+              {
+                "uz": "restoran; oshxona",
+                "ru": "ресторан; закусочная",
+                "tj": "тарабхона"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "虽然花了一些钱，但是我们过了一个快乐的生日。",
+          "pinyin": "Suīrán huāle yìxiē qián, dànshì wǒmen guòle yí ge kuàilè de shēngrì.",
+          "options": [
+            "虽然妻子忘了今天是自己的生日，但是丈夫记得。丈夫请妻子去饭馆吃饭、去电影院看电影，还给妻子买了一块非常漂亮的手表。妻子觉得今天很快乐。",
+            "虽然花了一些钱，但是我们过了一个快乐的生日。",
+            "手表！吃饭、看电影、买手表，今天花了不少钱吧？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "虽然花了一些钱，但是我们过了一个快乐的生日。 — Bir oz pul sarflagan bo‘lsak ham, quvonchli tug‘ilgan kun o‘tkazdik.",
+            "ru": "虽然花了一些钱，但是我们过了一个快乐的生日。 — Хотя потратили немного денег, зато отметили счастливый день рождения.",
+            "tj": "虽然花了一些钱，但是我们过了一个快乐的生日。 — Гарчанде каме пул сарф кардем, зодрӯзи хушҳол гузарондем."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "花",
+          "pinyin": "huā",
+          "translation": {
+            "uz": "sarflamoq",
+            "ru": "тратить",
+            "tj": "сарф кардан"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "饭馆",
+          "pinyin": "fànguǎn",
+          "translation": {
+            "uz": "restoran; oshxona",
+            "ru": "ресторан; закусочная",
+            "tj": "тарабхона"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "但是 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 但是:",
+            "tj": "Маънои калимаи 但是-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qo‘l soati",
+              "ru": "наручные часы",
+              "tj": "соати дастӣ"
+            },
+            {
+              "uz": "chap",
+              "ru": "лево; левый",
+              "tj": "чап"
+            },
+            {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            },
+            {
+              "uz": "chap tomon",
+              "ru": "левая сторона",
+              "tj": "тарафи чап"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "但是 = ammo; lekin (dànshì)",
+            "ru": "但是 = но; однако (dànshì)",
+            "tj": "但是 = аммо; лекин (dànshì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "但是",
+            "pinyin": "dànshì",
+            "meaning": {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'restoran; oshxona' xitoycha qaysi?",
+            "ru": "'ресторан; закусочная' по-китайски?",
+            "tj": "'тарабхона' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "手表",
+            "饭馆",
+            "左",
+            "左边"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "restoran; oshxona = 饭馆 (fànguǎn)",
+            "ru": "ресторан; закусочная = 饭馆 (fànguǎn)",
+            "tj": "тарабхона = 饭馆 (fànguǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "饭馆",
+            "pinyin": "fànguǎn",
+            "meaning": {
+              "uz": "restoran; oshxona",
+              "ru": "ресторан; закусочная",
+              "tj": "тарабхона"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

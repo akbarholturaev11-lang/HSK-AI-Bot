@@ -35,6 +35,8 @@ class AdCampaignRepository:
         ends_at: datetime,
         send_count_total: int,
         target_languages: Optional[list[str]] = None,
+        target_track: Optional[str] = None,
+        target_level: Optional[str] = None,
         include_active_subscribers: bool = False,
         created_by_telegram_id: Optional[int] = None,
         button_config: Optional[str] = None,
@@ -50,6 +52,8 @@ class AdCampaignRepository:
             next_send_at=starts_at,
             send_count_total=send_count_total,
             target_languages=encode_languages(target_languages),
+            target_track=(target_track or None),
+            target_level=(target_level or None),
             include_active_subscribers=include_active_subscribers,
             created_by_telegram_id=created_by_telegram_id,
         )

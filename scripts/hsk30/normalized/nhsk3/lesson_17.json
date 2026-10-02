@@ -1,0 +1,392 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 17,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174
+    ]
+  },
+  "title": {
+    "hanzi": "我要多向认真的人学习",
+    "pinyin": "Wǒ yào duō xiàng rènzhēn de rén xuéxí"
+  },
+  "objectives": [
+    "能听懂并表达内心难过、困惑、不满等情绪。",
+    "能听懂并使用反问句“不是……吗？”表达情感和语气。",
+    "掌握“只有”的用法，能表达唯一条件和结果。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "向",
+      "pinyin": "xiàng",
+      "part_of_speech": "prep.",
+      "source_page": 167
+    },
+    {
+      "hanzi": "楼梯",
+      "pinyin": "lóutī",
+      "part_of_speech": "n.",
+      "source_page": 167
+    },
+    {
+      "hanzi": "害怕",
+      "pinyin": "hàipà",
+      "part_of_speech": "v.",
+      "source_page": 167
+    },
+    {
+      "hanzi": "生气",
+      "pinyin": "shēngqì",
+      "part_of_speech": "v.",
+      "source_page": 167
+    },
+    {
+      "hanzi": "常见",
+      "pinyin": "chángjiàn",
+      "part_of_speech": "adj.",
+      "source_page": 167
+    },
+    {
+      "hanzi": "聪明",
+      "pinyin": "cōngming",
+      "part_of_speech": "adj.",
+      "source_page": 167
+    },
+    {
+      "hanzi": "错",
+      "pinyin": "cuò",
+      "part_of_speech": "n.",
+      "source_page": 167
+    },
+    {
+      "hanzi": "认为",
+      "pinyin": "rènwéi",
+      "part_of_speech": "v.",
+      "source_page": 167
+    },
+    {
+      "hanzi": "到处",
+      "pinyin": "dàochù",
+      "part_of_speech": "adv.",
+      "source_page": 169
+    },
+    {
+      "hanzi": "继续",
+      "pinyin": "jìxù",
+      "part_of_speech": "v.",
+      "source_page": 169
+    },
+    {
+      "hanzi": "同意",
+      "pinyin": "tóngyì",
+      "part_of_speech": "v.",
+      "source_page": 169
+    },
+    {
+      "hanzi": "可",
+      "pinyin": "kě",
+      "part_of_speech": "conj.",
+      "source_page": 169
+    },
+    {
+      "hanzi": "屋子",
+      "pinyin": "wūzi",
+      "part_of_speech": "n.",
+      "source_page": 169
+    },
+    {
+      "hanzi": "有关",
+      "pinyin": "yǒuguān",
+      "part_of_speech": "v./prep.",
+      "source_page": 169
+    },
+    {
+      "hanzi": "关机",
+      "pinyin": "guānjī",
+      "part_of_speech": "v.",
+      "source_page": 171
+    },
+    {
+      "hanzi": "前天",
+      "pinyin": "qiántiān",
+      "part_of_speech": "n.",
+      "source_page": 171
+    },
+    {
+      "hanzi": "留学",
+      "pinyin": "liúxué",
+      "part_of_speech": "v.",
+      "source_page": 171
+    },
+    {
+      "hanzi": "国家",
+      "pinyin": "guójiā",
+      "part_of_speech": "n.",
+      "source_page": 171
+    },
+    {
+      "hanzi": "比如",
+      "pinyin": "bǐrú",
+      "part_of_speech": "v.",
+      "source_page": 171
+    },
+    {
+      "hanzi": "查",
+      "pinyin": "chá",
+      "part_of_speech": "v.",
+      "source_page": 171
+    },
+    {
+      "hanzi": "有用",
+      "pinyin": "yǒuyòng",
+      "part_of_speech": "adj.",
+      "source_page": 171
+    },
+    {
+      "hanzi": "容易",
+      "pinyin": "róngyì",
+      "part_of_speech": "adj.",
+      "source_page": 172
+    },
+    {
+      "hanzi": "回答",
+      "pinyin": "huídá",
+      "part_of_speech": "v.",
+      "source_page": 172
+    },
+    {
+      "hanzi": "方向",
+      "pinyin": "fāngxiàng",
+      "part_of_speech": "n.",
+      "source_page": 172
+    },
+    {
+      "hanzi": "只有",
+      "pinyin": "zhǐyǒu",
+      "part_of_speech": "conj.",
+      "source_page": 172
+    },
+    {
+      "hanzi": "真正",
+      "pinyin": "zhēnzhèng",
+      "part_of_speech": "adv.",
+      "source_page": 172
+    },
+    {
+      "hanzi": "难题",
+      "pinyin": "nántí",
+      "part_of_speech": "n.",
+      "source_page": 172
+    }
+  ],
+  "grammar": [
+    {
+      "label": "介词“向”",
+      "source_page": 168,
+      "examples": [
+        {
+          "hanzi": "别再向前走了。",
+          "pinyin": "Bié zài xiàng qián zǒu le."
+        },
+        {
+          "hanzi": "以后我要多向认真的人学习。",
+          "pinyin": "Yǐhòu wǒ yào duō xiàng rènzhēn de rén xuéxí."
+        },
+        {
+          "hanzi": "孩子一看见妈妈，就向她跑过去了。",
+          "pinyin": "Háizi yí kànjiàn māma, jiù xiàng tā pǎo guòqu le."
+        }
+      ]
+    },
+    {
+      "label": "反问句“不是……吗？”",
+      "source_page": 169,
+      "examples": [
+        {
+          "hanzi": "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。",
+          "pinyin": "Nǐ bú shì xǐhuan wán diànnǎo ma? Nǐ kěyǐ qù kànkan gēn diànnǎo yǒuguān de shū."
+        },
+        {
+          "hanzi": "你不是说今天有事吗？为什么来了？",
+          "pinyin": "Nǐ bú shì shuō jīntiān yǒu shì ma? Wèishénme lái le?"
+        },
+        {
+          "hanzi": "考试不是下个月吗？你怎么今天就开始复习了？",
+          "pinyin": "Kǎoshì bú shì xià ge yuè ma? Nǐ zěnme jīntiān jiù kāishǐ fùxí le?"
+        }
+      ]
+    },
+    {
+      "label": "递进复句“……，更……”",
+      "source_page": 171,
+      "examples": [
+        {
+          "hanzi": "我还没想好学什么，更没想好去哪个国家。",
+          "pinyin": "Wǒ hái méi xiǎng hǎo xué shénme, gèng méi xiǎng hǎo qù nǎge guójiā."
+        },
+        {
+          "hanzi": "想提高中文水平要多听多看，更要多说多练。",
+          "pinyin": "Xiǎng tígāo Zhōngwén shuǐpíng yào duō tīng duō kàn, gèng yào duō shuō duō liàn."
+        },
+        {
+          "hanzi": "来中国学习，我学会了中文，更了解了中国文化。",
+          "pinyin": "Lái Zhōngguó xuéxí, wǒ xuéhuì le Zhōngwén, gèng liǎojiě le Zhōngguó wénhuà."
+        }
+      ]
+    },
+    {
+      "label": "条件复句“只有……，才……”",
+      "source_page": 173,
+      "examples": [
+        {
+          "hanzi": "只有想清楚自己真正喜欢什么，才能做出最合适的选择。",
+          "pinyin": "Zhǐyǒu xiǎng qīngchu zìjǐ zhēnzhèng xǐhuan shénme, cái néng zuòchū zuì héshì de xuǎnzé."
+        },
+        {
+          "hanzi": "只有每天锻炼身体，才会越来越健康。",
+          "pinyin": "Zhǐyǒu měitiān duànliàn shēntǐ, cái huì yuèláiyuè jiànkāng."
+        },
+        {
+          "hanzi": "只有多听、多说、多看，你的中文水平才能提高。",
+          "pinyin": "Zhǐyǒu duō tīng, duō shuō, duō kàn, nǐ de Zhōngwén shuǐpíng cái néng tígāo."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在教学楼里，刘小雪和同学边走边聊。",
+      "source_page": 167,
+      "turns": [
+        {
+          "speaker": "刘小雪",
+          "hanzi": "别再向前走了，李老师的办公室已经到了。",
+          "pinyin": "Bié zài xiàng qián zǒu le, Lǐ lǎoshī de bàngōngshì yǐjīng dào le."
+        },
+        {
+          "speaker": "同学",
+          "hanzi": "你进去吧，我在楼梯那儿等你。我害怕见李老师。",
+          "pinyin": "Nǐ jìnqu ba, wǒ zài lóutī nàr děng nǐ. Wǒ hàipà jiàn Lǐ lǎoshī."
+        },
+        {
+          "speaker": "刘小雪",
+          "hanzi": "怎么回事？",
+          "pinyin": "Zěnme huí shì?"
+        },
+        {
+          "speaker": "同学",
+          "hanzi": "最近我做错了好几件事，我怕李老师生气。",
+          "pinyin": "Zuìjìn wǒ zuò cuò le hǎo jǐ jiàn shì, wǒ pà Lǐ lǎoshī shēngqì."
+        },
+        {
+          "speaker": "刘小雪",
+          "hanzi": "你想多了，做错事情是很常见的。",
+          "pinyin": "Nǐ xiǎng duō le, zuò cuò shìqing shì hěn chángjiàn de."
+        },
+        {
+          "speaker": "同学",
+          "hanzi": "我把简单的事情做错了，李老师一定觉得我不认真。",
+          "pinyin": "Wǒ bǎ jiǎndān de shìqing zuò cuò le, Lǐ lǎoshī yídìng juéde wǒ bù rènzhēn."
+        },
+        {
+          "speaker": "刘小雪",
+          "hanzi": "有的人虽然很聪明，但是会在简单的事情中出错，因为他们认为事情简单，就不会认真去做了。",
+          "pinyin": "Yǒu de rén suīrán hěn cōngming, dànshì huì zài jiǎndān de shìqing zhōng chū cuò, yīnwèi tāmen rènwéi shìqing jiǎndān, jiù bú huì rènzhēn qù zuò le."
+        },
+        {
+          "speaker": "同学",
+          "hanzi": "你说的就是我，以后我要多向认真的人学习。",
+          "pinyin": "Nǐ shuō de jiù shì wǒ, yǐhòu wǒ yào duō xiàng rènzhēn de rén xuéxí."
+        }
+      ]
+    },
+    {
+      "scene": "在阅览室门口，白家月碰到了陈天中。",
+      "source_page": 169,
+      "turns": [
+        {
+          "speaker": "白家月",
+          "hanzi": "太阳从西边出来了？这几天怎么总是在图书馆看见你？",
+          "pinyin": "Tàiyáng cóng xībiān chūlái le? Zhè jǐ tiān zěnme zǒngshì zài túshūguǎn kànjiàn nǐ?"
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "这有什么奇怪的？我是来学习的。",
+          "pinyin": "Zhè yǒu shénme qíguài de? Wǒ shì lái xuéxí de."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "你怎么还来图书馆学习？同学们都在到处找工作呢。",
+          "pinyin": "Nǐ zěnme hái lái túshūguǎn xuéxí? Tóngxuémen dōu zài dàochù zhǎo gōngzuò ne."
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "我不想现在就工作，还想继续学习，我爸妈也同意。可我还没想好学什么，所以来图书馆看看。",
+          "pinyin": "Wǒ bù xiǎng xiànzài jiù gōngzuò, hái xiǎng jìxù xuéxí, wǒ bàmā yě tóngyì. Kě wǒ hái méi xiǎng hǎo xué shénme, suǒyǐ lái túshūguǎn kànkan."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。",
+          "pinyin": "Nǐ bú shì xǐhuan wán diànnǎo ma? Nǐ kěyǐ qù kànkan gēn diànnǎo yǒuguān de shū."
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "你说得对，我记得那个屋子里有些跟电脑有关的书，我去找找。",
+          "pinyin": "Nǐ shuō de duì, wǒ jìde nàge wūzi lǐ yǒuxiē gēn diànnǎo yǒuguān de shū, wǒ qù zhǎozhao."
+        }
+      ]
+    },
+    {
+      "scene": "在校园里，李文和陈天中在聊天儿。",
+      "source_page": 170,
+      "turns": [
+        {
+          "speaker": "李文",
+          "hanzi": "天中，你的手机怎么关机了？",
+          "pinyin": "Tiānzhōng, nǐ de shǒujī zěnme guānjī le?"
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "我的手机没电了。你找我有事吗？",
+          "pinyin": "Wǒ de shǒujī méi diàn le. Nǐ zhǎo wǒ yǒu shì ma?"
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "前天我看见家月了，她告诉我你打算继续留学？",
+          "pinyin": "Qiántiān wǒ kànjiàn Jiāyuè le, tā gàosu wǒ nǐ dǎsuàn jìxù liúxué?"
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "是，可是我还没想好学什么，更没想好去哪个国家。",
+          "pinyin": "Shì, kěshì wǒ hái méi xiǎng hǎo xué shénme, gèng méi xiǎng hǎo qù nǎge guójiā."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "你可以去中国学中文啊。比如可以去北京、上海这样的大城市，那里有很多好大学，也有很多留学生。",
+          "pinyin": "Nǐ kěyǐ qù Zhōngguó xué Zhōngwén a. Bǐrú kěyǐ qù Běijīng, Shànghǎi zhèyàng de dà chéngshì, nàlǐ yǒu hěn duō hǎo dàxué, yě yǒu hěn duō liúxuéshēng."
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "好，那我上网查一查。",
+          "pinyin": "Hǎo, nà wǒ shàngwǎng chá yì chá."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "我给你介绍几个有用的网站。",
+          "pinyin": "Wǒ gěi nǐ jièshào jǐ ge yǒuyòng de wǎngzhàn."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,688 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 98,
+  "source_lesson": 15,
+  "part_no": 1,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "大兴机场见！",
+  "subtitle": {
+    "uz": "Safar niyati va rejasini ifodalovchi so‘zlarni tushunish va ishlatish; “……，还/也……” bilan mantiqan teng bog‘langan gaplarni tuzish; xitoycha mehmondo‘stlik va ovqatlanish odobining asosiy jihatlarini tushunish.",
+    "ru": "Понимать и использовать лексику намерений и планов поездки; строить сочинённые предложения с “……，还/也……” ; понимать базовые нормы китайского застолья и гостеприимства.",
+    "tj": "Луғати ният ва нақшаи сафарро фаҳмидан ва истифода бурдан; бо “……，还/也……” ҷумлаҳои ҳампайванд сохтан; асосҳои одоби меҳмондорӣ ва хӯрокхӯрии чиниро фаҳмидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "爱",
+      "pinyin": "ài",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sevmoq; juda yoqtirmoq",
+        "ru": "любить; очень нравиться",
+        "tj": "дӯст доштан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "哪个",
+      "pinyin": "nǎge",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qaysi biri",
+        "ru": "который; какой",
+        "tj": "кадомаш"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "去年",
+      "pinyin": "qùnián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘tgan yil",
+        "ru": "прошлый год",
+        "tj": "соли гузашта"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "男朋友",
+      "pinyin": "nánpéngyou",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yigit; sevgili",
+        "ru": "парень; бойфренд",
+        "tj": "дӯстписар"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "“……，还/也……” teng bog‘langan qo‘shma gap",
+        "ru": "Сочинённое предложение “……，还/也……”",
+        "tj": "Ҷумлаи ҳампайванди “……，还/也……”"
+      },
+      "title_zh": "并列复句“……，还/也……”",
+      "rule": {
+        "uz": "Teng bog‘langan qo‘shma gap ikki yoki undan ko‘p mantiqan teng qismlardan tuziladi. Bu bosqichda “……，还/也……” o‘rganiladi.",
+        "ru": "Сочинённое предложение состоит из двух или более логически равноправных частей. Здесь изучается модель “……，还/也……”.",
+        "tj": "Ҷумлаи ҳампайванд аз ду ё зиёда қисми аз ҷиҳати мантиқӣ баробар сохта мешавад. Дар ин сатҳ қолаби “……，还/也……” омӯхта мешавад."
+      },
+      "examples": [
+        {
+          "zh": "我喜欢这个，也喜欢那个。",
+          "pinyin": "Wǒ xǐhuan zhège, yě xǐhuan nàge.",
+          "translation": {
+            "uz": "Buni yoqtiraman, anavini ham yoqtiraman.",
+            "ru": "Мне нравится это, и то тоже нравится.",
+            "tj": "Инро дӯст медорам, онро ҳам дӯст медорам."
+          }
+        },
+        {
+          "zh": "王老师是北京人，李文也是北京人。",
+          "pinyin": "Wáng lǎoshī shì Běijīng rén, Lǐ Wén yě shì Běijīng rén.",
+          "translation": {
+            "uz": "Ustoz Wang Pekinlik, Li Wen ham Pekinlik.",
+            "ru": "Преподаватель Ван из Пекина, и Ли Вэнь тоже из Пекина.",
+            "tj": "Устод Ван аз Пекин аст, Ли Вэн ҳам аз Пекин аст."
+          }
+        },
+        {
+          "zh": "我喜欢喝中国茶，还喜欢吃中国菜。",
+          "pinyin": "Wǒ xǐhuan hē Zhōngguó chá, hái xǐhuan chī Zhōngguó cài.",
+          "translation": {
+            "uz": "Xitoy choyini ichishni yoqtiraman, xitoy taomlarini yeyishni ham yoqtiraman.",
+            "ru": "Мне нравится пить китайский чай, а ещё я люблю китайскую еду.",
+            "tj": "Нӯшидани чойи чиниро дӯст медорам ва хӯрдани таоми чиниро ҳам дӯст медорам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Li Wenning uyida u Chen Tianzhong, Bai Jiayue va boshqa do‘stlarini xitoy taomlarini tatib ko‘rishga taklif qilgan.",
+        "ru": "Дома у Ли Вэня он угощает китайской едой Чэнь Тяньчжуна, Бай Цзяюэ и других друзей.",
+        "tj": "Дар хонаи Ли Вэн ӯ Чэн Тянҷун, Бай Ҷяюэ ва дигар дӯстонашро бо таоми чинӣ меҳмондорӣ мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "你们爱吃哪个菜？",
+          "pinyin": "Nǐmen ài chī nǎge cài?",
+          "text": {
+            "uz": "Qaysi taomni yoqtirasizlar?",
+            "ru": "Какое блюдо вам нравится?",
+            "tj": "Кадом таомро дӯст медоред?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我喜欢这个，也喜欢那个。",
+          "pinyin": "Wǒ xǐhuan zhège, yě xǐhuan nàge.",
+          "text": {
+            "uz": "Buni yoqtiraman, anavini ham yoqtiraman.",
+            "ru": "Мне нравится это, и то тоже нравится.",
+            "tj": "Инро дӯст медорам, онро ҳам дӯст медорам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "这些菜都好吃，还很好看。",
+          "pinyin": "Zhèxiē cài dōu hǎochī, hái hěn hǎokàn.",
+          "text": {
+            "uz": "Bu taomlarning hammasi mazali, ko‘rinishi ham juda chiroyli.",
+            "ru": "Все эти блюда вкусные и ещё очень красиво выглядят.",
+            "tj": "Ҳамаи ин таомҳо болаззатанд ва хеле зебо ҳам менамоянд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida hamma ovqatlanib turib ta’til rejalarini muhokama qilmoqda.",
+        "ru": "Дома у Ли Вэня все за едой обсуждают планы на каникулы.",
+        "tj": "Дар хонаи Ли Вэн ҳама ҳангоми хӯрок нақшаҳои таътилро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "你们都想去哪儿？",
+          "pinyin": "Nǐmen dōu xiǎng qù nǎr?",
+          "text": {
+            "uz": "Hammangiz qayerga bormoqchisiz?",
+            "ru": "Куда вы все хотите поехать?",
+            "tj": "Ҳамаатон ба куҷо рафтан мехоҳед?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "爱",
+            "pinyin": "ài",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sevmoq; juda yoqtirmoq",
+              "ru": "любить; очень нравиться",
+              "tj": "дӯст доштан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "爱 talaffuzini tanlang:",
+            "ru": "Выберите произношение 爱:",
+            "tj": "Талаффузи 爱-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "nánpéngyou",
+            "ài",
+            "qùnián",
+            "nǎge"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "爱 — ài",
+            "ru": "爱 — ài",
+            "tj": "爱 — ài"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "哪个",
+            "pinyin": "nǎge",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qaysi biri",
+              "ru": "который; какой",
+              "tj": "кадомаш"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "哪个",
+          "pinyin": "nǎge",
+          "translation": {
+            "uz": "qaysi biri",
+            "ru": "который; какой",
+            "tj": "кадомаш"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qaysi biri' xitoycha qaysi?",
+            "ru": "'который; какой' по-китайски?",
+            "tj": "'кадомаш' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "爱",
+            "去年",
+            "哪个",
+            "男朋友"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "qaysi biri = 哪个 (nǎge)",
+            "ru": "который; какой = 哪个 (nǎge)",
+            "tj": "кадомаш = 哪个 (nǎge)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "去年",
+            "pinyin": "qùnián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o‘tgan yil",
+              "ru": "прошлый год",
+              "tj": "соли гузашта"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "去年",
+          "pinyin": "qùnián",
+          "options": [
+            "哪个",
+            "爱",
+            "去年",
+            "男朋友"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "去年 — o‘tgan yil (qùnián)",
+            "ru": "去年 — прошлый год (qùnián)",
+            "tj": "去年 — соли гузашта (qùnián)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "男朋友",
+            "pinyin": "nánpéngyou",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yigit; sevgili",
+              "ru": "парень; бойфренд",
+              "tj": "дӯстписар"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "男朋友 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 男朋友:",
+            "tj": "Маънои калимаи 男朋友-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yigit; sevgili",
+              "ru": "парень; бойфренд",
+              "tj": "дӯстписар"
+            },
+            {
+              "uz": "o‘tgan yil",
+              "ru": "прошлый год",
+              "tj": "соли гузашта"
+            },
+            {
+              "uz": "qaysi biri",
+              "ru": "который; какой",
+              "tj": "кадомаш"
+            },
+            {
+              "uz": "sevmoq; juda yoqtirmoq",
+              "ru": "любить; очень нравиться",
+              "tj": "дӯст доштан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "男朋友 = yigit; sevgili (nánpéngyou)",
+            "ru": "男朋友 = парень; бойфренд (nánpéngyou)",
+            "tj": "男朋友 = дӯстписар (nánpéngyou)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "ài qaysi ieroglif?",
+            "ru": "Какой иероглиф читается ài?",
+            "tj": "ài кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "哪个",
+            "去年",
+            "爱",
+            "男朋友"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "爱 = sevmoq; juda yoqtirmoq (ài)",
+            "ru": "爱 = любить; очень нравиться (ài)",
+            "tj": "爱 = дӯст доштан (ài)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "爱",
+              {
+                "uz": "sevmoq; juda yoqtirmoq",
+                "ru": "любить; очень нравиться",
+                "tj": "дӯст доштан"
+              }
+            ],
+            [
+              "哪个",
+              {
+                "uz": "qaysi biri",
+                "ru": "который; какой",
+                "tj": "кадомаш"
+              }
+            ],
+            [
+              "去年",
+              {
+                "uz": "o‘tgan yil",
+                "ru": "прошлый год",
+                "tj": "соли гузашта"
+              }
+            ],
+            [
+              "男朋友",
+              {
+                "uz": "yigit; sevgili",
+                "ru": "парень; бойфренд",
+                "tj": "дӯстписар"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "“……，还/也……” teng bog‘langan qo‘shma gap",
+              "ru": "Сочинённое предложение “……，还/也……”",
+              "tj": "Ҷумлаи ҳампайванди “……，还/也……”"
+            },
+            "title_zh": "并列复句“……，还/也……”",
+            "rule": {
+              "uz": "Teng bog‘langan qo‘shma gap ikki yoki undan ko‘p mantiqan teng qismlardan tuziladi. Bu bosqichda “……，还/也……” o‘rganiladi.",
+              "ru": "Сочинённое предложение состоит из двух или более логически равноправных частей. Здесь изучается модель “……，还/也……”.",
+              "tj": "Ҷумлаи ҳампайванд аз ду ё зиёда қисми аз ҷиҳати мантиқӣ баробар сохта мешавад. Дар ин сатҳ қолаби “……，还/也……” омӯхта мешавад."
+            },
+            "examples": [
+              {
+                "zh": "我喜欢这个，也喜欢那个。",
+                "pinyin": "Wǒ xǐhuan zhège, yě xǐhuan nàge.",
+                "translation": {
+                  "uz": "Buni yoqtiraman, anavini ham yoqtiraman.",
+                  "ru": "Мне нравится это, и то тоже нравится.",
+                  "tj": "Инро дӯст медорам, онро ҳам дӯст медорам."
+                }
+              },
+              {
+                "zh": "王老师是北京人，李文也是北京人。",
+                "pinyin": "Wáng lǎoshī shì Běijīng rén, Lǐ Wén yě shì Běijīng rén.",
+                "translation": {
+                  "uz": "Ustoz Wang Pekinlik, Li Wen ham Pekinlik.",
+                  "ru": "Преподаватель Ван из Пекина, и Ли Вэнь тоже из Пекина.",
+                  "tj": "Устод Ван аз Пекин аст, Ли Вэн ҳам аз Пекин аст."
+                }
+              },
+              {
+                "zh": "我喜欢喝中国茶，还喜欢吃中国菜。",
+                "pinyin": "Wǒ xǐhuan hē Zhōngguó chá, hái xǐhuan chī Zhōngguó cài.",
+                "translation": {
+                  "uz": "Xitoy choyini ichishni yoqtiraman, xitoy taomlarini yeyishni ham yoqtiraman.",
+                  "ru": "Мне нравится пить китайский чай, а ещё я люблю китайскую еду.",
+                  "tj": "Нӯшидани чойи чиниро дӯст медорам ва хӯрдани таоми чиниро ҳам дӯст медорам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Buni yoqtiraman, anavini ham yoqtiraman.",
+            "ru": "Мне нравится это, и то тоже нравится.",
+            "tj": "Инро дӯст медорам, онро ҳам дӯст медорам."
+          },
+          "tokens": [
+            "喜欢",
+            "我",
+            "爱",
+            "那个",
+            "哪个",
+            "喜欢",
+            "这个",
+            "也"
+          ],
+          "answer_tokens": [
+            "我",
+            "喜欢",
+            "这个",
+            "也",
+            "喜欢",
+            "那个"
+          ],
+          "explanation": {
+            "uz": "我喜欢这个，也喜欢那个。 — Wǒ xǐhuan zhège, yě xǐhuan nàge.",
+            "ru": "我喜欢这个，也喜欢那个。 — Wǒ xǐhuan zhège, yě xǐhuan nàge.",
+            "tj": "我喜欢这个，也喜欢那个。 — Wǒ xǐhuan zhège, yě xǐhuan nàge."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Ustoz Wang Pekinlik, Li Wen ham Pekinlik.» — xitoychada qaysi biri?",
+            "ru": "«Преподаватель Ван из Пекина, и Ли Вэнь тоже из Пекина.» — какое предложение по-китайски?",
+            "tj": "«Устод Ван аз Пекин аст, Ли Вэн ҳам аз Пекин аст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我喜欢这个，也喜欢那个。",
+            "王老师是北京人，李文也是北京人。",
+            "我喜欢喝中国茶，还喜欢吃中国菜。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "王老师是北京人，李文也是北京人。 — Wáng lǎoshī shì Běijīng rén, Lǐ Wén yě shì Běijīng rén.",
+            "ru": "王老师是北京人，李文也是北京人。 — Wáng lǎoshī shì Běijīng rén, Lǐ Wén yě shì Běijīng rén.",
+            "tj": "王老师是北京人，李文也是北京人。 — Wáng lǎoshī shì Běijīng rén, Lǐ Wén yě shì Běijīng rén."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Qaysi taomni yoqtirasizlar?",
+            "ru": "Какое блюдо вам нравится?",
+            "tj": "Кадом таомро дӯст медоред?"
+          },
+          "tokens": [
+            "去年",
+            "你们",
+            "菜",
+            "爱",
+            "男朋友",
+            "哪个",
+            "吃"
+          ],
+          "answer_tokens": [
+            "你们",
+            "爱",
+            "吃",
+            "哪个",
+            "菜"
+          ],
+          "explanation": {
+            "uz": "你们爱吃哪个菜？ — Nǐmen ài chī nǎge cài?",
+            "ru": "你们爱吃哪个菜？ — Nǐmen ài chī nǎge cài?",
+            "tj": "你们爱吃哪个菜？ — Nǐmen ài chī nǎge cài?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "哪个",
+          "pinyin": "nǎge",
+          "translation": {
+            "uz": "qaysi biri",
+            "ru": "который; какой",
+            "tj": "кадомаш"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "火车 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 火车:",
+            "tj": "Маънои калимаи 火车-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            },
+            {
+              "uz": "sevmoq; juda yoqtirmoq",
+              "ru": "любить; очень нравиться",
+              "tj": "дӯст доштан"
+            },
+            {
+              "uz": "qaysi biri",
+              "ru": "который; какой",
+              "tj": "кадомаш"
+            },
+            {
+              "uz": "o‘tgan yil",
+              "ru": "прошлый год",
+              "tj": "соли гузашта"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "火车 = poyezd (huǒchē)",
+            "ru": "火车 = поезд (huǒchē)",
+            "tj": "火车 = қатор (huǒchē)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "火车",
+            "pinyin": "huǒchē",
+            "meaning": {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qaysi biri' xitoycha qaysi?",
+            "ru": "'который; какой' по-китайски?",
+            "tj": "'кадомаш' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "去年",
+            "哪个",
+            "爱",
+            "男朋友"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "qaysi biri = 哪个 (nǎge)",
+            "ru": "который; какой = 哪个 (nǎge)",
+            "tj": "кадомаш = 哪个 (nǎge)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "哪个",
+            "pinyin": "nǎge",
+            "meaning": {
+              "uz": "qaysi biri",
+              "ru": "который; какой",
+              "tj": "кадомаш"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

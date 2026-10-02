@@ -4,6 +4,10 @@ import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.data.api.CourseLessonDto
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.domain.model.CourseFoundation
+import com.pomp.hskai.domain.model.CourseHsk30
+import com.pomp.hskai.domain.model.CourseHsk30Access
+import com.pomp.hskai.domain.model.CourseHsk30Promo
+import com.pomp.hskai.domain.model.CourseHsk30NewBadge
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.CourseLessonLimit
 import com.pomp.hskai.domain.model.CourseMap
@@ -114,6 +118,34 @@ object CourseMapper {
                     required = foundation.required,
                     completed = foundation.completed,
                     status = foundation.status,
+                )
+            },
+            hsk30 = dto.hsk30?.let { hsk30 ->
+                CourseHsk30(
+                    activeTrack = hsk30.activeTrack,
+                    activeLevel = hsk30.activeLevel,
+                    access = CourseHsk30Access(
+                        featureEnabled = hsk30.access.featureEnabled,
+                        paidAccess = hsk30.access.paidAccess,
+                        permanentlyUnlocked = hsk30.access.permanentlyUnlocked,
+                        allowed = hsk30.access.allowed,
+                        reason = hsk30.access.reason,
+                    ),
+                    liveLevels = hsk30.liveLevels,
+                    newBadge = CourseHsk30NewBadge(
+                        isNew = hsk30.newBadge.isNew,
+                        enabledAt = hsk30.newBadge.enabledAt,
+                        newUntil = hsk30.newBadge.newUntil,
+                    ),
+                    paymentEnabled = hsk30.paymentEnabled,
+                    priceTjs = hsk30.priceTjs,
+                    promo = CourseHsk30Promo(
+                        eligible = hsk30.promo.eligible,
+                        reason = hsk30.promo.reason,
+                        recommendedLevel = hsk30.promo.recommendedLevel,
+                        shownCount = hsk30.promo.shownCount,
+                        maxShows = hsk30.promo.maxShows,
+                    ),
                 )
             },
             // Passed through untouched: which blocks exist, who sees them and

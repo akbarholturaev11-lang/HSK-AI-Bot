@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "track": "hsk30",
+  "level": "nhsk1",
+  "source_book": "新HSK教程1",
+  "source_pdf_path": "HSK 3.0 PDF/新HSK教程1.pdf",
+  "source_pdf_pages": {
+    "contents": [12, 13, 14],
+    "vocabulary_index": [136, 137, 138, 139, 140, 141, 142],
+    "instructions_for_use": [7, 8]
+  },
+  "notes": {
+    "lesson_count": 15,
+    "printed_page_to_pdf_page_offset": 14,
+    "book_claims": {
+      "aligned_words": 300,
+      "language_points": 40,
+      "recommended_class_hours": "30-36"
+    }
+  },
+  "lessons": [
+    {"lesson_order":1,"title_zh":"AI小语，你好！","title_en":"Hello, AI Xiaoyu!","printed_page":1,"pdf_page_start":15,"pdf_page_end":18,"printed_page_end":4,"language_points":[]},
+    {"lesson_order":2,"title_zh":"我叫李文","title_en":"My name is Li Wen","printed_page":5,"pdf_page_start":19,"pdf_page_end":23,"printed_page_end":9,"language_points":["汉语的基本语序 / Basic Word Order in Chinese"]},
+    {"lesson_order":3,"title_zh":"我是中国人","title_en":"I'm Chinese","printed_page":10,"pdf_page_start":24,"pdf_page_end":31,"printed_page_end":17,"language_points":["“是”字句 / “是” Sentence","结构助词“的” / Structural Particle “的”","用“吗”的是非问句 / Yes-No Question with “吗”"]},
+    {"lesson_order":4,"title_zh":"我有两个孩子","title_en":"I have two children","printed_page":18,"pdf_page_start":32,"pdf_page_end":40,"printed_page_end":26,"language_points":["“有”字句（1）/ “有” Sentence (1)","数字的表达 / Expression of Numbers","语气助词“呢”（1）/ Modal Particle “呢” (1)","名量词和名量结构 / Nominal Measure Words and [Num+M+(N)] Structure"]},
+    {"lesson_order":5,"title_zh":"今天我休息","title_en":"I'm off today","printed_page":27,"pdf_page_start":41,"pdf_page_end":48,"printed_page_end":34,"language_points":["时间的表达（1）/ Expression of Time (1)","名词谓语句 / Nominal-Predicate Sentences","能愿动词“会” / Modal Verb “会”"]},
+    {"lesson_order":6,"title_zh":"你的手机号是多少？","title_en":"What's your cell phone number?","printed_page":35,"pdf_page_start":49,"pdf_page_end":58,"printed_page_end":44,"language_points":["能愿动词“想” / Modal Verb “想”","连动句（1）/ Serial Verb Sentences (1)","疑问代词“怎么” / Interrogative Pronoun “怎么”"]},
+    {"lesson_order":7,"title_zh":"我晚上六点半下班","title_en":"I'll finish work at 6:30 in the evening","printed_page":45,"pdf_page_start":59,"pdf_page_end":67,"printed_page_end":53,"language_points":["时间的表达（2）/ Expression of Time (2)","语气助词“吧”（1）/ Modal Particle “吧” (1)","副词、时间词语作状语的位置 / Position of Adverbs and Time Expressions as Adverbials","语气助词“呢”（2）/ Modal Particle “呢” (2)"]},
+    {"lesson_order":8,"title_zh":"我爸爸也在医院工作","title_en":"My father also works at a hospital","printed_page":54,"pdf_page_start":68,"pdf_page_end":74,"printed_page_end":60,"language_points":["方位词 / Positional Words","介词“在” / Preposition “在”","能愿动词“能” / Modal Verb “能”"]},
+    {"lesson_order":9,"title_zh":"我明天上午在学校学习","title_en":"I'll be studying at school tomorrow morning","printed_page":61,"pdf_page_start":75,"pdf_page_end":83,"printed_page_end":69,"language_points":["存现句（1）/ Existential Sentences (1)","时间词语和处所词语同时作状语的顺序 / Sequence of Time and Location Expressions When Used as Adverbials Simultaneously","表示序数的“第” / “第” Indicating Ordinal Numbers"]},
+    {"lesson_order":10,"title_zh":"这儿的苹果真便宜！","title_en":"The apples here are really affordable!","printed_page":70,"pdf_page_start":84,"pdf_page_end":91,"printed_page_end":77,"language_points":["钱数的表达 / Expression of Amount of Money","形容词谓语句 / Adjectival-Predicate Sentences","疑问代词“怎么样” / Interrogative Pronoun “怎么样”"]},
+    {"lesson_order":11,"title_zh":"我读大学呢","title_en":"I'm studying at university","printed_page":78,"pdf_page_start":92,"pdf_page_end":99,"printed_page_end":85,"language_points":["正反问 / Affirmative-Negative Questions","时间副词“在/正在” / Temporal Adverbs “在/正在”","能愿动词“要” / Modal Verb “要”"]},
+    {"lesson_order":12,"title_zh":"昨天下雪了","title_en":"It snowed yesterday","printed_page":86,"pdf_page_start":100,"pdf_page_end":108,"printed_page_end":94,"language_points":["非主谓句 / Non-Subject-Predicate Sentences","语气助词“了（1）” / Modal Particle “了 (1)”","“太……了”格式 / “太……了” Pattern"]},
+    {"lesson_order":13,"title_zh":"请给我一杯茶","title_en":"I'll have a cup of tea, please","printed_page":95,"pdf_page_start":109,"pdf_page_end":116,"printed_page_end":102,"language_points":["能愿动词“可以” / Modal Verb “可以”","“动词+一下”结构 / “Verb+一下” Structure","双宾语句（1）/ Double-Object Sentences (1)"]},
+    {"lesson_order":14,"title_zh":"我看了一个电影","title_en":"I watched a movie","printed_page":103,"pdf_page_start":117,"pdf_page_end":125,"printed_page_end":111,"language_points":["动态助词“了（2）” / Aspect Particle “了 (2)”","离合词（1）/ Separable Words (1)","范围副词“都” / Scope Adverb “都”"]},
+    {"lesson_order":15,"title_zh":"大兴机场见！","title_en":"See you at Daxing Airport!","printed_page":112,"pdf_page_start":126,"pdf_page_end":135,"printed_page_end":121,"language_points":["并列复句“……，还/也……” / Coordinate Compound Sentence “……，还/也……”"]}
+  ]
+}

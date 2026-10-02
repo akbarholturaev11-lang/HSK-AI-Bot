@@ -180,7 +180,7 @@ fun SubscriptionCheckoutHost(
                 .padding(horizontal = 15.dp).padding(top = 16.dp, bottom = 22.dp),
         ) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(copy.getString(R.string.sub_heading), color = C.text, fontSize = 27.sp,
+                Text(copy.getString(if (state.isHsk30Unlock) R.string.sub_hsk30_heading else R.string.sub_heading), color = C.text, fontSize = 27.sp,
                     lineHeight = 30.sp, fontWeight = FontWeight.Black, modifier = Modifier.weight(1f))
                 Box(Modifier.size(38.dp).border(1.dp, C.line, CircleShape)
                     .background(C.surface, CircleShape).clickable { supportOpen = true },
@@ -364,19 +364,26 @@ private fun PlansContent(
     PaymentRouteButton(state, copy, onClick = onRoute)
     Spacer(Modifier.height(12.dp))
     val prices = state.overview?.prices?.get(state.method).orEmpty()
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-        listOf("1_month", "10_days").forEach { plan ->
-            prices[plan]?.let { price ->
-                PlanCard(plan, planPrice(state, plan, price), price.discountApplied, state.plan == plan, copy,
-                    onClick = { onPlan(plan) }, modifier = Modifier.weight(1f))
+    if (state.isHsk30Unlock) {
+        prices[state.plan]?.let { price ->
+            PlanCard(state.plan, planPrice(state, state.plan, price), price.discountApplied, true, copy,
+                onClick = { onPlan(state.plan) }, modifier = Modifier.fillMaxWidth(), wide = true)
+        }
+    } else {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+            listOf("1_month", "10_days").forEach { plan ->
+                prices[plan]?.let { price ->
+                    PlanCard(plan, planPrice(state, plan, price), price.discountApplied, state.plan == plan, copy,
+                        onClick = { onPlan(plan) }, modifier = Modifier.weight(1f))
+                }
             }
         }
-    }
-    prices["3_months"]?.let { price ->
-        Spacer(Modifier.height(9.dp))
-        PlanCard("3_months", planPrice(state, "3_months", price), price.discountApplied,
-            state.plan == "3_months", copy, onClick = { onPlan("3_months") },
-            modifier = Modifier.fillMaxWidth(), wide = true)
+        prices["3_months"]?.let { price ->
+            Spacer(Modifier.height(9.dp))
+            PlanCard("3_months", planPrice(state, "3_months", price), price.discountApplied,
+                state.plan == "3_months", copy, onClick = { onPlan("3_months") },
+                modifier = Modifier.fillMaxWidth(), wide = true)
+        }
     }
     val discount = state.discount
     val offer = state.overview?.offer
@@ -479,7 +486,10 @@ private fun PayContent(
         }
     }
     Spacer(Modifier.height(14.dp))
-    SummaryRow(copy.getString(R.string.sub_row_plan), copy.getString(planLabelId(state.plan)))
+    SummaryRow(
+        copy.getString(R.string.sub_row_plan),
+        if (state.plan == "hsk30_unlock") "HSK 3.0" else copy.getString(planLabelId(state.plan)),
+    )
     if (state.method == "visa") {
         SummaryRow(copy.getString(R.string.sub_row_bank), BANK_NAMES[state.cardBank.orEmpty()].orEmpty())
         if (state.country != "tj" && quote.exchangeRate.isNotBlank()) {
@@ -702,13 +712,16 @@ private fun PlanCard(plan: String, price: PlanPrice, discounted: Boolean, select
             Text(copy.getString(planLabelId(plan)), color = C.muted, fontSize = 13.sp, fontWeight = FontWeight.ExtraBold)
             Spacer(Modifier.weight(1f))
             val badge = when (plan) {
+                "hsk30_unlock" -> null
                 "10_days" -> R.string.sub_plan_fast
                 "3_months" -> R.string.sub_plan_value
                 else -> R.string.sub_plan_best
             }
-            Text(copy.getString(badge), color = C.goldInk, fontSize = 10.sp, fontWeight = FontWeight.Black,
-                modifier = Modifier.border(1.dp, C.goldLine, CircleShape).background(C.goldSoft, CircleShape)
-                    .padding(horizontal = 7.dp, vertical = 4.dp))
+            badge?.let {
+                Text(copy.getString(it), color = C.goldInk, fontSize = 10.sp, fontWeight = FontWeight.Black,
+                    modifier = Modifier.border(1.dp, C.goldLine, CircleShape).background(C.goldSoft, CircleShape)
+                        .padding(horizontal = 7.dp, vertical = 4.dp))
+            }
         }
         Row(verticalAlignment = Alignment.Bottom) {
             // A UZS amount such as "116 000" must still fit a half-width card.
@@ -853,6 +866,7 @@ private fun regionBodyId(region: String): Int = when (region) {
 }
 
 private fun planLabelId(plan: String): Int = when (plan) {
+    "hsk30_unlock" -> R.string.sub_plan_hsk30
     "10_days" -> R.string.sub_plan_10
     "3_months" -> R.string.sub_plan_3
     else -> R.string.sub_plan_1

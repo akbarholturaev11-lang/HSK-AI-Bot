@@ -1,0 +1,644 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 32,
+  "source_lesson": 7,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "他篮球打得很好",
+  "subtitle": {
+    "uz": "“一……就……” bilan ketma-ket/tez sodir bo‘ladigan harakatlarni ifodalash; 得 orqali holat to‘ldiruvchisini ishlatish; ajraluvchi fe’l va obyektli fe’llarda holat to‘ldiruvchisi tartibini to‘g‘ri qo‘llash; sport haqida gaplashish.",
+    "ru": "Выражать быстрое следование действий конструкцией “一……就……”；использовать дополнение состояния с 得; правильно строить его с разделяемыми и переходными глаголами; говорить о спорте.",
+    "tj": "Бо “一……就……” пайдарпай ё зуд рух додани амалҳоро ифода кардан; пуркунандаи ҳолатро бо 得 истифода бурдан; тартиби онро бо феълҳои ҷудошаванда ва объектдор дуруст сохтани; дар бораи варзиш суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "从",
+      "pinyin": "cóng",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "dan; ...dan boshlab",
+        "ru": "из; от",
+        "tj": "аз"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "往",
+      "pinyin": "wǎng",
+      "pos": "prep./v.",
+      "meaning": {
+        "uz": "tomon; ...ga qarab bormoq",
+        "ru": "в направлении; направляться",
+        "tj": "ба сӯи; рафтан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "跑",
+      "pinyin": "pǎo",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yugurmoq; chopmoq",
+        "ru": "бежать",
+        "tj": "давидан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "打",
+      "pinyin": "dǎ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘ynamoq (sport); urmoq",
+        "ru": "играть; ударять",
+        "tj": "бозӣ кардан; задан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "“一……就……” ixcham qo‘shma gapi",
+        "ru": "Сжатое сложное предложение “一……就……”",
+        "tj": "Ҷумлаи фишурдаи “一……就……”"
+      },
+      "title_zh": "紧缩复句“一……就……”",
+      "rule": {
+        "uz": "“一……就……” ikkinchi harakat birinchidan darhol keyin sodir bo‘lishini yoki birinchi harakat shart/sabab, ikkinchisi natija ekanini bildiradi. Ega bir xil bo‘lsa ega 一 yoki 就 oldida; egalar turli bo‘lsa har biri 一 va 就 oldida keladi.",
+        "ru": "“一……就……” показывает, что второе действие следует сразу за первым, либо первое является условием/причиной, а второе — результатом. При одном субъекте он ставится перед 一 или 就; при разных — каждый перед своей частью.",
+        "tj": "“一……就……” нишон медиҳад, ки амали дуюм фавран пас аз якум рух медиҳад ё якум шарт/сабаб, дуюм натиҷа аст. Агар мубтадо як бошад, пеш аз 一 ё 就; агар гуногун бошад, ҳар мубтадо пеш аз қисми худ меояд."
+      },
+      "examples": [
+        {
+          "zh": "你怎么一下课就往外跑？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我一到家，妈妈就打来电话了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "一到星期六，陈天中就跟同学去打篮球。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda Annie va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "В классе Энни и Чэнь Тяньчжун разговаривают.",
+        "tj": "Дар синф Энни ва Чэн Тянҷун суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "我也想跟你们一起玩。",
+          "pinyin": "Wǒ yě xiǎng gēn nǐmen yìqǐ wán.",
+          "text": {
+            "uz": "Men ham sizlar bilan birga o‘ynagim keladi.",
+            "ru": "Я тоже хочу поиграть с вами.",
+            "tj": "Ман ҳам мехоҳам бо шумо якҷо бозӣ кунам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "没问题，走吧。",
+          "pinyin": "Méi wèntí, zǒu ba.",
+          "text": {
+            "uz": "Muammo yo‘q, yur.",
+            "ru": "Без проблем, пошли.",
+            "tj": "Мушкил нест, равем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "从",
+            "pinyin": "cóng",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "dan; ...dan boshlab",
+              "ru": "из; от",
+              "tj": "аз"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "cóng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается cóng?",
+            "tj": "cóng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "从",
+            "往",
+            "打",
+            "跑"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "从 = dan; ...dan boshlab (cóng)",
+            "ru": "从 = из; от (cóng)",
+            "tj": "从 = аз (cóng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "往",
+            "pinyin": "wǎng",
+            "pos": "prep./v.",
+            "meaning": {
+              "uz": "tomon; ...ga qarab bormoq",
+              "ru": "в направлении; направляться",
+              "tj": "ба сӯи; рафтан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "往 talaffuzini tanlang:",
+            "ru": "Выберите произношение 往:",
+            "tj": "Талаффузи 往-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "wǎng",
+            "pǎo",
+            "dǎ",
+            "cóng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "往 — wǎng",
+            "ru": "往 — wǎng",
+            "tj": "往 — wǎng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "跑",
+            "pinyin": "pǎo",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yugurmoq; chopmoq",
+              "ru": "бежать",
+              "tj": "давидан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yugurmoq; chopmoq' xitoycha qaysi?",
+            "ru": "'бежать' по-китайски?",
+            "tj": "'давидан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "从",
+            "跑",
+            "打",
+            "往"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yugurmoq; chopmoq = 跑 (pǎo)",
+            "ru": "бежать = 跑 (pǎo)",
+            "tj": "давидан = 跑 (pǎo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "打",
+            "pinyin": "dǎ",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o‘ynamoq (sport); urmoq",
+              "ru": "играть; ударять",
+              "tj": "бозӣ кардан; задан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "打",
+          "pinyin": "dǎ",
+          "translation": {
+            "uz": "o‘ynamoq (sport); urmoq",
+            "ru": "играть; ударять",
+            "tj": "бозӣ кардан; задан"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "打",
+          "pinyin": "dǎ",
+          "options": [
+            "从",
+            "跑",
+            "往",
+            "打"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "打 — o‘ynamoq (sport); urmoq (dǎ)",
+            "ru": "打 — играть; ударять (dǎ)",
+            "tj": "打 — бозӣ кардан; задан (dǎ)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "从 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 从:",
+            "tj": "Маънои калимаи 从-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dan; ...dan boshlab",
+              "ru": "из; от",
+              "tj": "аз"
+            },
+            {
+              "uz": "o‘ynamoq (sport); urmoq",
+              "ru": "играть; ударять",
+              "tj": "бозӣ кардан; задан"
+            },
+            {
+              "uz": "tomon; ...ga qarab bormoq",
+              "ru": "в направлении; направляться",
+              "tj": "ба сӯи; рафтан"
+            },
+            {
+              "uz": "yugurmoq; chopmoq",
+              "ru": "бежать",
+              "tj": "давидан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "从 = dan; ...dan boshlab (cóng)",
+            "ru": "从 = из; от (cóng)",
+            "tj": "从 = аз (cóng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "从",
+              {
+                "uz": "dan; ...dan boshlab",
+                "ru": "из; от",
+                "tj": "аз"
+              }
+            ],
+            [
+              "往",
+              {
+                "uz": "tomon; ...ga qarab bormoq",
+                "ru": "в направлении; направляться",
+                "tj": "ба сӯи; рафтан"
+              }
+            ],
+            [
+              "跑",
+              {
+                "uz": "yugurmoq; chopmoq",
+                "ru": "бежать",
+                "tj": "давидан"
+              }
+            ],
+            [
+              "打",
+              {
+                "uz": "o‘ynamoq (sport); urmoq",
+                "ru": "играть; ударять",
+                "tj": "бозӣ кардан; задан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "“一……就……” ixcham qo‘shma gapi",
+              "ru": "Сжатое сложное предложение “一……就……”",
+              "tj": "Ҷумлаи фишурдаи “一……就……”"
+            },
+            "title_zh": "紧缩复句“一……就……”",
+            "rule": {
+              "uz": "“一……就……” ikkinchi harakat birinchidan darhol keyin sodir bo‘lishini yoki birinchi harakat shart/sabab, ikkinchisi natija ekanini bildiradi. Ega bir xil bo‘lsa ega 一 yoki 就 oldida; egalar turli bo‘lsa har biri 一 va 就 oldida keladi.",
+              "ru": "“一……就……” показывает, что второе действие следует сразу за первым, либо первое является условием/причиной, а второе — результатом. При одном субъекте он ставится перед 一 или 就; при разных — каждый перед своей частью.",
+              "tj": "“一……就……” нишон медиҳад, ки амали дуюм фавран пас аз якум рух медиҳад ё якум шарт/сабаб, дуюм натиҷа аст. Агар мубтадо як бошад, пеш аз 一 ё 就; агар гуногун бошад, ҳар мубтадо пеш аз қисми худ меояд."
+            },
+            "examples": [
+              {
+                "zh": "你怎么一下课就往外跑？",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "我一到家，妈妈就打来电话了。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "一到星期六，陈天中就跟同学去打篮球。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "打",
+            "就",
+            "怎么",
+            "外",
+            "从",
+            "跑",
+            "课",
+            "你",
+            "一下",
+            "往"
+          ],
+          "answer_tokens": [
+            "你",
+            "怎么",
+            "一下",
+            "课",
+            "就",
+            "往",
+            "外",
+            "跑"
+          ],
+          "explanation": {
+            "uz": "你怎么一下课就往外跑？",
+            "ru": "你怎么一下课就往外跑？",
+            "tj": "你怎么一下课就往外跑？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我一到家，妈妈就打来电话了。",
+            "一到星期六，陈天中就跟同学去打篮球。",
+            "你怎么一下课就往外跑？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "你怎么一下课就往外跑？ — ",
+            "ru": "你怎么一下课就往外跑？ — ",
+            "tj": "你怎么一下课就往外跑？ — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "从",
+          "pinyin": "cóng",
+          "translation": {
+            "uz": "dan; ...dan boshlab",
+            "ru": "из; от",
+            "tj": "аз"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "打",
+          "pinyin": "dǎ",
+          "translation": {
+            "uz": "o‘ynamoq (sport); urmoq",
+            "ru": "играть; ударять",
+            "tj": "бозӣ кардан; задан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "画笔 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 画笔:",
+            "tj": "Маънои калимаи 画笔-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yugurmoq; chopmoq",
+              "ru": "бежать",
+              "tj": "давидан"
+            },
+            {
+              "uz": "dan; ...dan boshlab",
+              "ru": "из; от",
+              "tj": "аз"
+            },
+            {
+              "uz": "tomon; ...ga qarab bormoq",
+              "ru": "в направлении; направляться",
+              "tj": "ба сӯи; рафтан"
+            },
+            {
+              "uz": "rangli qalam/mo‘yqalam",
+              "ru": "карандаш/кисть для рисования",
+              "tj": "қалам/мӯқалам барои расм"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "画笔 = rangli qalam/mo‘yqalam (huàbǐ)",
+            "ru": "画笔 = карандаш/кисть для рисования (huàbǐ)",
+            "tj": "画笔 = қалам/мӯқалам барои расм (huàbǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "画笔",
+            "pinyin": "huàbǐ",
+            "meaning": {
+              "uz": "rangli qalam/mo‘yqalam",
+              "ru": "карандаш/кисть для рисования",
+              "tj": "қалам/мӯқалам барои расм"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o‘ynamoq (sport); urmoq' xitoycha qaysi?",
+            "ru": "'играть; ударять' по-китайски?",
+            "tj": "'бозӣ кардан; задан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "从",
+            "打",
+            "跑",
+            "往"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "o‘ynamoq (sport); urmoq = 打 (dǎ)",
+            "ru": "играть; ударять = 打 (dǎ)",
+            "tj": "бозӣ кардан; задан = 打 (dǎ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "打",
+            "pinyin": "dǎ",
+            "meaning": {
+              "uz": "o‘ynamoq (sport); urmoq",
+              "ru": "играть; ударять",
+              "tj": "бозӣ кардан; задан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,733 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 72,
+  "source_lesson": 15,
+  "part_no": 3,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "我想再去一次中国",
+  "subtitle": {
+    "uz": "“次” bilan harakat necha marta sodir bo‘lganini aytish; frequency complement va obyektning tartibini to‘g‘ri qo‘llash; “有+miqdor” bilan ma’lum miqdorga yetganlikni ifodalash; sayohat va qaytish rejalari haqida gaplashish.",
+    "ru": "Выражать количество повторений действия с “次”; правильно располагать дополнение кратности и объект; выражать достигнутое количество конструкцией “有+количество”; говорить о путешествиях и возвращении домой.",
+    "tj": "Бо “次” шумораи такрори амалро гуфтан; ҷойи пуркунандаи такрор ва объектро дуруст истифода бурдан; бо “有+миқдор” расидан ба миқдори муайянро ифода кардан; дар бораи сафар ва бозгашт суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "飞",
+      "pinyin": "fēi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "uchmoq",
+        "ru": "лететь; летать",
+        "tj": "парвоз кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "好像",
+      "pinyin": "hǎoxiàng",
+      "pos": "v./adv.",
+      "meaning": {
+        "uz": "o‘xshamoq; go‘yo",
+        "ru": "быть похожим; как будто",
+        "tj": "монанд будан; гӯё"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "鸟",
+      "pinyin": "niǎo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qush",
+        "ru": "птица",
+        "tj": "парранда"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "“有” gapi (2)",
+        "ru": "Предложение с “有” (2)",
+        "tj": "Ҷумлаи “有” (2)"
+      },
+      "title_zh": "“有”字句（2）",
+      "rule": {
+        "uz": "“有+miqdor birikmasi” ma’lum bir miqdorga yetganlikni bildiradi.",
+        "ru": "“有+количественная группа” показывает достижение определённого количества.",
+        "tj": "“有+таркиби миқдорӣ” расидан ба миқдори муайянро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "你有一年没回国了吧？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "你女儿今年有10岁了吧？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我有一个月没给家里打电话了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda o‘quvchilar imtihon topshirmoqda.",
+        "ru": "В классе ученики сдают экзамен.",
+        "tj": "Дар синф донишҷӯён имтиҳон месупоранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "考试就要开始了，请大家写上姓名，写好后就可以做题了。",
+          "pinyin": "Kǎoshì jiù yào kāishǐ le, qǐng dàjiā xiě shàng xìngmíng, xiěhǎo hòu jiù kěyǐ zuò tí le.",
+          "text": {
+            "uz": "Imtihon boshlanishiga oz qoldi, iltimos ism-familiyangizni yozing, yozib bo‘lgach savollarni ishlashingiz mumkin.",
+            "ru": "Экзамен сейчас начнётся. Напишите имя и фамилию; после этого можно приступать к заданиям.",
+            "tj": "Имтиҳон ҳозир оғоз мешавад. Лутфан ному насабатонро нависед; баъд аз он саволҳоро иҷро кунед."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "老师，我做完了。",
+          "pinyin": "Lǎoshī, wǒ zuòwán le.",
+          "text": {
+            "uz": "Ustoz, men tugatdim.",
+            "ru": "Преподаватель, я закончила.",
+            "tj": "Устод, ман тамом кардам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "老师，我也做完了。",
+          "pinyin": "Lǎoshī, wǒ yě zuòwán le.",
+          "text": {
+            "uz": "Ustoz, men ham tugatdim.",
+            "ru": "Преподаватель, я тоже закончил.",
+            "tj": "Устод, ман ҳам тамом кардам."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "……对了，你们考完试想做什么？",
+          "pinyin": "... Duì le, nǐmen kǎowán shì xiǎng zuò shénme?",
+          "text": {
+            "uz": "Aytgancha, imtihondan keyin nima qilmoqchisizlar?",
+            "ru": "Кстати, что хотите делать после экзамена?",
+            "tj": "Ростӣ, баъди имтиҳон чӣ кор кардан мехоҳед?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Qahvaxonada Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В кафе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар қаҳвахона Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "考完试了，我现在可以出国旅游了。",
+          "pinyin": "Kǎowán shì le, wǒ xiànzài kěyǐ chūguó lǚyóu le.",
+          "text": {
+            "uz": "Imtihon tugadi, endi chet elga sayohat qila olaman.",
+            "ru": "Экзамен закончился, теперь я могу путешествовать за границу.",
+            "tj": "Имтиҳон тамом шуд, ҳоло метавонам ба хориҷ саёҳат кунам."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "你要去哪儿？",
+          "pinyin": "Nǐ yào qù nǎr?",
+          "text": {
+            "uz": "Qayerga bormoqchisan?",
+            "ru": "Куда собираешься?",
+            "tj": "Ба куҷо рафтан мехоҳӣ?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "你想做的事情很多啊！",
+          "pinyin": "Nǐ xiǎng zuò de shìqing hěn duō a!",
+          "text": {
+            "uz": "Qilmoqchi bo‘lgan ishlaring juda ko‘p ekan!",
+            "ru": "У тебя столько планов!",
+            "tj": "Корҳое, ки кардан мехоҳӣ, хеле зиёданд!"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "太好了！出门旅游，多个朋友多条路。",
+          "pinyin": "Tài hǎo le! Chūmén lǚyóu, duō ge péngyou duō tiáo lù.",
+          "text": {
+            "uz": "Zo‘r! Sayohatga chiqqanda bir do‘st ko‘p bo‘lsa, bir yo‘l ko‘p.",
+            "ru": "Отлично! В поездке лишний друг — лишний путь и возможность.",
+            "tj": "Олиҷаноб! Дар сафар як дӯст бештар — як роҳ бештар."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Qahvaxonada Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В кафе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар қаҳвахона Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "不到一年。我六月的时候回去了一次。",
+          "pinyin": "Bú dào yì nián. Wǒ Liùyuè de shíhou huíqùle yí cì.",
+          "text": {
+            "uz": "Bir yil bo‘lgani yo‘q. Iyun oyida bir marta qaytgandim.",
+            "ru": "Ещё не год. Я один раз ездил домой в июне.",
+            "tj": "Ҳанӯз як сол не. Моҳи июн як бор баргашта будам."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我怎么忘了？还是我送你去的机场呢。",
+          "pinyin": "Wǒ zěnme wàng le? Háishi wǒ sòng nǐ qù de jīchǎng ne.",
+          "text": {
+            "uz": "Qanday unutibman? Axir seni aeroportga men kuzatgan edim.",
+            "ru": "Как я могла забыть? Ведь именно я провожала тебя в аэропорт.",
+            "tj": "Чӣ хел фаромӯш кардаам? Охир ман туро ба фурудгоҳ гусел карда будам."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "是啊。",
+          "pinyin": "Shì a.",
+          "text": {
+            "uz": "Ha.",
+            "ru": "Да.",
+            "tj": "Ҳа."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我记得你那次的机票很便宜。",
+          "pinyin": "Wǒ jìde nǐ nà cì de jīpiào hěn piányi.",
+          "text": {
+            "uz": "Esimda, o‘sha safardagi aviachiptang juda arzon edi.",
+            "ru": "Помню, тогда твой авиабилет был очень дешёвым.",
+            "tj": "Дар хотир дорам, он дафъа чиптаи ҳавопаймоят хеле арзон буд."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "飞",
+            "pinyin": "fēi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "uchmoq",
+              "ru": "лететь; летать",
+              "tj": "парвоз кардан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "fēi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается fēi?",
+            "tj": "fēi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "出国",
+            "门票",
+            "姓名",
+            "飞"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "飞 = uchmoq (fēi)",
+            "ru": "飞 = лететь; летать (fēi)",
+            "tj": "飞 = парвоз кардан (fēi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "好像",
+            "pinyin": "hǎoxiàng",
+            "pos": "v./adv.",
+            "meaning": {
+              "uz": "o‘xshamoq; go‘yo",
+              "ru": "быть похожим; как будто",
+              "tj": "монанд будан; гӯё"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "好像 talaffuzini tanlang:",
+            "ru": "Выберите произношение 好像:",
+            "tj": "Талаффузи 好像-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "chūguó",
+            "hǎoxiàng",
+            "ménpiào",
+            "xìngmíng"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "好像 — hǎoxiàng",
+            "ru": "好像 — hǎoxiàng",
+            "tj": "好像 — hǎoxiàng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "鸟",
+            "pinyin": "niǎo",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qush",
+              "ru": "птица",
+              "tj": "парранда"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "鸟",
+          "pinyin": "niǎo",
+          "translation": {
+            "uz": "qush",
+            "ru": "птица",
+            "tj": "парранда"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qush' xitoycha qaysi?",
+            "ru": "'птица' по-китайски?",
+            "tj": "'парранда' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "鸟",
+            "门票",
+            "姓名",
+            "出国"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "qush = 鸟 (niǎo)",
+            "ru": "птица = 鸟 (niǎo)",
+            "tj": "парранда = 鸟 (niǎo)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "飞",
+          "pinyin": "fēi",
+          "options": [
+            "姓名",
+            "出国",
+            "门票",
+            "飞"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "飞 — uchmoq (fēi)",
+            "ru": "飞 — лететь; летать (fēi)",
+            "tj": "飞 — парвоз кардан (fēi)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "飞",
+              {
+                "uz": "uchmoq",
+                "ru": "лететь; летать",
+                "tj": "парвоз кардан"
+              }
+            ],
+            [
+              "好像",
+              {
+                "uz": "o‘xshamoq; go‘yo",
+                "ru": "быть похожим; как будто",
+                "tj": "монанд будан; гӯё"
+              }
+            ],
+            [
+              "鸟",
+              {
+                "uz": "qush",
+                "ru": "птица",
+                "tj": "парранда"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "“有” gapi (2)",
+              "ru": "Предложение с “有” (2)",
+              "tj": "Ҷумлаи “有” (2)"
+            },
+            "title_zh": "“有”字句（2）",
+            "rule": {
+              "uz": "“有+miqdor birikmasi” ma’lum bir miqdorga yetganlikni bildiradi.",
+              "ru": "“有+количественная группа” показывает достижение определённого количества.",
+              "tj": "“有+таркиби миқдорӣ” расидан ба миқдори муайянро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "你有一年没回国了吧？",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "你女儿今年有10岁了吧？",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "我有一个月没给家里打电话了。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "吧",
+            "今年",
+            "了",
+            "姓名",
+            "岁",
+            "女儿",
+            "出国",
+            "你",
+            "有"
+          ],
+          "answer_tokens": [
+            "你",
+            "女儿",
+            "今年",
+            "有",
+            "岁",
+            "了",
+            "吧"
+          ],
+          "explanation": {
+            "uz": "你女儿今年有10岁了吧？",
+            "ru": "你女儿今年有10岁了吧？",
+            "tj": "你女儿今年有10岁了吧？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你女儿今年有10岁了吧？",
+            "我有一个月没给家里打电话了。",
+            "你有一年没回国了吧？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "你有一年没回国了吧？ — ",
+            "ru": "你有一年没回国了吧？ — ",
+            "tj": "你有一年没回国了吧？ — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "飞",
+          "pinyin": "fēi",
+          "translation": {
+            "uz": "uchmoq",
+            "ru": "лететь; летать",
+            "tj": "парвоз кардан"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "鸟",
+          "pinyin": "niǎo",
+          "options": [
+            "姓名",
+            "鸟",
+            "出国",
+            "门票"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "鸟 — qush (niǎo)",
+            "ru": "鸟 — птица (niǎo)",
+            "tj": "鸟 — парранда (niǎo)"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o‘xshamoq; go‘yo' xitoycha qaysi?",
+            "ru": "'быть похожим; как будто' по-китайски?",
+            "tj": "'монанд будан; гӯё' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "门票",
+            "好像",
+            "姓名",
+            "出国"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "o‘xshamoq; go‘yo = 好像 (hǎoxiàng)",
+            "ru": "быть похожим; как будто = 好像 (hǎoxiàng)",
+            "tj": "монанд будан; гӯё = 好像 (hǎoxiàng)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "鸟",
+          "pinyin": "niǎo",
+          "translation": {
+            "uz": "qush",
+            "ru": "птица",
+            "tj": "парранда"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "机票 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 机票:",
+            "tj": "Маънои калимаи 机票-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ism-familiya",
+              "ru": "имя и фамилия",
+              "tj": "ному насаб"
+            },
+            {
+              "uz": "chet elga chiqmoq",
+              "ru": "ехать за границу",
+              "tj": "ба хориҷ рафтан"
+            },
+            {
+              "uz": "aviachipta",
+              "ru": "авиабилет",
+              "tj": "чиптаи ҳавопаймо"
+            },
+            {
+              "uz": "kirish chiptasi",
+              "ru": "входной билет",
+              "tj": "чиптаи даромад"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "机票 = aviachipta (jīpiào)",
+            "ru": "机票 = авиабилет (jīpiào)",
+            "tj": "机票 = чиптаи ҳавопаймо (jīpiào)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "机票",
+            "pinyin": "jīpiào",
+            "meaning": {
+              "uz": "aviachipta",
+              "ru": "авиабилет",
+              "tj": "чиптаи ҳавопаймо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qush' xitoycha qaysi?",
+            "ru": "'птица' по-китайски?",
+            "tj": "'парранда' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "鸟",
+            "门票",
+            "出国",
+            "姓名"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "qush = 鸟 (niǎo)",
+            "ru": "птица = 鸟 (niǎo)",
+            "tj": "парранда = 鸟 (niǎo)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "鸟",
+            "pinyin": "niǎo",
+            "meaning": {
+              "uz": "qush",
+              "ru": "птица",
+              "tj": "парранда"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

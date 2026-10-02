@@ -1,0 +1,1087 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 26,
+  "source_lesson": 5,
+  "part_no": 6,
+  "part_count": 6,
+  "checkpoint": true,
+  "title": "第一次去中国朋友家",
+  "subtitle": {
+    "uz": "Oddiy yo‘nalish to‘ldiruvchilarini 来/去 bilan ishlatish; obyektning joylashuvini to‘g‘ri tanlash; “都……了” bilan ‘allaqachon/shu darajaga yetdi’ ma’nosini berish; xitoylik do‘stnikiga mehmon bo‘lish vaziyatida muloqot qilish.",
+    "ru": "Использовать простые направительные дополнения с 来/去; правильно располагать объект; выражать ‘уже/дошло до’ конструкцией “都……了”; общаться в ситуации первого визита к китайским друзьям.",
+    "tj": "Пуркунандаи самти соддаро бо 来/去 истифода бурдан; ҷойи объектро дуруст гузоштан; бо “都……了” маънои ‘аллакай/то ин дараҷа’ додан; ҳангоми меҳмонӣ ба хонаи дӯсти чинӣ суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "快",
+      "pinyin": "kuài",
+      "pos": "adv./adj.",
+      "meaning": {
+        "uz": "tez; shoshil",
+        "ru": "быстро; скорый",
+        "tj": "тез; зуд"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "下来",
+      "pinyin": "xiàlái",
+      "pos": "v.",
+      "meaning": {
+        "uz": "pastga tushib kelmoq",
+        "ru": "спуститься сюда",
+        "tj": "поён омада расидан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "上来",
+      "pinyin": "shànglái",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yuqoriga chiqib kelmoq",
+        "ru": "подняться сюда",
+        "tj": "боло омада баромадан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "上去",
+      "pinyin": "shàngqù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yuqoriga chiqib bormoq",
+        "ru": "подняться туда",
+        "tj": "боло рафтан"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "下面",
+      "pinyin": "xiàmian",
+      "pos": "n.",
+      "meaning": {
+        "uz": "past; pastki tomon",
+        "ru": "внизу",
+        "tj": "поён; қисми поён"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "面",
+      "pinyin": "miàn",
+      "pos": "suf.",
+      "meaning": {
+        "uz": "joy otini yasovchi qo‘shimcha",
+        "ru": "суффикс для слов места",
+        "tj": "пасванд барои номи ҷой"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "等",
+      "pinyin": "děng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kutmoq",
+        "ru": "ждать",
+        "tj": "интизор шудан"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "一会儿",
+      "pinyin": "yíhuìr",
+      "pos": "num.-m.",
+      "meaning": {
+        "uz": "birozdan so‘ng; bir oz",
+        "ru": "через некоторое время; немного",
+        "tj": "каме баъд; андаке"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "下去",
+      "pinyin": "xiàqù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "pastga tushib bormoq",
+        "ru": "спуститься туда",
+        "tj": "поён рафтан"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "进来",
+      "pinyin": "jìnlái",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ichkariga kirib kelmoq",
+        "ru": "войти сюда",
+        "tj": "ба дарун омада даромадан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "爷爷",
+      "pinyin": "yéye",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bobo",
+        "ru": "дедушка",
+        "tj": "бобо"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "奶奶",
+      "pinyin": "nǎinai",
+      "pos": "n.",
+      "meaning": {
+        "uz": "buvi",
+        "ru": "бабушка",
+        "tj": "бибӣ"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "礼物",
+      "pinyin": "lǐwù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sovg‘a",
+        "ru": "подарок",
+        "tj": "тӯҳфа"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "准备",
+      "pinyin": "zhǔnbèi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tayyorlamoq",
+        "ru": "готовить; подготавливать",
+        "tj": "тайёр кардан"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "奶茶",
+      "pinyin": "nǎichá",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sutli choy; milk tea",
+        "ru": "чай с молоком; milk tea",
+        "tj": "чойи ширӣ"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "跟",
+      "pinyin": "gēn",
+      "pos": "prep./conj.",
+      "meaning": {
+        "uz": "bilan",
+        "ru": "с; и",
+        "tj": "бо; ва"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "走",
+      "pinyin": "zǒu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yurmoq; bormoq",
+        "ru": "идти пешком",
+        "tj": "пиёда рафтан"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "酒店",
+      "pinyin": "jiǔdiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mehmonxona",
+        "ru": "гостиница",
+        "tj": "меҳмонхона"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Oddiy yo‘nalish to‘ldiruvchisi (1)",
+        "ru": "Простое направительное дополнение (1)",
+        "tj": "Пуркунандаи самти содда (1)"
+      },
+      "title_zh": "简单趋向补语（1）",
+      "rule": {
+        "uz": "Asosiy tuzilma “fe’l+来/去”. 来 harakat gapiruvchi tomonga, 去 esa gapiruvchidan uzoqlashayotganini bildiradi. Ko‘p ishlatiladigan fe’llar: 上、下、进、出、回、过.",
+        "ru": "Базовая схема: «глагол+来/去». 来 показывает движение к говорящему, 去 — от говорящего. Часто используются 上、下、进、出、回、过.",
+        "tj": "Сохтори асосӣ «феъл+来/去» аст. 来 ҳаракат ба сӯи гӯянда, 去 аз гӯянда дур шуданро нишон медиҳад. Феълҳои маъмул: 上、下、进、出、回、过."
+      },
+      "examples": [
+        {
+          "zh": "我不上去了，就在下面等你。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "家月到下边了，你下去接她吧。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我在外边呢，你出来吧。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "她拿来一本中文书。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "你别过来拿了，我给你送去。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "今天早上5点她就起来了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Oddiy yo‘nalish to‘ldiruvchisi (2)",
+        "ru": "Простое направительное дополнение (2)",
+        "tj": "Пуркунандаи самти содда (2)"
+      },
+      "title_zh": "简单趋向补语（2）",
+      "rule": {
+        "uz": "Fe’l yo‘nalish to‘ldiruvchisi va obyekt bilan kelganda, joy oti bo‘lsa obyekt 来/去 dan oldin turadi; narsa oti bo‘lsa oldin ham, keyin ham kelishi mumkin. 开、买、拿、请、送、要、找、走 kabi fe’llar ham yo‘nalish elementlari bilan birikadi.",
+        "ru": "Если при глаголе есть простое направительное дополнение и объект, топоним/место ставится перед 来/去; предметный объект может стоять и до, и после 来/去. Глаголы 开、买、拿、请、送、要、找、走 также сочетаются с 上、下、进、出、回、过.",
+        "tj": "Агар феъл ҳам пуркунандаи самт ва ҳам объект дошта бошад, исми ҷой пеш аз 来/去 меояд; исми ашё метавонад пеш ё баъд аз 来/去 ояд. Феълҳои 开、买、拿、请、送、要、找、走 низ бо 上、下、进、出、回、过 меоянд."
+      },
+      "examples": [
+        {
+          "zh": "你们太客气了，还拿这么多礼物来！",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "家月给我送来了一本书。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "上课了，你们快进教室来吧。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "爸爸今天买回了很多水果。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "妈妈拿出了二十块钱，让小雪自己去买点儿吃的。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "“都……了” qolipi",
+        "ru": "Конструкция “都……了”",
+        "tj": "Қолаби “都……了”"
+      },
+      "title_zh": "固定格式“都……了”",
+      "rule": {
+        "uz": "“都……了” ‘allaqachon’ yoki ma’lum bosqichga yetganlikni bildiradi va odatda ta’kid yoki norozilik ohangiga ega.",
+        "ru": "“都……了” выражает значение «уже, дошло до» и обычно несёт оттенок усиления или недовольства.",
+        "tj": "“都……了” маънои «аллакай, то ин дараҷа расидааст»-ро медиҳад ва одатан таъкид ё норозигиро мефаҳмонад."
+      },
+      "examples": [
+        {
+          "zh": "都12点了，我们吃饭吧。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "都8点半了，你还不起床吗？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我都去过北京了，不想再去了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Mehmonxona pastida Annie Bai Jiayuega telefon qilmoqda.",
+        "ru": "Внизу гостиницы Энни звонит Бай Цзяюэ.",
+        "tj": "Дар поёни меҳмонхона Энни ба Бай Ҷяюэ занг мезанад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "家月，快下来吧，第一次去中国朋友家，别晚了。",
+          "pinyin": "Jiāyuè, kuài xiàlái ba, dì-yī cì qù Zhōngguó péngyou jiā, bié wǎn le.",
+          "text": {
+            "uz": "Jiayue, tez tush, xitoylik do‘stnikiga birinchi marta ketyapmiz, kechikmaylik.",
+            "ru": "Цзяюэ, скорее спускайся, мы впервые идём в гости к китайским друзьям, не опоздай.",
+            "tj": "Ҷяюэ, зуд поён биё, бори аввал ба хонаи дӯсти чинӣ меравем, дер накун."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "还有时间，你上来吧。",
+          "pinyin": "Hái yǒu shíjiān, nǐ shànglái ba.",
+          "text": {
+            "uz": "Hali vaqt bor, sen yuqoriga chiq.",
+            "ru": "Время ещё есть, поднимайся ко мне.",
+            "tj": "Ҳоло вақт ҳаст, ту боло биё."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "我不上去了，就在下面等你。",
+          "pinyin": "Wǒ bú shàngqù le, jiù zài xiàmian děng nǐ.",
+          "text": {
+            "uz": "Men yuqoriga chiqmayman, pastda seni kutaman.",
+            "ru": "Я не буду подниматься, подожду тебя внизу.",
+            "tj": "Ман боло намебароям, дар поён туро интизор мешавам."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "那我一会儿就下去。",
+          "pinyin": "Nà wǒ yíhuìr jiù xiàqù.",
+          "text": {
+            "uz": "Unda men birozdan keyin tushaman.",
+            "ru": "Тогда я через минуту спущусь.",
+            "tj": "Пас ман каме баъд поён мефароям."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "你快点儿吧。",
+          "pinyin": "Nǐ kuài diǎnr ba.",
+          "text": {
+            "uz": "Tezroq bo‘l.",
+            "ru": "Побыстрее, пожалуйста.",
+            "tj": "Тезтар шав."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "没事，一雪姐说11点前到就可以。",
+          "pinyin": "Méishì, Yīxuě jiě shuō shíyī diǎn qián dào jiù kěyǐ.",
+          "text": {
+            "uz": "Hechqisi yo‘q, opa Yixue soat 11 gacha yetib borsak bo‘ladi dedi.",
+            "ru": "Ничего, сестра Исюэ сказала, что достаточно приехать до 11.",
+            "tj": "Ҳеҷ гап не, апаи Исюэ гуфт то соати 11 расем бас аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yixue uyida Bai Jiayue va Annie mehmon bo‘lib kelgan.",
+        "ru": "У Ван Исюэ дома Бай Цзяюэ и Энни пришли в гости.",
+        "tj": "Дар хонаи Ван Исюэ Бай Ҷяюэ ва Энни ба меҳмонӣ омадаанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "家月、安妮，快进来！我给你们介绍一下，这是孩子们的爷爷、奶奶。",
+          "pinyin": "Jiāyuè, Ānnī, kuài jìnlái! Wǒ gěi nǐmen jièshào yíxià, zhè shì háizimen de yéye, nǎinai.",
+          "text": {
+            "uz": "Jiayue, Annie, tez kiring! Sizlarni tanishtiray: bular bolalarning bobosi va buvisi.",
+            "ru": "Цзяюэ, Энни, заходите! Познакомлю вас: это дедушка и бабушка детей.",
+            "tj": "Ҷяюэ, Энни, дароед! Шуморо шинос мекунам: инҳо бобо ва бибии кӯдаконанд."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue & Annie",
+          "zh": "你们好！",
+          "pinyin": "Nǐmen hǎo!",
+          "text": {
+            "uz": "Salom!",
+            "ru": "Здравствуйте!",
+            "tj": "Салом!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "爸，妈，这是白家月，这是安妮。她们都是一飞的学生。",
+          "pinyin": "Bà, mā, zhè shì Bái Jiāyuè, zhè shì Ānnī. Tāmen dōu shì Yīfēi de xuésheng.",
+          "text": {
+            "uz": "Dada, oyi, bu Bai Jiayue, bu Annie. Ikkalasi ham Yifeining talabalari.",
+            "ru": "Папа, мама, это Бай Цзяюэ, а это Энни. Они обе ученицы Ифэй.",
+            "tj": "Дада, оча, ин Бай Ҷяюэ, ин Энни. Ҳарду донишҷӯи Ифэй ҳастанд."
+          }
+        },
+        {
+          "speaker": "Grandpa Liu",
+          "zh": "家月、安妮，你们好！",
+          "pinyin": "Jiāyuè, Ānnī, nǐmen hǎo!",
+          "text": {
+            "uz": "Jiayue, Annie, salom!",
+            "ru": "Цзяюэ, Энни, здравствуйте!",
+            "tj": "Ҷяюэ, Энни, салом!"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "这是送你们的礼物。",
+          "pinyin": "Zhè shì sòng nǐmen de lǐwù.",
+          "text": {
+            "uz": "Bu sizlarga sovg‘a.",
+            "ru": "Это подарок для вас.",
+            "tj": "Ин тӯҳфа барои шумост."
+          }
+        },
+        {
+          "speaker": "Grandpa Liu",
+          "zh": "你们太客气了，还拿这么多礼物来！",
+          "pinyin": "Nǐmen tài kèqi le, hái ná zhème duō lǐwù lái!",
+          "text": {
+            "uz": "Juda ovora bo‘libsizlar, yana shuncha sovg‘a olib kelibsizlar!",
+            "ru": "Ну что вы, ещё столько подарков принесли!",
+            "tj": "Ин қадар заҳмат кашида, боз ин қадар тӯҳфа овардаед!"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "一雪姐，这是给孩子们准备的礼物。",
+          "pinyin": "Yīxuě jiě, zhè shì gěi háizimen zhǔnbèi de lǐwù.",
+          "text": {
+            "uz": "Opa Yixue, bu bolalar uchun tayyorlagan sovg‘amiz.",
+            "ru": "Сестра Исюэ, это подарок, который мы приготовили детям.",
+            "tj": "Апа Исюэ, ин тӯҳфаест, ки барои кӯдакон тайёр кардем."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "谢谢！你们别客气，快坐吧！",
+          "pinyin": "Xièxie! Nǐmen bié kèqi, kuài zuò ba!",
+          "text": {
+            "uz": "Rahmat! Bemalol bo‘linglar, o‘tiringlar!",
+            "ru": "Спасибо! Не стесняйтесь, садитесь!",
+            "tj": "Раҳмат! Худатонро озод ҳис кунед, нишинед!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yixue uyida Bai Jiayue va Annie ovqatlanmoqda.",
+        "ru": "У Ван Исюэ дома Бай Цзяюэ и Энни обедают.",
+        "tj": "Дар хонаи Ван Исюэ Бай Ҷяюэ ва Энни хӯрок мехӯранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "都12点了，我们吃饭吧。",
+          "pinyin": "Dōu shí'èr diǎn le, wǒmen chī fàn ba.",
+          "text": {
+            "uz": "Soat allaqachon 12 bo‘ldi, ovqatlanaylik.",
+            "ru": "Уже двенадцать, давайте есть.",
+            "tj": "Соат аллакай 12 шуд, биёед хӯрок хӯрем."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "这么多好吃的，您太客气了！",
+          "pinyin": "Zhème duō hǎochī de, nín tài kèqi le!",
+          "text": {
+            "uz": "Shuncha mazali taom, juda ovora bo‘libsiz!",
+            "ru": "Столько вкусного, вы так постарались!",
+            "tj": "Ин қадар хӯроки болаззат, хеле заҳмат кашидаед!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "都是我自己做的，你们多吃点儿。",
+          "pinyin": "Dōu shì wǒ zìjǐ zuò de, nǐmen duō chī diǎnr.",
+          "text": {
+            "uz": "Hammasini o‘zim qildim, ko‘proq yenglar.",
+            "ru": "Я всё приготовила сама, ешьте побольше.",
+            "tj": "Ҳамаашро худам тайёр кардам, бештар бихӯред."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "奶茶也很好喝，是您自己做的吗？",
+          "pinyin": "Nǎichá yě hěn hǎohē, shì nín zìjǐ zuò de ma?",
+          "text": {
+            "uz": "Sutli choy ham juda mazali, uni ham o‘zingiz qildingizmi?",
+            "ru": "Чай с молоком тоже очень вкусный, вы сами сделали?",
+            "tj": "Чойи ширӣ ҳам хеле болаззат аст, худатон тайёр кардед?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "不是，奶茶是爷爷买的。",
+          "pinyin": "Bú shì, nǎichá shì yéye mǎi de.",
+          "text": {
+            "uz": "Yo‘q, sutli choyni bobo sotib olgan.",
+            "ru": "Нет, чай с молоком купил дедушка.",
+            "tj": "Не, чойи шириро бобо харидааст."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "在哪儿买的？我还没喝过这么好喝的奶茶。",
+          "pinyin": "Zài nǎr mǎi de? Wǒ hái méi hēguo zhème hǎohē de nǎichá.",
+          "text": {
+            "uz": "Qayerdan olgan? Men hali bunday mazali sutli choy ichmaganman.",
+            "ru": "Где он его купил? Я ещё никогда не пила такой вкусный чай с молоком.",
+            "tj": "Аз куҷо харидааст? Ман ҳоло чунин чойи ширии болаззат нанӯшидаам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "就在前边的商场，吃完饭你们可以跟我去看看。",
+          "pinyin": "Jiù zài qiánbian de shāngchǎng, chīwán fàn nǐmen kěyǐ gēn wǒ qù kànkan.",
+          "text": {
+            "uz": "Oldindagi savdo markazida. Ovqatdan keyin men bilan borib ko‘rishingiz mumkin.",
+            "ru": "В торговом центре впереди. После еды можете сходить со мной посмотреть.",
+            "tj": "Дар маркази савдои пештар. Баъди хӯрок метавонед бо ман рафта бинед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxonada Bai Jiayue Li Wenga xabar yubormoqda.",
+        "ru": "В гостинице Бай Цзяюэ отправляет сообщение Ли Вэню.",
+        "tj": "Дар меҳмонхона Бай Ҷяюэ ба Ли Вэн паём мефиристад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Narration",
+          "zh": "回国前一天，我们去一雪姐家了。到她家的时候，饭菜都做好了。刘爷爷还准备了奶茶。因为吃了太多东西，我们吃完饭是走回酒店的。",
+          "pinyin": "Huíguó qián yì tiān, wǒmen qù Yīxuě jiě jiā le. Dào tā jiā de shíhou, fàncài dōu zuòhǎo le. Liú yéye hái zhǔnbèile nǎichá. Yīnwèi chīle tài duō dōngxi, wǒmen chīwán fàn shì zǒu huí jiǔdiàn de.",
+          "text": {
+            "uz": "Vatanga qaytishimizdan bir kun oldin opa Yixuenikiga bordik. Yetib borganimizda ovqatlar tayyor edi. Liu bobo sutli choy ham tayyorlagan ekan. Juda ko‘p ovqat yeganimiz uchun ovqatdan keyin mehmonxonaga piyoda qaytdik.",
+            "ru": "За день до возвращения домой мы пошли к сестре Исюэ. Когда пришли, еда уже была готова. Дедушка Лю приготовил ещё и чай с молоком. Мы съели слишком много, поэтому после еды вернулись в гостиницу пешком.",
+            "tj": "Як рӯз пеш аз бозгашт ба ватан ба хонаи апаи Исюэ рафтем. Вақте расидем, хӯрокҳо тайёр буданд. Бобои Лю чойи ширӣ ҳам тайёр карда буд. Азбаски бисёр хӯрок хӯрдем, баъди хӯрок пиёда ба меҳмонхона баргаштем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "今天早上5点她就起来了。",
+            "她拿来一本中文书。",
+            "你别过来拿了，我给你送去。",
+            "家月给我送来了一本书。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "今天早上5点她就起来了。 — ",
+            "ru": "今天早上5点她就起来了。 — ",
+            "tj": "今天早上5点她就起来了。 — "
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "快",
+              {
+                "uz": "tez; shoshil",
+                "ru": "быстро; скорый",
+                "tj": "тез; зуд"
+              }
+            ],
+            [
+              "下来",
+              {
+                "uz": "pastga tushib kelmoq",
+                "ru": "спуститься сюда",
+                "tj": "поён омада расидан"
+              }
+            ],
+            [
+              "上来",
+              {
+                "uz": "yuqoriga chiqib kelmoq",
+                "ru": "подняться сюда",
+                "tj": "боло омада баромадан"
+              }
+            ],
+            [
+              "上去",
+              {
+                "uz": "yuqoriga chiqib bormoq",
+                "ru": "подняться туда",
+                "tj": "боло рафтан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "下面",
+              {
+                "uz": "past; pastki tomon",
+                "ru": "внизу",
+                "tj": "поён; қисми поён"
+              }
+            ],
+            [
+              "面",
+              {
+                "uz": "joy otini yasovchi qo‘shimcha",
+                "ru": "суффикс для слов места",
+                "tj": "пасванд барои номи ҷой"
+              }
+            ],
+            [
+              "等",
+              {
+                "uz": "kutmoq",
+                "ru": "ждать",
+                "tj": "интизор шудан"
+              }
+            ],
+            [
+              "一会儿",
+              {
+                "uz": "birozdan so‘ng; bir oz",
+                "ru": "через некоторое время; немного",
+                "tj": "каме баъд; андаке"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "nǎinai qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nǎinai?",
+            "tj": "nǎinai кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "快",
+            "奶奶",
+            "下来",
+            "上来"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "奶奶 = buvi (nǎinai)",
+            "ru": "奶奶 = бабушка (nǎinai)",
+            "tj": "奶奶 = бибӣ (nǎinai)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "一会儿 talaffuzini tanlang:",
+            "ru": "Выберите произношение 一会儿:",
+            "tj": "Талаффузи 一会儿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yíhuìr",
+            "kuài",
+            "shànglái",
+            "xiàlái"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "一会儿 — yíhuìr",
+            "ru": "一会儿 — yíhuìr",
+            "tj": "一会儿 — yíhuìr"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "还有时间，你上来吧。",
+          "pinyin": "Hái yǒu shíjiān, nǐ shànglái ba.",
+          "translation": {
+            "uz": "Hali vaqt bor, sen yuqoriga chiq.",
+            "ru": "Время ещё есть, поднимайся ко мне.",
+            "tj": "Ҳоло вақт ҳаст, ту боло биё."
+          },
+          "tokens": {
+            "uz": [
+              "vaqt",
+              "chiq",
+              "Hali",
+              "sen",
+              "bor",
+              "tez",
+              "Jiayue",
+              "yuqoriga"
+            ],
+            "ru": [
+              "мне",
+              "скорее",
+              "Цзяюэ",
+              "поднимайся",
+              "ко",
+              "Время",
+              "есть",
+              "ещё"
+            ],
+            "tj": [
+              "Ҳоло",
+              "ҳаст",
+              "биё",
+              "вақт",
+              "Ҷяюэ",
+              "зуд",
+              "боло",
+              "ту"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Hali",
+              "vaqt",
+              "bor",
+              "sen",
+              "yuqoriga",
+              "chiq"
+            ],
+            "ru": [
+              "Время",
+              "ещё",
+              "есть",
+              "поднимайся",
+              "ко",
+              "мне"
+            ],
+            "tj": [
+              "Ҳоло",
+              "вақт",
+              "ҳаст",
+              "ту",
+              "боло",
+              "биё"
+            ]
+          },
+          "explanation": {
+            "uz": "还有时间，你上来吧。 — Hali vaqt bor, sen yuqoriga chiq.",
+            "ru": "还有时间，你上来吧。 — Время ещё есть, поднимайся ко мне.",
+            "tj": "还有时间，你上来吧。 — Ҳоло вақт ҳаст, ту боло биё."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ichkariga kirib kelmoq' xitoycha qaysi?",
+            "ru": "'войти сюда' по-китайски?",
+            "tj": "'ба дарун омада даромадан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "进来",
+            "下来",
+            "上来",
+            "快"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "ichkariga kirib kelmoq = 进来 (jìnlái)",
+            "ru": "войти сюда = 进来 (jìnlái)",
+            "tj": "ба дарун омада даромадан = 进来 (jìnlái)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "家月，快下来吧，第一次去中国朋友家，别晚了。",
+          "pinyin": "Jiāyuè, kuài xiàlái ba, dì-yī cì qù Zhōngguó péngyou jiā, bié wǎn le.",
+          "options": [
+            "家月，快下来吧，第一次去中国朋友家，别晚了。",
+            "我不上去了，就在下面等你。",
+            "还有时间，你上来吧。",
+            "那我一会儿就下去。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "家月，快下来吧，第一次去中国朋友家，别晚了。 — Jiayue, tez tush, xitoylik do‘stnikiga birinchi marta ketyapmiz, kechikmaylik.",
+            "ru": "家月，快下来吧，第一次去中国朋友家，别晚了。 — Цзяюэ, скорее спускайся, мы впервые идём в гости к китайским друзьям, не опоздай.",
+            "tj": "家月，快下来吧，第一次去中国朋友家，别晚了。 — Ҷяюэ, зуд поён биё, бори аввал ба хонаи дӯсти чинӣ меравем, дер накун."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "家____，快下来吧，第一次去中国朋友家，别晚了。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "一",
+            "七",
+            "万",
+            "月"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 月 — 家月，快下来吧，第一次去中国朋友家，别晚了。 (Jiayue, tez tush, xitoylik do‘stnikiga birinchi marta ketyapmiz, kechikmaylik.)",
+            "ru": "Верно: 月 — 家月，快下来吧，第一次去中国朋友家，别晚了。 (Цзяюэ, скорее спускайся, мы впервые идём в гости к китайским друзьям, не опоздай.)",
+            "tj": "Дуруст: 月 — 家月，快下来吧，第一次去中国朋友家，别晚了。 (Ҷяюэ, зуд поён биё, бори аввал ба хонаи дӯсти чинӣ меравем, дер накун.)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida Bai Jiayue nima deydi?",
+            "ru": "Что Bai Jiayue говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ Bai Jiayue чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "还有时间，你上来吧。",
+            "没事，一雪姐说11点前到就可以。",
+            "家月，快下来吧，第一次去中国朋友家，别晚了。",
+            "我不上去了，就在下面等你。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 没事，一雪姐说11点前到就可以。",
+            "ru": "Правильный ответ: 没事，一雪姐说11点前到就可以。",
+            "tj": "Ҷавоби дуруст: 没事，一雪姐说11点前到就可以。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda Annie avval nima deydi?",
+            "ru": "Что Annie говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ Annie аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "那我一会儿就下去。",
+            "家月，快下来吧，第一次去中国朋友家，别晚了。",
+            "还有时间，你上来吧。",
+            "我不上去了，就在下面等你。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 家月，快下来吧，第一次去中国朋友家，别晚了。",
+            "ru": "Правильный ответ: 家月，快下来吧，第一次去中国朋友家，别晚了。",
+            "tj": "Ҷавоби дуруст: 家月，快下来吧，第一次去中国朋友家，别晚了。"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "Annie",
+              "zh": "家月，快下来吧，第一次去中国朋友家，别晚了。",
+              "blank": false
+            },
+            {
+              "speaker": "Bai Jiayue",
+              "zh": "还有时间，你上来吧。",
+              "blank": false
+            },
+            {
+              "speaker": "Annie",
+              "zh": "我不上去了，就在下面等你。",
+              "blank": false
+            },
+            {
+              "speaker": "Bai Jiayue",
+              "zh": "那我一会儿就下去。",
+              "blank": false
+            },
+            {
+              "speaker": "Annie",
+              "zh": "你快点儿吧。",
+              "blank": false
+            },
+            {
+              "speaker": "Bai Jiayue",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "我不上去了，就在下面等你。",
+            "家月，快下来吧，第一次去中国朋友家，别晚了。",
+            "没事，一雪姐说11点前到就可以。",
+            "还有时间，你上来吧。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 没事，一雪姐说11点前到就可以。",
+            "ru": "Правильный ответ: 没事，一雪姐说11点前到就可以。",
+            "tj": "Ҷавоби дуруст: 没事，一雪姐说11点前到就可以。"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你们好！",
+          "pinyin": "Nǐmen hǎo!",
+          "translation": {
+            "uz": "Salom!",
+            "ru": "Здравствуйте!",
+            "tj": "Салом!"
+          }
+        }
+      ]
+    }
+  ]
+}

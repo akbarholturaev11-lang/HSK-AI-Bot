@@ -1,0 +1,987 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 69,
+  "source_lesson": 14,
+  "part_no": 4,
+  "part_count": 4,
+  "checkpoint": true,
+  "title": "一个人过年多没意思啊",
+  "subtitle": {
+    "uz": "“着” bilan mavjudlik gapini tuzish; undov gapida “多” bilan yuqori darajani ifodalash; qo‘shma yo‘nalish to‘ldiruvchilarini va obyektning joylashuvini to‘g‘ri ishlatish; tanishtirish va uy-joy haqida gaplashish.",
+    "ru": "Строить экзистенциальные предложения с “着”; выражать высокую степень через “多” в восклицательных предложениях; правильно использовать составные направительные дополнения и позицию объекта; говорить о знакомстве и жилье.",
+    "tj": "Бо “着” ҷумлаи мавҷудият сохтан; дар ҷумлаи хитобӣ бо “多” дараҷаи баландро ифода кардан; пуркунандаи мураккаби самт ва ҷойи объектро дуруст истифода бурдан; дар бораи шиносоӣ ва манзил суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "站",
+      "pinyin": "zhàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "turmoq",
+        "ru": "стоять",
+        "tj": "истодан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "包",
+      "pinyin": "bāo",
+      "pos": "n./v./m.",
+      "meaning": {
+        "uz": "sumka; o‘ram; o‘ramoq",
+        "ru": "сумка; пакет; заворачивать",
+        "tj": "халта; баста; бастан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "过年",
+      "pinyin": "guònián",
+      "pos": "v.",
+      "meaning": {
+        "uz": "Bahor bayramini/Yangi yilni nishonlamoq",
+        "ru": "праздновать Китайский Новый год",
+        "tj": "Соли нави чиниро ҷашн гирифтан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "没意思",
+      "pinyin": "méi yìsi",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "zerikarli; qiziq emas",
+        "ru": "скучно; неинтересно",
+        "tj": "дилгир; бе шавқ"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "位",
+      "pinyin": "wèi",
+      "pos": "m.",
+      "meaning": {
+        "uz": "odamlar uchun hurmat hisob so‘zi",
+        "ru": "уважительное счётное слово для людей",
+        "tj": "воҳиди эҳтиромии ҳисоб барои одам"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "前面",
+      "pinyin": "qiánmian",
+      "pos": "n.",
+      "meaning": {
+        "uz": "old tomon",
+        "ru": "впереди; передняя сторона",
+        "tj": "пеш; тарафи пеш"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "房子",
+      "pinyin": "fángzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "uy; xona-joy",
+        "ru": "дом; жильё",
+        "tj": "хона; манзил"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "小孩儿",
+      "pinyin": "xiǎoháir",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bola",
+        "ru": "ребёнок",
+        "tj": "кӯдак"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "女孩儿",
+      "pinyin": "nǚháir",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qiz bola",
+        "ru": "девочка",
+        "tj": "духтар"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "姓",
+      "pinyin": "xìng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "familiyasi ... bo‘lmoq",
+        "ru": "носить фамилию",
+        "tj": "насаб доштан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "眼睛",
+      "pinyin": "yǎnjing",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ko‘z",
+        "ru": "глаза",
+        "tj": "чашм"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "跳舞",
+      "pinyin": "tiàowǔ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "raqsga tushmoq",
+        "ru": "танцевать",
+        "tj": "рақсидан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Mavjudlik gapi (2)",
+        "ru": "Экзистенциальное предложение (2)",
+        "tj": "Ҷумлаи мавҷудият (2)"
+      },
+      "title_zh": "存现句（2）",
+      "rule": {
+        "uz": "“着” fe’ldan keyin kelib mavjudlik gapini tuzishi mumkin. Fe’l oldidan joy ifodasi, keyin odatda noaniq odam yoki narsa keladi. Tuzilishi: joy + fe’l + 着 + odam/narsa.",
+        "ru": "“着” после глагола может образовывать экзистенциальное предложение. Перед глаголом стоит место, после него обычно неопределённый человек или предмет. Схема: место + глагол + 着 + человек/предмет.",
+        "tj": "“着” баъди феъл омада ҷумлаи мавҷудият месозад. Пеш аз феъл ҷой, баъди он одатан шахс ё ашёи номуайян меояд. Сохтор: ҷой + феъл + 着 + шахс/ашё."
+      },
+      "examples": [
+        {
+          "zh": "你家楼下站着一个人。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "爸爸手里拿着一杯咖啡。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "那间教室里坐着不少学生。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Daraja ravishi “多”",
+        "ru": "Наречие степени “多”",
+        "tj": "Зарфи дараҷаи “多”"
+      },
+      "title_zh": "程度副词“多”",
+      "rule": {
+        "uz": "“多” undov gapida ishlatilib, darajaning juda yuqori ekanini bildiradi.",
+        "ru": "“多” используется в восклицательных предложениях и выражает высокую степень признака.",
+        "tj": "“多” дар ҷумлаи хитобӣ истифода шуда, дараҷаи хеле баландро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "你一个人在这儿多没意思啊！",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我们一起去多好啊！",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "多好看呀！买这件吧。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Qo‘shma yo‘nalish to‘ldiruvchisi",
+        "ru": "Составное направительное дополнение",
+        "tj": "Пуркунандаи мураккаби самт"
+      },
+      "title_zh": "复合趋向补语",
+      "rule": {
+        "uz": "“上、下、进、出、回、过” + “来/去” hamda “起来” fe’ldan keyin kelib qo‘shma yo‘nalish to‘ldiruvchisini tuzadi. Joy oti obyekt bo‘lsa 来/去 oldida; narsa oti esa oldida ham, keyin ham kelishi mumkin.",
+        "ru": "“上、下、进、出、回、过” + “来/去”, а также “起来”, после глагола образуют составное направительное дополнение. Объект-место ставится перед 来/去; предметный объект может стоять до или после 来/去.",
+        "tj": "“上、下、进、出、回、过” + “来/去” ва “起来” баъди феъл пуркунандаи мураккаби самт месозанд. Объекти ҷой пеш аз 来/去; объекти ашёӣ пеш ё пас аз 来/去 меояд."
+      },
+      "examples": [
+        {
+          "zh": "她经常跑上来找我玩。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "楼不高，我们走上去吧。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "一听到老师叫他的名字，他就站起来了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "同学们都走出教室去了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "妈妈让我买回来一些菜来。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "白家月从书包里找出来一个漂亮的本子。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyga qaytish yo‘lida Li Wen va Wang Yifei yurib suhbatlashmoqda.",
+        "ru": "По дороге домой Ли Вэнь и Ван Ифэй разговаривают на ходу.",
+        "tj": "Дар роҳи бозгашт ба хона Ли Вэн ва Ван Ифэй роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "王老师，你家楼下站着一个人。",
+          "pinyin": "Wáng lǎoshī, nǐ jiā lóuxià zhànzhe yí ge rén.",
+          "text": {
+            "uz": "Ustoz Wang, uyingiz pastida bir odam turibdi.",
+            "ru": "Преподаватель Ван, у вашего дома внизу стоит человек.",
+            "tj": "Устод Ван, поёни хонаи шумо як нафар истодааст."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "我家楼下？我看看。",
+          "pinyin": "Wǒ jiā lóuxià? Wǒ kànkan.",
+          "text": {
+            "uz": "Uyim pastidami? Qani ko‘ray.",
+            "ru": "Внизу моего дома? Дай посмотрю.",
+            "tj": "Поёни хонаи ман? Бинам."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "那个人穿着黑色的裤子，手里还拿着一个黑色的包。",
+          "pinyin": "Nàge rén chuānzhe hēisè de kùzi, shǒulǐ hái názhe yí ge hēisè de bāo.",
+          "text": {
+            "uz": "U odam qora shim kiygan, qo‘lida yana qora sumka bor.",
+            "ru": "На том человеке чёрные брюки, а в руке он держит чёрную сумку.",
+            "tj": "Он одам шими сиёҳ пӯшидааст ва дар дасташ халтаи сиёҳ дорад."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "我看见那个人了，他是我男朋友。",
+          "pinyin": "Wǒ kànjiàn nàge rén le, tā shì wǒ nánpéngyou.",
+          "text": {
+            "uz": "Ko‘rdim, u mening yigitim.",
+            "ru": "Я его вижу, это мой молодой человек.",
+            "tj": "Ӯро дидам, ӯ дӯстписари ман аст."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "那我们快过去吧。",
+          "pinyin": "Nà wǒmen kuài guòqu ba.",
+          "text": {
+            "uz": "Unda tezroq u tomonga boraylik.",
+            "ru": "Тогда пойдём скорее к нему.",
+            "tj": "Пас зуд ба он тараф равем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Bino pastida Wang Yifei Yang Tongle bilan uchrashdi.",
+        "ru": "Внизу дома Ван Ифэй встретила Ян Тунлэ.",
+        "tj": "Дар поёни бино Ван Ифэй бо Ян Тунлэ вохӯрд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "同乐，真是你啊！上次打电话，你说有时间过来看我，没想到这么快就来了！",
+          "pinyin": "Tónglè, zhēn shì nǐ a! Shàng cì dǎ diànhuà, nǐ shuō yǒu shíjiān guòlai kàn wǒ, méi xiǎngdào zhème kuài jiù lái le!",
+          "text": {
+            "uz": "Tongle, rostdan ham sen ekansan! O‘tgan safar telefonlashganda vaqt topib meni ko‘rgani kelaman deganding, bunchalik tez kelasan deb o‘ylamagandim!",
+            "ru": "Тунлэ, это правда ты! В прошлый раз по телефону ты сказал, что приедешь навестить меня, когда будет время. Не думала, что так скоро!",
+            "tj": "Тунлэ, воқеан ту будаӣ! Дафъаи гузашта гуфтӣ вақте фурсат бошад ба диданам меоӣ, фикр намекардам ин қадар зуд биёӣ!"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "就要过年了，你一个人在这儿多没意思啊，所以我就早早过来了。",
+          "pinyin": "Jiù yào guònián le, nǐ yí ge rén zài zhèr duō méi yìsi a, suǒyǐ wǒ jiù zǎozǎo guòlai le.",
+          "text": {
+            "uz": "Yangi yilga oz qoldi, bu yerda yolg‘iz qolish naqadar zerikarli, shuning uchun erta keldim.",
+            "ru": "Скоро Новый год, одному здесь так скучно, поэтому я приехал пораньше.",
+            "tj": "Ба Соли нав кам мондааст, танҳо будан дар ин ҷо чӣ қадар дилгир аст, барои ҳамин барвақт омадам."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "你能来，我太高兴了！",
+          "pinyin": "Nǐ néng lái, wǒ tài gāoxìng le!",
+          "text": {
+            "uz": "Kelganingdan juda xursandman!",
+            "ru": "Я так рада, что ты приехал!",
+            "tj": "Аз омаданат хеле хурсанд шудам!"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "一飞，你旁边这位是？",
+          "pinyin": "Yīfēi, nǐ pángbian zhè wèi shì?",
+          "text": {
+            "uz": "Yifei, yoningdagi bu kishi kim?",
+            "ru": "Ифэй, а кто этот человек рядом с тобой?",
+            "tj": "Ифэй, ин шахси паҳлӯят кист?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "同乐，这是李文，他在我们学校学医。李文，这是我男朋友杨同乐。",
+          "pinyin": "Tónglè, zhè shì Lǐ Wén, tā zài wǒmen xuéxiào xué yī. Lǐ Wén, zhè shì wǒ nánpéngyou Yáng Tónglè.",
+          "text": {
+            "uz": "Tongle, bu Li Wen, u bizning maktabda tibbiyot o‘qiydi. Li Wen, bu mening yigitim Yang Tongle.",
+            "ru": "Тунлэ, это Ли Вэнь, он изучает медицину в нашей школе. Ли Вэнь, это мой молодой человек Ян Тунлэ.",
+            "tj": "Тунлэ, ин Ли Вэн, ӯ дар мактаби мо тиб мехонад. Ли Вэн, ин дӯстписари ман Ян Тунлэ."
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "李文，很高兴认识你！",
+          "pinyin": "Lǐ Wén, hěn gāoxìng rènshi nǐ!",
+          "text": {
+            "uz": "Li Wen, tanishganimdan xursandman!",
+            "ru": "Ли Вэнь, приятно познакомиться!",
+            "tj": "Ли Вэн, аз шиносоӣ хушҳолам!"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "认识你我也很高兴！我家就在前面那个楼，有时间来玩。",
+          "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng! Wǒ jiā jiù zài qiánmian nàge lóu, yǒu shíjiān lái wán.",
+          "text": {
+            "uz": "Men ham tanishganimdan xursandman! Uyim oldindagi binoda, vaqtingiz bo‘lsa mehmonga keling.",
+            "ru": "Я тоже рад познакомиться! Я живу вон в том доме впереди, заходите как-нибудь.",
+            "tj": "Ман ҳам аз шиносоӣ хушҳолам! Хонаам дар ҳамон бинои пеш аст, вақт бошад меҳмон шавед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Wang Yifei va Yang Tongle mehmonxonada suhbatlashmoqda.",
+        "ru": "Дома у Ван Ифэй она и Ян Тунлэ разговаривают в гостиной.",
+        "tj": "Дар хонаи Ван Ифэй ӯ ва Ян Тунлэ дар меҳмонхона суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Yang Tongle",
+          "zh": "一飞，你住的房子真不错，很大，离学校也不远。",
+          "pinyin": "Yīfēi, nǐ zhù de fángzi zhēn búcuò, hěn dà, lí xuéxiào yě bù yuǎn.",
+          "text": {
+            "uz": "Yifei, yashaydigan uying juda yaxshi, katta va maktabdan ham uzoq emas.",
+            "ru": "Ифэй, у тебя отличный дом: большой и недалеко от школы.",
+            "tj": "Ифэй, хонае, ки зиндагӣ мекунӣ, хеле хубу калон аст ва аз мактаб ҳам дур нест."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "是啊！我楼下还住着一家中国人，他们人很好。",
+          "pinyin": "Shì a! Wǒ lóuxià hái zhùzhe yì jiā Zhōngguó rén, tāmen rén hěn hǎo.",
+          "text": {
+            "uz": "Ha! Pastimda yana bir xitoylik oila yashaydi, juda yaxshi odamlar.",
+            "ru": "Да! Этажом ниже живёт китайская семья, очень хорошие люди.",
+            "tj": "Ҳа! Поёни ман як оилаи чинӣ зиндагӣ мекунад, одамони хеле хубанд."
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "这样你有事情就可以找他们帮忙。",
+          "pinyin": "Zhèyàng nǐ yǒu shìqing jiù kěyǐ zhǎo tāmen bāngmáng.",
+          "text": {
+            "uz": "Shunda biror ish bo‘lsa ulardan yordam so‘rashing mumkin.",
+            "ru": "Тогда, если что-то понадобится, можешь попросить их помочь.",
+            "tj": "Ҳамин тавр, агар коре шавад, аз онҳо кӯмак пурсидан мумкин."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "对，我也帮他们家的小孩儿学中文。",
+          "pinyin": "Duì, wǒ yě bāng tāmen jiā de xiǎoháir xué Zhōngwén.",
+          "text": {
+            "uz": "Ha, men ham ularning bolasiga xitoy tilini o‘rganishda yordam beraman.",
+            "ru": "Да, а я помогаю их ребёнку учить китайский.",
+            "tj": "Ҳа, ман ҳам ба кӯдаки онҳо дар омӯхтани чинӣ кӯмак мекунам."
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我记得你跟我说过，是个女孩儿，学得也很好。",
+          "pinyin": "Wǒ jìde nǐ gēn wǒ shuōguo, shì ge nǚháir, xué de yě hěn hǎo.",
+          "text": {
+            "uz": "Esimda, menga aytganding, u qiz bola va juda yaxshi o‘qiydi.",
+            "ru": "Помню, ты рассказывала: это девочка, и учится она хорошо.",
+            "tj": "Дар хотир дорам, гуфта будӣ, духтар аст ва хеле хуб мехонад."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "没错，她经常跑上来找我玩。",
+          "pinyin": "Méi cuò, tā jīngcháng pǎo shànglái zhǎo wǒ wán.",
+          "text": {
+            "uz": "To‘g‘ri, u tez-tez yuqoriga yugurib kelib men bilan o‘ynaydi.",
+            "ru": "Верно, она часто прибегает наверх поиграть со мной.",
+            "tj": "Дуруст, ӯ зуд-зуд ба боло давида омада бо ман бозӣ мекунад."
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "你问问他们什么时候有时间，我请他们吃个饭。",
+          "pinyin": "Nǐ wènwen tāmen shénme shíhou yǒu shíjiān, wǒ qǐng tāmen chī ge fàn.",
+          "text": {
+            "uz": "Ulardan qachon vaqtlari borligini so‘ra, men ularni ovqatga taklif qilaman.",
+            "ru": "Спроси, когда у них будет время, я приглашу их поесть.",
+            "tj": "Аз онҳо пурс, кай вақт доранд, ман онҳоро ба хӯрок даъват мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xonada Wang Yifei kundalik yozmoqda.",
+        "ru": "В комнате Ван Ифэй пишет дневник.",
+        "tj": "Дар ҳуҷра Ван Ифэй рӯзнома менависад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Narration",
+          "zh": "我男朋友姓杨，叫杨同乐。他高个子，大眼睛，唱歌唱得很好，跳舞跳得也不错。他和我姐姐一起工作，是姐姐介绍我们认识的。他告诉我，从见到我的第一天开始，他就喜欢上我了。",
+          "pinyin": "Wǒ nánpéngyou xìng Yáng, jiào Yáng Tónglè. Tā gāo gèzi, dà yǎnjing, chànggē chàng de hěn hǎo, tiàowǔ tiào de yě búcuò. Tā hé wǒ jiějie yìqǐ gōngzuò, shì jiějie jièshào wǒmen rènshi de. Tā gàosu wǒ, cóng jiàndào wǒ de dì-yī tiān kāishǐ, tā jiù xǐhuan shàng wǒ le.",
+          "text": {
+            "uz": "Mening yigitimning familiyasi Yang, ismi Yang Tongle. U baland bo‘yli, ko‘zlari katta, juda yaxshi qo‘shiq aytadi va yaxshi raqsga tushadi. U opam bilan birga ishlaydi, bizni opam tanishtirgan. U menga birinchi ko‘rgan kunidan boshlab meni yoqtirib qolganini aytdi.",
+            "ru": "Фамилия моего молодого человека Ян, его зовут Ян Тунлэ. Он высокий, с большими глазами, хорошо поёт и неплохо танцует. Он работает вместе с моей сестрой; именно она нас познакомила. Он сказал, что полюбил меня с первого дня нашей встречи.",
+            "tj": "Насаби дӯстписари ман Ян, номаш Ян Тунлэ аст. Ӯ қадбаланду чашмкалон аст, хеле хуб месарояд ва хуб мерақсад. Ӯ бо апаам якҷо кор мекунад ва апаам моро шинос кард. Ӯ гуфт, ки аз рӯзи аввали диданаш маро дӯст доштааст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "那我们快过去吧。",
+          "pinyin": "Nà wǒmen kuài guòqu ba.",
+          "translation": {
+            "uz": "Unda tezroq u tomonga boraylik.",
+            "ru": "Тогда пойдём скорее к нему.",
+            "tj": "Пас зуд ба он тараф равем."
+          },
+          "tokens": {
+            "uz": [
+              "tezroq",
+              "Ustoz",
+              "Wang",
+              "u",
+              "boraylik",
+              "Unda",
+              "tomonga"
+            ],
+            "ru": [
+              "пойдём",
+              "к",
+              "скорее",
+              "Ван",
+              "нему",
+              "Тогда",
+              "Преподаватель"
+            ],
+            "tj": [
+              "равем",
+              "ба",
+              "Пас",
+              "Устод",
+              "он",
+              "Ван",
+              "зуд",
+              "тараф"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Unda",
+              "tezroq",
+              "u",
+              "tomonga",
+              "boraylik"
+            ],
+            "ru": [
+              "Тогда",
+              "пойдём",
+              "скорее",
+              "к",
+              "нему"
+            ],
+            "tj": [
+              "Пас",
+              "зуд",
+              "ба",
+              "он",
+              "тараф",
+              "равем"
+            ]
+          },
+          "explanation": {
+            "uz": "那我们快过去吧。 — Unda tezroq u tomonga boraylik.",
+            "ru": "那我们快过去吧。 — Тогда пойдём скорее к нему.",
+            "tj": "那我们快过去吧。 — Пас зуд ба он тараф равем."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "眼睛 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 眼睛:",
+            "tj": "Маънои калимаи 眼睛-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "turmoq",
+              "ru": "стоять",
+              "tj": "истодан"
+            },
+            {
+              "uz": "Bahor bayramini/Yangi yilni nishonlamoq",
+              "ru": "праздновать Китайский Новый год",
+              "tj": "Соли нави чиниро ҷашн гирифтан"
+            },
+            {
+              "uz": "sumka; o‘ram; o‘ramoq",
+              "ru": "сумка; пакет; заворачивать",
+              "tj": "халта; баста; бастан"
+            },
+            {
+              "uz": "ko‘z",
+              "ru": "глаза",
+              "tj": "чашм"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "眼睛 = ko‘z (yǎnjing)",
+            "ru": "眼睛 = глаза (yǎnjing)",
+            "tj": "眼睛 = чашм (yǎnjing)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "站",
+              {
+                "uz": "turmoq",
+                "ru": "стоять",
+                "tj": "истодан"
+              }
+            ],
+            [
+              "包",
+              {
+                "uz": "sumka; o‘ram; o‘ramoq",
+                "ru": "сумка; пакет; заворачивать",
+                "tj": "халта; баста; бастан"
+              }
+            ],
+            [
+              "过年",
+              {
+                "uz": "Bahor bayramini/Yangi yilni nishonlamoq",
+                "ru": "праздновать Китайский Новый год",
+                "tj": "Соли нави чиниро ҷашн гирифтан"
+              }
+            ],
+            [
+              "没意思",
+              {
+                "uz": "zerikarli; qiziq emas",
+                "ru": "скучно; неинтересно",
+                "tj": "дилгир; бе шавқ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "站 talaffuzini tanlang:",
+            "ru": "Выберите произношение 站:",
+            "tj": "Талаффузи 站-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhàn",
+            "bāo",
+            "méi yìsi",
+            "guònián"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "站 — zhàn",
+            "ru": "站 — zhàn",
+            "tj": "站 — zhàn"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "女孩儿",
+          "pinyin": "nǚháir",
+          "options": [
+            "过年",
+            "女孩儿",
+            "包",
+            "站"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "女孩儿 — qiz bola (nǚháir)",
+            "ru": "女孩儿 — девочка (nǚháir)",
+            "tj": "女孩儿 — духтар (nǚháir)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "爸爸手里拿着一杯咖啡。",
+            "她经常跑上来找我玩。",
+            "你家楼下站着一个人。",
+            "多好看呀！买这件吧。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "她经常跑上来找我玩。 — ",
+            "ru": "她经常跑上来找我玩。 — ",
+            "tj": "她经常跑上来找我玩。 — "
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "位",
+              {
+                "uz": "odamlar uchun hurmat hisob so‘zi",
+                "ru": "уважительное счётное слово для людей",
+                "tj": "воҳиди эҳтиромии ҳисоб барои одам"
+              }
+            ],
+            [
+              "前面",
+              {
+                "uz": "old tomon",
+                "ru": "впереди; передняя сторона",
+                "tj": "пеш; тарафи пеш"
+              }
+            ],
+            [
+              "房子",
+              {
+                "uz": "uy; xona-joy",
+                "ru": "дом; жильё",
+                "tj": "хона; манзил"
+              }
+            ],
+            [
+              "小孩儿",
+              {
+                "uz": "bola",
+                "ru": "ребёнок",
+                "tj": "кӯдак"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "王老师，你家楼下站着一个人。",
+          "pinyin": "Wáng lǎoshī, nǐ jiā lóuxià zhànzhe yí ge rén.",
+          "options": [
+            "那个人穿着黑色的裤子，手里还拿着一个黑色的包。",
+            "我看见那个人了，他是我男朋友。",
+            "我家楼下？我看看。",
+            "王老师，你家楼下站着一个人。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "王老师，你家楼下站着一个人。 — Ustoz Wang, uyingiz pastida bir odam turibdi.",
+            "ru": "王老师，你家楼下站着一个人。 — Преподаватель Ван, у вашего дома внизу стоит человек.",
+            "tj": "王老师，你家楼下站着一个人。 — Устод Ван, поёни хонаи шумо як нафар истодааст."
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "Li Wen",
+              "zh": "王老师，你家楼下站着一个人。",
+              "blank": false
+            },
+            {
+              "speaker": "Wang Yifei",
+              "zh": "我家楼下？我看看。",
+              "blank": false
+            },
+            {
+              "speaker": "Li Wen",
+              "zh": "那个人穿着黑色的裤子，手里还拿着一个黑色的包。",
+              "blank": false
+            },
+            {
+              "speaker": "Wang Yifei",
+              "zh": "我看见那个人了，他是我男朋友。",
+              "blank": false
+            },
+            {
+              "speaker": "Li Wen",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "那个人穿着黑色的裤子，手里还拿着一个黑色的包。",
+            "王老师，你家楼下站着一个人。",
+            "我家楼下？我看看。",
+            "那我们快过去吧。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 那我们快过去吧。",
+            "ru": "Правильный ответ: 那我们快过去吧。",
+            "tj": "Ҷавоби дуруст: 那我们快过去吧。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida Li Wen nima deydi?",
+            "ru": "Что Li Wen говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ Li Wen чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "我家楼下？我看看。",
+            "那个人穿着黑色的裤子，手里还拿着一个黑色的包。",
+            "王老师，你家楼下站着一个人。",
+            "那我们快过去吧。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 那我们快过去吧。",
+            "ru": "Правильный ответ: 那我们快过去吧。",
+            "tj": "Ҷавоби дуруст: 那我们快过去吧。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda Li Wen avval nima deydi?",
+            "ru": "Что Li Wen говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ Li Wen аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "我家楼下？我看看。",
+            "王老师，你家楼下站着一个人。",
+            "我看见那个人了，他是我男朋友。",
+            "那个人穿着黑色的裤子，手里还拿着一个黑色的包。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 王老师，你家楼下站着一个人。",
+            "ru": "Правильный ответ: 王老师，你家楼下站着一个人。",
+            "tj": "Ҷавоби дуруст: 王老师，你家楼下站着一个人。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____老师，你家楼下站着一个人。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "王",
+            "万",
+            "一",
+            "七"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 王 — 王老师，你家楼下站着一个人。 (Ustoz Wang, uyingiz pastida bir odam turibdi.)",
+            "ru": "Верно: 王 — 王老师，你家楼下站着一个人。 (Преподаватель Ван, у вашего дома внизу стоит человек.)",
+            "tj": "Дуруст: 王 — 王老师，你家楼下站着一个人。 (Устод Ван, поёни хонаи шумо як нафар истодааст.)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "我家楼下？我看看。",
+          "pinyin": "Wǒ jiā lóuxià? Wǒ kànkan.",
+          "translation": {
+            "uz": "Uyim pastidami? Qani ko‘ray.",
+            "ru": "Внизу моего дома? Дай посмотрю.",
+            "tj": "Поёни хонаи ман? Бинам."
+          }
+        }
+      ]
+    }
+  ]
+}

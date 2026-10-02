@@ -32,6 +32,8 @@ import com.pomp.hskai.core.auth.AuthState
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompHskAiTheme
 import com.pomp.hskai.core.i18n.AppLocale
+import com.pomp.hskai.core.navigation.AppDestination
+import com.pomp.hskai.core.navigation.DeepLinkRouter
 
 /** Full-screen native Starter 0 flow. Not exported; only the course map can open it. */
 class FoundationActivity : ComponentActivity() {
@@ -64,9 +66,15 @@ class FoundationActivity : ComponentActivity() {
 
     private fun returnToFreshCourse() {
         startActivity(
-            Intent(this, MainActivity::class.java).addFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
-            )
+            Intent(this, MainActivity::class.java)
+                .setData(
+                    android.net.Uri.parse(
+                        DeepLinkRouter.uriFor(AppDestination.CurrentLesson)
+                    )
+                )
+                .addFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
+                )
         )
         finish()
     }

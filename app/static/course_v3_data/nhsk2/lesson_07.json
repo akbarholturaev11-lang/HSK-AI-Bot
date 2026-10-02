@@ -1,0 +1,815 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 7,
+  "source_lesson": 2,
+  "part_no": 2,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "还是打车去北大吧",
+  "subtitle": {
+    "uz": "“还是……吧” orqali afzal variantni tavsiya qilish; “多” bilan taxminiy sonni ifodalash; fe’l/fe’lli birikma va ega-kesim birikmasini aniqlovchi sifatida ishlatish; transport va kampus haqida gaplashish.",
+    "ru": "Советовать предпочтительный вариант с “还是……吧”; выражать приблизительные числа с “多”; использовать глаголы, глагольные и субъектно-предикативные группы как определения; говорить о транспорте и кампусе.",
+    "tj": "Бо “还是……吧” варианти афзалро тавсия кардан; бо “多” шумораи тахминиро ифода кардан; феъл ва ибораҳои феълӣ/мубтадо-хабарро ҳамчун муайянкунанда истифода бурдан; дар бораи нақлиёт ва кампус суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "打车",
+      "pinyin": "dǎchē",
+      "pos": "v.",
+      "meaning": {
+        "uz": "taksi tutmoq/minmoq",
+        "ru": "взять такси",
+        "tj": "таксӣ гирифтан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "还是",
+      "pinyin": "háishi",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "yaxshisi; ma’quli",
+        "ru": "лучше; всё-таки",
+        "tj": "беҳтараш"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "啊",
+      "pinyin": "a",
+      "pos": "part.",
+      "meaning": {
+        "uz": "his-hayajon/ma’qullash yuklamasi",
+        "ru": "модальная частица эмоции/согласия",
+        "tj": "ҳиссачаи эҳсос/розигӣ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "万",
+      "pinyin": "wàn",
+      "pos": "num.",
+      "meaning": {
+        "uz": "o‘n ming",
+        "ru": "десять тысяч",
+        "tj": "даҳ ҳазор"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "“多” bilan taxminiy son",
+        "ru": "Приблизительные числа с “多”",
+        "tj": "Шумораи тахминӣ бо “多”"
+      },
+      "title_zh": "用“多”表达概数",
+      "rule": {
+        "uz": "Son yoki miqdor birikmasidan keyin “多” qo‘shilib, shu sondan biroz ko‘proq miqdorni bildiradi. O‘nlik sonlarda “多” odatda sondan keyin, boshqa holatlarda o‘lchov so‘zidan keyin keladi.",
+        "ru": "“多” после числительного или количественной группы означает немного больше указанного числа. После круглых десятков “多” обычно следует сразу за числом, в других случаях — после счётного слова.",
+        "tj": "“多” пас аз шумора ё таркиби миқдорӣ миқдори каме зиёда аз он ададро нишон медиҳад. Бо даҳгонаҳои пурра “多” пас аз адад, дар ҳолатҳои дигар пас аз воҳиди ҳисоб меояд."
+      },
+      "examples": [
+        {
+          "zh": "北京大学有四万多名学生呢！",
+          "pinyin": "Běijīng Dàxué yǒu sì wàn duō míng xuésheng ne!",
+          "translation": {
+            "uz": "Pekin universitetida qirq mingdan ortiq talaba bor!",
+            "ru": "В Пекинском университете больше сорока тысяч студентов!",
+            "tj": "Дар Донишгоҳи Пекин зиёда аз чил ҳазор донишҷӯ ҳаст!"
+          }
+        },
+        {
+          "zh": "教室里有二十多个学生。",
+          "pinyin": "Jiàoshì lǐ yǒu èrshí duō ge xuésheng.",
+          "translation": {
+            "uz": "Sinfda yigirmadan ortiq talaba bor.",
+            "ru": "В аудитории больше двадцати студентов.",
+            "tj": "Дар синф зиёда аз бист донишҷӯ ҳаст."
+          }
+        },
+        {
+          "zh": "这两个苹果五块多钱。",
+          "pinyin": "Zhè liǎng ge píngguǒ wǔ kuài duō qián.",
+          "translation": {
+            "uz": "Bu ikki olma besh yuandan sal ko‘proq turadi.",
+            "ru": "Эти два яблока стоят чуть больше пяти юаней.",
+            "tj": "Ин ду себ каме бештар аз панҷ юан меистад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Mehmonxona resepsiyasida Bai Jiayue va Annie xodimdan ma’lumot so‘ramoqda.",
+        "ru": "На стойке гостиницы Бай Цзяюэ и Энни спрашивают сотрудника.",
+        "tj": "Дар қабули меҳмонхона Бай Ҷяюэ ва Энни аз корманд маълумот мепурсанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Hotel staff",
+          "zh": "有，但车站有点儿远。",
+          "pinyin": "Yǒu, dàn chēzhàn yǒudiǎnr yuǎn.",
+          "text": {
+            "uz": "Bor, lekin bekat biroz uzoq.",
+            "ru": "Есть, но остановка немного далеко.",
+            "tj": "Ҳаст, аммо истгоҳ каме дур аст."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "这儿好打车吗？",
+          "pinyin": "Zhèr hǎo dǎchē ma?",
+          "text": {
+            "uz": "Bu yerda taksi tutish osonmi?",
+            "ru": "Здесь легко поймать такси?",
+            "tj": "Ин ҷо таксӣ гирифтан осон аст?"
+          }
+        },
+        {
+          "speaker": "Hotel staff",
+          "zh": "好打车。",
+          "pinyin": "Hǎo dǎchē.",
+          "text": {
+            "uz": "Taksi tutish oson.",
+            "ru": "Легко.",
+            "tj": "Осон аст."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "好，没问题。",
+          "pinyin": "Hǎo, méi wèntí.",
+          "text": {
+            "uz": "Xo‘p, muammo yo‘q.",
+            "ru": "Хорошо, без проблем.",
+            "tj": "Хуб, мушкиле нест."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Pekin universitetida Bai Jiayue va Annie kampusni tomosha qilmoqda.",
+        "ru": "В Пекинском университете Бай Цзяюэ и Энни осматривают кампус.",
+        "tj": "Дар Донишгоҳи Пекин Бай Ҷяюэ ва Энни кампусро тамошо мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "学校里人真多啊！",
+          "pinyin": "Xuéxiào lǐ rén zhēn duō a!",
+          "text": {
+            "uz": "Universitetda odam juda ko‘p ekan!",
+            "ru": "Как много людей в университете!",
+            "tj": "Дар донишгоҳ одам хеле бисёр будааст!"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "你是怎么知道的？",
+          "pinyin": "Nǐ shì zěnme zhīdào de?",
+          "text": {
+            "uz": "Buni qayerdan bilding?",
+            "ru": "Как ты это узнала?",
+            "tj": "Инро чӣ тавр фаҳмидӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我也想来这儿学习。",
+          "pinyin": "Wǒ yě xiǎng lái zhèr xuéxí.",
+          "text": {
+            "uz": "Men ham bu yerga o‘qishga kelishni xohlayman.",
+            "ru": "Я тоже хочу приехать сюда учиться.",
+            "tj": "Ман ҳам мехоҳам барои таҳсил ба ин ҷо биёям."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Pekin universiteti kampusida Bai Jiayue va Annie kinoteatrni ko‘rdi.",
+        "ru": "На кампусе Пекинского университета Бай Цзяюэ и Энни увидели кинотеатр.",
+        "tj": "Дар кампуси Донишгоҳи Пекин Бай Ҷяюэ ва Энни кинотеатрро диданд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "家月，你看，学校里有家电影院！",
+          "pinyin": "Jiāyuè, nǐ kàn, xuéxiào lǐ yǒu jiā diànyǐngyuàn!",
+          "text": {
+            "uz": "Jiayue, qara, universitetda kinoteatr bor!",
+            "ru": "Цзяюэ, смотри, в университете есть кинотеатр!",
+            "tj": "Ҷяюэ, бин, дар донишгоҳ кинотеатр ҳаст!"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "是啊，电影院还不小。",
+          "pinyin": "Shì a, diànyǐngyuàn hái bù xiǎo.",
+          "text": {
+            "uz": "Ha, kinoteatr ham kichik emas.",
+            "ru": "Да, и кинотеатр немаленький.",
+            "tj": "Ҳа, кинотеатр ҳам хурд нест."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "天啊！有的还不到二十块钱。",
+          "pinyin": "Tiān a! Yǒude hái bú dào èrshí kuài qián.",
+          "text": {
+            "uz": "Voy! Ba’zilari hatto yigirma yuanga ham yetmaydi.",
+            "ru": "Ничего себе! Некоторые стоят даже меньше двадцати юаней.",
+            "tj": "Вой! Баъзеаш ҳатто ба бист юан ҳам намерасад."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "那你想不想去看个电影？",
+          "pinyin": "Nà nǐ xiǎng bu xiǎng qù kàn ge diànyǐng?",
+          "text": {
+            "uz": "Unda film ko‘rgani bormoqchimisan?",
+            "ru": "Тогда хочешь сходить посмотреть фильм?",
+            "tj": "Пас мехоҳӣ филм тамошо кунӣ?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "打车",
+            "pinyin": "dǎchē",
+            "pos": "v.",
+            "meaning": {
+              "uz": "taksi tutmoq/minmoq",
+              "ru": "взять такси",
+              "tj": "таксӣ гирифтан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dǎchē qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dǎchē?",
+            "tj": "dǎchē кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "公交车",
+            "打车",
+            "车站",
+            "但"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "打车 = taksi tutmoq/minmoq (dǎchē)",
+            "ru": "打车 = взять такси (dǎchē)",
+            "tj": "打车 = таксӣ гирифтан (dǎchē)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "还是",
+            "pinyin": "háishi",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "yaxshisi; ma’quli",
+              "ru": "лучше; всё-таки",
+              "tj": "беҳтараш"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "还是 talaffuzini tanlang:",
+            "ru": "Выберите произношение 还是:",
+            "tj": "Талаффузи 还是-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "háishi",
+            "dàn",
+            "chēzhàn",
+            "gōngjiāochē"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "还是 — háishi",
+            "ru": "还是 — háishi",
+            "tj": "还是 — háishi"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "啊",
+            "pinyin": "a",
+            "pos": "part.",
+            "meaning": {
+              "uz": "his-hayajon/ma’qullash yuklamasi",
+              "ru": "модальная частица эмоции/согласия",
+              "tj": "ҳиссачаи эҳсос/розигӣ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "啊",
+          "pinyin": "a",
+          "translation": {
+            "uz": "his-hayajon/ma’qullash yuklamasi",
+            "ru": "модальная частица эмоции/согласия",
+            "tj": "ҳиссачаи эҳсос/розигӣ"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'his-hayajon/ma’qullash yuklamasi' xitoycha qaysi?",
+            "ru": "'модальная частица эмоции/согласия' по-китайски?",
+            "tj": "'ҳиссачаи эҳсос/розигӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "公交车",
+            "啊",
+            "但",
+            "车站"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "his-hayajon/ma’qullash yuklamasi = 啊 (a)",
+            "ru": "модальная частица эмоции/согласия = 啊 (a)",
+            "tj": "ҳиссачаи эҳсос/розигӣ = 啊 (a)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "万",
+            "pinyin": "wàn",
+            "pos": "num.",
+            "meaning": {
+              "uz": "o‘n ming",
+              "ru": "десять тысяч",
+              "tj": "даҳ ҳазор"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "万",
+          "pinyin": "wàn",
+          "options": [
+            "万",
+            "但",
+            "公交车",
+            "车站"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "万 — o‘n ming (wàn)",
+            "ru": "万 — десять тысяч (wàn)",
+            "tj": "万 — даҳ ҳазор (wàn)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "打车 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 打车:",
+            "tj": "Маънои калимаи 打车-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "taksi tutmoq/minmoq",
+              "ru": "взять такси",
+              "tj": "таксӣ гирифтан"
+            },
+            {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            },
+            {
+              "uz": "bekat; stansiya",
+              "ru": "остановка; станция",
+              "tj": "истгоҳ"
+            },
+            {
+              "uz": "avtobus",
+              "ru": "автобус",
+              "tj": "автобус"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "打车 = taksi tutmoq/minmoq (dǎchē)",
+            "ru": "打车 = взять такси (dǎchē)",
+            "tj": "打车 = таксӣ гирифтан (dǎchē)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "打车",
+              {
+                "uz": "taksi tutmoq/minmoq",
+                "ru": "взять такси",
+                "tj": "таксӣ гирифтан"
+              }
+            ],
+            [
+              "还是",
+              {
+                "uz": "yaxshisi; ma’quli",
+                "ru": "лучше; всё-таки",
+                "tj": "беҳтараш"
+              }
+            ],
+            [
+              "啊",
+              {
+                "uz": "his-hayajon/ma’qullash yuklamasi",
+                "ru": "модальная частица эмоции/согласия",
+                "tj": "ҳиссачаи эҳсос/розигӣ"
+              }
+            ],
+            [
+              "万",
+              {
+                "uz": "o‘n ming",
+                "ru": "десять тысяч",
+                "tj": "даҳ ҳазор"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "“多” bilan taxminiy son",
+              "ru": "Приблизительные числа с “多”",
+              "tj": "Шумораи тахминӣ бо “多”"
+            },
+            "title_zh": "用“多”表达概数",
+            "rule": {
+              "uz": "Son yoki miqdor birikmasidan keyin “多” qo‘shilib, shu sondan biroz ko‘proq miqdorni bildiradi. O‘nlik sonlarda “多” odatda sondan keyin, boshqa holatlarda o‘lchov so‘zidan keyin keladi.",
+              "ru": "“多” после числительного или количественной группы означает немного больше указанного числа. После круглых десятков “多” обычно следует сразу за числом, в других случаях — после счётного слова.",
+              "tj": "“多” пас аз шумора ё таркиби миқдорӣ миқдори каме зиёда аз он ададро нишон медиҳад. Бо даҳгонаҳои пурра “多” пас аз адад, дар ҳолатҳои дигар пас аз воҳиди ҳисоб меояд."
+            },
+            "examples": [
+              {
+                "zh": "北京大学有四万多名学生呢！",
+                "pinyin": "Běijīng Dàxué yǒu sì wàn duō míng xuésheng ne!",
+                "translation": {
+                  "uz": "Pekin universitetida qirq mingdan ortiq talaba bor!",
+                  "ru": "В Пекинском университете больше сорока тысяч студентов!",
+                  "tj": "Дар Донишгоҳи Пекин зиёда аз чил ҳазор донишҷӯ ҳаст!"
+                }
+              },
+              {
+                "zh": "教室里有二十多个学生。",
+                "pinyin": "Jiàoshì lǐ yǒu èrshí duō ge xuésheng.",
+                "translation": {
+                  "uz": "Sinfda yigirmadan ortiq talaba bor.",
+                  "ru": "В аудитории больше двадцати студентов.",
+                  "tj": "Дар синф зиёда аз бист донишҷӯ ҳаст."
+                }
+              },
+              {
+                "zh": "这两个苹果五块多钱。",
+                "pinyin": "Zhè liǎng ge píngguǒ wǔ kuài duō qián.",
+                "translation": {
+                  "uz": "Bu ikki olma besh yuandan sal ko‘proq turadi.",
+                  "ru": "Эти два яблока стоят чуть больше пяти юаней.",
+                  "tj": "Ин ду себ каме бештар аз панҷ юан меистад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu ikki olma besh yuandan sal ko‘proq turadi.",
+            "ru": "Эти два яблока стоят чуть больше пяти юаней.",
+            "tj": "Ин ду себ каме бештар аз панҷ юан меистад."
+          },
+          "tokens": [
+            "个",
+            "钱",
+            "块",
+            "两",
+            "公交车",
+            "这",
+            "五",
+            "多",
+            "但",
+            "苹果"
+          ],
+          "answer_tokens": [
+            "这",
+            "两",
+            "个",
+            "苹果",
+            "五",
+            "块",
+            "多",
+            "钱"
+          ],
+          "explanation": {
+            "uz": "这两个苹果五块多钱。 — Zhè liǎng ge píngguǒ wǔ kuài duō qián.",
+            "ru": "这两个苹果五块多钱。 — Zhè liǎng ge píngguǒ wǔ kuài duō qián.",
+            "tj": "这两个苹果五块多钱。 — Zhè liǎng ge píngguǒ wǔ kuài duō qián."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Pekin universitetida qirq mingdan ortiq talaba bor!» — xitoychada qaysi biri?",
+            "ru": "«В Пекинском университете больше сорока тысяч студентов!» — какое предложение по-китайски?",
+            "tj": "«Дар Донишгоҳи Пекин зиёда аз чил ҳазор донишҷӯ ҳаст!» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "北京大学有四万多名学生呢！",
+            "教室里有二十多个学生。",
+            "这两个苹果五块多钱。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "北京大学有四万多名学生呢！ — Běijīng Dàxué yǒu sì wàn duō míng xuésheng ne!",
+            "ru": "北京大学有四万多名学生呢！ — Běijīng Dàxué yǒu sì wàn duō míng xuésheng ne!",
+            "tj": "北京大学有四万多名学生呢！ — Běijīng Dàxué yǒu sì wàn duō míng xuésheng ne!"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "那件衣服很好看，还是买那件吧。",
+          "pinyin": "Nà jiàn yīfu hěn hǎokàn, háishi mǎi nà jiàn ba.",
+          "translation": {
+            "uz": "U kiyim chiroyli, yaxshisi o‘shanisini olaylik.",
+            "ru": "Та одежда красивая, лучше купить её.",
+            "tj": "Он либос зебост, беҳтараш ҳамонро бихарем."
+          },
+          "tokens": {
+            "uz": [
+              "Bu",
+              "U",
+              "o‘shanisini",
+              "olaylik",
+              "yaxshisi",
+              "kiyim",
+              "chiroyli",
+              "yerda"
+            ],
+            "ru": [
+              "легко",
+              "лучше",
+              "Здесь",
+              "красивая",
+              "Та",
+              "одежда",
+              "её",
+              "купить"
+            ],
+            "tj": [
+              "бихарем",
+              "ҷо",
+              "ҳамонро",
+              "Он",
+              "беҳтараш",
+              "Ин",
+              "зебост",
+              "либос"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "U",
+              "kiyim",
+              "chiroyli",
+              "yaxshisi",
+              "o‘shanisini",
+              "olaylik"
+            ],
+            "ru": [
+              "Та",
+              "одежда",
+              "красивая",
+              "лучше",
+              "купить",
+              "её"
+            ],
+            "tj": [
+              "Он",
+              "либос",
+              "зебост",
+              "беҳтараш",
+              "ҳамонро",
+              "бихарем"
+            ]
+          },
+          "explanation": {
+            "uz": "那件衣服很好看，还是买那件吧。 — U kiyim chiroyli, yaxshisi o‘shanisini olaylik.",
+            "ru": "那件衣服很好看，还是买那件吧。 — Та одежда красивая, лучше купить её.",
+            "tj": "那件衣服很好看，还是买那件吧。 — Он либос зебост, беҳтараш ҳамонро бихарем."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "啊",
+          "pinyin": "a",
+          "translation": {
+            "uz": "his-hayajon/ma’qullash yuklamasi",
+            "ru": "модальная частица эмоции/согласия",
+            "tj": "ҳиссачаи эҳсос/розигӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "车站 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 车站:",
+            "tj": "Маънои калимаи 车站-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "uzoq",
+              "ru": "далёкий",
+              "tj": "дур"
+            },
+            {
+              "uz": "bekat; stansiya",
+              "ru": "остановка; станция",
+              "tj": "истгоҳ"
+            },
+            {
+              "uz": "avtobus",
+              "ru": "автобус",
+              "tj": "автобус"
+            },
+            {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "车站 = bekat; stansiya (chēzhàn)",
+            "ru": "车站 = остановка; станция (chēzhàn)",
+            "tj": "车站 = истгоҳ (chēzhàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "车站",
+            "pinyin": "chēzhàn",
+            "meaning": {
+              "uz": "bekat; stansiya",
+              "ru": "остановка; станция",
+              "tj": "истгоҳ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'his-hayajon/ma’qullash yuklamasi' xitoycha qaysi?",
+            "ru": "'модальная частица эмоции/согласия' по-китайски?",
+            "tj": "'ҳиссачаи эҳсос/розигӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "啊",
+            "车站",
+            "但",
+            "公交车"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "his-hayajon/ma’qullash yuklamasi = 啊 (a)",
+            "ru": "модальная частица эмоции/согласия = 啊 (a)",
+            "tj": "ҳиссачаи эҳсос/розигӣ = 啊 (a)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "啊",
+            "pinyin": "a",
+            "meaning": {
+              "uz": "his-hayajon/ma’qullash yuklamasi",
+              "ru": "модальная частица эмоции/согласия",
+              "tj": "ҳиссачаи эҳсос/розигӣ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

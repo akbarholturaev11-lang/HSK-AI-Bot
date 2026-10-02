@@ -1,0 +1,661 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 13,
+  "source_lesson": 3,
+  "part_no": 4,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "我是中国人",
+  "subtitle": {
+    "uz": "“是” gaplari orqali shaxs yoki narsaning kim/nima ekanini aytish; “的” yordamida egalik va aniqlovchi munosabatini ifodalash; “吗” bilan ha/yo‘q savollarini tuzish.",
+    "ru": "Использовать предложения с “是” для обозначения принадлежности или идентификации; выражать определительные и притяжательные отношения с “的”; строить вопросы да/нет с “吗”.",
+    "tj": "Бо ҷумлаҳои “是” шахс ё чизро муаррифӣ кардан; бо “的” муносибати муайянкунанда ва соҳибиятро ифода кардан; бо “吗” саволҳои ҳа/не сохтан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "忙",
+      "pinyin": "máng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "band",
+        "ru": "занятый",
+        "tj": "банд"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "吗",
+      "pinyin": "ma",
+      "pos": "part.",
+      "meaning": {
+        "uz": "ha/yo‘q savol yuklamasi",
+        "ru": "вопросительная частица",
+        "tj": "ҳиссачаи саволи ҳа/не"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "对",
+      "pinyin": "duì",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "to‘g‘ri; ha",
+        "ru": "правильно; да",
+        "tj": "дуруст; ҳа"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "“吗” bilan ha/yo‘q savoli",
+        "ru": "Вопрос да/нет с “吗”",
+        "tj": "Саволи ҳа/не бо “吗”"
+      },
+      "title_zh": "用“吗”的是非问句",
+      "rule": {
+        "uz": "“吗” gap oxiriga qo‘yilib oddiy gapni ha/yo‘q savoliga aylantiradi.",
+        "ru": "“吗” ставится в конце предложения и превращает утверждение в вопрос да/нет.",
+        "tj": "“吗” дар охири ҷумла меояд ва онро ба саволи ҳа/не табдил медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "你是学生吗？",
+          "pinyin": "Nǐ shì xuésheng ma?",
+          "translation": {
+            "uz": "Sen talabamisan?",
+            "ru": "Ты студент?",
+            "tj": "Ту донишҷӯ ҳастӣ?"
+          }
+        },
+        {
+          "zh": "你们也想我们吗？",
+          "pinyin": "Nǐmen yě xiǎng wǒmen ma?",
+          "translation": {
+            "uz": "Sizlar ham bizni sog‘indingizmi?",
+            "ru": "Вы тоже по нам скучаете?",
+            "tj": "Шумо ҳам моро пазмон шудед?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Darsdan keyin sinfda Annie Chen Tianzhong telefonidagi suratlarni ko‘rmoqda.",
+        "ru": "После занятия в аудитории Энни смотрит фотографии в телефоне Чэнь Тяньчжуна.",
+        "tj": "Пас аз дарс дар синф Энни аксҳои телефони Чэн Тянҷунро тамошо мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "这是谁？",
+          "pinyin": "Zhè shì shéi?",
+          "text": {
+            "uz": "Bu kim?",
+            "ru": "Кто это?",
+            "tj": "Ин кӣ аст?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "这是我女朋友。",
+          "pinyin": "Zhè shì wǒ nǚpéngyou.",
+          "text": {
+            "uz": "Bu mening qiz do‘stim.",
+            "ru": "Это моя девушка.",
+            "tj": "Ин дӯстдухтари ман аст."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "你女朋友是哪国人？",
+          "pinyin": "Nǐ nǚpéngyou shì nǎ guó rén?",
+          "text": {
+            "uz": "Qiz do‘sting qaysi davlatdan?",
+            "ru": "Какой национальности твоя девушка?",
+            "tj": "Дӯстдухтари ту аз кадом кишвар аст?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Wang Yixue opasi Wang Yifei bilan videoqo‘ng‘iroq qilmoqda.",
+        "ru": "Дома Ван Исюэ разговаривает по видеосвязи со старшей сестрой Ван Ифэй.",
+        "tj": "Дар хона Ван Исюэ бо хоҳари калониаш Ван Ифэй видеозанг мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "姐姐！",
+          "pinyin": "Jiějie!",
+          "text": {
+            "uz": "Opa!",
+            "ru": "Сестра!",
+            "tj": "Апа!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你工作还忙吗？",
+          "pinyin": "Nǐ gōngzuò hái máng ma?",
+          "text": {
+            "uz": "Ishing hali ham bandmi?",
+            "ru": "Ты всё ещё очень занята на работе?",
+            "tj": "Корат ҳоло ҳам сермашғул аст?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "对，还很忙。你也很忙吗？",
+          "pinyin": "Duì, hái hěn máng. Nǐ yě hěn máng ma?",
+          "text": {
+            "uz": "Ha, hali ham juda bandman. Sen ham bandmisan?",
+            "ru": "Да, я всё ещё очень занята. А ты тоже занята?",
+            "tj": "Ҳа, ҳоло ҳам хеле банд ҳастам. Ту ҳам бандӣ?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "忙",
+            "pinyin": "máng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "band",
+              "ru": "занятый",
+              "tj": "банд"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "忙",
+          "pinyin": "máng",
+          "translation": {
+            "uz": "band",
+            "ru": "занятый",
+            "tj": "банд"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "忙 talaffuzini tanlang:",
+            "ru": "Выберите произношение 忙:",
+            "tj": "Талаффузи 忙-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "de",
+            "rén",
+            "zhè",
+            "máng"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "忙 — máng",
+            "ru": "忙 — máng",
+            "tj": "忙 — máng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "吗",
+            "pinyin": "ma",
+            "pos": "part.",
+            "meaning": {
+              "uz": "ha/yo‘q savol yuklamasi",
+              "ru": "вопросительная частица",
+              "tj": "ҳиссачаи саволи ҳа/не"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ha/yo‘q savol yuklamasi' xitoycha qaysi?",
+            "ru": "'вопросительная частица' по-китайски?",
+            "tj": "'ҳиссачаи саволи ҳа/не' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "的",
+            "人",
+            "吗",
+            "这"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "ha/yo‘q savol yuklamasi = 吗 (ma)",
+            "ru": "вопросительная частица = 吗 (ma)",
+            "tj": "ҳиссачаи саволи ҳа/не = 吗 (ma)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "对",
+            "pinyin": "duì",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "to‘g‘ri; ha",
+              "ru": "правильно; да",
+              "tj": "дуруст; ҳа"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "对",
+          "pinyin": "duì",
+          "options": [
+            "的",
+            "对",
+            "人",
+            "这"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "对 — to‘g‘ri; ha (duì)",
+            "ru": "对 — правильно; да (duì)",
+            "tj": "对 — дуруст; ҳа (duì)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "忙 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 忙:",
+            "tj": "Маънои калимаи 忙-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "aniqlovchi/egalik yuklamasi",
+              "ru": "структурная частица",
+              "tj": "ҳиссачаи сохторӣ/соҳибият"
+            },
+            {
+              "uz": "odam; kishi",
+              "ru": "человек",
+              "tj": "одам; шахс"
+            },
+            {
+              "uz": "band",
+              "ru": "занятый",
+              "tj": "банд"
+            },
+            {
+              "uz": "bu",
+              "ru": "это; этот",
+              "tj": "ин"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "忙 = band (máng)",
+            "ru": "忙 = занятый (máng)",
+            "tj": "忙 = банд (máng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "忙",
+              {
+                "uz": "band",
+                "ru": "занятый",
+                "tj": "банд"
+              }
+            ],
+            [
+              "吗",
+              {
+                "uz": "ha/yo‘q savol yuklamasi",
+                "ru": "вопросительная частица",
+                "tj": "ҳиссачаи саволи ҳа/не"
+              }
+            ],
+            [
+              "对",
+              {
+                "uz": "to‘g‘ri; ha",
+                "ru": "правильно; да",
+                "tj": "дуруст; ҳа"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "“吗” bilan ha/yo‘q savoli",
+              "ru": "Вопрос да/нет с “吗”",
+              "tj": "Саволи ҳа/не бо “吗”"
+            },
+            "title_zh": "用“吗”的是非问句",
+            "rule": {
+              "uz": "“吗” gap oxiriga qo‘yilib oddiy gapni ha/yo‘q savoliga aylantiradi.",
+              "ru": "“吗” ставится в конце предложения и превращает утверждение в вопрос да/нет.",
+              "tj": "“吗” дар охири ҷумла меояд ва онро ба саволи ҳа/не табдил медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "你是学生吗？",
+                "pinyin": "Nǐ shì xuésheng ma?",
+                "translation": {
+                  "uz": "Sen talabamisan?",
+                  "ru": "Ты студент?",
+                  "tj": "Ту донишҷӯ ҳастӣ?"
+                }
+              },
+              {
+                "zh": "你们也想我们吗？",
+                "pinyin": "Nǐmen yě xiǎng wǒmen ma?",
+                "translation": {
+                  "uz": "Sizlar ham bizni sog‘indingizmi?",
+                  "ru": "Вы тоже по нам скучаете?",
+                  "tj": "Шумо ҳам моро пазмон шудед?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Sen talabamisan?",
+            "ru": "Ты студент?",
+            "tj": "Ту донишҷӯ ҳастӣ?"
+          },
+          "tokens": [
+            "学生",
+            "是",
+            "吗",
+            "人",
+            "的",
+            "你"
+          ],
+          "answer_tokens": [
+            "你",
+            "是",
+            "学生",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "你是学生吗？ — Nǐ shì xuésheng ma?",
+            "ru": "你是学生吗？ — Nǐ shì xuésheng ma?",
+            "tj": "你是学生吗？ — Nǐ shì xuésheng ma?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "忙",
+          "pinyin": "máng",
+          "options": [
+            "这",
+            "忙",
+            "人",
+            "的"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "忙 — band (máng)",
+            "ru": "忙 — занятый (máng)",
+            "tj": "忙 — банд (máng)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Ishing hali ham bandmi?",
+            "ru": "Ты всё ещё очень занята на работе?",
+            "tj": "Корат ҳоло ҳам сермашғул аст?"
+          },
+          "tokens": [
+            "还",
+            "工作",
+            "你",
+            "吗",
+            "人",
+            "的",
+            "忙"
+          ],
+          "answer_tokens": [
+            "你",
+            "工作",
+            "还",
+            "忙",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "你工作还忙吗？ — Nǐ gōngzuò hái máng ma?",
+            "ru": "你工作还忙吗？ — Nǐ gōngzuò hái máng ma?",
+            "tj": "你工作还忙吗？ — Nǐ gōngzuò hái máng ma?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "吗",
+          "pinyin": "ma",
+          "translation": {
+            "uz": "ha/yo‘q savol yuklamasi",
+            "ru": "вопросительная частица",
+            "tj": "ҳиссачаи саволи ҳа/не"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "duì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается duì?",
+            "tj": "duì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "的",
+            "人",
+            "对",
+            "这"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "对 = to‘g‘ri; ha (duì)",
+            "ru": "对 = правильно; да (duì)",
+            "tj": "对 = дуруст; ҳа (duì)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "忙",
+          "pinyin": "máng",
+          "translation": {
+            "uz": "band",
+            "ru": "занятый",
+            "tj": "банд"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "喂 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 喂:",
+            "tj": "Маънои калимаи 喂-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "allo; hey",
+              "ru": "алло; эй",
+              "tj": "алло; эй"
+            },
+            {
+              "uz": "aniqlovchi/egalik yuklamasi",
+              "ru": "структурная частица",
+              "tj": "ҳиссачаи сохторӣ/соҳибият"
+            },
+            {
+              "uz": "bu",
+              "ru": "это; этот",
+              "tj": "ин"
+            },
+            {
+              "uz": "odam; kishi",
+              "ru": "человек",
+              "tj": "одам; шахс"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "喂 = allo; hey (wèi)",
+            "ru": "喂 = алло; эй (wèi)",
+            "tj": "喂 = алло; эй (wèi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "喂",
+            "pinyin": "wèi",
+            "meaning": {
+              "uz": "allo; hey",
+              "ru": "алло; эй",
+              "tj": "алло; эй"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'band' xitoycha qaysi?",
+            "ru": "'занятый' по-китайски?",
+            "tj": "'банд' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "的",
+            "忙",
+            "这",
+            "人"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "band = 忙 (máng)",
+            "ru": "занятый = 忙 (máng)",
+            "tj": "банд = 忙 (máng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "忙",
+            "pinyin": "máng",
+            "meaning": {
+              "uz": "band",
+              "ru": "занятый",
+              "tj": "банд"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

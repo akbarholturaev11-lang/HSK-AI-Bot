@@ -1,0 +1,695 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 45,
+  "source_lesson": 9,
+  "part_no": 4,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我去买杯奶茶",
+  "subtitle": {
+    "uz": "“没有” bilan ‘...chalik emas’ taqqoslashini ifodalash; “离” bilan makon/vaqt masofasini aytish; vaqt davomiyligi to‘ldiruvchisini ishlatish; kiyim tanlash, ichimlik va yo‘l haqida gaplashish.",
+    "ru": "Сравнивать через “没有” в значении «не такой, как»; выражать пространственную/временную дистанцию с “离”; использовать дополнение длительности; говорить об одежде, напитках и дороге.",
+    "tj": "Бо “没有” муқоисаи «ба дараҷаи ... нест»-ро ифода кардан; бо “离” масофаи макон/вақтро гуфтан; пуркунандаи давомнокии вақтро истифода бурдан; дар бораи либос, нӯшокӣ ва роҳ суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "近",
+      "pinyin": "jìn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "yaqin",
+        "ru": "близкий; рядом",
+        "tj": "наздик"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "走路",
+      "pinyin": "zǒulù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "piyoda yurmoq",
+        "ru": "ходить пешком",
+        "tj": "пиёда рафтан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "周",
+      "pinyin": "zhōu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hafta",
+        "ru": "неделя",
+        "tj": "ҳафта"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Do‘konda Wang Yixue va Liu Ming shimlarni ko‘rmoqda.",
+        "ru": "В магазине Ван Исюэ и Лю Мин смотрят брюки.",
+        "tj": "Дар мағоза Ван Исюэ ва Лю Мин шим мебинанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "儿子的裤子坏了，我们给他买条新的吧。",
+          "pinyin": "Érzi de kùzi huài le, wǒmen gěi tā mǎi tiáo xīn de ba.",
+          "text": {
+            "uz": "O‘g‘limizning shimi buzilibdi, unga yangisini olaylik.",
+            "ru": "Брюки сына испортились, давай купим ему новые.",
+            "tj": "Шими писарамон вайрон шудааст, барояш нав бихарем."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "好啊。",
+          "pinyin": "Hǎo a.",
+          "text": {
+            "uz": "Mayli.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你看这条黑色的怎么样？",
+          "pinyin": "Nǐ kàn zhè tiáo hēisè de zěnmeyàng?",
+          "text": {
+            "uz": "Bu qora shim qanday?",
+            "ru": "Как тебе эти чёрные брюки?",
+            "tj": "Ин шими сиёҳ чӣ хел?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "没有你上次买的那条好看。",
+          "pinyin": "Méiyǒu nǐ shàng cì mǎi de nà tiáo hǎokàn.",
+          "text": {
+            "uz": "O‘tgan safar olganingchalik chiroyli emas.",
+            "ru": "Не такие красивые, как те, что ты купила в прошлый раз.",
+            "tj": "Ба зебоии оне, ки дафъаи гузашта харидӣ, намерасад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "旁边那个男孩儿就穿了这样的裤子，我觉得很好看啊！",
+          "pinyin": "Pángbian nàge nánháir jiù chuānle zhèyàng de kùzi, wǒ juéde hěn hǎokàn a!",
+          "text": {
+            "uz": "Yonimizdagi bola ham shunday shim kiygan, menimcha juda chiroyli!",
+            "ru": "Вон мальчик рядом носит такие брюки, по-моему, выглядят отлично!",
+            "tj": "Писарбачаи паҳлӯ ҳамин хел шим пӯшидааст, ба назарам хеле зебост!"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "儿子的个子没有他那么高，穿上就不会太好看。",
+          "pinyin": "Érzi de gèzi méiyǒu tā nàme gāo, chuānshang jiù bú huì tài hǎokàn.",
+          "text": {
+            "uz": "O‘g‘limizning bo‘yi unchalik baland emas, kiysa bunchalik yarashmaydi.",
+            "ru": "Наш сын не такой высокий, как он; на нём они будут смотреться хуже.",
+            "tj": "Қади писарамон ба он қадар баланд нест, пӯшад он қадар зебо намешавад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "好吧，我们再去那边看看。",
+          "pinyin": "Hǎo ba, wǒmen zài qù nàbian kànkan.",
+          "text": {
+            "uz": "Mayli, yana u tomonga borib ko‘raylik.",
+            "ru": "Ладно, давай посмотрим ещё там.",
+            "tj": "Хуб, боз он тараф рафта бинем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do‘kon kirishida Wang Yixue va Liu Ming tashqariga chiqmoqda.",
+        "ru": "У входа в магазин Ван Исюэ и Лю Мин выходят наружу.",
+        "tj": "Дар назди даромадгоҳи мағоза Ван Исюэ ва Лю Мин ба берун мебароянд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "门口有家奶茶店。你想喝杯奶茶吗？",
+          "pinyin": "Ménkǒu yǒu jiā nǎichádiàn. Nǐ xiǎng hē bēi nǎichá ma?",
+          "text": {
+            "uz": "Kirishda sutli choy do‘koni bor. Bir piyola sutli choy ichasanmi?",
+            "ru": "У входа есть магазин молочного чая. Хочешь чашку?",
+            "tj": "Дар назди даромадгоҳ дӯкони чойи ширӣ ҳаст. Як пиёла мехоҳӣ?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "我想喝咖啡，还是去咖啡店吧。",
+          "pinyin": "Wǒ xiǎng hē kāfēi, háishi qù kāfēidiàn ba.",
+          "text": {
+            "uz": "Men qahva ichmoqchiman, yaxshisi qahvaxonaga boraylik.",
+            "ru": "Я хочу кофе, лучше пойдём в кофейню.",
+            "tj": "Ман қаҳва мехоҳам, беҳтараш ба қаҳвахона равем."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "咖啡店离这儿有点儿远。",
+          "pinyin": "Kāfēidiàn lí zhèr yǒudiǎnr yuǎn.",
+          "text": {
+            "uz": "Qahvaxona bu yerdan biroz uzoq.",
+            "ru": "Кофейня немного далеко отсюда.",
+            "tj": "Қаҳвахона аз ин ҷо каме дур аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "没关系，那家店的咖啡很好喝。",
+          "pinyin": "Méi guānxi, nà jiā diàn de kāfēi hěn hǎohē.",
+          "text": {
+            "uz": "Hechqisi yo‘q, u yerdagi qahva juda mazali.",
+            "ru": "Ничего, там очень хороший кофе.",
+            "tj": "Ҳеҷ гап не, қаҳваи он ҷо хеле болаззат аст."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "那你等一下，我去买杯奶茶。",
+          "pinyin": "Nà nǐ děng yíxià, wǒ qù mǎi bēi nǎichá.",
+          "text": {
+            "uz": "Unda biroz kut, men bir piyola sutli choy olib kelaman.",
+            "ru": "Тогда подожди, я схожу куплю молочный чай.",
+            "tj": "Пас каме интизор шав, ман рафта як пиёла чойи ширӣ мехарам."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "你不想喝咖啡吗？",
+          "pinyin": "Nǐ bù xiǎng hē kāfēi ma?",
+          "text": {
+            "uz": "Qahva ichging kelmayaptimi?",
+            "ru": "Ты не хочешь кофе?",
+            "tj": "Қаҳва нӯшидан намехоҳӣ?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "喝了咖啡，晚上就别想睡觉了。",
+          "pinyin": "Hēle kāfēi, wǎnshang jiù bié xiǎng shuìjiào le.",
+          "text": {
+            "uz": "Qahva ichsam, kechasi uyqu yo‘q.",
+            "ru": "Если выпью кофе, ночью не усну.",
+            "tj": "Агар қаҳва нӯшам, шаб хобам намебарад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Qahvaxona oldida Wang Yixue va Liu Ming suhbatlashmoqda.",
+        "ru": "У входа в кофейню Ван Исюэ и Лю Мин разговаривают.",
+        "tj": "Дар назди қаҳвахона Ван Исюэ ва Лю Мин суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "我们打车回去吧。",
+          "pinyin": "Wǒmen dǎchē huíqù ba.",
+          "text": {
+            "uz": "Uyga taksida qaytaylik.",
+            "ru": "Давай поедем обратно на такси.",
+            "tj": "Биё бо таксӣ ба хона баргардем."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "这里离家很近，还是走路吧。",
+          "pinyin": "Zhèlǐ lí jiā hěn jìn, háishi zǒulù ba.",
+          "text": {
+            "uz": "Bu yer uyga yaqin, yaxshisi piyoda yuraylik.",
+            "ru": "Отсюда до дома близко, лучше пойдём пешком.",
+            "tj": "Аз ин ҷо то хона наздик аст, беҳтараш пиёда равем."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "要走多长时间？",
+          "pinyin": "Yào zǒu duō cháng shíjiān?",
+          "text": {
+            "uz": "Qancha vaqt yurish kerak?",
+            "ru": "Сколько времени идти?",
+            "tj": "Чанд вақт роҳ рафтан лозим?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "走半个多小时就到了。",
+          "pinyin": "Zǒu bàn ge duō xiǎoshí jiù dào le.",
+          "text": {
+            "uz": "Yarim soatdan sal ko‘proq yursak yetamiz.",
+            "ru": "Чуть больше получаса пешком — и дойдём.",
+            "tj": "Каме бештар аз ним соат роҳ равем, мерасем."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "好的。每天上下班都坐车，今天运动运动吧。",
+          "pinyin": "Hǎo de. Měitiān shàngxiàbān dōu zuò chē, jīntiān yùndong yùndong ba.",
+          "text": {
+            "uz": "Xo‘p. Har kuni ishga borib-kelishda mashinada yuraman, bugun sal harakat qilay.",
+            "ru": "Хорошо. Каждый день езжу на работу и обратно, сегодня немного разомнёмся.",
+            "tj": "Хуб. Ҳар рӯз ба кору аз кор бо мошин меравам, имрӯз каме машқ кунем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "近",
+            "pinyin": "jìn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "yaqin",
+              "ru": "близкий; рядом",
+              "tj": "наздик"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "近",
+          "pinyin": "jìn",
+          "options": [
+            "男孩儿",
+            "近",
+            "坏",
+            "旁边"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "近 — yaqin (jìn)",
+            "ru": "近 — близкий; рядом (jìn)",
+            "tj": "近 — наздик (jìn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "走路",
+            "pinyin": "zǒulù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "piyoda yurmoq",
+              "ru": "ходить пешком",
+              "tj": "пиёда рафтан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "走路 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 走路:",
+            "tj": "Маънои калимаи 走路-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘g‘il bola",
+              "ru": "мальчик",
+              "tj": "писарбача"
+            },
+            {
+              "uz": "yomon; buzilgan",
+              "ru": "плохой; испорченный",
+              "tj": "бад; вайрон"
+            },
+            {
+              "uz": "piyoda yurmoq",
+              "ru": "ходить пешком",
+              "tj": "пиёда рафтан"
+            },
+            {
+              "uz": "yon; yon tomon",
+              "ru": "рядом; сбоку",
+              "tj": "паҳлӯ; наздик"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "走路 = piyoda yurmoq (zǒulù)",
+            "ru": "走路 = ходить пешком (zǒulù)",
+            "tj": "走路 = пиёда рафтан (zǒulù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "周",
+            "pinyin": "zhōu",
+            "pos": "n.",
+            "meaning": {
+              "uz": "hafta",
+              "ru": "неделя",
+              "tj": "ҳафта"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "周",
+          "pinyin": "zhōu",
+          "translation": {
+            "uz": "hafta",
+            "ru": "неделя",
+            "tj": "ҳафта"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhōu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhōu?",
+            "tj": "zhōu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "男孩儿",
+            "旁边",
+            "周",
+            "坏"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "周 = hafta (zhōu)",
+            "ru": "周 = неделя (zhōu)",
+            "tj": "周 = ҳафта (zhōu)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "近 talaffuzini tanlang:",
+            "ru": "Выберите произношение 近:",
+            "tj": "Талаффузи 近-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "pángbian",
+            "huài",
+            "jìn",
+            "nánháir"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "近 — jìn",
+            "ru": "近 — jìn",
+            "tj": "近 — jìn"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "近",
+              {
+                "uz": "yaqin",
+                "ru": "близкий; рядом",
+                "tj": "наздик"
+              }
+            ],
+            [
+              "走路",
+              {
+                "uz": "piyoda yurmoq",
+                "ru": "ходить пешком",
+                "tj": "пиёда рафтан"
+              }
+            ],
+            [
+              "周",
+              {
+                "uz": "hafta",
+                "ru": "неделя",
+                "tj": "ҳафта"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "周",
+          "pinyin": "zhōu",
+          "options": [
+            "旁边",
+            "周",
+            "坏",
+            "男孩儿"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "周 — hafta (zhōu)",
+            "ru": "周 — неделя (zhōu)",
+            "tj": "周 — ҳафта (zhōu)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu yer uyga yaqin, yaxshisi piyoda yuraylik.",
+            "ru": "Отсюда до дома близко, лучше пойдём пешком.",
+            "tj": "Аз ин ҷо то хона наздик аст, беҳтараш пиёда равем."
+          },
+          "tokens": [
+            "近",
+            "离",
+            "吧",
+            "还是",
+            "很",
+            "坏",
+            "家",
+            "这里",
+            "走路",
+            "旁边"
+          ],
+          "answer_tokens": [
+            "这里",
+            "离",
+            "家",
+            "很",
+            "近",
+            "还是",
+            "走路",
+            "吧"
+          ],
+          "explanation": {
+            "uz": "这里离家很近，还是走路吧。 — Zhèlǐ lí jiā hěn jìn, háishi zǒulù ba.",
+            "ru": "这里离家很近，还是走路吧。 — Zhèlǐ lí jiā hěn jìn, háishi zǒulù ba.",
+            "tj": "这里离家很近，还是走路吧。 — Zhèlǐ lí jiā hěn jìn, háishi zǒulù ba."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "近",
+              {
+                "uz": "yaqin",
+                "ru": "близкий; рядом",
+                "tj": "наздик"
+              }
+            ],
+            [
+              "走路",
+              {
+                "uz": "piyoda yurmoq",
+                "ru": "ходить пешком",
+                "tj": "пиёда рафтан"
+              }
+            ],
+            [
+              "周",
+              {
+                "uz": "hafta",
+                "ru": "неделя",
+                "tj": "ҳафта"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "周",
+          "pinyin": "zhōu",
+          "translation": {
+            "uz": "hafta",
+            "ru": "неделя",
+            "tj": "ҳафта"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "离 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 离:",
+            "tj": "Маънои калимаи 离-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yomon; buzilgan",
+              "ru": "плохой; испорченный",
+              "tj": "бад; вайрон"
+            },
+            {
+              "uz": "yon; yon tomon",
+              "ru": "рядом; сбоку",
+              "tj": "паҳлӯ; наздик"
+            },
+            {
+              "uz": "...dan masofada bo‘lmoq",
+              "ru": "находиться на расстоянии от",
+              "tj": "аз ... фосила доштан"
+            },
+            {
+              "uz": "o‘g‘il bola",
+              "ru": "мальчик",
+              "tj": "писарбача"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "离 = ...dan masofada bo‘lmoq (lí)",
+            "ru": "离 = находиться на расстоянии от (lí)",
+            "tj": "离 = аз ... фосила доштан (lí)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "离",
+            "pinyin": "lí",
+            "meaning": {
+              "uz": "...dan masofada bo‘lmoq",
+              "ru": "находиться на расстоянии от",
+              "tj": "аз ... фосила доштан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'hafta' xitoycha qaysi?",
+            "ru": "'неделя' по-китайски?",
+            "tj": "'ҳафта' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "旁边",
+            "坏",
+            "男孩儿",
+            "周"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "hafta = 周 (zhōu)",
+            "ru": "неделя = 周 (zhōu)",
+            "tj": "ҳафта = 周 (zhōu)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "周",
+            "pinyin": "zhōu",
+            "meaning": {
+              "uz": "hafta",
+              "ru": "неделя",
+              "tj": "ҳафта"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

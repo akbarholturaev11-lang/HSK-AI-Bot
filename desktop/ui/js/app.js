@@ -180,6 +180,10 @@ const state = {
   notificationLastSyncAt: 0,
   seenNotificationIds: new Set(),
   notificationPermission: "unsupported",
+  subscriptionMode: "subscription",
+  hsk30PromoMarked: false,
+  hsk30PromoDismissed: false,
+  hsk30Switching: false,
   ratingRequest: 0,
   ratingBoard: null,
   ratingError: "",
@@ -1680,9 +1684,86 @@ function toggleNotifications() {
 }
 
 function routeTo(view) {
+  if (view === "subscription") state.subscriptionMode = "subscription";
   state.view = view;
   renderActiveView();
   closeRail();
+}
+
+function openSubscriptionMode(mode) {
+  state.subscriptionMode = mode === "hsk30_unlock" ? "hsk30_unlock" : "subscription";
+  state.view = "subscription";
+  renderActiveView();
+  closeRail();
+}
+
+function openCourseVersionConfirm(targetTrack, level = null) {
+  const normalized = targetTrack === "hsk30" ? "hsk30" : "hsk20";
+  const targetLabel = normalized === "hsk30" ? "HSK 3.0" : "HSK 2.0";
+  document.querySelector(".course-version-confirm-layer")?.remove();
+
+  const layer = element("div", "referral-layer course-version-confirm-layer");
+  const shell = element("section", "referral-shell course-version-confirm-shell");
+  shell.setAttribute("role", "dialog");
+  shell.setAttribute("aria-modal", "true");
+  shell.setAttribute("aria-label", t("courseVersionConfirmTitle", { version: targetLabel }));
+
+  const hero = element("header", "referral-hero");
+  const copy = element("div");
+  copy.append(
+    element("p", "eyebrow", t("hsk30TrackSwitch")),
+    element("h2", "", t("courseVersionConfirmTitle", { version: targetLabel })),
+    element("p", "muted", t("courseVersionConfirmBody")),
+  );
+  hero.append(copy);
+
+  const actions = element("div", "payment-methods");
+  const confirm = element("button", "btn primary-button", t("courseVersionConfirmAction"));
+  const cancel = element("button", "secondary-button", t("courseVersionConfirmCancel"));
+  confirm.type = "button";
+  cancel.type = "button";
+
+  const close = (rerender = true) => {
+    globalThis.removeEventListener("keydown", onKeyDown);
+    layer.remove();
+    if (rerender && state.view === "profile") renderProfile();
+  };
+  const onKeyDown = (event) => {
+    if (event.key === "Escape") close();
+  };
+  cancel.addEventListener("click", () => close());
+  layer.addEventListener("click", (event) => {
+    if (event.target === layer) close();
+  });
+  confirm.addEventListener("click", () => {
+    close(false);
+    void switchCourseTrack(normalized, level);
+  });
+  globalThis.addEventListener("keydown", onKeyDown);
+
+  actions.append(confirm, cancel);
+  shell.append(hero, actions);
+  layer.append(shell);
+  document.body.append(layer);
+  confirm.focus();
+}
+
+async function switchCourseTrack(targetTrack, level = null) {
+  if (state.hsk30Switching) return;
+  state.hsk30Switching = true;
+  try {
+    await desktopBridge.courseTrackSwitch(targetTrack, level);
+    state.hsk30PromoDismissed = true;
+    await loadCourseMap({ keepView: true });
+  } catch (error) {
+    if (isSessionError(error)) {
+      showAuth({ expired: true });
+      return;
+    }
+    showToast(t("requestFailed"));
+  } finally {
+    state.hsk30Switching = false;
+  }
 }
 
 function languageLocale() {
@@ -2035,6 +2116,90 @@ function lessonMatches(item, query) {
     .includes(query);
 }
 
+function renderCourseTrackControl(map) {
+  const hsk30 = map?.hsk30;
+  if (!hsk30?.access?.feature_enabled) return null;
+  const wrap = element("section", "card cardPad course-version-card");
+  const head = element("div", "sectionTitle");
+  head.append(
+    element("h3", "", t("hsk30TrackSwitch")),
+    element("span", "tag red", String(hsk30.active_track || "hsk20") === "hsk30" ? "HSK 3.0" : "HSK 2.0"),
+  );
+  wrap.append(head);
+  const row = element("div", "payment-methods");
+  [
+    ["hsk20", "HSK 2.0"],
+    ["hsk30", "HSK 3.0"],
+  ].forEach(([track, label]) => {
+    const displayLabel =
+      track === "hsk30" && hsk30.new_badge?.is_new ? `${label} · NEW` : label;
+    const button = element("button", "payment-method", displayLabel);
+    button.type = "button";
+    const selected = String(hsk30.active_track || "hsk20") === track;
+    button.classList.toggle("is-active", selected);
+    button.disabled = selected || state.hsk30Switching;
+    button.addEventListener("click", () => {
+      if (track === "hsk30" && !hsk30.access?.allowed) {
+        if (hsk30.payment_enabled) openSubscriptionMode("hsk30_unlock");
+        else routeTo("subscription");
+        return;
+      }
+      const level = track === "hsk30"
+        ? String(hsk30.live_levels?.[0] || "nhsk1")
+        : null;
+      openCourseVersionConfirm(track, level);
+    });
+    row.append(button);
+  });
+  wrap.append(row);
+  return wrap;
+}
+
+function renderHsk30Promo(map) {
+  const hsk30 = map?.hsk30;
+  if (!hsk30?.promo?.eligible || state.hsk30PromoDismissed) return null;
+  if (!state.hsk30PromoMarked) {
+    state.hsk30PromoMarked = true;
+    void desktopBridge.hsk30PromoShown().catch(() => {});
+  }
+  const card = element("section", "card cardPad course-version-promo");
+  card.append(
+    element("p", "eyebrow", "HSK 3.0"),
+    element("h3", "", t("hsk30PromoTitle")),
+    element("p", "muted small", t("hsk30PromoBody")),
+  );
+  if (!hsk30.access?.allowed && hsk30.payment_enabled && Number(hsk30.price_tjs || 0) > 0) {
+    card.append(
+      element(
+        "p",
+        "tag red",
+        t("hsk30PromoPrice", { price: Number(hsk30.price_tjs || 0) }),
+      ),
+    );
+  }
+  const actions = element("div", "payment-methods");
+  const primary = element("button", "btn primary-button", t("hsk30PromoAction"));
+  primary.type = "button";
+  primary.addEventListener("click", () => {
+    if (hsk30.access?.allowed) {
+      void switchCourseTrack("hsk30", String(hsk30.promo?.recommended_level || hsk30.live_levels?.[0] || "nhsk1"));
+    } else if (hsk30.payment_enabled) {
+      openSubscriptionMode("hsk30_unlock");
+    } else {
+      routeTo("subscription");
+    }
+  });
+  const later = element("button", "secondary-button", t("onboardingLater"));
+  later.type = "button";
+  later.addEventListener("click", () => {
+    state.hsk30PromoDismissed = true;
+    renderCourseHome();
+  });
+  actions.append(primary, later);
+  card.append(actions);
+  return card;
+}
+
 function renderCourseHome() {
   const map = state.map;
   if (!map) return;
@@ -2055,6 +2220,11 @@ function renderCourseHome() {
       t("lessons", { done: completed, total: lessons.length }),
     ),
   );
+  const trackControl = renderCourseTrackControl(map);
+  const promo = renderHsk30Promo(map);
+  if (trackControl) dom.content.append(trackControl);
+  if (promo) dom.content.append(promo);
+
   const layout = element("div", "courseLayout course-layout");
   const units = element("div", "course-units");
   let renderedLessons = 0;
@@ -2403,6 +2573,7 @@ async function renderVocabulary() {
   );
   vocabulary.host = host;
   vocabulary.setLanguage(getLanguage());
+  vocabulary.setCourseLevel(state.map?.level || "hsk1");
   await vocabulary.load();
 }
 
@@ -2741,13 +2912,14 @@ async function renderRating() {
 }
 
 function renderSubscription() {
-  dom.contentTitle.textContent = t("subscription");
-  dom.contentSubtitle.textContent = t("subscriptionSubtitle");
+  const hsk30Unlock = state.subscriptionMode === "hsk30_unlock";
+  dom.contentTitle.textContent = hsk30Unlock ? t("hsk30UnlockTitle") : t("subscription");
+  dom.contentSubtitle.textContent = hsk30Unlock ? t("hsk30UnlockBody") : t("subscriptionSubtitle");
   const host = element("div", "subscription-host");
   dom.content.replaceChildren(
     viewHeading(
-      t("subscriptionTitle"),
-      t("subscriptionSubtitle"),
+      hsk30Unlock ? t("hsk30UnlockTitle") : t("subscriptionTitle"),
+      hsk30Unlock ? t("hsk30UnlockBody") : t("subscriptionSubtitle"),
       t("securePayment"),
     ),
     host,
@@ -2758,7 +2930,7 @@ function renderSubscription() {
   }
   subscription.host = host;
   subscription.setUser(state.map?.user);
-  void subscription.open({ refresh: true });
+  void subscription.open({ refresh: true, mode: state.subscriptionMode });
 }
 
 /**
@@ -4208,13 +4380,54 @@ function renderProfile() {
   const reopen = element("button", "secondary-button", t("onboardingReset"));
   reopen.type = "button";
   reopen.addEventListener("click", () => openOnboarding());
+
   studyCard.append(
     settingRow(
       t("interfaceLanguage"),
       t("interfaceLanguageBody"),
       languageSelect,
     ),
-    // The level is decided by the server, so the demo select is inert here.
+  );
+
+  const hsk30Settings = map.hsk30;
+  if (hsk30Settings && (hsk30Settings.access?.feature_enabled || hsk30Settings.active_track === "hsk30")) {
+    const activeTrack = String(hsk30Settings.active_track || "hsk20");
+    const versionSelect = selectControl(
+      [
+        { value: "hsk20", label: "HSK 2.0" },
+        {
+          value: "hsk30",
+          label: hsk30Settings.new_badge?.is_new ? "HSK 3.0 · NEW" : "HSK 3.0",
+        },
+      ],
+      activeTrack,
+      (targetTrack) => {
+        if (targetTrack === activeTrack || state.hsk30Switching) return;
+        if (targetTrack === "hsk30" && !hsk30Settings.access?.allowed) {
+          if (hsk30Settings.payment_enabled) openSubscriptionMode("hsk30_unlock");
+          else routeTo("subscription");
+          return;
+        }
+        const level =
+          targetTrack === "hsk30"
+            ? String(hsk30Settings.live_levels?.[0] || "nhsk1")
+            : null;
+        openCourseVersionConfirm(targetTrack, level);
+      },
+    );
+    versionSelect.dataset.role = "course-version";
+    studyCard.append(
+      settingRow(
+        t("hsk30TrackSwitch"),
+        t("hsk30TrackSwitchBody"),
+        versionSelect,
+      ),
+    );
+  }
+
+  studyCard.append(
+    // The band select still has no direct desktop mutation endpoint; course
+    // version is live above, while band changes remain release-gated.
     comingSoonSettingRow(
       t("courseLevelTitle"),
       t("courseLevelBody"),

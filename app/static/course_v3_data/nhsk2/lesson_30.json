@@ -1,0 +1,847 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 30,
+  "source_lesson": 6,
+  "part_no": 4,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "小雪，生日快乐！",
+  "subtitle": {
+    "uz": "Sifat takrorlanishi bilan darajani kuchaytirish; “什么的” bilan ‘va hokazo’ ma’nosini berish; “地” bilan harakatning holat/usulini ko‘rsatish; tug‘ilgan kun haqida gaplashish.",
+    "ru": "Усиливать признак редупликацией прилагательных; выражать «и так далее» с “什么的”; описывать способ действия с “地”; говорить о дне рождения.",
+    "tj": "Бо такрори сифат дараҷаро қавитар кардан; бо “什么的” маънои «ва ғайра»-ро додан; бо “地” тарзи амалро нишон додан; дар бораи зодрӯз суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "地",
+      "pinyin": "de",
+      "pos": "part.",
+      "meaning": {
+        "uz": "ravish yasovchi yuklama",
+        "ru": "частица наречного определения",
+        "tj": "ҳиссачаи ҳол/зарф"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "床",
+      "pinyin": "chuáng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "karavot",
+        "ru": "кровать",
+        "tj": "кат"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "舒服",
+      "pinyin": "shūfu",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "qulay; rohat",
+        "ru": "удобный; комфортный",
+        "tj": "роҳат; бароҳат"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Struktur yuklama “地”",
+        "ru": "Структурная частица “地”",
+        "tj": "Ҳиссачаи сохтории “地”"
+      },
+      "title_zh": "结构助词“地”",
+      "rule": {
+        "uz": "“地” odatda sifat bilan fe’l orasida kelib, harakatning holati yoki usulini bildiradi.",
+        "ru": "“地” обычно ставится между прилагательным и глаголом и обозначает способ или состояние выполнения действия.",
+        "tj": "“地” одатан байни сифат ва феъл омада, ҳолат ё тарзи иҷрои амалро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "过生日就要吃好吃的，还要高高兴兴地玩。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "老师早早地到了教室。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "爸爸很快地吃完早饭，就去上班了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "明天就是女儿的生日了。",
+          "pinyin": "Míngtiān jiù shì nǚ'ér de shēngrì le.",
+          "text": {
+            "uz": "Ertaga qizimizning tug‘ilgan kuni.",
+            "ru": "Завтра уже день рождения нашей дочери.",
+            "tj": "Фардо зодрӯзи духтарамон аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "你不说，我还真忘了。我们给她准备个什么礼物呢？",
+          "pinyin": "Nǐ bù shuō, wǒ hái zhēn wàng le. Wǒmen gěi tā zhǔnbèi ge shénme lǐwù ne?",
+          "text": {
+            "uz": "Aytinganing yaxshi bo‘ldi, rostdan unutibman. Unga qanday sovg‘a tayyorlaymiz?",
+            "ru": "Если бы ты не сказала, я бы и правда забыл. Что подарим ей?",
+            "tj": "Агар намегуфтӣ, ростӣ фаромӯш мекардам. Ба ӯ чӣ тӯҳфа тайёр кунем?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "她喜欢画画，你觉得画笔怎么样？",
+          "pinyin": "Tā xǐhuan huàhuà, nǐ juéde huàbǐ zěnmeyàng?",
+          "text": {
+            "uz": "U rasm chizishni yoqtiradi, rangli qalamlar qanday?",
+            "ru": "Она любит рисовать. Как насчёт карандашей/кистей?",
+            "tj": "Ӯ расм кашиданро дӯст медорад, қаламҳои расмкашӣ чӣ хел?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "就送画笔吧！",
+          "pinyin": "Jiù sòng huàbǐ ba!",
+          "text": {
+            "uz": "Unda qalamlar sovg‘a qilamiz!",
+            "ru": "Тогда подарим ей набор для рисования!",
+            "tj": "Пас қаламҳои расмкаширо тӯҳфа кунем!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "那我明天上午就去买。",
+          "pinyin": "Nà wǒ míngtiān shàngwǔ jiù qù mǎi.",
+          "text": {
+            "uz": "Unda ertaga ertalab borib olaman.",
+            "ru": "Тогда завтра утром я пойду куплю.",
+            "tj": "Пас фардо саҳар рафта мехарам."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "好的！我再给她买个大大的生日蛋糕。",
+          "pinyin": "Hǎo de! Wǒ zài gěi tā mǎi ge dàdà de shēngrì dàngāo.",
+          "text": {
+            "uz": "Xo‘p! Men unga yana katta-katta tug‘ilgan kun torti olaman.",
+            "ru": "Хорошо! А я куплю ей ещё большой-большой торт.",
+            "tj": "Хуб! Ман боз барояш торти калони зодрӯз мехарам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxonada Liu Ming oilasi suhbatlashmoqda.",
+        "ru": "В гостиной семья Лю Мина разговаривает.",
+        "tj": "Дар меҳмонхона оилаи Лю Мин суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "小雪，生日快乐！",
+          "pinyin": "Xiǎoxuě, shēngrì kuàilè!",
+          "text": {
+            "uz": "Xiaoxue, tug‘ilgan kuning bilan!",
+            "ru": "Сяосюэ, с днём рождения!",
+            "tj": "Сяосюэ, зодрӯз муборак!"
+          }
+        },
+        {
+          "speaker": "Liu Xiaoming",
+          "zh": "姐姐，生日快乐！",
+          "pinyin": "Jiějie, shēngrì kuàilè!",
+          "text": {
+            "uz": "Opa, tug‘ilgan kuning bilan!",
+            "ru": "Сестрёнка, с днём рождения!",
+            "tj": "Апа, зодрӯз муборак!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "小雪，这是爸爸、妈妈送你的礼物。",
+          "pinyin": "Xiǎoxuě, zhè shì bàba, māma sòng nǐ de lǐwù.",
+          "text": {
+            "uz": "Xiaoxue, bu dada va onangning senga sovg‘asi.",
+            "ru": "Сяосюэ, это подарок от папы и мамы.",
+            "tj": "Сяосюэ, ин тӯҳфаи падар ва модар барои туст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "你打开看看喜欢不喜欢。",
+          "pinyin": "Nǐ dǎkāi kànkan xǐhuan bu xǐhuan.",
+          "text": {
+            "uz": "Ochib ko‘r, yoqadimi-yo‘qmi.",
+            "ru": "Открой и посмотри, понравится ли.",
+            "tj": "Кушода бин, писанд меояд ё не."
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "画笔！我很喜欢！",
+          "pinyin": "Huàbǐ! Wǒ hěn xǐhuan!",
+          "text": {
+            "uz": "Rasm chizish qalamlari! Juda yoqdi!",
+            "ru": "Принадлежности для рисования! Очень нравится!",
+            "tj": "Қаламҳои расмкашӣ! Хеле писанд омад!"
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "画我们的家！有爸爸、妈妈、弟弟，还有黑色的狗、白色的猫什么的。",
+          "pinyin": "Huà wǒmen de jiā! Yǒu bàba, māma, dìdi, hái yǒu hēisè de gǒu, báisè de māo shénmede.",
+          "text": {
+            "uz": "Oilamizni! Dada, oyi, ukam, yana qora it, oq mushuk va hokazolarni.",
+            "ru": "Наш дом! Папу, маму, младшего брата, ещё чёрную собаку, белую кошку и всё такое.",
+            "tj": "Оилаамонро! Падар, модар, додар, боз саги сиёҳ, гурбаи сафед ва ғайра."
+          }
+        },
+        {
+          "speaker": "Liu Xiaoming",
+          "zh": "那我要画一个穿白色衣服的姐姐。",
+          "pinyin": "Nà wǒ yào huà yí ge chuān báisè yīfu de jiějie.",
+          "text": {
+            "uz": "Unda men oq kiyim kiygan opamni chizaman.",
+            "ru": "Тогда я нарисую сестру в белой одежде.",
+            "tj": "Пас ман апаи либоси сафедпӯшро мекашам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxonada Liu Ming oilasi Liu Xiaoxuening tug‘ilgan kunini nishonlamoqda.",
+        "ru": "В гостиной семья Лю Мина празднует день рождения Лю Сяосюэ.",
+        "tj": "Дар меҳмонхона оилаи Лю Мин зодрӯзи Лю Сяосюэро ҷашн мегиранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "小雪，看看今天有什么好吃的。",
+          "pinyin": "Xiǎoxuě, kànkan jīntiān yǒu shénme hǎochī de.",
+          "text": {
+            "uz": "Xiaoxue, bugun qanday mazali narsalar borligini qara.",
+            "ru": "Сяосюэ, посмотри, сколько сегодня вкусного.",
+            "tj": "Сяосюэ, бин имрӯз чӣ хӯрокҳои болаззат ҳаст."
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "长长的面条儿，大大的蛋糕。",
+          "pinyin": "Chángcháng de miàntiáor, dàdà de dàngāo.",
+          "text": {
+            "uz": "Uzun-uzun lag‘mon va katta-katta tort.",
+            "ru": "Длинная-длинная лапша и большой-большой торт.",
+            "tj": "Угрои дароз-дароз ва торти калон-калон."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "你看，还有鱼啊肉啊什么的，都是你喜欢吃的。",
+          "pinyin": "Nǐ kàn, hái yǒu yú a ròu a shénmede, dōu shì nǐ xǐhuan chī de.",
+          "text": {
+            "uz": "Qara, yana baliq, go‘sht va hokazolar bor — hammasi sen yoqtiradiganlar.",
+            "ru": "Смотри, ещё рыба, мясо и всё такое — всё то, что ты любишь.",
+            "tj": "Бин, боз моҳӣ, гӯшт ва ғайра ҳаст — ҳамааш чизҳои дӯстдоштаи туст."
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "谢谢爸爸、妈妈！",
+          "pinyin": "Xièxie bàba, māma!",
+          "text": {
+            "uz": "Rahmat, dada, oyi!",
+            "ru": "Спасибо, папа и мама!",
+            "tj": "Раҳмат, падар ва модар!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "快去叫弟弟过来吃饭吧，吃完饭我们还要出去玩呢。",
+          "pinyin": "Kuài qù jiào dìdi guòlai chī fàn ba, chīwán fàn wǒmen hái yào chūqù wán ne.",
+          "text": {
+            "uz": "Tez ukangni ovqatga chaqir, ovqatdan keyin yana tashqariga o‘ynagani chiqamiz.",
+            "ru": "Иди позови брата есть, после ужина мы ещё пойдём гулять.",
+            "tj": "Зуд додарро ба хӯрок даъват кун, баъди хӯрок боз ба берун бозӣ меравем."
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "过生日真好啊！",
+          "pinyin": "Guò shēngrì zhēn hǎo a!",
+          "text": {
+            "uz": "Tug‘ilgan kun o‘tkazish juda zo‘r!",
+            "ru": "Как здорово праздновать день рождения!",
+            "tj": "Зодрӯз гузарондан чӣ қадар хуб!"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "地",
+            "pinyin": "de",
+            "pos": "part.",
+            "meaning": {
+              "uz": "ravish yasovchi yuklama",
+              "ru": "частица наречного определения",
+              "tj": "ҳиссачаи ҳол/зарф"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "地",
+          "pinyin": "de",
+          "options": [
+            "画",
+            "忘",
+            "生日",
+            "地"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "地 — ravish yasovchi yuklama (de)",
+            "ru": "地 — частица наречного определения (de)",
+            "tj": "地 — ҳиссачаи ҳол/зарф (de)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "床",
+            "pinyin": "chuáng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "karavot",
+              "ru": "кровать",
+              "tj": "кат"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "床 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 床:",
+            "tj": "Маънои калимаи 床-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tug‘ilgan kun",
+              "ru": "день рождения",
+              "tj": "зодрӯз"
+            },
+            {
+              "uz": "karavot",
+              "ru": "кровать",
+              "tj": "кат"
+            },
+            {
+              "uz": "unutmoq",
+              "ru": "забывать",
+              "tj": "фаромӯш кардан"
+            },
+            {
+              "uz": "chizmoq; rasm",
+              "ru": "рисовать; рисунок",
+              "tj": "расм кашидан; расм"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "床 = karavot (chuáng)",
+            "ru": "床 = кровать (chuáng)",
+            "tj": "床 = кат (chuáng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "舒服",
+            "pinyin": "shūfu",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "qulay; rohat",
+              "ru": "удобный; комфортный",
+              "tj": "роҳат; бароҳат"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "舒服",
+          "pinyin": "shūfu",
+          "translation": {
+            "uz": "qulay; rohat",
+            "ru": "удобный; комфортный",
+            "tj": "роҳат; бароҳат"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shūfu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shūfu?",
+            "tj": "shūfu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "生日",
+            "舒服",
+            "忘",
+            "画"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "舒服 = qulay; rohat (shūfu)",
+            "ru": "舒服 = удобный; комфортный (shūfu)",
+            "tj": "舒服 = роҳат; бароҳат (shūfu)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "地 talaffuzini tanlang:",
+            "ru": "Выберите произношение 地:",
+            "tj": "Талаффузи 地-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shēngrì",
+            "de",
+            "huà",
+            "wàng"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "地 — de",
+            "ru": "地 — de",
+            "tj": "地 — de"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "地",
+              {
+                "uz": "ravish yasovchi yuklama",
+                "ru": "частица наречного определения",
+                "tj": "ҳиссачаи ҳол/зарф"
+              }
+            ],
+            [
+              "床",
+              {
+                "uz": "karavot",
+                "ru": "кровать",
+                "tj": "кат"
+              }
+            ],
+            [
+              "舒服",
+              {
+                "uz": "qulay; rohat",
+                "ru": "удобный; комфортный",
+                "tj": "роҳат; бароҳат"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Struktur yuklama “地”",
+              "ru": "Структурная частица “地”",
+              "tj": "Ҳиссачаи сохтории “地”"
+            },
+            "title_zh": "结构助词“地”",
+            "rule": {
+              "uz": "“地” odatda sifat bilan fe’l orasida kelib, harakatning holati yoki usulini bildiradi.",
+              "ru": "“地” обычно ставится между прилагательным и глаголом и обозначает способ или состояние выполнения действия.",
+              "tj": "“地” одатан байни сифат ва феъл омада, ҳолат ё тарзи иҷрои амалро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "过生日就要吃好吃的，还要高高兴兴地玩。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "老师早早地到了教室。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "爸爸很快地吃完早饭，就去上班了。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "忘",
+            "了",
+            "早",
+            "早",
+            "生日",
+            "老师",
+            "到",
+            "教室",
+            "地"
+          ],
+          "answer_tokens": [
+            "老师",
+            "早",
+            "早",
+            "地",
+            "到",
+            "了",
+            "教室"
+          ],
+          "explanation": {
+            "uz": "老师早早地到了教室。",
+            "ru": "老师早早地到了教室。",
+            "tj": "老师早早地到了教室。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "老师早早地到了教室。",
+            "过生日就要吃好吃的，还要高高兴兴地玩。",
+            "爸爸很快地吃完早饭，就去上班了。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "爸爸很快地吃完早饭，就去上班了。 — ",
+            "ru": "爸爸很快地吃完早饭，就去上班了。 — ",
+            "tj": "爸爸很快地吃完早饭，就去上班了。 — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "地",
+          "pinyin": "de",
+          "options": [
+            "生日",
+            "地",
+            "忘",
+            "画"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "地 — ravish yasovchi yuklama (de)",
+            "ru": "地 — частица наречного определения (de)",
+            "tj": "地 — ҳиссачаи ҳол/зарф (de)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "舒服",
+          "pinyin": "shūfu",
+          "options": [
+            "生日",
+            "忘",
+            "舒服",
+            "画"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "舒服 — qulay; rohat (shūfu)",
+            "ru": "舒服 — удобный; комфортный (shūfu)",
+            "tj": "舒服 — роҳат; бароҳат (shūfu)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "床 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 床:",
+            "tj": "Маънои калимаи 床-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "unutmoq",
+              "ru": "забывать",
+              "tj": "фаромӯш кардан"
+            },
+            {
+              "uz": "chizmoq; rasm",
+              "ru": "рисовать; рисунок",
+              "tj": "расм кашидан; расм"
+            },
+            {
+              "uz": "karavot",
+              "ru": "кровать",
+              "tj": "кат"
+            },
+            {
+              "uz": "tug‘ilgan kun",
+              "ru": "день рождения",
+              "tj": "зодрӯз"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "床 = karavot (chuáng)",
+            "ru": "床 = кровать (chuáng)",
+            "tj": "床 = кат (chuáng)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "舒服",
+          "pinyin": "shūfu",
+          "translation": {
+            "uz": "qulay; rohat",
+            "ru": "удобный; комфортный",
+            "tj": "роҳат; бароҳат"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "过 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 过:",
+            "tj": "Маънои калимаи 过-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chizmoq; rasm",
+              "ru": "рисовать; рисунок",
+              "tj": "расм кашидан; расм"
+            },
+            {
+              "uz": "unutmoq",
+              "ru": "забывать",
+              "tj": "фаромӯш кардан"
+            },
+            {
+              "uz": "tug‘ilgan kun",
+              "ru": "день рождения",
+              "tj": "зодрӯз"
+            },
+            {
+              "uz": "o‘tkazmoq (vaqt/bayram)",
+              "ru": "проводить (время/праздник)",
+              "tj": "гузарондан (вақт/ид)"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "过 = o‘tkazmoq (vaqt/bayram) (guò)",
+            "ru": "过 = проводить (время/праздник) (guò)",
+            "tj": "过 = гузарондан (вақт/ид) (guò)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "过",
+            "pinyin": "guò",
+            "meaning": {
+              "uz": "o‘tkazmoq (vaqt/bayram)",
+              "ru": "проводить (время/праздник)",
+              "tj": "гузарондан (вақт/ид)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qulay; rohat' xitoycha qaysi?",
+            "ru": "'удобный; комфортный' по-китайски?",
+            "tj": "'роҳат; бароҳат' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "生日",
+            "画",
+            "忘",
+            "舒服"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "qulay; rohat = 舒服 (shūfu)",
+            "ru": "удобный; комфортный = 舒服 (shūfu)",
+            "tj": "роҳат; бароҳат = 舒服 (shūfu)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "舒服",
+            "pinyin": "shūfu",
+            "meaning": {
+              "uz": "qulay; rohat",
+              "ru": "удобный; комфортный",
+              "tj": "роҳат; бароҳат"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

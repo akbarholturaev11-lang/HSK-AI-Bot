@@ -1,0 +1,710 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 18,
+  "source_lesson": 3,
+  "part_no": 2,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "这个小区挺好的",
+  "subtitle": {
+    "uz": "Yashash muhiti va uy sharoiti haqida gaplashish; “挺” va “坏了” orqali darajani ifodalash; “就” va “才” bilan ish-harakatning erta/kech yoki tez/sekin sodir bo‘lishini aytish.",
+    "ru": "Говорить о жилой среде и бытовых условиях; выражать степень с “挺” и “坏了”; использовать “就” и “才” для обозначения раннего/позднего или быстрого/медленного наступления действия.",
+    "tj": "Дар бораи муҳити зист ва шароити хона суҳбат кардан; бо “挺” ва “坏了” дараҷаро ифода кардан; бо “就” ва “才” барвақт/дер ё тез/суст рух додани амалро нишон додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "小区",
+      "pinyin": "xiǎoqū",
+      "pos": "n.",
+      "meaning": {
+        "uz": "turar-joy majmuasi",
+        "ru": "жилой комплекс; микрорайон",
+        "tj": "маҷмааи истиқоматӣ"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "环境",
+      "pinyin": "huánjìng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "muhit; atrof-muhit",
+        "ru": "окружающая среда; обстановка",
+        "tj": "муҳит; шароит"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "挺",
+      "pinyin": "tǐng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "ancha; juda",
+        "ru": "довольно; весьма",
+        "tj": "хеле; анча"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "空调",
+      "pinyin": "kōngtiáo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "konditsioner",
+        "ru": "кондиционер",
+        "tj": "кондитсионер"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Daraja ravishi “挺”",
+        "ru": "Наречие степени “挺”",
+        "tj": "Зарфи дараҷаи “挺”"
+      },
+      "title_zh": "程度副词“挺”",
+      "rule": {
+        "uz": "“挺” sifat yoki psixologik fe’l oldidan kelib “ancha/juda” ma’nosini beradi. Og‘zaki nutqda ko‘pincha gap oxiridagi “的” bilan birga ishlatiladi.",
+        "ru": "“挺” ставится перед прилагательным или глаголом чувства и означает «довольно / весьма». В разговорной речи часто сочетается с “的” в конце предложения.",
+        "tj": "“挺” пеш аз сифат ё феъли эҳсосӣ омада маънои «хеле / анча»-ро медиҳад. Дар гуфтугӯ аксаран бо “的” дар охири ҷумла меояд."
+      },
+      "examples": [
+        {
+          "zh": "这个小区环境挺好的。",
+          "pinyin": "Zhège xiǎoqū huánjìng tǐng hǎo de.",
+          "translation": {
+            "uz": "Bu turar-joy majmuasining muhiti ancha yaxshi.",
+            "ru": "В этом жилом комплексе довольно хорошая обстановка.",
+            "tj": "Муҳити ин маҷмааи истиқоматӣ хеле хуб аст."
+          }
+        },
+        {
+          "zh": "这家饭馆的菜挺好吃的。",
+          "pinyin": "Zhè jiā fànguǎn de cài tǐng hǎochī de.",
+          "translation": {
+            "uz": "Bu restoranning taomlari ancha mazali.",
+            "ru": "В этом ресторане блюда довольно вкусные.",
+            "tj": "Хӯрокҳои ин тарабхона хеле болаззатанд."
+          }
+        },
+        {
+          "zh": "买这个吧，我挺喜欢这个颜色的。",
+          "pinyin": "Mǎi zhège ba, wǒ tǐng xǐhuan zhège yánsè de.",
+          "translation": {
+            "uz": "Shuni olaylik, bu rang menga ancha yoqadi.",
+            "ru": "Давай купим это, мне довольно нравится этот цвет.",
+            "tj": "Ҳаминро бихарем, ин ранг ба ман хеле писанд аст."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘明",
+          "zh": "好啊，我上网看看。你觉得这个小区怎么样？",
+          "pinyin": "Hǎo a, wǒ shàngwǎng kànkan. Nǐ juéde zhège xiǎoqū zěnmeyàng?",
+          "text": {
+            "uz": "Mayli, internetdan ko‘rib chiqaman. Bu turar-joy majmuasi qanday?",
+            "ru": "Хорошо, посмотрю в интернете. Как тебе этот жилой комплекс?",
+            "tj": "Хуб, аз интернет мебинам. Ин маҷмааи истиқоматӣ чӣ хел аст?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "环境挺好的，离地铁站还不远。",
+          "pinyin": "Huánjìng tǐng hǎo de, lí dìtiězhàn hái bù yuǎn.",
+          "text": {
+            "uz": "Muhiti ancha yaxshi, metro bekatidan ham uzoq emas.",
+            "ru": "Обстановка довольно хорошая, и до метро недалеко.",
+            "tj": "Муҳиташ хеле хуб аст ва аз метро ҳам дур нест."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue mehmonxonada suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают в гостиной.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ дар меҳмонхона суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "这个月花了不少钱。",
+          "pinyin": "Zhège yuè huā le bù shǎo qián.",
+          "text": {
+            "uz": "Bu oy ancha pul sarfladik.",
+            "ru": "В этом месяце мы потратили немало денег.",
+            "tj": "Ин моҳ пули зиёд сарф кардем."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "今天下午？",
+          "pinyin": "Jīntiān xiàwǔ?",
+          "text": {
+            "uz": "Bugun tushdan keyinmi?",
+            "ru": "Сегодня днём?",
+            "tj": "Имрӯз баъд аз нисфирӯзӣ?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "那我下午自己去吧。",
+          "pinyin": "Nà wǒ xiàwǔ zìjǐ qù ba.",
+          "text": {
+            "uz": "Unda tushdan keyin o‘zim boraman.",
+            "ru": "Тогда я схожу днём сама.",
+            "tj": "Пас баъд аз нисфирӯзӣ худам меравам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "小区",
+            "pinyin": "xiǎoqū",
+            "pos": "n.",
+            "meaning": {
+              "uz": "turar-joy majmuasi",
+              "ru": "жилой комплекс; микрорайон",
+              "tj": "маҷмааи истиқоматӣ"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "小区 talaffuzini tanlang:",
+            "ru": "Выберите произношение 小区:",
+            "tj": "Талаффузи 小区-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zánmen",
+            "xiǎoqū",
+            "chūzhōng",
+            "huàn"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "小区 — xiǎoqū",
+            "ru": "小区 — xiǎoqū",
+            "tj": "小区 — xiǎoqū"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "环境",
+            "pinyin": "huánjìng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "muhit; atrof-muhit",
+              "ru": "окружающая среда; обстановка",
+              "tj": "муҳит; шароит"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "环境",
+          "pinyin": "huánjìng",
+          "translation": {
+            "uz": "muhit; atrof-muhit",
+            "ru": "окружающая среда; обстановка",
+            "tj": "муҳит; шароит"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'muhit; atrof-muhit' xitoycha qaysi?",
+            "ru": "'окружающая среда; обстановка' по-китайски?",
+            "tj": "'муҳит; шароит' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "咱们",
+            "换",
+            "初中",
+            "环境"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "muhit; atrof-muhit = 环境 (huánjìng)",
+            "ru": "окружающая среда; обстановка = 环境 (huánjìng)",
+            "tj": "муҳит; шароит = 环境 (huánjìng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "挺",
+            "pinyin": "tǐng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "ancha; juda",
+              "ru": "довольно; весьма",
+              "tj": "хеле; анча"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "挺",
+          "pinyin": "tǐng",
+          "options": [
+            "换",
+            "挺",
+            "初中",
+            "咱们"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "挺 — ancha; juda (tǐng)",
+            "ru": "挺 — довольно; весьма (tǐng)",
+            "tj": "挺 — хеле; анча (tǐng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "空调",
+            "pinyin": "kōngtiáo",
+            "pos": "n.",
+            "meaning": {
+              "uz": "konditsioner",
+              "ru": "кондиционер",
+              "tj": "кондитсионер"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "空调 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 空调:",
+            "tj": "Маънои калимаи 空调-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+              "ru": "средняя школа (младшие классы)",
+              "tj": "зинаи миёнаи поёнии мактаб"
+            },
+            {
+              "uz": "konditsioner",
+              "ru": "кондиционер",
+              "tj": "кондитсионер"
+            },
+            {
+              "uz": "almashtirmoq",
+              "ru": "менять; заменять",
+              "tj": "иваз кардан"
+            },
+            {
+              "uz": "biz (so‘zlovchi va tinglovchini ham qo‘shib)",
+              "ru": "мы (включая собеседника)",
+              "tj": "мо (бо шумули шунаванда)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "空调 = konditsioner (kōngtiáo)",
+            "ru": "空调 = кондиционер (kōngtiáo)",
+            "tj": "空调 = кондитсионер (kōngtiáo)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xiǎoqū qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xiǎoqū?",
+            "tj": "xiǎoqū кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "换",
+            "初中",
+            "咱们",
+            "小区"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "小区 = turar-joy majmuasi (xiǎoqū)",
+            "ru": "小区 = жилой комплекс; микрорайон (xiǎoqū)",
+            "tj": "小区 = маҷмааи истиқоматӣ (xiǎoqū)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "小区",
+              {
+                "uz": "turar-joy majmuasi",
+                "ru": "жилой комплекс; микрорайон",
+                "tj": "маҷмааи истиқоматӣ"
+              }
+            ],
+            [
+              "环境",
+              {
+                "uz": "muhit; atrof-muhit",
+                "ru": "окружающая среда; обстановка",
+                "tj": "муҳит; шароит"
+              }
+            ],
+            [
+              "挺",
+              {
+                "uz": "ancha; juda",
+                "ru": "довольно; весьма",
+                "tj": "хеле; анча"
+              }
+            ],
+            [
+              "空调",
+              {
+                "uz": "konditsioner",
+                "ru": "кондиционер",
+                "tj": "кондитсионер"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Daraja ravishi “挺”",
+              "ru": "Наречие степени “挺”",
+              "tj": "Зарфи дараҷаи “挺”"
+            },
+            "title_zh": "程度副词“挺”",
+            "rule": {
+              "uz": "“挺” sifat yoki psixologik fe’l oldidan kelib “ancha/juda” ma’nosini beradi. Og‘zaki nutqda ko‘pincha gap oxiridagi “的” bilan birga ishlatiladi.",
+              "ru": "“挺” ставится перед прилагательным или глаголом чувства и означает «довольно / весьма». В разговорной речи часто сочетается с “的” в конце предложения.",
+              "tj": "“挺” пеш аз сифат ё феъли эҳсосӣ омада маънои «хеле / анча»-ро медиҳад. Дар гуфтугӯ аксаран бо “的” дар охири ҷумла меояд."
+            },
+            "examples": [
+              {
+                "zh": "这个小区环境挺好的。",
+                "pinyin": "Zhège xiǎoqū huánjìng tǐng hǎo de.",
+                "translation": {
+                  "uz": "Bu turar-joy majmuasining muhiti ancha yaxshi.",
+                  "ru": "В этом жилом комплексе довольно хорошая обстановка.",
+                  "tj": "Муҳити ин маҷмааи истиқоматӣ хеле хуб аст."
+                }
+              },
+              {
+                "zh": "这家饭馆的菜挺好吃的。",
+                "pinyin": "Zhè jiā fànguǎn de cài tǐng hǎochī de.",
+                "translation": {
+                  "uz": "Bu restoranning taomlari ancha mazali.",
+                  "ru": "В этом ресторане блюда довольно вкусные.",
+                  "tj": "Хӯрокҳои ин тарабхона хеле болаззатанд."
+                }
+              },
+              {
+                "zh": "买这个吧，我挺喜欢这个颜色的。",
+                "pinyin": "Mǎi zhège ba, wǒ tǐng xǐhuan zhège yánsè de.",
+                "translation": {
+                  "uz": "Shuni olaylik, bu rang menga ancha yoqadi.",
+                  "ru": "Давай купим это, мне довольно нравится этот цвет.",
+                  "tj": "Ҳаминро бихарем, ин ранг ба ман хеле писанд аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu turar-joy majmuasining muhiti ancha yaxshi.",
+            "ru": "В этом жилом комплексе довольно хорошая обстановка.",
+            "tj": "Муҳити ин маҷмааи истиқоматӣ хеле хуб аст."
+          },
+          "tokens": [
+            "小区",
+            "咱们",
+            "初中",
+            "这个",
+            "挺",
+            "的",
+            "好",
+            "环境"
+          ],
+          "answer_tokens": [
+            "这个",
+            "小区",
+            "环境",
+            "挺",
+            "好",
+            "的"
+          ],
+          "explanation": {
+            "uz": "这个小区环境挺好的。 — Zhège xiǎoqū huánjìng tǐng hǎo de.",
+            "ru": "这个小区环境挺好的。 — Zhège xiǎoqū huánjìng tǐng hǎo de.",
+            "tj": "这个小区环境挺好的。 — Zhège xiǎoqū huánjìng tǐng hǎo de."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Shuni olaylik, bu rang menga ancha yoqadi.» — xitoychada qaysi biri?",
+            "ru": "«Давай купим это, мне довольно нравится этот цвет.» — какое предложение по-китайски?",
+            "tj": "«Ҳаминро бихарем, ин ранг ба ман хеле писанд аст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "这家饭馆的菜挺好吃的。",
+            "这个小区环境挺好的。",
+            "买这个吧，我挺喜欢这个颜色的。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "买这个吧，我挺喜欢这个颜色的。 — Mǎi zhège ba, wǒ tǐng xǐhuan zhège yánsè de.",
+            "ru": "买这个吧，我挺喜欢这个颜色的。 — Mǎi zhège ba, wǒ tǐng xǐhuan zhège yánsè de.",
+            "tj": "买这个吧，我挺喜欢这个颜色的。 — Mǎi zhège ba, wǒ tǐng xǐhuan zhège yánsè de."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "空调 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 空调:",
+            "tj": "Маънои калимаи 空调-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+              "ru": "средняя школа (младшие классы)",
+              "tj": "зинаи миёнаи поёнии мактаб"
+            },
+            {
+              "uz": "almashtirmoq",
+              "ru": "менять; заменять",
+              "tj": "иваз кардан"
+            },
+            {
+              "uz": "biz (so‘zlovchi va tinglovchini ham qo‘shib)",
+              "ru": "мы (включая собеседника)",
+              "tj": "мо (бо шумули шунаванда)"
+            },
+            {
+              "uz": "konditsioner",
+              "ru": "кондиционер",
+              "tj": "кондитсионер"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "空调 = konditsioner (kōngtiáo)",
+            "ru": "空调 = кондиционер (kōngtiáo)",
+            "tj": "空调 = кондитсионер (kōngtiáo)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "环境",
+          "pinyin": "huánjìng",
+          "translation": {
+            "uz": "muhit; atrof-muhit",
+            "ru": "окружающая среда; обстановка",
+            "tj": "муҳит; шароит"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "咱们 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 咱们:",
+            "tj": "Маънои калимаи 咱们-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+              "ru": "средняя школа (младшие классы)",
+              "tj": "зинаи миёнаи поёнии мактаб"
+            },
+            {
+              "uz": "almashtirmoq",
+              "ru": "менять; заменять",
+              "tj": "иваз кардан"
+            },
+            {
+              "uz": "uy; xona-joy",
+              "ru": "дом; жильё",
+              "tj": "хона; манзил"
+            },
+            {
+              "uz": "biz (so‘zlovchi va tinglovchini ham qo‘shib)",
+              "ru": "мы (включая собеседника)",
+              "tj": "мо (бо шумули шунаванда)"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "咱们 = biz (so‘zlovchi va tinglovchini ham qo‘shib) (zánmen)",
+            "ru": "咱们 = мы (включая собеседника) (zánmen)",
+            "tj": "咱们 = мо (бо шумули шунаванда) (zánmen)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "咱们",
+            "pinyin": "zánmen",
+            "meaning": {
+              "uz": "biz (so‘zlovchi va tinglovchini ham qo‘shib)",
+              "ru": "мы (включая собеседника)",
+              "tj": "мо (бо шумули шунаванда)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'muhit; atrof-muhit' xitoycha qaysi?",
+            "ru": "'окружающая среда; обстановка' по-китайски?",
+            "tj": "'муҳит; шароит' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "换",
+            "咱们",
+            "环境",
+            "初中"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "muhit; atrof-muhit = 环境 (huánjìng)",
+            "ru": "окружающая среда; обстановка = 环境 (huánjìng)",
+            "tj": "муҳит; шароит = 环境 (huánjìng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "环境",
+            "pinyin": "huánjìng",
+            "meaning": {
+              "uz": "muhit; atrof-muhit",
+              "ru": "окружающая среда; обстановка",
+              "tj": "муҳит; шароит"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

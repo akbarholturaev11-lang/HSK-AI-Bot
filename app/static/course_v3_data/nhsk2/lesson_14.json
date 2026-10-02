@@ -1,0 +1,667 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 14,
+  "source_lesson": 3,
+  "part_no": 4,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我想去西安旅游",
+  "subtitle": {
+    "uz": "Natija to‘ldiruvchisi orqali harakat natijasini ifodalash; fe’l takrorlanishi bilan qisqa, yengil yoki sinab ko‘rish xarakteridagi harakatni aytish; sayohat rejasini muhokama qilish.",
+    "ru": "Выражать результат действия с помощью результативного дополнения; использовать редупликацию глагола для краткого, непринуждённого или пробного действия; обсуждать планы поездки.",
+    "tj": "Натиҷаи амалро бо пуркунандаи натиҷа ифода кардан; такрори феълро барои амали кӯтоҳ, сабук ё озмоишӣ истифода бурдан; нақшаи сафарро муҳокима кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "回去",
+      "pinyin": "huíqù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qaytib bormoq",
+        "ru": "вернуться туда",
+        "tj": "баргашта рафтан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "每",
+      "pinyin": "měi",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "har; har bir",
+        "ru": "каждый",
+        "tj": "ҳар; ҳар як"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "累",
+      "pinyin": "lèi",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "charchagan",
+        "ru": "уставший",
+        "tj": "хаста"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uy eshigi oldida Liu Ming eshikni ochib uyga kirdi.",
+        "ru": "У двери дома Лю Мин открыл дверь и вошёл.",
+        "tj": "Дар назди дари хона Лю Мин дарро кушода ба хона даромад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "今天回来这么晚啊！",
+          "pinyin": "Jīntiān huílái zhème wǎn a!",
+          "text": {
+            "uz": "Bugun juda kech qaytding-ku!",
+            "ru": "Сегодня ты так поздно вернулся!",
+            "tj": "Имрӯз ин қадар дер баргаштӣ!"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "工作太多了，下班的时候没做完。",
+          "pinyin": "Gōngzuò tài duō le, xiàbān de shíhou méi zuòwán.",
+          "text": {
+            "uz": "Ish juda ko‘p edi, ishdan chiqish vaqtida tugata olmadim.",
+            "ru": "Работы было слишком много, к концу рабочего дня я не закончил.",
+            "tj": "Кор хеле зиёд буд, вақти аз кор баромадан тамом карда натавонистам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "菜都做好了，过来吃饭吧。",
+          "pinyin": "Cài dōu zuòhǎo le, guòlai chī fàn ba.",
+          "text": {
+            "uz": "Ovqatlar tayyor, kelib ovqat ye.",
+            "ru": "Еда уже готова, иди есть.",
+            "tj": "Хӯрок тайёр шудааст, биё хӯрок бихӯр."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "我想休息一下，喝杯水。",
+          "pinyin": "Wǒ xiǎng xiūxi yíxià, hē bēi shuǐ.",
+          "text": {
+            "uz": "Biroz dam olib, bir stakan suv ichmoqchiman.",
+            "ru": "Я хочу немного отдохнуть и выпить стакан воды.",
+            "tj": "Мехоҳам каме истироҳат карда, як пиёла об нӯшам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "好的。",
+          "pinyin": "Hǎo de.",
+          "text": {
+            "uz": "Xo‘p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxonada Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "В гостиной Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар меҳмонхона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "我们找个时间去旅游，怎么样？",
+          "pinyin": "Wǒmen zhǎo ge shíjiān qù lǚyóu, zěnmeyàng?",
+          "text": {
+            "uz": "Bir vaqt topib sayohatga borsak, qanday?",
+            "ru": "Давай найдём время и съездим куда-нибудь, как тебе?",
+            "tj": "Як вақт ёфта ба саёҳат равем, чӣ хел?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "好啊，我也很想一起出去玩。",
+          "pinyin": "Hǎo a, wǒ yě hěn xiǎng yìqǐ chūqù wán.",
+          "text": {
+            "uz": "Yaxshi, men ham birga tashqariga chiqib sayr qilishni juda xohlayman.",
+            "ru": "Хорошо, я тоже очень хочу куда-нибудь съездить вместе.",
+            "tj": "Хуб, ман ҳам хеле мехоҳам якҷо ба берун баромада сайр кунем."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "你想去哪儿？",
+          "pinyin": "Nǐ xiǎng qù nǎr?",
+          "text": {
+            "uz": "Qayerga bormoqchisan?",
+            "ru": "Куда ты хочешь поехать?",
+            "tj": "Ба куҷо рафтан мехоҳӣ?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我还没想好呢。",
+          "pinyin": "Wǒ hái méi xiǎnghǎo ne.",
+          "text": {
+            "uz": "Hali aniq o‘ylab topmadim.",
+            "ru": "Я ещё не решила.",
+            "tj": "Ҳоло хуб фикр карда набаромадаам."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "那你再想一想，你想好了，我来买票。",
+          "pinyin": "Nà nǐ zài xiǎng yì xiǎng, nǐ xiǎnghǎo le, wǒ lái mǎi piào.",
+          "text": {
+            "uz": "Unda yana o‘ylab ko‘r. Qaror qilganingda chiptani men olaman.",
+            "ru": "Тогда ещё подумай. Когда решишь, билеты куплю я.",
+            "tj": "Пас боз як бор фикр кун. Вақте қарор кардӣ, чиптаро ман мехарам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxonada Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "В гостиной Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар меҳмонхона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "吃个苹果吧，我都洗好了。",
+          "pinyin": "Chī ge píngguǒ ba, wǒ dōu xǐhǎo le.",
+          "text": {
+            "uz": "Olma ye, men hammasini yuvib qo‘ydim.",
+            "ru": "Съешь яблоко, я их уже помыл.",
+            "tj": "Як себ бихӯр, ман ҳамаашро шуста мондам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "好的。",
+          "pinyin": "Hǎo de.",
+          "text": {
+            "uz": "Xo‘p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "就在桌子上，你自己拿。",
+          "pinyin": "Jiù zài zhuōzi shàng, nǐ zìjǐ ná.",
+          "text": {
+            "uz": "Stol ustida, o‘zing ol.",
+            "ru": "Они прямо на столе, возьми сама.",
+            "tj": "Рӯйи мизанд, худат бигир."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "回去",
+            "pinyin": "huíqù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qaytib bormoq",
+              "ru": "вернуться туда",
+              "tj": "баргашта рафтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qaytib bormoq' xitoycha qaysi?",
+            "ru": "'вернуться туда' по-китайски?",
+            "tj": "'баргашта рафтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "回来",
+            "这么",
+            "完",
+            "回去"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "qaytib bormoq = 回去 (huíqù)",
+            "ru": "вернуться туда = 回去 (huíqù)",
+            "tj": "баргашта рафтан = 回去 (huíqù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "每",
+            "pinyin": "měi",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "har; har bir",
+              "ru": "каждый",
+              "tj": "ҳар; ҳар як"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "每",
+          "pinyin": "měi",
+          "translation": {
+            "uz": "har; har bir",
+            "ru": "каждый",
+            "tj": "ҳар; ҳар як"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "每",
+          "pinyin": "měi",
+          "options": [
+            "每",
+            "回来",
+            "完",
+            "这么"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "每 — har; har bir (měi)",
+            "ru": "每 — каждый (měi)",
+            "tj": "每 — ҳар; ҳар як (měi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "累",
+            "pinyin": "lèi",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "charchagan",
+              "ru": "уставший",
+              "tj": "хаста"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "累 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 累:",
+            "tj": "Маънои калимаи 累-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "shunchalik; bunaqa",
+              "ru": "так; настолько",
+              "tj": "ин қадар; ҳамин тавр"
+            },
+            {
+              "uz": "qaytib kelmoq",
+              "ru": "вернуться; прийти обратно",
+              "tj": "баргашта омадан"
+            },
+            {
+              "uz": "tugatmoq",
+              "ru": "закончить; завершить",
+              "tj": "тамом кардан"
+            },
+            {
+              "uz": "charchagan",
+              "ru": "уставший",
+              "tj": "хаста"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "累 = charchagan (lèi)",
+            "ru": "累 = уставший (lèi)",
+            "tj": "累 = хаста (lèi)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "huíqù qaysi ieroglif?",
+            "ru": "Какой иероглиф читается huíqù?",
+            "tj": "huíqù кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "回来",
+            "回去",
+            "这么",
+            "完"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "回去 = qaytib bormoq (huíqù)",
+            "ru": "回去 = вернуться туда (huíqù)",
+            "tj": "回去 = баргашта рафтан (huíqù)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "回去",
+              {
+                "uz": "qaytib bormoq",
+                "ru": "вернуться туда",
+                "tj": "баргашта рафтан"
+              }
+            ],
+            [
+              "每",
+              {
+                "uz": "har; har bir",
+                "ru": "каждый",
+                "tj": "ҳар; ҳар як"
+              }
+            ],
+            [
+              "累",
+              {
+                "uz": "charchagan",
+                "ru": "уставший",
+                "tj": "хаста"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "每",
+          "pinyin": "měi",
+          "options": [
+            "每",
+            "这么",
+            "完",
+            "回来"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "每 — har; har bir (měi)",
+            "ru": "每 — каждый (měi)",
+            "tj": "每 — ҳар; ҳар як (měi)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "累",
+          "pinyin": "lèi",
+          "options": [
+            "完",
+            "这么",
+            "累",
+            "回来"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "累 — charchagan (lèi)",
+            "ru": "累 — уставший (lèi)",
+            "tj": "累 — хаста (lèi)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我休息了一下，现在觉得不累了。",
+          "pinyin": "Wǒ xiūxile yíxià, xiànzài juéde bú lèi le.",
+          "translation": {
+            "uz": "Biroz dam oldim, hozir charchoq yo‘q.",
+            "ru": "Я немного отдохнул и теперь не чувствую усталости.",
+            "tj": "Каме истироҳат кардам, ҳоло дигар хаста нестам."
+          },
+          "tokens": {
+            "uz": [
+              "dam",
+              "charchoq",
+              "yo‘q",
+              "oldim",
+              "Biroz",
+              "charchadim",
+              "hozir",
+              "sal"
+            ],
+            "ru": [
+              "отдохнул",
+              "немного",
+              "усталости",
+              "не",
+              "теперь",
+              "и",
+              "хочу",
+              "устал",
+              "чувствую",
+              "Я"
+            ],
+            "tj": [
+              "кардам",
+              "ҳоло",
+              "хаста",
+              "хастаам",
+              "Каме",
+              "мехоҳам",
+              "дигар",
+              "нестам",
+              "истироҳат"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Biroz",
+              "dam",
+              "oldim",
+              "hozir",
+              "charchoq",
+              "yo‘q"
+            ],
+            "ru": [
+              "Я",
+              "немного",
+              "отдохнул",
+              "и",
+              "теперь",
+              "не",
+              "чувствую",
+              "усталости"
+            ],
+            "tj": [
+              "Каме",
+              "истироҳат",
+              "кардам",
+              "ҳоло",
+              "дигар",
+              "хаста",
+              "нестам"
+            ]
+          },
+          "explanation": {
+            "uz": "我休息了一下，现在觉得不累了。 — Biroz dam oldim, hozir charchoq yo‘q.",
+            "ru": "我休息了一下，现在觉得不累了。 — Я немного отдохнул и теперь не чувствую усталости.",
+            "tj": "我休息了一下，现在觉得不累了。 — Каме истироҳат кардам, ҳоло дигар хаста нестам."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "每",
+          "pinyin": "měi",
+          "translation": {
+            "uz": "har; har bir",
+            "ru": "каждый",
+            "tj": "ҳар; ҳар як"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "为什么 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 为什么:",
+            "tj": "Маънои калимаи 为什么-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qaytib kelmoq",
+              "ru": "вернуться; прийти обратно",
+              "tj": "баргашта омадан"
+            },
+            {
+              "uz": "nega; nima uchun",
+              "ru": "почему; зачем",
+              "tj": "чаро; барои чӣ"
+            },
+            {
+              "uz": "shunchalik; bunaqa",
+              "ru": "так; настолько",
+              "tj": "ин қадар; ҳамин тавр"
+            },
+            {
+              "uz": "tugatmoq",
+              "ru": "закончить; завершить",
+              "tj": "тамом кардан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "为什么 = nega; nima uchun (wèishénme)",
+            "ru": "为什么 = почему; зачем (wèishénme)",
+            "tj": "为什么 = чаро; барои чӣ (wèishénme)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "为什么",
+            "pinyin": "wèishénme",
+            "meaning": {
+              "uz": "nega; nima uchun",
+              "ru": "почему; зачем",
+              "tj": "чаро; барои чӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'har; har bir' xitoycha qaysi?",
+            "ru": "'каждый' по-китайски?",
+            "tj": "'ҳар; ҳар як' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "每",
+            "回来",
+            "这么",
+            "完"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "har; har bir = 每 (měi)",
+            "ru": "каждый = 每 (měi)",
+            "tj": "ҳар; ҳар як = 每 (měi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "每",
+            "pinyin": "měi",
+            "meaning": {
+              "uz": "har; har bir",
+              "ru": "каждый",
+              "tj": "ҳар; ҳар як"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

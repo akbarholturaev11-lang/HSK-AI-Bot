@@ -1,0 +1,461 @@
+{
+  "schema_version": 1,
+  "lesson": 3,
+  "source_title_hanzi": "这个小区挺好的",
+  "translation_origin": "assistant_authored_from_source_verified_chinese",
+  "goal": {
+    "uz": "Yashash muhiti va uy sharoiti haqida gaplashish; “挺” va “坏了” orqali darajani ifodalash; “就” va “才” bilan ish-harakatning erta/kech yoki tez/sekin sodir bo‘lishini aytish.",
+    "ru": "Говорить о жилой среде и бытовых условиях; выражать степень с “挺” и “坏了”; использовать “就” и “才” для обозначения раннего/позднего или быстрого/медленного наступления действия.",
+    "tj": "Дар бораи муҳити зист ва шароити хона суҳбат кардан; бо “挺” ва “坏了” дараҷаро ифода кардан; бо “就” ва “才” барвақт/дер ё тез/суст рух додани амалро нишон додан."
+  },
+  "intro_text": {
+    "uz": "Dars uy tanlash, yangi uyga ko‘chish va kundalik reja haqidagi suhbatlar orqali “挺”, daraja to‘ldiruvchisi va “就 / 才”ning qarama-qarshi vaqt ma’nolarini o‘rgatadi.",
+    "ru": "Урок через выбор жилья, переезд и бытовые планы вводит “挺”, дополнение степени и противопоставленное употребление “就 / 才” во времени.",
+    "tj": "Дарс тавассути интихоби хона, кӯчидан ва нақшаҳои рӯзмарра “挺”, пуркунандаи дараҷа ва истифодаи муқобили “就 / 才”-ро дар вақт меомӯзонад."
+  },
+  "vocabulary": [
+    {
+      "hanzi": "初中",
+      "pinyin": "chūzhōng",
+      "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+      "ru": "средняя школа (младшие классы)",
+      "tj": "зинаи миёнаи поёнии мактаб"
+    },
+    {
+      "hanzi": "咱们",
+      "pinyin": "zánmen",
+      "uz": "biz (so‘zlovchi va tinglovchini ham qo‘shib)",
+      "ru": "мы (включая собеседника)",
+      "tj": "мо (бо шумули шунаванда)"
+    },
+    {
+      "hanzi": "换",
+      "pinyin": "huàn",
+      "uz": "almashtirmoq",
+      "ru": "менять; заменять",
+      "tj": "иваз кардан"
+    },
+    {
+      "hanzi": "房子",
+      "pinyin": "fángzi",
+      "uz": "uy; xona-joy",
+      "ru": "дом; жильё",
+      "tj": "хона; манзил"
+    },
+    {
+      "hanzi": "小区",
+      "pinyin": "xiǎoqū",
+      "uz": "turar-joy majmuasi",
+      "ru": "жилой комплекс; микрорайон",
+      "tj": "маҷмааи истиқоматӣ"
+    },
+    {
+      "hanzi": "环境",
+      "pinyin": "huánjìng",
+      "uz": "muhit; atrof-muhit",
+      "ru": "окружающая среда; обстановка",
+      "tj": "муҳит; шароит"
+    },
+    {
+      "hanzi": "挺",
+      "pinyin": "tǐng",
+      "uz": "ancha; juda",
+      "ru": "довольно; весьма",
+      "tj": "хеле; анча"
+    },
+    {
+      "hanzi": "空调",
+      "pinyin": "kōngtiáo",
+      "uz": "konditsioner",
+      "ru": "кондиционер",
+      "tj": "кондитсионер"
+    },
+    {
+      "hanzi": "洗衣机",
+      "pinyin": "xǐyījī",
+      "uz": "kir yuvish mashinasi",
+      "ru": "стиральная машина",
+      "tj": "мошини ҷомашӯӣ"
+    },
+    {
+      "hanzi": "层",
+      "pinyin": "céng",
+      "uz": "qavat (hisob so‘zi)",
+      "ru": "этаж; слой",
+      "tj": "ошёна; қабат"
+    },
+    {
+      "hanzi": "花园",
+      "pinyin": "huāyuán",
+      "uz": "bog‘",
+      "ru": "сад",
+      "tj": "боғ"
+    },
+    {
+      "hanzi": "灯",
+      "pinyin": "dēng",
+      "uz": "chiroq",
+      "ru": "лампа; свет",
+      "tj": "чароғ"
+    },
+    {
+      "hanzi": "关",
+      "pinyin": "guān",
+      "uz": "o‘chirmoq; yopmoq",
+      "ru": "закрывать; выключать",
+      "tj": "бастан; хомӯш кардан"
+    },
+    {
+      "hanzi": "冰箱",
+      "pinyin": "bīngxiāng",
+      "uz": "muzlatkich",
+      "ru": "холодильник",
+      "tj": "яхдон"
+    },
+    {
+      "hanzi": "卫生间",
+      "pinyin": "wèishēngjiān",
+      "uz": "hojatxona; sanuzel",
+      "ru": "туалет; санузел",
+      "tj": "ҳоҷатхона"
+    },
+    {
+      "hanzi": "打扫",
+      "pinyin": "dǎsǎo",
+      "uz": "tozalamoq",
+      "ru": "убирать; чистить",
+      "tj": "тоза кардан"
+    },
+    {
+      "hanzi": "搬家",
+      "pinyin": "bānjiā",
+      "uz": "ko‘chmoq",
+      "ru": "переезжать",
+      "tj": "кӯчидан"
+    },
+    {
+      "hanzi": "办",
+      "pinyin": "bàn",
+      "uz": "rasmiylashtirmoq; qilmoq",
+      "ru": "оформлять; делать",
+      "tj": "расмӣ кардан; анҷом додан"
+    },
+    {
+      "hanzi": "信用卡",
+      "pinyin": "xìnyòngkǎ",
+      "uz": "kredit karta",
+      "ru": "кредитная карта",
+      "tj": "корти қарзӣ"
+    },
+    {
+      "hanzi": "还",
+      "pinyin": "huán",
+      "uz": "qaytarmoq; qarzni to‘lamoq",
+      "ru": "возвращать; погашать",
+      "tj": "баргардондан; пардохтан"
+    },
+    {
+      "hanzi": "听说",
+      "pinyin": "tīngshuō",
+      "uz": "eshitishimcha; eshitmoq",
+      "ru": "слышать; говорят, что",
+      "tj": "шунидан; шунидам, ки"
+    },
+    {
+      "hanzi": "银行",
+      "pinyin": "yínháng",
+      "uz": "bank",
+      "ru": "банк",
+      "tj": "бонк"
+    },
+    {
+      "hanzi": "才",
+      "pinyin": "cái",
+      "uz": "faqat shundagina; endigina",
+      "ru": "только тогда; лишь",
+      "tj": "танҳо баъд; дертар"
+    },
+    {
+      "hanzi": "纸",
+      "pinyin": "zhǐ",
+      "uz": "qog‘oz",
+      "ru": "бумага",
+      "tj": "коғаз"
+    },
+    {
+      "hanzi": "搬",
+      "pinyin": "bān",
+      "uz": "ko‘tarmoq; ko‘chirib tashimoq",
+      "ru": "переносить; перевозить",
+      "tj": "бурдан; кӯчондан"
+    },
+    {
+      "hanzi": "需要",
+      "pinyin": "xūyào",
+      "uz": "kerak bo‘lmoq; ehtiyoj",
+      "ru": "нуждаться; быть нужным",
+      "tj": "лозим будан; ниёз доштан"
+    }
+  ],
+  "grammar": [
+    {
+      "label": "程度副词“挺”",
+      "title_uz": "Daraja ravishi “挺”",
+      "title_ru": "Наречие степени “挺”",
+      "title_tj": "Зарфи дараҷаи “挺”",
+      "rule_uz": "“挺” sifat yoki psixologik fe’l oldidan kelib “ancha/juda” ma’nosini beradi. Og‘zaki nutqda ko‘pincha gap oxiridagi “的” bilan birga ishlatiladi.",
+      "rule_ru": "“挺” ставится перед прилагательным или глаголом чувства и означает «довольно / весьма». В разговорной речи часто сочетается с “的” в конце предложения.",
+      "rule_tj": "“挺” пеш аз сифат ё феъли эҳсосӣ омада маънои «хеле / анча»-ро медиҳад. Дар гуфтугӯ аксаран бо “的” дар охири ҷумла меояд.",
+      "examples": [
+        {
+          "hanzi": "这个小区环境挺好的。",
+          "uz": "Bu turar-joy majmuasining muhiti ancha yaxshi.",
+          "ru": "В этом жилом комплексе довольно хорошая обстановка.",
+          "tj": "Муҳити ин маҷмааи истиқоматӣ хеле хуб аст."
+        },
+        {
+          "hanzi": "这家饭馆的菜挺好吃的。",
+          "uz": "Bu restoranning taomlari ancha mazali.",
+          "ru": "В этом ресторане блюда довольно вкусные.",
+          "tj": "Хӯрокҳои ин тарабхона хеле болаззатанд."
+        },
+        {
+          "hanzi": "买这个吧，我挺喜欢这个颜色的。",
+          "uz": "Shuni olaylik, bu rang menga ancha yoqadi.",
+          "ru": "Давай купим это, мне довольно нравится этот цвет.",
+          "tj": "Ҳаминро бихарем, ин ранг ба ман хеле писанд аст."
+        }
+      ]
+    },
+    {
+      "label": "程度补语（1）",
+      "title_uz": "Daraja to‘ldiruvchisi (1)",
+      "title_ru": "Дополнение степени (1)",
+      "title_tj": "Пуркунандаи дараҷа (1)",
+      "rule_uz": "“坏了” sifat yoki holat fe’lidan keyin kelib darajaning juda yuqori ekanini bildiradi: “juda ham…, rosa…”. Bu yerda “坏” so‘zma-so‘z “buzilmoq” ma’nosida emas.",
+      "rule_ru": "“坏了” после прилагательного или глагола состояния выражает очень высокую степень: «ужасно / очень сильно». Здесь “坏” не означает буквально «сломаться».",
+      "rule_tj": "“坏了” баъди сифат ё феъли ҳолат дараҷаи хеле баландро ифода мекунад: «хеле / бисёр». Дар ин ҷо “坏” маънои аслии «вайрон шудан»-ро надорад.",
+      "examples": [
+        {
+          "hanzi": "我这几天忙坏了。",
+          "uz": "Shu kunlarda juda band bo‘ldim.",
+          "ru": "В эти дни я ужасно занят.",
+          "tj": "Ин чанд рӯз ман бисёр банд будам."
+        },
+        {
+          "hanzi": "我渴坏了，哪里能买水？",
+          "uz": "Juda chanqadim, qayerdan suv olsa bo‘ladi?",
+          "ru": "Я ужасно хочу пить. Где можно купить воду?",
+          "tj": "Ман сахт ташна шудам, аз куҷо об харидан мумкин?"
+        },
+        {
+          "hanzi": "这几天非常忙，大家都累坏了。",
+          "uz": "Shu kunlarda juda band edik, hamma rosa charchadi.",
+          "ru": "Эти дни были очень загруженными, все страшно устали.",
+          "tj": "Ин чанд рӯз хеле серкор буд, ҳама сахт хаста шуданд."
+        }
+      ]
+    },
+    {
+      "label": "“就”和“才”",
+      "title_uz": "“就” va “才” — erta/tez va kech/sekin holatlar",
+      "title_ru": "“就” и “才” — раннее/быстрое и позднее/медленное наступление",
+      "title_tj": "“就” ва “才” — барвақт/тез ва дер/суст",
+      "rule_uz": "“就” kutilganidan erta, tez yoki oson sodir bo‘lgan ishni ko‘rsatadi. “才” esa aksincha, ishning kech, sekin yoki faqat ma’lum shartdan keyin sodir bo‘lganini bildiradi.",
+      "rule_ru": "“就” указывает, что действие произошло раньше, быстрее или легче ожидаемого. “才”, наоборот, подчёркивает позднее, медленное наступление или выполнение только после определённого условия.",
+      "rule_tj": "“就” нишон медиҳад, ки амал барвақттар, тезтар ё осонтар аз интизорӣ рух додааст. “才” баръакс, дертар, сусттар ё танҳо баъди шарти муайян рух доданро нишон медиҳад.",
+      "examples": [
+        {
+          "hanzi": "中国银行很近，走路几分钟就能到。",
+          "uz": "Bank juda yaqin, piyoda bir necha daqiqada yetib borish mumkin.",
+          "ru": "Банк Китая близко, пешком можно дойти всего за несколько минут.",
+          "tj": "Бонки Чин наздик аст, пиёда дар чанд дақиқа расидан мумкин."
+        },
+        {
+          "hanzi": "我下午要去医院，很晚才能回来。",
+          "uz": "Tushdan keyin shifoxonaga boraman, juda kech qayta olaman.",
+          "ru": "Днём я иду в больницу и смогу вернуться только поздно.",
+          "tj": "Баъд аз нисфирӯзӣ ба беморхона меравам ва танҳо дер бармегардам."
+        },
+        {
+          "hanzi": "我早上五点就起床了。",
+          "uz": "Men ertalab soat beshdayoq turdim.",
+          "ru": "Я встал уже в пять утра.",
+          "tj": "Ман субҳ соати панҷ аллакай хестам."
+        },
+        {
+          "hanzi": "坐火车去北京，五个小时才能到。",
+          "uz": "Pekinga poyezdda borsang, faqat besh soatdan keyin yetasan.",
+          "ru": "На поезде до Пекина можно добраться только за пять часов.",
+          "tj": "Бо қатора ба Пекин танҳо пас аз панҷ соат расидан мумкин."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene_zh": "在家里，刘明和王一雪在聊天儿。",
+      "scene_uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+      "scene_ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+      "scene_tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "小雪的初中离家有点儿远，咱们换一个近点儿的房子吧。",
+          "uz": "Xiaoxuening maktabi uydan biroz uzoq, yaqinroq uyga ko‘chaylik.",
+          "ru": "Школа Сяосюэ далековата от дома, давай сменим жильё на более близкое.",
+          "tj": "Мактаби Сяосюэ аз хона каме дур аст, биё ба хонаи наздиктар кӯчем."
+        },
+        {
+          "hanzi": "好啊，我上网看看。你觉得这个小区怎么样？",
+          "uz": "Mayli, internetdan ko‘rib chiqaman. Bu turar-joy majmuasi qanday?",
+          "ru": "Хорошо, посмотрю в интернете. Как тебе этот жилой комплекс?",
+          "tj": "Хуб, аз интернет мебинам. Ин маҷмааи истиқоматӣ чӣ хел аст?"
+        },
+        {
+          "hanzi": "环境挺好的，离地铁站还不远。",
+          "uz": "Muhiti ancha yaxshi, metro bekatidan ham uzoq emas.",
+          "ru": "Обстановка довольно хорошая, и до метро недалеко.",
+          "tj": "Муҳиташ хеле хуб аст ва аз метро ҳам дур нест."
+        },
+        {
+          "hanzi": "房子里面也不错，空调和洗衣机都是新的。",
+          "uz": "Uyning ichi ham yaxshi, konditsioner va kir yuvish mashinasi yangi.",
+          "ru": "Внутри тоже неплохо, кондиционер и стиральная машина новые.",
+          "tj": "Даруни хона ҳам хуб аст, кондитсионеру мошини ҷомашӯӣ наванд."
+        },
+        {
+          "hanzi": "是不错，但是我不喜欢住一层。",
+          "uz": "Yomon emas, lekin birinchi qavatda yashashni yoqtirmayman.",
+          "ru": "Неплохо, но я не люблю жить на первом этаже.",
+          "tj": "Бад нест, аммо ман дар ошёнаи якум зиндагӣ карданро дӯст намедорам."
+        },
+        {
+          "hanzi": "这个一层带一个小花园，我觉得咱们可以去看看。",
+          "uz": "Bu birinchi qavatga kichik bog‘ ham kiradi, menimcha borib ko‘rsak bo‘ladi.",
+          "ru": "У этого первого этажа есть небольшой сад, думаю, стоит посмотреть.",
+          "tj": "Ин ошёнаи якум боғи хурд ҳам дорад, ба назарам рафта дидан мумкин."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在新家，王一雪在收拾房间，刘明进来了。",
+      "scene_uz": "Yangi uyda Wang Yixue xonani yig‘ishtirmoqda, Liu Ming kirib keldi.",
+      "scene_ru": "В новом доме Ван Исюэ убирает комнату, входит Лю Мин.",
+      "scene_tj": "Дар хонаи нав Ван Исюэ ҳуҷраро ҷамъ мекунад, Лю Мин медарояд.",
+      "turns": [
+        {
+          "hanzi": "我今天早上来的时候，灯还开着。",
+          "uz": "Bugun ertalab kelganimda chiroq hali ham yoqilgan edi.",
+          "ru": "Когда я пришла утром, свет всё ещё был включён.",
+          "tj": "Имрӯз саҳар омадам, чароғ ҳанӯз фурӯзон буд."
+        },
+        {
+          "hanzi": "我这几天忙坏了，可能走的时候忘关了。",
+          "uz": "Shu kunlarda juda bandman, ehtimol ketayotganda o‘chirishni unutganman.",
+          "ru": "В эти дни я ужасно занят, наверное, уходя забыл выключить.",
+          "tj": "Ин чанд рӯз бисёр банд будам, шояд ҳангоми рафтан хомӯш карданро фаромӯш кардам."
+        },
+        {
+          "hanzi": "冰箱不能用，这些吃的东西放在哪儿？",
+          "uz": "Muzlatkich ishlamayapti, bu yeguliklarni qayerga qo‘yamiz?",
+          "ru": "Холодильник не работает. Куда положить эти продукты?",
+          "tj": "Яхдон кор намекунад, ин хӯрокҳоро куҷо монем?"
+        },
+        {
+          "hanzi": "不可能吧？冰箱是新买的，我来看看。",
+          "uz": "Bo‘lishi mumkin emas-ku? Muzlatkich yangi olingan, qani ko‘ray.",
+          "ru": "Не может быть. Холодильник новый, дай посмотрю.",
+          "tj": "Мумкин нест-ку? Яхдон нав харида шудааст, бинам."
+        },
+        {
+          "hanzi": "洗衣机也坏了吗？",
+          "uz": "Kir yuvish mashinasi ham buzildimi?",
+          "ru": "Стиральная машина тоже сломалась?",
+          "tj": "Мошини ҷомашӯӣ ҳам вайрон шуд?"
+        },
+        {
+          "hanzi": "没坏，但是卫生间没打扫好，还不能洗衣服。",
+          "uz": "Buzilmagan, lekin sanuzel hali yaxshi tozalanmagan, hozircha kir yuvib bo‘lmaydi.",
+          "ru": "Нет, но санузел ещё не убран, стирать пока нельзя.",
+          "tj": "Вайрон нашудааст, аммо ҳоҷатхона ҳоло хуб тоза нашудааст, ҳоло либос шустан намешавад."
+        },
+        {
+          "hanzi": "星期天我们真的能搬家吗？",
+          "uz": "Yakshanba kuni rostdan ham ko‘cha olamizmi?",
+          "ru": "Мы правда сможем переехать в воскресенье?",
+          "tj": "Рӯзи якшанбе воқеан кӯчида метавонем?"
+        }
+      ]
+    },
+    {
+      "scene_zh": "在家里，刘明和王一雪在客厅聊天儿。",
+      "scene_uz": "Uyda Liu Ming va Wang Yixue mehmonxonada suhbatlashmoqda.",
+      "scene_ru": "Дома Лю Мин и Ван Исюэ разговаривают в гостиной.",
+      "scene_tj": "Дар хона Лю Мин ва Ван Исюэ дар меҳмонхона суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "这个月花了不少钱。",
+          "uz": "Bu oy ancha pul sarfladik.",
+          "ru": "В этом месяце мы потратили немало денег.",
+          "tj": "Ин моҳ пули зиёд сарф кардем."
+        },
+        {
+          "hanzi": "是的，我们买了很多搬家时要用的东西。",
+          "uz": "Ha, ko‘chishda kerak bo‘ladigan ko‘p narsalarni oldik.",
+          "ru": "Да, мы купили много вещей, нужных для переезда.",
+          "tj": "Ҳа, барои кӯчидан чизҳои зиёди лозим харидаем."
+        },
+        {
+          "hanzi": "咱们办张信用卡吧，花的钱可以慢慢还。听说中国银行的服务不错，办了信用卡买东西还能便宜。",
+          "uz": "Kredit karta ochaylik, sarflagan pulni asta-sekin qaytaramiz. Eshitishimcha, Bank of China xizmati yaxshi, kredit karta ochsang xaridlar ham arzonroq bo‘lar ekan.",
+          "ru": "Давай оформим кредитную карту: потраченные деньги можно возвращать постепенно. Говорят, в Банке Китая хорошее обслуживание, а с кредитной картой покупки ещё дешевле.",
+          "tj": "Биё корти қарзӣ кушоем, пули сарфшударо оҳиста бармегардонем. Шунидам, хизматрасонии Бонки Чин хуб аст ва бо корти қарзӣ харид ҳам арзонтар мешавад."
+        },
+        {
+          "hanzi": "好啊！中国银行很近，走路几分钟就能到。咱们什么时候去？",
+          "uz": "Mayli! Bank juda yaqin, piyoda bir necha daqiqada yetamiz. Qachon boramiz?",
+          "ru": "Хорошо! Банк Китая совсем рядом, пешком несколько минут. Когда пойдём?",
+          "tj": "Хуб! Бонки Чин хеле наздик аст, пиёда чанд дақиқа. Кай меравем?"
+        },
+        {
+          "hanzi": "今天下午？",
+          "uz": "Bugun tushdan keyinmi?",
+          "ru": "Сегодня днём?",
+          "tj": "Имрӯз баъд аз нисфирӯзӣ?"
+        },
+        {
+          "hanzi": "我下午要去医院，很晚才能回来。",
+          "uz": "Tushdan keyin shifoxonaga boraman, juda kech qaytaman.",
+          "ru": "Днём я иду в больницу и вернусь только поздно.",
+          "tj": "Баъд аз нисфирӯзӣ ба беморхона меравам ва танҳо дер бармегардам."
+        },
+        {
+          "hanzi": "那我下午自己去吧。",
+          "uz": "Unda tushdan keyin o‘zim boraman.",
+          "ru": "Тогда я схожу днём сама.",
+          "tj": "Пас баъд аз нисфирӯзӣ худам меравам."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在家里，刘明和王一雪讨论搬家计划。",
+      "scene_uz": "Uyda Liu Ming va Wang Yixue ko‘chish rejasini muhokama qilmoqda.",
+      "scene_ru": "Дома Лю Мин и Ван Исюэ обсуждают план переезда.",
+      "scene_tj": "Дар хона Лю Мин ва Ван Исюэ нақшаи кӯчиданро муҳокима мекунанд.",
+      "turns": [
+        {
+          "hanzi": "我觉得这个星期就能搬家。我明天去买一些纸箱，很快就能准备好。搬家那天，我想请几位朋友来帮忙，最多一天就能搬完。",
+          "uz": "Menimcha, shu haftadayoq ko‘cha olamiz. Ertaga bir nechta karton quti olaman, tez tayyor bo‘lamiz. Ko‘chadigan kuni bir necha do‘stni yordamga chaqiraman, ko‘pi bilan bir kunda tugatamiz.",
+          "ru": "Думаю, мы сможем переехать уже на этой неделе. Завтра куплю коробки, быстро всё подготовим. В день переезда попрошу нескольких друзей помочь — максимум за день закончим.",
+          "tj": "Ба назарам, ҳамин ҳафта кӯчида метавонем. Фардо чанд қуттии картонӣ мехарам, зуд тайёр мешавем. Рӯзи кӯчидан чанд дӯстамро ба кӯмак мехонам, ҳадди аксар дар як рӯз тамом мекунем."
+        },
+        {
+          "hanzi": "我觉得下个月才能搬家。这周开始准备，下周去打扫新家，这么多事情最少需要两个星期才能做完。搬家那天，我们应该找一家搬家公司。",
+          "uz": "Menimcha, faqat keyingi oy ko‘cha olamiz. Shu hafta tayyorlanishni boshlaymiz, keyingi hafta yangi uyni tozalaymiz. Shuncha ishni tugatishga kamida ikki hafta kerak. Ko‘chadigan kuni ko‘chirish kompaniyasini topishimiz kerak.",
+          "ru": "Думаю, переехать получится только в следующем месяце. На этой неделе начнём готовиться, на следующей уберём новый дом. На всё это нужно минимум две недели. В день переезда лучше нанять компанию.",
+          "tj": "Ба назарам, танҳо моҳи оянда кӯчида метавонем. Ин ҳафта омодагӣ мегирем, ҳафтаи оянда хонаи навро тоза мекунем. Барои ин қадар кор ҳадди ақал ду ҳафта лозим. Рӯзи кӯчидан бояд ширкати кӯчонидан ёбем."
+        }
+      ]
+    }
+  ]
+}

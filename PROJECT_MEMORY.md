@@ -8336,15 +8336,61 @@ Priority 2:
 Priority 3:
 - Public flaglarni faqat yuqoridagi tekshiruvlar o'tgach yoqish.
 
-### HSK 3.0 versiyasi — alohida kurs (reja tasdiqlangan, ish boshlanmagan)
+### HSK 3.0 versiyasi — alohida kurs (2026-10-01: implementation tayyor, rollout flag bilan)
 
-- To'liq reja va egasining 2026-09-29 qarorlari: `docs/HSK_3.0_VERSIYASI.md`.
-- Qisqasi: HSK 3.0 · 1–4 eski kursdan alohida trek (`nhsk1`–`nhsk4`
-  kalitlari), eski kurs qoladi, XP/reyting va lug'at umumiy (lug'atda filtr).
-  HSK 3.0 ni ochish — obunasizlar uchun bir martalik 10 somoni
-  (`plan_type="hsk30_unlock"`, admin tasdig'ida `activate_plan` CHAQIRILMAYDI);
-  obunachilar to'lamaydi. Ish egasi "boshla" deganda va rasmiy syllabus fayli
-  kelgach boshlanadi.
+- To'liq reja va egasining qarorlari: `docs/HSK_3.0_VERSIYASI.md`.
+- HSK 3.0 eski kursdan alohida trek: `nhsk1`–`nhsk4`; HSK 2.0 progressi
+  saqlanadi, track almashtirilganda ikkala progress alohida tiklanadi.
+- Runtime: N1 = 103, N2 = 73, N3 = 145 mini-lesson. N4 rasmiy source yo'q,
+  shuning uchun selectable/live emas.
+- Launch chegarasi serverda: `hsk30_enabled` global kill switch va
+  `hsk30_live_levels`. Missing live-level setting xavfsiz default sifatida
+  faqat `nhsk1` ni ochadi. N2/N3 runtime borligi ularni avtomatik live qilmaydi.
+- Access: faol HSK AI Pro HSK 3.0 ga qo'shimcha to'lovsiz kiradi. Pro bo'lmasa
+  bir martalik doimiy unlock ishlaydi (`plan_type="hsk30_unlock"`, joriy
+  default narx 10 TJS, admin paneldan o'zgaradi). Admin tasdig'ida
+  `activate_plan` CHAQIRILMAYDI; subscription muddati o'zgarmaydi.
+- Mini App, Android Direct/Play va Desktop bir xil server track/access
+  qoidasidan foydalanadi. Play build tashqi checkout'ni ilova ichida
+  ko'rsatmaydi; Direct APK canonical receipt checkout'dan foydalanadi.
+- Android relizi hozir egasining ko'rsatmasi bilan to'xtatilgan: source
+  `1.7.3` / `versionCode 34` da qoladi. Kodni `main`ga yig'ish yangi reliz
+  tayyorlash yoki chiqarishga ruxsat bermaydi; `1.8.0` / 35 hozir tayyorlanmaydi.
+- HSK 3.0 onboarding, track switch, eski user promo (maksimum 2 marta,
+  3 kun cooldown), dictionary filter, recognition/pronunciation/memorize,
+  mistake/review isolation va AI curriculum context tayyor.
+- Mini App lug'atidagi 970 noyob HSK 3.0 so'zning barchasida endi uch tilli
+  misol bor. 397 ta qo'shimcha misol pinyin bilan beriladi: 341 tasi tarjima
+  qilingan kurs darslaridan, 56 tasi qo'lda tuzilgan.
+  scripts/hsk30/dictionary_examples_manual.json dan yig'iladi.
+  scripts/hsk30/build_dictionary_assets.py chiqargan
+  hsk30-dictionary-examples.js ni app route whitelist va lug'at sahifasiga
+  birga ulash kerak.
+- Android native lug'ati HSK 2.0 va HSK 3.0 so'zlarini APK ichidagi
+  `hsk-words.js` va `hsk30-words.js` dan birlashtiradi.
+  `android/tools/build_dictionary_insights.py` HSK 3.0 darslari va manual
+  misollarni `hsk-examples.json` ga yig'adi; u 970/970 HSK 3.0 so'zni offline
+  qoplaydi. `check_dictionary_assets.py` va `DictionaryAssetsTest` bu
+  qamrovni majburiy tekshiradi.
+- HSK 3.0 lug'at so'zlari uchun yodlash fallback'i mavjud belgi kartalaridan
+  tarkibiy eslatma ko'rsatadi; chiziq ma'lumoti lokal bo'lmasa HanziWriter
+  CDN'dan yuklanadi, yuklanmasa boshqaruvlar o'chadi. CDN ishlamagan/offline
+  paytda shu kam uchraydigan belgilar animatsiyasiz qoladi. Android native
+  sahifasida qo'lda tuzilgan tarkibiy izoh bo'lmagan belgilar uchun yodlash
+  prompti chiqadi; 21 ta HSK 3.0 belgisi stroke assetida yo'q va yozish uchun
+  Android backend stroke fallback'i yoki Mini App CDN fallback'i talab qilinadi.
+- `hsk-lugat.html` desktop/tablet'da 2 ustunli, keng ekranli lug'at ko'rinishiga
+  o'tadi; telefon layouti o'z holicha qoladi. Oddiy Android WebView/Chrome
+  o'lchami bo'yicha desktop/mobile breakpointlar tekshirilgan.
+- Test markazi ataylab `Tez orada`: yangi HSK 3.0 exam source/formati
+  tayyor bo'lmaguncha eski HSK 2.0 testlari yangi trackka aralashtirilmaydi.
+- Admin: HSK 3.0 enable, live N1/N2/N3, permanent-payment toggle, narx/QR,
+  alohida finance row, broadcast va reklama track/level targeting mavjud.
+- `RELEASE_FEEDBACK_HSK30.md` eski ixtiyoriy draft; uni tayyorlash yoki
+  yuborish talabi egasining ko'rsatmasi bilan olib tashlangan.
+- Rollout tartibi: production deploy → admin panelda `hsk30_enabled` ni
+  yoqish → `live_levels` faqat `nhsk1` ekanini tekshirish → kichik cohort
+  feedback → keyin N2/N3 ni alohida yoqish.
 
 ### Android klientini Mini App bilan tenglashtirish
 
@@ -10451,3 +10497,19 @@ Files touched:
   Profile UI'ga kira olmadik. Backend unit testlar lokal Python muhitida
   `pytest`, SQLAlchemy va FastAPI yo'qligi sabab yugurmadi. Migratsiya deploy
   qilinmagan.
+
+### 2026-10-02 — Lokal ishlarni main bilan birlashtirish chegarasi
+
+- `codex/local-ai`dagi yakuniy HSK 3.0 kurs/to'lov/checkout implementatsiyasi
+  asosiy manba. Eski cloud, source va checkout branchlaridagi commit hashlar
+  ancestor bo'lmasligi ularning funksiyasi lokal kodda yo'q degani emas;
+  yangiroq lokal implementatsiyani eski Stage 1 varianti bilan almashtirmang.
+- iOS app branchi bu yig'ish doirasidan chiqarilgan; uni o'zgartirish yoki
+  sinxronlash uchun alohida ko'rsatma kerak.
+- Course track/ad targeting va subscription currency migratsiya tarmoqlari
+  `0097_merge_course_and_currency` orqali yagona headga birlashadi. U schema
+  o'zgartirmaydigan merge revision; ikkala oldingi migratsiya ham zarur.
+- Android currency preference API oddiy obuna narxlarini qaytaradi. HSK 3.0
+  permanent checkout valyuta saqlangach aynan o'sha origin overview'ini qayta
+  olishi shart; aks holda `hsk30_unlock` tarifi yo'qoladi. Refresh xatosida
+  avvalgi mahsulot/narx saqlanadi, dialog qayta urinish uchun ochiq qoladi.

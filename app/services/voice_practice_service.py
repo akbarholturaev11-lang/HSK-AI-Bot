@@ -96,6 +96,9 @@ LEVEL_GUIDANCE = {
     "hsk2": "Learner is HSK2. Use ONLY HSK1-HSK2 vocabulary and grammar. Simple sentences (up to ~9 characters). Avoid any HSK3+ words.",
     "hsk3": "Learner is HSK3. Use ONLY HSK1-HSK3 vocabulary and grammar. Everyday sentences. Avoid HSK4+ words and complex written-style structures.",
     "hsk4": "Learner is HSK4. Use ONLY HSK1-HSK4 vocabulary and grammar. Natural but not advanced; avoid HSK5+ words, literary idioms, and long clauses.",
+    "nhsk1": "Learner is New HSK 3.0 N1. Use ONLY vocabulary and grammar from the learner's N1 course. Keep sentences very short and concrete; avoid N2+ material.",
+    "nhsk2": "Learner is New HSK 3.0 N2. Use ONLY vocabulary and grammar from N1-N2. Keep everyday sentences simple; avoid N3+ material.",
+    "nhsk3": "Learner is New HSK 3.0 N3. Use ONLY vocabulary and grammar from N1-N3. Use natural everyday sentences but avoid material beyond N3.",
     "hsk1_2": "Learner knows HSK1-HSK2. Use ONLY HSK1-HSK2 vocabulary and grammar. Simple short sentences, no HSK3+ words.",
     "hsk3_4": "Learner knows HSK3-HSK4. Use ONLY HSK1-HSK4 vocabulary and grammar. Avoid HSK5+ words and literary structures.",
 }
@@ -646,6 +649,8 @@ class VoicePracticeService:
             v = str(value or "").strip().lower()
             if v.startswith("hsk4"):
                 return "hsk4"
+            if v in {"nhsk1", "nhsk2", "nhsk3"}:
+                return v
             return v if v in {"hsk1", "hsk2", "hsk3"} else "hsk1"
 
         completed_lessons = 0
@@ -683,7 +688,18 @@ class VoicePracticeService:
         level = (level or "").strip().lower()
         if level.startswith("hsk4"):
             level = "hsk4"  # users.level "hsk4a"/"hsk4b" bands map to HSK4 speech level
-        if level not in {"beginner", "hsk1_2", "hsk3_4", "hsk1", "hsk2", "hsk3", "hsk4"}:
+        if level not in {
+            "beginner",
+            "hsk1_2",
+            "hsk3_4",
+            "hsk1",
+            "hsk2",
+            "hsk3",
+            "hsk4",
+            "nhsk1",
+            "nhsk2",
+            "nhsk3",
+        }:
             raise VoicePracticeError("INVALID_LEVEL", "Unknown HSK level.")
         if language not in LANGUAGE_NAMES:
             language = "ru"

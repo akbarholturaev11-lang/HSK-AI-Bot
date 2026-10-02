@@ -1,0 +1,629 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 26,
+  "source_lesson": 5,
+  "part_no": 1,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "今天我休息",
+  "subtitle": {
+    "uz": "Sana va hafta kunlarini xitoycha tartibda aytish; “会” bilan o‘rganilgan qobiliyatni ifodalash; nominal-predikativ gaplarni tushunish va ishlatish.",
+    "ru": "Называть даты и дни недели по-китайски; выражать приобретённое умение с “会”; понимать и использовать именные сказуемые.",
+    "tj": "Сана ва рӯзҳои ҳафтаро бо тартиби чинӣ гуфтан; бо “会” қобилияти омӯхташударо ифода кардан; ҷумлаҳои номӣ-хабариро фаҳмидан ва истифода бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "今天",
+      "pinyin": "jīntiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bugun",
+        "ru": "сегодня",
+        "tj": "имрӯз"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "号",
+      "pinyin": "hào",
+      "pos": "m.",
+      "meaning": {
+        "uz": "sana (oy kuni)",
+        "ru": "число месяца",
+        "tj": "санаи моҳ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "月",
+      "pinyin": "yuè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oy",
+        "ru": "месяц",
+        "tj": "моҳ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "日",
+      "pinyin": "rì",
+      "pos": "m.",
+      "meaning": {
+        "uz": "kun; sana",
+        "ru": "день; дата",
+        "tj": "рӯз; сана"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Vaqt/sanani ifodalash (1)",
+        "ru": "Выражение времени и даты (1)",
+        "tj": "Ифодаи вақт ва сана (1)"
+      },
+      "title_zh": "时间的表达（1）",
+      "rule": {
+        "uz": "Xitoychada sana odatda kattadan kichikka: yil → oy → kun/sana → hafta kuni tartibida aytiladi.",
+        "ru": "Дата по-китайски обычно выражается от крупной единицы к мелкой: год → месяц → число → день недели.",
+        "tj": "Сана ба чинӣ одатан аз калон ба хурд гуфта мешавад: сол → моҳ → рӯз/сана → рӯзи ҳафта."
+      },
+      "examples": [
+        {
+          "zh": "今天9月8号。",
+          "pinyin": "Jīntiān jiǔ yuè bā hào.",
+          "translation": {
+            "uz": "Bugun 8-sentabr.",
+            "ru": "Сегодня 8 сентября.",
+            "tj": "Имрӯз 8 сентябр аст."
+          }
+        },
+        {
+          "zh": "今天星期日。",
+          "pinyin": "Jīntiān Xīngqīrì.",
+          "translation": {
+            "uz": "Bugun yakshanba.",
+            "ru": "Сегодня воскресенье.",
+            "tj": "Имрӯз якшанбе аст."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "今天几号？",
+          "pinyin": "Jīntiān jǐ hào?",
+          "text": {
+            "uz": "Bugun nechanchi sana?",
+            "ru": "Какое сегодня число?",
+            "tj": "Имрӯз чандум аст?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "今天9月8号。",
+          "pinyin": "Jīntiān jiǔ yuè bā hào.",
+          "text": {
+            "uz": "Bugun 8-sentabr.",
+            "ru": "Сегодня 8 сентября.",
+            "tj": "Имрӯз 8 сентябр аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "今天",
+            "pinyin": "jīntiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "今天 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 今天:",
+            "tj": "Маънои калимаи 今天-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            },
+            {
+              "uz": "oy",
+              "ru": "месяц",
+              "tj": "моҳ"
+            },
+            {
+              "uz": "kun; sana",
+              "ru": "день; дата",
+              "tj": "рӯз; сана"
+            },
+            {
+              "uz": "sana (oy kuni)",
+              "ru": "число месяца",
+              "tj": "санаи моҳ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "今天 = bugun (jīntiān)",
+            "ru": "今天 = сегодня (jīntiān)",
+            "tj": "今天 = имрӯз (jīntiān)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "号",
+            "pinyin": "hào",
+            "pos": "m.",
+            "meaning": {
+              "uz": "sana (oy kuni)",
+              "ru": "число месяца",
+              "tj": "санаи моҳ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "号",
+          "pinyin": "hào",
+          "translation": {
+            "uz": "sana (oy kuni)",
+            "ru": "число месяца",
+            "tj": "санаи моҳ"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "hào qaysi ieroglif?",
+            "ru": "Какой иероглиф читается hào?",
+            "tj": "hào кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "月",
+            "今天",
+            "号",
+            "日"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "号 = sana (oy kuni) (hào)",
+            "ru": "号 = число месяца (hào)",
+            "tj": "号 = санаи моҳ (hào)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "月",
+            "pinyin": "yuè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oy",
+              "ru": "месяц",
+              "tj": "моҳ"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "月 talaffuzini tanlang:",
+            "ru": "Выберите произношение 月:",
+            "tj": "Талаффузи 月-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "rì",
+            "yuè",
+            "jīntiān",
+            "hào"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "月 — yuè",
+            "ru": "月 — yuè",
+            "tj": "月 — yuè"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "日",
+            "pinyin": "rì",
+            "pos": "m.",
+            "meaning": {
+              "uz": "kun; sana",
+              "ru": "день; дата",
+              "tj": "рӯз; сана"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kun; sana' xitoycha qaysi?",
+            "ru": "'день; дата' по-китайски?",
+            "tj": "'рӯз; сана' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "月",
+            "今天",
+            "号",
+            "日"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "kun; sana = 日 (rì)",
+            "ru": "день; дата = 日 (rì)",
+            "tj": "рӯз; сана = 日 (rì)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "今天",
+          "pinyin": "jīntiān",
+          "options": [
+            "日",
+            "号",
+            "月",
+            "今天"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "今天 — bugun (jīntiān)",
+            "ru": "今天 — сегодня (jīntiān)",
+            "tj": "今天 — имрӯз (jīntiān)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "今天",
+              {
+                "uz": "bugun",
+                "ru": "сегодня",
+                "tj": "имрӯз"
+              }
+            ],
+            [
+              "号",
+              {
+                "uz": "sana (oy kuni)",
+                "ru": "число месяца",
+                "tj": "санаи моҳ"
+              }
+            ],
+            [
+              "月",
+              {
+                "uz": "oy",
+                "ru": "месяц",
+                "tj": "моҳ"
+              }
+            ],
+            [
+              "日",
+              {
+                "uz": "kun; sana",
+                "ru": "день; дата",
+                "tj": "рӯз; сана"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Vaqt/sanani ifodalash (1)",
+              "ru": "Выражение времени и даты (1)",
+              "tj": "Ифодаи вақт ва сана (1)"
+            },
+            "title_zh": "时间的表达（1）",
+            "rule": {
+              "uz": "Xitoychada sana odatda kattadan kichikka: yil → oy → kun/sana → hafta kuni tartibida aytiladi.",
+              "ru": "Дата по-китайски обычно выражается от крупной единицы к мелкой: год → месяц → число → день недели.",
+              "tj": "Сана ба чинӣ одатан аз калон ба хурд гуфта мешавад: сол → моҳ → рӯз/сана → рӯзи ҳафта."
+            },
+            "examples": [
+              {
+                "zh": "今天9月8号。",
+                "pinyin": "Jīntiān jiǔ yuè bā hào.",
+                "translation": {
+                  "uz": "Bugun 8-sentabr.",
+                  "ru": "Сегодня 8 сентября.",
+                  "tj": "Имрӯз 8 сентябр аст."
+                }
+              },
+              {
+                "zh": "今天星期日。",
+                "pinyin": "Jīntiān Xīngqīrì.",
+                "translation": {
+                  "uz": "Bugun yakshanba.",
+                  "ru": "Сегодня воскресенье.",
+                  "tj": "Имрӯз якшанбе аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bugun 8-sentabr.",
+            "ru": "Сегодня 8 сентября.",
+            "tj": "Имрӯз 8 сентябр аст."
+          },
+          "tokens": [
+            "号",
+            "月",
+            "有",
+            "今天",
+            "日"
+          ],
+          "answer_tokens": [
+            "今天",
+            "月",
+            "号"
+          ],
+          "explanation": {
+            "uz": "今天9月8号。 — Jīntiān jiǔ yuè bā hào.",
+            "ru": "今天9月8号。 — Jīntiān jiǔ yuè bā hào.",
+            "tj": "今天9月8号。 — Jīntiān jiǔ yuè bā hào."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "号",
+          "pinyin": "hào",
+          "options": [
+            "号",
+            "今天",
+            "月",
+            "日"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "号 — sana (oy kuni) (hào)",
+            "ru": "号 — число месяца (hào)",
+            "tj": "号 — санаи моҳ (hào)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bugun 8-sentabr.",
+            "ru": "Сегодня 8 сентября.",
+            "tj": "Имрӯз 8 сентябр аст."
+          },
+          "tokens": [
+            "月",
+            "今天",
+            "日",
+            "号",
+            "有"
+          ],
+          "answer_tokens": [
+            "今天",
+            "月",
+            "号"
+          ],
+          "explanation": {
+            "uz": "今天9月8号。 — Jīntiān jiǔ yuè bā hào.",
+            "ru": "今天9月8号。 — Jīntiān jiǔ yuè bā hào.",
+            "tj": "今天9月8号。 — Jīntiān jiǔ yuè bā hào."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "号",
+          "pinyin": "hào",
+          "translation": {
+            "uz": "sana (oy kuni)",
+            "ru": "число месяца",
+            "tj": "санаи моҳ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "多少 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 多少:",
+            "tj": "Маънои калимаи 多少-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            },
+            {
+              "uz": "sana (oy kuni)",
+              "ru": "число месяца",
+              "tj": "санаи моҳ"
+            },
+            {
+              "uz": "oy",
+              "ru": "месяц",
+              "tj": "моҳ"
+            },
+            {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "多少 = qancha; nechta (duōshao)",
+            "ru": "多少 = сколько (duōshao)",
+            "tj": "多少 = чанд; чӣ қадар (duōshao)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "多少",
+            "pinyin": "duōshao",
+            "meaning": {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sana (oy kuni)' xitoycha qaysi?",
+            "ru": "'число месяца' по-китайски?",
+            "tj": "'санаи моҳ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "今天",
+            "号",
+            "日",
+            "月"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "sana (oy kuni) = 号 (hào)",
+            "ru": "число месяца = 号 (hào)",
+            "tj": "санаи моҳ = 号 (hào)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "号",
+            "pinyin": "hào",
+            "meaning": {
+              "uz": "sana (oy kuni)",
+              "ru": "число месяца",
+              "tj": "санаи моҳ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

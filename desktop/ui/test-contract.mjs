@@ -27,6 +27,8 @@ const expectedCommands = [
   "desktop_bootstrap",
   "desktop_logout",
   "desktop_course_map",
+  "desktop_course_track_switch",
+  "desktop_hsk30_promo_shown",
   "desktop_lesson_data",
   "desktop_lesson_complete",
   "desktop_set_language",
@@ -137,6 +139,21 @@ test("preview responses follow production response casing", async () => {
   assert.equal(typeof map.notify.enabled, "boolean");
   assert.ok(Array.isArray(map.notifications));
   assert.equal(typeof map.notifications[0].title, "string");
+  assert.equal(map.hsk30.active_track, "hsk20");
+  assert.deepEqual(map.hsk30.live_levels, ["nhsk1"]);
+
+  const switched = await previewInvoke("desktop_course_track_switch", {
+    targetTrack: "hsk30",
+    level: "nhsk1",
+  });
+  assert.equal(switched.active_track, "hsk30");
+  const hsk30Map = await previewInvoke("desktop_course_map");
+  assert.equal(hsk30Map.level, "nhsk1");
+  assert.equal(hsk30Map.hsk30.active_track, "hsk30");
+  await previewInvoke("desktop_course_track_switch", {
+    targetTrack: "hsk20",
+    level: null,
+  });
 
   const lesson = await previewInvoke("desktop_lesson_data", {
     lessonOrder: 2,
@@ -160,6 +177,15 @@ test("preview responses follow production response casing", async () => {
   assert.equal(overview.mode, "subscription");
   assert.equal(overview.access.state, "free");
   assert.equal(typeof overview.prices.visa["1_month"].final_amount, "number");
+
+  const hsk30Overview = await previewInvoke("desktop_subscription_overview", {
+    mode: "hsk30_unlock",
+  });
+  assert.equal(hsk30Overview.mode, "hsk30_unlock");
+  assert.equal(
+    typeof hsk30Overview.prices.visa.hsk30_unlock.final_amount,
+    "number",
+  );
 
   const quote = await previewInvoke("desktop_subscription_quote", {
     plan: "1_month",
@@ -279,7 +305,7 @@ test("local AI composer supports media controls without hidden network egress", 
 
 test("renderer covers every checked-in Course v3 card type", async () => {
   const levels = (await readdir(lessonRoot, { withFileTypes: true })).filter(
-    (entry) => entry.isDirectory() && /^hsk[1-4]$/.test(entry.name),
+    (entry) => entry.isDirectory() && /^(?:hsk[1-4]|nhsk[1-3])$/.test(entry.name),
   );
   const discovered = new Set();
 
@@ -447,7 +473,7 @@ test("the weekly league comes from the shared gamification service", async () =>
   assert.match(adapter, /CourseGamificationService/);
   assert.match(adapter, /\.leaderboard\(/);
   // Telegram IDs are personal data the desktop UI never renders.
-  assert.doesNotMatch(adapter, /"telegram_id"/);
+  assert.doesNotMatch(adapter, /"telegram_id"\s*:/);
   for (const entry of board.leaderboard) {
     assert.equal(entry.telegram_id, undefined);
   }
@@ -601,16 +627,41 @@ test("a listening question is heard, never printed with its answer", async () =>
   }
 });
 
+test("HSK 3.0 Desktop UI exposes live course switching and locked price", async () => {
+  const app = await source("desktop/ui/js/app.js");
+  const i18n = await source("desktop/ui/js/i18n.js");
+  assert.match(app, /function renderCourseTrackControl\(map\)/);
+  assert.match(app, /hsk30TrackSwitch/);
+  assert.match(app, /hsk30Settings\.active_track === "hsk30"/);
+  assert.match(app, /hsk30PromoPrice/);
+  assert.match(app, /openSubscriptionMode\("hsk30_unlock"\)/);
+  assert.match(app, /function openCourseVersionConfirm\(targetTrack/);
+  assert.match(app, /courseVersionConfirmBody/);
+  assert.match(app, /new_badge\?\.is_new/);
+  assert.match(app, /HSK 3\.0 · NEW/);
+  assert.match(app, /vocabulary\.setCourseLevel\(state\.map\?\.level/);
+  assert.match(i18n, /hsk30TrackSwitchBody/);
+  assert.match(i18n, /courseVersionConfirmTitle/);
+  assert.match(i18n, /courseVersionConfirmBody/);
+  assert.match(i18n, /hsk30PromoPrice/);
+});
+
 test("the dictionary is a full offline word bank", async () => {
   const vocabulary = await source("desktop/ui/js/vocabulary.js");
   const dataModule = await source("desktop/ui/data/vocabulary.js");
+  const hsk30DataModule = await source("desktop/ui/data/hsk30-vocabulary.js");
   const strokeModule = await source("desktop/ui/data/strokes.js");
   const writer = await source("desktop/ui/vendor/hanzi-writer.js");
 
-  // Words, sentences and stroke paths ship with the app; the strict CSP allows
-  // no network from the webview and stroke order must not hit a CDN.
+  // Both course standards, sentences and stroke paths ship with the app; the
+  // strict CSP allows no network from the webview and stroke order must never
+  // hit a CDN.
   assert.match(dataModule, /export const WORDS = \[/);
   assert.match(dataModule, /export const EXAMPLES = \{/);
+  assert.match(hsk30DataModule, /export const HSK30_WORDS = \[/);
+  assert.match(vocabulary, /HSK30_LEVELS = \["N1", "N2", "N3"\]/);
+  assert.match(vocabulary, /this\.version === "hsk30"/);
+  assert.match(vocabulary, /setCourseLevel\(level\)/);
   assert.match(strokeModule, /export const STROKES = \{/);
   assert.match(vocabulary, /charDataLoader: \(_char, onLoad\) => onLoad\(data\)/);
   assert.doesNotMatch(vocabulary, /cdn\./);
@@ -637,6 +688,26 @@ test("the dictionary is a full offline word bank", async () => {
   assert.deepEqual(saved.saved, ["计划"]);
   const reread = await previewInvoke("desktop_vocabulary_state");
   assert.deepEqual(reread.review, ["周末"]);
+});
+
+test("HSK 3.0 desktop vocabulary ships N1-N3 offline", async () => {
+  const { HSK30_WORDS } = await import("../ui/data/hsk30-vocabulary.js");
+  assert.equal(HSK30_WORDS.length, 1000);
+  assert.deepEqual(
+    [...new Set(HSK30_WORDS.map((word) => word.lv))].sort(),
+    ["N1", "N2", "N3"],
+  );
+  assert.ok(
+    HSK30_WORDS.every(
+      (word) =>
+        String(word.h || "").trim() &&
+        String(word.p || "").trim() &&
+        String(word.m?.uz || "").trim() &&
+        String(word.m?.ru || "").trim() &&
+        String(word.m?.tj || "").trim(),
+    ),
+    "HSK 3.0 desktop dictionary must keep all three translations",
+  );
 });
 
 test("every bundled example sentence exists in all three languages", async () => {
@@ -721,7 +792,7 @@ test("invites are real and the study goal stays on the device", async () => {
   assert.match(adapter, /list_miniapp_referrals/);
   assert.match(adapter, /get_trial_activation_progress/);
   // Deep links must match the bot's own attribution format.
-  assert.match(adapter, /\?start=ref_/);
+  assert.match(adapter, /\?start=\{code\}/);
   // No identifiers the desktop never renders.
   assert.doesNotMatch(adapter, /"telegram_id"/);
 

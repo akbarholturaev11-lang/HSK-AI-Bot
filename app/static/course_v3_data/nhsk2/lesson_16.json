@@ -1,0 +1,726 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 16,
+  "source_lesson": 4,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "你穿红色的很好看",
+  "subtitle": {
+    "uz": "“过” bilan o‘tgan tajribani aytish; 因为……所以…… bilan sabab-natijani ifodalash; “的” iborasidan foydalanish; kiyim va rang tanlash haqida gaplashish.",
+    "ru": "Говорить о прошлом опыте с “过”; выражать причину и следствие с 因为……所以……; использовать конструкцию с “的”; обсуждать одежду и выбор цвета.",
+    "tj": "Бо “过” таҷрибаи гузаштаеро баён кардан; бо 因为……所以…… сабабу натиҷаро ифода кардан; ибораи “的”-ро истифода бурдан; дар бораи либос ва интихоби ранг суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "过",
+      "pinyin": "guo",
+      "pos": "part.",
+      "meaning": {
+        "uz": "o‘tgan tajribani bildiruvchi yuklama",
+        "ru": "частица прошедшего опыта",
+        "tj": "ҳиссачаи таҷрибаи гузашта"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "商场",
+      "pinyin": "shāngchǎng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "savdo markazi",
+        "ru": "торговый центр",
+        "tj": "маркази савдо"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "进去",
+      "pinyin": "jìnqu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ichkariga kirmoq",
+        "ru": "зайти внутрь",
+        "tj": "ба дарун даромадан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "条",
+      "pinyin": "tiáo",
+      "pos": "m.",
+      "meaning": {
+        "uz": "uzun/ingichka narsalar uchun hisob so‘zi",
+        "ru": "счётное слово для длинных/узких предметов",
+        "tj": "воҳиди ҳисоб барои чизҳои дароз/борик"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Aspekt yuklamasi “过”",
+        "ru": "Аспектная частица “过”",
+        "tj": "Ҳиссачаи аспектии “过”"
+      },
+      "title_zh": "动态助词“过”",
+      "rule": {
+        "uz": "“过” fe’ldan keyin kelib, harakat o‘tmishda sodir bo‘lganini, lekin hozirgacha davom etmaganini bildiradi. Tuzilishi: ega+fe’l+过+obyekt. Inkor fe’l oldidan 没（有） bilan qilinadi.",
+        "ru": "“过” ставится после глагола и показывает, что действие происходило в прошлом, но не продолжается сейчас. Схема: подлежащее+глагол+过+объект; отрицание — 没（有） перед глаголом.",
+        "tj": "“过” баъди феъл омада, амале дар гузашта рух дода, то ҳозир идома наёфтанашро нишон медиҳад. Сохтор: мубтадо+феъл+过+объект; инкор бо 没（有） пеш аз феъл."
+      },
+      "examples": [
+        {
+          "zh": "她去过中国。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我吃过饺子，很好吃。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "她没去过中国。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "我们来过这家商场吗？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "陈天中吃过饺子没有？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "你看没看过那个电影？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Savdo markazi oldida Wang Yixue va Liu Xiaoxue suhbatlashmoqda.",
+        "ru": "У входа в торговый центр Ван Исюэ и Лю Сяосюэ разговаривают.",
+        "tj": "Дар назди маркази савдо Ван Исюэ ва Лю Сяосюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "妈妈，我们来过这家商场吗？",
+          "pinyin": "Māma, wǒmen láiguo zhè jiā shāngchǎng ma?",
+          "text": {
+            "uz": "Oyi, biz bu savdo markaziga oldin kelganmizmi?",
+            "ru": "Мама, мы уже бывали в этом торговом центре?",
+            "tj": "Оча, мо пештар ба ин маркази савдо омада будем?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "没来过，这是新开的。",
+          "pinyin": "Méi láiguo, zhè shì xīn kāi de.",
+          "text": {
+            "uz": "Yo‘q, kelmaganmiz, bu yangi ochilgan.",
+            "ru": "Нет, не бывали, он недавно открылся.",
+            "tj": "Не, наомада будем, ин нав кушода шудааст."
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "我们进去看看吧。",
+          "pinyin": "Wǒmen jìnqu kànkan ba.",
+          "text": {
+            "uz": "Ichkariga kirib ko‘raylik.",
+            "ru": "Давай зайдём и посмотрим.",
+            "tj": "Биё даромада тамошо кунем."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "没问题。",
+          "pinyin": "Méi wèntí.",
+          "text": {
+            "uz": "Muammo yo‘q.",
+            "ru": "Без проблем.",
+            "tj": "Мушкил нест."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "过",
+            "pinyin": "guo",
+            "pos": "part.",
+            "meaning": {
+              "uz": "o‘tgan tajribani bildiruvchi yuklama",
+              "ru": "частица прошедшего опыта",
+              "tj": "ҳиссачаи таҷрибаи гузашта"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "过 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 过:",
+            "tj": "Маънои калимаи 过-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘tgan tajribani bildiruvchi yuklama",
+              "ru": "частица прошедшего опыта",
+              "tj": "ҳиссачаи таҷрибаи гузашта"
+            },
+            {
+              "uz": "savdo markazi",
+              "ru": "торговый центр",
+              "tj": "маркази савдо"
+            },
+            {
+              "uz": "uzun/ingichka narsalar uchun hisob so‘zi",
+              "ru": "счётное слово для длинных/узких предметов",
+              "tj": "воҳиди ҳисоб барои чизҳои дароз/борик"
+            },
+            {
+              "uz": "ichkariga kirmoq",
+              "ru": "зайти внутрь",
+              "tj": "ба дарун даромадан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "过 = o‘tgan tajribani bildiruvchi yuklama (guo)",
+            "ru": "过 = частица прошедшего опыта (guo)",
+            "tj": "过 = ҳиссачаи таҷрибаи гузашта (guo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "商场",
+            "pinyin": "shāngchǎng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "savdo markazi",
+              "ru": "торговый центр",
+              "tj": "маркази савдо"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shāngchǎng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shāngchǎng?",
+            "tj": "shāngchǎng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "过",
+            "商场",
+            "条",
+            "进去"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "商场 = savdo markazi (shāngchǎng)",
+            "ru": "商场 = торговый центр (shāngchǎng)",
+            "tj": "商场 = маркази савдо (shāngchǎng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "进去",
+            "pinyin": "jìnqu",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ichkariga kirmoq",
+              "ru": "зайти внутрь",
+              "tj": "ба дарун даромадан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "进去 talaffuzini tanlang:",
+            "ru": "Выберите произношение 进去:",
+            "tj": "Талаффузи 进去-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shāngchǎng",
+            "tiáo",
+            "guo",
+            "jìnqu"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "进去 — jìnqu",
+            "ru": "进去 — jìnqu",
+            "tj": "进去 — jìnqu"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "条",
+            "pinyin": "tiáo",
+            "pos": "m.",
+            "meaning": {
+              "uz": "uzun/ingichka narsalar uchun hisob so‘zi",
+              "ru": "счётное слово для длинных/узких предметов",
+              "tj": "воҳиди ҳисоб барои чизҳои дароз/борик"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "条",
+          "pinyin": "tiáo",
+          "translation": {
+            "uz": "uzun/ingichka narsalar uchun hisob so‘zi",
+            "ru": "счётное слово для длинных/узких предметов",
+            "tj": "воҳиди ҳисоб барои чизҳои дароз/борик"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'uzun/ingichka narsalar uchun hisob so‘zi' xitoycha qaysi?",
+            "ru": "'счётное слово для длинных/узких предметов' по-китайски?",
+            "tj": "'воҳиди ҳисоб барои чизҳои дароз/борик' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "进去",
+            "条",
+            "过",
+            "商场"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "uzun/ingichka narsalar uchun hisob so‘zi = 条 (tiáo)",
+            "ru": "счётное слово для длинных/узких предметов = 条 (tiáo)",
+            "tj": "воҳиди ҳисоб барои чизҳои дароз/борик = 条 (tiáo)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "过",
+          "pinyin": "guo",
+          "options": [
+            "商场",
+            "过",
+            "条",
+            "进去"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "过 — o‘tgan tajribani bildiruvchi yuklama (guo)",
+            "ru": "过 — частица прошедшего опыта (guo)",
+            "tj": "过 — ҳиссачаи таҷрибаи гузашта (guo)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "过",
+              {
+                "uz": "o‘tgan tajribani bildiruvchi yuklama",
+                "ru": "частица прошедшего опыта",
+                "tj": "ҳиссачаи таҷрибаи гузашта"
+              }
+            ],
+            [
+              "商场",
+              {
+                "uz": "savdo markazi",
+                "ru": "торговый центр",
+                "tj": "маркази савдо"
+              }
+            ],
+            [
+              "进去",
+              {
+                "uz": "ichkariga kirmoq",
+                "ru": "зайти внутрь",
+                "tj": "ба дарун даромадан"
+              }
+            ],
+            [
+              "条",
+              {
+                "uz": "uzun/ingichka narsalar uchun hisob so‘zi",
+                "ru": "счётное слово для длинных/узких предметов",
+                "tj": "воҳиди ҳисоб барои чизҳои дароз/борик"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Aspekt yuklamasi “过”",
+              "ru": "Аспектная частица “过”",
+              "tj": "Ҳиссачаи аспектии “过”"
+            },
+            "title_zh": "动态助词“过”",
+            "rule": {
+              "uz": "“过” fe’ldan keyin kelib, harakat o‘tmishda sodir bo‘lganini, lekin hozirgacha davom etmaganini bildiradi. Tuzilishi: ega+fe’l+过+obyekt. Inkor fe’l oldidan 没（有） bilan qilinadi.",
+              "ru": "“过” ставится после глагола и показывает, что действие происходило в прошлом, но не продолжается сейчас. Схема: подлежащее+глагол+过+объект; отрицание — 没（有） перед глаголом.",
+              "tj": "“过” баъди феъл омада, амале дар гузашта рух дода, то ҳозир идома наёфтанашро нишон медиҳад. Сохтор: мубтадо+феъл+过+объект; инкор бо 没（有） пеш аз феъл."
+            },
+            "examples": [
+              {
+                "zh": "她去过中国。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "我吃过饺子，很好吃。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "她没去过中国。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "我们来过这家商场吗？",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "陈天中吃过饺子没有？",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "你看没看过那个电影？",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "过",
+            "进去",
+            "商场",
+            "我",
+            "好吃",
+            "吃",
+            "饺子",
+            "很"
+          ],
+          "answer_tokens": [
+            "我",
+            "吃",
+            "过",
+            "饺子",
+            "很",
+            "好吃"
+          ],
+          "explanation": {
+            "uz": "我吃过饺子，很好吃。",
+            "ru": "我吃过饺子，很好吃。",
+            "tj": "我吃过饺子，很好吃。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我们来过这家商场吗？",
+            "她没去过中国。",
+            "我吃过饺子，很好吃。",
+            "你看没看过那个电影？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "我吃过饺子，很好吃。 — ",
+            "ru": "我吃过饺子，很好吃。 — ",
+            "tj": "我吃过饺子，很好吃。 — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "没来过，这是新开的。",
+          "pinyin": "Méi láiguo, zhè shì xīn kāi de.",
+          "options": [
+            "妈妈，我们来过这家商场吗？",
+            "我们进去看看吧。",
+            "没来过，这是新开的。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "没来过，这是新开的。 — Yo‘q, kelmaganmiz, bu yangi ochilgan.",
+            "ru": "没来过，这是新开的。 — Нет, не бывали, он недавно открылся.",
+            "tj": "没来过，这是新开的。 — Не, наомада будем, ин нав кушода шудааст."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "条",
+          "pinyin": "tiáo",
+          "translation": {
+            "uz": "uzun/ingichka narsalar uchun hisob so‘zi",
+            "ru": "счётное слово для длинных/узких предметов",
+            "tj": "воҳиди ҳисоб барои чизҳои дароз/борик"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "一起 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 一起:",
+            "tj": "Маънои калимаи 一起-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ichkariga kirmoq",
+              "ru": "зайти внутрь",
+              "tj": "ба дарун даромадан"
+            },
+            {
+              "uz": "o‘tgan tajribani bildiruvchi yuklama",
+              "ru": "частица прошедшего опыта",
+              "tj": "ҳиссачаи таҷрибаи гузашта"
+            },
+            {
+              "uz": "birga",
+              "ru": "вместе",
+              "tj": "якҷо"
+            },
+            {
+              "uz": "savdo markazi",
+              "ru": "торговый центр",
+              "tj": "маркази савдо"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "一起 = birga (yìqǐ)",
+            "ru": "一起 = вместе (yìqǐ)",
+            "tj": "一起 = якҷо (yìqǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "一起",
+            "pinyin": "yìqǐ",
+            "meaning": {
+              "uz": "birga",
+              "ru": "вместе",
+              "tj": "якҷо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'uzun/ingichka narsalar uchun hisob so‘zi' xitoycha qaysi?",
+            "ru": "'счётное слово для длинных/узких предметов' по-китайски?",
+            "tj": "'воҳиди ҳисоб барои чизҳои дароз/борик' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "商场",
+            "条",
+            "进去",
+            "过"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "uzun/ingichka narsalar uchun hisob so‘zi = 条 (tiáo)",
+            "ru": "счётное слово для длинных/узких предметов = 条 (tiáo)",
+            "tj": "воҳиди ҳисоб барои чизҳои дароз/борик = 条 (tiáo)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "条",
+            "pinyin": "tiáo",
+            "meaning": {
+              "uz": "uzun/ingichka narsalar uchun hisob so‘zi",
+              "ru": "счётное слово для длинных/узких предметов",
+              "tj": "воҳиди ҳисоб барои чизҳои дароз/борик"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,564 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 1,
+  "source_lesson": 1,
+  "part_no": 1,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "AI小语，你好！",
+  "subtitle": {
+    "uz": "Salomlashish, minnatdorchilik va xayrlashish uchun odobli iboralarni tushunish va ishlatish; xitoycha muloqot odobi hamda hurmat shakli 您 ni tushunish va qo'llash.",
+    "ru": "Понимать и использовать вежливые выражения для приветствия, благодарности и прощания; понимать нормы китайского общения и употреблять уважительную форму 您.",
+    "tj": "Ибораҳои хушмуомиларо барои салом, изҳори сипос ва хайрбод фаҳмидан ва истифода бурдан; одоби муоширати чинӣ ва шакли эҳтиромии 您-ро фаҳмидан ва ба кор бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "你好",
+      "pinyin": "nǐ hǎo",
+      "pos": "phrase",
+      "meaning": {
+        "uz": "salom",
+        "ru": "привет; здравствуйте",
+        "tj": "салом"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "大家",
+      "pinyin": "dàjiā",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "hamma; barchangiz",
+        "ru": "все; все вы",
+        "tj": "ҳама; ҳамаи шумо"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "好",
+      "pinyin": "hǎo",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "yaxshi; yaxshi bo'lmoq",
+        "ru": "хороший; хорошо",
+        "tj": "хуб; хуб будан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "学生",
+      "pinyin": "xuésheng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o'quvchi; talaba",
+        "ru": "ученик; студент",
+        "tj": "хонанда; донишҷӯ"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "O'qishning birinchi kuni darsda talabalar salomlashish iboralarini o'rganadilar.",
+        "ru": "В первый учебный день на занятии студенты изучают выражения для приветствия.",
+        "tj": "Дар рӯзи аввали таҳсил, дар дарс донишҷӯён ибораҳои саломро меомӯзанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "大家好！",
+          "pinyin": "Dàjiā hǎo!",
+          "text": {
+            "uz": "Hammaga salom!",
+            "ru": "Здравствуйте, все!",
+            "tj": "Салом ба ҳама!"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "你好",
+            "pinyin": "nǐ hǎo",
+            "pos": "phrase",
+            "meaning": {
+              "uz": "salom",
+              "ru": "привет; здравствуйте",
+              "tj": "салом"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你好",
+          "pinyin": "nǐ hǎo",
+          "translation": {
+            "uz": "salom",
+            "ru": "привет; здравствуйте",
+            "tj": "салом"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "你好 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 你好:",
+            "tj": "Маънои калимаи 你好-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hamma; barchangiz",
+              "ru": "все; все вы",
+              "tj": "ҳама; ҳамаи шумо"
+            },
+            {
+              "uz": "salom",
+              "ru": "привет; здравствуйте",
+              "tj": "салом"
+            },
+            {
+              "uz": "yaxshi; yaxshi bo'lmoq",
+              "ru": "хороший; хорошо",
+              "tj": "хуб; хуб будан"
+            },
+            {
+              "uz": "o'quvchi; talaba",
+              "ru": "ученик; студент",
+              "tj": "хонанда; донишҷӯ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你好 = salom (nǐ hǎo)",
+            "ru": "你好 = привет; здравствуйте (nǐ hǎo)",
+            "tj": "你好 = салом (nǐ hǎo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "大家",
+            "pinyin": "dàjiā",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "hamma; barchangiz",
+              "ru": "все; все вы",
+              "tj": "ҳама; ҳамаи шумо"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dàjiā qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dàjiā?",
+            "tj": "dàjiā кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "学生",
+            "你好",
+            "大家",
+            "好"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "大家 = hamma; barchangiz (dàjiā)",
+            "ru": "大家 = все; все вы (dàjiā)",
+            "tj": "大家 = ҳама; ҳамаи шумо (dàjiā)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "好",
+            "pinyin": "hǎo",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "yaxshi; yaxshi bo'lmoq",
+              "ru": "хороший; хорошо",
+              "tj": "хуб; хуб будан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "好 talaffuzini tanlang:",
+            "ru": "Выберите произношение 好:",
+            "tj": "Талаффузи 好-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "dàjiā",
+            "hǎo",
+            "xuésheng",
+            "nǐ hǎo"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "好 — hǎo",
+            "ru": "好 — hǎo",
+            "tj": "好 — hǎo"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "学生",
+            "pinyin": "xuésheng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o'quvchi; talaba",
+              "ru": "ученик; студент",
+              "tj": "хонанда; донишҷӯ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o'quvchi; talaba' xitoycha qaysi?",
+            "ru": "'ученик; студент' по-китайски?",
+            "tj": "'хонанда; донишҷӯ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "大家",
+            "好",
+            "你好",
+            "学生"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "o'quvchi; talaba = 学生 (xuésheng)",
+            "ru": "ученик; студент = 学生 (xuésheng)",
+            "tj": "хонанда; донишҷӯ = 学生 (xuésheng)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "你好",
+          "pinyin": "nǐ hǎo",
+          "options": [
+            "好",
+            "你好",
+            "学生",
+            "大家"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你好 — salom (nǐ hǎo)",
+            "ru": "你好 — привет; здравствуйте (nǐ hǎo)",
+            "tj": "你好 — салом (nǐ hǎo)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "你好",
+              {
+                "uz": "salom",
+                "ru": "привет; здравствуйте",
+                "tj": "салом"
+              }
+            ],
+            [
+              "大家",
+              {
+                "uz": "hamma; barchangiz",
+                "ru": "все; все вы",
+                "tj": "ҳама; ҳамаи шумо"
+              }
+            ],
+            [
+              "好",
+              {
+                "uz": "yaxshi; yaxshi bo'lmoq",
+                "ru": "хороший; хорошо",
+                "tj": "хуб; хуб будан"
+              }
+            ],
+            [
+              "学生",
+              {
+                "uz": "o'quvchi; talaba",
+                "ru": "ученик; студент",
+                "tj": "хонанда; донишҷӯ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "你好",
+          "pinyin": "nǐ hǎo",
+          "options": [
+            "学生",
+            "大家",
+            "你好",
+            "好"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "你好 — salom (nǐ hǎo)",
+            "ru": "你好 — привет; здравствуйте (nǐ hǎo)",
+            "tj": "你好 — салом (nǐ hǎo)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Hammaga salom!",
+            "ru": "Здравствуйте, все!",
+            "tj": "Салом ба ҳама!"
+          },
+          "tokens": [
+            "学生",
+            "好",
+            "你好",
+            "大家"
+          ],
+          "answer_tokens": [
+            "大家",
+            "好"
+          ],
+          "explanation": {
+            "uz": "大家好！ — Dàjiā hǎo!",
+            "ru": "大家好！ — Dàjiā hǎo!",
+            "tj": "大家好！ — Dàjiā hǎo!"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "大家",
+          "pinyin": "dàjiā",
+          "translation": {
+            "uz": "hamma; barchangiz",
+            "ru": "все; все вы",
+            "tj": "ҳама; ҳамаи шумо"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "大家好！",
+          "pinyin": "Dàjiā hǎo!",
+          "translation": {
+            "uz": "Hammaga salom!",
+            "ru": "Здравствуйте, все!",
+            "tj": "Салом ба ҳама!"
+          },
+          "tokens": {
+            "uz": [
+              "Hammaga",
+              "salom"
+            ],
+            "ru": [
+              "Здравствуйте",
+              "все"
+            ],
+            "tj": [
+              "ҳама",
+              "Салом",
+              "ба"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Hammaga",
+              "salom"
+            ],
+            "ru": [
+              "Здравствуйте",
+              "все"
+            ],
+            "tj": [
+              "Салом",
+              "ба",
+              "ҳама"
+            ]
+          },
+          "explanation": {
+            "uz": "大家好！ — Hammaga salom!",
+            "ru": "大家好！ — Здравствуйте, все!",
+            "tj": "大家好！ — Салом ба ҳама!"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你好",
+          "pinyin": "nǐ hǎo",
+          "translation": {
+            "uz": "salom",
+            "ru": "привет; здравствуйте",
+            "tj": "салом"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "大家 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 大家:",
+            "tj": "Маънои калимаи 大家-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "salom",
+              "ru": "привет; здравствуйте",
+              "tj": "салом"
+            },
+            {
+              "uz": "o'quvchi; talaba",
+              "ru": "ученик; студент",
+              "tj": "хонанда; донишҷӯ"
+            },
+            {
+              "uz": "hamma; barchangiz",
+              "ru": "все; все вы",
+              "tj": "ҳама; ҳамаи шумо"
+            },
+            {
+              "uz": "yaxshi; yaxshi bo'lmoq",
+              "ru": "хороший; хорошо",
+              "tj": "хуб; хуб будан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "大家 = hamma; barchangiz (dàjiā)",
+            "ru": "大家 = все; все вы (dàjiā)",
+            "tj": "大家 = ҳама; ҳамаи шумо (dàjiā)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "大家",
+            "pinyin": "dàjiā",
+            "meaning": {
+              "uz": "hamma; barchangiz",
+              "ru": "все; все вы",
+              "tj": "ҳама; ҳамаи шумо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'salom' xitoycha qaysi?",
+            "ru": "'привет; здравствуйте' по-китайски?",
+            "tj": "'салом' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "大家",
+            "好",
+            "你好",
+            "学生"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "salom = 你好 (nǐ hǎo)",
+            "ru": "привет; здравствуйте = 你好 (nǐ hǎo)",
+            "tj": "салом = 你好 (nǐ hǎo)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "你好",
+            "pinyin": "nǐ hǎo",
+            "meaning": {
+              "uz": "salom",
+              "ru": "привет; здравствуйте",
+              "tj": "салом"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

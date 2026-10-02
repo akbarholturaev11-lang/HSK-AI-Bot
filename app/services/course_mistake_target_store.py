@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 
-from sqlalchemy import func, select, update
+from sqlalchemy import func, or_, select, update
 
 from app.db.models.course_mistake import CourseMistake
 from app.db.models.course_mistake_target import CourseMistakeTarget
@@ -78,6 +78,14 @@ class CourseMistakeTargetStore:
     def __init__(self, session):
         self.session = session
 
+    @staticmethod
+    def _track_filter(query, column, track: str | None):
+        if track == "hsk30":
+            return query.where(column.like("nhsk%"))
+        if track == "hsk20":
+            return query.where(or_(column.is_(None), ~column.like("nhsk%")))
+        return query
+
     async def get(self, user_id: int, category: str, key: str) -> CourseMistakeTarget | None:
         result = await self.session.execute(
             select(CourseMistakeTarget).where(
@@ -138,15 +146,21 @@ class CourseMistakeTargetStore:
             row.passed_formats = ""
         return row
 
-    async def unsynced_rows(self, user_id: int, limit: int = SYNC_BATCH) -> list[CourseMistake]:
+    async def unsynced_rows(
+        self,
+        user_id: int,
+        limit: int = SYNC_BATCH,
+        *,
+        track: str | None = None,
+    ) -> list[CourseMistake]:
+        query = select(CourseMistake).where(
+            CourseMistake.user_id == user_id,
+            CourseMistake.wrong_count > CourseMistake.resolved_count,
+            CourseMistake.target_key.is_(None),
+        )
+        query = self._track_filter(query, CourseMistake.level, track)
         result = await self.session.execute(
-            select(CourseMistake)
-            .where(
-                CourseMistake.user_id == user_id,
-                CourseMistake.wrong_count > CourseMistake.resolved_count,
-                CourseMistake.target_key.is_(None),
-            )
-            .order_by(CourseMistake.last_seen_at.asc(), CourseMistake.id.asc())
+            query.order_by(CourseMistake.last_seen_at.asc(), CourseMistake.id.asc())
             .limit(limit)
         )
         return list(result.scalars().all())
@@ -158,6 +172,7 @@ class CourseMistakeTargetStore:
         category: str | None = None,
         limit: int = 50,
         offset: int = 0,
+        track: str | None = None,
     ) -> list[CourseMistakeTarget]:
         query = (
             select(CourseMistakeTarget)
@@ -170,15 +185,20 @@ class CourseMistakeTargetStore:
         )
         if category:
             query = query.where(CourseMistakeTarget.category == category)
+        query = self._track_filter(query, CourseMistakeTarget.level, track)
         result = await self.session.execute(query.offset(max(0, offset)).limit(max(1, limit)))
         return list(result.scalars().all())
 
-    async def counts(self, user_id: int) -> dict[str, int]:
-        result = await self.session.execute(
-            select(CourseMistakeTarget.category, func.count(CourseMistakeTarget.id))
-            .where(CourseMistakeTarget.user_id == user_id, CourseMistakeTarget.status == "active")
-            .group_by(CourseMistakeTarget.category)
+    async def counts(self, user_id: int, *, track: str | None = None) -> dict[str, int]:
+        query = select(
+            CourseMistakeTarget.category,
+            func.count(CourseMistakeTarget.id),
+        ).where(
+            CourseMistakeTarget.user_id == user_id,
+            CourseMistakeTarget.status == "active",
         )
+        query = self._track_filter(query, CourseMistakeTarget.level, track)
+        result = await self.session.execute(query.group_by(CourseMistakeTarget.category))
         return {str(category): int(count or 0) for category, count in result.all()}
 
     async def by_ids(self, user_id: int, ids: list[int], *, lock: bool = False) -> dict[int, CourseMistakeTarget]:

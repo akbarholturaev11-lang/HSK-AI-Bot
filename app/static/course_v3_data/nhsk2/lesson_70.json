@@ -1,0 +1,806 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 70,
+  "source_lesson": 15,
+  "part_no": 1,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "我想再去一次中国",
+  "subtitle": {
+    "uz": "“次” bilan harakat necha marta sodir bo‘lganini aytish; frequency complement va obyektning tartibini to‘g‘ri qo‘llash; “有+miqdor” bilan ma’lum miqdorga yetganlikni ifodalash; sayohat va qaytish rejalari haqida gaplashish.",
+    "ru": "Выражать количество повторений действия с “次”; правильно располагать дополнение кратности и объект; выражать достигнутое количество конструкцией “有+количество”; говорить о путешествиях и возвращении домой.",
+    "tj": "Бо “次” шумораи такрори амалро гуфтан; ҷойи пуркунандаи такрор ва объектро дуруст истифода бурдан; бо “有+миқдор” расидан ба миқдори муайянро ифода кардан; дар бораи сафар ва бозгашт суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "姓名",
+      "pinyin": "xìngmíng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ism-familiya",
+        "ru": "имя и фамилия",
+        "tj": "ному насаб"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "出国",
+      "pinyin": "chūguó",
+      "pos": "v.",
+      "meaning": {
+        "uz": "chet elga chiqmoq",
+        "ru": "ехать за границу",
+        "tj": "ба хориҷ рафтан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "门票",
+      "pinyin": "ménpiào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kirish chiptasi",
+        "ru": "входной билет",
+        "tj": "чиптаи даромад"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "高中",
+      "pinyin": "gāozhōng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yuqori sinf; o‘rta maktabning yuqori bosqichi",
+        "ru": "старшая школа",
+        "tj": "мактаби миёнаи болоӣ"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Takror soni to‘ldiruvchisi (1)",
+        "ru": "Дополнение кратности (1)",
+        "tj": "Пуркунандаи такрор (1)"
+      },
+      "title_zh": "动量补语（1）",
+      "rule": {
+        "uz": "“son+次” fe’ldan keyin kelib, harakat necha marta sodir bo‘lganini bildiradi. Fe’l obyekt ham olsa, obyekt odam yoki joy nomi bo‘lsa frequency complement oldida ham, keyin ham kelishi mumkin.",
+        "ru": "“числительное+次” после глагола образует дополнение кратности и показывает число повторений действия. Если объект — имя человека или место, он может стоять до или после дополнения.",
+        "tj": "“шумора+次” баъди феъл омада, шумораи рух додани амалро нишон медиҳад. Агар объект номи шахс ё ҷой бошад, метавонад пеш ё пас аз пуркунандаи такрор ояд."
+      },
+      "examples": [
+        {
+          "zh": "我想去中国，虽然去过一次，但是很想再去一次。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "安妮去过一次北京。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "李文见了杨同乐两次。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda o‘quvchilar imtihon topshirmoqda.",
+        "ru": "В классе ученики сдают экзамен.",
+        "tj": "Дар синф донишҷӯён имтиҳон месупоранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "考试就要开始了，请大家写上姓名，写好后就可以做题了。",
+          "pinyin": "Kǎoshì jiù yào kāishǐ le, qǐng dàjiā xiě shàng xìngmíng, xiěhǎo hòu jiù kěyǐ zuò tí le.",
+          "text": {
+            "uz": "Imtihon boshlanishiga oz qoldi, iltimos ism-familiyangizni yozing, yozib bo‘lgach savollarni ishlashingiz mumkin.",
+            "ru": "Экзамен сейчас начнётся. Напишите имя и фамилию; после этого можно приступать к заданиям.",
+            "tj": "Имтиҳон ҳозир оғоз мешавад. Лутфан ному насабатонро нависед; баъд аз он саволҳоро иҷро кунед."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "老师，我做完了。",
+          "pinyin": "Lǎoshī, wǒ zuòwán le.",
+          "text": {
+            "uz": "Ustoz, men tugatdim.",
+            "ru": "Преподаватель, я закончила.",
+            "tj": "Устод, ман тамом кардам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "老师，我也做完了。",
+          "pinyin": "Lǎoshī, wǒ yě zuòwán le.",
+          "text": {
+            "uz": "Ustoz, men ham tugatdim.",
+            "ru": "Преподаватель, я тоже закончил.",
+            "tj": "Устод, ман ҳам тамом кардам."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "……对了，你们考完试想做什么？",
+          "pinyin": "... Duì le, nǐmen kǎowán shì xiǎng zuò shénme?",
+          "text": {
+            "uz": "Aytgancha, imtihondan keyin nima qilmoqchisizlar?",
+            "ru": "Кстати, что хотите делать после экзамена?",
+            "tj": "Ростӣ, баъди имтиҳон чӣ кор кардан мехоҳед?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Qahvaxonada Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В кафе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар қаҳвахона Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "考完试了，我现在可以出国旅游了。",
+          "pinyin": "Kǎowán shì le, wǒ xiànzài kěyǐ chūguó lǚyóu le.",
+          "text": {
+            "uz": "Imtihon tugadi, endi chet elga sayohat qila olaman.",
+            "ru": "Экзамен закончился, теперь я могу путешествовать за границу.",
+            "tj": "Имтиҳон тамом шуд, ҳоло метавонам ба хориҷ саёҳат кунам."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "你要去哪儿？",
+          "pinyin": "Nǐ yào qù nǎr?",
+          "text": {
+            "uz": "Qayerga bormoqchisan?",
+            "ru": "Куда собираешься?",
+            "tj": "Ба куҷо рафтан мехоҳӣ?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "你想做的事情很多啊！",
+          "pinyin": "Nǐ xiǎng zuò de shìqing hěn duō a!",
+          "text": {
+            "uz": "Qilmoqchi bo‘lgan ishlaring juda ko‘p ekan!",
+            "ru": "У тебя столько планов!",
+            "tj": "Корҳое, ки кардан мехоҳӣ, хеле зиёданд!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Qahvaxonada Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В кафе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар қаҳвахона Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "不到一年。我六月的时候回去了一次。",
+          "pinyin": "Bú dào yì nián. Wǒ Liùyuè de shíhou huíqùle yí cì.",
+          "text": {
+            "uz": "Bir yil bo‘lgani yo‘q. Iyun oyida bir marta qaytgandim.",
+            "ru": "Ещё не год. Я один раз ездил домой в июне.",
+            "tj": "Ҳанӯз як сол не. Моҳи июн як бор баргашта будам."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我怎么忘了？还是我送你去的机场呢。",
+          "pinyin": "Wǒ zěnme wàng le? Háishi wǒ sòng nǐ qù de jīchǎng ne.",
+          "text": {
+            "uz": "Qanday unutibman? Axir seni aeroportga men kuzatgan edim.",
+            "ru": "Как я могла забыть? Ведь именно я провожала тебя в аэропорт.",
+            "tj": "Чӣ хел фаромӯш кардаам? Охир ман туро ба фурудгоҳ гусел карда будам."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "是啊。",
+          "pinyin": "Shì a.",
+          "text": {
+            "uz": "Ha.",
+            "ru": "Да.",
+            "tj": "Ҳа."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "姓名",
+            "pinyin": "xìngmíng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ism-familiya",
+              "ru": "имя и фамилия",
+              "tj": "ному насаб"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "姓名",
+          "pinyin": "xìngmíng",
+          "options": [
+            "门票",
+            "高中",
+            "姓名",
+            "出国"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "姓名 — ism-familiya (xìngmíng)",
+            "ru": "姓名 — имя и фамилия (xìngmíng)",
+            "tj": "姓名 — ному насаб (xìngmíng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "出国",
+            "pinyin": "chūguó",
+            "pos": "v.",
+            "meaning": {
+              "uz": "chet elga chiqmoq",
+              "ru": "ехать за границу",
+              "tj": "ба хориҷ рафтан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "出国",
+          "pinyin": "chūguó",
+          "translation": {
+            "uz": "chet elga chiqmoq",
+            "ru": "ехать за границу",
+            "tj": "ба хориҷ рафтан"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "出国 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 出国:",
+            "tj": "Маънои калимаи 出国-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chet elga chiqmoq",
+              "ru": "ехать за границу",
+              "tj": "ба хориҷ рафтан"
+            },
+            {
+              "uz": "kirish chiptasi",
+              "ru": "входной билет",
+              "tj": "чиптаи даромад"
+            },
+            {
+              "uz": "ism-familiya",
+              "ru": "имя и фамилия",
+              "tj": "ному насаб"
+            },
+            {
+              "uz": "yuqori sinf; o‘rta maktabning yuqori bosqichi",
+              "ru": "старшая школа",
+              "tj": "мактаби миёнаи болоӣ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "出国 = chet elga chiqmoq (chūguó)",
+            "ru": "出国 = ехать за границу (chūguó)",
+            "tj": "出国 = ба хориҷ рафтан (chūguó)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "门票",
+            "pinyin": "ménpiào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kirish chiptasi",
+              "ru": "входной билет",
+              "tj": "чиптаи даромад"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "ménpiào qaysi ieroglif?",
+            "ru": "Какой иероглиф читается ménpiào?",
+            "tj": "ménpiào кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "出国",
+            "姓名",
+            "高中",
+            "门票"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "门票 = kirish chiptasi (ménpiào)",
+            "ru": "门票 = входной билет (ménpiào)",
+            "tj": "门票 = чиптаи даромад (ménpiào)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "高中",
+            "pinyin": "gāozhōng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yuqori sinf; o‘rta maktabning yuqori bosqichi",
+              "ru": "старшая школа",
+              "tj": "мактаби миёнаи болоӣ"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "高中 talaffuzini tanlang:",
+            "ru": "Выберите произношение 高中:",
+            "tj": "Талаффузи 高中-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xìngmíng",
+            "chūguó",
+            "gāozhōng",
+            "ménpiào"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "高中 — gāozhōng",
+            "ru": "高中 — gāozhōng",
+            "tj": "高中 — gāozhōng"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ism-familiya' xitoycha qaysi?",
+            "ru": "'имя и фамилия' по-китайски?",
+            "tj": "'ному насаб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "门票",
+            "姓名",
+            "高中",
+            "出国"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ism-familiya = 姓名 (xìngmíng)",
+            "ru": "имя и фамилия = 姓名 (xìngmíng)",
+            "tj": "ному насаб = 姓名 (xìngmíng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "姓名",
+              {
+                "uz": "ism-familiya",
+                "ru": "имя и фамилия",
+                "tj": "ному насаб"
+              }
+            ],
+            [
+              "出国",
+              {
+                "uz": "chet elga chiqmoq",
+                "ru": "ехать за границу",
+                "tj": "ба хориҷ рафтан"
+              }
+            ],
+            [
+              "门票",
+              {
+                "uz": "kirish chiptasi",
+                "ru": "входной билет",
+                "tj": "чиптаи даромад"
+              }
+            ],
+            [
+              "高中",
+              {
+                "uz": "yuqori sinf; o‘rta maktabning yuqori bosqichi",
+                "ru": "старшая школа",
+                "tj": "мактаби миёнаи болоӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Takror soni to‘ldiruvchisi (1)",
+              "ru": "Дополнение кратности (1)",
+              "tj": "Пуркунандаи такрор (1)"
+            },
+            "title_zh": "动量补语（1）",
+            "rule": {
+              "uz": "“son+次” fe’ldan keyin kelib, harakat necha marta sodir bo‘lganini bildiradi. Fe’l obyekt ham olsa, obyekt odam yoki joy nomi bo‘lsa frequency complement oldida ham, keyin ham kelishi mumkin.",
+              "ru": "“числительное+次” после глагола образует дополнение кратности и показывает число повторений действия. Если объект — имя человека или место, он может стоять до или после дополнения.",
+              "tj": "“шумора+次” баъди феъл омада, шумораи рух додани амалро нишон медиҳад. Агар объект номи шахс ё ҷой бошад, метавонад пеш ё пас аз пуркунандаи такрор ояд."
+            },
+            "examples": [
+              {
+                "zh": "我想去中国，虽然去过一次，但是很想再去一次。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "安妮去过一次北京。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "李文见了杨同乐两次。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我想去中国，虽然去过一次，但是很想再去一次。",
+            "安妮去过一次北京。",
+            "李文见了杨同乐两次。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我想去中国，虽然去过一次，但是很想再去一次。 — ",
+            "ru": "我想去中国，虽然去过一次，但是很想再去一次。 — ",
+            "tj": "我想去中国，虽然去过一次，但是很想再去一次。 — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "考完试了，我现在可以出国旅游了。",
+          "pinyin": "Kǎowán shì le, wǒ xiànzài kěyǐ chūguó lǚyóu le.",
+          "translation": {
+            "uz": "Imtihon tugadi, endi chet elga sayohat qila olaman.",
+            "ru": "Экзамен закончился, теперь я могу путешествовать за границу.",
+            "tj": "Имтиҳон тамом шуд, ҳоло метавонам ба хориҷ саёҳат кунам."
+          },
+          "tokens": {
+            "uz": [
+              "qila",
+              "tugadi",
+              "endi",
+              "sayohat",
+              "boshlanishiga",
+              "oz",
+              "Imtihon",
+              "chet",
+              "elga",
+              "olaman"
+            ],
+            "ru": [
+              "теперь",
+              "сейчас",
+              "начнётся",
+              "за",
+              "границу",
+              "я",
+              "Экзамен",
+              "путешествовать",
+              "могу",
+              "закончился"
+            ],
+            "tj": [
+              "тамом",
+              "ҳоло",
+              "метавонам",
+              "шуд",
+              "саёҳат",
+              "Имтиҳон",
+              "ҳозир",
+              "оғоз",
+              "кунам",
+              "ба",
+              "хориҷ"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Imtihon",
+              "tugadi",
+              "endi",
+              "chet",
+              "elga",
+              "sayohat",
+              "qila",
+              "olaman"
+            ],
+            "ru": [
+              "Экзамен",
+              "закончился",
+              "теперь",
+              "я",
+              "могу",
+              "путешествовать",
+              "за",
+              "границу"
+            ],
+            "tj": [
+              "Имтиҳон",
+              "тамом",
+              "шуд",
+              "ҳоло",
+              "метавонам",
+              "ба",
+              "хориҷ",
+              "саёҳат",
+              "кунам"
+            ]
+          },
+          "explanation": {
+            "uz": "考完试了，我现在可以出国旅游了。 — Imtihon tugadi, endi chet elga sayohat qila olaman.",
+            "ru": "考完试了，我现在可以出国旅游了。 — Экзамен закончился, теперь я могу путешествовать за границу.",
+            "tj": "考完试了，我现在可以出国旅游了。 — Имтиҳон тамом шуд, ҳоло метавонам ба хориҷ саёҳат кунам."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "门票",
+          "pinyin": "ménpiào",
+          "options": [
+            "出国",
+            "姓名",
+            "高中",
+            "门票"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "门票 — kirish chiptasi (ménpiào)",
+            "ru": "门票 — входной билет (ménpiào)",
+            "tj": "门票 — чиптаи даромад (ménpiào)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "出国",
+          "pinyin": "chūguó",
+          "translation": {
+            "uz": "chet elga chiqmoq",
+            "ru": "ехать за границу",
+            "tj": "ба хориҷ рафтан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "包 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 包:",
+            "tj": "Маънои калимаи 包-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sumka; o‘ram; o‘ramoq",
+              "ru": "сумка; пакет; заворачивать",
+              "tj": "халта; баста; бастан"
+            },
+            {
+              "uz": "ism-familiya",
+              "ru": "имя и фамилия",
+              "tj": "ному насаб"
+            },
+            {
+              "uz": "kirish chiptasi",
+              "ru": "входной билет",
+              "tj": "чиптаи даромад"
+            },
+            {
+              "uz": "chet elga chiqmoq",
+              "ru": "ехать за границу",
+              "tj": "ба хориҷ рафтан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "包 = sumka; o‘ram; o‘ramoq (bāo)",
+            "ru": "包 = сумка; пакет; заворачивать (bāo)",
+            "tj": "包 = халта; баста; бастан (bāo)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "包",
+            "pinyin": "bāo",
+            "meaning": {
+              "uz": "sumka; o‘ram; o‘ramoq",
+              "ru": "сумка; пакет; заворачивать",
+              "tj": "халта; баста; бастан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'chet elga chiqmoq' xitoycha qaysi?",
+            "ru": "'ехать за границу' по-китайски?",
+            "tj": "'ба хориҷ рафтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "高中",
+            "姓名",
+            "门票",
+            "出国"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "chet elga chiqmoq = 出国 (chūguó)",
+            "ru": "ехать за границу = 出国 (chūguó)",
+            "tj": "ба хориҷ рафтан = 出国 (chūguó)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "出国",
+            "pinyin": "chūguó",
+            "meaning": {
+              "uz": "chet elga chiqmoq",
+              "ru": "ехать за границу",
+              "tj": "ба хориҷ рафтан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

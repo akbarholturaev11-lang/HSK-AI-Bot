@@ -1,0 +1,476 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 5,
+  "source_lesson": 2,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我叫李文",
+  "subtitle": {
+    "uz": "Boshqalarning o'zini tanishtirishini tushunish va xitoycha ism bilan o'zini tanishtirish; 对不起 va 没关系 orqali uzr so'rash va javob berish; xitoy tilidagi asosiy so'z tartibini tushunish.",
+    "ru": "Понимать самопрезентацию собеседника и представляться с китайским именем; извиняться с 对不起 и отвечать 没关系; освоить базовый порядок слов в китайском языке.",
+    "tj": "Худмуаррифии дигаронро фаҳмидан ва бо номи чинӣ худро муаррифӣ кардан; бо 对不起 узр пурсидан ва бо 没关系 ҷавоб додан; тартиби асосии калимаҳои забони чиниро аз худ кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "请问",
+      "pinyin": "qǐngwèn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kechirasiz, so'rasam",
+        "ru": "разрешите спросить; извините",
+        "tj": "мебахшед, пурсам"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "你",
+      "pinyin": "nǐ",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "sen",
+        "ru": "ты",
+        "tj": "ту"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "叫",
+      "pinyin": "jiào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "deb atalmoq; ismi bo'lmoq",
+        "ru": "зваться; называться",
+        "tj": "ном доштан; номида шудан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "什么",
+      "pinyin": "shénme",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "nima; qanday",
+        "ru": "что; какой",
+        "tj": "чӣ; кадом"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "请问",
+            "pinyin": "qǐngwèn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kechirasiz, so'rasam",
+              "ru": "разрешите спросить; извините",
+              "tj": "мебахшед, пурсам"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "请问",
+          "pinyin": "qǐngwèn",
+          "translation": {
+            "uz": "kechirasiz, so'rasam",
+            "ru": "разрешите спросить; извините",
+            "tj": "мебахшед, пурсам"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "请问",
+          "pinyin": "qǐngwèn",
+          "options": [
+            "请问",
+            "叫",
+            "什么",
+            "你"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "请问 — kechirasiz, so'rasam (qǐngwèn)",
+            "ru": "请问 — разрешите спросить; извините (qǐngwèn)",
+            "tj": "请问 — мебахшед, пурсам (qǐngwèn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "你",
+            "pinyin": "nǐ",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "sen",
+              "ru": "ты",
+              "tj": "ту"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "你 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 你:",
+            "tj": "Маънои калимаи 你-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "nima; qanday",
+              "ru": "что; какой",
+              "tj": "чӣ; кадом"
+            },
+            {
+              "uz": "kechirasiz, so'rasam",
+              "ru": "разрешите спросить; извините",
+              "tj": "мебахшед, пурсам"
+            },
+            {
+              "uz": "deb atalmoq; ismi bo'lmoq",
+              "ru": "зваться; называться",
+              "tj": "ном доштан; номида шудан"
+            },
+            {
+              "uz": "sen",
+              "ru": "ты",
+              "tj": "ту"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "你 = sen (nǐ)",
+            "ru": "你 = ты (nǐ)",
+            "tj": "你 = ту (nǐ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "叫",
+            "pinyin": "jiào",
+            "pos": "v.",
+            "meaning": {
+              "uz": "deb atalmoq; ismi bo'lmoq",
+              "ru": "зваться; называться",
+              "tj": "ном доштан; номида шудан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jiào qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jiào?",
+            "tj": "jiào кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "请问",
+            "什么",
+            "叫",
+            "你"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "叫 = deb atalmoq; ismi bo'lmoq (jiào)",
+            "ru": "叫 = зваться; называться (jiào)",
+            "tj": "叫 = ном доштан; номида шудан (jiào)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "什么",
+            "pinyin": "shénme",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "nima; qanday",
+              "ru": "что; какой",
+              "tj": "чӣ; кадом"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "什么 talaffuzini tanlang:",
+            "ru": "Выберите произношение 什么:",
+            "tj": "Талаффузи 什么-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "nǐ",
+            "qǐngwèn",
+            "shénme",
+            "jiào"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "什么 — shénme",
+            "ru": "什么 — shénme",
+            "tj": "什么 — shénme"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kechirasiz, so'rasam' xitoycha qaysi?",
+            "ru": "'разрешите спросить; извините' по-китайски?",
+            "tj": "'мебахшед, пурсам' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "你",
+            "请问",
+            "什么",
+            "叫"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "kechirasiz, so'rasam = 请问 (qǐngwèn)",
+            "ru": "разрешите спросить; извините = 请问 (qǐngwèn)",
+            "tj": "мебахшед, пурсам = 请问 (qǐngwèn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "请问",
+              {
+                "uz": "kechirasiz, so'rasam",
+                "ru": "разрешите спросить; извините",
+                "tj": "мебахшед, пурсам"
+              }
+            ],
+            [
+              "你",
+              {
+                "uz": "sen",
+                "ru": "ты",
+                "tj": "ту"
+              }
+            ],
+            [
+              "叫",
+              {
+                "uz": "deb atalmoq; ismi bo'lmoq",
+                "ru": "зваться; называться",
+                "tj": "ном доштан; номида шудан"
+              }
+            ],
+            [
+              "什么",
+              {
+                "uz": "nima; qanday",
+                "ru": "что; какой",
+                "tj": "чӣ; кадом"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "请问",
+          "pinyin": "qǐngwèn",
+          "options": [
+            "叫",
+            "请问",
+            "什么",
+            "你"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "请问 — kechirasiz, so'rasam (qǐngwèn)",
+            "ru": "请问 — разрешите спросить; извините (qǐngwèn)",
+            "tj": "请问 — мебахшед, пурсам (qǐngwèn)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你",
+          "pinyin": "nǐ",
+          "translation": {
+            "uz": "sen",
+            "ru": "ты",
+            "tj": "ту"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "请问",
+          "pinyin": "qǐngwèn",
+          "translation": {
+            "uz": "kechirasiz, so'rasam",
+            "ru": "разрешите спросить; извините",
+            "tj": "мебахшед, пурсам"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "你好 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 你好:",
+            "tj": "Маънои калимаи 你好-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "deb atalmoq; ismi bo'lmoq",
+              "ru": "зваться; называться",
+              "tj": "ном доштан; номида шудан"
+            },
+            {
+              "uz": "sen",
+              "ru": "ты",
+              "tj": "ту"
+            },
+            {
+              "uz": "kechirasiz, so'rasam",
+              "ru": "разрешите спросить; извините",
+              "tj": "мебахшед, пурсам"
+            },
+            {
+              "uz": "salom",
+              "ru": "привет; здравствуйте",
+              "tj": "салом"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "你好 = salom (nǐ hǎo)",
+            "ru": "你好 = привет; здравствуйте (nǐ hǎo)",
+            "tj": "你好 = салом (nǐ hǎo)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "你好",
+            "pinyin": "nǐ hǎo",
+            "meaning": {
+              "uz": "salom",
+              "ru": "привет; здравствуйте",
+              "tj": "салом"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kechirasiz, so'rasam' xitoycha qaysi?",
+            "ru": "'разрешите спросить; извините' по-китайски?",
+            "tj": "'мебахшед, пурсам' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "你",
+            "请问",
+            "什么",
+            "叫"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "kechirasiz, so'rasam = 请问 (qǐngwèn)",
+            "ru": "разрешите спросить; извините = 请问 (qǐngwèn)",
+            "tj": "мебахшед, пурсам = 请问 (qǐngwèn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "请问",
+            "pinyin": "qǐngwèn",
+            "meaning": {
+              "uz": "kechirasiz, so'rasam",
+              "ru": "разрешите спросить; извините",
+              "tj": "мебахшед, пурсам"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

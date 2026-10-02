@@ -1,0 +1,715 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 49,
+  "source_lesson": 8,
+  "part_no": 2,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "我爸爸也在医院工作",
+  "subtitle": {
+    "uz": "Joy, yo‘nalish va nisbiy o‘rinni tushunish va tasvirlash; joyni ko‘rsatish uchun “在” predlogini ishlatish; “能” bilan imkoniyat, sharoit yoki mumkinlikni ifodalash.",
+    "ru": "Понимать и описывать местоположение, направление и относительное положение; использовать предлог “在” для обозначения места; выражать способность, условие или возможность с “能”.",
+    "tj": "Ҷой, самт ва мавқеи нисбиро фаҳмидан ва тасвир кардан; барои нишон додани ҷой пешоянди “在”-ро истифода бурдан; бо “能” қобилият, шароит ё имконро ифода кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "猫",
+      "pinyin": "māo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mushuk",
+        "ru": "кошка",
+        "tj": "гурба"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "没",
+      "pinyin": "méi",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "yo‘q; -magan",
+        "ru": "не; ещё не",
+        "tj": "не; ҳанӯз не"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "看见",
+      "pinyin": "kànjiàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ko‘rib qolmoq; ko‘rmoq",
+        "ru": "увидеть; заметить",
+        "tj": "дидан; пай бурдан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "桌子",
+      "pinyin": "zhuōzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "stol",
+        "ru": "стол",
+        "tj": "миз"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Joylashuv so‘zlari",
+        "ru": "Слова местоположения",
+        "tj": "Калимаҳои мавқеъ"
+      },
+      "title_zh": "方位词",
+      "rule": {
+        "uz": "Bu bosqichda joy va yo‘nalishni ifodalovchi 上、下、里、前、后、外、外边 o‘rganiladi.",
+        "ru": "В этом уровне изучаются слова местоположения 上、下、里、前、后、外、外边.",
+        "tj": "Дар ин сатҳ калимаҳои мавқеи 上、下、里、前、后、外、外边 омӯхта мешаванд."
+      },
+      "examples": [
+        {
+          "zh": "房间里有一只小猫。",
+          "pinyin": "Fángjiān lǐ yǒu yì zhī xiǎomāo.",
+          "translation": {
+            "uz": "Xona ichida kichik mushuk bor.",
+            "ru": "В комнате есть котёнок.",
+            "tj": "Дар ҳуҷра як гурбачаи хурд ҳаст."
+          }
+        },
+        {
+          "zh": "我们去书店外吧。",
+          "pinyin": "Wǒmen qù shūdiàn wài ba.",
+          "translation": {
+            "uz": "Kitob do‘koni tashqarisiga boraylik.",
+            "ru": "Давай пойдём к книжному магазину снаружи.",
+            "tj": "Биёед ба беруни мағозаи китоб равем."
+          }
+        },
+        {
+          "zh": "小雪的手机在桌子上呢。",
+          "pinyin": "Xiǎoxuě de shǒujī zài zhuōzi shàng ne.",
+          "translation": {
+            "uz": "Xiaoxuening telefoni stol ustida.",
+            "ru": "Телефон Сяосюэ на столе.",
+            "tj": "Телефони Сяосюэ рӯйи миз аст."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Bai Jiayue va Chen Tianzhong mehmonga kelgan.",
+        "ru": "Бай Цзяюэ и Чэнь Тяньчжун пришли в гости к Ван Ифэй.",
+        "tj": "Бай Ҷяюэ ва Чэн Тянҷун ба хонаи Ван Ифэй меҳмон шудаанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "房间外有一只小猫。",
+          "pinyin": "Fángjiān wài yǒu yì zhī xiǎomāo.",
+          "text": {
+            "uz": "Xona tashqarisida bitta kichik mushuk bor.",
+            "ru": "Снаружи комнаты есть маленький котёнок.",
+            "tj": "Берун аз ҳуҷра як гурбачаи хурд ҳаст."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我没看见，它在哪儿呢？",
+          "pinyin": "Wǒ méi kànjiàn, tā zài nǎr ne?",
+          "text": {
+            "uz": "Men uni ko‘rmadim, u qayerda?",
+            "ru": "Я его не вижу. Где он?",
+            "tj": "Ман онро надидам, он куҷост?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsdan keyin sinfda Bai Jiayue Li Wenga telefon qilmoqda.",
+        "ru": "После занятия Бай Цзяюэ звонит Ли Вэню из аудитории.",
+        "tj": "Пас аз дарс Бай Ҷяюэ аз синф ба Ли Вэн занг мезанад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我们在哪儿见呢？",
+          "pinyin": "Wǒmen zài nǎr jiàn ne?",
+          "text": {
+            "uz": "Qayerda uchrashamiz?",
+            "ru": "Где мы встретимся?",
+            "tj": "Дар куҷо вомехӯрем?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kasalxonada Liu Ming doktor Hu bilan suhbatlashmoqda.",
+        "ru": "В больнице Лю Мин разговаривает с доктором Ху.",
+        "tj": "Дар беморхона Лю Мин бо духтур Ҳу суҳбат мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Dr. Hu",
+          "zh": "没吃呢。",
+          "pinyin": "Méi chī ne.",
+          "text": {
+            "uz": "Yo‘q, yemadim.",
+            "ru": "Нет, ещё не ел.",
+            "tj": "Не, ҳоло нахӯрдаам."
+          }
+        },
+        {
+          "speaker": "Dr. Hu",
+          "zh": "是的。我爸爸也在医院工作，他也非常忙。",
+          "pinyin": "Shì de. Wǒ bàba yě zài yīyuàn gōngzuò, tā yě fēicháng máng.",
+          "text": {
+            "uz": "Ha. Otam ham kasalxonada ishlaydi, u ham juda band.",
+            "ru": "Да. Мой отец тоже работает в больнице и тоже очень занят.",
+            "tj": "Ҳа. Падарам ҳам дар беморхона кор мекунад ва ӯ ҳам хеле банд аст."
+          }
+        },
+        {
+          "speaker": "Dr. Hu",
+          "zh": "对。",
+          "pinyin": "Duì.",
+          "text": {
+            "uz": "Ha.",
+            "ru": "Да.",
+            "tj": "Ҳа."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "猫",
+            "pinyin": "māo",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mushuk",
+              "ru": "кошка",
+              "tj": "гурба"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "猫",
+          "pinyin": "māo",
+          "translation": {
+            "uz": "mushuk",
+            "ru": "кошка",
+            "tj": "гурба"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'mushuk' xitoycha qaysi?",
+            "ru": "'кошка' по-китайски?",
+            "tj": "'гурба' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "猫",
+            "外",
+            "只",
+            "房间"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "mushuk = 猫 (māo)",
+            "ru": "кошка = 猫 (māo)",
+            "tj": "гурба = 猫 (māo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "没",
+            "pinyin": "méi",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "yo‘q; -magan",
+              "ru": "не; ещё не",
+              "tj": "не; ҳанӯз не"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "没",
+          "pinyin": "méi",
+          "options": [
+            "外",
+            "房间",
+            "只",
+            "没"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "没 — yo‘q; -magan (méi)",
+            "ru": "没 — не; ещё не (méi)",
+            "tj": "没 — не; ҳанӯз не (méi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "看见",
+            "pinyin": "kànjiàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ko‘rib qolmoq; ko‘rmoq",
+              "ru": "увидеть; заметить",
+              "tj": "дидан; пай бурдан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "看见 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 看见:",
+            "tj": "Маънои калимаи 看见-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xona",
+              "ru": "комната",
+              "tj": "ҳуҷра"
+            },
+            {
+              "uz": "tashqari; tashqarida",
+              "ru": "снаружи; вне",
+              "tj": "берун; беруни"
+            },
+            {
+              "uz": "ko‘rib qolmoq; ko‘rmoq",
+              "ru": "увидеть; заметить",
+              "tj": "дидан; пай бурдан"
+            },
+            {
+              "uz": "hayvonlar uchun o‘lchov so‘zi",
+              "ru": "счётное слово для животных",
+              "tj": "воҳиди ҳисоб барои ҳайвонот"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "看见 = ko‘rib qolmoq; ko‘rmoq (kànjiàn)",
+            "ru": "看见 = увидеть; заметить (kànjiàn)",
+            "tj": "看见 = дидан; пай бурдан (kànjiàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "桌子",
+            "pinyin": "zhuōzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "stol",
+              "ru": "стол",
+              "tj": "миз"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhuōzi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhuōzi?",
+            "tj": "zhuōzi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "外",
+            "只",
+            "房间",
+            "桌子"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "桌子 = stol (zhuōzi)",
+            "ru": "桌子 = стол (zhuōzi)",
+            "tj": "桌子 = миз (zhuōzi)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "猫 talaffuzini tanlang:",
+            "ru": "Выберите произношение 猫:",
+            "tj": "Талаффузи 猫-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "māo",
+            "fángjiān",
+            "wài",
+            "zhī"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "猫 — māo",
+            "ru": "猫 — māo",
+            "tj": "猫 — māo"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "猫",
+              {
+                "uz": "mushuk",
+                "ru": "кошка",
+                "tj": "гурба"
+              }
+            ],
+            [
+              "没",
+              {
+                "uz": "yo‘q; -magan",
+                "ru": "не; ещё не",
+                "tj": "не; ҳанӯз не"
+              }
+            ],
+            [
+              "看见",
+              {
+                "uz": "ko‘rib qolmoq; ko‘rmoq",
+                "ru": "увидеть; заметить",
+                "tj": "дидан; пай бурдан"
+              }
+            ],
+            [
+              "桌子",
+              {
+                "uz": "stol",
+                "ru": "стол",
+                "tj": "миз"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Joylashuv so‘zlari",
+              "ru": "Слова местоположения",
+              "tj": "Калимаҳои мавқеъ"
+            },
+            "title_zh": "方位词",
+            "rule": {
+              "uz": "Bu bosqichda joy va yo‘nalishni ifodalovchi 上、下、里、前、后、外、外边 o‘rganiladi.",
+              "ru": "В этом уровне изучаются слова местоположения 上、下、里、前、后、外、外边.",
+              "tj": "Дар ин сатҳ калимаҳои мавқеи 上、下、里、前、后、外、外边 омӯхта мешаванд."
+            },
+            "examples": [
+              {
+                "zh": "房间里有一只小猫。",
+                "pinyin": "Fángjiān lǐ yǒu yì zhī xiǎomāo.",
+                "translation": {
+                  "uz": "Xona ichida kichik mushuk bor.",
+                  "ru": "В комнате есть котёнок.",
+                  "tj": "Дар ҳуҷра як гурбачаи хурд ҳаст."
+                }
+              },
+              {
+                "zh": "我们去书店外吧。",
+                "pinyin": "Wǒmen qù shūdiàn wài ba.",
+                "translation": {
+                  "uz": "Kitob do‘koni tashqarisiga boraylik.",
+                  "ru": "Давай пойдём к книжному магазину снаружи.",
+                  "tj": "Биёед ба беруни мағозаи китоб равем."
+                }
+              },
+              {
+                "zh": "小雪的手机在桌子上呢。",
+                "pinyin": "Xiǎoxuě de shǒujī zài zhuōzi shàng ne.",
+                "translation": {
+                  "uz": "Xiaoxuening telefoni stol ustida.",
+                  "ru": "Телефон Сяосюэ на столе.",
+                  "tj": "Телефони Сяосюэ рӯйи миз аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Xona ichida kichik mushuk bor.",
+            "ru": "В комнате есть котёнок.",
+            "tj": "Дар ҳуҷра як гурбачаи хурд ҳаст."
+          },
+          "tokens": [
+            "猫",
+            "没",
+            "小",
+            "房间",
+            "有",
+            "外",
+            "里",
+            "只",
+            "一"
+          ],
+          "answer_tokens": [
+            "房间",
+            "里",
+            "有",
+            "一",
+            "只",
+            "小",
+            "猫"
+          ],
+          "explanation": {
+            "uz": "房间里有一只小猫。 — Fángjiān lǐ yǒu yì zhī xiǎomāo.",
+            "ru": "房间里有一只小猫。 — Fángjiān lǐ yǒu yì zhī xiǎomāo.",
+            "tj": "房间里有一只小猫。 — Fángjiān lǐ yǒu yì zhī xiǎomāo."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Xona ichida kichik mushuk bor.» — xitoychada qaysi biri?",
+            "ru": "«В комнате есть котёнок.» — какое предложение по-китайски?",
+            "tj": "«Дар ҳуҷра як гурбачаи хурд ҳаст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "小雪的手机在桌子上呢。",
+            "我们去书店外吧。",
+            "房间里有一只小猫。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "房间里有一只小猫。 — Fángjiān lǐ yǒu yì zhī xiǎomāo.",
+            "ru": "房间里有一只小猫。 — Fángjiān lǐ yǒu yì zhī xiǎomāo.",
+            "tj": "房间里有一只小猫。 — Fángjiān lǐ yǒu yì zhī xiǎomāo."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "kànjiàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается kànjiàn?",
+            "tj": "kànjiàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "外",
+            "房间",
+            "只",
+            "看见"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "看见 = ko‘rib qolmoq; ko‘rmoq (kànjiàn)",
+            "ru": "看见 = увидеть; заметить (kànjiàn)",
+            "tj": "看见 = дидан; пай бурдан (kànjiàn)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "猫",
+          "pinyin": "māo",
+          "translation": {
+            "uz": "mushuk",
+            "ru": "кошка",
+            "tj": "гурба"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "房间 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 房间:",
+            "tj": "Маънои калимаи 房间-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kichik",
+              "ru": "маленький",
+              "tj": "хурд"
+            },
+            {
+              "uz": "xona",
+              "ru": "комната",
+              "tj": "ҳуҷра"
+            },
+            {
+              "uz": "tashqari; tashqarida",
+              "ru": "снаружи; вне",
+              "tj": "берун; беруни"
+            },
+            {
+              "uz": "hayvonlar uchun o‘lchov so‘zi",
+              "ru": "счётное слово для животных",
+              "tj": "воҳиди ҳисоб барои ҳайвонот"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "房间 = xona (fángjiān)",
+            "ru": "房间 = комната (fángjiān)",
+            "tj": "房间 = ҳуҷра (fángjiān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "房间",
+            "pinyin": "fángjiān",
+            "meaning": {
+              "uz": "xona",
+              "ru": "комната",
+              "tj": "ҳуҷра"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'mushuk' xitoycha qaysi?",
+            "ru": "'кошка' по-китайски?",
+            "tj": "'гурба' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "只",
+            "外",
+            "猫",
+            "房间"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "mushuk = 猫 (māo)",
+            "ru": "кошка = 猫 (māo)",
+            "tj": "гурба = 猫 (māo)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "猫",
+            "pinyin": "māo",
+            "meaning": {
+              "uz": "mushuk",
+              "ru": "кошка",
+              "tj": "гурба"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

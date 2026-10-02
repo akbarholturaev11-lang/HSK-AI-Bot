@@ -1,0 +1,742 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 1,
+  "source_lesson": 1,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "她请我们吃了北京烤鸭",
+  "subtitle": {
+    "uz": "Taxminni “吧” bilan ifodalash; “是……的” orqali voqeaning vaqt, joy, usul yoki maqsadini ta’kidlash; “请/让/叫” bilan pivotal gaplardan foydalanish; aeroportda kutib olish va safar haqida gaplashish.",
+    "ru": "Выражать предположение с “吧”; подчёркивать время, место, способ или цель события с “是……的”; использовать pivotal-предложения с “请/让/叫”; общаться при встрече в аэропорту и о поездке.",
+    "tj": "Бо “吧” тахминро ифода кардан; бо “是……的” вақт, ҷой, тарз ё мақсади воқеаро таъкид кардан; ҷумлаҳои pivotal бо “请/让/叫”-ро истифода бурдан; дар бораи пешвозгирӣ дар фурудгоҳ ва сафар суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "就",
+      "pinyin": "jiù",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "aynan; xuddi",
+        "ru": "именно; как раз",
+        "tj": "маҳз; айнан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "给",
+      "pinyin": "gěi",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "ga; uchun",
+        "ru": "кому; для",
+        "tj": "ба; барои"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "让",
+      "pinyin": "ràng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ruxsat bermoq; qildirmoq",
+        "ru": "позволять; велеть",
+        "tj": "иҷозат додан; водор кардан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "接",
+      "pinyin": "jiē",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kutib olmoq; qabul qilmoq",
+        "ru": "встречать; принимать",
+        "tj": "пешвоз гирифтан; қабул кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Modal yuklama “吧” (2)",
+        "ru": "Модальная частица “吧” (2)",
+        "tj": "Ҳиссачаи модалии “吧” (2)"
+      },
+      "title_zh": "语气助词“吧”（2）",
+      "rule": {
+        "uz": "“吧” so‘roq gap oxirida kelib, gapiruvchining taxmini yoki gumonini bildiradi.",
+        "ru": "“吧” в конце вопросительного предложения выражает предположение или оценку говорящего.",
+        "tj": "“吧” дар охири ҷумлаи саволӣ омада, тахмин ё гумони гӯяндаро ифода мекунад."
+      },
+      "examples": [
+        {
+          "zh": "你们就是她的学生吧？",
+          "pinyin": "Nǐmen jiù shì tā de xuésheng ba?",
+          "translation": {
+            "uz": "Sizlar aynan uning talabalarisiz, shundaymi?",
+            "ru": "Вы как раз её студенты, верно?",
+            "tj": "Шумо ҳамон донишҷӯёни ӯ ҳастед, дуруст?"
+          }
+        },
+        {
+          "zh": "她唱歌很好听吧？",
+          "pinyin": "Tā chànggē hěn hǎotīng ba?",
+          "translation": {
+            "uz": "U juda yaxshi kuylaydi, shundaymi?",
+            "ru": "Она хорошо поёт, правда?",
+            "tj": "Ӯ хеле хуб месарояд, дуруст?"
+          }
+        },
+        {
+          "zh": "陈天中是泰国人吧？",
+          "pinyin": "Chén Tiānzhōng shì Tàiguó rén ba?",
+          "translation": {
+            "uz": "Chen Tianzhong tailandlik, shundaymi?",
+            "ru": "Чэнь Тяньчжун из Таиланда, верно?",
+            "tj": "Чэн Тянҷун таиландӣ аст, дуруст?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Aeroportda Wang Yixue Bai Jiayue va Annieni kutib oldi.",
+        "ru": "В аэропорту Ван Исюэ встретила Бай Цзяюэ и Энни.",
+        "tj": "Дар фурудгоҳ Ван Исюэ Бай Ҷяюэ ва Энниро пешвоз гирифт."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "是的，你们就是她的学生吧？",
+          "pinyin": "Shì de, nǐmen jiù shì tā de xuésheng ba?",
+          "text": {
+            "uz": "Ha, sizlar aynan uning talabalarisiz, shundaymi?",
+            "ru": "Да. Вы как раз её студенты, верно?",
+            "tj": "Ҳа, шумо ҳамон донишҷӯёни ӯ ҳастед, дуруст?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue & Annie",
+          "zh": "谢谢您。",
+          "pinyin": "Xièxie nín.",
+          "text": {
+            "uz": "Rahmat sizga.",
+            "ru": "Спасибо вам.",
+            "tj": "Раҳмат ба шумо."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "不客气。",
+          "pinyin": "Bú kèqi.",
+          "text": {
+            "uz": "Arzimaydi.",
+            "ru": "Не за что.",
+            "tj": "Марҳамат."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yixuening mashinasida Bai Jiayue, Annie va Wang Yixue suhbatlashmoqda.",
+        "ru": "В машине Ван Исюэ Бай Цзяюэ, Энни и Ван Исюэ разговаривают.",
+        "tj": "Дар мошини Ван Исюэ Бай Ҷяюэ, Энни ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我这几天都不忙，你们有事就找我。",
+          "pinyin": "Wǒ zhè jǐ tiān dōu bù máng, nǐmen yǒu shì jiù zhǎo wǒ.",
+          "text": {
+            "uz": "Shu kunlarda band emasman, ishingiz bo‘lsa meni toping.",
+            "ru": "В эти дни я не занята, если что-то понадобится — обращайтесь ко мне.",
+            "tj": "Ин чанд рӯз ман банд нестам, агар коре бошад ба ман муроҷиат кунед."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "好的，谢谢您。",
+          "pinyin": "Hǎo de, xièxie nín.",
+          "text": {
+            "uz": "Xo‘p, rahmat sizga.",
+            "ru": "Хорошо, спасибо вам.",
+            "tj": "Хуб, раҳмат ба шумо."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yixuening mashinasida Bai Jiayue telefon qo‘ng‘irog‘iga javob berdi.",
+        "ru": "В машине Ван Исюэ Бай Цзяюэ ответила на звонок.",
+        "tj": "Дар мошини Ван Исюэ Бай Ҷяюэ ба занги телефон ҷавоб дод."
+      },
+      "dialogue": [
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "你是什么时候到的？",
+          "pinyin": "Nǐ shì shénme shíhou dào de?",
+          "text": {
+            "uz": "Qachon yetib kelding?",
+            "ru": "Когда ты приехала?",
+            "tj": "Кай расидӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "好，再见！",
+          "pinyin": "Hǎo, zàijiàn!",
+          "text": {
+            "uz": "Xo‘p, xayr!",
+            "ru": "Хорошо, до свидания!",
+            "tj": "Хуб, хайр!"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "就",
+            "pinyin": "jiù",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "aynan; xuddi",
+              "ru": "именно; как раз",
+              "tj": "маҳз; айнан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "就",
+          "pinyin": "jiù",
+          "translation": {
+            "uz": "aynan; xuddi",
+            "ru": "именно; как раз",
+            "tj": "маҳз; айнан"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "就 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 就:",
+            "tj": "Маънои калимаи 就-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ruxsat bermoq; qildirmoq",
+              "ru": "позволять; велеть",
+              "tj": "иҷозат додан; водор кардан"
+            },
+            {
+              "uz": "kutib olmoq; qabul qilmoq",
+              "ru": "встречать; принимать",
+              "tj": "пешвоз гирифтан; қабул кардан"
+            },
+            {
+              "uz": "ga; uchun",
+              "ru": "кому; для",
+              "tj": "ба; барои"
+            },
+            {
+              "uz": "aynan; xuddi",
+              "ru": "именно; как раз",
+              "tj": "маҳз; айнан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "就 = aynan; xuddi (jiù)",
+            "ru": "就 = именно; как раз (jiù)",
+            "tj": "就 = маҳз; айнан (jiù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "给",
+            "pinyin": "gěi",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "ga; uchun",
+              "ru": "кому; для",
+              "tj": "ба; барои"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "gěi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается gěi?",
+            "tj": "gěi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "让",
+            "给",
+            "接",
+            "就"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "给 = ga; uchun (gěi)",
+            "ru": "给 = кому; для (gěi)",
+            "tj": "给 = ба; барои (gěi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "让",
+            "pinyin": "ràng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ruxsat bermoq; qildirmoq",
+              "ru": "позволять; велеть",
+              "tj": "иҷозат додан; водор кардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "让 talaffuzini tanlang:",
+            "ru": "Выберите произношение 让:",
+            "tj": "Талаффузи 让-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jiē",
+            "jiù",
+            "gěi",
+            "ràng"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "让 — ràng",
+            "ru": "让 — ràng",
+            "tj": "让 — ràng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "接",
+            "pinyin": "jiē",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kutib olmoq; qabul qilmoq",
+              "ru": "встречать; принимать",
+              "tj": "пешвоз гирифтан; қабул кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kutib olmoq; qabul qilmoq' xitoycha qaysi?",
+            "ru": "'встречать; принимать' по-китайски?",
+            "tj": "'пешвоз гирифтан; қабул кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "让",
+            "就",
+            "接",
+            "给"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "kutib olmoq; qabul qilmoq = 接 (jiē)",
+            "ru": "встречать; принимать = 接 (jiē)",
+            "tj": "пешвоз гирифтан; қабул кардан = 接 (jiē)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "就",
+          "pinyin": "jiù",
+          "options": [
+            "接",
+            "让",
+            "就",
+            "给"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "就 — aynan; xuddi (jiù)",
+            "ru": "就 — именно; как раз (jiù)",
+            "tj": "就 — маҳз; айнан (jiù)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "就",
+              {
+                "uz": "aynan; xuddi",
+                "ru": "именно; как раз",
+                "tj": "маҳз; айнан"
+              }
+            ],
+            [
+              "给",
+              {
+                "uz": "ga; uchun",
+                "ru": "кому; для",
+                "tj": "ба; барои"
+              }
+            ],
+            [
+              "让",
+              {
+                "uz": "ruxsat bermoq; qildirmoq",
+                "ru": "позволять; велеть",
+                "tj": "иҷозат додан; водор кардан"
+              }
+            ],
+            [
+              "接",
+              {
+                "uz": "kutib olmoq; qabul qilmoq",
+                "ru": "встречать; принимать",
+                "tj": "пешвоз гирифтан; қабул кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Modal yuklama “吧” (2)",
+              "ru": "Модальная частица “吧” (2)",
+              "tj": "Ҳиссачаи модалии “吧” (2)"
+            },
+            "title_zh": "语气助词“吧”（2）",
+            "rule": {
+              "uz": "“吧” so‘roq gap oxirida kelib, gapiruvchining taxmini yoki gumonini bildiradi.",
+              "ru": "“吧” в конце вопросительного предложения выражает предположение или оценку говорящего.",
+              "tj": "“吧” дар охири ҷумлаи саволӣ омада, тахмин ё гумони гӯяндаро ифода мекунад."
+            },
+            "examples": [
+              {
+                "zh": "你们就是她的学生吧？",
+                "pinyin": "Nǐmen jiù shì tā de xuésheng ba?",
+                "translation": {
+                  "uz": "Sizlar aynan uning talabalarisiz, shundaymi?",
+                  "ru": "Вы как раз её студенты, верно?",
+                  "tj": "Шумо ҳамон донишҷӯёни ӯ ҳастед, дуруст?"
+                }
+              },
+              {
+                "zh": "她唱歌很好听吧？",
+                "pinyin": "Tā chànggē hěn hǎotīng ba?",
+                "translation": {
+                  "uz": "U juda yaxshi kuylaydi, shundaymi?",
+                  "ru": "Она хорошо поёт, правда?",
+                  "tj": "Ӯ хеле хуб месарояд, дуруст?"
+                }
+              },
+              {
+                "zh": "陈天中是泰国人吧？",
+                "pinyin": "Chén Tiānzhōng shì Tàiguó rén ba?",
+                "translation": {
+                  "uz": "Chen Tianzhong tailandlik, shundaymi?",
+                  "ru": "Чэнь Тяньчжун из Таиланда, верно?",
+                  "tj": "Чэн Тянҷун таиландӣ аст, дуруст?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Sizlar aynan uning talabalarisiz, shundaymi?",
+            "ru": "Вы как раз её студенты, верно?",
+            "tj": "Шумо ҳамон донишҷӯёни ӯ ҳастед, дуруст?"
+          },
+          "tokens": [
+            "让",
+            "就",
+            "你们",
+            "是",
+            "学生",
+            "的",
+            "吧",
+            "她",
+            "给"
+          ],
+          "answer_tokens": [
+            "你们",
+            "就",
+            "是",
+            "她",
+            "的",
+            "学生",
+            "吧"
+          ],
+          "explanation": {
+            "uz": "你们就是她的学生吧？ — Nǐmen jiù shì tā de xuésheng ba?",
+            "ru": "你们就是她的学生吧？ — Nǐmen jiù shì tā de xuésheng ba?",
+            "tj": "你们就是她的学生吧？ — Nǐmen jiù shì tā de xuésheng ba?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U juda yaxshi kuylaydi, shundaymi?» — xitoychada qaysi biri?",
+            "ru": "«Она хорошо поёт, правда?» — какое предложение по-китайски?",
+            "tj": "«Ӯ хеле хуб месарояд, дуруст?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "陈天中是泰国人吧？",
+            "她唱歌很好听吧？",
+            "你们就是她的学生吧？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "她唱歌很好听吧？ — Tā chànggē hěn hǎotīng ba?",
+            "ru": "她唱歌很好听吧？ — Tā chànggē hěn hǎotīng ba?",
+            "tj": "她唱歌很好听吧？ — Tā chànggē hěn hǎotīng ba?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "就",
+              {
+                "uz": "aynan; xuddi",
+                "ru": "именно; как раз",
+                "tj": "маҳз; айнан"
+              }
+            ],
+            [
+              "给",
+              {
+                "uz": "ga; uchun",
+                "ru": "кому; для",
+                "tj": "ба; барои"
+              }
+            ],
+            [
+              "让",
+              {
+                "uz": "ruxsat bermoq; qildirmoq",
+                "ru": "позволять; велеть",
+                "tj": "иҷозат додан; водор кардан"
+              }
+            ],
+            [
+              "接",
+              {
+                "uz": "kutib olmoq; qabul qilmoq",
+                "ru": "встречать; принимать",
+                "tj": "пешвоз гирифтан; қабул кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "就",
+          "pinyin": "jiù",
+          "translation": {
+            "uz": "aynan; xuddi",
+            "ru": "именно; как раз",
+            "tj": "маҳз; айнан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "爱 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 爱:",
+            "tj": "Маънои калимаи 爱-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "aynan; xuddi",
+              "ru": "именно; как раз",
+              "tj": "маҳз; айнан"
+            },
+            {
+              "uz": "ruxsat bermoq; qildirmoq",
+              "ru": "позволять; велеть",
+              "tj": "иҷозат додан; водор кардан"
+            },
+            {
+              "uz": "sevmoq; juda yoqtirmoq",
+              "ru": "любить; очень нравиться",
+              "tj": "дӯст доштан"
+            },
+            {
+              "uz": "ga; uchun",
+              "ru": "кому; для",
+              "tj": "ба; барои"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "爱 = sevmoq; juda yoqtirmoq (ài)",
+            "ru": "爱 = любить; очень нравиться (ài)",
+            "tj": "爱 = дӯст доштан (ài)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "爱",
+            "pinyin": "ài",
+            "meaning": {
+              "uz": "sevmoq; juda yoqtirmoq",
+              "ru": "любить; очень нравиться",
+              "tj": "дӯст доштан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'aynan; xuddi' xitoycha qaysi?",
+            "ru": "'именно; как раз' по-китайски?",
+            "tj": "'маҳз; айнан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "给",
+            "让",
+            "就",
+            "接"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "aynan; xuddi = 就 (jiù)",
+            "ru": "именно; как раз = 就 (jiù)",
+            "tj": "маҳз; айнан = 就 (jiù)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "就",
+            "pinyin": "jiù",
+            "meaning": {
+              "uz": "aynan; xuddi",
+              "ru": "именно; как раз",
+              "tj": "маҳз; айнан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -39,6 +39,8 @@
     <string name="sub_qr_missing">QR барои ин нақша дастрас нест. Усули дигарро интихоб кунед.</string>
     <string name="sub_retry">Аз нав санҷидан</string>
     <string name="sub_heading">HSK AI Pro</string>
+    <string name="sub_hsk30_heading">Кушодани HSK 3.0</string>
+    <string name="sub_plan_hsk30">HSK 3.0 · ҳамешагӣ</string>
     <string name="sub_benefit_heading">Обуна чӣ медиҳад</string>
     <string name="sub_benefits">📚 Дарсҳои HSK қадам ба қадам   🤖 Ҷавобҳои бештари AI   🖼 Таҳлили акс ва иероглиф   🎙 Машқи овоз   🧩 Тест ва таҳлили хато</string>
     <string name="sub_focus_course">Ҳамаи дарсҳо кушода мешаванд</string>

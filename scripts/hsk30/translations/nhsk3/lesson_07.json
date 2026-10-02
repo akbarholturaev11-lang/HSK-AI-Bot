@@ -1,0 +1,471 @@
+{
+  "schema_version": 1,
+  "lesson": 7,
+  "source_title_hanzi": "那条裙子比短裤更好看",
+  "translation_origin": "assistant_authored_from_source_verified_chinese",
+  "goal": {
+    "uz": "Xarid tajribasini tushunish va aytib berish; mahsulot xususiyatlarini baholash; “比” taqqoslashining inkor shaklini ishlatish; Xitoydagi xarid odatlari bilan tanishish.",
+    "ru": "Понимать и описывать опыт покупок; оценивать свойства товаров; использовать отрицательную форму сравнений с “比”; познакомиться со способами совершения покупок в Китае.",
+    "tj": "Таҷрибаи харидро фаҳмидан ва шарҳ додан; хусусиятҳои молро арзёбӣ кардан; шакли инкории муқоисаи “比”-ро истифода бурдан; бо тарзҳои харид дар Чин шинос шудан."
+  },
+  "intro_text": {
+    "uz": "Dars velosiped va kiyim tanlash, bozorda meva sotib olish vaziyatlari orqali ketma-ket harakat, “不比……多少”, “极了” va “不但……而且……” tuzilmalarini o‘rgatadi.",
+    "ru": "Урок через выбор велосипеда и одежды, а также покупку фруктов вводит последовательные действия, “不比……多少”, “极了” и “不但……而且……”.",
+    "tj": "Дарс тавассути интихоби дучарха ва либос ва харидани мева сохторҳои амали пайдарпай, “不比……多少”, “极了” ва “不但……而且……” меомӯзонад."
+  },
+  "vocabulary": [
+    {
+      "hanzi": "辆",
+      "pinyin": "liàng",
+      "uz": "transport vositalari uchun hisob so‘zi",
+      "ru": "счётное слово для транспортных средств",
+      "tj": "воҳиди ҳисоб барои нақлиёт"
+    },
+    {
+      "hanzi": "自行车",
+      "pinyin": "zìxíngchē",
+      "uz": "velosiped",
+      "ru": "велосипед",
+      "tj": "дучарха"
+    },
+    {
+      "hanzi": "旧",
+      "pinyin": "jiù",
+      "uz": "eski",
+      "ru": "старый",
+      "tj": "кӯҳна"
+    },
+    {
+      "hanzi": "矮",
+      "pinyin": "ǎi",
+      "uz": "past; bo‘yi kalta",
+      "ru": "низкий; невысокий",
+      "tj": "паст; қадпаст"
+    },
+    {
+      "hanzi": "试",
+      "pinyin": "shì",
+      "uz": "sinab ko‘rmoq",
+      "ru": "пробовать; примерять",
+      "tj": "санҷидан; пӯшида дидан"
+    },
+    {
+      "hanzi": "黄色",
+      "pinyin": "huángsè",
+      "uz": "sariq rang",
+      "ru": "жёлтый цвет",
+      "tj": "ранги зард"
+    },
+    {
+      "hanzi": "短裤",
+      "pinyin": "duǎnkù",
+      "uz": "shortik",
+      "ru": "шорты",
+      "tj": "шорт"
+    },
+    {
+      "hanzi": "大小",
+      "pinyin": "dàxiǎo",
+      "uz": "o‘lcham; katta-kichiklik",
+      "ru": "размер",
+      "tj": "андоза"
+    },
+    {
+      "hanzi": "合适",
+      "pinyin": "héshì",
+      "uz": "mos; to‘g‘ri keladigan",
+      "ru": "подходящий",
+      "tj": "мувофиқ"
+    },
+    {
+      "hanzi": "裙子",
+      "pinyin": "qúnzi",
+      "uz": "yubka; ko‘ylak yubkasi",
+      "ru": "юбка",
+      "tj": "юбка"
+    },
+    {
+      "hanzi": "更",
+      "pinyin": "gèng",
+      "uz": "yanada",
+      "ru": "ещё более",
+      "tj": "боз ҳам"
+    },
+    {
+      "hanzi": "决定",
+      "pinyin": "juédìng",
+      "uz": "qaror qilmoq; qaror",
+      "ru": "решать; решение",
+      "tj": "қарор кардан; қарор"
+    },
+    {
+      "hanzi": "西瓜",
+      "pinyin": "xīguā",
+      "uz": "tarvuz",
+      "ru": "арбуз",
+      "tj": "тарбуз"
+    },
+    {
+      "hanzi": "新鲜",
+      "pinyin": "xīnxiān",
+      "uz": "yangi; barra",
+      "ru": "свежий",
+      "tj": "тоза; нав"
+    },
+    {
+      "hanzi": "甜",
+      "pinyin": "tián",
+      "uz": "shirin",
+      "ru": "сладкий",
+      "tj": "ширин"
+    },
+    {
+      "hanzi": "公斤",
+      "pinyin": "gōngjīn",
+      "uz": "kilogramm",
+      "ru": "килограмм",
+      "tj": "килограмм"
+    },
+    {
+      "hanzi": "冰",
+      "pinyin": "bīng",
+      "uz": "muz; sovutmoq",
+      "ru": "лёд; охлаждать",
+      "tj": "ях; хунук кардан"
+    },
+    {
+      "hanzi": "极",
+      "pinyin": "jí",
+      "uz": "nihoyatda; juda",
+      "ru": "крайне; очень",
+      "tj": "ниҳоят; хеле"
+    },
+    {
+      "hanzi": "斤",
+      "pinyin": "jīn",
+      "uz": "jin, 500 gramm",
+      "ru": "цзинь, 500 граммов",
+      "tj": "ҷин, 500 грамм"
+    },
+    {
+      "hanzi": "香蕉",
+      "pinyin": "xiāngjiāo",
+      "uz": "banan",
+      "ru": "банан",
+      "tj": "банан"
+    },
+    {
+      "hanzi": "一共",
+      "pinyin": "yígòng",
+      "uz": "jami",
+      "ru": "всего; итого",
+      "tj": "ҳамагӣ"
+    },
+    {
+      "hanzi": "毛",
+      "pinyin": "máo",
+      "uz": "mao, yuanning o‘ndan biri",
+      "ru": "мао, одна десятая юаня",
+      "tj": "мао, даҳяки юан"
+    },
+    {
+      "hanzi": "结婚",
+      "pinyin": "jiéhūn",
+      "uz": "turmush qurmoq",
+      "ru": "вступать в брак",
+      "tj": "оиладор шудан"
+    },
+    {
+      "hanzi": "不但",
+      "pinyin": "bùdàn",
+      "uz": "nafaqat",
+      "ru": "не только",
+      "tj": "на танҳо"
+    },
+    {
+      "hanzi": "而且",
+      "pinyin": "érqiě",
+      "uz": "balki; bundan tashqari",
+      "ru": "но и; к тому же",
+      "tj": "балки; инчунин"
+    },
+    {
+      "hanzi": "声",
+      "pinyin": "shēng",
+      "uz": "tovush; tovush uchun hisob so‘zi",
+      "ru": "звук; счётное слово для звуков",
+      "tj": "садо; воҳиди ҳисоб барои садо"
+    },
+    {
+      "hanzi": "开机",
+      "pinyin": "kāijī",
+      "uz": "qurilmani yoqmoq",
+      "ru": "включать устройство",
+      "tj": "дастгоҳро фурӯзон кардан"
+    }
+  ],
+  "grammar": [
+    {
+      "label": "连动句（2）",
+      "title_uz": "Ketma-ket harakatli gap (2)",
+      "title_ru": "Предложение с последовательными действиями (2)",
+      "title_tj": "Ҷумла бо амалҳои пайдарпай (2)",
+      "rule_uz": "Bir ega ketma-ket ikki yoki undan ortiq harakat bajarganda, fe’llar bitta gapda ketma-ket kelishi mumkin. Harakatlardan biri boshqa harakatning usuli yoki holatini ko‘rsatishi mumkin.",
+      "rule_ru": "Когда один субъект последовательно выполняет несколько действий, глаголы могут следовать друг за другом в одном предложении. Одно действие может обозначать способ выполнения другого.",
+      "rule_tj": "Вақте як мубтадо пайдарпай чанд амалро иҷро мекунад, феълҳо метавонанд дар як ҷумла паси ҳам оянд. Яке аз амалҳо метавонад тарзи иҷрои амали дигарро нишон диҳад.",
+      "examples": [
+        {
+          "hanzi": "咱们可以走着去。",
+          "uz": "Biz piyoda bora olamiz.",
+          "ru": "Мы можем пойти пешком.",
+          "tj": "Мо метавонем пиёда равем."
+        },
+        {
+          "hanzi": "弟弟吃着苹果写作业。",
+          "uz": "Ukam olma yeb turib uy vazifasini qilyapti.",
+          "ru": "Младший брат делает домашнее задание, одновременно ест яблоко.",
+          "tj": "Додарам себ хӯрда истода вазифаи хонагиро иҷро мекунад."
+        },
+        {
+          "hanzi": "他们坐着看电视。",
+          "uz": "Ular o‘tirib televizor ko‘rishmoqda.",
+          "ru": "Они смотрят телевизор сидя.",
+          "tj": "Онҳо нишаста телевизор мебинанд."
+        }
+      ]
+    },
+    {
+      "label": "比较句（10）",
+      "title_uz": "Taqqoslash gapi (10): “不比……”",
+      "title_ru": "Сравнительное предложение (10): “不比……”",
+      "title_tj": "Ҷумлаи муқоисавӣ (10): “不比……”",
+      "rule_uz": "“A 不比 B + sifat” A ning B dan ustun emasligini bildiradi. “不比……多少” esa farq katta emasligini, ya’ni deyarli bir xil ekanini ko‘rsatadi.",
+      "rule_ru": "“A 不比 B + прилагательное” означает, что A не превосходит B по признаку. “不比……多少” подчёркивает, что разница невелика.",
+      "rule_tj": "“A 不比 B + сифат” нишон медиҳад, ки A аз B аз рӯйи аломат беҳтар нест. “不比……多少” фарқи хурдро нишон медиҳад.",
+      "examples": [
+        {
+          "hanzi": "裙子不比短裤贵多少。",
+          "uz": "Yubka shortikdan uncha qimmat emas.",
+          "ru": "Юбка ненамного дороже шорт.",
+          "tj": "Юбка аз шорт он қадар гаронтар нест."
+        },
+        {
+          "hanzi": "他的中文不比你好。",
+          "uz": "Uning xitoychasi senikidan yaxshi emas.",
+          "ru": "Его китайский не лучше твоего.",
+          "tj": "Забони чинии ӯ аз ту беҳтар нест."
+        },
+        {
+          "hanzi": "他跑得不比我快多少。",
+          "uz": "U mendan uncha tez yugurmaydi.",
+          "ru": "Он бегает ненамного быстрее меня.",
+          "tj": "Ӯ аз ман он қадар тезтар намедавад."
+        }
+      ]
+    },
+    {
+      "label": "程度补语（3）",
+      "title_uz": "Daraja to‘ldiruvchisi (3): “极了”",
+      "title_ru": "Дополнение степени (3): “极了”",
+      "title_tj": "Пуркунандаи дараҷа (3): “极了”",
+      "rule_uz": "“Sifat/psixologik fe’l + 极了” belgining yoki hissiyotning juda yuqori darajasini bildiradi: “nihoyatda / juda ham”.",
+      "rule_ru": "“Прилагательное/глагол чувства + 极了” выражает очень высокую степень признака или чувства: «чрезвычайно / очень».",
+      "rule_tj": "“Сифат/феъли эҳсосӣ + 极了” дараҷаи хеле баланди хусусият ё ҳисро ифода мекунад: «ниҳоят / хеле».",
+      "examples": [
+        {
+          "hanzi": "这块冰西瓜甜极了。",
+          "uz": "Bu sovutilgan tarvuz nihoyatda shirin.",
+          "ru": "Этот охлаждённый арбуз невероятно сладкий.",
+          "tj": "Ин тарбузи хунукшуда ниҳоят ширин аст."
+        },
+        {
+          "hanzi": "今年夏天热极了。",
+          "uz": "Bu yoz nihoyatda issiq.",
+          "ru": "Этим летом ужасно жарко.",
+          "tj": "Имсол тобистон ниҳоят гарм аст."
+        },
+        {
+          "hanzi": "这本书我喜欢极了。",
+          "uz": "Bu kitob menga juda ham yoqadi.",
+          "ru": "Мне чрезвычайно нравится эта книга.",
+          "tj": "Ин китоб ба ман хеле писанд аст."
+        }
+      ]
+    },
+    {
+      "label": "递进复句“不但……，而且……”",
+      "title_uz": "Kuchaytiruvchi qo‘shma gap “不但……而且……”",
+      "title_ru": "Градационное сложное предложение “不但……而且……”",
+      "title_tj": "Ҷумлаи тақвиятӣ “不但……而且……”",
+      "rule_uz": "“不但A，而且B” birinchi ma’lumotga ikkinchi, kuchliroq yoki qo‘shimcha ma’lumotni qo‘shadi: “nafaqat A, balki B ham”.",
+      "rule_ru": "“不但A，而且B” добавляет ко второй части более сильную или дополнительную информацию: «не только A, но и B».",
+      "rule_tj": "“不但A，而且B” ба қисми аввал маълумоти иловагӣ ё қавитар зам мекунад: «на танҳо A, балки B ҳам».",
+      "examples": [
+        {
+          "hanzi": "现在的电视不但便宜，而且用着非常方便。",
+          "uz": "Hozirgi televizorlar nafaqat arzon, balki ishlatish ham juda qulay.",
+          "ru": "Современные телевизоры не только дешёвые, но и очень удобны в использовании.",
+          "tj": "Телевизорҳои ҳозира на танҳо арзонанд, балки истифодаашон ҳам хеле қулай аст."
+        },
+        {
+          "hanzi": "家月不但喜欢唱歌，而且唱得很好听。",
+          "uz": "Jiayue nafaqat qo‘shiq aytishni yoqtiradi, balki juda chiroyli aytadi.",
+          "ru": "Цзяюэ не только любит петь, но и очень хорошо поёт.",
+          "tj": "Ҷяюэ на танҳо сурудхониро дӯст медорад, балки хеле хуб месарояд."
+        },
+        {
+          "hanzi": "不但家月会说汉语，而且天中也会说汉语。",
+          "uz": "Nafaqat Jiayue, Tianzhong ham xitoycha gapira oladi.",
+          "ru": "Не только Цзяюэ говорит по-китайски, но и Тяньчжун тоже.",
+          "tj": "На танҳо Ҷяюэ, балки Тянҷун ҳам бо чинӣ гап зада метавонад."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene_zh": "在家里，王一雪和刘明商量去买东西。",
+      "scene_uz": "Uyda Wang Yixue va Liu Ming xaridga borishni muhokama qilmoqda.",
+      "scene_ru": "Дома Ван Исюэ и Лю Мин обсуждают поход за покупками.",
+      "scene_tj": "Дар хона Ван Исюэ ва Лю Мин харид рафтанро муҳокима мекунанд.",
+      "turns": [
+        {
+          "hanzi": "这辆自行车是小雪八岁的时候买的，看起来有点儿旧了。",
+          "uz": "Bu velosiped Xiaoxue sakkiz yoshida olingan, endi biroz eskirgandek ko‘rinadi.",
+          "ru": "Этот велосипед купили, когда Сяосюэ было восемь лет, теперь он выглядит староватым.",
+          "tj": "Ин дучархаро вақте Сяосюэ ҳаштсола буд харида буданд, ҳоло каме кӯҳна менамояд."
+        },
+        {
+          "hanzi": "是啊，她现在长高了，这辆车已经太矮了。",
+          "uz": "Ha, u bo‘yi o‘sdi, bu velosiped endi unga juda past.",
+          "ru": "Да, она выросла, этот велосипед уже слишком маленький.",
+          "tj": "Ҳа, қадаш баланд шуд, ин дучарха ҳоло барои ӯ хеле паст аст."
+        },
+        {
+          "hanzi": "商场里开了一家自行车店，咱们给她买辆新的吧。",
+          "uz": "Savdo markazida velosiped do‘koni ochilibdi, unga yangisini olaylik.",
+          "ru": "В торговом центре открылся магазин велосипедов, давай купим ей новый.",
+          "tj": "Дар маркази савдо мағозаи дучарха кушода шудааст, биё барояш нав бихарем."
+        },
+        {
+          "hanzi": "好，咱们带小雪一起去，让她试一下。",
+          "uz": "Mayli, Xiaoxueni ham olib boraylik, o‘zi sinab ko‘rsin.",
+          "ru": "Хорошо, возьмём Сяосюэ с собой, пусть попробует.",
+          "tj": "Хуб, Сяосюэро ҳам мебарем, бигзор худаш санҷад."
+        },
+        {
+          "hanzi": "那今天就去吧！我也想再看看衣服。咱们怎么去？",
+          "uz": "Unda bugun boraylik! Men ham kiyimlarni yana ko‘rmoqchiman. Qanday boramiz?",
+          "ru": "Тогда пойдём сегодня! Я ещё хочу посмотреть одежду. Как поедем?",
+          "tj": "Пас имрӯз равем! Ман ҳам мехоҳам либосҳоро боз бинам. Чӣ тавр меравем?"
+        },
+        {
+          "hanzi": "商场不远，咱们可以走着去。",
+          "uz": "Savdo markazi uzoq emas, piyoda borsak bo‘ladi.",
+          "ru": "Торговый центр недалеко, можем пойти пешком.",
+          "tj": "Маркази савдо дур нест, пиёда рафтан мумкин."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在商场，刘明和王一雪买完自行车，又来挑选衣服。",
+      "scene_uz": "Savdo markazida Liu Ming va Wang Yixue velosipedni olib bo‘lib, kiyim tanlamoqda.",
+      "scene_ru": "В торговом центре Лю Мин и Ван Исюэ после покупки велосипеда выбирают одежду.",
+      "scene_tj": "Дар маркази савдо Лю Мин ва Ван Исюэ баъди харидани дучарха либос интихоб мекунанд.",
+      "turns": [
+        {
+          "hanzi": "你看我穿这条黄色的短裤好看吗？",
+          "uz": "Qara, mana bu sariq shortik menga yarashadimi?",
+          "ru": "Посмотри, мне идут эти жёлтые шорты?",
+          "tj": "Бин, ин шорти зард ба ман зебо меистад?"
+        },
+        {
+          "hanzi": "大小合适，但我觉得那条裙子比短裤更好看。",
+          "uz": "O‘lchami mos, lekin menimcha o‘sha yubka shortikdan chiroyliroq.",
+          "ru": "Размер подходит, но мне кажется, та юбка красивее шорт.",
+          "tj": "Андозааш мувофиқ аст, аммо ба назарам он юбка аз шорт зеботар аст."
+        },
+        {
+          "hanzi": "裙子比短裤贵一点儿。",
+          "uz": "Yubka shortikdan biroz qimmatroq.",
+          "ru": "Юбка немного дороже шорт.",
+          "tj": "Юбка аз шорт каме гаронтар аст."
+        },
+        {
+          "hanzi": "贵多少？",
+          "uz": "Qanchaga qimmatroq?",
+          "ru": "Насколько дороже?",
+          "tj": "Чанд қадар гаронтар?"
+        },
+        {
+          "hanzi": "裙子480，短裤400。",
+          "uz": "Yubka 480, shortik 400.",
+          "ru": "Юбка — 480, шорты — 400.",
+          "tj": "Юбка 480, шорт 400."
+        },
+        {
+          "hanzi": "裙子不比短裤贵多少，还是买裙子吧，你穿裙子更好看。",
+          "uz": "Yubka shortikdan uncha qimmat emas, yaxshisi yubkani ol, yubka senga ko‘proq yarashadi.",
+          "ru": "Юбка ненамного дороже, лучше возьми её — тебе в юбке красивее.",
+          "tj": "Юбка аз шорт он қадар гаронтар нест, беҳтараш юбкаро бигир, ба ту бештар мезебад."
+        },
+        {
+          "hanzi": "我多看看再决定。你看，那边有买二送一！",
+          "uz": "Yana ko‘rib chiqib, keyin qaror qilaman. Qara, u yerda “ikkita olsang, bittasi sovg‘a” ekan!",
+          "ru": "Я ещё посмотрю и потом решу. Смотри, там акция «купи два — третий в подарок»!",
+          "tj": "Боз мебинам, баъд қарор мекунам. Бин, он ҷо “дуто бихар, якто тӯҳфа” ҳаст!"
+        }
+      ]
+    },
+    {
+      "scene_zh": "在商店，王一雪在买东西。",
+      "scene_uz": "Do‘konda Wang Yixue xarid qilmoqda.",
+      "scene_ru": "В магазине Ван Исюэ делает покупки.",
+      "scene_tj": "Дар мағоза Ван Исюэ харид мекунад.",
+      "turns": [
+        {
+          "hanzi": "西瓜又大又新鲜，不甜不要钱！",
+          "uz": "Tarvuzlar ham katta, ham yangi! Shirin bo‘lmasa, pul olmaysiz!",
+          "ru": "Арбузы большие и свежие! Если не сладкие — денег не берём!",
+          "tj": "Тарбузҳо ҳам калонанд, ҳам тару тоза! Агар ширин набошад, пул намегирем!"
+        },
+        {
+          "hanzi": "西瓜看起来不错，怎么卖？",
+          "uz": "Tarvuz yaxshi ko‘rinadi, narxi qancha?",
+          "ru": "Арбуз выглядит неплохо. Почём?",
+          "tj": "Тарбуз хуб менамояд, нархаш чанд?"
+        },
+        {
+          "hanzi": "五块钱一公斤。来，您先尝尝这块冰西瓜，甜极了！",
+          "uz": "Bir kilogrammi besh yuan. Marhamat, avval mana bu sovutilgan tarvuzni tatib ko‘ring, juda shirin!",
+          "ru": "Пять юаней за килограмм. Попробуйте сначала этот охлаждённый арбуз — очень сладкий!",
+          "tj": "Як килограмм панҷ юан. Марҳамат, аввал ҳамин тарбузи хунукро чашед, ниҳоят ширин аст!"
+        },
+        {
+          "hanzi": "是挺甜的！帮我选个大点儿的，再来两斤香蕉。",
+          "uz": "Ha, ancha shirin ekan! Menga kattaroq birini tanlab bering, yana ikki jin banan ham bering.",
+          "ru": "Да, довольно сладкий! Выберите мне побольше и ещё два цзиня бананов.",
+          "tj": "Ҳа, хеле ширин аст! Барои ман калонтарашро интихоб кунед ва боз ду ҷин банан диҳед."
+        },
+        {
+          "hanzi": "一共五十八块五毛。",
+          "uz": "Jami 58 yuan 5 mao.",
+          "ru": "Всего 58 юаней 5 мао.",
+          "tj": "Ҳамагӣ 58 юану 5 мао."
+        },
+        {
+          "hanzi": "我买了这么多，便宜点儿吧。",
+          "uz": "Shuncha ko‘p oldim, biroz arzonroq qiling.",
+          "ru": "Я столько всего купила, сделайте немного дешевле.",
+          "tj": "Ин қадар зиёд харидам, каме арзонтар кунед."
+        },
+        {
+          "hanzi": "您给我五十五吧，不能再便宜了。",
+          "uz": "55 yuan bering, bundan arzon qila olmayman.",
+          "ru": "Давайте 55 юаней, дешевле уже нельзя.",
+          "tj": "55 юан диҳед, аз ин арзонтар намешавад."
+        }
+      ]
+    }
+  ]
+}

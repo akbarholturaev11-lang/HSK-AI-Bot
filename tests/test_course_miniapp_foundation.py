@@ -5,7 +5,7 @@ from contextlib import AbstractAsyncContextManager
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import create_engine, inspect, select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
@@ -904,7 +904,7 @@ class CourseMiniAppAnalyticsTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(session.added), 1)
         self.assertEqual(session.added[0].event_name, "lesson_started")
 
-    async def test_analytics_failure_rolls_back_without_raising(self):
+    async def test_analytics_failure_does_not_roll_back_callers_transaction(self):
         session = _FailingSession()
         with self.assertLogs("app.services.course_miniapp_analytics_service", level="ERROR"):
             result = await CourseMiniAppAnalyticsService(session).record_server_event(
@@ -912,7 +912,35 @@ class CourseMiniAppAnalyticsTests(unittest.IsolatedAsyncioTestCase):
                 telegram_id=123,
             )
         self.assertFalse(result["ok"])
-        self.assertTrue(session.rolled_back)
+        self.assertFalse(session.rolled_back)
+
+    async def test_failed_analytics_savepoint_preserves_saved_user_change(self):
+        engine = create_async_engine("sqlite+aiosqlite:///:memory:", poolclass=StaticPool)
+        try:
+            async with engine.begin() as connection:
+                await connection.run_sync(Base.metadata.create_all)
+            sessions = async_sessionmaker(engine, expire_on_commit=False)
+            async with sessions() as session:
+                user = User(id=4, telegram_id=123, full_name="Before", language="uz", level="hsk1")
+                session.add(user)
+                await session.commit()
+                user.full_name = "Saved by caller"
+                await session.flush()
+                with (
+                    mock.patch.object(session, "flush", side_effect=RuntimeError("telemetry failed")),
+                    self.assertLogs("app.services.course_miniapp_analytics_service", level="ERROR"),
+                ):
+                    result = await CourseMiniAppAnalyticsService(session).record_server_event(
+                        event_name="miniapp_opened", telegram_id=123, user_id=user.id,
+                    )
+                self.assertFalse(result["ok"])
+                await session.commit()
+            async with sessions() as session:
+                self.assertEqual((await session.get(User, 4)).full_name, "Saved by caller")
+                events = await session.execute(select(models.CourseMiniAppEvent))
+                self.assertEqual(events.scalars().all(), [])
+        finally:
+            await engine.dispose()
 
     def test_large_payload_is_stored_as_valid_truncated_json(self):
         payload_json = CourseMiniAppAnalyticsService._payload_json({"value": "x" * 9000})

@@ -26,50 +26,80 @@ class AssetBundledDictionarySource(
     private val appContext = context.applicationContext
 
     override suspend fun load(language: AppLanguage): BundledDictionary? {
-        val raw = runCatching {
-            appContext.assets.open(ASSET_NAME).bufferedReader().use { it.readText() }
-        }.getOrNull() ?: return null
-        val match = WORDS_ARRAY.find(raw) ?: return null
-        val parsed = runCatching {
-            json.decodeFromString<List<SeedWord>>(match.groupValues[1])
-        }.getOrNull().orEmpty()
         val key = language.backendCode.takeIf { it in LANGUAGES } ?: DEFAULT_LANGUAGE
-        val words = parsed.mapIndexedNotNull { index, word ->
-            val hanzi = word.hanzi.trim()
-            val pinyin = word.pinyin.trim()
-            val meaning = word.meaning[key]?.trim().orEmpty()
-            if (hanzi.isBlank() || pinyin.isBlank() || meaning.isBlank()) {
-                null
-            } else {
-                DictionaryWordEntity(
-                    hanzi = hanzi,
-                    pinyin = pinyin,
-                    pinyinPlain = PinyinSearch.plain(pinyin),
-                    meaning = meaning,
-                    level = word.level.trim(),
-                    position = index,
-                )
+        val digest = MessageDigest.getInstance("SHA-256")
+        val merged = linkedMapOf<String, SeedWord>()
+
+        SOURCES.forEach { source ->
+            val raw = runCatching {
+                appContext.assets.open(source.name).bufferedReader().use { it.readText() }
+            }.getOrNull() ?: return@forEach
+            val match = source.pattern.find(raw) ?: return@forEach
+            val parsed = runCatching {
+                json.decodeFromString<List<SeedWord>>(match.groupValues[1])
+            }.getOrNull().orEmpty()
+
+            digest.update(source.name.toByteArray(Charsets.UTF_8))
+            digest.update(0.toByte())
+            digest.update(raw.toByteArray(Charsets.UTF_8))
+
+            parsed.forEach { word ->
+                val hanzi = word.hanzi.trim()
+                val pinyin = word.pinyin.trim()
+                val meaning = word.meaning[key]?.trim().orEmpty()
+                if (hanzi.isBlank() || pinyin.isBlank() || meaning.isBlank()) return@forEach
+                val existing = merged[hanzi]
+                if (existing == null) {
+                    merged[hanzi] = word.copy(
+                        hanzi = hanzi,
+                        pinyin = pinyin,
+                        meaning = word.meaning.mapValues { it.value.trim() },
+                        level = word.level.trim(),
+                    )
+                } else {
+                    val levels = existing.level.split("|").filter(String::isNotBlank).toMutableList()
+                    val next = word.level.trim()
+                    if (next.isNotBlank() && next !in levels) levels += next
+                    merged[hanzi] = existing.copy(level = levels.joinToString("|"))
+                }
             }
         }
+
+        val words = merged.values.mapIndexedNotNull { index, word ->
+            val meaning = word.meaning[key]?.trim().orEmpty()
+            if (meaning.isBlank()) null else DictionaryWordEntity(
+                hanzi = word.hanzi,
+                pinyin = word.pinyin,
+                pinyinPlain = PinyinSearch.plain(word.pinyin),
+                meaning = meaning,
+                level = word.level,
+                position = index,
+            )
+        }
         if (words.isEmpty()) return null
+        val version = digest.digest().joinToString("") { "%02x".format(it.toInt() and 0xff) }.take(16)
         return BundledDictionary(
-            version = sha256(raw).take(16),
+            version = version,
             language = key,
             words = words,
         )
     }
 
+    private data class Source(val name: String, val pattern: Regex)
+
     private companion object {
-        const val ASSET_NAME = "hsk-words.js"
         const val DEFAULT_LANGUAGE = "ru"
         val LANGUAGES = setOf("uz", "ru", "tj")
-        val WORDS_ARRAY = Regex("""const\s+WORDS\s*=\s*(\[.*])\s*;?\s*$""", RegexOption.DOT_MATCHES_ALL)
-
-        fun sha256(value: String): String {
-            val digest = MessageDigest.getInstance("SHA-256")
-                .digest(value.toByteArray(Charsets.UTF_8))
-            return digest.joinToString("") { "%02x".format(it.toInt() and 0xff) }
-        }
+        val SOURCES = listOf(
+            Source(
+                "hsk-words.js",
+                Regex("""const\s+WORDS\s*=\s*(\[.*])\s*;?\s*$""", RegexOption.DOT_MATCHES_ALL),
+            ),
+            Source(
+                "hsk30-words.js",
+                Regex("""window\.HSK30_WORDS\s*=\s*(\[.*])\s*;?\s*$""", RegexOption.DOT_MATCHES_ALL),
+            ),
+        )
     }
 }
 

@@ -1,0 +1,1106 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 8,
+  "source_lesson": 1,
+  "part_no": 8,
+  "part_count": 8,
+  "checkpoint": true,
+  "title": "我们去机场接你们",
+  "subtitle": {
+    "uz": "Odam yoki narsani bir nechta aniqlovchi bilan aniq tasvirlash, yo‘qolgan buyum haqida yordam so‘rash va noaniq shaxs, narsa yoki joyni so‘roq olmoshlari orqali ifodalash.",
+    "ru": "Описывать человека или предмет несколькими определениями, решать ситуацию с потерянной вещью и выражать неопределённого человека, предмет или место с помощью вопросительных местоимений.",
+    "tj": "Шахс ё ашёро бо чанд муайянкунанда дақиқ тавсиф кардан, масъалаи гум шудани чизро ҳал кардан ва шахс, ашё ё ҷойи номуайянро бо ҷонишинҳои саволӣ ифода кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "以为",
+      "pinyin": "yǐwéi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+        "ru": "полагать, считать (часто ошибочно)",
+        "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "像",
+      "pinyin": "xiàng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘xshamoq",
+        "ru": "быть похожим; походить",
+        "tj": "монанд будан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "长",
+      "pinyin": "zhǎng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘smoq; tashqi ko‘rinishi shakllanmoq",
+        "ru": "расти; выглядеть (о внешности)",
+        "tj": "сабзидан; аз рӯйи намуди зоҳирӣ будан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "身高",
+      "pinyin": "shēngāo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bo‘y balandligi",
+        "ru": "рост человека",
+        "tj": "қад; баландии қомат"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "米",
+      "pinyin": "mǐ",
+      "pos": "m.",
+      "meaning": {
+        "uz": "metr",
+        "ru": "метр",
+        "tj": "метр"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "瘦",
+      "pinyin": "shòu",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "ozg‘in",
+        "ru": "худой; стройный",
+        "tj": "лоғар"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "接",
+      "pinyin": "jiē",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kutib olmoq",
+        "ru": "встречать; забирать",
+        "tj": "пешвоз гирифтан"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "行李",
+      "pinyin": "xíngli",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bagaj; yuk",
+        "ru": "багаж",
+        "tj": "бағоҷ"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "丢",
+      "pinyin": "diū",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yo‘qotmoq",
+        "ru": "терять",
+        "tj": "гум кардан"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "箱子",
+      "pinyin": "xiāngzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "quti; chamadon",
+        "ru": "ящик; чемодан",
+        "tj": "қуттӣ; ҷомадон"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "号码",
+      "pinyin": "hàomǎ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "raqam",
+        "ru": "номер",
+        "tj": "рақам"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "好像",
+      "pinyin": "hǎoxiàng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "go‘yo; o‘xshaydi",
+        "ru": "кажется; похоже",
+        "tj": "гӯё; ба назар мерасад"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "重要",
+      "pinyin": "zhòngyào",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "muhim",
+        "ru": "важный",
+        "tj": "муҳим"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "着急",
+      "pinyin": "zháojí",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "xavotirlanmoq; shoshilmoq",
+        "ru": "волноваться; тревожиться",
+        "tj": "ташвиш кашидан; шитоб кардан"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "护照",
+      "pinyin": "hùzhào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "pasport",
+        "ru": "паспорт",
+        "tj": "шиноснома"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "服务台",
+      "pinyin": "fúwùtái",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ma’lumot/xizmat ko‘rsatish peshtaxtasi",
+        "ru": "стойка обслуживания; справочная",
+        "tj": "миз/пештахтаи хизматрасонӣ"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "应该",
+      "pinyin": "yīnggāi",
+      "pos": "mod.",
+      "meaning": {
+        "uz": "kerak; lozim; ehtimol",
+        "ru": "следует; должен; вероятно",
+        "tj": "бояд; лозим; эҳтимол"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "站",
+      "pinyin": "zhàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "turmoq",
+        "ru": "стоять",
+        "tj": "истодан"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "中间",
+      "pinyin": "zhōngjiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘rta; o‘rtasi",
+        "ru": "середина; посередине",
+        "tj": "миёна; мобайн"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "短",
+      "pinyin": "duǎn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "qisqa",
+        "ru": "короткий",
+        "tj": "кӯтоҳ"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "头发",
+      "pinyin": "tóufa",
+      "pos": "n.",
+      "meaning": {
+        "uz": "soch",
+        "ru": "волосы",
+        "tj": "мӯй"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "年轻",
+      "pinyin": "niánqīng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "yosh",
+        "ru": "молодой",
+        "tj": "ҷавон"
+      }
+    },
+    {
+      "no": 23,
+      "zh": "发现",
+      "pinyin": "fāxiàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "aniqlamoq; payqamoq",
+        "ru": "обнаружить; заметить",
+        "tj": "пай бурдан; ошкор кардан"
+      }
+    },
+    {
+      "no": 24,
+      "zh": "不见",
+      "pinyin": "bùjiàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yo‘qolib qolmoq; ko‘rinmay qolmoq",
+        "ru": "пропасть; исчезнуть",
+        "tj": "гум шудан; нопадид шудан"
+      }
+    },
+    {
+      "no": 25,
+      "zh": "带",
+      "pinyin": "dài",
+      "pos": "v.",
+      "meaning": {
+        "uz": "olib yurmoq; olib kelmoq",
+        "ru": "брать с собой; носить",
+        "tj": "бо худ гирифтан; бурдан"
+      }
+    },
+    {
+      "no": 26,
+      "zh": "帮助",
+      "pinyin": "bāngzhù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yordam bermoq",
+        "ru": "помогать",
+        "tj": "кӯмак кардан"
+      }
+    },
+    {
+      "no": 27,
+      "zh": "照片",
+      "pinyin": "zhàopiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "surat; fotosurat",
+        "ru": "фотография",
+        "tj": "сурат; акс"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "“看上去 / 看起来” — tashqi taassurotni ifodalash",
+        "ru": "“看上去 / 看起来” — внешнее впечатление",
+        "tj": "“看上去 / 看起来” — таассуроти зоҳирӣ"
+      },
+      "title_zh": "固定短语“看上去/看起来”",
+      "rule": {
+        "uz": "“看上去” va “看起来” biror odam yoki narsaning ko‘rinishi va kuzatuvchida uyg‘otgan taassurotini bildiradi. Keyin odatda sifat yoki tavsif keladi.",
+        "ru": "“看上去” и “看起来” передают впечатление по внешнему виду человека или предмета. После них обычно ставится прилагательное или описание.",
+        "tj": "“看上去” ва “看起来” таассуротро аз намуди зоҳирии шахс ё ашё ифода мекунанд. Баъди онҳо одатан сифат ё тавсиф меояд."
+      },
+      "examples": [
+        {
+          "zh": "他们看上去有点儿像。",
+          "pinyin": "Tāmen kàn shàngqu yǒudiǎnr xiàng.",
+          "translation": {
+            "uz": "Ular ko‘rinishidan biroz o‘xshaydi.",
+            "ru": "Они на вид немного похожи.",
+            "tj": "Онҳо аз рӯйи намуд каме монанданд."
+          }
+        },
+        {
+          "zh": "这些菜看起来都很好吃。",
+          "pinyin": "Zhèxiē cài kàn qǐlái dōu hěn hǎochī.",
+          "translation": {
+            "uz": "Bu taomlarning hammasi juda mazali ko‘rinadi.",
+            "ru": "Все эти блюда выглядят очень аппетитно.",
+            "tj": "Ҳамаи ин хӯрокҳо хеле болаззат ба назар мерасанд."
+          }
+        },
+        {
+          "zh": "那个新来的老师看上去很年轻。",
+          "pinyin": "Nàge xīn lái de lǎoshī kàn shàngqu hěn niánqīng.",
+          "translation": {
+            "uz": "Yangi kelgan o‘qituvchi juda yosh ko‘rinadi.",
+            "ru": "Новый преподаватель выглядит очень молодо.",
+            "tj": "Устоди навомада хеле ҷавон ба назар мерасад."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "So‘roq olmoshlarining so‘roq bo‘lmagan ma’nosi (1)",
+        "ru": "Невопросительное употребление вопросительных местоимений (1)",
+        "tj": "Истифодаи ғайрисаволии ҷонишинҳои саволӣ (1)"
+      },
+      "title_zh": "疑问代词的非疑问用法（1）",
+      "rule": {
+        "uz": "谁、什么、哪儿/哪里、哪 kabi so‘roq olmoshlari ayrim gaplarda savol bermaydi, balki aniq bo‘lmagan odam, narsa, joy yoki vaqtni bildiradi.",
+        "ru": "谁、什么、哪儿/哪里、哪 в некоторых предложениях не задают вопрос, а обозначают неопределённого человека, предмет, место или время.",
+        "tj": "谁、什么、哪儿/哪里、哪 дар баъзе ҷумлаҳо савол намедиҳанд, балки шахс, ашё, ҷой ё вақти номуайянро ифода мекунанд."
+      },
+      "examples": [
+        {
+          "zh": "我好像在哪儿看到过这个箱子。",
+          "pinyin": "Wǒ hǎoxiàng zài nǎr kàndào guo zhège xiāngzi.",
+          "translation": {
+            "uz": "Men bu chamadonni qayerdadir ko‘rgandekman.",
+            "ru": "Кажется, я где-то видел этот чемодан.",
+            "tj": "Ба назарам, ман ин ҷомадонро дар ягон ҷо дида будам."
+          }
+        },
+        {
+          "zh": "你吃点儿什么再走吧。",
+          "pinyin": "Nǐ chī diǎnr shénme zài zǒu ba.",
+          "translation": {
+            "uz": "Ketishdan oldin biror narsa yeb ol.",
+            "ru": "Съешь что-нибудь перед уходом.",
+            "tj": "Пеш аз рафтан чизе бихӯр."
+          }
+        },
+        {
+          "zh": "我们哪天一起去踢足球吧。",
+          "pinyin": "Wǒmen nǎ tiān yìqǐ qù tī zúqiú ba.",
+          "translation": {
+            "uz": "Biror kuni birga futbol o‘ynagani boraylik.",
+            "ru": "Давай как-нибудь вместе поиграем в футбол.",
+            "tj": "Ягон рӯз якҷо футбол бозӣ кунем."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Bir nechta aniqlovchining ketma-ket kelishi",
+        "ru": "Несколько определений перед существительным",
+        "tj": "Якчанд муайянкунанда пеш аз исм"
+      },
+      "title_zh": "多项定语",
+      "rule": {
+        "uz": "Bir otni bir nechta aniqlovchi tavsiflashi mumkin. Ular ot oldidan ketma-ket keladi; uzunroq fe’lli tavsiflar odatda “的” bilan otga bog‘lanadi.",
+        "ru": "Одно существительное может иметь несколько определений. Они последовательно ставятся перед существительным; более развёрнутые глагольные описания обычно связываются с ним через “的”.",
+        "tj": "Як исм метавонад чанд муайянкунанда дошта бошад. Онҳо пайдарпай пеш аз исм меоянд; тавсифҳои феълии дарозтар одатан бо “的” ба исм мепайванданд."
+      },
+      "examples": [
+        {
+          "zh": "李文是那个穿着黑衣服的短头发的年轻人吗？",
+          "pinyin": "Lǐ Wén shì nàge chuānzhe hēi yīfu de duǎn tóufa de niánqīng rén ma?",
+          "translation": {
+            "uz": "Li Wen qora kiyim kiygan, kalta sochli o‘sha yosh yigitmi?",
+            "ru": "Ли Вэнь — тот молодой человек в чёрной одежде с короткими волосами?",
+            "tj": "Ли Вэн ҳамон ҷавони либоси сиёҳпӯш ва мӯйкӯтоҳ аст?"
+          }
+        },
+        {
+          "zh": "昨天和家月一起看电影的两个人是我的朋友。",
+          "pinyin": "Zuótiān hé Jiāyuè yìqǐ kàn diànyǐng de liǎng ge rén shì wǒ de péngyou.",
+          "translation": {
+            "uz": "Kecha Jiayue bilan film ko‘rgan ikki kishi mening do‘stlarim.",
+            "ru": "Два человека, которые вчера смотрели фильм вместе с Цзяюэ, — мои друзья.",
+            "tj": "Ду нафаре, ки дирӯз бо Ҷяюэ филм диданд, дӯстони мананд."
+          }
+        },
+        {
+          "zh": "我那件新买的白色的衣服在哪儿？",
+          "pinyin": "Wǒ nà jiàn xīn mǎi de báisè de yīfu zài nǎr?",
+          "translation": {
+            "uz": "Mening yangi sotib olgan oq kiyimim qayerda?",
+            "ru": "Где моя новая белая одежда, которую я купил?",
+            "tj": "Либоси сафеди навхаридаи ман куҷост?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue divanda suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают на диване.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ рӯйи диван суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘明",
+          "zh": "这是杨同乐吗？他怎么跟白家月在一起？",
+          "pinyin": "Zhè shì Yáng Tónglè ma? Tā zěnme gēn Bái Jiāyuè zài yìqǐ?",
+          "text": {
+            "uz": "Bu Yang Tonglemi? U nega Bai Jiayue bilan birga?",
+            "ru": "Это Ян Тунлэ? Почему он вместе с Бай Цзяюэ?",
+            "tj": "Ин Ян Тунлэ аст? Чаро ӯ бо Бай Ҷяюэ якҷост?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "他不是杨同乐，他叫李文，是白家月的好朋友。",
+          "pinyin": "Tā bú shì Yáng Tónglè, tā jiào Lǐ Wén, shì Bái Jiāyuè de hǎo péngyou.",
+          "text": {
+            "uz": "U Yang Tongle emas, uning ismi Li Wen, u Bai Jiayuening yaxshi do‘sti.",
+            "ru": "Это не Ян Тунлэ. Его зовут Ли Вэнь, он хороший друг Бай Цзяюэ.",
+            "tj": "Ӯ Ян Тунлэ нест, номаш Ли Вэн аст ва дӯсти хуби Бай Ҷяюэ мебошад."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "我还以为是同乐呢，他们看上去有点儿像。",
+          "pinyin": "Wǒ hái yǐwéi shì Tónglè ne, tāmen kàn shàngqu yǒudiǎnr xiàng.",
+          "text": {
+            "uz": "Men uni Tongle deb o‘ylabman, ular ko‘rinishidan biroz o‘xshaydi.",
+            "ru": "А я думал, что это Тунлэ. Они немного похожи.",
+            "tj": "Ман гумон кардам Тунлэ аст, онҳо аз рӯйи намуд каме монанданд."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "是长得有点儿像，但是他比同乐高，身高有一米八。",
+          "pinyin": "Shì zhǎng de yǒudiǎnr xiàng, dànshì tā bǐ Tónglè gāo, shēngāo yǒu yì mǐ bā.",
+          "text": {
+            "uz": "Ha, biroz o‘xshash, lekin u Tongledan balandroq, bo‘yi bir metr sakson.",
+            "ru": "Да, внешне немного похожи, но он выше Тунлэ — рост около метра восьмидесяти.",
+            "tj": "Ҳа, каме монанданд, аммо ӯ аз Тунлэ баландтар аст, қадаш як метру ҳаштод."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "看起来也比同乐瘦一点儿。",
+          "pinyin": "Kàn qǐlái yě bǐ Tónglè shòu yìdiǎnr.",
+          "text": {
+            "uz": "Ko‘rinishidan Tongledan biroz ozg‘inroq ham.",
+            "ru": "И выглядит он немного худее Тунлэ.",
+            "tj": "Ба назар аз Тунлэ каме лоғартар ҳам ҳаст."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "下个星期家月和李文要来北京，我去机场接他们。",
+          "pinyin": "Xià ge xīngqī Jiāyuè hé Lǐ Wén yào lái Běijīng, wǒ qù jīchǎng jiē tāmen.",
+          "text": {
+            "uz": "Keyingi hafta Jiayue va Li Wen Pekinga keladi, men ularni aeroportda kutib olaman.",
+            "ru": "На следующей неделе Цзяюэ и Ли Вэнь приедут в Пекин, я встречу их в аэропорту.",
+            "tj": "Ҳафтаи оянда Ҷяюэ ва Ли Вэн ба Пекин меоянд, ман онҳоро дар фурудгоҳ пешвоз мегирам."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "他们哪天到北京？我跟你一起去机场接他们吧。",
+          "pinyin": "Tāmen nǎ tiān dào Běijīng? Wǒ gēn nǐ yìqǐ qù jīchǎng jiē tāmen ba.",
+          "text": {
+            "uz": "Ular qaysi kuni Pekinga yetib keladi? Men ham sen bilan aeroportga borib ularni kutib olay.",
+            "ru": "В какой день они прилетают в Пекин? Давай я поеду с тобой в аэропорт их встречать.",
+            "tj": "Онҳо кадом рӯз ба Пекин мерасанд? Ман ҳам бо ту ба фурудгоҳ рафта онҳоро пешвоз мегирам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Aeroportda Li Wen va Bai Jiayue bagaj olish joyida.",
+        "ru": "В аэропорту Ли Вэнь и Бай Цзяюэ находятся у выдачи багажа.",
+        "tj": "Дар фурудгоҳ Ли Вэн ва Бай Ҷяюэ дар ҷойи гирифтани бағоҷ ҳастанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "我的行李怎么还没出来？是不是丢了？",
+          "pinyin": "Wǒ de xíngli zěnme hái méi chūlái? Shì bú shì diū le?",
+          "text": {
+            "uz": "Nega mening bagajim hali chiqmadi? Yo‘qolib qoldimi?",
+            "ru": "Почему мой багаж до сих пор не появился? Он потерялся?",
+            "tj": "Чаро бағоҷи ман ҳоло набаромад? Гум шудааст?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "你的行李箱是什么样的？",
+          "pinyin": "Nǐ de xínglixiāng shì shénme yàng de?",
+          "text": {
+            "uz": "Chamadoning qanday ko‘rinishda?",
+            "ru": "Как выглядит твой чемодан?",
+            "tj": "Ҷомадонат чӣ хел аст?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "是一个黑色的箱子，上面写着我的名字和电话号码。",
+          "pinyin": "Shì yí ge hēisè de xiāngzi, shàngmian xiězhe wǒ de míngzi hé diànhuà hàomǎ.",
+          "text": {
+            "uz": "Qora chamadon, ustida ismim va telefon raqamim yozilgan.",
+            "ru": "Это чёрный чемодан, на нём написаны моё имя и номер телефона.",
+            "tj": "Ҷомадони сиёҳ аст, рӯяш ному рақами телефонам навишта шудааст."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我好像在哪儿看到过这个箱子，是不是有人拿错了？",
+          "pinyin": "Wǒ hǎoxiàng zài nǎr kàndào guo zhège xiāngzi, shì bú shì yǒu rén ná cuò le?",
+          "text": {
+            "uz": "Bu chamadonni qayerdadir ko‘rgandekman, balki kimdir adashib olib ketgandir?",
+            "ru": "Кажется, я где-то видел этот чемодан. Может, кто-то взял его по ошибке?",
+            "tj": "Ба назарам, ин ҷомадонро дар ягон ҷо дида будам. Шояд касе иштибоҳан гирифта бошад?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我们快找谁问一下吧，箱子里有不少重要的东西。",
+          "pinyin": "Wǒmen kuài zhǎo shéi wèn yíxià ba, xiāngzi lǐ yǒu bù shǎo zhòngyào de dōngxi.",
+          "text": {
+            "uz": "Tezroq biror kishidan so‘raylik, chamadonda ancha muhim narsalar bor.",
+            "ru": "Давай скорее у кого-нибудь спросим: в чемодане много важных вещей.",
+            "tj": "Биё зуд аз касе пурсем, дар ҷомадон чизҳои муҳими зиёд ҳастанд."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "别着急，我们拿着护照和机票，去服务台问问吧。",
+          "pinyin": "Bié zháojí, wǒmen názhe hùzhào hé jīpiào, qù fúwùtái wènwen ba.",
+          "text": {
+            "uz": "Xavotir olma, pasport va chiptalarimiz yonimizda, xizmat ko‘rsatish peshtaxtasiga borib so‘raylik.",
+            "ru": "Не волнуйся. Паспорт и билеты у нас с собой, пойдём спросим на стойке обслуживания.",
+            "tj": "Ташвиш накаш, шиноснома ва чиптаҳо бо мост, биё ба мизи хизматрасонӣ рафта пурсем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Aeroport zalida Liu Ming va Wang Yixue mehmonlarni kutib olmoqda.",
+        "ru": "В зале аэропорта Лю Мин и Ван Исюэ встречают прилетающих.",
+        "tj": "Дар толори фурудгоҳ Лю Мин ва Ван Исюэ меҳмононро пешвоз мегиранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘明",
+          "zh": "飞机早就到了，你看见白家月他们了吗？",
+          "pinyin": "Fēijī zǎo jiù dào le, nǐ kànjiàn Bái Jiāyuè tāmen le ma?",
+          "text": {
+            "uz": "Samolyot anchadan beri qo‘ngan, Bai Jiayue va boshqalarni ko‘rdingmi?",
+            "ru": "Самолёт уже давно прилетел. Ты видела Бай Цзяюэ и остальных?",
+            "tj": "Ҳавопаймо кайҳо расидааст, Бай Ҷяюэ ва дигаронро дидӣ?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "没有，他们应该快出来了。",
+          "pinyin": "Méiyǒu, tāmen yīnggāi kuài chūlái le.",
+          "text": {
+            "uz": "Yo‘q, ular hozir chiqib qolishi kerak.",
+            "ru": "Нет, они, наверное, скоро выйдут.",
+            "tj": "Не, онҳо бояд ҳозир-ҳозир бароянд."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "我们站到中间去吧，这样他们好找一些。",
+          "pinyin": "Wǒmen zhàn dào zhōngjiān qù ba, zhèyàng tāmen hǎo zhǎo yìxiē.",
+          "text": {
+            "uz": "O‘rtaroqqa borib turaylik, shunda ular bizni osonroq topadi.",
+            "ru": "Давай встанем посередине, так им будет легче нас найти.",
+            "tj": "Биё дар миёна истем, ҳамин тавр моро осонтар меёбанд."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "你看那个高个子的人是李文吗？",
+          "pinyin": "Nǐ kàn nàge gāo gèzi de rén shì Lǐ Wén ma?",
+          "text": {
+            "uz": "Qara, ana u baland bo‘yli odam Li Wenmi?",
+            "ru": "Смотри, тот высокий человек — Ли Вэнь?",
+            "tj": "Бин, он шахси қадбаланд Ли Вэн аст?"
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "你说的是哪个？那个穿着黑衣服的短头发的年轻人？",
+          "pinyin": "Nǐ shuō de shì nǎge? Nàge chuānzhe hēi yīfu de duǎn tóufa de niánqīng rén?",
+          "text": {
+            "uz": "Qaysinisini aytyapsan? Qora kiyimdagi kalta sochli yosh yigitnimi?",
+            "ru": "Кого ты имеешь в виду? Того молодого человека с короткими волосами в чёрной одежде?",
+            "tj": "Кадомашро мегӯӣ? Ҳамон ҷавони мӯйкӯтоҳи либоси сиёҳпӯшро?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "对，那个人就是李文！你看，家月在他后面呢。",
+          "pinyin": "Duì, nàge rén jiù shì Lǐ Wén! Nǐ kàn, Jiāyuè zài tā hòumian ne.",
+          "text": {
+            "uz": "Ha, o‘sha odam Li Wen! Qara, Jiayue uning orqasida.",
+            "ru": "Да, это и есть Ли Вэнь! Смотри, Цзяюэ идёт позади него.",
+            "tj": "Ҳа, ҳамон шахс Ли Вэн аст! Бин, Ҷяюэ пушти ӯст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "好像 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 好像:",
+            "tj": "Маънои калимаи 好像-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "go‘yo; o‘xshaydi",
+              "ru": "кажется; похоже",
+              "tj": "гӯё; ба назар мерасад"
+            },
+            {
+              "uz": "o‘xshamoq",
+              "ru": "быть похожим; походить",
+              "tj": "монанд будан"
+            },
+            {
+              "uz": "o‘smoq; tashqi ko‘rinishi shakllanmoq",
+              "ru": "расти; выглядеть (о внешности)",
+              "tj": "сабзидан; аз рӯйи намуди зоҳирӣ будан"
+            },
+            {
+              "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+              "ru": "полагать, считать (часто ошибочно)",
+              "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "好像 = go‘yo; o‘xshaydi (hǎoxiàng)",
+            "ru": "好像 = кажется; похоже (hǎoxiàng)",
+            "tj": "好像 = гӯё; ба назар мерасад (hǎoxiàng)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你的行李箱是什么样的？",
+          "pinyin": "Nǐ de xínglixiāng shì shénme yàng de?",
+          "translation": {
+            "uz": "Chamadoning qanday ko‘rinishda?",
+            "ru": "Как выглядит твой чемодан?",
+            "tj": "Ҷомадонат чӣ хел аст?"
+          },
+          "tokens": {
+            "uz": [
+              "Bu",
+              "ko‘rinishda",
+              "Yang",
+              "Chamadoning",
+              "qanday"
+            ],
+            "ru": [
+              "Как",
+              "выглядит",
+              "Это",
+              "твой",
+              "чемодан",
+              "Ян"
+            ],
+            "tj": [
+              "чӣ",
+              "Ян",
+              "хел",
+              "аст",
+              "Ҷомадонат",
+              "Ин"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Chamadoning",
+              "qanday",
+              "ko‘rinishda"
+            ],
+            "ru": [
+              "Как",
+              "выглядит",
+              "твой",
+              "чемодан"
+            ],
+            "tj": [
+              "Ҷомадонат",
+              "чӣ",
+              "хел",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "你的行李箱是什么样的？ — Chamadoning qanday ko‘rinishda?",
+            "ru": "你的行李箱是什么样的？ — Как выглядит твой чемодан?",
+            "tj": "你的行李箱是什么样的？ — Ҷомадонат чӣ хел аст?"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "以为",
+              {
+                "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+                "ru": "полагать, считать (часто ошибочно)",
+                "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+              }
+            ],
+            [
+              "像",
+              {
+                "uz": "o‘xshamoq",
+                "ru": "быть похожим; походить",
+                "tj": "монанд будан"
+              }
+            ],
+            [
+              "长",
+              {
+                "uz": "o‘smoq; tashqi ko‘rinishi shakllanmoq",
+                "ru": "расти; выглядеть (о внешности)",
+                "tj": "сабзидан; аз рӯйи намуди зоҳирӣ будан"
+              }
+            ],
+            [
+              "身高",
+              {
+                "uz": "bo‘y balandligi",
+                "ru": "рост человека",
+                "tj": "қад; баландии қомат"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bu taomlarning hammasi juda mazali ko‘rinadi.» — xitoychada qaysi biri?",
+            "ru": "«Все эти блюда выглядят очень аппетитно.» — какое предложение по-китайски?",
+            "tj": "«Ҳамаи ин хӯрокҳо хеле болаззат ба назар мерасанд.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "这些菜看起来都很好吃。",
+            "我好像在哪儿看到过这个箱子。",
+            "我们哪天一起去踢足球吧。",
+            "他们看上去有点儿像。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "这些菜看起来都很好吃。 — Zhèxiē cài kàn qǐlái dōu hěn hǎochī.",
+            "ru": "这些菜看起来都很好吃。 — Zhèxiē cài kàn qǐlái dōu hěn hǎochī.",
+            "tj": "这些菜看起来都很好吃。 — Zhèxiē cài kàn qǐlái dōu hěn hǎochī."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xíngli qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xíngli?",
+            "tj": "xíngli кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "像",
+            "长",
+            "行李",
+            "以为"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "行李 = bagaj; yuk (xíngli)",
+            "ru": "行李 = багаж (xíngli)",
+            "tj": "行李 = бағоҷ (xíngli)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "箱子",
+          "pinyin": "xiāngzi",
+          "options": [
+            "像",
+            "长",
+            "以为",
+            "箱子"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "箱子 — quti; chamadon (xiāngzi)",
+            "ru": "箱子 — ящик; чемодан (xiāngzi)",
+            "tj": "箱子 — қуттӣ; ҷомадон (xiāngzi)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "米",
+              {
+                "uz": "metr",
+                "ru": "метр",
+                "tj": "метр"
+              }
+            ],
+            [
+              "瘦",
+              {
+                "uz": "ozg‘in",
+                "ru": "худой; стройный",
+                "tj": "лоғар"
+              }
+            ],
+            [
+              "接",
+              {
+                "uz": "kutib olmoq",
+                "ru": "встречать; забирать",
+                "tj": "пешвоз гирифтан"
+              }
+            ],
+            [
+              "行李",
+              {
+                "uz": "bagaj; yuk",
+                "ru": "багаж",
+                "tj": "бағоҷ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "这是杨同乐吗？他怎么跟白家月在一起？",
+          "pinyin": "Zhè shì Yáng Tónglè ma? Tā zěnme gēn Bái Jiāyuè zài yìqǐ?",
+          "options": [
+            "他不是杨同乐，他叫李文，是白家月的好朋友。",
+            "这是杨同乐吗？他怎么跟白家月在一起？",
+            "我还以为是同乐呢，他们看上去有点儿像。",
+            "是长得有点儿像，但是他比同乐高，身高有一米八。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "这是杨同乐吗？他怎么跟白家月在一起？ — Bu Yang Tonglemi? U nega Bai Jiayue bilan birga?",
+            "ru": "这是杨同乐吗？他怎么跟白家月在一起？ — Это Ян Тунлэ? Почему он вместе с Бай Цзяюэ?",
+            "tj": "这是杨同乐吗？他怎么跟白家月在一起？ — Ин Ян Тунлэ аст? Чаро ӯ бо Бай Ҷяюэ якҷост?"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "刘明",
+              "zh": "这是杨同乐吗？他怎么跟白家月在一起？",
+              "blank": false
+            },
+            {
+              "speaker": "王一雪",
+              "zh": "他不是杨同乐，他叫李文，是白家月的好朋友。",
+              "blank": false
+            },
+            {
+              "speaker": "刘明",
+              "zh": "我还以为是同乐呢，他们看上去有点儿像。",
+              "blank": false
+            },
+            {
+              "speaker": "王一雪",
+              "zh": "是长得有点儿像，但是他比同乐高，身高有一米八。",
+              "blank": false
+            },
+            {
+              "speaker": "刘明",
+              "zh": "看起来也比同乐瘦一点儿。",
+              "blank": false
+            },
+            {
+              "speaker": "王一雪",
+              "zh": "下个星期家月和李文要来北京，我去机场接他们。",
+              "blank": false
+            },
+            {
+              "speaker": "刘明",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "他们哪天到北京？我跟你一起去机场接他们吧。",
+            "他不是杨同乐，他叫李文，是白家月的好朋友。",
+            "我还以为是同乐呢，他们看上去有点儿像。",
+            "这是杨同乐吗？他怎么跟白家月在一起？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 他们哪天到北京？我跟你一起去机场接他们吧。",
+            "ru": "Правильный ответ: 他们哪天到北京？我跟你一起去机场接他们吧。",
+            "tj": "Ҷавоби дуруст: 他们哪天到北京？我跟你一起去机场接他们吧。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____是杨同乐吗？他怎么跟白家月在一起？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "这",
+            "七",
+            "一",
+            "万"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 这 — 这是杨同乐吗？他怎么跟白家月在一起？ (Bu Yang Tonglemi? U nega Bai Jiayue bilan birga?)",
+            "ru": "Верно: 这 — 这是杨同乐吗？他怎么跟白家月在一起？ (Это Ян Тунлэ? Почему он вместе с Бай Цзяюэ?)",
+            "tj": "Дуруст: 这 — 这是杨同乐吗？他怎么跟白家月在一起？ (Ин Ян Тунлэ аст? Чаро ӯ бо Бай Ҷяюэ якҷост?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 刘明 avval nima deydi?",
+            "ru": "Что 刘明 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 刘明 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "他不是杨同乐，他叫李文，是白家月的好朋友。",
+            "这是杨同乐吗？他怎么跟白家月在一起？",
+            "我还以为是同乐呢，他们看上去有点儿像。",
+            "是长得有点儿像，但是他比同乐高，身高有一米八。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 这是杨同乐吗？他怎么跟白家月在一起？",
+            "ru": "Правильный ответ: 这是杨同乐吗？他怎么跟白家月在一起？",
+            "tj": "Ҷавоби дуруст: 这是杨同乐吗？他怎么跟白家月在一起？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 刘明 nima deydi?",
+            "ru": "Что 刘明 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 刘明 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "这是杨同乐吗？他怎么跟白家月在一起？",
+            "他们哪天到北京？我跟你一起去机场接他们吧。",
+            "他不是杨同乐，他叫李文，是白家月的好朋友。",
+            "我还以为是同乐呢，他们看上去有点儿像。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 他们哪天到北京？我跟你一起去机场接他们吧。",
+            "ru": "Правильный ответ: 他们哪天到北京？我跟你一起去机场接他们吧。",
+            "tj": "Ҷавоби дуруст: 他们哪天到北京？我跟你一起去机场接他们吧。"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "没有，他们应该快出来了。",
+          "pinyin": "Méiyǒu, tāmen yīnggāi kuài chūlái le.",
+          "translation": {
+            "uz": "Yo‘q, ular hozir chiqib qolishi kerak.",
+            "ru": "Нет, они, наверное, скоро выйдут.",
+            "tj": "Не, онҳо бояд ҳозир-ҳозир бароянд."
+          }
+        }
+      ]
+    }
+  ]
+}

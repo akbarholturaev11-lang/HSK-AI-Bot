@@ -1,0 +1,835 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 39,
+  "source_lesson": 8,
+  "part_no": 3,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "虽然你忘了，但是我记得",
+  "subtitle": {
+    "uz": "“比” bilan taqqoslash; 比 gaplarida 很/非常 o‘rniga 更/还 bilan darajani kuchaytirish; “虽然……但是……” bilan qarama-qarshilikni ifodalash; narx, kino va tug‘ilgan kun haqida gaplashish.",
+    "ru": "Сравнивать с “比”; усиливать степень в сравнении с 更/还 вместо 很/非常; выражать уступительно-противительные отношения через “虽然……但是……”；обсуждать цену, кино и день рождения.",
+    "tj": "Бо “比” муқоиса кардан; дар ҷумлаҳои муқоисавӣ ба ҷойи 很/非常 бо 更/还 дараҷаро қавӣ кардан; бо “虽然……但是……” зиддиятро ифода кардан; дар бораи нарх, кино ва зодрӯз суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "有意思",
+      "pinyin": "yǒu yìsi",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "qiziqarli",
+        "ru": "интересный",
+        "tj": "ҷолиб"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "点",
+      "pinyin": "diǎn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tanlamoq; buyurtma bermoq",
+        "ru": "выбирать; заказывать",
+        "tj": "интихоб кардан; фармоиш додан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "虽然",
+      "pinyin": "suīrán",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "garchi; ... bo‘lsa-da",
+        "ru": "хотя",
+        "tj": "гарчанде"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "但是",
+      "pinyin": "dànshì",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "ammo; lekin",
+        "ru": "но; однако",
+        "tj": "аммо; лекин"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Qarama-qarshi qo‘shma gap “虽然……，但是……”",
+        "ru": "Уступительно-противительное предложение “虽然……，但是……”",
+        "tj": "Ҷумлаи зиддиятии “虽然……，但是……”"
+      },
+      "title_zh": "转折复句“虽然……，但是……”",
+      "rule": {
+        "uz": "“虽然……但是……” qarama-qarshi ma’noli qo‘shma gap tuzadi. 虽然 va 但是 birga ham, bittasi alohida ham ishlatilishi mumkin.",
+        "ru": "“虽然……但是……” образует уступительно-противительное сложное предложение; 虽然 и 但是 употребляются вместе или по отдельности.",
+        "tj": "“虽然……但是……” ҷумлаи зиддиятӣ месозад; 虽然 ва 但是 метавонанд якҷо ё алоҳида истифода шаванд."
+      },
+      "examples": [
+        {
+          "zh": "虽然你忘了，但是我记得。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "外边下雪了，但是不太冷。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "虽然觉得有点儿累，我还是走回家了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Savdo markazida Wang Yixue va Liu Ming xarid qilmoqda.",
+        "ru": "В торговом центре Ван Исюэ и Лю Мин делают покупки.",
+        "tj": "Дар маркази савдо Ван Исюэ ва Лю Мин харид мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你看，这两块手表怎么样？",
+          "pinyin": "Nǐ kàn, zhè liǎng kuài shǒubiǎo zěnmeyàng?",
+          "text": {
+            "uz": "Qara, bu ikki qo‘l soati qanday?",
+            "ru": "Посмотри, как тебе эти двое часов?",
+            "tj": "Бин, ин ду соат чӣ хеланд?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "都不错！",
+          "pinyin": "Dōu búcuò!",
+          "text": {
+            "uz": "Ikkalasi ham yomon emas!",
+            "ru": "Оба неплохие!",
+            "tj": "Ҳардуяш ҳам бад нест!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我喜欢左边这个。",
+          "pinyin": "Wǒ xǐhuan zuǒbian zhège.",
+          "text": {
+            "uz": "Menga chapdagisi yoqdi.",
+            "ru": "Мне нравится тот, что слева.",
+            "tj": "Ба ман тарафи чап писанд аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "我也觉得左边的比右边的好看。",
+          "pinyin": "Wǒ yě juéde zuǒbian de bǐ yòubian de hǎokàn.",
+          "text": {
+            "uz": "Menimcha ham chapdagisi o‘ngdagidan chiroyliroq.",
+            "ru": "Мне тоже кажется, что левый красивее правого.",
+            "tj": "Ба назари ман ҳам чапаш аз росташ зеботар аст."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你看看要多少钱！",
+          "pinyin": "Nǐ kànkan yào duōshao qián!",
+          "text": {
+            "uz": "Narxiga qara!",
+            "ru": "Посмотри, сколько стоит!",
+            "tj": "Нархашро бин!"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "真不便宜！八千八！",
+          "pinyin": "Zhēn bù piányi! Bā qiān bā!",
+          "text": {
+            "uz": "Juda qimmat ekan! Sakkiz ming sakkiz yuz!",
+            "ru": "Совсем недёшево! Восемь тысяч восемьсот!",
+            "tj": "Хеле гарон будааст! Ҳашт ҳазору ҳаштсад!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kinoteatr tashqarisida Wang Yixue va Liu Ming suhbatlashmoqda.",
+        "ru": "Снаружи кинотеатра Ван Исюэ и Лю Мин разговаривают.",
+        "tj": "Берун аз кинотеатр Ван Исюэ ва Лю Мин суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "今天有不少电影，我们看个电影吧。",
+          "pinyin": "Jīntiān yǒu bù shǎo diànyǐng, wǒmen kàn ge diànyǐng ba.",
+          "text": {
+            "uz": "Bugun ancha film bor, bir film ko‘raylik.",
+            "ru": "Сегодня много фильмов, давай посмотрим один.",
+            "tj": "Имрӯз филмҳо бисёранд, биё як филм бинем."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "好啊！我们看哪个？",
+          "pinyin": "Hǎo a! Wǒmen kàn nǎge?",
+          "text": {
+            "uz": "Mayli! Qaysinisini ko‘ramiz?",
+            "ru": "Хорошо! Какой посмотрим?",
+            "tj": "Хуб! Кадомашро мебинем?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "我记得你喜欢看爱情片，我们看那个爱情片，怎么样？",
+          "pinyin": "Wǒ jìde nǐ xǐhuan kàn àiqíngpiàn, wǒmen kàn nàge àiqíngpiàn, zěnmeyàng?",
+          "text": {
+            "uz": "Esimda, sen romantik filmlarni yoqtirasan. O‘sha romantik filmni ko‘rsak qanday?",
+            "ru": "Я помню, ты любишь романтические фильмы. Как насчёт того?",
+            "tj": "Дар хотир дорам, ту филмҳои ошиқонаро дӯст медорӣ. Он филмро бинем, чӣ хел?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "还是看这个吧，我看网上说这个电影比那个爱情片更有意思。",
+          "pinyin": "Háishi kàn zhège ba, wǒ kàn wǎngshang shuō zhège diànyǐng bǐ nàge àiqíngpiàn gèng yǒu yìsi.",
+          "text": {
+            "uz": "Yaxshisi bunisini ko‘raylik. Internetda bu film o‘sha romantik filmdan qiziqroq deyilgan.",
+            "ru": "Лучше посмотрим этот. В интернете пишут, что он интереснее того романтического.",
+            "tj": "Беҳтараш ҳаминро бинем. Дар интернет гуфтаанд, ки ин аз он филми ошиқона ҷолибтар аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "好。我去买票。",
+          "pinyin": "Hǎo. Wǒ qù mǎi piào.",
+          "text": {
+            "uz": "Xo‘p. Men chipta olaman.",
+            "ru": "Хорошо. Я куплю билеты.",
+            "tj": "Хуб. Ман чипта мехарам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "到网上买吧，网上买比在这里买便宜。",
+          "pinyin": "Dào wǎngshang mǎi ba, wǎngshang mǎi bǐ zài zhèlǐ mǎi piányi.",
+          "text": {
+            "uz": "Internetdan ol, onlayn olish bu yerdan olishdan arzonroq.",
+            "ru": "Купи онлайн, в интернете дешевле, чем здесь.",
+            "tj": "Аз интернет бихар, онлайниаш аз ин ҷо арзонтар аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda Wang Yixue va Liu Ming taom buyurtma qilmoqda.",
+        "ru": "В ресторане Ван Исюэ и Лю Мин заказывают блюда.",
+        "tj": "Дар тарабхона Ван Исюэ ва Лю Мин хӯрок фармоиш медиҳанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "您好！就要这几个菜吧，谢谢！",
+          "pinyin": "Nín hǎo! Jiù yào zhè jǐ ge cài ba, xièxie!",
+          "text": {
+            "uz": "Salom! Shu bir nechta taomni olamiz, rahmat!",
+            "ru": "Здравствуйте! Возьмём эти блюда, спасибо!",
+            "tj": "Салом! Ҳамин чанд хӯрокро мегирем, раҳмат!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "怎么点这么多菜？",
+          "pinyin": "Zěnme diǎn zhème duō cài?",
+          "text": {
+            "uz": "Nega buncha ko‘p taom buyurtma qilding?",
+            "ru": "Зачем заказал столько блюд?",
+            "tj": "Чаро ин қадар хӯрок фармоиш додӣ?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "你想想，今天是几月几号？",
+          "pinyin": "Nǐ xiǎngxiang, jīntiān shì jǐ yuè jǐ hào?",
+          "text": {
+            "uz": "O‘ylab ko‘r, bugun nechanchi sana?",
+            "ru": "Подумай, какое сегодня число?",
+            "tj": "Фикр кун, имрӯз чандуми моҳ аст?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "8月27号。啊！我的生日！",
+          "pinyin": "Bā yuè èrshíqī hào. A! Wǒ de shēngrì!",
+          "text": {
+            "uz": "27-avgust. Voy! Tug‘ilgan kunim!",
+            "ru": "27 августа. А! Мой день рождения!",
+            "tj": "27-уми август. Оҳ! Зодрӯзи ман!"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "生日快乐！虽然你忘了，但是我记得。看看这是什么？",
+          "pinyin": "Shēngrì kuàilè! Suīrán nǐ wàng le, dànshì wǒ jìde. Kànkan zhè shì shénme?",
+          "text": {
+            "uz": "Tug‘ilgan kuning bilan! Sen unutgan bo‘lsang ham, men esladim. Qara, bu nima?",
+            "ru": "С днём рождения! Хотя ты забыла, я помнил. Посмотри, что это?",
+            "tj": "Зодрӯз муборак! Гарчанде ту фаромӯш кардӣ, ман дар хотир доштам. Бин, ин чист?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "有意思",
+            "pinyin": "yǒu yìsi",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "qiziqarli",
+              "ru": "интересный",
+              "tj": "ҷолиб"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qiziqarli' xitoycha qaysi?",
+            "ru": "'интересный' по-китайски?",
+            "tj": "'ҷолиб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "有意思",
+            "手表",
+            "左边",
+            "左"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "qiziqarli = 有意思 (yǒu yìsi)",
+            "ru": "интересный = 有意思 (yǒu yìsi)",
+            "tj": "ҷолиб = 有意思 (yǒu yìsi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "点",
+            "pinyin": "diǎn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tanlamoq; buyurtma bermoq",
+              "ru": "выбирать; заказывать",
+              "tj": "интихоб кардан; фармоиш додан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "点",
+          "pinyin": "diǎn",
+          "options": [
+            "左边",
+            "手表",
+            "左",
+            "点"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "点 — tanlamoq; buyurtma bermoq (diǎn)",
+            "ru": "点 — выбирать; заказывать (diǎn)",
+            "tj": "点 — интихоб кардан; фармоиш додан (diǎn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "虽然",
+            "pinyin": "suīrán",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "garchi; ... bo‘lsa-da",
+              "ru": "хотя",
+              "tj": "гарчанде"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "虽然",
+          "pinyin": "suīrán",
+          "translation": {
+            "uz": "garchi; ... bo‘lsa-da",
+            "ru": "хотя",
+            "tj": "гарчанде"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "虽然 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 虽然:",
+            "tj": "Маънои калимаи 虽然-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "garchi; ... bo‘lsa-da",
+              "ru": "хотя",
+              "tj": "гарчанде"
+            },
+            {
+              "uz": "qo‘l soati",
+              "ru": "наручные часы",
+              "tj": "соати дастӣ"
+            },
+            {
+              "uz": "chap",
+              "ru": "лево; левый",
+              "tj": "чап"
+            },
+            {
+              "uz": "chap tomon",
+              "ru": "левая сторона",
+              "tj": "тарафи чап"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "虽然 = garchi; ... bo‘lsa-da (suīrán)",
+            "ru": "虽然 = хотя (suīrán)",
+            "tj": "虽然 = гарчанде (suīrán)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "但是",
+            "pinyin": "dànshì",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dànshì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dànshì?",
+            "tj": "dànshì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "但是",
+            "左边",
+            "左",
+            "手表"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "但是 = ammo; lekin (dànshì)",
+            "ru": "但是 = но; однако (dànshì)",
+            "tj": "但是 = аммо; лекин (dànshì)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "有意思 talaffuzini tanlang:",
+            "ru": "Выберите произношение 有意思:",
+            "tj": "Талаффузи 有意思-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zuǒbian",
+            "shǒubiǎo",
+            "yǒu yìsi",
+            "zuǒ"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "有意思 — yǒu yìsi",
+            "ru": "有意思 — yǒu yìsi",
+            "tj": "有意思 — yǒu yìsi"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "有意思",
+              {
+                "uz": "qiziqarli",
+                "ru": "интересный",
+                "tj": "ҷолиб"
+              }
+            ],
+            [
+              "点",
+              {
+                "uz": "tanlamoq; buyurtma bermoq",
+                "ru": "выбирать; заказывать",
+                "tj": "интихоб кардан; фармоиш додан"
+              }
+            ],
+            [
+              "虽然",
+              {
+                "uz": "garchi; ... bo‘lsa-da",
+                "ru": "хотя",
+                "tj": "гарчанде"
+              }
+            ],
+            [
+              "但是",
+              {
+                "uz": "ammo; lekin",
+                "ru": "но; однако",
+                "tj": "аммо; лекин"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Qarama-qarshi qo‘shma gap “虽然……，但是……”",
+              "ru": "Уступительно-противительное предложение “虽然……，但是……”",
+              "tj": "Ҷумлаи зиддиятии “虽然……，但是……”"
+            },
+            "title_zh": "转折复句“虽然……，但是……”",
+            "rule": {
+              "uz": "“虽然……但是……” qarama-qarshi ma’noli qo‘shma gap tuzadi. 虽然 va 但是 birga ham, bittasi alohida ham ishlatilishi mumkin.",
+              "ru": "“虽然……但是……” образует уступительно-противительное сложное предложение; 虽然 и 但是 употребляются вместе или по отдельности.",
+              "tj": "“虽然……但是……” ҷумлаи зиддиятӣ месозад; 虽然 ва 但是 метавонанд якҷо ё алоҳида истифода шаванд."
+            },
+            "examples": [
+              {
+                "zh": "虽然你忘了，但是我记得。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "外边下雪了，但是不太冷。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "虽然觉得有点儿累，我还是走回家了。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "左边",
+            "虽然",
+            "但是",
+            "了",
+            "手表",
+            "你",
+            "记得",
+            "我",
+            "忘"
+          ],
+          "answer_tokens": [
+            "虽然",
+            "你",
+            "忘",
+            "了",
+            "但是",
+            "我",
+            "记得"
+          ],
+          "explanation": {
+            "uz": "虽然你忘了，但是我记得。",
+            "ru": "虽然你忘了，但是我记得。",
+            "tj": "虽然你忘了，但是我记得。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "外边下雪了，但是不太冷。",
+            "虽然你忘了，但是我记得。",
+            "虽然觉得有点儿累，我还是走回家了。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "虽然觉得有点儿累，我还是走回家了。 — ",
+            "ru": "虽然觉得有点儿累，我还是走回家了。 — ",
+            "tj": "虽然觉得有点儿累，我还是走回家了。 — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "不",
+            "外边",
+            "手表",
+            "冷",
+            "左边",
+            "太",
+            "了",
+            "雪",
+            "下",
+            "但是"
+          ],
+          "answer_tokens": [
+            "外边",
+            "下",
+            "雪",
+            "了",
+            "但是",
+            "不",
+            "太",
+            "冷"
+          ],
+          "explanation": {
+            "uz": "外边下雪了，但是不太冷。",
+            "ru": "外边下雪了，但是不太冷。",
+            "tj": "外边下雪了，但是不太冷。"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "虽然",
+          "pinyin": "suīrán",
+          "translation": {
+            "uz": "garchi; ... bo‘lsa-da",
+            "ru": "хотя",
+            "tj": "гарчанде"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "记得 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 记得:",
+            "tj": "Маънои калимаи 记得-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qo‘l soati",
+              "ru": "наручные часы",
+              "tj": "соати дастӣ"
+            },
+            {
+              "uz": "chap tomon",
+              "ru": "левая сторона",
+              "tj": "тарафи чап"
+            },
+            {
+              "uz": "chap",
+              "ru": "лево; левый",
+              "tj": "чап"
+            },
+            {
+              "uz": "eslamoq",
+              "ru": "помнить",
+              "tj": "дар хотир доштан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "记得 = eslamoq (jìde)",
+            "ru": "记得 = помнить (jìde)",
+            "tj": "记得 = дар хотир доштан (jìde)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "记得",
+            "pinyin": "jìde",
+            "meaning": {
+              "uz": "eslamoq",
+              "ru": "помнить",
+              "tj": "дар хотир доштан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'garchi; ... bo‘lsa-da' xitoycha qaysi?",
+            "ru": "'хотя' по-китайски?",
+            "tj": "'гарчанде' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "虽然",
+            "左边",
+            "左",
+            "手表"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "garchi; ... bo‘lsa-da = 虽然 (suīrán)",
+            "ru": "хотя = 虽然 (suīrán)",
+            "tj": "гарчанде = 虽然 (suīrán)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "虽然",
+            "pinyin": "suīrán",
+            "meaning": {
+              "uz": "garchi; ... bo‘lsa-da",
+              "ru": "хотя",
+              "tj": "гарчанде"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

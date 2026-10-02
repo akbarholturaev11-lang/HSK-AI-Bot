@@ -1,0 +1,384 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 3,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40
+    ]
+  },
+  "title": {
+    "hanzi": "这个小区挺好的",
+    "pinyin": "Zhège xiǎoqū tǐng hǎo de"
+  },
+  "objectives": [
+    "能听懂并谈论居住环境和居家情况。",
+    "能听懂并使用“挺”“坏了”表达程度。",
+    "掌握“就”和“才”的用法，能表达动作发生的早晚、快慢等信息。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "初中",
+      "pinyin": "chūzhōng",
+      "part_of_speech": "n.",
+      "source_page": 32
+    },
+    {
+      "hanzi": "咱们",
+      "pinyin": "zánmen",
+      "part_of_speech": "pron.",
+      "source_page": 32
+    },
+    {
+      "hanzi": "换",
+      "pinyin": "huàn",
+      "part_of_speech": "v.",
+      "source_page": 32
+    },
+    {
+      "hanzi": "房子",
+      "pinyin": "fángzi",
+      "part_of_speech": "n.",
+      "source_page": 32
+    },
+    {
+      "hanzi": "小区",
+      "pinyin": "xiǎoqū",
+      "part_of_speech": "n.",
+      "source_page": 32
+    },
+    {
+      "hanzi": "环境",
+      "pinyin": "huánjìng",
+      "part_of_speech": "n.",
+      "source_page": 32
+    },
+    {
+      "hanzi": "挺",
+      "pinyin": "tǐng",
+      "part_of_speech": "adv.",
+      "source_page": 32
+    },
+    {
+      "hanzi": "空调",
+      "pinyin": "kōngtiáo",
+      "part_of_speech": "n.",
+      "source_page": 32
+    },
+    {
+      "hanzi": "洗衣机",
+      "pinyin": "xǐyījī",
+      "part_of_speech": "n.",
+      "source_page": 32
+    },
+    {
+      "hanzi": "层",
+      "pinyin": "céng",
+      "part_of_speech": "m.",
+      "source_page": 32
+    },
+    {
+      "hanzi": "花园",
+      "pinyin": "huāyuán",
+      "part_of_speech": "n.",
+      "source_page": 32
+    },
+    {
+      "hanzi": "灯",
+      "pinyin": "dēng",
+      "part_of_speech": "n.",
+      "source_page": 34
+    },
+    {
+      "hanzi": "关",
+      "pinyin": "guān",
+      "part_of_speech": "v.",
+      "source_page": 34
+    },
+    {
+      "hanzi": "冰箱",
+      "pinyin": "bīngxiāng",
+      "part_of_speech": "n.",
+      "source_page": 34
+    },
+    {
+      "hanzi": "卫生间",
+      "pinyin": "wèishēngjiān",
+      "part_of_speech": "n.",
+      "source_page": 34
+    },
+    {
+      "hanzi": "打扫",
+      "pinyin": "dǎsǎo",
+      "part_of_speech": "v.",
+      "source_page": 34
+    },
+    {
+      "hanzi": "搬家",
+      "pinyin": "bānjiā",
+      "part_of_speech": "v.",
+      "source_page": 34
+    },
+    {
+      "hanzi": "办",
+      "pinyin": "bàn",
+      "part_of_speech": "v.",
+      "source_page": 35
+    },
+    {
+      "hanzi": "信用卡",
+      "pinyin": "xìnyòngkǎ",
+      "part_of_speech": "n.",
+      "source_page": 35
+    },
+    {
+      "hanzi": "还",
+      "pinyin": "huán",
+      "part_of_speech": "v.",
+      "source_page": 35
+    },
+    {
+      "hanzi": "听说",
+      "pinyin": "tīngshuō",
+      "part_of_speech": "v.",
+      "source_page": 35
+    },
+    {
+      "hanzi": "银行",
+      "pinyin": "yínháng",
+      "part_of_speech": "n.",
+      "source_page": 35
+    },
+    {
+      "hanzi": "才",
+      "pinyin": "cái",
+      "part_of_speech": "adv.",
+      "source_page": 35
+    },
+    {
+      "hanzi": "纸",
+      "pinyin": "zhǐ",
+      "part_of_speech": "n.",
+      "source_page": 37
+    },
+    {
+      "hanzi": "搬",
+      "pinyin": "bān",
+      "part_of_speech": "v.",
+      "source_page": 37
+    },
+    {
+      "hanzi": "需要",
+      "pinyin": "xūyào",
+      "part_of_speech": "v./n.",
+      "source_page": 37
+    }
+  ],
+  "grammar": [
+    {
+      "label": "程度副词“挺”",
+      "source_page": 33,
+      "examples": [
+        {
+          "hanzi": "这个小区环境挺好的。",
+          "pinyin": "Zhège xiǎoqū huánjìng tǐng hǎo de."
+        },
+        {
+          "hanzi": "这家饭馆的菜挺好吃的。",
+          "pinyin": "Zhè jiā fànguǎn de cài tǐng hǎochī de."
+        },
+        {
+          "hanzi": "买这个吧，我挺喜欢这个颜色的。",
+          "pinyin": "Mǎi zhège ba, wǒ tǐng xǐhuan zhège yánsè de."
+        }
+      ]
+    },
+    {
+      "label": "程度补语（1）",
+      "source_page": 34,
+      "examples": [
+        {
+          "hanzi": "我这几天忙坏了。",
+          "pinyin": "Wǒ zhè jǐ tiān máng huài le."
+        },
+        {
+          "hanzi": "我渴坏了，哪里能买水？",
+          "pinyin": "Wǒ kě huài le, nǎlǐ néng mǎi shuǐ?"
+        },
+        {
+          "hanzi": "这几天非常忙，大家都累坏了。",
+          "pinyin": "Zhè jǐ tiān fēicháng máng, dàjiā dōu lèi huài le."
+        }
+      ]
+    },
+    {
+      "label": "“就”和“才”",
+      "source_page": 36,
+      "examples": [
+        {
+          "hanzi": "中国银行很近，走路几分钟就能到。",
+          "pinyin": "Zhōngguó Yínháng hěn jìn, zǒulù jǐ fēnzhōng jiù néng dào."
+        },
+        {
+          "hanzi": "我下午要去医院，很晚才能回来。",
+          "pinyin": "Wǒ xiàwǔ yào qù yīyuàn, hěn wǎn cái néng huílái."
+        },
+        {
+          "hanzi": "我早上五点就起床了。",
+          "pinyin": "Wǒ zǎoshang wǔ diǎn jiù qǐchuáng le."
+        },
+        {
+          "hanzi": "坐火车去北京，五个小时才能到。",
+          "pinyin": "Zuò huǒchē qù Běijīng, wǔ ge xiǎoshí cái néng dào."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在家里，刘明和王一雪在聊天儿。",
+      "source_page": 32,
+      "turns": [
+        {
+          "speaker": "王一雪",
+          "hanzi": "小雪的初中离家有点儿远，咱们换一个近点儿的房子吧。",
+          "pinyin": "Xiǎoxuě de chūzhōng lí jiā yǒudiǎnr yuǎn, zánmen huàn yí ge jìn diǎnr de fángzi ba."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "好啊，我上网看看。你觉得这个小区怎么样？",
+          "pinyin": "Hǎo a, wǒ shàngwǎng kànkan. Nǐ juéde zhège xiǎoqū zěnmeyàng?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "环境挺好的，离地铁站还不远。",
+          "pinyin": "Huánjìng tǐng hǎo de, lí dìtiězhàn hái bù yuǎn."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "房子里面也不错，空调和洗衣机都是新的。",
+          "pinyin": "Fángzi lǐmian yě búcuò, kōngtiáo hé xǐyījī dōu shì xīn de."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "是不错，但是我不喜欢住一层。",
+          "pinyin": "Shì búcuò, dànshì wǒ bù xǐhuan zhù yì céng."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "这个一层带一个小花园，我觉得咱们可以去看看。",
+          "pinyin": "Zhège yì céng dài yí ge xiǎo huāyuán, wǒ juéde zánmen kěyǐ qù kànkan."
+        }
+      ]
+    },
+    {
+      "scene": "在新家，王一雪在收拾房间，刘明进来了。",
+      "source_page": 34,
+      "turns": [
+        {
+          "speaker": "王一雪",
+          "hanzi": "我今天早上来的时候，灯还开着。",
+          "pinyin": "Wǒ jīntiān zǎoshang lái de shíhou, dēng hái kāizhe."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "我这几天忙坏了，可能走的时候忘关了。",
+          "pinyin": "Wǒ zhè jǐ tiān máng huài le, kěnéng zǒu de shíhou wàng guān le."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "冰箱不能用，这些吃的东西放在哪儿？",
+          "pinyin": "Bīngxiāng bù néng yòng, zhèxiē chī de dōngxi fàng zài nǎr?"
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "不可能吧？冰箱是新买的，我来看看。",
+          "pinyin": "Bù kěnéng ba? Bīngxiāng shì xīn mǎi de, wǒ lái kànkan."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "洗衣机也坏了吗？",
+          "pinyin": "Xǐyījī yě huài le ma?"
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "没坏，但是卫生间没打扫好，还不能洗衣服。",
+          "pinyin": "Méi huài, dànshì wèishēngjiān méi dǎsǎo hǎo, hái bù néng xǐ yīfu."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "星期天我们真的能搬家吗？",
+          "pinyin": "Xīngqītiān wǒmen zhēn de néng bānjiā ma?"
+        }
+      ]
+    },
+    {
+      "scene": "在家里，刘明和王一雪在客厅聊天儿。",
+      "source_page": 35,
+      "turns": [
+        {
+          "speaker": "王一雪",
+          "hanzi": "这个月花了不少钱。",
+          "pinyin": "Zhège yuè huā le bù shǎo qián."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "是的，我们买了很多搬家时要用的东西。",
+          "pinyin": "Shì de, wǒmen mǎi le hěn duō bānjiā shí yào yòng de dōngxi."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "咱们办张信用卡吧，花的钱可以慢慢还。听说中国银行的服务不错，办了信用卡买东西还能便宜。",
+          "pinyin": "Zánmen bàn zhāng xìnyòngkǎ ba, huā de qián kěyǐ mànmàn huán. Tīngshuō Zhōngguó Yínháng de fúwù búcuò, bàn le xìnyòngkǎ mǎi dōngxi hái néng piányi."
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "好啊！中国银行很近，走路几分钟就能到。咱们什么时候去？",
+          "pinyin": "Hǎo a! Zhōngguó Yínháng hěn jìn, zǒulù jǐ fēnzhōng jiù néng dào. Zánmen shénme shíhou qù?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "今天下午？",
+          "pinyin": "Jīntiān xiàwǔ?"
+        },
+        {
+          "speaker": "刘明",
+          "hanzi": "我下午要去医院，很晚才能回来。",
+          "pinyin": "Wǒ xiàwǔ yào qù yīyuàn, hěn wǎn cái néng huílái."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "那我下午自己去吧。",
+          "pinyin": "Nà wǒ xiàwǔ zìjǐ qù ba."
+        }
+      ]
+    },
+    {
+      "scene": "在家里，刘明和王一雪讨论搬家计划。",
+      "source_page": 37,
+      "turns": [
+        {
+          "speaker": "刘明",
+          "hanzi": "我觉得这个星期就能搬家。我明天去买一些纸箱，很快就能准备好。搬家那天，我想请几位朋友来帮忙，最多一天就能搬完。",
+          "pinyin": "Wǒ juéde zhège xīngqī jiù néng bānjiā. Wǒ míngtiān qù mǎi yìxiē zhǐxiāng, hěn kuài jiù néng zhǔnbèi hǎo. Bānjiā nà tiān, wǒ xiǎng qǐng jǐ wèi péngyou lái bāngmáng, zuìduō yì tiān jiù néng bān wán."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "我觉得下个月才能搬家。这周开始准备，下周去打扫新家，这么多事情最少需要两个星期才能做完。搬家那天，我们应该找一家搬家公司。",
+          "pinyin": "Wǒ juéde xià ge yuè cái néng bānjiā. Zhè zhōu kāishǐ zhǔnbèi, xià zhōu qù dǎsǎo xīn jiā, zhème duō shìqing zuìshǎo xūyào liǎng ge xīngqī cái néng zuò wán. Bānjiā nà tiān, wǒmen yīnggāi zhǎo yì jiā bānjiā gōngsī."
+        }
+      ]
+    }
+  ]
+}

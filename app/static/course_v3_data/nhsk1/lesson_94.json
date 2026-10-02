@@ -1,0 +1,734 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 94,
+  "source_lesson": 14,
+  "part_no": 5,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我看了一个电影",
+  "subtitle": {
+    "uz": "Fe’ldan keyingi “了（2）” bilan tugallangan harakatni ifodalash; 离合词 ning ajralish xususiyatini tushunish; “都” bilan umumlashtirish; o‘qish jarayoni va o‘rgangan narsalarni tasvirlash.",
+    "ru": "Выражать завершённое действие с аспектуальной частицей “了（2）”; понимать разделяемые слова; использовать “都” для обобщения; описывать прогресс в обучении.",
+    "tj": "Бо ҳиссачаи намудии “了（2）” амали анҷомёфтаро ифода кардан; хусусияти калимаҳои ҷудошавандаро фаҳмидан; бо “都” умумисозӣ кардан; пешрафти омӯзишро тасвир кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "上",
+      "pinyin": "shàng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "belgilangan vaqtda boshlamoq/qatnashmoq",
+        "ru": "начинать/посещать в установленное время",
+        "tj": "дар вақти муайян оғоз/иштирок кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "中学",
+      "pinyin": "zhōngxué",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘rta maktab",
+        "ru": "средняя школа",
+        "tj": "мактаби миёна"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "小学",
+      "pinyin": "xiǎoxué",
+      "pos": "n.",
+      "meaning": {
+        "uz": "boshlang‘ich maktab",
+        "ru": "начальная школа",
+        "tj": "мактаби ибтидоӣ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "中学生",
+      "pinyin": "zhōngxuéshēng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘rta maktab o‘quvchisi",
+        "ru": "ученик средней школы",
+        "tj": "хонандаи мактаби миёна"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda darsdan keyin Bai Jiayue va Chen Tianzhong oldingi sayohat haqida suhbatlashmoqda.",
+        "ru": "В аудитории после занятия Бай Цзяюэ и Чэнь Тяньчжун обсуждают прошлую поездку.",
+        "tj": "Дар синф пас аз дарс Бай Ҷяюэ ва Чэн Тянҷун сафари гузаштаро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "你呢？",
+          "pinyin": "Nǐ ne?",
+          "text": {
+            "uz": "Sen-chi?",
+            "ru": "А ты?",
+            "tj": "Ту чӣ?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我看了一个电影。",
+          "pinyin": "Wǒ kànle yí ge diànyǐng.",
+          "text": {
+            "uz": "Men bitta film ko‘rdim.",
+            "ru": "Я посмотрел фильм.",
+            "tj": "Ман як филм тамошо кардам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsda Wang Yifei talabalarining o‘qish holatini so‘ramoqda.",
+        "ru": "На занятии Ван Ифэй спрашивает студентов об их успехах в учёбе.",
+        "tj": "Дар дарс Ван Ифэй аз донишҷӯён дар бораи пешрафти таҳсил мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我们都会写了。",
+          "pinyin": "Wǒmen dōu huì xiě le.",
+          "text": {
+            "uz": "Hammamiz yoza olamiz.",
+            "ru": "Мы все уже умеем писать.",
+            "tj": "Ҳамаамон навишта метавонем."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "老师，我听不见。",
+          "pinyin": "Lǎoshī, wǒ tīng bu jiàn.",
+          "text": {
+            "uz": "Ustoz, eshitmayapman.",
+            "ru": "Преподаватель, я не слышу.",
+            "tj": "Устод, ман намешунавам."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我会写这些字了，您看！",
+          "pinyin": "Wǒ huì xiě zhèxiē zì le, nín kàn!",
+          "text": {
+            "uz": "Men mana bu ierogliflarni yoza olaman, qarang!",
+            "ru": "Я уже умею писать эти иероглифы, посмотрите!",
+            "tj": "Ман ин иероглифҳоро навишта метавонам, бинед!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue bolalarining keyingi maktabga o‘tishi haqida gaplashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ обсуждают поступление детей в следующую школу.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ дар бораи гузаштани фарзандон ба мактаби нав суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "明年女儿上中学。",
+          "pinyin": "Míngnián nǚ'ér shàng zhōngxué.",
+          "text": {
+            "uz": "Kelasi yil qizimiz o‘rta maktabga boradi.",
+            "ru": "В следующем году дочь пойдёт в среднюю школу.",
+            "tj": "Соли оянда духтарамон ба мактаби миёна меравад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "对。儿子也上小学了。",
+          "pinyin": "Duì. Érzi yě shàng xiǎoxué le.",
+          "text": {
+            "uz": "Ha. O‘g‘limiz ham boshlang‘ich maktabga boradi.",
+            "ru": "Да. Сын тоже пойдёт в начальную школу.",
+            "tj": "Ҳа. Писарамон ҳам ба мактаби ибтидоӣ меравад."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "我们家有了一个中学生。",
+          "pinyin": "Wǒmen jiā yǒule yí ge zhōngxuéshēng.",
+          "text": {
+            "uz": "Oilamizda bitta o‘rta maktab o‘quvchisi bo‘ladi.",
+            "ru": "В нашей семье будет ученик средней школы.",
+            "tj": "Дар оилаи мо як хонандаи мактаби миёна мешавад."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "上学后，他们都忙了。",
+          "pinyin": "Shàngxué hòu, tāmen dōu máng le.",
+          "text": {
+            "uz": "Maktab boshlangach, ikkalasi ham band bo‘ladi.",
+            "ru": "Когда начнётся школа, оба будут заняты.",
+            "tj": "Баъди мактаб сар кардан, ҳар ду банд мешаванд."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "上",
+            "pinyin": "shàng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "belgilangan vaqtda boshlamoq/qatnashmoq",
+              "ru": "начинать/посещать в установленное время",
+              "tj": "дар вақти муайян оғоз/иштирок кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'belgilangan vaqtda boshlamoq/qatnashmoq' xitoycha qaysi?",
+            "ru": "'начинать/посещать в установленное время' по-китайски?",
+            "tj": "'дар вақти муайян оғоз/иштирок кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "中午",
+            "开",
+            "火车",
+            "上"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "belgilangan vaqtda boshlamoq/qatnashmoq = 上 (shàng)",
+            "ru": "начинать/посещать в установленное время = 上 (shàng)",
+            "tj": "дар вақти муайян оғоз/иштирок кардан = 上 (shàng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "中学",
+            "pinyin": "zhōngxué",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o‘rta maktab",
+              "ru": "средняя школа",
+              "tj": "мактаби миёна"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "中学",
+          "pinyin": "zhōngxué",
+          "translation": {
+            "uz": "o‘rta maktab",
+            "ru": "средняя школа",
+            "tj": "мактаби миёна"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "中学",
+          "pinyin": "zhōngxué",
+          "options": [
+            "上",
+            "中午",
+            "火车",
+            "中学"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "中学 — o‘rta maktab (zhōngxué)",
+            "ru": "中学 — средняя школа (zhōngxué)",
+            "tj": "中学 — мактаби миёна (zhōngxué)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "小学",
+            "pinyin": "xiǎoxué",
+            "pos": "n.",
+            "meaning": {
+              "uz": "boshlang‘ich maktab",
+              "ru": "начальная школа",
+              "tj": "мактаби ибтидоӣ"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "小学 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 小学:",
+            "tj": "Маънои калимаи 小学-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tush payti",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ"
+            },
+            {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            },
+            {
+              "uz": "boshlang‘ich maktab",
+              "ru": "начальная школа",
+              "tj": "мактаби ибтидоӣ"
+            },
+            {
+              "uz": "chiqmoq; transportga minmoq",
+              "ru": "подниматься; садиться в транспорт",
+              "tj": "баромадан; ба нақлиёт савор шудан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "小学 = boshlang‘ich maktab (xiǎoxué)",
+            "ru": "小学 = начальная школа (xiǎoxué)",
+            "tj": "小学 = мактаби ибтидоӣ (xiǎoxué)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "中学生",
+            "pinyin": "zhōngxuéshēng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o‘rta maktab o‘quvchisi",
+              "ru": "ученик средней школы",
+              "tj": "хонандаи мактаби миёна"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhōngxuéshēng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhōngxuéshēng?",
+            "tj": "zhōngxuéshēng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "中午",
+            "上",
+            "中学生",
+            "火车"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "中学生 = o‘rta maktab o‘quvchisi (zhōngxuéshēng)",
+            "ru": "中学生 = ученик средней школы (zhōngxuéshēng)",
+            "tj": "中学生 = хонандаи мактаби миёна (zhōngxuéshēng)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "上 talaffuzini tanlang:",
+            "ru": "Выберите произношение 上:",
+            "tj": "Талаффузи 上-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "huǒchē",
+            "kāi",
+            "zhōngwǔ",
+            "shàng"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "上 — shàng",
+            "ru": "上 — shàng",
+            "tj": "上 — shàng"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "上",
+              {
+                "uz": "belgilangan vaqtda boshlamoq/qatnashmoq",
+                "ru": "начинать/посещать в установленное время",
+                "tj": "дар вақти муайян оғоз/иштирок кардан"
+              }
+            ],
+            [
+              "中学",
+              {
+                "uz": "o‘rta maktab",
+                "ru": "средняя школа",
+                "tj": "мактаби миёна"
+              }
+            ],
+            [
+              "小学",
+              {
+                "uz": "boshlang‘ich maktab",
+                "ru": "начальная школа",
+                "tj": "мактаби ибтидоӣ"
+              }
+            ],
+            [
+              "中学生",
+              {
+                "uz": "o‘rta maktab o‘quvchisi",
+                "ru": "ученик средней школы",
+                "tj": "хонандаи мактаби миёна"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "对。儿子也上小学了。",
+          "pinyin": "Duì. Érzi yě shàng xiǎoxué le.",
+          "translation": {
+            "uz": "Ha. O‘g‘limiz ham boshlang‘ich maktabga boradi.",
+            "ru": "Да. Сын тоже пойдёт в начальную школу.",
+            "tj": "Ҳа. Писарамон ҳам ба мактаби ибтидоӣ меравад."
+          },
+          "tokens": {
+            "uz": [
+              "ham",
+              "Kelasi",
+              "O‘g‘limiz",
+              "boradi",
+              "maktabga",
+              "yil",
+              "Ha",
+              "boshlang‘ich"
+            ],
+            "ru": [
+              "в",
+              "Сын",
+              "Да",
+              "следующем",
+              "пойдёт",
+              "школу",
+              "тоже",
+              "В",
+              "начальную"
+            ],
+            "tj": [
+              "ибтидоӣ",
+              "ҳам",
+              "Ҳа",
+              "Соли",
+              "мактаби",
+              "ба",
+              "Писарамон",
+              "меравад",
+              "оянда"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ha",
+              "O‘g‘limiz",
+              "ham",
+              "boshlang‘ich",
+              "maktabga",
+              "boradi"
+            ],
+            "ru": [
+              "Да",
+              "Сын",
+              "тоже",
+              "пойдёт",
+              "в",
+              "начальную",
+              "школу"
+            ],
+            "tj": [
+              "Ҳа",
+              "Писарамон",
+              "ҳам",
+              "ба",
+              "мактаби",
+              "ибтидоӣ",
+              "меравад"
+            ]
+          },
+          "explanation": {
+            "uz": "对。儿子也上小学了。 — Ha. O‘g‘limiz ham boshlang‘ich maktabga boradi.",
+            "ru": "对。儿子也上小学了。 — Да. Сын тоже пойдёт в начальную школу.",
+            "tj": "对。儿子也上小学了。 — Ҳа. Писарамон ҳам ба мактаби ибтидоӣ меравад."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "上",
+              {
+                "uz": "belgilangan vaqtda boshlamoq/qatnashmoq",
+                "ru": "начинать/посещать в установленное время",
+                "tj": "дар вақти муайян оғоз/иштирок кардан"
+              }
+            ],
+            [
+              "中学",
+              {
+                "uz": "o‘rta maktab",
+                "ru": "средняя школа",
+                "tj": "мактаби миёна"
+              }
+            ],
+            [
+              "小学",
+              {
+                "uz": "boshlang‘ich maktab",
+                "ru": "начальная школа",
+                "tj": "мактаби ибтидоӣ"
+              }
+            ],
+            [
+              "中学生",
+              {
+                "uz": "o‘rta maktab o‘quvchisi",
+                "ru": "ученик средней школы",
+                "tj": "хонандаи мактаби миёна"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我们家有了一个中学生。",
+          "pinyin": "Wǒmen jiā yǒule yí ge zhōngxuéshēng.",
+          "options": [
+            "我们家有了一个中学生。",
+            "明年女儿上中学。",
+            "对。儿子也上小学了。",
+            "上学后，他们都忙了。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我们家有了一个中学生。 — Oilamizda bitta o‘rta maktab o‘quvchisi bo‘ladi.",
+            "ru": "我们家有了一个中学生。 — В нашей семье будет ученик средней школы.",
+            "tj": "我们家有了一个中学生。 — Дар оилаи мо як хонандаи мактаби миёна мешавад."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Ha. O‘g‘limiz ham boshlang‘ich maktabga boradi.",
+            "ru": "Да. Сын тоже пойдёт в начальную школу.",
+            "tj": "Ҳа. Писарамон ҳам ба мактаби ибтидоӣ меравад."
+          },
+          "tokens": [
+            "中午",
+            "小学",
+            "了",
+            "对",
+            "火车",
+            "儿子",
+            "也",
+            "上"
+          ],
+          "answer_tokens": [
+            "对",
+            "儿子",
+            "也",
+            "上",
+            "小学",
+            "了"
+          ],
+          "explanation": {
+            "uz": "对。儿子也上小学了。 — Duì. Érzi yě shàng xiǎoxué le.",
+            "ru": "对。儿子也上小学了。 — Duì. Érzi yě shàng xiǎoxué le.",
+            "tj": "对。儿子也上小学了。 — Duì. Érzi yě shàng xiǎoxué le."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "中学",
+          "pinyin": "zhōngxué",
+          "translation": {
+            "uz": "o‘rta maktab",
+            "ru": "средняя школа",
+            "tj": "мактаби миёна"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "哪些 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 哪些:",
+            "tj": "Маънои калимаи 哪些-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chiqmoq; transportga minmoq",
+              "ru": "подниматься; садиться в транспорт",
+              "tj": "баромадан; ба нақлиёт савор шудан"
+            },
+            {
+              "uz": "tush payti",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ"
+            },
+            {
+              "uz": "qaysilar",
+              "ru": "какие; которые",
+              "tj": "кадомҳо"
+            },
+            {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "哪些 = qaysilar (nǎxiē)",
+            "ru": "哪些 = какие; которые (nǎxiē)",
+            "tj": "哪些 = кадомҳо (nǎxiē)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "哪些",
+            "pinyin": "nǎxiē",
+            "meaning": {
+              "uz": "qaysilar",
+              "ru": "какие; которые",
+              "tj": "кадомҳо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o‘rta maktab' xitoycha qaysi?",
+            "ru": "'средняя школа' по-китайски?",
+            "tj": "'мактаби миёна' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "火车",
+            "中学",
+            "上",
+            "中午"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "o‘rta maktab = 中学 (zhōngxué)",
+            "ru": "средняя школа = 中学 (zhōngxué)",
+            "tj": "мактаби миёна = 中学 (zhōngxué)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "中学",
+            "pinyin": "zhōngxué",
+            "meaning": {
+              "uz": "o‘rta maktab",
+              "ru": "средняя школа",
+              "tj": "мактаби миёна"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

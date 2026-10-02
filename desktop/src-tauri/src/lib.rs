@@ -263,10 +263,13 @@ fn api_url(path: &str) -> Result<String, String> {
         | "/api/v3/desktop/bootstrap"
         | "/api/v3/desktop/course/map"
         | "/api/v3/desktop/course/complete"
+        | "/api/v3/desktop/course/tracks/switch"
+        | "/api/v3/desktop/course/hsk30/promo-shown"
         | "/api/v3/desktop/events"
         | "/api/v3/desktop/preferences/language"
         | "/api/v3/desktop/preferences/notifications"
         | "/api/v3/desktop/subscription/overview"
+        | "/api/v3/desktop/subscription/overview?mode=hsk30_unlock"
         | "/api/v3/desktop/subscription/quote"
         | "/api/v3/desktop/subscription/submit"
         | "/api/v3/desktop/practice/start"
@@ -327,6 +330,25 @@ fn course_map_path(timezone_offset_minutes: Option<i32>) -> Result<String, Strin
     }
 }
 
+fn validate_course_track(track: &str) -> Result<&'static str, String> {
+    match track.trim().to_ascii_lowercase().as_str() {
+        "hsk20" => Ok("hsk20"),
+        "hsk30" => Ok("hsk30"),
+        _ => Err("desktop_course_track_invalid".into()),
+    }
+}
+
+fn validate_course_level(level: Option<&str>) -> Result<Option<&str>, String> {
+    let Some(level) = level else {
+        return Ok(None);
+    };
+    let value = level.trim();
+    match value {
+        "hsk1" | "hsk2" | "hsk3" | "hsk4" | "nhsk1" | "nhsk2" | "nhsk3" => Ok(Some(value)),
+        _ => Err("desktop_course_level_invalid".into()),
+    }
+}
+
 fn validate_lesson_order(lesson_order: i64) -> Result<i64, String> {
     if (1..=MAX_LESSON_ORDER).contains(&lesson_order) {
         Ok(lesson_order)
@@ -366,6 +388,20 @@ fn validate_subscription_plan(plan: &str) -> Result<&'static str, String> {
         "10_days" => Ok("10_days"),
         "1_month" => Ok("1_month"),
         "3_months" => Ok("3_months"),
+        "hsk30_unlock" => Ok("hsk30_unlock"),
+        _ => Err("desktop_subscription_request_invalid".into()),
+    }
+}
+
+fn validate_subscription_mode(mode: Option<&str>) -> Result<&'static str, String> {
+    match mode
+        .unwrap_or("subscription")
+        .trim()
+        .to_ascii_lowercase()
+        .as_str()
+    {
+        "subscription" => Ok("subscription"),
+        "hsk30_unlock" => Ok("hsk30_unlock"),
         _ => Err("desktop_subscription_request_invalid".into()),
     }
 }
@@ -1034,7 +1070,10 @@ fn validate_subscription_envelope(value: &Value) -> Result<(), String> {
         .ok_or_else(|| "desktop_subscription_payload_invalid".to_string())?;
     if payload.get("ok").and_then(Value::as_bool) != Some(true)
         || payload.get("source").and_then(Value::as_str) != Some("desktop_subscription")
-        || payload.get("mode").and_then(Value::as_str) != Some("subscription")
+        || !matches!(
+            payload.get("mode").and_then(Value::as_str),
+            Some("subscription" | "hsk30_unlock")
+        )
         || contains_sensitive_subscription_field(value)
     {
         return Err("desktop_subscription_payload_invalid".into());
@@ -1076,7 +1115,7 @@ fn validate_subscription_prices(value: Option<&Value>) -> Result<(), String> {
             return Err("desktop_subscription_payload_invalid".into());
         };
         for (plan, price) in plans {
-            if !matches!(plan.as_str(), "10_days" | "1_month" | "3_months") || !price.is_object() {
+            if !matches!(plan.as_str(), "10_days" | "1_month" | "3_months" | "hsk30_unlock") || !price.is_object() {
                 return Err("desktop_subscription_payload_invalid".into());
             }
         }
@@ -2228,6 +2267,37 @@ async fn desktop_course_map(
 }
 
 #[tauri::command]
+async fn desktop_course_track_switch(
+    state: tauri::State<'_, DesktopState>,
+    target_track: String,
+    level: Option<String>,
+) -> Result<Value, String> {
+    let target_track = validate_course_track(&target_track)?;
+    let level = validate_course_level(level.as_deref())?;
+    authenticated_post_json(
+        &state,
+        "/api/v3/desktop/course/tracks/switch",
+        &json!({
+            "target_track": target_track,
+            "level": level,
+        }),
+    )
+    .await
+}
+
+#[tauri::command]
+async fn desktop_hsk30_promo_shown(
+    state: tauri::State<'_, DesktopState>,
+) -> Result<Value, String> {
+    authenticated_post_json(
+        &state,
+        "/api/v3/desktop/course/hsk30/promo-shown",
+        &json!({}),
+    )
+    .await
+}
+
+#[tauri::command]
 async fn desktop_sync(
     state: tauri::State<'_, DesktopState>,
 ) -> Result<Value, String> {
@@ -2300,10 +2370,15 @@ async fn desktop_set_notifications(
 #[tauri::command]
 async fn desktop_subscription_overview(
     state: tauri::State<'_, DesktopState>,
+    mode: Option<String>,
 ) -> Result<Value, String> {
-    let value =
-        authenticated_subscription_get_json(&state, "/api/v3/desktop/subscription/overview")
-            .await?;
+    let mode = validate_subscription_mode(mode.as_deref())?;
+    let path = if mode == "hsk30_unlock" {
+        "/api/v3/desktop/subscription/overview?mode=hsk30_unlock"
+    } else {
+        "/api/v3/desktop/subscription/overview"
+    };
+    let value = authenticated_subscription_get_json(&state, path).await?;
     validate_subscription_overview_response(&value)?;
     Ok(value)
 }
@@ -2744,7 +2819,9 @@ pub fn run() {
             desktop_bootstrap,
             desktop_logout,
             desktop_course_map,
-        desktop_sync,
+            desktop_course_track_switch,
+            desktop_hsk30_promo_shown,
+            desktop_sync,
             desktop_lesson_data,
             desktop_lesson_complete,
             desktop_set_language,
@@ -2797,9 +2874,9 @@ mod tests {
         current_access_token, is_allowed_external_url, is_allowed_oauth_authorize_url,
         is_allowed_telegram_link,
         local_ai_analytics_payload, no_update_status, terminal_link_status,
-        validate_checkout_attempt_id, validate_event_id, validate_language, validate_lesson_order,
+        validate_checkout_attempt_id, validate_course_level, validate_course_track, validate_event_id, validate_language, validate_lesson_order,
         validate_mistakes, validate_subscription_country, validate_subscription_image_data_url,
-        validate_subscription_method, validate_subscription_overview_response,
+        validate_subscription_method, validate_subscription_mode, validate_subscription_overview_response,
         validate_subscription_plan, validate_subscription_quote_response,
         validate_subscription_submit_response, validate_tts_text, DesktopLinkDisplay, DesktopState,
         PendingLink, MAX_MISTAKES, MAX_NATIVE_EVENT_DURATION_MS, MAX_NATIVE_EVENT_SIZE_BYTES,
@@ -2824,9 +2901,12 @@ mod tests {
         assert!(api_url("/api/v3/desktop/course/map?tz=300&admin=true").is_err());
         assert!(api_url("/api/v3/desktop/course/lesson/181").is_ok());
         assert!(api_url("/api/v3/desktop/course/complete").is_ok());
+        assert!(api_url("/api/v3/desktop/course/tracks/switch").is_ok());
+        assert!(api_url("/api/v3/desktop/course/hsk30/promo-shown").is_ok());
         assert!(api_url("/api/v3/desktop/preferences/language").is_ok());
         assert!(api_url("/api/v3/desktop/preferences/notifications").is_ok());
         assert!(api_url("/api/v3/desktop/subscription/overview").is_ok());
+        assert!(api_url("/api/v3/desktop/subscription/overview?mode=hsk30_unlock").is_ok());
         assert!(api_url("/api/v3/desktop/subscription/quote").is_ok());
         assert!(api_url("/api/v3/desktop/subscription/submit").is_ok());
         assert!(api_url("/api/v3/desktop/practice/start").is_ok());
@@ -3086,6 +3166,14 @@ mod tests {
         assert!(validate_lesson_order(0).is_err());
         assert!(validate_lesson_order(501).is_err());
 
+        assert_eq!(validate_course_track(" hsk30 "), Ok("hsk30"));
+        assert_eq!(validate_course_track("hsk20"), Ok("hsk20"));
+        assert!(validate_course_track("hsk40").is_err());
+        assert_eq!(validate_course_level(Some("nhsk1")), Ok(Some("nhsk1")));
+        assert_eq!(validate_course_level(Some("hsk4")), Ok(Some("hsk4")));
+        assert_eq!(validate_course_level(None), Ok(None));
+        assert!(validate_course_level(Some("nhsk4")).is_err());
+
         assert_eq!(
             validate_event_id("desktop.lesson:abc-1234"),
             Ok("desktop.lesson:abc-1234")
@@ -3141,7 +3229,11 @@ mod tests {
     #[test]
     fn desktop_subscription_inputs_are_strictly_bounded() {
         assert_eq!(validate_subscription_plan("1_month"), Ok("1_month"));
+        assert_eq!(validate_subscription_plan("hsk30_unlock"), Ok("hsk30_unlock"));
         assert!(validate_subscription_plan("lifetime").is_err());
+        assert_eq!(validate_subscription_mode(None), Ok("subscription"));
+        assert_eq!(validate_subscription_mode(Some("hsk30_unlock")), Ok("hsk30_unlock"));
+        assert!(validate_subscription_mode(Some("admin")).is_err());
         assert_eq!(validate_subscription_method("visa"), Ok("visa"));
         assert!(validate_subscription_method("crypto").is_err());
         assert_eq!(

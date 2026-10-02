@@ -1,0 +1,846 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 19,
+  "source_lesson": 3,
+  "part_no": 3,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "这个小区挺好的",
+  "subtitle": {
+    "uz": "Yashash muhiti va uy sharoiti haqida gaplashish; “挺” va “坏了” orqali darajani ifodalash; “就” va “才” bilan ish-harakatning erta/kech yoki tez/sekin sodir bo‘lishini aytish.",
+    "ru": "Говорить о жилой среде и бытовых условиях; выражать степень с “挺” и “坏了”; использовать “就” и “才” для обозначения раннего/позднего или быстрого/медленного наступления действия.",
+    "tj": "Дар бораи муҳити зист ва шароити хона суҳбат кардан; бо “挺” ва “坏了” дараҷаро ифода кардан; бо “就” ва “才” барвақт/дер ё тез/суст рух додани амалро нишон додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "洗衣机",
+      "pinyin": "xǐyījī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kir yuvish mashinasi",
+        "ru": "стиральная машина",
+        "tj": "мошини ҷомашӯӣ"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "层",
+      "pinyin": "céng",
+      "pos": "m.",
+      "meaning": {
+        "uz": "qavat (hisob so‘zi)",
+        "ru": "этаж; слой",
+        "tj": "ошёна; қабат"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "花园",
+      "pinyin": "huāyuán",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bog‘",
+        "ru": "сад",
+        "tj": "боғ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "灯",
+      "pinyin": "dēng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "chiroq",
+        "ru": "лампа; свет",
+        "tj": "чароғ"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "“就” va “才” — erta/tez va kech/sekin holatlar",
+        "ru": "“就” и “才” — раннее/быстрое и позднее/медленное наступление",
+        "tj": "“就” ва “才” — барвақт/тез ва дер/суст"
+      },
+      "title_zh": "“就”和“才”",
+      "rule": {
+        "uz": "“就” kutilganidan erta, tez yoki oson sodir bo‘lgan ishni ko‘rsatadi. “才” esa aksincha, ishning kech, sekin yoki faqat ma’lum shartdan keyin sodir bo‘lganini bildiradi.",
+        "ru": "“就” указывает, что действие произошло раньше, быстрее или легче ожидаемого. “才”, наоборот, подчёркивает позднее, медленное наступление или выполнение только после определённого условия.",
+        "tj": "“就” нишон медиҳад, ки амал барвақттар, тезтар ё осонтар аз интизорӣ рух додааст. “才” баръакс, дертар, сусттар ё танҳо баъди шарти муайян рух доданро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "中国银行很近，走路几分钟就能到。",
+          "pinyin": "Zhōngguó Yínháng hěn jìn, zǒulù jǐ fēnzhōng jiù néng dào.",
+          "translation": {
+            "uz": "Bank juda yaqin, piyoda bir necha daqiqada yetib borish mumkin.",
+            "ru": "Банк Китая близко, пешком можно дойти всего за несколько минут.",
+            "tj": "Бонки Чин наздик аст, пиёда дар чанд дақиқа расидан мумкин."
+          }
+        },
+        {
+          "zh": "我下午要去医院，很晚才能回来。",
+          "pinyin": "Wǒ xiàwǔ yào qù yīyuàn, hěn wǎn cái néng huílái.",
+          "translation": {
+            "uz": "Tushdan keyin shifoxonaga boraman, juda kech qayta olaman.",
+            "ru": "Днём я иду в больницу и смогу вернуться только поздно.",
+            "tj": "Баъд аз нисфирӯзӣ ба беморхона меравам ва танҳо дер бармегардам."
+          }
+        },
+        {
+          "zh": "我早上五点就起床了。",
+          "pinyin": "Wǒ zǎoshang wǔ diǎn jiù qǐchuáng le.",
+          "translation": {
+            "uz": "Men ertalab soat beshdayoq turdim.",
+            "ru": "Я встал уже в пять утра.",
+            "tj": "Ман субҳ соати панҷ аллакай хестам."
+          }
+        },
+        {
+          "zh": "坐火车去北京，五个小时才能到。",
+          "pinyin": "Zuò huǒchē qù Běijīng, wǔ ge xiǎoshí cái néng dào.",
+          "translation": {
+            "uz": "Pekinga poyezdda borsang, faqat besh soatdan keyin yetasan.",
+            "ru": "На поезде до Пекина можно добраться только за пять часов.",
+            "tj": "Бо қатора ба Пекин танҳо пас аз панҷ соат расидан мумкин."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘明",
+          "zh": "好啊，我上网看看。你觉得这个小区怎么样？",
+          "pinyin": "Hǎo a, wǒ shàngwǎng kànkan. Nǐ juéde zhège xiǎoqū zěnmeyàng?",
+          "text": {
+            "uz": "Mayli, internetdan ko‘rib chiqaman. Bu turar-joy majmuasi qanday?",
+            "ru": "Хорошо, посмотрю в интернете. Как тебе этот жилой комплекс?",
+            "tj": "Хуб, аз интернет мебинам. Ин маҷмааи истиқоматӣ чӣ хел аст?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "环境挺好的，离地铁站还不远。",
+          "pinyin": "Huánjìng tǐng hǎo de, lí dìtiězhàn hái bù yuǎn.",
+          "text": {
+            "uz": "Muhiti ancha yaxshi, metro bekatidan ham uzoq emas.",
+            "ru": "Обстановка довольно хорошая, и до метро недалеко.",
+            "tj": "Муҳиташ хеле хуб аст ва аз метро ҳам дур нест."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "房子里面也不错，空调和洗衣机都是新的。",
+          "pinyin": "Fángzi lǐmian yě búcuò, kōngtiáo hé xǐyījī dōu shì xīn de.",
+          "text": {
+            "uz": "Uyning ichi ham yaxshi, konditsioner va kir yuvish mashinasi yangi.",
+            "ru": "Внутри тоже неплохо, кондиционер и стиральная машина новые.",
+            "tj": "Даруни хона ҳам хуб аст, кондитсионеру мошини ҷомашӯӣ наванд."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "是不错，但是我不喜欢住一层。",
+          "pinyin": "Shì búcuò, dànshì wǒ bù xǐhuan zhù yì céng.",
+          "text": {
+            "uz": "Yomon emas, lekin birinchi qavatda yashashni yoqtirmayman.",
+            "ru": "Неплохо, но я не люблю жить на первом этаже.",
+            "tj": "Бад нест, аммо ман дар ошёнаи якум зиндагӣ карданро дӯст намедорам."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "这个一层带一个小花园，我觉得咱们可以去看看。",
+          "pinyin": "Zhège yì céng dài yí ge xiǎo huāyuán, wǒ juéde zánmen kěyǐ qù kànkan.",
+          "text": {
+            "uz": "Bu birinchi qavatga kichik bog‘ ham kiradi, menimcha borib ko‘rsak bo‘ladi.",
+            "ru": "У этого первого этажа есть небольшой сад, думаю, стоит посмотреть.",
+            "tj": "Ин ошёнаи якум боғи хурд ҳам дорад, ба назарам рафта дидан мумкин."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Yangi uyda Wang Yixue xonani yig‘ishtirmoqda, Liu Ming kirib keldi.",
+        "ru": "В новом доме Ван Исюэ убирает комнату, входит Лю Мин.",
+        "tj": "Дар хонаи нав Ван Исюэ ҳуҷраро ҷамъ мекунад, Лю Мин медарояд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "我今天早上来的时候，灯还开着。",
+          "pinyin": "Wǒ jīntiān zǎoshang lái de shíhou, dēng hái kāizhe.",
+          "text": {
+            "uz": "Bugun ertalab kelganimda chiroq hali ham yoqilgan edi.",
+            "ru": "Когда я пришла утром, свет всё ещё был включён.",
+            "tj": "Имрӯз саҳар омадам, чароғ ҳанӯз фурӯзон буд."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "洗衣机也坏了吗？",
+          "pinyin": "Xǐyījī yě huài le ma?",
+          "text": {
+            "uz": "Kir yuvish mashinasi ham buzildimi?",
+            "ru": "Стиральная машина тоже сломалась?",
+            "tj": "Мошини ҷомашӯӣ ҳам вайрон шуд?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue mehmonxonada suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают в гостиной.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ дар меҳмонхона суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "这个月花了不少钱。",
+          "pinyin": "Zhège yuè huā le bù shǎo qián.",
+          "text": {
+            "uz": "Bu oy ancha pul sarfladik.",
+            "ru": "В этом месяце мы потратили немало денег.",
+            "tj": "Ин моҳ пули зиёд сарф кардем."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "今天下午？",
+          "pinyin": "Jīntiān xiàwǔ?",
+          "text": {
+            "uz": "Bugun tushdan keyinmi?",
+            "ru": "Сегодня днём?",
+            "tj": "Имрӯз баъд аз нисфирӯзӣ?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "那我下午自己去吧。",
+          "pinyin": "Nà wǒ xiàwǔ zìjǐ qù ba.",
+          "text": {
+            "uz": "Unda tushdan keyin o‘zim boraman.",
+            "ru": "Тогда я схожу днём сама.",
+            "tj": "Пас баъд аз нисфирӯзӣ худам меравам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "洗衣机",
+            "pinyin": "xǐyījī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kir yuvish mashinasi",
+              "ru": "стиральная машина",
+              "tj": "мошини ҷомашӯӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kir yuvish mashinasi' xitoycha qaysi?",
+            "ru": "'стиральная машина' по-китайски?",
+            "tj": "'мошини ҷомашӯӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "洗衣机",
+            "换",
+            "初中",
+            "咱们"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "kir yuvish mashinasi = 洗衣机 (xǐyījī)",
+            "ru": "стиральная машина = 洗衣机 (xǐyījī)",
+            "tj": "мошини ҷомашӯӣ = 洗衣机 (xǐyījī)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "层",
+            "pinyin": "céng",
+            "pos": "m.",
+            "meaning": {
+              "uz": "qavat (hisob so‘zi)",
+              "ru": "этаж; слой",
+              "tj": "ошёна; қабат"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "层",
+          "pinyin": "céng",
+          "options": [
+            "层",
+            "初中",
+            "换",
+            "咱们"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "层 — qavat (hisob so‘zi) (céng)",
+            "ru": "层 — этаж; слой (céng)",
+            "tj": "层 — ошёна; қабат (céng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "花园",
+            "pinyin": "huāyuán",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bog‘",
+              "ru": "сад",
+              "tj": "боғ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "花园",
+          "pinyin": "huāyuán",
+          "translation": {
+            "uz": "bog‘",
+            "ru": "сад",
+            "tj": "боғ"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "花园 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 花园:",
+            "tj": "Маънои калимаи 花园-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+              "ru": "средняя школа (младшие классы)",
+              "tj": "зинаи миёнаи поёнии мактаб"
+            },
+            {
+              "uz": "bog‘",
+              "ru": "сад",
+              "tj": "боғ"
+            },
+            {
+              "uz": "almashtirmoq",
+              "ru": "менять; заменять",
+              "tj": "иваз кардан"
+            },
+            {
+              "uz": "biz (so‘zlovchi va tinglovchini ham qo‘shib)",
+              "ru": "мы (включая собеседника)",
+              "tj": "мо (бо шумули шунаванда)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "花园 = bog‘ (huāyuán)",
+            "ru": "花园 = сад (huāyuán)",
+            "tj": "花园 = боғ (huāyuán)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "灯",
+            "pinyin": "dēng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "chiroq",
+              "ru": "лампа; свет",
+              "tj": "чароғ"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dēng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dēng?",
+            "tj": "dēng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "初中",
+            "灯",
+            "咱们",
+            "换"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "灯 = chiroq (dēng)",
+            "ru": "灯 = лампа; свет (dēng)",
+            "tj": "灯 = чароғ (dēng)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "洗衣机 talaffuzini tanlang:",
+            "ru": "Выберите произношение 洗衣机:",
+            "tj": "Талаффузи 洗衣机-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "chūzhōng",
+            "huàn",
+            "zánmen",
+            "xǐyījī"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "洗衣机 — xǐyījī",
+            "ru": "洗衣机 — xǐyījī",
+            "tj": "洗衣机 — xǐyījī"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "洗衣机",
+              {
+                "uz": "kir yuvish mashinasi",
+                "ru": "стиральная машина",
+                "tj": "мошини ҷомашӯӣ"
+              }
+            ],
+            [
+              "层",
+              {
+                "uz": "qavat (hisob so‘zi)",
+                "ru": "этаж; слой",
+                "tj": "ошёна; қабат"
+              }
+            ],
+            [
+              "花园",
+              {
+                "uz": "bog‘",
+                "ru": "сад",
+                "tj": "боғ"
+              }
+            ],
+            [
+              "灯",
+              {
+                "uz": "chiroq",
+                "ru": "лампа; свет",
+                "tj": "чароғ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "“就” va “才” — erta/tez va kech/sekin holatlar",
+              "ru": "“就” и “才” — раннее/быстрое и позднее/медленное наступление",
+              "tj": "“就” ва “才” — барвақт/тез ва дер/суст"
+            },
+            "title_zh": "“就”和“才”",
+            "rule": {
+              "uz": "“就” kutilganidan erta, tez yoki oson sodir bo‘lgan ishni ko‘rsatadi. “才” esa aksincha, ishning kech, sekin yoki faqat ma’lum shartdan keyin sodir bo‘lganini bildiradi.",
+              "ru": "“就” указывает, что действие произошло раньше, быстрее или легче ожидаемого. “才”, наоборот, подчёркивает позднее, медленное наступление или выполнение только после определённого условия.",
+              "tj": "“就” нишон медиҳад, ки амал барвақттар, тезтар ё осонтар аз интизорӣ рух додааст. “才” баръакс, дертар, сусттар ё танҳо баъди шарти муайян рух доданро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "中国银行很近，走路几分钟就能到。",
+                "pinyin": "Zhōngguó Yínháng hěn jìn, zǒulù jǐ fēnzhōng jiù néng dào.",
+                "translation": {
+                  "uz": "Bank juda yaqin, piyoda bir necha daqiqada yetib borish mumkin.",
+                  "ru": "Банк Китая близко, пешком можно дойти всего за несколько минут.",
+                  "tj": "Бонки Чин наздик аст, пиёда дар чанд дақиқа расидан мумкин."
+                }
+              },
+              {
+                "zh": "我下午要去医院，很晚才能回来。",
+                "pinyin": "Wǒ xiàwǔ yào qù yīyuàn, hěn wǎn cái néng huílái.",
+                "translation": {
+                  "uz": "Tushdan keyin shifoxonaga boraman, juda kech qayta olaman.",
+                  "ru": "Днём я иду в больницу и смогу вернуться только поздно.",
+                  "tj": "Баъд аз нисфирӯзӣ ба беморхона меравам ва танҳо дер бармегардам."
+                }
+              },
+              {
+                "zh": "我早上五点就起床了。",
+                "pinyin": "Wǒ zǎoshang wǔ diǎn jiù qǐchuáng le.",
+                "translation": {
+                  "uz": "Men ertalab soat beshdayoq turdim.",
+                  "ru": "Я встал уже в пять утра.",
+                  "tj": "Ман субҳ соати панҷ аллакай хестам."
+                }
+              },
+              {
+                "zh": "坐火车去北京，五个小时才能到。",
+                "pinyin": "Zuò huǒchē qù Běijīng, wǔ ge xiǎoshí cái néng dào.",
+                "translation": {
+                  "uz": "Pekinga poyezdda borsang, faqat besh soatdan keyin yetasan.",
+                  "ru": "На поезде до Пекина можно добраться только за пять часов.",
+                  "tj": "Бо қатора ба Пекин танҳо пас аз панҷ соат расидан мумкин."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men ertalab soat beshdayoq turdim.",
+            "ru": "Я встал уже в пять утра.",
+            "tj": "Ман субҳ соати панҷ аллакай хестам."
+          },
+          "tokens": [
+            "早上",
+            "五",
+            "了",
+            "起床",
+            "点",
+            "就",
+            "初中",
+            "我",
+            "咱们"
+          ],
+          "answer_tokens": [
+            "我",
+            "早上",
+            "五",
+            "点",
+            "就",
+            "起床",
+            "了"
+          ],
+          "explanation": {
+            "uz": "我早上五点就起床了。 — Wǒ zǎoshang wǔ diǎn jiù qǐchuáng le.",
+            "ru": "我早上五点就起床了。 — Wǒ zǎoshang wǔ diǎn jiù qǐchuáng le.",
+            "tj": "我早上五点就起床了。 — Wǒ zǎoshang wǔ diǎn jiù qǐchuáng le."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Pekinga poyezdda borsang, faqat besh soatdan keyin yetasan.» — xitoychada qaysi biri?",
+            "ru": "«На поезде до Пекина можно добраться только за пять часов.» — какое предложение по-китайски?",
+            "tj": "«Бо қатора ба Пекин танҳо пас аз панҷ соат расидан мумкин.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "中国银行很近，走路几分钟就能到。",
+            "坐火车去北京，五个小时才能到。",
+            "我早上五点就起床了。",
+            "我下午要去医院，很晚才能回来。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "坐火车去北京，五个小时才能到。 — Zuò huǒchē qù Běijīng, wǔ ge xiǎoshí cái néng dào.",
+            "ru": "坐火车去北京，五个小时才能到。 — Zuò huǒchē qù Běijīng, wǔ ge xiǎoshí cái néng dào.",
+            "tj": "坐火车去北京，五个小时才能到。 — Zuò huǒchē qù Běijīng, wǔ ge xiǎoshí cái néng dào."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "洗衣机也坏了吗？",
+          "pinyin": "Xǐyījī yě huài le ma?",
+          "options": [
+            "洗衣机也坏了吗？",
+            "是不错，但是我不喜欢住一层。",
+            "这个一层带一个小花园，我觉得咱们可以去看看。",
+            "房子里面也不错，空调和洗衣机都是新的。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "洗衣机也坏了吗？ — Kir yuvish mashinasi ham buzildimi?",
+            "ru": "洗衣机也坏了吗？ — Стиральная машина тоже сломалась?",
+            "tj": "洗衣机也坏了吗？ — Мошини ҷомашӯӣ ҳам вайрон шуд?"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我今天早上来的时候，灯还开着。",
+          "pinyin": "Wǒ jīntiān zǎoshang lái de shíhou, dēng hái kāizhe.",
+          "translation": {
+            "uz": "Bugun ertalab kelganimda chiroq hali ham yoqilgan edi.",
+            "ru": "Когда я пришла утром, свет всё ещё был включён.",
+            "tj": "Имрӯз саҳар омадам, чароғ ҳанӯз фурӯзон буд."
+          },
+          "tokens": {
+            "uz": [
+              "yoqilgan",
+              "ham",
+              "chiroq",
+              "ichi",
+              "ertalab",
+              "Uyning",
+              "hali",
+              "edi",
+              "kelganimda",
+              "Bugun"
+            ],
+            "ru": [
+              "тоже",
+              "ещё",
+              "я",
+              "свет",
+              "Внутри",
+              "всё",
+              "был",
+              "Когда",
+              "пришла",
+              "включён",
+              "утром"
+            ],
+            "tj": [
+              "чароғ",
+              "буд",
+              "Даруни",
+              "омадам",
+              "фурӯзон",
+              "саҳар",
+              "Имрӯз",
+              "хона",
+              "ҳанӯз"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Bugun",
+              "ertalab",
+              "kelganimda",
+              "chiroq",
+              "hali",
+              "ham",
+              "yoqilgan",
+              "edi"
+            ],
+            "ru": [
+              "Когда",
+              "я",
+              "пришла",
+              "утром",
+              "свет",
+              "всё",
+              "ещё",
+              "был",
+              "включён"
+            ],
+            "tj": [
+              "Имрӯз",
+              "саҳар",
+              "омадам",
+              "чароғ",
+              "ҳанӯз",
+              "фурӯзон",
+              "буд"
+            ]
+          },
+          "explanation": {
+            "uz": "我今天早上来的时候，灯还开着。 — Bugun ertalab kelganimda chiroq hali ham yoqilgan edi.",
+            "ru": "我今天早上来的时候，灯还开着。 — Когда я пришла утром, свет всё ещё был включён.",
+            "tj": "我今天早上来的时候，灯还开着。 — Имрӯз саҳар омадам, чароғ ҳанӯз фурӯзон буд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "挺 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 挺:",
+            "tj": "Маънои калимаи 挺-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "almashtirmoq",
+              "ru": "менять; заменять",
+              "tj": "иваз кардан"
+            },
+            {
+              "uz": "ancha; juda",
+              "ru": "довольно; весьма",
+              "tj": "хеле; анча"
+            },
+            {
+              "uz": "biz (so‘zlovchi va tinglovchini ham qo‘shib)",
+              "ru": "мы (включая собеседника)",
+              "tj": "мо (бо шумули шунаванда)"
+            },
+            {
+              "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+              "ru": "средняя школа (младшие классы)",
+              "tj": "зинаи миёнаи поёнии мактаб"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "挺 = ancha; juda (tǐng)",
+            "ru": "挺 = довольно; весьма (tǐng)",
+            "tj": "挺 = хеле; анча (tǐng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "挺",
+            "pinyin": "tǐng",
+            "meaning": {
+              "uz": "ancha; juda",
+              "ru": "довольно; весьма",
+              "tj": "хеле; анча"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bog‘' xitoycha qaysi?",
+            "ru": "'сад' по-китайски?",
+            "tj": "'боғ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "初中",
+            "花园",
+            "换",
+            "咱们"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "bog‘ = 花园 (huāyuán)",
+            "ru": "сад = 花园 (huāyuán)",
+            "tj": "боғ = 花园 (huāyuán)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "花园",
+            "pinyin": "huāyuán",
+            "meaning": {
+              "uz": "bog‘",
+              "ru": "сад",
+              "tj": "боғ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

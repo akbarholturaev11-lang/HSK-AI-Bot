@@ -1,0 +1,740 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 115,
+  "source_lesson": 15,
+  "part_no": 3,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我是半个南京人",
+  "subtitle": {
+    "uz": "Joyning o‘rni va atrof-muhitini tasvirlash; tabiiy manzara yoki tarixiy-madaniy joylarni tanishtirish; “在……看来” bilan shaxs yoki guruh nuqtai nazarini ifodalash; Nanjing va Sariq daryo haqida asosiy ma’lumotlarni tushunish.",
+    "ru": "Описывать расположение и окружающую среду места; рассказывать о природных и историко-культурных объектах; выражать личную или групповую точку зрения конструкцией “在……看来”; познакомиться с базовой информацией о Нанкине и Хуанхэ.",
+    "tj": "Ҷойгиршавӣ ва муҳити атрофро тавсиф кардан; манзараҳои табиӣ ё ҷойҳои таърихию фарҳангиро муаррифӣ кардан; бо “在……看来” нуқтаи назари шахс ё гурӯҳро ифода кардан; бо маълумоти асосӣ дар бораи Нанҷин ва дарёи Хуанхэ шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "根据",
+      "pinyin": "gēnjù",
+      "pos": "prep./v.",
+      "meaning": {
+        "uz": "asosida; ...ga ko‘ra",
+        "ru": "на основании; согласно",
+        "tj": "дар асоси; мувофиқи"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "了解",
+      "pinyin": "liǎojiě",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tushunmoq; bilib olmoq",
+        "ru": "понимать; узнавать",
+        "tj": "фаҳмидан; шинос шудан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "可是",
+      "pinyin": "kěshì",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "ammo; lekin",
+        "ru": "но; однако",
+        "tj": "аммо; лекин"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "以上",
+      "pinyin": "yǐshàng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "...dan ortiq; yuqorida",
+        "ru": "свыше; выше",
+        "tj": "зиёда аз; боло"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Predlog “根据” — “...ga ko‘ra / asosida”",
+        "ru": "Предлог “根据” — «согласно / на основании»",
+        "tj": "Пешоянди “根据” — «мувофиқи / дар асоси»"
+      },
+      "title_zh": "介词“根据”",
+      "rule": {
+        "uz": "“根据 + manba/talab/vaziyat” qaror yoki harakat nimaga asoslanganini ko‘rsatadi.",
+        "ru": "“根据 + источник/требование/ситуация” показывает, на чём основано решение или действие.",
+        "tj": "“根据 + манба/талаб/вазъ” нишон медиҳад, ки қарор ё амал ба чӣ асос ёфтааст."
+      },
+      "examples": [
+        {
+          "zh": "这几年小区根据他们的需要，有了很多变化。",
+          "pinyin": "Zhè jǐ nián xiǎoqū gēnjù tāmen de xūyào, yǒu le hěn duō biànhuà.",
+          "translation": {
+            "uz": "So‘nggi yillarda turar-joy majmuasi ularning ehtiyojlariga ko‘ra ancha o‘zgardi.",
+            "ru": "За последние годы жилой комплекс сильно изменился в соответствии с их потребностями.",
+            "tj": "Дар чанд соли охир маҷмааи истиқоматӣ мувофиқи ниёзҳои онҳо хеле тағйир ёфт."
+          }
+        },
+        {
+          "zh": "根据要求，我们必须参加明天的会议。",
+          "pinyin": "Gēnjù yāoqiú, wǒmen bìxū cānjiā míngtiān de huìyì.",
+          "translation": {
+            "uz": "Talabga ko‘ra, ertangi yig‘ilishda qatnashishimiz shart.",
+            "ru": "Согласно требованиям, мы обязаны участвовать в завтрашнем совещании.",
+            "tj": "Мувофиқи талаб, мо бояд дар ҷаласаи фардо иштирок кунем."
+          }
+        },
+        {
+          "zh": "老师根据每个学生的兴趣，选择了不一样的书。",
+          "pinyin": "Lǎoshī gēnjù měi ge xuéshēng de xìngqù, xuǎnzé le bù yíyàng de shū.",
+          "translation": {
+            "uz": "O‘qituvchi har bir o‘quvchining qiziqishiga ko‘ra turli kitoblar tanladi.",
+            "ru": "Учитель выбрал разные книги в соответствии с интересами каждого ученика.",
+            "tj": "Омӯзгор мувофиқи шавқи ҳар донишҷӯ китобҳои гуногун интихоб кард."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ofisda Wang Yixue va Yang Tongle suhbatlashmoqda.",
+        "ru": "В офисе Ван Исюэ и Ян Тунлэ разговаривают.",
+        "tj": "Дар идора Ван Исюэ ва Ян Тунлэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "您搬到蓝天小区一段时间了，觉得怎么样？",
+          "pinyin": "Nín bān dào Lántiān Xiǎoqū yí duàn shíjiān le, juéde zěnmeyàng?",
+          "text": {
+            "uz": "Lantian turar-joy majmuasiga ko‘chganingizga bir muddat bo‘ldi, qanday?",
+            "ru": "Вы уже некоторое время живёте в жилом комплексе Ланьтянь. Как вам?",
+            "tj": "Муддате шуд ба маҷмааи Лантян кӯчидаед, чӣ хел аст?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "小区环境挺好的，附近买东西也很方便，过马路就是超市。",
+          "pinyin": "Xiǎoqū huánjìng tǐng hǎo de, fùjìn mǎi dōngxi yě hěn fāngbiàn, guò mǎlù jiù shì chāoshì.",
+          "text": {
+            "uz": "Majmuaning muhiti yaxshi, yaqin atrofda xarid qilish ham qulay, yo‘lning narigi tomonida supermarket bor.",
+            "ru": "Обстановка хорошая, покупки рядом делать удобно, через дорогу супермаркет.",
+            "tj": "Муҳити маҷмаа хуб аст, харид дар наздикӣ ҳам қулай, аз роҳ гузарӣ супермаркет аст."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "平时孩子们在哪儿玩？",
+          "pinyin": "Píngshí háizimen zài nǎr wán?",
+          "text": {
+            "uz": "Odatda bolalar qayerda o‘ynaydi?",
+            "ru": "Где дети обычно играют?",
+            "tj": "Одатан кӯдакон дар куҷо бозӣ мекунанд?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "小区里有很多树，孩子们放学后就在树下做游戏。你想买房子吗？",
+          "pinyin": "Xiǎoqū lǐ yǒu hěn duō shù, háizimen fàngxué hòu jiù zài shù xià zuò yóuxì. Nǐ xiǎng mǎi fángzi ma?",
+          "text": {
+            "uz": "Majmuada daraxtlar ko‘p, bolalar darsdan keyin daraxt tagida o‘ynaydi. Uy sotib olmoqchimisan?",
+            "ru": "В комплексе много деревьев, после школы дети играют под ними. Ты хочешь купить жильё?",
+            "tj": "Дар маҷмаа дарахт зиёд аст, кӯдакон баъди дарс зери дарахт бозӣ мекунанд. Хона харидан мехоҳӣ?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "蓝天小区的老人挺多的，这几年小区根据他们的需要，有了很多变化。",
+          "pinyin": "Lántiān Xiǎoqū de lǎorén tǐng duō de, zhè jǐ nián xiǎoqū gēnjù tāmen de xūyào, yǒu le hěn duō biànhuà.",
+          "text": {
+            "uz": "Lantian majmuasida keksalar ancha ko‘p, so‘nggi yillarda ularning ehtiyojlariga ko‘ra ko‘p o‘zgarishlar qilindi.",
+            "ru": "В Ланьтяне довольно много пожилых, и в последние годы комплекс сильно изменился с учётом их потребностей.",
+            "tj": "Дар маҷмааи Лантян пиронсолон зиёданд ва чанд соли охир мувофиқи ниёзҳои онҳо тағйироти зиёд шудааст."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "真不错！过几天我去蓝天小区看看。",
+          "pinyin": "Zhēn búcuò! Guò jǐ tiān wǒ qù Lántiān Xiǎoqū kànkan.",
+          "text": {
+            "uz": "Juda yaxshi! Bir necha kundan keyin Lantian majmuasini ko‘rgani boraman.",
+            "ru": "Отлично! Через несколько дней съезжу посмотреть Ланьтянь.",
+            "tj": "Хеле хуб! Баъди чанд рӯз ба маҷмааи Лантян рафта мебинам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ofisda Wang Yixue va Yang Tongle suhbatlashmoqda.",
+        "ru": "В офисе Ван Исюэ и Ян Тунлэ разговаривают.",
+        "tj": "Дар идора Ван Исюэ ва Ян Тунлэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "除了这些以外，你再告诉我一些外地人不知道的地方。",
+          "pinyin": "Chúle zhèxiē yǐwài, nǐ zài gàosu wǒ yìxiē wàidì rén bù zhīdào de dìfang.",
+          "text": {
+            "uz": "Bulardan tashqari, menga tashqaridan kelganlar bilmaydigan joylarni ham ayt.",
+            "ru": "Кроме этого, расскажи ещё о местах, которые приезжие обычно не знают.",
+            "tj": "Ба ғайр аз инҳо, боз ҷойҳоеро бигӯ, ки одамони аз дигар ҷой омада намедонанд."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "那太多了，我得一点儿一点儿给您讲。",
+          "pinyin": "Nà tài duō le, wǒ děi yìdiǎnr yìdiǎnr gěi nín jiǎng.",
+          "text": {
+            "uz": "Bunday joylar juda ko‘p, sizga asta-sekin aytib berishim kerak.",
+            "ru": "Таких мест очень много, придётся рассказывать понемногу.",
+            "tj": "Ин гуна ҷойҳо хеле зиёданд, бояд кам-кам ба шумо нақл кунам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "根据",
+            "pinyin": "gēnjù",
+            "pos": "prep./v.",
+            "meaning": {
+              "uz": "asosida; ...ga ko‘ra",
+              "ru": "на основании; согласно",
+              "tj": "дар асоси; мувофиқи"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "根据",
+          "pinyin": "gēnjù",
+          "options": [
+            "附近",
+            "根据",
+            "蓝",
+            "段"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "根据 — asosida; ...ga ko‘ra (gēnjù)",
+            "ru": "根据 — на основании; согласно (gēnjù)",
+            "tj": "根据 — дар асоси; мувофиқи (gēnjù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "了解",
+            "pinyin": "liǎojiě",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tushunmoq; bilib olmoq",
+              "ru": "понимать; узнавать",
+              "tj": "фаҳмидан; шинос шудан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "了解 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 了解:",
+            "tj": "Маънои калимаи 了解-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bo‘lak; davr (hisob so‘zi)",
+              "ru": "отрезок; период (счётное слово)",
+              "tj": "қисм; давра (воҳиди ҳисоб)"
+            },
+            {
+              "uz": "yaqin atrof",
+              "ru": "поблизости; окрестности",
+              "tj": "наздикӣ; атроф"
+            },
+            {
+              "uz": "tushunmoq; bilib olmoq",
+              "ru": "понимать; узнавать",
+              "tj": "фаҳмидан; шинос шудан"
+            },
+            {
+              "uz": "ko‘k; moviy",
+              "ru": "синий; голубой",
+              "tj": "кабуд; осмонӣ"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "了解 = tushunmoq; bilib olmoq (liǎojiě)",
+            "ru": "了解 = понимать; узнавать (liǎojiě)",
+            "tj": "了解 = фаҳмидан; шинос шудан (liǎojiě)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "可是",
+            "pinyin": "kěshì",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "可是",
+          "pinyin": "kěshì",
+          "translation": {
+            "uz": "ammo; lekin",
+            "ru": "но; однако",
+            "tj": "аммо; лекин"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "kěshì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается kěshì?",
+            "tj": "kěshì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "附近",
+            "可是",
+            "段",
+            "蓝"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "可是 = ammo; lekin (kěshì)",
+            "ru": "可是 = но; однако (kěshì)",
+            "tj": "可是 = аммо; лекин (kěshì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "以上",
+            "pinyin": "yǐshàng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "...dan ortiq; yuqorida",
+              "ru": "свыше; выше",
+              "tj": "зиёда аз; боло"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "以上 talaffuzini tanlang:",
+            "ru": "Выберите произношение 以上:",
+            "tj": "Талаффузи 以上-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "lán",
+            "yǐshàng",
+            "fùjìn",
+            "duàn"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "以上 — yǐshàng",
+            "ru": "以上 — yǐshàng",
+            "tj": "以上 — yǐshàng"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'asosida; ...ga ko‘ra' xitoycha qaysi?",
+            "ru": "'на основании; согласно' по-китайски?",
+            "tj": "'дар асоси; мувофиқи' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "根据",
+            "附近",
+            "蓝",
+            "段"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "asosida; ...ga ko‘ra = 根据 (gēnjù)",
+            "ru": "на основании; согласно = 根据 (gēnjù)",
+            "tj": "дар асоси; мувофиқи = 根据 (gēnjù)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "根据",
+              {
+                "uz": "asosida; ...ga ko‘ra",
+                "ru": "на основании; согласно",
+                "tj": "дар асоси; мувофиқи"
+              }
+            ],
+            [
+              "了解",
+              {
+                "uz": "tushunmoq; bilib olmoq",
+                "ru": "понимать; узнавать",
+                "tj": "фаҳмидан; шинос шудан"
+              }
+            ],
+            [
+              "可是",
+              {
+                "uz": "ammo; lekin",
+                "ru": "но; однако",
+                "tj": "аммо; лекин"
+              }
+            ],
+            [
+              "以上",
+              {
+                "uz": "...dan ortiq; yuqorida",
+                "ru": "свыше; выше",
+                "tj": "зиёда аз; боло"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Predlog “根据” — “...ga ko‘ra / asosida”",
+              "ru": "Предлог “根据” — «согласно / на основании»",
+              "tj": "Пешоянди “根据” — «мувофиқи / дар асоси»"
+            },
+            "title_zh": "介词“根据”",
+            "rule": {
+              "uz": "“根据 + manba/talab/vaziyat” qaror yoki harakat nimaga asoslanganini ko‘rsatadi.",
+              "ru": "“根据 + источник/требование/ситуация” показывает, на чём основано решение или действие.",
+              "tj": "“根据 + манба/талаб/вазъ” нишон медиҳад, ки қарор ё амал ба чӣ асос ёфтааст."
+            },
+            "examples": [
+              {
+                "zh": "这几年小区根据他们的需要，有了很多变化。",
+                "pinyin": "Zhè jǐ nián xiǎoqū gēnjù tāmen de xūyào, yǒu le hěn duō biànhuà.",
+                "translation": {
+                  "uz": "So‘nggi yillarda turar-joy majmuasi ularning ehtiyojlariga ko‘ra ancha o‘zgardi.",
+                  "ru": "За последние годы жилой комплекс сильно изменился в соответствии с их потребностями.",
+                  "tj": "Дар чанд соли охир маҷмааи истиқоматӣ мувофиқи ниёзҳои онҳо хеле тағйир ёфт."
+                }
+              },
+              {
+                "zh": "根据要求，我们必须参加明天的会议。",
+                "pinyin": "Gēnjù yāoqiú, wǒmen bìxū cānjiā míngtiān de huìyì.",
+                "translation": {
+                  "uz": "Talabga ko‘ra, ertangi yig‘ilishda qatnashishimiz shart.",
+                  "ru": "Согласно требованиям, мы обязаны участвовать в завтрашнем совещании.",
+                  "tj": "Мувофиқи талаб, мо бояд дар ҷаласаи фардо иштирок кунем."
+                }
+              },
+              {
+                "zh": "老师根据每个学生的兴趣，选择了不一样的书。",
+                "pinyin": "Lǎoshī gēnjù měi ge xuéshēng de xìngqù, xuǎnzé le bù yíyàng de shū.",
+                "translation": {
+                  "uz": "O‘qituvchi har bir o‘quvchining qiziqishiga ko‘ra turli kitoblar tanladi.",
+                  "ru": "Учитель выбрал разные книги в соответствии с интересами каждого ученика.",
+                  "tj": "Омӯзгор мувофиқи шавқи ҳар донишҷӯ китобҳои гуногун интихоб кард."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Talabga ko‘ra, ertangi yig‘ilishda qatnashishimiz shart.",
+            "ru": "Согласно требованиям, мы обязаны участвовать в завтрашнем совещании.",
+            "tj": "Мувофиқи талаб, мо бояд дар ҷаласаи фардо иштирок кунем."
+          },
+          "tokens": [
+            "必须",
+            "段",
+            "会议",
+            "我们",
+            "要求",
+            "的",
+            "参加",
+            "明天",
+            "根据",
+            "蓝"
+          ],
+          "answer_tokens": [
+            "根据",
+            "要求",
+            "我们",
+            "必须",
+            "参加",
+            "明天",
+            "的",
+            "会议"
+          ],
+          "explanation": {
+            "uz": "根据要求，我们必须参加明天的会议。 — Gēnjù yāoqiú, wǒmen bìxū cānjiā míngtiān de huìyì.",
+            "ru": "根据要求，我们必须参加明天的会议。 — Gēnjù yāoqiú, wǒmen bìxū cānjiā míngtiān de huìyì.",
+            "tj": "根据要求，我们必须参加明天的会议。 — Gēnjù yāoqiú, wǒmen bìxū cānjiā míngtiān de huìyì."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«O‘qituvchi har bir o‘quvchining qiziqishiga ko‘ra turli kitoblar tanladi.» — xitoychada qaysi biri?",
+            "ru": "«Учитель выбрал разные книги в соответствии с интересами каждого ученика.» — какое предложение по-китайски?",
+            "tj": "«Омӯзгор мувофиқи шавқи ҳар донишҷӯ китобҳои гуногун интихоб кард.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "这几年小区根据他们的需要，有了很多变化。",
+            "老师根据每个学生的兴趣，选择了不一样的书。",
+            "根据要求，我们必须参加明天的会议。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "老师根据每个学生的兴趣，选择了不一样的书。 — Lǎoshī gēnjù měi ge xuéshēng de xìngqù, xuǎnzé le bù yíyàng de shū.",
+            "ru": "老师根据每个学生的兴趣，选择了不一样的书。 — Lǎoshī gēnjù měi ge xuéshēng de xìngqù, xuǎnzé le bù yíyàng de shū.",
+            "tj": "老师根据每个学生的兴趣，选择了不一样的书。 — Lǎoshī gēnjù měi ge xuéshēng de xìngqù, xuǎnzé le bù yíyàng de shū."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "了解",
+          "pinyin": "liǎojiě",
+          "options": [
+            "蓝",
+            "了解",
+            "附近",
+            "段"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "了解 — tushunmoq; bilib olmoq (liǎojiě)",
+            "ru": "了解 — понимать; узнавать (liǎojiě)",
+            "tj": "了解 — фаҳмидан; шинос шудан (liǎojiě)"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'...dan ortiq; yuqorida' xitoycha qaysi?",
+            "ru": "'свыше; выше' по-китайски?",
+            "tj": "'зиёда аз; боло' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "蓝",
+            "段",
+            "附近",
+            "以上"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "...dan ortiq; yuqorida = 以上 (yǐshàng)",
+            "ru": "свыше; выше = 以上 (yǐshàng)",
+            "tj": "зиёда аз; боло = 以上 (yǐshàng)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "游戏 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 游戏:",
+            "tj": "Маънои калимаи 游戏-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yaqin atrof",
+              "ru": "поблизости; окрестности",
+              "tj": "наздикӣ; атроф"
+            },
+            {
+              "uz": "bo‘lak; davr (hisob so‘zi)",
+              "ru": "отрезок; период (счётное слово)",
+              "tj": "қисм; давра (воҳиди ҳисоб)"
+            },
+            {
+              "uz": "ko‘k; moviy",
+              "ru": "синий; голубой",
+              "tj": "кабуд; осмонӣ"
+            },
+            {
+              "uz": "o‘yin",
+              "ru": "игра",
+              "tj": "бозӣ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "游戏 = o‘yin (yóuxì)",
+            "ru": "游戏 = игра (yóuxì)",
+            "tj": "游戏 = бозӣ (yóuxì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "游戏",
+            "pinyin": "yóuxì",
+            "meaning": {
+              "uz": "o‘yin",
+              "ru": "игра",
+              "tj": "бозӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ammo; lekin' xitoycha qaysi?",
+            "ru": "'но; однако' по-китайски?",
+            "tj": "'аммо; лекин' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "可是",
+            "段",
+            "附近",
+            "蓝"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "ammo; lekin = 可是 (kěshì)",
+            "ru": "но; однако = 可是 (kěshì)",
+            "tj": "аммо; лекин = 可是 (kěshì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "可是",
+            "pinyin": "kěshì",
+            "meaning": {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

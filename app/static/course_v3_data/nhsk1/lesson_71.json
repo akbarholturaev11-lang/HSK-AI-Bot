@@ -1,0 +1,710 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 71,
+  "source_lesson": 11,
+  "part_no": 3,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我读大学呢",
+  "subtitle": {
+    "uz": "正反问 shaklidagi savollarni tushunish va tuzish; “在/正在” bilan davom etayotgan harakatni ifodalash; “要” bilan xohish yoki niyatni bildirish.",
+    "ru": "Понимать и строить утвердительно-отрицательные вопросы; выражать продолжающееся действие с “在/正在”; выражать желание или намерение с “要”.",
+    "tj": "Саволҳои тасдиқӣ-инкориро фаҳмидан ва сохтан; бо “在/正在” амали давомдорро ифода кардан; бо “要” хоҳиш ё ниятро нишон додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "读",
+      "pinyin": "dú",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘qimoq; tahsil olmoq",
+        "ru": "учиться; читать",
+        "tj": "хондан; таҳсил кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "大学",
+      "pinyin": "dàxué",
+      "pos": "n.",
+      "meaning": {
+        "uz": "universitet",
+        "ru": "университет",
+        "tj": "донишгоҳ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "大学生",
+      "pinyin": "dàxuéshēng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "universitet talabasi",
+        "ru": "студент университета",
+        "tj": "донишҷӯи донишгоҳ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "学",
+      "pinyin": "xué",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘rganmoq; o‘qimoq",
+        "ru": "учить; изучать",
+        "tj": "омӯхтан; хондан"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Yo‘lda Li Wen restoran qidirayotganida Wang Yifei unga telefon qiladi.",
+        "ru": "По дороге, пока Ли Вэнь искал ресторан, Ван Ифэй позвонила ему.",
+        "tj": "Дар роҳ, вақте Ли Вэн тарабхонаро меҷуст, Ван Ифэй ба ӯ занг зад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "还不知道，正在找呢。它是不是在超市后边？",
+          "pinyin": "Hái bù zhīdào, zhèngzài zhǎo ne. Tā shì bu shì zài chāoshì hòubian?",
+          "text": {
+            "uz": "Hali bilmayman, hozir qidiryapman. U supermarket orqasidami?",
+            "ru": "Пока не знаю, сейчас ищу. Он за супермаркетом?",
+            "tj": "Ҳоло намедонам, ҷустуҷӯ карда истодаам. Он паси супермаркет аст?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "是的。你开车没开车？",
+          "pinyin": "Shì de. Nǐ kāichē méi kāichē?",
+          "text": {
+            "uz": "Ha. Mashina haydayapsanmi yo‘qmi?",
+            "ru": "Да. Ты за рулём или нет?",
+            "tj": "Ҳа. Мошин меронӣ ё не?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "我没开车，坐车呢。",
+          "pinyin": "Wǒ méi kāichē, zuò chē ne.",
+          "text": {
+            "uz": "Mashina haydamayapman, transportda ketyapman.",
+            "ru": "Нет, я не за рулём, еду на машине.",
+            "tj": "Не, мошин намеронам, бо нақлиёт меравам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda uchrashgach Wang Yifei va Li Wen suhbatlashmoqda.",
+        "ru": "После встречи в ресторане Ван Ифэй и Ли Вэнь разговаривают.",
+        "tj": "Пас аз вохӯрӣ дар тарабхона Ван Ифэй ва Ли Вэн суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "你还在读大学吗？",
+          "pinyin": "Nǐ hái zài dú dàxué ma?",
+          "text": {
+            "uz": "Hali ham universitetda o‘qiyapsanmi?",
+            "ru": "Ты всё ещё учишься в университете?",
+            "tj": "Ҳоло ҳам дар донишгоҳ мехонӣ?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "对，我读大学呢，还是大学生。",
+          "pinyin": "Duì, wǒ dú dàxué ne, hái shì dàxuéshēng.",
+          "text": {
+            "uz": "Ha, universitetda o‘qiyman, hali talabaman.",
+            "ru": "Да, я учусь в университете, я ещё студент.",
+            "tj": "Ҳа, дар донишгоҳ мехонам, ҳоло ҳам донишҷӯ ҳастам."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "你们学习忙不忙？",
+          "pinyin": "Nǐmen xuéxí máng bu máng?",
+          "text": {
+            "uz": "O‘qishingiz bandmi yo‘qmi?",
+            "ru": "У вас учёба напряжённая?",
+            "tj": "Таҳсилатон сермашғул аст ё не?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Shanba ertalab Liu Ming kasalxonaga qo‘shimcha ishga ketishidan oldin qizi Xiaoxue bilan gaplashadi.",
+        "ru": "В субботу утром Лю Мин собирается на сверхурочную работу в больницу и перед выходом разговаривает с дочерью Сяосюэ.",
+        "tj": "Субҳи шанбе Лю Мин барои кори иловагӣ ба беморхона меравад ва пеш аз баромадан бо духтараш Сяосюэ суҳбат мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "去哪里？",
+          "pinyin": "Qù nǎli?",
+          "text": {
+            "uz": "Qayerga?",
+            "ru": "Куда?",
+            "tj": "Ба куҷо?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "去超市。",
+          "pinyin": "Qù chāoshì.",
+          "text": {
+            "uz": "Supermarketga.",
+            "ru": "В супермаркет.",
+            "tj": "Ба супермаркет."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "读",
+            "pinyin": "dú",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o‘qimoq; tahsil olmoq",
+              "ru": "учиться; читать",
+              "tj": "хондан; таҳсил кардан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "读 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 读:",
+            "tj": "Маънои калимаи 读-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "vaqt; payt",
+              "ru": "время; момент",
+              "tj": "вақт; лаҳза"
+            },
+            {
+              "uz": "restoran",
+              "ru": "ресторан",
+              "tj": "тарабхона"
+            },
+            {
+              "uz": "bilmoq",
+              "ru": "знать; понимать",
+              "tj": "донистан"
+            },
+            {
+              "uz": "o‘qimoq; tahsil olmoq",
+              "ru": "учиться; читать",
+              "tj": "хондан; таҳсил кардан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "读 = o‘qimoq; tahsil olmoq (dú)",
+            "ru": "读 = учиться; читать (dú)",
+            "tj": "读 = хондан; таҳсил кардан (dú)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "大学",
+            "pinyin": "dàxué",
+            "pos": "n.",
+            "meaning": {
+              "uz": "universitet",
+              "ru": "университет",
+              "tj": "донишгоҳ"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dàxué qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dàxué?",
+            "tj": "dàxué кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "大学",
+            "知道",
+            "时候",
+            "饭店"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "大学 = universitet (dàxué)",
+            "ru": "大学 = университет (dàxué)",
+            "tj": "大学 = донишгоҳ (dàxué)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "大学生",
+            "pinyin": "dàxuéshēng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "universitet talabasi",
+              "ru": "студент университета",
+              "tj": "донишҷӯи донишгоҳ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "大学生",
+          "pinyin": "dàxuéshēng",
+          "translation": {
+            "uz": "universitet talabasi",
+            "ru": "студент университета",
+            "tj": "донишҷӯи донишгоҳ"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "大学生 talaffuzini tanlang:",
+            "ru": "Выберите произношение 大学生:",
+            "tj": "Талаффузи 大学生-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shíhou",
+            "dàxuéshēng",
+            "fàndiàn",
+            "zhīdào"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "大学生 — dàxuéshēng",
+            "ru": "大学生 — dàxuéshēng",
+            "tj": "大学生 — dàxuéshēng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "学",
+            "pinyin": "xué",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o‘rganmoq; o‘qimoq",
+              "ru": "учить; изучать",
+              "tj": "омӯхтан; хондан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o‘rganmoq; o‘qimoq' xitoycha qaysi?",
+            "ru": "'учить; изучать' по-китайски?",
+            "tj": "'омӯхтан; хондан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "时候",
+            "学",
+            "知道",
+            "饭店"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "o‘rganmoq; o‘qimoq = 学 (xué)",
+            "ru": "учить; изучать = 学 (xué)",
+            "tj": "омӯхтан; хондан = 学 (xué)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "读",
+          "pinyin": "dú",
+          "options": [
+            "饭店",
+            "知道",
+            "读",
+            "时候"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "读 — o‘qimoq; tahsil olmoq (dú)",
+            "ru": "读 — учиться; читать (dú)",
+            "tj": "读 — хондан; таҳсил кардан (dú)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "读",
+              {
+                "uz": "o‘qimoq; tahsil olmoq",
+                "ru": "учиться; читать",
+                "tj": "хондан; таҳсил кардан"
+              }
+            ],
+            [
+              "大学",
+              {
+                "uz": "universitet",
+                "ru": "университет",
+                "tj": "донишгоҳ"
+              }
+            ],
+            [
+              "大学生",
+              {
+                "uz": "universitet talabasi",
+                "ru": "студент университета",
+                "tj": "донишҷӯи донишгоҳ"
+              }
+            ],
+            [
+              "学",
+              {
+                "uz": "o‘rganmoq; o‘qimoq",
+                "ru": "учить; изучать",
+                "tj": "омӯхтан; хондан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "学",
+          "pinyin": "xué",
+          "options": [
+            "学",
+            "时候",
+            "知道",
+            "饭店"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "学 — o‘rganmoq; o‘qimoq (xué)",
+            "ru": "学 — учить; изучать (xué)",
+            "tj": "学 — омӯхтан; хондан (xué)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "大学生",
+          "pinyin": "dàxuéshēng",
+          "options": [
+            "大学生",
+            "知道",
+            "时候",
+            "饭店"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "大学生 — universitet talabasi (dàxuéshēng)",
+            "ru": "大学生 — студент университета (dàxuéshēng)",
+            "tj": "大学生 — донишҷӯи донишгоҳ (dàxuéshēng)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Ha, universitetda o‘qiyman, hali talabaman.",
+            "ru": "Да, я учусь в университете, я ещё студент.",
+            "tj": "Ҳа, дар донишгоҳ мехонам, ҳоло ҳам донишҷӯ ҳастам."
+          },
+          "tokens": [
+            "是",
+            "读",
+            "大学",
+            "呢",
+            "大学生",
+            "我",
+            "饭店",
+            "还",
+            "时候",
+            "对"
+          ],
+          "answer_tokens": [
+            "对",
+            "我",
+            "读",
+            "大学",
+            "呢",
+            "还",
+            "是",
+            "大学生"
+          ],
+          "explanation": {
+            "uz": "对，我读大学呢，还是大学生。 — Duì, wǒ dú dàxué ne, hái shì dàxuéshēng.",
+            "ru": "对，我读大学呢，还是大学生。 — Duì, wǒ dú dàxué ne, hái shì dàxuéshēng.",
+            "tj": "对，我读大学呢，还是大学生。 — Duì, wǒ dú dàxué ne, hái shì dàxuéshēng."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "对，我读大学呢，还是大学生。",
+          "pinyin": "Duì, wǒ dú dàxué ne, hái shì dàxuéshēng.",
+          "translation": {
+            "uz": "Ha, universitetda o‘qiyman, hali talabaman.",
+            "ru": "Да, я учусь в университете, я ещё студент.",
+            "tj": "Ҳа, дар донишгоҳ мехонам, ҳоло ҳам донишҷӯ ҳастам."
+          },
+          "tokens": {
+            "uz": [
+              "o‘qiyman",
+              "universitetda",
+              "Hali",
+              "hali",
+              "talabaman",
+              "ham",
+              "Ha"
+            ],
+            "ru": [
+              "я",
+              "ещё",
+              "Ты",
+              "учусь",
+              "Да",
+              "в",
+              "всё",
+              "студент",
+              "я",
+              "университете"
+            ],
+            "tj": [
+              "дар",
+              "ҳам",
+              "мехонӣ",
+              "ҳастам",
+              "Ҳа",
+              "ҳоло",
+              "донишҷӯ",
+              "донишгоҳ",
+              "мехонам",
+              "Ҳоло"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ha",
+              "universitetda",
+              "o‘qiyman",
+              "hali",
+              "talabaman"
+            ],
+            "ru": [
+              "Да",
+              "я",
+              "учусь",
+              "в",
+              "университете",
+              "я",
+              "ещё",
+              "студент"
+            ],
+            "tj": [
+              "Ҳа",
+              "дар",
+              "донишгоҳ",
+              "мехонам",
+              "ҳоло",
+              "ҳам",
+              "донишҷӯ",
+              "ҳастам"
+            ]
+          },
+          "explanation": {
+            "uz": "对，我读大学呢，还是大学生。 — Ha, universitetda o‘qiyman, hali talabaman.",
+            "ru": "对，我读大学呢，还是大学生。 — Да, я учусь в университете, я ещё студент.",
+            "tj": "对，我读大学呢，还是大学生。 — Ҳа, дар донишгоҳ мехонам, ҳоло ҳам донишҷӯ ҳастам."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "大学生",
+          "pinyin": "dàxuéshēng",
+          "translation": {
+            "uz": "universitet talabasi",
+            "ru": "студент университета",
+            "tj": "донишҷӯи донишгоҳ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "车 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 车:",
+            "tj": "Маънои калимаи 车-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "restoran",
+              "ru": "ресторан",
+              "tj": "тарабхона"
+            },
+            {
+              "uz": "bilmoq",
+              "ru": "знать; понимать",
+              "tj": "донистан"
+            },
+            {
+              "uz": "mashina; transport",
+              "ru": "машина; транспорт",
+              "tj": "мошин; нақлиёт"
+            },
+            {
+              "uz": "vaqt; payt",
+              "ru": "время; момент",
+              "tj": "вақт; лаҳза"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "车 = mashina; transport (chē)",
+            "ru": "车 = машина; транспорт (chē)",
+            "tj": "车 = мошин; нақлиёт (chē)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "车",
+            "pinyin": "chē",
+            "meaning": {
+              "uz": "mashina; transport",
+              "ru": "машина; транспорт",
+              "tj": "мошин; нақлиёт"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'universitet talabasi' xitoycha qaysi?",
+            "ru": "'студент университета' по-китайски?",
+            "tj": "'донишҷӯи донишгоҳ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "饭店",
+            "知道",
+            "大学生",
+            "时候"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "universitet talabasi = 大学生 (dàxuéshēng)",
+            "ru": "студент университета = 大学生 (dàxuéshēng)",
+            "tj": "донишҷӯи донишгоҳ = 大学生 (dàxuéshēng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "大学生",
+            "pinyin": "dàxuéshēng",
+            "meaning": {
+              "uz": "universitet talabasi",
+              "ru": "студент университета",
+              "tj": "донишҷӯи донишгоҳ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,622 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 16,
+  "source_lesson": 4,
+  "part_no": 1,
+  "part_count": 10,
+  "checkpoint": false,
+  "title": "我有两个孩子",
+  "subtitle": {
+    "uz": "“有” orqali egalik va mavjudlikni ifodalash; sonlarni, “呢” savol yuklamasini va son+o‘lchov so‘zi tuzilmasini ishlatish; yosh va oila a’zolari haqida so‘rash va javob berish.",
+    "ru": "Выражать наличие и обладание с “有”; использовать числа, вопросительную частицу “呢” и структуру число+счётное слово; спрашивать и отвечать о возрасте и семье.",
+    "tj": "Бо “有” соҳибият ва мавҷудиятро ифода кардан; рақамҳо, ҳиссачаи саволии “呢” ва сохтори рақам+воҳиди ҳисобро истифода бурдан; дар бораи синну сол ва оила саволу ҷавоб кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "有",
+      "pinyin": "yǒu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bor; ega bo‘lmoq",
+        "ru": "иметь; есть",
+        "tj": "доштан; ҳаст"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "多少",
+      "pinyin": "duōshao",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qancha; nechta",
+        "ru": "сколько",
+        "tj": "чанд; чӣ қадар"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "个",
+      "pinyin": "gè",
+      "pos": "m.",
+      "meaning": {
+        "uz": "umumiy o‘lchov so‘zi",
+        "ru": "универсальное счётное слово",
+        "tj": "воҳиди умумии ҳисоб"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "哥哥",
+      "pinyin": "gēge",
+      "pos": "n.",
+      "meaning": {
+        "uz": "aka",
+        "ru": "старший брат",
+        "tj": "бародари калонӣ"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "她很忙。",
+          "pinyin": "Tā hěn máng.",
+          "text": {
+            "uz": "U juda band.",
+            "ru": "Она очень занята.",
+            "tj": "Ӯ хеле банд аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "她有多少个学生？",
+          "pinyin": "Tā yǒu duōshao ge xuésheng?",
+          "text": {
+            "uz": "Uning nechta talabasi bor?",
+            "ru": "Сколько у неё студентов?",
+            "tj": "Ӯ чанд донишҷӯ дорад?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "有",
+            "pinyin": "yǒu",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bor; ega bo‘lmoq",
+              "ru": "иметь; есть",
+              "tj": "доштан; ҳаст"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "有 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 有:",
+            "tj": "Маънои калимаи 有-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            },
+            {
+              "uz": "bor; ega bo‘lmoq",
+              "ru": "иметь; есть",
+              "tj": "доштан; ҳаст"
+            },
+            {
+              "uz": "umumiy o‘lchov so‘zi",
+              "ru": "универсальное счётное слово",
+              "tj": "воҳиди умумии ҳисоб"
+            },
+            {
+              "uz": "aka",
+              "ru": "старший брат",
+              "tj": "бародари калонӣ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "有 = bor; ega bo‘lmoq (yǒu)",
+            "ru": "有 = иметь; есть (yǒu)",
+            "tj": "有 = доштан; ҳаст (yǒu)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "多少",
+            "pinyin": "duōshao",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "duōshao qaysi ieroglif?",
+            "ru": "Какой иероглиф читается duōshao?",
+            "tj": "duōshao кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "有",
+            "多少",
+            "个",
+            "哥哥"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "多少 = qancha; nechta (duōshao)",
+            "ru": "多少 = сколько (duōshao)",
+            "tj": "多少 = чанд; чӣ қадар (duōshao)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "个",
+            "pinyin": "gè",
+            "pos": "m.",
+            "meaning": {
+              "uz": "umumiy o‘lchov so‘zi",
+              "ru": "универсальное счётное слово",
+              "tj": "воҳиди умумии ҳисоб"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "个 talaffuzini tanlang:",
+            "ru": "Выберите произношение 个:",
+            "tj": "Талаффузи 个-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "duōshao",
+            "gēge",
+            "yǒu",
+            "gè"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "个 — gè",
+            "ru": "个 — gè",
+            "tj": "个 — gè"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "哥哥",
+            "pinyin": "gēge",
+            "pos": "n.",
+            "meaning": {
+              "uz": "aka",
+              "ru": "старший брат",
+              "tj": "бародари калонӣ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "哥哥",
+          "pinyin": "gēge",
+          "translation": {
+            "uz": "aka",
+            "ru": "старший брат",
+            "tj": "бародари калонӣ"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'aka' xitoycha qaysi?",
+            "ru": "'старший брат' по-китайски?",
+            "tj": "'бародари калонӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "多少",
+            "哥哥",
+            "有",
+            "个"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "aka = 哥哥 (gēge)",
+            "ru": "старший брат = 哥哥 (gēge)",
+            "tj": "бародари калонӣ = 哥哥 (gēge)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "有",
+          "pinyin": "yǒu",
+          "options": [
+            "多少",
+            "哥哥",
+            "有",
+            "个"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "有 — bor; ega bo‘lmoq (yǒu)",
+            "ru": "有 — иметь; есть (yǒu)",
+            "tj": "有 — доштан; ҳаст (yǒu)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "有",
+              {
+                "uz": "bor; ega bo‘lmoq",
+                "ru": "иметь; есть",
+                "tj": "доштан; ҳаст"
+              }
+            ],
+            [
+              "多少",
+              {
+                "uz": "qancha; nechta",
+                "ru": "сколько",
+                "tj": "чанд; чӣ қадар"
+              }
+            ],
+            [
+              "个",
+              {
+                "uz": "umumiy o‘lchov so‘zi",
+                "ru": "универсальное счётное слово",
+                "tj": "воҳиди умумии ҳисоб"
+              }
+            ],
+            [
+              "哥哥",
+              {
+                "uz": "aka",
+                "ru": "старший брат",
+                "tj": "бародари калонӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "哥哥",
+          "pinyin": "gēge",
+          "options": [
+            "有",
+            "个",
+            "多少",
+            "哥哥"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "哥哥 — aka (gēge)",
+            "ru": "哥哥 — старший брат (gēge)",
+            "tj": "哥哥 — бародари калонӣ (gēge)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "有",
+              {
+                "uz": "bor; ega bo‘lmoq",
+                "ru": "иметь; есть",
+                "tj": "доштан; ҳаст"
+              }
+            ],
+            [
+              "多少",
+              {
+                "uz": "qancha; nechta",
+                "ru": "сколько",
+                "tj": "чанд; чӣ қадар"
+              }
+            ],
+            [
+              "个",
+              {
+                "uz": "umumiy o‘lchov so‘zi",
+                "ru": "универсальное счётное слово",
+                "tj": "воҳиди умумии ҳисоб"
+              }
+            ],
+            [
+              "哥哥",
+              {
+                "uz": "aka",
+                "ru": "старший брат",
+                "tj": "бародари калонӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Uning nechta talabasi bor?",
+            "ru": "Сколько у неё студентов?",
+            "tj": "Ӯ чанд донишҷӯ дорад?"
+          },
+          "tokens": [
+            "哥哥",
+            "她",
+            "人",
+            "学生",
+            "有",
+            "多少",
+            "个"
+          ],
+          "answer_tokens": [
+            "她",
+            "有",
+            "多少",
+            "个",
+            "学生"
+          ],
+          "explanation": {
+            "uz": "她有多少个学生？ — Tā yǒu duōshao ge xuésheng?",
+            "ru": "她有多少个学生？ — Tā yǒu duōshao ge xuésheng?",
+            "tj": "她有多少个学生？ — Tā yǒu duōshao ge xuésheng?"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "她有多少个学生？",
+          "pinyin": "Tā yǒu duōshao ge xuésheng?",
+          "translation": {
+            "uz": "Uning nechta talabasi bor?",
+            "ru": "Сколько у неё студентов?",
+            "tj": "Ӯ чанд донишҷӯ дорад?"
+          },
+          "tokens": {
+            "uz": [
+              "bor",
+              "talabasi",
+              "nechta",
+              "Uning"
+            ],
+            "ru": [
+              "студентов",
+              "неё",
+              "у",
+              "Сколько"
+            ],
+            "tj": [
+              "донишҷӯ",
+              "Ӯ",
+              "дорад",
+              "чанд"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Uning",
+              "nechta",
+              "talabasi",
+              "bor"
+            ],
+            "ru": [
+              "Сколько",
+              "у",
+              "неё",
+              "студентов"
+            ],
+            "tj": [
+              "Ӯ",
+              "чанд",
+              "донишҷӯ",
+              "дорад"
+            ]
+          },
+          "explanation": {
+            "uz": "她有多少个学生？ — Uning nechta talabasi bor?",
+            "ru": "她有多少个学生？ — Сколько у неё студентов?",
+            "tj": "她有多少个学生？ — Ӯ чанд донишҷӯ дорад?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "哥哥",
+          "pinyin": "gēge",
+          "translation": {
+            "uz": "aka",
+            "ru": "старший брат",
+            "tj": "бародари калонӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "谁 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 谁:",
+            "tj": "Маънои калимаи 谁-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "umumiy o‘lchov so‘zi",
+              "ru": "универсальное счётное слово",
+              "tj": "воҳиди умумии ҳисоб"
+            },
+            {
+              "uz": "bor; ega bo‘lmoq",
+              "ru": "иметь; есть",
+              "tj": "доштан; ҳаст"
+            },
+            {
+              "uz": "kim",
+              "ru": "кто",
+              "tj": "кӣ"
+            },
+            {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "谁 = kim (shéi/shuí)",
+            "ru": "谁 = кто (shéi/shuí)",
+            "tj": "谁 = кӣ (shéi/shuí)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "谁",
+            "pinyin": "shéi/shuí",
+            "meaning": {
+              "uz": "kim",
+              "ru": "кто",
+              "tj": "кӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'aka' xitoycha qaysi?",
+            "ru": "'старший брат' по-китайски?",
+            "tj": "'бародари калонӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "多少",
+            "哥哥",
+            "个",
+            "有"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "aka = 哥哥 (gēge)",
+            "ru": "старший брат = 哥哥 (gēge)",
+            "tj": "бародари калонӣ = 哥哥 (gēge)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "哥哥",
+            "pinyin": "gēge",
+            "meaning": {
+              "uz": "aka",
+              "ru": "старший брат",
+              "tj": "бародари калонӣ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

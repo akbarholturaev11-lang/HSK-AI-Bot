@@ -1,0 +1,758 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 80,
+  "source_lesson": 12,
+  "part_no": 4,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "昨天下雪了",
+  "subtitle": {
+    "uz": "Ob-havo holatini tushunish va aytish; tibbiy holatni qisqa tasvirlash; no-subject-predicate gaplarni, holat o‘zgarishini bildiruvchi “了（1）” ni va “太……了” qolipini ishlatish.",
+    "ru": "Понимать и описывать погоду; кратко описывать состояние здоровья; использовать безличные/нерасчленённые предложения, “了（1）” для изменения ситуации и модель “太……了”.",
+    "tj": "Ҳолати обу ҳаворо фаҳмидан ва гуфтан; ҳолати саломатиро кӯтоҳ тасвир кардан; ҷумлаҳои бемуайян, “了（1）” барои тағйири ҳолат ва қолаби “太……了”-ро истифода бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "公司",
+      "pinyin": "gōngsī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kompaniya",
+        "ru": "компания",
+        "tj": "ширкат"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "生病",
+      "pinyin": "shēngbìng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kasal bo‘lmoq",
+        "ru": "заболеть",
+        "tj": "бемор шудан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "看病",
+      "pinyin": "kànbìng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "shifokorga ko‘rinmoq",
+        "ru": "обращаться к врачу",
+        "tj": "ба духтур муроҷиат кардан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "病",
+      "pinyin": "bìng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kasal bo‘lmoq",
+        "ru": "болеть",
+        "tj": "бемор будан"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Wang Yixue Wang Yifeiga telefon qilib, u tomondagi vaziyatni so‘ramoqda.",
+        "ru": "Ван Исюэ звонит Ван Ифэй и спрашивает, как там обстановка.",
+        "tj": "Ван Исюэ ба Ван Ифэй занг зада, вазъияти он ҷоро мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "今天天气怎么样？",
+          "pinyin": "Jīntiān tiānqì zěnmeyàng?",
+          "text": {
+            "uz": "Bugun ob-havo qanday?",
+            "ru": "Какая сегодня погода?",
+            "tj": "Имрӯз обу ҳаво чӣ хел?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "这里的天不太好，下雨了。",
+          "pinyin": "Zhèlǐ de tiān bú tài hǎo, xià yǔ le.",
+          "text": {
+            "uz": "Bu yerda ob-havo unchalik yaxshi emas, yomg‘ir yog‘yapti.",
+            "ru": "Здесь погода не очень, идёт дождь.",
+            "tj": "Ин ҷо ҳаво он қадар хуб нест, борон меборад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "雨大吗？",
+          "pinyin": "Yǔ dà ma?",
+          "text": {
+            "uz": "Yomg‘ir kuchlimi?",
+            "ru": "Дождь сильный?",
+            "tj": "Борон сахт аст?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "有点儿大，我觉得很冷。",
+          "pinyin": "Yǒudiǎnr dà, wǒ juéde hěn lěng.",
+          "text": {
+            "uz": "Biroz kuchli, men juda sovqotyapman.",
+            "ru": "Немного сильный, и мне очень холодно.",
+            "tj": "Каме сахт аст, ман хеле сард ҳис мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniya liftida Wang Yixue va Yang Tongle suhbatlashmoqda.",
+        "ru": "В лифте компании Ван Исюэ и Ян Тунлэ разговаривают.",
+        "tj": "Дар лифти ширкат Ван Исюэ ва Ян Тунлэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "昨天下雪了。",
+          "pinyin": "Zuótiān xià xuě le.",
+          "text": {
+            "uz": "Kecha qor yog‘di.",
+            "ru": "Вчера шёл снег.",
+            "tj": "Дирӯз барф борид."
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "是的，太冷了。",
+          "pinyin": "Shì de, tài lěng le.",
+          "text": {
+            "uz": "Ha, juda sovuq edi.",
+            "ru": "Да, было очень холодно.",
+            "tj": "Ҳа, хеле сард буд."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你昨天没来公司，生病了？",
+          "pinyin": "Nǐ zuótiān méi lái gōngsī, shēngbìng le?",
+          "text": {
+            "uz": "Kecha kompaniyaga kelmading, kasal bo‘ldingmi?",
+            "ru": "Ты вчера не пришёл на работу, заболел?",
+            "tj": "Дирӯз ба ширкат наомадӣ, бемор шудӣ?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "对，我昨天去医院看病了。",
+          "pinyin": "Duì, wǒ zuótiān qù yīyuàn kànbìng le.",
+          "text": {
+            "uz": "Ha, kecha kasalxonaga shifokorga ko‘ringani bordim.",
+            "ru": "Да, вчера я ходил в больницу к врачу.",
+            "tj": "Ҳа, дирӯз ба беморхона назди духтур рафтам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kecha kasalxonada shifokor Yang Tongleni ko‘rikdan o‘tkazdi.",
+        "ru": "Вчера в больнице врач осматривал Ян Тунлэ.",
+        "tj": "Дирӯз дар беморхона духтур Ян Тунлэро муоина кард."
+      },
+      "dialogue": [
+        {
+          "speaker": "Yang Tongle",
+          "zh": "医生，我病了。",
+          "pinyin": "Yīshēng, wǒ bìng le.",
+          "text": {
+            "uz": "Doktor, men kasal bo‘ldim.",
+            "ru": "Доктор, я заболел.",
+            "tj": "Духтур, ман бемор шудам."
+          }
+        },
+        {
+          "speaker": "Dr. Hu",
+          "zh": "我看看。你觉得怎么样？",
+          "pinyin": "Wǒ kànkan. Nǐ juéde zěnmeyàng?",
+          "text": {
+            "uz": "Ko‘rib qo‘yay. O‘zingni qanday his qilyapsan?",
+            "ru": "Давайте посмотрю. Как вы себя чувствуете?",
+            "tj": "Бигзор бинам. Худатонро чӣ хел ҳис мекунед?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我很冷。",
+          "pinyin": "Wǒ hěn lěng.",
+          "text": {
+            "uz": "Juda sovqotyapman.",
+            "ru": "Мне очень холодно.",
+            "tj": "Ман хеле сард ҳис мекунам."
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "好的。",
+          "pinyin": "Hǎo de.",
+          "text": {
+            "uz": "Xo‘p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "公司",
+            "pinyin": "gōngsī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kompaniya",
+              "ru": "компания",
+              "tj": "ширкат"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "公司",
+          "pinyin": "gōngsī",
+          "options": [
+            "公司",
+            "天气",
+            "天",
+            "这里"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "公司 — kompaniya (gōngsī)",
+            "ru": "公司 — компания (gōngsī)",
+            "tj": "公司 — ширкат (gōngsī)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "生病",
+            "pinyin": "shēngbìng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kasal bo‘lmoq",
+              "ru": "заболеть",
+              "tj": "бемор шудан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "生病 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 生病:",
+            "tj": "Маънои калимаи 生病-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bu yer",
+              "ru": "здесь",
+              "tj": "ин ҷо"
+            },
+            {
+              "uz": "ob-havo; osmon",
+              "ru": "погода; небо",
+              "tj": "обу ҳаво; осмон"
+            },
+            {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            },
+            {
+              "uz": "kasal bo‘lmoq",
+              "ru": "заболеть",
+              "tj": "бемор шудан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "生病 = kasal bo‘lmoq (shēngbìng)",
+            "ru": "生病 = заболеть (shēngbìng)",
+            "tj": "生病 = бемор шудан (shēngbìng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "看病",
+            "pinyin": "kànbìng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "shifokorga ko‘rinmoq",
+              "ru": "обращаться к врачу",
+              "tj": "ба духтур муроҷиат кардан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "kànbìng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается kànbìng?",
+            "tj": "kànbìng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "天气",
+            "这里",
+            "看病",
+            "天"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "看病 = shifokorga ko‘rinmoq (kànbìng)",
+            "ru": "看病 = обращаться к врачу (kànbìng)",
+            "tj": "看病 = ба духтур муроҷиат кардан (kànbìng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "病",
+            "pinyin": "bìng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kasal bo‘lmoq",
+              "ru": "болеть",
+              "tj": "бемор будан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "病",
+          "pinyin": "bìng",
+          "translation": {
+            "uz": "kasal bo‘lmoq",
+            "ru": "болеть",
+            "tj": "бемор будан"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "病 talaffuzini tanlang:",
+            "ru": "Выберите произношение 病:",
+            "tj": "Талаффузи 病-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "tiānqì",
+            "tiān",
+            "bìng",
+            "zhèlǐ"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "病 — bìng",
+            "ru": "病 — bìng",
+            "tj": "病 — bìng"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kompaniya' xitoycha qaysi?",
+            "ru": "'компания' по-китайски?",
+            "tj": "'ширкат' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "这里",
+            "天",
+            "天气",
+            "公司"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "kompaniya = 公司 (gōngsī)",
+            "ru": "компания = 公司 (gōngsī)",
+            "tj": "ширкат = 公司 (gōngsī)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "公司",
+              {
+                "uz": "kompaniya",
+                "ru": "компания",
+                "tj": "ширкат"
+              }
+            ],
+            [
+              "生病",
+              {
+                "uz": "kasal bo‘lmoq",
+                "ru": "заболеть",
+                "tj": "бемор шудан"
+              }
+            ],
+            [
+              "看病",
+              {
+                "uz": "shifokorga ko‘rinmoq",
+                "ru": "обращаться к врачу",
+                "tj": "ба духтур муроҷиат кардан"
+              }
+            ],
+            [
+              "病",
+              {
+                "uz": "kasal bo‘lmoq",
+                "ru": "болеть",
+                "tj": "бемор будан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "对，我昨天去医院看病了。",
+          "pinyin": "Duì, wǒ zuótiān qù yīyuàn kànbìng le.",
+          "translation": {
+            "uz": "Ha, kecha kasalxonaga shifokorga ko‘ringani bordim.",
+            "ru": "Да, вчера я ходил в больницу к врачу.",
+            "tj": "Ҳа, дирӯз ба беморхона назди духтур рафтам."
+          },
+          "tokens": {
+            "uz": [
+              "shifokorga",
+              "kecha",
+              "Ha",
+              "kasalxonaga",
+              "Kecha",
+              "kompaniyaga",
+              "bordim",
+              "ko‘ringani"
+            ],
+            "ru": [
+              "Да",
+              "ходил",
+              "больницу",
+              "к",
+              "врачу",
+              "вчера",
+              "не",
+              "в",
+              "Ты",
+              "я"
+            ],
+            "tj": [
+              "ширкат",
+              "дирӯз",
+              "беморхона",
+              "рафтам",
+              "Ҳа",
+              "Дирӯз",
+              "назди",
+              "ба",
+              "духтур"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ha",
+              "kecha",
+              "kasalxonaga",
+              "shifokorga",
+              "ko‘ringani",
+              "bordim"
+            ],
+            "ru": [
+              "Да",
+              "вчера",
+              "я",
+              "ходил",
+              "в",
+              "больницу",
+              "к",
+              "врачу"
+            ],
+            "tj": [
+              "Ҳа",
+              "дирӯз",
+              "ба",
+              "беморхона",
+              "назди",
+              "духтур",
+              "рафтам"
+            ]
+          },
+          "explanation": {
+            "uz": "对，我昨天去医院看病了。 — Ha, kecha kasalxonaga shifokorga ko‘ringani bordim.",
+            "ru": "对，我昨天去医院看病了。 — Да, вчера я ходил в больницу к врачу.",
+            "tj": "对，我昨天去医院看病了。 — Ҳа, дирӯз ба беморхона назди духтур рафтам."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Ha, kecha kasalxonaga shifokorga ko‘ringani bordim.",
+            "ru": "Да, вчера я ходил в больницу к врачу.",
+            "tj": "Ҳа, дирӯз ба беморхона назди духтур рафтам."
+          },
+          "tokens": [
+            "昨天",
+            "天气",
+            "了",
+            "医院",
+            "看病",
+            "去",
+            "这里",
+            "我",
+            "对"
+          ],
+          "answer_tokens": [
+            "对",
+            "我",
+            "昨天",
+            "去",
+            "医院",
+            "看病",
+            "了"
+          ],
+          "explanation": {
+            "uz": "对，我昨天去医院看病了。 — Duì, wǒ zuótiān qù yīyuàn kànbìng le.",
+            "ru": "对，我昨天去医院看病了。 — Duì, wǒ zuótiān qù yīyuàn kànbìng le.",
+            "tj": "对，我昨天去医院看病了。 — Duì, wǒ zuótiān qù yīyuàn kànbìng le."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Kecha kompaniyaga kelmading, kasal bo‘ldingmi?",
+            "ru": "Ты вчера не пришёл на работу, заболел?",
+            "tj": "Дирӯз ба ширкат наомадӣ, бемор шудӣ?"
+          },
+          "tokens": [
+            "了",
+            "昨天",
+            "公司",
+            "这里",
+            "天气",
+            "生病",
+            "没",
+            "你",
+            "来"
+          ],
+          "answer_tokens": [
+            "你",
+            "昨天",
+            "没",
+            "来",
+            "公司",
+            "生病",
+            "了"
+          ],
+          "explanation": {
+            "uz": "你昨天没来公司，生病了？ — Nǐ zuótiān méi lái gōngsī, shēngbìng le?",
+            "ru": "你昨天没来公司，生病了？ — Nǐ zuótiān méi lái gōngsī, shēngbìng le?",
+            "tj": "你昨天没来公司，生病了？ — Nǐ zuótiān méi lái gōngsī, shēngbìng le?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "医生，我病了。",
+          "pinyin": "Yīshēng, wǒ bìng le.",
+          "options": [
+            "对，我昨天去医院看病了。",
+            "你昨天没来公司，生病了？",
+            "医生，我病了。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "医生，我病了。 — Doktor, men kasal bo‘ldim.",
+            "ru": "医生，我病了。 — Доктор, я заболел.",
+            "tj": "医生，我病了。 — Духтур, ман бемор шудам."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "病",
+          "pinyin": "bìng",
+          "translation": {
+            "uz": "kasal bo‘lmoq",
+            "ru": "болеть",
+            "tj": "бемор будан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "来 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 来:",
+            "tj": "Маънои калимаи 来-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kelmoq",
+              "ru": "приходить",
+              "tj": "омадан"
+            },
+            {
+              "uz": "bu yer",
+              "ru": "здесь",
+              "tj": "ин ҷо"
+            },
+            {
+              "uz": "ob-havo; osmon",
+              "ru": "погода; небо",
+              "tj": "обу ҳаво; осмон"
+            },
+            {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "来 = kelmoq (lái)",
+            "ru": "来 = приходить (lái)",
+            "tj": "来 = омадан (lái)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "来",
+            "pinyin": "lái",
+            "meaning": {
+              "uz": "kelmoq",
+              "ru": "приходить",
+              "tj": "омадан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kasal bo‘lmoq' xitoycha qaysi?",
+            "ru": "'болеть' по-китайски?",
+            "tj": "'бемор будан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "这里",
+            "病",
+            "天气",
+            "天"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "kasal bo‘lmoq = 病 (bìng)",
+            "ru": "болеть = 病 (bìng)",
+            "tj": "бемор будан = 病 (bìng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "病",
+            "pinyin": "bìng",
+            "meaning": {
+              "uz": "kasal bo‘lmoq",
+              "ru": "болеть",
+              "tj": "бемор будан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -337,7 +337,7 @@ const API={
 };
 const PARAMS=new URLSearchParams(window.location.search);
 const INIT_DATA=tg?.initData||"";
-const PLAN_ORDER=["1_month","10_days","3_months"];
+const PLAN_ORDER=["1_month","10_days","3_months","hsk30_unlock"];
 const METHOD_ORDER=["visa","alipay","wechat"];
 const CHINA_METHODS=["alipay","wechat"];
 /* Region — user to'laydigan karta davlati; Xitoy — Alipay/WeChat. */
@@ -362,7 +362,7 @@ function saveRegion(region){
 }
 /* Havola Xitoy usulini so'rasa (method=alipay/wechat) — havola ustun. */
 const REMEMBERED_REGION=CHINA_METHODS.includes(PARAMS.get("method"))?"":savedRegion();
-const MODE_ORDER=["subscription","referral_discount","admin_discount","feedback_discount"];
+const MODE_ORDER=["subscription","referral_discount","admin_discount","feedback_discount","hsk30_unlock"];
 const CHECKOUT_ATTEMPT_ID=(function(){
   const key="hsk_subscription_attempt_v1",now=Date.now();
   try{
@@ -377,7 +377,7 @@ const CHECKOUT_ATTEMPT_ID=(function(){
 const I18N={
   uz:{
     title:"Obuna",
-    modeTitles:{subscription:"HSK AI Pro",referral_discount:"3 do'st chegirmasi",admin_discount:"Maxsus chegirma",feedback_discount:"20% taklif"},
+    modeTitles:{subscription:"HSK AI Pro",referral_discount:"3 do'st chegirmasi",admin_discount:"Maxsus chegirma",feedback_discount:"20% taklif",hsk30_unlock:"HSK 3.0 · Doimiy ochish"},
     modeTv:{subscription:"Obuna nima beradi",referral_discount:"Referral chegirma",admin_discount:"Admin maxsus taklifi",feedback_discount:"Siz uchun chegirma"},
     modePlans:{subscription:"Tarif",referral_discount:"Chegirmali tarif",admin_discount:"Maxsus tarif",feedback_discount:"20% chegirmali tarif"},
     adminDiscountTitle:"Maxsus chegirma {percent}%",
@@ -429,7 +429,7 @@ const I18N={
     methodsTitle:"To'lov usuli",
     discountReady:"20% chegirma qo'llanadi",
     discountProgress:"20% chegirma: {count}/{required} referral",
-    planLabels:{ten:"10 kun",month:"1 oy",quarter:"3 oy",fast:"Sinab ko'rish",best:"Eng yaxshi tanlov",quarterBadge:"Foydali",quarterNote:"≈ 2 TJS/kun"},
+    planLabels:{ten:"10 kun",month:"1 oy",quarter:"3 oy",hsk30:"Bir martalik",fast:"Sinab ko'rish",best:"Eng yaxshi tanlov",quarterBadge:"Foydali",quarterNote:"≈ 2 TJS/kun"},
     methods:{
       dc_city:["Dushanbe City","DC City kartasiga to'lov"],
       alif:["Alif","Alif kartasiga to'lov"],
@@ -501,7 +501,7 @@ const I18N={
   },
   ru:{
     title:"Подписка",
-    modeTitles:{subscription:"HSK AI Pro",referral_discount:"Скидка за 3 друзей",admin_discount:"Специальная скидка",feedback_discount:"Предложение 20%"},
+    modeTitles:{subscription:"HSK AI Pro",referral_discount:"Скидка за 3 друзей",admin_discount:"Специальная скидка",feedback_discount:"Предложение 20%",hsk30_unlock:"HSK 3.0 · Постоянный доступ"},
     modeTv:{subscription:"Что дает подписка",referral_discount:"Реферальная скидка",admin_discount:"Спецпредложение админа",feedback_discount:"Скидка для вас"},
     modePlans:{subscription:"Тариф",referral_discount:"Тариф со скидкой",admin_discount:"Специальный тариф",feedback_discount:"Тариф со скидкой 20%"},
     adminDiscountTitle:"Специальная скидка {percent}%",
@@ -553,7 +553,7 @@ const I18N={
     methodsTitle:"Способ оплаты",
     discountReady:"Скидка 20% применится",
     discountProgress:"Скидка 20%: {count}/{required} реферала",
-    planLabels:{ten:"10 дней",month:"1 месяц",quarter:"3 месяца",fast:"Для пробы",best:"Лучший выбор",quarterBadge:"Выгодно",quarterNote:"≈ 2 TJS/день"},
+    planLabels:{ten:"10 дней",month:"1 месяц",quarter:"3 месяца",hsk30:"Одноразово",fast:"Для пробы",best:"Лучший выбор",quarterBadge:"Выгодно",quarterNote:"≈ 2 TJS/день"},
     methods:{
       dc_city:["Dushanbe City","Оплата на карту DC City"],
       alif:["Alif","Оплата на карту Алиф"],
@@ -625,7 +625,7 @@ const I18N={
   },
   tj:{
     title:"Обуна",
-    modeTitles:{subscription:"HSK AI Pro",referral_discount:"Тахфифи 3 дӯст",admin_discount:"Тахфифи махсус",feedback_discount:"Таклифи 20%"},
+    modeTitles:{subscription:"HSK AI Pro",referral_discount:"Тахфифи 3 дӯст",admin_discount:"Тахфифи махсус",feedback_discount:"Таклифи 20%",hsk30_unlock:"HSK 3.0 · Дастрасии доимӣ"},
     modeTv:{subscription:"Обуна чӣ медиҳад",referral_discount:"Тахфифи referral",admin_discount:"Пешниҳоди махсуси admin",feedback_discount:"Тахфиф барои шумо"},
     modePlans:{subscription:"Тариф",referral_discount:"Тарифи тахфифӣ",admin_discount:"Тарифи махсус",feedback_discount:"Тарифи 20% тахфиф"},
     adminDiscountTitle:"Тахфифи махсус {percent}%",
@@ -677,7 +677,7 @@ const I18N={
     methodsTitle:"Усули пардохт",
     discountReady:"20% тахфиф ҳисоб мешавад",
     discountProgress:"20% тахфиф: {count}/{required} referral",
-    planLabels:{ten:"10 рӯз",month:"1 моҳ",quarter:"3 моҳ",fast:"Барои санҷидан",best:"Беҳтарин интихоб",quarterBadge:"Фоиданок",quarterNote:"≈ 2 TJS/рӯз"},
+    planLabels:{ten:"10 рӯз",month:"1 моҳ",quarter:"3 моҳ",hsk30:"Якбора",fast:"Барои санҷидан",best:"Беҳтарин интихоб",quarterBadge:"Фоиданок",quarterNote:"≈ 2 TJS/рӯз"},
     methods:{
       dc_city:["Dushanbe City","Пардохт ба корти DC City"],
       alif:["Alif","Пардохт ба корти Алиф"],
@@ -749,21 +749,22 @@ const I18N={
   }
 };
 
+const HSK30_UNLOCK_MODE=PARAMS.get("mode")==="hsk30_unlock"||PARAMS.get("plan")==="hsk30_unlock";
 const state={
   lang:normalizeLang(tg?.initDataUnsafe?.user?.language_code||"uz"),
   source:String(PARAMS.get("source")||"").trim(),
   attemptId:CHECKOUT_ATTEMPT_ID,
-  mode:normalizeMode(PARAMS.get("mode")),
+  mode:HSK30_UNLOCK_MODE?"hsk30_unlock":normalizeMode(PARAMS.get("mode")),
   campaignId:positiveParam(PARAMS.get("campaign_id")),
   feedbackId:positiveParam(PARAMS.get("feedback_id")),
   preview:!INIT_DATA,
   overview:null,
-  plan:PLAN_ORDER.includes(PARAMS.get("plan"))?PARAMS.get("plan"):"1_month",
+  plan:HSK30_UNLOCK_MODE?"hsk30_unlock":(PLAN_ORDER.includes(PARAMS.get("plan"))?PARAMS.get("plan"):"1_month"),
   method:METHOD_ORDER.includes(PARAMS.get("method"))?PARAMS.get("method"):"visa",
   region:CHINA_METHODS.includes(PARAMS.get("method"))?"cn":REMEMBERED_REGION,
   country:"tj",
   bank:"dc_city",
-  step:REMEMBERED_REGION?1:0,
+  step:HSK30_UNLOCK_MODE?0:(REMEMBERED_REGION?1:0),
   quote:null,
   screenshotDataUrl:"",
   screenshotName:"",
@@ -812,11 +813,11 @@ function money(amount){
 }
 function planName(text,plan){
   const labels=text.planLabels||{};
-  return ({"10_days":labels.ten,"1_month":labels.month,"3_months":labels.quarter})[plan]||plan;
+  return ({"10_days":labels.ten,"1_month":labels.month,"3_months":labels.quarter,"hsk30_unlock":labels.hsk30||"HSK 3.0"})[plan]||plan;
 }
 function planBadge(text,plan){
   const labels=text.planLabels||{};
-  return ({"10_days":labels.fast,"1_month":labels.best,"3_months":labels.quarterBadge})[plan]||labels.best;
+  return ({"10_days":labels.fast,"1_month":labels.best,"3_months":labels.quarterBadge,"hsk30_unlock":""})[plan]||labels.best;
 }
 function priceInfo(method=state.method,plan=state.plan){
   const real=state.overview?.prices?.[method]?.[plan];
@@ -881,14 +882,17 @@ function contextPayload(){
   return {
     source:state.source,
     mode:state.mode,
+    plan:state.plan,
     attempt_id:state.attemptId,
     campaign_id:state.campaignId,
     feedback_id:state.feedbackId
   };
 }
 function hasCurrentPrice(){return Boolean(priceInfo(state.method,state.plan))}
+function isHsk30Unlock(){return state.mode==="hsk30_unlock"||state.plan==="hsk30_unlock"}
 function flow(){
   if(state.done||state.pending)return ["done"];
+  if(isHsk30Unlock())return hasMethodStep()?["country","method","pay"]:["country","pay"];
   return hasMethodStep()?["country","plans","method","pay"]:["country","plans","pay"];
 }
 function currentScreen(){return flow()[state.step]||"country"}
@@ -1175,13 +1179,13 @@ function localizedOfferField(offer,field){
 }
 function render(){
   const text=tr();
-  document.body.classList.remove("mode-subscription","mode-referral_discount","mode-admin_discount","mode-feedback_discount");
+  document.body.classList.remove("mode-subscription","mode-referral_discount","mode-admin_discount","mode-feedback_discount","mode-hsk30_unlock");
   document.body.classList.add(`mode-${state.mode}`);
   document.documentElement.lang=state.lang;
   $("#title").textContent=modeText(text,"modeTitles");
   /* Obuna sahifasida sarlavha bitta qator — «HSK AI Pro»; chegirma
      sahifalarida «HSK AI» ustida qoladi. */
-  $("#kicker").style.display=state.mode==="subscription"?"none":"";
+  $("#kicker").style.display=(state.mode==="subscription"||state.mode==="hsk30_unlock")?"none":"";
   $("#helpBtn").setAttribute("aria-label",text.supportTitle);
   const statusText=state.preview?text.preview:(state.loadError?text.loadError:(state.offerExpired?text.offerExpired:""));
   $("#status").textContent=statusText;

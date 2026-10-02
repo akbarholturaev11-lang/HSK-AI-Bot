@@ -37,10 +37,39 @@ import argparse
 import importlib
 import json
 import random
+import sys
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 BASE = Path("app/static/course_v3_data")
-LEVELS = [("hsk1", 15), ("hsk2", 15), ("hsk3", 20), ("hsk4", 20)]
+LEGACY_LEVELS = [("hsk1", 15), ("hsk2", 15), ("hsk3", 20), ("hsk4", 20)]
+HSK30_LEVELS = [("nhsk1", 15), ("nhsk2", 15), ("nhsk3", 18)]
+TRACK_LEVELS = {
+    "hsk20": LEGACY_LEVELS,
+    "hsk30": HSK30_LEVELS,
+}
+# Default stays legacy so importing this module cannot change the existing course.
+LEVELS = list(LEGACY_LEVELS)
+
+
+def level_band(level: str) -> int:
+    raw = str(level or "").strip().lower()
+    if raw.startswith("nhsk"):
+        raw = raw[4:]
+    elif raw.startswith("hsk"):
+        raw = raw[3:]
+    try:
+        return int(raw)
+    except (TypeError, ValueError):
+        return 1
+
+
+def level_label(level: str) -> str:
+    band = level_band(level)
+    return f"HSK 3.0 · N{band}" if str(level).startswith("nhsk") else f"HSK {band}"
 
 # Har bir HSK darsligi darsi bir nechta QISQA mini-darsga (qismga) bo'linadi:
 # har qismda ko'pi bilan PART_MAX_WORDS yangi so'z o'rgatiladi va shu qism
@@ -355,6 +384,15 @@ def build_exit_ticket(level: str, src: int, checkpoint: bool) -> dict | None:
 # --------------------------------------------------------------------------
 def load_seed_lesson(level: str, order: int) -> dict:
     """Return the canonical (post-materials) lesson dict for a level/order."""
+    if level == "nhsk3":
+        from scripts.hsk30.nhsk3_adapter import load_seed_lesson as load_nhsk3_seed
+
+        return dict(load_nhsk3_seed(order))
+    if level.startswith("nhsk"):
+        mod = importlib.import_module(
+            f"scripts.hsk30.seed_{level}_lesson_{order:02d}"
+        )
+        return dict(mod.LESSON)
     if level == "hsk4" and order >= 11:
         mod = importlib.import_module("scripts.hsk4_lower_seed_data")
         return mod.build_lesson(order)
@@ -1548,7 +1586,7 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
     if not isinstance(goal, dict):
         goal = {}
 
-    lvl = int(level.replace("hsk", "") or 0)
+    lvl = level_band(level)
     pi = part["part_idx"]
     checkpoint = part["checkpoint"]
     part_count = len(lesson["parts"])
@@ -1625,6 +1663,20 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
                 if all(_hits(w.get("zh", ""), rest) >= 4 for w in chunk):
                     practice_cards = cand
                     total -= 1
+
+        # Retention-review cards are supplemental. In dense grammar parts the
+        # mandatory teach/check coverage can already fill the 18-card budget.
+        # Drop only review cards that are redundant for the current chunk's
+        # 4x coverage; never remove a grammar teach/drill or a required intro.
+        if total > PART_CARD_BUDGET and review_cards:
+            i = len(review_cards) - 1
+            while total > PART_CARD_BUDGET and i >= 0:
+                cand_review = review_cards[:i] + review_cards[i + 1:]
+                rest = intro_cards + grammar_cards + practice_cards + cand_review
+                if all(_hits(w.get("zh", ""), rest) >= 4 for w in chunk):
+                    review_cards = cand_review
+                    total -= 1
+                i -= 1
 
         if total > PART_CARD_BUDGET:
             raise ValueError(
@@ -1771,7 +1823,24 @@ def sync_maps(plan: dict | None = None, dry: bool = False):
     idx = build_word_pinyin_index()
     for level, count in LEVELS:
         path = BASE / f"{level}.json"
-        data = json.loads(path.read_text(encoding="utf-8"))
+        if path.exists():
+            data = json.loads(path.read_text(encoding="utf-8"))
+        else:
+            data = {
+                "schema_version": 2,
+                "level": level,
+                "label": level_label(level),
+                "authenticated": False,
+                "progress": {
+                    "streak": 0,
+                    "xp": 0,
+                    "completed": 0,
+                    "league": "Bronze",
+                },
+                "units": [],
+            }
+        data["level"] = level
+        data["label"] = level_label(level)
         units = []
         for les in plan[level]["lessons"]:
             src = les["src"]
@@ -1846,9 +1915,20 @@ def sync_maps(plan: dict | None = None, dry: bool = False):
 
 def write_parts_manifest(plan: dict | None = None, dry: bool = False):
     """parts_manifest.json — HSK dars -> qismlar xaritasi (flat raqamlar).
-    Progress migratsiyasi va tekshiruv skriptlari uchun yagona manba."""
+
+    Track-specific runs merge their levels into the shared manifest so
+    generating HSK 3.0 never deletes the existing HSK 2.0 mappings (or vice
+    versa).
+    """
     plan = plan or build_split_plan()
-    out: dict[str, dict] = {}
+    path = BASE / "parts_manifest.json"
+    if path.exists():
+        try:
+            out: dict[str, dict] = json.loads(path.read_text(encoding="utf-8"))
+        except (ValueError, TypeError):
+            out = {}
+    else:
+        out = {}
     for level, count in LEVELS:
         lessons = []
         for les in plan[level]["lessons"]:
@@ -1870,6 +1950,43 @@ def write_parts_manifest(plan: dict | None = None, dry: bool = False):
         print(f"wrote {path}: " + ", ".join(f"{lv}={v['total_parts']}" for lv, v in out.items()))
 
 
+def write_hsk30_runtime_manifests(plan: dict | None = None, dry: bool = False):
+    """Write runtime availability manifests consumed by HSK 3.0 onboarding.
+
+    lesson_count is the FLAT Course V3 part count, because course progress and
+    launch_lesson are stored in flat mini-lesson numbering after the split.
+    source_lesson_count keeps the textbook lesson count separately.
+    """
+    plan = plan or build_split_plan()
+    for level, source_count in LEVELS:
+        if not level.startswith("nhsk"):
+            continue
+        out = BASE / level / "manifest.json"
+        payload = {
+            "schema_version": 1,
+            "version": 2,
+            "track": "hsk30",
+            "level": level,
+            "lesson_count": int(plan[level]["total"]),
+            "source_lesson_count": int(source_count),
+            "first_lesson_order": 1,
+            "content_status": "runtime_ready",
+        }
+        text = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
+        if dry:
+            print(
+                f"[dry] {out}: parts={payload['lesson_count']} "
+                f"source_lessons={source_count}"
+            )
+        else:
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(text, encoding="utf-8")
+            print(
+                f"wrote {out}: parts={payload['lesson_count']} "
+                f"source_lessons={source_count}"
+            )
+
+
 def write_lesson_gate(plan: dict | None = None, dry: bool = False):
     """so'z/belgi -> [HSK daraja, qism raqami] (birinchi O'RGATILGAN joyi —
     endi flat mini-dars raqami).
@@ -1881,7 +1998,7 @@ def write_lesson_gate(plan: dict | None = None, dry: bool = False):
     words: dict[str, list[int]] = {}
     chars: dict[str, list[int]] = {}
     for level, count in LEVELS:
-        lvl = int(level.replace("hsk", "") or 1)
+        lvl = level_band(level)
         for les in plan[level]["lessons"]:
             for part in les["parts"]:
                 for w in part["chunk"]:
@@ -1893,13 +2010,17 @@ def write_lesson_gate(plan: dict | None = None, dry: bool = False):
                     for ch in zh:
                         if "一" <= ch <= "鿿" and ch not in chars:
                             chars[ch] = [lvl, part["flat"]]
+    hsk30_track = bool(LEVELS and all(level.startswith("nhsk") for level, _ in LEVELS))
+    word_global = "HSK30_WORD_GATE" if hsk30_track else "HSK_WORD_GATE"
+    char_global = "HSK30_CHAR_GATE" if hsk30_track else "HSK_CHAR_GATE"
     text = (
         "/* GENERATED by scripts/gen_course_v3_from_seed.py — so'z/belgi -> [HSK daraja, qism]\n"
         "   (birinchi o'rgatilgan joyi; flat mini-dars raqami). Qo'lda tahrirlamang. */\n"
-        "window.HSK_WORD_GATE=" + json.dumps(words, ensure_ascii=False, separators=(",", ":")) + ";\n"
-        "window.HSK_CHAR_GATE=" + json.dumps(chars, ensure_ascii=False, separators=(",", ":")) + ";\n"
+        f"window.{word_global}=" + json.dumps(words, ensure_ascii=False, separators=(",", ":")) + ";\n"
+        f"window.{char_global}=" + json.dumps(chars, ensure_ascii=False, separators=(",", ":")) + ";\n"
     )
-    out = BASE / "lesson_gate.js"
+    gate_name = "lesson_gate_hsk30.js" if hsk30_track else "lesson_gate.js"
+    out = BASE / gate_name
     if dry:
         print(f"[dry] {out}: words={len(words)} chars={len(chars)}")
     else:
@@ -1907,21 +2028,91 @@ def write_lesson_gate(plan: dict | None = None, dry: bool = False):
         print(f"wrote {out}: words={len(words)} chars={len(chars)}")
 
 
+
+def write_hsk30_practice_words(dry: bool = False):
+    """Write the HSK 3.0 practice word pool used by recognition/pronunciation."""
+    if not (LEVELS and all(level.startswith("nhsk") for level, _ in LEVELS)):
+        return
+    items: list[dict] = []
+    seen: set[tuple[str, int]] = set()
+    for level, count in LEVELS:
+        band = level_band(level)
+        for order in range(1, count + 1):
+            seed = load_seed_lesson(level, order)
+            for raw in loadjson(seed.get("vocabulary_json"), []):
+                zh = str(raw.get("zh") or "").strip()
+                py = str(raw.get("pinyin") or "").strip()
+                if not zh or not py:
+                    continue
+                key = (zh, band)
+                if key in seen:
+                    continue
+                seen.add(key)
+                items.append(
+                    {
+                        "h": zh,
+                        "p": py,
+                        "m": {
+                            "uz": str(raw.get("uz") or "").strip(),
+                            "ru": str(raw.get("ru") or "").strip(),
+                            "tj": str(raw.get("tj") or "").strip(),
+                        },
+                        "lv": f"N{band}",
+                    }
+                )
+    text = (
+        "/* GENERATED by scripts/gen_course_v3_from_seed.py — HSK 3.0 practice words. */\n"
+        "window.HSK30_WORDS="
+        + json.dumps(items, ensure_ascii=False, separators=(",", ":"))
+        + ";\n"
+    )
+    out = BASE / "hsk30-words.js"
+    if dry:
+        print(f"[dry] {out}: words={len(items)}")
+    else:
+        out.write_text(text, encoding="utf-8")
+        print(f"wrote {out}: words={len(items)}")
+
+
 def main():
+    global LEVELS
+
     ap = argparse.ArgumentParser()
-    ap.add_argument("--level", help="only this level (hsk1..hsk4)")
+    ap.add_argument(
+        "--track",
+        choices=("hsk20", "hsk30"),
+        default=None,
+        help="course track; defaults to hsk20 unless --level starts with nhsk",
+    )
+    ap.add_argument(
+        "--level",
+        help="only this level (hsk1..hsk4 or nhsk1..nhsk3)",
+    )
     ap.add_argument("--lesson", type=int, help="only this SOURCE lesson (uning hamma qismlari)")
     ap.add_argument("--dry", action="store_true", help="print, do not write")
     ap.add_argument("--maps-only", action="store_true", help="only sync <level>.json maps")
     ap.add_argument("--no-maps", action="store_true", help="skip map sync")
     args = ap.parse_args()
 
+    track = args.track or (
+        "hsk30" if str(args.level or "").startswith("nhsk") else "hsk20"
+    )
+    LEVELS = list(TRACK_LEVELS[track])
+    active_levels = {level for level, _ in LEVELS}
+    if args.level and args.level not in active_levels:
+        ap.error(
+            f"--level {args.level!r} does not belong to --track {track}; "
+            f"expected one of {sorted(active_levels)}"
+        )
+
     plan = build_split_plan()
 
     if args.maps_only:
         sync_maps(plan, dry=args.dry)
         write_lesson_gate(plan, dry=args.dry)
+        write_hsk30_practice_words(dry=args.dry)
         write_parts_manifest(plan, dry=args.dry)
+        write_hsk30_runtime_manifests(plan, dry=args.dry)
         return
 
     known_prior: list[dict] = []  # cumulative vocab across all earlier lessons
@@ -1944,6 +2135,8 @@ def main():
                     lesson = build_v3_part(level, part["flat"], les["src"], les,
                                            part, gassign, known_prior)
                     out_path = BASE / level / f"lesson_{part['flat']:02d}.json"
+                    if not args.dry:
+                        out_path.parent.mkdir(parents=True, exist_ok=True)
                     text = json.dumps(lesson, ensure_ascii=False, indent=2)
                     if args.dry:
                         print(f"--- {out_path} ---")
@@ -1968,7 +2161,9 @@ def main():
     if not args.no_maps and not args.level and not args.lesson:
         sync_maps(plan, dry=args.dry)
         write_lesson_gate(plan, dry=args.dry)
+        write_hsk30_practice_words(dry=args.dry)
         write_parts_manifest(plan, dry=args.dry)
+        write_hsk30_runtime_manifests(plan, dry=args.dry)
 
 
 if __name__ == "__main__":

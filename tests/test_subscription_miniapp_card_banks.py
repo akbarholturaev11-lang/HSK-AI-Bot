@@ -237,7 +237,7 @@ class RegionFlowCopyTests(unittest.TestCase):
             SUBSCRIPTION_HTML,
         )
         self.assertIn('if(screen==="country")saveRegion(state.region);', SUBSCRIPTION_HTML)
-        self.assertIn("step:REMEMBERED_REGION?1:0,", SUBSCRIPTION_HTML)
+        self.assertIn("step:HSK30_UNLOCK_MODE?0:(REMEMBERED_REGION?1:0),", SUBSCRIPTION_HTML)
 
     def test_admin_panel_edits_both_requisites(self):
         self.assertIn('id="payDetails"', ADMIN_HTML)

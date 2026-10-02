@@ -3146,6 +3146,7 @@ class AdminMiniAppService:
             {"key": "user_search", "icon": "🔎", "title": "Фойдаланувчи қидириш", "note": "ID ёки username бўйича Mini App ичида қидириш", "section": "users", "callback": "adm:user_search_info"},
             {"key": "portfolio", "icon": "💼", "title": "Портфель", "note": "Тушум, харажат ва соф фойдани бошқариш", "section": "settings", "callback": "adm:portfolio"},
             {"key": "prices", "icon": "💳", "title": "Обуна нархлари", "note": "Visa/карта, Alipay, WeChat нархларини таҳрирлаш", "section": "settings", "callback": "adm:prices"},
+            {"key": "hsk30", "icon": "🆕", "title": "HSK 3.0", "note": "Курс, бир марталик тўлов ва нархни бошқариш", "section": "settings", "callback": "adm:hsk30"},
             {"key": "course_access", "icon": "📚", "title": "Курс access", "note": "Дарс paywall ёки вақтинча free режими", "section": "settings", "callback": "adm:course_access"},
             {"key": "limits", "icon": "🎚", "title": "Лимитлар", "note": "Бепул ва trial кунлик чегаралари — деплойсиз ўзгаради", "section": "settings", "callback": "adm:limits"},
             # Mini App ичидаги реклама битта бўлимда: ролик ва унинг жойи

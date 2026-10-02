@@ -1,0 +1,390 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 4,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49
+    ]
+  },
+  "title": {
+    "hanzi": "这家宾馆跟别的都不一样",
+    "pinyin": "Zhè jiā bīnguǎn gēn biéde dōu bù yíyàng"
+  },
+  "objectives": [
+    "能听懂并谈论假期计划，能表达旅游过程中的感受。",
+    "能听懂并表达完全否定的意义。",
+    "掌握“除了”的用法，能表达排除或补充的意义。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "假期",
+      "pinyin": "jiàqī",
+      "part_of_speech": "n.",
+      "source_page": 42
+    },
+    {
+      "hanzi": "海",
+      "pinyin": "hǎi",
+      "part_of_speech": "n.",
+      "source_page": 42
+    },
+    {
+      "hanzi": "草原",
+      "pinyin": "cǎoyuán",
+      "part_of_speech": "n.",
+      "source_page": 42
+    },
+    {
+      "hanzi": "主意",
+      "pinyin": "zhǔyi",
+      "part_of_speech": "n.",
+      "source_page": 42
+    },
+    {
+      "hanzi": "骑",
+      "pinyin": "qí",
+      "part_of_speech": "v.",
+      "source_page": 42
+    },
+    {
+      "hanzi": "马",
+      "pinyin": "mǎ",
+      "part_of_speech": "n.",
+      "source_page": 42
+    },
+    {
+      "hanzi": "羊",
+      "pinyin": "yáng",
+      "part_of_speech": "n.",
+      "source_page": 42
+    },
+    {
+      "hanzi": "月亮",
+      "pinyin": "yuèliang",
+      "part_of_speech": "n.",
+      "source_page": 42
+    },
+    {
+      "hanzi": "一定",
+      "pinyin": "yídìng",
+      "part_of_speech": "adv.",
+      "source_page": 42
+    },
+    {
+      "hanzi": "刻",
+      "pinyin": "kè",
+      "part_of_speech": "m.",
+      "source_page": 44
+    },
+    {
+      "hanzi": "起飞",
+      "pinyin": "qǐfēi",
+      "part_of_speech": "v.",
+      "source_page": 44
+    },
+    {
+      "hanzi": "宾馆",
+      "pinyin": "bīnguǎn",
+      "part_of_speech": "n.",
+      "source_page": 44
+    },
+    {
+      "hanzi": "特别",
+      "pinyin": "tèbié",
+      "part_of_speech": "adj./adv.",
+      "source_page": 44
+    },
+    {
+      "hanzi": "别的",
+      "pinyin": "biéde",
+      "part_of_speech": "pron.",
+      "source_page": 44
+    },
+    {
+      "hanzi": "一样",
+      "pinyin": "yíyàng",
+      "part_of_speech": "adj.",
+      "source_page": 44
+    },
+    {
+      "hanzi": "牛",
+      "pinyin": "niú",
+      "part_of_speech": "n.",
+      "source_page": 44
+    },
+    {
+      "hanzi": "相机",
+      "pinyin": "xiàngjī",
+      "part_of_speech": "n.",
+      "source_page": 44
+    },
+    {
+      "hanzi": "欢迎",
+      "pinyin": "huānyíng",
+      "part_of_speech": "v.",
+      "source_page": 45
+    },
+    {
+      "hanzi": "司机",
+      "pinyin": "sījī",
+      "part_of_speech": "n.",
+      "source_page": 45
+    },
+    {
+      "hanzi": "晚点",
+      "pinyin": "wǎndiǎn",
+      "part_of_speech": "v.",
+      "source_page": 45
+    },
+    {
+      "hanzi": "久",
+      "pinyin": "jiǔ",
+      "part_of_speech": "adj.",
+      "source_page": 45
+    },
+    {
+      "hanzi": "除了",
+      "pinyin": "chúle",
+      "part_of_speech": "prep.",
+      "source_page": 45
+    },
+    {
+      "hanzi": "以外",
+      "pinyin": "yǐwài",
+      "part_of_speech": "n.",
+      "source_page": 45
+    },
+    {
+      "hanzi": "先",
+      "pinyin": "xiān",
+      "part_of_speech": "adv.",
+      "source_page": 45
+    },
+    {
+      "hanzi": "一直",
+      "pinyin": "yìzhí",
+      "part_of_speech": "adv.",
+      "source_page": 47
+    },
+    {
+      "hanzi": "干净",
+      "pinyin": "gānjìng",
+      "part_of_speech": "adj.",
+      "source_page": 47
+    },
+    {
+      "hanzi": "满意",
+      "pinyin": "mǎnyì",
+      "part_of_speech": "v.",
+      "source_page": 47
+    }
+  ],
+  "grammar": [
+    {
+      "label": "固定格式“一……也/都+不/没……”",
+      "source_page": 43,
+      "examples": [
+        {
+          "hanzi": "她一件衣服都不想买。",
+          "pinyin": "Tā yí jiàn yīfu dōu bù xiǎng mǎi."
+        },
+        {
+          "hanzi": "我一个中国电影也没看过。",
+          "pinyin": "Wǒ yí ge Zhōngguó diànyǐng yě méi kàn guo."
+        },
+        {
+          "hanzi": "我一点儿东西也不想吃。",
+          "pinyin": "Wǒ yìdiǎnr dōngxi yě bù xiǎng chī."
+        },
+        {
+          "hanzi": "他对打球一点儿兴趣都没有。",
+          "pinyin": "Tā duì dǎqiú yìdiǎnr xìngqù dōu méiyǒu."
+        },
+        {
+          "hanzi": "草原一点儿也不冷。",
+          "pinyin": "Cǎoyuán yìdiǎnr yě bù lěng."
+        },
+        {
+          "hanzi": "他们一点儿也没着急。",
+          "pinyin": "Tāmen yìdiǎnr yě méi zháojí."
+        }
+      ]
+    },
+    {
+      "label": "比较句（9）",
+      "source_page": 44,
+      "examples": [
+        {
+          "hanzi": "这家宾馆跟别的都不一样。",
+          "pinyin": "Zhè jiā bīnguǎn gēn biéde dōu bù yíyàng."
+        },
+        {
+          "hanzi": "他买的新手机跟我的一样。",
+          "pinyin": "Tā mǎi de xīn shǒujī gēn wǒ de yíyàng."
+        },
+        {
+          "hanzi": "这个房间跟那个房间一样大。",
+          "pinyin": "Zhège fángjiān gēn nàge fángjiān yíyàng dà."
+        }
+      ]
+    },
+    {
+      "label": "固定格式“除了……（以外），……都/还/也……”",
+      "source_page": 46,
+      "examples": [
+        {
+          "hanzi": "除了我以外，大家都在玩手机。",
+          "pinyin": "Chúle wǒ yǐwài, dàjiā dōu zài wán shǒujī."
+        },
+        {
+          "hanzi": "除了这个汉字，别的汉字我都会写。",
+          "pinyin": "Chúle zhège Hànzì, biéde Hànzì wǒ dōu huì xiě."
+        },
+        {
+          "hanzi": "除了这个行李箱以外，还有别的东西吗？",
+          "pinyin": "Chúle zhège xínglixiāng yǐwài, hái yǒu biéde dōngxi ma?"
+        },
+        {
+          "hanzi": "除了唱歌以外，他也喜欢跳舞。",
+          "pinyin": "Chúle chànggē yǐwài, tā yě xǐhuan tiàowǔ."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在王一飞家客厅，杨同乐和王一飞在聊天儿。",
+      "source_page": 42,
+      "turns": [
+        {
+          "speaker": "杨同乐",
+          "hanzi": "这个假期咱们去哪儿玩玩吧。",
+          "pinyin": "Zhège jiàqī zánmen qù nǎr wánwan ba."
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "好啊，你想去哪儿，咱们就去哪儿。",
+          "pinyin": "Hǎo a, nǐ xiǎng qù nǎr, zánmen jiù qù nǎr."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "你喜欢海，找个海边住几天，怎么样？",
+          "pinyin": "Nǐ xǐhuan hǎi, zhǎo ge hǎibiān zhù jǐ tiān, zěnmeyàng?"
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "现在去海边有点儿冷。",
+          "pinyin": "Xiànzài qù hǎibiān yǒudiǎnr lěng."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "那去草原吧？草原一点儿也不冷。",
+          "pinyin": "Nà qù cǎoyuán ba? Cǎoyuán yìdiǎnr yě bù lěng."
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "这个主意好！我好久没骑马了。",
+          "pinyin": "Zhège zhǔyi hǎo! Wǒ hǎojiǔ méi qí mǎ le."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "对，在草原上骑马、吃羊肉、看月亮，一定很有意思。",
+          "pinyin": "Duì, zài cǎoyuán shàng qí mǎ, chī yángròu, kàn yuèliang, yídìng hěn yǒuyìsi."
+        }
+      ]
+    },
+    {
+      "scene": "在王一飞家客厅，杨同乐和王一飞在聊天儿。",
+      "source_page": 44,
+      "turns": [
+        {
+          "speaker": "杨同乐",
+          "hanzi": "出去玩的机票买好了吗？",
+          "pinyin": "Chūqù wán de jīpiào mǎi hǎo le ma?"
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "买好了。星期六上午十点一刻起飞。",
+          "pinyin": "Mǎi hǎo le. Xīngqīliù shàngwǔ shí diǎn yí kè qǐfēi."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "宾馆也选好了吗？",
+          "pinyin": "Bīnguǎn yě xuǎn hǎo le ma?"
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "是的，这家宾馆很特别，跟别的都不一样。一出门就能看见牛和羊！",
+          "pinyin": "Shì de, zhè jiā bīnguǎn hěn tèbié, gēn biéde dōu bù yíyàng. Yì chūmén jiù néng kànjiàn niú hé yáng!"
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "太好了！你看看要带什么东西？",
+          "pinyin": "Tài hǎo le! Nǐ kànkan yào dài shénme dōngxi?"
+        },
+        {
+          "speaker": "王一飞",
+          "hanzi": "我们不用带太多东西，别忘了拿上新买的相机。",
+          "pinyin": "Wǒmen búyòng dài tài duō dōngxi, bié wàng le ná shàng xīn mǎi de xiàngjī."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "一定不会忘带的。我现在就去准备行李。",
+          "pinyin": "Yídìng bú huì wàng dài de. Wǒ xiànzài jiù qù zhǔnbèi xíngli."
+        }
+      ]
+    },
+    {
+      "scene": "在机场，杨同乐和王一飞走出来，跟他们预约的司机兼导游见面。",
+      "source_page": 45,
+      "turns": [
+        {
+          "speaker": "小李",
+          "hanzi": "欢迎你们！我是你们的司机，我姓李，叫我小李就可以。",
+          "pinyin": "Huānyíng nǐmen! Wǒ shì nǐmen de sījī, wǒ xìng Lǐ, jiào wǒ Xiǎo Lǐ jiù kěyǐ."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "您好！不好意思，飞机晚点了，让您久等了。",
+          "pinyin": "Nín hǎo! Bù hǎoyìsi, fēijī wǎndiǎn le, ràng nín jiǔ děng le."
+        },
+        {
+          "speaker": "小李",
+          "hanzi": "没关系。除了这个行李箱以外，还有别的东西吗？",
+          "pinyin": "Méi guānxi. Chúle zhège xínglixiāng yǐwài, hái yǒu biéde dōngxi ma?"
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "还有一个包，我自己拿就可以。",
+          "pinyin": "Hái yǒu yí ge bāo, wǒ zìjǐ ná jiù kěyǐ."
+        },
+        {
+          "speaker": "小李",
+          "hanzi": "车在一层，请跟我来。",
+          "pinyin": "Chē zài yì céng, qǐng gēn wǒ lái."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "我们住的宾馆离机场远吗？",
+          "pinyin": "Wǒmen zhù de bīnguǎn lí jīchǎng yuǎn ma?"
+        },
+        {
+          "speaker": "小李",
+          "hanzi": "不远，三十分钟就能到。两位到了可以先休息休息，晚饭的时候我叫你们。",
+          "pinyin": "Bù yuǎn, sānshí fēnzhōng jiù néng dào. Liǎng wèi dào le kěyǐ xiān xiūxi xiūxi, wǎnfàn de shíhou wǒ jiào nǐmen."
+        }
+      ]
+    }
+  ]
+}

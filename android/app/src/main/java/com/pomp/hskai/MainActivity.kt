@@ -62,6 +62,7 @@ import com.pomp.hskai.core.navigation.DeepLinkRefreshGate
 import com.pomp.hskai.core.navigation.DestinationRequest
 import com.pomp.hskai.core.navigation.SessionViewModelStoreOwner
 import com.pomp.hskai.core.navigation.toTab
+import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.feature.auth.LinkScreen
 import com.pomp.hskai.feature.onboarding.NotificationPrimerScreen
 import com.pomp.hskai.feature.auth.LinkViewModel
@@ -77,6 +78,7 @@ import com.pomp.hskai.feature.course.StudySetupViewModel
 import com.pomp.hskai.feature.dictionary.DictionaryActions
 import com.pomp.hskai.feature.dictionary.DictionaryScreen
 import com.pomp.hskai.feature.dictionary.DictionaryViewModel
+import com.pomp.hskai.feature.foundation.FoundationActivity
 import com.pomp.hskai.feature.onboarding.OnboardingScreen
 import com.pomp.hskai.feature.onboarding.OnboardingViewModel
 import com.pomp.hskai.feature.profile.IdentitiesViewModel
@@ -671,6 +673,7 @@ private fun AppRoot(
             }
 
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
+            var onboardingAutoStartHandled by rememberSaveable { mutableStateOf(false) }
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
             val currentLevel = courseState.map?.level ?: state.account.level
             val currentLanguage = state.account.language.backendCode
@@ -690,6 +693,60 @@ private fun AppRoot(
                     lesson = lesson,
                     attemptKey = UUID.randomUUID().toString(),
                 )
+            }
+
+            // Mini App autostarts the onboarding result. Android waits until its
+            // one-time notification/widget prompts are finished, then opens the
+            // same server-selected lesson instead of stopping on the course map.
+            // Beginner onboarding enters Starter 0 first; FoundationActivity
+            // returns through the canonical current-lesson deep link.
+            LaunchedEffect(
+                onboardingState.launch,
+                courseState.map,
+                offline,
+                notificationPrimerSeen,
+                widgetSession.reminderEnabled,
+                widgetOfferHandled,
+                widgetSetupOpen,
+                widgetPlacedNotice,
+            ) {
+                val onboardingLaunch = onboardingState.launch ?: return@LaunchedEffect
+                if (onboardingAutoStartHandled || offline) return@LaunchedEffect
+                if (!notificationPrimerSeen && !widgetSession.reminderEnabled) {
+                    return@LaunchedEffect
+                }
+                if (!widgetOfferHandled || widgetSetupOpen || widgetPlacedNotice) {
+                    return@LaunchedEffect
+                }
+
+                val map = courseState.map ?: return@LaunchedEffect
+                val launchLevel = onboardingLaunch.level.trim().lowercase()
+                if (launchLevel.isNotBlank() && map.level.trim().lowercase() != launchLevel) {
+                    return@LaunchedEffect
+                }
+
+                if (onboardingLaunch.placement || onboardingLaunch.reviewOnly) {
+                    onboardingAutoStartHandled = true
+                    return@LaunchedEffect
+                }
+                if (onboardingLaunch.foundationRequired || map.foundation?.mustComeFirst == true) {
+                    onboardingAutoStartHandled = true
+                    context.startActivity(Intent(context, FoundationActivity::class.java))
+                    return@LaunchedEffect
+                }
+
+                val requestedOrder = onboardingLaunch.lesson?.takeIf { it > 0 }
+                    ?: map.currentLesson?.order
+                val candidate = requestedOrder?.let { order ->
+                    map.lessons.firstOrNull { it.order == order }
+                } ?: map.currentLesson ?: return@LaunchedEffect
+                if (
+                    candidate.access == LessonAccess.Open ||
+                    candidate.access == LessonAccess.HalfPreview
+                ) {
+                    onboardingAutoStartHandled = true
+                    launchLesson(candidate)
+                }
             }
 
             // Which locked lesson the skip test is running for, if any.
@@ -836,16 +893,50 @@ private fun AppRoot(
             }
 
             val launch = openLesson
-            if (onboardingState.loading && !onboardingUnknown) {
+            if (checkoutVisible) {
+                SubscriptionCheckoutHost(
+                    repository = app.featureRepository,
+                    viewModelStoreOwner = sessionOwner,
+                    origin = checkoutOrigin,
+                    onClose = {
+                        checkoutVisible = false
+                        onboardingViewModel.loadStatus(showSplash = false)
+                        profileViewModel.load()
+                        courseViewModel.load()
+                        voiceViewModel.refreshStatusIfLoaded()
+                        practiceViewModel.onAccessChanged()
+                    },
+                )
+            } else if (onboardingState.loading && !onboardingUnknown) {
                 SplashScreen()
             } else if (!onboardingState.completed && !onboardingUnknown) {
                 OnboardingScreen(
                     language = currentLanguage,
                     state = onboardingState.ui,
+                    onTrackSelected = onboardingViewModel::selectTrack,
                     onLevelSelected = onboardingViewModel::selectLevel,
                     onGoalSelected = onboardingViewModel::selectGoal,
                     onBack = onboardingViewModel::back,
                     onNext = onboardingViewModel::next,
+                    onLaterHsk20 = onboardingViewModel::startWithHsk20,
+                    onUnlockHsk30 = {
+                        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+                            checkoutOrigin =
+                                if (
+                                    onboardingState.ui.hsk30PaymentEnabled &&
+                                    onboardingState.ui.hsk30PriceTjs > 0
+                                ) "hsk30_onboarding"
+                                else "onboarding_plan"
+                            checkoutVisible = true
+                        } else {
+                            scope.launch {
+                                when (val result = app.featureRepository.subscriptionOpen()) {
+                                    is ApiResult.Success -> openExternal(context, result.value.botUrl)
+                                    is ApiResult.Failure -> Unit
+                                }
+                            }
+                        }
+                    },
                 )
             } else if (!onboardingUnknown && !notificationPrimerSeen && !widgetSession.reminderEnabled) {
                 // Asked once, at the end of onboarding, for both kinds of
@@ -861,19 +952,6 @@ private fun AppRoot(
                     },
                     onSkip = {
                         scope.launch { app.appSettings.setNotificationPrimerSeen() }
-                    },
-                )
-            } else if (checkoutVisible) {
-                SubscriptionCheckoutHost(
-                    repository = app.featureRepository,
-                    viewModelStoreOwner = sessionOwner,
-                    origin = checkoutOrigin,
-                    onClose = {
-                        checkoutVisible = false
-                        profileViewModel.load()
-                        courseViewModel.load()
-                        voiceViewModel.refreshStatusIfLoaded()
-                        practiceViewModel.onAccessChanged()
                     },
                 )
             } else if (ratingChallengesOpen) {
@@ -1009,10 +1087,15 @@ private fun AppRoot(
                     ),
                 )
                 val dictionaryState by dictionaryViewModel.state.collectAsStateWithLifecycle()
+                LaunchedEffect(dictionaryViewModel, currentLevel) {
+                    dictionaryViewModel.setActiveCourseLevel(currentLevel)
+                }
                 DictionaryScreen(
                     state = dictionaryState,
                     actions = DictionaryActions(
                         onQueryChange = dictionaryViewModel::onQueryChange,
+                        onVersionFilter = dictionaryViewModel::selectVersionFilter,
+                        onLevelFilter = dictionaryViewModel::selectLevelFilter,
                         onRetry = dictionaryViewModel::load,
                         onOpenWord = dictionaryViewModel::openWord,
                         onOpenRecent = dictionaryViewModel::openRecent,
@@ -1100,6 +1183,26 @@ private fun AppRoot(
                                 onOpenChest = courseViewModel::openRewardChest,
                                 onChestRewardConsumed = courseViewModel::consumeChestReward,
                                 onUnlockAnimationConsumed = courseViewModel::consumeLessonUnlock,
+                                onSwitchTrack = courseViewModel::switchCourseTrack,
+                                onHsk30PromoShown = courseViewModel::markHsk30PromoShown,
+                                onUnlockHsk30 = {
+                                    val hsk30 = courseState.map?.hsk30
+                                    if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+                                        checkoutOrigin = if (hsk30?.paymentEnabled == true) {
+                                            "hsk30_onboarding"
+                                        } else {
+                                            "course_limit"
+                                        }
+                                        checkoutVisible = true
+                                    } else {
+                                        scope.launch {
+                                            when (val result = app.featureRepository.subscriptionOpen()) {
+                                                is ApiResult.Success -> openExternal(context, result.value.botUrl)
+                                                is ApiResult.Failure -> Unit
+                                            }
+                                        }
+                                    }
+                                },
                                 onRetry = courseViewModel::load,
                                 modifier = contentModifier,
                             )
@@ -1218,6 +1321,33 @@ private fun AppRoot(
                                 onRefresh = profileViewModel::load,
                                 onLogout = { signOut(false) },
                                 onUnlinkDevice = { signOut(true) },
+                                courseTrack = courseState.map?.hsk30?.activeTrack
+                                    ?: if (currentLevel.startsWith("nhsk")) "hsk30" else "hsk20",
+                                hsk30Enabled = courseState.map?.hsk30?.access?.featureEnabled == true,
+                                hsk30Allowed = courseState.map?.hsk30?.access?.allowed == true,
+                                hsk30IsNew = courseState.map?.hsk30?.newBadge?.isNew == true,
+                                hsk30PaymentEnabled = courseState.map?.hsk30?.paymentEnabled == true,
+                                hsk30PriceTjs = courseState.map?.hsk30?.priceTjs ?: 0,
+                                hsk30LiveLevels = courseState.map?.hsk30?.liveLevels.orEmpty(),
+                                onSwitchCourseTrack = courseViewModel::switchCourseTrack,
+                                onUnlockHsk30 = {
+                                    val hsk30 = courseState.map?.hsk30
+                                    if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+                                        checkoutOrigin = if (hsk30?.paymentEnabled == true) {
+                                            "hsk30_settings"
+                                        } else {
+                                            "course_limit"
+                                        }
+                                        checkoutVisible = true
+                                    } else {
+                                        scope.launch {
+                                            when (val result = app.featureRepository.subscriptionOpen()) {
+                                                is ApiResult.Success -> openExternal(context, result.value.botUrl)
+                                                is ApiResult.Failure -> Unit
+                                            }
+                                        }
+                                    }
+                                },
                                 modifier = contentModifier,
                                 identities = identitiesState,
                                 onLoadIdentities = identitiesViewModel::refresh,

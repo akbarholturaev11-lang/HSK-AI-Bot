@@ -1,0 +1,696 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 94,
+  "source_lesson": 12,
+  "part_no": 6,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "这个季节天气变化很快",
+  "subtitle": {
+    "uz": "Ob-havodagi o‘zgarishlar va fasllar haqida gaplashish; ma’lum joyning iqlimini tasvirlash; “就” bilan miqdorning kamligi yoki istisnoni ta’kidlash; Pekinning to‘rt fasli bilan tanishish.",
+    "ru": "Говорить об изменениях погоды и сезонах; описывать климат местности; использовать “就” для подчёркивания малого количества или исключения; познакомиться с четырьмя сезонами Пекина.",
+    "tj": "Дар бораи тағйири обу ҳаво ва фаслҳо суҳбат кардан; иқлими ҷойро тавсиф кардан; бо “就” кам будани миқдор ё истисноро таъкид кардан; бо чор фасли Пекин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "四季",
+      "pinyin": "sìjì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "to‘rt fasl",
+        "ru": "четыре сезона",
+        "tj": "чор фасл"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "春天",
+      "pinyin": "chūntiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bahor",
+        "ru": "весна",
+        "tj": "баҳор"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "夏天",
+      "pinyin": "xiàtiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yoz",
+        "ru": "лето",
+        "tj": "тобистон"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "凉快",
+      "pinyin": "liángkuai",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "salqin",
+        "ru": "прохладный",
+        "tj": "салқин"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ko‘chada Wang Yifei va Bai Jiayue yurib suhbatlashmoqda.",
+        "ru": "На улице Ван Ифэй и Бай Цзяюэ идут и разговаривают.",
+        "tj": "Дар кӯча Ван Ифэй ва Бай Ҷяюэ роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一飞",
+          "zh": "上周我去公园坐船了，公园里的花也开了。",
+          "pinyin": "Shàng zhōu wǒ qù gōngyuán zuò chuán le, gōngyuán lǐ de huā yě kāi le.",
+          "text": {
+            "uz": "O‘tgan hafta parkda qayiqda yurdim, u yerdagi gullar ham ochilibdi.",
+            "ru": "На прошлой неделе я каталась на лодке в парке, там цветы тоже уже распустились.",
+            "tj": "Ҳафтаи гузашта дар боғ қаиқсаворӣ кардам, гулҳои боғ ҳам кушода шудаанд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "天气这么好，下午我也想去公园坐船。",
+          "pinyin": "Tiānqì zhème hǎo, xiàwǔ wǒ yě xiǎng qù gōngyuán zuò chuán.",
+          "text": {
+            "uz": "Havo bunchalik yaxshi ekan, tushdan keyin men ham parkda qayiqda yurmoqchiman.",
+            "ru": "Погода такая хорошая, днём я тоже хочу покататься на лодке в парке.",
+            "tj": "Ҳаво ин қадар хуб аст, баъд аз нисфирӯзӣ ман ҳам мехоҳам дар боғ қаиқсаворӣ кунам."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "去吧！今天是工作日，人应该不多。",
+          "pinyin": "Qù ba! Jīntiān shì gōngzuòrì, rén yīnggāi bù duō.",
+          "text": {
+            "uz": "Bor! Bugun ish kuni, odam ko‘p bo‘lmasligi kerak.",
+            "ru": "Иди! Сегодня рабочий день, людей должно быть немного.",
+            "tj": "Рав! Имрӯз рӯзи корӣ аст, одам набояд зиёд бошад."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "您有时间吗？我想跟您一起去。",
+          "pinyin": "Nín yǒu shíjiān ma? Wǒ xiǎng gēn nín yìqǐ qù.",
+          "text": {
+            "uz": "Vaqtingiz bormi? Siz bilan birga bormoqchiman.",
+            "ru": "У вас есть время? Я хотела бы пойти вместе с вами.",
+            "tj": "Вақт доред? Мехоҳам бо шумо якҷо равам."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "我今天下午有课，不能去太远的地方。",
+          "pinyin": "Wǒ jīntiān xiàwǔ yǒu kè, bù néng qù tài yuǎn de dìfang.",
+          "text": {
+            "uz": "Bugun tushdan keyin darsim bor, juda uzoqqa bora olmayman.",
+            "ru": "Сегодня днём у меня занятие, далеко ехать не могу.",
+            "tj": "Имрӯз баъд аз нисфирӯзӣ дарс дорам, ба ҷои дур рафта наметавонам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "那咱们换一天去？",
+          "pinyin": "Nà zánmen huàn yì tiān qù?",
+          "text": {
+            "uz": "Unda boshqa kuni boramizmi?",
+            "ru": "Тогда пойдём в другой день?",
+            "tj": "Пас рӯзи дигар равем?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "行。或者明天去，或者后天去，我给你打电话。",
+          "pinyin": "Xíng. Huòzhě míngtiān qù, huòzhě hòutiān qù, wǒ gěi nǐ dǎ diànhuà.",
+          "text": {
+            "uz": "Mayli. Yoki ertaga, yoki indinga boramiz, men senga telefon qilaman.",
+            "ru": "Хорошо. Либо завтра, либо послезавтра — я тебе позвоню.",
+            "tj": "Хуб. Ё фардо, ё пасфардо меравем, ман ба ту занг мезанам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ko‘chada Wang Yifei va Bai Jiayue birga sayr qilmoqda.",
+        "ru": "На улице Ван Ифэй и Бай Цзяюэ гуляют вместе.",
+        "tj": "Дар кӯча Ван Ифэй ва Бай Ҷяюэ якҷо сайр мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一飞",
+          "zh": "好像新闻里说今天有雨。",
+          "pinyin": "Hǎoxiàng xīnwén lǐ shuō jīntiān yǒu yǔ.",
+          "text": {
+            "uz": "Shekilli, yangiliklarda bugun yomg‘ir bo‘ladi deyishgandi.",
+            "ru": "Кажется, в новостях говорили, что сегодня будет дождь.",
+            "tj": "Ба назарам, дар ахбор гуфта буданд, ки имрӯз борон мешавад."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "我可以借给你，我车里有一把伞和一件雨衣。",
+          "pinyin": "Wǒ kěyǐ jiè gěi nǐ, wǒ chē lǐ yǒu yì bǎ sǎn hé yí jiàn yǔyī.",
+          "text": {
+            "uz": "Men senga berib turaman, mashinamda bitta soyabon va yomg‘irpo‘sh bor.",
+            "ru": "Я могу тебе одолжить: в машине есть зонт и дождевик.",
+            "tj": "Ман ба ту медиҳам, дар мошинам як чатр ва як боронӣ ҳаст."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "谢谢，希望下午天气能变好。",
+          "pinyin": "Xièxie, xīwàng xiàwǔ tiānqì néng biàn hǎo.",
+          "text": {
+            "uz": "Rahmat, umid qilamanki tushdan keyin havo yaxshilanadi.",
+            "ru": "Спасибо, надеюсь, днём погода улучшится.",
+            "tj": "Раҳмат, умедворам баъд аз нисфирӯзӣ ҳаво беҳтар мешавад."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "这个季节天气变化很快。",
+          "pinyin": "Zhège jìjié tiānqì biànhuà hěn kuài.",
+          "text": {
+            "uz": "Bu faslda ob-havo juda tez o‘zgaradi.",
+            "ru": "В этом сезоне погода меняется очень быстро.",
+            "tj": "Дар ин фасл ҳаво хеле зуд тағйир меёбад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda Wang Yifei va Bai Jiayue yomg‘irdan pana qilmoqda.",
+        "ru": "В классе Ван Ифэй и Бай Цзяюэ укрываются от дождя.",
+        "tj": "Дар синф Ван Ифэй ва Бай Ҷяюэ аз борон паноҳ мебаранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "您来这里已经一年多了，习惯了吧？",
+          "pinyin": "Nín lái zhèlǐ yǐjīng yì nián duō le, xíguàn le ba?",
+          "text": {
+            "uz": "Bu yerga kelganingizga bir yildan oshdi, ko‘nikib qolgandirsiz?",
+            "ru": "Вы здесь уже больше года, наверное, привыкли?",
+            "tj": "Зиёда аз як сол шуд ин ҷо ҳастед, одат кардаед?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "别的早就习惯了，就是天气我还不太习惯。",
+          "pinyin": "Biéde zǎo jiù xíguàn le, jiùshì tiānqì wǒ hái bú tài xíguàn.",
+          "text": {
+            "uz": "Boshqa narsalarga anchadan beri ko‘nikdim, faqat ob-havoga hali uncha emas.",
+            "ru": "Ко всему остальному давно привыкла, только к погоде ещё не совсем.",
+            "tj": "Ба дигар чизҳо кайҳо одат кардам, танҳо ба обу ҳаво ҳоло пурра одат накардаам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "为什么？您不喜欢这里的天气吗？",
+          "pinyin": "Wèishénme? Nín bù xǐhuan zhèlǐ de tiānqì ma?",
+          "text": {
+            "uz": "Nega? Bu yerdagi ob-havo sizga yoqmaydimi?",
+            "ru": "Почему? Вам не нравится местная погода?",
+            "tj": "Чаро? Обу ҳавои ин ҷо ба шумо писанд нест?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "我觉得冬天太冷了。",
+          "pinyin": "Wǒ juéde dōngtiān tài lěng le.",
+          "text": {
+            "uz": "Menimcha, qish juda sovuq.",
+            "ru": "Мне кажется, зимой слишком холодно.",
+            "tj": "Ба назарам, зимистон хеле хунук аст."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "冬天虽然冷，但是下雪的时候特别漂亮。",
+          "pinyin": "Dōngtiān suīrán lěng, dànshì xiàxuě de shíhou tèbié piàoliang.",
+          "text": {
+            "uz": "Qishda sovuq bo‘lsa ham, qor yog‘ganda juda chiroyli bo‘ladi.",
+            "ru": "Хотя зимой холодно, во время снега очень красиво.",
+            "tj": "Гарчанде зимистон хунук аст, вақте барф меборад хеле зебо мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "四季",
+            "pinyin": "sìjì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "to‘rt fasl",
+              "ru": "четыре сезона",
+              "tj": "чор фасл"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'to‘rt fasl' xitoycha qaysi?",
+            "ru": "'четыре сезона' по-китайски?",
+            "tj": "'чор фасл' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "四季",
+            "公园",
+            "街",
+            "开花"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "to‘rt fasl = 四季 (sìjì)",
+            "ru": "четыре сезона = 四季 (sìjì)",
+            "tj": "чор фасл = 四季 (sìjì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "春天",
+            "pinyin": "chūntiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bahor",
+              "ru": "весна",
+              "tj": "баҳор"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "春天",
+          "pinyin": "chūntiān",
+          "translation": {
+            "uz": "bahor",
+            "ru": "весна",
+            "tj": "баҳор"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "春天",
+          "pinyin": "chūntiān",
+          "options": [
+            "街",
+            "公园",
+            "春天",
+            "开花"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "春天 — bahor (chūntiān)",
+            "ru": "春天 — весна (chūntiān)",
+            "tj": "春天 — баҳор (chūntiān)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "夏天",
+            "pinyin": "xiàtiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yoz",
+              "ru": "лето",
+              "tj": "тобистон"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "夏天 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 夏天:",
+            "tj": "Маънои калимаи 夏天-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "gullamoq",
+              "ru": "цвести",
+              "tj": "гул кардан"
+            },
+            {
+              "uz": "yoz",
+              "ru": "лето",
+              "tj": "тобистон"
+            },
+            {
+              "uz": "park",
+              "ru": "парк",
+              "tj": "боғ"
+            },
+            {
+              "uz": "ko‘cha",
+              "ru": "улица",
+              "tj": "кӯча"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "夏天 = yoz (xiàtiān)",
+            "ru": "夏天 = лето (xiàtiān)",
+            "tj": "夏天 = тобистон (xiàtiān)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "凉快",
+            "pinyin": "liángkuai",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "salqin",
+              "ru": "прохладный",
+              "tj": "салқин"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "liángkuai qaysi ieroglif?",
+            "ru": "Какой иероглиф читается liángkuai?",
+            "tj": "liángkuai кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "开花",
+            "街",
+            "凉快",
+            "公园"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "凉快 = salqin (liángkuai)",
+            "ru": "凉快 = прохладный (liángkuai)",
+            "tj": "凉快 = салқин (liángkuai)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "四季 talaffuzini tanlang:",
+            "ru": "Выберите произношение 四季:",
+            "tj": "Талаффузи 四季-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "sìjì",
+            "gōngyuán",
+            "kāihuā",
+            "jiē"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "四季 — sìjì",
+            "ru": "四季 — sìjì",
+            "tj": "四季 — sìjì"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "四季",
+              {
+                "uz": "to‘rt fasl",
+                "ru": "четыре сезона",
+                "tj": "чор фасл"
+              }
+            ],
+            [
+              "春天",
+              {
+                "uz": "bahor",
+                "ru": "весна",
+                "tj": "баҳор"
+              }
+            ],
+            [
+              "夏天",
+              {
+                "uz": "yoz",
+                "ru": "лето",
+                "tj": "тобистон"
+              }
+            ],
+            [
+              "凉快",
+              {
+                "uz": "salqin",
+                "ru": "прохладный",
+                "tj": "салқин"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "四季",
+              {
+                "uz": "to‘rt fasl",
+                "ru": "четыре сезона",
+                "tj": "чор фасл"
+              }
+            ],
+            [
+              "春天",
+              {
+                "uz": "bahor",
+                "ru": "весна",
+                "tj": "баҳор"
+              }
+            ],
+            [
+              "夏天",
+              {
+                "uz": "yoz",
+                "ru": "лето",
+                "tj": "тобистон"
+              }
+            ],
+            [
+              "凉快",
+              {
+                "uz": "salqin",
+                "ru": "прохладный",
+                "tj": "салқин"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "春天",
+          "pinyin": "chūntiān",
+          "options": [
+            "春天",
+            "公园",
+            "街",
+            "开花"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "春天 — bahor (chūntiān)",
+            "ru": "春天 — весна (chūntiān)",
+            "tj": "春天 — баҳор (chūntiān)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "春天",
+          "pinyin": "chūntiān",
+          "translation": {
+            "uz": "bahor",
+            "ru": "весна",
+            "tj": "баҳор"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "冬天 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 冬天:",
+            "tj": "Маънои калимаи 冬天-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ko‘cha",
+              "ru": "улица",
+              "tj": "кӯча"
+            },
+            {
+              "uz": "park",
+              "ru": "парк",
+              "tj": "боғ"
+            },
+            {
+              "uz": "qish",
+              "ru": "зима",
+              "tj": "зимистон"
+            },
+            {
+              "uz": "gullamoq",
+              "ru": "цвести",
+              "tj": "гул кардан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "冬天 = qish (dōngtiān)",
+            "ru": "冬天 = зима (dōngtiān)",
+            "tj": "冬天 = зимистон (dōngtiān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "冬天",
+            "pinyin": "dōngtiān",
+            "meaning": {
+              "uz": "qish",
+              "ru": "зима",
+              "tj": "зимистон"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bahor' xitoycha qaysi?",
+            "ru": "'весна' по-китайски?",
+            "tj": "'баҳор' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "开花",
+            "春天",
+            "街",
+            "公园"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "bahor = 春天 (chūntiān)",
+            "ru": "весна = 春天 (chūntiān)",
+            "tj": "баҳор = 春天 (chūntiān)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "春天",
+            "pinyin": "chūntiān",
+            "meaning": {
+              "uz": "bahor",
+              "ru": "весна",
+              "tj": "баҳор"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

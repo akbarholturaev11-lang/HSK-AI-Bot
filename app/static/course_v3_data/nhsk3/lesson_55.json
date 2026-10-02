@@ -1,0 +1,774 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 55,
+  "source_lesson": 7,
+  "part_no": 7,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "那条裙子比短裤更好看",
+  "subtitle": {
+    "uz": "Xarid tajribasini tushunish va aytib berish; mahsulot xususiyatlarini baholash; “比” taqqoslashining inkor shaklini ishlatish; Xitoydagi xarid odatlari bilan tanishish.",
+    "ru": "Понимать и описывать опыт покупок; оценивать свойства товаров; использовать отрицательную форму сравнений с “比”; познакомиться со способами совершения покупок в Китае.",
+    "tj": "Таҷрибаи харидро фаҳмидан ва шарҳ додан; хусусиятҳои молро арзёбӣ кардан; шакли инкории муқоисаи “比”-ро истифода бурдан; бо тарзҳои харид дар Чин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "而且",
+      "pinyin": "érqiě",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "balki; bundan tashqari",
+        "ru": "но и; к тому же",
+        "tj": "балки; инчунин"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "声",
+      "pinyin": "shēng",
+      "pos": "m./n.",
+      "meaning": {
+        "uz": "tovush; tovush uchun hisob so‘zi",
+        "ru": "звук; счётное слово для звуков",
+        "tj": "садо; воҳиди ҳисоб барои садо"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "开机",
+      "pinyin": "kāijī",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qurilmani yoqmoq",
+        "ru": "включать устройство",
+        "tj": "дастгоҳро фурӯзон кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 4,
+      "title": {
+        "uz": "Kuchaytiruvchi qo‘shma gap “不但……而且……”",
+        "ru": "Градационное сложное предложение “不但……而且……”",
+        "tj": "Ҷумлаи тақвиятӣ “不但……而且……”"
+      },
+      "title_zh": "递进复句“不但……，而且……”",
+      "rule": {
+        "uz": "“不但A，而且B” birinchi ma’lumotga ikkinchi, kuchliroq yoki qo‘shimcha ma’lumotni qo‘shadi: “nafaqat A, balki B ham”.",
+        "ru": "“不但A，而且B” добавляет ко второй части более сильную или дополнительную информацию: «не только A, но и B».",
+        "tj": "“不但A，而且B” ба қисми аввал маълумоти иловагӣ ё қавитар зам мекунад: «на танҳо A, балки B ҳам»."
+      },
+      "examples": [
+        {
+          "zh": "现在的电视不但便宜，而且用着非常方便。",
+          "pinyin": "Xiànzài de diànshì bùdàn piányi, érqiě yòngzhe fēicháng fāngbiàn.",
+          "translation": {
+            "uz": "Hozirgi televizorlar nafaqat arzon, balki ishlatish ham juda qulay.",
+            "ru": "Современные телевизоры не только дешёвые, но и очень удобны в использовании.",
+            "tj": "Телевизорҳои ҳозира на танҳо арзонанд, балки истифодаашон ҳам хеле қулай аст."
+          }
+        },
+        {
+          "zh": "家月不但喜欢唱歌，而且唱得很好听。",
+          "pinyin": "Jiāyuè bùdàn xǐhuan chànggē, érqiě chàng de hěn hǎotīng.",
+          "translation": {
+            "uz": "Jiayue nafaqat qo‘shiq aytishni yoqtiradi, balki juda chiroyli aytadi.",
+            "ru": "Цзяюэ не только любит петь, но и очень хорошо поёт.",
+            "tj": "Ҷяюэ на танҳо сурудхониро дӯст медорад, балки хеле хуб месарояд."
+          }
+        },
+        {
+          "zh": "不但家月会说汉语，而且天中也会说汉语。",
+          "pinyin": "Bùdàn Jiāyuè huì shuō Hànyǔ, érqiě Tiānzhōng yě huì shuō Hànyǔ.",
+          "translation": {
+            "uz": "Nafaqat Jiayue, Tianzhong ham xitoycha gapira oladi.",
+            "ru": "Не только Цзяюэ говорит по-китайски, но и Тяньчжун тоже.",
+            "tj": "На танҳо Ҷяюэ, балки Тянҷун ҳам бо чинӣ гап зада метавонад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Wang Yixue va Liu Ming xaridga borishni muhokama qilmoqda.",
+        "ru": "Дома Ван Исюэ и Лю Мин обсуждают поход за покупками.",
+        "tj": "Дар хона Ван Исюэ ва Лю Мин харид рафтанро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘明",
+          "zh": "是啊，她现在长高了，这辆车已经太矮了。",
+          "pinyin": "Shì a, tā xiànzài zhǎng gāo le, zhè liàng chē yǐjīng tài ǎi le.",
+          "text": {
+            "uz": "Ha, u bo‘yi o‘sdi, bu velosiped endi unga juda past.",
+            "ru": "Да, она выросла, этот велосипед уже слишком маленький.",
+            "tj": "Ҳа, қадаш баланд шуд, ин дучарха ҳоло барои ӯ хеле паст аст."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "商场里开了一家自行车店，咱们给她买辆新的吧。",
+          "pinyin": "Shāngchǎng lǐ kāi le yì jiā zìxíngchē diàn, zánmen gěi tā mǎi liàng xīn de ba.",
+          "text": {
+            "uz": "Savdo markazida velosiped do‘koni ochilibdi, unga yangisini olaylik.",
+            "ru": "В торговом центре открылся магазин велосипедов, давай купим ей новый.",
+            "tj": "Дар маркази савдо мағозаи дучарха кушода шудааст, биё барояш нав бихарем."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "好，咱们带小雪一起去，让她试一下。",
+          "pinyin": "Hǎo, zánmen dài Xiǎoxuě yìqǐ qù, ràng tā shì yíxià.",
+          "text": {
+            "uz": "Mayli, Xiaoxueni ham olib boraylik, o‘zi sinab ko‘rsin.",
+            "ru": "Хорошо, возьмём Сяосюэ с собой, пусть попробует.",
+            "tj": "Хуб, Сяосюэро ҳам мебарем, бигзор худаш санҷад."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "那今天就去吧！我也想再看看衣服。咱们怎么去？",
+          "pinyin": "Nà jīntiān jiù qù ba! Wǒ yě xiǎng zài kànkan yīfu. Zánmen zěnme qù?",
+          "text": {
+            "uz": "Unda bugun boraylik! Men ham kiyimlarni yana ko‘rmoqchiman. Qanday boramiz?",
+            "ru": "Тогда пойдём сегодня! Я ещё хочу посмотреть одежду. Как поедем?",
+            "tj": "Пас имрӯз равем! Ман ҳам мехоҳам либосҳоро боз бинам. Чӣ тавр меравем?"
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "商场不远，咱们可以走着去。",
+          "pinyin": "Shāngchǎng bù yuǎn, zánmen kěyǐ zǒuzhe qù.",
+          "text": {
+            "uz": "Savdo markazi uzoq emas, piyoda borsak bo‘ladi.",
+            "ru": "Торговый центр недалеко, можем пойти пешком.",
+            "tj": "Маркази савдо дур нест, пиёда рафтан мумкин."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Savdo markazida Liu Ming va Wang Yixue velosipedni olib bo‘lib, kiyim tanlamoqda.",
+        "ru": "В торговом центре Лю Мин и Ван Исюэ после покупки велосипеда выбирают одежду.",
+        "tj": "Дар маркази савдо Лю Мин ва Ван Исюэ баъди харидани дучарха либос интихоб мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "你看我穿这条黄色的短裤好看吗？",
+          "pinyin": "Nǐ kàn wǒ chuān zhè tiáo huángsè de duǎnkù hǎokàn ma?",
+          "text": {
+            "uz": "Qara, mana bu sariq shortik menga yarashadimi?",
+            "ru": "Посмотри, мне идут эти жёлтые шорты?",
+            "tj": "Бин, ин шорти зард ба ман зебо меистад?"
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "大小合适，但我觉得那条裙子比短裤更好看。",
+          "pinyin": "Dàxiǎo héshì, dàn wǒ juéde nà tiáo qúnzi bǐ duǎnkù gèng hǎokàn.",
+          "text": {
+            "uz": "O‘lchami mos, lekin menimcha o‘sha yubka shortikdan chiroyliroq.",
+            "ru": "Размер подходит, но мне кажется, та юбка красивее шорт.",
+            "tj": "Андозааш мувофиқ аст, аммо ба назарам он юбка аз шорт зеботар аст."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "裙子比短裤贵一点儿。",
+          "pinyin": "Qúnzi bǐ duǎnkù guì yìdiǎnr.",
+          "text": {
+            "uz": "Yubka shortikdan biroz qimmatroq.",
+            "ru": "Юбка немного дороже шорт.",
+            "tj": "Юбка аз шорт каме гаронтар аст."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "贵多少？",
+          "pinyin": "Guì duōshao?",
+          "text": {
+            "uz": "Qanchaga qimmatroq?",
+            "ru": "Насколько дороже?",
+            "tj": "Чанд қадар гаронтар?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "裙子480，短裤400。",
+          "pinyin": "Qúnzi sìbǎi bāshí, duǎnkù sìbǎi.",
+          "text": {
+            "uz": "Yubka 480, shortik 400.",
+            "ru": "Юбка — 480, шорты — 400.",
+            "tj": "Юбка 480, шорт 400."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "裙子不比短裤贵多少，还是买裙子吧，你穿裙子更好看。",
+          "pinyin": "Qúnzi bù bǐ duǎnkù guì duōshao, háishi mǎi qúnzi ba, nǐ chuān qúnzi gèng hǎokàn.",
+          "text": {
+            "uz": "Yubka shortikdan uncha qimmat emas, yaxshisi yubkani ol, yubka senga ko‘proq yarashadi.",
+            "ru": "Юбка ненамного дороже, лучше возьми её — тебе в юбке красивее.",
+            "tj": "Юбка аз шорт он қадар гаронтар нест, беҳтараш юбкаро бигир, ба ту бештар мезебад."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "我多看看再决定。你看，那边有买二送一！",
+          "pinyin": "Wǒ duō kànkan zài juédìng. Nǐ kàn, nàbiān yǒu mǎi èr sòng yī!",
+          "text": {
+            "uz": "Yana ko‘rib chiqib, keyin qaror qilaman. Qara, u yerda “ikkita olsang, bittasi sovg‘a” ekan!",
+            "ru": "Я ещё посмотрю и потом решу. Смотри, там акция «купи два — третий в подарок»!",
+            "tj": "Боз мебинам, баъд қарор мекунам. Бин, он ҷо “дуто бихар, якто тӯҳфа” ҳаст!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do‘konda Wang Yixue xarid qilmoqda.",
+        "ru": "В магазине Ван Исюэ делает покупки.",
+        "tj": "Дар мағоза Ван Исюэ харид мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "店员",
+          "zh": "西瓜又大又新鲜，不甜不要钱！",
+          "pinyin": "Xīguā yòu dà yòu xīnxiān, bù tián bú yào qián!",
+          "text": {
+            "uz": "Tarvuzlar ham katta, ham yangi! Shirin bo‘lmasa, pul olmaysiz!",
+            "ru": "Арбузы большие и свежие! Если не сладкие — денег не берём!",
+            "tj": "Тарбузҳо ҳам калонанд, ҳам тару тоза! Агар ширин набошад, пул намегирем!"
+          }
+        },
+        {
+          "speaker": "店员",
+          "zh": "五块钱一公斤。来，您先尝尝这块冰西瓜，甜极了！",
+          "pinyin": "Wǔ kuài qián yì gōngjīn. Lái, nín xiān chángchang zhè kuài bīng xīguā, tián jí le!",
+          "text": {
+            "uz": "Bir kilogrammi besh yuan. Marhamat, avval mana bu sovutilgan tarvuzni tatib ko‘ring, juda shirin!",
+            "ru": "Пять юаней за килограмм. Попробуйте сначала этот охлаждённый арбуз — очень сладкий!",
+            "tj": "Як килограмм панҷ юан. Марҳамат, аввал ҳамин тарбузи хунукро чашед, ниҳоят ширин аст!"
+          }
+        },
+        {
+          "speaker": "店员",
+          "zh": "一共五十八块五毛。",
+          "pinyin": "Yígòng wǔshíbā kuài wǔ máo.",
+          "text": {
+            "uz": "Jami 58 yuan 5 mao.",
+            "ru": "Всего 58 юаней 5 мао.",
+            "tj": "Ҳамагӣ 58 юану 5 мао."
+          }
+        },
+        {
+          "speaker": "店员",
+          "zh": "您给我五十五吧，不能再便宜了。",
+          "pinyin": "Nín gěi wǒ wǔshíwǔ ba, bù néng zài piányi le.",
+          "text": {
+            "uz": "55 yuan bering, bundan arzon qila olmayman.",
+            "ru": "Давайте 55 юаней, дешевле уже нельзя.",
+            "tj": "55 юан диҳед, аз ин арзонтар намешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "而且",
+            "pinyin": "érqiě",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "balki; bundan tashqari",
+              "ru": "но и; к тому же",
+              "tj": "балки; инчунин"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "而且",
+          "pinyin": "érqiě",
+          "translation": {
+            "uz": "balki; bundan tashqari",
+            "ru": "но и; к тому же",
+            "tj": "балки; инчунин"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "而且",
+          "pinyin": "érqiě",
+          "options": [
+            "自行车",
+            "辆",
+            "旧",
+            "而且"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "而且 — balki; bundan tashqari (érqiě)",
+            "ru": "而且 — но и; к тому же (érqiě)",
+            "tj": "而且 — балки; инчунин (érqiě)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "声",
+            "pinyin": "shēng",
+            "pos": "m./n.",
+            "meaning": {
+              "uz": "tovush; tovush uchun hisob so‘zi",
+              "ru": "звук; счётное слово для звуков",
+              "tj": "садо; воҳиди ҳисоб барои садо"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "声 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 声:",
+            "tj": "Маънои калимаи 声-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "дучарха"
+            },
+            {
+              "uz": "tovush; tovush uchun hisob so‘zi",
+              "ru": "звук; счётное слово для звуков",
+              "tj": "садо; воҳиди ҳисоб барои садо"
+            },
+            {
+              "uz": "transport vositalari uchun hisob so‘zi",
+              "ru": "счётное слово для транспортных средств",
+              "tj": "воҳиди ҳисоб барои нақлиёт"
+            },
+            {
+              "uz": "eski",
+              "ru": "старый",
+              "tj": "кӯҳна"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "声 = tovush; tovush uchun hisob so‘zi (shēng)",
+            "ru": "声 = звук; счётное слово для звуков (shēng)",
+            "tj": "声 = садо; воҳиди ҳисоб барои садо (shēng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "开机",
+            "pinyin": "kāijī",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qurilmani yoqmoq",
+              "ru": "включать устройство",
+              "tj": "дастгоҳро фурӯзон кардан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "kāijī qaysi ieroglif?",
+            "ru": "Какой иероглиф читается kāijī?",
+            "tj": "kāijī кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "辆",
+            "开机",
+            "旧",
+            "自行车"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "开机 = qurilmani yoqmoq (kāijī)",
+            "ru": "开机 = включать устройство (kāijī)",
+            "tj": "开机 = дастгоҳро фурӯзон кардан (kāijī)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "而且 talaffuzini tanlang:",
+            "ru": "Выберите произношение 而且:",
+            "tj": "Талаффузи 而且-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "érqiě",
+            "jiù",
+            "liàng",
+            "zìxíngchē"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "而且 — érqiě",
+            "ru": "而且 — érqiě",
+            "tj": "而且 — érqiě"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "而且",
+              {
+                "uz": "balki; bundan tashqari",
+                "ru": "но и; к тому же",
+                "tj": "балки; инчунин"
+              }
+            ],
+            [
+              "声",
+              {
+                "uz": "tovush; tovush uchun hisob so‘zi",
+                "ru": "звук; счётное слово для звуков",
+                "tj": "садо; воҳиди ҳисоб барои садо"
+              }
+            ],
+            [
+              "开机",
+              {
+                "uz": "qurilmani yoqmoq",
+                "ru": "включать устройство",
+                "tj": "дастгоҳро фурӯзон кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "Kuchaytiruvchi qo‘shma gap “不但……而且……”",
+              "ru": "Градационное сложное предложение “不但……而且……”",
+              "tj": "Ҷумлаи тақвиятӣ “不但……而且……”"
+            },
+            "title_zh": "递进复句“不但……，而且……”",
+            "rule": {
+              "uz": "“不但A，而且B” birinchi ma’lumotga ikkinchi, kuchliroq yoki qo‘shimcha ma’lumotni qo‘shadi: “nafaqat A, balki B ham”.",
+              "ru": "“不但A，而且B” добавляет ко второй части более сильную или дополнительную информацию: «не только A, но и B».",
+              "tj": "“不但A，而且B” ба қисми аввал маълумоти иловагӣ ё қавитар зам мекунад: «на танҳо A, балки B ҳам»."
+            },
+            "examples": [
+              {
+                "zh": "现在的电视不但便宜，而且用着非常方便。",
+                "pinyin": "Xiànzài de diànshì bùdàn piányi, érqiě yòngzhe fēicháng fāngbiàn.",
+                "translation": {
+                  "uz": "Hozirgi televizorlar nafaqat arzon, balki ishlatish ham juda qulay.",
+                  "ru": "Современные телевизоры не только дешёвые, но и очень удобны в использовании.",
+                  "tj": "Телевизорҳои ҳозира на танҳо арзонанд, балки истифодаашон ҳам хеле қулай аст."
+                }
+              },
+              {
+                "zh": "家月不但喜欢唱歌，而且唱得很好听。",
+                "pinyin": "Jiāyuè bùdàn xǐhuan chànggē, érqiě chàng de hěn hǎotīng.",
+                "translation": {
+                  "uz": "Jiayue nafaqat qo‘shiq aytishni yoqtiradi, balki juda chiroyli aytadi.",
+                  "ru": "Цзяюэ не только любит петь, но и очень хорошо поёт.",
+                  "tj": "Ҷяюэ на танҳо сурудхониро дӯст медорад, балки хеле хуб месарояд."
+                }
+              },
+              {
+                "zh": "不但家月会说汉语，而且天中也会说汉语。",
+                "pinyin": "Bùdàn Jiāyuè huì shuō Hànyǔ, érqiě Tiānzhōng yě huì shuō Hànyǔ.",
+                "translation": {
+                  "uz": "Nafaqat Jiayue, Tianzhong ham xitoycha gapira oladi.",
+                  "ru": "Не только Цзяюэ говорит по-китайски, но и Тяньчжун тоже.",
+                  "tj": "На танҳо Ҷяюэ, балки Тянҷун ҳам бо чинӣ гап зада метавонад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "现在的电视____便宜，而且用着非常方便。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "辆",
+            "旧",
+            "自行车",
+            "不但"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 不但 (bùdàn) — nafaqat",
+            "ru": "Верно: 不但 (bùdàn) — не только",
+            "tj": "Дуруст: 不但 (bùdàn) — на танҳо"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Jiayue nafaqat qo‘shiq aytishni yoqtiradi, balki juda chiroyli aytadi.» — xitoychada qaysi biri?",
+            "ru": "«Цзяюэ не только любит петь, но и очень хорошо поёт.» — какое предложение по-китайски?",
+            "tj": "«Ҷяюэ на танҳо сурудхониро дӯст медорад, балки хеле хуб месарояд.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "不但家月会说汉语，而且天中也会说汉语。",
+            "家月不但喜欢唱歌，而且唱得很好听。",
+            "现在的电视不但便宜，而且用着非常方便。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "家月不但喜欢唱歌，而且唱得很好听。 — Jiāyuè bùdàn xǐhuan chànggē, érqiě chàng de hěn hǎotīng.",
+            "ru": "家月不但喜欢唱歌，而且唱得很好听。 — Jiāyuè bùdàn xǐhuan chànggē, érqiě chàng de hěn hǎotīng.",
+            "tj": "家月不但喜欢唱歌，而且唱得很好听。 — Jiāyuè bùdàn xǐhuan chànggē, érqiě chàng de hěn hǎotīng."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "声",
+          "pinyin": "shēng",
+          "translation": {
+            "uz": "tovush; tovush uchun hisob so‘zi",
+            "ru": "звук; счётное слово для звуков",
+            "tj": "садо; воҳиди ҳисоб барои садо"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "而且",
+          "pinyin": "érqiě",
+          "options": [
+            "自行车",
+            "旧",
+            "辆",
+            "而且"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "而且 — balki; bundan tashqari (érqiě)",
+            "ru": "而且 — но и; к тому же (érqiě)",
+            "tj": "而且 — балки; инчунин (érqiě)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "开机",
+          "pinyin": "kāijī",
+          "options": [
+            "旧",
+            "辆",
+            "自行车",
+            "开机"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "开机 — qurilmani yoqmoq (kāijī)",
+            "ru": "开机 — включать устройство (kāijī)",
+            "tj": "开机 — дастгоҳро фурӯзон кардан (kāijī)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "而且",
+          "pinyin": "érqiě",
+          "translation": {
+            "uz": "balki; bundan tashqari",
+            "ru": "но и; к тому же",
+            "tj": "балки; инчунин"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "结婚 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 结婚:",
+            "tj": "Маънои калимаи 结婚-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "дучарха"
+            },
+            {
+              "uz": "transport vositalari uchun hisob so‘zi",
+              "ru": "счётное слово для транспортных средств",
+              "tj": "воҳиди ҳисоб барои нақлиёт"
+            },
+            {
+              "uz": "eski",
+              "ru": "старый",
+              "tj": "кӯҳна"
+            },
+            {
+              "uz": "turmush qurmoq",
+              "ru": "вступать в брак",
+              "tj": "оиладор шудан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "结婚 = turmush qurmoq (jiéhūn)",
+            "ru": "结婚 = вступать в брак (jiéhūn)",
+            "tj": "结婚 = оиладор шудан (jiéhūn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "结婚",
+            "pinyin": "jiéhūn",
+            "meaning": {
+              "uz": "turmush qurmoq",
+              "ru": "вступать в брак",
+              "tj": "оиладор шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'balki; bundan tashqari' xitoycha qaysi?",
+            "ru": "'но и; к тому же' по-китайски?",
+            "tj": "'балки; инчунин' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "自行车",
+            "辆",
+            "旧",
+            "而且"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "balki; bundan tashqari = 而且 (érqiě)",
+            "ru": "но и; к тому же = 而且 (érqiě)",
+            "tj": "балки; инчунин = 而且 (érqiě)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "而且",
+            "pinyin": "érqiě",
+            "meaning": {
+              "uz": "balki; bundan tashqari",
+              "ru": "но и; к тому же",
+              "tj": "балки; инчунин"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

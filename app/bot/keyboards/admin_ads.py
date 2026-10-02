@@ -70,6 +70,47 @@ def ad_language_keyboard(selected: list[str]) -> InlineKeyboardMarkup:
     )
 
 
+def ad_track_keyboard(selected: str | None = None) -> InlineKeyboardMarkup:
+    def label(key: str, text: str) -> str:
+        return f"✅ {text}" if selected == key else text
+
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text=label("hsk20", "HSK 2.0"), callback_data="ads:track:hsk20"),
+                InlineKeyboardButton(text=label("hsk30", "HSK 3.0"), callback_data="ads:track:hsk30"),
+            ],
+            [InlineKeyboardButton(text="🌐 Hammasi", callback_data="ads:track:all")],
+            [InlineKeyboardButton(text="❌ Bekor qilish", callback_data="ads:cancel")],
+        ]
+    )
+
+
+def ad_level_keyboard(track: str | None = None, selected: str | None = None) -> InlineKeyboardMarkup:
+    if track == "hsk30":
+        levels = [("nhsk1", "HSK 3.0 · N1"), ("nhsk2", "HSK 3.0 · N2"), ("nhsk3", "HSK 3.0 · N3")]
+    elif track == "hsk20":
+        levels = [("beginner", "Boshlang'ich"), ("hsk1", "HSK1"), ("hsk2", "HSK2"), ("hsk3", "HSK3"), ("hsk4", "HSK4")]
+    else:
+        levels = [
+            ("hsk1", "HSK1"), ("hsk2", "HSK2"), ("hsk3", "HSK3"), ("hsk4", "HSK4"),
+            ("nhsk1", "3.0 · N1"), ("nhsk2", "3.0 · N2"), ("nhsk3", "3.0 · N3"),
+        ]
+
+    rows = []
+    for index in range(0, len(levels), 2):
+        rows.append([
+            InlineKeyboardButton(
+                text=("✅ " if selected == key else "") + text,
+                callback_data=f"ads:level:{key}",
+            )
+            for key, text in levels[index:index + 2]
+        ])
+    rows.append([InlineKeyboardButton(text="🌐 Hammasi", callback_data="ads:level:all")])
+    rows.append([InlineKeyboardButton(text="❌ Bekor qilish", callback_data="ads:cancel")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
 def ad_active_policy_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[

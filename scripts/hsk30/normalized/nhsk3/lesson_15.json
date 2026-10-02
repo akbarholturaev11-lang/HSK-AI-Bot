@@ -1,0 +1,389 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 15,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155
+    ]
+  },
+  "title": {
+    "hanzi": "我是半个南京人",
+    "pinyin": "Wǒ shì bàn ge Nánjīng rén"
+  },
+  "objectives": [
+    "能听懂并描述某地的位置和环境信息。",
+    "能听懂并介绍某地的自然景观或历史文化。",
+    "掌握“在……看来”短语，能表达个人或某个群体的观点。",
+    "了解南京和黄河的基本情况。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "蓝",
+      "pinyin": "lán",
+      "part_of_speech": "adj.",
+      "source_page": 146
+    },
+    {
+      "hanzi": "段",
+      "pinyin": "duàn",
+      "part_of_speech": "m.",
+      "source_page": 146
+    },
+    {
+      "hanzi": "附近",
+      "pinyin": "fùjìn",
+      "part_of_speech": "n.",
+      "source_page": 146
+    },
+    {
+      "hanzi": "马路",
+      "pinyin": "mǎlù",
+      "part_of_speech": "n.",
+      "source_page": 146
+    },
+    {
+      "hanzi": "平时",
+      "pinyin": "píngshí",
+      "part_of_speech": "n.",
+      "source_page": 146
+    },
+    {
+      "hanzi": "放学",
+      "pinyin": "fàngxué",
+      "part_of_speech": "v.",
+      "source_page": 146
+    },
+    {
+      "hanzi": "游戏",
+      "pinyin": "yóuxì",
+      "part_of_speech": "n.",
+      "source_page": 146
+    },
+    {
+      "hanzi": "老人",
+      "pinyin": "lǎorén",
+      "part_of_speech": "n.",
+      "source_page": 146
+    },
+    {
+      "hanzi": "根据",
+      "pinyin": "gēnjù",
+      "part_of_speech": "prep./v.",
+      "source_page": 146
+    },
+    {
+      "hanzi": "了解",
+      "pinyin": "liǎojiě",
+      "part_of_speech": "v.",
+      "source_page": 148
+    },
+    {
+      "hanzi": "可是",
+      "pinyin": "kěshì",
+      "part_of_speech": "conj.",
+      "source_page": 148
+    },
+    {
+      "hanzi": "以上",
+      "pinyin": "yǐshàng",
+      "part_of_speech": "n.",
+      "source_page": 148
+    },
+    {
+      "hanzi": "有名",
+      "pinyin": "yǒumíng",
+      "part_of_speech": "adj.",
+      "source_page": 148
+    },
+    {
+      "hanzi": "景点",
+      "pinyin": "jǐngdiǎn",
+      "part_of_speech": "n.",
+      "source_page": 148
+    },
+    {
+      "hanzi": "游客",
+      "pinyin": "yóukè",
+      "part_of_speech": "n.",
+      "source_page": 148
+    },
+    {
+      "hanzi": "外地",
+      "pinyin": "wàidì",
+      "part_of_speech": "n.",
+      "source_page": 148
+    },
+    {
+      "hanzi": "聊",
+      "pinyin": "liáo",
+      "part_of_speech": "v.",
+      "source_page": 148
+    },
+    {
+      "hanzi": "河",
+      "pinyin": "hé",
+      "part_of_speech": "n.",
+      "source_page": 150
+    },
+    {
+      "hanzi": "关系",
+      "pinyin": "guānxì",
+      "part_of_speech": "n.",
+      "source_page": 150
+    },
+    {
+      "hanzi": "养",
+      "pinyin": "yǎng",
+      "part_of_speech": "v.",
+      "source_page": 150
+    },
+    {
+      "hanzi": "西北",
+      "pinyin": "xīběi",
+      "part_of_speech": "n.",
+      "source_page": 151
+    },
+    {
+      "hanzi": "经过",
+      "pinyin": "jīngguò",
+      "part_of_speech": "v./n.",
+      "source_page": 151
+    },
+    {
+      "hanzi": "草地",
+      "pinyin": "cǎodì",
+      "part_of_speech": "n.",
+      "source_page": 151
+    },
+    {
+      "hanzi": "遇见",
+      "pinyin": "yùjiàn",
+      "part_of_speech": "v.",
+      "source_page": 151
+    },
+    {
+      "hanzi": "南京",
+      "pinyin": "Nánjīng",
+      "part_of_speech": "proper noun",
+      "source_page": 148
+    },
+    {
+      "hanzi": "黄河",
+      "pinyin": "Huáng Hé",
+      "part_of_speech": "proper noun",
+      "source_page": 150
+    }
+  ],
+  "grammar": [
+    {
+      "label": "介词“根据”",
+      "source_page": 147,
+      "examples": [
+        {
+          "hanzi": "这几年小区根据他们的需要，有了很多变化。",
+          "pinyin": "Zhè jǐ nián xiǎoqū gēnjù tāmen de xūyào, yǒu le hěn duō biànhuà."
+        },
+        {
+          "hanzi": "根据要求，我们必须参加明天的会议。",
+          "pinyin": "Gēnjù yāoqiú, wǒmen bìxū cānjiā míngtiān de huìyì."
+        },
+        {
+          "hanzi": "老师根据每个学生的兴趣，选择了不一样的书。",
+          "pinyin": "Lǎoshī gēnjù měi ge xuéshēng de xìngqù, xuǎnzé le bù yíyàng de shū."
+        }
+      ]
+    },
+    {
+      "label": "数量重叠“数词+量词+数词+量词”",
+      "source_page": 148,
+      "examples": [
+        {
+          "hanzi": "我得一点儿一点儿给您讲。",
+          "pinyin": "Wǒ děi yìdiǎnr yìdiǎnr gěi nín jiǎng."
+        },
+        {
+          "hanzi": "学生们的汉语水平一天一天地提高了。",
+          "pinyin": "Xuéshēngmen de Hànyǔ shuǐpíng yì tiān yì tiān de tígāo le."
+        },
+        {
+          "hanzi": "他们两个两个地走进去了。",
+          "pinyin": "Tāmen liǎng ge liǎng ge de zǒu jìnqu le."
+        }
+      ]
+    },
+    {
+      "label": "固定短语“在……看来”",
+      "source_page": 150,
+      "examples": [
+        {
+          "hanzi": "在我们中国人看来，黄河像妈妈一样，养了我们几千年。",
+          "pinyin": "Zài wǒmen Zhōngguó rén kànlái, Huáng Hé xiàng māma yíyàng, yǎng le wǒmen jǐ qiān nián."
+        },
+        {
+          "hanzi": "在同事们看来，她工作非常认真。",
+          "pinyin": "Zài tóngshìmen kànlái, tā gōngzuò fēicháng rènzhēn."
+        },
+        {
+          "hanzi": "在我看来，每天读书是一种很好的习惯。",
+          "pinyin": "Zài wǒ kànlái, měitiān dúshū shì yì zhǒng hěn hǎo de xíguàn."
+        }
+      ]
+    },
+    {
+      "label": "固定短语“不一会儿”",
+      "source_page": 152,
+      "examples": [
+        {
+          "hanzi": "难过的事情不一会儿就忘了。",
+          "pinyin": "Nánguò de shìqing bù yíhuìr jiù wàng le."
+        },
+        {
+          "hanzi": "不一会儿，张校长就来了。",
+          "pinyin": "Bù yíhuìr, Zhāng xiàozhǎng jiù lái le."
+        },
+        {
+          "hanzi": "两个小时看起来长，但是不一会儿就过去了。",
+          "pinyin": "Liǎng ge xiǎoshí kàn qǐlái cháng, dànshì bù yíhuìr jiù guòqu le."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在办公室里，王一雪和杨同乐在聊天儿。",
+      "source_page": 146,
+      "turns": [
+        {
+          "speaker": "杨同乐",
+          "hanzi": "您搬到蓝天小区一段时间了，觉得怎么样？",
+          "pinyin": "Nín bān dào Lántiān Xiǎoqū yí duàn shíjiān le, juéde zěnmeyàng?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "小区环境挺好的，附近买东西也很方便，过马路就是超市。",
+          "pinyin": "Xiǎoqū huánjìng tǐng hǎo de, fùjìn mǎi dōngxi yě hěn fāngbiàn, guò mǎlù jiù shì chāoshì."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "平时孩子们在哪儿玩？",
+          "pinyin": "Píngshí háizimen zài nǎr wán?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "小区里有很多树，孩子们放学后就在树下做游戏。你想买房子吗？",
+          "pinyin": "Xiǎoqū lǐ yǒu hěn duō shù, háizimen fàngxué hòu jiù zài shù xià zuò yóuxì. Nǐ xiǎng mǎi fángzi ma?"
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "是。我想买一个大房子，让我爸妈过来跟我一起住。",
+          "pinyin": "Shì. Wǒ xiǎng mǎi yí ge dà fángzi, ràng wǒ bàmā guòlái gēn wǒ yìqǐ zhù."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "蓝天小区的老人挺多的，这几年小区根据他们的需要，有了很多变化。",
+          "pinyin": "Lántiān Xiǎoqū de lǎorén tǐng duō de, zhè jǐ nián xiǎoqū gēnjù tāmen de xūyào, yǒu le hěn duō biànhuà."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "真不错！过几天我去蓝天小区看看。",
+          "pinyin": "Zhēn búcuò! Guò jǐ tiān wǒ qù Lántiān Xiǎoqū kànkan."
+        }
+      ]
+    },
+    {
+      "scene": "在办公室里，王一雪和杨同乐在聊天儿。",
+      "source_page": 148,
+      "turns": [
+        {
+          "speaker": "王一雪",
+          "hanzi": "假期我想去南京旅游，但是我不太了解那里。",
+          "pinyin": "Jiàqī wǒ xiǎng qù Nánjīng lǚyóu, dànshì wǒ bú tài liǎojiě nàlǐ."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "我虽然不是南京人，可是我是在南京上的大学，可以说是半个南京人。",
+          "pinyin": "Wǒ suīrán bú shì Nánjīng rén, kěshì wǒ shì zài Nánjīng shàng de dàxué, kěyǐ shuō shì bàn ge Nánjīng rén."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "太好了！你快给我介绍一下南京吧。",
+          "pinyin": "Tài hǎo le! Nǐ kuài gěi wǒ jièshào yíxià Nánjīng ba."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "南京有两千年以上的历史，有老城、老街，还有很多有名的景点，每年去旅游的游客特别多。",
+          "pinyin": "Nánjīng yǒu liǎng qiān nián yǐshàng de lìshǐ, yǒu lǎochéng, lǎojiē, hái yǒu hěn duō yǒumíng de jǐngdiǎn, měinián qù lǚyóu de yóukè tèbié duō."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "除了这些以外，你再告诉我一些外地人不知道的地方。",
+          "pinyin": "Chúle zhèxiē yǐwài, nǐ zài gàosu wǒ yìxiē wàidì rén bù zhīdào de dìfang."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "那太多了，我得一点儿一点儿给您讲。",
+          "pinyin": "Nà tài duō le, wǒ děi yìdiǎnr yìdiǎnr gěi nín jiǎng."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "行，下班后我请你吃晚饭，咱们边吃边聊。",
+          "pinyin": "Xíng, xiàbān hòu wǒ qǐng nǐ chī wǎnfàn, zánmen biān chī biān liáo."
+        }
+      ]
+    },
+    {
+      "scene": "在家里，王一雪和刘小明在聊天儿。",
+      "source_page": 150,
+      "turns": [
+        {
+          "speaker": "王一雪",
+          "hanzi": "小明，中国有一条大河，它的名字跟颜色有关系，你知道是什么河吗？",
+          "pinyin": "Xiǎomíng, Zhōngguó yǒu yì tiáo dà hé, tā de míngzi gēn yánsè yǒu guānxì, nǐ zhīdào shì shénme hé ma?"
+        },
+        {
+          "speaker": "刘小明",
+          "hanzi": "我知道，是黄河！",
+          "pinyin": "Wǒ zhīdào, shì Huáng Hé!"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "你说对了。我再问问你，你知道它为什么叫黄河吗？",
+          "pinyin": "Nǐ shuō duì le. Wǒ zài wènwen nǐ, nǐ zhīdào tā wèishénme jiào Huáng Hé ma?"
+        },
+        {
+          "speaker": "刘小明",
+          "hanzi": "因为河水看起来是黄色的，所以叫这个名字。黄河是中国最长的河吗？",
+          "pinyin": "Yīnwèi héshuǐ kàn qǐlái shì huángsè de, suǒyǐ jiào zhège míngzi. Huáng Hé shì Zhōngguó zuì cháng de hé ma?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "不是。黄河虽然不是最长的河，可是在历史上很重要。",
+          "pinyin": "Bú shì. Huáng Hé suīrán bú shì zuì cháng de hé, kěshì zài lìshǐ shàng hěn zhòngyào."
+        },
+        {
+          "speaker": "刘小明",
+          "hanzi": "这个我知道。很久以前，很多中国人都住在黄河边上。",
+          "pinyin": "Zhège wǒ zhīdào. Hěn jiǔ yǐqián, hěn duō Zhōngguó rén dōu zhù zài Huáng Hé biān shàng."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "对。在我们中国人看来，黄河像妈妈一样，养了我们几千年。",
+          "pinyin": "Duì. Zài wǒmen Zhōngguó rén kànlái, Huáng Hé xiàng māma yíyàng, yǎng le wǒmen jǐ qiān nián."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,691 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 52,
+  "source_lesson": 11,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我最喜欢吃中国菜",
+  "subtitle": {
+    "uz": "“着” bilan davom etayotgan holat yoki harakatni ifodalash; “着”li gapda obyekt va savol shakllarini to‘g‘ri ishlatish; “最” bilan eng yuqori darajani ifodalash; salomatlik va ovqat haqida gaplashish.",
+    "ru": "Выражать продолжающееся действие или состояние с “着”; правильно располагать объект и строить вопросы в предложениях с “着”; выражать превосходную степень с “最”; говорить о самочувствии и еде.",
+    "tj": "Бо “着” амал ё ҳолати давомдорро ифода кардан; объект ва шаклҳои саволро дар ҷумлаҳои “着” дуруст истифода бурдан; бо “最” дараҷаи олитаринро ифода кардан; дар бораи саломатӣ ва хӯрок суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "头",
+      "pinyin": "tóu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bosh",
+        "ru": "голова",
+        "tj": "сар"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "疼",
+      "pinyin": "téng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "og‘rimoq; og‘riqli",
+        "ru": "болеть; больной",
+        "tj": "дард кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "经常",
+      "pinyin": "jīngcháng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "tez-tez; ko‘pincha",
+        "ru": "часто",
+        "tj": "зуд-зуд; аксар вақт"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "动",
+      "pinyin": "dòng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qimirlamoq; harakatlanmoq",
+        "ru": "двигаться",
+        "tj": "ҳаракат кардан"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda Wang Yifei va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В классе Ван Ифэй и Бай Цзяюэ разговаривают.",
+        "tj": "Дар синф Ван Ифэй ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "家月，都下课了，你怎么还不回家？",
+          "pinyin": "Jiāyuè, dōu xiàkè le, nǐ zěnme hái bù huí jiā?",
+          "text": {
+            "uz": "Jiayue, dars tugadi-ku, nega hali uyga ketmading?",
+            "ru": "Цзяюэ, урок уже закончился, почему ты ещё не идёшь домой?",
+            "tj": "Ҷяюэ, дарс тамом шуд, чаро ҳоло ҳам ба хона намеравӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我头疼，不太舒服。",
+          "pinyin": "Wǒ tóu téng, bú tài shūfu.",
+          "text": {
+            "uz": "Boshim og‘riyapti, o‘zimni yaxshi his qilmayapman.",
+            "ru": "У меня болит голова, я не очень хорошо себя чувствую.",
+            "tj": "Сарам дард мекунад, худро хуб ҳис намекунам."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "你这几天经常头疼，去医院看看吧。",
+          "pinyin": "Nǐ zhè jǐ tiān jīngcháng tóu téng, qù yīyuàn kànkan ba.",
+          "text": {
+            "uz": "Shu kunlarda boshing tez-tez og‘riyapti, shifoxonaga borib ko‘rin.",
+            "ru": "В последние дни у тебя часто болит голова, сходи в больницу.",
+            "tj": "Ин чанд рӯз сарат зуд-зуд дард мекунад, ба беморхона рафта муоина шав."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我想休息一下，现在不能动，一动就疼。",
+          "pinyin": "Wǒ xiǎng xiūxi yíxià, xiànzài bù néng dòng, yí dòng jiù téng.",
+          "text": {
+            "uz": "Biroz dam olmoqchiman, hozir qimirlolmayman, qimirlasam darrov og‘riydi.",
+            "ru": "Хочу немного отдохнуть. Сейчас не могу двигаться: как только двигаюсь, сразу болит.",
+            "tj": "Мехоҳам каме истироҳат кунам, ҳоло ҳаракат карда наметавонам, ҳамин ки ҳаракат кунам, дард мекунад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yifeining mashinasida Wang Yifei va Bai Jiayue suhbatlashmoqda, Li Wen telefon qildi.",
+        "ru": "В машине Ван Ифэй разговаривает с Бай Цзяюэ; звонит Ли Вэнь.",
+        "tj": "Дар мошини Ван Ифэй ӯ бо Бай Ҷяюэ суҳбат мекунад ва Ли Вэн занг мезанад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "没问题，现在头没那么疼了。",
+          "pinyin": "Méi wèntí, xiànzài tóu méi nàme téng le.",
+          "text": {
+            "uz": "Mayli, hozir boshim unchalik og‘rimayapti.",
+            "ru": "Хорошо, сейчас голова уже не так сильно болит.",
+            "tj": "Хуб, ҳоло сарам он қадар дард намекунад."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "没什么事。今天雪这么大，你们开车去哪儿啊？",
+          "pinyin": "Méi shénme shì. Jīntiān xuě zhème dà, nǐmen kāichē qù nǎr a?",
+          "text": {
+            "uz": "Muhim ish yo‘q. Bugun qor juda kuchli, mashinada qayerga ketyapsizlar?",
+            "ru": "Ничего важного. Сегодня такой сильный снег, куда вы едете?",
+            "tj": "Кори муҳиме нест. Имрӯз барф ин қадар зиёд, бо мошин ба куҷо меравед?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "去医院，我头有点儿疼。",
+          "pinyin": "Qù yīyuàn, wǒ tóu yǒudiǎnr téng.",
+          "text": {
+            "uz": "Shifoxonaga, boshim biroz og‘riyapti.",
+            "ru": "В больницу, у меня немного болит голова.",
+            "tj": "Ба беморхона, сарам каме дард мекунад."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "那我一会儿去看看你。",
+          "pinyin": "Nà wǒ yíhuìr qù kànkan nǐ.",
+          "text": {
+            "uz": "Unda birozdan keyin seni ko‘rgani boraman.",
+            "ru": "Тогда я чуть позже зайду тебя навестить.",
+            "tj": "Пас каме баъд туро дидан меоям."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xonada Li Wen Bai Jiayueni ko‘rgani keldi.",
+        "ru": "В комнате Ли Вэнь пришёл навестить Бай Цзяюэ.",
+        "tj": "Дар ҳуҷра Ли Вэн барои дидани Бай Ҷяюэ омадааст."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "家月，你怎么样了？头还疼吗？",
+          "pinyin": "Jiāyuè, nǐ zěnmeyàng le? Tóu hái téng ma?",
+          "text": {
+            "uz": "Jiayue, qalaysan? Boshing hali og‘riyaptimi?",
+            "ru": "Цзяюэ, как ты? Голова ещё болит?",
+            "tj": "Ҷяюэ, аҳволат чӣ хел? Сарат ҳоло ҳам дард мекунад?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "不那么疼了。医生开了一些药，吃完就好多了。",
+          "pinyin": "Bú nàme téng le. Yīshēng kāile yìxiē yào, chīwán jiù hǎoduō le.",
+          "text": {
+            "uz": "Unchalik og‘rimayapti. Shifokor dori yozib berdi, ichganimdan keyin ancha yaxshi bo‘ldim.",
+            "ru": "Уже не так болит. Врач выписал лекарства, после них стало намного лучше.",
+            "tj": "Дигар он қадар дард намекунад. Духтур дору навишт, баъди истеъмол хеле беҳтар шудам."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "那就好！",
+          "pinyin": "Nà jiù hǎo!",
+          "text": {
+            "uz": "Unda yaxshi!",
+            "ru": "Вот и хорошо!",
+            "tj": "Хуб шудааст!"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "头",
+            "pinyin": "tóu",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bosh",
+              "ru": "голова",
+              "tj": "сар"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "tóu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается tóu?",
+            "tj": "tóu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "动",
+            "经常",
+            "疼",
+            "头"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "头 = bosh (tóu)",
+            "ru": "头 = голова (tóu)",
+            "tj": "头 = сар (tóu)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "疼",
+            "pinyin": "téng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "og‘rimoq; og‘riqli",
+              "ru": "болеть; больной",
+              "tj": "дард кардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "疼 talaffuzini tanlang:",
+            "ru": "Выберите произношение 疼:",
+            "tj": "Талаффузи 疼-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "dòng",
+            "tóu",
+            "téng",
+            "jīngcháng"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "疼 — téng",
+            "ru": "疼 — téng",
+            "tj": "疼 — téng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "经常",
+            "pinyin": "jīngcháng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "tez-tez; ko‘pincha",
+              "ru": "часто",
+              "tj": "зуд-зуд; аксар вақт"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tez-tez; ko‘pincha' xitoycha qaysi?",
+            "ru": "'часто' по-китайски?",
+            "tj": "'зуд-зуд; аксар вақт' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "头",
+            "疼",
+            "经常",
+            "动"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "tez-tez; ko‘pincha = 经常 (jīngcháng)",
+            "ru": "часто = 经常 (jīngcháng)",
+            "tj": "зуд-зуд; аксар вақт = 经常 (jīngcháng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "动",
+            "pinyin": "dòng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qimirlamoq; harakatlanmoq",
+              "ru": "двигаться",
+              "tj": "ҳаракат кардан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "动",
+          "pinyin": "dòng",
+          "translation": {
+            "uz": "qimirlamoq; harakatlanmoq",
+            "ru": "двигаться",
+            "tj": "ҳаракат кардан"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "动",
+          "pinyin": "dòng",
+          "options": [
+            "疼",
+            "头",
+            "经常",
+            "动"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "动 — qimirlamoq; harakatlanmoq (dòng)",
+            "ru": "动 — двигаться (dòng)",
+            "tj": "动 — ҳаракат кардан (dòng)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "头 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 头:",
+            "tj": "Маънои калимаи 头-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qimirlamoq; harakatlanmoq",
+              "ru": "двигаться",
+              "tj": "ҳаракат кардан"
+            },
+            {
+              "uz": "bosh",
+              "ru": "голова",
+              "tj": "сар"
+            },
+            {
+              "uz": "tez-tez; ko‘pincha",
+              "ru": "часто",
+              "tj": "зуд-зуд; аксар вақт"
+            },
+            {
+              "uz": "og‘rimoq; og‘riqli",
+              "ru": "болеть; больной",
+              "tj": "дард кардан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "头 = bosh (tóu)",
+            "ru": "头 = голова (tóu)",
+            "tj": "头 = сар (tóu)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "头",
+              {
+                "uz": "bosh",
+                "ru": "голова",
+                "tj": "сар"
+              }
+            ],
+            [
+              "疼",
+              {
+                "uz": "og‘rimoq; og‘riqli",
+                "ru": "болеть; больной",
+                "tj": "дард кардан"
+              }
+            ],
+            [
+              "经常",
+              {
+                "uz": "tez-tez; ko‘pincha",
+                "ru": "часто",
+                "tj": "зуд-зуд; аксар вақт"
+              }
+            ],
+            [
+              "动",
+              {
+                "uz": "qimirlamoq; harakatlanmoq",
+                "ru": "двигаться",
+                "tj": "ҳаракат кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "头",
+          "pinyin": "tóu",
+          "translation": {
+            "uz": "bosh",
+            "ru": "голова",
+            "tj": "сар"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "没问题，现在头没那么疼了。",
+          "pinyin": "Méi wèntí, xiànzài tóu méi nàme téng le.",
+          "translation": {
+            "uz": "Mayli, hozir boshim unchalik og‘rimayapti.",
+            "ru": "Хорошо, сейчас голова уже не так сильно болит.",
+            "tj": "Хуб, ҳоло сарам он қадар дард намекунад."
+          },
+          "tokens": {
+            "uz": [
+              "hozir",
+              "og‘rimayapti",
+              "Mayli",
+              "og‘riyapti",
+              "unchalik",
+              "Boshim",
+              "boshim"
+            ],
+            "ru": [
+              "меня",
+              "голова",
+              "так",
+              "не",
+              "болит",
+              "Хорошо",
+              "У",
+              "сейчас",
+              "сильно",
+              "уже"
+            ],
+            "tj": [
+              "дард",
+              "сарам",
+              "он",
+              "қадар",
+              "Хуб",
+              "мекунад",
+              "ҳоло",
+              "намекунад",
+              "Сарам"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Mayli",
+              "hozir",
+              "boshim",
+              "unchalik",
+              "og‘rimayapti"
+            ],
+            "ru": [
+              "Хорошо",
+              "сейчас",
+              "голова",
+              "уже",
+              "не",
+              "так",
+              "сильно",
+              "болит"
+            ],
+            "tj": [
+              "Хуб",
+              "ҳоло",
+              "сарам",
+              "он",
+              "қадар",
+              "дард",
+              "намекунад"
+            ]
+          },
+          "explanation": {
+            "uz": "没问题，现在头没那么疼了。 — Mayli, hozir boshim unchalik og‘rimayapti.",
+            "ru": "没问题，现在头没那么疼了。 — Хорошо, сейчас голова уже не так сильно болит.",
+            "tj": "没问题，现在头没那么疼了。 — Хуб, ҳоло сарам он қадар дард намекунад."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "没问题，现在头没那么疼了。",
+          "pinyin": "Méi wèntí, xiànzài tóu méi nàme téng le.",
+          "options": [
+            "我想休息一下，现在不能动，一动就疼。",
+            "没问题，现在头没那么疼了。",
+            "我头疼，不太舒服。",
+            "你这几天经常头疼，去医院看看吧。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "没问题，现在头没那么疼了。 — Mayli, hozir boshim unchalik og‘rimayapti.",
+            "ru": "没问题，现在头没那么疼了。 — Хорошо, сейчас голова уже не так сильно болит.",
+            "tj": "没问题，现在头没那么疼了。 — Хуб, ҳоло сарам он қадар дард намекунад."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "动",
+          "pinyin": "dòng",
+          "translation": {
+            "uz": "qimirlamoq; harakatlanmoq",
+            "ru": "двигаться",
+            "tj": "ҳаракат кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "笔 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 笔:",
+            "tj": "Маънои калимаи 笔-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ruchka; qalam",
+              "ru": "ручка; карандаш",
+              "tj": "ручка; қалам"
+            },
+            {
+              "uz": "bosh",
+              "ru": "голова",
+              "tj": "сар"
+            },
+            {
+              "uz": "tez-tez; ko‘pincha",
+              "ru": "часто",
+              "tj": "зуд-зуд; аксар вақт"
+            },
+            {
+              "uz": "og‘rimoq; og‘riqli",
+              "ru": "болеть; больной",
+              "tj": "дард кардан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "笔 = ruchka; qalam (bǐ)",
+            "ru": "笔 = ручка; карандаш (bǐ)",
+            "tj": "笔 = ручка; қалам (bǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "笔",
+            "pinyin": "bǐ",
+            "meaning": {
+              "uz": "ruchka; qalam",
+              "ru": "ручка; карандаш",
+              "tj": "ручка; қалам"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qimirlamoq; harakatlanmoq' xitoycha qaysi?",
+            "ru": "'двигаться' по-китайски?",
+            "tj": "'ҳаракат кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "疼",
+            "经常",
+            "头",
+            "动"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "qimirlamoq; harakatlanmoq = 动 (dòng)",
+            "ru": "двигаться = 动 (dòng)",
+            "tj": "ҳаракат кардан = 动 (dòng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "动",
+            "pinyin": "dòng",
+            "meaning": {
+              "uz": "qimirlamoq; harakatlanmoq",
+              "ru": "двигаться",
+              "tj": "ҳаракат кардан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

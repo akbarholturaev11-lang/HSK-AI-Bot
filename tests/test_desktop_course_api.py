@@ -19,10 +19,13 @@ from app.db.base import Base
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_mistake import CourseMistake
 from app.db.models.course_progress import CourseProgress
+from app.db.models.course_track_state import CourseTrackState
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.desktop import DesktopDevice
 from app.db.models.user import User
+from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.course_notification_service import CourseNotificationService
+from app.services.hsk30_feature_service import HSK30_ENABLED_SETTINGS_KEY
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.entitlements import actions as A
 from app.services.entitlements.limits_config import LimitConfigService
@@ -206,6 +209,81 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(device.first_open_at)
             self.assertEqual(int(first_open_events or 0), 0)
             self.assertEqual(progress.reminder_tz_offset, 5)
+
+    async def test_native_desktop_can_switch_to_live_hsk30_track(self):
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            user.status = "active"
+            user.payment_status = "approved"
+            user.end_date = datetime.now(timezone.utc) + timedelta(days=7)
+            await BotSettingRepository(session).set_bool(
+                HSK30_ENABLED_SETTINGS_KEY,
+                True,
+            )
+            await session.commit()
+
+        switched = await self.client.post(
+            "/api/v3/desktop/course/tracks/switch",
+            headers={**self.auth_headers, "Content-Type": "application/json"},
+            json={"target_track": "hsk30", "level": "nhsk1"},
+        )
+        self.assertEqual(switched.status_code, 200, switched.text)
+        self.assertEqual(switched.json()["active_track"], "hsk30")
+        self.assertEqual(switched.json()["active_level"], "nhsk1")
+
+        course_map = await self.client.get(
+            "/api/v3/desktop/course/map?tz=300",
+            headers=self.auth_headers,
+        )
+        self.assertEqual(course_map.status_code, 200, course_map.text)
+        payload = course_map.json()
+        self.assertEqual(payload["level"], "nhsk1")
+        self.assertEqual(payload["hsk30"]["active_track"], "hsk30")
+        self.assertTrue(payload["hsk30"]["access"]["allowed"])
+        self.assertEqual(payload["hsk30"]["live_levels"], ["nhsk1"])
+        self.assertTrue(payload["hsk30"]["new_badge"]["is_new"])
+        self.assertIsNotNone(payload["hsk30"]["new_badge"]["new_until"])
+
+        promo = await self.client.post(
+            "/api/v3/desktop/course/hsk30/promo-shown",
+            headers={**self.auth_headers, "Content-Type": "application/json"},
+            json={},
+        )
+        self.assertEqual(promo.status_code, 200, promo.text)
+        self.assertTrue(promo.json()["ok"])
+
+    async def test_hsk30_map_preserves_native_level_when_permanently_unlocked(self):
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            user.level = "nhsk1"
+            session.add(
+                CourseTrackState(
+                    user_id=user.id,
+                    track="hsk30",
+                    level="nhsk1",
+                    completed_lessons_count=0,
+                    unlocked_at=datetime.now(timezone.utc),
+                )
+            )
+            await BotSettingRepository(session).set_bool(
+                HSK30_ENABLED_SETTINGS_KEY,
+                True,
+            )
+            await session.commit()
+
+        response = await self.client.get(
+            "/api/v3/desktop/course/map?tz=300",
+            headers=self.auth_headers,
+        )
+
+        self.assertEqual(response.status_code, 200, response.text)
+        payload = response.json()
+        self.assertEqual(payload["level"], "nhsk1")
+        self.assertEqual(len(payload["units"]), 15)
+        self.assertTrue(payload["lesson_limit"]["allowed"])
+        self.assertTrue(
+            payload["lesson_limit"]["hsk30_access"]["permanently_unlocked"]
+        )
 
     async def test_sync_is_lightweight_and_reports_only_drift_markers(self):
         async with self.sessions() as session:
@@ -761,6 +839,8 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             paths,
             {
                 "/api/v3/desktop/course/map",
+                "/api/v3/desktop/course/tracks/switch",
+                "/api/v3/desktop/course/hsk30/promo-shown",
                 "/api/v3/desktop/sync",
                 "/api/v3/desktop/course/lesson/{lesson_order}",
                 "/api/v3/desktop/course/complete",

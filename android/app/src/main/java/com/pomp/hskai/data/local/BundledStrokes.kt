@@ -8,13 +8,11 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 /**
- * How every dictionary character is written, shipped inside the APK.
+ * Dictionary stroke data shipped inside the APK when a local outline exists.
  *
- * The word list travels with the app too (`AssetBundledDictionarySource`), but
- * the writing order used to be fetched one request at a time with no cache at
- * all: a learner with no connection saw the words and an empty writing box.
- * Both halves of the dictionary now work offline, and neither costs a round
- * trip for something that only changes with a release.
+ * The word list travels with the app too (`AssetBundledDictionarySource`).
+ * Most dictionary characters draw with no connection; a character absent
+ * from this bundle falls through to the repository's authenticated endpoint.
  *
  * Files are named by code point, the same way the server names its own stroke
  * cache (`{ord(char)}.json`), so the two layouts can be compared without

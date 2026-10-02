@@ -1,0 +1,835 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 68,
+  "source_lesson": 14,
+  "part_no": 3,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "一个人过年多没意思啊",
+  "subtitle": {
+    "uz": "“着” bilan mavjudlik gapini tuzish; undov gapida “多” bilan yuqori darajani ifodalash; qo‘shma yo‘nalish to‘ldiruvchilarini va obyektning joylashuvini to‘g‘ri ishlatish; tanishtirish va uy-joy haqida gaplashish.",
+    "ru": "Строить экзистенциальные предложения с “着”; выражать высокую степень через “多” в восклицательных предложениях; правильно использовать составные направительные дополнения и позицию объекта; говорить о знакомстве и жилье.",
+    "tj": "Бо “着” ҷумлаи мавҷудият сохтан; дар ҷумлаи хитобӣ бо “多” дараҷаи баландро ифода кардан; пуркунандаи мураккаби самт ва ҷойи объектро дуруст истифода бурдан; дар бораи шиносоӣ ва манзил суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "女孩儿",
+      "pinyin": "nǚháir",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qiz bola",
+        "ru": "девочка",
+        "tj": "духтар"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "姓",
+      "pinyin": "xìng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "familiyasi ... bo‘lmoq",
+        "ru": "носить фамилию",
+        "tj": "насаб доштан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "眼睛",
+      "pinyin": "yǎnjing",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ko‘z",
+        "ru": "глаза",
+        "tj": "чашм"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "跳舞",
+      "pinyin": "tiàowǔ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "raqsga tushmoq",
+        "ru": "танцевать",
+        "tj": "рақсидан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Qo‘shma yo‘nalish to‘ldiruvchisi",
+        "ru": "Составное направительное дополнение",
+        "tj": "Пуркунандаи мураккаби самт"
+      },
+      "title_zh": "复合趋向补语",
+      "rule": {
+        "uz": "“上、下、进、出、回、过” + “来/去” hamda “起来” fe’ldan keyin kelib qo‘shma yo‘nalish to‘ldiruvchisini tuzadi. Joy oti obyekt bo‘lsa 来/去 oldida; narsa oti esa oldida ham, keyin ham kelishi mumkin.",
+        "ru": "“上、下、进、出、回、过” + “来/去”, а также “起来”, после глагола образуют составное направительное дополнение. Объект-место ставится перед 来/去; предметный объект может стоять до или после 来/去.",
+        "tj": "“上、下、进、出、回、过” + “来/去” ва “起来” баъди феъл пуркунандаи мураккаби самт месозанд. Объекти ҷой пеш аз 来/去; объекти ашёӣ пеш ё пас аз 来/去 меояд."
+      },
+      "examples": [
+        {
+          "zh": "她经常跑上来找我玩。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "楼不高，我们走上去吧。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "一听到老师叫他的名字，他就站起来了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "同学们都走出教室去了。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "妈妈让我买回来一些菜来。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "白家月从书包里找出来一个漂亮的本子。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyga qaytish yo‘lida Li Wen va Wang Yifei yurib suhbatlashmoqda.",
+        "ru": "По дороге домой Ли Вэнь и Ван Ифэй разговаривают на ходу.",
+        "tj": "Дар роҳи бозгашт ба хона Ли Вэн ва Ван Ифэй роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "我家楼下？我看看。",
+          "pinyin": "Wǒ jiā lóuxià? Wǒ kànkan.",
+          "text": {
+            "uz": "Uyim pastidami? Qani ko‘ray.",
+            "ru": "Внизу моего дома? Дай посмотрю.",
+            "tj": "Поёни хонаи ман? Бинам."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "那个人穿着黑色的裤子，手里还拿着一个黑色的包。",
+          "pinyin": "Nàge rén chuānzhe hēisè de kùzi, shǒulǐ hái názhe yí ge hēisè de bāo.",
+          "text": {
+            "uz": "U odam qora shim kiygan, qo‘lida yana qora sumka bor.",
+            "ru": "На том человеке чёрные брюки, а в руке он держит чёрную сумку.",
+            "tj": "Он одам шими сиёҳ пӯшидааст ва дар дасташ халтаи сиёҳ дорад."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "我看见那个人了，他是我男朋友。",
+          "pinyin": "Wǒ kànjiàn nàge rén le, tā shì wǒ nánpéngyou.",
+          "text": {
+            "uz": "Ko‘rdim, u mening yigitim.",
+            "ru": "Я его вижу, это мой молодой человек.",
+            "tj": "Ӯро дидам, ӯ дӯстписари ман аст."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "那我们快过去吧。",
+          "pinyin": "Nà wǒmen kuài guòqu ba.",
+          "text": {
+            "uz": "Unda tezroq u tomonga boraylik.",
+            "ru": "Тогда пойдём скорее к нему.",
+            "tj": "Пас зуд ба он тараф равем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Bino pastida Wang Yifei Yang Tongle bilan uchrashdi.",
+        "ru": "Внизу дома Ван Ифэй встретила Ян Тунлэ.",
+        "tj": "Дар поёни бино Ван Ифэй бо Ян Тунлэ вохӯрд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Yang Tongle",
+          "zh": "就要过年了，你一个人在这儿多没意思啊，所以我就早早过来了。",
+          "pinyin": "Jiù yào guònián le, nǐ yí ge rén zài zhèr duō méi yìsi a, suǒyǐ wǒ jiù zǎozǎo guòlai le.",
+          "text": {
+            "uz": "Yangi yilga oz qoldi, bu yerda yolg‘iz qolish naqadar zerikarli, shuning uchun erta keldim.",
+            "ru": "Скоро Новый год, одному здесь так скучно, поэтому я приехал пораньше.",
+            "tj": "Ба Соли нав кам мондааст, танҳо будан дар ин ҷо чӣ қадар дилгир аст, барои ҳамин барвақт омадам."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "你能来，我太高兴了！",
+          "pinyin": "Nǐ néng lái, wǒ tài gāoxìng le!",
+          "text": {
+            "uz": "Kelganingdan juda xursandman!",
+            "ru": "Я так рада, что ты приехал!",
+            "tj": "Аз омаданат хеле хурсанд шудам!"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "认识你我也很高兴！我家就在前面那个楼，有时间来玩。",
+          "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng! Wǒ jiā jiù zài qiánmian nàge lóu, yǒu shíjiān lái wán.",
+          "text": {
+            "uz": "Men ham tanishganimdan xursandman! Uyim oldindagi binoda, vaqtingiz bo‘lsa mehmonga keling.",
+            "ru": "Я тоже рад познакомиться! Я живу вон в том доме впереди, заходите как-нибудь.",
+            "tj": "Ман ҳам аз шиносоӣ хушҳолам! Хонаам дар ҳамон бинои пеш аст, вақт бошад меҳмон шавед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Wang Yifei va Yang Tongle mehmonxonada suhbatlashmoqda.",
+        "ru": "Дома у Ван Ифэй она и Ян Тунлэ разговаривают в гостиной.",
+        "tj": "Дар хонаи Ван Ифэй ӯ ва Ян Тунлэ дар меҳмонхона суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Yang Tongle",
+          "zh": "这样你有事情就可以找他们帮忙。",
+          "pinyin": "Zhèyàng nǐ yǒu shìqing jiù kěyǐ zhǎo tāmen bāngmáng.",
+          "text": {
+            "uz": "Shunda biror ish bo‘lsa ulardan yordam so‘rashing mumkin.",
+            "ru": "Тогда, если что-то понадобится, можешь попросить их помочь.",
+            "tj": "Ҳамин тавр, агар коре шавад, аз онҳо кӯмак пурсидан мумкин."
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我记得你跟我说过，是个女孩儿，学得也很好。",
+          "pinyin": "Wǒ jìde nǐ gēn wǒ shuōguo, shì ge nǚháir, xué de yě hěn hǎo.",
+          "text": {
+            "uz": "Esimda, menga aytganding, u qiz bola va juda yaxshi o‘qiydi.",
+            "ru": "Помню, ты рассказывала: это девочка, и учится она хорошо.",
+            "tj": "Дар хотир дорам, гуфта будӣ, духтар аст ва хеле хуб мехонад."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "没错，她经常跑上来找我玩。",
+          "pinyin": "Méi cuò, tā jīngcháng pǎo shànglái zhǎo wǒ wán.",
+          "text": {
+            "uz": "To‘g‘ri, u tez-tez yuqoriga yugurib kelib men bilan o‘ynaydi.",
+            "ru": "Верно, она часто прибегает наверх поиграть со мной.",
+            "tj": "Дуруст, ӯ зуд-зуд ба боло давида омада бо ман бозӣ мекунад."
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "你问问他们什么时候有时间，我请他们吃个饭。",
+          "pinyin": "Nǐ wènwen tāmen shénme shíhou yǒu shíjiān, wǒ qǐng tāmen chī ge fàn.",
+          "text": {
+            "uz": "Ulardan qachon vaqtlari borligini so‘ra, men ularni ovqatga taklif qilaman.",
+            "ru": "Спроси, когда у них будет время, я приглашу их поесть.",
+            "tj": "Аз онҳо пурс, кай вақт доранд, ман онҳоро ба хӯрок даъват мекунам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "女孩儿",
+            "pinyin": "nǚháir",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qiz bola",
+              "ru": "девочка",
+              "tj": "духтар"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "女孩儿 talaffuzini tanlang:",
+            "ru": "Выберите произношение 女孩儿:",
+            "tj": "Талаффузи 女孩儿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "guònián",
+            "bāo",
+            "nǚháir",
+            "zhàn"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "女孩儿 — nǚháir",
+            "ru": "女孩儿 — nǚháir",
+            "tj": "女孩儿 — nǚháir"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "姓",
+            "pinyin": "xìng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "familiyasi ... bo‘lmoq",
+              "ru": "носить фамилию",
+              "tj": "насаб доштан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'familiyasi ... bo‘lmoq' xitoycha qaysi?",
+            "ru": "'носить фамилию' по-китайски?",
+            "tj": "'насаб доштан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "包",
+            "过年",
+            "站",
+            "姓"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "familiyasi ... bo‘lmoq = 姓 (xìng)",
+            "ru": "носить фамилию = 姓 (xìng)",
+            "tj": "насаб доштан = 姓 (xìng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "眼睛",
+            "pinyin": "yǎnjing",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ko‘z",
+              "ru": "глаза",
+              "tj": "чашм"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "眼睛",
+          "pinyin": "yǎnjing",
+          "options": [
+            "过年",
+            "站",
+            "包",
+            "眼睛"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "眼睛 — ko‘z (yǎnjing)",
+            "ru": "眼睛 — глаза (yǎnjing)",
+            "tj": "眼睛 — чашм (yǎnjing)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "跳舞",
+            "pinyin": "tiàowǔ",
+            "pos": "v.",
+            "meaning": {
+              "uz": "raqsga tushmoq",
+              "ru": "танцевать",
+              "tj": "рақсидан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "跳舞",
+          "pinyin": "tiàowǔ",
+          "translation": {
+            "uz": "raqsga tushmoq",
+            "ru": "танцевать",
+            "tj": "рақсидан"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "跳舞 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 跳舞:",
+            "tj": "Маънои калимаи 跳舞-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "turmoq",
+              "ru": "стоять",
+              "tj": "истодан"
+            },
+            {
+              "uz": "Bahor bayramini/Yangi yilni nishonlamoq",
+              "ru": "праздновать Китайский Новый год",
+              "tj": "Соли нави чиниро ҷашн гирифтан"
+            },
+            {
+              "uz": "sumka; o‘ram; o‘ramoq",
+              "ru": "сумка; пакет; заворачивать",
+              "tj": "халта; баста; бастан"
+            },
+            {
+              "uz": "raqsga tushmoq",
+              "ru": "танцевать",
+              "tj": "рақсидан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "跳舞 = raqsga tushmoq (tiàowǔ)",
+            "ru": "跳舞 = танцевать (tiàowǔ)",
+            "tj": "跳舞 = рақсидан (tiàowǔ)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "nǚháir qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nǚháir?",
+            "tj": "nǚháir кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "站",
+            "过年",
+            "女孩儿",
+            "包"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "女孩儿 = qiz bola (nǚháir)",
+            "ru": "女孩儿 = девочка (nǚháir)",
+            "tj": "女孩儿 = духтар (nǚháir)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "女孩儿",
+              {
+                "uz": "qiz bola",
+                "ru": "девочка",
+                "tj": "духтар"
+              }
+            ],
+            [
+              "姓",
+              {
+                "uz": "familiyasi ... bo‘lmoq",
+                "ru": "носить фамилию",
+                "tj": "насаб доштан"
+              }
+            ],
+            [
+              "眼睛",
+              {
+                "uz": "ko‘z",
+                "ru": "глаза",
+                "tj": "чашм"
+              }
+            ],
+            [
+              "跳舞",
+              {
+                "uz": "raqsga tushmoq",
+                "ru": "танцевать",
+                "tj": "рақсидан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Qo‘shma yo‘nalish to‘ldiruvchisi",
+              "ru": "Составное направительное дополнение",
+              "tj": "Пуркунандаи мураккаби самт"
+            },
+            "title_zh": "复合趋向补语",
+            "rule": {
+              "uz": "“上、下、进、出、回、过” + “来/去” hamda “起来” fe’ldan keyin kelib qo‘shma yo‘nalish to‘ldiruvchisini tuzadi. Joy oti obyekt bo‘lsa 来/去 oldida; narsa oti esa oldida ham, keyin ham kelishi mumkin.",
+              "ru": "“上、下、进、出、回、过” + “来/去”, а также “起来”, после глагола образуют составное направительное дополнение. Объект-место ставится перед 来/去; предметный объект может стоять до или после 来/去.",
+              "tj": "“上、下、进、出、回、过” + “来/去” ва “起来” баъди феъл пуркунандаи мураккаби самт месозанд. Объекти ҷой пеш аз 来/去; объекти ашёӣ пеш ё пас аз 来/去 меояд."
+            },
+            "examples": [
+              {
+                "zh": "她经常跑上来找我玩。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "楼不高，我们走上去吧。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "一听到老师叫他的名字，他就站起来了。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "同学们都走出教室去了。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "妈妈让我买回来一些菜来。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "白家月从书包里找出来一个漂亮的本子。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "包",
+            "我",
+            "她",
+            "站",
+            "上来",
+            "跑",
+            "玩",
+            "经常",
+            "找"
+          ],
+          "answer_tokens": [
+            "她",
+            "经常",
+            "跑",
+            "上来",
+            "找",
+            "我",
+            "玩"
+          ],
+          "explanation": {
+            "uz": "她经常跑上来找我玩。",
+            "ru": "她经常跑上来找我玩。",
+            "tj": "她经常跑上来找我玩。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "妈妈让我买回来一些菜来。",
+            "她经常跑上来找我玩。",
+            "楼不高，我们走上去吧。",
+            "一听到老师叫他的名字，他就站起来了。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "楼不高，我们走上去吧。 — ",
+            "ru": "楼不高，我们走上去吧。 — ",
+            "tj": "楼不高，我们走上去吧。 — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'familiyasi ... bo‘lmoq' xitoycha qaysi?",
+            "ru": "'носить фамилию' по-китайски?",
+            "tj": "'насаб доштан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "站",
+            "姓",
+            "过年",
+            "包"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "familiyasi ... bo‘lmoq = 姓 (xìng)",
+            "ru": "носить фамилию = 姓 (xìng)",
+            "tj": "насаб доштан = 姓 (xìng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yǎnjing qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yǎnjing?",
+            "tj": "yǎnjing кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "眼睛",
+            "过年",
+            "站",
+            "包"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "眼睛 = ko‘z (yǎnjing)",
+            "ru": "眼睛 = глаза (yǎnjing)",
+            "tj": "眼睛 = чашм (yǎnjing)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "小孩儿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 小孩儿:",
+            "tj": "Маънои калимаи 小孩儿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "turmoq",
+              "ru": "стоять",
+              "tj": "истодан"
+            },
+            {
+              "uz": "Bahor bayramini/Yangi yilni nishonlamoq",
+              "ru": "праздновать Китайский Новый год",
+              "tj": "Соли нави чиниро ҷашн гирифтан"
+            },
+            {
+              "uz": "bola",
+              "ru": "ребёнок",
+              "tj": "кӯдак"
+            },
+            {
+              "uz": "sumka; o‘ram; o‘ramoq",
+              "ru": "сумка; пакет; заворачивать",
+              "tj": "халта; баста; бастан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "小孩儿 = bola (xiǎoháir)",
+            "ru": "小孩儿 = ребёнок (xiǎoháir)",
+            "tj": "小孩儿 = кӯдак (xiǎoháir)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "小孩儿",
+            "pinyin": "xiǎoháir",
+            "meaning": {
+              "uz": "bola",
+              "ru": "ребёнок",
+              "tj": "кӯдак"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'raqsga tushmoq' xitoycha qaysi?",
+            "ru": "'танцевать' по-китайски?",
+            "tj": "'рақсидан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "跳舞",
+            "过年",
+            "包",
+            "站"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "raqsga tushmoq = 跳舞 (tiàowǔ)",
+            "ru": "танцевать = 跳舞 (tiàowǔ)",
+            "tj": "рақсидан = 跳舞 (tiàowǔ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "跳舞",
+            "pinyin": "tiàowǔ",
+            "meaning": {
+              "uz": "raqsga tushmoq",
+              "ru": "танцевать",
+              "tj": "рақсидан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

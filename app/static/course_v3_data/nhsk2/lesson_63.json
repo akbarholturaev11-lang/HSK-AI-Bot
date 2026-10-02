@@ -1,0 +1,749 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 63,
+  "source_lesson": 13,
+  "part_no": 3,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我们爱上中文课",
+  "subtitle": {
+    "uz": "“拿/送/卖 + 给” bilan ikki obyektli gap tuzish; “比”dan keyin miqdor birikmasi bilan aniq farqni aytish; “一点儿/一些” bilan kichik farqni ifodalash; yangi yil sovg‘alari va dars haqida gaplashish.",
+    "ru": "Строить двуобъектные предложения с “拿/送/卖 + 给”; выражать конкретную разницу количественной группой после 比; показывать небольшую разницу с “一点儿/一些”; говорить о новогодних подарках и занятиях.",
+    "tj": "Бо “拿/送/卖 + 给” ҷумлаи дуобъектӣ сохтан; баъди 比 бо таркиби миқдорӣ фарқи дақиқро гуфтан; бо “一点儿/一些” фарқи хурдро ифода кардан; дар бораи тӯҳфаҳои Соли нав ва дарс суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "笔",
+      "pinyin": "bǐ",
+      "pos": "m.",
+      "meaning": {
+        "uz": "chiziq (ieroglif zarbasi)",
+        "ru": "черта; штрих",
+        "tj": "хат; зарба"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "可能",
+      "pinyin": "kěnéng",
+      "pos": "v./adv.",
+      "meaning": {
+        "uz": "mumkin; ehtimol",
+        "ru": "возможно; мочь",
+        "tj": "мумкин; эҳтимол"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "上网",
+      "pinyin": "shàngwǎng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "internetga kirmoq",
+        "ru": "выходить в интернет",
+        "tj": "ба интернет даромадан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Taqqoslash gapi (8)",
+        "ru": "Сравнительное предложение (8)",
+        "tj": "Ҷумлаи муқоисавӣ (8)"
+      },
+      "title_zh": "比较句（8）",
+      "rule": {
+        "uz": "“比” gapida sifatdan keyin 一点儿 yoki 一些 kichik farqni bildiradi. Tuzilishi: A 比 B + sifat + 一点儿/一些.",
+        "ru": "В сравнении с 比 一点儿 или 一些 после прилагательного обозначает небольшую разницу. Схема: A 比 B + прилагательное + 一点儿/一些.",
+        "tj": "Дар ҷумлаи 比 一点儿 ё 一些 пас аз сифат фарқи хурдро нишон медиҳад. Сохтор: A 比 B + сифат + 一点儿/一些."
+      },
+      "examples": [
+        {
+          "zh": "比我们一起买的那个本子贵一点儿。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "姐姐比我高一点儿。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "那间教室比这间大一些。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda Bai Jiayue va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "В классе Бай Цзяюэ и Чэнь Тяньчжун разговаривают.",
+        "tj": "Дар синф Бай Ҷяюэ ва Чэн Тянҷун суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "时间过得真快啊！新年就要到了。",
+          "pinyin": "Shíjiān guò de zhēn kuài a! Xīnnián jiù yào dào le.",
+          "text": {
+            "uz": "Vaqt juda tez o‘tyapti! Yangi yilga ham oz qoldi.",
+            "ru": "Как быстро летит время! Новый год уже скоро.",
+            "tj": "Вақт чӣ қадар тез мегузарад! Соли нав ҳам наздик аст."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我们给她准备个新年礼物吧。你觉得送给她什么好呢？",
+          "pinyin": "Wǒmen gěi tā zhǔnbèi ge xīnnián lǐwù ba. Nǐ juéde sòng gěi tā shénme hǎo ne?",
+          "text": {
+            "uz": "Unga Yangi yil sovg‘asi tayyorlaylik. Nima sovg‘a qilsak yaxshi?",
+            "ru": "Давай приготовим ей новогодний подарок. Что лучше подарить?",
+            "tj": "Биё барояш тӯҳфаи Соли нав тайёр кунем. Чӣ тӯҳфа диҳем беҳтар?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "那我们去花店看看，现在买花的人多，希望花店还有漂亮的花。",
+          "pinyin": "Nà wǒmen qù huādiàn kànkan, xiànzài mǎi huā de rén duō, xīwàng huādiàn hái yǒu piàoliang de huā.",
+          "text": {
+            "uz": "Unda gul do‘koniga borib ko‘raylik. Hozir gul oladiganlar ko‘p, umid qilamanki, chiroyli gullar qolgan.",
+            "ru": "Тогда пойдём в цветочный магазин. Сейчас много покупателей; надеюсь, красивые цветы ещё остались.",
+            "tj": "Пас ба мағозаи гул рафта бинем. Ҳоло харидори гул зиёд аст, умедворам гулҳои зебо ҳанӯз ҳастанд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda Wang Yifei dars bermoqda.",
+        "ru": "В классе Ван Ифэй ведёт урок.",
+        "tj": "Дар синф Ван Ифэй дарс медиҳад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "是啊！你们都学会了吗？",
+          "pinyin": "Shì a! Nǐmen dōu xuéhuì le ma?",
+          "text": {
+            "uz": "Ha! Hammasini o‘rgandingizmi?",
+            "ru": "Да! Вы всё выучили?",
+            "tj": "Ҳа! Ҳамаашро омӯхтед?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "学会了，没有问题。",
+          "pinyin": "Xuéhuì le, méiyǒu wèntí.",
+          "text": {
+            "uz": "O‘rgandik, muammo yo‘q.",
+            "ru": "Выучили, без проблем.",
+            "tj": "Омӯхтем, мушкил нест."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "好。现在我来说，你们在本子上面写。",
+          "pinyin": "Hǎo. Xiànzài wǒ lái shuō, nǐmen zài běnzi shàngmian xiě.",
+          "text": {
+            "uz": "Yaxshi. Endi men aytaman, sizlar daftarga yozinglar.",
+            "ru": "Хорошо. Теперь я буду говорить, а вы записывайте в тетради.",
+            "tj": "Хуб. Ҳоло ман мегӯям, шумо дар дафтар нависед."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "同学们，“洗手间”的“间”字写错了，它的里面是“日”，不是“口”。",
+          "pinyin": "Tóngxuémen, “xǐshǒujiān” de “jiān” zì xiěcuò le, tā de lǐmian shì “rì”, bú shì “kǒu”.",
+          "text": {
+            "uz": "O‘quvchilar, “洗手间”dagi “间” xato yozilgan: ichida “日”, “口” emas.",
+            "ru": "Ребята, иероглиф “间” в “洗手间” написан неправильно: внутри “日”, а не “口”.",
+            "tj": "Донишҷӯён, “间” дар “洗手间” хато навишта шудааст: дарунаш “日” аст, на “口”."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "“日”比“口”多一笔，写“口”就是“问题”的“问”了。",
+          "pinyin": "“Rì” bǐ “kǒu” duō yì bǐ, xiě “kǒu” jiù shì “wèntí” de “wèn” le.",
+          "text": {
+            "uz": "“日” “口”dan bir chiziq ko‘p; “口” yozilsa, “问题”dagi “问” bo‘lib qoladi.",
+            "ru": "В “日” на одну черту больше, чем в “口”; если написать “口”, получится “问” из “问题”.",
+            "tj": "“日” аз “口” як хат бештар дорад; агар “口” нависем, “问”-и “问题” мешавад."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "没错，你说得很对。",
+          "pinyin": "Méi cuò, nǐ shuō de hěn duì.",
+          "text": {
+            "uz": "To‘g‘ri, juda to‘g‘ri aytding.",
+            "ru": "Верно, ты совершенно права.",
+            "tj": "Дуруст, хеле дуруст гуфтӣ."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda Annie va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В классе Энни и Бай Цзяюэ разговаривают.",
+        "tj": "Дар синф Энни ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "家月，你觉得这个本子怎么样？",
+          "pinyin": "Jiāyuè, nǐ juéde zhège běnzi zěnmeyàng?",
+          "text": {
+            "uz": "Jiayue, bu daftar senga qanday?",
+            "ru": "Цзяюэ, как тебе этот блокнот?",
+            "tj": "Ҷяюэ, ин дафтар чӣ хел аст?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "很漂亮，多少钱一个？",
+          "pinyin": "Hěn piàoliang, duōshao qián yí ge?",
+          "text": {
+            "uz": "Juda chiroyli, bittasi qancha?",
+            "ru": "Очень красивый. Сколько стоит один?",
+            "tj": "Хеле зебо, яктояш чанд пул?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "比我们一起买的那个本子贵一点儿。",
+          "pinyin": "Bǐ wǒmen yìqǐ mǎi de nàge běnzi guì yìdiǎnr.",
+          "text": {
+            "uz": "Birga olgan daftarimizdan biroz qimmatroq.",
+            "ru": "Немного дороже того блокнота, который мы покупали вместе.",
+            "tj": "Аз дафтаре, ки якҷо харида будем, каме гаронтар."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "这么漂亮的本子，不可能贵一点儿吧？",
+          "pinyin": "Zhème piàoliang de běnzi, bù kěnéng guì yìdiǎnr ba?",
+          "text": {
+            "uz": "Bunday chiroyli daftar faqat biroz qimmatroq bo‘lishi mumkin emas-a?",
+            "ru": "Такой красивый блокнот не может быть всего чуть дороже, правда?",
+            "tj": "Чунин дафтари зебо фақат каме гаронтар бошад, мумкин нест-ку?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "我是上网买的，真没那么贵。我买了两个，送你一个。",
+          "pinyin": "Wǒ shì shàngwǎng mǎi de, zhēn méi nàme guì. Wǒ mǎile liǎng ge, sòng nǐ yí ge.",
+          "text": {
+            "uz": "Internetdan oldim, aslida unchalik qimmat emas. Ikkita oldim, bittasini senga beraman.",
+            "ru": "Я купила в интернете, на самом деле не так дорого. Купила два, один подарю тебе.",
+            "tj": "Аз интернет харидам, аслан он қадар гарон нест. Дуто харидам, яктоашро ба ту медиҳам."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "谢谢！那我送给你什么呢？",
+          "pinyin": "Xièxie! Nà wǒ sòng gěi nǐ shénme ne?",
+          "text": {
+            "uz": "Rahmat! Unda men senga nima sovg‘a qilay?",
+            "ru": "Спасибо! А что мне подарить тебе?",
+            "tj": "Раҳмат! Пас ман ба ту чӣ тӯҳфа кунам?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "咖啡杯吧，我最喜欢喝咖啡了。",
+          "pinyin": "Kāfēibēi ba, wǒ zuì xǐhuan hē kāfēi le.",
+          "text": {
+            "uz": "Qahva piyolasi bo‘lsin, men qahvani eng ko‘p yoqtiraman.",
+            "ru": "Чашку для кофе — я больше всего люблю кофе.",
+            "tj": "Пиёлаи қаҳва бошад, ман қаҳваро аз ҳама бештар дӯст медорам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "笔",
+            "pinyin": "bǐ",
+            "pos": "m.",
+            "meaning": {
+              "uz": "chiziq (ieroglif zarbasi)",
+              "ru": "черта; штрих",
+              "tj": "хат; зарба"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "笔 talaffuzini tanlang:",
+            "ru": "Выберите произношение 笔:",
+            "tj": "Талаффузи 笔-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "huā",
+            "xīnnián",
+            "jiāo",
+            "bǐ"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "笔 — bǐ",
+            "ru": "笔 — bǐ",
+            "tj": "笔 — bǐ"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "可能",
+            "pinyin": "kěnéng",
+            "pos": "v./adv.",
+            "meaning": {
+              "uz": "mumkin; ehtimol",
+              "ru": "возможно; мочь",
+              "tj": "мумкин; эҳтимол"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'mumkin; ehtimol' xitoycha qaysi?",
+            "ru": "'возможно; мочь' по-китайски?",
+            "tj": "'мумкин; эҳтимол' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "可能",
+            "教",
+            "花",
+            "新年"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "mumkin; ehtimol = 可能 (kěnéng)",
+            "ru": "возможно; мочь = 可能 (kěnéng)",
+            "tj": "мумкин; эҳтимол = 可能 (kěnéng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "上网",
+            "pinyin": "shàngwǎng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "internetga kirmoq",
+              "ru": "выходить в интернет",
+              "tj": "ба интернет даромадан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "上网",
+          "pinyin": "shàngwǎng",
+          "translation": {
+            "uz": "internetga kirmoq",
+            "ru": "выходить в интернет",
+            "tj": "ба интернет даромадан"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "上网",
+          "pinyin": "shàngwǎng",
+          "options": [
+            "教",
+            "上网",
+            "花",
+            "新年"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "上网 — internetga kirmoq (shàngwǎng)",
+            "ru": "上网 — выходить в интернет (shàngwǎng)",
+            "tj": "上网 — ба интернет даромадан (shàngwǎng)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "笔 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 笔:",
+            "tj": "Маънои калимаи 笔-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "Yangi yil",
+              "ru": "Новый год",
+              "tj": "Соли нав"
+            },
+            {
+              "uz": "chiziq (ieroglif zarbasi)",
+              "ru": "черта; штрих",
+              "tj": "хат; зарба"
+            },
+            {
+              "uz": "o‘qitmoq",
+              "ru": "учить; преподавать",
+              "tj": "дарс додан; омӯзондан"
+            },
+            {
+              "uz": "gul",
+              "ru": "цветок",
+              "tj": "гул"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "笔 = chiziq (ieroglif zarbasi) (bǐ)",
+            "ru": "笔 = черта; штрих (bǐ)",
+            "tj": "笔 = хат; зарба (bǐ)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "笔",
+              {
+                "uz": "chiziq (ieroglif zarbasi)",
+                "ru": "черта; штрих",
+                "tj": "хат; зарба"
+              }
+            ],
+            [
+              "可能",
+              {
+                "uz": "mumkin; ehtimol",
+                "ru": "возможно; мочь",
+                "tj": "мумкин; эҳтимол"
+              }
+            ],
+            [
+              "上网",
+              {
+                "uz": "internetga kirmoq",
+                "ru": "выходить в интернет",
+                "tj": "ба интернет даромадан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Taqqoslash gapi (8)",
+              "ru": "Сравнительное предложение (8)",
+              "tj": "Ҷумлаи муқоисавӣ (8)"
+            },
+            "title_zh": "比较句（8）",
+            "rule": {
+              "uz": "“比” gapida sifatdan keyin 一点儿 yoki 一些 kichik farqni bildiradi. Tuzilishi: A 比 B + sifat + 一点儿/一些.",
+              "ru": "В сравнении с 比 一点儿 или 一些 после прилагательного обозначает небольшую разницу. Схема: A 比 B + прилагательное + 一点儿/一些.",
+              "tj": "Дар ҷумлаи 比 一点儿 ё 一些 пас аз сифат фарқи хурдро нишон медиҳад. Сохтор: A 比 B + сифат + 一点儿/一些."
+            },
+            "examples": [
+              {
+                "zh": "比我们一起买的那个本子贵一点儿。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "姐姐比我高一点儿。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "那间教室比这间大一些。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "比",
+            "一点儿",
+            "我",
+            "姐姐",
+            "教",
+            "新年",
+            "高"
+          ],
+          "answer_tokens": [
+            "姐姐",
+            "比",
+            "我",
+            "高",
+            "一点儿"
+          ],
+          "explanation": {
+            "uz": "姐姐比我高一点儿。",
+            "ru": "姐姐比我高一点儿。",
+            "tj": "姐姐比我高一点儿。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "姐姐比我高一点儿。",
+            "那间教室比这间大一些。",
+            "比我们一起买的那个本子贵一点儿。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "比我们一起买的那个本子贵一点儿。 — ",
+            "ru": "比我们一起买的那个本子贵一点儿。 — ",
+            "tj": "比我们一起买的那个本子贵一点儿。 — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "“日”比“口”多一笔，写“口”就是“问题”的“问”了。",
+          "pinyin": "“Rì” bǐ “kǒu” duō yì bǐ, xiě “kǒu” jiù shì “wèntí” de “wèn” le.",
+          "options": [
+            "我是上网买的，真没那么贵。我买了两个，送你一个。",
+            "这么漂亮的本子，不可能贵一点儿吧？",
+            "“日”比“口”多一笔，写“口”就是“问题”的“问”了。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "“日”比“口”多一笔，写“口”就是“问题”的“问”了。 — “日” “口”dan bir chiziq ko‘p; “口” yozilsa, “问题”dagi “问” bo‘lib qoladi.",
+            "ru": "“日”比“口”多一笔，写“口”就是“问题”的“问”了。 — В “日” на одну черту больше, чем в “口”; если написать “口”, получится “问” из “问题”.",
+            "tj": "“日”比“口”多一笔，写“口”就是“问题”的“问”了。 — “日” аз “口” як хат бештар дорад; агар “口” нависем, “问”-и “问题” мешавад."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "上网",
+          "pinyin": "shàngwǎng",
+          "translation": {
+            "uz": "internetga kirmoq",
+            "ru": "выходить в интернет",
+            "tj": "ба интернет даромадан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "里面 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 里面:",
+            "tj": "Маънои калимаи 里面-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "gul",
+              "ru": "цветок",
+              "tj": "гул"
+            },
+            {
+              "uz": "o‘qitmoq",
+              "ru": "учить; преподавать",
+              "tj": "дарс додан; омӯзондан"
+            },
+            {
+              "uz": "ichi; ichkarida",
+              "ru": "внутри",
+              "tj": "дарун; дохил"
+            },
+            {
+              "uz": "Yangi yil",
+              "ru": "Новый год",
+              "tj": "Соли нав"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "里面 = ichi; ichkarida (lǐmian)",
+            "ru": "里面 = внутри (lǐmian)",
+            "tj": "里面 = дарун; дохил (lǐmian)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "里面",
+            "pinyin": "lǐmian",
+            "meaning": {
+              "uz": "ichi; ichkarida",
+              "ru": "внутри",
+              "tj": "дарун; дохил"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'internetga kirmoq' xitoycha qaysi?",
+            "ru": "'выходить в интернет' по-китайски?",
+            "tj": "'ба интернет даромадан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "新年",
+            "上网",
+            "教",
+            "花"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "internetga kirmoq = 上网 (shàngwǎng)",
+            "ru": "выходить в интернет = 上网 (shàngwǎng)",
+            "tj": "ба интернет даромадан = 上网 (shàngwǎng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "上网",
+            "pinyin": "shàngwǎng",
+            "meaning": {
+              "uz": "internetga kirmoq",
+              "ru": "выходить в интернет",
+              "tj": "ба интернет даромадан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -53,9 +53,9 @@ def main() -> int:
     if extra := sorted(bundled - expected):
         problems.append(f"{len(extra)} file(s) no longer in the source, e.g. {extra[:5]}")
 
-    # The point of the bundle: a character the dictionary can open must be
-    # drawable without a connection. The word list Android ships is the same
-    # file the Mini App reads, so it is the one checked against.
+    # Every legacy dictionary character must be drawable without a connection.
+    # A small number of HSK 3.0 characters are not in the legacy stroke source;
+    # CourseRepository uses its authenticated server fallback for those.
     words = js_literal(ANDROID_ASSETS / "hsk-words.js", "WORDS")
     needed = {
         ch

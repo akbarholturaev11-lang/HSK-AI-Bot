@@ -21,6 +21,8 @@ data class CourseUiState(
     val isOpeningChest: Boolean = false,
     val chestRewardXp: Int? = null,
     val chestError: ApiError? = null,
+    val isSwitchingTrack: Boolean = false,
+    val trackError: ApiError? = null,
     /** Real server-map LOCKED -> non-LOCKED transition awaiting one reveal. */
     val unlockedLessonOrder: Int? = null,
 ) {
@@ -90,6 +92,31 @@ class CourseViewModel(
                     )
                 }
             }
+        }
+    }
+
+    fun switchCourseTrack(targetTrack: String, level: String? = null) {
+        val normalized = targetTrack.trim().lowercase()
+        if (normalized !in setOf("hsk20", "hsk30") || _state.value.isSwitchingTrack) return
+        _state.update { it.copy(isSwitchingTrack = true, trackError = null) }
+        viewModelScope.launch {
+            when (val result = repository.switchCourseTrack(normalized, level)) {
+                is ApiResult.Success -> {
+                    _state.update { it.copy(isSwitchingTrack = false, trackError = null) }
+                    load()
+                }
+                is ApiResult.Failure -> _state.update {
+                    it.copy(isSwitchingTrack = false, trackError = result.error)
+                }
+            }
+        }
+    }
+
+    fun markHsk30PromoShown() {
+        val promo = _state.value.map?.hsk30?.promo ?: return
+        if (!promo.eligible) return
+        viewModelScope.launch {
+            repository.markHsk30PromoShown()
         }
     }
 

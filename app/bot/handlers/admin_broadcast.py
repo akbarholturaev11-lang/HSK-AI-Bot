@@ -60,6 +60,7 @@ def _panel_text(
     discount_filter: Optional[str] = None,
     course_promo_filter: Optional[str] = None,
     activity_filter: Optional[str] = None,
+    track_filter: Optional[str] = None,
 ) -> str:
     labels = {
         "status": {
@@ -69,7 +70,8 @@ def _panel_text(
             "expired": "Tugagan",
             "blocked": "Blok",
         },
-        "level": {"beginner": "Boshlang'ich", "hsk1": "HSK1", "hsk2": "HSK2", "hsk3": "HSK3", "hsk4": "HSK4"},
+        "track": {"hsk20": "HSK 2.0", "hsk30": "HSK 3.0"},
+        "level": {"beginner": "Boshlang'ich", "hsk1": "HSK1", "hsk2": "HSK2", "hsk3": "HSK3", "hsk4": "HSK4", "nhsk1": "HSK 3.0 · 1", "nhsk2": "HSK 3.0 · 2", "nhsk3": "HSK 3.0 · 3"},
         "mode": {"qa": "Savol-javob", "course": "Kurs"},
         "payment_status": {"none": "Yo'q", "pending": "Kutilmoqda", "approved": "Tasdiqlangan", "rejected": "Rad etilgan"},
         "payment_method": {"visa": "Visa", "alipay": "Alipay", "wechat": "WeChat"},
@@ -95,6 +97,7 @@ def _panel_text(
         "<blockquote>"
         f"🌐 Til: <b>{languages_label(target_languages)}</b>\n"
         f"👤 Status: <b>{label('status', status_filter)}</b>\n"
+        f"🧭 Kurs versiyasi: <b>{label('track', track_filter)}</b>\n"
         f"📚 Daraja: <b>{label('level', level_filter)}</b>\n"
         f"🎯 Rejim: <b>{label('mode', mode_filter)}</b>\n"
         f"💳 To'lov statusi: <b>{label('payment_status', payment_status_filter)}</b>\n"
@@ -112,6 +115,7 @@ def _initial_broadcast_state() -> dict:
     return {
         "target_languages": [],
         "status_filter": None,
+        "track_filter": None,
         "level_filter": None,
         "mode_filter": None,
         "payment_status_filter": None,
@@ -163,6 +167,7 @@ async def _get_target_users(session, data: dict) -> list:
     return await user_repo.get_filtered_users(
         languages=_selected_languages(data) or None,
         status=data.get("status_filter"),
+        course_track=data.get("track_filter"),
         level=data.get("level_filter"),
         learning_mode=data.get("mode_filter"),
         payment_status=data.get("payment_status_filter"),
@@ -302,6 +307,7 @@ async def open_broadcast_panel_for_callback(callback: CallbackQuery, state: FSMC
 async def _redraw_panel(callback: CallbackQuery, data: dict) -> None:
     target_languages = _selected_languages(data)
     status_filter = data.get("status_filter")
+    track_filter = data.get("track_filter")
     level_filter = data.get("level_filter")
     mode_filter = data.get("mode_filter")
     payment_status_filter = data.get("payment_status_filter")
@@ -324,6 +330,7 @@ async def _redraw_panel(callback: CallbackQuery, data: dict) -> None:
                 discount_filter,
                 course_promo_filter,
                 activity_filter,
+                track_filter=track_filter,
             ),
             reply_markup=broadcast_panel_keyboard(
                 target_languages,
@@ -337,6 +344,7 @@ async def _redraw_panel(callback: CallbackQuery, data: dict) -> None:
                 course_promo_filter,
                 activity_filter,
                 section,
+                track_filter=track_filter,
             ),
             parse_mode="HTML",
         )
@@ -402,6 +410,11 @@ async def bc_status_filter(callback: CallbackQuery, state: FSMContext):
     await state.update_data(status_filter=data["status_filter"])
     await _redraw_panel(callback, data)
     await callback.answer()
+
+
+@router.callback_query(F.data.startswith("bc:track:"))
+async def bc_track_filter(callback: CallbackQuery, state: FSMContext):
+    await _set_filter(callback, state, "track_filter")
 
 
 @router.callback_query(F.data.startswith("bc:level:"))

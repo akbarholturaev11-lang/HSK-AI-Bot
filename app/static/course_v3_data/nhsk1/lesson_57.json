@@ -1,0 +1,754 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 57,
+  "source_lesson": 9,
+  "part_no": 3,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "我明天上午在学校学习",
+  "subtitle": {
+    "uz": "“有/是” bilan mavjudlikni ifodalovchi gaplarni ishlatish; vaqt va joy birga hol bo‘lganda ularning tartibini to‘g‘ri qo‘llash; “第” bilan tartib sonlarini yasash; zamonaviy xitoyliklarning bo‘sh vaqt mashg‘ulotlari haqida tushunish.",
+    "ru": "Использовать предложения существования с “有/是”; правильно располагать время и место, когда оба являются обстоятельствами; образовывать порядковые числительные с “第”; понимать лексику повседневного досуга.",
+    "tj": "Ҷумлаҳои мавҷудиятро бо “有/是” истифода бурдан; ҳангоми ҳамзамон ҳол будани вақт ва ҷой тартиби онҳоро дуруст гузоштан; бо “第” шумораҳои тартибиро сохтан; луғати фароғати рӯзмарраро фаҳмидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "书",
+      "pinyin": "shū",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kitob",
+        "ru": "книга",
+        "tj": "китоб"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "那",
+      "pinyin": "nà",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "u; o‘sha",
+        "ru": "тот; та",
+        "tj": "он; ҳамон"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "第",
+      "pinyin": "dì",
+      "pos": "pref.",
+      "meaning": {
+        "uz": "tartib son belgisi",
+        "ru": "показатель порядкового числа",
+        "tj": "нишондиҳандаи шумораи тартибӣ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "学习",
+      "pinyin": "xuéxí",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘qimoq; o‘rganmoq",
+        "ru": "учиться; изучать",
+        "tj": "хондан; омӯхтан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Tartib sonini bildiruvchi “第”",
+        "ru": "“第” для порядковых числительных",
+        "tj": "“第” барои шумораҳои тартибӣ"
+      },
+      "title_zh": "表示序数的“第”",
+      "rule": {
+        "uz": "“第” sanoq soni oldidan kelib tartib sonini hosil qiladi: 第+son; yoki 第+son+o‘lchov so‘zi+(ot).",
+        "ru": "“第” ставится перед количественным числительным и образует порядковое: 第+число; либо 第+число+счётное слово+(существительное).",
+        "tj": "“第” пеш аз шумораи миқдорӣ омада, шумораи тартибиро месозад: 第+рақам; ё 第+рақам+воҳиди ҳисоб+(исм)."
+      },
+      "examples": [
+        {
+          "zh": "第一、第二、第三",
+          "pinyin": "dì yī, dì èr, dì sān",
+          "translation": {
+            "uz": "birinchi, ikkinchi, uchinchi",
+            "ru": "первый, второй, третий",
+            "tj": "якум, дуюм, сеюм"
+          }
+        },
+        {
+          "zh": "第一个、第二个、第一本",
+          "pinyin": "dì yí ge, dì èr ge, dì yì běn",
+          "translation": {
+            "uz": "birinchi dona, ikkinchi dona, birinchi kitob",
+            "ru": "первый, второй, первая книга",
+            "tj": "якум, дуюм, китоби якум"
+          }
+        },
+        {
+          "zh": "第一个学生、第一本书",
+          "pinyin": "dì yí ge xuésheng, dì yì běn shū",
+          "translation": {
+            "uz": "birinchi talaba; birinchi kitob",
+            "ru": "первый студент; первая книга",
+            "tj": "донишҷӯи якум; китоби якум"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В кампусе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар кампус Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "学校前边有一家电影院。",
+          "pinyin": "Xuéxiào qiánbian yǒu yì jiā diànyǐngyuàn.",
+          "text": {
+            "uz": "Maktab oldida bitta kinoteatr bor.",
+            "ru": "Перед школой есть кинотеатр.",
+            "tj": "Пеши мактаб як кинотеатр ҳаст."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "对。我们晚上去那个电影院看电影吧。",
+          "pinyin": "Duì. Wǒmen wǎnshang qù nàge diànyǐngyuàn kàn diànyǐng ba.",
+          "text": {
+            "uz": "Ha. Bugun kechqurun o‘sha kinoteatrga film ko‘rgani boraylik.",
+            "ru": "Да. Давай вечером пойдём в тот кинотеатр посмотреть фильм.",
+            "tj": "Ҳа. Биёед шом ба ҳамон кинотеатр барои тамошои филм равем."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "好！我们七点在电影院外边见，好吗？",
+          "pinyin": "Hǎo! Wǒmen qī diǎn zài diànyǐngyuàn wàibian jiàn, hǎo ma?",
+          "text": {
+            "uz": "Yaxshi! Soat 7 da kinoteatr tashqarisida uchrashamiz, maylimi?",
+            "ru": "Хорошо! Встретимся в 7 часов у кинотеатра, ладно?",
+            "tj": "Хуб! Соати 7 беруни кинотеатр вомехӯрем, майлаш?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "好的，晚上七点见！",
+          "pinyin": "Hǎo de, wǎnshang qī diǎn jiàn!",
+          "text": {
+            "uz": "Xo‘p, kechqurun soat 7 da ko‘rishamiz!",
+            "ru": "Хорошо, увидимся в 7 вечера!",
+            "tj": "Хуб, шом соати 7 мебинем!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsdan keyin sinfda Bai Jiayue va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "После занятия Бай Цзяюэ и Чэнь Тяньчжун разговаривают в аудитории.",
+        "tj": "Пас аз дарс Бай Ҷяюэ ва Чэн Тянҷун дар синф суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "不客气。你明天上午在哪儿？",
+          "pinyin": "Bú kèqi. Nǐ míngtiān shàngwǔ zài nǎr?",
+          "text": {
+            "uz": "Arzimaydi. Ertaga ertalab qayerda bo‘lasan?",
+            "ru": "Не за что. Где ты будешь завтра утром?",
+            "tj": "Марҳамат. Фардо субҳ дар куҷо мешавӣ?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我明天上午在学校学习。",
+          "pinyin": "Wǒ míngtiān shàngwǔ zài xuéxiào xuéxí.",
+          "text": {
+            "uz": "Men ertaga ertalab maktabda o‘qiyman.",
+            "ru": "Завтра утром я буду заниматься в школе.",
+            "tj": "Ман фардо субҳ дар мактаб таҳсил мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ofisda tanaffus payti Wang Yixue va Yang Tongle dam olish kunlari haqida suhbatlashmoqda.",
+        "ru": "В офисе во время перерыва Ван Исюэ и Ян Тунлэ обсуждают выходные.",
+        "tj": "Дар идора ҳангоми танаффус Ван Исюэ ва Ян Тунлэ дар бораи рӯзҳои истироҳат суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "明天星期六，你做什么？",
+          "pinyin": "Míngtiān Xīngqīliù, nǐ zuò shénme?",
+          "text": {
+            "uz": "Ertaga shanba. Nima qilasan?",
+            "ru": "Завтра суббота. Что будешь делать?",
+            "tj": "Фардо шанбе. Чӣ кор мекунӣ?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "谢谢！您星期六做什么？",
+          "pinyin": "Xièxie! Nín Xīngqīliù zuò shénme?",
+          "text": {
+            "uz": "Rahmat! Siz shanba kuni nima qilasiz?",
+            "ru": "Спасибо! Что вы будете делать в субботу?",
+            "tj": "Раҳмат! Шумо рӯзи шанбе чӣ кор мекунед?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "书",
+            "pinyin": "shū",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kitob",
+              "ru": "книга",
+              "tj": "китоб"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "书",
+          "pinyin": "shū",
+          "translation": {
+            "uz": "kitob",
+            "ru": "книга",
+            "tj": "китоб"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shū qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shū?",
+            "tj": "shū кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "前边",
+            "家",
+            "书",
+            "边"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "书 = kitob (shū)",
+            "ru": "书 = книга (shū)",
+            "tj": "书 = китоб (shū)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "那",
+            "pinyin": "nà",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "u; o‘sha",
+              "ru": "тот; та",
+              "tj": "он; ҳамон"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "那 talaffuzini tanlang:",
+            "ru": "Выберите произношение 那:",
+            "tj": "Талаффузи 那-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "qiánbian",
+            "biān/bian",
+            "jiā",
+            "nà"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "那 — nà",
+            "ru": "那 — nà",
+            "tj": "那 — nà"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "第",
+            "pinyin": "dì",
+            "pos": "pref.",
+            "meaning": {
+              "uz": "tartib son belgisi",
+              "ru": "показатель порядкового числа",
+              "tj": "нишондиҳандаи шумораи тартибӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tartib son belgisi' xitoycha qaysi?",
+            "ru": "'показатель порядкового числа' по-китайски?",
+            "tj": "'нишондиҳандаи шумораи тартибӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "前边",
+            "家",
+            "第",
+            "边"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "tartib son belgisi = 第 (dì)",
+            "ru": "показатель порядкового числа = 第 (dì)",
+            "tj": "нишондиҳандаи шумораи тартибӣ = 第 (dì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "学习",
+            "pinyin": "xuéxí",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o‘qimoq; o‘rganmoq",
+              "ru": "учиться; изучать",
+              "tj": "хондан; омӯхтан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "学习",
+          "pinyin": "xuéxí",
+          "options": [
+            "学习",
+            "家",
+            "前边",
+            "边"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "学习 — o‘qimoq; o‘rganmoq (xuéxí)",
+            "ru": "学习 — учиться; изучать (xuéxí)",
+            "tj": "学习 — хондан; омӯхтан (xuéxí)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "书 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 书:",
+            "tj": "Маънои калимаи 书-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tashkilot/korxona uchun o‘lchov so‘zi",
+              "ru": "счётное слово для семей/предприятий",
+              "tj": "воҳиди ҳисоб барои оила/корхона"
+            },
+            {
+              "uz": "tomon; chet",
+              "ru": "сторона; край",
+              "tj": "тараф; канор"
+            },
+            {
+              "uz": "old tomoni; oldida",
+              "ru": "передняя сторона; впереди",
+              "tj": "пеш; тарафи пеш"
+            },
+            {
+              "uz": "kitob",
+              "ru": "книга",
+              "tj": "китоб"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "书 = kitob (shū)",
+            "ru": "书 = книга (shū)",
+            "tj": "书 = китоб (shū)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "书",
+              {
+                "uz": "kitob",
+                "ru": "книга",
+                "tj": "китоб"
+              }
+            ],
+            [
+              "那",
+              {
+                "uz": "u; o‘sha",
+                "ru": "тот; та",
+                "tj": "он; ҳамон"
+              }
+            ],
+            [
+              "第",
+              {
+                "uz": "tartib son belgisi",
+                "ru": "показатель порядкового числа",
+                "tj": "нишондиҳандаи шумораи тартибӣ"
+              }
+            ],
+            [
+              "学习",
+              {
+                "uz": "o‘qimoq; o‘rganmoq",
+                "ru": "учиться; изучать",
+                "tj": "хондан; омӯхтан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Tartib sonini bildiruvchi “第”",
+              "ru": "“第” для порядковых числительных",
+              "tj": "“第” барои шумораҳои тартибӣ"
+            },
+            "title_zh": "表示序数的“第”",
+            "rule": {
+              "uz": "“第” sanoq soni oldidan kelib tartib sonini hosil qiladi: 第+son; yoki 第+son+o‘lchov so‘zi+(ot).",
+              "ru": "“第” ставится перед количественным числительным и образует порядковое: 第+число; либо 第+число+счётное слово+(существительное).",
+              "tj": "“第” пеш аз шумораи миқдорӣ омада, шумораи тартибиро месозад: 第+рақам; ё 第+рақам+воҳиди ҳисоб+(исм)."
+            },
+            "examples": [
+              {
+                "zh": "第一、第二、第三",
+                "pinyin": "dì yī, dì èr, dì sān",
+                "translation": {
+                  "uz": "birinchi, ikkinchi, uchinchi",
+                  "ru": "первый, второй, третий",
+                  "tj": "якум, дуюм, сеюм"
+                }
+              },
+              {
+                "zh": "第一个、第二个、第一本",
+                "pinyin": "dì yí ge, dì èr ge, dì yì běn",
+                "translation": {
+                  "uz": "birinchi dona, ikkinchi dona, birinchi kitob",
+                  "ru": "первый, второй, первая книга",
+                  "tj": "якум, дуюм, китоби якум"
+                }
+              },
+              {
+                "zh": "第一个学生、第一本书",
+                "pinyin": "dì yí ge xuésheng, dì yì běn shū",
+                "translation": {
+                  "uz": "birinchi talaba; birinchi kitob",
+                  "ru": "первый студент; первая книга",
+                  "tj": "донишҷӯи якум; китоби якум"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "birinchi, ikkinchi, uchinchi",
+            "ru": "первый, второй, третий",
+            "tj": "якум, дуюм, сеюм"
+          },
+          "tokens": [
+            "三",
+            "二",
+            "第",
+            "第",
+            "前边",
+            "边",
+            "第",
+            "一"
+          ],
+          "answer_tokens": [
+            "第",
+            "一",
+            "第",
+            "二",
+            "第",
+            "三"
+          ],
+          "explanation": {
+            "uz": "第一、第二、第三 — dì yī, dì èr, dì sān",
+            "ru": "第一、第二、第三 — dì yī, dì èr, dì sān",
+            "tj": "第一、第二、第三 — dì yī, dì èr, dì sān"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«birinchi talaba; birinchi kitob» — xitoychada qaysi biri?",
+            "ru": "«первый студент; первая книга» — какое предложение по-китайски?",
+            "tj": "«донишҷӯи якум; китоби якум» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "第一个学生、第一本书",
+            "第一个、第二个、第一本",
+            "第一、第二、第三"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "第一个学生、第一本书 — dì yí ge xuésheng, dì yì běn shū",
+            "ru": "第一个学生、第一本书 — dì yí ge xuésheng, dì yì běn shū",
+            "tj": "第一个学生、第一本书 — dì yí ge xuésheng, dì yì běn shū"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men ertaga ertalab maktabda o‘qiyman.",
+            "ru": "Завтра утром я буду заниматься в школе.",
+            "tj": "Ман фардо субҳ дар мактаб таҳсил мекунам."
+          },
+          "tokens": [
+            "上午",
+            "在",
+            "边",
+            "学校",
+            "前边",
+            "我",
+            "学习",
+            "明天"
+          ],
+          "answer_tokens": [
+            "我",
+            "明天",
+            "上午",
+            "在",
+            "学校",
+            "学习"
+          ],
+          "explanation": {
+            "uz": "我明天上午在学校学习。 — Wǒ míngtiān shàngwǔ zài xuéxiào xuéxí.",
+            "ru": "我明天上午在学校学习。 — Wǒ míngtiān shàngwǔ zài xuéxiào xuéxí.",
+            "tj": "我明天上午在学校学习。 — Wǒ míngtiān shàngwǔ zài xuéxiào xuéxí."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "nà qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nà?",
+            "tj": "nà кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "边",
+            "家",
+            "前边",
+            "那"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "那 = u; o‘sha (nà)",
+            "ru": "那 = тот; та (nà)",
+            "tj": "那 = он; ҳамон (nà)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "外边 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 外边:",
+            "tj": "Маънои калимаи 外边-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tashkilot/korxona uchun o‘lchov so‘zi",
+              "ru": "счётное слово для семей/предприятий",
+              "tj": "воҳиди ҳисоб барои оила/корхона"
+            },
+            {
+              "uz": "tomon; chet",
+              "ru": "сторона; край",
+              "tj": "тараф; канор"
+            },
+            {
+              "uz": "tashqarida; tashqi tomon",
+              "ru": "снаружи; внешняя сторона",
+              "tj": "берун; тарафи берун"
+            },
+            {
+              "uz": "old tomoni; oldida",
+              "ru": "передняя сторона; впереди",
+              "tj": "пеш; тарафи пеш"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "外边 = tashqarida; tashqi tomon (wàibian)",
+            "ru": "外边 = снаружи; внешняя сторона (wàibian)",
+            "tj": "外边 = берун; тарафи берун (wàibian)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "外边",
+            "pinyin": "wàibian",
+            "meaning": {
+              "uz": "tashqarida; tashqi tomon",
+              "ru": "снаружи; внешняя сторона",
+              "tj": "берун; тарафи берун"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kitob' xitoycha qaysi?",
+            "ru": "'книга' по-китайски?",
+            "tj": "'китоб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "书",
+            "家",
+            "边",
+            "前边"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "kitob = 书 (shū)",
+            "ru": "книга = 书 (shū)",
+            "tj": "китоб = 书 (shū)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "书",
+            "pinyin": "shū",
+            "meaning": {
+              "uz": "kitob",
+              "ru": "книга",
+              "tj": "китоб"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

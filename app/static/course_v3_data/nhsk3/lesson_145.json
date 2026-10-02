@@ -1,0 +1,1238 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 145,
+  "source_lesson": 18,
+  "part_no": 9,
+  "part_count": 9,
+  "checkpoint": true,
+  "title": "我学会了包饺子",
+  "subtitle": {
+    "uz": "Hayotdagi o‘zgarish va ulg‘ayish tajribalarini tasvirlash; taxminiy miqdorni aytish; “只要……就……” bilan yetarli shart va natijani ifodalash; Xitoyning an’anaviy Bahor bayrami odatlari bilan tanishish.",
+    "ru": "Описывать изменения в жизни и опыт взросления; выражать приблизительное количество; использовать “只要……就……” для достаточного условия и результата; познакомиться с обычаями традиционного китайского праздника Весны.",
+    "tj": "Тағйироти зиндагӣ ва таҷрибаи калон шуданро тавсиф кардан; миқдори тахминиро ифода кардан; бо “只要……就……” шарти кофӣ ва натиҷаро гуфтан; бо одатҳои ҷашни анъанавии Баҳори Чин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "怎样",
+      "pinyin": "zěnyàng",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qanday; qanday qilib",
+        "ru": "как; каким образом",
+        "tj": "чӣ хел; чӣ гуна"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "过节",
+      "pinyin": "guòjié",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bayramni nishonlamoq",
+        "ru": "праздновать праздник",
+        "tj": "идро ҷашн гирифтан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "节",
+      "pinyin": "jié",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bayram",
+        "ru": "праздник",
+        "tj": "ид"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "节日",
+      "pinyin": "jiérì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bayram kuni; bayram",
+        "ru": "праздник; праздничный день",
+        "tj": "ид; рӯзи ид"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "联欢",
+      "pinyin": "liánhuān",
+      "pos": "v.",
+      "meaning": {
+        "uz": "birgalikda bayram qilmoq; ko‘ngilochar tadbir",
+        "ru": "совместно праздновать; праздничный вечер",
+        "tj": "якҷо ҷашн гирифтан; базми идона"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "大概",
+      "pinyin": "dàgài",
+      "pos": "adv./adj.",
+      "meaning": {
+        "uz": "taxminan; chamasi",
+        "ru": "примерно; вероятно",
+        "tj": "тақрибан; эҳтимол"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "阿姨",
+      "pinyin": "āyí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xola; ayol kishiga hurmat bilan murojaat",
+        "ru": "тётя; вежливое обращение к женщине",
+        "tj": "хола; муроҷиати эҳтиромӣ ба зан"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "叔叔",
+      "pinyin": "shūshu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "amaki; erkak kishiga hurmat bilan murojaat",
+        "ru": "дядя; вежливое обращение к мужчине",
+        "tj": "амак; муроҷиати эҳтиромӣ ба мард"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "收",
+      "pinyin": "shōu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qabul qilmoq; olmoq",
+        "ru": "принимать; получать",
+        "tj": "қабул кардан; гирифтан"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "总",
+      "pinyin": "zǒng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "doim; har doim",
+        "ru": "всегда; всё время",
+        "tj": "ҳамеша"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "起",
+      "pinyin": "qǐ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "...dan boshlab",
+        "ru": "с; начиная с",
+        "tj": "аз ... сар карда"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "见面",
+      "pinyin": "jiànmiàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "uchrashmoq",
+        "ru": "встречаться",
+        "tj": "вохӯрдан"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "矿泉水",
+      "pinyin": "kuàngquánshuǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mineral suv",
+        "ru": "минеральная вода",
+        "tj": "оби маъданӣ"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "刚刚",
+      "pinyin": "gānggāng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "hozirgina; endigina",
+        "ru": "только что",
+        "tj": "ҳозиргина"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "出发",
+      "pinyin": "chūfā",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yo‘lga chiqmoq",
+        "ru": "отправляться; выезжать",
+        "tj": "ба роҳ баромадан"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "不久",
+      "pinyin": "bùjiǔ",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "ko‘p o‘tmay; yaqinda",
+        "ru": "недолго; вскоре",
+        "tj": "дере нагузашта; наздик"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "发生",
+      "pinyin": "fāshēng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sodir bo‘lmoq",
+        "ru": "происходить",
+        "tj": "рух додан"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "刚",
+      "pinyin": "gāng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "hozirgina; endi",
+        "ru": "только что",
+        "tj": "ҳозиргина"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "只要",
+      "pinyin": "zhǐyào",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "faqat ... bo‘lsa kifoya",
+        "ru": "если только; достаточно чтобы",
+        "tj": "танҳо ... бошад кифоя"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "学期",
+      "pinyin": "xuéqī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "semestr; o‘quv davri",
+        "ru": "семестр; учебный период",
+        "tj": "семестр; давраи таҳсил"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "毕业",
+      "pinyin": "bìyè",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘qishni bitirmoq",
+        "ru": "оканчивать учебное заведение",
+        "tj": "таҳсилро хатм кардан"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "出生",
+      "pinyin": "chūshēng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tug‘ilmoq",
+        "ru": "рождаться",
+        "tj": "таваллуд шудан"
+      }
+    },
+    {
+      "no": 23,
+      "zh": "过去",
+      "pinyin": "guòqù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘tmish",
+        "ru": "прошлое",
+        "tj": "гузашта"
+      }
+    },
+    {
+      "no": 24,
+      "zh": "懂得",
+      "pinyin": "dǒngde",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tushunmoq; anglamoq",
+        "ru": "понимать; осознавать",
+        "tj": "фаҳмидан; дарк кардан"
+      }
+    },
+    {
+      "no": 25,
+      "zh": "坚持",
+      "pinyin": "jiānchí",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qat’iy davom ettirmoq; tashlamaslik",
+        "ru": "упорно продолжать; придерживаться",
+        "tj": "пайваста идома додан; устувор будан"
+      }
+    },
+    {
+      "no": 26,
+      "zh": "完成",
+      "pinyin": "wánchéng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tugatmoq; bajarib bo‘lmoq",
+        "ru": "завершать; выполнять",
+        "tj": "анҷом додан"
+      }
+    },
+    {
+      "no": 27,
+      "zh": "目标",
+      "pinyin": "mùbiāo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "maqsad",
+        "ru": "цель",
+        "tj": "мақсад"
+      }
+    },
+    {
+      "no": 28,
+      "zh": "发展",
+      "pinyin": "fāzhǎn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "rivojlanmoq; rivojlantirmoq",
+        "ru": "развиваться; развивать",
+        "tj": "рушд кардан; инкишоф додан"
+      }
+    },
+    {
+      "no": 29,
+      "zh": "春节",
+      "pinyin": "Chūnjié",
+      "pos": "proper noun",
+      "meaning": {
+        "uz": "Bahor bayrami (Xitoy Yangi yili)",
+        "ru": "Праздник Весны (Китайский Новый год)",
+        "tj": "Иди Баҳор (Соли нави чинӣ)"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Taxminiy sonni ifodalash",
+        "ru": "Выражение приблизительного количества",
+        "tj": "Ифодаи миқдори тахминӣ"
+      },
+      "title_zh": "概数表达法",
+      "rule": {
+        "uz": "Ikki yaqin son yonma-yon kelib aniq bo‘lmagan taxminiy miqdorni bildiradi: 七八天 — “yetti-sakkiz kun”, 五六个 — “besh-olti dona”.",
+        "ru": "Два соседних числительных ставятся рядом, чтобы выразить приблизительное количество: 七八天 — «семь-восемь дней», 五六个 — «пять-шесть».",
+        "tj": "Ду адади наздик паҳлуи ҳам омада миқдори тахминиро ифода мекунанд: 七八天 — «ҳафт-ҳашт рӯз», 五六个 — «панҷ-шаш»."
+      },
+      "examples": [
+        {
+          "zh": "春节大概放七八天假。",
+          "pinyin": "Chūnjié dàgài fàng qī bā tiān jià.",
+          "translation": {
+            "uz": "Bahor bayramida taxminan yetti-sakkiz kun ta’til bo‘ladi.",
+            "ru": "На Праздник Весны обычно дают примерно семь-восемь дней выходных.",
+            "tj": "Дар Иди Баҳор тақрибан ҳафт-ҳашт рӯз таътил мешавад."
+          }
+        },
+        {
+          "zh": "教室里来了五六个学生。",
+          "pinyin": "Jiàoshì lǐ lái le wǔ liù ge xuéshēng.",
+          "translation": {
+            "uz": "Sinfga besh-olti talaba keldi.",
+            "ru": "В класс пришло пять-шесть студентов.",
+            "tj": "Ба синф панҷ-шаш донишҷӯ омад."
+          }
+        },
+        {
+          "zh": "这些照片是三四年前照的吧？",
+          "pinyin": "Zhèxiē zhàopiàn shì sān sì nián qián zhào de ba?",
+          "translation": {
+            "uz": "Bu suratlar uch-to‘rt yil oldin olingan-a?",
+            "ru": "Эти фотографии сделаны года три-четыре назад, да?",
+            "tj": "Ин суратҳо се-чор сол пеш гирифта шудаанд, дуруст?"
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "“刚才” va “刚刚” — “hozirgina”",
+        "ru": "“刚才” и “刚刚” — «только что»",
+        "tj": "“刚才” ва “刚刚” — «ҳозиргина»"
+      },
+      "title_zh": "“刚才”和“刚刚”",
+      "rule": {
+        "uz": "Ikkalasi ham yaqinda sodir bo‘lgan ishni bildiradi. “刚才” vaqt oti bo‘lib, “hozirgina” degan aniq vaqtni ko‘rsatadi; “刚刚” esa ravish sifatida fe’l oldidan kelib ish endigina sodir bo‘lganini ta’kidlaydi.",
+        "ru": "Оба слова указывают на недавнее событие. “刚才” — временное существительное «только что», а “刚刚” — наречие перед глаголом, подчёркивающее, что действие произошло совсем недавно.",
+        "tj": "Ҳар ду калима амали ба наздикӣ рухдодаро нишон медиҳанд. “刚才” исми вақт ба маънои «ҳозиргина» аст, “刚刚” бошад зарф шуда пеш аз феъл меояд ва нав рӯй додани амалро таъкид мекунад."
+      },
+      "examples": [
+        {
+          "zh": "刚才的电话是我妈妈打来的。",
+          "pinyin": "Gāngcái de diànhuà shì wǒ māma dǎ lái de.",
+          "translation": {
+            "uz": "Hozirgina bo‘lgan qo‘ng‘iroqni onam qilgan edi.",
+            "ru": "Только что звонила моя мама.",
+            "tj": "Занги ҳозиргина аз модарам буд."
+          }
+        },
+        {
+          "zh": "我刚才看过一遍，不想再看了。",
+          "pinyin": "Wǒ gāngcái kàn guo yí biàn, bù xiǎng zài kàn le.",
+          "translation": {
+            "uz": "Men hozirgina bir marta ko‘rib chiqdim, yana ko‘rgim kelmaydi.",
+            "ru": "Я только что уже посмотрел один раз и не хочу смотреть снова.",
+            "tj": "Ман ҳозиргина як бор дидам, боз дидан намехоҳам."
+          }
+        },
+        {
+          "zh": "我刚刚看视频学会了包饺子。",
+          "pinyin": "Wǒ gānggāng kàn shìpín xuéhuì le bāo jiǎozi.",
+          "translation": {
+            "uz": "Men hozirgina video ko‘rib jiaozi tugishni o‘rgandim.",
+            "ru": "Я только что научился лепить цзяоцзы по видео.",
+            "tj": "Ман ҳозиргина видео дида ҷяози печониданро омӯхтам."
+          }
+        },
+        {
+          "zh": "他刚刚来北京两个月。",
+          "pinyin": "Tā gānggāng lái Běijīng liǎng ge yuè.",
+          "translation": {
+            "uz": "U Pekinga kelganiga endigina ikki oy bo‘ldi.",
+            "ru": "Он живёт в Пекине всего два месяца.",
+            "tj": "Ҳамагӣ ду моҳ шуд, ки ӯ ба Пекин омадааст."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Shartli gap “只要……就……”",
+        "ru": "Условная конструкция “只要……就……”",
+        "tj": "Ҷумлаи шартии “只要……就……”"
+      },
+      "title_zh": "条件复句“只要……，就……”",
+      "rule": {
+        "uz": "“只要A，就B” A bajarilishi B uchun yetarli shart ekanini bildiradi: A bo‘lsa kifoya, B sodir bo‘ladi. Bu “只有……才……”dagi zarur shartdan farq qiladi.",
+        "ru": "“只要A，就B” означает, что A является достаточным условием для B: достаточно A, и B произойдёт. Это отличается от необходимого условия в “只有……才……”.",
+        "tj": "“只要A，就B” нишон медиҳад, ки A барои B шарти кофӣ аст: A бошад, B рух медиҳад. Ин аз шарти зарурии “只有……才……” фарқ мекунад."
+      },
+      "examples": [
+        {
+          "zh": "我只要几天不跟他视频，就很想他。",
+          "pinyin": "Wǒ zhǐyào jǐ tiān bù gēn tā shìpín, jiù hěn xiǎng tā.",
+          "translation": {
+            "uz": "U bilan bir necha kun videoqo‘ng‘iroq qilmasam, darrov sog‘inaman.",
+            "ru": "Стоит мне несколько дней не созваниваться с ним по видео, я сразу начинаю скучать.",
+            "tj": "Ҳамин ки чанд рӯз бо ӯ видео суҳбат накунам, сахт пазмонаш мешавам."
+          }
+        },
+        {
+          "zh": "只要你同意，我们就这么决定了。",
+          "pinyin": "Zhǐyào nǐ tóngyì, wǒmen jiù zhème juédìng le.",
+          "translation": {
+            "uz": "Sen rozi bo‘lsang kifoya, shunday qaror qilamiz.",
+            "ru": "Если ты согласен, тогда так и решим.",
+            "tj": "Танҳо ту розӣ бошӣ, ҳамин тавр қарор мекунем."
+          }
+        },
+        {
+          "zh": "只要你坚持每天早睡，身体就一定会好起来。",
+          "pinyin": "Zhǐyào nǐ jiānchí měitiān zǎo shuì, shēntǐ jiù yídìng huì hǎo qǐlái.",
+          "translation": {
+            "uz": "Har kuni erta uxlashni davom ettirsang, sog‘lig‘ing albatta yaxshilanadi.",
+            "ru": "Если будешь постоянно ложиться рано, здоровье обязательно улучшится.",
+            "tj": "Агар ҳар рӯз барвақт хобиданро идома диҳӣ, саломатият ҳатман беҳтар мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": {
+        "uz": "“从……起” — “…dan boshlab”",
+        "ru": "“从……起” — «начиная с…»",
+        "tj": "“从……起” — «аз ... сар карда»"
+      },
+      "title_zh": "固定格式“从……起”",
+      "rule": {
+        "uz": "“从 + vaqt/hodisa + 起” ma’lum vaqt yoki hodisa yangi holatning boshlanish nuqtasi ekanini bildiradi.",
+        "ru": "“从 + время/событие + 起” показывает точку, с которой начинается новое действие, состояние или период.",
+        "tj": "“从 + вақт/ҳодиса + 起” нуқтаи оғоз шудани амал, ҳолат ё давраи навро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "他从那时起就努力学习。",
+          "pinyin": "Tā cóng nà shí qǐ jiù nǔlì xuéxí.",
+          "translation": {
+            "uz": "U o‘sha paytdan boshlab astoydil o‘qiy boshladi.",
+            "ru": "С того времени он стал усердно учиться.",
+            "tj": "Ӯ аз ҳамон вақт сар карда ҷиддӣ таҳсил кард."
+          }
+        },
+        {
+          "zh": "从那天起，我们就变成了好朋友。",
+          "pinyin": "Cóng nà tiān qǐ, wǒmen jiù biànchéng le hǎo péngyou.",
+          "translation": {
+            "uz": "O‘sha kundan boshlab biz yaxshi do‘st bo‘lib qoldik.",
+            "ru": "С того дня мы стали хорошими друзьями.",
+            "tj": "Аз ҳамон рӯз мо дӯстони хуб шудем."
+          }
+        },
+        {
+          "zh": "从那次旅游起，我对中国文化更有兴趣了。",
+          "pinyin": "Cóng nà cì lǚyóu qǐ, wǒ duì Zhōngguó wénhuà gèng yǒu xìngqù le.",
+          "translation": {
+            "uz": "O‘sha sayohatdan boshlab Xitoy madaniyatiga qiziqishim yanada oshdi.",
+            "ru": "После той поездки я стал ещё больше интересоваться китайской культурой.",
+            "tj": "Аз ҳамон сафар сар карда шавқам ба фарҳанги Чин боз ҳам зиёд шуд."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Samolyotda Bai Jiayue va Li Wen suhbatlashmoqda.",
+        "ru": "В самолёте Бай Цзяюэ и Ли Вэнь разговаривают.",
+        "tj": "Дар ҳавопаймо Бай Ҷяюэ ва Ли Вэн суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "我要在中国过年，真开心。",
+          "pinyin": "Wǒ yào zài Zhōngguó guònián, zhēn kāixīn.",
+          "text": {
+            "uz": "Xitoyda Yangi yilni o‘tkazaman, juda xursandman.",
+            "ru": "Я буду встречать Новый год в Китае, очень радуюсь.",
+            "tj": "Ман Соли навро дар Чин мегузаронам, хеле хушҳолам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "第一次请外国朋友来家里过春节，我也很高兴。",
+          "pinyin": "Dì yí cì qǐng wàiguó péngyou lái jiālǐ guò Chūnjié, wǒ yě hěn gāoxìng.",
+          "text": {
+            "uz": "Chet ellik do‘stimni uyga Bahor bayramiga birinchi marta taklif qilyapman, men ham juda xursandman.",
+            "ru": "Я впервые приглашаю иностранного друга домой на Праздник Весны и тоже очень рад.",
+            "tj": "Бори аввал дӯсти хориҷиро ба хона барои Иди Баҳор даъват мекунам, ман ҳам хеле хушҳолам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "你们怎样过节？",
+          "pinyin": "Nǐmen zěnyàng guòjié?",
+          "text": {
+            "uz": "Sizlar bayramni qanday nishonlaysizlar?",
+            "ru": "Как вы отмечаете праздник?",
+            "tj": "Шумо идро чӣ тавр ҷашн мегиред?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "春节是中国最重要的节日，我们一般会回家，跟家人一起过。",
+          "pinyin": "Chūnjié shì Zhōngguó zuì zhòngyào de jiérì, wǒmen yìbān huì huí jiā, gēn jiārén yìqǐ guò.",
+          "text": {
+            "uz": "Bahor bayrami Xitoydagi eng muhim bayram, odatda uyga qaytib oilamiz bilan birga nishonlaymiz.",
+            "ru": "Праздник Весны — самый важный праздник в Китае. Обычно мы возвращаемся домой и проводим его с семьёй.",
+            "tj": "Иди Баҳор муҳимтарин иди Чин аст, одатан ба хона баргашта бо оила якҷо ҷашн мегирем."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "那你跟家人会一起做什么？",
+          "pinyin": "Nà nǐ gēn jiārén huì yìqǐ zuò shénme?",
+          "text": {
+            "uz": "Unda oilang bilan birga nimalar qilasizlar?",
+            "ru": "А что вы обычно делаете вместе с семьёй?",
+            "tj": "Пас бо оилаатон якҷо чӣ кор мекунед?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我们家会一边包饺子，一边看春节联欢晚会，一直到十二点以后才睡觉。",
+          "pinyin": "Wǒmen jiā huì yìbiān bāo jiǎozi, yìbiān kàn Chūnjié Liánhuān Wǎnhuì, yìzhí dào shí'èr diǎn yǐhòu cái shuìjiào.",
+          "text": {
+            "uz": "Biz uyda jiaozi tugib turib Bahor bayrami gala-konsertini ko‘ramiz va faqat soat o‘n ikkidan keyin uxlaymiz.",
+            "ru": "У нас дома лепят цзяоцзы и одновременно смотрят праздничный новогодний концерт, а спать ложатся только после полуночи.",
+            "tj": "Мо дар хона ҷяози печонида истода консерти идонаи Баҳорро мебинем ва танҳо баъди соати дувоздаҳ мехобем."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "听起来很有意思。春节放几天假？",
+          "pinyin": "Tīng qǐlái hěn yǒuyìsi. Chūnjié fàng jǐ tiān jià?",
+          "text": {
+            "uz": "Juda qiziq eshitilyapti. Bahor bayramida necha kun ta’til bo‘ladi?",
+            "ru": "Звучит интересно. Сколько выходных на Праздник Весны?",
+            "tj": "Хеле ҷолиб садо медиҳад. Дар Иди Баҳор чанд рӯз таътил мешавад?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "大概七八天。",
+          "pinyin": "Dàgài qī bā tiān.",
+          "text": {
+            "uz": "Taxminan yetti-sakkiz kun.",
+            "ru": "Примерно семь-восемь дней.",
+            "tj": "Тақрибан ҳафт-ҳашт рӯз."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida Bai Jiayue uning ota-onasini Yangi yil bilan tabriklamoqda.",
+        "ru": "Дома у Ли Вэня Бай Цзяюэ поздравляет его родителей с Новым годом.",
+        "tj": "Дар хонаи Ли Вэн Бай Ҷяюэ падару модари ӯро бо Соли нав табрик мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "张阿姨，李叔叔。过年好！这是我准备的礼物，请收下。",
+          "pinyin": "Zhāng āyí, Lǐ shūshu. Guònián hǎo! Zhè shì wǒ zhǔnbèi de lǐwù, qǐng shōuxia.",
+          "text": {
+            "uz": "Zhang xola, Li amaki, Yangi yilingiz bilan! Bu sizlar uchun tayyorlagan sovg‘am, qabul qilinglar.",
+            "ru": "Тётя Чжан, дядя Ли, с Новым годом! Это мой подарок, примите, пожалуйста.",
+            "tj": "Холаи Чжан, амаки Ли, Соли нав муборак! Ин тӯҳфаи ман, марҳамат қабул кунед."
+          }
+        },
+        {
+          "speaker": "李叔叔",
+          "zh": "谢谢家月，你太客气了！",
+          "pinyin": "Xièxie Jiāyuè, nǐ tài kèqi le!",
+          "text": {
+            "uz": "Rahmat, Jiayue, juda ovora bo‘libsan!",
+            "ru": "Спасибо, Цзяюэ, не стоило так церемониться!",
+            "tj": "Раҳмат, Ҷяюэ, ин қадар таоруф лозим набуд!"
+          }
+        },
+        {
+          "speaker": "张阿姨",
+          "zh": "总听小文说起你，今天终于有机会见面了。",
+          "pinyin": "Zǒng tīng Xiǎowén shuō qǐ nǐ, jīntiān zhōngyú yǒu jīhuì jiànmiàn le.",
+          "text": {
+            "uz": "Xiaowen sendan doim gapirardi, bugun nihoyat uchrashish nasib qildi.",
+            "ru": "Сяовэнь всё время рассказывал о тебе, сегодня наконец удалось встретиться.",
+            "tj": "Сяовэн ҳамеша дар бораи ту мегуфт, имрӯз ниҳоят имкони дидор шуд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "谢谢您和叔叔请我来家里做客。",
+          "pinyin": "Xièxie nín hé shūshu qǐng wǒ lái jiālǐ zuòkè.",
+          "text": {
+            "uz": "Meni uyingizga mehmonga taklif qilganingiz uchun sizga va amakiga rahmat.",
+            "ru": "Спасибо вам и дяде, что пригласили меня в гости.",
+            "tj": "Раҳмат ба шумо ва амак, ки маро ба хона меҳмон даъват кардед."
+          }
+        },
+        {
+          "speaker": "李叔叔",
+          "zh": "桌子上有饮料，还有矿泉水，你想喝什么就自己拿。",
+          "pinyin": "Zhuōzi shàng yǒu yǐnliào, hái yǒu kuàngquánshuǐ, nǐ xiǎng hē shénme jiù zìjǐ ná.",
+          "text": {
+            "uz": "Stolda ichimliklar va mineral suv bor, nimani ichging kelsa o‘zing olaver.",
+            "ru": "На столе напитки и минеральная вода, бери сама что хочешь.",
+            "tj": "Рӯйи миз нӯшокиҳо ва оби маъданӣ ҳаст, ҳар чӣ хоҳӣ худат бигир."
+          }
+        },
+        {
+          "speaker": "张阿姨",
+          "zh": "你先坐着看会儿电视，饺子很快就包好了。",
+          "pinyin": "Nǐ xiān zuòzhe kàn huìr diànshì, jiǎozi hěn kuài jiù bāo hǎo le.",
+          "text": {
+            "uz": "Avval o‘tirib biroz televizor ko‘r, jiaozi tezda tayyor bo‘ladi.",
+            "ru": "Пока посиди и немного посмотри телевизор, цзяоцзы скоро будут готовы.",
+            "tj": "Аввал нишаста каме телевизор бин, ҷяози зуд тайёр мешавад."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我刚刚看视频学会了包饺子，我跟你们一起包吧。",
+          "pinyin": "Wǒ gānggāng kàn shìpín xuéhuì le bāo jiǎozi, wǒ gēn nǐmen yìqǐ bāo ba.",
+          "text": {
+            "uz": "Men hozirgina videodan jiaozi tugishni o‘rgandim, sizlar bilan birga qilay.",
+            "ru": "Я только что по видео научилась лепить цзяоцзы, давайте я помогу вам.",
+            "tj": "Ман ҳозиргина аз видео ҷяози печониданро омӯхтам, бо шумо якҷо мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida uning onasi va Bai Jiayue suhbatlashmoqda.",
+        "ru": "Дома у Ли Вэня его мама и Бай Цзяюэ разговаривают.",
+        "tj": "Дар хонаи Ли Вэн модараш ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "这张照片是李文出国前照的吗？",
+          "pinyin": "Zhè zhāng zhàopiàn shì Lǐ Wén chūguó qián zhào de ma?",
+          "text": {
+            "uz": "Bu surat Li Wen chet elga ketishidan oldin olinganmi?",
+            "ru": "Эта фотография сделана до того, как Ли Вэнь уехал за границу?",
+            "tj": "Ин сурат пеш аз ба хориҷ рафтани Ли Вэн гирифта шудааст?"
+          }
+        },
+        {
+          "speaker": "张阿姨",
+          "zh": "对，这是他从北京出发时，我们全家在机场照的。",
+          "pinyin": "Duì, zhè shì tā cóng Běijīng chūfā shí, wǒmen quán jiā zài jīchǎng zhào de.",
+          "text": {
+            "uz": "Ha, u Pekindan yo‘lga chiqqan paytda butun oilamiz aeroportda tushgan surat.",
+            "ru": "Да, мы всей семьёй сделали её в аэропорту, когда он уезжал из Пекина.",
+            "tj": "Ҳа, вақте ӯ аз Пекин ба роҳ баромад, тамоми оила дар фурудгоҳ ин аксро гирифтем."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "那是三四年前吧？",
+          "pinyin": "Nà shì sān sì nián qián ba?",
+          "text": {
+            "uz": "Bu uch-to‘rt yil oldin bo‘lgan-a?",
+            "ru": "Это было года три-четыре назад, да?",
+            "tj": "Ин се-чор сол пеш буд, дуруст?"
+          }
+        },
+        {
+          "speaker": "张阿姨",
+          "zh": "是啊，时间过得真快，好像是不久前发生的一样。",
+          "pinyin": "Shì a, shíjiān guò de zhēn kuài, hǎoxiàng shì bùjiǔ qián fāshēng de yíyàng.",
+          "text": {
+            "uz": "Ha, vaqt juda tez o‘tadi, xuddi yaqindagina bo‘lgandek.",
+            "ru": "Да, время летит быстро, кажется, будто это случилось совсем недавно.",
+            "tj": "Ҳа, вақт хеле зуд мегузарад, гӯё ҳамин наздикӣ рӯй дода бошад."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "您一定特别想李文吧？",
+          "pinyin": "Nín yídìng tèbié xiǎng Lǐ Wén ba?",
+          "text": {
+            "uz": "Li Wenni juda sog‘ingandirsiz?",
+            "ru": "Вы, наверное, очень скучаете по Ли Вэню?",
+            "tj": "Шумо Ли Вэнро хеле пазмон мешавед, дуруст?"
+          }
+        },
+        {
+          "speaker": "张阿姨",
+          "zh": "他刚离开家时，我很不习惯，只要几天不跟他视频，就很想他。",
+          "pinyin": "Tā gāng líkāi jiā shí, wǒ hěn bù xíguàn, zhǐyào jǐ tiān bù gēn tā shìpín, jiù hěn xiǎng tā.",
+          "text": {
+            "uz": "U endi uyidan ketgan paytda juda ko‘nika olmagandim; bir necha kun video orqali gaplashmasak, darrov sog‘inardim.",
+            "ru": "Когда он только уехал из дома, мне было непривычно: стоило несколько дней не созваниваться по видео, я очень скучала.",
+            "tj": "Вақте ӯ нав аз хона рафт, бароям хеле ғайриодатӣ буд; чанд рӯз видео суҳбат накунем, сахт пазмонаш мешавам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "还有最后一个学期就要毕业了，他很快就会回来了。",
+          "pinyin": "Hái yǒu zuìhòu yí ge xuéqī jiù yào bìyè le, tā hěn kuài jiù huì huílái le.",
+          "text": {
+            "uz": "Faqat oxirgi bir semestr qoldi, keyin bitiradi va tez orada qaytadi.",
+            "ru": "Остался последний семестр до выпуска, скоро он вернётся.",
+            "tj": "Танҳо як семестри охир мондааст, баъд хатм мекунад ва зуд бармегардад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "那你跟家人会一起做什么？",
+          "pinyin": "Nà nǐ gēn jiārén huì yìqǐ zuò shénme?",
+          "translation": {
+            "uz": "Unda oilang bilan birga nimalar qilasizlar?",
+            "ru": "А что вы обычно делаете вместе с семьёй?",
+            "tj": "Пас бо оилаатон якҷо чӣ кор мекунед?"
+          },
+          "tokens": {
+            "uz": [
+              "nimalar",
+              "oilang",
+              "Xitoyda",
+              "birga",
+              "bilan",
+              "Unda",
+              "qilasizlar",
+              "Yangi"
+            ],
+            "ru": [
+              "делаете",
+              "вместе",
+              "семьёй",
+              "что",
+              "буду",
+              "с",
+              "обычно",
+              "Я",
+              "вы",
+              "А"
+            ],
+            "tj": [
+              "якҷо",
+              "мекунед",
+              "Соли",
+              "Пас",
+              "оилаатон",
+              "Ман",
+              "чӣ",
+              "бо",
+              "кор"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Unda",
+              "oilang",
+              "bilan",
+              "birga",
+              "nimalar",
+              "qilasizlar"
+            ],
+            "ru": [
+              "А",
+              "что",
+              "вы",
+              "обычно",
+              "делаете",
+              "вместе",
+              "с",
+              "семьёй"
+            ],
+            "tj": [
+              "Пас",
+              "бо",
+              "оилаатон",
+              "якҷо",
+              "чӣ",
+              "кор",
+              "мекунед"
+            ]
+          },
+          "explanation": {
+            "uz": "那你跟家人会一起做什么？ — Unda oilang bilan birga nimalar qilasizlar?",
+            "ru": "那你跟家人会一起做什么？ — А что вы обычно делаете вместе с семьёй?",
+            "tj": "那你跟家人会一起做什么？ — Пас бо оилаатон якҷо чӣ кор мекунед?"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "怎样",
+              {
+                "uz": "qanday; qanday qilib",
+                "ru": "как; каким образом",
+                "tj": "чӣ хел; чӣ гуна"
+              }
+            ],
+            [
+              "过节",
+              {
+                "uz": "bayramni nishonlamoq",
+                "ru": "праздновать праздник",
+                "tj": "идро ҷашн гирифтан"
+              }
+            ],
+            [
+              "节",
+              {
+                "uz": "bayram",
+                "ru": "праздник",
+                "tj": "ид"
+              }
+            ],
+            [
+              "节日",
+              {
+                "uz": "bayram kuni; bayram",
+                "ru": "праздник; праздничный день",
+                "tj": "ид; рӯзи ид"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "联欢",
+              {
+                "uz": "birgalikda bayram qilmoq; ko‘ngilochar tadbir",
+                "ru": "совместно праздновать; праздничный вечер",
+                "tj": "якҷо ҷашн гирифтан; базми идона"
+              }
+            ],
+            [
+              "大概",
+              {
+                "uz": "taxminan; chamasi",
+                "ru": "примерно; вероятно",
+                "tj": "тақрибан; эҳтимол"
+              }
+            ],
+            [
+              "阿姨",
+              {
+                "uz": "xola; ayol kishiga hurmat bilan murojaat",
+                "ru": "тётя; вежливое обращение к женщине",
+                "tj": "хола; муроҷиати эҳтиромӣ ба зан"
+              }
+            ],
+            [
+              "叔叔",
+              {
+                "uz": "amaki; erkak kishiga hurmat bilan murojaat",
+                "ru": "дядя; вежливое обращение к мужчине",
+                "tj": "амак; муроҷиати эҳтиромӣ ба мард"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "过节 talaffuzini tanlang:",
+            "ru": "Выберите произношение 过节:",
+            "tj": "Талаффузи 过节-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jiérì",
+            "jié",
+            "guòjié",
+            "zěnyàng"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "过节 — guòjié",
+            "ru": "过节 — guòjié",
+            "tj": "过节 — guòjié"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bayram kuni; bayram' xitoycha qaysi?",
+            "ru": "'праздник; праздничный день' по-китайски?",
+            "tj": "'ид; рӯзи ид' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "怎样",
+            "过节",
+            "节",
+            "节日"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "bayram kuni; bayram = 节日 (jiérì)",
+            "ru": "праздник; праздничный день = 节日 (jiérì)",
+            "tj": "ид; рӯзи ид = 节日 (jiérì)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "春节 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 春节:",
+            "tj": "Маънои калимаи 春节-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bayramni nishonlamoq",
+              "ru": "праздновать праздник",
+              "tj": "идро ҷашн гирифтан"
+            },
+            {
+              "uz": "Bahor bayrami (Xitoy Yangi yili)",
+              "ru": "Праздник Весны (Китайский Новый год)",
+              "tj": "Иди Баҳор (Соли нави чинӣ)"
+            },
+            {
+              "uz": "qanday; qanday qilib",
+              "ru": "как; каким образом",
+              "tj": "чӣ хел; чӣ гуна"
+            },
+            {
+              "uz": "bayram",
+              "ru": "праздник",
+              "tj": "ид"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "春节 = Bahor bayrami (Xitoy Yangi yili) (Chūnjié)",
+            "ru": "春节 = Праздник Весны (Китайский Новый год) (Chūnjié)",
+            "tj": "春节 = Иди Баҳор (Соли нави чинӣ) (Chūnjié)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U Pekinga kelganiga endigina ikki oy bo‘ldi.» — xitoychada qaysi biri?",
+            "ru": "«Он живёт в Пекине всего два месяца.» — какое предложение по-китайски?",
+            "tj": "«Ҳамагӣ ду моҳ шуд, ки ӯ ба Пекин омадааст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "这些照片是三四年前照的吧？",
+            "我只要几天不跟他视频，就很想他。",
+            "他刚刚来北京两个月。",
+            "我刚才看过一遍，不想再看了。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "他刚刚来北京两个月。 — Tā gānggāng lái Běijīng liǎng ge yuè.",
+            "ru": "他刚刚来北京两个月。 — Tā gānggāng lái Běijīng liǎng ge yuè.",
+            "tj": "他刚刚来北京两个月。 — Tā gānggāng lái Běijīng liǎng ge yuè."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "我要在中国过年，真开心。",
+          "pinyin": "Wǒ yào zài Zhōngguó guònián, zhēn kāixīn.",
+          "options": [
+            "第一次请外国朋友来家里过春节，我也很高兴。",
+            "春节是中国最重要的节日，我们一般会回家，跟家人一起过。",
+            "你们怎样过节？",
+            "我要在中国过年，真开心。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "我要在中国过年，真开心。 — Xitoyda Yangi yilni o‘tkazaman, juda xursandman.",
+            "ru": "我要在中国过年，真开心。 — Я буду встречать Новый год в Китае, очень радуюсь.",
+            "tj": "我要在中国过年，真开心。 — Ман Соли навро дар Чин мегузаронам, хеле хушҳолам."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____要在中国过年，真开心。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "我",
+            "七",
+            "一",
+            "万"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 我 — 我要在中国过年，真开心。 (Xitoyda Yangi yilni o‘tkazaman, juda xursandman.)",
+            "ru": "Верно: 我 — 我要在中国过年，真开心。 (Я буду встречать Новый год в Китае, очень радуюсь.)",
+            "tj": "Дуруст: 我 — 我要在中国过年，真开心。 (Ман Соли навро дар Чин мегузаронам, хеле хушҳолам.)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 白家月 avval nima deydi?",
+            "ru": "Что 白家月 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 白家月 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "我要在中国过年，真开心。",
+            "春节是中国最重要的节日，我们一般会回家，跟家人一起过。",
+            "你们怎样过节？",
+            "第一次请外国朋友来家里过春节，我也很高兴。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 我要在中国过年，真开心。",
+            "ru": "Правильный ответ: 我要在中国过年，真开心。",
+            "tj": "Ҷавоби дуруст: 我要在中国过年，真开心。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 李文 nima deydi?",
+            "ru": "Что 李文 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 李文 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "大概七八天。",
+            "你们怎样过节？",
+            "第一次请外国朋友来家里过春节，我也很高兴。",
+            "我要在中国过年，真开心。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 大概七八天。",
+            "ru": "Правильный ответ: 大概七八天。",
+            "tj": "Ҷавоби дуруст: 大概七八天。"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "白家月",
+              "zh": "我要在中国过年，真开心。",
+              "blank": false
+            },
+            {
+              "speaker": "李文",
+              "zh": "第一次请外国朋友来家里过春节，我也很高兴。",
+              "blank": false
+            },
+            {
+              "speaker": "白家月",
+              "zh": "你们怎样过节？",
+              "blank": false
+            },
+            {
+              "speaker": "李文",
+              "zh": "春节是中国最重要的节日，我们一般会回家，跟家人一起过。",
+              "blank": false
+            },
+            {
+              "speaker": "白家月",
+              "zh": "那你跟家人会一起做什么？",
+              "blank": false
+            },
+            {
+              "speaker": "李文",
+              "zh": "我们家会一边包饺子，一边看春节联欢晚会，一直到十二点以后才睡觉。",
+              "blank": false
+            },
+            {
+              "speaker": "白家月",
+              "zh": "听起来很有意思。春节放几天假？",
+              "blank": false
+            },
+            {
+              "speaker": "李文",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "第一次请外国朋友来家里过春节，我也很高兴。",
+            "我要在中国过年，真开心。",
+            "你们怎样过节？",
+            "大概七八天。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 大概七八天。",
+            "ru": "Правильный ответ: 大概七八天。",
+            "tj": "Ҷавоби дуруст: 大概七八天。"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "我要在中国过年，真开心。",
+          "pinyin": "Wǒ yào zài Zhōngguó guònián, zhēn kāixīn.",
+          "translation": {
+            "uz": "Xitoyda Yangi yilni o‘tkazaman, juda xursandman.",
+            "ru": "Я буду встречать Новый год в Китае, очень радуюсь.",
+            "tj": "Ман Соли навро дар Чин мегузаронам, хеле хушҳолам."
+          }
+        }
+      ]
+    }
+  ]
+}

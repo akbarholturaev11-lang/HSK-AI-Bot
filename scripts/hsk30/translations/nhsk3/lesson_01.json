@@ -1,0 +1,436 @@
+{
+  "schema_version": 1,
+  "lesson": 1,
+  "source_title_hanzi": "我们去机场接你们",
+  "translation_origin": "assistant_authored_from_source_verified_chinese",
+  "goal": {
+    "uz": "Odam yoki narsani bir nechta aniqlovchi bilan aniq tasvirlash, yo‘qolgan buyum haqida yordam so‘rash va noaniq shaxs, narsa yoki joyni so‘roq olmoshlari orqali ifodalash.",
+    "ru": "Описывать человека или предмет несколькими определениями, решать ситуацию с потерянной вещью и выражать неопределённого человека, предмет или место с помощью вопросительных местоимений.",
+    "tj": "Шахс ё ашёро бо чанд муайянкунанда дақиқ тавсиф кардан, масъалаи гум шудани чизро ҳал кардан ва шахс, ашё ё ҷойи номуайянро бо ҷонишинҳои саволӣ ифода кардан."
+  },
+  "intro_text": {
+    "uz": "Dars aeroportda kutib olish, yo‘qolgan yukni qidirish va odamni tashqi ko‘rinishiga qarab tanish vaziyatlari orqali “看上去/看起来”, so‘roq olmoshlarining noaniq ma’nosi va ko‘p aniqlovchili birikmalarni o‘rgatadi.",
+    "ru": "Урок через встречу в аэропорту, поиск потерянного багажа и описание внешности вводит “看上去/看起来”, неопределённое употребление вопросительных местоимений и несколько определений перед существительным.",
+    "tj": "Дарс тавассути пешвозгирӣ дар фурудгоҳ, ҷустуҷӯи бағоҷи гумшуда ва шинохтани шахс аз рӯйи намуди зоҳирӣ “看上去/看起来”, истифодаи номуайяни ҷонишинҳои саволӣ ва чанд муайянкунандаро меомӯзонад."
+  },
+  "vocabulary": [
+    {
+      "hanzi": "以为",
+      "pinyin": "yǐwéi",
+      "uz": "deb o‘ylamoq (keyin noto‘g‘ri ekani ma’lum bo‘lishi mumkin)",
+      "ru": "полагать, считать (часто ошибочно)",
+      "tj": "гумон кардан, фикр кардан (аксар вақт нодуруст)"
+    },
+    {
+      "hanzi": "像",
+      "pinyin": "xiàng",
+      "uz": "o‘xshamoq",
+      "ru": "быть похожим; походить",
+      "tj": "монанд будан"
+    },
+    {
+      "hanzi": "长",
+      "pinyin": "zhǎng",
+      "uz": "o‘smoq; tashqi ko‘rinishi shakllanmoq",
+      "ru": "расти; выглядеть (о внешности)",
+      "tj": "сабзидан; аз рӯйи намуди зоҳирӣ будан"
+    },
+    {
+      "hanzi": "身高",
+      "pinyin": "shēngāo",
+      "uz": "bo‘y balandligi",
+      "ru": "рост человека",
+      "tj": "қад; баландии қомат"
+    },
+    {
+      "hanzi": "米",
+      "pinyin": "mǐ",
+      "uz": "metr",
+      "ru": "метр",
+      "tj": "метр"
+    },
+    {
+      "hanzi": "瘦",
+      "pinyin": "shòu",
+      "uz": "ozg‘in",
+      "ru": "худой; стройный",
+      "tj": "лоғар"
+    },
+    {
+      "hanzi": "接",
+      "pinyin": "jiē",
+      "uz": "kutib olmoq",
+      "ru": "встречать; забирать",
+      "tj": "пешвоз гирифтан"
+    },
+    {
+      "hanzi": "行李",
+      "pinyin": "xíngli",
+      "uz": "bagaj; yuk",
+      "ru": "багаж",
+      "tj": "бағоҷ"
+    },
+    {
+      "hanzi": "丢",
+      "pinyin": "diū",
+      "uz": "yo‘qotmoq",
+      "ru": "терять",
+      "tj": "гум кардан"
+    },
+    {
+      "hanzi": "箱子",
+      "pinyin": "xiāngzi",
+      "uz": "quti; chamadon",
+      "ru": "ящик; чемодан",
+      "tj": "қуттӣ; ҷомадон"
+    },
+    {
+      "hanzi": "号码",
+      "pinyin": "hàomǎ",
+      "uz": "raqam",
+      "ru": "номер",
+      "tj": "рақам"
+    },
+    {
+      "hanzi": "好像",
+      "pinyin": "hǎoxiàng",
+      "uz": "go‘yo; o‘xshaydi",
+      "ru": "кажется; похоже",
+      "tj": "гӯё; ба назар мерасад"
+    },
+    {
+      "hanzi": "重要",
+      "pinyin": "zhòngyào",
+      "uz": "muhim",
+      "ru": "важный",
+      "tj": "муҳим"
+    },
+    {
+      "hanzi": "着急",
+      "pinyin": "zháojí",
+      "uz": "xavotirlanmoq; shoshilmoq",
+      "ru": "волноваться; тревожиться",
+      "tj": "ташвиш кашидан; шитоб кардан"
+    },
+    {
+      "hanzi": "护照",
+      "pinyin": "hùzhào",
+      "uz": "pasport",
+      "ru": "паспорт",
+      "tj": "шиноснома"
+    },
+    {
+      "hanzi": "服务台",
+      "pinyin": "fúwùtái",
+      "uz": "ma’lumot/xizmat ko‘rsatish peshtaxtasi",
+      "ru": "стойка обслуживания; справочная",
+      "tj": "миз/пештахтаи хизматрасонӣ"
+    },
+    {
+      "hanzi": "应该",
+      "pinyin": "yīnggāi",
+      "uz": "kerak; lozim; ehtimol",
+      "ru": "следует; должен; вероятно",
+      "tj": "бояд; лозим; эҳтимол"
+    },
+    {
+      "hanzi": "站",
+      "pinyin": "zhàn",
+      "uz": "turmoq",
+      "ru": "стоять",
+      "tj": "истодан"
+    },
+    {
+      "hanzi": "中间",
+      "pinyin": "zhōngjiān",
+      "uz": "o‘rta; o‘rtasi",
+      "ru": "середина; посередине",
+      "tj": "миёна; мобайн"
+    },
+    {
+      "hanzi": "短",
+      "pinyin": "duǎn",
+      "uz": "qisqa",
+      "ru": "короткий",
+      "tj": "кӯтоҳ"
+    },
+    {
+      "hanzi": "头发",
+      "pinyin": "tóufa",
+      "uz": "soch",
+      "ru": "волосы",
+      "tj": "мӯй"
+    },
+    {
+      "hanzi": "年轻",
+      "pinyin": "niánqīng",
+      "uz": "yosh",
+      "ru": "молодой",
+      "tj": "ҷавон"
+    },
+    {
+      "hanzi": "发现",
+      "pinyin": "fāxiàn",
+      "uz": "aniqlamoq; payqamoq",
+      "ru": "обнаружить; заметить",
+      "tj": "пай бурдан; ошкор кардан"
+    },
+    {
+      "hanzi": "不见",
+      "pinyin": "bùjiàn",
+      "uz": "yo‘qolib qolmoq; ko‘rinmay qolmoq",
+      "ru": "пропасть; исчезнуть",
+      "tj": "гум шудан; нопадид шудан"
+    },
+    {
+      "hanzi": "带",
+      "pinyin": "dài",
+      "uz": "olib yurmoq; olib kelmoq",
+      "ru": "брать с собой; носить",
+      "tj": "бо худ гирифтан; бурдан"
+    },
+    {
+      "hanzi": "帮助",
+      "pinyin": "bāngzhù",
+      "uz": "yordam bermoq",
+      "ru": "помогать",
+      "tj": "кӯмак кардан"
+    },
+    {
+      "hanzi": "照片",
+      "pinyin": "zhàopiàn",
+      "uz": "surat; fotosurat",
+      "ru": "фотография",
+      "tj": "сурат; акс"
+    }
+  ],
+  "grammar": [
+    {
+      "label": "固定短语“看上去/看起来”",
+      "title_uz": "“看上去 / 看起来” — tashqi taassurotni ifodalash",
+      "title_ru": "“看上去 / 看起来” — внешнее впечатление",
+      "title_tj": "“看上去 / 看起来” — таассуроти зоҳирӣ",
+      "rule_uz": "“看上去” va “看起来” biror odam yoki narsaning ko‘rinishi va kuzatuvchida uyg‘otgan taassurotini bildiradi. Keyin odatda sifat yoki tavsif keladi.",
+      "rule_ru": "“看上去” и “看起来” передают впечатление по внешнему виду человека или предмета. После них обычно ставится прилагательное или описание.",
+      "rule_tj": "“看上去” ва “看起来” таассуротро аз намуди зоҳирии шахс ё ашё ифода мекунанд. Баъди онҳо одатан сифат ё тавсиф меояд.",
+      "examples": [
+        {
+          "hanzi": "他们看上去有点儿像。",
+          "uz": "Ular ko‘rinishidan biroz o‘xshaydi.",
+          "ru": "Они на вид немного похожи.",
+          "tj": "Онҳо аз рӯйи намуд каме монанданд."
+        },
+        {
+          "hanzi": "这些菜看起来都很好吃。",
+          "uz": "Bu taomlarning hammasi juda mazali ko‘rinadi.",
+          "ru": "Все эти блюда выглядят очень аппетитно.",
+          "tj": "Ҳамаи ин хӯрокҳо хеле болаззат ба назар мерасанд."
+        },
+        {
+          "hanzi": "那个新来的老师看上去很年轻。",
+          "uz": "Yangi kelgan o‘qituvchi juda yosh ko‘rinadi.",
+          "ru": "Новый преподаватель выглядит очень молодо.",
+          "tj": "Устоди навомада хеле ҷавон ба назар мерасад."
+        }
+      ]
+    },
+    {
+      "label": "疑问代词的非疑问用法（1）",
+      "title_uz": "So‘roq olmoshlarining so‘roq bo‘lmagan ma’nosi (1)",
+      "title_ru": "Невопросительное употребление вопросительных местоимений (1)",
+      "title_tj": "Истифодаи ғайрисаволии ҷонишинҳои саволӣ (1)",
+      "rule_uz": "谁、什么、哪儿/哪里、哪 kabi so‘roq olmoshlari ayrim gaplarda savol bermaydi, balki aniq bo‘lmagan odam, narsa, joy yoki vaqtni bildiradi.",
+      "rule_ru": "谁、什么、哪儿/哪里、哪 в некоторых предложениях не задают вопрос, а обозначают неопределённого человека, предмет, место или время.",
+      "rule_tj": "谁、什么、哪儿/哪里、哪 дар баъзе ҷумлаҳо савол намедиҳанд, балки шахс, ашё, ҷой ё вақти номуайянро ифода мекунанд.",
+      "examples": [
+        {
+          "hanzi": "我好像在哪儿看到过这个箱子。",
+          "uz": "Men bu chamadonni qayerdadir ko‘rgandekman.",
+          "ru": "Кажется, я где-то видел этот чемодан.",
+          "tj": "Ба назарам, ман ин ҷомадонро дар ягон ҷо дида будам."
+        },
+        {
+          "hanzi": "你吃点儿什么再走吧。",
+          "uz": "Ketishdan oldin biror narsa yeb ol.",
+          "ru": "Съешь что-нибудь перед уходом.",
+          "tj": "Пеш аз рафтан чизе бихӯр."
+        },
+        {
+          "hanzi": "我们哪天一起去踢足球吧。",
+          "uz": "Biror kuni birga futbol o‘ynagani boraylik.",
+          "ru": "Давай как-нибудь вместе поиграем в футбол.",
+          "tj": "Ягон рӯз якҷо футбол бозӣ кунем."
+        }
+      ]
+    },
+    {
+      "label": "多项定语",
+      "title_uz": "Bir nechta aniqlovchining ketma-ket kelishi",
+      "title_ru": "Несколько определений перед существительным",
+      "title_tj": "Якчанд муайянкунанда пеш аз исм",
+      "rule_uz": "Bir otni bir nechta aniqlovchi tavsiflashi mumkin. Ular ot oldidan ketma-ket keladi; uzunroq fe’lli tavsiflar odatda “的” bilan otga bog‘lanadi.",
+      "rule_ru": "Одно существительное может иметь несколько определений. Они последовательно ставятся перед существительным; более развёрнутые глагольные описания обычно связываются с ним через “的”.",
+      "rule_tj": "Як исм метавонад чанд муайянкунанда дошта бошад. Онҳо пайдарпай пеш аз исм меоянд; тавсифҳои феълии дарозтар одатан бо “的” ба исм мепайванданд.",
+      "examples": [
+        {
+          "hanzi": "李文是那个穿着黑衣服的短头发的年轻人吗？",
+          "uz": "Li Wen qora kiyim kiygan, kalta sochli o‘sha yosh yigitmi?",
+          "ru": "Ли Вэнь — тот молодой человек в чёрной одежде с короткими волосами?",
+          "tj": "Ли Вэн ҳамон ҷавони либоси сиёҳпӯш ва мӯйкӯтоҳ аст?"
+        },
+        {
+          "hanzi": "昨天和家月一起看电影的两个人是我的朋友。",
+          "uz": "Kecha Jiayue bilan film ko‘rgan ikki kishi mening do‘stlarim.",
+          "ru": "Два человека, которые вчера смотрели фильм вместе с Цзяюэ, — мои друзья.",
+          "tj": "Ду нафаре, ки дирӯз бо Ҷяюэ филм диданд, дӯстони мананд."
+        },
+        {
+          "hanzi": "我那件新买的白色的衣服在哪儿？",
+          "uz": "Mening yangi sotib olgan oq kiyimim qayerda?",
+          "ru": "Где моя новая белая одежда, которую я купил?",
+          "tj": "Либоси сафеди навхаридаи ман куҷост?"
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene_zh": "在家里，刘明和王一雪在沙发上聊天儿。",
+      "scene_uz": "Uyda Liu Ming va Wang Yixue divanda suhbatlashmoqda.",
+      "scene_ru": "Дома Лю Мин и Ван Исюэ разговаривают на диване.",
+      "scene_tj": "Дар хона Лю Мин ва Ван Исюэ рӯйи диван суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "这是杨同乐吗？他怎么跟白家月在一起？",
+          "uz": "Bu Yang Tonglemi? U nega Bai Jiayue bilan birga?",
+          "ru": "Это Ян Тунлэ? Почему он вместе с Бай Цзяюэ?",
+          "tj": "Ин Ян Тунлэ аст? Чаро ӯ бо Бай Ҷяюэ якҷост?"
+        },
+        {
+          "hanzi": "他不是杨同乐，他叫李文，是白家月的好朋友。",
+          "uz": "U Yang Tongle emas, uning ismi Li Wen, u Bai Jiayuening yaxshi do‘sti.",
+          "ru": "Это не Ян Тунлэ. Его зовут Ли Вэнь, он хороший друг Бай Цзяюэ.",
+          "tj": "Ӯ Ян Тунлэ нест, номаш Ли Вэн аст ва дӯсти хуби Бай Ҷяюэ мебошад."
+        },
+        {
+          "hanzi": "我还以为是同乐呢，他们看上去有点儿像。",
+          "uz": "Men uni Tongle deb o‘ylabman, ular ko‘rinishidan biroz o‘xshaydi.",
+          "ru": "А я думал, что это Тунлэ. Они немного похожи.",
+          "tj": "Ман гумон кардам Тунлэ аст, онҳо аз рӯйи намуд каме монанданд."
+        },
+        {
+          "hanzi": "是长得有点儿像，但是他比同乐高，身高有一米八。",
+          "uz": "Ha, biroz o‘xshash, lekin u Tongledan balandroq, bo‘yi bir metr sakson.",
+          "ru": "Да, внешне немного похожи, но он выше Тунлэ — рост около метра восьмидесяти.",
+          "tj": "Ҳа, каме монанданд, аммо ӯ аз Тунлэ баландтар аст, қадаш як метру ҳаштод."
+        },
+        {
+          "hanzi": "看起来也比同乐瘦一点儿。",
+          "uz": "Ko‘rinishidan Tongledan biroz ozg‘inroq ham.",
+          "ru": "И выглядит он немного худее Тунлэ.",
+          "tj": "Ба назар аз Тунлэ каме лоғартар ҳам ҳаст."
+        },
+        {
+          "hanzi": "下个星期家月和李文要来北京，我去机场接他们。",
+          "uz": "Keyingi hafta Jiayue va Li Wen Pekinga keladi, men ularni aeroportda kutib olaman.",
+          "ru": "На следующей неделе Цзяюэ и Ли Вэнь приедут в Пекин, я встречу их в аэропорту.",
+          "tj": "Ҳафтаи оянда Ҷяюэ ва Ли Вэн ба Пекин меоянд, ман онҳоро дар фурудгоҳ пешвоз мегирам."
+        },
+        {
+          "hanzi": "他们哪天到北京？我跟你一起去机场接他们吧。",
+          "uz": "Ular qaysi kuni Pekinga yetib keladi? Men ham sen bilan aeroportga borib ularni kutib olay.",
+          "ru": "В какой день они прилетают в Пекин? Давай я поеду с тобой в аэропорт их встречать.",
+          "tj": "Онҳо кадом рӯз ба Пекин мерасанд? Ман ҳам бо ту ба фурудгоҳ рафта онҳоро пешвоз мегирам."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在机场，李文和白家月在行李领取处。",
+      "scene_uz": "Aeroportda Li Wen va Bai Jiayue bagaj olish joyida.",
+      "scene_ru": "В аэропорту Ли Вэнь и Бай Цзяюэ находятся у выдачи багажа.",
+      "scene_tj": "Дар фурудгоҳ Ли Вэн ва Бай Ҷяюэ дар ҷойи гирифтани бағоҷ ҳастанд.",
+      "turns": [
+        {
+          "hanzi": "我的行李怎么还没出来？是不是丢了？",
+          "uz": "Nega mening bagajim hali chiqmadi? Yo‘qolib qoldimi?",
+          "ru": "Почему мой багаж до сих пор не появился? Он потерялся?",
+          "tj": "Чаро бағоҷи ман ҳоло набаромад? Гум шудааст?"
+        },
+        {
+          "hanzi": "你的行李箱是什么样的？",
+          "uz": "Chamadoning qanday ko‘rinishda?",
+          "ru": "Как выглядит твой чемодан?",
+          "tj": "Ҷомадонат чӣ хел аст?"
+        },
+        {
+          "hanzi": "是一个黑色的箱子，上面写着我的名字和电话号码。",
+          "uz": "Qora chamadon, ustida ismim va telefon raqamim yozilgan.",
+          "ru": "Это чёрный чемодан, на нём написаны моё имя и номер телефона.",
+          "tj": "Ҷомадони сиёҳ аст, рӯяш ному рақами телефонам навишта шудааст."
+        },
+        {
+          "hanzi": "我好像在哪儿看到过这个箱子，是不是有人拿错了？",
+          "uz": "Bu chamadonni qayerdadir ko‘rgandekman, balki kimdir adashib olib ketgandir?",
+          "ru": "Кажется, я где-то видел этот чемодан. Может, кто-то взял его по ошибке?",
+          "tj": "Ба назарам, ин ҷомадонро дар ягон ҷо дида будам. Шояд касе иштибоҳан гирифта бошад?"
+        },
+        {
+          "hanzi": "我们快找谁问一下吧，箱子里有不少重要的东西。",
+          "uz": "Tezroq biror kishidan so‘raylik, chamadonda ancha muhim narsalar bor.",
+          "ru": "Давай скорее у кого-нибудь спросим: в чемодане много важных вещей.",
+          "tj": "Биё зуд аз касе пурсем, дар ҷомадон чизҳои муҳими зиёд ҳастанд."
+        },
+        {
+          "hanzi": "别着急，我们拿着护照和机票，去服务台问问吧。",
+          "uz": "Xavotir olma, pasport va chiptalarimiz yonimizda, xizmat ko‘rsatish peshtaxtasiga borib so‘raylik.",
+          "ru": "Не волнуйся. Паспорт и билеты у нас с собой, пойдём спросим на стойке обслуживания.",
+          "tj": "Ташвиш накаш, шиноснома ва чиптаҳо бо мост, биё ба мизи хизматрасонӣ рафта пурсем."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在机场大厅，刘明和王一雪接机。",
+      "scene_uz": "Aeroport zalida Liu Ming va Wang Yixue mehmonlarni kutib olmoqda.",
+      "scene_ru": "В зале аэропорта Лю Мин и Ван Исюэ встречают прилетающих.",
+      "scene_tj": "Дар толори фурудгоҳ Лю Мин ва Ван Исюэ меҳмононро пешвоз мегиранд.",
+      "turns": [
+        {
+          "hanzi": "飞机早就到了，你看见白家月他们了吗？",
+          "uz": "Samolyot anchadan beri qo‘ngan, Bai Jiayue va boshqalarni ko‘rdingmi?",
+          "ru": "Самолёт уже давно прилетел. Ты видела Бай Цзяюэ и остальных?",
+          "tj": "Ҳавопаймо кайҳо расидааст, Бай Ҷяюэ ва дигаронро дидӣ?"
+        },
+        {
+          "hanzi": "没有，他们应该快出来了。",
+          "uz": "Yo‘q, ular hozir chiqib qolishi kerak.",
+          "ru": "Нет, они, наверное, скоро выйдут.",
+          "tj": "Не, онҳо бояд ҳозир-ҳозир бароянд."
+        },
+        {
+          "hanzi": "我们站到中间去吧，这样他们好找一些。",
+          "uz": "O‘rtaroqqa borib turaylik, shunda ular bizni osonroq topadi.",
+          "ru": "Давай встанем посередине, так им будет легче нас найти.",
+          "tj": "Биё дар миёна истем, ҳамин тавр моро осонтар меёбанд."
+        },
+        {
+          "hanzi": "你看那个高个子的人是李文吗？",
+          "uz": "Qara, ana u baland bo‘yli odam Li Wenmi?",
+          "ru": "Смотри, тот высокий человек — Ли Вэнь?",
+          "tj": "Бин, он шахси қадбаланд Ли Вэн аст?"
+        },
+        {
+          "hanzi": "你说的是哪个？那个穿着黑衣服的短头发的年轻人？",
+          "uz": "Qaysinisini aytyapsan? Qora kiyimdagi kalta sochli yosh yigitnimi?",
+          "ru": "Кого ты имеешь в виду? Того молодого человека с короткими волосами в чёрной одежде?",
+          "tj": "Кадомашро мегӯӣ? Ҳамон ҷавони мӯйкӯтоҳи либоси сиёҳпӯшро?"
+        },
+        {
+          "hanzi": "对，那个人就是李文！你看，家月在他后面呢。",
+          "uz": "Ha, o‘sha odam Li Wen! Qara, Jiayue uning orqasida.",
+          "ru": "Да, это и есть Ли Вэнь! Смотри, Цзяюэ идёт позади него.",
+          "tj": "Ҳа, ҳамон шахс Ли Вэн аст! Бин, Ҷяюэ пушти ӯст."
+        }
+      ]
+    }
+  ]
+}

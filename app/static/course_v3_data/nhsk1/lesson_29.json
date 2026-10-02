@@ -1,0 +1,682 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 29,
+  "source_lesson": 5,
+  "part_no": 4,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "今天我休息",
+  "subtitle": {
+    "uz": "Sana va hafta kunlarini xitoycha tartibda aytish; “会” bilan o‘rganilgan qobiliyatni ifodalash; nominal-predikativ gaplarni tushunish va ishlatish.",
+    "ru": "Называть даты и дни недели по-китайски; выражать приобретённое умение с “会”; понимать и использовать именные сказуемые.",
+    "tj": "Сана ва рӯзҳои ҳафтаро бо тартиби чинӣ гуфтан; бо “会” қобилияти омӯхташударо ифода кардан; ҷумлаҳои номӣ-хабариро фаҳмидан ва истифода бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "饺子",
+      "pinyin": "jiǎozi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "jiaozi; chuchvara",
+        "ru": "цзяоцзы; пельмени",
+        "tj": "ҷяозы; тушбера"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "一些",
+      "pinyin": "yìxiē",
+      "pos": "num.",
+      "meaning": {
+        "uz": "bir oz; ba’zi",
+        "ru": "немного; некоторые",
+        "tj": "каме; баъзе"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "菜",
+      "pinyin": "cài",
+      "pos": "n.",
+      "meaning": {
+        "uz": "taom; ovqat",
+        "ru": "блюдо; еда",
+        "tj": "таом; хӯрок"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "下班",
+      "pinyin": "xiàbān",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ishdan chiqmoq",
+        "ru": "заканчивать работу",
+        "tj": "аз кор баромадан"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "今天几号？",
+          "pinyin": "Jīntiān jǐ hào?",
+          "text": {
+            "uz": "Bugun nechanchi sana?",
+            "ru": "Какое сегодня число?",
+            "tj": "Имрӯз чандум аст?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "今天9月8号。",
+          "pinyin": "Jīntiān jiǔ yuè bā hào.",
+          "text": {
+            "uz": "Bugun 8-sentabr.",
+            "ru": "Сегодня 8 сентября.",
+            "tj": "Имрӯз 8 сентябр аст."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "星期几？",
+          "pinyin": "Xīngqī jǐ?",
+          "text": {
+            "uz": "Bugun haftaning qaysi kuni?",
+            "ru": "Какой сегодня день недели?",
+            "tj": "Имрӯз кадом рӯзи ҳафта аст?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "星期日。今天我休息。",
+          "pinyin": "Xīngqīrì. Jīntiān wǒ xiūxi.",
+          "text": {
+            "uz": "Yakshanba. Bugun men dam olaman.",
+            "ru": "Воскресенье. Сегодня я отдыхаю.",
+            "tj": "Якшанбе. Имрӯз ман истироҳат мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada Wang Yixue va Yang Tongle tanaffusda suhbatlashmoqda.",
+        "ru": "В компании Ван Исюэ и Ян Тунлэ разговаривают во время перерыва.",
+        "tj": "Дар ширкат Ван Исюэ ва Ян Тунлэ ҳангоми танаффус суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你会做饭吗？",
+          "pinyin": "Nǐ huì zuò fàn ma?",
+          "text": {
+            "uz": "Ovqat pishira olasanmi?",
+            "ru": "Ты умеешь готовить?",
+            "tj": "Ту хӯрок пухта метавонӣ?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我会做。",
+          "pinyin": "Wǒ huì zuò.",
+          "text": {
+            "uz": "Ha, pishira olaman.",
+            "ru": "Да, умею.",
+            "tj": "Ҳа, метавонам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你会做什么？",
+          "pinyin": "Nǐ huì zuò shénme?",
+          "text": {
+            "uz": "Nima pishira olasan?",
+            "ru": "Что ты умеешь готовить?",
+            "tj": "Чӣ пухта метавонӣ?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我会做面条儿、饺子，也会做一些菜。星期天我也做饭。",
+          "pinyin": "Wǒ huì zuò miàntiáor, jiǎozi, yě huì zuò yìxiē cài. Xīngqītiān wǒ yě zuò fàn.",
+          "text": {
+            "uz": "Men ugra, jiaozi va ba’zi taomlarni pishira olaman. Yakshanba kuni ham ovqat pishiraman.",
+            "ru": "Я умею готовить лапшу, цзяоцзы и некоторые другие блюда. По воскресеньям я тоже готовлю.",
+            "tj": "Ман угро, ҷяозы ва баъзе таомҳоро пухта метавонам. Рӯзи якшанбе ҳам хӯрок мепазам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada Wang Yixue va Yang Tongle ishdan chiqish payti suhbatlashmoqda.",
+        "ru": "В компании Ван Исюэ и Ян Тунлэ разговаривают после работы.",
+        "tj": "Дар ширкат Ван Исюэ ва Ян Тунлэ баъди кор суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Yang Tongle",
+          "zh": "下班。",
+          "pinyin": "Xiàbān.",
+          "text": {
+            "uz": "Ha, chiqdim.",
+            "ru": "Да.",
+            "tj": "Ҳа."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "饺子",
+            "pinyin": "jiǎozi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "jiaozi; chuchvara",
+              "ru": "цзяоцзы; пельмени",
+              "tj": "ҷяозы; тушбера"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "饺子",
+          "pinyin": "jiǎozi",
+          "translation": {
+            "uz": "jiaozi; chuchvara",
+            "ru": "цзяоцзы; пельмени",
+            "tj": "ҷяозы; тушбера"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'jiaozi; chuchvara' xitoycha qaysi?",
+            "ru": "'цзяоцзы; пельмени' по-китайски?",
+            "tj": "'ҷяозы; тушбера' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "饺子",
+            "号",
+            "月",
+            "今天"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "jiaozi; chuchvara = 饺子 (jiǎozi)",
+            "ru": "цзяоцзы; пельмени = 饺子 (jiǎozi)",
+            "tj": "ҷяозы; тушбера = 饺子 (jiǎozi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "一些",
+            "pinyin": "yìxiē",
+            "pos": "num.",
+            "meaning": {
+              "uz": "bir oz; ba’zi",
+              "ru": "немного; некоторые",
+              "tj": "каме; баъзе"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "一些",
+          "pinyin": "yìxiē",
+          "options": [
+            "今天",
+            "月",
+            "号",
+            "一些"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "一些 — bir oz; ba’zi (yìxiē)",
+            "ru": "一些 — немного; некоторые (yìxiē)",
+            "tj": "一些 — каме; баъзе (yìxiē)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "菜",
+            "pinyin": "cài",
+            "pos": "n.",
+            "meaning": {
+              "uz": "taom; ovqat",
+              "ru": "блюдо; еда",
+              "tj": "таом; хӯрок"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "菜 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 菜:",
+            "tj": "Маънои калимаи 菜-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            },
+            {
+              "uz": "taom; ovqat",
+              "ru": "блюдо; еда",
+              "tj": "таом; хӯрок"
+            },
+            {
+              "uz": "oy",
+              "ru": "месяц",
+              "tj": "моҳ"
+            },
+            {
+              "uz": "sana (oy kuni)",
+              "ru": "число месяца",
+              "tj": "санаи моҳ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "菜 = taom; ovqat (cài)",
+            "ru": "菜 = блюдо; еда (cài)",
+            "tj": "菜 = таом; хӯрок (cài)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "下班",
+            "pinyin": "xiàbān",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ishdan chiqmoq",
+              "ru": "заканчивать работу",
+              "tj": "аз кор баромадан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xiàbān qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xiàbān?",
+            "tj": "xiàbān кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "号",
+            "下班",
+            "今天",
+            "月"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "下班 = ishdan chiqmoq (xiàbān)",
+            "ru": "下班 = заканчивать работу (xiàbān)",
+            "tj": "下班 = аз кор баромадан (xiàbān)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "饺子 talaffuzini tanlang:",
+            "ru": "Выберите произношение 饺子:",
+            "tj": "Талаффузи 饺子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "hào",
+            "yuè",
+            "jiǎozi",
+            "jīntiān"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "饺子 — jiǎozi",
+            "ru": "饺子 — jiǎozi",
+            "tj": "饺子 — jiǎozi"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "饺子",
+              {
+                "uz": "jiaozi; chuchvara",
+                "ru": "цзяоцзы; пельмени",
+                "tj": "ҷяозы; тушбера"
+              }
+            ],
+            [
+              "一些",
+              {
+                "uz": "bir oz; ba’zi",
+                "ru": "немного; некоторые",
+                "tj": "каме; баъзе"
+              }
+            ],
+            [
+              "菜",
+              {
+                "uz": "taom; ovqat",
+                "ru": "блюдо; еда",
+                "tj": "таом; хӯрок"
+              }
+            ],
+            [
+              "下班",
+              {
+                "uz": "ishdan chiqmoq",
+                "ru": "заканчивать работу",
+                "tj": "аз кор баромадан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "饺子",
+          "pinyin": "jiǎozi",
+          "options": [
+            "月",
+            "号",
+            "今天",
+            "饺子"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "饺子 — jiaozi; chuchvara (jiǎozi)",
+            "ru": "饺子 — цзяоцзы; пельмени (jiǎozi)",
+            "tj": "饺子 — ҷяозы; тушбера (jiǎozi)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "一些",
+          "pinyin": "yìxiē",
+          "translation": {
+            "uz": "bir oz; ba’zi",
+            "ru": "немного; некоторые",
+            "tj": "каме; баъзе"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我不会做菜。",
+          "pinyin": "Wǒ bú huì zuò cài.",
+          "translation": {
+            "uz": "Men taom pishira olmayman.",
+            "ru": "Я не умею готовить блюда.",
+            "tj": "Ман таом пухта наметавонам."
+          },
+          "tokens": {
+            "uz": [
+              "olmayman",
+              "taom",
+              "Men",
+              "jiaozi",
+              "ugra",
+              "pishira"
+            ],
+            "ru": [
+              "Я",
+              "цзяоцзы",
+              "лапшу",
+              "блюда",
+              "не",
+              "готовить",
+              "умею"
+            ],
+            "tj": [
+              "пухта",
+              "наметавонам",
+              "ҷяозы",
+              "таом",
+              "угро",
+              "Ман"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Men",
+              "taom",
+              "pishira",
+              "olmayman"
+            ],
+            "ru": [
+              "Я",
+              "не",
+              "умею",
+              "готовить",
+              "блюда"
+            ],
+            "tj": [
+              "Ман",
+              "таом",
+              "пухта",
+              "наметавонам"
+            ]
+          },
+          "explanation": {
+            "uz": "我不会做菜。 — Men taom pishira olmayman.",
+            "ru": "我不会做菜。 — Я не умею готовить блюда.",
+            "tj": "我不会做菜。 — Ман таом пухта наметавонам."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xiàbān qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xiàbān?",
+            "tj": "xiàbān кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "今天",
+            "下班",
+            "号",
+            "月"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "下班 = ishdan chiqmoq (xiàbān)",
+            "ru": "下班 = заканчивать работу (xiàbān)",
+            "tj": "下班 = аз кор баромадан (xiàbān)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "饺子",
+          "pinyin": "jiǎozi",
+          "translation": {
+            "uz": "jiaozi; chuchvara",
+            "ru": "цзяоцзы; пельмени",
+            "tj": "ҷяозы; тушбера"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "会 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 会:",
+            "tj": "Маънои калимаи 会-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qila olmoq; bilmoq",
+              "ru": "уметь; мочь",
+              "tj": "тавонистан; уҳда кардан"
+            },
+            {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            },
+            {
+              "uz": "oy",
+              "ru": "месяц",
+              "tj": "моҳ"
+            },
+            {
+              "uz": "sana (oy kuni)",
+              "ru": "число месяца",
+              "tj": "санаи моҳ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "会 = qila olmoq; bilmoq (huì)",
+            "ru": "会 = уметь; мочь (huì)",
+            "tj": "会 = тавонистан; уҳда кардан (huì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "会",
+            "pinyin": "huì",
+            "meaning": {
+              "uz": "qila olmoq; bilmoq",
+              "ru": "уметь; мочь",
+              "tj": "тавонистан; уҳда кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'jiaozi; chuchvara' xitoycha qaysi?",
+            "ru": "'цзяоцзы; пельмени' по-китайски?",
+            "tj": "'ҷяозы; тушбера' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "饺子",
+            "今天",
+            "号",
+            "月"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "jiaozi; chuchvara = 饺子 (jiǎozi)",
+            "ru": "цзяоцзы; пельмени = 饺子 (jiǎozi)",
+            "tj": "ҷяозы; тушбера = 饺子 (jiǎozi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "饺子",
+            "pinyin": "jiǎozi",
+            "meaning": {
+              "uz": "jiaozi; chuchvara",
+              "ru": "цзяоцзы; пельмени",
+              "tj": "ҷяозы; тушбера"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

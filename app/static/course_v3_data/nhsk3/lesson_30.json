@@ -1,0 +1,882 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 30,
+  "source_lesson": 4,
+  "part_no": 6,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "这家宾馆跟别的都不一样",
+  "subtitle": {
+    "uz": "Ta’til va sayohat rejalarini muhokama qilish; safardagi taassurotlarni ifodalash; to‘liq inkorni aytish; “除了” yordamida istisno yoki qo‘shimcha ma’noni berish.",
+    "ru": "Обсуждать планы на каникулы и впечатления от поездки; выражать полное отрицание; использовать “除了” для исключения или добавления.",
+    "tj": "Нақшаҳои таътил ва сафарро муҳокима кардан; таассуроти сафарро ифода кардан; инкори пурраро гуфтан; бо “除了” маънои истисно ё илова додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "久",
+      "pinyin": "jiǔ",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "uzoq vaqt",
+        "ru": "долго",
+        "tj": "муддати дароз"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "除了",
+      "pinyin": "chúle",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "...dan tashqari",
+        "ru": "кроме",
+        "tj": "ба ғайр аз"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "以外",
+      "pinyin": "yǐwài",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tashqari; bundan tashqari",
+        "ru": "за пределами; кроме",
+        "tj": "берун аз; ғайр аз"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "先",
+      "pinyin": "xiān",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "avval",
+        "ru": "сначала",
+        "tj": "аввал"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "“除了……以外……” — istisno va qo‘shimcha",
+        "ru": "“除了……以外……” — исключение и добавление",
+        "tj": "“除了……以外……” — истисно ва илова"
+      },
+      "title_zh": "固定格式“除了……（以外），……都/还/也……”",
+      "rule": {
+        "uz": "“除了A（以外），B都……” A ni umumiy guruhdan chiqarib, qolganlarning barchasini bildiradi. “除了A（以外），还/也……” esa A ga qo‘shimcha yana boshqa narsa borligini bildiradi.",
+        "ru": "“除了A（以外），B都……” исключает A из общей группы и относится ко всем остальным. “除了A（以外），还/也……” добавляет к A ещё что-либо.",
+        "tj": "“除了A（以外），B都……” A-ро аз гурӯҳи умумӣ истисно мекунад ва ба боқимондаҳо дахл дорад. “除了A（以外），还/也……” ба A боз чизи дигарро илова мекунад."
+      },
+      "examples": [
+        {
+          "zh": "除了我以外，大家都在玩手机。",
+          "pinyin": "Chúle wǒ yǐwài, dàjiā dōu zài wán shǒujī.",
+          "translation": {
+            "uz": "Mendan tashqari hamma telefonda o‘ynayapti.",
+            "ru": "Кроме меня, все сидят в телефонах.",
+            "tj": "Ба ғайр аз ман, ҳама бо телефон машғуланд."
+          }
+        },
+        {
+          "zh": "除了这个汉字，别的汉字我都会写。",
+          "pinyin": "Chúle zhège Hànzì, biéde Hànzì wǒ dōu huì xiě.",
+          "translation": {
+            "uz": "Shu ieroglifdan tashqari boshqa ierogliflarning hammasini yoza olaman.",
+            "ru": "Кроме этого иероглифа, все остальные я умею писать.",
+            "tj": "Ба ғайр аз ин иероглиф, дигар иероглифҳоро навишта метавонам."
+          }
+        },
+        {
+          "zh": "除了这个行李箱以外，还有别的东西吗？",
+          "pinyin": "Chúle zhège xínglixiāng yǐwài, hái yǒu biéde dōngxi ma?",
+          "translation": {
+            "uz": "Bu chamadondan tashqari yana boshqa narsa bormi?",
+            "ru": "Кроме этого чемодана, есть ещё что-нибудь?",
+            "tj": "Ба ғайр аз ин ҷомадон, боз чизи дигар ҳаст?"
+          }
+        },
+        {
+          "zh": "除了唱歌以外，他也喜欢跳舞。",
+          "pinyin": "Chúle chànggē yǐwài, tā yě xǐhuan tiàowǔ.",
+          "translation": {
+            "uz": "Qo‘shiq aytishdan tashqari, u raqs tushishni ham yoqtiradi.",
+            "ru": "Кроме пения, он также любит танцевать.",
+            "tj": "Ба ғайр аз сурудхонӣ, ӯ рақсиданро ҳам дӯст медорад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Yang Tongle va Wang Yifei mehmonxonada suhbatlashmoqda.",
+        "ru": "В гостиной у Ван Ифэй Ян Тунлэ и Ван Ифэй разговаривают.",
+        "tj": "Дар меҳмонхонаи Ван Ифэй Ян Тунлэ ва Ван Ифэй суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "这个假期咱们去哪儿玩玩吧。",
+          "pinyin": "Zhège jiàqī zánmen qù nǎr wánwan ba.",
+          "text": {
+            "uz": "Bu ta’tilda biror joyga sayrga boraylik.",
+            "ru": "Давай куда-нибудь съездим на этих каникулах.",
+            "tj": "Дар ин таътил биё ба ягон ҷо сайр равем."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "好啊，你想去哪儿，咱们就去哪儿。",
+          "pinyin": "Hǎo a, nǐ xiǎng qù nǎr, zánmen jiù qù nǎr.",
+          "text": {
+            "uz": "Mayli, qayerga borishni xohlasang, o‘sha yerga boramiz.",
+            "ru": "Хорошо, куда ты захочешь, туда и поедем.",
+            "tj": "Хуб, ба куҷо хоҳӣ, ҳамон ҷо меравем."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "你喜欢海，找个海边住几天，怎么样？",
+          "pinyin": "Nǐ xǐhuan hǎi, zhǎo ge hǎibiān zhù jǐ tiān, zěnmeyàng?",
+          "text": {
+            "uz": "Sen dengizni yoqtirasan, dengiz bo‘yida bir necha kun yashasak qanday?",
+            "ru": "Ты любишь море. Может, поживём несколько дней у моря?",
+            "tj": "Ту баҳрро дӯст медорӣ, чанд рӯз дар соҳил зиндагӣ кунем чӣ хел?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "现在去海边有点儿冷。",
+          "pinyin": "Xiànzài qù hǎibiān yǒudiǎnr lěng.",
+          "text": {
+            "uz": "Hozir dengiz bo‘yiga borish biroz sovuq.",
+            "ru": "Сейчас на море немного холодно.",
+            "tj": "Ҳоло ба соҳил рафтан каме хунук аст."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "那去草原吧？草原一点儿也不冷。",
+          "pinyin": "Nà qù cǎoyuán ba? Cǎoyuán yìdiǎnr yě bù lěng.",
+          "text": {
+            "uz": "Unda dashtga boramizmi? Dasht umuman sovuq emas.",
+            "ru": "Тогда поедем в степь? Там совсем не холодно.",
+            "tj": "Пас ба саҳро равем? Он ҷо тамоман хунук нест."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "这个主意好！我好久没骑马了。",
+          "pinyin": "Zhège zhǔyi hǎo! Wǒ hǎojiǔ méi qí mǎ le.",
+          "text": {
+            "uz": "Bu yaxshi fikr! Anchadan beri ot minmaganman.",
+            "ru": "Хорошая идея! Я давно не ездил верхом.",
+            "tj": "Ин фикр хуб аст! Кайҳо аспсаворӣ накардаам."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "对，在草原上骑马、吃羊肉、看月亮，一定很有意思。",
+          "pinyin": "Duì, zài cǎoyuán shàng qí mǎ, chī yángròu, kàn yuèliang, yídìng hěn yǒuyìsi.",
+          "text": {
+            "uz": "Ha, dashtda ot minish, qo‘y go‘shti yeyish va oy tomosha qilish albatta qiziq bo‘ladi.",
+            "ru": "Да, ездить верхом, есть баранину и смотреть на луну в степи — наверняка будет интересно.",
+            "tj": "Ҳа, дар саҳро аспсаворӣ кардан, гӯшти гӯсфанд хӯрдан ва моҳро тамошо кардан ҳатман ҷолиб мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Yang Tongle va Wang Yifei mehmonxonada suhbatlashmoqda.",
+        "ru": "В гостиной у Ван Ифэй Ян Тунлэ и Ван Ифэй разговаривают.",
+        "tj": "Дар меҳмонхонаи Ван Ифэй Ян Тунлэ ва Ван Ифэй суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "出去玩的机票买好了吗？",
+          "pinyin": "Chūqù wán de jīpiào mǎi hǎo le ma?",
+          "text": {
+            "uz": "Sayohat uchun aviachiptalarni olib bo‘ldingmi?",
+            "ru": "Билеты на поездку уже куплены?",
+            "tj": "Чиптаҳои сафарро харида шуд?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "买好了。星期六上午十点一刻起飞。",
+          "pinyin": "Mǎi hǎo le. Xīngqīliù shàngwǔ shí diǎn yí kè qǐfēi.",
+          "text": {
+            "uz": "Ha. Shanba kuni ertalab soat o‘ndan chorak o‘tganda uchadi.",
+            "ru": "Да. Вылет в субботу в 10:15 утра.",
+            "tj": "Ҳа. Рӯзи шанбе соати 10:15 парвоз мекунем."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "宾馆也选好了吗？",
+          "pinyin": "Bīnguǎn yě xuǎn hǎo le ma?",
+          "text": {
+            "uz": "Mehmonxonani ham tanlab bo‘ldingmi?",
+            "ru": "Гостиницу тоже выбрали?",
+            "tj": "Меҳмонхонаро ҳам интихоб кардед?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "是的，这家宾馆很特别，跟别的都不一样。一出门就能看见牛和羊！",
+          "pinyin": "Shì de, zhè jiā bīnguǎn hěn tèbié, gēn biéde dōu bù yíyàng. Yì chūmén jiù néng kànjiàn niú hé yáng!",
+          "text": {
+            "uz": "Ha, bu mehmonxona juda o‘zgacha, boshqalarga umuman o‘xshamaydi. Eshikdan chiqishing bilan sigir va qo‘ylarni ko‘rasan!",
+            "ru": "Да, эта гостиница очень необычная, совсем не похожа на другие. Вышел за дверь — и сразу видишь коров и овец!",
+            "tj": "Ҳа, ин меҳмонхона хеле махсус аст ва аз дигарҳо фарқ мекунад. Ҳамин ки берун мебароӣ, гову гӯсфандро мебинӣ!"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "太好了！你看看要带什么东西？",
+          "pinyin": "Tài hǎo le! Nǐ kànkan yào dài shénme dōngxi?",
+          "text": {
+            "uz": "Zo‘r! Qara, nimalarni olib borish kerak?",
+            "ru": "Отлично! Посмотри, что нужно взять с собой.",
+            "tj": "Олиҷаноб! Бин, чӣ чизҳоро бояд бо худ гирем?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "我们不用带太多东西，别忘了拿上新买的相机。",
+          "pinyin": "Wǒmen búyòng dài tài duō dōngxi, bié wàng le ná shàng xīn mǎi de xiàngjī.",
+          "text": {
+            "uz": "Ko‘p narsa olish shart emas, yangi olgan fotoapparatni unutma.",
+            "ru": "Много вещей брать не нужно, только не забудь новую камеру.",
+            "tj": "Чизи зиёд гирифтан лозим нест, камераи навро фаромӯш накун."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "一定不会忘带的。我现在就去准备行李。",
+          "pinyin": "Yídìng bú huì wàng dài de. Wǒ xiànzài jiù qù zhǔnbèi xíngli.",
+          "text": {
+            "uz": "Albatta unutmayman. Hozirning o‘zida yuklarni tayyorlayman.",
+            "ru": "Точно не забуду. Сейчас же пойду собирать багаж.",
+            "tj": "Ҳатман фаромӯш намекунам. Ҳозир меравам бағоҷро тайёр мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Aeroportda Yang Tongle va Wang Yifei tashqariga chiqib, oldindan buyurtma qilingan haydovchi-gid bilan uchrashmoqda.",
+        "ru": "В аэропорту Ян Тунлэ и Ван Ифэй выходят и встречаются с заранее заказанным водителем-гидом.",
+        "tj": "Дар фурудгоҳ Ян Тунлэ ва Ван Ифэй берун омада, бо ронанда-роҳбалади пешакӣ фармоишдода вохӯрданд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "您好！不好意思，飞机晚点了，让您久等了。",
+          "pinyin": "Nín hǎo! Bù hǎoyìsi, fēijī wǎndiǎn le, ràng nín jiǔ děng le.",
+          "text": {
+            "uz": "Salom! Uzr, samolyot kechikdi, sizni uzoq kuttirib qo‘ydik.",
+            "ru": "Здравствуйте! Простите, самолёт задержался, вам пришлось долго ждать.",
+            "tj": "Салом! Бубахшед, ҳавопаймо дер кард ва шуморо зиёд интизор кардем."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "还有一个包，我自己拿就可以。",
+          "pinyin": "Hái yǒu yí ge bāo, wǒ zìjǐ ná jiù kěyǐ.",
+          "text": {
+            "uz": "Yana bitta sumka bor, uni o‘zim olaman.",
+            "ru": "Есть ещё одна сумка, её я понесу сам.",
+            "tj": "Боз як халта ҳаст, худам мебардорам."
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "车在一层，请跟我来。",
+          "pinyin": "Chē zài yì céng, qǐng gēn wǒ lái.",
+          "text": {
+            "uz": "Mashina birinchi qavatda, ortimdan yuringlar.",
+            "ru": "Машина на первом этаже, идите за мной.",
+            "tj": "Мошин дар ошёнаи якум аст, аз паси ман биёед."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "我们住的宾馆离机场远吗？",
+          "pinyin": "Wǒmen zhù de bīnguǎn lí jīchǎng yuǎn ma?",
+          "text": {
+            "uz": "Biz turadigan mehmonxona aeroportdan uzoqmi?",
+            "ru": "Гостиница, где мы будем жить, далеко от аэропорта?",
+            "tj": "Меҳмонхонае, ки мо мемонем, аз фурудгоҳ дур аст?"
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "不远，三十分钟就能到。两位到了可以先休息休息，晚饭的时候我叫你们。",
+          "pinyin": "Bù yuǎn, sānshí fēnzhōng jiù néng dào. Liǎng wèi dào le kěyǐ xiān xiūxi xiūxi, wǎnfàn de shíhou wǒ jiào nǐmen.",
+          "text": {
+            "uz": "Uzoq emas, o‘ttiz daqiqada yetamiz. Yetib borgach avval dam olishingiz mumkin, kechki ovqat payti sizlarni chaqiraman.",
+            "ru": "Недалеко, за тридцать минут доедем. По приезде сначала отдохните, а к ужину я вас позову.",
+            "tj": "Дур нест, дар сӣ дақиқа мерасем. Баъди расидан аввал истироҳат кунед, вақти шом шуморо даъват мекунам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "久",
+            "pinyin": "jiǔ",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "uzoq vaqt",
+              "ru": "долго",
+              "tj": "муддати дароз"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "久",
+          "pinyin": "jiǔ",
+          "options": [
+            "草原",
+            "海",
+            "久",
+            "假期"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "久 — uzoq vaqt (jiǔ)",
+            "ru": "久 — долго (jiǔ)",
+            "tj": "久 — муддати дароз (jiǔ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "除了",
+            "pinyin": "chúle",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "...dan tashqari",
+              "ru": "кроме",
+              "tj": "ба ғайр аз"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "除了",
+          "pinyin": "chúle",
+          "translation": {
+            "uz": "...dan tashqari",
+            "ru": "кроме",
+            "tj": "ба ғайр аз"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "除了 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 除了:",
+            "tj": "Маънои калимаи 除了-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ta’til",
+              "ru": "каникулы; отпуск",
+              "tj": "таътил"
+            },
+            {
+              "uz": "dasht; yaylov",
+              "ru": "степь; луг",
+              "tj": "саҳро; чарогоҳ"
+            },
+            {
+              "uz": "dengiz",
+              "ru": "море",
+              "tj": "баҳр"
+            },
+            {
+              "uz": "...dan tashqari",
+              "ru": "кроме",
+              "tj": "ба ғайр аз"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "除了 = ...dan tashqari (chúle)",
+            "ru": "除了 = кроме (chúle)",
+            "tj": "除了 = ба ғайр аз (chúle)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "以外",
+            "pinyin": "yǐwài",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tashqari; bundan tashqari",
+              "ru": "за пределами; кроме",
+              "tj": "берун аз; ғайр аз"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yǐwài qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yǐwài?",
+            "tj": "yǐwài кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "假期",
+            "以外",
+            "海",
+            "草原"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "以外 = tashqari; bundan tashqari (yǐwài)",
+            "ru": "以外 = за пределами; кроме (yǐwài)",
+            "tj": "以外 = берун аз; ғайр аз (yǐwài)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "先",
+            "pinyin": "xiān",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "avval",
+              "ru": "сначала",
+              "tj": "аввал"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "先 talaffuzini tanlang:",
+            "ru": "Выберите произношение 先:",
+            "tj": "Талаффузи 先-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jiàqī",
+            "hǎi",
+            "cǎoyuán",
+            "xiān"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "先 — xiān",
+            "ru": "先 — xiān",
+            "tj": "先 — xiān"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'uzoq vaqt' xitoycha qaysi?",
+            "ru": "'долго' по-китайски?",
+            "tj": "'муддати дароз' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "海",
+            "久",
+            "假期",
+            "草原"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "uzoq vaqt = 久 (jiǔ)",
+            "ru": "долго = 久 (jiǔ)",
+            "tj": "муддати дароз = 久 (jiǔ)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "久",
+              {
+                "uz": "uzoq vaqt",
+                "ru": "долго",
+                "tj": "муддати дароз"
+              }
+            ],
+            [
+              "除了",
+              {
+                "uz": "...dan tashqari",
+                "ru": "кроме",
+                "tj": "ба ғайр аз"
+              }
+            ],
+            [
+              "以外",
+              {
+                "uz": "tashqari; bundan tashqari",
+                "ru": "за пределами; кроме",
+                "tj": "берун аз; ғайр аз"
+              }
+            ],
+            [
+              "先",
+              {
+                "uz": "avval",
+                "ru": "сначала",
+                "tj": "аввал"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "“除了……以外……” — istisno va qo‘shimcha",
+              "ru": "“除了……以外……” — исключение и добавление",
+              "tj": "“除了……以外……” — истисно ва илова"
+            },
+            "title_zh": "固定格式“除了……（以外），……都/还/也……”",
+            "rule": {
+              "uz": "“除了A（以外），B都……” A ni umumiy guruhdan chiqarib, qolganlarning barchasini bildiradi. “除了A（以外），还/也……” esa A ga qo‘shimcha yana boshqa narsa borligini bildiradi.",
+              "ru": "“除了A（以外），B都……” исключает A из общей группы и относится ко всем остальным. “除了A（以外），还/也……” добавляет к A ещё что-либо.",
+              "tj": "“除了A（以外），B都……” A-ро аз гурӯҳи умумӣ истисно мекунад ва ба боқимондаҳо дахл дорад. “除了A（以外），还/也……” ба A боз чизи дигарро илова мекунад."
+            },
+            "examples": [
+              {
+                "zh": "除了我以外，大家都在玩手机。",
+                "pinyin": "Chúle wǒ yǐwài, dàjiā dōu zài wán shǒujī.",
+                "translation": {
+                  "uz": "Mendan tashqari hamma telefonda o‘ynayapti.",
+                  "ru": "Кроме меня, все сидят в телефонах.",
+                  "tj": "Ба ғайр аз ман, ҳама бо телефон машғуланд."
+                }
+              },
+              {
+                "zh": "除了这个汉字，别的汉字我都会写。",
+                "pinyin": "Chúle zhège Hànzì, biéde Hànzì wǒ dōu huì xiě.",
+                "translation": {
+                  "uz": "Shu ieroglifdan tashqari boshqa ierogliflarning hammasini yoza olaman.",
+                  "ru": "Кроме этого иероглифа, все остальные я умею писать.",
+                  "tj": "Ба ғайр аз ин иероглиф, дигар иероглифҳоро навишта метавонам."
+                }
+              },
+              {
+                "zh": "除了这个行李箱以外，还有别的东西吗？",
+                "pinyin": "Chúle zhège xínglixiāng yǐwài, hái yǒu biéde dōngxi ma?",
+                "translation": {
+                  "uz": "Bu chamadondan tashqari yana boshqa narsa bormi?",
+                  "ru": "Кроме этого чемодана, есть ещё что-нибудь?",
+                  "tj": "Ба ғайр аз ин ҷомадон, боз чизи дигар ҳаст?"
+                }
+              },
+              {
+                "zh": "除了唱歌以外，他也喜欢跳舞。",
+                "pinyin": "Chúle chànggē yǐwài, tā yě xǐhuan tiàowǔ.",
+                "translation": {
+                  "uz": "Qo‘shiq aytishdan tashqari, u raqs tushishni ham yoqtiradi.",
+                  "ru": "Кроме пения, он также любит танцевать.",
+                  "tj": "Ба ғайр аз сурудхонӣ, ӯ рақсиданро ҳам дӯст медорад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Mendan tashqari hamma telefonda o‘ynayapti.",
+            "ru": "Кроме меня, все сидят в телефонах.",
+            "tj": "Ба ғайр аз ман, ҳама бо телефон машғуланд."
+          },
+          "tokens": [
+            "海",
+            "除了",
+            "玩",
+            "假期",
+            "以外",
+            "大家",
+            "在",
+            "我",
+            "手机",
+            "都"
+          ],
+          "answer_tokens": [
+            "除了",
+            "我",
+            "以外",
+            "大家",
+            "都",
+            "在",
+            "玩",
+            "手机"
+          ],
+          "explanation": {
+            "uz": "除了我以外，大家都在玩手机。 — Chúle wǒ yǐwài, dàjiā dōu zài wán shǒujī.",
+            "ru": "除了我以外，大家都在玩手机。 — Chúle wǒ yǐwài, dàjiā dōu zài wán shǒujī.",
+            "tj": "除了我以外，大家都在玩手机。 — Chúle wǒ yǐwài, dàjiā dōu zài wán shǒujī."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Mendan tashqari hamma telefonda o‘ynayapti.» — xitoychada qaysi biri?",
+            "ru": "«Кроме меня, все сидят в телефонах.» — какое предложение по-китайски?",
+            "tj": "«Ба ғайр аз ман, ҳама бо телефон машғуланд.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "除了这个行李箱以外，还有别的东西吗？",
+            "除了我以外，大家都在玩手机。",
+            "除了这个汉字，别的汉字我都会写。",
+            "除了唱歌以外，他也喜欢跳舞。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "除了我以外，大家都在玩手机。 — Chúle wǒ yǐwài, dàjiā dōu zài wán shǒujī.",
+            "ru": "除了我以外，大家都在玩手机。 — Chúle wǒ yǐwài, dàjiā dōu zài wán shǒujī.",
+            "tj": "除了我以外，大家都在玩手机。 — Chúle wǒ yǐwài, dàjiā dōu zài wán shǒujī."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "先 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 先:",
+            "tj": "Маънои калимаи 先-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dasht; yaylov",
+              "ru": "степь; луг",
+              "tj": "саҳро; чарогоҳ"
+            },
+            {
+              "uz": "dengiz",
+              "ru": "море",
+              "tj": "баҳр"
+            },
+            {
+              "uz": "ta’til",
+              "ru": "каникулы; отпуск",
+              "tj": "таътил"
+            },
+            {
+              "uz": "avval",
+              "ru": "сначала",
+              "tj": "аввал"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "先 = avval (xiān)",
+            "ru": "先 = сначала (xiān)",
+            "tj": "先 = аввал (xiān)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "除了",
+          "pinyin": "chúle",
+          "translation": {
+            "uz": "...dan tashqari",
+            "ru": "кроме",
+            "tj": "ба ғайр аз"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "欢迎 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 欢迎:",
+            "tj": "Маънои калимаи 欢迎-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dasht; yaylov",
+              "ru": "степь; луг",
+              "tj": "саҳро; чарогоҳ"
+            },
+            {
+              "uz": "dengiz",
+              "ru": "море",
+              "tj": "баҳр"
+            },
+            {
+              "uz": "ta’til",
+              "ru": "каникулы; отпуск",
+              "tj": "таътил"
+            },
+            {
+              "uz": "xush kelibsiz; kutib olmoq",
+              "ru": "приветствовать; добро пожаловать",
+              "tj": "хуш омадед; истиқбол кардан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "欢迎 = xush kelibsiz; kutib olmoq (huānyíng)",
+            "ru": "欢迎 = приветствовать; добро пожаловать (huānyíng)",
+            "tj": "欢迎 = хуш омадед; истиқбол кардан (huānyíng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "欢迎",
+            "pinyin": "huānyíng",
+            "meaning": {
+              "uz": "xush kelibsiz; kutib olmoq",
+              "ru": "приветствовать; добро пожаловать",
+              "tj": "хуш омадед; истиқбол кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'...dan tashqari' xitoycha qaysi?",
+            "ru": "'кроме' по-китайски?",
+            "tj": "'ба ғайр аз' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "假期",
+            "草原",
+            "海",
+            "除了"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "...dan tashqari = 除了 (chúle)",
+            "ru": "кроме = 除了 (chúle)",
+            "tj": "ба ғайр аз = 除了 (chúle)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "除了",
+            "pinyin": "chúle",
+            "meaning": {
+              "uz": "...dan tashqari",
+              "ru": "кроме",
+              "tj": "ба ғайр аз"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

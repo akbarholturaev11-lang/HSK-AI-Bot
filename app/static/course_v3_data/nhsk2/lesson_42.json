@@ -1,0 +1,850 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 42,
+  "source_lesson": 9,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我去买杯奶茶",
+  "subtitle": {
+    "uz": "“没有” bilan ‘...chalik emas’ taqqoslashini ifodalash; “离” bilan makon/vaqt masofasini aytish; vaqt davomiyligi to‘ldiruvchisini ishlatish; kiyim tanlash, ichimlik va yo‘l haqida gaplashish.",
+    "ru": "Сравнивать через “没有” в значении «не такой, как»; выражать пространственную/временную дистанцию с “离”; использовать дополнение длительности; говорить об одежде, напитках и дороге.",
+    "tj": "Бо “没有” муқоисаи «ба дараҷаи ... нест»-ро ифода кардан; бо “离” масофаи макон/вақтро гуфтан; пуркунандаи давомнокии вақтро истифода бурдан; дар бораи либос, нӯшокӣ ва роҳ суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "坏",
+      "pinyin": "huài",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "yomon; buzilgan",
+        "ru": "плохой; испорченный",
+        "tj": "бад; вайрон"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "旁边",
+      "pinyin": "pángbian",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yon; yon tomon",
+        "ru": "рядом; сбоку",
+        "tj": "паҳлӯ; наздик"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "男孩儿",
+      "pinyin": "nánháir",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘g‘il bola",
+        "ru": "мальчик",
+        "tj": "писарбача"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "这样",
+      "pinyin": "zhèyàng",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "bunday; shunday",
+        "ru": "такой; так",
+        "tj": "чунин; ҳамин тавр"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Taqqoslash gapi (3)",
+        "ru": "Сравнительное предложение (3)",
+        "tj": "Ҷумлаи муқоисавӣ (3)"
+      },
+      "title_zh": "比较句（3）",
+      "rule": {
+        "uz": "“没有” taqqoslashda A B darajasiga yetmasligini bildiradi. Shakl: A 没有 B + sifat/sifatli birikma. Sifat oldidan 这么/那么 B ning darajasi yuqoriligini ko‘rsatadi. Tasdiq shakli 有 ko‘pincha taqqoslovchi savolda ishlatiladi.",
+        "ru": "“没有” в сравнении означает «не такой, как / уступает». Схема: A 没有 B + прилагательное/группа. 这么/那么 перед прилагательным подчёркивают более высокую степень у B. Утвердительное 有 часто встречается в сравнительных вопросах.",
+        "tj": "“没有” дар муқоиса маънои «ба B намерасад»-ро медиҳад. Сохтор: A 没有 B + сифат/ибораи сифатӣ. 这么/那么 дараҷаи баландтари B-ро нишон медиҳад. Шакли тасдиқии 有 аксаран дар саволҳои муқоисавӣ меояд."
+      },
+      "examples": [
+        {
+          "zh": "儿子的个子没有他那么高。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "昨天没有今天这么冷。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "这块手表没有那块好看。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "妹妹有姐姐高吗？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "那件衣服有这件好看吗？",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Do‘konda Wang Yixue va Liu Ming shimlarni ko‘rmoqda.",
+        "ru": "В магазине Ван Исюэ и Лю Мин смотрят брюки.",
+        "tj": "Дар мағоза Ван Исюэ ва Лю Мин шим мебинанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "儿子的裤子坏了，我们给他买条新的吧。",
+          "pinyin": "Érzi de kùzi huài le, wǒmen gěi tā mǎi tiáo xīn de ba.",
+          "text": {
+            "uz": "O‘g‘limizning shimi buzilibdi, unga yangisini olaylik.",
+            "ru": "Брюки сына испортились, давай купим ему новые.",
+            "tj": "Шими писарамон вайрон шудааст, барояш нав бихарем."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "好啊。",
+          "pinyin": "Hǎo a.",
+          "text": {
+            "uz": "Mayli.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你看这条黑色的怎么样？",
+          "pinyin": "Nǐ kàn zhè tiáo hēisè de zěnmeyàng?",
+          "text": {
+            "uz": "Bu qora shim qanday?",
+            "ru": "Как тебе эти чёрные брюки?",
+            "tj": "Ин шими сиёҳ чӣ хел?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "没有你上次买的那条好看。",
+          "pinyin": "Méiyǒu nǐ shàng cì mǎi de nà tiáo hǎokàn.",
+          "text": {
+            "uz": "O‘tgan safar olganingchalik chiroyli emas.",
+            "ru": "Не такие красивые, как те, что ты купила в прошлый раз.",
+            "tj": "Ба зебоии оне, ки дафъаи гузашта харидӣ, намерасад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "旁边那个男孩儿就穿了这样的裤子，我觉得很好看啊！",
+          "pinyin": "Pángbian nàge nánháir jiù chuānle zhèyàng de kùzi, wǒ juéde hěn hǎokàn a!",
+          "text": {
+            "uz": "Yonimizdagi bola ham shunday shim kiygan, menimcha juda chiroyli!",
+            "ru": "Вон мальчик рядом носит такие брюки, по-моему, выглядят отлично!",
+            "tj": "Писарбачаи паҳлӯ ҳамин хел шим пӯшидааст, ба назарам хеле зебост!"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "好吧，我们再去那边看看。",
+          "pinyin": "Hǎo ba, wǒmen zài qù nàbian kànkan.",
+          "text": {
+            "uz": "Mayli, yana u tomonga borib ko‘raylik.",
+            "ru": "Ладно, давай посмотрим ещё там.",
+            "tj": "Хуб, боз он тараф рафта бинем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do‘kon kirishida Wang Yixue va Liu Ming tashqariga chiqmoqda.",
+        "ru": "У входа в магазин Ван Исюэ и Лю Мин выходят наружу.",
+        "tj": "Дар назди даромадгоҳи мағоза Ван Исюэ ва Лю Мин ба берун мебароянд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "那你等一下，我去买杯奶茶。",
+          "pinyin": "Nà nǐ děng yíxià, wǒ qù mǎi bēi nǎichá.",
+          "text": {
+            "uz": "Unda biroz kut, men bir piyola sutli choy olib kelaman.",
+            "ru": "Тогда подожди, я схожу куплю молочный чай.",
+            "tj": "Пас каме интизор шав, ман рафта як пиёла чойи ширӣ мехарам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Qahvaxona oldida Wang Yixue va Liu Ming suhbatlashmoqda.",
+        "ru": "У входа в кофейню Ван Исюэ и Лю Мин разговаривают.",
+        "tj": "Дар назди қаҳвахона Ван Исюэ ва Лю Мин суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "我们打车回去吧。",
+          "pinyin": "Wǒmen dǎchē huíqù ba.",
+          "text": {
+            "uz": "Uyga taksida qaytaylik.",
+            "ru": "Давай поедем обратно на такси.",
+            "tj": "Биё бо таксӣ ба хона баргардем."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "要走多长时间？",
+          "pinyin": "Yào zǒu duō cháng shíjiān?",
+          "text": {
+            "uz": "Qancha vaqt yurish kerak?",
+            "ru": "Сколько времени идти?",
+            "tj": "Чанд вақт роҳ рафтан лозим?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "走半个多小时就到了。",
+          "pinyin": "Zǒu bàn ge duō xiǎoshí jiù dào le.",
+          "text": {
+            "uz": "Yarim soatdan sal ko‘proq yursak yetamiz.",
+            "ru": "Чуть больше получаса пешком — и дойдём.",
+            "tj": "Каме бештар аз ним соат роҳ равем, мерасем."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "好的。每天上下班都坐车，今天运动运动吧。",
+          "pinyin": "Hǎo de. Měitiān shàngxiàbān dōu zuò chē, jīntiān yùndong yùndong ba.",
+          "text": {
+            "uz": "Xo‘p. Har kuni ishga borib-kelishda mashinada yuraman, bugun sal harakat qilay.",
+            "ru": "Хорошо. Каждый день езжу на работу и обратно, сегодня немного разомнёмся.",
+            "tj": "Хуб. Ҳар рӯз ба кору аз кор бо мошин меравам, имрӯз каме машқ кунем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "坏",
+            "pinyin": "huài",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "yomon; buzilgan",
+              "ru": "плохой; испорченный",
+              "tj": "бад; вайрон"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "huài qaysi ieroglif?",
+            "ru": "Какой иероглиф читается huài?",
+            "tj": "huài кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "男孩儿",
+            "这样",
+            "旁边",
+            "坏"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "坏 = yomon; buzilgan (huài)",
+            "ru": "坏 = плохой; испорченный (huài)",
+            "tj": "坏 = бад; вайрон (huài)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "旁边",
+            "pinyin": "pángbian",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yon; yon tomon",
+              "ru": "рядом; сбоку",
+              "tj": "паҳлӯ; наздик"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "旁边",
+          "pinyin": "pángbian",
+          "translation": {
+            "uz": "yon; yon tomon",
+            "ru": "рядом; сбоку",
+            "tj": "паҳлӯ; наздик"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "旁边 talaffuzini tanlang:",
+            "ru": "Выберите произношение 旁边:",
+            "tj": "Талаффузи 旁边-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "nánháir",
+            "zhèyàng",
+            "huài",
+            "pángbian"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "旁边 — pángbian",
+            "ru": "旁边 — pángbian",
+            "tj": "旁边 — pángbian"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "男孩儿",
+            "pinyin": "nánháir",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o‘g‘il bola",
+              "ru": "мальчик",
+              "tj": "писарбача"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o‘g‘il bola' xitoycha qaysi?",
+            "ru": "'мальчик' по-китайски?",
+            "tj": "'писарбача' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "旁边",
+            "男孩儿",
+            "坏",
+            "这样"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "o‘g‘il bola = 男孩儿 (nánháir)",
+            "ru": "мальчик = 男孩儿 (nánháir)",
+            "tj": "писарбача = 男孩儿 (nánháir)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "这样",
+            "pinyin": "zhèyàng",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "bunday; shunday",
+              "ru": "такой; так",
+              "tj": "чунин; ҳамин тавр"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "这样",
+          "pinyin": "zhèyàng",
+          "options": [
+            "这样",
+            "旁边",
+            "坏",
+            "男孩儿"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "这样 — bunday; shunday (zhèyàng)",
+            "ru": "这样 — такой; так (zhèyàng)",
+            "tj": "这样 — чунин; ҳамин тавр (zhèyàng)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "坏 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 坏:",
+            "tj": "Маънои калимаи 坏-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bunday; shunday",
+              "ru": "такой; так",
+              "tj": "чунин; ҳамин тавр"
+            },
+            {
+              "uz": "o‘g‘il bola",
+              "ru": "мальчик",
+              "tj": "писарбача"
+            },
+            {
+              "uz": "yomon; buzilgan",
+              "ru": "плохой; испорченный",
+              "tj": "бад; вайрон"
+            },
+            {
+              "uz": "yon; yon tomon",
+              "ru": "рядом; сбоку",
+              "tj": "паҳлӯ; наздик"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "坏 = yomon; buzilgan (huài)",
+            "ru": "坏 = плохой; испорченный (huài)",
+            "tj": "坏 = бад; вайрон (huài)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "坏",
+              {
+                "uz": "yomon; buzilgan",
+                "ru": "плохой; испорченный",
+                "tj": "бад; вайрон"
+              }
+            ],
+            [
+              "旁边",
+              {
+                "uz": "yon; yon tomon",
+                "ru": "рядом; сбоку",
+                "tj": "паҳлӯ; наздик"
+              }
+            ],
+            [
+              "男孩儿",
+              {
+                "uz": "o‘g‘il bola",
+                "ru": "мальчик",
+                "tj": "писарбача"
+              }
+            ],
+            [
+              "这样",
+              {
+                "uz": "bunday; shunday",
+                "ru": "такой; так",
+                "tj": "чунин; ҳамин тавр"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Taqqoslash gapi (3)",
+              "ru": "Сравнительное предложение (3)",
+              "tj": "Ҷумлаи муқоисавӣ (3)"
+            },
+            "title_zh": "比较句（3）",
+            "rule": {
+              "uz": "“没有” taqqoslashda A B darajasiga yetmasligini bildiradi. Shakl: A 没有 B + sifat/sifatli birikma. Sifat oldidan 这么/那么 B ning darajasi yuqoriligini ko‘rsatadi. Tasdiq shakli 有 ko‘pincha taqqoslovchi savolda ishlatiladi.",
+              "ru": "“没有” в сравнении означает «не такой, как / уступает». Схема: A 没有 B + прилагательное/группа. 这么/那么 перед прилагательным подчёркивают более высокую степень у B. Утвердительное 有 часто встречается в сравнительных вопросах.",
+              "tj": "“没有” дар муқоиса маънои «ба B намерасад»-ро медиҳад. Сохтор: A 没有 B + сифат/ибораи сифатӣ. 这么/那么 дараҷаи баландтари B-ро нишон медиҳад. Шакли тасдиқии 有 аксаран дар саволҳои муқоисавӣ меояд."
+            },
+            "examples": [
+              {
+                "zh": "儿子的个子没有他那么高。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "昨天没有今天这么冷。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "这块手表没有那块好看。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "妹妹有姐姐高吗？",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "那件衣服有这件好看吗？",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "昨天",
+            "冷",
+            "旁边",
+            "没有",
+            "坏",
+            "这么",
+            "今天"
+          ],
+          "answer_tokens": [
+            "昨天",
+            "没有",
+            "今天",
+            "这么",
+            "冷"
+          ],
+          "explanation": {
+            "uz": "昨天没有今天这么冷。",
+            "ru": "昨天没有今天这么冷。",
+            "tj": "昨天没有今天这么冷。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "这块手表没有那块好看。",
+            "妹妹有姐姐高吗？",
+            "昨天没有今天这么冷。",
+            "那件衣服有这件好看吗？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "那件衣服有这件好看吗？ — ",
+            "ru": "那件衣服有这件好看吗？ — ",
+            "tj": "那件衣服有这件好看吗？ — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "儿子的裤子坏了，我们给他买条新的吧。",
+          "pinyin": "Érzi de kùzi huài le, wǒmen gěi tā mǎi tiáo xīn de ba.",
+          "translation": {
+            "uz": "O‘g‘limizning shimi buzilibdi, unga yangisini olaylik.",
+            "ru": "Брюки сына испортились, давай купим ему новые.",
+            "tj": "Шими писарамон вайрон шудааст, барояш нав бихарем."
+          },
+          "tokens": {
+            "uz": [
+              "O‘g‘limizning",
+              "Yonimizdagi",
+              "buzilibdi",
+              "shimi",
+              "bola",
+              "olaylik",
+              "unga",
+              "yangisini"
+            ],
+            "ru": [
+              "сына",
+              "новые",
+              "мальчик",
+              "давай",
+              "Вон",
+              "испортились",
+              "Брюки",
+              "ему",
+              "купим"
+            ],
+            "tj": [
+              "паҳлӯ",
+              "писарамон",
+              "барояш",
+              "Шими",
+              "вайрон",
+              "шудааст",
+              "бихарем",
+              "нав",
+              "Писарбачаи"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "O‘g‘limizning",
+              "shimi",
+              "buzilibdi",
+              "unga",
+              "yangisini",
+              "olaylik"
+            ],
+            "ru": [
+              "Брюки",
+              "сына",
+              "испортились",
+              "давай",
+              "купим",
+              "ему",
+              "новые"
+            ],
+            "tj": [
+              "Шими",
+              "писарамон",
+              "вайрон",
+              "шудааст",
+              "барояш",
+              "нав",
+              "бихарем"
+            ]
+          },
+          "explanation": {
+            "uz": "儿子的裤子坏了，我们给他买条新的吧。 — O‘g‘limizning shimi buzilibdi, unga yangisini olaylik.",
+            "ru": "儿子的裤子坏了，我们给他买条新的吧。 — Брюки сына испортились, давай купим ему новые.",
+            "tj": "儿子的裤子坏了，我们给他买条新的吧。 — Шими писарамон вайрон шудааст, барояш нав бихарем."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "旁边",
+          "pinyin": "pángbian",
+          "translation": {
+            "uz": "yon; yon tomon",
+            "ru": "рядом; сбоку",
+            "tj": "паҳлӯ; наздик"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "左边 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 左边:",
+            "tj": "Маънои калимаи 左边-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yon; yon tomon",
+              "ru": "рядом; сбоку",
+              "tj": "паҳлӯ; наздик"
+            },
+            {
+              "uz": "o‘g‘il bola",
+              "ru": "мальчик",
+              "tj": "писарбача"
+            },
+            {
+              "uz": "yomon; buzilgan",
+              "ru": "плохой; испорченный",
+              "tj": "бад; вайрон"
+            },
+            {
+              "uz": "chap tomon",
+              "ru": "левая сторона",
+              "tj": "тарафи чап"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "左边 = chap tomon (zuǒbian)",
+            "ru": "左边 = левая сторона (zuǒbian)",
+            "tj": "左边 = тарафи чап (zuǒbian)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "左边",
+            "pinyin": "zuǒbian",
+            "meaning": {
+              "uz": "chap tomon",
+              "ru": "левая сторона",
+              "tj": "тарафи чап"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yon; yon tomon' xitoycha qaysi?",
+            "ru": "'рядом; сбоку' по-китайски?",
+            "tj": "'паҳлӯ; наздик' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "旁边",
+            "这样",
+            "男孩儿",
+            "坏"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "yon; yon tomon = 旁边 (pángbian)",
+            "ru": "рядом; сбоку = 旁边 (pángbian)",
+            "tj": "паҳлӯ; наздик = 旁边 (pángbian)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "旁边",
+            "pinyin": "pángbian",
+            "meaning": {
+              "uz": "yon; yon tomon",
+              "ru": "рядом; сбоку",
+              "tj": "паҳлӯ; наздик"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

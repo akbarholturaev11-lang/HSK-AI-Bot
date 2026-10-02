@@ -1,0 +1,659 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 18,
+  "source_lesson": 4,
+  "part_no": 3,
+  "part_count": 10,
+  "checkpoint": false,
+  "title": "我有两个孩子",
+  "subtitle": {
+    "uz": "“有” orqali egalik va mavjudlikni ifodalash; sonlarni, “呢” savol yuklamasini va son+o‘lchov so‘zi tuzilmasini ishlatish; yosh va oila a’zolari haqida so‘rash va javob berish.",
+    "ru": "Выражать наличие и обладание с “有”; использовать числа, вопросительную частицу “呢” и структуру число+счётное слово; спрашивать и отвечать о возрасте и семье.",
+    "tj": "Бо “有” соҳибият ва мавҷудиятро ифода кардан; рақамҳо, ҳиссачаи саволии “呢” ва сохтори рақам+воҳиди ҳисобро истифода бурдан; дар бораи синну сол ва оила саволу ҷавоб кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "口",
+      "pinyin": "kǒu",
+      "pos": "m.",
+      "meaning": {
+        "uz": "oila a’zolari uchun o‘lchov so‘zi",
+        "ru": "счётное слово для членов семьи",
+        "tj": "воҳиди ҳисоб барои аъзои оила"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "爸爸",
+      "pinyin": "bàba",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ota; dada",
+        "ru": "папа",
+        "tj": "падар; дада"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "妈妈",
+      "pinyin": "māma",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ona; mama",
+        "ru": "мама",
+        "tj": "модар; оча"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "妹妹",
+      "pinyin": "mèimei",
+      "pos": "n.",
+      "meaning": {
+        "uz": "singil",
+        "ru": "младшая сестра",
+        "tj": "хоҳари хурдӣ"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "她很忙。",
+          "pinyin": "Tā hěn máng.",
+          "text": {
+            "uz": "U juda band.",
+            "ru": "Она очень занята.",
+            "tj": "Ӯ хеле банд аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "她有多少个学生？",
+          "pinyin": "Tā yǒu duōshao ge xuésheng?",
+          "text": {
+            "uz": "Uning nechta talabasi bor?",
+            "ru": "Сколько у неё студентов?",
+            "tj": "Ӯ чанд донишҷӯ дорад?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada Wang Yixue va Yang Tongle tanaffus payti suhbatlashmoqda.",
+        "ru": "В компании Ван Исюэ и Ян Тунлэ разговаривают во время перерыва.",
+        "tj": "Дар ширкат Ван Исюэ ва Ян Тунлэ ҳангоми танаффус суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我没有哥哥。",
+          "pinyin": "Wǒ méiyǒu gēge.",
+          "text": {
+            "uz": "Mening akam yo‘q.",
+            "ru": "У меня нет старшего брата.",
+            "tj": "Ман бародари калон надорам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你家有几口人？",
+          "pinyin": "Nǐ jiā yǒu jǐ kǒu rén?",
+          "text": {
+            "uz": "Oilangda nechta odam bor?",
+            "ru": "Сколько человек в твоей семье?",
+            "tj": "Дар оилаи ту чанд нафар ҳаст?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "口",
+            "pinyin": "kǒu",
+            "pos": "m.",
+            "meaning": {
+              "uz": "oila a’zolari uchun o‘lchov so‘zi",
+              "ru": "счётное слово для членов семьи",
+              "tj": "воҳиди ҳисоб барои аъзои оила"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "口 talaffuzini tanlang:",
+            "ru": "Выберите произношение 口:",
+            "tj": "Талаффузи 口-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "kǒu",
+            "duōshao",
+            "gè",
+            "yǒu"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "口 — kǒu",
+            "ru": "口 — kǒu",
+            "tj": "口 — kǒu"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "爸爸",
+            "pinyin": "bàba",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ota; dada",
+              "ru": "папа",
+              "tj": "падар; дада"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "爸爸",
+          "pinyin": "bàba",
+          "translation": {
+            "uz": "ota; dada",
+            "ru": "папа",
+            "tj": "падар; дада"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ota; dada' xitoycha qaysi?",
+            "ru": "'папа' по-китайски?",
+            "tj": "'падар; дада' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "多少",
+            "个",
+            "有",
+            "爸爸"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "ota; dada = 爸爸 (bàba)",
+            "ru": "папа = 爸爸 (bàba)",
+            "tj": "падар; дада = 爸爸 (bàba)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "妈妈",
+            "pinyin": "māma",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ona; mama",
+              "ru": "мама",
+              "tj": "модар; оча"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "妈妈",
+          "pinyin": "māma",
+          "options": [
+            "有",
+            "个",
+            "妈妈",
+            "多少"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "妈妈 — ona; mama (māma)",
+            "ru": "妈妈 — мама (māma)",
+            "tj": "妈妈 — модар; оча (māma)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "妹妹",
+            "pinyin": "mèimei",
+            "pos": "n.",
+            "meaning": {
+              "uz": "singil",
+              "ru": "младшая сестра",
+              "tj": "хоҳари хурдӣ"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "妹妹 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 妹妹:",
+            "tj": "Маънои калимаи 妹妹-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            },
+            {
+              "uz": "bor; ega bo‘lmoq",
+              "ru": "иметь; есть",
+              "tj": "доштан; ҳаст"
+            },
+            {
+              "uz": "umumiy o‘lchov so‘zi",
+              "ru": "универсальное счётное слово",
+              "tj": "воҳиди умумии ҳисоб"
+            },
+            {
+              "uz": "singil",
+              "ru": "младшая сестра",
+              "tj": "хоҳари хурдӣ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "妹妹 = singil (mèimei)",
+            "ru": "妹妹 = младшая сестра (mèimei)",
+            "tj": "妹妹 = хоҳари хурдӣ (mèimei)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "kǒu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается kǒu?",
+            "tj": "kǒu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "有",
+            "多少",
+            "口",
+            "个"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "口 = oila a’zolari uchun o‘lchov so‘zi (kǒu)",
+            "ru": "口 = счётное слово для членов семьи (kǒu)",
+            "tj": "口 = воҳиди ҳисоб барои аъзои оила (kǒu)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "口",
+              {
+                "uz": "oila a’zolari uchun o‘lchov so‘zi",
+                "ru": "счётное слово для членов семьи",
+                "tj": "воҳиди ҳисоб барои аъзои оила"
+              }
+            ],
+            [
+              "爸爸",
+              {
+                "uz": "ota; dada",
+                "ru": "папа",
+                "tj": "падар; дада"
+              }
+            ],
+            [
+              "妈妈",
+              {
+                "uz": "ona; mama",
+                "ru": "мама",
+                "tj": "модар; оча"
+              }
+            ],
+            [
+              "妹妹",
+              {
+                "uz": "singil",
+                "ru": "младшая сестра",
+                "tj": "хоҳари хурдӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "爸爸",
+          "pinyin": "bàba",
+          "options": [
+            "多少",
+            "个",
+            "爸爸",
+            "有"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "爸爸 — ota; dada (bàba)",
+            "ru": "爸爸 — папа (bàba)",
+            "tj": "爸爸 — падар; дада (bàba)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "口",
+              {
+                "uz": "oila a’zolari uchun o‘lchov so‘zi",
+                "ru": "счётное слово для членов семьи",
+                "tj": "воҳиди ҳисоб барои аъзои оила"
+              }
+            ],
+            [
+              "爸爸",
+              {
+                "uz": "ota; dada",
+                "ru": "папа",
+                "tj": "падар; дада"
+              }
+            ],
+            [
+              "妈妈",
+              {
+                "uz": "ona; mama",
+                "ru": "мама",
+                "tj": "модар; оча"
+              }
+            ],
+            [
+              "妹妹",
+              {
+                "uz": "singil",
+                "ru": "младшая сестра",
+                "tj": "хоҳари хурдӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Oilangda nechta odam bor?",
+            "ru": "Сколько человек в твоей семье?",
+            "tj": "Дар оилаи ту чанд нафар ҳаст?"
+          },
+          "tokens": [
+            "人",
+            "家",
+            "你",
+            "口",
+            "有",
+            "多少",
+            "个",
+            "几"
+          ],
+          "answer_tokens": [
+            "你",
+            "家",
+            "有",
+            "几",
+            "口",
+            "人"
+          ],
+          "explanation": {
+            "uz": "你家有几口人？ — Nǐ jiā yǒu jǐ kǒu rén?",
+            "ru": "你家有几口人？ — Nǐ jiā yǒu jǐ kǒu rén?",
+            "tj": "你家有几口人？ — Nǐ jiā yǒu jǐ kǒu rén?"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你家有几口人？",
+          "pinyin": "Nǐ jiā yǒu jǐ kǒu rén?",
+          "translation": {
+            "uz": "Oilangda nechta odam bor?",
+            "ru": "Сколько человек в твоей семье?",
+            "tj": "Дар оилаи ту чанд нафар ҳаст?"
+          },
+          "tokens": {
+            "uz": [
+              "Oilangda",
+              "odam",
+              "bor",
+              "nechta"
+            ],
+            "ru": [
+              "человек",
+              "семье",
+              "в",
+              "Сколько",
+              "твоей"
+            ],
+            "tj": [
+              "ту",
+              "ҳаст",
+              "чанд",
+              "оилаи",
+              "нафар",
+              "Дар"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Oilangda",
+              "nechta",
+              "odam",
+              "bor"
+            ],
+            "ru": [
+              "Сколько",
+              "человек",
+              "в",
+              "твоей",
+              "семье"
+            ],
+            "tj": [
+              "Дар",
+              "оилаи",
+              "ту",
+              "чанд",
+              "нафар",
+              "ҳаст"
+            ]
+          },
+          "explanation": {
+            "uz": "你家有几口人？ — Oilangda nechta odam bor?",
+            "ru": "你家有几口人？ — Сколько человек в твоей семье?",
+            "tj": "你家有几口人？ — Дар оилаи ту чанд нафар ҳаст?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "爸爸",
+          "pinyin": "bàba",
+          "translation": {
+            "uz": "ota; dada",
+            "ru": "папа",
+            "tj": "падар; дада"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "没有 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 没有:",
+            "tj": "Маънои калимаи 没有-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bor; ega bo‘lmoq",
+              "ru": "иметь; есть",
+              "tj": "доштан; ҳаст"
+            },
+            {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            },
+            {
+              "uz": "umumiy o‘lchov so‘zi",
+              "ru": "универсальное счётное слово",
+              "tj": "воҳиди умумии ҳисоб"
+            },
+            {
+              "uz": "yo‘q; ega emas",
+              "ru": "не иметь; нет",
+              "tj": "надоштан; нест"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "没有 = yo‘q; ega emas (méiyǒu)",
+            "ru": "没有 = не иметь; нет (méiyǒu)",
+            "tj": "没有 = надоштан; нест (méiyǒu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "没有",
+            "pinyin": "méiyǒu",
+            "meaning": {
+              "uz": "yo‘q; ega emas",
+              "ru": "не иметь; нет",
+              "tj": "надоштан; нест"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ota; dada' xitoycha qaysi?",
+            "ru": "'папа' по-китайски?",
+            "tj": "'падар; дада' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "个",
+            "多少",
+            "爸爸",
+            "有"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "ota; dada = 爸爸 (bàba)",
+            "ru": "папа = 爸爸 (bàba)",
+            "tj": "падар; дада = 爸爸 (bàba)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "爸爸",
+            "pinyin": "bàba",
+            "meaning": {
+              "uz": "ota; dada",
+              "ru": "папа",
+              "tj": "падар; дада"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

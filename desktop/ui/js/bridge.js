@@ -13,6 +13,8 @@ const COMMANDS = Object.freeze({
   bootstrap: "desktop_bootstrap",
   logout: "desktop_logout",
   courseMap: "desktop_course_map",
+  courseTrackSwitch: "desktop_course_track_switch",
+  hsk30PromoShown: "desktop_hsk30_promo_shown",
   syncState: "desktop_sync",
   lessonData: "desktop_lesson_data",
   lessonComplete: "desktop_lesson_complete",
@@ -47,7 +49,7 @@ const COMMANDS = Object.freeze({
 
 const ALLOWED_COMMANDS = new Set(Object.values(COMMANDS));
 const SUPPORTED_LANGUAGES = new Set(["uz", "ru", "tj"]);
-const SUBSCRIPTION_PLANS = new Set(["10_days", "1_month", "3_months"]);
+const SUBSCRIPTION_PLANS = new Set(["10_days", "1_month", "3_months", "hsk30_unlock"]);
 const SUBSCRIPTION_METHODS = new Set(["visa", "alipay", "wechat"]);
 const CARD_COUNTRIES = new Set(["tj", "uz", "ru", "other"]);
 // Mirrors GOAL_KINDS in src-tauri/src/lib.rs. Onboarding is the only writer.
@@ -269,6 +271,23 @@ function assertExternalUrl(value) {
   throw new DesktopBridgeError("desktop_external_url_invalid");
 }
 
+function assertCourseTrack(value) {
+  const track = String(value || "").trim().toLowerCase();
+  if (!["hsk20", "hsk30"].includes(track)) {
+    throw new DesktopBridgeError("desktop_course_track_invalid");
+  }
+  return track;
+}
+
+function assertCourseLevel(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const level = String(value).trim().toLowerCase();
+  if (!["hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"].includes(level)) {
+    throw new DesktopBridgeError("desktop_course_level_invalid");
+  }
+  return level;
+}
+
 function assertLessonOrder(value) {
   const lessonOrder = Number(value);
   if (!Number.isInteger(lessonOrder) || lessonOrder < 1 || lessonOrder > 500) {
@@ -287,6 +306,14 @@ function assertLanguage(value) {
 
 function normalizedSubscriptionValue(value) {
   return String(value || "").trim().toLowerCase();
+}
+
+function assertSubscriptionMode(value) {
+  const mode = String(value || "subscription").trim().toLowerCase();
+  if (!["subscription", "hsk30_unlock"].includes(mode)) {
+    throw new DesktopBridgeError("desktop_subscription_request_invalid");
+  }
+  return mode;
 }
 
 function assertSubscriptionSelection(plan, method, country) {
@@ -360,7 +387,7 @@ function subscriptionPayload(value, kind) {
   if (
     value.ok !== true ||
     value.source !== "desktop_subscription" ||
-    value.mode !== "subscription"
+    !["subscription", "hsk30_unlock"].includes(value.mode)
   ) {
     throw new DesktopBridgeError("desktop_subscription_payload_invalid");
   }
@@ -707,6 +734,17 @@ export const desktopBridge = Object.freeze({
     return invokeCommand(COMMANDS.courseMap, { timezoneOffsetMinutes });
   },
 
+  courseTrackSwitch(targetTrack, level = null) {
+    return invokeCommand(COMMANDS.courseTrackSwitch, {
+      targetTrack: assertCourseTrack(targetTrack),
+      level: assertCourseLevel(level),
+    });
+  },
+
+  hsk30PromoShown() {
+    return invokeCommand(COMMANDS.hsk30PromoShown);
+  },
+
   syncState() {
     return invokeCommand(COMMANDS.syncState);
   },
@@ -742,9 +780,11 @@ export const desktopBridge = Object.freeze({
     return invokeCommand(COMMANDS.setNotifications, { enabled });
   },
 
-  async subscriptionOverview() {
+  async subscriptionOverview(mode = "subscription") {
     return subscriptionPayload(
-      await invokeCommand(COMMANDS.subscriptionOverview),
+      await invokeCommand(COMMANDS.subscriptionOverview, {
+        mode: assertSubscriptionMode(mode),
+      }),
       "overview",
     );
   },

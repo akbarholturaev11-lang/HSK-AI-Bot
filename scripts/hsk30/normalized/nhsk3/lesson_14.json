@@ -1,0 +1,381 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 14,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144
+    ]
+  },
+  "title": {
+    "hanzi": "这本书被别人借走了",
+    "pinyin": "Zhè běn shū bèi biérén jiè zǒu le"
+  },
+  "objectives": [
+    "能听懂并介绍校园活动。",
+    "能听懂并表达对他人的鼓励。",
+    "掌握被动句（1）的用法，能表达被动意义。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "词典",
+      "pinyin": "cídiǎn",
+      "part_of_speech": "n.",
+      "source_page": 137
+    },
+    {
+      "hanzi": "最好",
+      "pinyin": "zuìhǎo",
+      "part_of_speech": "adv.",
+      "source_page": 137
+    },
+    {
+      "hanzi": "节",
+      "pinyin": "jié",
+      "part_of_speech": "m.",
+      "source_page": 137
+    },
+    {
+      "hanzi": "图书馆",
+      "pinyin": "túshūguǎn",
+      "part_of_speech": "n.",
+      "source_page": 137
+    },
+    {
+      "hanzi": "被",
+      "pinyin": "bèi",
+      "part_of_speech": "prep.",
+      "source_page": 137
+    },
+    {
+      "hanzi": "名人",
+      "pinyin": "míngrén",
+      "part_of_speech": "n.",
+      "source_page": 137
+    },
+    {
+      "hanzi": "故事",
+      "pinyin": "gùshi",
+      "part_of_speech": "n.",
+      "source_page": 137
+    },
+    {
+      "hanzi": "然后",
+      "pinyin": "ránhòu",
+      "part_of_speech": "conj.",
+      "source_page": 139
+    },
+    {
+      "hanzi": "报纸",
+      "pinyin": "bàozhǐ",
+      "part_of_speech": "n.",
+      "source_page": 139
+    },
+    {
+      "hanzi": "忘记",
+      "pinyin": "wàngjì",
+      "part_of_speech": "v.",
+      "source_page": 139
+    },
+    {
+      "hanzi": "电子书",
+      "pinyin": "diànzǐshū",
+      "part_of_speech": "n.",
+      "source_page": 139
+    },
+    {
+      "hanzi": "女生",
+      "pinyin": "nǚshēng",
+      "part_of_speech": "n.",
+      "source_page": 141
+    },
+    {
+      "hanzi": "表演",
+      "pinyin": "biǎoyǎn",
+      "part_of_speech": "v.",
+      "source_page": 141
+    },
+    {
+      "hanzi": "节目",
+      "pinyin": "jiémù",
+      "part_of_speech": "n.",
+      "source_page": 141
+    },
+    {
+      "hanzi": "怎么办",
+      "pinyin": "zěnme bàn",
+      "part_of_speech": "",
+      "source_page": 141
+    },
+    {
+      "hanzi": "校长",
+      "pinyin": "xiàozhǎng",
+      "part_of_speech": "n.",
+      "source_page": 141
+    },
+    {
+      "hanzi": "面前",
+      "pinyin": "miànqián",
+      "part_of_speech": "n.",
+      "source_page": 141
+    },
+    {
+      "hanzi": "有些",
+      "pinyin": "yǒuxiē",
+      "part_of_speech": "adv.",
+      "source_page": 141
+    },
+    {
+      "hanzi": "相信",
+      "pinyin": "xiāngxìn",
+      "part_of_speech": "v.",
+      "source_page": 141
+    },
+    {
+      "hanzi": "新年",
+      "pinyin": "xīnnián",
+      "part_of_speech": "n.",
+      "source_page": 142
+    },
+    {
+      "hanzi": "班级",
+      "pinyin": "bānjí",
+      "part_of_speech": "n.",
+      "source_page": 142
+    },
+    {
+      "hanzi": "跳",
+      "pinyin": "tiào",
+      "part_of_speech": "v.",
+      "source_page": 142
+    },
+    {
+      "hanzi": "留学生",
+      "pinyin": "liúxuéshēng",
+      "part_of_speech": "n.",
+      "source_page": 142
+    },
+    {
+      "hanzi": "最后",
+      "pinyin": "zuìhòu",
+      "part_of_speech": "n.",
+      "source_page": 142
+    },
+    {
+      "hanzi": "一块儿",
+      "pinyin": "yíkuàir",
+      "part_of_speech": "adv./n.",
+      "source_page": 142
+    },
+    {
+      "hanzi": "网站",
+      "pinyin": "wǎngzhàn",
+      "part_of_speech": "n.",
+      "source_page": 142
+    },
+    {
+      "hanzi": "视频",
+      "pinyin": "shìpín",
+      "part_of_speech": "n.",
+      "source_page": 142
+    }
+  ],
+  "grammar": [
+    {
+      "label": "被动句（1）",
+      "source_page": 138,
+      "examples": [
+        {
+          "hanzi": "这本书被别人借走了。",
+          "pinyin": "Zhè běn shū bèi biérén jiè zǒu le."
+        },
+        {
+          "hanzi": "水果可能被弟弟吃了。",
+          "pinyin": "Shuǐguǒ kěnéng bèi dìdi chī le."
+        },
+        {
+          "hanzi": "我们俩经常被叫错名字。",
+          "pinyin": "Wǒmen liǎ jīngcháng bèi jiào cuò míngzi."
+        }
+      ]
+    },
+    {
+      "label": "承接复句“先……，再/然后……”",
+      "source_page": 139,
+      "examples": [
+        {
+          "hanzi": "我要先去图书馆借书，然后去游泳。",
+          "pinyin": "Wǒ yào xiān qù túshūguǎn jiè shū, ránhòu qù yóuyǒng."
+        },
+        {
+          "hanzi": "你先去买门票，再来这里找我。",
+          "pinyin": "Nǐ xiān qù mǎi ménpiào, zài lái zhèlǐ zhǎo wǒ."
+        },
+        {
+          "hanzi": "你们先回房间休息一会儿，然后再出来吃晚饭。",
+          "pinyin": "Nǐmen xiān huí fángjiān xiūxi yíhuìr, ránhòu zài chūlái chī wǎnfàn."
+        }
+      ]
+    },
+    {
+      "label": "固定格式“×什么（啊）”",
+      "source_page": 141,
+      "examples": [
+        {
+          "hanzi": "一想到要在校长、老师和那么多同学面前表演，我就有些紧张。",
+          "pinyin": "Yì xiǎngdào yào zài xiàozhǎng, lǎoshī hé nàme duō tóngxué miànqián biǎoyǎn, wǒ jiù yǒuxiē jǐnzhāng."
+        },
+        {
+          "hanzi": "紧张什么啊，我们都喜欢听你唱歌，你要相信自己。",
+          "pinyin": "Jǐnzhāng shénme a, wǒmen dōu xǐhuan tīng nǐ chànggē, nǐ yào xiāngxìn zìjǐ."
+        },
+        {
+          "hanzi": "我最近胖了很多，不想拍照了。",
+          "pinyin": "Wǒ zuìjìn pàng le hěn duō, bù xiǎng pāizhào le."
+        },
+        {
+          "hanzi": "胖什么啊，你看起来不胖也不瘦。",
+          "pinyin": "Pàng shénme a, nǐ kàn qǐlái bù pàng yě bú shòu."
+        },
+        {
+          "hanzi": "还有十分钟，快点儿走吧。",
+          "pinyin": "Hái yǒu shí fēnzhōng, kuài diǎnr zǒu ba."
+        },
+        {
+          "hanzi": "急什么啊，马上就到了。",
+          "pinyin": "Jí shénme a, mǎshàng jiù dào le."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在校园餐厅，李文和白家月在聊天儿。",
+      "source_page": 137,
+      "turns": [
+        {
+          "speaker": "李文",
+          "hanzi": "我借的这本词典最好今天还，但是我没时间去。",
+          "pinyin": "Wǒ jiè de zhè běn cídiǎn zuìhǎo jīntiān huán, dànshì wǒ méi shíjiān qù."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "下午我只有两节课，可以帮你去图书馆还书。",
+          "pinyin": "Xiàwǔ wǒ zhǐ yǒu liǎng jié kè, kěyǐ bāng nǐ qù túshūguǎn huán shū."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "那太谢谢了。你能再帮我借本书吗？",
+          "pinyin": "Nà tài xièxie le. Nǐ néng zài bāng wǒ jiè běn shū ma?"
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "行，你告诉我书名。",
+          "pinyin": "Xíng, nǐ gàosu wǒ shūmíng."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "我把名字写在纸上吧。我去了好几次图书馆，这本书都被别人借走了。",
+          "pinyin": "Wǒ bǎ míngzi xiě zài zhǐ shàng ba. Wǒ qù le hǎo jǐ cì túshūguǎn, zhè běn shū dōu bèi biérén jiè zǒu le."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "《名人的故事》？我有这本书。明天我借给你吧。",
+          "pinyin": "Míngrén de Gùshi? Wǒ yǒu zhè běn shū. Míngtiān wǒ jiè gěi nǐ ba."
+        }
+      ]
+    },
+    {
+      "scene": "在校园里，白家月和安妮在聊天儿。",
+      "source_page": 139,
+      "turns": [
+        {
+          "speaker": "安妮",
+          "hanzi": "今天下课早，你一会儿做什么？",
+          "pinyin": "Jīntiān xiàkè zǎo, nǐ yíhuìr zuò shénme?"
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "我今天忙得很，要先去图书馆借书，然后去游泳。",
+          "pinyin": "Wǒ jīntiān máng de hěn, yào xiān qù túshūguǎn jiè shū, ránhòu qù yóuyǒng."
+        },
+        {
+          "speaker": "安妮",
+          "hanzi": "咱们一起走吧，我想去图书馆看看中文报纸。",
+          "pinyin": "Zánmen yìqǐ zǒu ba, wǒ xiǎng qù túshūguǎn kànkan Zhōngwén bàozhǐ."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "等等，我的校园卡不见了，没有卡进不去图书馆。",
+          "pinyin": "Děngdeng, wǒ de xiàoyuánkǎ bú jiàn le, méiyǒu kǎ jìn bu qù túshūguǎn."
+        },
+        {
+          "speaker": "安妮",
+          "hanzi": "你想想上一次用是什么时候？",
+          "pinyin": "Nǐ xiǎngxiang shàng yí cì yòng shì shénme shíhou?"
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "我忘记了，可能被我放在家里了。",
+          "pinyin": "Wǒ wàngjì le, kěnéng bèi wǒ fàng zài jiālǐ le."
+        },
+        {
+          "speaker": "安妮",
+          "hanzi": "进不去图书馆也没关系，上网看看有没有电子书。",
+          "pinyin": "Jìn bu qù túshūguǎn yě méi guānxi, shàngwǎng kànkan yǒu méiyǒu diànzǐshū."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "不行，我必须去，我还得帮李文还书呢。",
+          "pinyin": "Bù xíng, wǒ bìxū qù, wǒ hái děi bāng Lǐ Wén huán shū ne."
+        }
+      ]
+    },
+    {
+      "scene": "在校园餐厅，李文和白家月边吃边聊。",
+      "source_page": 140,
+      "turns": [
+        {
+          "speaker": "李文",
+          "hanzi": "下周学校有晚会，你知道吗？",
+          "pinyin": "Xià zhōu xuéxiào yǒu wǎnhuì, nǐ zhīdào ma?"
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "知道，我和几个女生要表演一个节目。你也参加吗？",
+          "pinyin": "Zhīdào, wǒ hé jǐ ge nǚshēng yào biǎoyǎn yí ge jiémù. Nǐ yě cānjiā ma?"
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "我想唱中文歌，但是还没找到人一起表演，不知道怎么办。",
+          "pinyin": "Wǒ xiǎng chàng Zhōngwén gē, dànshì hái méi zhǎodào rén yìqǐ biǎoyǎn, bù zhīdào zěnme bàn."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "找不到人，你就一个人唱吧。",
+          "pinyin": "Zhǎo bú dào rén, nǐ jiù yí ge rén chàng ba."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "一想到要在校长、老师和那么多同学面前表演，我就有些紧张。",
+          "pinyin": "Yì xiǎngdào yào zài xiàozhǎng, lǎoshī hé nàme duō tóngxué miànqián biǎoyǎn, wǒ jiù yǒuxiē jǐnzhāng."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "紧张什么啊，我们都喜欢听你唱歌，你要相信自己。",
+          "pinyin": "Jǐnzhāng shénme a, wǒmen dōu xǐhuan tīng nǐ chànggē, nǐ yào xiāngxìn zìjǐ."
+        }
+      ]
+    }
+  ]
+}

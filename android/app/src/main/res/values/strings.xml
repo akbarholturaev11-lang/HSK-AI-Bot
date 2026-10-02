@@ -335,6 +335,9 @@
     <string name="limit_unlock_unavailable">Amalni bajarib bo‘lmadi. Keyinroq urinib ko‘ring.</string>
     <string name="limit_voice_reason">Bugungi bepul AI Voice suhbatlaringiz tugadi.</string>
     <string name="profile_language">Til</string>
+    <string name="profile_course_version">Kurs versiyasi</string>
+    <string name="profile_course_version_confirm_title">%1$s ga o‘tish?</string>
+    <string name="profile_course_version_confirm_body">Joriy kursdagi progressingiz saqlanadi. Istalgan payt boshqa versiyaga qaytishingiz mumkin.</string>
     <string name="profile_language_picker_title">Tilni tanlang</string>
     <string name="profile_notifications">Bildirishnomalar</string>
     <string name="profile_help">Yordam</string>
@@ -351,7 +354,7 @@
     <string name="notify_goal_body_2">Maqsadga oz qoldi — panda oxirigacha birga boradi.</string>
     <string name="notify_goal_body_3">Bir qism qoldi, xolos. Bugungi maqsadni yopamizmi?</string>
     <string name="practice_dictionary_title">Ieroglif lug‘ati</string>
-    <string name="practice_dictionary_body">HSK 1–4 · yozilishi, pinyin, ma’no</string>
+    <string name="practice_dictionary_body">HSK 2.0 + 3.0 · yozilishi, pinyin, ma’no</string>
     <string name="dictionary_search_hint">Ieroglif, pinyin yoki ma’no</string>
     <string name="dictionary_recent_title">Oxirgi qidiruvlar</string>
     <string name="dictionary_all_words">Barcha so‘zlar</string>
@@ -367,6 +370,8 @@
     <string name="dictionary_action_write">Yozish</string>
     <string name="dictionary_parts_title">Qismlari</string>
     <string name="dictionary_examples_title">Misollar</string>
+    <string name="dictionary_memory_hint_title">Yodlash ishorasi</string>
+    <string name="dictionary_memory_hint_body">%1$s belgilarini yozib ko‘ring va shaklini so‘z ma’nosi bilan bog‘lab eslab qoling.</string>
     <string name="writing_stage_demo">Yozish tartibini kuzating</string>
     <string name="writing_stage_trace">Iz bo‘ylab yozing</string>
     <string name="writing_stage_hint">Ishora bilan yozing</string>
@@ -523,4 +528,10 @@
     <string name="notify_payment_rejected_body">Obuna bo‘limini ochib, to‘lovni tekshiring va qayta yuboring.</string>
     <string name="notify_payment_private_title">HSK AI obuna xabari</string>
     <string name="notify_payment_private_body">Tafsilotlarni ko‘rish uchun ilovani oching.</string>
+    <string name="hsk30_promo_title">Yangi HSK 3.0</string>
+    <string name="hsk30_promo_body">Yangi standart alohida kurs sifatida qo‘shildi. HSK 2.0 progressingiz saqlanadi va istalgan payt qaytishingiz mumkin.</string>
+    <string name="hsk30_promo_price">Bir martalik access: %1$d TJS</string>
+    <string name="hsk30_promo_switch">HSK 3.0 ga o‘tish</string>
+    <string name="hsk30_test_soon_title">HSK 3.0 testlari</string>
+    <string name="hsk30_test_soon_body">Yangi HSK 3.0 imtihon formati hali tayyorlanmoqda.</string>
 </resources>

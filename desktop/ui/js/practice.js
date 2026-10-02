@@ -161,7 +161,18 @@ export class DesktopPracticeController {
     }
 
     const grid = node("section", "practice-grid practiceGrid");
-    DRILLS.forEach((drill) => {
+    const hsk30 = this.level.toLowerCase().startsWith("nhsk");
+    if (hsk30) {
+      const soon = node("article", "practice-card practiceCard card-panel card");
+      soon.append(
+        node("div", "practice-glyph practiceIcon hanzi", "考"),
+        node("h3", "", this.t("hsk30TestSoonTitle")),
+        node("p", "muted", this.t("hsk30TestSoonBody")),
+        node("span", "tag", this.t("comingSoon")),
+      );
+      grid.append(soon);
+    }
+    DRILLS.filter((drill) => !(hsk30 && ["placement", "mock"].includes(drill.id))).forEach((drill) => {
       const card = node("article", "practice-card practiceCard card-panel card");
       card.tabIndex = 0;
       card.append(

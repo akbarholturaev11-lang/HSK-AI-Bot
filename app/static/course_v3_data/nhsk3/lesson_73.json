@@ -1,0 +1,809 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 73,
+  "source_lesson": 10,
+  "part_no": 1,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "你明天再把书还给我",
+  "subtitle": {
+    "uz": "O‘qish va imtihon holatini tushunish va tasvirlash; o‘qishdagi muammolar va usullar haqida gaplashish; “把” gaplari orqali narsaning joyi yoki holati o‘zgarishini ifodalash; Xitoy ta’lim tizimi bilan tanishish.",
+    "ru": "Понимать и описывать учёбу и экзамены; обсуждать учебные трудности и методы; использовать предложения с “把” для выражения изменения положения/состояния предмета; познакомиться с системой образования Китая.",
+    "tj": "Ҳолати таҳсил ва имтиҳонро фаҳмидан ва тавсиф кардан; дар бораи мушкилот ва усулҳои омӯзиш суҳбат кардан; бо ҷумлаҳои “把” тағйири ҷой ё ҳолати ашёро ифода кардан; бо низоми таҳсилоти Чин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "数学",
+      "pinyin": "shùxué",
+      "pos": "n.",
+      "meaning": {
+        "uz": "matematika",
+        "ru": "математика",
+        "tj": "математика"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "认真",
+      "pinyin": "rènzhēn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "jiddiy; diqqat bilan",
+        "ru": "серьёзный; внимательно",
+        "tj": "ҷиддӣ; бодиққат"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "笔记",
+      "pinyin": "bǐjì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "konspekt; qayd",
+        "ru": "конспект; заметки",
+        "tj": "қайд; конспект"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "清楚",
+      "pinyin": "qīngchu",
+      "pos": "adj./v.",
+      "meaning": {
+        "uz": "aniq; tushunarli",
+        "ru": "ясный; ясно",
+        "tj": "равшан; аниқ"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "“在……上 / 中 / 下” — soha, jarayon va sharoitni ko‘rsatish",
+        "ru": "“在……上 / 中 / 下” — сфера, процесс и условие",
+        "tj": "“在……上 / 中 / 下” — соҳа, раванд ва шароит"
+      },
+      "title_zh": "固定格式“在……上/中/下”",
+      "rule": {
+        "uz": "“在……上” ma’lum soha yoki jihatni, “在……中” jarayon/holat ichini, “在……下” esa ta’sir yoki sharoit ostida sodir bo‘lgan vaziyatni bildiradi.",
+        "ru": "“在……上” указывает сферу или аспект, “在……中” — процесс/ситуацию, “在……下” — действие под влиянием или при определённых условиях.",
+        "tj": "“在……上” соҳа ё ҷиҳатро, “在……中” раванд ё ҳолатро ва “在……下” амалро зери таъсир ё шароити муайян нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "在学习上，遇到什么问题都可以问我。",
+          "pinyin": "Zài xuéxí shàng, yùdào shénme wèntí dōu kěyǐ wèn wǒ.",
+          "translation": {
+            "uz": "O‘qishda qanday muammoga duch kelsang ham mendan so‘rashing mumkin.",
+            "ru": "По учёбе можешь спрашивать меня о любых проблемах.",
+            "tj": "Дар таҳсил ҳар мушкиле пеш ояд, аз ман пурсидан мумкин."
+          }
+        },
+        {
+          "zh": "在工作上，他总是能给我很多帮助。",
+          "pinyin": "Zài gōngzuò shàng, tā zǒngshì néng gěi wǒ hěn duō bāngzhù.",
+          "translation": {
+            "uz": "Ish masalasida u menga doim ko‘p yordam beradi.",
+            "ru": "В работе он всегда оказывает мне большую помощь.",
+            "tj": "Дар кор ӯ ҳамеша ба ман кӯмаки зиёд мерасонад."
+          }
+        },
+        {
+          "zh": "在比赛中，他得分最高。",
+          "pinyin": "Zài bǐsài zhōng, tā défēn zuì gāo.",
+          "translation": {
+            "uz": "Musobaqada u eng ko‘p ochko oldi.",
+            "ru": "В соревновании он набрал больше всех очков.",
+            "tj": "Дар мусобиқа ӯ аз ҳама бештар хол гирифт."
+          }
+        },
+        {
+          "zh": "在假期中，我认识了几个新朋友。",
+          "pinyin": "Zài jiàqī zhōng, wǒ rènshi le jǐ ge xīn péngyou.",
+          "translation": {
+            "uz": "Ta’til davomida bir nechta yangi do‘st bilan tanishdim.",
+            "ru": "Во время каникул я познакомился с несколькими новыми друзьями.",
+            "tj": "Дар таътил бо чанд дӯсти нав шинос шудам."
+          }
+        },
+        {
+          "zh": "在她的影响下，我开始喜欢拍照。",
+          "pinyin": "Zài tā de yǐngxiǎng xià, wǒ kāishǐ xǐhuan pāizhào.",
+          "translation": {
+            "uz": "Uning ta’siri ostida suratga olishni yoqtira boshladim.",
+            "ru": "Под её влиянием я начал любить фотографировать.",
+            "tj": "Зери таъсири ӯ аксбардориро дӯст дошта сар кардам."
+          }
+        },
+        {
+          "zh": "在老师的帮助下，我的成绩提高很快。",
+          "pinyin": "Zài lǎoshī de bāngzhù xià, wǒ de chéngjì tígāo hěn kuài.",
+          "translation": {
+            "uz": "O‘qituvchining yordami bilan natijalarim tez yaxshilandi.",
+            "ru": "С помощью учителя мои результаты быстро улучшились.",
+            "tj": "Бо кӯмаки омӯзгор натиҷаҳои ман зуд беҳтар шуданд."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda Liu Xiaoxue sinfdoshi bilan o‘qish usullari haqida gaplashmoqda.",
+        "ru": "В классе Лю Сяосюэ обсуждает с одноклассником методы учёбы.",
+        "tj": "Дар синф Лю Сяосюэ бо ҳамсинфаш дар бораи усулҳои омӯзиш суҳбат мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "同学",
+          "zh": "你的数学越来越好，能不能介绍一下学习方法？",
+          "pinyin": "Nǐ de shùxué yuèláiyuè hǎo, néng bu néng jièshào yíxià xuéxí fāngfǎ?",
+          "text": {
+            "uz": "Matematikang borgan sari yaxshilanmoqda, o‘qish usulingni aytib bera olasanmi?",
+            "ru": "У тебя математика всё лучше. Можешь рассказать о своём способе учиться?",
+            "tj": "Математикаат торафт беҳтар мешавад, метавонӣ усули омӯзишатро фаҳмонӣ?"
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "没有什么特别的方法，认真听课，认真记笔记。",
+          "pinyin": "Méiyǒu shénme tèbié de fāngfǎ, rènzhēn tīngkè, rènzhēn jì bǐjì.",
+          "text": {
+            "uz": "Maxsus usul yo‘q: darsni diqqat bilan tinglayman va konspektni puxta yozaman.",
+            "ru": "Ничего особенного: внимательно слушаю урок и тщательно веду конспект.",
+            "tj": "Усули махсус нест: дарсро бодиққат мешунавам ва қайдҳоро ҷиддӣ менависам."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "我看过你的笔记，记得非常清楚。",
+          "pinyin": "Wǒ kàn guo nǐ de bǐjì, jì de fēicháng qīngchu.",
+          "text": {
+            "uz": "Konspektingni ko‘rganman, juda aniq yozilgan.",
+            "ru": "Я видел твои записи — всё записано очень ясно.",
+            "tj": "Қайдҳоятро дидаам, хеле равшан навишта шудаанд."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "你说得对。我没有记笔记的习惯。",
+          "pinyin": "Nǐ shuō de duì. Wǒ méiyǒu jì bǐjì de xíguàn.",
+          "text": {
+            "uz": "To‘g‘ri aytding. Menda konspekt yozish odati yo‘q.",
+            "ru": "Ты права. У меня нет привычки вести записи.",
+            "tj": "Дуруст гуфтӣ. Ман одати қайд навиштан надорам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda Liu Xiaoxue sinfdoshi bilan kechagi imtihon haqida gaplashmoqda.",
+        "ru": "В классе Лю Сяосюэ обсуждает с одноклассником вчерашний экзамен.",
+        "tj": "Дар синф Лю Сяосюэ бо ҳамсинфаш дар бораи имтиҳони дирӯза суҳбат мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "同学",
+          "zh": "小雪，昨天的考试，你考得怎么样？",
+          "pinyin": "Xiǎoxuě, zuótiān de kǎoshì, nǐ kǎo de zěnmeyàng?",
+          "text": {
+            "uz": "Xiaoxue, kechagi imtihonni qanday topshirding?",
+            "ru": "Сяосюэ, как ты сдала вчерашний экзамен?",
+            "tj": "Сяосюэ, имтиҳони дирӯзаро чӣ хел супоридӣ?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ustoz Li kabinetida Liu Xiaoxue va sinfdoshi savol so‘ramoqda.",
+        "ru": "В кабинете учителя Ли Лю Сяосюэ и её одноклассник задают вопросы.",
+        "tj": "Дар кабинети устод Ли Лю Сяосюэ ва ҳамсинфаш савол мепурсанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李老师",
+          "zh": "好，坐下说吧，哪个题不会？",
+          "pinyin": "Hǎo, zuòxia shuō ba, nǎge tí bú huì?",
+          "text": {
+            "uz": "Xo‘p, o‘tiringlar, qaysi savolni bilmaysizlar?",
+            "ru": "Хорошо, садитесь. Какое задание непонятно?",
+            "tj": "Хуб, шинед. Кадом саволро намедонед?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "数学",
+            "pinyin": "shùxué",
+            "pos": "n.",
+            "meaning": {
+              "uz": "matematika",
+              "ru": "математика",
+              "tj": "математика"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "数学",
+          "pinyin": "shùxué",
+          "translation": {
+            "uz": "matematika",
+            "ru": "математика",
+            "tj": "математика"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "数学 talaffuzini tanlang:",
+            "ru": "Выберите произношение 数学:",
+            "tj": "Талаффузи 数学-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "qīngchu",
+            "shùxué",
+            "bǐjì",
+            "rènzhēn"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "数学 — shùxué",
+            "ru": "数学 — shùxué",
+            "tj": "数学 — shùxué"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "认真",
+            "pinyin": "rènzhēn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "jiddiy; diqqat bilan",
+              "ru": "серьёзный; внимательно",
+              "tj": "ҷиддӣ; бодиққат"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'jiddiy; diqqat bilan' xitoycha qaysi?",
+            "ru": "'серьёзный; внимательно' по-китайски?",
+            "tj": "'ҷиддӣ; бодиққат' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "认真",
+            "笔记",
+            "清楚",
+            "数学"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "jiddiy; diqqat bilan = 认真 (rènzhēn)",
+            "ru": "серьёзный; внимательно = 认真 (rènzhēn)",
+            "tj": "ҷиддӣ; бодиққат = 认真 (rènzhēn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "笔记",
+            "pinyin": "bǐjì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "konspekt; qayd",
+              "ru": "конспект; заметки",
+              "tj": "қайд; конспект"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "笔记",
+          "pinyin": "bǐjì",
+          "options": [
+            "笔记",
+            "数学",
+            "认真",
+            "清楚"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "笔记 — konspekt; qayd (bǐjì)",
+            "ru": "笔记 — конспект; заметки (bǐjì)",
+            "tj": "笔记 — қайд; конспект (bǐjì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "清楚",
+            "pinyin": "qīngchu",
+            "pos": "adj./v.",
+            "meaning": {
+              "uz": "aniq; tushunarli",
+              "ru": "ясный; ясно",
+              "tj": "равшан; аниқ"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "清楚 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 清楚:",
+            "tj": "Маънои калимаи 清楚-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "konspekt; qayd",
+              "ru": "конспект; заметки",
+              "tj": "қайд; конспект"
+            },
+            {
+              "uz": "matematika",
+              "ru": "математика",
+              "tj": "математика"
+            },
+            {
+              "uz": "jiddiy; diqqat bilan",
+              "ru": "серьёзный; внимательно",
+              "tj": "ҷиддӣ; бодиққат"
+            },
+            {
+              "uz": "aniq; tushunarli",
+              "ru": "ясный; ясно",
+              "tj": "равшан; аниқ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "清楚 = aniq; tushunarli (qīngchu)",
+            "ru": "清楚 = ясный; ясно (qīngchu)",
+            "tj": "清楚 = равшан; аниқ (qīngchu)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shùxué qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shùxué?",
+            "tj": "shùxué кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "认真",
+            "数学",
+            "清楚",
+            "笔记"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "数学 = matematika (shùxué)",
+            "ru": "数学 = математика (shùxué)",
+            "tj": "数学 = математика (shùxué)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "数学",
+              {
+                "uz": "matematika",
+                "ru": "математика",
+                "tj": "математика"
+              }
+            ],
+            [
+              "认真",
+              {
+                "uz": "jiddiy; diqqat bilan",
+                "ru": "серьёзный; внимательно",
+                "tj": "ҷиддӣ; бодиққат"
+              }
+            ],
+            [
+              "笔记",
+              {
+                "uz": "konspekt; qayd",
+                "ru": "конспект; заметки",
+                "tj": "қайд; конспект"
+              }
+            ],
+            [
+              "清楚",
+              {
+                "uz": "aniq; tushunarli",
+                "ru": "ясный; ясно",
+                "tj": "равшан; аниқ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "“在……上 / 中 / 下” — soha, jarayon va sharoitni ko‘rsatish",
+              "ru": "“在……上 / 中 / 下” — сфера, процесс и условие",
+              "tj": "“在……上 / 中 / 下” — соҳа, раванд ва шароит"
+            },
+            "title_zh": "固定格式“在……上/中/下”",
+            "rule": {
+              "uz": "“在……上” ma’lum soha yoki jihatni, “在……中” jarayon/holat ichini, “在……下” esa ta’sir yoki sharoit ostida sodir bo‘lgan vaziyatni bildiradi.",
+              "ru": "“在……上” указывает сферу или аспект, “在……中” — процесс/ситуацию, “在……下” — действие под влиянием или при определённых условиях.",
+              "tj": "“在……上” соҳа ё ҷиҳатро, “在……中” раванд ё ҳолатро ва “在……下” амалро зери таъсир ё шароити муайян нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "在学习上，遇到什么问题都可以问我。",
+                "pinyin": "Zài xuéxí shàng, yùdào shénme wèntí dōu kěyǐ wèn wǒ.",
+                "translation": {
+                  "uz": "O‘qishda qanday muammoga duch kelsang ham mendan so‘rashing mumkin.",
+                  "ru": "По учёбе можешь спрашивать меня о любых проблемах.",
+                  "tj": "Дар таҳсил ҳар мушкиле пеш ояд, аз ман пурсидан мумкин."
+                }
+              },
+              {
+                "zh": "在工作上，他总是能给我很多帮助。",
+                "pinyin": "Zài gōngzuò shàng, tā zǒngshì néng gěi wǒ hěn duō bāngzhù.",
+                "translation": {
+                  "uz": "Ish masalasida u menga doim ko‘p yordam beradi.",
+                  "ru": "В работе он всегда оказывает мне большую помощь.",
+                  "tj": "Дар кор ӯ ҳамеша ба ман кӯмаки зиёд мерасонад."
+                }
+              },
+              {
+                "zh": "在比赛中，他得分最高。",
+                "pinyin": "Zài bǐsài zhōng, tā défēn zuì gāo.",
+                "translation": {
+                  "uz": "Musobaqada u eng ko‘p ochko oldi.",
+                  "ru": "В соревновании он набрал больше всех очков.",
+                  "tj": "Дар мусобиқа ӯ аз ҳама бештар хол гирифт."
+                }
+              },
+              {
+                "zh": "在假期中，我认识了几个新朋友。",
+                "pinyin": "Zài jiàqī zhōng, wǒ rènshi le jǐ ge xīn péngyou.",
+                "translation": {
+                  "uz": "Ta’til davomida bir nechta yangi do‘st bilan tanishdim.",
+                  "ru": "Во время каникул я познакомился с несколькими новыми друзьями.",
+                  "tj": "Дар таътил бо чанд дӯсти нав шинос шудам."
+                }
+              },
+              {
+                "zh": "在她的影响下，我开始喜欢拍照。",
+                "pinyin": "Zài tā de yǐngxiǎng xià, wǒ kāishǐ xǐhuan pāizhào.",
+                "translation": {
+                  "uz": "Uning ta’siri ostida suratga olishni yoqtira boshladim.",
+                  "ru": "Под её влиянием я начал любить фотографировать.",
+                  "tj": "Зери таъсири ӯ аксбардориро дӯст дошта сар кардам."
+                }
+              },
+              {
+                "zh": "在老师的帮助下，我的成绩提高很快。",
+                "pinyin": "Zài lǎoshī de bāngzhù xià, wǒ de chéngjì tígāo hěn kuài.",
+                "translation": {
+                  "uz": "O‘qituvchining yordami bilan natijalarim tez yaxshilandi.",
+                  "ru": "С помощью учителя мои результаты быстро улучшились.",
+                  "tj": "Бо кӯмаки омӯзгор натиҷаҳои ман зуд беҳтар шуданд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«O‘qituvchining yordami bilan natijalarim tez yaxshilandi.» — xitoychada qaysi biri?",
+            "ru": "«С помощью учителя мои результаты быстро улучшились.» — какое предложение по-китайски?",
+            "tj": "«Бо кӯмаки омӯзгор натиҷаҳои ман зуд беҳтар шуданд.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "在工作上，他总是能给我很多帮助。",
+            "在老师的帮助下，我的成绩提高很快。",
+            "在她的影响下，我开始喜欢拍照。",
+            "在学习上，遇到什么问题都可以问我。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "在老师的帮助下，我的成绩提高很快。 — Zài lǎoshī de bāngzhù xià, wǒ de chéngjì tígāo hěn kuài.",
+            "ru": "在老师的帮助下，我的成绩提高很快。 — Zài lǎoshī de bāngzhù xià, wǒ de chéngjì tígāo hěn kuài.",
+            "tj": "在老师的帮助下，我的成绩提高很快。 — Zài lǎoshī de bāngzhù xià, wǒ de chéngjì tígāo hěn kuài."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "我看过你的笔记，记得非常清楚。",
+          "pinyin": "Wǒ kàn guo nǐ de bǐjì, jì de fēicháng qīngchu.",
+          "translation": {
+            "uz": "Konspektingni ko‘rganman, juda aniq yozilgan.",
+            "ru": "Я видел твои записи — всё записано очень ясно.",
+            "tj": "Қайдҳоятро дидаам, хеле равшан навишта шудаанд."
+          },
+          "tokens": {
+            "uz": [
+              "Konspektingni",
+              "juda",
+              "borgan",
+              "ko‘rganman",
+              "aniq",
+              "yozilgan",
+              "Matematikang"
+            ],
+            "ru": [
+              "У",
+              "записано",
+              "тебя",
+              "Я",
+              "ясно",
+              "видел",
+              "всё",
+              "твои",
+              "записи",
+              "очень"
+            ],
+            "tj": [
+              "дидаам",
+              "шудаанд",
+              "равшан",
+              "торафт",
+              "Қайдҳоятро",
+              "хеле",
+              "навишта",
+              "Математикаат"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Konspektingni",
+              "ko‘rganman",
+              "juda",
+              "aniq",
+              "yozilgan"
+            ],
+            "ru": [
+              "Я",
+              "видел",
+              "твои",
+              "записи",
+              "всё",
+              "записано",
+              "очень",
+              "ясно"
+            ],
+            "tj": [
+              "Қайдҳоятро",
+              "дидаам",
+              "хеле",
+              "равшан",
+              "навишта",
+              "шудаанд"
+            ]
+          },
+          "explanation": {
+            "uz": "我看过你的笔记，记得非常清楚。 — Konspektingni ko‘rganman, juda aniq yozilgan.",
+            "ru": "我看过你的笔记，记得非常清楚。 — Я видел твои записи — всё записано очень ясно.",
+            "tj": "我看过你的笔记，记得非常清楚。 — Қайдҳоятро дидаам, хеле равшан навишта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "没有什么特别的方法，认真听课，认真记笔记。",
+          "pinyin": "Méiyǒu shénme tèbié de fāngfǎ, rènzhēn tīngkè, rènzhēn jì bǐjì.",
+          "options": [
+            "你的数学越来越好，能不能介绍一下学习方法？",
+            "我看过你的笔记，记得非常清楚。",
+            "没有什么特别的方法，认真听课，认真记笔记。",
+            "你说得对。我没有记笔记的习惯。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "没有什么特别的方法，认真听课，认真记笔记。 — Maxsus usul yo‘q: darsni diqqat bilan tinglayman va konspektni puxta yozaman.",
+            "ru": "没有什么特别的方法，认真听课，认真记笔记。 — Ничего особенного: внимательно слушаю урок и тщательно веду конспект.",
+            "tj": "没有什么特别的方法，认真听课，认真记笔记。 — Усули махсус нест: дарсро бодиққат мешунавам ва қайдҳоро ҷиддӣ менависам."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "数学",
+          "pinyin": "shùxué",
+          "translation": {
+            "uz": "matematika",
+            "ru": "математика",
+            "tj": "математика"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "校园 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 校园:",
+            "tj": "Маънои калимаи 校园-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "jiddiy; diqqat bilan",
+              "ru": "серьёзный; внимательно",
+              "tj": "ҷиддӣ; бодиққат"
+            },
+            {
+              "uz": "kampus; maktab hududi",
+              "ru": "кампус; территория учебного заведения",
+              "tj": "кампус; ҳудуди мактаб"
+            },
+            {
+              "uz": "konspekt; qayd",
+              "ru": "конспект; заметки",
+              "tj": "қайд; конспект"
+            },
+            {
+              "uz": "matematika",
+              "ru": "математика",
+              "tj": "математика"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "校园 = kampus; maktab hududi (xiàoyuán)",
+            "ru": "校园 = кампус; территория учебного заведения (xiàoyuán)",
+            "tj": "校园 = кампус; ҳудуди мактаб (xiàoyuán)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "校园",
+            "pinyin": "xiàoyuán",
+            "meaning": {
+              "uz": "kampus; maktab hududi",
+              "ru": "кампус; территория учебного заведения",
+              "tj": "кампус; ҳудуди мактаб"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'matematika' xitoycha qaysi?",
+            "ru": "'математика' по-китайски?",
+            "tj": "'математика' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "笔记",
+            "数学",
+            "认真",
+            "清楚"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "matematika = 数学 (shùxué)",
+            "ru": "математика = 数学 (shùxué)",
+            "tj": "математика = 数学 (shùxué)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "数学",
+            "pinyin": "shùxué",
+            "meaning": {
+              "uz": "matematika",
+              "ru": "математика",
+              "tj": "математика"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

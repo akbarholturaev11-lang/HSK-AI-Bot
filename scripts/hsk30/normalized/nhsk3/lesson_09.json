@@ -1,0 +1,376 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 9,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97
+    ]
+  },
+  "title": {
+    "hanzi": "打不好没关系",
+    "pinyin": "Dǎ bù hǎo méi guānxi"
+  },
+  "objectives": [
+    "能听懂并介绍体育比赛的名称、运动员、影响等信息。",
+    "能听懂并使用可能补语说明情况的可能性。",
+    "掌握“越A越B”格式的用法，能说明事物或情况的变化。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "校园",
+      "pinyin": "xiàoyuán",
+      "part_of_speech": "n.",
+      "source_page": 89
+    },
+    {
+      "hanzi": "卡",
+      "pinyin": "kǎ",
+      "part_of_speech": "n.",
+      "source_page": 89
+    },
+    {
+      "hanzi": "球场",
+      "pinyin": "qiúchǎng",
+      "part_of_speech": "n.",
+      "source_page": 89
+    },
+    {
+      "hanzi": "为了",
+      "pinyin": "wèile",
+      "part_of_speech": "prep.",
+      "source_page": 89
+    },
+    {
+      "hanzi": "运动会",
+      "pinyin": "yùndònghuì",
+      "part_of_speech": "n.",
+      "source_page": 89
+    },
+    {
+      "hanzi": "男生",
+      "pinyin": "nánshēng",
+      "part_of_speech": "n.",
+      "source_page": 89
+    },
+    {
+      "hanzi": "练",
+      "pinyin": "liàn",
+      "part_of_speech": "v.",
+      "source_page": 89
+    },
+    {
+      "hanzi": "参加",
+      "pinyin": "cānjiā",
+      "part_of_speech": "v.",
+      "source_page": 89
+    },
+    {
+      "hanzi": "网球",
+      "pinyin": "wǎngqiú",
+      "part_of_speech": "n.",
+      "source_page": 89
+    },
+    {
+      "hanzi": "比赛",
+      "pinyin": "bǐsài",
+      "part_of_speech": "n./v.",
+      "source_page": 89
+    },
+    {
+      "hanzi": "练习",
+      "pinyin": "liànxí",
+      "part_of_speech": "v./n.",
+      "source_page": 89
+    },
+    {
+      "hanzi": "好多",
+      "pinyin": "hǎoduō",
+      "part_of_speech": "num.",
+      "source_page": 91
+    },
+    {
+      "hanzi": "几乎",
+      "pinyin": "jīhū",
+      "part_of_speech": "adv.",
+      "source_page": 91
+    },
+    {
+      "hanzi": "只是",
+      "pinyin": "zhǐshì",
+      "part_of_speech": "adv./conj.",
+      "source_page": 91
+    },
+    {
+      "hanzi": "啤酒",
+      "pinyin": "píjiǔ",
+      "part_of_speech": "n.",
+      "source_page": 93
+    },
+    {
+      "hanzi": "回",
+      "pinyin": "huí",
+      "part_of_speech": "m.",
+      "source_page": 93
+    },
+    {
+      "hanzi": "紧张",
+      "pinyin": "jǐnzhāng",
+      "part_of_speech": "adj.",
+      "source_page": 93
+    },
+    {
+      "hanzi": "主要",
+      "pinyin": "zhǔyào",
+      "part_of_speech": "adj.",
+      "source_page": 93
+    },
+    {
+      "hanzi": "受到",
+      "pinyin": "shòudào",
+      "part_of_speech": "v.",
+      "source_page": 93
+    },
+    {
+      "hanzi": "影响",
+      "pinyin": "yǐngxiǎng",
+      "part_of_speech": "n./v.",
+      "source_page": 93
+    },
+    {
+      "hanzi": "得分",
+      "pinyin": "défēn",
+      "part_of_speech": "v./n.",
+      "source_page": 93
+    },
+    {
+      "hanzi": "体育",
+      "pinyin": "tǐyù",
+      "part_of_speech": "n.",
+      "source_page": 94
+    },
+    {
+      "hanzi": "世界",
+      "pinyin": "shìjiè",
+      "part_of_speech": "n.",
+      "source_page": 94
+    },
+    {
+      "hanzi": "运动员",
+      "pinyin": "yùndòngyuán",
+      "part_of_speech": "n.",
+      "source_page": 94
+    },
+    {
+      "hanzi": "得到",
+      "pinyin": "dédào",
+      "part_of_speech": "v.",
+      "source_page": 94
+    },
+    {
+      "hanzi": "成绩",
+      "pinyin": "chéngjì",
+      "part_of_speech": "n.",
+      "source_page": 94
+    },
+    {
+      "hanzi": "奥运会",
+      "pinyin": "Àoyùnhuì",
+      "part_of_speech": "proper noun",
+      "source_page": 94
+    },
+    {
+      "hanzi": "刘长春",
+      "pinyin": "Liú Chángchūn",
+      "part_of_speech": "proper noun",
+      "source_page": 94
+    }
+  ],
+  "grammar": [
+    {
+      "label": "目的复句“为了……，……”",
+      "source_page": 90,
+      "examples": [
+        {
+          "hanzi": "听说为了准备运动会，你们几个男生每天都练球。",
+          "pinyin": "Tīngshuō wèile zhǔnbèi yùndònghuì, nǐmen jǐ ge nánshēng měitiān dōu liàn qiú."
+        },
+        {
+          "hanzi": "为了考上大学，她每天努力学习。",
+          "pinyin": "Wèile kǎo shàng dàxué, tā měitiān nǔlì xuéxí."
+        },
+        {
+          "hanzi": "为了早点儿到家，我打算坐飞机回去。",
+          "pinyin": "Wèile zǎo diǎnr dào jiā, wǒ dǎsuàn zuò fēijī huíqu."
+        }
+      ]
+    },
+    {
+      "label": "可能补语",
+      "source_page": 91,
+      "examples": [
+        {
+          "hanzi": "打不好没关系。",
+          "pinyin": "Dǎ bù hǎo méi guānxi."
+        },
+        {
+          "hanzi": "这本书你看得懂看不懂？",
+          "pinyin": "Zhè běn shū nǐ kàn de dǒng kàn bu dǒng?"
+        },
+        {
+          "hanzi": "你只有一个星期的时间，学得会游泳吗？",
+          "pinyin": "Nǐ zhǐ yǒu yí ge xīngqī de shíjiān, xué de huì yóuyǒng ma?"
+        }
+      ]
+    },
+    {
+      "label": "固定格式“越A越B”",
+      "source_page": 93,
+      "examples": [
+        {
+          "hanzi": "今天的足球比赛我越看越着急。",
+          "pinyin": "Jīntiān de zúqiú bǐsài wǒ yuè kàn yuè zháojí."
+        },
+        {
+          "hanzi": "妈妈越说，他越不高兴。",
+          "pinyin": "Māma yuè shuō, tā yuè bù gāoxìng."
+        },
+        {
+          "hanzi": "我想认识中国朋友，越多越好。",
+          "pinyin": "Wǒ xiǎng rènshi Zhōngguó péngyou, yuè duō yuè hǎo."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在图书馆门口，李文向白家月跑过去。",
+      "source_page": 89,
+      "turns": [
+        {
+          "speaker": "李文",
+          "hanzi": "家月，对不起，我昨天忘了还你校园卡了。",
+          "pinyin": "Jiāyuè, duìbuqǐ, wǒ zuótiān wàng le huán nǐ xiàoyuánkǎ le."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "没关系。你怎么这么快就过来了？",
+          "pinyin": "Méi guānxi. Nǐ zěnme zhème kuài jiù guòlái le?"
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "我正在球场打球呢，接了你的电话就跑过来了。",
+          "pinyin": "Wǒ zhèngzài qiúchǎng dǎqiú ne, jiē le nǐ de diànhuà jiù pǎo guòlái le."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "听说为了准备运动会，你们几个男生每天都练球。",
+          "pinyin": "Tīngshuō wèile zhǔnbèi yùndònghuì, nǐmen jǐ ge nánshēng měitiān dōu liàn qiú."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "是啊！你打算参加运动会吗？",
+          "pinyin": "Shì a! Nǐ dǎsuàn cānjiā yùndònghuì ma?"
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "我想参加网球比赛，最近一直在练习。",
+          "pinyin": "Wǒ xiǎng cānjiā wǎngqiú bǐsài, zuìjìn yìzhí zài liànxí."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "好，到时候我去看你的比赛。",
+          "pinyin": "Hǎo, dào shíhou wǒ qù kàn nǐ de bǐsài."
+        }
+      ]
+    },
+    {
+      "scene": "在校园里，李文和白家月在聊天儿。",
+      "source_page": 91,
+      "turns": [
+        {
+          "speaker": "李文",
+          "hanzi": "家月，你跟我们一起打羽毛球吧？",
+          "pinyin": "Jiāyuè, nǐ gēn wǒmen yìqǐ dǎ yǔmáoqiú ba?"
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "我好多年没打羽毛球了，几乎忘了怎么打了。",
+          "pinyin": "Wǒ hǎoduō nián méi dǎ yǔmáoqiú le, jīhū wàng le zěnme dǎ le."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "不是比赛，打不好没关系。",
+          "pinyin": "Bú shì bǐsài, dǎ bù hǎo méi guānxi."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "这么多同学一起打，如果总是接不住球，就太不好意思了。",
+          "pinyin": "Zhème duō tóngxué yìqǐ dǎ, rúguǒ zǒngshì jiē bú zhù qiú, jiù tài bù hǎoyìsi le."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "你想得太多了！大家打球只是为了锻炼身体。",
+          "pinyin": "Nǐ xiǎng de tài duō le! Dàjiā dǎqiú zhǐshì wèile duànliàn shēntǐ."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "我先自己练练吧，下周再跟你们一起打。",
+          "pinyin": "Wǒ xiān zìjǐ liànlian ba, xià zhōu zài gēn nǐmen yìqǐ dǎ."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "我在教天中打羽毛球，你可以过来跟我们一起练。",
+          "pinyin": "Wǒ zài jiāo Tiānzhōng dǎ yǔmáoqiú, nǐ kěyǐ guòlái gēn wǒmen yìqǐ liàn."
+        }
+      ]
+    },
+    {
+      "scene": "在李文家，李文、白家月和陈天中一起看电视。",
+      "source_page": 92,
+      "turns": [
+        {
+          "speaker": "陈天中",
+          "hanzi": "足球比赛已经开始了，快过来看吧！",
+          "pinyin": "Zúqiú bǐsài yǐjīng kāishǐ le, kuài guòlái kàn ba!"
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "你们先看，冰箱里有啤酒和饮料，我去拿一下。",
+          "pinyin": "Nǐmen xiān kàn, bīngxiāng lǐ yǒu píjiǔ hé yǐnliào, wǒ qù ná yíxià."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "今天怎么回事？总是踢不进去！",
+          "pinyin": "Jīntiān zěnme huí shì? Zǒngshì tī bu jìnqu!"
+        },
+        {
+          "speaker": "陈天中",
+          "hanzi": "几个老球员生病了，新球员第一次参加这么重要的比赛，太紧张了。",
+          "pinyin": "Jǐ ge lǎo qiúyuán shēngbìng le, xīn qiúyuán dì yí cì cānjiā zhème zhòngyào de bǐsài, tài jǐnzhāng le."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "是啊，主要的球员没参加比赛，所以大家也都受到影响了。",
+          "pinyin": "Shì a, zhǔyào de qiúyuán méi cānjiā bǐsài, suǒyǐ dàjiā yě dōu shòudào yǐngxiǎng le."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "越看越着急，我不看了，你们告诉我得分吧。",
+          "pinyin": "Yuè kàn yuè zháojí, wǒ bù kàn le, nǐmen gàosu wǒ défēn ba."
+        }
+      ]
+    }
+  ]
+}

@@ -22,6 +22,8 @@ from app.db.models.subscription_entry_event import SubscriptionEntryEvent
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.desktop_auth_service import DesktopAuthService
+from app.services.hsk30_feature_service import Hsk30FeatureService
+from app.services.hsk30_unlock_service import HSK30_UNLOCK_PLAN_TYPE
 from app.services.admin_notify_service import AdminNotifyService
 from app.services.subscription_miniapp_service import (
     PAYMENT_DETAILS_ALIF_KEY,
@@ -459,6 +461,55 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(wrong_content_type.status_code, 415)
 
+    async def test_desktop_hsk30_unlock_mode_uses_special_product(self):
+        async with self.sessions() as session:
+            await Hsk30FeatureService(session).set_enabled(True)
+            await BotSettingRepository(session).set(
+                PAYMENT_DETAILS_KEY,
+                "DC 4713380023849546",
+            )
+            await session.commit()
+
+        overview = await self.client.get(
+            "/api/v3/desktop/subscription/overview?mode=hsk30_unlock",
+            headers=self._headers(self.token_a),
+        )
+        self.assertEqual(overview.status_code, 200, overview.text)
+        payload = overview.json()
+        self.assertEqual(payload["mode"], "hsk30_unlock")
+        self.assertTrue(payload["checkout_allowed"])
+        self.assertEqual(
+            set(payload["prices"]["visa"]),
+            {HSK30_UNLOCK_PLAN_TYPE},
+        )
+
+        quote = await self.client.post(
+            "/api/v3/desktop/subscription/quote",
+            headers=self._headers(self.token_a),
+            json={
+                "plan_type": HSK30_UNLOCK_PLAN_TYPE,
+                "payment_method": "visa",
+                "card_country": "tj",
+                "card_bank": "dc_city",
+            },
+        )
+        self.assertEqual(quote.status_code, 200, quote.text)
+        self.assertEqual(quote.json()["mode"], "hsk30_unlock")
+        self.assertEqual(quote.json()["quote"]["final_amount"], 10)
+        self.assertEqual(quote.json()["quote"]["final_currency"], "TJS")
+
+        async with self.sessions() as session:
+            entry = (
+                await session.execute(
+                    select(SubscriptionEntryEvent)
+                    .where(SubscriptionEntryEvent.telegram_id == 1001)
+                    .order_by(SubscriptionEntryEvent.created_at.desc())
+                    .limit(1)
+                )
+            ).scalar_one()
+        self.assertEqual(entry.source, "desktop_hsk30_onboarding")
+        self.assertEqual(entry.mode, "hsk30_unlock")
+
     async def test_android_receipt_uses_canonical_checkout_and_marks_admin_origin(self):
         base = "/api/v3/android/subscription/checkout"
         missing = await self.client.get(base + "/overview")
@@ -546,6 +597,63 @@ class DesktopSubscriptionApiTests(unittest.IsolatedAsyncioTestCase):
             source=payment.source,
         ))
 
+    async def test_android_hsk30_entry_points_use_permanent_unlock_product(self):
+        async with self.sessions() as session:
+            await Hsk30FeatureService(session).set_enabled(True)
+            await BotSettingRepository(session).set(
+                PAYMENT_DETAILS_KEY,
+                "DC 4713380023849546",
+            )
+            await session.commit()
+
+        base = "/api/v3/android/subscription/checkout"
+        for origin in ("hsk30_onboarding", "hsk30_settings"):
+            with self.subTest(origin=origin):
+                overview = await self.client.get(
+                    base + f"/overview?origin={origin}",
+                    headers=self._headers(self.token_a),
+                )
+
+                self.assertEqual(overview.status_code, 200, overview.text)
+                payload = overview.json()
+                self.assertEqual(payload["mode"], "hsk30_unlock")
+                self.assertEqual(payload["source"], "android_subscription")
+                self.assertTrue(payload["checkout_allowed"])
+                self.assertIn(HSK30_UNLOCK_PLAN_TYPE, payload["prices"]["visa"])
+                self.assertEqual(
+                    set(payload["prices"]["visa"]),
+                    {HSK30_UNLOCK_PLAN_TYPE},
+                )
+
+        quote = await self.client.post(
+            base + "/quote",
+            headers=self._headers(self.token_a),
+            json={
+                "plan_type": HSK30_UNLOCK_PLAN_TYPE,
+                "payment_method": "visa",
+                "card_country": "tj",
+                "card_bank": "dc_city",
+            },
+        )
+        self.assertEqual(quote.status_code, 200, quote.text)
+        quote_payload = quote.json()
+        self.assertEqual(quote_payload["mode"], "hsk30_unlock")
+        self.assertEqual(quote_payload["quote"]["final_amount"], 10)
+        self.assertEqual(quote_payload["quote"]["final_currency"], "TJS")
+
+        async with self.sessions() as session:
+            entries = (
+                await session.execute(
+                    select(SubscriptionEntryEvent)
+                    .where(SubscriptionEntryEvent.telegram_id == 1001)
+                    .order_by(SubscriptionEntryEvent.created_at.asc())
+                )
+            ).scalars().all()
+        hsk30_entries = [entry for entry in entries if entry.mode == "hsk30_unlock"]
+        self.assertEqual(
+            [entry.source for entry in hsk30_entries[-2:]],
+            ["android_hsk30_onboarding", "android_hsk30_settings"],
+        )
     async def test_android_profile_renewal_allows_active_paid_checkout(self):
         expires_at = datetime.now(timezone.utc) + timedelta(days=12)
         async with self.sessions() as session:

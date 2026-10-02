@@ -1,0 +1,791 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 61,
+  "source_lesson": 13,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我们爱上中文课",
+  "subtitle": {
+    "uz": "“拿/送/卖 + 给” bilan ikki obyektli gap tuzish; “比”dan keyin miqdor birikmasi bilan aniq farqni aytish; “一点儿/一些” bilan kichik farqni ifodalash; yangi yil sovg‘alari va dars haqida gaplashish.",
+    "ru": "Строить двуобъектные предложения с “拿/送/卖 + 给”; выражать конкретную разницу количественной группой после 比; показывать небольшую разницу с “一点儿/一些”; говорить о новогодних подарках и занятиях.",
+    "tj": "Бо “拿/送/卖 + 给” ҷумлаи дуобъектӣ сохтан; баъди 比 бо таркиби миқдорӣ фарқи дақиқро гуфтан; бо “一点儿/一些” фарқи хурдро ифода кардан; дар бораи тӯҳфаҳои Соли нав ва дарс суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "新年",
+      "pinyin": "xīnnián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "Yangi yil",
+        "ru": "Новый год",
+        "tj": "Соли нав"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "教",
+      "pinyin": "jiāo",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘qitmoq",
+        "ru": "учить; преподавать",
+        "tj": "дарс додан; омӯзондан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "花",
+      "pinyin": "huā",
+      "pos": "n.",
+      "meaning": {
+        "uz": "gul",
+        "ru": "цветок",
+        "tj": "гул"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "希望",
+      "pinyin": "xīwàng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "umid qilmoq; tilamoq",
+        "ru": "надеяться; желать",
+        "tj": "умед кардан; орзу кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Ikki obyektli gap (2)",
+        "ru": "Предложение с двумя объектами (2)",
+        "tj": "Ҷумлаи дуобъектӣ (2)"
+      },
+      "title_zh": "双宾语句（2）",
+      "rule": {
+        "uz": "Ikki obyektli gapda bir fe’l ikki obyekt oladi: odatda birinchisi odamni, ikkinchisi narsani bildiradi. Bu darsda 拿、送、卖 fe’llarining 给 bilan ikki obyektli qo‘llanilishi o‘rganiladi.",
+        "ru": "В двуобъектном предложении глагол имеет два объекта: первый обычно обозначает человека, второй — предмет. Здесь изучаются конструкции с 拿、送、卖 + 给.",
+        "tj": "Дар ҷумлаи дуобъектӣ як феъл ду объект мегирад: одатан якум шахс, дуюм ашё аст. Дар ин дарс сохторҳои 拿、送、卖 + 给 омӯхта мешаванд."
+      },
+      "examples": [
+        {
+          "zh": "王老师喜欢花，就送给她花吧。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "她拿给我一杯水。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "他卖给我一本中文书。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda Bai Jiayue va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "В классе Бай Цзяюэ и Чэнь Тяньчжун разговаривают.",
+        "tj": "Дар синф Бай Ҷяюэ ва Чэн Тянҷун суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "时间过得真快啊！新年就要到了。",
+          "pinyin": "Shíjiān guò de zhēn kuài a! Xīnnián jiù yào dào le.",
+          "text": {
+            "uz": "Vaqt juda tez o‘tyapti! Yangi yilga ham oz qoldi.",
+            "ru": "Как быстро летит время! Новый год уже скоро.",
+            "tj": "Вақт чӣ қадар тез мегузарад! Соли нав ҳам наздик аст."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我们给她准备个新年礼物吧。你觉得送给她什么好呢？",
+          "pinyin": "Wǒmen gěi tā zhǔnbèi ge xīnnián lǐwù ba. Nǐ juéde sòng gěi tā shénme hǎo ne?",
+          "text": {
+            "uz": "Unga Yangi yil sovg‘asi tayyorlaylik. Nima sovg‘a qilsak yaxshi?",
+            "ru": "Давай приготовим ей новогодний подарок. Что лучше подарить?",
+            "tj": "Биё барояш тӯҳфаи Соли нав тайёр кунем. Чӣ тӯҳфа диҳем беҳтар?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "那我们去花店看看，现在买花的人多，希望花店还有漂亮的花。",
+          "pinyin": "Nà wǒmen qù huādiàn kànkan, xiànzài mǎi huā de rén duō, xīwàng huādiàn hái yǒu piàoliang de huā.",
+          "text": {
+            "uz": "Unda gul do‘koniga borib ko‘raylik. Hozir gul oladiganlar ko‘p, umid qilamanki, chiroyli gullar qolgan.",
+            "ru": "Тогда пойдём в цветочный магазин. Сейчас много покупателей; надеюсь, красивые цветы ещё остались.",
+            "tj": "Пас ба мағозаи гул рафта бинем. Ҳоло харидори гул зиёд аст, умедворам гулҳои зебо ҳанӯз ҳастанд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda Wang Yifei dars bermoqda.",
+        "ru": "В классе Ван Ифэй ведёт урок.",
+        "tj": "Дар синф Ван Ифэй дарс медиҳад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "是啊！你们都学会了吗？",
+          "pinyin": "Shì a! Nǐmen dōu xuéhuì le ma?",
+          "text": {
+            "uz": "Ha! Hammasini o‘rgandingizmi?",
+            "ru": "Да! Вы всё выучили?",
+            "tj": "Ҳа! Ҳамаашро омӯхтед?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "学会了，没有问题。",
+          "pinyin": "Xuéhuì le, méiyǒu wèntí.",
+          "text": {
+            "uz": "O‘rgandik, muammo yo‘q.",
+            "ru": "Выучили, без проблем.",
+            "tj": "Омӯхтем, мушкил нест."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "好。现在我来说，你们在本子上面写。",
+          "pinyin": "Hǎo. Xiànzài wǒ lái shuō, nǐmen zài běnzi shàngmian xiě.",
+          "text": {
+            "uz": "Yaxshi. Endi men aytaman, sizlar daftarga yozinglar.",
+            "ru": "Хорошо. Теперь я буду говорить, а вы записывайте в тетради.",
+            "tj": "Хуб. Ҳоло ман мегӯям, шумо дар дафтар нависед."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "同学们，“洗手间”的“间”字写错了，它的里面是“日”，不是“口”。",
+          "pinyin": "Tóngxuémen, “xǐshǒujiān” de “jiān” zì xiěcuò le, tā de lǐmian shì “rì”, bú shì “kǒu”.",
+          "text": {
+            "uz": "O‘quvchilar, “洗手间”dagi “间” xato yozilgan: ichida “日”, “口” emas.",
+            "ru": "Ребята, иероглиф “间” в “洗手间” написан неправильно: внутри “日”, а не “口”.",
+            "tj": "Донишҷӯён, “间” дар “洗手间” хато навишта шудааст: дарунаш “日” аст, на “口”."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "“日”比“口”多一笔，写“口”就是“问题”的“问”了。",
+          "pinyin": "“Rì” bǐ “kǒu” duō yì bǐ, xiě “kǒu” jiù shì “wèntí” de “wèn” le.",
+          "text": {
+            "uz": "“日” “口”dan bir chiziq ko‘p; “口” yozilsa, “问题”dagi “问” bo‘lib qoladi.",
+            "ru": "В “日” на одну черту больше, чем в “口”; если написать “口”, получится “问” из “问题”.",
+            "tj": "“日” аз “口” як хат бештар дорад; агар “口” нависем, “问”-и “问题” мешавад."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "没错，你说得很对。",
+          "pinyin": "Méi cuò, nǐ shuō de hěn duì.",
+          "text": {
+            "uz": "To‘g‘ri, juda to‘g‘ri aytding.",
+            "ru": "Верно, ты совершенно права.",
+            "tj": "Дуруст, хеле дуруст гуфтӣ."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda Annie va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В классе Энни и Бай Цзяюэ разговаривают.",
+        "tj": "Дар синф Энни ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "家月，你觉得这个本子怎么样？",
+          "pinyin": "Jiāyuè, nǐ juéde zhège běnzi zěnmeyàng?",
+          "text": {
+            "uz": "Jiayue, bu daftar senga qanday?",
+            "ru": "Цзяюэ, как тебе этот блокнот?",
+            "tj": "Ҷяюэ, ин дафтар чӣ хел аст?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "很漂亮，多少钱一个？",
+          "pinyin": "Hěn piàoliang, duōshao qián yí ge?",
+          "text": {
+            "uz": "Juda chiroyli, bittasi qancha?",
+            "ru": "Очень красивый. Сколько стоит один?",
+            "tj": "Хеле зебо, яктояш чанд пул?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "比我们一起买的那个本子贵一点儿。",
+          "pinyin": "Bǐ wǒmen yìqǐ mǎi de nàge běnzi guì yìdiǎnr.",
+          "text": {
+            "uz": "Birga olgan daftarimizdan biroz qimmatroq.",
+            "ru": "Немного дороже того блокнота, который мы покупали вместе.",
+            "tj": "Аз дафтаре, ки якҷо харида будем, каме гаронтар."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "谢谢！那我送给你什么呢？",
+          "pinyin": "Xièxie! Nà wǒ sòng gěi nǐ shénme ne?",
+          "text": {
+            "uz": "Rahmat! Unda men senga nima sovg‘a qilay?",
+            "ru": "Спасибо! А что мне подарить тебе?",
+            "tj": "Раҳмат! Пас ман ба ту чӣ тӯҳфа кунам?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "咖啡杯吧，我最喜欢喝咖啡了。",
+          "pinyin": "Kāfēibēi ba, wǒ zuì xǐhuan hē kāfēi le.",
+          "text": {
+            "uz": "Qahva piyolasi bo‘lsin, men qahvani eng ko‘p yoqtiraman.",
+            "ru": "Чашку для кофе — я больше всего люблю кофе.",
+            "tj": "Пиёлаи қаҳва бошад, ман қаҳваро аз ҳама бештар дӯст медорам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "新年",
+            "pinyin": "xīnnián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "Yangi yil",
+              "ru": "Новый год",
+              "tj": "Соли нав"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "新年",
+          "pinyin": "xīnnián",
+          "translation": {
+            "uz": "Yangi yil",
+            "ru": "Новый год",
+            "tj": "Соли нав"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "新年 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 新年:",
+            "tj": "Маънои калимаи 新年-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘qitmoq",
+              "ru": "учить; преподавать",
+              "tj": "дарс додан; омӯзондан"
+            },
+            {
+              "uz": "Yangi yil",
+              "ru": "Новый год",
+              "tj": "Соли нав"
+            },
+            {
+              "uz": "umid qilmoq; tilamoq",
+              "ru": "надеяться; желать",
+              "tj": "умед кардан; орзу кардан"
+            },
+            {
+              "uz": "gul",
+              "ru": "цветок",
+              "tj": "гул"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "新年 = Yangi yil (xīnnián)",
+            "ru": "新年 = Новый год (xīnnián)",
+            "tj": "新年 = Соли нав (xīnnián)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "教",
+            "pinyin": "jiāo",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o‘qitmoq",
+              "ru": "учить; преподавать",
+              "tj": "дарс додан; омӯзондан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jiāo qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jiāo?",
+            "tj": "jiāo кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "新年",
+            "花",
+            "希望",
+            "教"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "教 = o‘qitmoq (jiāo)",
+            "ru": "教 = учить; преподавать (jiāo)",
+            "tj": "教 = дарс додан; омӯзондан (jiāo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "花",
+            "pinyin": "huā",
+            "pos": "n.",
+            "meaning": {
+              "uz": "gul",
+              "ru": "цветок",
+              "tj": "гул"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "花 talaffuzini tanlang:",
+            "ru": "Выберите произношение 花:",
+            "tj": "Талаффузи 花-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "huā",
+            "xīnnián",
+            "jiāo",
+            "xīwàng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "花 — huā",
+            "ru": "花 — huā",
+            "tj": "花 — huā"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "希望",
+            "pinyin": "xīwàng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "umid qilmoq; tilamoq",
+              "ru": "надеяться; желать",
+              "tj": "умед кардан; орзу кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'umid qilmoq; tilamoq' xitoycha qaysi?",
+            "ru": "'надеяться; желать' по-китайски?",
+            "tj": "'умед кардан; орзу кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "新年",
+            "教",
+            "希望",
+            "花"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "umid qilmoq; tilamoq = 希望 (xīwàng)",
+            "ru": "надеяться; желать = 希望 (xīwàng)",
+            "tj": "умед кардан; орзу кардан = 希望 (xīwàng)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "新年",
+          "pinyin": "xīnnián",
+          "options": [
+            "新年",
+            "教",
+            "希望",
+            "花"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "新年 — Yangi yil (xīnnián)",
+            "ru": "新年 — Новый год (xīnnián)",
+            "tj": "新年 — Соли нав (xīnnián)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "新年",
+              {
+                "uz": "Yangi yil",
+                "ru": "Новый год",
+                "tj": "Соли нав"
+              }
+            ],
+            [
+              "教",
+              {
+                "uz": "o‘qitmoq",
+                "ru": "учить; преподавать",
+                "tj": "дарс додан; омӯзондан"
+              }
+            ],
+            [
+              "花",
+              {
+                "uz": "gul",
+                "ru": "цветок",
+                "tj": "гул"
+              }
+            ],
+            [
+              "希望",
+              {
+                "uz": "umid qilmoq; tilamoq",
+                "ru": "надеяться; желать",
+                "tj": "умед кардан; орзу кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Ikki obyektli gap (2)",
+              "ru": "Предложение с двумя объектами (2)",
+              "tj": "Ҷумлаи дуобъектӣ (2)"
+            },
+            "title_zh": "双宾语句（2）",
+            "rule": {
+              "uz": "Ikki obyektli gapda bir fe’l ikki obyekt oladi: odatda birinchisi odamni, ikkinchisi narsani bildiradi. Bu darsda 拿、送、卖 fe’llarining 给 bilan ikki obyektli qo‘llanilishi o‘rganiladi.",
+              "ru": "В двуобъектном предложении глагол имеет два объекта: первый обычно обозначает человека, второй — предмет. Здесь изучаются конструкции с 拿、送、卖 + 给.",
+              "tj": "Дар ҷумлаи дуобъектӣ як феъл ду объект мегирад: одатан якум шахс, дуюм ашё аст. Дар ин дарс сохторҳои 拿、送、卖 + 给 омӯхта мешаванд."
+            },
+            "examples": [
+              {
+                "zh": "王老师喜欢花，就送给她花吧。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "她拿给我一杯水。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "他卖给我一本中文书。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "一",
+            "教",
+            "新年",
+            "她",
+            "水",
+            "我",
+            "给",
+            "杯",
+            "拿"
+          ],
+          "answer_tokens": [
+            "她",
+            "拿",
+            "给",
+            "我",
+            "一",
+            "杯",
+            "水"
+          ],
+          "explanation": {
+            "uz": "她拿给我一杯水。",
+            "ru": "她拿给我一杯水。",
+            "tj": "她拿给我一杯水。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "她拿给我一杯水。",
+            "他卖给我一本中文书。",
+            "王老师喜欢花，就送给她花吧。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "王老师喜欢花，就送给她花吧。 — ",
+            "ru": "王老师喜欢花，就送给她花吧。 — ",
+            "tj": "王老师喜欢花，就送给她花吧。 — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我们给她准备个新年礼物吧。你觉得送给她什么好呢？",
+          "pinyin": "Wǒmen gěi tā zhǔnbèi ge xīnnián lǐwù ba. Nǐ juéde sòng gěi tā shénme hǎo ne?",
+          "options": [
+            "那我们去花店看看，现在买花的人多，希望花店还有漂亮的花。",
+            "我们给她准备个新年礼物吧。你觉得送给她什么好呢？",
+            "时间过得真快啊！新年就要到了。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我们给她准备个新年礼物吧。你觉得送给她什么好呢？ — Unga Yangi yil sovg‘asi tayyorlaylik. Nima sovg‘a qilsak yaxshi?",
+            "ru": "我们给她准备个新年礼物吧。你觉得送给她什么好呢？ — Давай приготовим ей новогодний подарок. Что лучше подарить?",
+            "tj": "我们给她准备个新年礼物吧。你觉得送给她什么好呢？ — Биё барояш тӯҳфаи Соли нав тайёр кунем. Чӣ тӯҳфа диҳем беҳтар?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "新年",
+          "pinyin": "xīnnián",
+          "translation": {
+            "uz": "Yangi yil",
+            "ru": "Новый год",
+            "tj": "Соли нав"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "事情 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 事情:",
+            "tj": "Маънои калимаи 事情-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ish; voqea; masala",
+              "ru": "дело; событие",
+              "tj": "кор; ҳодиса; масъала"
+            },
+            {
+              "uz": "gul",
+              "ru": "цветок",
+              "tj": "гул"
+            },
+            {
+              "uz": "o‘qitmoq",
+              "ru": "учить; преподавать",
+              "tj": "дарс додан; омӯзондан"
+            },
+            {
+              "uz": "Yangi yil",
+              "ru": "Новый год",
+              "tj": "Соли нав"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "事情 = ish; voqea; masala (shìqing)",
+            "ru": "事情 = дело; событие (shìqing)",
+            "tj": "事情 = кор; ҳодиса; масъала (shìqing)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "事情",
+            "pinyin": "shìqing",
+            "meaning": {
+              "uz": "ish; voqea; masala",
+              "ru": "дело; событие",
+              "tj": "кор; ҳодиса; масъала"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'Yangi yil' xitoycha qaysi?",
+            "ru": "'Новый год' по-китайски?",
+            "tj": "'Соли нав' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "希望",
+            "新年",
+            "教",
+            "花"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "Yangi yil = 新年 (xīnnián)",
+            "ru": "Новый год = 新年 (xīnnián)",
+            "tj": "Соли нав = 新年 (xīnnián)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "新年",
+            "pinyin": "xīnnián",
+            "meaning": {
+              "uz": "Yangi yil",
+              "ru": "Новый год",
+              "tj": "Соли нав"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

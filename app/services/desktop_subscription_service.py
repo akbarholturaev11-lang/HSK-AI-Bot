@@ -10,6 +10,7 @@ from sqlalchemy import select
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.desktop_auth_service import DesktopAuthService
+from app.services.hsk30_unlock_service import HSK30_UNLOCK_PLAN_TYPE
 from app.services.subscription_entry_analytics_service import (
     SubscriptionEntryAnalyticsService,
 )
@@ -23,6 +24,7 @@ from app.services.user_access_state_service import (
 
 DESKTOP_SUBSCRIPTION_SOURCE = "desktop_subscription"
 DESKTOP_SUBSCRIPTION_MODE = "subscription"
+HSK30_UNLOCK_MODE = "hsk30_unlock"
 DESKTOP_SUBSCRIPTION_STAGES = {
     "payment_instructions_viewed",
     "payment_receipt_selected",
@@ -66,6 +68,14 @@ class DesktopSubscriptionService:
             self.session,
             self.settings,
         ).authenticate(access_token)
+
+    @staticmethod
+    def _checkout_mode(*, entry_source: str | None = None, plan_type: str | None = None) -> str:
+        if plan_type == HSK30_UNLOCK_PLAN_TYPE:
+            return HSK30_UNLOCK_MODE
+        if str(entry_source or "").endswith(("hsk30_onboarding", "hsk30_settings")):
+            return HSK30_UNLOCK_MODE
+        return DESKTOP_SUBSCRIPTION_MODE
 
     @staticmethod
     def _expires_at(user) -> str | None:
@@ -116,6 +126,11 @@ class DesktopSubscriptionService:
             "payment_details_missing": 503,
             "qr_not_ready": 503,
             "admin_notification_failed": 503,
+            "hsk30_disabled": 403,
+            "hsk30_unlock_payment_disabled": 403,
+            "hsk30_already_unlocked": 409,
+            "hsk30_subscription_active": 409,
+            "payment_pending_other_product": 409,
         }
         return DesktopSubscriptionError(
             code,
@@ -139,6 +154,7 @@ class DesktopSubscriptionService:
         attempt_id: str,
         entry_source: str | None = None,
     ) -> None:
+        mode = self._checkout_mode(entry_source=entry_source)
         await ConversionFunnelService().record(
             event_name="checkout_opened",
             user=user,
@@ -146,7 +162,7 @@ class DesktopSubscriptionService:
             source=entry_source or self.source,
             payload={
                 "attempt_id": attempt_id,
-                "mode": DESKTOP_SUBSCRIPTION_MODE,
+                "mode": mode,
             },
         )
 
@@ -171,11 +187,12 @@ class DesktopSubscriptionService:
         entry_source: str | None = None,
     ) -> dict[str, Any]:
         context = await self._context(access_token)
+        mode = self._checkout_mode(entry_source=entry_source)
         result = self._checked_result(
             await self.checkout.overview(
                 context.user.telegram_id,
                 bot=self.bot,
-                mode=DESKTOP_SUBSCRIPTION_MODE,
+                mode=mode,
             )
         )
         access = self._access_payload(context.user)
@@ -201,7 +218,7 @@ class DesktopSubscriptionService:
         result.update(
             {
                 "source": self.source,
-                "mode": DESKTOP_SUBSCRIPTION_MODE,
+                "mode": mode,
                 "access": access,
                 "checkout_allowed": read_only_reason is None,
                 "read_only_reason": read_only_reason,
@@ -213,7 +230,7 @@ class DesktopSubscriptionService:
             telegram_id=context.user.telegram_id,
             user=context.user,
             source=entry_source or self.source,
-            mode=DESKTOP_SUBSCRIPTION_MODE,
+            mode=mode,
         )
 
         if result["checkout_allowed"]:
@@ -260,6 +277,7 @@ class DesktopSubscriptionService:
                 "desktop_subscription_request_invalid",
                 status_code=422,
             )
+        mode = self._checkout_mode(plan_type=plan_type)
         result = self._checked_result(
             await self.checkout.quote(
                 telegram_id=context.user.telegram_id,
@@ -268,13 +286,13 @@ class DesktopSubscriptionService:
                 card_country=card_country,
                 card_bank=card_bank,
                 bot=self.bot,
-                mode=DESKTOP_SUBSCRIPTION_MODE,
+                mode=mode,
             )
         )
         result.update(
             {
                 "source": self.source,
-                "mode": DESKTOP_SUBSCRIPTION_MODE,
+                "mode": mode,
                 "access": self._access_payload(context.user),
             }
         )
@@ -327,6 +345,7 @@ class DesktopSubscriptionService:
                 status_code=409,
             )
 
+        mode = self._checkout_mode(plan_type=plan_type)
         recorded = await ConversionFunnelService().record(
             event_name="checkout_opened",
             user=context.user,
@@ -337,7 +356,7 @@ class DesktopSubscriptionService:
                 "stage": stage,
                 "plan_type": plan_type,
                 "payment_method": payment_method,
-                "mode": DESKTOP_SUBSCRIPTION_MODE,
+                "mode": mode,
             },
         )
         return {
@@ -363,6 +382,7 @@ class DesktopSubscriptionService:
                 "desktop_subscription_request_invalid",
                 status_code=422,
             )
+        mode = self._checkout_mode(plan_type=plan_type)
         result = self._checked_result(
             await self.checkout.submit(
                 telegram_id=context.user.telegram_id,
@@ -372,14 +392,14 @@ class DesktopSubscriptionService:
                 card_bank=card_bank,
                 screenshot_data_url=screenshot_data_url,
                 bot=self.bot,
-                mode=DESKTOP_SUBSCRIPTION_MODE,
+                mode=mode,
                 source="android" if self.source == "android_subscription" else "desktop",
             )
         )
         result.update(
             {
                 "source": self.source,
-                "mode": DESKTOP_SUBSCRIPTION_MODE,
+                "mode": mode,
                 "access": self._access_payload(context.user),
             }
         )
@@ -394,7 +414,7 @@ class DesktopSubscriptionService:
                     "attempt_id": attempt_id,
                     "plan_type": plan_type,
                     "payment_method": payment_method,
-                    "mode": DESKTOP_SUBSCRIPTION_MODE,
+                    "mode": mode,
                 },
             )
         return result

@@ -92,6 +92,15 @@ if __name__ == "__main__":
     unittest.main()
 
 
+class Hsk30ReleaseControlTests(unittest.TestCase):
+    def test_hsk30_release_is_controlled_from_the_admin_panel(self):
+        self.assertIn('id="hsk30Enabled"', ADMIN)
+        self.assertIn('data-hsk30save', ADMIN)
+        self.assertIn('/api/admin-miniapp/hsk30/settings', ADMIN)
+        self.assertIn('OFF → ON', ADMIN)
+        self.assertIn('NEW', ADMIN)
+
+
 class TheLimitPanelCoversEveryEnforcedActionTests(unittest.TestCase):
     """Panelda ko'rinmagan chegara — jimgina o'zgaradigan chegara.
 

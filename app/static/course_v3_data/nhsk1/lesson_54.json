@@ -1,0 +1,1017 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 54,
+  "source_lesson": 8,
+  "part_no": 7,
+  "part_count": 7,
+  "checkpoint": true,
+  "title": "我爸爸也在医院工作",
+  "subtitle": {
+    "uz": "Joy, yo‘nalish va nisbiy o‘rinni tushunish va tasvirlash; joyni ko‘rsatish uchun “在” predlogini ishlatish; “能” bilan imkoniyat, sharoit yoki mumkinlikni ifodalash.",
+    "ru": "Понимать и описывать местоположение, направление и относительное положение; использовать предлог “在” для обозначения места; выражать способность, условие или возможность с “能”.",
+    "tj": "Ҷой, самт ва мавқеи нисбиро фаҳмидан ва тасвир кардан; барои нишон додани ҷой пешоянди “在”-ро истифода бурдан; бо “能” қобилият, шароит ё имконро ифода кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "房间",
+      "pinyin": "fángjiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xona",
+        "ru": "комната",
+        "tj": "ҳуҷра"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "外",
+      "pinyin": "wài",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tashqari; tashqarida",
+        "ru": "снаружи; вне",
+        "tj": "берун; беруни"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "只",
+      "pinyin": "zhī",
+      "pos": "m.",
+      "meaning": {
+        "uz": "hayvonlar uchun o‘lchov so‘zi",
+        "ru": "счётное слово для животных",
+        "tj": "воҳиди ҳисоб барои ҳайвонот"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "小",
+      "pinyin": "xiǎo",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "kichik",
+        "ru": "маленький",
+        "tj": "хурд"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "猫",
+      "pinyin": "māo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mushuk",
+        "ru": "кошка",
+        "tj": "гурба"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "没",
+      "pinyin": "méi",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "yo‘q; -magan",
+        "ru": "не; ещё не",
+        "tj": "не; ҳанӯз не"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "看见",
+      "pinyin": "kànjiàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ko‘rib qolmoq; ko‘rmoq",
+        "ru": "увидеть; заметить",
+        "tj": "дидан; пай бурдан"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "桌子",
+      "pinyin": "zhuōzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "stol",
+        "ru": "стол",
+        "tj": "миз"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "下",
+      "pinyin": "xià",
+      "pos": "n.",
+      "meaning": {
+        "uz": "past; ost",
+        "ru": "низ; под",
+        "tj": "поён; зери"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "漂亮",
+      "pinyin": "piàoliang",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "chiroyli",
+        "ru": "красивый",
+        "tj": "зебо"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "在",
+      "pinyin": "zài",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "da; joyda",
+        "ru": "в; на; у",
+        "tj": "дар; назди"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "学校",
+      "pinyin": "xuéxiào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "maktab; o‘quv yurti",
+        "ru": "школа; учебное заведение",
+        "tj": "мактаб; муассисаи таълимӣ"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "书店",
+      "pinyin": "shūdiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kitob do‘koni",
+        "ru": "книжный магазин",
+        "tj": "мағозаи китоб"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "前",
+      "pinyin": "qián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "old; oldi",
+        "ru": "перед; впереди",
+        "tj": "пеш; пеши"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "能",
+      "pinyin": "néng",
+      "pos": "mod.",
+      "meaning": {
+        "uz": "qila olmoq; mumkin bo‘lmoq",
+        "ru": "мочь; быть в состоянии",
+        "tj": "тавонистан; мумкин будан"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "到",
+      "pinyin": "dào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yetib bormoq",
+        "ru": "прибывать; достигать",
+        "tj": "расидан"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "午饭",
+      "pinyin": "wǔfàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tushlik",
+        "ru": "обед",
+        "tj": "хӯроки нисфирӯзӣ"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "饭",
+      "pinyin": "fàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ovqat",
+        "ru": "еда; приём пищи",
+        "tj": "хӯрок"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "大",
+      "pinyin": "dà",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "katta",
+        "ru": "большой",
+        "tj": "калон"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "病人",
+      "pinyin": "bìngrén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bemor",
+        "ru": "пациент; больной",
+        "tj": "бемор"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "多",
+      "pinyin": "duō",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "ko‘p",
+        "ru": "много",
+        "tj": "бисёр"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "医生",
+      "pinyin": "yīshēng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "shifokor",
+        "ru": "врач",
+        "tj": "духтур"
+      }
+    },
+    {
+      "no": 23,
+      "zh": "工作",
+      "pinyin": "gōngzuò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ishlamoq",
+        "ru": "работать",
+        "tj": "кор кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Joylashuv so‘zlari",
+        "ru": "Слова местоположения",
+        "tj": "Калимаҳои мавқеъ"
+      },
+      "title_zh": "方位词",
+      "rule": {
+        "uz": "Bu bosqichda joy va yo‘nalishni ifodalovchi 上、下、里、前、后、外、外边 o‘rganiladi.",
+        "ru": "В этом уровне изучаются слова местоположения 上、下、里、前、后、外、外边.",
+        "tj": "Дар ин сатҳ калимаҳои мавқеи 上、下、里、前、后、外、外边 омӯхта мешаванд."
+      },
+      "examples": [
+        {
+          "zh": "房间里有一只小猫。",
+          "pinyin": "Fángjiān lǐ yǒu yì zhī xiǎomāo.",
+          "translation": {
+            "uz": "Xona ichida kichik mushuk bor.",
+            "ru": "В комнате есть котёнок.",
+            "tj": "Дар ҳуҷра як гурбачаи хурд ҳаст."
+          }
+        },
+        {
+          "zh": "我们去书店外吧。",
+          "pinyin": "Wǒmen qù shūdiàn wài ba.",
+          "translation": {
+            "uz": "Kitob do‘koni tashqarisiga boraylik.",
+            "ru": "Давай пойдём к книжному магазину снаружи.",
+            "tj": "Биёед ба беруни мағозаи китоб равем."
+          }
+        },
+        {
+          "zh": "小雪的手机在桌子上呢。",
+          "pinyin": "Xiǎoxuě de shǒujī zài zhuōzi shàng ne.",
+          "translation": {
+            "uz": "Xiaoxuening telefoni stol ustida.",
+            "ru": "Телефон Сяосюэ на столе.",
+            "tj": "Телефони Сяосюэ рӯйи миз аст."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Predlog “在”",
+        "ru": "Предлог “在”",
+        "tj": "Пешоянди “在”"
+      },
+      "title_zh": "介词“在”",
+      "rule": {
+        "uz": "“在” joyni bildiruvchi so‘z yoki birikma bilan kelib, fe’l oldidan harakat qayerda sodir bo‘lishini ko‘rsatadi.",
+        "ru": "“在” сочетается с обозначением места и ставится перед глаголом, показывая, где происходит действие.",
+        "tj": "“在” бо калима ё ибораи ҷой омада, пеш аз феъл нишон медиҳад, ки амал дар куҷо сурат мегирад."
+      },
+      "examples": [
+        {
+          "zh": "我在学校吃午饭。",
+          "pinyin": "Wǒ zài xuéxiào chī wǔfàn.",
+          "translation": {
+            "uz": "Men maktabda tushlik qilaman.",
+            "ru": "Я обедаю в школе.",
+            "tj": "Ман дар мактаб хӯроки нисфирӯзӣ мехӯрам."
+          }
+        },
+        {
+          "zh": "他爸爸在医院工作。",
+          "pinyin": "Tā bàba zài yīyuàn gōngzuò.",
+          "translation": {
+            "uz": "Uning otasi kasalxonada ishlaydi.",
+            "ru": "Его отец работает в больнице.",
+            "tj": "Падараш дар беморхона кор мекунад."
+          }
+        },
+        {
+          "zh": "你在哪儿买菜？",
+          "pinyin": "Nǐ zài nǎr mǎi cài?",
+          "translation": {
+            "uz": "Sabzavotni qayerda sotib olasan?",
+            "ru": "Где ты покупаешь овощи?",
+            "tj": "Ту сабзавотро дар куҷо мехарӣ?"
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Modal fe’l “能”",
+        "ru": "Модальный глагол “能”",
+        "tj": "Феъли модалии “能”"
+      },
+      "title_zh": "能愿动词“能”",
+      "rule": {
+        "uz": "“能” fe’l oldidan kelib biror ishni qilish qobiliyati, sharoiti yoki imkoniyati borligini bildiradi.",
+        "ru": "“能” ставится перед глаголом и выражает способность, наличие условий или возможность выполнить действие.",
+        "tj": "“能” пеш аз феъл омада, қобилият, шароит ё имкони иҷрои амалро ифода мекунад."
+      },
+      "examples": [
+        {
+          "zh": "下午两点你能到吗？",
+          "pinyin": "Xiàwǔ liǎng diǎn nǐ néng dào ma?",
+          "translation": {
+            "uz": "Tushdan keyin soat 2 da kela olasanmi?",
+            "ru": "Ты сможешь прийти в 2 часа дня?",
+            "tj": "Баъди нисфирӯзӣ соати 2 расида метавонӣ?"
+          }
+        },
+        {
+          "zh": "爸爸能来。",
+          "pinyin": "Bàba néng lái.",
+          "translation": {
+            "uz": "Otam kela oladi.",
+            "ru": "Папа сможет прийти.",
+            "tj": "Падарам омада метавонад."
+          }
+        },
+        {
+          "zh": "我不能去学校吃午饭。",
+          "pinyin": "Wǒ bù néng qù xuéxiào chī wǔfàn.",
+          "translation": {
+            "uz": "Men maktabga tushlik qilgani bora olmayman.",
+            "ru": "Я не могу пойти в школу пообедать.",
+            "tj": "Ман барои нисфирӯзӣ ба мактаб рафта наметавонам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Bai Jiayue va Chen Tianzhong mehmonga kelgan.",
+        "ru": "Бай Цзяюэ и Чэнь Тяньчжун пришли в гости к Ван Ифэй.",
+        "tj": "Бай Ҷяюэ ва Чэн Тянҷун ба хонаи Ван Ифэй меҳмон шудаанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "房间外有一只小猫。",
+          "pinyin": "Fángjiān wài yǒu yì zhī xiǎomāo.",
+          "text": {
+            "uz": "Xona tashqarisida bitta kichik mushuk bor.",
+            "ru": "Снаружи комнаты есть маленький котёнок.",
+            "tj": "Берун аз ҳуҷра як гурбачаи хурд ҳаст."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我没看见，它在哪儿呢？",
+          "pinyin": "Wǒ méi kànjiàn, tā zài nǎr ne?",
+          "text": {
+            "uz": "Men uni ko‘rmadim, u qayerda?",
+            "ru": "Я его не вижу. Где он?",
+            "tj": "Ман онро надидам, он куҷост?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "它在桌子下呢。",
+          "pinyin": "Tā zài zhuōzi xià ne.",
+          "text": {
+            "uz": "U stol ostida.",
+            "ru": "Он под столом.",
+            "tj": "Он зери миз аст."
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "这只小猫真漂亮！",
+          "pinyin": "Zhè zhī xiǎomāo zhēn piàoliang!",
+          "text": {
+            "uz": "Bu kichik mushuk juda chiroyli!",
+            "ru": "Этот котёнок очень красивый!",
+            "tj": "Ин гурбачаи хурд хеле зебост!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsdan keyin sinfda Bai Jiayue Li Wenga telefon qilmoqda.",
+        "ru": "После занятия Бай Цзяюэ звонит Ли Вэню из аудитории.",
+        "tj": "Пас аз дарс Бай Ҷяюэ аз синф ба Ли Вэн занг мезанад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我们在哪儿见呢？",
+          "pinyin": "Wǒmen zài nǎr jiàn ne?",
+          "text": {
+            "uz": "Qayerda uchrashamiz?",
+            "ru": "Где мы встретимся?",
+            "tj": "Дар куҷо вомехӯрем?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "在学校书店前面见吧。",
+          "pinyin": "Zài xuéxiào shūdiàn qiánmiàn jiàn ba.",
+          "text": {
+            "uz": "Maktab kitob do‘koni oldida uchrashaylik.",
+            "ru": "Давай встретимся перед школьным книжным магазином.",
+            "tj": "Биёед пеши мағозаи китоби мактаб вохӯрем."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "好的。下午两点你能到吗？",
+          "pinyin": "Hǎo de. Xiàwǔ liǎng diǎn nǐ néng dào ma?",
+          "text": {
+            "uz": "Xo‘p. Tushdan keyin soat 2 da yetib kela olasanmi?",
+            "ru": "Хорошо. Ты сможешь прийти в 2 часа дня?",
+            "tj": "Хуб. Баъди нисфирӯзӣ соати 2 расида метавонӣ?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "我能到。我在学校吃午饭。",
+          "pinyin": "Wǒ néng dào. Wǒ zài xuéxiào chī wǔfàn.",
+          "text": {
+            "uz": "Yetib kela olaman. Men maktabda tushlik qilaman.",
+            "ru": "Да, смогу. Я пообедаю в школе.",
+            "tj": "Расида метавонам. Ман дар мактаб хӯроки нисфирӯзӣ мехӯрам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kasalxonada Liu Ming doktor Hu bilan suhbatlashmoqda.",
+        "ru": "В больнице Лю Мин разговаривает с доктором Ху.",
+        "tj": "Дар беморхона Лю Мин бо духтур Ҳу суҳбат мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "小胡，还没吃饭呢？",
+          "pinyin": "Xiǎo Hú, hái méi chī fàn ne?",
+          "text": {
+            "uz": "Xiao Hu, hali ovqat yemadingmi?",
+            "ru": "Сяо Ху, ты ещё не ел?",
+            "tj": "Сяо Ҳу, ҳоло ҳам хӯрок нахӯрдаӣ?"
+          }
+        },
+        {
+          "speaker": "Dr. Hu",
+          "zh": "没吃呢。",
+          "pinyin": "Méi chī ne.",
+          "text": {
+            "uz": "Yo‘q, yemadim.",
+            "ru": "Нет, ещё не ел.",
+            "tj": "Не, ҳоло нахӯрдаам."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "大医院病人多，医生非常忙。",
+          "pinyin": "Dà yīyuàn bìngrén duō, yīshēng fēicháng máng.",
+          "text": {
+            "uz": "Katta kasalxonalarda bemorlar ko‘p, shifokorlar juda band.",
+            "ru": "В больших больницах много пациентов, и врачи очень заняты.",
+            "tj": "Дар беморхонаҳои калон беморон бисёранд ва духтурон хеле банданд."
+          }
+        },
+        {
+          "speaker": "Dr. Hu",
+          "zh": "是的。我爸爸也在医院工作，他也非常忙。",
+          "pinyin": "Shì de. Wǒ bàba yě zài yīyuàn gōngzuò, tā yě fēicháng máng.",
+          "text": {
+            "uz": "Ha. Otam ham kasalxonada ishlaydi, u ham juda band.",
+            "ru": "Да. Мой отец тоже работает в больнице и тоже очень занят.",
+            "tj": "Ҳа. Падарам ҳам дар беморхона кор мекунад ва ӯ ҳам хеле банд аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "你家有两个医生？",
+          "pinyin": "Nǐ jiā yǒu liǎng ge yīshēng?",
+          "text": {
+            "uz": "Demak, oilangda ikkita shifokor bor?",
+            "ru": "Значит, в вашей семье два врача?",
+            "tj": "Пас, дар оилаи шумо ду духтур ҳаст?"
+          }
+        },
+        {
+          "speaker": "Dr. Hu",
+          "zh": "对。",
+          "pinyin": "Duì.",
+          "text": {
+            "uz": "Ha.",
+            "ru": "Да.",
+            "tj": "Ҳа."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "漂亮 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 漂亮:",
+            "tj": "Маънои калимаи 漂亮-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hayvonlar uchun o‘lchov so‘zi",
+              "ru": "счётное слово для животных",
+              "tj": "воҳиди ҳисоб барои ҳайвонот"
+            },
+            {
+              "uz": "xona",
+              "ru": "комната",
+              "tj": "ҳуҷра"
+            },
+            {
+              "uz": "tashqari; tashqarida",
+              "ru": "снаружи; вне",
+              "tj": "берун; беруни"
+            },
+            {
+              "uz": "chiroyli",
+              "ru": "красивый",
+              "tj": "зебо"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "漂亮 = chiroyli (piàoliang)",
+            "ru": "漂亮 = красивый (piàoliang)",
+            "tj": "漂亮 = зебо (piàoliang)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "桌子",
+          "pinyin": "zhuōzi",
+          "options": [
+            "外",
+            "桌子",
+            "只",
+            "房间"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "桌子 — stol (zhuōzi)",
+            "ru": "桌子 — стол (zhuōzi)",
+            "tj": "桌子 — миз (zhuōzi)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Men maktabga tushlik qilgani bora olmayman.» — xitoychada qaysi biri?",
+            "ru": "«Я не могу пойти в школу пообедать.» — какое предложение по-китайски?",
+            "tj": "«Ман барои нисфирӯзӣ ба мактаб рафта наметавонам.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "下午两点你能到吗？",
+            "爸爸能来。",
+            "房间里有一只小猫。",
+            "我不能去学校吃午饭。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "我不能去学校吃午饭。 — Wǒ bù néng qù xuéxiào chī wǔfàn.",
+            "ru": "我不能去学校吃午饭。 — Wǒ bù néng qù xuéxiào chī wǔfàn.",
+            "tj": "我不能去学校吃午饭。 — Wǒ bù néng qù xuéxiào chī wǔfàn."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我能到。我在学校吃午饭。",
+          "pinyin": "Wǒ néng dào. Wǒ zài xuéxiào chī wǔfàn.",
+          "translation": {
+            "uz": "Yetib kela olaman. Men maktabda tushlik qilaman.",
+            "ru": "Да, смогу. Я пообедаю в школе.",
+            "tj": "Расида метавонам. Ман дар мактаб хӯроки нисфирӯзӣ мехӯрам."
+          },
+          "tokens": {
+            "uz": [
+              "tashqarisida",
+              "kela",
+              "Yetib",
+              "tushlik",
+              "Men",
+              "olaman",
+              "Xona",
+              "maktabda",
+              "qilaman"
+            ],
+            "ru": [
+              "в",
+              "комнаты",
+              "пообедаю",
+              "Да",
+              "школе",
+              "смогу",
+              "Снаружи",
+              "Я"
+            ],
+            "tj": [
+              "хӯроки",
+              "нисфирӯзӣ",
+              "Берун",
+              "дар",
+              "мехӯрам",
+              "Ман",
+              "мактаб",
+              "аз",
+              "Расида",
+              "метавонам"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Yetib",
+              "kela",
+              "olaman",
+              "Men",
+              "maktabda",
+              "tushlik",
+              "qilaman"
+            ],
+            "ru": [
+              "Да",
+              "смогу",
+              "Я",
+              "пообедаю",
+              "в",
+              "школе"
+            ],
+            "tj": [
+              "Расида",
+              "метавонам",
+              "Ман",
+              "дар",
+              "мактаб",
+              "хӯроки",
+              "нисфирӯзӣ",
+              "мехӯрам"
+            ]
+          },
+          "explanation": {
+            "uz": "我能到。我在学校吃午饭。 — Yetib kela olaman. Men maktabda tushlik qilaman.",
+            "ru": "我能到。我在学校吃午饭。 — Да, смогу. Я пообедаю в школе.",
+            "tj": "我能到。我在学校吃午饭。 — Расида метавонам. Ман дар мактаб хӯроки нисфирӯзӣ мехӯрам."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "房间",
+              {
+                "uz": "xona",
+                "ru": "комната",
+                "tj": "ҳуҷра"
+              }
+            ],
+            [
+              "外",
+              {
+                "uz": "tashqari; tashqarida",
+                "ru": "снаружи; вне",
+                "tj": "берун; беруни"
+              }
+            ],
+            [
+              "只",
+              {
+                "uz": "hayvonlar uchun o‘lchov so‘zi",
+                "ru": "счётное слово для животных",
+                "tj": "воҳиди ҳисоб барои ҳайвонот"
+              }
+            ],
+            [
+              "小",
+              {
+                "uz": "kichik",
+                "ru": "маленький",
+                "tj": "хурд"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "学校 talaffuzini tanlang:",
+            "ru": "Выберите произношение 学校:",
+            "tj": "Талаффузи 学校-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "wài",
+            "xuéxiào",
+            "fángjiān",
+            "zhī"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "学校 — xuéxiào",
+            "ru": "学校 — xuéxiào",
+            "tj": "学校 — xuéxiào"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "猫",
+              {
+                "uz": "mushuk",
+                "ru": "кошка",
+                "tj": "гурба"
+              }
+            ],
+            [
+              "没",
+              {
+                "uz": "yo‘q; -magan",
+                "ru": "не; ещё не",
+                "tj": "не; ҳанӯз не"
+              }
+            ],
+            [
+              "看见",
+              {
+                "uz": "ko‘rib qolmoq; ko‘rmoq",
+                "ru": "увидеть; заметить",
+                "tj": "дидан; пай бурдан"
+              }
+            ],
+            [
+              "桌子",
+              {
+                "uz": "stol",
+                "ru": "стол",
+                "tj": "миз"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "房间外有一只小猫。",
+          "pinyin": "Fángjiān wài yǒu yì zhī xiǎomāo.",
+          "options": [
+            "房间外有一只小猫。",
+            "它在桌子下呢。",
+            "这只小猫真漂亮！",
+            "我没看见，它在哪儿呢？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "房间外有一只小猫。 — Xona tashqarisida bitta kichik mushuk bor.",
+            "ru": "房间外有一只小猫。 — Снаружи комнаты есть маленький котёнок.",
+            "tj": "房间外有一只小猫。 — Берун аз ҳуҷра як гурбачаи хурд ҳаст."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____间外有一只小猫。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "七",
+            "房",
+            "一",
+            "三"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 房 — 房间外有一只小猫。 (Xona tashqarisida bitta kichik mushuk bor.)",
+            "ru": "Верно: 房 — 房间外有一只小猫。 (Снаружи комнаты есть маленький котёнок.)",
+            "tj": "Дуруст: 房 — 房间外有一只小猫。 (Берун аз ҳуҷра як гурбачаи хурд ҳаст.)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda Bai Jiayue avval nima deydi?",
+            "ru": "Что Bai Jiayue говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ Bai Jiayue аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "房间外有一只小猫。",
+            "我没看见，它在哪儿呢？",
+            "这只小猫真漂亮！",
+            "它在桌子下呢。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 房间外有一只小猫。",
+            "ru": "Правильный ответ: 房间外有一只小猫。",
+            "tj": "Ҷавоби дуруст: 房间外有一只小猫。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida Chen Tianzhong nima deydi?",
+            "ru": "Что Chen Tianzhong говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ Chen Tianzhong чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "这只小猫真漂亮！",
+            "它在桌子下呢。",
+            "房间外有一只小猫。",
+            "我没看见，它在哪儿呢？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 这只小猫真漂亮！",
+            "ru": "Правильный ответ: 这只小猫真漂亮！",
+            "tj": "Ҷавоби дуруст: 这只小猫真漂亮！"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "Bai Jiayue",
+              "zh": "房间外有一只小猫。",
+              "blank": false
+            },
+            {
+              "speaker": "Chen Tianzhong",
+              "zh": "我没看见，它在哪儿呢？",
+              "blank": false
+            },
+            {
+              "speaker": "Bai Jiayue",
+              "zh": "它在桌子下呢。",
+              "blank": false
+            },
+            {
+              "speaker": "Chen Tianzhong",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "我没看见，它在哪儿呢？",
+            "房间外有一只小猫。",
+            "这只小猫真漂亮！",
+            "它在桌子下呢。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 这只小猫真漂亮！",
+            "ru": "Правильный ответ: 这只小猫真漂亮！",
+            "tj": "Ҷавоби дуруст: 这只小猫真漂亮！"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "小胡，还没吃饭呢？",
+          "pinyin": "Xiǎo Hú, hái méi chī fàn ne?",
+          "translation": {
+            "uz": "Xiao Hu, hali ovqat yemadingmi?",
+            "ru": "Сяо Ху, ты ещё не ел?",
+            "tj": "Сяо Ҳу, ҳоло ҳам хӯрок нахӯрдаӣ?"
+          }
+        }
+      ]
+    }
+  ]
+}

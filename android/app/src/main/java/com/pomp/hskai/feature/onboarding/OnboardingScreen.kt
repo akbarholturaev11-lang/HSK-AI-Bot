@@ -36,6 +36,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -77,11 +78,21 @@ import com.pomp.hskai.core.design.PompColors
 @Immutable
 data class OnboardingUiState(
     val step: Int = 0,
+    val selectedTrack: String = "hsk20",
     val selectedLevel: String = "beginner",
     val selectedGoal: String = "hsk_exam",
+    val hsk30Enabled: Boolean = false,
+    val hsk30Allowed: Boolean = false,
+    val hsk30LiveLevels: List<String> = listOf("nhsk1"),
+    val hsk30IsNew: Boolean = false,
+    val hsk30PaymentEnabled: Boolean = false,
+    val hsk30PriceTjs: Int = 0,
     val submitting: Boolean = false,
     val error: Boolean = false,
-)
+) {
+    val needsHsk30Unlock: Boolean
+        get() = selectedTrack == "hsk30" && !hsk30Allowed
+}
 
 @Immutable
 data class OnboardingCopy(
@@ -104,6 +115,15 @@ data class OnboardingCopy(
     val beginner: String,
     val beginnerSub: String,
     val selected: String,
+    val courseVersion: String,
+    val hsk20: String,
+    val hsk30: String,
+    val hsk30Locked: String,
+    val hsk30LockedPro: String,
+    val hsk30Disabled: String,
+    val unlockHsk30: String,
+    val getPro: String,
+    val laterHsk20: String,
     val notifyTitle: String,
     val notifyLessons: String,
     val notifyUpdates: String,
@@ -133,6 +153,15 @@ data class OnboardingCopy(
                 beginner = "Xitoy tilini umuman bilmayman",
                 beginnerSub = "Avval hanzi, pinyin va tonlarni tushunamiz",
                 selected = "Darajangiz",
+                courseVersion = "Kurs versiyasi",
+                hsk20 = "HSK 2.0",
+                hsk30 = "HSK 3.0",
+                hsk30Locked = "HSK 3.0 Pro bilan yoki %d TJS bir martalik to'lov bilan ochiladi.",
+                hsk30LockedPro = "HSK 3.0 faol HSK AI Pro bilan ochiladi.",
+                hsk30Disabled = "HSK 3.0 hozircha yopiq.",
+                unlockHsk30 = "HSK 3.0 ni ochish",
+                getPro = "HSK AI Pro olish",
+                laterHsk20 = "Keyinroq — HSK 2.0 da boshlash",
                 notifyTitle = "Bildirishnomalarni yoqing",
                 notifyLessons = "Kechqurun darsni eslatib turamiz",
                 notifyUpdates = "Yangi versiya chiqqanda bir marta xabar beramiz",
@@ -160,6 +189,15 @@ data class OnboardingCopy(
                 beginner = "Забони чиниро тамоман намедонам",
                 beginnerSub = "Аввал ханзӣ, пинйин ва оҳангҳоро мефаҳмем",
                 selected = "Сатҳи шумо",
+                courseVersion = "Версияи курс",
+                hsk20 = "HSK 2.0",
+                hsk30 = "HSK 3.0",
+                hsk30Locked = "HSK 3.0 бо Pro ё бо пардохти якбораи %d TJS кушода мешавад.",
+                hsk30LockedPro = "HSK 3.0 бо HSK AI Pro-и фаъол кушода мешавад.",
+                hsk30Disabled = "HSK 3.0 ҳоло баста аст.",
+                unlockHsk30 = "Кушодани HSK 3.0",
+                getPro = "HSK AI Pro гирифтан",
+                laterHsk20 = "Баъдтар — аз HSK 2.0 оғоз кардан",
                 notifyTitle = "Огоҳиномаҳоро фаъол кунед",
                 notifyLessons = "Бегоҳӣ дарсро ёдрас мекунем",
                 notifyUpdates = "Вақте версияи нав барояд, як бор хабар медиҳем",
@@ -187,6 +225,15 @@ data class OnboardingCopy(
                 beginner = "Я совсем с нуля",
                 beginnerSub = "Сначала разберём ханцзы, пиньинь и тоны",
                 selected = "Ваш уровень",
+                courseVersion = "Версия курса",
+                hsk20 = "HSK 2.0",
+                hsk30 = "HSK 3.0",
+                hsk30Locked = "HSK 3.0 доступен с Pro или за %d TJS навсегда.",
+                hsk30LockedPro = "HSK 3.0 доступен с активным HSK AI Pro.",
+                hsk30Disabled = "HSK 3.0 пока закрыт.",
+                unlockHsk30 = "Открыть HSK 3.0",
+                getPro = "Получить HSK AI Pro",
+                laterHsk20 = "Позже — начать с HSK 2.0",
                 notifyTitle = "Включите уведомления",
                 notifyLessons = "Вечером напомним про занятие",
                 notifyUpdates = "Один раз сообщим, когда выйдет новая версия",
@@ -246,10 +293,13 @@ private val goals = listOf(
 fun OnboardingScreen(
     language: String,
     state: OnboardingUiState,
+    onTrackSelected: (String) -> Unit,
     onLevelSelected: (String) -> Unit,
     onGoalSelected: (String) -> Unit,
     onBack: () -> Unit,
     onNext: () -> Unit,
+    onUnlockHsk30: () -> Unit,
+    onLaterHsk20: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val copy = OnboardingCopy.forLanguage(language)
@@ -350,9 +400,35 @@ fun OnboardingScreen(
                                 motionEnabled = motionEnabled,
                                 layoutSpec = layoutSpec,
                             ) {
+                                CourseVersionSwitch(
+                                    copy = copy,
+                                    state = state,
+                                    enabled = !state.submitting,
+                                    onSelected = { track ->
+                                        onTrackSelected(track)
+                                        selectionFeedback()
+                                    },
+                                )
+                                Spacer(Modifier.height(14.dp))
+                                if (state.selectedTrack == "hsk30") {
+                                    Text(
+                                        if (!state.hsk30Enabled) copy.hsk30Disabled
+                                        else if (!state.hsk30Allowed && state.hsk30PaymentEnabled && state.hsk30PriceTjs > 0) {
+                                            copy.hsk30Locked.format(state.hsk30PriceTjs)
+                                        } else if (!state.hsk30Allowed) {
+                                            copy.hsk30LockedPro
+                                        } else copy.hsk30,
+                                        color = if (state.hsk30Allowed) PompColors.InkSecondary else PompColors.CinnabarDark,
+                                        fontSize = 12.sp,
+                                        lineHeight = 18.sp,
+                                        modifier = Modifier.padding(bottom = 14.dp),
+                                    )
+                                }
                                 LevelChoices(
                                     language = language,
                                     copy = copy,
+                                    track = state.selectedTrack,
+                                    liveHsk30Levels = state.hsk30LiveLevels,
                                     selected = state.selectedLevel,
                                     enabled = !state.submitting,
                                     motionEnabled = motionEnabled,
@@ -390,7 +466,8 @@ fun OnboardingScreen(
                 OnboardingFooter(
                     copy = copy,
                     state = state,
-                    onNext = onNext,
+                    onNext = if (state.step >= 2 && state.needsHsk30Unlock) onUnlockHsk30 else onNext,
+                    onLaterHsk20 = onLaterHsk20,
                     motionEnabled = motionEnabled,
                     layoutSpec = layoutSpec,
                 )
@@ -643,9 +720,87 @@ private fun SpeechBubble(
 }
 
 @Composable
+private fun CourseVersionSwitch(
+    copy: OnboardingCopy,
+    state: OnboardingUiState,
+    enabled: Boolean,
+    onSelected: (String) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(13.dp))
+            .background(PompColors.Divider)
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        listOf("hsk20" to copy.hsk20, "hsk30" to copy.hsk30).forEach { (track, label) ->
+            val selected = state.selectedTrack == track
+            Surface(
+                color = if (selected) PompColors.PaperRaised else Color.Transparent,
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(42.dp)
+                    .clickable(
+                        enabled = enabled && (track != "hsk30" || state.hsk30Enabled),
+                        role = Role.RadioButton,
+                    ) { onSelected(track) },
+            ) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    val textColor = if (selected) PompColors.CinnabarDark else PompColors.InkSecondary
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                label,
+                                color = textColor,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                lineHeight = 14.sp,
+                            )
+                            if (track == "hsk30" && state.hsk30IsNew) {
+                                Spacer(Modifier.width(4.dp))
+                                Text(
+                                    "NEW",
+                                    color = PompColors.CinnabarDark,
+                                    fontSize = 8.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier
+                                        .background(
+                                            PompColors.Cinnabar.copy(alpha = 0.12f),
+                                            RoundedCornerShape(5.dp),
+                                        )
+                                        .padding(horizontal = 4.dp, vertical = 1.dp),
+                                )
+                            }
+                        }
+                        if (
+                            track == "hsk30" &&
+                            !state.hsk30Allowed &&
+                            state.hsk30PaymentEnabled &&
+                            state.hsk30PriceTjs > 0
+                        ) {
+                            Text(
+                                "${state.hsk30PriceTjs} TJS",
+                                color = textColor.copy(alpha = 0.78f),
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                lineHeight = 11.sp,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun LevelChoices(
     language: String,
     copy: OnboardingCopy,
+    track: String,
+    liveHsk30Levels: List<String>,
     selected: String,
     enabled: Boolean,
     motionEnabled: Boolean,
@@ -658,13 +813,26 @@ private fun LevelChoices(
         "tg" -> listOf("Каме забони чинӣ медонам", "Муоширати асосӣ", "Муоширати ҳаррӯза", "Муоширати озод")
         else -> listOf("Уже немного знаю китайский", "Базовое общение", "Повседневное общение", "Свободное общение")
     }
-    val levels = listOf(
-        LevelOption("beginner", copy.beginner, copy.beginnerSub),
-        LevelOption("hsk1", "HSK 1", descriptions[0]),
-        LevelOption("hsk2", "HSK 2", descriptions[1]),
-        LevelOption("hsk3", "HSK 3", descriptions[2]),
-        LevelOption("hsk4", "HSK 4", descriptions[3]),
-    )
+    val levels = if (track == "hsk30") {
+        val hsk30Descriptions = when (lang) {
+            "uz" -> listOf("Yangi standart · 1-daraja", "Yangi standart · 2-daraja", "Yangi standart · 3-daraja")
+            "tg" -> listOf("Стандарти нав · сатҳи 1", "Стандарти нав · сатҳи 2", "Стандарти нав · сатҳи 3")
+            else -> listOf("Новый стандарт · уровень 1", "Новый стандарт · уровень 2", "Новый стандарт · уровень 3")
+        }
+        listOf(
+            LevelOption("nhsk1", "HSK 3.0 · N1", hsk30Descriptions[0]),
+            LevelOption("nhsk2", "HSK 3.0 · N2", hsk30Descriptions[1]),
+            LevelOption("nhsk3", "HSK 3.0 · N3", hsk30Descriptions[2]),
+        ).filter { it.key in liveHsk30Levels }
+    } else {
+        listOf(
+            LevelOption("beginner", copy.beginner, copy.beginnerSub),
+            LevelOption("hsk1", "HSK 1", descriptions[0]),
+            LevelOption("hsk2", "HSK 2", descriptions[1]),
+            LevelOption("hsk3", "HSK 3", descriptions[2]),
+            LevelOption("hsk4", "HSK 4", descriptions[3]),
+        )
+    }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         levels.forEachIndexed { index, option ->
             ChoiceCard(
@@ -845,6 +1013,9 @@ private fun SelectedLevelSummary(copy: OnboardingCopy, level: String) {
         "hsk2" -> "HSK 2"
         "hsk3" -> "HSK 3"
         "hsk4" -> "HSK 4"
+        "nhsk1" -> "HSK 3.0 · N1"
+        "nhsk2" -> "HSK 3.0 · N2"
+        "nhsk3" -> "HSK 3.0 · N3"
         else -> level.uppercase()
     }
     Row(
@@ -871,6 +1042,7 @@ private fun OnboardingFooter(
     copy: OnboardingCopy,
     state: OnboardingUiState,
     onNext: () -> Unit,
+    onLaterHsk20: () -> Unit,
     motionEnabled: Boolean,
     layoutSpec: OnboardingLayoutSpec,
 ) {
@@ -879,6 +1051,8 @@ private fun OnboardingFooter(
         state.error -> copy.retry
         state.step == 0 -> copy.start
         state.step == 1 -> copy.continueLabel
+        state.needsHsk30Unlock ->
+            if (state.hsk30PaymentEnabled && state.hsk30PriceTjs > 0) copy.unlockHsk30 else copy.getPro
         else -> copy.firstLesson
     }
     val interactionSource = remember { MutableInteractionSource() }
@@ -978,6 +1152,23 @@ private fun OnboardingFooter(
                             )
                         }
                     }
+                }
+            }
+            if (state.step >= 2 && state.needsHsk30Unlock) {
+                Spacer(Modifier.height(10.dp))
+                OutlinedButton(
+                    onClick = onLaterHsk20,
+                    enabled = !state.submitting,
+                    shape = RoundedCornerShape(13.dp),
+                    border = BorderStroke(1.dp, PompColors.Divider),
+                    modifier = Modifier.fillMaxWidth().height(46.dp),
+                ) {
+                    Text(
+                        copy.laterHsk20,
+                        color = PompColors.InkSecondary,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    )
                 }
             }
         }

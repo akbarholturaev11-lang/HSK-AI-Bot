@@ -1,0 +1,663 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 69,
+  "source_lesson": 11,
+  "part_no": 1,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我读大学呢",
+  "subtitle": {
+    "uz": "正反问 shaklidagi savollarni tushunish va tuzish; “在/正在” bilan davom etayotgan harakatni ifodalash; “要” bilan xohish yoki niyatni bildirish.",
+    "ru": "Понимать и строить утвердительно-отрицательные вопросы; выражать продолжающееся действие с “在/正在”; выражать желание или намерение с “要”.",
+    "tj": "Саволҳои тасдиқӣ-инкориро фаҳмидан ва сохтан; бо “在/正在” амали давомдорро ифода кардан; бо “要” хоҳиш ё ниятро нишон додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "时候",
+      "pinyin": "shíhou",
+      "pos": "n.",
+      "meaning": {
+        "uz": "vaqt; payt",
+        "ru": "время; момент",
+        "tj": "вақт; лаҳза"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "饭店",
+      "pinyin": "fàndiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "restoran",
+        "ru": "ресторан",
+        "tj": "тарабхона"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "知道",
+      "pinyin": "zhīdào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bilmoq",
+        "ru": "знать; понимать",
+        "tj": "донистан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "正在",
+      "pinyin": "zhèngzài",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "ayni paytda ...yapti",
+        "ru": "в процессе; сейчас",
+        "tj": "ҳоло дар ҷараён"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Tasdiq-inkor savoli",
+        "ru": "Утвердительно-отрицательный вопрос",
+        "tj": "Саволи тасдиқӣ-инкорӣ"
+      },
+      "title_zh": "正反问",
+      "rule": {
+        "uz": "正反问 tasdiq va inkor shaklini ketma-ket qo‘yadi: V+不/没+V yoki sifat+不+sifat.",
+        "ru": "Утвердительно-отрицательный вопрос строится сочетанием утвердительной и отрицательной формы: V+不/没+V или Adj+不+Adj.",
+        "tj": "Саволи тасдиқӣ-инкорӣ аз шакли тасдиқӣ ва инкорӣ сохта мешавад: V+不/没+V ё сифат+不+сифат."
+      },
+      "examples": [
+        {
+          "zh": "它是不是在超市后边？",
+          "pinyin": "Tā shì bu shì zài chāoshì hòubian?",
+          "translation": {
+            "uz": "U supermarket orqasidami yo‘qmi?",
+            "ru": "Он за супермаркетом или нет?",
+            "tj": "Он паси супермаркет аст ё не?"
+          }
+        },
+        {
+          "zh": "你去没去学校？",
+          "pinyin": "Nǐ qù méi qù xuéxiào?",
+          "translation": {
+            "uz": "Maktabga bordingmi yo‘qmi?",
+            "ru": "Ты ходил в школу или нет?",
+            "tj": "Ба мактаб рафтӣ ё не?"
+          }
+        },
+        {
+          "zh": "这种衣服好看不好看？",
+          "pinyin": "Zhè zhǒng yīfu hǎokàn bù hǎokàn?",
+          "translation": {
+            "uz": "Bu turdagi kiyim chiroylimi yo‘qmi?",
+            "ru": "Такая одежда красивая или нет?",
+            "tj": "Ин навъи либос зебост ё не?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Restoranda uchrashgach Wang Yifei va Li Wen suhbatlashmoqda.",
+        "ru": "После встречи в ресторане Ван Ифэй и Ли Вэнь разговаривают.",
+        "tj": "Пас аз вохӯрӣ дар тарабхона Ван Ифэй ва Ли Вэн суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "你们学习忙不忙？",
+          "pinyin": "Nǐmen xuéxí máng bu máng?",
+          "text": {
+            "uz": "O‘qishingiz bandmi yo‘qmi?",
+            "ru": "У вас учёба напряжённая?",
+            "tj": "Таҳсилатон сермашғул аст ё не?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Shanba ertalab Liu Ming kasalxonaga qo‘shimcha ishga ketishidan oldin qizi Xiaoxue bilan gaplashadi.",
+        "ru": "В субботу утром Лю Мин собирается на сверхурочную работу в больницу и перед выходом разговаривает с дочерью Сяосюэ.",
+        "tj": "Субҳи шанбе Лю Мин барои кори иловагӣ ба беморхона меравад ва пеш аз баромадан бо духтараш Сяосюэ суҳбат мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "去哪里？",
+          "pinyin": "Qù nǎli?",
+          "text": {
+            "uz": "Qayerga?",
+            "ru": "Куда?",
+            "tj": "Ба куҷо?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "去超市。",
+          "pinyin": "Qù chāoshì.",
+          "text": {
+            "uz": "Supermarketga.",
+            "ru": "В супермаркет.",
+            "tj": "Ба супермаркет."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "时候",
+            "pinyin": "shíhou",
+            "pos": "n.",
+            "meaning": {
+              "uz": "vaqt; payt",
+              "ru": "время; момент",
+              "tj": "вақт; лаҳза"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "时候",
+          "pinyin": "shíhou",
+          "translation": {
+            "uz": "vaqt; payt",
+            "ru": "время; момент",
+            "tj": "вақт; лаҳза"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'vaqt; payt' xitoycha qaysi?",
+            "ru": "'время; момент' по-китайски?",
+            "tj": "'вақт; лаҳза' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "饭店",
+            "正在",
+            "时候",
+            "知道"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "vaqt; payt = 时候 (shíhou)",
+            "ru": "время; момент = 时候 (shíhou)",
+            "tj": "вақт; лаҳза = 时候 (shíhou)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "饭店",
+            "pinyin": "fàndiàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "restoran",
+              "ru": "ресторан",
+              "tj": "тарабхона"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "饭店",
+          "pinyin": "fàndiàn",
+          "options": [
+            "正在",
+            "时候",
+            "知道",
+            "饭店"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "饭店 — restoran (fàndiàn)",
+            "ru": "饭店 — ресторан (fàndiàn)",
+            "tj": "饭店 — тарабхона (fàndiàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "知道",
+            "pinyin": "zhīdào",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bilmoq",
+              "ru": "знать; понимать",
+              "tj": "донистан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "知道 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 知道:",
+            "tj": "Маънои калимаи 知道-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bilmoq",
+              "ru": "знать; понимать",
+              "tj": "донистан"
+            },
+            {
+              "uz": "restoran",
+              "ru": "ресторан",
+              "tj": "тарабхона"
+            },
+            {
+              "uz": "ayni paytda ...yapti",
+              "ru": "в процессе; сейчас",
+              "tj": "ҳоло дар ҷараён"
+            },
+            {
+              "uz": "vaqt; payt",
+              "ru": "время; момент",
+              "tj": "вақт; лаҳза"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "知道 = bilmoq (zhīdào)",
+            "ru": "知道 = знать; понимать (zhīdào)",
+            "tj": "知道 = донистан (zhīdào)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "正在",
+            "pinyin": "zhèngzài",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "ayni paytda ...yapti",
+              "ru": "в процессе; сейчас",
+              "tj": "ҳоло дар ҷараён"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhèngzài qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhèngzài?",
+            "tj": "zhèngzài кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "饭店",
+            "正在",
+            "知道",
+            "时候"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "正在 = ayni paytda ...yapti (zhèngzài)",
+            "ru": "正在 = в процессе; сейчас (zhèngzài)",
+            "tj": "正在 = ҳоло дар ҷараён (zhèngzài)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "时候 talaffuzini tanlang:",
+            "ru": "Выберите произношение 时候:",
+            "tj": "Талаффузи 时候-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "fàndiàn",
+            "shíhou",
+            "zhīdào",
+            "zhèngzài"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "时候 — shíhou",
+            "ru": "时候 — shíhou",
+            "tj": "时候 — shíhou"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "时候",
+              {
+                "uz": "vaqt; payt",
+                "ru": "время; момент",
+                "tj": "вақт; лаҳза"
+              }
+            ],
+            [
+              "饭店",
+              {
+                "uz": "restoran",
+                "ru": "ресторан",
+                "tj": "тарабхона"
+              }
+            ],
+            [
+              "知道",
+              {
+                "uz": "bilmoq",
+                "ru": "знать; понимать",
+                "tj": "донистан"
+              }
+            ],
+            [
+              "正在",
+              {
+                "uz": "ayni paytda ...yapti",
+                "ru": "в процессе; сейчас",
+                "tj": "ҳоло дар ҷараён"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Tasdiq-inkor savoli",
+              "ru": "Утвердительно-отрицательный вопрос",
+              "tj": "Саволи тасдиқӣ-инкорӣ"
+            },
+            "title_zh": "正反问",
+            "rule": {
+              "uz": "正反问 tasdiq va inkor shaklini ketma-ket qo‘yadi: V+不/没+V yoki sifat+不+sifat.",
+              "ru": "Утвердительно-отрицательный вопрос строится сочетанием утвердительной и отрицательной формы: V+不/没+V или Adj+不+Adj.",
+              "tj": "Саволи тасдиқӣ-инкорӣ аз шакли тасдиқӣ ва инкорӣ сохта мешавад: V+不/没+V ё сифат+不+сифат."
+            },
+            "examples": [
+              {
+                "zh": "它是不是在超市后边？",
+                "pinyin": "Tā shì bu shì zài chāoshì hòubian?",
+                "translation": {
+                  "uz": "U supermarket orqasidami yo‘qmi?",
+                  "ru": "Он за супермаркетом или нет?",
+                  "tj": "Он паси супермаркет аст ё не?"
+                }
+              },
+              {
+                "zh": "你去没去学校？",
+                "pinyin": "Nǐ qù méi qù xuéxiào?",
+                "translation": {
+                  "uz": "Maktabga bordingmi yo‘qmi?",
+                  "ru": "Ты ходил в школу или нет?",
+                  "tj": "Ба мактаб рафтӣ ё не?"
+                }
+              },
+              {
+                "zh": "这种衣服好看不好看？",
+                "pinyin": "Zhè zhǒng yīfu hǎokàn bù hǎokàn?",
+                "translation": {
+                  "uz": "Bu turdagi kiyim chiroylimi yo‘qmi?",
+                  "ru": "Такая одежда красивая или нет?",
+                  "tj": "Ин навъи либос зебост ё не?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U supermarket orqasidami yo‘qmi?",
+            "ru": "Он за супермаркетом или нет?",
+            "tj": "Он паси супермаркет аст ё не?"
+          },
+          "tokens": [
+            "它",
+            "不",
+            "后",
+            "时候",
+            "是",
+            "边",
+            "在",
+            "是",
+            "超市",
+            "饭店"
+          ],
+          "answer_tokens": [
+            "它",
+            "是",
+            "不",
+            "是",
+            "在",
+            "超市",
+            "后",
+            "边"
+          ],
+          "explanation": {
+            "uz": "它是不是在超市后边？ — Tā shì bu shì zài chāoshì hòubian?",
+            "ru": "它是不是在超市后边？ — Tā shì bu shì zài chāoshì hòubian?",
+            "tj": "它是不是在超市后边？ — Tā shì bu shì zài chāoshì hòubian?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U supermarket orqasidami yo‘qmi?» — xitoychada qaysi biri?",
+            "ru": "«Он за супермаркетом или нет?» — какое предложение по-китайски?",
+            "tj": "«Он паси супермаркет аст ё не?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你去没去学校？",
+            "这种衣服好看不好看？",
+            "它是不是在超市后边？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "它是不是在超市后边？ — Tā shì bu shì zài chāoshì hòubian?",
+            "ru": "它是不是在超市后边？ — Tā shì bu shì zài chāoshì hòubian?",
+            "tj": "它是不是在超市后边？ — Tā shì bu shì zài chāoshì hòubian?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "饭店",
+          "pinyin": "fàndiàn",
+          "translation": {
+            "uz": "restoran",
+            "ru": "ресторан",
+            "tj": "тарабхона"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "时候",
+          "pinyin": "shíhou",
+          "translation": {
+            "uz": "vaqt; payt",
+            "ru": "время; момент",
+            "tj": "вақт; лаҳза"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "杯子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 杯子:",
+            "tj": "Маънои калимаи 杯子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "restoran",
+              "ru": "ресторан",
+              "tj": "тарабхона"
+            },
+            {
+              "uz": "piyola; stakan",
+              "ru": "чашка; стакан",
+              "tj": "пиёла; стакан"
+            },
+            {
+              "uz": "bilmoq",
+              "ru": "знать; понимать",
+              "tj": "донистан"
+            },
+            {
+              "uz": "vaqt; payt",
+              "ru": "время; момент",
+              "tj": "вақт; лаҳза"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "杯子 = piyola; stakan (bēizi)",
+            "ru": "杯子 = чашка; стакан (bēizi)",
+            "tj": "杯子 = пиёла; стакан (bēizi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "杯子",
+            "pinyin": "bēizi",
+            "meaning": {
+              "uz": "piyola; stakan",
+              "ru": "чашка; стакан",
+              "tj": "пиёла; стакан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'vaqt; payt' xitoycha qaysi?",
+            "ru": "'время; момент' по-китайски?",
+            "tj": "'вақт; лаҳза' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "知道",
+            "正在",
+            "饭店",
+            "时候"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "vaqt; payt = 时候 (shíhou)",
+            "ru": "время; момент = 时候 (shíhou)",
+            "tj": "вақт; лаҳза = 时候 (shíhou)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "时候",
+            "pinyin": "shíhou",
+            "meaning": {
+              "uz": "vaqt; payt",
+              "ru": "время; момент",
+              "tj": "вақт; лаҳза"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

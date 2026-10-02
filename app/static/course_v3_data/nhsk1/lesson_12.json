@@ -1,0 +1,567 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 12,
+  "source_lesson": 3,
+  "part_no": 3,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "我是中国人",
+  "subtitle": {
+    "uz": "“是” gaplari orqali shaxs yoki narsaning kim/nima ekanini aytish; “的” yordamida egalik va aniqlovchi munosabatini ifodalash; “吗” bilan ha/yo‘q savollarini tuzish.",
+    "ru": "Использовать предложения с “是” для обозначения принадлежности или идентификации; выражать определительные и притяжательные отношения с “的”; строить вопросы да/нет с “吗”.",
+    "tj": "Бо ҷумлаҳои “是” шахс ё чизро муаррифӣ кардан; бо “的” муносибати муайянкунанда ва соҳибиятро ифода кардан; бо “吗” саволҳои ҳа/не сохтан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "喂",
+      "pinyin": "wèi",
+      "pos": "int.",
+      "meaning": {
+        "uz": "allo; hey",
+        "ru": "алло; эй",
+        "tj": "алло; эй"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "姐姐",
+      "pinyin": "jiějie",
+      "pos": "n.",
+      "meaning": {
+        "uz": "opa",
+        "ru": "старшая сестра",
+        "tj": "апа; хоҳари калонӣ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "工作",
+      "pinyin": "gōngzuò",
+      "pos": "n./v.",
+      "meaning": {
+        "uz": "ish; ishlamoq",
+        "ru": "работа; работать",
+        "tj": "кор; кор кардан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "还",
+      "pinyin": "hái",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "hali ham",
+        "ru": "ещё; всё ещё",
+        "tj": "ҳанӯз"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Darsdan keyin sinfda Annie Chen Tianzhong telefonidagi suratlarni ko‘rmoqda.",
+        "ru": "После занятия в аудитории Энни смотрит фотографии в телефоне Чэнь Тяньчжуна.",
+        "tj": "Пас аз дарс дар синф Энни аксҳои телефони Чэн Тянҷунро тамошо мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "这是谁？",
+          "pinyin": "Zhè shì shéi?",
+          "text": {
+            "uz": "Bu kim?",
+            "ru": "Кто это?",
+            "tj": "Ин кӣ аст?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "这是我女朋友。",
+          "pinyin": "Zhè shì wǒ nǚpéngyou.",
+          "text": {
+            "uz": "Bu mening qiz do‘stim.",
+            "ru": "Это моя девушка.",
+            "tj": "Ин дӯстдухтари ман аст."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "你女朋友是哪国人？",
+          "pinyin": "Nǐ nǚpéngyou shì nǎ guó rén?",
+          "text": {
+            "uz": "Qiz do‘sting qaysi davlatdan?",
+            "ru": "Какой национальности твоя девушка?",
+            "tj": "Дӯстдухтари ту аз кадом кишвар аст?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Wang Yixue opasi Wang Yifei bilan videoqo‘ng‘iroq qilmoqda.",
+        "ru": "Дома Ван Исюэ разговаривает по видеосвязи со старшей сестрой Ван Ифэй.",
+        "tj": "Дар хона Ван Исюэ бо хоҳари калониаш Ван Ифэй видеозанг мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "姐姐！",
+          "pinyin": "Jiějie!",
+          "text": {
+            "uz": "Opa!",
+            "ru": "Сестра!",
+            "tj": "Апа!"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "喂",
+            "pinyin": "wèi",
+            "pos": "int.",
+            "meaning": {
+              "uz": "allo; hey",
+              "ru": "алло; эй",
+              "tj": "алло; эй"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wèi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wèi?",
+            "tj": "wèi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "这",
+            "人",
+            "的",
+            "喂"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "喂 = allo; hey (wèi)",
+            "ru": "喂 = алло; эй (wèi)",
+            "tj": "喂 = алло; эй (wèi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "姐姐",
+            "pinyin": "jiějie",
+            "pos": "n.",
+            "meaning": {
+              "uz": "opa",
+              "ru": "старшая сестра",
+              "tj": "апа; хоҳари калонӣ"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "姐姐 talaffuzini tanlang:",
+            "ru": "Выберите произношение 姐姐:",
+            "tj": "Талаффузи 姐姐-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "rén",
+            "jiějie",
+            "de",
+            "zhè"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "姐姐 — jiějie",
+            "ru": "姐姐 — jiějie",
+            "tj": "姐姐 — jiějie"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "工作",
+            "pinyin": "gōngzuò",
+            "pos": "n./v.",
+            "meaning": {
+              "uz": "ish; ishlamoq",
+              "ru": "работа; работать",
+              "tj": "кор; кор кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ish; ishlamoq' xitoycha qaysi?",
+            "ru": "'работа; работать' по-китайски?",
+            "tj": "'кор; кор кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "的",
+            "这",
+            "人",
+            "工作"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "ish; ishlamoq = 工作 (gōngzuò)",
+            "ru": "работа; работать = 工作 (gōngzuò)",
+            "tj": "кор; кор кардан = 工作 (gōngzuò)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "还",
+            "pinyin": "hái",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "hali ham",
+              "ru": "ещё; всё ещё",
+              "tj": "ҳанӯз"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "还",
+          "pinyin": "hái",
+          "translation": {
+            "uz": "hali ham",
+            "ru": "ещё; всё ещё",
+            "tj": "ҳанӯз"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "还",
+          "pinyin": "hái",
+          "options": [
+            "这",
+            "人",
+            "的",
+            "还"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "还 — hali ham (hái)",
+            "ru": "还 — ещё; всё ещё (hái)",
+            "tj": "还 — ҳанӯз (hái)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "喂 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 喂:",
+            "tj": "Маънои калимаи 喂-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "aniqlovchi/egalik yuklamasi",
+              "ru": "структурная частица",
+              "tj": "ҳиссачаи сохторӣ/соҳибият"
+            },
+            {
+              "uz": "allo; hey",
+              "ru": "алло; эй",
+              "tj": "алло; эй"
+            },
+            {
+              "uz": "odam; kishi",
+              "ru": "человек",
+              "tj": "одам; шахс"
+            },
+            {
+              "uz": "bu",
+              "ru": "это; этот",
+              "tj": "ин"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "喂 = allo; hey (wèi)",
+            "ru": "喂 = алло; эй (wèi)",
+            "tj": "喂 = алло; эй (wèi)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "喂",
+              {
+                "uz": "allo; hey",
+                "ru": "алло; эй",
+                "tj": "алло; эй"
+              }
+            ],
+            [
+              "姐姐",
+              {
+                "uz": "opa",
+                "ru": "старшая сестра",
+                "tj": "апа; хоҳари калонӣ"
+              }
+            ],
+            [
+              "工作",
+              {
+                "uz": "ish; ishlamoq",
+                "ru": "работа; работать",
+                "tj": "кор; кор кардан"
+              }
+            ],
+            [
+              "还",
+              {
+                "uz": "hali ham",
+                "ru": "ещё; всё ещё",
+                "tj": "ҳанӯз"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "还",
+          "pinyin": "hái",
+          "options": [
+            "人",
+            "这",
+            "还",
+            "的"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "还 — hali ham (hái)",
+            "ru": "还 — ещё; всё ещё (hái)",
+            "tj": "还 — ҳанӯз (hái)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "喂",
+              {
+                "uz": "allo; hey",
+                "ru": "алло; эй",
+                "tj": "алло; эй"
+              }
+            ],
+            [
+              "姐姐",
+              {
+                "uz": "opa",
+                "ru": "старшая сестра",
+                "tj": "апа; хоҳари калонӣ"
+              }
+            ],
+            [
+              "工作",
+              {
+                "uz": "ish; ishlamoq",
+                "ru": "работа; работать",
+                "tj": "кор; кор кардан"
+              }
+            ],
+            [
+              "还",
+              {
+                "uz": "hali ham",
+                "ru": "ещё; всё ещё",
+                "tj": "ҳанӯз"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "还",
+          "pinyin": "hái",
+          "translation": {
+            "uz": "hali ham",
+            "ru": "ещё; всё ещё",
+            "tj": "ҳанӯз"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "她 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 她:",
+            "tj": "Маънои калимаи 她-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "u (ayol)",
+              "ru": "она; её",
+              "tj": "ӯ (зан)"
+            },
+            {
+              "uz": "aniqlovchi/egalik yuklamasi",
+              "ru": "структурная частица",
+              "tj": "ҳиссачаи сохторӣ/соҳибият"
+            },
+            {
+              "uz": "odam; kishi",
+              "ru": "человек",
+              "tj": "одам; шахс"
+            },
+            {
+              "uz": "bu",
+              "ru": "это; этот",
+              "tj": "ин"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "她 = u (ayol) (tā)",
+            "ru": "她 = она; её (tā)",
+            "tj": "她 = ӯ (зан) (tā)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "她",
+            "pinyin": "tā",
+            "meaning": {
+              "uz": "u (ayol)",
+              "ru": "она; её",
+              "tj": "ӯ (зан)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'hali ham' xitoycha qaysi?",
+            "ru": "'ещё; всё ещё' по-китайски?",
+            "tj": "'ҳанӯз' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "人",
+            "还",
+            "这",
+            "的"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "hali ham = 还 (hái)",
+            "ru": "ещё; всё ещё = 还 (hái)",
+            "tj": "ҳанӯз = 还 (hái)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "还",
+            "pinyin": "hái",
+            "meaning": {
+              "uz": "hali ham",
+              "ru": "ещё; всё ещё",
+              "tj": "ҳанӯз"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

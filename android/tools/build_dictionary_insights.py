@@ -11,7 +11,8 @@ inside the APK so the entry is complete with no connection:
 **Examples** come from the course first: every dialogue line and grammar
 example already has pinyin and a translation in all three languages, and a
 learner may meet the same sentence in a lesson. Words the course never uses
-in a sentence take theirs from `dictionary_insights/examples*.json`.
+in a sentence take theirs from `dictionary_insights/examples*.json` or the
+HSK 3.0 manual example source used by the Mini App.
 
 **Breakdowns** are written by hand, in `dictionary_insights/parts/*.json`,
 one character per line:
@@ -42,6 +43,8 @@ ASSETS = ROOT / "android" / "app" / "src" / "main" / "assets"
 SOURCES = Path(__file__).resolve().parent / "dictionary_insights"
 EXAMPLES_ASSET = ASSETS / "hsk-examples.json"
 PARTS_ASSET = ASSETS / "hanzi-parts.json"
+HSK30_WORDS_ASSET = ASSETS / "hsk30-words.js"
+HSK30_MANUAL_EXAMPLES = ROOT / "scripts" / "hsk30" / "dictionary_examples_manual.json"
 
 LANGUAGES = ("uz", "ru", "tj")
 MAX_EXAMPLES = 3
@@ -60,12 +63,30 @@ def js_literal(path: Path, name: str) -> object:
 
 
 def word_level(label: str) -> int:
+    nhsk = re.search(r"N([1-3])", label or "", re.IGNORECASE)
+    if nhsk:
+        return 4 + int(nhsk.group(1))
     match = re.search(r"HSK\s*(\d)", label or "")
     return int(match.group(1)) if match else 9
 
 
 def dictionary_words() -> list[dict]:
     return js_literal(ASSETS / "hsk-words.js", "WORDS")
+
+
+def hsk30_dictionary_words() -> list[dict]:
+    text = HSK30_WORDS_ASSET.read_text(encoding="utf-8")
+    marker = re.search(r"window\.HSK30_WORDS\s*=\s*", text)
+    if marker is None:
+        raise ValueError("Android HSK 3.0 word list has no HSK30_WORDS array")
+    words, _ = json.JSONDecoder().raw_decode(text, marker.end())
+    if not isinstance(words, list):
+        raise ValueError("Android HSK 3.0 word list is not an array")
+    return words
+
+
+def all_dictionary_words() -> list[dict]:
+    return dictionary_words() + hsk30_dictionary_words()
 
 
 def translations(value: object) -> list[str] | None:
@@ -93,8 +114,10 @@ def course_sentences() -> dict[str, tuple[str, list[str], int]]:
         if zh not in found or found[zh][2] > level:
             found[zh] = (pinyin, texts, level)
 
-    for path in sorted(COURSE.glob("hsk*/*.json")):
-        level = int(path.parent.name.removeprefix("hsk"))
+    paths = set(COURSE.glob("hsk*/*.json")) | set(COURSE.glob("nhsk*/*.json"))
+    for path in sorted(paths):
+        nhsk = re.fullmatch(r"nhsk([1-3])", path.parent.name)
+        level = 4 + int(nhsk.group(1)) if nhsk else int(path.parent.name.removeprefix("hsk"))
         data = json.loads(path.read_text(encoding="utf-8"))
         for dialogue in data.get("dialogues") or []:
             for line in dialogue.get("dialogue") or []:
@@ -110,12 +133,41 @@ def course_sentences() -> dict[str, tuple[str, list[str], int]]:
 
 
 def authored_examples() -> dict[str, list[list[str]]]:
-    """Hand-written sentences, from every `dictionary_insights/examples*.json`."""
+    """Hand-written sentences from the Android and HSK 3.0 sources."""
     merged: dict[str, list[list[str]]] = {}
     for path in sorted(SOURCES.glob("examples*.json")):
         for word, rows in json.loads(path.read_text(encoding="utf-8")).items():
             merged.setdefault(word, []).extend(list(row) for row in rows)
+    for item in json.loads(HSK30_MANUAL_EXAMPLES.read_text(encoding="utf-8")):
+        if not isinstance(item, dict):
+            continue
+        word = str(item.get("word") or "").strip()
+        meanings = item.get("m") if isinstance(item.get("m"), dict) else {}
+        row = [
+            str(item.get("zh") or "").strip(),
+            str(item.get("p") or "").strip(),
+            *(str(meanings.get(language) or "").strip() for language in LANGUAGES),
+        ]
+        if word:
+            merged.setdefault(word, []).append(row)
     return merged
+
+
+def preferred_hsk30_examples() -> dict[str, list[str]]:
+    """Manual HSK 3.0 sentences marked to replace a weaker course example."""
+    preferred: dict[str, list[str]] = {}
+    for item in json.loads(HSK30_MANUAL_EXAMPLES.read_text(encoding="utf-8")):
+        if not isinstance(item, dict) or item.get("prefer") is not True:
+            continue
+        word = str(item.get("word") or "").strip()
+        meanings = item.get("m") if isinstance(item.get("m"), dict) else {}
+        if word:
+            preferred[word] = [
+                str(item.get("zh") or "").strip(),
+                str(item.get("p") or "").strip(),
+                *(str(meanings.get(language) or "").strip() for language in LANGUAGES),
+            ]
+    return preferred
 
 
 def example_problems(words: list[dict]) -> list[str]:
@@ -136,6 +188,11 @@ def example_problems(words: list[dict]) -> list[str]:
             for text in row[1:]:
                 if typo := mixed_script(text):
                     problems.append(f"examples: {word}: {typo!r} mixes Latin and Cyrillic letters")
+    for word, row in preferred_hsk30_examples().items():
+        if word not in known:
+            problems.append(f"examples: preferred HSK 3.0 word {word} is not in the dictionary")
+        if len(row) != 2 + len(LANGUAGES) or not all(row):
+            problems.append(f"examples: preferred HSK 3.0 example for {word} needs [zh, pinyin, uz, ru, tj]")
     return problems
 
 
@@ -162,6 +219,7 @@ def uses_word(sentence: str, word: str) -> bool:
 def build_examples(words: list[dict]) -> dict:
     sentences = course_sentences()
     authored = authored_examples()
+    preferred = preferred_hsk30_examples()
     table: list[list[str]] = []
     index: dict[str, int] = {}
     by_word: dict[str, list[int]] = {}
@@ -184,6 +242,8 @@ def build_examples(words: list[dict]) -> dict:
             key=lambda zh: (max(0, sentences[zh][2] - level), len(HANZI.findall(zh)), zh),
         )
         chosen: list[int] = []
+        if hanzi in preferred:
+            chosen.append(slot(preferred[hanzi]))
         for zh in candidates:
             if len(chosen) == MAX_EXAMPLES:
                 break
@@ -195,6 +255,8 @@ def build_examples(words: list[dict]) -> dict:
         for row in authored.get(hanzi, []):
             if len(chosen) == MAX_EXAMPLES:
                 break
+            if any(table[index][0] == row[0] for index in chosen):
+                continue
             if len(row) == 2 + len(LANGUAGES) and all(row) and uses_word(row[0], hanzi):
                 chosen.append(slot([str(v).strip() for v in row]))
         if chosen:
@@ -273,9 +335,10 @@ def serialise(value: dict) -> str:
 
 
 def build() -> tuple[str, str, list[str]]:
-    words = dictionary_words()
+    legacy_words = dictionary_words()
+    words = legacy_words + hsk30_dictionary_words()
     examples = build_examples(words)
-    parts, problems = build_parts(words)
+    parts, problems = build_parts(legacy_words)
     return serialise(examples), serialise(parts), problems + example_problems(words)
 
 

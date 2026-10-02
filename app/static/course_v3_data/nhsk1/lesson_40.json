@@ -1,0 +1,675 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 40,
+  "source_lesson": 7,
+  "part_no": 1,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我晚上六点半下班",
+  "subtitle": {
+    "uz": "Voqealar vaqtini tushunish va aytish; “吧” bilan taklif, maslahat, buyruq yoki iltimosni ifodalash; “呢” bilan tasdiqlanayotgan faktni bildirish; vaqt so‘zlari va ravishlarning gapdagi o‘rnini to‘g‘ri qo‘llash.",
+    "ru": "Понимать и называть время событий; использовать “吧” для предложения, совета, побуждения или просьбы; использовать “呢” для подтверждаемого факта; правильно располагать наречия и выражения времени.",
+    "tj": "Вақти рӯйдодҳоро фаҳмидан ва гуфтан; бо “吧” пешниҳод, маслиҳат, амр ё хоҳишро ифода кардан; бо “呢” воқеияти тасдиқшавандаро нишон додан; ҷойи дурусти зарфҳо ва ифодаҳои вақтро истифода бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "现在",
+      "pinyin": "xiànzài",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hozir",
+        "ru": "сейчас",
+        "tj": "ҳозир"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "点",
+      "pinyin": "diǎn",
+      "pos": "m.",
+      "meaning": {
+        "uz": "soat (vaqt birligi)",
+        "ru": "час (при указании времени)",
+        "tj": "соат (ҳангоми гуфтани вақт)"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "早上",
+      "pinyin": "zǎoshang",
+      "pos": "n.",
+      "meaning": {
+        "uz": "erta tong",
+        "ru": "раннее утро",
+        "tj": "субҳи барвақт"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "上午",
+      "pinyin": "shàngwǔ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ertalab; tushgacha",
+        "ru": "утро; до полудня",
+        "tj": "субҳ; то нисфирӯзӣ"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Ravish va vaqt so‘zlarining hol sifatidagi o‘rni",
+        "ru": "Позиция наречий и выражений времени в роли обстоятельства",
+        "tj": "Ҷойи зарфҳо ва ифодаҳои вақт ҳамчун ҳол"
+      },
+      "title_zh": "副词、时间词语作状语的位置",
+      "rule": {
+        "uz": "Ravish va vaqt so‘zlari hol vazifasida kelganda odatda fe’l yoki sifatdan oldin turadi.",
+        "ru": "Когда наречия и выражения времени выступают обстоятельствами, они обычно стоят перед глаголом или прилагательным.",
+        "tj": "Вақте зарфҳо ва ифодаҳои вақт вазифаи ҳолро иҷро мекунанд, одатан пеш аз феъл ё сифат меоянд."
+      },
+      "examples": [
+        {
+          "zh": "我下午有课。",
+          "pinyin": "Wǒ xiàwǔ yǒu kè.",
+          "translation": {
+            "uz": "Tushdan keyin darsim bor.",
+            "ru": "Днём у меня занятие.",
+            "tj": "Баъди нисфирӯзӣ дарс дорам."
+          }
+        },
+        {
+          "zh": "妹妹很高兴。",
+          "pinyin": "Mèimei hěn gāoxìng.",
+          "translation": {
+            "uz": "Singlim juda xursand.",
+            "ru": "Младшая сестра очень рада.",
+            "tj": "Хоҳари хурдӣ хеле хурсанд аст."
+          }
+        },
+        {
+          "zh": "她上午八点半上课。",
+          "pinyin": "Tā shàngwǔ bā diǎn bàn shàngkè.",
+          "translation": {
+            "uz": "U ertalab 8:30 da darsga kiradi.",
+            "ru": "У неё занятие в 8:30 утра.",
+            "tj": "Ӯ субҳ соати 8:30 ба дарс медарояд."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Bai Jiayue va Annie telefonda gaplashmoqda.",
+        "ru": "Бай Цзяюэ и Энни разговаривают по телефону.",
+        "tj": "Бай Ҷяюэ ва Энни бо телефон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "现在几点？",
+          "pinyin": "Xiànzài jǐ diǎn?",
+          "text": {
+            "uz": "Hozir soat necha?",
+            "ru": "Который сейчас час?",
+            "tj": "Ҳозир соат чанд?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen Bai Jiayuega duch keladi.",
+        "ru": "В кампусе Ли Вэнь встречает Бай Цзяюэ.",
+        "tj": "Дар кампус Ли Вэн бо Бай Ҷяюэ вомехӯрад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "好的。明天呢？",
+          "pinyin": "Hǎo de. Míngtiān ne?",
+          "text": {
+            "uz": "Xo‘p. Ertaga-chi?",
+            "ru": "Хорошо. А завтра?",
+            "tj": "Хуб. Фардо чӣ?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "现在",
+            "pinyin": "xiànzài",
+            "pos": "n.",
+            "meaning": {
+              "uz": "hozir",
+              "ru": "сейчас",
+              "tj": "ҳозир"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "现在",
+          "pinyin": "xiànzài",
+          "options": [
+            "现在",
+            "早上",
+            "上午",
+            "点"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "现在 — hozir (xiànzài)",
+            "ru": "现在 — сейчас (xiànzài)",
+            "tj": "现在 — ҳозир (xiànzài)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "点",
+            "pinyin": "diǎn",
+            "pos": "m.",
+            "meaning": {
+              "uz": "soat (vaqt birligi)",
+              "ru": "час (при указании времени)",
+              "tj": "соат (ҳангоми гуфтани вақт)"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "点 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 点:",
+            "tj": "Маънои калимаи 点-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "soat (vaqt birligi)",
+              "ru": "час (при указании времени)",
+              "tj": "соат (ҳангоми гуфтани вақт)"
+            },
+            {
+              "uz": "erta tong",
+              "ru": "раннее утро",
+              "tj": "субҳи барвақт"
+            },
+            {
+              "uz": "ertalab; tushgacha",
+              "ru": "утро; до полудня",
+              "tj": "субҳ; то нисфирӯзӣ"
+            },
+            {
+              "uz": "hozir",
+              "ru": "сейчас",
+              "tj": "ҳозир"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "点 = soat (vaqt birligi) (diǎn)",
+            "ru": "点 = час (при указании времени) (diǎn)",
+            "tj": "点 = соат (ҳангоми гуфтани вақт) (diǎn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "早上",
+            "pinyin": "zǎoshang",
+            "pos": "n.",
+            "meaning": {
+              "uz": "erta tong",
+              "ru": "раннее утро",
+              "tj": "субҳи барвақт"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zǎoshang qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zǎoshang?",
+            "tj": "zǎoshang кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "现在",
+            "早上",
+            "点",
+            "上午"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "早上 = erta tong (zǎoshang)",
+            "ru": "早上 = раннее утро (zǎoshang)",
+            "tj": "早上 = субҳи барвақт (zǎoshang)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "上午",
+            "pinyin": "shàngwǔ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ertalab; tushgacha",
+              "ru": "утро; до полудня",
+              "tj": "субҳ; то нисфирӯзӣ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "上午",
+          "pinyin": "shàngwǔ",
+          "translation": {
+            "uz": "ertalab; tushgacha",
+            "ru": "утро; до полудня",
+            "tj": "субҳ; то нисфирӯзӣ"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "上午 talaffuzini tanlang:",
+            "ru": "Выберите произношение 上午:",
+            "tj": "Талаффузи 上午-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shàngwǔ",
+            "zǎoshang",
+            "xiànzài",
+            "diǎn"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "上午 — shàngwǔ",
+            "ru": "上午 — shàngwǔ",
+            "tj": "上午 — shàngwǔ"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'hozir' xitoycha qaysi?",
+            "ru": "'сейчас' по-китайски?",
+            "tj": "'ҳозир' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "早上",
+            "点",
+            "上午",
+            "现在"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "hozir = 现在 (xiànzài)",
+            "ru": "сейчас = 现在 (xiànzài)",
+            "tj": "ҳозир = 现在 (xiànzài)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "现在",
+              {
+                "uz": "hozir",
+                "ru": "сейчас",
+                "tj": "ҳозир"
+              }
+            ],
+            [
+              "点",
+              {
+                "uz": "soat (vaqt birligi)",
+                "ru": "час (при указании времени)",
+                "tj": "соат (ҳангоми гуфтани вақт)"
+              }
+            ],
+            [
+              "早上",
+              {
+                "uz": "erta tong",
+                "ru": "раннее утро",
+                "tj": "субҳи барвақт"
+              }
+            ],
+            [
+              "上午",
+              {
+                "uz": "ertalab; tushgacha",
+                "ru": "утро; до полудня",
+                "tj": "субҳ; то нисфирӯзӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Ravish va vaqt so‘zlarining hol sifatidagi o‘rni",
+              "ru": "Позиция наречий и выражений времени в роли обстоятельства",
+              "tj": "Ҷойи зарфҳо ва ифодаҳои вақт ҳамчун ҳол"
+            },
+            "title_zh": "副词、时间词语作状语的位置",
+            "rule": {
+              "uz": "Ravish va vaqt so‘zlari hol vazifasida kelganda odatda fe’l yoki sifatdan oldin turadi.",
+              "ru": "Когда наречия и выражения времени выступают обстоятельствами, они обычно стоят перед глаголом или прилагательным.",
+              "tj": "Вақте зарфҳо ва ифодаҳои вақт вазифаи ҳолро иҷро мекунанд, одатан пеш аз феъл ё сифат меоянд."
+            },
+            "examples": [
+              {
+                "zh": "我下午有课。",
+                "pinyin": "Wǒ xiàwǔ yǒu kè.",
+                "translation": {
+                  "uz": "Tushdan keyin darsim bor.",
+                  "ru": "Днём у меня занятие.",
+                  "tj": "Баъди нисфирӯзӣ дарс дорам."
+                }
+              },
+              {
+                "zh": "妹妹很高兴。",
+                "pinyin": "Mèimei hěn gāoxìng.",
+                "translation": {
+                  "uz": "Singlim juda xursand.",
+                  "ru": "Младшая сестра очень рада.",
+                  "tj": "Хоҳари хурдӣ хеле хурсанд аст."
+                }
+              },
+              {
+                "zh": "她上午八点半上课。",
+                "pinyin": "Tā shàngwǔ bā diǎn bàn shàngkè.",
+                "translation": {
+                  "uz": "U ertalab 8:30 da darsga kiradi.",
+                  "ru": "У неё занятие в 8:30 утра.",
+                  "tj": "Ӯ субҳ соати 8:30 ба дарс медарояд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Singlim juda xursand.",
+            "ru": "Младшая сестра очень рада.",
+            "tj": "Хоҳари хурдӣ хеле хурсанд аст."
+          },
+          "tokens": [
+            "很",
+            "高兴",
+            "现在",
+            "点",
+            "妹妹"
+          ],
+          "answer_tokens": [
+            "妹妹",
+            "很",
+            "高兴"
+          ],
+          "explanation": {
+            "uz": "妹妹很高兴。 — Mèimei hěn gāoxìng.",
+            "ru": "妹妹很高兴。 — Mèimei hěn gāoxìng.",
+            "tj": "妹妹很高兴。 — Mèimei hěn gāoxìng."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U ertalab 8:30 da darsga kiradi.» — xitoychada qaysi biri?",
+            "ru": "«У неё занятие в 8:30 утра.» — какое предложение по-китайски?",
+            "tj": "«Ӯ субҳ соати 8:30 ба дарс медарояд.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我下午有课。",
+            "妹妹很高兴。",
+            "她上午八点半上课。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "她上午八点半上课。 — Tā shàngwǔ bā diǎn bàn shàngkè.",
+            "ru": "她上午八点半上课。 — Tā shàngwǔ bā diǎn bàn shàngkè.",
+            "tj": "她上午八点半上课。 — Tā shàngwǔ bā diǎn bàn shàngkè."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "现在",
+              {
+                "uz": "hozir",
+                "ru": "сейчас",
+                "tj": "ҳозир"
+              }
+            ],
+            [
+              "点",
+              {
+                "uz": "soat (vaqt birligi)",
+                "ru": "час (при указании времени)",
+                "tj": "соат (ҳангоми гуфтани вақт)"
+              }
+            ],
+            [
+              "早上",
+              {
+                "uz": "erta tong",
+                "ru": "раннее утро",
+                "tj": "субҳи барвақт"
+              }
+            ],
+            [
+              "上午",
+              {
+                "uz": "ertalab; tushgacha",
+                "ru": "утро; до полудня",
+                "tj": "субҳ; то нисфирӯзӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "上午",
+          "pinyin": "shàngwǔ",
+          "translation": {
+            "uz": "ertalab; tushgacha",
+            "ru": "утро; до полудня",
+            "tj": "субҳ; то нисфирӯзӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "明天 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 明天:",
+            "tj": "Маънои калимаи 明天-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hozir",
+              "ru": "сейчас",
+              "tj": "ҳозир"
+            },
+            {
+              "uz": "erta tong",
+              "ru": "раннее утро",
+              "tj": "субҳи барвақт"
+            },
+            {
+              "uz": "ertaga",
+              "ru": "завтра",
+              "tj": "фардо"
+            },
+            {
+              "uz": "soat (vaqt birligi)",
+              "ru": "час (при указании времени)",
+              "tj": "соат (ҳангоми гуфтани вақт)"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "明天 = ertaga (míngtiān)",
+            "ru": "明天 = завтра (míngtiān)",
+            "tj": "明天 = фардо (míngtiān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "明天",
+            "pinyin": "míngtiān",
+            "meaning": {
+              "uz": "ertaga",
+              "ru": "завтра",
+              "tj": "фардо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ertalab; tushgacha' xitoycha qaysi?",
+            "ru": "'утро; до полудня' по-китайски?",
+            "tj": "'субҳ; то нисфирӯзӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "现在",
+            "上午",
+            "早上",
+            "点"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ertalab; tushgacha = 上午 (shàngwǔ)",
+            "ru": "утро; до полудня = 上午 (shàngwǔ)",
+            "tj": "субҳ; то нисфирӯзӣ = 上午 (shàngwǔ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "上午",
+            "pinyin": "shàngwǔ",
+            "meaning": {
+              "uz": "ertalab; tushgacha",
+              "ru": "утро; до полудня",
+              "tj": "субҳ; то нисфирӯзӣ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -104,6 +104,7 @@ data class SubscriptionCheckoutState(
     val currencySaving: Boolean = false,
     val currencyErrorRes: Int? = null,
 ) {
+    val isHsk30Unlock: Boolean get() = overview?.mode == "hsk30_unlock"
     val flow: List<CheckoutStep> get() = checkoutFlow(region)
 
     /** `dc_city` or `alif` for a card payment, null for the QR wallets. */
@@ -206,8 +207,17 @@ class SubscriptionCheckoutViewModel(
             when (val result = repository.updateSubscriptionCurrencyPreference(currency)) {
                 is ApiResult.Success -> {
                     val response = result.value
-                    val hasPrices = response.prices.values.any { it.isNotEmpty() }
-                    if (!response.ok || response.currency != currency || !hasPrices) {
+                    // The preference endpoint returns subscription prices. A permanent
+                    // course unlock must reload its own product instead of losing its plan.
+                    val productOverview = if (response.ok && response.currency == currency && current.isHsk30Unlock) {
+                        (repository.checkoutOverview(origin) as? ApiResult.Success)?.value
+                    } else null
+                    val prices = if (current.isHsk30Unlock) productOverview?.prices.orEmpty() else response.prices
+                    val hasPrices = prices.values.any { it.containsKey(current.plan) }
+                    val productMatches = !current.isHsk30Unlock ||
+                        (productOverview?.ok == true && productOverview.mode == current.overview?.mode &&
+                            productOverview.preferredCurrency == currency)
+                    if (!response.ok || response.currency != currency || !hasPrices || !productMatches) {
                         _state.update {
                             it.copy(
                                 currencySaving = false,
@@ -217,9 +227,10 @@ class SubscriptionCheckoutViewModel(
                     } else {
                         _state.update { latest ->
                             val overview = latest.overview?.copy(
-                                prices = response.prices,
+                                prices = prices,
                                 preferredCurrency = currency,
-                                displayCurrency = response.displayCurrency.ifBlank { currency },
+                                displayCurrency = (productOverview?.displayCurrency ?: response.displayCurrency)
+                                    .ifBlank { currency },
                             )
                             latest.copy(
                                 overview = overview,
@@ -415,7 +426,7 @@ class SubscriptionCheckoutViewModel(
     }
 
     private companion object {
-        val PLANS = listOf("1_month", "10_days", "3_months")
+        val PLANS = listOf("hsk30_unlock", "1_month", "10_days", "3_months")
         const val MAX_RECEIPT_BYTES = 8 * 1024 * 1024
         const val MAX_SOURCE_BYTES = 24 * 1024 * 1024
         const val TARGET_BASE64_CHARS = 300 * 1024

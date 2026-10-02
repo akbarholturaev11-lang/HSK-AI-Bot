@@ -1,0 +1,727 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 84,
+  "source_lesson": 13,
+  "part_no": 1,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "请给我一杯茶",
+  "subtitle": {
+    "uz": "“可以” bilan ruxsat yoki imkoniyatni ifodalash; “动词+一下” bilan qisqa yoki sinab ko‘rish xarakteridagi harakatni aytish; ikki obyektli gaplardan foydalanish; ovqat buyurtma qilishdagi asosiy iboralarni tushunish.",
+    "ru": "Выражать разрешение и возможность с “可以”; использовать “глагол+一下” для краткого или пробного действия; строить предложения с двумя дополнениями; понимать базовые фразы для заказа еды.",
+    "tj": "Бо “可以” иҷозат ё имкониятро ифода кардан; бо “феъл+一下” амали кӯтоҳ ё озмоиширо гуфтан; ҷумлаҳои ду-объектиро истифода бурдан; ибораҳои асосии фармоиши хӯрокро фаҳмидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "可以",
+      "pinyin": "kěyǐ",
+      "pos": "mod.",
+      "meaning": {
+        "uz": "mumkin; qila olmoq",
+        "ru": "можно; мочь",
+        "tj": "мумкин; тавонистан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "再",
+      "pinyin": "zài",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "yana; yana bir marta",
+        "ru": "снова; ещё раз",
+        "tj": "боз; бори дигар"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "问题",
+      "pinyin": "wèntí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "savol; muammo",
+        "ru": "вопрос; проблема",
+        "tj": "савол; масъала"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "卖",
+      "pinyin": "mài",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sotmoq",
+        "ru": "продавать",
+        "tj": "фурӯхтан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Modal fe’l “可以”",
+        "ru": "Модальный глагол “可以”",
+        "tj": "Феъли модалии “可以”"
+      },
+      "title_zh": "能愿动词“可以”",
+      "rule": {
+        "uz": "“可以” fe’l oldidan kelib mumkinlik, qobiliyat yoki ruxsatni bildiradi.",
+        "ru": "“可以” ставится перед глаголом и выражает возможность, способность или разрешение.",
+        "tj": "“可以” пеш аз феъл омада, имкон, қобилият ё иҷозатро ифода мекунад."
+      },
+      "examples": [
+        {
+          "zh": "我可以再问您一个问题吗？",
+          "pinyin": "Wǒ kěyǐ zài wèn nín yí ge wèntí ma?",
+          "translation": {
+            "uz": "Sizdan yana bir savol so‘rasam bo‘ladimi?",
+            "ru": "Можно задать вам ещё один вопрос?",
+            "tj": "Метавонам боз як савол пурсам?"
+          }
+        },
+        {
+          "zh": "你们可以看这本书。",
+          "pinyin": "Nǐmen kěyǐ kàn zhè běn shū.",
+          "translation": {
+            "uz": "Sizlar bu kitobni o‘qishingiz mumkin.",
+            "ru": "Вы можете прочитать эту книгу.",
+            "tj": "Шумо метавонед ин китобро хонед."
+          }
+        },
+        {
+          "zh": "我可以坐吗？可以，请坐！",
+          "pinyin": "Wǒ kěyǐ zuò ma? Kěyǐ, qǐng zuò!",
+          "translation": {
+            "uz": "O‘tirsam bo‘ladimi? Bo‘ladi, marhamat o‘tiring!",
+            "ru": "Можно сесть? Можно, присаживайтесь!",
+            "tj": "Нишастан мумкин? Мумкин, марҳамат нишинед!"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda darsdan keyin Bai Jiayue ustoz Wangdan savol so‘raydi.",
+        "ru": "В аудитории после занятия Бай Цзяюэ задаёт вопрос преподавателю Ван.",
+        "tj": "Дар синф пас аз дарс Бай Ҷяюэ аз устод Ван савол мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "可以。你有什么问题？",
+          "pinyin": "Kěyǐ. Nǐ yǒu shénme wèntí?",
+          "text": {
+            "uz": "Mumkin. Qanday savoling bor?",
+            "ru": "Можно. Какой у тебя вопрос?",
+            "tj": "Мумкин. Чӣ савол дорӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "那个小店卖不卖手机？",
+          "pinyin": "Nàge xiǎodiàn mài bu mài shǒujī?",
+          "text": {
+            "uz": "O‘sha kichik do‘kon telefon sotadimi yo‘qmi?",
+            "ru": "В том маленьком магазине продают телефоны?",
+            "tj": "Он мағозаи хурд телефон мефурӯшад ё не?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kafeda Wang Yixue nonushta qilmoqchi.",
+        "ru": "В кафе Ван Исюэ хочет позавтракать.",
+        "tj": "Дар қаҳвахона Ван Исюэ мехоҳад наҳорӣ кунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Waitress",
+          "zh": "好的。您还要什么？",
+          "pinyin": "Hǎo de. Nín hái yào shénme?",
+          "text": {
+            "uz": "Xo‘p. Yana nima olasiz?",
+            "ru": "Хорошо. Что-нибудь ещё?",
+            "tj": "Хуб. Боз чӣ мехоҳед?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda Liu Ming ovqat buyurtma qilmoqda.",
+        "ru": "В ресторане Лю Мин делает заказ.",
+        "tj": "Дар тарабхона Лю Мин хӯрок фармоиш медиҳад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "我要一斤饺子。",
+          "pinyin": "Wǒ yào yì jīn jiǎozi.",
+          "text": {
+            "uz": "Menga bir jin jiaozi bering.",
+            "ru": "Я возьму один цзинь цзяоцзы.",
+            "tj": "Ман як ҷин ҷяозы мегирам."
+          }
+        },
+        {
+          "speaker": "Waiter",
+          "zh": "好的。一斤饺子40个。",
+          "pinyin": "Hǎo de. Yì jīn jiǎozi sìshí ge.",
+          "text": {
+            "uz": "Xo‘p. Bir jin jiaozi 40 dona bo‘ladi.",
+            "ru": "Хорошо. В одном цзине цзяоцзы 40 штук.",
+            "tj": "Хуб. Як ҷин ҷяозы 40 дона мешавад."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "40个太多了，我要一半吧。",
+          "pinyin": "Sìshí ge tài duō le, wǒ yào yíbàn ba.",
+          "text": {
+            "uz": "40 dona juda ko‘p, yarmini olaman.",
+            "ru": "40 штук слишком много, возьму половину.",
+            "tj": "40 дона хеле зиёд, нисфашро мегирам."
+          }
+        },
+        {
+          "speaker": "Waiter",
+          "zh": "半斤20个。您想喝什么？",
+          "pinyin": "Bàn jīn èrshí ge. Nín xiǎng hē shénme?",
+          "text": {
+            "uz": "Yarim jin 20 dona. Nima ichasiz?",
+            "ru": "Полцзиня — 20 штук. Что будете пить?",
+            "tj": "Ним ҷин 20 дона. Чӣ менӯшед?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "可以",
+            "pinyin": "kěyǐ",
+            "pos": "mod.",
+            "meaning": {
+              "uz": "mumkin; qila olmoq",
+              "ru": "можно; мочь",
+              "tj": "мумкин; тавонистан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'mumkin; qila olmoq' xitoycha qaysi?",
+            "ru": "'можно; мочь' по-китайски?",
+            "tj": "'мумкин; тавонистан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "问题",
+            "再",
+            "卖",
+            "可以"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "mumkin; qila olmoq = 可以 (kěyǐ)",
+            "ru": "можно; мочь = 可以 (kěyǐ)",
+            "tj": "мумкин; тавонистан = 可以 (kěyǐ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "再",
+            "pinyin": "zài",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "yana; yana bir marta",
+              "ru": "снова; ещё раз",
+              "tj": "боз; бори дигар"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "再",
+          "pinyin": "zài",
+          "options": [
+            "再",
+            "可以",
+            "问题",
+            "卖"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "再 — yana; yana bir marta (zài)",
+            "ru": "再 — снова; ещё раз (zài)",
+            "tj": "再 — боз; бори дигар (zài)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "问题",
+            "pinyin": "wèntí",
+            "pos": "n.",
+            "meaning": {
+              "uz": "savol; muammo",
+              "ru": "вопрос; проблема",
+              "tj": "савол; масъала"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "问题 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 问题:",
+            "tj": "Маънои калимаи 问题-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sotmoq",
+              "ru": "продавать",
+              "tj": "фурӯхтан"
+            },
+            {
+              "uz": "savol; muammo",
+              "ru": "вопрос; проблема",
+              "tj": "савол; масъала"
+            },
+            {
+              "uz": "mumkin; qila olmoq",
+              "ru": "можно; мочь",
+              "tj": "мумкин; тавонистан"
+            },
+            {
+              "uz": "yana; yana bir marta",
+              "ru": "снова; ещё раз",
+              "tj": "боз; бори дигар"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "问题 = savol; muammo (wèntí)",
+            "ru": "问题 = вопрос; проблема (wèntí)",
+            "tj": "问题 = савол; масъала (wèntí)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "卖",
+            "pinyin": "mài",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sotmoq",
+              "ru": "продавать",
+              "tj": "фурӯхтан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "卖",
+          "pinyin": "mài",
+          "translation": {
+            "uz": "sotmoq",
+            "ru": "продавать",
+            "tj": "фурӯхтан"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "mài qaysi ieroglif?",
+            "ru": "Какой иероглиф читается mài?",
+            "tj": "mài кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "可以",
+            "再",
+            "卖",
+            "问题"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "卖 = sotmoq (mài)",
+            "ru": "卖 = продавать (mài)",
+            "tj": "卖 = фурӯхтан (mài)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "可以 talaffuzini tanlang:",
+            "ru": "Выберите произношение 可以:",
+            "tj": "Талаффузи 可以-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zài",
+            "wèntí",
+            "mài",
+            "kěyǐ"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "可以 — kěyǐ",
+            "ru": "可以 — kěyǐ",
+            "tj": "可以 — kěyǐ"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "可以",
+              {
+                "uz": "mumkin; qila olmoq",
+                "ru": "можно; мочь",
+                "tj": "мумкин; тавонистан"
+              }
+            ],
+            [
+              "再",
+              {
+                "uz": "yana; yana bir marta",
+                "ru": "снова; ещё раз",
+                "tj": "боз; бори дигар"
+              }
+            ],
+            [
+              "问题",
+              {
+                "uz": "savol; muammo",
+                "ru": "вопрос; проблема",
+                "tj": "савол; масъала"
+              }
+            ],
+            [
+              "卖",
+              {
+                "uz": "sotmoq",
+                "ru": "продавать",
+                "tj": "фурӯхтан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Modal fe’l “可以”",
+              "ru": "Модальный глагол “可以”",
+              "tj": "Феъли модалии “可以”"
+            },
+            "title_zh": "能愿动词“可以”",
+            "rule": {
+              "uz": "“可以” fe’l oldidan kelib mumkinlik, qobiliyat yoki ruxsatni bildiradi.",
+              "ru": "“可以” ставится перед глаголом и выражает возможность, способность или разрешение.",
+              "tj": "“可以” пеш аз феъл омада, имкон, қобилият ё иҷозатро ифода мекунад."
+            },
+            "examples": [
+              {
+                "zh": "我可以再问您一个问题吗？",
+                "pinyin": "Wǒ kěyǐ zài wèn nín yí ge wèntí ma?",
+                "translation": {
+                  "uz": "Sizdan yana bir savol so‘rasam bo‘ladimi?",
+                  "ru": "Можно задать вам ещё один вопрос?",
+                  "tj": "Метавонам боз як савол пурсам?"
+                }
+              },
+              {
+                "zh": "你们可以看这本书。",
+                "pinyin": "Nǐmen kěyǐ kàn zhè běn shū.",
+                "translation": {
+                  "uz": "Sizlar bu kitobni o‘qishingiz mumkin.",
+                  "ru": "Вы можете прочитать эту книгу.",
+                  "tj": "Шумо метавонед ин китобро хонед."
+                }
+              },
+              {
+                "zh": "我可以坐吗？可以，请坐！",
+                "pinyin": "Wǒ kěyǐ zuò ma? Kěyǐ, qǐng zuò!",
+                "translation": {
+                  "uz": "O‘tirsam bo‘ladimi? Bo‘ladi, marhamat o‘tiring!",
+                  "ru": "Можно сесть? Можно, присаживайтесь!",
+                  "tj": "Нишастан мумкин? Мумкин, марҳамат нишинед!"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Sizlar bu kitobni o‘qishingiz mumkin.",
+            "ru": "Вы можете прочитать эту книгу.",
+            "tj": "Шумо метавонед ин китобро хонед."
+          },
+          "tokens": [
+            "这",
+            "看",
+            "你们",
+            "再",
+            "本",
+            "可以",
+            "书",
+            "问题"
+          ],
+          "answer_tokens": [
+            "你们",
+            "可以",
+            "看",
+            "这",
+            "本",
+            "书"
+          ],
+          "explanation": {
+            "uz": "你们可以看这本书。 — Nǐmen kěyǐ kàn zhè běn shū.",
+            "ru": "你们可以看这本书。 — Nǐmen kěyǐ kàn zhè běn shū.",
+            "tj": "你们可以看这本书。 — Nǐmen kěyǐ kàn zhè běn shū."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«O‘tirsam bo‘ladimi? Bo‘ladi, marhamat o‘tiring!» — xitoychada qaysi biri?",
+            "ru": "«Можно сесть? Можно, присаживайтесь!» — какое предложение по-китайски?",
+            "tj": "«Нишастан мумкин? Мумкин, марҳамат нишинед!» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我可以再问您一个问题吗？",
+            "你们可以看这本书。",
+            "我可以坐吗？可以，请坐！"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "我可以坐吗？可以，请坐！ — Wǒ kěyǐ zuò ma? Kěyǐ, qǐng zuò!",
+            "ru": "我可以坐吗？可以，请坐！ — Wǒ kěyǐ zuò ma? Kěyǐ, qǐng zuò!",
+            "tj": "我可以坐吗？可以，请坐！ — Wǒ kěyǐ zuò ma? Kěyǐ, qǐng zuò!"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Mumkin. Qanday savoling bor?",
+            "ru": "Можно. Какой у тебя вопрос?",
+            "tj": "Мумкин. Чӣ савол дорӣ?"
+          },
+          "tokens": [
+            "有",
+            "什么",
+            "问题",
+            "卖",
+            "再",
+            "可以",
+            "你"
+          ],
+          "answer_tokens": [
+            "可以",
+            "你",
+            "有",
+            "什么",
+            "问题"
+          ],
+          "explanation": {
+            "uz": "可以。你有什么问题？ — Kěyǐ. Nǐ yǒu shénme wèntí?",
+            "ru": "可以。你有什么问题？ — Kěyǐ. Nǐ yǒu shénme wèntí?",
+            "tj": "可以。你有什么问题？ — Kěyǐ. Nǐ yǒu shénme wèntí?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "卖",
+          "pinyin": "mài",
+          "translation": {
+            "uz": "sotmoq",
+            "ru": "продавать",
+            "tj": "фурӯхтан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "下雨 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 下雨:",
+            "tj": "Маънои калимаи 下雨-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yomg‘ir yog‘moq",
+              "ru": "идти о дожде",
+              "tj": "борон боридан"
+            },
+            {
+              "uz": "yana; yana bir marta",
+              "ru": "снова; ещё раз",
+              "tj": "боз; бори дигар"
+            },
+            {
+              "uz": "mumkin; qila olmoq",
+              "ru": "можно; мочь",
+              "tj": "мумкин; тавонистан"
+            },
+            {
+              "uz": "savol; muammo",
+              "ru": "вопрос; проблема",
+              "tj": "савол; масъала"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "下雨 = yomg‘ir yog‘moq (xiàyǔ)",
+            "ru": "下雨 = идти о дожде (xiàyǔ)",
+            "tj": "下雨 = борон боридан (xiàyǔ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "下雨",
+            "pinyin": "xiàyǔ",
+            "meaning": {
+              "uz": "yomg‘ir yog‘moq",
+              "ru": "идти о дожде",
+              "tj": "борон боридан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sotmoq' xitoycha qaysi?",
+            "ru": "'продавать' по-китайски?",
+            "tj": "'фурӯхтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "卖",
+            "可以",
+            "再",
+            "问题"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "sotmoq = 卖 (mài)",
+            "ru": "продавать = 卖 (mài)",
+            "tj": "фурӯхтан = 卖 (mài)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "卖",
+            "pinyin": "mài",
+            "meaning": {
+              "uz": "sotmoq",
+              "ru": "продавать",
+              "tj": "фурӯхтан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

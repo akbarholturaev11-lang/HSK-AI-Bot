@@ -1,0 +1,707 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 92,
+  "source_lesson": 14,
+  "part_no": 3,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我看了一个电影",
+  "subtitle": {
+    "uz": "Fe’ldan keyingi “了（2）” bilan tugallangan harakatni ifodalash; 离合词 ning ajralish xususiyatini tushunish; “都” bilan umumlashtirish; o‘qish jarayoni va o‘rgangan narsalarni tasvirlash.",
+    "ru": "Выражать завершённое действие с аспектуальной частицей “了（2）”; понимать разделяемые слова; использовать “都” для обобщения; описывать прогресс в обучении.",
+    "tj": "Бо ҳиссачаи намудии “了（2）” амали анҷомёфтаро ифода кардан; хусусияти калимаҳои ҷудошавандаро фаҳмидан; бо “都” умумисозӣ кардан; пешрафти омӯзишро тасвир кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "都",
+      "pinyin": "dōu",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "hammasi; barchasi",
+        "ru": "все; оба",
+        "tj": "ҳама; ҳар ду"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "听见",
+      "pinyin": "tīngjiàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "eshitmoq",
+        "ru": "услышать",
+        "tj": "шунидан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "不要",
+      "pinyin": "búyào",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "qilmang; kerak emas",
+        "ru": "не надо; не делайте",
+        "tj": "накунед; лозим нест"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "说话",
+      "pinyin": "shuōhuà",
+      "pos": "v.",
+      "meaning": {
+        "uz": "gapirmoq",
+        "ru": "говорить; разговаривать",
+        "tj": "гап задан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Ajraluvchi so‘zlar (1)",
+        "ru": "Разделяемые слова (1)",
+        "tj": "Калимаҳои ҷудошаванда (1)"
+      },
+      "title_zh": "离合词（1）",
+      "rule": {
+        "uz": "上课、下课、上班、下班、说话、读书、睡觉 kabi so‘zlar fe’l+obyektdan tuzilgan; orasiga boshqa unsur kirsa, qismlari ajraladi.",
+        "ru": "Слова 上课、下课、上班、下班、说话、读书、睡觉 состоят из глагола и объекта; при вставке другого элемента они разделяются.",
+        "tj": "Калимаҳои 上课、下课、上班、下班、说话、读书、睡觉 аз феъл+объект сохта шудаанд; ҳангоми ворид кардани унсур қисмҳо ҷудо мешаванд."
+      },
+      "examples": [
+        {
+          "zh": "睡了觉；睡了一觉",
+          "pinyin": "shuìle jiào; shuìle yí jiào",
+          "translation": {
+            "uz": "uxladi; bir uxlab oldi",
+            "ru": "поспал; поспал один раз",
+            "tj": "хобид; як бор хобид"
+          }
+        },
+        {
+          "zh": "上了课；上了一次课",
+          "pinyin": "shàngle kè; shàngle yí cì kè",
+          "translation": {
+            "uz": "darsga qatnashdi; bir marta darsga qatnashdi",
+            "ru": "был на занятии; сходил на одно занятие",
+            "tj": "ба дарс рафт; як бор ба дарс рафт"
+          }
+        },
+        {
+          "zh": "说了话；说了很多话",
+          "pinyin": "shuōle huà; shuōle hěn duō huà",
+          "translation": {
+            "uz": "gapirdi; juda ko‘p gapirdi",
+            "ru": "говорил; много говорил",
+            "tj": "гап зад; бисёр гап зад"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda darsdan keyin Bai Jiayue va Chen Tianzhong oldingi sayohat haqida suhbatlashmoqda.",
+        "ru": "В аудитории после занятия Бай Цзяюэ и Чэнь Тяньчжун обсуждают прошлую поездку.",
+        "tj": "Дар синф пас аз дарс Бай Ҷяюэ ва Чэн Тянҷун сафари гузаштаро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "你呢？",
+          "pinyin": "Nǐ ne?",
+          "text": {
+            "uz": "Sen-chi?",
+            "ru": "А ты?",
+            "tj": "Ту чӣ?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我看了一个电影。",
+          "pinyin": "Wǒ kànle yí ge diànyǐng.",
+          "text": {
+            "uz": "Men bitta film ko‘rdim.",
+            "ru": "Я посмотрел фильм.",
+            "tj": "Ман як филм тамошо кардам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsda Wang Yifei talabalarining o‘qish holatini so‘ramoqda.",
+        "ru": "На занятии Ван Ифэй спрашивает студентов об их успехах в учёбе.",
+        "tj": "Дар дарс Ван Ифэй аз донишҷӯён дар бораи пешрафти таҳсил мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我们都会写了。",
+          "pinyin": "Wǒmen dōu huì xiě le.",
+          "text": {
+            "uz": "Hammamiz yoza olamiz.",
+            "ru": "Мы все уже умеем писать.",
+            "tj": "Ҳамаамон навишта метавонем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue bolalarining keyingi maktabga o‘tishi haqida gaplashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ обсуждают поступление детей в следующую школу.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ дар бораи гузаштани фарзандон ба мактаби нав суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "对。儿子也上小学了。",
+          "pinyin": "Duì. Érzi yě shàng xiǎoxué le.",
+          "text": {
+            "uz": "Ha. O‘g‘limiz ham boshlang‘ich maktabga boradi.",
+            "ru": "Да. Сын тоже пойдёт в начальную школу.",
+            "tj": "Ҳа. Писарамон ҳам ба мактаби ибтидоӣ меравад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "还有了一个小学生。",
+          "pinyin": "Hái yǒule yí ge xiǎoxuéshēng.",
+          "text": {
+            "uz": "Yana bitta boshlang‘ich maktab o‘quvchisi ham bo‘ladi.",
+            "ru": "И ещё ученик начальной школы.",
+            "tj": "Боз як хонандаи мактаби ибтидоӣ ҳам мешавад."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "上学后，他们都忙了。",
+          "pinyin": "Shàngxué hòu, tāmen dōu máng le.",
+          "text": {
+            "uz": "Maktab boshlangach, ikkalasi ham band bo‘ladi.",
+            "ru": "Когда начнётся школа, оба будут заняты.",
+            "tj": "Баъди мактаб сар кардан, ҳар ду банд мешаванд."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "都",
+            "pinyin": "dōu",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "hammasi; barchasi",
+              "ru": "все; оба",
+              "tj": "ҳама; ҳар ду"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dōu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dōu?",
+            "tj": "dōu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "火车",
+            "上",
+            "都",
+            "中午"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "都 = hammasi; barchasi (dōu)",
+            "ru": "都 = все; оба (dōu)",
+            "tj": "都 = ҳама; ҳар ду (dōu)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "听见",
+            "pinyin": "tīngjiàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "eshitmoq",
+              "ru": "услышать",
+              "tj": "шунидан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "听见 talaffuzini tanlang:",
+            "ru": "Выберите произношение 听见:",
+            "tj": "Талаффузи 听见-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "tīngjiàn",
+            "zhōngwǔ",
+            "huǒchē",
+            "shàng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "听见 — tīngjiàn",
+            "ru": "听见 — tīngjiàn",
+            "tj": "听见 — tīngjiàn"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "不要",
+            "pinyin": "búyào",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "qilmang; kerak emas",
+              "ru": "не надо; не делайте",
+              "tj": "накунед; лозим нест"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qilmang; kerak emas' xitoycha qaysi?",
+            "ru": "'не надо; не делайте' по-китайски?",
+            "tj": "'накунед; лозим нест' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "不要",
+            "中午",
+            "上",
+            "火车"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "qilmang; kerak emas = 不要 (búyào)",
+            "ru": "не надо; не делайте = 不要 (búyào)",
+            "tj": "накунед; лозим нест = 不要 (búyào)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "说话",
+            "pinyin": "shuōhuà",
+            "pos": "v.",
+            "meaning": {
+              "uz": "gapirmoq",
+              "ru": "говорить; разговаривать",
+              "tj": "гап задан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "说话",
+          "pinyin": "shuōhuà",
+          "translation": {
+            "uz": "gapirmoq",
+            "ru": "говорить; разговаривать",
+            "tj": "гап задан"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "说话",
+          "pinyin": "shuōhuà",
+          "options": [
+            "说话",
+            "中午",
+            "上",
+            "火车"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "说话 — gapirmoq (shuōhuà)",
+            "ru": "说话 — говорить; разговаривать (shuōhuà)",
+            "tj": "说话 — гап задан (shuōhuà)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "都 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 都:",
+            "tj": "Маънои калимаи 都-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            },
+            {
+              "uz": "chiqmoq; transportga minmoq",
+              "ru": "подниматься; садиться в транспорт",
+              "tj": "баромадан; ба нақлиёт савор шудан"
+            },
+            {
+              "uz": "hammasi; barchasi",
+              "ru": "все; оба",
+              "tj": "ҳама; ҳар ду"
+            },
+            {
+              "uz": "tush payti",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "都 = hammasi; barchasi (dōu)",
+            "ru": "都 = все; оба (dōu)",
+            "tj": "都 = ҳама; ҳар ду (dōu)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "都",
+              {
+                "uz": "hammasi; barchasi",
+                "ru": "все; оба",
+                "tj": "ҳама; ҳар ду"
+              }
+            ],
+            [
+              "听见",
+              {
+                "uz": "eshitmoq",
+                "ru": "услышать",
+                "tj": "шунидан"
+              }
+            ],
+            [
+              "不要",
+              {
+                "uz": "qilmang; kerak emas",
+                "ru": "не надо; не делайте",
+                "tj": "накунед; лозим нест"
+              }
+            ],
+            [
+              "说话",
+              {
+                "uz": "gapirmoq",
+                "ru": "говорить; разговаривать",
+                "tj": "гап задан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Ajraluvchi so‘zlar (1)",
+              "ru": "Разделяемые слова (1)",
+              "tj": "Калимаҳои ҷудошаванда (1)"
+            },
+            "title_zh": "离合词（1）",
+            "rule": {
+              "uz": "上课、下课、上班、下班、说话、读书、睡觉 kabi so‘zlar fe’l+obyektdan tuzilgan; orasiga boshqa unsur kirsa, qismlari ajraladi.",
+              "ru": "Слова 上课、下课、上班、下班、说话、读书、睡觉 состоят из глагола и объекта; при вставке другого элемента они разделяются.",
+              "tj": "Калимаҳои 上课、下课、上班、下班、说话、读书、睡觉 аз феъл+объект сохта шудаанд; ҳангоми ворид кардани унсур қисмҳо ҷудо мешаванд."
+            },
+            "examples": [
+              {
+                "zh": "睡了觉；睡了一觉",
+                "pinyin": "shuìle jiào; shuìle yí jiào",
+                "translation": {
+                  "uz": "uxladi; bir uxlab oldi",
+                  "ru": "поспал; поспал один раз",
+                  "tj": "хобид; як бор хобид"
+                }
+              },
+              {
+                "zh": "上了课；上了一次课",
+                "pinyin": "shàngle kè; shàngle yí cì kè",
+                "translation": {
+                  "uz": "darsga qatnashdi; bir marta darsga qatnashdi",
+                  "ru": "был на занятии; сходил на одно занятие",
+                  "tj": "ба дарс рафт; як бор ба дарс рафт"
+                }
+              },
+              {
+                "zh": "说了话；说了很多话",
+                "pinyin": "shuōle huà; shuōle hěn duō huà",
+                "translation": {
+                  "uz": "gapirdi; juda ko‘p gapirdi",
+                  "ru": "говорил; много говорил",
+                  "tj": "гап зад; бисёр гап зад"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«darsga qatnashdi; bir marta darsga qatnashdi» — xitoychada qaysi biri?",
+            "ru": "«был на занятии; сходил на одно занятие» — какое предложение по-китайски?",
+            "tj": "«ба дарс рафт; як бор ба дарс рафт» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "说了话；说了很多话",
+            "上了课；上了一次课",
+            "睡了觉；睡了一觉"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "上了课；上了一次课 — shàngle kè; shàngle yí cì kè",
+            "ru": "上了课；上了一次课 — shàngle kè; shàngle yí cì kè",
+            "tj": "上了课；上了一次课 — shàngle kè; shàngle yí cì kè"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'eshitmoq' xitoycha qaysi?",
+            "ru": "'услышать' по-китайски?",
+            "tj": "'шунидан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "火车",
+            "上",
+            "中午",
+            "听见"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "eshitmoq = 听见 (tīngjiàn)",
+            "ru": "услышать = 听见 (tīngjiàn)",
+            "tj": "шунидан = 听见 (tīngjiàn)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "búyào qaysi ieroglif?",
+            "ru": "Какой иероглиф читается búyào?",
+            "tj": "búyào кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "火车",
+            "不要",
+            "上",
+            "中午"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "不要 = qilmang; kerak emas (búyào)",
+            "ru": "不要 = не надо; не делайте (búyào)",
+            "tj": "不要 = накунед; лозим нест (búyào)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "说话",
+          "pinyin": "shuōhuà",
+          "translation": {
+            "uz": "gapirmoq",
+            "ru": "говорить; разговаривать",
+            "tj": "гап задан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "写 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 写:",
+            "tj": "Маънои калимаи 写-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chiqmoq; transportga minmoq",
+              "ru": "подниматься; садиться в транспорт",
+              "tj": "баромадан; ба нақлиёт савор шудан"
+            },
+            {
+              "uz": "yozmoq",
+              "ru": "писать",
+              "tj": "навиштан"
+            },
+            {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            },
+            {
+              "uz": "tush payti",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "写 = yozmoq (xiě)",
+            "ru": "写 = писать (xiě)",
+            "tj": "写 = навиштан (xiě)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "写",
+            "pinyin": "xiě",
+            "meaning": {
+              "uz": "yozmoq",
+              "ru": "писать",
+              "tj": "навиштан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'gapirmoq' xitoycha qaysi?",
+            "ru": "'говорить; разговаривать' по-китайски?",
+            "tj": "'гап задан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "中午",
+            "火车",
+            "上",
+            "说话"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "gapirmoq = 说话 (shuōhuà)",
+            "ru": "говорить; разговаривать = 说话 (shuōhuà)",
+            "tj": "гап задан = 说话 (shuōhuà)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "说话",
+            "pinyin": "shuōhuà",
+            "meaning": {
+              "uz": "gapirmoq",
+              "ru": "говорить; разговаривать",
+              "tj": "гап задан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

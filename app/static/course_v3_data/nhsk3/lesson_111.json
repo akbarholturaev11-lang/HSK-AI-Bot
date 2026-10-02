@@ -1,0 +1,641 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 111,
+  "source_lesson": 14,
+  "part_no": 7,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "这本书被别人借走了",
+  "subtitle": {
+    "uz": "Kampusdagi tadbirlar haqida gaplashish; boshqalarga dalda berish va qo‘llab-quvvatlash; “被” bilan passiv ma’noni ifodalash.",
+    "ru": "Говорить о мероприятиях в кампусе; поддерживать и подбадривать других; выражать пассивное значение с помощью “被”.",
+    "tj": "Дар бораи чорабиниҳои кампус суҳбат кардан; дигаронро рӯҳбаланд кардан; бо “被” маънои пассивро ифода кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "一块儿",
+      "pinyin": "yíkuàir",
+      "pos": "adv./n.",
+      "meaning": {
+        "uz": "birga",
+        "ru": "вместе",
+        "tj": "якҷо"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "网站",
+      "pinyin": "wǎngzhàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "veb-sayt",
+        "ru": "веб-сайт",
+        "tj": "сомона"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "视频",
+      "pinyin": "shìpín",
+      "pos": "n.",
+      "meaning": {
+        "uz": "video",
+        "ru": "видео",
+        "tj": "видео"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kampus oshxonasida Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В столовой кампуса Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар ошхонаи кампус Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "我借的这本词典最好今天还，但是我没时间去。",
+          "pinyin": "Wǒ jiè de zhè běn cídiǎn zuìhǎo jīntiān huán, dànshì wǒ méi shíjiān qù.",
+          "text": {
+            "uz": "Olgan lug‘atimni bugun qaytarganim yaxshi, lekin borishga vaqtim yo‘q.",
+            "ru": "Этот словарь лучше вернуть сегодня, но у меня нет времени идти.",
+            "tj": "Ин луғатро беҳтараш имрӯз баргардонам, аммо рафтан вақт надорам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "下午我只有两节课，可以帮你去图书馆还书。",
+          "pinyin": "Xiàwǔ wǒ zhǐ yǒu liǎng jié kè, kěyǐ bāng nǐ qù túshūguǎn huán shū.",
+          "text": {
+            "uz": "Tushdan keyin faqat ikki darsim bor, kutubxonaga borib kitobni qaytarib beraman.",
+            "ru": "Днём у меня всего два занятия, могу вернуть книгу за тебя.",
+            "tj": "Баъд аз нисфирӯзӣ танҳо ду дарс дорам, метавонам китобро ба китобхона баргардонам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "那太谢谢了。你能再帮我借本书吗？",
+          "pinyin": "Nà tài xièxie le. Nǐ néng zài bāng wǒ jiè běn shū ma?",
+          "text": {
+            "uz": "Juda rahmat. Yana bir kitob olib bera olasanmi?",
+            "ru": "Большое спасибо. Можешь ещё взять для меня одну книгу?",
+            "tj": "Хеле раҳмат. Боз як китоб барои ман гирифта метавонӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "行，你告诉我书名。",
+          "pinyin": "Xíng, nǐ gàosu wǒ shūmíng.",
+          "text": {
+            "uz": "Bo‘ladi, kitob nomini ayt.",
+            "ru": "Хорошо, скажи название.",
+            "tj": "Мешавад, номи китобро бигӯ."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我把名字写在纸上吧。我去了好几次图书馆，这本书都被别人借走了。",
+          "pinyin": "Wǒ bǎ míngzi xiě zài zhǐ shàng ba. Wǒ qù le hǎo jǐ cì túshūguǎn, zhè běn shū dōu bèi biérén jiè zǒu le.",
+          "text": {
+            "uz": "Nomini qog‘ozga yozib beraman. Kutubxonaga bir necha marta bordim, har safar bu kitobni boshqa birov olib ketgan edi.",
+            "ru": "Я запишу название на бумаге. Я несколько раз ходил в библиотеку, но эту книгу всё время кто-то уже брал.",
+            "tj": "Номашро дар коғаз менависам. Чанд бор ба китобхона рафтам, ҳар дафъа ин китобро каси дигар гирифта буд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "《名人的故事》？我有这本书。明天我借给你吧。",
+          "pinyin": "Míngrén de Gùshi? Wǒ yǒu zhè běn shū. Míngtiān wǒ jiè gěi nǐ ba.",
+          "text": {
+            "uz": "“Mashhur insonlar hikoyalari”mi? Menda bu kitob bor. Ertaga senga berib turaman.",
+            "ru": "«Истории знаменитых людей»? У меня есть эта книга. Завтра дам тебе.",
+            "tj": "«Ҳикояҳои одамони машҳур»? Ин китоб дар ман ҳаст. Фардо ба ту медиҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Bai Jiayue va Annie suhbatlashmoqda.",
+        "ru": "В кампусе Бай Цзяюэ и Энни разговаривают.",
+        "tj": "Дар кампус Бай Ҷяюэ ва Энни суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "安妮",
+          "zh": "今天下课早，你一会儿做什么？",
+          "pinyin": "Jīntiān xiàkè zǎo, nǐ yíhuìr zuò shénme?",
+          "text": {
+            "uz": "Bugun dars erta tugadi, hozir nima qilasan?",
+            "ru": "Сегодня занятия закончились рано, что будешь делать?",
+            "tj": "Имрӯз дарс барвақт тамом шуд, ҳозир чӣ мекунӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我今天忙得很，要先去图书馆借书，然后去游泳。",
+          "pinyin": "Wǒ jīntiān máng de hěn, yào xiān qù túshūguǎn jiè shū, ránhòu qù yóuyǒng.",
+          "text": {
+            "uz": "Bugun juda bandman, avval kutubxonaga kitob olgani, keyin suzishga boraman.",
+            "ru": "Сегодня я очень занята: сначала в библиотеку за книгой, потом плавать.",
+            "tj": "Имрӯз хеле банд ҳастам: аввал ба китобхона, баъд ба шиноварӣ меравам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "等等，我的校园卡不见了，没有卡进不去图书馆。",
+          "pinyin": "Děngdeng, wǒ de xiàoyuánkǎ bú jiàn le, méiyǒu kǎ jìn bu qù túshūguǎn.",
+          "text": {
+            "uz": "To‘xta, kampus kartam yo‘qolibdi, kartasiz kutubxonaga kira olmayman.",
+            "ru": "Подожди, моя кампус-карта пропала, без неё в библиотеку не войти.",
+            "tj": "Ист, корти кампусам гум шудааст, бе корт ба китобхона даромада намешавад."
+          }
+        },
+        {
+          "speaker": "安妮",
+          "zh": "你想想上一次用是什么时候？",
+          "pinyin": "Nǐ xiǎngxiang shàng yí cì yòng shì shénme shíhou?",
+          "text": {
+            "uz": "O‘ylab ko‘r, oxirgi marta qachon ishlatganding?",
+            "ru": "Вспомни, когда ты пользовалась ею в последний раз?",
+            "tj": "Фикр кун, бори охир кай истифода карда будӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我忘记了，可能被我放在家里了。",
+          "pinyin": "Wǒ wàngjì le, kěnéng bèi wǒ fàng zài jiālǐ le.",
+          "text": {
+            "uz": "Unutdim, balki uyda qoldirgandirman.",
+            "ru": "Забыла, возможно, я оставила её дома.",
+            "tj": "Фаромӯш кардам, шояд дар хона гузошта бошам."
+          }
+        },
+        {
+          "speaker": "安妮",
+          "zh": "进不去图书馆也没关系，上网看看有没有电子书。",
+          "pinyin": "Jìn bu qù túshūguǎn yě méi guānxi, shàngwǎng kànkan yǒu méiyǒu diànzǐshū.",
+          "text": {
+            "uz": "Kutubxonaga kira olmasang ham hechqisi yo‘q, internetdan elektron kitob bor-yo‘qligini ko‘r.",
+            "ru": "Ничего страшного, если не войдёшь в библиотеку; посмотри электронную книгу в интернете.",
+            "tj": "Агар ба китобхона даромада натавонӣ ҳам, ҳеҷ гап нест, аз интернет китоби электронӣ ҳаст ё не бин."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampus oshxonasida Li Wen va Bai Jiayue ovqatlanib suhbatlashmoqda.",
+        "ru": "В столовой кампуса Ли Вэнь и Бай Цзяюэ едят и разговаривают.",
+        "tj": "Дар ошхонаи кампус Ли Вэн ва Бай Ҷяюэ хӯрок хӯрда суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "下周学校有晚会，你知道吗？",
+          "pinyin": "Xià zhōu xuéxiào yǒu wǎnhuì, nǐ zhīdào ma?",
+          "text": {
+            "uz": "Keyingi hafta maktabda kecha bo‘ladi, bilasanmi?",
+            "ru": "На следующей неделе в школе будет вечер, знаешь?",
+            "tj": "Ҳафтаи оянда дар мактаб шомгоҳӣ мешавад, медонӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "知道，我和几个女生要表演一个节目。你也参加吗？",
+          "pinyin": "Zhīdào, wǒ hé jǐ ge nǚshēng yào biǎoyǎn yí ge jiémù. Nǐ yě cānjiā ma?",
+          "text": {
+            "uz": "Bilaman, men bir nechta qiz bilan bir chiqish tayyorlayapman. Sen ham qatnashasanmi?",
+            "ru": "Знаю, я с несколькими девушками готовлю номер. Ты тоже участвуешь?",
+            "tj": "Медонам, ман бо чанд духтар як барнома иҷро мекунем. Ту ҳам иштирок мекунӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "找不到人，你就一个人唱吧。",
+          "pinyin": "Zhǎo bú dào rén, nǐ jiù yí ge rén chàng ba.",
+          "text": {
+            "uz": "Odam topilmasa, o‘zing yolg‘iz aytaver.",
+            "ru": "Если никого не найдёшь, пой один.",
+            "tj": "Агар касе наёбӣ, худат танҳо суруд хон."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "一想到要在校长、老师和那么多同学面前表演，我就有些紧张。",
+          "pinyin": "Yì xiǎngdào yào zài xiàozhǎng, lǎoshī hé nàme duō tóngxué miànqián biǎoyǎn, wǒ jiù yǒuxiē jǐnzhāng.",
+          "text": {
+            "uz": "Direktor, o‘qituvchilar va shuncha talabalar oldida chiqish haqida o‘ylasam, biroz hayajonlanaman.",
+            "ru": "Как только думаю, что выступать перед директором, учителями и столькими студентами, начинаю нервничать.",
+            "tj": "Ҳамин ки фикр мекунам назди директор, омӯзгорон ва ин қадар донишҷӯ баромад мекунам, каме асабӣ мешавам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "紧张什么啊，我们都喜欢听你唱歌，你要相信自己。",
+          "pinyin": "Jǐnzhāng shénme a, wǒmen dōu xǐhuan tīng nǐ chànggē, nǐ yào xiāngxìn zìjǐ.",
+          "text": {
+            "uz": "Nimaga hayajonlanasan? Hammamiz qo‘shiq aytishingni yoqtiramiz, o‘zingga ishon.",
+            "ru": "Чего нервничать? Нам всем нравится, как ты поёшь. Поверь в себя.",
+            "tj": "Чаро асабӣ мешавӣ? Ҳама сурудхониатро дӯст медорем, ба худат бовар кун."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "一块儿",
+            "pinyin": "yíkuàir",
+            "pos": "adv./n.",
+            "meaning": {
+              "uz": "birga",
+              "ru": "вместе",
+              "tj": "якҷо"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "一块儿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 一块儿:",
+            "tj": "Маънои калимаи 一块儿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "lug‘at",
+              "ru": "словарь",
+              "tj": "луғат"
+            },
+            {
+              "uz": "dars uchun hisob so‘zi",
+              "ru": "счётное слово для уроков",
+              "tj": "воҳиди ҳисоб барои дарс"
+            },
+            {
+              "uz": "yaxshisi; eng yaxshi",
+              "ru": "лучше всего; самый хороший",
+              "tj": "беҳтараш; беҳтарин"
+            },
+            {
+              "uz": "birga",
+              "ru": "вместе",
+              "tj": "якҷо"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "一块儿 = birga (yíkuàir)",
+            "ru": "一块儿 = вместе (yíkuàir)",
+            "tj": "一块儿 = якҷо (yíkuàir)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "网站",
+            "pinyin": "wǎngzhàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "veb-sayt",
+              "ru": "веб-сайт",
+              "tj": "сомона"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wǎngzhàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wǎngzhàn?",
+            "tj": "wǎngzhàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "最好",
+            "词典",
+            "节",
+            "网站"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "网站 = veb-sayt (wǎngzhàn)",
+            "ru": "网站 = веб-сайт (wǎngzhàn)",
+            "tj": "网站 = сомона (wǎngzhàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "视频",
+            "pinyin": "shìpín",
+            "pos": "n.",
+            "meaning": {
+              "uz": "video",
+              "ru": "видео",
+              "tj": "видео"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "视频",
+          "pinyin": "shìpín",
+          "translation": {
+            "uz": "video",
+            "ru": "видео",
+            "tj": "видео"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "视频 talaffuzini tanlang:",
+            "ru": "Выберите произношение 视频:",
+            "tj": "Талаффузи 视频-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jié",
+            "cídiǎn",
+            "zuìhǎo",
+            "shìpín"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "视频 — shìpín",
+            "ru": "视频 — shìpín",
+            "tj": "视频 — shìpín"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'birga' xitoycha qaysi?",
+            "ru": "'вместе' по-китайски?",
+            "tj": "'якҷо' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "最好",
+            "词典",
+            "一块儿",
+            "节"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "birga = 一块儿 (yíkuàir)",
+            "ru": "вместе = 一块儿 (yíkuàir)",
+            "tj": "якҷо = 一块儿 (yíkuàir)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "一块儿",
+              {
+                "uz": "birga",
+                "ru": "вместе",
+                "tj": "якҷо"
+              }
+            ],
+            [
+              "网站",
+              {
+                "uz": "veb-sayt",
+                "ru": "веб-сайт",
+                "tj": "сомона"
+              }
+            ],
+            [
+              "视频",
+              {
+                "uz": "video",
+                "ru": "видео",
+                "tj": "видео"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "视频",
+          "pinyin": "shìpín",
+          "options": [
+            "节",
+            "最好",
+            "词典",
+            "视频"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "视频 — video (shìpín)",
+            "ru": "视频 — видео (shìpín)",
+            "tj": "视频 — видео (shìpín)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "一块儿",
+          "pinyin": "yíkuàir",
+          "translation": {
+            "uz": "birga",
+            "ru": "вместе",
+            "tj": "якҷо"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "网站",
+          "pinyin": "wǎngzhàn",
+          "options": [
+            "词典",
+            "网站",
+            "最好",
+            "节"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "网站 — veb-sayt (wǎngzhàn)",
+            "ru": "网站 — веб-сайт (wǎngzhàn)",
+            "tj": "网站 — сомона (wǎngzhàn)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "视频",
+          "pinyin": "shìpín",
+          "translation": {
+            "uz": "video",
+            "ru": "видео",
+            "tj": "видео"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "留学生 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 留学生:",
+            "tj": "Маънои калимаи 留学生-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dars uchun hisob so‘zi",
+              "ru": "счётное слово для уроков",
+              "tj": "воҳиди ҳисоб барои дарс"
+            },
+            {
+              "uz": "yaxshisi; eng yaxshi",
+              "ru": "лучше всего; самый хороший",
+              "tj": "беҳтараш; беҳтарин"
+            },
+            {
+              "uz": "chet ellik talaba",
+              "ru": "иностранный студент",
+              "tj": "донишҷӯи хориҷӣ"
+            },
+            {
+              "uz": "lug‘at",
+              "ru": "словарь",
+              "tj": "луғат"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "留学生 = chet ellik talaba (liúxuéshēng)",
+            "ru": "留学生 = иностранный студент (liúxuéshēng)",
+            "tj": "留学生 = донишҷӯи хориҷӣ (liúxuéshēng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "留学生",
+            "pinyin": "liúxuéshēng",
+            "meaning": {
+              "uz": "chet ellik talaba",
+              "ru": "иностранный студент",
+              "tj": "донишҷӯи хориҷӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'video' xitoycha qaysi?",
+            "ru": "'видео' по-китайски?",
+            "tj": "'видео' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "视频",
+            "最好",
+            "节",
+            "词典"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "video = 视频 (shìpín)",
+            "ru": "видео = 视频 (shìpín)",
+            "tj": "видео = 视频 (shìpín)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "视频",
+            "pinyin": "shìpín",
+            "meaning": {
+              "uz": "video",
+              "ru": "видео",
+              "tj": "видео"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

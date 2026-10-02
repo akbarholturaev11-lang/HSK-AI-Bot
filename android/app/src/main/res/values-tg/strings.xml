@@ -299,6 +299,9 @@
     <string name="limit_unlock_unavailable">Амалро иҷро карда натавонистем. Баъдтар кӯшиш кунед.</string>
     <string name="limit_voice_reason">Сӯҳбатҳои ройгони AI Voice барои имрӯз тамом шуданд.</string>
     <string name="profile_language">Забон</string>
+    <string name="profile_course_version">Версияи курс</string>
+    <string name="profile_course_version_confirm_title">Ба %1$s гузаред?</string>
+    <string name="profile_course_version_confirm_body">Пешрафти курси ҷорӣ нигоҳ дошта мешавад. Ҳар вақт метавонед ба версияи дигар баргардед.</string>
     <string name="profile_language_picker_title">Забонро интихоб кунед</string>
     <string name="profile_notifications">Огоҳиҳо</string>
     <string name="profile_help">Кӯмак</string>
@@ -315,7 +318,7 @@
     <string name="notify_goal_body_2">То ҳадаф каме мондааст — панда то охир бо шумост.</string>
     <string name="notify_goal_body_3">Танҳо як қисм мондааст. Ҳадафи имрӯзаро пӯшем?</string>
     <string name="practice_dictionary_title">Луғати иероглиф</string>
-    <string name="practice_dictionary_body">HSK 1–4 · навишт, пинйин, маъно</string>
+    <string name="practice_dictionary_body">HSK 2.0 + 3.0 · навишт, пинйин, маъно</string>
     <string name="dictionary_search_hint">Иероглиф, пинйин ё маъно</string>
     <string name="dictionary_recent_title">Ҷустуҷӯҳои охирин</string>
     <string name="dictionary_all_words">Ҳамаи калимаҳо</string>
@@ -331,6 +334,8 @@
     <string name="dictionary_action_write">Навиштан</string>
     <string name="dictionary_parts_title">Аз чӣ иборат аст</string>
     <string name="dictionary_examples_title">Мисолҳо</string>
+    <string name="dictionary_memory_hint_title">Ишораи ёдгирӣ</string>
+    <string name="dictionary_memory_hint_body">Аломатҳои %1$s-ро нависед ва шакли онҳоро бо маънои калима пайваст кунед.</string>
     <string name="writing_stage_demo">Тартиби навиштанро бинед</string>
     <string name="writing_stage_trace">Аз рӯи хат нависед</string>
     <string name="writing_stage_hint">Бо ишора нависед</string>
@@ -485,4 +490,10 @@
     <string name="notify_payment_rejected_body">Бахши обунаро кушоед, пардохтро санҷед ва дубора фиристед.</string>
     <string name="notify_payment_private_title">Хабари обунаи HSK AI</string>
     <string name="notify_payment_private_body">Барои дидани тафсилот барномаро кушоед.</string>
+    <string name="hsk30_promo_title">HSK 3.0-и нав</string>
+    <string name="hsk30_promo_body">Стандарти нав ҳамчун курси алоҳида илова шуд. Пешрафти HSK 2.0 нигоҳ дошта мешавад ва ҳар вақт баргашта метавонед.</string>
+    <string name="hsk30_promo_price">Дастрасии якдафъаина: %1$d TJS</string>
+    <string name="hsk30_promo_switch">Гузаштан ба HSK 3.0</string>
+    <string name="hsk30_test_soon_title">Тестҳои HSK 3.0</string>
+    <string name="hsk30_test_soon_body">Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад.</string>
 </resources>

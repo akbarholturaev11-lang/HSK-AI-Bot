@@ -267,6 +267,29 @@ class CourseMiniAppOnboardingValidationTests(unittest.TestCase):
 
 
 class CourseMiniAppOnboardingFlowTests(unittest.IsolatedAsyncioTestCase):
+    async def test_legacy_level_does_not_depend_on_hsk30_flag_lookup(self):
+        service = CourseMiniAppOnboardingService(SimpleNamespace())
+        with patch(
+            "app.services.course_miniapp_onboarding_service.Hsk30FeatureService.is_enabled",
+            new=AsyncMock(side_effect=RuntimeError("settings unavailable")),
+        ) as enabled:
+            self.assertEqual(await service._normalize_request_level("Beginner"), "beginner")
+        enabled.assert_not_awaited()
+
+    async def test_hsk30_level_still_requires_enabled_flag(self):
+        service = CourseMiniAppOnboardingService(SimpleNamespace())
+        with patch(
+            "app.services.course_miniapp_onboarding_service.Hsk30FeatureService.is_enabled",
+            new=AsyncMock(return_value=False),
+        ):
+            with self.assertRaises(ValueError):
+                await service._normalize_request_level("nhsk1")
+        with patch(
+            "app.services.course_miniapp_onboarding_service.Hsk30FeatureService.is_enabled",
+            new=AsyncMock(return_value=True),
+        ):
+            self.assertEqual(await service._normalize_request_level("nhsk1"), "nhsk1")
+
     @staticmethod
     def _profile():
         return SimpleNamespace(

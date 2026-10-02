@@ -1,0 +1,676 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 103,
+  "source_lesson": 13,
+  "part_no": 7,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我的新邻居来自英国",
+  "subtitle": {
+    "uz": "Turli hududlardagi yashash va mehmondorchilik odatlari farqini tushunish; minnatdorchilik, tabrik va maqtov iboralarini ishlatish; “一边……一边……” bilan bir vaqtda bajariladigan harakatlarni tasvirlash.",
+    "ru": "Понимать различия бытовых и гостевых привычек в разных регионах; использовать выражения благодарности, поздравления и похвалы; описывать одновременные действия конструкцией “一边……一边……”.",
+    "tj": "Фарқи одатҳои зиндагӣ ва меҳмондорӣ дар минтақаҳои гуногунро фаҳмидан; ибораҳои ташаккур, табрик ва таърифро истифода бурдан; бо “一边……一边……” амалҳои ҳамзамонро тавсиф кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "感到",
+      "pinyin": "gǎndào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "his qilmoq",
+        "ru": "чувствовать",
+        "tj": "ҳис кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "东方",
+      "pinyin": "dōngfāng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sharq",
+        "ru": "восток",
+        "tj": "шарқ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "文化",
+      "pinyin": "wénhuà",
+      "pos": "n.",
+      "meaning": {
+        "uz": "madaniyat",
+        "ru": "культура",
+        "tj": "фарҳанг"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "英国",
+      "pinyin": "Yīngguó",
+      "pos": "proper noun",
+      "meaning": {
+        "uz": "Buyuk Britaniya",
+        "ru": "Великобритания",
+        "tj": "Британияи Кабир"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Restoranda Yang Tongle hamkasblarini mehmon qilmoqda.",
+        "ru": "В ресторане Ян Тунлэ угощает коллег.",
+        "tj": "Дар тарабхона Ян Тунлэ ҳамкоронашро меҳмон мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "今天我请客，你们想吃什么就点什么！",
+          "pinyin": "Jīntiān wǒ qǐngkè, nǐmen xiǎng chī shénme jiù diǎn shénme!",
+          "text": {
+            "uz": "Bugun men mehmon qilaman, nima yegingiz kelsa, o‘shani buyurtma qilinglar!",
+            "ru": "Сегодня угощаю я, заказывайте что хотите!",
+            "tj": "Имрӯз ман меҳмон мекунам, ҳар чӣ хоҳед фармоиш диҳед!"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "那我就不客气了。听说这家饭馆的鱼做得很特别？",
+          "pinyin": "Nà wǒ jiù bú kèqi le. Tīngshuō zhè jiā fànguǎn de yú zuò de hěn tèbié?",
+          "text": {
+            "uz": "Unda tortinmayman. Eshitishimcha, bu restoranda baliq o‘zgacha tayyorlanar ekan?",
+            "ru": "Тогда церемониться не буду. Говорят, здесь рыбу готовят по-особому?",
+            "tj": "Пас таоруф намекунам. Шунидам, ки дар ин тарабхона моҳиро махсус тайёр мекунанд?"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "对，南方菜跟你们北方菜的做法不同。除了鱼，你们还想吃什么？",
+          "pinyin": "Duì, nánfāng cài gēn nǐmen běifāng cài de zuòfǎ bù tóng. Chúle yú, nǐmen hái xiǎng chī shénme?",
+          "text": {
+            "uz": "Ha, janubiy taomlar shimoliy taomlardan boshqacha tayyorlanadi. Baliqdan tashqari yana nima yeysizlar?",
+            "ru": "Да, южную кухню готовят иначе, чем северную. Кроме рыбы, что ещё хотите?",
+            "tj": "Ҳа, таомҳои ҷанубӣ аз таомҳои шимолӣ дигар хел тайёр мешаванд. Ба ғайр аз моҳӣ боз чӣ мехоҳед?"
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "我不常吃南方菜，还是你决定吧。",
+          "pinyin": "Wǒ bù cháng chī nánfāng cài, háishi nǐ juédìng ba.",
+          "text": {
+            "uz": "Men janubiy taomlarni tez-tez yemayman, yaxshisi sen tanla.",
+            "ru": "Я редко ем южную кухню, лучше ты решай.",
+            "tj": "Ман таомҳои ҷанубиро кам мехӯрам, беҳтараш худат интихоб кун."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "好，那再加一个鸡肉，一个……",
+          "pinyin": "Hǎo, nà zài jiā yí ge jīròu, yí ge...",
+          "text": {
+            "uz": "Xo‘p, unda yana bitta tovuqli taom, yana bitta...",
+            "ru": "Хорошо, тогда добавим блюдо из курицы и ещё одно...",
+            "tj": "Хуб, пас боз як хӯроки мурғӣ ва яктои дигар..."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "咱们就三个人，别点那么多。",
+          "pinyin": "Zánmen jiù sān ge rén, bié diǎn nàme duō.",
+          "text": {
+            "uz": "Biz atigi uch kishimiz, buncha ko‘p buyurtma qilma.",
+            "ru": "Нас всего трое, не заказывай столько.",
+            "tj": "Мо ҳамагӣ се нафарем, ин қадар зиёд фармоиш надиҳ."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "好，那先来这几个菜。",
+          "pinyin": "Hǎo, nà xiān lái zhè jǐ ge cài.",
+          "text": {
+            "uz": "Xo‘p, avval shu taomlarni olamiz.",
+            "ru": "Хорошо, тогда пока эти блюда.",
+            "tj": "Хуб, ҳоло ҳамин чанд хӯрокро гирем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Wang Yixue va Liu Ming tug‘ilgan kun bazmiga tayyorlanmoqda.",
+        "ru": "Дома Ван Исюэ и Лю Мин готовятся к дню рождения.",
+        "tj": "Дар хона Ван Исюэ ва Лю Мин ба ҷашни зодрӯз омодагӣ мебинанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "第一次请新邻居来做客，总是担心有什么没准备好。",
+          "pinyin": "Dì yí cì qǐng xīn línjū lái zuòkè, zǒngshì dānxīn yǒu shénme méi zhǔnbèi hǎo.",
+          "text": {
+            "uz": "Yangi qo‘shnilarni birinchi marta mehmonga chaqiryapmiz, nimanidir tayyorlamay qolmadikmi deb xavotirdaman.",
+            "ru": "Впервые приглашаем новых соседей, всё переживаю, не забыли ли что-то подготовить.",
+            "tj": "Бори аввал ҳамсояҳои навро меҳмон мекунем, ҳамеша хавотирам, ки чизе тайёр нашуда бошад."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "放心吧，我帮你看了，都已经准备好了。",
+          "pinyin": "Fàngxīn ba, wǒ bāng nǐ kàn le, dōu yǐjīng zhǔnbèi hǎo le.",
+          "text": {
+            "uz": "Xotirjam bo‘l, tekshirib chiqdim, hammasi tayyor.",
+            "ru": "Не переживай, я всё проверил, всё готово.",
+            "tj": "Хотирҷамъ бош, ман санҷидам, ҳама чиз тайёр аст."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "音乐的声音合适吗？",
+          "pinyin": "Yīnyuè de shēngyīn héshì ma?",
+          "text": {
+            "uz": "Musiqa ovozi mosmi?",
+            "ru": "Громкость музыки нормальная?",
+            "tj": "Баландии мусиқӣ мувофиқ аст?"
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "你把声音开得太大了，我去关小一点儿。",
+          "pinyin": "Nǐ bǎ shēngyīn kāi de tài dà le, wǒ qù guān xiǎo yìdiǎnr.",
+          "text": {
+            "uz": "Ovozni juda baland qilibsan, men biroz pasaytiraman.",
+            "ru": "Ты сделал слишком громко, я немного убавлю.",
+            "tj": "Ту садоро хеле баланд кардӣ, ман каме паст мекунам."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "好，那我们就等客人来吧。",
+          "pinyin": "Hǎo, nà wǒmen jiù děng kèrén lái ba.",
+          "text": {
+            "uz": "Xo‘p, endi mehmonlarni kutamiz.",
+            "ru": "Хорошо, тогда будем ждать гостей.",
+            "tj": "Хуб, пас меҳмононро интизор мешавем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Wang Yixue va Liu Ming tug‘ilgan kun bazmini o‘tkazmoqda.",
+        "ru": "Дома Ван Исюэ и Лю Мин проводят день рождения.",
+        "tj": "Дар хона Ван Исюэ ва Лю Мин ҷашни зодрӯз мегузаронанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘小明",
+          "zh": "谢谢您，我可以打开吗？",
+          "pinyin": "Xièxie nín, wǒ kěyǐ dǎkāi ma?",
+          "text": {
+            "uz": "Rahmat, ochsam bo‘ladimi?",
+            "ru": "Спасибо, можно открыть?",
+            "tj": "Раҳмат, кушоям мешавад?"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "当然可以，你妈妈说你跟姐姐一样，都喜欢画画，对吗？",
+          "pinyin": "Dāngrán kěyǐ, nǐ māma shuō nǐ gēn jiějie yíyàng, dōu xǐhuan huàhuà, duì ma?",
+          "text": {
+            "uz": "Albatta, onang aytdi, sen ham opang kabi rasm chizishni yoqtirarkan-san, to‘g‘rimi?",
+            "ru": "Конечно. Мама сказала, что ты, как и сестра, любишь рисовать, верно?",
+            "tj": "Албатта. Модарат гуфт, ки ту ҳам мисли апаат расмкаширо дӯст медорӣ, дуруст?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "我去把盘子拿过来，咱们一边吃蛋糕，一边聊天儿吧。",
+          "pinyin": "Wǒ qù bǎ pánzi ná guòlái, zánmen yìbiān chī dàngāo, yìbiān liáotiānr ba.",
+          "text": {
+            "uz": "Men tarelkalarni olib kelaman, kelinglar tort yeb turib suhbatlashamiz.",
+            "ru": "Я принесу тарелки, давайте есть торт и разговаривать.",
+            "tj": "Ман табақҳоро меорам, биё торт хӯрда истода суҳбат кунем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "感到",
+            "pinyin": "gǎndào",
+            "pos": "v.",
+            "meaning": {
+              "uz": "his qilmoq",
+              "ru": "чувствовать",
+              "tj": "ҳис кардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "感到 talaffuzini tanlang:",
+            "ru": "Выберите произношение 感到:",
+            "tj": "Талаффузи 感到-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "nánfāng",
+            "běifāng",
+            "qǐngkè",
+            "gǎndào"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "感到 — gǎndào",
+            "ru": "感到 — gǎndào",
+            "tj": "感到 — gǎndào"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "东方",
+            "pinyin": "dōngfāng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sharq",
+              "ru": "восток",
+              "tj": "шарқ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sharq' xitoycha qaysi?",
+            "ru": "'восток' по-китайски?",
+            "tj": "'шарқ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "请客",
+            "北方",
+            "南方",
+            "东方"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "sharq = 东方 (dōngfāng)",
+            "ru": "восток = 东方 (dōngfāng)",
+            "tj": "шарқ = 东方 (dōngfāng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "文化",
+            "pinyin": "wénhuà",
+            "pos": "n.",
+            "meaning": {
+              "uz": "madaniyat",
+              "ru": "культура",
+              "tj": "фарҳанг"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "文化",
+          "pinyin": "wénhuà",
+          "translation": {
+            "uz": "madaniyat",
+            "ru": "культура",
+            "tj": "фарҳанг"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "文化",
+          "pinyin": "wénhuà",
+          "options": [
+            "请客",
+            "南方",
+            "北方",
+            "文化"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "文化 — madaniyat (wénhuà)",
+            "ru": "文化 — культура (wénhuà)",
+            "tj": "文化 — фарҳанг (wénhuà)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "英国",
+            "pinyin": "Yīngguó",
+            "pos": "proper noun",
+            "meaning": {
+              "uz": "Buyuk Britaniya",
+              "ru": "Великобритания",
+              "tj": "Британияи Кабир"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "英国 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 英国:",
+            "tj": "Маънои калимаи 英国-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mehmon qilmoq; hisobni to‘lamoq",
+              "ru": "угощать; приглашать за свой счёт",
+              "tj": "меҳмон кардан; ҳисобро пардохтан"
+            },
+            {
+              "uz": "shimol",
+              "ru": "север",
+              "tj": "шимол"
+            },
+            {
+              "uz": "janub",
+              "ru": "юг",
+              "tj": "ҷануб"
+            },
+            {
+              "uz": "Buyuk Britaniya",
+              "ru": "Великобритания",
+              "tj": "Британияи Кабир"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "英国 = Buyuk Britaniya (Yīngguó)",
+            "ru": "英国 = Великобритания (Yīngguó)",
+            "tj": "英国 = Британияи Кабир (Yīngguó)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "gǎndào qaysi ieroglif?",
+            "ru": "Какой иероглиф читается gǎndào?",
+            "tj": "gǎndào кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "感到",
+            "南方",
+            "请客",
+            "北方"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "感到 = his qilmoq (gǎndào)",
+            "ru": "感到 = чувствовать (gǎndào)",
+            "tj": "感到 = ҳис кардан (gǎndào)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "感到",
+              {
+                "uz": "his qilmoq",
+                "ru": "чувствовать",
+                "tj": "ҳис кардан"
+              }
+            ],
+            [
+              "东方",
+              {
+                "uz": "sharq",
+                "ru": "восток",
+                "tj": "шарқ"
+              }
+            ],
+            [
+              "文化",
+              {
+                "uz": "madaniyat",
+                "ru": "культура",
+                "tj": "фарҳанг"
+              }
+            ],
+            [
+              "英国",
+              {
+                "uz": "Buyuk Britaniya",
+                "ru": "Великобритания",
+                "tj": "Британияи Кабир"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "英国",
+          "pinyin": "Yīngguó",
+          "translation": {
+            "uz": "Buyuk Britaniya",
+            "ru": "Великобритания",
+            "tj": "Британияи Кабир"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "文化",
+          "pinyin": "wénhuà",
+          "options": [
+            "南方",
+            "文化",
+            "北方",
+            "请客"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "文化 — madaniyat (wénhuà)",
+            "ru": "文化 — культура (wénhuà)",
+            "tj": "文化 — фарҳанг (wénhuà)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "东方",
+          "pinyin": "dōngfāng",
+          "options": [
+            "南方",
+            "请客",
+            "北方",
+            "东方"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "东方 — sharq (dōngfāng)",
+            "ru": "东方 — восток (dōngfāng)",
+            "tj": "东方 — шарқ (dōngfāng)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "文化",
+          "pinyin": "wénhuà",
+          "translation": {
+            "uz": "madaniyat",
+            "ru": "культура",
+            "tj": "фарҳанг"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "地图 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 地图:",
+            "tj": "Маънои калимаи 地图-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mehmon qilmoq; hisobni to‘lamoq",
+              "ru": "угощать; приглашать за свой счёт",
+              "tj": "меҳмон кардан; ҳисобро пардохтан"
+            },
+            {
+              "uz": "shimol",
+              "ru": "север",
+              "tj": "шимол"
+            },
+            {
+              "uz": "xarita",
+              "ru": "карта",
+              "tj": "харита"
+            },
+            {
+              "uz": "janub",
+              "ru": "юг",
+              "tj": "ҷануб"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "地图 = xarita (dìtú)",
+            "ru": "地图 = карта (dìtú)",
+            "tj": "地图 = харита (dìtú)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "地图",
+            "pinyin": "dìtú",
+            "meaning": {
+              "uz": "xarita",
+              "ru": "карта",
+              "tj": "харита"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'madaniyat' xitoycha qaysi?",
+            "ru": "'культура' по-китайски?",
+            "tj": "'фарҳанг' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "北方",
+            "请客",
+            "文化",
+            "南方"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "madaniyat = 文化 (wénhuà)",
+            "ru": "культура = 文化 (wénhuà)",
+            "tj": "фарҳанг = 文化 (wénhuà)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "文化",
+            "pinyin": "wénhuà",
+            "meaning": {
+              "uz": "madaniyat",
+              "ru": "культура",
+              "tj": "фарҳанг"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

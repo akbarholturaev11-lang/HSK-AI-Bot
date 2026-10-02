@@ -1,0 +1,716 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 87,
+  "source_lesson": 11,
+  "part_no": 7,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "看来我没办法解决这个问题",
+  "subtitle": {
+    "uz": "Ish jarayoni, yig‘ilish va ishdagi muammolar haqida gaplashish; kasb va ish tanlovi bo‘yicha fikr bildirish; “看来” bilan kuzatuv asosida xulosa chiqarish.",
+    "ru": "Говорить о работе, совещаниях и рабочих проблемах; обсуждать выбор профессии и отношение к работе; использовать “看来” для вывода на основе наблюдений.",
+    "tj": "Дар бораи кори рӯзмарра, ҷаласа ва мушкилоти корӣ суҳбат кардан; интихоби касб ва муносибат ба корро муҳокима кардан; бо “看来” аз рӯйи мушоҳида хулоса баровардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "生活",
+      "pinyin": "shēnghuó",
+      "pos": "n./v.",
+      "meaning": {
+        "uz": "hayot; yashamoq",
+        "ru": "жизнь; жить",
+        "tj": "зиндагӣ; зиндагӣ кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "为",
+      "pinyin": "wèi",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "uchun; deb",
+        "ru": "для; ради",
+        "tj": "барои; ба хотири"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "或",
+      "pinyin": "huò",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "yoki",
+        "ru": "или",
+        "tj": "ё"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "老张",
+      "pinyin": "Lǎo Zhāng",
+      "pos": "proper noun",
+      "meaning": {
+        "uz": "Lao Zhang",
+        "ru": "Лао Чжан",
+        "tj": "Лао Чжан"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ofisda Wang Yixue va Yang Tongle ishni muhokama qilmoqda.",
+        "ru": "В офисе Ван Исюэ и Ян Тунлэ обсуждают работу.",
+        "tj": "Дар идора Ван Исюэ ва Ян Тунлэ корро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "会议下午几点开始？",
+          "pinyin": "Huìyì xiàwǔ jǐ diǎn kāishǐ?",
+          "text": {
+            "uz": "Yig‘ilish tushdan keyin soat nechada boshlanadi?",
+            "ru": "Во сколько начинается совещание днём?",
+            "tj": "Ҷаласа баъд аз нисфирӯзӣ соати чанд сар мешавад?"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "今天下午经理不在，不开会了。",
+          "pinyin": "Jīntiān xiàwǔ jīnglǐ bú zài, bù kāihuì le.",
+          "text": {
+            "uz": "Bugun tushdan keyin menejer yo‘q, yig‘ilish bo‘lmaydi.",
+            "ru": "Сегодня днём менеджера не будет, совещание отменяется.",
+            "tj": "Имрӯз баъд аз нисфирӯзӣ мудир нест, ҷаласа намешавад."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "那什么时候开会？",
+          "pinyin": "Nà shénme shíhou kāihuì?",
+          "text": {
+            "uz": "Unda yig‘ilish qachon bo‘ladi?",
+            "ru": "Тогда когда будет совещание?",
+            "tj": "Пас ҷаласа кай мешавад?"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "后天上午十点，会议地点换到第一会议室。我正要给大家发邮件。",
+          "pinyin": "Hòutiān shàngwǔ shí diǎn, huìyì dìdiǎn huàn dào dì yī huìyìshì. Wǒ zhèng yào gěi dàjiā fā yóujiàn.",
+          "text": {
+            "uz": "Indinga ertalab soat o‘nda, joyi birinchi yig‘ilish xonasiga ko‘chirildi. Hozir hammaga email yubormoqchiman.",
+            "ru": "Послезавтра в десять утра, место перенесли в первую переговорную. Я как раз собираюсь разослать всем письмо.",
+            "tj": "Пасфардо соати даҳи саҳар, ҷой ба утоқи якуми ҷаласа иваз шуд. Ҳозир ба ҳама email мефиристам."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "开会的时候，我们用会议室的电脑还是自己的笔记本电脑？",
+          "pinyin": "Kāihuì de shíhou, wǒmen yòng huìyìshì de diànnǎo háishi zìjǐ de bǐjìběn diànnǎo?",
+          "text": {
+            "uz": "Yig‘ilish paytida xonadagi kompyuterni ishlatamizmi yoki o‘z noutbukimizni?",
+            "ru": "На совещании используем компьютер в переговорной или свои ноутбуки?",
+            "tj": "Ҳангоми ҷаласа компютери утоқро истифода мебарем ё ноутбуки худро?"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "会议室的电脑或者自己的电脑都可以。",
+          "pinyin": "Huìyìshì de diànnǎo huòzhě zìjǐ de diànnǎo dōu kěyǐ.",
+          "text": {
+            "uz": "Yig‘ilish xonasidagi kompyuter ham, o‘z kompyuteringiz ham bo‘ladi.",
+            "ru": "Подойдёт и компьютер в переговорной, и свой.",
+            "tj": "Компютери утоқи ҷаласа ё компютери худӣ — ҳарду мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Yig‘ilish xonasida Wang Yixue va Yang Tongle majlis oldidan tayyorlanmoqda.",
+        "ru": "В переговорной Ван Исюэ и Ян Тунлэ готовятся к совещанию.",
+        "tj": "Дар утоқи ҷаласа Ван Исюэ ва Ян Тунлэ ба ҷаласа омодагӣ мебинанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "电脑接好了吗？",
+          "pinyin": "Diànnǎo jiē hǎo le ma?",
+          "text": {
+            "uz": "Kompyuter ulandimi?",
+            "ru": "Компьютер подключён?",
+            "tj": "Компютер пайваст шуд?"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "已经接好了，您开机看看有没有问题。",
+          "pinyin": "Yǐjīng jiē hǎo le, nín kāijī kànkan yǒu méiyǒu wèntí.",
+          "text": {
+            "uz": "Ha, ulandi. Yoqib ko‘ring, muammo bormi yo‘qmi.",
+            "ru": "Да, уже подключён. Включите и проверьте, всё ли работает.",
+            "tj": "Ҳа, пайваст шуд. Фурӯзон карда бинед, мушкил ҳаст ё не."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "现在什么都看不见。",
+          "pinyin": "Xiànzài shénme dōu kàn bu jiàn.",
+          "text": {
+            "uz": "Hozir hech narsa ko‘rinmayapti.",
+            "ru": "Сейчас ничего не видно.",
+            "tj": "Ҳоло ҳеҷ чиз дида намешавад."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "看见了，但是听不见声音。",
+          "pinyin": "Kànjiàn le, dànshì tīng bu jiàn shēngyīn.",
+          "text": {
+            "uz": "Ko‘rinyapti, lekin ovoz eshitilmayapti.",
+            "ru": "Изображение есть, но звука не слышно.",
+            "tj": "Тасвир ҳаст, аммо садо шунида намешавад."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "现在呢？",
+          "pinyin": "Xiànzài ne?",
+          "text": {
+            "uz": "Hozir-chi?",
+            "ru": "А сейчас?",
+            "tj": "Ҳозир чӣ?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "听得见声音，但是声音有点儿小，听不清楚。",
+          "pinyin": "Tīng de jiàn shēngyīn, dànshì shēngyīn yǒudiǎnr xiǎo, tīng bu qīngchu.",
+          "text": {
+            "uz": "Ovoz eshitilyapti, lekin juda past, aniq eshitilmayapti.",
+            "ru": "Звук слышно, но он слишком тихий, разобрать трудно.",
+            "tj": "Садо шунида мешавад, аммо паст аст, равшан шунида намешавад."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "看来我没办法解决这个问题，只能找别人来帮帮忙了。",
+          "pinyin": "Kànlái wǒ méi bànfǎ jiějué zhège wèntí, zhǐ néng zhǎo biérén lái bāngbangmáng le.",
+          "text": {
+            "uz": "Ko‘rinishidan, bu muammoni o‘zim hal qila olmayman, boshqa birovdan yordam so‘rashga to‘g‘ri keladi.",
+            "ru": "Похоже, я не могу решить эту проблему — придётся позвать кого-то на помощь.",
+            "tj": "Ба назар, ин мушкилро худам ҳал карда наметавонам, бояд аз каси дигар кӯмак пурсам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ofisda Wang Yixue va Yang Tongle suhbatlashmoqda.",
+        "ru": "В офисе Ван Исюэ и Ян Тунлэ разговаривают.",
+        "tj": "Дар идора Ван Исюэ ва Ян Тунлэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "老张没来。他说家里有点儿事，所以请假了。",
+          "pinyin": "Lǎo Zhāng méi lái. Tā shuō jiālǐ yǒudiǎnr shì, suǒyǐ qǐngjià le.",
+          "text": {
+            "uz": "Lao Zhang kelmadi. Uyida ishi bor ekan, shuning uchun ruxsat oldi.",
+            "ru": "Лао Чжан не пришёл. Сказал, что дома дела, поэтому взял отгул.",
+            "tj": "Лао Чжан наомад. Гуфт дар хона кор дорад, барои ҳамин рухсат гирифт."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "好几个同事都休假了，开会前这么多工作我怕干不完。",
+          "pinyin": "Hǎo jǐ ge tóngshì dōu xiūjià le, kāihuì qián zhème duō gōngzuò wǒ pà gàn bu wán.",
+          "text": {
+            "uz": "Bir nechta hamkasb ta’tilda, yig‘ilishgacha buncha ishni tugata olmay qolishdan xavotirdaman.",
+            "ru": "Несколько коллег в отпуске, боюсь, до совещания не успею закончить столько работы.",
+            "tj": "Чанд ҳамкор рухсатӣ аст, метарсам то ҷаласа ин қадар корро тамом карда натавонам."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "十二点多了，咱们先去吃饭吧。吃完饭，我跟您一起把这些工作做完。",
+          "pinyin": "Shí'èr diǎn duō le, zánmen xiān qù chīfàn ba. Chī wán fàn, wǒ gēn nín yìqǐ bǎ zhèxiē gōngzuò zuò wán.",
+          "text": {
+            "uz": "Soat o‘n ikkidan o‘tdi, avval ovqatlanaylik. Ovqatdan keyin bu ishlarni siz bilan birga tugataman.",
+            "ru": "Уже после двенадцати, давайте сначала поедим. После еды я помогу вам закончить всю эту работу.",
+            "tj": "Соат аз дувоздаҳ гузашт, аввал хӯрок хӯрем. Баъди хӯрок ин корҳоро бо шумо якҷо анҷом медиҳам."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "你先去吃，我想再干一会儿。明天开会前要发到公司的邮箱里。",
+          "pinyin": "Nǐ xiān qù chī, wǒ xiǎng zài gàn yíhuìr. Míngtiān kāihuì qián yào fā dào gōngsī de yóuxiāng lǐ.",
+          "text": {
+            "uz": "Sen avval ovqatlan, men yana biroz ishlayman. Ertaga yig‘ilishdan oldin kompaniya pochtasiga yuborish kerak.",
+            "ru": "Ты иди поешь, а я ещё немного поработаю. До завтрашнего совещания нужно отправить всё на почту компании.",
+            "tj": "Ту аввал хӯрок хӯр, ман боз каме кор мекунам. Пеш аз ҷаласаи фардо бояд ба почтаи ширкат фиристода шавад."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "您没看到邮件吗？经理还没回来呢，下周才能开会。",
+          "pinyin": "Nín méi kàndào yóujiàn ma? Jīnglǐ hái méi huílái ne, xià zhōu cái néng kāihuì.",
+          "text": {
+            "uz": "Emailni ko‘rmadingizmi? Menejer hali qaytmadi, yig‘ilish faqat keyingi hafta bo‘ladi.",
+            "ru": "Вы не видели письмо? Менеджер ещё не вернулся, совещание будет только на следующей неделе.",
+            "tj": "Email-ро надидед? Мудир ҳоло барнагаштааст, ҷаласа танҳо ҳафтаи оянда мешавад."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "那不着急了。走，吃饭去。",
+          "pinyin": "Nà bù zháojí le. Zǒu, chīfàn qù.",
+          "text": {
+            "uz": "Unda shoshilmasak ham bo‘ladi. Yuring, ovqatlanamiz.",
+            "ru": "Тогда спешить некуда. Пойдём есть.",
+            "tj": "Пас шитоб лозим нест. Равем хӯрок хӯрем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "生活",
+            "pinyin": "shēnghuó",
+            "pos": "n./v.",
+            "meaning": {
+              "uz": "hayot; yashamoq",
+              "ru": "жизнь; жить",
+              "tj": "зиндагӣ; зиндагӣ кардан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shēnghuó qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shēnghuó?",
+            "tj": "shēnghuó кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "经理",
+            "生活",
+            "开会",
+            "会议"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "生活 = hayot; yashamoq (shēnghuó)",
+            "ru": "生活 = жизнь; жить (shēnghuó)",
+            "tj": "生活 = зиндагӣ; зиндагӣ кардан (shēnghuó)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "为",
+            "pinyin": "wèi",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "uchun; deb",
+              "ru": "для; ради",
+              "tj": "барои; ба хотири"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "为 talaffuzini tanlang:",
+            "ru": "Выберите произношение 为:",
+            "tj": "Талаффузи 为-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "huìyì",
+            "jīnglǐ",
+            "wèi",
+            "kāihuì"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "为 — wèi",
+            "ru": "为 — wèi",
+            "tj": "为 — wèi"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "或",
+            "pinyin": "huò",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "yoki",
+              "ru": "или",
+              "tj": "ё"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "或",
+          "pinyin": "huò",
+          "translation": {
+            "uz": "yoki",
+            "ru": "или",
+            "tj": "ё"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yoki' xitoycha qaysi?",
+            "ru": "'или' по-китайски?",
+            "tj": "'ё' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "经理",
+            "会议",
+            "开会",
+            "或"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "yoki = 或 (huò)",
+            "ru": "или = 或 (huò)",
+            "tj": "ё = 或 (huò)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "老张",
+            "pinyin": "Lǎo Zhāng",
+            "pos": "proper noun",
+            "meaning": {
+              "uz": "Lao Zhang",
+              "ru": "Лао Чжан",
+              "tj": "Лао Чжан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "老张",
+          "pinyin": "Lǎo Zhāng",
+          "options": [
+            "老张",
+            "开会",
+            "经理",
+            "会议"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "老张 — Lao Zhang (Lǎo Zhāng)",
+            "ru": "老张 — Лао Чжан (Lǎo Zhāng)",
+            "tj": "老张 — Лао Чжан (Lǎo Zhāng)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "生活 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 生活:",
+            "tj": "Маънои калимаи 生活-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "menejer; rahbar",
+              "ru": "менеджер; руководитель",
+              "tj": "мудир; роҳбар"
+            },
+            {
+              "uz": "yig‘ilish o‘tkazmoq",
+              "ru": "проводить совещание",
+              "tj": "ҷаласа гузарондан"
+            },
+            {
+              "uz": "yig‘ilish; majlis",
+              "ru": "совещание; собрание",
+              "tj": "ҷаласа; маҷлис"
+            },
+            {
+              "uz": "hayot; yashamoq",
+              "ru": "жизнь; жить",
+              "tj": "зиндагӣ; зиндагӣ кардан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "生活 = hayot; yashamoq (shēnghuó)",
+            "ru": "生活 = жизнь; жить (shēnghuó)",
+            "tj": "生活 = зиндагӣ; зиндагӣ кардан (shēnghuó)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "生活",
+              {
+                "uz": "hayot; yashamoq",
+                "ru": "жизнь; жить",
+                "tj": "зиндагӣ; зиндагӣ кардан"
+              }
+            ],
+            [
+              "为",
+              {
+                "uz": "uchun; deb",
+                "ru": "для; ради",
+                "tj": "барои; ба хотири"
+              }
+            ],
+            [
+              "或",
+              {
+                "uz": "yoki",
+                "ru": "или",
+                "tj": "ё"
+              }
+            ],
+            [
+              "老张",
+              {
+                "uz": "Lao Zhang",
+                "ru": "Лао Чжан",
+                "tj": "Лао Чжан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "或",
+          "pinyin": "huò",
+          "options": [
+            "经理",
+            "开会",
+            "或",
+            "会议"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "或 — yoki (huò)",
+            "ru": "或 — или (huò)",
+            "tj": "或 — ё (huò)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "老张",
+          "pinyin": "Lǎo Zhāng",
+          "translation": {
+            "uz": "Lao Zhang",
+            "ru": "Лао Чжан",
+            "tj": "Лао Чжан"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "为",
+          "pinyin": "wèi",
+          "options": [
+            "会议",
+            "经理",
+            "为",
+            "开会"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "为 — uchun; deb (wèi)",
+            "ru": "为 — для; ради (wèi)",
+            "tj": "为 — барои; ба хотири (wèi)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "或",
+          "pinyin": "huò",
+          "translation": {
+            "uz": "yoki",
+            "ru": "или",
+            "tj": "ё"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "离开 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 离开:",
+            "tj": "Маънои калимаи 离开-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yig‘ilish; majlis",
+              "ru": "совещание; собрание",
+              "tj": "ҷаласа; маҷлис"
+            },
+            {
+              "uz": "menejer; rahbar",
+              "ru": "менеджер; руководитель",
+              "tj": "мудир; роҳбар"
+            },
+            {
+              "uz": "tark etmoq; ketmoq",
+              "ru": "покидать; уходить",
+              "tj": "тарк кардан; рафтан"
+            },
+            {
+              "uz": "yig‘ilish o‘tkazmoq",
+              "ru": "проводить совещание",
+              "tj": "ҷаласа гузарондан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "离开 = tark etmoq; ketmoq (líkāi)",
+            "ru": "离开 = покидать; уходить (líkāi)",
+            "tj": "离开 = тарк кардан; рафтан (líkāi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "离开",
+            "pinyin": "líkāi",
+            "meaning": {
+              "uz": "tark etmoq; ketmoq",
+              "ru": "покидать; уходить",
+              "tj": "тарк кардан; рафтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yoki' xitoycha qaysi?",
+            "ru": "'или' по-китайски?",
+            "tj": "'ё' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "或",
+            "经理",
+            "会议",
+            "开会"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "yoki = 或 (huò)",
+            "ru": "или = 或 (huò)",
+            "tj": "ё = 或 (huò)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "或",
+            "pinyin": "huò",
+            "meaning": {
+              "uz": "yoki",
+              "ru": "или",
+              "tj": "ё"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

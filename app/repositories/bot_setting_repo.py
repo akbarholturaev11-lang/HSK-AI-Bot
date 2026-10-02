@@ -16,6 +16,12 @@ class BotSettingRepository:
         )
         return result.scalar_one_or_none()
 
+    async def get_record(self, key: str) -> BotSetting | None:
+        result = await self.session.execute(
+            select(BotSetting).where(BotSetting.key == key)
+        )
+        return result.scalar_one_or_none()
+
     async def set(self, key: str, value: str) -> BotSetting:
         result = await self.session.execute(
             select(BotSetting).where(BotSetting.key == key)

@@ -298,6 +298,9 @@
     <string name="limit_unlock_unavailable">Не удалось выполнить действие. Попробуйте позже.</string>
     <string name="limit_voice_reason">Бесплатные разговоры с AI Voice на сегодня закончились.</string>
     <string name="profile_language">Язык</string>
+    <string name="profile_course_version">Версия курса</string>
+    <string name="profile_course_version_confirm_title">Перейти на %1$s?</string>
+    <string name="profile_course_version_confirm_body">Прогресс текущего курса сохранится. Вы сможете вернуться к другой версии в любое время.</string>
     <string name="profile_language_picker_title">Выберите язык</string>
     <string name="profile_notifications">Уведомления</string>
     <string name="profile_help">Помощь</string>
@@ -314,7 +317,7 @@
     <string name="notify_goal_body_2">До цели совсем немного — панда дойдёт с вами до конца.</string>
     <string name="notify_goal_body_3">Осталась одна часть. Закроем сегодняшнюю цель?</string>
     <string name="practice_dictionary_title">Словарь иероглифов</string>
-    <string name="practice_dictionary_body">HSK 1–4 · написание, пиньинь, значение</string>
+    <string name="practice_dictionary_body">HSK 2.0 + 3.0 · написание, пиньинь, значение</string>
     <string name="dictionary_search_hint">Иероглиф, пиньинь или значение</string>
     <string name="dictionary_recent_title">Недавние поиски</string>
     <string name="dictionary_all_words">Все слова</string>
@@ -330,6 +333,8 @@
     <string name="dictionary_action_write">Писать</string>
     <string name="dictionary_parts_title">Из чего состоит</string>
     <string name="dictionary_examples_title">Примеры</string>
+    <string name="dictionary_memory_hint_title">Подсказка для запоминания</string>
+    <string name="dictionary_memory_hint_body">Попробуйте написать знаки %1$s и связать их форму со значением слова.</string>
     <string name="writing_stage_demo">Посмотрите порядок черт</string>
     <string name="writing_stage_trace">Обведите по контуру</string>
     <string name="writing_stage_hint">Пишите с подсказкой</string>
@@ -484,4 +489,10 @@
     <string name="notify_payment_rejected_body">Откройте раздел подписки, проверьте платёж и отправьте его снова.</string>
     <string name="notify_payment_private_title">Сообщение о подписке HSK AI</string>
     <string name="notify_payment_private_body">Откройте приложение, чтобы узнать подробности.</string>
+    <string name="hsk30_promo_title">Новый HSK 3.0</string>
+    <string name="hsk30_promo_body">Новый стандарт добавлен как отдельный курс. Прогресс HSK 2.0 сохранится, и к нему можно вернуться в любое время.</string>
+    <string name="hsk30_promo_price">Разовый доступ: %1$d TJS</string>
+    <string name="hsk30_promo_switch">Перейти на HSK 3.0</string>
+    <string name="hsk30_test_soon_title">Тесты HSK 3.0</string>
+    <string name="hsk30_test_soon_body">Новый формат экзамена HSK 3.0 ещё готовится.</string>
 </resources>

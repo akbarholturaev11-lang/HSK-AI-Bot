@@ -1,0 +1,771 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 75,
+  "source_lesson": 11,
+  "part_no": 7,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我读大学呢",
+  "subtitle": {
+    "uz": "正反问 shaklidagi savollarni tushunish va tuzish; “在/正在” bilan davom etayotgan harakatni ifodalash; “要” bilan xohish yoki niyatni bildirish.",
+    "ru": "Понимать и строить утвердительно-отрицательные вопросы; выражать продолжающееся действие с “在/正在”; выражать желание или намерение с “要”.",
+    "tj": "Саволҳои тасдиқӣ-инкориро фаҳмидан ва сохтан; бо “在/正在” амали давомдорро ифода кардан; бо “要” хоҳиш ё ниятро нишон додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "说",
+      "pinyin": "shuō",
+      "pos": "v.",
+      "meaning": {
+        "uz": "gapirmoq; aytmoq",
+        "ru": "говорить; сказать",
+        "tj": "гуфтан; сухан гуфтан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "要",
+      "pinyin": "yào",
+      "pos": "mod.",
+      "meaning": {
+        "uz": "xohlamoq; niyat qilmoq",
+        "ru": "хотеть; намереваться",
+        "tj": "хостан; ният кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "小朋友",
+      "pinyin": "xiǎopéngyou",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bola",
+        "ru": "ребёнок",
+        "tj": "кӯдак"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Modal fe’l “要”",
+        "ru": "Модальный глагол “要”",
+        "tj": "Феъли модалии “要”"
+      },
+      "title_zh": "能愿动词“要”",
+      "rule": {
+        "uz": "“要” fe’l oldidan kelib biror ishni qilish istagi yoki niyatini bildiradi.",
+        "ru": "“要” перед глаголом выражает желание или намерение что-то сделать.",
+        "tj": "“要” пеш аз феъл омада, хоҳиш ё нияти иҷрои амалро ифода мекунад."
+      },
+      "examples": [
+        {
+          "zh": "他今天要和小朋友玩。",
+          "pinyin": "Tā jīntiān yào hé xiǎopéngyou wán.",
+          "translation": {
+            "uz": "U bugun bolalar bilan o‘ynamoqchi.",
+            "ru": "Сегодня он хочет играть с детьми.",
+            "tj": "Ӯ имрӯз мехоҳад бо кӯдакон бозӣ кунад."
+          }
+        },
+        {
+          "zh": "妈妈要去超市。",
+          "pinyin": "Māma yào qù chāoshì.",
+          "translation": {
+            "uz": "Onam supermarketga bormoqchi.",
+            "ru": "Мама собирается в супермаркет.",
+            "tj": "Модарам ба супермаркет рафтан мехоҳад."
+          }
+        },
+        {
+          "zh": "白家月要在家里学中文。",
+          "pinyin": "Bái Jiāyuè yào zài jiālǐ xué Zhōngwén.",
+          "translation": {
+            "uz": "Bai Jiayue uyda xitoy tilini o‘rganmoqchi.",
+            "ru": "Бай Цзяюэ хочет изучать китайский дома.",
+            "tj": "Бай Ҷяюэ мехоҳад дар хона забони чинӣ омӯзад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Yo‘lda Li Wen restoran qidirayotganida Wang Yifei unga telefon qiladi.",
+        "ru": "По дороге, пока Ли Вэнь искал ресторан, Ван Ифэй позвонила ему.",
+        "tj": "Дар роҳ, вақте Ли Вэн тарабхонаро меҷуст, Ван Ифэй ба ӯ занг зад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "还不知道，正在找呢。它是不是在超市后边？",
+          "pinyin": "Hái bù zhīdào, zhèngzài zhǎo ne. Tā shì bu shì zài chāoshì hòubian?",
+          "text": {
+            "uz": "Hali bilmayman, hozir qidiryapman. U supermarket orqasidami?",
+            "ru": "Пока не знаю, сейчас ищу. Он за супермаркетом?",
+            "tj": "Ҳоло намедонам, ҷустуҷӯ карда истодаам. Он паси супермаркет аст?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "是的。你开车没开车？",
+          "pinyin": "Shì de. Nǐ kāichē méi kāichē?",
+          "text": {
+            "uz": "Ha. Mashina haydayapsanmi yo‘qmi?",
+            "ru": "Да. Ты за рулём или нет?",
+            "tj": "Ҳа. Мошин меронӣ ё не?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "我没开车，坐车呢。",
+          "pinyin": "Wǒ méi kāichē, zuò chē ne.",
+          "text": {
+            "uz": "Mashina haydamayapman, transportda ketyapman.",
+            "ru": "Нет, я не за рулём, еду на машине.",
+            "tj": "Не, мошин намеронам, бо нақлиёт меравам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda uchrashgach Wang Yifei va Li Wen suhbatlashmoqda.",
+        "ru": "После встречи в ресторане Ван Ифэй и Ли Вэнь разговаривают.",
+        "tj": "Пас аз вохӯрӣ дар тарабхона Ван Ифэй ва Ли Вэн суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "你还在读大学吗？",
+          "pinyin": "Nǐ hái zài dú dàxué ma?",
+          "text": {
+            "uz": "Hali ham universitetda o‘qiyapsanmi?",
+            "ru": "Ты всё ещё учишься в университете?",
+            "tj": "Ҳоло ҳам дар донишгоҳ мехонӣ?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "对，我读大学呢，还是大学生。",
+          "pinyin": "Duì, wǒ dú dàxué ne, hái shì dàxuéshēng.",
+          "text": {
+            "uz": "Ha, universitetda o‘qiyman, hali talabaman.",
+            "ru": "Да, я учусь в университете, я ещё студент.",
+            "tj": "Ҳа, дар донишгоҳ мехонам, ҳоло ҳам донишҷӯ ҳастам."
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "你们学习忙不忙？",
+          "pinyin": "Nǐmen xuéxí máng bu máng?",
+          "text": {
+            "uz": "O‘qishingiz bandmi yo‘qmi?",
+            "ru": "У вас учёба напряжённая?",
+            "tj": "Таҳсилатон сермашғул аст ё не?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "非常忙，我学医，我们的课很多。",
+          "pinyin": "Fēicháng máng, wǒ xué yī, wǒmen de kè hěn duō.",
+          "text": {
+            "uz": "Juda band. Men tibbiyot o‘qiyman, darslarimiz juda ko‘p.",
+            "ru": "Очень заняты. Я изучаю медицину, у нас много занятий.",
+            "tj": "Хеле банд. Ман тиб мехонам, дарсҳоямон бисёранд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Shanba ertalab Liu Ming kasalxonaga qo‘shimcha ishga ketishidan oldin qizi Xiaoxue bilan gaplashadi.",
+        "ru": "В субботу утром Лю Мин собирается на сверхурочную работу в больницу и перед выходом разговаривает с дочерью Сяосюэ.",
+        "tj": "Субҳи шанбе Лю Мин барои кори иловагӣ ба беморхона меравад ва пеш аз баромадан бо духтараш Сяосюэ суҳбат мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Ming",
+          "zh": "弟弟起床没起床呢？",
+          "pinyin": "Dìdi qǐchuáng méi qǐchuáng ne?",
+          "text": {
+            "uz": "Ukang turdimi yo‘qmi?",
+            "ru": "Младший брат уже встал или нет?",
+            "tj": "Бародари хурдиат аз хоб хест ё не?"
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "没起床呢，还在睡觉。",
+          "pinyin": "Méi qǐchuáng ne, hái zài shuìjiào.",
+          "text": {
+            "uz": "Yo‘q, hali turmadi, hanuz uxlayapti.",
+            "ru": "Нет, ещё не встал, всё ещё спит.",
+            "tj": "Не, ҳоло нахестааст, ҳанӯз хоб аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "还睡呢？他今天去不去那里？",
+          "pinyin": "Hái shuì ne? Tā jīntiān qù bu qù nàli?",
+          "text": {
+            "uz": "Hali uxlayaptimi? U bugun u yerga boradimi yo‘qmi?",
+            "ru": "Всё ещё спит? Он сегодня пойдёт туда или нет?",
+            "tj": "Ҳанӯз хоб аст? Ӯ имрӯз ба он ҷо меравад ё не?"
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "去哪里？",
+          "pinyin": "Qù nǎli?",
+          "text": {
+            "uz": "Qayerga?",
+            "ru": "Куда?",
+            "tj": "Ба куҷо?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "去超市。",
+          "pinyin": "Qù chāoshì.",
+          "text": {
+            "uz": "Supermarketga.",
+            "ru": "В супермаркет.",
+            "tj": "Ба супермаркет."
+          }
+        },
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "我昨天问他，他对我说，他不去，他今天要和小朋友玩。",
+          "pinyin": "Wǒ zuótiān wèn tā, tā duì wǒ shuō, tā bú qù, tā jīntiān yào hé xiǎopéngyou wán.",
+          "text": {
+            "uz": "Kecha undan so‘radim. U menga bormasligini aytdi, bugun bolalar bilan o‘ynamoqchi.",
+            "ru": "Я вчера спросила его. Он сказал мне, что не пойдёт; сегодня он хочет играть с друзьями.",
+            "tj": "Ман дирӯз аз ӯ пурсидам. Ӯ гуфт, ки намеравад; имрӯз мехоҳад бо кӯдакон бозӣ кунад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "说",
+            "pinyin": "shuō",
+            "pos": "v.",
+            "meaning": {
+              "uz": "gapirmoq; aytmoq",
+              "ru": "говорить; сказать",
+              "tj": "гуфтан; сухан гуфтан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "说",
+          "pinyin": "shuō",
+          "options": [
+            "时候",
+            "饭店",
+            "知道",
+            "说"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "说 — gapirmoq; aytmoq (shuō)",
+            "ru": "说 — говорить; сказать (shuō)",
+            "tj": "说 — гуфтан; сухан гуфтан (shuō)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "要",
+            "pinyin": "yào",
+            "pos": "mod.",
+            "meaning": {
+              "uz": "xohlamoq; niyat qilmoq",
+              "ru": "хотеть; намереваться",
+              "tj": "хостан; ният кардан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "要 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 要:",
+            "tj": "Маънои калимаи 要-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xohlamoq; niyat qilmoq",
+              "ru": "хотеть; намереваться",
+              "tj": "хостан; ният кардан"
+            },
+            {
+              "uz": "vaqt; payt",
+              "ru": "время; момент",
+              "tj": "вақт; лаҳза"
+            },
+            {
+              "uz": "bilmoq",
+              "ru": "знать; понимать",
+              "tj": "донистан"
+            },
+            {
+              "uz": "restoran",
+              "ru": "ресторан",
+              "tj": "тарабхона"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "要 = xohlamoq; niyat qilmoq (yào)",
+            "ru": "要 = хотеть; намереваться (yào)",
+            "tj": "要 = хостан; ният кардан (yào)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "小朋友",
+            "pinyin": "xiǎopéngyou",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bola",
+              "ru": "ребёнок",
+              "tj": "кӯдак"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "小朋友",
+          "pinyin": "xiǎopéngyou",
+          "translation": {
+            "uz": "bola",
+            "ru": "ребёнок",
+            "tj": "кӯдак"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xiǎopéngyou qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xiǎopéngyou?",
+            "tj": "xiǎopéngyou кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "时候",
+            "饭店",
+            "小朋友",
+            "知道"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "小朋友 = bola (xiǎopéngyou)",
+            "ru": "小朋友 = ребёнок (xiǎopéngyou)",
+            "tj": "小朋友 = кӯдак (xiǎopéngyou)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "说 talaffuzini tanlang:",
+            "ru": "Выберите произношение 说:",
+            "tj": "Талаффузи 说-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shuō",
+            "shíhou",
+            "zhīdào",
+            "fàndiàn"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "说 — shuō",
+            "ru": "说 — shuō",
+            "tj": "说 — shuō"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "说",
+              {
+                "uz": "gapirmoq; aytmoq",
+                "ru": "говорить; сказать",
+                "tj": "гуфтан; сухан гуфтан"
+              }
+            ],
+            [
+              "要",
+              {
+                "uz": "xohlamoq; niyat qilmoq",
+                "ru": "хотеть; намереваться",
+                "tj": "хостан; ният кардан"
+              }
+            ],
+            [
+              "小朋友",
+              {
+                "uz": "bola",
+                "ru": "ребёнок",
+                "tj": "кӯдак"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Modal fe’l “要”",
+              "ru": "Модальный глагол “要”",
+              "tj": "Феъли модалии “要”"
+            },
+            "title_zh": "能愿动词“要”",
+            "rule": {
+              "uz": "“要” fe’l oldidan kelib biror ishni qilish istagi yoki niyatini bildiradi.",
+              "ru": "“要” перед глаголом выражает желание или намерение что-то сделать.",
+              "tj": "“要” пеш аз феъл омада, хоҳиш ё нияти иҷрои амалро ифода мекунад."
+            },
+            "examples": [
+              {
+                "zh": "他今天要和小朋友玩。",
+                "pinyin": "Tā jīntiān yào hé xiǎopéngyou wán.",
+                "translation": {
+                  "uz": "U bugun bolalar bilan o‘ynamoqchi.",
+                  "ru": "Сегодня он хочет играть с детьми.",
+                  "tj": "Ӯ имрӯз мехоҳад бо кӯдакон бозӣ кунад."
+                }
+              },
+              {
+                "zh": "妈妈要去超市。",
+                "pinyin": "Māma yào qù chāoshì.",
+                "translation": {
+                  "uz": "Onam supermarketga bormoqchi.",
+                  "ru": "Мама собирается в супермаркет.",
+                  "tj": "Модарам ба супермаркет рафтан мехоҳад."
+                }
+              },
+              {
+                "zh": "白家月要在家里学中文。",
+                "pinyin": "Bái Jiāyuè yào zài jiālǐ xué Zhōngwén.",
+                "translation": {
+                  "uz": "Bai Jiayue uyda xitoy tilini o‘rganmoqchi.",
+                  "ru": "Бай Цзяюэ хочет изучать китайский дома.",
+                  "tj": "Бай Ҷяюэ мехоҳад дар хона забони чинӣ омӯзад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U bugun bolalar bilan o‘ynamoqchi.",
+            "ru": "Сегодня он хочет играть с детьми.",
+            "tj": "Ӯ имрӯз мехоҳад бо кӯдакон бозӣ кунад."
+          },
+          "tokens": [
+            "今天",
+            "玩",
+            "和",
+            "饭店",
+            "要",
+            "他",
+            "时候",
+            "小朋友"
+          ],
+          "answer_tokens": [
+            "他",
+            "今天",
+            "要",
+            "和",
+            "小朋友",
+            "玩"
+          ],
+          "explanation": {
+            "uz": "他今天要和小朋友玩。 — Tā jīntiān yào hé xiǎopéngyou wán.",
+            "ru": "他今天要和小朋友玩。 — Tā jīntiān yào hé xiǎopéngyou wán.",
+            "tj": "他今天要和小朋友玩。 — Tā jīntiān yào hé xiǎopéngyou wán."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U bugun bolalar bilan o‘ynamoqchi.» — xitoychada qaysi biri?",
+            "ru": "«Сегодня он хочет играть с детьми.» — какое предложение по-китайски?",
+            "tj": "«Ӯ имрӯз мехоҳад бо кӯдакон бозӣ кунад.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "妈妈要去超市。",
+            "他今天要和小朋友玩。",
+            "白家月要在家里学中文。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "他今天要和小朋友玩。 — Tā jīntiān yào hé xiǎopéngyou wán.",
+            "ru": "他今天要和小朋友玩。 — Tā jīntiān yào hé xiǎopéngyou wán.",
+            "tj": "他今天要和小朋友玩。 — Tā jīntiān yào hé xiǎopéngyou wán."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "说",
+          "pinyin": "shuō",
+          "options": [
+            "知道",
+            "说",
+            "时候",
+            "饭店"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "说 — gapirmoq; aytmoq (shuō)",
+            "ru": "说 — говорить; сказать (shuō)",
+            "tj": "说 — гуфтан; сухан гуфтан (shuō)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Onam supermarketga bormoqchi.",
+            "ru": "Мама собирается в супермаркет.",
+            "tj": "Модарам ба супермаркет рафтан мехоҳад."
+          },
+          "tokens": [
+            "超市",
+            "饭店",
+            "时候",
+            "要",
+            "去",
+            "妈妈"
+          ],
+          "answer_tokens": [
+            "妈妈",
+            "要",
+            "去",
+            "超市"
+          ],
+          "explanation": {
+            "uz": "妈妈要去超市。 — Māma yào qù chāoshì.",
+            "ru": "妈妈要去超市。 — Māma yào qù chāoshì.",
+            "tj": "妈妈要去超市。 — Māma yào qù chāoshì."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "小朋友",
+          "pinyin": "xiǎopéngyou",
+          "options": [
+            "时候",
+            "饭店",
+            "小朋友",
+            "知道"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "小朋友 — bola (xiǎopéngyou)",
+            "ru": "小朋友 — ребёнок (xiǎopéngyou)",
+            "tj": "小朋友 — кӯдак (xiǎopéngyou)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "小朋友",
+          "pinyin": "xiǎopéngyou",
+          "translation": {
+            "uz": "bola",
+            "ru": "ребёнок",
+            "tj": "кӯдак"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "对 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 对:",
+            "tj": "Маънои калимаи 对-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "vaqt; payt",
+              "ru": "время; момент",
+              "tj": "вақт; лаҳза"
+            },
+            {
+              "uz": "ga; tomon",
+              "ru": "к; по отношению к",
+              "tj": "ба; нисбат ба"
+            },
+            {
+              "uz": "bilmoq",
+              "ru": "знать; понимать",
+              "tj": "донистан"
+            },
+            {
+              "uz": "restoran",
+              "ru": "ресторан",
+              "tj": "тарабхона"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "对 = ga; tomon (duì)",
+            "ru": "对 = к; по отношению к (duì)",
+            "tj": "对 = ба; нисбат ба (duì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "对",
+            "pinyin": "duì",
+            "meaning": {
+              "uz": "ga; tomon",
+              "ru": "к; по отношению к",
+              "tj": "ба; нисбат ба"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bola' xitoycha qaysi?",
+            "ru": "'ребёнок' по-китайски?",
+            "tj": "'кӯдак' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "时候",
+            "饭店",
+            "小朋友",
+            "知道"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "bola = 小朋友 (xiǎopéngyou)",
+            "ru": "ребёнок = 小朋友 (xiǎopéngyou)",
+            "tj": "кӯдак = 小朋友 (xiǎopéngyou)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "小朋友",
+            "pinyin": "xiǎopéngyou",
+            "meaning": {
+              "uz": "bola",
+              "ru": "ребёнок",
+              "tj": "кӯдак"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

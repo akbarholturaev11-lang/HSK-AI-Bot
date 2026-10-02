@@ -1,0 +1,407 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 11,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115
+    ]
+  },
+  "title": {
+    "hanzi": "看来我没办法解决这个问题",
+    "pinyin": "Kànlái wǒ méi bànfǎ jiějué zhège wèntí"
+  },
+  "objectives": [
+    "能听懂并交流工作情况。",
+    "能听懂并谈论职业选择和工作感受。",
+    "掌握“看来”的用法，能对事件进行推测和分析。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "会议",
+      "pinyin": "huìyì",
+      "part_of_speech": "n.",
+      "source_page": 108
+    },
+    {
+      "hanzi": "经理",
+      "pinyin": "jīnglǐ",
+      "part_of_speech": "n.",
+      "source_page": 108
+    },
+    {
+      "hanzi": "开会",
+      "pinyin": "kāihuì",
+      "part_of_speech": "v.",
+      "source_page": 108
+    },
+    {
+      "hanzi": "后天",
+      "pinyin": "hòutiān",
+      "part_of_speech": "n.",
+      "source_page": 108
+    },
+    {
+      "hanzi": "地点",
+      "pinyin": "dìdiǎn",
+      "part_of_speech": "n.",
+      "source_page": 108
+    },
+    {
+      "hanzi": "室",
+      "pinyin": "shì",
+      "part_of_speech": "n.",
+      "source_page": 108
+    },
+    {
+      "hanzi": "发",
+      "pinyin": "fā",
+      "part_of_speech": "v.",
+      "source_page": 108
+    },
+    {
+      "hanzi": "笔记本（电脑）",
+      "pinyin": "bǐjìběn (diànnǎo)",
+      "part_of_speech": "n.",
+      "source_page": 108
+    },
+    {
+      "hanzi": "或者",
+      "pinyin": "huòzhě",
+      "part_of_speech": "conj.",
+      "source_page": 108
+    },
+    {
+      "hanzi": "声音",
+      "pinyin": "shēngyīn",
+      "part_of_speech": "n.",
+      "source_page": 110
+    },
+    {
+      "hanzi": "看来",
+      "pinyin": "kànlái",
+      "part_of_speech": "v.",
+      "source_page": 110
+    },
+    {
+      "hanzi": "办法",
+      "pinyin": "bànfǎ",
+      "part_of_speech": "n.",
+      "source_page": 110
+    },
+    {
+      "hanzi": "解决",
+      "pinyin": "jiějué",
+      "part_of_speech": "v.",
+      "source_page": 110
+    },
+    {
+      "hanzi": "只能",
+      "pinyin": "zhǐ néng",
+      "part_of_speech": "",
+      "source_page": 110
+    },
+    {
+      "hanzi": "别人",
+      "pinyin": "biérén",
+      "part_of_speech": "pron.",
+      "source_page": 110
+    },
+    {
+      "hanzi": "请假",
+      "pinyin": "qǐngjià",
+      "part_of_speech": "v.",
+      "source_page": 111
+    },
+    {
+      "hanzi": "同事",
+      "pinyin": "tóngshì",
+      "part_of_speech": "n.",
+      "source_page": 111
+    },
+    {
+      "hanzi": "休假",
+      "pinyin": "xiūjià",
+      "part_of_speech": "v.",
+      "source_page": 111
+    },
+    {
+      "hanzi": "怕",
+      "pinyin": "pà",
+      "part_of_speech": "v.",
+      "source_page": 111
+    },
+    {
+      "hanzi": "邮箱",
+      "pinyin": "yóuxiāng",
+      "part_of_speech": "n.",
+      "source_page": 111
+    },
+    {
+      "hanzi": "愿意",
+      "pinyin": "yuànyì",
+      "part_of_speech": "mod.",
+      "source_page": 113
+    },
+    {
+      "hanzi": "城市",
+      "pinyin": "chéngshì",
+      "part_of_speech": "n.",
+      "source_page": 113
+    },
+    {
+      "hanzi": "离开",
+      "pinyin": "líkāi",
+      "part_of_speech": "v.",
+      "source_page": 113
+    },
+    {
+      "hanzi": "机会",
+      "pinyin": "jīhuì",
+      "part_of_speech": "n.",
+      "source_page": 113
+    },
+    {
+      "hanzi": "生活",
+      "pinyin": "shēnghuó",
+      "part_of_speech": "n./v.",
+      "source_page": 113
+    },
+    {
+      "hanzi": "为",
+      "pinyin": "wèi",
+      "part_of_speech": "prep.",
+      "source_page": 113
+    },
+    {
+      "hanzi": "或",
+      "pinyin": "huò",
+      "part_of_speech": "conj.",
+      "source_page": 113
+    },
+    {
+      "hanzi": "老张",
+      "pinyin": "Lǎo Zhāng",
+      "part_of_speech": "proper noun",
+      "source_page": 111
+    }
+  ],
+  "grammar": [
+    {
+      "label": "“还是”和“或者”",
+      "source_page": 109,
+      "examples": [
+        {
+          "hanzi": "我们用会议室的电脑还是自己的笔记本电脑？",
+          "pinyin": "Wǒmen yòng huìyìshì de diànnǎo háishi zìjǐ de bǐjìběn diànnǎo?"
+        },
+        {
+          "hanzi": "我们今天去、明天去还是后天去？",
+          "pinyin": "Wǒmen jīntiān qù, míngtiān qù háishi hòutiān qù?"
+        },
+        {
+          "hanzi": "会议室的电脑或者自己的电脑都可以。",
+          "pinyin": "Huìyìshì de diànnǎo huòzhě zìjǐ de diànnǎo dōu kěyǐ."
+        },
+        {
+          "hanzi": "你可以坐地铁或者打车去学校。",
+          "pinyin": "Nǐ kěyǐ zuò dìtiě huòzhě dǎchē qù xuéxiào."
+        }
+      ]
+    },
+    {
+      "label": "固定短语“看来”",
+      "source_page": 110,
+      "examples": [
+        {
+          "hanzi": "看来我没办法解决这个问题。",
+          "pinyin": "Kànlái wǒ méi bànfǎ jiějué zhège wèntí."
+        },
+        {
+          "hanzi": "这么晚了，看来他今天不会来了。",
+          "pinyin": "Zhème wǎn le, kànlái tā jīntiān bú huì lái le."
+        },
+        {
+          "hanzi": "电梯坏了，看来咱们只能走下去了。",
+          "pinyin": "Diàntī huài le, kànlái zánmen zhǐ néng zǒu xiàqu le."
+        }
+      ]
+    },
+    {
+      "label": "“把”字句（3）",
+      "source_page": 112,
+      "examples": [
+        {
+          "hanzi": "我跟您一起把这些工作做完。",
+          "pinyin": "Wǒ gēn nín yìqǐ bǎ zhèxiē gōngzuò zuò wán."
+        },
+        {
+          "hanzi": "妈妈把衣服洗干净了。",
+          "pinyin": "Māma bǎ yīfu xǐ gānjìng le."
+        },
+        {
+          "hanzi": "他还没把笔记本电脑接好呢。",
+          "pinyin": "Tā hái méi bǎ bǐjìběn diànnǎo jiē hǎo ne."
+        }
+      ]
+    },
+    {
+      "label": "固定格式“对……来说”",
+      "source_page": 113,
+      "examples": [
+        {
+          "hanzi": "对我来说，生活也很重要，我不愿意为工作或学习离开家人。",
+          "pinyin": "Duì wǒ láishuō, shēnghuó yě hěn zhòngyào, wǒ bù yuànyì wèi gōngzuò huò xuéxí líkāi jiārén."
+        },
+        {
+          "hanzi": "对她来说，学习汉语很有意思。",
+          "pinyin": "Duì tā láishuō, xuéxí Hànyǔ hěn yǒuyìsi."
+        },
+        {
+          "hanzi": "对孩子来说，玩也是一种学习。",
+          "pinyin": "Duì háizi láishuō, wán yě shì yì zhǒng xuéxí."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在办公室里，王一雪跟杨同乐在讨论工作。",
+      "source_page": 108,
+      "turns": [
+        {
+          "speaker": "王一雪",
+          "hanzi": "会议下午几点开始？",
+          "pinyin": "Huìyì xiàwǔ jǐ diǎn kāishǐ?"
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "今天下午经理不在，不开会了。",
+          "pinyin": "Jīntiān xiàwǔ jīnglǐ bú zài, bù kāihuì le."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "那什么时候开会？",
+          "pinyin": "Nà shénme shíhou kāihuì?"
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "后天上午十点，会议地点换到第一会议室。我正要给大家发邮件。",
+          "pinyin": "Hòutiān shàngwǔ shí diǎn, huìyì dìdiǎn huàn dào dì yī huìyìshì. Wǒ zhèng yào gěi dàjiā fā yóujiàn."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "开会的时候，我们用会议室的电脑还是自己的笔记本电脑？",
+          "pinyin": "Kāihuì de shíhou, wǒmen yòng huìyìshì de diànnǎo háishi zìjǐ de bǐjìběn diànnǎo?"
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "会议室的电脑或者自己的电脑都可以。",
+          "pinyin": "Huìyìshì de diànnǎo huòzhě zìjǐ de diànnǎo dōu kěyǐ."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "那到时候咱们早点儿过去，你帮我把电脑接好吧。",
+          "pinyin": "Nà dào shíhou zánmen zǎo diǎnr guòqu, nǐ bāng wǒ bǎ diànnǎo jiē hǎo ba."
+        }
+      ]
+    },
+    {
+      "scene": "在会议室，王一雪跟杨同乐在做会前准备。",
+      "source_page": 110,
+      "turns": [
+        {
+          "speaker": "王一雪",
+          "hanzi": "电脑接好了吗？",
+          "pinyin": "Diànnǎo jiē hǎo le ma?"
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "已经接好了，您开机看看有没有问题。",
+          "pinyin": "Yǐjīng jiē hǎo le, nín kāijī kànkan yǒu méiyǒu wèntí."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "现在什么都看不见。",
+          "pinyin": "Xiànzài shénme dōu kàn bu jiàn."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "我检查一下哪里出问题了……您再试一下。",
+          "pinyin": "Wǒ jiǎnchá yíxià nǎlǐ chū wèntí le... Nín zài shì yíxià."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "看见了，但是听不见声音。",
+          "pinyin": "Kànjiàn le, dànshì tīng bu jiàn shēngyīn."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "现在呢？",
+          "pinyin": "Xiànzài ne?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "听得见声音，但是声音有点儿小，听不清楚。",
+          "pinyin": "Tīng de jiàn shēngyīn, dànshì shēngyīn yǒudiǎnr xiǎo, tīng bu qīngchu."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "看来我没办法解决这个问题，只能找别人来帮帮忙了。",
+          "pinyin": "Kànlái wǒ méi bànfǎ jiějué zhège wèntí, zhǐ néng zhǎo biérén lái bāngbangmáng le."
+        }
+      ]
+    },
+    {
+      "scene": "在办公室里，王一雪跟杨同乐在聊天儿。",
+      "source_page": 111,
+      "turns": [
+        {
+          "speaker": "王一雪",
+          "hanzi": "同乐，你看见老张了吗？",
+          "pinyin": "Tónglè, nǐ kànjiàn Lǎo Zhāng le ma?"
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "老张没来。他说家里有点儿事，所以请假了。",
+          "pinyin": "Lǎo Zhāng méi lái. Tā shuō jiālǐ yǒudiǎnr shì, suǒyǐ qǐngjià le."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "好几个同事都休假了，开会前这么多工作我怕干不完。",
+          "pinyin": "Hǎo jǐ ge tóngshì dōu xiūjià le, kāihuì qián zhème duō gōngzuò wǒ pà gàn bu wán."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "十二点多了，咱们先去吃饭吧。吃完饭，我跟您一起把这些工作做完。",
+          "pinyin": "Shí'èr diǎn duō le, zánmen xiān qù chīfàn ba. Chī wán fàn, wǒ gēn nín yìqǐ bǎ zhèxiē gōngzuò zuò wán."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "你先去吃，我想再干一会儿。明天开会前要发到公司的邮箱里。",
+          "pinyin": "Nǐ xiān qù chī, wǒ xiǎng zài gàn yíhuìr. Míngtiān kāihuì qián yào fā dào gōngsī de yóuxiāng lǐ."
+        },
+        {
+          "speaker": "杨同乐",
+          "hanzi": "您没看到邮件吗？经理还没回来呢，下周才能开会。",
+          "pinyin": "Nín méi kàndào yóujiàn ma? Jīnglǐ hái méi huílái ne, xià zhōu cái néng kāihuì."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "那不着急了。走，吃饭去。",
+          "pinyin": "Nà bù zháojí le. Zǒu, chīfàn qù."
+        }
+      ]
+    }
+  ]
+}

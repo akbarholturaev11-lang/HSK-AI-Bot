@@ -22,6 +22,7 @@ from starlette.middleware.gzip import GZipMiddleware
 from app.api.public_site import create_public_site_router
 from app.config import settings
 from app.api.android_auth import create_android_auth_router
+from app.api.course_tracks import create_course_tracks_router
 from app.api.android_course import create_android_course_router
 from app.api.android_events import create_android_events_router
 from app.api.android_features import create_android_features_router
@@ -76,6 +77,8 @@ from app.db.models.notification_template import NotificationTemplate  # noqa: F4
 from app.db.models.course_ad import CourseAdCreative, CourseAdView  # noqa: F401 (register tables)
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+from app.db.models.course_track_state import CourseTrackState
 from app.db.models.bot_reachability_event import BotReachabilityEvent
 from app.services.course_seed_service import CourseSeedService
 from app.services.notification_template_service import (
@@ -127,6 +130,7 @@ from app.services.desktop_release_manifest_service import (
 )
 from app.services.course_miniapp_lesson_flow_service import CourseMiniAppLessonFlowService
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
+from app.services.course_track_service import CourseTrackService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_lesson_mistake_material_service import (
@@ -156,6 +160,11 @@ from app.services.course_ad_service import (
 from app.services.referral_service import ReferralService, REFERRAL_TRIAL_REQUIRED_ACTIVE
 from app.services.ai_usage_budget_service import REFERRAL_TRIAL_PLAN_TYPE
 from app.services.payment_notify_service import PaymentNotifyService
+from app.services.hsk30_unlock_service import (
+    HSK30_UNLOCK_PLAN_TYPE,
+    Hsk30UnlockService,
+)
+from app.services.hsk30_feature_service import Hsk30FeatureService
 from app.services.portfolio_service import PortfolioService
 from app.services.required_channel_service import RequiredChannelService
 from app.services.subscription_service import (
@@ -184,6 +193,7 @@ from app.services.admin_broadcast_service import (
     parse_button_config,
 )
 from app.services.payment_qr_code_service import (
+    HSK30_UNLOCK_QR_SCOPE,
     PaymentQrCodeService,
     SUBSCRIPTION_DISCOUNT_20_QR_SCOPE,
     SUBSCRIPTION_QR_SCOPE,
@@ -624,6 +634,12 @@ app.include_router(
     )
 )
 app.include_router(
+    create_course_tracks_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+    )
+)
+app.include_router(
     create_desktop_course_router(
         session_factory=async_session_maker,
         settings_obj=settings,
@@ -790,6 +806,7 @@ ADMIN_MINIAPP_SECTIONS = {
     "user_search": ("🔎 Foydalanuvchi qidirish", "adm:user_search_info"),
     "portfolio": ("💼 Portfel", "adm:portfolio"),
     "prices": ("💳 Obuna narxlari", "adm:prices"),
+    "hsk30": ("🆕 HSK 3.0", "adm:hsk30"),
     "course_access": ("📚 Kurs access", "adm:course_access"),
     "channels": ("📣 Majburiy kanal obunasi", "adm:channels"),
     "delete_user": ("🗑 Foydalanuvchini o'chirish", "adm:deleteuser_info"),
@@ -881,7 +898,7 @@ def _mini_label(value: str | None, labels: dict[str, str]) -> str:
 
 
 def _mini_plan_label(value: str | None) -> str:
-    return _mini_label(value, {"10_days": "10 kun", "1_month": "1 oy", "3_months": "3 oy"})
+    return _mini_label(value, {"10_days": "10 kun", "1_month": "1 oy", "3_months": "3 oy", "hsk30_unlock": "HSK 3.0 ochish"})
 
 
 def _mini_method_label(value: str | None) -> str:
@@ -978,6 +995,8 @@ async def _admin_miniapp_management_payload(session) -> dict:
             "rounds_sent": int(item.rounds_sent or 0),
             "send_count_total": int(item.send_count_total or 0),
             "languages": decode_ad_languages(item.target_languages),
+            "track": getattr(item, "target_track", None) or "",
+            "level": getattr(item, "target_level", None) or "",
             "starts_at": _mini_dt(item.starts_at),
             "ends_at": _mini_dt(item.ends_at),
         })
@@ -1019,6 +1038,76 @@ async def _admin_miniapp_management_payload(session) -> dict:
         })
 
     qr_service = PaymentQrCodeService(session)
+    hsk30_unlock_service = Hsk30UnlockService(session)
+    hsk30_unlock_price = await hsk30_unlock_service.price_tjs()
+    hsk30_unlock_qr = {}
+    for method in ("alipay", "wechat"):
+        hsk30_unlock_qr[method] = bool(
+            await qr_service.get_file_id(
+                scope=HSK30_UNLOCK_QR_SCOPE,
+                payment_method=method,
+                plan_type=HSK30_UNLOCK_PLAN_TYPE,
+                amount=hsk30_unlock_price,
+                currency="TJS",
+            )
+        )
+
+    hsk30_active_users = int(
+        (
+            await session.execute(
+                select(func.count(User.id)).where(
+                    User.status != "blocked",
+                    User.level.like("nhsk%"),
+                )
+            )
+        ).scalar_one()
+        or 0
+    )
+    hsk30_track_users = int(
+        (
+            await session.execute(
+                select(func.count(func.distinct(CourseTrackState.user_id))).where(
+                    CourseTrackState.track == "hsk30"
+                )
+            )
+        ).scalar_one()
+        or 0
+    )
+    hsk30_unlocked_users = int(
+        (
+            await session.execute(
+                select(func.count(func.distinct(CourseTrackState.user_id))).where(
+                    CourseTrackState.track == "hsk30",
+                    CourseTrackState.unlocked_at.is_not(None),
+                )
+            )
+        ).scalar_one()
+        or 0
+    )
+    hsk30_promo_users = int(
+        (
+            await session.execute(
+                select(func.count(CourseMiniAppProfile.id)).where(
+                    CourseMiniAppProfile.hsk30_promo_shown_count > 0
+                )
+            )
+        ).scalar_one()
+        or 0
+    )
+    hsk30_promo_impressions = int(
+        (
+            await session.execute(
+                select(
+                    func.coalesce(
+                        func.sum(CourseMiniAppProfile.hsk30_promo_shown_count),
+                        0,
+                    )
+                )
+            )
+        ).scalar_one()
+        or 0
+    )
+
     price_items = []
     for price in prices:
         is_qr = PaymentQrCodeService.is_qr_method(price.payment_method)
@@ -1049,6 +1138,22 @@ async def _admin_miniapp_management_payload(session) -> dict:
         "prices": price_items,
         "payment_details": (await setting_repo.get(PAYMENT_DETAILS_KEY) or settings.PAYMENT_DETAILS or "").strip(),
         "payment_details_alif": (await setting_repo.get(PAYMENT_DETAILS_ALIF_KEY) or "").strip(),
+        "hsk30": {
+            "enabled": await Hsk30FeatureService(session).is_enabled(),
+            "live_levels": list(await Hsk30FeatureService(session).live_levels()),
+            "new_badge": await Hsk30FeatureService(session).new_badge(),
+            "unlock_payment_enabled": await hsk30_unlock_service.payment_enabled(),
+            "unlock_price_tjs": hsk30_unlock_price,
+            "unlock_plan_type": HSK30_UNLOCK_PLAN_TYPE,
+            "qr": hsk30_unlock_qr,
+            "stats": {
+                "active_users": hsk30_active_users,
+                "track_users": hsk30_track_users,
+                "permanent_unlock_users": hsk30_unlocked_users,
+                "promo_users": hsk30_promo_users,
+                "promo_impressions": hsk30_promo_impressions,
+            },
+        },
         "gemini": {
             "configured": bool(settings.GEMINI_API_KEY),
             "active_model": await get_active_gemini_model(),
@@ -1188,7 +1293,12 @@ async def _admin_access_meta(session, user, payments: list) -> dict:
 
     if state == EntitlementState.PRO_ACTIVE:
         approved = next(
-            (item for item in payments if getattr(item, "payment_status", "") == "approved"),
+            (
+                item
+                for item in payments
+                if getattr(item, "payment_status", "") == "approved"
+                and getattr(item, "plan_type", "") != HSK30_UNLOCK_PLAN_TYPE
+            ),
             None,
         )
         approved_at = (
@@ -1535,6 +1645,56 @@ async def _review_admin_payment(
     if action == "approve":
         if not await payment_repo.approve(payment, admin_comment="approved by admin mini app"):
             return {"ok": False, "error": "payment_already_reviewed"}, 409
+
+        user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
+        if not user:
+            await session.rollback()
+            return {"ok": False, "error": "user_not_found"}, 404
+
+        if payment.plan_type == HSK30_UNLOCK_PLAN_TYPE:
+            granted = await Hsk30UnlockService(session).grant(
+                user=user,
+                payment=payment,
+            )
+            if not granted:
+                await session.rollback()
+                return {"ok": False, "error": "hsk30_unlock_failed"}, 400
+            await session.commit()
+            await ConversionFunnelService().record(
+                event_name="hsk30_unlock_approved",
+                user=user,
+                telegram_id=payment.user_telegram_id,
+                source="admin_miniapp_payment_approve",
+                payment_id=payment.id,
+                payload={
+                    "plan_type": payment.plan_type,
+                    "payment_method": payment.payment_method,
+                },
+            )
+            async with async_session_maker() as analytics_session:
+                course_event = await CourseMiniAppAnalyticsService(
+                    analytics_session
+                ).record_server_event(
+                    event_name="hsk30_unlock_approved",
+                    telegram_id=payment.user_telegram_id,
+                    user_id=getattr(user, "id", None),
+                    source="admin_miniapp_payment_approve",
+                    dedupe_key=f"hsk30-unlock-payment:{payment.id}",
+                    payload={
+                        "plan_type": payment.plan_type,
+                        "payment_method": payment.payment_method,
+                    },
+                )
+                if course_event.get("recorded"):
+                    await analytics_session.commit()
+            with contextlib.suppress(Exception):
+                await PaymentNotifyService(session).notify_hsk30_unlock_approved(
+                    bot=bot,
+                    user=user,
+                    payment=payment,
+                )
+            return {"ok": True, "status": "approved", "product": HSK30_UNLOCK_PLAN_TYPE}, 200
+
         activated = await SubscriptionService(session).activate_plan(
             telegram_id=payment.user_telegram_id,
             plan_type=payment.plan_type,
@@ -1544,8 +1704,9 @@ async def _review_admin_payment(
         if not activated:
             await session.rollback()
             return {"ok": False, "error": "subscription_activation_failed"}, 400
-        partner, commission_usd, unlocked_bonus = await PartnerService(session).record_approved_payment(payment)
-        user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
+        partner, commission_usd, unlocked_bonus = await PartnerService(
+            session
+        ).record_approved_payment(payment)
         await session.commit()
         await ConversionFunnelService().record(
             event_name="payment_approved",
@@ -1553,21 +1714,33 @@ async def _review_admin_payment(
             telegram_id=payment.user_telegram_id,
             source="admin_miniapp_payment_approve",
             payment_id=payment.id,
-            payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method},
+            payload={
+                "plan_type": payment.plan_type,
+                "payment_method": payment.payment_method,
+            },
         )
         async with async_session_maker() as analytics_session:
-            course_event = await CourseMiniAppAnalyticsService(analytics_session).record_server_event(
+            course_event = await CourseMiniAppAnalyticsService(
+                analytics_session
+            ).record_server_event(
                 event_name="subscription_approved",
                 telegram_id=payment.user_telegram_id,
                 user_id=getattr(user, "id", None),
                 source="admin_miniapp_payment_approve",
                 dedupe_key=f"payment:{payment.id}",
-                payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method},
+                payload={
+                    "plan_type": payment.plan_type,
+                    "payment_method": payment.payment_method,
+                },
             )
             if course_event.get("recorded"):
                 await analytics_session.commit()
         with contextlib.suppress(Exception):
-            await PaymentNotifyService(session).notify_payment_approved(bot=bot, user=user, payment=payment)
+            await PaymentNotifyService(session).notify_payment_approved(
+                bot=bot,
+                user=user,
+                payment=payment,
+            )
         if partner:
             with contextlib.suppress(Exception):
                 await PartnerService(session).notify_partner(
@@ -1584,11 +1757,15 @@ async def _review_admin_payment(
         if not await payment_repo.reject(payment, admin_comment=comment):
             return {"ok": False, "error": "payment_already_reviewed"}, 409
         user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
-        if user:
+        if user and payment.plan_type != HSK30_UNLOCK_PLAN_TYPE:
             await user_repo.set_selected_plan_type(user, None)
         await session.commit()
         await ConversionFunnelService().record(
-            event_name="payment_rejected",
+            event_name=(
+                "hsk30_unlock_rejected"
+                if payment.plan_type == HSK30_UNLOCK_PLAN_TYPE
+                else "payment_rejected"
+            ),
             user=user,
             telegram_id=payment.user_telegram_id,
             source="admin_miniapp_payment_reject",
@@ -1596,13 +1773,21 @@ async def _review_admin_payment(
             payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method, "reason": comment},
         )
         with contextlib.suppress(Exception):
-            await PaymentNotifyService(session).notify_payment_rejected(
-                bot=bot,
-                user=user,
-                reason=None,
-                plan_type=payment.plan_type,
-                payment=payment,
-            )
+            notifier = PaymentNotifyService(session)
+            if payment.plan_type == HSK30_UNLOCK_PLAN_TYPE:
+                await notifier.notify_hsk30_unlock_rejected(
+                    bot=bot,
+                    user=user,
+                    payment=payment,
+                )
+            else:
+                await notifier.notify_payment_rejected(
+                    bot=bot,
+                    user=user,
+                    reason=None,
+                    plan_type=payment.plan_type,
+                    payment=payment,
+                )
         return {"ok": True, "status": "rejected"}, 200
 
     return {"ok": False, "error": "invalid_action"}, 400
@@ -1658,7 +1843,7 @@ async def course_data_file(level: str):
 # ── Course v3 Mini App ──────────────────────────────────────────────────────
 
 _COURSE_V3_PAGES = {"onboarding", "recognition", "pronunciation", "test", "mistakes", "voice", "memorize"}
-_COURSE_V3_LEVELS = {"hsk1", "hsk2", "hsk3", "hsk4"}
+_COURSE_V3_LEVELS = {"hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"}
 
 
 def _course_v3_level(value: str | None) -> str:
@@ -1667,7 +1852,7 @@ def _course_v3_level(value: str | None) -> str:
 
 
 # Band tugaganda keyingi HSK bandiga avtomatik o'tish (user.level yangilanadi).
-_COURSE_V3_NEXT_BAND = {"hsk1": "hsk2", "hsk2": "hsk3", "hsk3": "hsk4"}
+_COURSE_V3_NEXT_BAND = {"hsk1": "hsk2", "hsk2": "hsk3", "hsk3": "hsk4", "nhsk1": "nhsk2", "nhsk2": "nhsk3"}
 
 # Darslar mini-qismlarga bo'lingandan keyin band chegarasi legacy
 # course_lessons jadvalidan emas, parts_manifest.json dan aniqlanadi.
@@ -1683,6 +1868,23 @@ def _course_v3_user_level(user) -> str:
 
 def _course_v3_user_lang(user) -> str:
     return normalize_miniapp_lang(getattr(user, "language", None))
+
+
+async def _course_v3_next_level_release(session, level: str) -> tuple[str | None, str | None]:
+    """Return (live_next_level, pending_next_level).
+
+    HSK 2.0 keeps its established automatic band progression. HSK 3.0 is
+    rollout-gated: checked-in N2/N3 runtime must not become public merely
+    because N1 was completed.
+    """
+
+    next_band = _COURSE_V3_NEXT_BAND.get(_course_v3_level(level))
+    if not next_band:
+        return None, None
+    if str(level or "").strip().lower().startswith("nhsk"):
+        if not await Hsk30FeatureService(session).is_level_live(next_band):
+            return None, next_band
+    return next_band, None
 
 
 def _apply_course_v3_progress_marks(data: dict, *, completed: int) -> None:
@@ -1881,6 +2083,9 @@ async def course_v3_data_file(filename: str):
         "desktop-download.css": "text/css",
         "desktop-download.js": "application/javascript",
         "lesson_gate.js": "application/javascript",
+        "lesson_gate_hsk30.js": "application/javascript",
+        "hsk30-words.js": "application/javascript",
+        "hsk30-dictionary-examples.js": "application/javascript",
     }
     if filename in public_assets:
         return static_asset_response(
@@ -1902,7 +2107,7 @@ async def course_v3_exam_file(filename: str):
 @app.get("/course_v3_data/{level}/{filename}")
 async def course_v3_lesson_file(level: str, filename: str):
     import re
-    if not re.fullmatch(r"hsk[1-4]", level):
+    if not re.fullmatch(r"(?:hsk[1-4]|nhsk[1-3])", level):
         return JSONResponse(status_code=404, content={"error": "not_found"})
     if not re.fullmatch(r"lesson_\d+\.json", filename):
         return JSONResponse(status_code=404, content={"error": "not_found"})
@@ -2090,6 +2295,18 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
         # shunday qilib QA rejim va Kurs rejim hech qachon bir-biridan farq qilmaydi.
         resolved_lang = _course_v3_user_lang(user)
         target_band = _course_v3_user_level(user)
+
+        if target_band.startswith("nhsk"):
+            hsk30_access = await CourseTrackService(session).hsk30_access(user)
+            if not hsk30_access.allowed:
+                return JSONResponse(
+                    status_code=403,
+                    content={
+                        "ok": False,
+                        "error": hsk30_access.reason,
+                        "hsk30_access": hsk30_access.payload(),
+                    },
+                )
 
         progress_repo = CourseProgressRepository(session)
         progress = await progress_repo.get_by_user_id(user.id, for_update=True)
@@ -2484,6 +2701,17 @@ async def v3_course_lesson_unlock(request: Request):
             return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
 
         resolved_level = _course_v3_user_level(user)
+        if resolved_level.startswith("nhsk"):
+            hsk30_access = await CourseTrackService(session).hsk30_access(user)
+            if not hsk30_access.allowed:
+                return JSONResponse(
+                    status_code=403,
+                    content={
+                        "ok": False,
+                        "error": hsk30_access.reason,
+                        "hsk30_access": hsk30_access.payload(),
+                    },
+                )
         total_parts = _course_v3_total_parts(resolved_level)
         if total_parts and lesson_order > total_parts:
             return JSONResponse(status_code=404, content={"ok": False, "error": "course_no_lesson_found"})
@@ -2605,6 +2833,13 @@ async def v3_course_lesson_complete(request: Request):
         gamification = CourseGamificationService(session)
         if lesson_order <= completed:
             snapshot = await gamification.snapshot(user)
+            next_level = None
+            next_level_pending = None
+            if total_parts and lesson_order >= total_parts:
+                next_level, next_level_pending = await _course_v3_next_level_release(
+                    session,
+                    resolved_level,
+                )
             await session.commit()
             return JSONResponse(
                 content={
@@ -2612,6 +2847,8 @@ async def v3_course_lesson_complete(request: Request):
                     "duplicate": True,
                     "completed_lesson": lesson_order,
                     "completed_lessons_count": completed,
+                    "next_level": next_level,
+                    "next_level_pending": next_level_pending,
                     "gamification": snapshot,
                 }
             )
@@ -2638,13 +2875,17 @@ async def v3_course_lesson_complete(request: Request):
         # Manifest o'qilmasa (total_parts=0) band avto-o'tishi o'chiq qoladi.
         has_next = bool(total_parts) and lesson_order < total_parts
         next_order = lesson_order + 1 if has_next else None
+        next_level = None
+        next_level_pending = None
         if total_parts and not has_next:
-            # Joriy band to'liq tugadi: keyingi HSK bandiga o'tamiz va user.level ni
-            # yangilaymiz, shunda QA rejim ham yangi bandda bo'ladi (sinxron qoladi).
-            # Progress keyingi map ochilganda yangi banddan noldan boshlanadi.
-            next_band = _COURSE_V3_NEXT_BAND.get(resolved_level)
-            if next_band:
-                user.level = next_band
+            # Joriy band to'liq tugadi. Legacy HSK odatdagidek keyingi bandga
+            # o'tadi; HSK 3.0 esa faqat serverda live qilingan bandga o'tadi.
+            next_level, next_level_pending = await _course_v3_next_level_release(
+                session,
+                resolved_level,
+            )
+            if next_level:
+                user.level = next_level
         if has_next:
             await progress_repo.set_current_lesson_and_step(
                 progress=progress,
@@ -2675,6 +2916,8 @@ async def v3_course_lesson_complete(request: Request):
                 "lesson_order": lesson_order,
                 "is_paid": is_paid,
                 "next_lesson": next_order,
+                "next_level": next_level,
+                "next_level_pending": next_level_pending,
             },
         )
         if lesson_mistakes:
@@ -2704,6 +2947,8 @@ async def v3_course_lesson_complete(request: Request):
                 "ok": True,
                 "completed_lesson": lesson_order,
                 "next_lesson": next_order,
+                "next_level": next_level,
+                "next_level_pending": next_level_pending,
                 "completed_lessons_count": int(getattr(progress, "completed_lessons_count", 0) or 0),
                 "gamification": snapshot,
             }
@@ -3649,7 +3894,8 @@ async def admin_miniapp_prices_qr_upload(request: Request):
     method = str(form.get("method") or "").strip()
     plan = str(form.get("plan") or "").strip()
     scope_kind = str(form.get("scope") or "main").strip()
-    if not PaymentQrCodeService.is_qr_method(method) or plan not in PLANS:
+    valid_plan = plan in PLANS or plan == HSK30_UNLOCK_PLAN_TYPE
+    if not PaymentQrCodeService.is_qr_method(method) or not valid_plan:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_qr_target"})
     media = form.get("media")
     if media is None or not hasattr(media, "read"):
@@ -3662,16 +3908,25 @@ async def admin_miniapp_prices_qr_upload(request: Request):
     if len(data) > 25 * 1024 * 1024:
         return JSONResponse(status_code=400, content={"ok": False, "error": "media_too_large"})
     async with async_session_maker() as session:
-        price = await SubscriptionPriceService(session).get_price(payment_method=method, plan_type=plan)
-        amount = int(price.amount) if price else 0
-        currency = price.currency if price else "¥"
-        if amount <= 0:
-            return JSONResponse(status_code=400, content={"ok": False, "error": "price_not_set"})
-        if scope_kind == "discount20":
-            scope = SUBSCRIPTION_DISCOUNT_20_QR_SCOPE
-            amount = int(round(amount * 0.8))
+        if plan == HSK30_UNLOCK_PLAN_TYPE:
+            amount = await Hsk30UnlockService(session).price_tjs()
+            currency = "TJS"
+            scope = HSK30_UNLOCK_QR_SCOPE
+            scope_kind = "hsk30_unlock"
         else:
-            scope = SUBSCRIPTION_QR_SCOPE
+            price = await SubscriptionPriceService(session).get_price(
+                payment_method=method,
+                plan_type=plan,
+            )
+            amount = int(price.amount) if price else 0
+            currency = price.currency if price else "¥"
+            if amount <= 0:
+                return JSONResponse(status_code=400, content={"ok": False, "error": "price_not_set"})
+            if scope_kind == "discount20":
+                scope = SUBSCRIPTION_DISCOUNT_20_QR_SCOPE
+                amount = int(round(amount * 0.8))
+            else:
+                scope = SUBSCRIPTION_QR_SCOPE
         try:
             sent = await bot.send_photo(
                 telegram_id,
@@ -3694,6 +3949,92 @@ async def admin_miniapp_prices_qr_upload(request: Request):
         )
         await session.commit()
     return JSONResponse(content={"ok": True})
+
+
+@app.post("/api/admin-miniapp/hsk30/settings")
+async def admin_miniapp_hsk30_settings(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except ValueError:
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_hsk30_settings"},
+        )
+    if not isinstance(payload, dict):
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_hsk30_settings"},
+        )
+    if (
+        "enabled" not in payload
+        and "unlock_payment_enabled" not in payload
+        and "unlock_price_tjs" not in payload
+        and "live_levels" not in payload
+    ):
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_hsk30_settings"},
+        )
+
+    async with async_session_maker() as session:
+        feature = Hsk30FeatureService(session)
+        unlock = Hsk30UnlockService(session)
+        if "enabled" in payload:
+            if not isinstance(payload["enabled"], bool):
+                return JSONResponse(
+                    status_code=400,
+                    content={"ok": False, "error": "invalid_hsk30_enabled"},
+                )
+            await feature.set_enabled(payload["enabled"])
+        if "unlock_payment_enabled" in payload:
+            if not isinstance(payload["unlock_payment_enabled"], bool):
+                return JSONResponse(
+                    status_code=400,
+                    content={"ok": False, "error": "invalid_hsk30_unlock_payment_enabled"},
+                )
+            await unlock.set_payment_enabled(payload["unlock_payment_enabled"])
+        if "unlock_price_tjs" in payload:
+            try:
+                await unlock.set_price_tjs(int(payload["unlock_price_tjs"]))
+            except (TypeError, ValueError):
+                return JSONResponse(
+                    status_code=400,
+                    content={"ok": False, "error": "invalid_hsk30_unlock_price"},
+                )
+        if "live_levels" in payload:
+            live_levels = payload["live_levels"]
+            if not isinstance(live_levels, list) or any(
+                not isinstance(item, str) for item in live_levels
+            ):
+                return JSONResponse(
+                    status_code=400,
+                    content={"ok": False, "error": "invalid_hsk30_live_levels"},
+                )
+            await feature.set_live_levels(live_levels)
+        await session.commit()
+        enabled = await feature.is_enabled()
+        live_levels = await feature.live_levels()
+        unlock_payment_enabled = await unlock.payment_enabled()
+        price = await unlock.price_tjs()
+        new_badge = await feature.new_badge()
+
+    return JSONResponse(
+        content={
+            "ok": True,
+            "hsk30": {
+                "enabled": enabled,
+                "live_levels": list(live_levels),
+                "new_badge": new_badge,
+                "unlock_payment_enabled": unlock_payment_enabled,
+                "unlock_price_tjs": price,
+                "unlock_plan_type": HSK30_UNLOCK_PLAN_TYPE,
+            },
+        }
+    )
 
 
 @app.post("/api/admin-miniapp/payment-details/save")
@@ -4031,6 +4372,8 @@ async def admin_miniapp_campaign_create(request: Request):
                 ends_at=now + timedelta(hours=hours),
                 send_count_total=rounds,
                 target_languages=filters.get("languages"),
+                target_track=filters.get("track"),
+                target_level=filters.get("level"),
                 include_active_subscribers=bool(payload.get("include_active_subscribers")),
                 button_config=button_config,
                 created_by_telegram_id=telegram_id,

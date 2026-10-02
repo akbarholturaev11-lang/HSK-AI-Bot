@@ -1,0 +1,953 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 32,
+  "source_lesson": 5,
+  "part_no": 7,
+  "part_count": 7,
+  "checkpoint": true,
+  "title": "今天我休息",
+  "subtitle": {
+    "uz": "Sana va hafta kunlarini xitoycha tartibda aytish; “会” bilan o‘rganilgan qobiliyatni ifodalash; nominal-predikativ gaplarni tushunish va ishlatish.",
+    "ru": "Называть даты и дни недели по-китайски; выражать приобретённое умение с “会”; понимать и использовать именные сказуемые.",
+    "tj": "Сана ва рӯзҳои ҳафтаро бо тартиби чинӣ гуфтан; бо “会” қобилияти омӯхташударо ифода кардан; ҷумлаҳои номӣ-хабариро фаҳмидан ва истифода бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "今天",
+      "pinyin": "jīntiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bugun",
+        "ru": "сегодня",
+        "tj": "имрӯз"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "号",
+      "pinyin": "hào",
+      "pos": "m.",
+      "meaning": {
+        "uz": "sana (oy kuni)",
+        "ru": "число месяца",
+        "tj": "санаи моҳ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "月",
+      "pinyin": "yuè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oy",
+        "ru": "месяц",
+        "tj": "моҳ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "日",
+      "pinyin": "rì",
+      "pos": "m.",
+      "meaning": {
+        "uz": "kun; sana",
+        "ru": "день; дата",
+        "tj": "рӯз; сана"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "星期",
+      "pinyin": "xīngqī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hafta",
+        "ru": "неделя",
+        "tj": "ҳафта"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "星期日",
+      "pinyin": "Xīngqīrì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yakshanba",
+        "ru": "воскресенье",
+        "tj": "якшанбе"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "星期天",
+      "pinyin": "Xīngqītiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yakshanba",
+        "ru": "воскресенье",
+        "tj": "якшанбе"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "休息",
+      "pinyin": "xiūxi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "dam olmoq",
+        "ru": "отдыхать",
+        "tj": "истироҳат кардан"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "会",
+      "pinyin": "huì",
+      "pos": "mod.",
+      "meaning": {
+        "uz": "qila olmoq; bilmoq",
+        "ru": "уметь; мочь",
+        "tj": "тавонистан; уҳда кардан"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "做饭",
+      "pinyin": "zuò fàn",
+      "pos": "comp.",
+      "meaning": {
+        "uz": "ovqat pishirmoq",
+        "ru": "готовить еду",
+        "tj": "хӯрок пухтан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "做",
+      "pinyin": "zuò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qilmoq; tayyorlamoq",
+        "ru": "делать; готовить",
+        "tj": "кардан; тайёр кардан"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "面条儿",
+      "pinyin": "miàntiáor",
+      "pos": "n.",
+      "meaning": {
+        "uz": "lag‘mon; lapsha",
+        "ru": "лапша",
+        "tj": "угро"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "饺子",
+      "pinyin": "jiǎozi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "jiaozi; chuchvara",
+        "ru": "цзяоцзы; пельмени",
+        "tj": "ҷяозы; тушбера"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "一些",
+      "pinyin": "yìxiē",
+      "pos": "num.",
+      "meaning": {
+        "uz": "bir oz; ba’zi",
+        "ru": "немного; некоторые",
+        "tj": "каме; баъзе"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "菜",
+      "pinyin": "cài",
+      "pos": "n.",
+      "meaning": {
+        "uz": "taom; ovqat",
+        "ru": "блюдо; еда",
+        "tj": "таом; хӯрок"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "下班",
+      "pinyin": "xiàbān",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ishdan chiqmoq",
+        "ru": "заканчивать работу",
+        "tj": "аз кор баромадан"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "新",
+      "pinyin": "xīn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "yangi",
+        "ru": "новый",
+        "tj": "нав"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "电脑",
+      "pinyin": "diànnǎo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kompyuter",
+        "ru": "компьютер",
+        "tj": "компютер"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "真",
+      "pinyin": "zhēn",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "haqiqatan; juda",
+        "ru": "действительно; очень",
+        "tj": "воқеан; хеле"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "好看",
+      "pinyin": "hǎokàn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "chiroyli; yaxshi ko‘rinadigan",
+        "ru": "красивый; хорошо выглядящий",
+        "tj": "зебо; хушнамо"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "喜欢",
+      "pinyin": "xǐhuan",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yoqtirmoq",
+        "ru": "нравиться; любить",
+        "tj": "писанд кардан"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "它",
+      "pinyin": "tā",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "u (narsa/hayvon)",
+        "ru": "оно; он/она о предмете",
+        "tj": "он/он (барои чиз)"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Vaqt/sanani ifodalash (1)",
+        "ru": "Выражение времени и даты (1)",
+        "tj": "Ифодаи вақт ва сана (1)"
+      },
+      "title_zh": "时间的表达（1）",
+      "rule": {
+        "uz": "Xitoychada sana odatda kattadan kichikka: yil → oy → kun/sana → hafta kuni tartibida aytiladi.",
+        "ru": "Дата по-китайски обычно выражается от крупной единицы к мелкой: год → месяц → число → день недели.",
+        "tj": "Сана ба чинӣ одатан аз калон ба хурд гуфта мешавад: сол → моҳ → рӯз/сана → рӯзи ҳафта."
+      },
+      "examples": [
+        {
+          "zh": "今天9月8号。",
+          "pinyin": "Jīntiān jiǔ yuè bā hào.",
+          "translation": {
+            "uz": "Bugun 8-sentabr.",
+            "ru": "Сегодня 8 сентября.",
+            "tj": "Имрӯз 8 сентябр аст."
+          }
+        },
+        {
+          "zh": "今天星期日。",
+          "pinyin": "Jīntiān Xīngqīrì.",
+          "translation": {
+            "uz": "Bugun yakshanba.",
+            "ru": "Сегодня воскресенье.",
+            "tj": "Имрӯз якшанбе аст."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Nominal-predikativ gap",
+        "ru": "Предложение с именным сказуемым",
+        "tj": "Ҷумла бо хабари номӣ"
+      },
+      "title_zh": "名词谓语句",
+      "rule": {
+        "uz": "Nominal gapda kesim ot yoki ot birikmasidan iborat bo‘lib, ko‘pincha vaqt, sana va yoshni bildiradi.",
+        "ru": "В предложении с именным сказуемым сказуемое выражено существительным или именной группой; часто так говорят о времени, дате и возрасте.",
+        "tj": "Дар ҷумлаи номӣ хабар аз исм ё гурӯҳи исмӣ иборат буда, бештар вақт, сана ва синну солро ифода мекунад."
+      },
+      "examples": [
+        {
+          "zh": "今天星期四。",
+          "pinyin": "Jīntiān Xīngqīsì.",
+          "translation": {
+            "uz": "Bugun payshanba.",
+            "ru": "Сегодня четверг.",
+            "tj": "Имрӯз панҷшанбе аст."
+          }
+        },
+        {
+          "zh": "今天5月8号。",
+          "pinyin": "Jīntiān wǔ yuè bā hào.",
+          "translation": {
+            "uz": "Bugun 8-may.",
+            "ru": "Сегодня 8 мая.",
+            "tj": "Имрӯз 8 май аст."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Modal fe’l “会”",
+        "ru": "Модальный глагол “会”",
+        "tj": "Феъли модалии “会”"
+      },
+      "title_zh": "能愿动词“会”",
+      "rule": {
+        "uz": "“会” fe’l oldidan kelib o‘rganish orqali hosil qilingan qobiliyatni bildiradi.",
+        "ru": "“会” ставится перед глаголом и выражает умение, приобретённое в результате обучения.",
+        "tj": "“会” пеш аз феъл омада, қобилияти тавассути омӯзиш бадастомадаро ифода мекунад."
+      },
+      "examples": [
+        {
+          "zh": "你会做饭吗？",
+          "pinyin": "Nǐ huì zuò fàn ma?",
+          "translation": {
+            "uz": "Ovqat pishira olasanmi?",
+            "ru": "Ты умеешь готовить?",
+            "tj": "Ту хӯрок пухта метавонӣ?"
+          }
+        },
+        {
+          "zh": "我不会做菜。",
+          "pinyin": "Wǒ bú huì zuò cài.",
+          "translation": {
+            "uz": "Men taom pishira olmayman.",
+            "ru": "Я не умею готовить блюда.",
+            "tj": "Ман таом пухта наметавонам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "今天几号？",
+          "pinyin": "Jīntiān jǐ hào?",
+          "text": {
+            "uz": "Bugun nechanchi sana?",
+            "ru": "Какое сегодня число?",
+            "tj": "Имрӯз чандум аст?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "今天9月8号。",
+          "pinyin": "Jīntiān jiǔ yuè bā hào.",
+          "text": {
+            "uz": "Bugun 8-sentabr.",
+            "ru": "Сегодня 8 сентября.",
+            "tj": "Имрӯз 8 сентябр аст."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "星期几？",
+          "pinyin": "Xīngqī jǐ?",
+          "text": {
+            "uz": "Bugun haftaning qaysi kuni?",
+            "ru": "Какой сегодня день недели?",
+            "tj": "Имрӯз кадом рӯзи ҳафта аст?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "星期日。今天我休息。",
+          "pinyin": "Xīngqīrì. Jīntiān wǒ xiūxi.",
+          "text": {
+            "uz": "Yakshanba. Bugun men dam olaman.",
+            "ru": "Воскресенье. Сегодня я отдыхаю.",
+            "tj": "Якшанбе. Имрӯз ман истироҳат мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada Wang Yixue va Yang Tongle tanaffusda suhbatlashmoqda.",
+        "ru": "В компании Ван Исюэ и Ян Тунлэ разговаривают во время перерыва.",
+        "tj": "Дар ширкат Ван Исюэ ва Ян Тунлэ ҳангоми танаффус суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你会做饭吗？",
+          "pinyin": "Nǐ huì zuò fàn ma?",
+          "text": {
+            "uz": "Ovqat pishira olasanmi?",
+            "ru": "Ты умеешь готовить?",
+            "tj": "Ту хӯрок пухта метавонӣ?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我会做。",
+          "pinyin": "Wǒ huì zuò.",
+          "text": {
+            "uz": "Ha, pishira olaman.",
+            "ru": "Да, умею.",
+            "tj": "Ҳа, метавонам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "你会做什么？",
+          "pinyin": "Nǐ huì zuò shénme?",
+          "text": {
+            "uz": "Nima pishira olasan?",
+            "ru": "Что ты умеешь готовить?",
+            "tj": "Чӣ пухта метавонӣ?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我会做面条儿、饺子，也会做一些菜。星期天我也做饭。",
+          "pinyin": "Wǒ huì zuò miàntiáor, jiǎozi, yě huì zuò yìxiē cài. Xīngqītiān wǒ yě zuò fàn.",
+          "text": {
+            "uz": "Men ugra, jiaozi va ba’zi taomlarni pishira olaman. Yakshanba kuni ham ovqat pishiraman.",
+            "ru": "Я умею готовить лапшу, цзяоцзы и некоторые другие блюда. По воскресеньям я тоже готовлю.",
+            "tj": "Ман угро, ҷяозы ва баъзе таомҳоро пухта метавонам. Рӯзи якшанбе ҳам хӯрок мепазам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada Wang Yixue va Yang Tongle ishdan chiqish payti suhbatlashmoqda.",
+        "ru": "В компании Ван Исюэ и Ян Тунлэ разговаривают после работы.",
+        "tj": "Дар ширкат Ван Исюэ ва Ян Тунлэ баъди кор суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "同乐，下班吗？",
+          "pinyin": "Tónglè, xiàbān ma?",
+          "text": {
+            "uz": "Tongle, ishdan chiqdingmi?",
+            "ru": "Тунлэ, ты уже закончил работу?",
+            "tj": "Тунлэ, аз кор баромадӣ?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "下班。",
+          "pinyin": "Xiàbān.",
+          "text": {
+            "uz": "Ha, chiqdim.",
+            "ru": "Да.",
+            "tj": "Ҳа."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "这是你的新电脑吗？",
+          "pinyin": "Zhè shì nǐ de xīn diànnǎo ma?",
+          "text": {
+            "uz": "Bu sening yangi kompyuteringmi?",
+            "ru": "Это твой новый компьютер?",
+            "tj": "Ин компютери нави туст?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "是的，是我的新电脑。",
+          "pinyin": "Shì de, shì wǒ de xīn diànnǎo.",
+          "text": {
+            "uz": "Ha, bu mening yangi kompyuterim.",
+            "ru": "Да, это мой новый компьютер.",
+            "tj": "Ҳа, ин компютери нави ман аст."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "真好看！",
+          "pinyin": "Zhēn hǎokàn!",
+          "text": {
+            "uz": "Juda chiroyli ekan!",
+            "ru": "Очень красивый!",
+            "tj": "Хеле зебо будааст!"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我也很喜欢它。",
+          "pinyin": "Wǒ yě hěn xǐhuan tā.",
+          "text": {
+            "uz": "Men ham uni juda yoqtiraman.",
+            "ru": "Мне он тоже очень нравится.",
+            "tj": "Ман ҳам онро хеле писанд мекунам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ovqat pishirmoq' xitoycha qaysi?",
+            "ru": "'готовить еду' по-китайски?",
+            "tj": "'хӯрок пухтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "月",
+            "今天",
+            "号",
+            "做饭"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "ovqat pishirmoq = 做饭 (zuò fàn)",
+            "ru": "готовить еду = 做饭 (zuò fàn)",
+            "tj": "хӯрок пухтан = 做饭 (zuò fàn)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bugun payshanba.» — xitoychada qaysi biri?",
+            "ru": "«Сегодня четверг.» — какое предложение по-китайски?",
+            "tj": "«Имрӯз панҷшанбе аст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "今天5月8号。",
+            "今天星期日。",
+            "今天9月8号。",
+            "今天星期四。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "今天星期四。 — Jīntiān Xīngqīsì.",
+            "ru": "今天星期四。 — Jīntiān Xīngqīsì.",
+            "tj": "今天星期四。 — Jīntiān Xīngqīsì."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "今天",
+              {
+                "uz": "bugun",
+                "ru": "сегодня",
+                "tj": "имрӯз"
+              }
+            ],
+            [
+              "号",
+              {
+                "uz": "sana (oy kuni)",
+                "ru": "число месяца",
+                "tj": "санаи моҳ"
+              }
+            ],
+            [
+              "月",
+              {
+                "uz": "oy",
+                "ru": "месяц",
+                "tj": "моҳ"
+              }
+            ],
+            [
+              "日",
+              {
+                "uz": "kun; sana",
+                "ru": "день; дата",
+                "tj": "рӯз; сана"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "一些",
+          "pinyin": "yìxiē",
+          "options": [
+            "月",
+            "今天",
+            "一些",
+            "号"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "一些 — bir oz; ba’zi (yìxiē)",
+            "ru": "一些 — немного; некоторые (yìxiē)",
+            "tj": "一些 — каме; баъзе (yìxiē)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "miàntiáor qaysi ieroglif?",
+            "ru": "Какой иероглиф читается miàntiáor?",
+            "tj": "miàntiáor кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "月",
+            "今天",
+            "号",
+            "面条儿"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "面条儿 = lag‘mon; lapsha (miàntiáor)",
+            "ru": "面条儿 = лапша (miàntiáor)",
+            "tj": "面条儿 = угро (miàntiáor)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "星期",
+              {
+                "uz": "hafta",
+                "ru": "неделя",
+                "tj": "ҳафта"
+              }
+            ],
+            [
+              "星期日",
+              {
+                "uz": "yakshanba",
+                "ru": "воскресенье",
+                "tj": "якшанбе"
+              }
+            ],
+            [
+              "星期天",
+              {
+                "uz": "yakshanba",
+                "ru": "воскресенье",
+                "tj": "якшанбе"
+              }
+            ],
+            [
+              "休息",
+              {
+                "uz": "dam olmoq",
+                "ru": "отдыхать",
+                "tj": "истироҳат кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "是的，是我的新电脑。",
+          "pinyin": "Shì de, shì wǒ de xīn diànnǎo.",
+          "translation": {
+            "uz": "Ha, bu mening yangi kompyuterim.",
+            "ru": "Да, это мой новый компьютер.",
+            "tj": "Ҳа, ин компютери нави ман аст."
+          },
+          "tokens": {
+            "uz": [
+              "yangi",
+              "bu",
+              "Bugun",
+              "Ha",
+              "mening",
+              "nechanchi",
+              "kompyuterim"
+            ],
+            "ru": [
+              "это",
+              "мой",
+              "Какое",
+              "новый",
+              "Да",
+              "сегодня",
+              "компьютер"
+            ],
+            "tj": [
+              "нави",
+              "ин",
+              "компютери",
+              "аст",
+              "Ҳа",
+              "чандум",
+              "ман",
+              "Имрӯз"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ha",
+              "bu",
+              "mening",
+              "yangi",
+              "kompyuterim"
+            ],
+            "ru": [
+              "Да",
+              "это",
+              "мой",
+              "новый",
+              "компьютер"
+            ],
+            "tj": [
+              "Ҳа",
+              "ин",
+              "компютери",
+              "нави",
+              "ман",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "是的，是我的新电脑。 — Ha, bu mening yangi kompyuterim.",
+            "ru": "是的，是我的新电脑。 — Да, это мой новый компьютер.",
+            "tj": "是的，是我的新电脑。 — Ҳа, ин компютери нави ман аст."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "今天几号？",
+          "pinyin": "Jīntiān jǐ hào?",
+          "options": [
+            "星期日。今天我休息。",
+            "星期几？",
+            "今天几号？",
+            "今天9月8号。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "今天几号？ — Bugun nechanchi sana?",
+            "ru": "今天几号？ — Какое сегодня число?",
+            "tj": "今天几号？ — Имрӯз чандум аст?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda Wang Yixue avval nima deydi?",
+            "ru": "Что Wang Yixue говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ Wang Yixue аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "星期日。今天我休息。",
+            "今天9月8号。",
+            "星期几？",
+            "今天几号？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 今天几号？",
+            "ru": "Правильный ответ: 今天几号？",
+            "tj": "Ҷавоби дуруст: 今天几号？"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____天几号？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "今",
+            "七",
+            "一",
+            "三"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 今 — 今天几号？ (Bugun nechanchi sana?)",
+            "ru": "Верно: 今 — 今天几号？ (Какое сегодня число?)",
+            "tj": "Дуруст: 今 — 今天几号？ (Имрӯз чандум аст?)"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "Wang Yixue",
+              "zh": "今天几号？",
+              "blank": false
+            },
+            {
+              "speaker": "Liu Ming",
+              "zh": "今天9月8号。",
+              "blank": false
+            },
+            {
+              "speaker": "Wang Yixue",
+              "zh": "星期几？",
+              "blank": false
+            },
+            {
+              "speaker": "Liu Ming",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "星期几？",
+            "星期日。今天我休息。",
+            "今天9月8号。",
+            "今天几号？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 星期日。今天我休息。",
+            "ru": "Правильный ответ: 星期日。今天我休息。",
+            "tj": "Ҷавоби дуруст: 星期日。今天我休息。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida Liu Ming nima deydi?",
+            "ru": "Что Liu Ming говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ Liu Ming чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "今天9月8号。",
+            "星期几？",
+            "今天几号？",
+            "星期日。今天我休息。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 星期日。今天我休息。",
+            "ru": "Правильный ответ: 星期日。今天我休息。",
+            "tj": "Ҷавоби дуруст: 星期日。今天我休息。"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "今天9月8号。",
+          "pinyin": "Jīntiān jiǔ yuè bā hào.",
+          "translation": {
+            "uz": "Bugun 8-sentabr.",
+            "ru": "Сегодня 8 сентября.",
+            "tj": "Имрӯз 8 сентябр аст."
+          }
+        }
+      ]
+    }
+  ]
+}

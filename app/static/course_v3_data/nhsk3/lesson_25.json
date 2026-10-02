@@ -1,0 +1,806 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 25,
+  "source_lesson": 4,
+  "part_no": 1,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "这家宾馆跟别的都不一样",
+  "subtitle": {
+    "uz": "Ta’til va sayohat rejalarini muhokama qilish; safardagi taassurotlarni ifodalash; to‘liq inkorni aytish; “除了” yordamida istisno yoki qo‘shimcha ma’noni berish.",
+    "ru": "Обсуждать планы на каникулы и впечатления от поездки; выражать полное отрицание; использовать “除了” для исключения или добавления.",
+    "tj": "Нақшаҳои таътил ва сафарро муҳокима кардан; таассуроти сафарро ифода кардан; инкори пурраро гуфтан; бо “除了” маънои истисно ё илова додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "假期",
+      "pinyin": "jiàqī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ta’til",
+        "ru": "каникулы; отпуск",
+        "tj": "таътил"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "海",
+      "pinyin": "hǎi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dengiz",
+        "ru": "море",
+        "tj": "баҳр"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "草原",
+      "pinyin": "cǎoyuán",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dasht; yaylov",
+        "ru": "степь; луг",
+        "tj": "саҳро; чарогоҳ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "主意",
+      "pinyin": "zhǔyi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "fikr; g‘oya",
+        "ru": "идея; замысел",
+        "tj": "фикр; ғоя"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "“一……也/都不/没……” — to‘liq inkor",
+        "ru": "“一……也/都不/没……” — полное отрицание",
+        "tj": "“一……也/都不/没……” — инкори пурра"
+      },
+      "title_zh": "固定格式“一……也/都+不/没……”",
+      "rule": {
+        "uz": "Bu qolip “birorta ham / umuman” ma’nosida to‘liq inkorni bildiradi. “一+hisob so‘zi+ot” yoki “一点儿”dan keyin “也/都 + 不/没” keladi.",
+        "ru": "Конструкция выражает полное отрицание со значением «ни одного / совсем не». После “一+счётное слово+существительное” или “一点儿” ставится “也/都 + 不/没”.",
+        "tj": "Ин қолаб маънои инкори пурраи «ҳатто якто ҳам / тамоман не»-ро медиҳад. Пас аз “一+воҳиди ҳисоб+исм” ё “一点儿” — “也/都 + 不/没” меояд."
+      },
+      "examples": [
+        {
+          "zh": "她一件衣服都不想买。",
+          "pinyin": "Tā yí jiàn yīfu dōu bù xiǎng mǎi.",
+          "translation": {
+            "uz": "U birorta ham kiyim sotib olgisi kelmaydi.",
+            "ru": "Она не хочет покупать ни одной вещи.",
+            "tj": "Ӯ ҳатто як либос ҳам харидан намехоҳад."
+          }
+        },
+        {
+          "zh": "我一个中国电影也没看过。",
+          "pinyin": "Wǒ yí ge Zhōngguó diànyǐng yě méi kàn guo.",
+          "translation": {
+            "uz": "Men birorta ham xitoy filmini ko‘rmaganman.",
+            "ru": "Я не смотрел ни одного китайского фильма.",
+            "tj": "Ман ҳатто як филми чинӣ ҳам надидаам."
+          }
+        },
+        {
+          "zh": "我一点儿东西也不想吃。",
+          "pinyin": "Wǒ yìdiǎnr dōngxi yě bù xiǎng chī.",
+          "translation": {
+            "uz": "Umuman hech narsa yegim kelmaydi.",
+            "ru": "Я совсем ничего не хочу есть.",
+            "tj": "Ман тамоман чизе хӯрдан намехоҳам."
+          }
+        },
+        {
+          "zh": "他对打球一点儿兴趣都没有。",
+          "pinyin": "Tā duì dǎqiú yìdiǎnr xìngqù dōu méiyǒu.",
+          "translation": {
+            "uz": "U to‘p o‘ynashga umuman qiziqmaydi.",
+            "ru": "Ему совсем не интересны игры с мячом.",
+            "tj": "Ӯ ба бозии тӯб тамоман шавқ надорад."
+          }
+        },
+        {
+          "zh": "草原一点儿也不冷。",
+          "pinyin": "Cǎoyuán yìdiǎnr yě bù lěng.",
+          "translation": {
+            "uz": "Dasht umuman sovuq emas.",
+            "ru": "В степи совсем не холодно.",
+            "tj": "Дар саҳро тамоман хунук нест."
+          }
+        },
+        {
+          "zh": "他们一点儿也没着急。",
+          "pinyin": "Tāmen yìdiǎnr yě méi zháojí.",
+          "translation": {
+            "uz": "Ular umuman xavotirlanishmadi.",
+            "ru": "Они совсем не волновались.",
+            "tj": "Онҳо тамоман ташвиш накашиданд."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Yang Tongle va Wang Yifei mehmonxonada suhbatlashmoqda.",
+        "ru": "В гостиной у Ван Ифэй Ян Тунлэ и Ван Ифэй разговаривают.",
+        "tj": "Дар меҳмонхонаи Ван Ифэй Ян Тунлэ ва Ван Ифэй суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "这个假期咱们去哪儿玩玩吧。",
+          "pinyin": "Zhège jiàqī zánmen qù nǎr wánwan ba.",
+          "text": {
+            "uz": "Bu ta’tilda biror joyga sayrga boraylik.",
+            "ru": "Давай куда-нибудь съездим на этих каникулах.",
+            "tj": "Дар ин таътил биё ба ягон ҷо сайр равем."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "好啊，你想去哪儿，咱们就去哪儿。",
+          "pinyin": "Hǎo a, nǐ xiǎng qù nǎr, zánmen jiù qù nǎr.",
+          "text": {
+            "uz": "Mayli, qayerga borishni xohlasang, o‘sha yerga boramiz.",
+            "ru": "Хорошо, куда ты захочешь, туда и поедем.",
+            "tj": "Хуб, ба куҷо хоҳӣ, ҳамон ҷо меравем."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "你喜欢海，找个海边住几天，怎么样？",
+          "pinyin": "Nǐ xǐhuan hǎi, zhǎo ge hǎibiān zhù jǐ tiān, zěnmeyàng?",
+          "text": {
+            "uz": "Sen dengizni yoqtirasan, dengiz bo‘yida bir necha kun yashasak qanday?",
+            "ru": "Ты любишь море. Может, поживём несколько дней у моря?",
+            "tj": "Ту баҳрро дӯст медорӣ, чанд рӯз дар соҳил зиндагӣ кунем чӣ хел?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "现在去海边有点儿冷。",
+          "pinyin": "Xiànzài qù hǎibiān yǒudiǎnr lěng.",
+          "text": {
+            "uz": "Hozir dengiz bo‘yiga borish biroz sovuq.",
+            "ru": "Сейчас на море немного холодно.",
+            "tj": "Ҳоло ба соҳил рафтан каме хунук аст."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "那去草原吧？草原一点儿也不冷。",
+          "pinyin": "Nà qù cǎoyuán ba? Cǎoyuán yìdiǎnr yě bù lěng.",
+          "text": {
+            "uz": "Unda dashtga boramizmi? Dasht umuman sovuq emas.",
+            "ru": "Тогда поедем в степь? Там совсем не холодно.",
+            "tj": "Пас ба саҳро равем? Он ҷо тамоман хунук нест."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Yang Tongle va Wang Yifei mehmonxonada suhbatlashmoqda.",
+        "ru": "В гостиной у Ван Ифэй Ян Тунлэ и Ван Ифэй разговаривают.",
+        "tj": "Дар меҳмонхонаи Ван Ифэй Ян Тунлэ ва Ван Ифэй суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "出去玩的机票买好了吗？",
+          "pinyin": "Chūqù wán de jīpiào mǎi hǎo le ma?",
+          "text": {
+            "uz": "Sayohat uchun aviachiptalarni olib bo‘ldingmi?",
+            "ru": "Билеты на поездку уже куплены?",
+            "tj": "Чиптаҳои сафарро харида шуд?"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "太好了！你看看要带什么东西？",
+          "pinyin": "Tài hǎo le! Nǐ kànkan yào dài shénme dōngxi?",
+          "text": {
+            "uz": "Zo‘r! Qara, nimalarni olib borish kerak?",
+            "ru": "Отлично! Посмотри, что нужно взять с собой.",
+            "tj": "Олиҷаноб! Бин, чӣ чизҳоро бояд бо худ гирем?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Aeroportda Yang Tongle va Wang Yifei tashqariga chiqib, oldindan buyurtma qilingan haydovchi-gid bilan uchrashmoqda.",
+        "ru": "В аэропорту Ян Тунлэ и Ван Ифэй выходят и встречаются с заранее заказанным водителем-гидом.",
+        "tj": "Дар фурудгоҳ Ян Тунлэ ва Ван Ифэй берун омада, бо ронанда-роҳбалади пешакӣ фармоишдода вохӯрданд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "还有一个包，我自己拿就可以。",
+          "pinyin": "Hái yǒu yí ge bāo, wǒ zìjǐ ná jiù kěyǐ.",
+          "text": {
+            "uz": "Yana bitta sumka bor, uni o‘zim olaman.",
+            "ru": "Есть ещё одна сумка, её я понесу сам.",
+            "tj": "Боз як халта ҳаст, худам мебардорам."
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "车在一层，请跟我来。",
+          "pinyin": "Chē zài yì céng, qǐng gēn wǒ lái.",
+          "text": {
+            "uz": "Mashina birinchi qavatda, ortimdan yuringlar.",
+            "ru": "Машина на первом этаже, идите за мной.",
+            "tj": "Мошин дар ошёнаи якум аст, аз паси ман биёед."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "假期",
+            "pinyin": "jiàqī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ta’til",
+              "ru": "каникулы; отпуск",
+              "tj": "таътил"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "假期",
+          "pinyin": "jiàqī",
+          "translation": {
+            "uz": "ta’til",
+            "ru": "каникулы; отпуск",
+            "tj": "таътил"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "假期",
+          "pinyin": "jiàqī",
+          "options": [
+            "海",
+            "草原",
+            "假期",
+            "主意"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "假期 — ta’til (jiàqī)",
+            "ru": "假期 — каникулы; отпуск (jiàqī)",
+            "tj": "假期 — таътил (jiàqī)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "海",
+            "pinyin": "hǎi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "dengiz",
+              "ru": "море",
+              "tj": "баҳр"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "海 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 海:",
+            "tj": "Маънои калимаи 海-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dasht; yaylov",
+              "ru": "степь; луг",
+              "tj": "саҳро; чарогоҳ"
+            },
+            {
+              "uz": "ta’til",
+              "ru": "каникулы; отпуск",
+              "tj": "таътил"
+            },
+            {
+              "uz": "dengiz",
+              "ru": "море",
+              "tj": "баҳр"
+            },
+            {
+              "uz": "fikr; g‘oya",
+              "ru": "идея; замысел",
+              "tj": "фикр; ғоя"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "海 = dengiz (hǎi)",
+            "ru": "海 = море (hǎi)",
+            "tj": "海 = баҳр (hǎi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "草原",
+            "pinyin": "cǎoyuán",
+            "pos": "n.",
+            "meaning": {
+              "uz": "dasht; yaylov",
+              "ru": "степь; луг",
+              "tj": "саҳро; чарогоҳ"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "cǎoyuán qaysi ieroglif?",
+            "ru": "Какой иероглиф читается cǎoyuán?",
+            "tj": "cǎoyuán кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "草原",
+            "假期",
+            "主意",
+            "海"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "草原 = dasht; yaylov (cǎoyuán)",
+            "ru": "草原 = степь; луг (cǎoyuán)",
+            "tj": "草原 = саҳро; чарогоҳ (cǎoyuán)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "主意",
+            "pinyin": "zhǔyi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "fikr; g‘oya",
+              "ru": "идея; замысел",
+              "tj": "фикр; ғоя"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "主意 talaffuzini tanlang:",
+            "ru": "Выберите произношение 主意:",
+            "tj": "Талаффузи 主意-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "cǎoyuán",
+            "hǎi",
+            "jiàqī",
+            "zhǔyi"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "主意 — zhǔyi",
+            "ru": "主意 — zhǔyi",
+            "tj": "主意 — zhǔyi"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ta’til' xitoycha qaysi?",
+            "ru": "'каникулы; отпуск' по-китайски?",
+            "tj": "'таътил' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "海",
+            "草原",
+            "假期",
+            "主意"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "ta’til = 假期 (jiàqī)",
+            "ru": "каникулы; отпуск = 假期 (jiàqī)",
+            "tj": "таътил = 假期 (jiàqī)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "假期",
+              {
+                "uz": "ta’til",
+                "ru": "каникулы; отпуск",
+                "tj": "таътил"
+              }
+            ],
+            [
+              "海",
+              {
+                "uz": "dengiz",
+                "ru": "море",
+                "tj": "баҳр"
+              }
+            ],
+            [
+              "草原",
+              {
+                "uz": "dasht; yaylov",
+                "ru": "степь; луг",
+                "tj": "саҳро; чарогоҳ"
+              }
+            ],
+            [
+              "主意",
+              {
+                "uz": "fikr; g‘oya",
+                "ru": "идея; замысел",
+                "tj": "фикр; ғоя"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "“一……也/都不/没……” — to‘liq inkor",
+              "ru": "“一……也/都不/没……” — полное отрицание",
+              "tj": "“一……也/都不/没……” — инкори пурра"
+            },
+            "title_zh": "固定格式“一……也/都+不/没……”",
+            "rule": {
+              "uz": "Bu qolip “birorta ham / umuman” ma’nosida to‘liq inkorni bildiradi. “一+hisob so‘zi+ot” yoki “一点儿”dan keyin “也/都 + 不/没” keladi.",
+              "ru": "Конструкция выражает полное отрицание со значением «ни одного / совсем не». После “一+счётное слово+существительное” или “一点儿” ставится “也/都 + 不/没”.",
+              "tj": "Ин қолаб маънои инкори пурраи «ҳатто якто ҳам / тамоман не»-ро медиҳад. Пас аз “一+воҳиди ҳисоб+исм” ё “一点儿” — “也/都 + 不/没” меояд."
+            },
+            "examples": [
+              {
+                "zh": "她一件衣服都不想买。",
+                "pinyin": "Tā yí jiàn yīfu dōu bù xiǎng mǎi.",
+                "translation": {
+                  "uz": "U birorta ham kiyim sotib olgisi kelmaydi.",
+                  "ru": "Она не хочет покупать ни одной вещи.",
+                  "tj": "Ӯ ҳатто як либос ҳам харидан намехоҳад."
+                }
+              },
+              {
+                "zh": "我一个中国电影也没看过。",
+                "pinyin": "Wǒ yí ge Zhōngguó diànyǐng yě méi kàn guo.",
+                "translation": {
+                  "uz": "Men birorta ham xitoy filmini ko‘rmaganman.",
+                  "ru": "Я не смотрел ни одного китайского фильма.",
+                  "tj": "Ман ҳатто як филми чинӣ ҳам надидаам."
+                }
+              },
+              {
+                "zh": "我一点儿东西也不想吃。",
+                "pinyin": "Wǒ yìdiǎnr dōngxi yě bù xiǎng chī.",
+                "translation": {
+                  "uz": "Umuman hech narsa yegim kelmaydi.",
+                  "ru": "Я совсем ничего не хочу есть.",
+                  "tj": "Ман тамоман чизе хӯрдан намехоҳам."
+                }
+              },
+              {
+                "zh": "他对打球一点儿兴趣都没有。",
+                "pinyin": "Tā duì dǎqiú yìdiǎnr xìngqù dōu méiyǒu.",
+                "translation": {
+                  "uz": "U to‘p o‘ynashga umuman qiziqmaydi.",
+                  "ru": "Ему совсем не интересны игры с мячом.",
+                  "tj": "Ӯ ба бозии тӯб тамоман шавқ надорад."
+                }
+              },
+              {
+                "zh": "草原一点儿也不冷。",
+                "pinyin": "Cǎoyuán yìdiǎnr yě bù lěng.",
+                "translation": {
+                  "uz": "Dasht umuman sovuq emas.",
+                  "ru": "В степи совсем не холодно.",
+                  "tj": "Дар саҳро тамоман хунук нест."
+                }
+              },
+              {
+                "zh": "他们一点儿也没着急。",
+                "pinyin": "Tāmen yìdiǎnr yě méi zháojí.",
+                "translation": {
+                  "uz": "Ular umuman xavotirlanishmadi.",
+                  "ru": "Они совсем не волновались.",
+                  "tj": "Онҳо тамоман ташвиш накашиданд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U birorta ham kiyim sotib olgisi kelmaydi.",
+            "ru": "Она не хочет покупать ни одной вещи.",
+            "tj": "Ӯ ҳатто як либос ҳам харидан намехоҳад."
+          },
+          "tokens": [
+            "都",
+            "件",
+            "她",
+            "假期",
+            "一",
+            "衣服",
+            "不",
+            "海",
+            "买",
+            "想"
+          ],
+          "answer_tokens": [
+            "她",
+            "一",
+            "件",
+            "衣服",
+            "都",
+            "不",
+            "想",
+            "买"
+          ],
+          "explanation": {
+            "uz": "她一件衣服都不想买。 — Tā yí jiàn yīfu dōu bù xiǎng mǎi.",
+            "ru": "她一件衣服都不想买。 — Tā yí jiàn yīfu dōu bù xiǎng mǎi.",
+            "tj": "她一件衣服都不想买。 — Tā yí jiàn yīfu dōu bù xiǎng mǎi."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U to‘p o‘ynashga umuman qiziqmaydi.» — xitoychada qaysi biri?",
+            "ru": "«Ему совсем не интересны игры с мячом.» — какое предложение по-китайски?",
+            "tj": "«Ӯ ба бозии тӯб тамоман шавқ надорад.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "他对打球一点儿兴趣都没有。",
+            "他们一点儿也没着急。",
+            "草原一点儿也不冷。",
+            "我一点儿东西也不想吃。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "他对打球一点儿兴趣都没有。 — Tā duì dǎqiú yìdiǎnr xìngqù dōu méiyǒu.",
+            "ru": "他对打球一点儿兴趣都没有。 — Tā duì dǎqiú yìdiǎnr xìngqù dōu méiyǒu.",
+            "tj": "他对打球一点儿兴趣都没有。 — Tā duì dǎqiú yìdiǎnr xìngqù dōu méiyǒu."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Dasht umuman sovuq emas.",
+            "ru": "В степи совсем не холодно.",
+            "tj": "Дар саҳро тамоман хунук нест."
+          },
+          "tokens": [
+            "冷",
+            "一点儿",
+            "也",
+            "草原",
+            "不",
+            "假期",
+            "海"
+          ],
+          "answer_tokens": [
+            "草原",
+            "一点儿",
+            "也",
+            "不",
+            "冷"
+          ],
+          "explanation": {
+            "uz": "草原一点儿也不冷。 — Cǎoyuán yìdiǎnr yě bù lěng.",
+            "ru": "草原一点儿也不冷。 — Cǎoyuán yìdiǎnr yě bù lěng.",
+            "tj": "草原一点儿也不冷。 — Cǎoyuán yìdiǎnr yě bù lěng."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "假期",
+          "pinyin": "jiàqī",
+          "translation": {
+            "uz": "ta’til",
+            "ru": "каникулы; отпуск",
+            "tj": "таътил"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "初中 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 初中:",
+            "tj": "Маънои калимаи 初中-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dengiz",
+              "ru": "море",
+              "tj": "баҳр"
+            },
+            {
+              "uz": "ta’til",
+              "ru": "каникулы; отпуск",
+              "tj": "таътил"
+            },
+            {
+              "uz": "dasht; yaylov",
+              "ru": "степь; луг",
+              "tj": "саҳро; чарогоҳ"
+            },
+            {
+              "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+              "ru": "средняя школа (младшие классы)",
+              "tj": "зинаи миёнаи поёнии мактаб"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "初中 = o‘rta maktabning boshlang‘ich bosqichi (chūzhōng)",
+            "ru": "初中 = средняя школа (младшие классы) (chūzhōng)",
+            "tj": "初中 = зинаи миёнаи поёнии мактаб (chūzhōng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "初中",
+            "pinyin": "chūzhōng",
+            "meaning": {
+              "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+              "ru": "средняя школа (младшие классы)",
+              "tj": "зинаи миёнаи поёнии мактаб"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ta’til' xitoycha qaysi?",
+            "ru": "'каникулы; отпуск' по-китайски?",
+            "tj": "'таътил' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "海",
+            "主意",
+            "草原",
+            "假期"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "ta’til = 假期 (jiàqī)",
+            "ru": "каникулы; отпуск = 假期 (jiàqī)",
+            "tj": "таътил = 假期 (jiàqī)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "假期",
+            "pinyin": "jiàqī",
+            "meaning": {
+              "uz": "ta’til",
+              "ru": "каникулы; отпуск",
+              "tj": "таътил"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

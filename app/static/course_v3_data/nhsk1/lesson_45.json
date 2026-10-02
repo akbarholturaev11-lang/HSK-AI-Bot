@@ -1,0 +1,741 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 45,
+  "source_lesson": 7,
+  "part_no": 6,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我晚上六点半下班",
+  "subtitle": {
+    "uz": "Voqealar vaqtini tushunish va aytish; “吧” bilan taklif, maslahat, buyruq yoki iltimosni ifodalash; “呢” bilan tasdiqlanayotgan faktni bildirish; vaqt so‘zlari va ravishlarning gapdagi o‘rnini to‘g‘ri qo‘llash.",
+    "ru": "Понимать и называть время событий; использовать “吧” для предложения, совета, побуждения или просьбы; использовать “呢” для подтверждаемого факта; правильно располагать наречия и выражения времени.",
+    "tj": "Вақти рӯйдодҳоро фаҳмидан ва гуфтан; бо “吧” пешниҳод, маслиҳат, амр ё хоҳишро ифода кардан; бо “呢” воқеияти тасдиқшавандаро нишон додан; ҷойи дурусти зарфҳо ва ифодаҳои вақтро истифода бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "晚上",
+      "pinyin": "wǎnshang",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kechqurun",
+        "ru": "вечер",
+        "tj": "шом"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "医院",
+      "pinyin": "yīyuàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kasalxona",
+        "ru": "больница",
+        "tj": "беморхона"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "上班",
+      "pinyin": "shàngbān",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ishga bormoq; ishlamoq",
+        "ru": "идти на работу; работать",
+        "tj": "ба кор рафтан; кор кардан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "店",
+      "pinyin": "diàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "do‘kon",
+        "ru": "магазин",
+        "tj": "мағоза"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Bai Jiayue va Annie telefonda gaplashmoqda.",
+        "ru": "Бай Цзяюэ и Энни разговаривают по телефону.",
+        "tj": "Бай Ҷяюэ ва Энни бо телефон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "现在几点？",
+          "pinyin": "Xiànzài jǐ diǎn?",
+          "text": {
+            "uz": "Hozir soat necha?",
+            "ru": "Который сейчас час?",
+            "tj": "Ҳозир соат чанд?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "早上八点四十分。",
+          "pinyin": "Zǎoshang bā diǎn sìshí fēn.",
+          "text": {
+            "uz": "Ertalab soat 8:40.",
+            "ru": "Сейчас 8:40 утра.",
+            "tj": "Субҳ соати 8:40."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我上午十点十分有课。",
+          "pinyin": "Wǒ shàngwǔ shí diǎn shí fēn yǒu kè.",
+          "text": {
+            "uz": "Ertalab soat 10:10 da darsim bor.",
+            "ru": "У меня занятие в 10:10 утра.",
+            "tj": "Субҳ соати 10:10 дарс дорам."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "好的，我们下午两点见吧。",
+          "pinyin": "Hǎo de, wǒmen xiàwǔ liǎng diǎn jiàn ba.",
+          "text": {
+            "uz": "Xo‘p, tushdan keyin soat 2 da uchrashamiz.",
+            "ru": "Хорошо, давай встретимся в 2 часа дня.",
+            "tj": "Хуб, баъди нисфирӯзӣ соати 2 вомехӯрем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen Bai Jiayuega duch keladi.",
+        "ru": "В кампусе Ли Вэнь встречает Бай Цзяюэ.",
+        "tj": "Дар кампус Ли Вэн бо Бай Ҷяюэ вомехӯрад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "下午我想去电影院看电影，你去吗？",
+          "pinyin": "Xiàwǔ wǒ xiǎng qù diànyǐngyuàn kàn diànyǐng, nǐ qù ma?",
+          "text": {
+            "uz": "Bugun tushdan keyin kinoteatrga film ko‘rgani bormoqchiman. Sen ham borasanmi?",
+            "ru": "Сегодня днём я хочу пойти в кино. Ты пойдёшь?",
+            "tj": "Имрӯз баъди нисфирӯзӣ мехоҳам ба кино равам. Ту ҳам меравӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我不想去，下午还有事。",
+          "pinyin": "Wǒ bù xiǎng qù, xiàwǔ hái yǒu shì.",
+          "text": {
+            "uz": "Borgim kelmaydi, tushdan keyin yana ishim bor.",
+            "ru": "Я не хочу идти, днём у меня ещё есть дела.",
+            "tj": "Рафтан намехоҳам, баъди нисфирӯзӣ боз кор дорам."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "好的。明天呢？",
+          "pinyin": "Hǎo de. Míngtiān ne?",
+          "text": {
+            "uz": "Xo‘p. Ertaga-chi?",
+            "ru": "Хорошо. А завтра?",
+            "tj": "Хуб. Фардо чӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我明天下午两点还上课呢，两点半下课。",
+          "pinyin": "Wǒ míngtiān xiàwǔ liǎng diǎn hái shàngkè ne, liǎng diǎn bàn xiàkè.",
+          "text": {
+            "uz": "Ertaga tushdan keyin soat 2 da hali darsda bo‘laman, 2:30 da dars tugaydi.",
+            "ru": "Завтра в 2 часа дня у меня ещё занятие, оно заканчивается в 2:30.",
+            "tj": "Фардо баъди нисфирӯзӣ соати 2 ҳоло дарс дорам, соати 2:30 дарс тамом мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yixue ofisdan Liu Mingga telefon qilmoqda.",
+        "ru": "Ван Исюэ звонит Лю Мину из офиса.",
+        "tj": "Ван Исюэ аз идора ба Лю Мин занг мезанад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "喂，你在哪儿呢？",
+          "pinyin": "Wèi, nǐ zài nǎr ne?",
+          "text": {
+            "uz": "Allo, qayerdasan?",
+            "ru": "Алло, ты где?",
+            "tj": "Алло, ту куҷоӣ?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "我在家里呢。",
+          "pinyin": "Wǒ zài jiālǐ ne.",
+          "text": {
+            "uz": "Men uydaman.",
+            "ru": "Я дома.",
+            "tj": "Ман дар хонаам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我晚上六点半下班。",
+          "pinyin": "Wǒ wǎnshang liù diǎn bàn xiàbān.",
+          "text": {
+            "uz": "Men kechqurun soat 6:30 da ishdan chiqaman.",
+            "ru": "Я заканчиваю работу в 6:30 вечера.",
+            "tj": "Ман шом соати 6:30 аз кор мебароям."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "我八点去医院上班。",
+          "pinyin": "Wǒ bā diǎn qù yīyuàn shàngbān.",
+          "text": {
+            "uz": "Men soat 8 da kasalxonaga ishga boraman.",
+            "ru": "В 8 часов я пойду работать в больницу.",
+            "tj": "Ман соати 8 ба беморхона ба кор меравам."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "好的，你去店里买些菜吧。",
+          "pinyin": "Hǎo de, nǐ qù diàn lǐ mǎi xiē cài ba.",
+          "text": {
+            "uz": "Xo‘p, do‘konga borib biroz sabzavot ol.",
+            "ru": "Хорошо, зайди в магазин и купи овощей.",
+            "tj": "Хуб, ба мағоза рафта каме сабзавот бихар."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "晚上",
+            "pinyin": "wǎnshang",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kechqurun",
+              "ru": "вечер",
+              "tj": "шом"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "晚上",
+          "pinyin": "wǎnshang",
+          "translation": {
+            "uz": "kechqurun",
+            "ru": "вечер",
+            "tj": "шом"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "晚上",
+          "pinyin": "wǎnshang",
+          "options": [
+            "晚上",
+            "点",
+            "现在",
+            "早上"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "晚上 — kechqurun (wǎnshang)",
+            "ru": "晚上 — вечер (wǎnshang)",
+            "tj": "晚上 — шом (wǎnshang)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "医院",
+            "pinyin": "yīyuàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kasalxona",
+              "ru": "больница",
+              "tj": "беморхона"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "医院 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 医院:",
+            "tj": "Маънои калимаи 医院-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "erta tong",
+              "ru": "раннее утро",
+              "tj": "субҳи барвақт"
+            },
+            {
+              "uz": "hozir",
+              "ru": "сейчас",
+              "tj": "ҳозир"
+            },
+            {
+              "uz": "kasalxona",
+              "ru": "больница",
+              "tj": "беморхона"
+            },
+            {
+              "uz": "soat (vaqt birligi)",
+              "ru": "час (при указании времени)",
+              "tj": "соат (ҳангоми гуфтани вақт)"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "医院 = kasalxona (yīyuàn)",
+            "ru": "医院 = больница (yīyuàn)",
+            "tj": "医院 = беморхона (yīyuàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "上班",
+            "pinyin": "shàngbān",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ishga bormoq; ishlamoq",
+              "ru": "идти на работу; работать",
+              "tj": "ба кор рафтан; кор кардан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shàngbān qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shàngbān?",
+            "tj": "shàngbān кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "上班",
+            "现在",
+            "点",
+            "早上"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "上班 = ishga bormoq; ishlamoq (shàngbān)",
+            "ru": "上班 = идти на работу; работать (shàngbān)",
+            "tj": "上班 = ба кор рафтан; кор кардан (shàngbān)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "店",
+            "pinyin": "diàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "do‘kon",
+              "ru": "магазин",
+              "tj": "мағоза"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "店 talaffuzini tanlang:",
+            "ru": "Выберите произношение 店:",
+            "tj": "Талаффузи 店-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xiànzài",
+            "diǎn",
+            "zǎoshang",
+            "diàn"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "店 — diàn",
+            "ru": "店 — diàn",
+            "tj": "店 — diàn"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kechqurun' xitoycha qaysi?",
+            "ru": "'вечер' по-китайски?",
+            "tj": "'шом' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "现在",
+            "点",
+            "晚上",
+            "早上"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "kechqurun = 晚上 (wǎnshang)",
+            "ru": "вечер = 晚上 (wǎnshang)",
+            "tj": "шом = 晚上 (wǎnshang)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "晚上",
+              {
+                "uz": "kechqurun",
+                "ru": "вечер",
+                "tj": "шом"
+              }
+            ],
+            [
+              "医院",
+              {
+                "uz": "kasalxona",
+                "ru": "больница",
+                "tj": "беморхона"
+              }
+            ],
+            [
+              "上班",
+              {
+                "uz": "ishga bormoq; ishlamoq",
+                "ru": "идти на работу; работать",
+                "tj": "ба кор рафтан; кор кардан"
+              }
+            ],
+            [
+              "店",
+              {
+                "uz": "do‘kon",
+                "ru": "магазин",
+                "tj": "мағоза"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men kechqurun soat 6:30 da ishdan chiqaman.",
+            "ru": "Я заканчиваю работу в 6:30 вечера.",
+            "tj": "Ман шом соати 6:30 аз кор мебароям."
+          },
+          "tokens": [
+            "我",
+            "点",
+            "现在",
+            "下班",
+            "早上",
+            "晚上",
+            "半",
+            "六"
+          ],
+          "answer_tokens": [
+            "我",
+            "晚上",
+            "六",
+            "点",
+            "半",
+            "下班"
+          ],
+          "explanation": {
+            "uz": "我晚上六点半下班。 — Wǒ wǎnshang liù diǎn bàn xiàbān.",
+            "ru": "我晚上六点半下班。 — Wǒ wǎnshang liù diǎn bàn xiàbān.",
+            "tj": "我晚上六点半下班。 — Wǒ wǎnshang liù diǎn bàn xiàbān."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "医院",
+          "pinyin": "yīyuàn",
+          "translation": {
+            "uz": "kasalxona",
+            "ru": "больница",
+            "tj": "беморхона"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我晚上六点半下班。",
+          "pinyin": "Wǒ wǎnshang liù diǎn bàn xiàbān.",
+          "translation": {
+            "uz": "Men kechqurun soat 6:30 da ishdan chiqaman.",
+            "ru": "Я заканчиваю работу в 6:30 вечера.",
+            "tj": "Ман шом соати 6:30 аз кор мебароям."
+          },
+          "tokens": {
+            "uz": [
+              "soat",
+              "chiqaman",
+              "Men",
+              "da",
+              "6:30",
+              "kechqurun",
+              "kasalxonaga",
+              "ishdan",
+              "8"
+            ],
+            "ru": [
+              "В",
+              "вечера",
+              "заканчиваю",
+              "6:30",
+              "работу",
+              "Я",
+              "в",
+              "8"
+            ],
+            "tj": [
+              "ба",
+              "аз",
+              "Ман",
+              "8",
+              "шом",
+              "соати",
+              "6:30",
+              "мебароям",
+              "кор"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Men",
+              "kechqurun",
+              "soat",
+              "6:30",
+              "da",
+              "ishdan",
+              "chiqaman"
+            ],
+            "ru": [
+              "Я",
+              "заканчиваю",
+              "работу",
+              "в",
+              "6:30",
+              "вечера"
+            ],
+            "tj": [
+              "Ман",
+              "шом",
+              "соати",
+              "6:30",
+              "аз",
+              "кор",
+              "мебароям"
+            ]
+          },
+          "explanation": {
+            "uz": "我晚上六点半下班。 — Men kechqurun soat 6:30 da ishdan chiqaman.",
+            "ru": "我晚上六点半下班。 — Я заканчиваю работу в 6:30 вечера.",
+            "tj": "我晚上六点半下班。 — Ман шом соати 6:30 аз кор мебароям."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我晚上六点半下班。",
+          "pinyin": "Wǒ wǎnshang liù diǎn bàn xiàbān.",
+          "options": [
+            "我晚上六点半下班。",
+            "好的，你去店里买些菜吧。",
+            "我八点去医院上班。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我晚上六点半下班。 — Men kechqurun soat 6:30 da ishdan chiqaman.",
+            "ru": "我晚上六点半下班。 — Я заканчиваю работу в 6:30 вечера.",
+            "tj": "我晚上六点半下班。 — Ман шом соати 6:30 аз кор мебароям."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "晚上",
+          "pinyin": "wǎnshang",
+          "translation": {
+            "uz": "kechqurun",
+            "ru": "вечер",
+            "tj": "шом"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "下课 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 下课:",
+            "tj": "Маънои калимаи 下课-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hozir",
+              "ru": "сейчас",
+              "tj": "ҳозир"
+            },
+            {
+              "uz": "soat (vaqt birligi)",
+              "ru": "час (при указании времени)",
+              "tj": "соат (ҳангоми гуфтани вақт)"
+            },
+            {
+              "uz": "dars tugamoq",
+              "ru": "заканчивать занятие",
+              "tj": "дарс тамом шудан"
+            },
+            {
+              "uz": "erta tong",
+              "ru": "раннее утро",
+              "tj": "субҳи барвақт"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "下课 = dars tugamoq (xiàkè)",
+            "ru": "下课 = заканчивать занятие (xiàkè)",
+            "tj": "下课 = дарс тамом шудан (xiàkè)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "下课",
+            "pinyin": "xiàkè",
+            "meaning": {
+              "uz": "dars tugamoq",
+              "ru": "заканчивать занятие",
+              "tj": "дарс тамом шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kechqurun' xitoycha qaysi?",
+            "ru": "'вечер' по-китайски?",
+            "tj": "'шом' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "点",
+            "现在",
+            "早上",
+            "晚上"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "kechqurun = 晚上 (wǎnshang)",
+            "ru": "вечер = 晚上 (wǎnshang)",
+            "tj": "шом = 晚上 (wǎnshang)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "晚上",
+            "pinyin": "wǎnshang",
+            "meaning": {
+              "uz": "kechqurun",
+              "ru": "вечер",
+              "tj": "шом"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -25,6 +25,7 @@ from app.db.models.payment import Payment
 from app.db.models.portfolio import PortfolioTransaction
 from app.db.models.subscription_entry_event import SubscriptionEntryEvent
 from app.db.models.user import User
+from app.services.hsk30_unlock_service import HSK30_UNLOCK_PLAN_TYPE
 from app.services.subscription_currency_service import (
     DEFAULT_USD_CNY_RATE,
     DEFAULT_VISA_LOCAL_RATES,
@@ -124,6 +125,7 @@ class AdminFinanceStatsService:
             telegram_ids={p.user_id for p in approved},
         )
         renewed_ever = await self._renewed_ever_count()
+        hsk30_unlock = await self._hsk30_unlock_summary()
 
         periods = []
         for key, title, note, since in (
@@ -152,6 +154,7 @@ class AdminFinanceStatsService:
             "generated_at": _dt(now),
             "tz": "Asia/Shanghai",
             "periods": periods,
+            "hsk30_unlock": hsk30_unlock,
         }
 
     # ---- ma'lumot yig'ish -------------------------------------------------
@@ -167,7 +170,10 @@ class AdminFinanceStatsService:
                     Payment.reviewed_at,
                     Payment.submitted_at,
                     Payment.source,
-                ).where(Payment.payment_status == "approved")
+                ).where(
+                    Payment.payment_status == "approved",
+                    Payment.plan_type != HSK30_UNLOCK_PLAN_TYPE,
+                )
             )
         ).all()
 
@@ -251,11 +257,36 @@ class AdminFinanceStatsService:
         """≥2 marta tasdiqlangan to'lov qilgan (kamida 1 marta yangilagan) foydalanuvchilar."""
         sub = (
             select(Payment.user_telegram_id)
-            .where(Payment.payment_status == "approved")
+            .where(
+                Payment.payment_status == "approved",
+                Payment.plan_type != HSK30_UNLOCK_PLAN_TYPE,
+            )
             .group_by(Payment.user_telegram_id)
             .having(func.count() >= 2)
         ).subquery()
         return (await self.session.execute(select(func.count()).select_from(sub))).scalar() or 0
+
+    async def _hsk30_unlock_summary(self) -> dict:
+        row = (
+            await self.session.execute(
+                select(
+                    func.count(Payment.id).label("payments"),
+                    func.count(func.distinct(Payment.user_telegram_id)).label("users"),
+                    func.coalesce(func.sum(Payment.amount), 0).label("amount_tjs"),
+                ).where(
+                    Payment.payment_status == "approved",
+                    Payment.plan_type == HSK30_UNLOCK_PLAN_TYPE,
+                )
+            )
+        ).one()
+        return {
+            "label": "HSK 3.0 ochish",
+            "payments": int(row.payments or 0),
+            "users": int(row.users or 0),
+            "amount_tjs": int(row.amount_tjs or 0),
+            "amount_text": f"{int(row.amount_tjs or 0)} TJS",
+            "note": "Bir martalik doimiy HSK 3.0 kirish; obuna daromadiga qo'shilmaydi.",
+        }
 
     async def _ai_cost_usd(self, since: datetime | None) -> float:
         stmt = select(func.coalesce(func.sum(AIUsageEvent.cost_usd), 0.0))

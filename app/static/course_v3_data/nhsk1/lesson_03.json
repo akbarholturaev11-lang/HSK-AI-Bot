@@ -1,0 +1,653 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 3,
+  "source_lesson": 1,
+  "part_no": 3,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "AI小语，你好！",
+  "subtitle": {
+    "uz": "Salomlashish, minnatdorchilik va xayrlashish uchun odobli iboralarni tushunish va ishlatish; xitoycha muloqot odobi hamda hurmat shakli 您 ni tushunish va qo'llash.",
+    "ru": "Понимать и использовать вежливые выражения для приветствия, благодарности и прощания; понимать нормы китайского общения и употреблять уважительную форму 您.",
+    "tj": "Ибораҳои хушмуомиларо барои салом, изҳори сипос ва хайрбод фаҳмидан ва истифода бурдан; одоби муоширати чинӣ ва шакли эҳтиромии 您-ро фаҳмидан ва ба кор бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "谢谢",
+      "pinyin": "xièxie",
+      "pos": "v.",
+      "meaning": {
+        "uz": "rahmat aytmoq; rahmat",
+        "ru": "благодарить; спасибо",
+        "tj": "ташаккур гуфтан; раҳмат"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "不客气",
+      "pinyin": "bú kèqi",
+      "pos": "phrase",
+      "meaning": {
+        "uz": "arzimaydi",
+        "ru": "не за что; пожалуйста",
+        "tj": "марҳамат; ҳеҷ гап не"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "同学",
+      "pinyin": "tóngxué",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sinfdosh; kursdosh",
+        "ru": "одноклассник; одногруппник",
+        "tj": "ҳамсинф; ҳамкурс"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "再见",
+      "pinyin": "zàijiàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "xayr; ko'rishguncha",
+        "ru": "до свидания",
+        "tj": "хайр; то боздид"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "O'qishning birinchi kuni darsda talabalar salomlashish iboralarini o'rganadilar.",
+        "ru": "В первый учебный день на занятии студенты изучают выражения для приветствия.",
+        "tj": "Дар рӯзи аввали таҳсил, дар дарс донишҷӯён ибораҳои саломро меомӯзанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "大家好！",
+          "pinyin": "Dàjiā hǎo!",
+          "text": {
+            "uz": "Hammaga salom!",
+            "ru": "Здравствуйте, все!",
+            "tj": "Салом ба ҳама!"
+          }
+        },
+        {
+          "speaker": "Students",
+          "zh": "老师，您好！",
+          "pinyin": "Lǎoshī, nín hǎo!",
+          "text": {
+            "uz": "Ustoz, assalomu alaykum!",
+            "ru": "Здравствуйте, преподаватель!",
+            "tj": "Устод, салом!"
+          }
+        },
+        {
+          "speaker": "Xiaoyu",
+          "zh": "你们好！",
+          "pinyin": "Nǐmen hǎo!",
+          "text": {
+            "uz": "Sizlarga salom!",
+            "ru": "Здравствуйте!",
+            "tj": "Ба шумо салом!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "O'qishning birinchi kuni darsda talabalar minnatdorchilik va xayrlashish iboralarini o'rganadilar.",
+        "ru": "В первый учебный день на занятии студенты изучают выражения благодарности и прощания.",
+        "tj": "Дар рӯзи аввали таҳсил, дар дарс донишҷӯён ибораҳои сипос ва хайрбодро меомӯзанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Students",
+          "zh": "谢谢！",
+          "pinyin": "Xièxie!",
+          "text": {
+            "uz": "Rahmat!",
+            "ru": "Спасибо!",
+            "tj": "Раҳмат!"
+          }
+        },
+        {
+          "speaker": "Xiaoyu",
+          "zh": "不客气！",
+          "pinyin": "Bú kèqi!",
+          "text": {
+            "uz": "Arzimaydi!",
+            "ru": "Не за что!",
+            "tj": "Марҳамат!"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "同学们，再见！",
+          "pinyin": "Tóngxuémen, zàijiàn!",
+          "text": {
+            "uz": "Talabalar, xayr!",
+            "ru": "Студенты, до свидания!",
+            "tj": "Донишҷӯён, хайр!"
+          }
+        },
+        {
+          "speaker": "Students",
+          "zh": "老师，再见！",
+          "pinyin": "Lǎoshī, zàijiàn!",
+          "text": {
+            "uz": "Ustoz, xayr!",
+            "ru": "До свидания, преподаватель!",
+            "tj": "Устод, хайр!"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "谢谢",
+            "pinyin": "xièxie",
+            "pos": "v.",
+            "meaning": {
+              "uz": "rahmat aytmoq; rahmat",
+              "ru": "благодарить; спасибо",
+              "tj": "ташаккур гуфтан; раҳмат"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "谢谢 talaffuzini tanlang:",
+            "ru": "Выберите произношение 谢谢:",
+            "tj": "Талаффузи 谢谢-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "nǐ hǎo",
+            "dàjiā",
+            "hǎo",
+            "xièxie"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "谢谢 — xièxie",
+            "ru": "谢谢 — xièxie",
+            "tj": "谢谢 — xièxie"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "不客气",
+            "pinyin": "bú kèqi",
+            "pos": "phrase",
+            "meaning": {
+              "uz": "arzimaydi",
+              "ru": "не за что; пожалуйста",
+              "tj": "марҳамат; ҳеҷ гап не"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'arzimaydi' xitoycha qaysi?",
+            "ru": "'не за что; пожалуйста' по-китайски?",
+            "tj": "'марҳамат; ҳеҷ гап не' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "大家",
+            "好",
+            "你好",
+            "不客气"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "arzimaydi = 不客气 (bú kèqi)",
+            "ru": "не за что; пожалуйста = 不客气 (bú kèqi)",
+            "tj": "марҳамат; ҳеҷ гап не = 不客气 (bú kèqi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "同学",
+            "pinyin": "tóngxué",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sinfdosh; kursdosh",
+              "ru": "одноклассник; одногруппник",
+              "tj": "ҳамсинф; ҳамкурс"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "同学",
+          "pinyin": "tóngxué",
+          "translation": {
+            "uz": "sinfdosh; kursdosh",
+            "ru": "одноклассник; одногруппник",
+            "tj": "ҳамсинф; ҳамкурс"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "同学",
+          "pinyin": "tóngxué",
+          "options": [
+            "你好",
+            "大家",
+            "同学",
+            "好"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "同学 — sinfdosh; kursdosh (tóngxué)",
+            "ru": "同学 — одноклассник; одногруппник (tóngxué)",
+            "tj": "同学 — ҳамсинф; ҳамкурс (tóngxué)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "再见",
+            "pinyin": "zàijiàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "xayr; ko'rishguncha",
+              "ru": "до свидания",
+              "tj": "хайр; то боздид"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "再见 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 再见:",
+            "tj": "Маънои калимаи 再见-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xayr; ko'rishguncha",
+              "ru": "до свидания",
+              "tj": "хайр; то боздид"
+            },
+            {
+              "uz": "hamma; barchangiz",
+              "ru": "все; все вы",
+              "tj": "ҳама; ҳамаи шумо"
+            },
+            {
+              "uz": "yaxshi; yaxshi bo'lmoq",
+              "ru": "хороший; хорошо",
+              "tj": "хуб; хуб будан"
+            },
+            {
+              "uz": "salom",
+              "ru": "привет; здравствуйте",
+              "tj": "салом"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "再见 = xayr; ko'rishguncha (zàijiàn)",
+            "ru": "再见 = до свидания (zàijiàn)",
+            "tj": "再见 = хайр; то боздид (zàijiàn)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xièxie qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xièxie?",
+            "tj": "xièxie кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "好",
+            "大家",
+            "谢谢",
+            "你好"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "谢谢 = rahmat aytmoq; rahmat (xièxie)",
+            "ru": "谢谢 = благодарить; спасибо (xièxie)",
+            "tj": "谢谢 = ташаккур гуфтан; раҳмат (xièxie)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "谢谢",
+              {
+                "uz": "rahmat aytmoq; rahmat",
+                "ru": "благодарить; спасибо",
+                "tj": "ташаккур гуфтан; раҳмат"
+              }
+            ],
+            [
+              "不客气",
+              {
+                "uz": "arzimaydi",
+                "ru": "не за что; пожалуйста",
+                "tj": "марҳамат; ҳеҷ гап не"
+              }
+            ],
+            [
+              "同学",
+              {
+                "uz": "sinfdosh; kursdosh",
+                "ru": "одноклассник; одногруппник",
+                "tj": "ҳамсинф; ҳамкурс"
+              }
+            ],
+            [
+              "再见",
+              {
+                "uz": "xayr; ko'rishguncha",
+                "ru": "до свидания",
+                "tj": "хайр; то боздид"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "同学们，再见！",
+          "pinyin": "Tóngxuémen, zàijiàn!",
+          "translation": {
+            "uz": "Talabalar, xayr!",
+            "ru": "Студенты, до свидания!",
+            "tj": "Донишҷӯён, хайр!"
+          },
+          "tokens": {
+            "uz": [
+              "Arzimaydi",
+              "Talabalar",
+              "Rahmat",
+              "xayr"
+            ],
+            "ru": [
+              "Спасибо",
+              "Не",
+              "свидания",
+              "до",
+              "Студенты"
+            ],
+            "tj": [
+              "Донишҷӯён",
+              "Раҳмат",
+              "Марҳамат",
+              "хайр"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Talabalar",
+              "xayr"
+            ],
+            "ru": [
+              "Студенты",
+              "до",
+              "свидания"
+            ],
+            "tj": [
+              "Донишҷӯён",
+              "хайр"
+            ]
+          },
+          "explanation": {
+            "uz": "同学们，再见！ — Talabalar, xayr!",
+            "ru": "同学们，再见！ — Студенты, до свидания!",
+            "tj": "同学们，再见！ — Донишҷӯён, хайр!"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "老师，再见！",
+          "pinyin": "Lǎoshī, zàijiàn!",
+          "options": [
+            "老师，再见！",
+            "不客气！",
+            "同学们，再见！",
+            "谢谢！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "老师，再见！ — Ustoz, xayr!",
+            "ru": "老师，再见！ — До свидания, преподаватель!",
+            "tj": "老师，再见！ — Устод, хайр!"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "再见",
+          "pinyin": "zàijiàn",
+          "options": [
+            "你好",
+            "再见",
+            "好",
+            "大家"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "再见 — xayr; ko'rishguncha (zàijiàn)",
+            "ru": "再见 — до свидания (zàijiàn)",
+            "tj": "再见 — хайр; то боздид (zàijiàn)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Talabalar, xayr!",
+            "ru": "Студенты, до свидания!",
+            "tj": "Донишҷӯён, хайр!"
+          },
+          "tokens": [
+            "再见",
+            "大家",
+            "同学",
+            "你好",
+            "们"
+          ],
+          "answer_tokens": [
+            "同学",
+            "们",
+            "再见"
+          ],
+          "explanation": {
+            "uz": "同学们，再见！ — Tóngxuémen, zàijiàn!",
+            "ru": "同学们，再见！ — Tóngxuémen, zàijiàn!",
+            "tj": "同学们，再见！ — Tóngxuémen, zàijiàn!"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "同学",
+          "pinyin": "tóngxué",
+          "translation": {
+            "uz": "sinfdosh; kursdosh",
+            "ru": "одноклассник; одногруппник",
+            "tj": "ҳамсинф; ҳамкурс"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "您 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 您:",
+            "tj": "Маънои калимаи 您-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yaxshi; yaxshi bo'lmoq",
+              "ru": "хороший; хорошо",
+              "tj": "хуб; хуб будан"
+            },
+            {
+              "uz": "hamma; barchangiz",
+              "ru": "все; все вы",
+              "tj": "ҳама; ҳамаи шумо"
+            },
+            {
+              "uz": "Siz (hurmat shakli)",
+              "ru": "Вы (уважительная форма)",
+              "tj": "Шумо (шакли эҳтиромӣ)"
+            },
+            {
+              "uz": "salom",
+              "ru": "привет; здравствуйте",
+              "tj": "салом"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "您 = Siz (hurmat shakli) (nín)",
+            "ru": "您 = Вы (уважительная форма) (nín)",
+            "tj": "您 = Шумо (шакли эҳтиромӣ) (nín)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "您",
+            "pinyin": "nín",
+            "meaning": {
+              "uz": "Siz (hurmat shakli)",
+              "ru": "Вы (уважительная форма)",
+              "tj": "Шумо (шакли эҳтиромӣ)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sinfdosh; kursdosh' xitoycha qaysi?",
+            "ru": "'одноклассник; одногруппник' по-китайски?",
+            "tj": "'ҳамсинф; ҳамкурс' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "好",
+            "大家",
+            "你好",
+            "同学"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "sinfdosh; kursdosh = 同学 (tóngxué)",
+            "ru": "одноклассник; одногруппник = 同学 (tóngxué)",
+            "tj": "ҳамсинф; ҳамкурс = 同学 (tóngxué)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "同学",
+            "pinyin": "tóngxué",
+            "meaning": {
+              "uz": "sinfdosh; kursdosh",
+              "ru": "одноклассник; одногруппник",
+              "tj": "ҳамсинф; ҳамкурс"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,455 @@
+{
+  "schema_version": 1,
+  "lesson": 13,
+  "source_title_hanzi": "我的新邻居来自英国",
+  "translation_origin": "assistant_authored_from_source_verified_chinese",
+  "goal": {
+    "uz": "Turli hududlardagi yashash va mehmondorchilik odatlari farqini tushunish; minnatdorchilik, tabrik va maqtov iboralarini ishlatish; “一边……一边……” bilan bir vaqtda bajariladigan harakatlarni tasvirlash.",
+    "ru": "Понимать различия бытовых и гостевых привычек в разных регионах; использовать выражения благодарности, поздравления и похвалы; описывать одновременные действия конструкцией “一边……一边……”.",
+    "tj": "Фарқи одатҳои зиндагӣ ва меҳмондорӣ дар минтақаҳои гуногунро фаҳмидан; ибораҳои ташаккур, табрик ва таърифро истифода бурдан; бо “一边……一边……” амалҳои ҳамзамонро тавсиф кардан."
+  },
+  "intro_text": {
+    "uz": "Dars restoranda mehmon qilish, uyda mehmon kutish va tug‘ilgan kun bazmi haqidagi suhbatlar orqali “……的话，就……”, “把”ning to‘rtinchi turi va “一边……一边……” tuzilmalarini o‘rgatadi.",
+    "ru": "Урок через угощение в ресторане, приём гостей дома и день рождения вводит “……的话，就……”, четвёртый тип предложений с “把” и конструкцию “一边……一边……”.",
+    "tj": "Дарс тавассути меҳмондорӣ дар тарабхона, қабули меҳмон дар хона ва ҷашни зодрӯз “……的话，就……”, навъи чоруми ҷумлаҳои “把” ва сохтори “一边……一边……” меомӯзонад."
+  },
+  "vocabulary": [
+    {
+      "hanzi": "请客",
+      "pinyin": "qǐngkè",
+      "uz": "mehmon qilmoq; hisobni to‘lamoq",
+      "ru": "угощать; приглашать за свой счёт",
+      "tj": "меҳмон кардан; ҳисобро пардохтан"
+    },
+    {
+      "hanzi": "南方",
+      "pinyin": "nánfāng",
+      "uz": "janub",
+      "ru": "юг",
+      "tj": "ҷануб"
+    },
+    {
+      "hanzi": "北方",
+      "pinyin": "běifāng",
+      "uz": "shimol",
+      "ru": "север",
+      "tj": "шимол"
+    },
+    {
+      "hanzi": "做法",
+      "pinyin": "zuòfǎ",
+      "uz": "usul; tayyorlash yo‘li",
+      "ru": "способ; метод приготовления",
+      "tj": "усул; тарзи тайёр кардан"
+    },
+    {
+      "hanzi": "不同",
+      "pinyin": "bù tóng",
+      "uz": "turli; bir xil emas",
+      "ru": "разный; отличаться",
+      "tj": "гуногун; фарқкунанда"
+    },
+    {
+      "hanzi": "加",
+      "pinyin": "jiā",
+      "uz": "qo‘shmoq",
+      "ru": "добавлять",
+      "tj": "илова кардан"
+    },
+    {
+      "hanzi": "的话",
+      "pinyin": "dehuà",
+      "uz": "agar ... bo‘lsa",
+      "ru": "если; в случае если",
+      "tj": "агар ... бошад"
+    },
+    {
+      "hanzi": "做客",
+      "pinyin": "zuòkè",
+      "uz": "mehmon bo‘lib bormoq",
+      "ru": "ходить в гости",
+      "tj": "меҳмон шудан"
+    },
+    {
+      "hanzi": "邻居",
+      "pinyin": "línjū",
+      "uz": "qo‘shni",
+      "ru": "сосед",
+      "tj": "ҳамсоя"
+    },
+    {
+      "hanzi": "放心",
+      "pinyin": "fàngxīn",
+      "uz": "xotirjam bo‘lmoq",
+      "ru": "не беспокоиться; быть спокойным",
+      "tj": "хотирҷамъ шудан"
+    },
+    {
+      "hanzi": "酒",
+      "pinyin": "jiǔ",
+      "uz": "spirtli ichimlik",
+      "ru": "алкогольный напиток",
+      "tj": "нӯшокии спиртӣ"
+    },
+    {
+      "hanzi": "放",
+      "pinyin": "fàng",
+      "uz": "qo‘ymoq",
+      "ru": "класть; ставить",
+      "tj": "гузоштан"
+    },
+    {
+      "hanzi": "客人",
+      "pinyin": "kèrén",
+      "uz": "mehmon",
+      "ru": "гость",
+      "tj": "меҳмон"
+    },
+    {
+      "hanzi": "晚会",
+      "pinyin": "wǎnhuì",
+      "uz": "kechki tadbir; bayram kechasi",
+      "ru": "вечер; праздничное мероприятие",
+      "tj": "шоми идона; чорабинӣ"
+    },
+    {
+      "hanzi": "礼物",
+      "pinyin": "lǐwù",
+      "uz": "sovg‘a",
+      "ru": "подарок",
+      "tj": "тӯҳфа"
+    },
+    {
+      "hanzi": "画家",
+      "pinyin": "huàjiā",
+      "uz": "rassom",
+      "ru": "художник",
+      "tj": "рассом"
+    },
+    {
+      "hanzi": "盘子",
+      "pinyin": "pánzi",
+      "uz": "likop; tarelka",
+      "ru": "тарелка",
+      "tj": "табақ"
+    },
+    {
+      "hanzi": "一边",
+      "pinyin": "yìbiān",
+      "uz": "bir vaqtning o‘zida; ... qilib turib",
+      "ru": "одновременно; делая одно",
+      "tj": "ҳамзамон; дар ҳоле ки"
+    },
+    {
+      "hanzi": "聊天儿",
+      "pinyin": "liáotiānr",
+      "uz": "suhbatlashmoq",
+      "ru": "болтать; беседовать",
+      "tj": "суҳбат кардан"
+    },
+    {
+      "hanzi": "来自",
+      "pinyin": "láizì",
+      "uz": "...dan kelmoq; ...lik bo‘lmoq",
+      "ru": "быть родом из; происходить из",
+      "tj": "аз ... будан; аз ... омадан"
+    },
+    {
+      "hanzi": "夫妻",
+      "pinyin": "fūqī",
+      "uz": "er-xotin",
+      "ru": "супруги",
+      "tj": "зану шавҳар"
+    },
+    {
+      "hanzi": "直到",
+      "pinyin": "zhídào",
+      "uz": "...gacha",
+      "ru": "до; вплоть до",
+      "tj": "то ..."
+    },
+    {
+      "hanzi": "地图",
+      "pinyin": "dìtú",
+      "uz": "xarita",
+      "ru": "карта",
+      "tj": "харита"
+    },
+    {
+      "hanzi": "点",
+      "pinyin": "diǎn",
+      "uz": "nuqta; joy",
+      "ru": "точка; место",
+      "tj": "нуқта; ҷой"
+    },
+    {
+      "hanzi": "感到",
+      "pinyin": "gǎndào",
+      "uz": "his qilmoq",
+      "ru": "чувствовать",
+      "tj": "ҳис кардан"
+    },
+    {
+      "hanzi": "东方",
+      "pinyin": "dōngfāng",
+      "uz": "sharq",
+      "ru": "восток",
+      "tj": "шарқ"
+    },
+    {
+      "hanzi": "文化",
+      "pinyin": "wénhuà",
+      "uz": "madaniyat",
+      "ru": "культура",
+      "tj": "фарҳанг"
+    },
+    {
+      "hanzi": "英国",
+      "pinyin": "Yīngguó",
+      "uz": "Buyuk Britaniya",
+      "ru": "Великобритания",
+      "tj": "Британияи Кабир"
+    }
+  ],
+  "grammar": [
+    {
+      "label": "假设复句“……的话，就……”",
+      "title_uz": "Shartli gap “……的话，就……”",
+      "title_ru": "Условное предложение “……的话，就……”",
+      "title_tj": "Ҷумлаи шартии “……的话，就……”",
+      "rule_uz": "“A 的话，就 B” A sharti bajarilsa B sodir bo‘lishini bildiradi. “的话” shart qismidan keyin, “就” esa natija qismida keladi.",
+      "rule_ru": "“A 的话，就 B” выражает условие и результат: если выполняется A, происходит B. “的话” завершает условную часть, “就” вводит результат.",
+      "rule_tj": "“A 的话，就 B” шарт ва натиҷаро ифода мекунад: агар A иҷро шавад, B рух медиҳад. “的话” дар қисми шарт ва “就” дар қисми натиҷа меояд.",
+      "examples": [
+        {
+          "hanzi": "你们有时间的话，就来我家做客。",
+          "uz": "Vaqtingiz bo‘lsa, uyimga mehmonga kelinglar.",
+          "ru": "Если у вас будет время, приходите ко мне в гости.",
+          "tj": "Агар вақт дошта бошед, ба хонаи ман меҳмон шавед."
+        },
+        {
+          "hanzi": "你觉得满意的话，咱们就买。",
+          "uz": "Agar senga ma’qul bo‘lsa, sotib olamiz.",
+          "ru": "Если тебе нравится, тогда купим.",
+          "tj": "Агар ба ту писанд бошад, мехарем."
+        },
+        {
+          "hanzi": "明天天气好的话，我就去爬山。",
+          "uz": "Ertaga havo yaxshi bo‘lsa, tog‘ga chiqaman.",
+          "ru": "Если завтра будет хорошая погода, пойду в горы.",
+          "tj": "Агар фардо ҳаво хуб бошад, ба кӯҳ меравам."
+        }
+      ]
+    },
+    {
+      "label": "“把”字句（4）",
+      "title_uz": "“把” gapi (4): natijaning darajasini ko‘rsatish",
+      "title_ru": "Предложение с “把” (4): степень результата",
+      "title_tj": "Ҷумлаи “把” (4): дараҷаи натиҷа",
+      "rule_uz": "“把 + obyekt + fe’l + 得 + sifat/holat” shakli obyektga qilingan harakat natijasining darajasini ko‘rsatadi: ovozni juda baland qilish, yozuvni juda kichik yozish kabi.",
+      "rule_ru": "Конструкция “把 + объект + глагол + 得 + характеристика” показывает степень результата воздействия на объект.",
+      "rule_tj": "Сохтори “把 + объект + феъл + 得 + сифат/ҳолат” дараҷаи натиҷаи амалро нисбат ба объект нишон медиҳад.",
+      "examples": [
+        {
+          "hanzi": "你把声音开得太大了。",
+          "uz": "Ovozni juda baland qilib yubording.",
+          "ru": "Ты сделал звук слишком громким.",
+          "tj": "Ту садоро хеле баланд кардӣ."
+        },
+        {
+          "hanzi": "他把球踢进去了吗？",
+          "uz": "U to‘pni ichkariga tepib kiritdimi?",
+          "ru": "Он забил мяч внутрь?",
+          "tj": "Ӯ тӯбро зада даровард?"
+        },
+        {
+          "hanzi": "你把字写得太小了，我看不清楚。",
+          "uz": "Yozuvni juda kichik yozibsan, aniq ko‘rolmayapman.",
+          "ru": "Ты написал слишком мелко, я не могу разглядеть.",
+          "tj": "Ту ҳарфҳоро хеле майда навиштӣ, ман равшан дида наметавонам."
+        }
+      ]
+    },
+    {
+      "label": "并列复句“一边……，一边……”",
+      "title_uz": "Parallel gap “一边……一边……”",
+      "title_ru": "Параллельная конструкция “一边……一边……”",
+      "title_tj": "Сохтори ҳамзамони “一边……一边……”",
+      "rule_uz": "“一边A，一边B” bir ega ikki harakatni bir vaqtda bajarayotganini bildiradi. Og‘zaki nutqda “边A边B” shakli ham ishlatiladi.",
+      "rule_ru": "“一边A，一边B” показывает, что один субъект выполняет два действия одновременно. В разговорной речи также употребляется сокращённая форма “边A边B”.",
+      "rule_tj": "“一边A，一边B” нишон медиҳад, ки як шахс ду амалро ҳамзамон иҷро мекунад. Дар гуфтугӯ шакли кӯтоҳи “边A边B” ҳам истифода мешавад.",
+      "examples": [
+        {
+          "hanzi": "咱们一边吃蛋糕，一边聊天儿吧。",
+          "uz": "Keling, tort yeb turib suhbatlashamiz.",
+          "ru": "Давайте есть торт и одновременно разговаривать.",
+          "tj": "Биё торт хӯрда истода суҳбат кунем."
+        },
+        {
+          "hanzi": "我喜欢一边跑步，一边听音乐。",
+          "uz": "Men yugurib turib musiqa tinglashni yoqtiraman.",
+          "ru": "Мне нравится бегать и одновременно слушать музыку.",
+          "tj": "Ман давида истода мусиқӣ шуниданро дӯст медорам."
+        },
+        {
+          "hanzi": "你不应该边开车边打电话。",
+          "uz": "Mashina haydab turib telefonlashmasliging kerak.",
+          "ru": "Не следует разговаривать по телефону за рулём.",
+          "tj": "Ҳангоми рондани мошин телефон кардан лозим нест."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene_zh": "在饭馆，杨同乐请同事吃饭。",
+      "scene_uz": "Restoranda Yang Tongle hamkasblarini mehmon qilmoqda.",
+      "scene_ru": "В ресторане Ян Тунлэ угощает коллег.",
+      "scene_tj": "Дар тарабхона Ян Тунлэ ҳамкоронашро меҳмон мекунад.",
+      "turns": [
+        {
+          "hanzi": "今天我请客，你们想吃什么就点什么！",
+          "uz": "Bugun men mehmon qilaman, nima yegingiz kelsa, o‘shani buyurtma qilinglar!",
+          "ru": "Сегодня угощаю я, заказывайте что хотите!",
+          "tj": "Имрӯз ман меҳмон мекунам, ҳар чӣ хоҳед фармоиш диҳед!"
+        },
+        {
+          "hanzi": "那我就不客气了。听说这家饭馆的鱼做得很特别？",
+          "uz": "Unda tortinmayman. Eshitishimcha, bu restoranda baliq o‘zgacha tayyorlanar ekan?",
+          "ru": "Тогда церемониться не буду. Говорят, здесь рыбу готовят по-особому?",
+          "tj": "Пас таоруф намекунам. Шунидам, ки дар ин тарабхона моҳиро махсус тайёр мекунанд?"
+        },
+        {
+          "hanzi": "对，南方菜跟你们北方菜的做法不同。除了鱼，你们还想吃什么？",
+          "uz": "Ha, janubiy taomlar shimoliy taomlardan boshqacha tayyorlanadi. Baliqdan tashqari yana nima yeysizlar?",
+          "ru": "Да, южную кухню готовят иначе, чем северную. Кроме рыбы, что ещё хотите?",
+          "tj": "Ҳа, таомҳои ҷанубӣ аз таомҳои шимолӣ дигар хел тайёр мешаванд. Ба ғайр аз моҳӣ боз чӣ мехоҳед?"
+        },
+        {
+          "hanzi": "我不常吃南方菜，还是你决定吧。",
+          "uz": "Men janubiy taomlarni tez-tez yemayman, yaxshisi sen tanla.",
+          "ru": "Я редко ем южную кухню, лучше ты решай.",
+          "tj": "Ман таомҳои ҷанубиро кам мехӯрам, беҳтараш худат интихоб кун."
+        },
+        {
+          "hanzi": "好，那再加一个鸡肉，一个……",
+          "uz": "Xo‘p, unda yana bitta tovuqli taom, yana bitta...",
+          "ru": "Хорошо, тогда добавим блюдо из курицы и ещё одно...",
+          "tj": "Хуб, пас боз як хӯроки мурғӣ ва яктои дигар..."
+        },
+        {
+          "hanzi": "咱们就三个人，别点那么多。",
+          "uz": "Biz atigi uch kishimiz, buncha ko‘p buyurtma qilma.",
+          "ru": "Нас всего трое, не заказывай столько.",
+          "tj": "Мо ҳамагӣ се нафарем, ин қадар зиёд фармоиш надиҳ."
+        },
+        {
+          "hanzi": "好，那先来这几个菜。",
+          "uz": "Xo‘p, avval shu taomlarni olamiz.",
+          "ru": "Хорошо, тогда пока эти блюда.",
+          "tj": "Хуб, ҳоло ҳамин чанд хӯрокро гирем."
+        },
+        {
+          "hanzi": "对了，下周我儿子过生日，你们有时间的话，就来我家做客，我给你们做北京菜。",
+          "uz": "Aytgancha, keyingi hafta o‘g‘limning tug‘ilgan kuni. Vaqtingiz bo‘lsa, uyimga mehmonga kelinglar, sizlarga Pekin taomlari tayyorlayman.",
+          "ru": "Кстати, на следующей неделе у сына день рождения. Если будете свободны, приходите в гости, я приготовлю пекинские блюда.",
+          "tj": "Ростӣ, ҳафтаи оянда зодрӯзи писарам аст. Агар вақт дошта бошед, ба хонаам меҳмон шавед, бароятон таомҳои пекинӣ мепазам."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在家里，王一雪和刘明为生日会做准备。",
+      "scene_uz": "Uyda Wang Yixue va Liu Ming tug‘ilgan kun bazmiga tayyorlanmoqda.",
+      "scene_ru": "Дома Ван Исюэ и Лю Мин готовятся к дню рождения.",
+      "scene_tj": "Дар хона Ван Исюэ ва Лю Мин ба ҷашни зодрӯз омодагӣ мебинанд.",
+      "turns": [
+        {
+          "hanzi": "第一次请新邻居来做客，总是担心有什么没准备好。",
+          "uz": "Yangi qo‘shnilarni birinchi marta mehmonga chaqiryapmiz, nimanidir tayyorlamay qolmadikmi deb xavotirdaman.",
+          "ru": "Впервые приглашаем новых соседей, всё переживаю, не забыли ли что-то подготовить.",
+          "tj": "Бори аввал ҳамсояҳои навро меҳмон мекунем, ҳамеша хавотирам, ки чизе тайёр нашуда бошад."
+        },
+        {
+          "hanzi": "放心吧，我帮你看了，都已经准备好了。",
+          "uz": "Xotirjam bo‘l, tekshirib chiqdim, hammasi tayyor.",
+          "ru": "Не переживай, я всё проверил, всё готово.",
+          "tj": "Хотирҷамъ бош, ман санҷидам, ҳама чиз тайёр аст."
+        },
+        {
+          "hanzi": "我记得刚才已经把饮料拿出来了，怎么不见了？",
+          "uz": "Hozirgina ichimliklarni chiqarib qo‘ygan edim, qayerga ketdi?",
+          "ru": "Я же только что вынесла напитки, куда они делись?",
+          "tj": "Дар хотир дорам, ҳозиргина нӯшокиҳоро бароварда будам, куҷо шуданд?"
+        },
+        {
+          "hanzi": "我把饮料和酒都放进冰箱里了，客人来了再拿出来。",
+          "uz": "Ichimliklar va boshqa ichimliklarni muzlatkichga qo‘ydim, mehmonlar kelganda chiqaramiz.",
+          "ru": "Я убрал напитки в холодильник, достанем, когда придут гости.",
+          "tj": "Ман нӯшокиҳоро ба яхдон гузоштам, вақте меҳмонон меоянд мебарорем."
+        },
+        {
+          "hanzi": "音乐的声音合适吗？",
+          "uz": "Musiqa ovozi mosmi?",
+          "ru": "Громкость музыки нормальная?",
+          "tj": "Баландии мусиқӣ мувофиқ аст?"
+        },
+        {
+          "hanzi": "你把声音开得太大了，我去关小一点儿。",
+          "uz": "Ovozni juda baland qilibsan, men biroz pasaytiraman.",
+          "ru": "Ты сделал слишком громко, я немного убавлю.",
+          "tj": "Ту садоро хеле баланд кардӣ, ман каме паст мекунам."
+        },
+        {
+          "hanzi": "好，那我们就等客人来吧。",
+          "uz": "Xo‘p, endi mehmonlarni kutamiz.",
+          "ru": "Хорошо, тогда будем ждать гостей.",
+          "tj": "Хуб, пас меҳмононро интизор мешавем."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在家里，王一雪和刘明办生日会。",
+      "scene_uz": "Uyda Wang Yixue va Liu Ming tug‘ilgan kun bazmini o‘tkazmoqda.",
+      "scene_ru": "Дома Ван Исюэ и Лю Мин проводят день рождения.",
+      "scene_tj": "Дар хона Ван Исюэ ва Лю Мин ҷашни зодрӯз мегузаронанд.",
+      "turns": [
+        {
+          "hanzi": "谢谢你们来参加我儿子的生日晚会，希望大家今晚玩得开心。",
+          "uz": "O‘g‘limning tug‘ilgan kuniga kelganingiz uchun rahmat, bugun hammangiz yaxshi dam olinglar.",
+          "ru": "Спасибо, что пришли на день рождения моего сына. Надеюсь, сегодня всем будет весело.",
+          "tj": "Раҳмат, ки ба зодрӯзи писарам омадед. Умедворам имшаб ҳама хуш мегузаронед."
+        },
+        {
+          "hanzi": "小明，生日快乐！我准备了一个小礼物，希望你喜欢！",
+          "uz": "Xiaoming, tug‘ilgan kuning bilan! Senga kichik sovg‘a tayyorladim, umid qilamanki yoqadi!",
+          "ru": "Сяомин, с днём рождения! Я приготовил небольшой подарок, надеюсь, тебе понравится!",
+          "tj": "Сяомин, зодрӯз муборак! Бароят тӯҳфаи хурд омода кардам, умедворам писанд меояд!"
+        },
+        {
+          "hanzi": "谢谢您，我可以打开吗？",
+          "uz": "Rahmat, ochsam bo‘ladimi?",
+          "ru": "Спасибо, можно открыть?",
+          "tj": "Раҳмат, кушоям мешавад?"
+        },
+        {
+          "hanzi": "当然可以，你妈妈说你跟姐姐一样，都喜欢画画，对吗？",
+          "uz": "Albatta, onang aytdi, sen ham opang kabi rasm chizishni yoqtirarkan-san, to‘g‘rimi?",
+          "ru": "Конечно. Мама сказала, что ты, как и сестра, любишь рисовать, верно?",
+          "tj": "Албатта. Модарат гуфт, ки ту ҳам мисли апаат расмкаширо дӯст медорӣ, дуруст?"
+        },
+        {
+          "hanzi": "对，我想做一名画家。啊！画板和画笔，这正是我需要的。我太喜欢了。",
+          "uz": "Ha, men rassom bo‘lmoqchiman. Voy! Rasm doskasi va mo‘yqalamlar — aynan menga kerak edi. Juda yoqdi.",
+          "ru": "Да, я хочу стать художником. О! Планшет и кисти — именно то, что мне нужно. Очень нравится.",
+          "tj": "Ҳа, мехоҳам рассом шавам. Оҳ! Тахтаи расм ва мӯқаламҳо — маҳз ҳамин ба ман лозим буд. Хеле писанд омад."
+        },
+        {
+          "hanzi": "我去把盘子拿过来，咱们一边吃蛋糕，一边聊天儿吧。",
+          "uz": "Men tarelkalarni olib kelaman, kelinglar tort yeb turib suhbatlashamiz.",
+          "ru": "Я принесу тарелки, давайте есть торт и разговаривать.",
+          "tj": "Ман табақҳоро меорам, биё торт хӯрда истода суҳбат кунем."
+        }
+      ]
+    }
+  ]
+}

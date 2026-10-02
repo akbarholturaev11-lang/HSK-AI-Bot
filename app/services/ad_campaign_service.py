@@ -75,6 +75,8 @@ class AdCampaignService:
         round_no = campaign.rounds_sent + 1
         users = await self.user_repo.get_ad_target_users(
             languages=decode_languages(campaign.target_languages),
+            course_track=getattr(campaign, "target_track", None),
+            level=getattr(campaign, "target_level", None),
             include_active_subscribers=campaign.include_active_subscribers,
         )
         admin_ids = set(settings.admin_id_list)

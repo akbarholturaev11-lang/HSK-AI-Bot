@@ -1,0 +1,748 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 88,
+  "source_lesson": 13,
+  "part_no": 5,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "请给我一杯茶",
+  "subtitle": {
+    "uz": "“可以” bilan ruxsat yoki imkoniyatni ifodalash; “动词+一下” bilan qisqa yoki sinab ko‘rish xarakteridagi harakatni aytish; ikki obyektli gaplardan foydalanish; ovqat buyurtma qilishdagi asosiy iboralarni tushunish.",
+    "ru": "Выражать разрешение и возможность с “可以”; использовать “глагол+一下” для краткого или пробного действия; строить предложения с двумя дополнениями; понимать базовые фразы для заказа еды.",
+    "tj": "Бо “可以” иҷозат ё имкониятро ифода кардан; бо “феъл+一下” амали кӯтоҳ ё озмоиширо гуфтан; ҷумлаҳои ду-объектиро истифода бурдан; ибораҳои асосии фармоиши хӯрокро фаҳмидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "鸡蛋",
+      "pinyin": "jīdàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tuxum",
+        "ru": "куриное яйцо",
+        "tj": "тухм"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "先生",
+      "pinyin": "xiānsheng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "janob",
+        "ru": "господин; сэр",
+        "tj": "ҷаноб"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "一半",
+      "pinyin": "yíbàn",
+      "pos": "num.",
+      "meaning": {
+        "uz": "yarim",
+        "ru": "половина",
+        "tj": "ним"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "茶",
+      "pinyin": "chá",
+      "pos": "n.",
+      "meaning": {
+        "uz": "choy",
+        "ru": "чай",
+        "tj": "чой"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda darsdan keyin Bai Jiayue ustoz Wangdan savol so‘raydi.",
+        "ru": "В аудитории после занятия Бай Цзяюэ задаёт вопрос преподавателю Ван.",
+        "tj": "Дар синф пас аз дарс Бай Ҷяюэ аз устод Ван савол мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "可以。你有什么问题？",
+          "pinyin": "Kěyǐ. Nǐ yǒu shénme wèntí?",
+          "text": {
+            "uz": "Mumkin. Qanday savoling bor?",
+            "ru": "Можно. Какой у тебя вопрос?",
+            "tj": "Мумкин. Чӣ савол дорӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "那个小店卖不卖手机？",
+          "pinyin": "Nàge xiǎodiàn mài bu mài shǒujī?",
+          "text": {
+            "uz": "O‘sha kichik do‘kon telefon sotadimi yo‘qmi?",
+            "ru": "В том маленьком магазине продают телефоны?",
+            "tj": "Он мағозаи хурд телефон мефурӯшад ё не?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "我不知道。你可以打电话问一下。",
+          "pinyin": "Wǒ bù zhīdào. Nǐ kěyǐ dǎ diànhuà wèn yíxià.",
+          "text": {
+            "uz": "Bilmayman. Telefon qilib so‘rab ko‘rishing mumkin.",
+            "ru": "Не знаю. Можешь позвонить и спросить.",
+            "tj": "Намедонам. Метавонӣ занг зада як бор пурсӣ."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kafeda Wang Yixue nonushta qilmoqchi.",
+        "ru": "В кафе Ван Исюэ хочет позавтракать.",
+        "tj": "Дар қаҳвахона Ван Исюэ мехоҳад наҳорӣ кунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Waitress",
+          "zh": "女士，请坐！您喝什么？",
+          "pinyin": "Nǚshì, qǐng zuò! Nín hē shénme?",
+          "text": {
+            "uz": "Xonim, marhamat o‘tiring! Nima ichasiz?",
+            "ru": "Госпожа, присаживайтесь! Что будете пить?",
+            "tj": "Хонум, марҳамат нишинед! Чӣ менӯшед?"
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "我看一下。请给我一杯牛奶。",
+          "pinyin": "Wǒ kàn yíxià. Qǐng gěi wǒ yì bēi niúnǎi.",
+          "text": {
+            "uz": "Bir ko‘rib olay. Iltimos, menga bir stakan sut bering.",
+            "ru": "Дайте посмотреть. Пожалуйста, дайте мне стакан молока.",
+            "tj": "Бигзор як нигоҳ кунам. Лутфан, ба ман як пиёла шир диҳед."
+          }
+        },
+        {
+          "speaker": "Waitress",
+          "zh": "好的。您还要什么？",
+          "pinyin": "Hǎo de. Nín hái yào shénme?",
+          "text": {
+            "uz": "Xo‘p. Yana nima olasiz?",
+            "ru": "Хорошо. Что-нибудь ещё?",
+            "tj": "Хуб. Боз чӣ мехоҳед?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda Liu Ming ovqat buyurtma qilmoqda.",
+        "ru": "В ресторане Лю Мин делает заказ.",
+        "tj": "Дар тарабхона Лю Мин хӯрок фармоиш медиҳад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Waiter",
+          "zh": "先生，请坐！您要什么？",
+          "pinyin": "Xiānsheng, qǐng zuò! Nín yào shénme?",
+          "text": {
+            "uz": "Janob, marhamat o‘tiring! Nima buyurtma qilasiz?",
+            "ru": "Господин, присаживайтесь! Что будете заказывать?",
+            "tj": "Ҷаноб, марҳамат нишинед! Чӣ фармоиш медиҳед?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "我要一斤饺子。",
+          "pinyin": "Wǒ yào yì jīn jiǎozi.",
+          "text": {
+            "uz": "Menga bir jin jiaozi bering.",
+            "ru": "Я возьму один цзинь цзяоцзы.",
+            "tj": "Ман як ҷин ҷяозы мегирам."
+          }
+        },
+        {
+          "speaker": "Waiter",
+          "zh": "好的。一斤饺子40个。",
+          "pinyin": "Hǎo de. Yì jīn jiǎozi sìshí ge.",
+          "text": {
+            "uz": "Xo‘p. Bir jin jiaozi 40 dona bo‘ladi.",
+            "ru": "Хорошо. В одном цзине цзяоцзы 40 штук.",
+            "tj": "Хуб. Як ҷин ҷяозы 40 дона мешавад."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "40个太多了，我要一半吧。",
+          "pinyin": "Sìshí ge tài duō le, wǒ yào yíbàn ba.",
+          "text": {
+            "uz": "40 dona juda ko‘p, yarmini olaman.",
+            "ru": "40 штук слишком много, возьму половину.",
+            "tj": "40 дона хеле зиёд, нисфашро мегирам."
+          }
+        },
+        {
+          "speaker": "Waiter",
+          "zh": "半斤20个。您想喝什么？",
+          "pinyin": "Bàn jīn èrshí ge. Nín xiǎng hē shénme?",
+          "text": {
+            "uz": "Yarim jin 20 dona. Nima ichasiz?",
+            "ru": "Полцзиня — 20 штук. Что будете пить?",
+            "tj": "Ним ҷин 20 дона. Чӣ менӯшед?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "请给我一杯茶吧。",
+          "pinyin": "Qǐng gěi wǒ yì bēi chá ba.",
+          "text": {
+            "uz": "Iltimos, menga bir piyola choy bering.",
+            "ru": "Пожалуйста, дайте мне чашку чая.",
+            "tj": "Лутфан, ба ман як пиёла чой диҳед."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "鸡蛋",
+            "pinyin": "jīdàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tuxum",
+              "ru": "куриное яйцо",
+              "tj": "тухм"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "鸡蛋 talaffuzini tanlang:",
+            "ru": "Выберите произношение 鸡蛋:",
+            "tj": "Талаффузи 鸡蛋-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "wèntí",
+            "zài",
+            "jīdàn",
+            "kěyǐ"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "鸡蛋 — jīdàn",
+            "ru": "鸡蛋 — jīdàn",
+            "tj": "鸡蛋 — jīdàn"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "先生",
+            "pinyin": "xiānsheng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "janob",
+              "ru": "господин; сэр",
+              "tj": "ҷаноб"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'janob' xitoycha qaysi?",
+            "ru": "'господин; сэр' по-китайски?",
+            "tj": "'ҷаноб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "再",
+            "可以",
+            "问题",
+            "先生"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "janob = 先生 (xiānsheng)",
+            "ru": "господин; сэр = 先生 (xiānsheng)",
+            "tj": "ҷаноб = 先生 (xiānsheng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "一半",
+            "pinyin": "yíbàn",
+            "pos": "num.",
+            "meaning": {
+              "uz": "yarim",
+              "ru": "половина",
+              "tj": "ним"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "一半",
+          "pinyin": "yíbàn",
+          "options": [
+            "再",
+            "一半",
+            "问题",
+            "可以"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "一半 — yarim (yíbàn)",
+            "ru": "一半 — половина (yíbàn)",
+            "tj": "一半 — ним (yíbàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "茶",
+            "pinyin": "chá",
+            "pos": "n.",
+            "meaning": {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "茶",
+          "pinyin": "chá",
+          "translation": {
+            "uz": "choy",
+            "ru": "чай",
+            "tj": "чой"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "茶 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 茶:",
+            "tj": "Маънои калимаи 茶-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            },
+            {
+              "uz": "yana; yana bir marta",
+              "ru": "снова; ещё раз",
+              "tj": "боз; бори дигар"
+            },
+            {
+              "uz": "savol; muammo",
+              "ru": "вопрос; проблема",
+              "tj": "савол; масъала"
+            },
+            {
+              "uz": "mumkin; qila olmoq",
+              "ru": "можно; мочь",
+              "tj": "мумкин; тавонистан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "茶 = choy (chá)",
+            "ru": "茶 = чай (chá)",
+            "tj": "茶 = чой (chá)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jīdàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jīdàn?",
+            "tj": "jīdàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "鸡蛋",
+            "可以",
+            "再",
+            "问题"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "鸡蛋 = tuxum (jīdàn)",
+            "ru": "鸡蛋 = куриное яйцо (jīdàn)",
+            "tj": "鸡蛋 = тухм (jīdàn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "鸡蛋",
+              {
+                "uz": "tuxum",
+                "ru": "куриное яйцо",
+                "tj": "тухм"
+              }
+            ],
+            [
+              "先生",
+              {
+                "uz": "janob",
+                "ru": "господин; сэр",
+                "tj": "ҷаноб"
+              }
+            ],
+            [
+              "一半",
+              {
+                "uz": "yarim",
+                "ru": "половина",
+                "tj": "ним"
+              }
+            ],
+            [
+              "茶",
+              {
+                "uz": "choy",
+                "ru": "чай",
+                "tj": "чой"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "先生，请坐！您要什么？",
+          "pinyin": "Xiānsheng, qǐng zuò! Nín yào shénme?",
+          "translation": {
+            "uz": "Janob, marhamat o‘tiring! Nima buyurtma qilasiz?",
+            "ru": "Господин, присаживайтесь! Что будете заказывать?",
+            "tj": "Ҷаноб, марҳамат нишинед! Чӣ фармоиш медиҳед?"
+          },
+          "tokens": {
+            "uz": [
+              "Janob",
+              "Nima",
+              "qilasiz",
+              "dona",
+              "o‘tiring",
+              "marhamat",
+              "buyurtma",
+              "40"
+            ],
+            "ru": [
+              "Господин",
+              "будете",
+              "заказывать",
+              "Что",
+              "штук",
+              "присаживайтесь",
+              "40"
+            ],
+            "tj": [
+              "нишинед",
+              "40",
+              "марҳамат",
+              "дона",
+              "Ҷаноб",
+              "фармоиш",
+              "Чӣ",
+              "медиҳед"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Janob",
+              "marhamat",
+              "o‘tiring",
+              "Nima",
+              "buyurtma",
+              "qilasiz"
+            ],
+            "ru": [
+              "Господин",
+              "присаживайтесь",
+              "Что",
+              "будете",
+              "заказывать"
+            ],
+            "tj": [
+              "Ҷаноб",
+              "марҳамат",
+              "нишинед",
+              "Чӣ",
+              "фармоиш",
+              "медиҳед"
+            ]
+          },
+          "explanation": {
+            "uz": "先生，请坐！您要什么？ — Janob, marhamat o‘tiring! Nima buyurtma qilasiz?",
+            "ru": "先生，请坐！您要什么？ — Господин, присаживайтесь! Что будете заказывать?",
+            "tj": "先生，请坐！您要什么？ — Ҷаноб, марҳамат нишинед! Чӣ фармоиш медиҳед?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "40个太多了，我要一半吧。",
+          "pinyin": "Sìshí ge tài duō le, wǒ yào yíbàn ba.",
+          "options": [
+            "先生，请坐！您要什么？",
+            "40个太多了，我要一半吧。",
+            "请给我一杯茶吧。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "40个太多了，我要一半吧。 — 40 dona juda ko‘p, yarmini olaman.",
+            "ru": "40个太多了，我要一半吧。 — 40 штук слишком много, возьму половину.",
+            "tj": "40个太多了，我要一半吧。 — 40 дона хеле зиёд, нисфашро мегирам."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Iltimos, menga bir piyola choy bering.",
+            "ru": "Пожалуйста, дайте мне чашку чая.",
+            "tj": "Лутфан, ба ман як пиёла чой диҳед."
+          },
+          "tokens": [
+            "杯",
+            "茶",
+            "请",
+            "给",
+            "我",
+            "可以",
+            "再",
+            "一",
+            "吧"
+          ],
+          "answer_tokens": [
+            "请",
+            "给",
+            "我",
+            "一",
+            "杯",
+            "茶",
+            "吧"
+          ],
+          "explanation": {
+            "uz": "请给我一杯茶吧。 — Qǐng gěi wǒ yì bēi chá ba.",
+            "ru": "请给我一杯茶吧。 — Qǐng gěi wǒ yì bēi chá ba.",
+            "tj": "请给我一杯茶吧。 — Qǐng gěi wǒ yì bēi chá ba."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Janob, marhamat o‘tiring! Nima buyurtma qilasiz?",
+            "ru": "Господин, присаживайтесь! Что будете заказывать?",
+            "tj": "Ҷаноб, марҳамат нишинед! Чӣ фармоиш медиҳед?"
+          },
+          "tokens": [
+            "要",
+            "什么",
+            "再",
+            "您",
+            "先生",
+            "可以",
+            "坐",
+            "请"
+          ],
+          "answer_tokens": [
+            "先生",
+            "请",
+            "坐",
+            "您",
+            "要",
+            "什么"
+          ],
+          "explanation": {
+            "uz": "先生，请坐！您要什么？ — Xiānsheng, qǐng zuò! Nín yào shénme?",
+            "ru": "先生，请坐！您要什么？ — Xiānsheng, qǐng zuò! Nín yào shénme?",
+            "tj": "先生，请坐！您要什么？ — Xiānsheng, qǐng zuò! Nín yào shénme?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "茶",
+          "pinyin": "chá",
+          "translation": {
+            "uz": "choy",
+            "ru": "чай",
+            "tj": "чой"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "面包 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 面包:",
+            "tj": "Маънои калимаи 面包-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mumkin; qila olmoq",
+              "ru": "можно; мочь",
+              "tj": "мумкин; тавонистан"
+            },
+            {
+              "uz": "non",
+              "ru": "хлеб",
+              "tj": "нон"
+            },
+            {
+              "uz": "yana; yana bir marta",
+              "ru": "снова; ещё раз",
+              "tj": "боз; бори дигар"
+            },
+            {
+              "uz": "savol; muammo",
+              "ru": "вопрос; проблема",
+              "tj": "савол; масъала"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "面包 = non (miànbāo)",
+            "ru": "面包 = хлеб (miànbāo)",
+            "tj": "面包 = нон (miànbāo)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "面包",
+            "pinyin": "miànbāo",
+            "meaning": {
+              "uz": "non",
+              "ru": "хлеб",
+              "tj": "нон"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'choy' xitoycha qaysi?",
+            "ru": "'чай' по-китайски?",
+            "tj": "'чой' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "再",
+            "茶",
+            "可以",
+            "问题"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "choy = 茶 (chá)",
+            "ru": "чай = 茶 (chá)",
+            "tj": "чой = 茶 (chá)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "茶",
+            "pinyin": "chá",
+            "meaning": {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,9 +1,13 @@
 # HSK 3.0 versiyasi — alohida kurs qo'shish rejasi
 
-Holat: 2026-09-30 — **reja to'liq tasdiqlandi, ochiq savol yo'q. Ish hali
-boshlanmagan, kod o'zgartirilmagan.** HSK 3.0 uchun 1–3-daraja darslik PDF'lari
-`HSK 3.0 PDF/` ichida Git LFS orqali `main` ga qo'shilgan. Ish egasi "boshla"
-deganda 0-bosqichdan boshlanadi.
+Holat: 2026-10-01 — **implementation yakunlangan va rollout-safe holatda.**
+N1/N2/N3 runtime tayyor; production launchda faqat N1 live qilinadi. N4
+rasmiy source alohida kelmaguncha selectable emas. Yangi HSK 3.0 imtihon
+formati tayyor bo'lmaguncha Test markazi ataylab “Tez orada” turadi.
+
+Release cheklovi: `hsk30_enabled` deploy bilan avtomatik yoqilmaydi;
+`hsk30_live_levels` default faqat `nhsk1`. N2/N3 runtime mavjudligi ularni
+avtomatik ochmaydi. Release feedback draft: `RELEASE_FEEDBACK_HSK30.md`.
 
 Research: `research/hsk-3.0/`.
 
@@ -31,8 +35,10 @@ Research: `research/hsk-3.0/`.
 | 18 | Trial | 7 kunlik Pro trial, referal trial va vaqtinchalik bonus (`TRIAL`, `TEMPORARY_TRIAL`) **obuna hisoblanmaydi** — HSK 3.0 uchun 10 somoni kerak |
 | 19 | Alipay/WeChat | Shu summa uchun admin QR kod yuklamaguncha 10 somonilik ekranda **ko'rinmaydi** |
 | 20 | Darslik dialoglari | **Aynan darslikdagi dialoglar olinadi.** Egada ulardan foydalanish uchun ruxsat bor. Hanzi/pinyin saqlanadi, UZ/RU/TJ tarjimalar tayyorlanadi |
+| 21 | HSK 3.0 release boshqaruvi | **Faqat admin paneldagi HSK 3.0 switch orqali yoqiladi/o‘chiriladi.** Deploy kursni avtomatik yoqmaydi |
+| 22 | NEW belgisi | HSK 3.0 admin paneldan OFF → ON qilingan vaqtdan boshlab **aniq 3 kun** `NEW` ko‘rinadi; narx yoki live-level sozlamasini saqlash bu muddatni qayta boshlamaydi |
 
-## Hozirgi holat (kodda tekshirilgan)
+## Ish boshlanishidagi holat (2026-09-30 baseline)
 
 - Daraja kalitlari: `beginner`, `hsk1`–`hsk4`. `{"hsk1","hsk2","hsk3","hsk4"}`
   to'plamlari 40 dan ortiq backend, 8 ta Mini App, 9 ta Android va 4 ta
@@ -250,7 +256,7 @@ flowchart TD
 
 ```
 Yangi user:
-  Onboarding → [HSK 2.0 | HSK 3.0 · 10 somoni] (default HSK 2.0)
+  Onboarding → [HSK 2.0 | HSK 3.0 · {admin narxi}] (default HSK 2.0)
       ├─ HSK 2.0 → daraja → maqsad → 1-dars (hozirgidek)
       └─ HSK 3.0 → daraja → maqsad → to'lov ekrani
                       ├─ to'ladi → "tekshirilmoqda" → tasdiq → HSK 3.0 · 1-dars
@@ -260,7 +266,7 @@ Eski user (HSK 2.0 da):
   Reliz kuni bot xabari (1 marta) ──┐
   Ilova ochiladi → "Yangi HSK 3.0" ekrani (jami 2 marta, orasi ≥ 3 kun)
       ├─ [HSK 3.0 ga o'tish] → obuna bor / ochilgan? → daraja tanlash → tasdiq → yangi xarita
-      │                        yo'q → to'lov ekrani (10 somoni)
+      │                        yo'q → bir martalik to'lov yoqilgan bo'lsa joriy admin narxi; aks holda Pro ekrani
       └─ [Keyinroq]          → eski kurs davom etadi
 
 Istalgan user:
@@ -268,7 +274,7 @@ Istalgan user:
       → HSK 3.0 tanlanganda:
           ├─ 10 somoni oldin to'langan → darhol ochiladi
           ├─ faol PAID obuna bor → pul so'ralmaydi, obuna tugaguncha ochiladi
-          └─ ikkalasi ham yo'q → [Obunani davom ettirish / 10 somoni bir marta to'lash]
+          └─ ikkalasi ham yo'q → [Obunani davom ettirish / agar yoqilgan bo'lsa joriy admin narxida bir marta to'lash]
       → progress har ikki trek uchun saqlanadi
 ```
 
@@ -354,7 +360,8 @@ Istalgan user:
 - **To'lov qismi** (4-qaror bo'yicha):
   - `plan_type = "hsk30_unlock"`, `Hsk30UnlockService.grant`;
   - admin tasdig'i va rad etishda alohida tarmoq (`activate_plan` chaqirilmaydi);
-  - `hsk30_unlock_price_tjs` sozlamasi va valyuta o'girish;
+  - `hsk30_unlock_payment_enabled` kaliti bilan bir martalik to'lovni admin yoqadi/o'chiradi;
+  - `hsk30_unlock_price_tjs` admin o'zgartiradigan narx va valyuta o'girish;
   - statistika va partnyor hisobida `plan_type` filtri;
   - 3 tilda tasdiq/rad xabarlari.
 - Onboarding: `nhsk*` uchun legacy `course_lessons` ga bog'liqlik olib
@@ -365,8 +372,10 @@ Istalgan user:
 - Testlar:
   - reestr va trek almashish (saqlash, tiklash, ikki marta almashish);
   - izolyatsiya (nhsk XP ref, xatolar filtri);
-  - **10 somoni tasdig'i obuna maydonlarini o'zgartirmaydi**; obuna
-    tasdig'i avvalgidek ishlaydi; obunachi to'lovsiz o'tadi; to'lamagan
+  - **bir martalik HSK 3.0 to'lovi tasdig'i obuna maydonlarini o'zgartirmaydi**;
+    narx admin paneldagi joriy `hsk30_unlock_price_tjs` qiymatidan olinadi;
+    bir martalik to'lov o'chirilgan bo'lsa bu variant user UI'da ko'rsatilmaydi;
+    obuna tasdig'i avvalgidek ishlaydi; obunachi to'lovsiz o'tadi; to'lamagan
     obunasiz user o'ta olmaydi; chegirma va komissiya qo'llanmaydi;
   - eski xulq regressiyasi.
 - Mezon: flag o'chiq holatda eski userlar uchun hech narsa o'zgarmaydi.
@@ -426,8 +435,8 @@ Istalgan user:
   `_course_level_label` yorliqlari reestrdan olinadi.
 - Legacy bot kursi (`app/bot/handlers/course.py`) nhsk userlarni Mini App'ga
   yo'naltiradi, ularni legacy oqimga kiritmaydi.
-- Admin: to'lov kartasida mahsulot nomi ("HSK 3.0 ochish · 10 TJS"),
-  narx sozlamasi, statistikada alohida qator.
+- Admin: to'lov kartasida mahsulot nomi ("HSK 3.0 ochish · {joriy narx} TJS"),
+  bir martalik to'lovni yoqish/o'chirish kaliti, narx sozlamasi va statistikada alohida qator.
 - Admin broadcast: segment filtriga trek va HSK 3.0 darajalari; bot xabari
   shabloni (uz/ru/tj) va Mini App'ga olib boradigan tugma.
 - Reklama darajalariga HSK 3.0 qo'shiladi.
@@ -448,7 +457,9 @@ Istalgan user:
 ### 7-bosqich — 2, 3, 4-darajalar
 
 Har daraja 2-bosqich tartibida, alohida reliz sifatida, flag orqali ochiladi.
-10 somoni butun HSK 3.0 ni ochadi — keyingi darajalar uchun qayta to'lov yo'q.
+Bir martalik unlock yoqilgan bo'lsa, admin paneldagi joriy narx butun HSK 3.0 ni
+ochadi — keyingi darajalar uchun qayta to'lov yo'q. Bir martalik unlock o'chirilsa,
+HSK 3.0 faqat faol HSK AI Pro yoki avval olingan permanent unlock bilan ishlaydi.
 
 | Daraja | Yangi so'z | Taxminiy mini-dars |
 |---|---:|---:|

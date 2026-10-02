@@ -1,0 +1,780 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 8,
+  "source_lesson": 2,
+  "part_no": 3,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "还是打车去北大吧",
+  "subtitle": {
+    "uz": "“还是……吧” orqali afzal variantni tavsiya qilish; “多” bilan taxminiy sonni ifodalash; fe’l/fe’lli birikma va ega-kesim birikmasini aniqlovchi sifatida ishlatish; transport va kampus haqida gaplashish.",
+    "ru": "Советовать предпочтительный вариант с “还是……吧”; выражать приблизительные числа с “多”; использовать глаголы, глагольные и субъектно-предикативные группы как определения; говорить о транспорте и кампусе.",
+    "tj": "Бо “还是……吧” варианти афзалро тавсия кардан; бо “多” шумораи тахминиро ифода кардан; феъл ва ибораҳои феълӣ/мубтадо-хабарро ҳамчун муайянкунанда истифода бурдан; дар бораи нақлиёт ва кампус суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "名",
+      "pinyin": "míng",
+      "pos": "m./n.",
+      "meaning": {
+        "uz": "odamlar uchun hisob so‘zi; o‘rin; nom",
+        "ru": "счётное слово для людей; место; имя",
+        "tj": "воҳиди ҳисоб барои одам; ҷой; ном"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "网上",
+      "pinyin": "wǎngshang",
+      "pos": "n.",
+      "meaning": {
+        "uz": "internetda",
+        "ru": "в интернете",
+        "tj": "дар интернет"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "外国",
+      "pinyin": "wàiguó",
+      "pos": "n.",
+      "meaning": {
+        "uz": "chet davlat",
+        "ru": "иностранное государство",
+        "tj": "кишвари хориҷӣ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "间",
+      "pinyin": "jiān",
+      "pos": "m.",
+      "meaning": {
+        "uz": "xona/binoning kichik bo‘lagi uchun hisob so‘zi",
+        "ru": "счётное слово для комнат",
+        "tj": "воҳиди ҳисоб барои ҳуҷра"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Fe’l/fe’lli va ega-kesimli birikmalarning aniqlovchi bo‘lishi",
+        "ru": "Глаголы, глагольные и субъектно-предикативные группы как определения",
+        "tj": "Феъл ва ибораҳои феълӣ/мубтадо-хабар ҳамчун муайянкунанда"
+      },
+      "title_zh": "动词或动词性短语、主谓短语作定语",
+      "rule": {
+        "uz": "Fe’l, fe’lli birikma yoki ega-kesim birikmasi ot oldidan kelib, uning belgisi, holati yoki unga bog‘liq harakatni ko‘rsatishi mumkin.",
+        "ru": "Глагол, глагольная или субъектно-предикативная группа может стоять перед существительным как определение и описывать его признак, состояние или связанное действие.",
+        "tj": "Феъл, ибораи феълӣ ё таркиби мубтадо-хабар пеш аз исм омада, хусусият, ҳолат ё амали вобастаи онро мефаҳмонад."
+      },
+      "examples": [
+        {
+          "zh": "他们卖的电影票也很便宜。",
+          "pinyin": "Tāmen mài de diànyǐngpiào yě hěn piányi.",
+          "translation": {
+            "uz": "Ular sotadigan kino chiptalari ham arzon.",
+            "ru": "Билеты, которые они продают, тоже дешёвые.",
+            "tj": "Чиптаҳои киноие, ки онҳо мефурӯшанд, ҳам арзонанд."
+          }
+        },
+        {
+          "zh": "现在学中文的学生很多。",
+          "pinyin": "Xiànzài xué Zhōngwén de xuésheng hěn duō.",
+          "translation": {
+            "uz": "Hozir xitoy tilini o‘rganayotgan talabalar ko‘p.",
+            "ru": "Сейчас много студентов, изучающих китайский.",
+            "tj": "Ҳоло донишҷӯёне, ки чинӣ меомӯзанд, бисёранд."
+          }
+        },
+        {
+          "zh": "这是朋友给我的杯子。",
+          "pinyin": "Zhè shì péngyou gěi wǒ de bēizi.",
+          "translation": {
+            "uz": "Bu do‘stim menga bergan piyola.",
+            "ru": "Это чашка, которую мне подарил друг.",
+            "tj": "Ин пиёлаест, ки дӯстам ба ман додааст."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Mehmonxona resepsiyasida Bai Jiayue va Annie xodimdan ma’lumot so‘ramoqda.",
+        "ru": "На стойке гостиницы Бай Цзяюэ и Энни спрашивают сотрудника.",
+        "tj": "Дар қабули меҳмонхона Бай Ҷяюэ ва Энни аз корманд маълумот мепурсанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Hotel staff",
+          "zh": "有，但车站有点儿远。",
+          "pinyin": "Yǒu, dàn chēzhàn yǒudiǎnr yuǎn.",
+          "text": {
+            "uz": "Bor, lekin bekat biroz uzoq.",
+            "ru": "Есть, но остановка немного далеко.",
+            "tj": "Ҳаст, аммо истгоҳ каме дур аст."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "这儿好打车吗？",
+          "pinyin": "Zhèr hǎo dǎchē ma?",
+          "text": {
+            "uz": "Bu yerda taksi tutish osonmi?",
+            "ru": "Здесь легко поймать такси?",
+            "tj": "Ин ҷо таксӣ гирифтан осон аст?"
+          }
+        },
+        {
+          "speaker": "Hotel staff",
+          "zh": "好打车。",
+          "pinyin": "Hǎo dǎchē.",
+          "text": {
+            "uz": "Taksi tutish oson.",
+            "ru": "Легко.",
+            "tj": "Осон аст."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "好，没问题。",
+          "pinyin": "Hǎo, méi wèntí.",
+          "text": {
+            "uz": "Xo‘p, muammo yo‘q.",
+            "ru": "Хорошо, без проблем.",
+            "tj": "Хуб, мушкиле нест."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Pekin universitetida Bai Jiayue va Annie kampusni tomosha qilmoqda.",
+        "ru": "В Пекинском университете Бай Цзяюэ и Энни осматривают кампус.",
+        "tj": "Дар Донишгоҳи Пекин Бай Ҷяюэ ва Энни кампусро тамошо мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "学校里人真多啊！",
+          "pinyin": "Xuéxiào lǐ rén zhēn duō a!",
+          "text": {
+            "uz": "Universitetda odam juda ko‘p ekan!",
+            "ru": "Как много людей в университете!",
+            "tj": "Дар донишгоҳ одам хеле бисёр будааст!"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "你是怎么知道的？",
+          "pinyin": "Nǐ shì zěnme zhīdào de?",
+          "text": {
+            "uz": "Buni qayerdan bilding?",
+            "ru": "Как ты это узнала?",
+            "tj": "Инро чӣ тавр фаҳмидӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我也想来这儿学习。",
+          "pinyin": "Wǒ yě xiǎng lái zhèr xuéxí.",
+          "text": {
+            "uz": "Men ham bu yerga o‘qishga kelishni xohlayman.",
+            "ru": "Я тоже хочу приехать сюда учиться.",
+            "tj": "Ман ҳам мехоҳам барои таҳсил ба ин ҷо биёям."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Pekin universiteti kampusida Bai Jiayue va Annie kinoteatrni ko‘rdi.",
+        "ru": "На кампусе Пекинского университета Бай Цзяюэ и Энни увидели кинотеатр.",
+        "tj": "Дар кампуси Донишгоҳи Пекин Бай Ҷяюэ ва Энни кинотеатрро диданд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Annie",
+          "zh": "家月，你看，学校里有家电影院！",
+          "pinyin": "Jiāyuè, nǐ kàn, xuéxiào lǐ yǒu jiā diànyǐngyuàn!",
+          "text": {
+            "uz": "Jiayue, qara, universitetda kinoteatr bor!",
+            "ru": "Цзяюэ, смотри, в университете есть кинотеатр!",
+            "tj": "Ҷяюэ, бин, дар донишгоҳ кинотеатр ҳаст!"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "是啊，电影院还不小。",
+          "pinyin": "Shì a, diànyǐngyuàn hái bù xiǎo.",
+          "text": {
+            "uz": "Ha, kinoteatr ham kichik emas.",
+            "ru": "Да, и кинотеатр немаленький.",
+            "tj": "Ҳа, кинотеатр ҳам хурд нест."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "天啊！有的还不到二十块钱。",
+          "pinyin": "Tiān a! Yǒude hái bú dào èrshí kuài qián.",
+          "text": {
+            "uz": "Voy! Ba’zilari hatto yigirma yuanga ham yetmaydi.",
+            "ru": "Ничего себе! Некоторые стоят даже меньше двадцати юаней.",
+            "tj": "Вой! Баъзеаш ҳатто ба бист юан ҳам намерасад."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "那你想不想去看个电影？",
+          "pinyin": "Nà nǐ xiǎng bu xiǎng qù kàn ge diànyǐng?",
+          "text": {
+            "uz": "Unda film ko‘rgani bormoqchimisan?",
+            "ru": "Тогда хочешь сходить посмотреть фильм?",
+            "tj": "Пас мехоҳӣ филм тамошо кунӣ?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "名",
+            "pinyin": "míng",
+            "pos": "m./n.",
+            "meaning": {
+              "uz": "odamlar uchun hisob so‘zi; o‘rin; nom",
+              "ru": "счётное слово для людей; место; имя",
+              "tj": "воҳиди ҳисоб барои одам; ҷой; ном"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "名 talaffuzini tanlang:",
+            "ru": "Выберите произношение 名:",
+            "tj": "Талаффузи 名-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "gōngjiāochē",
+            "chēzhàn",
+            "míng",
+            "dàn"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "名 — míng",
+            "ru": "名 — míng",
+            "tj": "名 — míng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "网上",
+            "pinyin": "wǎngshang",
+            "pos": "n.",
+            "meaning": {
+              "uz": "internetda",
+              "ru": "в интернете",
+              "tj": "дар интернет"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'internetda' xitoycha qaysi?",
+            "ru": "'в интернете' по-китайски?",
+            "tj": "'дар интернет' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "但",
+            "车站",
+            "网上",
+            "公交车"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "internetda = 网上 (wǎngshang)",
+            "ru": "в интернете = 网上 (wǎngshang)",
+            "tj": "дар интернет = 网上 (wǎngshang)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "外国",
+            "pinyin": "wàiguó",
+            "pos": "n.",
+            "meaning": {
+              "uz": "chet davlat",
+              "ru": "иностранное государство",
+              "tj": "кишвари хориҷӣ"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "外国",
+          "pinyin": "wàiguó",
+          "options": [
+            "但",
+            "公交车",
+            "外国",
+            "车站"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "外国 — chet davlat (wàiguó)",
+            "ru": "外国 — иностранное государство (wàiguó)",
+            "tj": "外国 — кишвари хориҷӣ (wàiguó)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "间",
+            "pinyin": "jiān",
+            "pos": "m.",
+            "meaning": {
+              "uz": "xona/binoning kichik bo‘lagi uchun hisob so‘zi",
+              "ru": "счётное слово для комнат",
+              "tj": "воҳиди ҳисоб барои ҳуҷра"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "间",
+          "pinyin": "jiān",
+          "translation": {
+            "uz": "xona/binoning kichik bo‘lagi uchun hisob so‘zi",
+            "ru": "счётное слово для комнат",
+            "tj": "воҳиди ҳисоб барои ҳуҷра"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "间 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 间:",
+            "tj": "Маънои калимаи 间-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xona/binoning kichik bo‘lagi uchun hisob so‘zi",
+              "ru": "счётное слово для комнат",
+              "tj": "воҳиди ҳисоб барои ҳуҷра"
+            },
+            {
+              "uz": "bekat; stansiya",
+              "ru": "остановка; станция",
+              "tj": "истгоҳ"
+            },
+            {
+              "uz": "avtobus",
+              "ru": "автобус",
+              "tj": "автобус"
+            },
+            {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "间 = xona/binoning kichik bo‘lagi uchun hisob so‘zi (jiān)",
+            "ru": "间 = счётное слово для комнат (jiān)",
+            "tj": "间 = воҳиди ҳисоб барои ҳуҷра (jiān)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "míng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается míng?",
+            "tj": "míng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "但",
+            "公交车",
+            "名",
+            "车站"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "名 = odamlar uchun hisob so‘zi; o‘rin; nom (míng)",
+            "ru": "名 = счётное слово для людей; место; имя (míng)",
+            "tj": "名 = воҳиди ҳисоб барои одам; ҷой; ном (míng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "名",
+              {
+                "uz": "odamlar uchun hisob so‘zi; o‘rin; nom",
+                "ru": "счётное слово для людей; место; имя",
+                "tj": "воҳиди ҳисоб барои одам; ҷой; ном"
+              }
+            ],
+            [
+              "网上",
+              {
+                "uz": "internetda",
+                "ru": "в интернете",
+                "tj": "дар интернет"
+              }
+            ],
+            [
+              "外国",
+              {
+                "uz": "chet davlat",
+                "ru": "иностранное государство",
+                "tj": "кишвари хориҷӣ"
+              }
+            ],
+            [
+              "间",
+              {
+                "uz": "xona/binoning kichik bo‘lagi uchun hisob so‘zi",
+                "ru": "счётное слово для комнат",
+                "tj": "воҳиди ҳисоб барои ҳуҷра"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Fe’l/fe’lli va ega-kesimli birikmalarning aniqlovchi bo‘lishi",
+              "ru": "Глаголы, глагольные и субъектно-предикативные группы как определения",
+              "tj": "Феъл ва ибораҳои феълӣ/мубтадо-хабар ҳамчун муайянкунанда"
+            },
+            "title_zh": "动词或动词性短语、主谓短语作定语",
+            "rule": {
+              "uz": "Fe’l, fe’lli birikma yoki ega-kesim birikmasi ot oldidan kelib, uning belgisi, holati yoki unga bog‘liq harakatni ko‘rsatishi mumkin.",
+              "ru": "Глагол, глагольная или субъектно-предикативная группа может стоять перед существительным как определение и описывать его признак, состояние или связанное действие.",
+              "tj": "Феъл, ибораи феълӣ ё таркиби мубтадо-хабар пеш аз исм омада, хусусият, ҳолат ё амали вобастаи онро мефаҳмонад."
+            },
+            "examples": [
+              {
+                "zh": "他们卖的电影票也很便宜。",
+                "pinyin": "Tāmen mài de diànyǐngpiào yě hěn piányi.",
+                "translation": {
+                  "uz": "Ular sotadigan kino chiptalari ham arzon.",
+                  "ru": "Билеты, которые они продают, тоже дешёвые.",
+                  "tj": "Чиптаҳои киноие, ки онҳо мефурӯшанд, ҳам арзонанд."
+                }
+              },
+              {
+                "zh": "现在学中文的学生很多。",
+                "pinyin": "Xiànzài xué Zhōngwén de xuésheng hěn duō.",
+                "translation": {
+                  "uz": "Hozir xitoy tilini o‘rganayotgan talabalar ko‘p.",
+                  "ru": "Сейчас много студентов, изучающих китайский.",
+                  "tj": "Ҳоло донишҷӯёне, ки чинӣ меомӯзанд, бисёранд."
+                }
+              },
+              {
+                "zh": "这是朋友给我的杯子。",
+                "pinyin": "Zhè shì péngyou gěi wǒ de bēizi.",
+                "translation": {
+                  "uz": "Bu do‘stim menga bergan piyola.",
+                  "ru": "Это чашка, которую мне подарил друг.",
+                  "tj": "Ин пиёлаест, ки дӯстам ба ман додааст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu do‘stim menga bergan piyola.",
+            "ru": "Это чашка, которую мне подарил друг.",
+            "tj": "Ин пиёлаест, ки дӯстам ба ман додааст."
+          },
+          "tokens": [
+            "给",
+            "这",
+            "朋友",
+            "的",
+            "杯子",
+            "公交车",
+            "是",
+            "我",
+            "但"
+          ],
+          "answer_tokens": [
+            "这",
+            "是",
+            "朋友",
+            "给",
+            "我",
+            "的",
+            "杯子"
+          ],
+          "explanation": {
+            "uz": "这是朋友给我的杯子。 — Zhè shì péngyou gěi wǒ de bēizi.",
+            "ru": "这是朋友给我的杯子。 — Zhè shì péngyou gěi wǒ de bēizi.",
+            "tj": "这是朋友给我的杯子。 — Zhè shì péngyou gěi wǒ de bēizi."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bu do‘stim menga bergan piyola.» — xitoychada qaysi biri?",
+            "ru": "«Это чашка, которую мне подарил друг.» — какое предложение по-китайски?",
+            "tj": "«Ин пиёлаест, ки дӯстам ба ман додааст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "他们卖的电影票也很便宜。",
+            "这是朋友给我的杯子。",
+            "现在学中文的学生很多。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "这是朋友给我的杯子。 — Zhè shì péngyou gěi wǒ de bēizi.",
+            "ru": "这是朋友给我的杯子。 — Zhè shì péngyou gěi wǒ de bēizi.",
+            "tj": "这是朋友给我的杯子。 — Zhè shì péngyou gěi wǒ de bēizi."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'internetda' xitoycha qaysi?",
+            "ru": "'в интернете' по-китайски?",
+            "tj": "'дар интернет' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "网上",
+            "公交车",
+            "车站",
+            "但"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "internetda = 网上 (wǎngshang)",
+            "ru": "в интернете = 网上 (wǎngshang)",
+            "tj": "дар интернет = 网上 (wǎngshang)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wàiguó qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wàiguó?",
+            "tj": "wàiguó кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "车站",
+            "但",
+            "外国",
+            "公交车"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "外国 = chet davlat (wàiguó)",
+            "ru": "外国 = иностранное государство (wàiguó)",
+            "tj": "外国 = кишвари хориҷӣ (wàiguó)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "万 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 万:",
+            "tj": "Маънои калимаи 万-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ammo; lekin",
+              "ru": "но; однако",
+              "tj": "аммо; лекин"
+            },
+            {
+              "uz": "avtobus",
+              "ru": "автобус",
+              "tj": "автобус"
+            },
+            {
+              "uz": "bekat; stansiya",
+              "ru": "остановка; станция",
+              "tj": "истгоҳ"
+            },
+            {
+              "uz": "o‘n ming",
+              "ru": "десять тысяч",
+              "tj": "даҳ ҳазор"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "万 = o‘n ming (wàn)",
+            "ru": "万 = десять тысяч (wàn)",
+            "tj": "万 = даҳ ҳазор (wàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "万",
+            "pinyin": "wàn",
+            "meaning": {
+              "uz": "o‘n ming",
+              "ru": "десять тысяч",
+              "tj": "даҳ ҳазор"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'xona/binoning kichik bo‘lagi uchun hisob so‘zi' xitoycha qaysi?",
+            "ru": "'счётное слово для комнат' по-китайски?",
+            "tj": "'воҳиди ҳисоб барои ҳуҷра' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "但",
+            "间",
+            "公交车",
+            "车站"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "xona/binoning kichik bo‘lagi uchun hisob so‘zi = 间 (jiān)",
+            "ru": "счётное слово для комнат = 间 (jiān)",
+            "tj": "воҳиди ҳисоб барои ҳуҷра = 间 (jiān)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "间",
+            "pinyin": "jiān",
+            "meaning": {
+              "uz": "xona/binoning kichik bo‘lagi uchun hisob so‘zi",
+              "ru": "счётное слово для комнат",
+              "tj": "воҳиди ҳисоб барои ҳуҷра"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

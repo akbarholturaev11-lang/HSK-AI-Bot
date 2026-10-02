@@ -1,0 +1,737 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 27,
+  "source_lesson": 4,
+  "part_no": 3,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "这家宾馆跟别的都不一样",
+  "subtitle": {
+    "uz": "Ta’til va sayohat rejalarini muhokama qilish; safardagi taassurotlarni ifodalash; to‘liq inkorni aytish; “除了” yordamida istisno yoki qo‘shimcha ma’noni berish.",
+    "ru": "Обсуждать планы на каникулы и впечатления от поездки; выражать полное отрицание; использовать “除了” для исключения или добавления.",
+    "tj": "Нақшаҳои таътил ва сафарро муҳокима кардан; таассуроти сафарро ифода кардан; инкори пурраро гуфтан; бо “除了” маънои истисно ё илова додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "一定",
+      "pinyin": "yídìng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "albatta; aniq",
+        "ru": "обязательно; наверняка",
+        "tj": "албатта; ҳатман"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "刻",
+      "pinyin": "kè",
+      "pos": "m.",
+      "meaning": {
+        "uz": "chorak soat",
+        "ru": "четверть часа",
+        "tj": "чоряки соат"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "起飞",
+      "pinyin": "qǐfēi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "uchib chiqmoq",
+        "ru": "взлетать",
+        "tj": "парвоз кардан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "宾馆",
+      "pinyin": "bīnguǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mehmonxona",
+        "ru": "гостиница",
+        "tj": "меҳмонхона"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Yang Tongle va Wang Yifei mehmonxonada suhbatlashmoqda.",
+        "ru": "В гостиной у Ван Ифэй Ян Тунлэ и Ван Ифэй разговаривают.",
+        "tj": "Дар меҳмонхонаи Ван Ифэй Ян Тунлэ ва Ван Ифэй суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "这个假期咱们去哪儿玩玩吧。",
+          "pinyin": "Zhège jiàqī zánmen qù nǎr wánwan ba.",
+          "text": {
+            "uz": "Bu ta’tilda biror joyga sayrga boraylik.",
+            "ru": "Давай куда-нибудь съездим на этих каникулах.",
+            "tj": "Дар ин таътил биё ба ягон ҷо сайр равем."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "好啊，你想去哪儿，咱们就去哪儿。",
+          "pinyin": "Hǎo a, nǐ xiǎng qù nǎr, zánmen jiù qù nǎr.",
+          "text": {
+            "uz": "Mayli, qayerga borishni xohlasang, o‘sha yerga boramiz.",
+            "ru": "Хорошо, куда ты захочешь, туда и поедем.",
+            "tj": "Хуб, ба куҷо хоҳӣ, ҳамон ҷо меравем."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "你喜欢海，找个海边住几天，怎么样？",
+          "pinyin": "Nǐ xǐhuan hǎi, zhǎo ge hǎibiān zhù jǐ tiān, zěnmeyàng?",
+          "text": {
+            "uz": "Sen dengizni yoqtirasan, dengiz bo‘yida bir necha kun yashasak qanday?",
+            "ru": "Ты любишь море. Может, поживём несколько дней у моря?",
+            "tj": "Ту баҳрро дӯст медорӣ, чанд рӯз дар соҳил зиндагӣ кунем чӣ хел?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "现在去海边有点儿冷。",
+          "pinyin": "Xiànzài qù hǎibiān yǒudiǎnr lěng.",
+          "text": {
+            "uz": "Hozir dengiz bo‘yiga borish biroz sovuq.",
+            "ru": "Сейчас на море немного холодно.",
+            "tj": "Ҳоло ба соҳил рафтан каме хунук аст."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "那去草原吧？草原一点儿也不冷。",
+          "pinyin": "Nà qù cǎoyuán ba? Cǎoyuán yìdiǎnr yě bù lěng.",
+          "text": {
+            "uz": "Unda dashtga boramizmi? Dasht umuman sovuq emas.",
+            "ru": "Тогда поедем в степь? Там совсем не холодно.",
+            "tj": "Пас ба саҳро равем? Он ҷо тамоман хунук нест."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "这个主意好！我好久没骑马了。",
+          "pinyin": "Zhège zhǔyi hǎo! Wǒ hǎojiǔ méi qí mǎ le.",
+          "text": {
+            "uz": "Bu yaxshi fikr! Anchadan beri ot minmaganman.",
+            "ru": "Хорошая идея! Я давно не ездил верхом.",
+            "tj": "Ин фикр хуб аст! Кайҳо аспсаворӣ накардаам."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "对，在草原上骑马、吃羊肉、看月亮，一定很有意思。",
+          "pinyin": "Duì, zài cǎoyuán shàng qí mǎ, chī yángròu, kàn yuèliang, yídìng hěn yǒuyìsi.",
+          "text": {
+            "uz": "Ha, dashtda ot minish, qo‘y go‘shti yeyish va oy tomosha qilish albatta qiziq bo‘ladi.",
+            "ru": "Да, ездить верхом, есть баранину и смотреть на луну в степи — наверняка будет интересно.",
+            "tj": "Ҳа, дар саҳро аспсаворӣ кардан, гӯшти гӯсфанд хӯрдан ва моҳро тамошо кардан ҳатман ҷолиб мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yifeining uyida Yang Tongle va Wang Yifei mehmonxonada suhbatlashmoqda.",
+        "ru": "В гостиной у Ван Ифэй Ян Тунлэ и Ван Ифэй разговаривают.",
+        "tj": "Дар меҳмонхонаи Ван Ифэй Ян Тунлэ ва Ван Ифэй суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "出去玩的机票买好了吗？",
+          "pinyin": "Chūqù wán de jīpiào mǎi hǎo le ma?",
+          "text": {
+            "uz": "Sayohat uchun aviachiptalarni olib bo‘ldingmi?",
+            "ru": "Билеты на поездку уже куплены?",
+            "tj": "Чиптаҳои сафарро харида шуд?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "买好了。星期六上午十点一刻起飞。",
+          "pinyin": "Mǎi hǎo le. Xīngqīliù shàngwǔ shí diǎn yí kè qǐfēi.",
+          "text": {
+            "uz": "Ha. Shanba kuni ertalab soat o‘ndan chorak o‘tganda uchadi.",
+            "ru": "Да. Вылет в субботу в 10:15 утра.",
+            "tj": "Ҳа. Рӯзи шанбе соати 10:15 парвоз мекунем."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "宾馆也选好了吗？",
+          "pinyin": "Bīnguǎn yě xuǎn hǎo le ma?",
+          "text": {
+            "uz": "Mehmonxonani ham tanlab bo‘ldingmi?",
+            "ru": "Гостиницу тоже выбрали?",
+            "tj": "Меҳмонхонаро ҳам интихоб кардед?"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "太好了！你看看要带什么东西？",
+          "pinyin": "Tài hǎo le! Nǐ kànkan yào dài shénme dōngxi?",
+          "text": {
+            "uz": "Zo‘r! Qara, nimalarni olib borish kerak?",
+            "ru": "Отлично! Посмотри, что нужно взять с собой.",
+            "tj": "Олиҷаноб! Бин, чӣ чизҳоро бояд бо худ гирем?"
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "一定不会忘带的。我现在就去准备行李。",
+          "pinyin": "Yídìng bú huì wàng dài de. Wǒ xiànzài jiù qù zhǔnbèi xíngli.",
+          "text": {
+            "uz": "Albatta unutmayman. Hozirning o‘zida yuklarni tayyorlayman.",
+            "ru": "Точно не забуду. Сейчас же пойду собирать багаж.",
+            "tj": "Ҳатман фаромӯш намекунам. Ҳозир меравам бағоҷро тайёр мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Aeroportda Yang Tongle va Wang Yifei tashqariga chiqib, oldindan buyurtma qilingan haydovchi-gid bilan uchrashmoqda.",
+        "ru": "В аэропорту Ян Тунлэ и Ван Ифэй выходят и встречаются с заранее заказанным водителем-гидом.",
+        "tj": "Дар фурудгоҳ Ян Тунлэ ва Ван Ифэй берун омада, бо ронанда-роҳбалади пешакӣ фармоишдода вохӯрданд."
+      },
+      "dialogue": [
+        {
+          "speaker": "杨同乐",
+          "zh": "还有一个包，我自己拿就可以。",
+          "pinyin": "Hái yǒu yí ge bāo, wǒ zìjǐ ná jiù kěyǐ.",
+          "text": {
+            "uz": "Yana bitta sumka bor, uni o‘zim olaman.",
+            "ru": "Есть ещё одна сумка, её я понесу сам.",
+            "tj": "Боз як халта ҳаст, худам мебардорам."
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "车在一层，请跟我来。",
+          "pinyin": "Chē zài yì céng, qǐng gēn wǒ lái.",
+          "text": {
+            "uz": "Mashina birinchi qavatda, ortimdan yuringlar.",
+            "ru": "Машина на первом этаже, идите за мной.",
+            "tj": "Мошин дар ошёнаи якум аст, аз паси ман биёед."
+          }
+        },
+        {
+          "speaker": "杨同乐",
+          "zh": "我们住的宾馆离机场远吗？",
+          "pinyin": "Wǒmen zhù de bīnguǎn lí jīchǎng yuǎn ma?",
+          "text": {
+            "uz": "Biz turadigan mehmonxona aeroportdan uzoqmi?",
+            "ru": "Гостиница, где мы будем жить, далеко от аэропорта?",
+            "tj": "Меҳмонхонае, ки мо мемонем, аз фурудгоҳ дур аст?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "一定",
+            "pinyin": "yídìng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "albatta; aniq",
+              "ru": "обязательно; наверняка",
+              "tj": "албатта; ҳатман"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yídìng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yídìng?",
+            "tj": "yídìng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "一定",
+            "海",
+            "假期",
+            "草原"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "一定 = albatta; aniq (yídìng)",
+            "ru": "一定 = обязательно; наверняка (yídìng)",
+            "tj": "一定 = албатта; ҳатман (yídìng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "刻",
+            "pinyin": "kè",
+            "pos": "m.",
+            "meaning": {
+              "uz": "chorak soat",
+              "ru": "четверть часа",
+              "tj": "чоряки соат"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "刻 talaffuzini tanlang:",
+            "ru": "Выберите произношение 刻:",
+            "tj": "Талаффузи 刻-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "kè",
+            "cǎoyuán",
+            "jiàqī",
+            "hǎi"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "刻 — kè",
+            "ru": "刻 — kè",
+            "tj": "刻 — kè"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "起飞",
+            "pinyin": "qǐfēi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "uchib chiqmoq",
+              "ru": "взлетать",
+              "tj": "парвоз кардан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "起飞",
+          "pinyin": "qǐfēi",
+          "translation": {
+            "uz": "uchib chiqmoq",
+            "ru": "взлетать",
+            "tj": "парвоз кардан"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'uchib chiqmoq' xitoycha qaysi?",
+            "ru": "'взлетать' по-китайски?",
+            "tj": "'парвоз кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "草原",
+            "起飞",
+            "海",
+            "假期"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "uchib chiqmoq = 起飞 (qǐfēi)",
+            "ru": "взлетать = 起飞 (qǐfēi)",
+            "tj": "парвоз кардан = 起飞 (qǐfēi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "宾馆",
+            "pinyin": "bīnguǎn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mehmonxona",
+              "ru": "гостиница",
+              "tj": "меҳмонхона"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "宾馆",
+          "pinyin": "bīnguǎn",
+          "options": [
+            "宾馆",
+            "草原",
+            "海",
+            "假期"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "宾馆 — mehmonxona (bīnguǎn)",
+            "ru": "宾馆 — гостиница (bīnguǎn)",
+            "tj": "宾馆 — меҳмонхона (bīnguǎn)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "一定 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 一定:",
+            "tj": "Маънои калимаи 一定-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dengiz",
+              "ru": "море",
+              "tj": "баҳр"
+            },
+            {
+              "uz": "ta’til",
+              "ru": "каникулы; отпуск",
+              "tj": "таътил"
+            },
+            {
+              "uz": "albatta; aniq",
+              "ru": "обязательно; наверняка",
+              "tj": "албатта; ҳатман"
+            },
+            {
+              "uz": "dasht; yaylov",
+              "ru": "степь; луг",
+              "tj": "саҳро; чарогоҳ"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "一定 = albatta; aniq (yídìng)",
+            "ru": "一定 = обязательно; наверняка (yídìng)",
+            "tj": "一定 = албатта; ҳатман (yídìng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "一定",
+              {
+                "uz": "albatta; aniq",
+                "ru": "обязательно; наверняка",
+                "tj": "албатта; ҳатман"
+              }
+            ],
+            [
+              "刻",
+              {
+                "uz": "chorak soat",
+                "ru": "четверть часа",
+                "tj": "чоряки соат"
+              }
+            ],
+            [
+              "起飞",
+              {
+                "uz": "uchib chiqmoq",
+                "ru": "взлетать",
+                "tj": "парвоз кардан"
+              }
+            ],
+            [
+              "宾馆",
+              {
+                "uz": "mehmonxona",
+                "ru": "гостиница",
+                "tj": "меҳмонхона"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "宾馆也选好了吗？",
+          "pinyin": "Bīnguǎn yě xuǎn hǎo le ma?",
+          "options": [
+            "对，在草原上骑马、吃羊肉、看月亮，一定很有意思。",
+            "宾馆也选好了吗？",
+            "买好了。星期六上午十点一刻起飞。",
+            "一定不会忘带的。我现在就去准备行李。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "宾馆也选好了吗？ — Mehmonxonani ham tanlab bo‘ldingmi?",
+            "ru": "宾馆也选好了吗？ — Гостиницу тоже выбрали?",
+            "tj": "宾馆也选好了吗？ — Меҳмонхонаро ҳам интихоб кардед?"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "买好了。星期六上午十点一刻起飞。",
+          "pinyin": "Mǎi hǎo le. Xīngqīliù shàngwǔ shí diǎn yí kè qǐfēi.",
+          "translation": {
+            "uz": "Ha. Shanba kuni ertalab soat o‘ndan chorak o‘tganda uchadi.",
+            "ru": "Да. Вылет в субботу в 10:15 утра.",
+            "tj": "Ҳа. Рӯзи шанбе соати 10:15 парвоз мекунем."
+          },
+          "tokens": {
+            "uz": [
+              "chorak",
+              "Shanba",
+              "ertalab",
+              "o‘tganda",
+              "uchadi",
+              "dashtda",
+              "kuni",
+              "soat",
+              "o‘ndan",
+              "ot",
+              "Ha"
+            ],
+            "ru": [
+              "Да",
+              "10:15",
+              "в",
+              "верхом",
+              "утра",
+              "Вылет",
+              "в",
+              "субботу",
+              "ездить"
+            ],
+            "tj": [
+              "соати",
+              "парвоз",
+              "мекунем",
+              "Рӯзи",
+              "дар",
+              "шанбе",
+              "саҳро",
+              "10:15",
+              "Ҳа"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ha",
+              "Shanba",
+              "kuni",
+              "ertalab",
+              "soat",
+              "o‘ndan",
+              "chorak",
+              "o‘tganda",
+              "uchadi"
+            ],
+            "ru": [
+              "Да",
+              "Вылет",
+              "в",
+              "субботу",
+              "в",
+              "10:15",
+              "утра"
+            ],
+            "tj": [
+              "Ҳа",
+              "Рӯзи",
+              "шанбе",
+              "соати",
+              "10:15",
+              "парвоз",
+              "мекунем"
+            ]
+          },
+          "explanation": {
+            "uz": "买好了。星期六上午十点一刻起飞。 — Ha. Shanba kuni ertalab soat o‘ndan chorak o‘tganda uchadi.",
+            "ru": "买好了。星期六上午十点一刻起飞。 — Да. Вылет в субботу в 10:15 утра.",
+            "tj": "买好了。星期六上午十点一刻起飞。 — Ҳа. Рӯзи шанбе соати 10:15 парвоз мекунем."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "宾馆",
+          "pinyin": "bīnguǎn",
+          "translation": {
+            "uz": "mehmonxona",
+            "ru": "гостиница",
+            "tj": "меҳмонхона"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "起飞",
+          "pinyin": "qǐfēi",
+          "translation": {
+            "uz": "uchib chiqmoq",
+            "ru": "взлетать",
+            "tj": "парвоз кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "羊 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 羊:",
+            "tj": "Маънои калимаи 羊-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dengiz",
+              "ru": "море",
+              "tj": "баҳр"
+            },
+            {
+              "uz": "qo‘y",
+              "ru": "овца",
+              "tj": "гӯсфанд"
+            },
+            {
+              "uz": "ta’til",
+              "ru": "каникулы; отпуск",
+              "tj": "таътил"
+            },
+            {
+              "uz": "dasht; yaylov",
+              "ru": "степь; луг",
+              "tj": "саҳро; чарогоҳ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "羊 = qo‘y (yáng)",
+            "ru": "羊 = овца (yáng)",
+            "tj": "羊 = гӯсфанд (yáng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "羊",
+            "pinyin": "yáng",
+            "meaning": {
+              "uz": "qo‘y",
+              "ru": "овца",
+              "tj": "гӯсфанд"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'uchib chiqmoq' xitoycha qaysi?",
+            "ru": "'взлетать' по-китайски?",
+            "tj": "'парвоз кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "假期",
+            "起飞",
+            "海",
+            "草原"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "uchib chiqmoq = 起飞 (qǐfēi)",
+            "ru": "взлетать = 起飞 (qǐfēi)",
+            "tj": "парвоз кардан = 起飞 (qǐfēi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "起飞",
+            "pinyin": "qǐfēi",
+            "meaning": {
+              "uz": "uchib chiqmoq",
+              "ru": "взлетать",
+              "tj": "парвоз кардан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

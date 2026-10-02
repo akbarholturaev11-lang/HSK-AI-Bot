@@ -1,0 +1,716 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 46,
+  "source_lesson": 6,
+  "part_no": 6,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "高铁上还可以点外卖",
+  "subtitle": {
+    "uz": "Transport turlarining xususiyatlari va safar tajribasi haqida gapirish; “如果……就……” bilan shartli vaziyat va natijani ifodalash; “越来越” bilan o‘zgarish tendensiyasini tasvirlash; Xitoyning zamonaviy transporti — tezyurar poyezd bilan tanishish.",
+    "ru": "Говорить об особенностях транспорта и опыте поездки; выражать условие и результат с “如果……就……” ; описывать тенденцию изменения с “越来越”; познакомиться с китайскими скоростными поездами.",
+    "tj": "Дар бораи хусусиятҳои нақлиёт ва таҷрибаи сафар суҳбат кардан; бо “如果……就……” шарт ва натиҷаро ифода кардан; бо “越来越” тамоюли тағйирро тавсиф кардан; бо қатораи баландсуръати Чин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "电梯",
+      "pinyin": "diàntī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "lift",
+        "ru": "лифт",
+        "tj": "лифт"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "放假",
+      "pinyin": "fàngjià",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ta’tilga chiqmoq",
+        "ru": "уходить на каникулы/в отпуск",
+        "tj": "ба таътил баромадан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "沙发",
+      "pinyin": "shāfā",
+      "pos": "n.",
+      "meaning": {
+        "uz": "divan",
+        "ru": "диван",
+        "tj": "диван"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "安静",
+      "pinyin": "ānjìng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "tinch; sokin",
+        "ru": "тихий; спокойный",
+        "tj": "ором; хомӯш"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Qahvaxonada Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В кафе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар қаҳвахона Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "家月，咱们该买去上海的票了。你打算怎么去上海？",
+          "pinyin": "Jiāyuè, zánmen gāi mǎi qù Shànghǎi de piào le. Nǐ dǎsuàn zěnme qù Shànghǎi?",
+          "text": {
+            "uz": "Jiayue, Shanxayga chipta olish vaqti keldi. Shanxayga qanday borishni rejalashtiryapsan?",
+            "ru": "Цзяюэ, нам пора покупать билеты в Шанхай. Как ты планируешь ехать?",
+            "tj": "Ҷяюэ, вақти харидани чипта ба Шанхай расид. Чӣ тавр рафтанӣ ҳастӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我还没坐过高铁，咱们坐高铁去，怎么样？",
+          "pinyin": "Wǒ hái méi zuò guo gāotiě, zánmen zuò gāotiě qù, zěnmeyàng?",
+          "text": {
+            "uz": "Men hali tezyurar poyezdda yurmaganman, shunda tezyurar poyezdda boramizmi?",
+            "ru": "Я ещё не ездила на скоростном поезде. Давай поедем на нём?",
+            "tj": "Ман ҳоло бо қатораи баландсуръат нарафтаам, бо он равем чӣ хел?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "行！怎么买高铁票？",
+          "pinyin": "Xíng! Zěnme mǎi gāotiě piào?",
+          "text": {
+            "uz": "Bo‘ladi! Tezyurar poyezd chiptasini qanday olamiz?",
+            "ru": "Хорошо! Как купить билет на скоростной поезд?",
+            "tj": "Мешавад! Чиптаи қатораи баландсуръатро чӣ тавр мехарем?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "用手机App就能买。给我你的护照，我帮你买。",
+          "pinyin": "Yòng shǒujī App jiù néng mǎi. Gěi wǒ nǐ de hùzhào, wǒ bāng nǐ mǎi.",
+          "text": {
+            "uz": "Telefon ilovasi orqali olsa bo‘ladi. Pasportingni ber, men olib beraman.",
+            "ru": "Можно купить через приложение. Дай паспорт, я помогу купить.",
+            "tj": "Бо барномаи телефон харидан мумкин. Шиносномаатро деҳ, ман кӯмак мекунам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "早就听说过高铁，终于可以坐上了。",
+          "pinyin": "Zǎo jiù tīngshuō guo gāotiě, zhōngyú kěyǐ zuò shàng le.",
+          "text": {
+            "uz": "Tezyurar poyezd haqida anchadan beri eshitganman, nihoyat minib ko‘raman.",
+            "ru": "Я давно слышала о скоростных поездах, наконец-то смогу прокатиться.",
+            "tj": "Дар бораи қатораи баландсуръат кайҳо шунида будам, ниҳоят савор мешавам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "高铁又快又舒服，你一定会喜欢的。",
+          "pinyin": "Gāotiě yòu kuài yòu shūfu, nǐ yídìng huì xǐhuan de.",
+          "text": {
+            "uz": "Tezyurar poyezd ham tez, ham qulay, albatta yoqadi.",
+            "ru": "Скоростной поезд и быстрый, и удобный — тебе точно понравится.",
+            "tj": "Қатораи баландсуръат ҳам тез аст, ҳам роҳат, ҳатман писандат мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mashinada Liu Ming Bai Jiayue va Li Wenni tezyurar poyezd vokzaliga olib bormoqda.",
+        "ru": "В машине Лю Мин везёт Бай Цзяюэ и Ли Вэня на вокзал скоростных поездов.",
+        "tj": "Дар мошин Лю Мин Бай Ҷяюэ ва Ли Вэнро ба истгоҳи қатораи баландсуръат мебарад."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘明",
+          "zh": "过了前面的路口就到高铁站了。",
+          "pinyin": "Guò le qiánmian de lùkǒu jiù dào gāotiězhàn le.",
+          "text": {
+            "uz": "Oldingi chorrahadan o‘tsak, vokzalga yetamiz.",
+            "ru": "После следующего перекрёстка уже будет вокзал.",
+            "tj": "Аз чорроҳаи пеш гузарем, ба истгоҳ мерасем."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "好，你们还有一个小时，应该不会迟到的。",
+          "pinyin": "Hǎo, nǐmen hái yǒu yí ge xiǎoshí, yīnggāi bú huì chídào de.",
+          "text": {
+            "uz": "Xo‘p, sizlarda hali bir soat bor, kechikmasangiz kerak.",
+            "ru": "Хорошо, у вас ещё час, опоздать не должны.",
+            "tj": "Хуб, ҳоло як соат доред, набояд дер кунед."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我发现这条路车多，红绿灯也多。",
+          "pinyin": "Wǒ fāxiàn zhè tiáo lù chē duō, hónglǜdēng yě duō.",
+          "text": {
+            "uz": "Payqadim, bu yo‘lda mashina ham ko‘p, svetofor ham ko‘p.",
+            "ru": "Я заметила, на этой дороге много и машин, и светофоров.",
+            "tj": "Пай бурдам, дар ин роҳ ҳам мошин зиёд аст, ҳам чароғҳои роҳнамо."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "是啊，这条路我走过一次，后来再也不走了。",
+          "pinyin": "Shì a, zhè tiáo lù wǒ zǒu guo yí cì, hòulái zài yě bù zǒu le.",
+          "text": {
+            "uz": "Ha, bu yo‘ldan bir marta yurganman, keyin boshqa umuman yurmagandim.",
+            "ru": "Да, я ездил этой дорогой один раз, после этого больше не ездил.",
+            "tj": "Ҳа, як бор аз ин роҳ рафта будам, баъд дигар нарафтам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "那您今天为什么走了这条路？",
+          "pinyin": "Nà nín jīntiān wèishénme zǒu le zhè tiáo lù?",
+          "text": {
+            "uz": "Unda bugun nega shu yo‘ldan keldingiz?",
+            "ru": "Тогда почему сегодня вы поехали этой дорогой?",
+            "tj": "Пас имрӯз чаро аз ҳамин роҳ омадед?"
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "我一急就走错了。如果没走错，二十分钟以前就到了。",
+          "pinyin": "Wǒ yì jí jiù zǒu cuò le. Rúguǒ méi zǒu cuò, èrshí fēnzhōng yǐqián jiù dào le.",
+          "text": {
+            "uz": "Shoshilib, yo‘lni adashtirib yubordim. Adashtirmaganimda, yigirma daqiqa oldin yetib kelardik.",
+            "ru": "Я поторопился и свернул не туда. Если бы не ошибся, приехали бы двадцать минут назад.",
+            "tj": "Шитоб карда роҳро хато кардам. Агар хато намекардам, бист дақиқа пеш мерасидем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Tezyurar poyezd vokzalida Li Wen va Bai Jiayue xavfsizlik tekshiruvi hamda chipta nazorati uchun navbatda turibdi.",
+        "ru": "На вокзале скоростных поездов Ли Вэнь и Бай Цзяюэ стоят в очереди на досмотр и проверку билетов.",
+        "tj": "Дар истгоҳи қатораи баландсуръат Ли Вэн ва Бай Ҷяюэ барои санҷиши амният ва чипта дар навбатанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "前面的人越来越多。",
+          "pinyin": "Qiánmian de rén yuèláiyuè duō.",
+          "text": {
+            "uz": "Oldindagi odamlar borgan sari ko‘payyapti.",
+            "ru": "Впереди людей становится всё больше.",
+            "tj": "Одамони пеш торафт зиёд мешаванд."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "对，马上就进高铁站了。咱们一起走，别分开。",
+          "pinyin": "Duì, mǎshàng jiù jìn gāotiězhàn le. Zánmen yìqǐ zǒu, bié fēnkāi.",
+          "text": {
+            "uz": "Ha, hozir vokzal ichiga kiramiz. Birga yuraylik, ajralib ketmaylik.",
+            "ru": "Да, скоро войдём на вокзал. Идём вместе, не разделяйся.",
+            "tj": "Ҳа, ҳозир ба истгоҳ медароем. Якҷо равем, ҷудо нашавем."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "好，你检查一下，高铁票都拿好了吗？",
+          "pinyin": "Hǎo, nǐ jiǎnchá yíxià, gāotiě piào dōu ná hǎo le ma?",
+          "text": {
+            "uz": "Xo‘p, tekshirib ko‘r, chiptalarning hammasi yoningdami?",
+            "ru": "Хорошо, проверь: все билеты при тебе?",
+            "tj": "Хуб, санҷ, ҳама чиптаҳо бо ту ҳастанд?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "不用拿票，刷护照就能检票进站。",
+          "pinyin": "Búyòng ná piào, shuā hùzhào jiù néng jiǎnpiào jìnzhàn.",
+          "text": {
+            "uz": "Chipta olib yurish shart emas, pasportni skan qilib nazoratdan o‘tib kirish mumkin.",
+            "ru": "Билет не нужен: достаточно отсканировать паспорт и пройти контроль.",
+            "tj": "Чипта гирифтан шарт нест, шиносномаро скан карда аз назорат мегузарем."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "去哪里检票？",
+          "pinyin": "Qù nǎlǐ jiǎnpiào?",
+          "text": {
+            "uz": "Chipta qayerda tekshiriladi?",
+            "ru": "Где проходить проверку билетов?",
+            "tj": "Чиптаро дар куҷо месанҷанд?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "检票口在二层，我们一会儿坐电梯上去。",
+          "pinyin": "Jiǎnpiàokǒu zài èr céng, wǒmen yíhuìr zuò diàntī shàngqu.",
+          "text": {
+            "uz": "Chipta nazorati ikkinchi qavatda, birozdan keyin lift bilan chiqamiz.",
+            "ru": "Контроль билетов на втором этаже, сейчас поднимемся на лифте.",
+            "tj": "Ҷойи санҷиши чипта дар ошёнаи дуюм аст, каме баъд бо лифт мебароем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "电梯",
+            "pinyin": "diàntī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "lift",
+              "ru": "лифт",
+              "tj": "лифт"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "电梯 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 电梯:",
+            "tj": "Маънои калимаи 电梯-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tezyurar temiryo‘l/poyezd",
+              "ru": "скоростной поезд",
+              "tj": "қатораи баландсуръат"
+            },
+            {
+              "uz": "lift",
+              "ru": "лифт",
+              "tj": "лифт"
+            },
+            {
+              "uz": "rejalashtirmoq; reja",
+              "ru": "планировать; план",
+              "tj": "нақша кардан; нақша"
+            },
+            {
+              "uz": "kerak; vaqti keldi",
+              "ru": "следует; пора",
+              "tj": "бояд; вақти он расид"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "电梯 = lift (diàntī)",
+            "ru": "电梯 = лифт (diàntī)",
+            "tj": "电梯 = лифт (diàntī)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "放假",
+            "pinyin": "fàngjià",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ta’tilga chiqmoq",
+              "ru": "уходить на каникулы/в отпуск",
+              "tj": "ба таътил баромадан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "放假",
+          "pinyin": "fàngjià",
+          "translation": {
+            "uz": "ta’tilga chiqmoq",
+            "ru": "уходить на каникулы/в отпуск",
+            "tj": "ба таътил баромадан"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "fàngjià qaysi ieroglif?",
+            "ru": "Какой иероглиф читается fàngjià?",
+            "tj": "fàngjià кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "打算",
+            "高铁",
+            "放假",
+            "该"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "放假 = ta’tilga chiqmoq (fàngjià)",
+            "ru": "放假 = уходить на каникулы/в отпуск (fàngjià)",
+            "tj": "放假 = ба таътил баромадан (fàngjià)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "沙发",
+            "pinyin": "shāfā",
+            "pos": "n.",
+            "meaning": {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "沙发 talaffuzini tanlang:",
+            "ru": "Выберите произношение 沙发:",
+            "tj": "Талаффузи 沙发-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "gāi",
+            "gāotiě",
+            "dǎsuàn",
+            "shāfā"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "沙发 — shāfā",
+            "ru": "沙发 — shāfā",
+            "tj": "沙发 — shāfā"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "安静",
+            "pinyin": "ānjìng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "tinch; sokin",
+              "ru": "тихий; спокойный",
+              "tj": "ором; хомӯш"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tinch; sokin' xitoycha qaysi?",
+            "ru": "'тихий; спокойный' по-китайски?",
+            "tj": "'ором; хомӯш' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "打算",
+            "安静",
+            "高铁",
+            "该"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "tinch; sokin = 安静 (ānjìng)",
+            "ru": "тихий; спокойный = 安静 (ānjìng)",
+            "tj": "ором; хомӯш = 安静 (ānjìng)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "电梯",
+          "pinyin": "diàntī",
+          "options": [
+            "该",
+            "高铁",
+            "电梯",
+            "打算"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "电梯 — lift (diàntī)",
+            "ru": "电梯 — лифт (diàntī)",
+            "tj": "电梯 — лифт (diàntī)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "电梯",
+              {
+                "uz": "lift",
+                "ru": "лифт",
+                "tj": "лифт"
+              }
+            ],
+            [
+              "放假",
+              {
+                "uz": "ta’tilga chiqmoq",
+                "ru": "уходить на каникулы/в отпуск",
+                "tj": "ба таътил баромадан"
+              }
+            ],
+            [
+              "沙发",
+              {
+                "uz": "divan",
+                "ru": "диван",
+                "tj": "диван"
+              }
+            ],
+            [
+              "安静",
+              {
+                "uz": "tinch; sokin",
+                "ru": "тихий; спокойный",
+                "tj": "ором; хомӯш"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "电梯",
+              {
+                "uz": "lift",
+                "ru": "лифт",
+                "tj": "лифт"
+              }
+            ],
+            [
+              "放假",
+              {
+                "uz": "ta’tilga chiqmoq",
+                "ru": "уходить на каникулы/в отпуск",
+                "tj": "ба таътил баромадан"
+              }
+            ],
+            [
+              "沙发",
+              {
+                "uz": "divan",
+                "ru": "диван",
+                "tj": "диван"
+              }
+            ],
+            [
+              "安静",
+              {
+                "uz": "tinch; sokin",
+                "ru": "тихий; спокойный",
+                "tj": "ором; хомӯш"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "放假",
+          "pinyin": "fàngjià",
+          "options": [
+            "高铁",
+            "该",
+            "放假",
+            "打算"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "放假 — ta’tilga chiqmoq (fàngjià)",
+            "ru": "放假 — уходить на каникулы/в отпуск (fàngjià)",
+            "tj": "放假 — ба таътил баромадан (fàngjià)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "放假",
+          "pinyin": "fàngjià",
+          "translation": {
+            "uz": "ta’tilga chiqmoq",
+            "ru": "уходить на каникулы/в отпуск",
+            "tj": "ба таътил баромадан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "检查 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 检查:",
+            "tj": "Маънои калимаи 检查-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "rejalashtirmoq; reja",
+              "ru": "планировать; план",
+              "tj": "нақша кардан; нақша"
+            },
+            {
+              "uz": "kerak; vaqti keldi",
+              "ru": "следует; пора",
+              "tj": "бояд; вақти он расид"
+            },
+            {
+              "uz": "tezyurar temiryo‘l/poyezd",
+              "ru": "скоростной поезд",
+              "tj": "қатораи баландсуръат"
+            },
+            {
+              "uz": "tekshirmoq",
+              "ru": "проверять",
+              "tj": "санҷидан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "检查 = tekshirmoq (jiǎnchá)",
+            "ru": "检查 = проверять (jiǎnchá)",
+            "tj": "检查 = санҷидан (jiǎnchá)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "检查",
+            "pinyin": "jiǎnchá",
+            "meaning": {
+              "uz": "tekshirmoq",
+              "ru": "проверять",
+              "tj": "санҷидан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ta’tilga chiqmoq' xitoycha qaysi?",
+            "ru": "'уходить на каникулы/в отпуск' по-китайски?",
+            "tj": "'ба таътил баромадан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "高铁",
+            "该",
+            "放假",
+            "打算"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "ta’tilga chiqmoq = 放假 (fàngjià)",
+            "ru": "уходить на каникулы/в отпуск = 放假 (fàngjià)",
+            "tj": "ба таътил баромадан = 放假 (fàngjià)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "放假",
+            "pinyin": "fàngjià",
+            "meaning": {
+              "uz": "ta’tilga chiqmoq",
+              "ru": "уходить на каникулы/в отпуск",
+              "tj": "ба таътил баромадан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,722 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 89,
+  "source_lesson": 12,
+  "part_no": 1,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "这个季节天气变化很快",
+  "subtitle": {
+    "uz": "Ob-havodagi o‘zgarishlar va fasllar haqida gaplashish; ma’lum joyning iqlimini tasvirlash; “就” bilan miqdorning kamligi yoki istisnoni ta’kidlash; Pekinning to‘rt fasli bilan tanishish.",
+    "ru": "Говорить об изменениях погоды и сезонах; описывать климат местности; использовать “就” для подчёркивания малого количества или исключения; познакомиться с четырьмя сезонами Пекина.",
+    "tj": "Дар бораи тағйири обу ҳаво ва фаслҳо суҳбат кардан; иқлими ҷойро тавсиф кардан; бо “就” кам будани миқдор ё истисноро таъкид кардан; бо чор фасли Пекин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "街",
+      "pinyin": "jiē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ko‘cha",
+        "ru": "улица",
+        "tj": "кӯча"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "开花",
+      "pinyin": "kāihuā",
+      "pos": "v.",
+      "meaning": {
+        "uz": "gullamoq",
+        "ru": "цвести",
+        "tj": "гул кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "公园",
+      "pinyin": "gōngyuán",
+      "pos": "n.",
+      "meaning": {
+        "uz": "park",
+        "ru": "парк",
+        "tj": "боғ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "船",
+      "pinyin": "chuán",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qayiq; kema",
+        "ru": "лодка; судно",
+        "tj": "қаиқ; киштӣ"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Tanlov qo‘shma gapi “或者……或者……”",
+        "ru": "Альтернативное предложение “或者……或者……”",
+        "tj": "Ҷумлаи интихобии “或者……或者……”"
+      },
+      "title_zh": "选择复句“或者……，或者……”",
+      "rule": {
+        "uz": "“或者A，或者B” darak gapda ikki yoki undan ortiq imkoniyatdan biri tanlanishini bildiradi: “yoki A, yoki B”.",
+        "ru": "“或者A，或者B” в повествовательном предложении выражает выбор между двумя или несколькими вариантами: «либо A, либо B».",
+        "tj": "“或者A，或者B” дар ҷумлаи хабарӣ интихоб байни ду ё чанд вариантро ифода мекунад: «ё A, ё B»."
+      },
+      "examples": [
+        {
+          "zh": "或者明天去，或者后天去，我给你打电话。",
+          "pinyin": "Huòzhě míngtiān qù, huòzhě hòutiān qù, wǒ gěi nǐ dǎ diànhuà.",
+          "translation": {
+            "uz": "Yoki ertaga, yoki indinga boramiz, men senga telefon qilaman.",
+            "ru": "Либо пойдём завтра, либо послезавтра — я тебе позвоню.",
+            "tj": "Ё фардо меравем, ё пасфардо — ман ба ту занг мезанам."
+          }
+        },
+        {
+          "zh": "我们或者今天去电影院看电影，或者明天在家看电影。",
+          "pinyin": "Wǒmen huòzhě jīntiān qù diànyǐngyuàn kàn diànyǐng, huòzhě míngtiān zài jiā kàn diànyǐng.",
+          "translation": {
+            "uz": "Yoki bugun kinoteatrga boramiz, yoki ertaga uyda film ko‘ramiz.",
+            "ru": "Либо сегодня пойдём в кинотеатр, либо завтра посмотрим фильм дома.",
+            "tj": "Ё имрӯз ба кинотеатр меравем, ё фардо дар хона филм мебинем."
+          }
+        },
+        {
+          "zh": "晚饭你自己选，或者吃中国菜，或者吃日本菜，或者吃泰国菜。",
+          "pinyin": "Wǎnfàn nǐ zìjǐ xuǎn, huòzhě chī Zhōngguó cài, huòzhě chī Rìběn cài, huòzhě chī Tàiguó cài.",
+          "translation": {
+            "uz": "Kechki ovqatni o‘zing tanla: xitoy, yapon yoki tay taomi.",
+            "ru": "Ужин выбирай сам: либо китайская, либо японская, либо тайская кухня.",
+            "tj": "Хӯроки шомро худат интихоб кун: ё чинӣ, ё ҷопонӣ, ё тайландӣ."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ko‘chada Wang Yifei va Bai Jiayue yurib suhbatlashmoqda.",
+        "ru": "На улице Ван Ифэй и Бай Цзяюэ идут и разговаривают.",
+        "tj": "Дар кӯча Ван Ифэй ва Бай Ҷяюэ роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一飞",
+          "zh": "上周我去公园坐船了，公园里的花也开了。",
+          "pinyin": "Shàng zhōu wǒ qù gōngyuán zuò chuán le, gōngyuán lǐ de huā yě kāi le.",
+          "text": {
+            "uz": "O‘tgan hafta parkda qayiqda yurdim, u yerdagi gullar ham ochilibdi.",
+            "ru": "На прошлой неделе я каталась на лодке в парке, там цветы тоже уже распустились.",
+            "tj": "Ҳафтаи гузашта дар боғ қаиқсаворӣ кардам, гулҳои боғ ҳам кушода шудаанд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "天气这么好，下午我也想去公园坐船。",
+          "pinyin": "Tiānqì zhème hǎo, xiàwǔ wǒ yě xiǎng qù gōngyuán zuò chuán.",
+          "text": {
+            "uz": "Havo bunchalik yaxshi ekan, tushdan keyin men ham parkda qayiqda yurmoqchiman.",
+            "ru": "Погода такая хорошая, днём я тоже хочу покататься на лодке в парке.",
+            "tj": "Ҳаво ин қадар хуб аст, баъд аз нисфирӯзӣ ман ҳам мехоҳам дар боғ қаиқсаворӣ кунам."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "去吧！今天是工作日，人应该不多。",
+          "pinyin": "Qù ba! Jīntiān shì gōngzuòrì, rén yīnggāi bù duō.",
+          "text": {
+            "uz": "Bor! Bugun ish kuni, odam ko‘p bo‘lmasligi kerak.",
+            "ru": "Иди! Сегодня рабочий день, людей должно быть немного.",
+            "tj": "Рав! Имрӯз рӯзи корӣ аст, одам набояд зиёд бошад."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "您有时间吗？我想跟您一起去。",
+          "pinyin": "Nín yǒu shíjiān ma? Wǒ xiǎng gēn nín yìqǐ qù.",
+          "text": {
+            "uz": "Vaqtingiz bormi? Siz bilan birga bormoqchiman.",
+            "ru": "У вас есть время? Я хотела бы пойти вместе с вами.",
+            "tj": "Вақт доред? Мехоҳам бо шумо якҷо равам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "那咱们换一天去？",
+          "pinyin": "Nà zánmen huàn yì tiān qù?",
+          "text": {
+            "uz": "Unda boshqa kuni boramizmi?",
+            "ru": "Тогда пойдём в другой день?",
+            "tj": "Пас рӯзи дигар равем?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "行。或者明天去，或者后天去，我给你打电话。",
+          "pinyin": "Xíng. Huòzhě míngtiān qù, huòzhě hòutiān qù, wǒ gěi nǐ dǎ diànhuà.",
+          "text": {
+            "uz": "Mayli. Yoki ertaga, yoki indinga boramiz, men senga telefon qilaman.",
+            "ru": "Хорошо. Либо завтра, либо послезавтра — я тебе позвоню.",
+            "tj": "Хуб. Ё фардо, ё пасфардо меравем, ман ба ту занг мезанам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda Wang Yifei va Bai Jiayue yomg‘irdan pana qilmoqda.",
+        "ru": "В классе Ван Ифэй и Бай Цзяюэ укрываются от дождя.",
+        "tj": "Дар синф Ван Ифэй ва Бай Ҷяюэ аз борон паноҳ мебаранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "您来这里已经一年多了，习惯了吧？",
+          "pinyin": "Nín lái zhèlǐ yǐjīng yì nián duō le, xíguàn le ba?",
+          "text": {
+            "uz": "Bu yerga kelganingizga bir yildan oshdi, ko‘nikib qolgandirsiz?",
+            "ru": "Вы здесь уже больше года, наверное, привыкли?",
+            "tj": "Зиёда аз як сол шуд ин ҷо ҳастед, одат кардаед?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "别的早就习惯了，就是天气我还不太习惯。",
+          "pinyin": "Biéde zǎo jiù xíguàn le, jiùshì tiānqì wǒ hái bú tài xíguàn.",
+          "text": {
+            "uz": "Boshqa narsalarga anchadan beri ko‘nikdim, faqat ob-havoga hali uncha emas.",
+            "ru": "Ко всему остальному давно привыкла, только к погоде ещё не совсем.",
+            "tj": "Ба дигар чизҳо кайҳо одат кардам, танҳо ба обу ҳаво ҳоло пурра одат накардаам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "为什么？您不喜欢这里的天气吗？",
+          "pinyin": "Wèishénme? Nín bù xǐhuan zhèlǐ de tiānqì ma?",
+          "text": {
+            "uz": "Nega? Bu yerdagi ob-havo sizga yoqmaydimi?",
+            "ru": "Почему? Вам не нравится местная погода?",
+            "tj": "Чаро? Обу ҳавои ин ҷо ба шумо писанд нест?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "街",
+            "pinyin": "jiē",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ko‘cha",
+              "ru": "улица",
+              "tj": "кӯча"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "街",
+          "pinyin": "jiē",
+          "translation": {
+            "uz": "ko‘cha",
+            "ru": "улица",
+            "tj": "кӯча"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ko‘cha' xitoycha qaysi?",
+            "ru": "'улица' по-китайски?",
+            "tj": "'кӯча' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "公园",
+            "街",
+            "开花",
+            "船"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ko‘cha = 街 (jiē)",
+            "ru": "улица = 街 (jiē)",
+            "tj": "кӯча = 街 (jiē)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "开花",
+            "pinyin": "kāihuā",
+            "pos": "v.",
+            "meaning": {
+              "uz": "gullamoq",
+              "ru": "цвести",
+              "tj": "гул кардан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "开花",
+          "pinyin": "kāihuā",
+          "options": [
+            "开花",
+            "公园",
+            "街",
+            "船"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "开花 — gullamoq (kāihuā)",
+            "ru": "开花 — цвести (kāihuā)",
+            "tj": "开花 — гул кардан (kāihuā)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "公园",
+            "pinyin": "gōngyuán",
+            "pos": "n.",
+            "meaning": {
+              "uz": "park",
+              "ru": "парк",
+              "tj": "боғ"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "公园 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 公园:",
+            "tj": "Маънои калимаи 公园-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "gullamoq",
+              "ru": "цвести",
+              "tj": "гул кардан"
+            },
+            {
+              "uz": "park",
+              "ru": "парк",
+              "tj": "боғ"
+            },
+            {
+              "uz": "ko‘cha",
+              "ru": "улица",
+              "tj": "кӯча"
+            },
+            {
+              "uz": "qayiq; kema",
+              "ru": "лодка; судно",
+              "tj": "қаиқ; киштӣ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "公园 = park (gōngyuán)",
+            "ru": "公园 = парк (gōngyuán)",
+            "tj": "公园 = боғ (gōngyuán)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "船",
+            "pinyin": "chuán",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qayiq; kema",
+              "ru": "лодка; судно",
+              "tj": "қаиқ; киштӣ"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "chuán qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chuán?",
+            "tj": "chuán кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "公园",
+            "街",
+            "开花",
+            "船"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "船 = qayiq; kema (chuán)",
+            "ru": "船 = лодка; судно (chuán)",
+            "tj": "船 = қаиқ; киштӣ (chuán)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "街 talaffuzini tanlang:",
+            "ru": "Выберите произношение 街:",
+            "tj": "Талаффузи 街-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "gōngyuán",
+            "jiē",
+            "kāihuā",
+            "chuán"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "街 — jiē",
+            "ru": "街 — jiē",
+            "tj": "街 — jiē"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "街",
+              {
+                "uz": "ko‘cha",
+                "ru": "улица",
+                "tj": "кӯча"
+              }
+            ],
+            [
+              "开花",
+              {
+                "uz": "gullamoq",
+                "ru": "цвести",
+                "tj": "гул кардан"
+              }
+            ],
+            [
+              "公园",
+              {
+                "uz": "park",
+                "ru": "парк",
+                "tj": "боғ"
+              }
+            ],
+            [
+              "船",
+              {
+                "uz": "qayiq; kema",
+                "ru": "лодка; судно",
+                "tj": "қаиқ; киштӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Tanlov qo‘shma gapi “或者……或者……”",
+              "ru": "Альтернативное предложение “或者……或者……”",
+              "tj": "Ҷумлаи интихобии “或者……或者……”"
+            },
+            "title_zh": "选择复句“或者……，或者……”",
+            "rule": {
+              "uz": "“或者A，或者B” darak gapda ikki yoki undan ortiq imkoniyatdan biri tanlanishini bildiradi: “yoki A, yoki B”.",
+              "ru": "“或者A，或者B” в повествовательном предложении выражает выбор между двумя или несколькими вариантами: «либо A, либо B».",
+              "tj": "“或者A，或者B” дар ҷумлаи хабарӣ интихоб байни ду ё чанд вариантро ифода мекунад: «ё A, ё B»."
+            },
+            "examples": [
+              {
+                "zh": "或者明天去，或者后天去，我给你打电话。",
+                "pinyin": "Huòzhě míngtiān qù, huòzhě hòutiān qù, wǒ gěi nǐ dǎ diànhuà.",
+                "translation": {
+                  "uz": "Yoki ertaga, yoki indinga boramiz, men senga telefon qilaman.",
+                  "ru": "Либо пойдём завтра, либо послезавтра — я тебе позвоню.",
+                  "tj": "Ё фардо меравем, ё пасфардо — ман ба ту занг мезанам."
+                }
+              },
+              {
+                "zh": "我们或者今天去电影院看电影，或者明天在家看电影。",
+                "pinyin": "Wǒmen huòzhě jīntiān qù diànyǐngyuàn kàn diànyǐng, huòzhě míngtiān zài jiā kàn diànyǐng.",
+                "translation": {
+                  "uz": "Yoki bugun kinoteatrga boramiz, yoki ertaga uyda film ko‘ramiz.",
+                  "ru": "Либо сегодня пойдём в кинотеатр, либо завтра посмотрим фильм дома.",
+                  "tj": "Ё имрӯз ба кинотеатр меравем, ё фардо дар хона филм мебинем."
+                }
+              },
+              {
+                "zh": "晚饭你自己选，或者吃中国菜，或者吃日本菜，或者吃泰国菜。",
+                "pinyin": "Wǎnfàn nǐ zìjǐ xuǎn, huòzhě chī Zhōngguó cài, huòzhě chī Rìběn cài, huòzhě chī Tàiguó cài.",
+                "translation": {
+                  "uz": "Kechki ovqatni o‘zing tanla: xitoy, yapon yoki tay taomi.",
+                  "ru": "Ужин выбирай сам: либо китайская, либо японская, либо тайская кухня.",
+                  "tj": "Хӯроки шомро худат интихоб кун: ё чинӣ, ё ҷопонӣ, ё тайландӣ."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Kechki ovqatni o‘zing tanla: xitoy, yapon yoki tay taomi.» — xitoychada qaysi biri?",
+            "ru": "«Ужин выбирай сам: либо китайская, либо японская, либо тайская кухня.» — какое предложение по-китайски?",
+            "tj": "«Хӯроки шомро худат интихоб кун: ё чинӣ, ё ҷопонӣ, ё тайландӣ.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "或者明天去，或者后天去，我给你打电话。",
+            "我们或者今天去电影院看电影，或者明天在家看电影。",
+            "晚饭你自己选，或者吃中国菜，或者吃日本菜，或者吃泰国菜。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "晚饭你自己选，或者吃中国菜，或者吃日本菜，或者吃泰国菜。 — Wǎnfàn nǐ zìjǐ xuǎn, huòzhě chī Zhōngguó cài, huòzhě chī Rìběn cài, huòzhě chī Tàiguó cài.",
+            "ru": "晚饭你自己选，或者吃中国菜，或者吃日本菜，或者吃泰国菜。 — Wǎnfàn nǐ zìjǐ xuǎn, huòzhě chī Zhōngguó cài, huòzhě chī Rìběn cài, huòzhě chī Tàiguó cài.",
+            "tj": "晚饭你自己选，或者吃中国菜，或者吃日本菜，或者吃泰国菜。 — Wǎnfàn nǐ zìjǐ xuǎn, huòzhě chī Zhōngguó cài, huòzhě chī Rìběn cài, huòzhě chī Tàiguó cài."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "街",
+          "pinyin": "jiē",
+          "options": [
+            "船",
+            "开花",
+            "公园",
+            "街"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "街 — ko‘cha (jiē)",
+            "ru": "街 — улица (jiē)",
+            "tj": "街 — кӯча (jiē)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "开花",
+          "pinyin": "kāihuā",
+          "options": [
+            "公园",
+            "街",
+            "船",
+            "开花"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "开花 — gullamoq (kāihuā)",
+            "ru": "开花 — цвести (kāihuā)",
+            "tj": "开花 — гул кардан (kāihuā)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "街",
+          "pinyin": "jiē",
+          "translation": {
+            "uz": "ko‘cha",
+            "ru": "улица",
+            "tj": "кӯча"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "会议 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 会议:",
+            "tj": "Маънои калимаи 会议-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yig‘ilish; majlis",
+              "ru": "совещание; собрание",
+              "tj": "ҷаласа; маҷлис"
+            },
+            {
+              "uz": "gullamoq",
+              "ru": "цвести",
+              "tj": "гул кардан"
+            },
+            {
+              "uz": "ko‘cha",
+              "ru": "улица",
+              "tj": "кӯча"
+            },
+            {
+              "uz": "park",
+              "ru": "парк",
+              "tj": "боғ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "会议 = yig‘ilish; majlis (huìyì)",
+            "ru": "会议 = совещание; собрание (huìyì)",
+            "tj": "会议 = ҷаласа; маҷлис (huìyì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "会议",
+            "pinyin": "huìyì",
+            "meaning": {
+              "uz": "yig‘ilish; majlis",
+              "ru": "совещание; собрание",
+              "tj": "ҷаласа; маҷлис"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ko‘cha' xitoycha qaysi?",
+            "ru": "'улица' по-китайски?",
+            "tj": "'кӯча' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "开花",
+            "公园",
+            "街",
+            "船"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "ko‘cha = 街 (jiē)",
+            "ru": "улица = 街 (jiē)",
+            "tj": "кӯча = 街 (jiē)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "街",
+            "pinyin": "jiē",
+            "meaning": {
+              "uz": "ko‘cha",
+              "ru": "улица",
+              "tj": "кӯча"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

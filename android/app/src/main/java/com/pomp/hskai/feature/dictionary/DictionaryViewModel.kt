@@ -26,6 +26,8 @@ import kotlinx.coroutines.launch
 data class DictionaryUiState(
     val isLoading: Boolean = true,
     val query: String = "",
+    val versionFilter: String = "all",
+    val levelFilter: String = "all",
     val words: List<DictionaryWord> = emptyList(),
     val total: Int = 0,
     val error: ApiError? = null,
@@ -44,6 +46,7 @@ data class DictionaryUiState(
     val examples: List<ExampleSentence> = emptyList(),
     /** What each character of the selected word is made of, in order. */
     val breakdowns: List<CharacterBreakdown> = emptyList(),
+    val isInsightsLoading: Boolean = false,
     /** The handwriting practice, while it is open. */
     val writing: WritingUiState? = null,
     /** Entries last opened from a search, newest first; shown when the search box is focused. */
@@ -119,6 +122,44 @@ class DictionaryViewModel(
         }
     }
 
+    fun setActiveCourseLevel(level: String) {
+        val normalized = level.trim().lowercase()
+        val version = if (normalized.startsWith("nhsk")) "hsk30" else "hsk20"
+        val levelFilter = when {
+            normalized.startsWith("nhsk") -> {
+                val band = normalized.filter { it.isDigit() }.toIntOrNull()?.coerceIn(1, 3) ?: 1
+                "nhsk$band"
+            }
+            normalized.startsWith("hsk") -> {
+                val band = normalized.filter { it.isDigit() }.toIntOrNull()?.coerceIn(1, 4) ?: 1
+                "hsk$band"
+            }
+            else -> "hsk1"
+        }
+        val current = _state.value
+        if (current.versionFilter == version && current.levelFilter == levelFilter) return
+        _state.update { it.copy(versionFilter = version, levelFilter = levelFilter) }
+        viewModelScope.launch { runSearch(_state.value.query) }
+    }
+
+    fun selectVersionFilter(filter: String) {
+        if (filter !in VERSION_FILTERS) return
+        val current = _state.value
+        val nextLevel = when (filter) {
+            "hsk20" -> current.levelFilter.takeIf { it in HSK20_LEVEL_FILTERS } ?: "all"
+            "hsk30" -> current.levelFilter.takeIf { it in HSK30_LEVEL_FILTERS } ?: "all"
+            else -> current.levelFilter
+        }
+        _state.update { it.copy(versionFilter = filter, levelFilter = nextLevel) }
+        viewModelScope.launch { runSearch(_state.value.query) }
+    }
+
+    fun selectLevelFilter(filter: String) {
+        if (filter !in LEVEL_FILTERS) return
+        _state.update { it.copy(levelFilter = filter) }
+        viewModelScope.launch { runSearch(_state.value.query) }
+    }
+
     fun onQueryChange(query: String) {
         _state.update { it.copy(query = query) }
         searchJob?.cancel()
@@ -178,6 +219,7 @@ class DictionaryViewModel(
                 visibleStrokeCount = null,
                 examples = emptyList(),
                 breakdowns = emptyList(),
+                isInsightsLoading = insights != null,
                 writing = null,
                 isAudioLoading = false,
             )
@@ -211,6 +253,7 @@ class DictionaryViewModel(
                 isAudioLoading = false,
                 examples = emptyList(),
                 breakdowns = emptyList(),
+                isInsightsLoading = false,
                 writing = null,
             )
         }
@@ -268,7 +311,11 @@ class DictionaryViewModel(
             val breakdowns = characters.distinct().mapNotNull { source.breakdown(it, language) }
             _state.update {
                 if (it.selectedWord?.hanzi != word.hanzi) it
-                else it.copy(examples = examples, breakdowns = breakdowns)
+                else it.copy(
+                    examples = examples,
+                    breakdowns = breakdowns,
+                    isInsightsLoading = false,
+                )
             }
         }
     }
@@ -338,7 +385,14 @@ class DictionaryViewModel(
     }
 
     private suspend fun runSearch(query: String) {
-        val results = repository.search(query)
+        val current = _state.value
+        val results = repository.search(query).filter { word ->
+            dictionaryWordMatches(
+                word = word,
+                versionFilter = current.versionFilter,
+                levelFilter = current.levelFilter,
+            )
+        }
         _state.update { it.copy(words = results) }
     }
 
@@ -372,6 +426,31 @@ class DictionaryViewModel(
     private companion object {
         const val SEARCH_DEBOUNCE_MS = 180L
         const val ROUND_PAUSE_MS = 650L
+        val VERSION_FILTERS = setOf("all", "hsk20", "hsk30")
+        val HSK20_LEVEL_FILTERS = setOf("all", "hsk1", "hsk2", "hsk3", "hsk4")
+        val HSK30_LEVEL_FILTERS = setOf("all", "nhsk1", "nhsk2", "nhsk3")
+        val LEVEL_FILTERS = HSK20_LEVEL_FILTERS + HSK30_LEVEL_FILTERS
+    }
+}
+
+internal fun dictionaryWordMatches(
+    word: DictionaryWord,
+    versionFilter: String,
+    levelFilter: String,
+): Boolean {
+    val tags = word.level.split("|")
+        .map { it.trim().lowercase() }
+        .filter(String::isNotBlank)
+    val versionMatches = when (versionFilter) {
+        "hsk20" -> tags.any { it.startsWith("hsk") }
+        "hsk30" -> tags.any { Regex("^n[1-3]$").matches(it) }
+        else -> true
+    }
+    if (!versionMatches) return false
+    return when (levelFilter) {
+        "hsk1", "hsk2", "hsk3", "hsk4" -> tags.any { it == levelFilter }
+        "nhsk1", "nhsk2", "nhsk3" -> tags.any { it == "n" + levelFilter.takeLast(1) }
+        else -> true
     }
 }
 

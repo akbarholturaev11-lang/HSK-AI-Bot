@@ -1,0 +1,675 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 44,
+  "source_lesson": 7,
+  "part_no": 5,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我晚上六点半下班",
+  "subtitle": {
+    "uz": "Voqealar vaqtini tushunish va aytish; “吧” bilan taklif, maslahat, buyruq yoki iltimosni ifodalash; “呢” bilan tasdiqlanayotgan faktni bildirish; vaqt so‘zlari va ravishlarning gapdagi o‘rnini to‘g‘ri qo‘llash.",
+    "ru": "Понимать и называть время событий; использовать “吧” для предложения, совета, побуждения или просьбы; использовать “呢” для подтверждаемого факта; правильно располагать наречия и выражения времени.",
+    "tj": "Вақти рӯйдодҳоро фаҳмидан ва гуфтан; бо “吧” пешниҳод, маслиҳат, амр ё хоҳишро ифода кардан; бо “呢” воқеияти тасдиқшавандаро нишон додан; ҷойи дурусти зарфҳо ва ифодаҳои вақтро истифода бурдан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "下课",
+      "pinyin": "xiàkè",
+      "pos": "v.",
+      "meaning": {
+        "uz": "dars tugamoq",
+        "ru": "заканчивать занятие",
+        "tj": "дарс тамом шудан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "在",
+      "pinyin": "zài",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bo‘lmoq; joylashmoq",
+        "ru": "находиться; быть",
+        "tj": "будан; ҷойгир будан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "家",
+      "pinyin": "jiā",
+      "pos": "n.",
+      "meaning": {
+        "uz": "uy",
+        "ru": "дом",
+        "tj": "хона"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "里",
+      "pinyin": "lǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ichida",
+        "ru": "внутри",
+        "tj": "дарун; дохил"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Bai Jiayue va Annie telefonda gaplashmoqda.",
+        "ru": "Бай Цзяюэ и Энни разговаривают по телефону.",
+        "tj": "Бай Ҷяюэ ва Энни бо телефон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "现在几点？",
+          "pinyin": "Xiànzài jǐ diǎn?",
+          "text": {
+            "uz": "Hozir soat necha?",
+            "ru": "Который сейчас час?",
+            "tj": "Ҳозир соат чанд?"
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "早上八点四十分。",
+          "pinyin": "Zǎoshang bā diǎn sìshí fēn.",
+          "text": {
+            "uz": "Ertalab soat 8:40.",
+            "ru": "Сейчас 8:40 утра.",
+            "tj": "Субҳ соати 8:40."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我上午十点十分有课。",
+          "pinyin": "Wǒ shàngwǔ shí diǎn shí fēn yǒu kè.",
+          "text": {
+            "uz": "Ertalab soat 10:10 da darsim bor.",
+            "ru": "У меня занятие в 10:10 утра.",
+            "tj": "Субҳ соати 10:10 дарс дорам."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "好的，我们下午两点见吧。",
+          "pinyin": "Hǎo de, wǒmen xiàwǔ liǎng diǎn jiàn ba.",
+          "text": {
+            "uz": "Xo‘p, tushdan keyin soat 2 da uchrashamiz.",
+            "ru": "Хорошо, давай встретимся в 2 часа дня.",
+            "tj": "Хуб, баъди нисфирӯзӣ соати 2 вомехӯрем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen Bai Jiayuega duch keladi.",
+        "ru": "В кампусе Ли Вэнь встречает Бай Цзяюэ.",
+        "tj": "Дар кампус Ли Вэн бо Бай Ҷяюэ вомехӯрад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "下午我想去电影院看电影，你去吗？",
+          "pinyin": "Xiàwǔ wǒ xiǎng qù diànyǐngyuàn kàn diànyǐng, nǐ qù ma?",
+          "text": {
+            "uz": "Bugun tushdan keyin kinoteatrga film ko‘rgani bormoqchiman. Sen ham borasanmi?",
+            "ru": "Сегодня днём я хочу пойти в кино. Ты пойдёшь?",
+            "tj": "Имрӯз баъди нисфирӯзӣ мехоҳам ба кино равам. Ту ҳам меравӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我不想去，下午还有事。",
+          "pinyin": "Wǒ bù xiǎng qù, xiàwǔ hái yǒu shì.",
+          "text": {
+            "uz": "Borgim kelmaydi, tushdan keyin yana ishim bor.",
+            "ru": "Я не хочу идти, днём у меня ещё есть дела.",
+            "tj": "Рафтан намехоҳам, баъди нисфирӯзӣ боз кор дорам."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "好的。明天呢？",
+          "pinyin": "Hǎo de. Míngtiān ne?",
+          "text": {
+            "uz": "Xo‘p. Ertaga-chi?",
+            "ru": "Хорошо. А завтра?",
+            "tj": "Хуб. Фардо чӣ?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我明天下午两点还上课呢，两点半下课。",
+          "pinyin": "Wǒ míngtiān xiàwǔ liǎng diǎn hái shàngkè ne, liǎng diǎn bàn xiàkè.",
+          "text": {
+            "uz": "Ertaga tushdan keyin soat 2 da hali darsda bo‘laman, 2:30 da dars tugaydi.",
+            "ru": "Завтра в 2 часа дня у меня ещё занятие, оно заканчивается в 2:30.",
+            "tj": "Фардо баъди нисфирӯзӣ соати 2 ҳоло дарс дорам, соати 2:30 дарс тамом мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yixue ofisdan Liu Mingga telefon qilmoqda.",
+        "ru": "Ван Исюэ звонит Лю Мину из офиса.",
+        "tj": "Ван Исюэ аз идора ба Лю Мин занг мезанад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "喂，你在哪儿呢？",
+          "pinyin": "Wèi, nǐ zài nǎr ne?",
+          "text": {
+            "uz": "Allo, qayerdasan?",
+            "ru": "Алло, ты где?",
+            "tj": "Алло, ту куҷоӣ?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "我在家里呢。",
+          "pinyin": "Wǒ zài jiālǐ ne.",
+          "text": {
+            "uz": "Men uydaman.",
+            "ru": "Я дома.",
+            "tj": "Ман дар хонаам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "下课",
+            "pinyin": "xiàkè",
+            "pos": "v.",
+            "meaning": {
+              "uz": "dars tugamoq",
+              "ru": "заканчивать занятие",
+              "tj": "дарс тамом шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'dars tugamoq' xitoycha qaysi?",
+            "ru": "'заканчивать занятие' по-китайски?",
+            "tj": "'дарс тамом шудан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "现在",
+            "下课",
+            "点",
+            "早上"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "dars tugamoq = 下课 (xiàkè)",
+            "ru": "заканчивать занятие = 下课 (xiàkè)",
+            "tj": "дарс тамом шудан = 下课 (xiàkè)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "在",
+            "pinyin": "zài",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bo‘lmoq; joylashmoq",
+              "ru": "находиться; быть",
+              "tj": "будан; ҷойгир будан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "在",
+          "pinyin": "zài",
+          "options": [
+            "点",
+            "早上",
+            "现在",
+            "在"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "在 — bo‘lmoq; joylashmoq (zài)",
+            "ru": "在 — находиться; быть (zài)",
+            "tj": "在 — будан; ҷойгир будан (zài)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "家",
+            "pinyin": "jiā",
+            "pos": "n.",
+            "meaning": {
+              "uz": "uy",
+              "ru": "дом",
+              "tj": "хона"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "家 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 家:",
+            "tj": "Маънои калимаи 家-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "erta tong",
+              "ru": "раннее утро",
+              "tj": "субҳи барвақт"
+            },
+            {
+              "uz": "soat (vaqt birligi)",
+              "ru": "час (при указании времени)",
+              "tj": "соат (ҳангоми гуфтани вақт)"
+            },
+            {
+              "uz": "hozir",
+              "ru": "сейчас",
+              "tj": "ҳозир"
+            },
+            {
+              "uz": "uy",
+              "ru": "дом",
+              "tj": "хона"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "家 = uy (jiā)",
+            "ru": "家 = дом (jiā)",
+            "tj": "家 = хона (jiā)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "里",
+            "pinyin": "lǐ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ichida",
+              "ru": "внутри",
+              "tj": "дарун; дохил"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "里",
+          "pinyin": "lǐ",
+          "translation": {
+            "uz": "ichida",
+            "ru": "внутри",
+            "tj": "дарун; дохил"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "lǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается lǐ?",
+            "tj": "lǐ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "点",
+            "现在",
+            "早上",
+            "里"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "里 = ichida (lǐ)",
+            "ru": "里 = внутри (lǐ)",
+            "tj": "里 = дарун; дохил (lǐ)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "下课 talaffuzini tanlang:",
+            "ru": "Выберите произношение 下课:",
+            "tj": "Талаффузи 下课-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xiàkè",
+            "xiànzài",
+            "zǎoshang",
+            "diǎn"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "下课 — xiàkè",
+            "ru": "下课 — xiàkè",
+            "tj": "下课 — xiàkè"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "下课",
+              {
+                "uz": "dars tugamoq",
+                "ru": "заканчивать занятие",
+                "tj": "дарс тамом шудан"
+              }
+            ],
+            [
+              "在",
+              {
+                "uz": "bo‘lmoq; joylashmoq",
+                "ru": "находиться; быть",
+                "tj": "будан; ҷойгир будан"
+              }
+            ],
+            [
+              "家",
+              {
+                "uz": "uy",
+                "ru": "дом",
+                "tj": "хона"
+              }
+            ],
+            [
+              "里",
+              {
+                "uz": "ichida",
+                "ru": "внутри",
+                "tj": "дарун; дохил"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我在家里呢。",
+          "pinyin": "Wǒ zài jiālǐ ne.",
+          "options": [
+            "我在家里呢。",
+            "我明天下午两点还上课呢，两点半下课。",
+            "喂，你在哪儿呢？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我在家里呢。 — Men uydaman.",
+            "ru": "我在家里呢。 — Я дома.",
+            "tj": "我在家里呢。 — Ман дар хонаам."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "喂，你在哪儿呢？",
+          "pinyin": "Wèi, nǐ zài nǎr ne?",
+          "translation": {
+            "uz": "Allo, qayerdasan?",
+            "ru": "Алло, ты где?",
+            "tj": "Алло, ту куҷоӣ?"
+          },
+          "tokens": {
+            "uz": [
+              "tushdan",
+              "Ertaga",
+              "Allo",
+              "qayerdasan"
+            ],
+            "ru": [
+              "Завтра",
+              "Алло",
+              "ты",
+              "в",
+              "где"
+            ],
+            "tj": [
+              "куҷоӣ",
+              "ту",
+              "баъди",
+              "Фардо",
+              "Алло"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Allo",
+              "qayerdasan"
+            ],
+            "ru": [
+              "Алло",
+              "ты",
+              "где"
+            ],
+            "tj": [
+              "Алло",
+              "ту",
+              "куҷоӣ"
+            ]
+          },
+          "explanation": {
+            "uz": "喂，你在哪儿呢？ — Allo, qayerdasan?",
+            "ru": "喂，你在哪儿呢？ — Алло, ты где?",
+            "tj": "喂，你在哪儿呢？ — Алло, ту куҷоӣ?"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Allo, qayerdasan?",
+            "ru": "Алло, ты где?",
+            "tj": "Алло, ту куҷоӣ?"
+          },
+          "tokens": [
+            "呢",
+            "喂",
+            "点",
+            "哪儿",
+            "在",
+            "你",
+            "现在"
+          ],
+          "answer_tokens": [
+            "喂",
+            "你",
+            "在",
+            "哪儿",
+            "呢"
+          ],
+          "explanation": {
+            "uz": "喂，你在哪儿呢？ — Wèi, nǐ zài nǎr ne?",
+            "ru": "喂，你在哪儿呢？ — Wèi, nǐ zài nǎr ne?",
+            "tj": "喂，你在哪儿呢？ — Wèi, nǐ zài nǎr ne?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "里",
+          "pinyin": "lǐ",
+          "translation": {
+            "uz": "ichida",
+            "ru": "внутри",
+            "tj": "дарун; дохил"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "半 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 半:",
+            "tj": "Маънои калимаи 半-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hozir",
+              "ru": "сейчас",
+              "tj": "ҳозир"
+            },
+            {
+              "uz": "soat (vaqt birligi)",
+              "ru": "час (при указании времени)",
+              "tj": "соат (ҳангоми гуфтани вақт)"
+            },
+            {
+              "uz": "yarim",
+              "ru": "половина",
+              "tj": "ним"
+            },
+            {
+              "uz": "erta tong",
+              "ru": "раннее утро",
+              "tj": "субҳи барвақт"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "半 = yarim (bàn)",
+            "ru": "半 = половина (bàn)",
+            "tj": "半 = ним (bàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "半",
+            "pinyin": "bàn",
+            "meaning": {
+              "uz": "yarim",
+              "ru": "половина",
+              "tj": "ним"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ichida' xitoycha qaysi?",
+            "ru": "'внутри' по-китайски?",
+            "tj": "'дарун; дохил' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "里",
+            "早上",
+            "点",
+            "现在"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "ichida = 里 (lǐ)",
+            "ru": "внутри = 里 (lǐ)",
+            "tj": "дарун; дохил = 里 (lǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "里",
+            "pinyin": "lǐ",
+            "meaning": {
+              "uz": "ichida",
+              "ru": "внутри",
+              "tj": "дарун; дохил"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

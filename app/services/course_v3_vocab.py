@@ -15,9 +15,11 @@ import json
 import re
 from pathlib import Path
 
+from app.services.course_levels import content_level, legacy_content_levels
+
 
 _DATA_DIR = Path("app/static/course_v3_data")
-_LEVELS = ("hsk1", "hsk2", "hsk3", "hsk4")
+_LEVELS = legacy_content_levels() + ("nhsk1", "nhsk2", "nhsk3")
 
 # Dialoglardagi personaj ismlari ham `active_words` ichida keladi
 # (王方 "Wang Fang", 花花 "Huahua"). "Bu so'z nima degani?" degan savol
@@ -27,16 +29,8 @@ _PROPER_POS = {"proper noun", "proper n.", "name", "place"}
 # Faqat qavs ichida ism deb izohlanganlarini filtrlaymiz.
 _NAME_HINT = re.compile(r"\(\s*(ism|имя|ном)|familiya|фамилия|насаб", re.IGNORECASE)
 
-# Kurs oqimidagi bilan bir xil: `beginner` uchun alohida dars fayli yo'q,
-# hsk1 dan boshlanadi.
-_LEVEL_FALLBACK = {
-    "beginner": "hsk1",
-    "az0": "hsk1",
-    "hsk1": "hsk1",
-    "hsk2": "hsk2",
-    "hsk3": "hsk3",
-    "hsk4": "hsk4",
-}
+# Level normalization course registry bilan bitta manbadan olinadi.
+# HSK 3.0 uchun nbeginner -> nhsk1, legacy beginner -> hsk1.
 
 _cache: dict[str, list[dict]] | None = None
 
@@ -53,8 +47,8 @@ def _is_proper_name(item: dict) -> bool:
 
 
 def _normalize_level(level: str | None) -> str:
-    raw = str(level or "").strip().lower().replace(" ", "").replace("_", "")
-    return _LEVEL_FALLBACK.get(raw, "hsk1")
+    normalized = content_level(level, default="hsk1")
+    return normalized if normalized in _LEVELS else "hsk1"
 
 
 def _load() -> dict[str, list[dict]]:
@@ -105,10 +99,15 @@ def words_for_level(level: str | None) -> list[dict]:
     if words:
         return words
 
-    # Fayllar yetishmasa pastdagi darajalarni sinaymiz, oxirida bo'sh ro'yxat.
-    order = list(_LEVELS)
-    if normalized in order:
-        for fallback in reversed(order[: order.index(normalized)]):
+    # Fayllar yetishmasa faqat SHU track ichidagi past darajalarni
+    # sinaymiz. HSK 3.0 dan legacy HSK 2.0 lug'atiga tushib ketmasin.
+    same_track = [
+        item
+        for item in _LEVELS
+        if item.startswith("nhsk") == normalized.startswith("nhsk")
+    ]
+    if normalized in same_track:
+        for fallback in reversed(same_track[: same_track.index(normalized)]):
             if data.get(fallback):
                 return data[fallback]
     return []

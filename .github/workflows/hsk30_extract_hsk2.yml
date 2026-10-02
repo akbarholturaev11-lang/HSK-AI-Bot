@@ -1,0 +1,66 @@
+name: HSK30 Extract HSK2 PDF
+
+on:
+  push:
+    branches:
+      - codex/local-ai
+    paths:
+      - ".github/workflows/hsk30_extract_hsk2.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout with LFS
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 1
+
+      - name: Verify source PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          PDF="HSK 3.0 PDF/新HSK2 教材.pdf"
+          test -f "$PDF"
+          file "$PDF"
+          stat -c '%s bytes' "$PDF"
+          sha256sum "$PDF"
+
+      - name: Install PDF utilities
+        shell: bash
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y poppler-utils
+
+      - name: Extract PDF text and page renders
+        shell: bash
+        run: |
+          set -euo pipefail
+          PDF="HSK 3.0 PDF/新HSK2 教材.pdf"
+          mkdir -p /tmp/hsk2_extract/pages
+          pdfinfo "$PDF" | tee /tmp/hsk2_extract/pdfinfo.txt
+          pdftotext -layout "$PDF" /tmp/hsk2_extract/text.txt || true
+          pdftoppm -jpeg -jpegopt quality=82 -r 120 "$PDF" /tmp/hsk2_extract/pages/page
+          python - <<'PY'
+          from pathlib import Path
+          pages=sorted(Path("/tmp/hsk2_extract/pages").glob("page-*.jpg"))
+          Path("/tmp/hsk2_extract/manifest.txt").write_text(
+              "\n".join(p.name for p in pages)+"\n",
+              encoding="utf-8",
+          )
+          print("rendered_pages", len(pages))
+          PY
+
+      - name: Upload extracted source
+        uses: actions/upload-artifact@v4
+        with:
+          name: hsk30-hsk2-pdf-extract
+          path: /tmp/hsk2_extract
+          if-no-files-found: error
+          retention-days: 3

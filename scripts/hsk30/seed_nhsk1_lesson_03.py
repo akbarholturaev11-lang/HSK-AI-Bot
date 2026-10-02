@@ -1,0 +1,172 @@
+from __future__ import annotations
+
+import json
+
+SOURCE = {
+    "book": "新HSK教程1",
+    "pdf_path": "HSK 3.0 PDF/新HSK教程1.pdf",
+    "pdf_pages": [24, 25, 26, 27, 28, 29, 30, 31],
+    "printed_pages": [10, 11, 12, 13, 14, 15, 16, 17],
+    "rights_note": "Dialogue reuse permitted by project owner.",
+    "extraction_status": "verified_from_rendered_pages",
+}
+
+LESSON = {
+    "level": "nhsk1",
+    "lesson_order": 3,
+    "lesson_code": "NHSK1-L03",
+    "title": "我是中国人",
+    "title_pinyin": "Wǒ shì Zhōngguó rén",
+    "goal": json.dumps(
+        {
+            "uz": "“是” gaplari orqali shaxs yoki narsaning kim/nima ekanini aytish; “的” yordamida egalik va aniqlovchi munosabatini ifodalash; “吗” bilan ha/yo‘q savollarini tuzish.",
+            "ru": "Использовать предложения с “是” для обозначения принадлежности или идентификации; выражать определительные и притяжательные отношения с “的”; строить вопросы да/нет с “吗”.",
+            "tj": "Бо ҷумлаҳои “是” шахс ё чизро муаррифӣ кардан; бо “的” муносибати муайянкунанда ва соҳибиятро ифода кардан; бо “吗” саволҳои ҳа/не сохтан.",
+        },
+        ensure_ascii=False,
+    ),
+    "intro_text": json.dumps(
+        {
+            "uz": "Dars millat, mamlakat va tanishtirish mavzularidagi uchta dialog orqali “是”, “的” va “吗” tuzilmalarini o‘rgatadi.",
+            "ru": "Урок через три диалога о национальности, странах и знакомстве вводит конструкции “是”, “的” и “吗”.",
+            "tj": "Дарс тавассути се гуфтугӯ дар бораи миллат, кишвар ва шиносоӣ сохторҳои “是”, “的” ва “吗”-ро меомӯзонад.",
+        },
+        ensure_ascii=False,
+    ),
+    "vocabulary_json": json.dumps(
+        [
+            {"no": 1, "zh": "人", "pinyin": "rén", "pos": "n.", "uz": "odam; kishi", "ru": "человек", "tj": "одам; шахс"},
+            {"no": 2, "zh": "的", "pinyin": "de", "pos": "part.", "uz": "aniqlovchi/egalik yuklamasi", "ru": "структурная частица", "tj": "ҳиссачаи сохторӣ/соҳибият"},
+            {"no": 3, "zh": "这", "pinyin": "zhè", "pos": "pron.", "uz": "bu", "ru": "это; этот", "tj": "ин"},
+            {"no": 4, "zh": "谁", "pinyin": "shéi/shuí", "pos": "pron.", "uz": "kim", "ru": "кто", "tj": "кӣ"},
+            {"no": 5, "zh": "女朋友", "pinyin": "nǚpéngyou", "pos": "n.", "uz": "qiz do‘st; sevgili qiz", "ru": "девушка; подруга", "tj": "дӯстдухтар"},
+            {"no": 6, "zh": "哪", "pinyin": "nǎ", "pos": "pron.", "uz": "qaysi", "ru": "какой; который", "tj": "кадом"},
+            {"no": 7, "zh": "国", "pinyin": "guó", "pos": "n.", "uz": "mamlakat", "ru": "страна", "tj": "кишвар"},
+            {"no": 8, "zh": "她", "pinyin": "tā", "pos": "pron.", "uz": "u (ayol)", "ru": "она; её", "tj": "ӯ (зан)"},
+            {"no": 9, "zh": "喂", "pinyin": "wèi", "pos": "int.", "uz": "allo; hey", "ru": "алло; эй", "tj": "алло; эй"},
+            {"no": 10, "zh": "姐姐", "pinyin": "jiějie", "pos": "n.", "uz": "opa", "ru": "старшая сестра", "tj": "апа; хоҳари калонӣ"},
+            {"no": 11, "zh": "工作", "pinyin": "gōngzuò", "pos": "n./v.", "uz": "ish; ishlamoq", "ru": "работа; работать", "tj": "кор; кор кардан"},
+            {"no": 12, "zh": "还", "pinyin": "hái", "pos": "adv.", "uz": "hali ham", "ru": "ещё; всё ещё", "tj": "ҳанӯз"},
+            {"no": 13, "zh": "忙", "pinyin": "máng", "pos": "adj.", "uz": "band", "ru": "занятый", "tj": "банд"},
+            {"no": 14, "zh": "吗", "pinyin": "ma", "pos": "part.", "uz": "ha/yo‘q savol yuklamasi", "ru": "вопросительная частица", "tj": "ҳиссачаи саволи ҳа/не"},
+            {"no": 15, "zh": "对", "pinyin": "duì", "pos": "adj.", "uz": "to‘g‘ri; ha", "ru": "правильно; да", "tj": "дуруст; ҳа"},
+            {"no": 16, "zh": "太", "pinyin": "tài", "pos": "adv.", "uz": "juda; haddan tashqari", "ru": "слишком; очень", "tj": "хеле; аз ҳад"},
+            {"no": 17, "zh": "我们", "pinyin": "wǒmen", "pos": "pron.", "uz": "biz", "ru": "мы", "tj": "мо"},
+            {"no": 18, "zh": "想", "pinyin": "xiǎng", "pos": "v.", "uz": "sog‘inmoq; o‘ylamoq/xohlamoq", "ru": "скучать; думать/хотеть", "tj": "пазмон шудан; фикр/хостан"},
+        ],
+        ensure_ascii=False,
+    ),
+    "proper_nouns_json": json.dumps(
+        [
+            {"zh": "中国", "pinyin": "Zhōngguó", "en": "China", "uz": "Xitoy", "ru": "Китай", "tj": "Чин"},
+            {"zh": "法国", "pinyin": "Fǎguó", "en": "France", "uz": "Fransiya", "ru": "Франция", "tj": "Фаронса"},
+            {"zh": "中文", "pinyin": "Zhōngwén", "en": "Chinese language", "uz": "xitoy tili", "ru": "китайский язык", "tj": "забони чинӣ"},
+            {"zh": "泰国", "pinyin": "Tàiguó", "en": "Thailand", "uz": "Tailand", "ru": "Таиланд", "tj": "Таиланд"},
+        ],
+        ensure_ascii=False,
+    ),
+    "dialogue_json": json.dumps(
+        [
+            {
+                "block_no": 1,
+                "section_label": "课文 1",
+                "scene_zh": "在校园里，李文和白家月第一次相遇，两人继续聊天儿。",
+                "scene_en": "On campus, Li Wen and Bai Jiayue met for the first time and continued chatting.",
+                "scene_uz": "Kampusda Li Wen va Bai Jiayue birinchi marta uchrashib, suhbatni davom ettiradilar.",
+                "scene_ru": "В кампусе Ли Вэнь и Бай Цзяюэ впервые встречаются и продолжают разговор.",
+                "scene_tj": "Дар кампус Ли Вэн ва Бай Ҷяюэ бори аввал вохӯрда, суҳбатро идома медиҳанд.",
+                "dialogue": [
+                    {"speaker": "Li Wen", "zh": "我是中国人。", "pinyin": "Wǒ shì Zhōngguó rén.", "en": "I'm Chinese.", "uz": "Men xitoylikman.", "ru": "Я китаец.", "tj": "Ман чинӣ ҳастам."},
+                    {"speaker": "Bai Jiayue", "zh": "我是法国人。我的中文老师也是中国人。", "pinyin": "Wǒ shì Fǎguó rén. Wǒ de Zhōngwén lǎoshī yě shì Zhōngguó rén.", "en": "I'm French. My Chinese language teacher is also Chinese.", "uz": "Men fransuzman. Mening xitoy tili o‘qituvchim ham xitoylik.", "ru": "Я француженка. Мой преподаватель китайского языка тоже китаец.", "tj": "Ман фаронсавӣ ҳастам. Омӯзгори забони чинии ман ҳам чинӣ аст."},
+                ],
+            },
+            {
+                "block_no": 2,
+                "section_label": "课文 2",
+                "scene_zh": "在教室里，下课后，安妮在看陈天中手机里的照片。",
+                "scene_en": "After class, Annie was looking at the photos on Chen Tianzhong's cell phone in the classroom.",
+                "scene_uz": "Darsdan keyin sinfda Annie Chen Tianzhong telefonidagi suratlarni ko‘rmoqda.",
+                "scene_ru": "После занятия в аудитории Энни смотрит фотографии в телефоне Чэнь Тяньчжуна.",
+                "scene_tj": "Пас аз дарс дар синф Энни аксҳои телефони Чэн Тянҷунро тамошо мекунад.",
+                "dialogue": [
+                    {"speaker": "Annie", "zh": "这是谁？", "pinyin": "Zhè shì shéi?", "en": "Who is this?", "uz": "Bu kim?", "ru": "Кто это?", "tj": "Ин кӣ аст?"},
+                    {"speaker": "Chen Tianzhong", "zh": "这是我女朋友。", "pinyin": "Zhè shì wǒ nǚpéngyou.", "en": "This is my girlfriend.", "uz": "Bu mening qiz do‘stim.", "ru": "Это моя девушка.", "tj": "Ин дӯстдухтари ман аст."},
+                    {"speaker": "Annie", "zh": "你女朋友是哪国人？", "pinyin": "Nǐ nǚpéngyou shì nǎ guó rén?", "en": "What nationality is your girlfriend?", "uz": "Qiz do‘sting qaysi davlatdan?", "ru": "Какой национальности твоя девушка?", "tj": "Дӯстдухтари ту аз кадом кишвар аст?"},
+                    {"speaker": "Chen Tianzhong", "zh": "她也是泰国人。", "pinyin": "Tā yě shì Tàiguó rén.", "en": "She is also Thai.", "uz": "U ham tailandlik.", "ru": "Она тоже тайка.", "tj": "Ӯ ҳам таиландӣ аст."},
+                ],
+            },
+            {
+                "block_no": 3,
+                "section_label": "课文 3",
+                "scene_zh": "在家里，王一雪在跟姐姐王一飞打视频电话。",
+                "scene_en": "At home, Wang Yixue was making a video call to her elder sister Wang Yifei.",
+                "scene_uz": "Uyda Wang Yixue opasi Wang Yifei bilan videoqo‘ng‘iroq qilmoqda.",
+                "scene_ru": "Дома Ван Исюэ разговаривает по видеосвязи со старшей сестрой Ван Ифэй.",
+                "scene_tj": "Дар хона Ван Исюэ бо хоҳари калониаш Ван Ифэй видеозанг мекунад.",
+                "dialogue": [
+                    {"speaker": "Wang Yixue", "zh": "喂，一飞！", "pinyin": "Wèi, Yīfēi!", "en": "Hi, Yifei!", "uz": "Allo, Yifei!", "ru": "Привет, Ифэй!", "tj": "Алло, Ифэй!"},
+                    {"speaker": "Wang Yifei", "zh": "姐姐！", "pinyin": "Jiějie!", "en": "Sister!", "uz": "Opa!", "ru": "Сестра!", "tj": "Апа!"},
+                    {"speaker": "Wang Yixue", "zh": "你工作还忙吗？", "pinyin": "Nǐ gōngzuò hái máng ma?", "en": "Are you still very busy with work?", "uz": "Ishing hali ham bandmi?", "ru": "Ты всё ещё очень занята на работе?", "tj": "Корат ҳоло ҳам сермашғул аст?"},
+                    {"speaker": "Wang Yifei", "zh": "对，还很忙。你也很忙吗？", "pinyin": "Duì, hái hěn máng. Nǐ yě hěn máng ma?", "en": "Yes, I'm still very busy. Are you busy too?", "uz": "Ha, hali ham juda bandman. Sen ham bandmisan?", "ru": "Да, я всё ещё очень занята. А ты тоже занята?", "tj": "Ҳа, ҳоло ҳам хеле банд ҳастам. Ту ҳам бандӣ?"},
+                    {"speaker": "Wang Yixue", "zh": "我不太忙。我们很想你。", "pinyin": "Wǒ bú tài máng. Wǒmen hěn xiǎng nǐ.", "en": "I'm not too busy. We miss you a lot.", "uz": "Men unchalik band emasman. Biz seni juda sog‘indik.", "ru": "Я не очень занята. Мы очень скучаем по тебе.", "tj": "Ман он қадар банд нестам. Мо туро хеле пазмон шудем."},
+                    {"speaker": "Wang Yifei", "zh": "我也想你们。", "pinyin": "Wǒ yě xiǎng nǐmen.", "en": "We miss you a lot too.", "uz": "Men ham sizlarni sog‘indim.", "ru": "Я тоже по вам скучаю.", "tj": "Ман ҳам шуморо пазмон шудам."},
+                ],
+            },
+        ],
+        ensure_ascii=False,
+    ),
+    "grammar_json": json.dumps(
+        [
+            {
+                "no": 1,
+                "title_zh": "“是”字句",
+                "title_uz": "“是” bilan gap",
+                "title_ru": "Предложение с “是”",
+                "title_tj": "Ҷумла бо “是”",
+                "rule_zh": "表示人或事物等同什么或隶属什么，基本结构：A + 是 + B；否定形式是“不 + 是”。",
+                "rule_en": "The “是” sentence is used to indicate what somebody or something equals or belongs to. The negative form is “不是”.",
+                "rule_uz": "“是” shaxs yoki narsaning kim/nima ekanini ko‘rsatadi: A + 是 + B. Inkor shakli: 不是.",
+                "rule_ru": "“是” указывает, кем/чем является лицо или предмет: A + 是 + B. Отрицание: 不是.",
+                "rule_tj": "“是” нишон медиҳад, ки шахс ё чиз кӣ/чӣ аст: A + 是 + B. Инкор: 不是.",
+                "examples": [
+                    {"zh": "我是法国人。", "pinyin": "Wǒ shì Fǎguó rén.", "uz": "Men fransuzman.", "ru": "Я француз.", "tj": "Ман фаронсавӣ ҳастам."},
+                    {"zh": "她是中文老师。", "pinyin": "Tā shì Zhōngwén lǎoshī.", "uz": "U xitoy tili o‘qituvchisi.", "ru": "Она преподаватель китайского языка.", "tj": "Ӯ омӯзгори забони чинӣ аст."},
+                    {"zh": "我老师不是法国人。", "pinyin": "Wǒ lǎoshī bú shì Fǎguó rén.", "uz": "Mening o‘qituvchim fransuz emas.", "ru": "Мой преподаватель не француз.", "tj": "Омӯзгори ман фаронсавӣ нест."},
+                ],
+            },
+            {
+                "no": 2,
+                "title_zh": "结构助词“的”",
+                "title_uz": "Strukturaviy “的”",
+                "title_ru": "Структурная частица “的”",
+                "title_tj": "Ҳиссачаи сохтории “的”",
+                "rule_zh": "结构助词“的”在定语和中心语之间，表达领属关系；亲属、所属等关系明确时，有时可省略。",
+                "rule_en": "The structural particle “的” is placed between the attributive and the head noun to express a possessive relationship.",
+                "rule_uz": "“的” aniqlovchi bilan asosiy ot orasida kelib egalik/munosabatni bildiradi.",
+                "rule_ru": "“的” ставится между определением и главным словом и выражает принадлежность.",
+                "rule_tj": "“的” байни муайянкунанда ва исми асосӣ омада, муносибати соҳибиятро ифода мекунад.",
+                "examples": [
+                    {"zh": "白家月的中文老师", "pinyin": "Bái Jiāyuè de Zhōngwén lǎoshī", "uz": "Bai Jiayue’ning xitoy tili o‘qituvchisi", "ru": "преподаватель китайского языка Бай Цзяюэ", "tj": "омӯзгори забони чинии Бай Ҷяюэ"},
+                    {"zh": "你的名字", "pinyin": "nǐ de míngzi", "uz": "sening isming", "ru": "твоё имя", "tj": "номи ту"},
+                ],
+            },
+            {
+                "no": 3,
+                "title_zh": "用“吗”的是非问句",
+                "title_uz": "“吗” bilan ha/yo‘q savoli",
+                "title_ru": "Вопрос да/нет с “吗”",
+                "title_tj": "Саволи ҳа/не бо “吗”",
+                "rule_zh": "“吗”放在句末，把陈述句变成是非问句，基本结构：……吗？",
+                "rule_en": "The modal particle “吗” is placed at the end of a sentence to indicate a yes-no question.",
+                "rule_uz": "“吗” gap oxiriga qo‘yilib oddiy gapni ha/yo‘q savoliga aylantiradi.",
+                "rule_ru": "“吗” ставится в конце предложения и превращает утверждение в вопрос да/нет.",
+                "rule_tj": "“吗” дар охири ҷумла меояд ва онро ба саволи ҳа/не табдил медиҳад.",
+                "examples": [
+                    {"zh": "你是学生吗？", "pinyin": "Nǐ shì xuésheng ma?", "uz": "Sen talabamisan?", "ru": "Ты студент?", "tj": "Ту донишҷӯ ҳастӣ?"},
+                    {"zh": "你们也想我们吗？", "pinyin": "Nǐmen yě xiǎng wǒmen ma?", "uz": "Sizlar ham bizni sog‘indingizmi?", "ru": "Вы тоже по нам скучаете?", "tj": "Шумо ҳам моро пазмон шудед?"},
+                ],
+            },
+        ],
+        ensure_ascii=False,
+    ),
+}

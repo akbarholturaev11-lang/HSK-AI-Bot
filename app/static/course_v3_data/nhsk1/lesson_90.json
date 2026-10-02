@@ -1,0 +1,681 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 90,
+  "source_lesson": 14,
+  "part_no": 1,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我看了一个电影",
+  "subtitle": {
+    "uz": "Fe’ldan keyingi “了（2）” bilan tugallangan harakatni ifodalash; 离合词 ning ajralish xususiyatini tushunish; “都” bilan umumlashtirish; o‘qish jarayoni va o‘rgangan narsalarni tasvirlash.",
+    "ru": "Выражать завершённое действие с аспектуальной частицей “了（2）”; понимать разделяемые слова; использовать “都” для обобщения; описывать прогресс в обучении.",
+    "tj": "Бо ҳиссачаи намудии “了（2）” амали анҷомёфтаро ифода кардан; хусусияти калимаҳои ҷудошавандаро фаҳмидан; бо “都” умумисозӣ кардан; пешрафти омӯзишро тасвир кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "上",
+      "pinyin": "shàng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "chiqmoq; transportga minmoq",
+        "ru": "подниматься; садиться в транспорт",
+        "tj": "баромадан; ба нақлиёт савор шудан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "火车",
+      "pinyin": "huǒchē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "poyezd",
+        "ru": "поезд",
+        "tj": "қатор"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "中午",
+      "pinyin": "zhōngwǔ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tush payti",
+        "ru": "полдень",
+        "tj": "нисфирӯзӣ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "开",
+      "pinyin": "kāi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "jo‘namoq (transport)",
+        "ru": "отправляться о транспорте",
+        "tj": "ҳаракат кардан; рафтан (нақлиёт)"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Aspekt yuklamasi “了（2）”",
+        "ru": "Аспектуальная частица “了（2）”",
+        "tj": "Ҳиссачаи намудии “了（2）”"
+      },
+      "title_zh": "动态助词“了（2）”",
+      "rule": {
+        "uz": "“了（2）” fe’ldan keyin kelib harakat sodir bo‘lganini yoki tugallanganini bildiradi. Inkorda 没 ishlatiladi va 了 tushiriladi.",
+        "ru": "“了（2）” ставится после глагола и показывает, что действие произошло или завершилось. В отрицании используется 没, а 了 опускается.",
+        "tj": "“了（2）” пас аз феъл омада, рух додан ё анҷом ёфтани амалро нишон медиҳад. Дар инкор 没 истифода шуда, 了 намеояд."
+      },
+      "examples": [
+        {
+          "zh": "我看了一个电影。",
+          "pinyin": "Wǒ kànle yí ge diànyǐng.",
+          "translation": {
+            "uz": "Men bitta film ko‘rdim.",
+            "ru": "Я посмотрел фильм.",
+            "tj": "Ман як филм тамошо кардам."
+          }
+        },
+        {
+          "zh": "我买了一个新电脑。",
+          "pinyin": "Wǒ mǎile yí ge xīn diànnǎo.",
+          "translation": {
+            "uz": "Men yangi kompyuter sotib oldim.",
+            "ru": "Я купил новый компьютер.",
+            "tj": "Ман компютери нав харидам."
+          }
+        },
+        {
+          "zh": "我昨天没去商店买东西。",
+          "pinyin": "Wǒ zuótiān méi qù shāngdiàn mǎi dōngxi.",
+          "translation": {
+            "uz": "Men kecha do‘konga narsa sotib olishga bormadim.",
+            "ru": "Я вчера не ходил в магазин за покупками.",
+            "tj": "Ман дирӯз барои харид ба мағоза нарафтам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda darsdan keyin Bai Jiayue va Chen Tianzhong oldingi sayohat haqida suhbatlashmoqda.",
+        "ru": "В аудитории после занятия Бай Цзяюэ и Чэнь Тяньчжун обсуждают прошлую поездку.",
+        "tj": "Дар синф пас аз дарс Бай Ҷяюэ ва Чэн Тянҷун сафари гузаштаро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "你呢？",
+          "pinyin": "Nǐ ne?",
+          "text": {
+            "uz": "Sen-chi?",
+            "ru": "А ты?",
+            "tj": "Ту чӣ?"
+          }
+        },
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "我看了一个电影。",
+          "pinyin": "Wǒ kànle yí ge diànyǐng.",
+          "text": {
+            "uz": "Men bitta film ko‘rdim.",
+            "ru": "Я посмотрел фильм.",
+            "tj": "Ман як филм тамошо кардам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue bolalarining keyingi maktabga o‘tishi haqida gaplashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ обсуждают поступление детей в следующую школу.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ дар бораи гузаштани фарзандон ба мактаби нав суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "对。儿子也上小学了。",
+          "pinyin": "Duì. Érzi yě shàng xiǎoxué le.",
+          "text": {
+            "uz": "Ha. O‘g‘limiz ham boshlang‘ich maktabga boradi.",
+            "ru": "Да. Сын тоже пойдёт в начальную школу.",
+            "tj": "Ҳа. Писарамон ҳам ба мактаби ибтидоӣ меравад."
+          }
+        },
+        {
+          "speaker": "Wang Yixue",
+          "zh": "还有了一个小学生。",
+          "pinyin": "Hái yǒule yí ge xiǎoxuéshēng.",
+          "text": {
+            "uz": "Yana bitta boshlang‘ich maktab o‘quvchisi ham bo‘ladi.",
+            "ru": "И ещё ученик начальной школы.",
+            "tj": "Боз як хонандаи мактаби ибтидоӣ ҳам мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "上",
+            "pinyin": "shàng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "chiqmoq; transportga minmoq",
+              "ru": "подниматься; садиться в транспорт",
+              "tj": "баромадан; ба нақлиёт савор шудан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "上",
+          "pinyin": "shàng",
+          "options": [
+            "中午",
+            "开",
+            "上",
+            "火车"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "上 — chiqmoq; transportga minmoq (shàng)",
+            "ru": "上 — подниматься; садиться в транспорт (shàng)",
+            "tj": "上 — баромадан; ба нақлиёт савор шудан (shàng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "火车",
+            "pinyin": "huǒchē",
+            "pos": "n.",
+            "meaning": {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "火车",
+          "pinyin": "huǒchē",
+          "translation": {
+            "uz": "poyezd",
+            "ru": "поезд",
+            "tj": "қатор"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "火车 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 火车:",
+            "tj": "Маънои калимаи 火车-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chiqmoq; transportga minmoq",
+              "ru": "подниматься; садиться в транспорт",
+              "tj": "баромадан; ба нақлиёт савор шудан"
+            },
+            {
+              "uz": "tush payti",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ"
+            },
+            {
+              "uz": "jo‘namoq (transport)",
+              "ru": "отправляться о транспорте",
+              "tj": "ҳаракат кардан; рафтан (нақлиёт)"
+            },
+            {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "火车 = poyezd (huǒchē)",
+            "ru": "火车 = поезд (huǒchē)",
+            "tj": "火车 = қатор (huǒchē)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "中午",
+            "pinyin": "zhōngwǔ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tush payti",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhōngwǔ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhōngwǔ?",
+            "tj": "zhōngwǔ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "开",
+            "上",
+            "中午",
+            "火车"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "中午 = tush payti (zhōngwǔ)",
+            "ru": "中午 = полдень (zhōngwǔ)",
+            "tj": "中午 = нисфирӯзӣ (zhōngwǔ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "开",
+            "pinyin": "kāi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "jo‘namoq (transport)",
+              "ru": "отправляться о транспорте",
+              "tj": "ҳаракат кардан; рафтан (нақлиёт)"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "开 talaffuzini tanlang:",
+            "ru": "Выберите произношение 开:",
+            "tj": "Талаффузи 开-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shàng",
+            "huǒchē",
+            "kāi",
+            "zhōngwǔ"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "开 — kāi",
+            "ru": "开 — kāi",
+            "tj": "开 — kāi"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'chiqmoq; transportga minmoq' xitoycha qaysi?",
+            "ru": "'подниматься; садиться в транспорт' по-китайски?",
+            "tj": "'баромадан; ба нақлиёт савор шудан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "开",
+            "上",
+            "中午",
+            "火车"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "chiqmoq; transportga minmoq = 上 (shàng)",
+            "ru": "подниматься; садиться в транспорт = 上 (shàng)",
+            "tj": "баромадан; ба нақлиёт савор шудан = 上 (shàng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "上",
+              {
+                "uz": "chiqmoq; transportga minmoq",
+                "ru": "подниматься; садиться в транспорт",
+                "tj": "баромадан; ба нақлиёт савор шудан"
+              }
+            ],
+            [
+              "火车",
+              {
+                "uz": "poyezd",
+                "ru": "поезд",
+                "tj": "қатор"
+              }
+            ],
+            [
+              "中午",
+              {
+                "uz": "tush payti",
+                "ru": "полдень",
+                "tj": "нисфирӯзӣ"
+              }
+            ],
+            [
+              "开",
+              {
+                "uz": "jo‘namoq (transport)",
+                "ru": "отправляться о транспорте",
+                "tj": "ҳаракат кардан; рафтан (нақлиёт)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Aspekt yuklamasi “了（2）”",
+              "ru": "Аспектуальная частица “了（2）”",
+              "tj": "Ҳиссачаи намудии “了（2）”"
+            },
+            "title_zh": "动态助词“了（2）”",
+            "rule": {
+              "uz": "“了（2）” fe’ldan keyin kelib harakat sodir bo‘lganini yoki tugallanganini bildiradi. Inkorda 没 ishlatiladi va 了 tushiriladi.",
+              "ru": "“了（2）” ставится после глагола и показывает, что действие произошло или завершилось. В отрицании используется 没, а 了 опускается.",
+              "tj": "“了（2）” пас аз феъл омада, рух додан ё анҷом ёфтани амалро нишон медиҳад. Дар инкор 没 истифода шуда, 了 намеояд."
+            },
+            "examples": [
+              {
+                "zh": "我看了一个电影。",
+                "pinyin": "Wǒ kànle yí ge diànyǐng.",
+                "translation": {
+                  "uz": "Men bitta film ko‘rdim.",
+                  "ru": "Я посмотрел фильм.",
+                  "tj": "Ман як филм тамошо кардам."
+                }
+              },
+              {
+                "zh": "我买了一个新电脑。",
+                "pinyin": "Wǒ mǎile yí ge xīn diànnǎo.",
+                "translation": {
+                  "uz": "Men yangi kompyuter sotib oldim.",
+                  "ru": "Я купил новый компьютер.",
+                  "tj": "Ман компютери нав харидам."
+                }
+              },
+              {
+                "zh": "我昨天没去商店买东西。",
+                "pinyin": "Wǒ zuótiān méi qù shāngdiàn mǎi dōngxi.",
+                "translation": {
+                  "uz": "Men kecha do‘konga narsa sotib olishga bormadim.",
+                  "ru": "Я вчера не ходил в магазин за покупками.",
+                  "tj": "Ман дирӯз барои харид ба мағоза нарафтам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men bitta film ko‘rdim.",
+            "ru": "Я посмотрел фильм.",
+            "tj": "Ман як филм тамошо кардам."
+          },
+          "tokens": [
+            "我",
+            "上",
+            "了",
+            "看",
+            "电影",
+            "火车",
+            "个",
+            "一"
+          ],
+          "answer_tokens": [
+            "我",
+            "看",
+            "了",
+            "一",
+            "个",
+            "电影"
+          ],
+          "explanation": {
+            "uz": "我看了一个电影。 — Wǒ kànle yí ge diànyǐng.",
+            "ru": "我看了一个电影。 — Wǒ kànle yí ge diànyǐng.",
+            "tj": "我看了一个电影。 — Wǒ kànle yí ge diànyǐng."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Men bitta film ko‘rdim.» — xitoychada qaysi biri?",
+            "ru": "«Я посмотрел фильм.» — какое предложение по-китайски?",
+            "tj": "«Ман як филм тамошо кардам.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我买了一个新电脑。",
+            "我昨天没去商店买东西。",
+            "我看了一个电影。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "我看了一个电影。 — Wǒ kànle yí ge diànyǐng.",
+            "ru": "我看了一个电影。 — Wǒ kànle yí ge diànyǐng.",
+            "tj": "我看了一个电影。 — Wǒ kànle yí ge diànyǐng."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "火车",
+          "pinyin": "huǒchē",
+          "options": [
+            "开",
+            "上",
+            "火车",
+            "中午"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "火车 — poyezd (huǒchē)",
+            "ru": "火车 — поезд (huǒchē)",
+            "tj": "火车 — қатор (huǒchē)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "火车",
+          "pinyin": "huǒchē",
+          "translation": {
+            "uz": "poyezd",
+            "ru": "поезд",
+            "tj": "қатор"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "再 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 再:",
+            "tj": "Маънои калимаи 再-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yana; yana bir marta",
+              "ru": "снова; ещё раз",
+              "tj": "боз; бори дигар"
+            },
+            {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            },
+            {
+              "uz": "chiqmoq; transportga minmoq",
+              "ru": "подниматься; садиться в транспорт",
+              "tj": "баромадан; ба нақлиёт савор шудан"
+            },
+            {
+              "uz": "tush payti",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "再 = yana; yana bir marta (zài)",
+            "ru": "再 = снова; ещё раз (zài)",
+            "tj": "再 = боз; бори дигар (zài)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "再",
+            "pinyin": "zài",
+            "meaning": {
+              "uz": "yana; yana bir marta",
+              "ru": "снова; ещё раз",
+              "tj": "боз; бори дигар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'poyezd' xitoycha qaysi?",
+            "ru": "'поезд' по-китайски?",
+            "tj": "'қатор' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "开",
+            "火车",
+            "上",
+            "中午"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "poyezd = 火车 (huǒchē)",
+            "ru": "поезд = 火车 (huǒchē)",
+            "tj": "қатор = 火车 (huǒchē)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "火车",
+            "pinyin": "huǒchē",
+            "meaning": {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатор"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,847 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 107,
+  "source_lesson": 14,
+  "part_no": 3,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "这本书被别人借走了",
+  "subtitle": {
+    "uz": "Kampusdagi tadbirlar haqida gaplashish; boshqalarga dalda berish va qo‘llab-quvvatlash; “被” bilan passiv ma’noni ifodalash.",
+    "ru": "Говорить о мероприятиях в кампусе; поддерживать и подбадривать других; выражать пассивное значение с помощью “被”.",
+    "tj": "Дар бораи чорабиниҳои кампус суҳбат кардан; дигаронро рӯҳбаланд кардан; бо “被” маънои пассивро ифода кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "报纸",
+      "pinyin": "bàozhǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "gazeta",
+        "ru": "газета",
+        "tj": "рӯзнома"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "忘记",
+      "pinyin": "wàngjì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "unutmoq",
+        "ru": "забывать",
+        "tj": "фаромӯш кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "电子书",
+      "pinyin": "diànzǐshū",
+      "pos": "n.",
+      "meaning": {
+        "uz": "elektron kitob",
+        "ru": "электронная книга",
+        "tj": "китоби электронӣ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "女生",
+      "pinyin": "nǚshēng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qiz talaba; qiz bola",
+        "ru": "студентка; девушка",
+        "tj": "донишҷӯи духтар; духтар"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "“X什么啊” — e’tiroz yoki dalda berish",
+        "ru": "“X什么啊” — возражение или подбадривание",
+        "tj": "“X什么啊” — эътироз ё рӯҳбаландкунӣ"
+      },
+      "title_zh": "固定格式“×什么（啊）”",
+      "rule": {
+        "uz": "Fe’l yoki sifatdan keyin “什么啊” kelib, suhbatdoshning xavotiri yoki bahosini inkor qilib, “nima uchun bunday o‘ylayapsan?” kabi dalda beradi.",
+        "ru": "Модель “X什么啊” после глагола или прилагательного выражает возражение против переживания или оценки собеседника и часто подбадривает его.",
+        "tj": "Қолаби “X什么啊” пас аз феъл ё сифат нигаронӣ ё баҳогузории ҳамсуҳбатро рад карда, ӯро рӯҳбаланд мекунад."
+      },
+      "examples": [
+        {
+          "zh": "一想到要在校长、老师和那么多同学面前表演，我就有些紧张。",
+          "pinyin": "Yì xiǎngdào yào zài xiàozhǎng, lǎoshī hé nàme duō tóngxué miànqián biǎoyǎn, wǒ jiù yǒuxiē jǐnzhāng.",
+          "translation": {
+            "uz": "Direktor, o‘qituvchilar va shuncha talaba oldida chiqish haqida o‘ylasam, biroz hayajonlanaman.",
+            "ru": "Как подумаю, что выступать перед директором, учителями и столькими студентами, начинаю волноваться.",
+            "tj": "Вақте фикр мекунам, ки назди директор, омӯзгорон ва ин қадар донишҷӯ баромад мекунам, каме асабӣ мешавам."
+          }
+        },
+        {
+          "zh": "紧张什么啊，我们都喜欢听你唱歌，你要相信自己。",
+          "pinyin": "Jǐnzhāng shénme a, wǒmen dōu xǐhuan tīng nǐ chànggē, nǐ yào xiāngxìn zìjǐ.",
+          "translation": {
+            "uz": "Nimaga hayajonlanasan? Hammamiz qo‘shig‘ingni yoqtiramiz, o‘zingga ishon.",
+            "ru": "Чего нервничать? Нам всем нравится, как ты поёшь, поверь в себя.",
+            "tj": "Чаро асабӣ мешавӣ? Ҳама сурудхониатро дӯст медорем, ба худат бовар кун."
+          }
+        },
+        {
+          "zh": "我最近胖了很多，不想拍照了。",
+          "pinyin": "Wǒ zuìjìn pàng le hěn duō, bù xiǎng pāizhào le.",
+          "translation": {
+            "uz": "So‘nggi paytda ancha semirdim, suratga tushgim kelmayapti.",
+            "ru": "В последнее время я сильно поправился и не хочу фотографироваться.",
+            "tj": "Вақтҳои охир хеле фарбеҳ шудам, акс гирифтан намехоҳам."
+          }
+        },
+        {
+          "zh": "胖什么啊，你看起来不胖也不瘦。",
+          "pinyin": "Pàng shénme a, nǐ kàn qǐlái bù pàng yě bú shòu.",
+          "translation": {
+            "uz": "Qanaqa semirish? Sen na semiz, na ozg‘in ko‘rinyapsan.",
+            "ru": "Какой ещё толстый? Ты выглядишь ни толстым, ни худым.",
+            "tj": "Куҷо фарбеҳ? Ту на фарбеҳ ва на лоғар менамоӣ."
+          }
+        },
+        {
+          "zh": "还有十分钟，快点儿走吧。",
+          "pinyin": "Hái yǒu shí fēnzhōng, kuài diǎnr zǒu ba.",
+          "translation": {
+            "uz": "Yana o‘n daqiqa qoldi, tezroq yuraylik.",
+            "ru": "Осталось десять минут, пойдём быстрее.",
+            "tj": "Даҳ дақиқа мондааст, тезтар равем."
+          }
+        },
+        {
+          "zh": "急什么啊，马上就到了。",
+          "pinyin": "Jí shénme a, mǎshàng jiù dào le.",
+          "translation": {
+            "uz": "Nimaga shoshilasan? Hozir yetib boramiz.",
+            "ru": "Чего спешить? Уже почти приехали.",
+            "tj": "Чаро шитоб мекунӣ? Ҳозир мерасем."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kampus oshxonasida Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В столовой кампуса Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар ошхонаи кампус Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "我借的这本词典最好今天还，但是我没时间去。",
+          "pinyin": "Wǒ jiè de zhè běn cídiǎn zuìhǎo jīntiān huán, dànshì wǒ méi shíjiān qù.",
+          "text": {
+            "uz": "Olgan lug‘atimni bugun qaytarganim yaxshi, lekin borishga vaqtim yo‘q.",
+            "ru": "Этот словарь лучше вернуть сегодня, но у меня нет времени идти.",
+            "tj": "Ин луғатро беҳтараш имрӯз баргардонам, аммо рафтан вақт надорам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "下午我只有两节课，可以帮你去图书馆还书。",
+          "pinyin": "Xiàwǔ wǒ zhǐ yǒu liǎng jié kè, kěyǐ bāng nǐ qù túshūguǎn huán shū.",
+          "text": {
+            "uz": "Tushdan keyin faqat ikki darsim bor, kutubxonaga borib kitobni qaytarib beraman.",
+            "ru": "Днём у меня всего два занятия, могу вернуть книгу за тебя.",
+            "tj": "Баъд аз нисфирӯзӣ танҳо ду дарс дорам, метавонам китобро ба китобхона баргардонам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "那太谢谢了。你能再帮我借本书吗？",
+          "pinyin": "Nà tài xièxie le. Nǐ néng zài bāng wǒ jiè běn shū ma?",
+          "text": {
+            "uz": "Juda rahmat. Yana bir kitob olib bera olasanmi?",
+            "ru": "Большое спасибо. Можешь ещё взять для меня одну книгу?",
+            "tj": "Хеле раҳмат. Боз як китоб барои ман гирифта метавонӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "行，你告诉我书名。",
+          "pinyin": "Xíng, nǐ gàosu wǒ shūmíng.",
+          "text": {
+            "uz": "Bo‘ladi, kitob nomini ayt.",
+            "ru": "Хорошо, скажи название.",
+            "tj": "Мешавад, номи китобро бигӯ."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我把名字写在纸上吧。我去了好几次图书馆，这本书都被别人借走了。",
+          "pinyin": "Wǒ bǎ míngzi xiě zài zhǐ shàng ba. Wǒ qù le hǎo jǐ cì túshūguǎn, zhè běn shū dōu bèi biérén jiè zǒu le.",
+          "text": {
+            "uz": "Nomini qog‘ozga yozib beraman. Kutubxonaga bir necha marta bordim, har safar bu kitobni boshqa birov olib ketgan edi.",
+            "ru": "Я запишу название на бумаге. Я несколько раз ходил в библиотеку, но эту книгу всё время кто-то уже брал.",
+            "tj": "Номашро дар коғаз менависам. Чанд бор ба китобхона рафтам, ҳар дафъа ин китобро каси дигар гирифта буд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "《名人的故事》？我有这本书。明天我借给你吧。",
+          "pinyin": "Míngrén de Gùshi? Wǒ yǒu zhè běn shū. Míngtiān wǒ jiè gěi nǐ ba.",
+          "text": {
+            "uz": "“Mashhur insonlar hikoyalari”mi? Menda bu kitob bor. Ertaga senga berib turaman.",
+            "ru": "«Истории знаменитых людей»? У меня есть эта книга. Завтра дам тебе.",
+            "tj": "«Ҳикояҳои одамони машҳур»? Ин китоб дар ман ҳаст. Фардо ба ту медиҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Bai Jiayue va Annie suhbatlashmoqda.",
+        "ru": "В кампусе Бай Цзяюэ и Энни разговаривают.",
+        "tj": "Дар кампус Бай Ҷяюэ ва Энни суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "安妮",
+          "zh": "今天下课早，你一会儿做什么？",
+          "pinyin": "Jīntiān xiàkè zǎo, nǐ yíhuìr zuò shénme?",
+          "text": {
+            "uz": "Bugun dars erta tugadi, hozir nima qilasan?",
+            "ru": "Сегодня занятия закончились рано, что будешь делать?",
+            "tj": "Имрӯз дарс барвақт тамом шуд, ҳозир чӣ мекунӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我今天忙得很，要先去图书馆借书，然后去游泳。",
+          "pinyin": "Wǒ jīntiān máng de hěn, yào xiān qù túshūguǎn jiè shū, ránhòu qù yóuyǒng.",
+          "text": {
+            "uz": "Bugun juda bandman, avval kutubxonaga kitob olgani, keyin suzishga boraman.",
+            "ru": "Сегодня я очень занята: сначала в библиотеку за книгой, потом плавать.",
+            "tj": "Имрӯз хеле банд ҳастам: аввал ба китобхона, баъд ба шиноварӣ меравам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "等等，我的校园卡不见了，没有卡进不去图书馆。",
+          "pinyin": "Děngdeng, wǒ de xiàoyuánkǎ bú jiàn le, méiyǒu kǎ jìn bu qù túshūguǎn.",
+          "text": {
+            "uz": "To‘xta, kampus kartam yo‘qolibdi, kartasiz kutubxonaga kira olmayman.",
+            "ru": "Подожди, моя кампус-карта пропала, без неё в библиотеку не войти.",
+            "tj": "Ист, корти кампусам гум шудааст, бе корт ба китобхона даромада намешавад."
+          }
+        },
+        {
+          "speaker": "安妮",
+          "zh": "你想想上一次用是什么时候？",
+          "pinyin": "Nǐ xiǎngxiang shàng yí cì yòng shì shénme shíhou?",
+          "text": {
+            "uz": "O‘ylab ko‘r, oxirgi marta qachon ishlatganding?",
+            "ru": "Вспомни, когда ты пользовалась ею в последний раз?",
+            "tj": "Фикр кун, бори охир кай истифода карда будӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我忘记了，可能被我放在家里了。",
+          "pinyin": "Wǒ wàngjì le, kěnéng bèi wǒ fàng zài jiālǐ le.",
+          "text": {
+            "uz": "Unutdim, balki uyda qoldirgandirman.",
+            "ru": "Забыла, возможно, я оставила её дома.",
+            "tj": "Фаромӯш кардам, шояд дар хона гузошта бошам."
+          }
+        },
+        {
+          "speaker": "安妮",
+          "zh": "进不去图书馆也没关系，上网看看有没有电子书。",
+          "pinyin": "Jìn bu qù túshūguǎn yě méi guānxi, shàngwǎng kànkan yǒu méiyǒu diànzǐshū.",
+          "text": {
+            "uz": "Kutubxonaga kira olmasang ham hechqisi yo‘q, internetdan elektron kitob bor-yo‘qligini ko‘r.",
+            "ru": "Ничего страшного, если не войдёшь в библиотеку; посмотри электронную книгу в интернете.",
+            "tj": "Агар ба китобхона даромада натавонӣ ҳам, ҳеҷ гап нест, аз интернет китоби электронӣ ҳаст ё не бин."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampus oshxonasida Li Wen va Bai Jiayue ovqatlanib suhbatlashmoqda.",
+        "ru": "В столовой кампуса Ли Вэнь и Бай Цзяюэ едят и разговаривают.",
+        "tj": "Дар ошхонаи кампус Ли Вэн ва Бай Ҷяюэ хӯрок хӯрда суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "下周学校有晚会，你知道吗？",
+          "pinyin": "Xià zhōu xuéxiào yǒu wǎnhuì, nǐ zhīdào ma?",
+          "text": {
+            "uz": "Keyingi hafta maktabda kecha bo‘ladi, bilasanmi?",
+            "ru": "На следующей неделе в школе будет вечер, знаешь?",
+            "tj": "Ҳафтаи оянда дар мактаб шомгоҳӣ мешавад, медонӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "找不到人，你就一个人唱吧。",
+          "pinyin": "Zhǎo bú dào rén, nǐ jiù yí ge rén chàng ba.",
+          "text": {
+            "uz": "Odam topilmasa, o‘zing yolg‘iz aytaver.",
+            "ru": "Если никого не найдёшь, пой один.",
+            "tj": "Агар касе наёбӣ, худат танҳо суруд хон."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "报纸",
+            "pinyin": "bàozhǐ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "gazeta",
+              "ru": "газета",
+              "tj": "рӯзнома"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bàozhǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bàozhǐ?",
+            "tj": "bàozhǐ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "节",
+            "报纸",
+            "最好",
+            "词典"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "报纸 = gazeta (bàozhǐ)",
+            "ru": "报纸 = газета (bàozhǐ)",
+            "tj": "报纸 = рӯзнома (bàozhǐ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "忘记",
+            "pinyin": "wàngjì",
+            "pos": "v.",
+            "meaning": {
+              "uz": "unutmoq",
+              "ru": "забывать",
+              "tj": "фаромӯш кардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "忘记 talaffuzini tanlang:",
+            "ru": "Выберите произношение 忘记:",
+            "tj": "Талаффузи 忘记-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zuìhǎo",
+            "jié",
+            "cídiǎn",
+            "wàngjì"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "忘记 — wàngjì",
+            "ru": "忘记 — wàngjì",
+            "tj": "忘记 — wàngjì"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "电子书",
+            "pinyin": "diànzǐshū",
+            "pos": "n.",
+            "meaning": {
+              "uz": "elektron kitob",
+              "ru": "электронная книга",
+              "tj": "китоби электронӣ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "电子书",
+          "pinyin": "diànzǐshū",
+          "translation": {
+            "uz": "elektron kitob",
+            "ru": "электронная книга",
+            "tj": "китоби электронӣ"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'elektron kitob' xitoycha qaysi?",
+            "ru": "'электронная книга' по-китайски?",
+            "tj": "'китоби электронӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "词典",
+            "最好",
+            "节",
+            "电子书"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "elektron kitob = 电子书 (diànzǐshū)",
+            "ru": "электронная книга = 电子书 (diànzǐshū)",
+            "tj": "китоби электронӣ = 电子书 (diànzǐshū)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "女生",
+            "pinyin": "nǚshēng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qiz talaba; qiz bola",
+              "ru": "студентка; девушка",
+              "tj": "донишҷӯи духтар; духтар"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "女生",
+          "pinyin": "nǚshēng",
+          "options": [
+            "词典",
+            "女生",
+            "最好",
+            "节"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "女生 — qiz talaba; qiz bola (nǚshēng)",
+            "ru": "女生 — студентка; девушка (nǚshēng)",
+            "tj": "女生 — донишҷӯи духтар; духтар (nǚshēng)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "报纸 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 报纸:",
+            "tj": "Маънои калимаи 报纸-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dars uchun hisob so‘zi",
+              "ru": "счётное слово для уроков",
+              "tj": "воҳиди ҳисоб барои дарс"
+            },
+            {
+              "uz": "gazeta",
+              "ru": "газета",
+              "tj": "рӯзнома"
+            },
+            {
+              "uz": "yaxshisi; eng yaxshi",
+              "ru": "лучше всего; самый хороший",
+              "tj": "беҳтараш; беҳтарин"
+            },
+            {
+              "uz": "lug‘at",
+              "ru": "словарь",
+              "tj": "луғат"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "报纸 = gazeta (bàozhǐ)",
+            "ru": "报纸 = газета (bàozhǐ)",
+            "tj": "报纸 = рӯзнома (bàozhǐ)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "报纸",
+              {
+                "uz": "gazeta",
+                "ru": "газета",
+                "tj": "рӯзнома"
+              }
+            ],
+            [
+              "忘记",
+              {
+                "uz": "unutmoq",
+                "ru": "забывать",
+                "tj": "фаромӯш кардан"
+              }
+            ],
+            [
+              "电子书",
+              {
+                "uz": "elektron kitob",
+                "ru": "электронная книга",
+                "tj": "китоби электронӣ"
+              }
+            ],
+            [
+              "女生",
+              {
+                "uz": "qiz talaba; qiz bola",
+                "ru": "студентка; девушка",
+                "tj": "донишҷӯи духтар; духтар"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "“X什么啊” — e’tiroz yoki dalda berish",
+              "ru": "“X什么啊” — возражение или подбадривание",
+              "tj": "“X什么啊” — эътироз ё рӯҳбаландкунӣ"
+            },
+            "title_zh": "固定格式“×什么（啊）”",
+            "rule": {
+              "uz": "Fe’l yoki sifatdan keyin “什么啊” kelib, suhbatdoshning xavotiri yoki bahosini inkor qilib, “nima uchun bunday o‘ylayapsan?” kabi dalda beradi.",
+              "ru": "Модель “X什么啊” после глагола или прилагательного выражает возражение против переживания или оценки собеседника и часто подбадривает его.",
+              "tj": "Қолаби “X什么啊” пас аз феъл ё сифат нигаронӣ ё баҳогузории ҳамсуҳбатро рад карда, ӯро рӯҳбаланд мекунад."
+            },
+            "examples": [
+              {
+                "zh": "一想到要在校长、老师和那么多同学面前表演，我就有些紧张。",
+                "pinyin": "Yì xiǎngdào yào zài xiàozhǎng, lǎoshī hé nàme duō tóngxué miànqián biǎoyǎn, wǒ jiù yǒuxiē jǐnzhāng.",
+                "translation": {
+                  "uz": "Direktor, o‘qituvchilar va shuncha talaba oldida chiqish haqida o‘ylasam, biroz hayajonlanaman.",
+                  "ru": "Как подумаю, что выступать перед директором, учителями и столькими студентами, начинаю волноваться.",
+                  "tj": "Вақте фикр мекунам, ки назди директор, омӯзгорон ва ин қадар донишҷӯ баромад мекунам, каме асабӣ мешавам."
+                }
+              },
+              {
+                "zh": "紧张什么啊，我们都喜欢听你唱歌，你要相信自己。",
+                "pinyin": "Jǐnzhāng shénme a, wǒmen dōu xǐhuan tīng nǐ chànggē, nǐ yào xiāngxìn zìjǐ.",
+                "translation": {
+                  "uz": "Nimaga hayajonlanasan? Hammamiz qo‘shig‘ingni yoqtiramiz, o‘zingga ishon.",
+                  "ru": "Чего нервничать? Нам всем нравится, как ты поёшь, поверь в себя.",
+                  "tj": "Чаро асабӣ мешавӣ? Ҳама сурудхониатро дӯст медорем, ба худат бовар кун."
+                }
+              },
+              {
+                "zh": "我最近胖了很多，不想拍照了。",
+                "pinyin": "Wǒ zuìjìn pàng le hěn duō, bù xiǎng pāizhào le.",
+                "translation": {
+                  "uz": "So‘nggi paytda ancha semirdim, suratga tushgim kelmayapti.",
+                  "ru": "В последнее время я сильно поправился и не хочу фотографироваться.",
+                  "tj": "Вақтҳои охир хеле фарбеҳ шудам, акс гирифтан намехоҳам."
+                }
+              },
+              {
+                "zh": "胖什么啊，你看起来不胖也不瘦。",
+                "pinyin": "Pàng shénme a, nǐ kàn qǐlái bù pàng yě bú shòu.",
+                "translation": {
+                  "uz": "Qanaqa semirish? Sen na semiz, na ozg‘in ko‘rinyapsan.",
+                  "ru": "Какой ещё толстый? Ты выглядишь ни толстым, ни худым.",
+                  "tj": "Куҷо фарбеҳ? Ту на фарбеҳ ва на лоғар менамоӣ."
+                }
+              },
+              {
+                "zh": "还有十分钟，快点儿走吧。",
+                "pinyin": "Hái yǒu shí fēnzhōng, kuài diǎnr zǒu ba.",
+                "translation": {
+                  "uz": "Yana o‘n daqiqa qoldi, tezroq yuraylik.",
+                  "ru": "Осталось десять минут, пойдём быстрее.",
+                  "tj": "Даҳ дақиқа мондааст, тезтар равем."
+                }
+              },
+              {
+                "zh": "急什么啊，马上就到了。",
+                "pinyin": "Jí shénme a, mǎshàng jiù dào le.",
+                "translation": {
+                  "uz": "Nimaga shoshilasan? Hozir yetib boramiz.",
+                  "ru": "Чего спешить? Уже почти приехали.",
+                  "tj": "Чаро шитоб мекунӣ? Ҳозир мерасем."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Nimaga shoshilasan? Hozir yetib boramiz.",
+            "ru": "Чего спешить? Уже почти приехали.",
+            "tj": "Чаро шитоб мекунӣ? Ҳозир мерасем."
+          },
+          "tokens": [
+            "就",
+            "马上",
+            "词典",
+            "最好",
+            "啊",
+            "到",
+            "什么",
+            "急",
+            "了"
+          ],
+          "answer_tokens": [
+            "急",
+            "什么",
+            "啊",
+            "马上",
+            "就",
+            "到",
+            "了"
+          ],
+          "explanation": {
+            "uz": "急什么啊，马上就到了。 — Jí shénme a, mǎshàng jiù dào le.",
+            "ru": "急什么啊，马上就到了。 — Jí shénme a, mǎshàng jiù dào le.",
+            "tj": "急什么啊，马上就到了。 — Jí shénme a, mǎshàng jiù dào le."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Qanaqa semirish? Sen na semiz, na ozg‘in ko‘rinyapsan.» — xitoychada qaysi biri?",
+            "ru": "«Какой ещё толстый? Ты выглядишь ни толстым, ни худым.» — какое предложение по-китайски?",
+            "tj": "«Куҷо фарбеҳ? Ту на фарбеҳ ва на лоғар менамоӣ.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我最近胖了很多，不想拍照了。",
+            "胖什么啊，你看起来不胖也不瘦。",
+            "急什么啊，马上就到了。",
+            "还有十分钟，快点儿走吧。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "胖什么啊，你看起来不胖也不瘦。 — Pàng shénme a, nǐ kàn qǐlái bù pàng yě bú shòu.",
+            "ru": "胖什么啊，你看起来不胖也不瘦。 — Pàng shénme a, nǐ kàn qǐlái bù pàng yě bú shòu.",
+            "tj": "胖什么啊，你看起来不胖也不瘦。 — Pàng shénme a, nǐ kàn qǐlái bù pàng yě bú shòu."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "女生",
+          "pinyin": "nǚshēng",
+          "translation": {
+            "uz": "qiz talaba; qiz bola",
+            "ru": "студентка; девушка",
+            "tj": "донишҷӯи духтар; духтар"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "忘记",
+          "pinyin": "wàngjì",
+          "options": [
+            "忘记",
+            "词典",
+            "节",
+            "最好"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "忘记 — unutmoq (wàngjì)",
+            "ru": "忘记 — забывать (wàngjì)",
+            "tj": "忘记 — фаромӯш кардан (wàngjì)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "故事 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 故事:",
+            "tj": "Маънои калимаи 故事-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hikoya",
+              "ru": "история; рассказ",
+              "tj": "ҳикоя"
+            },
+            {
+              "uz": "lug‘at",
+              "ru": "словарь",
+              "tj": "луғат"
+            },
+            {
+              "uz": "yaxshisi; eng yaxshi",
+              "ru": "лучше всего; самый хороший",
+              "tj": "беҳтараш; беҳтарин"
+            },
+            {
+              "uz": "dars uchun hisob so‘zi",
+              "ru": "счётное слово для уроков",
+              "tj": "воҳиди ҳисоб барои дарс"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "故事 = hikoya (gùshi)",
+            "ru": "故事 = история; рассказ (gùshi)",
+            "tj": "故事 = ҳикоя (gùshi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "故事",
+            "pinyin": "gùshi",
+            "meaning": {
+              "uz": "hikoya",
+              "ru": "история; рассказ",
+              "tj": "ҳикоя"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'elektron kitob' xitoycha qaysi?",
+            "ru": "'электронная книга' по-китайски?",
+            "tj": "'китоби электронӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "节",
+            "词典",
+            "最好",
+            "电子书"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "elektron kitob = 电子书 (diànzǐshū)",
+            "ru": "электронная книга = 电子书 (diànzǐshū)",
+            "tj": "китоби электронӣ = 电子书 (diànzǐshū)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "电子书",
+            "pinyin": "diànzǐshū",
+            "meaning": {
+              "uz": "elektron kitob",
+              "ru": "электронная книга",
+              "tj": "китоби электронӣ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

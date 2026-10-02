@@ -24,7 +24,7 @@ from app.repositories.user_repo import UserRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.course_v3_parts import total_parts
-from app.services.desktop_course_service import normalize_course_v3_level
+from app.services.course_levels import content_level
 from app.services.course_access_policy_service import CourseAccessPolicyService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.entitlements.gate_shadow import shadow_compare_gate
@@ -204,7 +204,7 @@ def create_miniapp_entitlements_router(
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
             if not user:
                 return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
-            level = normalize_course_v3_level(user.level)
+            level = content_level(user.level)
             progress = await CourseProgressRepository(session).get_by_user_id(user.id, for_update=True)
             completed = int(progress.completed_lessons_count or 0) if progress and progress.level == level else 0
             if order < 1 or order > total_parts(level) or order > completed + 1:

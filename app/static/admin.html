@@ -1504,7 +1504,7 @@
       openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
       let d;
       try{ d=await loadManagement(false); }catch(e){ $("drawerBody").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; return; }
-      const map={prices:renderPrices,course_access:renderCourseAccess,limits:renderLimits,ad_placements:renderAdPlacements,course_sales_experiment:renderCourseSalesExperiment,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount",prefill),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
+      const map={prices:renderPrices,hsk30:renderHsk30,course_access:renderCourseAccess,limits:renderLimits,ad_placements:renderAdPlacements,course_sales_experiment:renderCourseSalesExperiment,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount",prefill),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
       if(key==="broadcast") return renderBroadcast();
       if(key==="give_access") return renderGiveAccess(prefill);
       if(key==="delete_user") return renderDeleteUser(prefill);
@@ -1855,6 +1855,71 @@
           <input type="file" accept="image/*" data-qrfile hidden></div>
         <div class="ncnote" data-qrinfo>Asosiy QR uchun ${esc(mainPrice)}, 20% chegirma QR uchun ${esc(discountPrice)} rasm yuklang.</div></div>`;
     }
+    function renderHsk30(d){
+      const h=d.hsk30||{};
+      const paymentOn=h.unlock_payment_enabled!==false;
+      const courseOn=h.enabled===true;
+      const newBadge=h.new_badge||{};
+      const newUntil=newBadge.new_until?courseAccessUntilText(newBadge.new_until):"";
+      const price=Math.max(1,Number(h.unlock_price_tjs||0)||1);
+      const live=Array.isArray(h.live_levels)?h.live_levels:[];
+      const qr=h.qr||{};
+      const stats=h.stats||{};
+      openDrawer("🆕 HSK 3.0","Курс ва бир марталик доступни алоҳида бошқариш",`<div class="panel">
+        <div class="mcard">
+          <h3>Rollout статистикаси</h3>
+          <div class="tags">
+            ${tag("HSK 3.0 да ҳозир "+Number(stats.active_users||0),"blue")}
+            ${tag("Трекни очган "+Number(stats.track_users||0),"blue")}
+            ${tag("Доимий unlock "+Number(stats.permanent_unlock_users||0),"green")}
+            ${tag("Promo user "+Number(stats.promo_users||0),"gold")}
+            ${tag("Promo кўрсатиш "+Number(stats.promo_impressions||0),"gold")}
+          </div>
+        </div>
+        <div class="mcard">
+          <h3>HSK 3.0 курс</h3>
+          <p>Бу глобал kill switch. Ўчирилса HSK 3.0 барча user учун ёпилади.</p>
+          <label class="ncsw"><input type="checkbox" id="hsk30Enabled" ${courseOn?"checked":""}> HSK 3.0 курс ёқилган</label>
+          <div class="tags" style="margin-top:10px">${tag(courseOn?"курс фаол":"курс ўчиқ",courseOn?"green":"red")}${newBadge.is_new?tag("NEW · 3 кунлик белги фаол","gold"):""}${live.map(x=>tag(String(x).toUpperCase(),"blue")).join("")}</div>
+          <div class="ncnote">${newBadge.is_new&&newUntil?`NEW белгиси ${newUntil} гача кўринади. `:""}Курс OFF → ON қилинганда NEW белгиси автоматик 3 кунга ёқилади. Нарх ёки live даражаларни сақлаш бу 3 кунлик ҳисобни қайта бошламайди.</div>
+          <div class="frow" style="margin-top:12px">
+            <label>Live даражалар</label>
+            <div class="row">
+              ${["nhsk1","nhsk2","nhsk3"].map((lv,idx)=>`<label class="ncsw"><input type="checkbox" data-hsk30-live value="${lv}" ${live.includes(lv)?"checked":""}> N${idx+1}</label>`).join("")}
+            </div>
+          </div>
+          <div class="ncnote">Runtime файл борлиги даражани автоматик очмайди. Фақат шу ерда белгиланган даражалар userларга кўринади.</div>
+        </div>
+        <div class="mcard">
+          <h3>Бир марталик HSK 3.0 тўлови</h3>
+          <p>Бу калит фақат доимий unlock тўловини бошқаради. HSK AI Pro обунаси алоҳида ишлашда давом этади.</p>
+          <label class="ncsw"><input type="checkbox" id="hsk30PaymentEnabled" ${paymentOn?"checked":""}> Бир марталик тўлов ёқилган</label>
+          <div class="frow" style="margin-top:12px"><label>Нарх (TJS)</label><input id="hsk30Price" class="input" type="number" min="1" max="10000" step="1" value="${price}"></div>
+          <div class="ncnote">Нарх кодда 10 TJS га қотирилмайди. Шу ерда сақланган сервер нархи Mini App, Android ва native checkout'ларга берилади.</div>
+          <button class="btn" type="button" data-hsk30save style="margin-top:12px">HSK 3.0 созламаларини сақлаш</button>
+        </div>
+        <div class="mcard" data-prow data-method="alipay" data-plan="hsk30_unlock">
+          <h3>Alipay · HSK 3.0</h3>
+          <p>${qr.alipay?"Жорий нарх учун QR бор ✅":"Жорий нарх учун QR йўқ"}</p>
+          <div data-qrbox data-main-price="${price} TJS" data-discount-price="">
+            <button class="btn sec" type="button" data-qrbtn data-scope="main">Alipay QR юклаш</button>
+            <input type="file" accept="image/*" data-qrfile hidden>
+            <div class="ncnote" data-qrinfo style="margin-top:8px">QR айнан ${price} TJS жорий нарх учун сақланади.</div>
+          </div>
+        </div>
+        <div class="mcard" data-prow data-method="wechat" data-plan="hsk30_unlock">
+          <h3>WeChat Pay · HSK 3.0</h3>
+          <p>${qr.wechat?"Жорий нарх учун QR бор ✅":"Жорий нарх учун QR йўқ"}</p>
+          <div data-qrbox data-main-price="${price} TJS" data-discount-price="">
+            <button class="btn sec" type="button" data-qrbtn data-scope="main">WeChat QR юклаш</button>
+            <input type="file" accept="image/*" data-qrfile hidden>
+            <div class="ncnote" data-qrinfo style="margin-top:8px">QR айнан ${price} TJS жорий нарх учун сақланади.</div>
+          </div>
+        </div>
+      </div>`);
+      bindPriceQr();
+    }
+
     function renderPrices(d){
       openDrawer("💳 Obuna narxlari","Narxlar darhol subscription Mini Appda ishlaydi",`<div class="panel">
         ${(d.prices||[]).map(p=>`<div class="mcard" data-prow data-method="${p.method}" data-plan="${p.plan}">
@@ -1926,7 +1991,8 @@
     const BC_LANGS=[["tj","TJ"],["uz","UZ"],["ru","RU"]];
     const BC_FILTERS=[
       ["status","👤 Status",[["","Hammasi"],["free","Bepul"],["trial","Sinov"],["active","Faol"],["expired","Tugagan"],["blocked","Blok"]]],
-      ["level","📚 Daraja",[["","Hammasi"],["beginner","Boshlang'ich"],["hsk1","HSK1"],["hsk2","HSK2"],["hsk3","HSK3"],["hsk4","HSK4"]]],
+      ["track","🧭 Kurs versiyasi",[["","Hammasi"],["hsk20","HSK 2.0"],["hsk30","HSK 3.0"]]],
+      ["level","📚 Daraja",[["","Hammasi"],["beginner","Boshlang'ich"],["hsk1","HSK1"],["hsk2","HSK2"],["hsk3","HSK3"],["hsk4","HSK4"],["nhsk1","HSK 3.0 · N1"],["nhsk2","HSK 3.0 · N2"],["nhsk3","HSK 3.0 · N3"]]],
       ["mode","🎯 Rejim",[["","Hammasi"],["qa","Savol-javob"],["course","Kurs"]]],
       ["payment_status","💳 To'lov statusi",[["","Hammasi"],["none","Yo'q"],["pending","Kutilmoqda"],["approved","Tasdiqlangan"],["rejected","Rad etilgan"]]],
       ["payment_method","🏦 To'lov usuli",[["","Hammasi"],["visa","Visa"],["alipay","Alipay"],["wechat","WeChat"]]],
@@ -2050,6 +2116,8 @@
         form=`<div class="frow"><label>Nomi</label><input id="cmTitle" class="input" maxlength="120"></div>
           <div class="frow"><label>Reklama matni</label><textarea id="cmText" class="textarea" maxlength="3500"></textarea></div>
           <div class="frow"><label>🌐 Til (bo'sh = hammasi)</label><div class="row">${cmLangChips()}</div></div>
+          ${sel("cm_track","🧭 Kurs versiyasi",[["","Hammasi"],["hsk20","HSK 2.0"],["hsk30","HSK 3.0"]])}
+          ${sel("cm_level","📚 Daraja",[["","Hammasi"],["beginner","Boshlang'ich"],["hsk1","HSK1"],["hsk2","HSK2"],["hsk3","HSK3"],["hsk4","HSK4"],["nhsk1","HSK 3.0 · N1"],["nhsk2","HSK 3.0 · N2"],["nhsk3","HSK 3.0 · N3"]])}
           <label class="ncsw"><input type="checkbox" id="cmActiveSubs"> Faol obunachilarga ham yuborilsin</label>
           <div class="frow"><label>📎 Foto/Video (ixtiyoriy)</label>
             <div class="row"><button class="btn sec" type="button" id="cmMediaBtn">Media tanlash</button>
@@ -2114,6 +2182,8 @@
       const p={kind,title:$("cmTitle").value.trim(),text:$("cmText").value.trim(),hours:$("cmHours").value};
       if(kind==="ad"){
         p.languages=[...document.querySelectorAll("[data-cmlang].active")].map(x=>x.dataset.cmlang);
+        p.track=$("cm_track").value;
+        p.level=$("cm_level").value;
         p.include_active_subscribers=$("cmActiveSubs").checked;
         p.content_type=state.cm.content_type; p.media_file_id=state.cm.media_file_id;
         const act=$("cmBtn").value; if(act){ const b={action:act}; const t=$("cmBtnText").value.trim(); if(t)b.text=t; const u=$("cmBtnUrl").value.trim(); if(u)b.url=u; p.button=b; }
@@ -2504,6 +2574,18 @@
       }
       if((el=T("[data-uaccess]"))){ el.disabled=true; return grantAccess(el.dataset.uaccess,$("qaDays").value,{name:el.dataset.uname,currentEnd:el.dataset.currentEnd,refreshUser:true}).catch(x=>toast(apiErr(x,"Obuna berilmadi"))).finally(()=>{if(el.isConnected)el.disabled=false;}); }
       if((el=T("[data-user]"))) return openUser(el.dataset.user);
+      if((el=T("[data-hsk30save]"))){
+        const price=Number(($("hsk30Price")&&$("hsk30Price").value)||0);
+        if(!Number.isSafeInteger(price)||price<1||price>10000){ toast("HSK 3.0 нархи 1–10000 TJS оралиғида бутун сон бўлиши керак"); return; }
+        el.disabled=true;
+        const liveLevels=[...document.querySelectorAll("[data-hsk30-live]:checked")].map(x=>x.value);
+        return apiPost("/api/admin-miniapp/hsk30/settings",{
+          enabled:!!($("hsk30Enabled")&&$("hsk30Enabled").checked),
+          unlock_payment_enabled:!!($("hsk30PaymentEnabled")&&$("hsk30PaymentEnabled").checked),
+          unlock_price_tjs:price,
+          live_levels:liveLevels
+        }).then(()=>afterModule("HSK 3.0 созламалари сақланди")).catch(x=>{toast(apiErr(x,"HSK 3.0 созламалари сақланмади"));el.disabled=false;});
+      }
       if((el=T("[data-psave]"))){ const r=el.closest("[data-prow]"); el.disabled=true; return apiPost("/api/admin-miniapp/prices/save",{method:r.dataset.method,plan:r.dataset.plan,amount:Number(r.querySelector("[data-pamount]").value||0)}).then(()=>afterModule("Narx saqlandi")).catch(x=>{toast(apiErr(x,"Narx saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-pdsave]"))){ const bank=el.dataset.bank||""; el.disabled=true; return apiPost("/api/admin-miniapp/payment-details/save",{payment_details:$(bank==="alif"?"payDetailsAlif":"payDetails").value,bank}).then(()=>afterModule("Rekvizit saqlandi")).catch(x=>{toast(apiErr(x,"Rekvizit saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-aimodelsave]"))){ const sel=$("aiModelSel"); el.disabled=true; return apiPost("/api/admin-miniapp/ai-model/save",{gemini_model:sel?sel.value:""}).then(()=>loadManagement(true)).then(()=>{renderAiModel();toast("AI modeli saqlandi");}).catch(x=>{toast(apiErr(x,"AI modeli saqlanmadi"));el.disabled=false;}); }

@@ -23,6 +23,8 @@ const previewState = {
   voiceSessionId: "",
   voiceTurns: 0,
   notificationsEnabled: true,
+  courseTrack: "hsk20",
+  hsk30PromoShown: 0,
 };
 
 const localized = (uz, ru, tj) => ({ uz, ru, tj });
@@ -104,13 +106,19 @@ function previewPrices() {
   };
 }
 
-function subscriptionOverview() {
+function subscriptionOverview(mode = "subscription") {
   const access = subscriptionAccess();
   const pending = previewState.subscription === "pending";
+  const hsk30Unlock = mode === "hsk30_unlock";
+  const hsk30Prices = {
+    visa: { hsk30_unlock: { final_amount: 10, currency: "TJS", discount_applied: false, discount_percent: 0 } },
+    alipay: { hsk30_unlock: { final_amount: 10, currency: "TJS", discount_applied: false, discount_percent: 0 } },
+    wechat: { hsk30_unlock: { final_amount: 10, currency: "TJS", discount_applied: false, discount_percent: 0 } },
+  };
   return {
     ok: true,
     source: "desktop_subscription",
-    mode: "subscription",
+    mode: hsk30Unlock ? "hsk30_unlock" : "subscription",
     language: previewState.language,
     access,
     checkout_allowed: !access.is_paid && !pending,
@@ -130,7 +138,7 @@ function subscriptionOverview() {
           submitted_at: "2026-08-02T08:00:00Z",
         }
       : null,
-    prices: access.is_paid || pending ? {} : previewPrices(),
+    prices: access.is_paid || pending ? {} : (hsk30Unlock ? hsk30Prices : previewPrices()),
     payment_details: access.is_paid || pending ? "" : "HSK AI · 0000 0000 0000 0000",
     payment_details_configured: !access.is_paid && !pending,
     card_countries: ["tj", "uz", "ru", "other"],
@@ -138,8 +146,15 @@ function subscriptionOverview() {
 }
 
 function subscriptionQuote(args) {
-  const prices = previewPrices();
   const plan = String(args.plan || "");
+  const hsk30Unlock = plan === "hsk30_unlock";
+  const prices = hsk30Unlock
+    ? {
+        visa: { hsk30_unlock: { final_amount: 10, currency: "TJS", discount_applied: false, discount_percent: 0 } },
+        alipay: { hsk30_unlock: { final_amount: 10, currency: "TJS", discount_applied: false, discount_percent: 0 } },
+        wechat: { hsk30_unlock: { final_amount: 10, currency: "TJS", discount_applied: false, discount_percent: 0 } },
+      }
+    : previewPrices();
   const method = String(args.method || "");
   const price = prices[method]?.[plan];
   if (!price || previewState.subscription !== "free") {
@@ -169,7 +184,7 @@ function subscriptionQuote(args) {
   return {
     ok: true,
     source: "desktop_subscription",
-    mode: "subscription",
+    mode: hsk30Unlock ? "hsk30_unlock" : "subscription",
     access: subscriptionAccess(),
     quote,
   };
@@ -197,11 +212,34 @@ function bootstrap() {
 }
 
 function courseMap() {
+  const hsk30 = previewState.courseTrack === "hsk30";
+  const level = hsk30 ? "nhsk1" : "hsk1";
   return {
     ok: true,
     authenticated: true,
-    level: "hsk1",
-    label: "HSK 1",
+    level,
+    label: hsk30 ? "HSK 3.0 · N1" : "HSK 1",
+    hsk30: {
+      active_track: previewState.courseTrack,
+      active_level: level,
+      access: {
+        feature_enabled: true,
+        paid_access: false,
+        permanently_unlocked: true,
+        allowed: true,
+        reason: "permanent_unlock",
+      },
+      live_levels: ["nhsk1"],
+      payment_enabled: true,
+      price_tjs: 10,
+      promo: {
+        eligible: previewState.courseTrack === "hsk20" && previewState.hsk30PromoShown < 2,
+        reason: "eligible",
+        recommended_level: "nhsk1",
+        shown_count: previewState.hsk30PromoShown,
+        max_shows: 2,
+      },
+    },
     user: bootstrap().user,
     progress: {
       completed: previewState.completed,
@@ -228,7 +266,7 @@ function courseMap() {
           ),
         ),
         action: "course",
-        level: "hsk1",
+        level,
         lesson_order: 1,
         created_at: "2026-08-11T10:00:00+00:00",
       },
@@ -460,6 +498,17 @@ export async function previewInvoke(command, args = {}) {
       return { ok: true };
     case "desktop_course_map":
       return courseMap();
+    case "desktop_course_track_switch":
+      previewState.courseTrack = String(args.targetTrack || "hsk20");
+      previewState.completed = 0;
+      return {
+        ok: true,
+        active_track: previewState.courseTrack,
+        active_level: previewState.courseTrack === "hsk30" ? "nhsk1" : "hsk1",
+      };
+    case "desktop_hsk30_promo_shown":
+      previewState.hsk30PromoShown += 1;
+      return { ok: true, recorded: true, shown_count: previewState.hsk30PromoShown };
     case "desktop_sync": {
       const map = courseMap();
       return {
@@ -504,7 +553,7 @@ export async function previewInvoke(command, args = {}) {
         notify: { enabled: previewState.notificationsEnabled },
       };
     case "desktop_subscription_overview":
-      return subscriptionOverview();
+      return subscriptionOverview(String(args.mode || "subscription"));
     case "desktop_subscription_quote":
       return subscriptionQuote(args);
     case "desktop_subscription_submit":
@@ -518,7 +567,7 @@ export async function previewInvoke(command, args = {}) {
         payment_id: 1001,
         already_pending: false,
         source: "desktop_subscription",
-        mode: "subscription",
+        mode: String(args.plan || "") === "hsk30_unlock" ? "hsk30_unlock" : "subscription",
         access: subscriptionAccess(),
       };
     case "desktop_vocabulary_state":

@@ -16,6 +16,7 @@ from app.repositories.partner_repo import PAYOUT_OPEN_STATUSES, PartnerRepositor
 from app.repositories.user_repo import UserRepository
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.portfolio_service import PortfolioService
+from app.services.hsk30_unlock_service import HSK30_UNLOCK_PLAN_TYPE
 
 
 PARTNER_LINK_PREFIX = "partner_"
@@ -211,6 +212,8 @@ class PartnerService:
 
     async def record_approved_payment(self, payment) -> tuple[Optional[Partner], Decimal, bool]:
         if not payment or payment.payment_status != "approved":
+            return None, Decimal("0.00"), False
+        if str(getattr(payment, "plan_type", "") or "") == HSK30_UNLOCK_PLAN_TYPE:
             return None, Decimal("0.00"), False
         if await self.repo.get_credit_by_payment(payment.id):
             return None, Decimal("0.00"), False

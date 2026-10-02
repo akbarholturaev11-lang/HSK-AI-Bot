@@ -1,0 +1,741 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 130,
+  "source_lesson": 17,
+  "part_no": 2,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我要多向认真的人学习",
+  "subtitle": {
+    "uz": "Ichki xafalik, ikkilanish va norozilik kabi hissiyotlarni ifodalash; “不是……吗？” ritorik savoli bilan hissiyot va ohangni kuchaytirish; “只有……才……” yordamida yagona zarur shart va natijani aytish.",
+    "ru": "Выражать внутреннюю грусть, сомнение и недовольство; использовать риторический вопрос “不是……吗？” для передачи эмоции и оттенка речи; выражать единственное необходимое условие и результат конструкцией “只有……才……”.",
+    "tj": "Ғамгинӣ, дудилагӣ ва норозигии дохилиро ифода кардан; бо саволи риторикии “不是……吗？” эҳсос ва оҳангро қавӣ кардан; бо “只有……才……” шарти ягонаи зарурӣ ва натиҷаро баён кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "常见",
+      "pinyin": "chángjiàn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "ko‘p uchraydigan; odatiy",
+        "ru": "часто встречающийся; обычный",
+        "tj": "маъмул; зуд-зуд вохӯранда"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "聪明",
+      "pinyin": "cōngming",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "aqlli",
+        "ru": "умный",
+        "tj": "доно; зирак"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "错",
+      "pinyin": "cuò",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xato",
+        "ru": "ошибка",
+        "tj": "хато"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "认为",
+      "pinyin": "rènwéi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "deb hisoblamoq; fikr qilmoq",
+        "ru": "считать; полагать",
+        "tj": "ҳисоб кардан; фикр кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Ritorik savol “不是……吗？”",
+        "ru": "Риторический вопрос “不是……吗？”",
+        "tj": "Саволи риторикии “不是……吗？”"
+      },
+      "title_zh": "反问句“不是……吗？”",
+      "rule": {
+        "uz": "“不是……吗？” odatda yangi ma’lumot so‘ramaydi. Gapiruvchi avval ma’lum bo‘lgan faktni eslatib, hayrat, e’tiroz yoki ta’kidni ifodalaydi.",
+        "ru": "“不是……吗？” обычно не запрашивает новую информацию. Говорящий напоминает известный факт и выражает удивление, возражение или подчёркивание.",
+        "tj": "“不是……吗？” одатан маълумоти нав намепурсад. Гӯянда далели маълумро ёдрас карда, ҳайрат, эътироз ё таъкидро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。",
+          "pinyin": "Nǐ bú shì xǐhuan wán diànnǎo ma? Nǐ kěyǐ qù kànkan gēn diànnǎo yǒuguān de shū.",
+          "translation": {
+            "uz": "Sen kompyuter bilan shug‘ullanishni yoqtirmaysanmi? Kompyuter haqidagi kitoblarni ko‘rib chiq.",
+            "ru": "Разве ты не любишь компьютеры? Посмотри книги, связанные с ними.",
+            "tj": "Магар ту компютерро дӯст намедорӣ? Китобҳои вобаста ба компютерро бин."
+          }
+        },
+        {
+          "zh": "你不是说今天有事吗？为什么来了？",
+          "pinyin": "Nǐ bú shì shuō jīntiān yǒu shì ma? Wèishénme lái le?",
+          "translation": {
+            "uz": "Bugun ishing bor degan eding-ku? Nega kelding?",
+            "ru": "Разве ты не говорил, что сегодня занят? Почему пришёл?",
+            "tj": "Магар нагуфта будӣ, ки имрӯз кор дорӣ? Чаро омадӣ?"
+          }
+        },
+        {
+          "zh": "考试不是下个月吗？你怎么今天就开始复习了？",
+          "pinyin": "Kǎoshì bú shì xià ge yuè ma? Nǐ zěnme jīntiān jiù kāishǐ fùxí le?",
+          "translation": {
+            "uz": "Imtihon keyingi oy emasmi? Nega bugundan takrorlashni boshlading?",
+            "ru": "Разве экзамен не в следующем месяце? Почему ты уже сегодня начал готовиться?",
+            "tj": "Магар имтиҳон моҳи оянда нест? Чаро аз имрӯз такрорро сар кардӣ?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "O‘quv binosida Liu Xiaoxue va sinfdoshi yurib suhbatlashmoqda.",
+        "ru": "В учебном корпусе Лю Сяосюэ и одноклассник идут и разговаривают.",
+        "tj": "Дар бинои таълимӣ Лю Сяосюэ ва ҳамсинфаш роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘小雪",
+          "zh": "怎么回事？",
+          "pinyin": "Zěnme huí shì?",
+          "text": {
+            "uz": "Nima bo‘ldi?",
+            "ru": "Что случилось?",
+            "tj": "Чӣ гап шуд?"
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "你想多了，做错事情是很常见的。",
+          "pinyin": "Nǐ xiǎng duō le, zuò cuò shìqing shì hěn chángjiàn de.",
+          "text": {
+            "uz": "Ortiqcha o‘ylayapsan, xato qilish juda odatiy hol.",
+            "ru": "Ты слишком переживаешь, ошибаться — обычное дело.",
+            "tj": "Аз ҳад зиёд фикр мекунӣ, хато кардан кори маъмул аст."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "你说的就是我，以后我要多向认真的人学习。",
+          "pinyin": "Nǐ shuō de jiù shì wǒ, yǐhòu wǒ yào duō xiàng rènzhēn de rén xuéxí.",
+          "text": {
+            "uz": "Aytganing aynan men haqimda. Bundan keyin jiddiy odamlaridan ko‘proq o‘rganaman.",
+            "ru": "Ты точно описала меня. Теперь я буду больше учиться у серьёзных людей.",
+            "tj": "Гуфтаат айнан ман ҳастам. Минбаъд аз одамони ҷиддӣ бештар меомӯзам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "O‘quv zali oldida Bai Jiayue Chen Tianzhongni uchratdi.",
+        "ru": "У входа в читальный зал Бай Цзяюэ встретила Чэнь Тяньчжуна.",
+        "tj": "Дар назди толори хониш Бай Ҷяюэ бо Чэн Тянҷун вохӯрд."
+      },
+      "dialogue": [
+        {
+          "speaker": "陈天中",
+          "zh": "这有什么奇怪的？我是来学习的。",
+          "pinyin": "Zhè yǒu shénme qíguài de? Wǒ shì lái xuéxí de.",
+          "text": {
+            "uz": "Buning nimasi g‘alati? Men o‘qigani keldim.",
+            "ru": "Что тут странного? Я пришёл заниматься.",
+            "tj": "Ин чӣ аҷиб дорад? Ман барои хондан омадам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。",
+          "pinyin": "Nǐ bú shì xǐhuan wán diànnǎo ma? Nǐ kěyǐ qù kànkan gēn diànnǎo yǒuguān de shū.",
+          "text": {
+            "uz": "Sen kompyuterni yoqtirmaysanmi? Kompyuterga oid kitoblarni ko‘rib chiq.",
+            "ru": "Разве ты не любишь компьютеры? Посмотри книги, связанные с ними.",
+            "tj": "Магар ту компютерро дӯст намедорӣ? Китобҳои вобаста ба компютерро бин."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "В кампусе Ли Вэнь и Чэнь Тяньчжун разговаривают.",
+        "tj": "Дар кампус Ли Вэн ва Чэн Тянҷун суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "陈天中",
+          "zh": "我的手机没电了。你找我有事吗？",
+          "pinyin": "Wǒ de shǒujī méi diàn le. Nǐ zhǎo wǒ yǒu shì ma?",
+          "text": {
+            "uz": "Telefonimning quvvati tugadi. Menga ishing bormi?",
+            "ru": "Телефон разрядился. Ты меня искал по делу?",
+            "tj": "Телефонам барқ надорад. Ба ман кор доштӣ?"
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "是，可是我还没想好学什么，更没想好去哪个国家。",
+          "pinyin": "Shì, kěshì wǒ hái méi xiǎng hǎo xué shénme, gèng méi xiǎng hǎo qù nǎge guójiā.",
+          "text": {
+            "uz": "Ha, lekin nimani o‘qishni hali hal qilganim yo‘q, qaysi mamlakatga borishni esa umuman tanlamadim.",
+            "ru": "Да, но я ещё не решил, что изучать, и тем более не решил, в какую страну ехать.",
+            "tj": "Ҳа, аммо ҳоло чӣ хонданро қарор накардаам, боз кадом кишвар рафтанро ҳам интихоб накардаам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我给你介绍几个有用的网站。",
+          "pinyin": "Wǒ gěi nǐ jièshào jǐ ge yǒuyòng de wǎngzhàn.",
+          "text": {
+            "uz": "Senga bir nechta foydali saytni tavsiya qilaman.",
+            "ru": "Я покажу тебе несколько полезных сайтов.",
+            "tj": "Ба ту чанд сомонаи муфидро нишон медиҳам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "常见",
+            "pinyin": "chángjiàn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "ko‘p uchraydigan; odatiy",
+              "ru": "часто встречающийся; обычный",
+              "tj": "маъмул; зуд-зуд вохӯранда"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "常见",
+          "pinyin": "chángjiàn",
+          "options": [
+            "常见",
+            "楼梯",
+            "害怕",
+            "向"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "常见 — ko‘p uchraydigan; odatiy (chángjiàn)",
+            "ru": "常见 — часто встречающийся; обычный (chángjiàn)",
+            "tj": "常见 — маъмул; зуд-зуд вохӯранда (chángjiàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "聪明",
+            "pinyin": "cōngming",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "aqlli",
+              "ru": "умный",
+              "tj": "доно; зирак"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "聪明",
+          "pinyin": "cōngming",
+          "translation": {
+            "uz": "aqlli",
+            "ru": "умный",
+            "tj": "доно; зирак"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "聪明 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 聪明:",
+            "tj": "Маънои калимаи 聪明-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qo‘rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
+            },
+            {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            },
+            {
+              "uz": "zina",
+              "ru": "лестница",
+              "tj": "зинапоя"
+            },
+            {
+              "uz": "aqlli",
+              "ru": "умный",
+              "tj": "доно; зирак"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "聪明 = aqlli (cōngming)",
+            "ru": "聪明 = умный (cōngming)",
+            "tj": "聪明 = доно; зирак (cōngming)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "错",
+            "pinyin": "cuò",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xato",
+              "ru": "ошибка",
+              "tj": "хато"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "cuò qaysi ieroglif?",
+            "ru": "Какой иероглиф читается cuò?",
+            "tj": "cuò кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "向",
+            "楼梯",
+            "错",
+            "害怕"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "错 = xato (cuò)",
+            "ru": "错 = ошибка (cuò)",
+            "tj": "错 = хато (cuò)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "认为",
+            "pinyin": "rènwéi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "deb hisoblamoq; fikr qilmoq",
+              "ru": "считать; полагать",
+              "tj": "ҳисоб кардан; фикр кардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "认为 talaffuzini tanlang:",
+            "ru": "Выберите произношение 认为:",
+            "tj": "Талаффузи 认为-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xiàng",
+            "rènwéi",
+            "hàipà",
+            "lóutī"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "认为 — rènwéi",
+            "ru": "认为 — rènwéi",
+            "tj": "认为 — rènwéi"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ko‘p uchraydigan; odatiy' xitoycha qaysi?",
+            "ru": "'часто встречающийся; обычный' по-китайски?",
+            "tj": "'маъмул; зуд-зуд вохӯранда' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "楼梯",
+            "害怕",
+            "常见",
+            "向"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "ko‘p uchraydigan; odatiy = 常见 (chángjiàn)",
+            "ru": "часто встречающийся; обычный = 常见 (chángjiàn)",
+            "tj": "маъмул; зуд-зуд вохӯранда = 常见 (chángjiàn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "常见",
+              {
+                "uz": "ko‘p uchraydigan; odatiy",
+                "ru": "часто встречающийся; обычный",
+                "tj": "маъмул; зуд-зуд вохӯранда"
+              }
+            ],
+            [
+              "聪明",
+              {
+                "uz": "aqlli",
+                "ru": "умный",
+                "tj": "доно; зирак"
+              }
+            ],
+            [
+              "错",
+              {
+                "uz": "xato",
+                "ru": "ошибка",
+                "tj": "хато"
+              }
+            ],
+            [
+              "认为",
+              {
+                "uz": "deb hisoblamoq; fikr qilmoq",
+                "ru": "считать; полагать",
+                "tj": "ҳисоб кардан; фикр кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Ritorik savol “不是……吗？”",
+              "ru": "Риторический вопрос “不是……吗？”",
+              "tj": "Саволи риторикии “不是……吗？”"
+            },
+            "title_zh": "反问句“不是……吗？”",
+            "rule": {
+              "uz": "“不是……吗？” odatda yangi ma’lumot so‘ramaydi. Gapiruvchi avval ma’lum bo‘lgan faktni eslatib, hayrat, e’tiroz yoki ta’kidni ifodalaydi.",
+              "ru": "“不是……吗？” обычно не запрашивает новую информацию. Говорящий напоминает известный факт и выражает удивление, возражение или подчёркивание.",
+              "tj": "“不是……吗？” одатан маълумоти нав намепурсад. Гӯянда далели маълумро ёдрас карда, ҳайрат, эътироз ё таъкидро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。",
+                "pinyin": "Nǐ bú shì xǐhuan wán diànnǎo ma? Nǐ kěyǐ qù kànkan gēn diànnǎo yǒuguān de shū.",
+                "translation": {
+                  "uz": "Sen kompyuter bilan shug‘ullanishni yoqtirmaysanmi? Kompyuter haqidagi kitoblarni ko‘rib chiq.",
+                  "ru": "Разве ты не любишь компьютеры? Посмотри книги, связанные с ними.",
+                  "tj": "Магар ту компютерро дӯст намедорӣ? Китобҳои вобаста ба компютерро бин."
+                }
+              },
+              {
+                "zh": "你不是说今天有事吗？为什么来了？",
+                "pinyin": "Nǐ bú shì shuō jīntiān yǒu shì ma? Wèishénme lái le?",
+                "translation": {
+                  "uz": "Bugun ishing bor degan eding-ku? Nega kelding?",
+                  "ru": "Разве ты не говорил, что сегодня занят? Почему пришёл?",
+                  "tj": "Магар нагуфта будӣ, ки имрӯз кор дорӣ? Чаро омадӣ?"
+                }
+              },
+              {
+                "zh": "考试不是下个月吗？你怎么今天就开始复习了？",
+                "pinyin": "Kǎoshì bú shì xià ge yuè ma? Nǐ zěnme jīntiān jiù kāishǐ fùxí le?",
+                "translation": {
+                  "uz": "Imtihon keyingi oy emasmi? Nega bugundan takrorlashni boshlading?",
+                  "ru": "Разве экзамен не в следующем месяце? Почему ты уже сегодня начал готовиться?",
+                  "tj": "Магар имтиҳон моҳи оянда нест? Чаро аз имрӯз такрорро сар кардӣ?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Sen kompyuter bilan shug‘ullanishni yoqtirmaysanmi? Kompyuter haqidagi kitoblarni ko‘rib chiq.» — xitoychada qaysi biri?",
+            "ru": "«Разве ты не любишь компьютеры? Посмотри книги, связанные с ними.» — какое предложение по-китайски?",
+            "tj": "«Магар ту компютерро дӯст намедорӣ? Китобҳои вобаста ба компютерро бин.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你不是说今天有事吗？为什么来了？",
+            "考试不是下个月吗？你怎么今天就开始复习了？",
+            "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。 — Nǐ bú shì xǐhuan wán diànnǎo ma? Nǐ kěyǐ qù kànkan gēn diànnǎo yǒuguān de shū.",
+            "ru": "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。 — Nǐ bú shì xǐhuan wán diànnǎo ma? Nǐ kěyǐ qù kànkan gēn diànnǎo yǒuguān de shū.",
+            "tj": "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。 — Nǐ bú shì xǐhuan wán diànnǎo ma? Nǐ kěyǐ qù kànkan gēn diànnǎo yǒuguān de shū."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "常见",
+              {
+                "uz": "ko‘p uchraydigan; odatiy",
+                "ru": "часто встречающийся; обычный",
+                "tj": "маъмул; зуд-зуд вохӯранда"
+              }
+            ],
+            [
+              "聪明",
+              {
+                "uz": "aqlli",
+                "ru": "умный",
+                "tj": "доно; зирак"
+              }
+            ],
+            [
+              "错",
+              {
+                "uz": "xato",
+                "ru": "ошибка",
+                "tj": "хато"
+              }
+            ],
+            [
+              "认为",
+              {
+                "uz": "deb hisoblamoq; fikr qilmoq",
+                "ru": "считать; полагать",
+                "tj": "ҳисоб кардан; фикр кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "聪明",
+          "pinyin": "cōngming",
+          "options": [
+            "楼梯",
+            "聪明",
+            "向",
+            "害怕"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "聪明 — aqlli (cōngming)",
+            "ru": "聪明 — умный (cōngming)",
+            "tj": "聪明 — доно; зирак (cōngming)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "聪明",
+          "pinyin": "cōngming",
+          "translation": {
+            "uz": "aqlli",
+            "ru": "умный",
+            "tj": "доно; зирак"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "楼梯 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 楼梯:",
+            "tj": "Маънои калимаи 楼梯-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            },
+            {
+              "uz": "qo‘rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
+            },
+            {
+              "uz": "zina",
+              "ru": "лестница",
+              "tj": "зинапоя"
+            },
+            {
+              "uz": "jahli chiqmoq",
+              "ru": "сердиться",
+              "tj": "қаҳр кардан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "楼梯 = zina (lóutī)",
+            "ru": "楼梯 = лестница (lóutī)",
+            "tj": "楼梯 = зинапоя (lóutī)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "楼梯",
+            "pinyin": "lóutī",
+            "meaning": {
+              "uz": "zina",
+              "ru": "лестница",
+              "tj": "зинапоя"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'aqlli' xitoycha qaysi?",
+            "ru": "'умный' по-китайски?",
+            "tj": "'доно; зирак' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "楼梯",
+            "向",
+            "聪明",
+            "害怕"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "aqlli = 聪明 (cōngming)",
+            "ru": "умный = 聪明 (cōngming)",
+            "tj": "доно; зирак = 聪明 (cōngming)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "聪明",
+            "pinyin": "cōngming",
+            "meaning": {
+              "uz": "aqlli",
+              "ru": "умный",
+              "tj": "доно; зирак"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

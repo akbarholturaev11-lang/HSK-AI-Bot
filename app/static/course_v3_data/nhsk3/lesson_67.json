@@ -1,0 +1,790 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 67,
+  "source_lesson": 9,
+  "part_no": 3,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "打不好没关系",
+  "subtitle": {
+    "uz": "Sport musobaqalari, sportchilar va natijalar haqida gaplashish; mumkinlik to‘ldiruvchisi bilan harakatning uddalanishi yoki uddalanmasligini aytish; “越A越B” bilan holatning o‘zgarishini ifodalash.",
+    "ru": "Говорить о спортивных соревнованиях, спортсменах и результатах; использовать дополнение возможности для выражения того, возможно ли выполнить действие; описывать изменение ситуации через “越A越B”.",
+    "tj": "Дар бораи мусобиқаҳои варзишӣ, варзишгарон ва натиҷаҳо суҳбат кардан; бо пуркунандаи имконият иҷро шудан ё нашудани амалро ифода кардан; бо “越A越B” тағйирёбии ҳолатро нишон додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "网球",
+      "pinyin": "wǎngqiú",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tennis",
+        "ru": "теннис",
+        "tj": "теннис"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "比赛",
+      "pinyin": "bǐsài",
+      "pos": "n./v.",
+      "meaning": {
+        "uz": "musobaqa; bellashmoq",
+        "ru": "соревнование; соревноваться",
+        "tj": "мусобиқа; рақобат кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "练习",
+      "pinyin": "liànxí",
+      "pos": "v./n.",
+      "meaning": {
+        "uz": "mashq qilmoq; mashq",
+        "ru": "упражняться; упражнение",
+        "tj": "машқ кардан; машқ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "好多",
+      "pinyin": "hǎoduō",
+      "pos": "num.",
+      "meaning": {
+        "uz": "juda ko‘p",
+        "ru": "очень много",
+        "tj": "хеле зиёд"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "“越A越B” — qancha A bo‘lsa, shuncha B",
+        "ru": "“越A越B” — чем больше A, тем больше B",
+        "tj": "“越A越B” — ҳар қадар A, ҳамон қадар B"
+      },
+      "title_zh": "固定格式“越A越B”",
+      "rule": {
+        "uz": "“越A越B” A o‘zgarishi bilan B ham kuchayib yoki o‘zgarib borishini bildiradi. Ikki qismning egasi bir xil yoki turli bo‘lishi mumkin.",
+        "ru": "“越A越B” показывает, что по мере изменения A изменяется или усиливается B. Субъекты двух частей могут совпадать или различаться.",
+        "tj": "“越A越B” нишон медиҳад, ки бо тағйири A, B ҳам тағйир ё қавитар мешавад. Мубтадоҳои ду қисм метавонанд якхела ё гуногун бошанд."
+      },
+      "examples": [
+        {
+          "zh": "今天的足球比赛我越看越着急。",
+          "pinyin": "Jīntiān de zúqiú bǐsài wǒ yuè kàn yuè zháojí.",
+          "translation": {
+            "uz": "Bugungi futbolni qancha ko‘rsam, shuncha xavotirlanayapman.",
+            "ru": "Чем дольше смотрю сегодняшний футбольный матч, тем больше волнуюсь.",
+            "tj": "Бозии футболи имрӯзаро ҳар қадар бинам, ҳамон қадар хавотир мешавам."
+          }
+        },
+        {
+          "zh": "妈妈越说，他越不高兴。",
+          "pinyin": "Māma yuè shuō, tā yuè bù gāoxìng.",
+          "translation": {
+            "uz": "Onasi qancha gapirsa, u shuncha norozi bo‘lyapti.",
+            "ru": "Чем больше мама говорит, тем сильнее он недоволен.",
+            "tj": "Модар ҳар қадар гап занад, ӯ ҳамон қадар нороҳат мешавад."
+          }
+        },
+        {
+          "zh": "我想认识中国朋友，越多越好。",
+          "pinyin": "Wǒ xiǎng rènshi Zhōngguó péngyou, yuè duō yuè hǎo.",
+          "translation": {
+            "uz": "Men xitoylik do‘stlar orttirmoqchiman, qancha ko‘p bo‘lsa, shuncha yaxshi.",
+            "ru": "Я хочу познакомиться с китайскими друзьями — чем больше, тем лучше.",
+            "tj": "Мехоҳам дӯстони чинӣ пайдо кунам, ҳар қадар зиёд бошад, ҳамон қадар беҳтар."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kutubxona oldida Li Wen Bai Jiayue tomon yugurib keldi.",
+        "ru": "У входа в библиотеку Ли Вэнь подбегает к Бай Цзяюэ.",
+        "tj": "Дар назди китобхона Ли Вэн ба тарафи Бай Ҷяюэ давида меояд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "家月，对不起，我昨天忘了还你校园卡了。",
+          "pinyin": "Jiāyuè, duìbuqǐ, wǒ zuótiān wàng le huán nǐ xiàoyuánkǎ le.",
+          "text": {
+            "uz": "Jiayue, uzr, kecha kampus kartangni qaytarishni unutibman.",
+            "ru": "Цзяюэ, прости, я вчера забыл вернуть твою кампус-карту.",
+            "tj": "Ҷяюэ, бубахш, дирӯз корти кампусатро баргардонданро фаромӯш кардам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "没关系。你怎么这么快就过来了？",
+          "pinyin": "Méi guānxi. Nǐ zěnme zhème kuài jiù guòlái le?",
+          "text": {
+            "uz": "Hechqisi yo‘q. Qanday qilib bunchalik tez kelib qolding?",
+            "ru": "Ничего. Как ты так быстро пришёл?",
+            "tj": "Ҳеҷ гап нест. Чӣ тавр ин қадар зуд омадӣ?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我正在球场打球呢，接了你的电话就跑过来了。",
+          "pinyin": "Wǒ zhèngzài qiúchǎng dǎqiú ne, jiē le nǐ de diànhuà jiù pǎo guòlái le.",
+          "text": {
+            "uz": "Men sport maydonida to‘p o‘ynayotgan edim, qo‘ng‘irog‘ingni olib darrov yugurib keldim.",
+            "ru": "Я играл на площадке; как только ответил на твой звонок, сразу прибежал.",
+            "tj": "Ман дар майдон тӯб бозӣ мекардам, зангатро гирифтаму фавран давида омадам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "听说为了准备运动会，你们几个男生每天都练球。",
+          "pinyin": "Tīngshuō wèile zhǔnbèi yùndònghuì, nǐmen jǐ ge nánshēng měitiān dōu liàn qiú.",
+          "text": {
+            "uz": "Eshitishimcha, sport musobaqasiga tayyorlanish uchun siz yigitlar har kuni to‘p mashq qilar ekansiz.",
+            "ru": "Говорят, ради подготовки к соревнованиям вы каждый день тренируетесь.",
+            "tj": "Шунидам, барои омодагӣ ба мусобиқаҳо шумо ҳар рӯз машқи тӯб мекунед."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "是啊！你打算参加运动会吗？",
+          "pinyin": "Shì a! Nǐ dǎsuàn cānjiā yùndònghuì ma?",
+          "text": {
+            "uz": "Ha! Sen ham sport musobaqasida qatnashmoqchimisan?",
+            "ru": "Да! Ты собираешься участвовать в соревнованиях?",
+            "tj": "Ҳа! Ту ҳам дар мусобиқа иштирок карданӣ ҳастӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我想参加网球比赛，最近一直在练习。",
+          "pinyin": "Wǒ xiǎng cānjiā wǎngqiú bǐsài, zuìjìn yìzhí zài liànxí.",
+          "text": {
+            "uz": "Tennis musobaqasida qatnashmoqchiman, so‘nggi paytlar doim mashq qilyapman.",
+            "ru": "Хочу участвовать в теннисном турнире, в последнее время постоянно тренируюсь.",
+            "tj": "Мехоҳам дар мусобиқаи теннис иштирок кунам, вақтҳои охир пайваста машқ мекунам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "好，到时候我去看你的比赛。",
+          "pinyin": "Hǎo, dào shíhou wǒ qù kàn nǐ de bǐsài.",
+          "text": {
+            "uz": "Yaxshi, o‘sha payt musobaqangni ko‘rgani boraman.",
+            "ru": "Хорошо, тогда я приду посмотреть твой матч.",
+            "tj": "Хуб, он вақт мусобиқаатро дидан меоям."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В кампусе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар кампус Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "家月，你跟我们一起打羽毛球吧？",
+          "pinyin": "Jiāyuè, nǐ gēn wǒmen yìqǐ dǎ yǔmáoqiú ba?",
+          "text": {
+            "uz": "Jiayue, biz bilan badminton o‘ynaysanmi?",
+            "ru": "Цзяюэ, поиграешь с нами в бадминтон?",
+            "tj": "Ҷяюэ, бо мо бадминтон бозӣ мекунӣ?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "不是比赛，打不好没关系。",
+          "pinyin": "Bú shì bǐsài, dǎ bù hǎo méi guānxi.",
+          "text": {
+            "uz": "Bu musobaqa emas, yaxshi o‘ynay olmasang ham hechqisi yo‘q.",
+            "ru": "Это не соревнование, ничего страшного, если сыграешь плохо.",
+            "tj": "Ин мусобиқа нест, агар хуб бозӣ карда натавонӣ ҳам, ҳеҷ гап нест."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "这么多同学一起打，如果总是接不住球，就太不好意思了。",
+          "pinyin": "Zhème duō tóngxué yìqǐ dǎ, rúguǒ zǒngshì jiē bú zhù qiú, jiù tài bù hǎoyìsi le.",
+          "text": {
+            "uz": "Shuncha sinfdosh birga o‘ynasa, men doim to‘pni qaytara olmasam juda noqulay bo‘ladi.",
+            "ru": "Когда столько однокурсников играют вместе, будет неловко, если я всё время не смогу принять мяч.",
+            "tj": "Ин қадар ҳамсабақ якҷо бозӣ кунанд, агар ман ҳамеша тӯбро гирифта натавонам, хеле хиҷолат мешавад."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "你想得太多了！大家打球只是为了锻炼身体。",
+          "pinyin": "Nǐ xiǎng de tài duō le! Dàjiā dǎqiú zhǐshì wèile duànliàn shēntǐ.",
+          "text": {
+            "uz": "Juda ko‘p o‘ylayapsan! Hamma faqat badan chiniqtirish uchun o‘ynayapti.",
+            "ru": "Ты слишком много думаешь! Все играют просто ради физической нагрузки.",
+            "tj": "Ту аз ҳад зиёд фикр мекунӣ! Ҳама танҳо барои машқи бадан бозӣ мекунанд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我先自己练练吧，下周再跟你们一起打。",
+          "pinyin": "Wǒ xiān zìjǐ liànlian ba, xià zhōu zài gēn nǐmen yìqǐ dǎ.",
+          "text": {
+            "uz": "Avval o‘zim biroz mashq qilay, keyingi hafta sizlar bilan o‘ynayman.",
+            "ru": "Я сначала сама немного потренируюсь, а на следующей неделе сыграю с вами.",
+            "tj": "Аввал худам каме машқ мекунам, ҳафтаи оянда бо шумо бозӣ мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida Li Wen, Bai Jiayue va Chen Tianzhong birga televizor ko‘rmoqda.",
+        "ru": "Дома у Ли Вэня Ли Вэнь, Бай Цзяюэ и Чэнь Тяньчжун вместе смотрят телевизор.",
+        "tj": "Дар хонаи Ли Вэн, Ли Вэн, Бай Ҷяюэ ва Чэн Тянҷун якҷо телевизор мебинанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "陈天中",
+          "zh": "足球比赛已经开始了，快过来看吧！",
+          "pinyin": "Zúqiú bǐsài yǐjīng kāishǐ le, kuài guòlái kàn ba!",
+          "text": {
+            "uz": "Futbol o‘yini boshlanib bo‘ldi, tez kelib ko‘ringlar!",
+            "ru": "Футбольный матч уже начался, идите скорее смотреть!",
+            "tj": "Бозии футбол аллакай оғоз шуд, зуд биёед тамошо кунед!"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "今天怎么回事？总是踢不进去！",
+          "pinyin": "Jīntiān zěnme huí shì? Zǒngshì tī bu jìnqu!",
+          "text": {
+            "uz": "Bugun nima bo‘lyapti? To‘pni hech kirita olishmayapti!",
+            "ru": "Что сегодня происходит? Всё никак не могут забить!",
+            "tj": "Имрӯз чӣ гап? Ҳеҷ тӯбро дароварда наметавонанд!"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "越看越着急，我不看了，你们告诉我得分吧。",
+          "pinyin": "Yuè kàn yuè zháojí, wǒ bù kàn le, nǐmen gàosu wǒ défēn ba.",
+          "text": {
+            "uz": "Ko‘rganim sari xavotirim oshyapti, boshqa ko‘rmayman, natijani keyin aytarsizlar.",
+            "ru": "Чем больше смотрю, тем сильнее нервничаю. Не буду смотреть, скажите потом счёт.",
+            "tj": "Ҳар қадар мебинам, ҳамон қадар хавотир мешавам. Дигар намебинам, баъд ҳисобро бигӯед."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "网球",
+            "pinyin": "wǎngqiú",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tennis",
+              "ru": "теннис",
+              "tj": "теннис"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wǎngqiú qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wǎngqiú?",
+            "tj": "wǎngqiú кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "网球",
+            "校园",
+            "球场",
+            "卡"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "网球 = tennis (wǎngqiú)",
+            "ru": "网球 = теннис (wǎngqiú)",
+            "tj": "网球 = теннис (wǎngqiú)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "比赛",
+            "pinyin": "bǐsài",
+            "pos": "n./v.",
+            "meaning": {
+              "uz": "musobaqa; bellashmoq",
+              "ru": "соревнование; соревноваться",
+              "tj": "мусобиқа; рақобат кардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "比赛 talaffuzini tanlang:",
+            "ru": "Выберите произношение 比赛:",
+            "tj": "Талаффузи 比赛-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "qiúchǎng",
+            "xiàoyuán",
+            "bǐsài",
+            "kǎ"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "比赛 — bǐsài",
+            "ru": "比赛 — bǐsài",
+            "tj": "比赛 — bǐsài"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "练习",
+            "pinyin": "liànxí",
+            "pos": "v./n.",
+            "meaning": {
+              "uz": "mashq qilmoq; mashq",
+              "ru": "упражняться; упражнение",
+              "tj": "машқ кардан; машқ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "练习",
+          "pinyin": "liànxí",
+          "translation": {
+            "uz": "mashq qilmoq; mashq",
+            "ru": "упражняться; упражнение",
+            "tj": "машқ кардан; машқ"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'mashq qilmoq; mashq' xitoycha qaysi?",
+            "ru": "'упражняться; упражнение' по-китайски?",
+            "tj": "'машқ кардан; машқ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "校园",
+            "卡",
+            "球场",
+            "练习"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "mashq qilmoq; mashq = 练习 (liànxí)",
+            "ru": "упражняться; упражнение = 练习 (liànxí)",
+            "tj": "машқ кардан; машқ = 练习 (liànxí)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "好多",
+            "pinyin": "hǎoduō",
+            "pos": "num.",
+            "meaning": {
+              "uz": "juda ko‘p",
+              "ru": "очень много",
+              "tj": "хеле зиёд"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "好多",
+          "pinyin": "hǎoduō",
+          "options": [
+            "好多",
+            "球场",
+            "校园",
+            "卡"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "好多 — juda ko‘p (hǎoduō)",
+            "ru": "好多 — очень много (hǎoduō)",
+            "tj": "好多 — хеле зиёд (hǎoduō)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "网球 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 网球:",
+            "tj": "Маънои калимаи 网球-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kampus; maktab hududi",
+              "ru": "кампус; территория учебного заведения",
+              "tj": "кампус; ҳудуди мактаб"
+            },
+            {
+              "uz": "tennis",
+              "ru": "теннис",
+              "tj": "теннис"
+            },
+            {
+              "uz": "sport maydoni; to‘p o‘ynash maydoni",
+              "ru": "спортивная площадка; поле",
+              "tj": "майдони варзишӣ"
+            },
+            {
+              "uz": "karta",
+              "ru": "карта",
+              "tj": "корт"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "网球 = tennis (wǎngqiú)",
+            "ru": "网球 = теннис (wǎngqiú)",
+            "tj": "网球 = теннис (wǎngqiú)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "网球",
+              {
+                "uz": "tennis",
+                "ru": "теннис",
+                "tj": "теннис"
+              }
+            ],
+            [
+              "比赛",
+              {
+                "uz": "musobaqa; bellashmoq",
+                "ru": "соревнование; соревноваться",
+                "tj": "мусобиқа; рақобат кардан"
+              }
+            ],
+            [
+              "练习",
+              {
+                "uz": "mashq qilmoq; mashq",
+                "ru": "упражняться; упражнение",
+                "tj": "машқ кардан; машқ"
+              }
+            ],
+            [
+              "好多",
+              {
+                "uz": "juda ko‘p",
+                "ru": "очень много",
+                "tj": "хеле зиёд"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "“越A越B” — qancha A bo‘lsa, shuncha B",
+              "ru": "“越A越B” — чем больше A, тем больше B",
+              "tj": "“越A越B” — ҳар қадар A, ҳамон қадар B"
+            },
+            "title_zh": "固定格式“越A越B”",
+            "rule": {
+              "uz": "“越A越B” A o‘zgarishi bilan B ham kuchayib yoki o‘zgarib borishini bildiradi. Ikki qismning egasi bir xil yoki turli bo‘lishi mumkin.",
+              "ru": "“越A越B” показывает, что по мере изменения A изменяется или усиливается B. Субъекты двух частей могут совпадать или различаться.",
+              "tj": "“越A越B” нишон медиҳад, ки бо тағйири A, B ҳам тағйир ё қавитар мешавад. Мубтадоҳои ду қисм метавонанд якхела ё гуногун бошанд."
+            },
+            "examples": [
+              {
+                "zh": "今天的足球比赛我越看越着急。",
+                "pinyin": "Jīntiān de zúqiú bǐsài wǒ yuè kàn yuè zháojí.",
+                "translation": {
+                  "uz": "Bugungi futbolni qancha ko‘rsam, shuncha xavotirlanayapman.",
+                  "ru": "Чем дольше смотрю сегодняшний футбольный матч, тем больше волнуюсь.",
+                  "tj": "Бозии футболи имрӯзаро ҳар қадар бинам, ҳамон қадар хавотир мешавам."
+                }
+              },
+              {
+                "zh": "妈妈越说，他越不高兴。",
+                "pinyin": "Māma yuè shuō, tā yuè bù gāoxìng.",
+                "translation": {
+                  "uz": "Onasi qancha gapirsa, u shuncha norozi bo‘lyapti.",
+                  "ru": "Чем больше мама говорит, тем сильнее он недоволен.",
+                  "tj": "Модар ҳар қадар гап занад, ӯ ҳамон қадар нороҳат мешавад."
+                }
+              },
+              {
+                "zh": "我想认识中国朋友，越多越好。",
+                "pinyin": "Wǒ xiǎng rènshi Zhōngguó péngyou, yuè duō yuè hǎo.",
+                "translation": {
+                  "uz": "Men xitoylik do‘stlar orttirmoqchiman, qancha ko‘p bo‘lsa, shuncha yaxshi.",
+                  "ru": "Я хочу познакомиться с китайскими друзьями — чем больше, тем лучше.",
+                  "tj": "Мехоҳам дӯстони чинӣ пайдо кунам, ҳар қадар зиёд бошад, ҳамон қадар беҳтар."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Onasi qancha gapirsa, u shuncha norozi bo‘lyapti.",
+            "ru": "Чем больше мама говорит, тем сильнее он недоволен.",
+            "tj": "Модар ҳар қадар гап занад, ӯ ҳамон қадар нороҳат мешавад."
+          },
+          "tokens": [
+            "越",
+            "卡",
+            "校园",
+            "他",
+            "高兴",
+            "越",
+            "妈妈",
+            "说",
+            "不"
+          ],
+          "answer_tokens": [
+            "妈妈",
+            "越",
+            "说",
+            "他",
+            "越",
+            "不",
+            "高兴"
+          ],
+          "explanation": {
+            "uz": "妈妈越说，他越不高兴。 — Māma yuè shuō, tā yuè bù gāoxìng.",
+            "ru": "妈妈越说，他越不高兴。 — Māma yuè shuō, tā yuè bù gāoxìng.",
+            "tj": "妈妈越说，他越不高兴。 — Māma yuè shuō, tā yuè bù gāoxìng."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bugungi futbolni qancha ko‘rsam, shuncha xavotirlanayapman.» — xitoychada qaysi biri?",
+            "ru": "«Чем дольше смотрю сегодняшний футбольный матч, тем больше волнуюсь.» — какое предложение по-китайски?",
+            "tj": "«Бозии футболи имрӯзаро ҳар қадар бинам, ҳамон қадар хавотир мешавам.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "妈妈越说，他越不高兴。",
+            "我想认识中国朋友，越多越好。",
+            "今天的足球比赛我越看越着急。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "今天的足球比赛我越看越着急。 — Jīntiān de zúqiú bǐsài wǒ yuè kàn yuè zháojí.",
+            "ru": "今天的足球比赛我越看越着急。 — Jīntiān de zúqiú bǐsài wǒ yuè kàn yuè zháojí.",
+            "tj": "今天的足球比赛我越看越着急。 — Jīntiān de zúqiú bǐsài wǒ yuè kàn yuè zháojí."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "好多",
+          "pinyin": "hǎoduō",
+          "translation": {
+            "uz": "juda ko‘p",
+            "ru": "очень много",
+            "tj": "хеле зиёд"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "练习",
+          "pinyin": "liànxí",
+          "translation": {
+            "uz": "mashq qilmoq; mashq",
+            "ru": "упражняться; упражнение",
+            "tj": "машқ кардан; машқ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "练 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 练:",
+            "tj": "Маънои калимаи 练-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "karta",
+              "ru": "карта",
+              "tj": "корт"
+            },
+            {
+              "uz": "sport maydoni; to‘p o‘ynash maydoni",
+              "ru": "спортивная площадка; поле",
+              "tj": "майдони варзишӣ"
+            },
+            {
+              "uz": "mashq qilmoq",
+              "ru": "тренироваться",
+              "tj": "машқ кардан"
+            },
+            {
+              "uz": "kampus; maktab hududi",
+              "ru": "кампус; территория учебного заведения",
+              "tj": "кампус; ҳудуди мактаб"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "练 = mashq qilmoq (liàn)",
+            "ru": "练 = тренироваться (liàn)",
+            "tj": "练 = машқ кардан (liàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "练",
+            "pinyin": "liàn",
+            "meaning": {
+              "uz": "mashq qilmoq",
+              "ru": "тренироваться",
+              "tj": "машқ кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'mashq qilmoq; mashq' xitoycha qaysi?",
+            "ru": "'упражняться; упражнение' по-китайски?",
+            "tj": "'машқ кардан; машқ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "球场",
+            "卡",
+            "校园",
+            "练习"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "mashq qilmoq; mashq = 练习 (liànxí)",
+            "ru": "упражняться; упражнение = 练习 (liànxí)",
+            "tj": "машқ кардан; машқ = 练习 (liànxí)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "练习",
+            "pinyin": "liànxí",
+            "meaning": {
+              "uz": "mashq qilmoq; mashq",
+              "ru": "упражняться; упражнение",
+              "tj": "машқ кардан; машқ"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

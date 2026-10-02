@@ -1,0 +1,753 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 50,
+  "source_lesson": 7,
+  "part_no": 2,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "那条裙子比短裤更好看",
+  "subtitle": {
+    "uz": "Xarid tajribasini tushunish va aytib berish; mahsulot xususiyatlarini baholash; “比” taqqoslashining inkor shaklini ishlatish; Xitoydagi xarid odatlari bilan tanishish.",
+    "ru": "Понимать и описывать опыт покупок; оценивать свойства товаров; использовать отрицательную форму сравнений с “比”; познакомиться со способами совершения покупок в Китае.",
+    "tj": "Таҷрибаи харидро фаҳмидан ва шарҳ додан; хусусиятҳои молро арзёбӣ кардан; шакли инкории муқоисаи “比”-ро истифода бурдан; бо тарзҳои харид дар Чин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "试",
+      "pinyin": "shì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sinab ko‘rmoq",
+        "ru": "пробовать; примерять",
+        "tj": "санҷидан; пӯшида дидан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "黄色",
+      "pinyin": "huángsè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sariq rang",
+        "ru": "жёлтый цвет",
+        "tj": "ранги зард"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "短裤",
+      "pinyin": "duǎnkù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "shortik",
+        "ru": "шорты",
+        "tj": "шорт"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "大小",
+      "pinyin": "dàxiǎo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘lcham; katta-kichiklik",
+        "ru": "размер",
+        "tj": "андоза"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Taqqoslash gapi (10): “不比……”",
+        "ru": "Сравнительное предложение (10): “不比……”",
+        "tj": "Ҷумлаи муқоисавӣ (10): “不比……”"
+      },
+      "title_zh": "比较句（10）",
+      "rule": {
+        "uz": "“A 不比 B + sifat” A ning B dan ustun emasligini bildiradi. “不比……多少” esa farq katta emasligini, ya’ni deyarli bir xil ekanini ko‘rsatadi.",
+        "ru": "“A 不比 B + прилагательное” означает, что A не превосходит B по признаку. “不比……多少” подчёркивает, что разница невелика.",
+        "tj": "“A 不比 B + сифат” нишон медиҳад, ки A аз B аз рӯйи аломат беҳтар нест. “不比……多少” фарқи хурдро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "裙子不比短裤贵多少。",
+          "pinyin": "Qúnzi bù bǐ duǎnkù guì duōshao.",
+          "translation": {
+            "uz": "Yubka shortikdan uncha qimmat emas.",
+            "ru": "Юбка ненамного дороже шорт.",
+            "tj": "Юбка аз шорт он қадар гаронтар нест."
+          }
+        },
+        {
+          "zh": "他的中文不比你好。",
+          "pinyin": "Tā de Zhōngwén bù bǐ nǐ hǎo.",
+          "translation": {
+            "uz": "Uning xitoychasi senikidan yaxshi emas.",
+            "ru": "Его китайский не лучше твоего.",
+            "tj": "Забони чинии ӯ аз ту беҳтар нест."
+          }
+        },
+        {
+          "zh": "他跑得不比我快多少。",
+          "pinyin": "Tā pǎo de bù bǐ wǒ kuài duōshao.",
+          "translation": {
+            "uz": "U mendan uncha tez yugurmaydi.",
+            "ru": "Он бегает ненамного быстрее меня.",
+            "tj": "Ӯ аз ман он қадар тезтар намедавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Wang Yixue va Liu Ming xaridga borishni muhokama qilmoqda.",
+        "ru": "Дома Ван Исюэ и Лю Мин обсуждают поход за покупками.",
+        "tj": "Дар хона Ван Исюэ ва Лю Мин харид рафтанро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘明",
+          "zh": "是啊，她现在长高了，这辆车已经太矮了。",
+          "pinyin": "Shì a, tā xiànzài zhǎng gāo le, zhè liàng chē yǐjīng tài ǎi le.",
+          "text": {
+            "uz": "Ha, u bo‘yi o‘sdi, bu velosiped endi unga juda past.",
+            "ru": "Да, она выросла, этот велосипед уже слишком маленький.",
+            "tj": "Ҳа, қадаш баланд шуд, ин дучарха ҳоло барои ӯ хеле паст аст."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "商场里开了一家自行车店，咱们给她买辆新的吧。",
+          "pinyin": "Shāngchǎng lǐ kāi le yì jiā zìxíngchē diàn, zánmen gěi tā mǎi liàng xīn de ba.",
+          "text": {
+            "uz": "Savdo markazida velosiped do‘koni ochilibdi, unga yangisini olaylik.",
+            "ru": "В торговом центре открылся магазин велосипедов, давай купим ей новый.",
+            "tj": "Дар маркази савдо мағозаи дучарха кушода шудааст, биё барояш нав бихарем."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "好，咱们带小雪一起去，让她试一下。",
+          "pinyin": "Hǎo, zánmen dài Xiǎoxuě yìqǐ qù, ràng tā shì yíxià.",
+          "text": {
+            "uz": "Mayli, Xiaoxueni ham olib boraylik, o‘zi sinab ko‘rsin.",
+            "ru": "Хорошо, возьмём Сяосюэ с собой, пусть попробует.",
+            "tj": "Хуб, Сяосюэро ҳам мебарем, бигзор худаш санҷад."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "那今天就去吧！我也想再看看衣服。咱们怎么去？",
+          "pinyin": "Nà jīntiān jiù qù ba! Wǒ yě xiǎng zài kànkan yīfu. Zánmen zěnme qù?",
+          "text": {
+            "uz": "Unda bugun boraylik! Men ham kiyimlarni yana ko‘rmoqchiman. Qanday boramiz?",
+            "ru": "Тогда пойдём сегодня! Я ещё хочу посмотреть одежду. Как поедем?",
+            "tj": "Пас имрӯз равем! Ман ҳам мехоҳам либосҳоро боз бинам. Чӣ тавр меравем?"
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "商场不远，咱们可以走着去。",
+          "pinyin": "Shāngchǎng bù yuǎn, zánmen kěyǐ zǒuzhe qù.",
+          "text": {
+            "uz": "Savdo markazi uzoq emas, piyoda borsak bo‘ladi.",
+            "ru": "Торговый центр недалеко, можем пойти пешком.",
+            "tj": "Маркази савдо дур нест, пиёда рафтан мумкин."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Savdo markazida Liu Ming va Wang Yixue velosipedni olib bo‘lib, kiyim tanlamoqda.",
+        "ru": "В торговом центре Лю Мин и Ван Исюэ после покупки велосипеда выбирают одежду.",
+        "tj": "Дар маркази савдо Лю Мин ва Ван Исюэ баъди харидани дучарха либос интихоб мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "你看我穿这条黄色的短裤好看吗？",
+          "pinyin": "Nǐ kàn wǒ chuān zhè tiáo huángsè de duǎnkù hǎokàn ma?",
+          "text": {
+            "uz": "Qara, mana bu sariq shortik menga yarashadimi?",
+            "ru": "Посмотри, мне идут эти жёлтые шорты?",
+            "tj": "Бин, ин шорти зард ба ман зебо меистад?"
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "贵多少？",
+          "pinyin": "Guì duōshao?",
+          "text": {
+            "uz": "Qanchaga qimmatroq?",
+            "ru": "Насколько дороже?",
+            "tj": "Чанд қадар гаронтар?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do‘konda Wang Yixue xarid qilmoqda.",
+        "ru": "В магазине Ван Исюэ делает покупки.",
+        "tj": "Дар мағоза Ван Исюэ харид мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "店员",
+          "zh": "您给我五十五吧，不能再便宜了。",
+          "pinyin": "Nín gěi wǒ wǔshíwǔ ba, bù néng zài piányi le.",
+          "text": {
+            "uz": "55 yuan bering, bundan arzon qila olmayman.",
+            "ru": "Давайте 55 юаней, дешевле уже нельзя.",
+            "tj": "55 юан диҳед, аз ин арзонтар намешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "试",
+            "pinyin": "shì",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sinab ko‘rmoq",
+              "ru": "пробовать; примерять",
+              "tj": "санҷидан; пӯшида дидан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "试",
+          "pinyin": "shì",
+          "options": [
+            "辆",
+            "旧",
+            "自行车",
+            "试"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "试 — sinab ko‘rmoq (shì)",
+            "ru": "试 — пробовать; примерять (shì)",
+            "tj": "试 — санҷидан; пӯшида дидан (shì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "黄色",
+            "pinyin": "huángsè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sariq rang",
+              "ru": "жёлтый цвет",
+              "tj": "ранги зард"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "黄色",
+          "pinyin": "huángsè",
+          "translation": {
+            "uz": "sariq rang",
+            "ru": "жёлтый цвет",
+            "tj": "ранги зард"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "黄色 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 黄色:",
+            "tj": "Маънои калимаи 黄色-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "transport vositalari uchun hisob so‘zi",
+              "ru": "счётное слово для транспортных средств",
+              "tj": "воҳиди ҳисоб барои нақлиёт"
+            },
+            {
+              "uz": "sariq rang",
+              "ru": "жёлтый цвет",
+              "tj": "ранги зард"
+            },
+            {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "дучарха"
+            },
+            {
+              "uz": "eski",
+              "ru": "старый",
+              "tj": "кӯҳна"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "黄色 = sariq rang (huángsè)",
+            "ru": "黄色 = жёлтый цвет (huángsè)",
+            "tj": "黄色 = ранги зард (huángsè)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "短裤",
+            "pinyin": "duǎnkù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "shortik",
+              "ru": "шорты",
+              "tj": "шорт"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "duǎnkù qaysi ieroglif?",
+            "ru": "Какой иероглиф читается duǎnkù?",
+            "tj": "duǎnkù кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "短裤",
+            "自行车",
+            "旧",
+            "辆"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "短裤 = shortik (duǎnkù)",
+            "ru": "短裤 = шорты (duǎnkù)",
+            "tj": "短裤 = шорт (duǎnkù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "大小",
+            "pinyin": "dàxiǎo",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o‘lcham; katta-kichiklik",
+              "ru": "размер",
+              "tj": "андоза"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "大小 talaffuzini tanlang:",
+            "ru": "Выберите произношение 大小:",
+            "tj": "Талаффузи 大小-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jiù",
+            "liàng",
+            "dàxiǎo",
+            "zìxíngchē"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "大小 — dàxiǎo",
+            "ru": "大小 — dàxiǎo",
+            "tj": "大小 — dàxiǎo"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sinab ko‘rmoq' xitoycha qaysi?",
+            "ru": "'пробовать; примерять' по-китайски?",
+            "tj": "'санҷидан; пӯшида дидан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "旧",
+            "试",
+            "辆",
+            "自行车"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "sinab ko‘rmoq = 试 (shì)",
+            "ru": "пробовать; примерять = 试 (shì)",
+            "tj": "санҷидан; пӯшида дидан = 试 (shì)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "试",
+              {
+                "uz": "sinab ko‘rmoq",
+                "ru": "пробовать; примерять",
+                "tj": "санҷидан; пӯшида дидан"
+              }
+            ],
+            [
+              "黄色",
+              {
+                "uz": "sariq rang",
+                "ru": "жёлтый цвет",
+                "tj": "ранги зард"
+              }
+            ],
+            [
+              "短裤",
+              {
+                "uz": "shortik",
+                "ru": "шорты",
+                "tj": "шорт"
+              }
+            ],
+            [
+              "大小",
+              {
+                "uz": "o‘lcham; katta-kichiklik",
+                "ru": "размер",
+                "tj": "андоза"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Taqqoslash gapi (10): “不比……”",
+              "ru": "Сравнительное предложение (10): “不比……”",
+              "tj": "Ҷумлаи муқоисавӣ (10): “不比……”"
+            },
+            "title_zh": "比较句（10）",
+            "rule": {
+              "uz": "“A 不比 B + sifat” A ning B dan ustun emasligini bildiradi. “不比……多少” esa farq katta emasligini, ya’ni deyarli bir xil ekanini ko‘rsatadi.",
+              "ru": "“A 不比 B + прилагательное” означает, что A не превосходит B по признаку. “不比……多少” подчёркивает, что разница невелика.",
+              "tj": "“A 不比 B + сифат” нишон медиҳад, ки A аз B аз рӯйи аломат беҳтар нест. “不比……多少” фарқи хурдро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "裙子不比短裤贵多少。",
+                "pinyin": "Qúnzi bù bǐ duǎnkù guì duōshao.",
+                "translation": {
+                  "uz": "Yubka shortikdan uncha qimmat emas.",
+                  "ru": "Юбка ненамного дороже шорт.",
+                  "tj": "Юбка аз шорт он қадар гаронтар нест."
+                }
+              },
+              {
+                "zh": "他的中文不比你好。",
+                "pinyin": "Tā de Zhōngwén bù bǐ nǐ hǎo.",
+                "translation": {
+                  "uz": "Uning xitoychasi senikidan yaxshi emas.",
+                  "ru": "Его китайский не лучше твоего.",
+                  "tj": "Забони чинии ӯ аз ту беҳтар нест."
+                }
+              },
+              {
+                "zh": "他跑得不比我快多少。",
+                "pinyin": "Tā pǎo de bù bǐ wǒ kuài duōshao.",
+                "translation": {
+                  "uz": "U mendan uncha tez yugurmaydi.",
+                  "ru": "Он бегает ненамного быстрее меня.",
+                  "tj": "Ӯ аз ман он қадар тезтар намедавад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U mendan uncha tez yugurmaydi.",
+            "ru": "Он бегает ненамного быстрее меня.",
+            "tj": "Ӯ аз ман он қадар тезтар намедавад."
+          },
+          "tokens": [
+            "他",
+            "辆",
+            "我",
+            "自行车",
+            "比",
+            "跑",
+            "快",
+            "多少",
+            "得",
+            "不"
+          ],
+          "answer_tokens": [
+            "他",
+            "跑",
+            "得",
+            "不",
+            "比",
+            "我",
+            "快",
+            "多少"
+          ],
+          "explanation": {
+            "uz": "他跑得不比我快多少。 — Tā pǎo de bù bǐ wǒ kuài duōshao.",
+            "ru": "他跑得不比我快多少。 — Tā pǎo de bù bǐ wǒ kuài duōshao.",
+            "tj": "他跑得不比我快多少。 — Tā pǎo de bù bǐ wǒ kuài duōshao."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Yubka shortikdan uncha qimmat emas.» — xitoychada qaysi biri?",
+            "ru": "«Юбка ненамного дороже шорт.» — какое предложение по-китайски?",
+            "tj": "«Юбка аз шорт он қадар гаронтар нест.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "裙子不比短裤贵多少。",
+            "他跑得不比我快多少。",
+            "他的中文不比你好。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "裙子不比短裤贵多少。 — Qúnzi bù bǐ duǎnkù guì duōshao.",
+            "ru": "裙子不比短裤贵多少。 — Qúnzi bù bǐ duǎnkù guì duōshao.",
+            "tj": "裙子不比短裤贵多少。 — Qúnzi bù bǐ duǎnkù guì duōshao."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "大小 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 大小:",
+            "tj": "Маънои калимаи 大小-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘lcham; katta-kichiklik",
+              "ru": "размер",
+              "tj": "андоза"
+            },
+            {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "дучарха"
+            },
+            {
+              "uz": "transport vositalari uchun hisob so‘zi",
+              "ru": "счётное слово для транспортных средств",
+              "tj": "воҳиди ҳисоб барои нақлиёт"
+            },
+            {
+              "uz": "eski",
+              "ru": "старый",
+              "tj": "кӯҳна"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "大小 = o‘lcham; katta-kichiklik (dàxiǎo)",
+            "ru": "大小 = размер (dàxiǎo)",
+            "tj": "大小 = андоза (dàxiǎo)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "黄色",
+          "pinyin": "huángsè",
+          "translation": {
+            "uz": "sariq rang",
+            "ru": "жёлтый цвет",
+            "tj": "ранги зард"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "自行车 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 自行车:",
+            "tj": "Маънои калимаи 自行车-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "eski",
+              "ru": "старый",
+              "tj": "кӯҳна"
+            },
+            {
+              "uz": "transport vositalari uchun hisob so‘zi",
+              "ru": "счётное слово для транспортных средств",
+              "tj": "воҳиди ҳисоб барои нақлиёт"
+            },
+            {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "дучарха"
+            },
+            {
+              "uz": "past; bo‘yi kalta",
+              "ru": "низкий; невысокий",
+              "tj": "паст; қадпаст"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "自行车 = velosiped (zìxíngchē)",
+            "ru": "自行车 = велосипед (zìxíngchē)",
+            "tj": "自行车 = дучарха (zìxíngchē)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "自行车",
+            "pinyin": "zìxíngchē",
+            "meaning": {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "дучарха"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sariq rang' xitoycha qaysi?",
+            "ru": "'жёлтый цвет' по-китайски?",
+            "tj": "'ранги зард' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "辆",
+            "黄色",
+            "自行车",
+            "旧"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "sariq rang = 黄色 (huángsè)",
+            "ru": "жёлтый цвет = 黄色 (huángsè)",
+            "tj": "ранги зард = 黄色 (huángsè)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "黄色",
+            "pinyin": "huángsè",
+            "meaning": {
+              "uz": "sariq rang",
+              "ru": "жёлтый цвет",
+              "tj": "ранги зард"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

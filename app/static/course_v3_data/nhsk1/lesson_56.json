@@ -1,0 +1,776 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 56,
+  "source_lesson": 9,
+  "part_no": 2,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "我明天上午在学校学习",
+  "subtitle": {
+    "uz": "“有/是” bilan mavjudlikni ifodalovchi gaplarni ishlatish; vaqt va joy birga hol bo‘lganda ularning tartibini to‘g‘ri qo‘llash; “第” bilan tartib sonlarini yasash; zamonaviy xitoyliklarning bo‘sh vaqt mashg‘ulotlari haqida tushunish.",
+    "ru": "Использовать предложения существования с “有/是”; правильно располагать время и место, когда оба являются обстоятельствами; образовывать порядковые числительные с “第”; понимать лексику повседневного досуга.",
+    "tj": "Ҷумлаҳои мавҷудиятро бо “有/是” истифода бурдан; ҳангоми ҳамзамон ҳол будани вақт ва ҷой тартиби онҳоро дуруст гузоштан; бо “第” шумораҳои тартибиро сохтан; луғати фароғати рӯзмарраро фаҳмидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "外边",
+      "pinyin": "wàibian",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tashqarida; tashqi tomon",
+        "ru": "снаружи; внешняя сторона",
+        "tj": "берун; тарафи берун"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "椅子",
+      "pinyin": "yǐzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "stul",
+        "ru": "стул",
+        "tj": "курсӣ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "上",
+      "pinyin": "shàng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ust; yuqori tomon",
+        "ru": "верх; на",
+        "tj": "боло; рӯйи"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "本",
+      "pinyin": "běn",
+      "pos": "m.",
+      "meaning": {
+        "uz": "kitoblar uchun o‘lchov so‘zi",
+        "ru": "счётное слово для книг",
+        "tj": "воҳиди ҳисоб барои китоб"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Vaqt va joy ifodalari birga hol bo‘lgandagi tartib",
+        "ru": "Порядок выражений времени и места при совместной роли обстоятельства",
+        "tj": "Тартиби ифодаҳои вақт ва ҷой ҳангоми ҳамзамон ҳол будан"
+      },
+      "title_zh": "时间词语和处所词语同时作状语的顺序",
+      "rule": {
+        "uz": "Vaqt va joy birikmalari bir vaqtda hol bo‘lsa, vaqt ifodasi joy ifodasidan oldin keladi.",
+        "ru": "Когда время и место одновременно выступают обстоятельствами, выражение времени ставится перед выражением места.",
+        "tj": "Вақте вақт ва ҷой ҳамзамон вазифаи ҳолро доранд, ифодаи вақт пеш аз ифодаи ҷой меояд."
+      },
+      "examples": [
+        {
+          "zh": "我们七点在电影院外边见。",
+          "pinyin": "Wǒmen qī diǎn zài diànyǐngyuàn wàibian jiàn.",
+          "translation": {
+            "uz": "Biz soat 7 da kinoteatr tashqarisida uchrashamiz.",
+            "ru": "Мы встретимся в 7 часов у кинотеатра.",
+            "tj": "Мо соати 7 беруни кинотеатр вомехӯрем."
+          }
+        },
+        {
+          "zh": "你明天下午在家里做什么？",
+          "pinyin": "Nǐ míngtiān xiàwǔ zài jiālǐ zuò shénme?",
+          "translation": {
+            "uz": "Sen ertaga tushdan keyin uyda nima qilasan?",
+            "ru": "Что ты будешь делать дома завтра днём?",
+            "tj": "Фардо баъди нисфирӯзӣ дар хона чӣ кор мекунӣ?"
+          }
+        },
+        {
+          "zh": "陈天中明天中午在学校吃午饭。",
+          "pinyin": "Chén Tiānzhōng míngtiān zhōngwǔ zài xuéxiào chī wǔfàn.",
+          "translation": {
+            "uz": "Chen Tianzhong ertaga tushda maktabda tushlik qiladi.",
+            "ru": "Чэнь Тяньчжун завтра в полдень пообедает в школе.",
+            "tj": "Чэн Тянҷун фардо нисфирӯзӣ дар мактаб хӯрок мехӯрад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В кампусе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар кампус Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "学校前边有一家电影院。",
+          "pinyin": "Xuéxiào qiánbian yǒu yì jiā diànyǐngyuàn.",
+          "text": {
+            "uz": "Maktab oldida bitta kinoteatr bor.",
+            "ru": "Перед школой есть кинотеатр.",
+            "tj": "Пеши мактаб як кинотеатр ҳаст."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "对。我们晚上去那个电影院看电影吧。",
+          "pinyin": "Duì. Wǒmen wǎnshang qù nàge diànyǐngyuàn kàn diànyǐng ba.",
+          "text": {
+            "uz": "Ha. Bugun kechqurun o‘sha kinoteatrga film ko‘rgani boraylik.",
+            "ru": "Да. Давай вечером пойдём в тот кинотеатр посмотреть фильм.",
+            "tj": "Ҳа. Биёед шом ба ҳамон кинотеатр барои тамошои филм равем."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "好！我们七点在电影院外边见，好吗？",
+          "pinyin": "Hǎo! Wǒmen qī diǎn zài diànyǐngyuàn wàibian jiàn, hǎo ma?",
+          "text": {
+            "uz": "Yaxshi! Soat 7 da kinoteatr tashqarisida uchrashamiz, maylimi?",
+            "ru": "Хорошо! Встретимся в 7 часов у кинотеатра, ладно?",
+            "tj": "Хуб! Соати 7 беруни кинотеатр вомехӯрем, майлаш?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "好的，晚上七点见！",
+          "pinyin": "Hǎo de, wǎnshang qī diǎn jiàn!",
+          "text": {
+            "uz": "Xo‘p, kechqurun soat 7 da ko‘rishamiz!",
+            "ru": "Хорошо, увидимся в 7 вечера!",
+            "tj": "Хуб, шом соати 7 мебинем!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsdan keyin sinfda Bai Jiayue va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "После занятия Бай Цзяюэ и Чэнь Тяньчжун разговаривают в аудитории.",
+        "tj": "Пас аз дарс Бай Ҷяюэ ва Чэн Тянҷун дар синф суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "不客气。你明天上午在哪儿？",
+          "pinyin": "Bú kèqi. Nǐ míngtiān shàngwǔ zài nǎr?",
+          "text": {
+            "uz": "Arzimaydi. Ertaga ertalab qayerda bo‘lasan?",
+            "ru": "Не за что. Где ты будешь завтра утром?",
+            "tj": "Марҳамат. Фардо субҳ дар куҷо мешавӣ?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ofisda tanaffus payti Wang Yixue va Yang Tongle dam olish kunlari haqida suhbatlashmoqda.",
+        "ru": "В офисе во время перерыва Ван Исюэ и Ян Тунлэ обсуждают выходные.",
+        "tj": "Дар идора ҳангоми танаффус Ван Исюэ ва Ян Тунлэ дар бораи рӯзҳои истироҳат суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "明天星期六，你做什么？",
+          "pinyin": "Míngtiān Xīngqīliù, nǐ zuò shénme?",
+          "text": {
+            "uz": "Ertaga shanba. Nima qilasan?",
+            "ru": "Завтра суббота. Что будешь делать?",
+            "tj": "Фардо шанбе. Чӣ кор мекунӣ?"
+          }
+        },
+        {
+          "speaker": "Yang Tongle",
+          "zh": "谢谢！您星期六做什么？",
+          "pinyin": "Xièxie! Nín Xīngqīliù zuò shénme?",
+          "text": {
+            "uz": "Rahmat! Siz shanba kuni nima qilasiz?",
+            "ru": "Спасибо! Что вы будете делать в субботу?",
+            "tj": "Раҳмат! Шумо рӯзи шанбе чӣ кор мекунед?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "外边",
+            "pinyin": "wàibian",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tashqarida; tashqi tomon",
+              "ru": "снаружи; внешняя сторона",
+              "tj": "берун; тарафи берун"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "外边 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 外边:",
+            "tj": "Маънои калимаи 外边-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tomon; chet",
+              "ru": "сторона; край",
+              "tj": "тараф; канор"
+            },
+            {
+              "uz": "old tomoni; oldida",
+              "ru": "передняя сторона; впереди",
+              "tj": "пеш; тарафи пеш"
+            },
+            {
+              "uz": "tashkilot/korxona uchun o‘lchov so‘zi",
+              "ru": "счётное слово для семей/предприятий",
+              "tj": "воҳиди ҳисоб барои оила/корхона"
+            },
+            {
+              "uz": "tashqarida; tashqi tomon",
+              "ru": "снаружи; внешняя сторона",
+              "tj": "берун; тарафи берун"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "外边 = tashqarida; tashqi tomon (wàibian)",
+            "ru": "外边 = снаружи; внешняя сторона (wàibian)",
+            "tj": "外边 = берун; тарафи берун (wàibian)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "椅子",
+            "pinyin": "yǐzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "stul",
+              "ru": "стул",
+              "tj": "курсӣ"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yǐzi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yǐzi?",
+            "tj": "yǐzi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "边",
+            "椅子",
+            "前边",
+            "家"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "椅子 = stul (yǐzi)",
+            "ru": "椅子 = стул (yǐzi)",
+            "tj": "椅子 = курсӣ (yǐzi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "上",
+            "pinyin": "shàng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ust; yuqori tomon",
+              "ru": "верх; на",
+              "tj": "боло; рӯйи"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "上 talaffuzini tanlang:",
+            "ru": "Выберите произношение 上:",
+            "tj": "Талаффузи 上-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "qiánbian",
+            "shàng",
+            "jiā",
+            "biān/bian"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "上 — shàng",
+            "ru": "上 — shàng",
+            "tj": "上 — shàng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "本",
+            "pinyin": "běn",
+            "pos": "m.",
+            "meaning": {
+              "uz": "kitoblar uchun o‘lchov so‘zi",
+              "ru": "счётное слово для книг",
+              "tj": "воҳиди ҳисоб барои китоб"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "本",
+          "pinyin": "běn",
+          "translation": {
+            "uz": "kitoblar uchun o‘lchov so‘zi",
+            "ru": "счётное слово для книг",
+            "tj": "воҳиди ҳисоб барои китоб"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kitoblar uchun o‘lchov so‘zi' xitoycha qaysi?",
+            "ru": "'счётное слово для книг' по-китайски?",
+            "tj": "'воҳиди ҳисоб барои китоб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "本",
+            "家",
+            "前边",
+            "边"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "kitoblar uchun o‘lchov so‘zi = 本 (běn)",
+            "ru": "счётное слово для книг = 本 (běn)",
+            "tj": "воҳиди ҳисоб барои китоб = 本 (běn)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "外边",
+          "pinyin": "wàibian",
+          "options": [
+            "边",
+            "家",
+            "前边",
+            "外边"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "外边 — tashqarida; tashqi tomon (wàibian)",
+            "ru": "外边 — снаружи; внешняя сторона (wàibian)",
+            "tj": "外边 — берун; тарафи берун (wàibian)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "外边",
+              {
+                "uz": "tashqarida; tashqi tomon",
+                "ru": "снаружи; внешняя сторона",
+                "tj": "берун; тарафи берун"
+              }
+            ],
+            [
+              "椅子",
+              {
+                "uz": "stul",
+                "ru": "стул",
+                "tj": "курсӣ"
+              }
+            ],
+            [
+              "上",
+              {
+                "uz": "ust; yuqori tomon",
+                "ru": "верх; на",
+                "tj": "боло; рӯйи"
+              }
+            ],
+            [
+              "本",
+              {
+                "uz": "kitoblar uchun o‘lchov so‘zi",
+                "ru": "счётное слово для книг",
+                "tj": "воҳиди ҳисоб барои китоб"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Vaqt va joy ifodalari birga hol bo‘lgandagi tartib",
+              "ru": "Порядок выражений времени и места при совместной роли обстоятельства",
+              "tj": "Тартиби ифодаҳои вақт ва ҷой ҳангоми ҳамзамон ҳол будан"
+            },
+            "title_zh": "时间词语和处所词语同时作状语的顺序",
+            "rule": {
+              "uz": "Vaqt va joy birikmalari bir vaqtda hol bo‘lsa, vaqt ifodasi joy ifodasidan oldin keladi.",
+              "ru": "Когда время и место одновременно выступают обстоятельствами, выражение времени ставится перед выражением места.",
+              "tj": "Вақте вақт ва ҷой ҳамзамон вазифаи ҳолро доранд, ифодаи вақт пеш аз ифодаи ҷой меояд."
+            },
+            "examples": [
+              {
+                "zh": "我们七点在电影院外边见。",
+                "pinyin": "Wǒmen qī diǎn zài diànyǐngyuàn wàibian jiàn.",
+                "translation": {
+                  "uz": "Biz soat 7 da kinoteatr tashqarisida uchrashamiz.",
+                  "ru": "Мы встретимся в 7 часов у кинотеатра.",
+                  "tj": "Мо соати 7 беруни кинотеатр вомехӯрем."
+                }
+              },
+              {
+                "zh": "你明天下午在家里做什么？",
+                "pinyin": "Nǐ míngtiān xiàwǔ zài jiālǐ zuò shénme?",
+                "translation": {
+                  "uz": "Sen ertaga tushdan keyin uyda nima qilasan?",
+                  "ru": "Что ты будешь делать дома завтра днём?",
+                  "tj": "Фардо баъди нисфирӯзӣ дар хона чӣ кор мекунӣ?"
+                }
+              },
+              {
+                "zh": "陈天中明天中午在学校吃午饭。",
+                "pinyin": "Chén Tiānzhōng míngtiān zhōngwǔ zài xuéxiào chī wǔfàn.",
+                "translation": {
+                  "uz": "Chen Tianzhong ertaga tushda maktabda tushlik qiladi.",
+                  "ru": "Чэнь Тяньчжун завтра в полдень пообедает в школе.",
+                  "tj": "Чэн Тянҷун фардо нисфирӯзӣ дар мактаб хӯрок мехӯрад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Biz soat 7 da kinoteatr tashqarisida uchrashamiz.",
+            "ru": "Мы встретимся в 7 часов у кинотеатра.",
+            "tj": "Мо соати 7 беруни кинотеатр вомехӯрем."
+          },
+          "tokens": [
+            "边",
+            "前边",
+            "电影院",
+            "我们",
+            "见",
+            "外边",
+            "点",
+            "在",
+            "七"
+          ],
+          "answer_tokens": [
+            "我们",
+            "七",
+            "点",
+            "在",
+            "电影院",
+            "外边",
+            "见"
+          ],
+          "explanation": {
+            "uz": "我们七点在电影院外边见。 — Wǒmen qī diǎn zài diànyǐngyuàn wàibian jiàn.",
+            "ru": "我们七点在电影院外边见。 — Wǒmen qī diǎn zài diànyǐngyuàn wàibian jiàn.",
+            "tj": "我们七点在电影院外边见。 — Wǒmen qī diǎn zài diànyǐngyuàn wàibian jiàn."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Sen ertaga tushdan keyin uyda nima qilasan?» — xitoychada qaysi biri?",
+            "ru": "«Что ты будешь делать дома завтра днём?» — какое предложение по-китайски?",
+            "tj": "«Фардо баъди нисфирӯзӣ дар хона чӣ кор мекунӣ?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "陈天中明天中午在学校吃午饭。",
+            "你明天下午在家里做什么？",
+            "我们七点在电影院外边见。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你明天下午在家里做什么？ — Nǐ míngtiān xiàwǔ zài jiālǐ zuò shénme?",
+            "ru": "你明天下午在家里做什么？ — Nǐ míngtiān xiàwǔ zài jiālǐ zuò shénme?",
+            "tj": "你明天下午在家里做什么？ — Nǐ míngtiān xiàwǔ zài jiālǐ zuò shénme?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "桌子上没有小猫。",
+          "pinyin": "Zhuōzi shàng méiyǒu xiǎomāo.",
+          "translation": {
+            "uz": "Stol ustida mushuk yo‘q.",
+            "ru": "На столе нет котёнка.",
+            "tj": "Рӯйи миз гурба нест."
+          },
+          "tokens": {
+            "uz": [
+              "mushuk",
+              "Yaxshi",
+              "Soat",
+              "Stol",
+              "yo‘q",
+              "ustida"
+            ],
+            "ru": [
+              "Встретимся",
+              "На",
+              "столе",
+              "Хорошо",
+              "котёнка",
+              "нет"
+            ],
+            "tj": [
+              "нест",
+              "Хуб",
+              "Соати",
+              "Рӯйи",
+              "гурба",
+              "миз"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Stol",
+              "ustida",
+              "mushuk",
+              "yo‘q"
+            ],
+            "ru": [
+              "На",
+              "столе",
+              "нет",
+              "котёнка"
+            ],
+            "tj": [
+              "Рӯйи",
+              "миз",
+              "гурба",
+              "нест"
+            ]
+          },
+          "explanation": {
+            "uz": "桌子上没有小猫。 — Stol ustida mushuk yo‘q.",
+            "ru": "桌子上没有小猫。 — На столе нет котёнка.",
+            "tj": "桌子上没有小猫。 — Рӯйи миз гурба нест."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'stul' xitoycha qaysi?",
+            "ru": "'стул' по-китайски?",
+            "tj": "'курсӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "前边",
+            "家",
+            "椅子",
+            "边"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "stul = 椅子 (yǐzi)",
+            "ru": "стул = 椅子 (yǐzi)",
+            "tj": "курсӣ = 椅子 (yǐzi)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "那个 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 那个:",
+            "tj": "Маънои калимаи 那个-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "old tomoni; oldida",
+              "ru": "передняя сторона; впереди",
+              "tj": "пеш; тарафи пеш"
+            },
+            {
+              "uz": "tashkilot/korxona uchun o‘lchov so‘zi",
+              "ru": "счётное слово для семей/предприятий",
+              "tj": "воҳиди ҳисоб барои оила/корхона"
+            },
+            {
+              "uz": "tomon; chet",
+              "ru": "сторона; край",
+              "tj": "тараф; канор"
+            },
+            {
+              "uz": "ana u; o‘sha",
+              "ru": "тот",
+              "tj": "он; ҳамон"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "那个 = ana u; o‘sha (nàge)",
+            "ru": "那个 = тот (nàge)",
+            "tj": "那个 = он; ҳамон (nàge)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "那个",
+            "pinyin": "nàge",
+            "meaning": {
+              "uz": "ana u; o‘sha",
+              "ru": "тот",
+              "tj": "он; ҳамон"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kitoblar uchun o‘lchov so‘zi' xitoycha qaysi?",
+            "ru": "'счётное слово для книг' по-китайски?",
+            "tj": "'воҳиди ҳисоб барои китоб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "前边",
+            "本",
+            "边",
+            "家"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "kitoblar uchun o‘lchov so‘zi = 本 (běn)",
+            "ru": "счётное слово для книг = 本 (běn)",
+            "tj": "воҳиди ҳисоб барои китоб = 本 (běn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "本",
+            "pinyin": "běn",
+            "meaning": {
+              "uz": "kitoblar uchun o‘lchov so‘zi",
+              "ru": "счётное слово для книг",
+              "tj": "воҳиди ҳисоб барои китоб"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,20 +1,11 @@
 """So'z -> qaysi bandda va qaysi qismda O'RGATILGAN degan indeks.
 
-Manba ataylab `lesson_gate.js` — dars fayllaridagi `active_words` EMAS.
-Ikkalasi bir xil ko'rinsa ham, hsk4 da **30 ta so'zda farq qiladi**: gate
-ularni ancha erta ochadi (masalan 使 gate'da 65-qism, dars faylida 157-qism).
-Sabab: generator gate'ni `plan[...]["parts"][*]["chunk"]` bo'yicha yozadi,
-`active_words` esa boshqa ro'yxat. Klient (`course_v3_recognition.html`,
-`course_v3_pronunciation.html`) aynan shu gate bilan ishlaydi, shuning uchun
-server ham shu artefaktni o'qiydi — shunda ikkalasi qurilishi bo'yicha doim
-mos keladi va o'quvchi klient ochgan so'zni server "hali yopiq" demaydi.
+Legacy HSK 2.0 va HSK 3.0 uchun gate artefaktlari alohida:
+- lesson_gate.js -> window.HSK_WORD_GATE
+- lesson_gate_hsk30.js -> window.HSK30_WORD_GATE
 
-Gate'da 1247 yozuv bor, `course_v3_vocab` da 1227 so'z. Farq — 20 ta atoqli
-ot (安娜, 李月, 王方 ...), ularni `course_v3_vocab` allaqachon filtrlagan.
-Shu sababli indeks vocab bilan kesishtiriladi.
-
-Fayl faqat deploy bilan o'zgaradi, shuning uchun bir marta o'qib keshda
-saqlanadi — `course_v3_parts.py` va `course_v3_vocab.py` kabi.
+Server va klient bir xil gate'ni ishlatishi shart. Shunda recognition /
+pronunciation mashqlarida klient ochgan so'zni server "hali yopiq" demaydi.
 """
 
 from __future__ import annotations
@@ -24,71 +15,76 @@ import logging
 import re
 from pathlib import Path
 
+from app.services.course_levels import content_level, legacy_content_levels
 from app.services.course_v3_parts import total_parts
 from app.services.course_v3_vocab import words_for_level
 
 
 logger = logging.getLogger(__name__)
 
-_GATE_PATH = Path("app/static/course_v3_data/lesson_gate.js")
-_GATE_PATTERN = re.compile(r"window\.HSK_WORD_GATE\s*=\s*(\{.*?\})\s*;", re.S)
-_LEVELS = ("hsk1", "hsk2", "hsk3", "hsk4")
-
-# Kurs oqimidagi bilan bir xil normallashtirish.
-_LEVEL_FALLBACK = {
-    "beginner": "hsk1",
-    "az0": "hsk1",
-    "hsk1": "hsk1",
-    "hsk2": "hsk2",
-    "hsk3": "hsk3",
-    "hsk4": "hsk4",
-    "hsk4a": "hsk4",
-    "hsk4b": "hsk4",
+_DATA_DIR = Path("app/static/course_v3_data")
+_LEGACY_LEVELS = legacy_content_levels()
+_HSK30_LEVELS = ("nhsk1", "nhsk2", "nhsk3")
+_GATE_SPECS = {
+    "hsk20": (
+        _DATA_DIR / "lesson_gate.js",
+        re.compile(r"window\.HSK_WORD_GATE\s*=\s*(\{.*?\})\s*;", re.S),
+        _LEGACY_LEVELS,
+    ),
+    "hsk30": (
+        _DATA_DIR / "lesson_gate_hsk30.js",
+        re.compile(r"window\.HSK30_WORD_GATE\s*=\s*(\{.*?\})\s*;", re.S),
+        _HSK30_LEVELS,
+    ),
 }
 
-# {zh: (hsk_level, first_part)}
-_cache: dict[str, tuple[int, int]] | None = None
+# track -> {zh: (band_number, first_flat_part)}
+_cache: dict[str, dict[str, tuple[int, int]]] = {}
 
 
 def normalize_level(value: str | None) -> str:
-    normalized = str(value or "").strip().lower()
-    return _LEVEL_FALLBACK.get(normalized, "hsk1")
+    normalized = content_level(value, default="hsk1")
+    if normalized in _LEGACY_LEVELS or normalized in _HSK30_LEVELS:
+        return normalized
+    return "hsk1"
+
+
+def _track(level: str | None) -> str:
+    return "hsk30" if normalize_level(level).startswith("nhsk") else "hsk20"
 
 
 def level_number(level: str | None) -> int:
     normalized = normalize_level(level)
-    try:
-        return int(normalized[3:]) or 1
-    except (TypeError, ValueError):
-        return 1
+    match = re.search(r"(\d+)$", normalized)
+    return int(match.group(1)) if match else 1
 
 
-def _vocabulary() -> set[str]:
+def _vocabulary(levels: tuple[str, ...]) -> set[str]:
     words: set[str] = set()
-    for level in _LEVELS:
+    for level in levels:
         words |= {str(item.get("zh") or "") for item in words_for_level(level)}
     words.discard("")
     return words
 
 
-def _index() -> dict[str, tuple[int, int]]:
-    global _cache
-    if _cache is not None:
-        return _cache
+def _index(level: str | None = None) -> dict[str, tuple[int, int]]:
+    track = _track(level)
+    if track in _cache:
+        return _cache[track]
 
+    gate_path, gate_pattern, levels = _GATE_SPECS[track]
     index: dict[str, tuple[int, int]] = {}
     try:
-        raw = _GATE_PATH.read_text(encoding="utf-8")
-        match = _GATE_PATTERN.search(raw)
+        raw = gate_path.read_text(encoding="utf-8")
+        match = gate_pattern.search(raw)
         gate = json.loads(match.group(1)) if match else {}
-    except Exception:  # noqa: BLE001 — indeks yo'q bo'lsa mashq eski yo'ldan ketadi
-        logger.exception("lesson_gate.js could not be read")
+    except Exception:  # noqa: BLE001
+        logger.exception("%s could not be read", gate_path.name)
         gate = {}
 
-    vocabulary = _vocabulary()
+    vocabulary = _vocabulary(levels)
     for zh, position in gate.items():
         if zh not in vocabulary:
-            # Atoqli ot yoki kurs lug'atidan tashqaridagi yozuv.
             continue
         if not isinstance(position, (list, tuple)) or len(position) < 2:
             continue
@@ -100,18 +96,18 @@ def _index() -> dict[str, tuple[int, int]]:
             continue
         index[str(zh)] = (level_no, part_no)
 
-    _cache = index
-    return _cache
+    _cache[track] = index
+    return index
 
 
-def index_size() -> int:
-    """Diagnostika uchun: indeksdagi so'zlar soni."""
-    return len(_index())
+def index_size(level: str | None = None) -> int:
+    """Diagnostika uchun: berilgan track indeksidagi so'zlar soni."""
+    return len(_index(level))
 
 
-def word_position(zh: str) -> tuple[int, int] | None:
-    """So'z qaysi bandda va qaysi qismda o'rgatilgan. Topilmasa None."""
-    return _index().get(str(zh or "").strip())
+def word_position(zh: str, level: str | None = None) -> tuple[int, int] | None:
+    """So'z qaysi band/qismda o'rgatilgan. Level track'ni tanlaydi."""
+    return _index(level).get(str(zh or "").strip())
 
 
 def taught_words(
@@ -121,16 +117,11 @@ def taught_words(
     single_char: bool = False,
     min_pool: int = 0,
 ) -> list[tuple[str, int]]:
-    """O'quvchi KO'RGAN so'zlar: `(zh, part)`, yangisi birinchi.
+    """O'quvchi ko'rgan so'zlar: (zh, flat_part), yangisi birinchi.
 
-    Joriy banddagi `part <= current_part` so'zlar, so'ng quyi bandlarning
-    hammasi (ular to'liq ochiq — klient gate'i ham shunday ishlaydi).
-
-    `min_pool` — kengaytirish chegarasi. Bu MAJBURIY: o'lchandi, HSK1 ning
-    1-qismida atigi **3 ta** so'z bor va 10 savollik mashq qurib bo'lmaydi.
-    Klient ham xuddi shunday oldinga qarab kengaytiradi; server undan
-    torroq bo'lsa mashq bo'sh chiqadi. Chegara — bandning haqiqiy qism soni
-    (62/71/108/180), klientdagi o'lik `40` emas.
+    Joriy banddagi part <= current_part so'zlar, keyin shu track'dagi quyi
+    bandlarning hammasi qo'shiladi. min_pool yetmasa ayni band ichida
+    oldinga qarab kengayadi; boshqa track'ga o'tmaydi.
     """
     normalized = normalize_level(level)
     level_no = level_number(normalized)
@@ -139,15 +130,16 @@ def taught_words(
     except (TypeError, ValueError):
         current_part = 1
 
-    index = _index()
-    if single_char:
-        candidates = {
+    index = _index(normalized)
+    candidates = (
+        {
             zh: position
             for zh, position in index.items()
             if len(zh) == 1
         }
-    else:
-        candidates = index
+        if single_char
+        else index
+    )
 
     base = sorted(
         ((zh, part) for zh, (lv, part) in candidates.items() if lv < level_no),

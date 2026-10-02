@@ -1,0 +1,672 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 13,
+  "source_lesson": 2,
+  "part_no": 5,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "你们想吃什么就点什么",
+  "subtitle": {
+    "uz": "Restorandagi taomlar, xizmat va ovqatlanish odatlari haqida gaplashish; so‘roq olmoshlarini “istalgan/har qanday” ma’nosida ishlatish; Xitoyda ovqatlanishda ishlatiladigan asosiy idish-tovoq va anjomlarni tushunish.",
+    "ru": "Говорить о блюдах, обслуживании и пищевых привычках; использовать вопросительные местоимения в значении «любой/какой угодно»; понимать основные столовые приборы и посуду, используемые в Китае.",
+    "tj": "Дар бораи хӯрокҳои тарабхона, хизматрасонӣ ва одатҳои ғизоӣ суҳбат кардан; ҷонишинҳои саволиро ба маънои «ҳар кадом/дилхоҳ» истифода бурдан; асбобу зарфҳои асосии хӯрокхӯриро дар Чин фаҳмидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "记",
+      "pinyin": "jì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "eslab qolmoq; yozib olmoq",
+        "ru": "запоминать; записывать",
+        "tj": "дар хотир доштан; қайд кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "用",
+      "pinyin": "yòng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ishlatmoq; foydalanmoq",
+        "ru": "использовать",
+        "tj": "истифода бурдан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "鸡",
+      "pinyin": "jī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tovuq",
+        "ru": "курица",
+        "tj": "мурғ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "张",
+      "pinyin": "zhāng",
+      "pos": "m.",
+      "meaning": {
+        "uz": "yassi narsalar uchun hisob so‘zi",
+        "ru": "счётное слово для плоских предметов",
+        "tj": "воҳиди ҳисоб барои ашёи ҳамвор"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Restoranda Wang Yixue, Liu Ming, Bai Jiayue va Li Wen taom buyurtma qilmoqda.",
+        "ru": "В ресторане Ван Исюэ, Лю Мин, Бай Цзяюэ и Ли Вэнь выбирают блюда.",
+        "tj": "Дар тарабхона Ван Исюэ, Лю Мин, Бай Ҷяюэ ва Ли Вэн хӯрок фармоиш медиҳанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "飞了这么远，现在还真是又饿又渴。",
+          "pinyin": "Fēi le zhème yuǎn, xiànzài hái zhēn shì yòu è yòu kě.",
+          "text": {
+            "uz": "Shuncha uzoq uchib keldik, hozir rostdan ham ham ochman, ham chanqaganman.",
+            "ru": "Так далеко летели — сейчас я и правда и голодна, и хочу пить.",
+            "tj": "Ин қадар дур парвоз кардем, ҳоло воқеан ҳам гуруснаам, ҳам ташна."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "没问题。你们看看还想吃什么。",
+          "pinyin": "Méi wèntí. Nǐmen kànkan hái xiǎng chī shénme.",
+          "text": {
+            "uz": "Muammo yo‘q. Yana nima yegingiz kelishini ko‘ringlar.",
+            "ru": "Без проблем. Посмотрите, что ещё хотите заказать.",
+            "tj": "Мушкил нест. Бинед, боз чӣ хӯрдан мехоҳед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda Wang Yixue, Liu Ming, Bai Jiayue va Li Wen birga ovqatlanmoqda.",
+        "ru": "В ресторане Ван Исюэ, Лю Мин, Бай Цзяюэ и Ли Вэнь вместе едят.",
+        "tj": "Дар тарабхона Ван Исюэ, Лю Мин, Бай Ҷяюэ ва Ли Вэн якҷо хӯрок мехӯранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "服务员，再给我们拿一双筷子、一个勺子和一个碗。",
+          "pinyin": "Fúwùyuán, zài gěi wǒmen ná yì shuāng kuàizi, yí ge sháozi hé yí ge wǎn.",
+          "text": {
+            "uz": "Ofitsiant, bizga yana bir juft cho‘pcha, bir qoshiq va bir kosa olib keling.",
+            "ru": "Официант, принесите нам ещё одну пару палочек, ложку и миску.",
+            "tj": "Пешхизмат, ба мо боз як ҷуфт чӯбча, як қошуқ ва як коса биёред."
+          }
+        },
+        {
+          "speaker": "服务员",
+          "zh": "好的，请等一下，我马上去拿。",
+          "pinyin": "Hǎo de, qǐng děng yíxià, wǒ mǎshàng qù ná.",
+          "text": {
+            "uz": "Xo‘p, biroz kuting, hozir olib kelaman.",
+            "ru": "Хорошо, подождите немного, сейчас принесу.",
+            "tj": "Хуб, каме интизор шавед, ҳозир меорам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "哪个菜都好吃。您点的这些菜真不错。",
+          "pinyin": "Nǎge cài dōu hǎochī. Nín diǎn de zhèxiē cài zhēn búcuò.",
+          "text": {
+            "uz": "Qaysi taomni olsak ham mazali. Siz buyurtma qilgan taomlar juda yaxshi ekan.",
+            "ru": "Все блюда вкусные. То, что вы заказали, действительно отлично.",
+            "tj": "Ҳар кадом хӯрок болаззат аст. Хӯрокҳое, ки шумо фармоиш додед, хеле хубанд."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "这里的饭菜又便宜又好吃，我们经常来，服务员都记住我们爱吃的菜了。",
+          "pinyin": "Zhèlǐ de fàncài yòu piányi yòu hǎochī, wǒmen jīngcháng lái, fúwùyuán dōu jìzhu wǒmen ài chī de cài le.",
+          "text": {
+            "uz": "Bu yerning taomlari ham arzon, ham mazali. Biz tez-tez kelamiz, ofitsiantlar hatto qaysi taomlarni yoqtirishimizni eslab qolishgan.",
+            "ru": "Здесь еда и дешёвая, и вкусная. Мы часто приходим, и официанты уже запомнили, что мы любим.",
+            "tj": "Хӯрокҳои ин ҷо ҳам арзонанд, ҳам болаззат. Мо зуд-зуд меоем ва пешхизматҳо ҳатто хӯрокҳои дӯстдоштаи моро дар хотир доранд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda Wang Yixue, Liu Ming, Bai Jiayue va Li Wen ovqatlanib, suhbatni davom ettirmoqda.",
+        "ru": "В ресторане Ван Исюэ, Лю Мин, Бай Цзяюэ и Ли Вэнь продолжают есть и разговаривать.",
+        "tj": "Дар тарабхона Ван Исюэ, Лю Мин, Бай Ҷяюэ ва Ли Вэн хӯрокхӯрда суҳбатро идома медиҳанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "这个鸡肉饭太好吃了，我要再来吃一次。",
+          "pinyin": "Zhège jīròufàn tài hǎochī le, wǒ yào zài lái chī yí cì.",
+          "text": {
+            "uz": "Bu tovuqli guruch juda mazali ekan, yana kelib bir marta yeyman.",
+            "ru": "Этот рис с курицей очень вкусный, я обязательно приду ещё раз.",
+            "tj": "Ин биринҷи мурғдор хеле болаззат аст, боз як бор меоям мехӯрам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "他们家还能送外卖？",
+          "pinyin": "Tāmen jiā hái néng sòng wàimài?",
+          "text": {
+            "uz": "Ular yetkazib berish ham qiladimi?",
+            "ru": "У них ещё и доставка есть?",
+            "tj": "Онҳо хӯрокро расонида ҳам медиҳанд?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "对，现在很多饭馆都能送外卖，想吃什么就点什么。",
+          "pinyin": "Duì, xiànzài hěn duō fànguǎn dōu néng sòng wàimài, xiǎng chī shénme jiù diǎn shénme.",
+          "text": {
+            "uz": "Ha, hozir ko‘p restoranlar ovqat yetkazib beradi. Nima yeging kelsa, o‘shani buyurtma qilasan.",
+            "ru": "Да, сейчас многие рестораны доставляют еду. Заказываешь то, что хочешь.",
+            "tj": "Ҳа, ҳоло бисёр тарабхонаҳо хӯрок мерасонанд. Чиро хоҳӣ, ҳамонро фармоиш медиҳӣ."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "记",
+            "pinyin": "jì",
+            "pos": "v.",
+            "meaning": {
+              "uz": "eslab qolmoq; yozib olmoq",
+              "ru": "запоминать; записывать",
+              "tj": "дар хотир доштан; қайд кардан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "记",
+          "pinyin": "jì",
+          "translation": {
+            "uz": "eslab qolmoq; yozib olmoq",
+            "ru": "запоминать; записывать",
+            "tj": "дар хотир доштан; қайд кардан"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "记 talaffuzini tanlang:",
+            "ru": "Выберите произношение 记:",
+            "tj": "Талаффузи 记-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yòu",
+            "càidān",
+            "jì",
+            "è"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "记 — jì",
+            "ru": "记 — jì",
+            "tj": "记 — jì"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "用",
+            "pinyin": "yòng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ishlatmoq; foydalanmoq",
+              "ru": "использовать",
+              "tj": "истифода бурдан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ishlatmoq; foydalanmoq' xitoycha qaysi?",
+            "ru": "'использовать' по-китайски?",
+            "tj": "'истифода бурдан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "饿",
+            "用",
+            "菜单",
+            "又"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ishlatmoq; foydalanmoq = 用 (yòng)",
+            "ru": "использовать = 用 (yòng)",
+            "tj": "истифода бурдан = 用 (yòng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "鸡",
+            "pinyin": "jī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tovuq",
+              "ru": "курица",
+              "tj": "мурғ"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "鸡",
+          "pinyin": "jī",
+          "options": [
+            "饿",
+            "又",
+            "菜单",
+            "鸡"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "鸡 — tovuq (jī)",
+            "ru": "鸡 — курица (jī)",
+            "tj": "鸡 — мурғ (jī)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "张",
+            "pinyin": "zhāng",
+            "pos": "m.",
+            "meaning": {
+              "uz": "yassi narsalar uchun hisob so‘zi",
+              "ru": "счётное слово для плоских предметов",
+              "tj": "воҳиди ҳисоб барои ашёи ҳамвор"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "张 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 张:",
+            "tj": "Маънои калимаи 张-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ham; yana (parallel belgilar/holatlar)",
+              "ru": "и; ещё (при параллельных признаках)",
+              "tj": "ҳам; боз"
+            },
+            {
+              "uz": "menyu",
+              "ru": "меню",
+              "tj": "меню"
+            },
+            {
+              "uz": "yassi narsalar uchun hisob so‘zi",
+              "ru": "счётное слово для плоских предметов",
+              "tj": "воҳиди ҳисоб барои ашёи ҳамвор"
+            },
+            {
+              "uz": "och",
+              "ru": "голодный",
+              "tj": "гурусна"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "张 = yassi narsalar uchun hisob so‘zi (zhāng)",
+            "ru": "张 = счётное слово для плоских предметов (zhāng)",
+            "tj": "张 = воҳиди ҳисоб барои ашёи ҳамвор (zhāng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jì?",
+            "tj": "jì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "饿",
+            "又",
+            "记",
+            "菜单"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "记 = eslab qolmoq; yozib olmoq (jì)",
+            "ru": "记 = запоминать; записывать (jì)",
+            "tj": "记 = дар хотир доштан; қайд кардан (jì)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "记",
+              {
+                "uz": "eslab qolmoq; yozib olmoq",
+                "ru": "запоминать; записывать",
+                "tj": "дар хотир доштан; қайд кардан"
+              }
+            ],
+            [
+              "用",
+              {
+                "uz": "ishlatmoq; foydalanmoq",
+                "ru": "использовать",
+                "tj": "истифода бурдан"
+              }
+            ],
+            [
+              "鸡",
+              {
+                "uz": "tovuq",
+                "ru": "курица",
+                "tj": "мурғ"
+              }
+            ],
+            [
+              "张",
+              {
+                "uz": "yassi narsalar uchun hisob so‘zi",
+                "ru": "счётное слово для плоских предметов",
+                "tj": "воҳиди ҳисоб барои ашёи ҳамвор"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "记",
+          "pinyin": "jì",
+          "options": [
+            "饿",
+            "又",
+            "菜单",
+            "记"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "记 — eslab qolmoq; yozib olmoq (jì)",
+            "ru": "记 — запоминать; записывать (jì)",
+            "tj": "记 — дар хотир доштан; қайд кардан (jì)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "用",
+          "pinyin": "yòng",
+          "options": [
+            "饿",
+            "菜单",
+            "又",
+            "用"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "用 — ishlatmoq; foydalanmoq (yòng)",
+            "ru": "用 — использовать (yòng)",
+            "tj": "用 — истифода бурдан (yòng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jī qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jī?",
+            "tj": "jī кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "菜单",
+            "鸡",
+            "又",
+            "饿"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "鸡 = tovuq (jī)",
+            "ru": "鸡 = курица (jī)",
+            "tj": "鸡 = мурғ (jī)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "张 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 张:",
+            "tj": "Маънои калимаи 张-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "menyu",
+              "ru": "меню",
+              "tj": "меню"
+            },
+            {
+              "uz": "yassi narsalar uchun hisob so‘zi",
+              "ru": "счётное слово для плоских предметов",
+              "tj": "воҳиди ҳисоб барои ашёи ҳамвор"
+            },
+            {
+              "uz": "ham; yana (parallel belgilar/holatlar)",
+              "ru": "и; ещё (при параллельных признаках)",
+              "tj": "ҳам; боз"
+            },
+            {
+              "uz": "och",
+              "ru": "голодный",
+              "tj": "гурусна"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "张 = yassi narsalar uchun hisob so‘zi (zhāng)",
+            "ru": "张 = счётное слово для плоских предметов (zhāng)",
+            "tj": "张 = воҳиди ҳисоб барои ашёи ҳамвор (zhāng)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "记",
+          "pinyin": "jì",
+          "translation": {
+            "uz": "eslab qolmoq; yozib olmoq",
+            "ru": "запоминать; записывать",
+            "tj": "дар хотир доштан; қайд кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "碗 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 碗:",
+            "tj": "Маънои калимаи 碗-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kosa; piyola",
+              "ru": "миска; пиала",
+              "tj": "коса"
+            },
+            {
+              "uz": "ham; yana (parallel belgilar/holatlar)",
+              "ru": "и; ещё (при параллельных признаках)",
+              "tj": "ҳам; боз"
+            },
+            {
+              "uz": "och",
+              "ru": "голодный",
+              "tj": "гурусна"
+            },
+            {
+              "uz": "menyu",
+              "ru": "меню",
+              "tj": "меню"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "碗 = kosa; piyola (wǎn)",
+            "ru": "碗 = миска; пиала (wǎn)",
+            "tj": "碗 = коса (wǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "碗",
+            "pinyin": "wǎn",
+            "meaning": {
+              "uz": "kosa; piyola",
+              "ru": "миска; пиала",
+              "tj": "коса"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'eslab qolmoq; yozib olmoq' xitoycha qaysi?",
+            "ru": "'запоминать; записывать' по-китайски?",
+            "tj": "'дар хотир доштан; қайд кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "又",
+            "记",
+            "饿",
+            "菜单"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "eslab qolmoq; yozib olmoq = 记 (jì)",
+            "ru": "запоминать; записывать = 记 (jì)",
+            "tj": "дар хотир доштан; қайд кардан = 记 (jì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "记",
+            "pinyin": "jì",
+            "meaning": {
+              "uz": "eslab qolmoq; yozib olmoq",
+              "ru": "запоминать; записывать",
+              "tj": "дар хотир доштан; қайд кардан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

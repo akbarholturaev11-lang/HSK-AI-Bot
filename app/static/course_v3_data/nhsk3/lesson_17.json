@@ -1,0 +1,664 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 17,
+  "source_lesson": 3,
+  "part_no": 1,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "这个小区挺好的",
+  "subtitle": {
+    "uz": "Yashash muhiti va uy sharoiti haqida gaplashish; “挺” va “坏了” orqali darajani ifodalash; “就” va “才” bilan ish-harakatning erta/kech yoki tez/sekin sodir bo‘lishini aytish.",
+    "ru": "Говорить о жилой среде и бытовых условиях; выражать степень с “挺” и “坏了”; использовать “就” и “才” для обозначения раннего/позднего или быстрого/медленного наступления действия.",
+    "tj": "Дар бораи муҳити зист ва шароити хона суҳбат кардан; бо “挺” ва “坏了” дараҷаро ифода кардан; бо “就” ва “才” барвақт/дер ё тез/суст рух додани амалро нишон додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "初中",
+      "pinyin": "chūzhōng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+        "ru": "средняя школа (младшие классы)",
+        "tj": "зинаи миёнаи поёнии мактаб"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "咱们",
+      "pinyin": "zánmen",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "biz (so‘zlovchi va tinglovchini ham qo‘shib)",
+        "ru": "мы (включая собеседника)",
+        "tj": "мо (бо шумули шунаванда)"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "换",
+      "pinyin": "huàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "almashtirmoq",
+        "ru": "менять; заменять",
+        "tj": "иваз кардан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "房子",
+      "pinyin": "fángzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "uy; xona-joy",
+        "ru": "дом; жильё",
+        "tj": "хона; манзил"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Daraja to‘ldiruvchisi (1)",
+        "ru": "Дополнение степени (1)",
+        "tj": "Пуркунандаи дараҷа (1)"
+      },
+      "title_zh": "程度补语（1）",
+      "rule": {
+        "uz": "“坏了” sifat yoki holat fe’lidan keyin kelib darajaning juda yuqori ekanini bildiradi: “juda ham…, rosa…”. Bu yerda “坏” so‘zma-so‘z “buzilmoq” ma’nosida emas.",
+        "ru": "“坏了” после прилагательного или глагола состояния выражает очень высокую степень: «ужасно / очень сильно». Здесь “坏” не означает буквально «сломаться».",
+        "tj": "“坏了” баъди сифат ё феъли ҳолат дараҷаи хеле баландро ифода мекунад: «хеле / бисёр». Дар ин ҷо “坏” маънои аслии «вайрон шудан»-ро надорад."
+      },
+      "examples": [
+        {
+          "zh": "我这几天忙坏了。",
+          "pinyin": "Wǒ zhè jǐ tiān máng huài le.",
+          "translation": {
+            "uz": "Shu kunlarda juda band bo‘ldim.",
+            "ru": "В эти дни я ужасно занят.",
+            "tj": "Ин чанд рӯз ман бисёр банд будам."
+          }
+        },
+        {
+          "zh": "我渴坏了，哪里能买水？",
+          "pinyin": "Wǒ kě huài le, nǎlǐ néng mǎi shuǐ?",
+          "translation": {
+            "uz": "Juda chanqadim, qayerdan suv olsa bo‘ladi?",
+            "ru": "Я ужасно хочу пить. Где можно купить воду?",
+            "tj": "Ман сахт ташна шудам, аз куҷо об харидан мумкин?"
+          }
+        },
+        {
+          "zh": "这几天非常忙，大家都累坏了。",
+          "pinyin": "Zhè jǐ tiān fēicháng máng, dàjiā dōu lèi huài le.",
+          "translation": {
+            "uz": "Shu kunlarda juda band edik, hamma rosa charchadi.",
+            "ru": "Эти дни были очень загруженными, все страшно устали.",
+            "tj": "Ин чанд рӯз хеле серкор буд, ҳама сахт хаста шуданд."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue mehmonxonada suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают в гостиной.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ дар меҳмонхона суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "这个月花了不少钱。",
+          "pinyin": "Zhège yuè huā le bù shǎo qián.",
+          "text": {
+            "uz": "Bu oy ancha pul sarfladik.",
+            "ru": "В этом месяце мы потратили немало денег.",
+            "tj": "Ин моҳ пули зиёд сарф кардем."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "今天下午？",
+          "pinyin": "Jīntiān xiàwǔ?",
+          "text": {
+            "uz": "Bugun tushdan keyinmi?",
+            "ru": "Сегодня днём?",
+            "tj": "Имрӯз баъд аз нисфирӯзӣ?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "那我下午自己去吧。",
+          "pinyin": "Nà wǒ xiàwǔ zìjǐ qù ba.",
+          "text": {
+            "uz": "Unda tushdan keyin o‘zim boraman.",
+            "ru": "Тогда я схожу днём сама.",
+            "tj": "Пас баъд аз нисфирӯзӣ худам меравам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "初中",
+            "pinyin": "chūzhōng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+              "ru": "средняя школа (младшие классы)",
+              "tj": "зинаи миёнаи поёнии мактаб"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "初中",
+          "pinyin": "chūzhōng",
+          "translation": {
+            "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+            "ru": "средняя школа (младшие классы)",
+            "tj": "зинаи миёнаи поёнии мактаб"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "chūzhōng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chūzhōng?",
+            "tj": "chūzhōng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "咱们",
+            "房子",
+            "换",
+            "初中"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "初中 = o‘rta maktabning boshlang‘ich bosqichi (chūzhōng)",
+            "ru": "初中 = средняя школа (младшие классы) (chūzhōng)",
+            "tj": "初中 = зинаи миёнаи поёнии мактаб (chūzhōng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "咱们",
+            "pinyin": "zánmen",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "biz (so‘zlovchi va tinglovchini ham qo‘shib)",
+              "ru": "мы (включая собеседника)",
+              "tj": "мо (бо шумули шунаванда)"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "咱们 talaffuzini tanlang:",
+            "ru": "Выберите произношение 咱们:",
+            "tj": "Талаффузи 咱们-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zánmen",
+            "huàn",
+            "fángzi",
+            "chūzhōng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "咱们 — zánmen",
+            "ru": "咱们 — zánmen",
+            "tj": "咱们 — zánmen"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "换",
+            "pinyin": "huàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "almashtirmoq",
+              "ru": "менять; заменять",
+              "tj": "иваз кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'almashtirmoq' xitoycha qaysi?",
+            "ru": "'менять; заменять' по-китайски?",
+            "tj": "'иваз кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "初中",
+            "房子",
+            "咱们",
+            "换"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "almashtirmoq = 换 (huàn)",
+            "ru": "менять; заменять = 换 (huàn)",
+            "tj": "иваз кардан = 换 (huàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "房子",
+            "pinyin": "fángzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "uy; xona-joy",
+              "ru": "дом; жильё",
+              "tj": "хона; манзил"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "房子",
+          "pinyin": "fángzi",
+          "options": [
+            "房子",
+            "咱们",
+            "换",
+            "初中"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "房子 — uy; xona-joy (fángzi)",
+            "ru": "房子 — дом; жильё (fángzi)",
+            "tj": "房子 — хона; манзил (fángzi)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "初中 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 初中:",
+            "tj": "Маънои калимаи 初中-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "uy; xona-joy",
+              "ru": "дом; жильё",
+              "tj": "хона; манзил"
+            },
+            {
+              "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+              "ru": "средняя школа (младшие классы)",
+              "tj": "зинаи миёнаи поёнии мактаб"
+            },
+            {
+              "uz": "biz (so‘zlovchi va tinglovchini ham qo‘shib)",
+              "ru": "мы (включая собеседника)",
+              "tj": "мо (бо шумули шунаванда)"
+            },
+            {
+              "uz": "almashtirmoq",
+              "ru": "менять; заменять",
+              "tj": "иваз кардан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "初中 = o‘rta maktabning boshlang‘ich bosqichi (chūzhōng)",
+            "ru": "初中 = средняя школа (младшие классы) (chūzhōng)",
+            "tj": "初中 = зинаи миёнаи поёнии мактаб (chūzhōng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "初中",
+              {
+                "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+                "ru": "средняя школа (младшие классы)",
+                "tj": "зинаи миёнаи поёнии мактаб"
+              }
+            ],
+            [
+              "咱们",
+              {
+                "uz": "biz (so‘zlovchi va tinglovchini ham qo‘shib)",
+                "ru": "мы (включая собеседника)",
+                "tj": "мо (бо шумули шунаванда)"
+              }
+            ],
+            [
+              "换",
+              {
+                "uz": "almashtirmoq",
+                "ru": "менять; заменять",
+                "tj": "иваз кардан"
+              }
+            ],
+            [
+              "房子",
+              {
+                "uz": "uy; xona-joy",
+                "ru": "дом; жильё",
+                "tj": "хона; манзил"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Daraja to‘ldiruvchisi (1)",
+              "ru": "Дополнение степени (1)",
+              "tj": "Пуркунандаи дараҷа (1)"
+            },
+            "title_zh": "程度补语（1）",
+            "rule": {
+              "uz": "“坏了” sifat yoki holat fe’lidan keyin kelib darajaning juda yuqori ekanini bildiradi: “juda ham…, rosa…”. Bu yerda “坏” so‘zma-so‘z “buzilmoq” ma’nosida emas.",
+              "ru": "“坏了” после прилагательного или глагола состояния выражает очень высокую степень: «ужасно / очень сильно». Здесь “坏” не означает буквально «сломаться».",
+              "tj": "“坏了” баъди сифат ё феъли ҳолат дараҷаи хеле баландро ифода мекунад: «хеле / бисёр». Дар ин ҷо “坏” маънои аслии «вайрон шудан»-ро надорад."
+            },
+            "examples": [
+              {
+                "zh": "我这几天忙坏了。",
+                "pinyin": "Wǒ zhè jǐ tiān máng huài le.",
+                "translation": {
+                  "uz": "Shu kunlarda juda band bo‘ldim.",
+                  "ru": "В эти дни я ужасно занят.",
+                  "tj": "Ин чанд рӯз ман бисёр банд будам."
+                }
+              },
+              {
+                "zh": "我渴坏了，哪里能买水？",
+                "pinyin": "Wǒ kě huài le, nǎlǐ néng mǎi shuǐ?",
+                "translation": {
+                  "uz": "Juda chanqadim, qayerdan suv olsa bo‘ladi?",
+                  "ru": "Я ужасно хочу пить. Где можно купить воду?",
+                  "tj": "Ман сахт ташна шудам, аз куҷо об харидан мумкин?"
+                }
+              },
+              {
+                "zh": "这几天非常忙，大家都累坏了。",
+                "pinyin": "Zhè jǐ tiān fēicháng máng, dàjiā dōu lèi huài le.",
+                "translation": {
+                  "uz": "Shu kunlarda juda band edik, hamma rosa charchadi.",
+                  "ru": "Эти дни были очень загруженными, все страшно устали.",
+                  "tj": "Ин чанд рӯз хеле серкор буд, ҳама сахт хаста шуданд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Shu kunlarda juda band bo‘ldim.",
+            "ru": "В эти дни я ужасно занят.",
+            "tj": "Ин чанд рӯз ман бисёр банд будам."
+          },
+          "tokens": [
+            "天",
+            "坏",
+            "咱们",
+            "几",
+            "这",
+            "了",
+            "我",
+            "初中",
+            "忙"
+          ],
+          "answer_tokens": [
+            "我",
+            "这",
+            "几",
+            "天",
+            "忙",
+            "坏",
+            "了"
+          ],
+          "explanation": {
+            "uz": "我这几天忙坏了。 — Wǒ zhè jǐ tiān máng huài le.",
+            "ru": "我这几天忙坏了。 — Wǒ zhè jǐ tiān máng huài le.",
+            "tj": "我这几天忙坏了。 — Wǒ zhè jǐ tiān máng huài le."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Shu kunlarda juda band edik, hamma rosa charchadi.» — xitoychada qaysi biri?",
+            "ru": "«Эти дни были очень загруженными, все страшно устали.» — какое предложение по-китайски?",
+            "tj": "«Ин чанд рӯз хеле серкор буд, ҳама сахт хаста шуданд.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我渴坏了，哪里能买水？",
+            "这几天非常忙，大家都累坏了。",
+            "我这几天忙坏了。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "这几天非常忙，大家都累坏了。 — Zhè jǐ tiān fēicháng máng, dàjiā dōu lèi huài le.",
+            "ru": "这几天非常忙，大家都累坏了。 — Zhè jǐ tiān fēicháng máng, dàjiā dōu lèi huài le.",
+            "tj": "这几天非常忙，大家都累坏了。 — Zhè jǐ tiān fēicháng máng, dàjiā dōu lèi huài le."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "初中",
+          "pinyin": "chūzhōng",
+          "options": [
+            "咱们",
+            "房子",
+            "初中",
+            "换"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "初中 — o‘rta maktabning boshlang‘ich bosqichi (chūzhōng)",
+            "ru": "初中 — средняя школа (младшие классы) (chūzhōng)",
+            "tj": "初中 — зинаи миёнаи поёнии мактаб (chūzhōng)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "初中",
+          "pinyin": "chūzhōng",
+          "translation": {
+            "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+            "ru": "средняя школа (младшие классы)",
+            "tj": "зинаи миёнаи поёнии мактаб"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "菜单 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 菜单:",
+            "tj": "Маънои калимаи 菜单-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "biz (so‘zlovchi va tinglovchini ham qo‘shib)",
+              "ru": "мы (включая собеседника)",
+              "tj": "мо (бо шумули шунаванда)"
+            },
+            {
+              "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+              "ru": "средняя школа (младшие классы)",
+              "tj": "зинаи миёнаи поёнии мактаб"
+            },
+            {
+              "uz": "menyu",
+              "ru": "меню",
+              "tj": "меню"
+            },
+            {
+              "uz": "almashtirmoq",
+              "ru": "менять; заменять",
+              "tj": "иваз кардан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "菜单 = menyu (càidān)",
+            "ru": "菜单 = меню (càidān)",
+            "tj": "菜单 = меню (càidān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "菜单",
+            "pinyin": "càidān",
+            "meaning": {
+              "uz": "menyu",
+              "ru": "меню",
+              "tj": "меню"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o‘rta maktabning boshlang‘ich bosqichi' xitoycha qaysi?",
+            "ru": "'средняя школа (младшие классы)' по-китайски?",
+            "tj": "'зинаи миёнаи поёнии мактаб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "房子",
+            "初中",
+            "换",
+            "咱们"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "o‘rta maktabning boshlang‘ich bosqichi = 初中 (chūzhōng)",
+            "ru": "средняя школа (младшие классы) = 初中 (chūzhōng)",
+            "tj": "зинаи миёнаи поёнии мактаб = 初中 (chūzhōng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "初中",
+            "pinyin": "chūzhōng",
+            "meaning": {
+              "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+              "ru": "средняя школа (младшие классы)",
+              "tj": "зинаи миёнаи поёнии мактаб"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

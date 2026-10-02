@@ -1,0 +1,625 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 23,
+  "source_lesson": 3,
+  "part_no": 7,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "这个小区挺好的",
+  "subtitle": {
+    "uz": "Yashash muhiti va uy sharoiti haqida gaplashish; “挺” va “坏了” orqali darajani ifodalash; “就” va “才” bilan ish-harakatning erta/kech yoki tez/sekin sodir bo‘lishini aytish.",
+    "ru": "Говорить о жилой среде и бытовых условиях; выражать степень с “挺” и “坏了”; использовать “就” и “才” для обозначения раннего/позднего или быстрого/медленного наступления действия.",
+    "tj": "Дар бораи муҳити зист ва шароити хона суҳбат кардан; бо “挺” ва “坏了” дараҷаро ифода кардан; бо “就” ва “才” барвақт/дер ё тез/суст рух додани амалро нишон додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "纸",
+      "pinyin": "zhǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qog‘oz",
+        "ru": "бумага",
+        "tj": "коғаз"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "搬",
+      "pinyin": "bān",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ko‘tarmoq; ko‘chirib tashimoq",
+        "ru": "переносить; перевозить",
+        "tj": "бурдан; кӯчондан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "需要",
+      "pinyin": "xūyào",
+      "pos": "v./n.",
+      "meaning": {
+        "uz": "kerak bo‘lmoq; ehtiyoj",
+        "ru": "нуждаться; быть нужным",
+        "tj": "лозим будан; ниёз доштан"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘明",
+          "zh": "好啊，我上网看看。你觉得这个小区怎么样？",
+          "pinyin": "Hǎo a, wǒ shàngwǎng kànkan. Nǐ juéde zhège xiǎoqū zěnmeyàng?",
+          "text": {
+            "uz": "Mayli, internetdan ko‘rib chiqaman. Bu turar-joy majmuasi qanday?",
+            "ru": "Хорошо, посмотрю в интернете. Как тебе этот жилой комплекс?",
+            "tj": "Хуб, аз интернет мебинам. Ин маҷмааи истиқоматӣ чӣ хел аст?"
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "环境挺好的，离地铁站还不远。",
+          "pinyin": "Huánjìng tǐng hǎo de, lí dìtiězhàn hái bù yuǎn.",
+          "text": {
+            "uz": "Muhiti ancha yaxshi, metro bekatidan ham uzoq emas.",
+            "ru": "Обстановка довольно хорошая, и до метро недалеко.",
+            "tj": "Муҳиташ хеле хуб аст ва аз метро ҳам дур нест."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "房子里面也不错，空调和洗衣机都是新的。",
+          "pinyin": "Fángzi lǐmian yě búcuò, kōngtiáo hé xǐyījī dōu shì xīn de.",
+          "text": {
+            "uz": "Uyning ichi ham yaxshi, konditsioner va kir yuvish mashinasi yangi.",
+            "ru": "Внутри тоже неплохо, кондиционер и стиральная машина новые.",
+            "tj": "Даруни хона ҳам хуб аст, кондитсионеру мошини ҷомашӯӣ наванд."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "是不错，但是我不喜欢住一层。",
+          "pinyin": "Shì búcuò, dànshì wǒ bù xǐhuan zhù yì céng.",
+          "text": {
+            "uz": "Yomon emas, lekin birinchi qavatda yashashni yoqtirmayman.",
+            "ru": "Неплохо, но я не люблю жить на первом этаже.",
+            "tj": "Бад нест, аммо ман дар ошёнаи якум зиндагӣ карданро дӯст намедорам."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "这个一层带一个小花园，我觉得咱们可以去看看。",
+          "pinyin": "Zhège yì céng dài yí ge xiǎo huāyuán, wǒ juéde zánmen kěyǐ qù kànkan.",
+          "text": {
+            "uz": "Bu birinchi qavatga kichik bog‘ ham kiradi, menimcha borib ko‘rsak bo‘ladi.",
+            "ru": "У этого первого этажа есть небольшой сад, думаю, стоит посмотреть.",
+            "tj": "Ин ошёнаи якум боғи хурд ҳам дорад, ба назарам рафта дидан мумкин."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Yangi uyda Wang Yixue xonani yig‘ishtirmoqda, Liu Ming kirib keldi.",
+        "ru": "В новом доме Ван Исюэ убирает комнату, входит Лю Мин.",
+        "tj": "Дар хонаи нав Ван Исюэ ҳуҷраро ҷамъ мекунад, Лю Мин медарояд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "我今天早上来的时候，灯还开着。",
+          "pinyin": "Wǒ jīntiān zǎoshang lái de shíhou, dēng hái kāizhe.",
+          "text": {
+            "uz": "Bugun ertalab kelganimda chiroq hali ham yoqilgan edi.",
+            "ru": "Когда я пришла утром, свет всё ещё был включён.",
+            "tj": "Имрӯз саҳар омадам, чароғ ҳанӯз фурӯзон буд."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "我这几天忙坏了，可能走的时候忘关了。",
+          "pinyin": "Wǒ zhè jǐ tiān máng huài le, kěnéng zǒu de shíhou wàng guān le.",
+          "text": {
+            "uz": "Shu kunlarda juda bandman, ehtimol ketayotganda o‘chirishni unutganman.",
+            "ru": "В эти дни я ужасно занят, наверное, уходя забыл выключить.",
+            "tj": "Ин чанд рӯз бисёр банд будам, шояд ҳангоми рафтан хомӯш карданро фаромӯш кардам."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "不可能吧？冰箱是新买的，我来看看。",
+          "pinyin": "Bù kěnéng ba? Bīngxiāng shì xīn mǎi de, wǒ lái kànkan.",
+          "text": {
+            "uz": "Bo‘lishi mumkin emas-ku? Muzlatkich yangi olingan, qani ko‘ray.",
+            "ru": "Не может быть. Холодильник новый, дай посмотрю.",
+            "tj": "Мумкин нест-ку? Яхдон нав харида шудааст, бинам."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "洗衣机也坏了吗？",
+          "pinyin": "Xǐyījī yě huài le ma?",
+          "text": {
+            "uz": "Kir yuvish mashinasi ham buzildimi?",
+            "ru": "Стиральная машина тоже сломалась?",
+            "tj": "Мошини ҷомашӯӣ ҳам вайрон шуд?"
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "没坏，但是卫生间没打扫好，还不能洗衣服。",
+          "pinyin": "Méi huài, dànshì wèishēngjiān méi dǎsǎo hǎo, hái bù néng xǐ yīfu.",
+          "text": {
+            "uz": "Buzilmagan, lekin sanuzel hali yaxshi tozalanmagan, hozircha kir yuvib bo‘lmaydi.",
+            "ru": "Нет, но санузел ещё не убран, стирать пока нельзя.",
+            "tj": "Вайрон нашудааст, аммо ҳоҷатхона ҳоло хуб тоза нашудааст, ҳоло либос шустан намешавад."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "星期天我们真的能搬家吗？",
+          "pinyin": "Xīngqītiān wǒmen zhēn de néng bānjiā ma?",
+          "text": {
+            "uz": "Yakshanba kuni rostdan ham ko‘cha olamizmi?",
+            "ru": "Мы правда сможем переехать в воскресенье?",
+            "tj": "Рӯзи якшанбе воқеан кӯчида метавонем?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue mehmonxonada suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают в гостиной.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ дар меҳмонхона суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "这个月花了不少钱。",
+          "pinyin": "Zhège yuè huā le bù shǎo qián.",
+          "text": {
+            "uz": "Bu oy ancha pul sarfladik.",
+            "ru": "В этом месяце мы потратили немало денег.",
+            "tj": "Ин моҳ пули зиёд сарф кардем."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "是的，我们买了很多搬家时要用的东西。",
+          "pinyin": "Shì de, wǒmen mǎi le hěn duō bānjiā shí yào yòng de dōngxi.",
+          "text": {
+            "uz": "Ha, ko‘chishda kerak bo‘ladigan ko‘p narsalarni oldik.",
+            "ru": "Да, мы купили много вещей, нужных для переезда.",
+            "tj": "Ҳа, барои кӯчидан чизҳои зиёди лозим харидаем."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "今天下午？",
+          "pinyin": "Jīntiān xiàwǔ?",
+          "text": {
+            "uz": "Bugun tushdan keyinmi?",
+            "ru": "Сегодня днём?",
+            "tj": "Имрӯз баъд аз нисфирӯзӣ?"
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "我下午要去医院，很晚才能回来。",
+          "pinyin": "Wǒ xiàwǔ yào qù yīyuàn, hěn wǎn cái néng huílái.",
+          "text": {
+            "uz": "Tushdan keyin shifoxonaga boraman, juda kech qaytaman.",
+            "ru": "Днём я иду в больницу и вернусь только поздно.",
+            "tj": "Баъд аз нисфирӯзӣ ба беморхона меравам ва танҳо дер бармегардам."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "那我下午自己去吧。",
+          "pinyin": "Nà wǒ xiàwǔ zìjǐ qù ba.",
+          "text": {
+            "uz": "Unda tushdan keyin o‘zim boraman.",
+            "ru": "Тогда я схожу днём сама.",
+            "tj": "Пас баъд аз нисфирӯзӣ худам меравам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue ko‘chish rejasini muhokama qilmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ обсуждают план переезда.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ нақшаи кӯчиданро муҳокима мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "我觉得下个月才能搬家。这周开始准备，下周去打扫新家，这么多事情最少需要两个星期才能做完。搬家那天，我们应该找一家搬家公司。",
+          "pinyin": "Wǒ juéde xià ge yuè cái néng bānjiā. Zhè zhōu kāishǐ zhǔnbèi, xià zhōu qù dǎsǎo xīn jiā, zhème duō shìqing zuìshǎo xūyào liǎng ge xīngqī cái néng zuò wán. Bānjiā nà tiān, wǒmen yīnggāi zhǎo yì jiā bānjiā gōngsī.",
+          "text": {
+            "uz": "Menimcha, faqat keyingi oy ko‘cha olamiz. Shu hafta tayyorlanishni boshlaymiz, keyingi hafta yangi uyni tozalaymiz. Shuncha ishni tugatishga kamida ikki hafta kerak. Ko‘chadigan kuni ko‘chirish kompaniyasini topishimiz kerak.",
+            "ru": "Думаю, переехать получится только в следующем месяце. На этой неделе начнём готовиться, на следующей уберём новый дом. На всё это нужно минимум две недели. В день переезда лучше нанять компанию.",
+            "tj": "Ба назарам, танҳо моҳи оянда кӯчида метавонем. Ин ҳафта омодагӣ мегирем, ҳафтаи оянда хонаи навро тоза мекунем. Барои ин қадар кор ҳадди ақал ду ҳафта лозим. Рӯзи кӯчидан бояд ширкати кӯчонидан ёбем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "纸",
+            "pinyin": "zhǐ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qog‘oz",
+              "ru": "бумага",
+              "tj": "коғаз"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "纸 talaffuzini tanlang:",
+            "ru": "Выберите произношение 纸:",
+            "tj": "Талаффузи 纸-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zánmen",
+            "zhǐ",
+            "huàn",
+            "chūzhōng"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "纸 — zhǐ",
+            "ru": "纸 — zhǐ",
+            "tj": "纸 — zhǐ"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "搬",
+            "pinyin": "bān",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ko‘tarmoq; ko‘chirib tashimoq",
+              "ru": "переносить; перевозить",
+              "tj": "бурдан; кӯчондан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "搬",
+          "pinyin": "bān",
+          "translation": {
+            "uz": "ko‘tarmoq; ko‘chirib tashimoq",
+            "ru": "переносить; перевозить",
+            "tj": "бурдан; кӯчондан"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ko‘tarmoq; ko‘chirib tashimoq' xitoycha qaysi?",
+            "ru": "'переносить; перевозить' по-китайски?",
+            "tj": "'бурдан; кӯчондан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "咱们",
+            "换",
+            "搬",
+            "初中"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "ko‘tarmoq; ko‘chirib tashimoq = 搬 (bān)",
+            "ru": "переносить; перевозить = 搬 (bān)",
+            "tj": "бурдан; кӯчондан = 搬 (bān)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "需要",
+            "pinyin": "xūyào",
+            "pos": "v./n.",
+            "meaning": {
+              "uz": "kerak bo‘lmoq; ehtiyoj",
+              "ru": "нуждаться; быть нужным",
+              "tj": "лозим будан; ниёз доштан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "需要",
+          "pinyin": "xūyào",
+          "options": [
+            "换",
+            "初中",
+            "咱们",
+            "需要"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "需要 — kerak bo‘lmoq; ehtiyoj (xūyào)",
+            "ru": "需要 — нуждаться; быть нужным (xūyào)",
+            "tj": "需要 — лозим будан; ниёз доштан (xūyào)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "纸 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 纸:",
+            "tj": "Маънои калимаи 纸-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "biz (so‘zlovchi va tinglovchini ham qo‘shib)",
+              "ru": "мы (включая собеседника)",
+              "tj": "мо (бо шумули шунаванда)"
+            },
+            {
+              "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+              "ru": "средняя школа (младшие классы)",
+              "tj": "зинаи миёнаи поёнии мактаб"
+            },
+            {
+              "uz": "almashtirmoq",
+              "ru": "менять; заменять",
+              "tj": "иваз кардан"
+            },
+            {
+              "uz": "qog‘oz",
+              "ru": "бумага",
+              "tj": "коғаз"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "纸 = qog‘oz (zhǐ)",
+            "ru": "纸 = бумага (zhǐ)",
+            "tj": "纸 = коғаз (zhǐ)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "纸",
+              {
+                "uz": "qog‘oz",
+                "ru": "бумага",
+                "tj": "коғаз"
+              }
+            ],
+            [
+              "搬",
+              {
+                "uz": "ko‘tarmoq; ko‘chirib tashimoq",
+                "ru": "переносить; перевозить",
+                "tj": "бурдан; кӯчондан"
+              }
+            ],
+            [
+              "需要",
+              {
+                "uz": "kerak bo‘lmoq; ehtiyoj",
+                "ru": "нуждаться; быть нужным",
+                "tj": "лозим будан; ниёз доштан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "需要",
+          "pinyin": "xūyào",
+          "translation": {
+            "uz": "kerak bo‘lmoq; ehtiyoj",
+            "ru": "нуждаться; быть нужным",
+            "tj": "лозим будан; ниёз доштан"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "搬",
+          "pinyin": "bān",
+          "options": [
+            "搬",
+            "换",
+            "初中",
+            "咱们"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "搬 — ko‘tarmoq; ko‘chirib tashimoq (bān)",
+            "ru": "搬 — переносить; перевозить (bān)",
+            "tj": "搬 — бурдан; кӯчондан (bān)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "搬",
+          "pinyin": "bān",
+          "translation": {
+            "uz": "ko‘tarmoq; ko‘chirib tashimoq",
+            "ru": "переносить; перевозить",
+            "tj": "бурдан; кӯчондан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "银行 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 银行:",
+            "tj": "Маънои калимаи 银行-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o‘rta maktabning boshlang‘ich bosqichi",
+              "ru": "средняя школа (младшие классы)",
+              "tj": "зинаи миёнаи поёнии мактаб"
+            },
+            {
+              "uz": "biz (so‘zlovchi va tinglovchini ham qo‘shib)",
+              "ru": "мы (включая собеседника)",
+              "tj": "мо (бо шумули шунаванда)"
+            },
+            {
+              "uz": "almashtirmoq",
+              "ru": "менять; заменять",
+              "tj": "иваз кардан"
+            },
+            {
+              "uz": "bank",
+              "ru": "банк",
+              "tj": "бонк"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "银行 = bank (yínháng)",
+            "ru": "银行 = банк (yínháng)",
+            "tj": "银行 = бонк (yínháng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "银行",
+            "pinyin": "yínháng",
+            "meaning": {
+              "uz": "bank",
+              "ru": "банк",
+              "tj": "бонк"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ko‘tarmoq; ko‘chirib tashimoq' xitoycha qaysi?",
+            "ru": "'переносить; перевозить' по-китайски?",
+            "tj": "'бурдан; кӯчондан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "搬",
+            "初中",
+            "咱们",
+            "换"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "ko‘tarmoq; ko‘chirib tashimoq = 搬 (bān)",
+            "ru": "переносить; перевозить = 搬 (bān)",
+            "tj": "бурдан; кӯчондан = 搬 (bān)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "搬",
+            "pinyin": "bān",
+            "meaning": {
+              "uz": "ko‘tarmoq; ko‘chirib tashimoq",
+              "ru": "переносить; перевозить",
+              "tj": "бурдан; кӯчондан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

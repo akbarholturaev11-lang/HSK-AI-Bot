@@ -1,0 +1,772 @@
+{
+  "schema_version": 2,
+  "level": "nhsk2",
+  "lesson_id": 22,
+  "source_lesson": 5,
+  "part_no": 2,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "第一次去中国朋友家",
+  "subtitle": {
+    "uz": "Oddiy yo‘nalish to‘ldiruvchilarini 来/去 bilan ishlatish; obyektning joylashuvini to‘g‘ri tanlash; “都……了” bilan ‘allaqachon/shu darajaga yetdi’ ma’nosini berish; xitoylik do‘stnikiga mehmon bo‘lish vaziyatida muloqot qilish.",
+    "ru": "Использовать простые направительные дополнения с 来/去; правильно располагать объект; выражать ‘уже/дошло до’ конструкцией “都……了”; общаться в ситуации первого визита к китайским друзьям.",
+    "tj": "Пуркунандаи самти соддаро бо 来/去 истифода бурдан; ҷойи объектро дуруст гузоштан; бо “都……了” маънои ‘аллакай/то ин дараҷа’ додан; ҳангоми меҳмонӣ ба хонаи дӯсти чинӣ суҳбат кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "下面",
+      "pinyin": "xiàmian",
+      "pos": "n.",
+      "meaning": {
+        "uz": "past; pastki tomon",
+        "ru": "внизу",
+        "tj": "поён; қисми поён"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "面",
+      "pinyin": "miàn",
+      "pos": "suf.",
+      "meaning": {
+        "uz": "joy otini yasovchi qo‘shimcha",
+        "ru": "суффикс для слов места",
+        "tj": "пасванд барои номи ҷой"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "等",
+      "pinyin": "děng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kutmoq",
+        "ru": "ждать",
+        "tj": "интизор шудан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "一会儿",
+      "pinyin": "yíhuìr",
+      "pos": "num.-m.",
+      "meaning": {
+        "uz": "birozdan so‘ng; bir oz",
+        "ru": "через некоторое время; немного",
+        "tj": "каме баъд; андаке"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Oddiy yo‘nalish to‘ldiruvchisi (2)",
+        "ru": "Простое направительное дополнение (2)",
+        "tj": "Пуркунандаи самти содда (2)"
+      },
+      "title_zh": "简单趋向补语（2）",
+      "rule": {
+        "uz": "Fe’l yo‘nalish to‘ldiruvchisi va obyekt bilan kelganda, joy oti bo‘lsa obyekt 来/去 dan oldin turadi; narsa oti bo‘lsa oldin ham, keyin ham kelishi mumkin. 开、买、拿、请、送、要、找、走 kabi fe’llar ham yo‘nalish elementlari bilan birikadi.",
+        "ru": "Если при глаголе есть простое направительное дополнение и объект, топоним/место ставится перед 来/去; предметный объект может стоять и до, и после 来/去. Глаголы 开、买、拿、请、送、要、找、走 также сочетаются с 上、下、进、出、回、过.",
+        "tj": "Агар феъл ҳам пуркунандаи самт ва ҳам объект дошта бошад, исми ҷой пеш аз 来/去 меояд; исми ашё метавонад пеш ё баъд аз 来/去 ояд. Феълҳои 开、买、拿、请、送、要、找、走 низ бо 上、下、进、出、回、过 меоянд."
+      },
+      "examples": [
+        {
+          "zh": "你们太客气了，还拿这么多礼物来！",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "家月给我送来了一本书。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "上课了，你们快进教室来吧。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "爸爸今天买回了很多水果。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        },
+        {
+          "zh": "妈妈拿出了二十块钱，让小雪自己去买点儿吃的。",
+          "pinyin": "",
+          "translation": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Mehmonxona pastida Annie Bai Jiayuega telefon qilmoqda.",
+        "ru": "Внизу гостиницы Энни звонит Бай Цзяюэ.",
+        "tj": "Дар поёни меҳмонхона Энни ба Бай Ҷяюэ занг мезанад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "还有时间，你上来吧。",
+          "pinyin": "Hái yǒu shíjiān, nǐ shànglái ba.",
+          "text": {
+            "uz": "Hali vaqt bor, sen yuqoriga chiq.",
+            "ru": "Время ещё есть, поднимайся ко мне.",
+            "tj": "Ҳоло вақт ҳаст, ту боло биё."
+          }
+        },
+        {
+          "speaker": "Annie",
+          "zh": "我不上去了，就在下面等你。",
+          "pinyin": "Wǒ bú shàngqù le, jiù zài xiàmian děng nǐ.",
+          "text": {
+            "uz": "Men yuqoriga chiqmayman, pastda seni kutaman.",
+            "ru": "Я не буду подниматься, подожду тебя внизу.",
+            "tj": "Ман боло намебароям, дар поён туро интизор мешавам."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "那我一会儿就下去。",
+          "pinyin": "Nà wǒ yíhuìr jiù xiàqù.",
+          "text": {
+            "uz": "Unda men birozdan keyin tushaman.",
+            "ru": "Тогда я через минуту спущусь.",
+            "tj": "Пас ман каме баъд поён мефароям."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yixue uyida Bai Jiayue va Annie mehmon bo‘lib kelgan.",
+        "ru": "У Ван Исюэ дома Бай Цзяюэ и Энни пришли в гости.",
+        "tj": "Дар хонаи Ван Исюэ Бай Ҷяюэ ва Энни ба меҳмонӣ омадаанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Bai Jiayue & Annie",
+          "zh": "你们好！",
+          "pinyin": "Nǐmen hǎo!",
+          "text": {
+            "uz": "Salom!",
+            "ru": "Здравствуйте!",
+            "tj": "Салом!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Yixue uyida Bai Jiayue va Annie ovqatlanmoqda.",
+        "ru": "У Ван Исюэ дома Бай Цзяюэ и Энни обедают.",
+        "tj": "Дар хонаи Ван Исюэ Бай Ҷяюэ ва Энни хӯрок мехӯранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "都12点了，我们吃饭吧。",
+          "pinyin": "Dōu shí'èr diǎn le, wǒmen chī fàn ba.",
+          "text": {
+            "uz": "Soat allaqachon 12 bo‘ldi, ovqatlanaylik.",
+            "ru": "Уже двенадцать, давайте есть.",
+            "tj": "Соат аллакай 12 шуд, биёед хӯрок хӯрем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "下面",
+            "pinyin": "xiàmian",
+            "pos": "n.",
+            "meaning": {
+              "uz": "past; pastki tomon",
+              "ru": "внизу",
+              "tj": "поён; қисми поён"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xiàmian qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xiàmian?",
+            "tj": "xiàmian кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "快",
+            "下来",
+            "上来",
+            "下面"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "下面 = past; pastki tomon (xiàmian)",
+            "ru": "下面 = внизу (xiàmian)",
+            "tj": "下面 = поён; қисми поён (xiàmian)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "面",
+            "pinyin": "miàn",
+            "pos": "suf.",
+            "meaning": {
+              "uz": "joy otini yasovchi qo‘shimcha",
+              "ru": "суффикс для слов места",
+              "tj": "пасванд барои номи ҷой"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "面",
+          "pinyin": "miàn",
+          "translation": {
+            "uz": "joy otini yasovchi qo‘shimcha",
+            "ru": "суффикс для слов места",
+            "tj": "пасванд барои номи ҷой"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "面 talaffuzini tanlang:",
+            "ru": "Выберите произношение 面:",
+            "tj": "Талаффузи 面-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shànglái",
+            "xiàlái",
+            "miàn",
+            "kuài"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "面 — miàn",
+            "ru": "面 — miàn",
+            "tj": "面 — miàn"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "等",
+            "pinyin": "děng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kutmoq",
+              "ru": "ждать",
+              "tj": "интизор шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kutmoq' xitoycha qaysi?",
+            "ru": "'ждать' по-китайски?",
+            "tj": "'интизор шудан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "等",
+            "上来",
+            "下来",
+            "快"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "kutmoq = 等 (děng)",
+            "ru": "ждать = 等 (děng)",
+            "tj": "интизор шудан = 等 (děng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "一会儿",
+            "pinyin": "yíhuìr",
+            "pos": "num.-m.",
+            "meaning": {
+              "uz": "birozdan so‘ng; bir oz",
+              "ru": "через некоторое время; немного",
+              "tj": "каме баъд; андаке"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "一会儿",
+          "pinyin": "yíhuìr",
+          "options": [
+            "快",
+            "下来",
+            "一会儿",
+            "上来"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "一会儿 — birozdan so‘ng; bir oz (yíhuìr)",
+            "ru": "一会儿 — через некоторое время; немного (yíhuìr)",
+            "tj": "一会儿 — каме баъд; андаке (yíhuìr)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "下面 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 下面:",
+            "tj": "Маънои калимаи 下面-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "pastga tushib kelmoq",
+              "ru": "спуститься сюда",
+              "tj": "поён омада расидан"
+            },
+            {
+              "uz": "tez; shoshil",
+              "ru": "быстро; скорый",
+              "tj": "тез; зуд"
+            },
+            {
+              "uz": "past; pastki tomon",
+              "ru": "внизу",
+              "tj": "поён; қисми поён"
+            },
+            {
+              "uz": "yuqoriga chiqib kelmoq",
+              "ru": "подняться сюда",
+              "tj": "боло омада баромадан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "下面 = past; pastki tomon (xiàmian)",
+            "ru": "下面 = внизу (xiàmian)",
+            "tj": "下面 = поён; қисми поён (xiàmian)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "下面",
+              {
+                "uz": "past; pastki tomon",
+                "ru": "внизу",
+                "tj": "поён; қисми поён"
+              }
+            ],
+            [
+              "面",
+              {
+                "uz": "joy otini yasovchi qo‘shimcha",
+                "ru": "суффикс для слов места",
+                "tj": "пасванд барои номи ҷой"
+              }
+            ],
+            [
+              "等",
+              {
+                "uz": "kutmoq",
+                "ru": "ждать",
+                "tj": "интизор шудан"
+              }
+            ],
+            [
+              "一会儿",
+              {
+                "uz": "birozdan so‘ng; bir oz",
+                "ru": "через некоторое время; немного",
+                "tj": "каме баъд; андаке"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Oddiy yo‘nalish to‘ldiruvchisi (2)",
+              "ru": "Простое направительное дополнение (2)",
+              "tj": "Пуркунандаи самти содда (2)"
+            },
+            "title_zh": "简单趋向补语（2）",
+            "rule": {
+              "uz": "Fe’l yo‘nalish to‘ldiruvchisi va obyekt bilan kelganda, joy oti bo‘lsa obyekt 来/去 dan oldin turadi; narsa oti bo‘lsa oldin ham, keyin ham kelishi mumkin. 开、买、拿、请、送、要、找、走 kabi fe’llar ham yo‘nalish elementlari bilan birikadi.",
+              "ru": "Если при глаголе есть простое направительное дополнение и объект, топоним/место ставится перед 来/去; предметный объект может стоять и до, и после 来/去. Глаголы 开、买、拿、请、送、要、找、走 также сочетаются с 上、下、进、出、回、过.",
+              "tj": "Агар феъл ҳам пуркунандаи самт ва ҳам объект дошта бошад, исми ҷой пеш аз 来/去 меояд; исми ашё метавонад пеш ё баъд аз 来/去 ояд. Феълҳои 开、买、拿、请、送、要、找、走 низ бо 上、下、进、出、回、过 меоянд."
+            },
+            "examples": [
+              {
+                "zh": "你们太客气了，还拿这么多礼物来！",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "家月给我送来了一本书。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "上课了，你们快进教室来吧。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "爸爸今天买回了很多水果。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              },
+              {
+                "zh": "妈妈拿出了二十块钱，让小雪自己去买点儿吃的。",
+                "pinyin": "",
+                "translation": {
+                  "uz": "",
+                  "ru": "",
+                  "tj": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "",
+            "ru": "",
+            "tj": ""
+          },
+          "tokens": [
+            "多",
+            "下来",
+            "了",
+            "今天",
+            "水果",
+            "快",
+            "回",
+            "爸爸",
+            "很",
+            "买"
+          ],
+          "answer_tokens": [
+            "爸爸",
+            "今天",
+            "买",
+            "回",
+            "了",
+            "很",
+            "多",
+            "水果"
+          ],
+          "explanation": {
+            "uz": "爸爸今天买回了很多水果。",
+            "ru": "爸爸今天买回了很多水果。",
+            "tj": "爸爸今天买回了很多水果。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«» — xitoychada qaysi biri?",
+            "ru": "«» — какое предложение по-китайски?",
+            "tj": "«» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "家月给我送来了一本书。",
+            "你们太客气了，还拿这么多礼物来！",
+            "妈妈拿出了二十块钱，让小雪自己去买点儿吃的。",
+            "上课了，你们快进教室来吧。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你们太客气了，还拿这么多礼物来！ — ",
+            "ru": "你们太客气了，还拿这么多礼物来！ — ",
+            "tj": "你们太客气了，还拿这么多礼物来！ — "
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "等",
+          "pinyin": "děng",
+          "options": [
+            "快",
+            "下来",
+            "等",
+            "上来"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "等 — kutmoq (děng)",
+            "ru": "等 — ждать (děng)",
+            "tj": "等 — интизор шудан (děng)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "一会儿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 一会儿:",
+            "tj": "Маънои калимаи 一会儿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tez; shoshil",
+              "ru": "быстро; скорый",
+              "tj": "тез; зуд"
+            },
+            {
+              "uz": "birozdan so‘ng; bir oz",
+              "ru": "через некоторое время; немного",
+              "tj": "каме баъд; андаке"
+            },
+            {
+              "uz": "pastga tushib kelmoq",
+              "ru": "спуститься сюда",
+              "tj": "поён омада расидан"
+            },
+            {
+              "uz": "yuqoriga chiqib kelmoq",
+              "ru": "подняться сюда",
+              "tj": "боло омада баромадан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "一会儿 = birozdan so‘ng; bir oz (yíhuìr)",
+            "ru": "一会儿 = через некоторое время; немного (yíhuìr)",
+            "tj": "一会儿 = каме баъд; андаке (yíhuìr)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "下来 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 下来:",
+            "tj": "Маънои калимаи 下来-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "pastga tushib kelmoq",
+              "ru": "спуститься сюда",
+              "tj": "поён омада расидан"
+            },
+            {
+              "uz": "yuqoriga chiqib kelmoq",
+              "ru": "подняться сюда",
+              "tj": "боло омада баромадан"
+            },
+            {
+              "uz": "yuqoriga chiqib bormoq",
+              "ru": "подняться туда",
+              "tj": "боло рафтан"
+            },
+            {
+              "uz": "tez; shoshil",
+              "ru": "быстро; скорый",
+              "tj": "тез; зуд"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "下来 = pastga tushib kelmoq (xiàlái)",
+            "ru": "下来 = спуститься сюда (xiàlái)",
+            "tj": "下来 = поён омада расидан (xiàlái)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "下来",
+            "pinyin": "xiàlái",
+            "meaning": {
+              "uz": "pastga tushib kelmoq",
+              "ru": "спуститься сюда",
+              "tj": "поён омада расидан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'joy otini yasovchi qo‘shimcha' xitoycha qaysi?",
+            "ru": "'суффикс для слов места' по-китайски?",
+            "tj": "'пасванд барои номи ҷой' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "快",
+            "下来",
+            "面",
+            "上来"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "joy otini yasovchi qo‘shimcha = 面 (miàn)",
+            "ru": "суффикс для слов места = 面 (miàn)",
+            "tj": "пасванд барои номи ҷой = 面 (miàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "面",
+            "pinyin": "miàn",
+            "meaning": {
+              "uz": "joy otini yasovchi qo‘shimcha",
+              "ru": "суффикс для слов места",
+              "tj": "пасванд барои номи ҷой"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

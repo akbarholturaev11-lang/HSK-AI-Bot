@@ -1,0 +1,747 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 70,
+  "source_lesson": 11,
+  "part_no": 2,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我读大学呢",
+  "subtitle": {
+    "uz": "正反问 shaklidagi savollarni tushunish va tuzish; “在/正在” bilan davom etayotgan harakatni ifodalash; “要” bilan xohish yoki niyatni bildirish.",
+    "ru": "Понимать и строить утвердительно-отрицательные вопросы; выражать продолжающееся действие с “在/正在”; выражать желание или намерение с “要”.",
+    "tj": "Саволҳои тасдиқӣ-инкориро фаҳмидан ва сохтан; бо “在/正在” амали давомдорро ифода кардан; бо “要” хоҳиш ё ниятро нишон додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "找",
+      "pinyin": "zhǎo",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qidirmoq",
+        "ru": "искать",
+        "tj": "ҷустуҷӯ кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "开车",
+      "pinyin": "kāichē",
+      "pos": "v.",
+      "meaning": {
+        "uz": "mashina haydamoq",
+        "ru": "водить машину",
+        "tj": "мошин рондан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "车",
+      "pinyin": "chē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mashina; transport",
+        "ru": "машина; транспорт",
+        "tj": "мошин; нақлиёт"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "在",
+      "pinyin": "zài",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "davom etayotgan harakat belgisi",
+        "ru": "показатель действия в процессе",
+        "tj": "нишондиҳандаи амали давомдор"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Vaqt ravishlari “在/正在”",
+        "ru": "Временные наречия “在/正在”",
+        "tj": "Зарфҳои вақт “在/正在”"
+      },
+      "title_zh": "时间副词“在/正在”",
+      "rule": {
+        "uz": "“在/正在” fe’l oldidan kelib harakat davom etayotganini bildiradi. Shakllar: 在/正在+fe’l, 在/正在+fe’l+呢, fe’l+呢; inkorda 没（有） ishlatiladi.",
+        "ru": "“在/正在” ставятся перед глаголом и показывают продолжающееся действие. Формы: 在/正在+глагол, 在/正在+глагол+呢, глагол+呢; отрицание — 没（有）.",
+        "tj": "“在/正在” пеш аз феъл омада, идома доштани амалро нишон медиҳанд. Шаклҳо: 在/正在+феъл, 在/正在+феъл+呢, феъл+呢; инкор бо 没（有）."
+      },
+      "examples": [
+        {
+          "zh": "你还在读大学吗？",
+          "pinyin": "Nǐ hái zài dú dàxué ma?",
+          "translation": {
+            "uz": "Hali ham universitetda o‘qiyapsanmi?",
+            "ru": "Ты всё ещё учишься в университете?",
+            "tj": "Ҳоло ҳам дар донишгоҳ мехонӣ?"
+          }
+        },
+        {
+          "zh": "学生们在/正在上课呢。",
+          "pinyin": "Xuéshengmen zài/zhèngzài shàngkè ne.",
+          "translation": {
+            "uz": "Talabalar hozir darsda.",
+            "ru": "Студенты сейчас на занятии.",
+            "tj": "Донишҷӯён ҳоло дар дарсанд."
+          }
+        },
+        {
+          "zh": "他们读书呢。",
+          "pinyin": "Tāmen dú shū ne.",
+          "translation": {
+            "uz": "Ular hozir kitob o‘qishyapti.",
+            "ru": "Они сейчас читают.",
+            "tj": "Онҳо ҳоло китоб мехонанд."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Yo‘lda Li Wen restoran qidirayotganida Wang Yifei unga telefon qiladi.",
+        "ru": "По дороге, пока Ли Вэнь искал ресторан, Ван Ифэй позвонила ему.",
+        "tj": "Дар роҳ, вақте Ли Вэн тарабхонаро меҷуст, Ван Ифэй ба ӯ занг зад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "还不知道，正在找呢。它是不是在超市后边？",
+          "pinyin": "Hái bù zhīdào, zhèngzài zhǎo ne. Tā shì bu shì zài chāoshì hòubian?",
+          "text": {
+            "uz": "Hali bilmayman, hozir qidiryapman. U supermarket orqasidami?",
+            "ru": "Пока не знаю, сейчас ищу. Он за супермаркетом?",
+            "tj": "Ҳоло намедонам, ҷустуҷӯ карда истодаам. Он паси супермаркет аст?"
+          }
+        },
+        {
+          "speaker": "Wang Yifei",
+          "zh": "是的。你开车没开车？",
+          "pinyin": "Shì de. Nǐ kāichē méi kāichē?",
+          "text": {
+            "uz": "Ha. Mashina haydayapsanmi yo‘qmi?",
+            "ru": "Да. Ты за рулём или нет?",
+            "tj": "Ҳа. Мошин меронӣ ё не?"
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "我没开车，坐车呢。",
+          "pinyin": "Wǒ méi kāichē, zuò chē ne.",
+          "text": {
+            "uz": "Mashina haydamayapman, transportda ketyapman.",
+            "ru": "Нет, я не за рулём, еду на машине.",
+            "tj": "Не, мошин намеронам, бо нақлиёт меравам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda uchrashgach Wang Yifei va Li Wen suhbatlashmoqda.",
+        "ru": "После встречи в ресторане Ван Ифэй и Ли Вэнь разговаривают.",
+        "tj": "Пас аз вохӯрӣ дар тарабхона Ван Ифэй ва Ли Вэн суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "你们学习忙不忙？",
+          "pinyin": "Nǐmen xuéxí máng bu máng?",
+          "text": {
+            "uz": "O‘qishingiz bandmi yo‘qmi?",
+            "ru": "У вас учёба напряжённая?",
+            "tj": "Таҳсилатон сермашғул аст ё не?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Shanba ertalab Liu Ming kasalxonaga qo‘shimcha ishga ketishidan oldin qizi Xiaoxue bilan gaplashadi.",
+        "ru": "В субботу утром Лю Мин собирается на сверхурочную работу в больницу и перед выходом разговаривает с дочерью Сяосюэ.",
+        "tj": "Субҳи шанбе Лю Мин барои кори иловагӣ ба беморхона меравад ва пеш аз баромадан бо духтараш Сяосюэ суҳбат мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Liu Xiaoxue",
+          "zh": "去哪里？",
+          "pinyin": "Qù nǎli?",
+          "text": {
+            "uz": "Qayerga?",
+            "ru": "Куда?",
+            "tj": "Ба куҷо?"
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "去超市。",
+          "pinyin": "Qù chāoshì.",
+          "text": {
+            "uz": "Supermarketga.",
+            "ru": "В супермаркет.",
+            "tj": "Ба супермаркет."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "找",
+            "pinyin": "zhǎo",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qidirmoq",
+              "ru": "искать",
+              "tj": "ҷустуҷӯ кардан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "找",
+          "pinyin": "zhǎo",
+          "options": [
+            "时候",
+            "饭店",
+            "找",
+            "知道"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "找 — qidirmoq (zhǎo)",
+            "ru": "找 — искать (zhǎo)",
+            "tj": "找 — ҷустуҷӯ кардан (zhǎo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "开车",
+            "pinyin": "kāichē",
+            "pos": "v.",
+            "meaning": {
+              "uz": "mashina haydamoq",
+              "ru": "водить машину",
+              "tj": "мошин рондан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "开车",
+          "pinyin": "kāichē",
+          "translation": {
+            "uz": "mashina haydamoq",
+            "ru": "водить машину",
+            "tj": "мошин рондан"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "开车 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 开车:",
+            "tj": "Маънои калимаи 开车-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "restoran",
+              "ru": "ресторан",
+              "tj": "тарабхона"
+            },
+            {
+              "uz": "mashina haydamoq",
+              "ru": "водить машину",
+              "tj": "мошин рондан"
+            },
+            {
+              "uz": "bilmoq",
+              "ru": "знать; понимать",
+              "tj": "донистан"
+            },
+            {
+              "uz": "vaqt; payt",
+              "ru": "время; момент",
+              "tj": "вақт; лаҳза"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "开车 = mashina haydamoq (kāichē)",
+            "ru": "开车 = водить машину (kāichē)",
+            "tj": "开车 = мошин рондан (kāichē)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "车",
+            "pinyin": "chē",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mashina; transport",
+              "ru": "машина; транспорт",
+              "tj": "мошин; нақлиёт"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "chē qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chē?",
+            "tj": "chē кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "饭店",
+            "车",
+            "时候",
+            "知道"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "车 = mashina; transport (chē)",
+            "ru": "车 = машина; транспорт (chē)",
+            "tj": "车 = мошин; нақлиёт (chē)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "在",
+            "pinyin": "zài",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "davom etayotgan harakat belgisi",
+              "ru": "показатель действия в процессе",
+              "tj": "нишондиҳандаи амали давомдор"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "在 talaffuzini tanlang:",
+            "ru": "Выберите произношение 在:",
+            "tj": "Талаффузи 在-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "fàndiàn",
+            "shíhou",
+            "zhīdào",
+            "zài"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "在 — zài",
+            "ru": "在 — zài",
+            "tj": "在 — zài"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qidirmoq' xitoycha qaysi?",
+            "ru": "'искать' по-китайски?",
+            "tj": "'ҷустуҷӯ кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "时候",
+            "饭店",
+            "找",
+            "知道"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "qidirmoq = 找 (zhǎo)",
+            "ru": "искать = 找 (zhǎo)",
+            "tj": "ҷустуҷӯ кардан = 找 (zhǎo)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "找",
+              {
+                "uz": "qidirmoq",
+                "ru": "искать",
+                "tj": "ҷустуҷӯ кардан"
+              }
+            ],
+            [
+              "开车",
+              {
+                "uz": "mashina haydamoq",
+                "ru": "водить машину",
+                "tj": "мошин рондан"
+              }
+            ],
+            [
+              "车",
+              {
+                "uz": "mashina; transport",
+                "ru": "машина; транспорт",
+                "tj": "мошин; нақлиёт"
+              }
+            ],
+            [
+              "在",
+              {
+                "uz": "davom etayotgan harakat belgisi",
+                "ru": "показатель действия в процессе",
+                "tj": "нишондиҳандаи амали давомдор"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Vaqt ravishlari “在/正在”",
+              "ru": "Временные наречия “在/正在”",
+              "tj": "Зарфҳои вақт “在/正在”"
+            },
+            "title_zh": "时间副词“在/正在”",
+            "rule": {
+              "uz": "“在/正在” fe’l oldidan kelib harakat davom etayotganini bildiradi. Shakllar: 在/正在+fe’l, 在/正在+fe’l+呢, fe’l+呢; inkorda 没（有） ishlatiladi.",
+              "ru": "“在/正在” ставятся перед глаголом и показывают продолжающееся действие. Формы: 在/正在+глагол, 在/正在+глагол+呢, глагол+呢; отрицание — 没（有）.",
+              "tj": "“在/正在” пеш аз феъл омада, идома доштани амалро нишон медиҳанд. Шаклҳо: 在/正在+феъл, 在/正在+феъл+呢, феъл+呢; инкор бо 没（有）."
+            },
+            "examples": [
+              {
+                "zh": "你还在读大学吗？",
+                "pinyin": "Nǐ hái zài dú dàxué ma?",
+                "translation": {
+                  "uz": "Hali ham universitetda o‘qiyapsanmi?",
+                  "ru": "Ты всё ещё учишься в университете?",
+                  "tj": "Ҳоло ҳам дар донишгоҳ мехонӣ?"
+                }
+              },
+              {
+                "zh": "学生们在/正在上课呢。",
+                "pinyin": "Xuéshengmen zài/zhèngzài shàngkè ne.",
+                "translation": {
+                  "uz": "Talabalar hozir darsda.",
+                  "ru": "Студенты сейчас на занятии.",
+                  "tj": "Донишҷӯён ҳоло дар дарсанд."
+                }
+              },
+              {
+                "zh": "他们读书呢。",
+                "pinyin": "Tāmen dú shū ne.",
+                "translation": {
+                  "uz": "Ular hozir kitob o‘qishyapti.",
+                  "ru": "Они сейчас читают.",
+                  "tj": "Онҳо ҳоло китоб мехонанд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Talabalar hozir darsda.",
+            "ru": "Студенты сейчас на занятии.",
+            "tj": "Донишҷӯён ҳоло дар дарсанд."
+          },
+          "tokens": [
+            "时候",
+            "们",
+            "在",
+            "呢",
+            "正在",
+            "学生",
+            "饭店",
+            "上课"
+          ],
+          "answer_tokens": [
+            "学生",
+            "们",
+            "在",
+            "正在",
+            "上课",
+            "呢"
+          ],
+          "explanation": {
+            "uz": "学生们在/正在上课呢。 — Xuéshengmen zài/zhèngzài shàngkè ne.",
+            "ru": "学生们在/正在上课呢。 — Xuéshengmen zài/zhèngzài shàngkè ne.",
+            "tj": "学生们在/正在上课呢。 — Xuéshengmen zài/zhèngzài shàngkè ne."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Hali ham universitetda o‘qiyapsanmi?» — xitoychada qaysi biri?",
+            "ru": "«Ты всё ещё учишься в университете?» — какое предложение по-китайски?",
+            "tj": "«Ҳоло ҳам дар донишгоҳ мехонӣ?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你还在读大学吗？",
+            "他们读书呢。",
+            "学生们在/正在上课呢。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "你还在读大学吗？ — Nǐ hái zài dú dàxué ma?",
+            "ru": "你还在读大学吗？ — Nǐ hái zài dú dàxué ma?",
+            "tj": "你还在读大学吗？ — Nǐ hái zài dú dàxué ma?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "学生们在/正在上课呢。",
+          "pinyin": "Xuéshengmen zài/zhèngzài shàngkè ne.",
+          "translation": {
+            "uz": "Talabalar hozir darsda.",
+            "ru": "Студенты сейчас на занятии.",
+            "tj": "Донишҷӯён ҳоло дар дарсанд."
+          },
+          "tokens": {
+            "uz": [
+              "Hali",
+              "darsda",
+              "bilmayman",
+              "hozir",
+              "Talabalar"
+            ],
+            "ru": [
+              "занятии",
+              "не",
+              "Пока",
+              "сейчас",
+              "Студенты",
+              "на"
+            ],
+            "tj": [
+              "намедонам",
+              "ҳоло",
+              "дарсанд",
+              "Ҳоло",
+              "Донишҷӯён",
+              "дар"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Talabalar",
+              "hozir",
+              "darsda"
+            ],
+            "ru": [
+              "Студенты",
+              "сейчас",
+              "на",
+              "занятии"
+            ],
+            "tj": [
+              "Донишҷӯён",
+              "ҳоло",
+              "дар",
+              "дарсанд"
+            ]
+          },
+          "explanation": {
+            "uz": "学生们在/正在上课呢。 — Talabalar hozir darsda.",
+            "ru": "学生们在/正在上课呢。 — Студенты сейчас на занятии.",
+            "tj": "学生们在/正在上课呢。 — Донишҷӯён ҳоло дар дарсанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "开车",
+          "pinyin": "kāichē",
+          "translation": {
+            "uz": "mashina haydamoq",
+            "ru": "водить машину",
+            "tj": "мошин рондан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "饭店 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 饭店:",
+            "tj": "Маънои калимаи 饭店-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "restoran",
+              "ru": "ресторан",
+              "tj": "тарабхона"
+            },
+            {
+              "uz": "vaqt; payt",
+              "ru": "время; момент",
+              "tj": "вақт; лаҳза"
+            },
+            {
+              "uz": "ayni paytda ...yapti",
+              "ru": "в процессе; сейчас",
+              "tj": "ҳоло дар ҷараён"
+            },
+            {
+              "uz": "bilmoq",
+              "ru": "знать; понимать",
+              "tj": "донистан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "饭店 = restoran (fàndiàn)",
+            "ru": "饭店 = ресторан (fàndiàn)",
+            "tj": "饭店 = тарабхона (fàndiàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "饭店",
+            "pinyin": "fàndiàn",
+            "meaning": {
+              "uz": "restoran",
+              "ru": "ресторан",
+              "tj": "тарабхона"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'mashina haydamoq' xitoycha qaysi?",
+            "ru": "'водить машину' по-китайски?",
+            "tj": "'мошин рондан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "知道",
+            "时候",
+            "饭店",
+            "开车"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "mashina haydamoq = 开车 (kāichē)",
+            "ru": "водить машину = 开车 (kāichē)",
+            "tj": "мошин рондан = 开车 (kāichē)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "开车",
+            "pinyin": "kāichē",
+            "meaning": {
+              "uz": "mashina haydamoq",
+              "ru": "водить машину",
+              "tj": "мошин рондан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

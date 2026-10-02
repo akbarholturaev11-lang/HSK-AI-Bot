@@ -14,6 +14,13 @@ from app.db.models.user import User
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_levels import (
+    content_level,
+    hsk30_content_levels,
+    legacy_content_levels,
+    level_spec,
+    next_level as registry_next_level,
+)
 from app.services.course_lesson_mistake_material_service import (
     CourseLessonMistakeMaterialError,
     CourseLessonMistakeMaterialService,
@@ -34,15 +41,32 @@ from app.services.miniapp_hint_service import MiniAppHintService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_today_service import CourseTodayService
+from app.services.course_track_service import CourseTrackError, CourseTrackService
 from app.services.course_v3_parts import total_parts
 from app.services.desktop_auth_service import DesktopAuthService
+from app.services.hsk30_feature_service import Hsk30FeatureService
+from app.services.hsk30_promo_service import Hsk30PromoService
+from app.services.hsk30_unlock_service import Hsk30UnlockService
 from app.services.support_contact_service import get_admin_contact_url
 
 logger = logging.getLogger(__name__)
 
-COURSE_V3_LEVELS = frozenset({"hsk1", "hsk2", "hsk3", "hsk4"})
+COURSE_V3_LEVELS = frozenset(
+    (
+        *legacy_content_levels(),
+        *(
+            level
+            for level in hsk30_content_levels()
+            if (level_spec(level) and level_spec(level).selectable)
+        ),
+    )
+)
 COURSE_V3_LANGUAGES = frozenset({"uz", "ru", "tj"})
-COURSE_V3_NEXT_BAND = {"hsk1": "hsk2", "hsk2": "hsk3", "hsk3": "hsk4"}
+COURSE_V3_NEXT_BAND = {
+    level: registry_next_level(level)
+    for level in COURSE_V3_LEVELS
+    if registry_next_level(level)
+}
 COURSE_V3_DATA_ROOT = Path(__file__).resolve().parents[1] / "static" / "course_v3_data"
 DESKTOP_PREVIEW_COMPLETION_ERROR = "free_feature_limit_reached"
 
@@ -56,7 +80,7 @@ class DesktopCourseError(RuntimeError):
 
 
 def normalize_course_v3_level(value: str | None) -> str:
-    normalized = str(value or "").strip().lower()
+    normalized = content_level(value)
     return normalized if normalized in COURSE_V3_LEVELS else "hsk1"
 
 
@@ -205,6 +229,15 @@ class DesktopCourseService:
             progress.level = level
         return progress
 
+    async def _next_level_release(self, level: str) -> tuple[str | None, str | None]:
+        next_band = COURSE_V3_NEXT_BAND.get(level)
+        if not next_band:
+            return None, None
+        if level.startswith("nhsk"):
+            if not await Hsk30FeatureService(self.session).is_level_live(next_band):
+                return None, next_band
+        return next_band, None
+
     @staticmethod
     def _completion_payload(
         *,
@@ -213,12 +246,16 @@ class DesktopCourseService:
         completed_lessons_count: int,
         gamification: dict[str, Any],
         duplicate: bool = False,
+        next_level: str | None = None,
+        next_level_pending: str | None = None,
     ) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "ok": True,
             "completed_lesson": lesson_order,
             "next_lesson": next_lesson,
             "completed_lessons_count": completed_lessons_count,
+            "next_level": next_level,
+            "next_level_pending": next_level_pending,
             "gamification": gamification,
         }
         if duplicate:
@@ -304,6 +341,19 @@ class DesktopCourseService:
             profile,
             completed_parts=completed,
         )
+        track_status = await CourseTrackService(self.session).status(user)
+        hsk30_track = (track_status.get("tracks") or {}).get("hsk30") or {}
+        hsk30_unlock = await Hsk30UnlockService(self.session).payment_eligibility(user)
+        data["hsk30"] = {
+            "active_track": track_status.get("active_track") or "hsk20",
+            "active_level": track_status.get("active_level") or level,
+            "access": hsk30_track.get("access") or {},
+            "live_levels": list(hsk30_track.get("live_levels") or []),
+            "new_badge": hsk30_track.get("new_badge") or {},
+            "payment_enabled": bool(hsk30_unlock.get("payment_enabled")),
+            "price_tjs": int(hsk30_unlock.get("price_tjs") or 0),
+            "promo": await Hsk30PromoService(self.session).state(user),
+        }
         # Mini App bilan AYNI blok. Native klientlar uni hozircha chizmaydi,
         # lekin ma'lumot bir joydan kelgani uchun ikkinchi personalizatsiya
         # tizimi qurilmaydi (ARCHITECTURE_DECISION.md).
@@ -366,6 +416,68 @@ class DesktopCourseService:
                 ),
             },
         }
+
+    async def switch_course_track(
+        self,
+        access_token: str,
+        *,
+        target_track: str,
+        level: str | None = None,
+    ) -> dict[str, Any]:
+        context = await self._context(access_token)
+        user = await self._locked_context_user(context)
+        service = CourseTrackService(self.session)
+        before_track = service.track_for_level(getattr(user, "level", None))
+        before_level = str(getattr(user, "level", "") or "")
+        try:
+            current_track = before_track
+            if target_track == current_track and level:
+                status = await service.change_level(user, level)
+            else:
+                status = await service.switch(
+                    user,
+                    target_track=target_track,
+                    requested_level=level,
+                )
+        except CourseTrackError as exc:
+            raise DesktopCourseError(exc.code, status_code=exc.status_code) from exc
+        after_level = str(getattr(user, "level", "") or "")
+        after_track = service.track_for_level(after_level)
+        if before_track != after_track or before_level != after_level:
+            await CourseMiniAppAnalyticsService(self.session).record_server_event(
+                event_name="course_track_switched",
+                user_id=int(user.id),
+                telegram_id=int(user.telegram_id),
+                source="desktop_course_track",
+                level=after_level,
+                payload={
+                    "from_track": before_track,
+                    "to_track": after_track,
+                    "from_level": before_level,
+                    "to_level": after_level,
+                },
+            )
+        await self.session.commit()
+        return {"ok": True, **status}
+
+    async def mark_hsk30_promo_shown(
+        self,
+        access_token: str,
+    ) -> dict[str, Any]:
+        context = await self._context(access_token)
+        user = await self._locked_context_user(context)
+        result = await Hsk30PromoService(self.session).mark_shown(user)
+        if result.get("recorded"):
+            await CourseMiniAppAnalyticsService(self.session).record_server_event(
+                event_name="hsk30_promo_shown",
+                user_id=int(user.id),
+                telegram_id=int(user.telegram_id),
+                source="desktop_course_track",
+                level=str(getattr(user, "level", "") or ""),
+                payload={"shown_count": int(result.get("shown_count") or 0)},
+            )
+        await self.session.commit()
+        return {"ok": True, **result}
 
     async def lesson(
         self,
@@ -527,12 +639,18 @@ class DesktopCourseService:
         if lesson_order <= completed:
             snapshot = await gamification_service.snapshot(user)
             await self.session.commit()
+            next_level = None
+            next_level_pending = None
+            if lesson_order >= total:
+                next_level, next_level_pending = await self._next_level_release(level)
             return self._completion_payload(
                 lesson_order=lesson_order,
                 next_lesson=lesson_order + 1 if lesson_order < total else None,
                 completed_lessons_count=completed,
                 gamification=snapshot,
                 duplicate=True,
+                next_level=next_level,
+                next_level_pending=next_level_pending,
             )
         if lesson_order != completed + 1:
             raise DesktopCourseError("course_lesson_not_unlocked", status_code=403)
@@ -564,10 +682,12 @@ class DesktopCourseService:
 
         has_next = lesson_order < total
         next_lesson = lesson_order + 1 if has_next else None
+        next_level = None
+        next_level_pending = None
         if not has_next:
-            next_band = COURSE_V3_NEXT_BAND.get(level)
-            if next_band:
-                user.level = next_band
+            next_level, next_level_pending = await self._next_level_release(level)
+            if next_level:
+                user.level = next_level
 
         await progress_repository.set_current_lesson_and_step(
             progress=progress, lesson_id=legacy_lesson_id,
@@ -581,6 +701,8 @@ class DesktopCourseService:
             next_lesson=next_lesson,
             completed_lessons_count=int(progress.completed_lessons_count or 0),
             gamification=snapshot,
+            next_level=next_level,
+            next_level_pending=next_level_pending,
         )
         analytics_result = await CourseMiniAppAnalyticsService(
             self.session

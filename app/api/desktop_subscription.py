@@ -31,7 +31,7 @@ MAX_DESKTOP_SUBSCRIPTION_SUBMIT_BODY_BYTES = (
 )
 PayloadModel = TypeVar("PayloadModel", bound=BaseModel)
 
-DesktopPlan = Literal["10_days", "1_month", "3_months"]
+DesktopPlan = Literal["10_days", "1_month", "3_months", "hsk30_unlock"]
 DesktopPaymentMethod = Literal["visa", "alipay", "wechat"]
 DesktopCardCountry = Literal["tj", "uz", "ru", "other"]
 # Karta rekviziti qaysi bankniki: Tojikistonda tanlanadi, boshqa davlat
@@ -217,13 +217,27 @@ def create_desktop_subscription_router(
     @router.get("/api/v3/desktop/subscription/overview")
     async def desktop_subscription_overview(request: Request):
         try:
-            if request.query_params:
+            unknown = set(request.query_params.keys()) - {"mode"}
+            if unknown:
+                raise DesktopSubscriptionError(
+                    "desktop_subscription_request_invalid",
+                    status_code=422,
+                )
+            mode = str(request.query_params.get("mode") or "subscription").strip().lower()
+            if mode not in {"subscription", "hsk30_unlock"}:
                 raise DesktopSubscriptionError(
                     "desktop_subscription_request_invalid",
                     status_code=422,
                 )
             async with session_factory() as session:
-                result = await service(session).overview(_access_token(request))
+                result = await service(session).overview(
+                    _access_token(request),
+                    entry_source=(
+                        "desktop_hsk30_onboarding"
+                        if mode == "hsk30_unlock"
+                        else None
+                    ),
+                )
             return JSONResponse(
                 content=result,
                 headers={"Cache-Control": "no-store"},

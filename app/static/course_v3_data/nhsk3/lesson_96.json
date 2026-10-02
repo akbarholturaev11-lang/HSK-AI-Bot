@@ -1,0 +1,1178 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 96,
+  "source_lesson": 12,
+  "part_no": 8,
+  "part_count": 8,
+  "checkpoint": true,
+  "title": "这个季节天气变化很快",
+  "subtitle": {
+    "uz": "Ob-havodagi o‘zgarishlar va fasllar haqida gaplashish; ma’lum joyning iqlimini tasvirlash; “就” bilan miqdorning kamligi yoki istisnoni ta’kidlash; Pekinning to‘rt fasli bilan tanishish.",
+    "ru": "Говорить об изменениях погоды и сезонах; описывать климат местности; использовать “就” для подчёркивания малого количества или исключения; познакомиться с четырьмя сезонами Пекина.",
+    "tj": "Дар бораи тағйири обу ҳаво ва фаслҳо суҳбат кардан; иқлими ҷойро тавсиф кардан; бо “就” кам будани миқдор ё истисноро таъкид кардан; бо чор фасли Пекин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "街",
+      "pinyin": "jiē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ko‘cha",
+        "ru": "улица",
+        "tj": "кӯча"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "开花",
+      "pinyin": "kāihuā",
+      "pos": "v.",
+      "meaning": {
+        "uz": "gullamoq",
+        "ru": "цвести",
+        "tj": "гул кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "公园",
+      "pinyin": "gōngyuán",
+      "pos": "n.",
+      "meaning": {
+        "uz": "park",
+        "ru": "парк",
+        "tj": "боғ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "船",
+      "pinyin": "chuán",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qayiq; kema",
+        "ru": "лодка; судно",
+        "tj": "қаиқ; киштӣ"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "工作日",
+      "pinyin": "gōngzuòrì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ish kuni",
+        "ru": "рабочий день",
+        "tj": "рӯзи корӣ"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "地方",
+      "pinyin": "dìfang",
+      "pos": "n.",
+      "meaning": {
+        "uz": "joy",
+        "ru": "место",
+        "tj": "ҷой"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "刚才",
+      "pinyin": "gāngcái",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hozirgina",
+        "ru": "только что",
+        "tj": "ҳозиргина"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "刮",
+      "pinyin": "guā",
+      "pos": "v.",
+      "meaning": {
+        "uz": "esmoq (shamol)",
+        "ru": "дуть (о ветре)",
+        "tj": "вазидан (шамол)"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "风",
+      "pinyin": "fēng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "shamol",
+        "ru": "ветер",
+        "tj": "шамол"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "新闻",
+      "pinyin": "xīnwén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yangiliklar",
+        "ru": "новости",
+        "tj": "ахбор"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "伞",
+      "pinyin": "sǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "soyabon",
+        "ru": "зонт",
+        "tj": "чатр"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "借",
+      "pinyin": "jiè",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qarzga bermoq/olmoq",
+        "ru": "одалживать; брать взаймы",
+        "tj": "қарз додан/гирифтан"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "把",
+      "pinyin": "bǎ",
+      "pos": "m.",
+      "meaning": {
+        "uz": "dastali buyumlar uchun hisob so‘zi",
+        "ru": "счётное слово для предметов с ручкой",
+        "tj": "воҳиди ҳисоб барои ашёи дастадор"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "雨衣",
+      "pinyin": "yǔyī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yomg‘irpo‘sh",
+        "ru": "дождевик",
+        "tj": "боронӣ"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "变",
+      "pinyin": "biàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘zgarmoq",
+        "ru": "меняться",
+        "tj": "тағйир ёфтан"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "季节",
+      "pinyin": "jìjié",
+      "pos": "n.",
+      "meaning": {
+        "uz": "fasl",
+        "ru": "сезон",
+        "tj": "фасл"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "变化",
+      "pinyin": "biànhuà",
+      "pos": "v./n.",
+      "meaning": {
+        "uz": "o‘zgarish; o‘zgarmoq",
+        "ru": "изменение; меняться",
+        "tj": "тағйир; тағйир ёфтан"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "冬天",
+      "pinyin": "dōngtiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qish",
+        "ru": "зима",
+        "tj": "зимистон"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "常常",
+      "pinyin": "chángcháng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "tez-tez",
+        "ru": "часто",
+        "tj": "зуд-зуд"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "关注",
+      "pinyin": "guānzhù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "e’tibor bermoq; kuzatmoq",
+        "ru": "обращать внимание; следить",
+        "tj": "диққат додан; пайгирӣ кардан"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "四季",
+      "pinyin": "sìjì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "to‘rt fasl",
+        "ru": "четыре сезона",
+        "tj": "чор фасл"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "春天",
+      "pinyin": "chūntiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bahor",
+        "ru": "весна",
+        "tj": "баҳор"
+      }
+    },
+    {
+      "no": 23,
+      "zh": "夏天",
+      "pinyin": "xiàtiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yoz",
+        "ru": "лето",
+        "tj": "тобистон"
+      }
+    },
+    {
+      "no": 24,
+      "zh": "凉快",
+      "pinyin": "liángkuai",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "salqin",
+        "ru": "прохладный",
+        "tj": "салқин"
+      }
+    },
+    {
+      "no": 25,
+      "zh": "秋天",
+      "pinyin": "qiūtiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kuz",
+        "ru": "осень",
+        "tj": "тирамоҳ"
+      }
+    },
+    {
+      "no": 26,
+      "zh": "叶子",
+      "pinyin": "yèzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "barg",
+        "ru": "лист",
+        "tj": "барг"
+      }
+    },
+    {
+      "no": 27,
+      "zh": "变成",
+      "pinyin": "biànchéng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "...ga aylanmoq",
+        "ru": "превращаться в",
+        "tj": "ба ... табдил ёфтан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Tanlov qo‘shma gapi “或者……或者……”",
+        "ru": "Альтернативное предложение “或者……或者……”",
+        "tj": "Ҷумлаи интихобии “或者……或者……”"
+      },
+      "title_zh": "选择复句“或者……，或者……”",
+      "rule": {
+        "uz": "“或者A，或者B” darak gapda ikki yoki undan ortiq imkoniyatdan biri tanlanishini bildiradi: “yoki A, yoki B”.",
+        "ru": "“或者A，或者B” в повествовательном предложении выражает выбор между двумя или несколькими вариантами: «либо A, либо B».",
+        "tj": "“或者A，或者B” дар ҷумлаи хабарӣ интихоб байни ду ё чанд вариантро ифода мекунад: «ё A, ё B»."
+      },
+      "examples": [
+        {
+          "zh": "或者明天去，或者后天去，我给你打电话。",
+          "pinyin": "Huòzhě míngtiān qù, huòzhě hòutiān qù, wǒ gěi nǐ dǎ diànhuà.",
+          "translation": {
+            "uz": "Yoki ertaga, yoki indinga boramiz, men senga telefon qilaman.",
+            "ru": "Либо пойдём завтра, либо послезавтра — я тебе позвоню.",
+            "tj": "Ё фардо меравем, ё пасфардо — ман ба ту занг мезанам."
+          }
+        },
+        {
+          "zh": "我们或者今天去电影院看电影，或者明天在家看电影。",
+          "pinyin": "Wǒmen huòzhě jīntiān qù diànyǐngyuàn kàn diànyǐng, huòzhě míngtiān zài jiā kàn diànyǐng.",
+          "translation": {
+            "uz": "Yoki bugun kinoteatrga boramiz, yoki ertaga uyda film ko‘ramiz.",
+            "ru": "Либо сегодня пойдём в кинотеатр, либо завтра посмотрим фильм дома.",
+            "tj": "Ё имрӯз ба кинотеатр меравем, ё фардо дар хона филм мебинем."
+          }
+        },
+        {
+          "zh": "晚饭你自己选，或者吃中国菜，或者吃日本菜，或者吃泰国菜。",
+          "pinyin": "Wǎnfàn nǐ zìjǐ xuǎn, huòzhě chī Zhōngguó cài, huòzhě chī Rìběn cài, huòzhě chī Tàiguó cài.",
+          "translation": {
+            "uz": "Kechki ovqatni o‘zing tanla: xitoy, yapon yoki tay taomi.",
+            "ru": "Ужин выбирай сам: либо китайская, либо японская, либо тайская кухня.",
+            "tj": "Хӯроки шомро худат интихоб кун: ё чинӣ, ё ҷопонӣ, ё тайландӣ."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Yo‘nalish to‘ldiruvchisining ko‘chma ma’nosi (2): “起来”",
+        "ru": "Переносное употребление направительного дополнения (2): “起来”",
+        "tj": "Истифодаи маҷозии пуркунандаи самт (2): “起来”"
+      },
+      "title_zh": "趋向补语的引申用法（2）",
+      "rule": {
+        "uz": "“起来” fe’l yoki sifatdan keyin kelib, yangi harakat yoki holatning boshlanishini bildirishi mumkin: yomg‘ir yog‘a boshladi, havo isiy boshladi.",
+        "ru": "“起来” после глагола или прилагательного может обозначать начало нового действия или состояния: начался дождь, стало теплее.",
+        "tj": "“起来” баъди феъл ё сифат омада оғози амал ё ҳолати навро нишон медиҳад: борон сар шуд, ҳаво гарм шуд."
+      },
+      "examples": [
+        {
+          "zh": "雨已经下起来了。",
+          "pinyin": "Yǔ yǐjīng xià qǐlái le.",
+          "translation": {
+            "uz": "Yomg‘ir yog‘a boshladi.",
+            "ru": "Дождь уже начался.",
+            "tj": "Борон аллакай сар шуд."
+          }
+        },
+        {
+          "zh": "最近天气热起来了。",
+          "pinyin": "Zuìjìn tiānqì rè qǐlái le.",
+          "translation": {
+            "uz": "So‘nggi paytda havo isiy boshladi.",
+            "ru": "В последнее время погода стала теплеть.",
+            "tj": "Вақтҳои охир ҳаво гарм шуда истодааст."
+          }
+        },
+        {
+          "zh": "怎么突然刮起风来了？",
+          "pinyin": "Zěnme tūrán guā qǐ fēng lái le?",
+          "translation": {
+            "uz": "Nega birdan shamol esa boshladi?",
+            "ru": "Почему вдруг поднялся ветер?",
+            "tj": "Чаро ногаҳон шамол вазидан гирифт?"
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Doirani cheklovchi ravish “就”",
+        "ru": "Ограничительное наречие “就”",
+        "tj": "Зарфи маҳдудкунандаи “就”"
+      },
+      "title_zh": "范围副词“就”",
+      "rule": {
+        "uz": "“就” ba’zan “faqat / aynan” ma’nosida miqdor yoki istisnoni cheklaydi. U kam sonni, qisqa vaqtni yoki umumiy holatdan bitta istisnoni ta’kidlashi mumkin.",
+        "ru": "“就” может иметь ограничительное значение «только / именно», подчёркивая малое количество, короткое время или единственное исключение.",
+        "tj": "“就” метавонад маънои маҳдудкунандаи «фақат / маҳз»-ро диҳад ва миқдори кам, вақти кӯтоҳ ё як истисноро таъкид кунад."
+      },
+      "examples": [
+        {
+          "zh": "北京常常下雪，但听说今年就下了一次。",
+          "pinyin": "Běijīng chángcháng xiàxuě, dàn tīngshuō jīnnián jiù xià le yí cì.",
+          "translation": {
+            "uz": "Pekinda tez-tez qor yog‘adi, lekin eshitishimcha bu yil faqat bir marta yog‘ibdi.",
+            "ru": "В Пекине часто идёт снег, но говорят, в этом году он выпал только один раз.",
+            "tj": "Дар Пекин зуд-зуд барф меборад, аммо шунидам имсол танҳо як бор боридааст."
+          }
+        },
+        {
+          "zh": "他昨天就看了十分钟书。",
+          "pinyin": "Tā zuótiān jiù kàn le shí fēnzhōng shū.",
+          "translation": {
+            "uz": "U kecha atigi o‘n daqiqa kitob o‘qidi.",
+            "ru": "Вчера он читал всего десять минут.",
+            "tj": "Ӯ дирӯз ҳамагӣ даҳ дақиқа китоб хонд."
+          }
+        },
+        {
+          "zh": "我每天书包里都放着雨伞，就今天没带。",
+          "pinyin": "Wǒ měitiān shūbāo lǐ dōu fàngzhe yǔsǎn, jiù jīntiān méi dài.",
+          "translation": {
+            "uz": "Har kuni sumkamda soyabon bo‘ladi, faqat bugun olmadim.",
+            "ru": "Я каждый день ношу зонт в рюкзаке, только сегодня не взял.",
+            "tj": "Ҳар рӯз дар ҷузвдонам чатр ҳаст, танҳо имрӯз нагирифтам."
+          }
+        },
+        {
+          "zh": "你们点的菜都挺好吃的，就我点的这个菜不太好吃。",
+          "pinyin": "Nǐmen diǎn de cài dōu tǐng hǎochī de, jiù wǒ diǎn de zhège cài bú tài hǎochī.",
+          "translation": {
+            "uz": "Sizlar buyurtma qilgan taomlarning hammasi mazali, faqat men buyurtma qilgan taom uncha emas.",
+            "ru": "Все ваши блюда вкусные, только моё оказалось не очень.",
+            "tj": "Ҳамаи хӯрокҳои фармоишдодаи шумо болаззатанд, танҳо хӯроки ман он қадар хуб нест."
+          }
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": {
+        "uz": "Yo‘nalish to‘ldiruvchisining ko‘chma ma’nosi (3): “下来”",
+        "ru": "Переносное употребление направительного дополнения (3): “下来”",
+        "tj": "Истифодаи маҷозии пуркунандаи самт (3): “下来”"
+      },
+      "title_zh": "趋向补语的引申用法（3）",
+      "rule": {
+        "uz": "“下来” harakat yoki holatning ma’lum davr davomida uzluksiz davom etib, yakuniy natijagacha yetganini bildirishi mumkin: yashab kelib, mashq qilib kelib, yugurib tugatib.",
+        "ru": "“下来” может показывать, что действие или состояние продолжалось в течение периода и дошло до текущего/конечного результата.",
+        "tj": "“下来” нишон дода метавонад, ки амал ё ҳолат муддате идома ёфта, то натиҷаи ҳозира ё ниҳоӣ расидааст."
+      },
+      "examples": [
+        {
+          "zh": "这一年多住下来，我还是更喜欢北京的四季。",
+          "pinyin": "Zhè yì nián duō zhù xiàlái, wǒ háishi gèng xǐhuan Běijīng de sìjì.",
+          "translation": {
+            "uz": "Bir yildan oshiq yashab ko‘rib, baribir Pekinning to‘rt faslini ko‘proq yoqtiraman.",
+            "ru": "Прожив здесь больше года, я всё же больше люблю четыре сезона Пекина.",
+            "tj": "Зиёда аз як сол зиндагӣ карда, ман ҳоло ҳам чор фасли Пекинро бештар дӯст медорам."
+          }
+        },
+        {
+          "zh": "这半年练下来，他画画的水平提高了不少。",
+          "pinyin": "Zhè bànnián liàn xiàlái, tā huàhuà de shuǐpíng tígāo le bù shǎo.",
+          "translation": {
+            "uz": "Yarim yil mashq qilib, uning rasm chizish darajasi ancha oshdi.",
+            "ru": "За полгода тренировок его уровень рисования заметно вырос.",
+            "tj": "Дар ним соли машқ сатҳи расмкашии ӯ хеле баланд шуд."
+          }
+        },
+        {
+          "zh": "5000米的长跑比赛，没想到我跑下来了。",
+          "pinyin": "Wǔqiān mǐ de chángpǎo bǐsài, méi xiǎngdào wǒ pǎo xiàlái le.",
+          "translation": {
+            "uz": "5000 metrlik yugurishni tugata olaman deb o‘ylamagandim, lekin uddaladim.",
+            "ru": "Не ожидал, что смогу пробежать пятикилометровую дистанцию до конца.",
+            "tj": "Фикр намекардам, ки мусобиқаи 5000 метрро то охир давида метавонам, аммо тавонистам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ko‘chada Wang Yifei va Bai Jiayue yurib suhbatlashmoqda.",
+        "ru": "На улице Ван Ифэй и Бай Цзяюэ идут и разговаривают.",
+        "tj": "Дар кӯча Ван Ифэй ва Бай Ҷяюэ роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "王老师，您看，这条街上的树都开花了。",
+          "pinyin": "Wáng lǎoshī, nín kàn, zhè tiáo jiē shàng de shù dōu kāihuā le.",
+          "text": {
+            "uz": "Ustoz Wang, qarang, bu ko‘chadagi daraxtlarning hammasi gullabdi.",
+            "ru": "Учитель Ван, смотрите, деревья на этой улице уже цветут.",
+            "tj": "Устод Ван, бинед, дарахтони ин кӯча ҳама гул кардаанд."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "上周我去公园坐船了，公园里的花也开了。",
+          "pinyin": "Shàng zhōu wǒ qù gōngyuán zuò chuán le, gōngyuán lǐ de huā yě kāi le.",
+          "text": {
+            "uz": "O‘tgan hafta parkda qayiqda yurdim, u yerdagi gullar ham ochilibdi.",
+            "ru": "На прошлой неделе я каталась на лодке в парке, там цветы тоже уже распустились.",
+            "tj": "Ҳафтаи гузашта дар боғ қаиқсаворӣ кардам, гулҳои боғ ҳам кушода шудаанд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "天气这么好，下午我也想去公园坐船。",
+          "pinyin": "Tiānqì zhème hǎo, xiàwǔ wǒ yě xiǎng qù gōngyuán zuò chuán.",
+          "text": {
+            "uz": "Havo bunchalik yaxshi ekan, tushdan keyin men ham parkda qayiqda yurmoqchiman.",
+            "ru": "Погода такая хорошая, днём я тоже хочу покататься на лодке в парке.",
+            "tj": "Ҳаво ин қадар хуб аст, баъд аз нисфирӯзӣ ман ҳам мехоҳам дар боғ қаиқсаворӣ кунам."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "去吧！今天是工作日，人应该不多。",
+          "pinyin": "Qù ba! Jīntiān shì gōngzuòrì, rén yīnggāi bù duō.",
+          "text": {
+            "uz": "Bor! Bugun ish kuni, odam ko‘p bo‘lmasligi kerak.",
+            "ru": "Иди! Сегодня рабочий день, людей должно быть немного.",
+            "tj": "Рав! Имрӯз рӯзи корӣ аст, одам набояд зиёд бошад."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "您有时间吗？我想跟您一起去。",
+          "pinyin": "Nín yǒu shíjiān ma? Wǒ xiǎng gēn nín yìqǐ qù.",
+          "text": {
+            "uz": "Vaqtingiz bormi? Siz bilan birga bormoqchiman.",
+            "ru": "У вас есть время? Я хотела бы пойти вместе с вами.",
+            "tj": "Вақт доред? Мехоҳам бо шумо якҷо равам."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "我今天下午有课，不能去太远的地方。",
+          "pinyin": "Wǒ jīntiān xiàwǔ yǒu kè, bù néng qù tài yuǎn de dìfang.",
+          "text": {
+            "uz": "Bugun tushdan keyin darsim bor, juda uzoqqa bora olmayman.",
+            "ru": "Сегодня днём у меня занятие, далеко ехать не могу.",
+            "tj": "Имрӯз баъд аз нисфирӯзӣ дарс дорам, ба ҷои дур рафта наметавонам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "那咱们换一天去？",
+          "pinyin": "Nà zánmen huàn yì tiān qù?",
+          "text": {
+            "uz": "Unda boshqa kuni boramizmi?",
+            "ru": "Тогда пойдём в другой день?",
+            "tj": "Пас рӯзи дигар равем?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "行。或者明天去，或者后天去，我给你打电话。",
+          "pinyin": "Xíng. Huòzhě míngtiān qù, huòzhě hòutiān qù, wǒ gěi nǐ dǎ diànhuà.",
+          "text": {
+            "uz": "Mayli. Yoki ertaga, yoki indinga boramiz, men senga telefon qilaman.",
+            "ru": "Хорошо. Либо завтра, либо послезавтра — я тебе позвоню.",
+            "tj": "Хуб. Ё фардо, ё пасфардо меравем, ман ба ту занг мезанам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ko‘chada Wang Yifei va Bai Jiayue birga sayr qilmoqda.",
+        "ru": "На улице Ван Ифэй и Бай Цзяюэ гуляют вместе.",
+        "tj": "Дар кӯча Ван Ифэй ва Бай Ҷяюэ якҷо сайр мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "刚才还是大晴天呢，怎么突然就刮起风来了？",
+          "pinyin": "Gāngcái háishi dà qíngtiān ne, zěnme tūrán jiù guā qǐ fēng lái le?",
+          "text": {
+            "uz": "Hozirgina havo juda ochiq edi, nega birdan shamol esa boshladi?",
+            "ru": "Только что было ясно, почему вдруг поднялся ветер?",
+            "tj": "Ҳозиргина ҳаво соф буд, чаро ногаҳон шамол вазидан гирифт?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "好像新闻里说今天有雨。",
+          "pinyin": "Hǎoxiàng xīnwén lǐ shuō jīntiān yǒu yǔ.",
+          "text": {
+            "uz": "Shekilli, yangiliklarda bugun yomg‘ir bo‘ladi deyishgandi.",
+            "ru": "Кажется, в новостях говорили, что сегодня будет дождь.",
+            "tj": "Ба назарам, дар ахбор гуфта буданд, ки имрӯз борон мешавад."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "啊？我每天书包里都放着雨伞，就今天没带。",
+          "pinyin": "A? Wǒ měitiān shūbāo lǐ dōu fàngzhe yǔsǎn, jiù jīntiān méi dài.",
+          "text": {
+            "uz": "A? Men har kuni sumkamda soyabon olib yuraman, faqat bugun olmadim.",
+            "ru": "Что? Я каждый день ношу зонт в рюкзаке, только сегодня не взяла.",
+            "tj": "А? Ман ҳар рӯз дар ҷузвдонам чатр мегирам, танҳо имрӯз нагирифтам."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "我可以借给你，我车里有一把伞和一件雨衣。",
+          "pinyin": "Wǒ kěyǐ jiè gěi nǐ, wǒ chē lǐ yǒu yì bǎ sǎn hé yí jiàn yǔyī.",
+          "text": {
+            "uz": "Men senga berib turaman, mashinamda bitta soyabon va yomg‘irpo‘sh bor.",
+            "ru": "Я могу тебе одолжить: в машине есть зонт и дождевик.",
+            "tj": "Ман ба ту медиҳам, дар мошинам як чатр ва як боронӣ ҳаст."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "谢谢，希望下午天气能变好。",
+          "pinyin": "Xièxie, xīwàng xiàwǔ tiānqì néng biàn hǎo.",
+          "text": {
+            "uz": "Rahmat, umid qilamanki tushdan keyin havo yaxshilanadi.",
+            "ru": "Спасибо, надеюсь, днём погода улучшится.",
+            "tj": "Раҳмат, умедворам баъд аз нисфирӯзӣ ҳаво беҳтар мешавад."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "这个季节天气变化很快。",
+          "pinyin": "Zhège jìjié tiānqì biànhuà hěn kuài.",
+          "text": {
+            "uz": "Bu faslda ob-havo juda tez o‘zgaradi.",
+            "ru": "В этом сезоне погода меняется очень быстро.",
+            "tj": "Дар ин фасл ҳаво хеле зуд тағйир меёбад."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "雨已经下起来了，咱们快点儿走吧。",
+          "pinyin": "Yǔ yǐjīng xià qǐlái le, zánmen kuài diǎnr zǒu ba.",
+          "text": {
+            "uz": "Yomg‘ir yog‘a boshladi, tezroq yuraylik.",
+            "ru": "Дождь уже начался, пойдём быстрее.",
+            "tj": "Борон сар шуд, тезтар равем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda Wang Yifei va Bai Jiayue yomg‘irdan pana qilmoqda.",
+        "ru": "В классе Ван Ифэй и Бай Цзяюэ укрываются от дождя.",
+        "tj": "Дар синф Ван Ифэй ва Бай Ҷяюэ аз борон паноҳ мебаранд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "您来这里已经一年多了，习惯了吧？",
+          "pinyin": "Nín lái zhèlǐ yǐjīng yì nián duō le, xíguàn le ba?",
+          "text": {
+            "uz": "Bu yerga kelganingizga bir yildan oshdi, ko‘nikib qolgandirsiz?",
+            "ru": "Вы здесь уже больше года, наверное, привыкли?",
+            "tj": "Зиёда аз як сол шуд ин ҷо ҳастед, одат кардаед?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "别的早就习惯了，就是天气我还不太习惯。",
+          "pinyin": "Biéde zǎo jiù xíguàn le, jiùshì tiānqì wǒ hái bú tài xíguàn.",
+          "text": {
+            "uz": "Boshqa narsalarga anchadan beri ko‘nikdim, faqat ob-havoga hali uncha emas.",
+            "ru": "Ко всему остальному давно привыкла, только к погоде ещё не совсем.",
+            "tj": "Ба дигар чизҳо кайҳо одат кардам, танҳо ба обу ҳаво ҳоло пурра одат накардаам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "为什么？您不喜欢这里的天气吗？",
+          "pinyin": "Wèishénme? Nín bù xǐhuan zhèlǐ de tiānqì ma?",
+          "text": {
+            "uz": "Nega? Bu yerdagi ob-havo sizga yoqmaydimi?",
+            "ru": "Почему? Вам не нравится местная погода?",
+            "tj": "Чаро? Обу ҳавои ин ҷо ба шумо писанд нест?"
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "我觉得冬天太冷了。",
+          "pinyin": "Wǒ juéde dōngtiān tài lěng le.",
+          "text": {
+            "uz": "Menimcha, qish juda sovuq.",
+            "ru": "Мне кажется, зимой слишком холодно.",
+            "tj": "Ба назарам, зимистон хеле хунук аст."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "冬天虽然冷，但是下雪的时候特别漂亮。",
+          "pinyin": "Dōngtiān suīrán lěng, dànshì xiàxuě de shíhou tèbié piàoliang.",
+          "text": {
+            "uz": "Qishda sovuq bo‘lsa ham, qor yog‘ganda juda chiroyli bo‘ladi.",
+            "ru": "Хотя зимой холодно, во время снега очень красиво.",
+            "tj": "Гарчанде зимистон хунук аст, вақте барф меборад хеле зебо мешавад."
+          }
+        },
+        {
+          "speaker": "王一飞",
+          "zh": "我也喜欢雪。北京常常下雪，但听说今年就下了一次。",
+          "pinyin": "Wǒ yě xǐhuan xuě. Běijīng chángcháng xiàxuě, dàn tīngshuō jīnnián jiù xià le yí cì.",
+          "text": {
+            "uz": "Men ham qorni yoqtiraman. Pekinda tez-tez qor yog‘adi, lekin eshitishimcha bu yil faqat bir marta yog‘ibdi.",
+            "ru": "Я тоже люблю снег. В Пекине он часто идёт, но говорят, в этом году был только один раз.",
+            "tj": "Ман ҳам барфро дӯст медорам. Дар Пекин зуд-зуд барф меборад, аммо шунидам имсол танҳо як бор боридааст."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我没关注过北京的天气，但是新闻里说过，今年冬天很多地方雪下得都少了。",
+          "pinyin": "Wǒ méi guānzhù guo Běijīng de tiānqì, dànshì xīnwén lǐ shuō guo, jīnnián dōngtiān hěn duō dìfang xuě xià de dōu shǎo le.",
+          "text": {
+            "uz": "Pekin ob-havosini kuzatmaganman, lekin yangiliklarda bu qish ko‘p joylarda qor kam yog‘gani aytildi.",
+            "ru": "Я не следила за погодой в Пекине, но в новостях говорили, что этой зимой во многих местах снега было меньше.",
+            "tj": "Ман обу ҳавои Пекинро пайгирӣ накардаам, аммо дар ахбор гуфтанд, ки имсол зимистон дар бисёр ҷойҳо барф кам боридааст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "工作日",
+              {
+                "uz": "ish kuni",
+                "ru": "рабочий день",
+                "tj": "рӯзи корӣ"
+              }
+            ],
+            [
+              "地方",
+              {
+                "uz": "joy",
+                "ru": "место",
+                "tj": "ҷой"
+              }
+            ],
+            [
+              "刚才",
+              {
+                "uz": "hozirgina",
+                "ru": "только что",
+                "tj": "ҳозиргина"
+              }
+            ],
+            [
+              "刮",
+              {
+                "uz": "esmoq (shamol)",
+                "ru": "дуть (о ветре)",
+                "tj": "вазидан (шамол)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Nega birdan shamol esa boshladi?» — xitoychada qaysi biri?",
+            "ru": "«Почему вдруг поднялся ветер?» — какое предложение по-китайски?",
+            "tj": "«Чаро ногаҳон шамол вазидан гирифт?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "雨已经下起来了。",
+            "晚饭你自己选，或者吃中国菜，或者吃日本菜，或者吃泰国菜。",
+            "怎么突然刮起风来了？",
+            "这一年多住下来，我还是更喜欢北京的四季。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "怎么突然刮起风来了？ — Zěnme tūrán guā qǐ fēng lái le?",
+            "ru": "怎么突然刮起风来了？ — Zěnme tūrán guā qǐ fēng lái le?",
+            "tj": "怎么突然刮起风来了？ — Zěnme tūrán guā qǐ fēng lái le?"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "雨已经下起来了。",
+          "pinyin": "Yǔ yǐjīng xià qǐlái le.",
+          "translation": {
+            "uz": "Yomg‘ir yog‘a boshladi.",
+            "ru": "Дождь уже начался.",
+            "tj": "Борон аллакай сар шуд."
+          },
+          "tokens": {
+            "uz": [
+              "boshladi",
+              "yog‘a",
+              "Yomg‘ir",
+              "Wang",
+              "Ustoz"
+            ],
+            "ru": [
+              "Дождь",
+              "Ван",
+              "уже",
+              "начался",
+              "Учитель"
+            ],
+            "tj": [
+              "шуд",
+              "сар",
+              "Устод",
+              "Ван",
+              "аллакай",
+              "Борон"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Yomg‘ir",
+              "yog‘a",
+              "boshladi"
+            ],
+            "ru": [
+              "Дождь",
+              "уже",
+              "начался"
+            ],
+            "tj": [
+              "Борон",
+              "аллакай",
+              "сар",
+              "шуд"
+            ]
+          },
+          "explanation": {
+            "uz": "雨已经下起来了。 — Yomg‘ir yog‘a boshladi.",
+            "ru": "雨已经下起来了。 — Дождь уже начался.",
+            "tj": "雨已经下起来了。 — Борон аллакай сар шуд."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "chángcháng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chángcháng?",
+            "tj": "chángcháng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "常常",
+            "街",
+            "开花",
+            "公园"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "常常 = tez-tez (chángcháng)",
+            "ru": "常常 = часто (chángcháng)",
+            "tj": "常常 = зуд-зуд (chángcháng)"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o‘zgarish; o‘zgarmoq' xitoycha qaysi?",
+            "ru": "'изменение; меняться' по-китайски?",
+            "tj": "'тағйир; тағйир ёфтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "开花",
+            "街",
+            "公园",
+            "变化"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "o‘zgarish; o‘zgarmoq = 变化 (biànhuà)",
+            "ru": "изменение; меняться = 变化 (biànhuà)",
+            "tj": "тағйир; тағйир ёфтан = 变化 (biànhuà)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "变 talaffuzini tanlang:",
+            "ru": "Выберите произношение 变:",
+            "tj": "Талаффузи 变-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "gōngyuán",
+            "kāihuā",
+            "jiē",
+            "biàn"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "变 — biàn",
+            "ru": "变 — biàn",
+            "tj": "变 — biàn"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "街",
+              {
+                "uz": "ko‘cha",
+                "ru": "улица",
+                "tj": "кӯча"
+              }
+            ],
+            [
+              "开花",
+              {
+                "uz": "gullamoq",
+                "ru": "цвести",
+                "tj": "гул кардан"
+              }
+            ],
+            [
+              "公园",
+              {
+                "uz": "park",
+                "ru": "парк",
+                "tj": "боғ"
+              }
+            ],
+            [
+              "船",
+              {
+                "uz": "qayiq; kema",
+                "ru": "лодка; судно",
+                "tj": "қаиқ; киштӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "王老师，您看，这条街上的树都开花了。",
+          "pinyin": "Wáng lǎoshī, nín kàn, zhè tiáo jiē shàng de shù dōu kāihuā le.",
+          "options": [
+            "上周我去公园坐船了，公园里的花也开了。",
+            "去吧！今天是工作日，人应该不多。",
+            "天气这么好，下午我也想去公园坐船。",
+            "王老师，您看，这条街上的树都开花了。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "王老师，您看，这条街上的树都开花了。 — Ustoz Wang, qarang, bu ko‘chadagi daraxtlarning hammasi gullabdi.",
+            "ru": "王老师，您看，这条街上的树都开花了。 — Учитель Ван, смотрите, деревья на этой улице уже цветут.",
+            "tj": "王老师，您看，这条街上的树都开花了。 — Устод Ван, бинед, дарахтони ин кӯча ҳама гул кардаанд."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 白家月 avval nima deydi?",
+            "ru": "Что 白家月 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 白家月 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "去吧！今天是工作日，人应该不多。",
+            "天气这么好，下午我也想去公园坐船。",
+            "王老师，您看，这条街上的树都开花了。",
+            "上周我去公园坐船了，公园里的花也开了。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 王老师，您看，这条街上的树都开花了。",
+            "ru": "Правильный ответ: 王老师，您看，这条街上的树都开花了。",
+            "tj": "Ҷавоби дуруст: 王老师，您看，这条街上的树都开花了。"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "白家月",
+              "zh": "王老师，您看，这条街上的树都开花了。",
+              "blank": false
+            },
+            {
+              "speaker": "王一飞",
+              "zh": "上周我去公园坐船了，公园里的花也开了。",
+              "blank": false
+            },
+            {
+              "speaker": "白家月",
+              "zh": "天气这么好，下午我也想去公园坐船。",
+              "blank": false
+            },
+            {
+              "speaker": "王一飞",
+              "zh": "去吧！今天是工作日，人应该不多。",
+              "blank": false
+            },
+            {
+              "speaker": "白家月",
+              "zh": "您有时间吗？我想跟您一起去。",
+              "blank": false
+            },
+            {
+              "speaker": "王一飞",
+              "zh": "我今天下午有课，不能去太远的地方。",
+              "blank": false
+            },
+            {
+              "speaker": "白家月",
+              "zh": "那咱们换一天去？",
+              "blank": false
+            },
+            {
+              "speaker": "王一飞",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "天气这么好，下午我也想去公园坐船。",
+            "行。或者明天去，或者后天去，我给你打电话。",
+            "上周我去公园坐船了，公园里的花也开了。",
+            "王老师，您看，这条街上的树都开花了。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 行。或者明天去，或者后天去，我给你打电话。",
+            "ru": "Правильный ответ: 行。或者明天去，或者后天去，我给你打电话。",
+            "tj": "Ҷавоби дуруст: 行。或者明天去，或者后天去，我给你打电话。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 王一飞 nima deydi?",
+            "ru": "Что 王一飞 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 王一飞 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "行。或者明天去，或者后天去，我给你打电话。",
+            "上周我去公园坐船了，公园里的花也开了。",
+            "王老师，您看，这条街上的树都开花了。",
+            "天气这么好，下午我也想去公园坐船。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 行。或者明天去，或者后天去，我给你打电话。",
+            "ru": "Правильный ответ: 行。或者明天去，或者后天去，我给你打电话。",
+            "tj": "Ҷавоби дуруст: 行。或者明天去，或者后天去，我给你打电话。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____老师，您看，这条街上的树都开花了。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "一",
+            "王",
+            "七",
+            "万"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 王 — 王老师，您看，这条街上的树都开花了。 (Ustoz Wang, qarang, bu ko‘chadagi daraxtlarning hammasi gullabdi.)",
+            "ru": "Верно: 王 — 王老师，您看，这条街上的树都开花了。 (Учитель Ван, смотрите, деревья на этой улице уже цветут.)",
+            "tj": "Дуруст: 王 — 王老师，您看，这条街上的树都开花了。 (Устод Ван, бинед, дарахтони ин кӯча ҳама гул кардаанд.)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "那咱们换一天去？",
+          "pinyin": "Nà zánmen huàn yì tiān qù?",
+          "translation": {
+            "uz": "Unda boshqa kuni boramizmi?",
+            "ru": "Тогда пойдём в другой день?",
+            "tj": "Пас рӯзи дигар равем?"
+          }
+        }
+      ]
+    }
+  ]
+}

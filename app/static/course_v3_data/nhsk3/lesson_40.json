@@ -1,0 +1,1183 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 40,
+  "source_lesson": 5,
+  "part_no": 8,
+  "part_count": 8,
+  "checkpoint": true,
+  "title": "这样的照片才好看",
+  "subtitle": {
+    "uz": "Sevimli dam olish mashg‘ulotlari haqida gapirish; ketma-ket sodir bo‘ladigan ikki harakatni ifodalash; mavjudlik gapining uchinchi turida odam yoki narsaning paydo bo‘lishi/yo‘qolishini aytish.",
+    "ru": "Рассказывать о любимом отдыхе; выражать два последовательных действия; использовать третий тип экзистенциального предложения для появления или исчезновения людей и предметов.",
+    "tj": "Дар бораи истироҳати дӯстдошта суҳбат кардан; ду амали пайдарпайро ифода кардан; бо навъи сеюми ҷумлаи мавҷудият пайдо ё нопадид шудани шахс ва ашёро гуфтан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "总是",
+      "pinyin": "zǒngshì",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "doim; har doim",
+        "ru": "всегда",
+        "tj": "ҳамеша"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "终于",
+      "pinyin": "zhōngyú",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "nihoyat",
+        "ru": "наконец",
+        "tj": "ниҳоят"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "爬",
+      "pinyin": "pá",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tirmashmoq; ko‘tarilmoq",
+        "ru": "лезть; подниматься",
+        "tj": "баромадан; кӯҳ баромадан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "山",
+      "pinyin": "shān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tog‘",
+        "ru": "гора",
+        "tj": "кӯҳ"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "锻炼",
+      "pinyin": "duànliàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "mashq qilmoq; chiniqmoq",
+        "ru": "тренироваться; заниматься",
+        "tj": "машқ кардан"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "照",
+      "pinyin": "zhào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "suratga olmoq",
+        "ru": "фотографировать",
+        "tj": "акс гирифтан"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "鞋",
+      "pinyin": "xié",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oyoq kiyim",
+        "ru": "обувь; туфли",
+        "tj": "пойафзол"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "大衣",
+      "pinyin": "dàyī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "palto",
+        "ru": "пальто",
+        "tj": "палто"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "拍照",
+      "pinyin": "pāizhào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "suratga olmoq",
+        "ru": "фотографировать",
+        "tj": "акс гирифтан"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "感兴趣",
+      "pinyin": "gǎn xìngqù",
+      "pos": "",
+      "meaning": {
+        "uz": "qiziqmoq",
+        "ru": "интересоваться",
+        "tj": "шавқ доштан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "照相",
+      "pinyin": "zhàoxiàng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "fotosuratga olmoq",
+        "ru": "фотографировать",
+        "tj": "аксбардорӣ кардан"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "难看",
+      "pinyin": "nánkàn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "xunuk; yoqimsiz ko‘rinadigan",
+        "ru": "некрасивый; плохо выглядящий",
+        "tj": "безеб; баднамо"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "比较",
+      "pinyin": "bǐjiào",
+      "pos": "v./adv.",
+      "meaning": {
+        "uz": "taqqoslamoq; nisbatan",
+        "ru": "сравнивать; сравнительно",
+        "tj": "муқоиса кардан; нисбатан"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "水平",
+      "pinyin": "shuǐpíng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "daraja; saviya",
+        "ru": "уровень",
+        "tj": "сатҳ"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "太阳",
+      "pinyin": "tàiyáng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "quyosh",
+        "ru": "солнце",
+        "tj": "офтоб"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "树",
+      "pinyin": "shù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "daraxt",
+        "ru": "дерево",
+        "tj": "дарахт"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "干",
+      "pinyin": "gàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qilmoq; shug‘ullanmoq",
+        "ru": "делать; заниматься",
+        "tj": "кардан; машғул шудан"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "电",
+      "pinyin": "diàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "elektr",
+        "ru": "электричество",
+        "tj": "барқ"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "收到",
+      "pinyin": "shōudào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qabul qilmoq; olmoq",
+        "ru": "получать",
+        "tj": "гирифтан; қабул кардан"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "封",
+      "pinyin": "fēng",
+      "pos": "m.",
+      "meaning": {
+        "uz": "xat/email uchun hisob so‘zi",
+        "ru": "счётное слово для писем",
+        "tj": "воҳиди ҳисоб барои нома"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "邮件",
+      "pinyin": "yóujiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "elektron xat; pochta",
+        "ru": "электронное письмо; почта",
+        "tj": "номаи электронӣ; почта"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "难过",
+      "pinyin": "nánguò",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "xafa; qayg‘uli",
+        "ru": "грустный; тяжело на душе",
+        "tj": "ғамгин; дилгир"
+      }
+    },
+    {
+      "no": 23,
+      "zh": "哈哈",
+      "pinyin": "hāhā",
+      "pos": "interj.",
+      "meaning": {
+        "uz": "ha-ha",
+        "ru": "ха-ха",
+        "tj": "ҳа-ҳа"
+      }
+    },
+    {
+      "no": 24,
+      "zh": "音乐",
+      "pinyin": "yīnyuè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "musiqa",
+        "ru": "музыка",
+        "tj": "мусиқӣ"
+      }
+    },
+    {
+      "no": 25,
+      "zh": "兴趣",
+      "pinyin": "xìngqù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qiziqish",
+        "ru": "интерес",
+        "tj": "шавқ"
+      }
+    },
+    {
+      "no": 26,
+      "zh": "会",
+      "pinyin": "huì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "uchrashuv; yig‘ilish; tadbir",
+        "ru": "собрание; мероприятие",
+        "tj": "ҷаласа; чорабинӣ"
+      }
+    },
+    {
+      "no": 27,
+      "zh": "结束",
+      "pinyin": "jiéshù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tugamoq; yakunlamoq",
+        "ru": "заканчиваться; завершать",
+        "tj": "тамом шудан; анҷом додан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Daraja to‘ldiruvchisi (2): “得很”",
+        "ru": "Дополнение степени (2): “得很”",
+        "tj": "Пуркунандаи дараҷа (2): “得很”"
+      },
+      "title_zh": "程度补语（2）",
+      "rule": {
+        "uz": "“Sifat + 得很” belgining darajasi juda yuqori ekanini bildiradi va “juda/rosa” ma’nosini beradi.",
+        "ru": "Конструкция “прилагательное + 得很” выражает очень высокую степень признака: «очень / чрезвычайно».",
+        "tj": "Сохтори “сифат + 得很” дараҷаи хеле баландро нишон медиҳад ва маънои «хеле» медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "现在天气好得很。",
+          "pinyin": "Xiànzài tiānqì hǎo de hěn.",
+          "translation": {
+            "uz": "Hozir ob-havo juda yaxshi.",
+            "ru": "Сейчас погода очень хорошая.",
+            "tj": "Ҳоло ҳаво хеле хуб аст."
+          }
+        },
+        {
+          "zh": "房间里面热得很。",
+          "pinyin": "Fángjiān lǐmian rè de hěn.",
+          "translation": {
+            "uz": "Xonaning ichi juda issiq.",
+            "ru": "В комнате очень жарко.",
+            "tj": "Даруни ҳуҷра хеле гарм аст."
+          }
+        },
+        {
+          "zh": "我觉得爬山累得很。",
+          "pinyin": "Wǒ juéde páshān lèi de hěn.",
+          "translation": {
+            "uz": "Menimcha, tog‘ga chiqish juda charchatadi.",
+            "ru": "Мне кажется, подниматься в горы очень утомительно.",
+            "tj": "Ба назарам, кӯҳ баромадан хеле хаста мекунад."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Hisob so‘zining takrorlanishi",
+        "ru": "Повтор счётных слов",
+        "tj": "Такрори воҳидҳои ҳисоб"
+      },
+      "title_zh": "量词重叠",
+      "rule": {
+        "uz": "Hisob so‘zi takrorlansa “har bir / bittadan-bitta” ma’nosini beradi: 张张, 个个 kabi. Vaqt birligi takrorlansa “har kuni” kabi muntazamlikni ham bildirishi mumkin.",
+        "ru": "Повтор счётного слова выражает значение «каждый»: 张张, 个个 и т. п. Повтор единицы времени может означать регулярность, например 天天 — «каждый день».",
+        "tj": "Такрори воҳиди ҳисоб маънои «ҳар кадом»-ро медиҳад: 张张, 个个 ва ғайра. Такрори воҳиди вақт метавонад мунтазамиро низ нишон диҳад, мисли 天天 — «ҳар рӯз»."
+      },
+      "examples": [
+        {
+          "zh": "这些照片张张都非常好看。",
+          "pinyin": "Zhèxiē zhàopiàn zhāngzhāng dōu fēicháng hǎokàn.",
+          "translation": {
+            "uz": "Bu suratlarning har biri juda chiroyli.",
+            "ru": "Каждая из этих фотографий очень красивая.",
+            "tj": "Ҳар кадоми ин суратҳо хеле зебо аст."
+          }
+        },
+        {
+          "zh": "这些苹果个个都很大。",
+          "pinyin": "Zhèxiē píngguǒ gègè dōu hěn dà.",
+          "translation": {
+            "uz": "Bu olmalarining har biri katta.",
+            "ru": "Каждое из этих яблок большое.",
+            "tj": "Ҳар кадоми ин себҳо калон аст."
+          }
+        },
+        {
+          "zh": "我想出去拍照，但是天天下雨。",
+          "pinyin": "Wǒ xiǎng chūqù pāizhào, dànshì tiāntiān xiàyǔ.",
+          "translation": {
+            "uz": "Suratga olish uchun tashqariga chiqmoqchiman, lekin har kuni yomg‘ir yog‘yapti.",
+            "ru": "Хочу выйти пофотографировать, но каждый день идёт дождь.",
+            "tj": "Мехоҳам барои аксбардорӣ берун равам, аммо ҳар рӯз борон меборад."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Mavjudlik gapi (3): paydo bo‘lish va harakat bilan kirib kelish",
+        "ru": "Экзистенциальное предложение (3): появление и движение",
+        "tj": "Ҷумлаи мавҷудият (3): пайдоиш ва ҳаракат"
+      },
+      "title_zh": "存现句（3）",
+      "rule": {
+        "uz": "Joy ifodasidan keyin yo‘nalish fe’li yoki harakat fe’li kelib, so‘ng noaniq odam/narsa keladi. Bunda gap biror shaxs yoki narsaning sahnaga paydo bo‘lishini yoki ma’lum tomondan kelishini bildiradi.",
+        "ru": "После обозначения места ставится глагол движения/направления, а затем неопределённый человек или предмет. Такая конструкция описывает появление или прибытие кого-либо/чего-либо.",
+        "tj": "Пас аз ифодаи ҷой феъли ҳаракат/самт меояд ва баъд шахс ё ашёи номуайян. Ин сохтор пайдо шудан ё аз самте омадани касе/чизеро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "后边走过去两个人。",
+          "pinyin": "Hòubian zǒu guòqu liǎng ge rén.",
+          "translation": {
+            "uz": "Orqa tomondan ikki kishi o‘tib ketdi.",
+            "ru": "Сзади прошли два человека.",
+            "tj": "Аз қафо ду нафар гузашта рафтанд."
+          }
+        },
+        {
+          "zh": "前面开过来很多车。",
+          "pinyin": "Qiánmian kāi guòlái hěn duō chē.",
+          "translation": {
+            "uz": "Old tomondan ko‘p mashinalar kelmoqda.",
+            "ru": "Спереди едет много машин.",
+            "tj": "Аз пеш мошинҳои зиёд меоянд."
+          }
+        },
+        {
+          "zh": "楼上下来几个人。",
+          "pinyin": "Lóushàng xiàlái jǐ ge rén.",
+          "translation": {
+            "uz": "Yuqori qavatdan bir necha kishi tushib keldi.",
+            "ru": "Сверху спустились несколько человек.",
+            "tj": "Аз боло чанд нафар поён омаданд."
+          }
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": {
+        "uz": "“……了……就……” — bir ish tugashi bilan keyingisi",
+        "ru": "“……了……就……” — сразу после одного действия",
+        "tj": "“……了……就……” — баъди анҷоми як амал фавран дигаре"
+      },
+      "title_zh": "紧缩复句“……了……就……”",
+      "rule": {
+        "uz": "Birinchi qismdagi ish tugashi bilan ikkinchi ish darhol yoki ketma-ket sodir bo‘lishini bildiradi. “了” birinchi harakat yakunlanganini, “就” keyingi harakat tez ergashishini ko‘rsatadi.",
+        "ru": "Конструкция показывает, что второе действие следует сразу после завершения первого. “了” отмечает завершение первого действия, а “就” — быстрое наступление второго.",
+        "tj": "Сохтор нишон медиҳад, ки амали дуюм фавран баъди анҷоми амали аввал меояд. “了” анҷоми амали аввал ва “就” зуд оғоз шудани амали дуюмро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "你听完了音乐会就来我家吃饭。",
+          "pinyin": "Nǐ tīng wán le yīnyuèhuì jiù lái wǒ jiā chīfàn.",
+          "translation": {
+            "uz": "Konsertni eshitib bo‘lgach, darhol biznikiga ovqatga kel.",
+            "ru": "После концерта сразу приходи ко мне поесть.",
+            "tj": "Консертро тамом карда, фавран ба хонаи ман барои хӯрок биё."
+          }
+        },
+        {
+          "zh": "我吃了早饭就去学校了。",
+          "pinyin": "Wǒ chī le zǎofàn jiù qù xuéxiào le.",
+          "translation": {
+            "uz": "Nonushta qilganimdan keyin darhol maktabga ketdim.",
+            "ru": "После завтрака я сразу пошёл в школу.",
+            "tj": "Баъди наҳорӣ фавран ба мактаб рафтам."
+          }
+        },
+        {
+          "zh": "昨天我们下了课就回家了。",
+          "pinyin": "Zuótiān wǒmen xià le kè jiù huí jiā le.",
+          "translation": {
+            "uz": "Kecha dars tugashi bilan uyga qaytdik.",
+            "ru": "Вчера после уроков мы сразу пошли домой.",
+            "tj": "Дирӯз баъди дарс фавран ба хона баргаштем."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ko‘chada Bai Jiayue va Li Wen sayr qilib, suhbatlashmoqda.",
+        "ru": "На улице Бай Цзяюэ и Ли Вэнь гуляют и разговаривают.",
+        "tj": "Дар кӯча Бай Ҷяюэ ва Ли Вэн сайр карда суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "这个星期总是阴天，今天终于晴了。",
+          "pinyin": "Zhège xīngqī zǒngshì yīntiān, jīntiān zhōngyú qíng le.",
+          "text": {
+            "uz": "Bu hafta doim bulutli edi, bugun nihoyat havo ochildi.",
+            "ru": "Всю неделю было пасмурно, а сегодня наконец ясно.",
+            "tj": "Ин ҳафта ҳамеша ҳаво абрнок буд, имрӯз ниҳоят соф шуд."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "现在天气好得很！我们去爬山怎么样？",
+          "pinyin": "Xiànzài tiānqì hǎo de hěn! Wǒmen qù páshān zěnmeyàng?",
+          "text": {
+            "uz": "Hozir ob-havo juda yaxshi! Tog‘ga chiqishga boramizmi?",
+            "ru": "Сейчас погода отличная! Как насчёт похода в горы?",
+            "tj": "Ҳоло ҳаво хеле хуб аст! Ба кӯҳ равем чӣ хел?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "好啊！又能锻炼身体，又能照好看的照片。",
+          "pinyin": "Hǎo a! Yòu néng duànliàn shēntǐ, yòu néng zhào hǎokàn de zhàopiàn.",
+          "text": {
+            "uz": "Mayli! Ham mashq qilamiz, ham chiroyli suratlar olamiz.",
+            "ru": "Хорошо! И потренируемся, и сделаем красивые фотографии.",
+            "tj": "Хуб! Ҳам машқ мекунем, ҳам аксҳои зебо мегирем."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "那我带点儿水和吃的，咱们现在就去？",
+          "pinyin": "Nà wǒ dài diǎnr shuǐ hé chī de, zánmen xiànzài jiù qù?",
+          "text": {
+            "uz": "Unda men suv va yegulik olaman, hozirning o‘zida boramizmi?",
+            "ru": "Тогда я возьму воду и еду. Пойдём прямо сейчас?",
+            "tj": "Пас ман обу хӯрданӣ мегирам, ҳозир равем?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我回去穿上运动鞋，拿上大衣。要不要叫一雪姐一起去？",
+          "pinyin": "Wǒ huíqu chuān shàng yùndòngxié, ná shàng dàyī. Yào bú yào jiào Yīxuě jiě yìqǐ qù?",
+          "text": {
+            "uz": "Men qaytib sport oyoq kiyimimni kiyaman, paltomni olaman. Yixue opani ham chaqiraylikmi?",
+            "ru": "Я схожу переобуюсь в спортивную обувь и возьму пальто. Позвать сестру Исюэ с нами?",
+            "tj": "Ман бармегардам, пойафзоли варзишӣ мепӯшам ва палторо мегирам. Апаи Исюэро ҳам даъват кунем?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "好主意。给她打个电话吧。",
+          "pinyin": "Hǎo zhǔyi. Gěi tā dǎ ge diànhuà ba.",
+          "text": {
+            "uz": "Yaxshi fikr. Unga telefon qilaylik.",
+            "ru": "Хорошая идея. Давай ей позвоним.",
+            "tj": "Фикри хуб. Ба ӯ занг занем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Taksida Wang Yixue va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В такси Ван Исюэ и Бай Цзяюэ разговаривают.",
+        "tj": "Дар таксӣ Ван Исюэ ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "这些照片是谁给您照的？张张都非常好看。",
+          "pinyin": "Zhèxiē zhàopiàn shì shéi gěi nín zhào de? Zhāngzhāng dōu fēicháng hǎokàn.",
+          "text": {
+            "uz": "Bu suratlarni sizga kim olgan? Har biri juda chiroyli.",
+            "ru": "Кто вас фотографировал? Все фотографии очень красивые.",
+            "tj": "Ин суратҳоро кӣ барои шумо гирифтааст? Ҳар кадомаш хеле зебо аст."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "一飞。她对拍照一直很感兴趣，经常给我照相。",
+          "pinyin": "Yīfēi. Tā duì pāizhào yìzhí hěn gǎn xìngqù, jīngcháng gěi wǒ zhàoxiàng.",
+          "text": {
+            "uz": "Yifei. U suratga olishga doim qiziqadi va meni tez-tez suratga oladi.",
+            "ru": "Ифэй. Она всегда интересовалась фотографией и часто меня снимает.",
+            "tj": "Ифэй. Ӯ ҳамеша ба аксбардорӣ шавқ дорад ва маро зуд-зуд акс мегирад."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我喜欢您大笑的这张，看起来很漂亮。",
+          "pinyin": "Wǒ xǐhuan nín dà xiào de zhè zhāng, kàn qǐlái hěn piàoliang.",
+          "text": {
+            "uz": "Menga qattiq kulayotganingizdagi mana bu surat yoqdi, juda chiroyli ko‘rinadi.",
+            "ru": "Мне нравится эта фотография, где вы смеётесь. Выглядит очень красиво.",
+            "tj": "Ба ман ҳамин сурати хандаатон писанд аст, хеле зебо менамояд."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "我觉得这张有点儿难看，那时候我不知道她在给我照相。",
+          "pinyin": "Wǒ juéde zhè zhāng yǒudiǎnr nánkàn, nà shíhou wǒ bù zhīdào tā zài gěi wǒ zhàoxiàng.",
+          "text": {
+            "uz": "Menimcha, bu surat biroz xunuk chiqqan, o‘sha payt u meni suratga olayotganini bilmagandim.",
+            "ru": "Мне кажется, здесь я вышла не очень. Тогда я не знала, что она меня фотографирует.",
+            "tj": "Ба назарам, ин сурат каме безеб баромадааст, он вақт намедонистам, ки маро акс мегирад."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "这样的照片才好看。我也喜欢拍照，爬山的时候我给您照几张照片吧。",
+          "pinyin": "Zhèyàng de zhàopiàn cái hǎokàn. Wǒ yě xǐhuan pāizhào, páshān de shíhou wǒ gěi nín zhào jǐ zhāng zhàopiàn ba.",
+          "text": {
+            "uz": "Shunaqa suratlar chiroyli bo‘ladi. Men ham suratga olishni yoqtiraman, tog‘ga chiqqanda sizni bir necha marta suratga olaman.",
+            "ru": "Вот такие фотографии как раз и красивые. Я тоже люблю фотографировать; в горах сниму вас несколько раз.",
+            "tj": "Ҳамин гуна суратҳо зебоанд. Ман ҳам аксбардориро дӯст медорам, дар кӯҳ аз шумо чанд акс мегирам."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "好，我可以比较一下你们两个谁的水平高。",
+          "pinyin": "Hǎo, wǒ kěyǐ bǐjiào yíxià nǐmen liǎng ge shéi de shuǐpíng gāo.",
+          "text": {
+            "uz": "Mayli, ikkovingizdan kim yaxshiroq suratga olishini taqqoslab ko‘raman.",
+            "ru": "Хорошо, сравню, у кого из вас уровень выше.",
+            "tj": "Хуб, муқоиса мекунам, ки сатҳи кадоматон баландтар аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Tog‘da Wang Yixue va Bai Jiayue yurib suhbatlashmoqda.",
+        "ru": "В горах Ван Исюэ и Бай Цзяюэ идут и разговаривают.",
+        "tj": "Дар кӯҳ Ван Исюэ ва Бай Ҷяюэ роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "王一雪",
+          "zh": "家月，这里挺漂亮的，咱们在这里拍照吧。",
+          "pinyin": "Jiāyuè, zhèlǐ tǐng piàoliang de, zánmen zài zhèlǐ pāizhào ba.",
+          "text": {
+            "uz": "Jiayue, bu yer ancha chiroyli, shu yerda suratga tushaylik.",
+            "ru": "Цзяюэ, здесь довольно красиво, давай сфотографируемся здесь.",
+            "tj": "Ҷяюэ, ин ҷо хеле зебост, ҳамин ҷо акс гирем."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "这边没有太阳，咱们去那边吧。",
+          "pinyin": "Zhèbiān méiyǒu tàiyáng, zánmen qù nàbiān ba.",
+          "text": {
+            "uz": "Bu tomonda quyosh yo‘q, u tomonga boraylik.",
+            "ru": "Здесь нет солнца, давай пойдём туда.",
+            "tj": "Ин тараф офтоб нест, ба он тараф равем."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "好。你觉得我站在这些树中间怎么样？",
+          "pinyin": "Hǎo. Nǐ juéde wǒ zhàn zài zhèxiē shù zhōngjiān zěnmeyàng?",
+          "text": {
+            "uz": "Mayli. Men bu daraxtlar orasida tursam qanday?",
+            "ru": "Хорошо. Как тебе, если я встану между этими деревьями?",
+            "tj": "Хуб. Ман байни ин дарахтҳо истам чӣ хел?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "挺好的。等一下，后边走过去两个人。",
+          "pinyin": "Tǐng hǎo de. Děng yíxià, hòubian zǒu guòqu liǎng ge rén.",
+          "text": {
+            "uz": "Ancha yaxshi. Bir oz kuting, orqadan ikki kishi o‘tib ketyapti.",
+            "ru": "Очень неплохо. Подождите, сзади проходят два человека.",
+            "tj": "Хеле хуб. Каме интизор шавед, аз қафо ду нафар мегузаранд."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "我准备好了，你照的时候告诉我。",
+          "pinyin": "Wǒ zhǔnbèi hǎo le, nǐ zhào de shíhou gàosu wǒ.",
+          "text": {
+            "uz": "Men tayyorman, suratga olayotganda ayting.",
+            "ru": "Я готова, скажи, когда будешь снимать.",
+            "tj": "Ман тайёрам, вақте акс мегирӣ, бигӯ."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "你不用看着我，想干什么都可以。",
+          "pinyin": "Nǐ búyòng kànzhe wǒ, xiǎng gàn shénme dōu kěyǐ.",
+          "text": {
+            "uz": "Menga qarab turishingiz shart emas, nima qilishni xohlasangiz bo‘ladi.",
+            "ru": "Не обязательно смотреть в камеру, делайте что хотите.",
+            "tj": "Ба ман нигоҳ кардан шарт нест, ҳар чӣ хоҳед кунед."
+          }
+        },
+        {
+          "speaker": "王一雪",
+          "zh": "树上飞来了几只鸟，我就看它们吧。",
+          "pinyin": "Shù shàng fēi lái le jǐ zhī niǎo, wǒ jiù kàn tāmen ba.",
+          "text": {
+            "uz": "Daraxtga bir nechta qush uchib keldi, unda ularga qarayman.",
+            "ru": "На дерево прилетело несколько птиц, тогда я посмотрю на них.",
+            "tj": "Ба дарахт чанд парранда парвоз карда омад, пас ба онҳо нигоҳ мекунам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "啊，手机没电了。",
+          "pinyin": "Ā, shǒujī méi diàn le.",
+          "text": {
+            "uz": "Voy, telefonning quvvati tugabdi.",
+            "ru": "Ой, телефон разрядился.",
+            "tj": "Оҳ, телефони ман барқ надорад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "好，我可以比较一下你们两个谁的水平高。",
+          "pinyin": "Hǎo, wǒ kěyǐ bǐjiào yíxià nǐmen liǎng ge shéi de shuǐpíng gāo.",
+          "translation": {
+            "uz": "Mayli, ikkovingizdan kim yaxshiroq suratga olishini taqqoslab ko‘raman.",
+            "ru": "Хорошо, сравню, у кого из вас уровень выше.",
+            "tj": "Хуб, муқоиса мекунам, ки сатҳи кадоматон баландтар аст."
+          },
+          "tokens": {
+            "uz": [
+              "kim",
+              "ko‘raman",
+              "Mayli",
+              "ikkovingizdan",
+              "hafta",
+              "yaxshiroq",
+              "Bu",
+              "olishini",
+              "taqqoslab",
+              "suratga"
+            ],
+            "ru": [
+              "Хорошо",
+              "сравню",
+              "уровень",
+              "Всю",
+              "кого",
+              "выше",
+              "у",
+              "неделю",
+              "из",
+              "вас"
+            ],
+            "tj": [
+              "Хуб",
+              "муқоиса",
+              "ки",
+              "мекунам",
+              "Ин",
+              "сатҳи",
+              "аст",
+              "кадоматон",
+              "баландтар",
+              "ҳафта"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Mayli",
+              "ikkovingizdan",
+              "kim",
+              "yaxshiroq",
+              "suratga",
+              "olishini",
+              "taqqoslab",
+              "ko‘raman"
+            ],
+            "ru": [
+              "Хорошо",
+              "сравню",
+              "у",
+              "кого",
+              "из",
+              "вас",
+              "уровень",
+              "выше"
+            ],
+            "tj": [
+              "Хуб",
+              "муқоиса",
+              "мекунам",
+              "ки",
+              "сатҳи",
+              "кадоматон",
+              "баландтар",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "好，我可以比较一下你们两个谁的水平高。 — Mayli, ikkovingizdan kim yaxshiroq suratga olishini taqqoslab ko‘raman.",
+            "ru": "好，我可以比较一下你们两个谁的水平高。 — Хорошо, сравню, у кого из вас уровень выше.",
+            "tj": "好，我可以比较一下你们两个谁的水平高。 — Хуб, муқоиса мекунам, ки сатҳи кадоматон баландтар аст."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "太阳 talaffuzini tanlang:",
+            "ru": "Выберите произношение 太阳:",
+            "tj": "Талаффузи 太阳-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "tàiyáng",
+            "pá",
+            "zhōngyú",
+            "zǒngshì"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "太阳 — tàiyáng",
+            "ru": "太阳 — tàiyáng",
+            "tj": "太阳 — tàiyáng"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bu olmalarining har biri katta.» — xitoychada qaysi biri?",
+            "ru": "«Каждое из этих яблок большое.» — какое предложение по-китайски?",
+            "tj": "«Ҳар кадоми ин себҳо калон аст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我吃了早饭就去学校了。",
+            "你听完了音乐会就来我家吃饭。",
+            "我想出去拍照，但是天天下雨。",
+            "这些苹果个个都很大。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "这些苹果个个都很大。 — Zhèxiē píngguǒ gègè dōu hěn dà.",
+            "ru": "这些苹果个个都很大。 — Zhèxiē píngguǒ gègè dōu hěn dà.",
+            "tj": "这些苹果个个都很大。 — Zhèxiē píngguǒ gègè dōu hěn dà."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "总是",
+              {
+                "uz": "doim; har doim",
+                "ru": "всегда",
+                "tj": "ҳамеша"
+              }
+            ],
+            [
+              "终于",
+              {
+                "uz": "nihoyat",
+                "ru": "наконец",
+                "tj": "ниҳоят"
+              }
+            ],
+            [
+              "爬",
+              {
+                "uz": "tirmashmoq; ko‘tarilmoq",
+                "ru": "лезть; подниматься",
+                "tj": "баромадан; кӯҳ баромадан"
+              }
+            ],
+            [
+              "山",
+              {
+                "uz": "tog‘",
+                "ru": "гора",
+                "tj": "кӯҳ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qilmoq; shug‘ullanmoq' xitoycha qaysi?",
+            "ru": "'делать; заниматься' по-китайски?",
+            "tj": "'кардан; машғул шудан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "终于",
+            "总是",
+            "干",
+            "爬"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "qilmoq; shug‘ullanmoq = 干 (gàn)",
+            "ru": "делать; заниматься = 干 (gàn)",
+            "tj": "кардан; машғул шудан = 干 (gàn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "锻炼",
+              {
+                "uz": "mashq qilmoq; chiniqmoq",
+                "ru": "тренироваться; заниматься",
+                "tj": "машқ кардан"
+              }
+            ],
+            [
+              "照",
+              {
+                "uz": "suratga olmoq",
+                "ru": "фотографировать",
+                "tj": "акс гирифтан"
+              }
+            ],
+            [
+              "鞋",
+              {
+                "uz": "oyoq kiyim",
+                "ru": "обувь; туфли",
+                "tj": "пойафзол"
+              }
+            ],
+            [
+              "大衣",
+              {
+                "uz": "palto",
+                "ru": "пальто",
+                "tj": "палто"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "比较 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 比较:",
+            "tj": "Маънои калимаи 比较-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "nihoyat",
+              "ru": "наконец",
+              "tj": "ниҳоят"
+            },
+            {
+              "uz": "tirmashmoq; ko‘tarilmoq",
+              "ru": "лезть; подниматься",
+              "tj": "баромадан; кӯҳ баромадан"
+            },
+            {
+              "uz": "taqqoslamoq; nisbatan",
+              "ru": "сравнивать; сравнительно",
+              "tj": "муқоиса кардан; нисбатан"
+            },
+            {
+              "uz": "doim; har doim",
+              "ru": "всегда",
+              "tj": "ҳамеша"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "比较 = taqqoslamoq; nisbatan (bǐjiào)",
+            "ru": "比较 = сравнивать; сравнительно (bǐjiào)",
+            "tj": "比较 = муқоиса кардан; нисбатан (bǐjiào)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "这个星期总是阴天，今天终于晴了。",
+          "pinyin": "Zhège xīngqī zǒngshì yīntiān, jīntiān zhōngyú qíng le.",
+          "options": [
+            "那我带点儿水和吃的，咱们现在就去？",
+            "现在天气好得很！我们去爬山怎么样？",
+            "好啊！又能锻炼身体，又能照好看的照片。",
+            "这个星期总是阴天，今天终于晴了。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "这个星期总是阴天，今天终于晴了。 — Bu hafta doim bulutli edi, bugun nihoyat havo ochildi.",
+            "ru": "这个星期总是阴天，今天终于晴了。 — Всю неделю было пасмурно, а сегодня наконец ясно.",
+            "tj": "这个星期总是阴天，今天终于晴了。 — Ин ҳафта ҳамеша ҳаво абрнок буд, имрӯз ниҳоят соф шуд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____个星期总是阴天，今天终于晴了。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "一",
+            "七",
+            "这",
+            "万"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 这 — 这个星期总是阴天，今天终于晴了。 (Bu hafta doim bulutli edi, bugun nihoyat havo ochildi.)",
+            "ru": "Верно: 这 — 这个星期总是阴天，今天终于晴了。 (Всю неделю было пасмурно, а сегодня наконец ясно.)",
+            "tj": "Дуруст: 这 — 这个星期总是阴天，今天终于晴了。 (Ин ҳафта ҳамеша ҳаво абрнок буд, имрӯз ниҳоят соф шуд.)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 李文 nima deydi?",
+            "ru": "Что 李文 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 李文 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "这个星期总是阴天，今天终于晴了。",
+            "现在天气好得很！我们去爬山怎么样？",
+            "好主意。给她打个电话吧。",
+            "好啊！又能锻炼身体，又能照好看的照片。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 好主意。给她打个电话吧。",
+            "ru": "Правильный ответ: 好主意。给她打个电话吧。",
+            "tj": "Ҷавоби дуруст: 好主意。给她打个电话吧。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 白家月 avval nima deydi?",
+            "ru": "Что 白家月 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 白家月 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "现在天气好得很！我们去爬山怎么样？",
+            "这个星期总是阴天，今天终于晴了。",
+            "那我带点儿水和吃的，咱们现在就去？",
+            "好啊！又能锻炼身体，又能照好看的照片。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 这个星期总是阴天，今天终于晴了。",
+            "ru": "Правильный ответ: 这个星期总是阴天，今天终于晴了。",
+            "tj": "Ҷавоби дуруст: 这个星期总是阴天，今天终于晴了。"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "白家月",
+              "zh": "这个星期总是阴天，今天终于晴了。",
+              "blank": false
+            },
+            {
+              "speaker": "李文",
+              "zh": "现在天气好得很！我们去爬山怎么样？",
+              "blank": false
+            },
+            {
+              "speaker": "白家月",
+              "zh": "好啊！又能锻炼身体，又能照好看的照片。",
+              "blank": false
+            },
+            {
+              "speaker": "李文",
+              "zh": "那我带点儿水和吃的，咱们现在就去？",
+              "blank": false
+            },
+            {
+              "speaker": "白家月",
+              "zh": "我回去穿上运动鞋，拿上大衣。要不要叫一雪姐一起去？",
+              "blank": false
+            },
+            {
+              "speaker": "李文",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "好啊！又能锻炼身体，又能照好看的照片。",
+            "好主意。给她打个电话吧。",
+            "这个星期总是阴天，今天终于晴了。",
+            "现在天气好得很！我们去爬山怎么样？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 好主意。给她打个电话吧。",
+            "ru": "Правильный ответ: 好主意。给她打个电话吧。",
+            "tj": "Ҷавоби дуруст: 好主意。给她打个电话吧。"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "啊，手机没电了。",
+          "pinyin": "Ā, shǒujī méi diàn le.",
+          "translation": {
+            "uz": "Voy, telefonning quvvati tugabdi.",
+            "ru": "Ой, телефон разрядился.",
+            "tj": "Оҳ, телефони ман барқ надорад."
+          }
+        }
+      ]
+    }
+  ]
+}

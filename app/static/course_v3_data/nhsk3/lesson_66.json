@@ -1,0 +1,749 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 66,
+  "source_lesson": 9,
+  "part_no": 2,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "打不好没关系",
+  "subtitle": {
+    "uz": "Sport musobaqalari, sportchilar va natijalar haqida gaplashish; mumkinlik to‘ldiruvchisi bilan harakatning uddalanishi yoki uddalanmasligini aytish; “越A越B” bilan holatning o‘zgarishini ifodalash.",
+    "ru": "Говорить о спортивных соревнованиях, спортсменах и результатах; использовать дополнение возможности для выражения того, возможно ли выполнить действие; описывать изменение ситуации через “越A越B”.",
+    "tj": "Дар бораи мусобиқаҳои варзишӣ, варзишгарон ва натиҷаҳо суҳбат кардан; бо пуркунандаи имконият иҷро шудан ё нашудани амалро ифода кардан; бо “越A越B” тағйирёбии ҳолатро нишон додан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "运动会",
+      "pinyin": "yùndònghuì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sport musobaqalari; spartakiada",
+        "ru": "спортивные соревнования; спартакиада",
+        "tj": "мусобиқаҳои варзишӣ"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "男生",
+      "pinyin": "nánshēng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘g‘il talaba; yigit",
+        "ru": "студент; парень",
+        "tj": "донишҷӯи писар; ҷавон"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "练",
+      "pinyin": "liàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "mashq qilmoq",
+        "ru": "тренироваться",
+        "tj": "машқ кардан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "参加",
+      "pinyin": "cānjiā",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qatnashmoq",
+        "ru": "участвовать",
+        "tj": "иштирок кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Maqsad qo‘shma gapi “为了……”",
+        "ru": "Целевое предложение “为了……”",
+        "tj": "Ҷумлаи мақсад “为了……”"
+      },
+      "title_zh": "目的复句“为了……，……”",
+      "rule": {
+        "uz": "“为了 + maqsad” ish-harakatning nima uchun bajarilayotganini bildiradi. Maqsad qismi gap boshida yoki asosiy harakatdan oldin keladi.",
+        "ru": "“为了 + цель” показывает, ради чего выполняется действие. Целевая часть обычно ставится перед основным действием.",
+        "tj": "“为了 + мақсад” нишон медиҳад, ки амал барои чӣ иҷро мешавад. Қисми мақсад одатан пеш аз амали асосӣ меояд."
+      },
+      "examples": [
+        {
+          "zh": "听说为了准备运动会，你们几个男生每天都练球。",
+          "pinyin": "Tīngshuō wèile zhǔnbèi yùndònghuì, nǐmen jǐ ge nánshēng měitiān dōu liàn qiú.",
+          "translation": {
+            "uz": "Eshitishimcha, sport musobaqasiga tayyorlanish uchun siz yigitlar har kuni to‘p mashq qilar ekansiz.",
+            "ru": "Говорят, ради подготовки к соревнованиям вы, несколько парней, каждый день тренируетесь с мячом.",
+            "tj": "Шунидам, барои омодагӣ ба мусобиқаҳои варзишӣ шумо чанд писар ҳар рӯз тӯб машқ мекунед."
+          }
+        },
+        {
+          "zh": "为了考上大学，她每天努力学习。",
+          "pinyin": "Wèile kǎo shàng dàxué, tā měitiān nǔlì xuéxí.",
+          "translation": {
+            "uz": "Universitetga kirish uchun u har kuni astoydil o‘qiydi.",
+            "ru": "Чтобы поступить в университет, она каждый день усердно учится.",
+            "tj": "Барои дохил шудан ба донишгоҳ ӯ ҳар рӯз ҷиддӣ мехонад."
+          }
+        },
+        {
+          "zh": "为了早点儿到家，我打算坐飞机回去。",
+          "pinyin": "Wèile zǎo diǎnr dào jiā, wǒ dǎsuàn zuò fēijī huíqu.",
+          "translation": {
+            "uz": "Uyga ertaroq yetish uchun samolyotda qaytishni rejalashtiryapman.",
+            "ru": "Чтобы пораньше добраться домой, я планирую лететь самолётом.",
+            "tj": "Барои барвақттар ба хона расидан, ният дорам бо ҳавопаймо баргардам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kutubxona oldida Li Wen Bai Jiayue tomon yugurib keldi.",
+        "ru": "У входа в библиотеку Ли Вэнь подбегает к Бай Цзяюэ.",
+        "tj": "Дар назди китобхона Ли Вэн ба тарафи Бай Ҷяюэ давида меояд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "家月，对不起，我昨天忘了还你校园卡了。",
+          "pinyin": "Jiāyuè, duìbuqǐ, wǒ zuótiān wàng le huán nǐ xiàoyuánkǎ le.",
+          "text": {
+            "uz": "Jiayue, uzr, kecha kampus kartangni qaytarishni unutibman.",
+            "ru": "Цзяюэ, прости, я вчера забыл вернуть твою кампус-карту.",
+            "tj": "Ҷяюэ, бубахш, дирӯз корти кампусатро баргардонданро фаромӯш кардам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "没关系。你怎么这么快就过来了？",
+          "pinyin": "Méi guānxi. Nǐ zěnme zhème kuài jiù guòlái le?",
+          "text": {
+            "uz": "Hechqisi yo‘q. Qanday qilib bunchalik tez kelib qolding?",
+            "ru": "Ничего. Как ты так быстро пришёл?",
+            "tj": "Ҳеҷ гап нест. Чӣ тавр ин қадар зуд омадӣ?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我正在球场打球呢，接了你的电话就跑过来了。",
+          "pinyin": "Wǒ zhèngzài qiúchǎng dǎqiú ne, jiē le nǐ de diànhuà jiù pǎo guòlái le.",
+          "text": {
+            "uz": "Men sport maydonida to‘p o‘ynayotgan edim, qo‘ng‘irog‘ingni olib darrov yugurib keldim.",
+            "ru": "Я играл на площадке; как только ответил на твой звонок, сразу прибежал.",
+            "tj": "Ман дар майдон тӯб бозӣ мекардам, зангатро гирифтаму фавран давида омадам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "听说为了准备运动会，你们几个男生每天都练球。",
+          "pinyin": "Tīngshuō wèile zhǔnbèi yùndònghuì, nǐmen jǐ ge nánshēng měitiān dōu liàn qiú.",
+          "text": {
+            "uz": "Eshitishimcha, sport musobaqasiga tayyorlanish uchun siz yigitlar har kuni to‘p mashq qilar ekansiz.",
+            "ru": "Говорят, ради подготовки к соревнованиям вы каждый день тренируетесь.",
+            "tj": "Шунидам, барои омодагӣ ба мусобиқаҳо шумо ҳар рӯз машқи тӯб мекунед."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "是啊！你打算参加运动会吗？",
+          "pinyin": "Shì a! Nǐ dǎsuàn cānjiā yùndònghuì ma?",
+          "text": {
+            "uz": "Ha! Sen ham sport musobaqasida qatnashmoqchimisan?",
+            "ru": "Да! Ты собираешься участвовать в соревнованиях?",
+            "tj": "Ҳа! Ту ҳам дар мусобиқа иштирок карданӣ ҳастӣ?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В кампусе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар кампус Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "家月，你跟我们一起打羽毛球吧？",
+          "pinyin": "Jiāyuè, nǐ gēn wǒmen yìqǐ dǎ yǔmáoqiú ba?",
+          "text": {
+            "uz": "Jiayue, biz bilan badminton o‘ynaysanmi?",
+            "ru": "Цзяюэ, поиграешь с нами в бадминтон?",
+            "tj": "Ҷяюэ, бо мо бадминтон бозӣ мекунӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "这么多同学一起打，如果总是接不住球，就太不好意思了。",
+          "pinyin": "Zhème duō tóngxué yìqǐ dǎ, rúguǒ zǒngshì jiē bú zhù qiú, jiù tài bù hǎoyìsi le.",
+          "text": {
+            "uz": "Shuncha sinfdosh birga o‘ynasa, men doim to‘pni qaytara olmasam juda noqulay bo‘ladi.",
+            "ru": "Когда столько однокурсников играют вместе, будет неловко, если я всё время не смогу принять мяч.",
+            "tj": "Ин қадар ҳамсабақ якҷо бозӣ кунанд, агар ман ҳамеша тӯбро гирифта натавонам, хеле хиҷолат мешавад."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "你想得太多了！大家打球只是为了锻炼身体。",
+          "pinyin": "Nǐ xiǎng de tài duō le! Dàjiā dǎqiú zhǐshì wèile duànliàn shēntǐ.",
+          "text": {
+            "uz": "Juda ko‘p o‘ylayapsan! Hamma faqat badan chiniqtirish uchun o‘ynayapti.",
+            "ru": "Ты слишком много думаешь! Все играют просто ради физической нагрузки.",
+            "tj": "Ту аз ҳад зиёд фикр мекунӣ! Ҳама танҳо барои машқи бадан бозӣ мекунанд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我先自己练练吧，下周再跟你们一起打。",
+          "pinyin": "Wǒ xiān zìjǐ liànlian ba, xià zhōu zài gēn nǐmen yìqǐ dǎ.",
+          "text": {
+            "uz": "Avval o‘zim biroz mashq qilay, keyingi hafta sizlar bilan o‘ynayman.",
+            "ru": "Я сначала сама немного потренируюсь, а на следующей неделе сыграю с вами.",
+            "tj": "Аввал худам каме машқ мекунам, ҳафтаи оянда бо шумо бозӣ мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida Li Wen, Bai Jiayue va Chen Tianzhong birga televizor ko‘rmoqda.",
+        "ru": "Дома у Ли Вэня Ли Вэнь, Бай Цзяюэ и Чэнь Тяньчжун вместе смотрят телевизор.",
+        "tj": "Дар хонаи Ли Вэн, Ли Вэн, Бай Ҷяюэ ва Чэн Тянҷун якҷо телевизор мебинанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "今天怎么回事？总是踢不进去！",
+          "pinyin": "Jīntiān zěnme huí shì? Zǒngshì tī bu jìnqu!",
+          "text": {
+            "uz": "Bugun nima bo‘lyapti? To‘pni hech kirita olishmayapti!",
+            "ru": "Что сегодня происходит? Всё никак не могут забить!",
+            "tj": "Имрӯз чӣ гап? Ҳеҷ тӯбро дароварда наметавонанд!"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "越看越着急，我不看了，你们告诉我得分吧。",
+          "pinyin": "Yuè kàn yuè zháojí, wǒ bù kàn le, nǐmen gàosu wǒ défēn ba.",
+          "text": {
+            "uz": "Ko‘rganim sari xavotirim oshyapti, boshqa ko‘rmayman, natijani keyin aytarsizlar.",
+            "ru": "Чем больше смотрю, тем сильнее нервничаю. Не буду смотреть, скажите потом счёт.",
+            "tj": "Ҳар қадар мебинам, ҳамон қадар хавотир мешавам. Дигар намебинам, баъд ҳисобро бигӯед."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "运动会",
+            "pinyin": "yùndònghuì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sport musobaqalari; spartakiada",
+              "ru": "спортивные соревнования; спартакиада",
+              "tj": "мусобиқаҳои варзишӣ"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "运动会 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 运动会:",
+            "tj": "Маънои калимаи 运动会-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kampus; maktab hududi",
+              "ru": "кампус; территория учебного заведения",
+              "tj": "кампус; ҳудуди мактаб"
+            },
+            {
+              "uz": "karta",
+              "ru": "карта",
+              "tj": "корт"
+            },
+            {
+              "uz": "sport maydoni; to‘p o‘ynash maydoni",
+              "ru": "спортивная площадка; поле",
+              "tj": "майдони варзишӣ"
+            },
+            {
+              "uz": "sport musobaqalari; spartakiada",
+              "ru": "спортивные соревнования; спартакиада",
+              "tj": "мусобиқаҳои варзишӣ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "运动会 = sport musobaqalari; spartakiada (yùndònghuì)",
+            "ru": "运动会 = спортивные соревнования; спартакиада (yùndònghuì)",
+            "tj": "运动会 = мусобиқаҳои варзишӣ (yùndònghuì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "男生",
+            "pinyin": "nánshēng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o‘g‘il talaba; yigit",
+              "ru": "студент; парень",
+              "tj": "донишҷӯи писар; ҷавон"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "男生",
+          "pinyin": "nánshēng",
+          "translation": {
+            "uz": "o‘g‘il talaba; yigit",
+            "ru": "студент; парень",
+            "tj": "донишҷӯи писар; ҷавон"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "nánshēng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nánshēng?",
+            "tj": "nánshēng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "卡",
+            "校园",
+            "球场",
+            "男生"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "男生 = o‘g‘il talaba; yigit (nánshēng)",
+            "ru": "男生 = студент; парень (nánshēng)",
+            "tj": "男生 = донишҷӯи писар; ҷавон (nánshēng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "练",
+            "pinyin": "liàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "mashq qilmoq",
+              "ru": "тренироваться",
+              "tj": "машқ кардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "练 talaffuzini tanlang:",
+            "ru": "Выберите произношение 练:",
+            "tj": "Талаффузи 练-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xiàoyuán",
+            "liàn",
+            "kǎ",
+            "qiúchǎng"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "练 — liàn",
+            "ru": "练 — liàn",
+            "tj": "练 — liàn"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "参加",
+            "pinyin": "cānjiā",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qatnashmoq",
+              "ru": "участвовать",
+              "tj": "иштирок кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qatnashmoq' xitoycha qaysi?",
+            "ru": "'участвовать' по-китайски?",
+            "tj": "'иштирок кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "卡",
+            "球场",
+            "参加",
+            "校园"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "qatnashmoq = 参加 (cānjiā)",
+            "ru": "участвовать = 参加 (cānjiā)",
+            "tj": "иштирок кардан = 参加 (cānjiā)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "运动会",
+          "pinyin": "yùndònghuì",
+          "options": [
+            "球场",
+            "校园",
+            "运动会",
+            "卡"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "运动会 — sport musobaqalari; spartakiada (yùndònghuì)",
+            "ru": "运动会 — спортивные соревнования; спартакиада (yùndònghuì)",
+            "tj": "运动会 — мусобиқаҳои варзишӣ (yùndònghuì)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "运动会",
+              {
+                "uz": "sport musobaqalari; spartakiada",
+                "ru": "спортивные соревнования; спартакиада",
+                "tj": "мусобиқаҳои варзишӣ"
+              }
+            ],
+            [
+              "男生",
+              {
+                "uz": "o‘g‘il talaba; yigit",
+                "ru": "студент; парень",
+                "tj": "донишҷӯи писар; ҷавон"
+              }
+            ],
+            [
+              "练",
+              {
+                "uz": "mashq qilmoq",
+                "ru": "тренироваться",
+                "tj": "машқ кардан"
+              }
+            ],
+            [
+              "参加",
+              {
+                "uz": "qatnashmoq",
+                "ru": "участвовать",
+                "tj": "иштирок кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Maqsad qo‘shma gapi “为了……”",
+              "ru": "Целевое предложение “为了……”",
+              "tj": "Ҷумлаи мақсад “为了……”"
+            },
+            "title_zh": "目的复句“为了……，……”",
+            "rule": {
+              "uz": "“为了 + maqsad” ish-harakatning nima uchun bajarilayotganini bildiradi. Maqsad qismi gap boshida yoki asosiy harakatdan oldin keladi.",
+              "ru": "“为了 + цель” показывает, ради чего выполняется действие. Целевая часть обычно ставится перед основным действием.",
+              "tj": "“为了 + мақсад” нишон медиҳад, ки амал барои чӣ иҷро мешавад. Қисми мақсад одатан пеш аз амали асосӣ меояд."
+            },
+            "examples": [
+              {
+                "zh": "听说为了准备运动会，你们几个男生每天都练球。",
+                "pinyin": "Tīngshuō wèile zhǔnbèi yùndònghuì, nǐmen jǐ ge nánshēng měitiān dōu liàn qiú.",
+                "translation": {
+                  "uz": "Eshitishimcha, sport musobaqasiga tayyorlanish uchun siz yigitlar har kuni to‘p mashq qilar ekansiz.",
+                  "ru": "Говорят, ради подготовки к соревнованиям вы, несколько парней, каждый день тренируетесь с мячом.",
+                  "tj": "Шунидам, барои омодагӣ ба мусобиқаҳои варзишӣ шумо чанд писар ҳар рӯз тӯб машқ мекунед."
+                }
+              },
+              {
+                "zh": "为了考上大学，她每天努力学习。",
+                "pinyin": "Wèile kǎo shàng dàxué, tā měitiān nǔlì xuéxí.",
+                "translation": {
+                  "uz": "Universitetga kirish uchun u har kuni astoydil o‘qiydi.",
+                  "ru": "Чтобы поступить в университет, она каждый день усердно учится.",
+                  "tj": "Барои дохил шудан ба донишгоҳ ӯ ҳар рӯз ҷиддӣ мехонад."
+                }
+              },
+              {
+                "zh": "为了早点儿到家，我打算坐飞机回去。",
+                "pinyin": "Wèile zǎo diǎnr dào jiā, wǒ dǎsuàn zuò fēijī huíqu.",
+                "translation": {
+                  "uz": "Uyga ertaroq yetish uchun samolyotda qaytishni rejalashtiryapman.",
+                  "ru": "Чтобы пораньше добраться домой, я планирую лететь самолётом.",
+                  "tj": "Барои барвақттар ба хона расидан, ният дорам бо ҳавопаймо баргардам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "听说____准备运动会，你们几个男生每天都练球。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "校园",
+            "为了",
+            "卡",
+            "球场"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 为了 (wèile) — ... uchun; maqsadida",
+            "ru": "Верно: 为了 (wèile) — ради; для того чтобы",
+            "tj": "Дуруст: 为了 (wèile) — барои; ба хотири"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Eshitishimcha, sport musobaqasiga tayyorlanish uchun siz yigitlar har kuni to‘p mashq qilar ekansiz.» — xitoychada qaysi biri?",
+            "ru": "«Говорят, ради подготовки к соревнованиям вы, несколько парней, каждый день тренируетесь с мячом.» — какое предложение по-китайски?",
+            "tj": "«Шунидам, барои омодагӣ ба мусобиқаҳои варзишӣ шумо чанд писар ҳар рӯз тӯб машқ мекунед.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "为了早点儿到家，我打算坐飞机回去。",
+            "听说为了准备运动会，你们几个男生每天都练球。",
+            "为了考上大学，她每天努力学习。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "听说为了准备运动会，你们几个男生每天都练球。 — Tīngshuō wèile zhǔnbèi yùndònghuì, nǐmen jǐ ge nánshēng měitiān dōu liàn qiú.",
+            "ru": "听说为了准备运动会，你们几个男生每天都练球。 — Tīngshuō wèile zhǔnbèi yùndònghuì, nǐmen jǐ ge nánshēng měitiān dōu liàn qiú.",
+            "tj": "听说为了准备运动会，你们几个男生每天都练球。 — Tīngshuō wèile zhǔnbèi yùndònghuì, nǐmen jǐ ge nánshēng měitiān dōu liàn qiú."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "听说为了准备运动会，你们几个男生每天都练球。",
+          "pinyin": "Tīngshuō wèile zhǔnbèi yùndònghuì, nǐmen jǐ ge nánshēng měitiān dōu liàn qiú.",
+          "options": [
+            "听说为了准备运动会，你们几个男生每天都练球。",
+            "是啊！你打算参加运动会吗？",
+            "我先自己练练吧，下周再跟你们一起打。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "听说为了准备运动会，你们几个男生每天都练球。 — Eshitishimcha, sport musobaqasiga tayyorlanish uchun siz yigitlar har kuni to‘p mashq qilar ekansiz.",
+            "ru": "听说为了准备运动会，你们几个男生每天都练球。 — Говорят, ради подготовки к соревнованиям вы каждый день тренируетесь.",
+            "tj": "听说为了准备运动会，你们几个男生每天都练球。 — Шунидам, барои омодагӣ ба мусобиқаҳо шумо ҳар рӯз машқи тӯб мекунед."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "男生",
+          "pinyin": "nánshēng",
+          "translation": {
+            "uz": "o‘g‘il talaba; yigit",
+            "ru": "студент; парень",
+            "tj": "донишҷӯи писар; ҷавон"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "卡 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 卡:",
+            "tj": "Маънои калимаи 卡-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sport maydoni; to‘p o‘ynash maydoni",
+              "ru": "спортивная площадка; поле",
+              "tj": "майдони варзишӣ"
+            },
+            {
+              "uz": "... uchun; maqsadida",
+              "ru": "ради; для того чтобы",
+              "tj": "барои; ба хотири"
+            },
+            {
+              "uz": "karta",
+              "ru": "карта",
+              "tj": "корт"
+            },
+            {
+              "uz": "kampus; maktab hududi",
+              "ru": "кампус; территория учебного заведения",
+              "tj": "кампус; ҳудуди мактаб"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "卡 = karta (kǎ)",
+            "ru": "卡 = карта (kǎ)",
+            "tj": "卡 = корт (kǎ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "卡",
+            "pinyin": "kǎ",
+            "meaning": {
+              "uz": "karta",
+              "ru": "карта",
+              "tj": "корт"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o‘g‘il talaba; yigit' xitoycha qaysi?",
+            "ru": "'студент; парень' по-китайски?",
+            "tj": "'донишҷӯи писар; ҷавон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "球场",
+            "校园",
+            "卡",
+            "男生"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "o‘g‘il talaba; yigit = 男生 (nánshēng)",
+            "ru": "студент; парень = 男生 (nánshēng)",
+            "tj": "донишҷӯи писар; ҷавон = 男生 (nánshēng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "男生",
+            "pinyin": "nánshēng",
+            "meaning": {
+              "uz": "o‘g‘il talaba; yigit",
+              "ru": "студент; парень",
+              "tj": "донишҷӯи писар; ҷавон"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

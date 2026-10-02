@@ -84,6 +84,17 @@ class CourseMiniAppProfile(Base):
         DateTime(timezone=True),
         nullable=True,
     )
+    # HSK 3.0 promo is server-owned across Mini App, Android and Desktop.
+    # The total cap is two impressions, with at least three days between them.
+    hsk30_promo_shown_count: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        nullable=False,
+    )
+    hsk30_promo_last_shown_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
     # Kunlik reja BARQARORLIGI. Kalit: "v1:<level>:<mahalliy sana>". Kalit mos
     # kelsa saqlangan task identity'si o'zgarmaydi — reja kun davomida boshqa
     # tasklarga almashib ketmaydi. Bajarilgan/ochiq holati bu yerda SAQLANMAYDI,

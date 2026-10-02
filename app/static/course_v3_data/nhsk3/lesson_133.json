@@ -1,0 +1,731 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 133,
+  "source_lesson": 17,
+  "part_no": 5,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "我要多向认真的人学习",
+  "subtitle": {
+    "uz": "Ichki xafalik, ikkilanish va norozilik kabi hissiyotlarni ifodalash; “不是……吗？” ritorik savoli bilan hissiyot va ohangni kuchaytirish; “只有……才……” yordamida yagona zarur shart va natijani aytish.",
+    "ru": "Выражать внутреннюю грусть, сомнение и недовольство; использовать риторический вопрос “不是……吗？” для передачи эмоции и оттенка речи; выражать единственное необходимое условие и результат конструкцией “只有……才……”.",
+    "tj": "Ғамгинӣ, дудилагӣ ва норозигии дохилиро ифода кардан; бо саволи риторикии “不是……吗？” эҳсос ва оҳангро қавӣ кардан; бо “只有……才……” шарти ягонаи зарурӣ ва натиҷаро баён кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "留学",
+      "pinyin": "liúxué",
+      "pos": "v.",
+      "meaning": {
+        "uz": "chet elda o‘qimoq",
+        "ru": "учиться за границей",
+        "tj": "дар хориҷ таҳсил кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "国家",
+      "pinyin": "guójiā",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mamlakat",
+        "ru": "страна",
+        "tj": "кишвар"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "比如",
+      "pinyin": "bǐrú",
+      "pos": "v.",
+      "meaning": {
+        "uz": "masalan",
+        "ru": "например",
+        "tj": "масалан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "查",
+      "pinyin": "chá",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tekshirmoq; qidirmoq",
+        "ru": "проверять; искать информацию",
+        "tj": "санҷидан; ҷустуҷӯ кардан"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "O‘quv binosida Liu Xiaoxue va sinfdoshi yurib suhbatlashmoqda.",
+        "ru": "В учебном корпусе Лю Сяосюэ и одноклассник идут и разговаривают.",
+        "tj": "Дар бинои таълимӣ Лю Сяосюэ ва ҳамсинфаш роҳравон суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘小雪",
+          "zh": "怎么回事？",
+          "pinyin": "Zěnme huí shì?",
+          "text": {
+            "uz": "Nima bo‘ldi?",
+            "ru": "Что случилось?",
+            "tj": "Чӣ гап шуд?"
+          }
+        },
+        {
+          "speaker": "刘小雪",
+          "zh": "你想多了，做错事情是很常见的。",
+          "pinyin": "Nǐ xiǎng duō le, zuò cuò shìqing shì hěn chángjiàn de.",
+          "text": {
+            "uz": "Ortiqcha o‘ylayapsan, xato qilish juda odatiy hol.",
+            "ru": "Ты слишком переживаешь, ошибаться — обычное дело.",
+            "tj": "Аз ҳад зиёд фикр мекунӣ, хато кардан кори маъмул аст."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "你说的就是我，以后我要多向认真的人学习。",
+          "pinyin": "Nǐ shuō de jiù shì wǒ, yǐhòu wǒ yào duō xiàng rènzhēn de rén xuéxí.",
+          "text": {
+            "uz": "Aytganing aynan men haqimda. Bundan keyin jiddiy odamlaridan ko‘proq o‘rganaman.",
+            "ru": "Ты точно описала меня. Теперь я буду больше учиться у серьёзных людей.",
+            "tj": "Гуфтаат айнан ман ҳастам. Минбаъд аз одамони ҷиддӣ бештар меомӯзам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "O‘quv zali oldida Bai Jiayue Chen Tianzhongni uchratdi.",
+        "ru": "У входа в читальный зал Бай Цзяюэ встретила Чэнь Тяньчжуна.",
+        "tj": "Дар назди толори хониш Бай Ҷяюэ бо Чэн Тянҷун вохӯрд."
+      },
+      "dialogue": [
+        {
+          "speaker": "陈天中",
+          "zh": "这有什么奇怪的？我是来学习的。",
+          "pinyin": "Zhè yǒu shénme qíguài de? Wǒ shì lái xuéxí de.",
+          "text": {
+            "uz": "Buning nimasi g‘alati? Men o‘qigani keldim.",
+            "ru": "Что тут странного? Я пришёл заниматься.",
+            "tj": "Ин чӣ аҷиб дорад? Ман барои хондан омадам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "你怎么还来图书馆学习？同学们都在到处找工作呢。",
+          "pinyin": "Nǐ zěnme hái lái túshūguǎn xuéxí? Tóngxuémen dōu zài dàochù zhǎo gōngzuò ne.",
+          "text": {
+            "uz": "Nega hali ham kutubxonada o‘qiyapsan? Sinfdoshlar hamma joyda ish qidiryapti-ku.",
+            "ru": "Почему ты всё ещё учишься в библиотеке? Однокурсники повсюду ищут работу.",
+            "tj": "Чаро ҳоло ҳам дар китобхона мехонӣ? Ҳамсинфон ҳама ҷо кор меҷӯянд."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "你不是喜欢玩电脑吗？你可以去看看跟电脑有关的书。",
+          "pinyin": "Nǐ bú shì xǐhuan wán diànnǎo ma? Nǐ kěyǐ qù kànkan gēn diànnǎo yǒuguān de shū.",
+          "text": {
+            "uz": "Sen kompyuterni yoqtirmaysanmi? Kompyuterga oid kitoblarni ko‘rib chiq.",
+            "ru": "Разве ты не любишь компьютеры? Посмотри книги, связанные с ними.",
+            "tj": "Магар ту компютерро дӯст намедорӣ? Китобҳои вобаста ба компютерро бин."
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "你说得对，我记得那个屋子里有些跟电脑有关的书，我去找找。",
+          "pinyin": "Nǐ shuō de duì, wǒ jìde nàge wūzi lǐ yǒuxiē gēn diànnǎo yǒuguān de shū, wǒ qù zhǎozhao.",
+          "text": {
+            "uz": "To‘g‘ri aytding, o‘sha xonada kompyuterga oid kitoblar bor edi, borib qidiraman.",
+            "ru": "Ты права, я помню, в той комнате были книги о компьютерах. Пойду поищу.",
+            "tj": "Дуруст гуфтӣ, дар хотир дорам он ҳуҷра китобҳои вобаста ба компютер дошт, рафта меҷӯям."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "В кампусе Ли Вэнь и Чэнь Тяньчжун разговаривают.",
+        "tj": "Дар кампус Ли Вэн ва Чэн Тянҷун суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "陈天中",
+          "zh": "我的手机没电了。你找我有事吗？",
+          "pinyin": "Wǒ de shǒujī méi diàn le. Nǐ zhǎo wǒ yǒu shì ma?",
+          "text": {
+            "uz": "Telefonimning quvvati tugadi. Menga ishing bormi?",
+            "ru": "Телефон разрядился. Ты меня искал по делу?",
+            "tj": "Телефонам барқ надорад. Ба ман кор доштӣ?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "前天我看见家月了，她告诉我你打算继续留学？",
+          "pinyin": "Qiántiān wǒ kànjiàn Jiāyuè le, tā gàosu wǒ nǐ dǎsuàn jìxù liúxué?",
+          "text": {
+            "uz": "Peshindin Jiayueni ko‘rdim, u sen chet elda o‘qishni davom ettirmoqchi ekaningni aytdi?",
+            "ru": "Позавчера я видел Цзяюэ. Она сказала, что ты собираешься продолжить учёбу за границей?",
+            "tj": "Пешдирӯз Ҷяюэро дидам, ӯ гуфт ту мехоҳӣ таҳсилро дар хориҷ идома диҳӣ?"
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "是，可是我还没想好学什么，更没想好去哪个国家。",
+          "pinyin": "Shì, kěshì wǒ hái méi xiǎng hǎo xué shénme, gèng méi xiǎng hǎo qù nǎge guójiā.",
+          "text": {
+            "uz": "Ha, lekin nimani o‘qishni hali hal qilganim yo‘q, qaysi mamlakatga borishni esa umuman tanlamadim.",
+            "ru": "Да, но я ещё не решил, что изучать, и тем более не решил, в какую страну ехать.",
+            "tj": "Ҳа, аммо ҳоло чӣ хонданро қарор накардаам, боз кадом кишвар рафтанро ҳам интихоб накардаам."
+          }
+        },
+        {
+          "speaker": "陈天中",
+          "zh": "好，那我上网查一查。",
+          "pinyin": "Hǎo, nà wǒ shàngwǎng chá yì chá.",
+          "text": {
+            "uz": "Xo‘p, unda internetdan tekshirib ko‘raman.",
+            "ru": "Хорошо, тогда посмотрю информацию в интернете.",
+            "tj": "Хуб, пас аз интернет маълумот меҷӯям."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "我给你介绍几个有用的网站。",
+          "pinyin": "Wǒ gěi nǐ jièshào jǐ ge yǒuyòng de wǎngzhàn.",
+          "text": {
+            "uz": "Senga bir nechta foydali saytni tavsiya qilaman.",
+            "ru": "Я покажу тебе несколько полезных сайтов.",
+            "tj": "Ба ту чанд сомонаи муфидро нишон медиҳам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "留学",
+            "pinyin": "liúxué",
+            "pos": "v.",
+            "meaning": {
+              "uz": "chet elda o‘qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "留学",
+          "pinyin": "liúxué",
+          "translation": {
+            "uz": "chet elda o‘qimoq",
+            "ru": "учиться за границей",
+            "tj": "дар хориҷ таҳсил кардан"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "留学 talaffuzini tanlang:",
+            "ru": "Выберите произношение 留学:",
+            "tj": "Талаффузи 留学-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xiàng",
+            "lóutī",
+            "liúxué",
+            "hàipà"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "留学 — liúxué",
+            "ru": "留学 — liúxué",
+            "tj": "留学 — liúxué"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "国家",
+            "pinyin": "guójiā",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mamlakat",
+              "ru": "страна",
+              "tj": "кишвар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'mamlakat' xitoycha qaysi?",
+            "ru": "'страна' по-китайски?",
+            "tj": "'кишвар' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "害怕",
+            "楼梯",
+            "国家",
+            "向"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "mamlakat = 国家 (guójiā)",
+            "ru": "страна = 国家 (guójiā)",
+            "tj": "кишвар = 国家 (guójiā)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "比如",
+            "pinyin": "bǐrú",
+            "pos": "v.",
+            "meaning": {
+              "uz": "masalan",
+              "ru": "например",
+              "tj": "масалан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "比如",
+          "pinyin": "bǐrú",
+          "options": [
+            "向",
+            "楼梯",
+            "害怕",
+            "比如"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "比如 — masalan (bǐrú)",
+            "ru": "比如 — например (bǐrú)",
+            "tj": "比如 — масалан (bǐrú)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "查",
+            "pinyin": "chá",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tekshirmoq; qidirmoq",
+              "ru": "проверять; искать информацию",
+              "tj": "санҷидан; ҷустуҷӯ кардан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "查 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 查:",
+            "tj": "Маънои калимаи 查-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tekshirmoq; qidirmoq",
+              "ru": "проверять; искать информацию",
+              "tj": "санҷидан; ҷустуҷӯ кардан"
+            },
+            {
+              "uz": "qo‘rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
+            },
+            {
+              "uz": "zina",
+              "ru": "лестница",
+              "tj": "зинапоя"
+            },
+            {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "查 = tekshirmoq; qidirmoq (chá)",
+            "ru": "查 = проверять; искать информацию (chá)",
+            "tj": "查 = санҷидан; ҷустуҷӯ кардан (chá)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "liúxué qaysi ieroglif?",
+            "ru": "Какой иероглиф читается liúxué?",
+            "tj": "liúxué кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "害怕",
+            "向",
+            "楼梯",
+            "留学"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "留学 = chet elda o‘qimoq (liúxué)",
+            "ru": "留学 = учиться за границей (liúxué)",
+            "tj": "留学 = дар хориҷ таҳсил кардан (liúxué)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "留学",
+              {
+                "uz": "chet elda o‘qimoq",
+                "ru": "учиться за границей",
+                "tj": "дар хориҷ таҳсил кардан"
+              }
+            ],
+            [
+              "国家",
+              {
+                "uz": "mamlakat",
+                "ru": "страна",
+                "tj": "кишвар"
+              }
+            ],
+            [
+              "比如",
+              {
+                "uz": "masalan",
+                "ru": "например",
+                "tj": "масалан"
+              }
+            ],
+            [
+              "查",
+              {
+                "uz": "tekshirmoq; qidirmoq",
+                "ru": "проверять; искать информацию",
+                "tj": "санҷидан; ҷустуҷӯ кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "国家",
+          "pinyin": "guójiā",
+          "options": [
+            "害怕",
+            "楼梯",
+            "国家",
+            "向"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "国家 — mamlakat (guójiā)",
+            "ru": "国家 — страна (guójiā)",
+            "tj": "国家 — кишвар (guójiā)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "是，可是我还没想好学什么，更没想好去哪个国家。",
+          "pinyin": "Shì, kěshì wǒ hái méi xiǎng hǎo xué shénme, gèng méi xiǎng hǎo qù nǎge guójiā.",
+          "options": [
+            "好，那我上网查一查。",
+            "是，可是我还没想好学什么，更没想好去哪个国家。",
+            "前天我看见家月了，她告诉我你打算继续留学？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "是，可是我还没想好学什么，更没想好去哪个国家。 — Ha, lekin nimani o‘qishni hali hal qilganim yo‘q, qaysi mamlakatga borishni esa umuman tanlamadim.",
+            "ru": "是，可是我还没想好学什么，更没想好去哪个国家。 — Да, но я ещё не решил, что изучать, и тем более не решил, в какую страну ехать.",
+            "tj": "是，可是我还没想好学什么，更没想好去哪个国家。 — Ҳа, аммо ҳоло чӣ хонданро қарор накардаам, боз кадом кишвар рафтанро ҳам интихоб накардаам."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "好，那我上网查一查。",
+          "pinyin": "Hǎo, nà wǒ shàngwǎng chá yì chá.",
+          "translation": {
+            "uz": "Xo‘p, unda internetdan tekshirib ko‘raman.",
+            "ru": "Хорошо, тогда посмотрю информацию в интернете.",
+            "tj": "Хуб, пас аз интернет маълумот меҷӯям."
+          },
+          "tokens": {
+            "uz": [
+              "tekshirib",
+              "ko‘raman",
+              "Peshindin",
+              "Xo‘p",
+              "internetdan",
+              "Jiayueni",
+              "unda"
+            ],
+            "ru": [
+              "тогда",
+              "я",
+              "посмотрю",
+              "в",
+              "Позавчера",
+              "Хорошо",
+              "интернете",
+              "информацию"
+            ],
+            "tj": [
+              "Ҷяюэро",
+              "аз",
+              "Хуб",
+              "Пешдирӯз",
+              "меҷӯям",
+              "маълумот",
+              "интернет",
+              "пас"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Xo‘p",
+              "unda",
+              "internetdan",
+              "tekshirib",
+              "ko‘raman"
+            ],
+            "ru": [
+              "Хорошо",
+              "тогда",
+              "посмотрю",
+              "информацию",
+              "в",
+              "интернете"
+            ],
+            "tj": [
+              "Хуб",
+              "пас",
+              "аз",
+              "интернет",
+              "маълумот",
+              "меҷӯям"
+            ]
+          },
+          "explanation": {
+            "uz": "好，那我上网查一查。 — Xo‘p, unda internetdan tekshirib ko‘raman.",
+            "ru": "好，那我上网查一查。 — Хорошо, тогда посмотрю информацию в интернете.",
+            "tj": "好，那我上网查一查。 — Хуб, пас аз интернет маълумот меҷӯям."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bǐrú qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bǐrú?",
+            "tj": "bǐrú кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "比如",
+            "楼梯",
+            "向",
+            "害怕"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "比如 = masalan (bǐrú)",
+            "ru": "比如 = например (bǐrú)",
+            "tj": "比如 = масалан (bǐrú)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "留学",
+          "pinyin": "liúxué",
+          "translation": {
+            "uz": "chet elda o‘qimoq",
+            "ru": "учиться за границей",
+            "tj": "дар хориҷ таҳсил кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "屋子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 屋子:",
+            "tj": "Маънои калимаи 屋子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qo‘rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
+            },
+            {
+              "uz": "tomon; ...dan o‘rganmoq",
+              "ru": "к; по направлению к; у кого-либо",
+              "tj": "ба сӯи; аз касе омӯхтан"
+            },
+            {
+              "uz": "xona; uy",
+              "ru": "комната; дом",
+              "tj": "ҳуҷра; хона"
+            },
+            {
+              "uz": "zina",
+              "ru": "лестница",
+              "tj": "зинапоя"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "屋子 = xona; uy (wūzi)",
+            "ru": "屋子 = комната; дом (wūzi)",
+            "tj": "屋子 = ҳуҷра; хона (wūzi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "屋子",
+            "pinyin": "wūzi",
+            "meaning": {
+              "uz": "xona; uy",
+              "ru": "комната; дом",
+              "tj": "ҳуҷра; хона"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'chet elda o‘qimoq' xitoycha qaysi?",
+            "ru": "'учиться за границей' по-китайски?",
+            "tj": "'дар хориҷ таҳсил кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "害怕",
+            "楼梯",
+            "向",
+            "留学"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "chet elda o‘qimoq = 留学 (liúxué)",
+            "ru": "учиться за границей = 留学 (liúxué)",
+            "tj": "дар хориҷ таҳсил кардан = 留学 (liúxué)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "留学",
+            "pinyin": "liúxué",
+            "meaning": {
+              "uz": "chet elda o‘qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

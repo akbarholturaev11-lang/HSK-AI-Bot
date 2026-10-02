@@ -1,0 +1,309 @@
+name: HSK30 Generate Course V3 Runtime
+
+on:
+  push:
+    branches:
+      - codex/local-ai
+    paths:
+      - ".github/workflows/hsk30_generate_runtime.yml"
+      - "scripts/gen_course_v3_from_seed.py"
+      - "scripts/hsk30/seed_nhsk1_lesson_*.py"
+      - "scripts/hsk30/verify_nhsk1_source.py"
+      - "scripts/hsk30/seed_nhsk2_lesson_*.py"
+      - "scripts/hsk30/verify_nhsk2_source.py"
+      - "scripts/hsk30/nhsk3_adapter.py"
+      - "scripts/hsk30/verify_nhsk3_normalized.py"
+      - "scripts/hsk30/verify_nhsk3_enrichment.py"
+      - "scripts/hsk30/normalized/nhsk3/**"
+      - "scripts/hsk30/translations/nhsk3/**"
+      - "scripts/hsk30/verify_runtime_integration.py"
+      - "app/main.py"
+      - "app/api/miniapp_entitlements.py"
+      - "app/services/course_levels.py"
+      - "app/services/entitlements/lesson_access.py"
+      - "app/services/subscription_miniapp_service.py"
+      - "app/services/course_v3_vocab.py"
+      - "app/services/course_v3_word_index.py"
+      - "app/services/desktop_course_service.py"
+      - "app/services/admin_notify_service.py"
+      - "app/services/voice_practice_service.py"
+      - "app/static/course-v3.html"
+      - "app/static/subscription.html"
+      - "app/static/course_v3_recognition.html"
+      - "app/static/course_v3_pronunciation.html"
+      - "app/services/course_track_service.py"
+      - "app/bot/keyboards/admin_broadcast.py"
+      - "app/bot/handlers/admin_broadcast.py"
+      - "app/services/admin_broadcast_service.py"
+      - "tests/test_admin_broadcast_hsk_track.py"
+      - "app/repositories/user_repo.py"
+      - "app/bot/handlers/course.py"
+      - "app/bot/keyboards/onboarding.py"
+      - "app/bot/handlers/commands.py"
+      - "app/static/course_v3_test.html"
+      - "app/static/course_v3_memorize.html"
+      - "tests/test_course_mistake_targets_flow.py"
+      - "tests/test_course_mistake_service.py"
+      - "tests/test_course_v3_dictionary.py"
+      - "app/services/hsk30_feature_service.py"
+      - "app/static/admin.html"
+      - "app/services/admin_miniapp_service.py"
+      - "app/services/desktop_subscription_service.py"
+      - "app/services/hsk30_unlock_service.py"
+      - "app/services/course_mistake_target_store.py"
+      - "app/services/course_mistake_service.py"
+      - "app/services/course_v3_dictionary.py"
+      - "app/static/hsk-lugat.html"
+      - "app/static/course_v3_onboarding.html"
+      - "tests/test_course_levels.py"
+      - "tests/test_course_track_service.py"
+      - "tests/test_hsk30_unlock_checkout.py"
+      - "tests/test_hsk30_promo_service.py"
+      - "tests/test_hsk30_admin_payment_flow.py"
+      - "tests/test_desktop_course_api.py"
+      - "tests/test_ad_campaign_hsk_target.py"
+      - "app/prompts/qa_system.txt"
+      - "app/services/course_tutor_service.py"
+      - "app/services/ai_service.py"
+      - "app/bot/keyboards/admin_ads.py"
+      - "app/bot/handlers/admin_ads.py"
+      - "app/services/ad_campaign_service.py"
+      - "app/repositories/ad_campaign_repo.py"
+      - "app/db/models/ad_campaign.py"
+      - "alembic/versions/0096_ad_campaign_course_target.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout local integration branch
+        uses: actions/checkout@v4
+        with:
+          ref: codex/local-ai
+          fetch-depth: 1
+          lfs: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Validate N1 source
+        run: python scripts/hsk30/verify_nhsk1_source.py
+
+      - name: Validate N2 source
+        run: python scripts/hsk30/verify_nhsk2_source.py
+
+      - name: Validate N3 normalized source
+        run: python scripts/hsk30/verify_nhsk3_normalized.py
+
+      - name: Validate N3 enrichment
+        run: python scripts/hsk30/verify_nhsk3_enrichment.py
+
+      - name: Generate N1 Course V3 runtime
+        run: python scripts/gen_course_v3_from_seed.py --track hsk30 --level nhsk1
+
+      - name: Generate N2 Course V3 runtime
+        run: python scripts/gen_course_v3_from_seed.py --track hsk30 --level nhsk2
+
+      - name: Generate N3 Course V3 runtime
+        run: python scripts/gen_course_v3_from_seed.py --track hsk30 --level nhsk3
+
+      - name: Generate HSK 3.0 maps and gates
+        run: python scripts/gen_course_v3_from_seed.py --track hsk30 --maps-only
+
+      - name: Validate HSK 3.0 runtime integration
+        run: python scripts/hsk30/verify_runtime_integration.py
+
+      - name: Compile changed Python integration modules
+        run: |
+          python -m py_compile \
+            app/main.py \
+            app/api/miniapp_entitlements.py \
+            app/services/course_levels.py \
+            app/services/entitlements/lesson_access.py \
+            app/services/subscription_miniapp_service.py \
+            app/services/course_v3_vocab.py \
+            app/services/course_v3_word_index.py \
+            app/services/course_v3_dictionary.py \
+            app/services/course_mistake_service.py \
+            app/services/course_mistake_target_store.py \
+            app/services/hsk30_feature_service.py \
+            app/services/hsk30_unlock_service.py \
+            app/services/desktop_subscription_service.py \
+            app/services/admin_miniapp_service.py \
+            app/services/ai_service.py \
+            app/services/course_tutor_service.py \
+            app/services/ad_campaign_service.py \
+            app/repositories/ad_campaign_repo.py \
+            app/repositories/user_repo.py \
+            app/bot/handlers/admin_ads.py \
+            app/bot/keyboards/admin_ads.py \
+            app/bot/handlers/commands.py \
+            app/bot/keyboards/onboarding.py \
+            app/services/voice_practice_service.py
+
+      - name: Syntax-check Mini App JavaScript
+        shell: bash
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          files = [
+              "app/static/course-v3.html",
+              "app/static/subscription.html",
+              "app/static/course_v3_recognition.html",
+              "app/static/course_v3_pronunciation.html",
+              "app/static/course_v3_memorize.html",
+              "app/static/course_v3_test.html",
+              "app/static/course_v3_onboarding.html",
+              "app/static/hsk-lugat.html",
+              "app/static/admin.html",
+          ]
+          for filename in files:
+              text = Path(filename).read_text(encoding="utf-8")
+              blocks = re.findall(r"<script(?:\\s[^>]*)?>(.*?)</script>", text, flags=re.I | re.S)
+              target = Path("/tmp") / (Path(filename).stem.replace("-", "_") + ".js")
+              target.write_text("\n".join(blocks), encoding="utf-8")
+              print(target)
+          PY
+          for f in /tmp/course_v3.js /tmp/subscription.js /tmp/course_v3_recognition.js /tmp/course_v3_pronunciation.js /tmp/course_v3_memorize.js /tmp/course_v3_test.js /tmp/course_v3_onboarding.js /tmp/hsk_lugat.js /tmp/admin.js; do
+            node --check "$f"
+          done
+
+      - name: Validate generated runtime
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          base = Path("app/static/course_v3_data")
+          manifest = json.loads((base / "parts_manifest.json").read_text(encoding="utf-8"))
+
+          for level, expected_units in (("nhsk1", 15), ("nhsk2", 15), ("nhsk3", 18)):
+              assert level in manifest, f"missing {level} in parts_manifest"
+              total_parts = int(manifest[level]["total_parts"])
+              assert total_parts > 0, f"{level}: total_parts must be > 0"
+
+              map_path = base / f"{level}.json"
+              assert map_path.is_file(), f"missing map {map_path}"
+              map_data = json.loads(map_path.read_text(encoding="utf-8"))
+              assert map_data["level"] == level
+              assert len(map_data["units"]) == expected_units, (
+                  level, len(map_data["units"]), expected_units
+              )
+
+              runtime_manifest = json.loads(
+                  (base / level / "manifest.json").read_text(encoding="utf-8")
+              )
+              assert runtime_manifest["level"] == level
+              assert int(runtime_manifest["lesson_count"]) == total_parts, (
+                  level,
+                  runtime_manifest.get("lesson_count"),
+                  total_parts,
+              )
+              assert int(runtime_manifest["source_lesson_count"]) == expected_units
+              assert runtime_manifest["content_status"] == "runtime_ready"
+
+              if level in {"nhsk1", "nhsk2", "nhsk3"}:
+                  lesson_files = sorted((base / level).glob("lesson_*.json"))
+                  assert len(lesson_files) == total_parts, (
+                      level, len(lesson_files), total_parts
+                  )
+                  for p in lesson_files:
+                      data = json.loads(p.read_text(encoding="utf-8"))
+                      assert data["level"] == level, (p, data.get("level"))
+                      assert data["sections"], f"{p}: sections empty"
+                      assert 1 <= int(data["source_lesson"]) <= expected_units
+
+          gate = base / "lesson_gate_hsk30.js"
+          assert gate.is_file(), "missing lesson_gate_hsk30.js"
+          text = gate.read_text(encoding="utf-8")
+          assert "window.HSK30_WORD_GATE=" in text
+          assert "window.HSK30_CHAR_GATE=" in text
+
+          words_asset = base / "hsk30-words.js"
+          assert words_asset.is_file(), "missing hsk30-words.js"
+          words_text = words_asset.read_text(encoding="utf-8")
+          assert "window.HSK30_WORDS=" in words_text
+
+          print(
+              "OK: HSK 3.0 runtime",
+              {
+                  level: {
+                      "units": len(json.loads((base / f"{level}.json").read_text(encoding="utf-8"))["units"]),
+                      "parts": manifest[level]["total_parts"],
+                  }
+                  for level in ("nhsk1", "nhsk2", "nhsk3")
+              },
+          )
+          PY
+
+      - name: Install backend test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt aiosqlite
+
+      - name: Compile HSK 3.0 regression tests
+        run: python -m compileall -q app tests
+
+      - name: Run HSK 3.0 access and payment regressions
+        run: |
+          python -m unittest \
+            tests.test_course_levels \
+            tests.test_course_track_service \
+            tests.test_hsk30_unlock_checkout \
+            tests.test_hsk30_promo_service \
+            tests.test_hsk30_admin_payment_flow \
+            tests.test_desktop_course_api \
+            tests.test_course_v3_dictionary \
+            tests.test_course_mistake_service \
+            tests.test_course_mistake_targets_flow \
+            tests.test_admin_broadcast_hsk_track \
+            tests.test_ad_campaign_hsk_target
+
+      - name: Check Alembic has exactly one head
+        run: |
+          python - <<'PY'
+          from alembic.config import Config
+          from alembic.script import ScriptDirectory
+
+          heads = ScriptDirectory.from_config(Config("alembic.ini")).get_heads()
+          if len(heads) != 1:
+              raise SystemExit(f"multiple Alembic heads: {heads}")
+          print("alembic head:", heads[0])
+          PY
+
+      - name: Commit generated runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "hsk-ai-actions"
+          git config user.email "actions@users.noreply.github.com"
+
+          git add \
+            app/static/course_v3_data/nhsk1 \
+            app/static/course_v3_data/nhsk2 \
+            app/static/course_v3_data/nhsk3 \
+            app/static/course_v3_data/nhsk1.json \
+            app/static/course_v3_data/nhsk2.json \
+            app/static/course_v3_data/nhsk3.json \
+            app/static/course_v3_data/lesson_gate_hsk30.js \
+            app/static/course_v3_data/hsk30-words.js \
+            app/static/course_v3_data/parts_manifest.json
+
+          if git diff --cached --quiet; then
+            echo "No generated runtime changes"
+            exit 0
+          fi
+
+          git commit -m "feat: generate HSK 3.0 N1 N2 and N3 Course V3 runtime"
+          git push origin HEAD:codex/local-ai

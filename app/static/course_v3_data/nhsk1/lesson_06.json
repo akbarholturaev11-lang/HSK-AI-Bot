@@ -1,0 +1,658 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 6,
+  "source_lesson": 2,
+  "part_no": 2,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我叫李文",
+  "subtitle": {
+    "uz": "Boshqalarning o'zini tanishtirishini tushunish va xitoycha ism bilan o'zini tanishtirish; 对不起 va 没关系 orqali uzr so'rash va javob berish; xitoy tilidagi asosiy so'z tartibini tushunish.",
+    "ru": "Понимать самопрезентацию собеседника и представляться с китайским именем; извиняться с 对不起 и отвечать 没关系; освоить базовый порядок слов в китайском языке.",
+    "tj": "Худмуаррифии дигаронро фаҳмидан ва бо номи чинӣ худро муаррифӣ кардан; бо 对不起 узр пурсидан ва бо 没关系 ҷавоб додан; тартиби асосии калимаҳои забони чиниро аз худ кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "名字",
+      "pinyin": "míngzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ism",
+        "ru": "имя",
+        "tj": "ном"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "我",
+      "pinyin": "wǒ",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "men; meni",
+        "ru": "я; меня",
+        "tj": "ман; маро"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "不",
+      "pinyin": "bù",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "emas; yo'q; -ma",
+        "ru": "не; нет",
+        "tj": "не; нест"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "是",
+      "pinyin": "shì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bo'lmoq; ...dir",
+        "ru": "быть; являться",
+        "tj": "будан; ...аст"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Xitoy tilidagi asosiy so'z tartibi",
+        "ru": "Базовый порядок слов в китайском языке",
+        "tj": "Тартиби асосии калимаҳо дар забони чинӣ"
+      },
+      "title_zh": "汉语的基本语序",
+      "rule": {
+        "uz": "Xitoy tilidagi asosiy tartib: ega + kesim + to'ldiruvchi.",
+        "ru": "Базовый порядок слов: подлежащее + сказуемое + дополнение.",
+        "tj": "Тартиби асосӣ: мубтадо + хабар + пуркунанда."
+      },
+      "examples": [
+        {
+          "zh": "你叫什么名字？",
+          "pinyin": "Nǐ jiào shénme míngzi?",
+          "translation": {
+            "uz": "Sening isming nima?",
+            "ru": "Как тебя зовут?",
+            "tj": "Номи ту чист?"
+          }
+        },
+        {
+          "zh": "我叫白家月。",
+          "pinyin": "Wǒ jiào Bái Jiāyuè.",
+          "translation": {
+            "uz": "Mening ismim Bai Jiayue.",
+            "ru": "Меня зовут Бай Цзяюэ.",
+            "tj": "Номи ман Бай Ҷяюэ аст."
+          }
+        },
+        {
+          "zh": "我是学生。",
+          "pinyin": "Wǒ shì xuésheng.",
+          "translation": {
+            "uz": "Men talabaman.",
+            "ru": "Я студент.",
+            "tj": "Ман донишҷӯ ҳастам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda Wang Yifei talabalar bilan tanishmoqda.",
+        "ru": "В аудитории Ван Ифэй знакомится со студентами.",
+        "tj": "Дар синф Ван Ифэй бо донишҷӯён шинос мешавад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yifei",
+          "zh": "请问，你叫什么名字？",
+          "pinyin": "Qǐngwèn, nǐ jiào shénme míngzi?",
+          "text": {
+            "uz": "Kechirasiz, ismingiz nima?",
+            "ru": "Разрешите спросить, как вас зовут?",
+            "tj": "Мебахшед, номи шумо чист?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "名字",
+            "pinyin": "míngzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ism",
+              "ru": "имя",
+              "tj": "ном"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "名字 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 名字:",
+            "tj": "Маънои калимаи 名字-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sen",
+              "ru": "ты",
+              "tj": "ту"
+            },
+            {
+              "uz": "ism",
+              "ru": "имя",
+              "tj": "ном"
+            },
+            {
+              "uz": "deb atalmoq; ismi bo'lmoq",
+              "ru": "зваться; называться",
+              "tj": "ном доштан; номида шудан"
+            },
+            {
+              "uz": "kechirasiz, so'rasam",
+              "ru": "разрешите спросить; извините",
+              "tj": "мебахшед, пурсам"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "名字 = ism (míngzi)",
+            "ru": "名字 = имя (míngzi)",
+            "tj": "名字 = ном (míngzi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "我",
+            "pinyin": "wǒ",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "men; meni",
+              "ru": "я; меня",
+              "tj": "ман; маро"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "我",
+          "pinyin": "wǒ",
+          "translation": {
+            "uz": "men; meni",
+            "ru": "я; меня",
+            "tj": "ман; маро"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wǒ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wǒ?",
+            "tj": "wǒ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "你",
+            "我",
+            "叫",
+            "请问"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我 = men; meni (wǒ)",
+            "ru": "我 = я; меня (wǒ)",
+            "tj": "我 = ман; маро (wǒ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "不",
+            "pinyin": "bù",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "emas; yo'q; -ma",
+              "ru": "не; нет",
+              "tj": "не; нест"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "不 talaffuzini tanlang:",
+            "ru": "Выберите произношение 不:",
+            "tj": "Талаффузи 不-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jiào",
+            "nǐ",
+            "qǐngwèn",
+            "bù"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "不 — bù",
+            "ru": "不 — bù",
+            "tj": "不 — bù"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "是",
+            "pinyin": "shì",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bo'lmoq; ...dir",
+              "ru": "быть; являться",
+              "tj": "будан; ...аст"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bo'lmoq; ...dir' xitoycha qaysi?",
+            "ru": "'быть; являться' по-китайски?",
+            "tj": "'будан; ...аст' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "是",
+            "请问",
+            "你",
+            "叫"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "bo'lmoq; ...dir = 是 (shì)",
+            "ru": "быть; являться = 是 (shì)",
+            "tj": "будан; ...аст = 是 (shì)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "名字",
+          "pinyin": "míngzi",
+          "options": [
+            "请问",
+            "你",
+            "叫",
+            "名字"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "名字 — ism (míngzi)",
+            "ru": "名字 — имя (míngzi)",
+            "tj": "名字 — ном (míngzi)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "名字",
+              {
+                "uz": "ism",
+                "ru": "имя",
+                "tj": "ном"
+              }
+            ],
+            [
+              "我",
+              {
+                "uz": "men; meni",
+                "ru": "я; меня",
+                "tj": "ман; маро"
+              }
+            ],
+            [
+              "不",
+              {
+                "uz": "emas; yo'q; -ma",
+                "ru": "не; нет",
+                "tj": "не; нест"
+              }
+            ],
+            [
+              "是",
+              {
+                "uz": "bo'lmoq; ...dir",
+                "ru": "быть; являться",
+                "tj": "будан; ...аст"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Xitoy tilidagi asosiy so'z tartibi",
+              "ru": "Базовый порядок слов в китайском языке",
+              "tj": "Тартиби асосии калимаҳо дар забони чинӣ"
+            },
+            "title_zh": "汉语的基本语序",
+            "rule": {
+              "uz": "Xitoy tilidagi asosiy tartib: ega + kesim + to'ldiruvchi.",
+              "ru": "Базовый порядок слов: подлежащее + сказуемое + дополнение.",
+              "tj": "Тартиби асосӣ: мубтадо + хабар + пуркунанда."
+            },
+            "examples": [
+              {
+                "zh": "你叫什么名字？",
+                "pinyin": "Nǐ jiào shénme míngzi?",
+                "translation": {
+                  "uz": "Sening isming nima?",
+                  "ru": "Как тебя зовут?",
+                  "tj": "Номи ту чист?"
+                }
+              },
+              {
+                "zh": "我叫白家月。",
+                "pinyin": "Wǒ jiào Bái Jiāyuè.",
+                "translation": {
+                  "uz": "Mening ismim Bai Jiayue.",
+                  "ru": "Меня зовут Бай Цзяюэ.",
+                  "tj": "Номи ман Бай Ҷяюэ аст."
+                }
+              },
+              {
+                "zh": "我是学生。",
+                "pinyin": "Wǒ shì xuésheng.",
+                "translation": {
+                  "uz": "Men talabaman.",
+                  "ru": "Я студент.",
+                  "tj": "Ман донишҷӯ ҳастам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Sening isming nima?",
+            "ru": "Как тебя зовут?",
+            "tj": "Номи ту чист?"
+          },
+          "tokens": [
+            "你",
+            "什么",
+            "我",
+            "叫",
+            "请问",
+            "名字"
+          ],
+          "answer_tokens": [
+            "你",
+            "叫",
+            "什么",
+            "名字"
+          ],
+          "explanation": {
+            "uz": "你叫什么名字？ — Nǐ jiào shénme míngzi?",
+            "ru": "你叫什么名字？ — Nǐ jiào shénme míngzi?",
+            "tj": "你叫什么名字？ — Nǐ jiào shénme míngzi?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Mening ismim Bai Jiayue.» — xitoychada qaysi biri?",
+            "ru": "«Меня зовут Бай Цзяюэ.» — какое предложение по-китайски?",
+            "tj": "«Номи ман Бай Ҷяюэ аст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你叫什么名字？",
+            "我叫白家月。",
+            "我是学生。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我叫白家月。 — Wǒ jiào Bái Jiāyuè.",
+            "ru": "我叫白家月。 — Wǒ jiào Bái Jiāyuè.",
+            "tj": "我叫白家月。 — Wǒ jiào Bái Jiāyuè."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "名字",
+              {
+                "uz": "ism",
+                "ru": "имя",
+                "tj": "ном"
+              }
+            ],
+            [
+              "我",
+              {
+                "uz": "men; meni",
+                "ru": "я; меня",
+                "tj": "ман; маро"
+              }
+            ],
+            [
+              "不",
+              {
+                "uz": "emas; yo'q; -ma",
+                "ru": "не; нет",
+                "tj": "не; нест"
+              }
+            ],
+            [
+              "是",
+              {
+                "uz": "bo'lmoq; ...dir",
+                "ru": "быть; являться",
+                "tj": "будан; ...аст"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "我",
+          "pinyin": "wǒ",
+          "translation": {
+            "uz": "men; meni",
+            "ru": "я; меня",
+            "tj": "ман; маро"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "你 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 你:",
+            "tj": "Маънои калимаи 你-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sen",
+              "ru": "ты",
+              "tj": "ту"
+            },
+            {
+              "uz": "kechirasiz, so'rasam",
+              "ru": "разрешите спросить; извините",
+              "tj": "мебахшед, пурсам"
+            },
+            {
+              "uz": "nima; qanday",
+              "ru": "что; какой",
+              "tj": "чӣ; кадом"
+            },
+            {
+              "uz": "deb atalmoq; ismi bo'lmoq",
+              "ru": "зваться; называться",
+              "tj": "ном доштан; номида шудан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "你 = sen (nǐ)",
+            "ru": "你 = ты (nǐ)",
+            "tj": "你 = ту (nǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "你",
+            "pinyin": "nǐ",
+            "meaning": {
+              "uz": "sen",
+              "ru": "ты",
+              "tj": "ту"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'men; meni' xitoycha qaysi?",
+            "ru": "'я; меня' по-китайски?",
+            "tj": "'ман; маро' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "请问",
+            "叫",
+            "我",
+            "你"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "men; meni = 我 (wǒ)",
+            "ru": "я; меня = 我 (wǒ)",
+            "tj": "ман; маро = 我 (wǒ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "我",
+            "pinyin": "wǒ",
+            "meaning": {
+              "uz": "men; meni",
+              "ru": "я; меня",
+              "tj": "ман; маро"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,636 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 17,
+  "source_lesson": 4,
+  "part_no": 2,
+  "part_count": 10,
+  "checkpoint": false,
+  "title": "我有两个孩子",
+  "subtitle": {
+    "uz": "“有” orqali egalik va mavjudlikni ifodalash; sonlarni, “呢” savol yuklamasini va son+o‘lchov so‘zi tuzilmasini ishlatish; yosh va oila a’zolari haqida so‘rash va javob berish.",
+    "ru": "Выражать наличие и обладание с “有”; использовать числа, вопросительную частицу “呢” и структуру число+счётное слово; спрашивать и отвечать о возрасте и семье.",
+    "tj": "Бо “有” соҳибият ва мавҷудиятро ифода кардан; рақамҳо, ҳиссачаи саволии “呢” ва сохтори рақам+воҳиди ҳисобро истифода бурдан; дар бораи синну сол ва оила саволу ҷавоб кардан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "呢",
+      "pinyin": "ne",
+      "pos": "part.",
+      "meaning": {
+        "uz": "“-chi?” savol yuklamasi",
+        "ru": "вопросительная частица «а…?»",
+        "tj": "ҳиссачаи саволии «-чӣ?»"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "没有",
+      "pinyin": "méiyǒu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yo‘q; ega emas",
+        "ru": "не иметь; нет",
+        "tj": "надоштан; нест"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "家",
+      "pinyin": "jiā",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oila; uy",
+        "ru": "семья; дом",
+        "tj": "оила; хона"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "几",
+      "pinyin": "jǐ",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "nechta",
+        "ru": "сколько; несколько",
+        "tj": "чанд"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Wang Yixue",
+          "zh": "她很忙。",
+          "pinyin": "Tā hěn máng.",
+          "text": {
+            "uz": "U juda band.",
+            "ru": "Она очень занята.",
+            "tj": "Ӯ хеле банд аст."
+          }
+        },
+        {
+          "speaker": "Liu Ming",
+          "zh": "她有多少个学生？",
+          "pinyin": "Tā yǒu duōshao ge xuésheng?",
+          "text": {
+            "uz": "Uning nechta talabasi bor?",
+            "ru": "Сколько у неё студентов?",
+            "tj": "Ӯ чанд донишҷӯ дорад?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada Wang Yixue va Yang Tongle tanaffus payti suhbatlashmoqda.",
+        "ru": "В компании Ван Исюэ и Ян Тунлэ разговаривают во время перерыва.",
+        "tj": "Дар ширкат Ван Исюэ ва Ян Тунлэ ҳангоми танаффус суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Yang Tongle",
+          "zh": "我没有哥哥。",
+          "pinyin": "Wǒ méiyǒu gēge.",
+          "text": {
+            "uz": "Mening akam yo‘q.",
+            "ru": "У меня нет старшего брата.",
+            "tj": "Ман бародари калон надорам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "呢",
+            "pinyin": "ne",
+            "pos": "part.",
+            "meaning": {
+              "uz": "“-chi?” savol yuklamasi",
+              "ru": "вопросительная частица «а…?»",
+              "tj": "ҳиссачаи саволии «-чӣ?»"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "呢",
+          "pinyin": "ne",
+          "translation": {
+            "uz": "“-chi?” savol yuklamasi",
+            "ru": "вопросительная частица «а…?»",
+            "tj": "ҳиссачаи саволии «-чӣ?»"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "ne qaysi ieroglif?",
+            "ru": "Какой иероглиф читается ne?",
+            "tj": "ne кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "呢",
+            "有",
+            "个",
+            "多少"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "呢 = “-chi?” savol yuklamasi (ne)",
+            "ru": "呢 = вопросительная частица «а…?» (ne)",
+            "tj": "呢 = ҳиссачаи саволии «-чӣ?» (ne)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "没有",
+            "pinyin": "méiyǒu",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yo‘q; ega emas",
+              "ru": "не иметь; нет",
+              "tj": "надоштан; нест"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "没有 talaffuzini tanlang:",
+            "ru": "Выберите произношение 没有:",
+            "tj": "Талаффузи 没有-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "duōshao",
+            "yǒu",
+            "gè",
+            "méiyǒu"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "没有 — méiyǒu",
+            "ru": "没有 — méiyǒu",
+            "tj": "没有 — méiyǒu"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "家",
+            "pinyin": "jiā",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oila; uy",
+              "ru": "семья; дом",
+              "tj": "оила; хона"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'oila; uy' xitoycha qaysi?",
+            "ru": "'семья; дом' по-китайски?",
+            "tj": "'оила; хона' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "有",
+            "家",
+            "多少",
+            "个"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "oila; uy = 家 (jiā)",
+            "ru": "семья; дом = 家 (jiā)",
+            "tj": "оила; хона = 家 (jiā)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "几",
+            "pinyin": "jǐ",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "nechta",
+              "ru": "сколько; несколько",
+              "tj": "чанд"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "几",
+          "pinyin": "jǐ",
+          "options": [
+            "几",
+            "多少",
+            "个",
+            "有"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "几 — nechta (jǐ)",
+            "ru": "几 — сколько; несколько (jǐ)",
+            "tj": "几 — чанд (jǐ)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "呢 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 呢:",
+            "tj": "Маънои калимаи 呢-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bor; ega bo‘lmoq",
+              "ru": "иметь; есть",
+              "tj": "доштан; ҳаст"
+            },
+            {
+              "uz": "“-chi?” savol yuklamasi",
+              "ru": "вопросительная частица «а…?»",
+              "tj": "ҳиссачаи саволии «-чӣ?»"
+            },
+            {
+              "uz": "umumiy o‘lchov so‘zi",
+              "ru": "универсальное счётное слово",
+              "tj": "воҳиди умумии ҳисоб"
+            },
+            {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "呢 = “-chi?” savol yuklamasi (ne)",
+            "ru": "呢 = вопросительная частица «а…?» (ne)",
+            "tj": "呢 = ҳиссачаи саволии «-чӣ?» (ne)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "呢",
+              {
+                "uz": "“-chi?” savol yuklamasi",
+                "ru": "вопросительная частица «а…?»",
+                "tj": "ҳиссачаи саволии «-чӣ?»"
+              }
+            ],
+            [
+              "没有",
+              {
+                "uz": "yo‘q; ega emas",
+                "ru": "не иметь; нет",
+                "tj": "надоштан; нест"
+              }
+            ],
+            [
+              "家",
+              {
+                "uz": "oila; uy",
+                "ru": "семья; дом",
+                "tj": "оила; хона"
+              }
+            ],
+            [
+              "几",
+              {
+                "uz": "nechta",
+                "ru": "сколько; несколько",
+                "tj": "чанд"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "呢",
+          "pinyin": "ne",
+          "options": [
+            "呢",
+            "多少",
+            "有",
+            "个"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "呢 — “-chi?” savol yuklamasi (ne)",
+            "ru": "呢 — вопросительная частица «а…?» (ne)",
+            "tj": "呢 — ҳиссачаи саволии «-чӣ?» (ne)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我没有哥哥。",
+          "pinyin": "Wǒ méiyǒu gēge.",
+          "translation": {
+            "uz": "Mening akam yo‘q.",
+            "ru": "У меня нет старшего брата.",
+            "tj": "Ман бародари калон надорам."
+          },
+          "tokens": {
+            "uz": [
+              "yo‘q",
+              "akam",
+              "Mening"
+            ],
+            "ru": [
+              "нет",
+              "меня",
+              "брата",
+              "У",
+              "старшего"
+            ],
+            "tj": [
+              "бародари",
+              "надорам",
+              "Ман",
+              "калон"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Mening",
+              "akam",
+              "yo‘q"
+            ],
+            "ru": [
+              "У",
+              "меня",
+              "нет",
+              "старшего",
+              "брата"
+            ],
+            "tj": [
+              "Ман",
+              "бародари",
+              "калон",
+              "надорам"
+            ]
+          },
+          "explanation": {
+            "uz": "我没有哥哥。 — Mening akam yo‘q.",
+            "ru": "我没有哥哥。 — У меня нет старшего брата.",
+            "tj": "我没有哥哥。 — Ман бародари калон надорам."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jiā qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jiā?",
+            "tj": "jiā кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "个",
+            "多少",
+            "有",
+            "家"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "家 = oila; uy (jiā)",
+            "ru": "家 = семья; дом (jiā)",
+            "tj": "家 = оила; хона (jiā)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "几 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 几:",
+            "tj": "Маънои калимаи 几-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bor; ega bo‘lmoq",
+              "ru": "иметь; есть",
+              "tj": "доштан; ҳаст"
+            },
+            {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            },
+            {
+              "uz": "nechta",
+              "ru": "сколько; несколько",
+              "tj": "чанд"
+            },
+            {
+              "uz": "umumiy o‘lchov so‘zi",
+              "ru": "универсальное счётное слово",
+              "tj": "воҳиди умумии ҳисоб"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "几 = nechta (jǐ)",
+            "ru": "几 = сколько; несколько (jǐ)",
+            "tj": "几 = чанд (jǐ)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "呢",
+          "pinyin": "ne",
+          "translation": {
+            "uz": "“-chi?” savol yuklamasi",
+            "ru": "вопросительная частица «а…?»",
+            "tj": "ҳиссачаи саволии «-чӣ?»"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "有 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 有:",
+            "tj": "Маънои калимаи 有-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "umumiy o‘lchov so‘zi",
+              "ru": "универсальное счётное слово",
+              "tj": "воҳиди умумии ҳисоб"
+            },
+            {
+              "uz": "qancha; nechta",
+              "ru": "сколько",
+              "tj": "чанд; чӣ қадар"
+            },
+            {
+              "uz": "bor; ega bo‘lmoq",
+              "ru": "иметь; есть",
+              "tj": "доштан; ҳаст"
+            },
+            {
+              "uz": "aka",
+              "ru": "старший брат",
+              "tj": "бародари калонӣ"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "有 = bor; ega bo‘lmoq (yǒu)",
+            "ru": "有 = иметь; есть (yǒu)",
+            "tj": "有 = доштан; ҳаст (yǒu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "有",
+            "pinyin": "yǒu",
+            "meaning": {
+              "uz": "bor; ega bo‘lmoq",
+              "ru": "иметь; есть",
+              "tj": "доштан; ҳаст"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'“-chi?” savol yuklamasi' xitoycha qaysi?",
+            "ru": "'вопросительная частица «а…?»' по-китайски?",
+            "tj": "'ҳиссачаи саволии «-чӣ?»' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "个",
+            "呢",
+            "多少",
+            "有"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "“-chi?” savol yuklamasi = 呢 (ne)",
+            "ru": "вопросительная частица «а…?» = 呢 (ne)",
+            "tj": "ҳиссачаи саволии «-чӣ?» = 呢 (ne)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "呢",
+            "pinyin": "ne",
+            "meaning": {
+              "uz": "“-chi?” savol yuklamasi",
+              "ru": "вопросительная частица «а…?»",
+              "tj": "ҳиссачаи саволии «-чӣ?»"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

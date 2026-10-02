@@ -1,0 +1,472 @@
+{
+  "schema_version": 1,
+  "lesson": 4,
+  "source_title_hanzi": "这家宾馆跟别的都不一样",
+  "translation_origin": "assistant_authored_from_source_verified_chinese",
+  "goal": {
+    "uz": "Ta’til va sayohat rejalarini muhokama qilish; safardagi taassurotlarni ifodalash; to‘liq inkorni aytish; “除了” yordamida istisno yoki qo‘shimcha ma’noni berish.",
+    "ru": "Обсуждать планы на каникулы и впечатления от поездки; выражать полное отрицание; использовать “除了” для исключения или добавления.",
+    "tj": "Нақшаҳои таътил ва сафарро муҳокима кардан; таассуроти сафарро ифода кардан; инкори пурраро гуфтан; бо “除了” маънои истисно ё илова додан."
+  },
+  "intro_text": {
+    "uz": "Dars ta’til rejalari, dashtga safar va mehmonxona haqidagi suhbatlar orqali “一……也/都不/没……”, “跟……一样/不一样” va “除了……以外……” tuzilmalarini o‘rgatadi.",
+    "ru": "Урок через планы на каникулы, поездку в степь и гостиницу вводит конструкции “一……也/都不/没……”, “跟……一样/不一样” и “除了……以外……”.",
+    "tj": "Дарс тавассути нақшаҳои таътил, сафар ба саҳро ва меҳмонхона сохторҳои “一……也/都不/没……”, “跟……一样/不一样” ва “除了……以外……” меомӯзонад."
+  },
+  "vocabulary": [
+    {
+      "hanzi": "假期",
+      "pinyin": "jiàqī",
+      "uz": "ta’til",
+      "ru": "каникулы; отпуск",
+      "tj": "таътил"
+    },
+    {
+      "hanzi": "海",
+      "pinyin": "hǎi",
+      "uz": "dengiz",
+      "ru": "море",
+      "tj": "баҳр"
+    },
+    {
+      "hanzi": "草原",
+      "pinyin": "cǎoyuán",
+      "uz": "dasht; yaylov",
+      "ru": "степь; луг",
+      "tj": "саҳро; чарогоҳ"
+    },
+    {
+      "hanzi": "主意",
+      "pinyin": "zhǔyi",
+      "uz": "fikr; g‘oya",
+      "ru": "идея; замысел",
+      "tj": "фикр; ғоя"
+    },
+    {
+      "hanzi": "骑",
+      "pinyin": "qí",
+      "uz": "minmoq (ot/velosiped)",
+      "ru": "ехать верхом; ехать на",
+      "tj": "савор шудан"
+    },
+    {
+      "hanzi": "马",
+      "pinyin": "mǎ",
+      "uz": "ot",
+      "ru": "лошадь",
+      "tj": "асп"
+    },
+    {
+      "hanzi": "羊",
+      "pinyin": "yáng",
+      "uz": "qo‘y",
+      "ru": "овца",
+      "tj": "гӯсфанд"
+    },
+    {
+      "hanzi": "月亮",
+      "pinyin": "yuèliang",
+      "uz": "oy",
+      "ru": "луна",
+      "tj": "моҳ"
+    },
+    {
+      "hanzi": "一定",
+      "pinyin": "yídìng",
+      "uz": "albatta; aniq",
+      "ru": "обязательно; наверняка",
+      "tj": "албатта; ҳатман"
+    },
+    {
+      "hanzi": "刻",
+      "pinyin": "kè",
+      "uz": "chorak soat",
+      "ru": "четверть часа",
+      "tj": "чоряки соат"
+    },
+    {
+      "hanzi": "起飞",
+      "pinyin": "qǐfēi",
+      "uz": "uchib chiqmoq",
+      "ru": "взлетать",
+      "tj": "парвоз кардан"
+    },
+    {
+      "hanzi": "宾馆",
+      "pinyin": "bīnguǎn",
+      "uz": "mehmonxona",
+      "ru": "гостиница",
+      "tj": "меҳмонхона"
+    },
+    {
+      "hanzi": "特别",
+      "pinyin": "tèbié",
+      "uz": "alohida; juda",
+      "ru": "особенный; особенно",
+      "tj": "махсус; хеле"
+    },
+    {
+      "hanzi": "别的",
+      "pinyin": "biéde",
+      "uz": "boshqa",
+      "ru": "другой; остальные",
+      "tj": "дигар"
+    },
+    {
+      "hanzi": "一样",
+      "pinyin": "yíyàng",
+      "uz": "bir xil",
+      "ru": "одинаковый",
+      "tj": "якхела"
+    },
+    {
+      "hanzi": "牛",
+      "pinyin": "niú",
+      "uz": "sigir; qoramol",
+      "ru": "корова; крупный рогатый скот",
+      "tj": "гов; чорвои калон"
+    },
+    {
+      "hanzi": "相机",
+      "pinyin": "xiàngjī",
+      "uz": "fotoapparat",
+      "ru": "фотоаппарат; камера",
+      "tj": "камера; фотоаппарат"
+    },
+    {
+      "hanzi": "欢迎",
+      "pinyin": "huānyíng",
+      "uz": "xush kelibsiz; kutib olmoq",
+      "ru": "приветствовать; добро пожаловать",
+      "tj": "хуш омадед; истиқбол кардан"
+    },
+    {
+      "hanzi": "司机",
+      "pinyin": "sījī",
+      "uz": "haydovchi",
+      "ru": "водитель",
+      "tj": "ронанда"
+    },
+    {
+      "hanzi": "晚点",
+      "pinyin": "wǎndiǎn",
+      "uz": "kechikmoq (transport)",
+      "ru": "опаздывать; задерживаться",
+      "tj": "дер кардан"
+    },
+    {
+      "hanzi": "久",
+      "pinyin": "jiǔ",
+      "uz": "uzoq vaqt",
+      "ru": "долго",
+      "tj": "муддати дароз"
+    },
+    {
+      "hanzi": "除了",
+      "pinyin": "chúle",
+      "uz": "...dan tashqari",
+      "ru": "кроме",
+      "tj": "ба ғайр аз"
+    },
+    {
+      "hanzi": "以外",
+      "pinyin": "yǐwài",
+      "uz": "tashqari; bundan tashqari",
+      "ru": "за пределами; кроме",
+      "tj": "берун аз; ғайр аз"
+    },
+    {
+      "hanzi": "先",
+      "pinyin": "xiān",
+      "uz": "avval",
+      "ru": "сначала",
+      "tj": "аввал"
+    },
+    {
+      "hanzi": "一直",
+      "pinyin": "yìzhí",
+      "uz": "doimo; uzluksiz",
+      "ru": "всё время; непрерывно",
+      "tj": "ҳамеша; пайваста"
+    },
+    {
+      "hanzi": "干净",
+      "pinyin": "gānjìng",
+      "uz": "toza",
+      "ru": "чистый",
+      "tj": "тоза"
+    },
+    {
+      "hanzi": "满意",
+      "pinyin": "mǎnyì",
+      "uz": "mamnun bo‘lmoq",
+      "ru": "быть довольным",
+      "tj": "қаноатманд будан"
+    }
+  ],
+  "grammar": [
+    {
+      "label": "固定格式“一……也/都+不/没……”",
+      "title_uz": "“一……也/都不/没……” — to‘liq inkor",
+      "title_ru": "“一……也/都不/没……” — полное отрицание",
+      "title_tj": "“一……也/都不/没……” — инкори пурра",
+      "rule_uz": "Bu qolip “birorta ham / umuman” ma’nosida to‘liq inkorni bildiradi. “一+hisob so‘zi+ot” yoki “一点儿”dan keyin “也/都 + 不/没” keladi.",
+      "rule_ru": "Конструкция выражает полное отрицание со значением «ни одного / совсем не». После “一+счётное слово+существительное” или “一点儿” ставится “也/都 + 不/没”.",
+      "rule_tj": "Ин қолаб маънои инкори пурраи «ҳатто якто ҳам / тамоман не»-ро медиҳад. Пас аз “一+воҳиди ҳисоб+исм” ё “一点儿” — “也/都 + 不/没” меояд.",
+      "examples": [
+        {
+          "hanzi": "她一件衣服都不想买。",
+          "uz": "U birorta ham kiyim sotib olgisi kelmaydi.",
+          "ru": "Она не хочет покупать ни одной вещи.",
+          "tj": "Ӯ ҳатто як либос ҳам харидан намехоҳад."
+        },
+        {
+          "hanzi": "我一个中国电影也没看过。",
+          "uz": "Men birorta ham xitoy filmini ko‘rmaganman.",
+          "ru": "Я не смотрел ни одного китайского фильма.",
+          "tj": "Ман ҳатто як филми чинӣ ҳам надидаам."
+        },
+        {
+          "hanzi": "我一点儿东西也不想吃。",
+          "uz": "Umuman hech narsa yegim kelmaydi.",
+          "ru": "Я совсем ничего не хочу есть.",
+          "tj": "Ман тамоман чизе хӯрдан намехоҳам."
+        },
+        {
+          "hanzi": "他对打球一点儿兴趣都没有。",
+          "uz": "U to‘p o‘ynashga umuman qiziqmaydi.",
+          "ru": "Ему совсем не интересны игры с мячом.",
+          "tj": "Ӯ ба бозии тӯб тамоман шавқ надорад."
+        },
+        {
+          "hanzi": "草原一点儿也不冷。",
+          "uz": "Dasht umuman sovuq emas.",
+          "ru": "В степи совсем не холодно.",
+          "tj": "Дар саҳро тамоман хунук нест."
+        },
+        {
+          "hanzi": "他们一点儿也没着急。",
+          "uz": "Ular umuman xavotirlanishmadi.",
+          "ru": "Они совсем не волновались.",
+          "tj": "Онҳо тамоман ташвиш накашиданд."
+        }
+      ]
+    },
+    {
+      "label": "比较句（9）",
+      "title_uz": "Taqqoslash gapi (9): “跟……一样 / 不一样”",
+      "title_ru": "Сравнительное предложение (9): “跟……一样 / 不一样”",
+      "title_tj": "Ҷумлаи муқоисавӣ (9): “跟……一样 / 不一样”",
+      "rule_uz": "“A 跟 B 一样” A va B bir xil ekanini, “A 跟 B 不一样” esa farq qilishini bildiradi. “一样”dan keyin sifat kelib, aynan qaysi belgi bir xil ekanini ko‘rsatishi mumkin.",
+      "rule_ru": "“A 跟 B 一样” означает, что A и B одинаковы, а “A 跟 B 不一样” — что отличаются. После “一样” может стоять прилагательное, уточняющее признак сравнения.",
+      "rule_tj": "“A 跟 B 一样” якхела будани A ва B-ро, “A 跟 B 不一样” фарқ доштани онҳоро нишон медиҳад. Баъд аз “一样” сифат омада метавонад.",
+      "examples": [
+        {
+          "hanzi": "这家宾馆跟别的都不一样。",
+          "uz": "Bu mehmonxona boshqalarining hech biriga o‘xshamaydi.",
+          "ru": "Эта гостиница совсем не такая, как другие.",
+          "tj": "Ин меҳмонхона аз дигарҳо фарқ мекунад."
+        },
+        {
+          "hanzi": "他买的新手机跟我的一样。",
+          "uz": "U sotib olgan yangi telefon menikiga bir xil.",
+          "ru": "Его новый телефон такой же, как мой.",
+          "tj": "Телефони нави ӯ бо телефони ман якхел аст."
+        },
+        {
+          "hanzi": "这个房间跟那个房间一样大。",
+          "uz": "Bu xona u xona bilan bir xil kattalikda.",
+          "ru": "Эта комната такая же большая, как та.",
+          "tj": "Ин ҳуҷра бо он ҳуҷра як андоза калон аст."
+        }
+      ]
+    },
+    {
+      "label": "固定格式“除了……（以外），……都/还/也……”",
+      "title_uz": "“除了……以外……” — istisno va qo‘shimcha",
+      "title_ru": "“除了……以外……” — исключение и добавление",
+      "title_tj": "“除了……以外……” — истисно ва илова",
+      "rule_uz": "“除了A（以外），B都……” A ni umumiy guruhdan chiqarib, qolganlarning barchasini bildiradi. “除了A（以外），还/也……” esa A ga qo‘shimcha yana boshqa narsa borligini bildiradi.",
+      "rule_ru": "“除了A（以外），B都……” исключает A из общей группы и относится ко всем остальным. “除了A（以外），还/也……” добавляет к A ещё что-либо.",
+      "rule_tj": "“除了A（以外），B都……” A-ро аз гурӯҳи умумӣ истисно мекунад ва ба боқимондаҳо дахл дорад. “除了A（以外），还/也……” ба A боз чизи дигарро илова мекунад.",
+      "examples": [
+        {
+          "hanzi": "除了我以外，大家都在玩手机。",
+          "uz": "Mendan tashqari hamma telefonda o‘ynayapti.",
+          "ru": "Кроме меня, все сидят в телефонах.",
+          "tj": "Ба ғайр аз ман, ҳама бо телефон машғуланд."
+        },
+        {
+          "hanzi": "除了这个汉字，别的汉字我都会写。",
+          "uz": "Shu ieroglifdan tashqari boshqa ierogliflarning hammasini yoza olaman.",
+          "ru": "Кроме этого иероглифа, все остальные я умею писать.",
+          "tj": "Ба ғайр аз ин иероглиф, дигар иероглифҳоро навишта метавонам."
+        },
+        {
+          "hanzi": "除了这个行李箱以外，还有别的东西吗？",
+          "uz": "Bu chamadondan tashqari yana boshqa narsa bormi?",
+          "ru": "Кроме этого чемодана, есть ещё что-нибудь?",
+          "tj": "Ба ғайр аз ин ҷомадон, боз чизи дигар ҳаст?"
+        },
+        {
+          "hanzi": "除了唱歌以外，他也喜欢跳舞。",
+          "uz": "Qo‘shiq aytishdan tashqari, u raqs tushishni ham yoqtiradi.",
+          "ru": "Кроме пения, он также любит танцевать.",
+          "tj": "Ба ғайр аз сурудхонӣ, ӯ рақсиданро ҳам дӯст медорад."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene_zh": "在王一飞家客厅，杨同乐和王一飞在聊天儿。",
+      "scene_uz": "Wang Yifeining uyida Yang Tongle va Wang Yifei mehmonxonada suhbatlashmoqda.",
+      "scene_ru": "В гостиной у Ван Ифэй Ян Тунлэ и Ван Ифэй разговаривают.",
+      "scene_tj": "Дар меҳмонхонаи Ван Ифэй Ян Тунлэ ва Ван Ифэй суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "这个假期咱们去哪儿玩玩吧。",
+          "uz": "Bu ta’tilda biror joyga sayrga boraylik.",
+          "ru": "Давай куда-нибудь съездим на этих каникулах.",
+          "tj": "Дар ин таътил биё ба ягон ҷо сайр равем."
+        },
+        {
+          "hanzi": "好啊，你想去哪儿，咱们就去哪儿。",
+          "uz": "Mayli, qayerga borishni xohlasang, o‘sha yerga boramiz.",
+          "ru": "Хорошо, куда ты захочешь, туда и поедем.",
+          "tj": "Хуб, ба куҷо хоҳӣ, ҳамон ҷо меравем."
+        },
+        {
+          "hanzi": "你喜欢海，找个海边住几天，怎么样？",
+          "uz": "Sen dengizni yoqtirasan, dengiz bo‘yida bir necha kun yashasak qanday?",
+          "ru": "Ты любишь море. Может, поживём несколько дней у моря?",
+          "tj": "Ту баҳрро дӯст медорӣ, чанд рӯз дар соҳил зиндагӣ кунем чӣ хел?"
+        },
+        {
+          "hanzi": "现在去海边有点儿冷。",
+          "uz": "Hozir dengiz bo‘yiga borish biroz sovuq.",
+          "ru": "Сейчас на море немного холодно.",
+          "tj": "Ҳоло ба соҳил рафтан каме хунук аст."
+        },
+        {
+          "hanzi": "那去草原吧？草原一点儿也不冷。",
+          "uz": "Unda dashtga boramizmi? Dasht umuman sovuq emas.",
+          "ru": "Тогда поедем в степь? Там совсем не холодно.",
+          "tj": "Пас ба саҳро равем? Он ҷо тамоман хунук нест."
+        },
+        {
+          "hanzi": "这个主意好！我好久没骑马了。",
+          "uz": "Bu yaxshi fikr! Anchadan beri ot minmaganman.",
+          "ru": "Хорошая идея! Я давно не ездил верхом.",
+          "tj": "Ин фикр хуб аст! Кайҳо аспсаворӣ накардаам."
+        },
+        {
+          "hanzi": "对，在草原上骑马、吃羊肉、看月亮，一定很有意思。",
+          "uz": "Ha, dashtda ot minish, qo‘y go‘shti yeyish va oy tomosha qilish albatta qiziq bo‘ladi.",
+          "ru": "Да, ездить верхом, есть баранину и смотреть на луну в степи — наверняка будет интересно.",
+          "tj": "Ҳа, дар саҳро аспсаворӣ кардан, гӯшти гӯсфанд хӯрдан ва моҳро тамошо кардан ҳатман ҷолиб мешавад."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在王一飞家客厅，杨同乐和王一飞在聊天儿。",
+      "scene_uz": "Wang Yifeining uyida Yang Tongle va Wang Yifei mehmonxonada suhbatlashmoqda.",
+      "scene_ru": "В гостиной у Ван Ифэй Ян Тунлэ и Ван Ифэй разговаривают.",
+      "scene_tj": "Дар меҳмонхонаи Ван Ифэй Ян Тунлэ ва Ван Ифэй суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "出去玩的机票买好了吗？",
+          "uz": "Sayohat uchun aviachiptalarni olib bo‘ldingmi?",
+          "ru": "Билеты на поездку уже куплены?",
+          "tj": "Чиптаҳои сафарро харида шуд?"
+        },
+        {
+          "hanzi": "买好了。星期六上午十点一刻起飞。",
+          "uz": "Ha. Shanba kuni ertalab soat o‘ndan chorak o‘tganda uchadi.",
+          "ru": "Да. Вылет в субботу в 10:15 утра.",
+          "tj": "Ҳа. Рӯзи шанбе соати 10:15 парвоз мекунем."
+        },
+        {
+          "hanzi": "宾馆也选好了吗？",
+          "uz": "Mehmonxonani ham tanlab bo‘ldingmi?",
+          "ru": "Гостиницу тоже выбрали?",
+          "tj": "Меҳмонхонаро ҳам интихоб кардед?"
+        },
+        {
+          "hanzi": "是的，这家宾馆很特别，跟别的都不一样。一出门就能看见牛和羊！",
+          "uz": "Ha, bu mehmonxona juda o‘zgacha, boshqalarga umuman o‘xshamaydi. Eshikdan chiqishing bilan sigir va qo‘ylarni ko‘rasan!",
+          "ru": "Да, эта гостиница очень необычная, совсем не похожа на другие. Вышел за дверь — и сразу видишь коров и овец!",
+          "tj": "Ҳа, ин меҳмонхона хеле махсус аст ва аз дигарҳо фарқ мекунад. Ҳамин ки берун мебароӣ, гову гӯсфандро мебинӣ!"
+        },
+        {
+          "hanzi": "太好了！你看看要带什么东西？",
+          "uz": "Zo‘r! Qara, nimalarni olib borish kerak?",
+          "ru": "Отлично! Посмотри, что нужно взять с собой.",
+          "tj": "Олиҷаноб! Бин, чӣ чизҳоро бояд бо худ гирем?"
+        },
+        {
+          "hanzi": "我们不用带太多东西，别忘了拿上新买的相机。",
+          "uz": "Ko‘p narsa olish shart emas, yangi olgan fotoapparatni unutma.",
+          "ru": "Много вещей брать не нужно, только не забудь новую камеру.",
+          "tj": "Чизи зиёд гирифтан лозим нест, камераи навро фаромӯш накун."
+        },
+        {
+          "hanzi": "一定不会忘带的。我现在就去准备行李。",
+          "uz": "Albatta unutmayman. Hozirning o‘zida yuklarni tayyorlayman.",
+          "ru": "Точно не забуду. Сейчас же пойду собирать багаж.",
+          "tj": "Ҳатман фаромӯш намекунам. Ҳозир меравам бағоҷро тайёр мекунам."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在机场，杨同乐和王一飞走出来，跟他们预约的司机兼导游见面。",
+      "scene_uz": "Aeroportda Yang Tongle va Wang Yifei tashqariga chiqib, oldindan buyurtma qilingan haydovchi-gid bilan uchrashmoqda.",
+      "scene_ru": "В аэропорту Ян Тунлэ и Ван Ифэй выходят и встречаются с заранее заказанным водителем-гидом.",
+      "scene_tj": "Дар фурудгоҳ Ян Тунлэ ва Ван Ифэй берун омада, бо ронанда-роҳбалади пешакӣ фармоишдода вохӯрданд.",
+      "turns": [
+        {
+          "hanzi": "欢迎你们！我是你们的司机，我姓李，叫我小李就可以。",
+          "uz": "Xush kelibsizlar! Men sizlarning haydovchingizman, familiyam Li, meni Xiao Li deb chaqirsangiz bo‘ladi.",
+          "ru": "Добро пожаловать! Я ваш водитель, моя фамилия Ли, зовите меня Сяо Ли.",
+          "tj": "Хуш омадед! Ман ронандаи шумо ҳастам, насабам Ли, маро Сяо Ли гӯед мешавад."
+        },
+        {
+          "hanzi": "您好！不好意思，飞机晚点了，让您久等了。",
+          "uz": "Salom! Uzr, samolyot kechikdi, sizni uzoq kuttirib qo‘ydik.",
+          "ru": "Здравствуйте! Простите, самолёт задержался, вам пришлось долго ждать.",
+          "tj": "Салом! Бубахшед, ҳавопаймо дер кард ва шуморо зиёд интизор кардем."
+        },
+        {
+          "hanzi": "没关系。除了这个行李箱以外，还有别的东西吗？",
+          "uz": "Hechqisi yo‘q. Bu chamadondan tashqari yana boshqa narsa bormi?",
+          "ru": "Ничего страшного. Кроме этого чемодана, есть ещё вещи?",
+          "tj": "Ҳеҷ гап нест. Ба ғайр аз ин ҷомадон боз чизи дигар ҳаст?"
+        },
+        {
+          "hanzi": "还有一个包，我自己拿就可以。",
+          "uz": "Yana bitta sumka bor, uni o‘zim olaman.",
+          "ru": "Есть ещё одна сумка, её я понесу сам.",
+          "tj": "Боз як халта ҳаст, худам мебардорам."
+        },
+        {
+          "hanzi": "车在一层，请跟我来。",
+          "uz": "Mashina birinchi qavatda, ortimdan yuringlar.",
+          "ru": "Машина на первом этаже, идите за мной.",
+          "tj": "Мошин дар ошёнаи якум аст, аз паси ман биёед."
+        },
+        {
+          "hanzi": "我们住的宾馆离机场远吗？",
+          "uz": "Biz turadigan mehmonxona aeroportdan uzoqmi?",
+          "ru": "Гостиница, где мы будем жить, далеко от аэропорта?",
+          "tj": "Меҳмонхонае, ки мо мемонем, аз фурудгоҳ дур аст?"
+        },
+        {
+          "hanzi": "不远，三十分钟就能到。两位到了可以先休息休息，晚饭的时候我叫你们。",
+          "uz": "Uzoq emas, o‘ttiz daqiqada yetamiz. Yetib borgach avval dam olishingiz mumkin, kechki ovqat payti sizlarni chaqiraman.",
+          "ru": "Недалеко, за тридцать минут доедем. По приезде сначала отдохните, а к ужину я вас позову.",
+          "tj": "Дур нест, дар сӣ дақиқа мерасем. Баъди расидан аввал истироҳат кунед, вақти шом шуморо даъват мекунам."
+        }
+      ]
+    }
+  ]
+}

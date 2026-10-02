@@ -1,0 +1,754 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 140,
+  "source_lesson": 18,
+  "part_no": 4,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "我学会了包饺子",
+  "subtitle": {
+    "uz": "Hayotdagi o‘zgarish va ulg‘ayish tajribalarini tasvirlash; taxminiy miqdorni aytish; “只要……就……” bilan yetarli shart va natijani ifodalash; Xitoyning an’anaviy Bahor bayrami odatlari bilan tanishish.",
+    "ru": "Описывать изменения в жизни и опыт взросления; выражать приблизительное количество; использовать “只要……就……” для достаточного условия и результата; познакомиться с обычаями традиционного китайского праздника Весны.",
+    "tj": "Тағйироти зиндагӣ ва таҷрибаи калон шуданро тавсиф кардан; миқдори тахминиро ифода кардан; бо “只要……就……” шарти кофӣ ва натиҷаро гуфтан; бо одатҳои ҷашни анъанавии Баҳори Чин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "矿泉水",
+      "pinyin": "kuàngquánshuǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mineral suv",
+        "ru": "минеральная вода",
+        "tj": "оби маъданӣ"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "刚刚",
+      "pinyin": "gānggāng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "hozirgina; endigina",
+        "ru": "только что",
+        "tj": "ҳозиргина"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "出发",
+      "pinyin": "chūfā",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yo‘lga chiqmoq",
+        "ru": "отправляться; выезжать",
+        "tj": "ба роҳ баромадан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "不久",
+      "pinyin": "bùjiǔ",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "ko‘p o‘tmay; yaqinda",
+        "ru": "недолго; вскоре",
+        "tj": "дере нагузашта; наздик"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 4,
+      "title": {
+        "uz": "“从……起” — “…dan boshlab”",
+        "ru": "“从……起” — «начиная с…»",
+        "tj": "“从……起” — «аз ... сар карда»"
+      },
+      "title_zh": "固定格式“从……起”",
+      "rule": {
+        "uz": "“从 + vaqt/hodisa + 起” ma’lum vaqt yoki hodisa yangi holatning boshlanish nuqtasi ekanini bildiradi.",
+        "ru": "“从 + время/событие + 起” показывает точку, с которой начинается новое действие, состояние или период.",
+        "tj": "“从 + вақт/ҳодиса + 起” нуқтаи оғоз шудани амал, ҳолат ё давраи навро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "他从那时起就努力学习。",
+          "pinyin": "Tā cóng nà shí qǐ jiù nǔlì xuéxí.",
+          "translation": {
+            "uz": "U o‘sha paytdan boshlab astoydil o‘qiy boshladi.",
+            "ru": "С того времени он стал усердно учиться.",
+            "tj": "Ӯ аз ҳамон вақт сар карда ҷиддӣ таҳсил кард."
+          }
+        },
+        {
+          "zh": "从那天起，我们就变成了好朋友。",
+          "pinyin": "Cóng nà tiān qǐ, wǒmen jiù biànchéng le hǎo péngyou.",
+          "translation": {
+            "uz": "O‘sha kundan boshlab biz yaxshi do‘st bo‘lib qoldik.",
+            "ru": "С того дня мы стали хорошими друзьями.",
+            "tj": "Аз ҳамон рӯз мо дӯстони хуб шудем."
+          }
+        },
+        {
+          "zh": "从那次旅游起，我对中国文化更有兴趣了。",
+          "pinyin": "Cóng nà cì lǚyóu qǐ, wǒ duì Zhōngguó wénhuà gèng yǒu xìngqù le.",
+          "translation": {
+            "uz": "O‘sha sayohatdan boshlab Xitoy madaniyatiga qiziqishim yanada oshdi.",
+            "ru": "После той поездки я стал ещё больше интересоваться китайской культурой.",
+            "tj": "Аз ҳамон сафар сар карда шавқам ба фарҳанги Чин боз ҳам зиёд шуд."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Samolyotda Bai Jiayue va Li Wen suhbatlashmoqda.",
+        "ru": "В самолёте Бай Цзяюэ и Ли Вэнь разговаривают.",
+        "tj": "Дар ҳавопаймо Бай Ҷяюэ ва Ли Вэн суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "你们怎样过节？",
+          "pinyin": "Nǐmen zěnyàng guòjié?",
+          "text": {
+            "uz": "Sizlar bayramni qanday nishonlaysizlar?",
+            "ru": "Как вы отмечаете праздник?",
+            "tj": "Шумо идро чӣ тавр ҷашн мегиред?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "那你跟家人会一起做什么？",
+          "pinyin": "Nà nǐ gēn jiārén huì yìqǐ zuò shénme?",
+          "text": {
+            "uz": "Unda oilang bilan birga nimalar qilasizlar?",
+            "ru": "А что вы обычно делаете вместе с семьёй?",
+            "tj": "Пас бо оилаатон якҷо чӣ кор мекунед?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "大概七八天。",
+          "pinyin": "Dàgài qī bā tiān.",
+          "text": {
+            "uz": "Taxminan yetti-sakkiz kun.",
+            "ru": "Примерно семь-восемь дней.",
+            "tj": "Тақрибан ҳафт-ҳашт рӯз."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida Bai Jiayue uning ota-onasini Yangi yil bilan tabriklamoqda.",
+        "ru": "Дома у Ли Вэня Бай Цзяюэ поздравляет его родителей с Новым годом.",
+        "tj": "Дар хонаи Ли Вэн Бай Ҷяюэ падару модари ӯро бо Соли нав табрик мекунад."
+      },
+      "dialogue": [
+        {
+          "speaker": "李叔叔",
+          "zh": "谢谢家月，你太客气了！",
+          "pinyin": "Xièxie Jiāyuè, nǐ tài kèqi le!",
+          "text": {
+            "uz": "Rahmat, Jiayue, juda ovora bo‘libsan!",
+            "ru": "Спасибо, Цзяюэ, не стоило так церемониться!",
+            "tj": "Раҳмат, Ҷяюэ, ин қадар таоруф лозим набуд!"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "谢谢您和叔叔请我来家里做客。",
+          "pinyin": "Xièxie nín hé shūshu qǐng wǒ lái jiālǐ zuòkè.",
+          "text": {
+            "uz": "Meni uyingizga mehmonga taklif qilganingiz uchun sizga va amakiga rahmat.",
+            "ru": "Спасибо вам и дяде, что пригласили меня в гости.",
+            "tj": "Раҳмат ба шумо ва амак, ки маро ба хона меҳмон даъват кардед."
+          }
+        },
+        {
+          "speaker": "李叔叔",
+          "zh": "桌子上有饮料，还有矿泉水，你想喝什么就自己拿。",
+          "pinyin": "Zhuōzi shàng yǒu yǐnliào, hái yǒu kuàngquánshuǐ, nǐ xiǎng hē shénme jiù zìjǐ ná.",
+          "text": {
+            "uz": "Stolda ichimliklar va mineral suv bor, nimani ichging kelsa o‘zing olaver.",
+            "ru": "На столе напитки и минеральная вода, бери сама что хочешь.",
+            "tj": "Рӯйи миз нӯшокиҳо ва оби маъданӣ ҳаст, ҳар чӣ хоҳӣ худат бигир."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我刚刚看视频学会了包饺子，我跟你们一起包吧。",
+          "pinyin": "Wǒ gānggāng kàn shìpín xuéhuì le bāo jiǎozi, wǒ gēn nǐmen yìqǐ bāo ba.",
+          "text": {
+            "uz": "Men hozirgina videodan jiaozi tugishni o‘rgandim, sizlar bilan birga qilay.",
+            "ru": "Я только что по видео научилась лепить цзяоцзы, давайте я помогу вам.",
+            "tj": "Ман ҳозиргина аз видео ҷяози печониданро омӯхтам, бо шумо якҷо мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li Wenning uyida uning onasi va Bai Jiayue suhbatlashmoqda.",
+        "ru": "Дома у Ли Вэня его мама и Бай Цзяюэ разговаривают.",
+        "tj": "Дар хонаи Ли Вэн модараш ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "白家月",
+          "zh": "那是三四年前吧？",
+          "pinyin": "Nà shì sān sì nián qián ba?",
+          "text": {
+            "uz": "Bu uch-to‘rt yil oldin bo‘lgan-a?",
+            "ru": "Это было года три-четыре назад, да?",
+            "tj": "Ин се-чор сол пеш буд, дуруст?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "矿泉水",
+            "pinyin": "kuàngquánshuǐ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mineral suv",
+              "ru": "минеральная вода",
+              "tj": "оби маъданӣ"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "矿泉水",
+          "pinyin": "kuàngquánshuǐ",
+          "options": [
+            "矿泉水",
+            "怎样",
+            "节",
+            "过节"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "矿泉水 — mineral suv (kuàngquánshuǐ)",
+            "ru": "矿泉水 — минеральная вода (kuàngquánshuǐ)",
+            "tj": "矿泉水 — оби маъданӣ (kuàngquánshuǐ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "刚刚",
+            "pinyin": "gānggāng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "hozirgina; endigina",
+              "ru": "только что",
+              "tj": "ҳозиргина"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "刚刚 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 刚刚:",
+            "tj": "Маънои калимаи 刚刚-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bayramni nishonlamoq",
+              "ru": "праздновать праздник",
+              "tj": "идро ҷашн гирифтан"
+            },
+            {
+              "uz": "hozirgina; endigina",
+              "ru": "только что",
+              "tj": "ҳозиргина"
+            },
+            {
+              "uz": "bayram",
+              "ru": "праздник",
+              "tj": "ид"
+            },
+            {
+              "uz": "qanday; qanday qilib",
+              "ru": "как; каким образом",
+              "tj": "чӣ хел; чӣ гуна"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "刚刚 = hozirgina; endigina (gānggāng)",
+            "ru": "刚刚 = только что (gānggāng)",
+            "tj": "刚刚 = ҳозиргина (gānggāng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "出发",
+            "pinyin": "chūfā",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yo‘lga chiqmoq",
+              "ru": "отправляться; выезжать",
+              "tj": "ба роҳ баромадан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "chūfā qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chūfā?",
+            "tj": "chūfā кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "出发",
+            "怎样",
+            "节",
+            "过节"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "出发 = yo‘lga chiqmoq (chūfā)",
+            "ru": "出发 = отправляться; выезжать (chūfā)",
+            "tj": "出发 = ба роҳ баромадан (chūfā)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "不久",
+            "pinyin": "bùjiǔ",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "ko‘p o‘tmay; yaqinda",
+              "ru": "недолго; вскоре",
+              "tj": "дере нагузашта; наздик"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "不久",
+          "pinyin": "bùjiǔ",
+          "translation": {
+            "uz": "ko‘p o‘tmay; yaqinda",
+            "ru": "недолго; вскоре",
+            "tj": "дере нагузашта; наздик"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "不久 talaffuzini tanlang:",
+            "ru": "Выберите произношение 不久:",
+            "tj": "Талаффузи 不久-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zěnyàng",
+            "jié",
+            "guòjié",
+            "bùjiǔ"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "不久 — bùjiǔ",
+            "ru": "不久 — bùjiǔ",
+            "tj": "不久 — bùjiǔ"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'mineral suv' xitoycha qaysi?",
+            "ru": "'минеральная вода' по-китайски?",
+            "tj": "'оби маъданӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "怎样",
+            "节",
+            "过节",
+            "矿泉水"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "mineral suv = 矿泉水 (kuàngquánshuǐ)",
+            "ru": "минеральная вода = 矿泉水 (kuàngquánshuǐ)",
+            "tj": "оби маъданӣ = 矿泉水 (kuàngquánshuǐ)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "矿泉水",
+              {
+                "uz": "mineral suv",
+                "ru": "минеральная вода",
+                "tj": "оби маъданӣ"
+              }
+            ],
+            [
+              "刚刚",
+              {
+                "uz": "hozirgina; endigina",
+                "ru": "только что",
+                "tj": "ҳозиргина"
+              }
+            ],
+            [
+              "出发",
+              {
+                "uz": "yo‘lga chiqmoq",
+                "ru": "отправляться; выезжать",
+                "tj": "ба роҳ баромадан"
+              }
+            ],
+            [
+              "不久",
+              {
+                "uz": "ko‘p o‘tmay; yaqinda",
+                "ru": "недолго; вскоре",
+                "tj": "дере нагузашта; наздик"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "“从……起” — “…dan boshlab”",
+              "ru": "“从……起” — «начиная с…»",
+              "tj": "“从……起” — «аз ... сар карда»"
+            },
+            "title_zh": "固定格式“从……起”",
+            "rule": {
+              "uz": "“从 + vaqt/hodisa + 起” ma’lum vaqt yoki hodisa yangi holatning boshlanish nuqtasi ekanini bildiradi.",
+              "ru": "“从 + время/событие + 起” показывает точку, с которой начинается новое действие, состояние или период.",
+              "tj": "“从 + вақт/ҳодиса + 起” нуқтаи оғоз шудани амал, ҳолат ё давраи навро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "他从那时起就努力学习。",
+                "pinyin": "Tā cóng nà shí qǐ jiù nǔlì xuéxí.",
+                "translation": {
+                  "uz": "U o‘sha paytdan boshlab astoydil o‘qiy boshladi.",
+                  "ru": "С того времени он стал усердно учиться.",
+                  "tj": "Ӯ аз ҳамон вақт сар карда ҷиддӣ таҳсил кард."
+                }
+              },
+              {
+                "zh": "从那天起，我们就变成了好朋友。",
+                "pinyin": "Cóng nà tiān qǐ, wǒmen jiù biànchéng le hǎo péngyou.",
+                "translation": {
+                  "uz": "O‘sha kundan boshlab biz yaxshi do‘st bo‘lib qoldik.",
+                  "ru": "С того дня мы стали хорошими друзьями.",
+                  "tj": "Аз ҳамон рӯз мо дӯстони хуб шудем."
+                }
+              },
+              {
+                "zh": "从那次旅游起，我对中国文化更有兴趣了。",
+                "pinyin": "Cóng nà cì lǚyóu qǐ, wǒ duì Zhōngguó wénhuà gèng yǒu xìngqù le.",
+                "translation": {
+                  "uz": "O‘sha sayohatdan boshlab Xitoy madaniyatiga qiziqishim yanada oshdi.",
+                  "ru": "После той поездки я стал ещё больше интересоваться китайской культурой.",
+                  "tj": "Аз ҳамон сафар сар карда шавқам ба фарҳанги Чин боз ҳам зиёд шуд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U o‘sha paytdan boshlab astoydil o‘qiy boshladi.",
+            "ru": "С того времени он стал усердно учиться.",
+            "tj": "Ӯ аз ҳамон вақт сар карда ҷиддӣ таҳсил кард."
+          },
+          "tokens": [
+            "学习",
+            "起",
+            "那",
+            "时",
+            "努力",
+            "过节",
+            "他",
+            "怎样",
+            "从",
+            "就"
+          ],
+          "answer_tokens": [
+            "他",
+            "从",
+            "那",
+            "时",
+            "起",
+            "就",
+            "努力",
+            "学习"
+          ],
+          "explanation": {
+            "uz": "他从那时起就努力学习。 — Tā cóng nà shí qǐ jiù nǔlì xuéxí.",
+            "ru": "他从那时起就努力学习。 — Tā cóng nà shí qǐ jiù nǔlì xuéxí.",
+            "tj": "他从那时起就努力学习。 — Tā cóng nà shí qǐ jiù nǔlì xuéxí."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U o‘sha paytdan boshlab astoydil o‘qiy boshladi.» — xitoychada qaysi biri?",
+            "ru": "«С того времени он стал усердно учиться.» — какое предложение по-китайски?",
+            "tj": "«Ӯ аз ҳамон вақт сар карда ҷиддӣ таҳсил кард.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "他从那时起就努力学习。",
+            "从那天起，我们就变成了好朋友。",
+            "从那次旅游起，我对中国文化更有兴趣了。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "他从那时起就努力学习。 — Tā cóng nà shí qǐ jiù nǔlì xuéxí.",
+            "ru": "他从那时起就努力学习。 — Tā cóng nà shí qǐ jiù nǔlì xuéxí.",
+            "tj": "他从那时起就努力学习。 — Tā cóng nà shí qǐ jiù nǔlì xuéxí."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "矿泉水",
+              {
+                "uz": "mineral suv",
+                "ru": "минеральная вода",
+                "tj": "оби маъданӣ"
+              }
+            ],
+            [
+              "刚刚",
+              {
+                "uz": "hozirgina; endigina",
+                "ru": "только что",
+                "tj": "ҳозиргина"
+              }
+            ],
+            [
+              "出发",
+              {
+                "uz": "yo‘lga chiqmoq",
+                "ru": "отправляться; выезжать",
+                "tj": "ба роҳ баромадан"
+              }
+            ],
+            [
+              "不久",
+              {
+                "uz": "ko‘p o‘tmay; yaqinda",
+                "ru": "недолго; вскоре",
+                "tj": "дере нагузашта; наздик"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "不久",
+          "pinyin": "bùjiǔ",
+          "translation": {
+            "uz": "ko‘p o‘tmay; yaqinda",
+            "ru": "недолго; вскоре",
+            "tj": "дере нагузашта; наздик"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "见面 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 见面:",
+            "tj": "Маънои калимаи 见面-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bayramni nishonlamoq",
+              "ru": "праздновать праздник",
+              "tj": "идро ҷашн гирифтан"
+            },
+            {
+              "uz": "qanday; qanday qilib",
+              "ru": "как; каким образом",
+              "tj": "чӣ хел; чӣ гуна"
+            },
+            {
+              "uz": "uchrashmoq",
+              "ru": "встречаться",
+              "tj": "вохӯрдан"
+            },
+            {
+              "uz": "bayram",
+              "ru": "праздник",
+              "tj": "ид"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "见面 = uchrashmoq (jiànmiàn)",
+            "ru": "见面 = встречаться (jiànmiàn)",
+            "tj": "见面 = вохӯрдан (jiànmiàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "见面",
+            "pinyin": "jiànmiàn",
+            "meaning": {
+              "uz": "uchrashmoq",
+              "ru": "встречаться",
+              "tj": "вохӯрдан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ko‘p o‘tmay; yaqinda' xitoycha qaysi?",
+            "ru": "'недолго; вскоре' по-китайски?",
+            "tj": "'дере нагузашта; наздик' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "节",
+            "怎样",
+            "不久",
+            "过节"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "ko‘p o‘tmay; yaqinda = 不久 (bùjiǔ)",
+            "ru": "недолго; вскоре = 不久 (bùjiǔ)",
+            "tj": "дере нагузашта; наздик = 不久 (bùjiǔ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "不久",
+            "pinyin": "bùjiǔ",
+            "meaning": {
+              "uz": "ko‘p o‘tmay; yaqinda",
+              "ru": "недолго; вскоре",
+              "tj": "дере нагузашта; наздик"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

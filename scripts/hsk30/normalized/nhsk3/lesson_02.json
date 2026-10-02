@@ -1,0 +1,365 @@
+{
+  "track": "hsk30",
+  "level": "nhsk3",
+  "lesson": 2,
+  "source": {
+    "ref": "main",
+    "pdf_path": "HSK 3.0 PDF/新HSK3教材.pdf",
+    "pages": [
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30
+    ]
+  },
+  "title": {
+    "hanzi": "你们想吃什么就点什么",
+    "pinyin": "Nǐmen xiǎng chī shénme jiù diǎn shénme"
+  },
+  "objectives": [
+    "能听懂并谈论餐厅的菜品、服务和个人的饮食习惯。",
+    "能听懂并使用疑问代词指代任何一个对象。",
+    "了解中国人就餐时使用的餐具。"
+  ],
+  "vocabulary": [
+    {
+      "hanzi": "菜单",
+      "pinyin": "càidān",
+      "part_of_speech": "n.",
+      "source_page": 23
+    },
+    {
+      "hanzi": "又",
+      "pinyin": "yòu",
+      "part_of_speech": "adv.",
+      "source_page": 23
+    },
+    {
+      "hanzi": "饿",
+      "pinyin": "è",
+      "part_of_speech": "adj.",
+      "source_page": 23
+    },
+    {
+      "hanzi": "渴",
+      "pinyin": "kě",
+      "part_of_speech": "adj.",
+      "source_page": 23
+    },
+    {
+      "hanzi": "客气",
+      "pinyin": "kèqi",
+      "part_of_speech": "v./adj.",
+      "source_page": 23
+    },
+    {
+      "hanzi": "饮料",
+      "pinyin": "yǐnliào",
+      "part_of_speech": "n.",
+      "source_page": 23
+    },
+    {
+      "hanzi": "好久",
+      "pinyin": "hǎojiǔ",
+      "part_of_speech": "adv.",
+      "source_page": 23
+    },
+    {
+      "hanzi": "服务",
+      "pinyin": "fúwù",
+      "part_of_speech": "v.",
+      "source_page": 25
+    },
+    {
+      "hanzi": "员",
+      "pinyin": "yuán",
+      "part_of_speech": "suf.",
+      "source_page": 25
+    },
+    {
+      "hanzi": "双",
+      "pinyin": "shuāng",
+      "part_of_speech": "m.",
+      "source_page": 25
+    },
+    {
+      "hanzi": "筷子",
+      "pinyin": "kuàizi",
+      "part_of_speech": "n.",
+      "source_page": 25
+    },
+    {
+      "hanzi": "勺子",
+      "pinyin": "sháozi",
+      "part_of_speech": "n.",
+      "source_page": 25
+    },
+    {
+      "hanzi": "碗",
+      "pinyin": "wǎn",
+      "part_of_speech": "n.",
+      "source_page": 25
+    },
+    {
+      "hanzi": "马上",
+      "pinyin": "mǎshàng",
+      "part_of_speech": "adv.",
+      "source_page": 25
+    },
+    {
+      "hanzi": "热情",
+      "pinyin": "rèqíng",
+      "part_of_speech": "adj.",
+      "source_page": 25
+    },
+    {
+      "hanzi": "尝",
+      "pinyin": "cháng",
+      "part_of_speech": "v.",
+      "source_page": 25
+    },
+    {
+      "hanzi": "记",
+      "pinyin": "jì",
+      "part_of_speech": "v.",
+      "source_page": 25
+    },
+    {
+      "hanzi": "用",
+      "pinyin": "yòng",
+      "part_of_speech": "v.",
+      "source_page": 25
+    },
+    {
+      "hanzi": "鸡",
+      "pinyin": "jī",
+      "part_of_speech": "n.",
+      "source_page": 27
+    },
+    {
+      "hanzi": "张",
+      "pinyin": "zhāng",
+      "part_of_speech": "m.",
+      "source_page": 27
+    },
+    {
+      "hanzi": "不用",
+      "pinyin": "búyòng",
+      "part_of_speech": "adv.",
+      "source_page": 27
+    },
+    {
+      "hanzi": "选",
+      "pinyin": "xuǎn",
+      "part_of_speech": "v.",
+      "source_page": 27
+    },
+    {
+      "hanzi": "外卖",
+      "pinyin": "wàimài",
+      "part_of_speech": "n./v.",
+      "source_page": 27
+    },
+    {
+      "hanzi": "方便",
+      "pinyin": "fāngbiàn",
+      "part_of_speech": "adj.",
+      "source_page": 27
+    },
+    {
+      "hanzi": "蛋糕",
+      "pinyin": "dàngāo",
+      "part_of_speech": "n.",
+      "source_page": 28
+    },
+    {
+      "hanzi": "只",
+      "pinyin": "zhǐ",
+      "part_of_speech": "adv.",
+      "source_page": 28
+    },
+    {
+      "hanzi": "方便面",
+      "pinyin": "fāngbiànmiàn",
+      "part_of_speech": "n.",
+      "source_page": 28
+    },
+    {
+      "hanzi": "简单",
+      "pinyin": "jiǎndān",
+      "part_of_speech": "adj.",
+      "source_page": 28
+    }
+  ],
+  "grammar": [
+    {
+      "label": "并列复句“又……又……”",
+      "source_page": 24,
+      "examples": [
+        {
+          "hanzi": "我现在还真是又饿又渴。",
+          "pinyin": "Wǒ xiànzài hái zhēn shì yòu è yòu kě."
+        },
+        {
+          "hanzi": "那个女孩儿又高又漂亮。",
+          "pinyin": "Nàge nǚháir yòu gāo yòu piàoliang."
+        },
+        {
+          "hanzi": "这个饭馆的菜又便宜又好吃。",
+          "pinyin": "Zhège fànguǎn de cài yòu piányi yòu hǎochī."
+        }
+      ]
+    },
+    {
+      "label": "疑问代词的非疑问用法（2）",
+      "source_page": 25,
+      "examples": [
+        {
+          "hanzi": "哪个菜都好吃。",
+          "pinyin": "Nǎge cài dōu hǎochī."
+        },
+        {
+          "hanzi": "这次旅游，我去哪儿都可以。",
+          "pinyin": "Zhè cì lǚyóu, wǒ qù nǎr dōu kěyǐ."
+        },
+        {
+          "hanzi": "我下午有时间，你想什么时候来都没问题。",
+          "pinyin": "Wǒ xiàwǔ yǒu shíjiān, nǐ xiǎng shénme shíhou lái dōu méi wèntí."
+        }
+      ]
+    },
+    {
+      "label": "疑问代词的非疑问用法（3）",
+      "source_page": 27,
+      "examples": [
+        {
+          "hanzi": "你们想吃什么就点什么。",
+          "pinyin": "Nǐmen xiǎng chī shénme jiù diǎn shénme."
+        },
+        {
+          "hanzi": "你觉得哪个好看就买哪个。",
+          "pinyin": "Nǐ juéde nǎge hǎokàn jiù mǎi nǎge."
+        },
+        {
+          "hanzi": "你想去哪儿，我们就去哪儿。",
+          "pinyin": "Nǐ xiǎng qù nǎr, wǒmen jiù qù nǎr."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": "在饭馆，王一雪、刘明、白家月和李文在点菜。",
+      "source_page": 23,
+      "turns": [
+        {
+          "speaker": "王一雪",
+          "hanzi": "家月，李文，你们看看菜单，想吃点儿什么？",
+          "pinyin": "Jiāyuè, Lǐ Wén, nǐmen kànkan càidān, xiǎng chī diǎnr shénme?"
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "谢谢一雪姐，我都可以，你们点吧。",
+          "pinyin": "Xièxie Yīxuě jiě, wǒ dōu kěyǐ, nǐmen diǎn ba."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "飞了这么远，现在还真是又饿又渴。",
+          "pinyin": "Fēi le zhème yuǎn, xiànzài hái zhēn shì yòu è yòu kě."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "那多点点儿，别客气。你们喝什么饮料？",
+          "pinyin": "Nà duō diǎn diǎnr, bié kèqi. Nǐmen hē shénme yǐnliào?"
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "好久没喝中国茶，也好久没吃饺子了。我想喝绿茶、吃饺子，可以吗？",
+          "pinyin": "Hǎojiǔ méi hē Zhōngguó chá, yě hǎojiǔ méi chī jiǎozi le. Wǒ xiǎng hē lǜchá, chī jiǎozi, kěyǐ ma?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "没问题。你们看看还想吃什么。",
+          "pinyin": "Méi wèntí. Nǐmen kànkan hái xiǎng chī shénme."
+        }
+      ]
+    },
+    {
+      "scene": "在饭馆，王一雪、刘明、白家月和李文一起吃饭。",
+      "source_page": 25,
+      "turns": [
+        {
+          "speaker": "王一雪",
+          "hanzi": "服务员，再给我们拿一双筷子、一个勺子和一个碗。",
+          "pinyin": "Fúwùyuán, zài gěi wǒmen ná yì shuāng kuàizi, yí ge sháozi hé yí ge wǎn."
+        },
+        {
+          "speaker": "服务员",
+          "hanzi": "好的，请等一下，我马上去拿。",
+          "pinyin": "Hǎo de, qǐng děng yíxià, wǒ mǎshàng qù ná."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "这家饭馆的服务很热情，菜也都做得很好吃。你们尝尝，看喜不喜欢这些菜。",
+          "pinyin": "Zhè jiā fànguǎn de fúwù hěn rèqíng, cài yě dōu zuò de hěn hǎochī. Nǐmen chángchang, kàn xǐ bu xǐhuan zhèxiē cài."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "哪个菜都好吃。您点的这些菜真不错。",
+          "pinyin": "Nǎge cài dōu hǎochī. Nín diǎn de zhèxiē cài zhēn búcuò."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "这里的饭菜又便宜又好吃，我们经常来，服务员都记住我们爱吃的菜了。",
+          "pinyin": "Zhèlǐ de fàncài yòu piányi yòu hǎochī, wǒmen jīngcháng lái, fúwùyuán dōu jìzhu wǒmen ài chī de cài le."
+        },
+        {
+          "speaker": "服务员",
+          "hanzi": "王姐，您经常来吃饭，今天送您一些水果，请慢用。",
+          "pinyin": "Wáng jiě, nín jīngcháng lái chīfàn, jīntiān sòng nín yìxiē shuǐguǒ, qǐng mànyòng."
+        }
+      ]
+    },
+    {
+      "scene": "在饭馆，王一雪、刘明、白家月和李文继续边吃边聊。",
+      "source_page": 26,
+      "turns": [
+        {
+          "speaker": "白家月",
+          "hanzi": "这个鸡肉饭太好吃了，我要再来吃一次。",
+          "pinyin": "Zhège jīròufàn tài hǎochī le, wǒ yào zài lái chī yí cì."
+        },
+        {
+          "speaker": "李文",
+          "hanzi": "你可以拿走这张菜单，看看下次还吃点儿什么。",
+          "pinyin": "Nǐ kěyǐ názǒu zhè zhāng càidān, kànkan xià cì hái chī diǎnr shénme."
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "不用拿菜单，在手机上就能看到，也可以选好了让他们给你送。",
+          "pinyin": "Búyòng ná càidān, zài shǒujī shàng jiù néng kàndào, yě kěyǐ xuǎn hǎo le ràng tāmen gěi nǐ sòng."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "他们家还能送外卖？",
+          "pinyin": "Tāmen jiā hái néng sòng wàimài?"
+        },
+        {
+          "speaker": "王一雪",
+          "hanzi": "对，现在很多饭馆都能送外卖，想吃什么就点什么。",
+          "pinyin": "Duì, xiànzài hěn duō fànguǎn dōu néng sòng wàimài, xiǎng chī shénme jiù diǎn shénme."
+        },
+        {
+          "speaker": "白家月",
+          "hanzi": "那真是太方便了！",
+          "pinyin": "Nà zhēn shì tài fāngbiàn le!"
+        }
+      ]
+    }
+  ]
+}

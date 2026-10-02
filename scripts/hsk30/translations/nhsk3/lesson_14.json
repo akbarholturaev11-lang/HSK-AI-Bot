@@ -1,0 +1,460 @@
+{
+  "schema_version": 1,
+  "lesson": 14,
+  "source_title_hanzi": "这本书被别人借走了",
+  "translation_origin": "assistant_authored_from_source_verified_chinese",
+  "goal": {
+    "uz": "Kampusdagi tadbirlar haqida gaplashish; boshqalarga dalda berish va qo‘llab-quvvatlash; “被” bilan passiv ma’noni ifodalash.",
+    "ru": "Говорить о мероприятиях в кампусе; поддерживать и подбадривать других; выражать пассивное значение с помощью “被”.",
+    "tj": "Дар бораи чорабиниҳои кампус суҳбат кардан; дигаронро рӯҳбаланд кардан; бо “被” маънои пассивро ифода кардан."
+  },
+  "intro_text": {
+    "uz": "Dars kutubxona, yo‘qolgan kampus karta va maktab kechasi haqidagi suhbatlar orqali “被” passiv gapi, “先……再/然后……” va “X什么啊” kabi dalda/inkor ifodasini o‘rgatadi.",
+    "ru": "Урок через библиотеку, потерянную кампус-карту и школьный вечер вводит пассив с “被”, последовательность “先……再/然后……” и разговорную модель “X什么啊” для возражения/подбадривания.",
+    "tj": "Дарс тавассути китобхона, корти гумшудаи кампус ва шоми мактаб ҷумлаи пассивии “被”, пайдарпайии “先……再/然后……” ва қолаби гуфтугӯии “X什么啊”-ро меомӯзонад."
+  },
+  "vocabulary": [
+    {
+      "hanzi": "词典",
+      "pinyin": "cídiǎn",
+      "uz": "lug‘at",
+      "ru": "словарь",
+      "tj": "луғат"
+    },
+    {
+      "hanzi": "最好",
+      "pinyin": "zuìhǎo",
+      "uz": "yaxshisi; eng yaxshi",
+      "ru": "лучше всего; самый хороший",
+      "tj": "беҳтараш; беҳтарин"
+    },
+    {
+      "hanzi": "节",
+      "pinyin": "jié",
+      "uz": "dars uchun hisob so‘zi",
+      "ru": "счётное слово для уроков",
+      "tj": "воҳиди ҳисоб барои дарс"
+    },
+    {
+      "hanzi": "图书馆",
+      "pinyin": "túshūguǎn",
+      "uz": "kutubxona",
+      "ru": "библиотека",
+      "tj": "китобхона"
+    },
+    {
+      "hanzi": "被",
+      "pinyin": "bèi",
+      "uz": "passiv gap ko‘rsatkichi",
+      "ru": "показатель пассивной конструкции",
+      "tj": "нишондиҳандаи ҷумлаи пассив"
+    },
+    {
+      "hanzi": "名人",
+      "pinyin": "míngrén",
+      "uz": "mashhur shaxs",
+      "ru": "известный человек",
+      "tj": "шахси машҳур"
+    },
+    {
+      "hanzi": "故事",
+      "pinyin": "gùshi",
+      "uz": "hikoya",
+      "ru": "история; рассказ",
+      "tj": "ҳикоя"
+    },
+    {
+      "hanzi": "然后",
+      "pinyin": "ránhòu",
+      "uz": "keyin; undan so‘ng",
+      "ru": "затем; потом",
+      "tj": "баъд; сипас"
+    },
+    {
+      "hanzi": "报纸",
+      "pinyin": "bàozhǐ",
+      "uz": "gazeta",
+      "ru": "газета",
+      "tj": "рӯзнома"
+    },
+    {
+      "hanzi": "忘记",
+      "pinyin": "wàngjì",
+      "uz": "unutmoq",
+      "ru": "забывать",
+      "tj": "фаромӯш кардан"
+    },
+    {
+      "hanzi": "电子书",
+      "pinyin": "diànzǐshū",
+      "uz": "elektron kitob",
+      "ru": "электронная книга",
+      "tj": "китоби электронӣ"
+    },
+    {
+      "hanzi": "女生",
+      "pinyin": "nǚshēng",
+      "uz": "qiz talaba; qiz bola",
+      "ru": "студентка; девушка",
+      "tj": "донишҷӯи духтар; духтар"
+    },
+    {
+      "hanzi": "表演",
+      "pinyin": "biǎoyǎn",
+      "uz": "sahna ko‘rinishi ko‘rsatmoq; ijro etmoq",
+      "ru": "выступать; исполнять",
+      "tj": "баромад кардан; иҷро кардан"
+    },
+    {
+      "hanzi": "节目",
+      "pinyin": "jiémù",
+      "uz": "dastur; sahna raqami",
+      "ru": "номер программы; выступление",
+      "tj": "барнома; рақами саҳнавӣ"
+    },
+    {
+      "hanzi": "怎么办",
+      "pinyin": "zěnme bàn",
+      "uz": "nima qilamiz?; nima qilish kerak?",
+      "ru": "что делать?",
+      "tj": "чӣ бояд кард?"
+    },
+    {
+      "hanzi": "校长",
+      "pinyin": "xiàozhǎng",
+      "uz": "maktab/universitet rahbari",
+      "ru": "директор; ректор",
+      "tj": "директор; роҳбари муассиса"
+    },
+    {
+      "hanzi": "面前",
+      "pinyin": "miànqián",
+      "uz": "oldida",
+      "ru": "перед; перед глазами",
+      "tj": "дар пеш; назди"
+    },
+    {
+      "hanzi": "有些",
+      "pinyin": "yǒuxiē",
+      "uz": "biroz; ayrim",
+      "ru": "немного; некоторые",
+      "tj": "каме; баъзе"
+    },
+    {
+      "hanzi": "相信",
+      "pinyin": "xiāngxìn",
+      "uz": "ishonmoq",
+      "ru": "верить",
+      "tj": "бовар кардан"
+    },
+    {
+      "hanzi": "新年",
+      "pinyin": "xīnnián",
+      "uz": "Yangi yil",
+      "ru": "Новый год",
+      "tj": "Соли нав"
+    },
+    {
+      "hanzi": "班级",
+      "pinyin": "bānjí",
+      "uz": "sinf; guruh",
+      "ru": "класс; учебная группа",
+      "tj": "синф; гурӯҳ"
+    },
+    {
+      "hanzi": "跳",
+      "pinyin": "tiào",
+      "uz": "sakramoq; raqs tushmoq",
+      "ru": "прыгать; танцевать",
+      "tj": "ҷаҳидан; рақсидан"
+    },
+    {
+      "hanzi": "留学生",
+      "pinyin": "liúxuéshēng",
+      "uz": "chet ellik talaba",
+      "ru": "иностранный студент",
+      "tj": "донишҷӯи хориҷӣ"
+    },
+    {
+      "hanzi": "最后",
+      "pinyin": "zuìhòu",
+      "uz": "oxiri; nihoyat",
+      "ru": "в конце; последний",
+      "tj": "охир; ниҳоят"
+    },
+    {
+      "hanzi": "一块儿",
+      "pinyin": "yíkuàir",
+      "uz": "birga",
+      "ru": "вместе",
+      "tj": "якҷо"
+    },
+    {
+      "hanzi": "网站",
+      "pinyin": "wǎngzhàn",
+      "uz": "veb-sayt",
+      "ru": "веб-сайт",
+      "tj": "сомона"
+    },
+    {
+      "hanzi": "视频",
+      "pinyin": "shìpín",
+      "uz": "video",
+      "ru": "видео",
+      "tj": "видео"
+    }
+  ],
+  "grammar": [
+    {
+      "label": "被动句（1）",
+      "title_uz": "Passiv gap (1): “被”",
+      "title_ru": "Пассивное предложение (1): “被”",
+      "title_tj": "Ҷумлаи пассивӣ (1): “被”",
+      "rule_uz": "“A 被 B + fe’l” shaklida A harakat ta’siriga uchraydigan obyekt, B esa harakatni bajaruvchi shaxs yoki sabab bo‘ladi. B ayrim hollarda tushirib qoldirilishi mumkin.",
+      "rule_ru": "В конструкции “A 被 B + глагол” A — объект воздействия, B — исполнитель действия. В некоторых случаях исполнитель может не называться.",
+      "rule_tj": "Дар сохтори “A 被 B + феъл” A объекти таъсир ва B иҷрокунандаи амал аст. Баъзан иҷрокунанда зикр намешавад.",
+      "examples": [
+        {
+          "hanzi": "这本书被别人借走了。",
+          "uz": "Bu kitobni boshqa birov olib ketibdi.",
+          "ru": "Эту книгу кто-то другой взял.",
+          "tj": "Ин китобро каси дигар гирифта бурдааст."
+        },
+        {
+          "hanzi": "水果可能被弟弟吃了。",
+          "uz": "Mevalarni ukam yeb qo‘ygan bo‘lishi mumkin.",
+          "ru": "Возможно, фрукты съел младший брат.",
+          "tj": "Шояд меваҳоро додарам хӯрда бошад."
+        },
+        {
+          "hanzi": "我们俩经常被叫错名字。",
+          "uz": "Ikkalamizning ismimizni tez-tez adashtirib aytishadi.",
+          "ru": "Наши имена часто путают.",
+          "tj": "Номи ҳардуи моро зуд-зуд хато мегӯянд."
+        }
+      ]
+    },
+    {
+      "label": "承接复句“先……，再/然后……”",
+      "title_uz": "Ketma-ket gap “先……再/然后……”",
+      "title_ru": "Последовательная конструкция “先……再/然后……”",
+      "title_tj": "Сохтори пайдарпай “先……再/然后……”",
+      "rule_uz": "“先 A，再/然后 B” avval A, undan keyin B bajarilishini bildiradi.",
+      "rule_ru": "“先 A，再/然后 B” показывает последовательность: сначала A, затем B.",
+      "rule_tj": "“先 A，再/然后 B” пайдарпайиро нишон медиҳад: аввал A, баъд B.",
+      "examples": [
+        {
+          "hanzi": "我要先去图书馆借书，然后去游泳。",
+          "uz": "Avval kutubxonaga kitob olgani, keyin suzishga boraman.",
+          "ru": "Сначала пойду в библиотеку за книгой, потом плавать.",
+          "tj": "Аввал ба китобхона барои китоб, баъд ба шиноварӣ меравам."
+        },
+        {
+          "hanzi": "你先去买门票，再来这里找我。",
+          "uz": "Avval kirish chiptasini ol, keyin bu yerga meni topgani kel.",
+          "ru": "Сначала купи билет, потом приходи сюда ко мне.",
+          "tj": "Аввал чипта бихар, баъд ин ҷо назди ман биё."
+        },
+        {
+          "hanzi": "你们先回房间休息一会儿，然后再出来吃晚饭。",
+          "uz": "Avval xonaga qaytib biroz dam olinglar, keyin kechki ovqatga chiqinglar.",
+          "ru": "Сначала вернитесь в номер и немного отдохните, потом выходите на ужин.",
+          "tj": "Аввал ба ҳуҷра баргашта каме истироҳат кунед, баъд барои хӯроки шом бароед."
+        }
+      ]
+    },
+    {
+      "label": "固定格式“×什么（啊）”",
+      "title_uz": "“X什么啊” — e’tiroz yoki dalda berish",
+      "title_ru": "“X什么啊” — возражение или подбадривание",
+      "title_tj": "“X什么啊” — эътироз ё рӯҳбаландкунӣ",
+      "rule_uz": "Fe’l yoki sifatdan keyin “什么啊” kelib, suhbatdoshning xavotiri yoki bahosini inkor qilib, “nima uchun bunday o‘ylayapsan?” kabi dalda beradi.",
+      "rule_ru": "Модель “X什么啊” после глагола или прилагательного выражает возражение против переживания или оценки собеседника и часто подбадривает его.",
+      "rule_tj": "Қолаби “X什么啊” пас аз феъл ё сифат нигаронӣ ё баҳогузории ҳамсуҳбатро рад карда, ӯро рӯҳбаланд мекунад.",
+      "examples": [
+        {
+          "hanzi": "一想到要在校长、老师和那么多同学面前表演，我就有些紧张。",
+          "uz": "Direktor, o‘qituvchilar va shuncha talaba oldida chiqish haqida o‘ylasam, biroz hayajonlanaman.",
+          "ru": "Как подумаю, что выступать перед директором, учителями и столькими студентами, начинаю волноваться.",
+          "tj": "Вақте фикр мекунам, ки назди директор, омӯзгорон ва ин қадар донишҷӯ баромад мекунам, каме асабӣ мешавам."
+        },
+        {
+          "hanzi": "紧张什么啊，我们都喜欢听你唱歌，你要相信自己。",
+          "uz": "Nimaga hayajonlanasan? Hammamiz qo‘shig‘ingni yoqtiramiz, o‘zingga ishon.",
+          "ru": "Чего нервничать? Нам всем нравится, как ты поёшь, поверь в себя.",
+          "tj": "Чаро асабӣ мешавӣ? Ҳама сурудхониатро дӯст медорем, ба худат бовар кун."
+        },
+        {
+          "hanzi": "我最近胖了很多，不想拍照了。",
+          "uz": "So‘nggi paytda ancha semirdim, suratga tushgim kelmayapti.",
+          "ru": "В последнее время я сильно поправился и не хочу фотографироваться.",
+          "tj": "Вақтҳои охир хеле фарбеҳ шудам, акс гирифтан намехоҳам."
+        },
+        {
+          "hanzi": "胖什么啊，你看起来不胖也不瘦。",
+          "uz": "Qanaqa semirish? Sen na semiz, na ozg‘in ko‘rinyapsan.",
+          "ru": "Какой ещё толстый? Ты выглядишь ни толстым, ни худым.",
+          "tj": "Куҷо фарбеҳ? Ту на фарбеҳ ва на лоғар менамоӣ."
+        },
+        {
+          "hanzi": "还有十分钟，快点儿走吧。",
+          "uz": "Yana o‘n daqiqa qoldi, tezroq yuraylik.",
+          "ru": "Осталось десять минут, пойдём быстрее.",
+          "tj": "Даҳ дақиқа мондааст, тезтар равем."
+        },
+        {
+          "hanzi": "急什么啊，马上就到了。",
+          "uz": "Nimaga shoshilasan? Hozir yetib boramiz.",
+          "ru": "Чего спешить? Уже почти приехали.",
+          "tj": "Чаро шитоб мекунӣ? Ҳозир мерасем."
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene_zh": "在校园餐厅，李文和白家月在聊天儿。",
+      "scene_uz": "Kampus oshxonasida Li Wen va Bai Jiayue suhbatlashmoqda.",
+      "scene_ru": "В столовой кампуса Ли Вэнь и Бай Цзяюэ разговаривают.",
+      "scene_tj": "Дар ошхонаи кампус Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "我借的这本词典最好今天还，但是我没时间去。",
+          "uz": "Olgan lug‘atimni bugun qaytarganim yaxshi, lekin borishga vaqtim yo‘q.",
+          "ru": "Этот словарь лучше вернуть сегодня, но у меня нет времени идти.",
+          "tj": "Ин луғатро беҳтараш имрӯз баргардонам, аммо рафтан вақт надорам."
+        },
+        {
+          "hanzi": "下午我只有两节课，可以帮你去图书馆还书。",
+          "uz": "Tushdan keyin faqat ikki darsim bor, kutubxonaga borib kitobni qaytarib beraman.",
+          "ru": "Днём у меня всего два занятия, могу вернуть книгу за тебя.",
+          "tj": "Баъд аз нисфирӯзӣ танҳо ду дарс дорам, метавонам китобро ба китобхона баргардонам."
+        },
+        {
+          "hanzi": "那太谢谢了。你能再帮我借本书吗？",
+          "uz": "Juda rahmat. Yana bir kitob olib bera olasanmi?",
+          "ru": "Большое спасибо. Можешь ещё взять для меня одну книгу?",
+          "tj": "Хеле раҳмат. Боз як китоб барои ман гирифта метавонӣ?"
+        },
+        {
+          "hanzi": "行，你告诉我书名。",
+          "uz": "Bo‘ladi, kitob nomini ayt.",
+          "ru": "Хорошо, скажи название.",
+          "tj": "Мешавад, номи китобро бигӯ."
+        },
+        {
+          "hanzi": "我把名字写在纸上吧。我去了好几次图书馆，这本书都被别人借走了。",
+          "uz": "Nomini qog‘ozga yozib beraman. Kutubxonaga bir necha marta bordim, har safar bu kitobni boshqa birov olib ketgan edi.",
+          "ru": "Я запишу название на бумаге. Я несколько раз ходил в библиотеку, но эту книгу всё время кто-то уже брал.",
+          "tj": "Номашро дар коғаз менависам. Чанд бор ба китобхона рафтам, ҳар дафъа ин китобро каси дигар гирифта буд."
+        },
+        {
+          "hanzi": "《名人的故事》？我有这本书。明天我借给你吧。",
+          "uz": "“Mashhur insonlar hikoyalari”mi? Menda bu kitob bor. Ertaga senga berib turaman.",
+          "ru": "«Истории знаменитых людей»? У меня есть эта книга. Завтра дам тебе.",
+          "tj": "«Ҳикояҳои одамони машҳур»? Ин китоб дар ман ҳаст. Фардо ба ту медиҳам."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在校园里，白家月和安妮在聊天儿。",
+      "scene_uz": "Kampusda Bai Jiayue va Annie suhbatlashmoqda.",
+      "scene_ru": "В кампусе Бай Цзяюэ и Энни разговаривают.",
+      "scene_tj": "Дар кампус Бай Ҷяюэ ва Энни суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "今天下课早，你一会儿做什么？",
+          "uz": "Bugun dars erta tugadi, hozir nima qilasan?",
+          "ru": "Сегодня занятия закончились рано, что будешь делать?",
+          "tj": "Имрӯз дарс барвақт тамом шуд, ҳозир чӣ мекунӣ?"
+        },
+        {
+          "hanzi": "我今天忙得很，要先去图书馆借书，然后去游泳。",
+          "uz": "Bugun juda bandman, avval kutubxonaga kitob olgani, keyin suzishga boraman.",
+          "ru": "Сегодня я очень занята: сначала в библиотеку за книгой, потом плавать.",
+          "tj": "Имрӯз хеле банд ҳастам: аввал ба китобхона, баъд ба шиноварӣ меравам."
+        },
+        {
+          "hanzi": "咱们一起走吧，我想去图书馆看看中文报纸。",
+          "uz": "Birga boraylik, men kutubxonada xitoycha gazetalarni ko‘rmoqchiman.",
+          "ru": "Пойдём вместе, я хочу посмотреть китайские газеты в библиотеке.",
+          "tj": "Якҷо равем, ман мехоҳам дар китобхона рӯзномаҳои чиниро бинам."
+        },
+        {
+          "hanzi": "等等，我的校园卡不见了，没有卡进不去图书馆。",
+          "uz": "To‘xta, kampus kartam yo‘qolibdi, kartasiz kutubxonaga kira olmayman.",
+          "ru": "Подожди, моя кампус-карта пропала, без неё в библиотеку не войти.",
+          "tj": "Ист, корти кампусам гум шудааст, бе корт ба китобхона даромада намешавад."
+        },
+        {
+          "hanzi": "你想想上一次用是什么时候？",
+          "uz": "O‘ylab ko‘r, oxirgi marta qachon ishlatganding?",
+          "ru": "Вспомни, когда ты пользовалась ею в последний раз?",
+          "tj": "Фикр кун, бори охир кай истифода карда будӣ?"
+        },
+        {
+          "hanzi": "我忘记了，可能被我放在家里了。",
+          "uz": "Unutdim, balki uyda qoldirgandirman.",
+          "ru": "Забыла, возможно, я оставила её дома.",
+          "tj": "Фаромӯш кардам, шояд дар хона гузошта бошам."
+        },
+        {
+          "hanzi": "进不去图书馆也没关系，上网看看有没有电子书。",
+          "uz": "Kutubxonaga kira olmasang ham hechqisi yo‘q, internetdan elektron kitob bor-yo‘qligini ko‘r.",
+          "ru": "Ничего страшного, если не войдёшь в библиотеку; посмотри электронную книгу в интернете.",
+          "tj": "Агар ба китобхона даромада натавонӣ ҳам, ҳеҷ гап нест, аз интернет китоби электронӣ ҳаст ё не бин."
+        },
+        {
+          "hanzi": "不行，我必须去，我还得帮李文还书呢。",
+          "uz": "Yo‘q, borishim shart, Li Wenga kitobini qaytarishga yordam berishim kerak.",
+          "ru": "Нет, мне обязательно нужно идти, я ещё должна вернуть книгу за Ли Вэня.",
+          "tj": "Не, ҳатман бояд равам, барои Ли Вэн китобро баргардонданам лозим."
+        }
+      ]
+    },
+    {
+      "scene_zh": "在校园餐厅，李文和白家月边吃边聊。",
+      "scene_uz": "Kampus oshxonasida Li Wen va Bai Jiayue ovqatlanib suhbatlashmoqda.",
+      "scene_ru": "В столовой кампуса Ли Вэнь и Бай Цзяюэ едят и разговаривают.",
+      "scene_tj": "Дар ошхонаи кампус Ли Вэн ва Бай Ҷяюэ хӯрок хӯрда суҳбат мекунанд.",
+      "turns": [
+        {
+          "hanzi": "下周学校有晚会，你知道吗？",
+          "uz": "Keyingi hafta maktabda kecha bo‘ladi, bilasanmi?",
+          "ru": "На следующей неделе в школе будет вечер, знаешь?",
+          "tj": "Ҳафтаи оянда дар мактаб шомгоҳӣ мешавад, медонӣ?"
+        },
+        {
+          "hanzi": "知道，我和几个女生要表演一个节目。你也参加吗？",
+          "uz": "Bilaman, men bir nechta qiz bilan bir chiqish tayyorlayapman. Sen ham qatnashasanmi?",
+          "ru": "Знаю, я с несколькими девушками готовлю номер. Ты тоже участвуешь?",
+          "tj": "Медонам, ман бо чанд духтар як барнома иҷро мекунем. Ту ҳам иштирок мекунӣ?"
+        },
+        {
+          "hanzi": "我想唱中文歌，但是还没找到人一起表演，不知道怎么办。",
+          "uz": "Xitoycha qo‘shiq aytmoqchiman, lekin birga chiqadigan odam topmadim, nima qilishni bilmayapman.",
+          "ru": "Хочу спеть китайскую песню, но пока не нашёл партнёра и не знаю, что делать.",
+          "tj": "Мехоҳам суруди чинӣ хонам, аммо касе барои ҳамроҳ баромадан наёфтам, намедонам чӣ кор кунам."
+        },
+        {
+          "hanzi": "找不到人，你就一个人唱吧。",
+          "uz": "Odam topilmasa, o‘zing yolg‘iz aytaver.",
+          "ru": "Если никого не найдёшь, пой один.",
+          "tj": "Агар касе наёбӣ, худат танҳо суруд хон."
+        },
+        {
+          "hanzi": "一想到要在校长、老师和那么多同学面前表演，我就有些紧张。",
+          "uz": "Direktor, o‘qituvchilar va shuncha talabalar oldida chiqish haqida o‘ylasam, biroz hayajonlanaman.",
+          "ru": "Как только думаю, что выступать перед директором, учителями и столькими студентами, начинаю нервничать.",
+          "tj": "Ҳамин ки фикр мекунам назди директор, омӯзгорон ва ин қадар донишҷӯ баромад мекунам, каме асабӣ мешавам."
+        },
+        {
+          "hanzi": "紧张什么啊，我们都喜欢听你唱歌，你要相信自己。",
+          "uz": "Nimaga hayajonlanasan? Hammamiz qo‘shiq aytishingni yoqtiramiz, o‘zingga ishon.",
+          "ru": "Чего нервничать? Нам всем нравится, как ты поёшь. Поверь в себя.",
+          "tj": "Чаро асабӣ мешавӣ? Ҳама сурудхониатро дӯст медорем, ба худат бовар кун."
+        }
+      ]
+    }
+  ]
+}

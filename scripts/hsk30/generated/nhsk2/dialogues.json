@@ -1,0 +1,3336 @@
+[
+  {
+    "lesson_order": 1,
+    "lesson_code": "NHSK2-L01",
+    "title": "她请我们吃了北京烤鸭",
+    "title_pinyin": "Tā qǐng wǒmen chīle Běijīng Kǎoyā",
+    "goal": {
+      "uz": "Taxminni “吧” bilan ifodalash; “是……的” orqali voqeaning vaqt, joy, usul yoki maqsadini ta’kidlash; “请/让/叫” bilan pivotal gaplardan foydalanish; aeroportda kutib olish va safar haqida gaplashish.",
+      "ru": "Выражать предположение с “吧”; подчёркивать время, место, способ или цель события с “是……的”; использовать pivotal-предложения с “请/让/叫”; общаться при встрече в аэропорту и о поездке.",
+      "tj": "Бо “吧” тахминро ифода кардан; бо “是……的” вақт, ҷой, тарз ё мақсади воқеаро таъкид кардан; ҷумлаҳои pivotal бо “请/让/叫”-ро истифода бурдан; дар бораи пешвозгирӣ дар фурудгоҳ ва сафар суҳбат кардан."
+    },
+    "intro_text": {
+      "uz": "Dars aeroportda kutib olish, Pekinga birinchi safar, yordam so‘rash va Pekin o‘rdagi haqidagi to‘rtta matn/dialog orqali yangi tuzilmalarni o‘rgatadi.",
+      "ru": "Урок через четыре текста/диалога о встрече в аэропорту, первой поездке в Пекин, просьбе о помощи и пекинской утке вводит новые конструкции.",
+      "tj": "Дарс тавассути чор матн/гуфтугӯ дар бораи пешвозгирӣ дар фурудгоҳ, сафари аввал ба Пекин, дархости кӯмак ва мурғиобии пекинӣ сохторҳои навро меомӯзонад."
+    },
+    "blocks": [
+      {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_zh": "在机场，王一雪接到了白家月和安妮。",
+        "scene_uz": "Aeroportda Wang Yixue Bai Jiayue va Annieni kutib oldi.",
+        "scene_ru": "В аэропорту Ван Исюэ встретила Бай Цзяюэ и Энни.",
+        "scene_tj": "Дар фурудгоҳ Ван Исюэ Бай Ҷяюэ ва Энниро пешвоз гирифт.",
+        "dialogue": [
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "请问，您是王一飞老师的姐姐吗？",
+            "pinyin": "Qǐngwèn, nín shì Wáng Yīfēi lǎoshī de jiějie ma?",
+            "uz": "Kechirasiz, siz ustoz Wang Yifeining opasimisiz?",
+            "ru": "Извините, вы старшая сестра преподавателя Ван Ифэй?",
+            "tj": "Мебахшед, шумо апаи устод Ван Ифэй ҳастед?"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "是的，你们就是她的学生吧？",
+            "pinyin": "Shì de, nǐmen jiù shì tā de xuésheng ba?",
+            "uz": "Ha, sizlar aynan uning talabalarisiz, shundaymi?",
+            "ru": "Да. Вы как раз её студенты, верно?",
+            "tj": "Ҳа, шумо ҳамон донишҷӯёни ӯ ҳастед, дуруст?"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "对。我是白家月，她是安妮。",
+            "pinyin": "Duì. Wǒ shì Bái Jiāyuè, tā shì Ānnī.",
+            "uz": "Ha. Men Bai Jiayue, u Annie.",
+            "ru": "Да. Я Бай Цзяюэ, а она Энни.",
+            "tj": "Ҳа. Ман Бай Ҷяюэ, ӯ Энни аст."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "你们好，我叫王一雪。王一飞给我打电话了，让我来接你们。",
+            "pinyin": "Nǐmen hǎo, wǒ jiào Wáng Yīxuě. Wáng Yīfēi gěi wǒ dǎ diànhuà le, ràng wǒ lái jiē nǐmen.",
+            "uz": "Salom, mening ismim Wang Yixue. Wang Yifei menga telefon qilib, sizlarni kutib olishimni aytdi.",
+            "ru": "Здравствуйте, меня зовут Ван Исюэ. Ван Ифэй позвонила мне и попросила встретить вас.",
+            "tj": "Салом, номи ман Ван Исюэ аст. Ван Ифэй ба ман занг зада, хоҳиш кард шуморо пешвоз гирам."
+          },
+          {
+            "speaker": "Bai Jiayue & Annie",
+            "zh": "谢谢您。",
+            "pinyin": "Xièxie nín.",
+            "uz": "Rahmat sizga.",
+            "ru": "Спасибо вам.",
+            "tj": "Раҳмат ба шумо."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "不客气。",
+            "pinyin": "Bú kèqi.",
+            "uz": "Arzimaydi.",
+            "ru": "Не за что.",
+            "tj": "Марҳамат."
+          }
+        ]
+      },
+      {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_zh": "在王一雪的车里，白家月、安妮和王一雪在聊天儿。",
+        "scene_uz": "Wang Yixuening mashinasida Bai Jiayue, Annie va Wang Yixue suhbatlashmoqda.",
+        "scene_ru": "В машине Ван Исюэ Бай Цзяюэ, Энни и Ван Исюэ разговаривают.",
+        "scene_tj": "Дар мошини Ван Исюэ Бай Ҷяюэ, Энни ва Ван Исюэ суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Wang Yixue",
+            "zh": "你们是第一次来北京吗？",
+            "pinyin": "Nǐmen shì dì yī cì lái Běijīng ma?",
+            "uz": "Sizlar Pekinga birinchi marta keldingizlarmi?",
+            "ru": "Вы впервые приехали в Пекин?",
+            "tj": "Шумо бори аввал ба Пекин омадед?"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "是的，我们都是第一次来。",
+            "pinyin": "Shì de, wǒmen dōu shì dì yī cì lái.",
+            "uz": "Ha, hammamiz birinchi marta keldik.",
+            "ru": "Да, мы обе приехали впервые.",
+            "tj": "Ҳа, ҳамаи мо бори аввал омадем."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "你们是来学中文的吗？",
+            "pinyin": "Nǐmen shì lái xué Zhōngwén de ma?",
+            "uz": "Sizlar xitoy tilini o‘rganish uchun keldingizlarmi?",
+            "ru": "Вы приехали изучать китайский?",
+            "tj": "Шумо барои омӯхтани забони чинӣ омадед?"
+          },
+          {
+            "speaker": "Annie",
+            "zh": "不是，我们是来旅游的。",
+            "pinyin": "Bú shì, wǒmen shì lái lǚyóu de.",
+            "uz": "Yo‘q, biz sayohat qilish uchun keldik.",
+            "ru": "Нет, мы приехали путешествовать.",
+            "tj": "Не, мо барои саёҳат омадем."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "我这几天都不忙，你们有事就找我。",
+            "pinyin": "Wǒ zhè jǐ tiān dōu bù máng, nǐmen yǒu shì jiù zhǎo wǒ.",
+            "uz": "Shu kunlarda band emasman, ishingiz bo‘lsa meni toping.",
+            "ru": "В эти дни я не занята, если что-то понадобится — обращайтесь ко мне.",
+            "tj": "Ин чанд рӯз ман банд нестам, агар коре бошад ба ман муроҷиат кунед."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "好的，谢谢您。",
+            "pinyin": "Hǎo de, xièxie nín.",
+            "uz": "Xo‘p, rahmat sizga.",
+            "ru": "Хорошо, спасибо вам.",
+            "tj": "Хуб, раҳмат ба шумо."
+          }
+        ]
+      },
+      {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_zh": "在王一雪的车上，白家月接了个电话。",
+        "scene_uz": "Wang Yixuening mashinasida Bai Jiayue telefon qo‘ng‘irog‘iga javob berdi.",
+        "scene_ru": "В машине Ван Исюэ Бай Цзяюэ ответила на звонок.",
+        "scene_tj": "Дар мошини Ван Исюэ Бай Ҷяюэ ба занги телефон ҷавоб дод.",
+        "dialogue": [
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "喂，家月，你明天有时间吗？我想请你帮个忙。",
+            "pinyin": "Wèi, Jiāyuè, nǐ míngtiān yǒu shíjiān ma? Wǒ xiǎng qǐng nǐ bāng ge máng.",
+            "uz": "Allo, Jiayue, ertaga vaqting bormi? Sendan bir yordam so‘ramoqchiman.",
+            "ru": "Алло, Цзяюэ, у тебя завтра есть время? Я хочу попросить тебя помочь.",
+            "tj": "Алло, Ҷяюэ, фардо вақт дорӣ? Мехоҳам аз ту як кӯмак пурсам."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "不好意思，天中，我已经到北京了。",
+            "pinyin": "Bù hǎoyìsi, Tiānzhōng, wǒ yǐjīng dào Běijīng le.",
+            "uz": "Kechirasan, Tianzhong, men allaqachon Pekinga yetib keldim.",
+            "ru": "Извини, Тяньчжун, я уже приехала в Пекин.",
+            "tj": "Мебахшӣ, Тянҷун, ман аллакай ба Пекин расидам."
+          },
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "你是什么时候到的？",
+            "pinyin": "Nǐ shì shénme shíhou dào de?",
+            "uz": "Qachon yetib kelding?",
+            "ru": "Когда ты приехала?",
+            "tj": "Кай расидӣ?"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "我是今天早上到的。你有事可以叫李文帮忙，他还在学校呢。",
+            "pinyin": "Wǒ shì jīntiān zǎoshang dào de. Nǐ yǒu shì kěyǐ jiào Lǐ Wén bāngmáng, tā hái zài xuéxiào ne.",
+            "uz": "Men bugun ertalab yetib keldim. Ishing bo‘lsa Li Wendan yordam so‘rashing mumkin, u hali maktabda.",
+            "ru": "Я приехала сегодня утром. Если нужна помощь, можешь попросить Ли Вэня, он ещё в школе.",
+            "tj": "Ман имрӯз субҳ расидам. Агар коре бошад, метавонӣ аз Ли Вэн кӯмак пурсӣ, ӯ ҳоло ҳам дар мактаб аст."
+          },
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "好的，那我给他打个电话。",
+            "pinyin": "Hǎo de, nà wǒ gěi tā dǎ ge diànhuà.",
+            "uz": "Xo‘p, unda unga telefon qilaman.",
+            "ru": "Хорошо, тогда я ему позвоню.",
+            "tj": "Хуб, пас ба ӯ занг мезанам."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "好，再见！",
+            "pinyin": "Hǎo, zàijiàn!",
+            "uz": "Xo‘p, xayr!",
+            "ru": "Хорошо, до свидания!",
+            "tj": "Хуб, хайр!"
+          }
+        ]
+      },
+      {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_zh": "在酒店，白家月给王一飞发信息。",
+        "scene_uz": "Mehmonxonada Bai Jiayue Wang Yifeiga xabar yubordi.",
+        "scene_ru": "В гостинице Бай Цзяюэ отправила сообщение Ван Ифэй.",
+        "scene_tj": "Дар меҳмонхона Бай Ҷяюэ ба Ван Ифэй паём фиристод.",
+        "dialogue": [
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "王老师，我们已经到北京了，是您姐姐来接的我们。她请我们吃了北京烤鸭，还给我们介绍了很多东西。我们的中文不太好，有时不太懂她的意思。",
+            "pinyin": "Wáng lǎoshī, wǒmen yǐjīng dào Běijīng le, shì nín jiějie lái jiē de wǒmen. Tā qǐng wǒmen chīle Běijīng Kǎoyā, hái gěi wǒmen jièshàole hěn duō dōngxi. Wǒmen de Zhōngwén bú tài hǎo, yǒushí bú tài dǒng tā de yìsi.",
+            "uz": "Ustoz Wang, biz allaqachon Pekinga yetib keldik, bizni opangiz kutib oldi. U bizni Pekin o‘rdagiga mehmon qildi va bizga ko‘p narsalarni tanishtirdi. Xitoy tilimiz unchalik yaxshi emas, ba’zan uning ma’nosini yaxshi tushunmaymiz.",
+            "ru": "Преподаватель Ван, мы уже приехали в Пекин, нас встретила ваша старшая сестра. Она угостила нас пекинской уткой и многое нам показала и объяснила. Наш китайский пока не очень хороший, иногда мы не совсем понимаем, что она имеет в виду.",
+            "tj": "Устод Ван, мо аллакай ба Пекин расидем, апаатон моро пешвоз гирифт. Ӯ моро бо мурғиобии пекинӣ меҳмондорӣ кард ва бисёр чизҳоро муаррифӣ намуд. Забони чинии мо ҳоло он қадар хуб нест, баъзан маънои гуфтаҳояшро хуб намефаҳмем."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lesson_order": 2,
+    "lesson_code": "NHSK2-L02",
+    "title": "还是打车去北大吧",
+    "title_pinyin": "Háishi dǎchē qù Běidà ba",
+    "goal": {
+      "uz": "“还是……吧” orqali afzal variantni tavsiya qilish; “多” bilan taxminiy sonni ifodalash; fe’l/fe’lli birikma va ega-kesim birikmasini aniqlovchi sifatida ishlatish; transport va kampus haqida gaplashish.",
+      "ru": "Советовать предпочтительный вариант с “还是……吧”; выражать приблизительные числа с “多”; использовать глаголы, глагольные и субъектно-предикативные группы как определения; говорить о транспорте и кампусе.",
+      "tj": "Бо “还是……吧” варианти афзалро тавсия кардан; бо “多” шумораи тахминиро ифода кардан; феъл ва ибораҳои феълӣ/мубтадо-хабарро ҳамчун муайянкунанда истифода бурдан; дар бораи нақлиёт ва кампус суҳбат кардан."
+    },
+    "intro_text": {
+      "uz": "Dars Pekin universitetiga borish, kampusni tomosha qilish, kino haqida gaplashish va kampus taassurotlari haqidagi to‘rtta matn/dialog orqali uchta yangi grammatik tuzilmani o‘rgatadi.",
+      "ru": "Урок через четыре текста/диалога о дороге в Пекинский университет, прогулке по кампусу, кино и впечатлениях вводит три грамматические конструкции.",
+      "tj": "Дарс тавассути чор матн/гуфтугӯ дар бораи рафтан ба Донишгоҳи Пекин, тамошои кампус, кино ва таассурот се сохтори грамматикиро меомӯзонад."
+    },
+    "blocks": [
+      {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_zh": "在宾馆前台，白家月和安妮向服务员咨询。",
+        "scene_uz": "Mehmonxona resepsiyasida Bai Jiayue va Annie xodimdan ma’lumot so‘ramoqda.",
+        "scene_ru": "На стойке гостиницы Бай Цзяюэ и Энни спрашивают сотрудника.",
+        "scene_tj": "Дар қабули меҳмонхона Бай Ҷяюэ ва Энни аз корманд маълумот мепурсанд.",
+        "dialogue": [
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "请问，这儿有到北京大学的公交车吗？",
+            "pinyin": "Qǐngwèn, zhèr yǒu dào Běijīng Dàxué de gōngjiāochē ma?",
+            "uz": "Kechirasiz, bu yerdan Pekin universitetiga boradigan avtobus bormi?",
+            "ru": "Скажите, отсюда есть автобус до Пекинского университета?",
+            "tj": "Мебахшед, аз ин ҷо то Донишгоҳи Пекин автобус ҳаст?"
+          },
+          {
+            "speaker": "Hotel staff",
+            "zh": "有，但车站有点儿远。",
+            "pinyin": "Yǒu, dàn chēzhàn yǒudiǎnr yuǎn.",
+            "uz": "Bor, lekin bekat biroz uzoq.",
+            "ru": "Есть, но остановка немного далеко.",
+            "tj": "Ҳаст, аммо истгоҳ каме дур аст."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "这儿好打车吗？",
+            "pinyin": "Zhèr hǎo dǎchē ma?",
+            "uz": "Bu yerda taksi tutish osonmi?",
+            "ru": "Здесь легко поймать такси?",
+            "tj": "Ин ҷо таксӣ гирифтан осон аст?"
+          },
+          {
+            "speaker": "Hotel staff",
+            "zh": "好打车。",
+            "pinyin": "Hǎo dǎchē.",
+            "uz": "Taksi tutish oson.",
+            "ru": "Легко.",
+            "tj": "Осон аст."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "谢谢。安妮，我们还是打车去吧。",
+            "pinyin": "Xièxie. Ānnī, wǒmen háishi dǎchē qù ba.",
+            "uz": "Rahmat. Annie, yaxshisi taksida boraylik.",
+            "ru": "Спасибо. Энни, давай лучше поедем на такси.",
+            "tj": "Раҳмат. Энни, беҳтараш бо таксӣ равем."
+          },
+          {
+            "speaker": "Annie",
+            "zh": "好，没问题。",
+            "pinyin": "Hǎo, méi wèntí.",
+            "uz": "Xo‘p, muammo yo‘q.",
+            "ru": "Хорошо, без проблем.",
+            "tj": "Хуб, мушкиле нест."
+          }
+        ]
+      },
+      {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_zh": "在北京大学，白家月和安妮在参观校园。",
+        "scene_uz": "Pekin universitetida Bai Jiayue va Annie kampusni tomosha qilmoqda.",
+        "scene_ru": "В Пекинском университете Бай Цзяюэ и Энни осматривают кампус.",
+        "scene_tj": "Дар Донишгоҳи Пекин Бай Ҷяюэ ва Энни кампусро тамошо мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "学校里人真多啊！",
+            "pinyin": "Xuéxiào lǐ rén zhēn duō a!",
+            "uz": "Universitetda odam juda ko‘p ekan!",
+            "ru": "Как много людей в университете!",
+            "tj": "Дар донишгоҳ одам хеле бисёр будааст!"
+          },
+          {
+            "speaker": "Annie",
+            "zh": "是啊，北京大学有四万多名学生呢！",
+            "pinyin": "Shì a, Běijīng Dàxué yǒu sì wàn duō míng xuésheng ne!",
+            "uz": "Ha, Pekin universitetida qirq mingdan ortiq talaba bor!",
+            "ru": "Да, в Пекинском университете больше сорока тысяч студентов!",
+            "tj": "Ҳа, дар Донишгоҳи Пекин зиёда аз чил ҳазор донишҷӯ ҳаст!"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "你是怎么知道的？",
+            "pinyin": "Nǐ shì zěnme zhīdào de?",
+            "uz": "Buni qayerdan bilding?",
+            "ru": "Как ты это узнала?",
+            "tj": "Инро чӣ тавр фаҳмидӣ?"
+          },
+          {
+            "speaker": "Annie",
+            "zh": "是网上说的，网上还说北京大学有三千多名外国学生。",
+            "pinyin": "Shì wǎngshang shuō de, wǎngshang hái shuō Běijīng Dàxué yǒu sān qiān duō míng wàiguó xuésheng.",
+            "uz": "Internetda yozilgan. Internetda Pekin universitetida uch mingdan ortiq chet ellik talaba borligi ham aytilgan.",
+            "ru": "Так написано в интернете; там ещё сказано, что в Пекинском университете более трёх тысяч иностранных студентов.",
+            "tj": "Дар интернет гуфта шудааст; он ҷо ҳамчунин навиштааст, ки дар Донишгоҳи Пекин зиёда аз се ҳазор донишҷӯи хориҷӣ ҳаст."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "我也想来这儿学习。",
+            "pinyin": "Wǒ yě xiǎng lái zhèr xuéxí.",
+            "uz": "Men ham bu yerga o‘qishga kelishni xohlayman.",
+            "ru": "Я тоже хочу приехать сюда учиться.",
+            "tj": "Ман ҳам мехоҳам барои таҳсил ба ин ҷо биёям."
+          },
+          {
+            "speaker": "Annie",
+            "zh": "那边就有一间教室，我们去看一下吧。",
+            "pinyin": "Nàbian jiù yǒu yì jiān jiàoshì, wǒmen qù kàn yíxià ba.",
+            "uz": "Ana u tomonda bir sinfxona bor, borib ko‘raylik.",
+            "ru": "Вон там как раз есть аудитория, давай посмотрим.",
+            "tj": "Он тараф як синфхона ҳаст, биё рафта бинем."
+          }
+        ]
+      },
+      {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_zh": "在北京大学校园里，白家月和安妮看到了电影院。",
+        "scene_uz": "Pekin universiteti kampusida Bai Jiayue va Annie kinoteatrni ko‘rdi.",
+        "scene_ru": "На кампусе Пекинского университета Бай Цзяюэ и Энни увидели кинотеатр.",
+        "scene_tj": "Дар кампуси Донишгоҳи Пекин Бай Ҷяюэ ва Энни кинотеатрро диданд.",
+        "dialogue": [
+          {
+            "speaker": "Annie",
+            "zh": "家月，你看，学校里有家电影院！",
+            "pinyin": "Jiāyuè, nǐ kàn, xuéxiào lǐ yǒu jiā diànyǐngyuàn!",
+            "uz": "Jiayue, qara, universitetda kinoteatr bor!",
+            "ru": "Цзяюэ, смотри, в университете есть кинотеатр!",
+            "tj": "Ҷяюэ, бин, дар донишгоҳ кинотеатр ҳаст!"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "是啊，电影院还不小。",
+            "pinyin": "Shì a, diànyǐngyuàn hái bù xiǎo.",
+            "uz": "Ha, kinoteatr ham kichik emas.",
+            "ru": "Да, и кинотеатр немаленький.",
+            "tj": "Ҳа, кинотеатр ҳам хурд нест."
+          },
+          {
+            "speaker": "Annie",
+            "zh": "他们卖的电影票也很便宜。",
+            "pinyin": "Tāmen mài de diànyǐngpiào yě hěn piányi.",
+            "uz": "Ular sotadigan kino chiptalari ham juda arzon.",
+            "ru": "Билеты в кино, которые они продают, тоже очень дешёвые.",
+            "tj": "Чиптаҳои кинои онҳо ҳам хеле арзонанд."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "天啊！有的还不到二十块钱。",
+            "pinyin": "Tiān a! Yǒude hái bú dào èrshí kuài qián.",
+            "uz": "Voy! Ba’zilari hatto yigirma yuanga ham yetmaydi.",
+            "ru": "Ничего себе! Некоторые стоят даже меньше двадцати юаней.",
+            "tj": "Вой! Баъзеаш ҳатто ба бист юан ҳам намерасад."
+          },
+          {
+            "speaker": "Annie",
+            "zh": "那你想不想去看个电影？",
+            "pinyin": "Nà nǐ xiǎng bu xiǎng qù kàn ge diànyǐng?",
+            "uz": "Unda film ko‘rgani bormoqchimisan?",
+            "ru": "Тогда хочешь сходить посмотреть фильм?",
+            "tj": "Пас мехоҳӣ филм тамошо кунӣ?"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "还是别看电影了，北京大学就很好看！",
+            "pinyin": "Háishi bié kàn diànyǐng le, Běijīng Dàxué jiù hěn hǎokàn!",
+            "uz": "Yaxshisi film ko‘rmaylik, Pekin universitetining o‘zi juda chiroyli!",
+            "ru": "Лучше не будем смотреть фильм — сам Пекинский университет очень красивый!",
+            "tj": "Беҳтараш филм набинем, худи Донишгоҳи Пекин хеле зебост!"
+          }
+        ]
+      },
+      {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_zh": "在北京大学门口，白家月给陈天中发信息。",
+        "scene_uz": "Pekin universiteti darvozasi oldida Bai Jiayue Chen Tianzhongga xabar yubordi.",
+        "scene_ru": "У входа в Пекинский университет Бай Цзяюэ отправила сообщение Чэнь Тяньчжуну.",
+        "scene_tj": "Дар даромадгоҳи Донишгоҳи Пекин Бай Ҷяюэ ба Чэн Тянҷун паём фиристод.",
+        "dialogue": [
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "北京大学很大，有四万多名学生。学校很漂亮，里边还有家电影院，电影票也不贵，我们有时间还想再过来看个电影。",
+            "pinyin": "Běijīng Dàxué hěn dà, yǒu sì wàn duō míng xuésheng. Xuéxiào hěn piàoliang, lǐbian hái yǒu jiā diànyǐngyuàn, diànyǐngpiào yě bú guì, wǒmen yǒu shíjiān hái xiǎng zài guòlai kàn ge diànyǐng.",
+            "uz": "Pekin universiteti juda katta, qirq mingdan ortiq talabasi bor. Universitet juda chiroyli, ichida yana kinoteatr ham bor, kino chiptalari ham qimmat emas. Vaqtimiz bo‘lsa, yana kelib film ko‘rmoqchimiz.",
+            "ru": "Пекинский университет очень большой, здесь более сорока тысяч студентов. Кампус красивый, внутри есть кинотеатр, билеты недорогие. Если будет время, мы хотим снова прийти посмотреть фильм.",
+            "tj": "Донишгоҳи Пекин хеле калон аст ва зиёда аз чил ҳазор донишҷӯ дорад. Донишгоҳ зебост, дар дохилаш кинотеатр ҳам ҳаст, чиптаҳо гарон нестанд. Агар вақт дошта бошем, боз омада филм тамошо кардан мехоҳем."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lesson_order": 3,
+    "lesson_code": "NHSK2-L03",
+    "title": "我想去西安旅游",
+    "title_pinyin": "Wǒ xiǎng qù Xī'ān lǚyóu",
+    "goal": {
+      "uz": "Natija to‘ldiruvchisi orqali harakat natijasini ifodalash; fe’l takrorlanishi bilan qisqa, yengil yoki sinab ko‘rish xarakteridagi harakatni aytish; sayohat rejasini muhokama qilish.",
+      "ru": "Выражать результат действия с помощью результативного дополнения; использовать редупликацию глагола для краткого, непринуждённого или пробного действия; обсуждать планы поездки.",
+      "tj": "Натиҷаи амалро бо пуркунандаи натиҷа ифода кардан; такрори феълро барои амали кӯтоҳ, сабук ё озмоишӣ истифода бурдан; нақшаи сафарро муҳокима кардан."
+    },
+    "intro_text": {
+      "uz": "Dars ish kuni, sayohat rejalari, Xi’anga borish va kundalik oilaviy vaziyatlar haqidagi to‘rtta matn/dialog orqali natija to‘ldiruvchisi va fe’l takrorlanishining ikki turini o‘rgatadi.",
+      "ru": "Урок через четыре текста/диалога о рабочем дне, планах путешествия, поездке в Сиань и семейной повседневности вводит результативные дополнения и два типа редупликации глагола.",
+      "tj": "Дарс тавассути чор матн/гуфтугӯ дар бораи рӯзи корӣ, нақшаҳои сафар, рафтан ба Сиан ва зиндагии оилавӣ пуркунандаи натиҷа ва ду навъи такрори феълро меомӯзонад."
+    },
+    "blocks": [
+      {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_zh": "在家门口，刘明开门进到家里。",
+        "scene_uz": "Uy eshigi oldida Liu Ming eshikni ochib uyga kirdi.",
+        "scene_ru": "У двери дома Лю Мин открыл дверь и вошёл.",
+        "scene_tj": "Дар назди дари хона Лю Мин дарро кушода ба хона даромад.",
+        "dialogue": [
+          {
+            "speaker": "Wang Yixue",
+            "zh": "今天回来这么晚啊！",
+            "pinyin": "Jīntiān huílái zhème wǎn a!",
+            "uz": "Bugun juda kech qaytding-ku!",
+            "ru": "Сегодня ты так поздно вернулся!",
+            "tj": "Имрӯз ин қадар дер баргаштӣ!"
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "工作太多了，下班的时候没做完。",
+            "pinyin": "Gōngzuò tài duō le, xiàbān de shíhou méi zuòwán.",
+            "uz": "Ish juda ko‘p edi, ishdan chiqish vaqtida tugata olmadim.",
+            "ru": "Работы было слишком много, к концу рабочего дня я не закончил.",
+            "tj": "Кор хеле зиёд буд, вақти аз кор баромадан тамом карда натавонистам."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "菜都做好了，过来吃饭吧。",
+            "pinyin": "Cài dōu zuòhǎo le, guòlai chī fàn ba.",
+            "uz": "Ovqatlar tayyor, kelib ovqat ye.",
+            "ru": "Еда уже готова, иди есть.",
+            "tj": "Хӯрок тайёр шудааст, биё хӯрок бихӯр."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "我想休息一下，喝杯水。",
+            "pinyin": "Wǒ xiǎng xiūxi yíxià, hē bēi shuǐ.",
+            "uz": "Biroz dam olib, bir stakan suv ichmoqchiman.",
+            "ru": "Я хочу немного отдохнуть и выпить стакан воды.",
+            "tj": "Мехоҳам каме истироҳат карда, як пиёла об нӯшам."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "好的。",
+            "pinyin": "Hǎo de.",
+            "uz": "Xo‘p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        ]
+      },
+      {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_zh": "在客厅，刘明和王一雪在聊天儿。",
+        "scene_uz": "Mehmonxonada Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "scene_ru": "В гостиной Лю Мин и Ван Исюэ разговаривают.",
+        "scene_tj": "Дар меҳмонхона Лю Мин ва Ван Исюэ суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Liu Ming",
+            "zh": "我们找个时间去旅游，怎么样？",
+            "pinyin": "Wǒmen zhǎo ge shíjiān qù lǚyóu, zěnmeyàng?",
+            "uz": "Bir vaqt topib sayohatga borsak, qanday?",
+            "ru": "Давай найдём время и съездим куда-нибудь, как тебе?",
+            "tj": "Як вақт ёфта ба саёҳат равем, чӣ хел?"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "好啊，我也很想一起出去玩。",
+            "pinyin": "Hǎo a, wǒ yě hěn xiǎng yìqǐ chūqù wán.",
+            "uz": "Yaxshi, men ham birga tashqariga chiqib sayr qilishni juda xohlayman.",
+            "ru": "Хорошо, я тоже очень хочу куда-нибудь съездить вместе.",
+            "tj": "Хуб, ман ҳам хеле мехоҳам якҷо ба берун баромада сайр кунем."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "你想去哪儿？",
+            "pinyin": "Nǐ xiǎng qù nǎr?",
+            "uz": "Qayerga bormoqchisan?",
+            "ru": "Куда ты хочешь поехать?",
+            "tj": "Ба куҷо рафтан мехоҳӣ?"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "我还没想好呢。",
+            "pinyin": "Wǒ hái méi xiǎnghǎo ne.",
+            "uz": "Hali aniq o‘ylab topmadim.",
+            "ru": "Я ещё не решила.",
+            "tj": "Ҳоло хуб фикр карда набаромадаам."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "那你再想一想，你想好了，我来买票。",
+            "pinyin": "Nà nǐ zài xiǎng yì xiǎng, nǐ xiǎnghǎo le, wǒ lái mǎi piào.",
+            "uz": "Unda yana o‘ylab ko‘r. Qaror qilganingda chiptani men olaman.",
+            "ru": "Тогда ещё подумай. Когда решишь, билеты куплю я.",
+            "tj": "Пас боз як бор фикр кун. Вақте қарор кардӣ, чиптаро ман мехарам."
+          }
+        ]
+      },
+      {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_zh": "在客厅，刘明和王一雪在聊天儿。",
+        "scene_uz": "Mehmonxonada Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "scene_ru": "В гостиной Лю Мин и Ван Исюэ разговаривают.",
+        "scene_tj": "Дар меҳмонхона Лю Мин ва Ван Исюэ суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Liu Ming",
+            "zh": "吃个苹果吧，我都洗好了。",
+            "pinyin": "Chī ge píngguǒ ba, wǒ dōu xǐhǎo le.",
+            "uz": "Olma ye, men hammasini yuvib qo‘ydim.",
+            "ru": "Съешь яблоко, я их уже помыл.",
+            "tj": "Як себ бихӯр, ман ҳамаашро шуста мондам."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "好的。",
+            "pinyin": "Hǎo de.",
+            "uz": "Xo‘p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "就在桌子上，你自己拿。",
+            "pinyin": "Jiù zài zhuōzi shàng, nǐ zìjǐ ná.",
+            "uz": "Stol ustida, o‘zing ol.",
+            "ru": "Они прямо на столе, возьми сама.",
+            "tj": "Рӯйи мизанд, худат бигир."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "我去洗洗手。对了，我们去西安旅游，怎么样？",
+            "pinyin": "Wǒ qù xǐxǐ shǒu. Duì le, wǒmen qù Xī'ān lǚyóu, zěnmeyàng?",
+            "uz": "Men borib qo‘limni yuvib kelaman. Aytgancha, Xi’anga sayohatga borsak qanday?",
+            "ru": "Я пойду помою руки. Кстати, как насчёт поездки в Сиань?",
+            "tj": "Ман рафта дастамро мешӯям. Ростӣ, ба Сиан ба саёҳат равем, чӣ хел?"
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "为什么想去西安？",
+            "pinyin": "Wèishénme xiǎng qù Xī'ān?",
+            "uz": "Nega Xi’anga bormoqchisan?",
+            "ru": "Почему хочешь поехать в Сиань?",
+            "tj": "Чаро мехоҳӣ ба Сиан равӣ?"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "我看了看网上的介绍，这个时候去西安很不错！",
+            "pinyin": "Wǒ kànle kàn wǎngshang de jièshào, zhège shíhou qù Xī'ān hěn búcuò!",
+            "uz": "Internetdagi ma’lumotlarni bir ko‘rib chiqdim, shu paytda Xi’anga borish juda yaxshi ekan!",
+            "ru": "Я посмотрела информацию в интернете — в это время ехать в Сиань очень неплохо!",
+            "tj": "Маълумоти интернетро як назар кардам, дар ҳамин вақт ба Сиан рафтан хеле хуб будааст!"
+          }
+        ]
+      },
+      {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_zh": "在家里，王一雪给好朋友打电话。",
+        "scene_uz": "Uyda Wang Yixue yaqin do‘stiga telefon qilmoqda.",
+        "scene_ru": "Дома Ван Исюэ звонит своей близкой подруге.",
+        "scene_tj": "Дар хона Ван Исюэ ба дӯсти наздикаш занг мезанад.",
+        "dialogue": [
+          {
+            "speaker": "Narration",
+            "zh": "早上，刘明开车送孩子去学校，送完孩子回家后，医院就来电话了，让他回去上班。我觉得他这个月每天都很累，真想让他休息休息。",
+            "pinyin": "Zǎoshang, Liú Míng kāichē sòng háizi qù xuéxiào, sòngwán háizi huí jiā hòu, yīyuàn jiù lái diànhuà le, ràng tā huíqù shàngbān. Wǒ juéde tā zhège yuè měitiān dōu hěn lèi, zhēn xiǎng ràng tā xiūxi xiūxi.",
+            "uz": "Ertalab Liu Ming bolani mashinada maktabga olib bordi. Bolani olib borib uyga qaytgach, kasalxonadan darrov qo‘ng‘iroq bo‘lib, uni ishga qaytishga chaqirishdi. Menimcha, u bu oy har kuni juda charchayapti, uni rosa dam oldirgim keladi.",
+            "ru": "Утром Лю Мин отвёз ребёнка в школу. Вернувшись домой, он сразу получил звонок из больницы — его попросили вернуться на работу. Мне кажется, в этом месяце он каждый день очень устаёт; очень хочется, чтобы он отдохнул.",
+            "tj": "Субҳ Лю Мин кӯдакро бо мошин ба мактаб бурд. Баъди расондани кӯдак ва баргаштан ба хона, аз беморхона фавран занг заданд ва аз ӯ хостанд ба кор баргардад. Ба назарам, ин моҳ ӯ ҳар рӯз хеле хаста мешавад; мехоҳам хуб истироҳат кунад."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lesson_order": 4,
+    "lesson_code": "NHSK2-L04",
+    "title": "你穿红色的很好看",
+    "title_pinyin": "Nǐ chuān hóngsè de hěn hǎokàn",
+    "goal": {
+      "uz": "“过” bilan o‘tgan tajribani aytish; 因为……所以…… bilan sabab-natijani ifodalash; “的” iborasidan foydalanish; kiyim va rang tanlash haqida gaplashish.",
+      "ru": "Говорить о прошлом опыте с “过”; выражать причину и следствие с 因为……所以……; использовать конструкцию с “的”; обсуждать одежду и выбор цвета.",
+      "tj": "Бо “过” таҷрибаи гузаштаеро баён кардан; бо 因为……所以…… сабабу натиҷаро ифода кардан; ибораи “的”-ро истифода бурдан; дар бораи либос ва интихоби ранг суҳбат кардан."
+    },
+    "intro_text": {
+      "uz": "Dars savdo markazida kiyim va sumka tanlash hamda kundalik yozuvi orqali tajriba, sabab-natija va “的” iborasini o‘rgatadi.",
+      "ru": "Урок через выбор одежды и рюкзака в торговом центре и запись в дневнике вводит опыт с 过, причинно-следственную связь и фразу с 的.",
+      "tj": "Дарс тавассути интихоби либос ва ҷузвдон дар маркази савдо ва навиштаи рӯзнома таҷриба бо 过, сабабу натиҷа ва ибораи 的-ро меомӯзонад."
+    },
+    "blocks": [
+      {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_zh": "在商场门口，王一雪和刘小雪在聊天儿。",
+        "scene_uz": "Savdo markazi oldida Wang Yixue va Liu Xiaoxue suhbatlashmoqda.",
+        "scene_ru": "У входа в торговый центр Ван Исюэ и Лю Сяосюэ разговаривают.",
+        "scene_tj": "Дар назди маркази савдо Ван Исюэ ва Лю Сяосюэ суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "妈妈，我们来过这家商场吗？",
+            "pinyin": "Māma, wǒmen láiguo zhè jiā shāngchǎng ma?",
+            "uz": "Oyi, biz bu savdo markaziga oldin kelganmizmi?",
+            "ru": "Мама, мы уже бывали в этом торговом центре?",
+            "tj": "Оча, мо пештар ба ин маркази савдо омада будем?"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "没来过，这是新开的。",
+            "pinyin": "Méi láiguo, zhè shì xīn kāi de.",
+            "uz": "Yo‘q, kelmaganmiz, bu yangi ochilgan.",
+            "ru": "Нет, не бывали, он недавно открылся.",
+            "tj": "Не, наомада будем, ин нав кушода шудааст."
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "我们进去看看吧。",
+            "pinyin": "Wǒmen jìnqu kànkan ba.",
+            "uz": "Ichkariga kirib ko‘raylik.",
+            "ru": "Давай зайдём и посмотрим.",
+            "tj": "Биё даромада тамошо кунем."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "好啊！你想买点儿什么？",
+            "pinyin": "Hǎo a! Nǐ xiǎng mǎi diǎnr shénme?",
+            "uz": "Mayli! Nima sotib olmoqchisan?",
+            "ru": "Хорошо! Что ты хочешь купить?",
+            "tj": "Хуб! Чӣ харидан мехоҳӣ?"
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "我想买条裤子。",
+            "pinyin": "Wǒ xiǎng mǎi tiáo kùzi.",
+            "uz": "Bir shim sotib olmoqchiman.",
+            "ru": "Я хочу купить брюки.",
+            "tj": "Мехоҳам як шим харам."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "没问题。",
+            "pinyin": "Méi wèntí.",
+            "uz": "Muammo yo‘q.",
+            "ru": "Без проблем.",
+            "tj": "Мушкил нест."
+          }
+        ]
+      },
+      {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_zh": "在商场，王一雪和刘小雪在看衣服。",
+        "scene_uz": "Savdo markazida Wang Yixue va Liu Xiaoxue kiyim ko‘rmoqda.",
+        "scene_ru": "В торговом центре Ван Исюэ и Лю Сяосюэ выбирают одежду.",
+        "scene_tj": "Дар маркази савдо Ван Исюэ ва Лю Сяосюэ либос мебинанд.",
+        "dialogue": [
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "妈妈，我想买这条白色的裤子。",
+            "pinyin": "Māma, wǒ xiǎng mǎi zhè tiáo báisè de kùzi.",
+            "uz": "Oyi, men mana bu oq shimni olmoqchiman.",
+            "ru": "Мама, я хочу купить эти белые брюки.",
+            "tj": "Оча, мехоҳам ҳамин шими сафедро харам."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "你有很多白色的衣服，为什么还买白色的？",
+            "pinyin": "Nǐ yǒu hěn duō báisè de yīfu, wèishénme hái mǎi báisè de?",
+            "uz": "Senda oq kiyimlar ko‘p-ku, nega yana oqini olmoqchisan?",
+            "ru": "У тебя много белой одежды, зачем снова покупать белое?",
+            "tj": "Ту либоси сафед бисёр дорӣ, чаро боз сафед мехарӣ?"
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "因为我喜欢白色啊！",
+            "pinyin": "Yīnwèi wǒ xǐhuan báisè a!",
+            "uz": "Chunki men oq rangni yoqtiraman!",
+            "ru": "Потому что мне нравится белый!",
+            "tj": "Зеро ман ранги сафедро дӯст медорам!"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "我觉得这条白色的不太好看，你试试那条红色的吧。",
+            "pinyin": "Wǒ juéde zhè tiáo báisè de bú tài hǎokàn, nǐ shìshi nà tiáo hóngsè de ba.",
+            "uz": "Menimcha, bu oq shim unchalik chiroyli emas, ana u qizilini sinab ko‘r.",
+            "ru": "По-моему, эти белые брюки не очень, примерь те красные.",
+            "tj": "Ба назарам, ин шими сафед он қадар зебо нест, он сурхро пӯшида бин."
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "我没穿过红色的，红色的好看吗？",
+            "pinyin": "Wǒ méi chuānguo hóngsè de, hóngsè de hǎokàn ma?",
+            "uz": "Men qizil kiyim kiyib ko‘rmaganman, qizili chiroylimi?",
+            "ru": "Я никогда не носила красное. Красное красиво?",
+            "tj": "Ман то ҳол сурх напӯшидаам, сурх зебо аст?"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "就是因为没穿过，所以要试试啊！",
+            "pinyin": "Jiù shì yīnwèi méi chuānguo, suǒyǐ yào shìshi a!",
+            "uz": "Aynan kiymaganing uchun sinab ko‘rishing kerak!",
+            "ru": "Вот именно потому, что не носила, и нужно попробовать!",
+            "tj": "Маҳз барои он ки напӯшидаӣ, бояд санҷида бинӣ!"
+          }
+        ]
+      },
+      {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_zh": "在商场，王一雪和刘小雪在看书包。",
+        "scene_uz": "Savdo markazida Wang Yixue va Liu Xiaoxue sumkalarni ko‘rmoqda.",
+        "scene_ru": "В торговом центре Ван Исюэ и Лю Сяосюэ выбирают рюкзаки.",
+        "scene_tj": "Дар маркази савдо Ван Исюэ ва Лю Сяосюэ ҷузвдон мебинанд.",
+        "dialogue": [
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "妈妈，我想买个新书包。",
+            "pinyin": "Māma, wǒ xiǎng mǎi ge xīn shūbāo.",
+            "uz": "Oyi, yangi sumka olmoqchiman.",
+            "ru": "Мама, я хочу купить новый рюкзак.",
+            "tj": "Оча, мехоҳам ҷузвдони нав харам."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "好，那边卖书包，我们过去看看吧。",
+            "pinyin": "Hǎo, nàbian mài shūbāo, wǒmen guòqu kànkan ba.",
+            "uz": "Xo‘p, u tomonda sumka sotishar ekan, borib ko‘raylik.",
+            "ru": "Хорошо, там продают рюкзаки, давай подойдём посмотрим.",
+            "tj": "Хуб, он тараф ҷузвдон мефурӯшанд, биё рафта бинем."
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "这么多漂亮的书包！",
+            "pinyin": "Zhème duō piàoliang de shūbāo!",
+            "uz": "Shuncha ko‘p chiroyli sumka!",
+            "ru": "Как много красивых рюкзаков!",
+            "tj": "Ин қадар ҷузвдони зебо!"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "红色的、绿色的、黑色的，你想买哪个？",
+            "pinyin": "Hóngsè de, lǜsè de, hēisè de, nǐ xiǎng mǎi nǎge?",
+            "uz": "Qizili, yashili, qorasi — qaysinisini olmoqchisan?",
+            "ru": "Красный, зелёный, чёрный — какой хочешь купить?",
+            "tj": "Сурх, сабз, сиёҳ — кадомашро мехоҳӣ?"
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "绿色的吧。",
+            "pinyin": "Lǜsè de ba.",
+            "uz": "Yashilini.",
+            "ru": "Наверное, зелёный.",
+            "tj": "Сабзашро."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "不错，我也觉得绿色的更好看。",
+            "pinyin": "Búcuò, wǒ yě juéde lǜsè de gèng hǎokàn.",
+            "uz": "Yomon emas, men ham yashili yanada chiroyli deb o‘ylayman.",
+            "ru": "Неплохо, мне тоже кажется, что зелёный красивее.",
+            "tj": "Бад нест, ба назари ман ҳам сабзаш зеботар аст."
+          }
+        ]
+      },
+      {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_zh": "在房间，刘小雪在写日记。",
+        "scene_uz": "Xonada Liu Xiaoxue kundalik yozmoqda.",
+        "scene_ru": "В комнате Лю Сяосюэ пишет дневник.",
+        "scene_tj": "Дар ҳуҷра Лю Сяосюэ рӯзнома менависад.",
+        "dialogue": [
+          {
+            "speaker": "Narration",
+            "zh": "我和妈妈去了一家商场。因为是新开的，所以这几天东西很便宜。商场里的衣服颜色很多。我没穿过红色的裤子，妈妈让我试了试，我觉得我穿红色的也很好看。",
+            "pinyin": "Wǒ hé māma qùle yì jiā shāngchǎng. Yīnwèi shì xīn kāi de, suǒyǐ zhè jǐ tiān dōngxi hěn piányi. Shāngchǎng lǐ de yīfu yánsè hěn duō. Wǒ méi chuānguo hóngsè de kùzi, māma ràng wǒ shìle shì, wǒ juéde wǒ chuān hóngsè de yě hěn hǎokàn.",
+            "uz": "Men onam bilan bir savdo markaziga bordim. U yangi ochilgani uchun shu kunlarda narsalar juda arzon. Savdo markazidagi kiyimlarning ranglari ko‘p. Men ilgari qizil shim kiymagan edim, onam sinab ko‘rishimni aytdi; men qizil kiyim menga ham juda yarashadi deb o‘yladim.",
+            "ru": "Мы с мамой сходили в торговый центр. Поскольку он недавно открылся, в эти дни товары там дешёвые. Одежда представлена во многих цветах. Я раньше не носила красные брюки; мама предложила примерить, и мне показалось, что красное мне тоже очень идёт.",
+            "tj": "Ман бо модарам ба як маркази савдо рафтам. Азбаски он нав кушода шудааст, ин рӯзҳо чизҳо хеле арзонанд. Либосҳо рангҳои бисёр доранд. Ман пештар шими сурх напӯшида будам; модарам гуфт санҷида бинам ва ба назарам сурх ба ман ҳам хеле зебо меояд."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lesson_order": 5,
+    "lesson_code": "NHSK2-L05",
+    "title": "第一次去中国朋友家",
+    "title_pinyin": "Dì-yī cì qù Zhōngguó péngyou jiā",
+    "goal": {
+      "uz": "Oddiy yo‘nalish to‘ldiruvchilarini 来/去 bilan ishlatish; obyektning joylashuvini to‘g‘ri tanlash; “都……了” bilan ‘allaqachon/shu darajaga yetdi’ ma’nosini berish; xitoylik do‘stnikiga mehmon bo‘lish vaziyatida muloqot qilish.",
+      "ru": "Использовать простые направительные дополнения с 来/去; правильно располагать объект; выражать ‘уже/дошло до’ конструкцией “都……了”; общаться в ситуации первого визита к китайским друзьям.",
+      "tj": "Пуркунандаи самти соддаро бо 来/去 истифода бурдан; ҷойи объектро дуруст гузоштан; бо “都……了” маънои ‘аллакай/то ин дараҷа’ додан; ҳангоми меҳмонӣ ба хонаи дӯсти чинӣ суҳбат кардан."
+    },
+    "intro_text": {
+      "uz": "Dars mehmonxonadan do‘stnikiga borish, uyga kirish, sovg‘a topshirish, ovqatlanish va qaytish haqidagi matnlar orqali yo‘nalish to‘ldiruvchisi va 都……了 qolipini o‘rgatadi.",
+      "ru": "Урок через визит к друзьям, вход в дом, подарки, обед и возвращение вводит направительные дополнения и конструкцию 都……了.",
+      "tj": "Дарс тавассути рафтан ба хонаи дӯст, даромадан, тӯҳфа додан, хӯрок хӯрдан ва баргаштан пуркунандаи самт ва қолаби 都……了-ро меомӯзонад."
+    },
+    "blocks": [
+      {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_zh": "在宾馆楼下，安妮给白家月打电话。",
+        "scene_uz": "Mehmonxona pastida Annie Bai Jiayuega telefon qilmoqda.",
+        "scene_ru": "Внизу гостиницы Энни звонит Бай Цзяюэ.",
+        "scene_tj": "Дар поёни меҳмонхона Энни ба Бай Ҷяюэ занг мезанад.",
+        "dialogue": [
+          {
+            "speaker": "Annie",
+            "zh": "家月，快下来吧，第一次去中国朋友家，别晚了。",
+            "pinyin": "Jiāyuè, kuài xiàlái ba, dì-yī cì qù Zhōngguó péngyou jiā, bié wǎn le.",
+            "uz": "Jiayue, tez tush, xitoylik do‘stnikiga birinchi marta ketyapmiz, kechikmaylik.",
+            "ru": "Цзяюэ, скорее спускайся, мы впервые идём в гости к китайским друзьям, не опоздай.",
+            "tj": "Ҷяюэ, зуд поён биё, бори аввал ба хонаи дӯсти чинӣ меравем, дер накун."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "还有时间，你上来吧。",
+            "pinyin": "Hái yǒu shíjiān, nǐ shànglái ba.",
+            "uz": "Hali vaqt bor, sen yuqoriga chiq.",
+            "ru": "Время ещё есть, поднимайся ко мне.",
+            "tj": "Ҳоло вақт ҳаст, ту боло биё."
+          },
+          {
+            "speaker": "Annie",
+            "zh": "我不上去了，就在下面等你。",
+            "pinyin": "Wǒ bú shàngqù le, jiù zài xiàmian děng nǐ.",
+            "uz": "Men yuqoriga chiqmayman, pastda seni kutaman.",
+            "ru": "Я не буду подниматься, подожду тебя внизу.",
+            "tj": "Ман боло намебароям, дар поён туро интизор мешавам."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "那我一会儿就下去。",
+            "pinyin": "Nà wǒ yíhuìr jiù xiàqù.",
+            "uz": "Unda men birozdan keyin tushaman.",
+            "ru": "Тогда я через минуту спущусь.",
+            "tj": "Пас ман каме баъд поён мефароям."
+          },
+          {
+            "speaker": "Annie",
+            "zh": "你快点儿吧。",
+            "pinyin": "Nǐ kuài diǎnr ba.",
+            "uz": "Tezroq bo‘l.",
+            "ru": "Побыстрее, пожалуйста.",
+            "tj": "Тезтар шав."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "没事，一雪姐说11点前到就可以。",
+            "pinyin": "Méishì, Yīxuě jiě shuō shíyī diǎn qián dào jiù kěyǐ.",
+            "uz": "Hechqisi yo‘q, opa Yixue soat 11 gacha yetib borsak bo‘ladi dedi.",
+            "ru": "Ничего, сестра Исюэ сказала, что достаточно приехать до 11.",
+            "tj": "Ҳеҷ гап не, апаи Исюэ гуфт то соати 11 расем бас аст."
+          }
+        ]
+      },
+      {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_zh": "在王一雪家，白家月和安妮来做客。",
+        "scene_uz": "Wang Yixue uyida Bai Jiayue va Annie mehmon bo‘lib kelgan.",
+        "scene_ru": "У Ван Исюэ дома Бай Цзяюэ и Энни пришли в гости.",
+        "scene_tj": "Дар хонаи Ван Исюэ Бай Ҷяюэ ва Энни ба меҳмонӣ омадаанд.",
+        "dialogue": [
+          {
+            "speaker": "Wang Yixue",
+            "zh": "家月、安妮，快进来！我给你们介绍一下，这是孩子们的爷爷、奶奶。",
+            "pinyin": "Jiāyuè, Ānnī, kuài jìnlái! Wǒ gěi nǐmen jièshào yíxià, zhè shì háizimen de yéye, nǎinai.",
+            "uz": "Jiayue, Annie, tez kiring! Sizlarni tanishtiray: bular bolalarning bobosi va buvisi.",
+            "ru": "Цзяюэ, Энни, заходите! Познакомлю вас: это дедушка и бабушка детей.",
+            "tj": "Ҷяюэ, Энни, дароед! Шуморо шинос мекунам: инҳо бобо ва бибии кӯдаконанд."
+          },
+          {
+            "speaker": "Bai Jiayue & Annie",
+            "zh": "你们好！",
+            "pinyin": "Nǐmen hǎo!",
+            "uz": "Salom!",
+            "ru": "Здравствуйте!",
+            "tj": "Салом!"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "爸，妈，这是白家月，这是安妮。她们都是一飞的学生。",
+            "pinyin": "Bà, mā, zhè shì Bái Jiāyuè, zhè shì Ānnī. Tāmen dōu shì Yīfēi de xuésheng.",
+            "uz": "Dada, oyi, bu Bai Jiayue, bu Annie. Ikkalasi ham Yifeining talabalari.",
+            "ru": "Папа, мама, это Бай Цзяюэ, а это Энни. Они обе ученицы Ифэй.",
+            "tj": "Дада, оча, ин Бай Ҷяюэ, ин Энни. Ҳарду донишҷӯи Ифэй ҳастанд."
+          },
+          {
+            "speaker": "Grandpa Liu",
+            "zh": "家月、安妮，你们好！",
+            "pinyin": "Jiāyuè, Ānnī, nǐmen hǎo!",
+            "uz": "Jiayue, Annie, salom!",
+            "ru": "Цзяюэ, Энни, здравствуйте!",
+            "tj": "Ҷяюэ, Энни, салом!"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "这是送你们的礼物。",
+            "pinyin": "Zhè shì sòng nǐmen de lǐwù.",
+            "uz": "Bu sizlarga sovg‘a.",
+            "ru": "Это подарок для вас.",
+            "tj": "Ин тӯҳфа барои шумост."
+          },
+          {
+            "speaker": "Grandpa Liu",
+            "zh": "你们太客气了，还拿这么多礼物来！",
+            "pinyin": "Nǐmen tài kèqi le, hái ná zhème duō lǐwù lái!",
+            "uz": "Juda ovora bo‘libsizlar, yana shuncha sovg‘a olib kelibsizlar!",
+            "ru": "Ну что вы, ещё столько подарков принесли!",
+            "tj": "Ин қадар заҳмат кашида, боз ин қадар тӯҳфа овардаед!"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "一雪姐，这是给孩子们准备的礼物。",
+            "pinyin": "Yīxuě jiě, zhè shì gěi háizimen zhǔnbèi de lǐwù.",
+            "uz": "Opa Yixue, bu bolalar uchun tayyorlagan sovg‘amiz.",
+            "ru": "Сестра Исюэ, это подарок, который мы приготовили детям.",
+            "tj": "Апа Исюэ, ин тӯҳфаест, ки барои кӯдакон тайёр кардем."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "谢谢！你们别客气，快坐吧！",
+            "pinyin": "Xièxie! Nǐmen bié kèqi, kuài zuò ba!",
+            "uz": "Rahmat! Bemalol bo‘linglar, o‘tiringlar!",
+            "ru": "Спасибо! Не стесняйтесь, садитесь!",
+            "tj": "Раҳмат! Худатонро озод ҳис кунед, нишинед!"
+          }
+        ]
+      },
+      {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_zh": "在王一雪家，白家月和安妮在吃饭。",
+        "scene_uz": "Wang Yixue uyida Bai Jiayue va Annie ovqatlanmoqda.",
+        "scene_ru": "У Ван Исюэ дома Бай Цзяюэ и Энни обедают.",
+        "scene_tj": "Дар хонаи Ван Исюэ Бай Ҷяюэ ва Энни хӯрок мехӯранд.",
+        "dialogue": [
+          {
+            "speaker": "Wang Yixue",
+            "zh": "都12点了，我们吃饭吧。",
+            "pinyin": "Dōu shí'èr diǎn le, wǒmen chī fàn ba.",
+            "uz": "Soat allaqachon 12 bo‘ldi, ovqatlanaylik.",
+            "ru": "Уже двенадцать, давайте есть.",
+            "tj": "Соат аллакай 12 шуд, биёед хӯрок хӯрем."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "这么多好吃的，您太客气了！",
+            "pinyin": "Zhème duō hǎochī de, nín tài kèqi le!",
+            "uz": "Shuncha mazali taom, juda ovora bo‘libsiz!",
+            "ru": "Столько вкусного, вы так постарались!",
+            "tj": "Ин қадар хӯроки болаззат, хеле заҳмат кашидаед!"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "都是我自己做的，你们多吃点儿。",
+            "pinyin": "Dōu shì wǒ zìjǐ zuò de, nǐmen duō chī diǎnr.",
+            "uz": "Hammasini o‘zim qildim, ko‘proq yenglar.",
+            "ru": "Я всё приготовила сама, ешьте побольше.",
+            "tj": "Ҳамаашро худам тайёр кардам, бештар бихӯред."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "奶茶也很好喝，是您自己做的吗？",
+            "pinyin": "Nǎichá yě hěn hǎohē, shì nín zìjǐ zuò de ma?",
+            "uz": "Sutli choy ham juda mazali, uni ham o‘zingiz qildingizmi?",
+            "ru": "Чай с молоком тоже очень вкусный, вы сами сделали?",
+            "tj": "Чойи ширӣ ҳам хеле болаззат аст, худатон тайёр кардед?"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "不是，奶茶是爷爷买的。",
+            "pinyin": "Bú shì, nǎichá shì yéye mǎi de.",
+            "uz": "Yo‘q, sutli choyni bobo sotib olgan.",
+            "ru": "Нет, чай с молоком купил дедушка.",
+            "tj": "Не, чойи шириро бобо харидааст."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "在哪儿买的？我还没喝过这么好喝的奶茶。",
+            "pinyin": "Zài nǎr mǎi de? Wǒ hái méi hēguo zhème hǎohē de nǎichá.",
+            "uz": "Qayerdan olgan? Men hali bunday mazali sutli choy ichmaganman.",
+            "ru": "Где он его купил? Я ещё никогда не пила такой вкусный чай с молоком.",
+            "tj": "Аз куҷо харидааст? Ман ҳоло чунин чойи ширии болаззат нанӯшидаам."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "就在前边的商场，吃完饭你们可以跟我去看看。",
+            "pinyin": "Jiù zài qiánbian de shāngchǎng, chīwán fàn nǐmen kěyǐ gēn wǒ qù kànkan.",
+            "uz": "Oldindagi savdo markazida. Ovqatdan keyin men bilan borib ko‘rishingiz mumkin.",
+            "ru": "В торговом центре впереди. После еды можете сходить со мной посмотреть.",
+            "tj": "Дар маркази савдои пештар. Баъди хӯрок метавонед бо ман рафта бинед."
+          }
+        ]
+      },
+      {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_zh": "在宾馆，白家月给李文发信息。",
+        "scene_uz": "Mehmonxonada Bai Jiayue Li Wenga xabar yubormoqda.",
+        "scene_ru": "В гостинице Бай Цзяюэ отправляет сообщение Ли Вэню.",
+        "scene_tj": "Дар меҳмонхона Бай Ҷяюэ ба Ли Вэн паём мефиристад.",
+        "dialogue": [
+          {
+            "speaker": "Narration",
+            "zh": "回国前一天，我们去一雪姐家了。到她家的时候，饭菜都做好了。刘爷爷还准备了奶茶。因为吃了太多东西，我们吃完饭是走回酒店的。",
+            "pinyin": "Huíguó qián yì tiān, wǒmen qù Yīxuě jiě jiā le. Dào tā jiā de shíhou, fàncài dōu zuòhǎo le. Liú yéye hái zhǔnbèile nǎichá. Yīnwèi chīle tài duō dōngxi, wǒmen chīwán fàn shì zǒu huí jiǔdiàn de.",
+            "uz": "Vatanga qaytishimizdan bir kun oldin opa Yixuenikiga bordik. Yetib borganimizda ovqatlar tayyor edi. Liu bobo sutli choy ham tayyorlagan ekan. Juda ko‘p ovqat yeganimiz uchun ovqatdan keyin mehmonxonaga piyoda qaytdik.",
+            "ru": "За день до возвращения домой мы пошли к сестре Исюэ. Когда пришли, еда уже была готова. Дедушка Лю приготовил ещё и чай с молоком. Мы съели слишком много, поэтому после еды вернулись в гостиницу пешком.",
+            "tj": "Як рӯз пеш аз бозгашт ба ватан ба хонаи апаи Исюэ рафтем. Вақте расидем, хӯрокҳо тайёр буданд. Бобои Лю чойи ширӣ ҳам тайёр карда буд. Азбаски бисёр хӯрок хӯрдем, баъди хӯрок пиёда ба меҳмонхона баргаштем."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lesson_order": 6,
+    "lesson_code": "NHSK2-L06",
+    "title": "小雪，生日快乐！",
+    "title_pinyin": "Xiǎoxuě, shēngrì kuàilè!",
+    "goal": {
+      "uz": "Sifat takrorlanishi bilan darajani kuchaytirish; “什么的” bilan ‘va hokazo’ ma’nosini berish; “地” bilan harakatning holat/usulini ko‘rsatish; tug‘ilgan kun haqida gaplashish.",
+      "ru": "Усиливать признак редупликацией прилагательных; выражать «и так далее» с “什么的”; описывать способ действия с “地”; говорить о дне рождения.",
+      "tj": "Бо такрори сифат дараҷаро қавитар кардан; бо “什么的” маънои «ва ғайра»-ро додан; бо “地” тарзи амалро нишон додан; дар бораи зодрӯз суҳбат кардан."
+    },
+    "intro_text": {
+      "uz": "Dars tug‘ilgan kun sovg‘asi, oilaviy bayram, taomlar va kundalik yozuvi orqali sifat takrorlanishi, 什么的 va 地 ni o‘rgatadi.",
+      "ru": "Урок через подарки на день рождения, семейный праздник, блюда и запись в дневнике вводит редупликацию прилагательных, 什么的 и 地.",
+      "tj": "Дарс тавассути тӯҳфаи зодрӯз, ҷашни оилавӣ, хӯрокҳо ва навиштаи рӯзнома такрори сифат, 什么的 ва 地-ро меомӯзонад."
+    },
+    "blocks": [
+      {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_zh": "在家里，刘明和王一雪在聊天儿。",
+        "scene_uz": "Uyda Liu Ming va Wang Yixue suhbatlashmoqda.",
+        "scene_ru": "Дома Лю Мин и Ван Исюэ разговаривают.",
+        "scene_tj": "Дар хона Лю Мин ва Ван Исюэ суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Wang Yixue",
+            "zh": "明天就是女儿的生日了。",
+            "pinyin": "Míngtiān jiù shì nǚ'ér de shēngrì le.",
+            "uz": "Ertaga qizimizning tug‘ilgan kuni.",
+            "ru": "Завтра уже день рождения нашей дочери.",
+            "tj": "Фардо зодрӯзи духтарамон аст."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "你不说，我还真忘了。我们给她准备个什么礼物呢？",
+            "pinyin": "Nǐ bù shuō, wǒ hái zhēn wàng le. Wǒmen gěi tā zhǔnbèi ge shénme lǐwù ne?",
+            "uz": "Aytinganing yaxshi bo‘ldi, rostdan unutibman. Unga qanday sovg‘a tayyorlaymiz?",
+            "ru": "Если бы ты не сказала, я бы и правда забыл. Что подарим ей?",
+            "tj": "Агар намегуфтӣ, ростӣ фаромӯш мекардам. Ба ӯ чӣ тӯҳфа тайёр кунем?"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "她喜欢画画，你觉得画笔怎么样？",
+            "pinyin": "Tā xǐhuan huàhuà, nǐ juéde huàbǐ zěnmeyàng?",
+            "uz": "U rasm chizishni yoqtiradi, rangli qalamlar qanday?",
+            "ru": "Она любит рисовать. Как насчёт карандашей/кистей?",
+            "tj": "Ӯ расм кашиданро дӯст медорад, қаламҳои расмкашӣ чӣ хел?"
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "就送画笔吧！",
+            "pinyin": "Jiù sòng huàbǐ ba!",
+            "uz": "Unda qalamlar sovg‘a qilamiz!",
+            "ru": "Тогда подарим ей набор для рисования!",
+            "tj": "Пас қаламҳои расмкаширо тӯҳфа кунем!"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "那我明天上午就去买。",
+            "pinyin": "Nà wǒ míngtiān shàngwǔ jiù qù mǎi.",
+            "uz": "Unda ertaga ertalab borib olaman.",
+            "ru": "Тогда завтра утром я пойду куплю.",
+            "tj": "Пас фардо саҳар рафта мехарам."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "好的！我再给她买个大大的生日蛋糕。",
+            "pinyin": "Hǎo de! Wǒ zài gěi tā mǎi ge dàdà de shēngrì dàngāo.",
+            "uz": "Xo‘p! Men unga yana katta-katta tug‘ilgan kun torti olaman.",
+            "ru": "Хорошо! А я куплю ей ещё большой-большой торт.",
+            "tj": "Хуб! Ман боз барояш торти калони зодрӯз мехарам."
+          }
+        ]
+      },
+      {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_zh": "在客厅，刘明一家人在聊天儿。",
+        "scene_uz": "Mehmonxonada Liu Ming oilasi suhbatlashmoqda.",
+        "scene_ru": "В гостиной семья Лю Мина разговаривает.",
+        "scene_tj": "Дар меҳмонхона оилаи Лю Мин суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Liu Ming",
+            "zh": "小雪，生日快乐！",
+            "pinyin": "Xiǎoxuě, shēngrì kuàilè!",
+            "uz": "Xiaoxue, tug‘ilgan kuning bilan!",
+            "ru": "Сяосюэ, с днём рождения!",
+            "tj": "Сяосюэ, зодрӯз муборак!"
+          },
+          {
+            "speaker": "Liu Xiaoming",
+            "zh": "姐姐，生日快乐！",
+            "pinyin": "Jiějie, shēngrì kuàilè!",
+            "uz": "Opa, tug‘ilgan kuning bilan!",
+            "ru": "Сестрёнка, с днём рождения!",
+            "tj": "Апа, зодрӯз муборак!"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "小雪，这是爸爸、妈妈送你的礼物。",
+            "pinyin": "Xiǎoxuě, zhè shì bàba, māma sòng nǐ de lǐwù.",
+            "uz": "Xiaoxue, bu dada va onangning senga sovg‘asi.",
+            "ru": "Сяосюэ, это подарок от папы и мамы.",
+            "tj": "Сяосюэ, ин тӯҳфаи падар ва модар барои туст."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "你打开看看喜欢不喜欢。",
+            "pinyin": "Nǐ dǎkāi kànkan xǐhuan bu xǐhuan.",
+            "uz": "Ochib ko‘r, yoqadimi-yo‘qmi.",
+            "ru": "Открой и посмотри, понравится ли.",
+            "tj": "Кушода бин, писанд меояд ё не."
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "画笔！我很喜欢！",
+            "pinyin": "Huàbǐ! Wǒ hěn xǐhuan!",
+            "uz": "Rasm chizish qalamlari! Juda yoqdi!",
+            "ru": "Принадлежности для рисования! Очень нравится!",
+            "tj": "Қаламҳои расмкашӣ! Хеле писанд омад!"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "那你想画点儿什么？",
+            "pinyin": "Nà nǐ xiǎng huà diǎnr shénme?",
+            "uz": "Unda nima chizmoqchisan?",
+            "ru": "Что ты хочешь нарисовать?",
+            "tj": "Пас чӣ расм кашидан мехоҳӣ?"
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "画我们的家！有爸爸、妈妈、弟弟，还有黑色的狗、白色的猫什么的。",
+            "pinyin": "Huà wǒmen de jiā! Yǒu bàba, māma, dìdi, hái yǒu hēisè de gǒu, báisè de māo shénmede.",
+            "uz": "Oilamizni! Dada, oyi, ukam, yana qora it, oq mushuk va hokazolarni.",
+            "ru": "Наш дом! Папу, маму, младшего брата, ещё чёрную собаку, белую кошку и всё такое.",
+            "tj": "Оилаамонро! Падар, модар, додар, боз саги сиёҳ, гурбаи сафед ва ғайра."
+          },
+          {
+            "speaker": "Liu Xiaoming",
+            "zh": "那我要画一个穿白色衣服的姐姐。",
+            "pinyin": "Nà wǒ yào huà yí ge chuān báisè yīfu de jiějie.",
+            "uz": "Unda men oq kiyim kiygan opamni chizaman.",
+            "ru": "Тогда я нарисую сестру в белой одежде.",
+            "tj": "Пас ман апаи либоси сафедпӯшро мекашам."
+          }
+        ]
+      },
+      {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_zh": "在客厅，刘明一家人在给刘小雪过生日。",
+        "scene_uz": "Mehmonxonada Liu Ming oilasi Liu Xiaoxuening tug‘ilgan kunini nishonlamoqda.",
+        "scene_ru": "В гостиной семья Лю Мина празднует день рождения Лю Сяосюэ.",
+        "scene_tj": "Дар меҳмонхона оилаи Лю Мин зодрӯзи Лю Сяосюэро ҷашн мегиранд.",
+        "dialogue": [
+          {
+            "speaker": "Liu Ming",
+            "zh": "小雪，看看今天有什么好吃的。",
+            "pinyin": "Xiǎoxuě, kànkan jīntiān yǒu shénme hǎochī de.",
+            "uz": "Xiaoxue, bugun qanday mazali narsalar borligini qara.",
+            "ru": "Сяосюэ, посмотри, сколько сегодня вкусного.",
+            "tj": "Сяосюэ, бин имрӯз чӣ хӯрокҳои болаззат ҳаст."
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "长长的面条儿，大大的蛋糕。",
+            "pinyin": "Chángcháng de miàntiáor, dàdà de dàngāo.",
+            "uz": "Uzun-uzun lag‘mon va katta-katta tort.",
+            "ru": "Длинная-длинная лапша и большой-большой торт.",
+            "tj": "Угрои дароз-дароз ва торти калон-калон."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "你看，还有鱼啊肉啊什么的，都是你喜欢吃的。",
+            "pinyin": "Nǐ kàn, hái yǒu yú a ròu a shénmede, dōu shì nǐ xǐhuan chī de.",
+            "uz": "Qara, yana baliq, go‘sht va hokazolar bor — hammasi sen yoqtiradiganlar.",
+            "ru": "Смотри, ещё рыба, мясо и всё такое — всё то, что ты любишь.",
+            "tj": "Бин, боз моҳӣ, гӯшт ва ғайра ҳаст — ҳамааш чизҳои дӯстдоштаи туст."
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "谢谢爸爸、妈妈！",
+            "pinyin": "Xièxie bàba, māma!",
+            "uz": "Rahmat, dada, oyi!",
+            "ru": "Спасибо, папа и мама!",
+            "tj": "Раҳмат, падар ва модар!"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "快去叫弟弟过来吃饭吧，吃完饭我们还要出去玩呢。",
+            "pinyin": "Kuài qù jiào dìdi guòlai chī fàn ba, chīwán fàn wǒmen hái yào chūqù wán ne.",
+            "uz": "Tez ukangni ovqatga chaqir, ovqatdan keyin yana tashqariga o‘ynagani chiqamiz.",
+            "ru": "Иди позови брата есть, после ужина мы ещё пойдём гулять.",
+            "tj": "Зуд додарро ба хӯрок даъват кун, баъди хӯрок боз ба берун бозӣ меравем."
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "过生日真好啊！",
+            "pinyin": "Guò shēngrì zhēn hǎo a!",
+            "uz": "Tug‘ilgan kun o‘tkazish juda zo‘r!",
+            "ru": "Как здорово праздновать день рождения!",
+            "tj": "Зодрӯз гузарондан чӣ қадар хуб!"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "是的，过生日就要吃好吃的，还要高高兴兴地玩。",
+            "pinyin": "Shì de, guò shēngrì jiù yào chī hǎochī de, hái yào gāogāoxìngxìng de wán.",
+            "uz": "Ha, tug‘ilgan kunda mazali narsalar yeyish va xursand bo‘lib o‘ynash kerak.",
+            "ru": "Да, в день рождения надо вкусно поесть и весело поиграть.",
+            "tj": "Ҳа, дар зодрӯз бояд хӯроки болаззат хӯрд ва хушҳолона бозӣ кард."
+          }
+        ]
+      },
+      {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_zh": "在房间，王一雪在写日记。",
+        "scene_uz": "Xonada Wang Yixue kundalik yozmoqda.",
+        "scene_ru": "В комнате Ван Исюэ пишет дневник.",
+        "scene_tj": "Дар ҳуҷра Ван Исюэ рӯзнома менависад.",
+        "dialogue": [
+          {
+            "speaker": "Narration",
+            "zh": "今天是女儿的生日。我们买了蛋糕，做了面条儿，还做了鱼啊肉啊什么的。吃完晚饭，一家人去看了个电影。回家后，孩子们早早地就上床了。明天不上学，他们说要舒舒服服地睡一觉，让我们晚点儿叫他们起床。这是很忙、很累，但很快乐的一天。",
+            "pinyin": "Jīntiān shì nǚ'ér de shēngrì. Wǒmen mǎile dàngāo, zuòle miàntiáor, hái zuòle yú a ròu a shénmede. Chīwán wǎnfàn, yì jiā rén qù kànle ge diànyǐng. Huí jiā hòu, háizimen zǎozǎo de jiù shàng chuáng le. Míngtiān bù shàngxué, tāmen shuō yào shūshufúfu de shuì yí jiào, ràng wǒmen wǎn diǎnr jiào tāmen qǐchuáng. Zhè shì hěn máng, hěn lèi, dàn hěn kuàilè de yì tiān.",
+            "uz": "Bugun qizimizning tug‘ilgan kuni edi. Tort oldik, lag‘mon qildik, yana baliq, go‘sht va boshqa narsalar tayyorladik. Kechki ovqatdan so‘ng butun oila film ko‘rgani bordi. Uyga qaytgach, bolalar erta yotishdi. Ertaga maktab yo‘q, ular bemalol uxlab olishni va bizdan kechroq uyg‘otishni so‘rashdi. Juda band va charchatadigan, lekin juda quvonchli kun bo‘ldi.",
+            "ru": "Сегодня был день рождения дочери. Мы купили торт, приготовили лапшу, рыбу, мясо и другое. После ужина всей семьёй пошли в кино. Вернувшись домой, дети рано легли спать. Завтра школы нет, они сказали, что хотят хорошенько выспаться и попросили разбудить их попозже. День был очень занятым и утомительным, но радостным.",
+            "tj": "Имрӯз зодрӯзи духтарамон буд. Торт харидем, угро пухтем, боз моҳӣ, гӯшт ва чизҳои дигар тайёр кардем. Баъди шом тамоми оила ба кино рафт. Пас аз бозгашт кӯдакон барвақт хобиданд. Фардо мактаб нест, гуфтанд мехоҳанд бароҳат хоб кунанд ва хоҳиш карданд дертар бедорашон кунем. Рӯзи серкору хастакунанда, вале хеле хушҳол буд."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lesson_order": 7,
+    "lesson_code": "NHSK2-L07",
+    "title": "他篮球打得很好",
+    "title_pinyin": "Tā lánqiú dǎ de hěn hǎo",
+    "goal": {
+      "uz": "“一……就……” bilan ketma-ket/tez sodir bo‘ladigan harakatlarni ifodalash; 得 orqali holat to‘ldiruvchisini ishlatish; ajraluvchi fe’l va obyektli fe’llarda holat to‘ldiruvchisi tartibini to‘g‘ri qo‘llash; sport haqida gaplashish.",
+      "ru": "Выражать быстрое следование действий конструкцией “一……就……”；использовать дополнение состояния с 得; правильно строить его с разделяемыми и переходными глаголами; говорить о спорте.",
+      "tj": "Бо “一……就……” пайдарпай ё зуд рух додани амалҳоро ифода кардан; пуркунандаи ҳолатро бо 得 истифода бурдан; тартиби онро бо феълҳои ҷудошаванда ва объектдор дуруст сохтани; дар бораи варзиш суҳбат кардан."
+    },
+    "intro_text": {
+      "uz": "Dars darsdan keyingi basketbol, futbol, yugurish va suzish haqidagi uch dialog hamda kundalik matni orqali 一……就…… va ikki turdagi holat to‘ldiruvchisini o‘rgatadi.",
+      "ru": "Урок через три диалога о баскетболе, футболе, беге и плавании и запись в дневнике вводит 一……就…… и два типа дополнения состояния.",
+      "tj": "Дарс тавассути се гуфтугӯ дар бораи баскетбол, футбол, давидан ва шиноварӣ ва матни рӯзнома 一……就…… ва ду навъи пуркунандаи ҳолатро меомӯзонад."
+    },
+    "blocks": [
+      {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_zh": "在教室，安妮和陈天中在聊天儿。",
+        "scene_uz": "Sinfda Annie va Chen Tianzhong suhbatlashmoqda.",
+        "scene_ru": "В классе Энни и Чэнь Тяньчжун разговаривают.",
+        "scene_tj": "Дар синф Энни ва Чэн Тянҷун суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "安妮，你是什么时候从北京回来的？",
+            "pinyin": "Ānnī, nǐ shì shénme shíhou cóng Běijīng huílái de?",
+            "uz": "Annie, sen Pekindan qachon qaytding?",
+            "ru": "Энни, когда ты вернулась из Пекина?",
+            "tj": "Энни, кай аз Пекин баргаштӣ?"
+          },
+          {
+            "speaker": "Annie",
+            "zh": "昨天下午。天中，你怎么一下课就往外跑？",
+            "pinyin": "Zuótiān xiàwǔ. Tiānzhōng, nǐ zěnme yí xiàkè jiù wǎng wài pǎo?",
+            "uz": "Kecha tushdan keyin. Tianzhong, nega dars tugashi bilan tashqariga yugurasan?",
+            "ru": "Вчера днём. Тяньчжун, почему ты сразу после урока выбегаешь наружу?",
+            "tj": "Дирӯз баъд аз нисфирӯзӣ. Тянҷун, чаро ҳамин ки дарс тамом мешавад, ба берун медавӣ?"
+          },
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "我跟同学说好了，一起去打篮球。",
+            "pinyin": "Wǒ gēn tóngxué shuōhǎo le, yìqǐ qù dǎ lánqiú.",
+            "uz": "Sinfdoshlar bilan kelishib qo‘ydim, birga basketbol o‘ynagani boramiz.",
+            "ru": "Я договорился с одноклассниками вместе поиграть в баскетбол.",
+            "tj": "Бо ҳамсинфон маслиҳат кардем, якҷо баскетбол бозӣ мекунем."
+          },
+          {
+            "speaker": "Annie",
+            "zh": "我也想跟你们一起玩。",
+            "pinyin": "Wǒ yě xiǎng gēn nǐmen yìqǐ wán.",
+            "uz": "Men ham sizlar bilan birga o‘ynagim keladi.",
+            "ru": "Я тоже хочу поиграть с вами.",
+            "tj": "Ман ҳам мехоҳам бо шумо якҷо бозӣ кунам."
+          },
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "没问题，走吧。",
+            "pinyin": "Méi wèntí, zǒu ba.",
+            "uz": "Muammo yo‘q, yur.",
+            "ru": "Без проблем, пошли.",
+            "tj": "Мушкил нест, равем."
+          }
+        ]
+      },
+      {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_zh": "在校园，安妮和陈天中边走边聊。",
+        "scene_uz": "Kampusda Annie va Chen Tianzhong yurib suhbatlashmoqda.",
+        "scene_ru": "В кампусе Энни и Чэнь Тяньчжун разговаривают на ходу.",
+        "scene_tj": "Дар кампус Энни ва Чэн Тянҷун роҳравон суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Annie",
+            "zh": "天中，你是不是很喜欢打篮球？",
+            "pinyin": "Tiānzhōng, nǐ shì bu shì hěn xǐhuan dǎ lánqiú?",
+            "uz": "Tianzhong, sen basketbol o‘ynashni juda yoqtirasanmi?",
+            "ru": "Тяньчжун, ты очень любишь играть в баскетбол?",
+            "tj": "Тянҷун, ту баскетбол бозӣ карданро хеле дӯст медорӣ?"
+          },
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "没错。",
+            "pinyin": "Méi cuò.",
+            "uz": "To‘g‘ri.",
+            "ru": "Именно.",
+            "tj": "Дуруст."
+          },
+          {
+            "speaker": "Annie",
+            "zh": "你还喜欢什么运动？",
+            "pinyin": "Nǐ hái xǐhuan shénme yùndòng?",
+            "uz": "Yana qaysi sportni yoqtirasan?",
+            "ru": "Какие ещё виды спорта ты любишь?",
+            "tj": "Боз кадом варзишро дӯст медорӣ?"
+          },
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "我还喜欢踢足球，一到星期天就跟朋友们去踢球。",
+            "pinyin": "Wǒ hái xǐhuan tī zúqiú, yí dào Xīngqītiān jiù gēn péngyoumen qù tī qiú.",
+            "uz": "Futbolni ham yoqtiraman, yakshanba kelishi bilan do‘stlar bilan futbol o‘ynagani boraman.",
+            "ru": "Я ещё люблю футбол: как только наступает воскресенье, иду с друзьями играть.",
+            "tj": "Футболро ҳам дӯст медорам; ҳамин ки якшанбе шавад, бо дӯстон футбол бозӣ меравам."
+          },
+          {
+            "speaker": "Annie",
+            "zh": "你踢得怎么样？",
+            "pinyin": "Nǐ tī de zěnmeyàng?",
+            "uz": "Qanday o‘ynaysan?",
+            "ru": "Как ты играешь?",
+            "tj": "Чӣ хел бозӣ мекунӣ?"
+          },
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "我踢得还可以。",
+            "pinyin": "Wǒ tī de hái kěyǐ.",
+            "uz": "Yomon emas o‘ynayman.",
+            "ru": "Играю неплохо.",
+            "tj": "Бад не бозӣ мекунам."
+          }
+        ]
+      },
+      {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_zh": "在校园，安妮和陈天中边走边聊。",
+        "scene_uz": "Kampusda Annie va Chen Tianzhong yurib suhbatlashmoqda.",
+        "scene_ru": "В кампусе Энни и Чэнь Тяньчжун разговаривают на ходу.",
+        "scene_tj": "Дар кампус Энни ва Чэн Тянҷун роҳравон суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "你篮球打得怎么样？",
+            "pinyin": "Nǐ lánqiú dǎ de zěnmeyàng?",
+            "uz": "Basketbolni qanday o‘ynaysan?",
+            "ru": "Как ты играешь в баскетбол?",
+            "tj": "Баскетболро чӣ хел бозӣ мекунӣ?"
+          },
+          {
+            "speaker": "Annie",
+            "zh": "打得还可以。",
+            "pinyin": "Dǎ de hái kěyǐ.",
+            "uz": "Yomon emas.",
+            "ru": "Неплохо.",
+            "tj": "Бад не."
+          },
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "跑步呢？你跑得快不快？",
+            "pinyin": "Pǎobù ne? Nǐ pǎo de kuài bu kuài?",
+            "uz": "Yugurish-chi? Tez yugurasanmi?",
+            "ru": "А бег? Ты быстро бегаешь?",
+            "tj": "Давидан чӣ? Тез медавӣ?"
+          },
+          {
+            "speaker": "Annie",
+            "zh": "我跑得不快，也不太喜欢跑步。",
+            "pinyin": "Wǒ pǎo de bú kuài, yě bú tài xǐhuan pǎobù.",
+            "uz": "Tez yugurmayman, yugurishni ham uncha yoqtirmayman.",
+            "ru": "Я бегаю небыстро и не очень люблю бег.",
+            "tj": "Ман тез намедавам ва давиданро ҳам он қадар дӯст намедорам."
+          },
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "那你喜欢游泳吗？",
+            "pinyin": "Nà nǐ xǐhuan yóuyǒng ma?",
+            "uz": "Unda suzishni yoqtirasanmi?",
+            "ru": "А плавать любишь?",
+            "tj": "Пас шиновариро дӯст медорӣ?"
+          },
+          {
+            "speaker": "Annie",
+            "zh": "喜欢，但我游泳游得不快。",
+            "pinyin": "Xǐhuan, dàn wǒ yóuyǒng yóu de bú kuài.",
+            "uz": "Ha, lekin tez suzolmayman.",
+            "ru": "Люблю, но плаваю небыстро.",
+            "tj": "Дӯст медорам, аммо тез шино намекунам."
+          }
+        ]
+      },
+      {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_zh": "在房间，陈天中在写日记。",
+        "scene_uz": "Xonada Chen Tianzhong kundalik yozmoqda.",
+        "scene_ru": "В комнате Чэнь Тяньчжун пишет дневник.",
+        "scene_tj": "Дар ҳуҷра Чэн Тянҷун рӯзнома менависад.",
+        "dialogue": [
+          {
+            "speaker": "Narration",
+            "zh": "我的爱好是运动。从上小学开始，我每天都跟爸爸去运动。现在我篮球打得很好，足球踢得不错，游泳游得也很快。我一有时间就去运动。",
+            "pinyin": "Wǒ de àihào shì yùndòng. Cóng shàng xiǎoxué kāishǐ, wǒ měitiān dōu gēn bàba qù yùndòng. Xiànzài wǒ lánqiú dǎ de hěn hǎo, zúqiú tī de búcuò, yóuyǒng yóu de yě hěn kuài. Wǒ yì yǒu shíjiān jiù qù yùndòng.",
+            "uz": "Mening qiziqishim sport. Boshlang‘ich maktabdan beri har kuni dadam bilan sport qilaman. Hozir basketbolni juda yaxshi, futbolni yomon emas o‘ynayman, suzishim ham tez. Vaqtim bo‘lishi bilan sport qilaman.",
+            "ru": "Моё хобби — спорт. С начальной школы я каждый день занимаюсь с папой. Сейчас я очень хорошо играю в баскетбол, неплохо в футбол и быстро плаваю. Как только есть время, иду заниматься спортом.",
+            "tj": "Шавқи ман варзиш аст. Аз мактаби ибтидоӣ ҳар рӯз бо падарам машқ мекунам. Ҳоло баскетболро хеле хуб, футболро бад не бозӣ мекунам ва тез шино мекунам. Ҳамин ки вақт дошта бошам, ба варзиш меравам."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lesson_order": 8,
+    "lesson_code": "NHSK2-L08",
+    "title": "虽然你忘了，但是我记得",
+    "title_pinyin": "Suīrán nǐ wàng le, dànshì wǒ jìde",
+    "goal": {
+      "uz": "“比” bilan taqqoslash; 比 gaplarida 很/非常 o‘rniga 更/还 bilan darajani kuchaytirish; “虽然……但是……” bilan qarama-qarshilikni ifodalash; narx, kino va tug‘ilgan kun haqida gaplashish.",
+      "ru": "Сравнивать с “比”; усиливать степень в сравнении с 更/还 вместо 很/非常; выражать уступительно-противительные отношения через “虽然……但是……”；обсуждать цену, кино и день рождения.",
+      "tj": "Бо “比” муқоиса кардан; дар ҷумлаҳои муқоисавӣ ба ҷойи 很/非常 бо 更/还 дараҷаро қавӣ кардан; бо “虽然……但是……” зиддиятро ифода кардан; дар бораи нарх, кино ва зодрӯз суҳбат кардан."
+    },
+    "intro_text": {
+      "uz": "Dars soat tanlash, kino tanlash, restoranda tug‘ilgan kunni nishonlash va hikoya matni orqali uchta taqqoslash/qarama-qarshilik strukturasini o‘rgatadi.",
+      "ru": "Урок через выбор часов, фильма, празднование дня рождения в ресторане и рассказ вводит три конструкции сравнения и противопоставления.",
+      "tj": "Дарс тавассути интихоби соат, филм, ҷашни зодрӯз дар тарабхона ва матни ҳикоя се сохтори муқоиса ва зиддиятро меомӯзонад."
+    },
+    "blocks": [
+      {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_zh": "在商场，王一雪和刘明在购物。",
+        "scene_uz": "Savdo markazida Wang Yixue va Liu Ming xarid qilmoqda.",
+        "scene_ru": "В торговом центре Ван Исюэ и Лю Мин делают покупки.",
+        "scene_tj": "Дар маркази савдо Ван Исюэ ва Лю Мин харид мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Wang Yixue",
+            "zh": "你看，这两块手表怎么样？",
+            "pinyin": "Nǐ kàn, zhè liǎng kuài shǒubiǎo zěnmeyàng?",
+            "uz": "Qara, bu ikki qo‘l soati qanday?",
+            "ru": "Посмотри, как тебе эти двое часов?",
+            "tj": "Бин, ин ду соат чӣ хеланд?"
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "都不错！",
+            "pinyin": "Dōu búcuò!",
+            "uz": "Ikkalasi ham yomon emas!",
+            "ru": "Оба неплохие!",
+            "tj": "Ҳардуяш ҳам бад нест!"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "我喜欢左边这个。",
+            "pinyin": "Wǒ xǐhuan zuǒbian zhège.",
+            "uz": "Menga chapdagisi yoqdi.",
+            "ru": "Мне нравится тот, что слева.",
+            "tj": "Ба ман тарафи чап писанд аст."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "我也觉得左边的比右边的好看。",
+            "pinyin": "Wǒ yě juéde zuǒbian de bǐ yòubian de hǎokàn.",
+            "uz": "Menimcha ham chapdagisi o‘ngdagidan chiroyliroq.",
+            "ru": "Мне тоже кажется, что левый красивее правого.",
+            "tj": "Ба назари ман ҳам чапаш аз росташ зеботар аст."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "你看看要多少钱！",
+            "pinyin": "Nǐ kànkan yào duōshao qián!",
+            "uz": "Narxiga qara!",
+            "ru": "Посмотри, сколько стоит!",
+            "tj": "Нархашро бин!"
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "真不便宜！八千八！",
+            "pinyin": "Zhēn bù piányi! Bā qiān bā!",
+            "uz": "Juda qimmat ekan! Sakkiz ming sakkiz yuz!",
+            "ru": "Совсем недёшево! Восемь тысяч восемьсот!",
+            "tj": "Хеле гарон будааст! Ҳашт ҳазору ҳаштсад!"
+          }
+        ]
+      },
+      {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_zh": "在电影院外面，王一雪和刘明在聊天儿。",
+        "scene_uz": "Kinoteatr tashqarisida Wang Yixue va Liu Ming suhbatlashmoqda.",
+        "scene_ru": "Снаружи кинотеатра Ван Исюэ и Лю Мин разговаривают.",
+        "scene_tj": "Берун аз кинотеатр Ван Исюэ ва Лю Мин суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Liu Ming",
+            "zh": "今天有不少电影，我们看个电影吧。",
+            "pinyin": "Jīntiān yǒu bù shǎo diànyǐng, wǒmen kàn ge diànyǐng ba.",
+            "uz": "Bugun ancha film bor, bir film ko‘raylik.",
+            "ru": "Сегодня много фильмов, давай посмотрим один.",
+            "tj": "Имрӯз филмҳо бисёранд, биё як филм бинем."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "好啊！我们看哪个？",
+            "pinyin": "Hǎo a! Wǒmen kàn nǎge?",
+            "uz": "Mayli! Qaysinisini ko‘ramiz?",
+            "ru": "Хорошо! Какой посмотрим?",
+            "tj": "Хуб! Кадомашро мебинем?"
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "我记得你喜欢看爱情片，我们看那个爱情片，怎么样？",
+            "pinyin": "Wǒ jìde nǐ xǐhuan kàn àiqíngpiàn, wǒmen kàn nàge àiqíngpiàn, zěnmeyàng?",
+            "uz": "Esimda, sen romantik filmlarni yoqtirasan. O‘sha romantik filmni ko‘rsak qanday?",
+            "ru": "Я помню, ты любишь романтические фильмы. Как насчёт того?",
+            "tj": "Дар хотир дорам, ту филмҳои ошиқонаро дӯст медорӣ. Он филмро бинем, чӣ хел?"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "还是看这个吧，我看网上说这个电影比那个爱情片更有意思。",
+            "pinyin": "Háishi kàn zhège ba, wǒ kàn wǎngshang shuō zhège diànyǐng bǐ nàge àiqíngpiàn gèng yǒu yìsi.",
+            "uz": "Yaxshisi bunisini ko‘raylik. Internetda bu film o‘sha romantik filmdan qiziqroq deyilgan.",
+            "ru": "Лучше посмотрим этот. В интернете пишут, что он интереснее того романтического.",
+            "tj": "Беҳтараш ҳаминро бинем. Дар интернет гуфтаанд, ки ин аз он филми ошиқона ҷолибтар аст."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "好。我去买票。",
+            "pinyin": "Hǎo. Wǒ qù mǎi piào.",
+            "uz": "Xo‘p. Men chipta olaman.",
+            "ru": "Хорошо. Я куплю билеты.",
+            "tj": "Хуб. Ман чипта мехарам."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "到网上买吧，网上买比在这里买便宜。",
+            "pinyin": "Dào wǎngshang mǎi ba, wǎngshang mǎi bǐ zài zhèlǐ mǎi piányi.",
+            "uz": "Internetdan ol, onlayn olish bu yerdan olishdan arzonroq.",
+            "ru": "Купи онлайн, в интернете дешевле, чем здесь.",
+            "tj": "Аз интернет бихар, онлайниаш аз ин ҷо арзонтар аст."
+          }
+        ]
+      },
+      {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_zh": "在饭馆，王一雪和刘明在点菜。",
+        "scene_uz": "Restoranda Wang Yixue va Liu Ming taom buyurtma qilmoqda.",
+        "scene_ru": "В ресторане Ван Исюэ и Лю Мин заказывают блюда.",
+        "scene_tj": "Дар тарабхона Ван Исюэ ва Лю Мин хӯрок фармоиш медиҳанд.",
+        "dialogue": [
+          {
+            "speaker": "Liu Ming",
+            "zh": "您好！就要这几个菜吧，谢谢！",
+            "pinyin": "Nín hǎo! Jiù yào zhè jǐ ge cài ba, xièxie!",
+            "uz": "Salom! Shu bir nechta taomni olamiz, rahmat!",
+            "ru": "Здравствуйте! Возьмём эти блюда, спасибо!",
+            "tj": "Салом! Ҳамин чанд хӯрокро мегирем, раҳмат!"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "怎么点这么多菜？",
+            "pinyin": "Zěnme diǎn zhème duō cài?",
+            "uz": "Nega buncha ko‘p taom buyurtma qilding?",
+            "ru": "Зачем заказал столько блюд?",
+            "tj": "Чаро ин қадар хӯрок фармоиш додӣ?"
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "你想想，今天是几月几号？",
+            "pinyin": "Nǐ xiǎngxiang, jīntiān shì jǐ yuè jǐ hào?",
+            "uz": "O‘ylab ko‘r, bugun nechanchi sana?",
+            "ru": "Подумай, какое сегодня число?",
+            "tj": "Фикр кун, имрӯз чандуми моҳ аст?"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "8月27号。啊！我的生日！",
+            "pinyin": "Bā yuè èrshíqī hào. A! Wǒ de shēngrì!",
+            "uz": "27-avgust. Voy! Tug‘ilgan kunim!",
+            "ru": "27 августа. А! Мой день рождения!",
+            "tj": "27-уми август. Оҳ! Зодрӯзи ман!"
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "生日快乐！虽然你忘了，但是我记得。看看这是什么？",
+            "pinyin": "Shēngrì kuàilè! Suīrán nǐ wàng le, dànshì wǒ jìde. Kànkan zhè shì shénme?",
+            "uz": "Tug‘ilgan kuning bilan! Sen unutgan bo‘lsang ham, men esladim. Qara, bu nima?",
+            "ru": "С днём рождения! Хотя ты забыла, я помнил. Посмотри, что это?",
+            "tj": "Зодрӯз муборак! Гарчанде ту фаромӯш кардӣ, ман дар хотир доштам. Бин, ин чист?"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "手表！吃饭、看电影、买手表，今天花了不少钱吧？",
+            "pinyin": "Shǒubiǎo! Chī fàn, kàn diànyǐng, mǎi shǒubiǎo, jīntiān huāle bù shǎo qián ba?",
+            "uz": "Qo‘l soati! Ovqat, kino, soat — bugun ancha pul sarflading-a?",
+            "ru": "Часы! Ужин, кино, часы — сегодня ты потратил немало денег, да?",
+            "tj": "Соат! Хӯрок, кино, соат — имрӯз пули зиёд сарф кардӣ, ҳамин тавр?"
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "虽然花了一些钱，但是我们过了一个快乐的生日。",
+            "pinyin": "Suīrán huāle yìxiē qián, dànshì wǒmen guòle yí ge kuàilè de shēngrì.",
+            "uz": "Bir oz pul sarflagan bo‘lsak ham, quvonchli tug‘ilgan kun o‘tkazdik.",
+            "ru": "Хотя потратили немного денег, зато отметили счастливый день рождения.",
+            "tj": "Гарчанде каме пул сарф кардем, зодрӯзи хушҳол гузарондем."
+          }
+        ]
+      },
+      {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_zh": "小语在讲述王一雪和刘明的一天。",
+        "scene_uz": "Xiaoyu Wang Yixue va Liu Mingning bir kunini hikoya qilmoqda.",
+        "scene_ru": "Сяоюй рассказывает об одном дне Ван Исюэ и Лю Мина.",
+        "scene_tj": "Сяоюй як рӯзи Ван Исюэ ва Лю Минро нақл мекунад.",
+        "dialogue": [
+          {
+            "speaker": "Narration",
+            "zh": "虽然妻子忘了今天是自己的生日，但是丈夫记得。丈夫请妻子去饭馆吃饭、去电影院看电影，还给妻子买了一块非常漂亮的手表。妻子觉得今天很快乐。",
+            "pinyin": "Suīrán qīzi wàngle jīntiān shì zìjǐ de shēngrì, dànshì zhàngfu jìde. Zhàngfu qǐng qīzi qù fànguǎn chī fàn, qù diànyǐngyuàn kàn diànyǐng, hái gěi qīzi mǎile yí kuài fēicháng piàoliang de shǒubiǎo. Qīzi juéde jīntiān hěn kuàilè.",
+            "uz": "Xotin bugun o‘zining tug‘ilgan kuni ekanini unutgan bo‘lsa-da, eri esladi. Eri uni restoranga ovqatga, kinoteatrga film ko‘rgani olib bordi va unga juda chiroyli qo‘l soati sotib oldi. Xotin bugun juda xursand bo‘ldi.",
+            "ru": "Хотя жена забыла, что сегодня её день рождения, муж помнил. Он пригласил её в ресторан, затем в кино и купил ей очень красивые часы. Жена была очень счастлива.",
+            "tj": "Гарчанде зан фаромӯш карда буд, ки имрӯз зодрӯзаш аст, шавҳар дар хотир дошт. Ӯ занашро ба тарабхона ва кино бурд ва барояш соати хеле зебо харид. Зан имрӯз хеле хушҳол буд."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lesson_order": 9,
+    "lesson_code": "NHSK2-L09",
+    "title": "我去买杯奶茶",
+    "title_pinyin": "Wǒ qù mǎi bēi nǎichá",
+    "goal": {
+      "uz": "“没有” bilan ‘...chalik emas’ taqqoslashini ifodalash; “离” bilan makon/vaqt masofasini aytish; vaqt davomiyligi to‘ldiruvchisini ishlatish; kiyim tanlash, ichimlik va yo‘l haqida gaplashish.",
+      "ru": "Сравнивать через “没有” в значении «не такой, как»; выражать пространственную/временную дистанцию с “离”; использовать дополнение длительности; говорить об одежде, напитках и дороге.",
+      "tj": "Бо “没有” муқоисаи «ба дараҷаи ... нест»-ро ифода кардан; бо “离” масофаи макон/вақтро гуфтан; пуркунандаи давомнокии вақтро истифода бурдан; дар бораи либос, нӯшокӣ ва роҳ суҳбат кардан."
+    },
+    "intro_text": {
+      "uz": "Dars shim tanlash, qahva/sutli choy, piyoda uyga qaytish va kundalik matni orqali taqqoslashning uchinchi turi, 离 va davomiylik to‘ldiruvchisini o‘rgatadi.",
+      "ru": "Урок через выбор брюк, кофе/молочный чай, возвращение домой пешком и запись в дневнике вводит третий тип сравнения, 离 и дополнение длительности.",
+      "tj": "Дарс тавассути интихоби шим, қаҳва/чойи ширӣ, пиёда ба хона баргаштан ва матни рӯзнома навъи сеюми муқоиса, 离 ва пуркунандаи давомнокиро меомӯзонад."
+    },
+    "blocks": [
+      {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_zh": "在商店，王一雪和刘明在看裤子。",
+        "scene_uz": "Do‘konda Wang Yixue va Liu Ming shimlarni ko‘rmoqda.",
+        "scene_ru": "В магазине Ван Исюэ и Лю Мин смотрят брюки.",
+        "scene_tj": "Дар мағоза Ван Исюэ ва Лю Мин шим мебинанд.",
+        "dialogue": [
+          {
+            "speaker": "Wang Yixue",
+            "zh": "儿子的裤子坏了，我们给他买条新的吧。",
+            "pinyin": "Érzi de kùzi huài le, wǒmen gěi tā mǎi tiáo xīn de ba.",
+            "uz": "O‘g‘limizning shimi buzilibdi, unga yangisini olaylik.",
+            "ru": "Брюки сына испортились, давай купим ему новые.",
+            "tj": "Шими писарамон вайрон шудааст, барояш нав бихарем."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "好啊。",
+            "pinyin": "Hǎo a.",
+            "uz": "Mayli.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "你看这条黑色的怎么样？",
+            "pinyin": "Nǐ kàn zhè tiáo hēisè de zěnmeyàng?",
+            "uz": "Bu qora shim qanday?",
+            "ru": "Как тебе эти чёрные брюки?",
+            "tj": "Ин шими сиёҳ чӣ хел?"
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "没有你上次买的那条好看。",
+            "pinyin": "Méiyǒu nǐ shàng cì mǎi de nà tiáo hǎokàn.",
+            "uz": "O‘tgan safar olganingchalik chiroyli emas.",
+            "ru": "Не такие красивые, как те, что ты купила в прошлый раз.",
+            "tj": "Ба зебоии оне, ки дафъаи гузашта харидӣ, намерасад."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "旁边那个男孩儿就穿了这样的裤子，我觉得很好看啊！",
+            "pinyin": "Pángbian nàge nánháir jiù chuānle zhèyàng de kùzi, wǒ juéde hěn hǎokàn a!",
+            "uz": "Yonimizdagi bola ham shunday shim kiygan, menimcha juda chiroyli!",
+            "ru": "Вон мальчик рядом носит такие брюки, по-моему, выглядят отлично!",
+            "tj": "Писарбачаи паҳлӯ ҳамин хел шим пӯшидааст, ба назарам хеле зебост!"
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "儿子的个子没有他那么高，穿上就不会太好看。",
+            "pinyin": "Érzi de gèzi méiyǒu tā nàme gāo, chuānshang jiù bú huì tài hǎokàn.",
+            "uz": "O‘g‘limizning bo‘yi unchalik baland emas, kiysa bunchalik yarashmaydi.",
+            "ru": "Наш сын не такой высокий, как он; на нём они будут смотреться хуже.",
+            "tj": "Қади писарамон ба он қадар баланд нест, пӯшад он қадар зебо намешавад."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "好吧，我们再去那边看看。",
+            "pinyin": "Hǎo ba, wǒmen zài qù nàbian kànkan.",
+            "uz": "Mayli, yana u tomonga borib ko‘raylik.",
+            "ru": "Ладно, давай посмотрим ещё там.",
+            "tj": "Хуб, боз он тараф рафта бинем."
+          }
+        ]
+      },
+      {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_zh": "在商店门口，王一雪和刘明往外走。",
+        "scene_uz": "Do‘kon kirishida Wang Yixue va Liu Ming tashqariga chiqmoqda.",
+        "scene_ru": "У входа в магазин Ван Исюэ и Лю Мин выходят наружу.",
+        "scene_tj": "Дар назди даромадгоҳи мағоза Ван Исюэ ва Лю Мин ба берун мебароянд.",
+        "dialogue": [
+          {
+            "speaker": "Wang Yixue",
+            "zh": "门口有家奶茶店。你想喝杯奶茶吗？",
+            "pinyin": "Ménkǒu yǒu jiā nǎichádiàn. Nǐ xiǎng hē bēi nǎichá ma?",
+            "uz": "Kirishda sutli choy do‘koni bor. Bir piyola sutli choy ichasanmi?",
+            "ru": "У входа есть магазин молочного чая. Хочешь чашку?",
+            "tj": "Дар назди даромадгоҳ дӯкони чойи ширӣ ҳаст. Як пиёла мехоҳӣ?"
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "我想喝咖啡，还是去咖啡店吧。",
+            "pinyin": "Wǒ xiǎng hē kāfēi, háishi qù kāfēidiàn ba.",
+            "uz": "Men qahva ichmoqchiman, yaxshisi qahvaxonaga boraylik.",
+            "ru": "Я хочу кофе, лучше пойдём в кофейню.",
+            "tj": "Ман қаҳва мехоҳам, беҳтараш ба қаҳвахона равем."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "咖啡店离这儿有点儿远。",
+            "pinyin": "Kāfēidiàn lí zhèr yǒudiǎnr yuǎn.",
+            "uz": "Qahvaxona bu yerdan biroz uzoq.",
+            "ru": "Кофейня немного далеко отсюда.",
+            "tj": "Қаҳвахона аз ин ҷо каме дур аст."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "没关系，那家店的咖啡很好喝。",
+            "pinyin": "Méi guānxi, nà jiā diàn de kāfēi hěn hǎohē.",
+            "uz": "Hechqisi yo‘q, u yerdagi qahva juda mazali.",
+            "ru": "Ничего, там очень хороший кофе.",
+            "tj": "Ҳеҷ гап не, қаҳваи он ҷо хеле болаззат аст."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "那你等一下，我去买杯奶茶。",
+            "pinyin": "Nà nǐ děng yíxià, wǒ qù mǎi bēi nǎichá.",
+            "uz": "Unda biroz kut, men bir piyola sutli choy olib kelaman.",
+            "ru": "Тогда подожди, я схожу куплю молочный чай.",
+            "tj": "Пас каме интизор шав, ман рафта як пиёла чойи ширӣ мехарам."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "你不想喝咖啡吗？",
+            "pinyin": "Nǐ bù xiǎng hē kāfēi ma?",
+            "uz": "Qahva ichging kelmayaptimi?",
+            "ru": "Ты не хочешь кофе?",
+            "tj": "Қаҳва нӯшидан намехоҳӣ?"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "喝了咖啡，晚上就别想睡觉了。",
+            "pinyin": "Hēle kāfēi, wǎnshang jiù bié xiǎng shuìjiào le.",
+            "uz": "Qahva ichsam, kechasi uyqu yo‘q.",
+            "ru": "Если выпью кофе, ночью не усну.",
+            "tj": "Агар қаҳва нӯшам, шаб хобам намебарад."
+          }
+        ]
+      },
+      {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_zh": "在咖啡店门口，王一雪和刘明在聊天儿。",
+        "scene_uz": "Qahvaxona oldida Wang Yixue va Liu Ming suhbatlashmoqda.",
+        "scene_ru": "У входа в кофейню Ван Исюэ и Лю Мин разговаривают.",
+        "scene_tj": "Дар назди қаҳвахона Ван Исюэ ва Лю Мин суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Liu Ming",
+            "zh": "我们打车回去吧。",
+            "pinyin": "Wǒmen dǎchē huíqù ba.",
+            "uz": "Uyga taksida qaytaylik.",
+            "ru": "Давай поедем обратно на такси.",
+            "tj": "Биё бо таксӣ ба хона баргардем."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "这里离家很近，还是走路吧。",
+            "pinyin": "Zhèlǐ lí jiā hěn jìn, háishi zǒulù ba.",
+            "uz": "Bu yer uyga yaqin, yaxshisi piyoda yuraylik.",
+            "ru": "Отсюда до дома близко, лучше пойдём пешком.",
+            "tj": "Аз ин ҷо то хона наздик аст, беҳтараш пиёда равем."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "要走多长时间？",
+            "pinyin": "Yào zǒu duō cháng shíjiān?",
+            "uz": "Qancha vaqt yurish kerak?",
+            "ru": "Сколько времени идти?",
+            "tj": "Чанд вақт роҳ рафтан лозим?"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "走半个多小时就到了。",
+            "pinyin": "Zǒu bàn ge duō xiǎoshí jiù dào le.",
+            "uz": "Yarim soatdan sal ko‘proq yursak yetamiz.",
+            "ru": "Чуть больше получаса пешком — и дойдём.",
+            "tj": "Каме бештар аз ним соат роҳ равем, мерасем."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "好的。每天上下班都坐车，今天运动运动吧。",
+            "pinyin": "Hǎo de. Měitiān shàngxiàbān dōu zuò chē, jīntiān yùndong yùndong ba.",
+            "uz": "Xo‘p. Har kuni ishga borib-kelishda mashinada yuraman, bugun sal harakat qilay.",
+            "ru": "Хорошо. Каждый день езжу на работу и обратно, сегодня немного разомнёмся.",
+            "tj": "Хуб. Ҳар рӯз ба кору аз кор бо мошин меравам, имрӯз каме машқ кунем."
+          }
+        ]
+      },
+      {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_zh": "在房间，王一雪在写日记。",
+        "scene_uz": "Xonada Wang Yixue kundalik yozmoqda.",
+        "scene_ru": "В комнате Ван Исюэ пишет дневник.",
+        "scene_tj": "Дар ҳуҷра Ван Исюэ рӯзнома менависад.",
+        "dialogue": [
+          {
+            "speaker": "Narration",
+            "zh": "这周刘明休息，我下班后跟他去了一家商店。商店里边的衣服没有大商场里的好看。我们没有买到喜欢的衣服，从商店出来就到咖啡店坐了坐。因为想运动运动，所以喝完东西，我们就走回家了。",
+            "pinyin": "Zhè zhōu Liú Míng xiūxi, wǒ xiàbān hòu gēn tā qùle yì jiā shāngdiàn. Shāngdiàn lǐbian de yīfu méiyǒu dà shāngchǎng lǐ de hǎokàn. Wǒmen méiyǒu mǎidào xǐhuan de yīfu, cóng shāngdiàn chūlái jiù dào kāfēidiàn zuòle zuò. Yīnwèi xiǎng yùndong yùndong, suǒyǐ hēwán dōngxi, wǒmen jiù zǒu huí jiā le.",
+            "uz": "Bu hafta Liu Ming dam oladi. Ishdan keyin u bilan bir do‘konga bordik. U yerdagi kiyimlar katta savdo markazidagilardek chiroyli emas edi. Yoqtirgan kiyim topolmadik, do‘kondan chiqib qahvaxonada biroz o‘tirdik. Harakat qilgimiz kelgani uchun ichimliklarni tugatgach uyga piyoda qaytdik.",
+            "ru": "На этой неделе Лю Мин отдыхает. После работы мы пошли в магазин. Одежда там была не такой красивой, как в большом торговом центре. Ничего подходящего не купили, вышли и немного посидели в кофейне. Хотели размяться, поэтому после напитков пошли домой пешком.",
+            "tj": "Ин ҳафта Лю Мин истироҳат мекунад. Баъди кор бо ӯ ба мағоза рафтем. Либосҳои он ҷо ба зебоии либосҳои маркази калони савдо намерасид. Либоси писанд наёфтем, аз мағоза баромада каме дар қаҳвахона нишастем. Азбаски мехостем ҳаракат кунем, баъди нӯшидан пиёда ба хона баргаштем."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lesson_order": 10,
+    "lesson_code": "NHSK2-L10",
+    "title": "就要考试了",
+    "title_pinyin": "Jiù yào kǎoshì le",
+    "goal": {
+      "uz": "Ega-kesim birikmasini kesim sifatida ishlatish; “还是” bilan tanlov savolini tuzish; “要/快/快要/就要……了” orqali yaqin kelajakdagi hodisani ifodalash; maktab va imtihon tayyorgarligi haqida gaplashish.",
+      "ru": "Использовать субъектно-предикативную группу как сказуемое; задавать альтернативные вопросы с “还是”; выражать скорое наступление события с “要/快/快要/就要……了”; говорить о подготовке к школе и экзамену.",
+      "tj": "Ибораи мубтадо-хабарро ҳамчун хабар истифода бурдан; бо “还是” саволи интихобӣ сохтан; бо “要/快/快要/就要……了” рӯйдоди наздикро ифода кардан; дар бораи омодагӣ ба мактаб ва имтиҳон суҳбат кардан."
+    },
+    "intro_text": {
+      "uz": "Dars maktab boshlanishi, imtihon tayyorgarligi, imtihondan keyingi suhbat va kundalik matni orqali uchta asosiy gap tuzilishini o‘rgatadi.",
+      "ru": "Урок через подготовку к началу школы, экзамену, разговор после экзамена и дневниковый текст вводит три ключевые грамматические конструкции.",
+      "tj": "Дарс тавассути омодагӣ ба оғози мактаб, имтиҳон, гуфтугӯи баъди имтиҳон ва матни рӯзнома се сохтори асосиро меомӯзонад."
+    },
+    "blocks": [
+      {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_zh": "在房间，刘明在帮刘小明准备东西。",
+        "scene_uz": "Xonada Liu Ming Liu Xiaominga narsalarni tayyorlashga yordam bermoqda.",
+        "scene_ru": "В комнате Лю Мин помогает Лю Сяомину готовить вещи.",
+        "scene_tj": "Дар ҳуҷра Лю Мин ба Лю Сяомин барои тайёр кардани чизҳо кӯмак мекунад.",
+        "dialogue": [
+          {
+            "speaker": "Liu Ming",
+            "zh": "小明，你们明天开学，你准备好了吗？",
+            "pinyin": "Xiǎomíng, nǐmen míngtiān kāixué, nǐ zhǔnbèi hǎo le ma?",
+            "uz": "Xiaoming, ertaga o‘qish boshlanadi, tayyormisan?",
+            "ru": "Сяомин, завтра начинается учёба, ты готов?",
+            "tj": "Сяомин, фардо таҳсил оғоз мешавад, тайёрӣ?"
+          },
+          {
+            "speaker": "Liu Xiaoming",
+            "zh": "明天就开学啊？爸爸，我的书包你看见了吗？",
+            "pinyin": "Míngtiān jiù kāixué a? Bàba, wǒ de shūbāo nǐ kànjiàn le ma?",
+            "uz": "Ertagayoq o‘qish boshlanadimi? Dada, mening sumkamni ko‘rdingizmi?",
+            "ru": "Учёба уже завтра начинается? Папа, ты видел мой рюкзак?",
+            "tj": "Фардо аллакай таҳсил сар мешавад? Дада, ҷузвдони маро дидед?"
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "书包在门后面。",
+            "pinyin": "Shūbāo zài mén hòumian.",
+            "uz": "Sumka eshik orqasida.",
+            "ru": "Рюкзак за дверью.",
+            "tj": "Ҷузвдон пушти дар аст."
+          },
+          {
+            "speaker": "Liu Xiaoming",
+            "zh": "书在哪儿呢？笔呢？",
+            "pinyin": "Shū zài nǎr ne? Bǐ ne?",
+            "uz": "Kitob qayerda? Qalam-chi?",
+            "ru": "А книги где? А ручка?",
+            "tj": "Китоб куҷост? Қалам чӣ?"
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "书在床上，笔在桌子上。",
+            "pinyin": "Shū zài chuáng shàng, bǐ zài zhuōzi shàng.",
+            "uz": "Kitob karavot ustida, qalam stol ustida.",
+            "ru": "Книги на кровати, ручка на столе.",
+            "tj": "Китоб рӯйи кат, қалам рӯйи миз аст."
+          },
+          {
+            "speaker": "Liu Xiaoming",
+            "zh": "太好了！现在都准备好了。",
+            "pinyin": "Tài hǎo le! Xiànzài dōu zhǔnbèi hǎo le.",
+            "uz": "Zo‘r! Endi hammasi tayyor.",
+            "ru": "Отлично! Теперь всё готово.",
+            "tj": "Олиҷаноб! Ҳоло ҳама чиз тайёр аст."
+          },
+          {
+            "speaker": "Liu Ming",
+            "zh": "这次爸爸帮你，下次你自己准备，好不好？",
+            "pinyin": "Zhè cì bàba bāng nǐ, xià cì nǐ zìjǐ zhǔnbèi, hǎo bu hǎo?",
+            "uz": "Bu safar dada yordam berdi, keyingi safar o‘zing tayyorlaysan, xo‘pmi?",
+            "ru": "В этот раз папа помог, в следующий подготовишься сам, хорошо?",
+            "tj": "Ин дафъа падарат кӯмак кард, дафъаи дигар худат тайёр мекунӣ, хуб?"
+          },
+          {
+            "speaker": "Liu Xiaoming",
+            "zh": "好！",
+            "pinyin": "Hǎo!",
+            "uz": "Xo‘p!",
+            "ru": "Хорошо!",
+            "tj": "Хуб!"
+          }
+        ]
+      },
+      {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_zh": "在房间，王一雪和刘小雪在聊学习。",
+        "scene_uz": "Xonada Wang Yixue va Liu Xiaoxue o‘qish haqida suhbatlashmoqda.",
+        "scene_ru": "В комнате Ван Исюэ и Лю Сяосюэ говорят об учёбе.",
+        "scene_tj": "Дар ҳуҷра Ван Исюэ ва Лю Сяосюэ дар бораи таҳсил суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Wang Yixue",
+            "zh": "小雪，你在做什么呢？",
+            "pinyin": "Xiǎoxuě, nǐ zài zuò shénme ne?",
+            "uz": "Xiaoxue, nima qilyapsan?",
+            "ru": "Сяосюэ, что ты делаешь?",
+            "tj": "Сяосюэ, чӣ кор карда истодаӣ?"
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "明天考试，我在看书呢。",
+            "pinyin": "Míngtiān kǎoshì, wǒ zài kàn shū ne.",
+            "uz": "Ertaga imtihon, kitob o‘qiyapman.",
+            "ru": "Завтра экзамен, я читаю.",
+            "tj": "Фардо имтиҳон, китоб мехонам."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "这些词要好好看看。",
+            "pinyin": "Zhèxiē cí yào hǎohāo kànkan.",
+            "uz": "Bu so‘zlarni yaxshilab ko‘rib chiqish kerak.",
+            "ru": "Эти слова нужно как следует повторить.",
+            "tj": "Ин калимаҳоро хуб дида баромадан лозим."
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "我看过了，意思也都懂了。",
+            "pinyin": "Wǒ kànguo le, yìsi yě dōu dǒng le.",
+            "uz": "Ko‘rib chiqdim, ma’nolarini ham tushundim.",
+            "ru": "Я уже посмотрела и значения тоже поняла.",
+            "tj": "Ман дида баромадам, маъноҳояшро ҳам фаҳмидам."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "你的本子呢？本子上做错的题也要看一看。",
+            "pinyin": "Nǐ de běnzi ne? Běnzi shàng zuòcuò de tí yě yào kàn yí kàn.",
+            "uz": "Daftaring-chi? Daftardagi xato qilgan savollaringni ham ko‘rib chiq.",
+            "ru": "А тетрадь? Нужно ещё посмотреть задания, где ты ошиблась.",
+            "tj": "Дафтарат чӣ? Саволҳои хато кардаатро ҳам дида баро."
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "妈妈，是您准备考试还是我准备考试？",
+            "pinyin": "Māma, shì nín zhǔnbèi kǎoshì háishi wǒ zhǔnbèi kǎoshì?",
+            "uz": "Oyi, imtihonga siz tayyorlanyapsizmi yoki menmi?",
+            "ru": "Мама, к экзамену готовитесь вы или я?",
+            "tj": "Оча, ба имтиҳон шумо тайёр мешавед ё ман?"
+          }
+        ]
+      },
+      {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_zh": "在客厅，王一雪和孩子们在聊天儿。",
+        "scene_uz": "Mehmonxonada Wang Yixue bolalar bilan suhbatlashmoqda.",
+        "scene_ru": "В гостиной Ван Исюэ разговаривает с детьми.",
+        "scene_tj": "Дар меҳмонхона Ван Исюэ бо кӯдакон суҳбат мекунад.",
+        "dialogue": [
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "妈妈，我回来了！",
+            "pinyin": "Māma, wǒ huílái le!",
+            "uz": "Oyi, men qaytdim!",
+            "ru": "Мама, я вернулась!",
+            "tj": "Оча, ман баргаштам!"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "我买了奶茶，就在桌子上，自己去拿吧。",
+            "pinyin": "Wǒ mǎile nǎichá, jiù zài zhuōzi shàng, zìjǐ qù ná ba.",
+            "uz": "Sutli choy oldim, stol ustida, o‘zing borib ol.",
+            "ru": "Я купила молочный чай, он на столе, возьми сама.",
+            "tj": "Чойи ширӣ харидам, рӯйи миз аст, худат гирифта гир."
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "谢谢妈妈！",
+            "pinyin": "Xièxie māma!",
+            "uz": "Rahmat, oyi!",
+            "ru": "Спасибо, мама!",
+            "tj": "Раҳмат, оча!"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "今天考试考得怎么样？",
+            "pinyin": "Jīntiān kǎoshì kǎo de zěnmeyàng?",
+            "uz": "Bugungi imtihonni qanday topshirding?",
+            "ru": "Как сегодня сдала экзамен?",
+            "tj": "Имтиҳони имрӯзаро чӣ хел супоридӣ?"
+          },
+          {
+            "speaker": "Liu Xiaoxue",
+            "zh": "我觉得比上次好。",
+            "pinyin": "Wǒ juéde bǐ shàng cì hǎo.",
+            "uz": "Menimcha, o‘tgan safardagidan yaxshi.",
+            "ru": "Мне кажется, лучше, чем в прошлый раз.",
+            "tj": "Ба назарам, аз дафъаи гузашта беҳтар."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "真不错！饭菜快要做好了，你叫弟弟一起去洗手吧。",
+            "pinyin": "Zhēn búcuò! Fàncài kuàiyào zuòhǎo le, nǐ jiào dìdi yìqǐ qù xǐshǒu ba.",
+            "uz": "Juda yaxshi! Ovqat deyarli tayyor, ukangni chaqirib birga qo‘l yuvishga boringlar.",
+            "ru": "Очень хорошо! Еда почти готова, позови брата и идите вместе мыть руки.",
+            "tj": "Хеле хуб! Хӯрок қариб тайёр шуд, додарро даъват кун ва якҷо даст шӯед."
+          },
+          {
+            "speaker": "Liu Xiaoming",
+            "zh": "妈妈，我是第一名，姐姐还没洗完呢。",
+            "pinyin": "Māma, wǒ shì dì-yī míng, jiějie hái méi xǐwán ne.",
+            "uz": "Oyi, men birinchi bo‘ldim, opam hali yuvib bo‘lmadi.",
+            "ru": "Мама, я первый закончил, сестра ещё не домыла руки.",
+            "tj": "Оча, ман якум шудам, апа ҳоло дасташро шуста тамом накардааст."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "你洗得真快啊！",
+            "pinyin": "Nǐ xǐ de zhēn kuài a!",
+            "uz": "Juda tez yuvibsan!",
+            "ru": "Как быстро ты помыл руки!",
+            "tj": "Чӣ қадар тез шустаӣ!"
+          }
+        ]
+      },
+      {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_zh": "在房间，刘小雪在写日记。",
+        "scene_uz": "Xonada Liu Xiaoxue kundalik yozmoqda.",
+        "scene_ru": "В комнате Лю Сяосюэ пишет дневник.",
+        "scene_tj": "Дар ҳуҷра Лю Сяосюэ рӯзнома менависад.",
+        "dialogue": [
+          {
+            "speaker": "Narration",
+            "zh": "快要开学了，爸爸帮弟弟准备书包、本子和笔。我就要考试了，妈妈让我看书、看做错的题。我们上学，爸爸、妈妈比我们还忙。我问他们：“是我和弟弟上学还是你们上学？”我问完，他们都笑了。",
+            "pinyin": "Kuàiyào kāixué le, bàba bāng dìdi zhǔnbèi shūbāo, běnzi hé bǐ. Wǒ jiù yào kǎoshì le, māma ràng wǒ kàn shū, kàn zuòcuò de tí. Wǒmen shàngxué, bàba, māma bǐ wǒmen hái máng. Wǒ wèn tāmen: “Shì wǒ hé dìdi shàngxué háishi nǐmen shàngxué?” Wǒ wènwán, tāmen dōu xiào le.",
+            "uz": "Maktab boshlanishiga oz qoldi, dada ukamga sumka, daftar va qalamlarini tayyorlashga yordam berdi. Men ham tez orada imtihon topshiraman, oyi menga kitob va xato qilgan savollarimni ko‘rishni aytdi. Maktabga biz borsak ham, dada va oyi bizdan ham band. Ulardan: “Maktabga men bilan ukam boramizmi yoki sizlarmi?” deb so‘radim. So‘rab bo‘lgach, ikkalasi ham kuldi.",
+            "ru": "Скоро начинается школа. Папа помогает брату подготовить рюкзак, тетради и ручки. У меня скоро экзамен, мама велит читать и повторять задания, где я ошиблась. Учимся мы, но папа и мама заняты ещё больше нас. Я спросила: «В школу идём мы с братом или вы?» После моего вопроса они оба рассмеялись.",
+            "tj": "Ба оғози мактаб кам мондааст, падарам ба додарам барои тайёр кардани ҷузвдон, дафтар ва қалам кӯмак кард. Ман ҳам ба зудӣ имтиҳон месупорам, модарам гуфт китоб ва саволҳои хато кардаамро бинам. Мо ба мактаб меравем, аммо падараму модарам аз мо ҳам бандтаранд. Пурсидам: «Ба мактаб ману додарам меравем ё шумо?» Баъди саволам ҳарду хандиданд."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lesson_order": 11,
+    "lesson_code": "NHSK2-L11",
+    "title": "我最喜欢吃中国菜",
+    "title_pinyin": "Wǒ zuì xǐhuan chī Zhōngguó cài",
+    "goal": {
+      "uz": "“着” bilan davom etayotgan holat yoki harakatni ifodalash; “着”li gapda obyekt va savol shakllarini to‘g‘ri ishlatish; “最” bilan eng yuqori darajani ifodalash; salomatlik va ovqat haqida gaplashish.",
+      "ru": "Выражать продолжающееся действие или состояние с “着”; правильно располагать объект и строить вопросы в предложениях с “着”; выражать превосходную степень с “最”; говорить о самочувствии и еде.",
+      "tj": "Бо “着” амал ё ҳолати давомдорро ифода кардан; объект ва шаклҳои саволро дар ҷумлаҳои “着” дуруст истифода бурдан; бо “最” дараҷаи олитаринро ифода кардан; дар бораи саломатӣ ва хӯрок суҳбат кардан."
+    },
+    "intro_text": {
+      "uz": "Dars bosh og‘rig‘i, shifoxonaga borish, do‘stni ko‘rishga kelish va kundalik matni orqali “着”ning ikki qo‘llanilishi hamda “最”ni o‘rgatadi.",
+      "ru": "Урок через головную боль, поездку в больницу, визит друга и дневниковую запись вводит два употребления “着” и наречие “最”.",
+      "tj": "Дарс тавассути дарди сар, рафтан ба беморхона, дидани дӯст ва навиштаи рӯзнома ду истифодаи “着” ва “最”-ро меомӯзонад."
+    },
+    "blocks": [
+      {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_zh": "在教室，王一飞和白家月在聊天儿。",
+        "scene_uz": "Sinfda Wang Yifei va Bai Jiayue suhbatlashmoqda.",
+        "scene_ru": "В классе Ван Ифэй и Бай Цзяюэ разговаривают.",
+        "scene_tj": "Дар синф Ван Ифэй ва Бай Ҷяюэ суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Wang Yifei",
+            "zh": "家月，都下课了，你怎么还不回家？",
+            "pinyin": "Jiāyuè, dōu xiàkè le, nǐ zěnme hái bù huí jiā?",
+            "uz": "Jiayue, dars tugadi-ku, nega hali uyga ketmading?",
+            "ru": "Цзяюэ, урок уже закончился, почему ты ещё не идёшь домой?",
+            "tj": "Ҷяюэ, дарс тамом шуд, чаро ҳоло ҳам ба хона намеравӣ?"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "我头疼，不太舒服。",
+            "pinyin": "Wǒ tóu téng, bú tài shūfu.",
+            "uz": "Boshim og‘riyapti, o‘zimni yaxshi his qilmayapman.",
+            "ru": "У меня болит голова, я не очень хорошо себя чувствую.",
+            "tj": "Сарам дард мекунад, худро хуб ҳис намекунам."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "你这几天经常头疼，去医院看看吧。",
+            "pinyin": "Nǐ zhè jǐ tiān jīngcháng tóu téng, qù yīyuàn kànkan ba.",
+            "uz": "Shu kunlarda boshing tez-tez og‘riyapti, shifoxonaga borib ko‘rin.",
+            "ru": "В последние дни у тебя часто болит голова, сходи в больницу.",
+            "tj": "Ин чанд рӯз сарат зуд-зуд дард мекунад, ба беморхона рафта муоина шав."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "我想休息一下，现在不能动，一动就疼。",
+            "pinyin": "Wǒ xiǎng xiūxi yíxià, xiànzài bù néng dòng, yí dòng jiù téng.",
+            "uz": "Biroz dam olmoqchiman, hozir qimirlolmayman, qimirlasam darrov og‘riydi.",
+            "ru": "Хочу немного отдохнуть. Сейчас не могу двигаться: как только двигаюсь, сразу болит.",
+            "tj": "Мехоҳам каме истироҳат кунам, ҳоло ҳаракат карда наметавонам, ҳамин ки ҳаракат кунам, дард мекунад."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "那你在这儿坐着，我去开车，一会儿送你去医院。",
+            "pinyin": "Nà nǐ zài zhèr zuòzhe, wǒ qù kāichē, yíhuìr sòng nǐ qù yīyuàn.",
+            "uz": "Unda shu yerda o‘tirib tur, men mashinani olib kelaman, keyin seni shifoxonaga olib boraman.",
+            "ru": "Тогда посиди здесь, я возьму машину и через немного времени отвезу тебя в больницу.",
+            "tj": "Пас ҳамин ҷо нишаста ист, ман мошинро меорам ва каме баъд туро ба беморхона мебарам."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "谢谢王老师。",
+            "pinyin": "Xièxie Wáng lǎoshī.",
+            "uz": "Rahmat, ustoz Wang.",
+            "ru": "Спасибо, преподаватель Ван.",
+            "tj": "Раҳмат, устод Ван."
+          }
+        ]
+      },
+      {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_zh": "在王一飞车里，王一飞和白家月在聊天儿，李文打来一个电话。",
+        "scene_uz": "Wang Yifeining mashinasida Wang Yifei va Bai Jiayue suhbatlashmoqda, Li Wen telefon qildi.",
+        "scene_ru": "В машине Ван Ифэй разговаривает с Бай Цзяюэ; звонит Ли Вэнь.",
+        "scene_tj": "Дар мошини Ван Ифэй ӯ бо Бай Ҷяюэ суҳбат мекунад ва Ли Вэн занг мезанад.",
+        "dialogue": [
+          {
+            "speaker": "Wang Yifei",
+            "zh": "现在路上车多，还下着雪，我开慢一点儿。",
+            "pinyin": "Xiànzài lùshang chē duō, hái xiàzhe xuě, wǒ kāi màn yìdiǎnr.",
+            "uz": "Hozir yo‘lda mashina ko‘p, yana qor yog‘ayapti, men sekinroq haydayman.",
+            "ru": "Сейчас на дороге много машин, ещё идёт снег, я поеду помедленнее.",
+            "tj": "Ҳоло дар роҳ мошин зиёд аст, барф ҳам меборад, ман сусттар меронам."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "没问题，现在头没那么疼了。",
+            "pinyin": "Méi wèntí, xiànzài tóu méi nàme téng le.",
+            "uz": "Mayli, hozir boshim unchalik og‘rimayapti.",
+            "ru": "Хорошо, сейчас голова уже не так сильно болит.",
+            "tj": "Хуб, ҳоло сарам он қадар дард намекунад."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "好。李文来电话了，你帮我接一下。",
+            "pinyin": "Hǎo. Lǐ Wén lái diànhuà le, nǐ bāng wǒ jiē yíxià.",
+            "uz": "Xo‘p. Li Wen qo‘ng‘iroq qilyapti, men uchun javob ber.",
+            "ru": "Хорошо. Звонит Ли Вэнь, ответь за меня.",
+            "tj": "Хуб. Ли Вэн занг мезанад, барои ман ҷавоб деҳ."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "喂，李文，王老师开着车呢，你找她有事吗？",
+            "pinyin": "Wèi, Lǐ Wén, Wáng lǎoshī kāizhe chē ne, nǐ zhǎo tā yǒu shì ma?",
+            "uz": "Allo, Li Wen, ustoz Wang mashina haydayapti, unga ishing bormi?",
+            "ru": "Алло, Ли Вэнь, преподаватель Ван сейчас за рулём. Ты по делу?",
+            "tj": "Алло, Ли Вэн, устод Ван ҳоло мошин меронад, ба ӯ кор дорӣ?"
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "没什么事。今天雪这么大，你们开车去哪儿啊？",
+            "pinyin": "Méi shénme shì. Jīntiān xuě zhème dà, nǐmen kāichē qù nǎr a?",
+            "uz": "Muhim ish yo‘q. Bugun qor juda kuchli, mashinada qayerga ketyapsizlar?",
+            "ru": "Ничего важного. Сегодня такой сильный снег, куда вы едете?",
+            "tj": "Кори муҳиме нест. Имрӯз барф ин қадар зиёд, бо мошин ба куҷо меравед?"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "去医院，我头有点儿疼。",
+            "pinyin": "Qù yīyuàn, wǒ tóu yǒudiǎnr téng.",
+            "uz": "Shifoxonaga, boshim biroz og‘riyapti.",
+            "ru": "В больницу, у меня немного болит голова.",
+            "tj": "Ба беморхона, сарам каме дард мекунад."
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "那我一会儿去看看你。",
+            "pinyin": "Nà wǒ yíhuìr qù kànkan nǐ.",
+            "uz": "Unda birozdan keyin seni ko‘rgani boraman.",
+            "ru": "Тогда я чуть позже зайду тебя навестить.",
+            "tj": "Пас каме баъд туро дидан меоям."
+          }
+        ]
+      },
+      {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_zh": "在房间，李文来看望白家月。",
+        "scene_uz": "Xonada Li Wen Bai Jiayueni ko‘rgani keldi.",
+        "scene_ru": "В комнате Ли Вэнь пришёл навестить Бай Цзяюэ.",
+        "scene_tj": "Дар ҳуҷра Ли Вэн барои дидани Бай Ҷяюэ омадааст.",
+        "dialogue": [
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "李文，快请进！",
+            "pinyin": "Lǐ Wén, kuài qǐng jìn!",
+            "uz": "Li Wen, tez kir!",
+            "ru": "Ли Вэнь, заходи скорее!",
+            "tj": "Ли Вэн, зуд даро!"
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "家月，你怎么样了？头还疼吗？",
+            "pinyin": "Jiāyuè, nǐ zěnmeyàng le? Tóu hái téng ma?",
+            "uz": "Jiayue, qalaysan? Boshing hali og‘riyaptimi?",
+            "ru": "Цзяюэ, как ты? Голова ещё болит?",
+            "tj": "Ҷяюэ, аҳволат чӣ хел? Сарат ҳоло ҳам дард мекунад?"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "不那么疼了。医生开了一些药，吃完就好多了。",
+            "pinyin": "Bú nàme téng le. Yīshēng kāile yìxiē yào, chīwán jiù hǎoduō le.",
+            "uz": "Unchalik og‘rimayapti. Shifokor dori yozib berdi, ichganimdan keyin ancha yaxshi bo‘ldim.",
+            "ru": "Уже не так болит. Врач выписал лекарства, после них стало намного лучше.",
+            "tj": "Дигар он қадар дард намекунад. Духтур дору навишт, баъди истеъмол хеле беҳтар шудам."
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "那就好！",
+            "pinyin": "Nà jiù hǎo!",
+            "uz": "Unda yaxshi!",
+            "ru": "Вот и хорошо!",
+            "tj": "Хуб шудааст!"
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "家月，你想不想吃点儿东西？",
+            "pinyin": "Jiāyuè, nǐ xiǎng bu xiǎng chī diǎnr dōngxi?",
+            "uz": "Jiayue, biror narsa yeging keladimi?",
+            "ru": "Цзяюэ, хочешь что-нибудь поесть?",
+            "tj": "Ҷяюэ, чизе хӯрдан мехоҳӣ?"
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "吃点儿吧，身体不舒服时更要好好吃饭。",
+            "pinyin": "Chī diǎnr ba, shēntǐ bù shūfu shí gèng yào hǎohāo chī fàn.",
+            "uz": "Biroz ye, o‘zingni yomon his qilgan paytingda yanada yaxshiroq ovqatlanish kerak.",
+            "ru": "Поешь немного. Когда плохо себя чувствуешь, особенно важно нормально питаться.",
+            "tj": "Каме бихӯр, вақте худро бад ҳис мекунӣ, боз ҳам хубтар хӯрок хӯрдан лозим."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "吃点儿什么呢？",
+            "pinyin": "Chī diǎnr shénme ne?",
+            "uz": "Nima yesam ekan?",
+            "ru": "Что бы поесть?",
+            "tj": "Чӣ бихӯрам?"
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "你最喜欢吃中国菜，我做几个中国菜吧。",
+            "pinyin": "Nǐ zuì xǐhuan chī Zhōngguó cài, wǒ zuò jǐ ge Zhōngguó cài ba.",
+            "uz": "Sen eng ko‘p xitoy taomlarini yoqtirasan, bir nechta xitoy taomi tayyorlayman.",
+            "ru": "Ты больше всего любишь китайскую кухню, приготовлю несколько китайских блюд.",
+            "tj": "Ту аз ҳама бештар хӯроки чиниро дӯст медорӣ, чанд хӯроки чинӣ тайёр мекунам."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "好的，谢谢王老师。",
+            "pinyin": "Hǎo de, xièxie Wáng lǎoshī.",
+            "uz": "Xo‘p, rahmat, ustoz Wang.",
+            "ru": "Хорошо, спасибо, преподаватель Ван.",
+            "tj": "Хуб, раҳмат, устод Ван."
+          }
+        ]
+      },
+      {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_zh": "在房间，白家月在写日记。",
+        "scene_uz": "Xonada Bai Jiayue kundalik yozmoqda.",
+        "scene_ru": "В комнате Бай Цзяюэ пишет дневник.",
+        "scene_tj": "Дар ҳуҷра Бай Ҷяюэ рӯзнома менависад.",
+        "dialogue": [
+          {
+            "speaker": "Narration",
+            "zh": "我这几天经常头疼，从药店买了点儿药，没去医院。今天下课后，王老师看我不舒服，就送我去医院了。从医院回来，李文也来看我了。现在他们都回去了，我也要睡觉了。",
+            "pinyin": "Wǒ zhè jǐ tiān jīngcháng tóu téng, cóng yàodiàn mǎile diǎnr yào, méi qù yīyuàn. Jīntiān xiàkè hòu, Wáng lǎoshī kàn wǒ bù shūfu, jiù sòng wǒ qù yīyuàn le. Cóng yīyuàn huílái, Lǐ Wén yě lái kàn wǒ le. Xiànzài tāmen dōu huíqù le, wǒ yě yào shuìjiào le.",
+            "uz": "Shu kunlarda boshim tez-tez og‘riyapti. Dorixonadan biroz dori oldim, lekin shifoxonaga bormadim. Bugun darsdan keyin ustoz Wang o‘zimni yomon his qilayotganimni ko‘rib, meni shifoxonaga olib bordi. Shifoxonadan qaytgach, Li Wen ham ko‘rgani keldi. Hozir ular qaytishdi, men ham uxlamoqchiman.",
+            "ru": "Последние дни у меня часто болела голова. Я купила лекарство в аптеке, но в больницу не ходила. Сегодня после урока преподаватель Ван увидела, что мне плохо, и отвезла меня в больницу. После возвращения Ли Вэнь тоже пришёл меня навестить. Сейчас они уже ушли, и я тоже собираюсь спать.",
+            "tj": "Ин чанд рӯз сарам зуд-зуд дард мекард. Аз дорухона каме дору харидам, аммо ба беморхона нарафтам. Имрӯз баъди дарс устод Ван дид, ки худро бад ҳис мекунам ва маро ба беморхона бурд. Баъди бозгашт Ли Вэн ҳам ба диданам омад. Ҳоло онҳо рафтанд, ман ҳам хоб карданӣ ҳастам."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lesson_order": 12,
+    "lesson_code": "NHSK2-L12",
+    "title": "这里比北京冷多了",
+    "title_pinyin": "Zhèlǐ bǐ Běijīng lěng duō le",
+    "goal": {
+      "uz": "“比” gapida 多了/得多 bilan katta farqni ifodalash; holat to‘ldiruvchili fe’l bilan 比 ning ikki joylashuvini ishlatish; obyektli/ajraluvchi fe’llarda 比 taqqoslashini to‘g‘ri tuzish; ob-havo va sport haqida gaplashish.",
+      "ru": "Выражать большую разницу с 多了/得多 в предложениях с 比; использовать два положения 比 при глаголе с дополнением состояния; правильно строить сравнение с объектными и разделяемыми глаголами; говорить о погоде и спорте.",
+      "tj": "Дар ҷумлаи 比 бо 多了/得多 фарқи калонро ифода кардан; бо феъли дорои пуркунандаи ҳолат ду ҷойи 比-ро истифода бурдан; муқоисаро бо феълҳои объектдор/ҷудошаванда дуруст сохтан; дар бораи обу ҳаво ва варзиш суҳбат кардан."
+    },
+    "intro_text": {
+      "uz": "Dars ikki shahardagi ob-havo, qor, yugurish va kundalik matni orqali taqqoslash gaplarining 4–6 turlarini o‘rgatadi.",
+      "ru": "Урок через погоду в двух городах, снег, бег и дневниковый текст вводит сравнительные конструкции 4–6.",
+      "tj": "Дарс тавассути обу ҳавои ду шаҳр, барф, давидан ва матни рӯзнома сохторҳои муқоисавии 4–6-ро меомӯзонад."
+    },
+    "blocks": [
+      {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_zh": "在房间，王一雪接到白家月的电话。",
+        "scene_uz": "Xonada Wang Yixue Bai Jiayuening qo‘ng‘irog‘ini qabul qildi.",
+        "scene_ru": "В комнате Ван Исюэ принимает звонок от Бай Цзяюэ.",
+        "scene_tj": "Дар ҳуҷра Ван Исюэ занги Бай Ҷяюэро қабул мекунад.",
+        "dialogue": [
+          {
+            "speaker": "Wang Yixue",
+            "zh": "喂，家月，是你啊！有什么事情吗？",
+            "pinyin": "Wèi, Jiāyuè, shì nǐ a! Yǒu shénme shìqing ma?",
+            "uz": "Allo, Jiayue, sen ekansan! Biror ish bormi?",
+            "ru": "Алло, Цзяюэ, это ты! Что-то случилось?",
+            "tj": "Алло, Ҷяюэ, ту будаӣ! Ягон кор ҳаст?"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "没什么事，就想跟您说说话。",
+            "pinyin": "Méi shénme shì, jiù xiǎng gēn nín shuōshuo huà.",
+            "uz": "Hech qanday ish yo‘q, shunchaki siz bilan gaplashgim keldi.",
+            "ru": "Ничего особенного, просто захотелось с вами поговорить.",
+            "tj": "Кори махсус нест, танҳо мехостам бо шумо суҳбат кунам."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "好啊。你今天没课吗？",
+            "pinyin": "Hǎo a. Nǐ jīntiān méi kè ma?",
+            "uz": "Mayli. Bugun darsing yo‘qmi?",
+            "ru": "Хорошо. У тебя сегодня нет занятий?",
+            "tj": "Хуб. Имрӯз дарс надорӣ?"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "下午有课。您那里天气怎么样？",
+            "pinyin": "Xiàwǔ yǒu kè. Nín nàli tiānqì zěnmeyàng?",
+            "uz": "Tushdan keyin darsim bor. Sizlarda ob-havo qanday?",
+            "ru": "Занятия днём. Какая у вас погода?",
+            "tj": "Баъд аз нисфирӯзӣ дарс дорам. Он ҷо ҳаво чӣ хел?"
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "北京这几天虽然是晴天，但是有点儿冷。",
+            "pinyin": "Běijīng zhè jǐ tiān suīrán shì qíngtiān, dànshì yǒudiǎnr lěng.",
+            "uz": "Pekinda shu kunlarda havo ochiq bo‘lsa ham, biroz sovuq.",
+            "ru": "В Пекине эти дни солнечные, но немного холодно.",
+            "tj": "Дар Пекин ин чанд рӯз ҳаво соф бошад ҳам, каме хунук аст."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "我这里比北京冷多了，外边还正下着雪呢！",
+            "pinyin": "Wǒ zhèlǐ bǐ Běijīng lěng duō le, wàibian hái zhèng xiàzhe xuě ne!",
+            "uz": "Bu yer Pekindan ancha sovuq, tashqarida hozir ham qor yog‘ayapti!",
+            "ru": "Здесь намного холоднее, чем в Пекине, и на улице сейчас ещё идёт снег!",
+            "tj": "Ин ҷо аз Пекин хеле хунуктар аст, берун ҳоло ҳам барф меборад!"
+          }
+        ]
+      },
+      {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_zh": "在客厅，王一雪给王一飞打电话。",
+        "scene_uz": "Mehmonxonada Wang Yixue Wang Yifeiga telefon qilmoqda.",
+        "scene_ru": "В гостиной Ван Исюэ звонит Ван Ифэй.",
+        "scene_tj": "Дар меҳмонхона Ван Исюэ ба Ван Ифэй занг мезанад.",
+        "dialogue": [
+          {
+            "speaker": "Wang Yixue",
+            "zh": "喂，一飞，听家月说你那边下雪了，下得大不大？",
+            "pinyin": "Wèi, Yīfēi, tīng Jiāyuè shuō nǐ nàbian xià xuě le, xià de dà bu dà?",
+            "uz": "Allo, Yifei, Jiayuedan eshitdim, sizlarda qor yog‘ibdi. Kuchlimi?",
+            "ru": "Алло, Ифэй, Цзяюэ сказала, что у вас снег. Сильно идёт?",
+            "tj": "Алло, Ифэй, аз Ҷяюэ шунидам, он ҷо барф боридааст. Сахт меборад?"
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "今天不大，昨天比今天下得大。",
+            "pinyin": "Jīntiān bú dà, zuótiān bǐ jīntiān xià de dà.",
+            "uz": "Bugun kuchli emas, kecha bugungidan kuchliroq yog‘di.",
+            "ru": "Сегодня не сильно, вчера снег шёл сильнее, чем сегодня.",
+            "tj": "Имрӯз сахт нест, дирӯз аз имрӯз сахттар борид."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "天气不好。你去外面的时候多穿点儿衣服。",
+            "pinyin": "Tiānqì bù hǎo. Nǐ qù wàimian de shíhou duō chuān diǎnr yīfu.",
+            "uz": "Havo yaxshi emas. Tashqariga chiqqanda ko‘proq kiyim kiy.",
+            "ru": "Погода плохая. Когда выходишь, одевайся теплее.",
+            "tj": "Ҳаво хуб нест. Вақте берун мебароӣ, бештар либос пӯш."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "这几天我在网上上课，没出去过。",
+            "pinyin": "Zhè jǐ tiān wǒ zài wǎngshang shàngkè, méi chūquguo.",
+            "uz": "Shu kunlarda onlayn dars beryapman, tashqariga chiqmadim.",
+            "ru": "Эти дни я преподаю онлайн и не выходила.",
+            "tj": "Ин чанд рӯз онлайн дарс медиҳам ва берун набаромадаам."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "那就好，有事记得给我打电话。",
+            "pinyin": "Nà jiù hǎo, yǒu shì jìde gěi wǒ dǎ diànhuà.",
+            "uz": "Yaxshi, biror narsa bo‘lsa menga telefon qilishni unutma.",
+            "ru": "Тогда хорошо. Если что — не забудь позвонить.",
+            "tj": "Хуб, агар коре шавад, ба ман занг заданро фаромӯш накун."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "好的。现在不下雪了，我出去买点儿吃的。",
+            "pinyin": "Hǎo de. Xiànzài bù xià xuě le, wǒ chūqu mǎi diǎnr chī de.",
+            "uz": "Xo‘p. Hozir qor yog‘mayapti, men tashqariga yegulik olgani chiqaman.",
+            "ru": "Хорошо. Сейчас снег прекратился, я выйду купить еды.",
+            "tj": "Хуб. Ҳоло барф намеборад, ман берун баромада хӯрданӣ мехарам."
+          },
+          {
+            "speaker": "Wang Yixue",
+            "zh": "一次多买点儿，阴天下雪什么的就少出去吧。",
+            "pinyin": "Yí cì duō mǎi diǎnr, yīntiān xià xuě shénmede jiù shǎo chūqu ba.",
+            "uz": "Bir yo‘la ko‘proq ol, bulutli yoki qorli kunlarda kamroq chiq.",
+            "ru": "Купи побольше за один раз, а в пасмурную или снежную погоду выходи пореже.",
+            "tj": "Якбора бештар бихар, рӯзҳои абрнок ё барфӣ камтар берун баро."
+          }
+        ]
+      },
+      {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_zh": "在房间，李文给白家月打电话。",
+        "scene_uz": "Xonada Li Wen Bai Jiayuega telefon qilmoqda.",
+        "scene_ru": "В комнате Ли Вэнь звонит Бай Цзяюэ.",
+        "scene_tj": "Дар ҳуҷра Ли Вэн ба Бай Ҷяюэ занг мезанад.",
+        "dialogue": [
+          {
+            "speaker": "Li Wen",
+            "zh": "喂，家月，今天天气不错，我们去跑步吧！",
+            "pinyin": "Wèi, Jiāyuè, jīntiān tiānqì búcuò, wǒmen qù pǎobù ba!",
+            "uz": "Allo, Jiayue, bugun havo yaxshi, yugurishga boraylik!",
+            "ru": "Алло, Цзяюэ, погода сегодня хорошая, пойдём побегаем!",
+            "tj": "Алло, Ҷяюэ, имрӯз ҳаво хуб аст, биё давидан равем!"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "你跑步跑得比我快，我们能一起跑吗？",
+            "pinyin": "Nǐ pǎobù pǎo de bǐ wǒ kuài, wǒmen néng yìqǐ pǎo ma?",
+            "uz": "Sen mendan tezroq yugurasan, birga yugura olamizmi?",
+            "ru": "Ты бегаешь быстрее меня, сможем бежать вместе?",
+            "tj": "Ту аз ман тезтар медавӣ, якҷо давида метавонем?"
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "可以的，我慢慢跑，等着你。",
+            "pinyin": "Kěyǐ de, wǒ mànmàn pǎo, děngzhe nǐ.",
+            "uz": "Bo‘ladi, men sekin yuguraman, seni kutib turaman.",
+            "ru": "Конечно, я буду бежать медленно и ждать тебя.",
+            "tj": "Мешавад, ман оҳиста медавам ва туро интизор мешавам."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "好吧。你真爱跑步啊！",
+            "pinyin": "Hǎo ba. Nǐ zhēn ài pǎobù a!",
+            "uz": "Mayli. Sen yugurishni juda yaxshi ko‘rarkan-san!",
+            "ru": "Хорошо. Ты и правда любишь бегать!",
+            "tj": "Хуб. Ту воқеан давиданро дӯст медорӣ!"
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "我从小就经常跟爸爸跑步，跑步能让人快乐！",
+            "pinyin": "Wǒ cóngxiǎo jiù jīngcháng gēn bàba pǎobù, pǎobù néng ràng rén kuàilè!",
+            "uz": "Men bolaligimdan dadam bilan tez-tez yuguraman, yugurish odamni xursand qiladi!",
+            "ru": "Я с детства часто бегаю с папой; бег делает людей счастливее!",
+            "tj": "Ман аз кӯдакӣ бо падарам зуд-зуд медавам, давидан одамро хушҳол мекунад!"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "好，那我准备一下。",
+            "pinyin": "Hǎo, nà wǒ zhǔnbèi yíxià.",
+            "uz": "Xo‘p, unda men tayyorlanaman.",
+            "ru": "Хорошо, тогда я подготовлюсь.",
+            "tj": "Хуб, пас ман тайёр мешавам."
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "我现在坐地铁去找你，一会儿楼下见。",
+            "pinyin": "Wǒ xiànzài zuò dìtiě qù zhǎo nǐ, yíhuìr lóuxià jiàn.",
+            "uz": "Hozir metroda oldingga boraman, birozdan keyin bino pastida ko‘rishamiz.",
+            "ru": "Сейчас поеду к тебе на метро, увидимся скоро внизу.",
+            "tj": "Ҳоло бо метро назди ту меоям, каме баъд поёни бино мебинем."
+          }
+        ]
+      },
+      {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_zh": "在房间，白家月在写日记。",
+        "scene_uz": "Xonada Bai Jiayue kundalik yozmoqda.",
+        "scene_ru": "В комнате Бай Цзяюэ пишет дневник.",
+        "scene_tj": "Дар ҳуҷра Бай Ҷяюэ рӯзнома менависад.",
+        "dialogue": [
+          {
+            "speaker": "Narration",
+            "zh": "前几天天气不好，我没走路，每天坐两站地铁去学校。今天是个大晴天，李文让我跟他去外面跑步。他小时候经常跑步，跑得比我快，但是他会等我。跟李文一起跑步，我好高兴啊！",
+            "pinyin": "Qián jǐ tiān tiānqì bù hǎo, wǒ méi zǒulù, měitiān zuò liǎng zhàn dìtiě qù xuéxiào. Jīntiān shì ge dà qíngtiān, Lǐ Wén ràng wǒ gēn tā qù wàimian pǎobù. Tā xiǎoshíhou jīngcháng pǎobù, pǎo de bǐ wǒ kuài, dànshì tā huì děng wǒ. Gēn Lǐ Wén yìqǐ pǎobù, wǒ hǎo gāoxìng a!",
+            "uz": "Oldingi kunlarda havo yomon edi, piyoda yurmadim, har kuni maktabga ikki bekat metroda bordim. Bugun juda ochiq kun, Li Wen meni u bilan tashqarida yugurishga chaqirdi. U bolaligida tez-tez yugurgan, mendan tezroq yuguradi, lekin meni kutadi. Li Wen bilan birga yugurishdan juda xursandman!",
+            "ru": "Последние несколько дней погода была плохой, я не ходила пешком, каждый день ехала до школы две станции метро. Сегодня ясный день, Ли Вэнь позвал меня побегать на улице. Он часто бегал с детства и бегает быстрее меня, но ждёт меня. Я так рада бегать вместе с Ли Вэнем!",
+            "tj": "Чанд рӯзи пеш ҳаво бад буд, пиёда намерафтам, ҳар рӯз то мактаб ду истгоҳ метро мерафтам. Имрӯз рӯзи хеле офтобист, Ли Вэн маро ба давидан дар берун даъват кард. Ӯ аз кӯдакӣ зуд-зуд медавид ва аз ман тезтар медавад, аммо маро интизор мешавад. Бо Ли Вэн якҷо давидан маро хеле хушҳол мекунад!"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lesson_order": 13,
+    "lesson_code": "NHSK2-L13",
+    "title": "我们爱上中文课",
+    "title_pinyin": "Wǒmen ài shàng Zhōngwén kè",
+    "goal": {
+      "uz": "“拿/送/卖 + 给” bilan ikki obyektli gap tuzish; “比”dan keyin miqdor birikmasi bilan aniq farqni aytish; “一点儿/一些” bilan kichik farqni ifodalash; yangi yil sovg‘alari va dars haqida gaplashish.",
+      "ru": "Строить двуобъектные предложения с “拿/送/卖 + 给”; выражать конкретную разницу количественной группой после 比; показывать небольшую разницу с “一点儿/一些”; говорить о новогодних подарках и занятиях.",
+      "tj": "Бо “拿/送/卖 + 给” ҷумлаи дуобъектӣ сохтан; баъди 比 бо таркиби миқдорӣ фарқи дақиқро гуфтан; бо “一点儿/一些” фарқи хурдро ифода кардан; дар бораи тӯҳфаҳои Соли нав ва дарс суҳбат кардан."
+    },
+    "intro_text": {
+      "uz": "Dars ustozga yangi yil sovg‘asi, sinfdagi so‘z/ieroglif mashqi, daftar sovg‘asi va kundalik matni orqali ikki obyektli gap hamda taqqoslashning 7–8 turlarini o‘rgatadi.",
+      "ru": "Урок через новогодний подарок преподавателю, словарно-иероглифическую работу в классе, подарок-блокнот и дневниковый текст вводит двуобъектные предложения и сравнительные конструкции 7–8.",
+      "tj": "Дарс тавассути тӯҳфаи Соли нав ба устод, машқи калима/иероглиф дар синф, тӯҳфаи дафтар ва матни рӯзнома ҷумлаи дуобъектӣ ва муқоисаҳои 7–8-ро меомӯзонад."
+    },
+    "blocks": [
+      {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_zh": "在教室，白家月和陈天中在聊天儿。",
+        "scene_uz": "Sinfda Bai Jiayue va Chen Tianzhong suhbatlashmoqda.",
+        "scene_ru": "В классе Бай Цзяюэ и Чэнь Тяньчжун разговаривают.",
+        "scene_tj": "Дар синф Бай Ҷяюэ ва Чэн Тянҷун суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "时间过得真快啊！新年就要到了。",
+            "pinyin": "Shíjiān guò de zhēn kuài a! Xīnnián jiù yào dào le.",
+            "uz": "Vaqt juda tez o‘tyapti! Yangi yilga ham oz qoldi.",
+            "ru": "Как быстро летит время! Новый год уже скоро.",
+            "tj": "Вақт чӣ қадар тез мегузарад! Соли нав ҳам наздик аст."
+          },
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "这一年王老师教我们中文，每天工作都很累。",
+            "pinyin": "Zhè yì nián Wáng lǎoshī jiāo wǒmen Zhōngwén, měitiān gōngzuò dōu hěn lèi.",
+            "uz": "Bu yil ustoz Wang bizga xitoy tilidan dars berdi, har kuni juda ko‘p ishladi.",
+            "ru": "В этом году преподаватель Ван учила нас китайскому и каждый день много работала.",
+            "tj": "Ин сол устод Ван ба мо чинӣ дарс дод ва ҳар рӯз бисёр кор кард."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "是啊，她教得很好。因为她，我们都非常爱上中文课。",
+            "pinyin": "Shì a, tā jiāo de hěn hǎo. Yīnwèi tā, wǒmen dōu fēicháng ài shàng Zhōngwén kè.",
+            "uz": "Ha, u juda yaxshi dars beradi. U sababli barchamiz xitoy tili darsini juda sevib qoldik.",
+            "ru": "Да, она очень хорошо преподаёт. Благодаря ей мы все полюбили уроки китайского.",
+            "tj": "Ҳа, ӯ хеле хуб дарс медиҳад. Бо шарофати ӯ ҳамаи мо дарси чиниро хеле дӯст доштем."
+          },
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "我们给她准备个新年礼物吧。你觉得送给她什么好呢？",
+            "pinyin": "Wǒmen gěi tā zhǔnbèi ge xīnnián lǐwù ba. Nǐ juéde sòng gěi tā shénme hǎo ne?",
+            "uz": "Unga Yangi yil sovg‘asi tayyorlaylik. Nima sovg‘a qilsak yaxshi?",
+            "ru": "Давай приготовим ей новогодний подарок. Что лучше подарить?",
+            "tj": "Биё барояш тӯҳфаи Соли нав тайёр кунем. Чӣ тӯҳфа диҳем беҳтар?"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "王老师喜欢花，就送给她花吧。",
+            "pinyin": "Wáng lǎoshī xǐhuan huā, jiù sòng gěi tā huā ba.",
+            "uz": "Ustoz Wang gullarni yoqtiradi, unga gul sovg‘a qilaylik.",
+            "ru": "Преподаватель Ван любит цветы, давай подарим ей цветы.",
+            "tj": "Устод Ван гулро дӯст медорад, барояш гул тӯҳфа кунем."
+          },
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "那我们去花店看看，现在买花的人多，希望花店还有漂亮的花。",
+            "pinyin": "Nà wǒmen qù huādiàn kànkan, xiànzài mǎi huā de rén duō, xīwàng huādiàn hái yǒu piàoliang de huā.",
+            "uz": "Unda gul do‘koniga borib ko‘raylik. Hozir gul oladiganlar ko‘p, umid qilamanki, chiroyli gullar qolgan.",
+            "ru": "Тогда пойдём в цветочный магазин. Сейчас много покупателей; надеюсь, красивые цветы ещё остались.",
+            "tj": "Пас ба мағозаи гул рафта бинем. Ҳоло харидори гул зиёд аст, умедворам гулҳои зебо ҳанӯз ҳастанд."
+          }
+        ]
+      },
+      {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_zh": "在教室，王一飞在上课。",
+        "scene_uz": "Sinfda Wang Yifei dars bermoqda.",
+        "scene_ru": "В классе Ван Ифэй ведёт урок.",
+        "scene_tj": "Дар синф Ван Ифэй дарс медиҳад.",
+        "dialogue": [
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "王老师，今天的词比昨天多了十个。",
+            "pinyin": "Wáng lǎoshī, jīntiān de cí bǐ zuótiān duōle shí ge.",
+            "uz": "Ustoz Wang, bugungi so‘zlar kechagidan o‘nta ko‘p.",
+            "ru": "Преподаватель Ван, сегодня слов на десять больше, чем вчера.",
+            "tj": "Устод Ван, калимаҳои имрӯз аз дирӯз даҳто бештар аст."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "是啊！你们都学会了吗？",
+            "pinyin": "Shì a! Nǐmen dōu xuéhuì le ma?",
+            "uz": "Ha! Hammasini o‘rgandingizmi?",
+            "ru": "Да! Вы всё выучили?",
+            "tj": "Ҳа! Ҳамаашро омӯхтед?"
+          },
+          {
+            "speaker": "Annie",
+            "zh": "学会了，没有问题。",
+            "pinyin": "Xuéhuì le, méiyǒu wèntí.",
+            "uz": "O‘rgandik, muammo yo‘q.",
+            "ru": "Выучили, без проблем.",
+            "tj": "Омӯхтем, мушкил нест."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "好。现在我来说，你们在本子上面写。",
+            "pinyin": "Hǎo. Xiànzài wǒ lái shuō, nǐmen zài běnzi shàngmian xiě.",
+            "uz": "Yaxshi. Endi men aytaman, sizlar daftarga yozinglar.",
+            "ru": "Хорошо. Теперь я буду говорить, а вы записывайте в тетради.",
+            "tj": "Хуб. Ҳоло ман мегӯям, шумо дар дафтар нависед."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "同学们，“洗手间”的“间”字写错了，它的里面是“日”，不是“口”。",
+            "pinyin": "Tóngxuémen, “xǐshǒujiān” de “jiān” zì xiěcuò le, tā de lǐmian shì “rì”, bú shì “kǒu”.",
+            "uz": "O‘quvchilar, “洗手间”dagi “间” xato yozilgan: ichida “日”, “口” emas.",
+            "ru": "Ребята, иероглиф “间” в “洗手间” написан неправильно: внутри “日”, а не “口”.",
+            "tj": "Донишҷӯён, “间” дар “洗手间” хато навишта шудааст: дарунаш “日” аст, на “口”."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "“日”比“口”多一笔，写“口”就是“问题”的“问”了。",
+            "pinyin": "“Rì” bǐ “kǒu” duō yì bǐ, xiě “kǒu” jiù shì “wèntí” de “wèn” le.",
+            "uz": "“日” “口”dan bir chiziq ko‘p; “口” yozilsa, “问题”dagi “问” bo‘lib qoladi.",
+            "ru": "В “日” на одну черту больше, чем в “口”; если написать “口”, получится “问” из “问题”.",
+            "tj": "“日” аз “口” як хат бештар дорад; агар “口” нависем, “问”-и “问题” мешавад."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "没错，你说得很对。",
+            "pinyin": "Méi cuò, nǐ shuō de hěn duì.",
+            "uz": "To‘g‘ri, juda to‘g‘ri aytding.",
+            "ru": "Верно, ты совершенно права.",
+            "tj": "Дуруст, хеле дуруст гуфтӣ."
+          }
+        ]
+      },
+      {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_zh": "在教室，安妮和白家月在聊天儿。",
+        "scene_uz": "Sinfda Annie va Bai Jiayue suhbatlashmoqda.",
+        "scene_ru": "В классе Энни и Бай Цзяюэ разговаривают.",
+        "scene_tj": "Дар синф Энни ва Бай Ҷяюэ суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Annie",
+            "zh": "家月，你觉得这个本子怎么样？",
+            "pinyin": "Jiāyuè, nǐ juéde zhège běnzi zěnmeyàng?",
+            "uz": "Jiayue, bu daftar senga qanday?",
+            "ru": "Цзяюэ, как тебе этот блокнот?",
+            "tj": "Ҷяюэ, ин дафтар чӣ хел аст?"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "很漂亮，多少钱一个？",
+            "pinyin": "Hěn piàoliang, duōshao qián yí ge?",
+            "uz": "Juda chiroyli, bittasi qancha?",
+            "ru": "Очень красивый. Сколько стоит один?",
+            "tj": "Хеле зебо, яктояш чанд пул?"
+          },
+          {
+            "speaker": "Annie",
+            "zh": "比我们一起买的那个本子贵一点儿。",
+            "pinyin": "Bǐ wǒmen yìqǐ mǎi de nàge běnzi guì yìdiǎnr.",
+            "uz": "Birga olgan daftarimizdan biroz qimmatroq.",
+            "ru": "Немного дороже того блокнота, который мы покупали вместе.",
+            "tj": "Аз дафтаре, ки якҷо харида будем, каме гаронтар."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "这么漂亮的本子，不可能贵一点儿吧？",
+            "pinyin": "Zhème piàoliang de běnzi, bù kěnéng guì yìdiǎnr ba?",
+            "uz": "Bunday chiroyli daftar faqat biroz qimmatroq bo‘lishi mumkin emas-a?",
+            "ru": "Такой красивый блокнот не может быть всего чуть дороже, правда?",
+            "tj": "Чунин дафтари зебо фақат каме гаронтар бошад, мумкин нест-ку?"
+          },
+          {
+            "speaker": "Annie",
+            "zh": "我是上网买的，真没那么贵。我买了两个，送你一个。",
+            "pinyin": "Wǒ shì shàngwǎng mǎi de, zhēn méi nàme guì. Wǒ mǎile liǎng ge, sòng nǐ yí ge.",
+            "uz": "Internetdan oldim, aslida unchalik qimmat emas. Ikkita oldim, bittasini senga beraman.",
+            "ru": "Я купила в интернете, на самом деле не так дорого. Купила два, один подарю тебе.",
+            "tj": "Аз интернет харидам, аслан он қадар гарон нест. Дуто харидам, яктоашро ба ту медиҳам."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "谢谢！那我送给你什么呢？",
+            "pinyin": "Xièxie! Nà wǒ sòng gěi nǐ shénme ne?",
+            "uz": "Rahmat! Unda men senga nima sovg‘a qilay?",
+            "ru": "Спасибо! А что мне подарить тебе?",
+            "tj": "Раҳмат! Пас ман ба ту чӣ тӯҳфа кунам?"
+          },
+          {
+            "speaker": "Annie",
+            "zh": "咖啡杯吧，我最喜欢喝咖啡了。",
+            "pinyin": "Kāfēibēi ba, wǒ zuì xǐhuan hē kāfēi le.",
+            "uz": "Qahva piyolasi bo‘lsin, men qahvani eng ko‘p yoqtiraman.",
+            "ru": "Чашку для кофе — я больше всего люблю кофе.",
+            "tj": "Пиёлаи қаҳва бошад, ман қаҳваро аз ҳама бештар дӯст медорам."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "好，那样我们就都有新年礼物了！",
+            "pinyin": "Hǎo, nàyàng wǒmen jiù dōu yǒu xīnnián lǐwù le!",
+            "uz": "Xo‘p, shunda ikkalamizda ham Yangi yil sovg‘asi bo‘ladi!",
+            "ru": "Хорошо, тогда у нас обеих будут новогодние подарки!",
+            "tj": "Хуб, он гоҳ ҳардуямон тӯҳфаи Соли нав дорем!"
+          }
+        ]
+      },
+      {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_zh": "在夜间，白家月在写日记。",
+        "scene_uz": "Kechasi Bai Jiayue kundalik yozmoqda.",
+        "scene_ru": "Ночью Бай Цзяюэ пишет дневник.",
+        "scene_tj": "Шабона Бай Ҷяюэ рӯзнома менависад.",
+        "dialogue": [
+          {
+            "speaker": "Narration",
+            "zh": "新年就要到了，安妮送给我一个新本子。她告诉我是在网上买的，比我的本子贵一点儿。我们班同学也送了王老师漂亮的花，希望她高高兴兴地过个新年。",
+            "pinyin": "Xīnnián jiù yào dào le, Ānnī sòng gěi wǒ yí ge xīn běnzi. Tā gàosu wǒ shì zài wǎngshang mǎi de, bǐ wǒ de běnzi guì yìdiǎnr. Wǒmen bān tóngxué yě sòngle Wáng lǎoshī piàoliang de huā, xīwàng tā gāogāoxìngxìng de guò ge xīnnián.",
+            "uz": "Yangi yilga oz qoldi, Annie menga yangi daftar sovg‘a qildi. Uni internetdan olganini va mening daftarimdan biroz qimmatroq ekanini aytdi. Sinfdoshlarimiz ham ustoz Wangga chiroyli gullar sovg‘a qilib, Yangi yilni xursand o‘tkazishini tilashdi.",
+            "ru": "Новый год уже близко. Энни подарила мне новый блокнот. Она сказала, что купила его в интернете и он немного дороже моего. Наш класс тоже подарил преподавателю Ван красивые цветы, пожелав ей радостного Нового года.",
+            "tj": "Соли нав наздик аст, Энни ба ман дафтари нав тӯҳфа кард. Гуфт, ки онро аз интернет харидааст ва аз дафтари ман каме гаронтар аст. Ҳамсинфонамон ҳам ба устод Ван гулҳои зебо тӯҳфа карда, орзу карданд Соли навро хушҳолона гузаронад."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lesson_order": 14,
+    "lesson_code": "NHSK2-L14",
+    "title": "一个人过年多没意思啊",
+    "title_pinyin": "Yí ge rén guònián duō méi yìsi a",
+    "goal": {
+      "uz": "“着” bilan mavjudlik gapini tuzish; undov gapida “多” bilan yuqori darajani ifodalash; qo‘shma yo‘nalish to‘ldiruvchilarini va obyektning joylashuvini to‘g‘ri ishlatish; tanishtirish va uy-joy haqida gaplashish.",
+      "ru": "Строить экзистенциальные предложения с “着”; выражать высокую степень через “多” в восклицательных предложениях; правильно использовать составные направительные дополнения и позицию объекта; говорить о знакомстве и жилье.",
+      "tj": "Бо “着” ҷумлаи мавҷудият сохтан; дар ҷумлаи хитобӣ бо “多” дараҷаи баландро ифода кардан; пуркунандаи мураккаби самт ва ҷойи объектро дуруст истифода бурдан; дар бораи шиносоӣ ва манзил суҳбат кардан."
+    },
+    "intro_text": {
+      "uz": "Dars Wang Yifeining yigit do‘sti bilan uchrashuv, qo‘shnilar, uy va kundalik matni orqali mavjudlik gapi, daraja ravishi 多 va qo‘shma yo‘nalish to‘ldiruvchisini o‘rgatadi.",
+      "ru": "Урок через встречу с молодым человеком Ван Ифэй, соседей, жильё и дневниковую запись вводит экзистенциальное предложение, наречие степени 多 и составное направительное дополнение.",
+      "tj": "Дарс тавассути вохӯрӣ бо дӯстписари Ван Ифэй, ҳамсояҳо, хона ва навиштаи рӯзнома ҷумлаи мавҷудият, зарфи дараҷаи 多 ва пуркунандаи мураккаби самтро меомӯзонад."
+    },
+    "blocks": [
+      {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_zh": "在回家路上，李文和王一飞边走边聊。",
+        "scene_uz": "Uyga qaytish yo‘lida Li Wen va Wang Yifei yurib suhbatlashmoqda.",
+        "scene_ru": "По дороге домой Ли Вэнь и Ван Ифэй разговаривают на ходу.",
+        "scene_tj": "Дар роҳи бозгашт ба хона Ли Вэн ва Ван Ифэй роҳравон суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Li Wen",
+            "zh": "王老师，你家楼下站着一个人。",
+            "pinyin": "Wáng lǎoshī, nǐ jiā lóuxià zhànzhe yí ge rén.",
+            "uz": "Ustoz Wang, uyingiz pastida bir odam turibdi.",
+            "ru": "Преподаватель Ван, у вашего дома внизу стоит человек.",
+            "tj": "Устод Ван, поёни хонаи шумо як нафар истодааст."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "我家楼下？我看看。",
+            "pinyin": "Wǒ jiā lóuxià? Wǒ kànkan.",
+            "uz": "Uyim pastidami? Qani ko‘ray.",
+            "ru": "Внизу моего дома? Дай посмотрю.",
+            "tj": "Поёни хонаи ман? Бинам."
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "那个人穿着黑色的裤子，手里还拿着一个黑色的包。",
+            "pinyin": "Nàge rén chuānzhe hēisè de kùzi, shǒulǐ hái názhe yí ge hēisè de bāo.",
+            "uz": "U odam qora shim kiygan, qo‘lida yana qora sumka bor.",
+            "ru": "На том человеке чёрные брюки, а в руке он держит чёрную сумку.",
+            "tj": "Он одам шими сиёҳ пӯшидааст ва дар дасташ халтаи сиёҳ дорад."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "我看见那个人了，他是我男朋友。",
+            "pinyin": "Wǒ kànjiàn nàge rén le, tā shì wǒ nánpéngyou.",
+            "uz": "Ko‘rdim, u mening yigitim.",
+            "ru": "Я его вижу, это мой молодой человек.",
+            "tj": "Ӯро дидам, ӯ дӯстписари ман аст."
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "那我们快过去吧。",
+            "pinyin": "Nà wǒmen kuài guòqu ba.",
+            "uz": "Unda tezroq u tomonga boraylik.",
+            "ru": "Тогда пойдём скорее к нему.",
+            "tj": "Пас зуд ба он тараф равем."
+          }
+        ]
+      },
+      {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_zh": "在楼下，王一飞见到杨同乐。",
+        "scene_uz": "Bino pastida Wang Yifei Yang Tongle bilan uchrashdi.",
+        "scene_ru": "Внизу дома Ван Ифэй встретила Ян Тунлэ.",
+        "scene_tj": "Дар поёни бино Ван Ифэй бо Ян Тунлэ вохӯрд.",
+        "dialogue": [
+          {
+            "speaker": "Wang Yifei",
+            "zh": "同乐，真是你啊！上次打电话，你说有时间过来看我，没想到这么快就来了！",
+            "pinyin": "Tónglè, zhēn shì nǐ a! Shàng cì dǎ diànhuà, nǐ shuō yǒu shíjiān guòlai kàn wǒ, méi xiǎngdào zhème kuài jiù lái le!",
+            "uz": "Tongle, rostdan ham sen ekansan! O‘tgan safar telefonlashganda vaqt topib meni ko‘rgani kelaman deganding, bunchalik tez kelasan deb o‘ylamagandim!",
+            "ru": "Тунлэ, это правда ты! В прошлый раз по телефону ты сказал, что приедешь навестить меня, когда будет время. Не думала, что так скоро!",
+            "tj": "Тунлэ, воқеан ту будаӣ! Дафъаи гузашта гуфтӣ вақте фурсат бошад ба диданам меоӣ, фикр намекардам ин қадар зуд биёӣ!"
+          },
+          {
+            "speaker": "Yang Tongle",
+            "zh": "就要过年了，你一个人在这儿多没意思啊，所以我就早早过来了。",
+            "pinyin": "Jiù yào guònián le, nǐ yí ge rén zài zhèr duō méi yìsi a, suǒyǐ wǒ jiù zǎozǎo guòlai le.",
+            "uz": "Yangi yilga oz qoldi, bu yerda yolg‘iz qolish naqadar zerikarli, shuning uchun erta keldim.",
+            "ru": "Скоро Новый год, одному здесь так скучно, поэтому я приехал пораньше.",
+            "tj": "Ба Соли нав кам мондааст, танҳо будан дар ин ҷо чӣ қадар дилгир аст, барои ҳамин барвақт омадам."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "你能来，我太高兴了！",
+            "pinyin": "Nǐ néng lái, wǒ tài gāoxìng le!",
+            "uz": "Kelganingdan juda xursandman!",
+            "ru": "Я так рада, что ты приехал!",
+            "tj": "Аз омаданат хеле хурсанд шудам!"
+          },
+          {
+            "speaker": "Yang Tongle",
+            "zh": "一飞，你旁边这位是？",
+            "pinyin": "Yīfēi, nǐ pángbian zhè wèi shì?",
+            "uz": "Yifei, yoningdagi bu kishi kim?",
+            "ru": "Ифэй, а кто этот человек рядом с тобой?",
+            "tj": "Ифэй, ин шахси паҳлӯят кист?"
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "同乐，这是李文，他在我们学校学医。李文，这是我男朋友杨同乐。",
+            "pinyin": "Tónglè, zhè shì Lǐ Wén, tā zài wǒmen xuéxiào xué yī. Lǐ Wén, zhè shì wǒ nánpéngyou Yáng Tónglè.",
+            "uz": "Tongle, bu Li Wen, u bizning maktabda tibbiyot o‘qiydi. Li Wen, bu mening yigitim Yang Tongle.",
+            "ru": "Тунлэ, это Ли Вэнь, он изучает медицину в нашей школе. Ли Вэнь, это мой молодой человек Ян Тунлэ.",
+            "tj": "Тунлэ, ин Ли Вэн, ӯ дар мактаби мо тиб мехонад. Ли Вэн, ин дӯстписари ман Ян Тунлэ."
+          },
+          {
+            "speaker": "Yang Tongle",
+            "zh": "李文，很高兴认识你！",
+            "pinyin": "Lǐ Wén, hěn gāoxìng rènshi nǐ!",
+            "uz": "Li Wen, tanishganimdan xursandman!",
+            "ru": "Ли Вэнь, приятно познакомиться!",
+            "tj": "Ли Вэн, аз шиносоӣ хушҳолам!"
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "认识你我也很高兴！我家就在前面那个楼，有时间来玩。",
+            "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng! Wǒ jiā jiù zài qiánmian nàge lóu, yǒu shíjiān lái wán.",
+            "uz": "Men ham tanishganimdan xursandman! Uyim oldindagi binoda, vaqtingiz bo‘lsa mehmonga keling.",
+            "ru": "Я тоже рад познакомиться! Я живу вон в том доме впереди, заходите как-нибудь.",
+            "tj": "Ман ҳам аз шиносоӣ хушҳолам! Хонаам дар ҳамон бинои пеш аст, вақт бошад меҳмон шавед."
+          }
+        ]
+      },
+      {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_zh": "在王一飞家里，王一飞和杨同乐在客厅聊天儿。",
+        "scene_uz": "Wang Yifeining uyida Wang Yifei va Yang Tongle mehmonxonada suhbatlashmoqda.",
+        "scene_ru": "Дома у Ван Ифэй она и Ян Тунлэ разговаривают в гостиной.",
+        "scene_tj": "Дар хонаи Ван Ифэй ӯ ва Ян Тунлэ дар меҳмонхона суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Yang Tongle",
+            "zh": "一飞，你住的房子真不错，很大，离学校也不远。",
+            "pinyin": "Yīfēi, nǐ zhù de fángzi zhēn búcuò, hěn dà, lí xuéxiào yě bù yuǎn.",
+            "uz": "Yifei, yashaydigan uying juda yaxshi, katta va maktabdan ham uzoq emas.",
+            "ru": "Ифэй, у тебя отличный дом: большой и недалеко от школы.",
+            "tj": "Ифэй, хонае, ки зиндагӣ мекунӣ, хеле хубу калон аст ва аз мактаб ҳам дур нест."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "是啊！我楼下还住着一家中国人，他们人很好。",
+            "pinyin": "Shì a! Wǒ lóuxià hái zhùzhe yì jiā Zhōngguó rén, tāmen rén hěn hǎo.",
+            "uz": "Ha! Pastimda yana bir xitoylik oila yashaydi, juda yaxshi odamlar.",
+            "ru": "Да! Этажом ниже живёт китайская семья, очень хорошие люди.",
+            "tj": "Ҳа! Поёни ман як оилаи чинӣ зиндагӣ мекунад, одамони хеле хубанд."
+          },
+          {
+            "speaker": "Yang Tongle",
+            "zh": "这样你有事情就可以找他们帮忙。",
+            "pinyin": "Zhèyàng nǐ yǒu shìqing jiù kěyǐ zhǎo tāmen bāngmáng.",
+            "uz": "Shunda biror ish bo‘lsa ulardan yordam so‘rashing mumkin.",
+            "ru": "Тогда, если что-то понадобится, можешь попросить их помочь.",
+            "tj": "Ҳамин тавр, агар коре шавад, аз онҳо кӯмак пурсидан мумкин."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "对，我也帮他们家的小孩儿学中文。",
+            "pinyin": "Duì, wǒ yě bāng tāmen jiā de xiǎoháir xué Zhōngwén.",
+            "uz": "Ha, men ham ularning bolasiga xitoy tilini o‘rganishda yordam beraman.",
+            "ru": "Да, а я помогаю их ребёнку учить китайский.",
+            "tj": "Ҳа, ман ҳам ба кӯдаки онҳо дар омӯхтани чинӣ кӯмак мекунам."
+          },
+          {
+            "speaker": "Yang Tongle",
+            "zh": "我记得你跟我说过，是个女孩儿，学得也很好。",
+            "pinyin": "Wǒ jìde nǐ gēn wǒ shuōguo, shì ge nǚháir, xué de yě hěn hǎo.",
+            "uz": "Esimda, menga aytganding, u qiz bola va juda yaxshi o‘qiydi.",
+            "ru": "Помню, ты рассказывала: это девочка, и учится она хорошо.",
+            "tj": "Дар хотир дорам, гуфта будӣ, духтар аст ва хеле хуб мехонад."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "没错，她经常跑上来找我玩。",
+            "pinyin": "Méi cuò, tā jīngcháng pǎo shànglái zhǎo wǒ wán.",
+            "uz": "To‘g‘ri, u tez-tez yuqoriga yugurib kelib men bilan o‘ynaydi.",
+            "ru": "Верно, она часто прибегает наверх поиграть со мной.",
+            "tj": "Дуруст, ӯ зуд-зуд ба боло давида омада бо ман бозӣ мекунад."
+          },
+          {
+            "speaker": "Yang Tongle",
+            "zh": "你问问他们什么时候有时间，我请他们吃个饭。",
+            "pinyin": "Nǐ wènwen tāmen shénme shíhou yǒu shíjiān, wǒ qǐng tāmen chī ge fàn.",
+            "uz": "Ulardan qachon vaqtlari borligini so‘ra, men ularni ovqatga taklif qilaman.",
+            "ru": "Спроси, когда у них будет время, я приглашу их поесть.",
+            "tj": "Аз онҳо пурс, кай вақт доранд, ман онҳоро ба хӯрок даъват мекунам."
+          }
+        ]
+      },
+      {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_zh": "在房间，王一飞在写日记。",
+        "scene_uz": "Xonada Wang Yifei kundalik yozmoqda.",
+        "scene_ru": "В комнате Ван Ифэй пишет дневник.",
+        "scene_tj": "Дар ҳуҷра Ван Ифэй рӯзнома менависад.",
+        "dialogue": [
+          {
+            "speaker": "Narration",
+            "zh": "我男朋友姓杨，叫杨同乐。他高个子，大眼睛，唱歌唱得很好，跳舞跳得也不错。他和我姐姐一起工作，是姐姐介绍我们认识的。他告诉我，从见到我的第一天开始，他就喜欢上我了。",
+            "pinyin": "Wǒ nánpéngyou xìng Yáng, jiào Yáng Tónglè. Tā gāo gèzi, dà yǎnjing, chànggē chàng de hěn hǎo, tiàowǔ tiào de yě búcuò. Tā hé wǒ jiějie yìqǐ gōngzuò, shì jiějie jièshào wǒmen rènshi de. Tā gàosu wǒ, cóng jiàndào wǒ de dì-yī tiān kāishǐ, tā jiù xǐhuan shàng wǒ le.",
+            "uz": "Mening yigitimning familiyasi Yang, ismi Yang Tongle. U baland bo‘yli, ko‘zlari katta, juda yaxshi qo‘shiq aytadi va yaxshi raqsga tushadi. U opam bilan birga ishlaydi, bizni opam tanishtirgan. U menga birinchi ko‘rgan kunidan boshlab meni yoqtirib qolganini aytdi.",
+            "ru": "Фамилия моего молодого человека Ян, его зовут Ян Тунлэ. Он высокий, с большими глазами, хорошо поёт и неплохо танцует. Он работает вместе с моей сестрой; именно она нас познакомила. Он сказал, что полюбил меня с первого дня нашей встречи.",
+            "tj": "Насаби дӯстписари ман Ян, номаш Ян Тунлэ аст. Ӯ қадбаланду чашмкалон аст, хеле хуб месарояд ва хуб мерақсад. Ӯ бо апаам якҷо кор мекунад ва апаам моро шинос кард. Ӯ гуфт, ки аз рӯзи аввали диданаш маро дӯст доштааст."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lesson_order": 15,
+    "lesson_code": "NHSK2-L15",
+    "title": "我想再去一次中国",
+    "title_pinyin": "Wǒ xiǎng zài qù yí cì Zhōngguó",
+    "goal": {
+      "uz": "“次” bilan harakat necha marta sodir bo‘lganini aytish; frequency complement va obyektning tartibini to‘g‘ri qo‘llash; “有+miqdor” bilan ma’lum miqdorga yetganlikni ifodalash; sayohat va qaytish rejalari haqida gaplashish.",
+      "ru": "Выражать количество повторений действия с “次”; правильно располагать дополнение кратности и объект; выражать достигнутое количество конструкцией “有+количество”; говорить о путешествиях и возвращении домой.",
+      "tj": "Бо “次” шумораи такрори амалро гуфтан; ҷойи пуркунандаи такрор ва объектро дуруст истифода бурдан; бо “有+миқдор” расидан ба миқдори муайянро ифода кардан; дар бораи сафар ва бозгашт суҳбат кардан."
+    },
+    "intro_text": {
+      "uz": "Dars imtihondan keyingi reja, Pekinga sayohat, aviachipta va uyga qaytish haqidagi suhbatlar hamda kundalik matni orqali frequency complement va “有” gapini o‘rgatadi.",
+      "ru": "Урок через планы после экзамена, поездку в Пекин, авиабилеты, возвращение домой и дневниковую запись вводит дополнение кратности и конструкцию “有”.",
+      "tj": "Дарс тавассути нақшаҳои баъди имтиҳон, сафар ба Пекин, чиптаи ҳавопаймо, бозгашт ба хона ва матни рӯзнома пуркунандаи такрор ва сохтори “有”-ро меомӯзонад."
+    },
+    "blocks": [
+      {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_zh": "在教室，同学们在考试。",
+        "scene_uz": "Sinfda o‘quvchilar imtihon topshirmoqda.",
+        "scene_ru": "В классе ученики сдают экзамен.",
+        "scene_tj": "Дар синф донишҷӯён имтиҳон месупоранд.",
+        "dialogue": [
+          {
+            "speaker": "Wang Yifei",
+            "zh": "考试就要开始了，请大家写上姓名，写好后就可以做题了。",
+            "pinyin": "Kǎoshì jiù yào kāishǐ le, qǐng dàjiā xiě shàng xìngmíng, xiěhǎo hòu jiù kěyǐ zuò tí le.",
+            "uz": "Imtihon boshlanishiga oz qoldi, iltimos ism-familiyangizni yozing, yozib bo‘lgach savollarni ishlashingiz mumkin.",
+            "ru": "Экзамен сейчас начнётся. Напишите имя и фамилию; после этого можно приступать к заданиям.",
+            "tj": "Имтиҳон ҳозир оғоз мешавад. Лутфан ному насабатонро нависед; баъд аз он саволҳоро иҷро кунед."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "老师，我做完了。",
+            "pinyin": "Lǎoshī, wǒ zuòwán le.",
+            "uz": "Ustoz, men tugatdim.",
+            "ru": "Преподаватель, я закончила.",
+            "tj": "Устод, ман тамом кардам."
+          },
+          {
+            "speaker": "Chen Tianzhong",
+            "zh": "老师，我也做完了。",
+            "pinyin": "Lǎoshī, wǒ yě zuòwán le.",
+            "uz": "Ustoz, men ham tugatdim.",
+            "ru": "Преподаватель, я тоже закончил.",
+            "tj": "Устод, ман ҳам тамом кардам."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "……对了，你们考完试想做什么？",
+            "pinyin": "... Duì le, nǐmen kǎowán shì xiǎng zuò shénme?",
+            "uz": "Aytgancha, imtihondan keyin nima qilmoqchisizlar?",
+            "ru": "Кстати, что хотите делать после экзамена?",
+            "tj": "Ростӣ, баъди имтиҳон чӣ кор кардан мехоҳед?"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "我很想去中国，虽然去过一次，但是很想再去一次。",
+            "pinyin": "Wǒ hěn xiǎng qù Zhōngguó, suīrán qùguo yí cì, dànshì hěn xiǎng zài qù yí cì.",
+            "uz": "Xitoyga juda borgim keladi. Bir marta borgan bo‘lsam ham, yana bir marta borishni juda xohlayman.",
+            "ru": "Я очень хочу в Китай. Хотя уже была один раз, очень хочу съездить ещё раз.",
+            "tj": "Ба Чин хеле рафтан мехоҳам. Гарчанде як бор рафтаам, боз як бор рафтан мехоҳам."
+          },
+          {
+            "speaker": "Wang Yifei",
+            "zh": "不错，到中国后就可以经常说中文了。",
+            "pinyin": "Búcuò, dào Zhōngguó hòu jiù kěyǐ jīngcháng shuō Zhōngwén le.",
+            "uz": "Yaxshi, Xitoyga borganingdan keyin tez-tez xitoycha gaplasha olasan.",
+            "ru": "Неплохо. В Китае сможешь часто говорить по-китайски.",
+            "tj": "Хуб. Ба Чин рафта, зуд-зуд бо чинӣ гап зада метавонӣ."
+          }
+        ]
+      },
+      {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_zh": "在咖啡店，李文和白家月在聊天儿。",
+        "scene_uz": "Qahvaxonada Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "scene_ru": "В кафе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "scene_tj": "Дар қаҳвахона Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "考完试了，我现在可以出国旅游了。",
+            "pinyin": "Kǎowán shì le, wǒ xiànzài kěyǐ chūguó lǚyóu le.",
+            "uz": "Imtihon tugadi, endi chet elga sayohat qila olaman.",
+            "ru": "Экзамен закончился, теперь я могу путешествовать за границу.",
+            "tj": "Имтиҳон тамом шуд, ҳоло метавонам ба хориҷ саёҳат кунам."
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "你要去哪儿？",
+            "pinyin": "Nǐ yào qù nǎr?",
+            "uz": "Qayerga bormoqchisan?",
+            "ru": "Куда собираешься?",
+            "tj": "Ба куҷо рафтан мехоҳӣ?"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "我要再去一次北京。",
+            "pinyin": "Wǒ yào zài qù yí cì Běijīng.",
+            "uz": "Pekinga yana bir marta bormoqchiman.",
+            "ru": "Я хочу ещё раз поехать в Пекин.",
+            "tj": "Мехоҳам боз як бор ба Пекин равам."
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "为什么还去北京？",
+            "pinyin": "Wèishénme hái qù Běijīng?",
+            "uz": "Nega yana Pekinga?",
+            "ru": "Почему снова в Пекин?",
+            "tj": "Чаро боз ба Пекин?"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "因为我想再吃一次烤鸭，再喝一次奶茶，再去北京大学看一次电影……",
+            "pinyin": "Yīnwèi wǒ xiǎng zài chī yí cì kǎoyā, zài hē yí cì nǎichá, zài qù Běijīng Dàxué kàn yí cì diànyǐng...",
+            "uz": "Chunki yana bir marta Pekin o‘rdagi yegim, sutli choy ichgim va Pekin universitetiga borib yana bir film ko‘rgim keladi...",
+            "ru": "Потому что хочу ещё раз поесть пекинскую утку, выпить молочный чай и снова посмотреть фильм в Пекинском университете...",
+            "tj": "Зеро мехоҳам боз як бор мурғиобии пекинӣ бихӯрам, чойи ширӣ нӯшам ва дар Донишгоҳи Пекин боз як филм бинам..."
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "你想做的事情很多啊！",
+            "pinyin": "Nǐ xiǎng zuò de shìqing hěn duō a!",
+            "uz": "Qilmoqchi bo‘lgan ishlaring juda ko‘p ekan!",
+            "ru": "У тебя столько планов!",
+            "tj": "Корҳое, ки кардан мехоҳӣ, хеле зиёданд!"
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "是啊。你看，我还在网上买好颐和园的门票了呢。",
+            "pinyin": "Shì a. Nǐ kàn, wǒ hái zài wǎngshang mǎihǎo Yíhé Yuán de ménpiào le ne.",
+            "uz": "Ha. Qara, men Yiheyuanga kirish chiptasini ham internetdan olib qo‘ydim.",
+            "ru": "Да. Смотри, я уже купила онлайн билет в Летний дворец.",
+            "tj": "Ҳа. Бин, ман чиптаи Ихэюанро ҳам аз интернет харида мондам."
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "我的高中同学就在颐和园上班，可以让他给你好好介绍介绍。",
+            "pinyin": "Wǒ de gāozhōng tóngxué jiù zài Yíhé Yuán shàngbān, kěyǐ ràng tā gěi nǐ hǎohāo jièshao jièshao.",
+            "uz": "Mening maktabdagi sinfdoshim Yiheyuanda ishlaydi, u senga yaxshilab tanishtirib bera oladi.",
+            "ru": "Мой школьный одноклассник работает в Летнем дворце, он сможет хорошо всё тебе показать и рассказать.",
+            "tj": "Ҳамсинфи мактабиам дар Ихэюан кор мекунад, метавонад ба ту хуб шинос кунад."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "太好了！出门旅游，多个朋友多条路。",
+            "pinyin": "Tài hǎo le! Chūmén lǚyóu, duō ge péngyou duō tiáo lù.",
+            "uz": "Zo‘r! Sayohatga chiqqanda bir do‘st ko‘p bo‘lsa, bir yo‘l ko‘p.",
+            "ru": "Отлично! В поездке лишний друг — лишний путь и возможность.",
+            "tj": "Олиҷаноб! Дар сафар як дӯст бештар — як роҳ бештар."
+          }
+        ]
+      },
+      {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_zh": "在咖啡店，李文和白家月在聊天儿。",
+        "scene_uz": "Qahvaxonada Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "scene_ru": "В кафе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "scene_tj": "Дар қаҳвахона Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд.",
+        "dialogue": [
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "李文，你有一年没回国了吧？",
+            "pinyin": "Lǐ Wén, nǐ yǒu yì nián méi huíguó le ba?",
+            "uz": "Li Wen, vatanga qaytmaganingga bir yil bo‘ldi-a?",
+            "ru": "Ли Вэнь, ты уже год не возвращался домой, да?",
+            "tj": "Ли Вэн, як сол шуд ба ватан барнагаштаӣ, дуруст?"
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "不到一年。我六月的时候回去了一次。",
+            "pinyin": "Bú dào yì nián. Wǒ Liùyuè de shíhou huíqùle yí cì.",
+            "uz": "Bir yil bo‘lgani yo‘q. Iyun oyida bir marta qaytgandim.",
+            "ru": "Ещё не год. Я один раз ездил домой в июне.",
+            "tj": "Ҳанӯз як сол не. Моҳи июн як бор баргашта будам."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "我怎么忘了？还是我送你去的机场呢。",
+            "pinyin": "Wǒ zěnme wàng le? Háishi wǒ sòng nǐ qù de jīchǎng ne.",
+            "uz": "Qanday unutibman? Axir seni aeroportga men kuzatgan edim.",
+            "ru": "Как я могла забыть? Ведь именно я провожала тебя в аэропорт.",
+            "tj": "Чӣ хел фаромӯш кардаам? Охир ман туро ба фурудгоҳ гусел карда будам."
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "是啊。",
+            "pinyin": "Shì a.",
+            "uz": "Ha.",
+            "ru": "Да.",
+            "tj": "Ҳа."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "我记得你那次的机票很便宜。",
+            "pinyin": "Wǒ jìde nǐ nà cì de jīpiào hěn piányi.",
+            "uz": "Esimda, o‘sha safardagi aviachiptang juda arzon edi.",
+            "ru": "Помню, тогда твой авиабилет был очень дешёвым.",
+            "tj": "Дар хотир дорам, он дафъа чиптаи ҳавопаймоят хеле арзон буд."
+          },
+          {
+            "speaker": "Li Wen",
+            "zh": "没错，可能因为那个时候去北京的人不多吧。",
+            "pinyin": "Méi cuò, kěnéng yīnwèi nàge shíhou qù Běijīng de rén bù duō ba.",
+            "uz": "To‘g‘ri, ehtimol o‘sha paytda Pekinga boradigan odamlar ko‘p bo‘lmagan.",
+            "ru": "Верно, возможно, потому что тогда в Пекин ехало не так много людей.",
+            "tj": "Дуруст, шояд он вақт ба Пекин одамони зиёд намерафтанд."
+          },
+          {
+            "speaker": "Bai Jiayue",
+            "zh": "这次的机票虽然有点儿贵，但想到就要飞北京了，我还是很高兴的。",
+            "pinyin": "Zhè cì de jīpiào suīrán yǒudiǎnr guì, dàn xiǎngdào jiù yào fēi Běijīng le, wǒ háishi hěn gāoxìng de.",
+            "uz": "Bu safargi chipta biroz qimmat bo‘lsa ham, tez orada Pekinga uchishimni o‘ylasam, baribir juda xursandman.",
+            "ru": "Хотя билет в этот раз дороговат, когда думаю, что скоро полечу в Пекин, всё равно очень радуюсь.",
+            "tj": "Гарчанде чиптаи ин дафъа каме гарон аст, вақте фикр мекунам ба зудӣ ба Пекин мепарам, боз ҳам хеле хушҳолам."
+          }
+        ]
+      },
+      {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_zh": "在房间，李文在写日记。",
+        "scene_uz": "Xonada Li Wen kundalik yozmoqda.",
+        "scene_ru": "В комнате Ли Вэнь пишет дневник.",
+        "scene_tj": "Дар ҳуҷра Ли Вэн рӯзнома менависад.",
+        "dialogue": [
+          {
+            "speaker": "Narration",
+            "zh": "我六月的时候回过一次北京，现在有半年多没回去了，我有点儿想家。就要过年了，我要回家过年。家月这次也要去北京，我们都是星期五的飞机。家月说我们好像小鸟，一起飞到北京，再一起飞回这里。",
+            "pinyin": "Wǒ Liùyuè de shíhou huíguo yí cì Běijīng, xiànzài yǒu bàn nián duō méi huíqù le, wǒ yǒudiǎnr xiǎng jiā. Jiù yào guònián le, wǒ yào huí jiā guònián. Jiāyuè zhè cì yě yào qù Běijīng, wǒmen dōu shì Xīngqīwǔ de fēijī. Jiāyuè shuō wǒmen hǎoxiàng xiǎoniǎo, yìqǐ fēi dào Běijīng, zài yìqǐ fēi huí zhèlǐ.",
+            "uz": "Iyun oyida Pekinga bir marta qaytgan edim. Hozir qaytmaganimga yarim yildan oshdi, uyimni biroz sog‘indim. Yangi yil yaqin, uyga qaytib bayram qilaman. Bu safar Jiayue ham Pekinga boradi, ikkalamizning samolyotimiz juma kuni. Jiayue aytishicha, biz go‘yo kichik qushlarmiz: birga Pekinga uchamiz, keyin yana birga bu yerga uchib qaytamiz.",
+            "ru": "В июне я один раз ездил в Пекин, а теперь уже больше полугода не возвращался и немного скучаю по дому. Скоро Новый год, я поеду домой праздновать. Цзяюэ тоже летит в Пекин, у нас обоих рейс в пятницу. Она сказала, что мы похожи на маленьких птиц: вместе летим в Пекин, а потом вместе обратно сюда.",
+            "tj": "Моҳи июн як бор ба Пекин баргашта будам. Ҳоло зиёда аз ним сол аст барнагаштаам ва каме хонаамро пазмон шудам. Соли нав наздик аст, ба хона бармегардам. Ҷяюэ ҳам ин дафъа ба Пекин меравад, ҳардуямон рӯзи ҷумъа парвоз дорем. Ӯ гуфт мо гӯё паррандаҳои хурдем: якҷо ба Пекин мепарем ва боз якҷо ба ин ҷо бармегардем."
+          }
+        ]
+      }
+    ]
+  }
+]

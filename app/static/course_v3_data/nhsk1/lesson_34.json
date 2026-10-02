@@ -1,0 +1,673 @@
+{
+  "schema_version": 2,
+  "level": "nhsk1",
+  "lesson_id": 34,
+  "source_lesson": 6,
+  "part_no": 2,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "你的手机号是多少？",
+  "subtitle": {
+    "uz": "Telefon raqamini tushunish va aytish; “想” bilan xohish/niyatni ifodalash; ketma-ket fe’lli gaplarda maqsad va usulni ifodalash; “怎么” bilan harakat usulini so‘rash.",
+    "ru": "Понимать и называть номера телефонов; выражать желание и намерение с “想”; использовать последовательности глаголов для цели и способа действия; спрашивать о способе действия с “怎么”.",
+    "tj": "Рақами телефонро фаҳмидан ва гуфтан; бо “想” хоҳишу ниятро ифода кардан; ҷумлаҳои пайдарпайи феълӣ барои мақсад ва тарзи амал; бо “怎么” тарзи амалро пурсидан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "去",
+      "pinyin": "qù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bormoq",
+        "ru": "идти; ехать",
+        "tj": "рафтан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "哪儿",
+      "pinyin": "nǎr",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qayer",
+        "ru": "где; куда",
+        "tj": "куҷо"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "想",
+      "pinyin": "xiǎng",
+      "pos": "mod.",
+      "meaning": {
+        "uz": "xohlamoq; niyat qilmoq",
+        "ru": "хотеть; собираться",
+        "tj": "хостан; ният кардан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "超市",
+      "pinyin": "chāoshì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "supermarket",
+        "ru": "супермаркет",
+        "tj": "супермаркет"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kampusda Li Wen Bai Jiayuedan telefon raqamini so‘ramoqda.",
+        "ru": "В кампусе Ли Вэнь спрашивает у Бай Цзяюэ номер мобильного телефона.",
+        "tj": "Дар кампус Ли Вэн аз Бай Ҷяюэ рақами телефонашро мепурсад."
+      },
+      "dialogue": [
+        {
+          "speaker": "Li Wen",
+          "zh": "家月，你的手机号是多少？",
+          "pinyin": "Jiāyuè, nǐ de shǒujīhào shì duōshao?",
+          "text": {
+            "uz": "Jiayue, mobil raqaming nechchi?",
+            "ru": "Цзяюэ, какой у тебя номер мобильного?",
+            "tj": "Ҷяюэ, рақами мобилиат чанд аст?"
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "我的手机号是+33 601493190。",
+          "pinyin": "Wǒ de shǒujīhào shì +33 601493190.",
+          "text": {
+            "uz": "Mening mobil raqamim +33 601493190.",
+            "ru": "Мой номер мобильного +33 601493190.",
+            "tj": "Рақами мобилии ман +33 601493190 аст."
+          }
+        },
+        {
+          "speaker": "Li Wen",
+          "zh": "我的手机号是+86 13552721160。",
+          "pinyin": "Wǒ de shǒujīhào shì +86 13552721160.",
+          "text": {
+            "uz": "Mening mobil raqamim +86 13552721160.",
+            "ru": "Мой номер мобильного +86 13552721160.",
+            "tj": "Рақами мобилии ман +86 13552721160 аст."
+          }
+        },
+        {
+          "speaker": "Bai Jiayue",
+          "zh": "好的。",
+          "pinyin": "Hǎo de.",
+          "text": {
+            "uz": "Xo‘p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsdan keyin sinfda Bai Jiayue va Chen Tianzhong suhbatlashmoqda.",
+        "ru": "После занятия Бай Цзяюэ и Чэнь Тяньчжун разговаривают в аудитории.",
+        "tj": "Пас аз дарс Бай Ҷяюэ ва Чэн Тянҷун дар синф суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "Chen Tianzhong",
+          "zh": "家月，明天你去哪儿？",
+          "pinyin": "Jiāyuè, míngtiān nǐ qù nǎr?",
+          "text": {
+            "uz": "Jiayue, ertaga qayerga borasan?",
+            "ru": "Цзяюэ, куда ты пойдёшь завтра?",
+            "tj": "Ҷяюэ, фардо ба куҷо меравӣ?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "去",
+            "pinyin": "qù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bormoq",
+              "ru": "идти; ехать",
+              "tj": "рафтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bormoq' xitoycha qaysi?",
+            "ru": "'идти; ехать' по-китайски?",
+            "tj": "'рафтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "电话",
+            "去",
+            "号",
+            "手机"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "bormoq = 去 (qù)",
+            "ru": "идти; ехать = 去 (qù)",
+            "tj": "рафтан = 去 (qù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "哪儿",
+            "pinyin": "nǎr",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qayer",
+              "ru": "где; куда",
+              "tj": "куҷо"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "哪儿",
+          "pinyin": "nǎr",
+          "translation": {
+            "uz": "qayer",
+            "ru": "где; куда",
+            "tj": "куҷо"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "哪儿",
+          "pinyin": "nǎr",
+          "options": [
+            "号",
+            "哪儿",
+            "电话",
+            "手机"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "哪儿 — qayer (nǎr)",
+            "ru": "哪儿 — где; куда (nǎr)",
+            "tj": "哪儿 — куҷо (nǎr)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "想",
+            "pinyin": "xiǎng",
+            "pos": "mod.",
+            "meaning": {
+              "uz": "xohlamoq; niyat qilmoq",
+              "ru": "хотеть; собираться",
+              "tj": "хостан; ният кардан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "想 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 想:",
+            "tj": "Маънои калимаи 想-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mobil telefon",
+              "ru": "мобильный телефон",
+              "tj": "телефони мобилӣ"
+            },
+            {
+              "uz": "raqam",
+              "ru": "номер",
+              "tj": "рақам"
+            },
+            {
+              "uz": "xohlamoq; niyat qilmoq",
+              "ru": "хотеть; собираться",
+              "tj": "хостан; ният кардан"
+            },
+            {
+              "uz": "telefon; qo‘ng‘iroq",
+              "ru": "телефон; звонок",
+              "tj": "телефон; занг"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "想 = xohlamoq; niyat qilmoq (xiǎng)",
+            "ru": "想 = хотеть; собираться (xiǎng)",
+            "tj": "想 = хостан; ният кардан (xiǎng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "超市",
+            "pinyin": "chāoshì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "supermarket",
+              "ru": "супермаркет",
+              "tj": "супермаркет"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "chāoshì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chāoshì?",
+            "tj": "chāoshì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "电话",
+            "手机",
+            "超市",
+            "号"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "超市 = supermarket (chāoshì)",
+            "ru": "超市 = супермаркет (chāoshì)",
+            "tj": "超市 = супермаркет (chāoshì)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "去 talaffuzini tanlang:",
+            "ru": "Выберите произношение 去:",
+            "tj": "Талаффузи 去-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "hào",
+            "qù",
+            "shǒujī",
+            "diànhuà"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "去 — qù",
+            "ru": "去 — qù",
+            "tj": "去 — qù"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "去",
+              {
+                "uz": "bormoq",
+                "ru": "идти; ехать",
+                "tj": "рафтан"
+              }
+            ],
+            [
+              "哪儿",
+              {
+                "uz": "qayer",
+                "ru": "где; куда",
+                "tj": "куҷо"
+              }
+            ],
+            [
+              "想",
+              {
+                "uz": "xohlamoq; niyat qilmoq",
+                "ru": "хотеть; собираться",
+                "tj": "хостан; ният кардан"
+              }
+            ],
+            [
+              "超市",
+              {
+                "uz": "supermarket",
+                "ru": "супермаркет",
+                "tj": "супермаркет"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "去",
+              {
+                "uz": "bormoq",
+                "ru": "идти; ехать",
+                "tj": "рафтан"
+              }
+            ],
+            [
+              "哪儿",
+              {
+                "uz": "qayer",
+                "ru": "где; куда",
+                "tj": "куҷо"
+              }
+            ],
+            [
+              "想",
+              {
+                "uz": "xohlamoq; niyat qilmoq",
+                "ru": "хотеть; собираться",
+                "tj": "хостан; ният кардан"
+              }
+            ],
+            [
+              "超市",
+              {
+                "uz": "supermarket",
+                "ru": "супермаркет",
+                "tj": "супермаркет"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "家月，明天你去哪儿？",
+          "pinyin": "Jiāyuè, míngtiān nǐ qù nǎr?",
+          "translation": {
+            "uz": "Jiayue, ertaga qayerga borasan?",
+            "ru": "Цзяюэ, куда ты пойдёшь завтра?",
+            "tj": "Ҷяюэ, фардо ба куҷо меравӣ?"
+          },
+          "tokens": {
+            "uz": [
+              "supermarketga",
+              "ertaga",
+              "Jiayue",
+              "Men",
+              "qayerga",
+              "borasan"
+            ],
+            "ru": [
+              "пойдёшь",
+              "Цзяюэ",
+              "куда",
+              "ты",
+              "завтра",
+              "хочу",
+              "Я"
+            ],
+            "tj": [
+              "Ҷяюэ",
+              "мехоҳам",
+              "фардо",
+              "Ман",
+              "ба",
+              "куҷо",
+              "меравӣ"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Jiayue",
+              "ertaga",
+              "qayerga",
+              "borasan"
+            ],
+            "ru": [
+              "Цзяюэ",
+              "куда",
+              "ты",
+              "пойдёшь",
+              "завтра"
+            ],
+            "tj": [
+              "Ҷяюэ",
+              "фардо",
+              "ба",
+              "куҷо",
+              "меравӣ"
+            ]
+          },
+          "explanation": {
+            "uz": "家月，明天你去哪儿？ — Jiayue, ertaga qayerga borasan?",
+            "ru": "家月，明天你去哪儿？ — Цзяюэ, куда ты пойдёшь завтра?",
+            "tj": "家月，明天你去哪儿？ — Ҷяюэ, фардо ба куҷо меравӣ?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "哪儿",
+          "pinyin": "nǎr",
+          "options": [
+            "电话",
+            "手机",
+            "号",
+            "哪儿"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "哪儿 — qayer (nǎr)",
+            "ru": "哪儿 — где; куда (nǎr)",
+            "tj": "哪儿 — куҷо (nǎr)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Jiayue, ertaga qayerga borasan?",
+            "ru": "Цзяюэ, куда ты пойдёшь завтра?",
+            "tj": "Ҷяюэ, фардо ба куҷо меравӣ?"
+          },
+          "tokens": [
+            "你",
+            "月",
+            "去",
+            "电话",
+            "明天",
+            "家",
+            "哪儿",
+            "手机"
+          ],
+          "answer_tokens": [
+            "家",
+            "月",
+            "明天",
+            "你",
+            "去",
+            "哪儿"
+          ],
+          "explanation": {
+            "uz": "家月，明天你去哪儿？ — Jiāyuè, míngtiān nǐ qù nǎr?",
+            "ru": "家月，明天你去哪儿？ — Jiāyuè, míngtiān nǐ qù nǎr?",
+            "tj": "家月，明天你去哪儿？ — Jiāyuè, míngtiān nǐ qù nǎr?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "哪儿",
+          "pinyin": "nǎr",
+          "translation": {
+            "uz": "qayer",
+            "ru": "где; куда",
+            "tj": "куҷо"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "电话 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 电话:",
+            "tj": "Маънои калимаи 电话-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ertaga",
+              "ru": "завтра",
+              "tj": "фардо"
+            },
+            {
+              "uz": "raqam",
+              "ru": "номер",
+              "tj": "рақам"
+            },
+            {
+              "uz": "telefon; qo‘ng‘iroq",
+              "ru": "телефон; звонок",
+              "tj": "телефон; занг"
+            },
+            {
+              "uz": "mobil telefon",
+              "ru": "мобильный телефон",
+              "tj": "телефони мобилӣ"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "电话 = telefon; qo‘ng‘iroq (diànhuà)",
+            "ru": "电话 = телефон; звонок (diànhuà)",
+            "tj": "电话 = телефон; занг (diànhuà)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "电话",
+            "pinyin": "diànhuà",
+            "meaning": {
+              "uz": "telefon; qo‘ng‘iroq",
+              "ru": "телефон; звонок",
+              "tj": "телефон; занг"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qayer' xitoycha qaysi?",
+            "ru": "'где; куда' по-китайски?",
+            "tj": "'куҷо' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "手机",
+            "电话",
+            "哪儿",
+            "号"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "qayer = 哪儿 (nǎr)",
+            "ru": "где; куда = 哪儿 (nǎr)",
+            "tj": "куҷо = 哪儿 (nǎr)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "哪儿",
+            "pinyin": "nǎr",
+            "meaning": {
+              "uz": "qayer",
+              "ru": "где; куда",
+              "tj": "куҷо"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

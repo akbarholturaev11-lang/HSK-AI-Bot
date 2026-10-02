@@ -1,0 +1,750 @@
+{
+  "schema_version": 2,
+  "level": "nhsk3",
+  "lesson_id": 41,
+  "source_lesson": 6,
+  "part_no": 1,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "高铁上还可以点外卖",
+  "subtitle": {
+    "uz": "Transport turlarining xususiyatlari va safar tajribasi haqida gapirish; “如果……就……” bilan shartli vaziyat va natijani ifodalash; “越来越” bilan o‘zgarish tendensiyasini tasvirlash; Xitoyning zamonaviy transporti — tezyurar poyezd bilan tanishish.",
+    "ru": "Говорить об особенностях транспорта и опыте поездки; выражать условие и результат с “如果……就……” ; описывать тенденцию изменения с “越来越”; познакомиться с китайскими скоростными поездами.",
+    "tj": "Дар бораи хусусиятҳои нақлиёт ва таҷрибаи сафар суҳбат кардан; бо “如果……就……” шарт ва натиҷаро ифода кардан; бо “越来越” тамоюли тағйирро тавсиф кардан; бо қатораи баландсуръати Чин шинос шудан."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "该",
+      "pinyin": "gāi",
+      "pos": "mod.",
+      "meaning": {
+        "uz": "kerak; vaqti keldi",
+        "ru": "следует; пора",
+        "tj": "бояд; вақти он расид"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "打算",
+      "pinyin": "dǎsuàn",
+      "pos": "v./n.",
+      "meaning": {
+        "uz": "rejalashtirmoq; reja",
+        "ru": "планировать; план",
+        "tj": "нақша кардан; нақша"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "高铁",
+      "pinyin": "gāotiě",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tezyurar temiryo‘l/poyezd",
+        "ru": "скоростной поезд",
+        "tj": "қатораи баландсуръат"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "行",
+      "pinyin": "xíng",
+      "pos": "v./adj.",
+      "meaning": {
+        "uz": "bo‘ladi; yaroqli",
+        "ru": "подходит; можно",
+        "tj": "мешавад; муносиб"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "“该……了” — bir ishning vaqti kelganini aytish",
+        "ru": "“该……了” — пора что-либо делать",
+        "tj": "“该……了” — вақти иҷрои амал расидааст"
+      },
+      "title_zh": "固定格式“该……了”",
+      "rule": {
+        "uz": "“该 + fe’l + 了” biror ishni qilish vaqti kelganini yoki endi uni qilish kerakligini bildiradi.",
+        "ru": "“该 + глагол + 了” означает, что пришло время выполнить действие или уже следует его сделать.",
+        "tj": "“该 + феъл + 了” нишон медиҳад, ки вақти иҷрои амал расидааст ё акнун онро бояд анҷом дод."
+      },
+      "examples": [
+        {
+          "zh": "咱们该买去上海的票了。",
+          "pinyin": "Zánmen gāi mǎi qù Shànghǎi de piào le.",
+          "translation": {
+            "uz": "Shanxayga chipta olish vaqti keldi.",
+            "ru": "Нам пора покупать билеты в Шанхай.",
+            "tj": "Вақти харидани чипта ба Шанхай расид."
+          }
+        },
+        {
+          "zh": "八点了，该上课了。",
+          "pinyin": "Bā diǎn le, gāi shàngkè le.",
+          "translation": {
+            "uz": "Soat sakkiz bo‘ldi, darsni boshlash vaqti keldi.",
+            "ru": "Уже восемь, пора на занятия.",
+            "tj": "Соат ҳашт шуд, вақти дарс расид."
+          }
+        },
+        {
+          "zh": "已经很晚了，我该睡觉了。",
+          "pinyin": "Yǐjīng hěn wǎn le, wǒ gāi shuìjiào le.",
+          "translation": {
+            "uz": "Juda kech bo‘ldi, uxlashim kerak.",
+            "ru": "Уже очень поздно, мне пора спать.",
+            "tj": "Хеле дер шуд, вақти хобам расид."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Qahvaxonada Li Wen va Bai Jiayue suhbatlashmoqda.",
+        "ru": "В кафе Ли Вэнь и Бай Цзяюэ разговаривают.",
+        "tj": "Дар қаҳвахона Ли Вэн ва Бай Ҷяюэ суҳбат мекунанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "家月，咱们该买去上海的票了。你打算怎么去上海？",
+          "pinyin": "Jiāyuè, zánmen gāi mǎi qù Shànghǎi de piào le. Nǐ dǎsuàn zěnme qù Shànghǎi?",
+          "text": {
+            "uz": "Jiayue, Shanxayga chipta olish vaqti keldi. Shanxayga qanday borishni rejalashtiryapsan?",
+            "ru": "Цзяюэ, нам пора покупать билеты в Шанхай. Как ты планируешь ехать?",
+            "tj": "Ҷяюэ, вақти харидани чипта ба Шанхай расид. Чӣ тавр рафтанӣ ҳастӣ?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "我还没坐过高铁，咱们坐高铁去，怎么样？",
+          "pinyin": "Wǒ hái méi zuò guo gāotiě, zánmen zuò gāotiě qù, zěnmeyàng?",
+          "text": {
+            "uz": "Men hali tezyurar poyezdda yurmaganman, shunda tezyurar poyezdda boramizmi?",
+            "ru": "Я ещё не ездила на скоростном поезде. Давай поедем на нём?",
+            "tj": "Ман ҳоло бо қатораи баландсуръат нарафтаам, бо он равем чӣ хел?"
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "行！怎么买高铁票？",
+          "pinyin": "Xíng! Zěnme mǎi gāotiě piào?",
+          "text": {
+            "uz": "Bo‘ladi! Tezyurar poyezd chiptasini qanday olamiz?",
+            "ru": "Хорошо! Как купить билет на скоростной поезд?",
+            "tj": "Мешавад! Чиптаи қатораи баландсуръатро чӣ тавр мехарем?"
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "用手机App就能买。给我你的护照，我帮你买。",
+          "pinyin": "Yòng shǒujī App jiù néng mǎi. Gěi wǒ nǐ de hùzhào, wǒ bāng nǐ mǎi.",
+          "text": {
+            "uz": "Telefon ilovasi orqali olsa bo‘ladi. Pasportingni ber, men olib beraman.",
+            "ru": "Можно купить через приложение. Дай паспорт, я помогу купить.",
+            "tj": "Бо барномаи телефон харидан мумкин. Шиносномаатро деҳ, ман кӯмак мекунам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "早就听说过高铁，终于可以坐上了。",
+          "pinyin": "Zǎo jiù tīngshuō guo gāotiě, zhōngyú kěyǐ zuò shàng le.",
+          "text": {
+            "uz": "Tezyurar poyezd haqida anchadan beri eshitganman, nihoyat minib ko‘raman.",
+            "ru": "Я давно слышала о скоростных поездах, наконец-то смогу прокатиться.",
+            "tj": "Дар бораи қатораи баландсуръат кайҳо шунида будам, ниҳоят савор мешавам."
+          }
+        },
+        {
+          "speaker": "李文",
+          "zh": "高铁又快又舒服，你一定会喜欢的。",
+          "pinyin": "Gāotiě yòu kuài yòu shūfu, nǐ yídìng huì xǐhuan de.",
+          "text": {
+            "uz": "Tezyurar poyezd ham tez, ham qulay, albatta yoqadi.",
+            "ru": "Скоростной поезд и быстрый, и удобный — тебе точно понравится.",
+            "tj": "Қатораи баландсуръат ҳам тез аст, ҳам роҳат, ҳатман писандат мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mashinada Liu Ming Bai Jiayue va Li Wenni tezyurar poyezd vokzaliga olib bormoqda.",
+        "ru": "В машине Лю Мин везёт Бай Цзяюэ и Ли Вэня на вокзал скоростных поездов.",
+        "tj": "Дар мошин Лю Мин Бай Ҷяюэ ва Ли Вэнро ба истгоҳи қатораи баландсуръат мебарад."
+      },
+      "dialogue": [
+        {
+          "speaker": "刘明",
+          "zh": "过了前面的路口就到高铁站了。",
+          "pinyin": "Guò le qiánmian de lùkǒu jiù dào gāotiězhàn le.",
+          "text": {
+            "uz": "Oldingi chorrahadan o‘tsak, vokzalga yetamiz.",
+            "ru": "После следующего перекрёстка уже будет вокзал.",
+            "tj": "Аз чорроҳаи пеш гузарем, ба истгоҳ мерасем."
+          }
+        },
+        {
+          "speaker": "刘明",
+          "zh": "是啊，这条路我走过一次，后来再也不走了。",
+          "pinyin": "Shì a, zhè tiáo lù wǒ zǒu guo yí cì, hòulái zài yě bù zǒu le.",
+          "text": {
+            "uz": "Ha, bu yo‘ldan bir marta yurganman, keyin boshqa umuman yurmagandim.",
+            "ru": "Да, я ездил этой дорогой один раз, после этого больше не ездил.",
+            "tj": "Ҳа, як бор аз ин роҳ рафта будам, баъд дигар нарафтам."
+          }
+        },
+        {
+          "speaker": "白家月",
+          "zh": "那您今天为什么走了这条路？",
+          "pinyin": "Nà nín jīntiān wèishénme zǒu le zhè tiáo lù?",
+          "text": {
+            "uz": "Unda bugun nega shu yo‘ldan keldingiz?",
+            "ru": "Тогда почему сегодня вы поехали этой дорогой?",
+            "tj": "Пас имрӯз чаро аз ҳамин роҳ омадед?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Tezyurar poyezd vokzalida Li Wen va Bai Jiayue xavfsizlik tekshiruvi hamda chipta nazorati uchun navbatda turibdi.",
+        "ru": "На вокзале скоростных поездов Ли Вэнь и Бай Цзяюэ стоят в очереди на досмотр и проверку билетов.",
+        "tj": "Дар истгоҳи қатораи баландсуръат Ли Вэн ва Бай Ҷяюэ барои санҷиши амният ва чипта дар навбатанд."
+      },
+      "dialogue": [
+        {
+          "speaker": "李文",
+          "zh": "对，马上就进高铁站了。咱们一起走，别分开。",
+          "pinyin": "Duì, mǎshàng jiù jìn gāotiězhàn le. Zánmen yìqǐ zǒu, bié fēnkāi.",
+          "text": {
+            "uz": "Ha, hozir vokzal ichiga kiramiz. Birga yuraylik, ajralib ketmaylik.",
+            "ru": "Да, скоро войдём на вокзал. Идём вместе, не разделяйся.",
+            "tj": "Ҳа, ҳозир ба истгоҳ медароем. Якҷо равем, ҷудо нашавем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "该",
+            "pinyin": "gāi",
+            "pos": "mod.",
+            "meaning": {
+              "uz": "kerak; vaqti keldi",
+              "ru": "следует; пора",
+              "tj": "бояд; вақти он расид"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "该",
+          "pinyin": "gāi",
+          "translation": {
+            "uz": "kerak; vaqti keldi",
+            "ru": "следует; пора",
+            "tj": "бояд; вақти он расид"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "该 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 该:",
+            "tj": "Маънои калимаи 该-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "rejalashtirmoq; reja",
+              "ru": "планировать; план",
+              "tj": "нақша кардан; нақша"
+            },
+            {
+              "uz": "kerak; vaqti keldi",
+              "ru": "следует; пора",
+              "tj": "бояд; вақти он расид"
+            },
+            {
+              "uz": "tezyurar temiryo‘l/poyezd",
+              "ru": "скоростной поезд",
+              "tj": "қатораи баландсуръат"
+            },
+            {
+              "uz": "bo‘ladi; yaroqli",
+              "ru": "подходит; можно",
+              "tj": "мешавад; муносиб"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "该 = kerak; vaqti keldi (gāi)",
+            "ru": "该 = следует; пора (gāi)",
+            "tj": "该 = бояд; вақти он расид (gāi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "打算",
+            "pinyin": "dǎsuàn",
+            "pos": "v./n.",
+            "meaning": {
+              "uz": "rejalashtirmoq; reja",
+              "ru": "планировать; план",
+              "tj": "нақша кардан; нақша"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dǎsuàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dǎsuàn?",
+            "tj": "dǎsuàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "行",
+            "打算",
+            "该",
+            "高铁"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "打算 = rejalashtirmoq; reja (dǎsuàn)",
+            "ru": "打算 = планировать; план (dǎsuàn)",
+            "tj": "打算 = нақша кардан; нақша (dǎsuàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "高铁",
+            "pinyin": "gāotiě",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tezyurar temiryo‘l/poyezd",
+              "ru": "скоростной поезд",
+              "tj": "қатораи баландсуръат"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "高铁 talaffuzini tanlang:",
+            "ru": "Выберите произношение 高铁:",
+            "tj": "Талаффузи 高铁-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xíng",
+            "gāotiě",
+            "dǎsuàn",
+            "gāi"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "高铁 — gāotiě",
+            "ru": "高铁 — gāotiě",
+            "tj": "高铁 — gāotiě"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "行",
+            "pinyin": "xíng",
+            "pos": "v./adj.",
+            "meaning": {
+              "uz": "bo‘ladi; yaroqli",
+              "ru": "подходит; можно",
+              "tj": "мешавад; муносиб"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bo‘ladi; yaroqli' xitoycha qaysi?",
+            "ru": "'подходит; можно' по-китайски?",
+            "tj": "'мешавад; муносиб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "行",
+            "高铁",
+            "打算",
+            "该"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "bo‘ladi; yaroqli = 行 (xíng)",
+            "ru": "подходит; можно = 行 (xíng)",
+            "tj": "мешавад; муносиб = 行 (xíng)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "该",
+          "pinyin": "gāi",
+          "options": [
+            "打算",
+            "高铁",
+            "该",
+            "行"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "该 — kerak; vaqti keldi (gāi)",
+            "ru": "该 — следует; пора (gāi)",
+            "tj": "该 — бояд; вақти он расид (gāi)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "该",
+              {
+                "uz": "kerak; vaqti keldi",
+                "ru": "следует; пора",
+                "tj": "бояд; вақти он расид"
+              }
+            ],
+            [
+              "打算",
+              {
+                "uz": "rejalashtirmoq; reja",
+                "ru": "планировать; план",
+                "tj": "нақша кардан; нақша"
+              }
+            ],
+            [
+              "高铁",
+              {
+                "uz": "tezyurar temiryo‘l/poyezd",
+                "ru": "скоростной поезд",
+                "tj": "қатораи баландсуръат"
+              }
+            ],
+            [
+              "行",
+              {
+                "uz": "bo‘ladi; yaroqli",
+                "ru": "подходит; можно",
+                "tj": "мешавад; муносиб"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "“该……了” — bir ishning vaqti kelganini aytish",
+              "ru": "“该……了” — пора что-либо делать",
+              "tj": "“该……了” — вақти иҷрои амал расидааст"
+            },
+            "title_zh": "固定格式“该……了”",
+            "rule": {
+              "uz": "“该 + fe’l + 了” biror ishni qilish vaqti kelganini yoki endi uni qilish kerakligini bildiradi.",
+              "ru": "“该 + глагол + 了” означает, что пришло время выполнить действие или уже следует его сделать.",
+              "tj": "“该 + феъл + 了” нишон медиҳад, ки вақти иҷрои амал расидааст ё акнун онро бояд анҷом дод."
+            },
+            "examples": [
+              {
+                "zh": "咱们该买去上海的票了。",
+                "pinyin": "Zánmen gāi mǎi qù Shànghǎi de piào le.",
+                "translation": {
+                  "uz": "Shanxayga chipta olish vaqti keldi.",
+                  "ru": "Нам пора покупать билеты в Шанхай.",
+                  "tj": "Вақти харидани чипта ба Шанхай расид."
+                }
+              },
+              {
+                "zh": "八点了，该上课了。",
+                "pinyin": "Bā diǎn le, gāi shàngkè le.",
+                "translation": {
+                  "uz": "Soat sakkiz bo‘ldi, darsni boshlash vaqti keldi.",
+                  "ru": "Уже восемь, пора на занятия.",
+                  "tj": "Соат ҳашт шуд, вақти дарс расид."
+                }
+              },
+              {
+                "zh": "已经很晚了，我该睡觉了。",
+                "pinyin": "Yǐjīng hěn wǎn le, wǒ gāi shuìjiào le.",
+                "translation": {
+                  "uz": "Juda kech bo‘ldi, uxlashim kerak.",
+                  "ru": "Уже очень поздно, мне пора спать.",
+                  "tj": "Хеле дер шуд, вақти хобам расид."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Soat sakkiz bo‘ldi, darsni boshlash vaqti keldi.",
+            "ru": "Уже восемь, пора на занятия.",
+            "tj": "Соат ҳашт шуд, вақти дарс расид."
+          },
+          "tokens": [
+            "该",
+            "了",
+            "上课",
+            "了",
+            "点",
+            "八",
+            "高铁",
+            "打算"
+          ],
+          "answer_tokens": [
+            "八",
+            "点",
+            "了",
+            "该",
+            "上课",
+            "了"
+          ],
+          "explanation": {
+            "uz": "八点了，该上课了。 — Bā diǎn le, gāi shàngkè le.",
+            "ru": "八点了，该上课了。 — Bā diǎn le, gāi shàngkè le.",
+            "tj": "八点了，该上课了。 — Bā diǎn le, gāi shàngkè le."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Soat sakkiz bo‘ldi, darsni boshlash vaqti keldi.» — xitoychada qaysi biri?",
+            "ru": "«Уже восемь, пора на занятия.» — какое предложение по-китайски?",
+            "tj": "«Соат ҳашт шуд, вақти дарс расид.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "咱们该买去上海的票了。",
+            "已经很晚了，我该睡觉了。",
+            "八点了，该上课了。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "八点了，该上课了。 — Bā diǎn le, gāi shàngkè le.",
+            "ru": "八点了，该上课了。 — Bā diǎn le, gāi shàngkè le.",
+            "tj": "八点了，该上课了。 — Bā diǎn le, gāi shàngkè le."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "打算",
+          "pinyin": "dǎsuàn",
+          "options": [
+            "高铁",
+            "打算",
+            "行",
+            "该"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "打算 — rejalashtirmoq; reja (dǎsuàn)",
+            "ru": "打算 — планировать; план (dǎsuàn)",
+            "tj": "打算 — нақша кардан; нақша (dǎsuàn)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "该",
+          "pinyin": "gāi",
+          "translation": {
+            "uz": "kerak; vaqti keldi",
+            "ru": "следует; пора",
+            "tj": "бояд; вақти он расид"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "总是 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 总是:",
+            "tj": "Маънои калимаи 总是-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "rejalashtirmoq; reja",
+              "ru": "планировать; план",
+              "tj": "нақша кардан; нақша"
+            },
+            {
+              "uz": "kerak; vaqti keldi",
+              "ru": "следует; пора",
+              "tj": "бояд; вақти он расид"
+            },
+            {
+              "uz": "tezyurar temiryo‘l/poyezd",
+              "ru": "скоростной поезд",
+              "tj": "қатораи баландсуръат"
+            },
+            {
+              "uz": "doim; har doim",
+              "ru": "всегда",
+              "tj": "ҳамеша"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "总是 = doim; har doim (zǒngshì)",
+            "ru": "总是 = всегда (zǒngshì)",
+            "tj": "总是 = ҳамеша (zǒngshì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "总是",
+            "pinyin": "zǒngshì",
+            "meaning": {
+              "uz": "doim; har doim",
+              "ru": "всегда",
+              "tj": "ҳамеша"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kerak; vaqti keldi' xitoycha qaysi?",
+            "ru": "'следует; пора' по-китайски?",
+            "tj": "'бояд; вақти он расид' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "打算",
+            "行",
+            "高铁",
+            "该"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "kerak; vaqti keldi = 该 (gāi)",
+            "ru": "следует; пора = 该 (gāi)",
+            "tj": "бояд; вақти он расид = 该 (gāi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "该",
+            "pinyin": "gāi",
+            "meaning": {
+              "uz": "kerak; vaqti keldi",
+              "ru": "следует; пора",
+              "tj": "бояд; вақти он расид"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
