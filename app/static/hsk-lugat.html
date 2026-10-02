@@ -73,8 +73,9 @@ button:active{transform:scale(.96)}
 .detail-level{font-size:10px;color:var(--text2);background:var(--bg3);padding:5px 10px;border-radius:8px;font-weight:700;letter-spacing:.3px}
 .detail-body{flex:1;overflow-y:auto;padding:6px 16px 30px;display:flex;flex-direction:column;align-items:center}
 
-.writer-card{margin-top:4px;width:100%;max-width:300px;display:flex;flex-direction:column;align-items:center}
-.writer-toolbar{display:flex;align-items:center;justify-content:space-between;width:100%}
+.writer-card{margin:0 auto;width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center}
+.writer-toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;width:100%;gap:8px}
+.writer-character{font-family:var(--cjk);font-size:28px;font-weight:700;color:var(--text);text-align:left;line-height:1}
 .nav-arrow{width:34px;height:34px;border-radius:11px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .nav-arrow:disabled{opacity:.25}
 .nav-arrow.hidden{visibility:hidden}
@@ -82,11 +83,21 @@ button:active{transform:scale(.96)}
 .writer-pos{font-size:11px;color:var(--text2);font-weight:700;letter-spacing:.2px}
 .writer-pos.hidden{display:none}
 .writer-strokes{font-size:12.5px;color:var(--ink);font-weight:800;letter-spacing:.2px;margin-top:1px}
-.char-box-lg{position:relative;width:248px;height:248px;margin-top:10px;border-radius:20px;background:var(--bg2);border:1px solid var(--border);overflow:hidden;flex-shrink:0}
+.writer-toolbar-end{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0}
+.stroke-close{width:36px;height:36px;border-radius:50%;color:var(--text2);font-size:25px;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.char-box-lg{position:relative;width:min(330px,86vw);height:min(330px,86vw);margin-top:14px;border-radius:20px;background:var(--bg2);border:1px solid var(--border);overflow:hidden;flex-shrink:0;touch-action:pan-y}
 .char-box-lg .grid-bg{position:absolute;inset:0;width:100%;height:100%}
 .char-box-lg .grid-bg line{stroke:rgba(255,255,255,.09);stroke-width:1}
 .char-box-lg .writer-target{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
 .char-box-lg .plain-char{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--cjk);font-size:64px;font-weight:600;color:var(--text2)}
+.stroke-modal{position:absolute;inset:0;z-index:50;display:flex;align-items:flex-end;background:rgba(0,0,0,.46);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.stroke-modal.hidden{display:none}
+.stroke-backdrop{position:absolute;inset:0;width:100%;height:100%;background:transparent}
+.stroke-sheet{position:relative;z-index:1;width:100%;max-height:calc(100% - max(18px,env(safe-area-inset-top)));overflow-y:auto;overscroll-behavior:contain;padding:8px 20px calc(22px + env(safe-area-inset-bottom));border:1px solid var(--border);border-bottom:0;border-radius:28px 28px 0 0;background:var(--bg);box-shadow:0 -14px 42px rgba(0,0,0,.22)}
+.stroke-handle{width:42px;height:5px;margin:0 auto 20px;border-radius:999px;background:var(--text2);opacity:.72}
+.detail-hanzi{font-family:var(--cjk);font-size:clamp(38px,12vw,58px);font-weight:700;color:var(--text);line-height:1.15;text-align:center;margin-top:20px;overflow-wrap:anywhere}
+.order-open-btn{margin:14px auto 0;min-height:44px;padding:0 16px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;background:var(--ink-dim);border:1px solid rgba(214,69,58,.34);color:var(--ink);font-size:14px;font-weight:800}
+.order-open-btn:active{transform:scale(.97)}
 .writer-controls{display:flex;align-items:center;gap:16px;margin-top:16px}
 .ctrl-btn{width:48px;height:48px;border-radius:50%;background:var(--ink-dim);color:var(--ink);font-size:17px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(214,69,58,.34)}
 .ctrl-btn.ctrl-main{width:60px;height:60px;font-size:20px;background:var(--ink);color:#fff;border-color:var(--ink)}
@@ -191,22 +202,22 @@ html.theme-light .hero{padding-bottom:10px;}
 .fw-hint{margin-top:12px;font-size:11.5px;color:var(--text2);text-align:center;line-height:1.4}
 .fw-back{margin-top:14px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-family:inherit;font-size:15px;font-weight:700}
 .fw-back:active{opacity:.88}
-.detail-primary,.detail-secondary{display:contents}
+.detail-secondary{display:contents}
 @media (min-width:760px){
   #app{max-width:1120px;height:100dvh;border-inline:1px solid var(--border);box-shadow:0 0 48px rgba(0,0,0,.16)}
   .hero{width:min(100%,980px);margin-inline:auto;padding:24px 28px 18px}
   .list{width:min(100%,980px);margin-inline:auto;padding-bottom:32px}
   .row{padding-inline:20px}
   .detail-header{width:min(100%,1060px);margin-inline:auto;padding:20px 28px 12px}
-  .detail-body{width:min(100%,1060px);margin-inline:auto;display:grid;grid-template-columns:minmax(250px,360px) minmax(320px,520px);justify-content:center;align-content:start;align-items:start;gap:12px 36px;padding:12px 28px 40px}
-  .detail-primary{grid-column:1;grid-row:1;min-width:0;display:block}
-  .detail-secondary{grid-column:2;grid-row:1;display:flex;flex-direction:column;align-items:stretch;gap:14px;min-width:0}
-  .writer-card{max-width:340px;position:static}
+  .detail-body{width:min(100%,1060px);margin-inline:auto;display:flex;justify-content:center;align-content:start;align-items:stretch;padding:12px 28px 40px}
+  .detail-secondary{width:min(100%,720px);margin:0 auto;display:flex;flex-direction:column;align-items:stretch;gap:14px;min-width:0}
+  .detail-hanzi{font-size:64px;margin-top:8px}
   .practice-block,.pinyin-row,.meaning,.memo-wrap,.example,.grammar-card{margin-top:0}
   .practice-block{max-width:none}
   .meaning{max-width:none;padding:0;text-align:left}
   .memo-wrap,.example,.grammar-card{max-width:none}
-  .char-box-lg{width:min(280px,100%);height:auto;aspect-ratio:1}
+  .order-open-btn{margin-left:0;margin-right:auto}
+  .char-box-lg{width:min(420px,86vw);height:min(420px,86vw)}
 }
 </style>
 </head>
@@ -244,31 +255,16 @@ html.theme-light .hero{padding-bottom:10px;}
       <span class="detail-level" id="detail-level"></span>
     </div>
     <div class="detail-body">
-      <div class="detail-primary">
-        <div class="writer-card">
-          <div class="writer-toolbar">
-            <button class="nav-arrow" id="char-prev" aria-label="Oldingi belgi">‹</button>
-            <div class="writer-info">
-              <div class="writer-pos hidden" id="writer-pos"></div>
-              <div class="writer-strokes" id="writer-strokes"></div>
-            </div>
-            <button class="nav-arrow" id="char-next" aria-label="Keyingi belgi">›</button>
-          </div>
-          <div class="char-box-lg" id="char-box-lg"></div>
-          <div class="writer-controls">
-            <button class="ctrl-btn" id="ctrl-restart" aria-label="Bir chiziq orqaga">«</button>
-            <button class="ctrl-btn ctrl-main" id="ctrl-playpause" aria-label="Pauza / Davom">▶</button>
-            <button class="ctrl-btn" id="ctrl-skip" aria-label="Bir chiziq oldinga">»</button>
-          </div>
-          <div class="next-word-btn hidden" id="next-word-btn"></div>
-        </div>
-      </div>
       <div class="detail-secondary">
+        <div class="detail-hanzi" id="detail-hanzi"></div>
         <div class="pinyin-row">
           <div class="pinyin" id="detail-pinyin"></div>
           <button class="audio-btn" id="audio-btn" aria-label="Tinglash">🔊</button>
         </div>
         <div class="meaning" id="detail-meaning"></div>
+        <button class="order-open-btn" id="open-stroke-order" type="button">
+          <span aria-hidden="true">✍️</span><span id="order-open-label">Tartib</span>
+        </button>
         <div class="memo-wrap" id="memo-block"></div>
         <div class="example hidden" id="example-block">
           <div class="usage-pos" id="usage-pos"></div>
@@ -312,6 +308,31 @@ html.theme-light .hero{padding-bottom:10px;}
         </div>
       </div>
     </div>
+    <div class="stroke-modal hidden" id="stroke-modal" aria-hidden="true">
+      <button class="stroke-backdrop" id="stroke-backdrop" type="button" aria-label="Yopish"></button>
+      <section class="stroke-sheet" role="dialog" aria-modal="true" aria-labelledby="writer-character">
+        <div class="stroke-handle" aria-hidden="true"></div>
+        <div class="writer-card">
+          <div class="writer-toolbar">
+            <div class="writer-character" id="writer-character"></div>
+            <div class="writer-info">
+              <div class="writer-strokes" id="writer-strokes"></div>
+            </div>
+            <div class="writer-toolbar-end">
+              <div class="writer-pos hidden" id="writer-pos"></div>
+              <button class="stroke-close" id="close-stroke-order" type="button" aria-label="Yopish">×</button>
+            </div>
+          </div>
+          <div class="char-box-lg" id="char-box-lg"></div>
+          <div class="writer-controls">
+            <button class="ctrl-btn" id="ctrl-restart" type="button" aria-label="Bir chiziq orqaga">«</button>
+            <button class="ctrl-btn ctrl-main" id="ctrl-playpause" type="button" aria-label="Pauza / Davom">▶</button>
+            <button class="ctrl-btn" id="ctrl-skip" type="button" aria-label="Bir chiziq oldinga">»</button>
+          </div>
+          <div class="next-word-btn hidden" id="next-word-btn"></div>
+        </div>
+      </section>
+    </div>
   </div>
 
 </div><script>
@@ -346,6 +367,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       countAll: function(n, level){ return level + ' · ' + n + " so'z"; },
       countResults: function(n){ return n + " natija"; },
       strokes: function(n){ return n + " chiziq"; },
+      order: "Tartib",
+      close: "Yopish",
       emptyTitle: "Hech narsa topilmadi.",
       emptySub: "Boshqa so'z bilan urinib ko'ring.",
       grammar: "Grammatika",
@@ -360,6 +383,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       countAll: function(n, level){ return level + ' · ' + n + " слов"; },
       countResults: function(n){ return n + " результатов"; },
       strokes: function(n){ return n + " черт"; },
+      order: "Порядок черт",
+      close: "Закрыть",
       emptyTitle: "Ничего не найдено.",
       emptySub: "Попробуйте другое слово.",
       grammar: "Грамматика",
@@ -374,6 +399,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       countAll: function(n, level){ return level + ' · ' + n + " калима"; },
       countResults: function(n){ return n + " натиҷа"; },
       strokes: function(n){ return n + " хат"; },
+      order: "Тартиби навиш",
+      close: "Пӯшидан",
       emptyTitle: "Чизе ёфт нашуд.",
       emptySub: "Калимаи дигар санҷед.",
       grammar: "Грамматика",
@@ -695,6 +722,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   var viewList = document.getElementById('view-list');
   var viewDetail = document.getElementById('view-detail');
   var detailPinyin = document.getElementById('detail-pinyin');
+  var detailHanzi = document.getElementById('detail-hanzi');
   var detailMeaning = document.getElementById('detail-meaning');
   var detailLevel = document.getElementById('detail-level');
   var backBtn = document.getElementById('back-btn');
@@ -715,8 +743,12 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   var grammarExampleText = document.getElementById('grammar-example-text');
   var grammarAudioBtn = document.getElementById('grammar-audio-btn');
 
-  var charPrevBtn = document.getElementById('char-prev');
-  var charNextBtn = document.getElementById('char-next');
+  var orderOpenBtn = document.getElementById('open-stroke-order');
+  var orderOpenLabel = document.getElementById('order-open-label');
+  var strokeModal = document.getElementById('stroke-modal');
+  var strokeBackdrop = document.getElementById('stroke-backdrop');
+  var closeStrokeBtn = document.getElementById('close-stroke-order');
+  var writerCharacter = document.getElementById('writer-character');
   var writerPos = document.getElementById('writer-pos');
   var writerStrokes = document.getElementById('writer-strokes');
   var charBoxLg = document.getElementById('char-box-lg');
@@ -728,9 +760,12 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   var currentChars = [];
   var currentCharIdx = 0;
   var currentWriter = null;
+  var currentWriterChar = '';
+  var currentWriterWordId = null;
   var strokeDataReady = false;
   var strokeLoadToken = 0;
   var isPlaying = false;
+  var isPaused = false;
   var isFinished = false;
   var currentStrokeShown = 0;
   var totalStrokes = 0;
@@ -771,7 +806,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
 
   function stepForward(){
     if(!currentWriter || currentStrokeShown >= totalStrokes || isPlaying || isReshowing) return;
-    isPlaying = true; isFinished = false; setPlayIcon();
+    isPlaying = true; isPaused = false; isFinished = false; setPlayIcon();
     var n = currentStrokeShown;
     currentWriter.animateStroke(n, {onComplete: function(){
       currentStrokeShown++;
@@ -785,18 +820,19 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     if(!currentWriter || currentStrokeShown <= 0 || isPlaying || isReshowing) return;
     currentStrokeShown--;
     hideNextWordBtn();
-    isFinished = false;
+    isFinished = false; isPaused = false;
     var target = currentStrokeShown;
     currentWriter.hideCharacter({duration:0});
     if(target === 0){ updateStepBtns(); return; }
-    isReshowing = true;
+    isReshowing = true; isPlaying = true; setPlayIcon();
     updateStepBtns();
     var origSpeed = currentWriter._options.strokeAnimationSpeed;
     currentWriter._options.strokeAnimationSpeed = 60;
     function showNext(i){
       if(i >= target){
         currentWriter._options.strokeAnimationSpeed = origSpeed;
-        isReshowing = false; updateStepBtns(); return;
+        isReshowing = false; isPlaying = false; isPaused = false;
+        setPlayIcon(); updateStepBtns(); return;
       }
       currentWriter.animateStroke(i, {onComplete: function(){ showNext(i+1); }});
     }
@@ -937,6 +973,10 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     heroEyebrow.textContent = '汉字 · ' + label;
     searchEl.placeholder = t.placeholder;
     grammarLabel.textContent = t.grammar;
+    orderOpenLabel.textContent = t.order;
+    closeStrokeBtn.setAttribute('aria-label', t.close);
+    strokeBackdrop.setAttribute('aria-label', t.close);
+    if(currentWriter && strokeDataReady) writerStrokes.textContent = t.strokes(totalStrokes);
     renderFilterPanel();
     renderSearchHistory();
     langSwitch.innerHTML = validLangs.map(function(value){
@@ -1078,7 +1118,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   function playCurrent(){
     if(!currentWriter) return;
     currentStrokeShown = 0;
-    isPlaying = true; isFinished = false;
+    isPlaying = true; isPaused = false; isFinished = false;
     hideNextWordBtn();
     setPlayIcon(); updateStepBtns();
     currentWriter.animateCharacter({
@@ -1092,23 +1132,23 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   }
 
   function loadChar(idx){
+    if(idx < 0 || idx >= currentChars.length) return;
+    if(currentWriter && (isPlaying || isReshowing)) currentWriter.pauseAnimation();
     currentCharIdx = idx;
     var ch = currentChars[idx];
     currentWriter = null;
+    currentWriterChar = ch;
+    currentWriterWordId = currentWord ? currentWord.id : null;
     strokeDataReady = false;
     var loadToken = ++strokeLoadToken;
-    isPlaying = false; isFinished = false; isReshowing = false;
+    isPlaying = false; isPaused = false; isFinished = false; isReshowing = false;
     currentStrokeShown = 0; totalStrokes = 0;
     hideNextWordBtn();
     setPlayIcon();
 
-    var multi = currentChars.length > 1;
-    writerPos.classList.toggle('hidden', !multi);
-    charPrevBtn.classList.toggle('hidden', !multi);
-    charNextBtn.classList.toggle('hidden', !multi);
-    if(multi) writerPos.textContent = (idx + 1) + ' / ' + currentChars.length;
-    charPrevBtn.disabled = (idx === 0);
-    charNextBtn.disabled = (idx === currentChars.length - 1);
+    writerCharacter.textContent = ch;
+    writerPos.textContent = (idx + 1) + '/' + currentChars.length;
+    writerPos.classList.remove('hidden');
 
     var data = (typeof STROKES !== 'undefined' && STROKES[ch]) ? STROKES[ch] : null;
     totalStrokes = data && Array.isArray(data.strokes) ? data.strokes.length : 0;
@@ -1137,7 +1177,10 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     if(!currentWriter || !strokeDataReady) return;
     if(isPlaying){
       currentWriter.pauseAnimation();
-      isPlaying = false; setPlayIcon(); updateStepBtns();
+      isPlaying = false; isPaused = true; setPlayIcon(); updateStepBtns();
+    } else if(isPaused){
+      currentWriter.resumeAnimation();
+      isPlaying = true; isPaused = false; setPlayIcon(); updateStepBtns();
     } else {
       playCurrent();
     }
@@ -1146,11 +1189,51 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   ctrlRestart.addEventListener('click', function(){ stepBack(); });
   ctrlSkip.addEventListener('click', function(){ stepForward(); });
 
-  charPrevBtn.addEventListener('click', function(){
-    if(currentCharIdx > 0) loadChar(currentCharIdx - 1);
+  var swipeStart = null;
+  charBoxLg.addEventListener('pointerdown', function(e){
+    swipeStart = {x:e.clientX,y:e.clientY};
+    if(charBoxLg.setPointerCapture) charBoxLg.setPointerCapture(e.pointerId);
   });
-  charNextBtn.addEventListener('click', function(){
-    if(currentCharIdx < currentChars.length - 1) loadChar(currentCharIdx + 1);
+  charBoxLg.addEventListener('pointerup', function(e){
+    if(!swipeStart) return;
+    var dx = e.clientX - swipeStart.x;
+    var dy = e.clientY - swipeStart.y;
+    swipeStart = null;
+    if(Math.abs(dx) < 48 || Math.abs(dx) <= Math.abs(dy) * 1.25) return;
+    var nextIdx = currentCharIdx + (dx < 0 ? 1 : -1);
+    if(nextIdx >= 0 && nextIdx < currentChars.length) loadChar(nextIdx);
+  });
+  charBoxLg.addEventListener('pointercancel', function(){ swipeStart = null; });
+
+  function openStrokeOrder(){
+    if(!currentWord || !currentChars.length) return;
+    strokeModal.classList.remove('hidden');
+    strokeModal.setAttribute('aria-hidden', 'false');
+    if(!currentWriter || currentWriterWordId !== currentWord.id || currentWriterChar !== currentChars[currentCharIdx]){
+      loadChar(currentCharIdx);
+    }
+    closeStrokeBtn.focus();
+  }
+
+  function closeStrokeOrder(){
+    if(strokeModal.classList.contains('hidden')) return;
+    if(currentWriter && (isPlaying || isReshowing)){
+      currentWriter.pauseAnimation();
+      isPlaying = false;
+      isPaused = true;
+      setPlayIcon();
+      updateStepBtns();
+    }
+    strokeModal.classList.add('hidden');
+    strokeModal.setAttribute('aria-hidden', 'true');
+    orderOpenBtn.focus();
+  }
+
+  orderOpenBtn.addEventListener('click', openStrokeOrder);
+  closeStrokeBtn.addEventListener('click', closeStrokeOrder);
+  strokeBackdrop.addEventListener('click', closeStrokeOrder);
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && !strokeModal.classList.contains('hidden')) closeStrokeOrder();
   });
 
   /* ---------- detail view ---------- */
@@ -1322,13 +1405,28 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
 
   function openDetail(word){
     scrollPos = listEl.scrollTop;
+    var keepStrokeOrderOpen = !strokeModal.classList.contains('hidden');
+    if(currentWriter && (isPlaying || isReshowing)) currentWriter.pauseAnimation();
     currentWord = word;
     detailLevel.textContent = word.lv;
+    detailHanzi.textContent = word.h;
     detailPinyin.textContent = word.p;
     detailMeaning.textContent = text(word.m);
 
     currentChars = Array.from(word.h);
-    loadChar(0);
+    currentCharIdx = 0;
+    if(keepStrokeOrderOpen){
+      loadChar(0);
+    } else {
+      currentWriter = null;
+      currentWriterChar = '';
+      currentWriterWordId = null;
+      strokeDataReady = false;
+      strokeLoadToken++;
+      isPlaying = false; isPaused = false; isFinished = false; isReshowing = false;
+      hideNextWordBtn();
+      setPlayIcon();
+    }
 
     renderMemo(word);
     renderExample(word);
@@ -1368,11 +1466,16 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     openDetail(DICTIONARY_WORDS[idx]);
   });
 
-  backBtn.addEventListener('click', function(){
+  function closeDetailView(){
     currentWord = null;
     viewDetail.classList.add('hidden');
     viewList.classList.remove('hidden');
     listEl.scrollTop = scrollPos;
+  }
+
+  backBtn.addEventListener('click', function(){
+    if(!strokeModal.classList.contains('hidden')){ closeStrokeOrder(); return; }
+    closeDetailView();
   });
 
   listBackBtn.addEventListener('click', goBackToStudy);
@@ -1455,10 +1558,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       if(tg && tg.BackButton && tg.BackButton.onClick) {
         tg.BackButton.onClick(function(){
           if(!viewDetail.classList.contains('hidden')) {
-            currentWord = null;
-            viewDetail.classList.add('hidden');
-            viewList.classList.remove('hidden');
-            listEl.scrollTop = scrollPos;
+            if(!strokeModal.classList.contains('hidden')) closeStrokeOrder();
+            else closeDetailView();
           } else {
             goBackToStudy();
           }
