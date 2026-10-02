@@ -2901,6 +2901,65 @@ def test_subscription_foreign_region_skips_payment_type_and_pays_to_alif(page):
     assert quotes[-1]["card_bank"] == "alif"
 
 
+def test_subscription_country_screen_recovers_when_overview_prices_are_empty(page):
+    mock_telegram_ready(page)
+    responses = [
+        {
+            "ok": True,
+            "language": "ru",
+            "mode": "subscription",
+            "pending_payment": None,
+            "offer": None,
+            "discount": None,
+            "payment_details": "",
+            "prices": {},
+            "card_prices": {},
+        },
+        {
+            "ok": True,
+            "language": "ru",
+            "mode": "subscription",
+            "pending_payment": None,
+            "offer": None,
+            "discount": None,
+            "payment_details": "",
+            "prices": {
+                "visa": {
+                    "1_month": {
+                        "base_amount": 89,
+                        "final_amount": 89,
+                        "currency": "TJS",
+                        "discount_applied": False,
+                        "discount_percent": 0,
+                    }
+                }
+            },
+            "card_prices": {
+                "ru": {
+                    "1_month": {
+                        "base_amount": "684",
+                        "final_amount": "684",
+                        "currency": "RUB",
+                    }
+                }
+            },
+        },
+    ]
+
+    def capture_overview(route):
+        json_response(route, responses.pop(0))
+
+    page.route("**/api/subscription-miniapp/overview", capture_overview)
+    page.goto(app_url("/subscription.html?mode=subscription"), wait_until="networkidle")
+
+    expect(page.locator("#countries")).to_contain_text("Цены тарифов сейчас не отображаются.")
+    page.locator("[data-retry-overview]").click()
+    expect(page.locator("[data-region=ru]")).to_be_visible()
+    page.locator("[data-region=ru]").click()
+    page.locator("#nextBtn").click()
+    expect(page.locator("#plans .plan").first).to_contain_text("RUB")
+
+
 def _open_course_profile_with_desktop_release(
     page,
     *,

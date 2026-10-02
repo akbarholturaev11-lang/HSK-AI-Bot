@@ -119,6 +119,7 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .detail-row.copyable{border-color:var(--accent-line);background:var(--accent-soft)}
 .copy-detail{height:34px;min-width:66px;border-radius:10px;background:var(--accent);color:#fff;font-size:12px;font-weight:950;padding:0 10px}
 .detail-empty{border:1px dashed var(--line2);border-radius:var(--radius-sm);padding:16px;color:var(--muted);font-size:13px;line-height:1.45;text-align:center;background:var(--card)}
+.retry-inline{display:inline-flex;align-items:center;justify-content:center;min-height:38px;margin-top:11px;padding:0 14px;border:1px solid var(--accent-line);border-radius:999px;background:var(--bg);color:var(--accent-ink);font-size:13px;font-weight:850}
 .qr{display:flex;align-items:center;justify-content:center;width:100%;min-height:220px;border:1px dashed var(--line2);border-radius:var(--radius-sm);background:#fff;margin-top:11px;overflow:hidden;transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}
 .qr-tappable{cursor:pointer}
 .qr-tappable:active{transform:scale(.99)}
@@ -438,6 +439,9 @@ const I18N={
     },
     countryTitle:"Qaysi davlatdan to'laysiz?",
     countryText:"Kartangiz davlatini tanlang — narxlar shu davlat valyutasida ko'rsatiladi.",
+    pricesLoading:"Tarif narxlari yuklanmoqda...",
+    pricesUnavailable:"Tarif narxlari hozir ko'rinmayapti.",
+    retryPrices:"Qayta urinish",
     countries:{
       tj:["Tojikiston kartasi","TJS ko'rinishida to'lov"],
       uz:["O'zbekiston kartasi","UZS ekvivalentida to'lov"],
@@ -562,6 +566,9 @@ const I18N={
     },
     countryTitle:"Из какой страны оплачиваете?",
     countryText:"Выберите страну вашей карты — цены будут показаны в её валюте.",
+    pricesLoading:"Загружаем цены тарифов...",
+    pricesUnavailable:"Цены тарифов сейчас не отображаются.",
+    retryPrices:"Повторить",
     countries:{
       tj:["Карта Таджикистана","Оплата в TJS"],
       uz:["Карта Узбекистана","Оплата в UZS"],
@@ -686,6 +693,9 @@ const I18N={
     },
     countryTitle:"Аз кадом давлат пардохт мекунед?",
     countryText:"Давлати корти худро интихоб кунед — нархҳо бо асъори ҳамон давлат нишон дода мешаванд.",
+    pricesLoading:"Нархҳои тариф бор шуда истодаанд...",
+    pricesUnavailable:"Нархҳои тариф ҳоло нишон дода намешаванд.",
+    retryPrices:"Аз нав кӯшиш кардан",
     countries:{
       tj:["Корти Тоҷикистон","Пардохт бо TJS"],
       uz:["Корти Ӯзбекистон","Пардохт бо UZS"],
@@ -785,7 +795,8 @@ const state={
   qrActionsOpen:false,
   qrPreviewOpen:false,
   detailHintOpen:false,
-  loadError:false
+  loadError:false,
+  overviewLoading:false
 };
 
 function $(selector){return document.querySelector(selector)}
@@ -1104,7 +1115,9 @@ function applyOverview(data){
   }
 }
 async function loadOverview(){
+  state.overviewLoading=true;
   setBusy(true,false);
+  render();
   try{
     if(state.preview){
       applyOverview(mockOverview());
@@ -1124,6 +1137,7 @@ async function loadOverview(){
     }
     toast(state.preview?tr().preview:tr().loadError);
   }finally{
+    state.overviewLoading=false;
     setBusy(false);
     render();
   }
@@ -1322,14 +1336,25 @@ function renderDone(text){
 function renderCountry(text){
   $("#countryTitle").textContent=text.countryTitle;
   $("#countryText").textContent=text.countryText;
-  $("#countries").innerHTML=availableRegions().map(region=>{
+  const regions=availableRegions();
+  if(!regions.length){
+    if(state.overviewLoading){
+      $("#countries").innerHTML=`<div class="detail-empty" role="status">${text.pricesLoading}</div>`;
+    }else if(state.loadError||overviewReady()){
+      $("#countries").innerHTML=`<div class="detail-empty"><span>${text.pricesUnavailable}</span><br><button class="retry-inline" type="button" data-retry-overview>${text.retryPrices}</button></div>`;
+    }else{
+      $("#countries").innerHTML="";
+    }
+    return;
+  }
+  $("#countries").innerHTML=regions.map(region=>{
     const item=text.countries[region];
     const selected=state.region===region?"selected":"";
     return `<button class="choice ${selected}" type="button" data-region="${region}">
       <i class="country-flag">${REGION_FLAGS[region]}</i>
       <span class="choice-tx"><strong>${item[0]}</strong><span>${item[1]}</span></span><i class="dot"></i>
     </button>`;
-  }).join("")||(overviewReady()?`<div class="detail-empty">${text.offerExpired}</div>`:"");
+  }).join("");
 }
 function renderPay(text){
   const quote=state.quote||(state.preview?mockQuote():null);
@@ -1663,6 +1688,8 @@ async function submitPayment(){
   }
 }
 document.addEventListener("click",event=>{
+  const retryOverview=event.target.closest("[data-retry-overview]");
+  if(retryOverview){loadOverview();return}
   const qrToggle=event.target.closest("[data-qr-toggle]");
   if(qrToggle){state.qrActionsOpen=!state.qrActionsOpen;render();return}
   const qrPreview=event.target.closest("[data-open-qr-preview]");
