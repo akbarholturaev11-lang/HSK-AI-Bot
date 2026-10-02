@@ -10533,3 +10533,26 @@ Files touched:
   o'tkaziladi).
 - Tekshiruv uchun: `tests/test_hsk30_promo_service.py` va
   `tests/e2e/test_miniapp_smoke.py`.
+
+### 2026-10-03 — Alembic migration head'lari birlashtirildi
+
+Changed:
+- `0098_merge_all_heads` `0095_android_live_voice` va
+  `0097_merge_course_and_currency` tarmoqlarini bitta head'ga birlashtiradi.
+  Merge revisionning o'zida schema amali yo'q.
+
+Why:
+- `alembic upgrade head` alohida qolgan Live Voice head sabab production
+  deploy paytida ambiguous head xatosi bilan to'xtagan.
+
+Files touched:
+- `alembic/versions/0098_merge_all_migration_heads.py`,
+  `PROJECT_MEMORY.md`.
+
+Risk:
+- `0095_android_live_voice` hali qo'llanmagan bazalarda merge'ga yetish uchun
+  oldindan mavjud, additive voice migration bajariladi.
+
+Follow-up:
+- Deploydan keyin Alembic yagona `0098_merge_all_heads` head'iga yetganini
+  Railway logida tekshirish kerak.
