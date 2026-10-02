@@ -48,6 +48,12 @@
     <string name="sub_focus_voice">Сӯҳбати овозӣ ва талаффуз</string>
     <string name="sub_focus_body">Бо обуна ин бахшро бе маҳдудият идома медиҳед.</string>
     <string name="sub_plans_heading">Тариф</string>
+    <string name="sub_active_expiry_current">Обунаи ҷорӣ то %1$s фаъол аст</string>
+    <string name="sub_active_expiry_after">Пас аз тарифи интихобшуда: то %1$s</string>
+    <string name="sub_renewal_confirm_title">Обунаро дароз мекунед?</string>
+    <string name="sub_renewal_confirm_body">Муҳлати ҷорӣ %1$s анҷом меёбад. Агар тарифи «%2$s»-ро илова кунед, муҳлати нав то %3$s мешавад.</string>
+    <string name="sub_renewal_edit">Тағйир додани тариф</string>
+    <string name="sub_change_payment">Тағйир додани усули пардохт</string>
     <string name="sub_trial_title">7 рӯз Pro ройгон</string>
     <string name="sub_trial_body">Ҳамаи имкониятҳои асосиро месанҷед. Худкор пул гирифта намешавад.</string>
     <string name="sub_trial_button">7 рӯз ройгон санҷидан</string>

@@ -38,6 +38,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.HeadsetMic
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -65,6 +66,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -73,6 +76,10 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.data.api.SubscriptionPriceDto
 import com.pomp.hskai.data.repository.FeatureRepository
+import java.time.Duration
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /**
@@ -155,6 +162,7 @@ fun SubscriptionCheckoutHost(
     var qrPreview by remember { mutableStateOf(false) }
     var qrActions by remember { mutableStateOf(false) }
     var hintExpanded by remember { mutableStateOf(false) }
+    var renewalConfirmOpen by remember { mutableStateOf(false) }
     val stepIndex = state.flow.indexOf(state.step)
 
     LaunchedEffect(Unit) { model.load() }
@@ -267,10 +275,52 @@ fun SubscriptionCheckoutHost(
                     CheckoutStep.PAY -> state.quote != null && state.receiptName.isNotBlank()
                     else -> state.overview?.prices?.get(state.method)?.get(state.plan) != null
                 }
+                val primaryAction: () -> Unit = when {
+                    state.step == CheckoutStep.PAY -> model::submit
+                    state.step == CheckoutStep.PLANS && paid && renewalDates(state) != null -> {
+                        { renewalConfirmOpen = true }
+                    }
+                    else -> model::next
+                }
                 CheckoutButton(label, state.submitting || state.quoting, enabled,
-                    onClick = if (state.step == CheckoutStep.PAY) model::submit else model::next,
+                    onClick = primaryAction,
                     modifier = Modifier.weight(1f))
             }
+        }
+    }
+
+    if (renewalConfirmOpen) {
+        val dates = renewalDates(state)
+        if (dates != null) {
+            AlertDialog(
+                onDismissRequest = { renewalConfirmOpen = false },
+                containerColor = C.surface,
+                title = {
+                    Text(copy.getString(R.string.sub_renewal_confirm_title),
+                        color = C.text, fontWeight = FontWeight.Black)
+                },
+                text = {
+                    Text(copy.getString(
+                        R.string.sub_renewal_confirm_body,
+                        dates.current,
+                        copy.getString(planLabelId(state.plan)),
+                        dates.next,
+                    ), color = C.muted)
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        renewalConfirmOpen = false
+                        model.next()
+                    }) { Text(copy.getString(R.string.action_continue), color = C.accentInk) }
+                },
+                dismissButton = {
+                    TextButton(onClick = { renewalConfirmOpen = false }) {
+                        Text(copy.getString(R.string.sub_renewal_edit), color = C.muted)
+                    }
+                },
+            )
+        } else {
+            renewalConfirmOpen = false
         }
     }
 
@@ -429,6 +479,15 @@ private fun PlansContent(
             }
         }
     }
+    renewalDates(state)?.let { dates ->
+        Spacer(Modifier.height(14.dp))
+        CardBlock(border = C.accentLine, background = C.accentSoft) {
+            Text(copy.getString(R.string.sub_active_expiry_current, dates.current),
+                color = C.muted, fontSize = 13.sp)
+            Text(copy.getString(R.string.sub_active_expiry_after, dates.next),
+                color = C.text, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        }
+    }
 }
 
 @Composable
@@ -436,8 +495,39 @@ private fun MethodContent(
     state: SubscriptionCheckoutState, copy: Context,
     onBank: (String) -> Unit, onMethod: (String) -> Unit,
 ) {
+    var expanded by remember(state.region, state.method, state.bank) { mutableStateOf(false) }
+    val selectedTitle = if (state.region == "cn") {
+        copy.getString(if (state.method == "alipay") R.string.sub_alipay else R.string.sub_wechat)
+    } else {
+        BANK_NAMES[cardBankFor(state.country, state.bank)].orEmpty()
+    }
+    val selectedSubtitle = if (state.region == "cn") {
+        copy.getString(R.string.sub_qr_yuan)
+    } else {
+        copy.getString(if (state.cardBank == "alif") R.string.sub_bank_alif_body else R.string.sub_bank_dc_body)
+    }
     Text(copy.getString(R.string.sub_method), color = C.text, fontSize = 22.sp, fontWeight = FontWeight.Black)
-    Spacer(Modifier.height(16.dp))
+    Spacer(Modifier.height(10.dp))
+    Row(
+        Modifier.fillMaxWidth()
+            .border(1.dp, C.line, RoundedCornerShape(16.dp))
+            .background(C.surface, RoundedCornerShape(16.dp))
+            .clickable { expanded = !expanded }
+            .semantics { contentDescription = copy.getString(R.string.sub_change_payment) }
+            .padding(horizontal = 14.dp, vertical = 11.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(if (expanded) "⌄" else "⌃", color = C.accentInk, fontSize = 22.sp,
+            fontWeight = FontWeight.Bold, modifier = Modifier.width(26.dp), textAlign = TextAlign.Center)
+        Spacer(Modifier.width(8.dp))
+        Column(Modifier.weight(1f)) {
+            Text(selectedTitle, color = C.text, fontSize = 14.sp, fontWeight = FontWeight.ExtraBold)
+            Text(selectedSubtitle, color = C.muted, fontSize = 12.sp, lineHeight = 16.sp)
+        }
+        SelectionDot(true)
+    }
+    if (!expanded) return
+    Spacer(Modifier.height(10.dp))
     if (state.region == "cn") {
         CHINA_METHODS.filter { !state.overview?.prices?.get(it).isNullOrEmpty() }.forEach { method ->
             ChoiceCard(null, copy.getString(if (method == "alipay") R.string.sub_alipay else R.string.sub_wechat),
@@ -600,6 +690,26 @@ private fun planPrice(state: SubscriptionCheckoutState, plan: String, price: Sub
     } else {
         PlanPrice(price.finalAmount.toString(), price.baseAmount.toString(), price.currency)
     }
+}
+
+private data class RenewalDates(val current: String, val next: String)
+
+private fun renewalDates(state: SubscriptionCheckoutState): RenewalDates? {
+    val rawExpiry = state.overview?.access?.takeIf { it.isPaid }?.expiresAt ?: return null
+    val expiry = runCatching { Instant.parse(rawExpiry) }.getOrNull() ?: return null
+    val durationDays = when (state.plan) {
+        "10_days" -> 10L
+        "1_month" -> 30L
+        "3_months" -> 90L
+        else -> return null
+    }
+    val locale = Locale.forLanguageTag(state.language.ifBlank { "uz" })
+    val formatter = DateTimeFormatter.ofPattern("d MMM yyyy", locale)
+    val zone = ZoneId.systemDefault()
+    return RenewalDates(
+        current = expiry.atZone(zone).format(formatter),
+        next = expiry.plus(Duration.ofDays(durationDays)).atZone(zone).format(formatter),
+    )
 }
 
 @Composable

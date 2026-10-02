@@ -8,7 +8,9 @@ from sqlalchemy import select
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user import User
 from app.services.entitlements import actions as A
+from app.services.entitlements import decision as D
 from app.services.entitlements.engine import EntitlementEngine
+from app.services.entitlements.limits_config import WINDOW_NONE
 from app.services.entitlements.state import EntitlementState, resolve_state
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService, COURSE_DAILY_EVENT_NAME
 from app.services.course_access_policy_service import CourseAccessPolicyService
@@ -38,10 +40,25 @@ class LessonAccessService:
             await self.session.execute(select(User.id).where(User.id == user.id).with_for_update())
         access = CourseMiniAppAccessService(self.session)
         engine = EntitlementEngine(self.session)
-        decision = await engine.check(user, A.LESSON_START)
+        state = resolve_state(user)
+        unlimited_course_access = state in {
+            EntitlementState.PRO_ACTIVE,
+            EntitlementState.TEMP_ACCESS,
+        }
+        decision = (
+            D.allow(
+                action=A.LESSON_START,
+                state=state,
+                limit=None,
+                used=0,
+                window=WINDOW_NONE,
+            )
+            if unlimited_course_access
+            else await engine.check(user, A.LESSON_START)
+        )
         payload = decision.as_dict(language=getattr(user, "language", "ru"))
         reference = self.reference(level, lesson_order)
-        if resolve_state(user) == EntitlementState.BLOCKED:
+        if state == EntitlementState.BLOCKED:
             return payload
 
         normalized_level = str(level or "").strip().lower()
@@ -94,7 +111,7 @@ class LessonAccessService:
                     "limit": None, "remaining": None, "window": "none", "reset_at": None}
         if lesson_order <= completed or await self._reserved(user, reference):
             return {**payload, "ok": True, "allowed": True, "idempotent": True}
-        if consume:
+        if consume and not unlimited_course_access:
             decision = await engine.consume(user, A.LESSON_START, ref=reference, notify_bot=bot)
             payload = decision.as_dict(language=getattr(user, "language", "ru"))
         return payload

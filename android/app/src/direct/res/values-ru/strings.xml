@@ -47,6 +47,12 @@
     <string name="sub_focus_voice">Голосовые диалоги и произношение</string>
     <string name="sub_focus_body">С подпиской вы сможете продолжать без ограничений.</string>
     <string name="sub_plans_heading">Тариф</string>
+    <string name="sub_active_expiry_current">Текущая подписка действует до %1$s</string>
+    <string name="sub_active_expiry_after">После выбранного тарифа: до %1$s</string>
+    <string name="sub_renewal_confirm_title">Продлить подписку?</string>
+    <string name="sub_renewal_confirm_body">Текущий срок закончится %1$s. Если добавить тариф «%2$s», новый срок будет до %3$s.</string>
+    <string name="sub_renewal_edit">Изменить тариф</string>
+    <string name="sub_change_payment">Изменить способ оплаты</string>
     <string name="sub_trial_title">7 дней Pro бесплатно</string>
     <string name="sub_trial_body">Попробуете все основные возможности. Деньги автоматически не спишутся.</string>
     <string name="sub_trial_button">Попробовать 7 дней бесплатно</string>

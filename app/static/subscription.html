@@ -80,6 +80,9 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .plan.selected,.choice.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:var(--accent-soft)}
 .plan.wide{grid-column:1/-1;min-height:auto}
 .plan-note{margin-top:6px;color:var(--muted);font-size:12px;font-weight:800}
+.renewal-summary{display:grid;gap:5px;margin-top:12px;border:1px solid var(--accent-line);border-radius:var(--radius-sm);background:var(--accent-soft);padding:12px 13px}
+.renewal-summary strong{font-size:13px;line-height:1.35;font-weight:850;color:var(--text)}
+.renewal-summary span{font-size:12px;line-height:1.4;color:var(--muted)}
 .plan-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .plan-name{font-size:13px;color:var(--muted);font-weight:850}
 .badge{display:inline-flex;align-items:center;justify-content:center;min-height:21px;border-radius:999px;padding:2px 8px;background:var(--gold-soft);color:var(--gold-ink);font-size:10px;line-height:1.12;font-weight:900;border:1px solid var(--gold-line)}
@@ -93,6 +96,13 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .choice strong{display:block;font-size:14px;line-height:1.25;font-weight:850;color:var(--text)}
 .choice span{display:block;margin-top:4px;color:var(--muted);font-size:12px;line-height:1.35}
 .choice .choice-tx{flex:1;min-width:0;margin-top:0;color:inherit}
+.method-current{width:100%;min-height:66px;display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);padding:0 14px;text-align:left}
+.method-current .chevron{flex:0 0 26px;color:var(--accent-ink);font-size:22px;line-height:1;text-align:center;font-weight:850}
+.method-current .choice-tx{flex:1;min-width:0}
+.method-current .choice-tx strong{display:block;font-size:14px;line-height:1.25;font-weight:850;color:var(--text)}
+.method-current .choice-tx span{display:block;margin-top:4px;color:var(--muted);font-size:12px;line-height:1.35}
+.method-options{display:none;margin-top:9px}
+.method-options.show{display:grid;gap:9px}
 .country-flag{flex:0 0 auto;width:46px;height:34px;border-radius:0;display:grid;place-items:center;background:transparent;font-size:38px;line-height:1;overflow:visible;box-shadow:none;font-style:normal}
 .dot{flex:0 0 auto;width:20px;height:20px;border-radius:50%;border:2px solid var(--line2);transition:.18s}
 .selected .dot{border-color:var(--accent);box-shadow:inset 0 0 0 4px var(--bg);background:var(--accent)}
@@ -175,6 +185,16 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .sheet-primary{background:var(--accent);color:#fff}
 .sheet-secondary{border:1px solid var(--line2);background:var(--bg);color:var(--text)}
 .sheet-close{color:var(--muted)}
+.renewal-modal{position:fixed;inset:0;z-index:32;display:none;align-items:center;justify-content:center;padding:20px}
+.renewal-modal.show{display:flex}
+.renewal-backdrop{position:absolute;inset:0;background:rgba(20,32,27,.42);backdrop-filter:blur(4px)}
+.renewal-card{position:relative;width:100%;max-width:430px;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);padding:20px;box-shadow:0 18px 55px rgba(20,32,27,.2);animation:pop .2s ease}
+.renewal-card h3{font-size:18px;line-height:1.25;font-weight:900}
+.renewal-card p{margin-top:9px;color:var(--muted);font-size:13px;line-height:1.5}
+.renewal-actions{display:grid;gap:8px;margin-top:16px}
+.renewal-actions button{min-height:48px;border-radius:13px;font-size:14px;font-weight:900}
+.renewal-confirm{background:var(--accent);color:#fff}
+.renewal-edit{border:1px solid var(--line2);background:var(--bg);color:var(--text)}
 .loading{position:fixed;inset:0;display:none;place-items:center;background:rgba(255,255,255,.7);backdrop-filter:blur(6px);z-index:30}
 .loading.show{display:grid}
 .spinner{width:38px;height:38px;border-radius:50%;border:3px solid var(--accent-soft);border-top-color:var(--accent);animation:spin .8s linear infinite}
@@ -224,6 +244,10 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
       </div>
       <p class="value-copy" id="valueText"></p>
       <div class="plans" id="plans"></div>
+      <div class="renewal-summary" id="renewalSummary" style="display:none">
+        <strong id="renewalCurrent"></strong>
+        <span id="renewalNext"></span>
+      </div>
     </section>
 
     <div class="discount" id="discountBox" style="display:none">
@@ -304,6 +328,17 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
     <div class="sheet-actions">
       <button class="sheet-primary" type="button" id="openSupportBtn"></button>
       <button class="sheet-close" type="button" id="closeSupportBtn"></button>
+    </div>
+  </div>
+</div>
+<div class="renewal-modal" id="renewalDialog" aria-hidden="true" role="dialog" aria-modal="true">
+  <button class="renewal-backdrop" type="button" id="renewalBackdrop" aria-label="Close"></button>
+  <div class="renewal-card">
+    <h3 id="renewalTitle"></h3>
+    <p id="renewalText"></p>
+    <div class="renewal-actions">
+      <button class="renewal-confirm" type="button" id="renewalConfirmBtn"></button>
+      <button class="renewal-edit" type="button" id="renewalEditBtn"></button>
     </div>
   </div>
 </div>
@@ -428,6 +463,13 @@ const I18N={
     plansTitle:"Tarif",
     lockedValueText:"Boshlagan darsingizni davom ettiring va keyingi HSK darslarini ketma-ket oching.",
     methodsTitle:"To'lov usuli",
+    renewalCurrent:"Amaldagi obuna: {date} gacha",
+    renewalNext:"Tanlangan tarifdan so‘ng: {date} gacha",
+    renewalTitle:"Obunani uzaytirasizmi?",
+    renewalBody:"Hozirgi muddat {current} da tugaydi. {plan} tarifini qo‘shsangiz, yangi muddat {next} gacha bo‘ladi.",
+    renewalConfirm:"Davom etish",
+    renewalEdit:"Tarifni o‘zgartirish",
+    changePayment:"To‘lov turini o‘zgartirish",
     discountReady:"20% chegirma qo'llanadi",
     discountProgress:"20% chegirma: {count}/{required} referral",
     planLabels:{ten:"10 kun",month:"1 oy",quarter:"3 oy",hsk30:"Bir martalik",fast:"Sinab ko'rish",best:"Eng yaxshi tanlov",quarterBadge:"Foydali",quarterNote:"≈ 2 TJS/kun"},
@@ -555,6 +597,13 @@ const I18N={
     plansTitle:"Тариф",
     lockedValueText:"Продолжите начатый урок и открывайте следующие уроки HSK по порядку.",
     methodsTitle:"Способ оплаты",
+    renewalCurrent:"Текущая подписка действует до {date}",
+    renewalNext:"После выбранного тарифа: до {date}",
+    renewalTitle:"Продлить подписку?",
+    renewalBody:"Текущий срок закончится {current}. Если добавить тариф «{plan}», новый срок будет до {next}.",
+    renewalConfirm:"Продолжить",
+    renewalEdit:"Изменить тариф",
+    changePayment:"Изменить способ оплаты",
     discountReady:"Скидка 20% применится",
     discountProgress:"Скидка 20%: {count}/{required} реферала",
     planLabels:{ten:"10 дней",month:"1 месяц",quarter:"3 месяца",hsk30:"Одноразово",fast:"Для пробы",best:"Лучший выбор",quarterBadge:"Выгодно",quarterNote:"≈ 2 TJS/день"},
@@ -682,6 +731,13 @@ const I18N={
     plansTitle:"Тариф",
     lockedValueText:"Дарси оғозкардаатонро идома диҳед ва дарсҳои навбатии HSK-ро пайдарпай кушоед.",
     methodsTitle:"Усули пардохт",
+    renewalCurrent:"Обунаи ҷорӣ то {date} фаъол аст",
+    renewalNext:"Пас аз тарифи интихобшуда: то {date}",
+    renewalTitle:"Обунаро дароз мекунед?",
+    renewalBody:"Муҳлати ҷорӣ {current} анҷом меёбад. Агар тарифи «{plan}»-ро илова кунед, муҳлати нав то {next} мешавад.",
+    renewalConfirm:"Идома додан",
+    renewalEdit:"Тағйир додани тариф",
+    changePayment:"Тағйир додани усули пардохт",
     discountReady:"20% тахфиф ҳисоб мешавад",
     discountProgress:"20% тахфиф: {count}/{required} referral",
     planLabels:{ten:"10 рӯз",month:"1 моҳ",quarter:"3 моҳ",hsk30:"Якбора",fast:"Барои санҷидан",best:"Беҳтарин интихоб",quarterBadge:"Фоиданок",quarterNote:"≈ 2 TJS/рӯз"},
@@ -795,6 +851,8 @@ const state={
   qrActionsOpen:false,
   qrPreviewOpen:false,
   detailHintOpen:false,
+  methodExpanded:false,
+  renewalOpen:false,
   loadError:false,
   overviewLoading:false
 };
@@ -825,6 +883,15 @@ function money(amount){
 function planName(text,plan){
   const labels=text.planLabels||{};
   return ({"10_days":labels.ten,"1_month":labels.month,"3_months":labels.quarter,"hsk30_unlock":labels.hsk30||"HSK 3.0"})[plan]||plan;
+}
+function renewalDates(){
+  if(!state.overview?.access?.is_paid)return null;
+  const expiry=new Date(state.overview.access.expires_at||"");
+  const days=({"10_days":10,"1_month":30,"3_months":90})[state.plan];
+  if(!Number.isFinite(expiry.getTime())||!days)return null;
+  const locale=({uz:"uz-UZ",ru:"ru-RU",tj:"tg-TJ"})[state.lang]||"uz-UZ";
+  const format=date=>new Intl.DateTimeFormat(locale,{day:"numeric",month:"short",year:"numeric"}).format(date);
+  return {current:format(expiry),next:format(new Date(expiry.getTime()+days*86400000))};
 }
 function planBadge(text,plan){
   const labels=text.planLabels||{};
@@ -1181,6 +1248,7 @@ function setBusy(value,overlay=true){
 function setStep(step){
   const items=flow();
   state.step=Math.max(0,Math.min(step,items.length-1));
+  state.methodExpanded=false;
   if(currentScreen()==="pay")loadQuote();
   render();
 }
@@ -1220,6 +1288,7 @@ function render(){
   renderPay(text);
   renderDone(text);
   renderSupportSheet(text);
+  renderRenewalDialog(text);
   renderQrPreview(text);
   $("#backBtn").textContent=text.back;
   $("#nextBtn").textContent=nextCtaText(text,screen);
@@ -1264,6 +1333,13 @@ function renderPlans(text){
       </span>
     </button>`;
   }).join("") || (overviewReady()?`<div class="detail-empty">${text.offerExpired}</div>`:"");
+  const dates=renewalDates();
+  const summary=$("#renewalSummary");
+  summary.style.display=dates?"grid":"none";
+  if(dates){
+    $("#renewalCurrent").textContent=text.renewalCurrent.replace("{date}",dates.current);
+    $("#renewalNext").textContent=text.renewalNext.replace("{date}",dates.next);
+  }
 }
 function renderMethod(text){
   $("#methodsTitle").textContent=text.methodsTitle;
@@ -1271,10 +1347,32 @@ function renderMethod(text){
   const options=state.region==="cn"
     ?CHINA_METHODS.filter(method=>methods.includes(method)).map(method=>({attr:`data-method="${method}"`,item:text.methods[method],selected:state.method===method}))
     :(state.region==="tj"?CARD_BANKS.map(bank=>({attr:`data-bank="${bank}"`,item:text.methods[bank],selected:state.bank===bank})):[]);
-  $("#methods").innerHTML=options.map(({attr,item,selected})=>`<button class="choice ${selected?"selected":""}" type="button" ${attr}>
+  const selectedItem=state.region==="cn"?text.methods[state.method]:text.methods[cardBank()];
+  const current=selectedItem?`<button class="method-current selected" type="button" data-method-toggle aria-expanded="${state.methodExpanded}" aria-label="${escapeAttr(text.changePayment)}">
+    <span class="chevron">${state.methodExpanded?"⌄":"⌃"}</span>
+    <span class="choice-tx"><strong>${selectedItem[0]}</strong><span>${selectedItem[1]}</span></span>
+    <i class="dot selected"></i>
+  </button>`:"";
+  const choices=options.map(({attr,item,selected})=>`<button class="choice ${selected?"selected":""}" type="button" ${attr}>
     <span class="choice-tx"><strong>${item[0]}</strong><span>${item[1]}</span></span>
     <i class="dot"></i>
   </button>`).join("");
+  $("#methods").innerHTML=`${current}<div class="method-options ${state.methodExpanded?"show":""}">${choices}</div>`;
+}
+function renderRenewalDialog(text){
+  const dialog=$("#renewalDialog");
+  const visible=Boolean(state.renewalOpen&&renewalDates());
+  dialog.classList.toggle("show",visible);
+  dialog.setAttribute("aria-hidden",visible?"false":"true");
+  if(!visible)return;
+  const dates=renewalDates();
+  $("#renewalTitle").textContent=text.renewalTitle;
+  $("#renewalText").textContent=text.renewalBody
+    .replace("{current}",dates.current)
+    .replace("{plan}",planName(text,state.plan))
+    .replace("{next}",dates.next);
+  $("#renewalConfirmBtn").textContent=text.renewalConfirm;
+  $("#renewalEditBtn").textContent=text.renewalEdit;
 }
 function renderDiscount(text){
   const discount=state.overview?.discount;
@@ -1690,6 +1788,8 @@ async function submitPayment(){
 document.addEventListener("click",event=>{
   const retryOverview=event.target.closest("[data-retry-overview]");
   if(retryOverview){loadOverview();return}
+  const methodToggle=event.target.closest("[data-method-toggle]");
+  if(methodToggle){state.methodExpanded=!state.methodExpanded;render();return}
   const qrToggle=event.target.closest("[data-qr-toggle]");
   if(qrToggle){state.qrActionsOpen=!state.qrActionsOpen;render();return}
   const qrPreview=event.target.closest("[data-open-qr-preview]");
@@ -1706,6 +1806,7 @@ document.addEventListener("click",event=>{
     if(region!==state.region){
       state.region=region;
       state.method=region==="cn"?(CHINA_METHODS.includes(state.method)?state.method:CHINA_METHODS[0]):"visa";
+      state.methodExpanded=false;
       ensureSelection();
       clearQuote();
     }
@@ -1715,6 +1816,7 @@ document.addEventListener("click",event=>{
   const methodBtn=event.target.closest("[data-method]");
   if(methodBtn){
     state.method=methodBtn.dataset.method;
+    state.methodExpanded=false;
     ensureSelection();
     clearQuote();
     render();
@@ -1723,6 +1825,7 @@ document.addEventListener("click",event=>{
   const bankBtn=event.target.closest("[data-bank]");
   if(bankBtn){
     state.bank=bankBtn.dataset.bank;
+    state.methodExpanded=false;
     clearQuote();
     render();
     return;
@@ -1739,10 +1842,21 @@ $("#nextBtn").addEventListener("click",()=>{
   if(screen==="country"&&!state.region)return;
   if(!hasCurrentPrice()){toast(tr().offerExpired);return}
   if(screen==="pay"){submitPayment();return}
+  if(screen==="plans"&&state.overview?.access?.is_paid&&renewalDates()){
+    state.renewalOpen=true;
+    render();
+    return;
+  }
   if(screen==="country")saveRegion(state.region);
   setStep(state.step+1);
 });
 $("#backBtn").addEventListener("click",()=>setStep(state.step-1));
+$("#renewalBackdrop").addEventListener("click",()=>{state.renewalOpen=false;render()});
+$("#renewalEditBtn").addEventListener("click",()=>{state.renewalOpen=false;render()});
+$("#renewalConfirmBtn").addEventListener("click",()=>{
+  state.renewalOpen=false;
+  setStep(state.step+1);
+});
 $("#botReturnBtn").addEventListener("click",closeMiniApp);
 $("#qrPreviewBackBtn").addEventListener("click",closeQrPreview);
 function shareReferral(link){

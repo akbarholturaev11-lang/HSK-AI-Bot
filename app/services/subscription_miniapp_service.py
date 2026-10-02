@@ -29,6 +29,7 @@ from app.services.payment_service import PaymentService
 from app.services.subscription_currency_service import SubscriptionCurrencyService
 from app.services.subscription_price_service import PLANS, SubscriptionPriceService
 from app.services.support_contact_service import get_admin_contact_url
+from app.services.user_access_state_service import UserAccessStateService
 
 
 logger = logging.getLogger(__name__)
@@ -75,6 +76,16 @@ class SubscriptionMiniAppService:
         self.currency_service = SubscriptionCurrencyService(session)
         self.setting_repo = BotSettingRepository(session)
 
+    @staticmethod
+    def _access_payload(user) -> dict[str, Any]:
+        state = UserAccessStateService.classify(user)
+        expires_at = UserAccessStateService.as_utc(getattr(user, "end_date", None))
+        return {
+            "state": state,
+            "is_paid": state == UserAccessStateService.PAID,
+            "expires_at": expires_at.isoformat().replace("+00:00", "Z") if expires_at else None,
+        }
+
     async def payment_details(self, card_bank: str | None = None) -> str:
         if card_bank == "alif":
             # Alif rekviziti bo'sh bo'lsa Dushanbe City rekvizitiga
@@ -118,6 +129,7 @@ class SubscriptionMiniAppService:
                 "ok": True,
                 "language": getattr(user, "language", None) or "uz",
                 "mode": mode,
+                "access": self._access_payload(user),
                 "support_url": await get_admin_contact_url(self.session),
                 "pending_payment": self._pending_payment_payload(pending_payment),
                 "offer": None,
@@ -195,6 +207,7 @@ class SubscriptionMiniAppService:
             "ok": True,
             "language": getattr(user, "language", None) or "uz",
             "mode": mode,
+            "access": self._access_payload(user),
             "support_url": await get_admin_contact_url(self.session),
             "pending_payment": None,
             "offer": offer,

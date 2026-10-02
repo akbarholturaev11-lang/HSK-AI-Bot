@@ -48,6 +48,12 @@
     <string name="sub_focus_voice">Voice suhbat va talaffuz</string>
     <string name="sub_focus_body">Obuna bilan ushbu bo‘limni cheklovsiz davom ettirasiz.</string>
     <string name="sub_plans_heading">Tarif</string>
+    <string name="sub_active_expiry_current">Amaldagi obuna: %1$s gacha</string>
+    <string name="sub_active_expiry_after">Tanlangan tarifdan so‘ng: %1$s gacha</string>
+    <string name="sub_renewal_confirm_title">Obunani uzaytirasizmi?</string>
+    <string name="sub_renewal_confirm_body">Hozirgi muddat %1$s da tugaydi. %2$s tarifini qo‘shsangiz, yangi muddat %3$s gacha bo‘ladi.</string>
+    <string name="sub_renewal_edit">Tarifni o‘zgartirish</string>
+    <string name="sub_change_payment">To‘lov turini o‘zgartirish</string>
     <string name="sub_trial_title">7 kun Pro bepul</string>
     <string name="sub_trial_body">Barcha asosiy imkoniyatlarni sinab ko‘rasiz. Avtomatik pul yechilmaydi.</string>
     <string name="sub_trial_button">7 kun bepul sinash</string>
