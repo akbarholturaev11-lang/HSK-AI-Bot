@@ -30,6 +30,10 @@ MODEL_PRICING_USD_PER_1M = {
     # Gemini (asosiy provayder), 1M token uchun (input, output) USD.
     # 2026-09-22 da Google'ning rasmiy narx sahifasidan olindi.
     "gemini-3.5-flash-lite": (0.30, 2.50),
+    # Gemini Live audio tariflari. Audio tarifini transkript tokenlariga ham
+    # qo'llash qasddan yuqoriroq hisob beradi; xarajat past ko'rsatilmaydi.
+    # Manba: Gemini API pricing, 2026-10-02.
+    "gemini-3.8-live": (3.00, 12.00),
     "gemini-3.5-flash": (1.50, 9.00),
     # DIQQAT: bu aksiya narxi — 2026-12-31 gacha. 2027-01-01 dan
     # (1.50, 7.50) bo'ladi. O'sha sanada shu qatorni yangilash kerak,

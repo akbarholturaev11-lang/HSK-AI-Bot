@@ -219,6 +219,7 @@
     <string name="voice_limit_free">Сӯҳбати ройгони боқимонда: %1$d</string>
     <string name="voice_session_title">Сӯҳбат</string>
     <string name="voice_turn_progress">%1$d / %2$d реплика</string>
+    <string name="voice_time_remaining">Вақти боқимонда %1$02d:%2$02d</string>
     <string name="voice_end">Анҷом</string>
     <string name="voice_hide_chat">Матни суҳбатро пинҳон кардан</string>
     <string name="voice_show_chat">Матни суҳбатро нишон додан</string>
@@ -394,6 +395,9 @@
     <string name="voice_status_listening">Шуморо гӯш мекунам…</string>
     <string name="voice_status_analyzing">Таҳлил мекунам…</string>
     <string name="voice_status_speaking">Сухан мегӯяд…</string>
+    <string name="voice_status_muted">Микрофон хомӯш аст</string>
+    <string name="voice_status_live_disconnected">Пайваст қатъ шуд. Барои пайвастшавӣ микрофонро пахш кунед.</string>
+    <string name="voice_status_fallback">Live пайваст нашуд. Ба суҳбати одии овозӣ гузаштем.</string>
     <string name="voice_what_to_say">Чӣ гӯям?</string>
     <string name="voice_hints_title">Чӣ гуфтан мумкин</string>
     <string name="voice_hints_words">Калимаҳои ин дарс</string>
@@ -405,6 +409,9 @@
     <string name="voice_a11y_send">фиристодан</string>
     <string name="voice_tap_to_speak">Барои гап задан микрофонро пахш кунед</string>
     <string name="voice_tap_to_stop">Барои фиристодан боз пахш кунед</string>
+    <string name="voice_live_tap_mute">Микрофонро хомӯш кунед</string>
+    <string name="voice_live_tap_unmute">Микрофонро фаъол кунед</string>
+    <string name="voice_live_tap_reconnect">Дубора пайваст шавед</string>
     <string name="drill_recognition_prompt">Иероглифи дурустро ёбед</string>
     <string name="drill_pronunciation_prompt">Гӯш кунед ва такрор кунед</string>
     <string name="limit_practice_reason">Истифодаи ройгони ин бахш ба анҷом расид.</string>

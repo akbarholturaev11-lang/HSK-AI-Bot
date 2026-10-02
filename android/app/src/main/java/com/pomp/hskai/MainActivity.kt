@@ -334,6 +334,8 @@ private fun AppRoot(
                     recorder = app.voiceRecorder,
                     courseRepository = app.courseRepository,
                     audioPlayer = app.lessonAudioPlayer,
+                    liveVoiceGateway = app.liveVoiceGateway,
+                    liveVoiceAudioEngine = app.liveVoiceAudioEngine,
                 ),
             )
             val voiceState by voiceViewModel.state.collectAsStateWithLifecycle()

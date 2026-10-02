@@ -336,6 +336,7 @@ class FeatureRepository(
         level: String,
         language: String,
         voice: String = "female",
+        mode: String = "turn",
     ): ApiResult<VoiceStartResponse> = authorized {
         api.voiceStart(
             it,
@@ -344,6 +345,7 @@ class FeatureRepository(
                 level = level.toVoiceLevel(),
                 language = language,
                 voice = voice,
+                mode = mode.takeIf { it == "live" },
             ),
         )
     }

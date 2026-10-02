@@ -2,38 +2,38 @@
 
 ## 1. Project Identity
 
-Project name: Unknown / needs inspection  
-Project type: Telegram Bot / Mini App / Website / Backend / Other  
-Main purpose: Unknown / needs inspection  
-Target users: Unknown / needs inspection  
-Current status: Unknown / needs inspection  
+Project name: HSK AI
+Project type: Telegram bot, Mini App, native Android app, and backend API
+Main purpose: Chinese learning practice aligned to HSK courses
+Target users: Uzbek, Russian, and Tajik speaking HSK learners
+Current status: Active production project
 
 Short description:
-- This project is built to: Unknown / needs inspection
-- Main user problem: Unknown / needs inspection
-- Main business goal: Unknown / needs inspection
+- This project is built to teach Chinese through structured lessons, practice, and AI conversation.
+- Main user problem: provide a consistent, localized Chinese learning path across Telegram and Android.
+- Main business goal: grow course engagement and paid subscriptions without bypassing access rules.
 
 ---
 
 ## 2. Core Architecture
 
 Frontend:
-- Unknown / needs inspection
+- Telegram Mini App under `app/static/`; native Android uses Kotlin and Jetpack Compose.
 
 Backend:
-- Unknown / needs inspection
+- FastAPI API plus Aiogram bot handlers; async SQLAlchemy services own business rules.
 
 Database:
-- Unknown / needs inspection
+- SQLAlchemy models and Alembic migrations; includes users, courses, voice sessions, and AI usage events.
 
 Hosting:
 - Unknown / needs inspection
 
 Bot framework:
-- Unknown / needs inspection
+- Aiogram.
 
 AI provider/model:
-- Unknown / needs inspection
+- Gemini is the primary provider with OpenAI fallback where supported; feature services may pin models.
 
 Payment system:
 - Unknown / needs inspection
@@ -118,6 +118,14 @@ Main files:
 
 Important note:
 - Do not rename or delete important files unless necessary.
+
+Android Live Voice:
+- Android's existing upload based voice mode remains `turn`; native bidirectional audio uses `live`.
+- Flow: `AudioRecord`/`AudioTrack` → authenticated WSS `/api/v3/android/voice/live` → server-side Gemini Live. Provider credentials never go to Android.
+- Migration `0095_android_live_voice` adds mode, connection lease, resumption handle, live start time, and session cost to `voice_practice_sessions`.
+- `ANDROID_VOICE_LIVE_ENABLED` defaults off. The server also requires paid Gemini billing, the configured Live model, a positive session budget, and a Telegram user allowlist. Do not enable until provider usage semantics/cost and physical-device audio are verified.
+- Server cap is 180 seconds per Live session and 7 dialogue turns; the app shows remaining time. Audio usage and transcript evaluation are recorded through the shared AI budget service.
+- Key files: `app/api/android_live_voice.py`, `app/services/android_live_voice_service.py`, `app/services/voice_practice_service.py`, Android `feature/voice/LiveVoiceSocket.kt`, and `core/audio/LiveVoiceAudioEngine.kt`.
 
 Android klienti:
 - `android/app/src/main/java/com/pomp/hskai/core/design/Color.kt` — palitra;

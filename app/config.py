@@ -4,6 +4,13 @@ from typing import List, Literal
 
 class Settings(BaseSettings):
     ANDROID_ASSISTANT_ENABLED: bool = True
+    # Android real-time voice remains unavailable until the paid provider
+    # project and an internal pilot allowlist are explicitly configured.
+    ANDROID_VOICE_LIVE_ENABLED: bool = False
+    ANDROID_VOICE_LIVE_ALLOWED_USERS: str = ""
+    ANDROID_VOICE_LIVE_MODEL: str = "gemini-3.8-live"
+    ANDROID_VOICE_LIVE_MAX_SECONDS: int = 180
+    ANDROID_VOICE_LIVE_SESSION_BUDGET_USD: float = 0.15
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

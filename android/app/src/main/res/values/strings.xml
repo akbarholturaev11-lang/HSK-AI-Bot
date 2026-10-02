@@ -255,6 +255,7 @@
     <string name="voice_limit_free">Bepul qolgan suhbat: %1$d</string>
     <string name="voice_session_title">Suhbat</string>
     <string name="voice_turn_progress">%1$d / %2$d dialog</string>
+    <string name="voice_time_remaining">Qolgan vaqt %1$02d:%2$02d</string>
     <string name="voice_end">Tugatish</string>
     <string name="voice_hide_chat">Suhbat matnini yashirish</string>
     <string name="voice_show_chat">Suhbat matnini ko‘rsatish</string>
@@ -432,6 +433,9 @@
     <string name="voice_status_listening">Sizni tinglayapman…</string>
     <string name="voice_status_analyzing">Tahlil qilyapman…</string>
     <string name="voice_status_speaking">Gapiryapti…</string>
+    <string name="voice_status_muted">Mikrofon o‘chiq</string>
+    <string name="voice_status_live_disconnected">Aloqa uzildi. Qayta ulanish uchun mikrofonni bosing.</string>
+    <string name="voice_status_fallback">Live ulanish ishlamadi. Oddiy ovozli suhbatga o‘tildi.</string>
     <string name="voice_what_to_say">Nima deyish?</string>
     <string name="voice_hints_title">Nima deyish mumkin</string>
     <string name="voice_hints_words">Shu darsning so‘zlari</string>
@@ -443,6 +447,9 @@
     <string name="voice_a11y_send">yuborish</string>
     <string name="voice_tap_to_speak">Gapirish uchun mikrofonni bosing</string>
     <string name="voice_tap_to_stop">Yuborish uchun yana bosing</string>
+    <string name="voice_live_tap_mute">Mikrofonni o‘chirish</string>
+    <string name="voice_live_tap_unmute">Mikrofonni yoqish</string>
+    <string name="voice_live_tap_reconnect">Qayta ulanish</string>
     <string name="drill_recognition_prompt">To‘g‘ri ieroglifni toping</string>
     <string name="drill_pronunciation_prompt">Eshiting va takrorlang</string>
     <string name="limit_practice_reason">Bu bo‘limdan bepul foydalanishingiz tugadi.</string>

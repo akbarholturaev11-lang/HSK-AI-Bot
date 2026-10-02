@@ -95,6 +95,7 @@ from app.services.subscription_entry_analytics_service import (
 )
 from app.services.subscription_currency_service import SubscriptionCurrencyService
 from app.services.user_access_state_service import UserAccessState, UserAccessStateService
+from app.services.android_live_voice_service import live_voice_available
 from app.services.voice_practice_service import (
     LANGUAGE_NAMES,
     MAX_TEXT_CHARS as VOICE_MAX_TEXT_CHARS,
@@ -171,6 +172,12 @@ class AndroidProfileUpdateRequest(BaseModel):
 
     display_name: str = Field(default="", max_length=80)
     avatar_key: str = Field(default="", max_length=32)
+
+
+class AndroidVoiceStartRequest(DesktopVoiceStartRequest):
+    """Android can opt into Live only when the server advertises the pilot."""
+
+    mode: Literal["turn", "live"] = "turn"
 
 
 class AndroidAdViewRequest(BaseModel):
@@ -1642,6 +1649,7 @@ def create_android_features_router(
             async with session_factory() as session:
                 telegram_id = await _telegram_id(session, request)
                 result = await voice_service_factory(session).user_status(telegram_id)
+                result["live_available"] = live_voice_available(settings_obj, telegram_id)
             return JSONResponse(content={"ok": True, **result}, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, VoicePracticeError) as exc:
             return _error_response(exc)
@@ -1654,7 +1662,7 @@ def create_android_features_router(
     @router.post("/api/v3/android/voice/session/start")
     async def android_voice_start(request: Request):
         try:
-            payload = await _validated_voice_payload(request, DesktopVoiceStartRequest)
+            payload = await _validated_voice_payload(request, AndroidVoiceStartRequest)
             if payload.language not in LANGUAGE_NAMES:
                 raise VoicePracticeError(
                     "ANDROID_VOICE_REQUEST_INVALID",
@@ -1665,12 +1673,19 @@ def create_android_features_router(
                 raise VoicePracticeError("INVALID_ROLE", "Unknown conversation role.", 422)
             async with session_factory() as session:
                 telegram_id = await _telegram_id(session, request)
+                if payload.mode == "live" and not live_voice_available(settings_obj, telegram_id):
+                    raise VoicePracticeError("LIVE_UNAVAILABLE", "Live Voice is not available.", 503)
+                start_args = {
+                    "role": payload.role,
+                    "level": payload.level,
+                    "language": payload.language,
+                    "voice": payload.voice,
+                }
+                if payload.mode == "live":
+                    start_args["mode"] = "live"
                 result = await voice_service_factory(session).start_session(
                     telegram_id,
-                    role=payload.role,
-                    level=payload.level,
-                    language=payload.language,
-                    voice=payload.voice,
+                    **start_args,
                 )
             return JSONResponse(content={"ok": True, **result}, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, VoicePracticeError) as exc:

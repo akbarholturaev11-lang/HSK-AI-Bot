@@ -3,9 +3,11 @@ package com.pomp.hskai
 import android.app.Application
 import androidx.room.Room
 import com.pomp.hskai.core.audio.AndroidLessonAudioPlayer
+import com.pomp.hskai.core.audio.AndroidLiveVoiceAudioEngine
 import com.pomp.hskai.core.audio.AndroidVoiceRecorder
 import com.pomp.hskai.core.audio.DiskTtsCache
 import com.pomp.hskai.core.audio.LessonAudioPlayer
+import com.pomp.hskai.core.audio.LiveVoiceAudioEngine
 import com.pomp.hskai.core.audio.TtsCache
 import com.pomp.hskai.core.audio.VoiceRecorder
 import com.pomp.hskai.core.auth.AuthRepository
@@ -42,6 +44,8 @@ import com.pomp.hskai.widget.*
 import com.pomp.hskai.core.notify.StudyReminderCoordinator
 import com.pomp.hskai.core.notify.StudyReminderScheduler
 import com.pomp.hskai.feature.update.UpdateWatch
+import com.pomp.hskai.feature.voice.AndroidLiveVoiceGateway
+import com.pomp.hskai.feature.voice.LiveVoiceGateway
 import com.pomp.hskai.core.notify.StudyNotifications
 import com.pomp.hskai.core.notify.AccountNoticeMonitor
 import com.pomp.hskai.core.notify.PaymentDecisionMonitor
@@ -117,6 +121,19 @@ class HskAiApplication : Application() {
             .build()
     }
 
+    /** Long-lived duplex calls need independent timeouts and no HTTP redirects. */
+    private val liveVoiceHttpClient: OkHttpClient by lazy {
+        OkHttpClient.Builder()
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(0, TimeUnit.MILLISECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .pingInterval(20, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(false)
+            .followRedirects(false)
+            .followSslRedirects(false)
+            .build()
+    }
+
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl("${BuildConfig.API_ORIGIN}/")
@@ -156,6 +173,16 @@ class HskAiApplication : Application() {
     val ttsCache: TtsCache by lazy { DiskTtsCache(File(cacheDir, "tts")) }
 
     val voiceRecorder: VoiceRecorder by lazy { AndroidVoiceRecorder(this) }
+
+    val liveVoiceAudioEngine: LiveVoiceAudioEngine by lazy { AndroidLiveVoiceAudioEngine(this) }
+
+    val liveVoiceGateway: LiveVoiceGateway by lazy {
+        AndroidLiveVoiceGateway(
+            client = liveVoiceHttpClient,
+            accessToken = authRepository::accessToken,
+            onSessionExpired = authRepository::invalidateSession,
+        )
+    }
 
     val authRepository: AuthRepository by lazy {
         AuthRepository(

@@ -682,7 +682,10 @@ class VoicePracticeService:
         level: str,
         language: str,
         voice: str,
+        mode: str = "turn",
     ) -> dict:
+        if mode not in {"turn", "live"}:
+            raise VoicePracticeError("INVALID_MODE", "Unknown voice mode.", 422)
         if role not in ROLE_PROMPTS:
             raise VoicePracticeError("INVALID_ROLE", "Unknown conversation role.")
         level = (level or "").strip().lower()
@@ -718,7 +721,7 @@ class VoicePracticeService:
         }
         offset_minutes = await self._offset_minutes(telegram_id)
         await self._retire_stale_sessions(telegram_id, offset_minutes)
-        item = await self._reusable_session(telegram_id, offset_minutes)
+        item = await self._reusable_session(telegram_id, offset_minutes, mode=mode)
         if item is None:
             item = VoicePracticeSession(id=str(uuid.uuid4()), user_telegram_id=telegram_id)
             self.session.add(item)
@@ -726,7 +729,13 @@ class VoicePracticeService:
         item.level = level
         item.language = language
         item.voice = voice
+        item.mode = mode
         item.status = "active"
+        item.live_connection_token = None
+        item.live_connection_expires_at = None
+        item.live_started_at = datetime.now(timezone.utc) if mode == "live" else None
+        item.live_cost_usd = 0.0
+        item.live_resumption_handle = None
         item.ended_at = None
         item.history = []
         item.corrections = []
@@ -747,6 +756,7 @@ class VoicePracticeService:
         next_status = await self.user_status(telegram_id)
         return {
             "session_id": item.id,
+            "mode": mode,
             "user_status": {"is_paid": status["is_paid"], "plan": status["plan"]},
             "remaining_limit": next_status["remaining_voice_limit"],
             "character": role,
@@ -777,7 +787,7 @@ class VoicePracticeService:
         )
 
     async def _reusable_session(
-        self, telegram_id: int, offset_minutes: int
+        self, telegram_id: int, offset_minutes: int, *, mode: str = "turn"
     ) -> VoicePracticeSession | None:
         """Bugungi hali gapirilmagan sessiya qatori (bo'lsa).
 
@@ -791,6 +801,7 @@ class VoicePracticeService:
             .where(
                 VoicePracticeSession.user_telegram_id == telegram_id,
                 VoicePracticeSession.turn_count == 0,
+                VoicePracticeSession.mode == mode,
                 VoicePracticeSession.started_at >= self._day_start(offset_minutes),
             )
             .order_by(VoicePracticeSession.started_at.desc())
@@ -1078,6 +1089,8 @@ class VoicePracticeService:
                 raise VoicePracticeError("AUDIO_TOO_LARGE", "Audio hajmi juda katta.", 413)
 
         item = await self._get_active_session(telegram_id, session_id)
+        if getattr(item, "mode", "turn") != "turn":
+            raise VoicePracticeError("SESSION_MODE_MISMATCH", "Voice session mode mismatch.", 409)
         if item.turn_count >= MAX_DIALOGS_PER_SESSION:
             raise VoicePracticeError("TURN_LIMIT_EXCEEDED", "Bu voice sessiya dialog limitiga yetdi.", 403)
         paid = await self._is_paid_telegram_user(telegram_id)
@@ -1166,6 +1179,160 @@ class VoicePracticeService:
             "max_dialogs": MAX_DIALOGS_PER_SESSION,
             "session_should_end": session_should_end,
             "budget_notice": self._budget_notice_payload(transcribe_record, reply_record),
+        }
+
+    async def process_live_turn(
+        self,
+        telegram_id: int,
+        *,
+        session_id: str,
+        transcription: str,
+        assistant_text: str,
+        provider_usage: AIUsageResult | None = None,
+    ) -> dict:
+        """Persist one completed Live turn and enrich it for the course UI.
+
+        Speech playback never waits for the text evaluator. If enrichment
+        fails, the transcript is still stored and counts as the same one
+        dialogue turn as the existing upload-based flow.
+        """
+        user_text = str(transcription or "").strip()[:500]
+        spoken_reply = str(assistant_text or "").strip()[:500]
+        if not user_text or not spoken_reply:
+            raise VoicePracticeError("LIVE_TURN_EMPTY", "Live transcript is incomplete.")
+
+        item = await self._get_active_session(telegram_id, session_id)
+        if item.mode != "live":
+            raise VoicePracticeError("SESSION_MODE_MISMATCH", "Voice session mode mismatch.", 409)
+        if item.turn_count >= MAX_DIALOGS_PER_SESSION:
+            raise VoicePracticeError("TURN_LIMIT_EXCEEDED", "Bu voice sessiya dialog limitiga yetdi.", 403)
+
+        paid = await self._is_paid_telegram_user(telegram_id)
+        if paid:
+            await self._ensure_budget_available(telegram_id)
+        else:
+            from app.services.entitlements.state import EntitlementState, resolve_state
+
+            user = await self.user_repo.get_by_telegram_id(telegram_id)
+            state = resolve_state(user)
+            if state == EntitlementState.BLOCKED:
+                raise VoicePracticeError("access_blocked", "Access blocked.", 403)
+            if state == EntitlementState.TRIAL_ACTIVE:
+                await self._ensure_budget_available(telegram_id)
+
+        reply = {
+            "chinese_reply": spoken_reply,
+            "pinyin": "",
+            "translation": "",
+            "correction": None,
+            "error_type": "none",
+            "suggestions": [],
+        }
+        evaluation_usage = None
+        try:
+            if settings.ai_enabled:
+                ai = AIService()
+                result = await asyncio.wait_for(
+                    ai.complete_messages_with_usage(
+                        messages=[
+                            {
+                                "role": "system",
+                                "content": (
+                                    "Evaluate a Chinese-learning voice turn. Do not rewrite the partner's spoken line. "
+                                    f"The learner's explanation language is {LANGUAGE_NAMES.get(item.language, 'Russian')}. "
+                                    "Return JSON only with pinyin, translation, correction, error_type, suggestions. "
+                                    "pinyin and translation must describe the partner's exact spoken line. "
+                                    "Set correction to null if the learner sentence is acceptable. Correct only clear, "
+                                    "important Chinese grammar, word-choice, or pronunciation errors visible in the "
+                                    "transcript; never invent a pronunciation error. error_type is grammar, word, "
+                                    "pronunciation, or none. suggestions must be an array of exactly two short natural "
+                                    "Chinese replies with zh, pinyin, and translation keys."
+                                ),
+                            },
+                            {
+                                "role": "user",
+                                "content": json.dumps(
+                                    {
+                                        "learner_chinese": user_text,
+                                        "partner_spoken_chinese": spoken_reply,
+                                        "level": item.level,
+                                        "lesson_words": item.target_words or [],
+                                    },
+                                    ensure_ascii=False,
+                                ),
+                            },
+                        ],
+                        openai_model="gpt-4o-mini",
+                        response_format={"type": "json_object"},
+                        max_completion_tokens=VOICE_REPLY_MAX_TOKENS,
+                        temperature=0.2,
+                        gemini_model=GEMINI_FAST_MODEL,
+                    ),
+                    timeout=18,
+                )
+                data = json.loads(result.content)
+                reply = self._clean_reply(
+                    json.dumps(
+                        {
+                            "chinese_reply": spoken_reply,
+                            "pinyin": data.get("pinyin"),
+                            "translation": data.get("translation"),
+                            "correction": data.get("correction"),
+                            "error_type": data.get("error_type"),
+                            "suggestions": data.get("suggestions"),
+                        },
+                        ensure_ascii=False,
+                    )
+                )
+                evaluation_usage = result
+        except Exception:  # noqa: BLE001 — spoken turn must survive evaluator failures
+            logger.exception("Android Live Voice turn enrichment failed for user %s", telegram_id)
+
+        budget_service = AIUsageBudgetService(self.session)
+        provider_record = await budget_service.record_usage(
+            telegram_id=telegram_id,
+            result=provider_usage,
+            source="voice_live_audio",
+        )
+        evaluation_record = await budget_service.record_usage(
+            telegram_id=telegram_id,
+            result=evaluation_usage,
+            source="voice_live_evaluation",
+        )
+        turn_cost_usd = provider_record.cost_usd + evaluation_record.cost_usd
+
+        history = list(item.history or [])
+        history.append(
+            {
+                "user": user_text,
+                "assistant": spoken_reply,
+                "pinyin": reply["pinyin"],
+                "translation": reply["translation"],
+                "correction": reply["correction"],
+                "error_type": reply["error_type"],
+            }
+        )
+        item.history = history[-20:]
+        if reply["correction"]:
+            item.corrections = [*list(item.corrections or []), reply["correction"]][-20:]
+        item.turn_count += 1
+        item.live_cost_usd = float(item.live_cost_usd or 0.0) + turn_cost_usd
+        await self.session.commit()
+
+        status = await self.user_status(telegram_id)
+        return {
+            "transcription": user_text,
+            **reply,
+            "audio_reply_url": None,
+            "audio_reply_base64": None,
+            "remaining_limit": status["remaining_voice_limit"],
+            "turn_count": item.turn_count,
+            "max_dialogs": MAX_DIALOGS_PER_SESSION,
+            "session_should_end": item.turn_count >= MAX_DIALOGS_PER_SESSION,
+            "evaluation_ready": evaluation_usage is not None,
+            "turn_cost_usd": round(turn_cost_usd, 8),
+            "session_cost_usd": round(item.live_cost_usd, 8),
+            "budget_notice": self._budget_notice_payload(provider_record, evaluation_record),
         }
 
     @staticmethod
@@ -1390,6 +1557,8 @@ class VoicePracticeService:
             started_at = started_at.replace(tzinfo=timezone.utc)
         item.status = "completed"
         item.ended_at = ended_at
+        item.live_started_at = None
+        item.live_resumption_handle = None
 
         # To'liq dialog transkripti: har bir navbat uchun user jumlasi, AI javobi,
         # pinyin/tarjima va xato bo'lgan-bo'lmagani. Frontend "zo'r gapirgan joylar"ni

@@ -23,6 +23,7 @@ from app.services.entitlements import actions as A
 from app.services.entitlements.limits_config import LimitConfigService
 from app.services.voice_practice_service import (
     FREE_TOTAL_SESSIONS,
+    VoicePracticeError,
     VoicePracticeService,
 )
 
@@ -134,6 +135,51 @@ class ResetInstantTests(_VoiceLimitCase):
         self.assertIsNone(status["reset_at"])
 
 
+class VoiceSessionModeTests(_VoiceLimitCase):
+
+    async def test_live_and_upload_sessions_use_separate_reusable_rows(self):
+        await self._status(paid=True)
+        async with self.sessions() as session:
+            service = VoicePracticeService(session)
+            service.user_status = AsyncMock(
+                return_value={"remaining_voice_limit": -1, "is_paid": True, "plan": "premium"}
+            )
+            service._course_context = AsyncMock(
+                return_value={"lesson_id": None, "words": [], "review_words": []}
+            )
+            service._learner_plan = AsyncMock(return_value={})
+
+            turn = await service.start_session(
+                123,
+                role="friend",
+                level="hsk1",
+                language="ru",
+                voice="female",
+                mode="turn",
+            )
+            live = await service.start_session(
+                123,
+                role="friend",
+                level="hsk1",
+                language="ru",
+                voice="female",
+                mode="live",
+            )
+            live_again = await service.start_session(
+                123,
+                role="friend",
+                level="hsk1",
+                language="ru",
+                voice="female",
+                mode="live",
+            )
+
+        self.assertEqual("turn", turn["mode"])
+        self.assertEqual("live", live["mode"])
+        self.assertNotEqual(turn["session_id"], live["session_id"])
+        self.assertEqual(live["session_id"], live_again["session_id"])
+
+
 class SharedWindowTests(unittest.TestCase):
 
     def test_voice_uses_the_same_window_as_the_course_limits(self):
@@ -143,6 +189,42 @@ class SharedWindowTests(unittest.TestCase):
             course_daily_window.day_start(300),
             VoicePracticeService._day_start(300),
         )
+
+
+class VoiceSessionTransportIsolationTests(unittest.IsolatedAsyncioTestCase):
+    async def test_upload_turn_rejects_a_live_session(self):
+        service = VoicePracticeService(object())
+        service._get_active_session = AsyncMock(
+            return_value=SimpleNamespace(mode="live", turn_count=0)
+        )
+
+        with patch("app.services.voice_practice_service.settings.ai_enabled", True):
+            with self.assertRaises(VoicePracticeError) as raised:
+                await service.process_message(
+                    123,
+                    session_id="live-session-123",
+                    audio_bytes=b"",
+                    filename="",
+                    text="你好",
+                )
+
+        self.assertEqual("SESSION_MODE_MISMATCH", raised.exception.code)
+
+    async def test_live_turn_rejects_an_upload_session(self):
+        service = VoicePracticeService(object())
+        service._get_active_session = AsyncMock(
+            return_value=SimpleNamespace(mode="turn", turn_count=0)
+        )
+
+        with self.assertRaises(VoicePracticeError) as raised:
+            await service.process_live_turn(
+                123,
+                session_id="turn-session-123",
+                transcription="你好",
+                assistant_text="你好！",
+            )
+
+        self.assertEqual("SESSION_MODE_MISMATCH", raised.exception.code)
 
 
 if __name__ == "__main__":

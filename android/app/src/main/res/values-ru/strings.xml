@@ -218,6 +218,7 @@
     <string name="voice_limit_free">Бесплатных разговоров осталось: %1$d</string>
     <string name="voice_session_title">Разговор</string>
     <string name="voice_turn_progress">%1$d / %2$d реплик</string>
+    <string name="voice_time_remaining">Осталось %1$02d:%2$02d</string>
     <string name="voice_end">Завершить</string>
     <string name="voice_hide_chat">Скрыть текст диалога</string>
     <string name="voice_show_chat">Показать текст диалога</string>
@@ -393,6 +394,9 @@
     <string name="voice_status_listening">Слушаю вас…</string>
     <string name="voice_status_analyzing">Анализирую…</string>
     <string name="voice_status_speaking">Говорит…</string>
+    <string name="voice_status_muted">Микрофон выключен</string>
+    <string name="voice_status_live_disconnected">Связь прервалась. Нажмите микрофон, чтобы подключиться снова.</string>
+    <string name="voice_status_fallback">Не удалось подключить Live. Переключились на обычный голосовой чат.</string>
     <string name="voice_what_to_say">Что сказать?</string>
     <string name="voice_hints_title">Что можно сказать</string>
     <string name="voice_hints_words">Слова этого урока</string>
@@ -404,6 +408,9 @@
     <string name="voice_a11y_send">отправить</string>
     <string name="voice_tap_to_speak">Нажмите микрофон, чтобы говорить</string>
     <string name="voice_tap_to_stop">Нажмите ещё раз, чтобы отправить</string>
+    <string name="voice_live_tap_mute">Выключить микрофон</string>
+    <string name="voice_live_tap_unmute">Включить микрофон</string>
+    <string name="voice_live_tap_reconnect">Подключиться снова</string>
     <string name="drill_recognition_prompt">Найдите нужный иероглиф</string>
     <string name="drill_pronunciation_prompt">Послушайте и повторите</string>
     <string name="limit_practice_reason">Бесплатное использование этого раздела закончилось.</string>

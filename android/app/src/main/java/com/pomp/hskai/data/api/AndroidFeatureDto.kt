@@ -825,6 +825,7 @@ data class VoiceStatusResponse(
     @SerialName("level") val level: String = "hsk1",
     @SerialName("language") val language: String = "uz",
     @SerialName("completed_lessons") val completedLessons: Int = 0,
+    @SerialName("live_available") val liveAvailable: Boolean = false,
     /**
      * When the daily free limit reopens, as a server instant. Null for a
      * subscriber (no limit) and whenever the server did not say.
@@ -838,12 +839,14 @@ data class VoiceStartRequest(
     @SerialName("level") val level: String,
     @SerialName("language") val language: String,
     @SerialName("voice") val voice: String = "female",
+    @SerialName("mode") val mode: String? = null,
 )
 
 @Serializable
 data class VoiceStartResponse(
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("session_id") val sessionId: String = "",
+    @SerialName("mode") val mode: String = "turn",
     @SerialName("remaining_limit") val remainingLimit: Int = 0,
     @SerialName("character") val character: String = "",
     @SerialName("opening_message") val openingMessage: VoiceReplyDto =

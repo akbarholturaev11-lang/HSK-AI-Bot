@@ -135,14 +135,18 @@ internal fun VoiceCallScreen(
     // MainScaffold already pads the status bar and hides the tab bar for a
     // running call, so the screen adds neither again — doing so opened a gap
     // at the top and another above the dock.
+    val turnProgress = stringResource(
+        R.string.voice_turn_progress,
+        state.turnCount,
+        state.maxDialogs,
+    )
+    val liveTime = state.liveSecondsRemaining?.let { seconds ->
+        stringResource(R.string.voice_time_remaining, seconds / 60, seconds % 60)
+    }
     Column(modifier = Modifier.fillMaxSize()) {
         CallTopBar(
             title = stringResource(partnerTitleRes(state.selectedRole)),
-            subtitle = stringResource(
-                R.string.voice_turn_progress,
-                state.turnCount,
-                state.maxDialogs,
-            ),
+            subtitle = if (state.isLive && liveTime != null) "$turnProgress · $liveTime" else turnProgress,
             onClose = onEndSession,
             transcriptVisible = transcriptVisible,
             onToggleTranscript = { transcriptVisible = !transcriptVisible },
@@ -152,6 +156,10 @@ internal fun VoiceCallScreen(
 
         val status = when {
             state.isStarting -> stringResource(R.string.voice_status_connecting)
+            state.isLiveConnecting -> stringResource(R.string.voice_status_connecting)
+            state.isLive && state.isAiSpeaking -> stringResource(R.string.voice_status_speaking)
+            state.isLive && state.isLiveMuted -> stringResource(R.string.voice_status_muted)
+            state.isLive && !state.isLiveConnected -> stringResource(R.string.voice_status_live_disconnected)
             state.isRecording -> stringResource(R.string.voice_status_listening)
             state.isSending -> stringResource(R.string.voice_status_analyzing)
             else -> stringResource(R.string.voice_status_speaking)
@@ -221,6 +229,16 @@ internal fun VoiceCallScreen(
                 }
             }
         }
+        if (state.usedTurnFallback) {
+            Text(
+                text = stringResource(R.string.voice_status_fallback),
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
+                color = PompColors.InkSecondary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 2.dp),
+            )
+        }
+
 
         CallDock(
             state = state,
@@ -537,7 +555,7 @@ private fun CallDock(
                     ) {
                         MicButton(
                             isRecording = state.isRecording,
-                            enabled = state.hasSession && !state.isSending,
+                            enabled = state.hasSession && (!state.isSending || state.isLive),
                             onClick = onMic,
                         )
                     }
@@ -548,6 +566,9 @@ private fun CallDock(
                 Text(
                     text = when {
                         state.isSending -> stringResource(R.string.voice_sending)
+                        state.isLive && !state.isLiveConnected -> stringResource(R.string.voice_live_tap_reconnect)
+                        state.isLive && state.isLiveMuted -> stringResource(R.string.voice_live_tap_unmute)
+                        state.isLive -> stringResource(R.string.voice_live_tap_mute)
                         state.isRecording -> stringResource(R.string.voice_tap_to_stop)
                         else -> stringResource(R.string.voice_tap_to_speak)
                     },

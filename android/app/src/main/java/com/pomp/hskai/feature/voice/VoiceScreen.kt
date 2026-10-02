@@ -82,7 +82,7 @@ fun VoiceScreen(
     onToggleSubtitles: (Boolean) -> Unit,
     onToggleSlowSpeech: (Boolean) -> Unit,
     onSelectRole: (String) -> Unit,
-    onStartSession: (String, String) -> Unit,
+    onStartSession: (String, String, Boolean) -> Unit,
     onToggleRecording: () -> Unit,
     onSendText: (String) -> Unit,
     onEndSession: () -> Unit,
@@ -94,6 +94,31 @@ fun VoiceScreen(
     // A running call hides the tab bar and puts its own dock there instead,
     // so the floating AI button is told to clear the dock, not the tabs.
     val callActive = state.hasSession && state.result == null
+    val context = LocalContext.current
+    var pendingLiveStart by remember { mutableStateOf<Pair<String, String>?>(null) }
+    val livePermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        val pending = pendingLiveStart
+        pendingLiveStart = null
+        if (pending != null) onStartSession(pending.first, pending.second, granted)
+    }
+    val startVoice: (String, String) -> Unit = { selectedLevel, selectedLanguage ->
+        if (state.status?.liveAvailable == true) {
+            val granted = ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.RECORD_AUDIO,
+            ) == PackageManager.PERMISSION_GRANTED
+            if (granted) {
+                onStartSession(selectedLevel, selectedLanguage, true)
+            } else {
+                pendingLiveStart = selectedLevel to selectedLanguage
+                livePermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            }
+        } else {
+            onStartSession(selectedLevel, selectedLanguage, false)
+        }
+    }
     AssistantScreen(
         voiceAssistantContext(state, level),
         bottomBar = !callActive,
@@ -123,7 +148,7 @@ fun VoiceScreen(
                 hints = hints,
                 onDismissHint = onDismissHint,
                 onSelectRole = onSelectRole,
-                onStartSession = onStartSession,
+                onStartSession = startVoice,
                 onRetryStatus = onRetryStatus,
             )
         }
