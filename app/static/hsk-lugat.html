@@ -35,36 +35,35 @@ button:active{transform:scale(.96)}
 .lang-switch{display:flex;gap:7px;margin-bottom:12px}
 .lang-btn{min-height:32px;padding:7px 11px;border-radius:999px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);font-size:11px;font-weight:800}
 .lang-btn.active{border-color:rgba(91,140,255,.62);background:var(--accent-dim);color:var(--accent)}
-.search-row{position:relative;display:flex;align-items:stretch;gap:8px}
+.search-row{position:relative;display:flex;align-items:stretch}
 .search-wrap{position:relative;flex:1;min-width:0}
-#search{width:100%;padding:13px 16px;font-size:14px;font-weight:600;border-radius:16px;
+#search{width:100%;padding:13px 44px 13px 44px;font-size:14px;font-weight:600;border-radius:14px;
   background:var(--bg2);border:1.5px solid var(--border2);color:var(--text);outline:none;
   transition:border-color .15s ease, box-shadow .15s ease}
 #search::placeholder{color:var(--text2);font-weight:500}
 #search:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-dim)}
-.filter-btn{width:68px;border-radius:16px;background:var(--bg2);border:1.5px solid var(--border2);color:var(--text);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-weight:800;line-height:1;flex-shrink:0}
-.filter-btn span{font-size:9px;letter-spacing:.6px;text-transform:uppercase;color:var(--text2)}
-.filter-btn b{font-size:12px;font-weight:900;color:var(--accent)}
-.filter-btn.active{border-color:rgba(91,140,255,.62);background:var(--accent-dim)}
-.filter-panel,.search-history{position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:20;background:rgba(18,24,38,.98);
+.search-icon{position:absolute;left:16px;top:50%;width:18px;height:18px;transform:translateY(-50%);color:var(--text2);pointer-events:none}
+.search-clear{position:absolute;right:8px;top:50%;width:32px;height:32px;transform:translateY(-50%);border-radius:50%;color:var(--text2);font-size:19px;display:none;align-items:center;justify-content:center}
+.search-clear.visible{display:flex}
+.search-history{position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:20;background:rgba(18,24,38,.98);
   border:1px solid var(--border2);border-radius:16px;padding:12px;box-shadow:0 14px 40px rgba(0,0,0,.28);backdrop-filter:blur(16px)}
-.filter-panel.hidden,.search-history.hidden{display:none}
-.filter-title,.history-title{font-size:11px;color:var(--text2);font-weight:800;text-transform:uppercase;letter-spacing:.5px}
-.filter-chips,.history-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.filter-chip,.history-item{padding:9px 11px;border-radius:999px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:12px;font-weight:800}
-.filter-chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.search-history.hidden{display:none}
+.filter-stack{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+.filter-row{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-pill{min-height:34px;padding:7px 12px;border-radius:11px;background:var(--bg2);border:1px solid var(--border2);color:var(--text2);font-size:12px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.filter-pill.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
 .history-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .history-clear{font-size:11px;color:var(--accent);font-weight:800}
-.count{margin-top:10px;font-size:12px;color:var(--text2);font-weight:600}
-.list{flex:1;overflow-y:auto;padding-bottom:20px;-webkit-overflow-scrolling:touch}
-.row{display:flex;align-items:center;gap:13px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer}
-.row:active{background:var(--bg2)}
-.row .h{font-family:var(--cjk);font-size:23px;font-weight:700;min-width:58px}
+.count{flex-shrink:0;margin-left:10px;font-size:14px;color:var(--text2);font-weight:500}
+.list{flex:1;overflow-y:auto;padding:8px 20px 20px;display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch}
+.row{display:flex;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:var(--bg2);box-shadow:0 3px 9px rgba(33,29,23,.06);cursor:pointer;flex-shrink:0}
+.row:active{background:var(--bg3)}
+.row .h{font-family:var(--cjk);font-size:23px;font-weight:700;min-width:58px;color:var(--text)}
 .row .info{flex:1;min-width:0}
-.row .p{font-size:12px;color:var(--accent);font-weight:700;margin-bottom:2px}
+.row .p{font-size:14px;color:var(--accent);font-weight:600;margin-bottom:2px}
 .row .m{font-size:13px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row .lv{font-size:9px;color:var(--text2);background:var(--bg3);padding:3px 7px;border-radius:7px;font-weight:700;letter-spacing:.3px;flex-shrink:0}
+.row .lv{font-size:11px;color:var(--text2);background:var(--bg3);padding:6px 9px;border-radius:999px;font-weight:600;flex-shrink:0}
 .empty{padding:40px 20px;text-align:center;color:var(--text2);font-size:14px;line-height:1.6}
 
 /* ---- detail view ---- */
@@ -185,11 +184,11 @@ html.theme-light #app{background:#FBF7EF;}
 html.theme-light .char-box-lg .grid-bg line{stroke:rgba(33,29,23,.08);}
 html.theme-light #search:focus{box-shadow:0 0 0 4px rgba(194,64,58,.12);}
 html.theme-light .lang-btn.active{border-color:rgba(194,64,58,.55);}
-html.theme-light .filter-btn.active{border-color:rgba(194,64,58,.55);}
-html.theme-light .filter-panel,html.theme-light .search-history{background:rgba(255,255,255,.98);box-shadow:0 14px 34px rgba(33,29,23,.12);}
+html.theme-light .search-history{background:rgba(255,255,255,.98);box-shadow:0 14px 34px rgba(33,29,23,.12);}
 html.theme-light .lang-switch{display:none;}
-html.theme-light .hero-copy{display:none;}
+html.theme-light .hero-copy{display:block;}
 html.theme-light .hero{padding-bottom:10px;}
+html.theme-light .row .lv{background:#FBF0CC;}
 /* ---- dars ichidan ochiladigan yozilish ekrani (?fast=1) ---- */
 .fw-card{max-width:340px}
 .fw-box{width:min(330px,86vw);height:min(330px,86vw);touch-action:pan-y}
@@ -229,22 +228,23 @@ html.theme-light .hero{padding-bottom:10px;}
       <div class="hero-top">
         <button class="list-back-btn" id="list-back-btn" aria-label="Orqaga">←</button>
         <div class="hero-copy">
-          <div class="eyebrow" id="hero-eyebrow">汉字 · HSK 1–4</div>
-          <div class="hero-title" id="hero-title">Yangi so'zlar lug'ati</div>
+          <div class="hero-title" id="hero-title">Ierogliflar lug‘ati</div>
         </div>
+        <div class="count" id="count" aria-live="polite">0</div>
       </div>
       <div class="lang-switch" id="lang-switch"></div>
       <div class="search-row" id="search-row">
         <div class="search-wrap">
-          <input id="search" type="text" placeholder="Mano, pinyin yoki ieroglif bo'yicha qidiring…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"></circle><path d="m16 16 4.5 4.5"></path></svg>
+          <input id="search" type="text" placeholder="Ma’no, pinyin yoki ieroglif bo‘yicha qidiring…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          <button class="search-clear" id="search-clear" type="button" aria-label="Tozalash">×</button>
         </div>
-        <button class="filter-btn" id="filter-btn" type="button" aria-expanded="false">
-          <span id="filter-text">Filtr</span><b id="filter-label">1-4</b>
-        </button>
-        <div class="filter-panel hidden" id="filter-panel"></div>
         <div class="search-history hidden" id="search-history"></div>
       </div>
-      <div class="count" id="count"></div>
+      <div class="filter-stack" aria-label="Lug‘at filtrlari">
+        <div class="filter-row" id="version-filters" role="group" aria-label="Lug‘at versiyasi"></div>
+        <div class="filter-row" id="level-filters" role="group" aria-label="Daraja"></div>
+      </div>
     </div>
     <div class="list" id="list"></div>
   </div>
@@ -362,7 +362,10 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   if(window.HSK_FAST_WRITER){ initFastWriter(params); return; }
   var UI = {
     uz: {
-      title: "Yangi so'zlar lug'ati",
+      title: "Ierogliflar lug‘ati",
+      allWords: "Barcha so‘zlar",
+      versionFilter: "Lug‘at versiyasi",
+      levelFilter: "Daraja",
       placeholder: "Ma'no, pinyin yoki ieroglif bo'yicha qidiring…",
       countAll: function(n, level){ return level + ' · ' + n + " so'z"; },
       countResults: function(n){ return n + " natija"; },
@@ -375,10 +378,14 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       grammarExample: "Misol",
       filter: "Filtr",
       historyTitle: "Oxirgi qidiruvlar",
-      clearHistory: "Tozalash"
+      clearHistory: "Tozalash",
+      clearSearch: "Qidiruvni tozalash"
     },
     ru: {
-      title: "Словарь новых слов",
+      title: "Словарь иероглифов",
+      allWords: "Все слова",
+      versionFilter: "Версия словаря",
+      levelFilter: "Уровень",
       placeholder: "Поиск по значению, пиньиню или иероглифу…",
       countAll: function(n, level){ return level + ' · ' + n + " слов"; },
       countResults: function(n){ return n + " результатов"; },
@@ -391,10 +398,14 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       grammarExample: "Пример",
       filter: "Фильтр",
       historyTitle: "Последние поиски",
-      clearHistory: "Очистить"
+      clearHistory: "Очистить",
+      clearSearch: "Очистить поиск"
     },
     tj: {
-      title: "Луғати калимаҳои нав",
+      title: "Луғати иероглифҳо",
+      allWords: "Ҳамаи калимаҳо",
+      versionFilter: "Нашри луғат",
+      levelFilter: "Дараҷа",
       placeholder: "Ҷустуҷӯ аз рӯи маъно, пиньин ё иероглиф…",
       countAll: function(n, level){ return level + ' · ' + n + " калима"; },
       countResults: function(n){ return n + " натиҷа"; },
@@ -407,11 +418,12 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       grammarExample: "Мисол",
       filter: "Филтр",
       historyTitle: "Ҷустуҷӯҳои охир",
-      clearHistory: "Тоза кардан"
+      clearHistory: "Тоза кардан",
+      clearSearch: "Пок кардани ҷустуҷӯ"
     }
   };
   var levelLabels = {
-    all: 'HSK 1-4',
+    all: 'Barcha so‘zlar',
     hsk1: 'HSK 1',
     hsk2: 'HSK 2',
     hsk3: 'HSK 3',
@@ -454,11 +466,21 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   function normalizeFilterLevel(value){
     var raw = String(value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
     if(raw === 'hsk4a' || raw === 'hsk4b') return 'hsk4';
-    return ['all','hsk20','hsk30','hsk1','hsk2','hsk3','hsk4','nhsk1','nhsk2','nhsk3'].indexOf(raw) !== -1 ? raw : 'all';
+    return ['all','hsk1','hsk2','hsk3','hsk4','nhsk1','nhsk2','nhsk3'].indexOf(raw) !== -1 ? raw : 'all';
+  }
+  function normalizeVersionFilter(value){
+    var raw = String(value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    return ['all','hsk20','hsk30'].indexOf(raw) !== -1 ? raw : '';
   }
   var currentLang = normalizeLang(params.get('lang')) || normalizeLang(localStorage.getItem('hsk_all_current_lang_v3')) || detectLang();
   var currentLevel = normalizeLevel(params.get('level'));
-  var currentFilterLevel = normalizeFilterLevel(params.get('filter'));
+  var requestedFilter = String(params.get('filter') || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  var currentFilterLevel = normalizeFilterLevel(requestedFilter);
+  var currentVersionFilter = normalizeVersionFilter(params.get('version')) ||
+    (requestedFilter === 'hsk20' || requestedFilter === 'hsk30' ? requestedFilter : 'all');
+  if(requestedFilter === 'hsk20' || requestedFilter === 'hsk30') currentFilterLevel = 'all';
+  if((currentVersionFilter === 'hsk20' && currentFilterLevel.indexOf('nhsk') === 0) ||
+     (currentVersionFilter === 'hsk30' && currentFilterLevel.indexOf('hsk') === 0)) currentFilterLevel = 'all';
   var isLight = params.get('theme') === 'light';
   if(isLight) document.documentElement.classList.add('theme-light');
   var activeWords = [];
@@ -651,8 +673,15 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   function wordMatchesLevel(word){
     return wordMatchesLevelKey(word, currentLevel);
   }
+  function wordMatchesVersionKey(word, version){
+    if(version === 'all') return true;
+    var tags = String(word.lv || '').toLowerCase().split('|').map(function(v){return v.replace(/\s/g,'')}).filter(Boolean);
+    if(version === 'hsk20') return tags.some(function(v){return v.indexOf('hsk') === 0});
+    if(version === 'hsk30') return tags.some(function(v){return /^n[1-3]$/.test(v)});
+    return true;
+  }
   function wordMatchesFilter(word){
-    return wordMatchesLevelKey(word, currentFilterLevel);
+    return wordMatchesVersionKey(word, currentVersionFilter) && wordMatchesLevelKey(word, currentFilterLevel);
   }
   function localizedExample(ex){
     if(!ex) return '';
@@ -702,21 +731,19 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       DICTIONARY_WORDS.forEach(function(w){ (wordMatchesLevel(w) ? _inLevel : _others).push(w); });
       ordered = _inLevel.concat(_others);
     }
-    activeWords = currentFilterLevel === 'all' ? ordered : ordered.filter(wordMatchesFilter);
+    activeWords = ordered.filter(wordMatchesFilter);
   }
   rebuildActiveWords();
 
   var searchEl = document.getElementById('search');
   var searchRow = document.getElementById('search-row');
-  var filterBtn = document.getElementById('filter-btn');
-  var filterText = document.getElementById('filter-text');
-  var filterLabel = document.getElementById('filter-label');
-  var filterPanel = document.getElementById('filter-panel');
+  var searchClear = document.getElementById('search-clear');
+  var versionFilters = document.getElementById('version-filters');
+  var levelFilters = document.getElementById('level-filters');
   var searchHistory = document.getElementById('search-history');
   var listEl = document.getElementById('list');
   var countEl = document.getElementById('count');
   var heroTitle = document.getElementById('hero-title');
-  var heroEyebrow = document.getElementById('hero-eyebrow');
   var langSwitch = document.getElementById('lang-switch');
   var listBackBtn = document.getElementById('list-back-btn');
   var viewList = document.getElementById('view-list');
@@ -878,10 +905,28 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   var SEARCH_HISTORY_KEY = 'hsk_lugat_search_history_v1';
   var searchHistoryOpen = false;
   var searchSaveTimer = null;
-  var filterChoices = ['all','hsk20','hsk1','hsk2','hsk3','hsk4','hsk30','nhsk1','nhsk2','nhsk3'];
-
-  function filterShortLabel(level){
-    return level === 'all' ? '2.0/3.0' : String(levelLabels[level] || level).replace(/^HSK\s*/i, '');
+  function levelsForVersion(version){
+    if(version === 'hsk20') return ['all','hsk1','hsk2','hsk3','hsk4'];
+    if(version === 'hsk30') return ['all','nhsk1','nhsk2','nhsk3'];
+    return ['all','hsk1','hsk2','hsk3','hsk4','nhsk1','nhsk2','nhsk3'];
+  }
+  function filterCountLabel(t){
+    if(currentFilterLevel === 'all') return currentVersionFilter === 'all' ? t.allWords : levelLabels[currentVersionFilter];
+    if(currentFilterLevel.indexOf('nhsk') === 0) return 'N' + currentFilterLevel.slice(-1);
+    return levelLabels[currentFilterLevel] || currentFilterLevel;
+  }
+  function formatDictionaryLevel(level){
+    var labels = String(level || '').split('|').map(function(v){return v.trim()}).filter(Boolean);
+    var levelName = labels[0] || '';
+    var hasNewHsk = labels.slice(1).some(function(v){return /^N\d+$/i.test(v)});
+    return hasNewHsk ? levelName.toUpperCase() + ' · 3.0' : levelName;
+  }
+  function syncFilterParams(){
+    if(currentVersionFilter === 'all') params.delete('version');
+    else params.set('version', currentVersionFilter);
+    if(currentFilterLevel === 'all') params.delete('filter');
+    else params.set('filter', currentFilterLevel);
+    history.replaceState(null, '', location.pathname + (params.toString() ? '?' + params.toString() : ''));
   }
   function readSearchHistory(){
     try{
@@ -916,7 +961,6 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   }
   function setSearchHistoryVisible(show){
     searchHistoryOpen = !!show;
-    if(searchHistoryOpen) closeFilterPanel();
     renderSearchHistory();
   }
   function renderSearchHistory(){
@@ -935,49 +979,36 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       }).join('')+'</div>';
     searchHistory.classList.remove('hidden');
   }
-  function closeFilterPanel(){
-    if(!filterPanel) return;
-    filterPanel.classList.add('hidden');
-    filterBtn.setAttribute('aria-expanded', 'false');
-  }
-  function renderFilterPanel(){
+  function renderFilterRows(){
     var t = UI[currentLang] || UI.uz;
-    filterText.textContent = t.filter;
-    filterLabel.textContent = filterShortLabel(currentFilterLevel);
-    filterBtn.classList.toggle('active', currentFilterLevel !== 'all');
-    filterPanel.innerHTML =
-      '<div class="filter-title">'+escapeHtml(t.filter)+'</div>'+
-      '<div class="filter-chips">'+filterChoices.map(function(level){
-        return '<button class="filter-chip '+(level === currentFilterLevel ? 'active' : '')+'" type="button" data-filter="'+level+'">'+
-          escapeHtml(levelLabels[level] || level)+'</button>';
-      }).join('')+'</div>';
-  }
-  function toggleFilterPanel(){
-    var willOpen = filterPanel.classList.contains('hidden');
-    if(willOpen){
-      setSearchHistoryVisible(false);
-      renderFilterPanel();
-      filterPanel.classList.remove('hidden');
-      filterBtn.setAttribute('aria-expanded', 'true');
-    } else {
-      closeFilterPanel();
-    }
+    var versions = ['all','hsk20','hsk30'];
+    versionFilters.innerHTML = versions.map(function(version){
+      var label = version === 'all' ? t.allWords : levelLabels[version];
+      return '<button class="filter-pill '+(version === currentVersionFilter ? 'active' : '')+'" type="button" data-version="'+version+'" aria-pressed="'+(version === currentVersionFilter)+'">'+
+        escapeHtml(label)+'</button>';
+    }).join('');
+    levelFilters.innerHTML = levelsForVersion(currentVersionFilter).map(function(level){
+      var label = level === 'all' ? t.allWords : level.indexOf('nhsk') === 0 ? 'N' + level.slice(-1) : 'HSK ' + level.slice(-1);
+      return '<button class="filter-pill '+(level === currentFilterLevel ? 'active' : '')+'" type="button" data-level="'+level+'" aria-pressed="'+(level === currentFilterLevel)+'">'+
+        escapeHtml(label)+'</button>';
+    }).join('');
   }
 
   function applyStaticText(){
     var t = UI[currentLang] || UI.uz;
-    var label = levelLabels[currentFilterLevel] || levelLabels.all;
     document.documentElement.lang = currentLang;
     document.title = t.title;
     heroTitle.textContent = t.title;
-    heroEyebrow.textContent = '汉字 · ' + label;
     searchEl.placeholder = t.placeholder;
+    searchClear.setAttribute('aria-label', t.clearSearch);
+    versionFilters.setAttribute('aria-label', t.versionFilter);
+    levelFilters.setAttribute('aria-label', t.levelFilter);
     grammarLabel.textContent = t.grammar;
     orderOpenLabel.textContent = t.order;
     closeStrokeBtn.setAttribute('aria-label', t.close);
     strokeBackdrop.setAttribute('aria-label', t.close);
     if(currentWriter && strokeDataReady) writerStrokes.textContent = t.strokes(totalStrokes);
-    renderFilterPanel();
+    renderFilterRows();
     renderSearchHistory();
     langSwitch.innerHTML = validLangs.map(function(value){
       return '<button class="lang-btn '+(value === currentLang ? 'active' : '')+'" data-lang="'+value+'">'+value.toUpperCase()+'</button>';
@@ -1028,7 +1059,9 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
           w._m.indexOf(qLower) !== -1 || text(w.m).toLowerCase().indexOf(qLower) !== -1;
       });
     }
-    countEl.textContent = q ? t.countResults(results.length) : t.countAll(activeWords.length, levelLabels[currentFilterLevel] || levelLabels.all);
+    countEl.textContent = String(results.length);
+    countEl.setAttribute('aria-label', q ? t.countResults(results.length) : t.countAll(results.length, filterCountLabel(t)));
+    searchClear.classList.toggle('visible', !!searchEl.value);
     if(results.length === 0){
       listEl.innerHTML = '<div class="empty">'+escapeHtml(t.emptyTitle)+'<br>'+escapeHtml(t.emptySub)+'</div>';
       return;
@@ -1038,7 +1071,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       var w = results[i];
       html += '<div class="row" data-idx="'+w.id+'"><div class="h">'+escapeHtml(w.h)+'</div>'+
         '<div class="info"><div class="p">'+escapeHtml(w.p)+'</div><div class="m">'+escapeHtml(text(w.m))+'</div></div>'+
-        '<div class="lv">'+escapeHtml(w.lv)+'</div></div>';
+        '<div class="lv">'+escapeHtml(formatDictionaryLevel(w.lv))+'</div></div>';
     }
     listEl.innerHTML = html;
   }
@@ -1408,7 +1441,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     var keepStrokeOrderOpen = !strokeModal.classList.contains('hidden');
     if(currentWriter && (isPlaying || isReshowing)) currentWriter.pauseAnimation();
     currentWord = word;
-    detailLevel.textContent = word.lv;
+    detailLevel.textContent = formatDictionaryLevel(word.lv);
     detailHanzi.textContent = word.h;
     detailPinyin.textContent = word.p;
     detailMeaning.textContent = text(word.m);
@@ -1461,7 +1494,6 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     if(!row) return;
     saveSearchQuery(searchEl.value);
     setSearchHistoryVisible(false);
-    closeFilterPanel();
     var idx = parseInt(row.dataset.idx, 10);
     openDetail(DICTIONARY_WORDS[idx]);
   });
@@ -1479,21 +1511,32 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   });
 
   listBackBtn.addEventListener('click', goBackToStudy);
-  filterBtn.addEventListener('click', function(e){
-    e.stopPropagation();
-    toggleFilterPanel();
-  });
-  filterPanel.addEventListener('click', function(e){
-    var button = e.target.closest('[data-filter]');
+  versionFilters.addEventListener('click', function(e){
+    var button = e.target.closest('[data-version]');
     if(!button) return;
-    currentFilterLevel = normalizeFilterLevel(button.dataset.filter);
-    if(currentFilterLevel === 'all') params.delete('filter');
-    else params.set('filter', currentFilterLevel);
-    history.replaceState(null, '', location.pathname + '?' + params.toString());
+    currentVersionFilter = normalizeVersionFilter(button.dataset.version) || 'all';
+    if(levelsForVersion(currentVersionFilter).indexOf(currentFilterLevel) === -1) currentFilterLevel = 'all';
+    syncFilterParams();
     rebuildActiveWords();
     applyStaticText();
-    closeFilterPanel();
+    listEl.scrollTop = 0;
     renderList(searchEl.value);
+  });
+  levelFilters.addEventListener('click', function(e){
+    var button = e.target.closest('[data-level]');
+    if(!button) return;
+    currentFilterLevel = normalizeFilterLevel(button.dataset.level);
+    syncFilterParams();
+    rebuildActiveWords();
+    applyStaticText();
+    listEl.scrollTop = 0;
+    renderList(searchEl.value);
+  });
+  searchClear.addEventListener('click', function(){
+    searchEl.value = '';
+    setSearchHistoryVisible(false);
+    renderList('');
+    searchEl.focus();
   });
   searchEl.addEventListener('focus', function(){ setSearchHistoryVisible(true); });
   searchEl.addEventListener('click', function(){ setSearchHistoryVisible(true); });
@@ -1516,7 +1559,6 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   document.addEventListener('pointerdown', function(e){
     if(searchRow && !searchRow.contains(e.target)){
       setSearchHistoryVisible(false);
-      closeFilterPanel();
     }
   });
   langSwitch.addEventListener('click', function(e){
@@ -1534,7 +1576,6 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   });
   searchEl.addEventListener('input', function(e){
     renderList(e.target.value);
-    closeFilterPanel();
     renderSearchHistory();
     scheduleSearchSave(e.target.value);
   });
