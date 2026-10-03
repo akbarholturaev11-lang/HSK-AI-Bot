@@ -287,7 +287,8 @@ fun CourseScreen(
         }
 
         val hsk30 = map?.hsk30
-        val hsk30Locked = hsk30?.activeTrack == "hsk30" &&
+        val hsk30Locked = hsk30 != null &&
+            hsk30.activeTrack == "hsk30" &&
             hsk30.access.featureEnabled &&
             !hsk30.access.allowed
 
