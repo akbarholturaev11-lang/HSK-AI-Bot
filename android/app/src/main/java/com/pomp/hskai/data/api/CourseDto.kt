@@ -96,6 +96,7 @@ data class CourseHsk30Dto(
     @SerialName("new_badge") val newBadge: CourseHsk30NewBadgeDto = CourseHsk30NewBadgeDto(),
     @SerialName("payment_enabled") val paymentEnabled: Boolean = false,
     @SerialName("price_tjs") val priceTjs: Int = 0,
+    @SerialName("price_display") val priceDisplay: String = "",
     @SerialName("promo") val promo: CourseHsk30PromoDto = CourseHsk30PromoDto(),
 )
 

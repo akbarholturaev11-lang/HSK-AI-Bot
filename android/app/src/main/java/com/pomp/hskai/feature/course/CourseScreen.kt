@@ -9,13 +9,17 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,12 +32,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Lock
@@ -68,6 +74,8 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -77,6 +85,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
@@ -279,13 +289,13 @@ fun CourseScreen(
             Hsk30PromoDialog(
                 hsk30 = hsk30,
                 onDismiss = { hsk30PromoOpen = false },
+                onUnlockPermanently = {
+                    hsk30PromoOpen = false
+                    onUnlockHsk30()
+                },
                 onContinue = {
                     hsk30PromoOpen = false
-                    if (hsk30.access.allowed) {
-                        onSwitchTrack("hsk30", hsk30.promo.recommendedLevel)
-                    } else {
-                        onUnlockHsk30()
-                    }
+                    onSwitchTrack("hsk30", hsk30.promo.recommendedLevel)
                 },
             )
         }
@@ -401,41 +411,195 @@ private fun CourseTrackBar(
 private fun Hsk30PromoDialog(
     hsk30: com.pomp.hskai.domain.model.CourseHsk30,
     onDismiss: () -> Unit,
+    onUnlockPermanently: () -> Unit,
     onContinue: () -> Unit,
 ) {
-    val priceLine = if (!hsk30.access.allowed && hsk30.paymentEnabled && hsk30.priceTjs > 0) {
-        stringResource(R.string.hsk30_promo_price, hsk30.priceTjs)
-    } else {
-        ""
+    val paidAccess = hsk30.access.paidAccess
+    val permanentlyUnlocked = hsk30.access.permanentlyUnlocked
+    val hasAccess = hsk30.access.allowed && (paidAccess || permanentlyUnlocked)
+    val body = when {
+        hasAccess -> stringResource(R.string.hsk30_promo_body_unlocked)
+        else -> stringResource(R.string.hsk30_promo_body)
     }
-    AlertDialog(
+    Dialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.hsk30_promo_title), fontWeight = FontWeight.SemiBold) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(stringResource(R.string.hsk30_promo_body))
-                if (priceLine.isNotBlank()) {
-                    Text(priceLine, color = PompColors.CinnabarDark, fontWeight = FontWeight.SemiBold)
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+    ) {
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            Surface(
+                modifier = Modifier.fillMaxWidth(0.92f).heightIn(max = maxHeight * 0.94f),
+                shape = RoundedCornerShape(30.dp),
+                color = PompColors.Paper,
+                shadowElevation = 18.dp,
+            ) {
+                Box(Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 18.dp, vertical = 20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Box(
+                            Modifier
+                                .width(54.dp)
+                                .height(6.dp)
+                                .background(Color(0xFFE9DCC3), RoundedCornerShape(8.dp)),
+                        )
+                        Spacer(Modifier.height(14.dp))
+                        Hsk30PromoBooksArt(Modifier.fillMaxWidth())
+                        Spacer(Modifier.height(10.dp))
+                        Text(
+                            text = stringResource(R.string.hsk30_promo_title),
+                            color = PompColors.Ink,
+                            fontSize = 27.sp,
+                            lineHeight = 32.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            textAlign = TextAlign.Center,
+                        )
+                        Spacer(Modifier.height(7.dp))
+                        Text(
+                            text = body,
+                            color = PompColors.InkSecondary,
+                            fontSize = 15.sp,
+                            lineHeight = 21.sp,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(horizontal = 2.dp),
+                        )
+                        Spacer(Modifier.height(17.dp))
+                        if (hasAccess) {
+                            Hsk30PromoPrimaryButton(
+                                label = stringResource(R.string.hsk30_promo_switch),
+                                leading = { Text("→", fontSize = 25.sp, lineHeight = 25.sp) },
+                                onClick = onContinue,
+                            )
+                        } else {
+                            if (hsk30.paymentEnabled && hsk30.priceTjs > 0 &&
+                                hsk30.priceDisplay.isNotBlank() && !hasAccess
+                            ) {
+                                Hsk30PromoPrimaryButton(
+                                    label = stringResource(R.string.hsk30_promo_price, hsk30.priceDisplay),
+                                    leading = {
+                                        Icon(
+                                            Icons.Filled.LockOpen,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(21.dp),
+                                        )
+                                    },
+                                    onClick = onUnlockPermanently,
+                                )
+                                Spacer(Modifier.height(8.dp))
+                            }
+                        }
+                        Hsk30PromoStayButton(
+                            label = stringResource(R.string.hsk30_promo_stay),
+                            onClick = onDismiss,
+                        )
+                    }
+                    androidx.compose.material3.IconButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.align(Alignment.TopEnd).padding(top = 5.dp, end = 5.dp).size(42.dp),
+                    ) {
+                        Icon(
+                            Icons.Filled.Close,
+                            contentDescription = stringResource(R.string.action_close),
+                            tint = PompColors.InkSecondary,
+                            modifier = Modifier.size(23.dp),
+                        )
+                    }
                 }
             }
-        },
-        confirmButton = {
-            Button(
-                onClick = onContinue,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PompColors.Cinnabar,
-                    contentColor = PompColors.Paper,
+        }
+    }
+}
+
+@Composable
+private fun Hsk30PromoBooksArt(modifier: Modifier = Modifier) {
+    BoxWithConstraints(
+        modifier = modifier
+            .aspectRatio(622f / 332f)
+            .clipToBounds()
+            .background(Color(0xFFFBF7EC)),
+    ) {
+        val cropWidth = maxWidth
+        val cropHeight = maxHeight
+        Image(
+            painter = painterResource(R.drawable.hsk30_promo_source),
+            contentDescription = stringResource(R.string.hsk30_promo_books_desc),
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier
+                .width(cropWidth * (734f / 622f))
+                .height(cropHeight * (982f / 332f))
+                .offset(
+                    x = -(cropWidth * (58f / 622f)),
+                    y = -(cropHeight * (60f / 332f)),
                 ),
-            ) {
-                Text(stringResource(R.string.hsk30_promo_switch))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.limit_later))
-            }
-        },
-    )
+        )
+        Box(
+            Modifier
+                .align(Alignment.TopEnd)
+                .fillMaxWidth(0.07f)
+                .fillMaxHeight(0.06f)
+                .background(Color(0xFFFBF7EC)),
+        )
+    }
+}
+
+@Composable
+private fun Hsk30PromoPrimaryButton(
+    label: String,
+    leading: @Composable () -> Unit,
+    onClick: () -> Unit,
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth().heightIn(min = 58.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFFEB463F),
+            contentColor = Color.White,
+        ),
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            leading()
+            Spacer(Modifier.width(10.dp))
+            Text(
+                text = label,
+                fontSize = 16.sp,
+                lineHeight = 19.sp,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center,
+            )
+        }
+    }
+}
+
+@Composable
+private fun Hsk30PromoStayButton(label: String, onClick: () -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp).clickable(onClick = onClick),
+        shape = RoundedCornerShape(15.dp),
+        color = Color.White,
+        border = BorderStroke(1.dp, Color(0xFFEADCC3)),
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                text = label,
+                color = Color(0xFF1688EE),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
+            )
+        }
+    }
 }
 
 private fun courseLevelLabel(level: String): String {

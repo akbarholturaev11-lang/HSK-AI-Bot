@@ -1335,7 +1335,7 @@ private fun AppRoot(
                                 hsk30Allowed = courseState.map?.hsk30?.access?.allowed == true,
                                 hsk30IsNew = courseState.map?.hsk30?.newBadge?.isNew == true,
                                 hsk30PaymentEnabled = courseState.map?.hsk30?.paymentEnabled == true,
-                                hsk30PriceTjs = courseState.map?.hsk30?.priceTjs ?: 0,
+                                hsk30PriceDisplay = courseState.map?.hsk30?.priceDisplay.orEmpty(),
                                 hsk30LiveLevels = courseState.map?.hsk30?.liveLevels.orEmpty(),
                                 onSwitchCourseTrack = courseViewModel::switchCourseTrack,
                                 onUnlockHsk30 = {

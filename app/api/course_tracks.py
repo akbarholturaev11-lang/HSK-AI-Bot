@@ -80,7 +80,10 @@ def _error(error) -> JSONResponse:
 
 async def _status_payload(session, user) -> dict:
     status = await CourseTrackService(session).status(user)
-    eligibility = await Hsk30UnlockService(session).payment_eligibility(user)
+    eligibility = await Hsk30UnlockService(session).payment_eligibility(
+        user,
+        include_display_price=True,
+    )
     return {
         "ok": True,
         **status,
