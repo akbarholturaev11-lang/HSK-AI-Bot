@@ -496,50 +496,31 @@ private fun MethodContent(
     state: SubscriptionCheckoutState, copy: Context,
     onBank: (String) -> Unit, onMethod: (String) -> Unit,
 ) {
-    var expanded by remember(state.region, state.method, state.bank) { mutableStateOf(false) }
-    val selectedTitle = if (state.region == "cn") {
-        copy.getString(if (state.method == "alipay") R.string.sub_alipay else R.string.sub_wechat)
-    } else {
-        BANK_NAMES[cardBankFor(state.country, state.bank)].orEmpty()
-    }
-    val selectedSubtitle = if (state.region == "cn") {
-        copy.getString(R.string.sub_qr_yuan)
-    } else {
-        copy.getString(if (state.cardBank == "alif") R.string.sub_bank_alif_body else R.string.sub_bank_dc_body)
-    }
     Text(copy.getString(R.string.sub_method), color = C.text, fontSize = 22.sp, fontWeight = FontWeight.Black)
     Spacer(Modifier.height(10.dp))
-    Row(
-        Modifier.fillMaxWidth()
-            .border(1.dp, C.line, RoundedCornerShape(16.dp))
-            .background(C.surface, RoundedCornerShape(16.dp))
-            .clickable { expanded = !expanded }
-            .semantics { contentDescription = copy.getString(R.string.sub_change_payment) }
-            .padding(horizontal = 14.dp, vertical = 11.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(if (expanded) "⌄" else "⌃", color = C.accentInk, fontSize = 22.sp,
-            fontWeight = FontWeight.Bold, modifier = Modifier.width(26.dp), textAlign = TextAlign.Center)
-        Spacer(Modifier.width(8.dp))
-        Column(Modifier.weight(1f)) {
-            Text(selectedTitle, color = C.text, fontSize = 14.sp, fontWeight = FontWeight.ExtraBold)
-            Text(selectedSubtitle, color = C.muted, fontSize = 12.sp, lineHeight = 16.sp)
-        }
-        SelectionDot(true)
-    }
-    if (!expanded) return
-    Spacer(Modifier.height(10.dp))
+    // Payment methods stay visible. The previous accordion hid Alipay/WeChat
+    // (or the Tajik banks) behind one extra tap and made the screen look as if
+    // only the preselected method existed.
     if (state.region == "cn") {
         CHINA_METHODS.filter { !state.overview?.prices?.get(it).isNullOrEmpty() }.forEach { method ->
-            ChoiceCard(null, copy.getString(if (method == "alipay") R.string.sub_alipay else R.string.sub_wechat),
-                copy.getString(R.string.sub_qr_yuan), state.method == method, onClick = { onMethod(method) })
+            ChoiceCard(
+                null,
+                copy.getString(if (method == "alipay") R.string.sub_alipay else R.string.sub_wechat),
+                copy.getString(R.string.sub_qr_yuan),
+                state.method == method,
+                onClick = { onMethod(method) },
+            )
             Spacer(Modifier.height(9.dp))
         }
     } else {
         CARD_BANKS.forEach { bank ->
-            ChoiceCard(null, BANK_NAMES.getValue(bank),
+            ChoiceCard(
+                null,
+                BANK_NAMES.getValue(bank),
                 copy.getString(if (bank == "alif") R.string.sub_bank_alif_body else R.string.sub_bank_dc_body),
-                state.bank == bank, onClick = { onBank(bank) })
+                state.bank == bank,
+                onClick = { onBank(bank) },
+            )
             Spacer(Modifier.height(9.dp))
         }
     }
