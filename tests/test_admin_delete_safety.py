@@ -62,14 +62,19 @@ class AdminDeleteSafetyTest(unittest.TestCase):
         self.assertIn("User.referred_by_telegram_id", block)
         self.assertIn("User.referrer_id", block)
 
-    def test_repository_delete_preserves_but_detaches_financial_ledger(self):
+    def test_repository_delete_preserves_but_anonymizes_financial_ledger(self):
         block = USER_REPO.split("async def delete_by_telegram_id", 1)[1].split(
             "async def set_blocked", 1
         )[0]
         self.assertIn("PortfolioTransaction", block)
-        self.assertIn(".values(user_telegram_id=None, payment_id=None)", block)
-        self.assertIn("PartnerReferral", block)
         self.assertIn("anonymous_telegram_id = -uid", block)
+        self.assertIn(".values(user_telegram_id=anonymous_telegram_id)", block)
+        self.assertIn('Payment.payment_status == "approved"', block)
+        self.assertIn("screenshot_file_id=None", block)
+        self.assertIn("admin_comment=None", block)
+        self.assertIn('Payment.payment_status != "approved"', block)
+        self.assertNotIn("(Payment, Payment.user_telegram_id)", block)
+        self.assertIn("PartnerReferral", block)
 
     def test_admin_miniapp_delete_failure_is_reported_without_cache_invalidation(self):
         block = MAIN.split("async def admin_miniapp_user_delete", 1)[1].split(
