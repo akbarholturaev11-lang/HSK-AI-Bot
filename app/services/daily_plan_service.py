@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import hashlib
 
+from app.services.course_levels import is_hsk30_level
 from app.services.learning_signals import LearningSignals
 
 
@@ -219,7 +220,7 @@ class DailyPlanService:
             score = weights.get(TASK_SKILL_DRILL, 1.0) + skill_score
             candidates.append((score, TASK_SKILL_DRILL, {"t": TASK_SKILL_DRILL, "skill": skill}))
 
-        if issuable(TASK_MOCK_EXAM):
+        if not is_hsk30_level(signals.level) and issuable(TASK_MOCK_EXAM):
             candidates.append(
                 (weights.get(TASK_MOCK_EXAM, 0.3), TASK_MOCK_EXAM, {"t": TASK_MOCK_EXAM})
             )
@@ -272,6 +273,10 @@ class DailyPlanService:
         for task in tasks or []:
             task_type = str(task.get("t") or "")
             if task_type not in TASK_TYPES:
+                continue
+            # Stored daily plans can predate this rule; never show an HSK 3.0
+            # exam task until that course has its own test content.
+            if task_type == TASK_MOCK_EXAM and is_hsk30_level(signals.level):
                 continue
             state = access.get(TASK_FEATURE[task_type], ACCESS_OPEN)
             items.append(

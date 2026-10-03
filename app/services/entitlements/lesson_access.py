@@ -61,6 +61,10 @@ class LessonAccessService:
         if state == EntitlementState.BLOCKED:
             return payload
 
+        # HSK 3.0 access (subscription or one-time unlock) only opens the
+        # VERSION/TRACK. It must never turn a free learner into Pro or bypass
+        # the centrally configured lesson.start limit.
+        hsk30_access_payload = None
         normalized_level = str(level or "").strip().lower()
         if normalized_level.startswith("nhsk"):
             track_service = CourseTrackService(self.session)
@@ -93,27 +97,43 @@ class LessonAccessService:
                     "window": "none",
                     "reset_at": None,
                 }
-            return {
+            hsk30_access_payload = {
+                **access_payload,
+                "level_live": True,
+            }
+
+        if (await CourseAccessPolicyService(self.session).get_policy()).free_active:
+            free_payload = {
                 **payload,
                 "ok": True,
                 "allowed": True,
-                "hsk30_access": {
-                    **access_payload,
-                    "level_live": True,
-                },
+                "policy_free": True,
                 "limit": None,
                 "remaining": None,
                 "window": "none",
                 "reset_at": None,
             }
-        if (await CourseAccessPolicyService(self.session).get_policy()).free_active:
-            return {**payload, "ok": True, "allowed": True, "policy_free": True,
-                    "limit": None, "remaining": None, "window": "none", "reset_at": None}
+            if hsk30_access_payload is not None:
+                free_payload["hsk30_access"] = hsk30_access_payload
+            return free_payload
+
         if lesson_order <= completed or await self._reserved(user, reference):
-            return {**payload, "ok": True, "allowed": True, "idempotent": True}
+            idempotent_payload = {
+                **payload,
+                "ok": True,
+                "allowed": True,
+                "idempotent": True,
+            }
+            if hsk30_access_payload is not None:
+                idempotent_payload["hsk30_access"] = hsk30_access_payload
+            return idempotent_payload
+
         if consume and not unlimited_course_access:
             decision = await engine.consume(user, A.LESSON_START, ref=reference, notify_bot=bot)
             payload = decision.as_dict(language=getattr(user, "language", "ru"))
+
+        if hsk30_access_payload is not None:
+            payload = {**payload, "hsk30_access": hsk30_access_payload}
         return payload
 
     async def apply_map(self, data, user, *, level, completed):

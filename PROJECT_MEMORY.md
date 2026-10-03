@@ -8392,6 +8392,9 @@ Priority 3:
   o'lchami bo'yicha desktop/mobile breakpointlar tekshirilgan.
 - Test markazi ataylab `Tez orada`: yangi HSK 3.0 exam source/formati
   tayyor bo'lmaguncha eski HSK 2.0 testlari yangi trackka aralashtirilmaydi.
+- Kunlik reja servisi HSK 3.0 uchun `mock_exam` vazifasini bermaydi; avval
+  saqlangan bugungi rejalar ham `hydrate` vaqtida bu vazifadan tozalanadi.
+  HSK 3.0 test kontenti tayyor bo'lganda bu qoidani qayta ko'rib chiqing.
 - Admin: HSK 3.0 enable, live N1/N2/N3, permanent-payment toggle, narx/QR,
   alohida finance row, broadcast va reklama track/level targeting mavjud.
 - `RELEASE_FEEDBACK_HSK30.md` eski ixtiyoriy draft; uni tayyorlash yoki
