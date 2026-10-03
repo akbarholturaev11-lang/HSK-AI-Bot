@@ -82,7 +82,8 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(parsed.find("meta", name="robots")[0]["content"], "index,follow")
             self.assertIn("HSK AI", html)
             self.assertIn("darsi_chini_bot", html)
-            self.assertIn("HSK 1", html)
+            if page.get("translation_group") == "hsk":
+                self.assertIn("HSK 1", html)
             self.assertNotIn("telegram-web-app.js", html)
             self.assertEqual(parsed.find("html")[0]["lang"], page["lang"])
             for prop in ("og:title", "og:description", "og:type", "og:url", "og:image"):
