@@ -432,12 +432,17 @@ class DesktopCourseService:
         try:
             current_track = before_track
             if target_track == current_track and level:
-                status = await service.change_level(user, level)
+                status = await service.change_level(
+                    user,
+                    level,
+                    allow_locked_hsk30=True,
+                )
             else:
                 status = await service.switch(
                     user,
                     target_track=target_track,
                     requested_level=level,
+                    allow_locked_hsk30=True,
                 )
         except CourseTrackError as exc:
             raise DesktopCourseError(exc.code, status_code=exc.status_code) from exc
