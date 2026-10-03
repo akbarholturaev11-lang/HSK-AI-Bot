@@ -345,6 +345,7 @@ class CourseTrackService:
                 level=target_level,
                 completed_lessons_count=0,
             )
+            target_completed = 0
         else:
             stored_level = self._validate_level_for_track(
                 target_state.level,
@@ -369,9 +370,6 @@ class CourseTrackService:
                 target_completed = int(
                     target_state.completed_lessons_count or 0
                 )
-
-        if target_state is not None and "target_completed" not in locals():
-            target_completed = int(target_state.completed_lessons_count or 0)
 
         user.level = target_level
         progress.level = content_level(target_level)
