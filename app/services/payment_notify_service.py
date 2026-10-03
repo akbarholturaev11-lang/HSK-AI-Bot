@@ -32,6 +32,12 @@ HSK30_UNLOCK_REJECTED_TEXT = {
     "ru": "❌ Платёж за открытие HSK 3.0 не подтверждён.",
 }
 
+HSK30_RETRY_BUTTON = {
+    "uz": "🔄 Qayta urinib ko'rish",
+    "tj": "🔄 Дубора кӯшиш кардан",
+    "ru": "🔄 Попробовать снова",
+}
+
 REASON_TRANSLATIONS = {
     "wrong_amount":       {"uz": "Summa noto'g'ri",    "tj": "Маблағ нодуруст",     "ru": "Неверная сумма"},
     "unclear_screenshot": {"uz": "Screenshot noaniq",  "tj": "Скриншот норавшан",   "ru": "Скриншот нечёткий"},
@@ -151,7 +157,18 @@ class PaymentNotifyService:
             if self.session is not None and BotBlockStatusService.is_bot_blocked(user):
                 return
             try:
-                await bot.send_message(chat_id=user.telegram_id, text=message)
+                await bot.send_message(
+                    chat_id=user.telegram_id,
+                    text=message,
+                    reply_markup=subscription_miniapp_keyboard(
+                        lang,
+                        source="hsk30_unlock_rejected",
+                        mode="hsk30_unlock",
+                        plan="hsk30_unlock",
+                        method=getattr(payment, "payment_method", None) if payment else None,
+                        text=HSK30_RETRY_BUTTON.get(lang, HSK30_RETRY_BUTTON["ru"]),
+                    ),
+                )
                 await self._success(user, "hsk30_unlock_rejected")
             except Exception as exc:
                 await self._failure(user, exc, "hsk30_unlock_rejected")
