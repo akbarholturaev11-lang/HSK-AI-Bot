@@ -2256,7 +2256,7 @@
     }
     function renderDeleteUser(prefill){
       openDrawer("🗑 Foydalanuvchini o'chirish",moduleSub("Xavfli amal: ID bilan tasdiqlanadi"),`<div class="panel">
-        <div class="danger-note">Bu foydalanuvchi va unga bog'liq BARCHA account ma'lumotini (to'lov, kurs, xabar, fikr, referal, AI limit, qurilma/sessiya va login identity) o'chiradi. Umumiy moliyaviy ledger buzilmaydi. Qaytarib bo'lmaydi.</div>
+        <div class="danger-note">Bu foydalanuvchi va unga bog'liq BARCHA account ma'lumotini (kurs, xabar, fikr, referal, AI limit, qurilma/sessiya va login identity) o'chiradi. To'lovdagi screenshot/xabar va user bog'lanishi ham o'chadi; tasdiqlangan tranzaksiya faqat anonim moliyaviy tarix sifatida qoladi, shuning uchun umumiy finance statistikasi buzilmaydi. Qaytarib bo'lmaydi.</div>
         <div class="mcard"><div class="frow"><label>Telegram ID</label><input id="delId" class="input" inputmode="numeric" value="${esc(prefill||"")}"></div>
           <div class="frow"><label>Tasdiq uchun shu IDni qayta yozing</label><input id="delConfirm" class="input" inputmode="numeric"></div>
           <button class="btn danger" data-deluser>O'chirish</button></div></div>`);
