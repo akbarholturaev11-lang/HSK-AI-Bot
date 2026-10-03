@@ -44,8 +44,6 @@
     uz: {
       eyebrow: "HSK AI · ilovalar",
       cardTitle: "HSK AI ilovalari",
-      cardBody:
-        "Android, MacBook yoki Windows — obuna va progress hamma joyda bir xil.",
       appsPage: "Ilovalarni yuklab olish",
       previewTranslation: "o‘rganmoq",
       preparing:
@@ -119,8 +117,6 @@
     ru: {
       eyebrow: "HSK AI · приложения",
       cardTitle: "Приложения HSK AI",
-      cardBody:
-        "Android, MacBook или Windows — подписка и прогресс везде одни и те же.",
       appsPage: "Скачать приложения",
       previewTranslation: "учиться",
       preparing:
@@ -194,8 +190,6 @@
     tj: {
       eyebrow: "HSK AI · барномаҳо",
       cardTitle: "Барномаҳои HSK AI",
-      cardBody:
-        "Android, MacBook ё Windows — обуна ва пешрафт дар ҳама ҷо як аст.",
       appsPage: "Боргирии барномаҳо",
       previewTranslation: "омӯхтан",
       preparing:
@@ -797,8 +791,32 @@
     var visual = element("div", "pdd-profile-device-visual");
     visual.setAttribute("aria-hidden", "true");
     var image = element("img", "pdd-profile-device-image");
-    image.src = "/assets/hsk-ai-devices.jpg";
     image.alt = "";
+    image.loading = "eager";
+    image.decoding = "async";
+    image.fetchPriority = "high";
+    var source = "/assets/hsk-ai-devices.jpg";
+    var failedLoads = 0;
+    image.addEventListener("error", function () {
+      failedLoads += 1;
+      if (failedLoads === 1) {
+        image.src = source + "?retry=" + Date.now();
+        return;
+      }
+      if (failedLoads === 2) {
+        visual.classList.add("is-fallback");
+        image.src = "/assets/hsk-ai-logo-256.png";
+        return;
+      }
+      image.hidden = true;
+      visual.classList.add("is-missing");
+    });
+    image.addEventListener("load", function () {
+      image.hidden = false;
+      visual.classList.remove("is-missing");
+      if (failedLoads < 2) visual.classList.remove("is-fallback");
+    });
+    image.src = source;
     visual.appendChild(image);
     return visual;
   }
@@ -950,22 +968,19 @@
     var main = element("div", "pdd-card-main");
     var head = element("div", "pdd-card-head");
     var seal = element("img", "pdd-seal");
-    seal.src = "/assets/hsk-ai-avatar.webp";
+    seal.src = "/assets/hsk-ai-logo-256.png";
     seal.alt = "";
     seal.setAttribute("aria-hidden", "true");
-    seal.width = 43;
-    seal.height = 43;
+    seal.width = 46;
+    seal.height = 46;
     head.appendChild(seal);
     var content = element("div", "pdd-card-copy");
-    content.appendChild(element("span", "pdd-eyebrow", copy.eyebrow));
     var title = element("h3", "", copy.cardTitle);
     title.id = "pdd-profile-title";
     content.appendChild(title);
-    content.appendChild(element("p", "", copy.cardBody));
     head.appendChild(content);
     main.appendChild(head);
     main.appendChild(buildProfileDeviceVisual());
-    main.appendChild(buildBenefits(true));
     var actions = buildActions("profile");
     // The page behind this one reads the device and opens its tab, which is
     // the part the two buttons above cannot do: they name a platform, and the

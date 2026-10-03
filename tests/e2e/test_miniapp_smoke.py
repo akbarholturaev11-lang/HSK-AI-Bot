@@ -3324,10 +3324,18 @@ def test_desktop_profile_card_is_discoverable_and_reaches_every_client(page):
     expect(windows).to_be_visible()
     expect(mac).to_have_attribute("data-recommended", "false")
     expect(windows).to_have_attribute("data-recommended", "false")
-    expect(card.locator(".pdd-product-preview")).to_be_visible()
-    expect(card.locator(".pdd-preview-word")).to_contain_text("学习")
-    expect(card.locator(".pdd-preview-word")).to_contain_text("xuéxí · o‘rganmoq")
-    expect(card.locator(".pdd-benefit")).to_have_count(3)
+    expect(card.locator("h3")).to_have_count(1)
+    expect(card.locator("h3")).to_have_text("HSK AI ilovalari")
+    expect(card.locator(".pdd-eyebrow, p, .pdd-benefit")).to_have_count(0)
+    expect(card.locator(".pdd-seal")).to_have_attribute(
+        "src", "/assets/hsk-ai-logo-256.png"
+    )
+    image = card.locator(".pdd-profile-device-image")
+    expect(image).to_be_visible()
+    page.wait_for_function(
+        "() => { const img = document.querySelector('#pomp-desktop-profile-root .pdd-profile-device-image'); return img && img.complete && img.naturalWidth > 0; }"
+    )
+    assert image.evaluate("img => img.naturalWidth / img.naturalHeight") == 1.5
     # The way out to every client, including the one this phone can install.
     apps = card.locator(".pdd-apps-button")
     expect(apps).to_be_visible()

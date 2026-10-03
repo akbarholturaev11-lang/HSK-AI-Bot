@@ -844,7 +844,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('<link rel="canonical" href="/download">', landing)
         self.assertIn('<meta name="robots" content="index,follow">', landing)
         self.assertIn('HSK AI Apps / Download — macOS, Windows va Android', landing)
-        self.assertIn('seal.src = "/assets/hsk-ai-avatar.webp"', download)
+        self.assertIn('seal.src = "/assets/hsk-ai-logo-256.png"', download)
         self.assertIn('logo.src = "/assets/hsk-ai-avatar.webp"', download)
         # Profil kartasi qurilmalar rasmini ko'rsatadi; mahsulot ko'rinishi
         # faqat promo oynasida qoldi.
@@ -870,13 +870,13 @@ class CourseV3StaticMapTests(unittest.TestCase):
         ):
             html = Path("app/static", page).read_text(encoding="utf-8")
             self.assertIn(
-                "/course_v3_data/desktop-download.css?v=20260929-1", html, page
+                "/course_v3_data/desktop-download.css?v=20261003-1", html, page
             )
             # Ikkala skript `immutable`, bir yillik cache bilan beriladi
             # (`app/main.py`, STATIC_ASSET_HEADERS), ya'ni faylni o'zgartirish
             # YETARLI EMAS — `?v=` ko'tarilmasa eski nusxa brauzerda qoladi.
             self.assertIn(
-                "/course_v3_data/desktop-download.js?v=20260929-1", html, page
+                "/course_v3_data/desktop-download.js?v=20261003-1", html, page
             )
             self.assertIn("/course_v3_data/ads.js?v=20260923-2", html, page)
 
@@ -911,7 +911,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertNotIn('searchParams.set("platform"', download)
         self.assertEqual(download.count("previewTranslation:"), 3)
         self.assertIn("main.appendChild(buildProfileDeviceVisual())", download)
-        self.assertIn("main.appendChild(buildBenefits(true))", download)
+        self.assertNotIn("main.appendChild(buildBenefits(true))", download)
         self.assertIn("copy.macUnavailable", download)
         self.assertIn("copy.windowsUnavailable", download)
         self.assertIn("if (isDesktop || !state.availabilityLoaded)", download)
@@ -1035,7 +1035,7 @@ class ImmutableScriptsCarryTheirVersionTests(unittest.TestCase):
     """
 
     EXPECTED = {
-        "desktop-download.js": "4b32cc7a790b071b",
+        "desktop-download.js": "b441d71a9cfa1187",
         "ads.js": "6238d6aa34689f86",
     }
 
