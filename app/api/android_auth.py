@@ -43,6 +43,7 @@ class AndroidLinkStartRequest(BaseModel):
     platform: Literal["android"] = ANDROID_PLATFORM
     app_version: AppVersion
     installation_key: InstallationKey
+    language: Literal["uz", "ru", "tj"] | None = None
 
 
 class AndroidLinkStatusRequest(BaseModel):
@@ -88,6 +89,11 @@ def create_android_auth_router(
                     app_version=payload.app_version,
                     installation_key=payload.installation_key.get_secret_value(),
                 )
+                # The Android login screen already owns the signed-out language.
+                # Carry it only in the bot deep link so a brand-new Telegram
+                # account is greeted in the exact language selected in the app.
+                if payload.language and result.get("bot_deep_link"):
+                    result["bot_deep_link"] = f'{result["bot_deep_link"]}_{payload.language}'
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except DesktopAuthError as exc:
             return auth_error_response(exc)
