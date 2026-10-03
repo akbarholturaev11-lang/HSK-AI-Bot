@@ -343,7 +343,10 @@ class DesktopCourseService:
         )
         track_status = await CourseTrackService(self.session).status(user)
         hsk30_track = (track_status.get("tracks") or {}).get("hsk30") or {}
-        hsk30_unlock = await Hsk30UnlockService(self.session).payment_eligibility(user)
+        hsk30_unlock = await Hsk30UnlockService(self.session).payment_eligibility(
+            user,
+            include_display_price=True,
+        )
         data["hsk30"] = {
             "active_track": track_status.get("active_track") or "hsk20",
             "active_level": track_status.get("active_level") or level,
@@ -352,6 +355,7 @@ class DesktopCourseService:
             "new_badge": hsk30_track.get("new_badge") or {},
             "payment_enabled": bool(hsk30_unlock.get("payment_enabled")),
             "price_tjs": int(hsk30_unlock.get("price_tjs") or 0),
+            "price_display": str(hsk30_unlock.get("price_display") or ""),
             "promo": await Hsk30PromoService(self.session).state(user),
         }
         # Mini App bilan AYNI blok. Native klientlar uni hozircha chizmaydi,
@@ -431,13 +435,19 @@ class DesktopCourseService:
         before_level = str(getattr(user, "level", "") or "")
         try:
             current_track = before_track
+            allow_locked_hsk30 = self.CLIENT_NAMESPACE == "android"
             if target_track == current_track and level:
-                status = await service.change_level(user, level)
+                status = await service.change_level(
+                    user,
+                    level,
+                    allow_locked_hsk30=allow_locked_hsk30,
+                )
             else:
                 status = await service.switch(
                     user,
                     target_track=target_track,
                     requested_level=level,
+                    allow_locked_hsk30=allow_locked_hsk30,
                 )
         except CourseTrackError as exc:
             raise DesktopCourseError(exc.code, status_code=exc.status_code) from exc

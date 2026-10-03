@@ -181,7 +181,13 @@ class CourseTrackService:
                 completed_lessons_count=completed,
             )
 
-    async def change_level(self, user, requested_level: str) -> dict:
+    async def change_level(
+        self,
+        user,
+        requested_level: str,
+        *,
+        allow_locked_hsk30: bool = False,
+    ) -> dict:
         """Change band inside the active course track.
 
         Track switching is a separate operation. A level change resets the
@@ -206,6 +212,8 @@ class CourseTrackService:
         if current_track == TRACK_HSK30:
             access = await self.hsk30_access(user)
             if not access.feature_enabled:
+                raise CourseTrackError(access.reason, status_code=403)
+            if not access.allowed and not allow_locked_hsk30:
                 raise CourseTrackError(access.reason, status_code=403)
             live_levels = await self.hsk30_feature.live_levels()
             if target_level not in live_levels:
@@ -263,6 +271,7 @@ class CourseTrackService:
         *,
         target_track: str,
         requested_level: str | None = None,
+        allow_locked_hsk30: bool = False,
     ) -> dict:
         target_track = str(target_track or "").strip().lower()
         if target_track not in {TRACK_HSK20, TRACK_HSK30}:
@@ -273,6 +282,8 @@ class CourseTrackService:
         if target_track == TRACK_HSK30:
             access = await self.hsk30_access(user)
             if not access.feature_enabled:
+                raise CourseTrackError(access.reason, status_code=403)
+            if not access.allowed and not allow_locked_hsk30:
                 raise CourseTrackError(access.reason, status_code=403)
             live_levels = await self.hsk30_feature.live_levels()
             if not live_levels:
@@ -345,19 +356,35 @@ class CourseTrackService:
                 level=target_level,
                 completed_lessons_count=0,
             )
+            target_completed = 0
         else:
-            target_level = self._validate_level_for_track(
+            stored_level = self._validate_level_for_track(
                 target_state.level,
                 target_track,
             )
+            target_level = validated_requested_level or stored_level
             if target_track == TRACK_HSK30 and target_level not in live_levels:
                 raise CourseTrackError("hsk30_level_not_live", status_code=403)
 
+            # A level explicitly chosen while entering the other track is a
+            # real band change, not a hint. Preserve progress when the learner
+            # picks the saved band; reset only when they deliberately choose a
+            # different band.
+            if validated_requested_level and target_level != stored_level:
+                await self.state_repo.save_progress(
+                    target_state,
+                    level=target_level,
+                    completed_lessons_count=0,
+                )
+                target_completed = 0
+            else:
+                target_completed = int(
+                    target_state.completed_lessons_count or 0
+                )
+
         user.level = target_level
         progress.level = content_level(target_level)
-        progress.completed_lessons_count = int(
-            target_state.completed_lessons_count or 0
-        )
+        progress.completed_lessons_count = target_completed
         progress.current_lesson_id = None
         progress.current_step = "intro"
         progress.waiting_for = "none"

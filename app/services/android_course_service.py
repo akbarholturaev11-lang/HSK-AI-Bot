@@ -130,12 +130,17 @@ class AndroidCourseService(DesktopCourseService):
         before_level = str(getattr(context.user, "level", "") or "")
         current_track = before_track
         if target_track == current_track and level:
-            status = await service.change_level(context.user, level)
+            status = await service.change_level(
+                context.user,
+                level,
+                allow_locked_hsk30=True,
+            )
         else:
             status = await service.switch(
                 context.user,
                 target_track=target_track,
                 requested_level=level,
+                allow_locked_hsk30=True,
             )
         after_level = str(getattr(context.user, "level", "") or "")
         after_track = service.track_for_level(after_level)

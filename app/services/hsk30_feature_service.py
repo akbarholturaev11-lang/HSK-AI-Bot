@@ -8,7 +8,7 @@ from app.services.course_levels import hsk30_content_levels, level_spec
 
 HSK30_ENABLED_SETTINGS_KEY = "hsk30_enabled"
 HSK30_LIVE_LEVELS_SETTINGS_KEY = "hsk30_live_levels"
-DEFAULT_HSK30_LIVE_LEVELS = ("nhsk1",)
+DEFAULT_HSK30_LIVE_LEVELS = ("nhsk1", "nhsk2", "nhsk3")
 HSK30_NEW_BADGE_WINDOW = timedelta(days=3)
 
 
@@ -19,9 +19,9 @@ class Hsk30FeatureService:
     boundary inside the track. Runtime data for a later level may be checked
     in without making that level selectable or startable.
 
-    Missing hsk30_live_levels intentionally defaults to N1 only: this is the
-    first public release defined by the HSK 3.0 rollout plan. An explicitly
-    empty value means no HSK 3.0 level is live.
+    Missing hsk30_live_levels defaults to every runtime-ready public HSK 3.0
+    band currently shipped by the product: N1, N2 and N3. An explicitly empty
+    value still means no HSK 3.0 level is live.
     """
 
     def __init__(self, session):

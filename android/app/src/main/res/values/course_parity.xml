@@ -24,4 +24,11 @@
     <string name="today_task_pron">Talaffuz</string>
     <string name="lesson_entry_title">Dars tayyorlanmoqda</string>
     <string name="lesson_entry_subtitle">Panda siz bilan boshlaydi</string>
+
+    <string name="hsk30_access_required_title">HSK 3.0 ni ochish kerak</string>
+    <string name="hsk30_access_required_body">HSK 3.0 versiyasidan hozircha bepul foydalanib bo‘lmaydi. Versiyani bir marta doimiy ochish uchun %1$s to‘lov qilish kerak.</string>
+    <string name="hsk30_access_unlock_button">HSK 3.0 ni ochish — %1$s</string>
+    <string name="hsk30_access_back_hsk20">HSK 2.0 ga qaytish</string>
+    <string name="hsk30_level_picker_title">HSK 3.0 ni qaysi darajadan davom ettirasiz?</string>
+    <string name="hsk30_level_picker_body">Darajani tanlang. Siz avtomatik N1 ga tushirilmaysiz.</string>
 </resources>

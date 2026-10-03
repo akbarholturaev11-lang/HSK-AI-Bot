@@ -30,7 +30,7 @@ class _BotSpy:
         self.sent = []
         self.fail = fail
 
-    async def send_message(self, *, chat_id, text, parse_mode=None):
+    async def send_message(self, *, chat_id, text, **kwargs):
         if self.fail:
             raise RuntimeError("bot bloklangan")
         self.sent.append((chat_id, text))

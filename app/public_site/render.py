@@ -109,15 +109,16 @@ def render_page(path, settings_obj, tags=None):
         else "guide" if str(page.get("translation_group", "")).startswith("guide")
         else None
     )
+    aria_current = ' aria-current="page"'
     nav_items = "".join(
         f'<a href="{esc(with_attribution(dest, tags))}"'
-        f'{" aria-current=\"page\"" if key == active_nav else ""}>'
+        f'{aria_current if key == active_nav else ""}>'
         f'{esc(labels[key])}</a>'
         for key, dest in nav_paths
     )
     nav = "".join(
         f'<a lang="{code}" href="{esc(with_attribution(translated_path(path, code), tags))}"'
-        f'{" aria-current=\"page\"" if code == lang else ""}>{label}</a>'
+        f'{aria_current if code == lang else ""}>{label}</a>'
         for code, label in LANGUAGE_NAMES.items()
     )
     sections = "".join(
