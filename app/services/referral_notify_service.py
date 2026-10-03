@@ -1,7 +1,15 @@
 from aiogram import Bot
 
+from app.bot.keyboards.course_miniapp import course_study_miniapp_keyboard
 from app.bot.utils.i18n import t
 from app.services.bot_block_status_service import BotBlockStatusService
+
+
+COURSE_START_BUTTON = {
+    "uz": "▶️ Darsni boshlash",
+    "tj": "▶️ Оғози дарс",
+    "ru": "▶️ Начать урок",
+}
 
 
 class ReferralNotifyService:
@@ -59,6 +67,11 @@ class ReferralNotifyService:
                 chat_id=referrer_user.telegram_id,
                 text=text,
                 parse_mode="HTML",
+                reply_markup=course_study_miniapp_keyboard(
+                    lang,
+                    tab="course",
+                    text=COURSE_START_BUTTON.get(lang, COURSE_START_BUTTON["ru"]),
+                ),
             )
             if blocks is not None:
                 await blocks.handle_send_success(referrer_user, reason="referral_trial_unlocked")
