@@ -1,6 +1,7 @@
 from aiogram import Bot
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 
+from app.bot.keyboards.course_miniapp import course_study_miniapp_keyboard
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.course_miniapp import course_study_miniapp_url
 from app.bot.utils.i18n import t
@@ -17,6 +18,12 @@ HSK30_UNLOCK_COURSE_BUTTON = {
     "uz": "▶️ HSK 3.0 ni boshlash",
     "tj": "▶️ HSK 3.0-ро оғоз кардан",
     "ru": "▶️ Начать HSK 3.0",
+}
+
+COURSE_START_BUTTON = {
+    "uz": "▶️ Darsni boshlash",
+    "tj": "▶️ Оғози дарс",
+    "ru": "▶️ Начать урок",
 }
 
 HSK30_UNLOCK_REJECTED_TEXT = {
@@ -74,7 +81,15 @@ class PaymentNotifyService:
             if self.session is not None and BotBlockStatusService.is_bot_blocked(user):
                 return
             try:
-                await bot.send_message(chat_id=user.telegram_id, text=t("user_payment_approved", lang))
+                await bot.send_message(
+                    chat_id=user.telegram_id,
+                    text=t("user_payment_approved", lang),
+                    reply_markup=course_study_miniapp_keyboard(
+                        lang,
+                        tab="course",
+                        text=COURSE_START_BUTTON.get(lang, COURSE_START_BUTTON["ru"]),
+                    ),
+                )
                 await self._success(user, "payment_approved")
             except Exception as exc:
                 await self._failure(user, exc, "payment_approved")
