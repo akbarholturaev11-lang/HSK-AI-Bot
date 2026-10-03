@@ -267,6 +267,7 @@
     <string name="rating_xp_behind">Шумо %1$d XP қафо ҳастед</string>
     <string name="rating_xp_tied">Натиҷа баробар аст</string>
     <string name="course_goal_progress">Ҳадафи рӯзона: %1$d / %2$d XP</string>
+    <string name="course_switch_version">Иваз кардани версияи курс</string>
     <string name="course_lesson_label">Дарси %1$d</string>
     <string name="practice_subtitle_short">Мустаҳкам ва санҷиш</string>
     <string name="practice_group_skills">Грамматика · Талаффуз</string>

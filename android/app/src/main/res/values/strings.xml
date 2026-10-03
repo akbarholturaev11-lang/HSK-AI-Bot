@@ -303,6 +303,7 @@
     <string name="rating_xp_behind">%1$d XP ortdasiz</string>
     <string name="rating_xp_tied">Natija teng</string>
     <string name="course_goal_progress">Kunlik maqsad: %1$d / %2$d XP</string>
+    <string name="course_switch_version">Kurs versiyasini almashtirish</string>
     <string name="course_lesson_label">%1$d-dars</string>
     <string name="practice_subtitle_short">Mustahkamlash va sinash</string>
     <string name="practice_group_skills">Grammatika · Talaffuz</string>

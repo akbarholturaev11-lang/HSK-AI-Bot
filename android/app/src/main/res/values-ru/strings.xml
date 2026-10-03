@@ -266,6 +266,7 @@
     <string name="rating_xp_behind">Отставание на %1$d XP</string>
     <string name="rating_xp_tied">Результат равный</string>
     <string name="course_goal_progress">Дневная цель: %1$d / %2$d XP</string>
+    <string name="course_switch_version">Переключить версию курса</string>
     <string name="course_lesson_label">Урок %1$d</string>
     <string name="practice_subtitle_short">Закрепление и проверка</string>
     <string name="practice_group_skills">Грамматика · Произношение</string>

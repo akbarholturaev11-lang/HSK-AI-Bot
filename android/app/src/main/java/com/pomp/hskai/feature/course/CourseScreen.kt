@@ -45,12 +45,14 @@ import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.TrackChanges
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -77,6 +79,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -142,6 +145,7 @@ fun CourseScreen(
     val map = state.map
     var hsk30PromoOpen by remember { mutableStateOf(false) }
     var hsk30PromoHandled by remember { mutableStateOf(false) }
+    var pendingTrackSwitch by remember { mutableStateOf<Pair<String, String?>?>(null) }
     val hsk30PromoEligible = map?.hsk30?.promo?.eligible == true
     LaunchedEffect(hsk30PromoEligible) {
         if (hsk30PromoEligible && !hsk30PromoHandled) {
@@ -203,6 +207,10 @@ fun CourseScreen(
                             onOpenGoal = onOpenGoal,
                             hints = hints,
                             onDismissHint = onDismissHint,
+                            isSwitchingTrack = state.isSwitchingTrack,
+                            onSwitchTrack = { targetTrack, targetLevel ->
+                                pendingTrackSwitch = targetTrack to targetLevel
+                            },
                         )
                         if (!foundationMustComeFirst) {
                             map.today?.takeIf { it.tasks.isNotEmpty() }?.let { today ->
@@ -287,6 +295,45 @@ fun CourseScreen(
                     hsk30PromoOpen = false
                     onSwitchTrack("hsk30", hsk30.promo.recommendedLevel)
                 },
+            )
+        }
+
+        pendingTrackSwitch?.let { (targetTrack, targetLevel) ->
+            val targetLabel = if (targetTrack == "hsk30") "HSK 3.0" else "HSK 2.0"
+            AlertDialog(
+                onDismissRequest = { pendingTrackSwitch = null },
+                title = {
+                    Text(
+                        stringResource(R.string.profile_course_version_confirm_title, targetLabel),
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                },
+                text = {
+                    Text(
+                        stringResource(R.string.profile_course_version_confirm_body),
+                        color = PompColors.InkSecondary,
+                    )
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            pendingTrackSwitch = null
+                            onSwitchTrack(targetTrack, targetLevel)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = PompColors.Cinnabar,
+                            contentColor = Color.White,
+                        ),
+                    ) {
+                        Text(stringResource(R.string.action_continue))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { pendingTrackSwitch = null }) {
+                        Text(stringResource(R.string.action_cancel), color = PompColors.InkSecondary)
+                    }
+                },
+                containerColor = PompColors.PaperRaised,
             )
         }
 
@@ -484,14 +531,39 @@ private fun CourseHeader(
     onOpenGoal: () -> Unit,
     hints: List<AndroidHintDto>,
     onDismissHint: (String) -> Unit,
+    isSwitchingTrack: Boolean,
+    onSwitchTrack: (String, String?) -> Unit,
 ) {
+    val hsk30 = map.hsk30
+    val activeTrack = hsk30?.activeTrack
+        ?: if (map.level.startsWith("nhsk", ignoreCase = true)) "hsk30" else "hsk20"
+    val targetTrack = if (activeTrack == "hsk30") "hsk20" else "hsk30"
+    val canSwitchTrack = hsk30 != null && (
+        targetTrack == "hsk20" ||
+            (hsk30.access.featureEnabled && hsk30.liveLevels.isNotEmpty())
+        )
+    val switchVersionAction = stringResource(R.string.course_switch_version)
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Surface(color = PompColors.Cinnabar, shape = RoundedCornerShape(20.dp)) {
+        Surface(
+            modifier = if (canSwitchTrack) {
+                Modifier.clickable(
+                    enabled = !isSwitchingTrack,
+                    role = Role.Button,
+                    onClickLabel = switchVersionAction,
+                ) {
+                    onSwitchTrack(targetTrack, null)
+                }
+            } else {
+                Modifier
+            },
+            color = PompColors.Cinnabar,
+            shape = RoundedCornerShape(20.dp),
+        ) {
             Row(
                 modifier = Modifier.padding(horizontal = 13.dp, vertical = 7.dp),
                 verticalAlignment = Alignment.CenterVertically,
