@@ -706,7 +706,7 @@ class AndroidBotConfirmationTests(unittest.IsolatedAsyncioTestCase):
             await desktop_auth_handler.begin_android_link(message, state, session)
 
         self.assertEqual("ru", user.language)
-        self.assertEqual("mode_choice", user.learning_mode)
+        self.assertEqual("onboard_mode", user.learning_mode)
         self.assertIsNone(state.state)
         session.commit.assert_awaited_once()
         self.assertEqual(1, len(message.answers))
