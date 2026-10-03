@@ -2040,6 +2040,21 @@ async def hsk_ai_devices():
     )
 
 
+@app.get("/assets/hsk20-course-books.jpg")
+async def hsk20_course_books():
+    return static_asset_response(
+        "app/static/assets/hsk20-course-books.jpg",
+        "image/jpeg",
+    )
+
+
+@app.get("/assets/hsk30-course-books.jpg")
+async def hsk30_course_books():
+    return static_asset_response(
+        "app/static/assets/hsk30-course-books.jpg",
+        "image/jpeg",
+    )
+
 COURSE_CHARACTER_ASSETS = {
     "hsk-character-pack.css": "text/css",
     "hsk-character-motion.css": "text/css",

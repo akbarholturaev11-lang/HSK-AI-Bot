@@ -37,7 +37,25 @@ button:disabled{cursor:default}
 .track-note{font-size:12px;line-height:1.45;color:var(--ink2);margin:-6px 0 14px}
 .track-note b{color:var(--cin2);font-weight:650}
 .book-preview{width:min(100%,320px);aspect-ratio:1/1;margin:0 auto 14px;overflow:hidden;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 3px 12px rgba(33,29,23,.06)}
+.book-preview{position:relative}
 .book-preview img{display:block;width:100%;height:100%;object-fit:contain}
+.book-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px 8px;background:linear-gradient(145deg,#fff,#f8f1e5)}
+.fallback-book{position:relative;display:flex;flex:1;max-width:31%;height:72%;flex-direction:column;align-items:center;overflow:hidden;padding:11px 4px 8px;border-radius:3px 5px 5px 3px;background:linear-gradient(145deg,var(--cover),var(--cover-dark));box-shadow:0 7px 12px rgba(33,29,23,.22);color:#fff;text-align:center;transform:rotate(-7deg) translateY(9px)}
+.fallback-book:before{content:"";position:absolute;top:0;bottom:0;left:0;width:5px;background:rgba(255,255,255,.24);border-right:1px solid rgba(0,0,0,.13)}
+.fallback-book:nth-child(2){z-index:1;height:84%;transform:translateY(-4px)}
+.fallback-book:nth-child(3){transform:rotate(7deg) translateY(9px)}
+.fallback-book span{font-size:clamp(7px,2vw,9px);font-weight:800;line-height:1.15}
+.fallback-book strong{margin-top:12px;font-size:clamp(18px,7vw,32px);line-height:.95}
+.fallback-book small{margin-top:8px;font-size:clamp(6px,1.8vw,8px);font-weight:700;line-height:1.2}
+#stage[data-step="1"]{overflow:hidden;overscroll-behavior:none}
+#stage[data-step="1"] .guide{gap:14px;padding:10px 20px}
+#stage[data-step="1"] .panda{width:76px;height:84px}
+#stage[data-step="1"] .bub{padding:12px 14px}
+#stage[data-step="1"] .bub h1{font-size:clamp(18px,5.4vw,21px);line-height:1.2}
+#stage[data-step="1"] .body{display:flex;flex:1;min-height:0;flex-direction:column;padding:0 24px 8px}
+#stage[data-step="1"] .book-preview{width:min(100%,320px,38vh);width:min(100%,320px,38dvh);flex:none;margin:0 auto 10px}
+#stage[data-step="1"] .track-switch{margin:0}
+#stage[data-step="1"].stage-enter{animation:none}
 .new-tag{display:inline-flex;align-items:center;margin-left:6px;padding:2px 5px;border-radius:6px;background:var(--cinbg);color:var(--cin2);font-size:9px;line-height:1.1;font-weight:800;vertical-align:middle}
 .choices{display:grid;gap:10px}
 .lv{display:flex;align-items:center;gap:14px;width:100%;min-height:72px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;color:var(--ink);transition:background .18s,border-color .18s,transform .15s}
@@ -76,6 +94,8 @@ button:disabled{cursor:default}
 @media(min-width:700px){.wrap{border-left:1px solid var(--line);border-right:1px solid var(--line)}.guide{padding-top:30px}.welcome .big{width:220px;height:233px}}
 @media(max-width:360px){.top{padding-inline:12px;gap:10px}.guide{padding:15px 16px;gap:12px}.panda{width:70px;height:80px}.bub{padding:14px}.bub h1{font-size:19px}.body{padding-inline:16px}.lv{padding:12px;gap:10px}.lv .hd{font-size:15px}.footer{padding-inline:16px}.welcome{padding-inline:24px}}
 @media(max-height:700px){.welcome{min-height:350px;padding-top:24px;padding-bottom:16px}.welcome .big{width:144px;height:153px;margin-bottom:16px}.welcome .hello{margin-bottom:18px}.welcome h1{font-size:34px}.welcome p{font-size:14px}.guide{padding-top:12px;padding-bottom:12px}.footer{padding-top:12px;padding-bottom:calc(14px + var(--safe-b))}}
+@media(max-width:360px){#stage[data-step="1"] .guide{gap:10px;padding:8px 16px}#stage[data-step="1"] .body{padding-right:16px;padding-left:16px}}
+@media(max-height:700px){#stage[data-step="1"] .guide{padding-top:6px;padding-bottom:6px}#stage[data-step="1"] .panda{width:62px;height:68px}#stage[data-step="1"] .book-preview{width:min(100%,320px,34vh);width:min(100%,320px,34dvh)}#stage[data-step="1"] .track-switch button{min-height:40px}}
 .pd-breathe{animation:pdBreathe 2.6s ease-in-out infinite;transform-origin:50% 100%}
 .pd-bounce{animation:pdBounce .7s ease-in-out infinite;transform-origin:50% 100%}
 @keyframes pdBreathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.02) translateY(-1px)}}
@@ -205,7 +225,7 @@ var GOALS=[
   {k:"study_china",g:"学",hd:{ru:"Учёба в Китае",uz:"Xitoyda o'qish",tj:"Таҳсил дар Чин"},
     s:{ru:"Упор на курс и словарный запас",uz:"Kursga va so'z boyligiga urg'u",tj:"Таъкид ба курс ва луғат"}}
 ];
-var step=0,track="hsk30",sel="nhsk1",goalSel="hsk_exam",submitting=false,hasSavedTrack=false;
+var step=0,track="hsk30",sel="nhsk1",goalSel="hsk_exam",submitting=false,hasSavedTrack=false,userSelectedTrack=false;
 var HSK30_STATUS=null;
 var INIT_DATA=(tg&&tg.initData)||"";
 try{
@@ -273,6 +293,21 @@ function hsk30PaymentEnabled(){
   var u=HSK30_STATUS&&HSK30_STATUS.hsk30_unlock||{};
   return u.payment_enabled!==false&&Number(u.price_tjs||0)>0&&!!hsk30Price();
 }
+function updateTrackSwitcher(){
+  var button=document.querySelector('.track-switch button[data-track="hsk30"]');
+  if(!button)return;
+  document.querySelectorAll(".track-switch button").forEach(function(option){
+    var selected=option.dataset.track===track;
+    option.classList.toggle("sel",selected);
+    option.setAttribute("aria-pressed",String(selected));
+  });
+  var access=hsk30Access();
+  var ready=!!access&&access.feature_enabled!==false;
+  var meta=["NEW"];
+  if(access&&!access.allowed&&hsk30PaymentEnabled())meta.push(hsk30Price());
+  button.disabled=!ready;
+  button.innerHTML=L.hsk30+"<small>"+meta.join(" · ")+"</small>";
+}
 function isHsk30Level(value){return /^nhsk[1-3]$/.test(String(value||""))}
 function saveDraft(){
   try{
@@ -293,10 +328,46 @@ function setTrack(next){
       var error=document.getElementById("error");error.textContent=L.hsk30Disabled;error.hidden=false;return;
     }
   }
+  userSelectedTrack=true;
+  var changed=track!==next;
   track=next;
   var choices=levelsForTrack();
   if(!choices.some(function(l){return l.k===sel}))sel=choices.length?choices[0].k:(track==="hsk30"?"nhsk1":"beginner");
-  saveDraft();render();focusQuestion();
+  saveDraft();
+  document.querySelectorAll(".track-switch button").forEach(function(button){
+    var selected=button.dataset.track===track;
+    button.classList.toggle("sel",selected);
+    button.setAttribute("aria-pressed",String(selected));
+  });
+  if(changed)updateBookPreview();
+}
+function bookImageUrl(track){return "/assets/"+(track==="hsk30"?"hsk30-course-books.jpg":"hsk20-course-books.jpg")+"?v=20261003c"}
+function updateBookPreview(){
+  var frame=document.querySelector(".book-preview");
+  if(!frame)return;
+  frame.dataset.track=track;
+  frame.classList.remove("has-fallback");
+  var image=new Image();
+  image.alt=track==="hsk30"?L.books30:L.books20;
+  image.onerror=function(){bookImageFailed(image)};
+  image.src=bookImageUrl(track);
+  frame.replaceChildren(image);
+}
+function bookFallbackMarkup(track,alt){
+  var fresh=track==="hsk30";
+  var levels=fresh?[1,2,3]:[1,2,3,4];
+  var colors=fresh?[["#183A65","#0D2442"],["#1B5BA8","#123B73"],["#204966","#102A43"]]:[["#E5BE1B","#B9890A"],["#0A9FA3","#08727A"],["#F07628","#BD4C18"],["#C72E32","#841E27"]];
+  var heading=fresh?"新 HSK 教程":"标准教程";
+  var course=fresh?"NEW HSK COURSE":"STANDARD COURSE";
+  return '<div class="book-fallback" role="img" aria-label="'+alt+'">'+levels.map(function(level,index){return '<div class="fallback-book" style="--cover:'+colors[index][0]+';--cover-dark:'+colors[index][1]+'"><span>'+heading+'</span><strong>HSK<br>'+level+'</strong><small>'+course+'</small></div>'}).join("")+'</div>';
+}
+function bookImageFailed(image){
+  var frame=image&&image.parentNode;
+  if(!frame||frame.querySelector("img")!==image)return;
+  var track=frame.getAttribute("data-track"),alt=image.alt;
+  image.remove();
+  frame.classList.add("has-fallback");
+  frame.innerHTML=bookFallbackMarkup(track,alt);
 }
 function trv(o){return typeof o==="string"?o:(o[LANG]||o.ru)}
 function levelTitle(level){return level.k==="beginner"?L.beginner:trv(level.hd)}
@@ -307,8 +378,9 @@ function optionRow(key,title,subtitle,glyph,selected,handler){
   return '<button type="button" class="lv'+(selected?' sel':'')+'" data-key="'+key+'" aria-pressed="'+selected+'" onclick="'+handler+'(\''+key+'\')">'
     +'<span class="glyph" aria-hidden="true">'+glyph+'</span><span class="ot"><span class="hd">'+title+(isHsk30Level(key)?'<span class="new-tag">NEW</span>':'')+'</span><small>'+subtitle+'</small></span><span class="chk">'+icon("check")+'</span></button>';
 }
-function render(){
+function render(animateStage){
   var st=document.getElementById("stage"),cta=document.getElementById("cta"),backButton=document.getElementById("back");
+  st.dataset.step=String(step);
   document.getElementById("top").style.display=step===0?"none":"flex";
   document.getElementById("error").hidden=true;
   backButton.innerHTML=icon("back");backButton.setAttribute("aria-label",L.back);
@@ -330,10 +402,10 @@ function render(){
       if(access&&!access.allowed&&hsk30PaymentEnabled())h30Meta.push(hsk30Price());
       var h30PriceLabel='<small>'+h30Meta.join(' · ')+'</small>';
       var switcher='<div class="track-switch" role="group" aria-label="'+L.courseVersion+'">'
-        +'<button type="button" class="'+(track==="hsk20"?"sel":"")+'" onclick="setTrack(\'hsk20\')">'+L.hsk20+'</button>'
-        +'<button type="button" '+(h30Ready?'':'disabled ')+'class="'+(track==="hsk30"?"sel":"")+'" onclick="setTrack(\'hsk30\')">'+L.hsk30+h30PriceLabel+'</button></div>';
+        +'<button type="button" data-track="hsk20" aria-pressed="'+(track==="hsk20")+'" class="'+(track==="hsk20"?"sel":"")+'" onclick="setTrack(\'hsk20\')">'+L.hsk20+'</button>'
+        +'<button type="button" data-track="hsk30" aria-pressed="'+(track==="hsk30")+'" '+(h30Ready?'':'disabled ')+'class="'+(track==="hsk30"?"sel":"")+'" onclick="setTrack(\'hsk30\')">'+L.hsk30+h30PriceLabel+'</button></div>';
       var bookAlt=track==="hsk30"?L.books30:L.books20;
-      rows='<div class="book-preview"><img src="/assets/'+(track==="hsk30"?'hsk30-course-books.jpg':'hsk20-course-books.jpg')+'" alt="'+bookAlt+'"></div>'+switcher;
+      rows='<div class="book-preview" data-track="'+track+'"><img src="'+bookImageUrl(track)+'" alt="'+bookAlt+'" onerror="bookImageFailed(this)"></div>'+switcher;
     }else if(step===2){
       var levelChoices=levelsForTrack();
       rows=levelChoices.map(function(l,index){return optionRow(l.k,levelTitle(l),l.k==="beginner"?L.beginnerSub:trv(l.s),levelGlyph(index),sel===l.k,"pick")}).join("");
@@ -343,11 +415,13 @@ function render(){
       summary='<div class="chosen">'+icon("check")+'<span>'+L.selected+': <b>'+levelTitle(level)+(isHsk30Level(level.k)?'<span class="new-tag">NEW</span>':'')+'</b></span></div>';
       rows=GOALS.map(function(o){return optionRow(o.k,trv(o.hd),trv(o.s),'<span class="goal-icon '+o.k+'">'+icon(o.k)+'</span>',goalSel===o.k,"pickGoal")}).join("");
     }
+    var helper=step===1?"":'<p class="helper">'+(step===2?L.levelHint:L.goalHint)+'</p>';
     st.innerHTML='<div class="guide"><div class="panda">'+panda("happy")+'</div><div class="bub"><h1 id="question" tabindex="-1">'+(step===1?L.askVersion:step===2?L.ask:L.askGoal)+'</h1></div></div>'
-      +'<div class="body"><p class="helper">'+(step===1?L.versionHint:step===2?L.levelHint:L.goalHint)+'</p>'+summary+(step===2||step===3?'<div class="choices" role="group" aria-labelledby="question">'+rows+'</div>':rows)+'</div>';
+      +'<div class="body">'+helper+summary+(step===2||step===3?'<div class="choices" role="group" aria-labelledby="question">'+rows+'</div>':rows)+'</div>';
     cta.innerHTML=(step<3?L.cont:L.first)+icon("arrow");
   }
   st.scrollTop=0;
+  if(animateStage===false){st.classList.remove("stage-enter");return}
   st.classList.remove("stage-enter");void st.offsetWidth;st.classList.add("stage-enter");
 }
 var pandaReactionTimer=null;
@@ -404,7 +478,8 @@ if(INIT_DATA){
       if(!d||!d.ok)throw new Error("course_track_unavailable");
       HSK30_STATUS=d;
       var access=hsk30Access(),h30Enabled=!!(access&&access.feature_enabled!==false);
-      if(!hasSavedTrack){
+      var previousTrack=track;
+      if(!hasSavedTrack&&!userSelectedTrack){
         track=h30Enabled?"hsk30":"hsk20";
         sel=h30Enabled?"nhsk1":"beginner";
       }else if(track==="hsk30"&&!h30Enabled){
@@ -414,12 +489,20 @@ if(INIT_DATA){
         if(!choices.some(function(l){return l.k===sel}))sel=track==="hsk30"?"nhsk1":"beginner";
       }
       saveDraft();
-      render();
+      if(step===1){
+        updateTrackSwitcher();
+        if(previousTrack!==track)updateBookPreview();
+      }else{
+        var stage=document.getElementById("stage"),previousScroll=stage.scrollTop;
+        render(false);
+        stage.scrollTop=previousScroll;
+      }
     })
     .catch(function(){
       HSK30_STATUS={tracks:{hsk30:{access:{feature_enabled:false,allowed:false},live_levels:[]}},hsk30_unlock:{}};
       if(track==="hsk30"){track="hsk20";sel="beginner";saveDraft()}
-      render();
+      if(step===1){updateTrackSwitcher();updateBookPreview()}
+      else{var stage=document.getElementById("stage"),previousScroll=stage.scrollTop;render(false);stage.scrollTop=previousScroll}
     });
 }
 render();
