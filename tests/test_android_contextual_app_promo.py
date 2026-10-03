@@ -77,8 +77,25 @@ class AndroidContextualAppPromoTests(unittest.TestCase):
         self.assertIn("buildProfileDeviceVisual()", profile)
         self.assertIn('buildActions("profile")', profile)
         self.assertIn('trackEntrySeen("profile"', profile)
-        self.assertIn("/assets/hsk-ai-devices.jpg", self.js)
+        self.assertIn('seal.src = "/assets/hsk-ai-logo-256.png"', profile)
+        self.assertNotIn("pdd-eyebrow", profile)
+        self.assertNotIn("copy.cardBody", profile)
+        self.assertNotIn("buildBenefits(true)", profile)
+        visual = _function_body(self.js, "buildProfileDeviceVisual")
+        self.assertIn('var source = "/assets/hsk-ai-devices.jpg"', visual)
+        self.assertIn('image.src = source + "?retry=" + Date.now()', visual)
+        self.assertIn('image.src = "/assets/hsk-ai-logo-256.png"', visual)
+        self.assertIn('image.loading = "eager"', visual)
+        self.assertIn('image.decoding = "async"', visual)
         self.assertIn(".pdd-profile-device-visual", self.css)
+        self.assertIn("aspect-ratio: 3 / 2", self.css)
+        self.assertIn("object-fit: contain", self.css)
+
+    def test_profile_device_photo_has_a_served_jpeg_route(self):
+        app_source = (ROOT / "app" / "main.py").read_text(encoding="utf-8")
+        self.assertIn('@app.get("/assets/hsk-ai-devices.jpg")', app_source)
+        self.assertIn('"app/static/assets/hsk-ai-devices.jpg"', app_source)
+        self.assertIn('"image/jpeg"', app_source)
 
     def test_profile_art_is_valid_jpeg(self):
         data = PROFILE_ART.read_bytes()

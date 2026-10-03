@@ -2032,6 +2032,14 @@ async def hsk_ai_cover():
     )
 
 
+@app.get("/assets/hsk-ai-devices.jpg")
+async def hsk_ai_devices():
+    return static_asset_response(
+        "app/static/assets/hsk-ai-devices.jpg",
+        "image/jpeg",
+    )
+
+
 COURSE_CHARACTER_ASSETS = {
     "hsk-character-pack.css": "text/css",
     "hsk-character-motion.css": "text/css",
