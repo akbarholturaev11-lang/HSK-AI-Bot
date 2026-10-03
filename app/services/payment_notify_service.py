@@ -1,14 +1,22 @@
 from aiogram import Bot
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
+from app.bot.utils.course_miniapp import course_study_miniapp_url
 from app.bot.utils.i18n import t
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.android_payment_push_service import AndroidPaymentPushService
 
 HSK30_UNLOCK_APPROVED_TEXT = {
-    "uz": "✅ HSK 3.0 ochildi.\n\nBir martalik doimiy kirish berildi. HSK 3.0 ga istalgan payt o'tishingiz mumkin.",
-    "tj": "✅ HSK 3.0 кушода шуд.\n\nДастрасии доимӣ бо пардохти якдафъаина дода шуд. Шумо ҳар вақт метавонед ба HSK 3.0 гузаред.",
-    "ru": "✅ HSK 3.0 открыт.\n\nПостоянный доступ после разовой оплаты активирован. Вы можете перейти на HSK 3.0 в любое время.",
+    "uz": "To'lov qabul qilindi ✅\n\nHSK 3.0 ga to'liq kirish siz uchun ochildi. Quyidagi tugmadan boshlang 👇🏽",
+    "tj": "Пардохт қабул шуд ✅\n\nДастрасии пурра ба HSK 3.0 барои шумо кушода шуд. Аз тугмаи поён оғоз кунед 👇🏽",
+    "ru": "Платёж принят ✅\n\nПолный доступ к HSK 3.0 открыт для вас. Начните с кнопки ниже 👇🏽",
+}
+
+HSK30_UNLOCK_COURSE_BUTTON = {
+    "uz": "▶️ HSK 3.0 ni boshlash",
+    "tj": "▶️ HSK 3.0-ро оғоз кардан",
+    "ru": "▶️ Начать HSK 3.0",
 }
 
 HSK30_UNLOCK_REJECTED_TEXT = {
@@ -84,6 +92,23 @@ class PaymentNotifyService:
                 await bot.send_message(
                     chat_id=user.telegram_id,
                     text=HSK30_UNLOCK_APPROVED_TEXT[lang],
+                    reply_markup=InlineKeyboardMarkup(
+                        inline_keyboard=[
+                            [
+                                InlineKeyboardButton(
+                                    text=HSK30_UNLOCK_COURSE_BUTTON[lang],
+                                    web_app=WebAppInfo(
+                                        url=course_study_miniapp_url(
+                                            lang=lang,
+                                            level="nhsk1",
+                                            tab="course",
+                                            source="hsk30_unlock_approved",
+                                        )
+                                    ),
+                                )
+                            ]
+                        ]
+                    ),
                 )
                 await self._success(user, "hsk30_unlock_approved")
             except Exception as exc:
