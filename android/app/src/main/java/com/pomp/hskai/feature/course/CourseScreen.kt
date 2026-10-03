@@ -45,14 +45,12 @@ import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.TrackChanges
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -144,7 +142,6 @@ fun CourseScreen(
     val map = state.map
     var hsk30PromoOpen by remember { mutableStateOf(false) }
     var hsk30PromoHandled by remember { mutableStateOf(false) }
-    var pendingTrackSwitch by remember { mutableStateOf<Pair<String, String?>?>(null) }
     val hsk30PromoEligible = map?.hsk30?.promo?.eligible == true
     LaunchedEffect(hsk30PromoEligible) {
         if (hsk30PromoEligible && !hsk30PromoHandled) {
@@ -207,16 +204,6 @@ fun CourseScreen(
                             hints = hints,
                             onDismissHint = onDismissHint,
                         )
-                        map.hsk30?.takeIf { it.access.featureEnabled }?.let {
-                            CourseTrackBar(
-                                map = map,
-                                isSwitching = state.isSwitchingTrack,
-                                onSwitchTrack = { track, level ->
-                                    pendingTrackSwitch = track to level
-                                },
-                                onUnlockHsk30 = onUnlockHsk30,
-                            )
-                        }
                         if (!foundationMustComeFirst) {
                             map.today?.takeIf { it.tasks.isNotEmpty() }?.let { today ->
                                 TodayPlanCard(today = today, onTask = onTodayTask)
@@ -250,7 +237,14 @@ fun CourseScreen(
                                         unlockedLessonOrder = state.unlockedLessonOrder,
                                         onUnlockAnimationConsumed = onUnlockAnimationConsumed,
                                         onLesson = onLesson,
-                                        onLimitedLesson = { limitedLesson = it },
+                                        onLimitedLesson = {
+                                            val hsk30 = map.hsk30
+                                            if (hsk30?.activeTrack == "hsk30" && !hsk30.access.allowed) {
+                                                onUnlockHsk30()
+                                            } else {
+                                                limitedLesson = it
+                                            }
+                                        },
                                         onLockedLesson = onLockedLesson,
                                         onOpenChest = onOpenChest,
                                     )
@@ -289,10 +283,6 @@ fun CourseScreen(
             Hsk30PromoDialog(
                 hsk30 = hsk30,
                 onDismiss = { hsk30PromoOpen = false },
-                onUnlockPermanently = {
-                    hsk30PromoOpen = false
-                    onUnlockHsk30()
-                },
                 onContinue = {
                     hsk30PromoOpen = false
                     onSwitchTrack("hsk30", hsk30.promo.recommendedLevel)
@@ -300,110 +290,6 @@ fun CourseScreen(
             )
         }
 
-        pendingTrackSwitch?.let { (targetTrack, targetLevel) ->
-            val targetLabel = if (targetTrack == "hsk30") "HSK 3.0" else "HSK 2.0"
-            AlertDialog(
-                onDismissRequest = { pendingTrackSwitch = null },
-                title = {
-                    Text(
-                        stringResource(R.string.profile_course_version_confirm_title, targetLabel),
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                },
-                text = {
-                    Text(
-                        stringResource(R.string.profile_course_version_confirm_body),
-                        color = PompColors.InkSecondary,
-                    )
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            pendingTrackSwitch = null
-                            onSwitchTrack(targetTrack, targetLevel)
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = PompColors.Cinnabar,
-                            contentColor = Color.White,
-                        ),
-                    ) {
-                        Text(stringResource(R.string.action_continue))
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { pendingTrackSwitch = null }) {
-                        Text(stringResource(R.string.action_cancel), color = PompColors.InkSecondary)
-                    }
-                },
-                containerColor = PompColors.PaperRaised,
-            )
-        }
-    }
-}
-
-@Composable
-private fun CourseTrackBar(
-    map: CourseMap,
-    isSwitching: Boolean,
-    onSwitchTrack: (String, String?) -> Unit,
-    onUnlockHsk30: () -> Unit,
-) {
-    val hsk30 = map.hsk30 ?: return
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 3.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        listOf("hsk20" to "HSK 2.0", "hsk30" to "HSK 3.0").forEach { (track, label) ->
-            val selected = hsk30.activeTrack == track
-            Surface(
-                color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(
-                    1.dp,
-                    if (selected) PompColors.Cinnabar else PompColors.Divider,
-                ),
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable(enabled = !isSwitching && !selected) {
-                        if (track == "hsk30" && !hsk30.access.allowed) {
-                            onUnlockHsk30()
-                        } else {
-                            onSwitchTrack(track, if (track == "hsk30") hsk30.liveLevels.firstOrNull() else null)
-                        }
-                    },
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp, horizontal = 4.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = label,
-                        color = if (selected) PompColors.CinnabarDark else PompColors.InkSecondary,
-                        fontSize = 13.sp,
-                        fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
-                        textAlign = TextAlign.Center,
-                    )
-                    if (track == "hsk30" && hsk30.newBadge.isNew) {
-                        Spacer(Modifier.width(5.dp))
-                        Text(
-                            text = "NEW",
-                            color = PompColors.CinnabarDark,
-                            fontSize = 8.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier
-                                .background(
-                                    PompColors.Cinnabar.copy(alpha = 0.12f),
-                                    RoundedCornerShape(5.dp),
-                                )
-                                .padding(horizontal = 4.dp, vertical = 1.dp),
-                        )
-                    }
-                }
-            }
-        }
     }
 }
 
@@ -411,7 +297,6 @@ private fun CourseTrackBar(
 private fun Hsk30PromoDialog(
     hsk30: com.pomp.hskai.domain.model.CourseHsk30,
     onDismiss: () -> Unit,
-    onUnlockPermanently: () -> Unit,
     onContinue: () -> Unit,
 ) {
     val paidAccess = hsk30.access.paidAccess
@@ -471,30 +356,12 @@ private fun Hsk30PromoDialog(
                             modifier = Modifier.padding(horizontal = 2.dp),
                         )
                         Spacer(Modifier.height(17.dp))
-                        if (hasAccess) {
-                            Hsk30PromoPrimaryButton(
-                                label = stringResource(R.string.hsk30_promo_switch),
-                                leading = { Text("→", fontSize = 25.sp, lineHeight = 25.sp) },
-                                onClick = onContinue,
-                            )
-                        } else {
-                            if (hsk30.paymentEnabled && hsk30.priceTjs > 0 &&
-                                hsk30.priceDisplay.isNotBlank() && !hasAccess
-                            ) {
-                                Hsk30PromoPrimaryButton(
-                                    label = stringResource(R.string.hsk30_promo_price, hsk30.priceDisplay),
-                                    leading = {
-                                        Icon(
-                                            Icons.Filled.LockOpen,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(21.dp),
-                                        )
-                                    },
-                                    onClick = onUnlockPermanently,
-                                )
-                                Spacer(Modifier.height(8.dp))
-                            }
-                        }
+                        Hsk30PromoPrimaryButton(
+                            label = stringResource(R.string.hsk30_promo_switch),
+                            leading = { Text("→", fontSize = 25.sp, lineHeight = 25.sp) },
+                            onClick = onContinue,
+                        )
+                        Spacer(Modifier.height(8.dp))
                         Hsk30PromoStayButton(
                             label = stringResource(R.string.hsk30_promo_stay),
                             onClick = onDismiss,
@@ -605,7 +472,7 @@ private fun Hsk30PromoStayButton(label: String, onClick: () -> Unit) {
 private fun courseLevelLabel(level: String): String {
     val normalized = level.lowercase().trim()
     val nhsk = Regex("^nhsk([1-3])$").find(normalized)?.groupValues?.get(1)
-    if (nhsk != null) return "HSK 3.0 · N$nhsk"
+    if (nhsk != null) return "HSK $nhsk"
     val number = normalized.removePrefix("hsk").toIntOrNull()
     return if (number != null) "HSK $number" else level.uppercase()
 }
@@ -645,6 +512,19 @@ private fun CourseHeader(
                     ),
                     color = PompColors.Paper,
                 )
+                if (map.level.startsWith("nhsk", ignoreCase = true)) {
+                    Spacer(Modifier.width(5.dp))
+                    Text(
+                        text = "NEW",
+                        color = PompColors.CinnabarDark,
+                        fontSize = 8.sp,
+                        lineHeight = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .background(Color.White.copy(alpha = 0.92f), RoundedCornerShape(5.dp))
+                            .padding(horizontal = 4.dp, vertical = 2.dp),
+                    )
+                }
             }
         }
         Spacer(Modifier.width(8.dp))

@@ -36,6 +36,9 @@ button:disabled{cursor:default}
 .track-switch button.sel{background:var(--card);color:var(--cin2);box-shadow:0 1px 4px rgba(33,29,23,.08)}
 .track-note{font-size:12px;line-height:1.45;color:var(--ink2);margin:-6px 0 14px}
 .track-note b{color:var(--cin2);font-weight:650}
+.book-preview{width:min(100%,320px);aspect-ratio:1/1;margin:0 auto 14px;overflow:hidden;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 3px 12px rgba(33,29,23,.06)}
+.book-preview img{display:block;width:100%;height:100%;object-fit:contain}
+.new-tag{display:inline-flex;align-items:center;margin-left:6px;padding:2px 5px;border-radius:6px;background:var(--cinbg);color:var(--cin2);font-size:9px;line-height:1.1;font-weight:800;vertical-align:middle}
 .choices{display:grid;gap:10px}
 .lv{display:flex;align-items:center;gap:14px;width:100%;min-height:72px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;color:var(--ink);transition:background .18s,border-color .18s,transform .15s}
 .lv:active:not(:disabled){transform:scale(.99)}
@@ -63,9 +66,6 @@ button:disabled{cursor:default}
 .cta{width:100%;min-height:54px;padding:14px 16px;background:var(--cin);color:#fff;border:none;border-radius:13px;font-family:var(--display);font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 2px 0 var(--cin2);transition:transform .15s,box-shadow .15s}
 .cta:active:not(:disabled){transform:translateY(2px);box-shadow:none}
 .cta:disabled{opacity:.65;box-shadow:0 2px 0 var(--cin2)}
-.later-cta{width:100%;min-height:46px;margin-top:10px;border:1px solid var(--line);border-radius:13px;background:var(--card);color:var(--ink2);font-size:14px;font-weight:600}
-.later-cta:active:not(:disabled){background:var(--line)}
-.later-cta:disabled{opacity:.55}
 .error{font-size:13px;line-height:1.45;color:var(--cin2);text-align:center;margin:0 0 12px}
 .welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:36px 30px 28px;min-height:420px}
 .welcome .hello{flex:none;padding:14px 22px;margin-bottom:27px;font-family:var(--display);font-size:17px;font-weight:500;line-height:1.5}
@@ -101,7 +101,7 @@ button:disabled{cursor:default}
 <div class="wrap">
   <header class="top" id="top" style="display:none">
     <button class="bk" id="back" type="button" onclick="back()"></button>
-    <div class="pbar" id="progress" role="progressbar" aria-valuemin="0" aria-valuemax="2" aria-valuenow="1"><i id="prog"></i></div>
+    <div class="pbar" id="progress" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="1"><i id="prog"></i></div>
     <span class="step-count" id="step-count" aria-hidden="true"></span>
   </header>
   <main id="stage"></main>
@@ -109,16 +109,15 @@ button:disabled{cursor:default}
     <p class="footer-note" id="footer-note"></p>
     <p class="error" id="error" role="alert" hidden></p>
     <button class="cta" id="cta" type="button" onclick="nextBtn()">Boshlash</button>
-    <button class="later-cta" id="later-cta" type="button" onclick="startWithHsk20()" hidden></button>
   </footer>
 </div>
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
 var L={
-  ru:{hello:"Привет! Я учитель Ли.",boot:"Китайский — шаг за шагом. Начните с того, что уже знаете.",ask:"Сколько китайского вы уже знаете?",levelHint:"HSK — это уровни знания китайского языка.",start:"Начать",cont:"Продолжить",first:"Начать первый урок",retry:"Попробовать снова",askGoal:"Зачем вам китайский?",goalHint:"Подберём акцент в вашем плане на день.",welcomeNote:"Всего 2 вопроса — и к первому уроку.",levelNote:"Выберите свой уровень — я помогу начать.",goalNote:"Всё готово. Перейдём к вашему первому уроку.",back:"Назад",progress:"Настройка курса",saving:"Сохраняем…",saveError:"Не удалось сохранить выбор. Проверьте соединение и попробуйте снова.",beginner:"Начинаю с нуля",beginnerSub:"Сначала ханцзы, пиньинь и тоны",selected:"Ваш уровень",courseVersion:"Версия курса",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Locked:"Откройте HSK 3.0 навсегда за {price} одним платежом.",hsk30Disabled:"HSK 3.0 пока закрыт.",unlockHsk30:"{price} · открыть навсегда",laterHsk20:"Позже — начать с HSK 2.0"},
-  uz:{hello:"Salom! Men Li ustozman.",boot:"Xitoy tilini qadamma-qadam o'rganing. O'zingizga mos darajadan boshlang.",ask:"Xitoy tilini qanchalik bilasiz?",levelHint:"HSK — xitoy tilini bilish darajalari.",start:"Boshlash",cont:"Davom etish",first:"Birinchi darsni boshlash",retry:"Qayta urinib ko'rish",askGoal:"Xitoy tili sizga nima uchun kerak?",goalHint:"Kunlik rejangiz shu maqsadga mos bo'ladi.",welcomeNote:"2 ta qisqa savol. Keyin — birinchi dars.",levelNote:"O'zingizga mos darajani tanlang.",goalNote:"Tayyor. Endi birinchi darsingizga o'tamiz.",back:"Orqaga",progress:"Kursni sozlash",saving:"Saqlanmoqda…",saveError:"Tanlov saqlanmadi. Internetni tekshirib, qayta urinib ko'ring.",beginner:"Noldan boshlayman",beginnerSub:"Avval hanzi, pinyin va tonlar",selected:"Darajangiz",courseVersion:"Kurs versiyasi",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Locked:"HSK 3.0 ni {price} evaziga bir martalik to'lov bilan doimiy oching.",hsk30Disabled:"HSK 3.0 hozircha yopiq.",unlockHsk30:"{price} · doimiy ochish",laterHsk20:"Keyinroq — HSK 2.0 da boshlash"},
-  tj:{hello:"Салом! Ман устод Ли ҳастам.",boot:"Забони чинӣ — қадам ба қадам. Аз сатҳи мувофиқ оғоз кунед.",ask:"Забони чиниро то чӣ андоза медонед?",levelHint:"HSK — сатҳҳои дониши забони чинӣ аст.",start:"Оғоз",cont:"Идома",first:"Оғози дарси аввал",retry:"Боз кӯшиш кунед",askGoal:"Забони чинӣ ба шумо барои чӣ лозим аст?",goalHint:"Нақшаи рӯзонаи шумо ба ин мақсад мувофиқ мешавад.",welcomeNote:"Ҳамагӣ 2 савол — ва ба дарси аввал.",levelNote:"Сатҳи мувофиқи худро интихоб кунед.",goalNote:"Тайёр. Ба дарси аввалини шумо мегузарем.",back:"Бозгашт",progress:"Танзими курс",saving:"Сабт мешавад…",saveError:"Интихоб сабт нашуд. Пайвастро санҷида, боз кӯшиш кунед.",beginner:"Аз сифр оғоз мекунам",beginnerSub:"Аввал ханзӣ, пинйин ва оҳангҳо",selected:"Сатҳи шумо",courseVersion:"Версияи курс",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Locked:"HSK 3.0-ро бо пардохти якдафъаинаи {price} ҳамеша кушоед.",hsk30Disabled:"HSK 3.0 ҳоло баста аст.",unlockHsk30:"{price} · ҳамеша кушодан",laterHsk20:"Баъдтар — аз HSK 2.0 оғоз кардан"}
+  ru:{hello:"Привет! Я учитель Ли.",boot:"Китайский — шаг за шагом. Начните с того, что уже знаете.",ask:"Сколько китайского вы уже знаете?",levelHint:"HSK — это уровни знания китайского языка.",askVersion:"С какой версии HSK вы хотите начать?",versionHint:"Выбранная версия определит учебники курса.",books20:"Учебники старого HSK 2.0",books30:"Новые учебники HSK 3.0",start:"Начать",cont:"Продолжить",first:"Начать первый урок",retry:"Попробовать снова",askGoal:"Зачем вам китайский?",goalHint:"Подберём акцент в вашем плане на день.",welcomeNote:"Всего 3 вопроса — и к первому уроку.",levelNote:"Выберите свой уровень — я помогу начать.",goalNote:"Всё готово. Перейдём к вашему первому уроку.",back:"Назад",progress:"Настройка курса",saving:"Сохраняем…",saveError:"Не удалось сохранить выбор. Проверьте соединение и попробуйте снова.",beginner:"Начинаю с нуля",beginnerSub:"Сначала ханцзы, пиньинь и тоны",selected:"Ваш уровень",courseVersion:"Версия курса",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Disabled:"HSK 3.0 пока закрыт."},
+  uz:{hello:"Salom! Men Li ustozman.",boot:"Xitoy tilini qadamma-qadam o'rganing. O'zingizga mos darajadan boshlang.",ask:"Xitoy tilini qanchalik bilasiz?",levelHint:"HSK — xitoy tilini bilish darajalari.",askVersion:"Qaysi HSK versiyasi orqali boshlamoqchisiz?",versionHint:"Tanlangan versiyaga mos darsliklardan boshlang.",books20:"HSK 2.0 eski darsliklari",books30:"HSK 3.0 yangi darsliklari",start:"Boshlash",cont:"Davom etish",first:"Birinchi darsni boshlash",retry:"Qayta urinib ko'rish",askGoal:"Xitoy tili sizga nima uchun kerak?",goalHint:"Kunlik rejangiz shu maqsadga mos bo'ladi.",welcomeNote:"3 ta qisqa savol. Keyin — birinchi dars.",levelNote:"O'zingizga mos darajani tanlang.",goalNote:"Tayyor. Endi birinchi darsingizga o'tamiz.",back:"Orqaga",progress:"Kursni sozlash",saving:"Saqlanmoqda…",saveError:"Tanlov saqlanmadi. Internetni tekshirib, qayta urinib ko'ring.",beginner:"Noldan boshlayman",beginnerSub:"Avval hanzi, pinyin va tonlar",selected:"Darajangiz",courseVersion:"Kurs versiyasi",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Disabled:"HSK 3.0 hozircha yopiq."},
+  tj:{hello:"Салом! Ман устод Ли ҳастам.",boot:"Забони чинӣ — қадам ба қадам. Аз сатҳи мувофиқ оғоз кунед.",ask:"Забони чиниро то чӣ андоза медонед?",levelHint:"HSK — сатҳҳои дониши забони чинӣ аст.",askVersion:"Бо кадом версияи HSK оғоз мекунед?",versionHint:"Китобҳо мувофиқи версияи интихобшуда иваз мешаванд.",books20:"Китобҳои кӯҳнаи HSK 2.0",books30:"Китобҳои нави HSK 3.0",start:"Оғоз",cont:"Идома",first:"Оғози дарси аввал",retry:"Боз кӯшиш кунед",askGoal:"Забони чинӣ ба шумо барои чӣ лозим аст?",goalHint:"Нақшаи рӯзонаи шумо ба ин мақсад мувофиқ мешавад.",welcomeNote:"Ҳамагӣ 3 савол — ва ба дарси аввал.",levelNote:"Сатҳи мувофиқи худро интихоб кунед.",goalNote:"Тайёр. Ба дарси аввалини шумо мегузарем.",back:"Бозгашт",progress:"Танзими курс",saving:"Сабт мешавад…",saveError:"Интихоб сабт нашуд. Пайвастро санҷида, боз кӯшиш кунед.",beginner:"Аз сифр оғоз мекунам",beginnerSub:"Аввал ханзӣ, пинйин ва оҳангҳо",selected:"Сатҳи шумо",courseVersion:"Версияи курс",hsk20:"HSK 2.0",hsk30:"HSK 3.0",hsk30Disabled:"HSK 3.0 ҳоло баста аст."}
 }[LANG];
 document.documentElement.lang=LANG==="tj"?"tg":LANG;
 var tg=window.Telegram&&window.Telegram.WebApp;
@@ -187,9 +186,9 @@ var LV20=[{k:"beginner",g:"零",hd:{ru:"Я совсем с нуля",uz:"Xitoy t
   {k:"hsk3",g:"明白",hd:"HSK 3",s:{ru:"Повседневное общение",uz:"Kundalik muloqot",tj:"Муоширати ҳаррӯза"}},
   {k:"hsk4",g:"流利",hd:"HSK 4",s:{ru:"Свободное общение",uz:"Erkin muloqot",tj:"Муоширати озод"}}];
 var LV30=[
-  {k:"nhsk1",g:"新",hd:"HSK 3.0 · N1",s:{ru:"Новый стандарт · уровень 1",uz:"Yangi standart · 1-daraja",tj:"Стандарти нав · сатҳи 1"}},
-  {k:"nhsk2",g:"进",hd:"HSK 3.0 · N2",s:{ru:"Новый стандарт · уровень 2",uz:"Yangi standart · 2-daraja",tj:"Стандарти нав · сатҳи 2"}},
-  {k:"nhsk3",g:"达",hd:"HSK 3.0 · N3",s:{ru:"Новый стандарт · уровень 3",uz:"Yangi standart · 3-daraja",tj:"Стандарти нав · сатҳи 3"}}
+  {k:"nhsk1",g:"新",hd:"HSK 1",s:{ru:"Новый стандарт · уровень 1",uz:"Yangi standart · 1-daraja",tj:"Стандарти нав · сатҳи 1"}},
+  {k:"nhsk2",g:"进",hd:"HSK 2",s:{ru:"Новый стандарт · уровень 2",uz:"Yangi standart · 2-daraja",tj:"Стандарти нав · сатҳи 2"}},
+  {k:"nhsk3",g:"达",hd:"HSK 3",s:{ru:"Новый стандарт · уровень 3",uz:"Yangi standart · 3-daraja",tj:"Стандарти нав · сатҳи 3"}}
 ];
 /* Maqsad — kunlik rejaning vaznini o'zgartiradi (test/voice/takrorlash
    nisbati) va AI suhbat rolini tanlaydi. Faqat serverda MAVJUD imkoniyatlar
@@ -206,14 +205,14 @@ var GOALS=[
   {k:"study_china",g:"学",hd:{ru:"Учёба в Китае",uz:"Xitoyda o'qish",tj:"Таҳсил дар Чин"},
     s:{ru:"Упор на курс и словарный запас",uz:"Kursga va so'z boyligiga urg'u",tj:"Таъкид ба курс ва луғат"}}
 ];
-var step=0,track="hsk20",sel="beginner",goalSel="hsk_exam",submitting=false;
+var step=0,track="hsk30",sel="nhsk1",goalSel="hsk_exam",submitting=false,hasSavedTrack=false;
 var HSK30_STATUS=null;
 var INIT_DATA=(tg&&tg.initData)||"";
 try{
   var savedTrack=localStorage.getItem("hsk_v3_onb_track");
   var savedLevel=localStorage.getItem("hsk_v3_onb_level");
   var savedGoal=localStorage.getItem("hsk_v3_onb_goal");
-  if(savedTrack==="hsk30"||savedTrack==="hsk20")track=savedTrack;
+  if(savedTrack==="hsk30"||savedTrack==="hsk20"){track=savedTrack;hasSavedTrack=true}
   if(savedLevel)sel=savedLevel;
   if(savedGoal&&GOALS.some(function(o){return o.k===savedGoal}))goalSel=savedGoal;
 }catch(e){}
@@ -274,22 +273,13 @@ function hsk30PaymentEnabled(){
   var u=HSK30_STATUS&&HSK30_STATUS.hsk30_unlock||{};
   return u.payment_enabled!==false&&Number(u.price_tjs||0)>0&&!!hsk30Price();
 }
-function hsk30NeedsUnlock(){
-  var a=hsk30Access();return !!(track==="hsk30"&&(!a||!a.allowed));
-}
+function isHsk30Level(value){return /^nhsk[1-3]$/.test(String(value||""))}
 function saveDraft(){
   try{
     localStorage.setItem("hsk_v3_onb_track",track);
     localStorage.setItem("hsk_v3_onb_level",sel);
     localStorage.setItem("hsk_v3_onb_goal",goalSel);
   }catch(e){}
-}
-function openHsk30Checkout(){
-  saveDraft();
-  var q=new URLSearchParams();
-  q.set("mode","hsk30_unlock");q.set("plan","hsk30_unlock");
-  q.set("source","hsk30_onboarding");q.set("lang",LANG);
-  location.href="/subscription.html?"+q.toString();
 }
 function setTrack(next){
   if(submitting)return;
@@ -299,7 +289,7 @@ function setTrack(next){
     /* Real Mini App must fail closed until the server has returned the HSK 3.0
        feature state. A stale localStorage draft must never reveal a disabled track. */
     if(INIT_DATA&&!HSK30_STATUS)return;
-    if(!a||a.feature_enabled===false){
+    if(INIT_DATA&&(!a||a.feature_enabled===false)){
       var error=document.getElementById("error");error.textContent=L.hsk30Disabled;error.hidden=false;return;
     }
   }
@@ -315,50 +305,47 @@ function levelGlyph(index){
 }
 function optionRow(key,title,subtitle,glyph,selected,handler){
   return '<button type="button" class="lv'+(selected?' sel':'')+'" data-key="'+key+'" aria-pressed="'+selected+'" onclick="'+handler+'(\''+key+'\')">'
-    +'<span class="glyph" aria-hidden="true">'+glyph+'</span><span class="ot"><span class="hd">'+title+'</span><small>'+subtitle+'</small></span><span class="chk">'+icon("check")+'</span></button>';
+    +'<span class="glyph" aria-hidden="true">'+glyph+'</span><span class="ot"><span class="hd">'+title+(isHsk30Level(key)?'<span class="new-tag">NEW</span>':'')+'</span><small>'+subtitle+'</small></span><span class="chk">'+icon("check")+'</span></button>';
 }
 function render(){
-  var st=document.getElementById("stage"),cta=document.getElementById("cta"),later=document.getElementById("later-cta"),backButton=document.getElementById("back");
+  var st=document.getElementById("stage"),cta=document.getElementById("cta"),backButton=document.getElementById("back");
   document.getElementById("top").style.display=step===0?"none":"flex";
   document.getElementById("error").hidden=true;
   backButton.innerHTML=icon("back");backButton.setAttribute("aria-label",L.back);
   document.getElementById("footer-note").textContent=L.welcomeNote;
   document.getElementById("footer-note").hidden=step!==0;
-  later.hidden=!(step===2&&hsk30NeedsUnlock()&&hsk30PaymentEnabled());
-  later.textContent=L.laterHsk20;
   if(step===0){
     st.innerHTML='<div class="welcome"><div class="bub hello">'+L.hello+'</div><div class="big">'+panda("happy")+'</div><h1 id="question" tabindex="-1">HSK AI</h1><p>'+L.boot+'</p></div>';
     cta.textContent=L.start;
   }else{
     var progress=document.getElementById("progress");
     progress.setAttribute("aria-valuenow",String(step));progress.setAttribute("aria-label",L.progress);
-    document.getElementById("prog").style.width=(step*50)+"%";
-    document.getElementById("step-count").textContent=step+" / 2";
+    document.getElementById("prog").style.width=(step*100/3)+"%";
+    document.getElementById("step-count").textContent=step+" / 3";
     var rows,summary="";
     if(step===1){
-      var levelChoices=levelsForTrack();
       var access=hsk30Access();
       var h30Ready=!INIT_DATA||(HSK30_STATUS&&hsk30Access()&&hsk30Access().feature_enabled!==false);
-      var h30Track=hsk30TrackState(),h30Meta=[];
-      if(h30Track&&h30Track.new_badge&&h30Track.new_badge.is_new)h30Meta.push("NEW");
+      var h30Meta=["NEW"];
       if(access&&!access.allowed&&hsk30PaymentEnabled())h30Meta.push(hsk30Price());
-      var h30PriceLabel=h30Meta.length?('<small>'+h30Meta.join(' · ')+'</small>'):"";
+      var h30PriceLabel='<small>'+h30Meta.join(' · ')+'</small>';
       var switcher='<div class="track-switch" role="group" aria-label="'+L.courseVersion+'">'
         +'<button type="button" class="'+(track==="hsk20"?"sel":"")+'" onclick="setTrack(\'hsk20\')">'+L.hsk20+'</button>'
         +'<button type="button" '+(h30Ready?'':'disabled ')+'class="'+(track==="hsk30"?"sel":"")+'" onclick="setTrack(\'hsk30\')">'+L.hsk30+h30PriceLabel+'</button></div>';
-      var trackNote="";
-      if(track==="hsk30"&&access&&access.feature_enabled===false)trackNote='<p class="track-note">'+L.hsk30Disabled+'</p>';
-      else if(track==="hsk30"&&(!access||!access.allowed))trackNote='<p class="track-note"><b>'+(hsk30PaymentEnabled()?L.hsk30Locked.replace("{price}",hsk30Price()):L.hsk30Disabled)+'</b></p>';
-      rows=switcher+trackNote+levelChoices.map(function(l,index){return optionRow(l.k,levelTitle(l),l.k==="beginner"?L.beginnerSub:trv(l.s),levelGlyph(index),sel===l.k,"pick")}).join("");
+      var bookAlt=track==="hsk30"?L.books30:L.books20;
+      rows='<div class="book-preview"><img src="/assets/'+(track==="hsk30"?'hsk30-course-books.jpg':'hsk20-course-books.jpg')+'" alt="'+bookAlt+'"></div>'+switcher;
+    }else if(step===2){
+      var levelChoices=levelsForTrack();
+      rows=levelChoices.map(function(l,index){return optionRow(l.k,levelTitle(l),l.k==="beginner"?L.beginnerSub:trv(l.s),levelGlyph(index),sel===l.k,"pick")}).join("");
     }else{
       var allLevels=LV20.concat(LV30);
       var level=allLevels.filter(function(l){return l.k===sel})[0]||levelsForTrack()[0];
-      summary='<div class="chosen">'+icon("check")+'<span>'+L.selected+': <b>'+levelTitle(level)+'</b></span></div>';
+      summary='<div class="chosen">'+icon("check")+'<span>'+L.selected+': <b>'+levelTitle(level)+(isHsk30Level(level.k)?'<span class="new-tag">NEW</span>':'')+'</b></span></div>';
       rows=GOALS.map(function(o){return optionRow(o.k,trv(o.hd),trv(o.s),'<span class="goal-icon '+o.k+'">'+icon(o.k)+'</span>',goalSel===o.k,"pickGoal")}).join("");
     }
-    st.innerHTML='<div class="guide"><div class="panda">'+panda("happy")+'</div><div class="bub"><h1 id="question" tabindex="-1">'+(step===1?L.ask:L.askGoal)+'</h1></div></div>'
-      +'<div class="body"><p class="helper">'+(step===1?L.levelHint:L.goalHint)+'</p>'+summary+'<div class="choices" role="group" aria-labelledby="question">'+rows+'</div></div>';
-    cta.innerHTML=(step===2&&hsk30NeedsUnlock()?(hsk30PaymentEnabled()?L.unlockHsk30.replace("{price}",hsk30Price()):L.laterHsk20):(step===1?L.cont:L.first))+icon("arrow");
+    st.innerHTML='<div class="guide"><div class="panda">'+panda("happy")+'</div><div class="bub"><h1 id="question" tabindex="-1">'+(step===1?L.askVersion:step===2?L.ask:L.askGoal)+'</h1></div></div>'
+      +'<div class="body"><p class="helper">'+(step===1?L.versionHint:step===2?L.levelHint:L.goalHint)+'</p>'+summary+(step===2||step===3?'<div class="choices" role="group" aria-labelledby="question">'+rows+'</div>':rows)+'</div>';
+    cta.innerHTML=(step<3?L.cont:L.first)+icon("arrow");
   }
   st.scrollTop=0;
   st.classList.remove("stage-enter");void st.offsetWidth;st.classList.add("stage-enter");
@@ -373,36 +360,29 @@ function selectChoice(k){
 function pick(k){var choices=levelsForTrack();if(submitting||!choices.some(function(l){return l.k===k}))return;sel=k;saveDraft();selectChoice(k)}
 function pickGoal(k){if(submitting||!GOALS.some(function(o){return o.k===k}))return;goalSel=k;saveDraft();selectChoice(k)}
 function focusQuestion(){var question=document.getElementById("question");if(question)question.focus({preventScroll:true})}
-function nextBtn(){if(submitting)return;if(step<2){step++;render();focusQuestion()}else{finish()}}
+function nextBtn(){if(submitting)return;if(step<3){step++;render();focusQuestion()}else{finish()}}
 function back(){if(submitting)return;if(step>0){step--;render();focusQuestion()}}
-function startWithHsk20(){
-  if(submitting||step!==2||!hsk30NeedsUnlock())return;
-  var fallback={nhsk1:"hsk2",nhsk2:"hsk3",nhsk3:"hsk4"};
-  sel=fallback[sel]||"hsk1";
-  track="hsk20";
-  saveDraft();
-  finish();
-}
 function setSubmitting(value){
   submitting=value;
-  document.querySelectorAll(".lv,#back,#cta,#later-cta").forEach(function(button){button.disabled=value});
+  document.querySelectorAll(".lv,#back,#cta").forEach(function(button){button.disabled=value});
   document.getElementById("stage").setAttribute("aria-busy",String(value));
 }
 function finish(){
   if(submitting)return;
-  if(hsk30NeedsUnlock()){if(hsk30PaymentEnabled())openHsk30Checkout();else startWithHsk20();return}
   setSubmitting(true);
   var cta=document.getElementById("cta");cta.textContent=L.saving;document.getElementById("error").hidden=true;
   var moved=false;
   function go(result){
     if(moved)return;moved=true;
     var launch=result&&result.ok?result:{};
-    try{localStorage.setItem("hsk_v3_onb","1");localStorage.setItem("hsk_v3_learner_level",sel);localStorage.setItem("hsk_v3_level",String(launch.level||(sel==="beginner"?"hsk1":sel)));localStorage.removeItem("hsk_v3_onb_track");localStorage.removeItem("hsk_v3_onb_level");localStorage.removeItem("hsk_v3_onb_goal")}catch(e){}
+    var chosenLevel=isHsk30Level(sel)?sel:String(launch.level||(sel==="beginner"?"hsk1":sel));
+    try{localStorage.setItem("hsk_v3_onb","1");localStorage.setItem("hsk_v3_learner_level",sel);localStorage.setItem("hsk_v3_level",chosenLevel);localStorage.removeItem("hsk_v3_onb_track");localStorage.removeItem("hsk_v3_onb_level");localStorage.removeItem("hsk_v3_onb_goal")}catch(e){}
     var query=new URLSearchParams(params.toString());
-    query.set("lang",LANG);query.set("level",String(launch.level||(sel==="beginner"?"hsk1":sel)));query.set("tab",String(launch.tab||"course"));query.set("onboarded","1");
+    query.set("lang",LANG);query.set("level",chosenLevel);query.set("tab",String(launch.tab||"course"));query.set("onboarded","1");
     if(launch.foundation_required)query.set("foundation","1");else query.delete("foundation");
     var lesson=Number(launch.lesson||1);
-    if(lesson>0&&!launch.placement){query.set("lesson",String(lesson));query.set("autostart","1")}
+    if(isHsk30Level(sel)){query.delete("lesson");query.delete("autostart")}
+    else if(lesson>0&&!launch.placement){query.set("lesson",String(lesson));query.set("autostart","1")}
     location.href="/course-v3.html?"+query.toString();
   }
   function fail(){setSubmitting(false);cta.textContent=L.retry;var error=document.getElementById("error");error.textContent=L.saveError;error.hidden=false}
@@ -421,22 +401,26 @@ if(INIT_DATA){
   fetch("/api/v3/course-tracks",{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"})
     .then(function(r){return r.ok?r.json():null})
     .then(function(d){
-      if(!d||!d.ok)return;
+      if(!d||!d.ok)throw new Error("course_track_unavailable");
       HSK30_STATUS=d;
-      if(track==="hsk30"){
-        var access=hsk30Access();
-        if(!access||access.feature_enabled===false){
-          track="hsk20";
-          sel="beginner";
-          saveDraft();
-        }else{
-          var choices=levelsForTrack();
-          if(!choices.some(function(l){return l.k===sel}))sel=choices.length?choices[0].k:"nhsk1";
-        }
+      var access=hsk30Access(),h30Enabled=!!(access&&access.feature_enabled!==false);
+      if(!hasSavedTrack){
+        track=h30Enabled?"hsk30":"hsk20";
+        sel=h30Enabled?"nhsk1":"beginner";
+      }else if(track==="hsk30"&&!h30Enabled){
+        track="hsk20";sel="beginner";
+      }else{
+        var choices=levelsForTrack();
+        if(!choices.some(function(l){return l.k===sel}))sel=track==="hsk30"?"nhsk1":"beginner";
       }
+      saveDraft();
       render();
     })
-    .catch(function(){});
+    .catch(function(){
+      HSK30_STATUS={tracks:{hsk30:{access:{feature_enabled:false,allowed:false},live_levels:[]}},hsk30_unlock:{}};
+      if(track==="hsk30"){track="hsk20";sel="beginner";saveDraft()}
+      render();
+    });
 }
 render();
 </script>
