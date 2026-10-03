@@ -87,6 +87,7 @@ data class OnboardingUiState(
     val hsk30IsNew: Boolean = false,
     val hsk30PaymentEnabled: Boolean = false,
     val hsk30PriceTjs: Int = 0,
+    val hsk30PriceDisplay: String = "",
     val submitting: Boolean = false,
     val error: Boolean = false,
 ) {
@@ -119,10 +120,9 @@ data class OnboardingCopy(
     val hsk20: String,
     val hsk30: String,
     val hsk30Locked: String,
-    val hsk30LockedPro: String,
+    val hsk30Unavailable: String,
     val hsk30Disabled: String,
     val unlockHsk30: String,
-    val getPro: String,
     val laterHsk20: String,
     val notifyTitle: String,
     val notifyLessons: String,
@@ -156,11 +156,10 @@ data class OnboardingCopy(
                 courseVersion = "Kurs versiyasi",
                 hsk20 = "HSK 2.0",
                 hsk30 = "HSK 3.0",
-                hsk30Locked = "HSK 3.0 Pro bilan yoki %d TJS bir martalik to'lov bilan ochiladi.",
-                hsk30LockedPro = "HSK 3.0 faol HSK AI Pro bilan ochiladi.",
+                hsk30Locked = "HSK 3.0 ni %s ga bir martalik to'lov bilan doimiy ochish mumkin.",
+                hsk30Unavailable = "HSK 3.0 ni doimiy ochish hozircha mavjud emas.",
                 hsk30Disabled = "HSK 3.0 hozircha yopiq.",
-                unlockHsk30 = "HSK 3.0 ni ochish",
-                getPro = "HSK AI Pro olish",
+                unlockHsk30 = "%s · doimiy ochish",
                 laterHsk20 = "Keyinroq — HSK 2.0 da boshlash",
                 notifyTitle = "Bildirishnomalarni yoqing",
                 notifyLessons = "Kechqurun darsni eslatib turamiz",
@@ -192,11 +191,10 @@ data class OnboardingCopy(
                 courseVersion = "Версияи курс",
                 hsk20 = "HSK 2.0",
                 hsk30 = "HSK 3.0",
-                hsk30Locked = "HSK 3.0 бо Pro ё бо пардохти якбораи %d TJS кушода мешавад.",
-                hsk30LockedPro = "HSK 3.0 бо HSK AI Pro-и фаъол кушода мешавад.",
+                hsk30Locked = "HSK 3.0-ро бо пардохти якдафъаинаи %s ҳамеша кушодан мумкин аст.",
+                hsk30Unavailable = "Кушодани доимии HSK 3.0 ҳоло дастрас нест.",
                 hsk30Disabled = "HSK 3.0 ҳоло баста аст.",
-                unlockHsk30 = "Кушодани HSK 3.0",
-                getPro = "HSK AI Pro гирифтан",
+                unlockHsk30 = "%s · ҳамеша кушодан",
                 laterHsk20 = "Баъдтар — аз HSK 2.0 оғоз кардан",
                 notifyTitle = "Огоҳиномаҳоро фаъол кунед",
                 notifyLessons = "Бегоҳӣ дарсро ёдрас мекунем",
@@ -228,11 +226,10 @@ data class OnboardingCopy(
                 courseVersion = "Версия курса",
                 hsk20 = "HSK 2.0",
                 hsk30 = "HSK 3.0",
-                hsk30Locked = "HSK 3.0 доступен с Pro или за %d TJS навсегда.",
-                hsk30LockedPro = "HSK 3.0 доступен с активным HSK AI Pro.",
+                hsk30Locked = "Откройте HSK 3.0 навсегда за %s одним платежом.",
+                hsk30Unavailable = "Постоянное открытие HSK 3.0 сейчас недоступно.",
                 hsk30Disabled = "HSK 3.0 пока закрыт.",
-                unlockHsk30 = "Открыть HSK 3.0",
-                getPro = "Получить HSK AI Pro",
+                unlockHsk30 = "%s · открыть навсегда",
                 laterHsk20 = "Позже — начать с HSK 2.0",
                 notifyTitle = "Включите уведомления",
                 notifyLessons = "Вечером напомним про занятие",
@@ -413,10 +410,15 @@ fun OnboardingScreen(
                                 if (state.selectedTrack == "hsk30") {
                                     Text(
                                         if (!state.hsk30Enabled) copy.hsk30Disabled
-                                        else if (!state.hsk30Allowed && state.hsk30PaymentEnabled && state.hsk30PriceTjs > 0) {
-                                            copy.hsk30Locked.format(state.hsk30PriceTjs)
+                                        else if (
+                                            !state.hsk30Allowed &&
+                                            state.hsk30PaymentEnabled &&
+                                            state.hsk30PriceTjs > 0 &&
+                                            state.hsk30PriceDisplay.isNotBlank()
+                                        ) {
+                                            copy.hsk30Locked.format(state.hsk30PriceDisplay)
                                         } else if (!state.hsk30Allowed) {
-                                            copy.hsk30LockedPro
+                                            copy.hsk30Unavailable
                                         } else copy.hsk30,
                                         color = if (state.hsk30Allowed) PompColors.InkSecondary else PompColors.CinnabarDark,
                                         fontSize = 12.sp,
@@ -466,7 +468,13 @@ fun OnboardingScreen(
                 OnboardingFooter(
                     copy = copy,
                     state = state,
-                    onNext = if (state.step >= 2 && state.needsHsk30Unlock) onUnlockHsk30 else onNext,
+                    onNext = if (state.step >= 2 && state.needsHsk30Unlock) {
+                        if (
+                            state.hsk30PaymentEnabled &&
+                            state.hsk30PriceTjs > 0 &&
+                            state.hsk30PriceDisplay.isNotBlank()
+                        ) onUnlockHsk30 else onLaterHsk20
+                    } else onNext,
                     onLaterHsk20 = onLaterHsk20,
                     motionEnabled = motionEnabled,
                     layoutSpec = layoutSpec,
@@ -778,10 +786,11 @@ private fun CourseVersionSwitch(
                             track == "hsk30" &&
                             !state.hsk30Allowed &&
                             state.hsk30PaymentEnabled &&
-                            state.hsk30PriceTjs > 0
+                            state.hsk30PriceTjs > 0 &&
+                            state.hsk30PriceDisplay.isNotBlank()
                         ) {
                             Text(
-                                "${state.hsk30PriceTjs} TJS",
+                                state.hsk30PriceDisplay,
                                 color = textColor.copy(alpha = 0.78f),
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -1052,7 +1061,11 @@ private fun OnboardingFooter(
         state.step == 0 -> copy.start
         state.step == 1 -> copy.continueLabel
         state.needsHsk30Unlock ->
-            if (state.hsk30PaymentEnabled && state.hsk30PriceTjs > 0) copy.unlockHsk30 else copy.getPro
+            if (
+                state.hsk30PaymentEnabled &&
+                state.hsk30PriceTjs > 0 &&
+                state.hsk30PriceDisplay.isNotBlank()
+            ) copy.unlockHsk30.format(state.hsk30PriceDisplay) else copy.laterHsk20
         else -> copy.firstLesson
     }
     val interactionSource = remember { MutableInteractionSource() }
@@ -1154,7 +1167,13 @@ private fun OnboardingFooter(
                     }
                 }
             }
-            if (state.step >= 2 && state.needsHsk30Unlock) {
+            if (
+                state.step >= 2 &&
+                state.needsHsk30Unlock &&
+                state.hsk30PaymentEnabled &&
+                state.hsk30PriceTjs > 0 &&
+                state.hsk30PriceDisplay.isNotBlank()
+            ) {
                 Spacer(Modifier.height(10.dp))
                 OutlinedButton(
                     onClick = onLaterHsk20,

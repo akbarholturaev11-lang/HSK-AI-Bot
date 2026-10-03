@@ -61,6 +61,7 @@ class OnboardingViewModel(
                                 hsk30IsNew = status.hsk30.newBadge.isNew,
                                 hsk30PaymentEnabled = status.hsk30.paymentEnabled,
                                 hsk30PriceTjs = status.hsk30.priceTjs.coerceAtLeast(0),
+                                hsk30PriceDisplay = status.hsk30.priceDisplay,
                             ),
                             error = if (status.ok) null else ApiError.Unknown,
                         )
