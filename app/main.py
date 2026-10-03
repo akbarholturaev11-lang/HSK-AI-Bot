@@ -3760,13 +3760,35 @@ async def admin_miniapp_user_delete(request: Request):
         return JSONResponse(status_code=400, content={"ok": False, "error": "delete_confirmation_required"})
     if _is_admin_id(target_id):
         return JSONResponse(status_code=400, content={"ok": False, "error": "cannot_delete_admin"})
-    async with async_session_maker() as session:
-        deleted = await UserRepository(session).delete_by_telegram_id(target_id)
-        await session.commit()
-    if not deleted:
-        return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
+    try:
+        async with async_session_maker() as session:
+            deleted = await UserRepository(session).delete_by_telegram_id(target_id)
+            if not deleted:
+                return JSONResponse(
+                    status_code=404,
+                    content={"ok": False, "error": "user_not_found"},
+                )
+            await session.commit()
+    except Exception:
+        logger.exception(
+            "admin_user_delete_failed admin_id=%s target_id=%s",
+            telegram_id,
+            target_id,
+        )
+        return JSONResponse(
+            status_code=500,
+            content={"ok": False, "error": "delete_failed"},
+        )
+
+    # Commitdan keyingina process-local guard cache tozalanadi. Commit yiqilsa
+    # old account holati cache bilan birga o'zgarishsiz qoladi.
     invalidate_block_cache(target_id)
-    return JSONResponse(content={"ok": True})
+    logger.info(
+        "admin_user_deleted admin_id=%s target_id=%s",
+        telegram_id,
+        target_id,
+    )
+    return JSONResponse(content={"ok": True, "telegram_id": target_id})
 
 
 @app.post("/api/admin-miniapp/users/block")

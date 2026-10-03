@@ -3,6 +3,7 @@ from datetime import datetime, timezone, timedelta
 from aiogram import Bot
 
 from app.repositories.user_repo import UserRepository
+from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.i18n import t
 from app.services.course_notification_service import CourseNotificationService
 from app.services.notification_delivery_service import (
@@ -39,7 +40,14 @@ class ExpiryReminderService:
                 user,
                 key="subscription_expiring",
                 lang=lang,
-                telegram=TelegramNotice(text=text),
+                telegram=TelegramNotice(
+                    text=text,
+                    reply_markup=subscription_miniapp_keyboard(
+                        lang,
+                        source="expiry_reminder",
+                        mode="subscription",
+                    ),
+                ),
                 reason="expiry_reminder",
             )
             if outcome not in DELIVERED:

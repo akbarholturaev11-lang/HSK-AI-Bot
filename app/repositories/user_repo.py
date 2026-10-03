@@ -358,16 +358,29 @@ class UserRepository:
         ]
 
     async def delete_by_telegram_id(self, telegram_id: int) -> bool:
-        """Foydalanuvchini va unga bog'liq BARCHA ma'lumotni o'chiradi.
+        """Foydalanuvchi accountini tizimda yetim iz qoldirmasdan o'chiradi.
 
-        Portfel tranzaksiyalari (portfolio_transactions) ataylab saqlanadi —
-        ular kompaniyaning moliyaviy hisobi (foyda) bo'lib, foydalanuvchi
-        o'chirilsa ham daromad tarixini buzmaslik kerak.
+        Accountga tegishli progress, sessiya, identity, notification, analytics,
+        referral va AI holatlari to'liq tozalanadi. Kompaniyaning umumiy moliyaviy
+        ledgeri esa tarixiy hisobot buzilmasligi uchun saqlanadi, lekin o'chirilgan
+        user/payment bilan bog'lovchi identifikatorlar undan uziladi.
+
+        Barcha amallar caller ochgan BITTA DB transaction ichida bajariladi.
         """
-        from sqlalchemy import delete as sql_delete
+        from sqlalchemy import delete as sql_delete, update as sql_update
+
+        from app.db.models.account_notice_delivery import AccountNoticeDelivery
         from app.db.models.ad_campaign import AdCampaignDelivery
         from app.db.models.ai_usage import AIUsageBudget, AIUsageEvent
+        from app.db.models.android_push import AndroidPushToken
+        from app.db.models.assistant import (
+            AssistantAssessment,
+            AssistantConversation,
+            AssistantRequest,
+        )
         from app.db.models.bot_feedback import BotFeedback
+        from app.db.models.bot_outbound_event import BotOutboundEvent
+        from app.db.models.bot_reachability_event import BotReachabilityEvent
         from app.db.models.conversion_funnel_event import ConversionFunnelEvent
         from app.db.models.course_ad import CourseAdView
         from app.db.models.course_attempts import CourseAttempt
@@ -376,79 +389,310 @@ class UserRepository:
         from app.db.models.course_miniapp_event import CourseMiniAppEvent
         from app.db.models.course_miniapp_profile import CourseMiniAppProfile
         from app.db.models.course_mistake import CourseMistake
+        from app.db.models.course_mistake_target import CourseMistakeTarget
         from app.db.models.course_pilot_event import CoursePilotEvent
         from app.db.models.course_progress import CourseProgress
+        from app.db.models.course_track_state import CourseTrackState
+        from app.db.models.course_user_notification import CourseUserNotification
+        from app.db.models.course_word_mastery import CourseWordMastery
         from app.db.models.course_xp_event import CourseXpEvent
+        from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
+        from app.db.models.entitlement_shadow_event import EntitlementShadowEvent
         from app.db.models.message import Message
         from app.db.models.onboarding_tip_event import OnboardingTipEvent
+        from app.db.models.partner import Partner, PartnerReferral
         from app.db.models.payment import Payment
+        from app.db.models.portfolio import PortfolioTransaction
         from app.db.models.referral import Referral
         from app.db.models.release_feedback import (
             ReleaseFeedbackDelivery,
             ReleaseFeedbackResponse,
         )
         from app.db.models.subscription_entry_event import SubscriptionEntryEvent
+        from app.db.models.trial_risk_event import TrialRiskEvent
+        from app.db.models.user_client_presence import AppPromoState, UserClientPresence
+        from app.db.models.user_identity import UserIdentity
         from app.db.models.voice_practice_session import VoicePracticeSession
 
-        user = await self.get_by_telegram_id(telegram_id)
+        # Row lock bir vaqtda payment/auth/event yozilishi bilan delete poygasini
+        # kamaytiradi. Commit/rollbackni caller boshqaradi.
+        user = await self.get_by_telegram_id_for_update(telegram_id)
         if not user:
             return False
 
-        uid = user.id
+        uid = int(user.id)
 
-        # users.id ga bog'langan jadvallar
+        # O'chirilayotgan user boshqa accountlarda referrer bo'lib qolmasin.
+        # Bu ustunlar tarixan FK emas, shuning uchun DB CASCADE yordam bermaydi.
+        await self.session.execute(
+            sql_update(User)
+            .where(User.referrer_id == uid)
+            .values(referrer_id=None)
+        )
+        await self.session.execute(
+            sql_update(User)
+            .where(User.referred_by_telegram_id == telegram_id)
+            .values(referred_by_telegram_id=None)
+        )
+
+        # Tasdiqlangan to'lovlar kompaniyaning accounting/business tarixi.
+        # Ularni fizik o'chirsak finance stats kamayadi va PortfolioService keyingi
+        # sync'da subscription_profit rowlarini ham stale deb o'chiradi. Shuning
+        # uchun account identifikatori hamda Telegram message/screenshot izlari
+        # uziladi, ammo anonim moliyaviy fakt saqlanadi.
+        #
+        # Manfiy users.id real Telegram user ID bo'la olmaydi va har bir o'chirilgan
+        # account uchun unique bo'ladi.
+        anonymous_telegram_id = -uid
+        approved_payment_ids = select(Payment.id).where(
+            Payment.user_telegram_id == telegram_id,
+            Payment.payment_status == "approved",
+        )
+        await self.session.execute(
+            sql_update(PortfolioTransaction)
+            .where(
+                or_(
+                    PortfolioTransaction.user_telegram_id == telegram_id,
+                    PortfolioTransaction.payment_id.in_(approved_payment_ids),
+                )
+            )
+            .values(user_telegram_id=anonymous_telegram_id)
+        )
+        await self.session.execute(
+            sql_update(Payment)
+            .where(
+                Payment.user_telegram_id == telegram_id,
+                Payment.payment_status == "approved",
+            )
+            .values(
+                user_telegram_id=anonymous_telegram_id,
+                screenshot_file_id=None,
+                admin_comment=None,
+                checkout_msg_id=None,
+                screenshot_msg_id=None,
+                waiting_msg_id=None,
+            )
+        )
+        # Draft/pending/rejected payment account state; accountingga kirmaydi.
+        await self.session.execute(
+            sql_delete(Payment).where(
+                Payment.user_telegram_id == telegram_id,
+                Payment.payment_status != "approved",
+            )
+        )
+
+        # Partner ledgeri (credit/payout) system-level moliyaviy tarix. Uni
+        # kaskad bilan yo'qotmasdan user identifikatorini anonim sentinelga
+        # almashtiramiz.
+        await self.session.execute(
+            sql_update(PartnerReferral)
+            .where(PartnerReferral.invited_user_telegram_id == telegram_id)
+            .values(invited_user_telegram_id=anonymous_telegram_id)
+        )
+        await self.session.execute(
+            sql_update(Partner)
+            .where(Partner.user_telegram_id == telegram_id)
+            .values(
+                user_telegram_id=anonymous_telegram_id,
+                status="blocked",
+                promotion_channel="[deleted]",
+                audience_size="[deleted]",
+                contact_username="[deleted]",
+            )
+        )
+
+        # Native/desktop auth zanjiri. SQLite test muhitida ham FK CASCADEga
+        # suyanib qolmaslik uchun child rowlar aniq tartibda o'chiriladi.
+        device_ids = select(DesktopDevice.id).where(
+            or_(
+                DesktopDevice.user_id == uid,
+                DesktopDevice.telegram_id == telegram_id,
+            )
+        )
+        await self.session.execute(
+            sql_delete(AndroidPushToken).where(AndroidPushToken.device_id.in_(device_ids))
+        )
+        await self.session.execute(
+            sql_delete(DesktopSession).where(DesktopSession.device_id.in_(device_ids))
+        )
+        await self.session.execute(
+            sql_delete(DesktopDevice).where(
+                or_(
+                    DesktopDevice.user_id == uid,
+                    DesktopDevice.telegram_id == telegram_id,
+                )
+            )
+        )
+        await self.session.execute(
+            sql_delete(DesktopLinkRequest).where(
+                or_(
+                    DesktopLinkRequest.bind_user_id == uid,
+                    DesktopLinkRequest.approved_user_id == uid,
+                    DesktopLinkRequest.approved_telegram_id == telegram_id,
+                )
+            )
+        )
+
+        # Assistant child rowlari conversationdan oldin tozalanadi.
+        await self.session.execute(
+            sql_delete(AssistantRequest).where(AssistantRequest.user_id == uid)
+        )
+        await self.session.execute(
+            sql_delete(AssistantAssessment).where(AssistantAssessment.user_id == uid)
+        )
+        await self.session.execute(
+            sql_delete(AssistantConversation).where(AssistantConversation.user_id == uid)
+        )
+
+        # Faqat users.id bilan bog'langan account state.
         by_user_id = [
             (OnboardingTipEvent, OnboardingTipEvent.user_id),
             (CourseAttempt, CourseAttempt.user_id),
             (CourseProgress, CourseProgress.user_id),
             (CourseFeatureUsage, CourseFeatureUsage.user_id),
-            (CourseMiniAppEvent, CourseMiniAppEvent.user_id),
             (CourseMiniAppProfile, CourseMiniAppProfile.user_id),
             (CourseMistake, CourseMistake.user_id),
-            (CoursePilotEvent, CoursePilotEvent.user_id),
+            (CourseMistakeTarget, CourseMistakeTarget.user_id),
+            (CourseTrackState, CourseTrackState.user_id),
+            (CourseWordMastery, CourseWordMastery.user_id),
             (CourseXpEvent, CourseXpEvent.user_id),
-            (ConversionFunnelEvent, ConversionFunnelEvent.user_id),
-            (SubscriptionEntryEvent, SubscriptionEntryEvent.user_id),
             (Message, Message.user_id),
+            (UserIdentity, UserIdentity.user_id),
+            (UserClientPresence, UserClientPresence.user_id),
+            (AppPromoState, AppPromoState.user_id),
         ]
         for model, column in by_user_id:
             await self.session.execute(sql_delete(model).where(column == uid))
 
-        # telegram_id ga bog'langan jadvallar
+        # Faqat Telegram ID bilan bog'langan account state.
         by_telegram_id = [
             (AIUsageBudget, AIUsageBudget.user_telegram_id),
             (AIUsageEvent, AIUsageEvent.user_telegram_id),
             (VoicePracticeSession, VoicePracticeSession.user_telegram_id),
-            (Payment, Payment.user_telegram_id),
             (ReleaseFeedbackDelivery, ReleaseFeedbackDelivery.user_telegram_id),
             (ReleaseFeedbackResponse, ReleaseFeedbackResponse.user_telegram_id),
             (AdCampaignDelivery, AdCampaignDelivery.user_telegram_id),
+            (EntitlementShadowEvent, EntitlementShadowEvent.telegram_id),
         ]
         for model, column in by_telegram_id:
-            await self.session.execute(sql_delete(model).where(column == telegram_id))
+            await self.session.execute(
+                sql_delete(model).where(column == telegram_id)
+            )
 
-        # ikkala ustunga ega jadvallar
+        # user_id SET NULL bo'lishi mumkin bo'lgan yoki legacy rowlarda user_id
+        # yo'q bo'lib, Telegram ID saqlanib qolishi mumkin bo'lgan jadvallar.
+        await self.session.execute(
+            sql_delete(AccountNoticeDelivery).where(
+                or_(
+                    AccountNoticeDelivery.user_id == uid,
+                    AccountNoticeDelivery.telegram_id == telegram_id,
+                )
+            )
+        )
+        await self.session.execute(
+            sql_delete(BotOutboundEvent).where(
+                or_(
+                    BotOutboundEvent.user_id == uid,
+                    BotOutboundEvent.telegram_id == telegram_id,
+                )
+            )
+        )
+        await self.session.execute(
+            sql_delete(BotReachabilityEvent).where(
+                or_(
+                    BotReachabilityEvent.user_id == uid,
+                    BotReachabilityEvent.telegram_id == telegram_id,
+                )
+            )
+        )
+        await self.session.execute(
+            sql_delete(ConversionFunnelEvent).where(
+                or_(
+                    ConversionFunnelEvent.user_id == uid,
+                    ConversionFunnelEvent.telegram_id == telegram_id,
+                )
+            )
+        )
+        await self.session.execute(
+            sql_delete(CourseMiniAppEvent).where(
+                or_(
+                    CourseMiniAppEvent.user_id == uid,
+                    CourseMiniAppEvent.telegram_id == telegram_id,
+                )
+            )
+        )
+        await self.session.execute(
+            sql_delete(CoursePilotEvent).where(
+                or_(
+                    CoursePilotEvent.user_id == uid,
+                    CoursePilotEvent.telegram_id == telegram_id,
+                )
+            )
+        )
+        await self.session.execute(
+            sql_delete(CourseUserNotification).where(
+                or_(
+                    CourseUserNotification.user_id == uid,
+                    CourseUserNotification.telegram_id == telegram_id,
+                )
+            )
+        )
+        await self.session.execute(
+            sql_delete(SubscriptionEntryEvent).where(
+                or_(
+                    SubscriptionEntryEvent.user_id == uid,
+                    SubscriptionEntryEvent.telegram_id == telegram_id,
+                )
+            )
+        )
+        await self.session.execute(
+            sql_delete(TrialRiskEvent).where(
+                or_(
+                    TrialRiskEvent.user_id == uid,
+                    TrialRiskEvent.telegram_id == telegram_id,
+                )
+            )
+        )
         await self.session.execute(
             sql_delete(BotFeedback).where(
-                (BotFeedback.user_id == uid) | (BotFeedback.telegram_id == telegram_id)
+                or_(
+                    BotFeedback.user_id == uid,
+                    BotFeedback.telegram_id == telegram_id,
+                )
             )
         )
         await self.session.execute(
             sql_delete(CourseAdView).where(
-                (CourseAdView.user_id == uid)
-                | (CourseAdView.user_telegram_id == telegram_id)
+                or_(
+                    CourseAdView.user_id == uid,
+                    CourseAdView.user_telegram_id == telegram_id,
+                )
             )
+        )
+
+        # Shared challenge: user participant bo'lsa challenge ham account datasi.
+        # Faqat winner sifatida turgan boshqa userlarning challenge'i saqlanadi.
+        await self.session.execute(
+            sql_update(CourseChallenge)
+            .where(CourseChallenge.winner_user_id == uid)
+            .values(winner_user_id=None)
         )
         await self.session.execute(
             sql_delete(CourseChallenge).where(
-                (CourseChallenge.challenger_user_id == uid)
-                | (CourseChallenge.opponent_user_id == uid)
+                or_(
+                    CourseChallenge.challenger_user_id == uid,
+                    CourseChallenge.opponent_user_id == uid,
+                )
             )
         )
+
+        # Referral rowning ikki tomoni ham o'chirilayotgan userga tegishli iz.
         await self.session.execute(
             sql_delete(Referral).where(
-                (Referral.referrer_telegram_id == telegram_id)
-                | (Referral.invited_user_telegram_id == telegram_id)
+                or_(
+                    Referral.referrer_telegram_id == telegram_id,
+                    Referral.invited_user_telegram_id == telegram_id,
+                )
             )
         )
 

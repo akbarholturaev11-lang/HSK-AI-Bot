@@ -17,6 +17,7 @@ from datetime import datetime, timedelta, timezone
 from aiogram import Bot
 from sqlalchemy import select
 
+from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.i18n import t
 from app.db.models.user import User
 from app.services.course_notification_service import CourseNotificationService
@@ -107,7 +108,15 @@ class TrialReminderService:
                 user,
                 key="trial_expiring",
                 lang=lang,
-                telegram=TelegramNotice(text=text, parse_mode="HTML"),
+                telegram=TelegramNotice(
+                    text=text,
+                    parse_mode="HTML",
+                    reply_markup=subscription_miniapp_keyboard(
+                        lang,
+                        source="trial_reminder",
+                        mode="subscription",
+                    ),
+                ),
                 reason="trial_reminder",
             )
             if outcome not in DELIVERED:
