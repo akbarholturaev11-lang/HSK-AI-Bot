@@ -435,25 +435,55 @@ class UserRepository:
             .values(referred_by_telegram_id=None)
         )
 
-        # Moliyaviy ledgerni o'chirmaymiz: daromad/harajat statistikasi tarixiy
-        # holatda qoladi, ammo o'chirilgan user va endi o'chadigan payment ID bilan
-        # aloqa uziladi.
-        payment_ids = select(Payment.id).where(Payment.user_telegram_id == telegram_id)
+        # Tasdiqlangan to'lovlar kompaniyaning accounting/business tarixi.
+        # Ularni fizik o'chirsak finance stats kamayadi va PortfolioService keyingi
+        # sync'da subscription_profit rowlarini ham stale deb o'chiradi. Shuning
+        # uchun account identifikatori hamda Telegram message/screenshot izlari
+        # uziladi, ammo anonim moliyaviy fakt saqlanadi.
+        #
+        # Manfiy users.id real Telegram user ID bo'la olmaydi va har bir o'chirilgan
+        # account uchun unique bo'ladi.
+        anonymous_telegram_id = -uid
+        approved_payment_ids = select(Payment.id).where(
+            Payment.user_telegram_id == telegram_id,
+            Payment.payment_status == "approved",
+        )
         await self.session.execute(
             sql_update(PortfolioTransaction)
             .where(
                 or_(
                     PortfolioTransaction.user_telegram_id == telegram_id,
-                    PortfolioTransaction.payment_id.in_(payment_ids),
+                    PortfolioTransaction.payment_id.in_(approved_payment_ids),
                 )
             )
-            .values(user_telegram_id=None, payment_id=None)
+            .values(user_telegram_id=anonymous_telegram_id)
+        )
+        await self.session.execute(
+            sql_update(Payment)
+            .where(
+                Payment.user_telegram_id == telegram_id,
+                Payment.payment_status == "approved",
+            )
+            .values(
+                user_telegram_id=anonymous_telegram_id,
+                screenshot_file_id=None,
+                admin_comment=None,
+                checkout_msg_id=None,
+                screenshot_msg_id=None,
+                waiting_msg_id=None,
+            )
+        )
+        # Draft/pending/rejected payment account state; accountingga kirmaydi.
+        await self.session.execute(
+            sql_delete(Payment).where(
+                Payment.user_telegram_id == telegram_id,
+                Payment.payment_status != "approved",
+            )
         )
 
         # Partner ledgeri (credit/payout) system-level moliyaviy tarix. Uni
         # kaskad bilan yo'qotmasdan user identifikatorini anonim sentinelga
-        # almashtiramiz. Manfiy users.id real Telegram user ID bo'la olmaydi.
-        anonymous_telegram_id = -uid
+        # almashtiramiz.
         await self.session.execute(
             sql_update(PartnerReferral)
             .where(PartnerReferral.invited_user_telegram_id == telegram_id)
@@ -539,7 +569,6 @@ class UserRepository:
             (AIUsageBudget, AIUsageBudget.user_telegram_id),
             (AIUsageEvent, AIUsageEvent.user_telegram_id),
             (VoicePracticeSession, VoicePracticeSession.user_telegram_id),
-            (Payment, Payment.user_telegram_id),
             (ReleaseFeedbackDelivery, ReleaseFeedbackDelivery.user_telegram_id),
             (ReleaseFeedbackResponse, ReleaseFeedbackResponse.user_telegram_id),
             (AdCampaignDelivery, AdCampaignDelivery.user_telegram_id),
