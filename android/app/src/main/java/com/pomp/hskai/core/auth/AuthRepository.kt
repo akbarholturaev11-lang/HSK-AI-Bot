@@ -54,7 +54,7 @@ class AuthRepository(
 
     // ---------------------------------------------------------------- linking
 
-    suspend fun startLink(): ApiResult<PendingLink> {
+    suspend fun startLink(language: AppLanguage? = null): ApiResult<PendingLink> {
         val installationKey = store.installationKey()
         return when (
             val result = apiCall {
@@ -62,6 +62,7 @@ class AuthRepository(
                     LinkStartRequest(
                         appVersion = appVersion,
                         installationKey = installationKey,
+                        language = language?.backendCode,
                     )
                 )
             }
