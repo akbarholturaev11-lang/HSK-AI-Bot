@@ -14,7 +14,7 @@ from app.api.public_site import (
     create_public_site_router,
     indexnow_payload,
 )
-from app.public_site.content import DOWNLOAD_PATH, GOOGLE_SIGNIN_PRIVACY_PAGES, HOME_PATHS, PAGES
+from app.public_site.content import DOWNLOAD_PATH, GOOGLE_SIGNIN_PRIVACY_PAGES, HOME_PATHS, PAGE_TRANSLATIONS, PAGES
 from app.public_site.render import attribution, public_origin
 
 ORIGIN = "https://learn.example.com"
@@ -88,9 +88,14 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             for prop in ("og:title", "og:description", "og:type", "og:url", "og:image"):
                 self.assertTrue(parsed.find("meta", property=prop))
             self.assertEqual(parsed.find("meta", name="twitter:card")[0]["content"], "summary_large_image")
-            expected = HOME_PATHS if path in HOME_PATHS.values() else {page["lang"]: path}
-            self.assertEqual({t["hreflang"]: t["href"] for t in parsed.find("link", rel="alternate")},
-                             {lang: ORIGIN + p for lang, p in expected.items()})
+            expected = PAGE_TRANSLATIONS.get(
+                page.get("translation_group"),
+                {page["lang"]: path},
+            )
+            self.assertEqual(
+                {t["hreflang"]: t["href"] for t in parsed.find("link", rel="alternate")},
+                {lang: ORIGIN + p for lang, p in expected.items()},
+            )
             graph = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)[1])["@graph"]
             self.assertTrue({"Organization", "WebSite", "SoftwareApplication", "WebPage"}.issubset({n["@type"] for n in graph}))
             self.assertFalse(any("aggregateRating" in n or "review" in n for n in graph))
