@@ -277,7 +277,8 @@ fun SubscriptionCheckoutHost(
                 }
                 val primaryAction: () -> Unit = when {
                     state.step == CheckoutStep.PAY -> model::submit
-                    state.step == CheckoutStep.PLANS && paid && renewalDates(state) != null -> {
+                    state.step == CheckoutStep.PLANS &&
+                        state.overview?.access?.isPaid == true && renewalDates(state) != null -> {
                         { renewalConfirmOpen = true }
                     }
                     else -> model::next
