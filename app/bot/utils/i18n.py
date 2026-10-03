@@ -56,7 +56,7 @@ TEXTS = {
         "referral_bonus_received": "Даъват қабул шуд ✅\n+5 саволи бонусӣ дода шуд.\n\nДаъватҳои фаъол: {count}",
         "referral_trial_access_unlocked": "🎁 <b>{days} рӯз дастрасии ройгон кушода шуд</b>\n\nМетавонед омӯзишро идома диҳед.",
         "referral_trial_access_unlocked_gemini": "🎁 <b>{days} рӯз дастрасии ройгон кушода шуд</b>\n\nМетавонед омӯзишро идома диҳед.",
-        "referral_invite_text": "<b>Силкаи даъвати шумо:</b>\n<code>{link}</code>\n\n🎁 1 дӯсти фаъол: +5 савол\n🔥 {required} дӯсти фаъол: {days} рӯз дастрасӣ\n\n👥 Ворид шуданд: {joined_count} · Фаъол: {count}/{required}",
+        "referral_invite_text": "<b>Силкаи даъвати шумо:</b>\n<code>{link}</code>\n\n🎁 1 дӯсти фаъол: +5 савол\n🔥 +6 дӯсти фаъол: {days} рӯз дастрасӣ\n\n👥 Ворид шуданд: {joined_count} · Фаъол: {count}/{required}",
 
         "payment_back": "⬅️ Бозгашт",        
         "payment_method_visa_button": "💳 Корти бонкӣ / VISA",
@@ -193,7 +193,7 @@ TEXTS = {
         "referral_bonus_received": "Приглашение засчитано ✅\n+5 бонусных вопросов начислено.\n\nАктивных приглашений: {count}",
         "referral_trial_access_unlocked": "🎁 <b>Открыт бесплатный доступ на {days} дня</b>\n\nМожно продолжать обучение.",
         "referral_trial_access_unlocked_gemini": "🎁 <b>Открыт бесплатный доступ на {days} дня</b>\n\nМожно продолжать обучение.",
-        "referral_invite_text": "<b>Ваша ссылка:</b>\n<code>{link}</code>\n\n🎁 1 активный друг: +5 вопросов\n🔥 {required} активных друзей: {days} дня доступа\n\n👥 Перешли: {joined_count} · Активные: {count}/{required}",
+        "referral_invite_text": "<b>Ваша ссылка:</b>\n<code>{link}</code>\n\n🎁 1 активный друг: +5 вопросов\n🔥 Пригласите +6 активных друзей: {days} дня доступа\n\n👥 Перешли: {joined_count} · Активные: {count}/{required}",
         "subscription_expires_tomorrow": "Подписка заканчивается завтра.",
         "daily_limit_renewed": "✅ Ваш дневной лимит обновлён. Снова можете пользоваться ботом.",
         "access_payment_pending_review": "⏳ <b>Платёж на проверке</b>\n\nСообщим после подтверждения.",
@@ -344,7 +344,7 @@ TEXTS = {
         "referral_bonus_received": "Taklif hisoblandi ✅\n+5 bonus savol berildi.\n\nFaol takliflar: {count}",
         "referral_trial_access_unlocked": "🎁 <b>{days} kun bepul kirish ochildi</b>\n\nO'qishni davom ettirishingiz mumkin.",
         "referral_trial_access_unlocked_gemini": "🎁 <b>{days} kun bepul kirish ochildi</b>\n\nO'qishni davom ettirishingiz mumkin.",
-        "referral_invite_text": "<b>Taklif havolangiz:</b>\n<code>{link}</code>\n\n🎁 1 faol do'st: +5 savol\n🔥 {required} faol do'st: {days} kun kirish\n\n👥 Kirganlar: {joined_count} · Faol: {count}/{required}",
+        "referral_invite_text": "<b>Taklif havolangiz:</b>\n<code>{link}</code>\n\n🎁 1 faol do‘st: +5 savol\n🔥 +6 ta faol do‘st: {days} kun kirish\n\n👥 Kirganlar: {joined_count} · Faol: {count}/{required}",
 
         "payment_back": "⬅️ Orqaga",
         "payment_method_visa_button": "💳 Bank kartasi / VISA",
