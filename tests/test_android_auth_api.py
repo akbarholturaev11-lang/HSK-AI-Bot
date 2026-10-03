@@ -485,6 +485,21 @@ class AndroidAuthApiTests(unittest.IsolatedAsyncioTestCase):
         payload = response.json()
         self.assertNotIn(payload["display_code"], payload["bot_deep_link"])
 
+    async def test_link_start_carries_selected_language_to_bot_deep_link(self):
+        response = await self.client.post(
+            "/api/v3/android-auth/link/start",
+            json={
+                "platform": "android",
+                "app_version": "1.0.0",
+                "installation_key": "k" * 48,
+                "language": "ru",
+            },
+        )
+        self.assertEqual(200, response.status_code)
+        payload = response.json()
+        self.assertTrue(payload["bot_deep_link"].endswith("_ru"))
+        self.assertNotIn(payload["display_code"], payload["bot_deep_link"])
+
     async def test_extra_fields_and_short_installation_key_are_rejected(self):
         for body in (
             {
@@ -668,6 +683,39 @@ class AndroidBotConfirmationTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(1, len(message.answers))
         self.assertIn("Android", message.answers[0][0])
+
+    async def test_android_start_uses_language_selected_in_app_without_second_picker(self):
+        state = self._State()
+        message = self._AndroidMessage(
+            "/start android_link_3f2504e0-4f89-11d3-9a0c-0305e82c3301_ru"
+        )
+        user = SimpleNamespace(language="tj", learning_mode="onboard_lang")
+        session = SimpleNamespace(commit=AsyncMock())
+        with patch.object(desktop_auth_handler, "OnboardingService") as onboarding, patch.object(
+            desktop_auth_handler, "DesktopAuthService"
+        ) as service:
+            onboarding.return_value.get_or_create_user = AsyncMock(
+                return_value=(user, True)
+            )
+            service.return_value.link_request_preview = AsyncMock(
+                return_value={"platform": "android", "app_version": "1.0.0"}
+            )
+            service.return_value.link_request_confirmation = AsyncMock(
+                return_value={"platform": "android", "app_version": "1.0.0"}
+            )
+            await desktop_auth_handler.begin_android_link(message, state, session)
+
+        self.assertEqual("ru", user.language)
+        self.assertEqual("mode_choice", user.learning_mode)
+        self.assertIsNone(state.state)
+        session.commit.assert_awaited_once()
+        self.assertEqual(1, len(message.answers))
+        self.assertIn("Подключение", message.answers[0][0])
+        service.return_value.link_request_confirmation.assert_awaited_once_with(
+            link_request_id="3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+            telegram_id=1001,
+            platform="android",
+        )
 
     async def test_android_language_selection_moves_to_confirmation(self):
         state = self._State()
