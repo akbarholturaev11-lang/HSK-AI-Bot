@@ -96,13 +96,6 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .choice strong{display:block;font-size:14px;line-height:1.25;font-weight:850;color:var(--text)}
 .choice span{display:block;margin-top:4px;color:var(--muted);font-size:12px;line-height:1.35}
 .choice .choice-tx{flex:1;min-width:0;margin-top:0;color:inherit}
-.method-current{width:100%;min-height:66px;display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);padding:0 14px;text-align:left}
-.method-current .chevron{flex:0 0 26px;color:var(--accent-ink);font-size:22px;line-height:1;text-align:center;font-weight:850}
-.method-current .choice-tx{flex:1;min-width:0}
-.method-current .choice-tx strong{display:block;font-size:14px;line-height:1.25;font-weight:850;color:var(--text)}
-.method-current .choice-tx span{display:block;margin-top:4px;color:var(--muted);font-size:12px;line-height:1.35}
-.method-options{display:none;margin-top:9px}
-.method-options.show{display:grid;gap:9px}
 .country-flag{flex:0 0 auto;width:46px;height:34px;border-radius:0;display:grid;place-items:center;background:transparent;font-size:38px;line-height:1;overflow:visible;box-shadow:none;font-style:normal}
 .dot{flex:0 0 auto;width:20px;height:20px;border-radius:50%;border:2px solid var(--line2);transition:.18s}
 .selected .dot{border-color:var(--accent);box-shadow:inset 0 0 0 4px var(--bg);background:var(--accent)}
@@ -851,7 +844,6 @@ const state={
   qrActionsOpen:false,
   qrPreviewOpen:false,
   detailHintOpen:false,
-  methodExpanded:false,
   renewalOpen:false,
   loadError:false,
   overviewLoading:false
@@ -1248,7 +1240,6 @@ function setBusy(value,overlay=true){
 function setStep(step){
   const items=flow();
   state.step=Math.max(0,Math.min(step,items.length-1));
-  state.methodExpanded=false;
   if(currentScreen()==="pay")loadQuote();
   render();
 }
@@ -1344,20 +1335,17 @@ function renderPlans(text){
 function renderMethod(text){
   $("#methodsTitle").textContent=text.methodsTitle;
   const methods=availableMethods();
-  const options=state.region==="cn"
+  let options=state.region==="cn"
     ?CHINA_METHODS.filter(method=>methods.includes(method)).map(method=>({attr:`data-method="${method}"`,item:text.methods[method],selected:state.method===method}))
     :(state.region==="tj"?CARD_BANKS.map(bank=>({attr:`data-bank="${bank}"`,item:text.methods[bank],selected:state.bank===bank})):[]);
   const selectedItem=state.region==="cn"?text.methods[state.method]:text.methods[cardBank()];
-  const current=selectedItem?`<button class="method-current selected" type="button" data-method-toggle aria-expanded="${state.methodExpanded}" aria-label="${escapeAttr(text.changePayment)}">
-    <span class="chevron">${state.methodExpanded?"⌄":"⌃"}</span>
-    <span class="choice-tx"><strong>${selectedItem[0]}</strong><span>${selectedItem[1]}</span></span>
-    <i class="dot selected"></i>
-  </button>`:"";
-  const choices=options.map(({attr,item,selected})=>`<button class="choice ${selected?"selected":""}" type="button" ${attr}>
-    <span class="choice-tx"><strong>${item[0]}</strong><span>${item[1]}</span></span>
-    <i class="dot"></i>
-  </button>`).join("");
-  $("#methods").innerHTML=`${current}<div class="method-options ${state.methodExpanded?"show":""}">${choices}</div>`;
+  if(!options.length&&selectedItem)options=[{item:selectedItem,selected:true}];
+  $("#methods").innerHTML=options.map(({attr,item,selected})=>{
+    const content=`<span class="choice-tx"><strong>${item[0]}</strong><span>${item[1]}</span></span><i class="dot ${selected?"selected":""}"></i>`;
+    return attr
+      ?`<button class="choice ${selected?"selected":""}" type="button" ${attr} aria-pressed="${selected}">${content}</button>`
+      :`<div class="choice selected" aria-current="true">${content}</div>`;
+  }).join("");
 }
 function renderRenewalDialog(text){
   const dialog=$("#renewalDialog");
@@ -1788,8 +1776,6 @@ async function submitPayment(){
 document.addEventListener("click",event=>{
   const retryOverview=event.target.closest("[data-retry-overview]");
   if(retryOverview){loadOverview();return}
-  const methodToggle=event.target.closest("[data-method-toggle]");
-  if(methodToggle){state.methodExpanded=!state.methodExpanded;render();return}
   const qrToggle=event.target.closest("[data-qr-toggle]");
   if(qrToggle){state.qrActionsOpen=!state.qrActionsOpen;render();return}
   const qrPreview=event.target.closest("[data-open-qr-preview]");
@@ -1806,7 +1792,6 @@ document.addEventListener("click",event=>{
     if(region!==state.region){
       state.region=region;
       state.method=region==="cn"?(CHINA_METHODS.includes(state.method)?state.method:CHINA_METHODS[0]):"visa";
-      state.methodExpanded=false;
       ensureSelection();
       clearQuote();
     }
@@ -1816,7 +1801,6 @@ document.addEventListener("click",event=>{
   const methodBtn=event.target.closest("[data-method]");
   if(methodBtn){
     state.method=methodBtn.dataset.method;
-    state.methodExpanded=false;
     ensureSelection();
     clearQuote();
     render();
@@ -1825,7 +1809,6 @@ document.addEventListener("click",event=>{
   const bankBtn=event.target.closest("[data-bank]");
   if(bankBtn){
     state.bank=bankBtn.dataset.bank;
-    state.methodExpanded=false;
     clearQuote();
     render();
     return;
