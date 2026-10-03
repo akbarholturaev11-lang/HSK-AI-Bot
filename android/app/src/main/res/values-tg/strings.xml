@@ -267,6 +267,7 @@
     <string name="rating_xp_behind">Шумо %1$d XP қафо ҳастед</string>
     <string name="rating_xp_tied">Натиҷа баробар аст</string>
     <string name="course_goal_progress">Ҳадафи рӯзона: %1$d / %2$d XP</string>
+    <string name="course_switch_version">Иваз кардани версияи курс</string>
     <string name="course_lesson_label">Дарси %1$d</string>
     <string name="practice_subtitle_short">Мустаҳкам ва санҷиш</string>
     <string name="practice_group_skills">Грамматика · Талаффуз</string>
@@ -504,6 +505,7 @@
     <string name="notify_payment_private_body">Барои дидани тафсилот барномаро кушоед.</string>
     <string name="hsk30_promo_title">HSK 3.0-ро кушоед</string>
     <string name="hsk30_promo_body">Дар версияи HSK 3.0 китобҳои нави HSK 1–3 дастрасанд.</string>
+    <string name="hsk30_unlock_unavailable">Кушодани HSK 3.0 ҳоло дастрас нест.</string>
     <string name="hsk30_promo_body_unlocked">HSK 3.0 барои ҳисоби шумо дастрас аст. Омӯзишро бо китобҳои нав оғоз кунед.</string>
     <string name="hsk30_promo_price">%1$s · ҳамеша кушодан</string>
     <string name="hsk30_promo_stay">Дар HSK 2.0 мондан</string>

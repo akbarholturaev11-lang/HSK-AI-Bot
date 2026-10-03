@@ -266,6 +266,7 @@
     <string name="rating_xp_behind">Отставание на %1$d XP</string>
     <string name="rating_xp_tied">Результат равный</string>
     <string name="course_goal_progress">Дневная цель: %1$d / %2$d XP</string>
+    <string name="course_switch_version">Переключить версию курса</string>
     <string name="course_lesson_label">Урок %1$d</string>
     <string name="practice_subtitle_short">Закрепление и проверка</string>
     <string name="practice_group_skills">Грамматика · Произношение</string>
@@ -503,6 +504,7 @@
     <string name="notify_payment_private_body">Откройте приложение, чтобы узнать подробности.</string>
     <string name="hsk30_promo_title">Открыть HSK 3.0</string>
     <string name="hsk30_promo_body">В версии HSK 3.0 доступны новые учебники HSK 1–3.</string>
+    <string name="hsk30_unlock_unavailable">Открытие HSK 3.0 сейчас недоступно.</string>
     <string name="hsk30_promo_body_unlocked">HSK 3.0 доступен вашему аккаунту. Начните заниматься по новым учебникам.</string>
     <string name="hsk30_promo_price">%1$s · открыть навсегда</string>
     <string name="hsk30_promo_stay">Остаться на HSK 2.0</string>
