@@ -1,13 +1,13 @@
 # HSK 3.0 versiyasi — alohida kurs qo'shish rejasi
 
-Holat: 2026-10-01 — **implementation yakunlangan va rollout-safe holatda.**
-N1/N2/N3 runtime tayyor; production launchda faqat N1 live qilinadi. N4
-rasmiy source alohida kelmaguncha selectable emas. Yangi HSK 3.0 imtihon
-formati tayyor bo'lmaguncha Test markazi ataylab “Tez orada” turadi.
+Holat: 2026-10-03 — **implementation yakunlangan va N1/N2/N3 runtime live.**
+N1, N2 va N3 to'liq runtime-ready va selectable. N4 rasmiy source alohida
+kelmaguncha selectable emas. Yangi HSK 3.0 imtihon formati tayyor bo'lmaguncha
+Test markazi ataylab “Tez orada” turadi.
 
 Release cheklovi: `hsk30_enabled` deploy bilan avtomatik yoqilmaydi;
-`hsk30_live_levels` default faqat `nhsk1`. N2/N3 runtime mavjudligi ularni
-avtomatik ochmaydi. Release feedback draft: `RELEASE_FEEDBACK_HSK30.md`.
+`hsk30_live_levels` canonical qiymati `nhsk1,nhsk2,nhsk3`. N4 live emas.
+Release feedback draft: `RELEASE_FEEDBACK_HSK30.md`.
 
 Research: `research/hsk-3.0/`.
 
