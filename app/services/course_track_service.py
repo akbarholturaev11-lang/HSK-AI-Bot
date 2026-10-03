@@ -181,7 +181,13 @@ class CourseTrackService:
                 completed_lessons_count=completed,
             )
 
-    async def change_level(self, user, requested_level: str) -> dict:
+    async def change_level(
+        self,
+        user,
+        requested_level: str,
+        *,
+        allow_locked_hsk30: bool = False,
+    ) -> dict:
         """Change band inside the active course track.
 
         Track switching is a separate operation. A level change resets the
@@ -205,7 +211,9 @@ class CourseTrackService:
 
         if current_track == TRACK_HSK30:
             access = await self.hsk30_access(user)
-            if not access.allowed:
+            if not access.feature_enabled:
+                raise CourseTrackError(access.reason, status_code=403)
+            if not access.allowed and not allow_locked_hsk30:
                 raise CourseTrackError(access.reason, status_code=403)
             live_levels = await self.hsk30_feature.live_levels()
             if target_level not in live_levels:
@@ -263,6 +271,7 @@ class CourseTrackService:
         *,
         target_track: str,
         requested_level: str | None = None,
+        allow_locked_hsk30: bool = False,
     ) -> dict:
         target_track = str(target_track or "").strip().lower()
         if target_track not in {TRACK_HSK20, TRACK_HSK30}:
@@ -272,7 +281,9 @@ class CourseTrackService:
         live_levels: tuple[str, ...] = ()
         if target_track == TRACK_HSK30:
             access = await self.hsk30_access(user)
-            if not access.allowed:
+            if not access.feature_enabled:
+                raise CourseTrackError(access.reason, status_code=403)
+            if not access.allowed and not allow_locked_hsk30:
                 raise CourseTrackError(access.reason, status_code=403)
             live_levels = await self.hsk30_feature.live_levels()
             if not live_levels:
