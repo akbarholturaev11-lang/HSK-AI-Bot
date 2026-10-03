@@ -61,7 +61,12 @@ class Hsk30UnlockService:
         row = await self.state_repo.get(int(user.id), TRACK_HSK30)
         return bool(row and row.unlocked_at)
 
-    async def payment_eligibility(self, user) -> dict:
+    async def payment_eligibility(
+        self,
+        user,
+        *,
+        include_display_price: bool = False,
+    ) -> dict:
         feature_enabled = await self.feature.is_enabled()
         payment_enabled = await self.payment_enabled()
         permanently_unlocked = await self.is_permanently_unlocked(user)
@@ -83,6 +88,26 @@ class Hsk30UnlockService:
             reason = "payment_required"
             allowed = True
 
+        price_tjs = await self.price_tjs()
+        price_display = ""
+        if allowed and include_display_price:
+            currency_code = (
+                self.currency.normalize_display_currency(
+                    getattr(user, "subscription_currency", None)
+                )
+                or "usd"
+            )
+            (display_amount, currency_label), = await self.currency.quote_display_amounts(
+                [price_tjs],
+                currency_code,
+                source_currency="TJS",
+            )
+            price_display = (
+                f"${display_amount}"
+                if currency_code == "usd"
+                else f"{display_amount} {currency_label}"
+            )
+
         return {
             "allowed": allowed,
             "reason": reason,
@@ -90,7 +115,8 @@ class Hsk30UnlockService:
             "payment_enabled": payment_enabled,
             "paid_access": paid_access,
             "permanently_unlocked": permanently_unlocked,
-            "price_tjs": await self.price_tjs(),
+            "price_tjs": price_tjs,
+            "price_display": price_display,
         }
 
     async def quote(self, *, card_country: str | None = None) -> dict:

@@ -131,7 +131,7 @@ fun ProfileScreen(
     hsk30Allowed: Boolean = false,
     hsk30IsNew: Boolean = false,
     hsk30PaymentEnabled: Boolean = false,
-    hsk30PriceTjs: Int = 0,
+    hsk30PriceDisplay: String = "",
     hsk30LiveLevels: List<String> = listOf("nhsk1"),
     onSwitchCourseTrack: (String, String?) -> Unit = { _, _ -> },
     onUnlockHsk30: () -> Unit = {},
@@ -320,7 +320,7 @@ fun ProfileScreen(
             hsk30Allowed = hsk30Allowed,
             hsk30IsNew = hsk30IsNew,
             hsk30PaymentEnabled = hsk30PaymentEnabled,
-            hsk30PriceTjs = hsk30PriceTjs,
+            hsk30PriceDisplay = hsk30PriceDisplay,
             hsk30LiveLevels = hsk30LiveLevels,
             onSwitch = onSwitchCourseTrack,
             onUnlockHsk30 = onUnlockHsk30,
@@ -900,7 +900,7 @@ private fun CourseVersionPickerSheet(
     hsk30Allowed: Boolean,
     hsk30IsNew: Boolean,
     hsk30PaymentEnabled: Boolean,
-    hsk30PriceTjs: Int,
+    hsk30PriceDisplay: String,
     hsk30LiveLevels: List<String>,
     onSwitch: (String, String?) -> Unit,
     onUnlockHsk30: () -> Unit,
@@ -1047,10 +1047,8 @@ private fun CourseVersionPickerSheet(
                                 when {
                                     currentTrack == "hsk30" ->
                                         Text("✓", color = PompColors.Jade, fontWeight = FontWeight.Bold)
-                                    !hsk30Allowed && hsk30PaymentEnabled && hsk30PriceTjs > 0 ->
-                                        Text("$hsk30PriceTjs TJS", color = PompColors.CinnabarDark, fontSize = 12.sp)
-                                    !hsk30Allowed ->
-                                        Text("Pro", color = PompColors.CinnabarDark, fontSize = 12.sp)
+                                    !hsk30Allowed && hsk30PaymentEnabled && hsk30PriceDisplay.isNotBlank() ->
+                                        Text(hsk30PriceDisplay, color = PompColors.CinnabarDark, fontSize = 12.sp)
                                     else -> SettingsChevron()
                                 }
                             }

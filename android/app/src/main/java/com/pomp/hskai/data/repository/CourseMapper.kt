@@ -139,6 +139,7 @@ object CourseMapper {
                     ),
                     paymentEnabled = hsk30.paymentEnabled,
                     priceTjs = hsk30.priceTjs,
+                    priceDisplay = hsk30.priceDisplay,
                     promo = CourseHsk30Promo(
                         eligible = hsk30.promo.eligible,
                         reason = hsk30.promo.reason,

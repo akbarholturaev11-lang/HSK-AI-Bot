@@ -134,6 +134,7 @@ data class CourseHsk30(
     val liveLevels: List<String>,
     val paymentEnabled: Boolean,
     val priceTjs: Int,
+    val priceDisplay: String,
     val promo: CourseHsk30Promo,
     val newBadge: CourseHsk30NewBadge = CourseHsk30NewBadge(
         isNew = false,

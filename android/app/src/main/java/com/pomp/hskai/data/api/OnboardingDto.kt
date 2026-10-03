@@ -22,6 +22,7 @@ data class AndroidHsk30OnboardingDto(
     @SerialName("new_badge") val newBadge: CourseHsk30NewBadgeDto = CourseHsk30NewBadgeDto(),
     @SerialName("payment_enabled") val paymentEnabled: Boolean = false,
     @SerialName("price_tjs") val priceTjs: Int = 0,
+    @SerialName("price_display") val priceDisplay: String = "",
 )
 
 @Serializable

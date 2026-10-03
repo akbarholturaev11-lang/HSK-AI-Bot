@@ -82,7 +82,8 @@ class AndroidCourseService(DesktopCourseService):
         track_status = await CourseTrackService(self.session).status(context.user)
         hsk30_track = (track_status.get("tracks") or {}).get("hsk30") or {}
         hsk30_unlock = await Hsk30UnlockService(self.session).payment_eligibility(
-            context.user
+            context.user,
+            include_display_price=True,
         )
         result["hsk30"] = {
             "active_track": track_status.get("active_track") or "hsk20",
@@ -94,6 +95,7 @@ class AndroidCourseService(DesktopCourseService):
             "new_badge": hsk30_track.get("new_badge") or {},
             "payment_enabled": bool(hsk30_unlock.get("payment_enabled")),
             "price_tjs": int(hsk30_unlock.get("price_tjs") or 0),
+            "price_display": str(hsk30_unlock.get("price_display") or ""),
             "promo": await Hsk30PromoService(self.session).state(context.user),
         }
 
@@ -288,7 +290,8 @@ class AndroidCourseService(DesktopCourseService):
         )
         track_status = await CourseTrackService(self.session).status(context.user)
         hsk30_unlock = await Hsk30UnlockService(self.session).payment_eligibility(
-            context.user
+            context.user,
+            include_display_price=True,
         )
         hsk30_track = (track_status.get("tracks") or {}).get("hsk30") or {}
         hsk30_access = hsk30_track.get("access") or {}
@@ -314,6 +317,7 @@ class AndroidCourseService(DesktopCourseService):
                 "new_badge": hsk30_track.get("new_badge") or {},
                 "payment_enabled": bool(hsk30_unlock.get("payment_enabled")),
                 "price_tjs": int(hsk30_unlock.get("price_tjs") or 0),
+                "price_display": str(hsk30_unlock.get("price_display") or ""),
             },
         }
 
