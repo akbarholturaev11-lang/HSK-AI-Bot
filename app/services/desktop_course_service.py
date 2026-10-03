@@ -435,18 +435,19 @@ class DesktopCourseService:
         before_level = str(getattr(user, "level", "") or "")
         try:
             current_track = before_track
+            allow_locked_hsk30 = self.CLIENT_NAMESPACE == "android"
             if target_track == current_track and level:
                 status = await service.change_level(
                     user,
                     level,
-                    allow_locked_hsk30=True,
+                    allow_locked_hsk30=allow_locked_hsk30,
                 )
             else:
                 status = await service.switch(
                     user,
                     target_track=target_track,
                     requested_level=level,
-                    allow_locked_hsk30=True,
+                    allow_locked_hsk30=allow_locked_hsk30,
                 )
         except CourseTrackError as exc:
             raise DesktopCourseError(exc.code, status_code=exc.status_code) from exc
