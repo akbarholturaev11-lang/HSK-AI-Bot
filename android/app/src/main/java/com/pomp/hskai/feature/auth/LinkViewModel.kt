@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.pomp.hskai.core.auth.AuthProvider
 import com.pomp.hskai.core.auth.AuthRepository
 import com.pomp.hskai.core.auth.PendingLink
+import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import kotlinx.coroutines.Job
@@ -97,12 +98,12 @@ class LinkViewModel(
      * bot reads the request out of the deep link and shows one confirm
      * button.
      */
-    fun continueWithTelegram() {
+    fun continueWithTelegram(language: AppLanguage) {
         val current = _state.value
         if (current.isRequestingCode) return
         val pending = current.pending
         if (pending == null || current.isExpired || remainingSeconds(pending) <= 0) {
-            requestCode(openTelegram = true)
+            requestCode(openTelegram = true, language = language)
             return
         }
         _state.update {
@@ -174,13 +175,16 @@ class LinkViewModel(
      * which is what the Telegram card wants; Google and Apple reserve their
      * own link rows through [startProvider].
      */
-    fun requestCode(openTelegram: Boolean = false) {
+    fun requestCode(
+        openTelegram: Boolean = false,
+        language: AppLanguage? = null,
+    ) {
         if (_state.value.isRequestingCode) return
         pollJob?.cancel()
         val providers = _state.value.providers
         _state.value = LinkUiState(isRequestingCode = true, providers = providers)
         startJob = viewModelScope.launch {
-            when (val result = authRepository.startLink()) {
+            when (val result = authRepository.startLink(language)) {
                 is ApiResult.Failure -> _state.value =
                     LinkUiState(error = result.error, providers = providers)
 
