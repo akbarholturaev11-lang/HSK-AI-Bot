@@ -29,7 +29,7 @@ from app.services.payment_service import PaymentService
 from app.services.subscription_currency_service import SubscriptionCurrencyService
 from app.services.subscription_price_service import PLANS, SubscriptionPriceService
 from app.services.support_contact_service import get_admin_contact_url
-from app.services.user_access_state_service import UserAccessStateService
+from app.services.user_access_state_service import UserAccessState, UserAccessStateService
 
 
 logger = logging.getLogger(__name__)
@@ -82,7 +82,7 @@ class SubscriptionMiniAppService:
         expires_at = UserAccessStateService.as_utc(getattr(user, "end_date", None))
         return {
             "state": state,
-            "is_paid": state == UserAccessStateService.PAID,
+            "is_paid": state == UserAccessState.PAID,
             "expires_at": expires_at.isoformat().replace("+00:00", "Z") if expires_at else None,
         }
 
