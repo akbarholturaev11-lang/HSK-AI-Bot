@@ -93,7 +93,7 @@ class MiniAppRequestLoadTests(unittest.TestCase):
         self.assertIn("function hsk30LiveLevels()", ONBOARDING)
         self.assertIn("/^nhsk[1-3]$/", ONBOARDING)
         self.assertIn("h30PriceLabel", ONBOARDING)
-        self.assertIn("if(access&&!access.allowed&&hsk30PaymentEnabled())h30Meta.push(hsk30Price())", ONBOARDING)
+        self.assertIn("if(h30Ready&&access&&!access.allowed&&hsk30PaymentEnabled())h30Meta.push(hsk30Price())", ONBOARDING)
         self.assertIn('var h30Meta=["NEW"]', ONBOARDING)
 
     def test_download_status_is_the_only_android_availability_request(self):
