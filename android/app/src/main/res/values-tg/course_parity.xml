@@ -25,10 +25,12 @@
     <string name="lesson_entry_title">Дарс омода мешавад</string>
     <string name="lesson_entry_subtitle">Панда шуморо интизор аст</string>
 
-    <string name="hsk30_access_required_title">HSK 3.0-ро кушодан лозим аст</string>
-    <string name="hsk30_access_required_body">HSK 3.0 ҳоло ройгон истифода намешавад. Барои як бор ва доимӣ кушодани ин версия, пардохти %1$s лозим аст.</string>
-    <string name="hsk30_access_unlock_button">Кушодани HSK 3.0 — %1$s</string>
+    <string name="hsk30_access_required_title">HSK 3.0-ро кушоед</string>
+    <string name="hsk30_access_required_body">Курсро аз рӯи китобҳои нав оғоз кунед.</string>
+    <string name="hsk30_access_unlock_button">Кушодани HSK 3.0</string>
+    <string name="hsk30_access_permanent">Дастрасии доимӣ</string>
+    <string name="hsk30_access_one_time">Пардохти якдафъаина</string>
     <string name="hsk30_access_back_hsk20">Бозгашт ба HSK 2.0</string>
     <string name="hsk30_level_picker_title">HSK 3.0-ро аз кадом сатҳ идома медиҳед?</string>
-    <string name="hsk30_level_picker_body">Сатҳро интихоб кунед. Система шуморо худкор ба N1 намебарад.</string>
+    <string name="hsk30_level_picker_body">Сатҳи мувофиқи худро интихоб кунед.</string>
 </resources>

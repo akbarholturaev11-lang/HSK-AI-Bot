@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -91,6 +93,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.Hsk30BooksHeader
 import com.pomp.hskai.core.design.components.HskGlassButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
@@ -315,6 +318,7 @@ fun CourseScreen(
                 if (targetTrack == "hsk30" && hsk30 != null) {
                     Hsk30LevelChoiceDialog(
                         levels = hsk30.liveLevels,
+                        isNew = hsk30.newBadge.isNew,
                         onDismiss = { pendingTrackSwitch = null },
                         onChoose = { level ->
                             pendingTrackSwitch = null
@@ -366,105 +370,190 @@ fun CourseScreen(
 }
 
 @Composable
+private fun Hsk30BookDialog(
+    isNew: Boolean,
+    onDismiss: () -> Unit,
+    dismissible: Boolean = true,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = dismissible,
+            dismissOnClickOutside = dismissible,
+        ),
+    ) {
+        BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Surface(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .widthIn(max = 380.dp)
+                    .fillMaxWidth()
+                    .heightIn(max = maxHeight * 0.94f),
+                shape = RoundedCornerShape(26.dp),
+                color = PompColors.Paper,
+                shadowElevation = 18.dp,
+            ) {
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(start = 22.dp, end = 22.dp, top = 22.dp, bottom = 14.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Hsk30BooksHeader(isNew = isNew, modifier = Modifier.fillMaxWidth())
+                    Spacer(Modifier.height(16.dp))
+                    content()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Hsk30BookTitle(title: String, body: String) {
+    Text(
+        title,
+        color = PompColors.Ink,
+        fontSize = 25.sp,
+        lineHeight = 30.sp,
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.Center,
+    )
+    Spacer(Modifier.height(9.dp))
+    Text(
+        body,
+        color = PompColors.InkSecondary,
+        fontSize = 15.sp,
+        lineHeight = 22.sp,
+        textAlign = TextAlign.Center,
+    )
+}
+
+@Composable
+private fun Hsk30BookPrice(price: String) {
+    Spacer(Modifier.height(20.dp))
+    Box(Modifier.fillMaxWidth().height(1.dp).background(PompColors.Divider))
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(
+                stringResource(R.string.hsk30_access_permanent),
+                color = PompColors.Ink,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                stringResource(R.string.hsk30_access_one_time),
+                color = PompColors.InkSecondary,
+                fontSize = 12.sp,
+            )
+        }
+        Text(
+            price,
+            color = PompColors.Ink,
+            fontSize = if (price.length > 10) 22.sp else 29.sp,
+            fontWeight = FontWeight.Bold,
+        )
+    }
+}
+
+@Composable
+private fun Hsk30BookPrimary(label: String, enabled: Boolean = true, onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp),
+        shape = RoundedCornerShape(14.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = PompColors.CinnabarDark,
+            contentColor = Color.White,
+        ),
+    ) {
+        Text(
+            label,
+            fontSize = 16.sp,
+            lineHeight = 21.sp,
+            fontWeight = FontWeight.SemiBold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.weight(1f, fill = false),
+        )
+        Spacer(Modifier.width(12.dp))
+        Text("→", fontSize = 23.sp)
+    }
+}
+
+@Composable
+private fun Hsk30BookSecondary(label: String, onClick: () -> Unit) {
+    Spacer(Modifier.height(8.dp))
+    TextButton(onClick = onClick, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+        Text(
+            label,
+            color = PompColors.InkSecondary,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.SemiBold,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+@Composable
 private fun Hsk30LockedEntryDialog(
     hsk30: com.pomp.hskai.domain.model.CourseHsk30,
     onUnlock: () -> Unit,
     onBackToHsk20: () -> Unit,
 ) {
-    val price = hsk30.priceDisplay.ifBlank { "—" }
-    AlertDialog(
-        onDismissRequest = {},
-        properties = DialogProperties(
-            dismissOnBackPress = false,
-            dismissOnClickOutside = false,
-        ),
-        title = {
-            Text(
-                stringResource(R.string.hsk30_access_required_title),
-                fontWeight = FontWeight.Bold,
-            )
-        },
-        text = {
-            Text(
-                stringResource(R.string.hsk30_access_required_body, price),
-                color = PompColors.InkSecondary,
-            )
-        },
-        confirmButton = {
-            Button(
-                onClick = onUnlock,
-                enabled = hsk30.paymentEnabled && hsk30.priceDisplay.isNotBlank(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PompColors.Cinnabar,
-                    contentColor = Color.White,
-                ),
-            ) {
-                Text(stringResource(R.string.hsk30_access_unlock_button, price))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onBackToHsk20) {
-                Text(
-                    stringResource(R.string.hsk30_access_back_hsk20),
-                    color = PompColors.InkSecondary,
-                )
-            }
-        },
-        containerColor = PompColors.PaperRaised,
-    )
+    Hsk30BookDialog(isNew = hsk30.newBadge.isNew, onDismiss = {}, dismissible = false) {
+        Hsk30BookTitle(
+            title = stringResource(R.string.hsk30_access_required_title),
+            body = stringResource(R.string.hsk30_access_required_body),
+        )
+        if (hsk30.priceDisplay.isNotBlank()) {
+            Hsk30BookPrice(hsk30.priceDisplay)
+        } else {
+            Spacer(Modifier.height(20.dp))
+        }
+        Hsk30BookPrimary(
+            label = stringResource(R.string.hsk30_access_unlock_button),
+            enabled = hsk30.paymentEnabled && hsk30.priceDisplay.isNotBlank(),
+            onClick = onUnlock,
+        )
+        Hsk30BookSecondary(stringResource(R.string.hsk30_access_back_hsk20), onBackToHsk20)
+    }
 }
 
 @Composable
 private fun Hsk30LevelChoiceDialog(
     levels: List<String>,
+    isNew: Boolean,
     onDismiss: () -> Unit,
     onChoose: (String) -> Unit,
 ) {
     val selectable = levels
         .filter { Regex("^nhsk[1-3]$").matches(it.lowercase()) }
         .distinct()
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(
-                stringResource(R.string.hsk30_level_picker_title),
-                fontWeight = FontWeight.Bold,
+    Hsk30BookDialog(isNew = isNew, onDismiss = onDismiss) {
+        Hsk30BookTitle(
+            title = stringResource(R.string.hsk30_level_picker_title),
+            body = stringResource(R.string.hsk30_level_picker_body),
+        )
+        Spacer(Modifier.height(16.dp))
+        selectable.forEach { level ->
+            val band = Regex("^nhsk([1-3])$").find(level.lowercase())
+                ?.groupValues?.getOrNull(1)
+                ?: level
+            Hsk30BookPrimary(
+                label = "HSK $band" + if (isNew) " · NEW" else "",
+                onClick = { onChoose(level) },
             )
-        },
-        text = {
-            Column {
-                Text(
-                    stringResource(R.string.hsk30_level_picker_body),
-                    color = PompColors.InkSecondary,
-                )
-                Spacer(Modifier.height(14.dp))
-                selectable.forEach { level ->
-                    val band = Regex("^nhsk([1-3])$").find(level.lowercase())
-                        ?.groupValues?.getOrNull(1)
-                        ?: level
-                    Button(
-                        onClick = { onChoose(level) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = PompColors.Cinnabar,
-                            contentColor = Color.White,
-                        ),
-                    ) {
-                        Text("HSK 3.0 · N$band")
-                    }
-                }
-            }
-        },
-        confirmButton = {},
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.action_cancel), color = PompColors.InkSecondary)
-            }
-        },
-        containerColor = PompColors.PaperRaised,
-    )
+            Spacer(Modifier.height(8.dp))
+        }
+        Hsk30BookSecondary(stringResource(R.string.action_cancel), onDismiss)
+    }
 }
 
 @Composable
@@ -473,173 +562,22 @@ private fun Hsk30PromoDialog(
     onDismiss: () -> Unit,
     onContinue: () -> Unit,
 ) {
-    val paidAccess = hsk30.access.paidAccess
-    val permanentlyUnlocked = hsk30.access.permanentlyUnlocked
-    val hasAccess = hsk30.access.allowed && (paidAccess || permanentlyUnlocked)
-    val body = when {
-        hasAccess -> stringResource(R.string.hsk30_promo_body_unlocked)
-        else -> stringResource(R.string.hsk30_promo_body)
-    }
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false),
-    ) {
-        BoxWithConstraints(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            Surface(
-                modifier = Modifier.fillMaxWidth(0.92f).heightIn(max = maxHeight * 0.94f),
-                shape = RoundedCornerShape(30.dp),
-                color = PompColors.Paper,
-                shadowElevation = 18.dp,
-            ) {
-                Box(Modifier.fillMaxWidth()) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .verticalScroll(rememberScrollState())
-                            .padding(horizontal = 18.dp, vertical = 20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Box(
-                            Modifier
-                                .width(54.dp)
-                                .height(6.dp)
-                                .background(Color(0xFFE9DCC3), RoundedCornerShape(8.dp)),
-                        )
-                        Spacer(Modifier.height(14.dp))
-                        Hsk30PromoBooksArt(Modifier.fillMaxWidth())
-                        Spacer(Modifier.height(10.dp))
-                        Text(
-                            text = stringResource(R.string.hsk30_promo_title),
-                            color = PompColors.Ink,
-                            fontSize = 27.sp,
-                            lineHeight = 32.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            textAlign = TextAlign.Center,
-                        )
-                        Spacer(Modifier.height(7.dp))
-                        Text(
-                            text = body,
-                            color = PompColors.InkSecondary,
-                            fontSize = 15.sp,
-                            lineHeight = 21.sp,
-                            fontWeight = FontWeight.Medium,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(horizontal = 2.dp),
-                        )
-                        Spacer(Modifier.height(17.dp))
-                        Hsk30PromoPrimaryButton(
-                            label = stringResource(R.string.hsk30_promo_switch),
-                            leading = { Text("→", fontSize = 25.sp, lineHeight = 25.sp) },
-                            onClick = onContinue,
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        Hsk30PromoStayButton(
-                            label = stringResource(R.string.hsk30_promo_stay),
-                            onClick = onDismiss,
-                        )
-                    }
-                    androidx.compose.material3.IconButton(
-                        onClick = onDismiss,
-                        modifier = Modifier.align(Alignment.TopEnd).padding(top = 5.dp, end = 5.dp).size(42.dp),
-                    ) {
-                        Icon(
-                            Icons.Filled.Close,
-                            contentDescription = stringResource(R.string.action_close),
-                            tint = PompColors.InkSecondary,
-                            modifier = Modifier.size(23.dp),
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun Hsk30PromoBooksArt(modifier: Modifier = Modifier) {
-    BoxWithConstraints(
-        modifier = modifier
-            .aspectRatio(622f / 332f)
-            .clipToBounds()
-            .background(Color(0xFFFBF7EC)),
-    ) {
-        val cropWidth = maxWidth
-        val cropHeight = maxHeight
-        Image(
-            painter = painterResource(R.drawable.hsk30_promo_source),
-            contentDescription = stringResource(R.string.hsk30_promo_books_desc),
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier
-                .width(cropWidth * (734f / 622f))
-                .height(cropHeight * (982f / 332f))
-                .offset(
-                    x = -(cropWidth * (58f / 622f)),
-                    y = -(cropHeight * (60f / 332f)),
-                ),
+    val hasAccess = hsk30.access.allowed &&
+        (hsk30.access.paidAccess || hsk30.access.permanentlyUnlocked)
+    Hsk30BookDialog(isNew = hsk30.newBadge.isNew, onDismiss = onDismiss) {
+        Hsk30BookTitle(
+            title = stringResource(if (hasAccess) R.string.hsk30_promo_switch else R.string.hsk30_promo_title),
+            body = stringResource(
+                if (hasAccess) R.string.hsk30_promo_body_unlocked else R.string.hsk30_access_required_body,
+            ),
         )
-        Box(
-            Modifier
-                .align(Alignment.TopEnd)
-                .fillMaxWidth(0.07f)
-                .fillMaxHeight(0.06f)
-                .background(Color(0xFFFBF7EC)),
-        )
-    }
-}
-
-@Composable
-private fun Hsk30PromoPrimaryButton(
-    label: String,
-    leading: @Composable () -> Unit,
-    onClick: () -> Unit,
-) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth().heightIn(min = 58.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFEB463F),
-            contentColor = Color.White,
-        ),
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            leading()
-            Spacer(Modifier.width(10.dp))
-            Text(
-                text = label,
-                fontSize = 16.sp,
-                lineHeight = 19.sp,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center,
-            )
+        if (!hasAccess && hsk30.priceDisplay.isNotBlank()) {
+            Hsk30BookPrice(hsk30.priceDisplay)
+        } else {
+            Spacer(Modifier.height(20.dp))
         }
-    }
-}
-
-@Composable
-private fun Hsk30PromoStayButton(label: String, onClick: () -> Unit) {
-    Surface(
-        modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp).clickable(onClick = onClick),
-        shape = RoundedCornerShape(15.dp),
-        color = Color.White,
-        border = BorderStroke(1.dp, Color(0xFFEADCC3)),
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(
-                text = label,
-                color = Color(0xFF1688EE),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
-            )
-        }
+        Hsk30BookPrimary(stringResource(R.string.hsk30_promo_switch), onClick = onContinue)
+        Hsk30BookSecondary(stringResource(R.string.hsk30_promo_stay), onDismiss)
     }
 }
 

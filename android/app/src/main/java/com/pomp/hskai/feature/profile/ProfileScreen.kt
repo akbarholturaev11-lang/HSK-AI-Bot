@@ -75,6 +75,7 @@ import com.pomp.hskai.core.auth.AuthProvider
 import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
+import com.pomp.hskai.core.design.components.Hsk30BooksHeader
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.feature.update.AppUpdateCard
@@ -911,6 +912,8 @@ private fun CourseVersionPickerSheet(
         ) {
             val targetTrack = pendingTrack
             if (targetTrack == "hsk30" && pendingLevel == null) {
+                Hsk30BooksHeader(isNew = hsk30IsNew, modifier = Modifier.fillMaxWidth())
+                Spacer(Modifier.height(16.dp))
                 Text(
                     stringResource(R.string.hsk30_level_picker_title),
                     color = PompColors.Ink,
@@ -946,7 +949,7 @@ private fun CourseVersionPickerSheet(
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(
-                                    "HSK 3.0 · N$band",
+                                    "HSK $band" + if (hsk30IsNew) " · NEW" else "",
                                     color = PompColors.Ink,
                                     fontWeight = FontWeight.SemiBold,
                                 )
@@ -964,6 +967,10 @@ private fun CourseVersionPickerSheet(
                     Text(stringResource(R.string.action_cancel), color = PompColors.Ink)
                 }
             } else if (targetTrack != null) {
+                if (targetTrack == "hsk30") {
+                    Hsk30BooksHeader(isNew = hsk30IsNew, modifier = Modifier.fillMaxWidth())
+                    Spacer(Modifier.height(16.dp))
+                }
                 val targetLabel = if (targetTrack == "hsk30") "HSK 3.0" else "HSK 2.0"
                 Text(
                     stringResource(R.string.profile_course_version_confirm_title, targetLabel),

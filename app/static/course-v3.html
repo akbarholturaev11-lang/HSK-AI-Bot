@@ -179,16 +179,24 @@ button{cursor:pointer}
 #sheet.hsk30-promo-center{align-items:center;padding:calc(14px + var(--safe-t)) 14px calc(14px + var(--safe-b))}
 #sheet.hsk30-promo-center .si{border-radius:24px;padding:20px 18px calc(18px + var(--safe-b));max-height:calc(100vh - 28px - var(--safe-t) - var(--safe-b));max-height:calc(100dvh - 28px - var(--safe-t) - var(--safe-b));box-shadow:0 18px 50px rgba(20,17,13,.25)}
 #sheet.hsk30-promo-center .grip{display:none}
-.hsk30-promo-grip{width:54px;height:6px;border-radius:8px;background:#e9dcc3;margin:0 auto 16px}
-.hsk30-promo-close{position:absolute;right:14px;top:14px;width:42px;height:42px;border:0;border-radius:50%;background:#f4efe5;color:#6e665b;font-size:22px;display:flex;align-items:center;justify-content:center}
-.hsk30-promo-books{position:relative;width:100%;aspect-ratio:622/332;overflow:hidden;background:#fbf7ec;border-radius:7px;margin:4px auto 14px}
-.hsk30-promo-books img{position:absolute;width:118.00645%;height:295.78314%;max-width:none;left:-9.32476%;top:-18.07229%;object-fit:fill}
-.hsk30-promo-art-mask{position:absolute;right:0;top:0;width:7%;height:6%;background:#fbf7ec}
-.hsk30-promo-title{font-size:clamp(23px,6vw,32px);line-height:1.16;letter-spacing:-.03em;font-weight:800;color:var(--ink);text-align:center;margin:6px 0 8px}
-.hsk30-promo-copy{font-size:clamp(14px,4vw,18px);line-height:1.42;color:var(--ink2);font-weight:500;text-align:center;margin:0 auto 16px;max-width:390px}
+#sheet.hsk30-book-card{padding:calc(20px + var(--safe-t)) 20px calc(20px + var(--safe-b))}
+#sheet.hsk30-book-card .si{width:100%;max-width:380px;border-radius:26px;padding:22px 22px 14px;overscroll-behavior:contain}
+#sheet.hsk30-book-card .sx{display:none}
+.hsk30-book-header{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;line-height:18px;font-weight:700;margin-bottom:12px}
+.hsk30-book-new{padding:3px 6px;border-radius:5px;background:var(--jadebg);color:#245f47;font-size:9px;font-weight:800;letter-spacing:.7px}
+.hsk30-promo-books{width:100%;aspect-ratio:1.65;overflow:hidden;margin:0 auto 16px}
+.hsk30-promo-books img{display:block;width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply}
+.hsk30-promo-title{font-size:25px;line-height:1.2;letter-spacing:-.025em;font-weight:750;color:var(--ink);text-align:center;margin:0 0 9px}
+.hsk30-promo-copy{font-size:15px;line-height:1.5;color:var(--ink2);font-weight:400;text-align:center;margin:0 auto 20px;max-width:330px}
+.hsk30-book-price{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding:16px 0;margin-top:0}
+.hsk30-book-price strong{display:block;font-size:14px;line-height:1.4;font-weight:650;color:var(--ink)}
+.hsk30-book-price small{display:block;font-size:12px;line-height:1.4;color:var(--ink2);margin-top:4px}
+.hsk30-book-price b{font-size:29px;line-height:1.2;letter-spacing:-.03em;font-weight:750;color:var(--ink);text-align:right}
 .hsk30-promo-actions{display:flex;flex-direction:column;gap:8px}
-.hsk30-promo-action{min-height:58px;padding:12px 14px;border-radius:16px;background:linear-gradient(110deg,#ee413b,#e74b40);font-size:clamp(15px,4.2vw,18px);font-weight:700;text-align:center}
-.hsk30-promo-stay{min-height:54px;justify-content:center;border-radius:15px;background:#fff;border:1px solid #eadcc3;color:#1688ee;font-size:clamp(15px,4.2vw,18px);font-weight:600;text-align:center}
+.hsk30-promo-action{width:100%;min-height:52px;padding:12px 16px;border:0;border-radius:14px;background:var(--cin2);color:#fff;font-size:16px;line-height:1.3;font-weight:650;display:flex;align-items:center;justify-content:center;gap:12px;text-align:center}
+.hsk30-promo-action svg{width:20px;height:20px;flex-shrink:0}
+.hsk30-promo-stay{width:100%;min-height:48px;padding:12px;border:0;border-radius:12px;background:transparent;color:var(--ink2);font-size:14px;line-height:1.4;font-weight:600;display:flex;align-items:center;justify-content:center;text-align:center}
+.hsk30-promo-action:focus-visible,.hsk30-promo-stay:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
 .grip{width:40px;height:4px;border-radius:3px;background:var(--line);margin:8px auto 14px}
 .sx{position:absolute;right:14px;top:14px;background:none;border:none;color:var(--ink2);font-size:22px}
 .shead{text-align:center;margin-bottom:14px}
@@ -1289,6 +1297,34 @@ var TRACK_UI={
   ru:{courseVersion:"Версия курса",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Текущий курс",switching:"Переключаем курс…",hsk30Title:"Открыть HSK 3.0",hsk30Body:"В HSK 3.0 доступны новые учебники HSK 1–3.",permanent:"{price} · открыть навсегда",stay:"Остаться на HSK 2.0",backTo20:"Вернуться на HSK 2.0",disabled:"HSK 3.0 пока отключён.",tryAgain:"Попробовать снова",testSoon:"Тесты HSK 3.0 · Скоро",testSoonTitle:"Тесты HSK 3.0",testSoonBody:"Новый формат экзаменов HSK 3.0 ещё готовится.",promoTitle:"Открыть HSK 3.0",promoBody:"В версии HSK 3.0 доступны новые учебники HSK 1–3.",promoBodyUnlocked:"HSK 3.0 доступен вашему аккаунту. Начните заниматься по новым учебникам.",promoUnlock:"{price} · открыть навсегда",promoOpen:"Перейти на HSK 3.0",promoStay:"Остаться на HSK 2.0",promoBooksAlt:"Новые учебники HSK 1, 2 и 3",promoSwitch:"Перейти на HSK 3.0",promoLater:"Позже",promoRecommended:"Рекомендуем",switchConfirmTitle:"Сменить версию курса?",switchConfirmBody:"Прогресс текущего курса сохранится. Вы сможете вернуться к другой версии в любое время.",switchConfirmAction:"Переключить",cancel:"Отмена",close:"Закрыть"},
   tj:{courseVersion:"Версияи курс",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Курси ҳозира",switching:"Курс иваз мешавад…",hsk30Title:"Кушодани HSK 3.0",hsk30Body:"Дар версияи HSK 3.0 китобҳои нави HSK 1–3 дастрасанд.",permanent:"{price} · ҳамешагӣ кушодан",stay:"Дар HSK 2.0 мондан",backTo20:"Ба HSK 2.0 баргаштан",disabled:"HSK 3.0 ҳоло хомӯш аст.",tryAgain:"Боз кӯшиш кардан",testSoon:"Тестҳои HSK 3.0 · Ба наздикӣ",testSoonTitle:"Тестҳои HSK 3.0",testSoonBody:"Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад.",promoTitle:"HSK 3.0-ро кушоед",promoBody:"Дар версияи HSK 3.0 китобҳои нави HSK 1–3 дастрасанд.",promoBodyUnlocked:"HSK 3.0 барои ҳисоби шумо дастрас аст. Омӯзишро бо китобҳои нав оғоз кунед.",promoUnlock:"{price} · ҳамеша кушодан",promoOpen:"Гузаштан ба HSK 3.0",promoStay:"Дар HSK 2.0 мондан",promoBooksAlt:"Китобҳои нави HSK 1, 2 ва 3",promoSwitch:"Гузаштан ба HSK 3.0",promoLater:"Баъдтар",promoRecommended:"Тавсия",switchConfirmTitle:"Версияи курсро иваз мекунед?",switchConfirmBody:"Пешрафти курси ҷорӣ нигоҳ дошта мешавад. Ҳар вақт метавонед ба версияи дигар баргардед.",switchConfirmAction:"Иваз кардан",cancel:"Бекор кардан",close:"Пӯшидан"}
 };
+var HSK30_BOOK_COPY={
+  uz:{title:"HSK 3.0 ni oching",body:"Yangi darsliklar asosidagi kursni boshlang.",permanent:"Doimiy kirish",oneTime:"Bir martalik to‘lov",open:"HSK 3.0 ni ochish"},
+  ru:{title:"Откройте HSK 3.0",body:"Начните курс по новым учебникам.",permanent:"Доступ навсегда",oneTime:"Разовый платёж",open:"Открыть HSK 3.0"},
+  tj:{title:"HSK 3.0-ро кушоед",body:"Курсро аз рӯи китобҳои нав оғоз кунед.",permanent:"Дастрасии доимӣ",oneTime:"Пардохти якдафъаина",open:"Кушодани HSK 3.0"}
+};
+function hsk30BookCopy(){return HSK30_BOOK_COPY[LANG]||HSK30_BOOK_COPY.uz}
+function hsk30BookHeader(status){
+  var h30=status&&status.tracks&&status.tracks.hsk30||{},t=trackUi();
+  var badge=h30.new_badge&&h30.new_badge.is_new?'<span class="hsk30-book-new">NEW</span>':"";
+  return '<div class="hsk30-book-header"><span>HSK 3.0</span>'+badge+'</div>'
+    +'<div class="hsk30-promo-books"><img src="/assets/hsk30-course-books.jpg?v=20261004" alt="'+esc(t.promoBooksAlt)+'" loading="eager" decoding="async"></div>';
+}
+function hsk30BookPrice(status){
+  var h30=status&&status.tracks&&status.tracks.hsk30||{},unlock=status&&status.hsk30_unlock||{};
+  var price=String(unlock.price_display||"");
+  if((h30.access&&h30.access.allowed)||!price||unlock.payment_enabled===false||Number(unlock.price_tjs||0)<=0)return "";
+  var c=hsk30BookCopy();
+  return '<div class="hsk30-book-price"><div><strong>'+esc(c.permanent)+'</strong><small>'+esc(c.oneTime)+'</small></div><b>'+esc(price)+'</b></div>';
+}
+function hsk30BookPrimary(label,action){
+  return '<button class="hsk30-promo-action" onclick="'+esc(action)+'"><span>'+esc(label)+'</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>';
+}
+function openHsk30BookSheet(html,title){
+  App.openSheet(html);
+  var sheet=$("#sheet");
+  sheet.classList.add("hsk30-promo-center","hsk30-book-card");
+  sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.setAttribute("aria-label",title);
+}
 function trackUi(){return TRACK_UI[LANG]||TRACK_UI.uz}
 function currentCourseTrack(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"hsk30":"hsk20"}
 var COURSE_TRACK_STATE=null,COURSE_TRACK_PROMISE=null;
@@ -1315,14 +1351,14 @@ function renderHsk30AccessGate(status){
     App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.disabled)+'</div></div><button class="sec" style="width:100%" onclick="App.closeSheet()">'+esc(t.close)+'</button>');
     return;
   }
+  var c=hsk30BookCopy();
   var leave=currentCourseTrack()==="hsk30"
-    ?'<button class="sec" style="width:100%;margin-top:8px" onclick="App.pickCourseTrack(\'hsk20\')">'+esc(t.backTo20)+'</button>'
-    :'<button class="sec" style="width:100%;margin-top:8px" onclick="App.closeSheet()">'+esc(t.stay)+'</button>';
-  var permanentButton=paymentEnabled
-    ?'<button class="scta" style="width:100%" onclick="openHsk30UnlockCheckout()"><i class="ti ti-lock-open"></i> '+esc(t.permanent.replace("{price}",price))+'</button>'
-    :'';
-  App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.hsk30Body)+'</div></div>'
-    +permanentButton+leave);
+    ?'<button class="hsk30-promo-stay" onclick="App.pickCourseTrack(\'hsk20\')">'+esc(t.backTo20)+'</button>'
+    :'<button class="hsk30-promo-stay" onclick="App.closeSheet()">'+esc(t.stay)+'</button>';
+  var permanentButton=paymentEnabled?hsk30BookPrimary(c.open,"openHsk30UnlockCheckout()"):"";
+  openHsk30BookSheet(hsk30BookHeader(status)
+    +'<h2 class="hsk30-promo-title">'+esc(c.title)+'</h2><p class="hsk30-promo-copy">'+esc(c.body)+'</p>'
+    +hsk30BookPrice(status)+'<div class="hsk30-promo-actions">'+permanentButton+leave+'</div>',c.title);
 }
 function showHsk30AccessGate(){
   courseTrackStatus(true).then(renderHsk30AccessGate).catch(function(){
@@ -1363,20 +1399,19 @@ function openHsk30PromoLevelPicker(recommended){
     var rec=lv===recommended?'<small>'+esc(t.promoRecommended)+'</small>':"";
     return '<button class="opt-row'+(lv===recommended?" on":"")+'" onclick="switchCourseTrack(\'hsk30\',\''+esc(lv)+'\')"><span class="han" style="font-size:14px;width:52px">HSK '+levelBand(lv)+'</span><span style="flex:1"><b>'+esc(courseLevelLabel(lv))+'</b>'+rec+'</span></button>';
   }).join("");
-  App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div></div>'+rows);
+  openHsk30BookSheet(hsk30BookHeader(COURSE_TRACK_STATE)+'<h2 class="hsk30-promo-title">'+esc(t.hsk30Title)+'</h2>'+rows+'<button class="hsk30-promo-stay" onclick="App.closeSheet()">'+esc(t.cancel)+'</button>',t.hsk30Title);
 }
 function renderHsk30Promo(status,promo){
   var t=trackUi(),access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
   var paidAccess=!!(access&&access.paid_access),permanentlyUnlocked=!!(access&&access.permanently_unlocked);
   var hasAccess=!!(access&&access.allowed&&(paidAccess||permanentlyUnlocked));
   var recommended=(promo&&promo.recommended_level)||"nhsk1";
-  var body=hasAccess?t.promoBodyUnlocked:t.promoBody;
-  var actions='<button class="scta hsk30-promo-action" onclick="openHsk30PromoLevelPicker(\''+esc(recommended)+'\')"><i class="ti ti-arrow-right"></i> '+esc(t.promoOpen)+'</button>';
-  actions+='<button class="sec hsk30-promo-stay" onclick="App.closeSheet()">'+esc(t.promoStay)+'</button>';
-  App.openSheet('<div class="hsk30-promo-grip"></div><button class="hsk30-promo-close" aria-label="'+esc(t.close)+'" onclick="App.closeSheet()"><i class="ti ti-x"></i></button>'
-    +'<div class="hsk30-promo-books" aria-hidden="true"><img src="/assets/hsk30-promo-source.png" alt="" loading="eager"><span class="hsk30-promo-art-mask"></span></div>'
-    +'<h2 class="hsk30-promo-title">'+esc(t.promoTitle)+'</h2><p class="hsk30-promo-copy">'+esc(body)+'</p>'
-    +'<div class="hsk30-promo-actions">'+actions+'</div>');
+  var c=hsk30BookCopy(),body=hasAccess?t.promoBodyUnlocked:c.body;
+  var actions=hsk30BookPrimary(t.promoOpen,"openHsk30PromoLevelPicker('"+recommended+"')");
+  actions+='<button class="hsk30-promo-stay" onclick="App.closeSheet()">'+esc(t.promoStay)+'</button>';
+  openHsk30BookSheet(hsk30BookHeader(status)
+    +'<h2 class="hsk30-promo-title">'+esc(hasAccess?t.promoOpen:c.title)+'</h2><p class="hsk30-promo-copy">'+esc(body)+'</p>'
+    +hsk30BookPrice(status)+'<div class="hsk30-promo-actions">'+actions+'</div>',hasAccess?t.promoOpen:c.title);
 }
 function maybeShowHsk30Promo(){
   if(currentCourseTrack()!=="hsk20"||!INIT_DATA){HSK30_PROMO_PENDING=false;HSK30_PROMO_READY=null;return Promise.resolve(false)}
@@ -1423,6 +1458,14 @@ function confirmCourseTrackSwitch(target,status){
   if(target==="hsk30"&&(!access||access.feature_enabled===false)){renderHsk30AccessGate(status);return}
   var label=target==="hsk30"?t.hsk30:t.hsk20;
   var level=target==="hsk30"?(hsk30LiveLevels()[0]||"nhsk1"):"";
+  if(target==="hsk30"){
+    openHsk30BookSheet(hsk30BookHeader(status)
+      +'<h2 class="hsk30-promo-title">'+esc(t.switchConfirmTitle)+'</h2><p class="hsk30-promo-copy">'+esc(t.switchConfirmBody)+'</p>'
+      +hsk30BookPrice(status)+'<div class="hsk30-promo-actions">'
+      +hsk30BookPrimary(t.switchConfirmAction,"switchCourseTrack('hsk30','"+level+"')")
+      +'<button class="hsk30-promo-stay" onclick="openCourseTrackPicker()">'+esc(t.cancel)+'</button></div>',t.switchConfirmTitle);
+    return;
+  }
   App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.switchConfirmTitle)+'</div><div class="tr">'+esc(label)+'</div><div class="tr">'+esc(t.switchConfirmBody)+'</div></div>'
     +'<button class="scta" style="width:100%" onclick="switchCourseTrack(\''+target+'\','+(level?'\''+level+'\'':'null')+')">'+esc(t.switchConfirmAction)+'</button>'
     +'<button class="sec" style="width:100%;margin-top:8px" onclick="openCourseTrackPicker()">'+esc(t.cancel)+'</button>');
@@ -1746,10 +1789,10 @@ var App={
     if(s==="profile"&&!SIGNIN_STATE.loaded)loadSignInMethods();
     if(s!=="profile")stopSignInPoll();
     if(s==="course"&&window._pendingXpFly){var fx=window._pendingXpFly;window._pendingXpFly=0;setTimeout(function(){flyXp(fx)},350)}},
-  openSheet:function(html){var sheet=$("#sheet");sheet.classList.remove("hsk30-promo-center");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");$("#sheet-body").innerHTML=html;sheet.classList.add("on");startSheetPromo("#sheet")},
+  openSheet:function(html){var sheet=$("#sheet");sheet.classList.remove("hsk30-promo-center","hsk30-book-card");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");$("#sheet-body").innerHTML=html;sheet.classList.add("on");startSheetPromo("#sheet")},
   closeSheet:function(){
     SETTINGS_SHEET=false;
-    var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");stopSheetPromo();
+    var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");stopSheetPromo();
     var revealUnlock=!!window._pendingUnlockAfterSheet;window._pendingUnlockAfterSheet=false;
     /* Qulf ochilishi animatsiyasi ustiga reklama chiqmaydi — u o'quvchi
        kutgan mukofot. Kechiktirilgan markaz reklamasi keyingi safar
