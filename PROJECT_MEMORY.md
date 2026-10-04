@@ -10589,9 +10589,14 @@ Follow-up:
 - Kurs trekini tanlash/almashtirish bepul. HSK 3.0 dars materiali va mashqiga
   kirishda mavjud server-side access tekshiruvi saqlanadi; to'lov taklifi shu
   joyda chiqadi. Obuna yoki permanent unlock bo'lsa narx ko'rsatilmaydi.
+- Mini App `/api/v3/map` HSK 3.0 xaritasini feature flag yoqilgan bepul
+  foydalanuvchiga ham qaytaradi. `LessonAccessService` materialni serverda
+  qulflaydi; frontend `lesson_limit.hsk30_access`ga amal qiladi. Xarita
+  javobidagi access yoki server xatosi Telegram auth xatosi sifatida
+  ko'rsatilmaydi; haqiqiy `401` va imzosiz kirish auth ekranini ochadi.
 - Ko'rsatiladigan unlock narxi `Hsk30UnlockService`dan olinadi: valyuta
   tanlanmaganida USD, tanlangan bo'lsa user valyutasi.
 - Mini App va Android asosiy nuqtalari: `course_v3_onboarding.html`,
-  `course-v3.html`, `OnboardingViewModel.kt`, `OnboardingScreen.kt`,
+  `course-v3.html`, `app/main.py`, `OnboardingViewModel.kt`, `OnboardingScreen.kt`,
   `MainActivity.kt`. Android kurs sahifasining tepasida track switch yo'q;
   tanlov onboarding yoki profildan qilinadi.

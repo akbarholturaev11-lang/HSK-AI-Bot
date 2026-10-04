@@ -17,6 +17,7 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -54,7 +55,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -600,14 +603,18 @@ private fun WelcomeStep(
 @Composable
 private fun ChoiceStep(
     question: String,
-    helper: String,
+    helper: String?,
     reactionKey: Int,
     motionEnabled: Boolean,
     layoutSpec: OnboardingLayoutSpec,
+    fillAvailableHeight: Boolean = false,
+    scrollable: Boolean = true,
     choices: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        modifier = Modifier
+            .fillMaxSize()
+            .then(if (scrollable) Modifier.verticalScroll(rememberScrollState()) else Modifier),
     ) {
         Row(
             modifier = Modifier
@@ -647,19 +654,22 @@ private fun ChoiceStep(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .then(if (fillAvailableHeight) Modifier.weight(1f) else Modifier)
                 .padding(
                     start = layoutSpec.horizontalPadding.dp,
                     end = layoutSpec.horizontalPadding.dp,
-                    bottom = 16.dp,
+                    bottom = if (fillAvailableHeight) 0.dp else 16.dp,
                 ),
         ) {
-            Text(
-                helper,
-                color = PompColors.InkSecondary,
-                fontSize = 13.sp,
-                lineHeight = 20.sp,
-                modifier = Modifier.padding(bottom = 17.dp),
-            )
+            helper?.takeIf(String::isNotBlank)?.let {
+                Text(
+                    it,
+                    color = PompColors.InkSecondary,
+                    fontSize = 13.sp,
+                    lineHeight = 20.sp,
+                    modifier = Modifier.padding(bottom = 17.dp),
+                )
+            }
             choices()
         }
     }
@@ -676,41 +686,38 @@ private fun CourseVersionChoiceStep(
 ) {
     ChoiceStep(
         question = copy.askVersion,
-        helper = copy.versionHint,
+        helper = null,
         reactionKey = reactionKey,
         motionEnabled = motionEnabled,
         layoutSpec = layoutSpec,
+        fillAvailableHeight = true,
+        scrollable = false,
     ) {
         val isHsk30 = state.selectedTrack == "hsk30"
-        Image(
-            painter = painterResource(
-                if (isHsk30) R.drawable.hsk30_course_books else R.drawable.hsk20_course_books,
-            ),
-            contentDescription = if (isHsk30) copy.hsk30BooksDescription else copy.hsk20BooksDescription,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .fillMaxWidth()
-                .widthIn(max = 320.dp)
-                .aspectRatio(1f)
-                .align(Alignment.CenterHorizontally)
-                .clip(RoundedCornerShape(16.dp)),
-        )
-        Spacer(Modifier.height(14.dp))
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxWidth().weight(1f),
+            contentAlignment = Alignment.TopCenter,
+        ) {
+            Image(
+                painter = painterResource(
+                    if (isHsk30) R.drawable.hsk30_course_books else R.drawable.hsk20_course_books,
+                ),
+                contentDescription = if (isHsk30) copy.hsk30BooksDescription else copy.hsk20BooksDescription,
+                contentScale = ContentScale.Fit,
+                colorFilter = ColorFilter.tint(PompColors.Paper, BlendMode.Multiply),
+                modifier = Modifier
+                    .widthIn(max = 360.dp)
+                    .heightIn(max = maxHeight)
+                    .aspectRatio(4f / 3f),
+            )
+        }
+        Spacer(Modifier.height(8.dp))
         CourseVersionSwitch(
             copy = copy,
             state = state,
             enabled = !state.submitting,
             onSelected = onTrackSelected,
         )
-        if (!state.hsk30Enabled) {
-            Text(
-                copy.hsk30Disabled,
-                color = PompColors.InkSecondary,
-                fontSize = 12.sp,
-                lineHeight = 18.sp,
-                modifier = Modifier.padding(top = 10.dp),
-            )
-        }
     }
 }
 
