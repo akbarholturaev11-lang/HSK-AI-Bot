@@ -10567,12 +10567,12 @@ Follow-up:
   ochmaydi va darsni avtomatik boshlamaydi.
 - Admin HSK 3.0 feature flagini o'chirsa, Mini App va Android onboardingda
   uning varianti, kitoblari va narxi yashiriladi; eski tanlov HSK 2.0ga o'tadi.
-- Kurs trekini tanlash/almashtirish bepul. HSK 3.0 dars materiali va mashqiga
-  kirishda mavjud server-side access tekshiruvi saqlanadi; to'lov taklifi shu
-  joyda chiqadi. Obuna yoki permanent unlock bo'lsa narx ko'rsatilmaydi.
-- Mini App `/api/v3/map` HSK 3.0 xaritasini feature flag yoqilgan bepul
-  foydalanuvchiga ham qaytaradi. `LessonAccessService` materialni serverda
-  qulflaydi; frontend `lesson_limit.hsk30_access`ga amal qiladi. Xarita
+- HSK 3.0 tanlangan, access yo'q user kursga kirganda unlock talabi chiqadi;
+  to'lov taklifini dars/mashq tugmasigacha kechiktirish qarori bekor qilingan.
+  Obuna yoki permanent unlock bo'lsa narx ko'rsatilmaydi. Androiddagi
+  markaziy majburiy blok va daraja tanlash boshqa agentning oqimida saqlanadi.
+- Mini App `/api/v3/map` HSK 3.0 access yo'q userga `403` qaytaradi;
+  `LessonAccessService` materialni ham serverda qulflaydi. Xarita
   javobidagi access yoki server xatosi Telegram auth xatosi sifatida
   ko'rsatilmaydi; haqiqiy `401` va imzosiz kirish auth ekranini ochadi.
 - Ko'rsatiladigan unlock narxi `Hsk30UnlockService`dan olinadi: valyuta

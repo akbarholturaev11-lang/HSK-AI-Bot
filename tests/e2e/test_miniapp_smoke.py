@@ -4591,7 +4591,7 @@ def test_ai_voice_a_hint_is_sent_at_once_without_opening_the_keyboard(page):
 
 
 @pytest.mark.parametrize("grant", ["free", "subscription", "permanent"])
-def test_hsk30_onboarding_opens_map_and_defers_payment_until_material(page, grant):
+def test_hsk30_onboarding_requires_access_before_course_entry(page, grant):
     mock_telegram_ready(page)
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
@@ -4615,7 +4615,10 @@ def test_hsk30_onboarding_opens_map_and_defers_payment_until_material(page, gran
     sent = []
     page.route("**/api/**", lambda route: json_response(route, {"ok": True}))
     page.route("**/api/v3/course-tracks", lambda route: json_response(route, tracks))
-    page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
+    page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(
+        route, data if allowed else {"ok": False, "error": "hsk30_unlock_required", "hsk30_access": access},
+        status=200 if allowed else 403,
+    ))
 
     def complete(route):
         sent.append(json.loads(route.request.post_data))
@@ -4634,20 +4637,19 @@ def test_hsk30_onboarding_opens_map_and_defers_payment_until_material(page, gran
     assert sent[0]["level"] == "nhsk1"
     query = parse_qs(urlparse(page.url).query)
     assert query["tab"] == ["course"] and "autostart" not in query and "lesson" not in query
-    expect(page.locator('#s-course .node[data-lesson-order="1"]')).to_be_visible()
     expect(page.locator("#s-course")).not_to_contain_text("Kursni bot ichidan oching")
-    expect(page.locator("#sheet")).not_to_have_class(re.compile(r"\bon\b"))
     expect(page.locator("#paywall")).not_to_have_class(re.compile(r"\bon\b"))
-    page.locator('#s-course .node[data-lesson-order="1"]').click()
-    expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
     if allowed:
+        expect(page.locator('#s-course .node[data-lesson-order="1"]')).to_be_visible()
+        expect(page.locator("#sheet")).not_to_have_class(re.compile(r"\bon\b"))
+        page.locator('#s-course .node[data-lesson-order="1"]').click()
+        expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
         expect(page.locator("#sheet-body")).not_to_contain_text("$1.08")
     else:
+        expect(page.locator('#s-course .node')).to_have_count(0)
+        expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
         expect(page.locator("#sheet-body")).to_contain_text("$1.08")
         expect(page.locator("#sheet-body")).not_to_contain_text("Pro")
-        page.locator("#sheet").click(position={"x": 10, "y": 10})
-        page.locator('#s-course .node[data-lesson-order="2"]').click()
-        expect(page.locator("#sheet-body")).to_contain_text("$1.08")
     assert errors == []
 
 
