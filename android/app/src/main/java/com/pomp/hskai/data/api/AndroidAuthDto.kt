@@ -8,6 +8,7 @@ data class LinkStartRequest(
     @SerialName("platform") val platform: String = "android",
     @SerialName("app_version") val appVersion: String,
     @SerialName("installation_key") val installationKey: String,
+    @SerialName("language") val language: String? = null,
 )
 
 @Serializable

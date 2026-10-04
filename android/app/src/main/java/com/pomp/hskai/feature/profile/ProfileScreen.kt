@@ -910,7 +910,60 @@ private fun CourseVersionPickerSheet(
                 .padding(bottom = 28.dp),
         ) {
             val targetTrack = pendingTrack
-            if (targetTrack != null) {
+            if (targetTrack == "hsk30" && pendingLevel == null) {
+                Text(
+                    stringResource(R.string.hsk30_level_picker_title),
+                    color = PompColors.Ink,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Text(
+                    stringResource(R.string.hsk30_level_picker_body),
+                    color = PompColors.InkSecondary,
+                    fontSize = 13.sp,
+                    lineHeight = 19.sp,
+                    modifier = Modifier.padding(top = 6.dp, bottom = 12.dp),
+                )
+                hsk30LiveLevels
+                    .filter { Regex("^nhsk[1-3]$").matches(it.lowercase()) }
+                    .distinct()
+                    .forEach { level ->
+                        val band = Regex("^nhsk([1-3])$").find(level.lowercase())
+                            ?.groupValues?.getOrNull(1)
+                            ?: level
+                        Surface(
+                            color = PompColors.PaperRaised,
+                            shape = RoundedCornerShape(14.dp),
+                            border = BorderStroke(1.dp, PompColors.Divider),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp)
+                                .heightIn(min = 48.dp)
+                                .clickable { pendingLevel = level },
+                        ) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(
+                                    "HSK 3.0 · N$band",
+                                    color = PompColors.Ink,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                            }
+                        }
+                    }
+                OutlinedButton(
+                    onClick = {
+                        pendingTrack = null
+                        pendingLevel = null
+                    },
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+                    shape = RoundedCornerShape(14.dp),
+                ) {
+                    Text(stringResource(R.string.action_cancel), color = PompColors.Ink)
+                }
+            } else if (targetTrack != null) {
                 val targetLabel = if (targetTrack == "hsk30") "HSK 3.0" else "HSK 2.0"
                 Text(
                     stringResource(R.string.profile_course_version_confirm_title, targetLabel),
@@ -1007,7 +1060,7 @@ private fun CourseVersionPickerSheet(
                                     currentTrack == "hsk30" -> onDismiss()
                                     else -> {
                                         pendingTrack = "hsk30"
-                                        pendingLevel = hsk30LiveLevels.firstOrNull() ?: "nhsk1"
+                                        pendingLevel = null
                                     }
                                 }
                             },

@@ -421,7 +421,7 @@ async def _send_android_confirmation(
 
 @router.message(
     CommandStart(deep_link=True),
-    F.text.regexp(r"^/start(?:@\w+)?\s+android_link_[0-9a-fA-F-]{36}\s*$"),
+    F.text.regexp(r"^/start(?:@\w+)?\s+android_link_[0-9a-fA-F-]{36}(?:_(?:uz|ru|tj))?\s*$"),
 )
 async def begin_android_link(
     message: Message,
@@ -431,14 +431,25 @@ async def begin_android_link(
     """Start the native Android registration/link flow from Telegram."""
 
     raw = str(message.text or "").strip().split()[-1]
-    request_id = raw[len(ANDROID_LINK_PREFIX):]
+    android_payload = raw[len(ANDROID_LINK_PREFIX):]
+    request_id = android_payload[:36]
+    requested_language = (
+        android_payload[37:]
+        if len(android_payload) > 37 and android_payload[36] == "_"
+        else None
+    )
+    if requested_language not in _ANDROID_COPY:
+        requested_language = None
     try:
         _preview = await DesktopAuthService(session, settings).link_request_preview(
             link_request_id=request_id,
             platform="android",
         )
     except DesktopAuthError:
-        await message.answer(_ANDROID_COPY["ru"]["invalid"], parse_mode="HTML")
+        await message.answer(
+            _ANDROID_COPY[requested_language or "ru"]["invalid"],
+            parse_mode="HTML",
+        )
         return
 
     onboarding = OnboardingService(session)
@@ -451,10 +462,29 @@ async def begin_android_link(
 
     await state.clear()
     if created or onboarding_stage(user) == "language":
+        if requested_language:
+            # Android already asked this before opening Telegram. Persist the
+            # exact choice for the brand-new account instead of asking again
+            # (and previously defaulting that prompt to Tajik).
+            user.language = requested_language
+            user.learning_mode = ONBOARDING_MODE_CHOICE_MODE
+            await session.commit()
+            await _send_android_confirmation(
+                message=message,
+                state=state,
+                session=session,
+                request_id=request_id,
+                telegram_id=message.from_user.id,
+                language=requested_language,
+            )
+            return
+        # Backward compatibility for old Android builds that did not send a
+        # login language with the deep link.
         await state.update_data(android_link_request_id=request_id)
         await state.set_state(AndroidLinkStates.choosing_language)
+        fallback_language = _android_language(user)
         await message.answer(
-            _ANDROID_COPY["tj"]["choose_language"],
+            _ANDROID_COPY[fallback_language]["choose_language"],
             reply_markup=_android_language_keyboard(),
             parse_mode="HTML",
         )

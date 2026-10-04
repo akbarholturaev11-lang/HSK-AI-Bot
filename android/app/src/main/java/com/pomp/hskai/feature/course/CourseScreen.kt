@@ -287,57 +287,185 @@ fun CourseScreen(
         }
 
         val hsk30 = map?.hsk30
-        if (hsk30PromoOpen && hsk30 != null) {
+        val hsk30Locked = hsk30 != null &&
+            hsk30.activeTrack == "hsk30" &&
+            hsk30.access.featureEnabled &&
+            !hsk30.access.allowed
+
+        if (hsk30Locked && hsk30 != null) {
+            Hsk30LockedEntryDialog(
+                hsk30 = hsk30,
+                onUnlock = onUnlockHsk30,
+                onBackToHsk20 = { onSwitchTrack("hsk20", null) },
+            )
+        }
+
+        if (!hsk30Locked && hsk30PromoOpen && hsk30 != null) {
             Hsk30PromoDialog(
                 hsk30 = hsk30,
                 onDismiss = { hsk30PromoOpen = false },
                 onContinue = {
                     hsk30PromoOpen = false
-                    onSwitchTrack("hsk30", hsk30.promo.recommendedLevel)
+                    pendingTrackSwitch = "hsk30" to null
                 },
             )
         }
 
-        pendingTrackSwitch?.let { (targetTrack, targetLevel) ->
-            val targetLabel = if (targetTrack == "hsk30") "HSK 3.0" else "HSK 2.0"
-            AlertDialog(
-                onDismissRequest = { pendingTrackSwitch = null },
-                title = {
-                    Text(
-                        stringResource(R.string.profile_course_version_confirm_title, targetLabel),
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                },
-                text = {
-                    Text(
-                        stringResource(R.string.profile_course_version_confirm_body),
-                        color = PompColors.InkSecondary,
-                    )
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
+        if (!hsk30Locked) {
+            pendingTrackSwitch?.let { (targetTrack, targetLevel) ->
+                if (targetTrack == "hsk30" && hsk30 != null) {
+                    Hsk30LevelChoiceDialog(
+                        levels = hsk30.liveLevels,
+                        onDismiss = { pendingTrackSwitch = null },
+                        onChoose = { level ->
                             pendingTrackSwitch = null
-                            onSwitchTrack(targetTrack, targetLevel)
+                            onSwitchTrack("hsk30", level)
                         },
+                    )
+                } else {
+                    val targetLabel = "HSK 2.0"
+                    AlertDialog(
+                        onDismissRequest = { pendingTrackSwitch = null },
+                        title = {
+                            Text(
+                                stringResource(R.string.profile_course_version_confirm_title, targetLabel),
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                        },
+                        text = {
+                            Text(
+                                stringResource(R.string.profile_course_version_confirm_body),
+                                color = PompColors.InkSecondary,
+                            )
+                        },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    pendingTrackSwitch = null
+                                    onSwitchTrack(targetTrack, targetLevel)
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = PompColors.Cinnabar,
+                                    contentColor = Color.White,
+                                ),
+                            ) {
+                                Text(stringResource(R.string.action_continue))
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { pendingTrackSwitch = null }) {
+                                Text(stringResource(R.string.action_cancel), color = PompColors.InkSecondary)
+                            }
+                        },
+                        containerColor = PompColors.PaperRaised,
+                    )
+                }
+            }
+        }
+
+    }
+}
+
+@Composable
+private fun Hsk30LockedEntryDialog(
+    hsk30: com.pomp.hskai.domain.model.CourseHsk30,
+    onUnlock: () -> Unit,
+    onBackToHsk20: () -> Unit,
+) {
+    val price = hsk30.priceDisplay.ifBlank { "—" }
+    AlertDialog(
+        onDismissRequest = {},
+        properties = DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false,
+        ),
+        title = {
+            Text(
+                stringResource(R.string.hsk30_access_required_title),
+                fontWeight = FontWeight.Bold,
+            )
+        },
+        text = {
+            Text(
+                stringResource(R.string.hsk30_access_required_body, price),
+                color = PompColors.InkSecondary,
+            )
+        },
+        confirmButton = {
+            Button(
+                onClick = onUnlock,
+                enabled = hsk30.paymentEnabled && hsk30.priceDisplay.isNotBlank(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = PompColors.Cinnabar,
+                    contentColor = Color.White,
+                ),
+            ) {
+                Text(stringResource(R.string.hsk30_access_unlock_button, price))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onBackToHsk20) {
+                Text(
+                    stringResource(R.string.hsk30_access_back_hsk20),
+                    color = PompColors.InkSecondary,
+                )
+            }
+        },
+        containerColor = PompColors.PaperRaised,
+    )
+}
+
+@Composable
+private fun Hsk30LevelChoiceDialog(
+    levels: List<String>,
+    onDismiss: () -> Unit,
+    onChoose: (String) -> Unit,
+) {
+    val selectable = levels
+        .filter { Regex("^nhsk[1-3]$").matches(it.lowercase()) }
+        .distinct()
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                stringResource(R.string.hsk30_level_picker_title),
+                fontWeight = FontWeight.Bold,
+            )
+        },
+        text = {
+            Column {
+                Text(
+                    stringResource(R.string.hsk30_level_picker_body),
+                    color = PompColors.InkSecondary,
+                )
+                Spacer(Modifier.height(14.dp))
+                selectable.forEach { level ->
+                    val band = Regex("^nhsk([1-3])$").find(level.lowercase())
+                        ?.groupValues?.getOrNull(1)
+                        ?: level
+                    Button(
+                        onClick = { onChoose(level) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = PompColors.Cinnabar,
                             contentColor = Color.White,
                         ),
                     ) {
-                        Text(stringResource(R.string.action_continue))
+                        Text("HSK 3.0 · N$band")
                     }
-                },
-                dismissButton = {
-                    TextButton(onClick = { pendingTrackSwitch = null }) {
-                        Text(stringResource(R.string.action_cancel), color = PompColors.InkSecondary)
-                    }
-                },
-                containerColor = PompColors.PaperRaised,
-            )
-        }
-
-    }
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.action_cancel), color = PompColors.InkSecondary)
+            }
+        },
+        containerColor = PompColors.PaperRaised,
+    )
 }
 
 @Composable

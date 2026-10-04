@@ -242,6 +242,27 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-10-03 — HSK 3.0 N1-N3 live va Android kirish oqimi
+
+Changed:
+- HSK 3.0 server live-level canonical set N1/N2/N3 bo'ldi; 0099 data migration mavjud `hsk30_live_levels` ni `nhsk1,nhsk2,nhsk3` ga ko'taradi.
+- Android Telegram auth yangi akkauntda login ekranida tanlangan uz/ru/tj tilini botga olib o'tadi; eski buildlar uchun til tanlash fallback'i qoladi.
+- Android HSK 2.0 → 3.0 switch N1/N2/N3 ni markaziy dialogda so'raydi; explicit boshqa band tanlansa shu trackdagi eski band progressi reset bo'lib tanlangan bandga o'tadi.
+- HSK 3.0 access yo'q user kursga kirganda markaziy one-time unlock/HSK 2.0 ga qaytish gate'ini ko'radi.
+- Direct APK subscription payment methodlari accordion ortida yashirilmaydi; mavjud Alipay/WeChat yoki bank variantlari doim ko'rinadi.
+
+Why:
+- N2/N3 runtime allaqachon production-ready edi, lekin rollout setting va eski hujjatlar N1-only deb qolgan.
+
+Files touched:
+- `app/services/hsk30_feature_service.py`, `alembic/versions/0099_hsk30_live_n1_n3.py`, Android auth/course/subscription UI va tegishli testlar.
+
+Risk:
+- Migration live-level settingni ataylab N1-only qilib qo'yilgan production qatorida ham N1-N3 ga ko'taradi; bu egasining 2026-10-03 qarori.
+
+Follow-up:
+- CI/Gradle va Python regressions o'tgach main'ga promote qilish, Railway deployda 0099 migration qo'llanganini tekshirish.
+
 ### 2026-10-01 — Android tarifida valyuta tanlovi akkaunt bo'yicha ishlaydi
 
 - `users.subscription_currency` nullable maydoni va 0095 migratsiya qo'shildi.
@@ -8352,8 +8373,8 @@ Priority 3:
 - Runtime: N1 = 103, N2 = 73, N3 = 145 mini-lesson. N4 rasmiy source yo'q,
   shuning uchun selectable/live emas.
 - Launch chegarasi serverda: `hsk30_enabled` global kill switch va
-  `hsk30_live_levels`. Missing live-level setting xavfsiz default sifatida
-  faqat `nhsk1` ni ochadi. N2/N3 runtime borligi ularni avtomatik live qilmaydi.
+  `hsk30_live_levels`. 2026-10-03 dan canonical live set
+  `nhsk1,nhsk2,nhsk3`; N1/N2/N3 runtime-ready va selectable. N4 live emas.
 - Access: faol HSK AI Pro HSK 3.0 ga qo'shimcha to'lovsiz kiradi. Pro bo'lmasa
   bir martalik doimiy unlock ishlaydi (`plan_type="hsk30_unlock"`, joriy
   default narx 10 TJS, admin paneldan o'zgaradi). Admin tasdig'ida
@@ -8400,8 +8421,8 @@ Priority 3:
 - `RELEASE_FEEDBACK_HSK30.md` eski ixtiyoriy draft; uni tayyorlash yoki
   yuborish talabi egasining ko'rsatmasi bilan olib tashlangan.
 - Rollout tartibi: production deploy → admin panelda `hsk30_enabled` ni
-  yoqish → `live_levels` faqat `nhsk1` ekanini tekshirish → kichik cohort
-  feedback → keyin N2/N3 ni alohida yoqish.
+  yoqish → `live_levels` `nhsk1,nhsk2,nhsk3` ekanini tekshirish. N4 rasmiy
+  source va runtime tayyor bo'lmaguncha live qilinmaydi.
 
 ### Android klientini Mini App bilan tenglashtirish
 

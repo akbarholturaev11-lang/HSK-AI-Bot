@@ -88,14 +88,13 @@ class MiniAppRequestLoadTests(unittest.TestCase):
         self.assertIn("switchConfirmAction", COURSE)
 
     def test_hsk30_onboarding_keeps_hsk20_escape_path(self):
-        self.assertIn('id="later-cta"', ONBOARDING)
-        self.assertIn("function startWithHsk20()", ONBOARDING)
-        self.assertIn('nhsk1:"hsk2"', ONBOARDING)
-        self.assertIn("laterHsk20", ONBOARDING)
+        self.assertIn("function setTrack(next)", ONBOARDING)
+        self.assertIn("onclick=\"setTrack(\\'hsk20\\')\"", ONBOARDING)
+        self.assertIn("function hsk30LiveLevels()", ONBOARDING)
+        self.assertIn("/^nhsk[1-3]$/", ONBOARDING)
         self.assertIn("h30PriceLabel", ONBOARDING)
-        self.assertIn('h30Meta.push(hsk30Price()+" TJS")', ONBOARDING)
-        self.assertIn('h30Track.new_badge&&h30Track.new_badge.is_new', ONBOARDING)
-        self.assertIn('h30Meta.push("NEW")', ONBOARDING)
+        self.assertIn("if(h30Ready&&access&&!access.allowed&&hsk30PaymentEnabled())h30Meta.push(hsk30Price())", ONBOARDING)
+        self.assertIn('var h30Meta=["NEW"]', ONBOARDING)
 
     def test_download_status_is_the_only_android_availability_request(self):
         self.assertNotIn('"/api/v3/apps/public-status"', DESKTOP)

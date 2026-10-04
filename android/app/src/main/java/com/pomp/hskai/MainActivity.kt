@@ -260,7 +260,9 @@ private fun AppRoot(
                         (localeHost as? Activity)?.recreate()
                     }
                 },
-                onContinueWithTelegram = viewModel::continueWithTelegram,
+                onContinueWithTelegram = {
+                    viewModel.continueWithTelegram(AppLocale.current(localeHost))
+                },
                 onSignInWithGoogle = { viewModel.signInWithGoogle(localeHost as? Activity) },
                 onSignInWithApple = viewModel::signInWithApple,
                 onBrowserUrlOpened = viewModel::browserUrlOpened,

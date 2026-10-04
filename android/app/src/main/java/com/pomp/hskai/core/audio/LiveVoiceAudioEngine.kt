@@ -1,6 +1,8 @@
 package com.pomp.hskai.core.audio
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioFocusRequest
@@ -9,6 +11,8 @@ import android.media.AudioRecord
 import android.media.AudioTrack
 import android.media.MediaRecorder
 import android.media.audiofx.AcousticEchoCanceler
+import androidx.core.content.ContextCompat
+import java.lang.SecurityException
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
@@ -44,6 +48,14 @@ class AndroidLiveVoiceAudioEngine(context: Context) : LiveVoiceAudioEngine {
     override fun start(onPcmChunk: (ByteArray) -> Unit) {
         if (!running.compareAndSet(false, true)) return
         try {
+            if (
+                ContextCompat.checkSelfPermission(
+                    appContext,
+                    Manifest.permission.RECORD_AUDIO,
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                throw SecurityException("RECORD_AUDIO permission is required")
+            }
             oldAudioMode = audioManager.mode
             oldSpeakerphoneOn = audioManager.isSpeakerphoneOn
             audioManager.mode = AudioManager.MODE_IN_COMMUNICATION

@@ -96,6 +96,7 @@ class CourseMiniAppOnboardingService:
                 user,
                 target_track=TRACK_HSK30,
                 requested_level=requested_level,
+                allow_locked_hsk30=True,
             )
 
         progress = await self.engine.progress_repo.get_by_user_id(

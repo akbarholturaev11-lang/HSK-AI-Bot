@@ -218,6 +218,38 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(onboarding["hsk30"]["new_badge"]["is_new"])
         self.assertIsNotNone(course_map["hsk30"]["new_badge"]["new_until"])
 
+    async def test_free_user_can_select_hsk30_n3_but_content_stays_locked(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            feature = Hsk30FeatureService(session)
+            await feature.set_enabled(True)
+            await feature.set_live_levels(["nhsk1", "nhsk2", "nhsk3"])
+            await session.commit()
+
+            service = AndroidCourseService(session, _settings())
+            switched = await service.switch_course_track(
+                token,
+                target_track="hsk30",
+                level="nhsk3",
+            )
+            course_map = await service.course_map(token)
+
+            self.assertEqual("hsk30", switched["active_track"])
+            self.assertEqual("nhsk3", switched["active_level"])
+            self.assertFalse(switched["tracks"]["hsk30"]["access"]["allowed"])
+            self.assertEqual("nhsk3", course_map["level"])
+            self.assertEqual("hsk30", course_map["hsk30"]["active_track"])
+            self.assertFalse(course_map["hsk30"]["access"]["allowed"])
+            self.assertFalse(course_map["lesson_limit"]["allowed"])
+            self.assertEqual(
+                "hsk30_unlock_required",
+                course_map["lesson_limit"]["error"],
+            )
+
+            with self.assertRaises(DesktopCourseError) as ctx:
+                await service.lesson(token, lesson_order=1)
+            self.assertEqual("hsk30_unlock_required", ctx.exception.code)
+
     async def test_a_spent_allowance_locks_the_current_lesson_only(self):
         """Qulf endi darajaga emas, adminning chegarasiga bog'liq.
 

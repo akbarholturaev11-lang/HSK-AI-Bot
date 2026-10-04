@@ -414,7 +414,7 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual([], bot.messages)
         [row] = await self._rows()
-        self.assertEqual(("Obuna tugayapti", "Ertaga obunangiz tugash kuni."), (row.title, row.body))
+        self.assertEqual(("Obuna tugayapti", "Obunangiz ertaga tugaydi."), (row.title, row.body))
         async with self.sessions() as session:
             feed = (await session.execute(select(CourseUserNotification))).scalars().all()
         self.assertEqual(["subscription_expiring"], [item.key for item in feed])
