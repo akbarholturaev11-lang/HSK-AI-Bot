@@ -10565,6 +10565,8 @@ Follow-up:
 - Onboardingda HSK versiyasi darajadan oldin tanlanadi; HSK 3.0 yoqilganida
   yangi foydalanuvchi uchun u standart tanlov. HSK 3.0 tanlovi checkout
   ochmaydi va darsni avtomatik boshlamaydi.
+- Admin HSK 3.0 feature flagini o'chirsa, Mini App va Android onboardingda
+  uning varianti, kitoblari va narxi yashiriladi; eski tanlov HSK 2.0ga o'tadi.
 - Kurs trekini tanlash/almashtirish bepul. HSK 3.0 dars materiali va mashqiga
   kirishda mavjud server-side access tekshiruvi saqlanadi; to'lov taklifi shu
   joyda chiqadi. Obuna yoki permanent unlock bo'lsa narx ko'rsatilmaydi.

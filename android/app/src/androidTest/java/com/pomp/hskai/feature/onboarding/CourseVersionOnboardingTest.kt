@@ -101,4 +101,35 @@ class CourseVersionOnboardingTest {
 
     @Test
     fun fitsRussianCompactScreen() = checkVersionStep("ru", 360, 640)
+
+    @Test
+    fun disabledVersionHidesNewBooksAndPrice() {
+        val copy = OnboardingCopy.forLanguage("uz")
+        compose.setContent {
+            PompHskAiTheme {
+                OnboardingScreen(
+                    language = "uz",
+                    state = OnboardingUiState(
+                        step = 1,
+                        selectedTrack = "hsk30",
+                        hsk30Enabled = false,
+                        hsk30PaymentEnabled = true,
+                        hsk30PriceTjs = 10,
+                        hsk30PriceDisplay = "$1.08",
+                    ),
+                    onTrackSelected = {},
+                    onLevelSelected = {},
+                    onGoalSelected = {},
+                    onBack = {},
+                    onNext = {},
+                )
+            }
+        }
+        compose.onNodeWithText(copy.hsk20).assertIsDisplayed()
+        compose.onNodeWithText(copy.hsk30).assertDoesNotExist()
+        compose.onNodeWithText(copy.newBadge).assertDoesNotExist()
+        compose.onNodeWithText("$1.08").assertDoesNotExist()
+        compose.onNodeWithContentDescription(copy.hsk20BooksDescription).assertIsDisplayed()
+        compose.onNodeWithContentDescription(copy.hsk30BooksDescription).assertDoesNotExist()
+    }
 }

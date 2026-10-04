@@ -693,7 +693,7 @@ private fun CourseVersionChoiceStep(
         fillAvailableHeight = true,
         scrollable = false,
     ) {
-        val isHsk30 = state.selectedTrack == "hsk30"
+        val isHsk30 = state.hsk30Enabled && state.selectedTrack == "hsk30"
         BoxWithConstraints(
             modifier = Modifier.fillMaxWidth().weight(1f),
             contentAlignment = Alignment.TopCenter,
@@ -781,8 +781,10 @@ private fun CourseVersionSwitch(
             .padding(4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        listOf("hsk20" to copy.hsk20, "hsk30" to copy.hsk30).forEach { (track, label) ->
-            val selected = state.selectedTrack == track
+        val tracks = listOf("hsk20" to copy.hsk20) +
+            if (state.hsk30Enabled) listOf("hsk30" to copy.hsk30) else emptyList()
+        tracks.forEach { (track, label) ->
+            val selected = state.selectedTrack == track || !state.hsk30Enabled
             Surface(
                 color = if (selected) PompColors.PaperRaised else Color.Transparent,
                 shape = RoundedCornerShape(10.dp),

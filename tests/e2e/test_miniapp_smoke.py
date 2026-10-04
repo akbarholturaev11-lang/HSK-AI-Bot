@@ -4671,3 +4671,46 @@ def test_course_map_startup_reports_correct_failure(page, status, error, auth_ga
         expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
     if not auth_gate:
         expect(page.locator("#s-course")).not_to_contain_text("Kursni bot ichidan oching")
+
+
+@pytest.mark.parametrize("status", [200, 503])
+def test_onboarding_hides_disabled_hsk30_even_with_saved_draft(page, status):
+    mock_telegram_ready(page)
+    page.add_init_script("""
+        localStorage.setItem('hsk_v3_onb_track', 'hsk30');
+        localStorage.setItem('hsk_v3_onb_level', 'nhsk2');
+    """)
+    page.route("**/api/v3/course-tracks", lambda route: json_response(route, {
+        "ok": True,
+        "tracks": {"hsk30": {"access": {"feature_enabled": False, "allowed": False}}},
+        "hsk30_unlock": {"payment_enabled": True, "price_tjs": 10, "price_display": "$1.08"},
+    }, status=status))
+    page.goto(app_url("/course_v3_onboarding.html?lang=uz"), wait_until="networkidle")
+    page.locator("#cta").click()
+    expect(page.locator('.track-switch [data-track="hsk30"]')).not_to_be_visible()
+    expect(page.locator('.track-switch [data-track="hsk20"]')).to_have_attribute("aria-pressed", "true")
+    expect(page.locator('.book-preview img')).to_have_attribute("src", re.compile("hsk20-course-books"))
+    expect(page.locator("#stage")).not_to_contain_text("$1.08")
+    page.locator("#cta").click()
+    expect(page.locator('.lv[data-key="beginner"]')).to_be_visible()
+    expect(page.locator('.lv[data-key^="nhsk"]')).to_have_count(0)
+    expect(page.locator(".new-tag")).to_have_count(0)
+
+
+def test_onboarding_restores_enabled_hsk30_saved_draft(page):
+    mock_telegram_ready(page)
+    page.add_init_script("""
+        localStorage.setItem('hsk_v3_onb_track', 'hsk30');
+        localStorage.setItem('hsk_v3_onb_level', 'nhsk2');
+    """)
+    page.route("**/api/v3/course-tracks", lambda route: json_response(route, {
+        "ok": True,
+        "tracks": {"hsk30": {"live_levels": ["nhsk1", "nhsk2"],
+                             "access": {"feature_enabled": True, "allowed": False}}},
+    }))
+    page.goto(app_url("/course_v3_onboarding.html?lang=uz"), wait_until="networkidle")
+    page.locator("#cta").click()
+    expect(page.locator('.track-switch [data-track="hsk30"]')).to_be_visible()
+    expect(page.locator('.track-switch [data-track="hsk30"]')).to_have_attribute("aria-pressed", "true")
+    page.locator("#cta").click()
+    expect(page.locator('.lv[data-key="nhsk2"]')).to_have_attribute("aria-pressed", "true")
