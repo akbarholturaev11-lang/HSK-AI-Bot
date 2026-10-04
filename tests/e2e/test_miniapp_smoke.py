@@ -4591,7 +4591,7 @@ def test_ai_voice_a_hint_is_sent_at_once_without_opening_the_keyboard(page):
 
 
 @pytest.mark.parametrize("grant", ["free", "subscription", "permanent"])
-def test_hsk30_onboarding_opens_map_and_defers_payment_until_material(page, grant):
+def test_hsk30_onboarding_requires_access_before_course_entry(page, grant):
     mock_telegram_ready(page)
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
@@ -4615,7 +4615,10 @@ def test_hsk30_onboarding_opens_map_and_defers_payment_until_material(page, gran
     sent = []
     page.route("**/api/**", lambda route: json_response(route, {"ok": True}))
     page.route("**/api/v3/course-tracks", lambda route: json_response(route, tracks))
-    page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
+    page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(
+        route, data if allowed else {"ok": False, "error": "hsk30_unlock_required", "hsk30_access": access},
+        status=200 if allowed else 403,
+    ))
 
     def complete(route):
         sent.append(json.loads(route.request.post_data))
@@ -4634,20 +4637,19 @@ def test_hsk30_onboarding_opens_map_and_defers_payment_until_material(page, gran
     assert sent[0]["level"] == "nhsk1"
     query = parse_qs(urlparse(page.url).query)
     assert query["tab"] == ["course"] and "autostart" not in query and "lesson" not in query
-    expect(page.locator('#s-course .node[data-lesson-order="1"]')).to_be_visible()
     expect(page.locator("#s-course")).not_to_contain_text("Kursni bot ichidan oching")
-    expect(page.locator("#sheet")).not_to_have_class(re.compile(r"\bon\b"))
     expect(page.locator("#paywall")).not_to_have_class(re.compile(r"\bon\b"))
-    page.locator('#s-course .node[data-lesson-order="1"]').click()
-    expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
     if allowed:
+        expect(page.locator('#s-course .node[data-lesson-order="1"]')).to_be_visible()
+        expect(page.locator("#sheet")).not_to_have_class(re.compile(r"\bon\b"))
+        page.locator('#s-course .node[data-lesson-order="1"]').click()
+        expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
         expect(page.locator("#sheet-body")).not_to_contain_text("$1.08")
     else:
+        expect(page.locator('#s-course .node')).to_have_count(0)
+        expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
         expect(page.locator("#sheet-body")).to_contain_text("$1.08")
         expect(page.locator("#sheet-body")).not_to_contain_text("Pro")
-        page.locator("#sheet").click(position={"x": 10, "y": 10})
-        page.locator('#s-course .node[data-lesson-order="2"]').click()
-        expect(page.locator("#sheet-body")).to_contain_text("$1.08")
     assert errors == []
 
 
@@ -4671,3 +4673,46 @@ def test_course_map_startup_reports_correct_failure(page, status, error, auth_ga
         expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
     if not auth_gate:
         expect(page.locator("#s-course")).not_to_contain_text("Kursni bot ichidan oching")
+
+
+@pytest.mark.parametrize("status", [200, 503])
+def test_onboarding_hides_disabled_hsk30_even_with_saved_draft(page, status):
+    mock_telegram_ready(page)
+    page.add_init_script("""
+        localStorage.setItem('hsk_v3_onb_track', 'hsk30');
+        localStorage.setItem('hsk_v3_onb_level', 'nhsk2');
+    """)
+    page.route("**/api/v3/course-tracks", lambda route: json_response(route, {
+        "ok": True,
+        "tracks": {"hsk30": {"access": {"feature_enabled": False, "allowed": False}}},
+        "hsk30_unlock": {"payment_enabled": True, "price_tjs": 10, "price_display": "$1.08"},
+    }, status=status))
+    page.goto(app_url("/course_v3_onboarding.html?lang=uz"), wait_until="networkidle")
+    page.locator("#cta").click()
+    expect(page.locator('.track-switch [data-track="hsk30"]')).not_to_be_visible()
+    expect(page.locator('.track-switch [data-track="hsk20"]')).to_have_attribute("aria-pressed", "true")
+    expect(page.locator('.book-preview img')).to_have_attribute("src", re.compile("hsk20-course-books"))
+    expect(page.locator("#stage")).not_to_contain_text("$1.08")
+    page.locator("#cta").click()
+    expect(page.locator('.lv[data-key="beginner"]')).to_be_visible()
+    expect(page.locator('.lv[data-key^="nhsk"]')).to_have_count(0)
+    expect(page.locator(".new-tag")).to_have_count(0)
+
+
+def test_onboarding_restores_enabled_hsk30_saved_draft(page):
+    mock_telegram_ready(page)
+    page.add_init_script("""
+        localStorage.setItem('hsk_v3_onb_track', 'hsk30');
+        localStorage.setItem('hsk_v3_onb_level', 'nhsk2');
+    """)
+    page.route("**/api/v3/course-tracks", lambda route: json_response(route, {
+        "ok": True,
+        "tracks": {"hsk30": {"live_levels": ["nhsk1", "nhsk2"],
+                             "access": {"feature_enabled": True, "allowed": False}}},
+    }))
+    page.goto(app_url("/course_v3_onboarding.html?lang=uz"), wait_until="networkidle")
+    page.locator("#cta").click()
+    expect(page.locator('.track-switch [data-track="hsk30"]')).to_be_visible()
+    expect(page.locator('.track-switch [data-track="hsk30"]')).to_have_attribute("aria-pressed", "true")
+    page.locator("#cta").click()
+    expect(page.locator('.lv[data-key="nhsk2"]')).to_have_attribute("aria-pressed", "true")

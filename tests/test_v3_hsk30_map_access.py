@@ -1,4 +1,4 @@
-"""HSK 3.0 selection opens the map; buying access happens at material entry."""
+"""Unpaid HSK 3.0 entry requires unlock; authentication stays separate."""
 
 import ast
 import hashlib
@@ -96,15 +96,13 @@ class Hsk30MapAccessTests(unittest.IsolatedAsyncioTestCase):
         await self.client.aclose()
         await self.engine.dispose()
 
-    async def test_unpaid_learner_can_open_map_but_cannot_start_material(self):
+    async def test_unpaid_learner_requires_unlock_before_course_entry(self):
         response = await self.client.get("/api/v3/map", headers={"X-Telegram-Init-Data": signed_init_data()})
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(403, response.status_code)
         data = response.json()
-        self.assertTrue(data["authenticated"])
-        self.assertEqual("nhsk1", data["level"])
-        self.assertTrue(data["units"])
-        self.assertFalse(data["lesson_limit"]["allowed"])
-        self.assertEqual("hsk30_unlock_required", data["lesson_limit"]["error"])
+        self.assertEqual("hsk30_unlock_required", data["error"])
+        self.assertFalse(data["hsk30_access"]["allowed"])
+        self.assertNotIn("units", data)
         async with self.sessions() as session:
             user = await UserRepository(session).get_by_telegram_id(7100)
             material = await LessonAccessService(session).status(user, level="nhsk1", lesson_order=1, consume=True)

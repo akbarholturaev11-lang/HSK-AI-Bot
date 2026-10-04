@@ -31,6 +31,8 @@ button:disabled{cursor:default}
 .body{padding:0 24px 16px}
 .helper{font-size:13px;line-height:1.5;color:var(--ink2);margin:0 0 17px}
 .track-switch{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--line);border-radius:13px;margin:0 0 14px}
+.track-switch.single{grid-template-columns:1fr}
+.track-switch button[hidden]{display:none}
 .track-switch button{min-height:42px;border:0;border-radius:10px;background:transparent;color:var(--ink2);font-size:13px;font-weight:650;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
 .track-switch button small{display:block;font-size:10px;line-height:1.1;margin-top:2px;font-weight:650;opacity:.78}
 .track-switch button.sel{background:var(--card);color:var(--cin2);box-shadow:0 1px 4px rgba(33,29,23,.08)}
@@ -236,6 +238,8 @@ try{
   if(savedLevel)sel=savedLevel;
   if(savedGoal&&GOALS.some(function(o){return o.k===savedGoal}))goalSel=savedGoal;
 }catch(e){}
+var pendingHsk30Draft=INIT_DATA&&track==="hsk30"?{level:sel,restore:hasSavedTrack}:null;
+if(pendingHsk30Draft){track="hsk20";sel="beginner"}
 var ONB_SESSION_ID=(function(){try{var k="hsk_v3_onb_session_id",v=sessionStorage.getItem(k);if(!v){v="onb-"+Date.now()+"-"+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v}catch(e){return"onb-"+Date.now()}})();
 function apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
 function postJson(url,body,signal){return fetch(url,{method:"POST",headers:apiHeaders(),body:JSON.stringify(body),keepalive:true,signal:signal})}
@@ -275,6 +279,10 @@ function hsk30TrackState(){
 function hsk30Access(){
   var row=hsk30TrackState();return row&&row.access?row.access:null;
 }
+function hsk30Enabled(){
+  var access=hsk30Access();
+  return !!access&&access.feature_enabled!==false||!INIT_DATA&&!HSK30_STATUS;
+}
 function hsk30LiveLevels(){
   var row=hsk30TrackState(),raw=row&&Array.isArray(row.live_levels)?row.live_levels:["nhsk1"];
   var allowed=raw.filter(function(v){return /^nhsk[1-3]$/.test(String(v||""))});
@@ -302,9 +310,11 @@ function updateTrackSwitcher(){
     option.setAttribute("aria-pressed",String(selected));
   });
   var access=hsk30Access();
-  var ready=!!access&&access.feature_enabled!==false;
+  var ready=hsk30Enabled();
+  button.hidden=!ready;
+  button.closest(".track-switch").classList.toggle("single",!ready);
   var meta=["NEW"];
-  if(access&&!access.allowed&&hsk30PaymentEnabled())meta.push(hsk30Price());
+  if(ready&&access&&!access.allowed&&hsk30PaymentEnabled())meta.push(hsk30Price());
   button.disabled=!ready;
   button.innerHTML=L.hsk30+"<small>"+meta.join(" · ")+"</small>";
 }
@@ -397,13 +407,13 @@ function render(animateStage){
     var rows,summary="";
     if(step===1){
       var access=hsk30Access();
-      var h30Ready=!INIT_DATA||(HSK30_STATUS&&hsk30Access()&&hsk30Access().feature_enabled!==false);
+      var h30Ready=hsk30Enabled();
       var h30Meta=["NEW"];
-      if(access&&!access.allowed&&hsk30PaymentEnabled())h30Meta.push(hsk30Price());
+      if(h30Ready&&access&&!access.allowed&&hsk30PaymentEnabled())h30Meta.push(hsk30Price());
       var h30PriceLabel='<small>'+h30Meta.join(' · ')+'</small>';
-      var switcher='<div class="track-switch" role="group" aria-label="'+L.courseVersion+'">'
+      var switcher='<div class="track-switch'+(h30Ready?'':' single')+'" role="group" aria-label="'+L.courseVersion+'">'
         +'<button type="button" data-track="hsk20" aria-pressed="'+(track==="hsk20")+'" class="'+(track==="hsk20"?"sel":"")+'" onclick="setTrack(\'hsk20\')">'+L.hsk20+'</button>'
-        +'<button type="button" data-track="hsk30" aria-pressed="'+(track==="hsk30")+'" '+(h30Ready?'':'disabled ')+'class="'+(track==="hsk30"?"sel":"")+'" onclick="setTrack(\'hsk30\')">'+L.hsk30+h30PriceLabel+'</button></div>';
+        +'<button type="button" data-track="hsk30" aria-pressed="'+(track==="hsk30")+'" '+(h30Ready?'':'hidden disabled ')+'class="'+(track==="hsk30"?"sel":"")+'" onclick="setTrack(\'hsk30\')">'+L.hsk30+h30PriceLabel+'</button></div>';
       var bookAlt=track==="hsk30"?L.books30:L.books20;
       rows='<div class="book-preview" data-track="'+track+'"><img src="'+bookImageUrl(track)+'" alt="'+bookAlt+'" onerror="bookImageFailed(this)"></div>'+switcher;
     }else if(step===2){
@@ -479,7 +489,11 @@ if(INIT_DATA){
       HSK30_STATUS=d;
       var access=hsk30Access(),h30Enabled=!!(access&&access.feature_enabled!==false);
       var previousTrack=track;
-      if(!hasSavedTrack&&!userSelectedTrack){
+      if(h30Enabled&&pendingHsk30Draft&&pendingHsk30Draft.restore&&!userSelectedTrack){
+        track="hsk30";sel=pendingHsk30Draft.level;
+        var restoredChoices=levelsForTrack();
+        if(!restoredChoices.some(function(l){return l.k===sel}))sel=restoredChoices[0].k;
+      }else if(!hasSavedTrack&&!userSelectedTrack){
         track=h30Enabled?"hsk30":"hsk20";
         sel=h30Enabled?"nhsk1":"beginner";
       }else if(track==="hsk30"&&!h30Enabled){

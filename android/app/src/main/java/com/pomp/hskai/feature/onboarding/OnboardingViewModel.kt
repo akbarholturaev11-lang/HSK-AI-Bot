@@ -52,7 +52,7 @@ class OnboardingViewModel(
                     _state.update {
                         val serverLevel = normalizeLevel(status.level)
                         val selectedTrack = when {
-                            serverLevel in HSK30_LEVELS -> "hsk30"
+                            hasLiveHsk30 && serverLevel in HSK30_LEVELS -> "hsk30"
                             !status.completed && hasLiveHsk30 -> "hsk30"
                             else -> "hsk20"
                         }
