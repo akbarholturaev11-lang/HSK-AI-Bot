@@ -1331,8 +1331,11 @@ yaxshi.
 
 ## 7. 2026-10-04 — limit, joriy tugun va HSK 3.0 eslatmasi
 
-Cloud ish branchi: `codex/cloud-ai`. Bu tuzatishlar hali `origin/main` ga
-chiqarilmadi. Android native build tekshiruvi qolgan.
+Cloud ish branchi: `codex/cloud-ai`. User commit/push uchun aniq ruxsat berdi.
+Tekshirilgan kod GitHubdagi `feat/android-miniapp-limits-hsk30-reminder`
+branchiga `1b29e470` commitida yuborildi. Android CI'da ikkala flavourning
+unit testlari, lint, debug buildlari va unsigned release bundlelari o'tdi.
+CI: https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/37172149182
 
 - `LessonAccessService.apply_map`: `status` progressga bog'liq. Limit tugagan
   joriy dars/checkpoint `current` bo'lib qoladi; `completion_allowed=false`,
@@ -1362,10 +1365,11 @@ Androidning 8 statik tekshiruvi o'tdi. Qizil checkpoint va limit oynasi
 Yangi regressiyalar: `tests/e2e/test_limit_and_release_regressions.py`,
 `tests/test_hsk30_lesson_limits.py`, `CourseMapperTest.kt` va
 `CourseRepositoryTest.kt` ichidagi `CoursePromoViewModelTest`. Native
-JUnit testlari hali ishga tushmagan: wrapper Gradle 8.14.5 yuklashda
-`java.net.SocketException: Network is unreachable` bilan to'xtadi.
+JUnit testlari ikkala Android flavour uchun GitHub CI'da o'tdi. Lokal
+wrapper Gradle 8.14.5 yuklashda `java.net.SocketException: Network is
+unreachable` bilan to'xtagani uchun native tekshiruv CI'da bajarildi.
 
-Lokal Codex yoki CI davom ettirishi kerak:
+Takroriy tekshirish buyruqlari:
 
 ```sh
 python -m pytest -q tests/test_admin_limit_authority.py tests/test_hsk30_promo_service.py tests/test_hsk30_lesson_limits.py tests/test_hsk30_admin_payment_flow.py tests/test_entitlement_engine_limits.py tests/test_android_course_api.py tests/test_desktop_course_api.py tests/test_course_track_service.py
@@ -1380,10 +1384,12 @@ yoqqach 2.0 akkaunt bilan foreground/kursga qayting: eslatma markazda,
 server tasdig'idan keyin chiqishi kerak. Boshqa oyna ochiq bo'lsa uni
 yopgandan keyin chiqsin. Serverdagi promo cooldown akkauntga umumiy.
 
-GitHubga yuborish oldingi avtomatik tasdiq tekshiruvida rad etilgan:
-remote branchga publication uchun aniq ruxsat yetishmagan. Ruxsat va
-Android CI tekshiruvidan keyin faqat shu task commitlarini yangilangan
-`origin/main` bilan birlashtirib, testsiz yoki force pushsiz chiqaring.
+Commit/push ruxsati 2026-10-04 kuni olindi. Git CLI'da yozish credentiali
+yo'qligi uchun GitHub connector ishlatildi; remote tree hash lokal
+tekshirilgan tree bilan tengligi tasdiqlandi. `main`ga tayyorlangan kod
+yangilangan `origin/main` va canonical branchlarning mavjud tarixini
+saqlaydi; force push talab qilinmaydi. Signed APK chiqarish alohida
+release workflow orqali bajariladi.
 `graphify update .` ham sinab ko'rildi, lekin bu muhitda `graphify` CLI
 yo'q; graph yangilanishi lokal muhitda bajarilishi kerak.
 
@@ -1392,3 +1398,10 @@ birlashtirildi: yangi Android N1–N3 tanlov oynasi va HSK 3.0 kirish/to'lov
 oqimi saqlandi. Birlashtirishdan keyin 120 server testi va 8 Android statik
 tekshiruvi qayta o'tdi. `main` ga chiqarishda shu bazadan keyingi remote
 o'zgarishlarni ham saqlang.
+
+Keyin `main`dagi `2e5c48db` onboarding tuzatishi ham saqlandi. Birlashgan
+kodda Mini App request-load, limit/release browser va limit-copy
+tekshiruvlari: 44 ta test va 13 ta subtest o'tdi. `codex/local-ai`ning
+alohida merge tarixi ham kodni o'zgartirmagan holda saqlandi; canonical
+branchlarni force pushsiz yangilash mumkin. GitHub CI backend bosqichi:
+468 ta test va 13453 ta subtest o'tdi.
