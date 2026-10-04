@@ -111,6 +111,10 @@ data class Hsk30PromoMarkResponse(
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("recorded") val recorded: Boolean = false,
     @SerialName("recommended_level") val recommendedLevel: String = "nhsk1",
+    @SerialName("eligible") val eligible: Boolean = false,
+    @SerialName("reason") val reason: String = "",
+    @SerialName("shown_count") val shownCount: Int = 0,
+    @SerialName("max_shows") val maxShows: Int = 2,
 )
 
 @Serializable

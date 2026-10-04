@@ -23,6 +23,8 @@ data class CourseUiState(
     val chestError: ApiError? = null,
     val isSwitchingTrack: Boolean = false,
     val trackError: ApiError? = null,
+    val isClaimingHsk30Promo: Boolean = false,
+    val hsk30PromoVisible: Boolean = false,
     /** Real server-map LOCKED -> non-LOCKED transition awaiting one reveal. */
     val unlockedLessonOrder: Int? = null,
 ) {
@@ -113,11 +115,45 @@ class CourseViewModel(
     }
 
     fun markHsk30PromoShown() {
-        val promo = _state.value.map?.hsk30?.promo ?: return
-        if (!promo.eligible) return
+        val current = _state.value
+        val promo = current.map?.hsk30?.promo ?: return
+        if (!promo.eligible || current.isStale || current.isRefreshing ||
+            current.isClaimingHsk30Promo || current.hsk30PromoVisible
+        ) return
+        _state.update { it.copy(isClaimingHsk30Promo = true) }
         viewModelScope.launch {
-            repository.markHsk30PromoShown()
+            when (val result = repository.markHsk30PromoShown()) {
+                is ApiResult.Success -> _state.update { state ->
+                    val mark = result.value
+                    val snapshot = state.snapshot
+                    val hsk30 = snapshot?.map?.hsk30
+                    state.copy(
+                        isClaimingHsk30Promo = false,
+                        hsk30PromoVisible = mark.ok && mark.recorded,
+                        snapshot = if (mark.ok && snapshot != null && hsk30 != null) {
+                            snapshot.copy(
+                                map = snapshot.map.copy(
+                                    hsk30 = hsk30.copy(
+                                        promo = hsk30.promo.copy(
+                                            eligible = mark.eligible,
+                                            reason = mark.reason,
+                                            recommendedLevel = mark.recommendedLevel,
+                                            shownCount = mark.shownCount,
+                                            maxShows = mark.maxShows,
+                                        ),
+                                    ),
+                                ),
+                            )
+                        } else snapshot,
+                    )
+                }
+                is ApiResult.Failure -> _state.update { it.copy(isClaimingHsk30Promo = false) }
+            }
         }
+    }
+
+    fun dismissHsk30Promo() {
+        _state.update { it.copy(hsk30PromoVisible = false) }
     }
 
     fun openRewardChest() {
@@ -187,4 +223,3 @@ internal fun findNewlyUnlockedLesson(
         .minByOrNull { it.order }
         ?.order
 }
-

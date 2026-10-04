@@ -407,14 +407,14 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             (await self._complete(3, "desktop-course-event-0003")).status_code,
             200,
         )
-        # Chegara tugadi: joriy dars qulflanadi va yarim ko'rish YO'Q —
-        # dars yo to'liq ochiladi, yo umuman ochilmaydi.
+        # A spent allowance keeps the current marker but denies both loading
+        # and completing the lesson; it never grants a half preview.
         spent_map = await self.client.get(
             "/api/v3/desktop/course/map",
             headers=self.auth_headers,
         )
         spent_map_lesson = spent_map.json()["units"][1]["lessons"][0]
-        self.assertEqual(spent_map_lesson["status"], "locked")
+        self.assertEqual(spent_map_lesson["status"], "current")
         self.assertTrue(spent_map_lesson["locked_premium"])
         self.assertNotIn("preview_half", spent_map_lesson)
         self.assertFalse(spent_map_lesson["completion_allowed"])

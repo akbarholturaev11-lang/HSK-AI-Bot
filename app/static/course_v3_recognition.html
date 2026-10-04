@@ -91,34 +91,48 @@ SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,in
    reklamani ko'rsatib, sessiyani ochamiz (reklama xato bersa ham davom). */
 /* Kunlik limit gate: bepul userga kuniga 1 to'liq sessiya. Server tomonda
    hisoblanadi — sahifani qayta yuklab aylanib o'tib bo'lmaydi. */
-function gateRef(create){try{var k="hsk_gate_recognition";var v=sessionStorage.getItem(k);if(!v&&create){v=Date.now().toString(36)+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v||""}catch(e){return ""}}
+var ATTEMPT_REF="",LIMIT_REASON="";
+function gateRef(create){if(create||!ATTEMPT_REF)ATTEMPT_REF=Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12);return ATTEMPT_REF}
+function validatePracticeGate(o){
+  if(o.status===403&&o.j&&o.j.error==="free_feature_limit_reached")return o;
+  if(o.status<200||o.status>=300||!o.j||o.j.ok!==true||o.j.allowed!==true)throw new Error("practice_gate_unavailable");
+  return o;
+}
+function gateEscape(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function practiceGateErrorCopy(){return ({
+  uz:{body:"Ruxsatni tekshirib bo'lmadi. Internetni tekshirib, qayta urining.",retry:"Qayta urinish",back:"Orqaga"},
+  ru:{body:"Не удалось проверить доступ. Проверьте интернет и повторите.",retry:"Повторить",back:"Назад"},
+  tj:{body:"Дастрасӣ санҷида нашуд. Интернетро санҷед ва боз кӯшиш кунед.",retry:"Боз кӯшиш кардан",back:"Бозгашт"}
+})[LANG]}
 function runGate(ref){
   return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"recognition",ref:ref})})
-    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})}).then(validatePracticeGate);
 }
-function showLimit(){SCRIPTS_READY.then(showLimitNow)}
+function showLimit(j){LIMIT_REASON=(j&&j.limit_text)||"";SCRIPTS_READY.then(showLimitNow)}
 function showLimitNow(){
   /* Murabbiy shu yerda QOLIB KETMASIN: limit ekrani boshqa holat,
      unda savol ham, personaj ham yo'q. */
   if(window.PracticeCoach){PracticeCoach.hide();PracticeCoach.reset()}
-  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({onSubscribe:goPremium,onBack:goBack});return}
+  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({reason:LIMIT_REASON,onSubscribe:goPremium,onBack:goBack});return}
   var adBtn="";
-  var sub=L.limitSub;
+  var sub=gateEscape(LIMIT_REASON||L.limitSub);
   document.getElementById("body").innerHTML='<div class="done"><div class="st" style="background:var(--gold)"><i class="ti ti-lock"></i></div><h3>'+L.limitTitle+'</h3><p>'+sub+'</p>'+adBtn+'<button onclick="goPremium()" style="width:100%;max-width:300px;background:transparent;border:1px solid var(--line);color:var(--cin2);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;font-weight:500;margin-top:8px">'+L.premiumBtn+'</button><button onclick="goBack()" style="width:100%;max-width:300px;background:transparent;border:1px solid var(--line);color:var(--ink2);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;margin-top:8px">'+L.back+'</button></div>';
 }
 /* Sessiya ochish (sahifa yuklanganda) — reload xavfsiz token bilan. */
-function gateStart(){
-  runGate(gateRef(true)).then(function(o){
-    if(o.status===403){showLimit();return}start();
-  }).catch(function(){start()});
+function gateStart(newAttempt){
+  var ref=gateRef(newAttempt!==false);
+
+  document.getElementById("body").innerHTML='<div class="loading">…</div>';
+  runGate(ref).then(function(o){
+    if(ref!==ATTEMPT_REF)return;
+    if(o.status===403){showLimit(o.j);return}start();
+  }).catch(function(){
+    if(ref!==ATTEMPT_REF)return;
+    var t=practiceGateErrorCopy();
+    document.getElementById("body").innerHTML='<div class="done"><p>'+gateEscape(t.body)+'</p><button onclick="gateStart(false)">'+gateEscape(t.retry)+'</button><button class="ghost" onclick="goBack()">'+gateEscape(t.back)+'</button></div>';
+  });
 }
-/* "Yana mashq" — bu yangi sessiya, yangi slot so'raydi (bepulga 1/kun). */
-function replay(){
-  resetPlan();
-  runGate("replay:"+Date.now()).then(function(o){
-    if(o.status===403){showLimit();return}start();
-  }).catch(function(){start()});
-}
+function replay(){resetPlan();gateStart();}
 var _ttsAudio=null;
 function clog(ev,msg,ex){try{var tg=window.Telegram&&window.Telegram.WebApp,c={ua:navigator.userAgent,plat:(tg&&tg.platform)||"",tgver:(tg&&tg.version)||"",page:location.pathname};if(ex)for(var k in ex)c[k]=ex[k];var b=JSON.stringify({event:ev,msg:msg||"",ctx:c});if(navigator.sendBeacon){navigator.sendBeacon("/api/v3/clientlog",new Blob([b],{type:"application/json"}))}else{fetch("/api/v3/clientlog",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}}catch(e){}}
 function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}

@@ -405,6 +405,9 @@ private fun AppRoot(
                 widgetLifecycle.addObserver(observer)
                 onDispose { widgetLifecycle.removeObserver(observer) }
             }
+            LaunchedEffect(widgetForegroundTick, offline) {
+                if (widgetForegroundTick > 0 && !offline) courseViewModel.load()
+            }
 
             // Onboarding uses the same full-screen widget prompt as the daily reminder.
             // The widget offer stays in this position; only the old Pro/trial
@@ -640,17 +643,26 @@ private fun AppRoot(
                 widgetSession.reminderEnabled,
                 adsUnlockedAfterLimit,
                 limitOverlayVisible,
+                courseState.map?.hsk30?.promo?.eligible,
+                courseState.isClaimingHsk30Promo,
+                courseState.hsk30PromoVisible,
             ) {
                 if (
                     !screenCenterAdAsked &&
                     adsUnlockedAfterLimit &&
                     !limitOverlayVisible &&
+                    courseState.map?.hsk30?.promo?.eligible != true &&
+                    !courseState.isClaimingHsk30Promo &&
+                    !courseState.hsk30PromoVisible &&
                     onboardingState.completed &&
                     (notificationPrimerSeen || widgetSession.reminderEnabled)
                 ) {
                     screenCenterAdAsked = true
                     delay(SCREEN_CENTER_AD_DELAY_MS)
-                    if (adRequest == null && !limitOverlayVisible) {
+                    if (adRequest == null && !limitOverlayVisible &&
+                        courseState.map?.hsk30?.promo?.eligible != true &&
+                        !courseState.isClaimingHsk30Promo && !courseState.hsk30PromoVisible
+                    ) {
                         adRequest = AdRequest(placement = AdViewModel.PLACEMENT_SCREEN_CENTER)
                     }
                 }
@@ -664,11 +676,12 @@ private fun AppRoot(
             var ratingUserOpen by remember { mutableStateOf<RatingEntryDto?>(null) }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
 
-            // Secondary tabs own their first server load. Returning to an already
-            // opened tab is local unless that feature explicitly requests refresh.
+            // Course refreshes server flags on return; secondary tabs keep
+            // their existing lazy-load policy.
             LaunchedEffect(selectedTab, offline) {
                 if (offline) return@LaunchedEffect
                 when (selectedTab) {
+                    MainTab.COURSE -> courseViewModel.load()
                     MainTab.PRACTICE -> practiceViewModel.ensureMistakesLoaded()
                     MainTab.VOICE -> voiceViewModel.ensureStatusLoaded()
                     MainTab.RATING -> ratingViewModel.ensureLoaded()
@@ -1233,6 +1246,10 @@ private fun AppRoot(
                                 onUnlockAnimationConsumed = courseViewModel::consumeLessonUnlock,
                                 onSwitchTrack = courseViewModel::switchCourseTrack,
                                 onHsk30PromoShown = courseViewModel::markHsk30PromoShown,
+                                onDismissHsk30Promo = courseViewModel::dismissHsk30Promo,
+                                hsk30PromoAllowed = adRequest == null && !limitOverlayVisible &&
+                                    !widgetSetupOpen && !widgetPlacedNotice && !studySetupState.visible &&
+                                    !languagePickerOpen && !goalPickerOpen && !checkoutVisible,
                                 onUnlockHsk30 = ::openHsk30ContentGate,
                                 onRetry = courseViewModel::load,
                                 modifier = contentModifier,

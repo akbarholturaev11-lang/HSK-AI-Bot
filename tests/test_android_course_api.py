@@ -250,12 +250,12 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
                 await service.lesson(token, lesson_order=1)
             self.assertEqual("hsk30_unlock_required", ctx.exception.code)
 
-    async def test_a_spent_allowance_locks_the_current_lesson_only(self):
+    async def test_a_spent_allowance_blocks_access_but_keeps_the_current_marker(self):
         """Qulf endi darajaga emas, adminning chegarasiga bog'liq.
 
         Ilgari bu yerda "bepul qismlar tugadi" degan qattiq chegara bor edi va
         undan keyingi dars YARIM ko'rinardi. Endi bitta qoida: kunlik chegara
-        tugasa joriy dars qulflanadi, ertaga esa yana ochiladi.
+        tugasa kirish yopiladi; joriy dars belgisi saqlanadi.
         """
         async with self.sessions() as session:
             token = await self._token(session)
@@ -274,7 +274,7 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(lessons[index]["completion_allowed"])
 
         current = lessons[2]
-        self.assertEqual("locked", current["status"])
+        self.assertEqual("current", current["status"])
         self.assertTrue(current["locked_premium"])
         self.assertFalse(current["completion_allowed"])
         self.assertEqual("free_feature_limit_reached", current["completion_error"])

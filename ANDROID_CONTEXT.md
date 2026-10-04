@@ -1328,3 +1328,67 @@ yaxshi.
 - **Emulyator:** `Pixel_8` AVD shu Mac'da bor.
   `connectedDirectDebugAndroidTest` har safar ilovani o'chirib qayta
   o'rnatadi — ya'ni ulangan Telegram sessiyasi yo'qoladi va qayta ulash kerak.
+
+## 7. 2026-10-04 — limit, joriy tugun va HSK 3.0 eslatmasi
+
+Cloud ish branchi: `codex/cloud-ai`. Bu tuzatishlar hali `origin/main` ga
+chiqarilmadi. Android native build tekshiruvi qolgan.
+
+- `LessonAccessService.apply_map`: `status` progressga bog'liq. Limit tugagan
+  joriy dars/checkpoint `current` bo'lib qoladi; `completion_allowed=false`,
+  `locked_premium=true` kirishni yopadi. Mini App va native maplar ayni
+  servisdan foydalanadi. Keyingi darslar `locked`, tugatilganlari `done`.
+- Mini App xaritasi va Android `CourseScreen`: joriy tugun qizil, pulsli,
+  “Davom etish” belgisi bilan qoladi. Bosilganda limit oynasi chiqadi.
+  HSK 3.0 doimiy ochilgan akkauntdagi kunlik limit ham oddiy limit oynasiga
+  boradi; versiyani ochish to'loviga yuborilmaydi.
+- Recognition, pronunciation, memorize va placement: yangi ochilish/yangi
+  sessiya yangi `ref` oladi. Faqat internet xatosidan keyingi qayta urinish
+  shu `ref`ni saqlaydi. HTTP xatosi yoki tasdiqlanmagan javob mashqni
+  boshlamaydi. Limit sababi serverning `limit_text` matnidan olinadi.
+- HSK 3.0 eslatmasi: Mini App boshqa oyna yopilishini kutadi, foreground va
+  kursga qaytishda admin holatini qayta so'raydi. Android oynani faqat
+  server `recorded=true` deb tasdiqlagach ko'rsatadi; holat ViewModelda
+  saqlanadi, shuning uchun tab almashishi takror ko'rsatmaydi. Ikkala
+  klientda mavjud server auditoriyasi, 2 marta limit va 3 kun oralig'i
+  saqlangan. Eslatma boshqa limit/reklama/to'lov oynasi ustiga chiqmaydi.
+
+Tekshirildi: 120 ta limit/promo/course-track/Android-desktop API testi; 35 ta Mini App
+brauzer va limit-matni testi; 16 ta qo'shimcha dars/practice/card-contract
+testi o'tdi. Python va 5 HTML sahifadagi JavaScript syntax tekshirildi.
+Androidning 8 statik tekshiruvi o'tdi. Qizil checkpoint va limit oynasi
+390×844 mobil viewportda ko'rib tekshirildi.
+
+Yangi regressiyalar: `tests/e2e/test_limit_and_release_regressions.py`,
+`tests/test_hsk30_lesson_limits.py`, `CourseMapperTest.kt` va
+`CourseRepositoryTest.kt` ichidagi `CoursePromoViewModelTest`. Native
+JUnit testlari hali ishga tushmagan: wrapper Gradle 8.14.5 yuklashda
+`java.net.SocketException: Network is unreachable` bilan to'xtadi.
+
+Lokal Codex yoki CI davom ettirishi kerak:
+
+```sh
+python -m pytest -q tests/test_admin_limit_authority.py tests/test_hsk30_promo_service.py tests/test_hsk30_lesson_limits.py tests/test_hsk30_admin_payment_flow.py tests/test_entitlement_engine_limits.py tests/test_android_course_api.py tests/test_desktop_course_api.py tests/test_course_track_service.py
+python -m pytest -q tests/e2e/test_limit_and_release_regressions.py tests/test_miniapp_limit_copy.py
+cd android
+./gradlew --no-daemon testDirectDebugUnitTest testPlayDebugUnitTest lintDirectDebug lintPlayDebug assembleDirectDebug assemblePlayDebug
+```
+
+Android qurilmada limitni tugatib joriy oddiy dars va checkpoint qizil/pulsli
+qolishini, bosilganda limit oynasi chiqishini tekshiring. Admin HSK 3.0ni
+yoqqach 2.0 akkaunt bilan foreground/kursga qayting: eslatma markazda,
+server tasdig'idan keyin chiqishi kerak. Boshqa oyna ochiq bo'lsa uni
+yopgandan keyin chiqsin. Serverdagi promo cooldown akkauntga umumiy.
+
+GitHubga yuborish oldingi avtomatik tasdiq tekshiruvida rad etilgan:
+remote branchga publication uchun aniq ruxsat yetishmagan. Ruxsat va
+Android CI tekshiruvidan keyin faqat shu task commitlarini yangilangan
+`origin/main` bilan birlashtirib, testsiz yoki force pushsiz chiqaring.
+`graphify update .` ham sinab ko'rildi, lekin bu muhitda `graphify` CLI
+yo'q; graph yangilanishi lokal muhitda bajarilishi kerak.
+
+Ish davomida `origin/main` `be15e13a` ga yangilangan. U lokal cloud branchga
+birlashtirildi: yangi Android N1–N3 tanlov oynasi va HSK 3.0 kirish/to'lov
+oqimi saqlandi. Birlashtirishdan keyin 120 server testi va 8 Android statik
+tekshiruvi qayta o'tdi. `main` ga chiqarishda shu bazadan keyingi remote
+o'zgarishlarni ham saqlang.

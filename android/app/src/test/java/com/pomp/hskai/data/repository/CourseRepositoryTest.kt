@@ -32,8 +32,19 @@ import com.pomp.hskai.data.local.CourseMapDao
 import com.pomp.hskai.data.local.LessonCacheDao
 import com.pomp.hskai.data.local.LessonCacheEntity
 import com.pomp.hskai.domain.model.LessonAccess
+import com.pomp.hskai.data.api.CourseHsk30Dto
+import com.pomp.hskai.data.api.CourseHsk30PromoDto
+import com.pomp.hskai.data.api.Hsk30PromoMarkResponse
+import com.pomp.hskai.feature.course.CourseViewModel
 import java.io.IOException
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import okhttp3.ResponseBody
@@ -43,6 +54,8 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.Before
+import org.junit.After
 import retrofit2.Response
 
 private class FakeCourseMapDao : CourseMapDao {
@@ -850,5 +863,120 @@ class CourseRepositoryTest {
 
         assertEquals(1, dao.clearCalls)
         assertTrue(dao.rows.isEmpty())
+    }
+}
+
+private class PromoCourseApi : FakeCourseApi() {
+    var eligible = true
+    var failMap = false
+    var markCalls = 0
+    var reply: CompletableDeferred<Hsk30PromoMarkResponse>? = null
+    var recorded = true
+
+    override suspend fun courseMap(
+        authorization: String,
+        timezoneOffsetMinutes: Int,
+    ): Response<CourseMapDto> {
+        if (failMap) throw IOException("offline")
+        return Response.success(sampleMap().copy(hsk30 = CourseHsk30Dto(
+            activeTrack = "hsk20",
+            promo = CourseHsk30PromoDto(eligible = eligible),
+        )))
+    }
+
+    override suspend fun markHsk30PromoShown(
+        authorization: String,
+    ): Response<Hsk30PromoMarkResponse> {
+        markCalls++
+        return Response.success(reply?.await() ?: Hsk30PromoMarkResponse(
+            ok = true, recorded = recorded, eligible = false,
+            reason = "cooldown", shownCount = 1,
+        ))
+    }
+}
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class CoursePromoViewModelTest {
+    @Before
+    fun setMainDispatcher() { Dispatchers.setMain(StandardTestDispatcher()) }
+
+    @After
+    fun resetMainDispatcher() { Dispatchers.resetMain() }
+
+    private fun repository(api: PromoCourseApi) = CourseRepository(
+        api = api,
+        accessToken = { ApiResult.Success("promo-access") },
+        dao = FakeCourseMapDao(),
+        json = Json { ignoreUnknownKeys = true },
+    )
+
+    @Test
+    fun `reminder waits for acknowledgement and duplicate requests share one claim`() = runTest {
+        val api = PromoCourseApi()
+        api.reply = CompletableDeferred()
+        val vm = CourseViewModel(repository(api))
+        runCurrent()
+        vm.markHsk30PromoShown()
+        vm.markHsk30PromoShown()
+        runCurrent()
+        assertEquals(1, api.markCalls)
+        assertTrue(vm.state.value.isClaimingHsk30Promo)
+        assertFalse(vm.state.value.hsk30PromoVisible)
+
+        api.reply!!.complete(Hsk30PromoMarkResponse(
+            ok = true, recorded = true, eligible = false, shownCount = 1,
+        ))
+        runCurrent()
+        assertTrue(vm.state.value.hsk30PromoVisible)
+        assertFalse(vm.state.value.isClaimingHsk30Promo)
+        vm.dismissHsk30Promo()
+        vm.markHsk30PromoShown()
+        runCurrent()
+        assertFalse(vm.state.value.hsk30PromoVisible)
+        assertEquals(1, api.markCalls)
+    }
+
+    @Test
+    fun `another clients server claim prevents a duplicate reminder`() = runTest {
+        val api = PromoCourseApi().apply { recorded = false }
+        val vm = CourseViewModel(repository(api))
+        runCurrent()
+        vm.markHsk30PromoShown()
+        runCurrent()
+        assertFalse(vm.state.value.hsk30PromoVisible)
+        assertFalse(vm.state.value.map!!.hsk30!!.promo.eligible)
+        assertEquals(1, api.markCalls)
+    }
+
+    @Test
+    fun `refresh sees an admin enable after the first load`() = runTest {
+        val api = PromoCourseApi().apply { eligible = false }
+        val vm = CourseViewModel(repository(api))
+        runCurrent()
+        vm.markHsk30PromoShown()
+        runCurrent()
+        assertEquals(0, api.markCalls)
+        api.eligible = true
+        vm.load()
+        runCurrent()
+        vm.markHsk30PromoShown()
+        runCurrent()
+        assertTrue(vm.state.value.hsk30PromoVisible)
+        assertEquals(1, api.markCalls)
+    }
+
+    @Test
+    fun `stale offline map never claims a release reminder`() = runTest {
+        val api = PromoCourseApi()
+        val repository = repository(api)
+        repository.courseMap()
+        api.failMap = true
+        val vm = CourseViewModel(repository)
+        runCurrent()
+        assertTrue(vm.state.value.isStale)
+        vm.markHsk30PromoShown()
+        runCurrent()
+        assertEquals(0, api.markCalls)
+        assertFalse(vm.state.value.hsk30PromoVisible)
     }
 }

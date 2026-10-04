@@ -133,16 +133,28 @@ function lvNum(){var m=String(LV||"hsk1").match(/^(?:n)?hsk([1-4])$/);return m?p
 function charGate(h){return (isHsk30()?(window.HSK30_CHAR_GATE||{}):(window.HSK_CHAR_GATE||{}))[h]}
 /* Reklama moduli: kunlik bepul limit tugagach, reklama bilan yana 2 marta/kun. */
 SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"memorize",level:(P.get("level")||"hsk1"),onSubscribe:goPremium})});
-function gateRef(create){try{var k="hsk_gate_memorize";var v=sessionStorage.getItem(k);if(!v&&create){v=Date.now().toString(36)+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v||""}catch(e){return ""}}
+var ATTEMPT_REF="",LIMIT_REASON="";
+function gateRef(create){if(create||!ATTEMPT_REF)ATTEMPT_REF=Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12);return ATTEMPT_REF}
+function validatePracticeGate(o){
+  if(o.status===403&&o.j&&o.j.error==="free_feature_limit_reached")return o;
+  if(o.status<200||o.status>=300||!o.j||o.j.ok!==true||o.j.allowed!==true)throw new Error("practice_gate_unavailable");
+  return o;
+}
+function gateEscape(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function practiceGateErrorCopy(){return ({
+  uz:{body:"Ruxsatni tekshirib bo'lmadi. Internetni tekshirib, qayta urining.",retry:"Qayta urinish",back:"Orqaga"},
+  ru:{body:"Не удалось проверить доступ. Проверьте интернет и повторите.",retry:"Повторить",back:"Назад"},
+  tj:{body:"Дастрасӣ санҷида нашуд. Интернетро санҷед ва боз кӯшиш кунед.",retry:"Боз кӯшиш кардан",back:"Бозгашт"}
+})[LANG]}
 function runGate(ref){
   return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"memorize",ref:ref})})
-    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})}).then(validatePracticeGate);
 }
-function showLimit(){SCRIPTS_READY.then(showLimitNow)}
+function showLimit(j){LIMIT_REASON=(j&&j.limit_text)||"";SCRIPTS_READY.then(showLimitNow)}
 function showLimitNow(){
-  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({onSubscribe:goPremium,onBack:goBack});return}
+  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({reason:LIMIT_REASON,onSubscribe:goPremium,onBack:goBack});return}
   var adBtn="";
-  var sub=t(LIM.sub);
+  var sub=gateEscape(LIMIT_REASON||t(LIM.sub));
   B.innerHTML='<div class="done"><div class="st"><i class="ti ti-lock"></i></div><h3>'+t(LIM.title)+'</h3><p>'+sub+'</p>'+adBtn+'<button class="ghost" onclick="goPremium()">'+t(LIM.pay)+'</button><button class="ghost" onclick="goBack()">'+t(LIM.back)+'</button></div>';
 }
 
@@ -389,9 +401,20 @@ function boot(){Promise.all([LV_READY,SCRIPTS_READY]).then(function(){
   buildDeck();DI=0;startChar();
 })}
 /* Sessiya boshlashdan oldin kunlik limitni tekshiramiz (server tomonda). */
-runGate(gateRef(true)).then(function(o){
-  if(o.status===403){showLimit();return}boot();
-}).catch(function(){boot()});
+function gateStart(newAttempt){
+  var ref=gateRef(newAttempt!==false);
+
+  B.innerHTML='<div class="loading">…</div>';
+  runGate(ref).then(function(o){
+    if(ref!==ATTEMPT_REF)return;
+    if(o.status===403){showLimit(o.j);return}boot();
+  }).catch(function(){
+    if(ref!==ATTEMPT_REF)return;
+    var t=practiceGateErrorCopy();
+    B.innerHTML='<div class="done"><p>'+gateEscape(t.body)+'</p><button onclick="gateStart(false)">'+gateEscape(t.retry)+'</button><button class="ghost" onclick="goBack()">'+gateEscape(t.back)+'</button></div>';
+  });
+}
+gateStart();
 </script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 </body>

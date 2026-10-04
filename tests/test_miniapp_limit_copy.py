@@ -45,8 +45,15 @@ class TheLimitSentenceComesFromTheServerTests(unittest.TestCase):
         # javobidagi gapni oladi. Ilgari ularning hammasi "kuniga 1 marta"
         # deb qattiq yozilgan matnni ko'rsatardi, admin nechchi qo'ysa ham.
         self.assertIn("function rememberSectionLimit(j)", MINIAPP)
-        # 1 ta e'lon + har bir 403 tarmog'ida bittadan chaqiruv.
-        self.assertEqual(9, MINIAPP.count("rememberSectionLimit("))
+        for start, end in (
+            ("var RECOG=", "window.RECOG="),
+            ("var PRON=", "window.PRON="),
+            ("var MIST=", "window.MIST="),
+            ("var TEST=", "window.TEST="),
+        ):
+            with self.subTest(module=start):
+                module = MINIAPP.split(start, 1)[1].split(end, 1)[0]
+                self.assertIn("rememberSectionLimit(", module)
         for sheet in (
             "esc(SECTION_LIMIT_TEXT||t.limitSub)",
             "SECTION_LIMIT_TEXT||t.limitText",

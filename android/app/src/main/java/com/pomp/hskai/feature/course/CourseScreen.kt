@@ -137,27 +137,26 @@ fun CourseScreen(
     onUnlockAnimationConsumed: () -> Unit = {},
     onSwitchTrack: (String, String?) -> Unit = { _, _ -> },
     onHsk30PromoShown: () -> Unit = {},
+    onDismissHsk30Promo: () -> Unit = {},
+    hsk30PromoAllowed: Boolean = true,
     onUnlockHsk30: () -> Unit = {},
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     AssistantScreen(courseAssistantContext(state), bottomBar = true)
     val map = state.map
-    var hsk30PromoOpen by remember { mutableStateOf(false) }
-    var hsk30PromoHandled by remember { mutableStateOf(false) }
     var pendingTrackSwitch by remember { mutableStateOf<Pair<String, String?>?>(null) }
-    val hsk30PromoEligible = map?.hsk30?.promo?.eligible == true
-    LaunchedEffect(hsk30PromoEligible) {
-        if (hsk30PromoEligible && !hsk30PromoHandled) {
-            hsk30PromoHandled = true
-            hsk30PromoOpen = true
-            onHsk30PromoShown()
-        }
-    }
     // The limit window belongs to the map, not to the lesson host: the Mini App
     // answers a spent allowance where the learner tapped, without loading a
     // lesson it already knows it will refuse.
     var limitedLesson by remember(map?.lessonLimit) { mutableStateOf<CourseLesson?>(null) }
+    val promoAllowed = hsk30PromoAllowed && pendingTrackSwitch == null &&
+        limitedLesson == null && state.chestRewardXp == null &&
+        !state.isSwitchingTrack && !state.isOpeningChest
+    val hsk30PromoEligible = !state.isStale && map?.hsk30?.promo?.eligible == true
+    LaunchedEffect(hsk30PromoEligible, state.isRefreshing, promoAllowed) {
+        if (hsk30PromoEligible && !state.isRefreshing && promoAllowed) onHsk30PromoShown()
+    }
     Box(modifier = modifier.fillMaxSize()) {
         Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
             when {
@@ -300,12 +299,12 @@ fun CourseScreen(
             )
         }
 
-        if (!hsk30Locked && hsk30PromoOpen && hsk30 != null) {
+        if (!hsk30Locked && state.hsk30PromoVisible && hsk30 != null && promoAllowed) {
             Hsk30PromoDialog(
                 hsk30 = hsk30,
-                onDismiss = { hsk30PromoOpen = false },
+                onDismiss = onDismissHsk30Promo,
                 onContinue = {
-                    hsk30PromoOpen = false
+                    onDismissHsk30Promo()
                     pendingTrackSwitch = "hsk30" to null
                 },
             )
@@ -989,10 +988,8 @@ private fun PathRow(
                         // window, a lesson not reached yet offers the skip
                         // test. A node that silently does nothing reads as a
                         // broken app, which is what it was.
-                        val openable = lesson.access == LessonAccess.Open ||
-                            lesson.access == LessonAccess.HalfPreview
                         val lessonDescription = lesson.stateLabel()
-                        if (lesson.isCurrent && openable) CurrentBubble()
+                        if (lesson.isCurrent) CurrentBubble()
                         Box(
                             modifier = Modifier
                                 .size(CURRENT_RING_SIZE)
@@ -1001,10 +998,9 @@ private fun PathRow(
                                         LessonAccess.Open,
                                         LessonAccess.HalfPreview,
                                         -> onLesson(lesson)
-                                        // The server sets `status: locked` on
-                                        // the lesson it just refused, so this
-                                        // must not be gated on `isCurrent` —
-                                        // that was exactly the dead tap.
+                                        // Progress styling and access are
+                                        // independent: current still pulses,
+                                        // while a spent allowance opens this window.
                                         LessonAccess.PremiumLocked -> onLimitedLesson(lesson)
                                         LessonAccess.NotReached -> onLockedLesson(lesson)
                                     }
@@ -1337,12 +1333,12 @@ private fun LessonNodeFace(lesson: CourseLesson) {
             PompColors.Paper,
             null,
         )
-        lesson.access == LessonAccess.PremiumLocked && lesson.isCurrent -> NodeStyle(
-            PompColors.CinnabarSoft,
+        current -> NodeStyle(
+            PompColors.Cinnabar,
             PompColors.CinnabarDark,
-            if (checkpoint) NodeContent.Checkpoint else NodeContent.Locked,
-            PompColors.CinnabarDark,
-            BorderStroke(2.dp, PompColors.Cinnabar),
+            if (checkpoint) NodeContent.Checkpoint else NodeContent.Glyph,
+            PompColors.Paper,
+            null,
         )
         lesson.access.isPremiumLocked || lesson.access == LessonAccess.NotReached -> NodeStyle(
             PompColors.Divider,

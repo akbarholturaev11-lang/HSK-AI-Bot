@@ -127,6 +127,31 @@ class CourseMapperTest {
         assertEquals(LessonAccess.HalfPreview, current?.access)
     }
 
+    @Test
+    fun `spent allowance keeps the checkpoint current and routes taps to the paywall`() {
+        val checkpoint = lesson(
+            order = 3,
+            status = "current",
+            lockedPremium = true,
+            completionError = "free_feature_limit_reached",
+        ).copy(checkpoint = true)
+        val domain = CourseMapper.toDomain(
+            map(
+                lesson(1, status = "done", completionAllowed = true),
+                lesson(2, status = "done", completionAllowed = true),
+                checkpoint,
+                lesson(4, completionError = "course_lesson_not_unlocked"),
+            )
+        )
+        assertEquals(3, domain.currentLesson?.order)
+        assertTrue(domain.lessons[2].isCurrent)
+        assertTrue(domain.lessons[2].isCheckpoint)
+        assertEquals(LessonAccess.PremiumLocked, domain.lessons[2].access)
+        assertTrue(domain.lessons[2].access.showsPaywall)
+        assertEquals(LessonStatus.LOCKED, domain.lessons[3].status)
+        assertEquals(LessonAccess.NotReached, domain.lessons[3].access)
+    }
+
     private fun lesson(
         order: Int,
         status: String = "locked",

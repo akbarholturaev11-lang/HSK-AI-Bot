@@ -32,6 +32,31 @@ def _hsk30_access_payload():
 
 
 class Hsk30LessonLimitTests(unittest.IsolatedAsyncioTestCase):
+    async def test_spent_allowance_keeps_current_checkpoint_in_both_tracks(self):
+        for level in ("hsk1", "nhsk1"):
+            with self.subTest(level=level):
+                service = LessonAccessService(SimpleNamespace())
+                service.status = AsyncMock(return_value={
+                    "allowed": False,
+                    "error": "free_feature_limit_reached",
+                    "limit_text": "Bepul limit tugadi.",
+                })
+                data = {"units": [
+                    {"status": "locked", "lessons": [
+                        {"n": 1}, {"n": 2}, {"n": 3, "checkpoint": True},
+                    ]},
+                    {"lessons": [{"n": 4}]},
+                ]}
+                await service.apply_map(data, _user(), level=level, completed=2)
+                lessons = data["units"][0]["lessons"]
+                self.assertEqual(["done", "done", "current"], [l["status"] for l in lessons])
+                self.assertTrue(lessons[2]["locked_premium"])
+                self.assertFalse(lessons[2]["completion_allowed"])
+                self.assertEqual("free_feature_limit_reached", lessons[2]["completion_error"])
+                self.assertNotIn("status", data["units"][0])
+                self.assertEqual("locked", data["units"][1]["lessons"][0]["status"])
+                self.assertFalse(data["units"][1]["lessons"][0]["completion_allowed"])
+
     async def _patched_status(self, *, consume, check_payload, consume_payload=None):
         session = SimpleNamespace(execute=AsyncMock())
         service = LessonAccessService(session)

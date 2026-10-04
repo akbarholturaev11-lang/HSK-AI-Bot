@@ -146,7 +146,9 @@ class LessonAccessService:
                 current = n == completed + 1
                 for key in ("preview_half", "locked_premium", "ad_required", "ad_unlockable", "completion_error"):
                     lesson.pop(key, None)
-                lesson["status"] = "done" if done else "current" if current and status["allowed"] else "locked"
+                # Progress owns the current marker; entitlement owns access.
+                # A spent allowance must keep the next node visible and tappable.
+                lesson["status"] = "done" if done else "current" if current else "locked"
                 lesson["completion_allowed"] = done or (current and status["allowed"])
                 if current and not status["allowed"]:
                     lesson["locked_premium"] = True
