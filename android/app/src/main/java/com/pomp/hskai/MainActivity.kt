@@ -680,6 +680,45 @@ private fun AppRoot(
             val currentLevel = courseState.map?.level ?: state.account.level
             val currentLanguage = state.account.language.backendCode
 
+            fun hsk30ContentLocked(): Boolean {
+                val level = (courseState.map?.level ?: state.account.level).trim().lowercase()
+                return level.startsWith("nhsk") && courseState.map?.hsk30?.access?.allowed != true
+            }
+
+            fun openHsk30ContentGate() {
+                val hsk30 = courseState.map?.hsk30
+                if (
+                    hsk30 == null || !hsk30.paymentEnabled || hsk30.priceTjs <= 0 ||
+                    hsk30.priceDisplay.isBlank()
+                ) {
+                    android.widget.Toast.makeText(
+                        context,
+                        R.string.hsk30_unlock_unavailable,
+                        android.widget.Toast.LENGTH_SHORT,
+                    ).show()
+                    return
+                }
+                if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
+                    checkoutOrigin = "hsk30_content"
+                    checkoutVisible = true
+                } else {
+                    android.widget.Toast.makeText(
+                        context,
+                        R.string.hsk30_unlock_unavailable,
+                        android.widget.Toast.LENGTH_SHORT,
+                    ).show()
+                }
+            }
+
+            fun openPracticeTab() {
+                if (hsk30ContentLocked()) {
+                    practiceRequest = null
+                    openHsk30ContentGate()
+                } else {
+                    selectedTab = MainTab.PRACTICE
+                }
+            }
+
             // Lessons report progress to the server, so offline they say so
             // instead of opening.
             val lessonNeedsInternet = {
@@ -691,15 +730,19 @@ private fun AppRoot(
                     lessonNeedsInternet()
                     return
                 }
+                if (hsk30ContentLocked()) {
+                    openHsk30ContentGate()
+                    return
+                }
                 openLesson = LessonLaunch(
                     lesson = lesson,
                     attemptKey = UUID.randomUUID().toString(),
                 )
             }
 
-            // Mini App autostarts the onboarding result. Android waits until its
-            // one-time notification/widget prompts are finished, then opens the
-            // same server-selected lesson instead of stopping on the course map.
+            // HSK 2.0 onboarding may open its first lesson after the one-time
+            // notification/widget prompts. HSK 3.0 always lands on the course map;
+            // its lesson and practice access is checked when the learner enters.
             // Beginner onboarding enters Starter 0 first; FoundationActivity
             // returns through the canonical current-lesson deep link.
             LaunchedEffect(
@@ -727,6 +770,10 @@ private fun AppRoot(
                     return@LaunchedEffect
                 }
 
+                if (launchLevel.startsWith("nhsk")) {
+                    onboardingAutoStartHandled = true
+                    return@LaunchedEffect
+                }
                 if (onboardingLaunch.placement || onboardingLaunch.reviewOnly) {
                     onboardingAutoStartHandled = true
                     return@LaunchedEffect
@@ -771,17 +818,19 @@ private fun AppRoot(
                             lesson.access == LessonAccess.HalfPreview
                         ) {
                             launchLesson(lesson)
+                        } else if (hsk30ContentLocked()) {
+                            openHsk30ContentGate()
                         }
                     }
 
                     "mistake_review" -> {
                         practiceRequest = PracticeRequest.MISTAKES
-                        selectedTab = MainTab.PRACTICE
+                        openPracticeTab()
                     }
 
                     "mock_exam" -> {
                         practiceRequest = PracticeRequest.TESTS
-                        selectedTab = MainTab.PRACTICE
+                        openPracticeTab()
                     }
 
                     "skill_drill" -> {
@@ -790,7 +839,7 @@ private fun AppRoot(
                         } else {
                             PracticeRequest.RECOGNITION
                         }
-                        selectedTab = MainTab.PRACTICE
+                        openPracticeTab()
                     }
 
                     "voice_dialog" -> {
@@ -823,7 +872,13 @@ private fun AppRoot(
                 ratingChallengesOpen = false
                 ratingUserOpen = null
                 dictionaryOpen = false
-                selectedTab = destination.toTab() ?: selectedTab
+                val destinationTab = destination.toTab()
+                if (destinationTab == MainTab.PRACTICE && hsk30ContentLocked()) {
+                    openHsk30ContentGate()
+                    onDestinationConsumed()
+                    return@LaunchedEffect
+                }
+                selectedTab = destinationTab ?: selectedTab
                 when (destination) {
                     AppDestination.CurrentLesson,
                     is AppDestination.Lesson,
@@ -920,25 +975,6 @@ private fun AppRoot(
                     onGoalSelected = onboardingViewModel::selectGoal,
                     onBack = onboardingViewModel::back,
                     onNext = onboardingViewModel::next,
-                    onLaterHsk20 = onboardingViewModel::startWithHsk20,
-                    onUnlockHsk30 = {
-                        if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
-                            checkoutOrigin =
-                                if (
-                                    onboardingState.ui.hsk30PaymentEnabled &&
-                                    onboardingState.ui.hsk30PriceTjs > 0
-                                ) "hsk30_onboarding"
-                                else "onboarding_plan"
-                            checkoutVisible = true
-                        } else {
-                            scope.launch {
-                                when (val result = app.featureRepository.subscriptionOpen()) {
-                                    is ApiResult.Success -> openExternal(context, result.value.botUrl)
-                                    is ApiResult.Failure -> Unit
-                                }
-                            }
-                        }
-                    },
                 )
             } else if (!onboardingUnknown && !notificationPrimerSeen && !widgetSession.reminderEnabled) {
                 // Asked once, at the end of onboarding, for both kinds of
@@ -1169,7 +1205,9 @@ private fun AppRoot(
                 Box(Modifier.fillMaxSize()) {
                     MainScaffold(
                         selectedTab = selectedTab,
-                        onTabSelected = { selectedTab = it },
+                        onTabSelected = {
+                            if (it == MainTab.PRACTICE) openPracticeTab() else selectedTab = it
+                        },
                         bottomBarVisible = !voiceCallActive,
                         topNotice = reconnect?.let { retry ->
                             { OfflineBanner(retrying = retry.retrying, onRetry = retry::retryNow) }
@@ -1193,24 +1231,7 @@ private fun AppRoot(
                                 onUnlockAnimationConsumed = courseViewModel::consumeLessonUnlock,
                                 onSwitchTrack = courseViewModel::switchCourseTrack,
                                 onHsk30PromoShown = courseViewModel::markHsk30PromoShown,
-                                onUnlockHsk30 = {
-                                    val hsk30 = courseState.map?.hsk30
-                                    if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
-                                        checkoutOrigin = if (hsk30?.paymentEnabled == true) {
-                                            "hsk30_onboarding"
-                                        } else {
-                                            "course_limit"
-                                        }
-                                        checkoutVisible = true
-                                    } else {
-                                        scope.launch {
-                                            when (val result = app.featureRepository.subscriptionOpen()) {
-                                                is ApiResult.Success -> openExternal(context, result.value.botUrl)
-                                                is ApiResult.Failure -> Unit
-                                            }
-                                        }
-                                    }
-                                },
+                                onUnlockHsk30 = ::openHsk30ContentGate,
                                 onRetry = courseViewModel::load,
                                 modifier = contentModifier,
                             )
@@ -1306,7 +1327,7 @@ private fun AppRoot(
                                 courseUser = courseState.map?.user,
                                 onOpenMistakes = {
                                     practiceRequest = PracticeRequest.MISTAKES
-                                    selectedTab = MainTab.PRACTICE
+                                    openPracticeTab()
                                 },
                                 onOpenFriends = {
                                     ratingViewModel.selectTab(RatingTab.FRIENDS)
@@ -1332,30 +1353,9 @@ private fun AppRoot(
                                 courseTrack = courseState.map?.hsk30?.activeTrack
                                     ?: if (currentLevel.startsWith("nhsk")) "hsk30" else "hsk20",
                                 hsk30Enabled = courseState.map?.hsk30?.access?.featureEnabled == true,
-                                hsk30Allowed = courseState.map?.hsk30?.access?.allowed == true,
                                 hsk30IsNew = courseState.map?.hsk30?.newBadge?.isNew == true,
-                                hsk30PaymentEnabled = courseState.map?.hsk30?.paymentEnabled == true,
-                                hsk30PriceDisplay = courseState.map?.hsk30?.priceDisplay.orEmpty(),
                                 hsk30LiveLevels = courseState.map?.hsk30?.liveLevels.orEmpty(),
                                 onSwitchCourseTrack = courseViewModel::switchCourseTrack,
-                                onUnlockHsk30 = {
-                                    val hsk30 = courseState.map?.hsk30
-                                    if (BuildConfig.EXTERNAL_CHECKOUT_ENABLED) {
-                                        checkoutOrigin = if (hsk30?.paymentEnabled == true) {
-                                            "hsk30_settings"
-                                        } else {
-                                            "course_limit"
-                                        }
-                                        checkoutVisible = true
-                                    } else {
-                                        scope.launch {
-                                            when (val result = app.featureRepository.subscriptionOpen()) {
-                                                is ApiResult.Success -> openExternal(context, result.value.botUrl)
-                                                is ApiResult.Failure -> Unit
-                                            }
-                                        }
-                                    }
-                                },
                                 modifier = contentModifier,
                                 identities = identitiesState,
                                 onLoadIdentities = identitiesViewModel::refresh,

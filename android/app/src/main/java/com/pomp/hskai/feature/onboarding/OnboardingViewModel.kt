@@ -21,7 +21,7 @@ data class OnboardingFlowState(
     val launch: AndroidOnboardingCompleteDto? = null,
 )
 
-/** Welcome -> level -> goal, matching the Mini App's two-question flow. */
+/** Welcome -> course version -> level -> goal, matching the Mini App flow. */
 class OnboardingViewModel(
     private val repository: OnboardingRepository,
     private val language: String,
@@ -46,18 +46,32 @@ class OnboardingViewModel(
             when (val result = repository.status()) {
                 is ApiResult.Success -> {
                     val status = result.value
+                    val liveHsk30Levels = status.hsk30.liveLevels
+                        .filter { level -> level in HSK30_LEVELS }
+                    val hasLiveHsk30 = status.hsk30.enabled && liveHsk30Levels.isNotEmpty()
                     _state.update {
+                        val serverLevel = normalizeLevel(status.level)
+                        val selectedTrack = when {
+                            serverLevel in HSK30_LEVELS -> "hsk30"
+                            !status.completed && hasLiveHsk30 -> "hsk30"
+                            else -> "hsk20"
+                        }
+                        val selectedLevel = when {
+                            selectedTrack == "hsk30" && serverLevel in liveHsk30Levels -> serverLevel
+                            selectedTrack == "hsk30" -> liveHsk30Levels.first()
+                            serverLevel in HSK20_LEVELS -> serverLevel
+                            else -> "beginner"
+                        }
                         it.copy(
                             loading = false,
                             completed = status.ok && status.completed,
                             ui = it.ui.copy(
-                                selectedTrack = if (status.level.lowercase().startsWith("nhsk")) "hsk30" else it.ui.selectedTrack,
-                                selectedLevel = normalizeLevel(status.level),
+                                selectedTrack = selectedTrack,
+                                selectedLevel = selectedLevel,
                                 selectedGoal = status.profile.goal.takeIf(::validGoal) ?: "hsk_exam",
                                 hsk30Enabled = status.hsk30.enabled,
                                 hsk30Allowed = status.hsk30.allowed,
-                                hsk30LiveLevels = status.hsk30.liveLevels.filter { level -> level in HSK30_LEVELS }
-                                    .ifEmpty { listOf("nhsk1") },
+                                hsk30LiveLevels = liveHsk30Levels.ifEmpty { listOf("nhsk1") },
                                 hsk30IsNew = status.hsk30.newBadge.isNew,
                                 hsk30PaymentEnabled = status.hsk30.paymentEnabled,
                                 hsk30PriceTjs = status.hsk30.priceTjs.coerceAtLeast(0),
@@ -113,31 +127,9 @@ class OnboardingViewModel(
     fun next() {
         val current = _state.value
         if (current.ui.submitting) return
-        if (current.ui.step >= 2 && current.ui.needsHsk30Unlock) return
-        if (current.ui.step < 2) {
+        if (current.ui.step < 3) {
             _state.update { it.copy(ui = it.ui.copy(step = it.ui.step + 1, error = false)) }
             return
-        }
-        submit()
-    }
-
-    fun startWithHsk20() {
-        val current = _state.value.ui
-        if (current.submitting || current.step < 2 || !current.needsHsk30Unlock) return
-        val fallbackLevel = when (current.selectedLevel) {
-            "nhsk1" -> "hsk2"
-            "nhsk2" -> "hsk3"
-            "nhsk3" -> "hsk4"
-            else -> "hsk1"
-        }
-        _state.update {
-            it.copy(
-                ui = it.ui.copy(
-                    selectedTrack = "hsk20",
-                    selectedLevel = fallbackLevel,
-                    error = false,
-                ),
-            )
         }
         submit()
     }

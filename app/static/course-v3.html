@@ -1337,7 +1337,7 @@ function switchCourseTrack(target,requestedLevel){
   var t=trackUi();
   courseTrackStatus(true).then(function(status){
     var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-    if(target==="hsk30"&&(!access||!access.allowed)){renderHsk30AccessGate(status);return null}
+    if(target==="hsk30"&&(!access||access.feature_enabled===false)){renderHsk30AccessGate(status);return null}
     App.openSheet('<div class="shead"><div class="tr">'+esc(t.switching)+'</div></div>');
     var switchPayload={target_track:target};
     if(requestedLevel)switchPayload.level=requestedLevel;
@@ -1349,8 +1349,8 @@ function switchCourseTrack(target,requestedLevel){
       loadLevel(lv);
     });
   }).catch(function(e){
-    if(target==="hsk30"){showHsk30AccessGate();return}
-    App.closeSheet();
+    var copy=trackUi();
+    App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(copy.hsk30Title)+'</div><div class="tr">'+esc(copy.tryAgain)+'</div></div><button class="sec" style="width:100%" onclick="openCourseTrackPicker()">'+esc(copy.tryAgain)+'</button>');
   });
 }
 var HSK30_PROMO_CHECKED=false;
@@ -1361,24 +1361,17 @@ function openHsk30PromoLevelPicker(recommended){
   if(levels.indexOf(recommended)<0)recommended=levels[0];
   var rows=levels.map(function(lv){
     var rec=lv===recommended?'<small>'+esc(t.promoRecommended)+'</small>':"";
-    return '<button class="opt-row'+(lv===recommended?" on":"")+'" onclick="switchCourseTrack(\'hsk30\',\''+esc(lv)+'\')"><span class="han" style="font-size:20px;width:42px">N'+levelBand(lv)+'</span><span style="flex:1"><b>'+esc(courseLevelLabel(lv))+'</b>'+rec+'</span></button>';
+    return '<button class="opt-row'+(lv===recommended?" on":"")+'" onclick="switchCourseTrack(\'hsk30\',\''+esc(lv)+'\')"><span class="han" style="font-size:14px;width:52px">HSK '+levelBand(lv)+'</span><span style="flex:1"><b>'+esc(courseLevelLabel(lv))+'</b>'+rec+'</span></button>';
   }).join("");
   App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div></div>'+rows);
 }
 function renderHsk30Promo(status,promo){
   var t=trackUi(),access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-  var unlock=status&&status.hsk30_unlock||{},price=String(unlock.price_display||"");
-  var paymentEnabled=unlock.payment_enabled!==false&&Number(unlock.price_tjs||0)>0&&!!price;
   var paidAccess=!!(access&&access.paid_access),permanentlyUnlocked=!!(access&&access.permanently_unlocked);
   var hasAccess=!!(access&&access.allowed&&(paidAccess||permanentlyUnlocked));
   var recommended=(promo&&promo.recommended_level)||"nhsk1";
   var body=hasAccess?t.promoBodyUnlocked:t.promoBody;
-  var actions='';
-  if(hasAccess){
-    actions='<button class="scta hsk30-promo-action" onclick="openHsk30PromoLevelPicker(\''+esc(recommended)+'\')"><i class="ti ti-arrow-right"></i> '+esc(t.promoOpen)+'</button>';
-  }else{
-    if(paymentEnabled&&!paidAccess&&!permanentlyUnlocked)actions+='<button class="scta hsk30-promo-action" onclick="openHsk30UnlockCheckout()"><i class="ti ti-lock-open"></i> '+esc(t.promoUnlock.replace("{price}",price))+'</button>';
-  }
+  var actions='<button class="scta hsk30-promo-action" onclick="openHsk30PromoLevelPicker(\''+esc(recommended)+'\')"><i class="ti ti-arrow-right"></i> '+esc(t.promoOpen)+'</button>';
   actions+='<button class="sec hsk30-promo-stay" onclick="App.closeSheet()">'+esc(t.promoStay)+'</button>';
   App.openSheet('<div class="hsk30-promo-grip"></div><button class="hsk30-promo-close" aria-label="'+esc(t.close)+'" onclick="App.closeSheet()"><i class="ti ti-x"></i></button>'
     +'<div class="hsk30-promo-books" aria-hidden="true"><img src="/assets/hsk30-promo-source.png" alt="" loading="eager"><span class="hsk30-promo-art-mask"></span></div>'
@@ -1409,7 +1402,7 @@ function confirmCourseTrackSwitch(target,status){
   var cur=currentCourseTrack(),t=trackUi();
   if(target===cur){App.closeSheet();return}
   var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-  if(target==="hsk30"&&(!access||!access.allowed)){renderHsk30AccessGate(status);return}
+  if(target==="hsk30"&&(!access||access.feature_enabled===false)){renderHsk30AccessGate(status);return}
   var label=target==="hsk30"?t.hsk30:t.hsk20;
   var level=target==="hsk30"?(hsk30LiveLevels()[0]||"nhsk1"):"";
   App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.switchConfirmTitle)+'</div><div class="tr">'+esc(label)+'</div><div class="tr">'+esc(t.switchConfirmBody)+'</div></div>'
@@ -1702,7 +1695,22 @@ function refreshCourseProgress(afterWrite){
 function notifTimesHtml(){var c={uz:{head:"Bot quyidagi holatlarda xabar yuboradi:",items:["Reytingda kimdir sizdan o'zib ketsa","Kun tugayotganda darsni hali bajarmagan bo'lsangiz","Ketma-ket kunlar seriyangiz uzilish xavfida bo'lsa"]},ru:{head:"Бот пришлёт уведомление, когда:",items:["кто-то обгоняет вас в рейтинге","день заканчивается, а урок ещё не пройден","ваша серия дней под угрозой"]},tj:{head:"Бот вақте огоҳӣ мефиристад, ки:",items:["касе дар рейтинг аз шумо пеш меравад","рӯз ба охир мерасаду дарс иҷро нашудааст","силсилаи рӯзҳои пайдарпайи шумо дар хатар аст"]}}[LANG]||{head:"",items:[]};return '<b style="color:var(--ink);font-weight:500">'+esc(c.head)+'</b>'+c.items.map(function(x){return '<div style="margin-top:3px">• '+esc(x)+'</div>'}).join("");}
 var App={
   setLang:function(l){if(!I18N[l])return;LANG=l;renderAll()},
-  show:function(s){var previous=SCREEN;SCREEN=s;document.querySelectorAll(".scr").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
+  show:function(s){
+    if(s==="mashq"&&isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){
+      var status=COURSE_TRACK_STATE,access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
+      if(access){if(!access.allowed){renderHsk30AccessGate(status);return}}
+      else{
+        courseTrackStatus(false).then(function(loaded){
+          var loadedAccess=loaded&&loaded.tracks&&loaded.tracks.hsk30&&loaded.tracks.hsk30.access;
+          if(loadedAccess&&loadedAccess.allowed)App.show(s);else renderHsk30AccessGate(loaded);
+        }).catch(function(){
+          var t=trackUi();
+          App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.tryAgain)+'</div></div><button class="sec" style="width:100%" onclick="App.show(\'mashq\')">'+esc(t.tryAgain)+'</button>');
+        });
+        return;
+      }
+    }
+    var previous=SCREEN;SCREEN=s;document.querySelectorAll(".scr").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
     document.querySelectorAll("#nav button").forEach(function(b){b.classList.toggle("on",b.dataset.s===s)});
     renderFloatHint(s);
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
@@ -2199,12 +2207,12 @@ var App={
   levelPicker:function(){
     var names={
       hsk1:["你好","HSK 1"],hsk2:["谢谢","HSK 2"],hsk3:["明白","HSK 3"],hsk4:["流利","HSK 4"],
-      nhsk1:["你好","HSK 3.0 · N1"],nhsk2:["谢谢","HSK 3.0 · N2"],nhsk3:["明白","HSK 3.0 · N3"]
+      nhsk1:["你好","HSK 1 NEW"],nhsk2:["谢谢","HSK 2 NEW"],nhsk3:["明白","HSK 3 NEW"]
     };
     var sub={
-      ru:{hsk1:"С нуля",hsk2:"Базовое общение",hsk3:"Повседневное общение",hsk4:"Свободное общение",nhsk1:"Новый стандарт · N1",nhsk2:"Новый стандарт · N2",nhsk3:"Новый стандарт · N3",title:"Выберите уровень"},
-      uz:{hsk1:"Noldan",hsk2:"Asosiy suhbat",hsk3:"Kundalik muloqot",hsk4:"Erkin muloqot",nhsk1:"Yangi standart · N1",nhsk2:"Yangi standart · N2",nhsk3:"Yangi standart · N3",title:"Darajani tanlang"},
-      tj:{hsk1:"Аз сифр",hsk2:"Муоширати асосӣ",hsk3:"Муоширати ҳаррӯза",hsk4:"Муоширати озод",nhsk1:"Стандарти нав · N1",nhsk2:"Стандарти нав · N2",nhsk3:"Стандарти нав · N3",title:"Сатҳро интихоб кунед"}
+      ru:{hsk1:"С нуля",hsk2:"Базовое общение",hsk3:"Повседневное общение",hsk4:"Свободное общение",nhsk1:"Новый стандарт · HSK 1",nhsk2:"Новый стандарт · HSK 2",nhsk3:"Новый стандарт · HSK 3",title:"Выберите уровень"},
+      uz:{hsk1:"Noldan",hsk2:"Asosiy suhbat",hsk3:"Kundalik muloqot",hsk4:"Erkin muloqot",nhsk1:"Yangi standart · HSK 1",nhsk2:"Yangi standart · HSK 2",nhsk3:"Yangi standart · HSK 3",title:"Darajani tanlang"},
+      tj:{hsk1:"Аз сифр",hsk2:"Муоширати асосӣ",hsk3:"Муоширати ҳаррӯза",hsk4:"Муоширати озод",nhsk1:"Стандарти нав · HSK 1",nhsk2:"Стандарти нав · HSK 2",nhsk3:"Стандарти нав · HSK 3",title:"Сатҳро интихоб кунед"}
     }[LANG];
     var cur=normalizeLevel(MAP&&MAP.level||getSelectedLevel()),choices=trackLevels(cur),tt=trackUi(),track=currentCourseTrack();
     var version='<button class="opt-row" style="margin-bottom:10px" onclick="App.courseTrackPicker()"><span class="han" style="font-size:19px;width:34px;text-align:center">'+(track==="hsk30"?"3.0":"2.0")+'</span><span style="flex:1"><b style="display:block">'+esc(tt.courseVersion)+'</b><small style="color:var(--ink2)">'+esc(track==="hsk30"?tt.hsk30:tt.hsk20)+'</small></span><span class="chk"><i class="ti ti-switch-horizontal"></i></span></button>';
@@ -2318,7 +2326,17 @@ function prefetchNearbyLessons(){
   });
 }
 function isPaidUser(){return !!(PROF&&PROF.is_paid||MAP&&MAP.user&&MAP.user.is_paid)}
-function isPremiumLocked(l){return !!(l&&l.locked_premium&&!isPaidUser())}
+function isPremiumLocked(l){
+  if(!l)return false;
+  var hsk30Access=MAP&&MAP.lesson_limit&&MAP.lesson_limit.hsk30_access;
+  if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel())&&hsk30Access)return hsk30Access.allowed===false;
+  return !!(l.locked_premium&&!isPaidUser());
+}
+function openLockedLessonSheet(idx){
+  var l=allLessons()[idx];if(!l)return;
+  if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){showHsk30AccessGate();return}
+  App.openPaywall({lessonIdx:idx,lesson:l});
+}
 /* Reklama ko'rib darsni ochish OLIB TASHLANDI: limit tugasa paywall chiqadi.
    Server endi `ad_required` bayrog'ini qaytarmaydi; funksiya eski javob
    shakli bilan kelgan klientlar uchun doim `false` beradi. */
@@ -2777,6 +2795,27 @@ function showAuthGate(){
   App.show("course");
 }
 function hideAuthGate(){}
+function showCourseLoadError(){
+  var c={
+    ru:{title:"Курс не загрузился",body:"Проверьте подключение и попробуйте ещё раз.",btn:"Попробовать снова"},
+    uz:{title:"Kurs yuklanmadi",body:"Ulanishni tekshirib, qayta urinib ko'ring.",btn:"Qayta urinish"},
+    tj:{title:"Курс бор нашуд",body:"Пайвастро санҷида, боз кӯшиш кунед.",btn:"Боз кӯшиш кардан"}
+  }[LANG];
+  MAP={units:[],progress:{xp:0,streak:0,completed:0},label:"HSK",level:getSelectedLevel()};
+  $("#s-course").innerHTML='<div class="htop"><span class="lvpill"><i class="ti ti-alert-circle"></i> HSK AI</span></div>'
+    +'<div class="rt-invite" style="margin-top:42px"><span class="han">学</span><p style="font-weight:600;color:var(--ink);margin-bottom:6px">'+esc(c.title)+'</p><p>'+esc(c.body)+'</p><button onclick="loadLevel(getSelectedLevel())"><i class="ti ti-refresh"></i> '+esc(c.btn)+'</button></div>';
+  ["s-mashq","s-voice","s-rating","s-profile"].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=""});
+  App.show("course");
+}
+function showCourseMapFailure(res){
+  if(res&&res.data)return false;
+  if(res&&res.blocked)showBlockedGate(res.support_url);
+  else if(res&&res.hsk30Soon)showHsk30LevelSoon(res.level);
+  else if(res&&res.hsk30Gate)showHsk30AccessGate();
+  else if(res&&res.auth===false)showAuthGate();
+  else showCourseLoadError();
+  return true;
+}
 function openLessonSheet(idx){
   var l=allLessons()[idx];if(!l)return;
   if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
@@ -3271,6 +3310,7 @@ function reserveLessonStart(l){
 function handleLessonStartDenied(err,idx){
   var d=(err&&err.data)||{},l=allLessons()[idx];
   rememberLimitText(d);
+  if(String(d.error||"").indexOf("hsk30_")===0){showHsk30AccessGate();return}
   if(d.error==="free_feature_limit_reached"||d.error==="course_access_blocked"){
     if(l){
       l.status="locked";l.locked_premium=true;l.completion_allowed=false;
@@ -4578,10 +4618,7 @@ function loadLevel(lv){
   lv=setSelectedLevel(lv);
   if(!INIT_DATA){showAuthGate();return;}
   loadCourseMap(lv).then(function(res){
-    if(res&&res.blocked){showBlockedGate(res.support_url);return;}
-    if(res&&res.hsk30Soon){showHsk30LevelSoon(res.level);return;}
-    if(res&&res.hsk30Gate){showHsk30AccessGate();return;}
-    if(!res.data){showAuthGate();return;}
+    if(showCourseMapFailure(res))return;
     var d=res.data;
     hideAuthGate();MAP=rememberLimitText(d);adoptServerLang(d);adoptBotUsername(d);setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");prefetchNearbyLessons();
   });
@@ -5009,7 +5046,7 @@ function ratingCountdownText(){
 }
 	function courseLevelLabel(lv){
 	  lv=normalizeLevel(lv||((MAP&&MAP.level)||"hsk1"));
-	  return isHsk30Level(lv)?("HSK 3.0 · N"+levelBand(lv)):lv.toUpperCase().replace("HSK","HSK ");
+	  return isHsk30Level(lv)?("HSK "+levelBand(lv)+" NEW"):lv.toUpperCase().replace("HSK","HSK ");
 	}
 	/* Haqiqiy Telegram avatarlari: harf zaxira bo'lib qoladi, rasm ustidan yopadi.
 	   Rasm topilmasa (404) img o'chadi va harf ko'rinaveradi. */
@@ -7280,7 +7317,7 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
   var bootLevel=getSelectedLevel();
   if(!INIT_DATA){showAuthGate();return;}
   loadCourseMap(bootLevel).then(function(res){
-    if(!res.data){showAuthGate();return;}
+    if(showCourseMapFailure(res))return;
     var d=res.data;
     hideAuthGate();MAP=rememberLimitText(d);adoptServerLang(d);adoptBotUsername(d);adoptStudySetup(d);setSelectedLevel(MAP.level||bootLevel);if(d.user)PROF=d.user;syncNotify();
     var bootParams=new URLSearchParams(location.search);

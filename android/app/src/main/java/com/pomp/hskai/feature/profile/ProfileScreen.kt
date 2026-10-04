@@ -128,13 +128,9 @@ fun ProfileScreen(
     onUnlinkDevice: () -> Unit,
     courseTrack: String = "hsk20",
     hsk30Enabled: Boolean = false,
-    hsk30Allowed: Boolean = false,
     hsk30IsNew: Boolean = false,
-    hsk30PaymentEnabled: Boolean = false,
-    hsk30PriceDisplay: String = "",
     hsk30LiveLevels: List<String> = listOf("nhsk1"),
     onSwitchCourseTrack: (String, String?) -> Unit = { _, _ -> },
-    onUnlockHsk30: () -> Unit = {},
     modifier: Modifier = Modifier,
     identities: IdentitiesUiState = IdentitiesUiState(),
     onLoadIdentities: () -> Unit = {},
@@ -317,13 +313,9 @@ fun ProfileScreen(
     if (courseVersionPickerOpen) {
         CourseVersionPickerSheet(
             currentTrack = courseTrack,
-            hsk30Allowed = hsk30Allowed,
             hsk30IsNew = hsk30IsNew,
-            hsk30PaymentEnabled = hsk30PaymentEnabled,
-            hsk30PriceDisplay = hsk30PriceDisplay,
             hsk30LiveLevels = hsk30LiveLevels,
             onSwitch = onSwitchCourseTrack,
-            onUnlockHsk30 = onUnlockHsk30,
             onDismiss = { courseVersionPickerOpen = false },
         )
     }
@@ -897,13 +889,9 @@ private fun ProfileSettingsSheet(
 @Composable
 private fun CourseVersionPickerSheet(
     currentTrack: String,
-    hsk30Allowed: Boolean,
     hsk30IsNew: Boolean,
-    hsk30PaymentEnabled: Boolean,
-    hsk30PriceDisplay: String,
     hsk30LiveLevels: List<String>,
     onSwitch: (String, String?) -> Unit,
-    onUnlockHsk30: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -1017,13 +1005,9 @@ private fun CourseVersionPickerSheet(
                             {
                                 when {
                                     currentTrack == "hsk30" -> onDismiss()
-                                    hsk30Allowed -> {
+                                    else -> {
                                         pendingTrack = "hsk30"
                                         pendingLevel = hsk30LiveLevels.firstOrNull() ?: "nhsk1"
-                                    }
-                                    else -> {
-                                        onDismiss()
-                                        onUnlockHsk30()
                                     }
                                 }
                             },
@@ -1047,8 +1031,6 @@ private fun CourseVersionPickerSheet(
                                 when {
                                     currentTrack == "hsk30" ->
                                         Text("✓", color = PompColors.Jade, fontWeight = FontWeight.Bold)
-                                    !hsk30Allowed && hsk30PaymentEnabled && hsk30PriceDisplay.isNotBlank() ->
-                                        Text(hsk30PriceDisplay, color = PompColors.CinnabarDark, fontSize = 12.sp)
                                     else -> SettingsChevron()
                                 }
                             }

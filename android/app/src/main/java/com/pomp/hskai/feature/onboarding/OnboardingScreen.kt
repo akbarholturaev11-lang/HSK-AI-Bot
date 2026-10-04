@@ -9,12 +9,15 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -36,7 +39,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,10 +55,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.progressBarRangeInfo
@@ -66,6 +72,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 
 /**
@@ -90,10 +97,7 @@ data class OnboardingUiState(
     val hsk30PriceDisplay: String = "",
     val submitting: Boolean = false,
     val error: Boolean = false,
-) {
-    val needsHsk30Unlock: Boolean
-        get() = selectedTrack == "hsk30" && !hsk30Allowed
-}
+)
 
 @Immutable
 data class OnboardingCopy(
@@ -101,6 +105,11 @@ data class OnboardingCopy(
     val boot: String,
     val askLevel: String,
     val levelHint: String,
+    val askVersion: String,
+    val versionHint: String,
+    val hsk20BooksDescription: String,
+    val hsk30BooksDescription: String,
+    val newBadge: String,
     val start: String,
     val continueLabel: String,
     val firstLesson: String,
@@ -119,11 +128,7 @@ data class OnboardingCopy(
     val courseVersion: String,
     val hsk20: String,
     val hsk30: String,
-    val hsk30Locked: String,
-    val hsk30Unavailable: String,
     val hsk30Disabled: String,
-    val unlockHsk30: String,
-    val laterHsk20: String,
     val notifyTitle: String,
     val notifyLessons: String,
     val notifyUpdates: String,
@@ -138,13 +143,18 @@ data class OnboardingCopy(
                 boot = "Xitoy tilini qadamma-qadam o'rganing. O'zingizga mos darajadan boshlang.",
                 askLevel = "Xitoy tilini qanchalik bilasiz?",
                 levelHint = "HSK — xitoy tilini bilish darajalari.",
+                askVersion = "Qaysi HSK versiyasi orqali boshlamoqchisiz?",
+                versionHint = "Tanlangan versiyaga mos darsliklardan boshlang.",
+                hsk20BooksDescription = "HSK 2.0 eski darsliklari",
+                hsk30BooksDescription = "HSK 3.0 yangi darsliklari",
+                newBadge = "NEW",
                 start = "Boshlash",
                 continueLabel = "Davom etish",
                 firstLesson = "Birinchi darsni boshlash",
                 retry = "Qayta urinib ko'rish",
                 askGoal = "Xitoy tili sizga nima uchun kerak?",
                 goalHint = "Kunlik rejangiz shu maqsadga mos bo'ladi.",
-                welcomeNote = "2 ta qisqa savol. Keyin — birinchi dars.",
+                welcomeNote = "3 ta qisqa savol. Keyin — birinchi dars.",
                 levelNote = "O'zingizga mos darajani tanlang.",
                 goalNote = "Tayyor. Endi birinchi darsingizga o'tamiz.",
                 back = "Orqaga",
@@ -156,11 +166,7 @@ data class OnboardingCopy(
                 courseVersion = "Kurs versiyasi",
                 hsk20 = "HSK 2.0",
                 hsk30 = "HSK 3.0",
-                hsk30Locked = "HSK 3.0 ni %s ga bir martalik to'lov bilan doimiy ochish mumkin.",
-                hsk30Unavailable = "HSK 3.0 ni doimiy ochish hozircha mavjud emas.",
                 hsk30Disabled = "HSK 3.0 hozircha yopiq.",
-                unlockHsk30 = "%s · doimiy ochish",
-                laterHsk20 = "Keyinroq — HSK 2.0 da boshlash",
                 notifyTitle = "Bildirishnomalarni yoqing",
                 notifyLessons = "Kechqurun darsni eslatib turamiz",
                 notifyUpdates = "Yangi versiya chiqqanda bir marta xabar beramiz",
@@ -173,13 +179,18 @@ data class OnboardingCopy(
                 boot = "Забони чинӣ — қадам ба қадам. Аз сатҳи мувофиқ оғоз кунед.",
                 askLevel = "Забони чиниро то чӣ андоза медонед?",
                 levelHint = "HSK — сатҳҳои дониши забони чинӣ аст.",
+                askVersion = "Бо кадом версияи HSK оғоз мекунед?",
+                versionHint = "Китобҳо мувофиқи версияи интихобшуда иваз мешаванд.",
+                hsk20BooksDescription = "Китобҳои кӯҳнаи HSK 2.0",
+                hsk30BooksDescription = "Китобҳои нави HSK 3.0",
+                newBadge = "NEW",
                 start = "Оғоз",
                 continueLabel = "Идома",
                 firstLesson = "Оғози дарси аввал",
                 retry = "Боз кӯшиш кунед",
                 askGoal = "Забони чинӣ ба шумо барои чӣ лозим аст?",
                 goalHint = "Нақшаи рӯзонаи шумо ба ин мақсад мувофиқ мешавад.",
-                welcomeNote = "Ҳамагӣ 2 савол — ва ба дарси аввал.",
+                welcomeNote = "Ҳамагӣ 3 савол — ва ба дарси аввал.",
                 levelNote = "Сатҳи мувофиқи худро интихоб кунед.",
                 goalNote = "Тайёр. Ба дарси аввалини шумо мегузарем.",
                 back = "Бозгашт",
@@ -191,11 +202,7 @@ data class OnboardingCopy(
                 courseVersion = "Версияи курс",
                 hsk20 = "HSK 2.0",
                 hsk30 = "HSK 3.0",
-                hsk30Locked = "HSK 3.0-ро бо пардохти якдафъаинаи %s ҳамеша кушодан мумкин аст.",
-                hsk30Unavailable = "Кушодани доимии HSK 3.0 ҳоло дастрас нест.",
                 hsk30Disabled = "HSK 3.0 ҳоло баста аст.",
-                unlockHsk30 = "%s · ҳамеша кушодан",
-                laterHsk20 = "Баъдтар — аз HSK 2.0 оғоз кардан",
                 notifyTitle = "Огоҳиномаҳоро фаъол кунед",
                 notifyLessons = "Бегоҳӣ дарсро ёдрас мекунем",
                 notifyUpdates = "Вақте версияи нав барояд, як бор хабар медиҳем",
@@ -208,13 +215,18 @@ data class OnboardingCopy(
                 boot = "Китайский — шаг за шагом. Начните с того, что уже знаете.",
                 askLevel = "Сколько китайского вы уже знаете?",
                 levelHint = "HSK — это уровни знания китайского языка.",
+                askVersion = "С какой версии HSK вы хотите начать?",
+                versionHint = "Учебники меняются вместе с выбранной версией.",
+                hsk20BooksDescription = "Учебники старого HSK 2.0",
+                hsk30BooksDescription = "Новые учебники HSK 3.0",
+                newBadge = "NEW",
                 start = "Начать",
                 continueLabel = "Продолжить",
                 firstLesson = "Начать первый урок",
                 retry = "Попробовать снова",
                 askGoal = "Зачем вам китайский?",
                 goalHint = "Подберём акцент в вашем плане на день.",
-                welcomeNote = "Всего 2 вопроса — и к первому уроку.",
+                welcomeNote = "Всего 3 вопроса — и к первому уроку.",
                 levelNote = "Выберите свой уровень — я помогу начать.",
                 goalNote = "Всё готово. Перейдём к вашему первому уроку.",
                 back = "Назад",
@@ -226,11 +238,7 @@ data class OnboardingCopy(
                 courseVersion = "Версия курса",
                 hsk20 = "HSK 2.0",
                 hsk30 = "HSK 3.0",
-                hsk30Locked = "Откройте HSK 3.0 навсегда за %s одним платежом.",
-                hsk30Unavailable = "Постоянное открытие HSK 3.0 сейчас недоступно.",
                 hsk30Disabled = "HSK 3.0 пока закрыт.",
-                unlockHsk30 = "%s · открыть навсегда",
-                laterHsk20 = "Позже — начать с HSK 2.0",
                 notifyTitle = "Включите уведомления",
                 notifyLessons = "Вечером напомним про занятие",
                 notifyUpdates = "Один раз сообщим, когда выйдет новая версия",
@@ -242,7 +250,12 @@ data class OnboardingCopy(
     }
 }
 
-private data class LevelOption(val key: String, val title: String, val subtitle: String)
+private data class LevelOption(
+    val key: String,
+    val title: String,
+    val subtitle: String,
+    val isNew: Boolean = false,
+)
 private data class GoalOption(
     val key: String,
     val titles: Map<String, String>,
@@ -295,8 +308,6 @@ fun OnboardingScreen(
     onGoalSelected: (String) -> Unit,
     onBack: () -> Unit,
     onNext: () -> Unit,
-    onUnlockHsk30: () -> Unit,
-    onLaterHsk20: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val copy = OnboardingCopy.forLanguage(language)
@@ -390,42 +401,24 @@ fun OnboardingScreen(
                                 motionEnabled = motionEnabled,
                                 layoutSpec = layoutSpec,
                             )
-                            1 -> ChoiceStep(
+                            1 -> CourseVersionChoiceStep(
+                                copy = copy,
+                                state = state,
+                                reactionKey = reactionKey,
+                                motionEnabled = motionEnabled,
+                                layoutSpec = layoutSpec,
+                                onTrackSelected = { track ->
+                                    onTrackSelected(track)
+                                    selectionFeedback()
+                                },
+                            )
+                            2 -> ChoiceStep(
                                 question = copy.askLevel,
                                 helper = copy.levelHint,
                                 reactionKey = reactionKey,
                                 motionEnabled = motionEnabled,
                                 layoutSpec = layoutSpec,
                             ) {
-                                CourseVersionSwitch(
-                                    copy = copy,
-                                    state = state,
-                                    enabled = !state.submitting,
-                                    onSelected = { track ->
-                                        onTrackSelected(track)
-                                        selectionFeedback()
-                                    },
-                                )
-                                Spacer(Modifier.height(14.dp))
-                                if (state.selectedTrack == "hsk30") {
-                                    Text(
-                                        if (!state.hsk30Enabled) copy.hsk30Disabled
-                                        else if (
-                                            !state.hsk30Allowed &&
-                                            state.hsk30PaymentEnabled &&
-                                            state.hsk30PriceTjs > 0 &&
-                                            state.hsk30PriceDisplay.isNotBlank()
-                                        ) {
-                                            copy.hsk30Locked.format(state.hsk30PriceDisplay)
-                                        } else if (!state.hsk30Allowed) {
-                                            copy.hsk30Unavailable
-                                        } else copy.hsk30,
-                                        color = if (state.hsk30Allowed) PompColors.InkSecondary else PompColors.CinnabarDark,
-                                        fontSize = 12.sp,
-                                        lineHeight = 18.sp,
-                                        modifier = Modifier.padding(bottom = 14.dp),
-                                    )
-                                }
                                 LevelChoices(
                                     language = language,
                                     copy = copy,
@@ -448,7 +441,7 @@ fun OnboardingScreen(
                                 motionEnabled = motionEnabled,
                                 layoutSpec = layoutSpec,
                             ) {
-                                SelectedLevelSummary(copy, state.selectedLevel)
+                                SelectedLevelSummary(copy, state.selectedLevel, state.selectedTrack)
                                 GoalChoices(
                                     language = language,
                                     selected = state.selectedGoal,
@@ -468,14 +461,7 @@ fun OnboardingScreen(
                 OnboardingFooter(
                     copy = copy,
                     state = state,
-                    onNext = if (state.step >= 2 && state.needsHsk30Unlock) {
-                        if (
-                            state.hsk30PaymentEnabled &&
-                            state.hsk30PriceTjs > 0 &&
-                            state.hsk30PriceDisplay.isNotBlank()
-                        ) onUnlockHsk30 else onLaterHsk20
-                    } else onNext,
-                    onLaterHsk20 = onLaterHsk20,
+                    onNext = onNext,
                     motionEnabled = motionEnabled,
                     layoutSpec = layoutSpec,
                 )
@@ -494,7 +480,7 @@ private fun OnboardingTopBar(
     layoutSpec: OnboardingLayoutSpec,
 ) {
     val progress by animateFloatAsState(
-        targetValue = step / 2f,
+        targetValue = step / 3f,
         animationSpec = tween(
             durationMillis = if (motionEnabled) 300 else 0,
             easing = cssEase,
@@ -535,7 +521,7 @@ private fun OnboardingTopBar(
                 .semantics {
                     progressBarRangeInfo = androidx.compose.ui.semantics.ProgressBarRangeInfo(
                         current = step.toFloat(),
-                        range = 0f..2f,
+                        range = 0f..3f,
                         steps = 1,
                     )
                 },
@@ -549,7 +535,7 @@ private fun OnboardingTopBar(
         }
         Spacer(Modifier.width(layoutSpec.topGap.dp))
         Text(
-            "$step / 2",
+            "$step / 3",
             color = PompColors.InkSecondary,
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium,
@@ -617,14 +603,18 @@ private fun WelcomeStep(
 @Composable
 private fun ChoiceStep(
     question: String,
-    helper: String,
+    helper: String?,
     reactionKey: Int,
     motionEnabled: Boolean,
     layoutSpec: OnboardingLayoutSpec,
+    fillAvailableHeight: Boolean = false,
+    scrollable: Boolean = true,
     choices: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        modifier = Modifier
+            .fillMaxSize()
+            .then(if (scrollable) Modifier.verticalScroll(rememberScrollState()) else Modifier),
     ) {
         Row(
             modifier = Modifier
@@ -664,21 +654,70 @@ private fun ChoiceStep(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .then(if (fillAvailableHeight) Modifier.weight(1f) else Modifier)
                 .padding(
                     start = layoutSpec.horizontalPadding.dp,
                     end = layoutSpec.horizontalPadding.dp,
-                    bottom = 16.dp,
+                    bottom = if (fillAvailableHeight) 0.dp else 16.dp,
                 ),
         ) {
-            Text(
-                helper,
-                color = PompColors.InkSecondary,
-                fontSize = 13.sp,
-                lineHeight = 20.sp,
-                modifier = Modifier.padding(bottom = 17.dp),
-            )
+            helper?.takeIf(String::isNotBlank)?.let {
+                Text(
+                    it,
+                    color = PompColors.InkSecondary,
+                    fontSize = 13.sp,
+                    lineHeight = 20.sp,
+                    modifier = Modifier.padding(bottom = 17.dp),
+                )
+            }
             choices()
         }
+    }
+}
+
+@Composable
+private fun CourseVersionChoiceStep(
+    copy: OnboardingCopy,
+    state: OnboardingUiState,
+    reactionKey: Int,
+    motionEnabled: Boolean,
+    layoutSpec: OnboardingLayoutSpec,
+    onTrackSelected: (String) -> Unit,
+) {
+    ChoiceStep(
+        question = copy.askVersion,
+        helper = null,
+        reactionKey = reactionKey,
+        motionEnabled = motionEnabled,
+        layoutSpec = layoutSpec,
+        fillAvailableHeight = true,
+        scrollable = false,
+    ) {
+        val isHsk30 = state.selectedTrack == "hsk30"
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxWidth().weight(1f),
+            contentAlignment = Alignment.TopCenter,
+        ) {
+            Image(
+                painter = painterResource(
+                    if (isHsk30) R.drawable.hsk30_course_books else R.drawable.hsk20_course_books,
+                ),
+                contentDescription = if (isHsk30) copy.hsk30BooksDescription else copy.hsk20BooksDescription,
+                contentScale = ContentScale.Fit,
+                colorFilter = ColorFilter.tint(PompColors.Paper, BlendMode.Multiply),
+                modifier = Modifier
+                    .widthIn(max = 360.dp)
+                    .heightIn(max = maxHeight)
+                    .aspectRatio(4f / 3f),
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+        CourseVersionSwitch(
+            copy = copy,
+            state = state,
+            enabled = !state.submitting,
+            onSelected = onTrackSelected,
+        )
     }
 }
 
@@ -766,10 +805,10 @@ private fun CourseVersionSwitch(
                                 fontWeight = FontWeight.SemiBold,
                                 lineHeight = 14.sp,
                             )
-                            if (track == "hsk30" && state.hsk30IsNew) {
+                            if (track == "hsk30") {
                                 Spacer(Modifier.width(4.dp))
                                 Text(
-                                    "NEW",
+                                    copy.newBadge,
                                     color = PompColors.CinnabarDark,
                                     fontSize = 8.sp,
                                     fontWeight = FontWeight.Bold,
@@ -829,9 +868,9 @@ private fun LevelChoices(
             else -> listOf("Новый стандарт · уровень 1", "Новый стандарт · уровень 2", "Новый стандарт · уровень 3")
         }
         listOf(
-            LevelOption("nhsk1", "HSK 3.0 · N1", hsk30Descriptions[0]),
-            LevelOption("nhsk2", "HSK 3.0 · N2", hsk30Descriptions[1]),
-            LevelOption("nhsk3", "HSK 3.0 · N3", hsk30Descriptions[2]),
+            LevelOption("nhsk1", "HSK 1", hsk30Descriptions[0], isNew = true),
+            LevelOption("nhsk2", "HSK 2", hsk30Descriptions[1], isNew = true),
+            LevelOption("nhsk3", "HSK 3", hsk30Descriptions[2], isNew = true),
         ).filter { it.key in liveHsk30Levels }
     } else {
         listOf(
@@ -853,6 +892,7 @@ private fun LevelChoices(
                 subtitle = option.subtitle,
                 leading = { LevelBars(active = index) },
                 onClick = { onSelected(option.key) },
+                badge = if (option.isNew) copy.newBadge else null,
             )
         }
     }
@@ -923,6 +963,7 @@ private fun ChoiceCard(
     subtitle: String,
     leading: @Composable () -> Unit,
     onClick: () -> Unit,
+    badge: String? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
@@ -978,13 +1019,20 @@ private fun ChoiceCard(
             Box(Modifier.size(42.dp), contentAlignment = Alignment.Center) { leading() }
             Spacer(Modifier.width(layoutSpec.cardGap.dp))
             Column(Modifier.weight(1f)) {
-                Text(
-                    title,
-                    color = if (selected) PompColors.CinnabarDark else PompColors.Ink,
-                    fontSize = 15.sp,
-                    lineHeight = 21.sp,
-                    fontWeight = FontWeight.Medium,
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        title,
+                        color = if (selected) PompColors.CinnabarDark else PompColors.Ink,
+                        fontSize = 15.sp,
+                        lineHeight = 21.sp,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.weight(1f, fill = false),
+                    )
+                    if (badge != null) {
+                        Spacer(Modifier.width(6.dp))
+                        NewBadge(badge)
+                    }
+                }
                 Spacer(Modifier.height(4.dp))
                 Text(subtitle, color = PompColors.InkSecondary, fontSize = 12.sp, lineHeight = 17.sp)
             }
@@ -1015,16 +1063,16 @@ private fun ChoiceCard(
 }
 
 @Composable
-private fun SelectedLevelSummary(copy: OnboardingCopy, level: String) {
+private fun SelectedLevelSummary(copy: OnboardingCopy, level: String, track: String) {
     val title = when (level) {
         "beginner" -> copy.beginner
         "hsk1" -> "HSK 1"
         "hsk2" -> "HSK 2"
         "hsk3" -> "HSK 3"
         "hsk4" -> "HSK 4"
-        "nhsk1" -> "HSK 3.0 · N1"
-        "nhsk2" -> "HSK 3.0 · N2"
-        "nhsk3" -> "HSK 3.0 · N3"
+        "nhsk1" -> "HSK 1"
+        "nhsk2" -> "HSK 2"
+        "nhsk3" -> "HSK 3"
         else -> level.uppercase()
     }
     Row(
@@ -1037,13 +1085,28 @@ private fun SelectedLevelSummary(copy: OnboardingCopy, level: String) {
             size = 16.dp,
         )
         Spacer(Modifier.width(7.dp))
-        Text(
-            "${copy.selected}: $title",
-            color = PompColors.InkSecondary,
-            fontSize = 12.sp,
-            lineHeight = 18.sp,
-        )
+        Text("${copy.selected}:", color = PompColors.InkSecondary, fontSize = 12.sp, lineHeight = 18.sp)
+        Spacer(Modifier.width(4.dp))
+        Text(title, color = PompColors.Ink, fontSize = 12.sp, lineHeight = 18.sp)
+        if (track == "hsk30") {
+            Spacer(Modifier.width(6.dp))
+            NewBadge(copy.newBadge)
+        }
     }
+}
+
+@Composable
+private fun NewBadge(label: String) {
+    Text(
+        label,
+        color = PompColors.CinnabarDark,
+        fontSize = 8.sp,
+        lineHeight = 10.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .background(PompColors.Cinnabar.copy(alpha = 0.12f), RoundedCornerShape(5.dp))
+            .padding(horizontal = 4.dp, vertical = 1.dp),
+    )
 }
 
 @Composable
@@ -1051,7 +1114,6 @@ private fun OnboardingFooter(
     copy: OnboardingCopy,
     state: OnboardingUiState,
     onNext: () -> Unit,
-    onLaterHsk20: () -> Unit,
     motionEnabled: Boolean,
     layoutSpec: OnboardingLayoutSpec,
 ) {
@@ -1059,13 +1121,7 @@ private fun OnboardingFooter(
         state.submitting -> copy.saving
         state.error -> copy.retry
         state.step == 0 -> copy.start
-        state.step == 1 -> copy.continueLabel
-        state.needsHsk30Unlock ->
-            if (
-                state.hsk30PaymentEnabled &&
-                state.hsk30PriceTjs > 0 &&
-                state.hsk30PriceDisplay.isNotBlank()
-            ) copy.unlockHsk30.format(state.hsk30PriceDisplay) else copy.laterHsk20
+        state.step < 3 -> copy.continueLabel
         else -> copy.firstLesson
     }
     val interactionSource = remember { MutableInteractionSource() }
@@ -1165,29 +1221,6 @@ private fun OnboardingFooter(
                             )
                         }
                     }
-                }
-            }
-            if (
-                state.step >= 2 &&
-                state.needsHsk30Unlock &&
-                state.hsk30PaymentEnabled &&
-                state.hsk30PriceTjs > 0 &&
-                state.hsk30PriceDisplay.isNotBlank()
-            ) {
-                Spacer(Modifier.height(10.dp))
-                OutlinedButton(
-                    onClick = onLaterHsk20,
-                    enabled = !state.submitting,
-                    shape = RoundedCornerShape(13.dp),
-                    border = BorderStroke(1.dp, PompColors.Divider),
-                    modifier = Modifier.fillMaxWidth().height(46.dp),
-                ) {
-                    Text(
-                        copy.laterHsk20,
-                        color = PompColors.InkSecondary,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    )
                 }
             }
         }
