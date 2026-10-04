@@ -96,6 +96,10 @@ class MiniAppRequestLoadTests(unittest.TestCase):
         self.assertIn("if(h30Ready&&access&&!access.allowed&&hsk30PaymentEnabled())h30Meta.push(hsk30Price())", ONBOARDING)
         self.assertIn('var h30Meta=["NEW"]', ONBOARDING)
 
+    def test_hsk30_disabled_onboarding_uses_single_version_copy(self):
+        self.assertIn('onlyHsk20:"Сейчас доступен HSK 2.0. Продолжим с него."', ONBOARDING)
+        self.assertIn("var questionText=step===1?(hsk30Enabled()?L.askVersion:L.onlyHsk20)", ONBOARDING)
+
     def test_download_status_is_the_only_android_availability_request(self):
         self.assertNotIn('"/api/v3/apps/public-status"', DESKTOP)
         self.assertNotIn("function loadAndroidAvailability()", DESKTOP)
