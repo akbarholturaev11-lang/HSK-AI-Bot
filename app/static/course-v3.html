@@ -2326,7 +2326,17 @@ function prefetchNearbyLessons(){
   });
 }
 function isPaidUser(){return !!(PROF&&PROF.is_paid||MAP&&MAP.user&&MAP.user.is_paid)}
-function isPremiumLocked(l){return !!(l&&l.locked_premium&&!isPaidUser())}
+function isPremiumLocked(l){
+  if(!l)return false;
+  var hsk30Access=MAP&&MAP.lesson_limit&&MAP.lesson_limit.hsk30_access;
+  if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel())&&hsk30Access)return hsk30Access.allowed===false;
+  return !!(l.locked_premium&&!isPaidUser());
+}
+function openLockedLessonSheet(idx){
+  var l=allLessons()[idx];if(!l)return;
+  if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){showHsk30AccessGate();return}
+  App.openPaywall({lessonIdx:idx,lesson:l});
+}
 /* Reklama ko'rib darsni ochish OLIB TASHLANDI: limit tugasa paywall chiqadi.
    Server endi `ad_required` bayrog'ini qaytarmaydi; funksiya eski javob
    shakli bilan kelgan klientlar uchun doim `false` beradi. */
@@ -2785,6 +2795,27 @@ function showAuthGate(){
   App.show("course");
 }
 function hideAuthGate(){}
+function showCourseLoadError(){
+  var c={
+    ru:{title:"Курс не загрузился",body:"Проверьте подключение и попробуйте ещё раз.",btn:"Попробовать снова"},
+    uz:{title:"Kurs yuklanmadi",body:"Ulanishni tekshirib, qayta urinib ko'ring.",btn:"Qayta urinish"},
+    tj:{title:"Курс бор нашуд",body:"Пайвастро санҷида, боз кӯшиш кунед.",btn:"Боз кӯшиш кардан"}
+  }[LANG];
+  MAP={units:[],progress:{xp:0,streak:0,completed:0},label:"HSK",level:getSelectedLevel()};
+  $("#s-course").innerHTML='<div class="htop"><span class="lvpill"><i class="ti ti-alert-circle"></i> HSK AI</span></div>'
+    +'<div class="rt-invite" style="margin-top:42px"><span class="han">学</span><p style="font-weight:600;color:var(--ink);margin-bottom:6px">'+esc(c.title)+'</p><p>'+esc(c.body)+'</p><button onclick="loadLevel(getSelectedLevel())"><i class="ti ti-refresh"></i> '+esc(c.btn)+'</button></div>';
+  ["s-mashq","s-voice","s-rating","s-profile"].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=""});
+  App.show("course");
+}
+function showCourseMapFailure(res){
+  if(res&&res.data)return false;
+  if(res&&res.blocked)showBlockedGate(res.support_url);
+  else if(res&&res.hsk30Soon)showHsk30LevelSoon(res.level);
+  else if(res&&res.hsk30Gate)showHsk30AccessGate();
+  else if(res&&res.auth===false)showAuthGate();
+  else showCourseLoadError();
+  return true;
+}
 function openLessonSheet(idx){
   var l=allLessons()[idx];if(!l)return;
   if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
@@ -3279,6 +3310,7 @@ function reserveLessonStart(l){
 function handleLessonStartDenied(err,idx){
   var d=(err&&err.data)||{},l=allLessons()[idx];
   rememberLimitText(d);
+  if(String(d.error||"").indexOf("hsk30_")===0){showHsk30AccessGate();return}
   if(d.error==="free_feature_limit_reached"||d.error==="course_access_blocked"){
     if(l){
       l.status="locked";l.locked_premium=true;l.completion_allowed=false;
@@ -4586,10 +4618,7 @@ function loadLevel(lv){
   lv=setSelectedLevel(lv);
   if(!INIT_DATA){showAuthGate();return;}
   loadCourseMap(lv).then(function(res){
-    if(res&&res.blocked){showBlockedGate(res.support_url);return;}
-    if(res&&res.hsk30Soon){showHsk30LevelSoon(res.level);return;}
-    if(res&&res.hsk30Gate){showHsk30AccessGate();return;}
-    if(!res.data){showAuthGate();return;}
+    if(showCourseMapFailure(res))return;
     var d=res.data;
     hideAuthGate();MAP=rememberLimitText(d);adoptServerLang(d);adoptBotUsername(d);setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");prefetchNearbyLessons();
   });
@@ -7288,7 +7317,7 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
   var bootLevel=getSelectedLevel();
   if(!INIT_DATA){showAuthGate();return;}
   loadCourseMap(bootLevel).then(function(res){
-    if(!res.data){showAuthGate();return;}
+    if(showCourseMapFailure(res))return;
     var d=res.data;
     hideAuthGate();MAP=rememberLimitText(d);adoptServerLang(d);adoptBotUsername(d);adoptStudySetup(d);setSelectedLevel(MAP.level||bootLevel);if(d.user)PROF=d.user;syncNotify();
     var bootParams=new URLSearchParams(location.search);

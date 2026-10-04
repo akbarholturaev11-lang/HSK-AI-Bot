@@ -4588,3 +4588,86 @@ def test_ai_voice_a_hint_is_sent_at_once_without_opening_the_keyboard(page):
     expect(page.locator("#vc-kbPanel")).not_to_have_class(re.compile(r"\bon\b"))
     page.wait_for_timeout(500)
     assert sent, "tanlangan variant serverga yuborilishi kerak"
+
+
+@pytest.mark.parametrize("grant", ["free", "subscription", "permanent"])
+def test_hsk30_onboarding_opens_map_and_defers_payment_until_material(page, grant):
+    mock_telegram_ready(page)
+    errors = []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    allowed = grant != "free"
+    access = {"feature_enabled": True, "allowed": allowed,
+              "paid_access": grant == "subscription", "permanently_unlocked": grant == "permanent"}
+    tracks = {"ok": True, "active_track": "hsk30", "active_level": "nhsk1",
+              "tracks": {"hsk30": {"level": "nhsk1", "live_levels": ["nhsk1"], "access": access}},
+              "hsk30_unlock": {"payment_enabled": True, "price_tjs": 10, "price_display": "$1.08"},
+              "hsk30_promo": {"eligible": False}}
+    data = json.loads((STATIC_ROOT / "course_v3_data/nhsk1.json").read_text())
+    data.update({"authenticated": True, "level": "nhsk1",
+                 "user": {"name": "Learner", "language": "uz", "is_paid": grant == "subscription",
+                          "onboarding_completed": True},
+                 "lesson_limit": {"allowed": allowed, "hsk30_access": access},
+                 "notify": {"enabled": True}})
+    for unit in data["units"]:
+        for lesson in unit["lessons"]:
+            lesson["locked_premium"] = not allowed and lesson["n"] == 1
+            lesson["status"] = "current" if allowed and lesson["n"] == 1 else "locked"
+    sent = []
+    page.route("**/api/**", lambda route: json_response(route, {"ok": True}))
+    page.route("**/api/v3/course-tracks", lambda route: json_response(route, tracks))
+    page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
+
+    def complete(route):
+        sent.append(json.loads(route.request.post_data))
+        json_response(route, {"ok": True, "level": "nhsk1", "lesson": 1, "tab": "course"})
+
+    page.route("**/api/miniapp/onboarding", complete)
+    page.goto(app_url("/course_v3_onboarding.html?lang=uz"), wait_until="networkidle")
+    page.locator("#cta").click()
+    expect(page.locator('.track-switch [data-track="hsk30"]')).to_have_attribute("aria-pressed", "true")
+    page.locator("#cta").click()
+    expect(page.locator('.lv[data-key="nhsk1"]')).to_contain_text("HSK 1")
+    expect(page.locator('.lv[data-key="nhsk1"]')).to_contain_text("NEW")
+    page.locator("#cta").click()
+    page.locator("#cta").click()
+    page.wait_for_url(re.compile(r"course-v3\.html"), wait_until="networkidle")
+    assert sent[0]["level"] == "nhsk1"
+    query = parse_qs(urlparse(page.url).query)
+    assert query["tab"] == ["course"] and "autostart" not in query and "lesson" not in query
+    expect(page.locator('#s-course .node[data-lesson-order="1"]')).to_be_visible()
+    expect(page.locator("#s-course")).not_to_contain_text("Kursni bot ichidan oching")
+    expect(page.locator("#sheet")).not_to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#paywall")).not_to_have_class(re.compile(r"\bon\b"))
+    page.locator('#s-course .node[data-lesson-order="1"]').click()
+    expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
+    if allowed:
+        expect(page.locator("#sheet-body")).not_to_contain_text("$1.08")
+    else:
+        expect(page.locator("#sheet-body")).to_contain_text("$1.08")
+        expect(page.locator("#sheet-body")).not_to_contain_text("Pro")
+        page.locator("#sheet").click(position={"x": 10, "y": 10})
+        page.locator('#s-course .node[data-lesson-order="2"]').click()
+        expect(page.locator("#sheet-body")).to_contain_text("$1.08")
+    assert errors == []
+
+
+@pytest.mark.parametrize("status,error,auth_gate", [
+    (403, "hsk30_disabled", False), (503, "map_load_failed", False), (401, "auth_required", True),
+])
+def test_course_map_startup_reports_correct_failure(page, status, error, auth_gate):
+    mock_telegram_ready(page)
+    page.route("**/api/v3/course-tracks", lambda route: json_response(route, {
+        "ok": True, "tracks": {"hsk30": {"access": {"feature_enabled": False, "allowed": False}}},
+    }))
+    page.route(re.compile(r".*/api/v3/map(\?.*)?$"),
+               lambda route: json_response(route, {"ok": False, "error": error}, status=status))
+    page.goto(app_url("/course-v3.html?lang=uz&level=nhsk1&onboarded=1"), wait_until="networkidle")
+    if auth_gate:
+        expect(page.locator("#s-course")).to_contain_text("Kursni bot ichidan oching")
+    elif status == 503:
+        expect(page.locator("#s-course")).to_contain_text("Kurs yuklanmadi", timeout=7000)
+        expect(page.get_by_role("button", name="Qayta urinish", exact=True)).to_be_visible()
+    else:
+        expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
+    if not auth_gate:
+        expect(page.locator("#s-course")).not_to_contain_text("Kursni bot ichidan oching")

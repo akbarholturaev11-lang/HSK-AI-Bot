@@ -2328,7 +2328,9 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
 
         if target_band.startswith("nhsk"):
             hsk30_access = await CourseTrackService(session).hsk30_access(user)
-            if not hsk30_access.allowed:
+            # Choosing HSK 3.0 opens its course map before purchase. Material
+            # access remains enforced by LessonAccessService and lesson routes.
+            if not hsk30_access.feature_enabled:
                 return JSONResponse(
                     status_code=403,
                     content={
