@@ -57,6 +57,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -76,6 +77,7 @@ import com.pomp.hskai.core.design.components.HskGlassButton
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
+import com.pomp.hskai.core.design.components.HskSectionTitle
 import com.pomp.hskai.core.design.components.hskReactionFor
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.navigation.LocalMainBottomInset
@@ -306,7 +308,7 @@ private fun PracticeHome(
             // The tab bar floats over the list; the last tool clears it here.
             bottom = 20.dp + LocalMainBottomInset.current,
         ),
-        verticalArrangement = Arrangement.spacedBy(11.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
             PracticeHeader(group = openGroup, onBack = { openGroup = null }, hints = hints, onDismissHint = onDismissHint)
@@ -314,15 +316,29 @@ private fun PracticeHome(
         }
         when (openGroup) {
             null -> {
-                item { GroupLabel(stringResource(R.string.practice_group_skills)) }
-                item { ToolRow("字", null, TintAmber, stringResource(R.string.practice_dictionary_title), stringResource(R.string.practice_dictionary_body), true, false, onOpenDictionary) }
-                item { ToolRow(null, Icons.Filled.Visibility, TintBlue, stringResource(R.string.practice_characters_title), stringResource(R.string.practice_recognition_group_body), toolsEnabled, false) { onOpenDrill(DrillMode.RECOGNITION) } }
-                item { ToolRow(null, Icons.Filled.Mic, TintJade, stringResource(R.string.practice_pronunciation_row_title), stringResource(R.string.practice_pronunciation_row_body), toolsEnabled, false) { onOpenDrill(DrillMode.PRONUNCIATION) } }
-                item { GroupLabel(stringResource(R.string.practice_group_test_short)) }
-                item { ToolRow(null, Icons.Filled.WorkspacePremium, TintCinnabar, stringResource(R.string.practice_group_tests), stringResource(R.string.practice_test_center_body), toolsEnabled, false) { openGroup = PracticeGroup.TEST } }
                 item {
                     val total = state.mistakes?.summary?.total ?: 0
-                    ToolRow(null, Icons.Filled.WarningAmber, TintCinnabar, stringResource(R.string.practice_mistakes_title), stringResource(R.string.practice_mistakes_body, total), toolsEnabled, state.isLoadingMistakes && !offline, onOpenMistakes)
+                    Column {
+                        GroupLabel(stringResource(R.string.practice_group_skills))
+                        ToolGroup {
+                            ToolRow("字", null, TintAmber, stringResource(R.string.practice_dictionary_title), stringResource(R.string.practice_dictionary_body), true, onClick = onOpenDictionary)
+                            ToolDivider()
+                            ToolRow(null, Icons.Filled.Visibility, TintBlue, stringResource(R.string.practice_characters_title), stringResource(R.string.practice_recognition_group_body), toolsEnabled) { onOpenDrill(DrillMode.RECOGNITION) }
+                            ToolDivider()
+                            ToolRow(null, Icons.Filled.Mic, TintJade, stringResource(R.string.practice_pronunciation_row_title), stringResource(R.string.practice_pronunciation_row_body), toolsEnabled) { onOpenDrill(DrillMode.PRONUNCIATION) }
+                        }
+                    }
+                }
+                item {
+                    val total = state.mistakes?.summary?.total ?: 0
+                    Column {
+                        GroupLabel(stringResource(R.string.practice_group_test_short))
+                        ToolGroup {
+                            ToolRow(null, Icons.Filled.WorkspacePremium, TintCinnabar, stringResource(R.string.practice_group_tests), stringResource(R.string.practice_test_center_body), toolsEnabled) { openGroup = PracticeGroup.TEST }
+                            ToolDivider()
+                            ToolRow(null, Icons.Filled.WarningAmber, TintCinnabar, stringResource(R.string.practice_mistakes_title), stringResource(R.string.practice_mistakes_body, total), toolsEnabled, state.isLoadingMistakes && !offline, onOpenMistakes)
+                        }
+                    }
                 }
             }
             PracticeGroup.TEST -> testCentre(level, toolsEnabled, { onStartPractice(placementTool, level, language) }, onStartExam)
@@ -495,9 +511,7 @@ private fun PracticeHeader(group: PracticeGroup?, onBack: () -> Unit, hints: Lis
             )
             Spacer(Modifier.width(8.dp))
         }
-        Surface(color = PompColors.Cinnabar, shape = RoundedCornerShape(999.dp)) {
-            Text(stringResource(titleRes), style = MaterialTheme.typography.titleMedium, color = if (PompColors.IsDark) PompColors.Ink else PompColors.Paper, modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp))
-        }
+        HskSectionTitle(stringResource(titleRes))
         Spacer(Modifier.width(8.dp))
         SectionHint(hints = hints, section = "mashq", onDismiss = onDismissHint)
     }
@@ -533,7 +547,27 @@ private fun PracticeInfoPill(text: String) {
 
 @Composable
 private fun GroupLabel(text: String) {
-    Text(text, style = MaterialTheme.typography.titleSmall, color = PompColors.InkSecondary, modifier = Modifier.padding(top = 7.dp, bottom = 2.dp))
+    Text(text, style = MaterialTheme.typography.titleSmall, color = PompColors.InkSecondary, modifier = Modifier.padding(top = 4.dp, bottom = 8.dp))
+}
+
+@Composable
+private fun ToolGroup(content: @Composable ColumnScope.() -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = PompColors.PaperRaised,
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, PompColors.Divider),
+    ) {
+        Column(content = content)
+    }
+}
+
+@Composable
+private fun ToolDivider() {
+    androidx.compose.material3.HorizontalDivider(
+        modifier = Modifier.padding(start = 68.dp),
+        color = PompColors.Divider,
+    )
 }
 
 @Composable
@@ -547,27 +581,26 @@ private fun ToolRow(
     busy: Boolean = false,
     onClick: () -> Unit,
 ) {
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth().heightIn(min = 68.dp),
-        shape = RoundedCornerShape(16.dp),
-        shadowElevation = 6.dp,
-        onClick = onClick,
-        enabled = enabled,
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .heightIn(min = 68.dp)
+            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-            Surface(color = tint.background, shape = RoundedCornerShape(13.dp), modifier = Modifier.size(46.dp)) {
-                Box(contentAlignment = Alignment.Center) {
-                    if (icon != null) Icon(icon, contentDescription = null, tint = tint.foreground, modifier = Modifier.size(22.dp))
-                    else Text(glyph.orEmpty(), style = MaterialTheme.typography.titleMedium, color = tint.foreground)
-                }
+        Surface(color = tint.background, shape = RoundedCornerShape(12.dp), modifier = Modifier.size(40.dp)) {
+            Box(contentAlignment = Alignment.Center) {
+                if (icon != null) Icon(icon, contentDescription = null, tint = tint.foreground, modifier = Modifier.size(22.dp))
+                else Text(glyph.orEmpty(), style = MaterialTheme.typography.titleMedium, color = tint.foreground)
             }
-            Column(Modifier.weight(1f).padding(start = 13.dp)) {
+        }
+        Column(Modifier.weight(1f).padding(start = 12.dp)) {
                 Text(title, style = MaterialTheme.typography.titleMedium, color = if (enabled) PompColors.Ink else PompColors.InkDisabled)
                 Text(body, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
-            }
-            if (busy) HskBrandLoader(compact = true)
-            else Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = PompColors.InkDisabled)
         }
+        if (busy) HskBrandLoader(compact = true)
+        else Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = PompColors.InkDisabled)
     }
 }
 

@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.PompShapes
 import com.pomp.hskai.core.design.PompTextStyles
 
 /*
@@ -238,8 +239,9 @@ internal fun HskDepthButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     loading: Boolean = false,
+    contentColor: Color = PompColors.OnCinnabar,
 ) {
-    val shape = RoundedCornerShape(14.dp)
+    val shape = PompShapes.Medium
     val live = enabled || loading
     Box(modifier = modifier.fillMaxWidth().padding(bottom = if (live) 4.dp else 0.dp)) {
         if (live) {
@@ -267,7 +269,7 @@ internal fun HskDepthButton(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp,
-                        color = if (live) PompColors.Paper else PompColors.InkDisabled,
+                        color = if (live) contentColor else PompColors.InkDisabled,
                         textAlign = TextAlign.Center,
                     )
                 }
@@ -365,7 +367,7 @@ internal fun HskAnswerOption(
         HskOptionState.WRONG -> stringResource(R.string.cd_answer_wrong, text)
         else -> text
     }
-    val shape = RoundedCornerShape(14.dp)
+    val shape = PompShapes.Medium
     Box(modifier = modifier.fillMaxWidth().padding(bottom = 4.dp)) {
         // The flat edge under the button: neutral while idle, the state's own colour once lit.
         Box(

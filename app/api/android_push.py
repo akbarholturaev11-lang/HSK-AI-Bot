@@ -145,6 +145,7 @@ def create_android_push_router(*, session_factory, settings_obj: Any) -> APIRout
                     "ok": True,
                     "payment_id": payment.id,
                     "status": payment.payment_status,
+                    "plan_type": payment.plan_type,
                 }
             return JSONResponse(result, headers={"Cache-Control": "no-store"})
         except DesktopAuthError as exc:

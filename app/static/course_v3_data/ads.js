@@ -136,6 +136,17 @@
   +'.caa-limit-link[hidden]{display:none!important}'
   +'.caa-limit-link.ad{color:rgba(255,255,255,.84)}'
   +'.caa-limit-link i{font-size:15px}'
+  +'.caa-ov.limit{background:var(--hsk-paper);color:var(--hsk-ink)}'
+  +'.caa-ov.limit .caa-box{min-height:100%;display:flex;flex-direction:column;justify-content:center;gap:16px;padding:calc(60px + env(safe-area-inset-top,0px)) 20px calc(16px + env(safe-area-inset-bottom,0px))}'
+  +'.caa-ov.limit .caa-top,.caa-ov.limit .caa-vwrap,.caa-ov.limit .caa-promo{display:none!important}'
+  +'.caa-ov.limit .caa-meta{width:100%;max-width:430px;margin:0 auto;gap:0}'
+  +'.caa-ov.limit .caa-sub{display:flex;flex-direction:column;gap:18px;width:100%;background:transparent;border:0;border-radius:0;padding:0;box-shadow:none}'
+  +'.caa-ov.limit .caa-why{display:flex;align-items:flex-start;gap:10px;margin:0;padding:0;background:none;border:0;border-radius:0;font-size:16px;line-height:1.5;color:var(--hsk-ink)}'
+  +'.caa-ov.limit .caa-why i{color:var(--hsk-cinnabar-dark)}'
+  +'.caa-ov.limit .caa-pay{min-height:52px;padding:14px;background:var(--hsk-cinnabar);color:var(--hsk-on-cinnabar);border:0;border-radius:12px;box-shadow:none;font-size:15px}'
+  +'.caa-ov.limit .caa-limit-foot{margin:0;gap:4px}'
+  +'.caa-ov.limit .caa-limit-link{min-height:44px;padding:8px;color:var(--hsk-ink-secondary);font-weight:650}'
+  +'.caa-ov.limit .caa-x{top:calc(10px + env(safe-area-inset-top,0px));right:12px;width:44px;height:44px;background:var(--hsk-paper-raised);border:1px solid var(--hsk-divider);color:var(--hsk-ink);box-shadow:none}'
   /* Chiqish (X) — faqat limit-promoda, o\'ng yuqori burchakda */
   +'.caa-x{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:12px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#fff;display:none;align-items:center;justify-content:center;font-size:18px;z-index:6;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}'
   +'.caa-ov.limit .caa-x{display:flex}'
@@ -169,6 +180,20 @@
   +'.caa-desktop:not([hidden]){display:block}';
 
   var els = null;
+  var limitReturnFocus = null;
+  document.addEventListener("keydown",function(event){
+    if(!els||!els.ov.classList.contains("on")||!els.ov.classList.contains("limit"))return;
+    if(event.key==="Escape"){event.preventDefault();els.x.click();return}
+    if(event.key!=="Tab")return;
+    var controls=[els.x,els.pay,els.limAd].filter(function(node){return node&&!node.disabled&&!node.hidden&&node.getClientRects().length>0});
+    if(!controls.length){event.preventDefault();return}
+    var activeIndex=controls.indexOf(document.activeElement);
+    if(activeIndex<0||(event.shiftKey&&activeIndex===0)){
+      event.preventDefault();(event.shiftKey?controls[controls.length-1]:controls[0]).focus();
+    }else if(!event.shiftKey&&activeIndex===controls.length-1){
+      event.preventDefault();controls[0].focus();
+    }
+  });
   function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
   function ensureDom(){
     if(els) return els;
@@ -427,9 +452,11 @@
      jimgina ishlamay qolgandi. `tests/test_course_ads_module.py` shu holni
      qotiradi. */
   function _closeLimit(){
+    var returnFocus=limitReturnFocus;limitReturnFocus=null;
     closeOverlay();
     try{
       els.ov.classList.remove("limit");
+      els.ov.removeAttribute("role");els.ov.removeAttribute("aria-modal");els.ov.removeAttribute("aria-label");
       els.limFoot.hidden=true;
       els.limAd.hidden=true;
       els.limAd.onclick=null;
@@ -437,6 +464,7 @@
       els.x.onclick=null;
     }catch(e){}
     resetState();
+    if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
   }
 
   function showLimitPromo(opts){
@@ -502,6 +530,7 @@
     }
     /* Chiqish — o'ng yuqori burchakdagi X (pastda "orqaga" tugma yo'q). */
     els.x.onclick=function(){var cb=opts.onBack;_closeLimit();if(typeof cb==="function")cb()};
+    limitReturnFocus=document.activeElement;
     /* Media yo'q — to'g'ridan promo (done) ko'rinishi. */
     try{els.video.pause();els.video.removeAttribute("src");els.video.load()}catch(e){}
     try{els.photo.removeAttribute("src");els.photo.hidden=true;els.video.hidden=false}catch(e){}
@@ -509,7 +538,11 @@
     setStatus("");
     els.ov.classList.add("on","caa-done","limit");
     els.ov.setAttribute("aria-hidden","false");
+    els.ov.setAttribute("role","dialog");els.ov.setAttribute("aria-modal","true");
+    els.ov.setAttribute("aria-label",({uz:"Bepul limit tugadi",ru:"Бесплатный лимит исчерпан",tj:"Лимити ройгон тамом шуд"})[CFG.lang]||"Bepul limit tugadi");
+    els.x.setAttribute("aria-label",({uz:"Yopish",ru:"Закрыть",tj:"Пӯшидан"})[CFG.lang]||"Yopish");
     setSubVisible(true);
+    els.pay.focus({preventScroll:true});
     startPromo();
   }
 

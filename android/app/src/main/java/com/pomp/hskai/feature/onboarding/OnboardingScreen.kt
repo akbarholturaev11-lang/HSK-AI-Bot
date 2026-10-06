@@ -3,6 +3,7 @@ package com.pomp.hskai.feature.onboarding
 import android.animation.ValueAnimator
 import android.os.Build
 import android.view.HapticFeedbackConstants
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -35,6 +36,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -310,6 +312,7 @@ fun OnboardingScreen(
     onNext: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    BackHandler(enabled = state.step > 0 && !state.submitting, onBack = onBack)
     val copy = OnboardingCopy.forLanguage(language)
     val view = LocalView.current
     val configuration = LocalConfiguration.current
@@ -790,13 +793,18 @@ private fun CourseVersionSwitch(
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .height(42.dp)
-                    .clickable(
+                    .heightIn(min = 48.dp)
+                    .selectable(
+                        selected = selected,
                         enabled = enabled && (track != "hsk30" || state.hsk30Enabled),
                         role = Role.RadioButton,
-                    ) { onSelected(track) },
+                        onClick = { onSelected(track) },
+                    ),
             ) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(
+                    Modifier.fillMaxWidth().heightIn(min = 48.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
                     val textColor = if (selected) PompColors.CinnabarDark else PompColors.InkSecondary
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -1006,7 +1014,8 @@ private fun ChoiceCard(
                 scaleX = cardScale
                 scaleY = cardScale
             }
-            .clickable(
+            .selectable(
+                selected = selected,
                 interactionSource = interactionSource,
                 indication = null,
                 enabled = enabled,
@@ -1054,7 +1063,7 @@ private fun ChoiceCard(
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         MiniAppOnboardingIcon(
                             kind = OnboardingIconKind.Check,
-                            tint = if (PompColors.IsDark) PompColors.Paper else Color.White,
+                            tint = PompColors.OnCinnabar,
                             size = 14.dp,
                         )
                     }
@@ -1134,7 +1143,7 @@ private fun OnboardingFooter(
         label = "onboarding-cta-press",
     )
     val buttonAlpha = if (state.submitting) 0.65f else 1f
-    val ctaContent = if (PompColors.IsDark) PompColors.Paper else Color.White
+    val ctaContent = PompColors.OnCinnabar
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -1165,7 +1174,7 @@ private fun OnboardingFooter(
             if (state.error) {
                 Text(
                     copy.saveError,
-                    color = PompColors.Flame,
+                    color = PompColors.FlameInk,
                     fontSize = 13.sp,
                     lineHeight = 19.sp,
                     textAlign = TextAlign.Center,

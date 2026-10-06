@@ -2700,6 +2700,57 @@ def test_subscription_page_smoke(page):
     expect(page.locator("#nextBtn")).to_contain_text("WeChat Pay bilan to'lash")
 
 
+def test_hsk30_pending_payment_stays_on_admin_status_screen(page):
+    mock_telegram_ready(page)
+    page.route(
+        "**/api/subscription-miniapp/overview",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "language": "uz",
+                "mode": "hsk30_unlock",
+                "pending_payment": {
+                    "id": 42,
+                    "plan_type": "hsk30_unlock",
+                    "provisional_access": False,
+                },
+                "prices": {},
+                "card_prices": {},
+                "card_countries": ["tj", "uz", "ru", "other"],
+            },
+        ),
+    )
+    status_requests = []
+
+    def pending_status(route):
+        status_requests.append(json.loads(route.request.post_data or "{}"))
+        json_response(
+            route,
+            {
+                "ok": True,
+                "payment_id": 42,
+                "status": "pending",
+                "plan_type": "hsk30_unlock",
+            },
+        )
+
+    page.route("**/api/subscription-miniapp/payment-status", pending_status)
+    page.goto(
+        app_url("/subscription.html?lang=uz&mode=hsk30_unlock"),
+        wait_until="domcontentloaded",
+    )
+
+    expect(page.locator("#doneTitle")).to_have_text("So'rovingiz tekshiruvda")
+    expect(page.locator("#botReturnBtn")).to_have_text("To'lov holatini yangilash")
+    page.locator("#botReturnBtn").click()
+
+    expect(page.locator("#doneText")).to_have_text("To'lov hali admin tekshiruvida.")
+    expect(page.locator("#botReturnBtn")).to_have_text("To'lov holatini yangilash")
+    assert status_requests == [{"payment_id": 42}]
+    assert page.url.endswith("/subscription.html?lang=uz&mode=hsk30_unlock")
+
+
 def test_subscription_remembers_the_region_until_the_user_changes_it(page):
     page.route("**/api/subscription-miniapp/**", lambda route: route.abort())
     page.goto(app_url("/subscription.html?lang=uz&mode=subscription"), wait_until="networkidle")

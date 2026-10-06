@@ -11,6 +11,7 @@ import com.pomp.hskai.data.api.AndroidTrialStatusResponse
 import com.pomp.hskai.data.api.AndroidAdViewRequest
 import com.pomp.hskai.data.api.AndroidAdViewResponse
 import com.pomp.hskai.data.api.AndroidFeatureApi
+import com.pomp.hskai.data.api.PaymentDecisionStatusResponse
 import com.pomp.hskai.data.api.AndroidHintDismissRequest
 import com.pomp.hskai.data.api.AndroidHintDismissResponse
 import com.pomp.hskai.data.api.AndroidProfileResponse
@@ -165,6 +166,9 @@ class FeatureRepository(
 
     suspend fun checkoutSubmit(request: SubscriptionSubmitRequest): ApiResult<SubscriptionSubmitResponse> =
         authorized { checkoutReceiptApi.checkoutSubmit(it, request) }
+
+    suspend fun checkoutPaymentStatus(paymentId: Int): ApiResult<PaymentDecisionStatusResponse> =
+        authorized { api.checkoutPaymentStatus(it, paymentId) }
 
     /**
      * Legacy handoff used by older clients. The APK now uses checkout* above;

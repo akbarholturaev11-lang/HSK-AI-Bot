@@ -104,6 +104,8 @@ data class SubscriptionPriceDto(
 @Serializable
 data class SubscriptionPendingDto(
     @SerialName("id") val id: Int = 0,
+    @SerialName("plan_type") val planType: String = "",
+    @SerialName("provisional_access") val provisionalAccess: Boolean = false,
 )
 
 @Serializable
@@ -242,6 +244,7 @@ data class SubscriptionSubmitResponse(
     @SerialName("payment_id") val paymentId: Int = 0,
     @SerialName("status") val status: String = "",
     @SerialName("already_pending") val alreadyPending: Boolean = false,
+    @SerialName("provisional_access") val provisionalAccess: Boolean = false,
 )
 
 @Serializable

@@ -436,10 +436,10 @@ private fun MistakeTargetCard(item: MistakeTargetDto) {
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 3.dp)) {
                     if (item.wrong.isNotBlank()) {
-                        Text(text = "✗ ${item.wrong}", fontSize = 12.sp, color = PompColors.Flame)
+                        Text(text = "✗ ${item.wrong}", fontSize = 12.sp, color = PompColors.FlameInk)
                     }
                     if (item.kind == "question" && item.answer.isNotBlank()) {
-                        Text(text = "✓ ${item.answer}", fontSize = 12.sp, color = PompColors.Jade)
+                        Text(text = "✓ ${item.answer}", fontSize = 12.sp, color = PompColors.JadeInk)
                     }
                 }
             }
@@ -883,7 +883,7 @@ internal fun MistakesReviewResult(
                             text = "+$awardedXp XP",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = PompColors.Gold,
+                            color = PompColors.GoldInk,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 5.dp),
                         )
                     }

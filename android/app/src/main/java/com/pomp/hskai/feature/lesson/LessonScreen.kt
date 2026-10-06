@@ -961,6 +961,8 @@ private fun FeedbackPanel(
     onAskAssistant: ((question: String, readyAnswer: String) -> Unit)?,
 ) {
     val accent = if (answer.isCorrect) PompColors.Jade else PompColors.Flame
+    val statusInk = if (answer.isCorrect) PompColors.JadeInk else PompColors.FlameInk
+    val actionInk = if (answer.isCorrect) PompColors.OnJade else PompColors.OnFlame
     // A pronunciation score is not an answer the chat can explain.
     val offerHelp = !answer.isCorrect && card !is PronunciationCard
     Surface(
@@ -985,7 +987,7 @@ private fun FeedbackPanel(
                     fontSize = 22.sp,
                     lineHeight = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    color = accent,
+                    color = statusInk,
                 )
             }
             if (offerHelp) {
@@ -1020,6 +1022,7 @@ private fun FeedbackPanel(
                 onClick = onAdvance,
                 enabled = !submitting,
                 loading = submitting,
+                contentColor = actionInk,
             )
         }
     }

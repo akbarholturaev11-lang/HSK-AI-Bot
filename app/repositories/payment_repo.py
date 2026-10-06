@@ -146,6 +146,20 @@ class PaymentRepository:
         )
         return result.scalar_one_or_none()
 
+    async def has_rejected_by_user_and_plan(
+        self,
+        user_telegram_id: int,
+        plan_type: str,
+    ) -> bool:
+        result = await self.session.execute(
+            select(Payment.id)
+            .where(Payment.user_telegram_id == user_telegram_id)
+            .where(Payment.plan_type == plan_type)
+            .where(Payment.payment_status == "rejected")
+            .limit(1)
+        )
+        return result.scalar_one_or_none() is not None
+
     async def has_pending_by_user(
         self,
         user_telegram_id: int,

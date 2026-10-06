@@ -68,6 +68,12 @@ interface AndroidFeatureApi {
         @Body body: SubscriptionSubmitRequest,
     ): Response<SubscriptionSubmitResponse>
 
+    @GET("api/v3/android/subscription/payments/{payment_id}/status")
+    suspend fun checkoutPaymentStatus(
+        @Header("Authorization") authorization: String,
+        @Path("payment_id") paymentId: Int,
+    ): Response<PaymentDecisionStatusResponse>
+
     @GET("api/v3/android/trial/status")
     suspend fun trialStatus(
         @Header("Authorization") authorization: String,

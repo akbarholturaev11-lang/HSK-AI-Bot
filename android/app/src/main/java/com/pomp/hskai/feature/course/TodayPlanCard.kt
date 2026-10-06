@@ -1,10 +1,5 @@
 package com.pomp.hskai.feature.course
 
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
@@ -107,7 +102,6 @@ internal fun TodayPlanCard(
             .padding(start = 16.dp, end = 16.dp, bottom = 10.dp),
     ) {
         Box {
-            PlanWatermark()
             Column(
                 modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = 12.dp, bottom = 14.dp),
             ) {
@@ -120,16 +114,6 @@ internal fun TodayPlanCard(
             }
         }
     }
-}
-
-@Composable
-private fun BoxScope.PlanWatermark() {
-    Text(
-        text = "计",
-        style = PompTextStyles.hanziLarge.copy(fontSize = 74.sp, lineHeight = 74.sp),
-        color = planPrimaryInk().copy(alpha = if (PompColors.IsDark) 0.05f else 0.06f),
-        modifier = Modifier.align(Alignment.TopEnd).offset(x = 6.dp, y = (-20).dp),
-    )
 }
 
 @Composable
@@ -160,14 +144,6 @@ private fun PlanHeader(today: CourseToday) {
 
 @Composable
 private fun PlanPath(tasks: List<TodayTask>, nextIndex: Int, onTask: (TodayTask) -> Unit) {
-    val pulse = rememberInfiniteTransition(label = "planPulse")
-    val pulseProgress by pulse.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(animation = tween(durationMillis = 1600), repeatMode = RepeatMode.Restart),
-        label = "planPulseProgress",
-    )
-
     Box(modifier = Modifier.fillMaxWidth().padding(top = 6.dp).padding(vertical = PathPadding)) {
         PlanTrail(tasks)
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
@@ -176,7 +152,6 @@ private fun PlanPath(tasks: List<TodayTask>, nextIndex: Int, onTask: (TodayTask)
                     task = task,
                     index = index,
                     isNext = index == nextIndex,
-                    pulseProgress = pulseProgress,
                     onTask = onTask,
                     modifier = Modifier.weight(1f),
                 )
@@ -220,7 +195,6 @@ private fun RowScope.PlanStep(
     task: TodayTask,
     index: Int,
     isNext: Boolean,
-    pulseProgress: Float,
     onTask: (TodayTask) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -231,7 +205,7 @@ private fun RowScope.PlanStep(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
-        PlanNode(task, isNext, pulseProgress, label) { onTask(task) }
+        PlanNode(task, isNext, label) { onTask(task) }
         Spacer(Modifier.height(4.dp))
         Text(
             text = label,
@@ -248,7 +222,6 @@ private fun RowScope.PlanStep(
 private fun PlanNode(
     task: TodayTask,
     isNext: Boolean,
-    pulseProgress: Float,
     label: String,
     onClick: () -> Unit,
 ) {
@@ -270,17 +243,6 @@ private fun PlanNode(
     val dimmed = !task.available && !task.done
 
     Box(modifier = Modifier.graphicsLayer { alpha = if (dimmed) 0.5f else 1f }) {
-        if (isNext) {
-            Canvas(modifier = Modifier.matchParentSize()) {
-                val radius = (size.minDimension / 2f + 4.dp.toPx()) * (1f + 0.25f * pulseProgress)
-                drawCircle(
-                    color = PompColors.Gold.copy(alpha = 0.7f * (1f - pulseProgress)),
-                    radius = radius,
-                    center = Offset(size.width / 2f, size.height / 2f),
-                    style = Stroke(width = 2.dp.toPx()),
-                )
-            }
-        }
         Surface(
             onClick = onClick,
             enabled = !task.done && task.available,

@@ -109,6 +109,9 @@ data class CourseHsk30Access(
     val featureEnabled: Boolean,
     val paidAccess: Boolean,
     val permanentlyUnlocked: Boolean,
+    val paymentPending: Boolean = false,
+    val provisionalAccess: Boolean = false,
+    val paymentRejected: Boolean = false,
     val allowed: Boolean,
     val reason: String,
 )

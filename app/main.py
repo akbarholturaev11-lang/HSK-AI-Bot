@@ -2110,6 +2110,7 @@ async def course_v3_ads_script():
 async def course_v3_data_file(filename: str):
     import re
     public_assets = {
+        "design-tokens.css": "text/css",
         "desktop-download.css": "text/css",
         "desktop-download.js": "application/javascript",
         "lesson_gate.js": "application/javascript",
@@ -5493,6 +5494,46 @@ async def subscription_miniapp_overview(request: Request):
                     },
                 )
         return result
+
+
+@app.post("/api/subscription-miniapp/payment-status")
+async def subscription_miniapp_payment_status(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(
+            status_code=401,
+            content={"ok": False, "error": "invalid_telegram_init_data"},
+        )
+    try:
+        payload = await request.json()
+        payment_id = _positive_int(payload.get("payment_id")) if isinstance(payload, dict) else None
+    except Exception:
+        payment_id = None
+    if not payment_id:
+        return JSONResponse(
+            status_code=422,
+            content={"ok": False, "error": "invalid_payment_id"},
+        )
+
+    async with async_session_maker() as session:
+        payment = await PaymentRepository(session).get_by_id(payment_id)
+        if payment is None or int(payment.user_telegram_id) != int(telegram_id):
+            return JSONResponse(
+                status_code=404,
+                content={"ok": False, "error": "payment_not_found"},
+            )
+        return JSONResponse(
+            content={
+                "ok": True,
+                "payment_id": int(payment.id),
+                "status": str(payment.payment_status or ""),
+                "plan_type": str(payment.plan_type or ""),
+            },
+            headers={"Cache-Control": "no-store"},
+        )
 
 
 @app.post("/api/subscription-miniapp/discount-start")

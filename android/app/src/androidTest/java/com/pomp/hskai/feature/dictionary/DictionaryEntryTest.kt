@@ -11,6 +11,7 @@ import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
@@ -78,7 +79,9 @@ class DictionaryEntryTest {
 
     private val noActions = DictionaryActions(
         onQueryChange = {}, onRetry = {}, onOpenWord = {}, onOpenRecent = {}, onCloseWord = {},
-        onPreviousCharacter = {}, onNextCharacter = {}, onPlayStrokeOrder = {}, onPlayAudio = {},
+        onPreviousCharacter = {}, onNextCharacter = {}, onPlayStrokeOrder = {},
+        onToggleStrokePlayback = {}, onPauseStrokePlayback = {}, onPreviousStroke = {}, onNextStroke = {},
+        onStrokeComplete = {}, onStrokeAnimationFinished = {}, onPlayAudio = {},
         onPreviousWord = {}, onNextWord = {}, onStartWriting = {}, onCloseWriting = {},
         onWritingDemoAgain = {}, onBeginWriting = {}, onWritingStroke = {}, onWritingHint = {},
         onRestartWritingRound = {}, onWriteAgain = {}, onWriteNextCharacter = {}, onBack = {},
@@ -136,6 +139,8 @@ class DictionaryEntryTest {
         // Tapping search: the history first, then the list.
         compose.onNode(search).performClick()
         compose.onNodeWithText(recent).assertExists()
+        compose.onNodeWithText(context.getString(R.string.dictionary_filter_all_versions)).assertExists()
+        compose.onNodeWithText(context.getString(R.string.dictionary_filter_all_levels)).assertExists()
         compose.onNodeWithText(context.getString(R.string.dictionary_all_words)).assertExists()
         save("history_open")
 
@@ -149,7 +154,9 @@ class DictionaryEntryTest {
         val state = entry(DictionaryWord("休息", "xiūxi", "dam olmoq", "HSK2"))
         compose.setContent { PompHskAiTheme { DictionaryScreen(state, noActions) } }
 
+        compose.onNodeWithContentDescription(context.getString(R.string.dictionary_action_order)).performClick()
         compose.onNodeWithText(context.getString(R.string.dictionary_character_position, 1, 2)).assertExists()
+        compose.onNodeWithContentDescription(context.getString(R.string.action_close)).performClick()
         compose.onNodeWithText("休息").assertExists()
         save("entry_xiuxi_top")
         compose.onNode(hasScrollAction()).performScrollToNode(hasText(state.breakdowns.last().hint))

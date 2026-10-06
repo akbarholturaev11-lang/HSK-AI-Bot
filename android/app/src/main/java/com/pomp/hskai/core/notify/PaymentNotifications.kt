@@ -47,23 +47,36 @@ object PaymentNotifications {
             context.getSystemService(NotificationManager::class.java)
                 ?.getNotificationChannel(CHANNEL_ID)?.importance != NotificationManager.IMPORTANCE_NONE
 
-    fun post(context: Context, status: String): Boolean {
+    fun post(context: Context, status: String, planType: String = ""): Boolean {
         if (status !in setOf("approved", "rejected")) return false
+        val isHsk30Unlock = planType == "hsk30_unlock"
         val localized = AppLocale.wrap(context)
         ensureChannel(localized)
         if (!canPost(context)) return false
 
         val title = localized.getString(
-            if (status == "approved") R.string.notify_payment_approved_title
-            else R.string.notify_payment_rejected_title
+            when {
+                isHsk30Unlock && status == "approved" -> R.string.notify_hsk30_payment_approved_title
+                isHsk30Unlock -> R.string.notify_hsk30_payment_rejected_title
+                status == "approved" -> R.string.notify_payment_approved_title
+                else -> R.string.notify_payment_rejected_title
+            }
         )
         val body = localized.getString(
-            if (status == "approved") R.string.notify_payment_approved_body
-            else R.string.notify_payment_rejected_body
+            when {
+                isHsk30Unlock && status == "approved" -> R.string.notify_hsk30_payment_approved_body
+                isHsk30Unlock -> R.string.notify_hsk30_payment_rejected_body
+                status == "approved" -> R.string.notify_payment_approved_body
+                else -> R.string.notify_payment_rejected_body
+            }
         )
         val intent = Intent(context, MainActivity::class.java).apply {
             action = Intent.ACTION_VIEW
-            data = Uri.parse(DeepLinkRouter.uriFor(AppDestination.Subscription))
+            data = Uri.parse(
+                DeepLinkRouter.uriFor(
+                    if (isHsk30Unlock) AppDestination.Course else AppDestination.Subscription,
+                ),
+            )
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         val pending = PendingIntent.getActivity(

@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FDF9F0">
 <title>HSK AI</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
@@ -10,14 +10,18 @@
 <link rel="stylesheet" href="/assets/characters/hsk-character-pack.css?v=20260921c">
 <link rel="stylesheet" href="/assets/characters/hsk-character-motion.css?v=20260921c">
 <link rel="stylesheet" href="/assets/characters/hsk-lesson-presentation.css?v=20260921c">
+<link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005-section-title">
 <script src="/assets/characters/hsk-character-pack.js?v=20260921c"></script>
 <script src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
 <script src="/assets/characters/hsk-lesson-presentation.js?v=20260921c"></script>
 <style>
 :root{
-  --ink:#211D17;--ink2:#665D50;--ink3:#A89E8E;--paper:#FDF9F0;--card:#FFFFFF;--line:#EAE0CC;
-  --cin:#E04A40;--cin2:#B23530;--cinbg:#FDEBE7;--gold:#E9A916;--goldbg:#FAF0D3;--jade:#2FA06A;--jadebg:#E3F4EA;
-  --flame:#FF9600;--flamebg:#FFEFD6;--blue:#2E86C1;--bluebg:#E8F2FA;--overlay:#171310;--shadow:#E4D9C4;
+  --ink:var(--hsk-ink);--ink2:var(--hsk-ink-secondary);--ink3:var(--hsk-ink-disabled);--paper:var(--hsk-paper);--card:var(--hsk-paper-raised);--line:var(--hsk-divider);
+  --cin:var(--hsk-cinnabar);--cin2:var(--hsk-cinnabar-ink);--cinbg:var(--hsk-cinnabar-soft);--cin-ink:var(--hsk-on-cinnabar);
+  --gold:var(--hsk-gold);--goldbg:var(--hsk-gold-soft);--gold-ink:var(--hsk-gold-ink);--gold-on:var(--hsk-on-gold);
+  --jade:var(--hsk-jade);--jade-ink:var(--hsk-jade-ink);--jadebg:var(--hsk-jade-soft);--jade-on:var(--hsk-on-jade);
+  --flame:var(--hsk-flame);--flame-ink:var(--hsk-flame-ink);--flamebg:var(--hsk-flame-soft);
+  --blue:var(--hsk-blue);--bluebg:var(--hsk-blue-soft);--overlay:#171310;--shadow:#E4D9C4;
   --safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);
   /* --read — O'QISH kengligi: dars oqimi, varaqlar, mashq ekranlari va
      pastki menyu doim shu kenglikda qoladi. Telegram Desktop'da ham matn
@@ -27,12 +31,14 @@
   --read:480px;--shell:480px;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif}
-.han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600;letter-spacing:1px}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:var(--hsk-font-ui)}
+.han{font-family:var(--hsk-font-cjk);font-weight:600;letter-spacing:1px}
 .wrap{max-width:var(--shell);margin:0 auto;min-height:100vh;position:relative;padding-top:var(--safe-t)}
 .scr{display:none;padding-bottom:calc(82px + var(--safe-b))}
 .scr.on{display:block}
-button{cursor:pointer}
+button{cursor:pointer;touch-action:manipulation}
+button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px solid var(--cin2);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 .hint{display:flex;gap:10px;align-items:flex-start;margin:0 16px 10px;padding:11px 12px;background:var(--card);border:1px solid var(--line);border-radius:13px}
 /* Suzuvchi tanishtiruv: kontent ustida, oqimdan tashqarida. Joy egallamaydi,
    shuning uchun ostidagi bo'lim siljimaydi; X bilan yopiladi. */
@@ -47,16 +53,16 @@ button{cursor:pointer}
 .hint .hx{flex:0 0 auto;background:none;border:none;color:var(--ink3);font-size:15px;padding:2px 0 0 2px;line-height:1}
 /* top */
 .htop{display:flex;align-items:center;gap:8px;padding:14px 16px 10px;position:sticky;top:var(--safe-t);background:var(--paper);z-index:4}
-.htop.profile-head{justify-content:space-between;padding-bottom:8px}
-.profile-title{margin:0;color:var(--ink);font-size:20px;line-height:1.2;font-weight:700}
+.htop.profile-head{justify-content:space-between}
+.section-title,.profile-title{margin:0;color:var(--ink);font-size:var(--hsk-section-title-size,20px);line-height:var(--hsk-section-title-line-height,1.2);font-weight:700;letter-spacing:-.01em}
+.section-title{flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .profile-settings{width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink2);box-shadow:0 2px 8px rgba(33,29,23,.08);cursor:pointer}
 .profile-settings i{font-size:21px}
 .profile-settings:focus-visible{outline:2px solid var(--cin);outline-offset:2px}
-.lvpill{display:flex;align-items:center;gap:6px;background:var(--cin);color:#fff;font-size:13px;font-weight:500;padding:7px 13px;border-radius:20px;border:none;font-family:inherit}
 .chip{display:flex;align-items:center;gap:5px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:500}
 .langsw{margin-left:auto;display:flex;background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden}
 .langsw button{background:none;border:none;font:inherit;font-size:12px;padding:6px 9px;color:var(--ink2)}
-.langsw button.on{background:var(--cin);color:#fff;font-weight:500}
+.langsw button.on{background:var(--cin);color:var(--cin-ink);font-weight:500}
 .pbar{flex:1;height:8px;background:var(--line);border-radius:6px;overflow:hidden}
 .pbar>i{display:block;height:100%;background:var(--cin);border-radius:6px;transition:width .4s}
 /* ---------- Bugungi reja so'qmog'i ----------
@@ -92,7 +98,7 @@ button{cursor:pointer}
 .tstep.dn{transform:translateY(9px)}
 .tnode{position:relative;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   font-size:15px;font-family:inherit;background:rgba(255,255,255,.09);color:rgba(255,255,255,.6);border:1.5px solid rgba(255,255,255,.2)}
-.tnode.done{background:var(--jade);color:#fff;border-color:var(--jade)}
+.tnode.done{background:var(--jade);color:var(--jade-on);border-color:var(--jade)}
 .tnode.now{background:var(--gold);color:#3a2c08;border-color:var(--gold)}
 .tnode.now:after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--gold);animation:pl 1.6s ease-out infinite}
 .tnode.lock{opacity:.5}
@@ -115,17 +121,17 @@ button{cursor:pointer}
 .nodewrap{position:absolute;display:flex;flex-direction:column;align-items:center;gap:4px}
 .node{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:23px;border:none;position:relative;font-family:inherit;color:#fff}
 .node .ring{position:absolute;inset:-6px;border-radius:50%;border:3px solid transparent}
-.node.done{background:var(--jade);box-shadow:0 4px 0 #245f47}
-.node.current{background:var(--cin);box-shadow:0 4px 0 var(--cin2)}
+.node.done{background:var(--jade);color:var(--jade-ink);box-shadow:0 4px 0 #245f47}
+.node.current{background:var(--cin);color:var(--cin-ink);box-shadow:0 4px 0 var(--cin2)}
 .node.current .ring{border-color:var(--cin);animation:pl 1.6s ease-out infinite}
 @keyframes pl{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.25);opacity:0}}
 .node.locked{background:var(--line);color:var(--ink3);box-shadow:0 4px 0 #d8d2c4}
 .node.chest{background:var(--goldbg);color:var(--gold);box-shadow:0 4px 0 #d8c79a;border:2px solid var(--gold)}
-.node.boss{background:var(--cinbg);color:var(--cin);box-shadow:0 4px 0 #e8cfc9;border:2px solid var(--cin)}
+.node.boss{background:var(--cinbg);color:var(--cin2);box-shadow:0 4px 0 #e8cfc9;border:2px solid var(--cin)}
 .nlabel{font-size:12px;font-weight:500;color:var(--ink2)}.nlabel.mut{color:var(--ink3)}
 .nnum{display:block;font-size:10px;font-weight:600;color:var(--ink3);letter-spacing:.02em;margin-top:1px}
-.bubble{position:absolute;top:-42px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--cin);color:var(--cin2);font-size:12px;font-weight:600;padding:7px 14px;border-radius:20px;white-space:nowrap}
-.bubble:after{content:"";position:absolute;bottom:-6px;left:50%;transform:translateX(-50%) rotate(45deg);width:10px;height:10px;background:#fff;border-right:1px solid var(--cin);border-bottom:1px solid var(--cin)}
+.bubble{position:absolute;top:-42px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--cin);color:var(--cin2);font-size:12px;font-weight:600;padding:7px 14px;border-radius:20px;white-space:nowrap}
+.bubble:after{content:"";position:absolute;bottom:-6px;left:50%;transform:translateX(-50%) rotate(45deg);width:10px;height:10px;background:var(--card);border-right:1px solid var(--cin);border-bottom:1px solid var(--cin)}
 .pmasc{position:absolute;top:50%;width:72px;height:72px;margin-top:-36px;pointer-events:none;animation:pmascBob 3.4s ease-in-out infinite;z-index:1;opacity:.95}
 .pmasc svg{width:100%;height:100%;display:block;opacity:.8;animation:pmascNod 4.6s ease-in-out infinite;transform-origin:50% 90%}
 .pmasc:after{content:"";position:absolute;left:50%;bottom:-7px;width:34px;height:8px;margin-left:-17px;background:radial-gradient(closest-side,rgba(33,29,23,.16),rgba(33,29,23,0));border-radius:50%;animation:pmascShadow 3.4s ease-in-out infinite}
@@ -166,12 +172,12 @@ button{cursor:pointer}
 @keyframes pdCoachWave{0%,100%{transform:rotate(0)}50%{transform:rotate(-3deg)}}
 /* nav */
 .nav{position:fixed;left:0;right:0;bottom:0;height:calc(70px + var(--safe-b));padding-bottom:var(--safe-b);background:var(--card);border-top:1px solid var(--line);display:flex;align-items:flex-start;padding-top:8px;max-width:var(--read);margin:0 auto;z-index:8}
-.nav button{flex:1;background:none;border:none;font-family:inherit;color:var(--ink3);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px}
-.nav button.on{color:var(--cin)}
+.nav button{flex:1;min-height:44px;background:none;border:none;font-family:inherit;color:var(--ink3);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.nav button.on{color:var(--cin2)}
 .nav button i{font-size:21px}
 .nav .center{position:relative;top:-20px}
-.nav .center .fab{width:58px;height:58px;border-radius:50%;background:var(--cin);border:4px solid var(--card);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px}
-.nav .center .lbl{margin-top:4px;color:var(--cin);font-weight:500}
+.nav .center .fab{width:58px;height:58px;border-radius:50%;background:var(--cin);border:4px solid var(--card);color:var(--cin-ink);display:flex;align-items:center;justify-content:center;font-size:24px}
+.nav .center .lbl{margin-top:4px;color:var(--cin2);font-weight:500}
 /* sheet */
 .sheet{position:fixed;inset:0;background:rgba(20,17,13,.5);display:none;align-items:flex-end;z-index:50;max-width:var(--read);margin:0 auto}
 .sheet.on{display:flex}
@@ -193,12 +199,12 @@ button{cursor:pointer}
 .hsk30-book-price small{display:block;font-size:12px;line-height:1.4;color:var(--ink2);margin-top:4px}
 .hsk30-book-price b{font-size:29px;line-height:1.2;letter-spacing:-.03em;font-weight:750;color:var(--ink);text-align:right}
 .hsk30-promo-actions{display:flex;flex-direction:column;gap:8px}
-.hsk30-promo-action{width:100%;min-height:52px;padding:12px 16px;border:0;border-radius:14px;background:var(--cin2);color:#fff;font-size:16px;line-height:1.3;font-weight:650;display:flex;align-items:center;justify-content:center;gap:12px;text-align:center}
+.hsk30-promo-action{width:100%;min-height:52px;padding:12px 16px;border:0;border-radius:14px;background:var(--cin);color:var(--cin-ink);font-size:16px;line-height:1.3;font-weight:650;display:flex;align-items:center;justify-content:center;gap:12px;text-align:center}
 .hsk30-promo-action svg{width:20px;height:20px;flex-shrink:0}
 .hsk30-promo-stay{width:100%;min-height:48px;padding:12px;border:0;border-radius:12px;background:transparent;color:var(--ink2);font-size:14px;line-height:1.4;font-weight:600;display:flex;align-items:center;justify-content:center;text-align:center}
 .hsk30-promo-action:focus-visible,.hsk30-promo-stay:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
 .grip{width:40px;height:4px;border-radius:3px;background:var(--line);margin:8px auto 14px}
-.sx{position:absolute;right:14px;top:14px;background:none;border:none;color:var(--ink2);font-size:22px}
+.sx{position:absolute;right:14px;top:14px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:none;border:none;color:var(--ink2);font-size:22px}
 .shead{text-align:center;margin-bottom:14px}
 .shead .zh{font-size:34px;line-height:1}
 .shead .py{font-size:15px;color:var(--cin2);font-weight:500;margin-top:5px}
@@ -210,10 +216,10 @@ button{cursor:pointer}
 .hsk30-test-close{justify-content:center;text-align:center}
 .sec .si2{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
 .sec.done .si2{background:var(--jadebg);color:var(--jade)}
-.sec.cur{border-color:var(--cin);background:var(--cinbg)}.sec.cur .si2{background:var(--cin);color:#fff}
+.sec.cur{border-color:var(--cin);background:var(--cinbg)}.sec.cur .si2{background:var(--cin);color:var(--cin-ink)}
 .sec.lock{color:var(--ink3)}.sec.lock .si2{background:var(--paper);color:var(--ink3)}
 .sec b{flex:1;font-weight:400}.sec.cur b{font-weight:500;color:var(--cin2)}
-.scta{width:100%;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px}
+.scta{width:100%;background:var(--cin);color:var(--cin-ink);border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px}
 .scta.ghost{background:var(--card);border:1px solid var(--line);color:var(--ink)}
 /* lesson overlay flow */
 .flow{position:fixed;inset:0;background:var(--paper);z-index:30;display:none;flex-direction:column;max-width:var(--read);margin:0 auto}
@@ -225,7 +231,7 @@ button{cursor:pointer}
 /* sheet/paywall ichidagi promo (och fon) */
 .spromo{position:relative;text-align:center;background:var(--cinbg);border:1px solid var(--line);border-radius:16px;padding:20px 16px 30px;margin-bottom:10px;overflow:hidden}
 .spromo-slide{display:flex;flex-direction:column;align-items:center;animation:promoIn .5s ease}
-.spromo-ic{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:27px;color:#fff;background:linear-gradient(160deg,var(--cin),var(--cin2));box-shadow:0 10px 24px rgba(194,64,58,.30);margin-bottom:14px}
+.spromo-ic{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:27px;color:var(--cin-ink);background:var(--cin);margin-bottom:14px}
 .spromo-t{font-size:16px;font-weight:800;letter-spacing:-.01em;color:var(--ink);margin:0 0 6px;line-height:1.25;max-width:280px}
 .spromo-s{font-size:13px;line-height:1.45;color:var(--ink2);max-width:280px;margin:0}
 .spromo-dots{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center;gap:5px}
@@ -242,10 +248,10 @@ button{cursor:pointer}
 .sales-next{background:var(--cinbg);border-color:rgba(194,64,58,.22)}.sales-next h3{font-size:14px;line-height:1.4;margin:0 0 8px;color:var(--ink)}.sales-next-example{display:flex;align-items:center;gap:11px;text-align:left}.sales-next-example .sales-zh{font-size:25px}
 .sales-benefits{display:grid;gap:7px}.sales-benefit{display:flex;align-items:center;gap:9px;font-size:13px;line-height:1.4;color:var(--ink2);padding:3px 2px}.sales-benefit i{font-size:18px;color:var(--jade);flex-shrink:0}
 .ftop{display:flex;align-items:center;gap:11px;padding:calc(14px + var(--safe-t)) 16px 8px}
-.fx{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:17px;line-height:1}
+.fx{width:44px;height:44px;flex:0 0 44px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:17px;line-height:1}
 .fpbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}
 .fpbar>i{display:block;height:100%;width:0;background:var(--cin);border-radius:6px;transition:width .3s}
-.fheart{display:flex;align-items:center;gap:3px;color:var(--cin);font-size:15px;font-weight:500}
+.fheart{display:flex;align-items:center;gap:3px;color:var(--cin2);font-size:15px;font-weight:500}
 .fstage{padding:4px 18px 0;font-size:11px;color:var(--cin2);font-weight:600;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .fstage b{font-size:12px;color:var(--ink);font-weight:600;text-transform:none;letter-spacing:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* Murabbiy qatori: chapda personaj, o'ngda u aytayotgan gap.
@@ -293,7 +299,7 @@ button{cursor:pointer}
 .mix-review .mix-meaning{font-size:25px;line-height:1.3;font-weight:700;color:var(--ink);overflow-wrap:anywhere}
 @keyframes reviewDeal{from{opacity:0;transform:translateY(18px) rotate(.8deg)}to{opacity:1;transform:none}}
 .cloze-gap{color:var(--cin);font-weight:700;border-bottom:3px solid var(--cin);display:inline-block;min-width:48px;text-align:center}
-.audio{margin:14px auto 0;width:48px;height:48px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:22px;display:flex;align-items:center;justify-content:center}
+.audio{margin:14px auto 0;width:48px;height:48px;border-radius:50%;background:var(--cinbg);color:var(--cin2);border:none;font-size:22px;display:flex;align-items:center;justify-content:center}
 .opt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:13px;padding:14px 15px;margin-bottom:10px;font-family:inherit;font-size:15px;color:var(--ink);box-shadow:0 4px 0 #E6DDCF;transition:transform .12s,box-shadow .12s}
 .opt:active{transform:translateY(2px);box-shadow:0 2px 0 #E6DDCF}
 .opt .k{width:23px;height:23px;border-radius:7px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink3)}
@@ -311,11 +317,11 @@ button{cursor:pointer}
 .duo-mini b{display:block;font-size:15px;color:var(--ink);margin-top:2px}
 .gc h3{font-size:20px;margin:0 0 3px;display:flex;align-items:center;gap:9px}.gc .zh{color:var(--cin2)}
 .gc .rule{font-size:14px;line-height:1.6;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;white-space:pre-line;margin:12px 0 14px}
-.gc .exrow{display:grid;grid-template-columns:minmax(0,1fr) 34px;align-items:center;column-gap:12px;row-gap:3px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 13px;margin-bottom:8px}
+.gc .exrow{display:grid;grid-template-columns:minmax(0,1fr) 44px;align-items:center;column-gap:12px;row-gap:3px;background:transparent;border:0;border-top:1px solid var(--line);border-radius:0;padding:12px 0;margin:0}
 .gc .exrow .z2{grid-column:1;grid-row:1;font-size:24px;line-height:1.35;width:auto;min-width:0;text-align:left;overflow-wrap:anywhere}
 .gc .exrow .z2+div{grid-column:1;grid-row:2;min-width:0}
-.gc .exrow .p2{font-size:14px;color:var(--cin2);font-weight:500;line-height:1.35}.gc .exrow .t2{font-size:12px;color:var(--ink2);line-height:1.35}
-.gc .exrow .au{grid-column:2;grid-row:1/3;justify-self:end;margin-left:0;width:32px;height:32px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:15px}
+.gc .exrow .p2{font-size:14px;color:var(--ink2);font-weight:500;line-height:1.35}.gc .exrow .t2{font-size:12px;color:var(--ink2);line-height:1.35}
+.gc .exrow .au{grid-column:2;grid-row:1/3;justify-self:end;margin-left:0;width:44px;height:44px;border-radius:50%;background:var(--cinbg);color:var(--cin2);border:none;font-size:15px}
 /* Grammar "teacher" step-by-step UI */
 .gtitle{font-size:19px;font-weight:700;margin:2px 0 12px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}.gtitle .zh{color:var(--cin2)}
 .teach{display:flex;gap:11px;align-items:flex-start;margin-bottom:14px}
@@ -324,28 +330,25 @@ button{cursor:pointer}
 .teach-bub{position:relative;background:#E7F0F8;border:1px solid #D2E2F0;border-radius:4px 16px 16px 16px;padding:11px 14px;flex:1}
 .teach-bub b{font-size:12px;color:#2F6F9E;display:block;margin-bottom:3px}
 .teach-bub .teach-say{font-size:15px;line-height:1.5;color:var(--ink)}
-/* Duolingo uslubi: YANGI SO'Z bayram-kartasi */
-.nw{position:relative;text-align:center;padding:22px 0 4px}
-.nw-card{display:inline-block;background:var(--card);border:3px solid var(--cin);border-radius:22px;padding:30px 42px;box-shadow:0 6px 0 var(--cin2);animation:nwPop .5s cubic-bezier(.34,1.56,.64,1) both}
+/* New-word reading order: Hanzi first, then pinyin, meaning and replay. */
+.nw{position:relative;text-align:center;padding:16px 0 4px}
+.nw-card{display:inline-block;background:transparent;border:0;border-radius:0;padding:0;box-shadow:none;animation:nwPop .24s ease-out both}
 .nw-card .big{font-size:60px;line-height:1.15}
-.nw-label{margin-top:14px;font-weight:800;font-size:21px;letter-spacing:2px;color:var(--cin);animation:nwUp .45s .25s both}
-.nw-spark{position:absolute;color:var(--gold);font-size:18px;opacity:0;animation:nwSpark 1.1s .3s ease-out}
-.nw-spark.s1{left:16%;top:4%}.nw-spark.s2{right:13%;top:22%;font-size:24px;animation-delay:.45s}.nw-spark.s3{left:24%;bottom:10%;font-size:13px;animation-delay:.6s}
-.nw-info{opacity:0;transform:translateY(10px);transition:opacity .4s,transform .4s;text-align:center;margin:16px auto 0;max-width:330px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px 18px 16px}
+.nw-label{margin-top:8px;font-weight:650;font-size:14px;letter-spacing:.01em;color:var(--ink2)}
+.nw-info{opacity:0;transform:translateY(6px);transition:opacity .24s,transform .24s;text-align:center;margin:16px auto 0;max-width:360px;background:transparent;border:0;border-radius:0;padding:0}
 .nw-info.on{opacity:1;transform:none}
 .nw-info .pyrow{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap}
-.nw-info .py{font-size:26px;color:var(--cin2);font-weight:500;line-height:1.2}
-.nw-info .mn{font-size:17px;line-height:1.45;color:var(--ink);margin-top:9px;padding-top:10px;border-top:1px solid var(--line)}
-.nw-info .pos{font-size:11.5px;color:var(--ink3);background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:3px 9px;line-height:1.3}
-.wl-au{margin-top:13px;display:inline-flex;align-items:center;gap:7px;background:var(--cinbg);color:var(--cin2);border:none;border-radius:20px;padding:9px 17px;font-family:inherit;font-size:14px;font-weight:500}
-@keyframes nwPop{0%{transform:scale(.3) rotate(-6deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
-@keyframes nwUp{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:none}}
-@keyframes nwSpark{0%{opacity:0;transform:scale(.4)}40%{opacity:1;transform:scale(1.25)}100%{opacity:0;transform:scale(.7) translateY(-16px)}}
+.nw-info .py{font-size:24px;color:var(--ink);font-weight:500;line-height:1.3}
+.nw-info .mn{font-size:16px;line-height:1.5;color:var(--ink);margin-top:8px}
+.nw-info .pos{font-size:12px;color:var(--ink2);line-height:1.3}
+.wl-au{margin-top:12px;min-height:44px;display:inline-flex;align-items:center;gap:7px;background:var(--cinbg);color:var(--cin2);border:none;border-radius:var(--hsk-radius-pill);padding:8px 16px;font-family:inherit;font-size:14px;font-weight:600}
+@keyframes nwUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes nwPop{from{transform:scale(.98);opacity:0}to{transform:scale(1);opacity:1}}
 /* Ustoz nutq pufagi (talaffuz / teskari builder) */
 .say-bub .z4{font-size:24px;line-height:1.35}
 .say-bub .p4{font-size:13px;color:var(--cin2);font-weight:500;margin-top:3px}
 .say-bub .t4{font-size:13px;color:var(--ink2);margin-top:2px}
-.say-bub .au{display:inline-flex;width:34px;height:34px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:17px;align-items:center;justify-content:center;margin-bottom:6px}
+.say-bub .au{display:inline-flex;width:34px;height:34px;border-radius:50%;background:var(--cinbg);color:var(--cin2);border:none;font-size:17px;align-items:center;justify-content:center;margin-bottom:6px}
 .pron-skip{display:block;margin:14px auto 0;background:none;border:none;color:var(--ink3);font-family:inherit;font-size:13px;font-weight:700;letter-spacing:1px}
 /* iOS uslubidagi chap chetdan orqaga swipe. Barmoq ostidagi qatlam
    `transform` bilan suriladi (reflow yo'q), ostidagi sahifa tabiiy ko'rinadi. */
@@ -361,7 +364,7 @@ button{cursor:pointer}
 .cheer .cpd{width:110px;height:110px;position:relative}
 .cheer .cbub{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 18px;font-size:16px;line-height:1.5;max-width:320px;animation:nwUp .4s .2s both}
 /* Pinyin ko'rsatish sozlamasi (Duolingo uslubi) */
-.fgear{width:30px;height:30px;border-radius:50%;border:none;background:none;color:var(--ink3);font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fgear{width:44px;height:44px;flex:0 0 44px;border-radius:50%;border:none;background:none;color:var(--ink3);font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 #flow.pyoff .qcard .qpy,#flow.pyoff .wc .py,#flow.pyoff .nw-info .py,#flow.pyoff .gc .exrow .p2,#flow.pyoff .gsteps .exrow .p2,#flow.pyoff .dia .bub .p3,#flow.pyoff .say-bub .p4{display:none}
 #flow.pynew .qcard .qpy,#flow.pynew .gc .exrow .p2,#flow.pynew .gsteps .exrow .p2,#flow.pynew .dia .bub .p3,#flow.pynew .say-bub .p4{display:none}
 .gsteps{display:flex;flex-direction:column}
@@ -372,11 +375,11 @@ button{cursor:pointer}
 .gstep-lbl.neg{color:var(--cin2);background:var(--cinbg)}
 .gformula{font-size:20px;line-height:1.4;color:var(--ink)}
 .gnote{font-size:13px;line-height:1.55;color:var(--ink2);padding:2px 4px 10px}
-.gsteps .exrow{display:grid;grid-template-columns:minmax(0,1fr) 34px;align-items:center;column-gap:12px;row-gap:3px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 13px;margin-bottom:8px}
+.gsteps .exrow{display:grid;grid-template-columns:minmax(0,1fr) 44px;align-items:center;column-gap:12px;row-gap:3px;background:transparent;border:0;border-top:1px solid var(--line);border-radius:0;padding:12px 0;margin:0}
 .gsteps .exrow .z2{grid-column:1;grid-row:1;font-size:24px;line-height:1.35;text-align:left;overflow-wrap:anywhere}
 .gsteps .exrow .z2+div{grid-column:1;grid-row:2;min-width:0}
-.gsteps .exrow .p2{font-size:14px;color:var(--cin2);font-weight:500;line-height:1.35}.gsteps .exrow .t2{font-size:12px;color:var(--ink2);line-height:1.35}
-.gsteps .exrow .au{grid-column:2;grid-row:1/3;justify-self:end;width:32px;height:32px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:15px}
+.gsteps .exrow .p2{font-size:14px;color:var(--ink2);font-weight:500;line-height:1.35}.gsteps .exrow .t2{font-size:12px;color:var(--ink2);line-height:1.35}
+.gsteps .exrow .au{grid-column:2;grid-row:1/3;justify-self:end;width:44px;height:44px;border-radius:50%;background:var(--cinbg);color:var(--cin2);border:none;font-size:15px}
 .gnext{margin-top:6px;align-self:flex-start;background:#2F6F9E;color:#fff;border:none;border-radius:12px;padding:11px 20px;font-size:15px;font-weight:600;font-family:inherit;display:inline-flex;align-items:center;gap:7px}
 .dia .scene{font-size:13px;color:var(--ink2);margin-bottom:14px;display:flex;align-items:center;gap:7px}
 .dia .line{display:flex;gap:9px;margin-bottom:13px;align-items:flex-end}
@@ -396,8 +399,8 @@ button{cursor:pointer}
 .pairs{display:flex;gap:10px}
 .pairs .col{flex:1;display:flex;flex-direction:column;gap:8px}
 .pcell{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:13px;text-align:center;font-family:inherit;font-size:16px;color:var(--ink)}
-.pcell.sel{border-color:var(--cin);background:var(--cinbg)}
-.pcell.ok{border-color:var(--jade);background:var(--jadebg);color:var(--jade);opacity:.7}
+.pcell.sel{border-color:var(--cin);background:var(--cinbg);color:var(--cin2)}
+.pcell.ok{border-color:var(--jade);background:var(--jadebg);color:var(--jade-ink);opacity:.7}
 .pcell.sm{font-size:13px}
 .fbar{display:none;position:sticky;bottom:0;z-index:4;padding:14px 16px calc(18px + var(--safe-b));background:var(--card);border-top:1px solid var(--line);box-shadow:0 -10px 22px rgba(33,29,23,.08)}
 .fbar.show{display:block}
@@ -406,24 +409,24 @@ button{cursor:pointer}
 .fmsg .fpanda{flex:0 0 46px;width:46px;height:46px;display:block}.fmsg .fpanda svg{width:100%;height:100%;display:block}
 .fbar.ok .fmsg{color:var(--jade)}.fbar.no .fmsg{color:var(--cin2)}
 .fmsg small{display:block;font-size:12px;font-weight:400;color:var(--ink2)}
-.fbtn{width:100%;border:none;border-radius:13px;padding:14px;font-family:inherit;font-size:16px;font-weight:500;color:#fff;background:var(--cin)}
+.fbtn{width:100%;border:none;border-radius:13px;padding:14px;font-family:inherit;font-size:16px;font-weight:500;color:var(--cin-ink);background:var(--cin)}
 .fbar.ok .fbtn{background:var(--jade)}
-.fcta{margin:0 16px calc(16px + var(--safe-b));padding:15px;background:var(--cin);color:#fff;border:none;border-radius:14px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px}
+.fcta{margin:0 16px calc(16px + var(--safe-b));padding:15px;background:var(--cin);color:var(--cin-ink);border:none;border-radius:14px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px}
 .fdone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px}
 .fdone .st{width:88px;height:88px;border-radius:24px;background:var(--jade);border:3px solid #fff;color:#fff;display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:16px}
 .fdone h3{font-size:22px;font-weight:500;margin:0 0 4px}.fdone p{font-size:14px;color:var(--ink2);margin:0 0 20px}
 .foundation-entry{margin:8px 16px 18px;padding:16px;border:1px solid rgba(194,64,58,.25);border-radius:18px;background:linear-gradient(145deg,#FFF8F1,var(--card));box-shadow:0 8px 24px rgba(91,56,32,.07);display:flex;align-items:center;gap:13px}
-.foundation-entry .fi{width:50px;height:50px;border-radius:15px;background:var(--cin);color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;flex-shrink:0}
+.foundation-entry .fi{width:50px;height:50px;border-radius:15px;background:var(--cin);color:var(--cin-ink);display:flex;align-items:center;justify-content:center;font-size:25px;flex-shrink:0}
 .foundation-entry .ft{flex:1;min-width:0}.foundation-entry b{display:block;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:3px}.foundation-entry small{display:block;font-size:12px;line-height:1.4;color:var(--ink2)}
-.foundation-entry button{border:0;border-radius:12px;background:var(--cin);color:#fff;padding:10px 12px;font-family:inherit;font-size:12px;font-weight:700;white-space:nowrap}
+.foundation-entry button{border:0;border-radius:12px;background:var(--cin);color:var(--cin-ink);padding:10px 12px;font-family:inherit;font-size:12px;font-weight:700;white-space:nowrap}
 .foundation-step{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:var(--cinbg);color:var(--cin2);padding:6px 10px;font-size:11px;font-weight:700;margin-bottom:14px}
 .foundation-hero{text-align:center;padding:8px 0 4px}.foundation-hero .zh{font-size:72px;line-height:1.05;color:var(--ink)}.foundation-hero .py{font-size:21px;color:var(--cin2);font-weight:600;margin-top:6px}.foundation-hero h2{font-size:22px;line-height:1.25;margin:16px 0 7px}.foundation-hero p{font-size:14px;line-height:1.55;color:var(--ink2);margin:0 auto;max-width:330px}
-.foundation-audio{width:64px;height:64px;border:0;border-radius:50%;background:var(--cin);color:#fff;font-size:27px;margin:18px auto 2px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(194,64,58,.28)}
+.foundation-audio{width:64px;height:64px;border:0;border-radius:50%;background:var(--cin);color:var(--cin-ink);font-size:27px;margin:18px auto 2px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(194,64,58,.28)}
 .foundation-note{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;margin:12px 0;font-size:14px;line-height:1.55;color:var(--ink2)}.foundation-note b{color:var(--ink)}
 .foundation-parts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}.foundation-part{background:var(--card);border:1px solid var(--line);border-radius:16px;text-align:center;padding:17px 10px}.foundation-part .zh{font-size:42px}.foundation-part .py{font-size:14px;color:var(--cin2);font-weight:600}.foundation-part small{display:block;color:var(--ink2);margin-top:4px}
 .tone-row{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:18px}.tone-btn{border:1px solid var(--line);background:var(--card);border-radius:13px;padding:13px 4px;color:var(--ink);font-family:inherit}.tone-btn b{display:block;font-size:20px;color:var(--cin2)}.tone-btn small{font-size:10px;color:var(--ink2)}
 .foundation-win{display:grid;gap:9px;margin:18px 0}.foundation-win div{display:flex;align-items:center;gap:10px;padding:12px 13px;background:var(--jadebg);border:1px solid rgba(47,125,94,.2);border-radius:13px;color:var(--jade);font-size:13px;font-weight:600}.foundation-win i{font-size:18px}
-.guided-card{border:1px solid rgba(185,132,13,.28);background:var(--goldbg);border-radius:17px;padding:16px;margin-top:12px}.guided-card b{display:block;color:var(--ink);margin-bottom:6px}.guided-card p{font-size:13px;line-height:1.5;color:var(--ink2);margin:0 0 13px}.guided-card button{width:100%;border:0;border-radius:12px;background:var(--jade);color:#fff;padding:14px;font-family:inherit;font-size:15px;font-weight:700}
+.guided-card{border:1px solid rgba(185,132,13,.28);background:var(--goldbg);border-radius:17px;padding:16px;margin-top:12px}.guided-card b{display:block;color:var(--ink);margin-bottom:6px}.guided-card p{font-size:13px;line-height:1.5;color:var(--ink2);margin:0 0 13px}.guided-card button{width:100%;border:0;border-radius:12px;background:var(--jade);color:var(--jade-on);padding:14px;font-family:inherit;font-size:15px;font-weight:700}
 /* generic screens */
 .phead{padding:4px 16px 0}
 .phead h1{font-size:24px;margin:6px 0 2px}.phead .sub{font-size:13px;color:var(--ink2);margin:0 0 12px}
@@ -431,11 +434,17 @@ button{cursor:pointer}
 .row-card .ti2{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
 .row-card .rt{flex:1;min-width:0}.row-card .rt b{font-size:15px;font-weight:500;display:block}.row-card .rt small{font-size:12px;color:var(--ink2)}
 .row-card .ar{color:var(--ink3);font-size:20px}
-.t-amber{background:#F8EFD9;color:#B07A1E}.t-blue{background:#E7F0F8;color:#2F6F9E}.t-jade{background:var(--jadebg);color:var(--jade)}.t-cin{background:var(--cinbg);color:var(--cin)}
+.mashq-group,.profile-quick-links{margin:0 16px;background:var(--card);border:1px solid var(--line);border-radius:var(--hsk-radius-medium);overflow:hidden}
+.mashq-group .row-card,.profile-quick-links .row-card{min-height:68px;gap:12px;margin:0;padding:12px;border:0;border-radius:0;background:transparent;width:100%;font-size:inherit}
+.mashq-group .row-card+.row-card,.profile-quick-links .row-card+.row-card{border-top:1px solid var(--line)}
+.mashq-group .row-card .ti2,.profile-quick-links .row-card .ti2{width:40px;height:40px;border-radius:var(--hsk-radius-medium);font-size:20px}
+.mashq-group .row-card .rt small,.profile-quick-links .row-card .rt small{font-size:13px;line-height:1.35}
+.mashq-group .row-card:focus-visible,.profile-quick-links .row-card:focus-visible{position:relative;outline:2px solid var(--cin2);outline-offset:-3px}
+.t-amber{background:#F8EFD9;color:#B07A1E}.t-blue{background:#E7F0F8;color:#2F6F9E}.t-jade{background:var(--jadebg);color:var(--jade)}.t-cin{background:var(--cinbg);color:var(--cin2)}
 .sech{font-size:13px;color:var(--ink2);font-weight:500;margin:18px 18px 9px}
 /* profile */
 .phero{display:flex;align-items:center;gap:14px;padding:10px 16px 2px}
-.pav{width:70px;height:70px;border-radius:18px;background:var(--cin);border:2px solid var(--cin2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;position:relative;flex-shrink:0}
+.pav{width:70px;height:70px;border-radius:18px;background:var(--cin);border:2px solid var(--cin2);color:var(--cin-ink);display:flex;align-items:center;justify-content:center;font-size:30px;position:relative;flex-shrink:0}
 .pav .ed{position:absolute;right:-5px;bottom:-5px;width:24px;height:24px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-size:12px;display:flex;align-items:center;justify-content:center}
 .pname{font-size:19px;font-weight:500}.pun{font-size:13px;color:var(--ink3)}
 .lvb{display:inline-flex;align-items:center;gap:5px;margin-top:7px;background:var(--cinbg);color:var(--cin2);font-size:11px;font-weight:500;padding:4px 10px;border-radius:11px}
@@ -461,16 +470,16 @@ button{cursor:pointer}
 .pgoal{display:flex;align-items:center;gap:14px;margin:14px 16px 0;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
 .pgoal .ring{width:56px;height:56px;flex-shrink:0}
 .pgoal .gt b{font-size:15px;font-weight:500}.pgoal .gt small{font-size:12px;color:var(--ink2);display:block;margin-top:2px}
-.pgoal .fl{margin-left:auto;text-align:center}.pgoal .fl b{font-size:22px;font-weight:600;color:var(--cin);display:block}.pgoal .fl small{font-size:10px;color:var(--ink2)}
+.pgoal .fl{margin-left:auto;text-align:center}.pgoal .fl b{font-size:22px;font-weight:600;color:var(--cin2);display:block}.pgoal .fl small{font-size:10px;color:var(--ink2)}
 .card2{margin:0 16px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
 .cal{display:flex;flex-direction:column;gap:5px}.cal .wk{display:flex;gap:5px;justify-content:space-between}
 .cell{width:34px;height:30px;border-radius:8px;background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink3)}
-.cell.on{background:var(--cin);border-color:var(--cin);color:#fff}.cell.tod{border:2px solid var(--gold)}
+.cell.on{background:var(--cin);border-color:var(--cin);color:var(--cin-ink)}.cell.tod{border:2px solid var(--gold)}
 .cell.ice{background:#e9f4fa;border-color:#d2e6f0;color:#78aac6}
 .ach{margin:0 16px;display:flex;flex-direction:column;gap:10px}
 .arow{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;align-items:center;gap:12px}
 .aic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.aic.c1{background:var(--cinbg);color:var(--cin)}.aic.c2{background:var(--goldbg);color:var(--gold)}.aic.c3{background:var(--jadebg);color:var(--jade)}
+.aic.c1{background:var(--cinbg);color:var(--cin2)}.aic.c2{background:var(--goldbg);color:var(--gold)}.aic.c3{background:var(--jadebg);color:var(--jade)}
 .at{flex:1;min-width:0}.at .ah{font-size:14px;font-weight:500;display:flex;justify-content:space-between}.at .ah small{color:var(--ink2);font-weight:400}
 .abar{height:7px;border-radius:5px;background:var(--line);margin-top:7px;overflow:hidden}.abar>i{display:block;height:100%;border-radius:5px;background:var(--cin)}
 .opt-row{display:flex;align-items:center;gap:11px;width:100%;background:var(--card);border:2px solid var(--line);border-radius:13px;padding:14px;margin-bottom:9px;font-family:inherit;font-size:15px;color:var(--ink)}
@@ -479,16 +488,16 @@ button{cursor:pointer}
 .toggle{margin-left:auto;width:44px;height:26px;border-radius:14px;background:var(--line);position:relative;transition:background .2s}
 .toggle.on{background:var(--jade)}.toggle:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s}.toggle.on:after{left:21px}
 /* rating */
-.lr{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--line);margin:0 16px}
+.lr{display:flex;align-items:center;gap:11px;width:calc(100% - 32px);padding:10px 0;border:0;border-bottom:1px solid var(--line);margin:0 16px;background:transparent;color:inherit;text-align:left;font:inherit;cursor:pointer}
 	.lr .rk{width:26px;text-align:center;font-weight:600;font-size:14px;color:var(--ink2)}
 	.lr .av{width:34px;height:34px;border-radius:10px;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:var(--ink2);position:relative}
 	.avp{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
 	.lr .nm{flex:1;font-size:14px}.lr .xp{font-size:13px;color:var(--ink2);font-weight:500}
 	.lr .nm small{display:block;font-size:11px;color:var(--ink3);margin-top:2px}
 	.lr.me{background:var(--cinbg);border-radius:11px;border-bottom:none;padding:10px 12px}
-	.lr.me .av{background:var(--cin);color:#fff}.lr.me .nm{font-weight:500;color:var(--cin2)}.lr.me .xp{color:var(--cin2)}
+	.lr.me .av{background:var(--cin);color:var(--cin-ink)}.lr.me .nm{font-weight:500;color:var(--cin2)}.lr.me .xp{color:var(--cin2)}
 .rt-league{display:flex;align-items:center;gap:13px;margin:8px 16px 6px;padding:14px;background:var(--card);border:1px solid var(--line);border-radius:16px}
-.rt-emb{width:50px;height:50px;border-radius:14px;background:var(--cin);border:2px solid var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0}
+.rt-emb{width:50px;height:50px;border-radius:14px;background:var(--cin);border:2px solid var(--gold);color:var(--cin-ink);display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0}
 .rt-league .nm2{font-size:16px;font-weight:500}.rt-league .sb{font-size:12px;color:var(--ink2);margin-top:2px}
 .rt-cd{margin-left:auto;text-align:center;background:var(--cinbg);border-radius:11px;padding:6px 10px}
 .rt-cd b{display:block;font-size:14px;font-weight:600;color:var(--cin2)}.rt-cd small{font-size:10px;color:var(--cin2)}
@@ -500,34 +509,34 @@ button{cursor:pointer}
 .rt-zone.up{color:var(--gold)}.rt-zone.dn{color:var(--cin)}.rt-zone .ln{flex:1;height:1px;background:currentColor;opacity:.4}
 .rt-seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:3px;margin:0 16px 8px}
 .rt-seg button{flex:1;background:none;border:none;font-family:inherit;font-size:13px;font-weight:500;color:var(--ink2);padding:8px;border-radius:10px}
-.rt-seg button.on{background:var(--cin);color:#fff}
+.rt-seg button.on{background:var(--cin);color:var(--cin-ink)}
 .med{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;border:2px solid rgba(255,255,255,.5)}
 .med.g{background:var(--gold)}.med.s{background:#A9A293}.med.b{background:#B07A4A}
 .pm{width:14px;height:14px;border-radius:4px;background:var(--gold);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;margin-left:5px}
 	.rt-invite{text-align:center;padding:40px 22px}
 	.rt-invite .han{font-size:42px;color:var(--cin);display:block;margin-bottom:12px}
 	.rt-invite p{font-size:14px;color:var(--ink2);margin:0 0 16px;line-height:1.5}
-	.rt-invite button{background:var(--cin);color:#fff;border:none;border-radius:12px;padding:12px 20px;font-family:inherit;font-size:14px;font-weight:500}
+	.rt-invite button{min-height:44px;display:inline-flex;align-items:center;justify-content:center;background:var(--cin);color:var(--cin-ink);border:none;border-radius:var(--hsk-radius-medium,12px);padding:12px 20px;font-family:inherit;font-size:14px;font-weight:500}
 	.ref-stat{display:flex;gap:10px;margin:0 16px 12px}
 	.ref-stat>div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:10px 4px;text-align:center}
 	.ref-stat b{display:block;font-size:18px;font-weight:600}.ref-stat small{font-size:11px;color:var(--ink2)}
 	.ref-badge{display:inline-flex;align-items:center;gap:4px;background:var(--jadebg);color:var(--jade);border-radius:10px;padding:3px 8px;font-size:10px;font-weight:600}
 	.ref-badge.wait{background:var(--goldbg);color:var(--gold)}
 .sp{display:flex;align-items:center;gap:13px;margin-bottom:14px}
-.sp .pav2{width:56px;height:56px;border-radius:15px;background:var(--cin);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px}
+.sp .pav2{width:56px;height:56px;border-radius:15px;background:var(--cin);color:var(--cin-ink);display:flex;align-items:center;justify-content:center;font-size:22px}
 .sp b{font-size:18px;font-weight:500;display:flex;align-items:center}.sp small{font-size:13px;color:var(--ink2)}
 .sst{display:flex;gap:10px;margin-bottom:16px}
 .sst>div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 4px;text-align:center}
 .sst b{display:block;font-size:17px;font-weight:600}.sst small{font-size:11px;color:var(--ink2)}
 .sact{display:flex;gap:10px}
 .sact button{flex:1;border:none;border-radius:13px;padding:14px;font-family:inherit;font-size:14px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px}
-.sact .b-ch{background:var(--cin);color:#fff}.sact .b-tg{background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.sact .b-ch{background:var(--cin);color:var(--cin-ink)}.sact .b-tg{background:var(--card);border:1px solid var(--line);color:var(--ink)}
 .upov{position:fixed;inset:0;background:var(--paper);z-index:42;display:none;max-width:var(--read);margin:0 auto;overflow-y:auto;padding-top:var(--safe-t)}
 .upov.on{display:block}
 .uptop{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 4px}
 .upx{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:18px;display:flex;align-items:center;justify-content:center}
 .uphero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:6px 18px 0}
-.uphero .av{width:80px;height:80px;border-radius:22px;background:var(--cin);border:2px solid var(--cin2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;position:relative}
+.uphero .av{width:80px;height:80px;border-radius:22px;background:var(--cin);border:2px solid var(--cin2);color:var(--cin-ink);display:flex;align-items:center;justify-content:center;font-size:34px;position:relative}
 .uphero .av .avp{border-radius:20px}
 .uphero .av .cr{position:absolute;right:-5px;bottom:-5px;width:26px;height:26px;border-radius:50%;background:var(--gold);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;border:2px solid var(--paper)}
 .uphero .nm{font-size:21px;font-weight:500;margin:10px 0 2px}.uphero .un{font-size:13px;color:var(--ink3)}
@@ -550,7 +559,7 @@ button{cursor:pointer}
 .ch-review .cr-item span{display:block;color:var(--ink2);font-size:12px;white-space:pre-line}.ch-review .cr-item strong{display:block;color:var(--jade);font-size:13px;margin-top:3px}.ch-review .cr-item small{display:block;color:var(--cin2);font-size:12px;margin-top:2px}
 .linkbox{display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin:10px 0;font-size:13px;color:var(--ink2)}
 .linkbox .lk{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.linkbox button{background:var(--cin);color:#fff;border:none;border-radius:9px;padding:7px 12px;font-family:inherit;font-size:12px;font-weight:500;flex-shrink:0}
+.linkbox button{background:var(--cin);color:var(--cin-ink);border:none;border-radius:9px;padding:7px 12px;font-family:inherit;font-size:12px;font-weight:500;flex-shrink:0}
 .toast{position:fixed;bottom:calc(86px + var(--safe-b));left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;font-size:13px;font-weight:500;padding:9px 16px;border-radius:20px;opacity:0;transition:all .25s;z-index:60;pointer-events:none;max-width:90%}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .combo{position:fixed;inset:0;z-index:47;display:flex;align-items:center;justify-content:center;pointer-events:none;max-width:var(--read);margin:0 auto;opacity:0;transition:opacity .2s}
@@ -559,7 +568,7 @@ button{cursor:pointer}
 .combo.on .combo-card{transform:scale(1)}
 .combo-pd{width:104px;height:104px;filter:drop-shadow(0 8px 14px rgba(33,29,23,.25));animation:comboBounce .5s ease}
 .combo-n{font-size:46px;font-weight:700;color:var(--gold);line-height:1;margin-top:6px;text-shadow:0 2px 0 rgba(154,116,32,.35)}
-.combo-tx{font-size:17px;font-weight:600;color:var(--cin2);margin-top:4px;background:#fff;padding:7px 16px;border-radius:18px;box-shadow:0 4px 12px rgba(33,29,23,.14)}
+.combo-tx{font-size:17px;font-weight:600;color:var(--cin2);margin-top:4px;background:var(--card);padding:7px 16px;border-radius:18px}
 @keyframes comboBounce{0%{transform:translateY(14px)}60%{transform:translateY(-8px)}100%{transform:translateY(0)}}
 .combo-spark{position:absolute;width:10px;height:10px;border-radius:2px;opacity:0}
 .combo-spark.go{transition:transform .7s ease-out,opacity .7s}
@@ -567,7 +576,8 @@ button{cursor:pointer}
 .voicebox .pd{width:90px;height:90px;margin:0 auto 8px}
 .voicebox h3{font-size:18px;font-weight:500;margin:0 0 4px;color:#fff}
 .voicebox p{font-size:13px;color:rgba(255,255,255,.72);margin:0 0 16px}
-.voicebox button{background:var(--cin);color:#fff;border:none;border-radius:13px;padding:14px 26px;font-family:inherit;font-size:15px;font-weight:500}
+.voicebox .voice-quota{margin:0 0 14px;color:rgba(255,255,255,.76);font-size:12px;line-height:1.45}
+.voicebox button{background:var(--cin);color:var(--cin-ink);border:none;border-radius:13px;padding:14px 26px;font-family:inherit;font-size:15px;font-weight:500}
 .pro{margin:16px;background:var(--ink);color:#fff;border-radius:16px;padding:17px;position:relative;overflow:hidden}
 .pro .gw{position:absolute;right:-6px;top:-16px;font-size:84px;color:rgba(255,255,255,.06)}
 .pro h3{margin:0 0 4px;font-size:16px;font-weight:500;color:#fff}.pro p{margin:0 0 13px;font-size:13px;color:rgba(255,255,255,.7)}
@@ -584,7 +594,7 @@ button{cursor:pointer}
 .writeov{position:fixed;inset:0;background:var(--paper);z-index:45;display:none;max-width:var(--read);margin:0 auto}
 .writeov.on{display:block}
 .writeov iframe{width:100%;height:100%;border:none;display:block}
-.writeov-x{position:absolute;top:calc(10px + var(--safe-t));right:12px;z-index:2;width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-size:20px;display:flex;align-items:center;justify-content:center}
+.writeov-x{position:absolute;top:calc(10px + var(--safe-t));right:12px;z-index:2;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-size:20px;display:flex;align-items:center;justify-content:center}
 .writeov-loading{position:absolute;inset:0;z-index:1;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:var(--paper);color:var(--ink2);font-size:14px;font-weight:600}
 .writeov.loading .writeov-loading{display:flex}
 .writeov.loading iframe{opacity:0}
@@ -646,8 +656,9 @@ button{cursor:pointer}
 .lu-rw{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:13px;padding:11px 14px;text-align:center;min-width:72px}
 .lu-rw b{display:block;font-size:18px;font-weight:600;color:var(--gold)}.lu-rw small{font-size:11px;color:rgba(255,255,255,.7)}
 .lu-rw.a-jade{border-color:rgba(72,217,154,.45)}.lu-rw.a-jade b{color:#48D99A}
+.lu-result-note{margin-top:14px;color:rgba(255,255,255,.72);font-size:13px;line-height:1.4;text-align:center}
 .lu-rw.a-blue{border-color:rgba(126,221,246,.45)}.lu-rw.a-blue b{color:#7EDDF6}
-.lu-cta{margin:0 16px calc(16px + var(--safe-b));padding:16px;background:#fff;color:var(--cin2);border:none;border-radius:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;z-index:2}
+.lu-cta{margin:0 16px calc(16px + var(--safe-b));padding:16px;background:var(--cin);color:var(--cin-ink);border:none;border-radius:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;z-index:2}
 .lu-conf{position:absolute;top:-14px;width:9px;height:13px;border-radius:2px;opacity:0;z-index:3}
 .lu-conf.fall{opacity:1;transition:transform 1.7s ease-in,opacity 1.7s}
 .ru-wrap{width:100%;display:flex;flex-direction:column;align-items:center}
@@ -657,7 +668,7 @@ button{cursor:pointer}
 .ru-rk{width:20px;text-align:center;font-weight:600;font-size:14px;color:rgba(255,255,255,.7)}
 .ru-row.me .ru-rk{color:#fff}
 .ru-av{width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#fff}
-.ru-row.me .ru-av{background:#fff;color:var(--cin2)}
+.ru-row.me .ru-av{background:var(--card);color:var(--cin2)}
 .ru-nm{flex:1;font-size:14px;color:#fff}.ru-xp{font-size:13px;color:rgba(255,255,255,.78);font-weight:500}
 .tour{position:fixed;inset:0;z-index:55;display:none;max-width:var(--read);margin:0 auto}
 .tour.on{display:block}
@@ -673,9 +684,9 @@ button{cursor:pointer}
 .tour-coach .desc{font-size:14px;line-height:1.45;margin:0 0 12px}
 .tour-coach .row{display:flex;align-items:center;gap:10px}
 .tour-coach .dots{display:flex;gap:5px;flex:1}.tour-coach .dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}.tour-coach .dots i.on{background:var(--cin)}
-.tour-coach .nx{background:var(--cin);color:#fff;border:none;border-radius:12px;padding:11px 20px;font-family:inherit;font-size:14px;font-weight:500}
+.tour-coach .nx{background:var(--cin);color:var(--cin-ink);border:none;border-radius:12px;padding:11px 20px;font-family:inherit;font-size:14px;font-weight:500}
 /* ===== FRESH polish + dopamine features ===== */
-.uban{background:linear-gradient(135deg,var(--cin),var(--cin2));color:#fff}
+.uban{background:var(--cin);color:var(--cin-ink)}
 .uban.lock{background:var(--card);color:var(--ink2)}
 /* edge glow (combo) */
 #edgeglow{position:fixed;inset:0;pointer-events:none;z-index:46;opacity:0;transition:opacity .4s;max-width:var(--read);margin:0 auto}
@@ -777,10 +788,10 @@ button{cursor:pointer}
 .rc-tile.rc-ok{border-color:var(--jade);background:var(--jadebg)}.rc-tile.rc-ok .rc-p{color:var(--jade);font-weight:500}
 .rc-tile.rc-bad{border-color:var(--cin);background:var(--redbg)}.rc-tile.rc-bad .rc-p{color:var(--cin2)}
 .rc-done{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px 0}
-.rc-done .rc-st{width:90px;height:90px;border-radius:24px;background:var(--cin);border:3px solid var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:16px}
+.rc-done .rc-st{width:90px;height:90px;border-radius:24px;background:var(--cin);border:3px solid var(--gold);color:var(--cin-ink);display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:16px}
 .rc-done h3{font-size:22px;font-weight:500;margin:0 0 4px}
 .rc-done p{font-size:14px;color:var(--ink2);margin:0 0 20px}
-.rc-done button{width:100%;max-width:280px;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500}
+.rc-done button{width:100%;max-width:280px;background:var(--cin);color:var(--cin-ink);border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500}
 .rc-done button.rc-ghost{background:transparent;border:1px solid var(--line);color:var(--ink2);margin-top:8px;font-size:15px;padding:14px}
 .rc-done button.rc-prem{background:transparent;border:1px solid var(--line);color:var(--cin2);margin-top:8px;font-size:15px;padding:14px}
 .rc-loading{padding:60px 20px;text-align:center;color:var(--ink3)}
@@ -808,24 +819,24 @@ button{cursor:pointer}
 .pr-listen{margin-top:14px;display:inline-flex;align-items:center;gap:7px;background:var(--cinbg);color:var(--cin2);border:none;border-radius:20px;padding:9px 16px;font-family:inherit;font-size:14px;font-weight:500}
 .pr-ctrl{padding:8px 0 calc(24px + var(--safe-b));display:flex;flex-direction:column;align-items:center;gap:9px}
 .pr-micwrap{position:relative;width:84px;height:84px;display:flex;align-items:center;justify-content:center}
-.pr-mic{width:78px;height:78px;border-radius:50%;background:var(--cin);color:#fff;border:none;font-size:31px;display:flex;align-items:center;justify-content:center;z-index:2}
-.pr-mic.pr-rec{background:var(--cin2)}
+.pr-mic{width:78px;height:78px;border-radius:50%;background:var(--cin);color:var(--cin-ink);border:none;font-size:31px;display:flex;align-items:center;justify-content:center;z-index:2}
+.pr-mic.pr-rec{background:var(--cin);color:var(--cin-ink)}
 .pr-micwrap.pr-rec:before,.pr-micwrap.pr-rec:after{content:"";position:absolute;width:78px;height:78px;border-radius:50%;border:3px solid var(--cin);animation:pr-ring 1.4s ease-out infinite}
 .pr-micwrap.pr-rec:after{animation-delay:.7s}
 @keyframes pr-ring{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.7);opacity:0}}
 .pr-hint{font-size:13px;color:var(--ink3)}
 .pr-skip{background:none;border:none;color:var(--ink3);font-family:inherit;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:5px;padding:6px 12px;margin-top:2px}
 .pr-skip:active{opacity:.6}
-.pr-toast{position:absolute;top:54px;left:50%;transform:translateX(-50%) translateY(-12px);background:var(--jade);color:#fff;font-size:14px;font-weight:500;padding:7px 15px;border-radius:18px;opacity:0;transition:all .3s;z-index:6}
+.pr-toast{position:absolute;top:54px;left:50%;transform:translateX(-50%) translateY(-12px);background:var(--jade);color:var(--jade-on);font-size:14px;font-weight:500;padding:7px 15px;border-radius:18px;opacity:0;transition:all .3s;z-index:6}
 .pr-toast.pr-show{opacity:1;transform:translateX(-50%) translateY(0)}
 .pr-conf{position:absolute;top:-14px;width:9px;height:13px;border-radius:2px;opacity:0;z-index:5}
 .pr-conf.pr-fall{opacity:1;transition:transform 1.4s ease-in,opacity 1.4s}
 .pr-done{position:absolute;inset:0;background:var(--paper);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;z-index:8}
 .pr-done.on{display:flex}
-.pr-done .pr-st{width:90px;height:90px;border-radius:24px;background:var(--cin);border:3px solid var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:16px;font-family:"Songti SC","STSong","Noto Serif SC",serif}
+.pr-done .pr-st{width:90px;height:90px;border-radius:24px;background:var(--cin);border:3px solid var(--gold);color:var(--cin-ink);display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:16px;font-family:"Songti SC","STSong","Noto Serif SC",serif}
 .pr-done h3{font-size:23px;font-weight:500;margin:0 0 4px}
 .pr-done p{font-size:14px;color:var(--ink2);margin:0 0 20px}
-.pr-done button{width:100%;max-width:280px;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500}
+.pr-done button{width:100%;max-width:280px;background:var(--cin);color:var(--cin-ink);border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500}
 .pr-done button.pr-ghost{background:transparent;border:1px solid var(--line);color:var(--ink2);margin-top:8px}
 .pr-done button.pr-prem{background:transparent;border:1px solid var(--line);color:var(--cin2);margin-top:8px}
 .pr-loading{margin:auto;color:var(--ink3)}
@@ -842,12 +853,12 @@ button{cursor:pointer}
 #mk-root .cta .gw{position:absolute;right:-6px;top:-16px;font-size:84px;color:rgba(255,255,255,.06)}
 #mk-root .cta b{font-size:16px;font-weight:500;display:flex;align-items:center;gap:8px}
 #mk-root .cta p{margin:5px 0 13px;font-size:13px;color:rgba(255,255,255,.72)}
-#mk-root .cta button{background:var(--cin);color:#fff;border:none;border-radius:12px;padding:12px 18px;font-family:inherit;font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:7px}
+#mk-root .cta button{background:var(--cin);color:var(--cin-ink);border:none;border-radius:12px;padding:12px 18px;font-family:inherit;font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:7px}
 #mk-root .chips{display:flex;gap:7px;overflow-x:auto;margin-bottom:14px;padding-bottom:2px}
 #mk-root .chips button{flex-shrink:0;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:7px 13px;font-family:inherit;font-size:12px;font-weight:500;color:var(--ink2)}
-#mk-root .chips button.on{background:var(--cin);border-color:var(--cin);color:#fff}
+#mk-root .chips button.on{background:var(--cin);border-color:var(--cin);color:var(--cin-ink)}
 #mk-root .item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:13px;margin-bottom:10px}
-#mk-root .item .tl{width:44px;height:44px;border-radius:12px;background:var(--cinbg);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+#mk-root .item .tl{width:44px;height:44px;border-radius:12px;background:var(--cinbg);color:var(--cin2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 #mk-root .item .mid{flex:1;min-width:0}
 #mk-root .item .mid .w{display:flex;align-items:baseline;gap:7px}
 #mk-root .item .mid .w b{font-size:17px}
@@ -859,15 +870,15 @@ button{cursor:pointer}
 #mk-root .item .mid .err .c{color:var(--jade)}
 #mk-root .item .mid .meta{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 5px}
 #mk-root .item .mid .meta span{font-size:10px;color:var(--ink2);background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:2px 6px}
-#mk-root .item .cnt{font-size:11px;font-weight:600;color:var(--cin);background:var(--cinbg);border-radius:9px;padding:2px 7px;flex-shrink:0}
+#mk-root .item .cnt{font-size:11px;font-weight:600;color:var(--cin2);background:var(--cinbg);border-radius:9px;padding:2px 7px;flex-shrink:0}
 #mk-root .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px;min-height:55vh}
 #mk-root .empty .ic{width:84px;height:84px;border-radius:22px;background:var(--jadebg);color:var(--jade);display:flex;align-items:center;justify-content:center;font-size:38px;margin-bottom:16px}
 #mk-root .empty h3{font-size:19px;font-weight:500;margin:0 0 6px}
 #mk-root .empty p{font-size:14px;color:var(--ink2);margin:0 0 22px;line-height:1.5}
-#mk-root .empty button{background:var(--cin);color:#fff;border:none;border-radius:13px;padding:13px 22px;font-family:inherit;font-size:14px;font-weight:500}
+#mk-root .empty button{background:var(--cin);color:var(--cin-ink);border:none;border-radius:13px;padding:13px 22px;font-family:inherit;font-size:14px;font-weight:500}
 #mk-root .state{display:flex;align-items:center;justify-content:center;gap:9px;min-height:42vh;color:var(--ink2);font-size:14px;text-align:center;flex-direction:column}
 #mk-root .state i{font-size:30px;color:var(--cin)}
-#mk-root .state button{background:var(--cin);color:#fff;border:0;border-radius:12px;padding:12px 20px;font:600 14px inherit}
+#mk-root .state button{background:var(--cin);color:var(--cin-ink);border:0;border-radius:12px;padding:12px 20px;font:600 14px inherit}
 #mk-root .more{width:100%;border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:13px;padding:13px;font:600 14px inherit;margin:2px 0 12px}
 #mk-root .rv{position:fixed;inset:0;background:var(--paper);z-index:50;display:flex;flex-direction:column;max-width:var(--read);margin:0 auto}
 #mk-root .rv[hidden]{display:none}
@@ -880,14 +891,14 @@ button{cursor:pointer}
 #mk-root .rv-material{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:-8px 0 16px;text-align:center}
 #mk-root .rv-material .han{font-size:24px;line-height:1.4}
 #mk-root .rv-material .py{font-size:13px;color:var(--cin2);margin-top:3px}
-#mk-root .rv-audio{width:42px;height:42px;border-radius:50%;border:0;background:var(--cinbg);color:var(--cin);font-size:20px;margin-bottom:8px}
+#mk-root .rv-audio{width:42px;height:42px;border-radius:50%;border:0;background:var(--cinbg);color:var(--cin2);font-size:20px;margin-bottom:8px}
 #mk-root .rv-opts{display:flex;flex-direction:column;gap:10px}
 #mk-root .rv-opt{display:flex;align-items:center;gap:11px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:15px 16px;font-family:inherit;font-size:16px;color:var(--ink);text-align:left;width:100%;transition:border-color .15s,background .15s}
 #mk-root .rv-opt .rk{width:26px;height:26px;border-radius:8px;background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--ink2);flex-shrink:0}
 #mk-root .rv-opt.ok{border-color:var(--jade);background:var(--jadebg)}
 #mk-root .rv-opt.ok .rk{background:var(--jade);border-color:var(--jade);color:#fff}
 #mk-root .rv-opt.no{border-color:var(--cin);background:var(--cinbg)}
-#mk-root .rv-opt.no .rk{background:var(--cin);border-color:var(--cin);color:#fff}
+#mk-root .rv-opt.no .rk{background:var(--cin);border-color:var(--cin);color:var(--cin-ink)}
 #mk-root .rv-opt:disabled{opacity:1}
 #mk-root .rv-fb{margin-top:18px;border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.5}
 #mk-root .rv-fb.ok{background:var(--jadebg);color:var(--jade)}
@@ -907,10 +918,10 @@ button{cursor:pointer}
 #mk-root .lim[hidden]{display:none}
 #mk-root .lim .bd{position:absolute;inset:0;background:rgba(33,29,23,.45)}
 #mk-root .lim .sh{position:relative;background:var(--card);width:100%;max-width:var(--read);border-radius:22px 22px 0 0;padding:26px 20px calc(22px + var(--safe-b));text-align:center}
-#mk-root .lim .sh .ic{width:64px;height:64px;border-radius:18px;background:var(--cinbg);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 14px}
+#mk-root .lim .sh .ic{width:64px;height:64px;border-radius:18px;background:var(--cinbg);color:var(--cin2);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 14px}
 #mk-root .lim .sh h3{font-size:19px;font-weight:600;margin-bottom:7px}
 #mk-root .lim .sh p{font-size:14px;color:var(--ink2);line-height:1.5;margin-bottom:18px}
-#mk-root .lim .sh .go{width:100%;background:var(--cin);color:#fff;border:none;border-radius:13px;padding:15px;font-family:inherit;font-size:15px;font-weight:500;margin-bottom:9px}
+#mk-root .lim .sh .go{width:100%;background:var(--cin);color:var(--cin-ink);border:none;border-radius:13px;padding:15px;font-family:inherit;font-size:15px;font-weight:500;margin-bottom:9px}
 #mk-root .lim .sh .lt{width:100%;background:none;border:none;color:var(--ink2);font-family:inherit;font-size:14px;padding:9px}
 /* --- Test markazi (#tc-root ichida scope'langan) --- */
 #tc-root{flex:1;min-height:0;overflow-y:auto;max-width:var(--read);margin:0 auto;width:100%;position:relative;padding:calc(14px + var(--safe-t)) 16px calc(20px + var(--safe-b))}
@@ -926,7 +937,7 @@ button{cursor:pointer}
 #tc-root .place button{background:var(--gold);color:#3a2c08;border:none;border-radius:12px;padding:12px 18px;font-family:inherit;font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:7px}
 #tc-root .sech{font-size:13px;color:var(--ink2);font-weight:500;margin:8px 2px 9px}
 #tc-root .ex{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:11px;font-family:inherit;color:var(--ink)}
-#tc-root .ex .lvl{width:52px;height:52px;border-radius:14px;background:var(--cin);border:2px solid var(--cin2);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;line-height:1}
+#tc-root .ex .lvl{width:52px;height:52px;border-radius:14px;background:var(--cin);border:2px solid var(--cin2);color:var(--cin-ink);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;line-height:1}
 #tc-root .ex .lvl b{font-size:11px;opacity:.85}
 #tc-root .ex .lvl span{font-size:20px;font-weight:600}
 #tc-root .ex .et{flex:1}
@@ -937,7 +948,7 @@ button{cursor:pointer}
 #tc-root .ex .go{background:var(--cinbg);color:var(--cin2);border:none;border-radius:11px;padding:9px 13px;font-family:inherit;font-size:13px;font-weight:500;flex-shrink:0}
 #tc-root .empty{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:70px 24px;min-height:60vh}
 #tc-root .empty.on{display:flex}
-#tc-root .empty .ic{width:84px;height:84px;border-radius:22px;background:var(--cinbg);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:38px;margin-bottom:16px}
+#tc-root .empty .ic{width:84px;height:84px;border-radius:22px;background:var(--cinbg);color:var(--cin2);display:flex;align-items:center;justify-content:center;font-size:38px;margin-bottom:16px}
 #tc-root .empty h3{font-size:19px;font-weight:500;margin:0 0 6px}
 #tc-root .empty p{font-size:14px;color:var(--ink2);margin:0 0 22px;line-height:1.5}
 #tc-root .empty button{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:13px;padding:12px 22px;font-family:inherit;font-size:14px;font-weight:500}
@@ -956,7 +967,7 @@ button{cursor:pointer}
 #tc-root .pl .opt .k{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink3)}
 #tc-root .pl .opt.sel{border-color:var(--cin);background:var(--cinbg)}
 #tc-root .pl .res{text-align:center;padding:14px 6px 0}
-#tc-root .pl .res .lvl{width:108px;height:108px;border-radius:28px;background:var(--cin);border:3px solid var(--gold);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 14px}
+#tc-root .pl .res .lvl{width:108px;height:108px;border-radius:28px;background:var(--cin);border:3px solid var(--gold);color:var(--cin-ink);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 14px}
 #tc-root .pl .res .lvl small{font-size:13px;opacity:.85}
 #tc-root .pl .res .lvl b{font-size:34px;font-weight:600;line-height:1}
 #tc-root .pl .res h3{font-size:20px;font-weight:500;margin:0 0 4px}
@@ -975,9 +986,9 @@ button{cursor:pointer}
 #tc-root .pl .review-list>div span,#tc-root .pl .review-list>div strong,#tc-root .pl .review-list>div small{display:block}
 #tc-root .pl .review-list>div strong{color:var(--jade);margin-top:3px}
 #tc-root .pl .review-list>div small{color:var(--cin2);margin-top:2px}
-#tc-root .pl .cta{width:100%;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
+#tc-root .pl .cta{width:100%;background:var(--cin);color:var(--cin-ink);border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
 #tc-root .pl .ghost{width:100%;background:none;border:1px solid var(--line);color:var(--ink2);border-radius:14px;padding:13px;font-family:inherit;font-size:14px;font-weight:500}
-#tc-root .pl .abtn{width:84px;height:84px;border-radius:50%;background:var(--cin);border:none;color:#fff;font-size:34px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+#tc-root .pl .abtn{width:84px;height:84px;border-radius:50%;background:var(--cin);border:none;color:var(--cin-ink);font-size:34px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
 #tc-root .pl .ahint{font-size:13px;color:var(--ink2);margin-top:2px}
 #tc-root .pl .qzh{font-size:26px;line-height:1.3;margin-top:8px}
 #tc-root .pl .opt small{display:block;font-size:12px;color:var(--ink2);font-weight:400;margin-top:2px}
@@ -1028,7 +1039,7 @@ button{cursor:pointer}
 #vc-root .msg.me{justify-content:flex-end}
 #vc-root .bub{max-width:84%;border-radius:15px;padding:9px 12px;line-height:1.4}
 #vc-root .msg.ai .bub{background:var(--card);border:1px solid var(--line);border-top-left-radius:6px}
-#vc-root .msg.me .bub{background:var(--cin);color:#fff;border-top-right-radius:6px}
+#vc-root .msg.me .bub{background:var(--cin);color:var(--cin-ink);border-top-right-radius:6px}
 #vc-root .bub .zh{font-size:19px;color:var(--ink)}
 #vc-root .bub .py{font-size:13px;color:var(--cin2);font-weight:500;margin-top:3px}
 #vc-root .bub .tr{font-size:13px;color:var(--ink2);margin-top:2px}
@@ -1050,8 +1061,8 @@ button{cursor:pointer}
 #vc-root .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 #vc-root .sq{width:48px;height:48px;border-radius:16px;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-size:21px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 #vc-root .micwrap{flex:1;display:flex;justify-content:center}
-#vc-root .mic{position:relative;width:78px;height:78px;border-radius:50%;background:var(--cin);color:#fff;border:3px solid rgba(251,247,239,.7);font-size:31px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}
-#vc-root .mic.rec{background:var(--cin2);transform:scale(1.06)}
+#vc-root .mic{position:relative;width:78px;height:78px;border-radius:50%;background:var(--cin);color:var(--cin-ink);border:3px solid rgba(251,247,239,.7);font-size:31px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}
+#vc-root .mic.rec{background:var(--cin);color:var(--cin-ink);transform:scale(1.06)}
 #vc-root .mic.rec:after{content:"";position:absolute;inset:-3px;border-radius:50%;border:3px solid var(--cin);animation:pr 1.2s ease-out infinite}
 #vc-root 0%{transform:scale(1);opacity:.6}
 #vc-root 100%{transform:scale(1.5);opacity:0}
@@ -1062,7 +1073,7 @@ button{cursor:pointer}
 #vc-root .row.off{display:none}
 #vc-root .kb textarea{flex:1;min-height:46px;max-height:96px;resize:none;font-family:inherit;font-size:16px;line-height:1.35;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 13px}
 #vc-root .kb textarea:focus{outline:none;border-color:rgba(194,64,58,.5)}
-#vc-root .kbsend{width:46px;height:46px;border-radius:14px;background:var(--cin);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+#vc-root .kbsend{width:46px;height:46px;border-radius:14px;background:var(--cin);color:var(--cin-ink);font-size:20px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 #vc-root .kbsend[disabled]{opacity:.4}
 #vc-root .kbclose{width:46px;height:46px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-size:20px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 #vc-root .sheet{position:absolute;inset:0;z-index:20;display:none}
@@ -1084,7 +1095,7 @@ button{cursor:pointer}
 #vc-root .done{position:absolute;inset:0;background:rgba(33,25,15,.55);backdrop-filter:blur(3px);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;z-index:30}
 #vc-root .done.on{display:flex}
 #vc-root .dcard{background:var(--paper);border-radius:22px;padding:26px 22px;width:100%}
-#vc-root .done .b{width:100%;background:var(--cin);color:#fff;border-radius:14px;padding:15px;font-size:16px;font-weight:500;margin-top:18px}
+#vc-root .done .b{width:100%;background:var(--cin);color:var(--cin-ink);border-radius:14px;padding:15px;font-size:16px;font-weight:500;margin-top:18px}
 #vc-root .done .b2{width:100%;color:var(--ink2);font-size:14px;padding:12px 0 2px}
 #vc-root .done p{font-size:14px;color:var(--ink2);margin:6px 0 0}
 #vc-root .done h3{font-size:21px;font-weight:500;margin:6px 0 0}
@@ -1226,13 +1237,13 @@ button{cursor:pointer}
        bo'limning o'ziga o'xshab turmaydi. Bo'lim almashganda yangilanadi. -->
   <div id="hint-float" aria-live="polite"></div>
 
-  <div class="nav" id="nav">
-    <button class="on" data-s="course"><i class="ti ti-map-2" id="i-c"></i><span data-i="course"></span></button>
+  <nav class="nav" id="nav">
+    <button class="on" data-s="course" aria-current="page"><i class="ti ti-map-2" id="i-c"></i><span data-i="course"></span></button>
     <button data-s="mashq"><i class="ti ti-cards"></i><span data-i="mashq"></span></button>
     <button class="center" data-s="voice"><span class="fab"><i class="ti ti-microphone"></i></span><span class="lbl" data-i="voice"></span></button>
     <button data-s="rating"><i class="ti ti-trophy"></i><span data-i="rating"></span></button>
     <button data-s="profile"><i class="ti ti-user"></i><span data-i="profile"></span></button>
-  </div>
+  </nav>
 
   <div class="sheet" id="sheet"><div class="si" onclick="event.stopPropagation()"><button class="sx" onclick="App.closeSheet()"><i class="ti ti-x"></i></button><div class="grip"></div><div id="sheet-body"></div></div></div>
 
@@ -1247,7 +1258,7 @@ button{cursor:pointer}
     <div class="fbody" id="f-body"></div>
     <button class="fcta" id="f-cta" onclick="Flow.next()"></button>
     <button class="writebtn" id="writebtn" onclick="App.openWriter(writeChar)" style="display:none" aria-label="Yozilishi"><span class="penwrap"><i class="ti ti-pencil"></i></span></button>
-    <div class="fbar" id="f-bar"><div class="fmsg" id="f-msg"></div><button class="fbtn" onclick="Flow.next()" id="f-barbtn"></button></div>
+    <div class="fbar" id="f-bar"><div class="fmsg" id="f-msg" role="status" aria-live="polite"></div><button class="fbtn" onclick="Flow.next()" id="f-barbtn"></button></div>
   </div>
 
   </div>
@@ -1275,6 +1286,8 @@ var I18N={
   tj:{trialOn:"HSK AI Pro ба 7 рӯз кушода шуд",trialFail:"Ҳозир нашуд",trialTitle:"HSK AI Pro — 7 рӯз ройгон",trialBody:"Ҳамаи имкониятҳои асосиро месанҷед. Худкор пул гирифта намешавад.",trialCta:"7 рӯз ройгон санҷидан",trialActive:"HSK AI Pro фаъол",trialLeft:"{n} рӯз монд",trialLeftHours:"Имрӯз тамом мешавад · {n} соат монд",trialLeftSoon:"Имрӯз тамом мешавад · камтар аз 1 соат",trialUsed:"Шумо аллакай санҷишро истифода бурдед",planPay:"HSK AI Pro гирифтан",planFree:"Ройгон оғоз кардан",planTitle:"Нақшаи шахсии шумо тайёр",planBody:"Интихоб кунед, ки чӣ тавр оғоз мекунед. Режими ройгон ҳамеша дастрас — бо маҳдудияти рӯзона.",nav:{course:"Курс",mashq:"Машқ",voice:"AI Voice",rating:"Рейтинг",profile:"Профил"},cont:"Идома",check:"Санҷидан",next:"Идома",lessons:"дарс",unit:"Фасл",done:"анҷом",here:"Ин ҷо",stage:"зина",completeOf:"иҷро шуд",finishPrev:"Дарси пешинаро анҷом диҳед",repeat:"Такрор",lessonDone:"Дарс анҷом ёфт!",lessonDoneSub:"Офарин! Зинаи навбатӣ интизор аст.",correct:"Дуруст!",wrong:"Нодуруст",rightAns:"Ҷавоби дуруст:",newWord:"Калимаи нав",grammar:"Грамматика",dialog:"Гуфтугӯ",listen:"Гӯш кардан",buildSent:"Ҷумларо созед",matchPairs:"Ҷуфтҳоро мувофиқ кунед",say:"Талаффуз кунед",mashqSub:"Мустаҳкам ва санҷиш",dict:"Луғати иероглиф",dictSub:"HSK 1–4 · навишт, пинйин, маъно",recog:"Шинохти иероглиф",recogSub:"Аз байни монандҳо дурустро ёбед",pron:"Машқи талаффуз",pronSub:"Гӯш кун, такрор кун",testCenter:"Маркази тест",testSub:"Имтиҳонҳои HSK ва муайянкунии сатҳ",mistakes:"Хатоҳои ман",mistakesSub:"Кор бар ҷойҳои заиф",voiceTitle:"Бо AI сӯҳбат кунед",voiceSub:"Сӯҳбати зинда бо панда 阿宝.",voiceStart:"Оғози сӯҳбат",league:"Лигаи 朱雀",you:"Шумо",unlockTitle:"Ҳамаро кушоед",unlockSub:"AI Voice ва ҳамаи дарсҳо",unlockBtn:"HSK AI Pro ⭐️",learner:"донишҷӯ",premium:"HSK AI Pro",xp:"XP",streak:"рӯз",rank:"ҷой",lang:"Забон",notif:"Огоҳиҳо",goal:"Ҳадафи рӯзона",help:"Кӯмак",helpTitle:"Кӯмак",helpText:"Дар mini app хатогӣ ё мушкилӣ пайдо шуд? Ба админ кӯтоҳ нависед ва screenshot фиристед — кӯмак мекунем.",helpBtn:"Ба админ навиштан",helpNoContact:"Тамоси админ ҳоло дастрас нест. Баъдтар кӯшиш кунед.",on:"Фаъол",friends:"Дӯстон",payTitle:"HSK AI Pro",paySub:"Тамоми роҳи HSK",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",subscribe:"HSK AI Pro ⭐️ гирифтан",later:"Дертар",lockedLesson:"Ин дарс дар HSK AI Pro аст"}
 };
 var LANG=(new URLSearchParams(location.search).get("lang")||"ru");if(!I18N[LANG])LANG="ru";
+function syncDocumentLanguage(){document.documentElement.lang=LANG==="tj"?"tg":LANG;}
+syncDocumentLanguage();
 var LEGACY_LEVELS=["hsk1","hsk2","hsk3","hsk4"];
 var HSK30_LEVELS=["nhsk1","nhsk2","nhsk3"];
 var LEVELS=LEGACY_LEVELS.concat(HSK30_LEVELS);
@@ -1293,9 +1306,9 @@ function practiceWordsUrl(){return isHsk30Level((MAP&&MAP.level)||getSelectedLev
 function practiceWords(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?(window.HSK30_WORDS||[]):(typeof WORDS!=="undefined"?WORDS:[])}
 function practiceWordGate(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?(window.HSK30_WORD_GATE||{}):(window.HSK_WORD_GATE||{})}
 var TRACK_UI={
-  uz:{courseVersion:"Kurs versiyasi",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Hozirgi kurs",switching:"Kurs almashtirilmoqda…",hsk30Title:"HSK 3.0 ni ochish",hsk30Body:"HSK 3.0 versiyasida HSK 1–3 yangi darsliklari bor.",permanent:"{price} · doimiy ochish",stay:"HSK 2.0 da qolish",backTo20:"HSK 2.0 ga qaytish",disabled:"HSK 3.0 hozircha yopiq.",tryAgain:"Qayta urinib ko'rish",testSoon:"HSK 3.0 testlari · Tez orada",testSoonTitle:"HSK 3.0 testlari",testSoonBody:"Yangi HSK 3.0 imtihon formati tayyorlanmoqda.",promoTitle:"HSK 3.0 ni ochish",promoBody:"HSK 3.0 versiyasida HSK 1–3 yangi darsliklari bor.",promoBodyUnlocked:"HSK 3.0 siz uchun ochiq. Yangi darsliklardan boshlang.",promoUnlock:"{price} · doimiy ochish",promoOpen:"HSK 3.0 ga o'tish",promoStay:"HSK 2.0 da qolish",promoBooksAlt:"HSK 1, 2 va 3 yangi darsliklari",promoSwitch:"HSK 3.0 ga o'tish",promoLater:"Keyinroq",promoRecommended:"Tavsiya",switchConfirmTitle:"Kurs versiyasini almashtirasizmi?",switchConfirmBody:"Joriy kursdagi progressingiz saqlanadi. Istalgan payt boshqa versiyaga qaytishingiz mumkin.",switchConfirmAction:"Almashtirish",cancel:"Bekor qilish",close:"Yopish"},
-  ru:{courseVersion:"Версия курса",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Текущий курс",switching:"Переключаем курс…",hsk30Title:"Открыть HSK 3.0",hsk30Body:"В HSK 3.0 доступны новые учебники HSK 1–3.",permanent:"{price} · открыть навсегда",stay:"Остаться на HSK 2.0",backTo20:"Вернуться на HSK 2.0",disabled:"HSK 3.0 пока отключён.",tryAgain:"Попробовать снова",testSoon:"Тесты HSK 3.0 · Скоро",testSoonTitle:"Тесты HSK 3.0",testSoonBody:"Новый формат экзаменов HSK 3.0 ещё готовится.",promoTitle:"Открыть HSK 3.0",promoBody:"В версии HSK 3.0 доступны новые учебники HSK 1–3.",promoBodyUnlocked:"HSK 3.0 доступен вашему аккаунту. Начните заниматься по новым учебникам.",promoUnlock:"{price} · открыть навсегда",promoOpen:"Перейти на HSK 3.0",promoStay:"Остаться на HSK 2.0",promoBooksAlt:"Новые учебники HSK 1, 2 и 3",promoSwitch:"Перейти на HSK 3.0",promoLater:"Позже",promoRecommended:"Рекомендуем",switchConfirmTitle:"Сменить версию курса?",switchConfirmBody:"Прогресс текущего курса сохранится. Вы сможете вернуться к другой версии в любое время.",switchConfirmAction:"Переключить",cancel:"Отмена",close:"Закрыть"},
-  tj:{courseVersion:"Версияи курс",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Курси ҳозира",switching:"Курс иваз мешавад…",hsk30Title:"Кушодани HSK 3.0",hsk30Body:"Дар версияи HSK 3.0 китобҳои нави HSK 1–3 дастрасанд.",permanent:"{price} · ҳамешагӣ кушодан",stay:"Дар HSK 2.0 мондан",backTo20:"Ба HSK 2.0 баргаштан",disabled:"HSK 3.0 ҳоло хомӯш аст.",tryAgain:"Боз кӯшиш кардан",testSoon:"Тестҳои HSK 3.0 · Ба наздикӣ",testSoonTitle:"Тестҳои HSK 3.0",testSoonBody:"Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад.",promoTitle:"HSK 3.0-ро кушоед",promoBody:"Дар версияи HSK 3.0 китобҳои нави HSK 1–3 дастрасанд.",promoBodyUnlocked:"HSK 3.0 барои ҳисоби шумо дастрас аст. Омӯзишро бо китобҳои нав оғоз кунед.",promoUnlock:"{price} · ҳамеша кушодан",promoOpen:"Гузаштан ба HSK 3.0",promoStay:"Дар HSK 2.0 мондан",promoBooksAlt:"Китобҳои нави HSK 1, 2 ва 3",promoSwitch:"Гузаштан ба HSK 3.0",promoLater:"Баъдтар",promoRecommended:"Тавсия",switchConfirmTitle:"Версияи курсро иваз мекунед?",switchConfirmBody:"Пешрафти курси ҷорӣ нигоҳ дошта мешавад. Ҳар вақт метавонед ба версияи дигар баргардед.",switchConfirmAction:"Иваз кардан",cancel:"Бекор кардан",close:"Пӯшидан"}
+  uz:{courseVersion:"Kurs versiyasi",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Hozirgi kurs",switching:"Kurs almashtirilmoqda…",hsk30Title:"HSK 3.0 ni ochish",hsk30Body:"HSK 3.0 versiyasida HSK 1–3 yangi darsliklari bor.",permanent:"{price} · doimiy ochish",stay:"HSK 2.0 da qolish",backTo20:"HSK 2.0 ga qaytish",disabled:"HSK 3.0 hozircha yopiq.",paymentRejectedTitle:"HSK 3.0 to‘lovi qabul qilinmadi",paymentRejectedBody:"To‘lovingiz qabul qilinmadi. Ma’lumotlarni tekshirib, to‘lovni boshidan yuboring.",tryAgain:"Qayta urinib ko'rish",testSoon:"HSK 3.0 testlari · Tez orada",testSoonTitle:"HSK 3.0 testlari",testSoonBody:"Yangi HSK 3.0 imtihon formati tayyorlanmoqda.",promoTitle:"HSK 3.0 ni ochish",promoBody:"HSK 3.0 versiyasida HSK 1–3 yangi darsliklari bor.",promoBodyUnlocked:"HSK 3.0 siz uchun ochiq. Yangi darsliklardan boshlang.",promoUnlock:"{price} · doimiy ochish",promoOpen:"HSK 3.0 ga o'tish",promoStay:"HSK 2.0 da qolish",promoBooksAlt:"HSK 1, 2 va 3 yangi darsliklari",promoSwitch:"HSK 3.0 ga o'tish",promoLater:"Keyinroq",promoRecommended:"Tavsiya",switchConfirmTitle:"Kurs versiyasini almashtirasizmi?",switchConfirmBody:"Joriy kursdagi progressingiz saqlanadi. Istalgan payt boshqa versiyaga qayтишингиз мумкин.",switchConfirmAction:"Almashtirish",cancel:"Bekor qilish",close:"Yopish"},
+  ru:{courseVersion:"Версия курса",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Текущий курс",switching:"Переключаем курс…",hsk30Title:"Открыть HSK 3.0",hsk30Body:"В HSK 3.0 доступны новые учебники HSK 1–3.",permanent:"{price} · открыть навсегда",stay:"Остаться на HSK 2.0",backTo20:"Вернуться на HSK 2.0",disabled:"HSK 3.0 пока отключён.",paymentRejectedTitle:"Платёж за HSK 3.0 не принят",paymentRejectedBody:"Платёж не принят. Проверьте данные и отправьте его заново.",tryAgain:"Попробовать снова",testSoon:"Тесты HSK 3.0 · Скоро",testSoonTitle:"Тесты HSK 3.0",testSoonBody:"Новый формат экзаменов HSK 3.0 ещё готовится.",promoTitle:"Открыть HSK 3.0",promoBody:"В версии HSK 3.0 доступны новые учебники HSK 1–3.",promoBodyUnlocked:"HSK 3.0 доступен вашему аккаунту. Начните заниматься по новым учебникам.",promoUnlock:"{price} · открыть навсегда",promoOpen:"Перейти на HSK 3.0",promoStay:"Остаться на HSK 2.0",promoBooksAlt:"Новые учебники HSK 1, 2 и 3",promoSwitch:"Перейти на HSK 3.0",promoLater:"Позже",promoRecommended:"Рекомендуем",switchConfirmTitle:"Сменить версию курса?",switchConfirmBody:"Прогресс текущего курса сохранится. Вы сможете вернуться к другой версии в любое время.",switchConfirmAction:"Переключить",cancel:"Отмена",close:"Закрыть"},
+  tj:{courseVersion:"Версияи курс",hsk20:"HSK 2.0",hsk30:"HSK 3.0",current:"Курси ҳозира",switching:"Курс иваз мешавад…",hsk30Title:"Кушодани HSK 3.0",hsk30Body:"Дар версияи HSK 3.0 китобҳои нави HSK 1–3 дастрасанд.",permanent:"{price} · ҳамешагӣ кушодан",stay:"Дар HSK 2.0 мондан",backTo20:"Ба HSK 2.0 баргаштан",disabled:"HSK 3.0 ҳоло хомӯш аст.",paymentRejectedTitle:"Пардохти HSK 3.0 қабул нашуд",paymentRejectedBody:"Пардохти шумо қабул нашуд. Маълумотро санҷида, пардохтро аз нав фиристед.",tryAgain:"Боз кӯшиш кардан",testSoon:"Тестҳои HSK 3.0 · Ба наздикӣ",testSoonTitle:"Тестҳои HSK 3.0",testSoonBody:"Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад.",promoTitle:"HSK 3.0-ро кушоед",promoBody:"Дар версияи HSK 3.0 китобҳои нави HSK 1–3 дастрасанд.",promoBodyUnlocked:"HSK 3.0 барои ҳисоби шумо дастрас аст. Омӯзишро бо китобҳои нав оғоз кунед.",promoUnlock:"{price} · ҳамеша кушодан",promoOpen:"Гузаштан ба HSK 3.0",promoStay:"Дар HSK 2.0 мондан",promoBooksAlt:"Китобҳои нави HSK 1, 2 ва 3",promoSwitch:"Гузаштан ба HSK 3.0",promoLater:"Баъдтар",promoRecommended:"Тавсия",switchConfirmTitle:"Версияи курсро иваз мекунед?",switchConfirmBody:"Пешрафти курси ҷорӣ нигоҳ дошта мешавад. Ҳар вақт метавонед ба версияи дигар баргардед.",switchConfirmAction:"Иваз кардан",cancel:"Бекор кардан",close:"Пӯшидан"}
 };
 var HSK30_BOOK_COPY={
   uz:{title:"HSK 3.0 ni oching",body:"Yangi darsliklar asosidagi kursni boshlang.",permanent:"Doimiy kirish",oneTime:"Bir martalik to‘lov",open:"HSK 3.0 ni ochish"},
@@ -1356,8 +1369,9 @@ function renderHsk30AccessGate(status){
     ?'<button class="hsk30-promo-stay" onclick="App.pickCourseTrack(\'hsk20\')">'+esc(t.backTo20)+'</button>'
     :'<button class="hsk30-promo-stay" onclick="App.closeSheet()">'+esc(t.stay)+'</button>';
   var permanentButton=paymentEnabled?hsk30BookPrimary(c.open,"openHsk30UnlockCheckout()"):"";
+  var rejected=Boolean(access&&access.payment_rejected);
   openHsk30BookSheet(hsk30BookHeader(status)
-    +'<h2 class="hsk30-promo-title">'+esc(c.title)+'</h2><p class="hsk30-promo-copy">'+esc(c.body)+'</p>'
+    +'<h2 class="hsk30-promo-title">'+esc(rejected?t.paymentRejectedTitle:c.title)+'</h2><p class="hsk30-promo-copy">'+esc(rejected?t.paymentRejectedBody:c.body)+'</p>'
     +hsk30BookPrice(status)+'<div class="hsk30-promo-actions">'+permanentButton+leave+'</div>',c.title);
 }
 function showHsk30AccessGate(){
@@ -1403,8 +1417,8 @@ function openHsk30PromoLevelPicker(recommended){
 }
 function renderHsk30Promo(status,promo){
   var t=trackUi(),access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-  var paidAccess=!!(access&&access.paid_access),permanentlyUnlocked=!!(access&&access.permanently_unlocked);
-  var hasAccess=!!(access&&access.allowed&&(paidAccess||permanentlyUnlocked));
+  var paidAccess=!!(access&&access.paid_access),permanentlyUnlocked=!!(access&&access.permanently_unlocked),provisionalAccess=!!(access&&access.provisional_access);
+  var hasAccess=!!(access&&access.allowed&&(paidAccess||permanentlyUnlocked||provisionalAccess));
   var recommended=(promo&&promo.recommended_level)||"nhsk1";
   var c=hsk30BookCopy(),body=hasAccess?t.promoBodyUnlocked:c.body;
   var actions=hsk30BookPrimary(t.promoOpen,"openHsk30PromoLevelPicker('"+recommended+"')");
@@ -1754,8 +1768,38 @@ function refreshCourseProgress(afterWrite){
   return PROGRESS_REFRESH;
 }
 function notifTimesHtml(){var c={uz:{head:"Bot quyidagi holatlarda xabar yuboradi:",items:["Reytingda kimdir sizdan o'zib ketsa","Kun tugayotganda darsni hali bajarmagan bo'lsangiz","Ketma-ket kunlar seriyangiz uzilish xavfida bo'lsa"]},ru:{head:"Бот пришлёт уведомление, когда:",items:["кто-то обгоняет вас в рейтинге","день заканчивается, а урок ещё не пройден","ваша серия дней под угрозой"]},tj:{head:"Бот вақте огоҳӣ мефиристад, ки:",items:["касе дар рейтинг аз шумо пеш меравад","рӯз ба охир мерасаду дарс иҷро нашудааст","силсилаи рӯзҳои пайдарпайи шумо дар хатар аст"]}}[LANG]||{head:"",items:[]};return '<b style="color:var(--ink);font-weight:500">'+esc(c.head)+'</b>'+c.items.map(function(x){return '<div style="margin-top:3px">• '+esc(x)+'</div>'}).join("");}
+var SHEET_RETURN_FOCUS=null;
+function setSheetBackgroundInert(value){
+  document.querySelectorAll(".wrap > .scr,.wrap > #nav,.wrap > #hint-float,.wrap > #flow,.wrap > #secov,.wrap > #paywall").forEach(function(node){node.inert=!!value});
+}
+function sheetControls(sheet){
+  return Array.prototype.slice.call(sheet.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'))
+    .filter(function(node){return node.getClientRects().length>0&&!node.closest('[inert]')});
+}
+function focusSheetStart(sheet){
+  var title=sheet.querySelector('#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role="heading"],#sheet-body .shead .tr');
+  var controls=sheetControls(sheet),target=title||controls[0]||sheet;
+  if(title&&!title.hasAttribute('tabindex'))title.setAttribute('tabindex','-1');
+  if(target===sheet&&!sheet.hasAttribute("tabindex"))sheet.setAttribute("tabindex","-1");
+  target.focus({preventScroll:true});
+}
+document.addEventListener("keydown",function(event){
+  var sheet=$("#sheet");
+  if(!sheet||!sheet.classList.contains("on"))return;
+  if(event.key==="Escape"){event.preventDefault();App.closeSheet();return}
+  if(event.key!=="Tab")return;
+  var controls=sheetControls(sheet);
+  if(!controls.length){event.preventDefault();sheet.focus();return}
+  var first=controls[0],last=controls[controls.length-1];
+  var activeIndex=controls.indexOf(document.activeElement);
+  if(activeIndex<0||(event.shiftKey&&activeIndex===0)){
+    event.preventDefault();(event.shiftKey?last:first).focus();
+  }else if(!event.shiftKey&&document.activeElement===last){
+    event.preventDefault();first.focus();
+  }
+});
 var App={
-  setLang:function(l){if(!I18N[l])return;LANG=l;renderAll()},
+  setLang:function(l){if(!I18N[l])return;LANG=l;syncDocumentLanguage();renderAll()},
   show:function(s){
     if(s==="mashq"&&isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){
       var status=COURSE_TRACK_STATE,access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
@@ -1772,7 +1816,7 @@ var App={
       }
     }
     var previous=SCREEN;SCREEN=s;document.querySelectorAll(".scr").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
-    document.querySelectorAll("#nav button").forEach(function(b){b.classList.toggle("on",b.dataset.s===s)});
+    document.querySelectorAll("#nav button").forEach(function(b){var selected=b.dataset.s===s;b.classList.toggle("on",selected);if(selected)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
     renderFloatHint(s);
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
     if(s==="course"){drawTrails();scrollToCurrentNode()}else{window.scrollTo(0,0)}
@@ -1789,10 +1833,10 @@ var App={
     if(s==="profile"&&!SIGNIN_STATE.loaded)loadSignInMethods();
     if(s!=="profile")stopSignInPoll();
     if(s==="course"&&window._pendingXpFly){var fx=window._pendingXpFly;window._pendingXpFly=0;setTimeout(function(){flyXp(fx)},350)}},
-  openSheet:function(html){var sheet=$("#sheet");sheet.classList.remove("hsk30-promo-center","hsk30-book-card");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");$("#sheet-body").innerHTML=html;sheet.classList.add("on");startSheetPromo("#sheet")},
+  openSheet:function(html){var sheet=$("#sheet");if(!sheet.classList.contains("on"))SHEET_RETURN_FOCUS=document.activeElement;sheet.classList.remove("hsk30-promo-center","hsk30-book-card");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");$("#sheet-body").innerHTML=html;var title=sheet.querySelector("#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role='heading'],#sheet-body .shead .tr");if(title){if(!title.id)title.id="hsk-sheet-title";sheet.setAttribute("aria-labelledby",title.id)}else{sheet.setAttribute("aria-label",LANG==="ru"?"Диалог HSK AI":LANG==="tj"?"Муколамаи HSK AI":"HSK AI oynasi")}var close=sheet.querySelector(".sx");if(close)close.setAttribute("aria-label",LANG==="ru"?"Закрыть":LANG==="tj"?"Пӯшидан":"Yopish");sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.classList.add("on");setSheetBackgroundInert(true);focusSheetStart(sheet);startSheetPromo("#sheet")},
   closeSheet:function(){
     SETTINGS_SHEET=false;
-    var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");stopSheetPromo();
+    var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");sheet.removeAttribute("tabindex");stopSheetPromo();setSheetBackgroundInert(false);var returnFocus=SHEET_RETURN_FOCUS;SHEET_RETURN_FOCUS=null;if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
     var revealUnlock=!!window._pendingUnlockAfterSheet;window._pendingUnlockAfterSheet=false;
     /* Qulf ochilishi animatsiyasi ustiga reklama chiqmaydi — u o'quvchi
        kutgan mukofot. Kechiktirilgan markaz reklamasi keyingi safar
@@ -1907,13 +1951,16 @@ var App={
        marra ekranida energiyali Xitoy ajdari chiqadi. Server flow o'zgarmaydi. */
     cineLessonCharacter("land",finishChar,"celebrate",function(){
       $("#lu-panda").innerHTML=lessonCharacterHtml(finishChar,"celebrate");
-      $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p>'+rewards;
-      $("#lu-cta").setAttribute("onclick",firstCp?"App.openCheckpointNext()":((t0==="lesson"||t0==="checkpoint"||window._pendingStreak)?"App.showStreakScreen()":"App.closeLevelUp()"));
+      var streak=window._pendingStreak;
+      var streakCopy={ru:"Дней подряд",uz:"Ketma-ket kunlar",tj:"Рӯзҳои пайдарпай"}[LANG]||"Ketma-ket kunlar";
+      var streakNote=streak&&streak.extended&&Number(streak.now)>0?'<div class="lu-result-note">'+esc(streakCopy)+": "+Number(streak.now)+"</div>":"";
+      $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p>'+rewards+streakNote;
+      $("#lu-cta").setAttribute("onclick",firstCp?"App.openCheckpointNext()":"App.closeLevelUp()");
       var nextLabel=LANG==="ru"?"Открыть следующий урок":LANG==="tj"?"Кушодани дарси оянда":"Keyingi darsni ochish";
       $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+(firstCp?nextLabel:lu.cont);
       $("#levelup").classList.add("on");
       setTimeout(function(){var e=document.querySelector("#lu-stage .lu-emb");if(e)e.classList.add("in")},60);
-      luRain();beep([523,659,784,1046]);haptic("ok");
+      if(!fxOff())luRain();beep([523,659,784,1046]);haptic("ok");
     });
   },
   /* Duolingo uslubidagi alanga ekrani — dars tugagach */
@@ -2737,7 +2784,7 @@ function renderCourse(){
   /* `.ctop` — YOPISHQOQ blok: daraja qatori, progress chizig'i va bugungi
      reja birga tepada qoladi. Ilgari faqat `.htop` yopishqoq edi va reja
      tasmasi pastga suriganda uning ostiga kirib ko'rinmay ketardi. */
-  var h='<div class="cleft"><div class="ctop"><div class="htop"><span class="lvpill"><i class="ti ti-bolt"></i> '+esc(MAP.label)+'</span>'
+  var h='<div class="cleft"><div class="ctop"><div class="htop"><h1 class="section-title">'+esc(MAP.label)+'</h1>'
     +'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>'
     +'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span>'
     +goalRingHtml()+'</div>'
@@ -2852,7 +2899,7 @@ function showBlockedGate(supportUrl){
   var c=blockedGateCopy();
   window._blockedSupportUrl=supportUrl||"";
   MAP={units:[],progress:{xp:0,streak:0,completed:0},label:"HSK",level:getSelectedLevel()};
-  $("#s-course").innerHTML='<div class="htop"><span class="lvpill"><i class="ti ti-alert-circle"></i> HSK AI</span></div>'
+  $("#s-course").innerHTML='<div class="htop"><h1 class="section-title">HSK AI</h1></div>'
     +'<div class="rt-invite" style="margin-top:42px"><span class="han">停</span><p style="font-weight:600;color:var(--ink);margin-bottom:6px">'+esc(c.title)+'</p><p>'+esc(c.body)+'</p>'
     +(supportUrl?'<button onclick="openSupportLink(window._blockedSupportUrl)"><i class="ti ti-lifebuoy"></i> '+esc(c.btn)+'</button>':'')
     +'</div>';
@@ -2862,7 +2909,7 @@ function showBlockedGate(supportUrl){
 function showAuthGate(){
   var c=authGateCopy();
   MAP={units:[],progress:{xp:0,streak:0,completed:0},label:"HSK",level:getSelectedLevel()};
-  $("#s-course").innerHTML='<div class="htop"><span class="lvpill"><i class="ti ti-alert-circle"></i> HSK AI</span></div>'
+  $("#s-course").innerHTML='<div class="htop"><h1 class="section-title">HSK AI</h1></div>'
     +'<div class="rt-invite" style="margin-top:42px"><span class="han">开</span><p style="font-weight:600;color:var(--ink);margin-bottom:6px">'+esc(c.title)+'</p><p>'+esc(c.body)+'</p><button onclick="openBotStart()"><i class="ti ti-brand-telegram"></i> '+esc(c.btn)+'</button></div>';
   ["s-mashq","s-voice","s-rating","s-profile"].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=""});
   App.show("course");
@@ -2875,7 +2922,7 @@ function showCourseLoadError(){
     tj:{title:"Курс бор нашуд",body:"Пайвастро санҷида, боз кӯшиш кунед.",btn:"Боз кӯшиш кардан"}
   }[LANG];
   MAP={units:[],progress:{xp:0,streak:0,completed:0},label:"HSK",level:getSelectedLevel()};
-  $("#s-course").innerHTML='<div class="htop"><span class="lvpill"><i class="ti ti-alert-circle"></i> HSK AI</span></div>'
+  $("#s-course").innerHTML='<div class="htop"><h1 class="section-title">HSK AI</h1></div>'
     +'<div class="rt-invite" style="margin-top:42px"><span class="han">学</span><p style="font-weight:600;color:var(--ink);margin-bottom:6px">'+esc(c.title)+'</p><p>'+esc(c.body)+'</p><button onclick="loadLevel(getSelectedLevel())"><i class="ti ti-refresh"></i> '+esc(c.btn)+'</button></div>';
   ["s-mashq","s-voice","s-rating","s-profile"].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=""});
   App.show("course");
@@ -3130,7 +3177,7 @@ Foundation.grade=function(ok){
 };
 Foundation.feedback=function(ok,sub){
   var b=$("#f-bar");b.className="fbar show "+(ok?"ok":"no");
-  $("#f-msg").innerHTML='<span class="fpanda hsk-character-stage" id="fbar-char"></span><span>'+(ok?T().correct:T().wrong)+(sub?'<small>'+esc(sub)+'</small>':'')+'</span>';
+  $("#f-msg").innerHTML='<span class="fpanda hsk-character-stage" id="fbar-char" aria-hidden="true"></span><span>'+(ok?T().correct:T().wrong)+(sub?'<small>'+esc(sub)+'</small>':'')+'</span>';
   $("#f-barbtn").textContent=T().next;
   beep(ok?[523,659,784]:[220,180]);haptic(ok?"ok":"no");
   renderFeedbackCharacter($("#fbar-char"),ok?"panda":"rabbit",ok?"jump":"wrong");
@@ -3654,7 +3701,7 @@ function showBar(ok,msg,sub){
   var b=$("#f-bar");b.className="fbar show "+(ok?"ok":"no");
   var card=flowCurrentCard(),displaySub=sub;
   if(!ok&&HP===1)displaySub=displaySub?(displaySub+" · "+oneHeartText()):oneHeartText();
-  $("#f-msg").innerHTML='<span class="fpanda hsk-character-stage" id="fbar-char"></span><span>'+msg+(displaySub?'<small>'+displaySub+'</small>':'')+'</span>';
+  $("#f-msg").innerHTML='<span class="fpanda hsk-character-stage" id="fbar-char" aria-hidden="true"></span><span>'+msg+(displaySub?'<small>'+displaySub+'</small>':'')+'</span>';
   $("#f-barbtn").textContent=T().next;
   setTimeout(function(){try{b.scrollIntoView({block:"end"})}catch(e){}},20);
   Flow.streak=ok?(Flow.streak||0)+1:0;
@@ -4162,9 +4209,8 @@ function cardWord(c){
   /* Duolingo uslubi: avval "YANGI SO'Z" bayram-kartasi (sparkle + katta hanzi),
      keyin pinyin/ma'no o'zi ochilib chiqadi — quruq flash-karta emas. */
   var w=c.word||{};$("#f-cta").style.display="none";
-  var NW={uz:"YANGI SO'Z",ru:"НОВОЕ СЛОВО",tj:"КАЛИМАИ НАВ"}[LANG]||"YANGI SO'Z";
+  var NW={uz:"Yangi so'z",ru:"Новое слово",tj:"Калимаи нав"}[LANG]||"Yangi so'z";
   $("#f-body").innerHTML='<div class="nw">'
-    +'<span class="nw-spark s1"><i class="ti ti-sparkles"></i></span><span class="nw-spark s2"><i class="ti ti-north-star"></i></span><span class="nw-spark s3"><i class="ti ti-sparkles"></i></span>'
     +'<div class="nw-card"><div class="big han">'+esc(w.zh||"")+'</div></div>'
     +'<div class="nw-label">'+esc(NW)+'</div></div>'
     +'<div class="nw-info" id="nwinfo">'
@@ -4494,11 +4540,11 @@ function cardMatch(c){
   $("#f-body").innerHTML='<div class="qq">'+T().matchPairs+'</div><div class="pairs"><div class="col" id="mL"></div><div class="col" id="mR"></div></div>';
   var selL=null,matched=0;
   function draw(){
-    $("#mL").innerHTML=left.map(function(x,i){return '<button class="pcell han" data-i="'+i+'" onclick="window._mL('+i+')">'+esc(x)+'</button>'}).join("");
-    $("#mR").innerHTML=ri.map(function(idx){return '<button class="pcell sm" data-i="'+idx+'" onclick="window._mR('+idx+')">'+esc(right[idx])+'</button>'}).join("");
+    $("#mL").innerHTML=left.map(function(x,i){return '<button class="pcell han" type="button" aria-pressed="false" data-i="'+i+'" onclick="window._mL('+i+')">'+esc(x)+'</button>'}).join("");
+    $("#mR").innerHTML=ri.map(function(idx){return '<button class="pcell sm" type="button" aria-pressed="false" data-i="'+idx+'" onclick="window._mR('+idx+')">'+esc(right[idx])+'</button>'}).join("");
   }
-  window._mL=function(i){if(Flow.answered)return;selL=i;document.querySelectorAll("#mL .pcell").forEach(function(b){b.classList.toggle("sel",+b.dataset.i===i&&!b.classList.contains("ok"))})};
-  window._mR=function(i){if(Flow.answered||selL===null)return;if(i===selL){document.querySelectorAll("#mL .pcell").forEach(function(b){if(+b.dataset.i===i){b.classList.add("ok");b.classList.remove("sel")}});document.querySelectorAll("#mR .pcell").forEach(function(b){if(+b.dataset.i===i)b.classList.add("ok")});selL=null;matched++;beep([660,880]);if(matched===left.length){Flow.answered=true;Flow.graded=(Flow.graded||0)+1;Flow.correct=(Flow.correct||0)+1;haptic("ok");showBar(true,T().correct,"")}}else{beep([200,150]);haptic("no");flashLessonReaction("monkey","wrong");document.querySelectorAll("#mL .pcell").forEach(function(b){b.classList.remove("sel")});selL=null}};
+  window._mL=function(i){if(Flow.answered)return;selL=i;document.querySelectorAll("#mL .pcell").forEach(function(b){var selected=+b.dataset.i===i&&!b.classList.contains("ok");b.classList.toggle("sel",selected);b.setAttribute("aria-pressed",String(selected||b.classList.contains("ok")))})};
+  window._mR=function(i){if(Flow.answered||selL===null)return;if(i===selL){document.querySelectorAll("#mL .pcell").forEach(function(b){if(+b.dataset.i===i){b.classList.add("ok");b.classList.remove("sel");b.setAttribute("aria-pressed","true")}});document.querySelectorAll("#mR .pcell").forEach(function(b){if(+b.dataset.i===i){b.classList.add("ok");b.setAttribute("aria-pressed","true")}});selL=null;matched++;beep([660,880]);if(matched===left.length){Flow.answered=true;Flow.graded=(Flow.graded||0)+1;Flow.correct=(Flow.correct||0)+1;haptic("ok");showBar(true,T().correct,"")}}else{beep([200,150]);haptic("no");flashLessonReaction("monkey","wrong");document.querySelectorAll("#mL .pcell").forEach(function(b){b.classList.remove("sel");b.setAttribute("aria-pressed",String(b.classList.contains("ok")))});selL=null}};
   draw();
 }
 function initData(){return (tg&&tg.initData)?tg.initData:""}
@@ -4654,6 +4700,7 @@ var _NEXT_LEVEL={hsk1:"hsk2",hsk2:"hsk3",hsk3:"hsk4",nhsk1:"nhsk2",nhsk2:"nhsk3"
 function adoptServerLang(d){
   /* Til yagona manbadan (botdagi user.language) keladi — server tilini qabul qilamiz. */
   if(d&&d.user&&d.user.language&&I18N[d.user.language])LANG=d.user.language;
+  syncDocumentLanguage();
 }
 /* Map yuklash — cold-start / tranzient server xatolarida ("birinchi ochkanda
    API yiqildi") darrov "ulanmagan" gate ko'rsatilmaydi, bir necha marta qayta
@@ -4778,23 +4825,39 @@ function flowDone(){
 /* ---------- Mashq ---------- */
 function renderMashq(){
   var t=T();
-  $("#s-mashq").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-cards"></i> '+t.nav.mashq+'</span></div>'
+  $("#s-mashq").innerHTML='<div class="htop"><h1 class="section-title">'+t.nav.mashq+'</h1></div>'
     +'<div class="phead"><div class="sub">'+t.mashqSub+'</div></div>'
     +'<div class="sech">'+t.grammar+' · '+t.pron+'</div>'
+    +'<div class="mashq-group" role="group" aria-label="'+esc(t.grammar+' · '+t.pron)+'">'
     +rowCard("t-amber",'<span class="han">字</span>',t.dict,t.dictSub,"App.openDict()","m-dict")
     +rowCard("t-blue",'<i class="ti ti-eye"></i>',t.recog,t.recogSub,"App.openRecog()","m-recog")
-    +rowCard("t-jade",'<i class="ti ti-microphone"></i>',t.pron,t.pronSub,"App.openPron()","m-pron")
+    +rowCard("t-jade",'<i class="ti ti-microphone"></i>',t.pron,t.pronSub,"App.openPron()","m-pron")+'</div>'
     +'<div class="sech">'+t.testCenter.split(" ")[0]+'</div>'
+    +'<div class="mashq-group" role="group" aria-label="'+esc(t.testCenter.split(" ")[0]+' · '+t.mistakes)+'">'
     +rowCard("t-cin",'<i class="ti ti-certificate"></i>',t.testCenter,isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?trackUi().testSoon:t.testSub,"App.openTest()","m-test")
-    +rowCard("t-cin",'<i class="ti ti-alert-triangle"></i>',t.mistakes,t.mistakesSub,"App.openMistakes()","m-mist");
+    +rowCard("t-cin",'<i class="ti ti-alert-triangle"></i>',t.mistakes,t.mistakesSub,"App.openMistakes()","m-mist")+'</div>';
 }
-function rowCard(cls,ic,title,sub,act,id){return '<button class="row-card"'+(id?' id="'+id+'"':'')+(act?' onclick="'+act+'"':'')+'><span class="ti2 '+cls+'">'+ic+'</span><span class="rt"><b>'+esc(title)+'</b><small>'+esc(sub)+'</small></span><span class="ar"><i class="ti ti-chevron-right"></i></span></button>'}
+function rowCard(cls,ic,title,sub,act,id){return '<button type="button" class="row-card"'+(id?' id="'+id+'"':'')+(act?' onclick="'+act+'"':'')+'><span class="ti2 '+cls+'" aria-hidden="true">'+ic+'</span><span class="rt"><b>'+esc(title)+'</b><small>'+esc(sub)+'</small></span><span class="ar" aria-hidden="true"><i class="ti ti-chevron-right"></i></span></button>'}
 
 /* ---------- Voice ---------- */
 function renderVoice(){
   var t=T();
-  $("#s-voice").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-microphone"></i> AI Voice</span></div>'
-    +'<div class="voicebox"><div class="pd">'+pandaChar("talk")+'</div><h3>'+t.voiceTitle+'</h3><p>'+t.voiceSub+'</p><button onclick="App.openVoiceCall()"><i class="ti ti-phone"></i> '+t.voiceStart+'</button></div>';
+  $("#s-voice").innerHTML='<div class="htop"><h1 class="section-title">AI Voice</h1></div>'
+    +'<div class="voicebox"><div class="pd">'+pandaChar("talk")+'</div><h3>'+t.voiceTitle+'</h3><p>'+t.voiceSub+'</p><p class="voice-quota" id="voice-quota" role="status" aria-live="polite" hidden></p><button onclick="App.openVoiceCall()"><i class="ti ti-phone"></i> '+t.voiceStart+'</button></div>';
+  if(INIT_DATA&&window.CourseLimitStatus){
+    CourseLimitStatus.get("voice").then(function(status){
+      var quota=document.getElementById("voice-quota");
+      if(!quota||SCREEN!=="voice"||!status)return;
+      var unlimited=!!status.is_paid||status.remaining==null;
+      var copy=LANG==="ru"
+        ?(unlimited?"AI Voice без ограничения":"Сегодня осталось разговоров: {n}")
+        :LANG==="tj"
+          ?(unlimited?"AI Voice бе маҳдудият":"Имрӯз {n} суҳбат боқӣ монд")
+          :(unlimited?"AI Voice cheksiz":"Bugun {n} ta suhbat qoldi");
+      quota.textContent=unlimited?copy:copy.replace("{n}",String(Math.max(0,Number(status.remaining)||0)));
+      quota.hidden=false;
+    }).catch(function(){});
+  }
   /* Bo'lim ochilganda panda sakrab kirib keladi */
   pandaFx(document.querySelector("#s-voice .voicebox .pd"),"pop");
 }
@@ -5102,9 +5165,10 @@ function pandaChar(mood,opts){
 /* ---------- Rating (league + challenge) ---------- */
 // Real users come from server /api/miniapp/gamification.
 	var ratingTabCur="league",ratingUsers=[],ratingMeta={loaded:false,error:false,leagueSize:0,resetAtMs:null},referralUsers=[],referralMeta={loaded:false,error:false,joined:0,active:0,required:0};
-	function rl(){return {ru:{promote:"Топ 5 поднимаются выше",demote:"Зона понижения",liga:"Лига",friends:"Друзья",refs:"Мои приглашённые",members:"учеников",left:"осталось",ch:"Вызов",chDone:"Вызов отправлен",invite:"Пригласить друзей",inviteSub:"Позови друга и сразись в лиге или тестах — покажи, кто лучший! 🔥",refSub:"Здесь видны ученики, которые пришли по вашей ссылке. Откройте профиль, напишите или отправьте дуэль.",msg:"Написать",weekRank:"место",loadErr:"Рейтинг не загрузился",refLoadErr:"Список друзей не загрузился",empty:"Пока нет реальных участников лиги",refEmpty:"По вашей ссылке пока никто не зашёл",pending:"ждём активности",active:"активный",totalXp:"всего XP"},
+function rl(){return {ru:{promote:"Топ 5 поднимаются выше",demote:"Зона понижения",liga:"Лига",friends:"Друзья",refs:"Мои приглашённые",members:"учеников",left:"осталось",ch:"Вызов",chDone:"Вызов отправлен",invite:"Пригласить друзей",inviteSub:"Позови друга и сразись в лиге или тестах — покажи, кто лучший! 🔥",refSub:"Здесь видны ученики, которые пришли по вашей ссылке. Откройте профиль, напишите или отправьте дуэль.",msg:"Написать",weekRank:"место",loadErr:"Рейтинг не загрузился",refLoadErr:"Список друзей не загрузился",empty:"Пока нет реальных участников лиги",refEmpty:"По вашей ссылке пока никто не зашёл",pending:"ждём активности",active:"активный",totalXp:"всего XP"},
 	  uz:{promote:"Top 5 yuqoriga ko'tariladi",demote:"Tushish zonasi",liga:"Liga",friends:"Do'stlar",refs:"Referallarim",members:"o'quvchi",left:"qoldi",ch:"Belashuv",chDone:"Chaqiruv yuborildi",invite:"Do'st taklif qilish",inviteSub:"Do'stingni chaqir va ligada yoki testda kuch sina — kim zo'rligini ko'rsat! 🔥",refSub:"Sizning havolangizdan kirgan o'quvchilar shu yerda. Profilini oching, yozing yoki belashuv yuboring.",msg:"Yozish",weekRank:"o'rin",loadErr:"Reyting yuklanmadi",refLoadErr:"Do'stlar ro'yxati yuklanmadi",empty:"Ligada hali real ishtirokchi yo'q",refEmpty:"Havolangizdan hali hech kim kirmagan",pending:"aktivlik kutilmoqda",active:"aktiv",totalXp:"jami XP"},
 	  tj:{promote:"Топ 5 боло мебароянд",demote:"Минтақаи поёншавӣ",liga:"Лига",friends:"Дӯстон",refs:"Рефералҳои ман",members:"донишҷӯ",left:"мондааст",ch:"Мубориза",chDone:"Даъват фиристода шуд",invite:"Даъвати дӯстон",inviteSub:"Дӯстатро даъват кун ва дар лига ё тест мубориза кун — нишон деҳ, ки кӣ беҳтар аст! 🔥",refSub:"Донишҷӯёне, ки аз пайванди шумо омаданд, ин ҷо ҳастанд. Профилро кушоед, нависед ё рақобат фиристед.",msg:"Навиштан",weekRank:"ҷой",loadErr:"Рейтинг бор нашуд",refLoadErr:"Рӯйхати дӯстон бор нашуд",empty:"Дар лига ҳоло иштирокчии воқеӣ нест",refEmpty:"Аз пайванди шумо ҳоло касе надаромадааст",pending:"фаъолият интизор",active:"фаъол",totalXp:"XP умумӣ"}}[LANG]}
+function ratingRetryText(){return LANG==="ru"?"Повторить загрузку":LANG==="tj"?"Аз нав бор кардан":"Qayta yuklash"}
 function ratingCountdownText(){
   if(!ratingMeta.resetAtMs)return "—";
   var sec=Math.max(0,Math.floor((ratingMeta.resetAtMs-Date.now())/1000));
@@ -5200,7 +5264,7 @@ function renderRating(){
   if(!ratingLoaded&&INIT_DATA){
     ratingLoaded=true;
     var t=T();
-    $("#s-rating").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-trophy"></i> '+t.nav.rating+'</span></div><div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
+    $("#s-rating").innerHTML='<div class="htop"><h1 class="section-title">'+t.nav.rating+'</h1></div><div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
     loadLatestRating().then(function(){
       _renderRatingContent();
     }).catch(function(){ratingMeta={loaded:true,error:true,leagueSize:0,resetAtMs:null};ratingUsers=[];_renderRatingContent()});
@@ -5208,12 +5272,14 @@ function renderRating(){
   }
   _renderRatingContent();
 }
+function retryRating(){ratingLoaded=false;renderRating()}
+function retryReferrals(){referralMeta={loaded:false,error:false,joined:0,active:0,required:0};_renderRatingContent()}
 function _renderRatingContent(){
   var t=T(),r=rl();
   sortRatingUsers();
   var memberCount=Number(ratingMeta.leagueSize||ratingUsers.length||0);
-	  var h='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-trophy"></i> '+t.nav.rating+'</span></div>'
-	    +'<div class="rt-seg"><button class="'+(ratingTabCur==="league"?"on":"")+'" onclick="setRatingTab(\'league\')">'+r.liga+'</button><button class="'+(ratingTabCur==="friends"?"on":"")+'" onclick="setRatingTab(\'friends\')">'+r.friends+'</button></div>';
+	  var h='<div class="htop"><h1 class="section-title">'+t.nav.rating+'</h1></div>'
+	    +'<div class="rt-seg" role="group" aria-label="'+esc(r.liga+" · "+r.friends)+'"><button type="button" aria-pressed="'+(ratingTabCur==="league"?"true":"false")+'" class="'+(ratingTabCur==="league"?"on":"")+'" onclick="setRatingTab(\'league\')">'+r.liga+'</button><button type="button" aria-pressed="'+(ratingTabCur==="friends"?"true":"false")+'" class="'+(ratingTabCur==="friends"?"on":"")+'" onclick="setRatingTab(\'friends\')">'+r.friends+'</button></div>';
 	  if(ratingTabCur==="friends"){
 	    if(!referralMeta.loaded&&INIT_DATA){
 	      referralMeta.loaded=true;
@@ -5221,12 +5287,12 @@ function _renderRatingContent(){
 	      loadReferrals().then(function(){_renderRatingContent()}).catch(function(){referralMeta={loaded:true,error:true,joined:0,active:0,required:0};referralUsers=[];_renderRatingContent()});
 	      return;
 	    }
-	    h+='<div class="rt-invite" style="padding:20px 22px 18px"><span class="han">友</span><p>'+esc(r.refSub||r.inviteSub)+'</p><button onclick="openInviteSheet()"><i class="ti ti-user-plus"></i> '+esc(r.invite)+'</button></div>'
-	      +'<div class="ref-stat"><div><b>'+Number(referralMeta.joined||0)+'</b><small>'+(LANG==="ru"?"перешли":LANG==="tj"?"даромаданд":"kirgan")+'</small></div><div><b>'+Number(referralMeta.active||0)+' / '+Number(referralMeta.required||0)+'</b><small>'+(LANG==="ru"?"актив":LANG==="tj"?"фаъол":"faol")+'</small></div></div>';
+	    h+='<div class="rt-invite" style="padding:20px 22px 18px"><span class="han">友</span><p>'+esc(r.refSub||r.inviteSub)+'</p><button onclick="openInviteSheet()"><i class="ti ti-user-plus"></i> '+esc(r.invite)+'</button></div>';
 	    if(referralMeta.error){
-	      h+='<div class="rt-invite"><span class="han">友</span><p>'+esc(r.refLoadErr)+'</p></div>';
+	      h+='<div class="rt-invite"><span class="han">友</span><p>'+esc(r.refLoadErr)+'</p><button type="button" class="scta" onclick="retryReferrals()">'+esc(ratingRetryText())+'</button></div>';
 	      $("#s-rating").innerHTML=h;return;
 	    }
+	    h+='<div class="ref-stat"><div><b>'+Number(referralMeta.joined||0)+'</b><small>'+(LANG==="ru"?"перешли":LANG==="tj"?"даромаданд":"kirgan")+'</small></div><div><b>'+Number(referralMeta.active||0)+' / '+Number(referralMeta.required||0)+'</b><small>'+(LANG==="ru"?"актив":LANG==="tj"?"фаъол":"faol")+'</small></div></div>';
 	    if(!referralUsers.length){
 	      h+='<div class="rt-invite"><span class="han">人</span><p>'+esc(r.refEmpty)+'</p></div>';
 	      $("#s-rating").innerHTML=h;return;
@@ -5235,16 +5301,16 @@ function _renderRatingContent(){
 	      var st=u.refStatus==="active"?r.active:r.pending;
 	      var badge='<span class="ref-badge '+(u.refStatus==="active"?"":"wait")+'">'+esc(st)+'</span>';
 	      var pm=u.p?'<span class="pm"><i class="ti ti-crown"></i></span>':'';
-	      h+='<div class="lr" onclick="openRatingUser('+i+',\'referrals\')"><span class="rk">'+(i+1)+'</span><span class="av">'+u.a+avatarImgHtml(u.tgId)+'</span><span class="nm">'+esc(u.n)+pm+'<small>'+badge+' · '+esc(courseLevelLabel(u.level||((MAP&&MAP.level)||"hsk1")))+' · '+esc(r.totalXp)+': '+u.totalXp.toLocaleString("ru")+'</small></span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></div>';
+	    h+='<button type="button" class="lr" onclick="openRatingUser('+i+',\'referrals\')"><span class="rk">'+(i+1)+'</span><span class="av">'+u.a+avatarImgHtml(u.tgId)+'</span><span class="nm">'+esc(u.n)+pm+'<small>'+badge+' · '+esc(courseLevelLabel(u.level||((MAP&&MAP.level)||"hsk1")))+' · '+esc(r.totalXp)+': '+u.totalXp.toLocaleString("ru")+'</small></span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></button>';
 	    });
 	    $("#s-rating").innerHTML=h;return;
 	  }
-  h+='<div class="rt-league"><div class="rt-emb han">朱</div><div><div class="nm2">'+t.league+'</div><div class="sb"><i class="ti ti-users" style="font-size:12px"></i> '+memberCount+' '+r.members+'</div></div><div class="rt-cd"><b>'+ratingCountdownText()+'</b><small>'+r.left+'</small></div></div>'
-    +'<div class="rt-ladder"><span class="rt-step han">玄</span><span class="rt-step line"></span><span class="rt-step cur han">朱</span><span class="rt-step line"></span><span class="rt-step han">龙</span><span class="rt-step line"></span><span class="rt-step han">凤</span></div>';
-  if(ratingMeta.error){
-    h+='<div class="rt-invite"><span class="han">榜</span><p>'+esc(r.loadErr)+'</p></div>';
-    $("#s-rating").innerHTML=h;return;
-  }
+	  if(ratingMeta.error){
+	    h+='<div class="rt-invite"><span class="han">榜</span><p>'+esc(r.loadErr)+'</p><button type="button" class="scta" onclick="retryRating()">'+esc(ratingRetryText())+'</button></div>';
+	    $("#s-rating").innerHTML=h;return;
+	  }
+	  h+='<div class="rt-league"><div class="rt-emb han">朱</div><div><div class="nm2">'+t.league+'</div><div class="sb"><i class="ti ti-users" style="font-size:12px"></i> '+memberCount+' '+r.members+'</div></div><div class="rt-cd"><b>'+ratingCountdownText()+'</b><small>'+r.left+'</small></div></div>'
+	    +'<div class="rt-ladder"><span class="rt-step han">玄</span><span class="rt-step line"></span><span class="rt-step cur han">朱</span><span class="rt-step line"></span><span class="rt-step han">龙</span><span class="rt-step line"></span><span class="rt-step han">凤</span></div>';
   if(!ratingUsers.length){
     h+='<div class="rt-invite"><span class="han">榜</span><p>'+esc(r.empty)+'</p></div>';
     $("#s-rating").innerHTML=h;return;
@@ -5255,7 +5321,7 @@ function _renderRatingContent(){
     if(ratingUsers.length>=8&&i===ratingUsers.length-2)h+='<div class="rt-zone dn"><span class="ln"></span><i class="ti ti-arrow-down"></i> '+r.demote+' <span class="ln"></span></div>';
     var rk=i<3?'<span class="med '+med[i]+'">'+(i+1)+'</span>':'<span class="rk">'+(i+1)+'</span>';
     var pm=u.p?'<span class="pm"><i class="ti ti-crown"></i></span>':'';
-	    h+='<div class="lr'+(u.me?' me':'')+'" onclick="openRatingUser('+i+',\'rating\')">'+rk+'<span class="av'+(u.me?' han':'')+'">'+u.a+(u.me?myAvatarImgHtml():avatarImgHtml(u.tgId))+'</span><span class="nm">'+esc(u.n)+pm+'</span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></div>';
+	    h+='<button type="button" class="lr'+(u.me?' me':'')+'" onclick="openRatingUser('+i+',\'rating\')">'+rk+'<span class="av'+(u.me?' han':'')+'">'+u.a+(u.me?myAvatarImgHtml():avatarImgHtml(u.tgId))+'</span><span class="nm">'+esc(u.n)+pm+'</span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></button>';
 	  });
   $("#s-rating").innerHTML=h;
 }
@@ -5886,9 +5952,9 @@ function renderProfile(){
     +'<div class="arow"><div class="aic c1"><i class="ti ti-book"></i></div><div class="at"><div class="ah"><span>'+p.a2+'</span><small>'+completedLessons+' / 100</small></div><div class="abar"><i style="width:'+lessonAchPct+'%"></i></div></div></div>'
     +'<div class="arow"><div class="aic c2"><i class="ti ti-flame"></i></div><div class="at"><div class="ah"><span>'+p.a3+'</span><small>'+streak+' / 30</small></div><div class="abar"><i style="width:'+streakAchPct+'%"></i></div></div></div></div>'
     +proProfileCard()
-    +'<div class="sech">'+t.mistakes+' · '+t.friends+'</div>'
+    +'<div class="sech">'+t.mistakes+' · '+t.friends+'</div><div class="profile-quick-links" role="group" aria-label="'+esc(t.mistakes+' · '+t.friends)+'">'
     +rowCard("t-cin",'<i class="ti ti-alert-triangle"></i>',t.mistakes,t.mistakesSub,"App.openMistakes()")
-    +rowCard("t-jade",'<i class="ti ti-users"></i>',t.friends,"","App.openFriends()")
+    +rowCard("t-jade",'<i class="ti ti-users"></i>',t.friends,"","App.openFriends()")+'</div>'
     +socialLinksHtml()
     +'<div style="height:14px"></div>';
   if(window.PompDesktopDownload&&window.PompDesktopDownload.renderProfile)window.PompDesktopDownload.renderProfile();
@@ -7361,6 +7427,7 @@ function leave(){
   try{closeSettings();closeHints();closeKb()}catch(e){}
   if(sess){try{fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:INIT_DATA,session_id:sess})}).then(function(r){if(r.ok)refreshCourseProgress(true)}).catch(function(){})}catch(e){}}
   started=false;sess=null;
+  if(window.CourseLimitStatus)CourseLimitStatus.invalidate("voice");
   closeSection();App.show("voice");
 }
 function open(role){

@@ -26,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
@@ -61,21 +62,22 @@ fun SectionHint(
     val hint = hints.firstOrNull { it.section == section && it.key.isNotBlank() } ?: return
     var open by remember(hint.key) { mutableStateOf(false) }
 
-    Box(modifier) {
+    Box(
+        modifier = modifier
+            .size(44.dp)
+            .clickable(role = Role.Button, onClickLabel = hint.title.ifBlank { null }) { open = !open },
+        contentAlignment = Alignment.Center,
+    ) {
         Surface(
             color = PompColors.PaperRaised,
             shape = CircleShape,
             border = BorderStroke(1.dp, PompColors.Divider),
-            modifier = Modifier
-                .size(24.dp)
-                .clickable { open = !open },
+            modifier = Modifier.size(24.dp),
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector = Icons.Outlined.Info,
-                    contentDescription = hint.title.ifBlank {
-                        stringResource(R.string.hint_open)
-                    },
+                    contentDescription = hint.title.ifBlank { stringResource(R.string.hint_open) },
                     tint = PompColors.InkSecondary,
                     modifier = Modifier.size(15.dp),
                 )
@@ -135,8 +137,8 @@ private fun HintCard(hint: AndroidHintDto, onClose: () -> Unit) {
             Spacer(Modifier.width(4.dp))
             Box(
                 modifier = Modifier
-                    .size(28.dp)
-                    .clickable(onClick = onClose),
+                    .size(44.dp)
+                    .clickable(role = Role.Button, onClick = onClose),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(

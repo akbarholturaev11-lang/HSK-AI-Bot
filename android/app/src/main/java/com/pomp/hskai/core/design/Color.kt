@@ -13,13 +13,21 @@ internal data class PompPalette(
     val inkDisabled: Color,
     val cinnabar: Color,
     val cinnabarDark: Color,
+    val cinnabarInk: Color,
     val cinnabarSoft: Color,
+    val onCinnabar: Color,
     val jade: Color,
+    val jadeInk: Color,
     val jadeSoft: Color,
     val gold: Color,
+    val goldInk: Color,
     val goldSoft: Color,
+    val onGold: Color,
     val flame: Color,
+    val flameInk: Color,
     val flameSoft: Color,
+    val onJade: Color,
+    val onFlame: Color,
     val blue: Color,
     val blueSoft: Color,
     val overlay: Color,
@@ -47,13 +55,21 @@ object PompColors {
     val LightInkDisabled = Color(0xFFA89E8E)
     val LightCinnabar = Color(0xFFE04A40)
     val LightCinnabarDark = Color(0xFFB23530)
+    val LightCinnabarInk = Color(0xFFB23530)
     val LightCinnabarSoft = Color(0xFFFDEBE7)
+    val LightOnCinnabar = Color(0xFF160C09)
     val LightJade = Color(0xFF2FA06A)
+    val LightJadeInk = Color(0xFF175B3A)
     val LightJadeSoft = Color(0xFFE3F4EA)
     val LightGold = Color(0xFFE9A916)
+    val LightGoldInk = Color(0xFF725000)
     val LightGoldSoft = Color(0xFFFAF0D3)
+    val LightOnGold = Color(0xFF3A2C08)
     val LightFlame = Color(0xFFFF9600)
+    val LightFlameInk = Color(0xFF873800)
     val LightFlameSoft = Color(0xFFFFEFD6)
+    val LightOnJade = Color(0xFF102117)
+    val LightOnFlame = Color(0xFF2A1A00)
     val LightBlue = Color(0xFF2E86C1)
     val LightBlueSoft = Color(0xFFE8F2FA)
     val LightOverlay = Color(0xFF171310)
@@ -64,9 +80,13 @@ object PompColors {
         paper = LightPaper, paperRaised = LightPaperRaised, ink = LightInk,
         inkSecondary = LightInkSecondary, inkDisabled = LightInkDisabled,
         cinnabar = LightCinnabar, cinnabarDark = LightCinnabarDark,
-        cinnabarSoft = LightCinnabarSoft, jade = LightJade, jadeSoft = LightJadeSoft,
-        gold = LightGold, goldSoft = LightGoldSoft, flame = LightFlame,
-        flameSoft = LightFlameSoft, blue = LightBlue, blueSoft = LightBlueSoft,
+        cinnabarInk = LightCinnabarInk, cinnabarSoft = LightCinnabarSoft, onCinnabar = LightOnCinnabar,
+        jade = LightJade, jadeInk = LightJadeInk,
+        jadeSoft = LightJadeSoft, gold = LightGold, goldInk = LightGoldInk,
+        goldSoft = LightGoldSoft, onGold = LightOnGold,
+        flame = LightFlame, flameInk = LightFlameInk,
+        flameSoft = LightFlameSoft, onJade = LightOnJade, onFlame = LightOnFlame,
+        blue = LightBlue, blueSoft = LightBlueSoft,
         overlay = LightOverlay, shadow = LightShadow, divider = LightDivider,
         courseTrail = Color(0xFFEBE2CC), tileAmberSoft = Color(0xFFF8EFD9),
         tileAmberInk = Color(0xFFB07A1E), tileBlueSoft = Color(0xFFE7F0F8),
@@ -84,13 +104,21 @@ object PompColors {
         inkDisabled = Color(0xFF7FA3B5),
         cinnabar = Color(0xFF20BCEB),
         cinnabarDark = Color(0xFF1299C4),
+        cinnabarInk = Color(0xFF7EDDF6),
         cinnabarSoft = Color(0xFF0B4C66),
+        onCinnabar = Color(0xFF002F49),
         jade = Color(0xFF48D99A),
+        jadeInk = Color(0xFF8AEFC0),
         jadeSoft = Color(0xFF0A5146),
         gold = Color(0xFFF4C95D),
+        goldInk = Color(0xFFFFDB82),
         goldSoft = Color(0xFF584819),
+        onGold = Color(0xFF302706),
         flame = Color(0xFFFF6B66),
+        flameInk = Color(0xFFFFAAA5),
         flameSoft = Color(0xFF5B3135),
+        onJade = Color(0xFF002F49),
+        onFlame = Color(0xFF002F49),
         blue = Color(0xFF20BCEB),
         blueSoft = Color(0xFF0B4C66),
         overlay = Color(0xFF000E17),
@@ -122,13 +150,21 @@ object PompColors {
     val InkDisabled: Color get() = activePalette.inkDisabled
     val Cinnabar: Color get() = activePalette.cinnabar
     val CinnabarDark: Color get() = activePalette.cinnabarDark
+    val CinnabarInk: Color get() = activePalette.cinnabarInk
     val CinnabarSoft: Color get() = activePalette.cinnabarSoft
+    val OnCinnabar: Color get() = activePalette.onCinnabar
     val Jade: Color get() = activePalette.jade
+    val JadeInk: Color get() = activePalette.jadeInk
     val JadeSoft: Color get() = activePalette.jadeSoft
     val Gold: Color get() = activePalette.gold
+    val GoldInk: Color get() = activePalette.goldInk
     val GoldSoft: Color get() = activePalette.goldSoft
+    val OnGold: Color get() = activePalette.onGold
     val Flame: Color get() = activePalette.flame
+    val FlameInk: Color get() = activePalette.flameInk
     val FlameSoft: Color get() = activePalette.flameSoft
+    val OnJade: Color get() = activePalette.onJade
+    val OnFlame: Color get() = activePalette.onFlame
     val Blue: Color get() = activePalette.blue
     val BlueSoft: Color get() = activePalette.blueSoft
     val Overlay: Color get() = activePalette.overlay

@@ -23,6 +23,8 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.PompShapes
+import com.pomp.hskai.core.design.PompSpacing
 
 @Composable
 fun HskPrimaryButton(
@@ -50,13 +52,13 @@ fun HskPrimaryButton(
             },
         enabled = enabled && !loading,
         interactionSource = interaction,
-        shape = RoundedCornerShape(16.dp),
+        shape = PompShapes.Medium,
         color = if (enabled) PompColors.Cinnabar else PompColors.Divider,
-        contentColor = if (enabled) PompColors.Paper else PompColors.InkDisabled,
+        contentColor = if (enabled) PompColors.OnCinnabar else PompColors.InkDisabled,
         shadowElevation = if (pressed) 2.dp else 8.dp,
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp),
+            modifier = Modifier.padding(horizontal = PompSpacing.Large, vertical = PompSpacing.Medium),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -94,7 +96,7 @@ fun HskGlassButton(
             },
         enabled = enabled,
         interactionSource = interaction,
-        shape = RoundedCornerShape(16.dp),
+        shape = PompShapes.Medium,
         // Composited onto the page instead of left translucent. A Surface
         // that lets light through also lets its own elevation shadow through,
         // and the shadow's inner edge showed as a hard white band across the
@@ -114,7 +116,7 @@ fun HskGlassButton(
         shadowElevation = if (pressed) 1.dp else 6.dp,
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp),
+            modifier = Modifier.padding(horizontal = PompSpacing.Large, vertical = PompSpacing.Small + PompSpacing.XSmall),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {

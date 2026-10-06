@@ -25,6 +25,7 @@ data class CourseUiState(
     val trackError: ApiError? = null,
     val isClaimingHsk30Promo: Boolean = false,
     val hsk30PromoVisible: Boolean = false,
+    val hasAttemptedHsk30Promo: Boolean = false,
     /** Real server-map LOCKED -> non-LOCKED transition awaiting one reveal. */
     val unlockedLessonOrder: Int? = null,
 ) {
@@ -118,9 +119,15 @@ class CourseViewModel(
         val current = _state.value
         val promo = current.map?.hsk30?.promo ?: return
         if (!promo.eligible || current.isStale || current.isRefreshing ||
-            current.isClaimingHsk30Promo || current.hsk30PromoVisible
+            current.isClaimingHsk30Promo || current.hsk30PromoVisible ||
+            current.hasAttemptedHsk30Promo
         ) return
-        _state.update { it.copy(isClaimingHsk30Promo = true) }
+        _state.update {
+            it.copy(
+                isClaimingHsk30Promo = true,
+                hasAttemptedHsk30Promo = true,
+            )
+        }
         viewModelScope.launch {
             when (val result = repository.markHsk30PromoShown()) {
                 is ApiResult.Success -> _state.update { state ->

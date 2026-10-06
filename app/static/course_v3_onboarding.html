@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>HSK AI</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <style>
 /* HSK AI palette + course mascot; the reference supplies the screen hierarchy. */
-:root{--ink:#211D17;--ink2:#665D50;--paper:#FDF9F0;--card:#FFFFFF;--line:#EAE0CC;--cin:#E04A40;--cin2:#B23530;--cinbg:#FDEBE7;--gold:#E9A916;--goldbg:#FAF0D3;--jade:#2FA06A;--safe-t:max(env(safe-area-inset-top,0px),var(--tg-top,0px));--safe-b:max(env(safe-area-inset-bottom,0px),var(--tg-bottom,0px));--display:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif}
+:root{--ink:var(--hsk-ink);--ink2:var(--hsk-ink-secondary);--paper:var(--hsk-paper);--card:var(--hsk-paper-raised);--line:var(--hsk-divider);--cin:var(--hsk-cinnabar);--cin2:var(--hsk-cinnabar-ink);--cinbg:var(--hsk-cinnabar-soft);--cin-ink:var(--hsk-on-cinnabar);--gold:var(--hsk-gold);--goldbg:var(--hsk-gold-soft);--jade:var(--hsk-jade);--safe-t:max(env(safe-area-inset-top,0px),var(--tg-top,0px));--safe-b:max(env(safe-area-inset-bottom,0px),var(--tg-bottom,0px));--display:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--paper);color:var(--ink);font-family:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif}
 button{font:inherit;cursor:pointer;touch-action:manipulation}
@@ -83,7 +84,7 @@ button:disabled{cursor:default}
 .chosen b{font-weight:600;color:var(--ink)}
 .footer{flex-shrink:0;padding:16px 24px calc(20px + var(--safe-b));border-top:1px solid var(--line);background:var(--paper)}
 .footer-note{text-align:center;font-size:12px;line-height:1.5;color:var(--ink2);margin:0 0 12px}
-.cta{width:100%;min-height:54px;padding:14px 16px;background:var(--cin);color:#fff;border:none;border-radius:13px;font-family:var(--display);font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 2px 0 var(--cin2);transition:transform .15s,box-shadow .15s}
+.cta{width:100%;min-height:54px;padding:14px 16px;background:var(--cin);color:var(--cin-ink);border:none;border-radius:13px;font-family:var(--display);font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 2px 0 var(--cin2);transition:transform .15s,box-shadow .15s}
 .cta:active:not(:disabled){transform:translateY(2px);box-shadow:none}
 .cta:disabled{opacity:.65;box-shadow:0 2px 0 var(--cin2)}
 .error{font-size:13px;line-height:1.45;color:var(--cin2);text-align:center;margin:0 0 12px}

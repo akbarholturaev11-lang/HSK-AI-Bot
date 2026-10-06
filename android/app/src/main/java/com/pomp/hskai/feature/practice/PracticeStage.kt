@@ -118,6 +118,8 @@ internal fun PracticeFeedbackPanel(
     verdictSuffix: String = "",
 ) {
     val accent = if (isCorrect) PompColors.Jade else PompColors.Flame
+    val statusInk = if (isCorrect) PompColors.JadeInk else PompColors.FlameInk
+    val actionInk = if (isCorrect) PompColors.OnJade else PompColors.OnFlame
     Surface(
         color = if (isCorrect) PompColors.JadeSoft else PompColors.FlameSoft,
         modifier = Modifier.fillMaxWidth(),
@@ -138,7 +140,7 @@ internal fun PracticeFeedbackPanel(
                     fontSize = 22.sp,
                     lineHeight = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    color = accent,
+                    color = statusInk,
                 )
             }
             lines.filter { it.isNotBlank() }.forEach { line ->
@@ -157,6 +159,7 @@ internal fun PracticeFeedbackPanel(
                 onClick = onContinue,
                 enabled = !loading,
                 loading = loading,
+                contentColor = actionInk,
             )
         }
     }
@@ -169,7 +172,7 @@ internal fun PracticeErrorPill(text: String, modifier: Modifier = Modifier) {
         Text(
             text = text,
             style = MaterialTheme.typography.bodyMedium,
-            color = PompColors.Flame,
+            color = PompColors.FlameInk,
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
         )
     }

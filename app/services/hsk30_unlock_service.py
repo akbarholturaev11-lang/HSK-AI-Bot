@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.course_track_state_repo import CourseTrackStateRepository
+from app.repositories.payment_repo import PaymentRepository
 from app.services.course_levels import TRACK_HSK30
 from app.services.hsk30_feature_service import Hsk30FeatureService
 from app.services.subscription_currency_service import SubscriptionCurrencyService
@@ -23,6 +24,7 @@ class Hsk30UnlockService:
         self.session = session
         self.setting_repo = BotSettingRepository(session)
         self.state_repo = CourseTrackStateRepository(session)
+        self.payment_repo = PaymentRepository(session)
         self.currency = SubscriptionCurrencyService(session)
         self.feature = Hsk30FeatureService(session)
 
@@ -60,6 +62,57 @@ class Hsk30UnlockService:
             return False
         row = await self.state_repo.get(int(user.id), TRACK_HSK30)
         return bool(row and row.unlocked_at)
+
+    async def review_state(self, user) -> dict:
+        """Return the server-owned pending/rejected state for the one-time unlock."""
+        if not user:
+            return {
+                "pending_payment": None,
+                "payment_rejected": False,
+                "provisional_access": False,
+            }
+
+        telegram_id = int(getattr(user, "telegram_id", 0) or 0)
+        pending = await self.payment_repo.get_latest_pending_by_user_and_plan(
+            telegram_id,
+            HSK30_UNLOCK_PLAN_TYPE,
+        )
+        has_rejected = await self.payment_repo.has_rejected_by_user_and_plan(
+            telegram_id,
+            HSK30_UNLOCK_PLAN_TYPE,
+        )
+        feature_enabled = await self.feature.is_enabled()
+        permanently_unlocked = await self.is_permanently_unlocked(user)
+        paid_access = UserAccessStateService.is_paid(user)
+        provisional = bool(
+            pending
+            and not has_rejected
+            and feature_enabled
+            and not permanently_unlocked
+            and not paid_access
+        )
+        return {
+            "pending_payment": pending,
+            "payment_rejected": bool(has_rejected and pending is None),
+            "provisional_access": provisional,
+        }
+
+    async def is_provisional_payment(self, user, payment) -> bool:
+        if (
+            not user
+            or not payment
+            or str(getattr(payment, "plan_type", "") or "") != HSK30_UNLOCK_PLAN_TYPE
+            or str(getattr(payment, "payment_status", "") or "") != "pending"
+            or int(getattr(payment, "user_telegram_id", 0) or 0)
+            != int(getattr(user, "telegram_id", 0) or 0)
+        ):
+            return False
+        state = await self.review_state(user)
+        return bool(
+            state["pending_payment"]
+            and int(state["pending_payment"].id) == int(payment.id)
+            and state["provisional_access"]
+        )
 
     async def payment_eligibility(
         self,

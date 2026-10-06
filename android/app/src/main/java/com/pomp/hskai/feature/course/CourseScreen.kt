@@ -1,12 +1,8 @@
 package com.pomp.hskai.feature.course
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -92,6 +88,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskSectionTitle
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.Hsk30BooksHeader
 import com.pomp.hskai.core.design.components.HskGlassButton
@@ -349,7 +346,7 @@ fun CourseScreen(
                                 },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = PompColors.Cinnabar,
-                                    contentColor = Color.White,
+                                    contentColor = PompColors.OnCinnabar,
                                 ),
                             ) {
                                 Text(stringResource(R.string.action_continue))
@@ -470,8 +467,8 @@ private fun Hsk30BookPrimary(label: String, enabled: Boolean = true, onClick: ()
         modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp),
         shape = RoundedCornerShape(14.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = PompColors.CinnabarDark,
-            contentColor = Color.White,
+            containerColor = PompColors.Cinnabar,
+            contentColor = PompColors.OnCinnabar,
         ),
     ) {
         Text(
@@ -509,8 +506,14 @@ private fun Hsk30LockedEntryDialog(
 ) {
     Hsk30BookDialog(isNew = hsk30.newBadge.isNew, onDismiss = {}, dismissible = false) {
         Hsk30BookTitle(
-            title = stringResource(R.string.hsk30_access_required_title),
-            body = stringResource(R.string.hsk30_access_required_body),
+            title = stringResource(
+                if (hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_title
+                else R.string.hsk30_access_required_title,
+            ),
+            body = stringResource(
+                if (hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_body
+                else R.string.hsk30_access_required_body,
+            ),
         )
         if (hsk30.priceDisplay.isNotBlank()) {
             Hsk30BookPrice(hsk30.priceDisplay)
@@ -563,7 +566,7 @@ private fun Hsk30PromoDialog(
     onContinue: () -> Unit,
 ) {
     val hasAccess = hsk30.access.allowed &&
-        (hsk30.access.paidAccess || hsk30.access.permanentlyUnlocked)
+        (hsk30.access.paidAccess || hsk30.access.permanentlyUnlocked || hsk30.access.provisionalAccess)
     Hsk30BookDialog(isNew = hsk30.newBadge.isNew, onDismiss = onDismiss) {
         Hsk30BookTitle(
             title = stringResource(if (hasAccess) R.string.hsk30_promo_switch else R.string.hsk30_promo_title),
@@ -614,54 +617,31 @@ private fun CourseHeader(
             .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Surface(
-            modifier = if (canSwitchTrack) {
-                Modifier.clickable(
-                    enabled = !isSwitchingTrack,
-                    role = Role.Button,
-                    onClickLabel = switchVersionAction,
-                ) {
-                    onSwitchTrack(targetTrack, null)
-                }
-            } else {
-                Modifier
-            },
-            color = PompColors.Cinnabar,
-            shape = RoundedCornerShape(20.dp),
-        ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 13.dp, vertical = 7.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    Icons.Filled.Bolt,
-                    contentDescription = null,
-                    tint = PompColors.Paper,
-                    modifier = Modifier.size(15.dp),
-                )
-                Spacer(Modifier.width(6.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            HskSectionTitle(
+                text = courseLevelLabel(map.level),
+                modifier = if (canSwitchTrack) {
+                    Modifier.clickable(
+                        enabled = !isSwitchingTrack,
+                        role = Role.Button,
+                        onClickLabel = switchVersionAction,
+                    ) {
+                        onSwitchTrack(targetTrack, null)
+                    }
+                } else Modifier,
+            )
+            if (map.level.startsWith("nhsk", ignoreCase = true)) {
+                Spacer(Modifier.width(5.dp))
                 Text(
-                    text = courseLevelLabel(map.level),
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Medium,
-                        letterSpacing = 0.sp,
-                    ),
-                    color = PompColors.Paper,
+                    text = "NEW",
+                    color = PompColors.CinnabarDark,
+                    fontSize = 8.sp,
+                    lineHeight = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .background(PompColors.CinnabarSoft, RoundedCornerShape(5.dp))
+                        .padding(horizontal = 4.dp, vertical = 2.dp),
                 )
-                if (map.level.startsWith("nhsk", ignoreCase = true)) {
-                    Spacer(Modifier.width(5.dp))
-                    Text(
-                        text = "NEW",
-                        color = PompColors.CinnabarDark,
-                        fontSize = 8.sp,
-                        lineHeight = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .background(Color.White.copy(alpha = 0.92f), RoundedCornerShape(5.dp))
-                            .padding(horizontal = 4.dp, vertical = 2.dp),
-                    )
-                }
             }
         }
         Spacer(Modifier.width(8.dp))
@@ -669,14 +649,14 @@ private fun CourseHeader(
         Spacer(Modifier.weight(1f))
         StatChip(
             Icons.Filled.LocalFireDepartment,
-            PompColors.Cinnabar,
+            PompColors.CinnabarInk,
             map.progress.streak.toString(),
             stringResource(R.string.today_streak),
         )
         Spacer(Modifier.width(8.dp))
         StatChip(
             Icons.Filled.Diamond,
-            PompColors.Gold,
+            PompColors.GoldInk,
             map.progress.xp.toString(),
             stringResource(R.string.today_xp),
         )
@@ -692,28 +672,23 @@ private fun StatChip(
     value: String,
     label: String,
 ) {
-    HskGlassSurface(
-        shape = RoundedCornerShape(20.dp),
-        shadowElevation = 4.dp,
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 4.dp, vertical = 4.dp)
+            .semantics { contentDescription = "$label: $value" },
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 12.dp, vertical = 6.dp)
-                .semantics { contentDescription = "$label: $value" },
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
-            Spacer(Modifier.width(5.dp))
-            Text(
-                value,
-                style = MaterialTheme.typography.labelLarge.copy(
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
-                    letterSpacing = 0.sp,
-                ),
-                color = tint,
-            )
-        }
+        Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
+        Spacer(Modifier.width(5.dp))
+        Text(
+            value,
+            style = MaterialTheme.typography.labelLarge.copy(
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Medium,
+                letterSpacing = 0.sp,
+            ),
+            color = tint,
+        )
     }
 }
 
@@ -898,21 +873,11 @@ private fun PathRow(
                     .align(if (onLeft) Alignment.CenterStart else Alignment.CenterEnd)
                     .padding(start = if (onLeft) 8.dp else 0.dp, end = if (onLeft) 0.dp else 8.dp),
             )
-        } else if (row.nodeIndex % 2 == 1) {
-            val onLeft = offsetX.value >= 0f
-            MiniAppScenery(
-                seed = row.unitIndex * 5 + row.nodeIndex,
-                small = ((row.unitIndex * 3 + row.nodeIndex) % 3 == 0),
-                modifier = Modifier
-                    .align(if (onLeft) Alignment.CenterStart else Alignment.CenterEnd)
-                    .padding(start = if (onLeft) 16.dp else 0.dp, end = if (onLeft) 0.dp else 16.dp),
-            )
         }
 
         Column(
-            // Tepadagi bo'sh joy — "DAVOM ETISH" pufakchasi uchun. Tugun
-            // markazi shu bilan birga `COURSE_NODE_CENTER_DP` ga to'g'ri
-            // keladi, ya'ni yo'lakcha aynan undan o'tadi.
+            // Tugun markazi `COURSE_NODE_CENTER_DP` ga to'g'ri keladi,
+            // shuning uchun yo'lakcha aynan shu nuqtadan o'tadi.
             modifier = Modifier.offset(x = offsetX, y = COURSE_NODE_TOP_GAP_DP.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -927,7 +892,6 @@ private fun PathRow(
                         // test. A node that silently does nothing reads as a
                         // broken app, which is what it was.
                         val lessonDescription = lesson.stateLabel()
-                        if (lesson.isCurrent) CurrentBubble()
                         Box(
                             modifier = Modifier
                                 .size(CURRENT_RING_SIZE)
@@ -1011,65 +975,6 @@ private fun PathRow(
                     maxLines = 1,
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun CurrentBubble() {
-    val bubbleFill = if (PompColors.IsDark) {
-        PompColors.PaperRaised.copy(alpha = 0.88f)
-    } else {
-        Color.White.copy(alpha = 0.72f)
-    }
-    Box(
-        // `unbounded` ATAYLAB: pufakcha tugun qutisidan (76dp) kengroq va usiz
-        // matn ikki qatorga bo'linib kesiladi. Mini App'da `white-space:nowrap`
-        // aynan shuni qiladi.
-        modifier = Modifier
-            .offset(y = (-43).dp)
-            .wrapContentSize(unbounded = true),
-        contentAlignment = Alignment.Center,
-    ) {
-        HskGlassSurface(
-            shape = RoundedCornerShape(20.dp),
-            shadowElevation = 5.dp,
-            borderColor = PompColors.Cinnabar,
-        ) {
-            Text(
-                text = stringResource(R.string.today_continue).uppercase(),
-                style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp),
-                color = PompColors.CinnabarDark,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                softWrap = false,
-                modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
-            )
-        }
-        Canvas(
-            modifier = Modifier
-                .size(10.dp)
-                .offset(y = 17.dp),
-        ) {
-            val path = Path().apply {
-                moveTo(size.width / 2f, size.height)
-                lineTo(0f, 0f)
-                lineTo(size.width, 0f)
-                close()
-            }
-            drawPath(path, color = bubbleFill)
-            drawLine(
-                color = PompColors.Cinnabar,
-                start = Offset(0f, 0f),
-                end = Offset(size.width / 2f, size.height),
-                strokeWidth = 1.dp.toPx(),
-            )
-            drawLine(
-                color = PompColors.Cinnabar,
-                start = Offset(size.width, 0f),
-                end = Offset(size.width / 2f, size.height),
-                strokeWidth = 1.dp.toPx(),
-            )
         }
     }
 }
@@ -1275,7 +1180,7 @@ private fun LessonNodeFace(lesson: CourseLesson) {
             PompColors.Cinnabar,
             PompColors.CinnabarDark,
             if (checkpoint) NodeContent.Checkpoint else NodeContent.Glyph,
-            PompColors.Paper,
+            PompColors.OnCinnabar,
             null,
         )
         lesson.access.isPremiumLocked || lesson.access == LessonAccess.NotReached -> NodeStyle(
@@ -1296,36 +1201,18 @@ private fun LessonNodeFace(lesson: CourseLesson) {
             PompColors.Cinnabar,
             PompColors.CinnabarDark,
             NodeContent.Glyph,
-            PompColors.Paper,
+            PompColors.OnCinnabar,
             null,
         )
     }
-
-    val transition = if (current) rememberInfiniteTransition(label = "course-current-node") else null
-    val ringScale = transition?.animateFloat(
-        initialValue = 1f,
-        targetValue = 1.25f,
-        animationSpec = infiniteRepeatable(tween(1600), RepeatMode.Restart),
-        label = "course-current-ring-scale",
-    )?.value ?: 1f
-    val ringAlpha = transition?.animateFloat(
-        initialValue = 0.70f,
-        targetValue = 0f,
-        animationSpec = infiniteRepeatable(tween(1600), RepeatMode.Restart),
-        label = "course-current-ring-alpha",
-    )?.value ?: 0f
 
     Box(modifier = Modifier.size(CURRENT_RING_SIZE), contentAlignment = Alignment.Center) {
         if (current) {
             Surface(
                 color = Color.Transparent,
                 shape = CircleShape,
-                border = BorderStroke(3.dp, PompColors.Cinnabar),
-                modifier = Modifier.size(NODE_SIZE + 12.dp).graphicsLayer {
-                    scaleX = ringScale
-                    scaleY = ringScale
-                    alpha = ringAlpha
-                },
+                border = BorderStroke(2.dp, PompColors.CinnabarInk.copy(alpha = 0.48f)),
+                modifier = Modifier.size(NODE_SIZE + 10.dp),
             ) {}
         }
         Box(Modifier.size(NODE_SIZE).offset(y = 4.dp).background(depth, CircleShape))

@@ -98,6 +98,11 @@ data class SubscriptionCheckoutState(
     val receiptNoteRes: Int? = null,
     val submitted: Boolean = false,
     val alreadyPending: Boolean = false,
+    val pendingPaymentId: Int = 0,
+    val provisionalAccess: Boolean = false,
+    val paymentDecision: String = "",
+    val checkingPaymentStatus: Boolean = false,
+    val paymentStatusMessageRes: Int? = null,
     val errorRes: Int? = null,
     val currencyDialogOpen: Boolean = false,
     val currencyDialogRequired: Boolean = false,
@@ -105,6 +110,8 @@ data class SubscriptionCheckoutState(
     val currencyErrorRes: Int? = null,
 ) {
     val isHsk30Unlock: Boolean get() = overview?.mode == "hsk30_unlock"
+    val isWaitingForHsk30Review: Boolean
+        get() = isHsk30Unlock && pendingPaymentId > 0 && paymentDecision.isBlank() && !provisionalAccess
     val flow: List<CheckoutStep> get() = checkoutFlow(region)
 
     /** `dc_city` or `alif` for a card payment, null for the QR wallets. */
@@ -117,6 +124,7 @@ class SubscriptionCheckoutViewModel(
     private val onPendingPayment: (Int) -> Unit = {},
     private val savedRegion: suspend () -> String? = { null },
     private val saveRegion: suspend (String) -> Unit = {},
+    private val onProvisionalAccess: () -> Unit = {},
 ) : ViewModel() {
     private val _state = MutableStateFlow(SubscriptionCheckoutState())
     val state = _state.asStateFlow()
@@ -127,7 +135,9 @@ class SubscriptionCheckoutViewModel(
         quoteGeneration++
         clearReceipt()
         _state.update { it.copy(loading = true, quoting = false, errorRes = null, quote = null,
-            submitted = false, alreadyPending = false) }
+            submitted = false, alreadyPending = false, pendingPaymentId = 0,
+            provisionalAccess = false, paymentDecision = "", checkingPaymentStatus = false,
+            paymentStatusMessageRes = null) }
         viewModelScope.launch {
             // A region confirmed earlier opens checkout on the plans, like the Mini App.
             val remembered = runCatching { savedRegion() }.getOrNull()
@@ -149,6 +159,12 @@ class SubscriptionCheckoutViewModel(
                             loading = false,
                             overview = data,
                             discount = data.discount,
+                            alreadyPending = data.pendingPayment != null,
+                            pendingPaymentId = data.pendingPayment?.id ?: 0,
+                            provisionalAccess = data.pendingPayment?.provisionalAccess == true,
+                            paymentDecision = "",
+                            checkingPaymentStatus = false,
+                            paymentStatusMessageRes = null,
                             region = region,
                             method = method,
                             country = if (method == "visa" && region.isNotEmpty()) region else current.country,
@@ -383,14 +399,21 @@ class SubscriptionCheckoutViewModel(
             ))) {
                 is ApiResult.Success -> {
                     val success = result.value.ok && result.value.status == "pending"
+                    val provisional = success && current.isHsk30Unlock && result.value.provisionalAccess
                     if (success) {
                         clearReceipt()
                         if (result.value.paymentId > 0) onPendingPayment(result.value.paymentId)
                     }
                     _state.update { it.copy(submitting = false, submitted = success,
                         alreadyPending = result.value.alreadyPending,
+                        pendingPaymentId = result.value.paymentId,
+                        provisionalAccess = provisional,
+                        paymentDecision = "",
+                        checkingPaymentStatus = false,
+                        paymentStatusMessageRes = null,
                         step = if (success) CheckoutStep.DONE else it.step,
                         errorRes = if (success) null else R.string.sub_unavailable) }
+                    if (provisional && !result.value.alreadyPending) onProvisionalAccess()
                 }
                 is ApiResult.Failure -> _state.update {
                     it.copy(submitting = false, errorRes = result.error.messageRes)
@@ -398,6 +421,52 @@ class SubscriptionCheckoutViewModel(
             }
         }
     }
+
+    fun refreshPaymentStatus() {
+        val paymentId = _state.value.pendingPaymentId
+        if (paymentId <= 0 || _state.value.checkingPaymentStatus) return
+        _state.update {
+            it.copy(checkingPaymentStatus = true, paymentStatusMessageRes = null, errorRes = null)
+        }
+        viewModelScope.launch {
+            when (val result = repository.checkoutPaymentStatus(paymentId)) {
+                is ApiResult.Success -> {
+                    val status = result.value
+                    if (!status.ok || status.paymentId != paymentId ||
+                        status.planType != "hsk30_unlock"
+                    ) {
+                        _state.update {
+                            it.copy(
+                                checkingPaymentStatus = false,
+                                errorRes = R.string.sub_status_check_failed,
+                            )
+                        }
+                    } else {
+                        _state.update {
+                            it.copy(
+                                checkingPaymentStatus = false,
+                                paymentDecision = status.status.takeIf {
+                                    it == "approved" || it == "rejected"
+                                }.orEmpty(),
+                                paymentStatusMessageRes = if (status.status == "pending") {
+                                    R.string.sub_payment_still_pending
+                                } else null,
+                                errorRes = null,
+                            )
+                        }
+                    }
+                }
+                is ApiResult.Failure -> _state.update {
+                    it.copy(
+                        checkingPaymentStatus = false,
+                        errorRes = R.string.sub_status_check_failed,
+                    )
+                }
+            }
+        }
+    }
+
+    fun retryAfterRejection() = load()
 
     private fun trackEvent(stage: String) {
         val current = _state.value
@@ -419,10 +488,18 @@ class SubscriptionCheckoutViewModel(
         private val onPendingPayment: (Int) -> Unit = {},
         private val savedRegion: suspend () -> String? = { null },
         private val saveRegion: suspend (String) -> Unit = {},
+        private val onProvisionalAccess: () -> Unit = {},
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            SubscriptionCheckoutViewModel(repository, origin, onPendingPayment, savedRegion, saveRegion) as T
+            SubscriptionCheckoutViewModel(
+                repository,
+                origin,
+                onPendingPayment,
+                savedRegion,
+                saveRegion,
+                onProvisionalAccess,
+            ) as T
     }
 
     private companion object {

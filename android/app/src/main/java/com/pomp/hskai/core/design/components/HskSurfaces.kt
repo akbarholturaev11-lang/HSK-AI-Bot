@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.PompShapes
 
 /**
  * HSK AI's glass-like surface.
@@ -25,7 +26,7 @@ import com.pomp.hskai.core.design.PompColors
 @Composable
 fun HskGlassSurface(
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(20.dp),
+    shape: Shape = PompShapes.Large,
     shadowElevation: Dp = 12.dp,
     borderColor: Color? = null,
     onClick: (() -> Unit)? = null,

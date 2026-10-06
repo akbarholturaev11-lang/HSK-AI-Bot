@@ -27,6 +27,7 @@ data class PaymentDecisionStatusResponse(
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("payment_id") val paymentId: Int = 0,
     @SerialName("status") val status: String = "",
+    @SerialName("plan_type") val planType: String = "",
 )
 
 /** A subscription or limit notice; `show = false` means Telegram already has it. */

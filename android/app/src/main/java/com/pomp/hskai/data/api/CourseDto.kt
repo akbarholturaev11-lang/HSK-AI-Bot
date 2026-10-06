@@ -67,6 +67,9 @@ data class CourseHsk30AccessDto(
     @SerialName("feature_enabled") val featureEnabled: Boolean = false,
     @SerialName("paid_access") val paidAccess: Boolean = false,
     @SerialName("permanently_unlocked") val permanentlyUnlocked: Boolean = false,
+    @SerialName("payment_pending") val paymentPending: Boolean = false,
+    @SerialName("provisional_access") val provisionalAccess: Boolean = false,
+    @SerialName("payment_rejected") val paymentRejected: Boolean = false,
     @SerialName("allowed") val allowed: Boolean = false,
     @SerialName("reason") val reason: String = "",
 )

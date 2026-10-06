@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -46,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -57,6 +60,7 @@ import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskContentSkeleton
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.design.components.HskSectionTitle
 import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.data.api.AndroidHintDto
@@ -108,10 +112,7 @@ fun RatingScreen(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    SectionPill(
-                        icon = Icons.Filled.WorkspacePremium,
-                        text = stringResource(R.string.nav_rating),
-                    )
+                    HskSectionTitle(stringResource(R.string.nav_rating))
                     Spacer(Modifier.width(8.dp))
                     SectionHint(
                         hints = hints,
@@ -195,18 +196,18 @@ fun RatingScreen(
 
                 RatingTab.FRIENDS -> {
                     val referral = state.referral
-                    if (!state.isLoading || referral != null || state.referralError != null) {
+                    if (referral != null) {
                         item {
                             FriendInviteCard(
-                                link = referral?.link.orEmpty(),
+                                link = referral.link,
                                 onInvite = onInviteFriends,
                             )
                         }
                         item {
                             FriendStats(
-                                invited = referral?.invited ?: 0,
-                                activated = referral?.activated ?: 0,
-                                required = referral?.trialRequired ?: 0,
+                                invited = referral.invited,
+                                activated = referral.activated,
+                                required = referral.trialRequired,
                             )
                         }
                     }
@@ -719,34 +720,13 @@ private fun ratingLevelLabel(level: String): String {
 }
 
 @Composable
-private fun SectionPill(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    text: String,
-) {
-    Surface(color = PompColors.Cinnabar, shape = RoundedCornerShape(999.dp)) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(icon, contentDescription = null, tint = PompColors.Paper, modifier = Modifier.size(18.dp))
-            Spacer(Modifier.width(8.dp))
-            Text(
-                text = text,
-                style = MaterialTheme.typography.titleMedium,
-                color = PompColors.Paper,
-            )
-        }
-    }
-}
-
-@Composable
 private fun TabSwitch(selected: RatingTab, onSelect: (RatingTab) -> Unit) {
     HskGlassSurface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
         shadowElevation = 5.dp,
     ) {
-        Row(modifier = Modifier.padding(4.dp)) {
+        Row(modifier = Modifier.padding(4.dp).selectableGroup()) {
             TabButton(
                 label = stringResource(R.string.rating_tab_league),
                 selected = selected == RatingTab.LEAGUE,
@@ -775,13 +755,13 @@ private fun TabButton(
         shape = RoundedCornerShape(11.dp),
         modifier = modifier
             .heightIn(min = 44.dp)
-            .clickable(onClick = onClick),
+            .selectable(selected = selected, role = Role.Tab, onClick = onClick),
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = label,
                 style = MaterialTheme.typography.titleSmall,
-                color = if (selected) PompColors.Paper else PompColors.InkSecondary,
+                color = if (selected) PompColors.OnCinnabar else PompColors.InkSecondary,
             )
         }
     }
@@ -911,7 +891,7 @@ private fun PromotionZone() {
         Text(
             text = stringResource(R.string.rating_promote, PROMOTION_ZONE),
             style = MaterialTheme.typography.bodyMedium,
-            color = PompColors.Gold,
+            color = PompColors.GoldInk,
         )
         Spacer(Modifier.width(8.dp))
         Box(
@@ -978,7 +958,7 @@ private fun LeagueRow(
                         Text(
                             text = stringResource(R.string.rating_premium),
                             style = MaterialTheme.typography.labelSmall,
-                            color = PompColors.Gold,
+                            color = PompColors.GoldInk,
                             fontWeight = FontWeight.SemiBold,
                         )
                     }

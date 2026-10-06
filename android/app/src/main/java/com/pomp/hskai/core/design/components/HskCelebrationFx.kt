@@ -853,7 +853,7 @@ private fun hskConfetti(seed: Int): List<ConfettiPiece> {
  */
 @Composable
 internal fun HskConfettiRain(key: Any?, modifier: Modifier = Modifier) {
-    if (key == null) return
+    if (key == null || hskMotionOff(LocalContext.current)) return
     val fall = remember(key) { Animatable(0f) }
     val pieces = remember(key) { hskConfetti(key.hashCode()) }
     LaunchedEffect(key) {
@@ -892,10 +892,14 @@ internal fun HskConfettiRain(key: Any?, modifier: Modifier = Modifier) {
 /** `.lu-emb`: the cinnabar tile with a gold rim that pops in at the top of the scene. */
 @Composable
 internal fun HskCelebrationEmblem(glyph: String, modifier: Modifier = Modifier) {
-    val pop = remember(glyph) { Animatable(0f) }
+    val context = LocalContext.current
+    val motionOff = remember(context) { hskMotionOff(context) }
+    val pop = remember(glyph, motionOff) { Animatable(if (motionOff) 1f else 0f) }
     LaunchedEffect(glyph) {
-        delay(60)
-        pop.animateTo(1f, tween(durationMillis = 500, easing = bezier(.2f, 1.5f, .4f, 1f)))
+        if (motionOff) pop.snapTo(1f) else {
+            delay(60)
+            pop.animateTo(1f, tween(durationMillis = 500, easing = bezier(.2f, 1.5f, .4f, 1f)))
+        }
     }
     val shape = RoundedCornerShape(34.dp)
     Box(
@@ -917,7 +921,7 @@ internal fun HskCelebrationEmblem(glyph: String, modifier: Modifier = Modifier) 
                 lineHeight = 64.sp,
                 fontWeight = FontWeight.Medium,
             ),
-            color = Color.White,
+            color = PompColors.LightOnCinnabar,
         )
     }
 }
@@ -932,8 +936,14 @@ internal fun HskReveal(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    val progress = remember { Animatable(0f) }
+    val context = LocalContext.current
+    val motionOff = remember(context) { hskMotionOff(context) }
+    val progress = remember(motionOff) { Animatable(if (motionOff) 1f else 0f) }
     LaunchedEffect(Unit) {
+        if (motionOff) {
+            progress.snapTo(1f)
+            return@LaunchedEffect
+        }
         delay(delayMillis.toLong())
         progress.animateTo(1f, tween(durationMillis = 500, easing = CssEase))
     }
@@ -957,8 +967,14 @@ internal fun HskFadeIn(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    val progress = remember { Animatable(0f) }
+    val context = LocalContext.current
+    val motionOff = remember(context) { hskMotionOff(context) }
+    val progress = remember(motionOff) { Animatable(if (motionOff) 1f else 0f) }
     LaunchedEffect(Unit) {
+        if (motionOff) {
+            progress.snapTo(1f)
+            return@LaunchedEffect
+        }
         progress.animateTo(1f, tween(durationMillis = durationMillis, easing = LinearEasing))
     }
     Box(modifier = modifier.graphicsLayer { alpha = progress.value }) {
@@ -1063,23 +1079,31 @@ private val MINI_FLICKER_X = arrayOf(
 @Composable
 internal fun HskStreakFlame(modifier: Modifier = Modifier) {
     val paths = remember { flamePaths() }
+    val context = LocalContext.current
+    val motionOff = remember(context) { hskMotionOff(context) }
     val ignite = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
-        ignite.animateTo(1f, tween(durationMillis = 700, easing = LinearEasing))
+        if (motionOff) ignite.snapTo(1f)
+        else ignite.animateTo(1f, tween(durationMillis = 700, easing = LinearEasing))
     }
-    val loop = rememberInfiniteTransition(label = "streak-flame")
-    val flicker by loop.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(durationMillis = 1300, easing = LinearEasing)),
-        label = "streak-flame-flicker",
-    )
-    val glow by loop.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(durationMillis = 1600, easing = LinearEasing)),
-        label = "streak-flame-glow",
-    )
+    val (flicker, glow) = if (motionOff) {
+        0f to 0f
+    } else {
+        val loop = rememberInfiniteTransition(label = "streak-flame")
+        val flicker by loop.animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(tween(durationMillis = 1300, easing = LinearEasing)),
+            label = "streak-flame-flicker",
+        )
+        val glow by loop.animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(tween(durationMillis = 1600, easing = LinearEasing)),
+            label = "streak-flame-glow",
+        )
+        flicker to glow
+    }
     Box(modifier = modifier.size(150.dp), contentAlignment = Alignment.Center) {
         Canvas(Modifier.requiredSize(202.dp)) {
             val radius = size.minDimension / 2f * hskTrack(GLOW_SCALE, glow)
@@ -1121,7 +1145,9 @@ internal enum class HskDayFlame { Lit, Frozen, Ahead }
 @Composable
 internal fun HskMiniFlame(state: HskDayFlame, modifier: Modifier = Modifier) {
     val paths = remember { flamePaths() }
-    val flicker: State<Float>? = if (state == HskDayFlame.Lit) {
+    val context = LocalContext.current
+    val motionOff = remember(context) { hskMotionOff(context) }
+    val flicker: State<Float>? = if (state == HskDayFlame.Lit && !motionOff) {
         rememberInfiniteTransition(label = "day-flame").animateFloat(
             initialValue = 0f,
             targetValue = 1f,
@@ -1187,8 +1213,14 @@ internal fun HskStamp(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    val stamp = remember { Animatable(0f) }
+    val context = LocalContext.current
+    val motionOff = remember(context) { hskMotionOff(context) }
+    val stamp = remember(motionOff) { Animatable(if (motionOff) 1f else 0f) }
     LaunchedEffect(Unit) {
+        if (motionOff) {
+            stamp.snapTo(1f)
+            return@LaunchedEffect
+        }
         delay(delayMillis.toLong())
         stamp.animateTo(1f, tween(durationMillis = 650, easing = LinearEasing))
     }
@@ -1217,8 +1249,14 @@ internal fun HskNumberPop(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    val pop = remember { Animatable(0f) }
+    val context = LocalContext.current
+    val motionOff = remember(context) { hskMotionOff(context) }
+    val pop = remember(motionOff) { Animatable(if (motionOff) 1f else 0f) }
     LaunchedEffect(Unit) {
+        if (motionOff) {
+            pop.snapTo(1f)
+            return@LaunchedEffect
+        }
         delay(delayMillis.toLong())
         pop.animateTo(1f, tween(durationMillis = 600, easing = LinearEasing))
     }

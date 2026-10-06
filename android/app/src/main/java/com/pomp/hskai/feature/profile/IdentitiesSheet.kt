@@ -270,7 +270,7 @@ private fun ProviderAccountRow(
                 onClick = { onDisconnect(identity.id) },
                 enabled = state.busyProvider == null,
             ) {
-                Text(stringResource(R.string.profile_account_disconnect), color = PompColors.Flame)
+                Text(stringResource(R.string.profile_account_disconnect), color = PompColors.FlameInk)
             }
         } else if (canConnect) {
             OutlinedButton(

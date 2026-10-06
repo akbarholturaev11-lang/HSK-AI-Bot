@@ -16,8 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -37,6 +37,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.PompShapes
+import com.pomp.hskai.core.design.PompSpacing
 
 /** Channel-neutral full-screen offer; every payment decision stays on the server. */
 @Composable
@@ -58,86 +60,86 @@ fun LimitBlock(
 ) {
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState())
-            .padding(horizontal = 26.dp, vertical = 64.dp),
+            .padding(horizontal = PompSpacing.XLarge, vertical = PompSpacing.Large),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(PompSpacing.Small))
         Surface(color = PompColors.GoldSoft, shape = CircleShape) {
-            Box(Modifier.size(94.dp), contentAlignment = Alignment.Center) {
-                Icon(Icons.Filled.Lock, contentDescription = null, tint = PompColors.Gold, modifier = Modifier.size(42.dp))
+            Box(Modifier.size(64.dp), contentAlignment = Alignment.Center) {
+                Icon(Icons.Filled.Lock, contentDescription = null, tint = PompColors.GoldInk, modifier = Modifier.size(28.dp))
             }
         }
-        Spacer(Modifier.height(26.dp))
+        Spacer(Modifier.height(PompSpacing.Large))
         Text(
             stringResource(R.string.limit_screen_badge),
             style = MaterialTheme.typography.labelLarge,
             color = PompColors.Cinnabar,
             fontWeight = FontWeight.Bold,
         )
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(PompSpacing.XSmall))
         Text(
             headline, style = MaterialTheme.typography.headlineMedium, color = PompColors.Ink,
             fontWeight = FontWeight.Bold, textAlign = TextAlign.Center,
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(PompSpacing.Small))
         Text(
             reason?.takeIf { it.isNotBlank() } ?: sectionTitle,
             style = MaterialTheme.typography.bodyLarge, color = PompColors.InkSecondary,
             textAlign = TextAlign.Center,
         )
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(PompSpacing.Large))
         Surface(
-            color = PompColors.PaperRaised, shape = RoundedCornerShape(20.dp),
+            color = PompColors.PaperRaised, shape = PompShapes.Large,
             border = BorderStroke(1.dp, PompColors.Divider),
         ) {
-            Column(Modifier.fillMaxWidth().padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(Modifier.fillMaxWidth().padding(PompSpacing.Large), verticalArrangement = Arrangement.spacedBy(PompSpacing.Small)) {
                 listOf(
                     stringResource(R.string.limit_benefit_lessons),
                     stringResource(R.string.limit_benefit_practice),
                     stringResource(R.string.limit_benefit_voice),
                 ).forEach { benefit ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("✦", color = PompColors.Gold, style = MaterialTheme.typography.titleMedium)
-                        Spacer(Modifier.width(12.dp))
+                        Icon(Icons.Filled.Check, contentDescription = null, tint = PompColors.JadeInk, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(PompSpacing.Small))
                         Text(benefit, color = PompColors.Ink, style = MaterialTheme.typography.bodyMedium)
                     }
                 }
             }
         }
-        Spacer(Modifier.height(34.dp))
+        Spacer(Modifier.height(PompSpacing.XLarge))
         Button(
             onClick = onPrimary, enabled = !isBusy,
             modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp),
-            shape = RoundedCornerShape(16.dp),
+            shape = PompShapes.Medium,
             colors = ButtonDefaults.buttonColors(containerColor = PompColors.Cinnabar),
         ) {
             if (isBusy) CircularProgressIndicator(
-                color = PompColors.Paper, strokeWidth = 2.dp, modifier = Modifier.size(18.dp),
+                color = PompColors.OnCinnabar, strokeWidth = 2.dp, modifier = Modifier.size(18.dp),
             ) else Text(primaryLabel, style = MaterialTheme.typography.labelLarge)
         }
         if (secondaryLabel != null && onSecondary != null) {
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(PompSpacing.Small))
             OutlinedButton(
                 onClick = onSecondary, enabled = !isBusy,
                 modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp),
-                shape = RoundedCornerShape(16.dp),
+                shape = PompShapes.Medium,
                 border = BorderStroke(1.dp, PompColors.Cinnabar),
             ) { Text(secondaryLabel, color = PompColors.CinnabarDark) }
         }
         if (tertiaryLabel != null && onTertiary != null) {
-            Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(PompSpacing.XSmall))
             TextButton(onClick = onTertiary, enabled = !isBusy) {
                 Text(tertiaryLabel, color = PompColors.InkSecondary)
             }
         }
         if (!hint.isNullOrBlank()) {
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(PompSpacing.Small))
             Text(hint, color = PompColors.InkSecondary, style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
         }
         val message = errorText ?: noticeText
         if (!message.isNullOrBlank()) {
-            Spacer(Modifier.height(14.dp))
-            Text(message, color = if (errorText != null) PompColors.Flame else PompColors.InkSecondary, textAlign = TextAlign.Center)
+            Spacer(Modifier.height(PompSpacing.Medium))
+            Text(message, color = if (errorText != null) PompColors.FlameInk else PompColors.InkSecondary, textAlign = TextAlign.Center)
         }
     }
 }

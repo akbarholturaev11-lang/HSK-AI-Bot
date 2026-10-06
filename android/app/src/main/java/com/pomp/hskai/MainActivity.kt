@@ -313,6 +313,15 @@ private fun AppRoot(
                 factory = CourseViewModel.Factory(app.courseRepository),
             )
             val courseState by courseViewModel.state.collectAsStateWithLifecycle()
+            // The first automatic widget prompt must wait until the HSK 3.0
+            // announcement has either been ruled out or acknowledged by server.
+            // Stale cached eligibility is ignored; a failed refresh must not
+            // leave the widget prompt blocked indefinitely.
+            val hsk30PromoMustPrecedeWidget = courseState.isLoading ||
+                courseState.isRefreshing || courseState.isClaimingHsk30Promo ||
+                courseState.hsk30PromoVisible ||
+                (!courseState.isStale && !courseState.hasAttemptedHsk30Promo &&
+                    courseState.map?.hsk30?.promo?.eligible == true)
             val studySetupViewModel: StudySetupViewModel = viewModel(
                 viewModelStoreOwner = sessionOwner,
                 factory = StudySetupViewModel.Factory(app.studyPreferencesRepository),
@@ -412,7 +421,8 @@ private fun AppRoot(
             // Onboarding uses the same full-screen widget prompt as the daily reminder.
             // The widget offer stays in this position; only the old Pro/trial
             // interruption after onboarding was removed.
-            LaunchedEffect(onboardingState.launch) {
+            LaunchedEffect(onboardingState.launch, hsk30PromoMustPrecedeWidget) {
+                if (hsk30PromoMustPrecedeWidget) return@LaunchedEffect
                 if (onboardingState.launch != null && !widgetOfferHandled && !widgetSetupOpen) {
                     val today = LocalDate.now().toString()
                     val session = app.widgetStore.read()
@@ -476,8 +486,11 @@ private fun AppRoot(
                 widgetSetupOpen,
                 studySetupState.visible,
                 widgetSession.lastInstallPromptDay,
+                hsk30PromoMustPrecedeWidget,
             ) {
-                if (!onboardingState.completed || widgetSetupOpen || studySetupState.visible) {
+                if (!onboardingState.completed || widgetSetupOpen || studySetupState.visible ||
+                    hsk30PromoMustPrecedeWidget
+                ) {
                     return@LaunchedEffect
                 }
                 if (onboardingState.launch != null && !widgetOfferHandled) {

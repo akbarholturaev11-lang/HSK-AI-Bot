@@ -15,6 +15,7 @@ import com.pomp.hskai.data.api.AndroidSubscriptionCurrencyPreferenceRequest
 import com.pomp.hskai.data.api.AndroidSubscriptionCurrencyPreferenceResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOpenResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOverviewResponse
+import com.pomp.hskai.data.api.PaymentDecisionStatusResponse
 import com.pomp.hskai.data.api.SubscriptionCheckoutOverviewDto
 import com.pomp.hskai.data.api.SubscriptionCheckoutEventRequest
 import com.pomp.hskai.data.api.SubscriptionCheckoutEventResponse
@@ -301,6 +302,11 @@ private class FakeFeatureApi(
         authorization: String,
         body: SubscriptionSubmitRequest,
     ): Response<SubscriptionSubmitResponse> = error("unexpected call")
+
+    override suspend fun checkoutPaymentStatus(
+        authorization: String,
+        paymentId: Int,
+    ): Response<PaymentDecisionStatusResponse> = error("unexpected call")
 
     override suspend fun practiceStart(
         authorization: String,

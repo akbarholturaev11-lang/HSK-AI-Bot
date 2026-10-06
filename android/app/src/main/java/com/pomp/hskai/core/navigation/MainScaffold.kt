@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.PompShapes
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.feature.update.AppUpdateBanner
 
@@ -176,8 +177,8 @@ fun MainScaffold(
                     ) {
                         HskGlassSurface(
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(28.dp),
-                            shadowElevation = 14.dp,
+                            shape = PompShapes.Large,
+                            shadowElevation = 4.dp,
                         ) {
                             Row(
                                 modifier = Modifier
@@ -212,8 +213,9 @@ private fun NavItem(
     modifier: Modifier = Modifier,
 ) {
     val label = stringResource(tab.labelRes)
-    val tint = if (selected) PompColors.Cinnabar else PompColors.InkDisabled
-    val itemShape = RoundedCornerShape(18.dp)
+    val tint = if (selected) PompColors.Cinnabar else PompColors.InkSecondary
+    val labelTint = if (selected) PompColors.CinnabarInk else PompColors.InkSecondary
+    val itemShape = PompShapes.Medium
     val selectedBackground = if (selected && !tab.isCentre) {
         PompColors.CinnabarSoft.copy(alpha = if (PompColors.IsDark) 0.72f else 0.78f)
     } else {
@@ -222,7 +224,7 @@ private fun NavItem(
 
     Column(
         modifier = modifier
-            .then(if (tab.isCentre) Modifier.offset(y = (-8).dp) else Modifier)
+            .then(if (tab.isCentre) Modifier.offset(y = (-2).dp) else Modifier)
             .padding(horizontal = 2.dp)
             .clip(itemShape)
             .background(selectedBackground)
@@ -236,50 +238,26 @@ private fun NavItem(
         verticalArrangement = Arrangement.Center,
     ) {
         if (tab.isCentre) {
-            Box(contentAlignment = Alignment.Center) {
-                Box(
-                    modifier = Modifier
-                        .size(62.dp)
-                        .background(
-                            color = PompColors.Cinnabar.copy(alpha = 0.12f),
-                            shape = CircleShape,
-                        ),
-                )
-                Surface(
-                    modifier = Modifier
-                        .size(52.dp)
-                        .shadow(
-                            elevation = 10.dp,
-                            shape = CircleShape,
-                            ambientColor = PompColors.Cinnabar.copy(alpha = 0.20f),
-                            spotColor = PompColors.Cinnabar.copy(alpha = 0.30f),
-                        ),
-                    shape = CircleShape,
-                    color = PompColors.Cinnabar,
-                    border = BorderStroke(
-                        3.dp,
-                        if (PompColors.IsDark) {
-                            PompColors.PaperRaised.copy(alpha = 0.92f)
-                        } else {
-                            Color.White.copy(alpha = 0.90f)
-                        },
-                    ),
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = tab.icon,
-                            contentDescription = null,
-                            tint = PompColors.Paper,
-                            modifier = Modifier.size(23.dp),
-                        )
-                    }
+            Surface(
+                modifier = Modifier.size(48.dp),
+                shape = CircleShape,
+                color = PompColors.Cinnabar,
+                border = BorderStroke(1.dp, PompColors.PaperRaised),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = tab.icon,
+                        contentDescription = null,
+                        tint = PompColors.OnCinnabar,
+                        modifier = Modifier.size(22.dp),
+                    )
                 }
             }
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall,
                 fontSize = 11.sp,
-                color = PompColors.Cinnabar,
+                color = PompColors.CinnabarInk,
                 maxLines = 1,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 1.dp),
@@ -294,8 +272,8 @@ private fun NavItem(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall,
-                fontSize = 10.5.sp,
-                color = tint,
+                fontSize = 11.sp,
+                color = labelTint,
                 maxLines = 1,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 3.dp),

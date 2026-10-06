@@ -155,4 +155,18 @@
     <string name="update_channel_name">Навсозиҳои барнома</string>
     <string name="notify_update_title">Версияи нав баромад</string>
     <string name="notify_update_body">HSK AI %1$s омода аст. Барои навсозӣ барномаро кушоед.</string>
+    <string name="sub_hsk30_pending_title">Пардохти HSK 3.0 санҷида мешавад</string>
+    <string name="sub_hsk30_pending_body">Дархост ба администратор фиристода шуд. HSK 3.0 пас аз тасдиқ кушода мешавад. Ҳолатро нав кунед.</string>
+    <string name="sub_hsk30_provisional_title">HSK 3.0 муваққатан кушода шуд</string>
+    <string name="sub_hsk30_provisional_body">Дархости аввал санҷида мешавад. Агар пардохт тасдиқ нашавад, дастрасӣ ба HSK 3.0 баста мешавад.</string>
+    <string name="sub_hsk30_rejected_title">Пардохти HSK 3.0 қабул нашуд</string>
+    <string name="sub_hsk30_rejected_body">Пардохти шумо қабул нашуд. Маълумотро санҷида, пардохтро аз нав фиристед.</string>
+    <string name="sub_hsk30_approved_title">HSK 3.0 кушода шуд</string>
+    <string name="sub_hsk30_approved_body">Пардохт тасдиқ шуд. Метавонед аз китобҳои нав оғоз кунед.</string>
+    <string name="sub_hsk30_retry">Пардохтро аз нав фиристед</string>
+    <string name="sub_hsk30_open_course">HSK 3.0-ро кушоед</string>
+    <string name="sub_payment_refresh">Ҳолати пардохтро нав кардан</string>
+    <string name="sub_payment_checking">Ҳолат санҷида мешавад…</string>
+    <string name="sub_payment_still_pending">Пардохт ҳанӯз аз ҷониби администратор санҷида мешавад.</string>
+    <string name="sub_status_check_failed">Ҳолатро санҷида нашуд. Интернетро тафтиш карда, боз кӯшиш кунед.</string>
 </resources>

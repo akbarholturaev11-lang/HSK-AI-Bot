@@ -22,8 +22,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.HelpOutline
@@ -37,6 +39,7 @@ import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -47,6 +50,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -74,9 +78,12 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.AuthProvider
 import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.PompShapes
+import com.pomp.hskai.core.design.PompSpacing
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.Hsk30BooksHeader
 import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.design.components.HskSectionTitle
 import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.feature.update.AppUpdateCard
 import com.pomp.hskai.core.navigation.AppDestination
@@ -143,7 +150,7 @@ fun ProfileScreen(
     onOpenSubscription: (renewal: Boolean) -> Unit = {},
     subscriptionCheckoutAvailable: Boolean = BuildConfig.FLAVOR == "direct",
 ) {
-    AssistantScreen(profileAssistantContext(state), bottomBar = true)
+    AssistantScreen(profileAssistantContext(state), bottomBar = true, showButton = false)
     var settingsOpen by remember { mutableStateOf(false) }
     var courseVersionPickerOpen by remember { mutableStateOf(false) }
     var appearancePickerOpen by remember { mutableStateOf(false) }
@@ -178,12 +185,12 @@ fun ProfileScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item { ProfileToolbar(onOpenSettings = openSettings) }
-
-            if (hints.isNotEmpty()) {
-                item {
-                    SectionHint(hints = hints, section = "profile", onDismiss = onDismissHint)
-                }
+            item {
+                ProfileToolbar(
+                    onOpenSettings = openSettings,
+                    hints = hints,
+                    onDismissHint = onDismissHint,
+                )
             }
 
             item {
@@ -209,7 +216,6 @@ fun ProfileScreen(
                 DailyGoalCard(
                     dailyXp = dailyXp,
                     dailyGoal = dailyGoal,
-                    streak = courseProgress?.streak ?: state.profile?.stats?.streak ?: 0,
                     onOpenGoal = onOpenGoal,
                 )
             }
@@ -233,23 +239,9 @@ fun ProfileScreen(
                 )
             }
             item {
-                ProfileActionCard(
-                    icon = Icons.Filled.WarningAmber,
-                    iconBackground = PompColors.FlameSoft,
-                    iconTint = PompColors.Flame,
-                    title = stringResource(R.string.practice_mistakes_title),
-                    subtitle = stringResource(R.string.profile_mini_mistakes_subtitle),
-                    onClick = openMistakes,
-                )
-            }
-            item {
-                ProfileActionCard(
-                    icon = Icons.Filled.People,
-                    iconBackground = PompColors.JadeSoft,
-                    iconTint = PompColors.Jade,
-                    title = stringResource(R.string.profile_friends),
-                    subtitle = null,
-                    onClick = onOpenFriends,
+                ProfileQuickLinks(
+                    onOpenMistakes = openMistakes,
+                    onOpenFriends = onOpenFriends,
                 )
             }
 
@@ -391,18 +383,21 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun ProfileToolbar(onOpenSettings: () -> Unit) {
+private fun ProfileToolbar(
+    onOpenSettings: () -> Unit,
+    hints: List<AndroidHintDto>,
+    onDismissHint: (String) -> Unit,
+) {
     Row(
         modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
+        HskSectionTitle(
             text = stringResource(R.string.nav_profile),
-            style = MaterialTheme.typography.headlineMedium,
-            color = PompColors.Ink,
-            fontWeight = FontWeight.Bold,
             modifier = Modifier.weight(1f),
         )
+        SectionHint(hints = hints, section = "profile", onDismiss = onDismissHint)
+        Spacer(Modifier.width(PompSpacing.Small))
         Surface(
             onClick = onOpenSettings,
             color = PompColors.PaperRaised,
@@ -475,7 +470,7 @@ private fun ProfileSubscriptionCard(
                 ) {
                     Text(
                         stringResource(statusRes),
-                        color = if (isPaid || trialActive) PompColors.Jade else PompColors.InkSecondary,
+                        color = if (isPaid || trialActive) PompColors.JadeInk else PompColors.InkSecondary,
                         style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                     )
@@ -523,7 +518,7 @@ private fun ProfileSubscriptionCard(
                                 else -> R.string.profile_subscription_buy
                             }
                         ),
-                        color = PompColors.Paper,
+                        color = PompColors.OnCinnabar,
                     )
                 }
             } else if (!checkoutAvailable && subscription != null && !isPaid) {
@@ -635,7 +630,7 @@ private fun AvatarNoteSheet(onDismiss: () -> Unit) {
 }
 
 @Composable
-private fun DailyGoalCard(dailyXp: Int, dailyGoal: Int, streak: Int, onOpenGoal: () -> Unit) {
+private fun DailyGoalCard(dailyXp: Int, dailyGoal: Int, onOpenGoal: () -> Unit) {
     val remaining = (dailyGoal - dailyXp).coerceAtLeast(0)
     val percent = if (dailyGoal > 0) ((dailyXp.toFloat() / dailyGoal) * 100).toInt().coerceIn(0, 100) else 0
     HskGlassSurface(
@@ -650,10 +645,6 @@ private fun DailyGoalCard(dailyXp: Int, dailyGoal: Int, streak: Int, onOpenGoal:
                 Text(stringResource(R.string.profile_goal_body, dailyXp, dailyGoal, remaining), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
                 Text(stringResource(R.string.profile_goal_percent, percent), style = MaterialTheme.typography.labelSmall, color = PompColors.InkSecondary)
             }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(streak.toString(), style = MaterialTheme.typography.headlineSmall, color = PompColors.Cinnabar, fontWeight = FontWeight.Bold)
-                Text(stringResource(R.string.profile_streak), style = MaterialTheme.typography.labelSmall, color = PompColors.InkSecondary)
-            }
         }
     }
 }
@@ -661,29 +652,89 @@ private fun DailyGoalCard(dailyXp: Int, dailyGoal: Int, streak: Int, onOpenGoal:
 @Composable
 private fun StatsGrid(state: ProfileUiState) {
     val stats = state.profile?.stats
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            StatCard(stringResource(R.string.profile_xp), (stats?.xp ?: 0).toString(), Modifier.weight(1f))
-            StatCard(stringResource(R.string.profile_streak), (stats?.streak ?: 0).toString(), Modifier.weight(1f))
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            StatCard(stringResource(R.string.profile_lessons), (stats?.completedLessons ?: 0).toString(), Modifier.weight(1f))
-            StatCard(stringResource(R.string.profile_mistakes), (stats?.mistakes ?: 0).toString(), Modifier.weight(1f))
+    HskGlassSurface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = PompShapes.Large,
+        shadowElevation = 2.dp,
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = PompSpacing.Small, vertical = PompSpacing.Large),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            StatMetric(stringResource(R.string.profile_xp), (stats?.xp ?: 0).toString(), Modifier.weight(1f))
+            StatMetric(stringResource(R.string.profile_lessons), (stats?.completedLessons ?: 0).toString(), Modifier.weight(1f))
+            StatMetric(stringResource(R.string.profile_mistakes), (stats?.mistakes ?: 0).toString(), Modifier.weight(1f))
         }
     }
 }
 
 @Composable
-private fun StatCard(label: String, value: String, modifier: Modifier = Modifier) {
-    HskGlassSurface(
-        modifier = modifier,
-        shape = RoundedCornerShape(16.dp),
-        shadowElevation = 6.dp,
+private fun StatMetric(label: String, value: String, modifier: Modifier = Modifier) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(value, style = MaterialTheme.typography.headlineSmall, color = PompColors.Ink)
+        Text(
+            label,
+            style = MaterialTheme.typography.bodySmall,
+            color = PompColors.InkSecondary,
+            maxLines = 1,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+@Composable
+private fun ProfileQuickLinks(onOpenMistakes: () -> Unit, onOpenFriends: () -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = PompShapes.Medium,
+        color = PompColors.PaperRaised,
+        border = BorderStroke(1.dp, PompColors.Divider),
     ) {
-        Column(Modifier.padding(14.dp)) {
-            Text(value, style = MaterialTheme.typography.headlineSmall, color = PompColors.Ink)
-            Text(label, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
+        Column {
+            ProfileQuickLinkRow(
+                icon = Icons.Filled.WarningAmber,
+                title = stringResource(R.string.practice_mistakes_title),
+                subtitle = stringResource(R.string.profile_mini_mistakes_subtitle),
+                iconTint = PompColors.FlameInk,
+                onClick = onOpenMistakes,
+            )
+            SettingsDivider()
+            ProfileQuickLinkRow(
+                icon = Icons.Filled.People,
+                title = stringResource(R.string.profile_friends),
+                subtitle = null,
+                iconTint = PompColors.JadeInk,
+                onClick = onOpenFriends,
+            )
         }
+    }
+}
+
+@Composable
+private fun ProfileQuickLinkRow(
+    icon: ImageVector,
+    title: String,
+    subtitle: String?,
+    iconTint: Color,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 60.dp)
+            .clickable(onClick = onClick)
+            .padding(horizontal = PompSpacing.Large, vertical = PompSpacing.Small),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(PompSpacing.Large),
+    ) {
+        Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(22.dp))
+        Column(Modifier.weight(1f)) {
+            Text(title, color = PompColors.Ink, style = MaterialTheme.typography.bodyLarge)
+            if (!subtitle.isNullOrBlank()) {
+                Text(subtitle, color = PompColors.InkSecondary, style = MaterialTheme.typography.bodySmall)
+            }
+        }
+        SettingsChevron()
     }
 }
 
@@ -726,7 +777,7 @@ private fun AccessPill(isPaid: Boolean, modifier: Modifier = Modifier) {
                 if (isPaid) R.string.synced_access_paid else R.string.synced_access_free,
             ),
             style = MaterialTheme.typography.labelMedium,
-            color = if (isPaid) PompColors.Jade else PompColors.InkSecondary,
+            color = if (isPaid) PompColors.JadeInk else PompColors.InkSecondary,
             maxLines = 1,
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
         )
@@ -767,8 +818,16 @@ private fun ProfileSettingsSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val supportUrl = state.profile?.supportUrl.orEmpty()
+    var confirmUnlink by remember { mutableStateOf(false) }
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = PompColors.Paper) {
-        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 28.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 720.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 28.dp),
+        ) {
             Text(
                 stringResource(R.string.profile_mini_settings),
                 color = PompColors.Ink,
@@ -785,7 +844,7 @@ private fun ProfileSettingsSheet(
                 Column {
                     MiniSettingsRow(Icons.Filled.Language, stringResource(R.string.profile_language), !settings.isBusy, onOpenLanguage) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(account.language.backendCode.uppercase(), color = PompColors.InkDisabled, fontSize = 13.sp)
+                            Text(account.language.backendCode.uppercase(), color = PompColors.InkSecondary, fontSize = 13.sp)
                             Spacer(Modifier.width(4.dp)); SettingsChevron()
                         }
                     }
@@ -800,7 +859,7 @@ private fun ProfileSettingsSheet(
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     if (courseTrack == "hsk30") "HSK 3.0" else "HSK 2.0",
-                                    color = PompColors.InkDisabled,
+                                    color = PompColors.InkSecondary,
                                     fontSize = 13.sp,
                                 )
                                 Spacer(Modifier.width(4.dp)); SettingsChevron()
@@ -810,7 +869,7 @@ private fun ProfileSettingsSheet(
                     SettingsDivider()
                     MiniSettingsRow(Icons.Filled.Settings, stringResource(R.string.profile_appearance), true, onOpenAppearance) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(stringResource(themeMode.labelRes()), color = PompColors.InkDisabled, fontSize = 13.sp)
+                            Text(stringResource(themeMode.labelRes()), color = PompColors.InkSecondary, fontSize = 13.sp)
                             Spacer(Modifier.width(4.dp)); SettingsChevron()
                         }
                     }
@@ -822,7 +881,7 @@ private fun ProfileSettingsSheet(
                                     if (notificationsEnabled) R.string.profile_notifications_status_on
                                     else R.string.profile_notifications_status_off
                                 ),
-                                color = PompColors.InkDisabled,
+                                color = PompColors.InkSecondary,
                                 fontSize = 13.sp,
                             )
                             Spacer(Modifier.width(4.dp)); SettingsChevron()
@@ -846,7 +905,7 @@ private fun ProfileSettingsSheet(
                     SettingsDivider()
                     MiniSettingsRow(Icons.Filled.TrackChanges, stringResource(R.string.profile_mini_daily_goal), true, onOpenGoal) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("$dailyGoal XP", color = PompColors.InkDisabled, fontSize = 13.sp)
+                            Text("$dailyGoal XP", color = PompColors.InkSecondary, fontSize = 13.sp)
                             Spacer(Modifier.width(4.dp)); SettingsChevron()
                         }
                     }
@@ -856,7 +915,7 @@ private fun ProfileSettingsSheet(
                     MiniSettingsRow(Icons.Filled.Lock, stringResource(R.string.profile_privacy_security), true, onOpenPrivacy) { SettingsChevron() }
                     SettingsDivider()
                     MiniSettingsRow(Icons.Filled.HelpOutline, stringResource(R.string.profile_help), supportUrl.isNotBlank(), { onOpenSupport(supportUrl) }) {
-                        if (supportUrl.isBlank()) Text(stringResource(R.string.profile_help_unavailable), color = PompColors.InkDisabled, fontSize = 12.sp)
+                        if (supportUrl.isBlank()) Text(stringResource(R.string.profile_help_unavailable), color = PompColors.InkSecondary, fontSize = 12.sp)
                         else SettingsChevron()
                     }
                     SettingsDivider()
@@ -867,7 +926,7 @@ private fun ProfileSettingsSheet(
                     ) {
                         Icon(Icons.Filled.Settings, contentDescription = null, tint = PompColors.InkSecondary, modifier = Modifier.size(19.dp))
                         Text(stringResource(R.string.profile_app_version), color = PompColors.Ink, fontSize = 14.sp, modifier = Modifier.weight(1f))
-                        Text(BuildConfig.VERSION_NAME, color = PompColors.InkDisabled, fontSize = 13.sp)
+                        Text(BuildConfig.VERSION_NAME, color = PompColors.InkSecondary, fontSize = 13.sp)
                     }
                     settings.error?.let { error ->
                         Box(Modifier.padding(horizontal = 14.dp, vertical = 8.dp)) { ErrorPill(stringResource(error.messageRes)) }
@@ -879,10 +938,27 @@ private fun ProfileSettingsSheet(
                 Text(stringResource(R.string.profile_logout), color = PompColors.Ink)
             }
             Spacer(Modifier.height(10.dp))
-            OutlinedButton(onClick = onUnlinkDevice, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp), shape = RoundedCornerShape(14.dp)) {
-                Text(stringResource(R.string.profile_unlink_device), color = PompColors.Flame)
+            OutlinedButton(onClick = { confirmUnlink = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp), shape = RoundedCornerShape(14.dp)) {
+                Text(stringResource(R.string.profile_unlink_device), color = PompColors.FlameInk)
             }
         }
+    }
+    if (confirmUnlink) {
+        AlertDialog(
+            onDismissRequest = { confirmUnlink = false },
+            title = { Text(stringResource(R.string.profile_unlink_device)) },
+            text = { Text(stringResource(R.string.profile_unlink_explain)) },
+            confirmButton = {
+                TextButton(onClick = { confirmUnlink = false; onUnlinkDevice() }) {
+                    Text(stringResource(R.string.profile_unlink_device), color = PompColors.FlameInk)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmUnlink = false }) {
+                    Text(stringResource(R.string.action_cancel), color = PompColors.InkSecondary)
+                }
+            },
+        )
     }
 }
 
@@ -1349,7 +1425,7 @@ private fun AppearancePicker(current: AppThemeMode, onPick: (AppThemeMode) -> Un
 private fun ErrorPill(text: String, onClick: (() -> Unit)? = null) {
     val modifier = if (onClick == null) Modifier.fillMaxWidth() else Modifier.fillMaxWidth().clickable(onClick = onClick)
     Surface(color = PompColors.FlameSoft, shape = RoundedCornerShape(12.dp), modifier = modifier) {
-        Text(text, color = PompColors.Flame, fontSize = 13.sp, modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp))
+        Text(text, color = PompColors.FlameInk, fontSize = 13.sp, modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp))
     }
 }
 

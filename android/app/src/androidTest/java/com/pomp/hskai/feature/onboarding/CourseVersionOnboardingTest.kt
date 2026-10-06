@@ -77,7 +77,10 @@ class CourseVersionOnboardingTest {
             .fetchSemanticsNode().boundsInRoot
         val continueButton = compose.onNodeWithText(copy.continueLabel).assertIsDisplayed()
             .fetchSemanticsNode().boundsInRoot
-        assertTrue("Book art must stay above the selector", books.bottom <= selector.top)
+        assertTrue(
+            "Book art must stay above the selector (books=$books, selector=$selector)",
+            books.bottom <= selector.top,
+        )
         assertTrue("Version choice must sit next to Continue", continueButton.top - selector.bottom < 24f * density)
 
         val image = compose.onRoot().captureToImage().asAndroidBitmap()

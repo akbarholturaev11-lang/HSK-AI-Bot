@@ -54,6 +54,7 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
+import com.pomp.hskai.core.design.components.HskSectionTitle
 import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.feature.course.CoursePandaMascot
 import com.pomp.hskai.feature.course.PandaMood
@@ -216,28 +217,7 @@ private fun VoiceHome(
     ) {
         item {
           Row(verticalAlignment = Alignment.CenterVertically) {
-            Surface(
-                color = PompColors.Cinnabar,
-                shape = RoundedCornerShape(999.dp),
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 13.dp, vertical = 7.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Mic,
-                        contentDescription = null,
-                        tint = PompColors.Paper,
-                        modifier = Modifier.size(16.dp),
-                    )
-                    Spacer(Modifier.width(6.dp))
-                    Text(
-                        text = stringResource(R.string.nav_ai),
-                        style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp),
-                        color = PompColors.Paper,
-                    )
-                }
-            }
+            HskSectionTitle(stringResource(R.string.nav_ai))
             Spacer(Modifier.width(8.dp))
             SectionHint(hints = hints, section = "voice", onDismiss = onDismissHint)
           }
@@ -265,13 +245,11 @@ private fun VoiceHome(
         }
         item {
             VoiceBox(
-                isStarting = state.isStarting,
-                enabled = canStartVoice(state),
+                state = state,
                 onStart = { onStartSession(level, language) },
             )
         }
         item {
-            VoiceLimit(state)
             state.error?.let {
                 Spacer(Modifier.height(10.dp))
                 ErrorPill(stringResource(it.messageRes))
@@ -292,13 +270,20 @@ private fun VoiceHome(
 /** Mini App `.voicebox`. */
 @Composable
 private fun VoiceBox(
-    isStarting: Boolean,
-    enabled: Boolean,
+    state: VoiceUiState,
     onStart: () -> Unit,
 ) {
     val boxSurface = if (PompColors.IsDark) PompColors.PaperRaised else PompColors.Ink
     val boxInk = if (PompColors.IsDark) PompColors.Ink else PompColors.Paper
     val boxMuted = if (PompColors.IsDark) PompColors.InkSecondary else Color.White.copy(alpha = 0.72f)
+    val quotaText = when {
+        state.isLoading -> stringResource(R.string.state_loading)
+        state.status?.isPaid == true -> stringResource(R.string.voice_limit_premium)
+        else -> stringResource(
+            R.string.voice_limit_free,
+            state.status?.remainingVoiceLimit ?: state.remainingLimit,
+        )
+    }
     Surface(
         color = boxSurface,
         shape = RoundedCornerShape(18.dp),
@@ -325,42 +310,24 @@ private fun VoiceBox(
                 color = boxMuted,
                 textAlign = TextAlign.Center,
             )
+            Spacer(Modifier.height(12.dp))
+            Text(
+                text = quotaText,
+                style = MaterialTheme.typography.labelMedium,
+                color = boxMuted,
+                textAlign = TextAlign.Center,
+            )
             Spacer(Modifier.height(16.dp))
             HskPrimaryButton(
                 text = stringResource(R.string.voice_start),
                 onClick = onStart,
-                enabled = enabled,
-                loading = isStarting,
+                enabled = canStartVoice(state),
+                loading = state.isStarting,
                 // Full width inside the card: a long ru/tg label then wraps
                 // with the card instead of pushing past its padding.
                 modifier = Modifier.fillMaxWidth(),
             )
         }
-    }
-}
-
-@Composable
-private fun VoiceLimit(state: VoiceUiState) {
-    val status = state.status
-    val text = when {
-        state.isLoading -> stringResource(R.string.state_loading)
-        status?.isPaid == true -> stringResource(R.string.voice_limit_premium)
-        else -> stringResource(
-            R.string.voice_limit_free,
-            status?.remainingVoiceLimit ?: state.remainingLimit,
-        )
-    }
-    Surface(
-        color = PompColors.GoldSoft,
-        shape = RoundedCornerShape(12.dp),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            color = PompColors.Ink,
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
-        )
     }
 }
 

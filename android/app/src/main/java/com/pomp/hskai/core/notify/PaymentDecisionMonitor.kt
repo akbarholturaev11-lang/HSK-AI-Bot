@@ -170,17 +170,23 @@ class PaymentDecisionMonitor(
         val verified = apiCall { api.paymentStatus("Bearer ${access.value}", paymentId) }
         val body = (verified as? ApiResult.Success)?.value ?: return false
         if (!body.ok || body.paymentId != paymentId || body.status != status) return false
-        return postVerified(deviceId, paymentId, status, epoch)
+        return postVerified(deviceId, paymentId, status, body.planType, epoch)
     }
 
-    private fun postVerified(deviceId: String, paymentId: Int, status: String, epoch: Long): Boolean {
+    private fun postVerified(
+        deviceId: String,
+        paymentId: Int,
+        status: String,
+        planType: String,
+        epoch: Long,
+    ): Boolean {
         synchronized(lock) {
             if (prefs.getString(DEVICE_ID, null) != deviceId ||
                 prefs.getLong(SESSION_EPOCH, 0L) != epoch
             ) return false
             val seenKey = "seen:$deviceId:$paymentId:$status"
             if (prefs.getBoolean(seenKey, false)) return false
-            if (!PaymentNotifications.post(app, status)) return false
+            if (!PaymentNotifications.post(app, status, planType)) return false
             prefs.edit().putBoolean(seenKey, true).apply()
             if (prefs.getInt(PENDING_PAYMENT_ID, 0) == paymentId) {
                 prefs.edit().remove(PENDING_PAYMENT_ID).apply()
@@ -210,7 +216,11 @@ class PaymentDecisionMonitor(
                     status.status in setOf("approved", "rejected")
                 ) {
                     postVerified(
-                        prefs.getString(DEVICE_ID, null).orEmpty(), paymentId, status.status, epoch
+                        prefs.getString(DEVICE_ID, null).orEmpty(),
+                        paymentId,
+                        status.status,
+                        status.planType,
+                        epoch,
                     )
                 }
                 false

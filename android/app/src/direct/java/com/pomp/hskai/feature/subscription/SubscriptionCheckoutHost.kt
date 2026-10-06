@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -53,6 +54,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -68,12 +70,14 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.Role
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.PompShapes
 import com.pomp.hskai.data.api.SubscriptionPriceDto
 import com.pomp.hskai.data.repository.FeatureRepository
 import java.time.Duration
@@ -82,10 +86,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-/**
- * Light follows the Mini App checkout (`subscription.html`), dark follows the
- * app's own dark palette, so the screen matches whichever theme is on.
- */
+/** Checkout surfaces use the same semantic HSK AI palette as the rest of the app. */
 private class CheckoutColors(
     val bg: Color,
     val surface: Color,
@@ -104,26 +105,25 @@ private class CheckoutColors(
     val line2: Color,
 )
 
-private val LightCheckout = CheckoutColors(
-    bg = Color(0xFFFFFFFF), surface = Color(0xFFFFFFFF), card = Color(0xFFF6F8F7),
-    text = Color(0xFF14201B), muted = Color(0xFF687770),
-    accent = Color(0xFF0E9A64), accentInk = Color(0xFF0A7A4F), accentSoft = Color(0xFFE9F7F0),
-    accentLine = Color(0xFFBFE6D3), onAccent = Color(0xFFFFFFFF),
-    goldSoft = Color(0xFFFFF7E6), goldLine = Color(0xFFF3D9A4), goldInk = Color(0xFF8A5A00),
-    line = Color(0xFFE3E8E6), line2 = Color(0xFFCBD5D1),
-)
-
-private val DarkCheckout = CheckoutColors(
-    bg = Color(0xFF002F49), surface = Color(0xFF073B55), card = Color(0xFF0A435F),
-    text = Color(0xFFF5FAFD), muted = Color(0xFFB8CDDA),
-    accent = Color(0xFF48D99A), accentInk = Color(0xFF48D99A), accentSoft = Color(0xFF0A5146),
-    accentLine = Color(0xFF1F7A5A), onAccent = Color(0xFF002F49),
-    goldSoft = Color(0xFF584819), goldLine = Color(0xFF7A6526), goldInk = Color(0xFFF4C95D),
-    line = Color(0xFF17617D), line2 = Color(0xFF2A7896),
-)
-
 /** Read during composition, so switching the app theme recomposes the screen. */
-private val C: CheckoutColors get() = if (PompColors.IsDark) DarkCheckout else LightCheckout
+private val C: CheckoutColors
+    get() = CheckoutColors(
+        bg = PompColors.Paper,
+        surface = PompColors.PaperRaised,
+        card = PompColors.PaperRaised,
+        text = PompColors.Ink,
+        muted = PompColors.InkSecondary,
+        accent = PompColors.Cinnabar,
+        accentInk = PompColors.CinnabarInk,
+        accentSoft = PompColors.CinnabarSoft,
+        accentLine = PompColors.Cinnabar.copy(alpha = 0.45f),
+        onAccent = PompColors.OnCinnabar,
+        goldSoft = PompColors.GoldSoft,
+        goldLine = PompColors.Gold.copy(alpha = 0.45f),
+        goldInk = PompColors.GoldInk,
+        line = PompColors.Divider,
+        line2 = PompColors.Divider,
+    )
 
 /** Brand names, the same in every language. */
 private val BANK_NAMES = mapOf("dc_city" to "Dushanbe City", "alif" to "Alif")
@@ -148,6 +148,7 @@ fun SubscriptionCheckoutHost(
             onPendingPayment = { paymentId -> app.paymentDecisionMonitor.watch(paymentId) },
             savedRegion = { app.appSettings.paymentRegion() },
             saveRegion = { region -> app.appSettings.setPaymentRegion(region) },
+            onProvisionalAccess = onClose,
         ),
     )
     val state by model.state.collectAsStateWithLifecycle()
@@ -177,6 +178,7 @@ fun SubscriptionCheckoutHost(
             qrPreview -> qrPreview = false
             inviteOpen -> inviteOpen = false
             supportOpen -> supportOpen = false
+            state.isWaitingForHsk30Review -> Unit
             stepIndex > 0 -> model.back()
             else -> onClose()
         }
@@ -190,26 +192,37 @@ fun SubscriptionCheckoutHost(
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(copy.getString(if (state.isHsk30Unlock) R.string.sub_hsk30_heading else R.string.sub_heading), color = C.text, fontSize = 27.sp,
                     lineHeight = 30.sp, fontWeight = FontWeight.Black, modifier = Modifier.weight(1f))
-                Box(Modifier.size(38.dp).border(1.dp, C.line, CircleShape)
+                Box(Modifier.size(44.dp).border(1.dp, C.line, CircleShape)
                     .background(C.surface, CircleShape).clickable { supportOpen = true },
                     contentAlignment = Alignment.Center) {
                     Icon(Icons.Filled.HeadsetMic, contentDescription = copy.getString(R.string.sub_help_title),
                         tint = C.accentInk, modifier = Modifier.size(20.dp))
                 }
-                IconButton(onClick = onClose, modifier = Modifier.size(38.dp)) {
-                    Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.action_close),
-                        tint = C.muted, modifier = Modifier.size(19.dp))
+                if (state.isWaitingForHsk30Review) {
+                    Spacer(Modifier.size(44.dp))
+                } else {
+                    IconButton(onClick = onClose, modifier = Modifier.size(44.dp)) {
+                        Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.action_close),
+                            tint = C.muted, modifier = Modifier.size(19.dp))
+                    }
                 }
             }
             Spacer(Modifier.height(16.dp))
 
-            val pending = state.overview?.pendingPayment != null
+            val pending = state.overview?.pendingPayment != null ||
+                (state.isHsk30Unlock && state.pendingPaymentId > 0 && state.paymentDecision.isBlank())
             val paid = state.overview?.access?.isPaid == true
             if (state.loading) {
                 Spacer(Modifier.height(80.dp))
                 CircularProgressIndicator(color = C.accent, modifier = Modifier.align(Alignment.CenterHorizontally))
-            } else if (state.submitted || pending) {
-                DoneContent(copy, pending = pending || state.alreadyPending, onClose = onClose)
+            } else if (state.submitted || pending || state.paymentDecision.isNotBlank()) {
+                DoneContent(
+                    copy = copy,
+                    state = state,
+                    onClose = onClose,
+                    onRefreshStatus = model::refreshPaymentStatus,
+                    onRetry = model::retryAfterRejection,
+                )
             } else if (state.overview?.checkoutAllowed != true) {
                 MessageCard(copy.getString(R.string.sub_unavailable))
                 Spacer(Modifier.height(12.dp))
@@ -244,7 +257,13 @@ fun SubscriptionCheckoutHost(
                         onUpload = { picker.launch("image/*") },
                         onCopy = { value -> copyValue(context, value) },
                     )
-                    CheckoutStep.DONE -> DoneContent(copy, pending = state.alreadyPending, onClose = onClose)
+                    CheckoutStep.DONE -> DoneContent(
+                        copy = copy,
+                        state = state,
+                        onClose = onClose,
+                        onRefreshStatus = model::refreshPaymentStatus,
+                        onRetry = model::retryAfterRejection,
+                    )
                 }
             }
             state.errorRes?.let { error ->
@@ -377,7 +396,7 @@ fun SubscriptionCheckoutHost(
                     fontSize = 20.sp, fontWeight = FontWeight.Black)
                 Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                     if (bitmap != null) Image(bitmap, contentDescription = copy.getString(R.string.sub_qr_title),
-                        modifier = Modifier.fillMaxWidth().background(Color.White, RoundedCornerShape(18.dp)).padding(12.dp))
+                        modifier = Modifier.fillMaxWidth().background(Color.White, PompShapes.Large).padding(12.dp))
                 }
                 CheckoutButton(copy.getString(R.string.action_back), false, true,
                     onClick = { qrPreview = false }, secondary = true)
@@ -393,10 +412,13 @@ private fun RegionContent(state: SubscriptionCheckoutState, copy: Context, onReg
     Spacer(Modifier.height(7.dp))
     Text(copy.getString(R.string.sub_route_body), color = C.muted, fontSize = 13.sp, lineHeight = 19.sp)
     Spacer(Modifier.height(16.dp))
-    availableRegions(state.overview?.prices.orEmpty()).forEach { region ->
-        ChoiceCard(REGION_FLAGS[region], copy.getString(regionTitleId(region)),
-            copy.getString(regionBodyId(region)), state.region == region, onClick = { onRegion(region) })
-        Spacer(Modifier.height(9.dp))
+    val regions = availableRegions(state.overview?.prices.orEmpty())
+    ChoiceGroup {
+        regions.forEachIndexed { index, region ->
+            ChoiceCard(REGION_FLAGS[region], copy.getString(regionTitleId(region)),
+                copy.getString(regionBodyId(region)), state.region == region, onClick = { onRegion(region) })
+            if (index < regions.lastIndex) ChoiceDivider()
+        }
     }
 }
 
@@ -455,9 +477,9 @@ private fun PlansContent(
         Spacer(Modifier.height(14.dp))
         CardBlock(border = C.goldLine, background = C.goldSoft) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Box(Modifier.size(58.dp).background(Color(0xFFFFC65F), RoundedCornerShape(15.dp)),
+                Box(Modifier.size(58.dp).background(PompColors.Gold, PompShapes.Large),
                     contentAlignment = Alignment.Center) {
-                    Text("20%", color = Color(0xFF2A1C00), fontSize = 18.sp, fontWeight = FontWeight.Black)
+                    Text("20%", color = PompColors.OnGold, fontSize = 18.sp, fontWeight = FontWeight.Black)
                 }
                 Column {
                     Text(copy.getString(if (discount.referral20Available) R.string.sub_discount_ready else R.string.sub_discount_locked),
@@ -502,26 +524,31 @@ private fun MethodContent(
     // (or the Tajik banks) behind one extra tap and made the screen look as if
     // only the preselected method existed.
     if (state.region == "cn") {
-        CHINA_METHODS.filter { !state.overview?.prices?.get(it).isNullOrEmpty() }.forEach { method ->
-            ChoiceCard(
-                null,
-                copy.getString(if (method == "alipay") R.string.sub_alipay else R.string.sub_wechat),
-                copy.getString(R.string.sub_qr_yuan),
-                state.method == method,
-                onClick = { onMethod(method) },
-            )
-            Spacer(Modifier.height(9.dp))
+        val methods = CHINA_METHODS.filter { !state.overview?.prices?.get(it).isNullOrEmpty() }
+        ChoiceGroup {
+            methods.forEachIndexed { index, method ->
+                ChoiceCard(
+                    null,
+                    copy.getString(if (method == "alipay") R.string.sub_alipay else R.string.sub_wechat),
+                    copy.getString(R.string.sub_qr_yuan),
+                    state.method == method,
+                    onClick = { onMethod(method) },
+                )
+                if (index < methods.lastIndex) ChoiceDivider()
+            }
         }
     } else {
-        CARD_BANKS.forEach { bank ->
-            ChoiceCard(
-                null,
-                BANK_NAMES.getValue(bank),
-                copy.getString(if (bank == "alif") R.string.sub_bank_alif_body else R.string.sub_bank_dc_body),
-                state.bank == bank,
-                onClick = { onBank(bank) },
-            )
-            Spacer(Modifier.height(9.dp))
+        ChoiceGroup {
+            CARD_BANKS.forEachIndexed { index, bank ->
+                ChoiceCard(
+                    null,
+                    BANK_NAMES.getValue(bank),
+                    copy.getString(if (bank == "alif") R.string.sub_bank_alif_body else R.string.sub_bank_dc_body),
+                    state.bank == bank,
+                    onClick = { onBank(bank) },
+                )
+                if (index < CARD_BANKS.lastIndex) ChoiceDivider()
+            }
         }
     }
 }
@@ -595,8 +622,8 @@ private fun PayContent(
                     val number = Regex("\\+?\\d[\\d\\s\\-()]{7,}\\d").find(line)?.value
                         ?.filter { it.isDigit() }.orEmpty().takeIf { it.length >= 8 }
                     Row(Modifier.fillMaxWidth().padding(bottom = 8.dp)
-                        .border(1.dp, if (number != null) C.accentLine else C.line, RoundedCornerShape(13.dp))
-                        .background(if (number != null) C.accentSoft else C.card, RoundedCornerShape(13.dp))
+                        .border(1.dp, if (number != null) C.accentLine else C.line, PompShapes.Medium)
+                        .background(if (number != null) C.accentSoft else C.card, PompShapes.Medium)
                         .padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                         Text(line, color = C.text, fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.weight(1f))
@@ -614,7 +641,7 @@ private fun PayContent(
                 fontSize = 15.sp, fontWeight = FontWeight.Black)
             val bitmap = remember(quote.qr?.imageDataUrl) { decodeQr(quote.qr?.imageDataUrl) }
             if (bitmap != null) {
-                Box(Modifier.fillMaxWidth().height(240.dp).background(Color.White, RoundedCornerShape(13.dp))
+                Box(Modifier.fillMaxWidth().height(240.dp).background(Color.White, PompShapes.Medium)
                     .clickable(onClick = onToggleQr).padding(8.dp), contentAlignment = Alignment.Center) {
                     Image(bitmap, contentDescription = copy.getString(R.string.sub_qr_title),
                         modifier = Modifier.fillMaxSize())
@@ -628,8 +655,10 @@ private fun PayContent(
     Spacer(Modifier.height(14.dp))
     val selected = state.receiptName.isNotBlank()
     Column(Modifier.fillMaxWidth().heightIn(min = 150.dp)
-        .border(2.dp, if (selected) C.accent else C.line2, RoundedCornerShape(18.dp))
-        .background(if (selected) C.accentSoft else C.card, RoundedCornerShape(18.dp)).clickable(onClick = onUpload)
+        .heightIn(min = 56.dp)
+        .border(2.dp, if (selected) C.accent else C.line2, PompShapes.Large)
+        .background(if (selected) C.accentSoft else C.card, PompShapes.Large)
+        .clickable(role = Role.Button, onClick = onUpload)
         .padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
         Box(Modifier.size(62.dp).background(if (selected) C.accent else C.accentSoft, CircleShape),
@@ -702,8 +731,8 @@ private fun CurrencySelectorButton(
 ) {
     val currency = state.overview?.displayCurrency.orEmpty()
     Row(
-        Modifier.fillMaxWidth().border(1.dp, C.accentLine, RoundedCornerShape(14.dp))
-            .background(C.accentSoft, RoundedCornerShape(14.dp)).clickable(onClick = onClick)
+        Modifier.fillMaxWidth().heightIn(min = 56.dp).border(1.dp, C.accentLine, PompShapes.Medium)
+            .background(C.accentSoft, PompShapes.Medium).clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = 13.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -730,8 +759,8 @@ private fun PaymentRouteButton(state: SubscriptionCheckoutState, copy: Context, 
         "${copy.getString(R.string.sub_card)} · ${copy.getString(regionTitleId(state.region))}"
     }
     Row(
-        Modifier.fillMaxWidth().border(1.dp, C.line, RoundedCornerShape(14.dp))
-            .background(C.surface, RoundedCornerShape(14.dp)).clickable(onClick = onClick)
+        Modifier.fillMaxWidth().heightIn(min = 56.dp).border(1.dp, C.line, PompShapes.Medium)
+            .background(C.surface, PompShapes.Medium).clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = 13.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -762,7 +791,7 @@ private fun CurrencyPreferenceDialog(
     ) {
         Column(
             Modifier.fillMaxWidth(0.92f).heightIn(max = 620.dp)
-                .background(C.surface, RoundedCornerShape(24.dp)).padding(18.dp)
+                .background(C.surface, RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)).padding(18.dp)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(9.dp),
         ) {
@@ -770,14 +799,17 @@ private fun CurrencyPreferenceDialog(
                 lineHeight = 24.sp, fontWeight = FontWeight.Black)
             Text(copy.getString(R.string.sub_currency_body), color = C.muted, fontSize = 13.sp,
                 lineHeight = 19.sp)
-            SUBSCRIPTION_DISPLAY_CURRENCIES.forEach { currency ->
-                ChoiceCard(
-                    null,
-                    currency,
-                    copy.getString(currencyTitleId(currency)),
-                    state.overview?.displayCurrency == currency,
-                    onClick = { if (!state.currencySaving) onChoose(currency) },
-                )
+            ChoiceGroup {
+                SUBSCRIPTION_DISPLAY_CURRENCIES.forEachIndexed { index, currency ->
+                    ChoiceCard(
+                        null,
+                        currency,
+                        copy.getString(currencyTitleId(currency)),
+                        state.overview?.displayCurrency == currency,
+                        onClick = { if (!state.currencySaving) onChoose(currency) },
+                    )
+                    if (index < SUBSCRIPTION_DISPLAY_CURRENCIES.lastIndex) ChoiceDivider()
+                }
             }
             state.currencyErrorRes?.let { MessageCard(copy.getString(it)) }
             if (state.currencySaving) {
@@ -797,9 +829,10 @@ private fun CurrencyPreferenceDialog(
 private fun PlanCard(plan: String, price: PlanPrice, discounted: Boolean, selected: Boolean,
     copy: Context, onClick: () -> Unit, modifier: Modifier = Modifier, wide: Boolean = false) {
     Column(modifier.heightIn(min = if (wide) 95.dp else 130.dp)
-        .border(if (selected) 2.dp else 1.dp, if (selected) C.accent else C.line, RoundedCornerShape(18.dp))
-        .background(if (selected) C.accentSoft else C.surface, RoundedCornerShape(18.dp))
-        .clickable(onClick = onClick).padding(14.dp), verticalArrangement = Arrangement.SpaceBetween) {
+        .border(if (selected) 2.dp else 1.dp, if (selected) C.accent else C.line, PompShapes.Large)
+        .background(if (selected) C.accentSoft else C.surface, PompShapes.Large)
+        .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
+        .padding(14.dp), verticalArrangement = Arrangement.SpaceBetween) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text(copy.getString(planLabelId(plan)), color = C.muted, fontSize = 13.sp, fontWeight = FontWeight.ExtraBold)
             Spacer(Modifier.weight(1f))
@@ -830,12 +863,26 @@ private fun PlanCard(plan: String, price: PlanPrice, discounted: Boolean, select
 }
 
 @Composable
+private fun ChoiceGroup(content: @Composable ColumnScope.() -> Unit) {
+    Column(
+        Modifier.fillMaxWidth().clip(PompShapes.Large).background(C.surface)
+            .border(1.dp, C.line, PompShapes.Large),
+        content = content,
+    )
+}
+
+@Composable
+private fun ChoiceDivider() {
+    Box(Modifier.fillMaxWidth().height(1.dp).background(C.line))
+}
+
+@Composable
 private fun ChoiceCard(icon: String?, title: String, subtitle: String,
     selected: Boolean, onClick: () -> Unit) {
     Row(Modifier.fillMaxWidth().heightIn(min = 66.dp)
-        .border(if (selected) 2.dp else 1.dp, if (selected) C.accent else C.line, RoundedCornerShape(18.dp))
-        .background(if (selected) C.accentSoft else C.surface, RoundedCornerShape(18.dp))
-        .clickable(onClick = onClick).padding(horizontal = 14.dp, vertical = 11.dp),
+        .background(if (selected) C.accentSoft else C.surface)
+        .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
+        .padding(horizontal = 14.dp, vertical = 11.dp),
         verticalAlignment = Alignment.CenterVertically) {
         if (icon != null) {
             Text(icon, fontSize = 30.sp)
@@ -860,8 +907,8 @@ private fun SelectionDot(selected: Boolean) {
 @Composable
 private fun SummaryRow(label: String, value: String) {
     Row(Modifier.fillMaxWidth().padding(bottom = 8.dp)
-        .border(1.dp, C.line, RoundedCornerShape(13.dp))
-        .background(C.surface, RoundedCornerShape(13.dp)).padding(12.dp),
+        .border(1.dp, C.line, PompShapes.Medium)
+        .background(C.surface, PompShapes.Medium).padding(12.dp),
         verticalAlignment = Alignment.CenterVertically) {
         Text(label, color = C.muted, fontSize = 12.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.weight(1f))
@@ -871,33 +918,82 @@ private fun SummaryRow(label: String, value: String) {
 }
 
 @Composable
-private fun DoneContent(copy: Context, pending: Boolean, onClose: () -> Unit) {
+private fun DoneContent(
+    copy: Context,
+    state: SubscriptionCheckoutState,
+    onClose: () -> Unit,
+    onRefreshStatus: () -> Unit,
+    onRetry: () -> Unit,
+) {
+    val isHsk30 = state.isHsk30Unlock
+    val pending = state.paymentDecision.isBlank() &&
+        (state.overview?.pendingPayment != null || state.pendingPaymentId > 0 || state.alreadyPending)
+    val rejected = state.paymentDecision == "rejected"
+    val approved = state.paymentDecision == "approved"
+    val titleRes = when {
+        isHsk30 && rejected -> R.string.sub_hsk30_rejected_title
+        isHsk30 && approved -> R.string.sub_hsk30_approved_title
+        isHsk30 && pending && state.provisionalAccess -> R.string.sub_hsk30_provisional_title
+        isHsk30 && pending -> R.string.sub_hsk30_pending_title
+        pending -> R.string.sub_pending_title
+        else -> R.string.sub_done_title
+    }
+    val bodyRes = when {
+        isHsk30 && rejected -> R.string.sub_hsk30_rejected_body
+        isHsk30 && approved -> R.string.sub_hsk30_approved_body
+        isHsk30 && pending && state.provisionalAccess -> R.string.sub_hsk30_provisional_body
+        isHsk30 && pending -> R.string.sub_hsk30_pending_body
+        pending -> R.string.sub_pending_body
+        else -> R.string.sub_done_body
+    }
     Column(Modifier.fillMaxWidth().padding(top = 54.dp), horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(14.dp)) {
-        Box(Modifier.size(84.dp).background(C.accent, CircleShape), contentAlignment = Alignment.Center) {
-            Text(if (pending) "…" else "✓", color = C.onAccent, fontSize = 42.sp, fontWeight = FontWeight.Black)
+        Box(Modifier.size(64.dp).background(if (rejected) C.accentSoft else PompColors.Jade, CircleShape), contentAlignment = Alignment.Center) {
+            Text(if (pending) "…" else if (rejected) "!" else "✓", color = if (rejected) C.accentInk else PompColors.OnJade,
+                fontSize = 34.sp, fontWeight = FontWeight.Black)
         }
-        Text(copy.getString(if (pending) R.string.sub_pending_title else R.string.sub_done_title),
+        Text(copy.getString(titleRes),
             color = C.text, fontSize = 25.sp, fontWeight = FontWeight.Black, textAlign = TextAlign.Center)
-        Text(copy.getString(if (pending) R.string.sub_pending_body else R.string.sub_done_body),
+        Text(copy.getString(bodyRes),
             color = C.muted, fontSize = 13.sp, textAlign = TextAlign.Center)
-        CheckoutButton(copy.getString(R.string.sub_return_app), false, true, onClose)
+        state.paymentStatusMessageRes?.let { message ->
+            MessageCard(copy.getString(message))
+        }
+        when {
+            isHsk30 && rejected -> CheckoutButton(
+                copy.getString(R.string.sub_hsk30_retry), false, true, onRetry,
+            )
+            isHsk30 && approved -> CheckoutButton(
+                copy.getString(R.string.sub_hsk30_open_course), false, true, onClose,
+            )
+            isHsk30 && pending && state.provisionalAccess -> {
+                CheckoutButton(copy.getString(R.string.sub_hsk30_open_course), false, true, onClose)
+                SmallAction(copy.getString(R.string.sub_payment_refresh), onRefreshStatus)
+            }
+            isHsk30 && pending -> CheckoutButton(
+                copy.getString(if (state.checkingPaymentStatus) R.string.sub_payment_checking else R.string.sub_payment_refresh),
+                state.checkingPaymentStatus,
+                !state.checkingPaymentStatus,
+                onRefreshStatus,
+            )
+            else -> CheckoutButton(copy.getString(R.string.sub_return_app), false, true, onClose)
+        }
     }
 }
 
 @Composable
 private fun CardBlock(modifier: Modifier = Modifier, border: Color = C.line, background: Color = C.surface,
     content: @Composable ColumnScope.() -> Unit) {
-    Column(modifier.fillMaxWidth().border(1.dp, border, RoundedCornerShape(18.dp))
-        .background(background, RoundedCornerShape(18.dp))
+    Column(modifier.fillMaxWidth().border(1.dp, border, PompShapes.Large)
+        .background(background, PompShapes.Large)
         .padding(16.dp), verticalArrangement = Arrangement.spacedBy(2.dp), content = content)
 }
 
 @Composable
 private fun MessageCard(message: String) {
     Text(message, color = C.goldInk, fontSize = 12.sp, lineHeight = 17.sp,
-        modifier = Modifier.fillMaxWidth().border(1.dp, C.goldLine, RoundedCornerShape(13.dp))
-            .background(C.goldSoft, RoundedCornerShape(13.dp)).padding(12.dp))
+        modifier = Modifier.fillMaxWidth().border(1.dp, C.goldLine, PompShapes.Medium)
+            .background(C.goldSoft, PompShapes.Medium).padding(12.dp))
 }
 
 @Composable
@@ -905,7 +1001,7 @@ private fun CheckoutButton(label: String, busy: Boolean, enabled: Boolean,
     onClick: () -> Unit, modifier: Modifier = Modifier, secondary: Boolean = false) {
     Button(onClick = onClick, enabled = enabled && !busy,
         modifier = modifier.fillMaxWidth().heightIn(min = 54.dp),
-        shape = RoundedCornerShape(16.dp),
+        shape = PompShapes.Medium,
         border = if (secondary) BorderStroke(1.dp, C.line) else null,
         colors = ButtonDefaults.buttonColors(
             containerColor = if (secondary) C.surface else C.accent,

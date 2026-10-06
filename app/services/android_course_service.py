@@ -318,6 +318,9 @@ class AndroidCourseService(DesktopCourseService):
                 "permanently_unlocked": bool(
                     hsk30_access.get("permanently_unlocked")
                 ),
+                "payment_pending": bool(hsk30_access.get("payment_pending")),
+                "provisional_access": bool(hsk30_access.get("provisional_access")),
+                "payment_rejected": bool(hsk30_access.get("payment_rejected")),
                 "live_levels": list(hsk30_track.get("live_levels") or []),
                 "new_badge": hsk30_track.get("new_badge") or {},
                 "payment_enabled": bool(hsk30_unlock.get("payment_enabled")),

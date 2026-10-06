@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -67,9 +68,11 @@ fun HskCelebrationStage(
     rainKey: Any? = null,
     content: @Composable () -> Unit,
 ) {
+    val context = LocalContext.current
+    val motionOff = remember(context) { hskMotionOff(context) }
     val rays by animateFloatAsState(
         targetValue = if (raysVisible) 1f else 0f,
-        animationSpec = tween(durationMillis = 400),
+        animationSpec = tween(durationMillis = if (motionOff) 0 else 400),
         label = "stage-rays",
     )
     Box(
@@ -309,15 +312,22 @@ private fun streakCopy(streak: Int, reset: Boolean): String = stringResource(
  */
 @Composable
 fun HskRayBurst(modifier: Modifier = Modifier) {
-    val spin = rememberInfiniteTransition(label = "ray-spin")
-    val angle by spin.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 28_000, easing = LinearEasing),
-        ),
-        label = "ray-spin-angle",
-    )
+    val context = LocalContext.current
+    val motionOff = remember(context) { hskMotionOff(context) }
+    val angle = if (motionOff) {
+        0f
+    } else {
+        val spin = rememberInfiniteTransition(label = "ray-spin")
+        val value by spin.animateFloat(
+            initialValue = 0f,
+            targetValue = 360f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 28_000, easing = LinearEasing),
+            ),
+            label = "ray-spin-angle",
+        )
+        value
+    }
     Canvas(modifier = modifier) {
         val centre = Offset(size.width / 2f, size.height * 0.24f)
         val length = size.maxDimension

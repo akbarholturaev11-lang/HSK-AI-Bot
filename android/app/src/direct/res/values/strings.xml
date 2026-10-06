@@ -155,4 +155,18 @@
     <string name="update_channel_name">Ilova yangilanishlari</string>
     <string name="notify_update_title">Yangi versiya chiqdi</string>
     <string name="notify_update_body">HSK AI %1$s tayyor. Yangilash uchun ilovani oching.</string>
+    <string name="sub_hsk30_pending_title">HSK 3.0 to‘lovi tekshiruvda</string>
+    <string name="sub_hsk30_pending_body">To‘lov adminga yuborildi. Ikkinchi urinish tasdiqlanmaguncha HSK 3.0 ochilmaydi. Holatni yangilang.</string>
+    <string name="sub_hsk30_provisional_title">HSK 3.0 vaqtincha ochildi</string>
+    <string name="sub_hsk30_provisional_body">Birinchi to‘lov so‘rovi tekshiruvda. Tasdiqlanmasa, HSK 3.0 ga kirish yopiladi.</string>
+    <string name="sub_hsk30_rejected_title">HSK 3.0 to‘lovi qabul qilinmadi</string>
+    <string name="sub_hsk30_rejected_body">To‘lovingiz qabul qilinmadi. Ma’lumotlarni tekshirib, to‘lovni boshidan yuboring.</string>
+    <string name="sub_hsk30_approved_title">HSK 3.0 ochildi</string>
+    <string name="sub_hsk30_approved_body">To‘lov tasdiqlandi. Yangi darsliklardan boshlashingiz mumkin.</string>
+    <string name="sub_hsk30_retry">To‘lovni qayta yuborish</string>
+    <string name="sub_hsk30_open_course">HSK 3.0 ni ochish</string>
+    <string name="sub_payment_refresh">To‘lov holatini yangilash</string>
+    <string name="sub_payment_checking">Holat tekshirilmoqda…</string>
+    <string name="sub_payment_still_pending">To‘lov hali admin tekshiruvida.</string>
+    <string name="sub_status_check_failed">Holatni tekshirib bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.</string>
 </resources>

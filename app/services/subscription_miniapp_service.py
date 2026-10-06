@@ -125,13 +125,18 @@ class SubscriptionMiniAppService:
 
         pending_payment = await self.payment_repo.get_latest_pending_by_user(telegram_id)
         if pending_payment:
+            pending_payload = self._pending_payment_payload(pending_payment)
+            if str(pending_payment.plan_type or "") == HSK30_UNLOCK_PLAN_TYPE:
+                pending_payload["provisional_access"] = await Hsk30UnlockService(
+                    self.session
+                ).is_provisional_payment(user, pending_payment)
             return {
                 "ok": True,
                 "language": getattr(user, "language", None) or "uz",
                 "mode": mode,
                 "access": self._access_payload(user),
                 "support_url": await get_admin_contact_url(self.session),
-                "pending_payment": self._pending_payment_payload(pending_payment),
+                "pending_payment": pending_payload,
                 "offer": None,
                 "offer_expired": False,
                 "discount": None,
@@ -332,6 +337,14 @@ class SubscriptionMiniAppService:
                 "payment_id": pending_payment.id,
                 "status": "pending",
                 "already_pending": True,
+                "provisional_access": (
+                    await Hsk30UnlockService(self.session).is_provisional_payment(
+                        user,
+                        pending_payment,
+                    )
+                    if str(pending_payment.plan_type or "") == HSK30_UNLOCK_PLAN_TYPE
+                    else False
+                ),
             }
 
         screenshot, reject_reason = self._decode_screenshot(screenshot_data_url)
@@ -424,10 +437,17 @@ class SubscriptionMiniAppService:
             payment.screenshot_file_id = file_id
         await self.session.commit()
 
+        provisional_access = (
+            await Hsk30UnlockService(self.session).is_provisional_payment(user, payment)
+            if str(payment.plan_type or "") == HSK30_UNLOCK_PLAN_TYPE
+            else False
+        )
+
         return {
             "ok": True,
             "payment_id": payment.id,
             "status": "pending",
+            "provisional_access": provisional_access,
         }
 
     async def _prices_payload(

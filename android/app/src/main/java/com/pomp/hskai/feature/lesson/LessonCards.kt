@@ -5,8 +5,7 @@ import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
@@ -28,9 +27,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.CircularProgressIndicator
@@ -56,7 +53,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -64,6 +63,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.PompShapes
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.design.components.HskBubbleTail
 import com.pomp.hskai.core.design.components.HskSpeechBubble
@@ -95,18 +95,10 @@ internal fun CardPrompt(text: String) {
     Spacer(Modifier.height(16.dp))
 }
 
-/** `cubic-bezier(.34,1.56,.64,1)` — the Mini App's overshoot on `nwPop`. */
-private val NwPop = CubicBezierEasing(0.34f, 1.56f, 0.64f, 1f)
-
 /**
- * The Mini App's `cardWord` celebration, matched beat for beat.
- *
- * A new word is the one moment in a lesson that is pure reward, so it arrives
- * as a card that pops in with sparkles rather than as a line of text: the
- * bordered hanzi plate lands first, the label rises under it, and only after
- * the word has been read aloud does pinyin and meaning slide up. Sizes and
- * colours are `.nw*` in `course-v3.html`; the palette tokens here hold the same
- * hex values, so light mode is identical and dark mode still works.
+ * A new word keeps the learning order: Hanzi, spoken example, then pinyin,
+ * meaning and replay. The content sits on the lesson canvas without a second
+ * decorative card or sparkle layer.
  */
 @Composable
 fun NewWordCardView(
@@ -125,7 +117,7 @@ fun NewWordCardView(
     LaunchedEffect(card) {
         haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
         revealed.snapTo(0f)
-        revealed.animateTo(1f, tween(durationMillis = 500, easing = NwPop))
+        revealed.animateTo(1f, tween(durationMillis = 240, easing = FastOutSlowInEasing))
     }
     // 400ms: the word speaks. 900ms: the meaning opens and the CTA appears —
     // the learner hears it before being asked to move on.
@@ -137,21 +129,13 @@ fun NewWordCardView(
         reveal()
     }
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-        BoxWithConstraints(modifier = Modifier.fillMaxWidth().padding(top = 22.dp, bottom = 4.dp)) {
-            val width = maxWidth
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth().align(Alignment.Center),
-            ) {
-                HanziPlate(hanzi = card.hanzi, progress = revealed.value)
-                Spacer(Modifier.height(14.dp))
-                NewWordLabel(progress = revealed.value)
-            }
-            Sparkle(card, Icons.Filled.AutoAwesome, 18.sp, 300, Modifier.align(Alignment.TopStart).offset(x = width * 0.16f, y = 4.dp))
-            Sparkle(card, Icons.Filled.Star, 24.sp, 450, Modifier.align(Alignment.TopEnd).offset(x = -width * 0.13f, y = 26.dp))
-            Sparkle(card, Icons.Filled.AutoAwesome, 13.sp, 600, Modifier.align(Alignment.BottomStart).offset(x = width * 0.24f, y = -10.dp))
-        }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp),
+    ) {
+        NewWordLabel(progress = revealed.value)
+        Spacer(Modifier.height(8.dp))
+        HanziPlate(hanzi = card.hanzi, progress = revealed.value)
         NewWordInfo(
             card = card,
             pinyin = pinyin,
@@ -162,90 +146,39 @@ fun NewWordCardView(
     }
 }
 
-/** `.nw-card` — white plate, 3px cinnabar edge, flat 6px cinnabar-dark depth. */
+/** Large Hanzi is the first reading target; it is not wrapped in another card. */
 @Composable
 private fun HanziPlate(hanzi: String, progress: Float) {
-    Box(
+    Text(
+        text = hanzi,
+        style = PompTextStyles.hanziLarge.copy(fontSize = 60.sp, lineHeight = 72.sp),
+        color = PompColors.Ink,
         modifier = Modifier.graphicsLayer {
-            scaleX = 0.3f + 0.7f * progress
-            scaleY = 0.3f + 0.7f * progress
-            rotationZ = -6f * (1f - progress)
+            val scale = 0.98f + 0.02f * progress
+            scaleX = scale
+            scaleY = scale
             alpha = progress
-        }
-    ) {
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .offset(y = 6.dp)
-                .background(PompColors.CinnabarDark, RoundedCornerShape(22.dp))
-        )
-        Surface(
-            color = PompColors.PaperRaised,
-            shape = RoundedCornerShape(22.dp),
-            border = BorderStroke(3.dp, PompColors.Cinnabar),
-        ) {
-            Text(
-                text = hanzi,
-                style = PompTextStyles.hanziLarge.copy(fontSize = 60.sp, lineHeight = 69.sp),
-                color = PompColors.Ink,
-                modifier = Modifier.padding(horizontal = 42.dp, vertical = 30.dp),
-            )
-        }
-    }
+        },
+    )
 }
 
-/** `.nw-label` — `nwUp`, 450ms on a 250ms delay against the plate's 500ms pop. */
+/** A quiet lesson label stays secondary to the Chinese word. */
 @Composable
 private fun NewWordLabel(progress: Float) {
     val own = ((progress - 0.5f) / 0.5f).coerceIn(0f, 1f)
     Text(
         text = stringResource(R.string.lesson_new_word),
-        fontSize = 21.sp,
-        fontWeight = FontWeight.ExtraBold,
-        letterSpacing = 2.sp,
-        color = PompColors.Cinnabar,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.SemiBold,
+        letterSpacing = 0.2.sp,
+        color = PompColors.InkSecondary,
         modifier = Modifier
             .alpha(own)
             .offset(y = (14 * (1f - own)).dp),
     )
 }
 
-/** `.nw-spark` — fades in oversized, then drifts up and out. */
-@Composable
-private fun Sparkle(
-    key: Any,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    size: androidx.compose.ui.unit.TextUnit,
-    delayMillis: Int,
-    modifier: Modifier = Modifier,
-) {
-    val t = remember(key) { Animatable(0f) }
-    LaunchedEffect(key) {
-        t.snapTo(0f)
-        kotlinx.coroutines.delay(delayMillis.toLong())
-        t.animateTo(1f, tween(durationMillis = 1100, easing = LinearEasing))
-    }
-    val alpha = if (t.value < 0.4f) t.value / 0.4f else 1f - (t.value - 0.4f) / 0.6f
-    val scale = when {
-        t.value < 0.4f -> 0.4f + (1.25f - 0.4f) * (t.value / 0.4f)
-        else -> 1.25f - (1.25f - 0.7f) * ((t.value - 0.4f) / 0.6f)
-    }
-    Icon(
-        imageVector = icon,
-        contentDescription = null,
-        tint = PompColors.Gold,
-        modifier = modifier
-            .size(with(androidx.compose.ui.platform.LocalDensity.current) { size.toDp() })
-            .graphicsLayer {
-                this.alpha = alpha.coerceIn(0f, 1f)
-                scaleX = scale
-                scaleY = scale
-                translationY = -16.dp.toPx() * ((t.value - 0.4f) / 0.6f).coerceAtLeast(0f)
-            },
-    )
-}
-
-/** `.nw-info` — held back until the word has been heard, then slides up. */
+/** Pinyin, meaning and replay appear together after the word has been heard. */
 @Composable
 private fun NewWordInfo(
     card: NewWordCard,
@@ -259,93 +192,77 @@ private fun NewWordInfo(
         if (visible) show.animateTo(1f, tween(durationMillis = 400)) else show.snapTo(0f)
     }
     if (show.value <= 0f) return
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(top = 16.dp)
-            .widthIn(max = 330.dp)
+            .widthIn(max = 360.dp)
             .alpha(show.value)
-            .offset(y = (10 * (1f - show.value)).dp),
+            .offset(y = (6 * (1f - show.value)).dp),
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(start = 18.dp, end = 18.dp, top = 15.dp, bottom = 16.dp),
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(9.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            if (pinyin != PinyinVisibility.OFF) {
+                Text(
+                    text = card.pinyin,
+                    fontSize = 24.sp,
+                    lineHeight = 32.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = PompColors.Ink,
+                )
+            }
+            if (card.partOfSpeech.isNotBlank()) {
+                Text(
+                    text = card.partOfSpeech,
+                    fontSize = 12.sp,
+                    lineHeight = 16.sp,
+                    color = PompColors.InkSecondary,
+                )
+            }
+        }
+        Text(
+            text = card.meaning,
+            fontSize = 16.sp,
+            lineHeight = 25.sp,
+            color = PompColors.Ink,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+        )
+        Surface(
+            color = PompColors.CinnabarSoft,
+            shape = PompShapes.Pill,
+            onClick = onPlayAudio,
+            enabled = !isAudioLoading,
+            modifier = Modifier.padding(top = 12.dp).heightIn(min = 48.dp),
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(9.dp, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(7.dp),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             ) {
-                if (pinyin != PinyinVisibility.OFF) {
-                    Text(
-                        text = card.pinyin,
-                        fontSize = 26.sp,
-                        lineHeight = 31.sp,
-                        fontWeight = FontWeight.Medium,
+                if (isAudioLoading) {
+                    CircularProgressIndicator(
                         color = PompColors.CinnabarDark,
+                        modifier = Modifier.size(16.dp),
+                        strokeWidth = 2.dp,
+                    )
+                } else {
+                    Icon(
+                        Icons.AutoMirrored.Filled.VolumeUp,
+                        contentDescription = null,
+                        tint = PompColors.CinnabarDark,
+                        modifier = Modifier.size(16.dp),
                     )
                 }
-                if (card.partOfSpeech.isNotBlank()) {
-                    Surface(
-                        color = PompColors.Paper,
-                        shape = RoundedCornerShape(9.dp),
-                        border = BorderStroke(1.dp, PompColors.Divider),
-                    ) {
-                        Text(
-                            text = card.partOfSpeech,
-                            fontSize = 11.5.sp,
-                            lineHeight = 15.sp,
-                            color = PompColors.InkDisabled,
-                            modifier = Modifier.padding(horizontal = 9.dp, vertical = 3.dp),
-                        )
-                    }
-                }
-            }
-            Spacer(Modifier.height(9.dp))
-            Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(PompColors.Divider))
-            Text(
-                text = card.meaning,
-                fontSize = 17.sp,
-                lineHeight = 25.sp,
-                color = PompColors.Ink,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 10.dp),
-            )
-            Surface(
-                color = PompColors.CinnabarSoft,
-                shape = RoundedCornerShape(20.dp),
-                onClick = onPlayAudio,
-                enabled = !isAudioLoading,
-                modifier = Modifier.padding(top = 13.dp),
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(7.dp),
-                    modifier = Modifier.padding(horizontal = 17.dp, vertical = 9.dp),
-                ) {
-                    if (isAudioLoading) {
-                        CircularProgressIndicator(
-                            color = PompColors.CinnabarDark,
-                            modifier = Modifier.size(16.dp),
-                            strokeWidth = 2.dp,
-                        )
-                    } else {
-                        Icon(
-                            Icons.AutoMirrored.Filled.VolumeUp,
-                            contentDescription = null,
-                            tint = PompColors.CinnabarDark,
-                            modifier = Modifier.size(16.dp),
-                        )
-                    }
-                    Text(
-                        text = stringResource(R.string.lesson_listen),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = PompColors.CinnabarDark,
-                    )
-                }
+                Text(
+                    text = stringResource(R.string.lesson_listen),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = PompColors.CinnabarDark,
+                )
             }
         }
     }
@@ -360,19 +277,29 @@ fun GrammarCardView(card: GrammarCard, pinyin: PinyinVisibility) {
         Text(text = card.rule, style = MaterialTheme.typography.bodyLarge, color = PompColors.InkSecondary)
         if (card.examples.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
-            card.examples.forEach { example ->
-                Surface(
-                    color = PompColors.PaperRaised,
-                    shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(1.dp, PompColors.Divider),
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                ) {
-                    Column(modifier = Modifier.padding(12.dp)) {
-                        Text(text = example.hanzi, style = PompTextStyles.hanziMedium, color = PompColors.Ink)
-                        if (pinyin == PinyinVisibility.ALL) {
-                            Text(text = example.pinyin, style = PompTextStyles.pinyin, color = PompColors.InkSecondary)
+            Surface(
+                color = PompColors.PaperRaised,
+                shape = PompShapes.Medium,
+                border = BorderStroke(1.dp, PompColors.Divider),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+                    card.examples.forEachIndexed { index, example ->
+                        if (index > 0) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(1.dp)
+                                    .background(PompColors.Divider),
+                            )
                         }
-                        Text(text = example.translation, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
+                        Column(modifier = Modifier.padding(vertical = 12.dp)) {
+                            Text(text = example.hanzi, style = PompTextStyles.hanziMedium, color = PompColors.Ink)
+                            if (pinyin == PinyinVisibility.ALL) {
+                                Text(text = example.pinyin, style = PompTextStyles.pinyin, color = PompColors.InkSecondary)
+                            }
+                            Text(text = example.translation, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
+                        }
                     }
                 }
             }
@@ -993,7 +920,7 @@ private fun PairCell(
     val border = when (state) {
         PairState.IDLE -> PompColors.Divider
         PairState.SELECTED -> PompColors.Cinnabar
-        PairState.MATCHED -> PompColors.Jade
+        PairState.MATCHED -> PompColors.JadeInk
         PairState.WRONG -> PompColors.Flame
     }
     val background = when (state) {
@@ -1006,7 +933,13 @@ private fun PairCell(
         PairState.SELECTED -> PompColors.CinnabarDark
         PairState.MATCHED -> PompColors.Jade
     }
-    val shape = RoundedCornerShape(14.dp)
+    val shape = PompShapes.Medium
+    val stateLabel = when (state) {
+        PairState.IDLE -> ""
+        PairState.SELECTED -> stringResource(R.string.lesson_pair_selected)
+        PairState.MATCHED -> stringResource(R.string.lesson_pair_matched)
+        PairState.WRONG -> stringResource(R.string.lesson_pair_mismatch)
+    }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -1028,7 +961,10 @@ private fun PairCell(
             border = BorderStroke(2.dp, border),
             onClick = onClick,
             enabled = enabled,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().semantics {
+                selected = state == PairState.SELECTED
+                if (stateLabel.isNotBlank()) stateDescription = stateLabel
+            },
         ) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.heightIn(min = 76.dp)) {
                 Text(

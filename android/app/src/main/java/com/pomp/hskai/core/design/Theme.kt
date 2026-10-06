@@ -47,17 +47,17 @@ private fun pompColorScheme(
 ): ColorScheme = if (darkTheme) {
     darkColorScheme(
         primary = palette.cinnabar,
-        onPrimary = palette.paper,
+        onPrimary = palette.onCinnabar,
         primaryContainer = palette.cinnabarSoft,
         onPrimaryContainer = palette.cinnabarDark,
 
         secondary = palette.jade,
-        onSecondary = palette.paper,
+        onSecondary = palette.onJade,
         secondaryContainer = palette.jadeSoft,
         onSecondaryContainer = palette.ink,
 
         tertiary = palette.gold,
-        onTertiary = palette.paper,
+        onTertiary = palette.onGold,
         tertiaryContainer = palette.goldSoft,
         onTertiaryContainer = palette.ink,
 
@@ -77,17 +77,17 @@ private fun pompColorScheme(
 } else {
     lightColorScheme(
         primary = palette.cinnabar,
-        onPrimary = palette.paper,
+        onPrimary = palette.onCinnabar,
         primaryContainer = palette.cinnabarSoft,
         onPrimaryContainer = palette.cinnabarDark,
 
         secondary = palette.jade,
-        onSecondary = palette.paper,
+        onSecondary = palette.onJade,
         secondaryContainer = palette.jadeSoft,
         onSecondaryContainer = palette.ink,
 
         tertiary = palette.gold,
-        onTertiary = palette.ink,
+        onTertiary = palette.onGold,
         tertiaryContainer = palette.goldSoft,
         onTertiaryContainer = palette.ink,
 

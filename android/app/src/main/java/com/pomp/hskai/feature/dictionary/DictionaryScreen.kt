@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,7 +26,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -60,10 +63,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -81,6 +86,7 @@ import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskContentSkeleton
 import com.pomp.hskai.core.design.components.HskGlassButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.design.components.HskSectionTitle
 import com.pomp.hskai.core.hanzi.StrokeAnimation
 import com.pomp.hskai.data.repository.CharacterBreakdown
 import com.pomp.hskai.data.repository.DictionaryWord
@@ -249,19 +255,31 @@ private fun DictionaryList(
                 state = listState,
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(0.dp),
             ) {
                 if (showRecent) {
                     item(key = "recent-title") { ListSectionTitle(stringResource(R.string.dictionary_recent_title)) }
-                    items(state.history, key = { "recent-${it.hanzi}" }) { word ->
-                        WordRow(word) {
-                            focusManager.clearFocus()
-                            onOpenRecent(word)
+                    itemsIndexed(state.history, key = { _, word -> "recent-${word.hanzi}" }) { index, word ->
+                        Column {
+                            WordRow(word) {
+                                focusManager.clearFocus()
+                                onOpenRecent(word)
+                            }
+                            if (index < state.history.lastIndex) {
+                                HorizontalDivider(Modifier.padding(start = 70.dp), color = PompColors.Divider)
+                            }
                         }
                     }
                     item(key = "all-title") { ListSectionTitle(stringResource(R.string.dictionary_all_words)) }
                 }
-                items(state.words, key = { it.hanzi }) { word -> WordRow(word) { onOpenWord(word) } }
+                itemsIndexed(state.words, key = { _, word -> word.hanzi }) { index, word ->
+                    Column {
+                        WordRow(word) { onOpenWord(word) }
+                        if (index < state.words.lastIndex) {
+                            HorizontalDivider(Modifier.padding(start = 70.dp), color = PompColors.Divider)
+                        }
+                    }
+                }
             }
         }
     }
@@ -290,7 +308,7 @@ private fun DictionaryFilters(
                     text = when (key) {
                         "hsk20" -> "HSK 2.0"
                         "hsk30" -> "HSK 3.0"
-                        else -> stringResource(R.string.dictionary_all_words)
+                        else -> stringResource(R.string.dictionary_filter_all_versions)
                     },
                     selected = version == key,
                     onClick = { onVersion(key) },
@@ -303,7 +321,7 @@ private fun DictionaryFilters(
         ) {
             items(levels, key = { "level-$it" }) { key ->
                 val label = when {
-                    key == "all" -> stringResource(R.string.dictionary_all_words)
+                    key == "all" -> stringResource(R.string.dictionary_filter_all_levels)
                     key.startsWith("nhsk") -> "N" + key.takeLast(1)
                     else -> "HSK " + key.takeLast(1)
                 }
@@ -331,7 +349,11 @@ private fun DictionaryFilterPill(
             1.dp,
             if (selected) PompColors.Cinnabar else PompColors.Divider,
         ),
-        modifier = Modifier.clickable(onClick = onClick),
+        modifier = Modifier.heightIn(min = 44.dp).selectable(
+            selected = selected,
+            role = Role.RadioButton,
+            onClick = onClick,
+        ),
     ) {
         Text(
             text = text,
@@ -948,7 +970,7 @@ private fun DictionaryHeader(
         IconButton(onClick = onBack) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.action_back), tint = PompColors.Ink)
         }
-        Text(title, style = MaterialTheme.typography.titleLarge, color = PompColors.Ink, modifier = Modifier.weight(1f))
+        HskSectionTitle(title, modifier = Modifier.weight(1f))
         if (trailing != null) Text(trailing, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
         if (level.isNotBlank()) LevelPill(level)
     }
@@ -975,13 +997,16 @@ private fun dictionaryLevelLabel(level: String): String {
 
 @Composable
 private fun WordRow(word: DictionaryWord, onClick: () -> Unit) {
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        shadowElevation = 5.dp,
+    Surface(
         onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RectangleShape,
+        color = PompColors.Paper,
     ) {
-        Row(Modifier.padding(horizontal = 14.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth().heightIn(min = 72.dp).padding(horizontal = 4.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Text(word.hanzi, style = PompTextStyles.hanziSmall, color = PompColors.Ink)
             Column(Modifier.weight(1f).padding(start = 14.dp)) {
                 Text(word.pinyin, style = PompTextStyles.pinyin, color = PompColors.CinnabarDark)

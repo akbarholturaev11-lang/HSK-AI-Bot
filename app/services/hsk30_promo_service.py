@@ -59,10 +59,14 @@ class Hsk30PromoService:
             getattr(user, "level", None)
         )
         permanently_unlocked = await self.unlock.is_permanently_unlocked(user)
+        payment_review = await self.unlock.review_state(user)
 
         if not feature_enabled:
             eligible = False
             reason = "hsk30_disabled"
+        elif payment_review["pending_payment"] is not None:
+            eligible = False
+            reason = "payment_pending"
         elif active_track == TRACK_HSK30:
             eligible = False
             reason = "already_on_hsk30"

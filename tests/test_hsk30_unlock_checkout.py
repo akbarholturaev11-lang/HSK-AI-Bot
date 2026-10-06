@@ -12,7 +12,9 @@ from app.db.models.course_track_state import CourseTrackState
 from app.db.models.payment import Payment
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
+from app.repositories.payment_repo import PaymentRepository
 from app.services.admin_notify_service import AdminNotifyService
+from app.services.course_track_service import CourseTrackService
 from app.services.hsk30_feature_service import HSK30_ENABLED_SETTINGS_KEY
 from app.services.hsk30_unlock_service import (
     HSK30_UNLOCK_PAYMENT_ENABLED_KEY,
@@ -235,6 +237,74 @@ class Hsk30UnlockCheckoutTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(payment.currency, "TJS")
         self.assertEqual(payment.discount_percent, 0)
         self.assertEqual(payment.discount_source, "none")
+
+    async def test_first_pending_hsk30_payment_grants_provisional_course_access(self):
+        async with self.sessions() as session:
+            with patch.object(
+                AdminNotifyService,
+                "notify_payment_review",
+                return_value="HSK30_RECEIPT",
+            ):
+                result = await SubscriptionMiniAppService(session).submit(
+                    telegram_id=5001,
+                    plan_type=HSK30_UNLOCK_PLAN_TYPE,
+                    payment_method="visa",
+                    card_country="tj",
+                    card_bank="dc_city",
+                    screenshot_data_url=PNG_1X1_DATA_URL,
+                    bot=self.bot,
+                )
+            user = await session.get(User, 1)
+            access = await CourseTrackService(session).hsk30_access(user)
+
+        self.assertTrue(result["provisional_access"])
+        self.assertTrue(access.allowed)
+        self.assertTrue(access.payment_pending)
+        self.assertTrue(access.provisional_access)
+
+    async def test_retry_after_rejection_waits_for_admin_without_provisional_access(self):
+        async with self.sessions() as session:
+            with patch.object(
+                AdminNotifyService,
+                "notify_payment_review",
+                return_value="HSK30_RECEIPT",
+            ):
+                first = await SubscriptionMiniAppService(session).submit(
+                    telegram_id=5001,
+                    plan_type=HSK30_UNLOCK_PLAN_TYPE,
+                    payment_method="visa",
+                    card_country="tj",
+                    card_bank="dc_city",
+                    screenshot_data_url=PNG_1X1_DATA_URL,
+                    bot=self.bot,
+                )
+            first_payment = await session.get(Payment, first["payment_id"])
+            self.assertTrue(await PaymentRepository(session).reject(first_payment))
+            await session.commit()
+
+        async with self.sessions() as session:
+            with patch.object(
+                AdminNotifyService,
+                "notify_payment_review",
+                return_value="HSK30_RECEIPT_RETRY",
+            ):
+                retry = await SubscriptionMiniAppService(session).submit(
+                    telegram_id=5001,
+                    plan_type=HSK30_UNLOCK_PLAN_TYPE,
+                    payment_method="visa",
+                    card_country="tj",
+                    card_bank="dc_city",
+                    screenshot_data_url=PNG_1X1_DATA_URL,
+                    bot=self.bot,
+                )
+            user = await session.get(User, 1)
+            access = await CourseTrackService(session).hsk30_access(user)
+
+        self.assertTrue(retry["ok"], retry)
+        self.assertFalse(retry["provisional_access"])
+        self.assertFalse(access.allowed)
+        self.assertTrue(access.payment_pending)
+        self.assertFalse(access.provisional_access)
 
     async def test_hsk30_review_label_is_not_shown_as_raw_plan_key(self):
         text = AdminNotifyService().build_payment_review_text(

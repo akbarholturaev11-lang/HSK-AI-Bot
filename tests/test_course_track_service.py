@@ -31,6 +31,13 @@ class _FakeState:
 class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.service = CourseTrackService(SimpleNamespace())
+        self.service.hsk30_unlock = SimpleNamespace(
+            review_state=AsyncMock(return_value={
+                "pending_payment": None,
+                "payment_rejected": False,
+                "provisional_access": False,
+            }),
+        )
         self.user = SimpleNamespace(
             id=7,
             telegram_id=700,

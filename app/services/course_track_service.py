@@ -12,6 +12,7 @@ from app.services.course_levels import (
     level_spec,
 )
 from app.services.hsk30_feature_service import Hsk30FeatureService
+from app.services.hsk30_unlock_service import Hsk30UnlockService
 from app.services.user_access_state_service import UserAccessStateService
 
 
@@ -27,10 +28,15 @@ class CourseTrackAccess:
     feature_enabled: bool
     paid_access: bool
     permanently_unlocked: bool
+    payment_pending: bool = False
+    provisional_access: bool = False
+    payment_rejected: bool = False
 
     @property
     def allowed(self) -> bool:
-        return self.feature_enabled and (self.paid_access or self.permanently_unlocked)
+        return self.feature_enabled and (
+            self.paid_access or self.permanently_unlocked or self.provisional_access
+        )
 
     @property
     def reason(self) -> str:
@@ -40,6 +46,10 @@ class CourseTrackAccess:
             return "permanent_unlock"
         if self.paid_access:
             return "paid_subscription"
+        if self.payment_pending:
+            return "payment_pending"
+        if self.payment_rejected:
+            return "payment_rejected"
         return "hsk30_unlock_required"
 
     def payload(self) -> dict:
@@ -47,6 +57,9 @@ class CourseTrackAccess:
             "feature_enabled": self.feature_enabled,
             "paid_access": self.paid_access,
             "permanently_unlocked": self.permanently_unlocked,
+            "payment_pending": self.payment_pending,
+            "provisional_access": self.provisional_access,
+            "payment_rejected": self.payment_rejected,
             "allowed": self.allowed,
             "reason": self.reason,
         }
@@ -67,6 +80,7 @@ class CourseTrackService:
         self.state_repo = CourseTrackStateRepository(session)
         self.progress_repo = CourseProgressRepository(session)
         self.hsk30_feature = Hsk30FeatureService(session)
+        self.hsk30_unlock = Hsk30UnlockService(session)
 
     @staticmethod
     def track_for_level(level: str | None) -> str:
@@ -105,10 +119,22 @@ class CourseTrackService:
         row = await self._state(int(user.id), TRACK_HSK30)
         permanently_unlocked = bool(row and row.unlocked_at)
         paid = UserAccessStateService.is_paid(user)
+        if not enabled or permanently_unlocked or paid:
+            return CourseTrackAccess(
+                feature_enabled=enabled,
+                paid_access=paid,
+                permanently_unlocked=permanently_unlocked,
+            )
+
+        review = await self.hsk30_unlock.review_state(user)
+        pending = review["pending_payment"] is not None
         return CourseTrackAccess(
             feature_enabled=enabled,
             paid_access=paid,
             permanently_unlocked=permanently_unlocked,
+            payment_pending=pending,
+            provisional_access=bool(review["provisional_access"]),
+            payment_rejected=bool(review["payment_rejected"]),
         )
 
     async def status(self, user) -> dict:

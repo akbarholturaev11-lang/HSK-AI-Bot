@@ -10602,3 +10602,16 @@ Follow-up:
   `course-v3.html`, `app/main.py`, `OnboardingViewModel.kt`, `OnboardingScreen.kt`,
   `MainActivity.kt`. Android kurs sahifasining tepasida track switch yo'q;
   tanlov onboarding yoki profildan qilinadi.
+
+### 2026-10-06 — HSK 3.0 pending payment access policy
+
+- Birinchi HSK 3.0 unlock to'lovi admin tekshiruviga tushganda userga vaqtinchalik
+  kirish beriladi. Rad etilsa kirish darhol server access tekshiruvlarida bekor
+  bo'ladi. Shu userda avval rad etilgan HSK 3.0 to'lovi bo'lsa, keyingi pending
+  urinish admin tasdig'igacha kursni ochmaydi.
+- Mini App va Direct Android pending HSK 3.0 to'lovida alohida status refresh
+  oqimini ko'rsatadi; HSK 3.0 approval xabari obuna faollashdi demaydi, kurs
+  ochilganini bildiradi. Status endpoint payment egasini tekshiradi.
+- Schema migration yo'q. Asosiy kod: `hsk30_unlock_service.py`,
+  `course_track_service.py`, `subscription_miniapp_service.py`,
+  `app/static/subscription.html`, Android checkout va payment-status API.
