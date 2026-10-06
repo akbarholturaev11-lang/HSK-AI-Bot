@@ -49,6 +49,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -372,10 +373,12 @@ fun AssistantModalBottomSheet(
 @Composable
 private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose: () -> Unit, onAction: (AssistantAction) -> Unit) {
     val state by app.assistant.state.collectAsStateWithLifecycle()
-    var expanded by rememberSaveable { mutableStateOf(false) }
     var includeContext by rememberSaveable { mutableStateOf(true) }
     var inspect by remember { mutableStateOf(false) }
-    var history by remember { mutableStateOf(false) }
+    val conversationsDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val historyOpen = conversationsDrawerState.isOpen
+    val drawerWidth = minOf(LocalConfiguration.current.screenWidthDp.dp * .72f, 360.dp)
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var recording by remember { mutableStateOf(false) }
     var preparing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -466,300 +469,368 @@ private fun AssistantChat(app: HskAiApplication, screen: ScreenContext, onClose:
     }
     LaunchedEffect(recording) { if (recording) { delay(60_000); finishRecording() } }
     val list = rememberLazyListState()
-    LaunchedEffect(state.turns.lastOrNull(), state.busy, history) {
-        if (!history && state.turns.isNotEmpty()) list.animateScrollToItem(maxOf(0, list.layoutInfo.totalItemsCount - 1))
+    LaunchedEffect(state.turns.lastOrNull(), state.busy, historyOpen) {
+        if (!historyOpen && state.turns.isNotEmpty()) list.animateScrollToItem(maxOf(0, list.layoutInfo.totalItemsCount - 1))
     }
     val canSend = state.statusReady && state.enabled && !state.busy && !state.loading && !recording && !preparing && (state.draft.isNotBlank() || state.media.isNotBlank())
     ModalBottomSheet(
         onDismissRequest = onClose,
-        // Full screen must still stop below the clock and the camera cutout.
-        modifier = Modifier.statusBarsPadding(),
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        containerColor = PompColors.PaperRaised.copy(
-            alpha = if (PompColors.IsDark) 0.92f else 0.86f,
-        ),
+        sheetState = sheetState,
+        containerColor = PompColors.PaperRaised,
         scrimColor = PompColors.Overlay.copy(alpha = if (PompColors.IsDark) 0.42f else 0.28f),
         tonalElevation = 0.dp,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        // A real handle is what makes the swipe-down-to-close gesture reachable.
-        dragHandle = { AssistantDragHandle() },
+        shape = RoundedCornerShape(0.dp),
+        dragHandle = null,
     ) {
         Column(
             Modifier.fillMaxWidth()
-                .fillMaxHeight(if (expanded) 1f else .94f)
+                .fillMaxHeight(1f)
+                .statusBarsPadding()
                 .navigationBarsPadding()
                 .imePadding(),
         ) {
-            Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { history = !history; inspect = false; if (history) app.assistant.conversations() }) {
-                    Icon(Icons.Default.History, stringResource(R.string.assistant_history),
-                        tint = if (history) PompColors.Cinnabar else PompColors.InkSecondary)
-                }
-                AssistantAvatar(30.dp)
-                Spacer(Modifier.width(8.dp))
-                Text("HSK AI", style = MaterialTheme.typography.titleMedium, color = PompColors.Ink, modifier = Modifier.weight(1f))
-                IconButton(onClick = { app.assistant.selectConversation(); history = false }, enabled = !state.busy && !state.loading) {
-                    Icon(Icons.Default.Add, stringResource(R.string.assistant_new), tint = PompColors.InkSecondary)
-                }
-                IconButton(onClick = { expanded = !expanded }) {
-                    Icon(if (expanded) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
-                        stringResource(R.string.assistant_expand), tint = PompColors.InkSecondary)
-                }
-                IconButton(onClick = onClose) {
-                    Icon(Icons.Default.Close, stringResource(R.string.assistant_close), tint = PompColors.InkSecondary)
-                }
-            }
-            when {
-                state.statusLoading && !state.statusReady -> Row(
-                    Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    CircularProgressIndicator(Modifier.size(16.dp), color = PompColors.Cinnabar, strokeWidth = 2.dp)
-                    Text(stringResource(R.string.assistant_status_loading), style = MaterialTheme.typography.bodySmall, color = PompColors.InkSecondary)
-                }
-                state.statusError.isNotBlank() -> Surface(
-                    color = PompColors.CinnabarSoft, shape = RoundedCornerShape(14.dp),
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
-                ) {
-                    Row(Modifier.padding(start = 12.dp, end = 4.dp, top = 4.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                            Text(assistantError(state.statusError), style = MaterialTheme.typography.bodySmall, color = PompColors.CinnabarDark)
-                            if (state.statusLimitText.isNotBlank()) Text(
-                                state.statusLimitText, style = MaterialTheme.typography.labelSmall, color = PompColors.CinnabarDark,
-                            )
-                            if (state.statusResetAt.isNotBlank()) Text(
-                                stringResource(R.string.assistant_reset_at, state.statusResetAt),
-                                style = MaterialTheme.typography.labelSmall, color = PompColors.InkSecondary,
-                            )
-                        }
-                        TextButton(onClick = { app.assistant.refreshStatus(force = true) }, enabled = !state.statusLoading) {
-                            Text(stringResource(R.string.assistant_retry_status), color = PompColors.Cinnabar)
-                        }
-                    }
-                }
-                state.statusReady && !state.enabled -> Surface(
-                    color = PompColors.CinnabarSoft, shape = RoundedCornerShape(14.dp),
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
-                ) {
-                    Text(stringResource(R.string.assistant_disabled), Modifier.padding(12.dp),
-                        style = MaterialTheme.typography.bodySmall, color = PompColors.CinnabarDark)
-                }
-            }
-            if (!history) {
-                Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
-                    AssistantChip(
-                        text = if (includeContext) screen.title.ifBlank { stringResource(R.string.assistant_general) } else stringResource(R.string.assistant_general),
-                        onClick = { includeContext = !includeContext },
-                        selected = includeContext,
-                        maxLines = 1,
-                        modifier = Modifier.weight(1f, fill = false).semantics { contentDescription = context.getString(R.string.assistant_context) },
-                        icon = {
-                            Icon(if (includeContext) Icons.Default.Check else Icons.Default.RemoveCircleOutline, null,
-                                Modifier.size(15.dp), tint = if (includeContext) PompColors.Cinnabar else PompColors.InkSecondary)
-                        },
-                    )
-                    if (screen.details.isNotBlank()) IconButton(onClick = { inspect = !inspect }, modifier = Modifier.size(36.dp)) {
-                        Icon(Icons.Default.Info, null, Modifier.size(17.dp),
-                            tint = if (inspect) PompColors.Cinnabar else PompColors.InkDisabled)
-                    }
-                }
-                if (inspect) HskGlassSurface(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    shadowElevation = 4.dp,
-                ) {
-                    Text(screen.details.ifBlank { screen.title },
-                        Modifier.heightIn(max = 132.dp).verticalScroll(rememberScrollState()).padding(12.dp),
-                        style = MaterialTheme.typography.bodySmall, color = PompColors.InkSecondary)
-                }
-            }
-            if (state.loading) LinearProgressIndicator(Modifier.fillMaxWidth().padding(top = 4.dp), color = PompColors.Cinnabar, trackColor = PompColors.Divider)
-            Box(Modifier.weight(1f).fillMaxWidth()) {
-                if (history) AssistantConversations(
-                    items = state.conversations,
-                    currentId = state.conversationId,
-                    enabled = !state.busy && !state.loading,
-                    onSelect = { app.assistant.selectConversation(it); history = false },
-                    onNew = { app.assistant.selectConversation(); history = false },
-                ) else LazyColumn(
-                    Modifier.fillMaxSize(), state = list,
-                    verticalArrangement = Arrangement.spacedBy(14.dp),
-                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 14.dp),
-                ) {
-                    if (state.nextCursor.isNotBlank()) item {
-                        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                            AssistantChip(stringResource(R.string.assistant_older), onClick = app.assistant::older)
-                        }
-                    }
-                    if (state.turns.isEmpty() && !state.loading && state.seed == null) item {
-                        Column(
-                            Modifier.fillMaxWidth().padding(top = 22.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(14.dp),
+            Box(Modifier.fillMaxWidth().weight(1f)) {
+                ModalNavigationDrawer(
+                    modifier = Modifier.fillMaxSize(),
+                    drawerState = conversationsDrawerState,
+                    scrimColor = PompColors.Overlay.copy(alpha = 0.22f),
+                    drawerContent = {
+                        ModalDrawerSheet(
+                            modifier = Modifier.width(drawerWidth),
+                            drawerShape = RoundedCornerShape(topEnd = 22.dp, bottomEnd = 22.dp),
+                            drawerContainerColor = PompColors.Paper,
+                            drawerContentColor = PompColors.Ink,
+                            windowInsets = WindowInsets(0.dp),
                         ) {
-                            AssistantAvatar(52.dp)
-                            Text(stringResource(R.string.assistant_intro), style = MaterialTheme.typography.titleMedium,
-                                color = PompColors.Ink, textAlign = TextAlign.Center)
-                            FlowRow(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                            ) {
-                                val suggestions = if (screen.screen in setOf("exam", "challenge")) listOf(R.string.assistant_how)
-                                    else listOf(R.string.assistant_simple, R.string.assistant_example, R.string.assistant_mistake)
-                                suggestions.forEach { label ->
-                                    val text = stringResource(label)
-                                    AssistantChip(text, onClick = { app.assistant.edit(text) })
-                                }
-                            }
+                            AssistantConversations(
+                                items = state.conversations,
+                                currentId = state.conversationId,
+                                enabled = !state.busy && !state.loading,
+                                onSelect = { id ->
+                                    app.assistant.selectConversation(id)
+                                    scope.launch { conversationsDrawerState.close() }
+                                },
+                            )
                         }
-                    }
-                    items(state.turns, key = { it.clientMessageId }) { turn ->
-                        Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            // The ready answer the question was asked about comes first.
-                            state.seed?.takeIf { it.beforeClientMessageId == turn.clientMessageId }?.let { seed ->
-                                AssistantSeedBubble(seed)
-                            }
-                            AssistantUserBubble(turn)
-                            when {
-                                turn.text.isNotBlank() -> AssistantAnswerBubble(turn, onAction)
-                                turn.status == "processing" -> AssistantAnswerFrame {
-                                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                        AssistantTypingDots()
-                                        Text(stringResource(when (turn.phase) {
-                                            "transcribing" -> R.string.assistant_transcribing
-                                            "analyzing" -> R.string.assistant_analyzing
-                                            else -> R.string.assistant_answering
-                                        }), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
+                    },
+                ) {
+                    Column(Modifier.fillMaxSize()) {
+                        Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = {
+                                scope.launch {
+                                    if (conversationsDrawerState.isOpen) conversationsDrawerState.close()
+                                    else {
+                                        inspect = false
+                                        app.assistant.conversations()
+                                        conversationsDrawerState.open()
                                     }
                                 }
-                                turn.status == "failed" -> AssistantAnswerFrame {
-                                    Text(assistantError(turn.error), style = MaterialTheme.typography.bodyMedium, color = PompColors.CinnabarDark)
+                            }) {
+                                Icon(Icons.Default.ChatBubbleOutline, stringResource(R.string.assistant_history),
+                                    tint = if (historyOpen) PompColors.Cinnabar else PompColors.InkSecondary)
+                            }
+                            Spacer(Modifier.weight(1f))
+                            IconButton(onClick = onClose) {
+                                Icon(Icons.Default.Close, stringResource(R.string.assistant_close), tint = PompColors.InkSecondary)
+                            }
+                        }
+                        when {
+                            state.statusLoading && !state.statusReady -> Row(
+                                Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            ) {
+                                CircularProgressIndicator(Modifier.size(16.dp), color = PompColors.Cinnabar, strokeWidth = 2.dp)
+                                Text(stringResource(R.string.assistant_status_loading), style = MaterialTheme.typography.bodySmall, color = PompColors.InkSecondary)
+                            }
+                            state.statusError.isNotBlank() -> Surface(
+                                color = PompColors.CinnabarSoft, shape = RoundedCornerShape(14.dp),
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                            ) {
+                                Row(Modifier.padding(start = 12.dp, end = 4.dp, top = 4.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                        Text(assistantError(state.statusError), style = MaterialTheme.typography.bodySmall, color = PompColors.CinnabarDark)
+                                        if (state.statusLimitText.isNotBlank()) Text(
+                                            state.statusLimitText, style = MaterialTheme.typography.labelSmall, color = PompColors.CinnabarDark,
+                                        )
+                                        if (state.statusResetAt.isNotBlank()) Text(
+                                            stringResource(R.string.assistant_reset_at, state.statusResetAt),
+                                            style = MaterialTheme.typography.labelSmall, color = PompColors.InkSecondary,
+                                        )
+                                    }
+                                    TextButton(onClick = { app.assistant.refreshStatus(force = true) }, enabled = !state.statusLoading) {
+                                        Text(stringResource(R.string.assistant_retry_status), color = PompColors.Cinnabar)
+                                    }
+                                }
+                            }
+                            state.statusReady && !state.enabled -> Surface(
+                                color = PompColors.CinnabarSoft, shape = RoundedCornerShape(14.dp),
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                            ) {
+                                Text(stringResource(R.string.assistant_disabled), Modifier.padding(12.dp),
+                                    style = MaterialTheme.typography.bodySmall, color = PompColors.CinnabarDark)
+                            }
+                        }
+                        Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+                            AssistantChip(
+                                text = if (includeContext) screen.title.ifBlank { stringResource(R.string.assistant_general) } else stringResource(R.string.assistant_general),
+                                onClick = { includeContext = !includeContext },
+                                selected = includeContext,
+                                maxLines = 1,
+                                modifier = Modifier.weight(1f, fill = false).semantics { contentDescription = context.getString(R.string.assistant_context) },
+                                icon = {
+                                    Icon(if (includeContext) Icons.Default.Check else Icons.Default.RemoveCircleOutline, null,
+                                        Modifier.size(15.dp), tint = if (includeContext) PompColors.Cinnabar else PompColors.InkSecondary)
+                                },
+                            )
+                            if (screen.details.isNotBlank()) IconButton(onClick = { inspect = !inspect }, modifier = Modifier.size(36.dp)) {
+                                Icon(Icons.Default.Info, null, Modifier.size(17.dp),
+                                    tint = if (inspect) PompColors.Cinnabar else PompColors.InkDisabled)
+                            }
+                        }
+                        if (inspect) HskGlassSurface(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                            shape = RoundedCornerShape(14.dp),
+                            shadowElevation = 4.dp,
+                        ) {
+                            Text(screen.details.ifBlank { screen.title },
+                                Modifier.heightIn(max = 132.dp).verticalScroll(rememberScrollState()).padding(12.dp),
+                                style = MaterialTheme.typography.bodySmall, color = PompColors.InkSecondary)
+                        }
+                        if (state.loading) LinearProgressIndicator(Modifier.fillMaxWidth().padding(top = 4.dp), color = PompColors.Cinnabar, trackColor = PompColors.Divider)
+                        Box(Modifier.weight(1f).fillMaxWidth()) {
+                            LazyColumn(
+                                Modifier.fillMaxSize(), state = list,
+                                verticalArrangement = Arrangement.spacedBy(14.dp),
+                                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 14.dp),
+                            ) {
+                                if (state.nextCursor.isNotBlank()) item {
+                                    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                                        AssistantChip(stringResource(R.string.assistant_older), onClick = app.assistant::older)
+                                    }
+                                }
+                                if (state.turns.isEmpty() && !state.loading && state.seed == null) item {
+                                    Column(
+                                        Modifier.fillMaxWidth().padding(top = 22.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.spacedBy(14.dp),
+                                    ) {
+                                        AssistantPanda(92.dp)
+                                        Text(stringResource(R.string.assistant_intro), style = MaterialTheme.typography.titleMedium,
+                                            color = PompColors.Ink, textAlign = TextAlign.Center)
+                                    }
+                                }
+                                items(state.turns, key = { it.clientMessageId }) { turn ->
+                                    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                        // The ready answer the question was asked about comes first.
+                                        state.seed?.takeIf { it.beforeClientMessageId == turn.clientMessageId }?.let { seed ->
+                                            AssistantSeedBubble(seed)
+                                        }
+                                        AssistantUserBubble(turn)
+                                        when {
+                                            turn.text.isNotBlank() -> AssistantAnswerBubble(turn, onAction)
+                                            turn.status == "processing" -> AssistantAnswerFrame {
+                                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                                                    AssistantTypingDots()
+                                                    Text(stringResource(when (turn.phase) {
+                                                        "transcribing" -> R.string.assistant_transcribing
+                                                        "analyzing" -> R.string.assistant_analyzing
+                                                        else -> R.string.assistant_answering
+                                                    }), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
+                                                }
+                                            }
+                                            turn.status == "failed" -> AssistantAnswerFrame {
+                                                Text(assistantError(turn.error), style = MaterialTheme.typography.bodyMedium, color = PompColors.CinnabarDark)
+                                            }
+                                        }
+                                    }
+                                }
+                                // Until the server confirms the question, the ready answer waits at the end.
+                                state.seed?.takeIf { seed -> state.turns.none { it.clientMessageId == seed.beforeClientMessageId } }?.let { seed ->
+                                    item(key = "assistant-seed") { AssistantSeedBubble(seed) }
+                                }
+                            }
+                        }
+                        if (state.error.isNotBlank()) Surface(
+                            color = PompColors.CinnabarSoft, shape = RoundedCornerShape(14.dp),
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                        ) {
+                            Row(Modifier.padding(start = 12.dp, end = 4.dp, top = 4.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                    Text(assistantError(state.error), style = MaterialTheme.typography.bodySmall, color = PompColors.CinnabarDark)
+                                    if (state.errorLimitText.isNotBlank()) Text(
+                                        state.errorLimitText, style = MaterialTheme.typography.labelSmall, color = PompColors.CinnabarDark,
+                                    )
+                                    if (state.errorResetAt.isNotBlank()) Text(
+                                        stringResource(R.string.assistant_reset_at, state.errorResetAt),
+                                        style = MaterialTheme.typography.labelSmall, color = PompColors.InkSecondary,
+                                    )
+                                }
+                                // A queued question that never resolves must not lock the chat.
+                                if (state.queued) TextButton(onClick = app.assistant::discard, enabled = !state.busy) {
+                                    Text(stringResource(R.string.assistant_cancel), color = PompColors.InkSecondary)
+                                }
+                                TextButton(onClick = app.assistant::retry, enabled = !state.busy) {
+                                    Text(stringResource(R.string.assistant_retry), color = PompColors.Cinnabar)
+                                }
+                            }
+                        }
+                        if (state.turns.isEmpty() && !state.loading && state.seed == null && state.draft.isBlank() && state.media.isBlank()) {
+                            val suggestions = if (screen.screen in setOf("exam", "challenge")) listOf(R.string.assistant_how)
+                                else listOf(R.string.assistant_simple, R.string.assistant_example, R.string.assistant_mistake)
+                            Column(
+                                Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 2.dp),
+                                verticalArrangement = Arrangement.spacedBy(0.dp),
+                            ) {
+                                suggestions.forEach { label ->
+                                    TextButton(
+                                        onClick = { app.assistant.edit(context.getString(label)) },
+                                        modifier = Modifier.fillMaxWidth(),
+                                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 5.dp),
+                                        colors = ButtonDefaults.textButtonColors(contentColor = PompColors.InkSecondary),
+                                    ) {
+                                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                                            Box(Modifier.size(5.dp).clip(CircleShape).background(PompColors.Cinnabar.copy(alpha = .48f)))
+                                            Spacer(Modifier.width(10.dp))
+                                            Text(stringResource(label), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (state.media.isNotBlank()) {
+                            if (state.mediaKind == "image") {
+                                val bitmap = remember(state.media) { runCatching {
+                                    val bytes = Base64.decode(state.media.substringAfter(','), Base64.DEFAULT)
+                                    BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                                }.getOrNull() }
+                                Surface(
+                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                                    shape = RoundedCornerShape(18.dp),
+                                    color = PompColors.Paper,
+                                    border = BorderStroke(1.dp, PompColors.Divider),
+                                ) {
+                                    Row(
+                                        Modifier.padding(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    ) {
+                                        if (bitmap != null) Image(bitmap.asImageBitmap(), stringResource(R.string.assistant_photo_attached),
+                                            Modifier.size(72.dp).clip(RoundedCornerShape(12.dp)), contentScale = ContentScale.Crop)
+                                        else Box(
+                                            Modifier.size(72.dp).clip(RoundedCornerShape(12.dp)).background(PompColors.PaperRaised),
+                                            contentAlignment = Alignment.Center,
+                                        ) { Icon(Icons.Default.Image, null, tint = PompColors.InkDisabled) }
+                                        Text(stringResource(R.string.assistant_photo_attached), Modifier.weight(1f),
+                                            style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary, maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis)
+                                        IconButton(onClick = { stopPreview(); app.assistant.media("", "text") },
+                                            enabled = !state.busy, modifier = Modifier.size(40.dp)) {
+                                            Icon(Icons.Default.Close, stringResource(R.string.assistant_remove), Modifier.size(19.dp), tint = PompColors.InkSecondary)
+                                        }
+                                    }
+                                }
+                            } else Row(
+                                Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            ) {
+                                AssistantChip(stringResource(R.string.assistant_listen), onClick = {
+                                    stopPreview()
+                                    runCatching {
+                                        val file = File.createTempFile("assistant-preview-", ".m4a", context.cacheDir)
+                                        previewFile = file
+                                        file.writeBytes(Base64.decode(state.media.substringAfter(','), Base64.DEFAULT))
+                                        player = MediaPlayer().apply { setDataSource(file.path); prepare(); start(); setOnCompletionListener { stopPreview() } }
+                                    }.onFailure { stopPreview(); app.assistant.error("assistant_no_speech") }
+                                }, icon = { Icon(Icons.Default.PlayArrow, null, Modifier.size(16.dp), tint = PompColors.Cinnabar) })
+                                Spacer(Modifier.weight(1f))
+                                IconButton(onClick = { stopPreview(); app.assistant.media("", "text") }, enabled = !state.busy, modifier = Modifier.size(34.dp)) {
+                                    Icon(Icons.Default.Close, stringResource(R.string.assistant_remove), Modifier.size(17.dp), tint = PompColors.InkSecondary)
+                                }
+                            }
+                        }
+                        if (recording) Row(
+                            Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            AssistantTypingDots()
+                            Spacer(Modifier.width(10.dp))
+                            Text(stringResource(R.string.assistant_recording), Modifier.weight(1f),
+                                style = MaterialTheme.typography.bodySmall, color = PompColors.InkSecondary)
+                            TextButton(onClick = { app.voiceRecorder.cancel(); recording = false }) {
+                                Text(stringResource(R.string.assistant_cancel), color = PompColors.InkSecondary)
+                            }
+                            TextButton(onClick = ::finishRecording) { Text(stringResource(R.string.assistant_stop), color = PompColors.Cinnabar) }
+                        }
+                        Row(
+                            Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 10.dp),
+                            verticalAlignment = Alignment.Bottom,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            HskGlassSurface(
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(24.dp),
+                                shadowElevation = 4.dp,
+                            ) {
+                                Row(Modifier.padding(horizontal = 4.dp), verticalAlignment = Alignment.Bottom) {
+                                    IconButton(
+                                        onClick = { photo.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+                                        enabled = !state.busy && !recording && !preparing, modifier = Modifier.size(44.dp),
+                                    ) { Icon(Icons.Default.AddPhotoAlternate, stringResource(R.string.assistant_photo), Modifier.size(21.dp), tint = PompColors.InkSecondary) }
+                                    Box(Modifier.weight(1f).padding(vertical = 12.dp), contentAlignment = Alignment.CenterStart) {
+                                        if (state.draft.isEmpty()) Text(stringResource(R.string.assistant_hint),
+                                            style = MaterialTheme.typography.bodyLarge, color = PompColors.InkDisabled,
+                                            maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                        BasicTextField(
+                                            value = state.draft,
+                                            onValueChange = app.assistant::edit,
+                                            enabled = !state.busy && !recording,
+                                            textStyle = MaterialTheme.typography.bodyLarge.copy(color = PompColors.Ink),
+                                            cursorBrush = SolidColor(PompColors.Cinnabar),
+                                            maxLines = 5,
+                                            modifier = Modifier.fillMaxWidth(),
+                                        )
+                                    }
+                                    IconButton(
+                                        onClick = {
+                                            if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) startRecording()
+                                            else permission.launch(Manifest.permission.RECORD_AUDIO)
+                                        },
+                                        enabled = !state.busy && !recording && !preparing, modifier = Modifier.size(44.dp),
+                                    ) { Icon(Icons.Default.Mic, stringResource(R.string.assistant_voice), Modifier.size(21.dp), tint = PompColors.InkSecondary) }
+                                }
+                            }
+                            Surface(
+                                onClick = { stopPreview(); app.assistant.send(if (includeContext) screen else ScreenContext()) },
+                                enabled = canSend, shape = CircleShape,
+                                color = if (canSend) PompColors.Cinnabar else PompColors.Divider,
+                                modifier = Modifier.size(46.dp),
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    if (state.busy || preparing) HskBrandLoader(compact = true)
+                                    else Icon(Icons.AutoMirrored.Filled.Send, stringResource(R.string.assistant_send), Modifier.size(19.dp),
+                                        tint = if (canSend) PompColors.Paper else PompColors.InkDisabled)
                                 }
                             }
                         }
                     }
-                    // Until the server confirms the question, the ready answer waits at the end.
-                    state.seed?.takeIf { seed -> state.turns.none { it.clientMessageId == seed.beforeClientMessageId } }?.let { seed ->
-                        item(key = "assistant-seed") { AssistantSeedBubble(seed) }
-                    }
                 }
-            }
-            if (state.error.isNotBlank()) Surface(
-                color = PompColors.CinnabarSoft, shape = RoundedCornerShape(14.dp),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
-            ) {
-                Row(Modifier.padding(start = 12.dp, end = 4.dp, top = 4.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(assistantError(state.error), style = MaterialTheme.typography.bodySmall, color = PompColors.CinnabarDark)
-                        if (state.errorLimitText.isNotBlank()) Text(
-                            state.errorLimitText, style = MaterialTheme.typography.labelSmall, color = PompColors.CinnabarDark,
-                        )
-                        if (state.errorResetAt.isNotBlank()) Text(
-                            stringResource(R.string.assistant_reset_at, state.errorResetAt),
-                            style = MaterialTheme.typography.labelSmall, color = PompColors.InkSecondary,
-                        )
-                    }
-                    // A queued question that never resolves must not lock the chat.
-                    if (state.queued) TextButton(onClick = app.assistant::discard, enabled = !state.busy) {
-                        Text(stringResource(R.string.assistant_cancel), color = PompColors.InkSecondary)
-                    }
-                    TextButton(onClick = app.assistant::retry, enabled = !state.busy) {
-                        Text(stringResource(R.string.assistant_retry), color = PompColors.Cinnabar)
-                    }
-                }
-            }
-            if (state.media.isNotBlank()) Row(
-                Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                if (state.mediaKind == "image") {
-                    val bitmap = remember(state.media) { runCatching {
-                        val bytes = Base64.decode(state.media.substringAfter(','), Base64.DEFAULT)
-                        BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                    }.getOrNull() }
-                    if (bitmap != null) Image(bitmap.asImageBitmap(), stringResource(R.string.assistant_photo),
-                        Modifier.size(46.dp).clip(RoundedCornerShape(12.dp)), contentScale = ContentScale.Crop)
-                    Text(stringResource(R.string.assistant_photo), Modifier.weight(1f),
-                        style = MaterialTheme.typography.bodySmall, color = PompColors.InkSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                } else {
-                    AssistantChip(stringResource(R.string.assistant_listen), onClick = {
-                        stopPreview()
-                        runCatching {
-                            val file = File.createTempFile("assistant-preview-", ".m4a", context.cacheDir)
-                            previewFile = file
-                            file.writeBytes(Base64.decode(state.media.substringAfter(','), Base64.DEFAULT))
-                            player = MediaPlayer().apply { setDataSource(file.path); prepare(); start(); setOnCompletionListener { stopPreview() } }
-                        }.onFailure { stopPreview(); app.assistant.error("assistant_no_speech") }
-                    }, icon = { Icon(Icons.Default.PlayArrow, null, Modifier.size(16.dp), tint = PompColors.Cinnabar) })
-                    Spacer(Modifier.weight(1f))
-                }
-                IconButton(onClick = { stopPreview(); app.assistant.media("", "text") }, enabled = !state.busy, modifier = Modifier.size(34.dp)) {
-                    Icon(Icons.Default.Close, stringResource(R.string.assistant_remove), Modifier.size(17.dp), tint = PompColors.InkSecondary)
-                }
-            }
-            if (recording) Row(
-                Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                AssistantTypingDots()
-                Spacer(Modifier.width(10.dp))
-                Text(stringResource(R.string.assistant_recording), Modifier.weight(1f),
-                    style = MaterialTheme.typography.bodySmall, color = PompColors.InkSecondary)
-                TextButton(onClick = { app.voiceRecorder.cancel(); recording = false }) {
-                    Text(stringResource(R.string.assistant_cancel), color = PompColors.InkSecondary)
-                }
-                TextButton(onClick = ::finishRecording) { Text(stringResource(R.string.assistant_stop), color = PompColors.Cinnabar) }
-            }
-            Row(
-                Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 10.dp),
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                HskGlassSurface(
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(24.dp),
-                    shadowElevation = 4.dp,
-                ) {
-                    Row(Modifier.padding(horizontal = 4.dp), verticalAlignment = Alignment.Bottom) {
-                        IconButton(
-                            onClick = { photo.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
-                            enabled = !state.busy && !recording && !preparing, modifier = Modifier.size(44.dp),
-                        ) { Icon(Icons.Default.AddPhotoAlternate, stringResource(R.string.assistant_photo), Modifier.size(21.dp), tint = PompColors.InkSecondary) }
-                        Box(Modifier.weight(1f).padding(vertical = 12.dp), contentAlignment = Alignment.CenterStart) {
-                            if (state.draft.isEmpty()) Text(stringResource(R.string.assistant_hint),
-                                style = MaterialTheme.typography.bodyLarge, color = PompColors.InkDisabled,
-                                maxLines = 1, overflow = TextOverflow.Ellipsis)
-                            BasicTextField(
-                                value = state.draft,
-                                onValueChange = app.assistant::edit,
-                                enabled = !state.busy && !recording,
-                                textStyle = MaterialTheme.typography.bodyLarge.copy(color = PompColors.Ink),
-                                cursorBrush = SolidColor(PompColors.Cinnabar),
-                                maxLines = 5,
-                                modifier = Modifier.fillMaxWidth(),
-                            )
+                if (historyOpen) Surface(
+                    onClick = {
+                        if (!state.busy && !state.loading) {
+                            app.assistant.selectConversation()
+                            scope.launch { conversationsDrawerState.close() }
                         }
-                        IconButton(
-                            onClick = {
-                                if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) startRecording()
-                                else permission.launch(Manifest.permission.RECORD_AUDIO)
-                            },
-                            enabled = !state.busy && !recording && !preparing, modifier = Modifier.size(44.dp),
-                        ) { Icon(Icons.Default.Mic, stringResource(R.string.assistant_voice), Modifier.size(21.dp), tint = PompColors.InkSecondary) }
-                    }
-                }
-                Surface(
-                    onClick = { stopPreview(); app.assistant.send(if (includeContext) screen else ScreenContext()) },
-                    enabled = canSend, shape = CircleShape,
-                    color = if (canSend) PompColors.Cinnabar else PompColors.Divider,
-                    modifier = Modifier.size(46.dp),
+                    },
+                    enabled = !state.busy && !state.loading,
+                    shape = CircleShape,
+                    color = if (!state.busy && !state.loading) PompColors.Cinnabar else PompColors.Divider,
+                    contentColor = if (!state.busy && !state.loading) Color.White else PompColors.InkDisabled,
+                    modifier = Modifier.align(Alignment.BottomEnd).padding(end = 12.dp, bottom = 14.dp).size(48.dp),
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        if (state.busy || preparing) HskBrandLoader(compact = true)
-                        else Icon(Icons.AutoMirrored.Filled.Send, stringResource(R.string.assistant_send), Modifier.size(19.dp),
-                            tint = if (canSend) PompColors.Paper else PompColors.InkDisabled)
+                        Icon(Icons.Default.Add, stringResource(R.string.assistant_new))
                     }
                 }
             }
@@ -812,13 +883,14 @@ private fun AssistantDragHandle() {
 }
 
 @Composable
-private fun AssistantAvatar(size: Dp) {
-    Box(
-        Modifier.size(size).clip(CircleShape).background(PompColors.Cinnabar),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text("AI", color = PompColors.Paper, style = MaterialTheme.typography.labelLarge)
-    }
+private fun AssistantPanda(size: Dp) {
+    val shape = if (size < 40.dp) CircleShape else RoundedCornerShape(20.dp)
+    Image(
+        painter = painterResource(R.drawable.widget_panda_m03),
+        contentDescription = null,
+        modifier = Modifier.size(size).clip(shape),
+        contentScale = ContentScale.Crop,
+    )
 }
 
 @Composable
@@ -881,7 +953,7 @@ private fun AssistantUserBubble(turn: AssistantTurn) {
 @Composable
 private fun AssistantAnswerFrame(content: @Composable ColumnScope.() -> Unit) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
-        AssistantAvatar(28.dp)
+        AssistantPanda(28.dp)
         Spacer(Modifier.width(8.dp))
         HskGlassSurface(
             modifier = Modifier.widthIn(max = bubbleMaxWidth()),
@@ -943,49 +1015,80 @@ private fun AssistantConversations(
     currentId: String,
     enabled: Boolean,
     onSelect: (String) -> Unit,
-    onNew: () -> Unit,
 ) {
-    LazyColumn(
-        Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 14.dp),
-    ) {
-        item {
-            Surface(
-                onClick = onNew,
-                enabled = enabled,
-                shape = RoundedCornerShape(16.dp),
-                color = PompColors.CinnabarSoft,
-                contentColor = PompColors.CinnabarDark,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Icon(Icons.Default.Add, null, Modifier.size(19.dp), tint = PompColors.Cinnabar)
-                    Text(stringResource(R.string.assistant_new), style = MaterialTheme.typography.titleMedium)
-                }
+    var query by rememberSaveable { mutableStateOf("") }
+    val visibleItems = remember(items, query) {
+        val normalizedQuery = query.trim()
+        if (normalizedQuery.isEmpty()) items
+        else items.filter { it.title.contains(normalizedQuery, ignoreCase = true) }
+    }
+    Column(Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
+        Row(
+            Modifier.fillMaxWidth()
+                .padding(top = 12.dp, bottom = 8.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(PompColors.PaperRaised)
+                .padding(horizontal = 12.dp, vertical = 11.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Icon(Icons.Default.Search, null, Modifier.size(20.dp), tint = PompColors.InkSecondary)
+            Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                if (query.isEmpty()) Text(
+                    stringResource(R.string.assistant_search),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PompColors.InkDisabled,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                BasicTextField(
+                    value = query,
+                    onValueChange = { query = it },
+                    enabled = enabled,
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(color = PompColors.Ink),
+                    cursorBrush = SolidColor(PompColors.Cinnabar),
+                )
             }
         }
-        if (items.isEmpty()) item {
-            Text(stringResource(R.string.assistant_no_conversations),
-                Modifier.fillMaxWidth().padding(top = 24.dp),
-                style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary, textAlign = TextAlign.Center)
-        }
-        items(items, key = { it.id }) { conversation ->
-            val active = conversation.id == currentId
-            Surface(
-                onClick = { onSelect(conversation.id) },
-                enabled = enabled,
-                shape = RoundedCornerShape(16.dp),
-                color = PompColors.PaperRaised,
-                contentColor = PompColors.Ink,
-                border = BorderStroke(if (active) 2.dp else 1.dp, if (active) PompColors.Cinnabar else PompColors.Divider),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Icon(Icons.Default.ChatBubbleOutline, null, Modifier.size(17.dp),
-                        tint = if (active) PompColors.Cinnabar else PompColors.InkDisabled)
-                    Text(conversation.title, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge,
-                        maxLines = 1, overflow = TextOverflow.Ellipsis)
+        HorizontalDivider(color = PompColors.Divider)
+        LazyColumn(
+            Modifier.fillMaxWidth().weight(1f),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(top = 12.dp, bottom = 82.dp),
+        ) {
+            if (visibleItems.isEmpty()) item {
+                val emptyText = if (items.isEmpty() && query.isBlank()) {
+                    R.string.assistant_no_conversations
+                } else {
+                    R.string.assistant_no_search_results
+                }
+                Text(
+                    stringResource(emptyText),
+                    Modifier.fillMaxWidth().padding(top = 24.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PompColors.InkSecondary,
+                    textAlign = TextAlign.Center,
+                )
+            }
+            items(visibleItems, key = { it.id }) { conversation ->
+                val active = conversation.id == currentId
+                Surface(
+                    onClick = { onSelect(conversation.id) },
+                    enabled = enabled,
+                    shape = RoundedCornerShape(16.dp),
+                    color = PompColors.PaperRaised,
+                    contentColor = PompColors.Ink,
+                    border = BorderStroke(if (active) 2.dp else 1.dp, if (active) PompColors.Cinnabar else PompColors.Divider),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Icon(Icons.Default.ChatBubbleOutline, null, Modifier.size(17.dp),
+                            tint = if (active) PompColors.Cinnabar else PompColors.InkDisabled)
+                        Text(conversation.title, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge,
+                            maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    }
                 }
             }
         }

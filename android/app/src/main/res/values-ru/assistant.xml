@@ -3,9 +3,12 @@
     <string name="assistant_open">Открыть AI-помощника</string>
     <string name="assistant_close">Закрыть</string>
     <string name="assistant_expand">Развернуть окно</string>
+    <string name="assistant_collapse">Свернуть окно</string>
     <string name="assistant_history">Разговоры</string>
     <string name="assistant_new">Новый разговор</string>
+    <string name="assistant_search">Поиск бесед</string>
     <string name="assistant_no_conversations">Разговоров пока нет. Задайте первый вопрос.</string>
+    <string name="assistant_no_search_results">Ничего не найдено.</string>
     <string name="assistant_context">Использовать контекст экрана</string>
     <string name="assistant_general">Общий вопрос</string>
     <string name="assistant_intro">Разберёмся вместе. Что здесь непонятно?</string>
@@ -16,6 +19,7 @@
     <string name="assistant_older">Предыдущие сообщения</string>
     <string name="assistant_voice">Голосовой вопрос</string>
     <string name="assistant_photo">Выбрать фото</string>
+    <string name="assistant_photo_attached">Изображение прикреплено</string>
     <string name="assistant_hint">Напишите вопрос…</string>
     <string name="assistant_send">Отправить</string>
     <string name="assistant_sending">Отправляется…</string>

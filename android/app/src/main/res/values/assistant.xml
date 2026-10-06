@@ -3,9 +3,12 @@
     <string name="assistant_open">AI yordamchini ochish</string>
     <string name="assistant_close">Yopish</string>
     <string name="assistant_expand">Oynani kengaytirish</string>
+    <string name="assistant_collapse">Oynani kichraytirish</string>
     <string name="assistant_history">Suhbatlar</string>
     <string name="assistant_new">Yangi suhbat</string>
+    <string name="assistant_search">Suhbatlarni qidirish</string>
     <string name="assistant_no_conversations">Hozircha suhbat yo‘q. Birinchi savolingizni yozing.</string>
+    <string name="assistant_no_search_results">Mos suhbat topilmadi.</string>
     <string name="assistant_context">Ekran kontekstini ulash</string>
     <string name="assistant_general">Umumiy savol</string>
     <string name="assistant_intro">Shu joyini birga tushunamiz. Nima qiyin bo‘lyapti?</string>
@@ -16,6 +19,7 @@
     <string name="assistant_older">Oldingi xabarlar</string>
     <string name="assistant_voice">Ovozli savol</string>
     <string name="assistant_photo">Foto tanlash</string>
+    <string name="assistant_photo_attached">Rasm biriktirildi</string>
     <string name="assistant_hint">Savolingizni yozing…</string>
     <string name="assistant_send">Yuborish</string>
     <string name="assistant_sending">Yuborilmoqda…</string>
