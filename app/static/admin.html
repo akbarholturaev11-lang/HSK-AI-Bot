@@ -1856,6 +1856,61 @@
           <input type="file" accept="image/*" data-qrfile hidden></div>
         <div class="ncnote" data-qrinfo>Asosiy QR uchun ${esc(mainPrice)}, 20% chegirma QR uchun ${esc(discountPrice)} rasm yuklang.</div></div>`;
     }
+    function hsk30StatsMethod(value){
+      return ({visa:"Visa / karta",alipay:"Alipay",wechat:"WeChat",unknown:"Noma'lum"})[String(value||"")]||String(value||"—");
+    }
+    let hsk30StatsRequestId=0;
+    function renderHsk30Stats(data){
+      const host=$("hsk30Analytics"); if(!host)return;
+      const funnel=Array.isArray(data.funnel)?data.funnel:[];
+      const maxUsers=Math.max(1,...funnel.map(x=>Number(x.users||0)));
+      const funnelHtml=funnel.map(step=>{
+        const users=Number(step.users||0);
+        const width=users?Math.max(2,Math.min(100,Math.round(users/maxUsers*100))):0;
+        const rate=step.conversion_from_previous_pct==null?"—":`${Number(step.conversion_from_previous_pct).toFixed(1)}%`;
+        return `<tr><td><b>${esc(step.label)}</b><div style="height:5px;background:var(--surface-2);border-radius:99px;margin-top:6px"><i style="display:block;height:5px;width:${width}%;background:var(--accent);border-radius:99px"></i></div></td><td class="r"><b>${users}</b></td><td class="r">${rate}</td></tr>`;
+      }).join("");
+      const pay=data.payments||{};
+      const outcomeTags=[
+        tag(`Текширувда ${Number(pay.pending||0)}`,"amber"),
+        tag(`Тасдиқ ${Number(pay.approved||0)}`,"green"),
+        tag(`Рад ${Number(pay.rejected||0)}`,"red")
+      ].join("");
+      const methodRows=(data.payment_methods||[]).map(row=>`<tr><td>${esc(hsk30StatsMethod(row.method))}</td><td class="r">${Number(row.payments||0)}</td><td class="r">${Number(row.approved||0)}</td><td class="r">${Number(row.rejected||0)}</td></tr>`).join("");
+      const reasonRows=(data.rejection_reasons||[]).map(row=>`<tr><td>${esc(row.reason)}</td><td class="r"><b>${Number(row.count||0)}</b></td></tr>`).join("");
+      const failureRows=(data.checkout_failures||[]).map(row=>`<tr><td>${esc(row.reason)}</td><td class="r"><b>${Number(row.count||0)}</b></td></tr>`).join("");
+      const dropoffRows=(data.dropoffs||[]).map(row=>`<tr><td>${esc(row.label)}</td><td class="r"><b>${Number(row.users||0)}</b></td></tr>`).join("");
+      const statusLabel={not_submitted:"Тўлов юборилмаган",pending:"Текширувда",approved:"Тасдиқланган",rejected:"Рад этилган"};
+      const userRows=(data.users||[]).map(row=>{
+        const identity=[row.name,row.username?`@${row.username}`:"",`ID ${row.telegram_id}`].filter(Boolean).map(esc).join(" · ");
+        const reason=row.reason?`<br><small>${esc(row.reason)}</small>`:"";
+        return `<tr><td>${identity||"—"}</td><td>${esc(row.last_step_label||"—")}</td><td>${esc(statusLabel[row.status]||row.status||"—")}</td><td>${esc(hsk30StatsMethod(row.method))}</td><td>${esc(row.last_seen_at||"—")}${reason}</td></tr>`;
+      }).join("");
+      host.innerHTML=`
+        <div class="tags" style="margin:4px 0 12px">${tag(`Promo кўрган ${Number(funnel[0]?.users||0)}`,"blue")}${tag(`HSK 3.0 фаоллашган ${Number(data.track_activated_users||0)}`,"blue")}${tag(`Checkout ${Number(funnel.find(x=>x.key==="checkout_opened")?.users||0)}`,"blue")}${outcomeTags}${tag(`Promo кўрсатиш ${Number(data.promo_impressions||0)}`,"gold")}</div>
+        <div class="dtitle-sm">Ўтиш босқичлари <small>Одамлар · олдинги қадамдан ўтиш</small></div>
+        <div style="overflow:auto"><table class="tbl"><thead><tr><th>Қадам</th><th class="r">User</th><th class="r">Ўтиш</th></tr></thead><tbody>${funnelHtml||"<tr><td colspan='3' class='empty'>Маълумот ҳали йўқ.</td></tr>"}</tbody></table></div>
+        <div class="grid g2" style="margin-top:14px">
+          <section><div class="dtitle-sm">Checkout’да тўхтаган жой</div><table class="tbl"><tbody>${dropoffRows||"<tr><td class='empty'>Ташлаб кетган checkout йўқ.</td></tr>"}</tbody></table></section>
+          <section><div class="dtitle-sm">Тўлов усуллари</div><table class="tbl"><thead><tr><th>Усул</th><th class="r">Юборилган</th><th class="r">OK</th><th class="r">Рад</th></tr></thead><tbody>${methodRows||"<tr><td colspan='4' class='empty'>HSK 3.0 тўлови йўқ.</td></tr>"}</tbody></table></section>
+        </div>
+        <div class="grid g2" style="margin-top:14px">
+          <section><div class="dtitle-sm">Admin рад сабаблари</div><table class="tbl"><tbody>${reasonRows||"<tr><td class='empty'>Рад этилган тўлов йўқ.</td></tr>"}</tbody></table></section>
+          <section><div class="dtitle-sm">Checkout техник хатолари</div><table class="tbl"><tbody>${failureRows||"<tr><td class='empty'>Қайд этилган хато йўқ.</td></tr>"}</tbody></table></section>
+        </div>
+        <div class="dtitle-sm" style="margin-top:16px">Охирги user’лар ва улар тўхтаган қадам <small>${(data.users||[]).length} тагача</small></div>
+        <div style="overflow:auto"><table class="tbl"><thead><tr><th>User</th><th>Охирги қадам</th><th>Ҳолат</th><th>Усул</th><th>Вақт / сабаб</th></tr></thead><tbody>${userRows||"<tr><td colspan='5' class='empty'>Ҳозирча кузатилган user йўқ.</td></tr>"}</tbody></table></div>
+        <div class="ncnote" style="margin-top:12px">${esc(data.coverage_note||"")}</div>`;
+    }
+    function loadHsk30Stats(days){
+      const host=$("hsk30Analytics"); if(!host)return;
+      const requestId=++hsk30StatsRequestId;
+      document.querySelectorAll("[data-hsk30-period]").forEach(button=>button.classList.toggle("active",Number(button.dataset.hsk30Period)===Number(days)));
+      host.innerHTML="<p class='empty'>Статистика юкланмоқда…</p>";
+      return apiPost("/api/admin-miniapp/hsk30/stats",{days:Number(days)||0})
+        .then(data=>{if(requestId===hsk30StatsRequestId&&host.isConnected)renderHsk30Stats(data)})
+        .catch(()=>{if(requestId===hsk30StatsRequestId&&host.isConnected)host.innerHTML="<p class='empty'>Статистика юкланмади. Қайта уриниб кўринг.</p>";});
+    }
     function renderHsk30(d){
       const h=d.hsk30||{};
       const paymentOn=h.unlock_payment_enabled!==false;
@@ -1876,6 +1931,14 @@
             ${tag("Promo user "+Number(stats.promo_users||0),"gold")}
             ${tag("Promo кўрсатиш "+Number(stats.promo_impressions||0),"gold")}
           </div>
+        </div>
+        <div class="mcard">
+          <h3>HSK 3.0 га ўтиш ва тўлов статистикаси</h3>
+          <p>Қайси қадамда user чиқиб кетгани, тўлов усули, натижа ва қайд этилган хатолар.</p>
+          <div class="periods" style="margin-top:10px;margin-bottom:8px">
+            ${[[7,"7 кун"],[30,"30 кун"],[90,"90 кун"],[0,"Ҳаммаси"]].map(([days,label])=>`<button type="button" class="period${days===30?" active":""}" data-hsk30-period="${days}">${label}</button>`).join("")}
+          </div>
+          <div id="hsk30Analytics"><p class="empty">Статистика юкланмоқда…</p></div>
         </div>
         <div class="mcard">
           <h3>HSK 3.0 курс</h3>
@@ -1919,6 +1982,7 @@
         </div>
       </div>`);
       bindPriceQr();
+      loadHsk30Stats(30);
     }
 
     function renderPrices(d){
@@ -2575,6 +2639,7 @@
       }
       if((el=T("[data-uaccess]"))){ el.disabled=true; return grantAccess(el.dataset.uaccess,$("qaDays").value,{name:el.dataset.uname,currentEnd:el.dataset.currentEnd,refreshUser:true}).catch(x=>toast(apiErr(x,"Obuna berilmadi"))).finally(()=>{if(el.isConnected)el.disabled=false;}); }
       if((el=T("[data-user]"))) return openUser(el.dataset.user);
+      if((el=T("[data-hsk30-period]"))) return loadHsk30Stats(Number(el.dataset.hsk30Period));
       if((el=T("[data-hsk30save]"))){
         const price=Number(($("hsk30Price")&&$("hsk30Price").value)||0);
         if(!Number.isSafeInteger(price)||price<1||price>10000){ toast("HSK 3.0 нархи 1–10000 TJS оралиғида бутун сон бўлиши керак"); return; }

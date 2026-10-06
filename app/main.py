@@ -166,6 +166,7 @@ from app.services.hsk30_unlock_service import (
     Hsk30UnlockService,
 )
 from app.services.hsk30_feature_service import Hsk30FeatureService
+from app.services.admin_hsk30_analytics_service import AdminHsk30AnalyticsService
 from app.services.portfolio_service import PortfolioService
 from app.services.required_channel_service import RequiredChannelService
 from app.services.subscription_service import (
@@ -287,6 +288,40 @@ def _checkout_attempt_id(value) -> str | None:
 
 def _checkout_text(value, limit: int) -> str:
     return str(value or "").strip()[:limit]
+
+
+async def _record_hsk30_checkout_failure(
+    *,
+    telegram_id: int,
+    plan_type: str,
+    payment_method: str,
+    stage: str,
+    error: str,
+) -> None:
+    if str(plan_type or "") != HSK30_UNLOCK_PLAN_TYPE:
+        return
+    try:
+        async with async_session_maker() as analytics_session:
+            user = await UserRepository(analytics_session).get_by_telegram_id(
+                int(telegram_id)
+            )
+            recorded = await CourseMiniAppAnalyticsService(
+                analytics_session
+            ).record_server_event(
+                event_name="hsk30_checkout_failed",
+                user=user,
+                telegram_id=int(telegram_id),
+                source="subscription_miniapp",
+                payload={
+                    "stage": _checkout_text(stage, 24),
+                    "error": _checkout_text(error, 80),
+                    "payment_method": _checkout_text(payment_method, 16),
+                },
+            )
+            if recorded.get("recorded"):
+                await analytics_session.commit()
+    except Exception:
+        logger.exception("Failed to record HSK 3.0 checkout failure")
 
 
 async def _support_url_for_error() -> str:
@@ -4090,6 +4125,30 @@ async def admin_miniapp_hsk30_settings(request: Request):
     )
 
 
+@app.post("/api/admin-miniapp/hsk30/stats")
+async def admin_miniapp_hsk30_stats(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+        days = int(payload.get("days", 30)) if isinstance(payload, dict) else 30
+    except (TypeError, ValueError):
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_hsk30_stats_period"},
+        )
+    if days not in {0, 7, 30, 90}:
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_hsk30_stats_period"},
+        )
+    async with async_session_maker() as session:
+        snapshot = await AdminHsk30AnalyticsService(session).snapshot(days=days)
+    return JSONResponse(content=snapshot, headers={"Cache-Control": "no-store"})
+
+
 @app.post("/api/admin-miniapp/payment-details/save")
 async def admin_miniapp_payment_details_save(request: Request):
     telegram_id = _admin_miniapp_user_id(request)
@@ -5493,6 +5552,17 @@ async def subscription_miniapp_overview(request: Request):
                         "feedback_id": _positive_int(payload.get("feedback_id")),
                     },
                 )
+        elif (
+            str(payload.get("mode") or "") == HSK30_UNLOCK_PLAN_TYPE
+            or str(payload.get("plan") or "") == HSK30_UNLOCK_PLAN_TYPE
+        ):
+            await _record_hsk30_checkout_failure(
+                telegram_id=telegram_id,
+                plan_type=HSK30_UNLOCK_PLAN_TYPE,
+                payment_method=str(payload.get("method") or ""),
+                stage="overview",
+                error=str(result.get("error") or "checkout_unavailable"),
+            )
         return result
 
 
@@ -5560,7 +5630,7 @@ async def subscription_miniapp_quote(request: Request):
 
     payload = await request.json()
     async with async_session_maker() as session:
-        return await SubscriptionMiniAppService(session).quote(
+        result = await SubscriptionMiniAppService(session).quote(
             telegram_id=telegram_id,
             plan_type=str(payload.get("plan_type") or ""),
             payment_method=str(payload.get("payment_method") or ""),
@@ -5571,6 +5641,15 @@ async def subscription_miniapp_quote(request: Request):
             campaign_id=_positive_int(payload.get("campaign_id")),
             feedback_id=_positive_int(payload.get("feedback_id")),
         )
+    if not result.get("ok"):
+        await _record_hsk30_checkout_failure(
+            telegram_id=telegram_id,
+            plan_type=str(payload.get("plan_type") or ""),
+            payment_method=str(payload.get("payment_method") or ""),
+            stage="quote",
+            error=str(result.get("error") or "quote_failed"),
+        )
+    return result
 
 
 @app.post("/api/subscription-miniapp/event")
@@ -5687,6 +5766,13 @@ async def subscription_miniapp_submit(request: Request):
             )
             with contextlib.suppress(Exception):
                 await session.rollback()
+            await _record_hsk30_checkout_failure(
+                telegram_id=telegram_id,
+                plan_type=str(payload.get("plan_type") or ""),
+                payment_method=str(payload.get("payment_method") or ""),
+                stage="submit",
+                error="payment_submit_failed",
+            )
             return JSONResponse(
                 status_code=500,
                 content={
@@ -5696,12 +5782,25 @@ async def subscription_miniapp_submit(request: Request):
                 },
             )
         if not result.get("ok"):
+            failure_code = str(result.get("error") or "payment_submit_failed")
+            if (
+                failure_code == "invalid_screenshot"
+                and str(result.get("reason") or "") in {"format", "too_big"}
+            ):
+                failure_code = f"invalid_screenshot_{result['reason']}"
             logger.warning(
                 "subscription_miniapp_submit rejected telegram_id=%s plan=%s method=%s reason=%s",
                 telegram_id,
                 _checkout_text(payload.get("plan_type"), 32),
                 _checkout_text(payload.get("payment_method"), 32),
                 result.get("error"),
+            )
+            await _record_hsk30_checkout_failure(
+                telegram_id=telegram_id,
+                plan_type=str(payload.get("plan_type") or ""),
+                payment_method=str(payload.get("payment_method") or ""),
+                stage="submit",
+                error=failure_code,
             )
             result.setdefault("support_url", await _support_url_for_error())
         if result.get("ok") and result.get("payment_id") and not result.get("already_pending"):

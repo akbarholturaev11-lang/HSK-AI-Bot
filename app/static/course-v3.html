@@ -1331,6 +1331,10 @@ function hsk30BookPrice(status){
 function hsk30BookPrimary(label,action){
   return '<button class="hsk30-promo-action" onclick="'+esc(action)+'"><span>'+esc(label)+'</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>';
 }
+function dismissHsk30Promo(){
+  trackCourseEvent("hsk30_promo_dismissed",{dedupe_key:"hsk30-promo-dismissed:"+COURSE_SESSION_ID},{keepalive:true});
+  App.closeSheet();
+}
 function openHsk30BookSheet(html,title){
   App.openSheet(html);
   var sheet=$("#sheet");
@@ -1404,15 +1408,24 @@ function switchCourseTrack(target,requestedLevel){
 }
 var HSK30_PROMO_CHECKED=false,HSK30_PROMO_PENDING=false,HSK30_PROMO_READY=null,HSK30_PROMO_INFLIGHT=null;
 function openHsk30PromoLevelPicker(recommended){
+  trackCourseEvent("hsk30_promo_cta_clicked",{dedupe_key:"hsk30-promo-cta:"+COURSE_SESSION_ID},{keepalive:true});
   var t=trackUi(),levels=hsk30LiveLevels();
   if(!levels.length){showHsk30LevelSoon("nhsk1");return}
   recommended=normalizeLevel(recommended||levels[0]);
   if(levels.indexOf(recommended)<0)recommended=levels[0];
   var rows=levels.map(function(lv){
     var rec=lv===recommended?'<small>'+esc(t.promoRecommended)+'</small>':"";
-    return '<button class="opt-row'+(lv===recommended?" on":"")+'" onclick="switchCourseTrack(\'hsk30\',\''+esc(lv)+'\')"><span class="han" style="font-size:14px;width:52px">HSK '+levelBand(lv)+'</span><span style="flex:1"><b>'+esc(courseLevelLabel(lv))+'</b>'+rec+'</span></button>';
+    return '<button class="opt-row'+(lv===recommended?" on":"")+'" onclick="selectHsk30PromoLevel(\''+esc(lv)+'\')"><span class="han" style="font-size:14px;width:52px">HSK '+levelBand(lv)+'</span><span style="flex:1"><b>'+esc(courseLevelLabel(lv))+'</b>'+rec+'</span></button>';
   }).join("");
-  openHsk30BookSheet(hsk30BookHeader(COURSE_TRACK_STATE)+'<h2 class="hsk30-promo-title">'+esc(t.hsk30Title)+'</h2>'+rows+'<button class="hsk30-promo-stay" onclick="App.closeSheet()">'+esc(t.cancel)+'</button>',t.hsk30Title);
+  openHsk30BookSheet(hsk30BookHeader(COURSE_TRACK_STATE)+'<h2 class="hsk30-promo-title">'+esc(t.hsk30Title)+'</h2>'+rows+'<button class="hsk30-promo-stay" onclick="dismissHsk30Promo()">'+esc(t.cancel)+'</button>',t.hsk30Title);
+}
+function selectHsk30PromoLevel(level){
+  var normalized=normalizeLevel(level);
+  trackCourseEvent("hsk30_level_selected",{
+    selected_level:normalized,
+    dedupe_key:"hsk30-level-selected:"+COURSE_SESSION_ID+":"+normalized
+  },{keepalive:true});
+  switchCourseTrack("hsk30",normalized);
 }
 function renderHsk30Promo(status,promo){
   var t=trackUi(),access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
@@ -1421,7 +1434,7 @@ function renderHsk30Promo(status,promo){
   var recommended=(promo&&promo.recommended_level)||"nhsk1";
   var c=hsk30BookCopy(),body=hasAccess?t.promoBodyUnlocked:c.body;
   var actions=hsk30BookPrimary(t.promoOpen,"openHsk30PromoLevelPicker('"+recommended+"')");
-  actions+='<button class="hsk30-promo-stay" onclick="App.closeSheet()">'+esc(t.promoStay)+'</button>';
+  actions+='<button class="hsk30-promo-stay" onclick="dismissHsk30Promo()">'+esc(t.promoStay)+'</button>';
   openHsk30BookSheet(hsk30BookHeader(status)
     +'<h2 class="hsk30-promo-title">'+esc(hasAccess?t.promoOpen:c.title)+'</h2><p class="hsk30-promo-copy">'+esc(body)+'</p>'
     +hsk30BookPrice(status)+'<div class="hsk30-promo-actions">'+actions+'</div>',hasAccess?t.promoOpen:c.title);

@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field, StringConstraints, Validation
 
 from app.repositories.user_repo import UserRepository
 from app.services.course_track_service import CourseTrackError, CourseTrackService
+from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
 from app.services.hsk30_unlock_service import Hsk30UnlockService
 from app.services.hsk30_promo_service import Hsk30PromoService
@@ -139,11 +140,34 @@ def create_course_tracks_router(*, session_factory, settings_obj) -> APIRouter:
                 user = await UserRepository(session).get_by_telegram_id(telegram_id)
                 if not user:
                     raise CourseTrackRequestError("access_start_first", status_code=403)
+                before_track = CourseTrackService.track_for_level(
+                    getattr(user, "level", None)
+                )
+                before_level = str(getattr(user, "level", "") or "")
                 result = await CourseTrackService(session).switch(
                     user,
                     target_track=body.target_track,
                     requested_level=body.level,
                 )
+                after_level = str(getattr(user, "level", "") or "")
+                after_track = CourseTrackService.track_for_level(after_level)
+                if (
+                    after_track == "hsk30"
+                    and (before_track != after_track or before_level != after_level)
+                ):
+                    await CourseMiniAppAnalyticsService(session).record_server_event(
+                        event_name="course_track_switched",
+                        user=user,
+                        telegram_id=int(user.telegram_id),
+                        source="course_track_miniapp",
+                        level=after_level,
+                        payload={
+                            "from_track": before_track,
+                            "to_track": after_track,
+                            "from_level": before_level,
+                            "to_level": after_level,
+                        },
+                    )
                 await session.commit()
                 result = {
                     "ok": True,
@@ -170,6 +194,15 @@ def create_course_tracks_router(*, session_factory, settings_obj) -> APIRouter:
                 if not user:
                     raise CourseTrackRequestError("access_start_first", status_code=403)
                 promo = await Hsk30PromoService(session).mark_shown(user)
+                if promo.get("recorded"):
+                    await CourseMiniAppAnalyticsService(session).record_server_event(
+                        event_name="hsk30_promo_shown",
+                        user=user,
+                        telegram_id=int(user.telegram_id),
+                        source="course_track_miniapp",
+                        level=str(getattr(user, "level", "") or ""),
+                        payload={"shown_count": int(promo.get("shown_count") or 0)},
+                    )
                 await session.commit()
             return JSONResponse(
                 content={"ok": True, "hsk30_promo": promo},
