@@ -202,17 +202,30 @@ html.theme-light .hero-copy{display:block;}
 html.theme-light .hero{padding-bottom:10px;}
 html.theme-light .row .lv{background:var(--hsk-gold-soft);}
 /* ---- dars ichidan ochiladigan yozilish ekrani (?fast=1) ---- */
-.fw-card{max-width:340px}
-.fw-box{width:min(330px,86vw);height:min(330px,86vw);touch-action:pan-y}
-.fw-info{margin-top:18px;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:14px 16px;text-align:center}
-.fw-py{font-size:23px;font-weight:700;color:var(--accent);line-height:1.25}
-.fw-mn{margin-top:9px;padding-top:10px;border-top:1px solid var(--border);font-size:14.5px;color:var(--text);line-height:1.5}
-.fw-info.no-py .fw-py{display:none}
-.fw-info.no-mn .fw-mn{display:none}
-.fw-info.no-py .fw-mn{margin-top:0;padding-top:0;border-top:none}
-.fw-hint{margin-top:12px;font-size:11.5px;color:var(--text2);text-align:center;line-height:1.4}
-.fw-back{margin-top:14px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-family:inherit;font-size:15px;font-weight:700}
-.fw-back:active{opacity:.88}
+html.fast-writer-sheet,html.fast-writer-sheet body,html.fast-writer-sheet #app{background:transparent!important}
+html.fast-writer-sheet body{overflow:hidden}
+html.fast-writer-sheet #app{max-width:none;overflow:hidden}
+.fw-overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-end;justify-content:center;background:rgba(29,25,20,.44)}
+.fw-backdrop{position:absolute;inset:0;width:100%;height:100%;background:transparent}
+.fw-sheet{position:relative;z-index:1;width:100%;max-width:560px;max-height:100dvh;overflow-y:auto;overscroll-behavior:contain;padding:8px 20px calc(20px + var(--safe-bottom));border:1px solid rgba(181,146,98,.2);border-bottom:0;border-radius:28px 28px 0 0;background:var(--hsk-paper);box-shadow:0 -12px 32px rgba(33,29,23,.16);transform:translateY(100%);transition:transform .24s cubic-bezier(.2,.75,.25,1)}
+.fw-sheet.visible{transform:translateY(0)}
+.fw-handle{width:42px;height:5px;margin:0 auto 18px;border-radius:999px;background:var(--hsk-ink-secondary);opacity:.78}
+.fw-toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:8px;min-height:54px}
+.fw-character{min-width:0;font-family:var(--cjk);font-size:clamp(40px,10vw,52px);font-weight:700;line-height:1.1;color:var(--hsk-ink)}
+.fw-count{font-size:16px;font-weight:600;color:var(--hsk-ink-secondary);white-space:nowrap}
+.fw-close{justify-self:end;width:44px;height:44px;border-radius:50%;font-size:29px;line-height:1;color:var(--hsk-ink-secondary);display:flex;align-items:center;justify-content:center}
+.fw-box{width:min(560px,calc(100vw - 40px));height:auto;aspect-ratio:1;margin-top:12px;border-radius:22px;background:var(--hsk-paper-raised);border:1px solid rgba(181,146,98,.28);touch-action:pan-y}
+.fw-box .grid-bg line{stroke:rgba(181,146,98,.2);stroke-width:1}
+.fw-box .plain-char{font-family:var(--cjk);font-size:clamp(112px,34vw,170px);font-weight:600;color:var(--hsk-ink)}
+.fw-controls{gap:20px;margin-top:18px;margin-bottom:0}
+.fw-control,.fw-control.ctrl-main{width:68px;height:68px;flex-shrink:0;border:0;border-radius:50%;background:var(--hsk-cinnabar-soft);color:var(--hsk-cinnabar-ink);font-size:29px;line-height:1}
+.fw-control svg{display:block;width:25px;height:25px}
+.fw-control .fw-chevron{fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.fw-control .fw-play,.fw-control .fw-pause{fill:currentColor}
+.fw-control:disabled{background:var(--hsk-paper-raised);color:var(--hsk-ink-secondary);opacity:.68}
+.fw-control:active{transform:scale(.95)}
+.fw-status{min-height:0;margin-top:0;text-align:center;color:var(--hsk-ink-secondary);font-size:12px;line-height:1.4}
+@media (max-height:700px){.fw-sheet{padding-top:6px}.fw-handle{margin-bottom:10px}.fw-toolbar{min-height:48px}.fw-character{font-size:38px}.fw-box{width:min(460px,calc(100vw - 40px));margin-top:8px}.fw-controls{margin-top:10px}.fw-control,.fw-control.ctrl-main{width:56px;height:56px}}
 .detail-secondary{display:contents}
 @media (min-width:760px){
   #app{max-width:1120px;height:100dvh;border-inline:1px solid var(--border);box-shadow:0 0 48px rgba(0,0,0,.16)}
@@ -362,6 +375,10 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
 (function(){
   var params = new URLSearchParams(location.search || '');
   window.HSK_FAST_WRITER = params.get('fast') === '1';
+  if(window.HSK_FAST_WRITER){
+    document.documentElement.classList.add('fast-writer-sheet');
+    if(params.get('theme') === 'light') document.documentElement.setAttribute('data-hsk-theme','light');
+  }
   if(!window.HSK_FAST_WRITER){
     document.write('<script src="hsk-words.js?v=20260720"><\/script>');
     document.write('<script src="/course_v3_data/hsk30-words.js?v=20260930"><\/script>');
@@ -535,15 +552,13 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     var isFastLight = fastParams.get('theme') === 'light';
     if(isFastLight) document.documentElement.classList.add('theme-light');
     var labels = {
-      uz:{close:'Yopish',play:'Ko\'rsatish',replay:'Qayta',dict:'Lug\'atda ochish',strokes:function(n){return n + ' chiziq';},fallback:'Yozilish animatsiyasi yuklanmadi',back:'Darsga qaytish',swipe:'Keyingi ieroglif uchun yon tomonga suring'},
-      ru:{close:'Закрыть',play:'Показать',replay:'Повторить',dict:'Открыть в словаре',strokes:function(n){return n + ' черт';},fallback:'Анимация написания не загрузилась',back:'Вернуться к уроку',swipe:'Проведите в сторону — следующий иероглиф'},
-      tj:{close:'Пӯшидан',play:'Нишон додан',replay:'Такрор',dict:'Дар луғат кушодан',strokes:function(n){return n + ' хат';},fallback:'Аниматсияи навишт бор нашуд',back:'Бозгашт ба дарс',swipe:'Барои иероглифи навбатӣ ба паҳлӯ кашед'}
+      uz:{close:'Yopish',play:'Yozilishini ko‘rsatish',pause:'Pauza',previous:'Oldingi chiziq',next:'Keyingi chiziq',strokes:function(n){return n + ' ta chiziq';},loading:'Yozilish tartibi yuklanmoqda…',fallback:'Yozilish tartibi yuklanmadi'},
+      ru:{close:'Закрыть',play:'Показать написание',pause:'Пауза',previous:'Предыдущая черта',next:'Следующая черта',strokes:function(n){return n + ' черт';},loading:'Загружается порядок черт…',fallback:'Порядок черт не загрузился'},
+      tj:{close:'Пӯшидан',play:'Тартиби навиштро нишон додан',pause:'Таваққуф',previous:'Хати пешина',next:'Хати навбатӣ',strokes:function(n){return n + ' хат';},loading:'Тартиби навиш бор шуда истодааст…',fallback:'Тартиби навиш бор нашуд'}
     }[lang] || {};
     var raw = fastParams.get('char') || '字';
     var chars = Array.from(raw).filter(function(c){return c.trim();});
     if(!chars.length) chars = ['字'];
-    var pinyin = fastParams.get('pinyin') || '';
-    var meaning = fastParams.get('meaning') || '';
     var app = document.getElementById('app');
     function e(s){return String(s || '').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
     function closeFast(){
@@ -559,128 +574,180 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       '</svg><div class="writer-target" id="fast-target"></div>';
     }
     app.innerHTML =
-      '<div class="view" style="display:flex">'+
-        '<div class="detail-header"><button class="back-btn" id="fast-close">×</button><div class="detail-level">HSK AI</div></div>'+
-        '<div class="detail-body">'+
-          '<div class="writer-card fw-card">'+
-            '<div class="writer-toolbar">'+
-              '<button class="nav-arrow" id="fast-prev">‹</button>'+
-              '<div class="writer-info"><div class="writer-pos" id="fast-pos"></div><div class="writer-strokes" id="fast-strokes"></div></div>'+
-              '<button class="nav-arrow" id="fast-next">›</button>'+
-            '</div>'+
-            '<div class="char-box-lg fw-box" id="fast-box"></div>'+
-            '<div class="writer-controls">'+
-              '<button class="ctrl-btn ctrl-main" id="fast-play">⏸</button>'+
-              '<button class="ctrl-btn" id="fast-replay">↻</button>'+
-            '</div>'+
-            (chars.length > 1 ? '<div class="fw-hint">'+e(labels.swipe)+'</div>' : '')+
-            '<div class="fw-info" id="fast-info">'+
-              '<div class="fw-py" id="fast-pinyin"></div>'+
-              '<div class="fw-mn" id="fast-meaning"></div>'+
-            '</div>'+
-            '<button class="next-word-btn" id="fast-dict" style="margin-top:14px"><span>字</span><b>'+e(labels.dict)+'</b></button>'+
-            '<button class="fw-back" id="fast-back">'+e(labels.back)+'</button>'+
+      '<div class="fw-overlay" id="fast-overlay">'+
+        '<button class="fw-backdrop" id="fast-backdrop" type="button" aria-label="'+e(labels.close)+'"></button>'+
+        '<section class="fw-sheet" id="fast-sheet" role="dialog" aria-modal="true" aria-labelledby="fast-character">'+
+          '<div class="fw-handle" aria-hidden="true"></div>'+
+          '<div class="fw-toolbar">'+
+            '<div class="fw-character" id="fast-character"></div>'+
+            '<div class="fw-count" id="fast-strokes" aria-live="polite"></div>'+
+            '<button class="fw-close" id="fast-close" type="button" aria-label="'+e(labels.close)+'">×</button>'+
           '</div>'+
-        '</div>'+
+          '<div class="char-box-lg fw-box" id="fast-box"></div>'+
+          '<div class="writer-controls fw-controls">'+
+            '<button class="ctrl-btn fw-control" id="fast-prev" type="button" aria-label="'+e(labels.previous)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="fw-chevron" d="m15 18-6-6 6-6"/></svg></button>'+
+            '<button class="ctrl-btn ctrl-main fw-control" id="fast-play" type="button" aria-label="'+e(labels.play)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="fw-play" d="M8 5v14l11-7z"/></svg></button>'+
+            '<button class="ctrl-btn fw-control" id="fast-next" type="button" aria-label="'+e(labels.next)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="fw-chevron" d="m9 18 6-6-6-6"/></svg></button>'+
+          '</div>'+
+          '<div class="fw-status" id="fast-status" role="status" aria-live="polite"></div>'+
+        '</section>'+
       '</div>';
-    var idx = 0, writer = null, paused = false;
+    var idx = 0, writer = null, isPlaying = false, isPaused = false;
+    var isReady = false, isRestoring = false, totalStrokes = 0, currentStrokeShown = 0, renderToken = 0;
     var box = document.getElementById('fast-box');
-    var pos = document.getElementById('fast-pos');
     var strokes = document.getElementById('fast-strokes');
+    var status = document.getElementById('fast-status');
+    var character = document.getElementById('fast-character');
     var prev = document.getElementById('fast-prev');
     var next = document.getElementById('fast-next');
     var play = document.getElementById('fast-play');
-    var replay = document.getElementById('fast-replay');
+    var sheet = document.getElementById('fast-sheet');
     document.getElementById('fast-close').onclick = closeFast;
-    document.getElementById('fast-back').onclick = closeFast;
-    document.getElementById('fast-dict').onclick = function(){
-      location.href = '/hsk-lugat.html?theme=light&char=' + encodeURIComponent(raw) + '&lang=' + encodeURIComponent(lang);
-    };
-    function drawPlain(ch){box.innerHTML = '<div class="plain-char">'+e(ch)+'</div>';strokes.textContent = labels.fallback;}
-    function setPlayIcon(){play.textContent = paused ? '▶' : '⏸';}
-    function render(){
-      var ch = chars[idx];
-      writer = null;
-      paused = false;
-      setPlayIcon();
-      pos.textContent = chars.length > 1 ? (idx + 1) + ' / ' + chars.length : '';
-      pos.classList.toggle('hidden', chars.length <= 1);
-      prev.disabled = idx === 0;
-      next.disabled = idx === chars.length - 1;
-      var info = document.getElementById('fast-info');
-      document.getElementById('fast-pinyin').textContent = pinyin;
-      document.getElementById('fast-meaning').textContent = meaning;
-      info.classList.toggle('no-py', !pinyin);
-      info.classList.toggle('no-mn', !meaning);
-      info.style.display = (pinyin || meaning) ? '' : 'none';
+    document.getElementById('fast-backdrop').onclick = closeFast;
+    document.addEventListener('keydown', function(ev){if(ev.key === 'Escape') closeFast()});
+
+    function updateControls(){
+      prev.disabled = !isReady || isPlaying || isRestoring || currentStrokeShown <= 0;
+      next.disabled = !isReady || isPlaying || isRestoring || currentStrokeShown >= totalStrokes;
+      play.disabled = !isReady || isRestoring;
+      play.innerHTML = isPlaying ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="fw-pause" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="fw-play" d="M8 5v14l11-7z"/></svg>';
+      play.setAttribute('aria-label', isPlaying ? labels.pause : labels.play);
+    }
+    function drawPlain(ch){
+      writer = null; isReady = false; isPlaying = false; isPaused = false; isRestoring = false;
+      box.innerHTML = '<div class="plain-char">'+e(ch)+'</div>';
       strokes.textContent = '';
-      box.innerHTML = grid();
-      var size = Math.max(200, box.clientWidth || 300);
+      status.textContent = labels.fallback;
+      updateControls();
+    }
+    function replayPrefix(target, token, finish){
+      if(token !== renderToken || !writer) return;
+      if(target <= 0){
+        currentStrokeShown=0;isRestoring=false;isPlaying=false;updateControls();
+        if(finish) finish();
+        return;
+      }
+      var originalSpeed = writer._options.strokeAnimationSpeed;
+      writer._options.strokeAnimationSpeed = 60;
+      var index = 0;
+      function showNext(){
+        if(token !== renderToken || !writer) return;
+        if(index >= target){
+          writer._options.strokeAnimationSpeed = originalSpeed;
+          currentStrokeShown=target;isRestoring=false;isPlaying=false;isPaused=false;
+          updateControls();if(finish) finish();return;
+        }
+        writer.animateStroke(index,{onComplete:function(){index++;showNext()}});
+      }
+      showNext();
+    }
+    function stepBack(){
+      if(!writer || !isReady || currentStrokeShown <= 0 || isPlaying || isRestoring) return;
+      var target=currentStrokeShown-1,token=renderToken;
+      writer.hideCharacter({duration:0});
+      currentStrokeShown=0;isRestoring=true;updateControls();
+      replayPrefix(target,token);
+    }
+    function stepForward(){
+      if(!writer || !isReady || currentStrokeShown >= totalStrokes || isPlaying || isRestoring) return;
+      var token=renderToken,index=currentStrokeShown;
+      writer.hideCharacter({duration:0});
+      if(index>0){
+        isRestoring=true;updateControls();
+        replayPrefix(index,token,function(){animateNext()});
+      }else animateNext();
+      function animateNext(){
+        if(token!==renderToken || !writer) return;
+        isPlaying=true;isPaused=false;updateControls();
+        writer.animateStroke(index,{onComplete:function(){
+          if(token!==renderToken)return;
+          currentStrokeShown=Math.min(totalStrokes,index+1);isPlaying=false;updateControls();
+        }});
+      }
+    }
+    function playCurrent(){
+      if(!writer || !isReady || isRestoring) return;
+      if(isPlaying){writer.pauseAnimation();isPlaying=false;isPaused=true;updateControls();return;}
+      if(isPaused){writer.resumeAnimation();isPlaying=true;isPaused=false;updateControls();return;}
+      var token=renderToken;
+      writer.hideCharacter({duration:0});
+      currentStrokeShown=0;isPlaying=true;isPaused=false;updateControls();
+      writer.animateCharacter({onComplete:function(){
+        if(token!==renderToken)return;
+        currentStrokeShown=totalStrokes;isPlaying=false;isPaused=false;updateControls();
+      }});
+    }
+    function render(){
+      var ch=chars[idx],token=++renderToken;
+      if(writer && (isPlaying || isRestoring)){try{writer.pauseAnimation()}catch(err){}}
+      writer=null;isReady=false;isPlaying=false;isPaused=false;isRestoring=false;
+      totalStrokes=0;currentStrokeShown=0;
+      character.textContent=ch;
+      character.setAttribute('aria-label',chars.length>1?(idx+1)+' / '+chars.length:ch);
+      strokes.textContent='';
+      status.textContent=labels.loading;
+      box.innerHTML=grid();
+      var size=Math.max(200,box.clientWidth || 300);
+      updateControls();
       try{
-        writer = HanziWriter.create(document.getElementById('fast-target'), ch, {
-          width:size,height:size,padding:14,showOutline:true,showCharacter:false,
+        writer=HanziWriter.create(document.getElementById('fast-target'),ch,{
+          width:size,height:size,padding:14,showOutline:true,showCharacter:true,
           outlineColor:isFastLight?'rgba(33,29,23,.14)':'rgba(255,255,255,.16)',
-          /* Ekran ochilishi bilan yozilish tartibi o'zi aylanib turadi:
-             sekinroq chiziqlar, chiziqlar orasida pauza yo'q. */
-          strokeColor:'#d6453a',strokeAnimationSpeed:0.65,delayBetweenStrokes:40,delayBetweenLoops:900,
+          strokeColor:isFastLight?'#211D17':'#FFFFFF',strokeAnimationSpeed:0.65,delayBetweenStrokes:90,
           charDataLoader:function(c,onComplete,onError){
-            var xhr = new XMLHttpRequest();
+            var xhr=new XMLHttpRequest();
             xhr.overrideMimeType && xhr.overrideMimeType('application/json');
             xhr.open('GET','https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0.1/'+encodeURIComponent(c)+'.json',true);
-            xhr.timeout = 2500;
-            xhr.onreadystatechange = function(){
-              if(xhr.readyState !== 4) return;
-              if(xhr.status === 200) onComplete(JSON.parse(xhr.responseText));
-              else if(onError) onError(xhr);
+            xhr.timeout=4000;
+            xhr.onreadystatechange=function(){
+              if(xhr.readyState!==4)return;
+              if(xhr.status===200){
+                try{onComplete(JSON.parse(xhr.responseText))}
+                catch(err){if(onError)onError(err)}
+              }else if(onError)onError(xhr);
             };
-            xhr.onerror = xhr.ontimeout = function(){ if(onError) onError(xhr); };
+            xhr.onerror=xhr.ontimeout=function(){if(onError)onError(xhr)};
             xhr.send(null);
           },
-          onLoadCharDataError:function(){drawPlain(ch)}
+          onLoadCharDataError:function(){if(token===renderToken)drawPlain(ch)}
         });
         writer.getCharacterData().then(function(data){
-          if(chars[idx] !== ch) return;
-          strokes.textContent = labels.strokes((data.strokes || []).length);
-          try{writer.loopCharacterAnimation()}catch(err){}
-        }).catch(function(){drawPlain(ch)});
+          if(token!==renderToken || chars[idx]!==ch)return;
+          totalStrokes=data && Array.isArray(data.strokes)?data.strokes.length:0;
+          if(!totalStrokes){drawPlain(ch);return;}
+          isReady=true;currentStrokeShown=totalStrokes;
+          strokes.textContent=labels.strokes(totalStrokes);
+          status.textContent='';
+          updateControls();
+        }).catch(function(){if(token===renderToken)drawPlain(ch)});
       }catch(err){drawPlain(ch)}
     }
     function go(step){
-      var n = idx + step;
-      if(n < 0 || n > chars.length - 1) return;
-      idx = n; render();
+      var n=idx+step;
+      if(n<0 || n>=chars.length)return;
+      if(writer && (isPlaying || isRestoring)){try{writer.pauseAnimation()}catch(err){}}
+      idx=n;render();
     }
-    prev.onclick = function(){go(-1)};
-    next.onclick = function(){go(1)};
-    play.onclick = function(){
-      if(!writer) return;
-      paused = !paused;
-      try{paused ? writer.pauseAnimation() : writer.resumeAnimation()}catch(err){}
-      setPlayIcon();
-    };
-    replay.onclick = function(){render()};
-    /* Keyingi/oldingi ieroglifga qo'l bilan yon tomonga surib ham o'tish */
+    prev.onclick=stepBack;
+    next.onclick=stepForward;
+    play.onclick=playCurrent;
+    /* Multi-character targets move by horizontal swipe; buttons control stroke order. */
     (function(){
-      var x0 = null, y0 = null;
-      box.addEventListener('touchstart', function(ev){
-        var t = ev.touches && ev.touches[0]; if(!t) return;
-        x0 = t.clientX; y0 = t.clientY;
-      }, {passive:true});
-      box.addEventListener('touchend', function(ev){
-        if(x0 === null) return;
-        var t = ev.changedTouches && ev.changedTouches[0];
-        if(t){
-          var dx = t.clientX - x0, dy = t.clientY - y0;
-          if(Math.abs(dx) > 44 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1);
-        }
-        x0 = y0 = null;
-      }, {passive:true});
+      var start=null;
+      box.addEventListener('pointerdown',function(ev){start={x:ev.clientX,y:ev.clientY}});
+      box.addEventListener('pointerup',function(ev){
+        if(!start)return;
+        var dx=ev.clientX-start.x,dy=ev.clientY-start.y;start=null;
+        if(chars.length>1 && Math.abs(dx)>48 && Math.abs(dx)>Math.abs(dy)*1.25)go(dx<0?1:-1);
+      });
+      box.addEventListener('pointercancel',function(){start=null});
     })();
+    requestAnimationFrame(function(){sheet.classList.add('visible')});
     try{
-      var tg = window.Telegram && window.Telegram.WebApp;
-      if(tg && tg.ready) tg.ready();
-      if(tg && tg.BackButton && tg.BackButton.show) tg.BackButton.show();
-      if(tg && tg.BackButton && tg.BackButton.onClick) tg.BackButton.onClick(closeFast);
+      var tg=window.Telegram && window.Telegram.WebApp;
+      if(tg && tg.ready)tg.ready();
+      if(tg && tg.BackButton && tg.BackButton.show)tg.BackButton.show();
+      if(tg && tg.BackButton && tg.BackButton.onClick)tg.BackButton.onClick(closeFast);
     }catch(err){}
     render();
   }
