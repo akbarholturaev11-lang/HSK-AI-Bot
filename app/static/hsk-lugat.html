@@ -1,9 +1,17 @@
 <!DOCTYPE html>
-<html lang="uz" data-hsk-theme="dark">
+<html lang="uz" class="theme-light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>HSK Lug'at · Yangi so'zlar</title>
+<script>
+(function(){
+  if(new URLSearchParams(location.search || '').get('theme') === 'dark'){
+    document.documentElement.classList.remove('theme-light');
+    document.documentElement.setAttribute('data-hsk-theme','dark');
+  }
+})();
+</script>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <style>
@@ -184,16 +192,16 @@ button:active{transform:scale(.98)}
 .memo-word .mw-w{font-family:var(--cjk);font-size:16px;font-weight:700;color:var(--text)}
 .memo-word .mw-p{font-size:11px;color:var(--accent);font-weight:700}
 .memo-word .mw-m{font-size:12px;color:var(--text2)}
-/* ---- light theme (course-v3 ink-cinnabar) — opt-in via ?theme=light ---- */
+/* ---- light theme (course-v3 ink-cinnabar) — default; ?theme=dark opts out ---- */
 html.theme-light{color-scheme:light;
-  --bg:var(--hsk-paper);--bg2:var(--hsk-paper-raised);--bg3:#F3EBDD;
-  --border:rgba(33,29,23,.10);--border2:rgba(33,29,23,.18);
+  --bg:var(--hsk-paper);--bg2:var(--hsk-paper-raised);--bg3:var(--hsk-gold-soft);
+  --border:var(--hsk-divider);--border2:rgba(181,146,98,.28);
   --text:var(--hsk-ink);--text2:var(--hsk-ink-secondary);
   --accent:var(--hsk-cinnabar);--accent-dim:var(--hsk-cinnabar-soft);
   --ink:var(--hsk-cinnabar-ink);--ink-dim:var(--hsk-cinnabar-soft);
   --cjk:"Songti SC","STSong","Noto Serif SC",serif;}
 html.theme-light #app{background:var(--hsk-paper);}
-html.theme-light .char-box-lg .grid-bg line{stroke:rgba(33,29,23,.08);}
+html.theme-light .char-box-lg .grid-bg line{stroke:var(--hsk-divider);stroke-opacity:.7;}
 html.theme-light #search:focus{box-shadow:0 0 0 2px var(--accent-dim);}
 html.theme-light .lang-btn.active{border-color:var(--accent);}
 html.theme-light .search-history{background:rgba(255,255,255,.98);box-shadow:0 14px 34px rgba(33,29,23,.12);}
@@ -377,7 +385,6 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   window.HSK_FAST_WRITER = params.get('fast') === '1';
   if(window.HSK_FAST_WRITER){
     document.documentElement.classList.add('fast-writer-sheet');
-    if(params.get('theme') === 'light') document.documentElement.setAttribute('data-hsk-theme','light');
   }
   if(!window.HSK_FAST_WRITER){
     document.write('<script src="hsk-words.js?v=20260720"><\/script>');
@@ -528,8 +535,10 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   if(requestedFilter === 'hsk20' || requestedFilter === 'hsk30') currentFilterLevel = 'all';
   if((currentVersionFilter === 'hsk20' && currentFilterLevel.indexOf('nhsk') === 0) ||
      (currentVersionFilter === 'hsk30' && currentFilterLevel.indexOf('hsk') === 0)) currentFilterLevel = 'all';
-  var isLight = params.get('theme') === 'light';
-  if(isLight) document.documentElement.classList.add('theme-light');
+  var isLight = params.get('theme') !== 'dark';
+  document.documentElement.classList.toggle('theme-light', isLight);
+  if(isLight) document.documentElement.removeAttribute('data-hsk-theme');
+  else document.documentElement.setAttribute('data-hsk-theme','dark');
   var activeWords = [];
   var currentWord = null;
 
@@ -549,8 +558,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   }
   function initFastWriter(fastParams){
     var lang = normalizeLang(fastParams.get('lang')) || detectLang();
-    var isFastLight = fastParams.get('theme') === 'light';
-    if(isFastLight) document.documentElement.classList.add('theme-light');
+    var isFastLight = fastParams.get('theme') !== 'dark';
+    document.documentElement.classList.toggle('theme-light', isFastLight);
     var labels = {
       uz:{close:'Yopish',play:'Yozilishini ko‘rsatish',pause:'Pauza',previous:'Oldingi chiziq',next:'Keyingi chiziq',strokes:function(n){return n + ' ta chiziq';},loading:'Yozilish tartibi yuklanmoqda…',fallback:'Yozilish tartibi yuklanmadi'},
       ru:{close:'Закрыть',play:'Показать написание',pause:'Пауза',previous:'Предыдущая черта',next:'Следующая черта',strokes:function(n){return n + ' черт';},loading:'Загружается порядок черт…',fallback:'Порядок черт не загрузился'},
