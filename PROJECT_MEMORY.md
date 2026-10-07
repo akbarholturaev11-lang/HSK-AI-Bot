@@ -123,8 +123,9 @@ Android Live Voice:
 - Android's existing upload based voice mode remains `turn`; native bidirectional audio uses `live`.
 - Flow: `AudioRecord`/`AudioTrack` → authenticated WSS `/api/v3/android/voice/live` → server-side Gemini Live. Provider credentials never go to Android.
 - Migration `0095_android_live_voice` adds mode, connection lease, resumption handle, live start time, and session cost to `voice_practice_sessions`.
-- `ANDROID_VOICE_LIVE_ENABLED` defaults off. The server also requires paid Gemini billing, the configured Live model, a positive session budget, and a Telegram user allowlist. Do not enable until provider usage semantics/cost and physical-device audio are verified.
-- Server cap is 180 seconds per Live session and 7 dialogue turns; the app shows remaining time. Audio usage and transcript evaluation are recorded through the shared AI budget service.
+- `ANDROID_VOICE_LIVE_ENABLED` defaults off. Availability requires a Gemini API key, `GEMINI_BILLING_TIER=paid`, the configured Live model, a positive session budget, and an explicit Telegram user allowlist.
+- `ANDROID_VOICE_LIVE_ALLOWED_USERS` accepts comma-separated Telegram IDs or the exact value `*` for a deliberate all-user rollout. Empty or malformed values fail closed. Production was enabled for all users on 2026-10-07; preserve the paid-billing gate and do not set the billing tier without verifying provider billing.
+- The Live session cap is 180 seconds, 7 dialogue turns, and $0.15 per session by default. Existing per-user daily voice limits and paid AI budgets remain in force. Audio usage and transcript evaluation are recorded through the shared AI budget service.
 - Key files: `app/api/android_live_voice.py`, `app/services/android_live_voice_service.py`, `app/services/voice_practice_service.py`, Android `feature/voice/LiveVoiceSocket.kt`, and `core/audio/LiveVoiceAudioEngine.kt`.
 
 Android klienti:
