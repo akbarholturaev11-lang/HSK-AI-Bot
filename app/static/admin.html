@@ -1862,14 +1862,21 @@
     let hsk30StatsRequestId=0;
     function renderHsk30Stats(data){
       const host=$("hsk30Analytics"); if(!host)return;
-      const funnel=Array.isArray(data.funnel)?data.funnel:[];
-      const maxUsers=Math.max(1,...funnel.map(x=>Number(x.users||0)));
-      const funnelHtml=funnel.map(step=>{
-        const users=Number(step.users||0);
-        const width=users?Math.max(2,Math.min(100,Math.round(users/maxUsers*100))):0;
-        const rate=step.conversion_from_previous_pct==null?"—":`${Number(step.conversion_from_previous_pct).toFixed(1)}%`;
-        return `<tr><td><b>${esc(step.label)}</b><div style="height:5px;background:var(--surface-2);border-radius:99px;margin-top:6px"><i style="display:block;height:5px;width:${width}%;background:var(--accent);border-radius:99px"></i></div></td><td class="r"><b>${users}</b></td><td class="r">${rate}</td></tr>`;
-      }).join("");
+      const courseFunnel=Array.isArray(data.course_funnel)?data.course_funnel:[];
+      const paymentFunnel=Array.isArray(data.payment_funnel)?data.payment_funnel:[];
+      const funnelTable=(rows,unit)=>{
+        const maxCount=Math.max(1,...rows.map(x=>Number(x[unit]||0)));
+        return rows.map(step=>{
+          const count=Number(step[unit]||0);
+          const previous=unit==="users"?step.previous_users:step.previous_attempts;
+          const converted=step.converted_from_previous;
+          const rate=previous==null?"—":`${Number(converted||0)}/${Number(previous||0)} (${step.conversion_from_previous_pct==null?"—":`${Number(step.conversion_from_previous_pct).toFixed(1)}%`})`;
+          const width=count?Math.max(2,Math.min(100,Math.round(count/maxCount*100))):0;
+          return `<tr><td><b>${esc(step.label)}</b><div style="height:5px;background:var(--surface-2);border-radius:99px;margin-top:6px"><i style="display:block;height:5px;width:${width}%;background:var(--accent);border-radius:99px"></i></div></td><td class="r"><b>${count}</b></td><td class="r">${rate}</td></tr>`;
+        }).join("");
+      };
+      const courseFunnelHtml=funnelTable(courseFunnel,"users");
+      const paymentFunnelHtml=funnelTable(paymentFunnel,"attempts");
       const pay=data.payments||{};
       const outcomeTags=[
         tag(`Текширувда ${Number(pay.pending||0)}`,"amber"),
@@ -1879,7 +1886,7 @@
       const methodRows=(data.payment_methods||[]).map(row=>`<tr><td>${esc(hsk30StatsMethod(row.method))}</td><td class="r">${Number(row.payments||0)}</td><td class="r">${Number(row.approved||0)}</td><td class="r">${Number(row.rejected||0)}</td></tr>`).join("");
       const reasonRows=(data.rejection_reasons||[]).map(row=>`<tr><td>${esc(row.reason)}</td><td class="r"><b>${Number(row.count||0)}</b></td></tr>`).join("");
       const failureRows=(data.checkout_failures||[]).map(row=>`<tr><td>${esc(row.reason)}</td><td class="r"><b>${Number(row.count||0)}</b></td></tr>`).join("");
-      const dropoffRows=(data.dropoffs||[]).map(row=>`<tr><td>${esc(row.label)}</td><td class="r"><b>${Number(row.users||0)}</b></td></tr>`).join("");
+      const dropoffRows=(data.dropoffs||[]).map(row=>`<tr><td>${esc(row.label)}</td><td class="r"><b>${Number(row.attempts||0)}</b></td></tr>`).join("");
       const statusLabel={not_submitted:"Тўлов юборилмаган",pending:"Текширувда",approved:"Тасдиқланган",rejected:"Рад этилган"};
       const userRows=(data.users||[]).map(row=>{
         const identity=[row.name,row.username?`@${row.username}`:"",`ID ${row.telegram_id}`].filter(Boolean).map(esc).join(" · ");
@@ -1887,20 +1894,23 @@
         return `<tr><td>${identity||"—"}</td><td>${esc(row.last_step_label||"—")}</td><td>${esc(statusLabel[row.status]||row.status||"—")}</td><td>${esc(hsk30StatsMethod(row.method))}</td><td>${esc(row.last_seen_at||"—")}${reason}</td></tr>`;
       }).join("");
       host.innerHTML=`
-        <div class="tags" style="margin:4px 0 12px">${tag(`Promo кўрган ${Number(funnel[0]?.users||0)}`,"blue")}${tag(`HSK 3.0 фаоллашган ${Number(data.track_activated_users||0)}`,"blue")}${tag(`Checkout ${Number(funnel.find(x=>x.key==="checkout_opened")?.users||0)}`,"blue")}${outcomeTags}${tag(`Promo кўрсатиш ${Number(data.promo_impressions||0)}`,"gold")}</div>
-        <div class="dtitle-sm">Ўтиш босқичлари <small>Одамлар · олдинги қадамдан ўтиш</small></div>
-        <div style="overflow:auto"><table class="tbl"><thead><tr><th>Қадам</th><th class="r">User</th><th class="r">Ўтиш</th></tr></thead><tbody>${funnelHtml||"<tr><td colspan='3' class='empty'>Маълумот ҳали йўқ.</td></tr>"}</tbody></table></div>
+        <div class="tags" style="margin:4px 0 12px">${tag(`Mini App promo кўрган ${Number(courseFunnel[0]?.users||0)}`,"blue")}${tag(`Курс очган ${Number(data.track_activated_users||0)}`,"blue")}${tag(`HSK 3.0 тўлов уриниши ${Number(paymentFunnel[0]?.attempts||0)}`,"blue")}${outcomeTags}${tag(`Mini App promo кўрсатиш ${Number(data.promo_impressions||0)}`,"gold")}${tag(`Promo lifetime · барча платформа ${Number(data.promo_impressions_all_platforms_lifetime||0)}`,"gold")}</div>
+        <div class="dtitle-sm">Курсга ўтиш · Mini App <small>User · шу даврдаги кетма-кет қадамлар</small></div>
+        <div style="overflow:auto"><table class="tbl"><thead><tr><th>Қадам</th><th class="r">User</th><th class="r">Ўтган / олдинги</th></tr></thead><tbody>${courseFunnelHtml||"<tr><td colspan='3' class='empty'>Mini App’да қайд этилган қадамлар ҳали йўқ.</td></tr>"}</tbody></table></div>
+        <div class="dtitle-sm" style="margin-top:14px">Тўлов жараёни · HSK 3.0 <small>Танланган даврда бошланган уриниш · Mini App / Android / Desktop</small></div>
+        <div style="overflow:auto"><table class="tbl"><thead><tr><th>Қадам</th><th class="r">Уриниш</th><th class="r">Ўтган / олдинги</th></tr></thead><tbody>${paymentFunnelHtml||"<tr><td colspan='3' class='empty'>ID билан боғланган HSK 3.0 checkout уриниши йўқ.</td></tr>"}</tbody></table></div>
+        <div class="ncnote" style="margin-top:8px">Attempt ID билан submit event’и топилмаган тўлов ёзуви: ${Number(data.unlinked_payment_records||0)}. Тўлов ҳолатлари пастдаги жадвалда барча платформа бўйича алоҳида саналган.</div>
         <div class="grid g2" style="margin-top:14px">
-          <section><div class="dtitle-sm">Checkout’да тўхтаган жой</div><table class="tbl"><tbody>${dropoffRows||"<tr><td class='empty'>Ташлаб кетган checkout йўқ.</td></tr>"}</tbody></table></section>
-          <section><div class="dtitle-sm">Тўлов усуллари</div><table class="tbl"><thead><tr><th>Усул</th><th class="r">Юборилган</th><th class="r">OK</th><th class="r">Рад</th></tr></thead><tbody>${methodRows||"<tr><td colspan='4' class='empty'>HSK 3.0 тўлови йўқ.</td></tr>"}</tbody></table></section>
+          <section><div class="dtitle-sm">Тўлов уринишлари қаерда тўхтади</div><table class="tbl"><tbody>${dropoffRows||"<tr><td class='empty'>Ташлаб кетган checkout уриниши йўқ.</td></tr>"}</tbody></table></section>
+          <section><div class="dtitle-sm">Тўлов усуллари <small>Тўлов ёзувлари · барча платформа</small></div><table class="tbl"><thead><tr><th>Усул</th><th class="r">Юборилган</th><th class="r">OK</th><th class="r">Рад</th></tr></thead><tbody>${methodRows||"<tr><td colspan='4' class='empty'>HSK 3.0 тўлови йўқ.</td></tr>"}</tbody></table></section>
         </div>
         <div class="grid g2" style="margin-top:14px">
           <section><div class="dtitle-sm">Admin рад сабаблари</div><table class="tbl"><tbody>${reasonRows||"<tr><td class='empty'>Рад этилган тўлов йўқ.</td></tr>"}</tbody></table></section>
-          <section><div class="dtitle-sm">Checkout техник хатолари</div><table class="tbl"><tbody>${failureRows||"<tr><td class='empty'>Қайд этилган хато йўқ.</td></tr>"}</tbody></table></section>
+          <section><div class="dtitle-sm">Mini App checkout техник хатолари</div><table class="tbl"><tbody>${failureRows||"<tr><td class='empty'>Mini App’да қайд этилган хато йўқ.</td></tr>"}</tbody></table></section>
         </div>
         <div class="dtitle-sm" style="margin-top:16px">Охирги user’лар ва улар тўхтаган қадам <small>${(data.users||[]).length} тагача</small></div>
         <div style="overflow:auto"><table class="tbl"><thead><tr><th>User</th><th>Охирги қадам</th><th>Ҳолат</th><th>Усул</th><th>Вақт / сабаб</th></tr></thead><tbody>${userRows||"<tr><td colspan='5' class='empty'>Ҳозирча кузатилган user йўқ.</td></tr>"}</tbody></table></div>
-        <div class="ncnote" style="margin-top:12px">${esc(data.coverage_note||"")}</div>`;
+        <div class="ncnote" style="margin-top:12px">${esc(data.coverage_note||"")}${data.course_funnel_tracking_since?` Mini App курс қадамлари ${esc(data.course_funnel_tracking_since)} дан қайд этилмоқда.`:""}</div>`;
     }
     function loadHsk30Stats(days){
       const host=$("hsk30Analytics"); if(!host)return;
@@ -1923,13 +1933,13 @@
       const stats=h.stats||{};
       openDrawer("🆕 HSK 3.0","Курс ва бир марталик доступни алоҳида бошқариш",`<div class="panel">
         <div class="mcard">
-          <h3>Rollout статистикаси</h3>
+          <h3>Жорий rollout ҳолати <small>Жами · барча платформалар</small></h3>
           <div class="tags">
             ${tag("HSK 3.0 да ҳозир "+Number(stats.active_users||0),"blue")}
             ${tag("Трекни очган "+Number(stats.track_users||0),"blue")}
             ${tag("Доимий unlock "+Number(stats.permanent_unlock_users||0),"green")}
-            ${tag("Promo user "+Number(stats.promo_users||0),"gold")}
-            ${tag("Promo кўрсатиш "+Number(stats.promo_impressions||0),"gold")}
+            ${tag("Promo user · lifetime "+Number(stats.promo_users||0),"gold")}
+            ${tag("Promo кўрсатиш · lifetime "+Number(stats.promo_impressions||0),"gold")}
           </div>
         </div>
         <div class="mcard">

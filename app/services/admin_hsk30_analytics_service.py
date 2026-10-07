@@ -4,12 +4,11 @@ import json
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 
-from sqlalchemy import or_, select
+from sqlalchemy import func, or_, select
 
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
-from app.db.models.course_track_state import CourseTrackState
 from app.db.models.payment import Payment
 from app.db.models.subscription_entry_event import SubscriptionEntryEvent
 from app.db.models.user import User
@@ -31,12 +30,20 @@ class AdminHsk30AnalyticsService:
         "payment_instructions_viewed": "instructions",
         "payment_receipt_selected": "receipt_selected",
     }
+    COURSE_FUNNEL_EVENTS = {
+        "hsk30_promo_shown",
+        "hsk30_promo_cta_clicked",
+        "hsk30_promo_dismissed",
+        "hsk30_level_selected",
+        "course_track_switched",
+    }
     STAGE_LABELS = {
         "promo_shown": "HSK 3.0 таклифи кўрсатилди",
         "promo_cta": "Таклиф тугмаси босилди",
         "promo_dismissed": "Таклиф ёпилди",
         "level_selected": "HSK 3.0 даражаси танланди",
         "track_activated": "HSK 3.0 курси фаоллашди",
+        "subscription_entry": "HSK 3.0 обуна саҳифасига кирди",
         "checkout_opened": "Checkout очилди",
         "instructions": "Тўлов йўриқномаси",
         "receipt_selected": "Чек танланди",
@@ -92,12 +99,13 @@ class AdminHsk30AnalyticsService:
             course_stmt = course_stmt.where(CourseMiniAppEvent.created_at >= since)
         course_events = list((await self.session.execute(course_stmt)).scalars().all())
 
-        promo_users: set[int] = set()
+        # Course funnel users come only from event rows emitted by the Mini App.
+        # The profile counter below is shared by Mini App, Desktop, and Android.
         promo_impressions = 0
-        promo_cta_users: set[int] = set()
         promo_dismiss_users: set[int] = set()
-        selected_level_users: set[int] = set()
-        track_users: set[int] = set()
+        course_stage_times: dict[int, dict[str, list[datetime]]] = defaultdict(
+            lambda: defaultdict(list)
+        )
         error_rows: list[dict] = []
         latest_course_event: dict[int, tuple[datetime, str, dict, str]] = {}
 
@@ -107,13 +115,13 @@ class AdminHsk30AnalyticsService:
             name = str(event.event_name)
             promo_impressions += int(name == "hsk30_promo_shown")
             if name == "hsk30_promo_shown":
-                promo_users.add(telegram_id)
+                course_stage_times[telegram_id]["promo_shown"].append(event.created_at)
             elif name == "hsk30_promo_cta_clicked":
-                promo_cta_users.add(telegram_id)
+                course_stage_times[telegram_id]["promo_cta"].append(event.created_at)
             elif name == "hsk30_promo_dismissed":
                 promo_dismiss_users.add(telegram_id)
             elif name == "hsk30_level_selected":
-                selected_level_users.add(telegram_id)
+                course_stage_times[telegram_id]["level_selected"].append(event.created_at)
             elif name == "hsk30_checkout_failed":
                 error_rows.append({
                     "telegram_id": telegram_id,
@@ -126,7 +134,7 @@ class AdminHsk30AnalyticsService:
                 name == "course_track_switched"
                 and str(payload.get("to_track") or "") == "hsk30"
             ):
-                track_users.add(telegram_id)
+                course_stage_times[telegram_id]["track_activated"].append(event.created_at)
 
             event_stage = {
                 "hsk30_promo_shown": "promo_shown",
@@ -151,38 +159,57 @@ class AdminHsk30AnalyticsService:
                     )
 
         profile_stmt = select(
-            User.telegram_id,
             CourseMiniAppProfile.hsk30_promo_shown_count,
-            CourseMiniAppProfile.hsk30_promo_last_shown_at,
-        ).join(
-            CourseMiniAppProfile,
-            CourseMiniAppProfile.user_id == User.id,
         ).where(CourseMiniAppProfile.hsk30_promo_shown_count > 0)
-        if since is not None:
-            profile_stmt = profile_stmt.where(
-                CourseMiniAppProfile.hsk30_promo_last_shown_at >= since
-            )
         profile_rows = (await self.session.execute(profile_stmt)).all()
-        profile_promo_users = {int(row.telegram_id) for row in profile_rows}
-        promo_users |= profile_promo_users
-        if since is None:
-            # The profile counter is the complete legacy impression count.
-            promo_impressions = sum(
-                max(0, int(row.hsk30_promo_shown_count or 0))
-                for row in profile_rows
-            )
+        lifetime_promo_impressions_all_platforms = sum(
+            max(0, int(row.hsk30_promo_shown_count or 0))
+            for row in profile_rows
+        )
 
-        if since is None:
-            track_state_ids = set((await self.session.execute(
-                select(CourseTrackState.user_id).where(
-                    CourseTrackState.track == "hsk30"
-                )
-            )).scalars().all())
-            if track_state_ids:
-                state_ids = (await self.session.execute(
-                    select(User.telegram_id).where(User.id.in_(track_state_ids))
-                )).scalars().all()
-                track_users |= {int(value) for value in state_ids}
+        tracking_since = (await self.session.execute(
+            select(func.min(CourseMiniAppEvent.created_at)).where(
+                CourseMiniAppEvent.event_name.in_(self.COURSE_FUNNEL_EVENTS - {"course_track_switched"})
+            )
+        )).scalar_one_or_none()
+
+        # Keep Mini App course steps in sequence. A later event counts only when
+        # the same user has the preceding event in the selected reporting window.
+        course_reached: dict[str, set[int]] = {
+            "promo_shown": set(),
+            "promo_cta": set(),
+            "level_selected": set(),
+            "track_activated": set(),
+        }
+        for telegram_id, event_times in course_stage_times.items():
+            promo_at = min(event_times.get("promo_shown", []), default=None)
+            if promo_at is None:
+                continue
+            course_reached["promo_shown"].add(telegram_id)
+            cta_at = min(
+                (value for value in event_times.get("promo_cta", []) if value >= promo_at),
+                default=None,
+            )
+            if cta_at is None:
+                continue
+            course_reached["promo_cta"].add(telegram_id)
+            level_at = min(
+                (value for value in event_times.get("level_selected", []) if value >= cta_at),
+                default=None,
+            )
+            if level_at is None:
+                continue
+            course_reached["level_selected"].add(telegram_id)
+            track_at = min(
+                (value for value in event_times.get("track_activated", []) if value >= level_at),
+                default=None,
+            )
+            if track_at is not None:
+                course_reached["track_activated"].add(telegram_id)
+        promo_users = course_reached["promo_shown"]
+        promo_cta_users = course_reached["promo_cta"]
+        selected_level_users = course_reached["level_selected"]
+        track_users = course_reached["track_activated"]
 
         entry_stmt = select(SubscriptionEntryEvent).where(or_(
             SubscriptionEntryEvent.mode == HSK30_UNLOCK_PLAN_TYPE,
@@ -200,26 +227,28 @@ class AdminHsk30AnalyticsService:
                 latest_entries[telegram_id] = entry
 
         checkout_events_stmt = select(ConversionFunnelEvent).where(
-            ConversionFunnelEvent.event_name == "checkout_opened",
-            or_(
-                ConversionFunnelEvent.source == HSK30_UNLOCK_PLAN_TYPE,
-                ConversionFunnelEvent.payload_json.contains(HSK30_UNLOCK_PLAN_TYPE),
+            ConversionFunnelEvent.event_name.in_(
+                ("checkout_opened", "payment_screenshot_submitted")
             ),
         )
         if since is not None:
             checkout_events_stmt = checkout_events_stmt.where(
                 ConversionFunnelEvent.created_at >= since
             )
-        checkout_event_rows = list(
-            (await self.session.execute(checkout_events_stmt)).scalars().all()
+        checkout_event_rows = sorted(
+            (await self.session.execute(checkout_events_stmt)).scalars().all(),
+            key=lambda event: event.created_at,
         )
-        checkout_events: dict[int, list[tuple[datetime, str, dict]]] = defaultdict(list)
-        stage_users: dict[str, set[int]] = {
-            "instructions": set(),
-            "receipt_selected": set(),
-        }
+        hsk30_attempts: dict[tuple[int, str], dict] = {}
+
+        # First identify real HSK 3.0 checkout starts. Stage and submit events
+        # are then attached only to that user's same attempt_id.
         for event in checkout_event_rows:
+            if event.event_name != "checkout_opened":
+                continue
             payload = self._payload(event.payload_json)
+            if str(payload.get("stage") or "").strip():
+                continue
             if not (
                 str(payload.get("plan_type") or "") == HSK30_UNLOCK_PLAN_TYPE
                 or str(payload.get("mode") or "") == HSK30_UNLOCK_PLAN_TYPE
@@ -227,11 +256,57 @@ class AdminHsk30AnalyticsService:
             ):
                 continue
             telegram_id = int(event.telegram_id)
-            stage = str(payload.get("stage") or "")
-            stage_key = self.CHECKOUT_STAGES.get(stage, "checkout_opened")
-            if stage_key in stage_users:
-                stage_users[stage_key].add(telegram_id)
-            checkout_events[telegram_id].append((event.created_at, stage_key, payload))
+            attempt_id = str(payload.get("attempt_id") or "").strip()
+            if not attempt_id:
+                continue
+            key = (telegram_id, attempt_id)
+            hsk30_attempts.setdefault(key, {
+                "telegram_id": telegram_id,
+                "attempt_id": attempt_id,
+                "opened_at": event.created_at,
+                "stages": {},
+                "payment_id": None,
+            })
+
+        checkout_events: dict[int, list[tuple[datetime, str, dict, str]]] = defaultdict(list)
+        attempt_payment_ids: set[int] = set()
+        for event in checkout_event_rows:
+            payload = self._payload(event.payload_json)
+            attempt_id = str(payload.get("attempt_id") or "").strip()
+            telegram_id = int(event.telegram_id)
+            if (
+                event.event_name == "payment_screenshot_submitted"
+                and attempt_id
+                and event.payment_id
+                and (
+                    str(payload.get("plan_type") or "") == HSK30_UNLOCK_PLAN_TYPE
+                    or str(payload.get("mode") or "") == HSK30_UNLOCK_PLAN_TYPE
+                    or str(event.source or "") == HSK30_UNLOCK_PLAN_TYPE
+                )
+            ):
+                # A submission may belong to an attempt started before the
+                # selected period. It is still attempt-aware, even though its
+                # opening step is outside this period's funnel cohort.
+                attempt_payment_ids.add(int(event.payment_id))
+            attempt = hsk30_attempts.get((telegram_id, attempt_id)) if attempt_id else None
+            if attempt is None or event.created_at < attempt["opened_at"]:
+                continue
+            if event.event_name == "checkout_opened":
+                stage = str(payload.get("stage") or "").strip()
+                stage_key = self.CHECKOUT_STAGES.get(stage)
+                if stage_key:
+                    attempt["stages"].setdefault(stage_key, event.created_at)
+                    checkout_events[telegram_id].append(
+                        (event.created_at, stage_key, payload, str(event.source or ""))
+                    )
+            elif event.event_name == "payment_screenshot_submitted":
+                attempt["stages"].setdefault("payment_submitted", event.created_at)
+                if event.payment_id:
+                    attempt["payment_id"] = int(event.payment_id)
+                    attempt_payment_ids.add(int(event.payment_id))
+                checkout_events[telegram_id].append(
+                    (event.created_at, "payment_submitted", payload, str(event.source or ""))
+                )
 
         payment_stmt = select(Payment).where(
             Payment.plan_type == HSK30_UNLOCK_PLAN_TYPE,
@@ -268,39 +343,100 @@ class AdminHsk30AnalyticsService:
             if status == "rejected":
                 rejection_reasons[self._normalize_reason(payment.admin_comment)] += 1
 
-        payment_submitted_users = {int(payment.user_telegram_id) for payment in payment_rows}
-        funnel_stages = [
-            ("promo_shown", "Promo кўрсатилди", promo_users),
-            ("promo_cta", "Promo тугмаси босилди", promo_cta_users),
-            ("level_selected", "HSK 3.0 даражаси танланди", selected_level_users),
-            ("checkout_opened", "Checkout очилди", set(latest_entries)),
-            ("instructions", "Тўлов йўриқномаси очилди", stage_users["instructions"]),
-            ("receipt_selected", "Чек танланди", stage_users["receipt_selected"]),
-            ("payment_submitted", "Тўлов юборилди", payment_submitted_users),
+        course_stages = [
+            ("promo_shown", "Таклиф кўрсатилди"),
+            ("promo_cta", "Таклиф тугмаси босилди"),
+            ("level_selected", "HSK 3.0 даражаси танланди"),
+            ("track_activated", "HSK 3.0 курси очилди"),
         ]
-        funnel_payload = []
-        previous_users: set[int] | None = None
-        for key, label, users in funnel_stages:
-            count = len(users)
-            shared_users = len(previous_users & users) if previous_users is not None else count
-            conversion = (
-                round(shared_users * 100 / len(previous_users), 1)
-                if previous_users
+        course_funnel = []
+        previous_course_users: set[int] | None = None
+        for key, label in course_stages:
+            users = course_reached[key]
+            converted = (
+                len(previous_course_users & users)
+                if previous_course_users is not None
+                else len(users)
+            )
+            previous_count = (
+                len(previous_course_users)
+                if previous_course_users is not None
                 else None
             )
-            reach = (
-                round(len(promo_users & users) * 100 / len(promo_users), 1)
-                if promo_users
-                else 0.0
-            )
-            funnel_payload.append({
+            course_funnel.append({
                 "key": key,
                 "label": label,
-                "users": count,
-                "conversion_from_previous_pct": conversion,
-                "reach_pct": reach,
+                "users": len(users),
+                "previous_users": previous_count,
+                "converted_from_previous": converted if previous_count is not None else None,
+                "conversion_from_previous_pct": (
+                    round(converted * 100 / previous_count, 1)
+                    if previous_count
+                    else None
+                ),
             })
-            previous_users = users
+            previous_course_users = users
+
+        payment_reached: dict[str, set[tuple[int, str]]] = {
+            "checkout_opened": set(),
+            "instructions": set(),
+            "receipt_selected": set(),
+            "payment_submitted": set(),
+        }
+        dropoff_counts: Counter[str] = Counter()
+        for attempt_key, attempt in hsk30_attempts.items():
+            stages = attempt["stages"]
+            payment_reached["checkout_opened"].add(attempt_key)
+            submitted = "payment_submitted" in stages
+            receipt = "receipt_selected" in stages or submitted
+            instructions = "instructions" in stages or receipt
+            if instructions:
+                payment_reached["instructions"].add(attempt_key)
+            if receipt:
+                payment_reached["receipt_selected"].add(attempt_key)
+            if submitted:
+                payment_reached["payment_submitted"].add(attempt_key)
+            else:
+                last_step = (
+                    "receipt_selected" if receipt
+                    else "instructions" if instructions
+                    else "checkout_opened"
+                )
+                dropoff_counts[last_step] += 1
+
+        payment_stages = [
+            ("checkout_opened", "HSK 3.0 checkout очилди"),
+            ("instructions", "Тўлов йўриқномаси кўрилди"),
+            ("receipt_selected", "Чек танланди"),
+            ("payment_submitted", "Тўлов юборилди"),
+        ]
+        payment_funnel = []
+        previous_attempts: set[tuple[int, str]] | None = None
+        for key, label in payment_stages:
+            attempts = payment_reached[key]
+            converted = (
+                len(previous_attempts & attempts)
+                if previous_attempts is not None
+                else len(attempts)
+            )
+            previous_count = (
+                len(previous_attempts)
+                if previous_attempts is not None
+                else None
+            )
+            payment_funnel.append({
+                "key": key,
+                "label": label,
+                "attempts": len(attempts),
+                "previous_attempts": previous_count,
+                "converted_from_previous": converted if previous_count is not None else None,
+                "conversion_from_previous_pct": (
+                    round(converted * 100 / previous_count, 1)
+                    if previous_count
+                    else None
+                ),
+            })
+            previous_attempts = attempts
 
         method_payload = [
             {
@@ -327,14 +463,21 @@ class AdminHsk30AnalyticsService:
             if previous is None or entry.created_at > previous[0]:
                 user_stages[telegram_id] = (
                     entry.created_at,
-                    "checkout_opened",
-                    {"payment_method": entry.payment_method},
+                    "subscription_entry",
+                    {
+                        "payment_method": entry.payment_method,
+                        "source": entry.source,
+                    },
                 )
         for telegram_id, values in checkout_events.items():
-            for created_at, stage, payload in values:
+            for created_at, stage, payload, source in values:
                 previous = user_stages.get(telegram_id)
                 if previous is None or created_at > previous[0]:
-                    user_stages[telegram_id] = (created_at, stage, payload)
+                    user_stages[telegram_id] = (
+                        created_at,
+                        stage,
+                        {**payload, "source": source},
+                    )
         for row in error_rows:
             telegram_id = int(row["telegram_id"])
             previous = user_stages.get(telegram_id)
@@ -348,9 +491,14 @@ class AdminHsk30AnalyticsService:
                     },
                 )
 
-        dropoff_counts: Counter[str] = Counter()
         recent_rows: list[dict] = []
-        candidate_users = set(user_stages) | set(latest_entries) | set(latest_payments)
+        attempt_users = {telegram_id for telegram_id, _attempt_id in hsk30_attempts}
+        candidate_users = (
+            set(user_stages)
+            | set(latest_entries)
+            | set(latest_payments)
+            | attempt_users
+        )
         for telegram_id in candidate_users:
             entry = latest_entries.get(telegram_id)
             payment = latest_payments.get(telegram_id)
@@ -375,19 +523,6 @@ class AdminHsk30AnalyticsService:
                     last_payload["reason"] = self._normalize_reason(payment.admin_comment)
             else:
                 status = "not_submitted"
-                if last_step in {
-                    "promo_shown",
-                    "promo_cta",
-                    "promo_dismissed",
-                    "level_selected",
-                    "track_activated",
-                    "instructions",
-                    "receipt_selected",
-                    "checkout_failed",
-                }:
-                    dropoff_counts[last_step] += 1
-                else:
-                    dropoff_counts["checkout_opened"] += 1
 
             recent_rows.append({
                 "telegram_id": telegram_id,
@@ -433,19 +568,29 @@ class AdminHsk30AnalyticsService:
             for reason, count in errors_by_reason.most_common(10)
         ]
         dropoffs = [
-            {"step": key, "label": self.STAGE_LABELS.get(key, key), "users": count}
+            {"step": key, "label": self.STAGE_LABELS.get(key, key), "attempts": count}
             for key, count in dropoff_counts.most_common()
         ]
+
+        linked_payment_ids = {
+            int(payment.id)
+            for payment in payment_rows
+            if payment.id is not None and int(payment.id) in attempt_payment_ids
+        }
 
         return {
             "ok": True,
             "period_days": days,
             "generated_at": now.isoformat(),
-            "funnel": funnel_payload,
+            "course_funnel": course_funnel,
+            "payment_funnel": payment_funnel,
             "promo_dismissed_users": len(promo_dismiss_users),
             "selected_level_users": len(selected_level_users),
             "track_activated_users": len(track_users),
             "promo_impressions": promo_impressions,
+            "promo_impressions_all_platforms_lifetime": lifetime_promo_impressions_all_platforms,
+            "course_funnel_tracking_since": self._iso(tracking_since),
+            "unlinked_payment_records": max(0, len(payment_rows) - len(linked_payment_ids)),
             "payments": {
                 "pending": payment_status_counts.get("pending", 0),
                 "approved": payment_status_counts.get("approved", 0),
@@ -469,8 +614,13 @@ class AdminHsk30AnalyticsService:
                 for row in recent_rows[:user_limit]
             ],
             "coverage_note": (
-                "Checkout ва тўлов маълумоти танланган даврдаги сервер ёзувларидан олинди. "
-                "Promo/track қадамлари аввал барча платформада бир хил қайд этилмаган; "
-                "сабабсиз ёпилган checkout учун сабаб аниқ эмас, охирги қайд этилган қадам кўрсатилади."
+                "Курс voronkasi фақат Mini App’да қайд этилган promo → танлаш → курс очиш user’ларини санайди; "
+                "қадамлар танланган даврда ва шу тартибда бўлиши шарт. Promo lifetime сони барча платформанинг "
+                "профиль ҳисоблагичидан алоҳида олинади. Тўлов voronkasi HSK 3.0 checkout attempt_id бўйича "
+                "Mini App, Android ва Desktop’ни боғлайди ва уринишларни санайди; attempt_id билан боғланмаган "
+                "танланган даврдан олдин бошланган тўлов уринишлари воронкага кирмайди. "
+                "Тўлов ҳолатлари эса "
+                "танланган даврдаги барча HSK 3.0 тўлов "
+                "ёзувларини қамрайди. Сабабсиз ёпилган checkout сабабини сервер аниқлай олмайди."
             ),
         }
