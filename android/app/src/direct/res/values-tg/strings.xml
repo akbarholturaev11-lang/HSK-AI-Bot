@@ -157,6 +157,14 @@
     <string name="update_channel_name">Навсозиҳои барнома</string>
     <string name="notify_update_title">Версияи нав баромад</string>
     <string name="notify_update_body">HSK AI %1$s омода аст. Барои навсозӣ барномаро кушоед.</string>
+    <string name="update_gate_title">Версияи навро насб кунед</string>
+    <string name="update_gate_version">HSK AI %1$s</string>
+    <string name="update_gate_body">Барои идома версияи нави барнома лозим аст.</string>
+    <string name="update_gate_button">Барномаро нав кунед</string>
+    <string name="update_gate_downloading">Боргирӣ · %1$d%%</string>
+    <string name="update_gate_downloaded">Боргирӣ шуд. Барои оғоз кардани насб тугмаро пахш кунед.</string>
+    <string name="update_gate_failed">Боргирӣ нашуд. Боз кӯшиш кунед.</string>
+    <string name="update_gate_permission">Пеш аз навсозӣ иҷозати насби барномаро диҳед.</string>
     <string name="sub_hsk30_pending_title">Пардохти HSK 3.0 санҷида мешавад</string>
     <string name="sub_hsk30_pending_body">Дархост ба администратор фиристода шуд. HSK 3.0 пас аз тасдиқ кушода мешавад. Ҳолатро нав кунед.</string>
     <string name="sub_hsk30_provisional_title">HSK 3.0 муваққатан кушода шуд</string>

@@ -157,6 +157,14 @@
     <string name="update_channel_name">Ilova yangilanishlari</string>
     <string name="notify_update_title">Yangi versiya chiqdi</string>
     <string name="notify_update_body">HSK AI %1$s tayyor. Yangilash uchun ilovani oching.</string>
+    <string name="update_gate_title">Yangi versiyani o‘rnating</string>
+    <string name="update_gate_version">HSK AI %1$s</string>
+    <string name="update_gate_body">Davom etish uchun ilovaning yangi versiyasi kerak.</string>
+    <string name="update_gate_button">Ilovani yangilang</string>
+    <string name="update_gate_downloading">Yuklanmoqda · %1$d%%</string>
+    <string name="update_gate_downloaded">Yuklandi. O‘rnatishni boshlash uchun tugmani bosing.</string>
+    <string name="update_gate_failed">Yuklab bo‘lmadi. Qayta urinib ko‘ring.</string>
+    <string name="update_gate_permission">Yangilashdan oldin ilovani o‘rnatishga ruxsat bering.</string>
     <string name="sub_hsk30_pending_title">HSK 3.0 to‘lovi tekshiruvda</string>
     <string name="sub_hsk30_pending_body">To‘lov adminga yuborildi. Ikkinchi urinish tasdiqlanmaguncha HSK 3.0 ochilmaydi. Holatni yangilang.</string>
     <string name="sub_hsk30_provisional_title">HSK 3.0 vaqtincha ochildi</string>

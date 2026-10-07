@@ -39,6 +39,7 @@ object AppUpdate {
      * one who reports bugs that were fixed weeks ago.
      */
     const val NUDGE_AFTER_MISSED_RELEASES = 2
+    const val FORCE_UPDATE_AFTER_MISSED_RELEASES = 3
     const val CHECK_CACHE_TTL_MILLIS = 30L * 60L * 1000L
 
     private val json = Json { ignoreUnknownKeys = true }
@@ -114,6 +115,10 @@ object AppUpdate {
      */
     fun isFarBehind(release: UpdateRelease, installedVersionCode: Int): Boolean =
         release.versionCode - installedVersionCode >= NUDGE_AFTER_MISSED_RELEASES
+
+    /** A direct install three or more releases behind cannot enter the app. */
+    fun isMandatoryUpdate(release: UpdateRelease, installedVersionCode: Int): Boolean =
+        release.versionCode - installedVersionCode >= FORCE_UPDATE_AFTER_MISSED_RELEASES
 
     /**
      * Whether this release still owes the learner a notification.

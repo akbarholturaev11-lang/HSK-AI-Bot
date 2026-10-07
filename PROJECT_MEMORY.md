@@ -10656,3 +10656,24 @@ Risk:
 Follow-up:
 - Haqiqiy e'lon qilingan APK bilan fizik telefonda app'ni yopib, keyin qaytib
   100%/installer oqimini tekshirish kerak.
+
+### 2026-10-07 — Android lug'at ieroglifi va majburiy yangilanish
+
+- Lug'at detail sarlavhasi endi bitta ieroglifli yozuvlarda ham `hanzi`ni
+  ko'rsatadi; `DictionaryEntryTest` `每 / měi / har bir` holatini qoplaydi.
+- Direct APK’da serverdagi eng yangi `versionCode` bilan farq 3 yoki ko'p
+  bo'lsa, `MainActivity` ichidagi `MandatoryUpdateGate` ilova tarkibini to'liq
+  almashtirib, faqat APK yangilash tugmasini beradi. U mavjud WorkManager
+  yuklash va Android installer oqimidan foydalanadi. Play flavor gate'ni
+  no-op qiladi.
+- API/yuklash tekshiruvi mavjud Direct update oqimiga tayanadi. Serverga
+  bog'lanib bo'lmasa ilova ochiq qoladi; eski, gate'siz APK'larga serverdan
+  turib bu yangi ekran qo'shib bo'lmaydi.
+- Versiya `1.7.6` / `versionCode 37`. Cloudflare R2 e'loni
+  `.github/workflows/android-release.yml` orqali qo'lda ishga tushiriladi.
+
+Files:
+- `android/app/src/main/java/com/pomp/hskai/feature/dictionary/DictionaryScreen.kt`
+- `android/app/src/direct/java/com/pomp/hskai/feature/update/MandatoryUpdateGate.kt`
+- `android/app/src/play/java/com/pomp/hskai/feature/update/MandatoryUpdateGate.kt`
+- `android/app/src/main/java/com/pomp/hskai/MainActivity.kt`

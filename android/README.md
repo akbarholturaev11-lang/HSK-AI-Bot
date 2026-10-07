@@ -248,12 +248,13 @@ How it works:
    switches the evening study reminder on. Refusing costs nothing: the card
    and the banner do not depend on it, and the question is not asked again.
 4. Two releases behind (`AppUpdate.NUDGE_AFTER_MISSED_RELEASES`), a bar appears
-   above the tab bar and stays until the install is newer. It cannot be
-   dismissed, and it is drawn by `MainScaffold`, so a lesson, a drill and a
-   voice call never carry it.
-5. Tapping either the card or the bar downloads the APK to
-   `cacheDir/updates/update.apk`, checks the size against what the server
-   announced, and opens the system installer.
+   above the tab bar and stays until the install is newer. At three releases
+   behind (`FORCE_UPDATE_AFTER_MISSED_RELEASES`), the Direct build replaces the
+   app UI with a mandatory update screen; its only action downloads or installs
+   the current APK. The Play build does not include this self-update gate.
+5. Tapping the card, bar or mandatory update action downloads the APK to
+   `filesDir/updates/update-<versionCode>.apk`, checks the size against what the
+   server announced, and opens the system installer.
 
 Android refuses an update signed by a different key, so a swapped file cannot
 replace the app with something else. The size check catches the one thing that

@@ -156,6 +156,14 @@
     <string name="update_channel_name">Обновления приложения</string>
     <string name="notify_update_title">Вышла новая версия</string>
     <string name="notify_update_body">HSK AI %1$s готов. Откройте приложение, чтобы обновить.</string>
+    <string name="update_gate_title">Установите новую версию</string>
+    <string name="update_gate_version">HSK AI %1$s</string>
+    <string name="update_gate_body">Чтобы продолжить, установите новую версию приложения.</string>
+    <string name="update_gate_button">Обновить приложение</string>
+    <string name="update_gate_downloading">Загрузка · %1$d%%</string>
+    <string name="update_gate_downloaded">Загружено. Нажмите кнопку, чтобы начать установку.</string>
+    <string name="update_gate_failed">Не удалось загрузить. Попробуйте ещё раз.</string>
+    <string name="update_gate_permission">Разрешите установку приложения перед обновлением.</string>
     <string name="sub_hsk30_pending_title">Платёж за HSK 3.0 проверяется</string>
     <string name="sub_hsk30_pending_body">Заявка отправлена администратору. HSK 3.0 откроется после подтверждения. Обновите статус.</string>
     <string name="sub_hsk30_provisional_title">HSK 3.0 временно открыт</string>

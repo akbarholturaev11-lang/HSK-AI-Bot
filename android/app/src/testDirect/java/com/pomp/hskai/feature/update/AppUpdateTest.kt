@@ -156,4 +156,17 @@ class AppUpdateTest {
         assertEquals(99, AppUpdate.downloadPercent(downloadedBytes = 110, totalBytes = 100))
         assertNull(AppUpdate.downloadPercent(downloadedBytes = 10, totalBytes = 0))
     }
+
+    @Test
+    fun `mandatory update starts after three missed releases`() {
+        val release = UpdateRelease(
+            versionName = "1.7.6",
+            versionCode = 40,
+            url = "https://pub-example.r2.dev/hsk-ai-1.7.6-40-direct-release.apk",
+        )
+
+        assertFalse(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 38))
+        assertTrue(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 37))
+        assertTrue(AppUpdate.isMandatoryUpdate(release, installedVersionCode = 36))
+    }
 }
