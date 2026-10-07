@@ -114,19 +114,6 @@ internal fun FoundationCircularAudio(onClick: () -> Unit, modifier: Modifier = M
 }
 
 @Composable
-internal fun FoundationListenAudio(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Surface(
-        color = PompColors.CinnabarSoft,
-        shape = CircleShape,
-        modifier = modifier.size(48.dp).clickable(onClick = onClick),
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Icon(Icons.Filled.VolumeUp, contentDescription = null, tint = PompColors.Cinnabar, modifier = Modifier.size(22.dp))
-        }
-    }
-}
-
-@Composable
 internal fun FoundationPartsGrid(
     examples: List<FoundationExample>,
     onPlayExample: (String) -> Unit,

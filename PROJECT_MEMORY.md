@@ -243,6 +243,19 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-10-07 — Android Foundation completion wire contract
+
+Changed:
+- Mandatory `foundation_id` and `foundation_version` request fields have no Kotlin defaults; `CourseRepository` supplies the canonical values explicitly.
+Why:
+- Retrofit uses `encodeDefaults=false`. Defaults previously omitted both fields, causing HTTP 422 before persistence and leaving beginners locked after Starter 0, including on retry.
+Files touched:
+- `FoundationDto.kt`, `FoundationCompleteContractTest.kt`, `tests/test_android_foundation_api.py`.
+Risk:
+- Low: server validation, idempotent completion, and the required beginner prerequisite remain authoritative. Existing APKs need a new Android release to receive the fix.
+Follow-up:
+- Keep real Retrofit HTTP contract tests; fake API tests alone cannot catch serializer omissions in mandatory request fields.
+
 ### 2026-10-07 — Android HSK 2.0/3.0 switch feedback va rad etilgan to'lov
 
 - Kurs tracki o'zgarganda yangi kurs xaritasi kelguncha darsga kirish Panda

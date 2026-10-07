@@ -1,5 +1,6 @@
 """Regression coverage for the native Android Starter 0/Foundation contract."""
 
+import json
 import unittest
 from datetime import datetime, timezone
 from types import SimpleNamespace
@@ -254,6 +255,91 @@ class AndroidFoundationApiTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(200, map_response.status_code)
         self.assertTrue(map_response.json()["foundation"]["completed"])
+
+    async def test_omitted_required_android_wire_fields_are_rejected_without_completion(self):
+        headers = await self._bearer()
+        # The former Kotlin DTO had defaults for both mandatory fields. The
+        # production encoder (encodeDefaults=false) sent only this event ID.
+        response = await self.client.post(
+            "/api/v3/android/course/foundation/complete",
+            headers=headers,
+            json={"event_id": "android:foundation:" + "m" * 32},
+        )
+        self.assertEqual(422, response.status_code)
+        self.assertEqual("desktop_course_request_invalid", response.json()["error"])
+
+        async with self.sessions() as session:
+            completions = (
+                await session.execute(
+                    select(CourseMiniAppEvent).where(
+                        CourseMiniAppEvent.telegram_id == 1001,
+                        CourseMiniAppEvent.event_name == "foundation_completed",
+                    )
+                )
+            ).scalars().all()
+        self.assertEqual([], completions)
+
+        status = await self.client.get(
+            "/api/v3/android/course/foundation",
+            headers=headers,
+        )
+        self.assertEqual(200, status.status_code)
+        self.assertFalse(status.json()["status"]["completed"])
+
+    async def test_required_android_wire_fields_complete_without_optional_speaking_bonus(self):
+        headers = await self._bearer()
+        event_id = "android:foundation:" + "w" * 32
+        # The corrected DTO always emits the ID/version. The optional false
+        # speaking bonus is still legitimately omitted by the same encoder.
+        response = await self.client.post(
+            "/api/v3/android/course/foundation/complete",
+            headers=headers,
+            json={
+                "foundation_id": "starter0_hsk1",
+                "foundation_version": 1,
+                "event_id": event_id,
+            },
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(response.json()["ok"])
+        self.assertTrue(response.json()["foundation"]["completed"])
+
+        async with self.sessions() as session:
+            completions = (
+                await session.execute(
+                    select(CourseMiniAppEvent).where(
+                        CourseMiniAppEvent.telegram_id == 1001,
+                        CourseMiniAppEvent.event_name == "foundation_completed",
+                    )
+                )
+            ).scalars().all()
+        self.assertEqual(1, len(completions))
+        self.assertEqual(event_id, completions[0].dedupe_key)
+        self.assertEqual("android_course", completions[0].source)
+        self.assertEqual(
+            {
+                "foundation_id": "starter0_hsk1",
+                "foundation_version": 1,
+                "speaking_bonus": False,
+            },
+            json.loads(completions[0].payload_json),
+        )
+
+        status = await self.client.get(
+            "/api/v3/android/course/foundation",
+            headers=headers,
+        )
+        self.assertEqual(200, status.status_code)
+        self.assertTrue(status.json()["status"]["completed"])
+
+        course_map = await self.client.get(
+            "/api/v3/android/course/map",
+            headers=headers,
+        )
+        self.assertEqual(200, course_map.status_code)
+        first_lesson = course_map.json()["units"][0]["lessons"][0]
+        self.assertEqual("current", first_lesson["status"])
+        self.assertTrue(first_lesson["completion_allowed"])
 
     async def test_foundation_completion_rejects_version_tampering(self):
         headers = await self._bearer()

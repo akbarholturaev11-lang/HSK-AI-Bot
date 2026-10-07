@@ -9,4 +9,10 @@
     <string name="foundation_speak_checking">Проверяю…</string>
     <string name="foundation_speak_heard">Я услышал:</string>
     <string name="foundation_speak_skip">Я СЕЙЧАС НЕ МОГУ ГОВОРИТЬ</string>
+    <string name="foundation_begin">Начать занятие</string>
+    <string name="foundation_start_first_lesson">Перейти к уроку 1</string>
+    <string name="foundation_save_error">Результат не сохранён. Проверьте подключение и повторите попытку.</string>
+    <string name="foundation_save_retry">Повторить сохранение</string>
+    <string name="foundation_required_intro">Пройдите это короткое занятие перед первым уроком HSK 1.</string>
+    <string name="foundation_optional_intro">Короткое вводное занятие для HSK 1.</string>
 </resources>

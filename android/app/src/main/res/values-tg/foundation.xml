@@ -9,4 +9,10 @@
     <string name="foundation_speak_checking">Месанҷам…</string>
     <string name="foundation_speak_heard">Ман чунин шунидам:</string>
     <string name="foundation_speak_skip">ҲОЗИР ГАП ЗАДА НАМЕТАВОНАМ</string>
+    <string name="foundation_begin">Оғози машқ</string>
+    <string name="foundation_start_first_lesson">Ба дарси 1 гузаштан</string>
+    <string name="foundation_save_error">Натиҷа сабт нашуд. Пайвастшавиро санҷида, дубора кӯшиш кунед.</string>
+    <string name="foundation_save_retry">Натиҷаро аз нав фиристодан</string>
+    <string name="foundation_required_intro">Пеш аз дарси якуми HSK 1 ин машқи кӯтоҳро анҷом диҳед.</string>
+    <string name="foundation_optional_intro">Машқи кӯтоҳи оғозӣ барои HSK 1.</string>
 </resources>

@@ -9,4 +9,10 @@
     <string name="foundation_speak_checking">Tekshiryapman…</string>
     <string name="foundation_speak_heard">Men shunday eshitdim:</string>
     <string name="foundation_speak_skip">HOZIR GAPIRA OLMAYMAN</string>
+    <string name="foundation_begin">Mashqni boshlash</string>
+    <string name="foundation_start_first_lesson">1-darsga o‘tish</string>
+    <string name="foundation_save_error">Natija saqlanmadi. Internetni tekshirib, qayta urinib ko‘ring.</string>
+    <string name="foundation_save_retry">Natijani qayta yuborish</string>
+    <string name="foundation_required_intro">HSK 1 darsidan oldin shu qisqa mashqni tugating.</string>
+    <string name="foundation_optional_intro">HSK 1 uchun qisqa boshlang‘ich mashq.</string>
 </resources>

@@ -27,8 +27,9 @@ data class FoundationResponseDto(
 
 @Serializable
 data class FoundationCompleteRequest(
-    @SerialName("foundation_id") val foundationId: String = "starter0_hsk1",
-    @SerialName("foundation_version") val foundationVersion: Int = 1,
+    // Required by the server: defaults would be omitted by the Retrofit encoder.
+    @SerialName("foundation_id") val foundationId: String,
+    @SerialName("foundation_version") val foundationVersion: Int,
     @SerialName("speaking_bonus") val speakingBonus: Boolean = false,
     @SerialName("event_id") val eventId: String,
 )

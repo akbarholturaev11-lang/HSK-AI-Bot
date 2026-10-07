@@ -289,11 +289,15 @@ class FoundationViewModel(
         }
     }
 
-    fun retrySave() = finish()
+    fun retrySave() {
+        val state = _state.value
+        if (state.currentCard?.type != "result" || state.error == null) return
+        finish()
+    }
 
     private fun finish() {
         val state = _state.value
-        if (!state.canFinish || state.saving) return
+        if (state.currentCard?.type != "result" || !state.canFinish || state.saving) return
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             when (

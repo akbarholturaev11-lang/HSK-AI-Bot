@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.size
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Icon
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -63,7 +65,12 @@ internal fun FoundationScreen(
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    AssistantScreen(foundationAssistantContext(state), bottomBar = false, priority = 10)
+    AssistantScreen(
+        foundationAssistantContext(state),
+        bottomBar = false,
+        priority = 10,
+        showButton = false,
+    )
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         when {
             state.loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -192,6 +199,17 @@ private fun FoundationCardBody(
             text = card.text,
             modifier = Modifier.fillMaxWidth(),
         )
+        Spacer(Modifier.height(10.dp))
+        Text(
+            text = stringResource(
+                if (state.required) R.string.foundation_required_intro
+                else R.string.foundation_optional_intro,
+            ),
+            style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp, lineHeight = 18.sp),
+            color = PompColors.InkSecondary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+        )
         if (card.audioText.isNotBlank()) {
             Spacer(Modifier.height(18.dp))
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -245,12 +263,6 @@ private fun FoundationCardBody(
 
     when (card.type) {
         "choice", "listen_choice" -> {
-            if (card.type == "listen_choice" && card.audioText.isNotBlank()) {
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    FoundationListenAudio(onClick = onPlayAudio)
-                }
-                Spacer(Modifier.height(16.dp))
-            }
             card.options.forEachIndexed { index, option ->
                 val selected = state.selectedChoice == index
                 val correct = selected && state.answerCorrect == true
@@ -318,7 +330,6 @@ private fun FoundationCardBody(
             }
         }
         "speak" -> {
-            if (card.audioText.isNotBlank()) AudioButton(onPlayAudio)
             Spacer(Modifier.height(14.dp))
             FoundationAction(
                 enabled = !state.isRecording && !state.isScoring,
@@ -387,6 +398,15 @@ private fun FoundationCardBody(
             )
         }
     }
+
+    if (state.error != null && card.type != "result") {
+        Spacer(Modifier.height(12.dp))
+        Text(
+            text = stringResource(state.error.messageRes),
+            style = MaterialTheme.typography.bodyMedium,
+            color = PompColors.Flame,
+        )
+    }
 }
 
 @Composable
@@ -412,17 +432,6 @@ private fun FoundationExampleCard(example: FoundationExample, audio: Boolean, on
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun AudioButton(onClick: () -> Unit) {
-    Surface(
-        color = PompColors.CinnabarSoft,
-        shape = RoundedCornerShape(16.dp),
-        modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp).clickable(onClick = onClick),
-    ) {
-        Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.VolumeUp, contentDescription = null, tint = PompColors.Cinnabar) }
     }
 }
 
@@ -484,28 +493,45 @@ private fun HanziToken(text: String, onClick: () -> Unit) {
 @Composable
 private fun FoundationFooter(state: FoundationUiState, card: FoundationCard, onAdvance: () -> Unit, onRetry: () -> Unit) {
     val interactiveBlocked = card.type in setOf("choice", "listen_choice", "builder") && state.answerCorrect != true
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(
-            topStart = 20.dp,
-            topEnd = 20.dp,
-            bottomEnd = 0.dp,
-            bottomStart = 0.dp,
-        ),
-        shadowElevation = 10.dp,
-    ) {
-        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp)) {
-            if (state.error != null) {
-                FoundationAction(enabled = !state.saving, onClick = onRetry, text = stringResource(R.string.action_retry), secondary = true, leadingRefresh = true)
-                Spacer(Modifier.height(8.dp))
+    val resultSaveFailed = card.type == "result" && state.error != null
+    Surface(modifier = Modifier.fillMaxWidth(), color = PompColors.Paper) {
+        Column {
+            HorizontalDivider(color = PompColors.Divider)
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .padding(horizontal = 20.dp, vertical = 12.dp),
+            ) {
+                if (resultSaveFailed) {
+                    Text(
+                        text = stringResource(R.string.foundation_save_error),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = PompColors.Flame,
+                        modifier = Modifier.padding(bottom = 10.dp),
+                    )
+                    FoundationAction(
+                        enabled = !state.saving,
+                        onClick = onRetry,
+                        text = stringResource(R.string.foundation_save_retry),
+                        secondary = false,
+                        loading = state.saving,
+                    )
+                } else {
+                    val actionLabel = when {
+                        card.type == "intro" && state.cardIndex == 0 -> R.string.foundation_begin
+                        card.type == "result" -> R.string.foundation_start_first_lesson
+                        else -> R.string.action_continue
+                    }
+                    FoundationAction(
+                        enabled = !interactiveBlocked && !state.saving && (card.type != "result" || state.canFinish),
+                        onClick = onAdvance,
+                        text = stringResource(actionLabel),
+                        secondary = false,
+                        loading = state.saving,
+                    )
+                }
             }
-            FoundationAction(
-                enabled = !interactiveBlocked && !state.saving && (card.type != "result" || state.canFinish),
-                onClick = onAdvance,
-                text = stringResource(R.string.action_continue),
-                secondary = false,
-                loading = state.saving,
-            )
         }
     }
 }
