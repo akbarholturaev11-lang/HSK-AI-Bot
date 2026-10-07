@@ -115,6 +115,25 @@ class DictionaryEntryTest {
     }
 
     @Test
+    fun singleCharacterEntryShowsItsHanziInTheHeading() {
+        val mei = DictionaryWord("每", "měi", "har bir", "HSK2")
+        val state = DictionaryUiState(
+            isLoading = false,
+            words = listOf(mei),
+            total = 1,
+            selectedWord = mei,
+            characters = listOf("每"),
+        )
+
+        compose.setContent { PompHskAiTheme { DictionaryScreen(state, noActions) } }
+
+        compose.onNodeWithText("每").assertExists()
+        compose.onNodeWithText("měi").assertExists()
+        compose.onNodeWithText("har bir").assertExists()
+        save("entry_mei_single_character")
+    }
+
+    @Test
     fun theHistoryShowsOnlyWhileTheSearchBoxIsFocused() {
         val hao = DictionaryWord("好", "hǎo", "yaxshi, ajoyib", "HSK1")
         val xuexi = DictionaryWord("学习", "xuéxí", "o'qimoq, o'rganmoq", "HSK1")

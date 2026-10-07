@@ -389,7 +389,7 @@ private fun DictionaryDetail(state: DictionaryUiState, actions: DictionaryAction
             contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 4.dp, bottom = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            item(key = "word") { WordHeading(word, showHanzi = isPhrase) }
+            item(key = "word") { WordHeading(word) }
             item(key = "actions") {
                 ActionRow(
                     isAudioLoading = state.isAudioLoading,
@@ -615,14 +615,12 @@ private fun StrokeControl(
 }
 
 @Composable
-private fun WordHeading(word: DictionaryWord, showHanzi: Boolean) {
+private fun WordHeading(word: DictionaryWord) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(top = 14.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        if (showHanzi) {
-            Text(word.hanzi, style = PompTextStyles.hanziMedium, color = PompColors.Ink, textAlign = TextAlign.Center)
-        }
+        Text(word.hanzi, style = PompTextStyles.hanziMedium, color = PompColors.Ink, textAlign = TextAlign.Center)
         Text(
             word.pinyin,
             style = PompTextStyles.pinyin.copy(fontSize = 22.sp),
