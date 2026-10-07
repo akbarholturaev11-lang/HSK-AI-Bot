@@ -18,9 +18,12 @@ class AndroidLiveVoiceGateTests(unittest.TestCase):
         values.update(overrides)
         return SimpleNamespace(**values)
 
-    def test_live_requires_explicit_paid_allowlist_and_budget(self):
+    def test_live_requires_explicit_paid_allowlist_or_global_rollout_and_budget(self):
         self.assertTrue(live_voice_available(self._settings(), 4242))
         self.assertFalse(live_voice_available(self._settings(), 7))
+        self.assertTrue(
+            live_voice_available(self._settings(ANDROID_VOICE_LIVE_ALLOWED_USERS="*"), 7)
+        )
         self.assertFalse(
             live_voice_available(self._settings(ANDROID_VOICE_LIVE_ENABLED=False), 4242)
         )
@@ -34,6 +37,9 @@ class AndroidLiveVoiceGateTests(unittest.TestCase):
     def test_malformed_allowlist_or_budget_fails_closed(self):
         self.assertFalse(
             live_voice_available(self._settings(ANDROID_VOICE_LIVE_ALLOWED_USERS="4242,nope"), 4242)
+        )
+        self.assertFalse(
+            live_voice_available(self._settings(ANDROID_VOICE_LIVE_ALLOWED_USERS="*,4242"), 4242)
         )
         self.assertFalse(
             live_voice_available(self._settings(ANDROID_VOICE_LIVE_SESSION_BUDGET_USD="invalid"), 4242)

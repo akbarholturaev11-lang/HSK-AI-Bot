@@ -13,15 +13,18 @@ from app.services.voice_practice_service import (
 
 
 def live_voice_available(settings_obj, telegram_id: int) -> bool:
-    """Fail closed until paid billing and an internal pilot user are set."""
+    """Require paid billing and an explicit user allowlist or global rollout."""
+    raw_allowed_users = str(
+        getattr(settings_obj, "ANDROID_VOICE_LIVE_ALLOWED_USERS", "") or ""
+    ).strip()
+    allow_all_users = raw_allowed_users == "*"
     try:
-        allowed = {
-            int(value.strip())
-            for value in str(
-                getattr(settings_obj, "ANDROID_VOICE_LIVE_ALLOWED_USERS", "") or ""
-            ).split(",")
-            if value.strip()
-        }
+        if allow_all_users:
+            allowed = set()
+        else:
+            allowed = {
+                int(value.strip()) for value in raw_allowed_users.split(",") if value.strip()
+            }
     except (TypeError, ValueError):
         return False
     try:
@@ -36,7 +39,7 @@ def live_voice_available(settings_obj, telegram_id: int) -> bool:
         and getattr(settings_obj, "GEMINI_BILLING_TIER", "free") == "paid"
         and str(getattr(settings_obj, "ANDROID_VOICE_LIVE_MODEL", "")) == "gemini-3.8-live"
         and session_budget > 0
-        and int(telegram_id) in allowed
+        and (allow_all_users or int(telegram_id) in allowed)
     )
 
 

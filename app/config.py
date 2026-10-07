@@ -4,8 +4,8 @@ from typing import List, Literal
 
 class Settings(BaseSettings):
     ANDROID_ASSISTANT_ENABLED: bool = True
-    # Android real-time voice remains unavailable until the paid provider
-    # project and an internal pilot allowlist are explicitly configured.
+    # Android live voice requires paid billing and an explicit user allowlist;
+    # the allowlist value "*" is the deliberate all-user rollout switch.
     ANDROID_VOICE_LIVE_ENABLED: bool = False
     ANDROID_VOICE_LIVE_ALLOWED_USERS: str = ""
     ANDROID_VOICE_LIVE_MODEL: str = "gemini-3.8-live"

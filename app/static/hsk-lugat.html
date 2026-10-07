@@ -56,18 +56,20 @@ button:active{transform:scale(.98)}
 .search-icon{position:absolute;left:16px;top:50%;width:18px;height:18px;transform:translateY(-50%);color:var(--text2);pointer-events:none}
 .search-clear{position:absolute;right:44px;top:50%;width:44px;height:44px;transform:translateY(-50%);border-radius:50%;color:var(--text2);font-size:19px;display:none;align-items:center;justify-content:center}
 .search-clear.visible{display:flex}
-.filter-toggle{position:absolute;right:7px;top:50%;width:44px;height:44px;transform:translateY(-50%);display:flex;align-items:center;justify-content:center;border:0;border-radius:10px;background:transparent;color:var(--text2);transition:background .15s ease,color .15s ease}
+.filter-toggle{position:absolute;right:7px;top:50%;width:44px;height:44px;transform:translateY(-50%);display:flex;align-items:center;justify-content:center;border:0;border-radius:12px;background:transparent;color:var(--text2);transition:background .15s ease,color .15s ease}
 .filter-toggle svg{width:20px;height:20px}
 .filter-toggle[aria-expanded="true"]{background:var(--accent-dim);color:var(--accent)}
 .filter-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.filter-count{position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 3px;display:flex;align-items:center;justify-content:center;border:1px solid var(--bg2);border-radius:999px;background:var(--accent);color:#fff;font-size:10px;font-weight:800;line-height:1}
+.filter-count:empty{display:none}
 .search-history{position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:20;background:rgba(18,24,38,.98);
   border:1px solid var(--border2);border-radius:16px;padding:12px;box-shadow:0 14px 40px rgba(0,0,0,.28);backdrop-filter:blur(16px)}
 .search-history.hidden{display:none}
-.filter-stack{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+.filter-stack{display:flex;flex-direction:column;gap:8px;margin-top:8px}
 .filter-stack.collapsed{display:none}
 .filter-row{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .filter-row::-webkit-scrollbar{display:none}
-.filter-pill{min-width:44px;min-height:44px;padding:7px 12px;border-radius:11px;background:var(--bg2);border:1px solid var(--border2);color:var(--text2);font-size:12px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.filter-pill{min-width:44px;min-height:44px;padding:7px 12px;border-radius:12px;background:var(--bg2);border:1px solid var(--border2);color:var(--text2);font-size:12px;font-weight:600;white-space:nowrap;flex-shrink:0}
 .filter-pill.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
 .history-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .history-clear{font-size:11px;color:var(--accent);font-weight:800}
@@ -271,13 +273,14 @@ html.fast-writer-sheet #app{max-width:none;overflow:hidden}
           <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"></circle><path d="m16 16 4.5 4.5"></path></svg>
           <input id="search" type="text" placeholder="Ma’no, pinyin yoki ieroglif bo‘yicha qidiring…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
           <button class="search-clear" id="search-clear" type="button" aria-label="Tozalash">×</button>
-          <button class="filter-toggle" id="filter-toggle" type="button" aria-label="Filtrlarni yashirish" aria-expanded="true" aria-controls="filter-stack">
+          <button class="filter-toggle" id="filter-toggle" type="button" aria-label="Filtrlarni ko‘rsatish" aria-expanded="false" aria-controls="filter-stack">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16l-6.4 7.2v5.1l-3.2 1.7v-6.8L4 5z"></path></svg>
+            <span class="filter-count" id="filter-count" aria-hidden="true"></span>
           </button>
         </div>
         <div class="search-history hidden" id="search-history"></div>
       </div>
-      <div class="filter-stack" id="filter-stack" aria-label="Lug‘at filtrlari">
+      <div class="filter-stack collapsed" id="filter-stack" aria-label="Lug‘at filtrlari">
         <div class="filter-row" id="version-filters" role="group" aria-label="Lug‘at versiyasi"></div>
         <div class="filter-row" id="level-filters" role="group" aria-label="Daraja"></div>
       </div>
@@ -845,6 +848,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   var searchRow = document.getElementById('search-row');
   var searchClear = document.getElementById('search-clear');
   var filterToggle = document.getElementById('filter-toggle');
+  var filterCount = document.getElementById('filter-count');
   var filterStack = document.getElementById('filter-stack');
   var versionFilters = document.getElementById('version-filters');
   var levelFilters = document.getElementById('level-filters');
@@ -1111,6 +1115,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     heroTitle.textContent = t.title;
     searchEl.placeholder = t.placeholder;
     searchClear.setAttribute('aria-label', t.clearSearch);
+    var activeFilterCount = (currentVersionFilter === 'all' ? 0 : 1) + (currentFilterLevel === 'all' ? 0 : 1);
+    filterCount.textContent = activeFilterCount ? String(activeFilterCount) : '';
     filterToggle.setAttribute('aria-label', filterStack.classList.contains('collapsed') ? t.showFilters : t.hideFilters);
     filterToggle.setAttribute('aria-expanded', String(!filterStack.classList.contains('collapsed')));
     versionFilters.setAttribute('aria-label', t.versionFilter);
