@@ -31,12 +31,18 @@ class UpdateBannerStatesTest {
         size = 3_766_687L,
     )
 
-    private fun show(phase: UpdatePhase, canInstall: Boolean, onClick: () -> Unit = {}) {
+    private fun show(
+        phase: UpdatePhase,
+        canInstall: Boolean,
+        downloadPercent: Int? = null,
+        onClick: () -> Unit = {},
+    ) {
         compose.setContent {
             PompHskAiTheme {
                 UpdateBannerContent(
                     release = release,
                     phase = phase,
+                    downloadPercent = downloadPercent,
                     canInstall = canInstall,
                     onClick = onClick,
                 )
@@ -61,8 +67,15 @@ class UpdateBannerStatesTest {
 
     @Test
     fun downloadingAndFailureBothStaySpokenFor() {
-        show(phase = UpdatePhase.Downloading, canInstall = true)
-        compose.onNodeWithText("Yuklanmoqda…").assertIsDisplayed()
+        show(phase = UpdatePhase.Downloading, canInstall = true, downloadPercent = 42)
+        compose.onNodeWithText("Yuklanmoqda · 42%").assertIsDisplayed()
+    }
+
+    @Test
+    fun aCompletedDownloadOffersInstallation() {
+        show(phase = UpdatePhase.Downloaded, canInstall = true, downloadPercent = 100)
+
+        compose.onNodeWithText("Yuklandi · 100% — o‘rnatish uchun bosing").assertIsDisplayed()
     }
 
     @Test

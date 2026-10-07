@@ -99,6 +99,13 @@ object AppUpdate {
         return downloadedBytes == announcedBytes
     }
 
+    fun downloadPercent(downloadedBytes: Long, totalBytes: Long): Int? {
+        if (totalBytes <= 0L) return null
+        return ((downloadedBytes.toDouble() / totalBytes.toDouble()) * 100)
+            .toInt()
+            .coerceIn(0, 99)
+    }
+
     /**
      * Whether this install is far enough behind to be told so on every screen.
      *

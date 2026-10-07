@@ -11,10 +11,10 @@ import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,12 +23,12 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.work.WorkManager
 import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.feature.profile.ProfileActionCard
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -49,11 +49,10 @@ private val updateCheckLock = Any()
 /**
  * "A newer version exists", in the one place a learner goes looking.
  *
- * Android cannot update a sideloaded app silently — the system always shows
- * its own install confirmation — so this is deliberately one tap and then the
- * system's dialog, never a background swap. The card lives in the profile and
- * nowhere else: an update is not urgent enough to stand between someone and
- * the lesson they opened the app for.
+ * Android cannot update a sideloaded app silently. A tap starts the download;
+ * once it is ready, another tap opens Android's install confirmation. The
+ * download continues if the learner leaves the app, and the card stays in the
+ * profile so it does not stand between someone and a lesson.
  *
  * The Play build has a no-op in place of this file. Google Play forbids an app
  * it distributes from updating itself by any other route, which is why none of
@@ -63,9 +62,7 @@ private val updateCheckLock = Any()
 fun AppUpdateCard(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val scope = rememberCoroutineScope()
     var release by remember { mutableStateOf<UpdateRelease?>(null) }
-    var phase by remember { mutableStateOf(UpdatePhase.Ready) }
     var canInstall by remember { mutableStateOf(context.canInstallApks()) }
 
     LaunchedEffect(Unit) {
@@ -87,10 +84,19 @@ fun AppUpdateCard(modifier: Modifier = Modifier) {
     }
 
     val available = release ?: return
+    val workInfos by remember(context, available.versionCode) {
+        WorkManager.getInstance(context)
+            .getWorkInfosForUniqueWorkFlow(UpdateDownload.uniqueWorkName(available.versionCode))
+    }.collectAsState(initial = emptyList())
+    val file = UpdateDownload.apkFileForVersion(context, available.versionCode)
+    val downloadedFileIsValid = file.isFile && AppUpdate.isExpectedSize(file.length(), available.size)
+    val workInfo = UpdateDownload.currentWorkInfo(workInfos)
+    val phase = UpdateDownload.downloadPhase(workInfos, downloadedFileIsValid)
 
     UpdateCardContent(
         release = available,
         phase = phase,
+        downloadPercent = UpdateDownload.downloadProgressPercent(workInfo),
         canInstall = canInstall,
         modifier = modifier,
         onClick = {
@@ -99,17 +105,10 @@ fun AppUpdateCard(modifier: Modifier = Modifier) {
                 context.openInstallPermissionSettings()
                 return@UpdateCardContent
             }
-            phase = UpdatePhase.Downloading
-            scope.launch {
-                val file = withContext(Dispatchers.IO) { download(context, available) }
-                if (file == null) {
-                    phase = UpdatePhase.Failed
-                } else {
-                    // Back to Ready, not "installed": the system dialog can be
-                    // dismissed, and the card must still be there if it was.
-                    phase = UpdatePhase.Ready
-                    context.launchInstaller(file)
-                }
+            if (downloadedFileIsValid) {
+                context.launchInstaller(file)
+            } else {
+                UpdateDownload.enqueue(context, available)
             }
         },
     )
@@ -127,6 +126,7 @@ fun AppUpdateCard(modifier: Modifier = Modifier) {
 internal fun UpdateCardContent(
     release: UpdateRelease,
     phase: UpdatePhase,
+    downloadPercent: Int?,
     canInstall: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -136,7 +136,11 @@ internal fun UpdateCardContent(
     when {
         phase == UpdatePhase.Downloading -> {
             title = stringResource(R.string.update_card_title, release.versionName)
-            subtitle = stringResource(R.string.update_card_downloading)
+            subtitle = stringResource(R.string.update_card_downloading, downloadPercent ?: 0)
+        }
+        phase == UpdatePhase.Downloaded -> {
+            title = stringResource(R.string.update_card_title, release.versionName)
+            subtitle = stringResource(R.string.update_card_downloaded)
         }
         phase == UpdatePhase.Failed -> {
             title = stringResource(R.string.update_card_title, release.versionName)
@@ -163,19 +167,11 @@ internal fun UpdateCardContent(
     )
 }
 
-internal enum class UpdatePhase { Ready, Downloading, Failed }
+internal enum class UpdatePhase { Ready, Downloading, Downloaded, Failed }
 
 /**
- * Its own client on purpose.
- *
- * Shared with the banner and the background check, which is why these are
- * `internal` rather than private to this file.
- *
- * The app's shared OkHttp client carries `OriginGuardInterceptor`, which
- * rejects every host but our API — correct for the API, and fatal here, since
- * the artifact is served from object storage. This one accepts only what
- * [AppUpdate.isInstallableUrl] already allowed, and follows redirects because
- * storage buckets use them.
+ * The update endpoint uses its own client so API origin rules and redirect
+ * behavior stay isolated from the APK download worker.
  */
 private val downloadClient: OkHttpClient by lazy {
     OkHttpClient.Builder()
@@ -281,36 +277,6 @@ private fun storeUpdateCheck(
             }
         }
         .apply()
-}
-
-internal fun download(context: Context, release: UpdateRelease): File? = try {
-    val directory = File(context.cacheDir, "updates").apply { mkdirs() }
-    // One file, always overwritten. Keeping a version-named file per release
-    // would quietly fill the cache with installers nobody will open again.
-    val target = File(directory, "update.apk")
-    val request = Request.Builder().url(release.url).get().build()
-    downloadClient.newCall(request).execute().use { response ->
-        val body = response.body
-        if (!response.isSuccessful || body == null) {
-            target.delete()
-            null
-        } else {
-            target.outputStream().use { out -> body.byteStream().copyTo(out) }
-            if (AppUpdate.isExpectedSize(target.length(), release.size)) {
-                target
-            } else {
-                // Not the file we were promised. Deleting it matters more than
-                // reporting it: a half-written APK left in the cache is the
-                // one the next attempt would find.
-                Log.w(TAG, "downloaded ${target.length()} bytes, expected ${release.size}")
-                target.delete()
-                null
-            }
-        }
-    }
-} catch (error: Exception) {
-    Log.w(TAG, "update download failed", error)
-    null
 }
 
 internal fun Context.canInstallApks(): Boolean = packageManager.canRequestPackageInstalls()

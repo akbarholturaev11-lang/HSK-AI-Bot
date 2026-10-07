@@ -31,12 +31,18 @@ class UpdateCardStatesTest {
         size = 3_766_687L,
     )
 
-    private fun show(phase: UpdatePhase, canInstall: Boolean, onClick: () -> Unit = {}) {
+    private fun show(
+        phase: UpdatePhase,
+        canInstall: Boolean,
+        downloadPercent: Int? = null,
+        onClick: () -> Unit = {},
+    ) {
         compose.setContent {
             PompHskAiTheme {
                 UpdateCardContent(
                     release = release,
                     phase = phase,
+                    downloadPercent = downloadPercent,
                     canInstall = canInstall,
                     onClick = onClick,
                 )
@@ -62,10 +68,17 @@ class UpdateCardStatesTest {
 
     @Test
     fun downloadingSaysSoWithoutLosingTheVersion() {
-        show(phase = UpdatePhase.Downloading, canInstall = true)
+        show(phase = UpdatePhase.Downloading, canInstall = true, downloadPercent = 42)
 
         compose.onNodeWithText("Yangi versiya 1.2.0").assertIsDisplayed()
-        compose.onNodeWithText("Yuklanmoqda…").assertIsDisplayed()
+        compose.onNodeWithText("Yuklanmoqda · 42%").assertIsDisplayed()
+    }
+
+    @Test
+    fun aCompletedDownloadOffersInstallation() {
+        show(phase = UpdatePhase.Downloaded, canInstall = true, downloadPercent = 100)
+
+        compose.onNodeWithText("Yuklandi · 100% — o‘rnatish uchun bosing").assertIsDisplayed()
     }
 
     @Test

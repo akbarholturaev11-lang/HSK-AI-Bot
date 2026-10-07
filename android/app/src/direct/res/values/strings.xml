@@ -139,7 +139,8 @@
     -->
     <string name="update_card_title">Yangi versiya %1$s</string>
     <string name="update_card_subtitle">%1$s · yangilash uchun bosing</string>
-    <string name="update_card_downloading">Yuklanmoqda…</string>
+    <string name="update_card_downloading">Yuklanmoqda · %1$d%%</string>
+    <string name="update_card_downloaded">Yuklandi · 100% — o‘rnatish uchun bosing</string>
     <string name="update_card_failed">Yuklab bo‘lmadi — qayta urinib ko‘ring</string>
     <string name="update_card_permission">O‘rnatishga ruxsat bering</string>
     <string name="update_card_permission_hint">Android sozlamalari ochiladi</string>
@@ -149,7 +150,8 @@
         notification a release is allowed to send.
     -->
     <string name="update_banner_text">Yangi versiya %1$s — yangilash uchun bosing</string>
-    <string name="update_banner_downloading">Yuklanmoqda…</string>
+    <string name="update_banner_downloading">Yuklanmoqda · %1$d%%</string>
+    <string name="update_banner_downloaded">Yuklandi · 100% — o‘rnatish uchun bosing</string>
     <string name="update_banner_failed">Yuklab bo‘lmadi — qayta urinib ko‘ring</string>
     <string name="update_banner_permission">O‘rnatishga ruxsat bering — yangilash uchun bosing</string>
     <string name="update_channel_name">Ilova yangilanishlari</string>

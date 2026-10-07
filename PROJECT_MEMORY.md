@@ -10616,3 +10616,32 @@ Follow-up:
 - Schema migration yo'q. Asosiy kod: `hsk30_unlock_service.py`,
   `course_track_service.py`, `subscription_miniapp_service.py`,
   `app/static/subscription.html`, Android checkout va payment-status API.
+
+### 2026-10-07 — Direct Android APK yangilanishi fonda yuklanadi
+
+Changed:
+- Direct APK yangilanishi WorkManager'ning unique, tarmoqqa bog'langan ishiga
+  o'tdi. Yuklash profildan chiqilganda yoki app process yopilganda davom etadi;
+  profil kartasi va eski versiya banneri bir xil ish holati va foizni ko'rsatadi.
+- APK `filesDir/updates` ichidagi vaqtinchalik faylga olinadi, e'lon qilingan
+  hajmi tekshirilgach yakuniy APK'ga o'tadi. Xatoda cheklangan retry bor; o'rnatish
+  hanuz Android tizim tasdig'i bilan va foydalanuvchi bosganda boshlanadi.
+- Play flavor va yangilanish haqidagi mavjud bitta-bildirishnoma qoidasi o'zgarmadi.
+
+Why:
+- Yuklash holati ekran holatiga bog'lanib qolmasin va profil/banner parallel
+  APK yozmasin.
+
+Files touched:
+- `android/app/src/direct/java/com/pomp/hskai/feature/update/UpdateDownload.kt`,
+  `AppUpdate.kt`, `AppUpdateCard.kt`, `AppUpdateBanner.kt`, Direct tarjimalari,
+  `android/app/src/direct/res/xml/update_paths.xml`.
+
+Risk:
+- WorkManager internet qaytguncha ishni kutishi yoki tizim resursiga ko'ra
+  kechiktirishi mumkin; Android'dagi force-stop ishni ilova qayta ochilguncha
+  to'xtatadi.
+
+Follow-up:
+- Haqiqiy e'lon qilingan APK bilan fizik telefonda app'ni yopib, keyin qaytib
+  100%/installer oqimini tekshirish kerak.

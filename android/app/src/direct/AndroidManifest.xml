@@ -18,7 +18,7 @@
 
     <application>
         <!--
-            The installer runs in another process and cannot read our cache
+            The installer runs in another process and cannot read our private
             directory, so the downloaded file is handed over as a content URI
             with a one-shot read grant instead.
         -->

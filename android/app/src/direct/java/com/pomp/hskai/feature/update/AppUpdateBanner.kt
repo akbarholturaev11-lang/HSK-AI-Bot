@@ -15,10 +15,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,11 +30,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.work.WorkManager
 import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
@@ -53,9 +53,7 @@ import kotlinx.coroutines.withContext
 fun AppUpdateBanner(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val scope = rememberCoroutineScope()
     var release by remember { mutableStateOf<UpdateRelease?>(null) }
-    var phase by remember { mutableStateOf(UpdatePhase.Ready) }
     var canInstall by remember { mutableStateOf(context.canInstallApks()) }
 
     LaunchedEffect(Unit) {
@@ -86,9 +84,19 @@ fun AppUpdateBanner(modifier: Modifier = Modifier) {
         return
     }
 
+    val workInfos by remember(context, available.versionCode) {
+        WorkManager.getInstance(context)
+            .getWorkInfosForUniqueWorkFlow(UpdateDownload.uniqueWorkName(available.versionCode))
+    }.collectAsState(initial = emptyList())
+    val file = UpdateDownload.apkFileForVersion(context, available.versionCode)
+    val downloadedFileIsValid = file.isFile && AppUpdate.isExpectedSize(file.length(), available.size)
+    val workInfo = UpdateDownload.currentWorkInfo(workInfos)
+    val phase = UpdateDownload.downloadPhase(workInfos, downloadedFileIsValid)
+
     UpdateBannerContent(
         release = available,
         phase = phase,
+        downloadPercent = UpdateDownload.downloadProgressPercent(workInfo),
         canInstall = canInstall,
         modifier = modifier,
         onClick = {
@@ -97,17 +105,10 @@ fun AppUpdateBanner(modifier: Modifier = Modifier) {
                 context.openInstallPermissionSettings()
                 return@UpdateBannerContent
             }
-            phase = UpdatePhase.Downloading
-            scope.launch {
-                val file = withContext(Dispatchers.IO) { download(context, available) }
-                if (file == null) {
-                    phase = UpdatePhase.Failed
-                } else {
-                    // Back to Ready rather than "installed": the system dialog
-                    // can be dismissed, and the bar has to survive that.
-                    phase = UpdatePhase.Ready
-                    context.launchInstaller(file)
-                }
+            if (downloadedFileIsValid) {
+                context.launchInstaller(file)
+            } else {
+                UpdateDownload.enqueue(context, available)
             }
         },
     )
@@ -121,12 +122,17 @@ fun AppUpdateBanner(modifier: Modifier = Modifier) {
 internal fun UpdateBannerContent(
     release: UpdateRelease,
     phase: UpdatePhase,
+    downloadPercent: Int?,
     canInstall: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val text = when {
-        phase == UpdatePhase.Downloading -> stringResource(R.string.update_banner_downloading)
+        phase == UpdatePhase.Downloading -> stringResource(
+            R.string.update_banner_downloading,
+            downloadPercent ?: 0,
+        )
+        phase == UpdatePhase.Downloaded -> stringResource(R.string.update_banner_downloaded)
         phase == UpdatePhase.Failed -> stringResource(R.string.update_banner_failed)
         !canInstall -> stringResource(R.string.update_banner_permission)
         else -> stringResource(R.string.update_banner_text, release.versionName)

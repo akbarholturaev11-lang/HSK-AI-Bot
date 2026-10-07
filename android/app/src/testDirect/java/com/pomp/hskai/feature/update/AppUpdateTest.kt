@@ -148,4 +148,12 @@ class AppUpdateTest {
         assertTrue(AppUpdate.isExpectedSize(downloadedBytes = 100, announcedBytes = 0))
         assertFalse(AppUpdate.isExpectedSize(downloadedBytes = 0, announcedBytes = 0))
     }
+
+    @Test
+    fun `download percent stays bounded until the verified file is complete`() {
+        assertEquals(0, AppUpdate.downloadPercent(downloadedBytes = 0, totalBytes = 100))
+        assertEquals(42, AppUpdate.downloadPercent(downloadedBytes = 42, totalBytes = 100))
+        assertEquals(99, AppUpdate.downloadPercent(downloadedBytes = 110, totalBytes = 100))
+        assertNull(AppUpdate.downloadPercent(downloadedBytes = 10, totalBytes = 0))
+    }
 }
