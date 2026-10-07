@@ -61,7 +61,7 @@ data class VoiceUiState(
     val sessionId: String? = null,
     val remainingLimit: Int = 0,
     val turnCount: Int = 0,
-    val maxDialogs: Int = 7,
+    val maxDialogs: Int = 0,
     val lines: List<VoiceLine> = emptyList(),
     val result: VoiceEndResponse? = null,
     val error: ApiError? = null,

@@ -855,7 +855,7 @@ data class VoiceStartResponse(
     @SerialName("opening_message") val openingMessage: VoiceReplyDto =
         VoiceReplyDto(),
     @SerialName("scenario") val scenario: VoiceScenarioDto? = null,
-    @SerialName("max_dialogs") val maxDialogs: Int = 7,
+    @SerialName("max_dialogs") val maxDialogs: Int = 0,
     /** The lesson this conversation is built on: the "what to say" material. */
     @SerialName("course_context") val courseContext: VoiceCourseContextDto =
         VoiceCourseContextDto(),
@@ -911,7 +911,7 @@ data class VoiceMessageResponse(
     @SerialName("correction") val correction: String? = null,
     @SerialName("remaining_limit") val remainingLimit: Int = 0,
     @SerialName("turn_count") val turnCount: Int = 0,
-    @SerialName("max_dialogs") val maxDialogs: Int = 7,
+    @SerialName("max_dialogs") val maxDialogs: Int = 0,
     @SerialName("session_should_end") val sessionShouldEnd: Boolean = false,
     @SerialName("suggestions") val suggestions: List<VoiceSuggestionDto> = emptyList(),
 )

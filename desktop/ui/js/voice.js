@@ -277,7 +277,7 @@ export class DesktopVoiceController {
       `Voice role: ${briefText(role, 80)}`,
       `Voice level: ${briefText(this.level, 40)}`,
       `Voice phase: ${briefText(phase, 80)}`,
-      `Voice turns: ${Number(this.turnCount || 0)}/${Number(this.maxDialogs || 0)}`,
+      `Voice turns: ${Number(this.turnCount || 0)}`,
     ];
     let latestTurn = "";
     if (latest) {

@@ -222,7 +222,7 @@
     <string name="voice_limit_premium">Premium: AI Voice бе лимит</string>
     <string name="voice_limit_free">Сӯҳбати ройгони боқимонда: %1$d</string>
     <string name="voice_session_title">Сӯҳбат</string>
-    <string name="voice_turn_progress">%1$d / %2$d реплика</string>
+    <string name="voice_turn_progress">%1$d реплика</string>
     <string name="voice_time_remaining">Вақти боқимонда %1$02d:%2$02d</string>
     <string name="voice_end">Анҷом</string>
     <string name="voice_hide_chat">Матни суҳбатро пинҳон кардан</string>

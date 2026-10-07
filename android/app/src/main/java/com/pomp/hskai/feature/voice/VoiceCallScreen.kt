@@ -138,7 +138,6 @@ internal fun VoiceCallScreen(
     val turnProgress = stringResource(
         R.string.voice_turn_progress,
         state.turnCount,
-        state.maxDialogs,
     )
     val liveTime = state.liveSecondsRemaining?.let { seconds ->
         stringResource(R.string.voice_time_remaining, seconds / 60, seconds % 60)

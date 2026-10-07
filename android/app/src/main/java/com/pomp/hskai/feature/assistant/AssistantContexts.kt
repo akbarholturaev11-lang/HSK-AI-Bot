@@ -227,7 +227,7 @@ fun voiceAssistantContext(state: VoiceUiState, level: String): ScreenContext {
     val details = buildString {
         appendLine("Voice role: ${state.selectedRole}, level: $level")
         state.sessionId?.let { appendLine("Session is active; AI chat must not start recording while practice mic is active.") }
-        appendLine("Turns: ${state.turnCount}/${state.maxDialogs}")
+        appendLine("Turns: ${state.turnCount}")
         state.lines.takeLast(4).forEach { line ->
             val who = if (line.speaker == VoiceSpeaker.USER) "User" else "Partner"
             appendLine("$who: ${line.text}")

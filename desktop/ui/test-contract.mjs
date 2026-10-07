@@ -365,6 +365,16 @@ test("AI Voice speaks to the shared voice-practice backend", async () => {
   // A correction is either a string or null; the UI branches on exactly that.
   assert.ok(turn.correction === null || typeof turn.correction === "string");
 
+  for (let count = 2; count <= 8; count += 1) {
+    const next = await previewInvoke("desktop_voice_message", {
+      sessionId: started.session_id,
+      audioDataUrl: "data:audio/webm;base64,GkXfow==",
+    });
+    assert.equal(next.turn_count, count);
+    assert.equal(next.max_dialogs, 0);
+    assert.equal(next.session_should_end, false);
+  }
+
   const ended = await previewInvoke("desktop_voice_session_end", {
     sessionId: started.session_id,
   });

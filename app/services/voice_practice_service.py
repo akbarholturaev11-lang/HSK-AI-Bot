@@ -61,7 +61,10 @@ FREE_PRONOUNCE_DAILY = 25
 # Talaffuz "o'tdi" chegarasi. Klient ham shu qiymatni ko'rsatadi
 # (course_v3_pronunciation.html: score>=60), shuning uchun bitta joyda.
 PRONOUNCE_PASS_SCORE = 60
-MAX_DIALOGS_PER_SESSION = 7
+# API compatibility: 0 means no per-session dialogue cap.
+MAX_DIALOGS_PER_SESSION = 0
+# Keep the existing learning-completion milestone independent of the cap.
+VOICE_COMPLETION_MIN_TURNS = 7
 # AI qaytaradigan xato turlari. `course_mistakes.category` bilan bir xil
 # nomlanadi, shunda end_session ularni to'g'ridan-to'g'ri uzata oladi.
 VOICE_ERROR_TYPES = frozenset({"grammar", "word", "pronunciation"})
@@ -742,9 +745,9 @@ class VoicePracticeService:
         item.lesson_id = course_context.get("lesson_id")
         item.target_words = course_context.get("words") or []
         item.review_words = course_context.get("review_words") or []
-        # Moslashuv rejasi sessiya boshida MUZLATILADI: `_generate_reply` bir
-        # sessiyada 7 marta ishlaydi, har safar qayta hisoblash so'rov narxini
-        # 7 ga ko'paytirar va murabbiylik suhbat o'rtasida siljirdi. Klientga
+        # Moslashuv rejasi sessiya boshida MUZLATILADI: `_generate_reply`
+        # har navbatda ishlaydi; qayta hisoblash so'rov narxini oshirar
+        # va murabbiylik suhbat o'rtasida siljirdi. Klientga
         # QAYTARILMAYDI — bu ichki murabbiylik ma'lumoti.
         plan = await self._learner_plan(user, telegram_id, level) if user else {}
         scenario = self._select_voice_scenario(plan, item.id)
@@ -924,14 +927,7 @@ class VoicePracticeService:
         recent = list(item.history or [])[-4:]
         target_words = json.dumps(list(item.target_words or [])[:3], ensure_ascii=False)
         review_words = json.dumps(list(item.review_words or [])[:6], ensure_ascii=False)
-        next_dialog_no = int(item.turn_count or 0) + 1
-        is_closing_dialog = next_dialog_no >= MAX_DIALOGS_PER_SESSION
-        closing_instruction = (
-            "THIS IS THE FINAL EXCHANGE: no matter the topic, warmly wrap up now — give a short natural "
-            "reason to go, say a friendly goodbye in Chinese (e.g. 再见/下次聊), and DO NOT ask any follow-up question."
-            if is_closing_dialog
-            else "End with one short playful follow-up question when natural."
-        )
+        closing_instruction = "End with one short playful follow-up question when natural."
         # O'tgan darslardan so'zlarni suhbatga qo'shib takrorlatish — endi barcha
         # rollar uchun, faqat 2-3 tasi butun suhbat davomida tarqoq holda.
         review_list = list(item.review_words or [])[:6]
@@ -1091,8 +1087,6 @@ class VoicePracticeService:
         item = await self._get_active_session(telegram_id, session_id)
         if getattr(item, "mode", "turn") != "turn":
             raise VoicePracticeError("SESSION_MODE_MISMATCH", "Voice session mode mismatch.", 409)
-        if item.turn_count >= MAX_DIALOGS_PER_SESSION:
-            raise VoicePracticeError("TURN_LIMIT_EXCEEDED", "Bu voice sessiya dialog limitiga yetdi.", 403)
         paid = await self._is_paid_telegram_user(telegram_id)
         if paid:
             await self._ensure_budget_available(telegram_id)
@@ -1165,7 +1159,6 @@ class VoicePracticeService:
         if reply["correction"]:
             item.corrections = [*list(item.corrections or []), reply["correction"]][-20:]
         item.turn_count += 1
-        session_should_end = item.turn_count >= MAX_DIALOGS_PER_SESSION
         await self.session.commit()
 
         status = await self.user_status(telegram_id)
@@ -1177,7 +1170,7 @@ class VoicePracticeService:
             "remaining_limit": status["remaining_voice_limit"],
             "turn_count": item.turn_count,
             "max_dialogs": MAX_DIALOGS_PER_SESSION,
-            "session_should_end": session_should_end,
+            "session_should_end": False,
             "budget_notice": self._budget_notice_payload(transcribe_record, reply_record),
         }
 
@@ -1204,8 +1197,6 @@ class VoicePracticeService:
         item = await self._get_active_session(telegram_id, session_id)
         if item.mode != "live":
             raise VoicePracticeError("SESSION_MODE_MISMATCH", "Voice session mode mismatch.", 409)
-        if item.turn_count >= MAX_DIALOGS_PER_SESSION:
-            raise VoicePracticeError("TURN_LIMIT_EXCEEDED", "Bu voice sessiya dialog limitiga yetdi.", 403)
 
         paid = await self._is_paid_telegram_user(telegram_id)
         if paid:
@@ -1328,7 +1319,7 @@ class VoicePracticeService:
             "remaining_limit": status["remaining_voice_limit"],
             "turn_count": item.turn_count,
             "max_dialogs": MAX_DIALOGS_PER_SESSION,
-            "session_should_end": item.turn_count >= MAX_DIALOGS_PER_SESSION,
+            "session_should_end": False,
             "evaluation_ready": evaluation_usage is not None,
             "turn_cost_usd": round(turn_cost_usd, 8),
             "session_cost_usd": round(item.live_cost_usd, 8),
@@ -1699,5 +1690,5 @@ class VoicePracticeService:
             "target_used": {"used": len(used), "total": len(pool), "words": used[:12]},
             "avg_chars": round(sum(lengths) / len(lengths), 1) if lengths else 0.0,
             "turns": turns,
-            "completed": turns >= MAX_DIALOGS_PER_SESSION,
+            "completed": turns >= VOICE_COMPLETION_MIN_TURNS,
         }

@@ -4327,7 +4327,7 @@ def _mock_voice_environment(page, *, start=None, message=None, end=None, remaini
             "course_context": {"lesson_id": 5, "words": [{"zh": "医院", "pinyin": "yīyuàn", "meaning": "shifoxona"}], "review_words": []},
             "opening_message": {"chinese_reply": "你好！", "pinyin": "nǐ hǎo", "translation": "Salom!", "correction": None,
                                 "suggestions": [{"zh": "你好，很高兴认识你", "pinyin": "nǐ hǎo", "translation": "Tanishganimdan xursandman"}]},
-            "max_dialogs": 7,
+            "max_dialogs": 0,
         })
 
     page.route(re.compile(r".*/api/voice-practice/session/start$"), handle_start)
@@ -4346,7 +4346,7 @@ def _mock_voice_environment(page, *, start=None, message=None, end=None, remaini
             ],
             "remaining_limit": remaining,
             "turn_count": 2,
-            "max_dialogs": 7,
+            "max_dialogs": 0,
             "session_should_end": False,
         }),
     )
@@ -4446,6 +4446,36 @@ def test_ai_voice_hides_the_badge_when_nothing_was_said(page):
     expect(page.locator("#vc-dbadge")).to_be_hidden()
 
 
+def test_ai_voice_continues_after_dialog_eight_without_a_maximum_counter(page):
+    page_errors = []
+    page.on("pageerror", lambda error: page_errors.append(str(error)))
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    _mock_voice_environment(page, message={
+        "transcription": "你好", "chinese_reply": "你好吗？", "pinyin": "nǐ hǎo ma",
+        "translation": "Yaxshimisiz?", "turn_count": 8, "max_dialogs": 0,
+        "session_should_end": False, "remaining_limit": 1,
+    })
+    end_requests = []
+    page.on("request", lambda request: end_requests.append(request.url)
+            if request.url.endswith("/api/voice-practice/session/end") else None)
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.openVoiceCall()")
+    page.locator("#vc-root .row .sq").first.click()
+    page.locator("#vc-kbText").fill("你好")
+    page.locator("#vc-kbSend").click()
+    expect(page.locator("#vc-cnt")).to_have_text("9-javob")
+    page.wait_for_timeout(1500)
+    expect(page.locator("#vc-done")).to_be_hidden()
+    assert not end_requests
+    expect(page.locator("#vc-chat")).to_contain_text("你好吗？")
+    page.locator("#vc-root .top .ic:first-child").click()
+    expect(page.locator("#vc-done")).to_have_class(re.compile(r"\bon\b"))
+    assert len(end_requests) == 1
+    assert not page_errors
+
+
 def test_ai_voice_opens_with_the_role_the_daily_plan_chose(page):
     """Kunlik reja HSK imtihoni uchun 李老师 ni tanlaydi — klient uni tashlamasin.
 
@@ -4526,7 +4556,7 @@ def test_ai_voice_hints_fall_back_when_the_model_sends_nothing(page):
         "remaining_limit": 1,
         "course_context": {"words": [], "review_words": []},
         "opening_message": {"chinese_reply": "你好！", "pinyin": "nǐ hǎo", "translation": "Salom!", "correction": None},
-        "max_dialogs": 7,
+        "max_dialogs": 0,
     })
 
     page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")

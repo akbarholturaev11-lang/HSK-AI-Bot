@@ -15,7 +15,7 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from app.services.voice_practice_service import (
-    MAX_DIALOGS_PER_SESSION,
+    VOICE_COMPLETION_MIN_TURNS,
     VoicePracticeService,
 )
 
@@ -94,7 +94,7 @@ class VoiceEvaluationTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(result["completed"])
 
     async def test_a_full_session_is_marked_completed(self):
-        result, _, _ = await _end([GOOD], turn_count=MAX_DIALOGS_PER_SESSION)
+        result, _, _ = await _end([GOOD], turn_count=VOICE_COMPLETION_MIN_TURNS)
         self.assertTrue(result["completed"])
 
     async def test_each_mistake_carries_its_own_category(self):

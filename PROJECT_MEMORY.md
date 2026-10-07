@@ -125,7 +125,7 @@ Android Live Voice:
 - Migration `0095_android_live_voice` adds mode, connection lease, resumption handle, live start time, and session cost to `voice_practice_sessions`.
 - `ANDROID_VOICE_LIVE_ENABLED` defaults off. Availability requires a Gemini API key, `GEMINI_BILLING_TIER=paid`, the configured Live model, a positive session budget, and an explicit Telegram user allowlist.
 - `ANDROID_VOICE_LIVE_ALLOWED_USERS` accepts comma-separated Telegram IDs or the exact value `*` for a deliberate all-user rollout. Empty or malformed values fail closed. Production was enabled for all users on 2026-10-07; preserve the paid-billing gate and do not set the billing tier without verifying provider billing.
-- The Live session cap is 180 seconds, 7 dialogue turns, and $0.15 per session by default. Existing per-user daily voice limits and paid AI budgets remain in force. Audio usage and transcript evaluation are recorded through the shared AI budget service.
+- Live sessions retain the 180-second time cap and configured USD budget ($0.15 by default). There is no dialogue-count cap: `max_dialogs: 0`, `session_should_end: false` in both turn and live modes. The existing 7-turn learning-completion metric and reward rules remain separate from access limits. Existing per-user daily voice limits and paid AI budgets remain in force. Audio usage and transcript evaluation use the shared AI budget service.
 - Key files: `app/api/android_live_voice.py`, `app/services/android_live_voice_service.py`, `app/services/voice_practice_service.py`, Android `feature/voice/LiveVoiceSocket.kt`, and `core/audio/LiveVoiceAudioEngine.kt`.
 
 Android klienti:
@@ -10690,3 +10690,23 @@ Files:
 - `android/app/src/direct/java/com/pomp/hskai/feature/update/MandatoryUpdateGate.kt`
 - `android/app/src/play/java/com/pomp/hskai/feature/update/MandatoryUpdateGate.kt`
 - `android/app/src/main/java/com/pomp/hskai/MainActivity.kt`
+
+### 2026-10-07 — AI Voice dialogue cap and continuous Live receive
+
+Changed:
+- Removed the per-session 7-dialogue gate and forced goodbye; Mini App, Android and the shared macOS/Windows UI display the turn count without a maximum. API keeps integer `max_dialogs: 0` for compatibility.
+- The Gemini Live relay restarts the SDK receive iterator after each completed turn, so one WebSocket supports multiple replies.
+
+Why:
+- The SDK `receive()` iterator ends at `turn_complete`; the relay previously treated that as the end of the connection.
+
+Files touched:
+- `app/services/voice_practice_service.py`, `app/api/android_live_voice.py`, voice client counters/DTOs and regression tests.
+
+Risk:
+- Longer turn-mode conversations can consume more AI budget; daily/session access, paid/trial budget, Live time/USD caps, feature flag, allowlist, Chinese-only prompt and rewards remain unchanged. Existing Android APKs need a new build to display the counter correctly.
+
+Follow-up:
+- Verified: 159 backend tests (+166 subtests), 9 mobile voice smoke tests, 28 desktop contracts, five Android static checks, Direct/Play compilation and 756 Android unit tests on the updated `origin/main` base. The 8-turn regression uses the pinned SDK receive iterator and checks budget/time/stop behavior.
+- On the original `b35cb774` baseline, three broader smoke tests (checkpoint copy, sales-preview lesson, download copy button) fail identically before this patch; their code is outside the voice change.
+- Publish the tested backend/UI and verify physical-device Gemini audio. Preserve the existing deployed Live rollout settings and provider credentials; this patch only removes the dialogue cap and repairs continuous receiving.

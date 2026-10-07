@@ -217,7 +217,7 @@ private class AndroidLiveVoiceConnection(
             suggestions = suggestions,
             remainingLimit = optInt("remaining_limit"),
             turnCount = optInt("turn_count"),
-            maxDialogs = optInt("max_dialogs", 7),
+            maxDialogs = optInt("max_dialogs", 0),
             shouldEnd = optBoolean("session_should_end"),
         )
     }

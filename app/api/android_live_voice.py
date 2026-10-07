@@ -24,7 +24,11 @@ from app.services.android_live_voice_service import (
 )
 from app.services.ai_service import AIUsageResult
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
-from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
+from app.services.voice_practice_service import (
+    MAX_DIALOGS_PER_SESSION,
+    VoicePracticeError,
+    VoicePracticeService,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -92,6 +96,17 @@ def _usage_result(metadata, model: str) -> AIUsageResult | None:
         completion_tokens=completion_tokens,
         total_tokens=total_tokens,
     )
+
+
+async def _receive_live_responses(provider_session):
+    """The SDK receive iterator ends after each turn, not after the session."""
+    while True:
+        received = False
+        async for response in provider_session.receive():
+            received = True
+            yield response
+        if not received:
+            return
 
 
 def create_android_live_voice_router(
@@ -199,7 +214,7 @@ def create_android_live_voice_router(
                         "type": "ready",
                         "input_sample_rate": 16000,
                         "output_sample_rate": 24000,
-                        "max_dialogs": 7,
+                        "max_dialogs": MAX_DIALOGS_PER_SESSION,
                         "max_seconds": max_seconds,
                     }
                 )
@@ -275,7 +290,7 @@ def create_android_live_voice_router(
                         float(getattr(settings_obj, "ANDROID_VOICE_LIVE_SESSION_BUDGET_USD", 0.15) or 0.15),
                     )
                     model = str(getattr(settings_obj, "ANDROID_VOICE_LIVE_MODEL", "gemini-3.8-live"))
-                    async for response in provider_session.receive():
+                    async for response in _receive_live_responses(provider_session):
                         resumption = getattr(response, "session_resumption_update", None)
                         resumption_handle = str(getattr(resumption, "new_handle", "") or "")
                         if resumption_handle:

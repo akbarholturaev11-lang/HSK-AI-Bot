@@ -198,7 +198,7 @@ class VoiceSessionTransportIsolationTests(unittest.IsolatedAsyncioTestCase):
             return_value=SimpleNamespace(mode="live", turn_count=0)
         )
 
-        with patch("app.services.voice_practice_service.settings.ai_enabled", True):
+        with patch("app.services.voice_practice_service.settings.OPENAI_API_KEY", "test-key"):
             with self.assertRaises(VoicePracticeError) as raised:
                 await service.process_message(
                     123,

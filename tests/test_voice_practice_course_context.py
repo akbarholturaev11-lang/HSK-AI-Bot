@@ -186,11 +186,11 @@ class VoicePracticeCourseContextTests(unittest.IsolatedAsyncioTestCase):
             ["voice_practice_transcribe", "voice_practice_reply"],
         )
 
-    async def test_seventh_voice_dialog_ends_session_after_ai_reply(self):
+    async def test_voice_dialogs_continue_past_seven_with_budget_checks(self):
         session = SimpleNamespace(commit=AsyncMock())
         service = VoicePracticeService(session)
         item = SimpleNamespace(
-            turn_count=MAX_DIALOGS_PER_SESSION - 1,
+            turn_count=7,
             language="uz",
             level="hsk1",
             role="teacher_li",
@@ -205,6 +205,7 @@ class VoicePracticeCourseContextTests(unittest.IsolatedAsyncioTestCase):
             end_date=None,
         )
         service._get_active_session = AsyncMock(return_value=item)
+        service._is_paid_telegram_user = AsyncMock(return_value=True)
         service.user_repo = SimpleNamespace(get_by_telegram_id=AsyncMock(return_value=user))
         service.user_status = AsyncMock(
             return_value={"is_paid": True, "plan": "premium", "remaining_voice_limit": -1}
@@ -256,8 +257,62 @@ class VoicePracticeCourseContextTests(unittest.IsolatedAsyncioTestCase):
                 filename="voice.webm",
             )
 
-        self.assertEqual(item.turn_count, MAX_DIALOGS_PER_SESSION)
-        self.assertTrue(result["session_should_end"])
+        self.assertEqual(item.turn_count, 8)
+        self.assertEqual(result["max_dialogs"], 0)
+        self.assertFalse(result["session_should_end"])
+        budget_service.can_use_ai.assert_awaited_once()
+
+    async def test_live_dialog_eight_is_saved_and_charged_without_ending(self):
+        session = SimpleNamespace(commit=AsyncMock())
+        service = VoicePracticeService(session)
+        item = SimpleNamespace(
+            mode="live", turn_count=7, language="uz", level="hsk1",
+            target_words=[], history=[], corrections=[], live_cost_usd=0.01,
+        )
+        service._get_active_session = AsyncMock(return_value=item)
+        service._is_paid_telegram_user = AsyncMock(return_value=True)
+        service._ensure_budget_available = AsyncMock()
+        service.user_status = AsyncMock(return_value={"remaining_voice_limit": -1})
+        usage = AIUsageResult(content="", model="gemini-3.8-live", prompt_tokens=10,
+                              completion_tokens=10, total_tokens=20)
+        record = SimpleNamespace(cost_usd=0.01, cooldown_started=False,
+                                 budget_depleted=False, message_key="", cooldown_hours=6)
+        with patch("app.services.voice_practice_service.settings.OPENAI_API_KEY", "test-key"), patch(
+            "app.services.voice_practice_service.AIService"
+        ) as ai_cls, patch("app.services.voice_practice_service.AIUsageBudgetService") as budget_cls:
+            ai_cls.return_value.complete_messages_with_usage = AsyncMock(
+                return_value=AIUsageResult(
+                    content='{"pinyin":"nǐ hǎo","translation":"Salom","correction":null}',
+                    model="gpt-4o-mini", prompt_tokens=10, completion_tokens=10, total_tokens=20,
+                )
+            )
+            budget_cls.return_value.record_usage = AsyncMock(return_value=record)
+            result = await service.process_live_turn(
+                123, session_id="session-live", transcription="你好",
+                assistant_text="你好！", provider_usage=usage,
+            )
+        self.assertEqual(result["turn_count"], 8)
+        self.assertEqual(result["max_dialogs"], 0)
+        self.assertFalse(result["session_should_end"])
+        self.assertAlmostEqual(item.live_cost_usd, 0.03)
+        service._ensure_budget_available.assert_awaited_once_with(123)
+        self.assertEqual(item.history[-1]["assistant"], "你好！")
+
+    async def test_dialog_eight_still_rejects_an_exhausted_ai_budget(self):
+        service = VoicePracticeService(SimpleNamespace())
+        service._get_active_session = AsyncMock(return_value=SimpleNamespace(mode="turn", turn_count=7))
+        service._is_paid_telegram_user = AsyncMock(return_value=True)
+        with patch("app.services.voice_practice_service.settings.OPENAI_API_KEY", "test-key"), patch(
+            "app.services.voice_practice_service.AIService"
+        ) as ai_cls, patch("app.services.voice_practice_service.AIUsageBudgetService") as budget_cls:
+            budget_cls.return_value.can_use_ai = AsyncMock(
+                return_value=SimpleNamespace(allowed=False, message_key="ai_budget_cooldown")
+            )
+            with self.assertRaises(VoicePracticeError) as error:
+                await service.process_message(123, session_id="session-turn", audio_bytes=b"",
+                                              filename="", text="你好")
+        self.assertEqual(error.exception.code, "ai_budget_cooldown")
+        ai_cls.assert_not_called()
 
     async def test_free_pronunciation_limit_blocks_before_ai_call(self):
         session = SimpleNamespace(commit=AsyncMock())
@@ -461,6 +516,12 @@ class VoiceAdaptivePromptTests(unittest.IsolatedAsyncioTestCase):
             self.assertNotIn(marker, prompt)
         self.assertIn("STRICT LEVEL RULE", prompt)
         self.assertIn("Continue the existing conversation naturally", prompt)
+
+    async def test_seventh_and_later_replies_are_not_forced_to_say_goodbye(self):
+        for count in (6, 7, 12):
+            prompt = await self._prompt({}, history=[{"user": "你好", "assistant": "好"}] * count)
+            self.assertNotIn("THIS IS THE FINAL EXCHANGE", prompt)
+            self.assertIn("End with one short playful follow-up question", prompt)
 
     async def test_a_new_session_prompt_stays_in_its_practical_scene(self):
         prompt = await self._prompt({"scenario_id": "ask_directions"})

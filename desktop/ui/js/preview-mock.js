@@ -33,7 +33,7 @@ const PREVIEW_QR =
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk" +
   "+A8AAQUBAScY42YAAAAASUVORK5CYII=";
 
-const PREVIEW_VOICE_MAX_DIALOGS = 7;
+const PREVIEW_VOICE_MAX_DIALOGS = 0;
 
 // Deterministic replies so the preview and the Chromium flow tests stay
 // reproducible. Production never reaches this file: previewInvoke only runs on
@@ -828,7 +828,7 @@ export async function previewInvoke(command, args = {}) {
         remaining_limit: previewState.subscription === "paid" ? -1 : 0,
         turn_count: previewState.voiceTurns,
         max_dialogs: PREVIEW_VOICE_MAX_DIALOGS,
-        session_should_end: previewState.voiceTurns >= PREVIEW_VOICE_MAX_DIALOGS,
+        session_should_end: false,
         budget_notice: null,
       };
     }
