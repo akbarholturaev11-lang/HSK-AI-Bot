@@ -23,9 +23,11 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -39,6 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -105,6 +108,7 @@ import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.LessonAccess
 import com.pomp.hskai.domain.model.TodayTask
 import com.pomp.hskai.feature.lesson.LessonOutcome
+import com.pomp.hskai.feature.lesson.LessonEntryOverlay
 import com.pomp.hskai.feature.lesson.LessonScreen
 import com.pomp.hskai.feature.lesson.LessonViewModel
 import com.pomp.hskai.feature.ad.AdScreen
@@ -132,6 +136,7 @@ import com.pomp.hskai.widget.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 
 class MainActivity : ComponentActivity() {
 
@@ -703,6 +708,19 @@ private fun AppRoot(
             }
 
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
+            var hsk30PaymentRejectionVisible by remember { mutableStateOf(false) }
+            LaunchedEffect(courseViewModel) {
+                app.paymentDecisionMonitor.inAppPaymentDecisions.collect { decision ->
+                    if (
+                        decision.deviceId == app.paymentDecisionMonitor.currentDeviceId() &&
+                        decision.planType == "hsk30_unlock" &&
+                        decision.status == "rejected"
+                    ) {
+                        courseViewModel.load()
+                        hsk30PaymentRejectionVisible = true
+                    }
+                }
+            }
             var onboardingAutoStartHandled by rememberSaveable { mutableStateOf(false) }
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
             val currentLevel = courseState.map?.level ?: state.account.level
@@ -1495,6 +1513,62 @@ private fun AppRoot(
                         )
                     }
                 }
+            }
+
+            if (courseState.isSwitchingTrack) {
+                LessonEntryOverlay(
+                    alpha = 1f,
+                    key = courseState.map?.level ?: "course-track-switch",
+                    titleRes = R.string.course_track_switch_title,
+                    subtitleRes = R.string.course_track_switch_subtitle,
+                )
+            }
+
+            if (hsk30PaymentRejectionVisible) {
+                AlertDialog(
+                    onDismissRequest = {},
+                    properties = DialogProperties(
+                        dismissOnBackPress = false,
+                        dismissOnClickOutside = false,
+                    ),
+                    title = {
+                        Text(
+                            stringResource(R.string.hsk30_payment_rejected_title),
+                            color = PompColors.Ink,
+                        )
+                    },
+                    text = {
+                        Text(
+                            stringResource(R.string.hsk30_payment_rejected_body),
+                            color = PompColors.InkSecondary,
+                        )
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                hsk30PaymentRejectionVisible = false
+                                openLesson = null
+                                selectedTab = MainTab.COURSE
+                                openHsk30ContentGate()
+                            },
+                        ) {
+                            Text(stringResource(R.string.hsk30_payment_retry))
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = {
+                                hsk30PaymentRejectionVisible = false
+                                openLesson = null
+                                selectedTab = MainTab.COURSE
+                                courseViewModel.switchCourseTrack("hsk20")
+                            },
+                        ) {
+                            Text(stringResource(R.string.hsk30_access_back_hsk20))
+                        }
+                    },
+                    containerColor = PompColors.Paper,
+                )
             }
         }
     }

@@ -23,7 +23,17 @@ import com.pomp.hskai.data.api.PushTokenRequest
 import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
+
+data class InAppPaymentDecision(
+    val deviceId: String,
+    val paymentId: Int,
+    val status: String,
+    val planType: String,
+)
 
 /**
  * FCM is optional; the pending Android payment is also checked every 15 minutes.
@@ -35,6 +45,8 @@ class PaymentDecisionMonitor(
 ) {
     private val prefs = app.getSharedPreferences("payment_decisions", Context.MODE_PRIVATE)
     private val lock = Any()
+    private val inAppPaymentDecisionChannel = Channel<InAppPaymentDecision>(Channel.UNLIMITED)
+    val inAppPaymentDecisions: Flow<InAppPaymentDecision> = inAppPaymentDecisionChannel.receiveAsFlow()
 
     fun initializeFirebase(): Boolean {
         if (!firebaseConfigured()) return false
@@ -184,6 +196,20 @@ class PaymentDecisionMonitor(
             if (prefs.getString(DEVICE_ID, null) != deviceId ||
                 prefs.getLong(SESSION_EPOCH, 0L) != epoch
             ) return false
+            if (planType == "hsk30_unlock" && status == "rejected") {
+                val inAppSeenKey = "in-app:$deviceId:$paymentId:$status"
+                if (!prefs.getBoolean(inAppSeenKey, false)) {
+                    prefs.edit().putBoolean(inAppSeenKey, true).apply()
+                    inAppPaymentDecisionChannel.trySend(
+                        InAppPaymentDecision(
+                            deviceId = deviceId,
+                            paymentId = paymentId,
+                            status = status,
+                            planType = planType,
+                        )
+                    )
+                }
+            }
             val seenKey = "seen:$deviceId:$paymentId:$status"
             if (prefs.getBoolean(seenKey, false)) return false
             if (!PaymentNotifications.post(app, status, planType)) return false

@@ -24,6 +24,8 @@
     <string name="today_task_pron">Талаффуз</string>
     <string name="lesson_entry_title">Дарс омода мешавад</string>
     <string name="lesson_entry_subtitle">Панда шуморо интизор аст</string>
+    <string name="course_track_switch_title">Версияи курс омода мешавад</string>
+    <string name="course_track_switch_subtitle">Панда дарсҳои нави шуморо мекушояд</string>
 
     <string name="hsk30_access_required_title">HSK 3.0-ро кушоед</string>
     <string name="hsk30_access_required_body">Курсро аз рӯи китобҳои нав оғоз кунед.</string>

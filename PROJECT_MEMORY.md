@@ -243,6 +243,17 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-10-07 — Android HSK 2.0/3.0 switch feedback va rad etilgan to'lov
+
+- Kurs tracki o'zgarganda yangi kurs xaritasi kelguncha darsga kirish Panda
+  overlay'i maxsus matn bilan ko'rsatiladi; switch va xarita yangilanishi bitta
+  holat sifatida boshqariladi.
+- Android'da tasdiqlangan HSK 3.0 unlock rad javobi ilova ichida bir marta
+  qayta urinish dialogini chiqaradi, dars ichida bo'lsa ham. Access qarori
+  serverda qoladi; rad javobi lokal unlock qilmaydi.
+- Asosiy kod: `CourseViewModel`, `LessonEntryOverlay`, `MainActivity`,
+  `PaymentDecisionMonitor` va uz/ru/tg resurslari.
+
 ### 2026-10-03 — HSK 3.0 N1-N3 live va Android kirish oqimi
 
 Changed:

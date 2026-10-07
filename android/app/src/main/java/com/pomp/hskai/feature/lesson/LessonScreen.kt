@@ -67,6 +67,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.annotation.StringRes
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import kotlinx.coroutines.coroutineScope
@@ -828,9 +829,11 @@ private fun AnimatedHeartCounter(
 }
 
 @Composable
-private fun LessonEntryOverlay(
+internal fun LessonEntryOverlay(
     alpha: Float,
     key: Any,
+    @StringRes titleRes: Int = R.string.lesson_entry_title,
+    @StringRes subtitleRes: Int = R.string.lesson_entry_subtitle,
 ) {
     val phase by rememberInfiniteTransition(label = "lesson-entry-dots").animateFloat(
         initialValue = 0f,
@@ -865,7 +868,7 @@ private fun LessonEntryOverlay(
             )
             Spacer(Modifier.height(9.dp))
             Text(
-                text = stringResource(R.string.lesson_entry_title),
+                text = stringResource(titleRes),
                 style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.sp),
                 fontWeight = FontWeight.Bold,
                 color = PompColors.Ink,
@@ -873,7 +876,7 @@ private fun LessonEntryOverlay(
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = stringResource(R.string.lesson_entry_subtitle),
+                text = stringResource(subtitleRes),
                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
                 color = PompColors.InkSecondary,
                 textAlign = TextAlign.Center,

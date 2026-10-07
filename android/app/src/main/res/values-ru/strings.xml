@@ -524,4 +524,5 @@
     <string name="hsk30_test_soon_body">Новый формат экзамена HSK 3.0 ещё готовится.</string>
     <string name="hsk30_payment_rejected_title">Платёж за HSK 3.0 отклонён</string>
     <string name="hsk30_payment_rejected_body">Платёж не принят. Проверьте данные и отправьте его заново.</string>
+    <string name="hsk30_payment_retry">Попробовать снова</string>
 </resources>

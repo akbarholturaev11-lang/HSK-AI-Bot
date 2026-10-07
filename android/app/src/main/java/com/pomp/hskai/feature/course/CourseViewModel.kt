@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 data class CourseUiState(
     val isLoading: Boolean = true,
@@ -40,13 +42,14 @@ class CourseViewModel(
 
     private val _state = MutableStateFlow(CourseUiState())
     val state: StateFlow<CourseUiState> = _state.asStateFlow()
+    private val courseMapRefreshMutex = Mutex()
 
     init {
         load()
     }
 
     fun load() {
-        if (_state.value.isRefreshing) return
+        if (_state.value.isRefreshing || _state.value.isSwitchingTrack) return
         _state.update {
             it.copy(
                 isLoading = it.snapshot == null,
@@ -54,7 +57,18 @@ class CourseViewModel(
                 error = null,
             )
         }
-        viewModelScope.launch {
+        viewModelScope.launch { refreshCourseMap() }
+    }
+
+    private suspend fun refreshCourseMap(completeTrackSwitch: Boolean = false) {
+        courseMapRefreshMutex.withLock {
+            _state.update {
+                it.copy(
+                    isLoading = it.snapshot == null,
+                    isRefreshing = true,
+                    error = null,
+                )
+            }
             // Draw the previous map first when there is nothing on screen yet.
             // The refresh below replaces it a moment later; the point is that
             // the learner is looking at their course while it happens instead
@@ -83,6 +97,8 @@ class CourseViewModel(
                         isRefreshing = false,
                         snapshot = result.value,
                         error = null,
+                        isSwitchingTrack = if (completeTrackSwitch) false else current.isSwitchingTrack,
+                        trackError = if (completeTrackSwitch) null else current.trackError,
                         unlockedLessonOrder = unlockedOrder,
                     )
                 }
@@ -92,6 +108,8 @@ class CourseViewModel(
                         isLoading = false,
                         isRefreshing = false,
                         error = result.error,
+                        isSwitchingTrack = if (completeTrackSwitch) false else it.isSwitchingTrack,
+                        trackError = if (completeTrackSwitch) result.error else it.trackError,
                     )
                 }
             }
@@ -100,13 +118,15 @@ class CourseViewModel(
 
     fun switchCourseTrack(targetTrack: String, level: String? = null) {
         val normalized = targetTrack.trim().lowercase()
-        if (normalized !in setOf("hsk20", "hsk30") || _state.value.isSwitchingTrack) return
+        if (
+            normalized !in setOf("hsk20", "hsk30") ||
+            _state.value.isSwitchingTrack
+        ) return
         _state.update { it.copy(isSwitchingTrack = true, trackError = null) }
         viewModelScope.launch {
             when (val result = repository.switchCourseTrack(normalized, level)) {
                 is ApiResult.Success -> {
-                    _state.update { it.copy(isSwitchingTrack = false, trackError = null) }
-                    load()
+                    refreshCourseMap(completeTrackSwitch = true)
                 }
                 is ApiResult.Failure -> _state.update {
                     it.copy(isSwitchingTrack = false, trackError = result.error)

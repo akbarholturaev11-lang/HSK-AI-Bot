@@ -563,4 +563,5 @@
     <string name="hsk30_test_soon_body">Yangi HSK 3.0 imtihon formati hali tayyorlanmoqda.</string>
     <string name="hsk30_payment_rejected_title">HSK 3.0 to‘lovi rad etildi</string>
     <string name="hsk30_payment_rejected_body">To‘lovingiz qabul qilinmadi. Ma’lumotlarni tekshirib, to‘lovni boshidan yuboring.</string>
+    <string name="hsk30_payment_retry">Qayta urinib ko‘rish</string>
 </resources>

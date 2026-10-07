@@ -525,4 +525,5 @@
     <string name="hsk30_test_soon_body">Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад.</string>
     <string name="hsk30_payment_rejected_title">Пардохти HSK 3.0 рад шуд</string>
     <string name="hsk30_payment_rejected_body">Пардохт қабул нашуд. Маълумотро санҷида, онро аз нав фиристед.</string>
+    <string name="hsk30_payment_retry">Боз кӯшиш кардан</string>
 </resources>

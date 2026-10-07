@@ -24,6 +24,8 @@
     <string name="today_task_pron">Произношение</string>
     <string name="lesson_entry_title">Готовим урок</string>
     <string name="lesson_entry_subtitle">Панда уже ждёт вас</string>
+    <string name="course_track_switch_title">Готовим версию курса</string>
+    <string name="course_track_switch_subtitle">Панда открывает ваши новые уроки</string>
 
     <string name="hsk30_access_required_title">Откройте HSK 3.0</string>
     <string name="hsk30_access_required_body">Начните курс по новым учебникам.</string>
