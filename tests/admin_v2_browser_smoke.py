@@ -19,8 +19,9 @@ def check_real_module_coverage():
 
     mapping = html.split("function renderModules(){", 1)[1].split("for(const [id,keys]", 1)[0]
     mapped = set()
-    for array_source in re.findall(r'new Set\\(\\[([^\\]]*)\\]\\)', mapping):
-        mapped.update(re.findall(r'"([a-z_]+)"', array_source))
+    for array_source in mapping.split("new Set([")[1:]:
+        members = array_source.split("])", 1)[0]
+        mapped.update(re.findall(r'"([a-z_]+)"', members))
     direct = set(re.findall(r'data-module="([a-z_]+)"', html))
     special = {"stats": "statistics", "user_search": "users", "ads_hub": "marketing"}
     for module, view in special.items():
