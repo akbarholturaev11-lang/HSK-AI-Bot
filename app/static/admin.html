@@ -510,6 +510,26 @@ body{
 #drawer .dtitle-sm{font-size:11px;letter-spacing:.095em;color:#c1cfe0}
 #drawer .hint{line-height:1.55}
 #drawer .acc{background:#1a2634;border-color:rgba(148,181,212,.18);border-radius:13px}
+#drawer .v2-profile-details{margin:0 0 13px;overflow:hidden}
+#drawer .v2-profile-details>summary{
+  min-height:52px;padding:14px 16px;
+  color:#dce6f0;letter-spacing:-.01em;
+  font-weight:800;line-height:1.4;
+}
+#drawer .v2-profile-details[open]>summary{
+  color:#fff;background:rgba(230,93,79,.055);
+  border-bottom:1px solid rgba(150,181,212,.16);
+}
+#drawer .v2-profile-body{
+  padding:12px 15px 17px;
+  min-width:0;
+}
+#drawer .v2-profile-body .kv{margin:10px 0 13px}
+#drawer .v2-profile-body .ncnote{line-height:1.65}
+#drawer .v2-profile-body .idrow{align-items:flex-start;flex-wrap:wrap;overflow-wrap:anywhere}
+#drawer .v2-profile-body .idrow>div{min-width:0;flex:1}
+#drawer .v2-profile-body .idrow .tag{flex-shrink:0}
+
 #scrim.open{background:rgba(2,7,13,.69);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
 body.locked .mobile-nav{pointer-events:none}
 @media(hover:hover) and (pointer:fine){
