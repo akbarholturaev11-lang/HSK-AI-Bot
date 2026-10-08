@@ -688,25 +688,8 @@
     function renderDashboard(){
       const ov = state.overview;
       $("generatedAt").textContent = "Oxirgi yangilanish: " + (ov.generated_at || "—");
-      const desktop=state.desktopStats.all_time;
-      const android=state.androidStats.all_time;
-      const summary=(ov.summary||[]).slice();
-      if(android&&!android.error){
-        summary.push({
-          label:"Android WAU",
-          value:Number(android.active&&android.active.wau||0),
-          note:"HSK AI · 7 kun",
-          tone:"info"
-        });
-      }
-      if(desktop&&!desktop.error){
-        summary.push({
-          label:"Desktop WAU",
-          value:Number(desktop.active&&desktop.active.wau||0),
-          note:"HSK AI · 7 kun",
-          tone:"info"
-        });
-      }
+      // V2 hero: four verified overview KPIs; platform WAU remains in Analytics.
+      const summary=(ov.summary||[]).slice(0,4);
       $("summaryGrid").innerHTML = summary.map(i=>`
         <article class="stat ${i.tone||""}"><div class="lab">${esc(i.label)}</div>
           <div><div class="val">${esc(i.value)}</div><div class="sub">${esc(i.note)}</div></div></article>`).join("");
