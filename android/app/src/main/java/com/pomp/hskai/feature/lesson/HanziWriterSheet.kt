@@ -167,7 +167,7 @@ internal fun HanziWriterSheet(
             Spacer(Modifier.height(14.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(
@@ -184,7 +184,7 @@ internal fun HanziWriterSheet(
                     },
                     enabled = !isLoading && (completedStrokes > 0 || index > 0),
                 ) {
-                    Icon(Icons.Filled.SkipPrevious, contentDescription = stringResource(R.string.writer_previous_stroke))
+                    Icon(Icons.Filled.SkipPrevious, contentDescription = stringResource(if (completedStrokes == 0) R.string.lesson_writer_previous else R.string.writer_previous_stroke))
                 }
                 IconButton(
                     onClick = {
@@ -224,7 +224,7 @@ internal fun HanziWriterSheet(
                     },
                     enabled = !isLoading && (completedStrokes < strokeCount || index < characters.lastIndex),
                 ) {
-                    Icon(Icons.Filled.SkipNext, contentDescription = stringResource(R.string.writer_next_stroke))
+                    Icon(Icons.Filled.SkipNext, contentDescription = stringResource(if (completedStrokes >= strokeCount) R.string.lesson_writer_next else R.string.writer_next_stroke))
                 }
             }
         }
