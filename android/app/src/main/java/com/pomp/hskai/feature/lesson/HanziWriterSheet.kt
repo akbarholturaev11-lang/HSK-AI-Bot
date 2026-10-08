@@ -88,6 +88,9 @@ internal fun HanziWriterSheet(
     var playing by remember(index, current) { mutableStateOf(true) }
     var replayKey by remember(index, current) { mutableIntStateOf(0) }
     var finished by remember(index, current) { mutableStateOf(false) }
+    var completedStrokes by remember(index, current) { mutableIntStateOf(0) }
+    var manualStrokeCount by remember(index, current) { mutableStateOf<Int?>(null) }
+    val strokeCount = strokes?.size ?: 0
     AssistantScreen(
         ScreenContext(
             screen = "writing",
@@ -167,6 +170,8 @@ internal fun HanziWriterSheet(
                             strokes = strokes,
                             replayKey = replayKey,
                             isPlaying = playing,
+                            visibleStrokeCount = manualStrokeCount,
+                            onStrokeComplete = { completedStrokes = it },
                             onAnimationFinished = { finished = true; playing = false },
                         )
                     }
@@ -180,32 +185,60 @@ internal fun HanziWriterSheet(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(
-                    onClick = { onShowCharacter(index - 1) },
-                    enabled = index > 0 && !isLoading,
+                    onClick = {
+                        if (completedStrokes > 0) {
+                            val step = (completedStrokes - 1).coerceAtLeast(0)
+                            playing = false
+                            manualStrokeCount = step
+                            completedStrokes = step
+                            finished = false
+                        } else if (index > 0) {
+                            onShowCharacter(index - 1)
+                        }
+                    },
+                    enabled = !isLoading && (completedStrokes > 0 || index > 0),
                 ) {
-                    Icon(Icons.Filled.SkipPrevious, contentDescription = stringResource(R.string.lesson_writer_previous))
+                    Icon(Icons.Filled.SkipPrevious, contentDescription = stringResource(R.string.writer_previous_stroke))
                 }
                 IconButton(
                     onClick = {
-                        if (!playing && strokes?.isNotEmpty() == true) {
-                            // Restart after a finished demo; otherwise resume from paused position.
-                            if (finished) { replayKey++; finished = false }
+                        if (playing) {
+                            playing = false
+                        } else {
+                            if (finished) {
+                                replayKey++
+                                completedStrokes = 0
+                                finished = false
+                            }
+                            manualStrokeCount = null
+                            playing = true
                         }
-                        playing = !playing
                     },
                     enabled = !isLoading && strokes?.isNotEmpty() == true,
                 ) {
                     Icon(
                         if (playing) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                        contentDescription = if (playing) "Pause" else "Play",
+                        contentDescription = stringResource(
+                            if (playing) R.string.writer_pause else R.string.writer_resume
+                        ),
                         tint = PompColors.CinnabarDark,
                     )
                 }
                 IconButton(
-                    onClick = { onShowCharacter(index + 1) },
-                    enabled = index < characters.lastIndex && !isLoading,
+                    onClick = {
+                        if (completedStrokes < strokeCount) {
+                            val step = completedStrokes + 1
+                            playing = false
+                            manualStrokeCount = step
+                            completedStrokes = step
+                            finished = step == strokeCount
+                        } else if (index < characters.lastIndex) {
+                            onShowCharacter(index + 1)
+                        }
+                    },
+                    enabled = !isLoading && (completedStrokes < strokeCount || index < characters.lastIndex),
                 ) {
-                    Icon(Icons.Filled.SkipNext, contentDescription = stringResource(R.string.lesson_writer_next))
+                    Icon(Icons.Filled.SkipNext, contentDescription = stringResource(R.string.writer_next_stroke))
                 }
             }
         }
