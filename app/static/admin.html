@@ -1838,8 +1838,9 @@ body.locked .mobile-nav{pointer-events:none}
           ${access.source==="manual_admin"?'<div class="ncnote" style="margin-top:10px">Bu access admin tomonidan qo\'lda berilgan. U to\'lov yoki daromad yozuvi hisoblanmaydi.</div>':""}
         </section>
 
-        <section class="dsec">
-          <div class="dtitle-sm">Telegram aloqa va HSK AI faolligi</div>
+        <details class="acc v2-profile-details">
+          <summary>Telegram алоқа ва HSK AI фаоллиги</summary>
+          <div class="v2-profile-body">
           <div class="ncnote" style="margin-top:8px"><b>${esc(tgDiag.title)}</b><br>${esc(tgDiag.text)}</div>
           <div class="kv" style="margin-top:10px">
             <span>Telegram xabari</span><b>${f.bot_blocked?"yetib bormaydi":"yetib borishi mumkin"}</b>
@@ -1866,10 +1867,13 @@ body.locked .mobile-nav{pointer-events:none}
           </details>
 
           ${f.bot_blocked&&tgHistory.length===0?'<div class="ncnote" style="margin-top:10px">Bu eski yozuv bo\'lishi mumkin. Yangi block/unblock tarixi deploydan keyingi eventlardan boshlab to\'planadi.</div>':""}
-        </section>
 
-        <section class="dsec">
-          <div class="dtitle-sm">Qurilmalar va foydalanish</div>
+          </div>
+        </details>
+
+        <details class="acc v2-profile-details">
+          <summary>Қурилмалар ва фойдаланиш</summary>
+          <div class="v2-profile-body">
           <div class="ncnote" style="margin-top:8px">
             <b>Asosiy oxirgi client:</b> ${primaryDevice?esc(devicePlatformLabel(primaryDevice.platform)+" · "+primaryDevice.surface+" · "+primaryDevice.last_foreground_at):"hali aniqlanmagan"}
           </div>
@@ -1878,20 +1882,30 @@ body.locked .mobile-nav{pointer-events:none}
           <div class="dtitle-sm" style="margin-top:12px">Native ilovalar</div>
           ${nativeDevicesHtml}
           <div class="ncnote" style="margin-top:10px">Native <b>server contact</b> foreground degani emas: Android widget background refresh ham sessionni tegishi mumkin. Faol foydalanish uchun foreground/open event alohida ko'rsatiladi.</div>
-        </section>
+
+          </div>
+        </details>
         <section class="dsec"><div class="dtitle-sm">O'qish</div><div class="kv">
           <span>Til</span><b>${esc(f.language)}</b><span>Daraja</span><b>${esc(f.level)}</b>
           <span>Rejim</span><b>${esc(f.mode||f.learning_mode)}</b><span>Savollar</span><b>${esc(f.questions)}</b>
           <span>Qo'shimcha AI savollar</span><b>${esc(bonus.left)} ta</b><span>Seriya</span><b>${esc(f.streak)} kun</b>
           <span>Bonus berilgan</span><b>${esc(bonus.total)} ta</b><span>Bonus ishlatilgan</span><b>${esc(bonus.used)} ta</b></div></section>
-        <section class="dsec"><div class="dtitle-sm">Referral</div><div class="kv">
+        <details class="acc v2-profile-details">
+          <summary>Referral маълумотлари</summary>
+          <div class="v2-profile-body"><div class="kv">
           <span>Taklif qilgan</span><b>${esc(referrerText)}</b>
           <span>O'z referral kodi</span><b>${esc(referral.own_code||f.referral_code||"kod yaratilmagan")}</b>
           <span>Takliflari</span><b>${esc(referral.invited_total||0)} ta</b>
-          <span>Faol referral</span><b>${esc(referral.invited_active||0)} ta</b></div></section>
-        <section class="dsec"><div class="dtitle-sm">To'lov tarixi</div><div class="panel">
+          <span>Faol referral</span><b>${esc(referral.invited_active||0)} ta</b>
+          </div>
+        </details>
+        <details class="acc v2-profile-details">
+          <summary>Тўлов тарихи</summary>
+          <div class="v2-profile-body"><div class="panel">
           ${pays.length?pays.map(p=>`<div class="mcard"><h3>#${p.id} · ${esc(p.status)}</h3><p>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.amount)}<br>Manba: ${esc(paymentSourceLabel(p.source))}<br>Yuborilgan: ${esc(p.submitted_at||"—")}<br>Ko'rilgan: ${esc(p.reviewed_at||"—")}${p.comment?" · "+esc(p.comment):""}</p></div>`).join(""):"<p class='empty'>To'lov tarixi yo'q.</p>"}
-        </div></section>
+        
+          </div>
+        </details>
         <section class="dsec"><div class="dtitle-sm">Admin amallari</div><div class="panel">
           <div class="mcard"><h3>Qo'lda paid obuna berish</h3>
             ${durationControlHtml("qaDays")}
