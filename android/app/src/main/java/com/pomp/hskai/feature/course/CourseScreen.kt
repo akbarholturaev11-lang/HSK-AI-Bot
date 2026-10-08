@@ -316,11 +316,15 @@ fun CourseScreen(
                 if (targetTrack == "hsk30" && hsk30 != null) {
                     Hsk30LevelChoiceDialog(
                         levels = hsk30.liveLevels,
-                        isNew = hsk30.newBadge.isNew,
                         onDismiss = { pendingTrackSwitch = null },
                         onChoose = { level ->
                             pendingTrackSwitch = null
-                            onSwitchTrack("hsk30", level)
+                            if (hsk30.access.allowed) {
+                                onSwitchTrack("hsk30", level)
+                            } else {
+                                // Never send a locked switch that the server will reject.
+                                onUnlockHsk30()
+                            }
                         },
                     )
                 } else {
@@ -533,7 +537,6 @@ private fun Hsk30LockedEntryDialog(
 @Composable
 private fun Hsk30LevelChoiceDialog(
     levels: List<String>,
-    isNew: Boolean,
     onDismiss: () -> Unit,
     onChoose: (String) -> Unit,
 ) {
@@ -551,7 +554,7 @@ private fun Hsk30LevelChoiceDialog(
                 ?.groupValues?.getOrNull(1)
                 ?: level
             Hsk30BookPrimary(
-                label = "HSK $band" + if (isNew) " · NEW" else "",
+                label = "HSK $band",
                 onClick = { onChoose(level) },
             )
             Spacer(Modifier.height(8.dp))
