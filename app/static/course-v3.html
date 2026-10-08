@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005-section-title">
 <script src="/assets/characters/hsk-character-pack.js?v=20260921c"></script>
 <script src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
+<script src="/assets/characters/hsk-study-preparing.js?v=20261008-1"></script>
 <script src="/assets/characters/hsk-lesson-presentation.js?v=20260921c"></script>
 <style>
 :root{
@@ -6147,7 +6148,7 @@ var RECOG=(function(){
 
   function shell(){
     return '<div class="rc-top"><button class="rc-ix" onclick="RECOG.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="rc-pbar"><i id="rc-prog"></i></div><span class="rc-pill" id="rc-score">0 ✓</span></div>'
-      +'<div class="rc-body" id="rc-body"><div class="rc-loading">…</div></div>';
+      +'<div class="rc-body" id="rc-body">'+HSKStudyPreparing.render(LANG)+'</div>';
   }
 
   // New openings consume new attempts; only a network retry reuses the ref.
@@ -6255,7 +6256,7 @@ var RECOG=(function(){
   }
   function gateStart(newAttempt){
     var ref=gateRef(newAttempt);
-    el("rc-body").innerHTML='<div class="rc-loading">…</div>';
+    el("rc-body").innerHTML=HSKStudyPreparing.render(LANG);
     runGate(ref).then(function(o){
       if(SECTION!==API||ref!==ATTEMPT_REF)return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}
@@ -6300,7 +6301,7 @@ var PRON=(function(){
     return '<div class="pr-wrap">'
       +'<div class="pr-top"><button class="pr-ix" onclick="PRON.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="pr-pbar"><i id="pr-prog"></i></div><span class="pr-pill" id="pr-cnt">1 / 10</span></div>'
       +'<div class="pr-toast" id="pr-toast">+10 XP</div>'
-      +'<div class="pr-stage" id="pr-stage"><div class="pr-loading">…</div></div>'
+      +'<div class="pr-stage" id="pr-stage">'+HSKStudyPreparing.render(LANG)+'</div>'
       +'<div class="pr-ctrl" id="pr-ctrl" style="display:none">'
       +'<div class="pr-micwrap" id="pr-micwrap"><button class="pr-mic" id="pr-mic" onclick="PRON.rec()" aria-label="Gapirish"><i class="ti ti-microphone"></i></button></div>'
       +'<div class="pr-hint" id="pr-hint"></div>'
@@ -6475,7 +6476,7 @@ var PRON=(function(){
   function gateStart(newAttempt){
     var ref=gateRef(newAttempt);
     el("pr-ctrl").style.display="none";el("pr-done").classList.remove("on");
-    el("pr-stage").innerHTML='<div class="pr-loading">…</div>';
+    el("pr-stage").innerHTML=HSKStudyPreparing.render(LANG);
     runGate(ref).then(function(o){
       if(!live()||ref!==ATTEMPT_REF)return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}
