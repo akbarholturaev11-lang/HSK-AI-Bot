@@ -22,6 +22,9 @@ class PaymentMethodDialogContractTests(unittest.TestCase):
         self.assertIn("fillMaxWidth(0.92f)", dialog)
         self.assertIn("fillMaxWidth(0.92f)", currency)
         self.assertNotIn("ModalBottomSheet", dialog)
+        self.assertIn("RoundedCornerShape(20.dp)", dialog)
+        self.assertIn("RoundedCornerShape(20.dp)", currency)
+        self.assertIn("HskSceneSurface(modifier = Modifier.fillMaxSize())", self.host)
 
     def test_method_selection_advances_without_an_extra_confirmation(self):
         self.assertIn("state.step == CheckoutStep.METHOD", self.host)
