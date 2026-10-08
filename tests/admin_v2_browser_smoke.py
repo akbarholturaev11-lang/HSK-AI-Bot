@@ -145,6 +145,12 @@ def main():
             assert live.locator("#v2SystemModules [data-module]").count() == 2, "System module rendering failed"
             assert live.locator("#v2ProductContent [data-module]").count() == 2, "Product Content modules missing"
             assert live.locator("#v2MarketingPartners [data-module]").count() == 1, "Partner module missing"
+            assert live.locator('#payments [data-v2-pane="payments:prices"] [data-module="prices"]').count() == 1, "Finance prices missing"
+            assert live.locator('#payments [data-v2-pane="payments:methods"] [data-module="prices"]').count() == 1, "Finance methods missing"
+            assert live.locator('#payments [data-v2-pane="payments:portfolio"] [data-module="portfolio"]').count() == 1, "Finance portfolio missing"
+            assert live.locator("#marketing #adHub").count() == 1, "Existing Mini App advertising control was lost"
+            assert live.locator("#marketing #notifTemplates").count() == 1, "Existing notifications control was lost"
+
             # Critical module coverage: each module must be discoverable from some safe V2 path.
             mapped_keys = {"hsk30","course_access","limits","course_sales_experiment","audio",
                            "broadcast","ads","release_feedback","discount","partners","channels","help",
@@ -152,6 +158,7 @@ def main():
             assert len(mapped_keys) == 19
             for area, keys in (
                 ("statistics", ("overview", "platform", "funnel", "ai")),
+                ("payments", ("payments", "prices", "methods", "portfolio")),
                 ("settings", ("tracks", "access", "content")),
                 ("marketing", ("campaigns", "ads", "reminders", "partners")),
                 ("system", ("model", "settings")),
