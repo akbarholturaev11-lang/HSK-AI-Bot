@@ -724,7 +724,7 @@
         ].map(i=>`<article class="stat ${i.t}"><div class="lab">${i.l}</div><div><div class="val">${esc(i.v)}</div><div class="sub">${esc(i.s)}</div></div></article>`).join("");
       } else $("financeQuick").innerHTML="<p class='empty'>Moliyaviy statistika yuklanmadi.</p>";
       $("queueList").innerHTML = (ov.queue||[]).map((i,idx)=>`
-        <button class="srow" data-tab-jump="${i.section==="payments"?"payments":i.section==="ads"?"settings":"users"}">
+        <button class="srow" data-tab-jump="${i.section==="payments"?"payments":i.section==="ads"?"marketing":"users"}">
           <div><h3>${idx+1}. ${esc(i.title)}</h3><p>${esc(i.note)}</p></div>
           <span class="tag ${i.priority==="hozir"||i.priority==="иссиқ"||i.priority==="ҳозир"?"amber":"green"}">${esc(i.priority)}</span>
         </button>`).join("");
