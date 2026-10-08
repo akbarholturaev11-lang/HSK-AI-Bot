@@ -15,4 +15,8 @@
     <string name="foundation_save_retry">Повторить сохранение</string>
     <string name="foundation_required_intro">Пройдите это короткое занятие перед первым уроком HSK 1.</string>
     <string name="foundation_optional_intro">Короткое вводное занятие для HSK 1.</string>
+    <string name="writer_pause">Пауза</string>
+    <string name="writer_resume">Продолжить</string>
+    <string name="writer_previous_stroke">Предыдущая черта</string>
+    <string name="writer_next_stroke">Следующая черта</string>
 </resources>
