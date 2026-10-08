@@ -31,6 +31,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -189,14 +190,16 @@ internal fun HanziWriterSheet(
                             color = PompColors.Ink,
                         )
 
-                        else -> StrokeAnimation(
-                            strokes = strokes,
-                            replayKey = replayKey,
-                            visibleStrokeCount = visibleStrokeCount,
-                            isPlaying = isPlaying,
-                            onStrokeComplete = { strokeCursor = it },
-                            onAnimationFinished = { isPlaying = false },
-                        )
+                        else -> key(index, current) {
+                            StrokeAnimation(
+                                strokes = strokes,
+                                replayKey = replayKey,
+                                visibleStrokeCount = visibleStrokeCount,
+                                isPlaying = isPlaying,
+                                onStrokeComplete = { strokeCursor = it },
+                                onAnimationFinished = { isPlaying = false },
+                            )
+                        }
                     }
                 }
             }
