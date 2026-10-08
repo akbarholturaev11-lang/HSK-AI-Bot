@@ -318,7 +318,7 @@ def main():
             iphone.locator("#drawer.open .v2-profile-details").first.wait_for(timeout=6000)
             assert iphone.locator("#drawer .v2-profile-details").count()==4, "Optional profile diagnostics not grouped"
             assert not iphone.locator("#drawer .v2-profile-details").first.evaluate("(el) => el.open"), "Technical data should start collapsed"
-            iphone.locator("#drawer .v2-profile-details").first.locator("summary").click()
+            iphone.locator("#drawer .v2-profile-details").first.locator("summary").first.click()
             assert iphone.locator("#drawer .v2-profile-details").first.evaluate("(el) => el.open"), "User diagnostics accordion does not expand"
             assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "User profile overflow"
             iphone.screenshot(path=str(output / "admin-v2-telegram-user-sheet-390.png"), full_page=False)
