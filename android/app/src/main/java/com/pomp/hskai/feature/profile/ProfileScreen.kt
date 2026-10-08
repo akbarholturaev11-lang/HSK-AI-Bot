@@ -1328,7 +1328,7 @@ private fun PrivacySecuritySheet(
 /** HSK AI rasmiy sahifalari, Mini App profilidagi qator bilan bir xil. */
 internal val SOCIAL_LINKS = listOf(
     Triple("Instagram", R.drawable.ic_brand_instagram, "https://www.instagram.com/hskai.app"),
-    Triple("TikTok", R.drawable.ic_brand_tiktok, "https://www.tiktok.com/@hsk.ai"),
+    Triple("TikTok", R.drawable.ic_brand_tiktok, "https://www.tiktok.com/@hskai.app"),
     Triple("YouTube", R.drawable.ic_brand_youtube, "https://youtube.com/@hskai_app"),
 )
 

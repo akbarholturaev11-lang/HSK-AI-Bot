@@ -54,7 +54,7 @@ class SocialLinksTest {
 
         listOf(
             "Instagram" to "https://www.instagram.com/hskai.app",
-            "TikTok" to "https://www.tiktok.com/@hsk.ai",
+            "TikTok" to "https://www.tiktok.com/@hskai.app",
             "YouTube" to "https://youtube.com/@hskai_app",
         ).forEach { (label, expected) ->
             opened.clear()
