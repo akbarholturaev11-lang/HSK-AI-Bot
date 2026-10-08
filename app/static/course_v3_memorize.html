@@ -69,6 +69,9 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
   <div class="top"><button class="ix" onclick="goBack()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="pbar"><i id="prog"></i></div><span class="pill" id="pos">1/1</span></div>
   <div class="body" id="body"><div class="loading">…</div></div>
 </div>
+<link rel="stylesheet" href="/assets/characters/hsk-character-pack.css?v=20260921c">
+<script defer src="/assets/characters/hsk-character-pack.js?v=20260921c"></script>
+<script defer src="/assets/characters/hsk-study-preparing.js?v=20261008-1"></script>
 <script defer src="course_v3_data/memo.js?v=20260628"></script>
 <script defer src="course_v3_data/lesson_gate.js?v=20260719"></script>
 <script defer src="course_v3_data/lesson_gate_hsk30.js?v=20260930"></script>
@@ -405,7 +408,7 @@ function boot(){Promise.all([LV_READY,SCRIPTS_READY]).then(function(){
 function gateStart(newAttempt){
   var ref=gateRef(newAttempt!==false);
 
-  B.innerHTML='<div class="loading">…</div>';
+  B.innerHTML=HSKStudyPreparing.render(LANG);
   runGate(ref).then(function(o){
     if(ref!==ATTEMPT_REF)return;
     if(o.status===403){showLimit(o.j);return}boot();
