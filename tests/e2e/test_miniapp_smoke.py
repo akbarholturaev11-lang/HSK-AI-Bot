@@ -4304,7 +4304,7 @@ def test_lesson_end_promo_still_gets_its_turn_after_the_home_prompt(page):
     expect(page.locator(".pdd-promo-shell")).to_have_count(0)
 
 
-def _mock_voice_environment(page, *, start=None, message=None, end=None, remaining=1):
+def _mock_voice_environment(page, *, start=None, message=None, end=None, remaining=1, live=False):
     """AI Voice uchun server javoblari. Mikrofon KERAK EMAS — klaviatura yo'li."""
     start_bodies = []
     page.route(
@@ -4319,6 +4319,7 @@ def _mock_voice_environment(page, *, start=None, message=None, end=None, remaini
     def handle_start(route):
         start_bodies.append(json.loads(route.request.post_data or "{}"))
         json_response(route, start or {
+            "live_available": live,
             "session_id": "sess-smoke",
             "user_status": {"is_paid": False, "plan": "free"},
             "remaining_limit": remaining,

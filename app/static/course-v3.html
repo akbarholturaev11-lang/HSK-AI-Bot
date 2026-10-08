@@ -1276,6 +1276,7 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
+<script src="/voice-live.js?v=1"></script>
 <script defer src="/course_v3_data/ads.js?v=20260923-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
@@ -6968,6 +6969,12 @@ var LD={ru:{speaking:"Говорит…",listening:"Слушаю вас…",anal
     holdMic:"Gapirish uchun mikrofonni bosib turing",releaseMic:"Yuborish uchun qo'yib yuboring",holdLonger:"Sal uzoqroq bosib turing",whatToSay:"Nima deyish?",hintTitle:"Nima deyish mumkin",hintWords:"Shu darsning so'zlari",hintPhrases:"Foydali iboralar",kbPlaceholder:"Yozing…",settings:"Sozlamalar",optPersona:"Suhbatdosh",optSub:"Pinyin va tarjima",optRate:"Nutq tezligi",on:"yoqilgan",off:"o'chirilgan",rateSlow:"sekin",rateNormal:"oddiy",emptyChat:"Suhbatingiz shu yerda ko'rinadi",replay:"Yana eshitish",turnOf:"{n}-javob",statWords:"dars so'zi",leftToday:"Bugun qoldi",unlimited:"cheksiz",errGrammar:"grammatika",errWord:"so'z",errPron:"talaffuz",a11yClose:"yopish",a11ySettings:"sozlamalar",a11yKeyboard:"klaviatura",a11yMic:"gapirish",a11ySend:"yuborish"},
   tj:{speaking:"Сухан мегӯяд…",listening:"Шуморо гӯш мекунам…",analyzing:"Таҳлил мекунам…",connecting:"Пайвастшавӣ…",heard:"Шумо:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Сӯҳбати хуб!",replWord:"ҷавоб",corrTitle:"Чиро ислоҳ кунем",again:"Боз сӯҳбат",exit:"Баромадан",micDeny:"Аз танзимоти Telegram ба микрофон иҷозат диҳед.",sendErr:"Хатогӣ. Бори дигар кӯшиш кунед.",tooShort:"Хеле кӯтоҳ. Бори дигар гап занед.",noSupport:"Дар ин дастгоҳ сабти овоз дастрас нест.",startBot:"Аввал ботро кушоед ва /start пахш кунед.",limitTitle:"Сӯҳбати озмоишӣ анҷом ёфт",limitSub:"Бо HSK AI Pro ҳар рӯз бо 阿宝 гап мезанед — бе лимит.",limitWhy:"Дар ҳолати ройгон AI Voice 1 маротиба санҷида мешавад — сӯҳбати озмоишиатро истифода кардӣ. Бо обуна ҳар рӯз бо 阿宝 гап мезанӣ: сухани зинда — роҳи кӯтоҳтарини ба забон омадан бо чинӣ.",premiumBtn:"HSK AI Pro ⭐️ гирифтан",learnBadge:"Оҳ, ман чинӣ гап зада истодаам!",showDialog:"Дидани гуфтугӯи пурра",hideDialog:"Пинҳон кардани гуфтугӯ",statGood:"ҷавоби хуб",statMistake:"ислоҳ",savedToMistakes:"Хатоҳо ба бахши «Хатоҳои ман» илова шуданд",noMistakes:"Бе хато — офарин!",fixLabel:"Дуруст:",scenarioPrefix:"Машқ: ",
     holdMic:"Барои гап задан микрофонро пахш карда нигоҳ доред",releaseMic:"Барои фиристодан сар диҳед",holdLonger:"Каме дарозтар нигоҳ доред",whatToSay:"Чӣ гӯям?",hintTitle:"Чӣ гуфтан мумкин",hintWords:"Калимаҳои ин дарс",hintPhrases:"Ибораҳои муфид",kbPlaceholder:"Нависед…",settings:"Танзимот",optPersona:"Ҳамсӯҳбат",optSub:"Пинйин ва тарҷума",optRate:"Суръати нутқ",on:"фаъол",off:"хомӯш",rateSlow:"оҳиста",rateNormal:"муқаррарӣ",emptyChat:"Гуфтугӯи шумо дар ин ҷо пайдо мешавад",replay:"Боз шунидан",turnOf:"Ҷавоби {n}",statWords:"калимаи дарс",leftToday:"Имрӯз мондааст",unlimited:"бе лимит",errGrammar:"грамматика",errWord:"калима",errPron:"талаффуз",a11yClose:"пӯшидан",a11ySettings:"танзимот",a11yKeyboard:"клавиатура",a11yMic:"гап задан",a11ySend:"фиристодан"}};
+var LIVE_TEXT={
+  uz:{startLive:"Live suhbat uchun bosing",stopLive:"Mikrofon ochiq · To'xtatish uchun bosing",liveFallback:"Live ulanmayapti. Mikrofonni bosib turib gapiring."},
+  ru:{startLive:"Нажмите для живого разговора",stopLive:"Микрофон включён · Нажмите, чтобы закончить",liveFallback:"Live недоступен. Удерживайте микрофон, чтобы говорить."},
+  tj:{startLive:"Барои гуфтугӯи зинда пахш кунед",stopLive:"Микрофон фаъол · Барои анҷом пахш кунед",liveFallback:"Live дастрас нест. Барои гап задан микрофонро нигоҳ доред."}
+};
+Object.keys(LIVE_TEXT).forEach(function(k){Object.assign(LD[k],LIVE_TEXT[k])});
 var L=LD[LANG]||LD.ru;
 var tg=window.Telegram&&window.Telegram.WebApp;
 var $=function(id){return document.getElementById("vc-"+id)};
@@ -7052,6 +7059,7 @@ var persona="bao";
 var ME={level:"hsk1",language:LANG,is_paid:false};
 var sess=null,turn=0,maxDialogs=0,busy=false,started=false;
 var scenarioInfo=null;
+var liveClient=null,liveAvailable=false,liveStarting=false,liveRecovering=false,liveUntil=0,liveTimer=null,voiceEpoch=0;
 /* Server har javobda `remaining_limit` qaytaradi (-1 = cheksiz), lekin klient
    uni tashlab yuborardi — o'quvchi paywall'ga urilgunча "necha marta qoldi"ni
    bilmasdi. */
@@ -7073,7 +7081,12 @@ function mtr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
 
 function setChar(m){$("char").innerHTML=chr(m,persona);$("char").className="charwrap"+(m==="talk"?" speaking":"")}
 function setStatus(t){$("status").textContent=t||""}
-function setCnt(){$("cnt").textContent=String(L.turnOf).replace("{n}",turn+1)}
+function setCnt(){
+  var count=String(L.turnOf).replace("{n}",turn+1);
+  if(liveUntil){var left=Math.max(0,Math.ceil((liveUntil-Date.now())/1000));count+=" · "+Math.floor(left/60)+":"+String(left%60).padStart(2,"0")}
+  $("cnt").textContent=count;
+}
+function micHint(){return liveClient&&liveClient.ready?L.stopLive:(liveAvailable?L.startLive:L.holdMic)}
 function setName(){$("nm").textContent=PERS[persona].name;$("setPersonaV").textContent=PERS[persona].name}
 function kbOn(){var k=$("kbPanel");return !!(k&&k.classList.contains("on"))}
 function setHold(t){$("holdhint").textContent=(kbOn()?"":(t||""))}
@@ -7137,7 +7150,7 @@ function closeHints(){$("hintSheet").classList.remove("on")}
 
 /* ---- keyboard panel ---- */
 function openKb(){$("ctrlRow").classList.add("off");$("kbPanel").classList.add("on");setHold("");$("kbText").focus()}
-function closeKb(){$("kbPanel").classList.remove("on");$("ctrlRow").classList.remove("off");setHold(started?L.holdMic:"")}
+function closeKb(){$("kbPanel").classList.remove("on");$("ctrlRow").classList.remove("off");setHold(started?micHint():"")}
 function syncSend(){$("kbSend").disabled=!$("kbText").value.trim()}
 
 /* ---- session ---- */
@@ -7155,12 +7168,16 @@ function init(){
 }
 
 function startSession(){
+  var epoch=voiceEpoch;
   busy=true;micBusy(true);setStatus(L.connecting);setChar("talk");
   return fetch("/api/voice-practice/session/start",{method:"POST",headers:{"Content-Type":"application/json"},
     body:JSON.stringify({initData:initData(),role:PERS[persona].role,level:ME.level,language:ME.language,voice:PERS[persona].voice})}).then(jr)
-   .then(function(o){busy=false;micBusy(false);
+   .then(function(o){
+      if(epoch!==voiceEpoch)return false;
+      busy=false;micBusy(false);
       if(!o.ok){onStartError(o);return false;}
-      sess=o.j.session_id;maxDialogs=Number(o.j.max_dialogs)||0;turn=0;started=true;setCnt();noteLimit(o.j.remaining_limit);
+      sess=o.j.session_id;maxDialogs=Number(o.j.max_dialogs)||0;turn=0;started=true;
+      liveAvailable=!!(o.j.live_available&&window.PompLiveVoice&&PompLiveVoice.supported());liveIndicator(false);setCnt();noteLimit(o.j.remaining_limit);
       scenarioInfo=o.j.scenario||null;
       var cc=o.j.course_context||{};lessonWords=cc.words||[];reviewWords=cc.review_words||[];
       hintSug=(o.j.opening_message&&o.j.opening_message.suggestions)||[];
@@ -7168,9 +7185,9 @@ function startSession(){
       chatClear();dropEmpty();
       addAi(op.chinese_reply||"",op.pinyin||"",op.translation||"");
       setChar("talk");setStatus(L.speaking);speak(op.chinese_reply||"");ring([587,740]);
-      setTimeout(function(){if(started){setChar("happy");setStatus("");setHold(L.holdMic)}},1100);
+      setTimeout(function(){if(started&&!liveStarting&&!(liveClient&&liveClient.ready)){setChar("happy");setStatus("");setHold(micHint())}},1100);
       return true;
-   }).catch(function(){busy=false;micBusy(false);setChar("happy");setStatus(L.sendErr);return false});
+   }).catch(function(){if(epoch!==voiceEpoch)return false;busy=false;micBusy(false);setChar("happy");setStatus(L.sendErr);return false});
 }
 function onStartError(o){
   setChar("happy");
@@ -7180,6 +7197,73 @@ function onStartError(o){
   setStatus(L.sendErr);
 }
 
+/* ---- Live audio; the original upload flow is the device fallback ---- */
+function liveIndicator(on){
+  if(!mic)return;
+  mic.classList.toggle("rec",!!on);
+  mic.setAttribute("aria-label",on?L.stopLive:(liveAvailable?L.startLive:L.a11yMic));
+  var icon=mic.querySelector("i");if(icon)icon.className=on?"ti ti-player-stop":"ti ti-microphone";
+}
+function stopLive(){
+  if(liveClient)liveClient.stop();liveClient=null;liveStarting=false;
+  clearInterval(liveTimer);liveTimer=null;liveUntil=0;liveIndicator(false);
+}
+function changeVoiceMode(mode,sid,attempt){
+  return fetch("/api/voice-practice/session/mode",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({initData:initData(),session_id:sid,mode:mode})}).then(jr).then(function(o){
+      if(!o.ok&&o.j&&o.j.code==="LIVE_SESSION_BUSY"&&(attempt||0)<4){
+        return new Promise(function(resolve){setTimeout(resolve,150)}).then(function(){return changeVoiceMode(mode,sid,(attempt||0)+1)});
+      }
+      return o;
+    });
+}
+function recoverLive(code){
+  if(liveRecovering||!started||!sess)return;
+  if(["time_limit","budget_limit","session_limit","live_session_expired","LIMIT_EXCEEDED","access_blocked","INVALID_INIT_DATA"].indexOf(code)>=0||String(code).indexOf("ai_budget_")===0){endCall();return}
+  var sid=sess,epoch=voiceEpoch;
+  liveRecovering=true;stopLive();liveAvailable=false;busy=true;micBusy(true);
+  changeVoiceMode("turn",sid).then(function(o){
+    if(epoch!==voiceEpoch||sess!==sid)return;
+    if(!o.ok){endCall();return}
+    setChar("happy");setStatus(code==="NotAllowedError"?L.micDeny:L.liveFallback);setHold(L.holdMic);setCnt();
+  }).catch(function(){if(epoch===voiceEpoch&&sess===sid)endCall()}).finally(function(){
+    if(epoch===voiceEpoch){liveRecovering=false;busy=false;micBusy(false)}
+  });
+}
+async function startLiveCall(){
+  if(liveStarting||liveRecovering||!started||!sess)return;
+  var epoch=voiceEpoch,sid=sess;
+  liveStarting=true;busy=true;micBusy(true);stopSpeak();setStatus(L.connecting);
+  var client=PompLiveVoice.create({
+    playbackRate:function(){return slowOn()?0.85:1},
+    onstate:function(state){
+      if(epoch!==voiceEpoch||sess!==sid)return;
+      setChar(state==="speaking"?"talk":"listen");setStatus(state==="speaking"?L.speaking:(state==="analyzing"?L.analyzing:L.listening));setHold(L.stopLive);
+    },
+    onturn:function(res){if(epoch===voiceEpoch&&sess===sid)renderReply(res,false,true)},
+    onerror:function(code){if(!liveStarting&&epoch===voiceEpoch&&sess===sid)recoverLive(code)}
+  });
+  liveClient=client;
+  try{
+    await client.prepare();
+    if(epoch!==voiceEpoch||sess!==sid){client.stop();return}
+    var o=await changeVoiceMode("live",sid);
+    if(epoch!==voiceEpoch||sess!==sid){client.stop();return}
+    if(!o.ok)throw new Error((o.j&&o.j.code)||"live_voice_unavailable");
+    var ready=await client.connect(sid,initData());
+    if(epoch!==voiceEpoch||sess!==sid){client.stop();return}
+    liveStarting=false;busy=false;micBusy(false);liveIndicator(true);
+    liveUntil=Date.now()+Math.max(0,Number(ready.max_seconds)||0)*1000;setCnt();
+    liveTimer=setInterval(function(){if(epoch!==voiceEpoch)return;setCnt();if(Date.now()>=liveUntil)endCall()},1000);
+  }catch(e){
+    client.stop();
+    if(epoch!==voiceEpoch||sess!==sid)return;
+    liveStarting=false;recoverLive((e&&e.name==="NotAllowedError")?e.name:((e&&e.message)||"live_voice_unavailable"));
+  }
+}
+function liveVisibility(){if(document.hidden&&(liveClient||liveStarting))endCall()}
+function livePageHide(){if(liveClient||liveStarting)endCall()}
+
 /* ---- hold-to-talk mic ---- */
 var mic=null;
 
@@ -7187,7 +7271,7 @@ function endHoldEvent(e){
   if(e)e.preventDefault();
   if(!holdAt)return;
   holdAt=0;
-  if(!holdOk){setHold(started?L.holdMic:"");return;}
+  if(!holdOk){setHold(started?micHint():"");return;}
   /* Yozuv uzunligi mikrofon ochilgan paytdan hisoblanadi — sessiya ulanish
      kechikishi "juda qisqa" xatosiga sabab bo'lmasligi uchun. */
   if(!recAt||Date.now()-recAt<MIN_HOLD_MS){cancelRecording();setStatus(L.holdLonger);setHold(L.holdMic);return;}
@@ -7237,7 +7321,7 @@ function cancelRecording(){
   try{if(mediaRecorder&&mediaRecorder.state!=="inactive"){mediaRecorder.onstop=null;mediaRecorder.stop()}}catch(e){}
   mediaRecorder=null;releaseMicSoon();setChar("happy");
 }
-function stopHard(){clearTimeout(autoStop);clearTimeout(micIdle);holdAt=0;holdOk=false;recAt=0;try{if(mediaRecorder&&mediaRecorder.state!=="inactive")mediaRecorder.stop()}catch(e){}try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null}
+function stopHard(){stopLive();clearTimeout(autoStop);clearTimeout(micIdle);holdAt=0;holdOk=false;recAt=0;try{if(mediaRecorder&&mediaRecorder.state!=="inactive")mediaRecorder.stop()}catch(e){}try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null}
 function extFromMime(mt){mt=(mt||"").toLowerCase();if(/mp4|m4a|aac/.test(mt))return"mp4";if(/ogg/.test(mt))return"ogg";if(/mpeg|mp3/.test(mt))return"mp3";if(/wav/.test(mt))return"wav";return"webm"}
 function onStopped(){
   var mt=(mediaRecorder&&mediaRecorder.mimeType)||"audio/webm";
@@ -7258,6 +7342,7 @@ function onStopped(){
 function sendMessage(txt){
   txt=(""+(txt||"")).trim();
   if(busy||!txt)return;
+  if(liveClient&&liveClient.ready){liveClient.sendText(txt);return}
   if(!started){startSession().then(function(ok){if(ok)sendMessage(txt)});return;}
   busy=true;micBusy(true);setChar("talk");setStatus(L.analyzing);
   addMe(txt,"");addTyping();
@@ -7283,7 +7368,7 @@ function onMsgError(o){
   if(code==="SESSION_NOT_FOUND"){started=false;sess=null;setStatus(L.sendErr);return;}
   setStatus(L.sendErr);
 }
-function renderReply(res,skipUser){
+function renderReply(res,skipUser,streamed){
   if(!res){setStatus("");return;}
   turn=Number(res.turn_count)||turn+1;if(res.max_dialogs)maxDialogs=Number(res.max_dialogs);setCnt();noteLimit(res.remaining_limit);
   hintSug=res.suggestions||[];
@@ -7291,16 +7376,18 @@ function renderReply(res,skipUser){
   else if(skipUser&&res.correction){var last=chatEl().querySelector(".msg.me:last-child .bub");
     if(last&&!last.querySelector(".fx")){var f=document.createElement("div");f.className="fx";f.innerHTML='<b>'+esc(L.fixLabel)+'</b> '+esc(res.correction);last.appendChild(f)}}
   addAi(res.chinese_reply||"",res.pinyin||"",res.translation||"");
+  if(streamed)return;
   setChar("talk");setStatus(L.speaking);speak(res.chinese_reply||"");ring(persona==="li"?[523,659]:[587,740]);
   if(res.session_should_end){setTimeout(endCall,1300);return;}
-  setTimeout(function(){if(started){setChar("happy");setStatus("");setHold(L.holdMic)}},1100);
+  setTimeout(function(){if(started&&!liveStarting&&!(liveClient&&liveClient.ready)){setChar("happy");setStatus("");setHold(micHint())}},1100);
 }
 function endCall(){
+  voiceEpoch++;stopLive();liveRecovering=false;busy=false;micBusy(false);
   closeSettings();closeHints();
   if(!started||!sess){showDoneResult({message_count:turn});return;}
   stopHard();stopSpeak();var sid=sess;started=false;sess=null;
   fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({initData:initData(),session_id:sid})}).then(function(r){return r.json()})
+    keepalive:true,body:JSON.stringify({initData:initData(),session_id:sid})}).then(function(r){return r.json()})
    .then(function(j){if(j&&j.ok)refreshCourseProgress(true);showDoneResult(j||{})})
    .catch(function(){showDoneResult({message_count:turn})});
 }
@@ -7373,6 +7460,7 @@ function showPaywall(){
 }
 function goPremium(){App.goPay("v3_voice_limit")}
 function softReset(){
+  voiceEpoch++;stopLive();liveRecovering=false;liveAvailable=false;
   started=false;sess=null;turn=0;lessonWords=[];reviewWords=[];hintSug=[];scenarioInfo=null;
   closeKb();setName();setChar("happy");setStatus("");setHold(L.holdMic);chatClear();setCnt();
 }
@@ -7409,10 +7497,14 @@ $("hintBody").addEventListener("click",function(e){
 });
 $("kbText").addEventListener("input",function(){var t=$("kbText");t.style.height="auto";t.style.height=Math.min(t.scrollHeight,96)+"px";syncSend()});
 $("kbText").addEventListener("focus",function(){setTimeout(chatScroll,250)});
+document.addEventListener("visibilitychange",liveVisibility);
+window.addEventListener("pagehide",livePageHide);
 mic.addEventListener("contextmenu",function(e){e.preventDefault()});
 mic.addEventListener("pointerdown",function(e){
   e.preventDefault();
   if(busy)return;
+  if(liveClient&&liveClient.ready){endCall();return}
+  if(liveAvailable&&started){startLiveCall();return}
   try{mic.setPointerCapture(e.pointerId)}catch(_){}
   holdAt=Date.now();holdOk=false;
   if(!started){startSession().then(function(ok){if(ok&&holdAt)beginHold()});return;}
@@ -7432,6 +7524,7 @@ mic.addEventListener("pointerleave",function(e){if(holdAt&&holdOk)endHoldEvent(e
 /* Bo'limdan chiqish: mikrofon va audio to'xtatiladi, ochiq sessiya serverda
    yopiladi — aks holda dialog limiti "band" holatda qolib ketardi. */
 function leave(){
+  voiceEpoch++;document.removeEventListener("visibilitychange",liveVisibility);window.removeEventListener("pagehide",livePageHide);
   try{stopHard()}catch(e){}try{stopSpeak()}catch(e){}
   if(vpOff){vpOff();vpOff=null}
   try{closeSettings();closeHints();closeKb()}catch(e){}
@@ -7441,6 +7534,7 @@ function leave(){
   closeSection();App.show("voice");
 }
 function open(role){
+  voiceEpoch++;stopLive();liveAvailable=false;liveRecovering=false;
   L=LD[LANG]||LD.ru;
   /* Kunlik reja "voice_dialog" vazifasi maqsadga mos rol beradi. Boshqa
      kirish nuqtalarida (bo'lim kartasi) rol yo'q — odatdagi 阿宝 qoladi. */

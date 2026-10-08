@@ -1,8 +1,10 @@
-"""Authenticated WebSocket relay for Android real-time voice practice."""
+"""Shared Live relay with Android bearer and Telegram Mini App authentication."""
 
 from __future__ import annotations
 
 import asyncio
+
+import anyio
 import base64
 import json
 import logging
@@ -12,8 +14,10 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 from typing import Callable
+from urllib.parse import urlparse
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect
+from fastapi.responses import JSONResponse
 from starlette.websockets import WebSocketState
 from sqlalchemy import or_, select, update
 
@@ -24,6 +28,7 @@ from app.services.android_live_voice_service import (
 )
 from app.services.ai_service import AIUsageResult
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
+from app.services.telegram_webapp_auth import extract_fresh_verified_webapp_user_id
 from app.services.voice_practice_service import (
     MAX_DIALOGS_PER_SESSION,
     VoicePracticeError,
@@ -118,12 +123,74 @@ def create_android_live_voice_router(
 ) -> APIRouter:
     router = APIRouter(tags=["android-live-voice"])
 
+    def miniapp_user_id(init_data: str) -> int | None:
+        return extract_fresh_verified_webapp_user_id(
+            init_data, settings_obj.BOT_TOKEN, max_age_seconds=86400,
+        )
+
+    @router.post("/api/voice-practice/session/mode")
+    async def miniapp_voice_mode(request: Request):
+        try:
+            payload = await request.json()
+            if not isinstance(payload, dict):
+                raise ValueError("Expected an object")
+            telegram_id = miniapp_user_id(str(payload.get("initData") or ""))
+            if not telegram_id:
+                raise VoicePracticeError("INVALID_INIT_DATA", "Invalid Telegram init data.", 401)
+            mode = str(payload.get("mode") or "")
+            if mode == "live" and not live_voice_available(settings_obj, telegram_id):
+                raise VoicePracticeError("live_voice_unavailable", "Live voice is unavailable.", 403)
+            async with session_factory() as session:
+                result = await voice_service_factory(session).set_session_mode(
+                    telegram_id, session_id=str(payload.get("session_id") or ""), mode=mode,
+                )
+            return result
+        except VoicePracticeError as exc:
+            return JSONResponse(status_code=exc.status_code, content={
+                "ok": False, "code": exc.code, "message": exc.message,
+            })
+        except (ValueError, TypeError):
+            return JSONResponse(status_code=422, content={"ok": False, "code": "INVALID_REQUEST"})
+
     @router.websocket("/api/v3/android/voice/live")
     async def android_live_voice(websocket: WebSocket):
+        await relay(websocket, miniapp=False)
+
+    @router.websocket("/api/voice-practice/live")
+    async def miniapp_live_voice(websocket: WebSocket):
+        await relay(websocket, miniapp=True)
+
+    async def relay(websocket: WebSocket, *, miniapp: bool):
         await websocket.accept()
         token = _bearer_token(websocket.headers.get("Authorization"))
         session_id = str(websocket.query_params.get("session_id") or "").strip()
-        if not token or not 8 <= len(session_id) <= 120:
+        miniapp_telegram_id = None
+        if miniapp:
+            # Browser WebSockets cannot set Authorization headers. Keep signed
+            # Telegram data in the first frame, never in URLs or access logs.
+            try:
+                origin = urlparse(websocket.headers.get("origin", ""))
+                if origin.scheme not in {"http", "https"} or origin.netloc.lower() != websocket.headers.get("host", "").lower():
+                    raise ValueError("Invalid origin")
+                frame = await asyncio.wait_for(websocket.receive(), timeout=5)
+                auth = frame.get("text")
+                if not isinstance(auth, str) or len(auth) > 16384:
+                    raise ValueError("Auth frame too large")
+                payload = json.loads(auth)
+                if not isinstance(payload, dict) or payload.get("type") != "auth":
+                    raise ValueError("Expected auth frame")
+                miniapp_telegram_id = miniapp_user_id(str(payload.get("initData") or ""))
+                session_id = str(payload.get("session_id") or "").strip()
+                if not miniapp_telegram_id or not 8 <= len(session_id) <= 120:
+                    raise ValueError("Invalid auth")
+            except (ValueError, TypeError, asyncio.TimeoutError, WebSocketDisconnect):
+                try:
+                    await websocket.send_json({"type": "error", "code": "INVALID_INIT_DATA"})
+                    await websocket.close(code=1008)
+                except WebSocketDisconnect:
+                    pass
+                return
+        elif not token or not 8 <= len(session_id) <= 120:
             await websocket.send_json({"type": "error", "code": "android_request_invalid"})
             await websocket.close(code=1008)
             return
@@ -139,8 +206,12 @@ def create_android_live_voice_router(
         expires_at = datetime.now(timezone.utc) + timedelta(seconds=max_seconds + 20)
         try:
             async with session_factory() as session:
-                context = await DesktopAuthService(session, settings_obj).authenticate(token)
-                telegram_id = int(context.user.telegram_id)
+                if miniapp:
+                    telegram_id = int(miniapp_telegram_id)
+                    await voice_service_factory(session).validate_live_session(telegram_id, session_id=session_id)
+                else:
+                    context = await DesktopAuthService(session, settings_obj).authenticate(token)
+                    telegram_id = int(context.user.telegram_id)
                 if not live_voice_available(settings_obj, telegram_id):
                     raise DesktopAuthError("live_voice_unavailable", status_code=403)
                 claimed = await session.execute(
@@ -420,7 +491,7 @@ def create_android_live_voice_router(
                     await websocket.close(code=1000)
         except (DesktopAuthError, VoicePracticeError) as exc:
             code = getattr(exc, "code", "live_voice_unavailable")
-            logger.info("Android Live Voice refused: %s", code)
+            logger.info("Live Voice refused: %s", code)
             try:
                 await websocket.send_json({"type": "error", "code": code})
                 await websocket.close(code=1008)
@@ -429,7 +500,7 @@ def create_android_live_voice_router(
         except WebSocketDisconnect:
             pass
         except Exception:  # noqa: BLE001
-            logger.exception("Android Live Voice relay failed for user %s", telegram_id or "unknown")
+            logger.exception("Live Voice relay failed for user %s", telegram_id or "unknown")
             try:
                 await websocket.send_json({"type": "error", "code": "live_voice_unavailable"})
                 await websocket.close(code=1011)
@@ -438,21 +509,22 @@ def create_android_live_voice_router(
         finally:
             if connection_token and telegram_id:
                 try:
-                    async with session_factory() as session:
-                        await session.execute(
-                            update(VoicePracticeSession)
-                            .where(
-                                VoicePracticeSession.id == session_id,
-                                VoicePracticeSession.user_telegram_id == telegram_id,
-                                VoicePracticeSession.live_connection_token == connection_token,
+                    with anyio.CancelScope(shield=True):
+                        async with session_factory() as session:
+                            await session.execute(
+                                update(VoicePracticeSession)
+                                .where(
+                                    VoicePracticeSession.id == session_id,
+                                    VoicePracticeSession.user_telegram_id == telegram_id,
+                                    VoicePracticeSession.live_connection_token == connection_token,
+                                )
+                                .values(
+                                    live_connection_token=None,
+                                    live_connection_expires_at=None,
+                                )
                             )
-                            .values(
-                                live_connection_token=None,
-                                live_connection_expires_at=None,
-                            )
-                        )
-                        await session.commit()
+                            await session.commit()
                 except Exception:  # noqa: BLE001 — expiry is the fallback release
-                    logger.exception("Android Live Voice lock release failed")
+                    logger.exception("Live Voice lock release failed")
 
     return router

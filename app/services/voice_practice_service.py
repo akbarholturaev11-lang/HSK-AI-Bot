@@ -9,7 +9,7 @@ import uuid
 from collections import Counter
 from datetime import datetime, timezone
 
-from sqlalchemy import func, select, update
+from sqlalchemy import func, or_, select, update
 
 from app.config import settings
 from app.db.models.voice_practice_session import VoicePracticeSession
@@ -772,6 +772,61 @@ class VoicePracticeService:
             "opening_message": self._opening_message(role, language, scenario),
             "max_dialogs": MAX_DIALOGS_PER_SESSION,
         }
+
+    async def set_session_mode(self, telegram_id: int, *, session_id: str, mode: str) -> dict:
+        """Upgrade or fall back within the same conversation and daily allowance."""
+        if mode not in {"turn", "live"}:
+            raise VoicePracticeError("INVALID_MODE", "Unknown voice mode.", 422)
+        item = await self._get_active_session(telegram_id, session_id)
+        now = datetime.now(timezone.utc)
+        values = {"mode": mode}
+        if mode == "live":
+            started_at = await self._ensure_live_session_access(telegram_id, item)
+            values["live_started_at"] = func.coalesce(VoicePracticeSession.live_started_at, started_at)
+        changed = await self.session.execute(
+            update(VoicePracticeSession).where(
+                VoicePracticeSession.id == session_id,
+                VoicePracticeSession.user_telegram_id == telegram_id,
+                VoicePracticeSession.status == "active",
+                or_(VoicePracticeSession.live_connection_token.is_(None),
+                    VoicePracticeSession.live_connection_expires_at < now),
+            ).values(**values).execution_options(synchronize_session=False)
+        )
+        if changed.rowcount != 1:
+            raise VoicePracticeError("LIVE_SESSION_BUSY", "Live connection is still active.", 409)
+        await self.session.commit()
+        return {"ok": True, "session_id": session_id, "mode": mode, "max_dialogs": MAX_DIALOGS_PER_SESSION}
+
+    async def validate_live_session(self, telegram_id: int, *, session_id: str) -> None:
+        item = await self._get_active_session(telegram_id, session_id)
+        if item.mode != "live":
+            raise VoicePracticeError("SESSION_MODE_MISMATCH", "Voice session mode mismatch.", 409)
+        await self._ensure_live_session_access(telegram_id, item)
+
+    async def _ensure_live_session_access(self, telegram_id: int, item) -> datetime:
+        now = datetime.now(timezone.utc)
+        from app.services.entitlements.state import EntitlementState, resolve_state
+
+        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        if user is None:
+            raise VoicePracticeError("USER_NOT_FOUND", "User not found.", 404)
+        state = resolve_state(user)
+        if state == EntitlementState.BLOCKED:
+            raise VoicePracticeError("access_blocked", "Access blocked.", 403)
+        if int(item.turn_count or 0) == 0 and await self.remaining_free_sessions(user) == 0:
+            raise VoicePracticeError("LIMIT_EXCEEDED", "Voice Practice limit reached.", 403)
+        if await self._is_paid_telegram_user(telegram_id) or state == EntitlementState.TRIAL_ACTIVE:
+            await self._ensure_budget_available(telegram_id)
+        # Switching modes must never renew the Live clock or its USD cap.
+        started_at = item.live_started_at
+        if started_at:
+            if started_at.tzinfo is None:
+                started_at = started_at.replace(tzinfo=timezone.utc)
+            if (now - started_at).total_seconds() >= min(180, max(30, settings.ANDROID_VOICE_LIVE_MAX_SECONDS)):
+                raise VoicePracticeError("live_session_expired", "Live session expired.", 403)
+        if float(item.live_cost_usd or 0) >= settings.ANDROID_VOICE_LIVE_SESSION_BUDGET_USD:
+            raise VoicePracticeError("budget_limit", "Live session budget exhausted.", 403)
+        return started_at or now
 
     async def _retire_stale_sessions(self, telegram_id: int, offset_minutes: int) -> None:
         """Kechagi ochiq qolgan sessiyalarni yopadi.

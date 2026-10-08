@@ -10710,3 +10710,23 @@ Follow-up:
 - Verified: 159 backend tests (+166 subtests), 9 mobile voice smoke tests, 28 desktop contracts, five Android static checks, Direct/Play compilation and 756 Android unit tests on the updated `origin/main` base. The 8-turn regression uses the pinned SDK receive iterator and checks budget/time/stop behavior.
 - On the original `b35cb774` baseline, three broader smoke tests (checkpoint copy, sales-preview lesson, download copy button) fail identically before this patch; their code is outside the voice change.
 - Publish the tested backend/UI and verify physical-device Gemini audio. Preserve the existing deployed Live rollout settings and provider credentials; this patch only removes the dialogue cap and repairs continuous receiving.
+
+### 2026-10-08 — Telegram Mini App Live voice
+
+Changed:
+- Mini App streams mono 16 kHz PCM through an AudioWorklet to the existing server-owned Gemini relay, plays 24 kHz PCM, and supports speech interruption. Chinese audio, pinyin/translation, corrections and rewards use the existing voice logic.
+- `/api/voice-practice/live` authenticates signed Telegram initData in its first WebSocket frame (24-hour freshness and same-origin checks). Provider credentials remain server-side. `/api/voice-practice/session/mode` upgrades or falls back within the same owned session without resetting history, daily allowance, Live clock or USD budget.
+- Android bearer authentication and relay contracts remain supported. Connection leases are released under cancellation shielding so fallback does not leave a session busy.
+
+Why:
+- Continuous conversation in Telegram should use the existing rollout and budget controls and recover to the working upload/text flow when browser audio or the provider is unavailable.
+
+Files touched:
+- `app/api/android_live_voice.py`, `app/services/voice_practice_service.py`, `app/main.py`, `app/static/course-v3.html`, `app/static/voice-live.js`, `app/static/voice-live-worklet.js` and Live regression tests.
+
+Risk:
+- Requires HTTPS, browser AudioWorklet/microphone support, paid Gemini billing and the existing `ANDROID_VOICE_LIVE_*` rollout settings. No migration or new environment variables. Time/budget/access errors end the call; they cannot trigger fallback to bypass those limits.
+
+Follow-up:
+- Real Chromium capture/playback with fake microphone and a routed provider, signed-auth/database tests, Android relay and course/payment regressions pass. These do not confirm physical Telegram WebView audio or a paid Gemini connection; verify on Android Telegram and iPhone after deployment.
+- Validation: 281 backend tests (+186 subtests), 10 Live browser cases, 4 PCM sample-rate checks and main-flow smoke checks. A sales-checkout smoke case is blocked by an overlapping locked-lesson sheet on both this patch and clean `f5666bc5`; it is an existing issue outside Live voice.

@@ -27,6 +27,7 @@ from app.api.android_course import create_android_course_router
 from app.api.android_events import create_android_events_router
 from app.api.android_features import create_android_features_router
 from app.api.android_live_voice import create_android_live_voice_router
+from app.services.android_live_voice_service import live_voice_available
 from app.api.android_assistant import create_android_assistant_router
 from app.api.desktop_auth import create_desktop_auth_router
 from app.api.native_oauth import create_native_oauth_router
@@ -1953,6 +1954,16 @@ async def course_v3_miniapp():
     return miniapp_file_response("app/static/course-v3.html")
 
 
+@app.get("/voice-live.js")
+async def miniapp_voice_live_client():
+    return static_asset_response("app/static/voice-live.js", media_type="application/javascript")
+
+
+@app.get("/voice-live-worklet.js")
+async def miniapp_voice_live_worklet():
+    return static_asset_response("app/static/voice-live-worklet.js", media_type="application/javascript")
+
+
 APP_DOWNLOADS_MARKER = "<!--APP-DOWNLOADS-->"
 
 
@@ -3065,6 +3076,7 @@ async def voice_practice_start(request: Request):
                 language=str(payload.get("language") or ""),
                 voice=str(payload.get("voice") or ""),
             )
+            result["live_available"] = live_voice_available(settings, telegram_id)
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
             await CourseMiniAppAnalyticsService(session).record_server_event(
                 event_name="voice_started",
