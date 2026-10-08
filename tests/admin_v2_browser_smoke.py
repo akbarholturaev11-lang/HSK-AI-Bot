@@ -88,7 +88,19 @@ def main():
                     {"label": name, "value": 42, "note": "UI demo only", "tone": ""}
                     for name in ("Foydalanuvchilar", "Faol obuna", "To‘lov tekshiruvda", "Issiq mijoz")
                 ],
-                "segments": {}, "queue": [], "users": [], "payments": {"latest": []},
+                "segments": {}, "queue": [],
+                "users": [{
+                    "id": 9001, "name": "Demo Learner", "username": "demo",
+                    "language": "tj", "level": "HSK 3", "last_active": "demo",
+                    "plan": "Pro", "method": "Alif", "status": "active",
+                    "questions": "3/5", "streak": 1
+                }],
+                "payments": {"latest": [{
+                    "id": 7001, "telegram_id": 9001, "name": "Demo Learner",
+                    "username": "demo", "plan": "Pro", "method": "Alif",
+                    "amount": "69 TJS", "status": "pending", "status_label": "Tekshiruvda",
+                    "submitted_at": "demo", "source": "miniapp", "has_screenshot": True
+                }]},
                 "statistics_reports": [], "data_quality": {},
                 "modules": [
                     {"key": key, "title": label, "icon": "⚙️", "note": "Demo"}
@@ -113,6 +125,14 @@ def main():
             assert live.locator("#moduleGrid [data-module]").count() == 2, "Real Product module rendering failed"
             assert live.locator("#v2MarketingModules [data-module]").count() == 1, "Real Marketing module rendering failed"
             assert live.locator("#v2SystemModules [data-module]").count() == 1, "Real System module rendering failed"
+            assert live.locator("#userList [data-user]").count() >= 1, "Real Users rows missing"
+            live.locator('#tabs [data-tab="payments"]').click()
+            assert live.locator('#paymentBoard [data-payment-preview="7001"]').count() == 1, "Real Payments row missing"
+            live.locator('#paymentBoard [data-payment-preview="7001"]').click()
+            assert live.locator("#drawer.open").count() == 1, "Payment preview did not open"
+            assert "bank" in live.locator("#drawerBody").inner_text().lower(), "Bank verification warning missing"
+            live.locator('[data-act="close-drawer"]').first.click(force=True)
+            live.locator('#tabs [data-tab="dashboard"]').click()
             assert not live_errors, "Real render JS errors: " + str(live_errors)
             live.screenshot(path=str(output / "admin-v2-mocked-api-render-1440.png"),
                             full_page=True)
