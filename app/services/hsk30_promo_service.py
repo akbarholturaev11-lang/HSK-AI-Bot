@@ -56,7 +56,6 @@ class Hsk30PromoService:
         shown_count = max(0, int(getattr(profile, "hsk30_promo_shown_count", 0) or 0))
         last_shown = _utc(getattr(profile, "hsk30_promo_last_shown_at", None))
         feature_enabled = await self.feature.is_enabled()
-        release_at = _utc(await self.feature.enabled_at()) if feature_enabled else None
         onboarded_at = _utc(getattr(profile, "onboarding_completed_at", None))
         active_track = CourseTrackService.track_for_level(
             getattr(user, "level", None)
@@ -81,8 +80,6 @@ class Hsk30PromoService:
             reason = "onboarding_not_completed"
         elif (
             onboarded_at is not None
-            and release_at is not None
-            and onboarded_at >= release_at
             and now < onboarded_at + HSK30_NEW_USER_GRACE_PERIOD
         ):
             eligible = False
