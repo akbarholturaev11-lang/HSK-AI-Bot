@@ -78,6 +78,7 @@ import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompShapes
+import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.data.api.SubscriptionPriceDto
 import com.pomp.hskai.data.repository.FeatureRepository
 import java.time.Duration
@@ -184,7 +185,8 @@ fun SubscriptionCheckoutHost(
         }
     }
 
-    Column(Modifier.fillMaxSize().background(C.bg).safeDrawingPadding()) {
+    HskSceneSurface(modifier = Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize().safeDrawingPadding()) {
         Column(
             Modifier.weight(1f).verticalScroll(rememberScrollState())
                 .padding(horizontal = 15.dp).padding(top = 16.dp, bottom = 22.dp),
@@ -310,6 +312,7 @@ fun SubscriptionCheckoutHost(
                     onClick = primaryAction,
                     modifier = Modifier.weight(1f))
             }
+        }
         }
     }
 
