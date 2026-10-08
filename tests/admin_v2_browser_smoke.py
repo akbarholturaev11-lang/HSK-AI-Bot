@@ -58,6 +58,8 @@ def main():
                 assert page.locator("main .view").count() == 7, "7 views expected"
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Horizontal overflow"
                 page.screenshot(path=str(output / f"admin-v2-dashboard-{width}.png"), full_page=True)
+                if width == 390:
+                    page.screenshot(path=str(output / "admin-v2-mobile-viewport.png"), full_page=False)
                 if width > 760:
                     assert page.locator("#tabs [data-tab]").count() == 7
                     assert page.evaluate("getComputedStyle(document.body).overflowY !== 'hidden'"), "Desktop scroll locked"
@@ -205,6 +207,15 @@ def main():
             baseline.wait_for_timeout(250)
             baseline.screenshot(path=str(output / "approved-prototype-1440.png"), full_page=True)
             baseline_context.close()
+            mobile_baseline_ctx = browser.new_context(viewport={"width": 390, "height": 844})
+            mobile_baseline = mobile_baseline_ctx.new_page()
+            mobile_baseline.goto(
+                f"http://127.0.0.1:{server.server_port}/tests/fixtures/admin_v2_approved_prototype.html",
+                wait_until="domcontentloaded"
+            )
+            mobile_baseline.wait_for_timeout(250)
+            mobile_baseline.screenshot(path=str(output / "approved-prototype-mobile-viewport.png"), full_page=False)
+            mobile_baseline_ctx.close()
 
             # Compare the stable left-navigation region, not data-dependent KPI values.
             from PIL import Image, ImageChops, ImageStat
@@ -212,6 +223,10 @@ def main():
             approved = Image.open(output / "approved-prototype-1440.png").convert("RGB").crop((0, 0, 258, 560))
             metric = sum(ImageStat.Stat(ImageChops.difference(current, approved)).mean) / 3
             print(f"Visual navigation mean pixel difference (0=identical): {metric:.2f}/255")
+            mobile_current = Image.open(output / "admin-v2-mobile-viewport.png").convert("RGB").crop((0, 745, 390, 844))
+            mobile_approved = Image.open(output / "approved-prototype-mobile-viewport.png").convert("RGB").crop((0, 745, 390, 844))
+            mobile_metric = sum(ImageStat.Stat(ImageChops.difference(mobile_current, mobile_approved)).mean) / 3
+            print(f"Visual mobile navigation mean pixel difference (0=identical): {mobile_metric:.2f}/255")
             # This metric is diagnostic until both live and demo content states are normalized.
             browser.close()
     finally:
