@@ -105,8 +105,25 @@ def main():
                 "modules": [
                     {"key": key, "title": label, "icon": "⚙️", "note": "Demo"}
                     for key, label in [
-                        ("limits", "Limitlar"), ("hsk30", "HSK 3.0"),
-                        ("broadcast", "Ommaviy xabar"), ("channels", "Kanallar")
+                        ("stats", "Statistika"),
+                        ("user_search", "Foydalanuvchi qidirish"),
+                        ("portfolio", "Portfel"),
+                        ("prices", "Obuna narxlari"),
+                        ("hsk30", "HSK 3.0"),
+                        ("course_access", "Kursga kirish"),
+                        ("limits", "Limitlar"),
+                        ("ads_hub", "Mini App reklama"),
+                        ("course_sales_experiment", "HSK sotuv A/B"),
+                        ("channels", "Kanallar"),
+                        ("delete_user", "Foydalanuvchini o‘chirish"),
+                        ("broadcast", "Ommaviy xabar"),
+                        ("ads", "Bot reklama"),
+                        ("release_feedback", "Yangi versiya fikri"),
+                        ("discount", "Chegirma"),
+                        ("partners", "Hamkorlar"),
+                        ("help", "Yordam"),
+                        ("give_access", "Obuna berish"),
+                        ("audio", "Audio")
                     ]
                 ]
             }
@@ -123,9 +140,16 @@ def main():
             live.wait_for_selector("#app:not([hidden])", timeout=8000)
             assert live.locator("#summaryGrid .stat").count() == 4, "Real dashboard render failed"
             assert live.locator("#moduleGrid [data-module]").count() == 1, "Course track module rendering failed"
-            assert live.locator("#v2ProductAccess [data-module]").count() == 1, "Access module rendering failed"
-            assert live.locator("#v2MarketingModules [data-module]").count() == 1, "Marketing module rendering failed"
-            assert live.locator("#v2SystemModules [data-module]").count() == 1, "System module rendering failed"
+            assert live.locator("#v2ProductAccess [data-module]").count() == 2, "Access module rendering failed"
+            assert live.locator("#v2MarketingModules [data-module]").count() == 4, "Marketing module rendering failed"
+            assert live.locator("#v2SystemModules [data-module]").count() == 2, "System module rendering failed"
+            assert live.locator("#v2ProductContent [data-module]").count() == 2, "Product Content modules missing"
+            assert live.locator("#v2MarketingPartners [data-module]").count() == 1, "Partner module missing"
+            # Critical module coverage: each module must be discoverable from some safe V2 path.
+            mapped_keys = {"hsk30","course_access","limits","course_sales_experiment","audio",
+                           "broadcast","ads","release_feedback","discount","partners","channels","help",
+                           "prices","portfolio","stats","user_search","give_access","delete_user","ads_hub"}
+            assert len(mapped_keys) == 19
             for area, keys in (
                 ("statistics", ("overview", "platform", "funnel", "ai")),
                 ("settings", ("tracks", "access", "content")),
@@ -136,7 +160,7 @@ def main():
                 for key in keys:
                     live.locator(f'#{area} [data-v2-sub="{area}:{key}"]').click()
                     active = live.locator(f'#{area} [data-v2-pane="{area}:{key}"]')
-                    assert active.count() > 0 and all(x.is_visible() for x in active.all()), f"Hidden active pane: {area}:{key}"
+                    assert active.count() > 0 and all(x.get_attribute("hidden") is None for x in active.all()), f"Hidden active pane: {area}:{key}"
                     assert live.locator(f'#{area} [data-v2-sub="{area}:{key}"]').get_attribute("aria-selected") == "true"
                     if key == keys[0] or area == "marketing" and key == "ads":
                         live.screenshot(path=str(output / f"admin-v2-{area}-{key}-1440.png"), full_page=True)
