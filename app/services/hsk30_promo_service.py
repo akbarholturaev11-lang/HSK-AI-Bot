@@ -14,6 +14,8 @@ from app.services.hsk30_unlock_service import Hsk30UnlockService
 
 HSK30_PROMO_MAX_SHOWS = 2
 HSK30_PROMO_MIN_INTERVAL = timedelta(days=3)
+# Newly onboarded HSK 2.0 learners get time to study before seeing 3.0.
+HSK30_NEW_USER_GRACE_PERIOD = timedelta(days=5)
 
 
 def _utc(value: datetime | None) -> datetime | None:
@@ -54,6 +56,7 @@ class Hsk30PromoService:
         shown_count = max(0, int(getattr(profile, "hsk30_promo_shown_count", 0) or 0))
         last_shown = _utc(getattr(profile, "hsk30_promo_last_shown_at", None))
         feature_enabled = await self.feature.is_enabled()
+        release_at = _utc(await self.feature.enabled_at()) if feature_enabled else None
         onboarded_at = _utc(getattr(profile, "onboarding_completed_at", None))
         active_track = CourseTrackService.track_for_level(
             getattr(user, "level", None)
@@ -76,6 +79,14 @@ class Hsk30PromoService:
         elif onboarded_at is None:
             eligible = False
             reason = "onboarding_not_completed"
+        elif (
+            onboarded_at is not None
+            and release_at is not None
+            and onboarded_at >= release_at
+            and now < onboarded_at + HSK30_NEW_USER_GRACE_PERIOD
+        ):
+            eligible = False
+            reason = "onboarding_grace_period"
         elif shown_count >= HSK30_PROMO_MAX_SHOWS:
             eligible = False
             reason = "show_cap_reached"
@@ -87,11 +98,9 @@ class Hsk30PromoService:
             reason = "eligible"
 
         next_eligible_at = None
-        if (
-            not eligible
-            and reason == "cooldown"
-            and last_shown is not None
-        ):
+        if not eligible and reason == "onboarding_grace_period" and onboarded_at is not None:
+            next_eligible_at = onboarded_at + HSK30_NEW_USER_GRACE_PERIOD
+        elif not eligible and reason == "cooldown" and last_shown is not None:
             next_eligible_at = last_shown + HSK30_PROMO_MIN_INTERVAL
 
         legacy_level = str(getattr(user, "level", "") or "").strip().lower()
