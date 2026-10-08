@@ -27,7 +27,7 @@ def main():
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
-            for width, height in [(1440, 900), (390, 844), (320, 700)]:
+            for width, height in [(1440, 900), (1024, 768), (820, 1000), (390, 844), (320, 700)]:
                 context = browser.new_context(viewport={"width": width, "height": height})
                 page = context.new_page()
                 errors = []
@@ -58,7 +58,7 @@ def main():
                 assert page.locator("main .view").count() == 7, "7 views expected"
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Horizontal overflow"
                 page.screenshot(path=str(output / f"admin-v2-dashboard-{width}.png"), full_page=True)
-                if width >= 860:
+                if width > 760:
                     assert page.locator("#tabs [data-tab]").count() == 7
                     assert page.evaluate("getComputedStyle(document.body).overflowY !== 'hidden'"), "Desktop scroll locked"
                     page.locator('#tabs [data-tab="marketing"]').click()
