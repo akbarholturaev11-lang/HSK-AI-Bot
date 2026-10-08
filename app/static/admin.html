@@ -638,7 +638,7 @@
 
 
   <div id="scrim" class="scrim" data-act="close-drawer"></div>
-  <aside id="drawer" class="drawer" aria-hidden="true">
+  <aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-describedby="drawerSub" aria-hidden="true" tabindex="-1">
     <div class="dhead">
       <button class="close" id="drawerBack" data-act="drawer-back" title="Orqaga" hidden>←</button>
       <div><div class="dtitle" id="drawerTitle">—</div><div class="dsub" id="drawerSub"></div></div>
@@ -663,17 +663,25 @@
       adHub:"kurs"
     };
 
-    /* ---------- Telegram full-screen ---------- */
+    /* Telegram Admin must not force fullscreen: Telegram's native Close / menu
+       chrome overlays the dashboard and dialog titles on iOS. Regular expanded
+       Mini App mode reserves this area; still honor native safe-area updates. */
     function applyViewport(){
       const h = (tg && (tg.viewportStableHeight || tg.viewportHeight)) || window.innerHeight;
       if(h) document.documentElement.style.setProperty("--app-h", h + "px");
+      const inset = tg && tg.contentSafeAreaInset || {};
+      const top = Math.min(180, Math.max(0, Number(inset.top)||0));
+      const bottom = Math.min(100, Math.max(0, Number(inset.bottom)||0));
+      document.documentElement.style.setProperty("--telegram-content-top", top + "px");
+      document.documentElement.style.setProperty("--telegram-content-bottom", bottom + "px");
     }
     if(tg){
       try{ tg.ready(); }catch(e){}
       try{ tg.expand(); }catch(e){}
-      try{ tg.requestFullscreen && tg.requestFullscreen(); }catch(e){}
-      try{ tg.setHeaderColor && tg.setHeaderColor("#0f1216"); tg.setBackgroundColor && tg.setBackgroundColor("#0f1216"); }catch(e){}
+      try{ tg.setHeaderColor && tg.setHeaderColor("#0c1118"); tg.setBackgroundColor && tg.setBackgroundColor("#0c1118"); }catch(e){}
       try{ tg.onEvent("viewportChanged", applyViewport); }catch(e){}
+      try{ tg.onEvent("contentSafeAreaChanged", applyViewport); }catch(e){}
+      try{ tg.onEvent("safeAreaChanged", applyViewport); }catch(e){}
     }
     applyViewport();
     window.addEventListener("resize", applyViewport);
@@ -1402,6 +1410,13 @@
         '<td>'+status(p)+'</td>'+
         '<td><button class="tableaction" data-payment-preview="'+esc(p.id)+'">Ko‘rish →</button></td>'+
       '</tr>').join("");
+      const mobileCards = latest.map(p=>'<article class="v2-pay-card">'+
+        '<div class="v2-pay-card-top"><div><span class="v2-pay-id">#'+esc(p.id)+'</span><div class="v2-pay-person">'+esc(p.name||"—")+'</div>'+
+        (p.username?'<div class="note">@'+esc(p.username)+'</div>':'')+'</div>'+
+        '<div class="v2-pay-amount">'+esc(p.amount||"—")+'</div></div>'+
+        '<div class="v2-pay-meta"><span>'+esc(p.plan||"—")+'</span><span>'+esc(p.method||"—")+'</span>'+status(p)+'</div>'+
+        '<button class="v2-pay-open" type="button" data-payment-preview="'+esc(p.id)+'">To‘lovni ko‘rish <span aria-hidden="true">↗</span></button>'+
+      '</article>').join("");
       $("paymentBoard").innerHTML =
         '<div class="grid v2-pay-summary">'+
           stat("Tekshiruvda",counts.pending_payments||0,"Bank orqali tekshiriladi")+
@@ -1409,9 +1424,10 @@
           stat("Rad etilgan",counts.rejected_payments||0,"Jami rad etilgan to‘lovlar")+
         '</div>'+
         '<div class="v2-section-title"><b>To‘lovlar ro‘yxati</b><small>Bankdagi tushumni tekshirib tasdiqlang</small></div>'+
-        '<div class="panel"><div class="table-scroll"><table class="data-table">'+
+        '<div class="panel v2-pay-desktop"><div class="table-scroll"><table class="data-table">'+
         '<thead><tr><th>ID / Foydalanuvchi</th><th>Tarif</th><th>Usul</th><th>Summa</th><th>Holat</th><th>Harakat</th></tr></thead>'+
-        '<tbody>'+ (rows||'<tr><td colspan="6" class="empty">Hozircha to‘lov yo‘q.</td></tr>')+'</tbody></table></div></div>';
+        '<tbody>'+ (rows||'<tr><td colspan="6" class="empty">Hozircha to‘lov yo‘q.</td></tr>')+'</tbody></table></div></div>'+
+        '<div class="v2-pay-mobile">'+(mobileCards||'<p class="empty">Hozircha to‘lov yo‘q.</p>')+'</div>';
     }
     function previewPayment(id){
       const p=((state.overview.payments||{}).latest||[]).find(row=>String(row.id)===String(id));
@@ -1451,8 +1467,34 @@
     /* ---------- USER DETAIL ---------- */
     /* Drawer ichi almashadi, shuning uchun profildan bo'lim ochilganda qaytish
        yo'li kerak. `state.drawerBack` — bir pog'onali orqaga qaytarish. */
-    function openDrawer(title,sub,html){ $("drawerTitle").textContent=title; $("drawerSub").textContent=sub||""; $("drawerBody").innerHTML=html; $("drawer").classList.add("open"); $("scrim").classList.add("open"); $("drawer").setAttribute("aria-hidden","false"); $("drawerBack").hidden=!state.drawerBack; }
-    function closeDrawer(){ $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); $("drawer").setAttribute("aria-hidden","true"); state.activeModule=null; state.drawerBack=null; $("drawerBack").hidden=true; }
+    let drawerReturnFocus = null;
+    function openDrawer(title,sub,html){
+      if(!$("drawer").classList.contains("open")) drawerReturnFocus=document.activeElement;
+      $("drawerTitle").textContent=title;
+      $("drawerSub").textContent=sub||"";
+      $("drawerBody").innerHTML=html;
+      $("drawerBody").scrollTop=0;
+      $("drawer").classList.add("open");
+      $("scrim").classList.add("open");
+      $("drawer").setAttribute("aria-hidden","false");
+      $("drawerBack").hidden=!state.drawerBack;
+      document.body.classList.add("locked");
+      const close=$("drawer").querySelector('[data-act="close-drawer"]');
+      if(close) close.focus({preventScroll:true});
+    }
+    function closeDrawer(){
+      const wasOpen=$("drawer").classList.contains("open");
+      $("drawer").classList.remove("open");
+      $("scrim").classList.remove("open");
+      $("drawer").setAttribute("aria-hidden","true");
+      document.body.classList.remove("locked");
+      state.activeModule=null;
+      state.drawerBack=null;
+      $("drawerBack").hidden=true;
+      const focus=drawerReturnFocus;
+      drawerReturnFocus=null;
+      if(wasOpen&&focus&&focus.isConnected&&typeof focus.focus==="function") focus.focus({preventScroll:true});
+    }
     function drawerBack(){ const back=state.drawerBack; state.drawerBack=null; if(back) back(); else closeDrawer(); }
 
     /* Bitta panel ikki joyda chiziladi: modul drawer'ida yoki «📣 Reklama»
