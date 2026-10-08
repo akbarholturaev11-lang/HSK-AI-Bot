@@ -109,18 +109,30 @@ class Hsk30PromoServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertFalse(state["eligible"])
             self.assertEqual(state["reason"], "show_cap_reached")
 
-    async def test_user_onboarded_after_hsk30_release_gets_promo(self):
+    async def test_new_hsk20_user_waits_five_days_after_onboarding(self):
         async with self.sessions() as session:
             release_at = await Hsk30FeatureService(session).enabled_at()
+            onboarded_at = release_at + timedelta(seconds=1)
             profile = await CourseMiniAppProfileService(session).get_or_create(1)
-            profile.onboarding_completed_at = release_at + timedelta(seconds=1)
+            profile.onboarding_completed_at = onboarded_at
             await session.commit()
 
         async with self.sessions() as session:
             user = await session.get(User, 1)
-            state = await Hsk30PromoService(session).state(user)
-            self.assertTrue(state["eligible"])
-            self.assertEqual(state["reason"], "eligible")
+            service = Hsk30PromoService(session)
+            early = await service.state(user, now=onboarded_at + timedelta(days=4, hours=23))
+            self.assertFalse(early["eligible"])
+            self.assertEqual(early["reason"], "onboarding_grace_period")
+            self.assertEqual(
+                early["next_eligible_at"],
+                (onboarded_at + timedelta(days=5)).isoformat(),
+            )
+            refused = await service.mark_shown(user, now=onboarded_at + timedelta(days=4))
+            self.assertFalse(refused["recorded"])
+            self.assertEqual(refused["shown_count"], 0)
+            ready = await service.state(user, now=onboarded_at + timedelta(days=5))
+            self.assertTrue(ready["eligible"])
+            self.assertEqual(ready["reason"], "eligible")
 
     async def test_feature_off_hides_promo(self):
         async with self.sessions() as session:
