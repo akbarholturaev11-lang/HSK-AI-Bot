@@ -579,7 +579,6 @@ private fun LessonBody(
             strokes = state.writerStrokes,
             isLoading = state.isWriterLoading,
             onShowCharacter = onShowWriterCharacter,
-            onReplay = { onShowWriterCharacter(state.writerIndex) },
             onDismiss = onCloseWriter,
         )
     }

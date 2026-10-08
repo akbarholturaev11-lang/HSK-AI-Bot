@@ -1,10 +1,6 @@
 package com.pomp.hskai.feature.lesson
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,29 +14,26 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Matrix
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathMeasure
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -75,10 +68,15 @@ internal fun HanziWriterSheet(
     strokes: CharacterStrokes?,
     isLoading: Boolean,
     onShowCharacter: (Int) -> Unit,
-    onReplay: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     val current = characters.getOrNull(index) ?: hanzi
+    var playing by remember(index, current) { mutableStateOf(true) }
+    var replayKey by remember(index, current) { mutableIntStateOf(0) }
+    var finished by remember(index, current) { mutableStateOf(false) }
+    var completedStrokes by remember(index, current) { mutableIntStateOf(0) }
+    var manualStrokeCount by remember(index, current) { mutableStateOf<Int?>(null) }
+    val strokeCount = strokes?.size ?: 0
     AssistantScreen(
         ScreenContext(
             screen = "writing",
@@ -126,33 +124,11 @@ internal fun HanziWriterSheet(
             // written a character at a time rather than drawn on top of
             // itself — which is what one box for the lot produced.
             if (characters.size > 1) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    WriterStep(
-                        glyph = "‹",
-                        description = stringResource(R.string.lesson_writer_previous),
-                        enabled = index > 0,
-                        onClick = { onShowCharacter(index - 1) },
-                    )
-                    Text(
-                        text = stringResource(
-                            R.string.lesson_writer_position,
-                            index + 1,
-                            characters.size,
-                        ),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = PompColors.InkSecondary,
-                    )
-                    WriterStep(
-                        glyph = "›",
-                        description = stringResource(R.string.lesson_writer_next),
-                        enabled = index < characters.lastIndex,
-                        onClick = { onShowCharacter(index + 1) },
-                    )
-                }
+                Text(
+                    text = stringResource(R.string.lesson_writer_position, index + 1, characters.size),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = PompColors.InkSecondary,
+                )
                 Spacer(Modifier.height(10.dp))
             }
 
@@ -176,53 +152,82 @@ internal fun HanziWriterSheet(
                             color = PompColors.Ink,
                         )
 
-                        else -> StrokeAnimation(strokes)
+                        else -> StrokeAnimation(
+                            strokes = strokes,
+                            replayKey = replayKey,
+                            isPlaying = playing,
+                            visibleStrokeCount = manualStrokeCount,
+                            onStrokeComplete = { completedStrokes = it },
+                            onAnimationFinished = { finished = true; playing = false },
+                        )
                     }
                 }
             }
 
             Spacer(Modifier.height(14.dp))
-            Surface(
-                onClick = onReplay,
-                enabled = !isLoading && strokes?.isNotEmpty() == true,
-                color = PompColors.Gold,
-                shape = RoundedCornerShape(13.dp),
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 22.dp, vertical = 13.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
+                IconButton(
+                    onClick = {
+                        if (completedStrokes > 0) {
+                            val step = (completedStrokes - 1).coerceAtLeast(0)
+                            playing = false
+                            manualStrokeCount = step
+                            completedStrokes = step
+                            finished = false
+                        } else if (index > 0) {
+                            onShowCharacter(index - 1)
+                        }
+                    },
+                    enabled = !isLoading && (completedStrokes > 0 || index > 0),
                 ) {
-                    Text(
-                        text = stringResource(R.string.lesson_writer_replay),
-                        style = MaterialTheme.typography.labelLarge.copy(fontSize = 15.sp),
-                        fontWeight = FontWeight.SemiBold,
-                        color = PompColors.PlanOnGold,
+                    Icon(Icons.Filled.SkipPrevious, contentDescription = stringResource(if (completedStrokes == 0) R.string.lesson_writer_previous else R.string.writer_previous_stroke))
+                }
+                IconButton(
+                    onClick = {
+                        if (playing) {
+                            playing = false
+                        } else {
+                            if (finished) {
+                                replayKey++
+                                completedStrokes = 0
+                                finished = false
+                            }
+                            manualStrokeCount = null
+                            playing = true
+                        }
+                    },
+                    enabled = !isLoading && strokes?.isNotEmpty() == true,
+                ) {
+                    Icon(
+                        if (playing) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                        contentDescription = stringResource(
+                            if (playing) R.string.writer_pause else R.string.writer_resume
+                        ),
+                        tint = PompColors.CinnabarDark,
                     )
+                }
+                IconButton(
+                    onClick = {
+                        if (completedStrokes < strokeCount) {
+                            val step = completedStrokes + 1
+                            playing = false
+                            manualStrokeCount = step
+                            completedStrokes = step
+                            finished = step == strokeCount
+                        } else if (index < characters.lastIndex) {
+                            onShowCharacter(index + 1)
+                        }
+                    },
+                    enabled = !isLoading && (completedStrokes < strokeCount || index < characters.lastIndex),
+                ) {
+                    Icon(Icons.Filled.SkipNext, contentDescription = stringResource(if (completedStrokes >= strokeCount) R.string.lesson_writer_next else R.string.writer_next_stroke))
                 }
             }
         }
     }
 }
 
-/** One step through the phrase — the dictionary's own arrows, and the Mini App's. */
-@Composable
-private fun WriterStep(
-    glyph: String,
-    description: String,
-    enabled: Boolean,
-    onClick: () -> Unit,
-) {
-    IconButton(
-        onClick = onClick,
-        enabled = enabled,
-        // The glyph is a bracket, so a reader needs to be told what it does.
-        modifier = Modifier.size(40.dp).semantics { contentDescription = description },
-    ) {
-        Text(
-            text = glyph,
-            style = MaterialTheme.typography.headlineMedium,
-            color = if (enabled) PompColors.CinnabarDark else PompColors.InkDisabled,
-        )
-    }
-}
