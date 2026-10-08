@@ -109,7 +109,11 @@ data class SubscriptionCheckoutState(
     val currencySaving: Boolean = false,
     val currencyErrorRes: Int? = null,
 ) {
-    val isHsk30Unlock: Boolean get() = overview?.mode == "hsk30_unlock"
+    // Checkout returns an existing pending payment before offering a product.
+    // Its actual plan owns the review screen, even when another origin opened it.
+    val isHsk30Unlock: Boolean
+        get() = overview?.pendingPayment?.let { it.planType == "hsk30_unlock" }
+            ?: (overview?.mode == "hsk30_unlock")
     val isWaitingForHsk30Review: Boolean
         get() = isHsk30Unlock && pendingPaymentId > 0 && paymentDecision.isBlank() && !provisionalAccess
     val flow: List<CheckoutStep> get() = checkoutFlow(region)
@@ -424,7 +428,7 @@ class SubscriptionCheckoutViewModel(
 
     fun refreshPaymentStatus() {
         val paymentId = _state.value.pendingPaymentId
-        if (paymentId <= 0 || _state.value.checkingPaymentStatus) return
+        if (paymentId <= 0 || !_state.value.isHsk30Unlock || _state.value.checkingPaymentStatus) return
         _state.update {
             it.copy(checkingPaymentStatus = true, paymentStatusMessageRes = null, errorRes = null)
         }

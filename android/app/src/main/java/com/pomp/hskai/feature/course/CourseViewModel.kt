@@ -15,6 +15,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
+data class CourseTrackSwitchCompletion(val track: String, val level: String)
+
 data class CourseUiState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
@@ -25,6 +27,8 @@ data class CourseUiState(
     val chestError: ApiError? = null,
     val isSwitchingTrack: Boolean = false,
     val trackError: ApiError? = null,
+    /** Published only after the fresh server map confirms the requested track. */
+    val completedTrackSwitch: CourseTrackSwitchCompletion? = null,
     val isClaimingHsk30Promo: Boolean = false,
     val hsk30PromoVisible: Boolean = false,
     val hasAttemptedHsk30Promo: Boolean = false,
@@ -43,6 +47,9 @@ class CourseViewModel(
     private val _state = MutableStateFlow(CourseUiState())
     val state: StateFlow<CourseUiState> = _state.asStateFlow()
     private val courseMapRefreshMutex = Mutex()
+    private data class TrackSwitchRequest(val track: String, val level: String?)
+    private var lastTrackSwitchRequest: TrackSwitchRequest? = null
+    private var pendingTrackConfirmation: TrackSwitchRequest? = null
 
     init {
         load()
@@ -50,17 +57,20 @@ class CourseViewModel(
 
     fun load() {
         if (_state.value.isRefreshing || _state.value.isSwitchingTrack) return
+        val confirmation = pendingTrackConfirmation
         _state.update {
             it.copy(
                 isLoading = it.snapshot == null,
                 isRefreshing = true,
                 error = null,
+                isSwitchingTrack = confirmation != null,
+                trackError = if (confirmation != null) null else it.trackError,
             )
         }
-        viewModelScope.launch { refreshCourseMap() }
+        viewModelScope.launch { refreshCourseMap(confirmation) }
     }
 
-    private suspend fun refreshCourseMap(completeTrackSwitch: Boolean = false) {
+    private suspend fun refreshCourseMap(confirmTrackSwitch: TrackSwitchRequest? = null) {
         courseMapRefreshMutex.withLock {
             _state.update {
                 it.copy(
@@ -73,7 +83,7 @@ class CourseViewModel(
             // The refresh below replaces it a moment later; the point is that
             // the learner is looking at their course while it happens instead
             // of at an empty screen.
-            if (_state.value.snapshot == null) {
+            if (_state.value.snapshot == null && confirmTrackSwitch == null) {
                 repository.cachedCourseMap()?.let { cached ->
                     _state.update {
                         if (it.snapshot == null) it.copy(isLoading = false, snapshot = cached) else it
@@ -81,35 +91,59 @@ class CourseViewModel(
                 }
             }
             when (val result = repository.courseMap()) {
-                is ApiResult.Success -> _state.update { current ->
-                    val previous = current.snapshot
-                    val unlockedOrder = if (
-                        previous != null &&
-                        !previous.isStale &&
-                        !result.value.isStale
-                    ) {
-                        findNewlyUnlockedLesson(previous.map.lessons, result.value.map.lessons)
-                    } else {
-                        null
+                is ApiResult.Success -> {
+                    val map = result.value.map
+                    val mapTrack = map.hsk30?.activeTrack
+                        ?: if (map.level.startsWith("nhsk", ignoreCase = true)) "hsk30" else "hsk20"
+                    val levelTrack = if (map.level.startsWith("nhsk", ignoreCase = true)) "hsk30" else "hsk20"
+                    val confirmationError = if (confirmTrackSwitch != null && (
+                        result.value.isStale ||
+                            mapTrack != confirmTrackSwitch.track ||
+                            levelTrack != confirmTrackSwitch.track ||
+                            (confirmTrackSwitch.level != null && map.level != confirmTrackSwitch.level)
+                    )) {
+                        result.value.refreshError ?: ApiError.Unknown
+                    } else null
+                    if (confirmTrackSwitch != null && confirmationError == null) {
+                        pendingTrackConfirmation = null
                     }
-                    current.copy(
-                        isLoading = false,
-                        isRefreshing = false,
-                        snapshot = result.value,
-                        error = null,
-                        isSwitchingTrack = if (completeTrackSwitch) false else current.isSwitchingTrack,
-                        trackError = if (completeTrackSwitch) null else current.trackError,
-                        unlockedLessonOrder = unlockedOrder,
-                    )
+                    _state.update { current ->
+                        val previous = current.snapshot
+                        val unlockedOrder = if (
+                            confirmTrackSwitch == null &&
+                            previous != null &&
+                            !previous.isStale &&
+                            !result.value.isStale
+                        ) {
+                            findNewlyUnlockedLesson(previous.map.lessons, result.value.map.lessons)
+                        } else {
+                            null
+                        }
+                        current.copy(
+                            isLoading = false,
+                            isRefreshing = false,
+                            // A committed switch makes the previous course unsafe
+                            // to open. Keep ordinary offline fallback unchanged.
+                            snapshot = if (confirmationError == null) result.value else null,
+                            error = confirmationError,
+                            isSwitchingTrack = if (confirmTrackSwitch != null) false else current.isSwitchingTrack,
+                            trackError = if (confirmTrackSwitch != null) confirmationError else current.trackError,
+                            completedTrackSwitch = if (confirmTrackSwitch != null && confirmationError == null) {
+                                CourseTrackSwitchCompletion(confirmTrackSwitch.track, map.level)
+                            } else current.completedTrackSwitch,
+                            unlockedLessonOrder = unlockedOrder,
+                        )
+                    }
                 }
 
                 is ApiResult.Failure -> _state.update {
                     it.copy(
                         isLoading = false,
                         isRefreshing = false,
+                        snapshot = if (confirmTrackSwitch != null) null else it.snapshot,
                         error = result.error,
-                        isSwitchingTrack = if (completeTrackSwitch) false else it.isSwitchingTrack,
-                        trackError = if (completeTrackSwitch) result.error else it.trackError,
+                        isSwitchingTrack = if (confirmTrackSwitch != null) false else it.isSwitchingTrack,
+                        trackError = if (confirmTrackSwitch != null) result.error else it.trackError,
                     )
                 }
             }
@@ -122,17 +156,45 @@ class CourseViewModel(
             normalized !in setOf("hsk20", "hsk30") ||
             _state.value.isSwitchingTrack
         ) return
-        _state.update { it.copy(isSwitchingTrack = true, trackError = null) }
+        val request = TrackSwitchRequest(normalized, level?.trim()?.lowercase())
+        lastTrackSwitchRequest = request
+        pendingTrackConfirmation = null
+        _state.update {
+            it.copy(isSwitchingTrack = true, trackError = null, completedTrackSwitch = null)
+        }
         viewModelScope.launch {
-            when (val result = repository.switchCourseTrack(normalized, level)) {
+            when (val result = repository.switchCourseTrack(request.track, request.level)) {
                 is ApiResult.Success -> {
-                    refreshCourseMap(completeTrackSwitch = true)
+                    if (result.value.ok) {
+                        pendingTrackConfirmation = request
+                        refreshCourseMap(confirmTrackSwitch = request)
+                    } else {
+                        _state.update { it.copy(isSwitchingTrack = false, trackError = ApiError.Unknown) }
+                    }
                 }
                 is ApiResult.Failure -> _state.update {
                     it.copy(isSwitchingTrack = false, trackError = result.error)
                 }
             }
         }
+    }
+
+    /** Once the POST committed, retry only its confirmation, never reset progress again. */
+    fun retryTrackSwitch() {
+        if (_state.value.isRefreshing || _state.value.isSwitchingTrack) return
+        if (pendingTrackConfirmation != null) {
+            load()
+        } else {
+            lastTrackSwitchRequest?.let { switchCourseTrack(it.track, it.level) }
+        }
+    }
+
+    fun consumeTrackError() {
+        _state.update { it.copy(trackError = null) }
+    }
+
+    fun consumeTrackSwitchCompletion() {
+        _state.update { it.copy(completedTrackSwitch = null) }
     }
 
     fun markHsk30PromoShown() {
