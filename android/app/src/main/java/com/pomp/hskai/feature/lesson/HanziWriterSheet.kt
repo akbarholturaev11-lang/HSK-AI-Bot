@@ -18,6 +18,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -28,6 +34,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,6 +86,9 @@ internal fun HanziWriterSheet(
     onDismiss: () -> Unit,
 ) {
     val current = characters.getOrNull(index) ?: hanzi
+    var playing by remember(current) { mutableStateOf(true) }
+    var replayKey by remember(current) { mutableIntStateOf(0) }
+    var finished by remember(current) { mutableStateOf(false) }
     AssistantScreen(
         ScreenContext(
             screen = "writing",
@@ -176,29 +186,49 @@ internal fun HanziWriterSheet(
                             color = PompColors.Ink,
                         )
 
-                        else -> StrokeAnimation(strokes)
+                        else -> StrokeAnimation(
+                            strokes = strokes,
+                            replayKey = replayKey,
+                            isPlaying = playing,
+                            onAnimationFinished = { finished = true; playing = false },
+                        )
                     }
                 }
             }
 
             Spacer(Modifier.height(14.dp))
-            Surface(
-                onClick = onReplay,
-                enabled = !isLoading && strokes?.isNotEmpty() == true,
-                color = PompColors.Gold,
-                shape = RoundedCornerShape(13.dp),
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 22.dp, vertical = 13.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
+                IconButton(
+                    onClick = { onShowCharacter(index - 1) },
+                    enabled = index > 0 && !isLoading,
                 ) {
-                    Text(
-                        text = stringResource(R.string.lesson_writer_replay),
-                        style = MaterialTheme.typography.labelLarge.copy(fontSize = 15.sp),
-                        fontWeight = FontWeight.SemiBold,
-                        color = PompColors.PlanOnGold,
+                    Icon(Icons.Filled.SkipPrevious, contentDescription = stringResource(R.string.lesson_writer_previous))
+                }
+                IconButton(
+                    onClick = {
+                        if (!playing && strokes?.isNotEmpty() == true) {
+                            // Restart after a finished demo; otherwise resume from paused position.
+                            if (finished) { replayKey++; finished = false }
+                        }
+                        playing = !playing
+                    },
+                    enabled = !isLoading && strokes?.isNotEmpty() == true,
+                ) {
+                    Icon(
+                        if (playing) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                        contentDescription = if (playing) "Pause" else "Play",
+                        tint = PompColors.CinnabarDark,
                     )
+                }
+                IconButton(
+                    onClick = { onShowCharacter(index + 1) },
+                    enabled = index < characters.lastIndex && !isLoading,
+                ) {
+                    Icon(Icons.Filled.SkipNext, contentDescription = stringResource(R.string.lesson_writer_next))
                 }
             }
         }
