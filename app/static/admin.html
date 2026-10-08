@@ -1431,7 +1431,14 @@
       if(!id||!action) return;
       let reason="";
       if(action==="approve"){
-        if(!window.confirm("Bank hisobida haqiqiy tushum borligini mustaqil tekshirdingizmi? To‘lovni hozir tasdiqlaysiz.")) return;
+        const question="Bank hisobida haqiqiy tushum borligini mustaqil tekshirdingizmi? To‘lovni hozir tasdiqlaysiz.";
+        const approved=await new Promise(resolve=>{
+          if(tg&&typeof tg.showConfirm==="function"){
+            try{tg.showConfirm(question,ok=>resolve(!!ok));return;}catch(e){}
+          }
+          resolve(window.confirm(question));
+        });
+        if(!approved) return;
       }
       if(action==="reject"){ reason=prompt("Rad sababini yozing","admin panel orqali rad etildi")||""; if(!reason.trim()) return; }
       btn.disabled=true;
