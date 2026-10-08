@@ -1,10 +1,37 @@
 """Offline Admin V2 browser smoke; never performs production/admin mutations."""
 import argparse
 import json
+import re
 import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+
+
+
+def check_real_module_coverage():
+    """Prove all backend-declared admin modules have a reachable V2 entry point."""
+    html = Path("app/static/admin.html").read_text(encoding="utf-8")
+    backend = Path("app/services/admin_miniapp_service.py").read_text(encoding="utf-8")
+    block = backend.split("def _modules()", 1)[1].split("def _monitor(", 1)[0]
+    declared = set(re.findall(r'"key": "([a-z_]+)"', block))
+    assert len(declared) == 19, f"Admin backend module inventory changed: {declared}"
+
+    mapping = html.split("function renderModules(){", 1)[1].split("for(const [id,keys]", 1)[0]
+    mapped = set()
+    for array_source in re.findall(r'new Set\\(\\[([^\\]]*)\\]\\)', mapping):
+        mapped.update(re.findall(r'"([a-z_]+)"', array_source))
+    direct = set(re.findall(r'data-module="([a-z_]+)"', html))
+    special = {"stats": "statistics", "user_search": "users", "ads_hub": "marketing"}
+    for module, view in special.items():
+        assert f'key==="{module}"' in html, f"Special route missing for {module}"
+        assert f'<section id="{view}" class="view' in html, f"Special view missing: {view}"
+    covered = mapped | direct | set(special)
+    missing = declared - covered
+    unknown = mapped - declared
+    assert not missing, f"Admin V2 cannot reach these backend modules: {sorted(missing)}"
+    assert not unknown, f"Unrecognized module keys in V2: {sorted(unknown)}"
+    print(f"Admin module reachability: {len(declared)}/{len(declared)} backend keys mapped")
 
 
 def main():
@@ -13,6 +40,7 @@ def main():
     args = parser.parse_args()
     output = Path(args.output)
     output.mkdir(parents=True, exist_ok=True)
+    check_real_module_coverage()
 
     class Handler(SimpleHTTPRequestHandler):
         def __init__(self, *a, **kw):
