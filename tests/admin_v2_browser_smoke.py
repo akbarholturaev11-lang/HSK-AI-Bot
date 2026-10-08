@@ -314,6 +314,17 @@ def main():
             iphone.locator('.mobile-nav [data-tab="users"]').click()
             assert iphone.locator("#userList .v2-users-mobile [data-user]").count()>0, "Mobile user cards missing"
             iphone.screenshot(path=str(output / "admin-v2-telegram-users-390.png"), full_page=False)
+            iphone.locator("#userList .v2-users-mobile [data-user]").first.click()
+            iphone.locator("#drawer.open .v2-profile-details").first.wait_for(timeout=6000)
+            assert iphone.locator("#drawer .v2-profile-details").count()==4, "Optional profile diagnostics not grouped"
+            assert not iphone.locator("#drawer .v2-profile-details").first.evaluate("(el) => el.open"), "Technical data should start collapsed"
+            iphone.locator("#drawer .v2-profile-details").first.locator("summary").click()
+            assert iphone.locator("#drawer .v2-profile-details").first.evaluate("(el) => el.open"), "User diagnostics accordion does not expand"
+            assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "User profile overflow"
+            iphone.screenshot(path=str(output / "admin-v2-telegram-user-sheet-390.png"), full_page=False)
+            iphone.locator('#drawer [data-act="close-drawer"]').click()
+            assert iphone.locator(".workspace .topbar [data-act='reload']").is_visible(), "Mobile refresh not reachable"
+            assert iphone.locator(".page-head .page-actions [data-act='reload']").is_hidden(), "Duplicate refresh CTA visible"
             assert not iphone_errors, "Telegram iPhone JS errors: " + str(iphone_errors)
             iphone_context.close()
 
