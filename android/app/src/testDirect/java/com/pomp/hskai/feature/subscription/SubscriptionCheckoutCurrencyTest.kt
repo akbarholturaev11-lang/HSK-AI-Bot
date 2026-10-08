@@ -78,14 +78,14 @@ class SubscriptionCheckoutCurrencyTest {
     fun `currency change keeps the permanent unlock product and original checkout origin`() = runTest(dispatcher) {
         overviews.add(Response.success(overview("hsk30_unlock", "TJS")))
         overviews.add(Response.success(overview("hsk30_unlock", "RUB")))
-        val model = model("hsk30_unlock")
+        val model = model("hsk30_content")
         model.load()
         advanceUntilIdle()
         model.openCurrencySelector()
         model.chooseCurrency("RUB")
         advanceUntilIdle()
 
-        assertEquals(listOf("hsk30_unlock", "hsk30_unlock"), origins)
+        assertEquals(listOf("hsk30_content", "hsk30_content"), origins)
         assertTrue(model.state.value.isHsk30Unlock)
         assertEquals("hsk30_unlock", model.state.value.plan)
         assertEquals(setOf("hsk30_unlock"), model.state.value.overview!!.prices["visa"]!!.keys)
@@ -99,7 +99,7 @@ class SubscriptionCheckoutCurrencyTest {
         val original = overview("hsk30_unlock", "TJS")
         overviews.add(Response.success(original))
         overviews.add(Response.error(503, "unavailable".toResponseBody()))
-        val model = model("hsk30_unlock")
+        val model = model("hsk30_content")
         model.load()
         advanceUntilIdle()
         model.openCurrencySelector()
@@ -115,13 +115,13 @@ class SubscriptionCheckoutCurrencyTest {
     @Test
     fun `ordinary subscription uses returned prices without an extra overview request`() = runTest(dispatcher) {
         overviews.add(Response.success(overview("subscription", "TJS")))
-        val model = model("profile")
+        val model = model("profile_subscription")
         model.load()
         advanceUntilIdle()
         model.chooseCurrency("RUB")
         advanceUntilIdle()
 
-        assertEquals(listOf("profile"), origins)
+        assertEquals(listOf("profile_subscription"), origins)
         assertFalse(model.state.value.isHsk30Unlock)
         assertEquals(subscriptionPrices, model.state.value.overview!!.prices)
         assertEquals("RUB", model.state.value.overview!!.preferredCurrency)

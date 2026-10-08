@@ -143,6 +143,7 @@ fun SubscriptionCheckoutHost(
     val app = context.applicationContext as HskAiApplication
     val model: SubscriptionCheckoutViewModel = viewModel(
         viewModelStoreOwner = viewModelStoreOwner,
+        key = "subscription-checkout:$origin",
         factory = SubscriptionCheckoutViewModel.Factory(
             repository,
             origin,
@@ -167,7 +168,7 @@ fun SubscriptionCheckoutHost(
     var renewalConfirmOpen by remember { mutableStateOf(false) }
     val stepIndex = state.flow.indexOf(state.step)
 
-    LaunchedEffect(Unit) { model.load() }
+    LaunchedEffect(model) { model.load() }
     LaunchedEffect(state.discount, state.discountStarting) {
         if (waitingInvite && !state.discountStarting && state.discount?.referralLink?.isNotBlank() == true) {
             waitingInvite = false

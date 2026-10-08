@@ -711,6 +711,17 @@ private fun AppRoot(
             }
 
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
+            LaunchedEffect(courseState.completedTrackSwitch) {
+                if (courseState.completedTrackSwitch == null) return@LaunchedEffect
+                openLesson = null
+                practiceRequest = null
+                openDrill = null
+                selectedTab = MainTab.COURSE
+                profileViewModel.load()
+                voiceViewModel.refreshStatusIfLoaded()
+                practiceViewModel.onAccessChanged()
+                courseViewModel.consumeTrackSwitchCompletion()
+            }
             var hsk30PaymentRejectionVisible by remember { mutableStateOf(false) }
             LaunchedEffect(courseViewModel) {
                 app.paymentDecisionMonitor.inAppPaymentDecisions.collect { decision ->
@@ -1524,6 +1535,25 @@ private fun AppRoot(
                     key = courseState.map?.level ?: "course-track-switch",
                     titleRes = R.string.course_track_switch_title,
                     subtitleRes = R.string.course_track_switch_subtitle,
+                )
+            }
+
+            courseState.trackError?.let { error ->
+                AlertDialog(
+                    onDismissRequest = courseViewModel::consumeTrackError,
+                    title = { Text(stringResource(R.string.profile_course_version)) },
+                    text = { Text(stringResource(error.messageRes)) },
+                    confirmButton = {
+                        TextButton(onClick = courseViewModel::retryTrackSwitch) {
+                            Text(stringResource(R.string.action_retry))
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = courseViewModel::consumeTrackError) {
+                            Text(stringResource(R.string.action_close))
+                        }
+                    },
+                    containerColor = PompColors.Paper,
                 )
             }
 

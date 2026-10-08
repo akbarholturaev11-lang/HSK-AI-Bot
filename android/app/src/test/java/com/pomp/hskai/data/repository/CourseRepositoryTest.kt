@@ -37,6 +37,7 @@ import com.pomp.hskai.data.api.CourseHsk30PromoDto
 import com.pomp.hskai.data.api.Hsk30PromoMarkResponse
 import com.pomp.hskai.feature.course.CourseViewModel
 import java.io.IOException
+import java.net.SocketTimeoutException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -978,5 +979,236 @@ class CoursePromoViewModelTest {
         runCurrent()
         assertEquals(0, api.markCalls)
         assertFalse(vm.state.value.hsk30PromoVisible)
+    }
+}
+
+private class TrackSwitchCourseApi : FakeCourseApi() {
+    var currentMap = sampleMap()
+    var switchCalls = 0
+    var lastSwitch: com.pomp.hskai.data.api.CourseTrackSwitchRequest? = null
+    var switchReply: CompletableDeferred<OkResponse>? = null
+    var nextMapReply: CompletableDeferred<CourseMapDto>? = null
+    var switchFailure: Exception? = null
+    var mapFailure: Exception? = null
+    var beforeMap: suspend () -> Unit = {}
+
+    override suspend fun courseMap(
+        authorization: String,
+        timezoneOffsetMinutes: Int,
+    ): Response<CourseMapDto> {
+        mapCalls++
+        beforeMap()
+        mapFailure?.let { throw it }
+        return Response.success(nextMapReply?.await() ?: currentMap)
+    }
+
+    override suspend fun switchCourseTrack(
+        authorization: String,
+        body: com.pomp.hskai.data.api.CourseTrackSwitchRequest,
+    ): Response<OkResponse> {
+        switchCalls++
+        lastSwitch = body
+        switchFailure?.let { throw it }
+        val reply = switchReply?.await() ?: OkResponse(ok = true)
+        if (reply.ok) {
+            val level = body.level ?: if (body.targetTrack == "hsk30") "nhsk1" else "hsk1"
+            currentMap = sampleMap().copy(
+                level = level,
+                hsk30 = CourseHsk30Dto(activeTrack = body.targetTrack, activeLevel = level),
+            )
+        }
+        return Response.success(reply)
+    }
+}
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class CourseTrackSwitchViewModelTest {
+    private val dispatcher = StandardTestDispatcher()
+    private val json = Json { ignoreUnknownKeys = true }
+
+    @Before
+    fun setMainDispatcher() { Dispatchers.setMain(dispatcher) }
+
+    @After
+    fun resetMainDispatcher() { Dispatchers.resetMain() }
+
+    private fun repository(api: TrackSwitchCourseApi, dao: FakeCourseMapDao = FakeCourseMapDao()) =
+        CourseRepository(
+            api = api,
+            accessToken = { ApiResult.Success("track-access") },
+            dao = dao,
+            json = json,
+        )
+
+    @Test
+    fun `switch stays busy until the requested fresh map arrives then emits one completion`() = runTest(dispatcher) {
+        val api = TrackSwitchCourseApi()
+        val dao = FakeCourseMapDao()
+        val vm = CourseViewModel(repository(api, dao))
+        runCurrent()
+        api.switchReply = CompletableDeferred()
+        vm.switchCourseTrack("hsk30", "nhsk2")
+        vm.switchCourseTrack("hsk30", "nhsk3")
+        vm.load()
+        runCurrent()
+        assertEquals(1, api.switchCalls)
+        assertEquals("nhsk2", api.lastSwitch!!.level)
+        assertTrue(vm.state.value.isSwitchingTrack)
+        assertNull(vm.state.value.completedTrackSwitch)
+
+        api.nextMapReply = CompletableDeferred()
+        api.switchReply!!.complete(OkResponse(ok = true))
+        runCurrent()
+        assertEquals(2, api.mapCalls)
+        assertTrue(vm.state.value.isSwitchingTrack)
+        assertTrue(vm.state.value.isRefreshing)
+        assertNull(vm.state.value.completedTrackSwitch)
+        api.nextMapReply!!.complete(api.currentMap)
+        runCurrent()
+
+        assertFalse(vm.state.value.isSwitchingTrack)
+        assertFalse(vm.state.value.isRefreshing)
+        assertEquals("nhsk2", vm.state.value.map!!.level)
+        assertEquals("hsk30", vm.state.value.completedTrackSwitch!!.track)
+        assertEquals("nhsk2", vm.state.value.completedTrackSwitch!!.level)
+        assertEquals(1, dao.clearCalls)
+        assertEquals(setOf("nhsk2"), dao.rows.keys)
+        assertNull(vm.state.value.trackError)
+        vm.consumeTrackSwitchCompletion()
+        assertNull(vm.state.value.completedTrackSwitch)
+        vm.load()
+        runCurrent()
+        assertNull(vm.state.value.completedTrackSwitch)
+    }
+
+    @Test
+    fun `failed POST keeps the previous map and error can be consumed or retried`() = runTest(dispatcher) {
+        val api = TrackSwitchCourseApi()
+        val dao = FakeCourseMapDao()
+        val vm = CourseViewModel(repository(api, dao))
+        runCurrent()
+        api.switchFailure = IOException("offline")
+        vm.switchCourseTrack("hsk30", "nhsk3")
+        runCurrent()
+
+        assertFalse(vm.state.value.isSwitchingTrack)
+        assertEquals(ApiError.Offline, vm.state.value.trackError)
+        assertEquals("hsk1", vm.state.value.map!!.level)
+        assertEquals(0, dao.clearCalls)
+        assertEquals(1, api.mapCalls)
+        assertNull(vm.state.value.completedTrackSwitch)
+        vm.consumeTrackError()
+        assertNull(vm.state.value.trackError)
+
+        api.switchFailure = null
+        vm.retryTrackSwitch()
+        runCurrent()
+        assertEquals(2, api.switchCalls)
+        assertEquals("nhsk3", vm.state.value.map!!.level)
+        assertEquals("nhsk3", vm.state.value.completedTrackSwitch!!.level)
+    }
+
+    private fun assertConfirmationFailure(failure: Exception, expected: ApiError) = runTest(dispatcher) {
+        val api = TrackSwitchCourseApi()
+        val vm = CourseViewModel(repository(api))
+        runCurrent()
+        api.mapFailure = failure
+        vm.switchCourseTrack("hsk30", "nhsk2")
+        runCurrent()
+        assertFalse(vm.state.value.isSwitchingTrack)
+        assertFalse(vm.state.value.isRefreshing)
+        assertEquals(expected, vm.state.value.trackError)
+        assertNull(vm.state.value.completedTrackSwitch)
+        assertNull(vm.state.value.map)
+
+        vm.consumeTrackError()
+        api.mapFailure = null
+        vm.retryTrackSwitch()
+        runCurrent()
+        assertEquals("Confirmation retry must not repeat the committed POST", 1, api.switchCalls)
+        assertEquals(3, api.mapCalls)
+        assertEquals("nhsk2", vm.state.value.map!!.level)
+        assertNull(vm.state.value.trackError)
+        assertEquals("nhsk2", vm.state.value.completedTrackSwitch!!.level)
+    }
+
+    @Test
+    fun `map timeout exposes its reason and retry only fetches confirmation`() =
+        assertConfirmationFailure(SocketTimeoutException("slow map"), ApiError.Timeout)
+
+    @Test
+    fun `map failure hides the previous track and retry only fetches confirmation`() =
+        assertConfirmationFailure(IOException("offline map"), ApiError.Offline)
+
+    @Test
+    fun `stale cached response propagates refresh error instead of confirming a switch`() = runTest(dispatcher) {
+        val api = TrackSwitchCourseApi()
+        val dao = FakeCourseMapDao()
+        val vm = CourseViewModel(repository(api, dao))
+        runCurrent()
+        // An older in-flight GET can repopulate the cache after the POST cleared it.
+        api.beforeMap = {
+            dao.upsert(CourseMapCacheEntity(
+                level = "hsk1",
+                payloadJson = json.encodeToString(CourseMapDto.serializer(), sampleMap()),
+                fetchedAtMillis = 1L,
+            ))
+        }
+        api.mapFailure = IOException("offline map")
+        vm.switchCourseTrack("hsk30", "nhsk1")
+        runCurrent()
+        assertEquals(ApiError.Offline, vm.state.value.trackError)
+        assertNull(vm.state.value.completedTrackSwitch)
+        assertNull(vm.state.value.map)
+        assertFalse(vm.state.value.isSwitchingTrack)
+    }
+
+    @Test
+    fun `fresh wrong level is not a completed switch and can be confirmed without another POST`() = runTest(dispatcher) {
+        val api = TrackSwitchCourseApi()
+        val vm = CourseViewModel(repository(api))
+        runCurrent()
+        api.nextMapReply = CompletableDeferred()
+        vm.switchCourseTrack("hsk30", "nhsk3")
+        runCurrent()
+        api.nextMapReply!!.complete(api.currentMap.copy(level = "nhsk1"))
+        runCurrent()
+        assertEquals(ApiError.Unknown, vm.state.value.trackError)
+        assertNull(vm.state.value.completedTrackSwitch)
+        assertNull(vm.state.value.map)
+
+        api.nextMapReply = null
+        vm.retryTrackSwitch()
+        runCurrent()
+        assertEquals(1, api.switchCalls)
+        assertEquals("nhsk3", vm.state.value.completedTrackSwitch!!.level)
+    }
+
+    @Test
+    fun `ordinary offline refresh preserves the existing stale cache fallback`() = runTest(dispatcher) {
+        val api = TrackSwitchCourseApi()
+        val vm = CourseViewModel(repository(api))
+        runCurrent()
+        api.mapFailure = IOException("offline")
+        vm.load()
+        runCurrent()
+        assertEquals("hsk1", vm.state.value.map!!.level)
+        assertTrue(vm.state.value.isStale)
+        assertNull(vm.state.value.trackError)
+        assertNull(vm.state.value.completedTrackSwitch)
+    }
+
+    @Test
+    fun `a 200 response with ok false never emits switch completion`() = runTest(dispatcher) {
+        val api = TrackSwitchCourseApi()
+        val vm = CourseViewModel(repository(api))
+        runCurrent()
+        api.switchReply = CompletableDeferred(OkResponse(ok = false))
+        vm.switchCourseTrack("hsk30", "nhsk1")
+        runCurrent()
+        assertEquals(ApiError.Unknown, vm.state.value.trackError)
+        assertFalse(vm.state.value.isSwitchingTrack)
+        assertNull(vm.state.value.completedTrackSwitch)
+        assertEquals(1, api.mapCalls)
     }
 }
