@@ -246,8 +246,11 @@ fun SubscriptionCheckoutHost(
                         onRoute = { routeOpen = true },
                         onDiscount = { waitingInvite = true; model.startDiscount() },
                     )
-                    CheckoutStep.METHOD -> MethodContent(
-                        state = state, copy = copy, onBank = model::chooseBank, onMethod = model::chooseMethod,
+                    CheckoutStep.METHOD -> Text(
+                        copy.getString(R.string.sub_method),
+                        color = C.text,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
                     )
                     CheckoutStep.PAY -> PayContent(
                         state = state, copy = copy,
@@ -272,7 +275,8 @@ fun SubscriptionCheckoutHost(
             }
         }
         if (!state.loading && state.overview?.checkoutAllowed == true &&
-            state.overview?.pendingPayment == null && !state.submitted && state.step != CheckoutStep.DONE) {
+            state.overview?.pendingPayment == null && !state.submitted &&
+            state.step != CheckoutStep.DONE && state.step != CheckoutStep.METHOD) {
             Row(Modifier.fillMaxWidth().background(C.bg)
                 .border(BorderStroke(1.dp, C.line)).padding(horizontal = 15.dp, vertical = 11.dp),
                 horizontalArrangement = Arrangement.spacedBy(9.dp)) {
@@ -370,6 +374,22 @@ fun SubscriptionCheckoutHost(
             copy = copy,
             onDismiss = model::dismissCurrencySelector,
             onChoose = model::chooseCurrency,
+        )
+    }
+    if (state.step == CheckoutStep.METHOD && !state.currencyDialogOpen &&
+        !state.loading && state.overview?.checkoutAllowed == true) {
+        PaymentMethodDialog(
+            state = state,
+            copy = copy,
+            onDismiss = model::back,
+            onBank = { bank ->
+                model.chooseBank(bank)
+                model.next()
+            },
+            onMethod = { method ->
+                model.chooseMethod(method)
+                model.next()
+            },
         )
     }
     if (inviteOpen) {
@@ -513,41 +533,64 @@ private fun PlansContent(
     }
 }
 
+/** Payment option picker uses the same centred modal as currency selection.
+ * Selection is the confirmation: move directly to the server-backed quote.
+ */
 @Composable
-private fun MethodContent(
-    state: SubscriptionCheckoutState, copy: Context,
-    onBank: (String) -> Unit, onMethod: (String) -> Unit,
+private fun PaymentMethodDialog(
+    state: SubscriptionCheckoutState,
+    copy: Context,
+    onDismiss: () -> Unit,
+    onBank: (String) -> Unit,
+    onMethod: (String) -> Unit,
 ) {
-    Text(copy.getString(R.string.sub_method), color = C.text, fontSize = 22.sp, fontWeight = FontWeight.Black)
-    Spacer(Modifier.height(10.dp))
-    // Payment methods stay visible. The previous accordion hid Alipay/WeChat
-    // (or the Tajik banks) behind one extra tap and made the screen look as if
-    // only the preselected method existed.
-    if (state.region == "cn") {
-        val methods = CHINA_METHODS.filter { !state.overview?.prices?.get(it).isNullOrEmpty() }
-        ChoiceGroup {
-            methods.forEachIndexed { index, method ->
-                ChoiceCard(
-                    null,
-                    copy.getString(if (method == "alipay") R.string.sub_alipay else R.string.sub_wechat),
-                    copy.getString(R.string.sub_qr_yuan),
-                    state.method == method,
-                    onClick = { onMethod(method) },
-                )
-                if (index < methods.lastIndex) ChoiceDivider()
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+    ) {
+        Column(
+            Modifier.fillMaxWidth(0.92f).heightIn(max = 620.dp)
+                .background(C.surface, RoundedCornerShape(20.dp))
+                .padding(18.dp).verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(9.dp),
+        ) {
+            Text(
+                copy.getString(R.string.sub_method),
+                color = C.text,
+                fontSize = 20.sp,
+                lineHeight = 24.sp,
+                fontWeight = FontWeight.Black,
+            )
+            ChoiceGroup {
+                if (state.region == "cn") {
+                    val methods = CHINA_METHODS.filter {
+                        state.overview?.prices?.get(it)?.containsKey(state.plan) == true
+                    }
+                    methods.forEachIndexed { index, method ->
+                        ChoiceCard(
+                            null,
+                            copy.getString(if (method == "alipay") R.string.sub_alipay else R.string.sub_wechat),
+                            copy.getString(R.string.sub_qr_yuan),
+                            state.method == method,
+                            onClick = { onMethod(method) },
+                        )
+                        if (index < methods.lastIndex) ChoiceDivider()
+                    }
+                } else {
+                    CARD_BANKS.forEachIndexed { index, bank ->
+                        ChoiceCard(
+                            null,
+                            BANK_NAMES.getValue(bank),
+                            copy.getString(if (bank == "alif") R.string.sub_bank_alif_body else R.string.sub_bank_dc_body),
+                            state.bank == bank,
+                            onClick = { onBank(bank) },
+                        )
+                        if (index < CARD_BANKS.lastIndex) ChoiceDivider()
+                    }
+                }
             }
-        }
-    } else {
-        ChoiceGroup {
-            CARD_BANKS.forEachIndexed { index, bank ->
-                ChoiceCard(
-                    null,
-                    BANK_NAMES.getValue(bank),
-                    copy.getString(if (bank == "alif") R.string.sub_bank_alif_body else R.string.sub_bank_dc_body),
-                    state.bank == bank,
-                    onClick = { onBank(bank) },
-                )
-                if (index < CARD_BANKS.lastIndex) ChoiceDivider()
+            TextButton(onClick = onDismiss, modifier = Modifier.align(Alignment.End)) {
+                Text(copy.getString(R.string.action_back), color = C.accentInk)
             }
         }
     }
