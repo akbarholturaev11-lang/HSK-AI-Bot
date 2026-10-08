@@ -122,9 +122,26 @@ def main():
                       wait_until="domcontentloaded")
             live.wait_for_selector("#app:not([hidden])", timeout=8000)
             assert live.locator("#summaryGrid .stat").count() == 4, "Real dashboard render failed"
-            assert live.locator("#moduleGrid [data-module]").count() == 2, "Real Product module rendering failed"
-            assert live.locator("#v2MarketingModules [data-module]").count() == 1, "Real Marketing module rendering failed"
-            assert live.locator("#v2SystemModules [data-module]").count() == 1, "Real System module rendering failed"
+            assert live.locator("#moduleGrid [data-module]").count() == 1, "Course track module rendering failed"
+            assert live.locator("#v2ProductAccess [data-module]").count() == 1, "Access module rendering failed"
+            assert live.locator("#v2MarketingModules [data-module]").count() == 1, "Marketing module rendering failed"
+            assert live.locator("#v2SystemModules [data-module]").count() == 1, "System module rendering failed"
+            for area, keys in (
+                ("statistics", ("overview", "platform", "funnel", "ai")),
+                ("settings", ("tracks", "access", "content")),
+                ("marketing", ("campaigns", "ads", "reminders", "partners")),
+                ("system", ("model", "settings")),
+            ):
+                live.locator(f'#tabs [data-tab="{area}"]').click()
+                for key in keys:
+                    live.locator(f'#{area} [data-v2-sub="{area}:{key}"]').click()
+                    active = live.locator(f'#{area} [data-v2-pane="{area}:{key}"]')
+                    assert active.count() > 0 and all(x.is_visible() for x in active.all()), f"Hidden active pane: {area}:{key}"
+                    assert live.locator(f'#{area} [data-v2-sub="{area}:{key}"]').get_attribute("aria-selected") == "true"
+                    if key == keys[0] or area == "marketing" and key == "ads":
+                        live.screenshot(path=str(output / f"admin-v2-{area}-{key}-1440.png"), full_page=True)
+                live.locator(f'#{area} [data-v2-sub="{area}:{keys[0]}"]').click()
+            live.locator('#tabs [data-tab="dashboard"]').click()
             assert live.locator("#userList [data-user]").count() >= 1, "Real Users rows missing"
             live.locator('#tabs [data-tab="users"]').click()
             live.screenshot(path=str(output / "admin-v2-users-1440.png"), full_page=True)
