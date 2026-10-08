@@ -1,0 +1,29 @@
+/* Shared ink landscape. Keep decoration below content and outside hit testing. */
+@supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
+  .hsk-scene-page,
+  .hsk-scene-page :is(#app, .flow, .secov, .upov, .rv, .pr-done, .hsk-entry-overlay),
+  .hsk-scene-pronunciation .done {
+    isolation: isolate;
+  }
+
+  .hsk-scene-page::before,
+  .hsk-scene-page :is(#app, .flow, .secov, .upov, .rv, .pr-done, .hsk-entry-overlay)::before,
+  .hsk-scene-pronunciation .done::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    max-width: 480px;
+    margin: 0 auto;
+    z-index: -1;
+    pointer-events: none;
+    background-color: var(--ink, var(--text, var(--hsk-ink, #211d17)));
+    -webkit-mask: url("./hsk-scene-background.svg?v=20261008-scene-1") center bottom / 100% auto no-repeat;
+    mask: url("./hsk-scene-background.svg?v=20261008-scene-1") center bottom / 100% auto no-repeat;
+  }
+
+  :root[data-hsk-theme="dark"] .hsk-scene-page::before,
+  :root[data-hsk-theme="dark"] .hsk-scene-page :is(#app, .flow, .secov, .upov, .rv, .pr-done, .hsk-entry-overlay)::before,
+  :root[data-hsk-theme="dark"] .hsk-scene-pronunciation .done::before {
+    opacity: .85;
+  }
+}

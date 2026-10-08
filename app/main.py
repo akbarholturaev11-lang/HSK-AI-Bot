@@ -2105,6 +2105,8 @@ COURSE_CHARACTER_ASSETS = {
     "hsk-character-pack.css": "text/css",
     "hsk-character-motion.css": "text/css",
     "hsk-lesson-presentation.css": "text/css",
+    "hsk-scene-background.css": "text/css",
+    "hsk-scene-background.svg": "image/svg+xml",
     "hsk-practice-coach.css": "text/css",
     "hsk-character-pack.js": "application/javascript",
     "hsk-character-motion.js": "application/javascript",

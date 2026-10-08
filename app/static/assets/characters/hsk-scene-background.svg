@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844" fill="#000">
+  <defs>
+    <linearGradient id="far" x1="0" y1="610" x2="0" y2="844" gradientUnits="userSpaceOnUse">
+      <stop stop-opacity=".06"/><stop offset=".6" stop-opacity=".021"/><stop offset="1" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="mid" x1="0" y1="692" x2="0" y2="844" gradientUnits="userSpaceOnUse">
+      <stop stop-opacity=".1"/><stop offset="1" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="near" x1="0" y1="690" x2="0" y2="844" gradientUnits="userSpaceOnUse">
+      <stop stop-opacity=".15"/><stop offset="1" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <circle cx="318" cy="190" r="40" opacity=".07"/>
+  <path d="M52 176 Q57 171 62 176 Q67 171 72 176 M82 160 Q86 156 90 160 Q94 156 98 160 M72 200 Q75.5 196.5 79 200 Q82.5 196.5 86 200" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" opacity=".17"/>
+  <path d="M0 720 C28 700 52 668 84 676 C108 682 124 642 154 636 C178 631 194 668 218 674 C244 680 266 628 302 618 C330 610 348 654 372 660 C380 662 386 658 390 656 L390 844 L0 844Z" fill="url(#far)"/>
+  <path d="M0 780 C24 758 42 728 72 720 C96 714 112 748 140 752 C160 755 176 722 206 704 C226 692 242 698 254 710 C270 728 292 748 322 745 C350 742 366 724 390 716 L390 844 L0 844Z" fill="url(#mid)"/>
+  <path d="M201 692 h10 v12 h-10Z M193 693 Q200 691 206 686 Q212 691 219 693 L215 695 L197 695Z M202 680 h8 v8 h-8Z M195 681 Q201 679 206 674 Q211 679 217 681 L213 683 L199 683Z M203 669 h6 v7 h-6Z M197 670 Q202 668 206 664 Q210 668 215 670 L212 672 L200 672Z M205.4 656 h1.2 v9 h-1.2Z" opacity=".15"/>
+  <path d="M270 800 Q292 808 316 800 L311 805 Q292 811 275 805Z M288 789 h2.2 v11 h-2.2Z M283 790 L289 784 L295 790Z" opacity=".2"/>
+  <path d="M291 792 L322 774" fill="none" stroke="#000" stroke-width=".9" opacity=".2"/>
+  <path d="M0 690 C16 692 28 708 40 736 C50 760 60 790 92 810 C122 828 172 832 232 833 C300 834 350 826 390 820 L390 844 L0 844Z" fill="url(#near)"/>
+  <path d="M12 702 C16 684 22 672 34 662 C42 656 50 654 60 652 M30 666 C26 654 28 646 22 638" fill="none" stroke="#000" stroke-width="3.2" stroke-linecap="round" opacity=".18"/>
+  <g opacity=".18">
+    <ellipse cx="62" cy="650" rx="20" ry="5"/><ellipse cx="44" cy="660" rx="16" ry="4.5"/>
+    <ellipse cx="24" cy="636" rx="14" ry="4.5"/><ellipse cx="72" cy="642" rx="11" ry="3.6"/>
+    <ellipse cx="38" cy="644" rx="10" ry="3.4"/>
+  </g>
+  <path d="M236 814 H258 M272 820 H302 M318 812 H336 M252 830 H268 M300 834 H326" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" opacity=".15"/>
+</svg>

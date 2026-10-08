@@ -7,6 +7,7 @@ CHARACTER_ASSETS = {
     "hsk-character-pack.css": "text/css",
     "hsk-character-motion.css": "text/css",
     "hsk-lesson-presentation.css": "text/css",
+    "hsk-scene-background.css": "text/css",
     "hsk-character-pack.js": "application/javascript",
     "hsk-character-motion.js": "application/javascript",
     "hsk-lesson-presentation.js": "application/javascript",
@@ -108,6 +109,7 @@ class CourseCharacterAssetWiringTests(unittest.TestCase):
 
     def test_every_practice_page_loads_and_wires_the_coach(self):
         needed = set(PRACTICE_COACH_ASSETS) | {
+            "hsk-scene-background.css",
             "hsk-character-pack.css",
             "hsk-character-motion.css",
             "hsk-character-pack.js",

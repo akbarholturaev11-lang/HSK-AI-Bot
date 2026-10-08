@@ -48,6 +48,7 @@ def route_static_files(page):
             ".png": "image/png",
             ".jpg": "image/jpeg",
             ".jpeg": "image/jpeg",
+            ".svg": "image/svg+xml",
         }
         is_text = file_path.suffix in {".css", ".js", ".json", ".html"}
         route.fulfill(
