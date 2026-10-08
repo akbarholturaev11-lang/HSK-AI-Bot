@@ -10729,4 +10729,4 @@ Risk:
 
 Follow-up:
 - Real Chromium capture/playback with fake microphone and a routed provider, signed-auth/database tests, Android relay and course/payment regressions pass. These do not confirm physical Telegram WebView audio or a paid Gemini connection; verify on Android Telegram and iPhone after deployment.
-- Validation: 281 backend tests (+186 subtests), 10 Live browser cases, 4 PCM sample-rate checks and main-flow smoke checks. A sales-checkout smoke case is blocked by an overlapping locked-lesson sheet on both this patch and clean `f5666bc5`; it is an existing issue outside Live voice.
+- Validation: 281 backend tests (+186 subtests), 10 Live browser cases, 4 PCM sample-rate checks and main-flow smoke checks. The sales-checkout overlap discovered on clean `f5666bc5` was fixed on 2026-10-08: `App.openPaywall` shows its layer, closes the shared lesson sheet to clear background `inert`, then starts paywall promos. Keep the real click/navigation regressions for treatment and regular uz/ru/tj paywalls.

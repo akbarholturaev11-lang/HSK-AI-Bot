@@ -1874,7 +1874,10 @@ var App={
     SALES_PAYWALL_ACTIVE=sales;SALES_PAYWALL_IMPRESSION=sales?["sales_offer",COURSE_SESSION_ID,Date.now()].join(":"):"";
     if(sales)trackCourseEvent("sales_offer_seen",salesValueEventPayload({dedupe_key:SALES_PAYWALL_IMPRESSION}));
     $("#paywall-body").innerHTML=paywallHtml(ctx);
-    $("#paywall").classList.add("on");startSheetPromo("#paywall");
+    $("#paywall").classList.add("on");
+    // Replace the lesson sheet and release its inert background before checkout.
+    if($("#sheet").classList.contains("on"))App.closeSheet();
+    startSheetPromo("#paywall");
   },
   closePaywall:function(){
     if(SALES_PAYWALL_ACTIVE)trackCourseEvent("sales_offer_dismissed",salesValueEventPayload({dedupe_key:SALES_PAYWALL_IMPRESSION+":dismissed"}));

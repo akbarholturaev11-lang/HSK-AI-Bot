@@ -1428,6 +1428,7 @@ def test_course_v3_sales_treatment_primary_opens_outcome_checkout(page):
         }"""
     )
     assert shown is True
+    expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
     page.locator("#lu-cta").click()
 
     paywall = page.locator("#paywall")
@@ -1435,6 +1436,8 @@ def test_course_v3_sales_treatment_primary_opens_outcome_checkout(page):
     expect(paywall).to_contain_text("HSK maqsadingizgacha aniq yo'l")
     expect(paywall).to_contain_text("Birinchi natijani oldingiz")
     expect(paywall.locator(".spromo")).to_have_count(0)
+    expect(page.locator("#sheet")).not_to_have_class(re.compile(r"\bon\b"))
+    assert page.evaluate("document.getElementById('paywall').inert") is False
     page.locator("#paywall .sales-offer .scta").click()
     expect(page).to_have_url(
         re.compile(r"/subscription\.html\?.*source=v3_hsk1_checkpoint_outcome")
@@ -1443,6 +1446,35 @@ def test_course_v3_sales_treatment_primary_opens_outcome_checkout(page):
     cta = next(event for event in events if event.get("event") == "sales_bridge_cta")
     assert cta["action"] == "unlock_path"
     assert "arm" not in cta
+
+
+@pytest.mark.parametrize("language", ["uz", "ru", "tj"])
+def test_paywall_replaces_the_lesson_sheet_and_checkout_remains_clickable(page, language):
+    errors = []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    page.route("**/api/**", lambda route: json_response(route, {"ok": True}))
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_learning_audio(page)
+    mock_course_map(page, language=language)
+    page.goto(app_url(f"/course-v3.html?lang={language}&level=hsk1&lesson=1&onboarded=1"), wait_until="networkidle")
+    sheet = page.locator("#sheet")
+    paywall = page.locator("#paywall")
+    expect(sheet).to_have_class(re.compile(r"\bon\b"))
+    page.evaluate("App.openPaywall({lessonIdx:0,lesson:allLessons()[0]})")
+    expect(paywall).to_have_class(re.compile(r"\bon\b"))
+    expect(sheet).not_to_have_class(re.compile(r"\bon\b"))
+    assert page.evaluate("document.getElementById('paywall').inert") is False
+    paywall.locator(".sx").click()
+    expect(paywall).not_to_have_class(re.compile(r"\bon\b"))
+    assert page.evaluate("document.getElementById('s-course').inert") is False
+    page.locator('#s-course .node[data-lesson-order="1"]').click()
+    expect(sheet).to_have_class(re.compile(r"\bon\b"))
+    page.evaluate("App.openPaywall({lessonIdx:0,lesson:allLessons()[0]})")
+    paywall.locator(".scta").first.click()
+    expect(page).to_have_url(re.compile(r"/subscription\.html\?.*source=v3_locked_lesson"))
+    assert parse_qs(urlparse(page.url).query)["lang"] == [language]
+    assert not errors
 
 
 def test_course_v3_checkpoint_repair_resume_restores_exact_semantic_card(page):
