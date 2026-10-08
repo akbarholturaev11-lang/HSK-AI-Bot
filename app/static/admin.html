@@ -453,6 +453,7 @@ body{
   transition:transform .38s var(--v2-ease);
   grid-template-rows:auto minmax(0,1fr);
 }
+#drawer.open{transform:translateX(0)}
 #drawer .dhead{
   background:linear-gradient(120deg,rgba(50,69,88,.27),rgba(22,34,47,.2));
   border-color:rgba(155,184,215,.15);
@@ -573,6 +574,7 @@ body.locked .mobile-nav{pointer-events:none}
     transform:translateY(110%);
     box-shadow:0 -23px 75px rgba(0,0,0,.53);
   }
+  #drawer.open{transform:translateY(0)}
   #drawer:before{
     content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);
     width:36px;height:4px;border-radius:9px;
