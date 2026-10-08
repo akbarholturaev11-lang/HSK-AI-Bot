@@ -260,6 +260,63 @@ def main():
                             full_page=True)
             live_context.close()
 
+            # Telegram iOS-style WebView contract: native inset must prevent
+            # native Close/menu overlays from covering the title and drawer.
+            # Never invoke fullscreen in Admin: Telegram renders its own chrome.
+            iphone_context = browser.new_context(
+                viewport={"width": 390, "height": 844},
+                is_mobile=True, has_touch=True, device_scale_factor=3,
+            )
+            iphone = iphone_context.new_page()
+            iphone_errors = []
+            iphone.on("pageerror", lambda error: iphone_errors.append(str(error)))
+            iphone.route("https://telegram.org/js/telegram-web-app.js", lambda route: route.fulfill(
+                status=200, content_type="application/javascript",
+                body="""window.__fullscreenRequests=0;
+                window.Telegram={WebApp:{
+                    initData:'nonprod-mobile-demo',
+                    contentSafeAreaInset:{top:75,right:0,bottom:26,left:0},
+                    requestFullscreen(){window.__fullscreenRequests++},
+                    ready(){},expand(){},setHeaderColor(){},
+                    setBackgroundColor(){},onEvent(){}
+                }};"""
+            ))
+            iphone.route("**/api/admin-miniapp/**", api_fixture)
+            iphone.goto(
+                f"http://127.0.0.1:{server.server_port}/app/static/admin.html",
+                wait_until="domcontentloaded"
+            )
+            iphone.wait_for_selector("#app:not([hidden])", timeout=8000)
+            assert iphone.evaluate("window.__fullscreenRequests === 0"), "Admin requested Telegram fullscreen"
+            assert iphone.evaluate("parseFloat(getComputedStyle(document.body).paddingTop)>=75"), "Telegram content-safe top missing"
+            assert iphone.evaluate("""() => {
+                const bar=document.querySelector('.workspace .topbar').getBoundingClientRect();
+                const nav=document.querySelector('.mobile-nav').getBoundingClientRect();
+                return bar.top>=74 && nav.bottom<=innerHeight-25;
+            }"""), "Telegram header or bottom navigation overlaps native inset"
+            iphone.screenshot(path=str(output / "admin-v2-telegram-safe-dashboard-390.png"), full_page=False)
+            iphone.locator('.mobile-nav [data-tab="payments"]').click()
+            assert iphone.locator("#paymentBoard .v2-pay-mobile [data-payment-preview]").count()==1, "Mobile finance cards missing"
+            assert iphone.locator("#paymentBoard .v2-pay-desktop").is_hidden(), "Desktop payments table visible on mobile"
+            assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Mobile finance overflow"
+            iphone.screenshot(path=str(output / "admin-v2-telegram-mobile-finance-390.png"), full_page=False)
+            iphone.locator("#paymentBoard .v2-pay-mobile [data-payment-preview]").first.click()
+            assert iphone.locator("#drawer.open").is_visible(), "Payment details sheet missing"
+            assert iphone.evaluate("""() => {
+                const panel=document.querySelector('#drawer').getBoundingClientRect();
+                const header=document.querySelector('#drawer .dhead').getBoundingClientRect();
+                return panel.top>=75 && header.top>=panel.top && panel.right<=innerWidth+1;
+            }"""), "Native Telegram controls cover drawer header"
+            assert iphone.evaluate("document.body.classList.contains('locked')"), "Drawer did not lock background"
+            iphone.screenshot(path=str(output / "admin-v2-telegram-payment-sheet-390.png"), full_page=False)
+            iphone.locator('#drawer [data-act="close-drawer"]').click()
+            assert not iphone.evaluate("document.body.classList.contains('locked')"), "Drawer background remained locked"
+            iphone.locator('.mobile-nav [data-tab="users"]').click()
+            assert iphone.locator("#userList .v2-users-mobile [data-user]").count()>0, "Mobile user cards missing"
+            iphone.screenshot(path=str(output / "admin-v2-telegram-users-390.png"), full_page=False)
+            assert not iphone_errors, "Telegram iPhone JS errors: " + str(iphone_errors)
+            iphone_context.close()
+
             # Approved standalone prototype as a persistent visual reference.
             baseline_context = browser.new_context(viewport={"width": 1440, "height": 900})
             baseline = baseline_context.new_page()
