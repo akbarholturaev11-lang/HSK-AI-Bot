@@ -563,9 +563,9 @@ private fun PaymentMethodDialog(
             )
             ChoiceGroup {
                 if (state.region == "cn") {
-                    val methods = CHINA_METHODS.filter {
-                        state.overview?.prices?.get(it)?.containsKey(state.plan) == true
-                    }
+                    val methods = availablePaymentOptions(
+                        state.region, state.plan, state.overview?.prices.orEmpty()
+                    )
                     methods.forEachIndexed { index, method ->
                         ChoiceCard(
                             null,
