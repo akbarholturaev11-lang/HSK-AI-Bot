@@ -262,7 +262,7 @@ private fun FoundationCardBody(
         Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             FoundationCircularAudio(onClick = onPlayAudio)
         }
-        if (state.answerCorrect != null) {
+        if (foundationListeningExampleVisible(state.answerCorrect)) {
             card.example?.let {
                 Spacer(Modifier.height(12.dp))
                 FoundationExampleCard(it, false, onPlayAudio)
