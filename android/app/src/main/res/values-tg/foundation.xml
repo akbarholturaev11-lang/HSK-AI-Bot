@@ -15,4 +15,8 @@
     <string name="foundation_save_retry">Натиҷаро аз нав фиристодан</string>
     <string name="foundation_required_intro">Пеш аз дарси якуми HSK 1 ин машқи кӯтоҳро анҷом диҳед.</string>
     <string name="foundation_optional_intro">Машқи кӯтоҳи оғозӣ барои HSK 1.</string>
+    <string name="writer_pause">Таваққуф</string>
+    <string name="writer_resume">Идома додан</string>
+    <string name="writer_previous_stroke">Хати пешина</string>
+    <string name="writer_next_stroke">Хати навбатӣ</string>
 </resources>
