@@ -332,7 +332,279 @@
 .v2-track-grid .v2-track-actions{grid-template-columns:1fr;margin:0}
 .v2-track-grid .v2-track-actions .srow{min-height:134px;align-items:flex-start}
 @media(max-width:760px){.v2-track-grid{grid-template-columns:1fr}.v2-track-card{min-height:110px}.v2-track-grid .v2-track-actions .srow{min-height:110px}}
-</style>
+
+/* ===== Admin V2 refined surfaces: one presentation layer for real controls =====
+   Scoped to the production admin DOM; no API / backend or model fixture changes. */
+:root{
+  --telegram-content-top:0px;--telegram-content-bottom:0px;
+  --v2-glow:rgba(230,93,79,.16);
+  --v2-highlight:rgba(171,200,234,.075);
+  --v2-shadow:0 18px 50px rgba(0,0,0,.19),inset 0 1px rgba(255,255,255,.035);
+  --v2-ease:cubic-bezier(.22,1,.36,1);
+}
+body{
+  padding-top:max(var(--safe-top),var(--telegram-content-top));
+  padding-bottom:max(var(--safe-bottom),var(--telegram-content-bottom));
+  background:radial-gradient(ellipse 1100px 750px at 72% -22%,rgba(55,86,117,.13),transparent 72%),var(--bg);
+}
+.app.shell{
+  min-height:calc(var(--app-h) - max(var(--safe-top),var(--telegram-content-top)));
+}
+.sidebar{
+  background:linear-gradient(165deg,#101924 0%,#0c1118 76%);
+  border-right:1px solid rgba(134,163,195,.13);
+}
+.sidebar .brand-mark{
+  background:linear-gradient(145deg,#e36a59 0%,#b34138 100%);
+  box-shadow:0 8px 23px rgba(199,71,61,.19),inset 0 1px 0 #ffffff50;
+}
+.workspace .topbar{
+  background:rgba(12,17,24,.95);
+  -webkit-backdrop-filter:blur(18px);
+  backdrop-filter:blur(18px);
+  border-bottom-color:rgba(125,154,185,.14);
+}
+.workspace .topbar .mobile-brand{font-weight:850;letter-spacing:-.035em}
+.workspace>main.content{position:relative}
+.content .stat,.v2-panel,.v2-finance-heading,.v2-track-card,
+.content .block,.content .ucard,.content .pcard,.content .ncard,
+.content .srow,.content .mcard{
+  border-color:rgba(133,163,195,.17);
+  box-shadow:var(--v2-shadow);
+}
+.content .stat{
+  background:linear-gradient(135deg,#1a2633,#141e2a 85%)!important;
+  border-color:rgba(133,163,195,.21)!important;
+}
+.content .stat .val{font-variant-numeric:tabular-nums}
+.v2-panel{
+  background:linear-gradient(155deg,#17222f,#131d29);
+}
+.content .srow,
+.content .ucard,.content .pcard{
+  transition:border-color .2s ease,transform .3s var(--v2-ease),box-shadow .25s ease;
+}
+.v2-section-title b{letter-spacing:-.025em}
+.v2-subnav{
+  background:linear-gradient(120deg,#16212e,#121b26);
+  border-color:rgba(133,163,195,.19);
+}
+.v2-subnav [data-v2-sub].active{
+  background:linear-gradient(180deg,#303d4b,#252f3d);
+  box-shadow:inset 0 -2px #e65d4f,0 4px 16px rgba(0,0,0,.13);
+}
+.content .btn:not(.sec):not(.danger),.drawer .btn:not(.sec):not(.danger),
+.content .chip.active{
+  background:linear-gradient(135deg,#ee7264,#dc5449);
+  color:#fff;
+  box-shadow:0 7px 19px rgba(228,85,74,.16),inset 0 1px 0 rgba(255,255,255,.19);
+}
+.content .btn.sec,.drawer .btn.sec{
+  background:linear-gradient(180deg,#263443,#1e2a38);
+  border:1px solid rgba(151,177,203,.18);
+  color:#edf1f6;
+}
+.content .input:focus,.content .select:focus,.content .textarea:focus,
+.drawer .input:focus,.drawer .select:focus,.drawer .textarea:focus{
+  border-color:#ef8a7c;
+  box-shadow:0 0 0 3px var(--v2-glow);
+}
+:where(.content,.drawer) :where(.input,.select,.textarea){
+  min-width:0;max-width:100%;
+}
+.v2-pay-desktop{display:block}
+.v2-pay-mobile{display:none}
+.v2-pay-card{
+  min-width:0;
+  display:grid;gap:13px;
+  border:1px solid rgba(133,163,195,.23);
+  border-radius:17px;
+  background:linear-gradient(146deg,#1b2837,#151f2b);
+  box-shadow:var(--v2-shadow);
+  padding:17px;
+}
+.v2-pay-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.v2-pay-card-top>div:first-child{min-width:0}
+.v2-pay-id{font-size:11px;font-weight:850;letter-spacing:.06em;color:#eb8678}
+.v2-pay-person{margin:5px 0 2px;font-size:15px;font-weight:820;overflow-wrap:anywhere}
+.v2-pay-amount{font-size:18px;font-weight:850;letter-spacing:-.03em;white-space:nowrap;color:#f3f6fb}
+.v2-pay-meta{display:flex;flex-wrap:wrap;align-items:center;gap:7px}
+.v2-pay-meta>span:not(.tag){
+  padding:6px 9px;border:1px solid rgba(133,163,195,.13);
+  border-radius:8px;background:rgba(0,0,0,.13);
+  font-size:11px;color:#b6c7d8;
+  overflow-wrap:anywhere;
+}
+.v2-pay-open{
+  min-height:44px;width:100%;
+  display:flex;justify-content:space-between;align-items:center;
+  border-radius:11px;padding:0 13px;
+  background:rgba(230,93,79,.1);
+  color:#ffb8ad;font-weight:800;font-size:12px;
+}
+.v2-pay-open:focus-visible{outline:2px solid #e98c7e;outline-offset:2px}
+/* The real drawer is #drawer, not the inert .drawer-overlay prototype.
+   Use the same elevated surface language as the V2 sections. */
+#drawer{
+  color:var(--text);
+  background:linear-gradient(155deg,#172331 0%,#111b27 82%);
+  border-color:rgba(162,190,217,.22);
+  box-shadow:-22px 0 88px rgba(0,0,0,.48);
+  transition:transform .38s var(--v2-ease);
+  grid-template-rows:auto minmax(0,1fr);
+}
+#drawer .dhead{
+  background:linear-gradient(120deg,rgba(50,69,88,.27),rgba(22,34,47,.2));
+  border-color:rgba(155,184,215,.15);
+  align-items:center;
+  padding:19px 20px 17px;
+}
+#drawer .dhead>div{min-width:0}
+#drawer .dtitle{font-size:17px;font-weight:850;letter-spacing:-.025em;line-height:1.25;overflow-wrap:anywhere}
+#drawer .dsub{line-height:1.4;overflow-wrap:anywhere}
+#drawer .close{
+  width:42px;height:42px;border-radius:13px;
+  flex-shrink:0;color:#dae5f1;
+  border:1px solid rgba(150,176,204,.15);
+  background:linear-gradient(135deg,#253444,#1d2a39);
+}
+#drawer .close:focus-visible{outline:2px solid #ef8a7c;outline-offset:2px}
+#drawer .dbody{
+  min-height:0;max-height:none;
+  padding:19px 20px calc(26px + max(var(--safe-bottom),var(--telegram-content-bottom)));
+  overscroll-behavior:contain;
+}
+#drawer .panel{
+  display:grid;gap:14px;background:transparent;
+  border:0;border-radius:0;box-shadow:none;
+  overflow:visible;padding:0;min-width:0;
+}
+#drawer .mcard{
+  min-width:0;
+  padding:17px;
+  border:1px solid rgba(157,187,217,.2);
+  border-radius:15px;
+  background:linear-gradient(145deg,#1d2937,#162130);
+  box-shadow:0 7px 23px rgba(0,0,0,.095),inset 0 1px 0 #ffffff08;
+}
+#drawer .mcard .mcard{background:rgba(7,15,24,.23);box-shadow:none;padding:13px}
+#drawer .mcard h3{font-size:14px;letter-spacing:-.014em}
+#drawer .mcard p{font-size:12px;line-height:1.6}
+#drawer .kv{gap:11px 13px;line-height:1.5}
+#drawer .kv span,#drawer .clean-row .note{color:#a8b9cc}
+#drawer .kv b,#drawer .clean-row b{color:#f1f5fa;font-variant-numeric:tabular-nums}
+#drawer .clean-row{min-width:0;padding:11px 0;align-items:flex-start}
+#drawer .clean-row>*{min-width:0;overflow-wrap:anywhere}
+#drawer .input,#drawer .select,#drawer .textarea{
+  background:#111c29;
+  border:1px solid #3b4c60;
+  color:#edf1f6;
+  border-radius:11px;
+  font-size:16px;
+}
+#drawer .frow label{font-size:12px;color:#aebdd0}
+#drawer .btn{min-height:44px}
+#drawer .danger-note{border-radius:13px;padding:14px;line-height:1.5}
+#drawer .dsec{border-color:rgba(133,163,195,.16);padding-bottom:17px;margin-bottom:18px}
+#drawer .dtitle-sm{font-size:11px;letter-spacing:.095em;color:#c1cfe0}
+#drawer .hint{line-height:1.55}
+#drawer .acc{background:#1a2634;border-color:rgba(148,181,212,.18);border-radius:13px}
+#scrim.open{background:rgba(2,7,13,.69);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+body.locked .mobile-nav{pointer-events:none}
+@media(hover:hover) and (pointer:fine){
+  .content .srow:hover,.content .ucard:hover,
+  .content .pcard:hover,.v2-pay-card:hover{
+    border-color:rgba(235,136,123,.39);
+    transform:translateY(-2px);
+    box-shadow:0 13px 32px rgba(0,0,0,.23);
+  }
+  .v2-pay-open:hover{background:rgba(230,93,79,.19)}
+}
+@media(min-width:761px){
+  body{padding-top:0;padding-bottom:0}
+  .workspace .topbar{top:0}
+}
+@media(max-width:760px){
+  .workspace .topbar{
+    top:max(var(--safe-top),var(--telegram-content-top));
+    min-height:61px;height:61px;padding:0 16px;
+    border-bottom:1px solid rgba(150,181,212,.16);
+    background:rgba(13,21,30,.94);
+  }
+  .workspace>main.content{
+    padding:19px 16px calc(112px + max(var(--safe-bottom),var(--telegram-content-bottom)));
+  }
+  .content .page-head{gap:13px;margin-bottom:23px}
+  .page-head h1{font-size:clamp(25px,7vw,32px);line-height:1.15}
+  .v2-kpis{gap:10px}
+  .content .stat{min-height:123px;border-radius:15px;padding:15px}
+  .content .stat .lab{font-size:11px;line-height:1.45}
+  .content .stat .val{font-size:clamp(23px,6vw,31px);margin:14px 0 6px}
+  .content .stat .sub{font-size:11px;line-height:1.5}
+  .v2-section-title{align-items:flex-start;flex-wrap:wrap;gap:6px}
+  .v2-panel{border-radius:16px}
+  .mobile-nav{
+    bottom:calc(10px + max(var(--safe-bottom),var(--telegram-content-bottom)));
+    left:12px;right:12px;
+    min-height:65px;height:65px;
+    padding:5px;gap:2px;
+    background:rgba(29,42,56,.93);
+    border:1px solid rgba(164,193,221,.22);
+    border-radius:19px;
+    -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+    box-shadow:0 15px 50px rgba(0,0,0,.43),inset 0 1px 0 #ffffff1c;
+  }
+  .mobile-nav .tab{border-radius:15px;font-size:10px}
+  .mobile-nav .tab.active{
+    background:linear-gradient(145deg,rgba(240,121,103,.19),rgba(159,84,99,.14));
+    box-shadow:inset 0 1px 0 rgba(247,174,162,.09);
+  }
+  .mobile-nav .tab.active svg{color:#ffb6a7}
+  .v2-pay-desktop{display:none}
+  .v2-pay-mobile{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+  #drawer{
+    left:0;right:0;
+    top:max(22px,var(--telegram-content-top));
+    bottom:0;
+    width:100%;
+    max-height:none;height:auto;
+    border-radius:23px 23px 0 0;
+    border:1px solid rgba(151,180,211,.26);
+    transform:translateY(110%);
+    box-shadow:0 -23px 75px rgba(0,0,0,.53);
+  }
+  #drawer:before{
+    content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);
+    width:36px;height:4px;border-radius:9px;
+    background:rgba(201,219,235,.23);pointer-events:none;
+  }
+  #drawer .dhead{padding:25px 15px 14px;gap:10px}
+  #drawer .dtitle{font-size:17px}
+  #drawer .dsub{font-size:11.5px}
+  #drawer .dbody{
+    padding:16px 15px calc(22px + max(var(--safe-bottom),var(--telegram-content-bottom)));
+  }
+  #drawer .mcard{padding:14px}
+  #drawer .clean-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:10px}
+  #drawer .kv{grid-template-columns:minmax(0,1fr) minmax(0,1fr);font-size:12px;gap:12px}
+  #drawer .frow.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #drawer .row>[data-pay]{flex:1;min-width:110px}
+  #drawer .panel .mcard{min-width:0}
+  .v2-subnav{scroll-snap-type:x proximity}
+  .v2-subnav [data-v2-sub]{scroll-snap-align:start}
+}
+@media(max-width:370px){
+  #drawer .frow.two{grid-template-columns:minmax(0,1fr)}
+  #drawer .kv{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}
+  .mobile-nav{left:7px;right:7px}
+  .content .stat{padding:12px}
+}
+@media(prefers-reduced-transparency:reduce){
+  .mobile-nav,.workspace .topbar{backdrop-filter:none;-webkit-backdrop-filter:none;background:#15202b}
+  #scrim.open{backdrop-filter:none;-webkit-backdrop-filter:none}
+}
+
+  </style>
 </head>
 <body>
   <div id="loading" class="state">
