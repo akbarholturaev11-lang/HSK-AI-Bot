@@ -333,6 +333,12 @@
 .v2-track-grid .v2-track-actions .srow{min-height:134px;align-items:flex-start}
 @media(max-width:760px){.v2-track-grid{grid-template-columns:1fr}.v2-track-card{min-height:110px}.v2-track-grid .v2-track-actions .srow{min-height:110px}}
 
+/* One refresh action per screen: the topbar already owns refresh. */
+.workspace .page-head .page-actions [data-act="reload"]{display:none}
+.workspace .page-head .page-actions:empty{display:none}
+@media(max-width:370px){
+  .workspace .topbar .top-actions .refresh-btn{display:grid}
+}
 /* ===== Admin V2 refined surfaces: one presentation layer for real controls =====
    Scoped to the production admin DOM; no API / backend or model fixture changes. */
 :root{
