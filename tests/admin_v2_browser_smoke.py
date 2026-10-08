@@ -229,8 +229,8 @@ def main():
             live.screenshot(path=str(output / "admin-v2-users-1440.png"), full_page=True)
             live.locator('#tabs [data-tab="payments"]').click()
             live.screenshot(path=str(output / "admin-v2-payments-1440.png"), full_page=True)
-            assert live.locator('#paymentBoard [data-payment-preview="7001"]').count() == 1, "Real Payments row missing"
-            live.locator('#paymentBoard [data-payment-preview="7001"]').click()
+            assert live.locator('#paymentBoard .v2-pay-desktop [data-payment-preview="7001"]').count() == 1, "Real Payments row missing"
+            live.locator('#paymentBoard .v2-pay-desktop [data-payment-preview="7001"]').click()
             assert live.locator("#drawer.open").count() == 1, "Payment preview did not open"
             live.screenshot(path=str(output / "admin-v2-payment-preview-1440.png"), full_page=False)
             assert "bank" in live.locator("#drawerBody").inner_text().lower(), "Bank verification warning missing"
