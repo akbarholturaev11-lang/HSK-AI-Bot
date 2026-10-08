@@ -72,6 +72,52 @@ def main():
                 assert not errors, "JS errors: " + str(errors)
                 results.append({"viewport": width, "passed": True})
                 context.close()
+            # Execute the real load/render path with mocked read-only API responses.
+            # The fake Telegram token and local route handlers never reach production.
+            live_context = browser.new_context(viewport={"width": 1440, "height": 900})
+            live = live_context.new_page()
+            live_errors = []
+            live.on("pageerror", lambda error: live_errors.append(str(error)))
+            live.route("https://telegram.org/js/telegram-web-app.js", lambda route: route.fulfill(
+                status=200, content_type="application/javascript",
+                body="window.Telegram={WebApp:{initData:'nonprod-demo',ready(){},expand(){},setHeaderColor(){},setBackgroundColor(){},onEvent(){}}};"
+            ))
+            fake_overview = {
+                "ok": True, "generated_at": "2026-10-08T10:00:00Z",
+                "summary": [
+                    {"label": name, "value": 42, "note": "UI demo only", "tone": ""}
+                    for name in ("Foydalanuvchilar", "Faol obuna", "To‘lov tekshiruvda", "Issiq mijoz")
+                ],
+                "segments": {}, "queue": [], "users": [], "payments": {"latest": []},
+                "statistics_reports": [], "data_quality": {},
+                "modules": [
+                    {"key": key, "title": label, "icon": "⚙️", "note": "Demo"}
+                    for key, label in [
+                        ("limits", "Limitlar"), ("hsk30", "HSK 3.0"),
+                        ("broadcast", "Ommaviy xabar"), ("channels", "Kanallar")
+                    ]
+                ]
+            }
+            def api_fixture(route):
+                if route.request.url.endswith("/api/admin-miniapp/overview"):
+                    route.fulfill(status=200, content_type="application/json",
+                                  body=json.dumps(fake_overview))
+                else:
+                    route.fulfill(status=403, content_type="application/json",
+                                  body='{"ok":false,"error":"admin_only"}')
+            live.route("**/api/admin-miniapp/**", api_fixture)
+            live.goto(f"http://127.0.0.1:{server.server_port}/app/static/admin.html",
+                      wait_until="domcontentloaded")
+            live.wait_for_selector("#app:not([hidden])", timeout=8000)
+            assert live.locator("#summaryGrid .stat").count() == 4, "Real dashboard render failed"
+            assert live.locator("#moduleGrid [data-module]").count() == 2, "Real Product module rendering failed"
+            assert live.locator("#v2MarketingModules [data-module]").count() == 1, "Real Marketing module rendering failed"
+            assert live.locator("#v2SystemModules [data-module]").count() == 1, "Real System module rendering failed"
+            assert not live_errors, "Real render JS errors: " + str(live_errors)
+            live.screenshot(path=str(output / "admin-v2-mocked-api-render-1440.png"),
+                            full_page=True)
+            live_context.close()
+
             # Approved standalone prototype as a persistent visual reference.
             baseline_context = browser.new_context(viewport={"width": 1440, "height": 900})
             baseline = baseline_context.new_page()
