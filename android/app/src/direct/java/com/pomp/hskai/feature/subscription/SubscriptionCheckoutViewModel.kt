@@ -48,6 +48,16 @@ internal fun availableRegions(prices: Map<String, Map<String, SubscriptionPriceD
 /** Only Tajikistan (the bank) and China (the wallet) ask for a payment type. */
 internal fun hasMethodStep(region: String): Boolean = region == "tj" || region == "cn"
 
+/** A wallet is selectable only if the chosen plan is priced for that wallet. */
+internal fun availablePaymentOptions(
+    region: String,
+    plan: String,
+    prices: Map<String, Map<String, SubscriptionPriceDto>>,
+): List<String> =
+    if (region == "cn") CHINA_METHODS.filter { prices[it]?.containsKey(plan) == true }
+    else if (region == "tj" && prices["visa"]?.containsKey(plan) == true) CARD_BANKS
+    else emptyList()
+
 internal fun checkoutFlow(region: String): List<CheckoutStep> =
     if (hasMethodStep(region)) {
         listOf(CheckoutStep.PLANS, CheckoutStep.METHOD, CheckoutStep.PAY)
