@@ -69,6 +69,11 @@ def main():
                 assert page.locator("#marketing").evaluate("(el) => el.classList.contains('active')")
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Marketing overflow"
                 page.screenshot(path=str(output / f"admin-v2-marketing-{width}.png"), full_page=True)
+                page.locator('#marketing [data-v2-sub="marketing:ads"]').click()
+                assert page.locator('#marketing #adHub').is_visible(), "Mini App advertising panel inaccessible"
+                assert page.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), f"Ads horizontal overflow at {width}px"
+                if width <= 390:
+                    page.screenshot(path=str(output / f"admin-v2-ads-{width}.png"), full_page=True)
                 assert not errors, "JS errors: " + str(errors)
                 results.append({"viewport": width, "passed": True})
                 context.close()
