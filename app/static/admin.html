@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>HSK AI — Admin panel</title>
   <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -1421,7 +1421,7 @@
         '<div class="panel"><div class="mcard"><h3>To‘lov ma’lumotlari</h3><div class="clean-list">'+
         detail("Foydalanuvchi",p.name)+detail("Telegram ID",p.telegram_id)+
         detail("Tarif",p.plan)+detail("To‘lov usuli",p.method)+detail("Summa",p.amount)+
-        detail("Holat",p.status_label||p.status)+detail("Manba",paymentSourceLabel(p.source))+
+        detail("Holat",p.status_label||p.status)+detail("Manba",paymentSourceLabel(p.source))+detail("Kvitansiya",p.has_screenshot?"Yuklangan (bankda mustaqil tekshiring)":"Yuklanmagan")+
         '</div></div><div class="danger-note">Tasdiqlashdan oldin bankda haqiqiy tushumni tekshiring. Skrinshotning o‘zi to‘lov isboti emas.</div>'+
         (p.status==="pending"?'<div class="row"><button class="btn" data-pay="'+esc(p.id)+'" data-pact="approve">Tasdiqlash</button><button class="btn danger" data-pay="'+esc(p.id)+'" data-pact="reject">Rad etish</button></div>':"")+
         '</div>');
@@ -1430,6 +1430,9 @@
       const id=Number(btn.dataset.pay||0), action=btn.dataset.pact;
       if(!id||!action) return;
       let reason="";
+      if(action==="approve"){
+        if(!window.confirm("Bank hisobida haqiqiy tushum borligini mustaqil tekshirdingizmi? To‘lovni hozir tasdiqlaysiz.")) return;
+      }
       if(action==="reject"){ reason=prompt("Rad sababini yozing","admin panel orqali rad etildi")||""; if(!reason.trim()) return; }
       btn.disabled=true;
       try{ await apiPost("/api/admin-miniapp/payments/review",{payment_id:id,action,reason}); closeDrawer(); await reloadAll(action==="approve"?"To'lov tasdiqlandi":"To'lov rad etildi"); }
