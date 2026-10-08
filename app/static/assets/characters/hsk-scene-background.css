@@ -27,3 +27,20 @@
     opacity: .85;
   }
 }
+
+/* Reusable loading state for lessons and practice, not the application's boot. */
+.hsk-study-preparing{
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  min-height:240px;width:100%;padding:28px 16px;text-align:center;
+  color:var(--ink,#211D17);background:transparent;
+}
+.hsk-study-preparing-panda{width:148px;height:164px;display:grid;place-items:center}
+.hsk-study-preparing-panda>.hsk-character{width:100%;height:100%}
+.hsk-study-preparing b{display:block;margin-top:9px;font-size:14px;line-height:1.4;font-weight:700}
+.hsk-study-preparing small{display:block;margin-top:4px;font-size:12px;line-height:1.4;color:var(--ink2,#665D50)}
+.hsk-study-preparing-dots{display:flex;gap:8px;margin-top:12px}
+.hsk-study-preparing-dots i{width:5px;height:5px;border-radius:50%;background:var(--cin,#E04A40);animation:hskStudyLoadPulse .95s ease-in-out infinite alternate}
+.hsk-study-preparing-dots i:nth-child(2){animation-delay:.19s}
+.hsk-study-preparing-dots i:nth-child(3){animation-delay:.38s}
+@keyframes hskStudyLoadPulse{from{opacity:.3;transform:translateY(1px)}to{opacity:1;transform:translateY(-3px)}}
+@media(prefers-reduced-motion:reduce){.hsk-study-preparing-dots i{animation:none}}
