@@ -82,13 +82,12 @@ internal fun HanziWriterSheet(
     strokes: CharacterStrokes?,
     isLoading: Boolean,
     onShowCharacter: (Int) -> Unit,
-    onReplay: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     val current = characters.getOrNull(index) ?: hanzi
-    var playing by remember(current) { mutableStateOf(true) }
-    var replayKey by remember(current) { mutableIntStateOf(0) }
-    var finished by remember(current) { mutableStateOf(false) }
+    var playing by remember(index, current) { mutableStateOf(true) }
+    var replayKey by remember(index, current) { mutableIntStateOf(0) }
+    var finished by remember(index, current) { mutableStateOf(false) }
     AssistantScreen(
         ScreenContext(
             screen = "writing",
@@ -136,33 +135,11 @@ internal fun HanziWriterSheet(
             // written a character at a time rather than drawn on top of
             // itself — which is what one box for the lot produced.
             if (characters.size > 1) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    WriterStep(
-                        glyph = "‹",
-                        description = stringResource(R.string.lesson_writer_previous),
-                        enabled = index > 0,
-                        onClick = { onShowCharacter(index - 1) },
-                    )
-                    Text(
-                        text = stringResource(
-                            R.string.lesson_writer_position,
-                            index + 1,
-                            characters.size,
-                        ),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = PompColors.InkSecondary,
-                    )
-                    WriterStep(
-                        glyph = "›",
-                        description = stringResource(R.string.lesson_writer_next),
-                        enabled = index < characters.lastIndex,
-                        onClick = { onShowCharacter(index + 1) },
-                    )
-                }
+                Text(
+                    text = stringResource(R.string.lesson_writer_position, index + 1, characters.size),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = PompColors.InkSecondary,
+                )
                 Spacer(Modifier.height(10.dp))
             }
 
@@ -235,24 +212,3 @@ internal fun HanziWriterSheet(
     }
 }
 
-/** One step through the phrase — the dictionary's own arrows, and the Mini App's. */
-@Composable
-private fun WriterStep(
-    glyph: String,
-    description: String,
-    enabled: Boolean,
-    onClick: () -> Unit,
-) {
-    IconButton(
-        onClick = onClick,
-        enabled = enabled,
-        // The glyph is a bracket, so a reader needs to be told what it does.
-        modifier = Modifier.size(40.dp).semantics { contentDescription = description },
-    ) {
-        Text(
-            text = glyph,
-            style = MaterialTheme.typography.headlineMedium,
-            color = if (enabled) PompColors.CinnabarDark else PompColors.InkDisabled,
-        )
-    }
-}
