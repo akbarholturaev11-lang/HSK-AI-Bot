@@ -44,6 +44,8 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.design.components.HskSceneBackground
+import com.pomp.hskai.core.design.components.HskCharacter
+import com.pomp.hskai.core.design.components.HskCharacterStage
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
@@ -233,29 +235,32 @@ private fun FoundationCardBody(
         return
     }
 
-    if (card.title.isNotBlank()) {
-        Text(
-            text = card.title,
-            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
-            color = PompColors.Ink,
-        )
-        Spacer(Modifier.height(10.dp))
-    }
-    if (card.text.isNotBlank()) {
-        Text(
-            text = card.text,
-            style = MaterialTheme.typography.bodyLarge.copy(lineHeight = 24.sp),
-            color = PompColors.InkSecondary,
-        )
-        Spacer(Modifier.height(16.dp))
-    }
-    if (card.prompt.isNotBlank()) {
-        Text(
-            text = card.prompt,
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-            color = PompColors.Ink,
-        )
-        Spacer(Modifier.height(16.dp))
+    if (card.type != "speak") {
+        if (card.title.isNotBlank()) {
+            Text(
+                text = card.title,
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
+                color = PompColors.Ink,
+            )
+            Spacer(Modifier.height(10.dp))
+        }
+        if (card.text.isNotBlank()) {
+            Text(
+                text = card.text,
+                style = MaterialTheme.typography.bodyLarge.copy(lineHeight = 24.sp),
+                color = PompColors.InkSecondary,
+            )
+            Spacer(Modifier.height(16.dp))
+        }
+        if (card.prompt.isNotBlank()) {
+            Text(
+                text = card.prompt,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                color = PompColors.Ink,
+            )
+            Spacer(Modifier.height(16.dp))
+        }
+
     }
 
     if (card.type == "listen_choice") {
@@ -361,6 +366,12 @@ private fun FoundationCardBody(
                 onPlayAudio = onPlayText,
                 onSpeak = onCheckPronunciation,
                 onSkip = onSkipSpeaking,
+                coach = {
+                    HskCharacterStage(
+                        character = HskCharacter.Panda,
+                        modifier = Modifier.size(width = 150.dp, height = 165.dp),
+                    )
+                },
             )
             if (state.pronunciationMessage.isNotBlank()) {
                 Spacer(Modifier.height(12.dp))
@@ -494,6 +505,9 @@ private fun HanziToken(text: String, onClick: () -> Unit) {
 
 @Composable
 private fun FoundationFooter(state: FoundationUiState, card: FoundationCard, onAdvance: () -> Unit, onRetry: () -> Unit) {
+    // During pronunciation, the microphone and a quiet skip are the only actions.
+    // Continue appears once a real score passes; skip advances without a bonus.
+    if (card.type == "speak" && !state.speakingBonus) return
     val interactiveBlocked = (card.type in setOf("choice", "listen_choice", "builder") && state.answerCorrect != true) || (card.type == "speak" && state.answerCorrect != true)
     val resultSaveFailed = card.type == "result" && state.error != null
     Surface(modifier = Modifier.fillMaxWidth(), color = PompColors.Paper) {
