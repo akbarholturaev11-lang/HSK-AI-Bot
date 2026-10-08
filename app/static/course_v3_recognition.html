@@ -53,6 +53,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <script defer src="/course_v3_data/ads.js?v=20260923-2"></script>
 <script defer src="/course_v3_data/desktop-download.js?v=20261003-1"></script>
 <script defer src="/assets/characters/hsk-character-pack.js?v=20260921c"></script>
+<script defer src="/assets/characters/hsk-study-preparing.js?v=20261008-1"></script>
 <script defer src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
 <script defer src="/assets/characters/hsk-practice-coach.js?v=20260921a"></script>
 <script>
@@ -123,7 +124,7 @@ function showLimitNow(){
 function gateStart(newAttempt){
   var ref=gateRef(newAttempt!==false);
 
-  document.getElementById("body").innerHTML='<div class="loading">…</div>';
+  document.getElementById("body").innerHTML=HSKStudyPreparing.render(LANG);
   runGate(ref).then(function(o){
     if(ref!==ATTEMPT_REF)return;
     if(o.status===403){showLimit(o.j);return}start();
