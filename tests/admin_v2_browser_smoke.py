@@ -134,11 +134,26 @@ def main():
                     ]
                 ]
             }
+            attempted_mutations = []
+            fake_management = {
+                "ok": True, "prices": [], "payment_details": "", "payment_details_alif": "",
+                "hsk30": {"enabled": False, "unlock_price_tjs": 10, "live_levels": []},
+                "limits_config": {"plans": {}, "trial": {}},
+                "channels": {"enabled": False, "items": []},
+                "help": {"links": []}, "gemini": {"configured": False, "options": []},
+                "portfolio": {"summary": {}, "history": []}
+            }
             def api_fixture(route):
-                if route.request.url.endswith("/api/admin-miniapp/overview"):
+                url = route.request.url
+                if url.endswith("/api/admin-miniapp/overview"):
                     route.fulfill(status=200, content_type="application/json",
                                   body=json.dumps(fake_overview))
+                elif url.endswith("/api/admin-miniapp/management"):
+                    route.fulfill(status=200, content_type="application/json",
+                                  body=json.dumps(fake_management))
                 else:
+                    if url.endswith("/payments/review"):
+                        attempted_mutations.append("payment_review")
                     route.fulfill(status=403, content_type="application/json",
                                   body='{"ok":false,"error":"admin_only"}')
             live.route("**/api/admin-miniapp/**", api_fixture)
@@ -190,7 +205,26 @@ def main():
             assert live.locator("#drawer.open").count() == 1, "Payment preview did not open"
             live.screenshot(path=str(output / "admin-v2-payment-preview-1440.png"), full_page=False)
             assert "bank" in live.locator("#drawerBody").inner_text().lower(), "Bank verification warning missing"
+            assert "Kvitansiya" in live.locator("#drawerBody").inner_text(), "Missing receipt status"
+            live.once("dialog", lambda d: d.dismiss())
+            live.locator('#drawer.open [data-pay][data-pact="approve"]').click()
+            assert not attempted_mutations, "Payment approval was sent despite cancelled verification"
             live.locator('[data-act="close-drawer"]').first.click(force=True)
+
+            # Open real management drawers with a fake in-memory management payload.
+            for section, subpage, module_key, expected in [
+                ("payments", "prices", "prices", "#payDetails"),
+                ("settings", "tracks", "hsk30", "#hsk30Enabled"),
+                ("settings", "access", "limits", "#trialEnabled"),
+                ("marketing", "campaigns", "broadcast", "#bcText"),
+                ("system", "settings", "channels", '[data-chadd]'),
+            ]:
+                live.locator(f'#tabs [data-tab="{section}"]').click()
+                live.locator(f'#{section} [data-v2-sub="{section}:{subpage}"]').click()
+                live.locator(f'#{section} [data-module="{module_key}"]').first.click()
+                live.locator(f'#drawer.open {expected}').wait_for(timeout=5000)
+                live.locator('#drawer [data-act="close-drawer"]').click()
+            assert not attempted_mutations, "The UI smoke performed a production mutation"
             live.locator('#tabs [data-tab="dashboard"]').click()
             assert not live_errors, "Real render JS errors: " + str(live_errors)
             live.screenshot(path=str(output / "admin-v2-mocked-api-render-1440.png"),
