@@ -126,10 +126,14 @@ def main():
             assert live.locator("#v2MarketingModules [data-module]").count() == 1, "Real Marketing module rendering failed"
             assert live.locator("#v2SystemModules [data-module]").count() == 1, "Real System module rendering failed"
             assert live.locator("#userList [data-user]").count() >= 1, "Real Users rows missing"
+            live.locator('#tabs [data-tab="users"]').click()
+            live.screenshot(path=str(output / "admin-v2-users-1440.png"), full_page=True)
             live.locator('#tabs [data-tab="payments"]').click()
+            live.screenshot(path=str(output / "admin-v2-payments-1440.png"), full_page=True)
             assert live.locator('#paymentBoard [data-payment-preview="7001"]').count() == 1, "Real Payments row missing"
             live.locator('#paymentBoard [data-payment-preview="7001"]').click()
             assert live.locator("#drawer.open").count() == 1, "Payment preview did not open"
+            live.screenshot(path=str(output / "admin-v2-payment-preview-1440.png"), full_page=False)
             assert "bank" in live.locator("#drawerBody").inner_text().lower(), "Bank verification warning missing"
             live.locator('[data-act="close-drawer"]').first.click(force=True)
             live.locator('#tabs [data-tab="dashboard"]').click()
