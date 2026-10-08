@@ -64,7 +64,7 @@ class Hsk30SwitchUiContractTests(unittest.TestCase):
 
     @unittest.skipUnless(shutil.which("node"), "Node.js is not installed")
     def test_mini_inline_javascript_is_syntactically_valid(self):
-        scripts = re.findall(r"<script(?:\\s[^>]*)?>(.*?)</script>", self.mini, re.S | re.I)
+        scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", self.mini, re.S | re.I)
         with tempfile.TemporaryDirectory() as temp:
             for index, script in enumerate(scripts):
                 if not script.strip():
