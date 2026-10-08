@@ -129,6 +129,12 @@ Android Live Voice:
 - `ANDROID_VOICE_LIVE_ALLOWED_USERS` accepts comma-separated Telegram IDs or the exact value `*` for a deliberate all-user rollout. Empty or malformed values fail closed. Production was enabled for all users on 2026-10-07; preserve the paid-billing gate and do not set the billing tier without verifying provider billing.
 - Live sessions retain the 180-second time cap and configured USD budget ($0.15 by default). There is no dialogue-count cap: `max_dialogs: 0`, `session_should_end: false` in both turn and live modes. The existing 7-turn learning-completion metric and reward rules remain separate from access limits. Existing per-user daily voice limits and paid AI budgets remain in force. Audio usage and transcript evaluation use the shared AI budget service.
 - Key files: `app/api/android_live_voice.py`, `app/services/android_live_voice_service.py`, `app/services/voice_practice_service.py`, Android `feature/voice/LiveVoiceSocket.kt`, and `core/audio/LiveVoiceAudioEngine.kt`.
+- PCM output can arrive faster than playback. `LiveVoicePlaybackBuffer` bounds pending output to 12 seconds (~576 KB); this is queue capacity, not startup latency. Actual barge-in invalidates queued/in-flight chunks, while notification ducking preserves them. Audio worker generations prevent stopped workers from entering a replacement connection.
+- Socket intentional closes and terminal limit messages never trigger recovery. `VoiceViewModel` owns/cancels connection/retry jobs, rejects stale connection events, and permits at most three automatic retries on the same session. Reopening the idle Voice tab after an error refreshes status instead of keeping the previous failure. Server time, cost and daily caps remain authoritative.
+
+Android dictionary:
+- Offline entries merge HSK 2.0 and 3.0 membership tags by hanzi (`HSK2|N1`). Filter and badge projection must use the selected version; a shared word is valid in both versions but its 3.0 badge is hidden in an HSK 2.0 view. `HSK4 (1-qism)` and `HSK4 (2-qism)` both normalize to HSK4 for filtering, without changing source data.
+- `DictionaryViewModel.runSearch` publishes results only while query/version/level still match the request snapshot, preventing late Room queries from replacing a newer selection. Real bundled-data/Room/filter-sheet regressions live in Android `DictionaryFiltersTest`.
 
 Android klienti:
 - `feature/profile/ProfileWidgetCompat.kt` must pass an argument unique to the richer
