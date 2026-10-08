@@ -43,9 +43,15 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
+import com.pomp.hskai.core.design.components.HskSceneBackground
+import com.pomp.hskai.core.design.components.HskCharacter
+import com.pomp.hskai.core.design.components.HskCharacterStage
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.feature.lesson.PronunciationCardView
+import com.pomp.hskai.core.settings.PinyinVisibility
+import com.pomp.hskai.domain.model.PronunciationCard
 import com.pomp.hskai.feature.assistant.AssistantScreen
 import com.pomp.hskai.feature.assistant.ScreenContext
 
@@ -72,6 +78,8 @@ internal fun FoundationScreen(
         showButton = false,
     )
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
+        Box(Modifier.fillMaxSize()) {
+            HskSceneBackground(Modifier.fillMaxSize())
         when {
             state.loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 HskBrandLoader()
@@ -82,7 +90,7 @@ internal fun FoundationScreen(
                     .fillMaxSize()
                     .statusBarsPadding(),
             ) {
-                FoundationTopBar(state.progress, state.required, onClose)
+                FoundationTopBar(state.progress, state.required, state.cardIndex, state.cards.size, onClose)
                 val card = state.currentCard
                 if (card != null) {
                     Column(
@@ -92,12 +100,6 @@ internal fun FoundationScreen(
                             .verticalScroll(rememberScrollState())
                             .padding(horizontal = 20.dp, vertical = 18.dp),
                     ) {
-                        FoundationStepPill(
-                            index = state.cardIndex,
-                            total = state.cards.size,
-                            label = state.stepLabel,
-                        )
-                        Spacer(Modifier.height(14.dp))
                         FoundationCardBody(
                             card = card,
                             state = state,
@@ -114,6 +116,7 @@ internal fun FoundationScreen(
                     FoundationFooter(state, card, onAdvance, onRetry)
                 }
             }
+        }
         }
     }
 }
@@ -151,7 +154,7 @@ private fun foundationAssistantContext(state: FoundationUiState): ScreenContext 
 }
 
 @Composable
-private fun FoundationTopBar(progress: Float, required: Boolean, onClose: () -> Unit) {
+private fun FoundationTopBar(progress: Float, required: Boolean, index: Int, total: Int, onClose: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -175,7 +178,8 @@ private fun FoundationTopBar(progress: Float, required: Boolean, onClose: () -> 
             color = PompColors.Cinnabar,
             trackColor = PompColors.Divider,
         )
-        Spacer(Modifier.width(52.dp))
+        Spacer(Modifier.width(10.dp))
+        Text(text = "${index + 1}/${total.coerceAtLeast(1)}", style = MaterialTheme.typography.labelLarge, color = PompColors.CinnabarDark)
     }
 }
 
@@ -231,34 +235,50 @@ private fun FoundationCardBody(
         return
     }
 
-    if (card.title.isNotBlank()) {
-        Text(
-            text = card.title,
-            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
-            color = PompColors.Ink,
-        )
-        Spacer(Modifier.height(10.dp))
-    }
-    if (card.text.isNotBlank()) {
-        Text(
-            text = card.text,
-            style = MaterialTheme.typography.bodyLarge.copy(lineHeight = 24.sp),
-            color = PompColors.InkSecondary,
-        )
-        Spacer(Modifier.height(16.dp))
-    }
-    if (card.prompt.isNotBlank()) {
-        Text(
-            text = card.prompt,
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-            color = PompColors.Ink,
-        )
-        Spacer(Modifier.height(16.dp))
+    if (card.type != "speak") {
+        if (card.title.isNotBlank()) {
+            Text(
+                text = card.title,
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
+                color = PompColors.Ink,
+            )
+            Spacer(Modifier.height(10.dp))
+        }
+        if (card.text.isNotBlank()) {
+            Text(
+                text = card.text,
+                style = MaterialTheme.typography.bodyLarge.copy(lineHeight = 24.sp),
+                color = PompColors.InkSecondary,
+            )
+            Spacer(Modifier.height(16.dp))
+        }
+        if (card.prompt.isNotBlank()) {
+            Text(
+                text = card.prompt,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                color = PompColors.Ink,
+            )
+            Spacer(Modifier.height(16.dp))
+        }
+
     }
 
-    card.example?.let {
-        FoundationExampleCard(it, card.audioText.isNotBlank(), onPlayAudio)
+    if (card.type == "listen_choice") {
+        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            FoundationCircularAudio(onClick = onPlayAudio)
+        }
+        if (foundationListeningExampleVisible(state.answerCorrect)) {
+            card.example?.let {
+                Spacer(Modifier.height(12.dp))
+                FoundationExampleCard(it, false, onPlayAudio)
+            }
+        }
         Spacer(Modifier.height(14.dp))
+    } else if (card.type != "speak") {
+        card.example?.let {
+            FoundationExampleCard(it, card.audioText.isNotBlank(), onPlayAudio)
+            Spacer(Modifier.height(14.dp))
+        }
     }
 
     when (card.type) {
@@ -330,45 +350,38 @@ private fun FoundationCardBody(
             }
         }
         "speak" -> {
-            Spacer(Modifier.height(14.dp))
-            FoundationAction(
-                enabled = !state.isRecording && !state.isScoring,
-                onClick = onCheckPronunciation,
-                text = when {
-                    state.isRecording -> stringResource(R.string.foundation_speak_listening)
-                    state.isScoring -> stringResource(R.string.foundation_speak_checking)
-                    else -> stringResource(R.string.foundation_speak_check)
+            val example = card.example
+            PronunciationCardView(
+                card = PronunciationCard(
+                    materialRef = card.id,
+                    phrase = card.audioText.ifBlank { example?.zh.orEmpty() },
+                    pinyin = example?.pinyin.orEmpty(),
+                    translation = example?.translation.orEmpty(),
+                ),
+                pinyin = PinyinVisibility.ALL,
+                isAudioLoading = false,
+                isRecording = state.isRecording,
+                isScoring = state.isScoring,
+                isAnswered = state.speakingBonus,
+                onPlayAudio = onPlayText,
+                onSpeak = onCheckPronunciation,
+                onSkip = onSkipSpeaking,
+                coach = {
+                    HskCharacterStage(
+                        character = HskCharacter.Panda,
+                        modifier = Modifier.size(width = 150.dp, height = 165.dp),
+                    )
                 },
-                secondary = state.speakingBonus,
             )
-            val hint = when {
-                state.speakingBonus && state.pronunciationMessage.isNotBlank() ->
-                    stringResource(R.string.lesson_correct) + " " + state.pronunciationMessage
-                state.pronunciationMessage.isNotBlank() ->
-                    stringResource(R.string.foundation_speak_heard) + " " + state.pronunciationMessage
-                else -> ""
+            if (state.pronunciationMessage.isNotBlank()) {
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    text = state.pronunciationMessage,
+                    color = if (state.speakingBonus) PompColors.Jade else PompColors.InkSecondary,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                )
             }
-            Spacer(Modifier.height(9.dp))
-            Text(
-                text = hint,
-                style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
-                color = if (state.speakingBonus) PompColors.Jade else PompColors.InkSecondary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(Modifier.height(6.dp))
-            Text(
-                text = stringResource(R.string.foundation_speak_skip),
-                style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp),
-                fontWeight = FontWeight.Bold,
-                color = PompColors.InkDisabled,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(enabled = !state.isRecording && !state.isScoring) {
-                        onSkipSpeaking()
-                    },
-            )
         }
         "result" -> {
             Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
@@ -492,7 +505,10 @@ private fun HanziToken(text: String, onClick: () -> Unit) {
 
 @Composable
 private fun FoundationFooter(state: FoundationUiState, card: FoundationCard, onAdvance: () -> Unit, onRetry: () -> Unit) {
-    val interactiveBlocked = card.type in setOf("choice", "listen_choice", "builder") && state.answerCorrect != true
+    // During pronunciation, the microphone and a quiet skip are the only actions.
+    // Continue appears once a real score passes; skip advances without a bonus.
+    if (card.type == "speak" && !state.speakingBonus) return
+    val interactiveBlocked = (card.type in setOf("choice", "listen_choice", "builder") && state.answerCorrect != true) || (card.type == "speak" && state.answerCorrect != true)
     val resultSaveFailed = card.type == "result" && state.error != null
     Surface(modifier = Modifier.fillMaxWidth(), color = PompColors.Paper) {
         Column {
