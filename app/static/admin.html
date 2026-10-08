@@ -1348,7 +1348,7 @@
       let reason="";
       if(action==="reject"){ reason=prompt("Rad sababini yozing","admin panel orqali rad etildi")||""; if(!reason.trim()) return; }
       btn.disabled=true;
-      try{ await apiPost("/api/admin-miniapp/payments/review",{payment_id:id,action,reason}); await reloadAll(action==="approve"?"To'lov tasdiqlandi":"To'lov rad etildi"); }
+      try{ await apiPost("/api/admin-miniapp/payments/review",{payment_id:id,action,reason}); closeDrawer(); await reloadAll(action==="approve"?"To'lov tasdiqlandi":"To'lov rad etildi"); }
       catch(e){ toast(apiErr(e,"To'lovni ko'rib bo'lmadi")); btn.disabled=false; }
     }
 
