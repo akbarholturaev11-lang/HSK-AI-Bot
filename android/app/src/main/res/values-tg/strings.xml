@@ -441,6 +441,10 @@
     <string name="lesson_writer_replay">Боз нишон додан</string>
     <string name="lesson_writer_previous">Иероглифи пешина</string>
     <string name="lesson_writer_next">Иероглифи навбатӣ</string>
+    <string name="lesson_writer_stroke_previous">Хатти пешина</string>
+    <string name="lesson_writer_stroke_pause">Таваққуф</string>
+    <string name="lesson_writer_stroke_resume">Идома додан</string>
+    <string name="lesson_writer_stroke_next">Хатти навбатӣ</string>
     <string name="lesson_writer_position">%1$d / %2$d</string>
     <string name="challenge_title">Даъват</string>
     <string name="challenge_invite">Даъват кардан</string>

@@ -15,7 +15,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Icon
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +31,8 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -75,10 +82,17 @@ internal fun HanziWriterSheet(
     strokes: CharacterStrokes?,
     isLoading: Boolean,
     onShowCharacter: (Int) -> Unit,
-    onReplay: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     val current = characters.getOrNull(index) ?: hanzi
+    // Keep the stroke cursor local to the actual drawing. Changing the phrase's
+    // character or its loaded payload must start a fresh demonstration.
+    var isPlaying by remember(index, strokes) { mutableStateOf(true) }
+    var visibleStrokeCount by remember(index, strokes) { mutableStateOf<Int?>(null) }
+    var strokeCursor by remember(index, strokes) { mutableIntStateOf(0) }
+    var replayKey by remember(index, strokes) { mutableIntStateOf(0) }
+    val totalStrokes = strokes?.size ?: 0
+    val canControl = !isLoading && totalStrokes > 0
     AssistantScreen(
         ScreenContext(
             screen = "writing",
@@ -176,30 +190,90 @@ internal fun HanziWriterSheet(
                             color = PompColors.Ink,
                         )
 
-                        else -> StrokeAnimation(strokes)
+                        else -> key(index, current) {
+                            StrokeAnimation(
+                                strokes = strokes,
+                                replayKey = replayKey,
+                                visibleStrokeCount = visibleStrokeCount,
+                                isPlaying = isPlaying,
+                                onStrokeComplete = { strokeCursor = it },
+                                onAnimationFinished = { isPlaying = false },
+                            )
+                        }
                     }
                 }
             }
 
             Spacer(Modifier.height(14.dp))
-            Surface(
-                onClick = onReplay,
-                enabled = !isLoading && strokes?.isNotEmpty() == true,
-                color = PompColors.Gold,
-                shape = RoundedCornerShape(13.dp),
+            // These arrows move through individual brush strokes (even when
+            // showing just one Hanzi). Character arrows remain above the grid.
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 22.dp, vertical = 13.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
+                WriterStep(
+                    glyph = "‹",
+                    description = stringResource(R.string.lesson_writer_stroke_previous),
+                    enabled = canControl && strokeCursor > 0,
+                    onClick = {
+                        isPlaying = false
+                        val previous = (strokeCursor - 1).coerceAtLeast(0)
+                        strokeCursor = previous
+                        visibleStrokeCount = previous
+                    },
+                )
+                Surface(
+                    onClick = {
+                        if (isPlaying) {
+                            // Cancelling StrokeAnimation's effect retains the
+                            // exact partial stroke, so Play resumes in place.
+                            isPlaying = false
+                        } else {
+                            if (strokeCursor >= totalStrokes) {
+                                replayKey += 1
+                                strokeCursor = 0
+                            }
+                            visibleStrokeCount = null
+                            isPlaying = true
+                        }
+                    },
+                    enabled = canControl,
+                    color = PompColors.Gold,
+                    shape = CircleShape,
+                    modifier = Modifier.size(54.dp),
                 ) {
-                    Text(
-                        text = stringResource(R.string.lesson_writer_replay),
-                        style = MaterialTheme.typography.labelLarge.copy(fontSize = 15.sp),
-                        fontWeight = FontWeight.SemiBold,
-                        color = PompColors.PlanOnGold,
-                    )
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                            contentDescription = stringResource(
+                                if (isPlaying) R.string.lesson_writer_stroke_pause
+                                else R.string.lesson_writer_stroke_resume,
+                            ),
+                            tint = PompColors.PlanOnGold,
+                            modifier = Modifier.size(26.dp),
+                        )
+                    }
                 }
+                WriterStep(
+                    glyph = "›",
+                    description = stringResource(R.string.lesson_writer_stroke_next),
+                    enabled = canControl && strokeCursor < totalStrokes,
+                    onClick = {
+                        isPlaying = false
+                        val nextStroke = (strokeCursor + 1).coerceAtMost(totalStrokes)
+                        strokeCursor = nextStroke
+                        visibleStrokeCount = nextStroke
+                    },
+                )
+            }
+            if (canControl) {
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.lesson_writer_position, strokeCursor, totalStrokes),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = PompColors.InkSecondary,
+                )
             }
         }
     }
