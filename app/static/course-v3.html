@@ -1425,7 +1425,7 @@ function openHsk30LevelPicker(status,recommended){
   recommended=levels.indexOf(stored)>=0?stored:normalizeLevel(recommended||levels[0]);
   if(levels.indexOf(recommended)<0)recommended=levels[0];
   var rows=levels.map(function(lv){
-    return '<button class="opt-row'+(lv===recommended?' on':'')+'" onclick="selectHsk30PromoLevel(\''+esc(lv)+'\')"><span class="han" style="font-size:20px;width:54px">HSK '+levelBand(lv)+'</span><span style="flex:1"><b>HSK '+levelBand(lv)+'</b></span></button>';
+    return '<button class="opt-row'+(lv===recommended?' on':'')+'" onclick="selectHsk30PromoLevel(\''+esc(lv)+'\')"><span class="han" style="font-size:22px;width:54px">'+(["一","二","三"][levelBand(lv)-1])+'</span><span style="flex:1"><b>HSK '+levelBand(lv)+'</b></span></button>';
   }).join("");
   openHsk30BookSheet(hsk30BookHeader(status,false)+'<h2 class="hsk30-promo-title">'+esc(t.courseVersion)+'</h2>'+rows+'<button class="hsk30-promo-stay" onclick="openCourseTrackPicker()">'+esc(t.cancel)+'</button>',t.courseVersion);
 }
