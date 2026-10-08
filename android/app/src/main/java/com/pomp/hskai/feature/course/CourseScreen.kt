@@ -543,7 +543,7 @@ private fun Hsk30LevelChoiceDialog(
     val selectable = levels
         .filter { Regex("^nhsk[1-3]$").matches(it.lowercase()) }
         .distinct()
-    Hsk30BookDialog(isNew = isNew, onDismiss = onDismiss) {
+    Hsk30BookDialog(isNew = false, onDismiss = onDismiss) {
         Hsk30BookTitle(
             title = stringResource(R.string.hsk30_level_picker_title),
             body = stringResource(R.string.hsk30_level_picker_body),
