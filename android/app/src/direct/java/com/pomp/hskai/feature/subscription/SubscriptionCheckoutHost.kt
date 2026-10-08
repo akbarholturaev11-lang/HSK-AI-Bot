@@ -837,7 +837,7 @@ private fun CurrencyPreferenceDialog(
     ) {
         Column(
             Modifier.fillMaxWidth(0.92f).heightIn(max = 620.dp)
-                .background(C.surface, RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)).padding(18.dp)
+                .background(C.surface, RoundedCornerShape(20.dp)).padding(18.dp)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(9.dp),
         ) {
