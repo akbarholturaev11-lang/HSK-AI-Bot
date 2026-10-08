@@ -303,6 +303,17 @@
 .content .useravatar{display:grid;place-items:center;flex-shrink:0;width:36px;height:36px;border-radius:10px;background:#344253;color:#edf1f6;font-weight:850}
 .content .usercell small{display:block;margin-top:4px;font-size:11px;color:var(--muted)}
 @media(max-width:760px){.v2-users-desktop{display:none}.v2-users-mobile{display:grid;gap:10px}.v2-pay-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Approved V2 inner tab navigation, without rebuilding V1 data handlers. */
+.v2-subnav{margin:17px 0 24px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:6px;border:1px solid var(--line);background:#111b26;border-radius:12px;min-width:0}
+.v2-subnav [data-v2-sub]{min-height:44px;border:0;border-radius:9px;background:transparent;color:#aebac8;padding:9px 15px;font-size:12px;font-weight:750;cursor:pointer}
+.v2-subnav [data-v2-sub]:hover{color:var(--ink);background:#222c39}
+.v2-subnav [data-v2-sub].active{background:#293543;color:#f5f7fb;box-shadow:inset 0 -2px #e65d4f}
+[data-v2-pane][hidden]{display:none!important}
+.v2-access-hint{padding:15px 18px;background:#1a2532;border:1px solid #293543;border-radius:12px;color:#b7c2d0;font-size:12px;line-height:1.55;margin-bottom:25px}
+#statistics [data-v2-pane]{margin-bottom:15px}
+#marketing [data-v2-pane]>.sec:first-child,#system [data-v2-pane]>.sec:first-child{margin-top:0}
+@media(max-width:760px){.v2-subnav{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px -5px 22px;padding:5px}.v2-subnav button{white-space:nowrap;flex-shrink:0;padding:9px 12px}}
 </style>
 </head>
 <body>
@@ -352,9 +363,10 @@
         <div class="periods" id="periodTabs"></div>
         <div class="range-lab" id="rangeLabel"></div>
         <div class="explain" id="dataQuality" style="margin-bottom:12px"></div>
+        <div class="subnav v2-subnav" role="tablist" aria-label="statistics ichki bo‘limlari"><button type="button" role="tab" aria-selected="true" class="active" data-v2-sub="statistics:overview">Умумий</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="statistics:platform">Платформалар</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="statistics:funnel">Конверсия</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="statistics:ai">Молия ва AI</button></div>
 
         <!-- Advanced product metrics -->
-        <div class="block">
+        <div class="block" data-v2-pane="statistics:funnel" hidden>
           <div class="block-head"><span class="bi">📌</span><div><h3>Qo'shimcha product metrikalar</h3><p>Retention, vaqt, QA/Voice, payment abandon, revenue/payer va paid/free adoption</p></div></div>
           <div class="explain" id="advancedExplain"></div>
           <div class="grid g2" id="advancedCards" style="margin-top:12px"></div>
@@ -369,7 +381,7 @@
         </div>
 
         <!-- Connected desktop product -->
-        <div class="block">
+        <div class="block" data-v2-pane="statistics:platform" hidden>
           <div class="block-head"><span class="bi">🖥</span><div><h3>HSK AI Desktop</h3><p>Funnel: tanlangan davr · health/platforma: oxirgi 30 kun</p></div></div>
           <div class="grid g2" id="desktopCards"></div>
           <div style="margin-top:12px">
@@ -388,7 +400,7 @@
         </div>
 
         <!-- Native Android client -->
-        <div class="block">
+        <div class="block" data-v2-pane="statistics:platform" hidden>
           <div class="block-head"><span class="bi">📱</span><div><h3>HSK AI Android</h3><p>Asosiy raqamlar — sodda ko'rinish</p></div></div>
           <div class="grid g2" id="androidCards"></div>
           <div class="ncnote" id="androidUpdateSummary" style="margin-top:12px"></div>
@@ -409,7 +421,7 @@
         </div>
 
         <!-- Unified client business schema -->
-        <div class="block">
+        <div class="block" data-v2-pane="statistics:platform" hidden>
           <div class="block-head"><span class="bi">▦</span><div><h3>Mini App · Android · Desktop biznes</h3><p>Bitta payment/access schema bo'yicha client kesimi</p></div></div>
           <div class="grid g2" id="clientBusinessCards"></div>
           <div id="clientBusinessTable"></div>
@@ -417,7 +429,7 @@
         </div>
 
         <!-- Cross-client device inventory -->
-        <div class="block">
+        <div class="block" data-v2-pane="statistics:platform" hidden>
           <div class="block-head"><span class="bi">📲</span><div><h3>Qurilmalar va foydalanish</h3><p>Mini App platformasi + tasdiqlangan native install registry</p></div></div>
           <div class="grid g2" id="clientDeviceCards"></div>
           <div id="clientDeviceTable" style="margin-top:12px"></div>
@@ -425,7 +437,7 @@
         </div>
 
         <!-- Finance -->
-        <div class="block">
+        <div class="block" data-v2-pane="statistics:ai" hidden>
           <div class="block-head"><span class="bi">💰</span><div><h3>Kuzatilgan net va xarajat</h3><p>Obuna tushumi + qo'lda foyda − AI model estimate − rasxod</p></div></div>
           <div class="grid g2" id="financeCards"></div>
           <div class="explain" id="financeExplain"></div>
@@ -433,28 +445,28 @@
         </div>
 
         <!-- Unit economics -->
-        <div class="block">
+        <div class="block" data-v2-pane="statistics:ai" hidden>
           <div class="block-head"><span class="bi">📐</span><div><h3>Birlik iqtisodi</h3><p>ARPU, ARPPU, o'rtacha chek</p></div></div>
           <div class="grid g2" id="unitCards"></div>
           <div class="explain" id="unitExplain"></div>
         </div>
 
         <!-- Retention -->
-        <div class="block">
+        <div class="block" data-v2-pane="statistics:overview">
           <div class="block-head"><span class="bi">🔁</span><div><h3>Obuna yangilash va hozirgi holat</h3><p>Qayta to'lov ulushi; all-time uchun payer snapshot</p></div></div>
           <div class="grid g2" id="retentionCards"></div>
           <div class="explain" id="retentionExplain"></div>
         </div>
 
         <!-- Sources -> paid -->
-        <div class="block">
+        <div class="block" data-v2-pane="statistics:funnel" hidden>
           <div class="block-head"><span class="bi">🧲</span><div><h3>Manba → pul</h3><p>Qaysi manba real pul olib keladi</p></div></div>
           <div id="sourcesPaid"></div>
           <div class="explain" id="sourceAttributionExplain">Har to'lov paymentdan oldingi eng yaqin obuna-kirish manbasiga bog'lanadi.</div>
         </div>
 
         <!-- General overview report -->
-        <div class="block">
+        <div class="block" data-v2-pane="statistics:overview">
           <div class="block-head"><span class="bi">📋</span><div><h3>Umumiy ko'rsatkichlar</h3><p>Foydalanuvchi, to'lov va kurs faolligi</p></div></div>
           <div class="grid g2" id="overviewCards"></div>
           <div style="margin-top:12px">
@@ -464,13 +476,13 @@
         </div>
 
         <!-- Source traffic (entry events) -->
-        <div class="block">
+        <div class="block" data-v2-pane="statistics:funnel" hidden>
           <div class="block-head"><span class="bi">🚪</span><div><h3>Obuna oynasiga kirish manbalari</h3><p>Alohida rolling 7 kun + all-time; yuqoridagi period tabiga bog'liq emas</p></div></div>
           <div id="subEntryStats"><p class="empty">Yuklanmoqda…</p></div>
           <div class="explain">Bu — obuna sahifasini <b>ochgan</b> odamlar (hali to'lamagan bo'lishi mumkin). Yuqoridagi "Manba → pul" esa real to'lovni ko'rsatadi. Ikkalasini solishtirsangiz: ko'p kirgan, lekin kam to'lagan manba — kuchsiz; kam kirgan, ko'p to'lagan manba — kuchli.</div>
         </div>
 
-        <div class="block">
+        <div class="block" data-v2-pane="statistics:overview">
           <div class="block-head"><span class="bi">📝</span><div><h3>To'liq matnli hisobot</h3><p>Nusxalab tashqariga yuborish uchun</p></div></div>
           <pre id="reportText" style="white-space:pre-wrap;margin:0;font-size:12.5px;line-height:1.5;color:#d6deeb;font-family:inherit"></pre>
         </div>
@@ -500,12 +512,20 @@
       </section>
 
       <!-- SETTINGS -->
-      <section id="settings" class="view"><div class="v2-intro">HSK 2.0/3.0, kursga kirish, limitlar, trial va dars vositalari</div><div class="grid settings-grid v2-modules" id="moduleGrid"></div></section>
-<section id="marketing" class="view"><div class="v2-intro">Kampaniyalar, reklama, eslatmalar va hamkorlar</div><div class="grid settings-grid v2-modules" id="v2MarketingModules"></div>        <div class="sec">
-          <div class="sec-head"><div><div class="sec-title">🔔 Motivatsion eslatmalar</div><div class="sec-note">UZ/RU/TJ matn, yoqish/o'chirish, media</div></div></div>
-          <div class="grid" id="notifTemplates"><p class="empty">Yuklanmoqda…</p></div>
-        </div>
-        <div class="sec" id="adHub">
+      <section id="settings" class="view">
+  <div class="v2-intro">HSK 2.0/3.0, kursga kirish, лимитлар, Trial ва дарс воситалари.</div>
+  <div class="subnav v2-subnav" role="tablist" aria-label="settings ichki bo‘limlari"><button type="button" role="tab" aria-selected="true" class="active" data-v2-sub="settings:tracks">Курслар</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="settings:access">Лимит ва доступ</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="settings:content">Контент ва тестлар</button></div>
+  <div data-v2-pane="settings:tracks"><div class="grid settings-grid v2-modules" id="moduleGrid"></div>
+    <div class="v2-access-hint">HSK 3.0 учун бир марталик тўлов курсга киришни очади, тўлиқ Pro дарслар эса алоҳида обуна талаб қилади.</div>
+  </div>
+  <div data-v2-pane="settings:access" hidden><div class="grid settings-grid v2-modules" id="v2ProductAccess"></div></div>
+  <div data-v2-pane="settings:content" hidden><div class="grid settings-grid v2-modules" id="v2ProductContent"></div></div>
+</section>
+<section id="marketing" class="view">
+  <div class="v2-intro">Хабарлар, реклама, эслатмалар ва ҳамкорлар — бир-биридан аниқ ажратилган.</div>
+  <div class="subnav v2-subnav" role="tablist" aria-label="marketing ichki bo‘limlari"><button type="button" role="tab" aria-selected="true" class="active" data-v2-sub="marketing:campaigns">Хабарлар</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="marketing:ads">Реклама</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="marketing:reminders">Эслатмалар</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="marketing:partners">Ҳамкорлар</button></div>
+  <div data-v2-pane="marketing:campaigns"><div class="grid settings-grid v2-modules" id="v2MarketingModules"></div></div>
+  <div data-v2-pane="marketing:ads" hidden>        <div class="sec" id="adHub">
           <div class="sec-head"><div><div class="sec-title">📣 Reklama</div><div class="sec-note">Mini App ichidagi reklama. Avval nima qilmoqchi ekaningizni tanlang</div></div></div>
           <div class="chips" id="adHubTabs" style="margin-bottom:9px">
             <button class="chip active" data-adhub="kurs">🎬 Kurs reklamasi</button>
@@ -545,11 +565,23 @@
 
           <div id="adPaneIlova" data-adhub-pane hidden></div>
         </div>
+</div>
+  <div data-v2-pane="marketing:reminders" hidden>        <div class="sec">
+          <div class="sec-head"><div><div class="sec-title">🔔 Motivatsion eslatmalar</div><div class="sec-note">UZ/RU/TJ matn, yoqish/o'chirish, media</div></div></div>
+          <div class="grid" id="notifTemplates"><p class="empty">Yuklanmoqda…</p></div>
+        </div>
+</div>
+  <div data-v2-pane="marketing:partners" hidden><div class="grid settings-grid v2-modules" id="v2MarketingPartners"></div></div>
 </section>
-<section id="system" class="view"><div class="v2-intro">AI modeli, majburiy kanallar va yordam sozlamalari</div><div class="grid settings-grid v2-modules" id="v2SystemModules"></div>        <div class="sec">
+<section id="system" class="view">
+  <div class="v2-intro">AI модели, мажбурий каналлар ва ёрдам созламалари.</div>
+  <div class="subnav v2-subnav" role="tablist" aria-label="system ichki bo‘limlari"><button type="button" role="tab" aria-selected="true" class="active" data-v2-sub="system:model">AI модели</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="system:settings">Каналлар ва ёрдам</button></div>
+  <div data-v2-pane="system:model">        <div class="sec">
           <div class="sec-head"><div><div class="sec-title">🤖 AI modeli</div><div class="sec-note">Gemini asosiy, OpenAI zaxira — qaysi Gemini modeli ishlashini tanlang</div></div></div>
           <div id="aiModelBox"><p class="empty">Yuklanmoqda…</p></div>
         </div>
+</div>
+  <div data-v2-pane="system:settings" hidden><div class="grid settings-grid v2-modules" id="v2SystemModules"></div></div>
 </section>
 </main></div><nav class="mobile-nav" aria-label="Mobil navigatsiya"><button class="tab active" data-tab="dashboard"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-8h6v8"/></svg><span>Bosh</span></button><button class="tab " data-tab="statistics"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h17M8 14l4-4 4 3 4-7"/></svg><span>Tahlil</span></button><button class="tab " data-tab="users"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3a4 4 0 0 1 0 8"/></svg><span>Odamlar</span></button><button class="tab " data-tab="payments"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="16" rx="2"/><path d="M2 10h20M16 15h2"/></svg><span>To‘lov</span></button><button class="tab " data-tab="menu"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Menyu</span></button></nav></div>
 
@@ -1506,17 +1538,37 @@
     }
 
     /* ---------- MODULES (settings) ---------- */
+    const v2SubState={statistics:"overview",settings:"tracks",marketing:"campaigns",system:"model"};
+    function selectV2Sub(tab,pane){
+      const container=$(tab);if(!container)return;
+      const choices=Array.from(container.querySelectorAll("[data-v2-sub]"));
+      const match=choices.find(item=>item.dataset.v2Sub===tab+":"+pane);
+      if(!match)return;
+      v2SubState[tab]=pane;
+      choices.forEach(item=>{
+        const selected=item===match;
+        item.classList.toggle("active",selected);
+        item.setAttribute("aria-selected",selected?"true":"false");
+      });
+      container.querySelectorAll("[data-v2-pane]").forEach(el=>{
+        el.hidden=(el.dataset.v2Pane!==tab+":"+pane);
+      });
+    }
     function renderModules(){
       const mods=state.overview.modules||[];
       const groups={
-        moduleGrid:new Set(["hsk30","course_access","limits","course_sales_experiment","audio"]),
-        v2MarketingModules:new Set(["ads_hub","broadcast","ads","release_feedback","discount","partners"]),
+        moduleGrid:new Set(["hsk30"]),
+        v2ProductAccess:new Set(["course_access","limits"]),
+        v2ProductContent:new Set(["course_sales_experiment","audio"]),
+        v2MarketingModules:new Set(["broadcast","ads","release_feedback","discount"]),
+        v2MarketingPartners:new Set(["partners"]),
         v2SystemModules:new Set(["channels","help"])
       };
       for(const [id,keys] of Object.entries(groups)){
         const el=$(id);if(!el)continue;
         el.innerHTML=mods.filter(m=>keys.has(m.key)).map(m=>`<button class="srow" data-module="${esc(m.key)}"><div><h3>${esc(m.icon)} ${esc(m.title)}</h3><p>${esc(m.note)}</p></div><span class="tag">Ochish</span></button>`).join("");
       }
+      for(const [tab,pane] of Object.entries(v2SubState))selectV2Sub(tab,pane);
     }
     function renderAiModel(){
       const host=$("aiModelBox"); if(!host) return;
@@ -1551,7 +1603,7 @@
       if(key==="stats"){ closeDrawer(); switchTab("statistics"); return; }
       if(key==="user_search"){ closeDrawer(); switchTab("users"); $("search").focus(); return; }
       /* Reklama endi drawer emas, sozlamalar ichidagi bitta bo'lim. */
-      if(key==="ads_hub"){ closeDrawer(); switchTab("marketing"); const h=$("adHub"); if(h) h.scrollIntoView({behavior:"smooth",block:"start"}); return openAdHub(state.adHub); }
+      if(key==="ads_hub"){ closeDrawer(); switchTab("marketing"); selectV2Sub("marketing","ads"); const h=$("adHub"); if(h) h.scrollIntoView({behavior:"smooth",block:"start"}); return openAdHub(state.adHub); }
       openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
       let d;
       try{ d=await loadManagement(false); }catch(e){ $("drawerBody").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; return; }
@@ -2670,6 +2722,7 @@
       };
       if(!pages[tab])return;
       closeDrawer();state.tab=tab;
+      if(v2SubState[tab])selectV2Sub(tab,v2SubState[tab]);
       document.querySelectorAll(".tab").forEach(b=>{
         const active=b.dataset.tab===tab||(b.dataset.tab==="menu"&&["settings","marketing","system"].includes(tab));
         b.classList.toggle("active",active);
@@ -2806,6 +2859,7 @@
       if((el=T("[data-seg]"))){ state.filter=el.dataset.seg; state.remoteUsers=null; renderDashboard(); renderUserFilters(); switchTab("users"); if(state.filter==="bot_blocked") return remoteSearch(state.search); renderUsers(); return; }
       if((el=T("[data-period]"))){ state.statsPeriod=el.dataset.period||"all_time"; renderStatistics(); return; }
       if((el=T("[data-v2-search]"))){switchTab("users");$("search").focus();return;}
+      if((el=T("[data-v2-sub]"))){const parts=el.dataset.v2Sub.split(":");return selectV2Sub(parts[0],parts[1]);}
       if((el=T("[data-tab]"))) return switchTab(el.dataset.tab);
       if((el=T("[data-tab-jump]"))) return switchTab(el.dataset.tabJump);
       if((el=T("[data-act]"))){
