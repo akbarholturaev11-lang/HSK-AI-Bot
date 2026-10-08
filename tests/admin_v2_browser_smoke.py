@@ -72,6 +72,24 @@ def main():
                 assert not errors, "JS errors: " + str(errors)
                 results.append({"viewport": width, "passed": True})
                 context.close()
+            # Approved standalone prototype as a persistent visual reference.
+            baseline_context = browser.new_context(viewport={"width": 1440, "height": 900})
+            baseline = baseline_context.new_page()
+            baseline.goto(
+                f"http://127.0.0.1:{server.server_port}/tests/fixtures/admin_v2_approved_prototype.html",
+                wait_until="domcontentloaded"
+            )
+            baseline.wait_for_timeout(250)
+            baseline.screenshot(path=str(output / "approved-prototype-1440.png"), full_page=True)
+            baseline_context.close()
+
+            # Compare the stable left-navigation region, not data-dependent KPI values.
+            from PIL import Image, ImageChops, ImageStat
+            current = Image.open(output / "admin-v2-dashboard-1440.png").convert("RGB").crop((0, 0, 258, 560))
+            approved = Image.open(output / "approved-prototype-1440.png").convert("RGB").crop((0, 0, 258, 560))
+            metric = sum(ImageStat.Stat(ImageChops.difference(current, approved)).mean) / 3
+            print(f"Visual navigation mean pixel difference (0=identical): {metric:.2f}/255")
+            # This metric is diagnostic until both live and demo content states are normalized.
             browser.close()
     finally:
         server.shutdown()
