@@ -14,15 +14,15 @@ def check_real_module_coverage():
     html = Path("app/static/admin.html").read_text(encoding="utf-8")
     backend = Path("app/services/admin_miniapp_service.py").read_text(encoding="utf-8")
     block = backend.split("def _modules()", 1)[1].split("def _monitor(", 1)[0]
-    declared = set(re.findall(r'"key": "([a-z_]+)"', block))
+    declared = set(re.findall(r'"key": "([a-z0-9_]+)"', block))
     assert len(declared) == 19, f"Admin backend module inventory changed: {declared}"
 
     mapping = html.split("function renderModules(){", 1)[1].split("for(const [id,keys]", 1)[0]
     mapped = set()
     for array_source in mapping.split("new Set([")[1:]:
         members = array_source.split("])", 1)[0]
-        mapped.update(re.findall(r'"([a-z_]+)"', members))
-    direct = set(re.findall(r'data-module="([a-z_]+)"', html))
+        mapped.update(re.findall(r'"([a-z0-9_]+)"', members))
+    direct = set(re.findall(r'data-module="([a-z0-9_]+)"', html))
     special = {"stats": "statistics", "user_search": "users", "ads_hub": "marketing"}
     for module, view in special.items():
         assert f'key==="{module}"' in html, f"Special route missing for {module}"
