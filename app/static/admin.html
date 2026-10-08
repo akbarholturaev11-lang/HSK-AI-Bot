@@ -321,6 +321,17 @@
 .v2-finance-heading p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}
 #payments [data-v2-pane]>.v2-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:760px){#payments [data-v2-pane]>.v2-actions{grid-template-columns:1fr}.v2-finance-heading{padding:16px}}
+
+/* Track cards: V2 HSK 2.0 / 3.0 pairing while keeping the live 3.0 form as a single authority. */
+.v2-track-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px}
+.v2-track-card{min-height:134px;display:flex;gap:14px;align-items:flex-start;padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.v2-track-icon{display:grid;place-items:center;flex-shrink:0;width:42px;height:42px;border-radius:11px;background:#273849;color:#b9d5ed;font-weight:850;font-size:12px}
+.v2-track-copy h3{margin:1px 0 8px;font-size:14px}
+.v2-track-copy p{margin:0 0 12px;color:var(--muted);font-size:12px;line-height:1.45}
+.v2-track-note{color:#b7c2d0;font-size:11px}
+.v2-track-grid .v2-track-actions{grid-template-columns:1fr;margin:0}
+.v2-track-grid .v2-track-actions .srow{min-height:134px;align-items:flex-start}
+@media(max-width:760px){.v2-track-grid{grid-template-columns:1fr}.v2-track-card{min-height:110px}.v2-track-grid .v2-track-actions .srow{min-height:110px}}
 </style>
 </head>
 <body>
@@ -544,7 +555,18 @@
       <section id="settings" class="view">
   <div class="v2-intro">HSK 2.0/3.0, kursga kirish, лимитлар, Trial ва дарс воситалари.</div>
   <div class="subnav v2-subnav" role="tablist" aria-label="settings ichki bo‘limlari"><button type="button" role="tab" aria-selected="true" class="active" data-v2-sub="settings:tracks">Курслар</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="settings:access">Лимит ва доступ</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="settings:content">Контент ва тестлар</button></div>
-  <div data-v2-pane="settings:tracks"><div class="grid settings-grid v2-modules" id="moduleGrid"></div>
+  <div data-v2-pane="settings:tracks">
+    <div class="v2-track-grid">
+      <article class="v2-track-card">
+        <div class="v2-track-icon">2.0</div>
+        <div class="v2-track-copy">
+          <h3>HSK 2.0</h3>
+          <p>Классик стандарт. Фойдаланувчиларнинг аввалги курс прогресси сақланади.</p>
+          <span class="v2-track-note">Мавжуд версия · ушбу карточка маълумот учун</span>
+        </div>
+      </article>
+      <div class="grid settings-grid v2-modules v2-track-actions" id="moduleGrid"></div>
+    </div>
     <div class="v2-access-hint">HSK 3.0 учун бир марталик тўлов курсга киришни очади, тўлиқ Pro дарслар эса алоҳида обуна талаб қилади.</div>
   </div>
   <div data-v2-pane="settings:access" hidden><div class="grid settings-grid v2-modules" id="v2ProductAccess"></div></div>
