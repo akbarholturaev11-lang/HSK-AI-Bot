@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskContentSkeleton
 import com.pomp.hskai.core.design.components.HskGlassIconButton
@@ -95,7 +96,7 @@ fun RatingScreen(
 ) {
     AssistantScreen(ratingAssistantContext(state), bottomBar = true)
     val rating = state.rating
-    Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
+    HskSceneSurface(modifier = modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(

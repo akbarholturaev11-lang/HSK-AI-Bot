@@ -88,6 +88,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.components.HskSectionTitle
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.Hsk30BooksHeader
@@ -158,7 +159,7 @@ fun CourseScreen(
         if (hsk30PromoEligible && !state.isRefreshing && promoAllowed) onHsk30PromoShown()
     }
     Box(modifier = modifier.fillMaxSize()) {
-        Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
+        HskSceneSurface(modifier = Modifier.fillMaxSize()) {
             when {
                 state.isLoading && map == null -> Box(
                     modifier = Modifier.fillMaxSize(),

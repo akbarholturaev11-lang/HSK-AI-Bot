@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
 import com.pomp.hskai.core.design.components.HskSectionTitle
@@ -126,7 +127,7 @@ fun VoiceScreen(
         bottomInset = if (callActive) VOICE_DOCK_HEIGHT else 0.dp,
         showButton = false,
     )
-    Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
+    HskSceneSurface(modifier = modifier.fillMaxSize()) {
       Box(Modifier.fillMaxSize()) {
         when {
             state.result != null -> VoiceResult(state = state, onDone = onReset)

@@ -1,6 +1,9 @@
 package com.pomp.hskai.core.design.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -44,6 +47,21 @@ fun HskSceneBackground(modifier: Modifier = Modifier) {
             onDrawBehind { scene.draw(this) }
         },
     )
+}
+
+/** The same quiet landscape used in lessons, behind a main screen's content. */
+@Composable
+fun HskSceneSurface(
+    modifier: Modifier = Modifier,
+    showScene: Boolean = true,
+    content: @Composable () -> Unit,
+) {
+    Surface(modifier = modifier, color = PompColors.Paper) {
+        Box(Modifier.fillMaxSize()) {
+            if (showScene) HskSceneBackground(Modifier.fillMaxSize())
+            content()
+        }
+    }
 }
 
 /** Light ink on Cosmos Blue reads stronger than dark ink on paper. */

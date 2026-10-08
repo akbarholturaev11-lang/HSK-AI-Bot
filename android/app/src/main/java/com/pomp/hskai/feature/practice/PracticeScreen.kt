@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import com.pomp.hskai.core.design.components.HskAnswerOption
 import com.pomp.hskai.core.design.components.HskSceneBackground
+import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.components.HskStageCoach
 import com.pomp.hskai.core.design.components.HskStageHeading
 import com.pomp.hskai.core.design.components.hskOptionState
@@ -129,7 +130,11 @@ fun PracticeScreen(
     var mistakesOpen by rememberSaveable { mutableStateOf(false) }
     AssistantScreen(practiceAssistantContext(state, level, mistakesOpen), bottomBar = true)
 
-    Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
+    HskSceneSurface(
+        modifier = modifier.fillMaxSize(),
+        // These learning stages already draw the same scene themselves.
+        showScene = !state.isPracticeRunning && !state.isReviewRunning,
+    ) {
       Box(Modifier.fillMaxSize()) {
         // The phone's back follows each screen's own way out, so it no longer
         // falls through to the tabs (or out of the app) from inside a run: a

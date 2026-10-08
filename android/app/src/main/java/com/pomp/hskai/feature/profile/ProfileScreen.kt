@@ -78,6 +78,7 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.AuthProvider
 import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.PompShapes
 import com.pomp.hskai.core.design.PompSpacing
 import com.pomp.hskai.core.design.components.HskBrandLoader
@@ -173,7 +174,7 @@ fun ProfileScreen(
         settingsOpen = true
     }
 
-    Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
+    HskSceneSurface(modifier = modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
