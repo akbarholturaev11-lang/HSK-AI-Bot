@@ -47,6 +47,22 @@ class SubscriptionCheckoutFlowTest {
     }
 
     @Test
+    fun `centered payment picker offers only priced methods for the selected plan`() {
+        val cardPrices = mapOf("1_month" to card.getValue("1_month"))
+        val walletPrices = mapOf("1_month" to yuan.getValue("1_month"))
+        val methods = mapOf(
+            "visa" to cardPrices,
+            "alipay" to walletPrices,
+            "wechat" to mapOf("10_days" to yuan.getValue("1_month")),
+        )
+        assertEquals(listOf("dc_city", "alif"), availablePaymentOptions("tj", "1_month", methods))
+        assertEquals(listOf("alipay"), availablePaymentOptions("cn", "1_month", methods))
+        assertEquals(listOf("wechat"), availablePaymentOptions("cn", "10_days", methods))
+        assertEquals(emptyList<String>(), availablePaymentOptions("ru", "1_month", methods))
+        assertEquals(emptyList<String>(), availablePaymentOptions("cn", "3_months", methods))
+    }
+
+    @Test
     fun `card bank is only sent for card payments`() {
         assertEquals("alif", SubscriptionCheckoutState(method = "visa", country = "uz").cardBank)
         assertEquals("dc_city", SubscriptionCheckoutState(method = "visa", country = "tj").cardBank)

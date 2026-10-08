@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import com.pomp.hskai.feature.lesson.LessonEntryOverlay
 import com.pomp.hskai.core.design.components.HskAnswerOption
 import com.pomp.hskai.core.design.components.HskSceneBackground
 import com.pomp.hskai.core.design.components.HskSceneSurface
@@ -152,6 +153,7 @@ fun PracticeScreen(
                 BackHandler(onBack = onResetExam)
                 ExamSummary(state = state, onDone = onResetExam)
             }
+            state.isStarting -> LessonEntryOverlay(alpha = 1f, key = "practice-loading")
             state.isExamRunning -> ExamRun(
                 state = state,
                 language = language,

@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005-section-title">
 <script src="/assets/characters/hsk-character-pack.js?v=20260921c"></script>
 <script src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
+<script src="/assets/characters/hsk-study-preparing.js?v=20261008-1"></script>
 <script src="/assets/characters/hsk-lesson-presentation.js?v=20260921c"></script>
 <style>
 :root{
@@ -1299,7 +1300,7 @@ function hsk30LiveLevels(){
   var raw=COURSE_TRACK_STATE&&COURSE_TRACK_STATE.tracks&&COURSE_TRACK_STATE.tracks.hsk30&&COURSE_TRACK_STATE.tracks.hsk30.live_levels;
   if(!Array.isArray(raw))return ["nhsk1"];
   var out=raw.map(normalizeLevel).filter(function(lv){return HSK30_LEVELS.indexOf(lv)>=0});
-  return out.length?out:["nhsk1"];
+  return out;
 }
 function trackLevels(v){return isHsk30Level(v)?hsk30LiveLevels():LEGACY_LEVELS}
 function lessonGateUrl(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"/course_v3_data/lesson_gate_hsk30.js?v=20260930":"/course_v3_data/lesson_gate.js?v=20260719"}
@@ -1317,9 +1318,9 @@ var HSK30_BOOK_COPY={
   tj:{title:"HSK 3.0-ро кушоед",body:"Курсро аз рӯи китобҳои нав оғоз кунед.",permanent:"Дастрасии доимӣ",oneTime:"Пардохти якдафъаина",open:"Кушодани HSK 3.0"}
 };
 function hsk30BookCopy(){return HSK30_BOOK_COPY[LANG]||HSK30_BOOK_COPY.uz}
-function hsk30BookHeader(status){
+function hsk30BookHeader(status,showNew){
   var h30=status&&status.tracks&&status.tracks.hsk30||{},t=trackUi();
-  var badge=h30.new_badge&&h30.new_badge.is_new?'<span class="hsk30-book-new">NEW</span>':"";
+  var badge=showNew!==false&&h30.new_badge&&h30.new_badge.is_new?'<span class="hsk30-book-new">NEW</span>':"";
   return '<div class="hsk30-book-header"><span>HSK 3.0</span>'+badge+'</div>'
     +'<div class="hsk30-promo-books"><img src="/assets/hsk30-course-books.jpg?v=20261004" alt="'+esc(t.promoBooksAlt)+'" loading="eager" decoding="async"></div>';
 }
@@ -1392,7 +1393,7 @@ function switchCourseTrack(target,requestedLevel){
   var t=trackUi();
   courseTrackStatus(true).then(function(status){
     var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-    if(target==="hsk30"&&(!access||access.feature_enabled===false)){renderHsk30AccessGate(status);return null}
+    if(target==="hsk30"&&(!access||!access.allowed)){renderHsk30AccessGate(status);return null}
     App.openSheet('<div class="shead"><div class="tr">'+esc(t.switching)+'</div></div>');
     var switchPayload={target_track:target};
     if(requestedLevel)switchPayload.level=requestedLevel;
@@ -1404,22 +1405,37 @@ function switchCourseTrack(target,requestedLevel){
       loadLevel(lv);
     });
   }).catch(function(e){
+    var error=String(e&&e.message||"");
+    if(target==="hsk30"&&/^hsk30_(unlock_required|payment_pending|disabled)/.test(error)){
+      courseTrackStatus(true).then(renderHsk30AccessGate).catch(function(){openCourseTrackPicker()});
+      return;
+    }
     var copy=trackUi();
     App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(copy.hsk30Title)+'</div><div class="tr">'+esc(copy.tryAgain)+'</div></div><button class="sec" style="width:100%" onclick="openCourseTrackPicker()">'+esc(copy.tryAgain)+'</button>');
   });
 }
 var HSK30_PROMO_CHECKED=false,HSK30_PROMO_PENDING=false,HSK30_PROMO_READY=null,HSK30_PROMO_INFLIGHT=null;
-function openHsk30PromoLevelPicker(recommended){
-  trackCourseEvent("hsk30_promo_cta_clicked",{dedupe_key:"hsk30-promo-cta:"+COURSE_SESSION_ID},{keepalive:true});
-  var t=trackUi(),levels=hsk30LiveLevels();
+// Shared picker: returnees keep their saved level unless they choose a new band.
+// Selecting an HSK 1/2/3 entry directly invokes the track switch.
+function openHsk30LevelPicker(status,recommended){
+  var t=trackUi(),h30=status&&status.tracks&&status.tracks.hsk30||{};
+  var levels=Array.isArray(h30.live_levels)?h30.live_levels.filter(function(lv){return HSK30_LEVELS.indexOf(lv)>=0}):[];
   if(!levels.length){showHsk30LevelSoon("nhsk1");return}
-  recommended=normalizeLevel(recommended||levels[0]);
+  var stored=normalizeLevel(h30.level||"");
+  recommended=levels.indexOf(stored)>=0?stored:normalizeLevel(recommended||levels[0]);
   if(levels.indexOf(recommended)<0)recommended=levels[0];
   var rows=levels.map(function(lv){
-    var rec=lv===recommended?'<small>'+esc(t.promoRecommended)+'</small>':"";
-    return '<button class="opt-row'+(lv===recommended?" on":"")+'" onclick="selectHsk30PromoLevel(\''+esc(lv)+'\')"><span class="han" style="font-size:14px;width:52px">HSK '+levelBand(lv)+'</span><span style="flex:1"><b>'+esc(courseLevelLabel(lv))+'</b>'+rec+'</span></button>';
+    return '<button class="opt-row'+(lv===recommended?' on':'')+'" onclick="selectHsk30PromoLevel(\''+esc(lv)+'\')"><span class="han" style="font-size:22px;width:54px">'+(["一","二","三"][levelBand(lv)-1])+'</span><span style="flex:1"><b>HSK '+levelBand(lv)+'</b></span></button>';
   }).join("");
-  openHsk30BookSheet(hsk30BookHeader(COURSE_TRACK_STATE)+'<h2 class="hsk30-promo-title">'+esc(t.hsk30Title)+'</h2>'+rows+'<button class="hsk30-promo-stay" onclick="dismissHsk30Promo()">'+esc(t.cancel)+'</button>',t.hsk30Title);
+  openHsk30BookSheet(hsk30BookHeader(status,false)+'<h2 class="hsk30-promo-title">'+esc(t.courseVersion)+'</h2>'+rows+'<button class="hsk30-promo-stay" onclick="openCourseTrackPicker()">'+esc(t.cancel)+'</button>',t.courseVersion);
+}
+function openHsk30PromoLevelPicker(recommended){
+  trackCourseEvent("hsk30_promo_cta_clicked",{dedupe_key:"hsk30-promo-cta:"+COURSE_SESSION_ID},{keepalive:true});
+  courseTrackStatus(true).then(function(status){
+    var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
+    if(!access||access.feature_enabled===false){renderHsk30AccessGate(status);return}
+    openHsk30LevelPicker(status,recommended);
+  }).catch(function(){showHsk30AccessGate()});
 }
 function selectHsk30PromoLevel(level){
   var normalized=normalizeLevel(level);
@@ -1483,20 +1499,12 @@ function confirmCourseTrackSwitch(target,status){
   var cur=currentCourseTrack(),t=trackUi();
   if(target===cur){App.closeSheet();return}
   var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-  if(target==="hsk30"&&(!access||access.feature_enabled===false)){renderHsk30AccessGate(status);return}
-  var label=target==="hsk30"?t.hsk30:t.hsk20;
-  var level=target==="hsk30"?(hsk30LiveLevels()[0]||"nhsk1"):"";
   if(target==="hsk30"){
-    openHsk30BookSheet(hsk30BookHeader(status)
-      +'<h2 class="hsk30-promo-title">'+esc(t.switchConfirmTitle)+'</h2><p class="hsk30-promo-copy">'+esc(t.switchConfirmBody)+'</p>'
-      +hsk30BookPrice(status)+'<div class="hsk30-promo-actions">'
-      +hsk30BookPrimary(t.switchConfirmAction,"switchCourseTrack('hsk30','"+level+"')")
-      +'<button class="hsk30-promo-stay" onclick="openCourseTrackPicker()">'+esc(t.cancel)+'</button></div>',t.switchConfirmTitle);
+    if(!access||access.feature_enabled===false){renderHsk30AccessGate(status);return}
+    openHsk30LevelPicker(status);
     return;
   }
-  App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.switchConfirmTitle)+'</div><div class="tr">'+esc(label)+'</div><div class="tr">'+esc(t.switchConfirmBody)+'</div></div>'
-    +'<button class="scta" style="width:100%" onclick="switchCourseTrack(\''+target+'\','+(level?'\''+level+'\'':'null')+')">'+esc(t.switchConfirmAction)+'</button>'
-    +'<button class="sec" style="width:100%;margin-top:8px" onclick="openCourseTrackPicker()">'+esc(t.cancel)+'</button>');
+  switchCourseTrack("hsk20",null);
 }
 function requestCourseTrackSwitch(target){
   courseTrackStatus(false).then(function(status){confirmCourseTrackSwitch(target,status)}).catch(function(){
@@ -1509,9 +1517,7 @@ function openCourseTrackPicker(){
   courseTrackStatus(false).catch(function(){return null}).then(function(status){
     var h30=status&&status.tracks&&status.tracks.hsk30||{},access=h30.access;
     var h30sub=access&&access.feature_enabled===false?t.disabled:(access&&access.allowed?t.current:t.hsk30Title);
-    var newTag=h30.new_badge&&h30.new_badge.is_new
-      ?'<span style="display:inline-block;margin-left:6px;padding:2px 5px;border-radius:6px;background:var(--cinbg);color:var(--cin2);font-size:9px;font-weight:800">NEW</span>'
-      :"";
+    var newTag="";
     App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.courseVersion)+'</div></div>'
       +'<button class="opt-row'+(cur==="hsk20"?" on":"")+'" onclick="App.pickCourseTrack(\'hsk20\')"><span class="han" style="font-size:20px;width:42px">2.0</span><span style="flex:1"><b>'+esc(t.hsk20)+'</b><small>'+esc(cur==="hsk20"?t.current:"")+'</small></span></button>'
       +'<button class="opt-row'+(cur==="hsk30"?" on":"")+'" onclick="App.pickCourseTrack(\'hsk30\')"><span class="han" style="font-size:20px;width:42px">3.0</span><span style="flex:1"><b>'+esc(t.hsk30)+'</b>'+newTag+'<small>'+esc(cur==="hsk30"?t.current:h30sub)+'</small></span></button>');
@@ -6142,7 +6148,7 @@ var RECOG=(function(){
 
   function shell(){
     return '<div class="rc-top"><button class="rc-ix" onclick="RECOG.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="rc-pbar"><i id="rc-prog"></i></div><span class="rc-pill" id="rc-score">0 ✓</span></div>'
-      +'<div class="rc-body" id="rc-body"><div class="rc-loading">…</div></div>';
+      +'<div class="rc-body" id="rc-body">'+HSKStudyPreparing.render(LANG)+'</div>';
   }
 
   // New openings consume new attempts; only a network retry reuses the ref.
@@ -6250,7 +6256,7 @@ var RECOG=(function(){
   }
   function gateStart(newAttempt){
     var ref=gateRef(newAttempt);
-    el("rc-body").innerHTML='<div class="rc-loading">…</div>';
+    el("rc-body").innerHTML=HSKStudyPreparing.render(LANG);
     runGate(ref).then(function(o){
       if(SECTION!==API||ref!==ATTEMPT_REF)return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}
@@ -6295,7 +6301,7 @@ var PRON=(function(){
     return '<div class="pr-wrap">'
       +'<div class="pr-top"><button class="pr-ix" onclick="PRON.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="pr-pbar"><i id="pr-prog"></i></div><span class="pr-pill" id="pr-cnt">1 / 10</span></div>'
       +'<div class="pr-toast" id="pr-toast">+10 XP</div>'
-      +'<div class="pr-stage" id="pr-stage"><div class="pr-loading">…</div></div>'
+      +'<div class="pr-stage" id="pr-stage">'+HSKStudyPreparing.render(LANG)+'</div>'
       +'<div class="pr-ctrl" id="pr-ctrl" style="display:none">'
       +'<div class="pr-micwrap" id="pr-micwrap"><button class="pr-mic" id="pr-mic" onclick="PRON.rec()" aria-label="Gapirish"><i class="ti ti-microphone"></i></button></div>'
       +'<div class="pr-hint" id="pr-hint"></div>'
@@ -6470,7 +6476,7 @@ var PRON=(function(){
   function gateStart(newAttempt){
     var ref=gateRef(newAttempt);
     el("pr-ctrl").style.display="none";el("pr-done").classList.remove("on");
-    el("pr-stage").innerHTML='<div class="pr-loading">…</div>';
+    el("pr-stage").innerHTML=HSKStudyPreparing.render(LANG);
     runGate(ref).then(function(o){
       if(!live()||ref!==ATTEMPT_REF)return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}

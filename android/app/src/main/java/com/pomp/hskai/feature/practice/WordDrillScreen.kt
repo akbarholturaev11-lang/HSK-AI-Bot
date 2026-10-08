@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.pomp.hskai.feature.lesson.LessonEntryOverlay
 import com.pomp.hskai.core.design.components.HskAnswerOption
 import com.pomp.hskai.core.design.components.HskBubbleTail
 import com.pomp.hskai.core.design.components.HskCharacterStage
@@ -113,10 +114,7 @@ fun WordDrillScreen(
             if (!state.finished) PracticeStageTopBar(progress = state.progress, onClose = requestClose)
 
             when {
-                state.isLoading -> Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) { HskBrandLoader() }
+                state.isLoading -> LessonEntryOverlay(alpha = 1f, key = "drill-loading")
 
                 state.limitReached -> SectionLimitOverlay(
                     sectionTitle = stringResource(
