@@ -1318,9 +1318,9 @@ var HSK30_BOOK_COPY={
   tj:{title:"HSK 3.0-ро кушоед",body:"Курсро аз рӯи китобҳои нав оғоз кунед.",permanent:"Дастрасии доимӣ",oneTime:"Пардохти якдафъаина",open:"Кушодани HSK 3.0"}
 };
 function hsk30BookCopy(){return HSK30_BOOK_COPY[LANG]||HSK30_BOOK_COPY.uz}
-function hsk30BookHeader(status){
+function hsk30BookHeader(status,showNew){
   var h30=status&&status.tracks&&status.tracks.hsk30||{},t=trackUi();
-  var badge=h30.new_badge&&h30.new_badge.is_new?'<span class="hsk30-book-new">NEW</span>':"";
+  var badge=showNew!==false&&h30.new_badge&&h30.new_badge.is_new?'<span class="hsk30-book-new">NEW</span>':"";
   return '<div class="hsk30-book-header"><span>HSK 3.0</span>'+badge+'</div>'
     +'<div class="hsk30-promo-books"><img src="/assets/hsk30-course-books.jpg?v=20261004" alt="'+esc(t.promoBooksAlt)+'" loading="eager" decoding="async"></div>';
 }
@@ -1427,7 +1427,7 @@ function openHsk30LevelPicker(status,recommended){
   var rows=levels.map(function(lv){
     return '<button class="opt-row'+(lv===recommended?' on':'')+'" onclick="selectHsk30PromoLevel(\''+esc(lv)+'\')"><span class="han" style="font-size:20px;width:54px">HSK '+levelBand(lv)+'</span><span style="flex:1"><b>HSK '+levelBand(lv)+'</b></span></button>';
   }).join("");
-  openHsk30BookSheet(hsk30BookHeader(status)+'<h2 class="hsk30-promo-title">'+esc(t.courseVersion)+'</h2>'+rows+'<button class="hsk30-promo-stay" onclick="openCourseTrackPicker()">'+esc(t.cancel)+'</button>',t.courseVersion);
+  openHsk30BookSheet(hsk30BookHeader(status,false)+'<h2 class="hsk30-promo-title">'+esc(t.courseVersion)+'</h2>'+rows+'<button class="hsk30-promo-stay" onclick="openCourseTrackPicker()">'+esc(t.cancel)+'</button>',t.courseVersion);
 }
 function openHsk30PromoLevelPicker(recommended){
   trackCourseEvent("hsk30_promo_cta_clicked",{dedupe_key:"hsk30-promo-cta:"+COURSE_SESSION_ID},{keepalive:true});
