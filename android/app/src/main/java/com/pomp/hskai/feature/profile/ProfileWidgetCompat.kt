@@ -66,6 +66,9 @@ fun ProfileScreen(
         onRefresh = onRefresh,
         onLogout = onLogout,
         onUnlinkDevice = onUnlinkDevice,
+        // Select the richer overload; without its extra argument this call
+        // resolves to this compatibility bridge again and recurses forever.
+        courseTrack = "hsk20",
         modifier = modifier,
         identities = identities,
         onLoadIdentities = onLoadIdentities,

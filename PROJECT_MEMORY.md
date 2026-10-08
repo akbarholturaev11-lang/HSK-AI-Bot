@@ -129,6 +129,9 @@ Android Live Voice:
 - Key files: `app/api/android_live_voice.py`, `app/services/android_live_voice_service.py`, `app/services/voice_practice_service.py`, Android `feature/voice/LiveVoiceSocket.kt`, and `core/audio/LiveVoiceAudioEngine.kt`.
 
 Android klienti:
+- `feature/profile/ProfileWidgetCompat.kt` must pass an argument unique to the richer
+  `ProfileScreen` overload (`courseTrack`); otherwise Kotlin selects the legacy bridge
+  itself and causes infinite recursion. `ProfileWidgetCompatTest` exercises the legacy call.
 - `android/app/src/main/java/com/pomp/hskai/core/design/Color.kt` — palitra;
   qiymatlari `app/static/course-v3.html` dagi CSS custom property'lardan olinadi.
 - `android/tools/` — 5 ta statik tekshiruv. Cloud muhitlarda `dl.google.com`
