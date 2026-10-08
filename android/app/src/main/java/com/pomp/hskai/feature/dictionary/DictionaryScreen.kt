@@ -42,6 +42,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -187,6 +188,7 @@ fun DictionaryScreen(
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 private fun DictionaryList(
     state: DictionaryUiState,
     onQueryChange: (String) -> Unit,
@@ -201,14 +203,16 @@ private fun DictionaryList(
     // Opening the dictionary shows the list; the history appears only once
     // the learner goes to search, and goes again when they start typing.
     var searchFocused by remember { mutableStateOf(false) }
-    val showRecent = searchFocused && state.query.isBlank() && state.history.isNotEmpty()
+    var filtersOpen by remember { mutableStateOf(false) }
+    val recent = state.history.filter { dictionaryWordMatches(it, state.versionFilter, state.levelFilter) }
+    val showRecent = searchFocused && state.query.isBlank() && recent.isNotEmpty()
     val listState = rememberLazyListState()
     LaunchedEffect(showRecent) { if (showRecent) listState.scrollToItem(0) }
     // With the search box focused, back leaves the search first.
     BackHandler(enabled = searchFocused) { focusManager.clearFocus() }
 
     Column(Modifier.fillMaxSize().statusBarsPadding()) {
-        DictionaryHeader(onBack, stringResource(R.string.practice_dictionary_title), trailing = state.total.takeIf { it > 0 }?.toString())
+        DictionaryHeader(onBack, stringResource(R.string.practice_dictionary_title), trailing = if (state.isLoading) null else state.words.size.toString())
         OutlinedTextField(
             value = state.query,
             onValueChange = onQueryChange,
@@ -216,9 +220,18 @@ private fun DictionaryList(
             placeholder = { Text(stringResource(R.string.dictionary_search_hint), color = PompColors.InkDisabled) },
             leadingIcon = { Icon(Icons.Filled.Search, null, tint = PompColors.InkSecondary) },
             trailingIcon = {
-                if (state.query.isNotEmpty()) {
-                    IconButton(onClick = { onQueryChange("") }) {
-                        Icon(Icons.Filled.Close, stringResource(R.string.action_clear), tint = PompColors.InkSecondary)
+                Row {
+                    if (state.query.isNotEmpty()) {
+                        IconButton(onClick = { onQueryChange("") }) {
+                            Icon(Icons.Filled.Close, stringResource(R.string.action_clear), tint = PompColors.InkSecondary)
+                        }
+                    }
+                    IconButton(onClick = { focusManager.clearFocus(); filtersOpen = true }) {
+                        Icon(
+                            Icons.Filled.Tune,
+                            stringResource(R.string.dictionary_filters),
+                            tint = if (state.versionFilter != "all" || state.levelFilter != "all") PompColors.Cinnabar else PompColors.InkSecondary,
+                        )
                     }
                 }
             },
@@ -234,12 +247,6 @@ private fun DictionaryList(
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp, vertical = 10.dp)
                 .onFocusChanged { searchFocused = it.isFocused },
-        )
-        DictionaryFilters(
-            version = state.versionFilter,
-            level = state.levelFilter,
-            onVersion = onVersionFilter,
-            onLevel = onLevelFilter,
         )
         when {
             state.isLoading && state.words.isEmpty() -> DictionarySkeleton()
@@ -259,13 +266,13 @@ private fun DictionaryList(
             ) {
                 if (showRecent) {
                     item(key = "recent-title") { ListSectionTitle(stringResource(R.string.dictionary_recent_title)) }
-                    itemsIndexed(state.history, key = { _, word -> "recent-${word.hanzi}" }) { index, word ->
+                    itemsIndexed(recent, key = { _, word -> "recent-${word.hanzi}" }) { index, word ->
                         Column {
-                            WordRow(word) {
+                            WordRow(word, state.versionFilter, state.levelFilter) {
                                 focusManager.clearFocus()
                                 onOpenRecent(word)
                             }
-                            if (index < state.history.lastIndex) {
+                            if (index < recent.lastIndex) {
                                 HorizontalDivider(Modifier.padding(start = 70.dp), color = PompColors.Divider)
                             }
                         }
@@ -274,12 +281,29 @@ private fun DictionaryList(
                 }
                 itemsIndexed(state.words, key = { _, word -> word.hanzi }) { index, word ->
                     Column {
-                        WordRow(word) { onOpenWord(word) }
+                        WordRow(word, state.versionFilter, state.levelFilter) { onOpenWord(word) }
                         if (index < state.words.lastIndex) {
                             HorizontalDivider(Modifier.padding(start = 70.dp), color = PompColors.Divider)
                         }
                     }
                 }
+            }
+        }
+    }
+    if (filtersOpen) {
+        ModalBottomSheet(
+            onDismissRequest = { filtersOpen = false },
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            containerColor = PompColors.Paper,
+        ) {
+            Column(Modifier.fillMaxWidth().navigationBarsPadding().padding(bottom = 20.dp)) {
+                HskSectionTitle(stringResource(R.string.dictionary_filters), modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp))
+                DictionaryFilters(state.versionFilter, state.levelFilter, onVersionFilter, onLevelFilter)
+                HskGlassButton(
+                    text = stringResource(R.string.dictionary_filter_results, state.words.size),
+                    onClick = { filtersOpen = false },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp),
+                )
             }
         }
     }
@@ -382,7 +406,10 @@ private fun DictionaryDetail(state: DictionaryUiState, actions: DictionaryAction
     // A new entry starts at the top, not where the previous one was left.
     val listState = remember(word.hanzi) { LazyListState() }
     Column(Modifier.fillMaxSize().statusBarsPadding()) {
-        DictionaryHeader(actions.onCloseWord, stringResource(R.string.dictionary_detail_title), level = word.level)
+        DictionaryHeader(
+            actions.onCloseWord, stringResource(R.string.dictionary_detail_title), level = word.level,
+            versionFilter = state.versionFilter, levelFilter = state.levelFilter,
+        )
         LazyColumn(
             state = listState,
             modifier = Modifier.weight(1f).fillMaxWidth(),
@@ -960,6 +987,8 @@ private fun DictionaryHeader(
     title: String,
     trailing: String? = null,
     level: String = "",
+    versionFilter: String = "all",
+    levelFilter: String = "all",
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(start = 4.dp, end = 16.dp, top = 8.dp),
@@ -970,15 +999,17 @@ private fun DictionaryHeader(
         }
         HskSectionTitle(title, modifier = Modifier.weight(1f))
         if (trailing != null) Text(trailing, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
-        if (level.isNotBlank()) LevelPill(level)
+        if (level.isNotBlank()) LevelPill(level, versionFilter, levelFilter)
     }
 }
 
 @Composable
-private fun LevelPill(level: String) {
+private fun LevelPill(level: String, versionFilter: String = "all", levelFilter: String = "all") {
+    val label = dictionaryLevelLabel(level, versionFilter, levelFilter)
+    if (label.isBlank()) return
     Surface(color = PompColors.GoldSoft, shape = RoundedCornerShape(999.dp)) {
         Text(
-            dictionaryLevelLabel(level),
+            label,
             style = MaterialTheme.typography.labelSmall,
             color = PompColors.InkSecondary,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
@@ -986,15 +1017,8 @@ private fun LevelPill(level: String) {
     }
 }
 
-private fun dictionaryLevelLabel(level: String): String {
-    val labels = level.split('|').map(String::trim).filter(String::isNotEmpty)
-    val levelName = labels.firstOrNull().orEmpty()
-    val isNewHsk = labels.drop(1).any { it.matches(Regex("N\\d+", RegexOption.IGNORE_CASE)) }
-    return if (isNewHsk) "${levelName.uppercase()} · 3.0" else levelName
-}
-
 @Composable
-private fun WordRow(word: DictionaryWord, onClick: () -> Unit) {
+private fun WordRow(word: DictionaryWord, versionFilter: String = "all", levelFilter: String = "all", onClick: () -> Unit) {
     Surface(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
@@ -1012,7 +1036,7 @@ private fun WordRow(word: DictionaryWord, onClick: () -> Unit) {
             }
             if (word.level.isNotBlank()) {
                 Spacer(Modifier.width(10.dp))
-                LevelPill(word.level)
+                LevelPill(word.level, versionFilter, levelFilter)
             }
         }
     }

@@ -158,6 +158,12 @@ class DictionaryViewModel(
 
     fun selectLevelFilter(filter: String) {
         if (filter !in LEVEL_FILTERS) return
+        val compatible = when (_state.value.versionFilter) {
+            "hsk20" -> filter in HSK20_LEVEL_FILTERS
+            "hsk30" -> filter in HSK30_LEVEL_FILTERS
+            else -> true
+        }
+        if (!compatible) return
         _state.update { it.copy(levelFilter = filter) }
         viewModelScope.launch { runSearch(_state.value.query) }
     }
@@ -460,7 +466,12 @@ class DictionaryViewModel(
                 levelFilter = current.levelFilter,
             )
         }
-        _state.update { it.copy(words = results) }
+        _state.update {
+            // A slow old Room query must not overwrite a newer filter/search.
+            if (it.query == query && it.versionFilter == current.versionFilter && it.levelFilter == current.levelFilter) {
+                it.copy(words = results)
+            } else it
+        }
     }
 
     class Factory(
@@ -505,20 +516,37 @@ internal fun dictionaryWordMatches(
     versionFilter: String,
     levelFilter: String,
 ): Boolean {
-    val tags = word.level.split("|")
-        .map { it.trim().lowercase() }
-        .filter(String::isNotBlank)
+    if (versionFilter == "hsk20" && levelFilter.startsWith("nhsk")) return false
+    if (versionFilter == "hsk30" && levelFilter.startsWith("hsk")) return false
+    val tags = dictionaryLevelTags(word.level)
     val versionMatches = when (versionFilter) {
-        "hsk20" -> tags.any { it.startsWith("hsk") }
-        "hsk30" -> tags.any { Regex("^n[1-3]$").matches(it) }
+        "hsk20" -> tags.any { it.startsWith("HSK") }
+        "hsk30" -> tags.any { it.startsWith("N") }
         else -> true
     }
     if (!versionMatches) return false
     return when (levelFilter) {
-        "hsk1", "hsk2", "hsk3", "hsk4" -> tags.any { it == levelFilter }
-        "nhsk1", "nhsk2", "nhsk3" -> tags.any { it == "n" + levelFilter.takeLast(1) }
+        "hsk1", "hsk2", "hsk3", "hsk4" -> levelFilter.uppercase() in tags
+        "nhsk1", "nhsk2", "nhsk3" -> "N" + levelFilter.takeLast(1) in tags
         else -> true
     }
 }
+
+/** Project membership tags onto the selected course version for list/detail badges. */
+internal fun dictionaryLevelLabel(level: String, versionFilter: String = "all", levelFilter: String = "all"): String {
+    val tags = dictionaryLevelTags(level)
+    val visible = when {
+        versionFilter == "hsk20" || (versionFilter == "all" && levelFilter.startsWith("hsk")) -> tags.filter { it.startsWith("HSK") }
+        versionFilter == "hsk30" || (versionFilter == "all" && levelFilter.startsWith("nhsk")) -> tags.filter { it.startsWith("N") }
+        else -> tags
+    }
+    return visible.joinToString(" · ") { if (it.startsWith("N")) "$it (3.0)" else it }
+}
+
+// HSK4 has two authored parts; both are membership in the same HSK band.
+private val DICTIONARY_LEVEL_TAG = Regex("^(HSK[1-4]|N[1-3])(?:\\s*\\([^)]*\\))?$")
+private fun dictionaryLevelTags(level: String): List<String> = level.split('|').mapNotNull {
+    DICTIONARY_LEVEL_TAG.matchEntire(it.trim().uppercase())?.groupValues?.get(1)
+}.distinct()
 
 private fun Char.isHanzi(): Boolean = this in '一'..'鿿'

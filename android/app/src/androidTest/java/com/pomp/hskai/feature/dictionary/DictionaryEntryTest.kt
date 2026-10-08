@@ -158,8 +158,9 @@ class DictionaryEntryTest {
         // Tapping search: the history first, then the list.
         compose.onNode(search).performClick()
         compose.onNodeWithText(recent).assertExists()
-        compose.onNodeWithText(context.getString(R.string.dictionary_filter_all_versions)).assertExists()
-        compose.onNodeWithText(context.getString(R.string.dictionary_filter_all_levels)).assertExists()
+        compose.onNodeWithContentDescription(context.getString(R.string.dictionary_filters)).assertExists()
+        compose.onNodeWithText(context.getString(R.string.dictionary_filter_all_versions)).assertDoesNotExist()
+        compose.onNodeWithText(context.getString(R.string.dictionary_filter_all_levels)).assertDoesNotExist()
         compose.onNodeWithText(context.getString(R.string.dictionary_all_words)).assertExists()
         save("history_open")
 

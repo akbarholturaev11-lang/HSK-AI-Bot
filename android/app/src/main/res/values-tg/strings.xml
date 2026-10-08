@@ -329,6 +329,8 @@
     <string name="dictionary_recent_title">Ҷустуҷӯҳои охирин</string>
     <string name="dictionary_all_words">Ҳамаи калимаҳо</string>
     <string name="dictionary_filter_all_versions">Ҳамаи версияҳо</string>
+    <string name="dictionary_filters">Филтрҳо</string>
+    <string name="dictionary_filter_results">Дидани %1$d калима</string>
     <string name="dictionary_filter_all_levels">Ҳамаи сатҳҳо</string>
     <string name="dictionary_no_match">Аз рӯи «%1$s» чизе ёфт нашуд</string>
     <string name="dictionary_unavailable">Луғатро бор кардан нашуд. Интернетро санҷед ва бори дигар кӯшиш кунед.</string>

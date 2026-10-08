@@ -365,6 +365,8 @@
     <string name="dictionary_recent_title">Oxirgi qidiruvlar</string>
     <string name="dictionary_all_words">Barcha so‘zlar</string>
     <string name="dictionary_filter_all_versions">Barcha versiyalar</string>
+    <string name="dictionary_filters">Filtrlar</string>
+    <string name="dictionary_filter_results">%1$d ta so‘zni ko‘rish</string>
     <string name="dictionary_filter_all_levels">Barcha darajalar</string>
     <string name="dictionary_no_match">«%1$s» bo‘yicha hech nima topilmadi</string>
     <string name="dictionary_unavailable">Lug‘atni yuklab bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.</string>

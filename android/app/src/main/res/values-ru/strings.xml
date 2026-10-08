@@ -328,6 +328,8 @@
     <string name="dictionary_recent_title">Недавние поиски</string>
     <string name="dictionary_all_words">Все слова</string>
     <string name="dictionary_filter_all_versions">Все версии</string>
+    <string name="dictionary_filters">Фильтры</string>
+    <string name="dictionary_filter_results">Показать слова: %1$d</string>
     <string name="dictionary_filter_all_levels">Все уровни</string>
     <string name="dictionary_no_match">По запросу «%1$s» ничего не найдено</string>
     <string name="dictionary_unavailable">Не удалось загрузить словарь. Проверьте интернет и попробуйте снова.</string>
