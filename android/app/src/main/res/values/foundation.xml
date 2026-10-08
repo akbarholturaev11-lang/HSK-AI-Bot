@@ -15,4 +15,8 @@
     <string name="foundation_save_retry">Natijani qayta yuborish</string>
     <string name="foundation_required_intro">HSK 1 darsidan oldin shu qisqa mashqni tugating.</string>
     <string name="foundation_optional_intro">HSK 1 uchun qisqa boshlang‘ich mashq.</string>
+    <string name="writer_pause">Pauza</string>
+    <string name="writer_resume">Davom ettirish</string>
+    <string name="writer_previous_stroke">Oldingi chiziq</string>
+    <string name="writer_next_stroke">Keyingi chiziq</string>
 </resources>
