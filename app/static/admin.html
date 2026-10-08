@@ -314,6 +314,13 @@
 #statistics [data-v2-pane]{margin-bottom:15px}
 #marketing [data-v2-pane]>.sec:first-child,#system [data-v2-pane]>.sec:first-child{margin-top:0}
 @media(max-width:760px){.v2-subnav{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px -5px 22px;padding:5px}.v2-subnav button{white-space:nowrap;flex-shrink:0;padding:9px 12px}}
+
+/* Finance V2 internal screens re-use the original controls and API. */
+.v2-finance-heading{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:21px 22px;margin-bottom:15px}
+.v2-finance-heading h3{margin:0 0 7px;font-size:15px;color:var(--ink)}
+.v2-finance-heading p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}
+#payments [data-v2-pane]>.v2-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:760px){#payments [data-v2-pane]>.v2-actions{grid-template-columns:1fr}.v2-finance-heading{padding:16px}}
 </style>
 </head>
 <body>
@@ -501,13 +508,35 @@
 
       <!-- PAYMENTS -->
       <section id="payments" class="view">
-        <div class="v2-section-title"><b>To‘lovlar</b><small>Tekshirish va tasdiqlash</small></div>
-        <div id="paymentBoard"></div>
-        <div class="v2-section-title"><b>Tarif va moliya boshqaruvi</b><small>Mavjud admin API funksiyalari</small></div>
-        <div class="v2-actions">
-          <button class="srow" data-module="prices"><div><h3>💳 Obuna narxlari va rekvizitlar</h3><p>Tariflar, Alif, Dushanbe City va QR</p></div><span>›</span></button>
-          <button class="srow" data-module="hsk30"><div><h3>📚 HSK 3.0 to‘lov narxi</h3><p>Bir martalik unlock narxi va holati</p></div><span>›</span></button>
-          <button class="srow" data-module="portfolio"><div><h3>💼 Portfel</h3><p>Tushum, xarajat va kuzatilgan net</p></div><span>›</span></button>
+        <div class="v2-intro">Тўловларни текшириш, Pro тарифлар, банк реквизитлари ва портфель.</div>
+        <div class="subnav v2-subnav" role="tablist" aria-label="Moliya ichki bo‘limlari">
+          <button type="button" role="tab" aria-selected="true" class="active" data-v2-sub="payments:payments">Тўловлар</button>
+          <button type="button" role="tab" aria-selected="false" data-v2-sub="payments:prices">Нархлар</button>
+          <button type="button" role="tab" aria-selected="false" data-v2-sub="payments:methods">Тўлов усуллари</button>
+          <button type="button" role="tab" aria-selected="false" data-v2-sub="payments:portfolio">Портфель</button>
+        </div>
+        <div data-v2-pane="payments:payments">
+          <div id="paymentBoard"></div>
+        </div>
+        <div data-v2-pane="payments:prices" hidden>
+          <div class="v2-finance-heading"><h3>Тарифларни бошқариш</h3><p>Амалдаги нархлар сервердан олинади. Pro обуна ва HSK 3.0 кириш нархи мустақил.</p></div>
+          <div class="v2-actions">
+            <button class="srow" data-module="prices"><div><h3>💳 Pro обуна нархлари</h3><p>Мавжуд тариф ва валюталарни таҳрирлаш</p></div><span>›</span></button>
+            <button class="srow" data-module="hsk30"><div><h3>📚 HSK 3.0 кириш нархи</h3><p>Бир марталик unlock нархи ва ишлаш ҳолати</p></div><span>›</span></button>
+          </div>
+        </div>
+        <div data-v2-pane="payments:methods" hidden>
+          <div class="v2-finance-heading"><h3>Тўлов реквизитлари ва QR</h3><p>Мавжуд тариф бошқаруви ичида банк ва тўлов усулига тегишли созламалар жойлашган.</p></div>
+          <div class="v2-actions">
+            <button class="srow" data-module="prices"><div><h3>🏦 Карта, Alipay ва WeChat</h3><p>Тўлов реквизитлари, QR ва нархлар</p></div><span>›</span></button>
+          </div>
+        </div>
+        <div data-v2-pane="payments:portfolio" hidden>
+          <div class="v2-finance-heading"><h3>Портфель ва харажатлар</h3><p>Тушум ва харажат ҳисоботлари, валюта контексти ва молиявий натижа.</p></div>
+          <div class="v2-actions">
+            <button class="srow" data-module="portfolio"><div><h3>💼 Портфельни очиш</h3><p>Даромад, харажат ва соф фойдани бошқариш</p></div><span>›</span></button>
+            <button class="srow" data-tab-jump="statistics"><div><h3>📊 Молиявий аналитика</h3><p>AI сарфи, даромад ва тўлов кўрсаткичлари</p></div><span>›</span></button>
+          </div>
         </div>
       </section>
 
@@ -1538,7 +1567,7 @@
     }
 
     /* ---------- MODULES (settings) ---------- */
-    const v2SubState={statistics:"overview",settings:"tracks",marketing:"campaigns",system:"model"};
+    const v2SubState={statistics:"overview",payments:"payments",settings:"tracks",marketing:"campaigns",system:"model"};
     function selectV2Sub(tab,pane){
       const container=$(tab);if(!container)return;
       const choices=Array.from(container.querySelectorAll("[data-v2-sub]"));
