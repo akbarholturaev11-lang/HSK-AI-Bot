@@ -3,6 +3,7 @@ package com.pomp.hskai.feature.voice
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.pomp.hskai.R
 import com.pomp.hskai.core.audio.LiveVoiceAudioEngine
 import com.pomp.hskai.core.audio.LessonAudioPlayer
 import com.pomp.hskai.core.audio.VoiceRecorder
@@ -16,6 +17,8 @@ import com.pomp.hskai.data.api.VoiceWordDto
 import com.pomp.hskai.data.repository.CourseRepository
 import com.pomp.hskai.data.repository.FeatureRepository
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -88,12 +91,16 @@ class VoiceViewModel(
     private val audioPlayer: LessonAudioPlayer? = null,
     private val liveVoiceGateway: LiveVoiceGateway? = null,
     private val liveVoiceAudioEngine: LiveVoiceAudioEngine? = null,
+    private val liveIoDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
 
     private var speakJob: Job? = null
     private var liveEventsJob: Job? = null
     private var liveTimerJob: Job? = null
+    private var liveConnectJob: Job? = null
+    private var liveReconnectJob: Job? = null
     private var liveConnection: LiveVoiceConnection? = null
+    @Volatile private var liveGeneration = 0L
     private var lastLiveLevel = "hsk1"
     private var lastLiveLanguage = "uz"
     private var liveReconnectAttempts = 0
@@ -136,7 +143,9 @@ class VoiceViewModel(
 
     /** First Voice-tab entry owns the initial status request, not app startup. */
     fun ensureStatusLoaded() {
-        if (!statusLoaded && !statusLoadInFlight) loadStatus()
+        if (!statusLoadInFlight && (!statusLoaded || (!_state.value.hasSession && _state.value.error != null))) {
+            loadStatus()
+        }
     }
 
     /** Access changes refresh Voice only after Voice has actually been opened. */
@@ -146,10 +155,7 @@ class VoiceViewModel(
 
     override fun onCleared() {
         recorder.cancel()
-        liveEventsJob?.cancel()
-        liveConnection?.close()
-        liveTimerJob?.cancel()
-        liveVoiceAudioEngine?.stop()
+        disconnectLiveTransport()
     }
 
     fun loadStatus() {
@@ -311,23 +317,33 @@ class VoiceViewModel(
     }
 
     private fun connectLiveSession(sessionId: String, allowTurnFallback: Boolean = true) {
+        if (!_state.value.isLive || _state.value.sessionId != sessionId || liveConnectJob?.isActive == true) return
         val gateway = liveVoiceGateway
         val audioEngine = liveVoiceAudioEngine
         if (gateway == null || audioEngine == null) {
             fallbackToTurnBased(sessionId)
             return
         }
-        viewModelScope.launch {
+        val generation = ++liveGeneration
+        liveConnectJob = viewModelScope.launch {
             try {
                 val connection = gateway.connect(sessionId)
+                if (generation != liveGeneration || _state.value.sessionId != sessionId) {
+                    connection.close()
+                    return@launch
+                }
                 liveConnection = connection
                 startLiveTimer(connection.maxSeconds)
                 liveEventsJob?.cancel()
                 liveEventsJob = launch {
-                    connection.events.collect { event -> handleLiveEvent(event) }
+                    connection.events.collect { event ->
+                        if (liveConnection === connection && generation == liveGeneration) handleLiveEvent(event)
+                    }
                 }
-                withContext(Dispatchers.IO) {
-                    audioEngine.start { chunk -> connection.sendAudio(chunk) }
+                withContext(liveIoDispatcher) {
+                    audioEngine.start { chunk ->
+                        if (generation == liveGeneration) connection.sendAudio(chunk)
+                    }
                 }
                 connection.setMuted(false)
                 audioEngine.setMuted(false)
@@ -339,25 +355,69 @@ class VoiceViewModel(
                         isRecording = true,
                     )
                 }
-            } catch (_: Exception) {
-                liveConnection?.close()
-                liveConnection = null
-                liveEventsJob?.cancel()
-                liveEventsJob = null
-                audioEngine.stop()
-                if (allowTurnFallback && _state.value.turnCount == 0) {
-                    fallbackToTurnBased(sessionId)
-                } else {
-                    _state.update {
-                        it.copy(
-                            isLiveConnecting = false,
-                            isLiveConnected = false,
-                            isRecording = false,
-                            error = ApiError.Unknown,
-                        )
-                    }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (error: Exception) {
+                if (generation == liveGeneration) {
+                    recoverLiveConnection(error.message ?: "live_connect_failed", allowTurnFallback)
+                }
+            } finally {
+                if (generation == liveGeneration) liveConnectJob = null
+            }
+        }
+    }
+
+    private fun disconnectLiveTransport(keepTimer: Boolean = false) {
+        liveGeneration++
+        liveConnectJob?.cancel()
+        liveConnectJob = null
+        liveReconnectJob?.cancel()
+        liveReconnectJob = null
+        liveEventsJob?.cancel()
+        liveEventsJob = null
+        val connection = liveConnection
+        liveConnection = null
+        connection?.close()
+        liveVoiceAudioEngine?.stop()
+        if (!keepTimer) {
+            liveTimerJob?.cancel()
+            liveTimerJob = null
+        }
+    }
+
+    private fun recoverLiveConnection(reason: String, allowTurnFallback: Boolean = true) {
+        val current = _state.value
+        if (!current.isLive || !current.hasSession) return
+        val sessionId = current.sessionId ?: return
+        disconnectLiveTransport(keepTimer = true)
+        _state.update {
+            it.copy(isRecording = false, isLiveConnected = false, isAiSpeaking = false, isSending = false)
+        }
+        if (reason in LIVE_TERMINAL_REASONS) {
+            endSession()
+            return
+        }
+        if (liveReconnectAttempts < MAX_LIVE_RECONNECTS) {
+            liveReconnectAttempts++
+            val generation = liveGeneration
+            val retryDelay = LIVE_RECONNECT_DELAY_MS * liveReconnectAttempts
+            _state.update { it.copy(isLiveConnecting = true, error = null) }
+            liveReconnectJob = viewModelScope.launch {
+                delay(retryDelay)
+                if (generation == liveGeneration && _state.value.sessionId == sessionId && _state.value.isLive) {
+                    liveReconnectJob = null
+                    connectLiveSession(sessionId, allowTurnFallback)
                 }
             }
+        } else if (allowTurnFallback && current.turnCount == 0) {
+            disconnectLiveTransport()
+            fallbackToTurnBased(sessionId)
+        } else {
+            liveTimerJob?.cancel()
+            liveTimerJob = null
+            val error = ApiError.fromCode(reason).takeUnless { it == ApiError.Unknown }
+                ?: ApiError.Server(reason, R.string.error_voice_unavailable)
+            _state.update { it.copy(isLiveConnecting = false, error = error) }
         }
     }
 
@@ -460,7 +520,7 @@ class VoiceViewModel(
                 _state.update { it.copy(isAiSpeaking = true) }
                 val engine = liveVoiceAudioEngine
                 if (engine != null) {
-                    val queued = withContext(Dispatchers.IO) { engine.playPcm(event.pcm) }
+                    val queued = withContext(liveIoDispatcher) { engine.playPcm(event.pcm) }
                     if (!queued) {
                         handleLiveEvent(LiveVoiceEvent.Failed("live_playback_backpressure"))
                     }
@@ -468,7 +528,7 @@ class VoiceViewModel(
             }
             LiveVoiceEvent.Interrupted -> {
                 liveVoiceAudioEngine?.let { engine ->
-                    withContext(Dispatchers.IO) { engine.clearPlayback() }
+                    withContext(liveIoDispatcher) { engine.clearPlayback() }
                 }
                 _state.update { it.copy(isAiSpeaking = false) }
             }
@@ -506,10 +566,7 @@ class VoiceViewModel(
                 when (event.reason) {
                     "session_limit" -> endSession()
                     "budget_limit", "time_limit" -> {
-                        liveEventsJob?.cancel()
-                        liveConnection?.close()
-                        liveConnection = null
-                        liveVoiceAudioEngine?.stop()
+                        disconnectLiveTransport()
                         _state.update {
                             it.copy(
                                 isRecording = false,
@@ -524,39 +581,7 @@ class VoiceViewModel(
                 }
             }
             is LiveVoiceEvent.Failed -> {
-                val sessionId = _state.value.sessionId
-                liveVoiceAudioEngine?.stop()
-                liveConnection?.close()
-                liveConnection = null
-                if (sessionId != null && liveReconnectAttempts < MAX_LIVE_RECONNECTS) {
-                    liveReconnectAttempts++
-                    _state.update {
-                        it.copy(
-                            isRecording = false,
-                            isLiveConnected = false,
-                            isLiveConnecting = true,
-                            isLiveMuted = false,
-                            isAiSpeaking = false,
-                            error = null,
-                        )
-                    }
-                    viewModelScope.launch {
-                        delay(LIVE_RECONNECT_DELAY_MS)
-                        connectLiveSession(sessionId, allowTurnFallback = _state.value.turnCount == 0)
-                    }
-                } else {
-                    _state.update {
-                        it.copy(
-                            isRecording = false,
-                            isLiveConnected = false,
-                            isLiveConnecting = false,
-                            isLiveMuted = false,
-                            isAiSpeaking = false,
-                            isSending = false,
-                            error = ApiError.Unknown,
-                        )
-                    }
-                }
+                recoverLiveConnection(event.reason, allowTurnFallback = _state.value.turnCount == 0)
             }
         }
     }
@@ -608,13 +633,7 @@ class VoiceViewModel(
         if (_state.value.isSending && !_state.value.isLive) return
         speakJob?.cancel()
         recorder.cancel()
-        liveEventsJob?.cancel()
-        liveEventsJob = null
-        liveConnection?.close()
-        liveConnection = null
-        liveTimerJob?.cancel()
-        liveTimerJob = null
-        liveVoiceAudioEngine?.stop()
+        disconnectLiveTransport()
         _state.update {
             it.copy(
                 isRecording = false,
@@ -657,13 +676,7 @@ class VoiceViewModel(
         if (_state.value.isSending || _state.value.isStarting) return
         val previousSession = _state.value.sessionId
         recorder.cancel()
-        liveEventsJob?.cancel()
-        liveEventsJob = null
-        liveConnection?.close()
-        liveConnection = null
-        liveTimerJob?.cancel()
-        liveTimerJob = null
-        liveVoiceAudioEngine?.stop()
+        disconnectLiveTransport()
         _state.update {
             it.copy(
                 selectedRole = role,
@@ -689,12 +702,7 @@ class VoiceViewModel(
 
     fun reset() {
         recorder.cancel()
-        liveEventsJob?.cancel()
-        liveConnection?.close()
-        liveConnection = null
-        liveTimerJob?.cancel()
-        liveTimerJob = null
-        liveVoiceAudioEngine?.stop()
+        disconnectLiveTransport()
         _state.update {
             VoiceUiState(
                 status = it.status,
@@ -729,7 +737,11 @@ class VoiceViewModel(
     private companion object {
         /** The Mini App's `playbackRate` for slow speech. */
         const val SLOW_SPEECH_RATE = 0.75f
-        const val MAX_LIVE_RECONNECTS = 1
+        const val MAX_LIVE_RECONNECTS = 3
         const val LIVE_RECONNECT_DELAY_MS = 1_200L
+        val LIVE_TERMINAL_REASONS = setOf(
+            "budget_limit", "time_limit", "live_session_expired", "LIMIT_EXCEEDED",
+            "SESSION_EXPIRED", "SESSION_ENDED", "SESSION_NOT_FOUND",
+        )
     }
 }

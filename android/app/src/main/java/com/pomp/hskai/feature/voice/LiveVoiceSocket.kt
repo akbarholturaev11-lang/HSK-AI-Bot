@@ -6,7 +6,14 @@ import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.data.api.VoiceSuggestionDto
 import java.io.IOException
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -93,10 +100,14 @@ class AndroidLiveVoiceGateway(
     }
 }
 
-private class AndroidLiveVoiceConnection(
+internal class AndroidLiveVoiceConnection(
     private val ready: CompletableDeferred<Unit>,
 ) : LiveVoiceConnection {
-    private val mutableEvents = MutableSharedFlow<LiveVoiceEvent>(replay = 1, extraBufferCapacity = 96)
+    private val mutableEvents = MutableSharedFlow<LiveVoiceEvent>(replay = 1, extraBufferCapacity = 256)
+    private val eventScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val closed = AtomicBoolean(false)
+    private val failed = AtomicBoolean(false)
+    private val terminal = AtomicBoolean(false)
     override val events = mutableEvents.asSharedFlow()
     @Volatile private var socket: WebSocket? = null
     @Volatile private var muted = false
@@ -109,6 +120,7 @@ private class AndroidLiveVoiceConnection(
 
     fun listener() = object : WebSocketListener() {
         override fun onMessage(webSocket: WebSocket, text: String) {
+            if (closed.get() || failed.get() || terminal.get()) return
             if (text.length > 256_000) {
                 fail("live_message_too_large")
                 webSocket.cancel()
@@ -138,7 +150,7 @@ private class AndroidLiveVoiceConnection(
     }
 
     override fun sendAudio(pcm: ByteArray) {
-        if (muted || pcm.isEmpty()) return
+        if (closed.get() || failed.get() || terminal.get() || muted || pcm.isEmpty()) return
         val current = socket ?: return
         if (current.queueSize() > MAX_QUEUED_AUDIO_BYTES) {
             fail("live_network_backpressure")
@@ -149,6 +161,7 @@ private class AndroidLiveVoiceConnection(
     }
 
     override fun sendText(text: String) {
+        if (closed.get() || failed.get() || terminal.get()) return
         val value = text.trim().take(200)
         if (value.isEmpty()) return
         val payload = JSONObject().put("type", "text").put("text", value).toString()
@@ -160,9 +173,12 @@ private class AndroidLiveVoiceConnection(
     }
 
     override fun close() {
+        if (!closed.compareAndSet(false, true)) return
+        if (!ready.isCompleted) ready.completeExceptionally(IOException("live_client_closed"))
         socket?.send(JSONObject().put("type", "stop").toString())
         socket?.close(1000, "client stop")
         socket = null
+        eventScope.cancel()
     }
 
     private fun handleMessage(message: JSONObject) {
@@ -179,10 +195,12 @@ private class AndroidLiveVoiceConnection(
                     socket?.cancel()
                 }
             }
-            "interrupted" -> mutableEvents.tryEmit(LiveVoiceEvent.Interrupted)
-            "turn_complete" -> mutableEvents.tryEmit(LiveVoiceEvent.TurnComplete(message.toTurn()))
-            "budget_limit", "time_limit", "session_limit" ->
-                mutableEvents.tryEmit(LiveVoiceEvent.Terminal(type))
+            "interrupted" -> emitControl(LiveVoiceEvent.Interrupted)
+            "turn_complete" -> emitControl(LiveVoiceEvent.TurnComplete(message.toTurn()))
+            "budget_limit", "time_limit", "session_limit" -> {
+                terminal.set(true)
+                emitControl(LiveVoiceEvent.Terminal(type))
+            }
             "error" -> {
                 val code = message.optString("code").ifBlank { "live_voice_unavailable" }
                 if (!ready.isCompleted) ready.completeExceptionally(IOException(code))
@@ -223,7 +241,15 @@ private class AndroidLiveVoiceConnection(
     }
 
     private fun fail(reason: String) {
-        mutableEvents.tryEmit(LiveVoiceEvent.Failed(reason))
+        if (closed.get() || terminal.get() || !failed.compareAndSet(false, true)) return
+        emitControl(LiveVoiceEvent.Failed(reason))
+    }
+
+    private fun emitControl(event: LiveVoiceEvent) {
+        if (!mutableEvents.tryEmit(event)) {
+            // A full PCM buffer must never swallow a limit/disconnect signal.
+            eventScope.launch(start = CoroutineStart.UNDISPATCHED) { mutableEvents.emit(event) }
+        }
     }
 
     private companion object {

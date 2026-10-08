@@ -254,7 +254,7 @@ private fun VoiceHome(
             state.error?.let {
                 Spacer(Modifier.height(10.dp))
                 ErrorPill(stringResource(it.messageRes))
-                if (state.status == null && !state.isLoading) {
+                if (!state.isLoading) {
                     OutlinedButton(
                         onClick = onRetryStatus,
                         modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
@@ -279,6 +279,7 @@ private fun VoiceBox(
     val boxMuted = if (PompColors.IsDark) PompColors.InkSecondary else Color.White.copy(alpha = 0.72f)
     val quotaText = when {
         state.isLoading -> stringResource(R.string.state_loading)
+        state.status == null -> stringResource(R.string.error_voice_unavailable)
         state.status?.isPaid == true -> stringResource(R.string.voice_limit_premium)
         else -> stringResource(
             R.string.voice_limit_free,
