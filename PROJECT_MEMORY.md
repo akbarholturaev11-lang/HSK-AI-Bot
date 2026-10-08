@@ -19,6 +19,8 @@ Short description:
 
 Frontend:
 - Telegram Mini App under `app/static/`; native Android uses Kotlin and Jetpack Compose.
+- Lesson completion shows the result, then the streak celebration only when the server confirms a new counted day (`streak_updated`, positive streak, neither duplicate flag). Mini App consumes `_pendingStreak`; Android queues `STREAK` after `COMPLETE`. Checkpoint continuation retains the existing sales/access flow. Rank interstitials remain disabled.
+- Mini App's result CTA stops click propagation when opening the streak: otherwise the same tap reaches the newly registered cinematic skip listener and immediately skips the panda flight. Regression coverage: `tests/e2e/test_lesson_streak_celebration.py` and Android `LessonStreakCelebrationTest`.
 
 Backend:
 - FastAPI API plus Aiogram bot handlers; async SQLAlchemy services own business rules.

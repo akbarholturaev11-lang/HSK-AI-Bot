@@ -100,9 +100,21 @@ internal fun LessonCompletionCelebration(
             null
         }
     }
-    // One completion summary owns the result and the next action. Streak and
-    // rank remain available elsewhere; they no longer create extra screens.
-    val scenes = remember(outcome) { listOf(CelebrationScene.COMPLETE) }
+    // The result comes first; show the streak scene only when the server
+    // confirms this completion extended today's run.
+    val scenes = remember(outcome) {
+        buildList {
+            add(CelebrationScene.COMPLETE)
+            if (
+                !outcome.duplicate &&
+                !gamification.duplicate &&
+                gamification.streakUpdated &&
+                gamification.streak > 0
+            ) {
+                add(CelebrationScene.STREAK)
+            }
+        }
+    }
     var sceneIndex by remember(outcome) { mutableStateOf(0) }
     val scene = scenes[sceneIndex.coerceIn(0, scenes.lastIndex)]
     // The scene whose entrance is over. Until then only the character is on
@@ -337,22 +349,6 @@ private fun CompletionScene(
                 Text(
                     text = "${gamification.league} · ${gamification.weeklyXp} XP",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = HskStageInkMuted,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 12.dp),
-                )
-            }
-        }
-        if (
-            !outcome.duplicate &&
-            !gamification.duplicate &&
-            gamification.streakUpdated &&
-            gamification.streak > 0
-        ) {
-            HskReveal(delayMillis = 320) {
-                Text(
-                    text = stringResource(R.string.lesson_done_streak, gamification.streak),
-                    style = MaterialTheme.typography.bodySmall,
                     color = HskStageInkMuted,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 12.dp),

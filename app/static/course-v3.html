@@ -1967,22 +1967,21 @@ var App={
     cineLessonCharacter("land",finishChar,"celebrate",function(){
       $("#lu-panda").innerHTML=lessonCharacterHtml(finishChar,"celebrate");
       var streak=window._pendingStreak;
-      var streakCopy={ru:"Дней подряд",uz:"Ketma-ket kunlar",tj:"Рӯзҳои пайдарпай"}[LANG]||"Ketma-ket kunlar";
-      var streakNote=streak&&streak.extended&&Number(streak.now)>0?'<div class="lu-result-note">'+esc(streakCopy)+": "+Number(streak.now)+"</div>":"";
-      $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p>'+rewards+streakNote;
-      $("#lu-cta").setAttribute("onclick",firstCp?"App.openCheckpointNext()":"App.closeLevelUp()");
+      var showStreak=!!(streak&&streak.extended&&Number(streak.now)>0);
+      $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p>'+rewards;
+      $("#lu-cta").setAttribute("onclick",(showStreak?"event.stopPropagation();":"")+(firstCp?(showStreak?"App.showStreakScreen('checkpoint')":"App.openCheckpointNext()"):(showStreak?"App.showStreakScreen()":"App.closeLevelUp()")));
       var nextLabel=LANG==="ru"?"Открыть следующий урок":LANG==="tj"?"Кушодани дарси оянда":"Keyingi darsni ochish";
-      $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+(firstCp?nextLabel:lu.cont);
+      $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+(firstCp&&!showStreak?nextLabel:lu.cont);
       $("#levelup").classList.add("on");
       setTimeout(function(){var e=document.querySelector("#lu-stage .lu-emb");if(e)e.classList.add("in")},60);
       if(!fxOff())luRain();beep([523,659,784,1046]);haptic("ok");
     });
   },
   /* Duolingo uslubidagi alanga ekrani — dars tugagach */
-  showStreakScreen:function(){
+  showStreakScreen:function(next){
     var ps=window._pendingStreak;window._pendingStreak=null;
     var n=ps?ps.now:0;
-    if(!ps||!n||!ps.extended){App.showRankUp();return}
+    if(!ps||!n||!ps.extended){if(next==="checkpoint")App.openCheckpointNext();else App.closeLevelUp();return}
     var W={ru:{one:"день в ударе!",few:"дня в ударе!",many:"дней в ударе!",cont:"Продолжить"},
       uz:{one:"kun ketma-ket!",few:"kun ketma-ket!",many:"kun ketma-ket!",cont:"Davom etish"},
       tj:{one:"рӯз пайдарпай!",few:"рӯз пайдарпай!",many:"рӯз пайдарпай!",cont:"Идома"}}[LANG];
@@ -1996,8 +1995,9 @@ var App={
         +'<div class="sk-panda">'+pandaChar("celebrate")+'</div></div>'
         +'<div class="sk-num">'+n+'</div><h2>'+lbl+'</h2><p>'+desc+'</p>'
         +'<div class="sk-days">'+skDaysHtml(n,true,ps)+'</div>'+skWeekGoalHtml(ps);
-      $("#lu-cta").setAttribute("onclick","App.showRankUp()");
-      $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+W.cont;
+      $("#lu-cta").setAttribute("onclick",next==="checkpoint"?"App.openCheckpointNext()":"App.closeLevelUp()");
+      var nextLabel=LANG==="ru"?"Открыть следующий урок":LANG==="tj"?"Кушодани дарси оянда":"Keyingi darsni ochish";
+      $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+(next==="checkpoint"?nextLabel:W.cont);
       $("#levelup").classList.add("on");
       if(ps.extended){setTimeout(function(){beep([392,523,659,784]);haptic("heavy")},350)}
     });
