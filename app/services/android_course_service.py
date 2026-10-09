@@ -294,6 +294,7 @@ class AndroidCourseService(DesktopCourseService):
         event_id: str,
         mistakes: list[dict[str, Any]] | None = None,
         access_ref: str = "",
+        expected_level: str | None = None,
     ) -> dict[str, Any]:
         await self._require_foundation_complete(access_token)
         context = await self._context(access_token)
@@ -304,6 +305,7 @@ class AndroidCourseService(DesktopCourseService):
             event_id=event_id,
             mistakes=mistakes,
             access_ref=access_ref,
+            expected_level=expected_level,
         )
         if bool(result.get("duplicate")):
             rank_after = rank_before

@@ -26,6 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
+import com.pomp.hskai.feature.lesson.LessonEntryOverlay
+import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskGlassButton
@@ -67,7 +69,7 @@ internal fun SkipTestScreen(
         onExit = onClose,
     )
 
-    Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
+    HskSceneSurface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -78,10 +80,7 @@ internal fun SkipTestScreen(
             // property they each have to re-prove.
             val finished = state.finishedScore
             when {
-                state.isLoading || state.isUnlocking -> Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) { HskBrandLoader() }
+                state.isLoading || state.isUnlocking -> LessonEntryOverlay(alpha = 1f, key = "test-loading")
 
                 state.error != null -> SkipTestMessage(
                     title = stringResource(R.string.skip_test_not_ready),

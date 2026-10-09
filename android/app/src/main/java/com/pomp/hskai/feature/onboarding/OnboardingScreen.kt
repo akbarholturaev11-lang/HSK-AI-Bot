@@ -75,6 +75,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.pomp.hskai.R
+import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.PompColors
 
 /**
@@ -350,7 +351,7 @@ fun OnboardingScreen(
         view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
         reactionKey += 1
     }
-    Surface(color = PompColors.Paper, modifier = modifier.fillMaxSize()) {
+    HskSceneSurface(modifier = modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
             Column(
                 modifier = Modifier

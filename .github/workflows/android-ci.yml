@@ -20,7 +20,7 @@ on:
       - "app/static/course_v3_data/**"
       - "tests/test_android_*.py"
       - "tests/test_course_card_contract.py"
-      - "tests/test_hsk30_lesson_limits.py"
+      - "tests/test_hsk30_*.py"
       - "tests/test_desktop_auth_service.py"
       - "tests/test_desktop_course_api.py"
       - "tests/test_desktop_subscription_api.py"
@@ -44,7 +44,7 @@ on:
       - "app/static/course_v3_data/**"
       - "tests/test_android_*.py"
       - "tests/test_course_card_contract.py"
-      - "tests/test_hsk30_lesson_limits.py"
+      - "tests/test_hsk30_*.py"
       - "tests/test_desktop_auth_service.py"
       - "tests/test_desktop_course_api.py"
       - "tests/test_desktop_subscription_api.py"
@@ -215,6 +215,9 @@ jobs:
             tests/test_course_levels.py \
             tests/test_course_track_service.py \
             tests/test_hsk30_lesson_limits.py \
+            tests/test_hsk30_promo_service.py \
+            tests/test_hsk30_switch_ui_contract.py \
+            tests/test_android_payment_method_dialog_contract.py \
             tests/test_course_gamification_service.py \
             tests/test_course_hsk_exam_service.py \
             tests/test_course_miniapp_profile_preferences.py \

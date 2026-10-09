@@ -16,6 +16,7 @@ import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseLessonDto
 import com.pomp.hskai.data.api.CourseLessonResponse
 import com.pomp.hskai.data.api.CourseMapDto
+import com.pomp.hskai.data.api.CourseMistakeDto
 import com.pomp.hskai.data.api.StrokeDataDto
 import com.pomp.hskai.data.api.DictionaryResponse
 import com.pomp.hskai.data.api.CourseUnitDto
@@ -41,6 +42,7 @@ import java.net.SocketTimeoutException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runCurrent
@@ -48,6 +50,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
@@ -831,12 +834,104 @@ class CourseRepositoryTest {
         val repository = repository(api, FakeCourseMapDao())
         val eventId = "android:0d1f2e3a4b5c6d7e8f90a1b2c3d4e5f6"
 
-        repository.completeLesson(lessonOrder = 1, eventId = eventId)
-        val retry = repository.completeLesson(lessonOrder = 1, eventId = eventId)
+        repository.completeLesson(lessonOrder = 1, expectedLevel = "hsk1", eventId = eventId)
+        val retry = repository.completeLesson(lessonOrder = 1, expectedLevel = "hsk1", eventId = eventId)
 
         assertEquals(2, sent.size)
         assertEquals(listOf(eventId, eventId), sent.map { it.eventId })
+        assertEquals(listOf("hsk1", "hsk1"), sent.map { it.expectedLevel })
         assertTrue((retry as ApiResult.Success).value.duplicate)
+    }
+
+    @Test
+    fun `completion keeps the begun lesson level when the course changes before dispatch`() = runTest {
+        var activeLevel = "hsk1"
+        var pauseCompletionToken = false
+        val tokenStarted = CompletableDeferred<Unit>()
+        val resumeToken = CompletableDeferred<Unit>()
+        val sent = mutableListOf<CourseCompleteRequest>()
+        val api = object : FakeCourseApi() {
+            override suspend fun courseMap(
+                authorization: String,
+                timezoneOffsetMinutes: Int,
+            ): Response<CourseMapDto> = Response.success(sampleMap().copy(level = activeLevel))
+
+            override suspend fun lesson(
+                authorization: String,
+                lessonOrder: Int,
+                accessRef: String,
+            ): Response<CourseLessonResponse> = Response.success(CourseLessonResponse(
+                ok = true,
+                level = activeLevel,
+                lessonOrder = lessonOrder,
+                totalCards = 2,
+                previewCardLimit = 2,
+                completionAllowed = true,
+                lesson = lessonPayload,
+            ))
+
+            override suspend fun complete(
+                authorization: String,
+                body: CourseCompleteRequest,
+            ): Response<CourseCompleteResponse> {
+                assertEquals("nhsk3", activeLevel)
+                assertEquals("Bearer access-1", authorization)
+                sent += body
+                return Response.success(CourseCompleteResponse(
+                    ok = true,
+                    completedLesson = body.lessonOrder,
+                    completedLessonsCount = body.lessonOrder,
+                ))
+            }
+        }
+        val repository = repository(api, FakeCourseMapDao(), token = {
+            if (pauseCompletionToken) {
+                pauseCompletionToken = false
+                tokenStarted.complete(Unit)
+                resumeToken.await()
+            }
+            ApiResult.Success("access-1")
+        })
+        repository.courseMap()
+        val begun = (repository.lesson(
+            level = "hsk1",
+            lessonOrder = 1,
+            language = com.pomp.hskai.core.i18n.AppLanguage.UZBEK,
+        ) as ApiResult.Success).value.lesson
+        val eventId = "android:0d1f2e3a4b5c6d7e8f90a1b2c3d4e5f6"
+        val mistakes = listOf(CourseMistakeDto(
+            materialRef = "lesson:hsk1:1:section:1:card:1",
+            selectedAnswer = "好",
+        ))
+        pauseCompletionToken = true
+        val completion = async {
+            repository.completeLesson(
+                lessonOrder = begun.order,
+                expectedLevel = begun.level,
+                eventId = eventId,
+                mistakes = mistakes,
+                accessRef = "ad:owned-access",
+            )
+        }
+        tokenStarted.await()
+
+        // A separate course switch is already reflected in the shared map
+        // while this old completion still waits for bearer transport.
+        activeLevel = "nhsk3"
+        val switched = repository.courseMap() as ApiResult.Success
+        assertEquals("nhsk3", switched.value.map.level)
+        assertTrue(sent.isEmpty())
+        resumeToken.complete(Unit)
+        assertTrue(completion.await() is ApiResult.Success)
+
+        val request = sent.single()
+        assertEquals("hsk1", request.expectedLevel)
+        assertEquals(begun.order, request.lessonOrder)
+        assertEquals(eventId, request.eventId)
+        assertEquals(mistakes, request.mistakes)
+        assertEquals("ad:owned-access", request.accessRef)
+        val wire = Json.parseToJsonElement(json.encodeToString(CourseCompleteRequest.serializer(), request)).jsonObject
+        assertEquals("hsk1", wire.getValue("expected_level").jsonPrimitive.content)
     }
 
     @Test

@@ -167,7 +167,7 @@ fun LessonScreen(
     Box(modifier = modifier.fillMaxSize()) {
         Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
             when {
-                state.isLoading -> Centered { HskBrandLoader() }
+                state.isLoading -> LessonEntryOverlay(alpha = 1f, key = "lesson-loading")
                 state.lesson == null -> Centered {
                     Text(
                         text = (state.error as? ApiError.LimitReached)?.limitText
@@ -579,7 +579,6 @@ private fun LessonBody(
             strokes = state.writerStrokes,
             isLoading = state.isWriterLoading,
             onShowCharacter = onShowWriterCharacter,
-            onReplay = { onShowWriterCharacter(state.writerIndex) },
             onDismiss = onCloseWriter,
         )
     }
@@ -854,8 +853,10 @@ internal fun LessonEntryOverlay(
                 scaleY = 1f + (1f - alpha) * .012f
             },
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(24.dp),
+        Box(Modifier.fillMaxSize()) {
+            HskSceneBackground(Modifier.fillMaxSize())
+            Column(
+                modifier = Modifier.fillMaxSize().padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -895,6 +896,7 @@ internal fun LessonEntryOverlay(
                         ),
                     )
                 }
+            }
             }
         }
     }

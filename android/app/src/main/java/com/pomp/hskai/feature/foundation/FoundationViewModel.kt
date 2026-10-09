@@ -27,6 +27,9 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
+// Do not turn a listening retry into a reading/copying question.
+internal fun foundationListeningExampleVisible(answerCorrect: Boolean?): Boolean = answerCorrect == true
+
 internal data class FoundationExample(
     val zh: String,
     val pinyin: String,

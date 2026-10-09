@@ -15,6 +15,7 @@ Audit: 2026-10-08, based on `codex/local-ai` after the HSK 3.0 checkout repair.
 | Leave Voice during start, send or delayed microphone initialization | Late responses revive the session or microphone | Invalidate session ownership, close abandoned sessions, stop on Back/disposal/tab exit, synchronize live engine start/stop. `VoiceCourseChangeTest`, `VoiceScreenBackTest`. |
 | Start a skip test for a genuinely locked lesson | The normal playable-lesson endpoint correctly rejects it | Fetch only quiz material through `/api/v3/android/course/skip-test/{order}`. Validate owned active level/order/material refs; never populate the playable lesson cache or consume a lesson start. `SkipTestRepositoryContractTest`, `SkipTestViewModelTest`, Android course/Foundation API tests. |
 | A skip unlock request arrives after the active course changes | An old test can advance the newly selected course | New APKs send `expected_level`; check it under the existing server user lock before any progress mutation. Treat it as a precondition, never a course override. Keep the preview → switch → old unlock API regression. |
+| A lesson completion request arrives after the active course changes | The old result can award progress/XP to the newly selected course | Send the immutable lesson level and check the optional `expected_level` precondition under the same fresh user lock before progress, allowance, mistakes or XP writes. Keep delayed-dispatch client and preview → switch → old completion server regressions. |
 
 ## Rules for future changes
 

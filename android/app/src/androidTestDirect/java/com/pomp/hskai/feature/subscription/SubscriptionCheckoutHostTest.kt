@@ -163,13 +163,23 @@ class SubscriptionCheckoutHostTest {
         compose.waitForIdle()
     }
 
-    private fun readyReceipt(): SubscriptionCheckoutViewModel {
+    private fun advanceToPayment() {
         val continueLabel = copy.getString(R.string.action_continue)
         if (compose.onAllNodesWithText(continueLabel).fetchSemanticsNodes().isNotEmpty()) {
             compose.onNodeWithText(continueLabel).performClick()
         }
-        compose.onNodeWithText(copy.getString(R.string.sub_continue_country)).performClick()
+        if (compose.onAllNodesWithText("Dushanbe City").fetchSemanticsNodes().isNotEmpty()) {
+            // The centered picker confirms the method and requests its quote
+            // on this tap; there is no separate METHOD Continue button.
+            compose.onNodeWithText("Dushanbe City").assertIsDisplayed().performClick()
+        } else {
+            compose.onNodeWithText(copy.getString(R.string.sub_continue_country)).performClick()
+        }
         compose.waitForIdle()
+    }
+
+    private fun readyReceipt(): SubscriptionCheckoutViewModel {
+        advanceToPayment()
         lateinit var model: SubscriptionCheckoutViewModel
         compose.runOnIdle {
             model = ViewModelProvider(owner).get(
@@ -246,8 +256,7 @@ class SubscriptionCheckoutHostTest {
         val model = readyReceipt()
         val token = requireNotNull(model.receiptSelectionToken())
         compose.runOnIdle { model.back() }
-        compose.onNodeWithText(copy.getString(R.string.sub_continue_country)).performClick()
-        compose.waitForIdle()
+        advanceToPayment()
         compose.runOnIdle {
             // A picker may return after Back and a new payment quote.
             model.selectReceipt(context, Uri.parse("file:///obsolete-picker-receipt.png"), token)
@@ -314,12 +323,7 @@ class SubscriptionCheckoutHostTest {
         reopen("hsk30_content")
         expectPlan(R.string.sub_plan_hsk30)
 
-        val continueLabel = copy.getString(R.string.action_continue)
-        if (compose.onAllNodesWithText(continueLabel).fetchSemanticsNodes().isNotEmpty()) {
-            compose.onNodeWithText(continueLabel).performClick()
-        }
-        compose.onNodeWithText(copy.getString(R.string.sub_continue_country)).performClick()
-        compose.waitForIdle()
+        advanceToPayment()
         assertEquals("hsk30_unlock", quoteRequests.single().planType)
 
         lateinit var model: SubscriptionCheckoutViewModel

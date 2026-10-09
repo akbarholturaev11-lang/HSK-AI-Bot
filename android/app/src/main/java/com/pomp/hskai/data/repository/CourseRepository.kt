@@ -573,6 +573,7 @@ class CourseRepository(
 
     suspend fun completeLesson(
         lessonOrder: Int,
+        expectedLevel: String,
         eventId: String = newEventId(),
         mistakes: List<CourseMistakeDto> = emptyList(),
         accessRef: String = "",
@@ -587,6 +588,7 @@ class CourseRepository(
                 CourseCompleteRequest(
                     lessonOrder = lessonOrder,
                     eventId = eventId,
+                    expectedLevel = expectedLevel.trim().lowercase(),
                     accessRef = accessRef,
                     mistakes = mistakes,
                 ),

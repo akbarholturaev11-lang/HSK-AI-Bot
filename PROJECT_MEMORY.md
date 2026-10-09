@@ -10766,6 +10766,7 @@ Changed:
 - Fresh canonical course levels invalidate old Practice/Voice sessions and temporary destinations. Request generations protect Profile/checkout/Voice from late reads and mutations; receipt-picker ownership and displayed-host navigation prevent cross-product callbacks.
 - Every authenticated payment decision refreshes foreground access, independently of OS notification permission. Course refresh requests are coalesced and Voice status refreshes supersede stale in-flight reads.
 - Android locked-lesson skip tests fetch only quiz material from `/api/v3/android/course/skip-test/{order}`; canonical material validation and Foundation/course/daily gates remain. Skip unlock enforces Foundation and the new APK's `expected_level` precondition under the existing user lock, preventing an old test from advancing a newly selected course. Older clients can omit the optional field.
+- Ordinary Android lesson completion also sends the immutable lesson level as `expected_level`; the shared server completion checks it under the fresh user lock before any progress, allowance, mistakes or XP mutation. This closes the same delayed-request cross-course hole as skip unlock while remaining optional for older clients.
 - CI and release share a blocking Direct/Play emulator regression action, including checkout, course, Voice lifecycle and verified payment decisions.
 
 Why:

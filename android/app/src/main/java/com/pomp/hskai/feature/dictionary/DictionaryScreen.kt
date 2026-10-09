@@ -81,6 +81,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.abs
 import com.pomp.hskai.R
+import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.design.components.HskBrandLoader
@@ -157,7 +158,7 @@ fun DictionaryScreen(
             else -> actions.onBack()
         }
     }
-    Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
+    HskSceneSurface(modifier = modifier.fillMaxSize()) {
         val writing = state.writing
         when {
             writing != null -> HanziWritingScreen(
