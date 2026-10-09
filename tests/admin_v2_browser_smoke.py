@@ -88,8 +88,7 @@ def main():
                 page.on("pageerror", lambda error: errors.append(str(error)))
                 page.route("https://telegram.org/js/telegram-web-app.js", lambda route: route.fulfill(
                     status=200, content_type="application/javascript",
-                    body="window.Telegram={WebApp:{initData:'invalid-demo-session',ready(){},expand(){},setHeaderColor(){},setBackgroundColor(){},
-                    onEvent(type,callback){(window.__telegramEvents||(window.__telegramEvents={}))[type]=callback}}};"
+                    body="window.Telegram={WebApp:{initData:'invalid-demo-session',ready(){},expand(){},setHeaderColor(){},setBackgroundColor(){},onEvent(){}}};"
                 ))
                 page.route("**/api/admin-miniapp/**", lambda route: route.fulfill(
                     status=403, content_type="application/json",
@@ -358,7 +357,8 @@ def main():
                     contentSafeAreaInset:{top:75,right:0,bottom:26,left:0},
                     requestFullscreen(){window.__fullscreenRequests++},
                     ready(){},expand(){},setHeaderColor(){},
-                    setBackgroundColor(){},onEvent(){}
+                    setBackgroundColor(){},
+                    onEvent(type,callback){(window.__telegramEvents||(window.__telegramEvents={}))[type]=callback}
                 }};"""
             ))
             iphone.route("**/api/admin-miniapp/**", api_fixture)
