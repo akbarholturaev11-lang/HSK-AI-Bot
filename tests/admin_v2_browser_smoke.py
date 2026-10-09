@@ -138,7 +138,19 @@ def main():
                     "amount": "69 TJS", "status": "pending", "status_label": "Tekshiruvda",
                     "submitted_at": "demo", "source": "miniapp", "has_screenshot": True
                 }]},
-                "statistics_reports": [], "data_quality": {},
+                "statistics_reports": [
+                    {
+                        "key": period, "note": "UI demo period",
+                        "metrics": {
+                            "user_count": 100, "active_users": 37,
+                            "approved_payment_users": 5, "pending_payments": 1,
+                        },
+                        "course": {
+                            "opened_users": 30, "lesson_users": 20,
+                            "completed_users": 11,
+                        },
+                    } for period in ("weekly", "monthly", "all_time")
+                ], "data_quality": {},
                 "modules": [
                     {"key": key, "title": label, "icon": "⚙️", "note": "Demo"}
                     for key, label in [
@@ -164,6 +176,32 @@ def main():
                     ]
                 ]
             }
+            fake_finance = {
+                "ok": True,
+                "periods": [
+                    {
+                        "key": period, "note": "UI demo", "range_label": "Demo period",
+                        "unit": {"approved_count": 8, "arppu_text": "$8.00"},
+                        "finance": {
+                            "revenue_text": "$64.00", "ai_cost_text": "$5.00",
+                            "expense_text": "$7.00", "net_text": "$52.00",
+                            "ai_share_pct": 7.8, "margin_pct": 81.2,
+                            "net_positive": True,
+                        },
+                        "client_business": {"rows": [
+                            {"key": "miniapp", "entry_users": 24, "paying_users": 4,
+                             "payments": 5, "revenue_text": "$40.00"},
+                            {"key": "android", "entry_users": 12, "paying_users": 2,
+                             "payments": 2, "revenue_text": "$16.00"},
+                            {"key": "desktop", "entry_users": 8, "paying_users": 1,
+                             "payments": 1, "revenue_text": "$8.00"},
+                            {"key": "unknown", "entry_users": 0, "paying_users": 0,
+                             "payments": 1, "revenue_text": "$9.00"},
+                        ]},
+                    } for period in ("weekly", "monthly", "all_time")
+                ]
+            }
+            legacy_stats_requests = []
             attempted_mutations = []
             fake_management = {
                 "ok": True, "prices": [], "payment_details": "", "payment_details_alif": "",
@@ -181,7 +219,12 @@ def main():
                 elif url.endswith("/api/admin-miniapp/management"):
                     route.fulfill(status=200, content_type="application/json",
                                   body=json.dumps(fake_management))
+                elif url.endswith("/api/admin-miniapp/finance-stats"):
+                    route.fulfill(status=200, content_type="application/json",
+                                  body=json.dumps(fake_finance))
                 else:
+                    if url.endswith(("/desktop-stats", "/android-stats", "/sub-entry-stats")):
+                        legacy_stats_requests.append(url)
                     if url.endswith("/payments/review"):
                         attempted_mutations.append("payment_review")
                     route.fulfill(status=403, content_type="application/json",
@@ -191,6 +234,16 @@ def main():
                       wait_until="domcontentloaded")
             live.wait_for_selector("#app:not([hidden])", timeout=8000)
             assert live.locator("#summaryGrid .stat").count() == 4, "Real dashboard render failed"
+            assert live.locator("#overviewCards .stat").count() == 4, "Executive overview should show exactly four facts"
+            assert live.locator("#v2LearningCards .stat").count() == 3, "Learning report should show exactly three facts"
+            assert live.locator("#v2FinanceCards .stat").count() == 4, "Finance should show four key facts"
+            assert live.locator("#v2UnifiedApps .v2-client-card").count() == 3, "Three app summaries expected"
+            for channel, revenue in (("miniapp", "$40.00"), ("android", "$16.00"), ("desktop", "$8.00")):
+                c = live.locator(f'#v2UnifiedApps [data-client="{channel}"]')
+                assert c.locator(".v2-client-fact").count() == 3, f"Too many facts for {channel}"
+                assert revenue in c.inner_text(), f"Canonical revenue missing for {channel}"
+            assert "noma'lum" in live.locator("#v2SourceNote").inner_text(), "Unattributed payments must be disclosed"
+            assert not legacy_stats_requests, "Deprecated device/install endpoints should not load: " + str(legacy_stats_requests)
             assert live.locator("#moduleGrid [data-module]").count() == 1, "Course track module rendering failed; browser errors: " + str(live_errors)
             assert live.locator("#v2ProductAccess [data-module]").count() == 2, "Access module rendering failed"
             assert live.locator("#v2MarketingModules [data-module]").count() == 4, "Marketing module rendering failed"
@@ -296,6 +349,11 @@ def main():
                 return bar.top>=74 && nav.bottom<=innerHeight-25;
             }"""), "Telegram header or bottom navigation overlaps native inset"
             iphone.screenshot(path=str(output / "admin-v2-telegram-safe-dashboard-390.png"), full_page=False)
+            iphone.locator('.mobile-nav [data-tab="statistics"]').click()
+            iphone.locator('#statistics [data-v2-sub="statistics:platform"]').click()
+            assert iphone.locator("#v2UnifiedApps .v2-client-card").count() == 3
+            assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Unified apps mobile overflow"
+            iphone.screenshot(path=str(output / "admin-v2-telegram-unified-apps-390.png"), full_page=False)
             iphone.locator('.mobile-nav [data-tab="payments"]').click()
             assert iphone.locator("#paymentBoard .v2-pay-mobile [data-payment-preview]").count()==1, "Mobile finance cards missing"
             assert iphone.locator("#paymentBoard .v2-pay-desktop").is_hidden(), "Desktop payments table visible on mobile"
