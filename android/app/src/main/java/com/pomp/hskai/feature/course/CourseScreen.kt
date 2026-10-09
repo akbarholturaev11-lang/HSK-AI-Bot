@@ -292,7 +292,7 @@ fun CourseScreen(
             hsk30.access.featureEnabled &&
             !hsk30.access.allowed
 
-        if (hsk30Locked && hsk30 != null) {
+        if (hsk30Locked && hsk30 != null && !state.isSwitchingTrack) {
             Hsk30LockedEntryDialog(
                 hsk30 = hsk30,
                 onUnlock = onUnlockHsk30,
@@ -509,6 +509,8 @@ private fun Hsk30LockedEntryDialog(
     onUnlock: () -> Unit,
     onBackToHsk20: () -> Unit,
 ) {
+    val paymentAvailable = hsk30.paymentEnabled && hsk30.priceTjs > 0 &&
+        hsk30.priceDisplay.isNotBlank()
     Hsk30BookDialog(isNew = hsk30.newBadge.isNew, onDismiss = {}, dismissible = false) {
         Hsk30BookTitle(
             title = stringResource(
@@ -525,9 +527,17 @@ private fun Hsk30LockedEntryDialog(
         } else {
             Spacer(Modifier.height(20.dp))
         }
+        if (!paymentAvailable) {
+            Text(
+                stringResource(R.string.hsk30_unlock_unavailable),
+                color = PompColors.InkSecondary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 12.dp),
+            )
+        }
         Hsk30BookPrimary(
             label = stringResource(R.string.hsk30_access_unlock_button),
-            enabled = hsk30.paymentEnabled && hsk30.priceDisplay.isNotBlank(),
+            enabled = paymentAvailable,
             onClick = onUnlock,
         )
         Hsk30BookSecondary(stringResource(R.string.hsk30_access_back_hsk20), onBackToHsk20)

@@ -1,6 +1,7 @@
 package com.pomp.hskai.core.notify
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import android.Manifest
 import android.content.pm.PackageManager
@@ -39,11 +40,23 @@ data class InAppPaymentDecision(
  * FCM is optional; the pending Android payment is also checked every 15 minutes.
  * Both transports use the same device and payment decision dedupe key.
  */
-class PaymentDecisionMonitor(
+class PaymentDecisionMonitor internal constructor(
     private val app: HskAiApplication,
     private val api: AndroidPushApi,
+    private val prefs: SharedPreferences,
+    private val accessToken: suspend () -> ApiResult<String>,
+    private val hasSession: suspend () -> Boolean,
+    private val postNotification: (String, String) -> Boolean,
 ) {
-    private val prefs = app.getSharedPreferences("payment_decisions", Context.MODE_PRIVATE)
+    constructor(app: HskAiApplication, api: AndroidPushApi) : this(
+        app = app,
+        api = api,
+        prefs = app.getSharedPreferences("payment_decisions", Context.MODE_PRIVATE),
+        accessToken = { app.authRepository.accessToken() },
+        hasSession = { app.credentialStore.refreshToken() != null },
+        postNotification = { status, plan -> PaymentNotifications.post(app, status, plan) },
+    )
+
     private val lock = Any()
     private val inAppPaymentDecisionChannel = Channel<InAppPaymentDecision>(Channel.UNLIMITED)
     val inAppPaymentDecisions: Flow<InAppPaymentDecision> = inAppPaymentDecisionChannel.receiveAsFlow()
@@ -99,7 +112,7 @@ class PaymentDecisionMonitor(
     suspend fun syncRegistration() {
         if (!initializeFirebase() ||
             prefs.getString(DEVICE_ID, null).isNullOrBlank() ||
-            app.credentialStore.refreshToken() == null
+            !hasSession()
         ) return
         if (!canRegisterPush()) {
             // Notifications were switched off: the server should stop routing
@@ -120,9 +133,9 @@ class PaymentDecisionMonitor(
     suspend fun registerToken(token: String) {
         if (!firebaseConfigured() || token.isBlank() || !canRegisterPush() ||
             prefs.getString(DEVICE_ID, null).isNullOrBlank() ||
-            app.credentialStore.refreshToken() == null
+            !hasSession()
         ) return
-        val access = app.authRepository.accessToken() as? ApiResult.Success ?: return
+        val access = accessToken() as? ApiResult.Success ?: return
         val registered = apiCall { api.register("Bearer ${access.value}", PushTokenRequest(token)) }
         if (registered is ApiResult.Success && registered.value.ok) {
             syncPreferences(access.value)
@@ -130,8 +143,8 @@ class PaymentDecisionMonitor(
     }
 
     suspend fun syncPreferences() {
-        if (!firebaseConfigured() || app.credentialStore.refreshToken() == null) return
-        val access = app.authRepository.accessToken() as? ApiResult.Success ?: return
+        if (!firebaseConfigured() || !hasSession()) return
+        val access = accessToken() as? ApiResult.Success ?: return
         syncPreferences(access.value)
     }
 
@@ -174,11 +187,11 @@ class PaymentDecisionMonitor(
     /** FCM data is a hint, not proof: verify this payment under today's login. */
     suspend fun receive(deviceId: String, paymentId: Int, status: String): Boolean {
         if (paymentId <= 0 || status !in setOf("approved", "rejected") ||
-            deviceId.isBlank() || app.credentialStore.refreshToken() == null
+            deviceId.isBlank() || !hasSession()
         ) return false
         val epoch = prefs.getLong(SESSION_EPOCH, 0L)
         if (prefs.getString(DEVICE_ID, null) != deviceId) return false
-        val access = app.authRepository.accessToken() as? ApiResult.Success ?: return false
+        val access = accessToken() as? ApiResult.Success ?: return false
         val verified = apiCall { api.paymentStatus("Bearer ${access.value}", paymentId) }
         val body = (verified as? ApiResult.Success)?.value ?: return false
         if (!body.ok || body.paymentId != paymentId || body.status != status) return false
@@ -196,23 +209,24 @@ class PaymentDecisionMonitor(
             if (prefs.getString(DEVICE_ID, null) != deviceId ||
                 prefs.getLong(SESSION_EPOCH, 0L) != epoch
             ) return false
-            if (planType == "hsk30_unlock" && status == "rejected") {
-                val inAppSeenKey = "in-app:$deviceId:$paymentId:$status"
-                if (!prefs.getBoolean(inAppSeenKey, false)) {
-                    prefs.edit().putBoolean(inAppSeenKey, true).apply()
-                    inAppPaymentDecisionChannel.trySend(
-                        InAppPaymentDecision(
-                            deviceId = deviceId,
-                            paymentId = paymentId,
-                            status = status,
-                            planType = planType,
-                        )
+            // Every verified decision can change access in an open app. This
+            // event is independent of OS notification permission and its dedupe.
+            val inAppSeenKey = "in-app:$deviceId:$paymentId:$status"
+            if (!prefs.getBoolean(inAppSeenKey, false)) {
+                if (inAppPaymentDecisionChannel.trySend(
+                    InAppPaymentDecision(
+                        deviceId = deviceId,
+                        paymentId = paymentId,
+                        status = status,
+                        planType = planType,
                     )
+                ).isSuccess) {
+                    prefs.edit().putBoolean(inAppSeenKey, true).apply()
                 }
             }
             val seenKey = "seen:$deviceId:$paymentId:$status"
             if (prefs.getBoolean(seenKey, false)) return false
-            if (!PaymentNotifications.post(app, status, planType)) return false
+            if (!postNotification(status, planType)) return false
             prefs.edit().putBoolean(seenKey, true).apply()
             if (prefs.getInt(PENDING_PAYMENT_ID, 0) == paymentId) {
                 prefs.edit().remove(PENDING_PAYMENT_ID).apply()
@@ -226,12 +240,12 @@ class PaymentDecisionMonitor(
     suspend fun pollPending(): Boolean {
         val paymentId = pendingPaymentId()
         if (paymentId <= 0) return false
-        if (app.credentialStore.refreshToken() == null) {
+        if (!hasSession()) {
             clear()
             return false
         }
         val epoch = prefs.getLong(SESSION_EPOCH, 0L)
-        val access = app.authRepository.accessToken() as? ApiResult.Success ?: return true
+        val access = accessToken() as? ApiResult.Success ?: return true
         return when (val result = apiCall {
             api.paymentStatus("Bearer ${access.value}", paymentId)
         }) {

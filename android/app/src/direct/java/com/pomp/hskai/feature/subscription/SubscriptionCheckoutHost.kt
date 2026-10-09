@@ -52,6 +52,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -143,31 +144,38 @@ fun SubscriptionCheckoutHost(
     val app = context.applicationContext as HskAiApplication
     val model: SubscriptionCheckoutViewModel = viewModel(
         viewModelStoreOwner = viewModelStoreOwner,
+        key = "subscription-checkout:$origin",
         factory = SubscriptionCheckoutViewModel.Factory(
             repository,
             origin,
             onPendingPayment = { paymentId -> app.paymentDecisionMonitor.watch(paymentId) },
             savedRegion = { app.appSettings.paymentRegion() },
             saveRegion = { region -> app.appSettings.setPaymentRegion(region) },
-            onProvisionalAccess = onClose,
         ),
     )
     val state by model.state.collectAsStateWithLifecycle()
     val copy = remember(context, state.language) { localizedContext(context, state.language) }
+    var receiptSelection by remember(model) { mutableStateOf<Int?>(null) }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        model.selectReceipt(context, uri)
+        val token = receiptSelection
+        receiptSelection = null
+        if (token != null) model.selectReceipt(context, uri, token)
     }
-    var supportOpen by remember { mutableStateOf(false) }
-    var routeOpen by remember { mutableStateOf(false) }
-    var inviteOpen by remember { mutableStateOf(false) }
-    var waitingInvite by remember { mutableStateOf(false) }
-    var qrPreview by remember { mutableStateOf(false) }
-    var qrActions by remember { mutableStateOf(false) }
-    var hintExpanded by remember { mutableStateOf(false) }
-    var renewalConfirmOpen by remember { mutableStateOf(false) }
+    var supportOpen by remember(model) { mutableStateOf(false) }
+    var routeOpen by remember(model) { mutableStateOf(false) }
+    var inviteOpen by remember(model) { mutableStateOf(false) }
+    var waitingInvite by remember(model) { mutableStateOf(false) }
+    var qrPreview by remember(model) { mutableStateOf(false) }
+    var qrActions by remember(model) { mutableStateOf(false) }
+    var hintExpanded by remember(model) { mutableStateOf(false) }
+    var renewalConfirmOpen by remember(model) { mutableStateOf(false) }
+    val closeHost by rememberUpdatedState(onClose)
     val stepIndex = state.flow.indexOf(state.step)
 
-    LaunchedEffect(Unit) { model.load() }
+    LaunchedEffect(model) { model.load() }
+    LaunchedEffect(model) {
+        model.provisionalAccess.collect { closeHost() }
+    }
     LaunchedEffect(state.discount, state.discountStarting) {
         if (waitingInvite && !state.discountStarting && state.discount?.referralLink?.isNotBlank() == true) {
             waitingInvite = false
@@ -259,7 +267,12 @@ fun SubscriptionCheckoutHost(
                         hintExpanded = hintExpanded, onToggleHint = { hintExpanded = !hintExpanded },
                         qrActions = qrActions, onToggleQr = { qrActions = !qrActions },
                         onQrPreview = { qrPreview = true },
-                        onUpload = { picker.launch("image/*") },
+                        onUpload = {
+                            model.receiptSelectionToken()?.let { token ->
+                                receiptSelection = token
+                                picker.launch("image/*")
+                            }
+                        },
                         onCopy = { value -> copyValue(context, value) },
                     )
                     CheckoutStep.DONE -> DoneContent(

@@ -100,12 +100,17 @@ class VoiceViewModel(
     private var liveConnectJob: Job? = null
     private var liveReconnectJob: Job? = null
     private var liveConnection: LiveVoiceConnection? = null
+    private val liveAudioLifecycleLock = Any()
     @Volatile private var liveGeneration = 0L
     private var lastLiveLevel = "hsk1"
     private var lastLiveLanguage = "uz"
     private var liveReconnectAttempts = 0
     private var fallbackNoticePending = false
     private var slowSpeech: Boolean = false
+    private var courseLevel: String? = null
+    private var courseGeneration = 0L
+    private var sessionGeneration = 0L
+    private var endingGeneration: Long? = null
 
     /** Follows the learner's "slow speech" setting for the next reply. */
     fun setSlowSpeech(slow: Boolean) {
@@ -124,11 +129,14 @@ class VoiceViewModel(
         if (phrase.isEmpty()) return
         val course = courseRepository ?: return
         val player = audioPlayer ?: return
+        val generation = sessionGeneration
         speakJob?.cancel()
         speakJob = viewModelScope.launch {
             when (val audio = course.ttsAudio(phrase)) {
                 is ApiResult.Success -> runCatching {
-                    player.play(audio.value, if (slowSpeech) SLOW_SPEECH_RATE else 1f)
+                    if (generation == sessionGeneration) {
+                        player.play(audio.value, if (slowSpeech) SLOW_SPEECH_RATE else 1f)
+                    }
                 }
 
                 is ApiResult.Failure -> Unit
@@ -150,22 +158,68 @@ class VoiceViewModel(
 
     /** Access changes refresh Voice only after Voice has actually been opened. */
     fun refreshStatusIfLoaded() {
-        if (statusLoaded) loadStatus()
+        if (statusLoaded || statusLoadInFlight) {
+            courseGeneration++
+            statusLoadInFlight = false
+            loadStatus()
+        }
     }
 
-    override fun onCleared() {
+    /** A confirmed course change cannot keep a conversation from the old level. */
+    fun onCourseChanged(level: String) {
+        val previousLevel = courseLevel
+        courseLevel = level
+        if (previousLevel == null || previousLevel == level) return
+        val current = _state.value
+        val refreshStatus = statusLoaded || statusLoadInFlight
+        courseGeneration++
+        statusLoadInFlight = false
+        invalidateSession()
+        lastLiveLevel = level
+        _state.value = VoiceUiState(
+            status = current.status,
+            isLoading = !statusLoaded,
+            selectedRole = current.selectedRole,
+            remainingLimit = current.status?.remainingVoiceLimit ?: 0,
+        )
+        current.sessionId?.let(::closeAbandonedSession)
+        if (refreshStatus) loadStatus()
+    }
+
+    private fun invalidateSession() {
+        sessionGeneration++
+        endingGeneration = null
+        speakJob?.cancel()
+        speakJob = null
+        audioPlayer?.release()
         recorder.cancel()
         disconnectLiveTransport()
+        fallbackNoticePending = false
+        liveReconnectAttempts = 0
+    }
+
+    private fun closeAbandonedSession(sessionId: String) {
+        viewModelScope.launch { repository.voiceEnd(sessionId) }
+    }
+
+    private fun ownsSession(generation: Long, sessionId: String): Boolean =
+        generation == sessionGeneration && _state.value.sessionId == sessionId
+
+    override fun onCleared() {
+        courseGeneration++
+        invalidateSession()
     }
 
     fun loadStatus() {
         if (statusLoadInFlight) return
+        val generation = courseGeneration
         statusLoadInFlight = true
         _state.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
             try {
             when (val result = repository.voiceStatus()) {
                 is ApiResult.Success -> {
+                    if (generation != courseGeneration) return@launch
                     statusLoaded = true
                     _state.update {
                         it.copy(
@@ -176,12 +230,12 @@ class VoiceViewModel(
                     }
                 }
 
-                is ApiResult.Failure -> _state.update {
+                is ApiResult.Failure -> if (generation == courseGeneration) _state.update {
                     it.copy(isLoading = false, error = result.error)
                 }
             }
             } finally {
-                statusLoadInFlight = false
+                if (generation == courseGeneration) statusLoadInFlight = false
             }
         }
     }
@@ -193,6 +247,10 @@ class VoiceViewModel(
 
     fun startSession(level: String, language: String, preferLive: Boolean = true) {
         if (_state.value.isStarting || _state.value.hasSession) return
+        if (courseLevel != null && courseLevel != level) return
+        if (courseLevel == null) courseLevel = level
+        val generation = ++sessionGeneration
+        val role = _state.value.selectedRole
         lastLiveLevel = level
         lastLiveLanguage = language
         liveReconnectAttempts = 0
@@ -201,13 +259,17 @@ class VoiceViewModel(
         viewModelScope.launch {
             when (
                 val result = repository.voiceStart(
-                    role = _state.value.selectedRole,
+                    role = role,
                     level = level,
                     language = language,
                     mode = mode,
                 )
             ) {
                 is ApiResult.Success -> {
+                    if (generation != sessionGeneration) {
+                        closeAbandonedSession(result.value.sessionId)
+                        return@launch
+                    }
                     val opening = result.value.openingMessage
                     _state.update {
                         it.copy(
@@ -246,6 +308,7 @@ class VoiceViewModel(
                 }
 
                 is ApiResult.Failure -> {
+                    if (generation != sessionGeneration) return@launch
                     if (mode == "live") {
                         fallbackNoticePending = true
                         _state.update { it.copy(isStarting = false, error = null) }
@@ -277,16 +340,20 @@ class VoiceViewModel(
             )
             return
         }
+        val sessionId = current.sessionId ?: return
+        val generation = sessionGeneration
         viewModelScope.launch {
+            if (!ownsSession(generation, sessionId)) return@launch
             _state.update { it.copy(isRecording = false, isSending = true, error = null) }
             val recording = runCatching { recorder.stop() }.getOrElse {
+                if (!ownsSession(generation, sessionId)) return@launch
                 _state.update { state ->
                     state.copy(isSending = false, error = ApiError.Unknown)
                 }
                 return@launch
             }
-            val sessionId = _state.value.sessionId ?: return@launch
-            applyTurn(repository.voiceMessage(sessionId, recording.dataUrl))
+            if (!ownsSession(generation, sessionId)) return@launch
+            applyTurn(repository.voiceMessage(sessionId, recording.dataUrl), generation, sessionId)
         }
     }
 
@@ -301,6 +368,7 @@ class VoiceViewModel(
         val current = _state.value
         if (trimmed.isEmpty() || !current.canAnswer) return
         val sessionId = current.sessionId ?: return
+        val generation = sessionGeneration
         if (current.isLive) {
             val connection = liveConnection ?: return
             connection.setMuted(true)
@@ -312,7 +380,8 @@ class VoiceViewModel(
         recorder.cancel()
         _state.update { it.copy(isRecording = false, isSending = true, error = null) }
         viewModelScope.launch {
-            applyTurn(repository.voiceTypedMessage(sessionId, trimmed))
+            if (!ownsSession(generation, sessionId)) return@launch
+            applyTurn(repository.voiceTypedMessage(sessionId, trimmed), generation, sessionId)
         }
     }
 
@@ -341,10 +410,15 @@ class VoiceViewModel(
                     }
                 }
                 withContext(liveIoDispatcher) {
-                    audioEngine.start { chunk ->
-                        if (generation == liveGeneration) connection.sendAudio(chunk)
+                    synchronized(liveAudioLifecycleLock) {
+                        if (generation == liveGeneration) {
+                            audioEngine.start { chunk ->
+                                if (generation == liveGeneration) connection.sendAudio(chunk)
+                            }
+                        }
                     }
                 }
+                if (generation != liveGeneration || _state.value.sessionId != sessionId) return@launch
                 connection.setMuted(false)
                 audioEngine.setMuted(false)
                 _state.update {
@@ -378,7 +452,7 @@ class VoiceViewModel(
         val connection = liveConnection
         liveConnection = null
         connection?.close()
-        liveVoiceAudioEngine?.stop()
+        synchronized(liveAudioLifecycleLock) { liveVoiceAudioEngine?.stop() }
         if (!keepTimer) {
             liveTimerJob?.cancel()
             liveTimerJob = null
@@ -422,7 +496,11 @@ class VoiceViewModel(
     }
 
     private fun fallbackToTurnBased(liveSessionId: String) {
+        val generation = ++sessionGeneration
         val role = _state.value.selectedRole
+        val level = lastLiveLevel
+        val language = lastLiveLanguage
+        disconnectLiveTransport()
         _state.update {
             it.copy(
                 isLive = false,
@@ -437,15 +515,20 @@ class VoiceViewModel(
         }
         viewModelScope.launch {
             repository.voiceEnd(liveSessionId)
+            if (!ownsSession(generation, liveSessionId)) return@launch
             when (
                 val fallback = repository.voiceStart(
                     role = role,
-                    level = lastLiveLevel,
-                    language = lastLiveLanguage,
+                    level = level,
+                    language = language,
                     mode = "turn",
                 )
             ) {
                 is ApiResult.Success -> {
+                    if (!ownsSession(generation, liveSessionId)) {
+                        closeAbandonedSession(fallback.value.sessionId)
+                        return@launch
+                    }
                     val response = fallback.value
                     val opening = response.openingMessage
                     _state.update {
@@ -476,7 +559,7 @@ class VoiceViewModel(
                     }
                     speak(opening.chineseReply)
                 }
-                is ApiResult.Failure -> _state.update {
+                is ApiResult.Failure -> if (ownsSession(generation, liveSessionId)) _state.update {
                     it.copy(isStarting = false, sessionId = null, error = fallback.error)
                 }
             }
@@ -515,12 +598,18 @@ class VoiceViewModel(
     }
 
     private suspend fun handleLiveEvent(event: LiveVoiceEvent) {
+        val generation = liveGeneration
         when (event) {
             is LiveVoiceEvent.Audio -> {
                 _state.update { it.copy(isAiSpeaking = true) }
                 val engine = liveVoiceAudioEngine
                 if (engine != null) {
-                    val queued = withContext(liveIoDispatcher) { engine.playPcm(event.pcm) }
+                    val queued = withContext(liveIoDispatcher) {
+                        synchronized(liveAudioLifecycleLock) {
+                            if (generation == liveGeneration) engine.playPcm(event.pcm) else true
+                        }
+                    }
+                    if (generation != liveGeneration) return
                     if (!queued) {
                         handleLiveEvent(LiveVoiceEvent.Failed("live_playback_backpressure"))
                     }
@@ -528,8 +617,13 @@ class VoiceViewModel(
             }
             LiveVoiceEvent.Interrupted -> {
                 liveVoiceAudioEngine?.let { engine ->
-                    withContext(liveIoDispatcher) { engine.clearPlayback() }
+                    withContext(liveIoDispatcher) {
+                        synchronized(liveAudioLifecycleLock) {
+                            if (generation == liveGeneration) engine.clearPlayback()
+                        }
+                    }
                 }
+                if (generation != liveGeneration) return
                 _state.update { it.copy(isAiSpeaking = false) }
             }
             is LiveVoiceEvent.TurnComplete -> {
@@ -586,7 +680,8 @@ class VoiceViewModel(
         }
     }
 
-    private fun applyTurn(result: ApiResult<VoiceMessageResponse>) {
+    private fun applyTurn(result: ApiResult<VoiceMessageResponse>, generation: Long, sessionId: String) {
+        if (!ownsSession(generation, sessionId)) return
         when (result) {
             is ApiResult.Success -> {
                 val response = result.value
@@ -629,13 +724,18 @@ class VoiceViewModel(
     }
 
     fun endSession() {
-        val sessionId = _state.value.sessionId ?: return
-        if (_state.value.isSending && !_state.value.isLive) return
-        speakJob?.cancel()
-        recorder.cancel()
-        disconnectLiveTransport()
+        if (endingGeneration == sessionGeneration) return
+        val sessionId = _state.value.sessionId
+        invalidateSession()
+        if (sessionId == null) {
+            _state.update { it.copy(isStarting = false, isSending = false, isRecording = false) }
+            return
+        }
+        val generation = sessionGeneration
+        endingGeneration = generation
         _state.update {
             it.copy(
+                isStarting = false,
                 isRecording = false,
                 isLiveConnecting = false,
                 isLiveConnected = false,
@@ -645,7 +745,10 @@ class VoiceViewModel(
             )
         }
         viewModelScope.launch {
-            when (val result = repository.voiceEnd(sessionId)) {
+            val result = repository.voiceEnd(sessionId)
+            if (!ownsSession(generation, sessionId)) return@launch
+            endingGeneration = null
+            when (result) {
                 is ApiResult.Success -> _state.update {
                     it.copy(
                         isSending = false,
@@ -675,8 +778,8 @@ class VoiceViewModel(
     fun swapPartner(role: String, level: String, language: String) {
         if (_state.value.isSending || _state.value.isStarting) return
         val previousSession = _state.value.sessionId
-        recorder.cancel()
-        disconnectLiveTransport()
+        invalidateSession()
+        val generation = sessionGeneration
         _state.update {
             it.copy(
                 selectedRole = role,
@@ -696,13 +799,14 @@ class VoiceViewModel(
         }
         viewModelScope.launch {
             if (previousSession != null) repository.voiceEnd(previousSession)
-            startSession(level, language)
+            if (generation == sessionGeneration) startSession(level, language)
         }
     }
 
     fun reset() {
-        recorder.cancel()
-        disconnectLiveTransport()
+        courseGeneration++
+        statusLoadInFlight = false
+        invalidateSession()
         _state.update {
             VoiceUiState(
                 status = it.status,

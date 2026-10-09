@@ -137,20 +137,21 @@ class AndroidCourseCompleteRequest(DesktopCourseCompleteRequest):
     """
 
     access_ref: str = Field(default="", max_length=160)
+    expected_level: str | None = Field(default=None, min_length=1, max_length=20)
 
 
 class AndroidLessonUnlockRequest(BaseModel):
     """Skip-ahead test result for a locked lesson.
 
-    The level is not here on purpose: the server reads the learner's band from
-    their own record, exactly as completion does, so a client cannot unlock a
-    lesson in a band it does not belong to.
+    The server owns the active band. An optional expected level only rejects
+    a quiz submitted after that band changed; it can never select another band.
     """
 
     model_config = ConfigDict(extra="forbid")
 
     lesson_order: int = Field(ge=MIN_LESSON_ORDER, le=MAX_LESSON_ORDER)
     score: int = Field(default=0, ge=0, le=100)
+    expected_level: str | None = Field(default=None, min_length=1, max_length=20)
 
 
 class AndroidFoundationCompleteRequest(BaseModel):
@@ -440,6 +441,25 @@ def create_android_course_router(
             logger.exception("Android foundation completion failed")
             return _unavailable()
 
+    @router.get("/api/v3/android/course/skip-test/{lesson_order}")
+    async def android_skip_test_questions(request: Request, lesson_order: int):
+        try:
+            if request.query_params:
+                raise DesktopCourseError("invalid_request", status_code=422)
+            if not MIN_LESSON_ORDER <= lesson_order <= MAX_LESSON_ORDER:
+                raise DesktopCourseError("invalid_lesson_order", status_code=422)
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).skip_test_questions(
+                    bearer_access_token(request),
+                    lesson_order=lesson_order,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android skip test questions failed")
+            return _unavailable()
+
     @router.get("/api/v3/android/course/lesson/{lesson_order}")
     async def android_course_lesson(request: Request, lesson_order: int):
         try:
@@ -523,6 +543,7 @@ def create_android_course_router(
                         for mistake in payload.mistakes
                     ],
                     access_ref=payload.access_ref,
+                    expected_level=payload.expected_level,
                 )
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, DesktopCourseError) as exc:
@@ -548,6 +569,7 @@ def create_android_course_router(
                     bearer_access_token(request),
                     lesson_order=payload.lesson_order,
                     score=payload.score,
+                    expected_level=payload.expected_level,
                 )
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, DesktopCourseError) as exc:

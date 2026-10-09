@@ -10741,3 +10741,42 @@ Risk:
 Follow-up:
 - Real Chromium capture/playback with fake microphone and a routed provider, signed-auth/database tests, Android relay and course/payment regressions pass. These do not confirm physical Telegram WebView audio or a paid Gemini connection; verify on Android Telegram and iPhone after deployment.
 - Validation: 281 backend tests (+186 subtests), 10 Live browser cases, 4 PCM sample-rate checks and main-flow smoke checks. The sales-checkout overlap discovered on clean `f5666bc5` was fixed on 2026-10-08: `App.openPaywall` shows its layer, closes the shared lesson sheet to clear background `inert`, then starts paywall promos. Keep the real click/navigation regressions for treatment and regular uz/ru/tj paywalls.
+
+### 2026-10-08 — Android HSK 3.0 transition and checkout state
+
+Changed:
+- Direct checkout ViewModel is keyed by its API origin (`subscription-checkout:<origin>`). Pending review uses `pending_payment.plan_type`, so an ordinary Pro payment opened from HSK 3.0 remains dismissible and a pending HSK unlock opened from Profile retains its course action.
+- A track switch completes only after a fresh server map confirms its track and requested level. MainActivity opens Course and refreshes Profile/access-dependent sections. Failed confirmation retries only the map GET, avoiding another progress-resetting level POST. The locked entry dialog hides during switching and explains unavailable payment.
+
+Why:
+- The shared session owner outlives checkout screens: an unkeyed model retained the previous product's origin. Switch errors were invisible and Profile kept its old level.
+
+Files touched:
+- Android `MainActivity.kt`, `feature/course/CourseViewModel.kt`, `CourseScreen.kt`, Direct `feature/subscription/SubscriptionCheckoutHost.kt`, `SubscriptionCheckoutViewModel.kt`, and regression tests.
+
+Risk:
+- No server price, access, approval, subscription or schema change. Installed APKs need a new release to receive this native fix.
+
+Follow-up:
+- Publish a signed Direct APK and verify the physical-phone transition/payment flow. Keep `CourseTrackSwitchViewModelTest`, `Hsk30EntryFlowTest`, `SubscriptionCheckoutHostTest`, and `SubscriptionCheckoutPaymentReviewTest`; the receipt submission test uses a fake API and never creates a production payment.
+
+### 2026-10-08 — Android course/session regression prevention
+
+Changed:
+- Fresh canonical course levels invalidate old Practice/Voice sessions and temporary destinations. Request generations protect Profile/checkout/Voice from late reads and mutations; receipt-picker ownership and displayed-host navigation prevent cross-product callbacks.
+- Every authenticated payment decision refreshes foreground access, independently of OS notification permission. Course refresh requests are coalesced and Voice status refreshes supersede stale in-flight reads.
+- Android locked-lesson skip tests fetch only quiz material from `/api/v3/android/course/skip-test/{order}`; canonical material validation and Foundation/course/daily gates remain. Skip unlock enforces Foundation and the new APK's `expected_level` precondition under the existing user lock, preventing an old test from advancing a newly selected course. Older clients can omit the optional field.
+- Ordinary Android lesson completion also sends the immutable lesson level as `expected_level`; the shared server completion checks it under the fresh user lock before any progress, allowance, mistakes or XP mutation. This closes the same delayed-request cross-course hole as skip unlock while remaining optional for older clients.
+- CI and release share a blocking Direct/Play emulator regression action, including checkout, course, Voice lifecycle and verified payment decisions.
+
+Why:
+- Session-owned models outlive screens; ignored refreshes and late callbacks can preserve old products, course levels or access. Normal playable lesson GET correctly cannot serve locked skip-test material.
+
+Files touched:
+- Android course, Practice, Profile, Voice, Direct checkout, payment monitor and MainActivity; Android course API/service; regression tests; `.github/actions/android-flow-regressions` and Android CI/release workflows. Durable scenarios: `knowledge/bugs/android-course-and-checkout-lifecycle.md`.
+
+Risk:
+- Deploy the new authenticated backend endpoint before the new APK. No schema, price, subscription approval, quiz score or lesson-content change. Installed APKs retain old native behavior until updated.
+
+Follow-up:
+- Preserve deferred-response and real Compose regressions; verify the signed APK on the affected phone after deployment. These changes do not prove physical microphone behavior or production payment/provider operation.

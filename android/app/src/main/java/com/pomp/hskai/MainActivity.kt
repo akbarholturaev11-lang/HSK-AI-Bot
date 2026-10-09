@@ -711,15 +711,40 @@ private fun AppRoot(
             }
 
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
+            var skipTestLesson by remember { mutableStateOf<CourseLesson?>(null) }
+            LaunchedEffect(courseState.completedTrackSwitch) {
+                if (courseState.completedTrackSwitch == null) return@LaunchedEffect
+                openLesson = null
+                practiceRequest = null
+                openDrill = null
+                skipTestLesson = null
+                dictionaryOpen = false
+                openChallenge = null
+                ratingUserOpen = null
+                ratingChallengesOpen = false
+                checkoutVisible = false
+                adRequest = null
+                limitOverlayVisible = false
+                selectedTab = MainTab.COURSE
+                profileViewModel.load()
+                courseViewModel.consumeTrackSwitchCompletion()
+            }
+            LaunchedEffect(courseState.map?.level, courseState.isStale) {
+                val level = courseState.map?.level ?: return@LaunchedEffect
+                if (courseState.isStale) return@LaunchedEffect
+                practiceViewModel.onCourseChanged(level)
+                voiceViewModel.onCourseChanged(level)
+            }
             var hsk30PaymentRejectionVisible by remember { mutableStateOf(false) }
             LaunchedEffect(courseViewModel) {
                 app.paymentDecisionMonitor.inAppPaymentDecisions.collect { decision ->
-                    if (
-                        decision.deviceId == app.paymentDecisionMonitor.currentDeviceId() &&
-                        decision.planType == "hsk30_unlock" &&
-                        decision.status == "rejected"
-                    ) {
-                        courseViewModel.load()
+                    if (decision.deviceId != app.paymentDecisionMonitor.currentDeviceId()) return@collect
+                    courseViewModel.load()
+                    profileViewModel.load()
+                    onboardingViewModel.loadStatus(showSplash = false)
+                    voiceViewModel.refreshStatusIfLoaded()
+                    practiceViewModel.onAccessChanged()
+                    if (decision.planType == "hsk30_unlock" && decision.status == "rejected") {
                         hsk30PaymentRejectionVisible = true
                     }
                 }
@@ -728,6 +753,12 @@ private fun AppRoot(
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
             val currentLevel = courseState.map?.level ?: state.account.level
             val currentLanguage = state.account.language.backendCode
+            LaunchedEffect(selectedTab, voiceViewModel) {
+                val voice = voiceViewModel.state.value
+                if (selectedTab != MainTab.VOICE && (voice.hasSession || voice.isStarting)) {
+                    voiceViewModel.endSession()
+                }
+            }
 
             fun hsk30ContentLocked(): Boolean {
                 val level = (courseState.map?.level ?: state.account.level).trim().lowercase()
@@ -846,9 +877,6 @@ private fun AppRoot(
                     launchLesson(candidate)
                 }
             }
-
-            // Which locked lesson the skip test is running for, if any.
-            var skipTestLesson by remember { mutableStateOf<CourseLesson?>(null) }
 
             fun launchDrill(mode: DrillMode) {
                 // A drill is an attempt, not a reusable destination. A fresh
@@ -1140,6 +1168,10 @@ private fun AppRoot(
                     ),
                 )
                 val skipTestState by skipTestViewModel.state.collectAsStateWithLifecycle()
+                DisposableEffect(skipTestViewModel) {
+                    skipTestViewModel.beginAttempt()
+                    onDispose { skipTestViewModel.endAttempt() }
+                }
                 SkipTestScreen(
                     state = skipTestState,
                     pinyin = pinyin,
@@ -1524,6 +1556,25 @@ private fun AppRoot(
                     key = courseState.map?.level ?: "course-track-switch",
                     titleRes = R.string.course_track_switch_title,
                     subtitleRes = R.string.course_track_switch_subtitle,
+                )
+            }
+
+            courseState.trackError?.let { error ->
+                AlertDialog(
+                    onDismissRequest = courseViewModel::consumeTrackError,
+                    title = { Text(stringResource(R.string.profile_course_version)) },
+                    text = { Text(stringResource(error.messageRes)) },
+                    confirmButton = {
+                        TextButton(onClick = courseViewModel::retryTrackSwitch) {
+                            Text(stringResource(R.string.action_retry))
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = courseViewModel::consumeTrackError) {
+                            Text(stringResource(R.string.action_close))
+                        }
+                    },
+                    containerColor = PompColors.Paper,
                 )
             }
 

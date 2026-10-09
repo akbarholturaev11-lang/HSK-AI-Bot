@@ -29,6 +29,8 @@ from app.services.course_v3_dictionary import (
 )
 from app.db.models.course_lessons import CourseLesson
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.course_mistake import CourseMistake
+from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.user import User
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.android_course_service import AndroidCourseService
@@ -39,6 +41,7 @@ from app.services.course_access_policy_service import (
     CourseAccessPolicyService,
 )
 from app.services.course_miniapp_access_service import (
+    COURSE_DAILY_EVENT_NAME,
     FREE_COURSE_LESSONS_PER_LEVEL,
     CourseMiniAppAccessService,
     free_course_parts_for_level,
@@ -249,6 +252,12 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             with self.assertRaises(DesktopCourseError) as ctx:
                 await service.lesson(token, lesson_order=1)
             self.assertEqual("hsk30_unlock_required", ctx.exception.code)
+            with self.assertRaises(DesktopCourseError) as quiz:
+                await service.skip_test_questions(token, lesson_order=4)
+            self.assertEqual("hsk30_unlock_required", quiz.exception.code)
+            with self.assertRaises(DesktopCourseError) as unlock:
+                await service.unlock_lesson(token, lesson_order=4, score=100)
+            self.assertEqual("hsk30_unlock_required", unlock.exception.code)
 
     async def test_a_spent_allowance_blocks_access_but_keeps_the_current_marker(self):
         """Qulf endi darajaga emas, adminning chegarasiga bog'liq.
@@ -424,6 +433,113 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             # Rad etilgan urinish progressni SURMAYDI.
             self.assertEqual(2, await self._completed_count(session))
 
+    async def test_skip_questions_are_read_only_and_keep_the_actual_lesson_locked(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            service = AndroidCourseService(session, _settings())
+
+            quiz = await service.skip_test_questions(token, lesson_order=4)
+
+            self.assertEqual({"ok", "level", "lesson_order", "questions"}, set(quiz))
+            self.assertEqual("hsk1", quiz["level"])
+            self.assertEqual(4, quiz["lesson_order"])
+            self.assertTrue(quiz["questions"])
+            self.assertIsNone(await CourseProgressRepository(session).get_by_user_id(1))
+            events = (await session.execute(select(CourseMiniAppEvent))).scalars().all()
+            self.assertFalse(any(event.event_name in {
+                COURSE_DAILY_EVENT_NAME, "lesson_completed", "test_completed",
+            } for event in events))
+            source = json.loads(Path("app/static/course_v3_data/hsk1/lesson_04.json").read_text())
+            for question in quiz["questions"]:
+                ref = question["material_ref"].split(":")
+                self.assertEqual(["lesson", "hsk1", "4", "section"], ref[:4])
+                section_no, card_no = int(ref[4]), int(ref[6])
+                if section_no == 99:
+                    card = source["exit_ticket"]["cards"][card_no - 1]
+                else:
+                    section = next(
+                        section for index, section in enumerate(source["sections"], start=1)
+                        if int(section.get("section_no") or index) == section_no
+                    )
+                    card = section["cards"][card_no - 1]
+                self.assertEqual(card, question["card"])
+            with self.assertRaises(DesktopCourseError) as locked:
+                await service.lesson(token, lesson_order=4)
+            self.assertEqual("course_lesson_not_unlocked", locked.exception.code)
+            with self.assertRaises(DesktopCourseError) as completion:
+                await service.complete(token, lesson_order=4, event_id="android:" + "q" * 32)
+            self.assertEqual("course_lesson_not_unlocked", completion.exception.code)
+            self.assertEqual(0, await self._completed_count(session))
+
+    async def test_skip_questions_do_not_spend_a_lesson_start(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            await self._lesson_limit(session, 1)
+            service = AndroidCourseService(session, _settings())
+            await service.skip_test_questions(token, lesson_order=4)
+            await service.skip_test_questions(token, lesson_order=4)
+            course_map = await service.course_map(token)
+            self.assertEqual(1, course_map["lesson_limit"]["remaining"])
+            await service.lesson(token, lesson_order=1)
+            with self.assertRaises(DesktopCourseError) as spent:
+                await service.skip_test_questions(token, lesson_order=4)
+            self.assertEqual("free_feature_limit_reached", spent.exception.code)
+
+    async def test_corrupt_lesson_cannot_become_an_empty_skip_test(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            service = AndroidCourseService(session, _settings())
+            for source in (
+                {"level": "hsk1", "lesson_id": 4, "sections": []},
+                {"lesson_id": 4, "sections": [{"cards": [{"type": "pronunciation"}]}]},
+                {"level": "hsk1", "lesson_id": 5, "sections": [{"cards": [{"type": "pronunciation"}]}]},
+            ):
+                with self.subTest(source=source), patch.object(service, "_read_json", return_value=source):
+                    with self.assertRaises(DesktopCourseError) as invalid:
+                        await service.skip_test_questions(token, lesson_order=4)
+                    self.assertEqual("course_lesson_load_failed", invalid.exception.code)
+                    self.assertEqual(500, invalid.exception.status_code)
+            self.assertIsNone(await CourseProgressRepository(session).get_by_user_id(1))
+
+    async def test_old_quiz_cannot_unlock_the_new_band_after_a_track_change(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            service = AndroidCourseService(session, _settings())
+            quiz = await service.skip_test_questions(token, lesson_order=4)
+            await service.switch_course_track(token, target_track="hsk20", level="hsk2")
+            with self.assertRaises(DesktopCourseError) as stale:
+                await service.unlock_lesson(token, lesson_order=4, score=100, expected_level=quiz["level"])
+            self.assertEqual("course_context_changed", stale.exception.code)
+            self.assertEqual(409, stale.exception.status_code)
+            progress = await CourseProgressRepository(session).get_by_user_id(1)
+            self.assertEqual("hsk2", progress.level)
+            self.assertEqual(0, progress.completed_lessons_count)
+            tests = (await session.execute(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == "test_completed",
+            ))).scalars().all()
+            self.assertFalse(tests)
+
+    async def test_locked_user_read_refreshes_cached_level_before_quiz_precondition(self):
+        async with self.sessions() as old_session, self.sessions() as switch_session:
+            token = await self._token(old_session)
+            old_service = AndroidCourseService(old_session, _settings())
+            await old_service.skip_test_questions(token, lesson_order=4)
+            await old_session.commit()
+            # Keep the authenticated old User in SQLAlchemy's identity map.
+            old_context = await old_service._context(token)
+            self.assertEqual("hsk1", old_context.user.level)
+            await AndroidCourseService(switch_session, _settings()).switch_course_track(
+                token, target_track="hsk20", level="hsk2",
+            )
+            self.assertEqual("hsk1", old_context.user.level)
+            with self.assertRaises(DesktopCourseError) as stale:
+                await old_service.unlock_lesson(token, lesson_order=4, score=100, expected_level="hsk1")
+            self.assertEqual("course_context_changed", stale.exception.code)
+            self.assertEqual("hsk2", old_context.user.level)
+            progress = await CourseProgressRepository(old_session).get_by_user_id(1)
+            self.assertEqual("hsk2", progress.level)
+            self.assertEqual(0, progress.completed_lessons_count)
+
     async def test_the_skip_test_opens_a_locked_lesson(self):
         """The Mini App's skip-ahead test, reachable from the native client.
 
@@ -493,6 +609,9 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(403, blocked.exception.status_code)
             self.assertEqual("free_feature_limit_reached", blocked.exception.code)
             self.assertEqual(2, await self._completed_count(session))
+            with self.assertRaises(DesktopCourseError) as preview:
+                await service.skip_test_questions(token, lesson_order=6)
+            self.assertEqual("free_feature_limit_reached", preview.exception.code)
 
     async def test_the_skip_test_refuses_a_lesson_outside_the_band(self):
         async with self.sessions() as session:
@@ -508,6 +627,9 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(
                 await CourseProgressRepository(session).get_by_user_id(1)
             )
+            with self.assertRaises(DesktopCourseError) as questions:
+                await service.skip_test_questions(token, lesson_order=499)
+            self.assertEqual(404, questions.exception.status_code)
 
     async def test_lesson_payload_matches_the_checked_in_material(self):
         async with self.sessions() as session:
@@ -706,6 +828,7 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         cases = [
             ("get", "/api/v3/android/course/map", None),
             ("get", "/api/v3/android/course/lesson/1", None),
+            ("get", "/api/v3/android/course/skip-test/4", None),
             ("get", "/api/v3/android/tts?text=你好", None),
             ("get", "/api/v3/android/stroke?char=你", None),
             (
@@ -735,6 +858,17 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         """
         headers = await self._bearer()
 
+        questions = await self.client.get(
+            "/api/v3/android/course/skip-test/4", headers=headers,
+        )
+        self.assertEqual(200, questions.status_code)
+        self.assertEqual("no-store", questions.headers.get("Cache-Control"))
+        self.assertTrue(questions.json()["questions"])
+        self.assertNotIn("lesson", questions.json())
+        locked = await self.client.get("/api/v3/android/course/lesson/4", headers=headers)
+        self.assertEqual(403, locked.status_code)
+        self.assertEqual("course_lesson_not_unlocked", locked.json()["error"])
+
         response = await self.client.post(
             "/api/v3/android/lesson/unlock",
             json={"lesson_order": 4, "score": 75},
@@ -747,6 +881,48 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(4, body["lesson_order"])
         self.assertEqual(3, body["completed_lessons_count"])
         self.assertEqual("no-store", response.headers.get("Cache-Control"))
+        opened = await self.client.get("/api/v3/android/course/lesson/4", headers=headers)
+        self.assertEqual(200, opened.status_code)
+        self.assertTrue(opened.json()["completion_allowed"])
+
+    async def test_skip_questions_reject_client_level_and_bound_order(self):
+        headers = await self._bearer()
+        for path, status in (
+            ("/api/v3/android/course/skip-test/4?level=hsk4", 422),
+            ("/api/v3/android/course/skip-test/0", 422),
+            ("/api/v3/android/course/skip-test/501", 422),
+            ("/api/v3/android/course/skip-test/499", 404),
+        ):
+            with self.subTest(path=path):
+                response = await self.client.get(path, headers=headers)
+                self.assertEqual(status, response.status_code)
+                self.assertEqual("no-store", response.headers.get("Cache-Control"))
+
+    async def test_skip_unlock_expected_level_is_a_precondition_not_a_course_override(self):
+        headers = await self._bearer()
+        preview = await self.client.get("/api/v3/android/course/skip-test/4", headers=headers)
+        switched = await self.client.post(
+            "/api/v3/android/course/tracks/switch", headers=headers,
+            json={"target_track": "hsk20", "level": "hsk2"},
+        )
+        self.assertEqual(200, switched.status_code)
+        rejected = await self.client.post(
+            "/api/v3/android/lesson/unlock", headers=headers,
+            json={"lesson_order": 4, "score": 100, "expected_level": preview.json()["level"]},
+        )
+        self.assertEqual(409, rejected.status_code)
+        self.assertEqual("course_context_changed", rejected.json()["error"])
+        self.assertEqual("no-store", rejected.headers.get("Cache-Control"))
+        current_map = await self.client.get("/api/v3/android/course/map", headers=headers)
+        self.assertEqual("hsk2", current_map.json()["level"])
+        self.assertEqual(0, current_map.json()["progress"]["completed"])
+        # A fresh quiz in that band still obeys the existing weak-score rule.
+        allowed = await self.client.post(
+            "/api/v3/android/lesson/unlock", headers=headers,
+            json={"lesson_order": 4, "score": 0, "expected_level": "hsk2"},
+        )
+        self.assertEqual(200, allowed.status_code)
+        self.assertEqual(3, allowed.json()["completed_lessons_count"])
 
     async def test_the_skip_test_route_rejects_a_level_the_client_invents(self):
         headers = await self._bearer()
@@ -999,6 +1175,89 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
             first.json()["completed_lessons_count"],
             retry.json()["completed_lessons_count"],
         )
+
+    async def _completion_mutation_state(self, headers):
+        response = await self.client.get("/api/v3/android/course/map", headers=headers)
+        self.assertEqual(200, response.status_code)
+        body = response.json()
+        async with self.sessions() as session:
+            event_ids = {}
+            for model in (CourseMiniAppEvent, CourseXpEvent, CourseMistake):
+                event_ids[model.__name__] = list(
+                    (await session.execute(select(model.id).order_by(model.id))).scalars()
+                )
+        return {
+            "level": body["level"],
+            "completed": body["progress"]["completed"],
+            "xp": body["progress"]["xp"],
+            "daily_xp": body["progress"]["daily_xp"],
+            "allowance": {
+                key: body["lesson_limit"].get(key)
+                for key in ("allowed", "used", "remaining")
+            },
+            "events": event_ids,
+        }
+
+    async def test_late_old_course_completion_cannot_advance_the_new_course(self):
+        headers = await self._bearer()
+        lesson = await self.client.get("/api/v3/android/course/lesson/1", headers=headers)
+        self.assertEqual(200, lesson.status_code)
+        self.assertTrue(lesson.json()["completion_allowed"])
+        old_level = lesson.json()["level"]
+        switched = await self.client.post(
+            "/api/v3/android/course/tracks/switch", headers=headers,
+            json={"target_track": "hsk20", "level": "hsk2"},
+        )
+        self.assertEqual(200, switched.status_code)
+        before = await self._completion_mutation_state(headers)
+        self.assertEqual("hsk2", before["level"])
+        self.assertEqual(0, before["completed"])
+
+        rejected = await self.client.post(
+            "/api/v3/android/course/complete", headers=headers,
+            json={
+                "lesson_order": 1, "event_id": "android:" + "c" * 32,
+                "expected_level": old_level, "mistakes": [],
+            },
+        )
+        self.assertEqual(409, rejected.status_code)
+        self.assertEqual("course_context_changed", rejected.json()["error"])
+        self.assertEqual("no-store", rejected.headers.get("Cache-Control"))
+        self.assertEqual(before, await self._completion_mutation_state(headers))
+
+    async def test_same_course_completion_with_expected_level_remains_idempotent(self):
+        headers = await self._bearer()
+        body = {
+            "lesson_order": 1, "event_id": "android:" + "d" * 32,
+            "expected_level": "hsk1",
+        }
+        completed = await self.client.post(
+            "/api/v3/android/course/complete", headers=headers, json=body,
+        )
+        self.assertEqual(200, completed.status_code)
+        self.assertEqual(1, completed.json()["completed_lessons_count"])
+        before = await self._completion_mutation_state(headers)
+        self.assertGreater(before["xp"], 0)
+        retried = await self.client.post(
+            "/api/v3/android/course/complete", headers=headers, json=body,
+        )
+        self.assertEqual(200, retried.status_code)
+        self.assertTrue(retried.json()["duplicate"])
+        self.assertEqual(before, await self._completion_mutation_state(headers))
+
+        # Even a retry of a stored result belongs to the lesson's original band.
+        switched = await self.client.post(
+            "/api/v3/android/course/tracks/switch", headers=headers,
+            json={"target_track": "hsk20", "level": "hsk2"},
+        )
+        self.assertEqual(200, switched.status_code)
+        before = await self._completion_mutation_state(headers)
+        late_retry = await self.client.post(
+            "/api/v3/android/course/complete", headers=headers, json=body,
+        )
+        self.assertEqual(409, late_retry.status_code)
+        self.assertEqual("course_context_changed", late_retry.json()["error"])
+        self.assertEqual(before, await self._completion_mutation_state(headers))
 
     async def test_notifications_toggle_persists_and_shows_in_the_map(self):
         headers = await self._bearer()

@@ -44,6 +44,21 @@ import kotlinx.serialization.json.intOrNull
  */
 object LessonParser {
 
+    /** The same graded card parser, with the source reference supplied by the quiz API. */
+    fun parseSkipQuestion(
+        card: JsonObject,
+        language: AppLanguage,
+        materialRef: String,
+    ): ChoiceCard? {
+        val type = card["type"].string()?.trim()?.lowercase().orEmpty()
+        val kind = CHOICE_KINDS[type] ?: when (type) {
+            "choice" -> ChoiceKind.MEANING
+            "listen_choice" -> ChoiceKind.LISTENING
+            else -> return null
+        }
+        return card.toChoice(kind, language, materialRef)
+    }
+
     fun materialRef(
         level: String,
         lessonOrder: Int,

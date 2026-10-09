@@ -166,6 +166,27 @@ class AndroidFoundationApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(403, response.status_code)
         self.assertEqual("android_foundation_required", response.json()["error"])
 
+    async def test_required_foundation_blocks_skip_questions_and_unlock(self):
+        headers = await self._bearer()
+        preview = await self.client.get("/api/v3/android/course/skip-test/4", headers=headers)
+        self.assertEqual(403, preview.status_code)
+        self.assertEqual("android_foundation_required", preview.json()["error"])
+        unlock = await self.client.post(
+            "/api/v3/android/lesson/unlock", headers=headers,
+            json={"lesson_order": 4, "score": 100},
+        )
+        self.assertEqual(403, unlock.status_code)
+        self.assertEqual("android_foundation_required", unlock.json()["error"])
+
+        await self._complete_foundation(headers, suffix="s")
+        ready = await self.client.get("/api/v3/android/course/skip-test/4", headers=headers)
+        self.assertEqual(200, ready.status_code)
+        self.assertTrue(ready.json()["questions"])
+        # Reading the quiz never removes the separate lesson-order guard.
+        locked = await self.client.get("/api/v3/android/course/lesson/4", headers=headers)
+        self.assertEqual(403, locked.status_code)
+        self.assertEqual("course_lesson_not_unlocked", locked.json()["error"])
+
     async def test_required_foundation_blocks_lesson_completion(self):
         headers = await self._bearer()
         response = await self.client.post(
