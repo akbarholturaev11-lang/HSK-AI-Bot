@@ -375,6 +375,32 @@ const API={
 };
 const PARAMS=new URLSearchParams(window.location.search);
 const INIT_DATA=tg?.initData||"";
+/* Course checkout runs in the same Telegram WebView. The Telegram header Back
+   must return to Course V3, not close the Mini App or step through payment. */
+const RETURN_TO_COURSE=PARAMS.get("return_to")==="course";
+function courseReturnUrl(){
+  const lang=PARAMS.get("lang");
+  const requestedTab=PARAMS.get("return_tab");
+  const level=PARAMS.get("return_level");
+  const tab=["course","mashq","voice","rating","profile"].includes(requestedTab)?requestedTab:"course";
+  const query=new URLSearchParams({lang:["ru","uz","tj"].includes(lang)?lang:"uz",tab});
+  if(/^(?:hsk[1-4]|nhsk[1-3])$/.test(level||""))query.set("level",level);
+  return "/course-v3.html?"+query.toString();
+}
+function returnToCourseFromCheckout(){
+  /* replace avoids a course -> checkout -> course -> checkout browser-history loop. */
+  window.location.replace(courseReturnUrl());
+}
+function initTelegramCourseReturn(){
+  if(!RETURN_TO_COURSE||!INIT_DATA)return;
+  try{
+    const back=tg?.BackButton;
+    if(!back||typeof back.onClick!=="function"||typeof back.show!=="function")return;
+    back.onClick(returnToCourseFromCheckout);
+    back.show();
+  }catch(e){}
+}
+initTelegramCourseReturn();
 const PLAN_ORDER=["1_month","10_days","3_months","hsk30_unlock"];
 const METHOD_ORDER=["visa","alipay","wechat"];
 const CHINA_METHODS=["alipay","wechat"];
