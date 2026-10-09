@@ -307,6 +307,21 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .opt.sel{border-color:var(--jade);background:var(--jadebg);color:var(--jade)}
 .opt.bad{border-color:var(--cin);background:var(--cinbg);color:var(--cin2)}
 .opt small{display:block;color:var(--ink3);font-size:12px;margin-top:2px}
+
+/* Compact lesson viewport: keep localized prompts and answer choices in
+   the same scroll area. The mascot remains a small instruction header. */
+@media(max-width:600px){
+  .fcoach-dock{margin:4px 16px 6px;gap:8px}
+  .fcoach{width:68px;height:76px;min-height:76px;flex:0 0 68px}
+  .fcoach-bubble{font-size:12px;line-height:1.4;padding:9px 11px}
+  .fbody{padding:8px 16px calc(18px + var(--safe-b))}
+  .qcard{padding:16px 13px;margin-bottom:14px}
+  .qcard .qh.qask{font-size:clamp(21px,6vw,27px);line-height:1.32;letter-spacing:0;overflow-wrap:anywhere}
+  .qcard .gap{font-size:clamp(21px,6vw,28px);overflow-wrap:anywhere}
+  .opt{min-width:0;padding:12px 13px;overflow-wrap:anywhere}
+  .opt .k{flex:0 0 23px}
+}
+
 /* teaching word */
 .wc{text-align:center;padding:8px 0}
 .wc .big{font-size:92px;line-height:1}
@@ -3645,6 +3660,16 @@ function syncLessonCoachLine(){
   slot.innerHTML="";
   var material=document.querySelectorAll("#f-body > .qcard, #f-body > .dia");
   if(!material.length){dock.classList.remove("beside");return}
+  // The coach row is outside the scrollable answer area. On phones, keep
+  // the question with its options so long localized prompts can scroll.
+  // Long material needs full width even in a wider browser window.
+  var narrow=window.innerWidth<=600;
+  var longMaterial=Array.prototype.some.call(material,function(node){
+    return (node.textContent||"").trim().length>22
+      || node.classList.contains("dia")
+      || !!node.querySelector(".gap");
+  });
+  if(narrow||longMaterial){dock.classList.remove("beside");return}
   for(var i=0;i<material.length;i++)slot.appendChild(material[i]);
   dock.classList.add("beside");
 }
