@@ -28,19 +28,66 @@
   }
 }
 
-/* Reusable loading state for lessons and practice, not the application's boot. */
+/* Reusable compact loading state for lesson/practice entry (not app boot). */
 .hsk-study-preparing{
-  display:flex;flex-direction:column;justify-content:center;align-items:center;
-  min-height:240px;width:100%;padding:28px 16px;text-align:center;
-  color:var(--ink,#211D17);background:transparent;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  min-height:240px;
+  padding:18px 18px;
+  margin:0 auto;
+  text-align:center;
+  color:var(--ink,#211D17);
+  background:transparent;
 }
-.hsk-study-preparing-panda{width:148px;height:164px;display:grid;place-items:center}
-.hsk-study-preparing-panda>.hsk-character{width:100%;height:100%}
-.hsk-study-preparing b{display:block;margin-top:9px;font-size:14px;line-height:1.4;font-weight:700}
-.hsk-study-preparing small{display:block;margin-top:4px;font-size:12px;line-height:1.4;color:var(--ink2,#665D50)}
-.hsk-study-preparing-dots{display:flex;gap:8px;margin-top:12px}
+.hsk-study-preparing-panda{
+  display:grid;
+  place-items:center;
+  box-sizing:border-box;
+  flex:0 0 auto;
+  width:110px;
+  height:121px;
+  max-width:30vw;
+  overflow:hidden;
+}
+.hsk-study-preparing-panda>.hsk-character{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+}
+.hsk-study-preparing b{
+  display:block;
+  max-width:300px;
+  margin:5px 0 0;
+  font-size:16px;
+  line-height:1.35;
+  font-weight:700;
+  overflow-wrap:break-word;
+}
+.hsk-study-preparing small{
+  display:block;
+  max-width:300px;
+  margin:0;
+  font-size:13px;
+  line-height:1.45;
+  color:var(--ink2,#665D50);
+  overflow-wrap:break-word;
+}
+.hsk-study-preparing-dots{display:flex;gap:8px;margin-top:8px}
 .hsk-study-preparing-dots i{width:5px;height:5px;border-radius:50%;background:var(--cin,#E04A40);animation:hskStudyLoadPulse .95s ease-in-out infinite alternate}
 .hsk-study-preparing-dots i:nth-child(2){animation-delay:.19s}
 .hsk-study-preparing-dots i:nth-child(3){animation-delay:.38s}
 @keyframes hskStudyLoadPulse{from{opacity:.3;transform:translateY(1px)}to{opacity:1;transform:translateY(-3px)}}
+@media(max-height:650px){
+  .hsk-study-preparing{min-height:185px;padding:12px 14px;gap:5px}
+  .hsk-study-preparing-panda{width:92px;height:101px}
+}
 @media(prefers-reduced-motion:reduce){.hsk-study-preparing-dots i{animation:none}}
