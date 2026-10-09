@@ -158,27 +158,27 @@ class StoredCourseAdCopyTests(unittest.TestCase):
 
 class CourseAdClientTranslationWiringTests(unittest.TestCase):
     def test_all_language_uses_tajik_source_before_upload(self):
-        main = open("app/main.py", encoding="utf-8").read()
+        main = Path("app/main.py").read_text(encoding="utf-8")
         self.assertIn('if language == "all":', main)
         self.assertIn('CourseAdTranslationService().translate_from_tajik(', main)
         self.assertIn("localized_copy=localized_copy", main)
         self.assertIn('"translation_status": "completed" if localized_copy', main)
 
     def test_miniapp_current_locale_sent_to_backend(self):
-        js = open("app/static/course_v3_data/ads.js", encoding="utf-8").read()
-        api = open("app/api/miniapp_ads.py", encoding="utf-8").read()
+        js = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
+        api = Path("app/api/miniapp_ads.py").read_text(encoding="utf-8")
         self.assertIn('"&lang="+encodeURIComponent(', js)
         self.assertIn('request.query_params.get("lang")', api)
         self.assertIn('language=chosen_lang', api)
 
     def test_android_and_ad_placement_render_localized_text(self):
-        android = open("app/api/android_features.py", encoding="utf-8").read()
-        placement = open("app/services/ad_placement_service.py", encoding="utf-8").read()
+        android = Path("app/api/android_features.py").read_text(encoding="utf-8")
+        placement = Path("app/services/ad_placement_service.py").read_text(encoding="utf-8")
         self.assertIn('service.payload(ad, language=getattr(user, "language", None))', android)
         self.assertIn('candidates[index], language=language or getattr(user, "language", None)', placement)
 
     def test_admin_explains_tajik_source_and_one_click_translation(self):
-        html = open("app/static/admin.html", encoding="utf-8").read()
+        html = Path("app/static/admin.html").read_text(encoding="utf-8")
         self.assertIn('id="caLanguageNote"', html)
         self.assertIn('id="caTitleLabel"', html)
         self.assertIn('"caLang").addEventListener("change",caTypeUI)', html)
