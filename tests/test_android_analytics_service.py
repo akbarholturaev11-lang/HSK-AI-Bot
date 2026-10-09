@@ -426,8 +426,12 @@ class AdminRenderResilienceTest(unittest.TestCase):
             self.assertIn('key:"' + key + '"', admin)
         self.assertIn("fp.client_business", admin)
         self.assertIn('apiPost("/api/admin-miniapp/finance-stats"', admin)
-        self.assertNotIn('apiPost("/api/admin-miniapp/android-stats"', admin)
-        self.assertNotIn('apiPost("/api/admin-miniapp/desktop-stats"', admin)
+        # Heavy client reports are now optional, not initial overview requests.
+        initial = admin.split("async function loadData(){", 1)[1].split("function renderAll(){", 1)[0]
+        self.assertNotIn('apiPost("/api/admin-miniapp/android-stats"', initial)
+        self.assertNotIn('apiPost("/api/admin-miniapp/desktop-stats"', initial)
+        self.assertIn('apiPost("/api/admin-miniapp/android-stats"', admin)
+        self.assertIn('apiPost("/api/admin-miniapp/desktop-stats"', admin)
 
     def test_render_error_is_not_reported_as_server_connection_error(self):
         with open("app/static/admin.html", encoding="utf-8") as handle:
@@ -437,14 +441,21 @@ class AdminRenderResilienceTest(unittest.TestCase):
 
 
 class AdminAnalyticsClarityTest(unittest.TestCase):
-    def test_no_detailed_android_install_funnel_in_main_admin(self):
+    def test_detailed_device_reports_exist_but_remain_collapsed_by_default(self):
         with open("app/static/admin.html", encoding="utf-8") as handle:
             admin = handle.read()
-        self.assertNotIn('id="androidFunnel"', admin)
-        self.assertNotIn('id="desktopFunnel"', admin)
-        self.assertNotIn('id="androidVersions"', admin)
-        self.assertNotIn('Batafsil statistika', admin)
-        self.assertNotIn('Update o\'rnatilgan', admin)
+        for detail in ('id="androidFunnel"', 'id="desktopFunnel"',
+                       'id="androidVersions"', 'id="advancedFunnel"',
+                       'id="clientDeviceTable"', 'id="unitCards"',
+                       'id="retentionCards"', 'id="subEntryStats"'):
+            self.assertIn(detail, admin)
+        self.assertIn('data-v2-sub="statistics:details"', admin)
+        self.assertIn('data-v2-pane="statistics:details" hidden', admin)
+        self.assertIn('if(tab==="statistics"&&pane==="details"&&state.overview)', admin)
+        self.assertIn("renderStatisticsDetails();", admin)
+        self.assertIn("loadSubEntry();", admin)
+        self.assertIn('id="v2UnifiedApps"', admin)
+        self.assertIn('id="overviewCards"', admin)
 
     def test_platform_cards_have_only_three_canonical_facts(self):
         with open("app/static/admin.html", encoding="utf-8") as handle:
