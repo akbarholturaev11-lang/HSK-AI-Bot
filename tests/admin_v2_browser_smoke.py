@@ -351,11 +351,29 @@ def main():
             assert not attempted_mutations, "Payment approval was sent despite cancelled verification"
             live.locator('[data-act="close-drawer"]').first.click(force=True)
 
-            # Open real management drawers with a fake in-memory management payload.
+            # Product control modules must be full-width inline workspaces now,
+            # not old narrow modal drawers. The original server-backed form IDs
+            # and events must survive the redesign.
+            for subpage, module_key, expected in [
+                ("tracks", "hsk30", "#hsk30Enabled"),
+                ("access", "course_access", "#courseAccessMode"),
+                ("access", "limits", "#trialEnabled"),
+                ("content", "course_sales_experiment", "#salesExperimentMode"),
+                ("content", "audio", "#auLevel"),
+            ]:
+                live.locator('#tabs [data-tab="settings"]').click()
+                live.locator(f'#settings [data-v2-sub="settings:{subpage}"]').click()
+                live.locator(f'#settings [data-module="{module_key}"]').first.click()
+                host = live.locator('#settings .v2-product-editor:not([hidden])')
+                host.locator(expected).wait_for(timeout=7000)
+                assert host.count() == 1, f"Duplicated Product editor: {module_key}"
+                assert not live.locator('#drawer').evaluate("(el) => el.classList.contains('open')"), f"Old drawer opened: {module_key}"
+                assert live.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), f"Product overflow: {module_key}"
+                live.screenshot(path=str(output / f"admin-v2-product-{module_key}-1440.png"), full_page=False)
+                host.locator('[data-product-back]').click()
+                assert live.locator(f'#settings [data-module="{module_key}"]').first.is_visible(), f"Product navigation lost: {module_key}"
+            # Original modal controls not yet migrated remain operational.
             for section, subpage, module_key, expected in [
-
-                ("settings", "tracks", "hsk30", "#hsk30Enabled"),
-                ("settings", "access", "limits", "#trialEnabled"),
                 ("marketing", "campaigns", "broadcast", "#bcText"),
                 ("system", "settings", "channels", '[data-chadd]'),
             ]:
@@ -531,6 +549,17 @@ def main():
             iphone.locator('#drawer [data-act="close-drawer"]').click()
             assert iphone.locator(".workspace .topbar [data-act='reload']").is_visible(), "Mobile refresh not reachable"
             assert iphone.locator(".page-head .page-actions [data-act='reload']").is_hidden(), "Duplicate refresh CTA visible"
+            # iPhone Product: editable real controls inline, no fullscreen drawer.
+            iphone.locator('.mobile-nav [data-tab="menu"]').click()
+            iphone.locator('#drawer.open [data-tab="settings"]').click()
+            iphone.locator('#settings [data-v2-sub="settings:access"]').click()
+            iphone.locator('#v2ProductAccess [data-module="course_access"]').click()
+            iphone.locator('#v2ProductEditorAccess:not([hidden]) #courseAccessMode').wait_for(timeout=7000)
+            assert not iphone.locator('#drawer').evaluate("(el) => el.classList.contains('open')"), "Mobile Product opened old modal"
+            assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth+1"), "Mobile Product overflow"
+            iphone.screenshot(path=str(output / "admin-v2-telegram-product-course-390.png"), full_page=False)
+            iphone.locator('#v2ProductEditorAccess [data-product-back]').click()
+            assert iphone.locator('#v2ProductAccess [data-module="limits"]').is_visible(), "Mobile Product module was not restored"
             assert not iphone_errors, "Telegram iPhone JS errors: " + str(iphone_errors)
             iphone_context.close()
 
