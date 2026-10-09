@@ -2628,6 +2628,17 @@ function askStudyFocus(){
    "faqat Pro uchun" kabi noto'g'ri sababni aytmaydi — chegara admin sozlagan
    oynada qayta ochiladi. */
 var LIMIT_TEXT="",SECTION_LIMIT_TEXT="";
+/* Best-effort startup: a missing optional mascot script must not block a lesson. */
+function renderStudyPreparing(){
+  try{
+    if(window.HSKStudyPreparing&&typeof window.HSKStudyPreparing.render==="function"){
+      return window.HSKStudyPreparing.render(LANG);
+    }
+  }catch(err){try{console.warn("study_preparing_fallback",err)}catch(_){}}
+  var copy=LANG==="ru"?"Готовим упражнение":LANG==="tj"?"Машқ омода мешавад":"Mashq tayyorlanmoqda";
+  return '<div class="hsk-study-preparing" role="status" aria-live="polite">'
+    +'<div class="hsk-study-preparing-panda" aria-hidden="true">🐼</div><b>'+copy+'</b></div>';
+}
 function newPracticeAttemptRef(){return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
 function validatePracticeGate(o){
   if(o.status===403&&o.j&&o.j.error==="free_feature_limit_reached")return o;
@@ -6162,7 +6173,7 @@ var RECOG=(function(){
 
   function shell(){
     return '<div class="rc-top"><button class="rc-ix" onclick="RECOG.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="rc-pbar"><i id="rc-prog"></i></div><span class="rc-pill" id="rc-score">0 ✓</span></div>'
-      +'<div class="rc-body" id="rc-body">'+HSKStudyPreparing.render(LANG)+'</div>';
+      +'<div class="rc-body" id="rc-body">'+renderStudyPreparing()+'</div>';
   }
 
   // New openings consume new attempts; only a network retry reuses the ref.
@@ -6270,7 +6281,7 @@ var RECOG=(function(){
   }
   function gateStart(newAttempt){
     var ref=gateRef(newAttempt);
-    el("rc-body").innerHTML=HSKStudyPreparing.render(LANG);
+    el("rc-body").innerHTML=renderStudyPreparing();
     runGate(ref).then(function(o){
       if(SECTION!==API||ref!==ATTEMPT_REF)return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}
@@ -6315,7 +6326,7 @@ var PRON=(function(){
     return '<div class="pr-wrap">'
       +'<div class="pr-top"><button class="pr-ix" onclick="PRON.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="pr-pbar"><i id="pr-prog"></i></div><span class="pr-pill" id="pr-cnt">1 / 10</span></div>'
       +'<div class="pr-toast" id="pr-toast">+10 XP</div>'
-      +'<div class="pr-stage" id="pr-stage">'+HSKStudyPreparing.render(LANG)+'</div>'
+      +'<div class="pr-stage" id="pr-stage">'+renderStudyPreparing()+'</div>'
       +'<div class="pr-ctrl" id="pr-ctrl" style="display:none">'
       +'<div class="pr-micwrap" id="pr-micwrap"><button class="pr-mic" id="pr-mic" onclick="PRON.rec()" aria-label="Gapirish"><i class="ti ti-microphone"></i></button></div>'
       +'<div class="pr-hint" id="pr-hint"></div>'
@@ -6490,7 +6501,7 @@ var PRON=(function(){
   function gateStart(newAttempt){
     var ref=gateRef(newAttempt);
     el("pr-ctrl").style.display="none";el("pr-done").classList.remove("on");
-    el("pr-stage").innerHTML=HSKStudyPreparing.render(LANG);
+    el("pr-stage").innerHTML=renderStudyPreparing();
     runGate(ref).then(function(o){
       if(!live()||ref!==ATTEMPT_REF)return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}
