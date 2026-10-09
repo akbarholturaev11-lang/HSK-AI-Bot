@@ -866,10 +866,8 @@ body.locked .mobile-nav{pointer-events:none}
           </div>
         </div>
         <div data-v2-pane="payments:portfolio" hidden>
-          <div class="v2-finance-heading"><h3>Портфель ва харажатлар</h3><p>Тушум ва харажат ҳисоботлари, валюта контексти ва молиявий натижа.</p></div>
-          <div class="v2-actions">
-            <button class="srow" data-module="portfolio"><div><h3>💼 Портфельни очиш</h3><p>Даромад, харажат ва соф фойдани бошқариш</p></div><span>›</span></button>
-            <button class="srow" data-tab-jump="statistics"><div><h3>📊 Молиявий аналитика</h3><p>AI сарфи, даромад ва тўлов кўрсаткичлари</p></div><span>›</span></button>
+          <div id="v2PortfolioView" aria-live="polite">
+            <div class="v2-finance-heading"><h3>Портфель</h3><p>Сервер маълумотлари юкланмоқда…</p></div>
           </div>
         </div>
       </section>
@@ -1694,6 +1692,15 @@ body.locked .mobile-nav{pointer-events:none}
       container.querySelectorAll("[data-v2-pane]").forEach(el=>{
         el.hidden=(el.dataset.v2Pane!==tab+":"+pane);
       });
+      if(tab==="payments"&&pane==="portfolio"){
+        const host=$("v2PortfolioView");
+        if(host&&host.dataset.loaded!=="true"&&host.dataset.loading!=="true"){
+          host.dataset.loading="true";
+          loadManagement(false).then(renderPortfolio).catch(()=>{
+            host.innerHTML='<div class="v2-ledger-note">Портфель маълумотларини юклаб бўлмади. <button class="btn sec" data-module="portfolio">Қайта уриниш</button></div>';
+          }).finally(()=>{host.dataset.loading="false";});
+        }
+      }
     }
     function renderModules(){
       const mods=state.overview.modules||[];
@@ -1743,6 +1750,13 @@ body.locked .mobile-nav{pointer-events:none}
       state.activeModule=key;
       if(key==="stats"){ closeDrawer(); switchTab("statistics"); return; }
       if(key==="user_search"){ closeDrawer(); switchTab("users"); $("search").focus(); return; }
+      if(key==="portfolio"){
+        closeDrawer(); switchTab("payments");
+        const host=$("v2PortfolioView");
+        if(host){host.dataset.loaded="false";host.dataset.loading="false";}
+        selectV2Sub("payments","portfolio");
+        return;
+      }
       /* Reklama endi drawer emas, sozlamalar ichidagi bitta bo'lim. */
       if(key==="ads_hub"){ closeDrawer(); switchTab("marketing"); selectV2Sub("marketing","ads"); const h=$("adHub"); if(h) h.scrollIntoView({behavior:"smooth",block:"start"}); return openAdHub(state.adHub); }
       openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
@@ -2299,22 +2313,58 @@ body.locked .mobile-nav{pointer-events:none}
           <input class="input" data-hvalue value="${esc(i.value||"")}" placeholder="https://..."><button class="btn" data-hsave>Saqlash</button></div>`).join("")}</div>`);
     }
     function renderPortfolio(d){
-      const p=d.portfolio||{}, s=p.summary||{};
-      openDrawer("💼 Portfel","Tushum va qo'lda kiritilgan operatsiyalar (AI xarajatsiz)",`<div class="panel">
-        <div class="mcard"><h3>Joriy holat</h3><div class="kv">
-          <span>Tasdiqlangan to'lov</span><b>${esc(s.approved_payments||0)}</b>
-          <span>Yalpi tushum</span><b>${esc(s.gross_revenue_usd||"$0.00")}</b>
-          <span>Qo'lda foyda</span><b>${esc(s.manual_profit_usd||"$0.00")}</b>
-          <span>Qo'lda rasxod</span><b>${esc(s.manual_expense_usd||"$0.00")}</b>
-          <span>Portfel balansi (AI xarajatsiz)</span><b>${esc(s.net_usd||"$0.00")}</b></div></div>
-        <div class="mcard"><h3>Amaliyot qo'shish</h3>
-          <div class="frow two"><div><label>Tur</label><select id="pfType" class="select"><option value="profit">Foyda</option><option value="expense">Rasxod</option></select></div>
-            <div><label>Valyuta</label><select id="pfCurrency" class="select"><option value="usd">USD</option><option value="tjs">TJS</option><option value="¥">CNY/¥</option></select></div></div>
-          <div class="frow"><label>Summa</label><input id="pfAmount" class="input" type="number" step="0.01" min="0"></div>
-          <div class="frow"><label>Sabab</label><input id="pfNote" class="input" placeholder="OpenAI to'lov, reklama, ..."></div>
-          <button class="btn" data-pfsave>Saqlash</button></div>
-        ${(p.history||[]).map(i=>`<div class="mcard"><h3>${i.type==="profit"?"+":"−"} ${esc(i.amount_usd)}</h3><p>${esc(i.source)} · ${esc(i.created_at)}<br>${esc(i.original||"")} ${esc(i.note||"")}</p></div>`).join("")||"<p class='empty'>Tarix bo'sh.</p>"}</div>`);
-    }
+  const host=$("v2PortfolioView");if(!host)return;
+  const p=d.portfolio||{}, s=p.summary||{}, h=Array.isArray(p.history)?p.history:[];
+  const display=(v,fallback)=>esc(v==null||v===""?fallback:v);
+  const stat=(label,value,sub,tone)=>'<article class="v2-ledger-metric '+tone+'"><div class="v2-ledger-metric-label">'+label+'</div><div class="v2-ledger-metric-value">'+display(value,"$0.00")+'</div><div class="v2-ledger-metric-foot">'+sub+'</div></article>';
+  host.innerHTML=`
+    <div class="v2-ledger-heading">
+      <div><div class="v2-ledger-eyebrow">FINANCE / PORTFOLIO</div><h2>Портфель</h2>
+      <p>Тасдиқланган тўловлар, қўлда киритилган фойда ва харажатлар.</p></div>
+      <button type="button" class="button v2-ledger-refresh" data-module="portfolio" aria-label="Портфельни янгилаш">↻ <span>Янгилаш</span></button>
+    </div>
+    <div class="v2-ledger-overview">
+      <section class="v2-ledger-balance">
+        <div class="v2-ledger-balance-label"><span class="v2-ledger-pulse"></span> Портфель баланси · AI харажатларисиз</div>
+        <div class="v2-ledger-balance-value">${display(s.net_usd,"$0.00")}</div>
+        <div class="v2-ledger-balance-foot">Сервер ҳисоблаган USD эквиваленти <span class="v2-ledger-separator">·</span> ${display(s.approved_payments,0)} та тасдиқланган тўлов</div>
+        <svg class="v2-ledger-deco" viewBox="0 0 170 160" fill="none" aria-hidden="true"><circle cx="138" cy="28" r="87" stroke="currentColor" stroke-width="1"/><circle cx="138" cy="28" r="65" stroke="currentColor" stroke-width="1"/><circle cx="138" cy="28" r="43" stroke="currentColor" stroke-width="1"/></svg>
+      </section>
+      <div class="v2-ledger-metrics">
+        ${stat("Ялпи тушум",s.gross_revenue_usd,"Тасдиқланган тўловлар","revenue")}
+        ${stat("Қўшимча фойда",s.manual_profit_usd,"Қўлда киритилган","profit")}
+        ${stat("Харажатлар",s.manual_expense_usd,"Қўлда киритилган","expense")}
+      </div>
+    </div>
+    <div class="v2-ledger-note"><span class="v2-ledger-note-icon" aria-hidden="true">ⓘ</span>
+      <span>Маблағлар сервер ҳисобида USD эквивалентида кўрсатилади. Турли валютадаги асл суммалар амалиётлар тарихида сақланади. AI сарфи бу балансга киритилмаган.</span>
+    </div>
+    <div class="v2-ledger-content">
+      <section class="v2-ledger-panel v2-ledger-entry">
+        <div class="v2-ledger-panel-head"><div class="v2-ledger-eyebrow">NEW ENTRY</div><h3>Янги амалиёт</h3><p>Фойда ёки харажатни ҳисобга қўшиш</p></div>
+        <div class="v2-ledger-form">
+          <div class="v2-ledger-form-row">
+            <div class="field"><label for="pfType">Амалиёт тури</label><select id="pfType" class="select"><option value="profit">＋ Фойда</option><option value="expense">－ Харажат</option></select></div>
+            <div class="field"><label for="pfCurrency">Валюта</label><select id="pfCurrency" class="select"><option value="usd">USD · $</option><option value="tjs">TJS · сомони</option><option value="¥">CNY · ¥</option></select></div>
+          </div>
+          <div class="field"><label for="pfAmount">Сумма</label><input id="pfAmount" class="input" type="number" inputmode="decimal" step="0.01" min="0.01" placeholder="0.00" autocomplete="off"></div>
+          <div class="field"><label for="pfNote">Изоҳ</label><input id="pfNote" class="input" type="text" placeholder="Масалан, реклама ёки қўшимча тушум" maxlength="500"></div>
+          <button type="button" class="button primary v2-ledger-save" data-pfsave>Амалиётни сақлаш <span aria-hidden="true">↗</span></button>
+        </div>
+      </section>
+      <section class="v2-ledger-panel v2-ledger-history">
+        <div class="v2-ledger-panel-head"><div class="v2-ledger-eyebrow">ACTIVITY</div><h3>Амалиётлар тарихи</h3><p>${h.length} та қайд · сервер маълумотлари</p></div>
+        <div class="v2-ledger-records">
+          ${h.length?h.map(i=>`<div class="v2-ledger-record">
+            <div class="v2-ledger-record-icon ${i.type==="profit"?"positive":"negative"}" aria-hidden="true">${i.type==="profit"?"↙":"↗"}</div>
+            <div class="v2-ledger-record-copy"><b>${display(i.note||i.source,"Амалиёт")}</b><small>${display(i.source,"—")} · ${display(i.created_at,"—")}</small>${i.original?`<small class="v2-ledger-original">${esc(i.original)}</small>`:""}</div>
+            <div class="v2-ledger-record-amount ${i.type==="profit"?"positive":"negative"}">${i.type==="profit"?"+":"−"} ${display(i.amount_usd,"$0.00")}</div>
+          </div>`).join(""):'<div class="v2-ledger-empty">Ҳозирча амалиётлар тарихи йўқ.</div>'}
+        </div>
+      </section>
+    </div>`;
+  host.dataset.loaded="true";
+}
     const BC_LANGS=[["tj","TJ"],["uz","UZ"],["ru","RU"]];
     const BC_FILTERS=[
       ["status","👤 Status",[["","Hammasi"],["free","Bepul"],["trial","Sinov"],["active","Faol"],["expired","Tugagan"],["blocked","Blok"]]],
@@ -2602,7 +2652,10 @@ body.locked .mobile-nav{pointer-events:none}
       const m=state.activeModule, hub=state.adHub;
       state.management=null;
       await loadData();
-      if(m && $("drawer").classList.contains("open")) await openModule(m);
+      if(m==="portfolio" && $("v2PortfolioView") && v2SubState.payments==="portfolio"){
+        const d=await loadManagement(true);renderPortfolio(d);
+      }
+      else if(m && $("drawer").classList.contains("open")) await openModule(m);
       /* Panel «📣 Reklama» bo'limi ichida ochilgan bo'lsa, drawer yopiq —
          o'sha yerda qayta chizamiz, aks holda admin saqlab bo'lib eski
          qiymatlarga qarab turardi. */
