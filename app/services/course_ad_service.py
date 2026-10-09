@@ -553,7 +553,7 @@ class CourseAdService:
         self, language: str | None = None, slot: str | None = None
     ) -> dict | None:
         ad = await self.get_active_ad(language=language, slot=slot)
-        return self.payload(ad) if ad else None
+        return self.payload(ad, language=language) if ad else None
 
     async def list_active(
         self, language: str | None = None, slot: str | None = None
@@ -580,7 +580,7 @@ class CourseAdService:
         self, language: str | None = None, slot: str | None = None
     ) -> list[dict]:
         return [
-            self.payload(ad)
+            self.payload(ad, language=language)
             for ad in await self.list_active(language=language, slot=slot)
         ]
 
