@@ -19,6 +19,8 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 data class AdUiState(
+    /** Placement determines presentation: immersive lesson-end or centered popup. */
+    val placement: String = "screen_center",
     val isLoading: Boolean = true,
     val ad: AndroidAdDto? = null,
     /** Absolute, origin-checked media URL. Null means there is nothing to play. */
@@ -57,7 +59,7 @@ class AdViewModel(
     private val lessonOrder: Int = 0,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(AdUiState())
+    private val _state = MutableStateFlow(AdUiState(placement = placement))
     val state: StateFlow<AdUiState> = _state.asStateFlow()
 
     private var ticker: Job? = null
@@ -70,7 +72,7 @@ class AdViewModel(
     fun load() {
         ticker?.cancel()
         adId = 0
-        _state.value = AdUiState()
+        _state.value = AdUiState(placement = placement)
         viewModelScope.launch {
             val listing = when (val result = repository.ads(placement)) {
                 is ApiResult.Failure -> {

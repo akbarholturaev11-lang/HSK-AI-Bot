@@ -167,6 +167,19 @@
   +'.caa-app-x.on{display:flex}'
   +'.caa-app-wait{position:absolute;top:-10px;right:-10px;min-width:34px;height:34px;padding:0 10px;border-radius:20px;background:rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.82);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;white-space:nowrap;z-index:2}'
   +'.caa-app-wait[hidden]{display:none!important}'
+  /* Dars yakuni — to'liq ekran. Ekran markazidagi reklama esa yuqoridagi
+     o'zgarmagan caa-app-card modalida qoladi. TG/iPhone safe-area hisobga olinadi. */
+  +'.caa-app.lesson-end{padding:0;align-items:stretch;justify-content:stretch;background:#080b10;backdrop-filter:none;-webkit-backdrop-filter:none}'
+  +'.caa-app.lesson-end .caa-app-card{width:100%;max-width:none;height:100%;height:100dvh;min-height:0;max-height:none;margin:0;border:0;border-radius:0;box-shadow:none;display:flex;flex-direction:column;align-items:stretch;gap:10px;overflow-y:auto;overscroll-behavior:contain;'
+  +'padding:calc(64px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));background:#080b10}'
+  +'.caa-app.lesson-end .caa-app-media{width:100%;flex:1 1 auto;height:100%;min-height:160px;max-height:none;aspect-ratio:auto;border-radius:0;background:#000}'
+  +'.caa-app.lesson-end .caa-app-media video,.caa-app.lesson-end .caa-app-media img{width:100%;height:100%;object-fit:contain}'
+  +'.caa-app.lesson-end .caa-app-x,.caa-app.lesson-end .caa-app-wait{top:calc(14px + env(safe-area-inset-top,0px));right:16px;width:auto;min-width:42px;height:42px;border-radius:14px}'
+  +'.caa-app.lesson-end .caa-app-x{width:42px}'
+  +'.caa-app.lesson-end .caa-app-t{flex:none;font-size:17px;text-align:left;line-height:1.35}'
+  +'.caa-app.lesson-end .caa-app-cta,.caa-app.lesson-end .caa-app-sub{flex:none;min-height:46px}'
+  +'.caa-app.lesson-end .caa-app-promo:not([hidden]){flex:none}'
+  +'@media(max-height:580px){.caa-app.lesson-end .caa-app-card{padding-top:calc(55px + env(safe-area-inset-top,0px));gap:7px}.caa-app.lesson-end .caa-app-media{min-height:120px}}'
   /* Reklama turiga qarab video ostidagi knopka bloki (hamkorlik / bot) */
   +'.caa-ps{display:none;gap:8px;text-align:left}'
   +'.caa-ps.on{display:grid}'
@@ -610,7 +623,7 @@
     if(appState.timer){ clearInterval(appState.timer); appState.timer=null; }
     try{ appEls.video.pause(); appEls.video.removeAttribute("src"); appEls.video.load(); }catch(e){}
     try{ appEls.photo.removeAttribute("src"); appEls.photo.hidden=true; appEls.video.hidden=false; }catch(e){}
-    appEls.ov.classList.remove("on");
+    appEls.ov.classList.remove("on","lesson-end");
     appEls.ov.setAttribute("aria-hidden","true");
     appState.open=false;
   }
@@ -624,11 +637,13 @@
     }catch(err){}
   }
 
-  function showCenterAd(ad){
+  function showCenterAd(ad,placement){
     var e=ensureAppDom(), t=T();
+    var lessonEnd=placement==="lesson_end";
     var skip=Math.max(0,Math.min(60,Number(ad&&ad.skip_after_seconds)||0));
     appState.ad=ad;
-    appState.placement=isLessonEnd()?"lesson_end":"screen_center";
+    appState.placement=lessonEnd?"lesson_end":"screen_center";
+    e.ov.classList.toggle("lesson-end",lessonEnd);
     appState.watched=0;
     e.title.textContent=String(ad.title||"");
     e.cta.textContent=String(ad.button_text||t.appCta);
@@ -648,7 +663,7 @@
     }
     /* Dars yakunida obuna taklifi chiqadi — bu joyning butun ma'nosi.
        Ekran markazida esa chiqmaydi: u shunchaki reklama. */
-    if(isLessonEnd()){
+    if(lessonEnd){
       /* Obunachiga obuna taklif qilinmaydi. Joy auditoriyasi "hammaga"
          bo'lsa u ham reklamani ko'radi — lekin ostida to'lov kartasi emas,
          faqat reklamaning o'zi va ilova promosi qoladi. */
@@ -717,12 +732,12 @@
     CFG.slot="";
     return fetchPlacementAd("screen_center").then(function(ad){
       if(!ad) return false;
-      showCenterAd(ad);
+      showCenterAd(ad,"screen_center");
       return true;
     });
   }
 
-  /* Dars yakunidagi reklama — o'sha markazdagi modal, boshqa joy nomi bilan. */
+  /* Dars yakunidagi reklama — alohida full-screen overlay, markaz reklamasi modal. */
   function playLessonEnd(lessonOrder){
     if(appState.open) return Promise.resolve(false);
     if(lessonOrder!=null) CFG.lessonOrder=lessonOrder;
@@ -731,7 +746,7 @@
     CFG.slot="lesson_end";
     return fetchPlacementAd("lesson_end").then(function(ad){
       if(!ad) return false;
-      showCenterAd(ad);
+      showCenterAd(ad,"lesson_end");
       return true;
     });
   }
