@@ -452,6 +452,26 @@ def main():
             assert not iphone.evaluate("document.body.classList.contains('locked')"), "Drawer background remained locked"
             iphone.locator('.mobile-nav [data-tab="users"]').click()
             assert iphone.locator("#userList .v2-users-mobile [data-user]").count()>0, "Mobile user cards missing"
+
+            # Regression: iOS automatically zooms the entire page when an input
+            # whose computed font is <16px receives focus in Telegram WebView.
+            # Chromium doesn't emulate that native zoom; enforce the computed
+            # font-size contract and stable in-viewport bounds instead.
+            search = iphone.locator("#users #search")
+            assert search.is_visible(), "Users search field is not visible"
+            assert float(search.evaluate("(el) => getComputedStyle(el).fontSize.replace('px','')")) >= 16, "iOS search font causes focus auto-zoom"
+            assert iphone.evaluate("""() => {
+                const r=document.querySelector('#users .toolbar').getBoundingClientRect();
+                return r.left >= -1 && r.right <= innerWidth+1;
+            }"""), "Search toolbar overflows viewport before focus"
+            search.focus()
+            assert iphone.evaluate("""() => {
+                const r=document.querySelector('#users #search').getBoundingClientRect();
+                return r.left>=-1 && r.right<=innerWidth+1 &&
+                  getComputedStyle(document.querySelector('#users #search')).fontSize==='16px';
+            }"""), "Search input enlarged or clipped after focus"
+            iphone.screenshot(path=str(output / "admin-v2-telegram-search-focused-390.png"), full_page=False)
+            search.blur()
             iphone.screenshot(path=str(output / "admin-v2-telegram-users-390.png"), full_page=False)
             iphone.locator("#userList .v2-users-mobile [data-user]").first.click()
             iphone.locator("#drawer.open .v2-profile-details").first.wait_for(timeout=6000)
