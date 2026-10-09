@@ -333,6 +333,61 @@
 .v2-track-grid .v2-track-actions .srow{min-height:134px;align-items:flex-start}
 @media(max-width:760px){.v2-track-grid{grid-template-columns:1fr}.v2-track-card{min-height:110px}.v2-track-grid .v2-track-actions .srow{min-height:110px}}
 
+
+/* Executive analytics: one clear source, no nested legacy reports. */
+.v2-simple-intro{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:21px 23px;margin:0 0 17px;border-radius:18px;
+  border:1px solid rgba(156,186,216,.19);
+  background:radial-gradient(ellipse 360px 180px at 92% 5%,rgba(227,93,78,.12),transparent 80%),
+             linear-gradient(125deg,#1d2b39,#121d29);
+  box-shadow:var(--v2-shadow);
+}
+.v2-intro-kicker{color:#f08b7e;font-size:10px;font-weight:900;letter-spacing:.13em}
+.v2-simple-intro h2{margin:9px 0 5px;font-size:20px;letter-spacing:-.04em}
+.v2-simple-intro p{font-size:12px;color:#a6b6c9;line-height:1.5}
+.v2-simple-intro .btn{white-space:nowrap;min-height:44px;flex-shrink:0}
+.v2-simple-pane{min-width:0;animation:fade .23s ease}
+.v2-simple-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:21px 0 14px}
+.v2-simple-head h3{font-size:17px;font-weight:820;letter-spacing:-.025em}
+.v2-simple-head p{color:var(--muted);font-size:12px;line-height:1.5}
+.v2-simple-metrics{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.v2-simple-metrics .stat{min-height:122px}
+.v2-simple-footnote{margin:15px 2px 0;color:#899bae;font-size:11.5px;line-height:1.6}
+.v2-client-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.v2-client-card{
+  position:relative;min-width:0;overflow:hidden;display:grid;align-content:start;gap:16px;
+  padding:20px;border-radius:17px;border:1px solid rgba(143,176,206,.21);
+  background:linear-gradient(155deg,#1b2938,#131f2b);
+  box-shadow:var(--v2-shadow);
+}
+.v2-client-card:before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,rgba(237,105,91,.85),transparent)}
+.v2-client-card header{display:flex;align-items:center;gap:10px}
+.v2-client-icon{width:37px;height:37px;display:grid;place-items:center;border-radius:11px;font-size:17px;color:#ffc1b9;background:#3b2b30}
+.v2-client-card h4{font-size:14px;letter-spacing:-.02em}
+.v2-client-card header p{color:var(--muted);font-size:11px;margin-top:3px}
+.v2-client-facts{display:grid;gap:11px}
+.v2-client-fact{min-width:0;display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding-bottom:10px;border-bottom:1px solid rgba(145,175,205,.12)}
+.v2-client-fact:last-child{padding-bottom:0;border:0}
+.v2-client-fact span{color:#a7b6c7;font-size:11.5px}
+.v2-client-fact strong{color:#f0f4f9;font-size:16px;letter-spacing:-.02em;overflow-wrap:anywhere;text-align:right;font-variant-numeric:tabular-nums}
+#statistics #rangeLabel{color:#9fafbf;font-size:11px;margin:5px 0 12px}
+@media(max-width:1160px){
+  .v2-simple-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .v2-client-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .v2-simple-intro{padding:17px;gap:12px;flex-wrap:wrap}
+  .v2-simple-intro h2{font-size:18px}
+  .v2-simple-intro .btn{width:100%}
+  .v2-simple-head{display:block;margin:19px 0 12px}
+  .v2-simple-head p{margin-top:4px}
+  .v2-client-cards{grid-template-columns:minmax(0,1fr)}
+  .v2-client-card{padding:17px;gap:13px}
+  .v2-client-facts{gap:9px}
+  .v2-simple-metrics .stat{min-height:118px}
+}
+@media(max-width:360px){.v2-simple-metrics{gap:8px}}
 /* One refresh action per screen: the topbar already owns refresh. */
 .workspace .page-head .page-actions [data-act="reload"]{display:none}
 .workspace .page-head .page-actions:empty{display:none}
@@ -672,137 +727,43 @@ body.locked .mobile-nav{pointer-events:none}
   <div class="chips" id="segmentChips"></div><div class="v2-time" id="generatedAt">—</div>
 </section>
 
-      <!-- STATISTICS -->
+      <!-- ANALYTICS: three clients / one real finance source, max four facts per pane -->
       <section id="statistics" class="view">
-        <div class="sec-head" style="margin-bottom:8px">
-          <div><div class="sec-title">Chuqur statistika</div><div class="sec-note">Har bo'lim oddiy o'zbek tilida izohlangan</div></div>
-          <button class="link-btn" data-act="copy-report">Umumiy hisobotni nusxalash</button>
-        </div>
-        <div class="periods" id="periodTabs"></div>
-        <div class="range-lab" id="rangeLabel"></div>
-        <div class="explain" id="dataQuality" style="margin-bottom:12px"></div>
-        <div class="subnav v2-subnav" role="tablist" aria-label="statistics ichki bo‘limlari"><button type="button" role="tab" aria-selected="true" class="active" data-v2-sub="statistics:overview">Умумий</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="statistics:platform">Платформалар</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="statistics:funnel">Конверсия</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="statistics:ai">Молия ва AI</button></div>
-
-        <!-- Advanced product metrics -->
-        <div class="block" data-v2-pane="statistics:funnel" hidden>
-          <div class="block-head"><span class="bi">📌</span><div><h3>Qo'shimcha product metrikalar</h3><p>Retention, vaqt, QA/Voice, payment abandon, revenue/payer va paid/free adoption</p></div></div>
-          <div class="explain" id="advancedExplain"></div>
-          <div class="grid g2" id="advancedCards" style="margin-top:12px"></div>
-          <div style="margin-top:12px">
-            <div class="dtitle-sm">Payment abandon funnel</div>
-            <div id="advancedFunnel"></div>
+        <div class="v2-simple-intro">
+          <div>
+            <span class="v2-intro-kicker">HSK AI / ANALYTICS</span>
+            <h2>Асосий рақамлар, холос.</h2>
+            <p>Битта маълумотлар базаси. Қайта-қайта такрорланадиган ҳисоботларсиз.</p>
           </div>
-          <div style="margin-top:12px">
-            <div class="dtitle-sm">Feature adoption: paid / free</div>
-            <div id="featureAdoption"></div>
-          </div>
+          <button type="button" class="btn sec" data-act="copy-report" title="Тўлиқ ҳисоботни нусхалаш">Ҳисоботни нусхалаш ↗</button>
         </div>
-
-        <!-- Connected desktop product -->
-        <div class="block" data-v2-pane="statistics:platform" hidden>
-          <div class="block-head"><span class="bi">🖥</span><div><h3>HSK AI Desktop</h3><p>Funnel: tanlangan davr · health/platforma: oxirgi 30 kun</p></div></div>
-          <div class="grid g2" id="desktopCards"></div>
-          <div style="margin-top:12px">
-            <div class="dtitle-sm">Desktop voronkasi</div>
-            <div id="desktopFunnel"></div>
-          </div>
-          <div style="margin-top:12px">
-            <div class="dtitle-sm">Download manbalari</div>
-            <div id="desktopPromotion"></div>
-          </div>
-          <div style="margin-top:12px">
-            <div class="dtitle-sm">Platforma va texnik holat</div>
-            <div id="desktopHealth"></div>
-          </div>
-          <div class="explain" id="desktopExplain"></div>
+        <div class="periods" id="periodTabs" aria-label="Ҳисобот даври"></div>
+        <div class="range-lab" id="rangeLabel" role="status"></div>
+        <div class="subnav v2-subnav" role="tablist" aria-label="Аналитика бўлимлари">
+          <button type="button" role="tab" aria-selected="true" class="active" data-v2-sub="statistics:overview">Умумий</button>
+          <button type="button" role="tab" aria-selected="false" data-v2-sub="statistics:platform">Иловалар</button>
+          <button type="button" role="tab" aria-selected="false" data-v2-sub="statistics:funnel">Ўқиш</button>
+          <button type="button" role="tab" aria-selected="false" data-v2-sub="statistics:ai">Молия ва AI</button>
         </div>
-
-        <!-- Native Android client -->
-        <div class="block" data-v2-pane="statistics:platform" hidden>
-          <div class="block-head"><span class="bi">📱</span><div><h3>HSK AI Android</h3><p>Asosiy raqamlar — sodda ko'rinish</p></div></div>
-          <div class="grid g2" id="androidCards"></div>
-          <div class="ncnote" id="androidUpdateSummary" style="margin-top:12px"></div>
-          <details class="acc" style="margin-top:12px">
-            <summary>Batafsil statistika</summary>
-            <div class="accbody">
-              <div class="dtitle-sm">Yuklash jarayoni · user</div>
-              <div id="androidFunnel"></div>
-              <div class="dtitle-sm" style="margin-top:14px">Android → obuna</div>
-              <div id="androidSubscription"></div>
-              <div class="dtitle-sm" style="margin-top:14px">Qurilmalar</div>
-              <div id="androidDevices"></div>
-              <div class="dtitle-sm" style="margin-top:14px">Versiyalar · oxirgi 30 kun</div>
-              <div id="androidVersions"></div>
-            </div>
-          </details>
-          <div class="explain" id="androidExplain"></div>
+        <div class="v2-simple-pane" data-v2-pane="statistics:overview">
+          <div class="v2-simple-head"><h3>Жами ҳолат</h3><p>Танланган даврнинг 4 та асосий кўрсаткичи</p></div>
+          <div id="overviewCards" class="grid g2 v2-simple-metrics"></div>
+          <p class="v2-simple-footnote">Фаоллик, фойдаланувчи ва тўловлар — реал сервер маълумотлари.</p>
         </div>
-
-        <!-- Unified client business schema -->
-        <div class="block" data-v2-pane="statistics:platform" hidden>
-          <div class="block-head"><span class="bi">▦</span><div><h3>Mini App · Android · Desktop biznes</h3><p>Bitta payment/access schema bo'yicha client kesimi</p></div></div>
-          <div class="grid g2" id="clientBusinessCards"></div>
-          <div id="clientBusinessTable"></div>
-          <div class="explain" id="clientBusinessExplain"></div>
+        <div class="v2-simple-pane" data-v2-pane="statistics:platform" hidden>
+          <div class="v2-simple-head"><h3>Учта илова — битта ҳисоб</h3><p>Mini App / Bot, Android ва Desktop бўйича тўловга олиб келган фаоллик</p></div>
+          <div class="v2-client-cards" id="v2UnifiedApps"></div>
+          <p class="v2-simple-footnote" id="v2SourceNote"></p>
         </div>
-
-        <!-- Cross-client device inventory -->
-        <div class="block" data-v2-pane="statistics:platform" hidden>
-          <div class="block-head"><span class="bi">📲</span><div><h3>Qurilmalar va foydalanish</h3><p>Mini App platformasi + tasdiqlangan native install registry</p></div></div>
-          <div class="grid g2" id="clientDeviceCards"></div>
-          <div id="clientDeviceTable" style="margin-top:12px"></div>
-          <div class="explain" id="clientDeviceExplain"></div>
+        <div class="v2-simple-pane" data-v2-pane="statistics:funnel" hidden>
+          <div class="v2-simple-head"><h3>Курсдаги ҳаракат</h3><p>Фақат очиш, бошлаш ва тугатиш</p></div>
+          <div id="v2LearningCards" class="grid g2 v2-simple-metrics"></div>
+          <p class="v2-simple-footnote">Ҳар бир рақам мустақил уникал фойдаланувчи сони. Уларни кетма-кет конверсия деб талқин қилманг.</p>
         </div>
-
-        <!-- Finance -->
-        <div class="block" data-v2-pane="statistics:ai" hidden>
-          <div class="block-head"><span class="bi">💰</span><div><h3>Kuzatilgan net va xarajat</h3><p>Obuna tushumi + qo'lda foyda − AI model estimate − rasxod</p></div></div>
-          <div class="grid g2" id="financeCards"></div>
-          <div class="explain" id="financeExplain"></div>
-          <div id="aiUsageBreakdown"></div>
-        </div>
-
-        <!-- Unit economics -->
-        <div class="block" data-v2-pane="statistics:ai" hidden>
-          <div class="block-head"><span class="bi">📐</span><div><h3>Birlik iqtisodi</h3><p>ARPU, ARPPU, o'rtacha chek</p></div></div>
-          <div class="grid g2" id="unitCards"></div>
-          <div class="explain" id="unitExplain"></div>
-        </div>
-
-        <!-- Retention -->
-        <div class="block" data-v2-pane="statistics:overview">
-          <div class="block-head"><span class="bi">🔁</span><div><h3>Obuna yangilash va hozirgi holat</h3><p>Qayta to'lov ulushi; all-time uchun payer snapshot</p></div></div>
-          <div class="grid g2" id="retentionCards"></div>
-          <div class="explain" id="retentionExplain"></div>
-        </div>
-
-        <!-- Sources -> paid -->
-        <div class="block" data-v2-pane="statistics:funnel" hidden>
-          <div class="block-head"><span class="bi">🧲</span><div><h3>Manba → pul</h3><p>Qaysi manba real pul olib keladi</p></div></div>
-          <div id="sourcesPaid"></div>
-          <div class="explain" id="sourceAttributionExplain">Har to'lov paymentdan oldingi eng yaqin obuna-kirish manbasiga bog'lanadi.</div>
-        </div>
-
-        <!-- General overview report -->
-        <div class="block" data-v2-pane="statistics:overview">
-          <div class="block-head"><span class="bi">📋</span><div><h3>Umumiy ko'rsatkichlar</h3><p>Foydalanuvchi, to'lov va kurs faolligi</p></div></div>
-          <div class="grid g2" id="overviewCards"></div>
-          <div style="margin-top:12px">
-            <div class="dtitle-sm">Davrdagi mustaqil kurs ko'rsatkichlari</div>
-            <div id="conversionBars"></div>
-          </div>
-        </div>
-
-        <!-- Source traffic (entry events) -->
-        <div class="block" data-v2-pane="statistics:funnel" hidden>
-          <div class="block-head"><span class="bi">🚪</span><div><h3>Obuna oynasiga kirish manbalari</h3><p>Alohida rolling 7 kun + all-time; yuqoridagi period tabiga bog'liq emas</p></div></div>
-          <div id="subEntryStats"><p class="empty">Yuklanmoqda…</p></div>
-          <div class="explain">Bu — obuna sahifasini <b>ochgan</b> odamlar (hali to'lamagan bo'lishi mumkin). Yuqoridagi "Manba → pul" esa real to'lovni ko'rsatadi. Ikkalasini solishtirsangiz: ko'p kirgan, lekin kam to'lagan manba — kuchsiz; kam kirgan, ko'p to'lagan manba — kuchli.</div>
-        </div>
-
-        <div class="block" data-v2-pane="statistics:overview">
-          <div class="block-head"><span class="bi">📝</span><div><h3>To'liq matnli hisobot</h3><p>Nusxalab tashqariga yuborish uchun</p></div></div>
-          <pre id="reportText" style="white-space:pre-wrap;margin:0;font-size:12.5px;line-height:1.5;color:#d6deeb;font-family:inherit"></pre>
+        <div class="v2-simple-pane" data-v2-pane="statistics:ai" hidden>
+          <div class="v2-simple-head"><h3>Пул ҳаракати</h3><p>Тушум, AI сарфи, харажат ва кузатилган натижа</p></div>
+          <div id="v2FinanceCards" class="grid g2 v2-simple-metrics"></div>
+          <p id="v2FinanceNote" class="v2-simple-footnote"></p>
         </div>
       </section>
 
