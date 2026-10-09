@@ -730,7 +730,7 @@ def create_android_features_router(
                 for ad in await placements.list_for_placement(
                     slot, language=getattr(user, "language", None)
                 ):
-                    payload = service.payload(ad)
+                    payload = service.payload(ad, language=getattr(user, "language", None))
                     payload["placement"] = slot
                     payload["skip_after_seconds"] = rule.skip_after_seconds
                     ads.append(payload)

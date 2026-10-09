@@ -345,7 +345,8 @@
      mumkin. Kunlik chegara SERVERDA sanaladi — bu yerda hisoblanmaydi. */
   function fetchPlacementAd(placement){
     var url="/api/v3/ad?placement="+encodeURIComponent(placement)
-      +"&lesson="+encodeURIComponent(Number(CFG.lessonOrder)||0);
+      +"&lesson="+encodeURIComponent(Number(CFG.lessonOrder)||0)
+      +"&lang="+encodeURIComponent(["tj","uz","ru"].indexOf(CFG.lang)>=0?CFG.lang:"tj");
     return fetch(url,{headers:{"X-Telegram-Init-Data":CFG.initData||""}})
       .then(function(r){return r.json().catch(function(){return {}})})
       .then(function(d){

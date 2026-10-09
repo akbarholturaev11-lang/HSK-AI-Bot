@@ -377,7 +377,9 @@ class AdPlacementService:
         # Dars yakunida ketma-ket bir xil reklama chiqmasin: dars raqami
         # bo'yicha aylanma tanlov (tasodifiy emas — takrorlanadigan bo'lsin).
         index = int(lesson_order or 0) % len(candidates)
-        payload = self.ads.payload(candidates[index])
+        payload = self.ads.payload(
+            candidates[index], language=language or getattr(user, "language", None)
+        )
         payload["placement"] = placement
         payload["skip_after_seconds"] = rule.skip_after_seconds
         return payload

@@ -43,6 +43,9 @@ class CourseAdCreative(Base):
     # Universal knopka nomi (hamkorlik/bot/dars_yakuni tashqi CTA uchun).
     # Bo'sh bo'lsa — turga mos default nom.
     button_text: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    # "all" reklamalar: bir marta AI bilan tarjima qilingan tj/uz/ru title + CTA.
+    # Eski reklamalarda NULL: original matn barcha til uchun fallback.
+    localized_copy: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     duration_seconds: Mapped[int] = mapped_column(Integer, default=7, nullable=False)
     # ESKIRGAN uchta ustun — hech narsani boshqarmaydi, eski qatorlar uchun
     # qoldi. Ularni hech kim yozmaydi ham, o'qimaydi ham:

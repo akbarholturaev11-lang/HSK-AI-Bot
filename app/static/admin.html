@@ -540,13 +540,14 @@
             <div class="mcard" style="margin-bottom:11px">
               <h3>➕ Yangi reklama</h3>
               <div class="frow two">
-                <div><label>Sarlavha</label><input id="caTitle" class="input" placeholder="Kurs reklama"></div>
+                <div><label id="caTitleLabel">Sarlavha (tojikcha)</label><input id="caTitle" class="input" maxlength="120" placeholder="Тоҷикӣ: реклама сарлавҳаси"></div>
                 <div><label>Video / surat davomiyligi (soniya)</label><input id="caDuration" class="input" type="number" min="5" max="120" value="7" title="Reklama mediasining davomiyligi. Yopish tugmasining vaqti pastdagi umumiy sozlamada."></div>
               </div>
               <div class="frow two">
                 <div><label>Reklama turi</label><select id="caType" class="select"><option value="odiy">📺 Oddiy reklama</option><option value="hamkorlik">🤝 Hamkorlik</option><option value="bot">🤖 Bot reklamasi</option><option value="dars_yakuni">👑 Obuna taklifi bilan</option></select></div>
                 <div><label>Til</label><select id="caLang" class="select"><option value="all">Barcha tillar</option><option value="uz">O'zbekcha</option><option value="ru">Ruscha</option><option value="tj">Tojikcha</option></select></div>
               </div>
+              <div class="hint" id="caLanguageNote" style="margin:-4px 2px 6px">🌐 Barcha tillar: sarlavha va tugmani TOJIKCHA (кирилл) yozing. AI o'zbekcha va ruscha variantlarni yaratadi.</div>
               <div class="hint" id="caTypeNote" style="margin:-4px 2px 4px"></div>
 
               <div class="frow" data-ca-field="button"><label id="caBtnLabel">Knopka nomi</label><input id="caBtnText" class="input" maxlength="64"></div>
@@ -673,6 +674,8 @@
         invalid_course_sales_experiment:"Sotuv tajribasi rejimi yoki foizi noto'g'ri",
         invalid_broadcast_text:"Xabar matni juda qisqa yoki uzun", invalid_campaign_payload:"Kampaniya ma'lumoti to'liq emas",
         broadcast_text_too_long:"Matn juda uzun (media bilan max 1024)", media_too_large:"Fayl 25MB dan katta",
+        ad_translation_unavailable:"AI tarjima tayyorlay olmadi. Matnlarni tekshirib, qayta urinib ko'ring.",
+        invalid_ad_copy:"Barcha tillar uchun tojikcha sarlavha kerak (120 belgigacha).",
         unsupported_media:"Fayl turi qo'llab-quvvatlanmaydi", media_upload_failed:"Media yuklab bo'lmadi",
         ffmpeg_not_available:"Serverda ffmpeg yo'q. Deploy sozlamasini tekshiring.",
         video_transcode_failed:"Video MP4 formatga o'tkazilmadi. Boshqa video bilan urinib ko'ring.",
@@ -2693,14 +2696,19 @@
     function caSpec(){ return CA_TYPE_SPEC[($("caType")&&$("caType").value)||"odiy"]||CA_TYPE_SPEC.odiy; }
     function caTypeUI(){
       const spec=caSpec(), on=spec.fields;
+      const multi=$("caLang")?.value==="all";
+      const titleLabel=$("caTitleLabel");
+      if(titleLabel) titleLabel.textContent=multi?"Sarlavha (tojikcha)":"Sarlavha";
+      const languageNote=$("caLanguageNote");
+      if(languageNote) languageNote.hidden=!multi;
       document.querySelectorAll("[data-ca-field]").forEach(el=>{ el.hidden=on.indexOf(el.dataset.caField)<0; });
       const set=(id,text)=>{ const el=$(id); if(el) el.textContent=text||""; };
       set("caTypeNote",spec.note);
       set("caLinkLabel",spec.linkLabel);
       set("caLinkNote",spec.linkNote);
-      set("caBtnLabel",spec.buttonLabel||"Knopka nomi");
+      set("caBtnLabel",($("caLang")?.value==="all"?"Tojikcha — ":"")+(spec.buttonLabel||"Knopka nomi"));
       const bt=$("caBtnText");
-      if(bt){ bt.placeholder=spec.buttonPlaceholder||""; }
+      if(bt){ bt.placeholder=multi?"Тоҷикӣ: матни тугма":(spec.buttonPlaceholder||""); }
       /* Yashiringan katakning qiymati qolib ketmasin — aks holda ko'rinmaydigan
          maydon jimgina yuborilib ketardi. */
       if(on.indexOf("button")<0&&bt) bt.value="";
@@ -2754,8 +2762,20 @@
          ketdi — ilovani endi faqat «Ilova reklamasi» promosi reklama
          qiladi. */
       fd.append("media",f);
-      try{ await apiUpload("/api/admin-miniapp/course-ads/upload",fd); $("caTitle").value=""; $("caLink").value=""; $("caBtnText").value=""; toast("Kurs reklama yuklandi"); loadCourseAds(); }
-      catch(e){ toast(apiErr(e,"Reklama yuklashda xato")); } finally{ input.value=""; }
+      try{
+        if($("caLang").value==="all"&&!($("caTitle").value||"").trim()){
+          toast("Barcha tillar uchun tojikcha sarlavha kiriting"); return;
+        }
+        const result=await apiUpload("/api/admin-miniapp/course-ads/upload",fd);
+        $("caTitle").value=""; $("caLink").value=""; $("caBtnText").value="";
+        toast(result&&result.translation_status==="completed"?"Reklama 3 tilga tarjima qilindi ✅":"Kurs reklama yuklandi");
+        loadCourseAds();
+      }catch(e){
+        const error=apiErr(e,"Reklama yuklashda xato");
+        toast(String(error).includes("ad_translation_unavailable")
+          ?"AI tarjima tayyorlay olmadi. Matnlarni tekshirib, qayta urinib ko'ring."
+          :error);
+      }finally{ input.value=""; }
     }
 
     /* ---------- tabs ---------- */
@@ -2914,6 +2934,7 @@
 
     $("search").addEventListener("input",(e)=>{ state.search=e.target.value; clearTimeout(window.st); window.st=setTimeout(()=>remoteSearch(state.search),260); renderUsers(); });
     $("caFile").addEventListener("change",submitCourseAd);
+    $("caLang").addEventListener("change",caTypeUI);
     /* Reklama uchun joy tanlash ham, joyni yoqish/o'chirish ham
        formaning qayta chizilishidan keyin ishlasin. */
     document.addEventListener("change",(e)=>{

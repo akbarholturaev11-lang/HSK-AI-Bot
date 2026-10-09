@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import defer
 
 from app.db.models.course_ad import CourseAdCreative, CourseAdView
+from app.services.course_ad_translation_service import localize_ad_copy
 
 
 COURSE_AD_PLACEMENTS = ("start", "middle", "end")
@@ -363,11 +364,17 @@ class CourseAdService:
         return CourseAdService._file_available(path)
 
     @classmethod
-    def payload(cls, ad: CourseAdCreative) -> dict:
+    def payload(cls, ad: CourseAdCreative, language: str | None = None) -> dict:
         media_available = cls.media_available(ad)
+        title, button = ad.title, getattr(ad, "button_text", None) or None
+        if language and cls.normalize_language(getattr(ad, "language", None)) == COURSE_AD_ALL_LANGUAGES:
+            title, button = localize_ad_copy(
+                getattr(ad, "localized_copy", None),
+                title=title, button_text=button, language=language,
+            )
         return {
             "id": int(ad.id),
-            "title": ad.title,
+            "title": title,
             "media_type": cls.normalize_media_type(getattr(ad, "media_type", None)),
             "media_url": f"/uploads/course_ads/{ad.media_path}",
             "link_url": getattr(ad, "link_url", None) or None,
@@ -376,7 +383,7 @@ class CourseAdService:
             # Reklama qaysi joy(lar)da chiqishi. Admin panel buni ko'rsatishi
             # SHART: ilgari u joyni turdan taxmin qilardi va noto'g'ri yozardi.
             "placements": _ad_placements_list(ad),
-            "button_text": getattr(ad, "button_text", None) or None,
+            "button_text": button,
             "duration_seconds": cls.normalize_duration(ad.duration_seconds),
             # `skip_after_seconds` va `daily_limit` ATAYLAB yo'q. Reklamani
             # beruvchi ikkala yo'l ham (`AdPlacementService.next_ad` va Android
@@ -412,6 +419,7 @@ class CourseAdService:
         language: str = COURSE_AD_ALL_LANGUAGES,
         ad_type: str = COURSE_AD_DEFAULT_TYPE,
         button_text: str | None = None,
+        localized_copy: str | None = None,
         skip_after_seconds=None,
         daily_limit=None,
         media_type: str = COURSE_AD_DEFAULT_MEDIA_TYPE,
@@ -433,6 +441,7 @@ class CourseAdService:
             language=self.normalize_language(language),
             ad_type=self.normalize_ad_type(ad_type),
             button_text=self.normalize_button_text(button_text),
+            localized_copy=localized_copy if self.normalize_language(language) == COURSE_AD_ALL_LANGUAGES else None,
             duration_seconds=self.normalize_duration(duration_seconds),
             skip_after_seconds=self.normalize_skip_after(
                 skip_after_seconds, duration_seconds
@@ -544,7 +553,7 @@ class CourseAdService:
         self, language: str | None = None, slot: str | None = None
     ) -> dict | None:
         ad = await self.get_active_ad(language=language, slot=slot)
-        return self.payload(ad) if ad else None
+        return self.payload(ad, language=language) if ad else None
 
     async def list_active(
         self, language: str | None = None, slot: str | None = None
@@ -571,7 +580,7 @@ class CourseAdService:
         self, language: str | None = None, slot: str | None = None
     ) -> list[dict]:
         return [
-            self.payload(ad)
+            self.payload(ad, language=language)
             for ad in await self.list_active(language=language, slot=slot)
         ]
 

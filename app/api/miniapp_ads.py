@@ -87,10 +87,16 @@ def create_miniapp_ads_router(
                     content={"ok": True, "ad": None, "placement": placement}
                 )
             service = AdPlacementService(session)
+            # UI tanlangan tili hisobdagidan farq qilishi mumkin. Reklama
+            # auditoriyasi foydalanuvchi auth/obunasidan aniqlanadi, til
+            # esa interfeysning joriy tilidan olinadi.
+            requested_lang = str(request.query_params.get("lang") or "").lower()
+            chosen_lang = requested_lang if requested_lang in ("tj", "uz", "ru") else getattr(user, "language", None)
             ad = await service.next_ad(
                 user,
                 placement=placement,
                 client=CLIENT,
+                language=chosen_lang,
                 lesson_order=lesson_order,
             )
             status = await service.status(user, placement=placement, client=CLIENT)
