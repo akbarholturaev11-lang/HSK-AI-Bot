@@ -490,10 +490,14 @@ class AdminAdPlacementsApiTests(unittest.IsolatedAsyncioTestCase):
 
         centre = ads["placements"]["screen_center"]
         self.assertTrue(centre["enabled"])
-        self.assertEqual(2, centre["daily_cap"])
+        self.assertEqual(1, centre["daily_cap"])
         self.assertEqual("free_only", centre["audience"])
-        # Dars yakunida kunlik chegara yo'q.
-        self.assertEqual(0, ads["placements"]["lesson_end"]["daily_cap"])
+        self.assertEqual(5, centre["skip_after_seconds"])
+        lesson = ads["placements"]["lesson_end"]
+        self.assertTrue(lesson["enabled"])
+        self.assertEqual("free_only", lesson["audience"])
+        self.assertEqual(1, lesson["daily_cap"])
+        self.assertEqual(5, lesson["skip_after_seconds"])
 
     async def test_one_placement_is_switched_off_without_touching_the_other(self):
         await self._post(
