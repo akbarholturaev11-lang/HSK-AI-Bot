@@ -2,6 +2,7 @@ package com.pomp.hskai.feature.voice
 
 import android.Manifest
 import android.content.pm.PackageManager
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -35,9 +36,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -96,8 +99,19 @@ fun VoiceScreen(
     // A running call hides the tab bar and puts its own dock there instead,
     // so the floating AI button is told to clear the dock, not the tabs.
     val callActive = state.hasSession && state.result == null
+    // VoiceCallScreen owns Back after connection; pending starts need the same
+    // cancellation before their late response can open a call in the background.
+    BackHandler(enabled = state.isStarting && !callActive, onBack = onEndSession)
     val context = LocalContext.current
     var pendingLiveStart by remember { mutableStateOf<Pair<String, String>?>(null) }
+    val endSessionOnExit by rememberUpdatedState(onEndSession)
+    val sessionActiveOnExit by rememberUpdatedState(state.hasSession || state.isStarting)
+    DisposableEffect(Unit) {
+        onDispose {
+            pendingLiveStart = null
+            if (sessionActiveOnExit) endSessionOnExit()
+        }
+    }
     val livePermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { granted ->

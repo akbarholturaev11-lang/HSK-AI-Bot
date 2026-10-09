@@ -32,22 +32,46 @@ class SkipTestViewModel(
 
     private val _state = MutableStateFlow(SkipTestUiState())
     val state: StateFlow<SkipTestUiState> = _state.asStateFlow()
+    private var attemptGeneration = 0L
+    private var attemptActive = true
 
-    /** Loads the locked lesson and draws its questions. */
+    /** A retained ViewModel must not reuse a previous course's unlock result on reopen. */
+    fun beginAttempt() {
+        attemptGeneration++
+        attemptActive = true
+        _state.value = SkipTestUiState()
+    }
+
+    fun endAttempt() {
+        attemptGeneration++
+        attemptActive = false
+        _state.value = SkipTestUiState()
+    }
+
+    /** Draws the locked lesson's quiz without trying to open the playable lesson. */
     fun start(lessonOrder: Int) {
-        if (_state.value.lessonOrder == lessonOrder && _state.value.questions.isNotEmpty()) return
+        if (!attemptActive) return
+        val current = _state.value
+        if (current.lessonOrder == lessonOrder &&
+            (current.isLoading || current.questions.isNotEmpty() || current.unlocked)
+        ) return
+        val generation = ++attemptGeneration
         _state.value = SkipTestUiState(lessonOrder = lessonOrder, isLoading = true)
         viewModelScope.launch {
-            when (val result = repository.lesson(level, lessonOrder, language)) {
+            if (generation != attemptGeneration) return@launch
+            val result = repository.skipTestQuestions(level, lessonOrder, language)
+            if (generation != attemptGeneration) return@launch
+            when (result) {
                 is ApiResult.Success -> {
                     val questions = drawQuestions(
-                        cards = result.value.lesson.cards.filterIsInstance<ChoiceCard>(),
+                        cards = result.value,
                         seed = lessonOrder,
                     )
                     if (questions.isEmpty()) {
                         // Nothing to ask means nothing to prove. The Mini App
                         // unlocks outright here rather than showing an empty
                         // test the learner cannot pass or fail.
+                        _state.update { it.copy(isLoading = false) }
                         unlock(score = 100)
                         return@launch
                     }
@@ -94,12 +118,16 @@ class SkipTestViewModel(
      * the client's to ask because the server opens the lesson either way.
      */
     fun unlock(score: Int = _state.value.score) {
-        if (_state.value.isUnlocking) return
+        if (!attemptActive || _state.value.isUnlocking || _state.value.unlocked) return
         val lessonOrder = _state.value.lessonOrder
         if (lessonOrder <= 0) return
+        val generation = attemptGeneration
         _state.update { it.copy(isUnlocking = true, error = null) }
         viewModelScope.launch {
-            when (val result = repository.unlockLesson(lessonOrder, score)) {
+            if (generation != attemptGeneration) return@launch
+            val result = repository.unlockLesson(lessonOrder, score, expectedLevel = level)
+            if (generation != attemptGeneration) return@launch
+            when (result) {
                 is ApiResult.Success -> _state.update {
                     it.copy(isUnlocking = false, unlocked = true)
                 }

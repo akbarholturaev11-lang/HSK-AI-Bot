@@ -152,6 +152,7 @@ class DesktopCourseService:
     async def _locked_context_user(self, context):
         result = await self.session.execute(
             select(User).where(User.id == context.user.id).with_for_update()
+            .execution_options(populate_existing=True)
         )
         user = result.scalar_one_or_none()
         if not user:
@@ -796,6 +797,7 @@ class DesktopCourseService:
         *,
         lesson_order: int,
         score: int,
+        expected_level: str | None = None,
     ) -> dict[str, Any]:
         """Open a not-yet-reached lesson after the Mini App's skip-ahead test.
 
@@ -815,6 +817,10 @@ class DesktopCourseService:
         user = await self._locked_context_user(context)
         lesson_order = int(lesson_order)
         level = self._level(user)
+        # A quiz belongs to the course from which its questions were read.
+        # This is a precondition, never an override of the server-owned band.
+        if expected_level is not None and str(expected_level).strip().lower() != level:
+            raise DesktopCourseError("course_context_changed", status_code=409)
 
         if lesson_order <= 0:
             raise DesktopCourseError("invalid_lesson_order", status_code=422)

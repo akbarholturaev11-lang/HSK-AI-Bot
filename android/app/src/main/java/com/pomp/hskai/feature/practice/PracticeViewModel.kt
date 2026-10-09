@@ -145,6 +145,38 @@ class PracticeViewModel(
     private var reviewAudioJob: Job? = null
     private var mistakesLoaded = false
     private var mistakesLoadInFlight = false
+    private var courseLevel: String? = null
+    private var courseGeneration = 0L
+
+    /** A run and its retry belong to the course in which they were started. */
+    fun onCourseChanged(level: String) {
+        val normalized = level.trim().lowercase()
+        if (normalized.isBlank() || normalized == courseLevel) return
+        val previous = courseLevel
+        courseLevel = normalized
+        if (previous == null) return
+
+        val reloadMistakes = mistakesLoaded || mistakesLoadInFlight
+        courseGeneration++
+        stopReviewAudio()
+        lastAttempt = null
+        lastExamAttempt = null
+        lastMistakeReviewAccessRef = null
+        mistakesLoaded = false
+        mistakesLoadInFlight = false
+        _state.value = PracticeUiState()
+        if (reloadMistakes) loadMistakes()
+    }
+
+    /** Check before sending and before publishing, including calls queued during a switch. */
+    private suspend fun <T> courseRequest(
+        generation: Long,
+        block: suspend () -> ApiResult<T>,
+    ): ApiResult<T>? {
+        if (generation != courseGeneration) return null
+        val result = block()
+        return result.takeIf { generation == courseGeneration }
+    }
 
     /** First Practice-tab entry owns the initial mistakes fetch, not app startup. */
     fun ensureMistakesLoaded() {
@@ -162,6 +194,7 @@ class PracticeViewModel(
     fun loadMistakes() {
         if (mistakesLoadInFlight) return
         mistakesLoadInFlight = true
+        val generation = courseGeneration
         _state.update { it.copy(isLoadingMistakes = true, error = null) }
         viewModelScope.launch {
             try {
@@ -171,10 +204,12 @@ class PracticeViewModel(
 
             while (offset < MISTAKES_MAX_ITEMS) {
                 when (
-                    val result = repository.mistakes(
-                        limit = MISTAKES_PAGE_SIZE,
-                        offset = offset,
-                    )
+                    val result = courseRequest(generation) {
+                        repository.mistakes(
+                            limit = MISTAKES_PAGE_SIZE,
+                            offset = offset,
+                        )
+                    } ?: return@launch
                 ) {
                     is ApiResult.Success -> {
                         if (summary == null) summary = result.value.summary
@@ -231,7 +266,7 @@ class PracticeViewModel(
                 )
             }
             } finally {
-                mistakesLoadInFlight = false
+                if (generation == courseGeneration) mistakesLoadInFlight = false
             }
         }
     }
@@ -270,6 +305,7 @@ class PracticeViewModel(
         adSupported: Boolean = false,
     ) {
         if (_state.value.isStarting) return
+        val generation = courseGeneration
         lastAttempt = Attempt(tool, level, language)
         lastExamAttempt = null
         lastMistakeReviewAccessRef = null
@@ -287,14 +323,16 @@ class PracticeViewModel(
         }
         viewModelScope.launch {
             when (
-                val result = repository.practiceStart(
-                    mode = tool.mode,
-                    level = level,
-                    language = language,
-                    skill = tool.skill,
-                    accessRef = accessRef,
-                    adSupported = adSupported,
-                )
+                val result = courseRequest(generation) {
+                    repository.practiceStart(
+                        mode = tool.mode,
+                        level = level,
+                        language = language,
+                        skill = tool.skill,
+                        accessRef = accessRef,
+                        adSupported = adSupported,
+                    )
+                } ?: return@launch
             ) {
                 is ApiResult.Success -> _state.update {
                     it.copy(
@@ -350,6 +388,7 @@ class PracticeViewModel(
         adSupported: Boolean = false,
     ) {
         if (_state.value.isStarting) return
+        val generation = courseGeneration
         val resolvedAccessRef = accessRef.ifBlank { UUID.randomUUID().toString() }
         lastExamAttempt = ExamAttempt(level, language, resolvedAccessRef)
         lastAttempt = null
@@ -372,12 +411,14 @@ class PracticeViewModel(
         }
         viewModelScope.launch {
             when (
-                val result = repository.examStart(
-                    level = level,
-                    language = language,
-                    accessRef = resolvedAccessRef,
-                    adSupported = adSupported,
-                )
+                val result = courseRequest(generation) {
+                    repository.examStart(
+                        level = level,
+                        language = language,
+                        accessRef = resolvedAccessRef,
+                        adSupported = adSupported,
+                    )
+                } ?: return@launch
             ) {
                 is ApiResult.Success -> _state.update {
                     it.copy(
@@ -416,15 +457,18 @@ class PracticeViewModel(
             }
             return
         }
+        val generation = courseGeneration
         _state.update { it.copy(isCompleting = true, examAnswers = nextAnswers, error = null) }
         viewModelScope.launch {
             when (
-                val result = repository.examComplete(
-                    sessionId = session.id,
-                    level = session.level,
-                    language = language,
-                    answers = nextAnswers,
-                )
+                val result = courseRequest(generation) {
+                    repository.examComplete(
+                        sessionId = session.id,
+                        level = session.level,
+                        language = language,
+                        answers = nextAnswers,
+                    )
+                } ?: return@launch
             ) {
                 is ApiResult.Success -> _state.update {
                     it.copy(isCompleting = false, examResult = result.value)
@@ -485,22 +529,25 @@ class PracticeViewModel(
             }
             return
         }
+        val generation = courseGeneration
         _state.update { it.copy(isCompleting = true, answers = nextAnswers, error = null) }
         viewModelScope.launch {
             when (
-                val result = repository.practiceComplete(
-                    sessionId = session.id,
-                    mode = session.mode,
-                    level = session.level,
-                    language = language,
-                    skill = session.skill,
-                    answers = nextAnswers,
-                    // A session an ad opened must be finished the same way,
-                    // or the server judges it against the daily limit and the
-                    // learner loses a practice they already completed.
-                    accessRef = current.adAccessRef,
-                    adSupported = current.adAccessRef.isNotBlank(),
-                )
+                val result = courseRequest(generation) {
+                    repository.practiceComplete(
+                        sessionId = session.id,
+                        mode = session.mode,
+                        level = session.level,
+                        language = language,
+                        skill = session.skill,
+                        answers = nextAnswers,
+                        // A session an ad opened must be finished the same way,
+                        // or the server judges it against the daily limit and the
+                        // learner loses a practice they already completed.
+                        accessRef = current.adAccessRef,
+                        adSupported = current.adAccessRef.isNotBlank(),
+                    )
+                } ?: return@launch
             ) {
                 is ApiResult.Success -> _state.update {
                     it.copy(isCompleting = false, result = result.value)
@@ -572,6 +619,7 @@ class PracticeViewModel(
 
     fun startMistakeReview(accessRef: String = "") {
         if (_state.value.isStarting) return
+        val generation = courseGeneration
         val resolvedAccessRef = accessRef.ifBlank { UUID.randomUUID().toString() }
         lastAttempt = null
         lastExamAttempt = null
@@ -591,7 +639,9 @@ class PracticeViewModel(
         }
         val category = _state.value.mistakeCategory
         viewModelScope.launch {
-            when (val result = repository.startMistakeReview(resolvedAccessRef, category)) {
+            when (val result = courseRequest(generation) {
+                repository.startMistakeReview(resolvedAccessRef, category)
+            } ?: return@launch) {
                 is ApiResult.Success -> {
                     _state.update {
                         it.copy(
@@ -616,14 +666,17 @@ class PracticeViewModel(
         if (current.reviewFeedback != null || current.reviewSelectedIndex != null) return
         val session = current.reviewSession ?: return
         val question = session.questions.getOrNull(current.reviewIndex) ?: return
+        val generation = courseGeneration
         _state.update { it.copy(reviewSelectedIndex = index, error = null) }
         viewModelScope.launch {
             when (
-                val result = repository.answerMistakeReview(
-                    sessionId = session.id,
-                    questionId = question.id,
-                    selectedIndex = index,
-                )
+                val result = courseRequest(generation) {
+                    repository.answerMistakeReview(
+                        sessionId = session.id,
+                        questionId = question.id,
+                        selectedIndex = index,
+                    )
+                } ?: return@launch
             ) {
                 is ApiResult.Success -> _state.update {
                     it.copy(
@@ -651,14 +704,17 @@ class PracticeViewModel(
         val session = current.reviewSession ?: return
         val question = session.questions.getOrNull(current.reviewIndex) ?: return
         if (!question.isBuilder || tokens.size != question.tokens.size) return
+        val generation = courseGeneration
         _state.update { it.copy(reviewSelectedTokens = tokens, error = null) }
         viewModelScope.launch {
             when (
-                val result = repository.answerMistakeReview(
-                    sessionId = session.id,
-                    questionId = question.id,
-                    selectedTokens = tokens,
-                )
+                val result = courseRequest(generation) {
+                    repository.answerMistakeReview(
+                        sessionId = session.id,
+                        questionId = question.id,
+                        selectedTokens = tokens,
+                    )
+                } ?: return@launch
             ) {
                 is ApiResult.Success -> _state.update {
                     it.copy(
@@ -706,13 +762,16 @@ class PracticeViewModel(
             autoplayReviewQuestion()
             return
         }
+        val generation = courseGeneration
         _state.update { it.copy(isCompleting = true, error = null) }
         viewModelScope.launch {
             when (
-                val result = repository.completeMistakeReview(
-                    sessionId = session.id,
-                    answers = current.reviewAnswers,
-                )
+                val result = courseRequest(generation) {
+                    repository.completeMistakeReview(
+                        sessionId = session.id,
+                        answers = current.reviewAnswers,
+                    )
+                } ?: return@launch
             ) {
                 is ApiResult.Success -> _state.update {
                     it.copy(isCompleting = false, reviewResult = result.value)
@@ -755,9 +814,12 @@ class PracticeViewModel(
         val phrase = text.trim()
         if (phrase.isEmpty() || _state.value.isReviewAudioLoading) return
         reviewAudioJob?.cancel()
+        val generation = courseGeneration
         _state.update { it.copy(isReviewAudioLoading = true, reviewAudioError = null) }
         reviewAudioJob = viewModelScope.launch {
-            when (val result = courseRepository.ttsAudio(phrase)) {
+            when (val result = courseRequest(generation) {
+                courseRepository.ttsAudio(phrase)
+            } ?: return@launch) {
                 is ApiResult.Failure -> _state.update {
                     it.copy(isReviewAudioLoading = false, reviewAudioError = result.error)
                 }

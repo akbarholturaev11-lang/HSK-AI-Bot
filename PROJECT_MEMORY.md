@@ -10759,3 +10759,23 @@ Risk:
 
 Follow-up:
 - Publish a signed Direct APK and verify the physical-phone transition/payment flow. Keep `CourseTrackSwitchViewModelTest`, `Hsk30EntryFlowTest`, `SubscriptionCheckoutHostTest`, and `SubscriptionCheckoutPaymentReviewTest`; the receipt submission test uses a fake API and never creates a production payment.
+
+### 2026-10-08 — Android course/session regression prevention
+
+Changed:
+- Fresh canonical course levels invalidate old Practice/Voice sessions and temporary destinations. Request generations protect Profile/checkout/Voice from late reads and mutations; receipt-picker ownership and displayed-host navigation prevent cross-product callbacks.
+- Every authenticated payment decision refreshes foreground access, independently of OS notification permission. Course refresh requests are coalesced and Voice status refreshes supersede stale in-flight reads.
+- Android locked-lesson skip tests fetch only quiz material from `/api/v3/android/course/skip-test/{order}`; canonical material validation and Foundation/course/daily gates remain. Skip unlock enforces Foundation and the new APK's `expected_level` precondition under the existing user lock, preventing an old test from advancing a newly selected course. Older clients can omit the optional field.
+- CI and release share a blocking Direct/Play emulator regression action, including checkout, course, Voice lifecycle and verified payment decisions.
+
+Why:
+- Session-owned models outlive screens; ignored refreshes and late callbacks can preserve old products, course levels or access. Normal playable lesson GET correctly cannot serve locked skip-test material.
+
+Files touched:
+- Android course, Practice, Profile, Voice, Direct checkout, payment monitor and MainActivity; Android course API/service; regression tests; `.github/actions/android-flow-regressions` and Android CI/release workflows. Durable scenarios: `knowledge/bugs/android-course-and-checkout-lifecycle.md`.
+
+Risk:
+- Deploy the new authenticated backend endpoint before the new APK. No schema, price, subscription approval, quiz score or lesson-content change. Installed APKs retain old native behavior until updated.
+
+Follow-up:
+- Preserve deferred-response and real Compose regressions; verify the signed APK on the affected phone after deployment. These changes do not prove physical microphone behavior or production payment/provider operation.

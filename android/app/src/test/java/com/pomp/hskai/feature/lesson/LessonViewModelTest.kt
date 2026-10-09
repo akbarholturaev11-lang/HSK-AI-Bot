@@ -115,6 +115,11 @@ private open class FakeLessonApi(
         authorization: String,
     ): Response<com.pomp.hskai.data.api.Hsk30PromoMarkResponse> = throw NotImplementedError()
 
+    override suspend fun skipTestQuestions(
+        authorization: String,
+        lessonOrder: Int,
+    ): Response<com.pomp.hskai.data.api.CourseSkipTestResponse> = throw NotImplementedError()
+
     override suspend fun lesson(
         authorization: String,
         lessonOrder: Int,

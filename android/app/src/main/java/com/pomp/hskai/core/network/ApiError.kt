@@ -168,6 +168,7 @@ sealed interface ApiError {
                 "desktop_link_intent_invalid",
                 "android_request_invalid",
                 "android_request_too_large",
+                "course_context_changed",
                 -> R.string.error_unknown
 
                 else -> return Unknown
