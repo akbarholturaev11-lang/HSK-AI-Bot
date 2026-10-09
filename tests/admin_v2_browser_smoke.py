@@ -394,6 +394,22 @@ def main():
             assert iphone.locator("#v2UnifiedApps .v2-client-card").count() == 3
             assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Unified apps mobile overflow"
             iphone.screenshot(path=str(output / "admin-v2-telegram-unified-apps-390.png"), full_page=False)
+            # Every Product subtab must fit within the viewport (no cut-off label).
+            iphone.locator('.mobile-nav [data-tab="menu"]').click()
+            iphone.locator('#drawer.open [data-tab="settings"]').click()
+            iphone.locator('#settings [data-v2-sub="settings:access"]').click()
+            assert iphone.locator('#settings>.v2-intro').is_hidden(), "Duplicate product description"
+            assert iphone.evaluate("""() => {
+                const nav=document.querySelector('#settings .v2-subnav');
+                const rect=nav.getBoundingClientRect();
+                return getComputedStyle(nav).display==='grid' &&
+                  nav.scrollWidth<=nav.clientWidth+1 &&
+                  [...nav.querySelectorAll('[data-v2-sub]')].every(tab=>{
+                    const t=tab.getBoundingClientRect();
+                    return t.left>=rect.left-1 && t.right<=rect.right+1;
+                  });
+            }"""), "Mobile Product tabs overflow or get clipped"
+            iphone.screenshot(path=str(output / "admin-v2-telegram-product-tabs-390.png"), full_page=False)
             iphone.locator('.mobile-nav [data-tab="payments"]').click()
             assert iphone.locator("#paymentBoard .v2-pay-mobile [data-payment-preview]").count()==1, "Mobile finance cards missing"
             assert iphone.locator("#paymentBoard .v2-pay-desktop").is_hidden(), "Desktop payments table visible on mobile"
@@ -407,6 +423,22 @@ def main():
                 return panel.top>=75 && header.top>=panel.top && panel.right<=innerWidth+1;
             }"""), "Native Telegram controls cover drawer header"
             assert iphone.evaluate("document.body.classList.contains('locked')"), "Drawer did not lock background"
+            # Render a real HSK 3.0 report shape inside a visible drawer with
+            # in-memory data; verify phone-only card view rather than wide tables.
+            iphone.evaluate("""() => {
+                document.querySelector('#drawerBody').innerHTML='<div id="hsk30Analytics"></div>';
+                renderHsk30Stats({
+                    course_funnel:[{label:'Таклиф кўрсатилди',users:12},
+                                   {label:'HSK 3.0 даражаси танланди',users:4,previous_users:12,converted_from_previous:4,conversion_from_previous_pct:33.3}],
+                    payment_funnel:[{label:'Тўловга ўтиш',attempts:7},
+                                    {label:'Тасдиқланган',attempts:2,previous_attempts:7,converted_from_previous:2,conversion_from_previous_pct:28.6}],
+                    payments:{pending:0,approved:2,rejected:0}
+                });
+            }""")
+            assert iphone.locator("#hsk30Analytics .hsk30-funnel-mobile .hsk30-funnel-step").count()==4, "HSK 3.0 funnel cards missing"
+            assert iphone.locator("#hsk30Analytics .hsk30-funnel-desktop").first.is_hidden(), "Wide HSK30 funnel table visible on phone"
+            assert iphone.evaluate("document.documentElement.scrollWidth<=innerWidth+1"), "HSK3 stats horizontal overflow"
+            iphone.screenshot(path=str(output / "admin-v2-telegram-hsk3-funnel-sheet-390.png"), full_page=False)
             iphone.screenshot(path=str(output / "admin-v2-telegram-payment-sheet-390.png"), full_page=False)
             iphone.locator('#drawer [data-act="close-drawer"]').click()
             assert not iphone.evaluate("document.body.classList.contains('locked')"), "Drawer background remained locked"
