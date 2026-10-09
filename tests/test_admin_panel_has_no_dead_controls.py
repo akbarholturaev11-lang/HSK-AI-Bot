@@ -312,8 +312,29 @@ class SimplifiedPlacementControlsTests(unittest.TestCase):
 
     def test_legacy_differences_are_disclosed(self):
         self.assertIn('const different=fields.some', ADMIN)
-        self.assertIn("ikkala joyga bir xil qoida", ADMIN.lower())
+        self.assertIn("ikkala joyga bir xil auditoriya", ADMIN.lower())
         self.assertIn("Bu video davomiyligidan BOSHQA sozlama.", ADMIN)
+
+    def test_standard_mode_hides_unneeded_settings(self):
+        self.assertIn('id="adCustomMode"', ADMIN)
+        self.assertIn('role="switch"', ADMIN)
+        self.assertIn('id="adPresetSummary"', ADMIN)
+        self.assertIn('id="adCustomSettings"', ADMIN)
+        self.assertIn('if(advanced) advanced.hidden=!custom', ADMIN)
+        self.assertIn('if(standard) standard.hidden=custom', ADMIN)
+        self.assertIn('adRulesModeUI()', ADMIN)
+
+    def test_custom_mode_is_detected_from_saved_backend_rules(self):
+        self.assertIn('function adRulesAreCustom(cfg)', ADMIN)
+        self.assertIn('adRulesInitiallyCustom=adRulesAreCustom(cfg)', ADMIN)
+        self.assertIn('if(!custom&&adRulesInitiallyCustom&&!confirm(', ADMIN)
+
+    def test_preset_matches_conservative_backend_limits(self):
+        self.assertIn('daily_cap:1,', ADMIN)
+        self.assertIn('skip_after_seconds:5,', ADMIN)
+        self.assertIn('audience:"free_only"', ADMIN)
+        self.assertIn('enabled:custom?', ADMIN)
+        self.assertIn('clients:custom?', ADMIN)
 
     def test_selection_survives_refresh(self):
         self.assertIn('const caPlaceChosen={lesson_end:true,screen_center:false}', ADMIN)
