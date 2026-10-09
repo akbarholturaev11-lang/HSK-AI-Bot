@@ -191,9 +191,14 @@ class MiniAppAdvertisingLivesInOneSectionTests(unittest.TestCase):
             with self.subTest(pane=pane):
                 self.assertIn(f'id="{pane}"', ADMIN)
 
-    def test_the_reel_and_its_placement_share_one_screen(self):
-        # Joy sozlamasi rolik formasi bilan bir panelda chiziladi.
-        self.assertIn('id="adPlacementsBox"', ADMIN)
+    def test_creative_form_is_separate_from_global_placement_settings(self):
+        # Rolikning joy tanlovi formada qoladi, lekin barcha reklamalarga
+        # ta'sir qiladigan qoidalar sozlamalar dialogiga ko'chirildi.
+        form = ADMIN.split('id="adPaneKurs"', 1)[1].split('id="adPaneIlova"', 1)[0]
+        dialog = ADMIN.split('id="adRulesModal"', 1)[1].split('id="scrim"', 1)[0]
+        self.assertIn('id="caPlacementBox"', form)
+        self.assertNotIn('id="adPlacementsBox"', form)
+        self.assertIn('id="adPlacementsBox"', dialog)
         self.assertIn('panelTarget=host.id', ADMIN)
         self.assertIn('state.adHub==="kurs"', ADMIN)
 
@@ -204,6 +209,51 @@ class MiniAppAdvertisingLivesInOneSectionTests(unittest.TestCase):
         self.assertIn("function showPanel(title,sub,html)", ADMIN)
         self.assertIn("renderAdPlacements(d)", ADMIN)
         self.assertIn("renderAppPromo(d)", ADMIN)
+
+
+class AdsSettingsModalTests(unittest.TestCase):
+    """Umumiy reklama qoidalari asosiy forma ostida takrorlanmasin."""
+
+    def test_settings_gear_is_in_ad_header(self):
+        heading = ADMIN.split('id="adHub"', 1)[1].split('id="adHubTabs"', 1)[0]
+        self.assertIn('id="adRulesGear"', heading)
+        self.assertIn('data-ad-rules-open', heading)
+        self.assertIn('aria-haspopup="dialog"', heading)
+        self.assertIn('aria-controls="adRulesModal"', heading)
+
+    def test_rules_use_a_real_accessible_modal_card(self):
+        self.assertIn('id="adRulesModal" class="ad-rules-backdrop" hidden', ADMIN)
+        self.assertIn('class="ad-rules-dialog" role="dialog" aria-modal="true"', ADMIN)
+        self.assertIn('aria-labelledby="adRulesTitle"', ADMIN)
+        self.assertIn('class="ad-rules-dialog-body"', ADMIN)
+        self.assertIn('class="ad-rules-dialog-footer"', ADMIN)
+        self.assertEqual(1, ADMIN.count('data-adplacesave>'))
+        self.assertIn('function openAdRulesModal()', ADMIN)
+        self.assertIn('function closeAdRulesModal()', ADMIN)
+
+    def test_modal_close_and_accessibility_are_wired(self):
+        self.assertIn('if((el=T("[data-ad-rules-open]"))) return openAdRulesModal();', ADMIN)
+        self.assertIn('if((el=T("[data-ad-rules-close]"))) return closeAdRulesModal();', ADMIN)
+        self.assertIn('if(e.target&&e.target.id==="adRulesModal") return closeAdRulesModal();', ADMIN)
+        self.assertIn('if(e.key==="Escape"){e.preventDefault();closeAdRulesModal();return;}', ADMIN)
+        self.assertIn('e.key==="Tab"', ADMIN)
+        self.assertIn('document.body.classList.add("ads-dialog-open")', ADMIN)
+        self.assertIn('document.body.classList.remove("ads-dialog-open")', ADMIN)
+
+    def test_settings_are_only_for_course_ads(self):
+        self.assertIn('gear.hidden=state.adHub!=="kurs"', ADMIN)
+        self.assertIn('if(state.adHub!=="kurs") closeAdRulesModal()', ADMIN)
+
+    def test_cancel_discards_uncommitted_toggle_values(self):
+        self.assertIn('if(state.management){', ADMIN)
+        self.assertIn('renderAdPlacements(state.management)', ADMIN)
+        self.assertIn('caPlaceWarnUI(); // Bekor qilingan', ADMIN)
+        self.assertIn('if(!custom&&adRulesInitiallyCustom&&!confirm(', ADMIN)
+
+    def test_save_refreshes_and_closes_only_on_success(self):
+        self.assertIn('.then(async()=>{closeAdRulesModal();await afterModule(', ADMIN)
+        self.assertIn('data-adplacesave', ADMIN)
+        self.assertIn('"ad_placements"', ADMIN)
 
 
 class TheUploadFormOnlyAsksWhatTheTypeNeedsTests(unittest.TestCase):
