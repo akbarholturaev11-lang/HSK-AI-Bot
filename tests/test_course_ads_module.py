@@ -249,6 +249,48 @@ class EveryNameUsedInsideTheModuleExistsTests(unittest.TestCase):
         )
 
 
+class AdFullscreenPlacementContractTests(unittest.TestCase):
+    """Darс yakunidagi reklama fullscreen, ekran markazi esa eski modal."""
+
+    ANDROID_SCREEN = Path(
+        "android/app/src/main/java/com/pomp/hskai/feature/ad/AdScreen.kt"
+    ).read_text(encoding="utf-8")
+    ANDROID_VM = Path(
+        "android/app/src/main/java/com/pomp/hskai/feature/ad/AdViewModel.kt"
+    ).read_text(encoding="utf-8")
+    COURSE = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+
+    def test_miniapp_fullscreen_only_for_lesson_end(self):
+        self.assertIn('.caa-app.lesson-end{padding:0;', ADS)
+        self.assertIn('.caa-app.lesson-end .caa-app-card{width:100%;max-width:none;', ADS)
+        self.assertIn('.caa-app.lesson-end .caa-app-media{width:100%;flex:1', ADS)
+        self.assertIn('e.ov.classList.toggle("lesson-end",lessonEnd)', ADS)
+        self.assertIn('showCenterAd(ad,"screen_center")', ADS)
+        self.assertIn('showCenterAd(ad,"lesson_end")', ADS)
+
+    def test_reused_overlay_clears_fullscreen_state(self):
+        self.assertIn('appEls.ov.classList.remove("on","lesson-end")', ADS)
+        self.assertIn('var lessonEnd=placement==="lesson_end"', ADS)
+
+    def test_close_timer_and_ctas_are_preserved(self):
+        self.assertIn('var skip=Math.max(0,Math.min(60,Number(ad&&ad.skip_after_seconds)||0))', ADS)
+        self.assertIn('e.cta.textContent=String(ad.button_text||t.appCta)', ADS)
+        self.assertIn('e.sub.hidden=!!CFG.paid', ADS)
+        self.assertIn('recordView(appState.ad,appState.placement||"screen_center"', ADS)
+
+    def test_cached_ad_module_is_refreshed(self):
+        self.assertIn('/course_v3_data/ads.js?v=20261009-fullscreen', self.COURSE)
+
+    def test_android_uses_fullscreen_for_lesson_end_only(self):
+        self.assertIn('val placement: String = "screen_center"', self.ANDROID_VM)
+        self.assertIn('AdUiState(placement = placement)', self.ANDROID_VM)
+        self.assertIn('state.placement == AdViewModel.PLACEMENT_LESSON_END', self.ANDROID_SCREEN)
+        self.assertIn('fullScreen = true', self.ANDROID_SCREEN)
+        self.assertIn('HskGlassSurface(', self.ANDROID_SCREEN)
+        self.assertIn('.weight(1f)', self.ANDROID_SCREEN)
+        self.assertIn('.navigationBarsPadding()', self.ANDROID_SCREEN)
+
+
 class AdAudienceIsTheServersDecisionTests(unittest.TestCase):
     """Reklama kimga chiqishini admin sozlamasi hal qiladi, klient emas.
 
