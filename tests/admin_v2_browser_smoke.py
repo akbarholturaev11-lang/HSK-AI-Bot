@@ -39,9 +39,9 @@ def check_css_architecture():
     """Keep only one authoritative theme token definition and no orphan V1/demo styles."""
     html = Path("app/static/admin.html").read_text(encoding="utf-8")
     css = html.split("<style>", 1)[1].split("</style>", 1)[0]
-    roots = re.findall(r":root\\s*\\{([^{}]*)\\}", css)
+    roots = re.findall(r":root\s*\{([^{}]*)\}", css)
     assert len(roots) >= 2, "Admin theme root not found"
-    tokens = re.findall(r"(--[a-z0-9-]+)\\s*:", "\\n".join(roots))
+    tokens = re.findall(r"(--[a-z0-9-]+)\s*:", "\n".join(roots))
     duplicate_tokens = sorted({name for name in tokens if tokens.count(name) > 1})
     assert not duplicate_tokens, f"Conflicting Admin theme tokens: {duplicate_tokens}"
 
@@ -50,7 +50,7 @@ def check_css_architecture():
                 "panel-body", "kpi-line", "kpi-list", "demo-strip",
                 "preview-bubble", "filter-tabs", "option-tile", "pboard")
     for cls in ("tabs", *obsolete):
-        selector = r"\\." + re.escape(cls) + r"(?![a-zA-Z0-9_-])"
+        selector = r"\." + re.escape(cls) + r"(?![a-zA-Z0-9_-])"
         assert not re.search(selector, css), f"Unused V1/demo CSS returned: .{cls}"
     assert "#drawer.open{transform:translateX(0)}" in css
     assert "#drawer.open{transform:translateY(0)}" in css
