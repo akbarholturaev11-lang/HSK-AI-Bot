@@ -324,7 +324,7 @@ def main():
             details = live.locator("#v2AdvancedAnalytics")
             assert details.count() == 1 and not details.evaluate("(el) => el.open")
             assert not legacy_stats_requests, "Optional legacy analytics loaded eagerly"
-            details.locator("summary").click()
+            details.locator("summary").first.click()
             assert details.evaluate("(el) => el.open")
             live.locator("#dataQuality").wait_for(timeout=5000)
             assert "Data freshness" in live.locator("#dataQuality").inner_text(), "Detailed render failed"
@@ -333,7 +333,7 @@ def main():
             assert any(u.endswith("/android-stats") for u in legacy_stats_requests), "Android diagnostics not requested on demand"
             live.screenshot(path=str(output / "admin-v2-advanced-analytics-opt-in.png"), full_page=True)
             assert not live_errors, "Optional analytics render exceptions: " + str(live_errors)
-            details.locator("summary").click()
+            details.locator("summary").first.click()
             live.locator('#tabs [data-tab="dashboard"]').click()
 
             # Critical module coverage: each module must be discoverable from some safe V2 path.
