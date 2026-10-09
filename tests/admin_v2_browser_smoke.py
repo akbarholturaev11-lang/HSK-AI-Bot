@@ -341,7 +341,7 @@ def main():
 
             # Telegram iOS-style WebView contract: native inset must prevent
             # native Close/menu overlays from covering the title and drawer.
-            # Never invoke fullscreen in Admin: Telegram renders its own chrome.
+            # Request mobile fullscreen and keep native floating controls clear.
             iphone_context = browser.new_context(
                 viewport={"width": 390, "height": 844},
                 is_mobile=True, has_touch=True, device_scale_factor=3,
@@ -353,9 +353,10 @@ def main():
                 status=200, content_type="application/javascript",
                 body="""window.__fullscreenRequests=0;
                 window.Telegram={WebApp:{
-                    initData:'nonprod-mobile-demo',
+                    initData:'nonprod-mobile-demo', platform:'ios',isFullscreen:false,
+                    safeAreaInset:{top:57,right:0,bottom:15,left:0},
                     contentSafeAreaInset:{top:75,right:0,bottom:26,left:0},
-                    requestFullscreen(){window.__fullscreenRequests++},
+                    requestFullscreen(){window.__fullscreenRequests++;this.isFullscreen=true},
                     ready(){},expand(){},setHeaderColor(){},
                     setBackgroundColor(){},
                     onEvent(type,callback){(window.__telegramEvents||(window.__telegramEvents={}))[type]=callback}
@@ -367,25 +368,33 @@ def main():
                 wait_until="domcontentloaded"
             )
             iphone.wait_for_selector("#app:not([hidden])", timeout=8000)
-            assert iphone.evaluate("window.__fullscreenRequests === 0"), "Admin requested Telegram fullscreen"
-            assert iphone.evaluate("parseFloat(getComputedStyle(document.body).paddingTop)>=75"), "Telegram content-safe top missing"
+            assert iphone.evaluate("window.__fullscreenRequests === 1"), "Admin did not request Telegram fullscreen"
+            assert iphone.evaluate("parseFloat(getComputedStyle(document.querySelector('.workspace')).paddingTop)>=112"), "Fullscreen iPhone close-controls clearance missing"
             assert iphone.evaluate("""() => {
                 const bar=document.querySelector('.workspace .topbar').getBoundingClientRect();
                 const nav=document.querySelector('.mobile-nav').getBoundingClientRect();
-                return bar.top>=74 && nav.bottom<=innerHeight-25;
+                return bar.top>=110 && nav.bottom<=innerHeight-25;
             }"""), "Telegram header or bottom navigation overlaps native inset"
             # Telegram can update content-safe-area after expansion/rotation.
             iphone.evaluate("""() => {
-                window.Telegram.WebApp.contentSafeAreaInset = {top:92,right:0,bottom:35,left:0};
+                window.Telegram.WebApp.contentSafeAreaInset = {top:138,right:0,bottom:35,left:0};
                 window.__telegramEvents.contentSafeAreaChanged();
             }""")
-            assert iphone.evaluate("parseFloat(getComputedStyle(document.body).paddingTop)>=92"), "Telegram dynamic safe top not applied"
+            assert iphone.evaluate("parseFloat(getComputedStyle(document.querySelector('.workspace')).paddingTop)>=138"), "Telegram dynamic safe top not applied"
             assert iphone.evaluate("parseFloat(getComputedStyle(document.querySelector('.mobile-nav')).bottom)>=35"), "Telegram dynamic bottom inset missing"
             iphone.evaluate("window.scrollTo(0, 0)")
+            print("Fullscreen geometry", iphone.evaluate("""() => {
+                const b=document.querySelector('.workspace .topbar').getBoundingClientRect();
+                const t=document.querySelector('#v2Eyebrow').getBoundingClientRect();
+                return {barTop:b.top,barBottom:b.bottom,titleTop:t.top,scrollY:window.scrollY,
+                  workspaceTop:getComputedStyle(document.querySelector('.workspace')).paddingTop,
+                  stickyTop:getComputedStyle(document.querySelector('.workspace .topbar')).top,
+                  full:document.documentElement.dataset.adminFullscreen};
+            }"""))
             assert iphone.evaluate("""() => {
                 const bar=document.querySelector('.workspace .topbar').getBoundingClientRect();
                 const eyebrow=document.querySelector('#v2Eyebrow').getBoundingClientRect();
-                return bar.top >= 90 && eyebrow.top >= bar.bottom - 1;
+                return bar.top >= 137 && eyebrow.top >= bar.bottom - 1;
             }"""), "Page title hidden behind Telegram-safe sticky header"
             iphone.screenshot(path=str(output / "admin-v2-telegram-safe-dashboard-390.png"), full_page=False)
             iphone.locator('.mobile-nav [data-tab="statistics"]').click()
@@ -393,6 +402,22 @@ def main():
             assert iphone.locator("#v2UnifiedApps .v2-client-card").count() == 3
             assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Unified apps mobile overflow"
             iphone.screenshot(path=str(output / "admin-v2-telegram-unified-apps-390.png"), full_page=False)
+            # Every Product subtab must fit within the viewport (no cut-off label).
+            iphone.locator('.mobile-nav [data-tab="menu"]').click()
+            iphone.locator('#drawer.open [data-tab="settings"]').click()
+            iphone.locator('#settings [data-v2-sub="settings:access"]').click()
+            assert iphone.locator('#settings>.v2-intro').is_hidden(), "Duplicate product description"
+            assert iphone.evaluate("""() => {
+                const nav=document.querySelector('#settings .v2-subnav');
+                const rect=nav.getBoundingClientRect();
+                return getComputedStyle(nav).display==='grid' &&
+                  nav.scrollWidth<=nav.clientWidth+1 &&
+                  [...nav.querySelectorAll('[data-v2-sub]')].every(tab=>{
+                    const t=tab.getBoundingClientRect();
+                    return t.left>=rect.left-1 && t.right<=rect.right+1;
+                  });
+            }"""), "Mobile Product tabs overflow or get clipped"
+            iphone.screenshot(path=str(output / "admin-v2-telegram-product-tabs-390.png"), full_page=False)
             iphone.locator('.mobile-nav [data-tab="payments"]').click()
             assert iphone.locator("#paymentBoard .v2-pay-mobile [data-payment-preview]").count()==1, "Mobile finance cards missing"
             assert iphone.locator("#paymentBoard .v2-pay-desktop").is_hidden(), "Desktop payments table visible on mobile"
@@ -406,6 +431,22 @@ def main():
                 return panel.top>=75 && header.top>=panel.top && panel.right<=innerWidth+1;
             }"""), "Native Telegram controls cover drawer header"
             assert iphone.evaluate("document.body.classList.contains('locked')"), "Drawer did not lock background"
+            # Render a real HSK 3.0 report shape inside a visible drawer with
+            # in-memory data; verify phone-only card view rather than wide tables.
+            iphone.evaluate("""() => {
+                document.querySelector('#drawerBody').innerHTML='<div id="hsk30Analytics"></div>';
+                renderHsk30Stats({
+                    course_funnel:[{label:'Таклиф кўрсатилди',users:12},
+                                   {label:'HSK 3.0 даражаси танланди',users:4,previous_users:12,converted_from_previous:4,conversion_from_previous_pct:33.3}],
+                    payment_funnel:[{label:'Тўловга ўтиш',attempts:7},
+                                    {label:'Тасдиқланган',attempts:2,previous_attempts:7,converted_from_previous:2,conversion_from_previous_pct:28.6}],
+                    payments:{pending:0,approved:2,rejected:0}
+                });
+            }""")
+            assert iphone.locator("#hsk30Analytics .hsk30-funnel-mobile .hsk30-funnel-step").count()==4, "HSK 3.0 funnel cards missing"
+            assert iphone.locator("#hsk30Analytics .hsk30-funnel-desktop").first.is_hidden(), "Wide HSK30 funnel table visible on phone"
+            assert iphone.evaluate("document.documentElement.scrollWidth<=innerWidth+1"), "HSK3 stats horizontal overflow"
+            iphone.screenshot(path=str(output / "admin-v2-telegram-hsk3-funnel-sheet-390.png"), full_page=False)
             iphone.screenshot(path=str(output / "admin-v2-telegram-payment-sheet-390.png"), full_page=False)
             iphone.locator('#drawer [data-act="close-drawer"]').click()
             assert not iphone.evaluate("document.body.classList.contains('locked')"), "Drawer background remained locked"

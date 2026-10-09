@@ -667,6 +667,70 @@ body.locked .mobile-nav{pointer-events:none}
   #scrim.open{backdrop-filter:none;-webkit-backdrop-filter:none}
 }
 
+  
+/* Admin V2: genuine phone fullscreen and unclipped two-column tab selectors */
+.hsk30-funnel-mobile{display:none}
+@media(max-width:760px){
+  /* Reserve native Telegram chrome on the workspace, not body. Otherwise
+     iOS adds body-padding + sticky-top (2x) and toolbar covers the title. */
+  body{padding-top:0}
+  #loading{padding-top:max(var(--safe-top),var(--telegram-content-top))}
+  .workspace{padding-top:max(var(--safe-top),var(--telegram-content-top))}
+  .workspace .topbar{
+    top:max(var(--safe-top),var(--telegram-content-top));
+    min-height:56px;height:56px;
+    padding:0 14px;
+  }
+  .workspace>main.content{padding-top:15px;padding-inline:15px}
+  .content .page-head{margin-bottom:16px;gap:8px}
+  .content .page-head h1{font-size:clamp(24px,6.7vw,29px)}
+  .content .page-head p{font-size:13px;line-height:1.48}
+  /* Descriptions were printed twice: once in page-head and again in the pane */
+  .view>.v2-intro{display:none}
+  /* No horizontal partial tab labels: complete touch targets on two rows. */
+  .v2-subnav{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:5px;overflow:visible;flex-wrap:initial;
+    margin:12px 0 18px;padding:5px;
+    scroll-snap-type:none;
+  }
+  .v2-subnav [data-v2-sub]{
+    width:100%;min-width:0;min-height:49px;
+    white-space:normal;text-align:center;
+    line-height:1.3;font-size:12.5px;
+    padding:9px 7px;scroll-snap-align:none;
+    overflow-wrap:break-word;
+  }
+  .v2-subnav:has(>[data-v2-sub]:nth-child(3):last-child)>[data-v2-sub]:last-child{
+    grid-column:span 2;
+  }
+  .content .stat .sub,.content .srow p,.content .ncnote{font-size:12.5px;line-height:1.5}
+  .content .srow h3{font-size:14px}
+  #drawer .dbody{overflow-x:hidden;overscroll-behavior:contain}
+  #drawer .dtitle-sm,#drawer .ncnote,#drawer .mcard p{white-space:normal;overflow-wrap:anywhere}
+  #drawer .grid.g2,#drawer #hsk30Analytics .grid.g2{grid-template-columns:minmax(0,1fr)}
+  #drawer #hsk30Analytics{min-width:0;max-width:100%;overflow-wrap:anywhere}
+  #drawer #hsk30Analytics .grid.g2 section{max-width:100%;min-width:0;overflow-x:auto}
+  #drawer #hsk30Analytics .tags{flex-wrap:wrap}
+  #drawer #hsk30Analytics .tbl{width:100%;font-size:12px}
+  #drawer #hsk30Analytics .tbl th,#drawer #hsk30Analytics .tbl td{
+    padding:10px 6px;overflow-wrap:anywhere;
+    white-space:normal;
+  }
+  #drawer #hsk30Analytics>div[style*="overflow:auto"]{max-width:100%;overscroll-behavior-x:contain}
+  .hsk30-funnel-desktop{display:none}
+  .hsk30-funnel-mobile{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin:10px 0 15px}
+  .hsk30-funnel-step{
+    min-width:0;display:grid;grid-template-columns:minmax(0,1fr) auto;
+    align-items:start;gap:5px 10px;
+    padding:13px;border:1px solid rgba(153,182,211,.18);
+    border-radius:12px;background:linear-gradient(135deg,#192635,#14202d);
+  }
+  .hsk30-funnel-step>b{font-size:12.5px;line-height:1.42;overflow-wrap:anywhere}
+  .hsk30-funnel-count{color:#f1f6fa;font-size:16px;font-weight:850;font-variant-numeric:tabular-nums}
+  .hsk30-funnel-step>small{grid-column:1/-1;font-size:11.5px;color:var(--muted);line-height:1.4}
+}
+
   </style>
 </head>
 <body>
@@ -902,28 +966,41 @@ body.locked .mobile-nav{pointer-events:none}
       adHub:"kurs"
     };
 
-    /* Telegram Admin must not force fullscreen: Telegram's native Close / menu
-       chrome overlays the dashboard and dialog titles on iOS. Regular expanded
-       Mini App mode reserves this area; still honor native safe-area updates. */
+    /* Fullscreen is requested only on phones. Telegram replaces its native
+       bar with floating controls in fullscreen; the native safe-area may
+       temporarily report zero, so reserve an iOS-specific control corridor.
+       On unsupported clients fullscreenFailed restores standard inset values. */
+    let adminFullscreenPending=false;
     function applyViewport(){
       const h = (tg && (tg.viewportStableHeight || tg.viewportHeight)) || window.innerHeight;
       if(h) document.documentElement.style.setProperty("--app-h", h + "px");
-      const inset = tg && tg.contentSafeAreaInset || {};
-      const top = Math.min(180, Math.max(0, Number(inset.top)||0));
-      const bottom = Math.min(100, Math.max(0, Number(inset.bottom)||0));
-      document.documentElement.style.setProperty("--telegram-content-top", top + "px");
-      document.documentElement.style.setProperty("--telegram-content-bottom", bottom + "px");
+      const content = (tg && tg.contentSafeAreaInset) || {};
+      const device = (tg && tg.safeAreaInset) || {};
+      const full=!!(tg && tg.isFullscreen) || adminFullscreenPending;
+      const ios=!!(tg && tg.platform==="ios") || /iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const clearance=full?(ios?112:86):0;
+      const clamp=(v,max)=>Math.max(0,Math.min(max,Number(v)||0));
+      const top=Math.min(190,Math.max(clamp(content.top,190),clamp(device.top,190),clearance));
+      const bottom=Math.max(clamp(content.bottom,100),clamp(device.bottom,100));
+      document.documentElement.style.setProperty("--telegram-content-top",top+"px");
+      document.documentElement.style.setProperty("--telegram-content-bottom",bottom+"px");
+      document.documentElement.dataset.adminFullscreen=full?"true":"false";
     }
     if(tg){
       try{ tg.ready(); }catch(e){}
       try{ tg.expand(); }catch(e){}
       try{ tg.setHeaderColor && tg.setHeaderColor("#0c1118"); tg.setBackgroundColor && tg.setBackgroundColor("#0c1118"); }catch(e){}
-      try{ tg.onEvent("viewportChanged", applyViewport); }catch(e){}
-      try{ tg.onEvent("contentSafeAreaChanged", applyViewport); }catch(e){}
-      try{ tg.onEvent("safeAreaChanged", applyViewport); }catch(e){}
+      try{ tg.onEvent("viewportChanged",applyViewport); }catch(e){}
+      try{ tg.onEvent("contentSafeAreaChanged",applyViewport); }catch(e){}
+      try{ tg.onEvent("safeAreaChanged",applyViewport); }catch(e){}
+      try{ tg.onEvent("fullscreenChanged",()=>{adminFullscreenPending=!!tg.isFullscreen;applyViewport();}); }catch(e){}
+      try{ tg.onEvent("fullscreenFailed",()=>{adminFullscreenPending=false;applyViewport();}); }catch(e){}
+      if(window.matchMedia("(max-width:760px)").matches && typeof tg.requestFullscreen==="function"){
+        try{adminFullscreenPending=true;tg.requestFullscreen();}catch(e){adminFullscreenPending=false;}
+      }
     }
     applyViewport();
-    window.addEventListener("resize", applyViewport);
+    window.addEventListener("resize",applyViewport);
 
     /* ---------- helpers ---------- */
     function esc(v){ return String(v==null?"":v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c])); }
@@ -2023,6 +2100,15 @@ body.locked .mobile-nav{pointer-events:none}
           return `<tr><td><b>${esc(step.label)}</b><div style="height:5px;background:var(--surface-2);border-radius:99px;margin-top:6px"><i style="display:block;height:5px;width:${width}%;background:var(--accent);border-radius:99px"></i></div></td><td class="r"><b>${count}</b></td><td class="r">${rate}</td></tr>`;
         }).join("");
       };
+      const funnelMobile=(rows,unit)=>{
+        return rows.map(step=>{
+          const count=Number(step[unit]||0);
+          const previous=unit==="users"?step.previous_users:step.previous_attempts;
+          const converted=step.converted_from_previous;
+          const rate=previous==null?"—":`${Number(converted||0)}/${Number(previous||0)} (${step.conversion_from_previous_pct==null?"—":`${Number(step.conversion_from_previous_pct).toFixed(1)}%`})`;
+          return `<article class="hsk30-funnel-step"><b>${esc(step.label)}</b><span class="hsk30-funnel-count">${count}</span><small>Ўтган / олдинги: ${rate}</small></article>`;
+        }).join("");
+      };
       const courseFunnelHtml=funnelTable(courseFunnel,"users");
       const paymentFunnelHtml=funnelTable(paymentFunnel,"attempts");
       const pay=data.payments||{};
@@ -2044,9 +2130,9 @@ body.locked .mobile-nav{pointer-events:none}
       host.innerHTML=`
         <div class="tags" style="margin:4px 0 12px">${tag(`Mini App promo кўрган ${Number(courseFunnel[0]?.users||0)}`,"blue")}${tag(`Курс очган ${Number(data.track_activated_users||0)}`,"blue")}${tag(`HSK 3.0 тўлов уриниши ${Number(paymentFunnel[0]?.attempts||0)}`,"blue")}${outcomeTags}${tag(`Mini App promo кўрсатиш ${Number(data.promo_impressions||0)}`,"gold")}${tag(`Promo lifetime · барча платформа ${Number(data.promo_impressions_all_platforms_lifetime||0)}`,"gold")}</div>
         <div class="dtitle-sm">Курсга ўтиш · Mini App <small>User · шу даврдаги кетма-кет қадамлар</small></div>
-        <div style="overflow:auto"><table class="tbl"><thead><tr><th>Қадам</th><th class="r">User</th><th class="r">Ўтган / олдинги</th></tr></thead><tbody>${courseFunnelHtml||"<tr><td colspan='3' class='empty'>Mini App’да қайд этилган қадамлар ҳали йўқ.</td></tr>"}</tbody></table></div>
+        <div class="hsk30-funnel-mobile">${funnelMobile(courseFunnel,"users")||"<p class='empty'>Ҳозирча қайд йўқ.</p>"}</div><div class="hsk30-funnel-desktop" style="overflow:auto"><table class="tbl"><thead><tr><th>Қадам</th><th class="r">User</th><th class="r">Ўтган / олдинги</th></tr></thead><tbody>${courseFunnelHtml||"<tr><td colspan='3' class='empty'>Mini App’да қайд этилган қадамлар ҳали йўқ.</td></tr>"}</tbody></table></div>
         <div class="dtitle-sm" style="margin-top:14px">Тўлов жараёни · HSK 3.0 <small>Танланган даврда бошланган уриниш · Mini App / Android / Desktop</small></div>
-        <div style="overflow:auto"><table class="tbl"><thead><tr><th>Қадам</th><th class="r">Уриниш</th><th class="r">Ўтган / олдинги</th></tr></thead><tbody>${paymentFunnelHtml||"<tr><td colspan='3' class='empty'>ID билан боғланган HSK 3.0 checkout уриниши йўқ.</td></tr>"}</tbody></table></div>
+        <div class="hsk30-funnel-mobile">${funnelMobile(paymentFunnel,"attempts")||"<p class='empty'>Ҳозирча қайд йўқ.</p>"}</div><div class="hsk30-funnel-desktop" style="overflow:auto"><table class="tbl"><thead><tr><th>Қадам</th><th class="r">Уриниш</th><th class="r">Ўтган / олдинги</th></tr></thead><tbody>${paymentFunnelHtml||"<tr><td colspan='3' class='empty'>ID билан боғланган HSK 3.0 checkout уриниши йўқ.</td></tr>"}</tbody></table></div>
         <div class="ncnote" style="margin-top:8px">Attempt ID билан submit event’и топилмаган тўлов ёзуви: ${Number(data.unlinked_payment_records||0)}. Тўлов ҳолатлари пастдаги жадвалда барча платформа бўйича алоҳида саналган.</div>
         <div class="grid g2" style="margin-top:14px">
           <section><div class="dtitle-sm">Тўлов уринишлари қаерда тўхтади</div><table class="tbl"><tbody>${dropoffRows||"<tr><td class='empty'>Ташлаб кетган checkout уриниши йўқ.</td></tr>"}</tbody></table></section>
