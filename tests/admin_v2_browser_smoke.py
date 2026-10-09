@@ -383,6 +383,14 @@ def main():
             assert iphone.evaluate("parseFloat(getComputedStyle(document.body).paddingTop)>=138"), "Telegram dynamic safe top not applied"
             assert iphone.evaluate("parseFloat(getComputedStyle(document.querySelector('.mobile-nav')).bottom)>=35"), "Telegram dynamic bottom inset missing"
             iphone.evaluate("window.scrollTo(0, 0)")
+            print("Fullscreen geometry", iphone.evaluate("""() => {
+                const b=document.querySelector('.workspace .topbar').getBoundingClientRect();
+                const t=document.querySelector('#v2Eyebrow').getBoundingClientRect();
+                return {barTop:b.top,barBottom:b.bottom,titleTop:t.top,scrollY:window.scrollY,
+                  bodyTop:getComputedStyle(document.body).paddingTop,
+                  stickyTop:getComputedStyle(document.querySelector('.workspace .topbar')).top,
+                  full:document.documentElement.dataset.adminFullscreen};
+            }"""))
             assert iphone.evaluate("""() => {
                 const bar=document.querySelector('.workspace .topbar').getBoundingClientRect();
                 const eyebrow=document.querySelector('#v2Eyebrow').getBoundingClientRect();
