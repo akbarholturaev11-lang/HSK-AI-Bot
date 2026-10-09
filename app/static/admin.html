@@ -1171,7 +1171,7 @@ body.locked .mobile-nav{pointer-events:none}
           <div id="aiModelBox"><p class="empty">Yuklanmoqda…</p></div>
         </div>
 </div>
-  <div data-v2-pane="system:settings" hidden><div class="grid settings-grid v2-modules" id="v2SystemModules"></div></div>
+  <div data-v2-pane="system:settings" hidden><div class="grid settings-grid v2-modules" id="v2SystemModules"></div><section id="v2SystemEditor" class="v2-marketing-editor" hidden aria-label="Тизим таҳрири"></section></div>
 </section>
 </main></div><nav class="mobile-nav" aria-label="Mobil navigatsiya"><button class="tab active" data-tab="dashboard"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-8h6v8"/></svg><span>Bosh</span></button><button class="tab " data-tab="statistics"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h17M8 14l4-4 4 3 4-7"/></svg><span>Tahlil</span></button><button class="tab " data-tab="users"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3a4 4 0 0 1 0 8"/></svg><span>Odamlar</span></button><button class="tab " data-tab="payments"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="16" rx="2"/><path d="M2 10h20M16 15h2"/></svg><span>To‘lov</span></button><button class="tab " data-tab="menu"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Menyu</span></button></nav></div>
 
@@ -2023,6 +2023,16 @@ body.locked .mobile-nav{pointer-events:none}
         }
         return;
       }
+      if(key==="channels"||key==="help"){
+        closeDrawer();switchTab("system");selectV2Sub("system","settings");
+        state.activeModule=key;
+        const host=$("v2SystemEditor");
+        if(host){host.hidden=false;host.innerHTML='<p class="v2-ledger-note">Юкланмоқда…</p>';}
+        try{const d=await loadManagement(false);
+          if(state.activeModule===key){if(key==="channels")renderChannels(d);else renderHelp(d);}
+        }catch(e){if(host)host.innerHTML='<div class="danger-note">Маълумот юкланмади.</div>';}
+        return;
+      }
       /* Reklama endi drawer emas, sozlamalar ichidagi bitta bo'lim. */
       if(key==="ads_hub"){ closeDrawer(); switchTab("marketing"); selectV2Sub("marketing","ads"); const h=$("adHub"); if(h) h.scrollIntoView({behavior:"smooth",block:"start"}); return openAdHub(state.adHub); }
       openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
@@ -2648,9 +2658,19 @@ body.locked .mobile-nav{pointer-events:none}
       catch(e){ if(info) info.textContent="QR yuklanmadi"; toast(apiErr(e,"QR yuklanmadi")); }
       finally{ file.value=""; }
     }
+    function openSystemEditor(title,sub,html){
+      const host=$("v2SystemEditor");
+      if(!host||state.tab!=="system")return openDrawer(title,sub,html);
+      host.hidden=false;
+      host.innerHTML=`<div class="v2-product-editor-head"><div><div class="v2-ledger-eyebrow">SYSTEM / SETTINGS</div>
+        <h2>${esc(title)}</h2><p>${esc(sub)}</p></div>
+        <button type="button" class="button v2-editor-close" data-system-close>✕ <span>Ёпиш</span></button></div>
+        <div class="v2-marketing-editor-content v2-system-editor-content">${html}</div>`;
+      host.querySelector("[data-system-close]").onclick=()=>{host.hidden=true;host.innerHTML="";state.activeModule=null;};
+    }
     function renderChannels(d){
       const ch=d.channels||{};
-      openDrawer("📣 Majburiy kanal","Kanal majburiyligini panel ichida boshqarish",`<div class="panel">
+      openSystemEditor("📣 Majburiy kanal","Kanal majburiyligini panel ichida boshqarish",`<div class="panel">
         <div class="mcard"><h3>Majburiy obuna holati</h3><p>Hozir: ${ch.enabled?"yoqilgan":"o'chirilgan"}</p>
           <button class="btn ${ch.enabled?"sec":""}" data-chmode="${ch.enabled?"0":"1"}">${ch.enabled?"O'chirish":"Yoqish"}</button></div>
         <div class="mcard"><h3>Kanal qo'shish</h3>
@@ -2665,7 +2685,7 @@ body.locked .mobile-nav{pointer-events:none}
     }
     function renderHelp(d){
       const h=d.help||{};
-      openDrawer("🆘 Yordam sozlamalari","Admin aloqa va 3 tildagi video linklar",`<div class="panel">
+      openSystemEditor("🆘 Yordam sozlamalari","Admin aloqa va 3 tildagi video linklar",`<div class="panel">
         <div class="mcard"><h3>Admin aloqa</h3><input id="adminContact" class="input" value="${esc(h.admin_contact||"")}" placeholder="@username yoki t.me/link"><button class="btn" data-hcontact>Saqlash</button></div>
         ${(h.links||[]).map(i=>`<div class="mcard" data-hrow data-key="${i.key}" data-lang="${i.lang}"><h3>${esc(i.icon)} ${esc(i.label)} · ${esc(i.lang.toUpperCase())}</h3>
           <input class="input" data-hvalue value="${esc(i.value||"")}" placeholder="https://..."><button class="btn" data-hsave>Saqlash</button></div>`).join("")}</div>`);
@@ -3035,6 +3055,10 @@ body.locked .mobile-nav{pointer-events:none}
       else if(PRODUCT_INLINE_MODULES[m] && state.tab==="settings"){
         const d=await loadManagement(true);
         PRODUCT_INLINE_RENDERERS[m](d);
+      }
+      else if((m==="channels"||m==="help") && state.tab==="system" && $("v2SystemEditor") && !$("v2SystemEditor").hidden){
+        const d=await loadManagement(true);
+        if(m==="channels")renderChannels(d);else renderHelp(d);
       }
       else if(m && $("drawer").classList.contains("open")) await openModule(m);
       /* Panel «📣 Reklama» bo'limi ichida ochilgan bo'lsa, drawer yopiq —
