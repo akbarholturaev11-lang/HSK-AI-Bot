@@ -253,7 +253,7 @@ class AdsSettingsModalTests(unittest.TestCase):
     def test_save_refreshes_and_closes_only_on_success(self):
         self.assertIn('.then(async()=>{closeAdRulesModal();await afterModule(', ADMIN)
         self.assertIn('data-adplacesave', ADMIN)
-        self.assertIn('"ad_placements"', ADMIN)
+        self.assertIn('/api/admin-miniapp/ad-placements/save', ADMIN)
 
 
 class TheUploadFormOnlyAsksWhatTheTypeNeedsTests(unittest.TestCase):
