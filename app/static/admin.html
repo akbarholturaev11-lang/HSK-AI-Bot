@@ -207,6 +207,13 @@
     .nctitle{font-size:14px;font-weight:850}
     .ncnote{color:var(--muted);font-size:11.5px;line-height:1.4;margin-top:2px}
     .ncph{color:#93c5fd;font-size:11px;font-weight:800;margin-top:2px;word-break:break-word}
+    /* Tavsiya rejimini custom rejimdan ajratuvchi bitta tумбler. */
+    .ad-rule-mode{display:flex;align-items:center;justify-content:space-between;gap:14px;cursor:pointer;padding:2px 0}
+    .ad-rule-mode input{appearance:none;-webkit-appearance:none;flex:0 0 48px;width:48px;height:28px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);position:relative;cursor:pointer;transition:background .18s,border-color .18s}
+    .ad-rule-mode input::before{content:"";position:absolute;width:20px;height:20px;top:3px;left:3px;border-radius:50%;background:var(--muted);transition:transform .18s,background .18s}
+    .ad-rule-mode input:checked{background:var(--accent);border-color:var(--accent)}
+    .ad-rule-mode input:checked::before{transform:translateX(20px);background:#fff}
+    .ad-rule-mode input:focus-visible{outline:2px solid #fff;outline-offset:3px}
     .ncsw{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:var(--muted);white-space:nowrap}
     .nclang label{font-size:11px;font-weight:800;color:var(--muted);display:block;margin-bottom:4px}
     .nclang textarea{width:100%;min-height:72px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);padding:9px 11px;font:inherit;font-size:13px;line-height:1.4;resize:vertical;outline:none}
@@ -1704,45 +1711,79 @@
         <span data-ca-place-warn="${esc(key)}"${(chosen&&rule&&rule.enabled===false)?"":" hidden"} title="Bu joy hozir o'chirilgan" style="font-size:12px;color:#e9aa39">⚠️ Joy o'chiq</span>
       </label>`;
     }
+    /* Tavsiya etilgan sozlama bir joyda. Backenddagi DEFAULT_SETTINGS
+       bilan bir xil: yangi loyihalarda hech nima to'ldirish kerak emas.
+       Eski saqlangan custom qoidalar avtomatik o'zgartirilmaydi. */
+    const AD_DEFAULT_RULES={
+      audience:"free_only",
+      daily_cap:1,
+      skip_after_seconds:5,
+      clients:["miniapp","android","desktop"]
+    };
+    let adRulesInitiallyCustom=false;
+    function adRulesAreCustom(cfg){
+      return AD_PLACEMENTS.some(([key])=>{
+        const rule=cfg[key]||{};
+        return rule.enabled===false
+          ||rule.audience!==AD_DEFAULT_RULES.audience
+          ||Number(rule.daily_cap)!==AD_DEFAULT_RULES.daily_cap
+          ||Number(rule.skip_after_seconds)!==AD_DEFAULT_RULES.skip_after_seconds
+          ||JSON.stringify([...(rule.clients||[])].sort())!==JSON.stringify([...AD_DEFAULT_RULES.clients].sort());
+      });
+    }
+    function adRulesModeUI(){
+      const custom=!!($("adCustomMode")&&$("adCustomMode").checked);
+      const advanced=$("adCustomSettings"), standard=$("adPresetSummary");
+      if(advanced) advanced.hidden=!custom;
+      if(standard) standard.hidden=custom;
+    }
     function renderAdPlacements(d){
       const cfg=(d.ad_placements||{}).placements||{};
       const choice=$("caPlacementBox");
       if(choice) choice.innerHTML=AD_PLACEMENTS.map(([k,l,n])=>adPlacementCard(k,l,n,cfg[k])).join("");
       const lesson=cfg.lesson_end||{}, center=cfg.screen_center||{};
-      const fields=["audience","daily_cap","skip_after_seconds"];
+      const fields=["enabled","audience","daily_cap","skip_after_seconds"];
       const different=fields.some(k=>String(lesson[k]??"")!==String(center[k]??""));
-      const current=lesson;
+      adRulesInitiallyCustom=adRulesAreCustom(cfg);
+      const current=adRulesInitiallyCustom?lesson:AD_DEFAULT_RULES;
       const audience=current.audience==="everyone"?"everyone":"free_only";
       const cap=Math.max(0,Number(current.daily_cap)||0);
       const skip=Math.max(0,Number(current.skip_after_seconds)||0);
       const summary=different
-        ? `<div class="hint" style="margin-top:6px">⚠️ Eski sozlamalarda ikki joyning qoidalari turlicha: dars yakuni — ${Number(lesson.skip_after_seconds)||0}s / ${Number(lesson.daily_cap)||0} ta, ekran markazi — ${Number(center.skip_after_seconds)||0}s / ${Number(center.daily_cap)||0} ta. Quyidagi qiymatlarni saqlasangiz, IKKALA joyga bir xil qoida o'rnatiladi.</div>`
+        ? `<div class="hint" style="margin-top:10px">⚠️ Hozir ikki joyning qoidalari farq qiladi. Qo'lda sozlamalarni saqlasangiz, ikkala joyga bir xil auditoriya, kunlik chegara va yopish vaqti o'rnatiladi. Standartni tanlasangiz, har bir joy kuniga 1 martadan ko'rsatiladi.</div>`
         : "";
       const enabled=AD_PLACEMENTS.map(([k,l])=>`<label style="display:flex;align-items:center;gap:9px;padding:7px 0"><input type="checkbox" id="adOn_${k}"${cfg[k]&&cfg[k].enabled===false?"":" checked"}> <span>${esc(l)} faol</span></label>`).join("");
-      showPanel("⚙️ Reklama ko'rsatish qoidalari",
-        "Bu sozlamalar hamma reklamalarga tegishli. Yangi reklama uchun joyni yuqorida tanlaysiz.",`<div class="panel">
+      showPanel("⚙️ Reklama sozlamalari",
+        "Standart sozlama tayyor. Faqat o'zgartirmoqchi bo'lsangiz, qo'lda sozlashni yoqing.",`<div class="panel">
         <div class="mcard">
-          <h3>Reklama joylari faolmi?</h3>
-          <p class="ncnote">Joyni o'chirsangiz, unga biriktirilgan reklamalar ham ko'rinmaydi. Reklama fayllari o'chmaydi.</p>
-          ${enabled}
-        </div>
-        <div class="mcard">
-          <h3>📺 Umumiy ko'rsatish qoidasi</h3>
-          <p class="ncnote">Quyidagi 3 ta sozlama ikkala joy va barcha reklamalar uchun BITTA.</p>
-          <div class="frow"><label>Kimlarga ko'rsatilsin?</label><select id="adAudience" class="select">
-            <option value="free_only"${audience==="free_only"?" selected":""}>Faqat bepul foydalanuvchilarga</option>
-            <option value="everyone"${audience==="everyone"?" selected":""}>Hammaga</option>
-          </select></div>
-          <div class="frow"><label>Kuniga har bir joyda eng ko'pi (0 = cheksiz)</label>
-            <input id="adDailyCap" class="input" type="number" min="0" max="50" value="${cap}"></div>
-          <div class="frow"><label>Yopish (×) tugmasi necha soniyadan keyin chiqsin?</label>
-            <input id="adSkipAfter" class="input" type="number" min="0" max="60" value="${skip}">
-            <div class="hint">0 = darhol yopish mumkin. Masalan, 5 = foydalanuvchi 5 soniyadan keyin yopishi mumkin. Bu video davomiyligidan BOSHQA sozlama.</div>
+          <label class="ad-rule-mode" for="adCustomMode">
+            <span style="min-width:0"><b style="font-size:13px">⚙️ Qo'lda sozlash</b>
+              <span class="ncnote" style="display:block;margin-top:4px">O'chirilgan bo'lsa, standart sozlamalar ishlaydi</span>
+            </span>
+            <input id="adCustomMode" type="checkbox" role="switch" aria-controls="adCustomSettings" ${adRulesInitiallyCustom?"checked":""}>
+          </label>
+          <div id="adPresetSummary" ${adRulesInitiallyCustom?"hidden":""}>
+            <p class="ncnote" style="line-height:1.65">✅ <b>Standart:</b> faqat bepul foydalanuvchilar; dars yakunida kuniga 1 marta, ekran markazida kuniga 1 marta; yopish tugmasi 5 soniyadan keyin. Ikkala joy ham faol.</p>
           </div>
-          ${summary}
+          <div id="adCustomSettings" ${adRulesInitiallyCustom?"":"hidden"}>
+            <p class="ncnote" style="margin-bottom:11px">Quyidagi qiymatlar ikkala joydagi barcha reklamalarga taalluqli. Joylarni alohida yoqish yoki o'chirish mumkin.</p>
+            <div style="margin-bottom:14px">${enabled}</div>
+            <div class="frow"><label>Kimlarga ko'rsatilsin?</label><select id="adAudience" class="select">
+              <option value="free_only"${audience==="free_only"?" selected":""}>Faqat bepul foydalanuvchilarga</option>
+              <option value="everyone"${audience==="everyone"?" selected":""}>Hammaga</option>
+            </select></div>
+            <div class="frow"><label>Kuniga har bir joyda eng ko'pi (0 = cheksiz)</label>
+              <input id="adDailyCap" class="input" type="number" min="0" max="50" value="${cap}"></div>
+            <div class="frow"><label>Yopish (×) tugmasi necha soniyadan keyin chiqsin?</label>
+              <input id="adSkipAfter" class="input" type="number" min="0" max="60" value="${skip}">
+              <div class="hint">0 = darhol yopish mumkin. Masalan, 5 = foydalanuvchi 5 soniyadan keyin yopishi mumkin. Bu video davomiyligidan BOSHQA sozlama.</div>
+            </div>
+            ${summary}
+          </div>
         </div>
-        <button class="btn sec" data-adplacesave>💾 Umumiy sozlamalarni saqlash</button>
+        <button class="btn sec" data-adplacesave>💾 Sozlamalarni saqlash</button>
       </div>`);
+      adRulesModeUI();
     }
     function salesExperimentStartedText(value){
       if(!value) return "hali boshlanmagan";
@@ -2688,25 +2729,27 @@
       if((el=T("[data-pdsave]"))){ const bank=el.dataset.bank||""; el.disabled=true; return apiPost("/api/admin-miniapp/payment-details/save",{payment_details:$(bank==="alif"?"payDetailsAlif":"payDetails").value,bank}).then(()=>afterModule("Rekvizit saqlandi")).catch(x=>{toast(apiErr(x,"Rekvizit saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-aimodelsave]"))){ const sel=$("aiModelSel"); el.disabled=true; return apiPost("/api/admin-miniapp/ai-model/save",{gemini_model:sel?sel.value:""}).then(()=>loadManagement(true)).then(()=>{renderAiModel();toast("AI modeli saqlandi");}).catch(x=>{toast(apiErr(x,"AI modeli saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-adplacesave]"))){
-        const audience=$("adAudience")?.value||"free_only";
-        const cap=Number($("adDailyCap")?.value);
-        const skip=Number($("adSkipAfter")?.value);
+        const custom=!!($("adCustomMode")&&$("adCustomMode").checked);
+        const audience=custom?($("adAudience")?.value||"free_only"):AD_DEFAULT_RULES.audience;
+        const cap=custom?Number($("adDailyCap")?.value):AD_DEFAULT_RULES.daily_cap;
+        const skip=custom?Number($("adSkipAfter")?.value):AD_DEFAULT_RULES.skip_after_seconds;
         if(!Number.isInteger(cap)||cap<0||cap>50||!Number.isInteger(skip)||skip<0||skip>60){
           toast("Kunlik son 0–50, yopish vaqti 0–60 oralig'ida bo'lishi kerak"); return;
         }
+        if(!custom&&adRulesInitiallyCustom&&!confirm("Eski maxsus sozlamalar o'rniga standart sozlamalar o'rnatiladi. Davom etasizmi?")) return;
         const placements={};
         AD_PLACEMENTS.forEach(([key])=>{
           placements[key]={
-            enabled:!!($("adOn_"+key)&&$("adOn_"+key).checked),
-            audience:audience,
+            enabled:custom?!!($("adOn_"+key)&&$("adOn_"+key).checked):true,
+            audience,
             daily_cap:cap,
             skip_after_seconds:skip,
-            clients:(caPlaceRules[key]&&caPlaceRules[key].clients)||["miniapp","android","desktop"]
+            clients:custom?((caPlaceRules[key]&&caPlaceRules[key].clients)||AD_DEFAULT_RULES.clients):AD_DEFAULT_RULES.clients
           };
         });
         el.disabled=true;
         return apiPost("/api/admin-miniapp/ad-placements/save",{placements})
-          .then(()=>afterModule("Ikkala reklama joyi uchun umumiy qoidalar saqlandi"))
+          .then(()=>afterModule(custom?"Maxsus reklama sozlamalari saqlandi":"Standart reklama sozlamalari o'rnatildi"))
           .catch(x=>{toast(apiErr(x,"Saqlanmadi"));el.disabled=false;});
       }
       if((el=T("[data-trial-risk-refresh]"))){
@@ -2779,6 +2822,7 @@
     document.addEventListener("change",(e)=>{
       const el=e.target&&e.target.closest?e.target.closest("[data-ca-place]"):null;
       if(el) caPlaceChosen[el.dataset.caPlace]=el.checked;
+      if(e.target&&e.target.id==="adCustomMode") adRulesModeUI();
       if(el||(e.target&&e.target.id&&e.target.id.startsWith("adOn_"))) caPlaceWarnUI();
     });
     if($("caType")) $("caType").addEventListener("change",caTypeUI);

@@ -45,20 +45,22 @@ AUDIENCES = frozenset({AUDIENCE_FREE_ONLY, AUDIENCE_EVERYONE})
 MAX_DAILY_CAP = 50
 MAX_SKIP_SECONDS = 60
 
-#: Kelishilgan qiymatlar: markazdagi reklama faqat bepul foydalanuvchilarga,
-#: kuniga ko'pi bilan 2 marta.
+#: Standart reklama rejimi: faqat bepul userlar, har bir joyda
+#: kuniga ko'pi bilan bittadan (ikkala joyda jami ko'pi bilan 2 ta),
+#: yopish tugmasi 5 soniyadan keyin. Saqlangan eski admin qoidalari
+#: avtomatik o'zgartirilmaydi.
 DEFAULT_SETTINGS = {
     PLACEMENT_LESSON_END: {
         "enabled": True,
         "audience": AUDIENCE_FREE_ONLY,
-        "daily_cap": 0,  # 0 = cheklovsiz
-        "skip_after_seconds": 0,
+        "daily_cap": 1,
+        "skip_after_seconds": 5,
         "clients": ["miniapp", "android", "desktop"],
     },
     PLACEMENT_SCREEN_CENTER: {
         "enabled": True,
         "audience": AUDIENCE_FREE_ONLY,
-        "daily_cap": 2,
+        "daily_cap": 1,
         "skip_after_seconds": 5,
         "clients": ["miniapp", "android", "desktop"],
     },

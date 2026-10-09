@@ -161,6 +161,13 @@ class AdPlacementServiceTests(unittest.IsolatedAsyncioTestCase):
 
         async with self.sessions() as session:
             service = AdPlacementService(session)
+            # Qo'lda limit oshirilganda ham hamma qurilmalarda BIR hisob.
+            await service.save_settings({
+                "placements": {
+                    PLACEMENT_SCREEN_CENTER: {"daily_cap": 2},
+                    PLACEMENT_LESSON_END: {"daily_cap": 1},
+                }
+            })
             user = await self._user_row(session)
 
             first = await service.next_ad(user, placement=PLACEMENT_SCREEN_CENTER, client="miniapp")
@@ -184,21 +191,24 @@ class AdPlacementServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(third)
         self.assertEqual(2, len(await self._views()))
 
-    async def test_the_lesson_end_placement_has_no_cap_by_default(self):
+    async def test_standard_lesson_end_has_one_view_per_day(self):
+        """Standart rejim takrorlanadigan majburiy reklama bilan bezovta qilmaydi."""
         await self._seed(_creative(1, placements=PLACEMENT_LESSON_END))
 
         async with self.sessions() as session:
             service = AdPlacementService(session)
             user = await self._user_row(session)
-            for _ in range(5):
-                shown = await service.next_ad(user, placement=PLACEMENT_LESSON_END, client="miniapp")
-                self.assertIsNotNone(shown)
-                await service.record_view(
-                    user, placement=PLACEMENT_LESSON_END, ad_id=1, watched_seconds=7
-                )
+            first = await service.next_ad(user, placement=PLACEMENT_LESSON_END, client="miniapp")
+            self.assertIsNotNone(first)
+            self.assertEqual(5, first["skip_after_seconds"])
+            await service.record_view(
+                user, placement=PLACEMENT_LESSON_END, ad_id=1, watched_seconds=5
+            )
             await session.commit()
+            again = await service.next_ad(user, placement=PLACEMENT_LESSON_END, client="android")
 
-        self.assertEqual(5, len(await self._views()))
+        self.assertIsNone(again)
+        self.assertEqual(1, len(await self._views()))
 
     async def test_the_two_placements_are_counted_apart(self):
         await self._seed(_creative(1, placements="lesson_end,screen_center"))
@@ -372,6 +382,18 @@ class AdPlacementServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNotNone(in_miniapp)
         self.assertIsNone(on_desktop)
 
+    async def test_standard_config_limits_each_placement_to_once(self):
+        """Standart 1+1 ta reklama, 5 sekund va faqat bepul userlar."""
+        await self._seed()
+        async with self.sessions() as session:
+            settings = await AdPlacementService(session).get_settings()
+            for place in (PLACEMENT_LESSON_END, PLACEMENT_SCREEN_CENTER):
+                rule = settings.rule(place)
+                self.assertTrue(rule.enabled)
+                self.assertEqual("free_only", rule.audience)
+                self.assertEqual(1, rule.daily_cap)
+                self.assertEqual(5, rule.skip_after_seconds)
+
     async def test_a_corrupt_settings_row_falls_back_to_the_defaults(self):
         await self._seed(_creative(1, placements=PLACEMENT_SCREEN_CENTER))
 
@@ -384,7 +406,7 @@ class AdPlacementServiceTests(unittest.IsolatedAsyncioTestCase):
 
             settings = await AdPlacementService(session).get_settings()
 
-        self.assertEqual(2, settings.rule(PLACEMENT_SCREEN_CENTER).daily_cap)
+        self.assertEqual(1, settings.rule(PLACEMENT_SCREEN_CENTER).daily_cap)
 
     async def test_an_unknown_placement_is_refused_on_save(self):
         await self._seed()
