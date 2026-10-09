@@ -234,7 +234,14 @@ def main():
                 "limits_config": {"plans": {}, "trial": {}},
                 "channels": {"enabled": False, "items": []},
                 "help": {"links": []}, "gemini": {"configured": False, "options": []},
-                "portfolio": {"summary": {}, "history": []}
+                "portfolio": {"summary": {
+                  "approved_payments": 12, "gross_revenue_usd": "$50.70",
+                  "manual_profit_usd": "$81.14", "manual_expense_usd": "$143.75",
+                  "net_usd": "$-11.91"
+                }, "history": [
+                  {"type":"profit","amount_usd":"$1.08","source":"manual_profit",
+                   "created_at":"2026-10-09", "original":"10 TJS", "note":"Demo activity"}
+                ]}
             }
             def api_fixture(route):
                 url = route.request.url
@@ -277,7 +284,7 @@ def main():
             assert live.locator("#v2MarketingPartners [data-module]").count() == 1, "Partner module missing"
             assert live.locator('#payments [data-v2-pane="payments:prices"] [data-module="prices"]').count() == 1, "Finance prices missing"
             assert live.locator('#payments [data-v2-pane="payments:methods"] [data-module="prices"]').count() == 1, "Finance methods missing"
-            assert live.locator('#payments [data-v2-pane="payments:portfolio"] [data-module="portfolio"]').count() == 1, "Finance portfolio missing"
+            assert live.locator('#v2PortfolioView').count() == 1, "Finance inline portfolio section missing"
             assert live.locator("#marketing #adHub").count() == 1, "Existing Mini App advertising control was lost"
             assert live.locator("#marketing #notifTemplates").count() == 1, "Existing notifications control was lost"
 
@@ -299,6 +306,14 @@ def main():
                     active = live.locator(f'#{area} [data-v2-pane="{area}:{key}"]')
                     assert active.count() > 0 and all(x.get_attribute("hidden") is None for x in active.all()), f"Hidden active pane: {area}:{key}"
                     assert live.locator(f'#{area} [data-v2-sub="{area}:{key}"]').get_attribute("aria-selected") == "true"
+                    if area == "payments" and key == "portfolio":
+                        live.locator('#v2PortfolioView .v2-ledger-balance').wait_for(timeout=6000)
+                        assert live.locator('#v2PortfolioView .v2-ledger-metric').count() == 3, "Finance KPI cards missing"
+                        assert live.locator('#v2PortfolioView .v2-ledger-record').count() == 1, "Real portfolio history not rendered"
+                        assert live.locator('#v2PortfolioView [data-pfsave]').count() == 1, "Live portfolio editor lost"
+                        assert live.locator('#drawer.open').count() == 0, "Legacy finance drawer unexpectedly opened"
+                        assert "$-11.91" in live.locator('#v2PortfolioView').inner_text(), "Portfolio did not use server balance"
+                        live.screenshot(path=str(output / "admin-v2-portfolio-inline-1440.png"), full_page=True)
                     if key == keys[0] or area == "marketing" and key == "ads":
                         live.screenshot(path=str(output / f"admin-v2-{area}-{key}-1440.png"), full_page=True)
                 live.locator(f'#{area} [data-v2-sub="{area}:{keys[0]}"]').click()
@@ -419,6 +434,13 @@ def main():
             }"""), "Mobile Product tabs overflow or get clipped"
             iphone.screenshot(path=str(output / "admin-v2-telegram-product-tabs-390.png"), full_page=False)
             iphone.locator('.mobile-nav [data-tab="payments"]').click()
+            iphone.locator('#payments [data-v2-sub="payments:portfolio"]').click()
+            iphone.locator('#v2PortfolioView .v2-ledger-balance').wait_for(timeout=6000)
+            assert iphone.locator('#drawer.open').count() == 0, "Mobile finance still uses legacy drawer"
+            assert iphone.locator('#v2PortfolioView [data-pfsave]').count() == 1
+            assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Portfolio overflow on iPhone"
+            iphone.screenshot(path=str(output / "admin-v2-portfolio-inline-390.png"), full_page=True)
+            iphone.locator('#payments [data-v2-sub="payments:payments"]').click()
             assert iphone.locator("#paymentBoard .v2-pay-mobile [data-payment-preview]").count()==1, "Mobile finance cards missing"
             assert iphone.locator("#paymentBoard .v2-pay-desktop").is_hidden(), "Desktop payments table visible on mobile"
             assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Mobile finance overflow"
