@@ -671,8 +671,11 @@ body.locked .mobile-nav{pointer-events:none}
 /* Admin V2: genuine phone fullscreen and unclipped two-column tab selectors */
 .hsk30-funnel-mobile{display:none}
 @media(max-width:760px){
-  /* Body reserves Telegram controls; sticky toolbar uses the exact same inset
-     (not twice the inset) when the document is scrolled. */
+  /* Reserve native Telegram chrome on the workspace, not body. Otherwise
+     iOS adds body-padding + sticky-top (2x) and toolbar covers the title. */
+  body{padding-top:0}
+  #loading{padding-top:max(var(--safe-top),var(--telegram-content-top))}
+  .workspace{padding-top:max(var(--safe-top),var(--telegram-content-top))}
   .workspace .topbar{
     top:max(var(--safe-top),var(--telegram-content-top));
     min-height:56px;height:56px;
