@@ -505,6 +505,8 @@ def main():
             assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "iPhone broadcast editor overflow"
             iphone.screenshot(path=str(output / "admin-v2-broadcast-inline-390.png"), full_page=True)
             iphone.locator('#v2MarketingCampaignEditor [data-bc-close]').click()
+            iphone.locator('.mobile-nav [data-tab="payments"]').click()
+            assert iphone.locator('#payments').is_visible(), "Did not return to finance after broadcast test"
             iphone.locator('#payments [data-v2-sub="payments:payments"]').click()
             assert iphone.locator("#paymentBoard .v2-pay-mobile [data-payment-preview]").count()==1, "Mobile finance cards missing"
             assert iphone.locator("#paymentBoard .v2-pay-desktop").is_hidden(), "Desktop payments table visible on mobile"
