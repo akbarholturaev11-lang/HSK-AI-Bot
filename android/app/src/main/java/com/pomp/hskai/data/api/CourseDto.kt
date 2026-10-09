@@ -254,6 +254,8 @@ data class CourseNotifyDto(
 data class CourseCompleteRequest(
     @SerialName("lesson_order") val lessonOrder: Int,
     @SerialName("event_id") val eventId: String,
+    /** The course that served this lesson, even if the account switched later. */
+    @SerialName("expected_level") val expectedLevel: String,
     @SerialName("mistakes") val mistakes: List<CourseMistakeDto> = emptyList(),
     /** Present only for a lesson an ad opened; the server checks its record. */
     @SerialName("access_ref") val accessRef: String = "",

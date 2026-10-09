@@ -137,6 +137,7 @@ class AndroidCourseCompleteRequest(DesktopCourseCompleteRequest):
     """
 
     access_ref: str = Field(default="", max_length=160)
+    expected_level: str | None = Field(default=None, min_length=1, max_length=20)
 
 
 class AndroidLessonUnlockRequest(BaseModel):
@@ -542,6 +543,7 @@ def create_android_course_router(
                         for mistake in payload.mistakes
                     ],
                     access_ref=payload.access_ref,
+                    expected_level=payload.expected_level,
                 )
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, DesktopCourseError) as exc:

@@ -29,6 +29,8 @@ from app.services.course_v3_dictionary import (
 )
 from app.db.models.course_lessons import CourseLesson
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.course_mistake import CourseMistake
+from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.user import User
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.android_course_service import AndroidCourseService
@@ -1173,6 +1175,89 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
             first.json()["completed_lessons_count"],
             retry.json()["completed_lessons_count"],
         )
+
+    async def _completion_mutation_state(self, headers):
+        response = await self.client.get("/api/v3/android/course/map", headers=headers)
+        self.assertEqual(200, response.status_code)
+        body = response.json()
+        async with self.sessions() as session:
+            event_ids = {}
+            for model in (CourseMiniAppEvent, CourseXpEvent, CourseMistake):
+                event_ids[model.__name__] = list(
+                    (await session.execute(select(model.id).order_by(model.id))).scalars()
+                )
+        return {
+            "level": body["level"],
+            "completed": body["progress"]["completed"],
+            "xp": body["progress"]["xp"],
+            "daily_xp": body["progress"]["daily_xp"],
+            "allowance": {
+                key: body["lesson_limit"].get(key)
+                for key in ("allowed", "used", "remaining")
+            },
+            "events": event_ids,
+        }
+
+    async def test_late_old_course_completion_cannot_advance_the_new_course(self):
+        headers = await self._bearer()
+        lesson = await self.client.get("/api/v3/android/course/lesson/1", headers=headers)
+        self.assertEqual(200, lesson.status_code)
+        self.assertTrue(lesson.json()["completion_allowed"])
+        old_level = lesson.json()["level"]
+        switched = await self.client.post(
+            "/api/v3/android/course/tracks/switch", headers=headers,
+            json={"target_track": "hsk20", "level": "hsk2"},
+        )
+        self.assertEqual(200, switched.status_code)
+        before = await self._completion_mutation_state(headers)
+        self.assertEqual("hsk2", before["level"])
+        self.assertEqual(0, before["completed"])
+
+        rejected = await self.client.post(
+            "/api/v3/android/course/complete", headers=headers,
+            json={
+                "lesson_order": 1, "event_id": "android:" + "c" * 32,
+                "expected_level": old_level, "mistakes": [],
+            },
+        )
+        self.assertEqual(409, rejected.status_code)
+        self.assertEqual("course_context_changed", rejected.json()["error"])
+        self.assertEqual("no-store", rejected.headers.get("Cache-Control"))
+        self.assertEqual(before, await self._completion_mutation_state(headers))
+
+    async def test_same_course_completion_with_expected_level_remains_idempotent(self):
+        headers = await self._bearer()
+        body = {
+            "lesson_order": 1, "event_id": "android:" + "d" * 32,
+            "expected_level": "hsk1",
+        }
+        completed = await self.client.post(
+            "/api/v3/android/course/complete", headers=headers, json=body,
+        )
+        self.assertEqual(200, completed.status_code)
+        self.assertEqual(1, completed.json()["completed_lessons_count"])
+        before = await self._completion_mutation_state(headers)
+        self.assertGreater(before["xp"], 0)
+        retried = await self.client.post(
+            "/api/v3/android/course/complete", headers=headers, json=body,
+        )
+        self.assertEqual(200, retried.status_code)
+        self.assertTrue(retried.json()["duplicate"])
+        self.assertEqual(before, await self._completion_mutation_state(headers))
+
+        # Even a retry of a stored result belongs to the lesson's original band.
+        switched = await self.client.post(
+            "/api/v3/android/course/tracks/switch", headers=headers,
+            json={"target_track": "hsk20", "level": "hsk2"},
+        )
+        self.assertEqual(200, switched.status_code)
+        before = await self._completion_mutation_state(headers)
+        late_retry = await self.client.post(
+            "/api/v3/android/course/complete", headers=headers, json=body,
+        )
+        self.assertEqual(409, late_retry.status_code)
+        self.assertEqual("course_context_changed", late_retry.json()["error"])
+        self.assertEqual(before, await self._completion_mutation_state(headers))
 
     async def test_notifications_toggle_persists_and_shows_in_the_map(self):
         headers = await self._bearer()

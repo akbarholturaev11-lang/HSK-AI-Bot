@@ -582,6 +582,7 @@ class DesktopCourseService:
         event_id: str,
         mistakes: list[dict[str, Any]] | None = None,
         access_ref: str = "",
+        expected_level: str | None = None,
     ) -> dict[str, Any]:
         context = await self._context(access_token)
         user = await self._locked_context_user(context)
@@ -589,6 +590,8 @@ class DesktopCourseService:
         event_id = str(event_id or "").strip()
         event_dedupe_key = f"{self.CLIENT_NAMESPACE}-course-complete:{event_id}"
         level = self._level(user)
+        if expected_level is not None and str(expected_level).strip().lower() != level:
+            raise DesktopCourseError("course_context_changed", status_code=409)
 
         existing_result = await self.session.execute(
             select(CourseMiniAppEvent).where(

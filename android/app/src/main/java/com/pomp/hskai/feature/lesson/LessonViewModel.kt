@@ -597,10 +597,12 @@ class LessonViewModel(
         }
         val attemptKey = activeAttemptKey ?: return
         val stableEventId = eventId.takeIf { it.isNotBlank() } ?: return
+        val lesson = _state.value.lesson ?: return
         _state.update { it.copy(isSubmitting = true, error = null) }
         viewModelScope.launch {
             val result = repository.completeLesson(
                 lessonOrder = lessonOrder,
+                expectedLevel = lesson.level,
                 eventId = stableEventId,
                 mistakes = mistakes.toList(),
                 accessRef = accessRef,
