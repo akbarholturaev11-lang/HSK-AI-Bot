@@ -280,6 +280,21 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .fcoach-col{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:8px}
 .fcoach-slot:empty{display:none}
 .fcoach-slot>*{margin:0!important}
+/* Keep translated question cards full-width inside the scrollable lesson body. */
+.fcoach-dock.question{align-items:center;margin-top:2px;margin-bottom:6px}
+.fcoach-dock.question .fcoach{width:72px;height:78px;min-height:78px;flex:0 0 72px}
+.fcoach-dock.question .fcoach-bubble{font-size:12px;line-height:1.35;padding:8px 11px}
+.fcoach-dock.question .fcoach-col{gap:0}
+.fbody .qcard{width:100%;min-width:0}
+.fbody .qcard .qh.qask{font-size:clamp(19px,5.2vw,25px);line-height:1.35;overflow-wrap:break-word;letter-spacing:normal}
+.fbody .opt .k{flex-shrink:0}
+@media(max-width:390px),(max-height:740px){
+  .fcoach-dock.question .fcoach{width:60px;height:66px;min-height:66px;flex-basis:60px}
+  .fcoach-dock.question{margin-top:0;margin-bottom:4px}
+  .fbody{padding-top:6px}
+  .fbody .qcard{padding:14px 12px;margin-bottom:12px}
+  .fbody .opt{min-height:50px;padding:11px 12px;margin-bottom:8px}
+}
 @media(max-height:650px){.fcoach{width:76px;height:82px;min-height:82px;flex-basis:76px}.fcoach-bubble{font-size:12px;padding:8px 11px}}
 .fbody{flex:1;min-height:0;overflow-y:auto;padding:10px 18px 20px}
 .kicker{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;padding:5px 11px;border-radius:12px;margin:4px 0 14px}
@@ -1818,20 +1833,23 @@ document.addEventListener("keydown",function(event){
     event.preventDefault();first.focus();
   }
 });
+var MASHQ_ACCESS_PENDING=null;
 var App={
   setLang:function(l){if(!I18N[l])return;LANG=l;syncDocumentLanguage();renderAll()},
   show:function(s){
     if(s==="mashq"&&isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){
       var status=COURSE_TRACK_STATE,access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-      if(access){if(!access.allowed){renderHsk30AccessGate(status);return}}
-      else{
-        courseTrackStatus(false).then(function(loaded){
-          var loadedAccess=loaded&&loaded.tracks&&loaded.tracks.hsk30&&loaded.tracks.hsk30.access;
-          if(loadedAccess&&loadedAccess.allowed)App.show(s);else renderHsk30AccessGate(loaded);
+      if(!access||!access.allowed){
+        /* Refresh cached denial after checkout, but never bypass server authorization. */
+        if(MASHQ_ACCESS_PENDING)return;
+        MASHQ_ACCESS_PENDING=courseTrackStatus(true).then(function(loaded){
+          var refreshed=loaded&&loaded.tracks&&loaded.tracks.hsk30&&loaded.tracks.hsk30.access;
+          if(refreshed&&refreshed.allowed){App.show("mashq");return}
+          renderHsk30AccessGate(loaded);
         }).catch(function(){
           var t=trackUi();
-          App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.tryAgain)+'</div></div><button class="sec" style="width:100%" onclick="App.show(\'mashq\')">'+esc(t.tryAgain)+'</button>');
-        });
+          App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.tryAgain)+'</div></div><button class="sec" style="width:100%" onclick="App.show(&quot;mashq&quot;)">'+esc(t.tryAgain)+'</button>');
+        }).then(function(){MASHQ_ACCESS_PENDING=null});
         return;
       }
     }
@@ -2610,6 +2628,17 @@ function askStudyFocus(){
    "faqat Pro uchun" kabi noto'g'ri sababni aytmaydi — chegara admin sozlagan
    oynada qayta ochiladi. */
 var LIMIT_TEXT="",SECTION_LIMIT_TEXT="";
+/* Best-effort startup: a missing optional mascot script must not block a lesson. */
+function renderStudyPreparing(){
+  try{
+    if(window.HSKStudyPreparing&&typeof window.HSKStudyPreparing.render==="function"){
+      return window.HSKStudyPreparing.render(LANG);
+    }
+  }catch(err){try{console.warn("study_preparing_fallback",err)}catch(_){}}
+  var copy=LANG==="ru"?"Готовим упражнение":LANG==="tj"?"Машқ омода мешавад":"Mashq tayyorlanmoqda";
+  return '<div class="hsk-study-preparing" role="status" aria-live="polite">'
+    +'<div class="hsk-study-preparing-panda" aria-hidden="true">🐼</div><b>'+copy+'</b></div>';
+}
 function newPracticeAttemptRef(){return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
 function validatePracticeGate(o){
   if(o.status===403&&o.j&&o.j.error==="free_feature_limit_reached")return o;
@@ -3633,20 +3662,16 @@ function syncLessonCoachLine(){
   var dock=$("#f-coach-dock"),bubble=$("#f-coach-bubble"),slot=$("#f-coach-slot");
   if(!dock||!bubble)return;
   var q=document.querySelector("#f-body .qq");
-  var text=q?String(q.textContent||"").trim():"";
-  if(q&&text)q.style.display="none";
-  bubble.textContent=text;
-  dock.classList.toggle("mute",!text);
-  /* Savol personajning YONIGA ko'chiriladi: savol kartasi (`.qcard`) yoki
-     dialog (`.dia`) murabbiyning o'ng ustuniga o'tadi, javob tugmalari esa
-     `#f-body` da, to'liq enda qoladi. Kartasi yo'q turlar (quruvchi,
-     juftlik) o'z joyida qoladi — ko'chiradigan narsa yo'q. */
-  if(!slot)return;
-  slot.innerHTML="";
-  var material=document.querySelectorAll("#f-body > .qcard, #f-body > .dia");
-  if(!material.length){dock.classList.remove("beside");return}
-  for(var i=0;i<material.length;i++)slot.appendChild(material[i]);
-  dock.classList.add("beside");
+  var line=q?String(q.textContent||"").trim():"";
+  if(q&&line)q.style.display="none";
+  bubble.textContent=line;
+  dock.classList.toggle("mute",!line);
+  /* The question/dialog remains in #f-body, which is scrollable. Reparenting it
+     beside the mascot narrowed long questions and pushed answers off screen. */
+  if(slot)slot.innerHTML="";
+  dock.classList.remove("beside");
+  dock.classList.toggle("question",!!document.querySelector("#f-body > .qcard, #f-body > .dia"));
+  var body=$("#f-body");if(body)body.scrollTop=0;
 }
 function renderLessonCoach(card,mood){
   var dock=$("#f-coach-dock"),host=$("#f-coach");
@@ -4489,7 +4514,7 @@ function cardChoice(c){
         :'<div class="qh han">'+esc(rw.zh||p)+'</div><div class="qpy">'+esc(rw.pinyin||"")+'</div>';
       head='<div class="qcard mix-review'+(isCur?" current":"")+'">'+badge+body+sent+'</div>';
     }
-    else head='<div class="qcard"><div class="qh qask han">'+esc(p)+'</div>'+sent+'</div>'}
+    else head='<div class="qcard"><div class="qh qask'+(/[\u3400-\u9fff]/.test(p)?" han":"")+'">'+esc(p)+'</div>'+sent+'</div>'}
   var opts=(c.options||[]).map(function(o,k){return '<button class="opt" data-k="'+k+'" onclick="Flow.pick(this,'+k+')"><span class="k">'+"ABCD"[k]+'</span>'+esc(optText(o))+'</button>'}).join("");
   $("#f-body").innerHTML='<div class="qq">'+esc(tr(c.title)||"")+'</div>'+audio+head+opts;
 }
@@ -6148,7 +6173,7 @@ var RECOG=(function(){
 
   function shell(){
     return '<div class="rc-top"><button class="rc-ix" onclick="RECOG.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="rc-pbar"><i id="rc-prog"></i></div><span class="rc-pill" id="rc-score">0 ✓</span></div>'
-      +'<div class="rc-body" id="rc-body">'+HSKStudyPreparing.render(LANG)+'</div>';
+      +'<div class="rc-body" id="rc-body">'+renderStudyPreparing()+'</div>';
   }
 
   // New openings consume new attempts; only a network retry reuses the ref.
@@ -6256,7 +6281,7 @@ var RECOG=(function(){
   }
   function gateStart(newAttempt){
     var ref=gateRef(newAttempt);
-    el("rc-body").innerHTML=HSKStudyPreparing.render(LANG);
+    el("rc-body").innerHTML=renderStudyPreparing();
     runGate(ref).then(function(o){
       if(SECTION!==API||ref!==ATTEMPT_REF)return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}
@@ -6301,7 +6326,7 @@ var PRON=(function(){
     return '<div class="pr-wrap">'
       +'<div class="pr-top"><button class="pr-ix" onclick="PRON.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="pr-pbar"><i id="pr-prog"></i></div><span class="pr-pill" id="pr-cnt">1 / 10</span></div>'
       +'<div class="pr-toast" id="pr-toast">+10 XP</div>'
-      +'<div class="pr-stage" id="pr-stage">'+HSKStudyPreparing.render(LANG)+'</div>'
+      +'<div class="pr-stage" id="pr-stage">'+renderStudyPreparing()+'</div>'
       +'<div class="pr-ctrl" id="pr-ctrl" style="display:none">'
       +'<div class="pr-micwrap" id="pr-micwrap"><button class="pr-mic" id="pr-mic" onclick="PRON.rec()" aria-label="Gapirish"><i class="ti ti-microphone"></i></button></div>'
       +'<div class="pr-hint" id="pr-hint"></div>'
@@ -6476,7 +6501,7 @@ var PRON=(function(){
   function gateStart(newAttempt){
     var ref=gateRef(newAttempt);
     el("pr-ctrl").style.display="none";el("pr-done").classList.remove("on");
-    el("pr-stage").innerHTML=HSKStudyPreparing.render(LANG);
+    el("pr-stage").innerHTML=renderStudyPreparing();
     runGate(ref).then(function(o){
       if(!live()||ref!==ATTEMPT_REF)return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}
