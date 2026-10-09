@@ -2116,6 +2116,7 @@ COURSE_CHARACTER_ASSETS = {
     "hsk-character-motion.js": "application/javascript",
     "hsk-lesson-presentation.js": "application/javascript",
     "hsk-practice-coach.js": "application/javascript",
+    "hsk-study-preparing.js": "application/javascript",
 }
 
 
