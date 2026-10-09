@@ -1980,8 +1980,8 @@ body.locked .mobile-nav{pointer-events:none}
       if(PRODUCT_INLINE_MODULES[key]){
         closeDrawer();
         closeProductEditor();
+        switchTab("settings"); // Navigation closes any previous drawer and resets activeModule.
         state.activeModule=key;
-        switchTab("settings");
         selectV2Sub("settings",PRODUCT_INLINE_MODULES[key][0]);
         const host=$(PRODUCT_INLINE_MODULES[key][1]);
         if(host){host.hidden=false;host.innerHTML='<p class="v2-ledger-note">Маълумотлар юкланмоқда…</p>';}
