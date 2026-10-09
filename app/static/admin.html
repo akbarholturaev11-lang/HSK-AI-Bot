@@ -953,6 +953,26 @@ body.locked .mobile-nav{pointer-events:none}
  .v2-product-editor-body .mcard .frow.two{grid-template-columns:1fr}
 }
 
+
+/* Admin V2 real marketing workspace: data handlers remain unchanged. */
+.v2-marketing-editor{display:grid;gap:15px;margin:20px 0 28px;min-width:0;scroll-margin-top:100px}
+.v2-marketing-editor[hidden]{display:none!important}
+.v2-marketing-editor-content>.panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;align-items:start;min-width:0;background:transparent;border:0;box-shadow:none;overflow:visible}
+.v2-marketing-editor-content .mcard{display:grid;align-content:start;gap:12px;min-width:0;padding:22px;background:linear-gradient(145deg,#1c2b3a,#14212f);border:1px solid rgba(153,186,221,.21);border-radius:17px;box-shadow:0 13px 36px rgba(0,0,0,.14),inset 0 1px 0 #ffffff09}
+.v2-marketing-editor-content .mcard h3{font-size:15px;letter-spacing:-.025em}
+.v2-marketing-editor-content .mcard .frow{min-width:0}
+.v2-marketing-editor-content .mcard .frow label{font-size:12px}
+.v2-marketing-editor-content :where(.input,.select,.textarea){min-width:0;max-width:100%;font-size:16px;background:#111e2b;border:1px solid #3a4e61}
+.v2-marketing-editor-content .mcard:has(#bcText){grid-row:span 2}
+.v2-marketing-editor-content #bcText{min-height:170px}
+.v2-marketing-editor-content .ncsw{white-space:normal;line-height:1.5}
+.v2-marketing-editor-content>.panel>.row:last-child{grid-column:1/-1;display:flex;justify-content:flex-end;gap:11px;padding:14px 0 0;border-top:1px solid rgba(157,184,214,.17)}
+.v2-marketing-editor-content>.panel>.row:last-child .btn{min-height:47px;padding:0 24px}
+.v2-marketing-editor-content #bcSend{background:linear-gradient(135deg,#ec7365,#d6534a);color:white;box-shadow:0 10px 22px rgba(226,89,73,.15)}
+.v2-editor-close{flex-shrink:0}
+@media(max-width:980px){.v2-marketing-editor-content>.panel{grid-template-columns:1fr}.v2-marketing-editor-content .mcard:has(#bcText){grid-row:auto}.v2-marketing-editor-content>.panel>.row:last-child{grid-column:auto}}
+@media(max-width:760px){.v2-marketing-editor{gap:12px;margin-top:14px;scroll-margin-top:80px}.v2-marketing-editor-content .mcard{padding:17px}.v2-marketing-editor-content>.panel>.row:last-child{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.v2-marketing-editor-content>.panel>.row:last-child .btn{padding:0 8px}}
+
 </style>
 </head>
 <body>
@@ -1094,7 +1114,7 @@ body.locked .mobile-nav{pointer-events:none}
 <section id="marketing" class="view">
   <div class="v2-intro">Хабарлар, реклама, эслатмалар ва ҳамкорлар — бир-биридан аниқ ажратилган.</div>
   <div class="subnav v2-subnav" role="tablist" aria-label="marketing ichki bo‘limlari"><button type="button" role="tab" aria-selected="true" class="active" data-v2-sub="marketing:campaigns">Хабарлар</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="marketing:ads">Реклама</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="marketing:reminders">Эслатмалар</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="marketing:partners">Ҳамкорлар</button></div>
-  <div data-v2-pane="marketing:campaigns"><div class="grid settings-grid v2-modules" id="v2MarketingModules"></div></div>
+  <div data-v2-pane="marketing:campaigns"><div class="grid settings-grid v2-modules" id="v2MarketingModules"></div><section id="v2MarketingCampaignEditor" class="v2-marketing-editor" hidden aria-label="Оммавий хабар таҳрири"></section></div>
   <div data-v2-pane="marketing:ads" hidden>        <div class="sec" id="adHub">
           <div class="sec-head"><div><div class="sec-title">📣 Reklama</div><div class="sec-note">Mini App ichidagi reklama. Avval nima qilmoqchi ekaningizni tanlang</div></div></div>
           <div class="chips" id="adHubTabs" style="margin-bottom:9px">
@@ -1956,6 +1976,16 @@ body.locked .mobile-nav{pointer-events:none}
     }
 
     async function openModule(key,prefill){
+      if(key==="broadcast"){
+        closeDrawer();
+        switchTab("marketing");
+        selectV2Sub("marketing","campaigns");
+        state.activeModule="broadcast";
+        renderBroadcast();
+        const editor=$("v2MarketingCampaignEditor");
+        if(editor)editor.scrollIntoView({behavior:"smooth",block:"start"});
+        return;
+      }
       state.activeModule=key;
       if(key==="stats"){ closeDrawer(); switchTab("statistics"); return; }
       if(key==="user_search"){ closeDrawer(); switchTab("users"); $("search").focus(); return; }
@@ -2712,7 +2742,7 @@ body.locked .mobile-nav{pointer-events:none}
       state.bc={content_type:"text",media_file_id:null};
       const filterHtml=BC_FILTERS.map(([k,label,opts])=>`<div class="frow"><label>${label}</label>
         <select id="bc_${k}" class="select" data-bcfilter>${opts.map(o=>`<option value="${o[0]}">${esc(o[1])}</option>`).join("")}</select></div>`).join("");
-      openDrawer("📢 Ommaviy xabar","To'liq segment + media + knopka + AI tarjima",`<div class="panel">
+      const formHtml=`<div class="panel">
         <div class="danger-note">Bu real yuborish. «Yuborish»dan oldin «Test» bilan o'zingizga ko'ring.</div>
         <div class="mcard"><h3>🎯 Segment</h3>
           <div class="frow"><label>🌐 Til (bo'sh = hammasi)</label><div class="row" id="bcLangs">
@@ -2732,7 +2762,23 @@ body.locked .mobile-nav{pointer-events:none}
           <div class="frow" id="bcBtnTextRow" hidden><label>Knopka nomi (bo'sh = default)</label><input id="bcBtnText" class="input" maxlength="64"></div>
           <div class="frow" id="bcBtnUrlRow" hidden><label>Havola (https://… yoki @username)</label><input id="bcBtnUrl" class="input"></div></div>
         <div class="row"><button class="btn sec" id="bcTest" type="button">👁 Test (o'zimga)</button>
-          <button class="btn danger" id="bcSend" type="button">📢 Yuborish</button></div></div>`);
+          <button class="btn danger" id="bcSend" type="button">📢 Yuborish</button></div></div>`;
+      const editor=$("v2MarketingCampaignEditor");
+      if(editor && state.tab==="marketing"){
+        editor.hidden=false;
+        editor.innerHTML=`
+          <div class="v2-product-editor-head">
+            <div><div class="v2-ledger-eyebrow">MARKETING / BROADCAST</div><h2>Оммавий хабар</h2>
+              <p>Аудиторияни танлаш, матн ва медиа қўшиш, синов хабарини юбориш ва натижани тасдиқлаш.</p></div>
+            <button type="button" class="button v2-editor-close" data-bc-close>✕ <span>Ёпиш</span></button>
+          </div>
+          <div class="v2-marketing-editor-content">${formHtml}</div>`;
+        editor.querySelector("[data-bc-close]").onclick=()=>{
+          editor.hidden=true;editor.innerHTML="";state.activeModule=null;
+        };
+      }else{
+        openDrawer("📢 Ommaviy xabar","To'liq segment + media + knopka + AI tarjima",formHtml);
+      }
       bindBroadcast();
     }
     function bcCollect(){
