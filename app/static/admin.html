@@ -842,6 +842,54 @@ body.locked .mobile-nav{pointer-events:none}
  .v2-ledger-metric.expense{grid-column:1/-1;min-height:94px}
  .v2-ledger-form-row{grid-template-columns:1fr}
 }
+  
+/* Real Finance V2 pricing + bank management. No faux prototype actions. */
+#v2PricesView,#v2MethodsView{display:grid;gap:20px;min-width:0}
+.v2-price-grid,.v2-methods-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;min-width:0}
+.v2-price-tile{display:flex;flex-direction:column;align-items:stretch;gap:7px;min-width:0;
+  background:linear-gradient(147deg,#192634,#141e2a);border:1px solid #334251;border-radius:16px;
+  padding:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.v2-price-tile-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.v2-price-tile h3{font-size:15px;font-weight:800;letter-spacing:-.015em;margin:12px 0 0}
+.v2-price-current{font-size:29px;font-weight:850;letter-spacing:-.045em;line-height:1.15;margin-top:7px;font-variant-numeric:tabular-nums}
+.v2-price-foot{font-size:11px;color:#94a5b7}
+.v2-price-controls{display:flex;align-items:flex-end;gap:10px;min-width:0;
+  padding-top:16px;margin-top:auto;border-top:1px solid #293746}
+.v2-price-controls label{min-width:0;flex:1;font-size:11px;color:#b7c8d7;font-weight:700}
+.v2-price-controls .input{margin-top:8px;min-height:44px;font-size:16px;background:#101b29;border-color:#3a4b5e}
+.v2-price-controls .button{flex:none;min-height:44px}
+.v2-price-link{display:flex;align-items:center;gap:15px;text-align:left;width:100%;min-height:81px;
+  background:linear-gradient(125deg,#202d3b,#17212d);border:1px solid #37485a;border-radius:15px;
+  padding:17px 19px;color:#f3f6f9}
+.v2-price-link-icon{display:grid;place-items:center;flex:none;width:43px;height:43px;border-radius:12px;
+  background:rgba(234,113,94,.15);border:1px solid rgba(234,113,94,.25);color:#ef988a;font-size:13px;font-weight:850}
+.v2-price-link>span:nth-child(2){flex:1;min-width:0}
+.v2-price-link b{font-size:13px}
+.v2-price-link small{display:block;color:#9cafc2;font-size:11px;margin-top:6px;line-height:1.5}
+.v2-price-link>span:last-child{color:#e99588;font-size:20px}
+#v2MethodsView .v2-ledger-panel .textarea{background:#0f1a26;border:1px solid #3b4b5d;
+  border-radius:11px;line-height:1.55;font-size:15px;resize:vertical;min-height:110px}
+#v2MethodsView .v2-ledger-panel .textarea:focus{outline:none;border-color:#ed8e7f;box-shadow:0 0 0 3px rgba(239,137,124,.12)}
+#v2MethodsView .v2-ledger-panel .v2-ledger-form .button{width:100%}
+#v2MethodsView .v2-qr-tile .qr-price{grid-template-columns:repeat(2,minmax(0,1fr))}
+#v2MethodsView .v2-qr-tile .row{gap:10px}
+#v2MethodsView .v2-qr-tile .btn{min-height:43px;flex:1}
+#v2MethodsView .v2-qr-tile .frow{margin:0}
+#v2MethodsView .v2-qr-tile .ncnote{line-height:1.6}
+@media(hover:hover) and (pointer:fine){
+  .v2-price-tile:hover,.v2-price-link:hover{border-color:#667888}
+}
+@media(max-width:870px){.v2-price-grid,.v2-methods-grid{grid-template-columns:1fr}}
+@media(max-width:760px){
+ #v2PricesView,#v2MethodsView{gap:14px}
+ .v2-price-tile{padding:17px}
+ .v2-price-current{font-size:26px}
+ .v2-price-controls{gap:8px}
+ .v2-price-controls .button{padding:0 12px}
+ .v2-price-link{padding:14px;gap:10px}
+}
+@media(max-width:350px){.v2-price-controls{flex-wrap:wrap}.v2-price-controls .button{width:100%}}
+
   </style>
 </head>
 <body>
@@ -2402,7 +2450,7 @@ body.locked .mobile-nav{pointer-events:none}
  host.innerHTML=`
   <div class="v2-ledger-heading"><div><div class="v2-ledger-eyebrow">FINANCE / PAYMENT METHODS</div>
    <h2>Тўлов усуллари</h2><p>Банк реквизитлари ва QR кодларни бошқариш.</p></div>
-   <button class="button v2-ledger-refresh" type="button" data-v2-sub="payments:prices">Нархлар ↗</button></div>
+   <button class="button v2-ledger-refresh" type="button" data-module="prices">Нархлар ↗</button></div>
   <div class="v2-methods-grid">
     <section class="v2-ledger-panel">
       <div class="v2-ledger-panel-head"><div class="v2-ledger-eyebrow">BANK DETAILS</div><h3>Dushanbe City</h3><p>Тожикистондаги Dushanbe City тўлови учун.</p></div>
