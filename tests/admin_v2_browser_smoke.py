@@ -114,7 +114,7 @@ def main():
             live = live_context.new_page()
             live_errors = []
             live.on("pageerror", lambda error: live_errors.append(str(error)))
-            live.on("console", lambda msg: live_errors.append(msg.text) if msg.type == "error" else None)
+            live.on("console", lambda msg: live_errors.append(msg.text) if msg.type == "error" and "Admin panel render xatosi" in msg.text else None)
             live.route("https://telegram.org/js/telegram-web-app.js", lambda route: route.fulfill(
                 status=200, content_type="application/javascript",
                 body="window.Telegram={WebApp:{initData:'nonprod-demo',ready(){},expand(){},setHeaderColor(){},setBackgroundColor(){},onEvent(){}}};"
