@@ -1374,10 +1374,21 @@ function courseTrackStatus(force){
     .catch(function(e){COURSE_TRACK_PROMISE=null;throw e});
   return COURSE_TRACK_PROMISE;
 }
+/* Return only to the original Course V3 screen, never to an arbitrary URL.
+   The checkout is a separate document within the same Telegram Mini App. */
+function courseCheckoutReturnParams(){
+  var q=new URLSearchParams();
+  q.set("return_to","course");
+  q.set("return_tab",["course","mashq","voice","rating","profile"].indexOf(SCREEN)>=0?SCREEN:"course");
+  var level=(MAP&&MAP.level)||getSelectedLevel();
+  if(/^(?:hsk[1-4]|nhsk[1-3])$/.test(String(level)))q.set("return_level",level);
+  return q;
+}
 function openHsk30UnlockCheckout(){
   beginInternalNavigation();
   var q=new URLSearchParams();
   q.set("mode","hsk30_unlock");q.set("plan","hsk30_unlock");q.set("source","hsk30_unlock");q.set("lang",LANG);
+  courseCheckoutReturnParams().forEach(function(value,key){q.set(key,value)});
   location.href="/subscription.html?"+q.toString();
 }
 function renderHsk30AccessGate(status){
@@ -1918,7 +1929,8 @@ var App={
     CHECKOUT_NAVIGATING=true;
     var source=src||PAY_SOURCE||"v3_paywall";
     SALES_PAYWALL_ACTIVE=false;SALES_PAYWALL_IMPRESSION="";
-    var url="/subscription.html?lang="+LANG+"&source="+encodeURIComponent(source)+"&mode=subscription";
+    var url="/subscription.html?lang="+LANG+"&source="+encodeURIComponent(source)+"&mode=subscription"
+      +"&"+courseCheckoutReturnParams().toString();
     var clickId=["checkout",COURSE_SESSION_ID,Date.now(),Math.random().toString(36).slice(2,8)].join(":");
     trackCheckoutOpenedForRedirect(source,clickId);
     /* Same-origin subscription page: navigate inside the Telegram Mini App webview.
