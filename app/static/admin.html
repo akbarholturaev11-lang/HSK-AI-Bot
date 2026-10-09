@@ -588,7 +588,7 @@ body.locked .mobile-nav{pointer-events:none}
 }
 @media(max-width:760px){
   .workspace .topbar{
-    top:max(var(--safe-top),var(--telegram-content-top));
+    top:0; /* body already reserves Telegram content inset */
     min-height:61px;height:61px;padding:0 16px;
     border-bottom:1px solid rgba(150,181,212,.16);
     background:rgba(13,21,30,.94);
