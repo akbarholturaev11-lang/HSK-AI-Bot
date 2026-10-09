@@ -973,6 +973,21 @@ body.locked .mobile-nav{pointer-events:none}
 @media(max-width:980px){.v2-marketing-editor-content>.panel{grid-template-columns:1fr}.v2-marketing-editor-content .mcard:has(#bcText){grid-row:auto}.v2-marketing-editor-content>.panel>.row:last-child{grid-column:auto}}
 @media(max-width:760px){.v2-marketing-editor{gap:12px;margin-top:14px;scroll-margin-top:80px}.v2-marketing-editor-content .mcard{padding:17px}.v2-marketing-editor-content>.panel>.row:last-child{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.v2-marketing-editor-content>.panel>.row:last-child .btn{padding:0 8px}}
 
+
+/* System V2 real management — same visual language as marketing. */
+#v2SystemEditor{scroll-margin-top:90px}
+#v2SystemEditor .v2-system-editor-content>.panel{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;min-width:0
+}
+#v2SystemEditor .mcard{min-width:0;align-content:start}
+#v2SystemEditor .mcard .row{justify-content:flex-start;gap:9px}
+#v2SystemEditor .mcard .btn{min-height:44px;max-width:100%}
+#v2SystemEditor .mcard .frow label{font-size:12px}
+#v2SystemEditor .mcard .input{font-size:16px;min-width:0}
+@media(max-width:950px){
+ #v2SystemEditor .v2-system-editor-content>.panel{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:760px){#v2SystemEditor .mcard{padding:17px}}
 </style>
 </head>
 <body>
