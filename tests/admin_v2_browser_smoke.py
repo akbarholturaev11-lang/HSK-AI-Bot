@@ -226,6 +226,48 @@ def main():
                     } for period in ("weekly", "monthly", "all_time")
                 ]
             }
+            # Previous Admin had twelve independently useful analytics reports.
+            # Keep the executive four-tab summary short, but exercise every
+            # detailed report against real renderers and mocked read-only APIs.
+            for period in fake_overview["statistics_reports"]:
+                period["cards"] = [
+                    {"label":"Savollar", "value":34, "note":"So‘rovlar", "tone":"info"}
+                ]
+                period["text"] = "Batafsil server hisobot — test."
+                period["advanced"] = {
+                    "explain":"Darsga qaytish va to‘lovni tugatish",
+                    "cards":[{"label":"Retention", "value":"31%", "note":"Test", "tone":"info"}],
+                    "payment":{"funnel":{"steps":[
+                        {"label":"Paywall ochildi", "users":9},
+                        {"label":"To‘lov boshladi", "users":5}
+                    ],"abandon_step":"To‘lov boshladi","abandon_count":4,"abandon_rate":44}},
+                    "feature_adoption":{"rows":[{"label":"Voice","paid":3,"free":2,
+                       "paid_rate":30,"free_rate":20}],"paid_denominator":10,"free_denominator":10}
+                }
+            fake_overview["client_devices"] = {"miniapp_users_total":21,"native_users_total":8}
+            fake_overview["data_quality"] = {"rows":[{"label":"To‘lov","status":"ok","last_at":"2026-10-09"}]}
+            for period in fake_finance["periods"]:
+                period["unit"].update({"approved_count":9,"arpu_text":"$0.73",
+                    "arpu_users":100,"avg_check_text":"$8.11","paying_users":7,
+                    "explain":"To‘lovlar soni va payer farq qiladi"})
+                period["finance"].update({"manual_profit_text":"$3.00",
+                    "explain":"Taxminiy hisob","ai_usage":[{"model":"demo",
+                    "label":"AI Test","requests":4,"tokens":120,"cost_text":"$0.01"}]})
+                period["retention"] = {"new_paying":5,"renewals":2,
+                    "ever_renewed_share_pct":15,"inactive_paid_share_pct":3,
+                    "renewal_share_pct":22,"active_paid_now":7,"explain":"Qayta to‘lov"}
+                period["sources_paid"] = [{"label":"Telegram","paying_users":3,
+                    "payments":4,"revenue_text":"$32.00"}]
+            fake_desktop = {"funnel":{"download_requested":{"users":8},
+                "verified_first_open":{"users":3}},
+                "active":{"dau":1,"wau":2,"mau":3},
+                "notes":{"install_definition":"Faqat birinchi ochish isbotlangan."}}
+            fake_android = {"funnel":{"apk_requested":{"users":6},
+                "first_open":{"users":4}},
+                "registry":{"installed_devices":4,"installed_users":4},
+                "active":{"dau":1,"wau":2,"mau":3},"versions":{"rows":[]}}
+            fake_entry = {"ok":True,"rows":[{"label":"Bot",
+                "total_week":9,"unique_week":7,"total_all":20,"unique_all":12}]}
             legacy_stats_requests = []
             attempted_mutations = []
             fake_management = {
@@ -260,6 +302,13 @@ def main():
                 elif url.endswith("/api/admin-miniapp/finance-stats"):
                     route.fulfill(status=200, content_type="application/json",
                                   body=json.dumps(fake_finance))
+                elif url.endswith(("/desktop-stats", "/android-stats", "/sub-entry-stats")):
+                    legacy_stats_requests.append(url)
+                    data = ({"ok":True,"desktop":fake_desktop} if url.endswith("/desktop-stats")
+                            else {"ok":True,"android":fake_android} if url.endswith("/android-stats")
+                            else fake_entry)
+                    route.fulfill(status=200, content_type="application/json",
+                                  body=json.dumps(data))
                 else:
                     if url.endswith(("/desktop-stats", "/android-stats", "/sub-entry-stats")):
                         legacy_stats_requests.append(url)
@@ -281,7 +330,7 @@ def main():
                 assert c.locator(".v2-client-fact").count() == 3, f"Too many facts for {channel}"
                 assert revenue in c.inner_text(), f"Canonical revenue missing for {channel}"
             assert "noma'lum" in live.locator("#v2SourceNote").inner_text(), "Unattributed payments must be disclosed"
-            assert not legacy_stats_requests, "Deprecated device/install endpoints should not load: " + str(legacy_stats_requests)
+            assert not legacy_stats_requests, "Detailed reports must not load before opening: " + str(legacy_stats_requests)
             assert live.locator("#moduleGrid [data-module]").count() == 1, "Course track module rendering failed; browser errors: " + str(live_errors)
             assert live.locator("#v2ProductAccess [data-module]").count() == 2, "Access module rendering failed"
             assert live.locator("#v2MarketingModules [data-module]").count() == 4, "Marketing module rendering failed"
@@ -300,7 +349,7 @@ def main():
                            "prices","portfolio","stats","user_search","give_access","delete_user","ads_hub"}
             assert len(mapped_keys) == 19
             for area, keys in (
-                ("statistics", ("overview", "platform", "funnel", "ai")),
+                ("statistics", ("overview", "platform", "funnel", "ai", "details")),
                 ("payments", ("payments", "prices", "methods", "portfolio")),
                 ("settings", ("tracks", "access", "content")),
                 ("marketing", ("campaigns", "ads", "reminders", "partners")),
@@ -312,6 +361,32 @@ def main():
                     active = live.locator(f'#{area} [data-v2-pane="{area}:{key}"]')
                     assert active.count() > 0 and all(x.get_attribute("hidden") is None for x in active.all()), f"Hidden active pane: {area}:{key}"
                     assert live.locator(f'#{area} [data-v2-sub="{area}:{key}"]').get_attribute("aria-selected") == "true"
+                    if area == "statistics" and key == "details":
+                        assert live.locator("#statistics .v2-legacy-group").count() == 3
+                        assert live.locator("#statistics .v2-details-pane .block").count() == 12
+                        assert live.locator("#statistics #legacyOverviewCards .stat").count() == 1
+                        assert live.locator("#statistics #advancedCards .stat").count() == 1
+                        assert live.locator("#statistics #featureAdoption .tbl").count() == 1
+                        assert live.locator("#statistics #financeCards .stat").count() == 5
+                        assert live.locator("#statistics #unitCards .stat").count() == 4
+                        assert live.locator("#statistics #retentionCards .stat").count() == 4
+                        assert live.locator("#statistics #clientDeviceCards .stat").count() == 4
+                        live.locator("#desktopCards .stat").first.wait_for(timeout=8000)
+                        live.locator("#androidCards .stat").first.wait_for(timeout=8000)
+                        live.locator("#subEntryStats .tbl").wait_for(timeout=8000)
+                        assert live.locator("#desktopCards .stat").count() == 4
+                        assert live.locator("#androidCards .stat").count() >= 4
+                        assert live.locator("#desktopFunnel .bar").count() == 5
+                        assert live.locator("#androidFunnel .bar").count() == 4
+                        assert "Batafsil server hisobot" in live.locator("#reportText").inner_text()
+                        assert live.locator("#overviewCards .stat").count() == 4, "Simple analytics were overwritten"
+                        assert len(legacy_stats_requests) == 3, "Detailed endpoints not lazily loaded once each"
+                        live.screenshot(path=str(output / "admin-v2-full-legacy-analytics.png"),
+                                        full_page=True)
+                        live.locator('#statistics [data-v2-sub="statistics:overview"]').click()
+                        assert live.locator("#overviewCards .stat").count() == 4
+                        live.locator('#statistics [data-v2-sub="statistics:details"]').click()
+                        assert len(legacy_stats_requests) == 3, "Details repeated network calls"
                     if area == "payments" and key == "prices":
                         live.locator('#v2PricesView [data-prow]').first.wait_for(timeout=6000)
                         assert live.locator('#v2PricesView [data-psave]').count() == 1, "Live pricing controls missing"
