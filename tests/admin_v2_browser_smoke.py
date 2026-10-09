@@ -33,6 +33,37 @@ def check_real_module_coverage():
     assert not missing, f"Admin V2 cannot reach these backend modules: {sorted(missing)}"
     assert not unknown, f"Unrecognized module keys in V2: {sorted(unknown)}"
     print(f"Admin module reachability: {len(declared)}/{len(declared)} backend keys mapped")
+    # Advanced diagnostics are optional, but no previously operational module
+    # may disappear during visual simplification or CSS cleanup.
+    historic_ids = (
+        "dataQuality", "advancedExplain", "advancedCards", "advancedFunnel", "featureAdoption",
+        "desktopCards", "desktopFunnel", "desktopPromotion", "desktopHealth", "desktopExplain",
+        "androidCards", "androidUpdateSummary", "androidFunnel", "androidSubscription",
+        "androidDevices", "androidVersions", "androidExplain", "clientBusinessCards",
+        "clientBusinessTable", "clientBusinessExplain", "clientDeviceCards", "clientDeviceTable",
+        "clientDeviceExplain", "financeCards", "financeExplain", "aiUsageBreakdown",
+        "unitCards", "unitExplain", "retentionCards", "retentionExplain", "sourcesPaid",
+        "sourceAttributionExplain", "conversionBars", "subEntryStats", "reportText",
+    )
+    missing_ids = [x for x in historic_ids if f'id="{x}"' not in html]
+    assert not missing_ids, f"Admin lost existing analytic controls: {missing_ids}"
+    existing_functions = (
+        "loadDesktopStats", "desktopUsers", "renderDesktopStats", "loadAndroidStats",
+        "androidBlank", "renderAndroidStats", "renderAdvanced", "renderClientDevices",
+        "loadSubEntry",
+    )
+    missing_funcs = [x for x in existing_functions if f"function {x}(" not in html]
+    assert not missing_funcs, f"Admin lost existing analytic operations: {missing_funcs}"
+    existing_apis = (
+        "/api/admin-miniapp/desktop-stats", "/api/admin-miniapp/android-stats",
+        "/api/admin-miniapp/sub-entry-stats",
+    )
+    missing_apis = [x for x in existing_apis if x not in html]
+    assert not missing_apis, f"Admin discarded usable backend endpoints: {missing_apis}"
+    assert 'id="v2AdvancedAnalytics"' in html
+    print(f"Advanced analytics preserved: {len(existing_functions)} helpers, {len(historic_ids)} elements, {len(existing_apis)} API routes")
+
+
 
 
 def check_css_architecture():
@@ -206,13 +237,19 @@ def main():
                 "periods": [
                     {
                         "key": period, "note": "UI demo", "range_label": "Demo period",
-                        "unit": {"approved_count": 9, "arppu_text": "$8.00"},
+                        "unit": {"approved_count": 9, "arppu_text": "$8.00", "arpu_text": "$1.00",
+                                 "avg_check_text": "$8.00", "paying_users": 4, "arpu_users": 100},
                         "finance": {
                             "revenue_text": "$73.00", "ai_cost_text": "$5.00",
                             "expense_text": "$7.00", "net_text": "$61.00",
                             "ai_share_pct": 6.8, "margin_pct": 83.6,
-                            "net_positive": True,
+                            "net_positive": True, "explain": "Demo accounting", "ai_usage": [],
+                            "manual_profit_text": "$0.00",
                         },
+                        "retention": {"new_paying": 3, "renewals": 2, "renewal_share_pct": 40,
+                                      "active_paid_now": 4, "ever_renewed_share_pct": 40,
+                                      "inactive_paid_share_pct": 0, "explain": "Demo"},
+                        "sources_paid": [],
                         "client_business": {"rows": [
                             {"key": "miniapp", "entry_users": 24, "paying_users": 4,
                              "payments": 5, "revenue_text": "$40.00"},
@@ -280,6 +317,24 @@ def main():
             assert live.locator('#payments [data-v2-pane="payments:portfolio"] [data-module="portfolio"]').count() == 1, "Finance portfolio missing"
             assert live.locator("#marketing #adHub").count() == 1, "Existing Mini App advertising control was lost"
             assert live.locator("#marketing #notifTemplates").count() == 1, "Existing notifications control was lost"
+
+            # Keep the new executive overview concise while exposing older
+            # real platform/device metrics only behind an explicit opt-in.
+            live.locator('#tabs [data-tab="statistics"]').click()
+            details = live.locator("#v2AdvancedAnalytics")
+            assert details.count() == 1 and not details.evaluate("(el) => el.open")
+            assert not legacy_stats_requests, "Optional legacy analytics loaded eagerly"
+            details.locator("summary").click()
+            assert details.evaluate("(el) => el.open")
+            live.locator("#dataQuality").wait_for(timeout=5000)
+            assert "Data freshness" in live.locator("#dataQuality").inner_text(), "Detailed render failed"
+            live.wait_for_function("() => document.querySelector('#advancedOverviewCards').children.length > 0", timeout=6000)
+            assert any(u.endswith("/desktop-stats") for u in legacy_stats_requests), "Desktop diagnostics not requested on demand"
+            assert any(u.endswith("/android-stats") for u in legacy_stats_requests), "Android diagnostics not requested on demand"
+            live.screenshot(path=str(output / "admin-v2-advanced-analytics-opt-in.png"), full_page=True)
+            assert not live_errors, "Optional analytics render exceptions: " + str(live_errors)
+            details.locator("summary").click()
+            live.locator('#tabs [data-tab="dashboard"]').click()
 
             # Critical module coverage: each module must be discoverable from some safe V2 path.
             mapped_keys = {"hsk30","course_access","limits","course_sales_experiment","audio",
