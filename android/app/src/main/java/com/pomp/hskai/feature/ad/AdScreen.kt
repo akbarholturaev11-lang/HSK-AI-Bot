@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.size
@@ -24,6 +25,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -41,17 +43,9 @@ import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskPrimaryButton
 
 /**
- * One ad, in the centre of the screen, over whatever the learner was doing.
- *
- * It is a card on a scrim rather than a page of its own, because that is what
- * it is: the Mini App shows the same block in the middle of the screen and
- * the app carries on behind it. A full-screen takeover read as a different
- * app having launched.
- *
- * Nothing is bought with the watch. The ad used to open a closed section, so
- * the countdown was a price; now it is only how long the block stays before
- * it may be dismissed, and the number comes from the placement the admin
- * configured.
+ * The lesson-end placement owns a full-screen ad surface; screen_center stays
+ * a compact modal card above the current content. The backend still owns
+ * audience, daily cap and the dismissal countdown for both placements.
  */
 @Composable
 fun AdScreen(
@@ -64,18 +58,11 @@ fun AdScreen(
     val mediaUrl = state.mediaUrl
     if (state.isLoading || state.unavailable || mediaUrl == null) return
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(PompColors.Ink.copy(alpha = SCRIM_ALPHA))
-            .statusBarsPadding()
-            .padding(20.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        HskGlassSurface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(20.dp),
-            shadowElevation = 8.dp,
+    if (state.placement == AdViewModel.PLACEMENT_LESSON_END) {
+        // Edge-to-edge lesson-end creative: no centered card or dimmed backdrop.
+        // System bars remain unobstructed and CTA stays below the media.
+        Box(
+            modifier = modifier.fillMaxSize().background(Color(0xFF080B10)),
         ) {
             AdContent(
                 state = state,
@@ -83,7 +70,31 @@ fun AdScreen(
                 onContinue = onContinue,
                 onClose = onClose,
                 onOpenLink = onOpenLink,
+                fullScreen = true,
             )
+        }
+    } else {
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(PompColors.Ink.copy(alpha = SCRIM_ALPHA))
+                .statusBarsPadding()
+                .padding(20.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            HskGlassSurface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                shadowElevation = 8.dp,
+            ) {
+                AdContent(
+                    state = state,
+                    mediaUrl = mediaUrl,
+                    onContinue = onContinue,
+                    onClose = onClose,
+                    onOpenLink = onOpenLink,
+                )
+            }
         }
     }
 }
@@ -98,6 +109,7 @@ private fun AdContent(
     onContinue: () -> Unit,
     onClose: () -> Unit,
     onOpenLink: (String) -> Unit,
+    fullScreen: Boolean = false,
 ) {
     val ad = state.ad
     val isPhoto = ad?.mediaType == "photo"
@@ -105,15 +117,21 @@ private fun AdContent(
     val link = ad?.linkUrl?.takeIf { it.isNotBlank() }
     val linkLabel = ad?.buttonText?.takeIf { it.isNotBlank() }
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(18.dp),
+        modifier = if (fullScreen) {
+            Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .padding(horizontal = 18.dp, vertical = 12.dp)
+        } else {
+            Modifier.fillMaxWidth().padding(18.dp)
+        },
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = stringResource(R.string.ad_title),
                 style = MaterialTheme.typography.labelLarge,
-                color = PompColors.InkSecondary,
+                color = if (fullScreen) Color.White.copy(alpha = 0.82f) else PompColors.InkSecondary,
                 modifier = Modifier.weight(1f),
             )
             Text(
@@ -123,15 +141,21 @@ private fun AdContent(
                     stringResource(R.string.ad_wait_seconds, state.remainingSeconds)
                 },
                 style = MaterialTheme.typography.labelLarge,
-                color = PompColors.CinnabarDark,
+                color = if (fullScreen) Color.White else PompColors.CinnabarDark,
             )
         }
 
         Spacer(Modifier.height(10.dp))
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(16f / 9f),
+            modifier = if (fullScreen) {
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .heightIn(min = 120.dp)
+                    .background(Color.Black)
+            } else {
+                Modifier.fillMaxWidth().aspectRatio(16f / 9f)
+            },
             contentAlignment = Alignment.Center,
         ) {
             if (isPhoto) {
@@ -159,7 +183,7 @@ private fun AdContent(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
-                color = PompColors.Ink,
+                color = if (fullScreen) Color.White else PompColors.Ink,
             )
         }
 
