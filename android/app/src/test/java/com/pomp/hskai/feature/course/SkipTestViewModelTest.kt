@@ -6,6 +6,8 @@ import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.CourseCompleteRequest
 import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseLessonResponse
+import com.pomp.hskai.data.api.CourseSkipTestResponse
+import com.pomp.hskai.data.api.CourseSkipQuestionDto
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.data.api.DictionaryResponse
 import com.pomp.hskai.data.api.LanguageRequest
@@ -19,14 +21,17 @@ import com.pomp.hskai.data.local.CourseMapCacheEntity
 import com.pomp.hskai.data.local.CourseMapDao
 import com.pomp.hskai.data.repository.CourseRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.setMain
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonArray
 import okhttp3.ResponseBody
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -57,13 +62,17 @@ class SkipTestViewModelTest {
 
     @Test
     fun `a locked lesson is drawn as six questions`() = runTest(dispatcher) {
-        val model = viewModel()
+        val api = FakeSkipApi()
+        val model = viewModel(api)
 
         model.start(4)
         advanceUntilIdle()
 
         assertEquals(SkipTestViewModel.QUESTION_COUNT, model.state.value.questions.size)
         assertFalse(model.state.value.isLoading)
+        assertEquals(listOf(4), api.quizReads)
+        assertEquals(0, api.lessonReads)
+        assertTrue(api.unlocks.isEmpty())
     }
 
     @Test
@@ -98,6 +107,7 @@ class SkipTestViewModelTest {
         advanceUntilIdle()
         assertTrue(model.state.value.unlocked)
         assertEquals(listOf(4 to 100), api.unlocks)
+        assertEquals(listOf("hsk1"), api.unlockLevels)
     }
 
     @Test
@@ -147,6 +157,86 @@ class SkipTestViewModelTest {
         assertEquals(1, api.unlocks.size)
     }
 
+    @Test
+    fun `reopened retained viewmodel starts a fresh locked attempt`() = runTest(dispatcher) {
+        val api = FakeSkipApi()
+        val model = viewModel(api)
+        model.start(4)
+        advanceUntilIdle()
+        answerAll(model, correct = true)
+        model.unlock()
+        advanceUntilIdle()
+        assertTrue(model.state.value.unlocked)
+
+        model.endAttempt()
+        model.beginAttempt()
+        model.start(4)
+        advanceUntilIdle()
+
+        assertFalse(model.state.value.unlocked)
+        assertEquals(null, model.state.value.finishedScore)
+        assertEquals(0, model.state.value.correctCount)
+        assertEquals(listOf(4, 4), api.quizReads)
+        assertEquals(1, api.unlocks.size)
+    }
+
+    @Test
+    fun `closed quiz response cannot auto unlock an empty old lesson`() = runTest(dispatcher) {
+        val pending = CompletableDeferred<Response<CourseSkipTestResponse>>()
+        val api = object : FakeSkipApi() {
+            override suspend fun skipTestQuestions(authorization: String, lessonOrder: Int) = pending.await()
+        }
+        val model = viewModel(api)
+        model.start(4)
+        runCurrent()
+        model.endAttempt()
+        pending.complete(Response.success(CourseSkipTestResponse(
+            ok = true, level = "hsk1", lessonOrder = 4, questions = emptyList(),
+        )))
+        advanceUntilIdle()
+        assertEquals(SkipTestUiState(), model.state.value)
+        assertTrue(api.unlocks.isEmpty())
+    }
+
+    @Test
+    fun `late unlock cannot mark a reopened quiz as unlocked`() = runTest(dispatcher) {
+        val pending = CompletableDeferred<Response<LessonUnlockResponse>>()
+        val api = object : FakeSkipApi() {
+            override suspend fun unlockLesson(authorization: String, body: LessonUnlockRequest) = pending.await()
+        }
+        val model = viewModel(api)
+        model.start(4)
+        advanceUntilIdle()
+        answerAll(model, correct = true)
+        model.unlock()
+        runCurrent()
+        model.endAttempt()
+        model.beginAttempt()
+        model.start(4)
+        runCurrent()
+        pending.complete(Response.success(LessonUnlockResponse(
+            ok = true, lessonOrder = 4, completedLessonsCount = 3,
+        )))
+        advanceUntilIdle()
+        assertFalse(model.state.value.unlocked)
+        assertFalse(model.state.value.isUnlocking)
+        assertEquals(null, model.state.value.finishedScore)
+    }
+
+    @Test
+    fun `queued unlock is not sent after closing the attempt`() = runTest(dispatcher) {
+        val api = FakeSkipApi()
+        val model = viewModel(api)
+        model.start(4)
+        advanceUntilIdle()
+        answerAll(model, correct = true)
+        model.unlock()
+        model.endAttempt()
+        advanceUntilIdle()
+        assertTrue(api.unlocks.isEmpty())
+        assertEquals(SkipTestUiState(), model.state.value)
+    }
+
     private fun answerAll(model: SkipTestViewModel, correct: Boolean) {
         repeat(SkipTestViewModel.QUESTION_COUNT) {
             val question = model.state.value.currentQuestion ?: return
@@ -193,16 +283,18 @@ private fun skipLessonBody(withQuestions: Boolean): String {
         "sections":[{"section_no":1,"section_purpose":"practice","cards":[$cards]}]}}"""
 }
 
-private class FakeSkipApi(private val withQuestions: Boolean = true) : AndroidCourseApi {
+private open class FakeSkipApi(private val withQuestions: Boolean = true) : AndroidCourseApi {
     val unlocks = mutableListOf<Pair<Int, Int>>()
-
-    private val cardCount = if (withQuestions) SKIP_CARD_COUNT else 1
+    val unlockLevels = mutableListOf<String>()
+    val quizReads = mutableListOf<Int>()
+    var lessonReads = 0
 
     override suspend fun unlockLesson(
         authorization: String,
         body: LessonUnlockRequest,
     ): Response<LessonUnlockResponse> {
         unlocks += body.lessonOrder to body.score
+        unlockLevels += body.expectedLevel
         return Response.success(
             LessonUnlockResponse(
                 ok = true,
@@ -216,23 +308,33 @@ private class FakeSkipApi(private val withQuestions: Boolean = true) : AndroidCo
         authorization: String,
         lessonOrder: Int,
         accessRef: String,
-    ): Response<CourseLessonResponse> = Response.success(
-        CourseLessonResponse(
+    ): Response<CourseLessonResponse> {
+        lessonReads++
+        // The actual locked lesson is forbidden. A successful skip quiz must
+        // use the question endpoint, not this playable-lesson endpoint.
+        return Response.error(403, ResponseBody.create(null,
+            """{"error":"course_lesson_not_unlocked"}"""))
+    }
+
+    override suspend fun skipTestQuestions(
+        authorization: String,
+        lessonOrder: Int,
+    ): Response<CourseSkipTestResponse> {
+        quizReads += lessonOrder
+        val cards = if (!withQuestions) emptyList() else Json.parseToJsonElement(
+            skipLessonBody(true)
+        ).jsonObject.getValue("lesson").jsonObject.getValue("sections")
+            .jsonArray.first().jsonObject.getValue("cards").jsonArray
+        return Response.success(CourseSkipTestResponse(
             ok = true,
             level = "hsk1",
             lessonOrder = lessonOrder,
-            // The repository refuses an envelope whose counts do not match the
-            // payload it carries, so a fake that leaves them at zero is
-            // refused exactly as a malformed server answer would be.
-            previewCardLimit = cardCount,
-            totalCards = cardCount,
-            completionAllowed = true,
-            lesson = Json.parseToJsonElement(skipLessonBody(withQuestions))
-                .jsonObject
-                .getValue("lesson")
-                .jsonObject,
-        )
-    )
+            questions = cards.mapIndexed { index, card -> CourseSkipQuestionDto(
+                materialRef = "lesson:hsk1:$lessonOrder:section:1:card:${index + 1}",
+                card = card.jsonObject,
+            ) },
+        ))
+    }
 
     override suspend fun courseMap(
         authorization: String,

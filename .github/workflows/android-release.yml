@@ -33,7 +33,7 @@ jobs:
   release:
     name: Build, verify and publish
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     steps:
       - uses: actions/checkout@v4
@@ -80,6 +80,12 @@ jobs:
       - name: Unit tests and lint
         working-directory: android
         run: ./gradlew --no-daemon testDirectDebugUnitTest testPlayDebugUnitTest lintDirectDebug lintPlayDebug
+
+      # Publishing is blocked when the real course/checkout navigation fails,
+      # even if unit tests, lint and the APK compiler all succeed.
+      - name: Course, checkout and Voice emulator regressions
+        uses: ./.github/actions/android-flow-regressions
+        timeout-minutes: 25
 
       - name: Restore the release keystore
         env:

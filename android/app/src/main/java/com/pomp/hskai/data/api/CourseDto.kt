@@ -285,6 +285,7 @@ data class CourseCompleteResponse(
 data class LessonUnlockRequest(
     @SerialName("lesson_order") val lessonOrder: Int,
     @SerialName("score") val score: Int,
+    @SerialName("expected_level") val expectedLevel: String,
 )
 
 @Serializable
@@ -292,6 +293,20 @@ data class LessonUnlockResponse(
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("lesson_order") val lessonOrder: Int = 0,
     @SerialName("completed_lessons_count") val completedLessonsCount: Int = 0,
+)
+
+@Serializable
+data class CourseSkipTestResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("level") val level: String = "",
+    @SerialName("lesson_order") val lessonOrder: Int = 0,
+    @SerialName("questions") val questions: List<CourseSkipQuestionDto>,
+)
+
+@Serializable
+data class CourseSkipQuestionDto(
+    @SerialName("material_ref") val materialRef: String,
+    @SerialName("card") val card: JsonObject,
 )
 
 @Serializable

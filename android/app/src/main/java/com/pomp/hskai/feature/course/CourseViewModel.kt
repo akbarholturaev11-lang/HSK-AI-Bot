@@ -50,13 +50,20 @@ class CourseViewModel(
     private data class TrackSwitchRequest(val track: String, val level: String?)
     private var lastTrackSwitchRequest: TrackSwitchRequest? = null
     private var pendingTrackConfirmation: TrackSwitchRequest? = null
+    private var refreshQueued = false
 
     init {
         load()
     }
 
     fun load() {
-        if (_state.value.isRefreshing || _state.value.isSwitchingTrack) return
+        if (_state.value.isRefreshing || _state.value.isSwitchingTrack) {
+            // An approval can arrive after the in-flight request read access.
+            // One later GET must observe it even when several callers refresh.
+            refreshQueued = true
+            return
+        }
+        refreshQueued = false
         val confirmation = pendingTrackConfirmation
         _state.update {
             it.copy(
@@ -148,6 +155,13 @@ class CourseViewModel(
                 }
             }
         }
+        drainQueuedRefresh()
+    }
+
+    private fun drainQueuedRefresh() {
+        if (refreshQueued && !_state.value.isRefreshing && !_state.value.isSwitchingTrack) {
+            load()
+        }
     }
 
     fun switchCourseTrack(targetTrack: String, level: String? = null) {
@@ -176,6 +190,7 @@ class CourseViewModel(
                     it.copy(isSwitchingTrack = false, trackError = result.error)
                 }
             }
+            drainQueuedRefresh()
         }
     }
 

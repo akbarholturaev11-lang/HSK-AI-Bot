@@ -1,0 +1,37 @@
+name: Android course, checkout and Voice regressions
+description: Verify real course entry, checkout, Voice exit and payment decisions before CI builds and signed releases.
+
+runs:
+  using: composite
+  steps:
+    - name: Enable KVM
+      shell: bash
+      run: |
+        set -euo pipefail
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+
+    - name: Test course, Voice and payments in both distributions
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 35
+        target: google_apis
+        arch: x86_64
+        profile: pixel_7
+        disable-animations: true
+        working-directory: android
+        script: |
+          ./gradlew --no-daemon connectedDirectDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.pomp.hskai.feature.course.Hsk30EntryFlowTest,com.pomp.hskai.feature.course.SkipTestOfferTest,com.pomp.hskai.feature.subscription.SubscriptionCheckoutHostTest,com.pomp.hskai.feature.voice.VoiceScreenBackTest,com.pomp.hskai.core.notify.PaymentDecisionMonitorTest
+          ./gradlew --no-daemon connectedPlayDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.pomp.hskai.feature.course.Hsk30EntryFlowTest,com.pomp.hskai.feature.course.SkipTestOfferTest,com.pomp.hskai.feature.voice.VoiceScreenBackTest,com.pomp.hskai.core.notify.PaymentDecisionMonitorTest
+
+    - name: Save emulator reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-flow-regressions
+        path: |
+          android/app/build/reports/androidTests/**
+          android/app/build/outputs/androidTest-results/**
+        if-no-files-found: ignore
+        retention-days: 7

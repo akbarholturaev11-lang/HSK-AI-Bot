@@ -40,6 +40,13 @@ interface AndroidCourseApi {
         @Query("access_ref") accessRef: String = "",
     ): Response<CourseLessonResponse>
 
+    /** Quiz material only; this request never starts or unlocks the lesson. */
+    @GET("api/v3/android/course/skip-test/{lessonOrder}")
+    suspend fun skipTestQuestions(
+        @Header("Authorization") authorization: String,
+        @Path("lessonOrder") lessonOrder: Int,
+    ): Response<CourseSkipTestResponse>
+
     @GET("api/v3/android/stroke")
     suspend fun stroke(
         @Header("Authorization") authorization: String,

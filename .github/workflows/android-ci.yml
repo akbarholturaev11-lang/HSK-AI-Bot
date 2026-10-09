@@ -3,12 +3,13 @@ name: Android CI
 # Additive only: this does not touch the existing desktop-release workflow.
 on:
   push:
-    branches: [main, "feat/android-**", "codex/local-ai"]
+    branches: [main, "feat/android-**", "codex/local-ai", "codex/cloud-ai"]
     paths:
       - "android/**"
       - "app/api/android_*.py"
       - "app/api/desktop_auth.py"
       - "app/api/desktop_course.py"
+      - "app/api/course_tracks.py"
       - "app/main.py"
       - "app/bot/handlers/desktop_auth.py"
       - "app/bot/utils/course_miniapp.py"
@@ -19,17 +20,20 @@ on:
       - "app/static/course_v3_data/**"
       - "tests/test_android_*.py"
       - "tests/test_course_card_contract.py"
+      - "tests/test_hsk30_lesson_limits.py"
       - "tests/test_desktop_auth_service.py"
       - "tests/test_desktop_course_api.py"
       - "tests/test_desktop_subscription_api.py"
       - "requirements*.txt"
       - ".github/workflows/android-ci.yml"
+      - ".github/actions/android-flow-regressions/**"
   pull_request:
     paths:
       - "android/**"
       - "app/api/android_*.py"
       - "app/api/desktop_auth.py"
       - "app/api/desktop_course.py"
+      - "app/api/course_tracks.py"
       - "app/main.py"
       - "app/bot/handlers/desktop_auth.py"
       - "app/bot/utils/course_miniapp.py"
@@ -40,11 +44,13 @@ on:
       - "app/static/course_v3_data/**"
       - "tests/test_android_*.py"
       - "tests/test_course_card_contract.py"
+      - "tests/test_hsk30_lesson_limits.py"
       - "tests/test_desktop_auth_service.py"
       - "tests/test_desktop_course_api.py"
       - "tests/test_desktop_subscription_api.py"
       - "requirements*.txt"
       - ".github/workflows/android-ci.yml"
+      - ".github/actions/android-flow-regressions/**"
   workflow_dispatch:
 
 concurrency:
@@ -58,7 +64,7 @@ jobs:
   android:
     name: Build, test and lint
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     defaults:
       run:
         working-directory: android
@@ -152,6 +158,12 @@ jobs:
       - name: Android Lint
         run: ./gradlew --no-daemon lintPlayDebug lintDirectDebug
 
+      # A JVM fake cannot catch a Compose host reusing the previous product's
+      # ViewModel. Run the actual course and checkout screens before building.
+      - name: Course, checkout and Voice emulator regressions
+        uses: ./.github/actions/android-flow-regressions
+        timeout-minutes: 25
+
       - name: Assemble debug
         run: ./gradlew --no-daemon assemblePlayDebug assembleDirectDebug
 
@@ -194,6 +206,7 @@ jobs:
           python -m pytest -q \
             tests/test_android_auth_api.py \
             tests/test_android_course_api.py \
+            tests/test_android_foundation_api.py \
             tests/test_android_course_rank_completion.py \
             tests/test_android_features_api.py \
             tests/test_android_push.py \
@@ -201,6 +214,7 @@ jobs:
             tests/test_course_card_contract.py \
             tests/test_course_levels.py \
             tests/test_course_track_service.py \
+            tests/test_hsk30_lesson_limits.py \
             tests/test_course_gamification_service.py \
             tests/test_course_hsk_exam_service.py \
             tests/test_course_miniapp_profile_preferences.py \

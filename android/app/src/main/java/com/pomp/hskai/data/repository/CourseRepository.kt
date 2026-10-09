@@ -33,6 +33,7 @@ import com.pomp.hskai.data.local.CourseMapDao
 import com.pomp.hskai.data.local.LessonCacheDao
 import com.pomp.hskai.data.local.LessonCacheEntity
 import com.pomp.hskai.domain.model.CourseMap
+import com.pomp.hskai.domain.model.ChoiceCard
 import com.pomp.hskai.domain.model.Lesson
 import java.io.ByteArrayOutputStream
 import java.util.TimeZone
@@ -262,6 +263,49 @@ class CourseRepository(
         }
         notifySessionExpired(failure.error)
         return failure
+    }
+
+    /** Read-only quiz material, deliberately separate from the playable lesson/cache. */
+    suspend fun skipTestQuestions(
+        level: String,
+        lessonOrder: Int,
+        language: AppLanguage,
+    ): ApiResult<List<ChoiceCard>> {
+        val token = when (val result = accessToken()) {
+            is ApiResult.Failure -> return result
+            is ApiResult.Success -> result.value
+        }
+        return when (val result = apiCall { api.skipTestQuestions("Bearer $token", lessonOrder) }) {
+            is ApiResult.Failure -> {
+                notifySessionExpired(result.error)
+                result
+            }
+            is ApiResult.Success -> {
+                val response = result.value
+                val requestedLevel = level.trim().lowercase()
+                if (!response.ok || response.level.trim().lowercase() != requestedLevel ||
+                    response.lessonOrder != lessonOrder
+                ) return ApiResult.Failure(ApiError.Unknown)
+                val sourceRef = Regex(
+                    "lesson:${Regex.escape(requestedLevel)}:$lessonOrder:section:[1-9][0-9]*:card:[1-9][0-9]*"
+                )
+                val questions = response.questions.map { question ->
+                    if (!sourceRef.matches(question.materialRef)) {
+                        return ApiResult.Failure(ApiError.Unknown)
+                    }
+                    val parsed = LessonParser.parseSkipQuestion(
+                        card = question.card,
+                        language = language,
+                        materialRef = question.materialRef,
+                    ) ?: return ApiResult.Failure(ApiError.Unknown)
+                    if (parsed.options.size < 2 || parsed.correctIndex !in parsed.options.indices) {
+                        return ApiResult.Failure(ApiError.Unknown)
+                    }
+                    parsed
+                }
+                ApiResult.Success(questions)
+            }
+        }
     }
 
     suspend fun lesson(
@@ -501,6 +545,7 @@ class CourseRepository(
     suspend fun unlockLesson(
         lessonOrder: Int,
         score: Int,
+        expectedLevel: String,
     ): ApiResult<LessonUnlockResponse> {
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> return result
@@ -509,9 +554,17 @@ class CourseRepository(
         val result = apiCall {
             api.unlockLesson(
                 "Bearer $token",
-                LessonUnlockRequest(lessonOrder = lessonOrder, score = score),
+                LessonUnlockRequest(
+                    lessonOrder = lessonOrder,
+                    score = score,
+                    expectedLevel = expectedLevel.trim().lowercase(),
+                ),
             )
         }
+        if (result is ApiResult.Success && (!result.value.ok ||
+            result.value.lessonOrder != lessonOrder ||
+            result.value.completedLessonsCount < lessonOrder - 1)
+        ) return ApiResult.Failure(ApiError.Unknown)
         if (result is ApiResult.Failure) notifySessionExpired(result.error)
         // The map's progress moved on the server, so the cached copy is stale.
         if (result is ApiResult.Success) clearCache()

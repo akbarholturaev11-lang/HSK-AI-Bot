@@ -35,12 +35,14 @@ class ProfileViewModel(
 
     private val _state = MutableStateFlow(ProfileUiState())
     val state: StateFlow<ProfileUiState> = _state.asStateFlow()
+    private var loadGeneration = 0L
 
     init {
         load()
     }
 
     fun load() {
+        val generation = ++loadGeneration
         _state.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
             val profile = async { repository.profile() }
@@ -48,34 +50,58 @@ class ProfileViewModel(
 
             val profileResult = profile.await()
             val trialResult = trial.await()
+            if (generation != loadGeneration) return@launch
 
             // Trial is an optional offer. A trial-status failure must not turn
             // a perfectly usable profile into an error screen.
             val firstError = (profileResult as? ApiResult.Failure)?.error
 
-            _state.value = ProfileUiState(
-                isLoading = false,
-                profile = (profileResult as? ApiResult.Success)?.value,
-                trial = (trialResult as? ApiResult.Success)?.value?.trial,
-                error = firstError,
-            )
+            _state.update {
+                it.copy(
+                    isLoading = false,
+                    profile = (profileResult as? ApiResult.Success)?.value ?: it.profile,
+                    trial = (trialResult as? ApiResult.Success)?.value?.trial ?: it.trial,
+                    error = firstError,
+                )
+            }
         }
     }
 
     fun saveProfile(displayName: String, avatarKey: String) {
         if (_state.value.profileSaving) return
+        val generation = loadGeneration
         _state.update { it.copy(profileSaving = true, error = null) }
         viewModelScope.launch {
             when (val result = repository.updateProfile(displayName, avatarKey)) {
-                is ApiResult.Success -> _state.update {
-                    it.copy(
-                        profile = result.value,
-                        profileSaving = false,
-                        profileRevision = it.profileRevision + 1,
-                    )
+                is ApiResult.Success -> {
+                    // A read started before the save cannot undo the canonical
+                    // profile returned by this completed mutation.
+                    val refreshedDuringSave = generation != loadGeneration
+                    loadGeneration++
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            // A newer course/access read may already be on
+                            // screen. An older save response must not undo it.
+                            profile = if (refreshedDuringSave) it.profile else result.value,
+                            profileSaving = false,
+                            profileRevision = it.profileRevision + 1,
+                        )
+                    }
+                    if (refreshedDuringSave) load()
                 }
-                is ApiResult.Failure -> _state.update {
-                    it.copy(profileSaving = false, error = result.error)
+                is ApiResult.Failure -> {
+                    val refreshedDuringSave = generation != loadGeneration
+                    // Only invalidate reads that preceded this save. A newer
+                    // access refresh must still be allowed to finish.
+                    if (!refreshedDuringSave) loadGeneration++
+                    _state.update {
+                        it.copy(
+                            isLoading = if (refreshedDuringSave) it.isLoading else false,
+                            profileSaving = false,
+                            error = result.error,
+                        )
+                    }
                 }
             }
         }
@@ -92,6 +118,7 @@ class ProfileViewModel(
             when (val result = repository.trialStart()) {
                 is ApiResult.Success ->
                     if (result.value.ok) {
+                        _state.update { it.copy(trialStarting = false) }
                         load()
                     } else {
                         _state.update {

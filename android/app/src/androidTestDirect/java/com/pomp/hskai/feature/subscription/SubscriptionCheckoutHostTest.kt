@@ -7,6 +7,7 @@ import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -36,6 +37,9 @@ import com.pomp.hskai.data.repository.FeatureRepository
 import java.io.File
 import java.lang.reflect.Proxy
 import java.util.Locale
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
+import kotlin.coroutines.resume
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -62,6 +66,8 @@ class SubscriptionCheckoutHostTest {
     private val submitRequests = mutableListOf<SubscriptionSubmitRequest>()
     private var pending: SubscriptionPendingDto? = null
     private var closeCount = 0
+    private var deferSubmit = false
+    @Volatile private var submitContinuation: Continuation<Any?>? = null
 
     @After
     fun tearDown() {
@@ -108,7 +114,12 @@ class SubscriptionCheckoutHostTest {
                 "checkoutEvent" -> Response.success(SubscriptionCheckoutEventResponse(ok = true))
                 "checkoutSubmit" -> {
                     submitRequests += args[1] as SubscriptionSubmitRequest
-                    Response.success(SubscriptionSubmitResponse(
+                    if (deferSubmit) {
+                        @Suppress("UNCHECKED_CAST")
+                        val continuation = args.last() as Continuation<Any?>
+                        submitContinuation = continuation
+                        COROUTINE_SUSPENDED
+                    } else Response.success(SubscriptionSubmitResponse(
                         ok = true, paymentId = 71, status = "pending", provisionalAccess = true,
                     ))
                 }
@@ -150,6 +161,101 @@ class SubscriptionCheckoutHostTest {
             visible.value = true
         }
         compose.waitForIdle()
+    }
+
+    private fun readyReceipt(): SubscriptionCheckoutViewModel {
+        val continueLabel = copy.getString(R.string.action_continue)
+        if (compose.onAllNodesWithText(continueLabel).fetchSemanticsNodes().isNotEmpty()) {
+            compose.onNodeWithText(continueLabel).performClick()
+        }
+        compose.onNodeWithText(copy.getString(R.string.sub_continue_country)).performClick()
+        compose.waitForIdle()
+        lateinit var model: SubscriptionCheckoutViewModel
+        compose.runOnIdle {
+            model = ViewModelProvider(owner).get(
+                "subscription-checkout:${origin.value}", SubscriptionCheckoutViewModel::class.java,
+            )
+        }
+        val receipt = File(context.cacheDir, "checkout-delayed-test-receipt.png")
+        val bitmap = Bitmap.createBitmap(16, 16, Bitmap.Config.ARGB_8888)
+        receipt.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        bitmap.recycle()
+        try {
+            compose.runOnIdle { model.selectReceipt(context, Uri.fromFile(receipt)) }
+            compose.waitUntil(10_000) { model.state.value.receiptBytes > 0 }
+        } finally {
+            receipt.delete()
+        }
+        return model
+    }
+
+    private fun finishDelayedSubmit() {
+        compose.runOnIdle {
+            requireNotNull(submitContinuation).resume(Response.success(SubscriptionSubmitResponse(
+                ok = true, paymentId = 71, status = "pending", provisionalAccess = true,
+            )))
+        }
+        compose.waitForIdle()
+    }
+
+    @Test
+    fun delayedHskReceiptResponseCannotCloseNewProCheckout() {
+        origin.value = "hsk30_content"
+        deferSubmit = true
+        show()
+        readyReceipt()
+        compose.onNodeWithText(copy.getString(R.string.sub_submit)).performClick()
+        compose.waitUntil(10_000) { submitContinuation != null }
+        reopen("profile_subscription")
+        expectPlan(R.string.sub_plan_1)
+
+        finishDelayedSubmit()
+
+        expectPlan(R.string.sub_plan_1)
+        compose.runOnIdle {
+            assertTrue(visible.value)
+            assertEquals(0, closeCount)
+        }
+    }
+
+    @Test
+    fun delayedReceiptResponseCannotCloseReopenedHskReview() {
+        origin.value = "hsk30_content"
+        deferSubmit = true
+        show()
+        val model = readyReceipt()
+        compose.onNodeWithText(copy.getString(R.string.sub_submit)).performClick()
+        compose.waitUntil(10_000) { submitContinuation != null }
+        pending = SubscriptionPendingDto(id = 71, planType = "hsk30_unlock", provisionalAccess = true)
+        reopen("hsk30_content")
+        finishDelayedSubmit()
+        compose.waitUntil(10_000) { !model.state.value.loading && !model.state.value.submitting }
+
+        compose.onNodeWithText(copy.getString(R.string.sub_hsk30_provisional_title)).assertIsDisplayed()
+        compose.runOnIdle {
+            assertTrue(visible.value)
+            assertEquals(0, closeCount)
+            assertEquals(71, model.state.value.pendingPaymentId)
+        }
+    }
+
+    @Test
+    fun pickerResultFromPreviousPaymentStepCannotAttachToNewQuote() {
+        origin.value = "hsk30_content"
+        show()
+        val model = readyReceipt()
+        val token = requireNotNull(model.receiptSelectionToken())
+        compose.runOnIdle { model.back() }
+        compose.onNodeWithText(copy.getString(R.string.sub_continue_country)).performClick()
+        compose.waitForIdle()
+        compose.runOnIdle {
+            // A picker may return after Back and a new payment quote.
+            model.selectReceipt(context, Uri.parse("file:///obsolete-picker-receipt.png"), token)
+            assertEquals(0, model.state.value.receiptBytes)
+            assertEquals("", model.state.value.receiptName)
+            assertEquals(null, model.state.value.receiptNoteRes)
+        }
+        compose.onNodeWithText(copy.getString(R.string.sub_submit)).assertIsNotEnabled()
     }
 
     @Test

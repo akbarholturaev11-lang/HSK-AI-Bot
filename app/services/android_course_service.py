@@ -27,9 +27,13 @@ from app.services.course_miniapp_profile_service import (
     CourseMiniAppProfileService,
 )
 from app.services.desktop_course_service import (
+    COURSE_V3_DATA_ROOT,
     DesktopCourseError,
     DesktopCourseService,
+    course_v3_lesson_card_count,
 )
+from app.services.course_v3_parts import total_parts
+from app.services.entitlements.lesson_access import LessonAccessService
 
 
 __all__ = ["AndroidCourseError", "AndroidCourseService"]
@@ -38,6 +42,10 @@ AndroidCourseError = DesktopCourseError
 
 _FOUNDATION_SOURCE = Path("app/static/course_v3_data/hsk1/lesson_01.json")
 _FOUNDATION_REQUIRED_ERROR = "android_foundation_required"
+_SKIP_CHOICE_TYPES = frozenset({
+    "meaning_guess", "translation_choice", "hanzi_choice", "pinyin_choice",
+    "quick_quiz", "gap_fill", "listening_choice", "dialog_cloze",
+})
 
 
 class AndroidCourseService(DesktopCourseService):
@@ -125,24 +133,25 @@ class AndroidCourseService(DesktopCourseService):
         level: str | None = None,
     ) -> dict[str, Any]:
         context = await self._context(access_token)
+        user = await self._locked_context_user(context)
         service = CourseTrackService(self.session)
-        before_track = service.track_for_level(getattr(context.user, "level", None))
-        before_level = str(getattr(context.user, "level", "") or "")
+        before_track = service.track_for_level(getattr(user, "level", None))
+        before_level = str(getattr(user, "level", "") or "")
         current_track = before_track
         if target_track == current_track and level:
             status = await service.change_level(
-                context.user,
+                user,
                 level,
                 allow_locked_hsk30=True,
             )
         else:
             status = await service.switch(
-                context.user,
+                user,
                 target_track=target_track,
                 requested_level=level,
                 allow_locked_hsk30=True,
             )
-        after_level = str(getattr(context.user, "level", "") or "")
+        after_level = str(getattr(user, "level", "") or "")
         after_track = service.track_for_level(after_level)
         if before_track != after_track or before_level != after_level:
             await CourseMiniAppAnalyticsService(self.session).record_server_event(
@@ -188,6 +197,93 @@ class AndroidCourseService(DesktopCourseService):
             access_token,
             lesson_order=lesson_order,
             access_ref=access_ref,
+        )
+
+    async def skip_test_questions(
+        self,
+        access_token: str,
+        *,
+        lesson_order: int,
+    ) -> dict[str, Any]:
+        """Read the locked lesson's quiz without starting or opening the lesson.
+
+        The Mini App builds its skip test from checked-in lesson cards. Android
+        needs the same material before the normal lesson-order guard allows a
+        lesson fetch. Foundation and course entitlement still apply, exactly as
+        they do when the skip result is submitted, and no start is consumed.
+        """
+        await self._require_foundation_complete(access_token)
+        context = await self._context(access_token)
+        user = context.user
+        level = self._level(user)
+        lesson_order = int(lesson_order)
+        if lesson_order <= 0:
+            raise DesktopCourseError("invalid_lesson_order", status_code=422)
+        total = total_parts(level)
+        if not total or lesson_order > total:
+            raise DesktopCourseError("course_no_lesson_found", status_code=404)
+        access = await LessonAccessService(self.session).status(
+            user,
+            level=level,
+            lesson_order=lesson_order,
+            consume=False,
+        )
+        if not access["allowed"]:
+            raise DesktopCourseError(
+                access.get("error", "free_feature_limit_reached"),
+                status_code=403,
+                detail=access,
+            )
+        lesson = self._read_json(
+            COURSE_V3_DATA_ROOT / level / f"lesson_{lesson_order:02d}.json",
+            error_code="course_lesson_load_failed",
+        )
+        if (
+            str(lesson.get("level") or "").strip().lower() != level
+            or int(lesson.get("lesson_id") or 0) != lesson_order
+            or course_v3_lesson_card_count(lesson) <= 0
+        ):
+            raise DesktopCourseError("course_lesson_load_failed", status_code=500)
+        questions = []
+        for section_index, section in enumerate(lesson.get("sections") or [], start=1):
+            if not isinstance(section, dict):
+                continue
+            section_no = int(section.get("section_no") or section_index)
+            for card_no, card in enumerate(section.get("cards") or [], start=1):
+                if isinstance(card, dict) and card.get("type") in _SKIP_CHOICE_TYPES:
+                    questions.append({
+                        "material_ref": f"lesson:{level}:{lesson_order}:section:{section_no}:card:{card_no}",
+                        "card": card,
+                    })
+        # Native lesson cards also include a checkpoint's versioned exit ticket.
+        ticket = lesson.get("exit_ticket") or {}
+        for card_no, card in enumerate(ticket.get("cards") or [], start=1):
+            if isinstance(card, dict) and card.get("type") in {"choice", "listen_choice"}:
+                questions.append({
+                    "material_ref": f"lesson:{level}:{lesson_order}:section:99:card:{card_no}",
+                    "card": card,
+                })
+        return {
+            "ok": True,
+            "level": level,
+            "lesson_order": lesson_order,
+            "questions": questions,
+        }
+
+    async def unlock_lesson(
+        self,
+        access_token: str,
+        *,
+        lesson_order: int,
+        score: int,
+        expected_level: str | None = None,
+    ) -> dict[str, Any]:
+        await self._require_foundation_complete(access_token)
+        return await super().unlock_lesson(
+            access_token,
+            lesson_order=lesson_order,
+            score=score,
+            expected_level=expected_level,
         )
 
     async def complete(

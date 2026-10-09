@@ -355,16 +355,16 @@ def test_hsk30_release_reminder_is_centered_and_precedes_app_open_ad(page):
     )
     page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
 
-    dialog = page.get_by_role("dialog", name="HSK 3.0 ni ochish")
+    dialog = page.get_by_role("dialog", name="HSK 3.0 ni oching")
     expect(dialog).to_be_visible(timeout=6_000)
-    expect(dialog).to_contain_text("HSK 3.0 versiyasida HSK 1–3 yangi darsliklari bor.")
+    expect(dialog).to_contain_text("Yangi darsliklar asosidagi kursni boshlang.")
     centered = page.locator("#sheet .si").evaluate(
         "node => Math.abs((node.getBoundingClientRect().top + node.getBoundingClientRect().bottom) / 2 - innerHeight / 2)"
     )
     assert centered < 8
     assert app_open_ad_requests == []
 
-    page.locator("#sheet .sec").click()
+    dialog.get_by_role("button", name="HSK 2.0 da qolish").click()
     expect(page.locator("#sheet")).not_to_have_class(re.compile(r"\bon\b"))
 
 

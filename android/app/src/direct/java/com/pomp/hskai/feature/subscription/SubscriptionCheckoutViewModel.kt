@@ -22,6 +22,8 @@ import com.pomp.hskai.data.repository.FeatureRepository
 import java.io.ByteArrayOutputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -138,17 +140,25 @@ class SubscriptionCheckoutViewModel(
     private val onPendingPayment: (Int) -> Unit = {},
     private val savedRegion: suspend () -> String? = { null },
     private val saveRegion: suspend (String) -> Unit = {},
-    private val onProvisionalAccess: () -> Unit = {},
 ) : ViewModel() {
     private val _state = MutableStateFlow(SubscriptionCheckoutState())
     val state = _state.asStateFlow()
+    private val _provisionalAccess = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    // Navigation belongs to the currently displayed host, not this session-owned model.
+    val provisionalAccess = _provisionalAccess.asSharedFlow()
     private var receiptDataUrl: String? = null
     private var quoteGeneration = 0
+    private var checkoutGeneration = 0
+    private var receiptGeneration = 0
+    private var submitInFlight = false
 
     fun load() {
+        val generation = ++checkoutGeneration
         quoteGeneration++
         clearReceipt()
-        _state.update { it.copy(loading = true, quoting = false, errorRes = null, quote = null,
+        _state.update { it.copy(loading = true, overview = null, discount = null,
+            quoting = false, errorRes = null, quote = null, discountStarting = false,
+            currencySaving = false, currencyDialogOpen = false, currencyDialogRequired = false,
             submitted = false, alreadyPending = false, pendingPaymentId = 0,
             provisionalAccess = false, paymentDecision = "", checkingPaymentStatus = false,
             paymentStatusMessageRes = null) }
@@ -156,6 +166,7 @@ class SubscriptionCheckoutViewModel(
             // A region confirmed earlier opens checkout on the plans, like the Mini App.
             val remembered = runCatching { savedRegion() }.getOrNull()
             val overviewResult = repository.checkoutOverview(origin)
+            if (generation != checkoutGeneration) return@launch
             when (overviewResult) {
                 is ApiResult.Success -> {
                     val data = overviewResult.value
@@ -202,6 +213,7 @@ class SubscriptionCheckoutViewModel(
     }
 
     fun chooseRegion(region: String) {
+        if (submitInFlight) return
         val current = _state.value
         val prices = current.overview?.prices ?: return
         if (region !in availableRegions(prices) || region == current.region) return
@@ -226,6 +238,7 @@ class SubscriptionCheckoutViewModel(
     }
 
     fun chooseCurrency(currency: String) {
+        if (submitInFlight) return
         val current = _state.value
         if (current.currencySaving || currency !in SUBSCRIPTION_DISPLAY_CURRENCIES) return
         if (!current.currencyDialogRequired && current.overview?.preferredCurrency == currency) {
@@ -233,8 +246,11 @@ class SubscriptionCheckoutViewModel(
             return
         }
         _state.update { it.copy(currencySaving = true, currencyErrorRes = null) }
+        val generation = checkoutGeneration
         viewModelScope.launch {
-            when (val result = repository.updateSubscriptionCurrencyPreference(currency)) {
+            val result = repository.updateSubscriptionCurrencyPreference(currency)
+            if (generation != checkoutGeneration) return@launch
+            when (result) {
                 is ApiResult.Success -> {
                     val response = result.value
                     // The preference endpoint returns subscription prices. A permanent
@@ -242,6 +258,7 @@ class SubscriptionCheckoutViewModel(
                     val productOverview = if (response.ok && response.currency == currency && current.isHsk30Unlock) {
                         (repository.checkoutOverview(origin) as? ApiResult.Success)?.value
                     } else null
+                    if (generation != checkoutGeneration) return@launch
                     val prices = if (current.isHsk30Unlock) productOverview?.prices.orEmpty() else response.prices
                     val hasPrices = prices.values.any { it.containsKey(current.plan) }
                     val productMatches = !current.isHsk30Unlock ||
@@ -283,6 +300,7 @@ class SubscriptionCheckoutViewModel(
     }
 
     fun choosePlan(plan: String) {
+        if (submitInFlight) return
         val current = _state.value
         if (current.overview?.prices?.get(current.method)?.containsKey(plan) != true) return
         quoteGeneration++
@@ -292,6 +310,7 @@ class SubscriptionCheckoutViewModel(
 
     /** China's wallet: Alipay or WeChat Pay. */
     fun chooseMethod(method: String) {
+        if (submitInFlight) return
         val current = _state.value
         val prices = current.overview?.prices ?: return
         if (method !in CHINA_METHODS || prices[method].isNullOrEmpty()) return
@@ -303,6 +322,7 @@ class SubscriptionCheckoutViewModel(
 
     /** A Tajik card: Dushanbe City or Alif. */
     fun chooseBank(bank: String) {
+        if (submitInFlight) return
         if (bank !in CARD_BANKS) return
         quoteGeneration++
         clearReceipt()
@@ -310,6 +330,7 @@ class SubscriptionCheckoutViewModel(
     }
 
     fun next() {
+        if (submitInFlight) return
         val current = _state.value
         val overview = current.overview ?: return
         if (current.loading || current.quoting || overview.checkoutAllowed != true) return
@@ -369,8 +390,11 @@ class SubscriptionCheckoutViewModel(
     fun startDiscount() {
         if (_state.value.discountStarting) return
         _state.update { it.copy(discountStarting = true, errorRes = null) }
+        val generation = checkoutGeneration
         viewModelScope.launch {
-            when (val result = repository.checkoutDiscountStart()) {
+            val result = repository.checkoutDiscountStart()
+            if (generation != checkoutGeneration) return@launch
+            when (result) {
                 is ApiResult.Success -> _state.update { it.copy(discountStarting = false,
                     discount = result.value.discount,
                     errorRes = if (result.value.ok) null else R.string.sub_unavailable) }
@@ -381,14 +405,24 @@ class SubscriptionCheckoutViewModel(
         }
     }
 
-    fun selectReceipt(context: Context, uri: Uri?) {
-        if (uri == null) return
+    fun receiptSelectionToken(): Int? = receiptGeneration.takeIf {
+        !submitInFlight && !_state.value.loading && _state.value.quote != null
+    }
+
+    fun selectReceipt(context: Context, uri: Uri?, selectionToken: Int? = null) {
+        if (selectionToken != null && selectionToken != receiptGeneration) return
+        if (uri == null || submitInFlight || _state.value.quote == null) return
+        clearReceipt()
+        val generation = receiptGeneration
         _state.update { it.copy(errorRes = null, receiptNoteRes = null) }
         viewModelScope.launch {
-            val prepared = withContext(Dispatchers.IO) { prepareReceipt(context, uri) }
+            val (prepared, name) = withContext(Dispatchers.IO) {
+                prepareReceipt(context, uri) to receiptName(context, uri)
+            }
+            if (generation != receiptGeneration) return@launch
             receiptDataUrl = prepared?.first
             _state.update { it.copy(
-                receiptName = if (prepared != null) receiptName(context, uri) else "",
+                receiptName = if (prepared != null) name else "",
                 receiptBytes = prepared?.second ?: 0,
                 receiptNoteRes = if (prepared == null) R.string.sub_receipt_invalid else null,
             ) }
@@ -399,24 +433,35 @@ class SubscriptionCheckoutViewModel(
     fun submit() {
         val current = _state.value
         val receipt = receiptDataUrl
-        if (current.submitting || current.quote == null || receipt == null) {
+        if (submitInFlight || current.loading || current.quote == null || receipt == null) {
             if (receipt == null) _state.update { it.copy(receiptNoteRes = R.string.sub_receipt_invalid) }
             return
         }
+        submitInFlight = true
+        val generation = checkoutGeneration
         _state.update { it.copy(submitting = true, errorRes = null) }
         viewModelScope.launch {
-            when (val result = repository.checkoutSubmit(SubscriptionSubmitRequest(
+            val result = repository.checkoutSubmit(SubscriptionSubmitRequest(
                 planType = current.plan, paymentMethod = current.method,
                 cardCountry = current.country.takeIf { current.method == "visa" },
                 cardBank = current.cardBank,
                 screenshotDataUrl = receipt, attemptId = current.overview?.attemptId,
-            ))) {
+            ))
+            submitInFlight = false
+            // A server payment may already exist even after its host was closed.
+            if (result is ApiResult.Success && result.value.ok && result.value.status == "pending" &&
+                result.value.paymentId > 0) onPendingPayment(result.value.paymentId)
+            if (generation != checkoutGeneration) {
+                _state.update { it.copy(submitting = false) }
+                load()
+                return@launch
+            }
+            when (result) {
                 is ApiResult.Success -> {
                     val success = result.value.ok && result.value.status == "pending"
                     val provisional = success && current.isHsk30Unlock && result.value.provisionalAccess
                     if (success) {
                         clearReceipt()
-                        if (result.value.paymentId > 0) onPendingPayment(result.value.paymentId)
                     }
                     _state.update { it.copy(submitting = false, submitted = success,
                         alreadyPending = result.value.alreadyPending,
@@ -427,7 +472,7 @@ class SubscriptionCheckoutViewModel(
                         paymentStatusMessageRes = null,
                         step = if (success) CheckoutStep.DONE else it.step,
                         errorRes = if (success) null else R.string.sub_unavailable) }
-                    if (provisional && !result.value.alreadyPending) onProvisionalAccess()
+                    if (provisional && !result.value.alreadyPending) _provisionalAccess.tryEmit(Unit)
                 }
                 is ApiResult.Failure -> _state.update {
                     it.copy(submitting = false, errorRes = result.error.messageRes)
@@ -442,8 +487,11 @@ class SubscriptionCheckoutViewModel(
         _state.update {
             it.copy(checkingPaymentStatus = true, paymentStatusMessageRes = null, errorRes = null)
         }
+        val generation = checkoutGeneration
         viewModelScope.launch {
-            when (val result = repository.checkoutPaymentStatus(paymentId)) {
+            val result = repository.checkoutPaymentStatus(paymentId)
+            if (generation != checkoutGeneration || _state.value.pendingPaymentId != paymentId) return@launch
+            when (result) {
                 is ApiResult.Success -> {
                     val status = result.value
                     if (!status.ok || status.paymentId != paymentId ||
@@ -492,6 +540,7 @@ class SubscriptionCheckoutViewModel(
     }
 
     private fun clearReceipt() {
+        receiptGeneration++
         receiptDataUrl = null
         _state.update { it.copy(receiptName = "", receiptBytes = 0) }
     }
@@ -502,7 +551,6 @@ class SubscriptionCheckoutViewModel(
         private val onPendingPayment: (Int) -> Unit = {},
         private val savedRegion: suspend () -> String? = { null },
         private val saveRegion: suspend (String) -> Unit = {},
-        private val onProvisionalAccess: () -> Unit = {},
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
@@ -512,7 +560,6 @@ class SubscriptionCheckoutViewModel(
                 onPendingPayment,
                 savedRegion,
                 saveRegion,
-                onProvisionalAccess,
             ) as T
     }
 
