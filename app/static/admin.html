@@ -988,7 +988,84 @@ body.locked .mobile-nav{pointer-events:none}
  #v2SystemEditor .v2-system-editor-content>.panel{grid-template-columns:minmax(0,1fr)}
 }
 @media(max-width:760px){#v2SystemEditor .mcard{padding:17px}}
-</style>
+
+/* Complete analytics archive: modern disclosure UI, original metric sources. */
+.v2-details-pane{min-width:0}
+.v2-details-pane>.v2-simple-head{margin-bottom:16px}
+.v2-legacy-intro{
+ display:grid;gap:7px;margin-bottom:16px;padding:17px 19px;border-radius:15px;
+ background:linear-gradient(110deg,rgba(62,100,132,.18),rgba(230,93,79,.065));
+ border:1px solid rgba(144,182,212,.23);font-size:12px;line-height:1.65;color:#b6c7d9
+}
+.v2-legacy-intro strong{color:#eaf1fa;font-size:13px}
+.v2-legacy-quality{
+ padding:12px 15px;margin-bottom:15px;border:1px solid var(--line);
+ border-radius:12px;color:#a8bcd0;font-size:12px;line-height:1.5;
+ overflow-wrap:anywhere
+}
+.v2-legacy-group{
+ min-width:0;margin-bottom:14px;border-radius:17px;
+ background:linear-gradient(150deg,#172433,#121c28);
+ border:1px solid rgba(148,184,213,.23);
+ box-shadow:0 14px 42px rgba(0,0,0,.13),inset 0 1px 0 rgba(255,255,255,.035);
+ overflow:hidden
+}
+.v2-legacy-group>summary{
+ list-style:none;cursor:pointer;min-height:75px;padding:19px 21px;
+ display:flex;align-items:center;justify-content:space-between;gap:16px;
+ color:#f0f5fb
+}
+.v2-legacy-group>summary::-webkit-details-marker{display:none}
+.v2-legacy-group>summary span:first-child{display:grid;gap:6px;min-width:0}
+.v2-legacy-group>summary strong{font-size:15px;letter-spacing:-.018em}
+.v2-legacy-group>summary small{font-size:12px;line-height:1.45;color:#99aec3;font-weight:500}
+.v2-legacy-group>summary span:last-child{
+ display:grid;place-items:center;flex:none;border-radius:10px;
+ width:34px;height:34px;background:#263647;font-size:20px;
+ color:#eaaa9f;transition:transform .2s ease
+}
+.v2-legacy-group[open]>summary{border-bottom:1px solid rgba(145,179,212,.19)}
+.v2-legacy-group[open]>summary span:last-child{transform:rotate(180deg)}
+.v2-legacy-group-body{padding:18px 20px 8px;min-width:0}
+.v2-details-pane .block{
+ min-width:0;max-width:100%;padding:19px;
+ margin-bottom:14px;overflow-x:auto;
+ border-radius:14px;border-color:rgba(149,184,214,.2);
+ background:linear-gradient(135deg,#1a2838,#162130)
+}
+.v2-details-pane .block-head{align-items:flex-start}
+.v2-details-pane .block-head h3{font-size:14px;color:#f2f6fd;line-height:1.4}
+.v2-details-pane .block-head p{font-size:12px;line-height:1.55;color:#a8b8cd}
+.v2-details-pane .explain{
+ background:#172333;border-color:rgba(128,162,198,.24);
+ color:#bacbdd;line-height:1.65;font-size:12px
+}
+.v2-details-pane .grid.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.v2-details-pane .stat{min-height:105px}
+.v2-details-pane .bar{
+ height:auto;display:grid;grid-template-columns:minmax(96px,.85fr) minmax(0,1fr) 46px;
+ align-items:center;gap:10px;margin:10px 0;
+ background:transparent;border-radius:0;overflow:visible;
+ color:#aebfd1;font-size:12px;line-height:1.45
+}
+.v2-details-pane .bar .track{min-width:0;background:#2c3b4d;height:9px;border-radius:999px;overflow:hidden}
+.v2-details-pane .bar .track>span{display:block;height:100%;background:linear-gradient(90deg,#e6695b,#8db7ee)}
+.v2-details-pane .bar>b{text-align:right;color:#f4f7fb;font-variant-numeric:tabular-nums}
+.v2-details-pane .tbl{min-width:450px;width:100%;font-size:12px}
+.v2-details-pane .tbl th,.v2-details-pane .tbl td{padding:10px 12px}
+.v2-details-pane .dtitle-sm{margin-top:8px}
+.v2-details-pane #reportText{max-width:100%;overflow-wrap:anywhere;white-space:pre-wrap}
+@media(max-width:760px){
+ .v2-legacy-group>summary{padding:17px 15px;min-height:72px}
+ .v2-legacy-group>summary strong{font-size:14px}
+ .v2-legacy-group-body{padding:14px 12px 2px}
+ .v2-details-pane .block{padding:15px}
+ .v2-details-pane .bar{grid-template-columns:minmax(74px,.9fr) minmax(0,1fr) 38px;font-size:11px;gap:6px}
+ .v2-details-pane .grid.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .v2-details-pane .tbl{min-width:400px}
+}
+
+  </style>
 </head>
 <body>
   <div id="loading" class="state">
