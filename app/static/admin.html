@@ -1627,18 +1627,18 @@ body.locked .mobile-nav{pointer-events:none}
       const entrySources=(promotion.entry_funnel&&promotion.entry_funnel.by_source)||{};
       const ai=snapshot.ai_pack||{}, sync=snapshot.sync||{}, updates=snapshot.updates||{}, versions=snapshot.versions||{};
       $("desktopCards").innerHTML=[
-        {label:"Tasdiqlangan first-open",value:desktopUsers(funnel,"verified_first_open"),note:"yuklash emas",tone:"good"},
-        {label:"Desktop DAU",value:Number(active.dau||0),note:"so'nggi 24 soat",tone:"info"},
-        {label:"Desktop WAU",value:Number(active.wau||0),note:"so'nggi 7 kun",tone:"info"},
-        {label:"Desktop MAU",value:Number(active.mau||0),note:"so'nggi 30 kun",tone:"good"}
+        {label:"Иловани биринчи марта очганлар",value:desktopUsers(funnel,"verified_first_open"),note:"Ҳақиқий очиш тасдиқланган",tone:"good"},
+        {label:"Desktop: 1 кунда фаол",value:Number(active.dau||0),note:"Охирги 24 соат",tone:"info"},
+        {label:"Desktop: 7 кунда фаол",value:Number(active.wau||0),note:"so'nggi 7 kun",tone:"info"},
+        {label:"Desktop: 30 кунда фаол",value:Number(active.mau||0),note:"so'nggi 30 kun",tone:"good"}
       ].map(cardHtml).join("");
 
       const steps=[
-        ["So'rov",desktopUsers(funnel,"download_requested")],
-        ["Yuklash/ulashish ochildi",desktopUsers(funnel,"download_started")],
-        ["Fayl URL ochildi",desktopUsers(funnel,"link_clicked")],
-        ["Akkaunt ulandi",desktopUsers(funnel,"session_linked")],
-        ["First open",desktopUsers(funnel,"verified_first_open")]
+        ["Юклаш сўрови",desktopUsers(funnel,"download_requested")],
+        ["Юклаш ёки улашиш ойнаси очилди",desktopUsers(funnel,"download_started")],
+        ["Файл ҳаволаси очилди",desktopUsers(funnel,"link_clicked")],
+        ["Аккаунт уланди",desktopUsers(funnel,"session_linked")],
+        ["Биринчи марта очилди",desktopUsers(funnel,"verified_first_open")]
       ];
       const maxStep=Math.max.apply(null,steps.map(x=>x[1]).concat([1]));
       $("desktopFunnel").innerHTML=steps.map(x=>`<div class="bar"><span>${esc(x[0])}</span><div class="track"><span style="width:${Math.round(x[1]/maxStep*100)}%"></span></div><b>${x[1]}</b></div>`).join("");
@@ -1723,24 +1723,24 @@ body.locked .mobile-nav{pointer-events:none}
         return source==="android_subscription"||source.startsWith("android_");
       });
       const androidCards=[
-        {label:"O'rnatilgan",value:num(reg.installed_devices),note:num(reg.installed_users)+" user · hozir ulangan",tone:"good"},
-        {label:"Bugun ishlatgan",value:num(active.dau),note:"user",tone:"info"},
-        {label:"7 kunda ishlatgan",value:num(active.wau),note:"user",tone:"info"},
-        {label:"30 kunda ishlatgan",value:num(active.mau),note:"user",tone:"good"}
+        {label:"Ҳозир уланган телефонлар",value:num(reg.installed_devices),note:num(reg.installed_users)+" user · hozir ulangan",tone:"good"},
+        {label:"Бугун ишлатганлар",value:num(active.dau),note:"user",tone:"info"},
+        {label:"7 кунда ишлатганлар",value:num(active.wau),note:"user",tone:"info"},
+        {label:"30 кунда ишлатганлар",value:num(active.mau),note:"user",tone:"good"}
       ];
       if(androidBiz){
         androidCards.push(
-          {label:"Android pullik",value:num(androidBiz.paying_users),note:num(androidBiz.payments)+" tasdiqlangan to'lov",tone:"good"},
-          {label:"Android tushum",value:androidBiz.revenue_text||"$0.00",note:num(androidBiz.entry_users)+" user obunani ochgan",tone:"info"}
+          {label:"Android: тўлов қилганлар",value:num(androidBiz.paying_users),note:num(androidBiz.payments)+" tasdiqlangan to'lov",tone:"good"},
+          {label:"Android: тасдиқланган тушум",value:androidBiz.revenue_text||"$0.00",note:num(androidBiz.entry_users)+" user obunani ochgan",tone:"info"}
         );
       }
       $("androidCards").innerHTML=androidCards.map(cardHtml).join("");
 
       const steps=[
-        ["APK so'raldi",stage("apk_requested")],
-        ["APK olgan",stage("apk_sent")],
-        ["Akkaunt ulagan",stage("session_linked")],
-        ["Birinchi marta ochgan",stage("first_open")]
+        ["APK сўралган",stage("apk_requested")],
+        ["APK юборилган",stage("apk_sent")],
+        ["Аккаунт боғлаган",stage("session_linked")],
+        ["Биринчи марта очган",stage("first_open")]
       ];
       const maxStep=Math.max.apply(null,steps.map(x=>x[1]).concat([1]));
       $("androidFunnel").innerHTML=steps.map(x=>`<div class="bar"><span>${esc(x[0])}</span><div class="track"><span style="width:${Math.round(x[1]/maxStep*100)}%"></span></div><b>${x[1]}</b></div>`).join("");
@@ -1861,7 +1861,7 @@ body.locked .mobile-nav{pointer-events:none}
       const quality=(state.overview&&state.overview.data_quality)||{};
       const qualityRows=quality.rows||[];
       $("dataQuality").textContent=qualityRows.length
-        ? "Oxirgi DB yozuvi · "+qualityRows.map(row=>`${row.label}: ${row.status==="no_data"?"no data":row.last_at}`).join(" · ")
+        ? "Маълумот янгиланган сана · "+qualityRows.map(row=>`${row.label}: ${row.status==="no_data"?"no data":row.last_at}`).join(" · ")
         : "Data freshness ma'lumoti kelmadi.";
       renderAdvanced(orep);
       renderClientDevices();
@@ -1899,11 +1899,11 @@ body.locked .mobile-nav{pointer-events:none}
           : "<p class='empty'>Bu davrda client attribution yo'q.</p>";
         $("clientBusinessExplain").textContent = cb.explain || "";
         $("financeCards").innerHTML = [
-          {label:"Daromad",value:fp.finance.revenue_text,note:fp.unit.approved_count+" ta to'lov",tone:"info"},
-          {label:"AI model estimate",value:fp.finance.ai_cost_text,note:"invoice emas · "+fp.finance.ai_share_pct+"%",tone:"warn"},
-          {label:"Qo'lda foyda",value:fp.finance.manual_profit_text||"$0.00",note:"portfel",tone:"good"},
-          {label:"Portfel rasxod",value:fp.finance.expense_text,note:"qo'lda kiritilgan",tone:"warn"},
-          {label:"Kuzatilgan net",value:fp.finance.net_text,note:"tracked marja "+fp.finance.margin_pct+"%",tone:fp.finance.net_positive?"good":"danger"}
+          {label:"Обуна тушуми",value:fp.finance.revenue_text,note:fp.unit.approved_count+" ta to'lov",tone:"info"},
+          {label:"AI сарфи (тахмин)",value:fp.finance.ai_cost_text,note:"invoice emas · "+fp.finance.ai_share_pct+"%",tone:"warn"},
+          {label:"Қўлда киритилган фойда",value:fp.finance.manual_profit_text||"$0.00",note:"portfel",tone:"good"},
+          {label:"Қўлда киритилган харажат",value:fp.finance.expense_text,note:"qo'lda kiritilgan",tone:"warn"},
+          {label:"Кузатилган натижа (тахмин)",value:fp.finance.net_text,note:"tracked marja "+fp.finance.margin_pct+"%",tone:fp.finance.net_positive?"good":"danger"}
         ].map(cardHtml).join("");
         $("financeExplain").innerHTML = esc(fp.finance.explain);
         $("aiUsageBreakdown").innerHTML = (fp.finance.ai_usage||[]).map(i=>`
@@ -1911,22 +1911,22 @@ body.locked .mobile-nav{pointer-events:none}
           <p>${esc(i.requests)} so'rov · ${esc(i.tokens)} token</p></div>
           <b>${esc(i.cost_text)}</b></div>`).join("");
         $("unitCards").innerHTML = [
-          {label:"ARPU",value:fp.unit.arpu_text,note:(fp.unit.arpu_users||0)+(fp.key==="all_time"?" jami":" faol user"),tone:"info"},
-          {label:"ARPPU",value:fp.unit.arppu_text,note:"har pullik",tone:"good"},
-          {label:"O'rtacha chek",value:fp.unit.avg_check_text,note:"har to'lov",tone:"info"},
-          {label:"Pullik",value:fp.unit.paying_users,note:"shu davrdagi payer",tone:"good"}
+          {label:"ARPU — барчага ўртача тушум",value:fp.unit.arpu_text,note:(fp.unit.arpu_users||0)+(fp.key==="all_time"?" jami":" faol user"),tone:"info"},
+          {label:"ARPPU — тўловчига ўртача тушум",value:fp.unit.arppu_text,note:"har pullik",tone:"good"},
+          {label:"Битта тўловнинг ўртача суммаси",value:fp.unit.avg_check_text,note:"har to'lov",tone:"info"},
+          {label:"Пул тўлаганлар",value:fp.unit.paying_users,note:"shu davrdagi payer",tone:"good"}
         ].map(cardHtml).join("");
         $("unitExplain").innerHTML = esc(fp.unit.explain);
         const r=fp.retention;
         $("retentionCards").innerHTML = [
-          {label:"Yangi to'lov",value:r.new_paying,note:"birinchi marta",tone:"info"},
-          {label:"Yangilash",value:r.renewals,note:"qayta to'lov",tone:"good"},
+          {label:"Биринчи марта тўлаганлар",value:r.new_paying,note:"birinchi marta",tone:"info"},
+          {label:"Обунани қайта тўлаганлар",value:r.renewals,note:"qayta to'lov",tone:"good"},
           (fp.key==="all_time"
-            ? {label:"Ever yangilagan",value:(r.ever_renewed_share_pct==null?"—":r.ever_renewed_share_pct+"%"),note:"ever payer ichida",tone:"good"}
-            : {label:"Yangilash ulushi",value:r.renewal_share_pct+"%",note:"payment ulushi",tone:"good"}),
+            ? {label:"Бирор марта узайтирганлар",value:(r.ever_renewed_share_pct==null?"—":r.ever_renewed_share_pct+"%"),note:"ever payer ichida",tone:"good"}
+            : {label:"Қайта тўловлар улуши",value:r.renewal_share_pct+"%",note:"payment ulushi",tone:"good"}),
           (fp.key==="all_time"
-            ? {label:"Hozir inactive payer",value:(r.inactive_paid_share_pct==null?"—":r.inactive_paid_share_pct+"%"),note:"cohort churn emas",tone:"danger"}
-            : {label:"Faol obuna",value:r.active_paid_now,note:"hozir to'lovli",tone:"good"})
+            ? {label:"Ҳозир обунаси тугаган тўловчилар",value:(r.inactive_paid_share_pct==null?"—":r.inactive_paid_share_pct+"%"),note:"cohort churn emas",tone:"danger"}
+            : {label:"Ҳозир фаол обуналар",value:r.active_paid_now,note:"hozir to'lovli",tone:"good"})
         ].map(cardHtml).join("");
         $("retentionExplain").innerHTML = esc(r.explain);
         const sp = fp.sources_paid||[];
