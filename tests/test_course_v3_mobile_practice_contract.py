@@ -26,6 +26,14 @@ class CourseMobilePracticeContractTests(unittest.TestCase):
     def test_russian_question_does_not_force_chinese_serif(self):
         self.assertIn('qask\'+(/[\\u3400-\\u9fff]/.test(p)?" han":"")+', SOURCE)
 
+    def test_preparing_asset_failure_does_not_block_practice(self):
+        self.assertIn("function renderStudyPreparing(){", SOURCE)
+        self.assertIn('typeof window.HSKStudyPreparing.render==="function"', SOURCE)
+        self.assertIn('class="hsk-study-preparing"', SOURCE)
+        # Four practice/lesson startup sites are protected by the same fallback.
+        self.assertEqual(SOURCE.count("'+renderStudyPreparing()"), 2)
+        self.assertEqual(SOURCE.count('=renderStudyPreparing();'), 2)
+
     def test_hsk30_practice_rechecks_stale_denial(self):
         start = SOURCE.index("  show:function(s){")
         end = SOURCE.index("    var previous=SCREEN;", start)
