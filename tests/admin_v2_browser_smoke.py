@@ -436,6 +436,12 @@ def main():
             }""")
             assert iphone.evaluate("parseFloat(getComputedStyle(document.body).paddingTop)>=92"), "Telegram dynamic safe top not applied"
             assert iphone.evaluate("parseFloat(getComputedStyle(document.querySelector('.mobile-nav')).bottom)>=35"), "Telegram dynamic bottom inset missing"
+            iphone.evaluate("window.scrollTo(0, 0)")
+            assert iphone.evaluate("""() => {
+                const bar=document.querySelector('.workspace .topbar').getBoundingClientRect();
+                const eyebrow=document.querySelector('#v2Eyebrow').getBoundingClientRect();
+                return bar.top >= 90 && eyebrow.top >= bar.bottom - 1;
+            }"""), "Page title hidden behind sticky Telegram-safe header"
             iphone.screenshot(path=str(output / "admin-v2-telegram-safe-dashboard-390.png"), full_page=False)
             iphone.locator('.mobile-nav [data-tab="statistics"]').click()
             iphone.locator('#statistics [data-v2-sub="statistics:platform"]').click()
