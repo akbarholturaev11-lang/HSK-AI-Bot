@@ -166,6 +166,44 @@
     .hint{font-size:11.5px;font-weight:600;color:var(--muted);line-height:1.45}
     .hint b{color:var(--ink)}
     .danger-note{border:1px solid rgba(251,113,133,.35);background:var(--red-soft);color:#fecdd3;border-radius:11px;padding:11px 13px;font-size:12px;font-weight:700;line-height:1.45}
+
+    /* Reklama umumiy sozlamalari: asosiy formadan alohida glass-card modal. */
+    .ad-hub-heading{align-items:center}
+    .ad-hub-heading>div{min-width:0}
+    .ad-settings-trigger{flex:none;width:44px;height:44px;display:grid;place-items:center;border-radius:13px;
+      border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:22px;
+      box-shadow:0 3px 12px rgba(0,0,0,.18);transition:background .18s,transform .18s}
+    .ad-settings-trigger:active{transform:scale(.95);background:var(--surface-2)}
+    .ad-settings-trigger:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+    body.ads-dialog-open{overflow:hidden}
+    .ad-rules-backdrop{position:fixed;inset:0;z-index:70;background:rgba(3,8,18,.74);
+      backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);display:flex;align-items:center;justify-content:center;
+      padding:calc(14px + var(--safe-top)) 12px calc(14px + var(--safe-bottom))}
+    .ad-rules-dialog{width:min(100%,540px);max-height:100%;display:flex;flex-direction:column;overflow:hidden;
+      border:1px solid rgba(148,163,184,.25);border-radius:22px;
+      background:linear-gradient(165deg,#222c3b 0%,#171d28 52%,#151b25 100%);
+      box-shadow:0 26px 90px rgba(0,0,0,.64)}
+    .ad-rules-dialog-header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;
+      padding:18px 18px 15px;border-bottom:1px solid var(--line)}
+    .ad-rules-dialog-heading{display:flex;gap:11px;align-items:center;min-width:0}
+    .ad-rules-dialog-icon{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
+      font-size:21px;background:var(--accent-soft);border:1px solid rgba(59,130,246,.18)}
+    .ad-rules-dialog-heading h2{font-size:16px;font-weight:850;line-height:1.3}
+    .ad-rules-dialog-heading p{font-size:11.5px;line-height:1.4;color:var(--muted);margin-top:4px}
+    .ad-rules-dismiss{flex:none;width:36px;height:36px;border:1px solid var(--line);border-radius:11px;
+      background:var(--surface-2);font-size:18px;line-height:1}
+    .ad-rules-dismiss:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+    .ad-rules-dialog-body{min-height:0;overflow-y:auto;overscroll-behavior:contain;
+      -webkit-overflow-scrolling:touch;padding:14px 16px 17px}
+    .ad-rules-dialog-body .mcard{border-color:rgba(148,163,184,.15);padding:15px}
+    .ad-rules-dialog-footer{flex:none;display:flex;gap:10px;padding:12px 16px calc(12px + var(--safe-bottom));
+      border-top:1px solid var(--line);background:rgba(22,28,38,.98)}
+    .ad-rules-dialog-footer .btn{flex:1;min-width:0;height:47px}
+    @media(max-width:380px){
+      .ad-rules-dialog-header{padding:14px 13px 12px}
+      .ad-rules-dialog-body{padding:12px}
+      .ad-rules-dialog-footer{padding:10px 12px calc(10px + var(--safe-bottom))}
+    }
     /* Drawer */
     .scrim{position:fixed;inset:0;z-index:49;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s}
     .scrim.open{opacity:1;pointer-events:auto}
@@ -486,7 +524,12 @@
              reklama xabari bu yerdan CHIQARILDI — u Mini App rekalamasi
              emas, oммавий хабарнинг ukasi. -->
         <div class="sec" id="adHub">
-          <div class="sec-head"><div><div class="sec-title">📣 Reklama</div><div class="sec-note">Mini App ichidagi reklama. Avval nima qilmoqchi ekaningizni tanlang</div></div></div>
+          <div class="sec-head ad-hub-heading">
+            <div><div class="sec-title">📣 Reklama</div><div class="sec-note">Mini App ichidagi reklamalaringizni boshqaring</div></div>
+            <button type="button" class="ad-settings-trigger" id="adRulesGear" data-ad-rules-open
+              aria-label="Kurs reklamasi umumiy sozlamalarini ochish"
+              aria-haspopup="dialog" aria-controls="adRulesModal" title="Umumiy reklama sozlamalari">⚙️</button>
+          </div>
           <div class="chips" id="adHubTabs" style="margin-bottom:9px">
             <button class="chip active" data-adhub="kurs">🎬 Kurs reklamasi</button>
             <button class="chip" data-adhub="ilova">💻 Ilova reklamasi</button>
@@ -517,7 +560,6 @@
               <button class="btn" data-act="upload-ca">📎 Video yoki surat yuklash</button>
               <input id="caFile" type="file" accept="video/*,image/*" hidden>
             </div>
-            <div id="adPlacementsBox"><p class="empty">Yuklanmoqda…</p></div>
 
             <div class="sec-head" style="margin-top:14px"><div><div class="sec-title">📁 Yuklangan roliklar</div></div></div>
             <div class="chips" id="caLangFilter" style="margin-bottom:10px"></div>
@@ -528,6 +570,30 @@
         </div>
       </section>
     </main>
+  </div>
+
+  <!-- Reklama qoidalari uchun alohida, telefonda ham qulay dialog.
+       Rolik yaratish formasi va yuklangan reklamalar ostida katta sozlamalar yo'q. -->
+  <div id="adRulesModal" class="ad-rules-backdrop" hidden>
+    <section class="ad-rules-dialog" role="dialog" aria-modal="true"
+      aria-labelledby="adRulesTitle" aria-describedby="adRulesDescription" tabindex="-1">
+      <div class="ad-rules-dialog-header">
+        <div class="ad-rules-dialog-heading">
+          <div class="ad-rules-dialog-icon" aria-hidden="true">⚙️</div>
+          <div><h2 id="adRulesTitle">Reklama sozlamalari</h2>
+            <p id="adRulesDescription">Barcha kurs reklamalarining umumiy ko'rsatish qoidalari</p></div>
+        </div>
+        <button class="ad-rules-dismiss" type="button" data-ad-rules-close
+          aria-label="Sozlamalarni yopish">✕</button>
+      </div>
+      <div class="ad-rules-dialog-body">
+        <div id="adPlacementsBox"><p class="empty">Yuklanmoqda…</p></div>
+      </div>
+      <div class="ad-rules-dialog-footer">
+        <button class="btn sec" type="button" data-ad-rules-close>Bekor qilish</button>
+        <button class="btn" type="button" data-adplacesave>💾 Saqlash</button>
+      </div>
+    </section>
   </div>
 
   <div id="scrim" class="scrim" data-act="close-drawer"></div>
@@ -1737,6 +1803,34 @@
       if(advanced) advanced.hidden=!custom;
       if(standard) standard.hidden=custom;
     }
+    let adRulesFocusReturn=null;
+    function openAdRulesModal(){
+      const modal=$("adRulesModal");
+      if(!modal||state.adHub!=="kurs") return;
+      adRulesFocusReturn=document.activeElement;
+      modal.hidden=false;
+      document.body.classList.add("ads-dialog-open");
+      const close=modal.querySelector("[data-ad-rules-close]");
+      if(close) close.focus();
+      // Qayta ochilganda eski, saqlanmagan qiymatlar qolmasin.
+      // Sahifada allaqachon yuklangan server qoidalarini qayta ko'rsatamiz.
+      if(state.management){
+        panelTarget="adPlacementsBox";
+        try{renderAdPlacements(state.management);}
+        finally{panelTarget=null;}
+        caPlaceWarnUI();
+      }else openAdHub("kurs"); // Initial loading / retry
+    }
+    function closeAdRulesModal(){
+      const modal=$("adRulesModal");
+      if(!modal||modal.hidden)return;
+      modal.hidden=true;
+      document.body.classList.remove("ads-dialog-open");
+      if(adRulesFocusReturn&&adRulesFocusReturn.isConnected&&typeof adRulesFocusReturn.focus==="function")
+        adRulesFocusReturn.focus();
+      adRulesFocusReturn=null;
+      caPlaceWarnUI(); // Bekor qilingan, saqlanmagan kalit holatlari ta'sir qilmasin
+    }
     function renderAdPlacements(d){
       const cfg=(d.ad_placements||{}).placements||{};
       const choice=$("caPlacementBox");
@@ -1781,7 +1875,6 @@
             ${summary}
           </div>
         </div>
-        <button class="btn sec" data-adplacesave>💾 Sozlamalarni saqlash</button>
       </div>`);
       adRulesModeUI();
     }
@@ -2409,9 +2502,8 @@
       state.management=null;
       await loadData();
       if(m && $("drawer").classList.contains("open")) await openModule(m);
-      /* Panel «📣 Reklama» bo'limi ichida ochilgan bo'lsa, drawer yopiq —
-         o'sha yerda qayta chizamiz, aks holda admin saqlab bo'lib eski
-         qiymatlarga qarab turardi. */
+      /* Reklama umumiy qoidalari alohida modalga chiziladi. Saqlashdan
+         keyin serverdan yangilangan qiymatni qayta olib kelamiz. */
       else if(hub) await openAdHub(hub);
       toast(msg||"Saqlandi");
     }
@@ -2554,7 +2646,7 @@
         const chosen=!!caPlaceChosen[k];
         if(chosen) anyChosen=true;
         const warn=document.querySelector('[data-ca-place-warn="'+k+'"]');
-        const enabledControl=$("adOn_"+k);
+        const enabledControl=$("adRulesModal")&&!$("adRulesModal").hidden?$("adOn_"+k):null;
         const isEnabled=enabledControl?enabledControl.checked:!(caPlaceRules[k]&&caPlaceRules[k].enabled===false);
         if(warn) warn.hidden=!(chosen&&!isEnabled);
       });
@@ -2625,12 +2717,14 @@
     };
     async function openAdHub(key){
       state.adHub=AD_HUB[key]?key:"kurs";
+      if(state.adHub!=="kurs") closeAdRulesModal();
+      const gear=$("adRulesGear"); if(gear) gear.hidden=state.adHub!=="kurs";
       const cfg=AD_HUB[state.adHub];
       Object.keys(AD_HUB).forEach(k=>{ const el=$(AD_HUB[k].pane); if(el) el.hidden=(k!==state.adHub); });
       document.querySelectorAll("[data-adhub]").forEach(b=>b.classList.toggle("active",b.dataset.adhub===state.adHub));
       const note=$("adHubNote"); if(note) note.textContent=cfg.note;
-      /* Joy sozlamasi endi rolik formasi bilan BIR ekranda: u shu paneldagi
-         alohida qutiga chiziladi, drawer'ga emas. */
+      /* Umumiy joy qoidalari modal ichida. Reklama yaratiladigan
+         forma faqat shu rolikka tegishli joy tanlovini ko'rsatadi. */
       const host=state.adHub==="kurs" ? $("adPlacementsBox") : $(cfg.pane);
       if(state.adHub==="kurs") caTypeUI();
       if(!host) return;
@@ -2702,6 +2796,9 @@
       if((el=T("[data-umsg]"))){ state.drawerBack=(()=>openUser(el.dataset.umsg)); return renderUserMessage(el.dataset.umsg,el.dataset.uname); }
       if((el=T("[data-umsend]"))){ const text=($("umText").value||"").trim(); if(text.length<2){ toast("Matn juda qisqa"); return; } el.disabled=true; return apiPost("/api/admin-miniapp/users/message",{telegram_id:Number(el.dataset.umsend),text,translate:$("umTranslate").checked}).then(()=>{closeDrawer();toast("Xabar yuborildi");}).catch(x=>{toast(apiErr(x,"Xabar yuborilmadi"));el.disabled=false;}); }
       if((el=T("[data-uchat]"))) return openUserChat(el.dataset.uchat);
+      if((el=T("[data-ad-rules-open]"))) return openAdRulesModal();
+      if((el=T("[data-ad-rules-close]"))) return closeAdRulesModal();
+      if(e.target&&e.target.id==="adRulesModal") return closeAdRulesModal();
       if((el=T("[data-adhub]"))) return openAdHub(el.dataset.adhub);
       if((el=T("[data-module]"))){
         // `data-uback` bo'lsa bo'lim profil kontekstida ochiladi va orqaga
@@ -2749,7 +2846,7 @@
         });
         el.disabled=true;
         return apiPost("/api/admin-miniapp/ad-placements/save",{placements})
-          .then(()=>afterModule(custom?"Maxsus reklama sozlamalari saqlandi":"Standart reklama sozlamalari o'rnatildi"))
+          .then(async()=>{closeAdRulesModal();await afterModule(custom?"Maxsus reklama sozlamalari saqlandi":"Standart reklama sozlamalari o'rnatildi");})
           .catch(x=>{toast(apiErr(x,"Saqlanmadi"));el.disabled=false;});
       }
       if((el=T("[data-trial-risk-refresh]"))){
@@ -2827,7 +2924,22 @@
     });
     if($("caType")) $("caType").addEventListener("change",caTypeUI);
     openAdHub("kurs");
-    document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeDrawer(); });
+    document.addEventListener("keydown",(e)=>{
+      const modal=$("adRulesModal");
+      if(modal&&!modal.hidden){
+        if(e.key==="Escape"){e.preventDefault();closeAdRulesModal();return;}
+        if(e.key==="Tab"){
+          const items=[...modal.querySelectorAll('button:not([disabled]):not([hidden]),input:not([disabled]):not([hidden]),select:not([disabled]):not([hidden])')]
+            .filter(x=>x.getClientRects().length);
+          if(!items.length)return;
+          const first=items[0],last=items[items.length-1];
+          if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+          else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+        }
+        return;
+      }
+      if(e.key==="Escape") closeDrawer();
+    });
 
     async function saveChannel(payload,btn){ if(btn) btn.disabled=true; try{ await apiPost("/api/admin-miniapp/channels/save",payload); await afterModule("Kanal sozlamasi saqlandi"); }catch(e){ toast(apiErr(e,"Kanal saqlanmadi")); if(btn) btn.disabled=false; } }
 
