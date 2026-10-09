@@ -153,6 +153,10 @@ from app.services.course_sales_experiment_service import (
     SALES_EXPERIMENT_CLIENT_EVENTS,
     CourseSalesExperimentService,
 )
+from app.services.course_ad_translation_service import (
+    CourseAdTranslationError,
+    CourseAdTranslationService,
+)
 from app.services.course_ad_service import (
     COURSE_AD_ALLOWED_IMAGE_EXTENSIONS,
     COURSE_AD_ALLOWED_VIDEO_EXTENSIONS,
@@ -4817,6 +4821,24 @@ async def admin_miniapp_course_ads_upload(request: Request):
     if len(data) > COURSE_AD_MAX_UPLOAD_BYTES:
         return JSONResponse(status_code=400, content={"ok": False, "error": "media_too_large"})
 
+    language = CourseAdService.normalize_language(form.get("language"))
+    raw_title = str(form.get("title") or "").strip()
+    title = (raw_title or "Course ad")[:120]
+    button_text = CourseAdService.normalize_button_text(form.get("button_text"))
+    localized_copy = None
+    if language == "all":
+        # Admin tanlagan "Barcha tillar": asli TJ, qolgan ikkisi AI.
+        # Ikkala tarjima tayyor bo'lmasa, reklama yaratilmaydi: eskicha TJ
+        # matnini yangi RU/UZ tarjimasi deb ko'rsatish noto'g'ri bo'lar edi.
+        if not raw_title or len(raw_title) > 120:
+            return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_copy"})
+        try:
+            localized_copy = await CourseAdTranslationService().translate_from_tajik(
+                title=title, button_text=button_text
+            )
+        except CourseAdTranslationError:
+            return JSONResponse(status_code=503, content={"ok": False, "error": "ad_translation_unavailable"})
+
     try:
         # Surat qayta kodlanmaydi (ffmpeg kerak emas), video esa WebView uchun
         # xavfsiz MP4 ga o'giriladi — eski xatti-harakat o'zgarmaydi.
@@ -4837,12 +4859,9 @@ async def admin_miniapp_course_ads_upload(request: Request):
     except OSError:
         return JSONResponse(status_code=400, content={"ok": False, "error": "media_upload_failed"})
 
-    title = str(form.get("title") or "Course ad").strip()[:120] or "Course ad"
     duration_seconds = CourseAdService.normalize_duration(form.get("duration_seconds"))
     link_url = CourseAdService.normalize_link(form.get("link_url"))
-    language = CourseAdService.normalize_language(form.get("language"))
     ad_type = CourseAdService.normalize_ad_type(form.get("ad_type"))
-    button_text = CourseAdService.normalize_button_text(form.get("button_text"))
     # Yopish tugmasi vaqti va kunlik chegara bu yerdan OLIB TASHLANDI. Forma
     # ularni so'rardi, baza saqlardi, lekin ikkalasi ham hech qachon
     # ishlamasdi: reklama berilishidan oldin server `skip_after_seconds` ni
@@ -4866,6 +4885,7 @@ async def admin_miniapp_course_ads_upload(request: Request):
             language=language,
             ad_type=ad_type,
             button_text=button_text,
+            localized_copy=localized_copy,
             media_type=media_type,
             media_blob=media_backup,
             created_by_telegram_id=telegram_id,
@@ -4873,7 +4893,7 @@ async def admin_miniapp_course_ads_upload(request: Request):
         )
         await session.commit()
         payload = CourseAdService.payload(ad)
-    return JSONResponse(content={"ok": True, "ad": payload})
+    return JSONResponse(content={"ok": True, "ad": payload, "translation_status": "completed" if localized_copy else "not_required"})
 
 
 @app.post("/api/admin-miniapp/course-ads/toggle")
