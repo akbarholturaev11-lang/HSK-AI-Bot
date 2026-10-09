@@ -1812,7 +1812,14 @@
       document.body.classList.add("ads-dialog-open");
       const close=modal.querySelector("[data-ad-rules-close]");
       if(close) close.focus();
-      if(!$("adCustomMode")) openAdHub("kurs"); // Initial loading / retry
+      // Qayta ochilganda eski, saqlanmagan qiymatlar qolmasin.
+      // Sahifada allaqachon yuklangan server qoidalarini qayta ko'rsatamiz.
+      if(state.management){
+        panelTarget="adPlacementsBox";
+        try{renderAdPlacements(state.management);}
+        finally{panelTarget=null;}
+        caPlaceWarnUI();
+      }else openAdHub("kurs"); // Initial loading / retry
     }
     function closeAdRulesModal(){
       const modal=$("adRulesModal");
@@ -1822,6 +1829,7 @@
       if(adRulesFocusReturn&&adRulesFocusReturn.isConnected&&typeof adRulesFocusReturn.focus==="function")
         adRulesFocusReturn.focus();
       adRulesFocusReturn=null;
+      caPlaceWarnUI(); // Bekor qilingan, saqlanmagan kalit holatlari ta'sir qilmasin
     }
     function renderAdPlacements(d){
       const cfg=(d.ad_placements||{}).placements||{};
@@ -2494,9 +2502,8 @@
       state.management=null;
       await loadData();
       if(m && $("drawer").classList.contains("open")) await openModule(m);
-      /* Panel «📣 Reklama» bo'limi ichida ochilgan bo'lsa, drawer yopiq —
-         o'sha yerda qayta chizamiz, aks holda admin saqlab bo'lib eski
-         qiymatlarga qarab turardi. */
+      /* Reklama umumiy qoidalari alohida modalga chiziladi. Saqlashdan
+         keyin serverdan yangilangan qiymatni qayta olib kelamiz. */
       else if(hub) await openAdHub(hub);
       toast(msg||"Saqlandi");
     }
@@ -2639,7 +2646,7 @@
         const chosen=!!caPlaceChosen[k];
         if(chosen) anyChosen=true;
         const warn=document.querySelector('[data-ca-place-warn="'+k+'"]');
-        const enabledControl=$("adOn_"+k);
+        const enabledControl=$("adRulesModal")&&!$("adRulesModal").hidden?$("adOn_"+k):null;
         const isEnabled=enabledControl?enabledControl.checked:!(caPlaceRules[k]&&caPlaceRules[k].enabled===false);
         if(warn) warn.hidden=!(chosen&&!isEnabled);
       });
@@ -2716,8 +2723,8 @@
       Object.keys(AD_HUB).forEach(k=>{ const el=$(AD_HUB[k].pane); if(el) el.hidden=(k!==state.adHub); });
       document.querySelectorAll("[data-adhub]").forEach(b=>b.classList.toggle("active",b.dataset.adhub===state.adHub));
       const note=$("adHubNote"); if(note) note.textContent=cfg.note;
-      /* Joy sozlamasi endi rolik formasi bilan BIR ekranda: u shu paneldagi
-         alohida qutiga chiziladi, drawer'ga emas. */
+      /* Umumiy joy qoidalari modal ichida. Reklama yaratiladigan
+         forma faqat shu rolikka tegishli joy tanlovini ko'rsatadi. */
       const host=state.adHub==="kurs" ? $("adPlacementsBox") : $(cfg.pane);
       if(state.adHub==="kurs") caTypeUI();
       if(!host) return;
