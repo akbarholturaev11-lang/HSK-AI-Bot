@@ -369,7 +369,7 @@ def main():
             )
             iphone.wait_for_selector("#app:not([hidden])", timeout=8000)
             assert iphone.evaluate("window.__fullscreenRequests === 1"), "Admin did not request Telegram fullscreen"
-            assert iphone.evaluate("parseFloat(getComputedStyle(document.body).paddingTop)>=112"), "Fullscreen iPhone close-controls clearance missing"
+            assert iphone.evaluate("parseFloat(getComputedStyle(document.querySelector(".workspace")).paddingTop)>=112"), "Fullscreen iPhone close-controls clearance missing"
             assert iphone.evaluate("""() => {
                 const bar=document.querySelector('.workspace .topbar').getBoundingClientRect();
                 const nav=document.querySelector('.mobile-nav').getBoundingClientRect();
@@ -380,14 +380,14 @@ def main():
                 window.Telegram.WebApp.contentSafeAreaInset = {top:138,right:0,bottom:35,left:0};
                 window.__telegramEvents.contentSafeAreaChanged();
             }""")
-            assert iphone.evaluate("parseFloat(getComputedStyle(document.body).paddingTop)>=138"), "Telegram dynamic safe top not applied"
+            assert iphone.evaluate("parseFloat(getComputedStyle(document.querySelector(".workspace")).paddingTop)>=138"), "Telegram dynamic safe top not applied"
             assert iphone.evaluate("parseFloat(getComputedStyle(document.querySelector('.mobile-nav')).bottom)>=35"), "Telegram dynamic bottom inset missing"
             iphone.evaluate("window.scrollTo(0, 0)")
             print("Fullscreen geometry", iphone.evaluate("""() => {
                 const b=document.querySelector('.workspace .topbar').getBoundingClientRect();
                 const t=document.querySelector('#v2Eyebrow').getBoundingClientRect();
                 return {barTop:b.top,barBottom:b.bottom,titleTop:t.top,scrollY:window.scrollY,
-                  bodyTop:getComputedStyle(document.body).paddingTop,
+                  workspaceTop:getComputedStyle(document.querySelector('.workspace')).paddingTop,
                   stickyTop:getComputedStyle(document.querySelector('.workspace .topbar')).top,
                   full:document.documentElement.dataset.adminFullscreen};
             }"""))
