@@ -114,6 +114,7 @@ def main():
             live = live_context.new_page()
             live_errors = []
             live.on("pageerror", lambda error: live_errors.append(str(error)))
+            live.on("console", lambda msg: live_errors.append(msg.text) if msg.type == "error" else None)
             live.route("https://telegram.org/js/telegram-web-app.js", lambda route: route.fulfill(
                 status=200, content_type="application/javascript",
                 body="window.Telegram={WebApp:{initData:'nonprod-demo',ready(){},expand(){},setHeaderColor(){},setBackgroundColor(){},onEvent(){}}};"
@@ -190,7 +191,7 @@ def main():
                       wait_until="domcontentloaded")
             live.wait_for_selector("#app:not([hidden])", timeout=8000)
             assert live.locator("#summaryGrid .stat").count() == 4, "Real dashboard render failed"
-            assert live.locator("#moduleGrid [data-module]").count() == 1, "Course track module rendering failed"
+            assert live.locator("#moduleGrid [data-module]").count() == 1, "Course track module rendering failed; browser errors: " + str(live_errors)
             assert live.locator("#v2ProductAccess [data-module]").count() == 2, "Access module rendering failed"
             assert live.locator("#v2MarketingModules [data-module]").count() == 4, "Marketing module rendering failed"
             assert live.locator("#v2SystemModules [data-module]").count() == 2, "System module rendering failed"
