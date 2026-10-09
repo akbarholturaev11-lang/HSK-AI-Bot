@@ -35,6 +35,30 @@ def check_real_module_coverage():
     print(f"Admin module reachability: {len(declared)}/{len(declared)} backend keys mapped")
 
 
+def check_css_architecture():
+    """Keep only one authoritative theme token definition and no orphan V1/demo styles."""
+    html = Path("app/static/admin.html").read_text(encoding="utf-8")
+    css = html.split("<style>", 1)[1].split("</style>", 1)[0]
+    roots = re.findall(r":root\\s*\\{([^{}]*)\\}", css)
+    assert len(roots) >= 2, "Admin theme root not found"
+    tokens = re.findall(r"(--[a-z0-9-]+)\\s*:", "\\n".join(roots))
+    duplicate_tokens = sorted({name for name in tokens if tokens.count(name) > 1})
+    assert not duplicate_tokens, f"Conflicting Admin theme tokens: {duplicate_tokens}"
+
+    obsolete = ("topbar-inner", "drawer-head", "drawer-body", "drawer-footer",
+                "demo-chip", "metric", "chart-svg", "chart-plot", "panel-header",
+                "panel-body", "kpi-line", "kpi-list", "demo-strip",
+                "preview-bubble", "filter-tabs", "option-tile", "pboard")
+    for cls in ("tabs", *obsolete):
+        selector = r"\\." + re.escape(cls) + r"(?![a-zA-Z0-9_-])"
+        assert not re.search(selector, css), f"Unused V1/demo CSS returned: .{cls}"
+    assert "#drawer.open{transform:translateX(0)}" in css
+    assert "#drawer.open{transform:translateY(0)}" in css
+    print(f"Admin CSS architecture: {len(tokens)} unique theme tokens; orphan prototype components absent")
+
+
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default="/tmp/admin-v2-ui")
@@ -42,6 +66,7 @@ def main():
     output = Path(args.output)
     output.mkdir(parents=True, exist_ok=True)
     check_real_module_coverage()
+    check_css_architecture()
 
     class Handler(SimpleHTTPRequestHandler):
         def __init__(self, *a, **kw):
@@ -63,7 +88,8 @@ def main():
                 page.on("pageerror", lambda error: errors.append(str(error)))
                 page.route("https://telegram.org/js/telegram-web-app.js", lambda route: route.fulfill(
                     status=200, content_type="application/javascript",
-                    body="window.Telegram={WebApp:{initData:'invalid-demo-session',ready(){},expand(){},setHeaderColor(){},setBackgroundColor(){},onEvent(){}}};"
+                    body="window.Telegram={WebApp:{initData:'invalid-demo-session',ready(){},expand(){},setHeaderColor(){},setBackgroundColor(){},
+                    onEvent(type,callback){(window.__telegramEvents||(window.__telegramEvents={}))[type]=callback}}};"
                 ))
                 page.route("**/api/admin-miniapp/**", lambda route: route.fulfill(
                     status=403, content_type="application/json",
@@ -348,6 +374,13 @@ def main():
                 const nav=document.querySelector('.mobile-nav').getBoundingClientRect();
                 return bar.top>=74 && nav.bottom<=innerHeight-25;
             }"""), "Telegram header or bottom navigation overlaps native inset"
+            # Telegram can update content-safe-area after expansion/rotation.
+            iphone.evaluate("""() => {
+                window.Telegram.WebApp.contentSafeAreaInset = {top:92,right:0,bottom:35,left:0};
+                window.__telegramEvents.contentSafeAreaChanged();
+            }""")
+            assert iphone.evaluate("parseFloat(getComputedStyle(document.body).paddingTop)>=92"), "Telegram dynamic safe top not applied"
+            assert iphone.evaluate("parseFloat(getComputedStyle(document.querySelector('.mobile-nav')).bottom)>=35"), "Telegram dynamic bottom inset missing"
             iphone.screenshot(path=str(output / "admin-v2-telegram-safe-dashboard-390.png"), full_page=False)
             iphone.locator('.mobile-nav [data-tab="statistics"]').click()
             iphone.locator('#statistics [data-v2-sub="statistics:platform"]').click()
