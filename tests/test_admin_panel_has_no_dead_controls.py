@@ -282,61 +282,55 @@ class TheAdVideoDoesNotOwnTimingOrLimitsTests(unittest.TestCase):
         self.assertIn("used >= rule.daily_cap", self.PLACEMENTS)
 
 
-class EachPlacementIsOneBlockTests(unittest.TestCase):
-    """Joy haqidagi hamma narsa BITTA kartada.
+class SimplifiedPlacementControlsTests(unittest.TestCase):
+    """Rolik uchun joy tanlash va umumiy ko'rsatish qoidasi alohida.
 
-    Ilgari joy ikki marta so'ralardi va ekranning ikki joyida turardi:
-    yuqorida "Qayerda chiqsin" chiplari (bu rolik uchun), pastda esa
-    "Qayerda chiqadi va necha marta" kartalari (joyning o'zi uchun).
-    Nomlari deyarli bir xil edi va foydalanuvchi ularni bitta savolning
-    takrori deb o'ylardi.
-
-    Ikkalasi ham kerak — birini ikkinchisidan chiqarib bo'lmaydi: rolik
-    joyni tanlaydi, joy esa hamma roliklar uchun bitta qoidaga bo'ysunadi.
-    Shuning uchun ular qo'shilmadi, balki BIR kartaga yig'ildi: kalit
-    yuqorida, joyning qoidasi ostida.
+    Ikkala joyga bir xil auditoriya, kunlik limit va yopish vaqtini
+    BITTA formadan saqlaymiz, lekin har biri faol/o'chiq bo'lishi mumkin.
     """
 
-    def test_the_switch_and_the_rules_share_one_card(self):
-        card = ADMIN.split("function adPlacementCard(", 1)[1].split("\n    }", 1)[0]
-        self.assertIn('data-ca-place="${esc(key)}"', card)
-        self.assertIn("Yangi rolik shu joyga qo'yilsin", card)
-        self.assertIn('id="adOn_${id}"', card)
-        self.assertIn('id="adCap_${id}"', card)
+    def test_each_ad_chooses_from_exactly_two_placements(self):
+        self.assertIn('data-ca-place="${esc(key)}"', ADMIN)
+        self.assertIn('id="caPlacementBox"', ADMIN)
+        self.assertIn('["lesson_end"', ADMIN)
+        self.assertIn('["screen_center"', ADMIN)
 
-    def test_each_control_says_who_it_applies_to(self):
-        self.assertIn("Yangi rolik shu joyga qo'yilsin", ADMIN)
-        self.assertIn("joyning O'ZI uchun", ADMIN)
-        self.assertIn("hamma roliklarga birdan tegishli", ADMIN)
+    def test_global_rules_have_one_control_for_each_setting(self):
+        self.assertEqual(1, ADMIN.count('id="adAudience"'))
+        self.assertEqual(1, ADMIN.count('id="adDailyCap"'))
+        self.assertEqual(1, ADMIN.count('id="adSkipAfter"'))
+        self.assertNotIn('id="adCap_${id}"', ADMIN)
+        self.assertNotIn('id="adSkip_${id}"', ADMIN)
+        self.assertIn('AD_PLACEMENTS.forEach(([key])=>', ADMIN)
+        self.assertIn('skip_after_seconds:skip,', ADMIN)
+        self.assertIn('daily_cap:cap,', ADMIN)
 
-    def test_there_is_no_second_placement_question_left(self):
-        self.assertNotIn("Qayerda chiqadi va necha marta", ADMIN)
-        self.assertNotIn("Joylarning o'z sozlamasi", ADMIN)
-        self.assertNotIn('id="caPlaceLessonEnd"', ADMIN)
-
-    def test_the_choice_survives_the_card_being_redrawn(self):
-        """Karta joy sozlamasi bilan birga qayta chiziladi.
-
-        Tanlov faqat DOM'da tursa, saqlashdan keyin jimgina nolga
-        qaytardi — shuning uchun qiymat alohida saqlanadi."""
-        self.assertIn("const caPlaceChosen={lesson_end:true,screen_center:false}", ADMIN)
-        self.assertIn("caPlaceChosen[el.dataset.caPlace]=el.checked", ADMIN)
-
-    def test_choosing_a_switched_off_placement_is_not_silent(self):
-        """O'chirilgan joyni tanlash jimgina hech narsa qilmaydi.
-
-        Rolik `placements` da o'sha joyni olib yuradi, lekin joy qoidasi
-        o'chiq bo'lsa server uni hech qachon bermaydi."""
-        self.assertIn("function caPlaceWarnUI()", ADMIN)
+    def test_each_place_can_still_be_switched_off(self):
+        self.assertIn('id="adOn_${k}"', ADMIN)
         self.assertIn('data-ca-place-warn="${esc(key)}"', ADMIN)
-        self.assertIn("caPlaceRules=((d.ad_placements||{}).placements)||{}", ADMIN)
+        self.assertIn('caPlaceRules=((d.ad_placements||{}).placements)||{}', ADMIN)
 
-    def test_choosing_nothing_says_where_the_reel_actually_lands(self):
-        # Hech biri tanlanmasa server uni dars yakuniga tushiradi — admin
-        # buni ekranda ko'rsin, keyin "qayerga ketdi?" deb qidirmasin.
+    def test_legacy_differences_are_disclosed(self):
+        self.assertIn('const different=fields.some', ADMIN)
+        self.assertIn("ikkala joyga bir xil qoida", ADMIN.lower())
+        self.assertIn("Bu video davomiyligidan BOSHQA sozlama.", ADMIN)
+
+    def test_selection_survives_refresh(self):
+        self.assertIn('const caPlaceChosen={lesson_end:true,screen_center:false}', ADMIN)
+        self.assertIn('caPlaceChosen[el.dataset.caPlace]=el.checked', ADMIN)
+
+    def test_empty_placement_selection_is_rejected(self):
         self.assertIn('id="caPlaceNone"', ADMIN)
-        self.assertIn('return (on.length?on:["lesson_end"]).join(",")', ADMIN)
+        self.assertIn('return on.join(",")', ADMIN)
+        self.assertIn('if(!caPlacementsValue()){ toast(', ADMIN)
 
+
+class OrdinaryAdCtaContractTests(unittest.TestCase):
+    def test_custom_cta_is_available_for_regular_ads(self):
+        self.assertIn('odiy:{\n        fields:["link","button"]', ADMIN)
+        self.assertIn('buttonLabel:"Tugma nomi (ixtiyoriy)"', ADMIN)
+        self.assertIn('const btnLine=(i.button_text)?', ADMIN)
+        self.assertIn('fd.append("button_text",caFields.indexOf("button")<0?', ADMIN)
 
 
 class UserAccessDetailsAreExplicitTests(unittest.TestCase):
