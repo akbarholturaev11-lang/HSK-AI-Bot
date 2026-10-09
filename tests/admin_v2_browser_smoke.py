@@ -229,7 +229,13 @@ def main():
             legacy_stats_requests = []
             attempted_mutations = []
             fake_management = {
-                "ok": True, "prices": [], "payment_details": "", "payment_details_alif": "",
+                "ok": True,
+                "prices": [
+                  {"method":"alipay","plan":"10_days","amount":19,"currency":"TJS",
+                   "text":"19 TJS","method_label":"Alipay","plan_label":"10 кун",
+                   "qr_method":"alipay","qr_set":True}
+                ],
+                "payment_details": "Dushanbe City demo", "payment_details_alif": "Alif demo",
                 "hsk30": {"enabled": False, "unlock_price_tjs": 10, "live_levels": []},
                 "limits_config": {"plans": {}, "trial": {}},
                 "channels": {"enabled": False, "items": []},
@@ -282,8 +288,8 @@ def main():
             assert live.locator("#v2SystemModules [data-module]").count() == 2, "System module rendering failed"
             assert live.locator("#v2ProductContent [data-module]").count() == 2, "Product Content modules missing"
             assert live.locator("#v2MarketingPartners [data-module]").count() == 1, "Partner module missing"
-            assert live.locator('#payments [data-v2-pane="payments:prices"] [data-module="prices"]').count() == 1, "Finance prices missing"
-            assert live.locator('#payments [data-v2-pane="payments:methods"] [data-module="prices"]').count() == 1, "Finance methods missing"
+            assert live.locator('#v2PricesView').count() == 1, "Finance pricing workspace missing"
+            assert live.locator('#v2MethodsView').count() == 1, "Finance payment-methods workspace missing"
             assert live.locator('#v2PortfolioView').count() == 1, "Finance inline portfolio section missing"
             assert live.locator("#marketing #adHub").count() == 1, "Existing Mini App advertising control was lost"
             assert live.locator("#marketing #notifTemplates").count() == 1, "Existing notifications control was lost"
@@ -306,6 +312,17 @@ def main():
                     active = live.locator(f'#{area} [data-v2-pane="{area}:{key}"]')
                     assert active.count() > 0 and all(x.get_attribute("hidden") is None for x in active.all()), f"Hidden active pane: {area}:{key}"
                     assert live.locator(f'#{area} [data-v2-sub="{area}:{key}"]').get_attribute("aria-selected") == "true"
+                    if area == "payments" and key == "prices":
+                        live.locator('#v2PricesView [data-prow]').first.wait_for(timeout=6000)
+                        assert live.locator('#v2PricesView [data-psave]').count() == 1, "Live pricing controls missing"
+                        assert live.locator('#drawer.open').count() == 0, "Old prices drawer still opens"
+                        live.screenshot(path=str(output / "admin-v2-prices-inline-1440.png"), full_page=True)
+                    if area == "payments" and key == "methods":
+                        live.locator('#v2MethodsView #payDetails').wait_for(timeout=6000)
+                        assert live.locator('#v2MethodsView [data-qrbtn]').count() == 2, "Live QR controls missing"
+                        assert live.locator('#v2MethodsView [data-pdsave]').count() == 2, "Bank save actions missing"
+                        assert live.locator('#drawer.open').count() == 0, "Old payment-methods drawer still opens"
+                        live.screenshot(path=str(output / "admin-v2-methods-inline-1440.png"), full_page=True)
                     if area == "payments" and key == "portfolio":
                         live.locator('#v2PortfolioView .v2-ledger-balance').wait_for(timeout=6000)
                         assert live.locator('#v2PortfolioView .v2-ledger-metric').count() == 3, "Finance KPI cards missing"
@@ -336,7 +353,7 @@ def main():
 
             # Open real management drawers with a fake in-memory management payload.
             for section, subpage, module_key, expected in [
-                ("payments", "prices", "prices", "#payDetails"),
+
                 ("settings", "tracks", "hsk30", "#hsk30Enabled"),
                 ("settings", "access", "limits", "#trialEnabled"),
                 ("marketing", "campaigns", "broadcast", "#bcText"),
@@ -434,6 +451,14 @@ def main():
             }"""), "Mobile Product tabs overflow or get clipped"
             iphone.screenshot(path=str(output / "admin-v2-telegram-product-tabs-390.png"), full_page=False)
             iphone.locator('.mobile-nav [data-tab="payments"]').click()
+            iphone.locator('#payments [data-v2-sub="payments:prices"]').click()
+            iphone.locator('#v2PricesView [data-prow]').first.wait_for(timeout=6000)
+            assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Pricing overflow on iPhone"
+            iphone.screenshot(path=str(output / "admin-v2-prices-inline-390.png"), full_page=True)
+            iphone.locator('#payments [data-v2-sub="payments:methods"]').click()
+            iphone.locator('#v2MethodsView #payDetails').wait_for(timeout=6000)
+            assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Bank editor overflow on iPhone"
+            iphone.screenshot(path=str(output / "admin-v2-methods-inline-390.png"), full_page=True)
             iphone.locator('#payments [data-v2-sub="payments:portfolio"]').click()
             iphone.locator('#v2PortfolioView .v2-ledger-balance').wait_for(timeout=6000)
             assert iphone.locator('#drawer.open').count() == 0, "Mobile finance still uses legacy drawer"
