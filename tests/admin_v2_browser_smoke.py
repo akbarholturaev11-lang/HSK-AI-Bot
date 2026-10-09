@@ -181,11 +181,11 @@ def main():
                 "periods": [
                     {
                         "key": period, "note": "UI demo", "range_label": "Demo period",
-                        "unit": {"approved_count": 8, "arppu_text": "$8.00"},
+                        "unit": {"approved_count": 9, "arppu_text": "$8.00"},
                         "finance": {
-                            "revenue_text": "$64.00", "ai_cost_text": "$5.00",
-                            "expense_text": "$7.00", "net_text": "$52.00",
-                            "ai_share_pct": 7.8, "margin_pct": 81.2,
+                            "revenue_text": "$73.00", "ai_cost_text": "$5.00",
+                            "expense_text": "$7.00", "net_text": "$61.00",
+                            "ai_share_pct": 6.8, "margin_pct": 83.6,
                             "net_positive": True,
                         },
                         "client_business": {"rows": [
