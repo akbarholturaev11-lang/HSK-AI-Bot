@@ -372,16 +372,30 @@ def main():
                 live.screenshot(path=str(output / f"admin-v2-product-{module_key}-1440.png"), full_page=False)
                 host.locator('[data-product-back]').click()
                 assert live.locator(f'#settings [data-module="{module_key}"]').first.is_visible(), f"Product navigation lost: {module_key}"
-            # Original modal controls not yet migrated remain operational.
-            for section, subpage, module_key, expected in [
-                ("marketing", "campaigns", "broadcast", "#bcText"),
-                ("system", "settings", "channels", '[data-chadd]'),
-            ]:
-                live.locator(f'#tabs [data-tab="{section}"]').click()
-                live.locator(f'#{section} [data-v2-sub="{section}:{subpage}"]').click()
-                live.locator(f'#{section} [data-module="{module_key}"]').first.click()
-                live.locator(f'#drawer.open {expected}').wait_for(timeout=5000)
-                live.locator('#drawer [data-act="close-drawer"]').click()
+            # Broadcast is now an actual V2 campaign editor, not an old Drawer.
+            live.locator('#tabs [data-tab="marketing"]').click()
+            live.locator('#marketing [data-v2-sub="marketing:campaigns"]').click()
+            live.locator('#v2MarketingModules [data-module="broadcast"]').first.click()
+            live.locator('#v2MarketingCampaignEditor:not([hidden]) #bcText').wait_for(timeout=6000)
+            assert live.locator("#drawer.open").count() == 0, "Legacy broadcast drawer still opens"
+            assert live.locator("#v2MarketingCampaignEditor #bcSend").count() == 1, "Real broadcast send action lost"
+            assert live.locator("#v2MarketingCampaignEditor #bcTest").count() == 1, "Real broadcast test action lost"
+            assert live.locator('#v2MarketingCampaignEditor [data-bcfilter]').count() >= 5, "Broadcast targeting filters lost"
+            assert live.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Broadcast editor overflow"
+            live.screenshot(path=str(output / "admin-v2-broadcast-inline-1440.png"), full_page=True)
+            live.locator('#v2MarketingCampaignEditor [data-bc-close]').click()
+            assert live.locator('#v2MarketingCampaignEditor').is_hidden(), "Broadcast close did not hide editor"
+            live.locator('#v2MarketingModules [data-module="broadcast"]').first.click()
+            live.locator('#v2MarketingCampaignEditor:not([hidden]) #bcText').wait_for(timeout=6000)
+            assert live.locator('#v2MarketingCampaignEditor #bcText').count() == 1, "Duplicate broadcast inputs"
+            live.locator('#v2MarketingCampaignEditor [data-bc-close]').click()
+
+            # System settings still use original admin callbacks while migration continues.
+            live.locator('#tabs [data-tab="system"]').click()
+            live.locator('#system [data-v2-sub="system:settings"]').click()
+            live.locator('#system [data-module="channels"]').first.click()
+            live.locator('#drawer.open [data-chadd]').wait_for(timeout=5000)
+            live.locator('#drawer [data-act="close-drawer"]').click()
             assert not attempted_mutations, "The UI smoke performed a production mutation"
             live.locator('#tabs [data-tab="dashboard"]').click()
             assert not live_errors, "Real render JS errors: " + str(live_errors)
@@ -483,6 +497,14 @@ def main():
             assert iphone.locator('#v2PortfolioView [data-pfsave]').count() == 1
             assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Portfolio overflow on iPhone"
             iphone.screenshot(path=str(output / "admin-v2-portfolio-inline-390.png"), full_page=True)
+            iphone.locator('.mobile-nav [data-tab="menu"]').click()
+            iphone.locator('#drawer.open [data-tab="marketing"]').click()
+            iphone.locator('#marketing [data-v2-sub="marketing:campaigns"]').click()
+            iphone.locator('#v2MarketingModules [data-module="broadcast"]').first.click()
+            iphone.locator('#v2MarketingCampaignEditor:not([hidden]) #bcText').wait_for(timeout=7000)
+            assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "iPhone broadcast editor overflow"
+            iphone.screenshot(path=str(output / "admin-v2-broadcast-inline-390.png"), full_page=True)
+            iphone.locator('#v2MarketingCampaignEditor [data-bc-close]').click()
             iphone.locator('#payments [data-v2-sub="payments:payments"]').click()
             assert iphone.locator("#paymentBoard .v2-pay-mobile [data-payment-preview]").count()==1, "Mobile finance cards missing"
             assert iphone.locator("#paymentBoard .v2-pay-desktop").is_hidden(), "Desktop payments table visible on mobile"
