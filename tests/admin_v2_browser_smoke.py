@@ -390,12 +390,24 @@ def main():
             assert live.locator('#v2MarketingCampaignEditor #bcText').count() == 1, "Duplicate broadcast inputs"
             live.locator('#v2MarketingCampaignEditor [data-bc-close]').click()
 
-            # System settings still use original admin callbacks while migration continues.
+            # Channels and Help are now a single native V2 inline workspace.
             live.locator('#tabs [data-tab="system"]').click()
             live.locator('#system [data-v2-sub="system:settings"]').click()
             live.locator('#system [data-module="channels"]').first.click()
-            live.locator('#drawer.open [data-chadd]').wait_for(timeout=5000)
-            live.locator('#drawer [data-act="close-drawer"]').click()
+            live.locator('#v2SystemEditor:not([hidden]) [data-chadd]').wait_for(timeout=6000)
+            assert live.locator("#drawer.open").count() == 0, "Legacy channels drawer still opens"
+            assert live.locator("#v2SystemEditor [data-chmode]").count() == 1, "Channel controls missing"
+            assert live.locator("#v2SystemEditor #chTitle").count() == 1, "Channel add form duplicated"
+            live.screenshot(path=str(output / "admin-v2-system-channels-inline-1440.png"), full_page=True)
+            live.locator('#v2SystemEditor [data-system-close]').click()
+            assert live.locator("#v2SystemEditor").is_hidden(), "Channels close button did not hide editor"
+            live.locator('#system [data-module="help"]').first.click()
+            live.locator('#v2SystemEditor:not([hidden]) #adminContact').wait_for(timeout=6000)
+            assert live.locator("#drawer.open").count() == 0, "Legacy help drawer still opens"
+            assert live.locator('#v2SystemEditor [data-hcontact]').count() == 1, "Help save action missing"
+            assert live.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Inline system editor overflow"
+            live.screenshot(path=str(output / "admin-v2-system-help-inline-1440.png"), full_page=True)
+            live.locator('#v2SystemEditor [data-system-close]').click()
             assert not attempted_mutations, "The UI smoke performed a production mutation"
             live.locator('#tabs [data-tab="dashboard"]').click()
             assert not live_errors, "Real render JS errors: " + str(live_errors)
@@ -505,8 +517,16 @@ def main():
             assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "iPhone broadcast editor overflow"
             iphone.screenshot(path=str(output / "admin-v2-broadcast-inline-390.png"), full_page=True)
             iphone.locator('#v2MarketingCampaignEditor [data-bc-close]').click()
+            iphone.locator('.mobile-nav [data-tab="menu"]').click()
+            iphone.locator('#drawer.open [data-tab="system"]').click()
+            iphone.locator('#system [data-v2-sub="system:settings"]').click()
+            iphone.locator('#system [data-module="channels"]').first.click()
+            iphone.locator('#v2SystemEditor:not([hidden]) #chTitle').wait_for(timeout=6000)
+            assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Mobile channels editor overflow"
+            iphone.screenshot(path=str(output / "admin-v2-system-channels-inline-390.png"), full_page=True)
+            iphone.locator('#v2SystemEditor [data-system-close]').click()
             iphone.locator('.mobile-nav [data-tab="payments"]').click()
-            assert iphone.locator('#payments').is_visible(), "Did not return to finance after broadcast test"
+            assert iphone.locator('#payments').is_visible(), "Did not return to finance after system test"
             iphone.locator('#payments [data-v2-sub="payments:payments"]').click()
             assert iphone.locator("#paymentBoard .v2-pay-mobile [data-payment-preview]").count()==1, "Mobile finance cards missing"
             assert iphone.locator("#paymentBoard .v2-pay-desktop").is_hidden(), "Desktop payments table visible on mobile"
