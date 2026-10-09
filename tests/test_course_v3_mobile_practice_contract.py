@@ -19,7 +19,7 @@ class CourseMobilePracticeContractTests(unittest.TestCase):
 
     def test_mobile_question_is_readable_and_options_scroll(self):
         self.assertIn(".fbody .qcard{width:100%;min-width:0}", SOURCE)
-        self.assertIn(".fbody .qcard .qh.qask{font-size:clamp(", SOURCE)
+        self.assertIn("qask\u0027+(/[\\u3400-\\u9fff]/.test(p)?", SOURCE)
         self.assertIn("@media(max-width:390px),(max-height:740px)", SOURCE)
         self.assertIn(".fbody .opt{min-height:50px;", SOURCE)
 
