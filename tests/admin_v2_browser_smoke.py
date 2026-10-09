@@ -560,6 +560,17 @@ def main():
             assert iphone.locator("#v2UnifiedApps .v2-client-card").count() == 3
             assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Unified apps mobile overflow"
             iphone.screenshot(path=str(output / "admin-v2-telegram-unified-apps-390.png"), full_page=False)
+            iphone.locator('#statistics [data-v2-sub="statistics:details"]').click()
+            assert iphone.locator('#statistics .v2-details-pane .block').count() == 12
+            assert iphone.locator('#statistics .v2-legacy-group').count() == 3
+            assert iphone.evaluate("""() => {
+                const root=document.querySelector('#statistics .v2-subnav').getBoundingClientRect();
+                const tab=document.querySelector('[data-v2-sub="statistics:details"]').getBoundingClientRect();
+                return tab.left>=root.left-1 && tab.right<=root.right+1;
+            }"""), "Detailed analytics navigation clipped on phone"
+            assert iphone.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Detailed analytics phone overflow"
+            iphone.screenshot(path=str(output / "admin-v2-telegram-full-analytics-390.png"), full_page=False)
+            iphone.locator('#statistics [data-v2-sub="statistics:overview"]').click()
             # Every Product subtab must fit within the viewport (no cut-off label).
             iphone.locator('.mobile-nav [data-tab="menu"]').click()
             iphone.locator('#drawer.open [data-tab="settings"]').click()
