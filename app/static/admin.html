@@ -946,17 +946,10 @@ body.locked .mobile-nav{pointer-events:none}
           <div id="paymentBoard"></div>
         </div>
         <div data-v2-pane="payments:prices" hidden>
-          <div class="v2-finance-heading"><h3>Тарифларни бошқариш</h3><p>Амалдаги нархлар сервердан олинади. Pro обуна ва HSK 3.0 кириш нархи мустақил.</p></div>
-          <div class="v2-actions">
-            <button class="srow" data-module="prices"><div><h3>💳 Pro обуна нархлари</h3><p>Мавжуд тариф ва валюталарни таҳрирлаш</p></div><span>›</span></button>
-            <button class="srow" data-module="hsk30"><div><h3>📚 HSK 3.0 кириш нархи</h3><p>Бир марталик unlock нархи ва ишлаш ҳолати</p></div><span>›</span></button>
-          </div>
+          <div id="v2PricesView" aria-live="polite"><div class="v2-finance-heading"><h3>Нархлар</h3><p>Тарифлар юкланмоқда…</p></div></div>
         </div>
         <div data-v2-pane="payments:methods" hidden>
-          <div class="v2-finance-heading"><h3>Тўлов реквизитлари ва QR</h3><p>Мавжуд тариф бошқаруви ичида банк ва тўлов усулига тегишли созламалар жойлашган.</p></div>
-          <div class="v2-actions">
-            <button class="srow" data-module="prices"><div><h3>🏦 Карта, Alipay ва WeChat</h3><p>Тўлов реквизитлари, QR ва нархлар</p></div><span>›</span></button>
-          </div>
+          <div id="v2MethodsView" aria-live="polite"><div class="v2-finance-heading"><h3>Тўлов усуллари</h3><p>Реквизитлар юкланмоқда…</p></div></div>
         </div>
         <div data-v2-pane="payments:portfolio" hidden>
           <div id="v2PortfolioView" aria-live="polite">
@@ -1785,12 +1778,23 @@ body.locked .mobile-nav{pointer-events:none}
       container.querySelectorAll("[data-v2-pane]").forEach(el=>{
         el.hidden=(el.dataset.v2Pane!==tab+":"+pane);
       });
-      if(tab==="payments"&&pane==="portfolio"){
-        const host=$("v2PortfolioView");
+      if(tab==="payments"&&["portfolio","prices","methods"].includes(pane)){
+        const hosts={portfolio:"v2PortfolioView",prices:"v2PricesView",methods:"v2MethodsView"};
+        for(const [key,id] of Object.entries(hosts)){
+          if(key===pane)continue;
+          const other=$(id);
+          if(other){other.innerHTML="";other.dataset.loaded="false";}
+        }
+        const host=$(hosts[pane]);
         if(host&&host.dataset.loaded!=="true"&&host.dataset.loading!=="true"){
           host.dataset.loading="true";
-          loadManagement(false).then(renderPortfolio).catch(()=>{
-            host.innerHTML='<div class="v2-ledger-note">Портфель маълумотларини юклаб бўлмади. <button class="btn sec" data-module="portfolio">Қайта уриниш</button></div>';
+          loadManagement(false).then(d=>{
+            if(v2SubState.payments!==pane)return;
+            if(pane==="portfolio")renderPortfolio(d);
+            else if(pane==="prices")renderPrices(d);
+            else renderPaymentMethods(d);
+          }).catch(()=>{
+            host.innerHTML='<div class="v2-ledger-note">Молия маълумотларини юклаб бўлмади. <button class="btn sec" data-module="'+(pane==="methods"?"prices":pane)+'">Қайта уриниш</button></div>';
           }).finally(()=>{host.dataset.loading="false";});
         }
       }
@@ -1843,6 +1847,15 @@ body.locked .mobile-nav{pointer-events:none}
       state.activeModule=key;
       if(key==="stats"){ closeDrawer(); switchTab("statistics"); return; }
       if(key==="user_search"){ closeDrawer(); switchTab("users"); $("search").focus(); return; }
+      if(key==="prices"){
+        closeDrawer();
+        const host=$("v2PricesView");
+        if(host){host.dataset.loaded="false";host.dataset.loading="false";}
+        switchTab("payments");
+        state.activeModule="prices";
+        selectV2Sub("payments","prices");
+        return;
+      }
       if(key==="portfolio"){
         closeDrawer();
         const host=$("v2PortfolioView");
@@ -2357,15 +2370,63 @@ body.locked .mobile-nav{pointer-events:none}
     }
 
     function renderPrices(d){
-      openDrawer("💳 Obuna narxlari","Narxlar darhol subscription Mini Appda ishlaydi",`<div class="panel">
-        ${(d.prices||[]).map(p=>`<div class="mcard" data-prow data-method="${p.method}" data-plan="${p.plan}">
-          <h3>${esc(p.method_label)} · ${esc(p.plan_label)}</h3><p>Joriy: ${esc(p.text)}</p>
-          <div class="row"><input class="input" data-pamount type="number" min="1" max="1000000" value="${p.amount}" style="max-width:170px"><button class="btn" data-psave>Saqlash</button></div>
-          ${priceQrHtml(p)}</div>`).join("")}
-        <div class="mcard"><h3>Dushanbe City rekviziti</h3><p>Tojikiston → Dushanbe City tanlagan userlarga chiqadi.</p><textarea id="payDetails" class="textarea" maxlength="1500">${esc(d.payment_details||"")}</textarea><button class="btn" data-pdsave>Rekvizitni saqlash</button></div>
-        <div class="mcard"><h3>Alif rekviziti</h3><p>Tojikiston → Alif, Rossiya, O'zbekiston va boshqa davlat kartalariga chiqadi.</p><textarea id="payDetailsAlif" class="textarea" maxlength="1500">${esc(d.payment_details_alif||"")}</textarea><button class="btn" data-pdsave data-bank="alif">Rekvizitni saqlash</button></div></div>`);
-      bindPriceQr();
-    }
+ const host=$("v2PricesView");if(!host)return;
+ const prices=Array.isArray(d.prices)?d.prices:[];
+ host.innerHTML=`
+  <div class="v2-ledger-heading">
+    <div><div class="v2-ledger-eyebrow">FINANCE / PRICING</div><h2>Тарифлар ва нархлар</h2><p>Ҳақиқий обуна тарифлари. Ўзгаришлар бевосита серверга сақланади.</p></div>
+    <button class="button v2-ledger-refresh" type="button" data-module="prices">↻ <span>Янгилаш</span></button>
+  </div>
+  <div class="v2-ledger-note"><span class="v2-ledger-note-icon" aria-hidden="true">ⓘ</span>
+    <span>Pro обуна нархи ва HSK 3.0 учун бир марталик кириш — алоҳида маҳсулотлар. Тарифни сақлашдан олдин валюта ва тўлов усулини текширинг.</span>
+  </div>
+  <div class="v2-price-grid">
+    ${prices.length?prices.map(p=>`<article class="v2-price-tile" data-prow data-method="${esc(p.method)}" data-plan="${esc(p.plan)}">
+      <div class="v2-price-tile-head"><div class="v2-ledger-eyebrow">${esc(p.method_label||p.method)}</div>${tag(p.plan_label||p.plan,"blue")}</div>
+      <h3>${esc(p.plan_label||p.plan)}</h3>
+      <div class="v2-price-current">${esc(p.text||moneyText(p.amount,p.currency))}</div>
+      <div class="v2-price-foot">Ҳозирги нарх</div>
+      <div class="v2-price-controls"><label>Янги нарх<input class="input" type="number" data-pamount min="1" max="1000000" inputmode="decimal" value="${esc(p.amount)}"></label>
+        <button class="button primary" type="button" data-psave>Сақлаш ↗</button></div>
+    </article>`).join(""):'<div class="v2-ledger-empty">Серверда тарифлар мавжуд эмас.</div>'}
+  </div>
+  <button class="v2-price-link" type="button" data-module="hsk30">
+    <span class="v2-price-link-icon">3.0</span><span><b>HSK 3.0 · бир марталик кириш</b><small>Unlock нархи ва курс ҳолати мустақил бошқарилади</small></span><span aria-hidden="true">↗</span>
+  </button>`;
+ host.dataset.loaded="true";
+}
+    function renderPaymentMethods(d){
+ const host=$("v2MethodsView");if(!host)return;
+ const prices=Array.isArray(d.prices)?d.prices:[];
+ const qrRows=prices.filter(p=>p.qr_method);
+ host.innerHTML=`
+  <div class="v2-ledger-heading"><div><div class="v2-ledger-eyebrow">FINANCE / PAYMENT METHODS</div>
+   <h2>Тўлов усуллари</h2><p>Банк реквизитлари ва QR кодларни бошқариш.</p></div>
+   <button class="button v2-ledger-refresh" type="button" data-v2-sub="payments:prices">Нархлар ↗</button></div>
+  <div class="v2-methods-grid">
+    <section class="v2-ledger-panel">
+      <div class="v2-ledger-panel-head"><div class="v2-ledger-eyebrow">BANK DETAILS</div><h3>Dushanbe City</h3><p>Тожикистондаги Dushanbe City тўлови учун.</p></div>
+      <div class="v2-ledger-form"><div class="field"><label for="payDetails">Реквизитлар</label>
+        <textarea class="textarea" id="payDetails" maxlength="1500" rows="4">${esc(d.payment_details||"")}</textarea></div>
+        <button class="button primary" data-pdsave type="button">Реквизитларни сақлаш ↗</button></div>
+    </section>
+    <section class="v2-ledger-panel">
+      <div class="v2-ledger-panel-head"><div class="v2-ledger-eyebrow">BANK DETAILS</div><h3>Alif</h3><p>Тожикистон, хорижий карталар ва Alif тўлови учун.</p></div>
+      <div class="v2-ledger-form"><div class="field"><label for="payDetailsAlif">Реквизитлар</label>
+        <textarea class="textarea" id="payDetailsAlif" maxlength="1500" rows="4">${esc(d.payment_details_alif||"")}</textarea></div>
+        <button class="button primary" data-pdsave data-bank="alif" type="button">Реквизитларни сақлаш ↗</button></div>
+    </section>
+  </div>
+  <div class="v2-section-title"><b>QR тўловлар</b><small>Асосий ва 20% чегирма кодлари</small></div>
+  <div class="v2-methods-grid">
+   ${qrRows.length?qrRows.map(p=>`<article class="v2-ledger-panel v2-qr-tile" data-prow data-method="${esc(p.method)}" data-plan="${esc(p.plan)}">
+      <div class="v2-ledger-panel-head"><div class="v2-ledger-eyebrow">${esc(p.method_label||p.method)}</div>
+       <h3>${esc(p.plan_label||p.plan)}</h3><p>${esc(p.text||moneyText(p.amount,p.currency))}</p></div>
+      <div class="v2-ledger-form">${priceQrHtml(p)}</div>
+   </article>`).join(""):'<div class="v2-ledger-note">QR код талаб қиладиган тарифлар йўқ.</div>'}
+  </div>`;
+ host.dataset.loaded="true";bindPriceQr();
+}
     function bindPriceQr(){
       document.querySelectorAll("[data-prow]").forEach(row=>{
         const file=row.querySelector("[data-qrfile]"); if(!file) return;
@@ -2747,8 +2808,11 @@ body.locked .mobile-nav{pointer-events:none}
       const m=state.activeModule, hub=state.adHub;
       state.management=null;
       await loadData();
-      if($("v2PortfolioView") && state.tab==="payments" && v2SubState.payments==="portfolio" && !$("drawer").classList.contains("open")){
-        const d=await loadManagement(true);renderPortfolio(d);
+      if(state.tab==="payments" && ["portfolio","prices","methods"].includes(v2SubState.payments) && !$("drawer").classList.contains("open")){
+        const d=await loadManagement(true);
+        if(v2SubState.payments==="portfolio")renderPortfolio(d);
+        else if(v2SubState.payments==="prices")renderPrices(d);
+        else renderPaymentMethods(d);
       }
       else if(m && $("drawer").classList.contains("open")) await openModule(m);
       /* Panel «📣 Reklama» bo'limi ichida ochilgan bo'lsa, drawer yopiq —
