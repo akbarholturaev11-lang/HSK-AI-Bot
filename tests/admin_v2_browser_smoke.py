@@ -371,6 +371,10 @@ def main():
                         assert live.locator("#statistics #unitCards .stat").count() == 4
                         assert live.locator("#statistics #retentionCards .stat").count() == 4
                         assert live.locator("#statistics #clientDeviceCards .stat").count() == 4
+                        # Platform reports are intentionally collapsed until opened.
+                        platform_group = live.locator("#statistics .v2-legacy-group").nth(1)
+                        assert not platform_group.evaluate("(el)=>el.open"), "Platform diagnostics should default collapsed"
+                        platform_group.locator("summary").first.click()
                         live.locator("#desktopCards .stat").first.wait_for(timeout=8000)
                         live.locator("#androidCards .stat").first.wait_for(timeout=8000)
                         live.locator("#subEntryStats .tbl").wait_for(timeout=8000)
