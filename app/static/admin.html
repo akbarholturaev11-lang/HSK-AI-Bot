@@ -488,10 +488,10 @@
 
           <div id="adPaneKurs" data-adhub-pane>
             <div class="mcard" style="margin-bottom:11px">
-              <h3>➕ Yangi rolik</h3>
+              <h3>➕ Yangi reklama</h3>
               <div class="frow two">
                 <div><label>Sarlavha</label><input id="caTitle" class="input" placeholder="Kurs reklama"></div>
-                <div><label>Davomiyligi (s)</label><input id="caDuration" class="input" type="number" min="5" max="120" value="7" title="Videoda — ko'rish vaqti, suratda — ekranda turish vaqti"></div>
+                <div><label>Video / surat davomiyligi (soniya)</label><input id="caDuration" class="input" type="number" min="5" max="120" value="7" title="Reklama mediasining davomiyligi. Yopish tugmasining vaqti pastdagi umumiy sozlamada."></div>
               </div>
               <div class="frow two">
                 <div><label>Reklama turi</label><select id="caType" class="select"><option value="odiy">📺 Oddiy reklama</option><option value="hamkorlik">🤝 Hamkorlik</option><option value="bot">🤖 Bot reklamasi</option><option value="dars_yakuni">👑 Obuna taklifi bilan</option></select></div>
@@ -502,14 +502,15 @@
               <div class="frow" data-ca-field="button"><label id="caBtnLabel">Knopka nomi</label><input id="caBtnText" class="input" maxlength="64"></div>
               <div class="frow" data-ca-field="link"><label id="caLinkLabel">Havola</label><input id="caLink" class="input" placeholder="https://..."><div class="hint" id="caLinkNote"></div></div>
               <div class="frow" style="margin-bottom:6px">
-                <label>📺 Qayerda chiqsin</label>
-                <div class="hint">Har bir joy o'z kartasida. Kartaning YUQORISIDAGI kalit — shu rolik uchun; qolgani joyning O'ZI uchun va hamma roliklarga birdan tegishli.</div>
+                <label>📍 Reklama qayerda chiqsin?</label>
+                <div class="hint">Bitta yoki ikkala joyni tanlang. Bu tanlov faqat hozir yuklayotgan reklamangizga tegishli.</div>
               </div>
-              <div id="adPlacementsBox"><p class="empty">Yuklanmoqda…</p></div>
-              <div class="danger-note" id="caPlaceNone" hidden>Hech bir joy tanlanmagan — rolik dars yakuniga qo'yiladi.</div>
+              <div id="caPlacementBox"><p class="empty">Yuklanmoqda…</p></div>
+              <div class="danger-note" id="caPlaceNone" hidden>Reklamani yuklash uchun kamida bitta joyni tanlang.</div>
               <button class="btn" data-act="upload-ca">📎 Video yoki surat yuklash</button>
               <input id="caFile" type="file" accept="video/*,image/*" hidden>
             </div>
+            <div id="adPlacementsBox"><p class="empty">Yuklanmoqda…</p></div>
 
             <div class="sec-head" style="margin-top:14px"><div><div class="sec-title">📁 Yuklangan roliklar</div></div></div>
             <div class="chips" id="caLangFilter" style="margin-bottom:10px"></div>
@@ -1688,43 +1689,59 @@
       </div>`);
       loadTrialRiskReport();
     }
-    /* Reklama joylari — aynan ikkita, har biri ALOHIDA boshqariladi.
-       Birini o'chirish ikkinchisiga tegmaydi. */
+    /* Reklama qaysi joyda chiqishi — har bir YANGI rolikning tanlovi.
+       Ko'rsatish qoidalari esa pastda BITTA formadan har ikkala joyga
+       qo'llanadi. Backendning ikkita placement kaliti saqlanadi. */
     const AD_PLACEMENTS=[
-      ["lesson_end","🎓 Dars yakuni","Dars tugagach chiqadi"],
-      ["screen_center","🎯 Ekran markazi","Qaysi bo'limda bo'lishidan qat'i nazar"]
+      ["lesson_end","🎓 Dars yakuni","Dars tugagach"],
+      ["screen_center","🎯 Ekran markazi","Mini App ochilganda yoki mos vaqtda"]
     ];
     function adPlacementCard(key,label,note,rule){
-      const r=rule||{};
-      const id=key.replace(/[^A-Za-z0-9]/g,"_");
-      /* Joy haqidagi HAMMA narsa bitta kartada: yangi rolik shu yerga
-         qo'yiladimi (bu — faqat shu rolik uchun) va joyning o'z qoidasi
-         (bu — hamma roliklarga birdan). Ilgari ikkisi ekranning ikki
-         joyida turardi va bir xil savolning takroriga o'xshardi. */
       const chosen=!!caPlaceChosen[key];
-      return `<div class="mcard" data-adplace data-key="${esc(key)}">
-        <h3>${esc(label)}</h3>
-        <p>${esc(note)}</p>
-        <label class="ncsw"><input type="checkbox" data-ca-place="${esc(key)}"${chosen?" checked":""}> <b>Yangi rolik shu joyga qo'yilsin</b></label>
-        <div class="danger-note" data-ca-place-warn="${esc(key)}"${(chosen&&r.enabled===false)?"":" hidden"}>Bu joy hozir o'chirilgan — quyidagi «Joy yoqilgan» kalitini yoqib saqlamasangiz, rolik bu yerda chiqmaydi.</div>
-        <div class="hint">Quyidagilar joyning O'ZI uchun — hamma roliklarga birdan tegishli.</div>
-        <div class="frow"><label><input type="checkbox" id="adOn_${id}"${r.enabled?" checked":""}> Joy yoqilgan</label></div>
-        <div class="frow"><label>Kimga ko'rsatiladi</label><select id="adAud_${id}" class="select">
-          <option value="free_only"${r.audience!=="everyone"?" selected":""}>Faqat bepul foydalanuvchilarga</option>
-          <option value="everyone"${r.audience==="everyone"?" selected":""}>Hammaga</option>
-        </select></div>
-        <div class="frow"><label>Kuniga ko'pi bilan (0 = cheklovsiz)</label>
-          <input id="adCap_${id}" class="input" type="number" min="0" max="50" value="${Number(r.daily_cap||0)}"></div>
-        <div class="frow"><label>Yopish tugmasi necha soniyadan keyin</label>
-          <input id="adSkip_${id}" class="input" type="number" min="0" max="60" value="${Number(r.skip_after_seconds||0)}"></div>
-      </div>`;
+      return `<label class="mcard" data-adplace-choice style="display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:7px;cursor:pointer">
+        <input type="checkbox" data-ca-place="${esc(key)}"${chosen?" checked":""} style="width:21px;height:21px;flex-shrink:0;accent-color:#0ea5e9">
+        <span style="min-width:0;flex:1"><b>${esc(label)}</b><small style="display:block;opacity:.75;margin-top:3px">${esc(note)}</small></span>
+        <span data-ca-place-warn="${esc(key)}"${(chosen&&rule&&rule.enabled===false)?"":" hidden"} title="Bu joy hozir o'chirilgan">⚠️</span>
+      </label>`;
     }
     function renderAdPlacements(d){
       const cfg=(d.ad_placements||{}).placements||{};
-      const body=AD_PLACEMENTS.map(([k,l,n])=>adPlacementCard(k,l,n,cfg[k])).join("");
-      showPanel("📺 Reklama joylari","Aynan ikkita joy. Kunlik chegara serverda — qurilma almashtirish uni aylanib o'tmaydi.",`<div class="panel">
-        ${body}
-        <button class="btn sec" data-adplacesave>💾 Joy sozlamalarini saqlash</button>
+      const choice=$("caPlacementBox");
+      if(choice) choice.innerHTML=AD_PLACEMENTS.map(([k,l,n])=>adPlacementCard(k,l,n,cfg[k])).join("");
+      const lesson=cfg.lesson_end||{}, center=cfg.screen_center||{};
+      const fields=["audience","daily_cap","skip_after_seconds"];
+      const different=fields.some(k=>String(lesson[k]??"")!==String(center[k]??""));
+      const current=lesson;
+      const audience=current.audience==="everyone"?"everyone":"free_only";
+      const cap=Math.max(0,Number(current.daily_cap)||0);
+      const skip=Math.max(0,Number(current.skip_after_seconds)||0);
+      const summary=different
+        ? `<div class="hint" style="margin-top:6px">⚠️ Eski sozlamalarda ikki joyning qoidalari turlicha: dars yakuni — ${Number(lesson.skip_after_seconds)||0}s / ${Number(lesson.daily_cap)||0} ta, ekran markazi — ${Number(center.skip_after_seconds)||0}s / ${Number(center.daily_cap)||0} ta. Quyidagi qiymatlarni saqlasangiz, IKKALA joyga bir xil qoida o'rnatiladi.</div>`
+        : "";
+      const enabled=AD_PLACEMENTS.map(([k,l])=>`<label style="display:flex;align-items:center;gap:9px;padding:7px 0"><input type="checkbox" id="adOn_${k}"${cfg[k]&&cfg[k].enabled===false?"":" checked"}> <span>${esc(l)} faol</span></label>`).join("");
+      showPanel("⚙️ Reklama ko'rsatish qoidalari",
+        "Bu sozlamalar hamma reklamalarga tegishli. Yangi reklama uchun joyni yuqorida tanlaysiz.",`<div class="panel">
+        <div class="mcard">
+          <h3>Reklama joylari faolmi?</h3>
+          <p class="ncnote">Joyni o'chirsangiz, unga biriktirilgan reklamalar ham ko'rinmaydi. Reklama fayllari o'chmaydi.</p>
+          ${enabled}
+        </div>
+        <div class="mcard">
+          <h3>📺 Umumiy ko'rsatish qoidasi</h3>
+          <p class="ncnote">Quyidagi 3 ta sozlama ikkala joy va barcha reklamalar uchun BITTA.</p>
+          <div class="frow"><label>Kimlarga ko'rsatilsin?</label><select id="adAudience" class="select">
+            <option value="free_only"${audience==="free_only"?" selected":""}>Faqat bepul foydalanuvchilarga</option>
+            <option value="everyone"${audience==="everyone"?" selected":""}>Hammaga</option>
+          </select></div>
+          <div class="frow"><label>Kuniga har bir joyda eng ko'pi (0 = cheksiz)</label>
+            <input id="adDailyCap" class="input" type="number" min="0" max="50" value="${cap}"></div>
+          <div class="frow"><label>Yopish (×) tugmasi necha soniyadan keyin chiqsin?</label>
+            <input id="adSkipAfter" class="input" type="number" min="0" max="60" value="${skip}">
+            <div class="hint">0 = darhol yopish mumkin. Masalan, 5 = foydalanuvchi 5 soniyadan keyin yopishi mumkin. Bu video davomiyligidan BOSHQA sozlama.</div>
+          </div>
+          ${summary}
+        </div>
+        <button class="btn sec" data-adplacesave>💾 Umumiy sozlamalarni saqlash</button>
       </div>`);
     }
     function salesExperimentStartedText(value){
@@ -2443,7 +2460,7 @@
           : `<video src="${esc(i.media_url)}" controls muted playsinline></video>`)
         : `<div class="danger-note">${mediaWord==="surat"?"Surat":"Video"} fayl serverda topilmadi. Railway Volume yoki MEDIA_ROOT sozlang va reklamani qayta yuklang.</div>`;
       const tmeta=caTypeMeta(i.ad_type||"odiy");
-      const btnLine=(i.ad_type&&i.ad_type!=="odiy"&&i.button_text)?`<div class="ncnote">🔘 ${esc(i.button_text)}</div>`:"";
+      const btnLine=(i.button_text)?`<div class="ncnote">🔘 ${esc(i.button_text)}</div>`:"";
       /* Joy TURDAN taxmin qilinmaydi — u alohida maydonda saqlanadi.
          Ilgari bu yerda "Mashq bo'limlarida chiqadi" deb yozilardi; mashq
          reklamalari olib tashlangandan keyin bu shunchaki yolg'on edi. */
@@ -2488,7 +2505,7 @@
     let caPlaceRules={};
     function caPlacementsValue(){
       const on=Object.keys(caPlaceChosen).filter(k=>caPlaceChosen[k]);
-      return (on.length?on:["lesson_end"]).join(",");
+      return on.join(",");
     }
     function caPlaceWarnUI(){
       let anyChosen=false;
@@ -2496,7 +2513,9 @@
         const chosen=!!caPlaceChosen[k];
         if(chosen) anyChosen=true;
         const warn=document.querySelector('[data-ca-place-warn="'+k+'"]');
-        if(warn) warn.hidden=!(chosen&&caPlaceRules[k]&&caPlaceRules[k].enabled===false);
+        const enabledControl=$("adOn_"+k);
+        const isEnabled=enabledControl?enabledControl.checked:!(caPlaceRules[k]&&caPlaceRules[k].enabled===false);
+        if(warn) warn.hidden=!(chosen&&!isEnabled);
       });
       const none=$("caPlaceNone"); if(none) none.hidden=anyChosen;
     }
@@ -2506,10 +2525,12 @@
        turgani ham yordam bermasdi. */
     const CA_TYPE_SPEC={
       odiy:{
-        fields:["link"],
-        note:"Faqat rolik ko'rsatiladi, ichida tugma yo'q.",
-        linkLabel:"Havola (ixtiyoriy)",
-        linkNote:"Dars yakuniga qo'ysangiz, shu havola bilan bitta tugma qo'shiladi. Bo'sh qoldirsangiz reklama hech qayerga olib bormaydi."
+        fields:["link","button"],
+        note:"Oddiy reklama: havola qo'shsangiz, reklama ichida o'zingiz nomlagan tugma chiqadi.",
+        linkLabel:"Tugma ochadigan havola (ixtiyoriy)",
+        linkNote:"Havola bo'lmasa tugma ko'rinmaydi.",
+        buttonLabel:"Tugma nomi (ixtiyoriy)",
+        buttonPlaceholder:"Masalan: Batafsil bilish"
       },
       hamkorlik:{
         fields:["link","button"],
@@ -2588,6 +2609,7 @@
     }
     async function submitCourseAd(){
       const input=$("caFile"), f=input&&input.files&&input.files[0]; if(!f) return;
+      if(!caPlacementsValue()){ toast("Kamida bitta reklama joyini tanlang"); input.value=""; caPlaceWarnUI(); return; }
       if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); input.value=""; return; }
       const adType=($("caType")&&$("caType").value)||"odiy";
       const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("ad_type",adType); fd.append("placements",caPlacementsValue()); const caFields=(CA_TYPE_SPEC[adType]||CA_TYPE_SPEC.odiy).fields; fd.append("button_text",caFields.indexOf("button")<0?"":($("caBtnText").value||"")); /* Yopish vaqti, kunlik chegara va platforma havolalari bu yerdan
@@ -2666,20 +2688,25 @@
       if((el=T("[data-pdsave]"))){ const bank=el.dataset.bank||""; el.disabled=true; return apiPost("/api/admin-miniapp/payment-details/save",{payment_details:$(bank==="alif"?"payDetailsAlif":"payDetails").value,bank}).then(()=>afterModule("Rekvizit saqlandi")).catch(x=>{toast(apiErr(x,"Rekvizit saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-aimodelsave]"))){ const sel=$("aiModelSel"); el.disabled=true; return apiPost("/api/admin-miniapp/ai-model/save",{gemini_model:sel?sel.value:""}).then(()=>loadManagement(true)).then(()=>{renderAiModel();toast("AI modeli saqlandi");}).catch(x=>{toast(apiErr(x,"AI modeli saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-adplacesave]"))){
+        const audience=$("adAudience")?.value||"free_only";
+        const cap=Number($("adDailyCap")?.value);
+        const skip=Number($("adSkipAfter")?.value);
+        if(!Number.isInteger(cap)||cap<0||cap>50||!Number.isInteger(skip)||skip<0||skip>60){
+          toast("Kunlik son 0–50, yopish vaqti 0–60 oralig'ida bo'lishi kerak"); return;
+        }
         const placements={};
-        document.querySelectorAll("[data-adplace]").forEach(card=>{
-          const key=card.getAttribute("data-key");
-          const id=key.replace(/[^A-Za-z0-9]/g,"_");
+        AD_PLACEMENTS.forEach(([key])=>{
           placements[key]={
-            enabled:!!($("adOn_"+id)&&$("adOn_"+id).checked),
-            audience:($("adAud_"+id)&&$("adAud_"+id).value)||"free_only",
-            daily_cap:Number(($("adCap_"+id)&&$("adCap_"+id).value)||0),
-            skip_after_seconds:Number(($("adSkip_"+id)&&$("adSkip_"+id).value)||0)
+            enabled:!!($("adOn_"+key)&&$("adOn_"+key).checked),
+            audience:audience,
+            daily_cap:cap,
+            skip_after_seconds:skip,
+            clients:(caPlaceRules[key]&&caPlaceRules[key].clients)||["miniapp","android","desktop"]
           };
         });
         el.disabled=true;
-        return apiPost("/api/admin-miniapp/ad-placements/save",{placements:placements})
-          .then(()=>afterModule("Reklama joylari saqlandi"))
+        return apiPost("/api/admin-miniapp/ad-placements/save",{placements})
+          .then(()=>afterModule("Ikkala reklama joyi uchun umumiy qoidalar saqlandi"))
           .catch(x=>{toast(apiErr(x,"Saqlanmadi"));el.disabled=false;});
       }
       if((el=T("[data-trial-risk-refresh]"))){
@@ -2739,7 +2766,7 @@
         if(n==="reload") return loadData();
         if(n==="clear-search"){ $("search").value=""; state.search=""; state.remoteUsers=null; if(state.filter==="bot_blocked") return remoteSearch(""); renderUsers(); return; }
         if(n==="copy-report") return copyReport();
-        if(n==="upload-ca"){ $("caFile").click(); return; }
+        if(n==="upload-ca"){ if(!caPlacementsValue()){ toast("Avval kamida bitta reklama joyini tanlang"); caPlaceWarnUI(); return; } $("caFile").click(); return; }
         if(n==="close-drawer") return closeDrawer();
         if(n==="drawer-back") return drawerBack();
       }
