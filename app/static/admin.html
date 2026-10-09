@@ -890,7 +890,70 @@ body.locked .mobile-nav{pointer-events:none}
 }
 @media(max-width:350px){.v2-price-controls{flex-wrap:wrap}.v2-price-controls .button{width:100%}}
 
-  </style>
+  
+/* Product V2 inline workspaces — no legacy modal forms. */
+.v2-product-editor{min-width:0;display:grid;gap:18px;animation:fade .22s ease}
+.v2-product-editor[hidden]{display:none!important}
+.v2-product-editor-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;
+  padding:24px 25px;border-radius:18px;
+  border:1px solid rgba(146,180,214,.23);
+  background:radial-gradient(circle at 80% -30%,rgba(231,102,80,.17),transparent 55%),
+    linear-gradient(140deg,#202f40,#15222f 75%);
+  box-shadow:0 14px 37px rgba(0,0,0,.17),inset 0 1px 0 rgba(255,255,255,.065)}
+.v2-product-editor-head h2{font-size:clamp(21px,2.5vw,29px);font-weight:850;margin:10px 0 8px;letter-spacing:-.035em}
+.v2-product-editor-head p{font-size:12px;color:#b8c7d7;line-height:1.6;max-width:580px}
+.v2-product-editor-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0}
+.v2-product-editor-body{min-width:0}
+.v2-product-editor-body>.panel{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:15px;
+ padding:0;border:0;background:transparent;box-shadow:none;overflow:visible
+}
+.v2-product-editor-body .mcard{
+ min-width:0;display:grid;align-content:start;gap:12px;
+ padding:22px;border:1px solid rgba(151,178,213,.21);border-radius:16px;
+ background:linear-gradient(145deg,#1b2938,#14202d);
+ box-shadow:0 8px 30px rgba(0,0,0,.13),inset 0 1px 0 rgba(255,255,255,.035)
+}
+.v2-product-editor-body .mcard h3{font-size:15px;letter-spacing:-.018em}
+.v2-product-editor-body .mcard p{font-size:12px;line-height:1.6}
+.v2-product-editor-body .mcard>.tags{gap:8px}
+.v2-product-editor-body .mcard .frow{min-width:0}
+.v2-product-editor-body .mcard .frow label{font-size:12px}
+.v2-product-editor-body .mcard .input,.v2-product-editor-body .mcard .select{
+ font-size:16px;background:#101d2a;border:1px solid #35475a;min-width:0;max-width:100%
+}
+.v2-product-editor-body .mcard .hint{line-height:1.65}
+.v2-product-editor-body .mcard .btn{max-width:100%;min-height:46px}
+.v2-product-editor-body .mcard .ncsw{min-height:36px;align-items:center;white-space:normal}
+.v2-product-editor-body [data-limit-row]{
+ display:grid;grid-template-columns:minmax(0,1.1fr) minmax(82px,.7fr) minmax(0,.6fr) minmax(100px,.8fr);
+ align-items:center;gap:10px;border-bottom:1px solid rgba(152,181,211,.11);padding:10px 0;margin:0
+}
+.v2-product-editor-body [data-limit-row] label{font-size:11px!important;line-height:1.45}
+.v2-product-editor-body [data-limit-row] label:has(input){display:flex;align-items:center;gap:7px}
+.v2-product-editor-body [data-limit-row] .input,.v2-product-editor-body [data-limit-row] .select{min-height:43px}
+.v2-product-editor-body [data-limit-row] .input:disabled{opacity:.48}
+#v2ProductEditorAccess:has([data-limit-row]) .mcard:has([data-limit-row]){grid-column:1/-1}
+#v2ProductEditorTracks .mcard:has(#hsk30Analytics){grid-column:1/-1}
+.v2-product-editor .panel>.btn:last-child{align-self:start}
+@media(max-width:980px){
+ .v2-product-editor-body>.panel{grid-template-columns:1fr}
+ .v2-product-editor-body .mcard:has(#hsk30Analytics){grid-column:auto}
+}
+@media(max-width:760px){
+ .v2-product-editor{gap:12px}
+ .v2-product-editor-head{flex-direction:column;padding:19px 17px;gap:16px}
+ .v2-product-editor-actions{width:100%;justify-content:stretch}
+ .v2-product-editor-actions .button{flex:1}
+ .v2-product-editor-body .mcard{padding:17px;gap:10px}
+ .v2-product-editor-body [data-limit-row]{
+    grid-template-columns:minmax(0,1fr) minmax(84px,.52fr);gap:7px 12px
+ }
+ .v2-product-editor-body [data-limit-row]>label:first-child{grid-column:1/-1}
+ .v2-product-editor-body .mcard .frow.two{grid-template-columns:1fr}
+}
+
+</style>
 </head>
 <body>
   <div id="loading" class="state">
@@ -1023,9 +1086,10 @@ body.locked .mobile-nav{pointer-events:none}
       <div class="grid settings-grid v2-modules v2-track-actions" id="moduleGrid"></div>
     </div>
     <div class="v2-access-hint">HSK 3.0 учун бир марталик тўлов курсга киришни очади, тўлиқ Pro дарслар эса алоҳида обуна талаб қилади.</div>
+    <div id="v2ProductEditorTracks" class="v2-product-editor" hidden></div>
   </div>
-  <div data-v2-pane="settings:access" hidden><div class="grid settings-grid v2-modules" id="v2ProductAccess"></div></div>
-  <div data-v2-pane="settings:content" hidden><div class="grid settings-grid v2-modules" id="v2ProductContent"></div></div>
+  <div data-v2-pane="settings:access" hidden><div class="grid settings-grid v2-modules" id="v2ProductAccess"></div><div id="v2ProductEditorAccess" class="v2-product-editor" hidden></div></div>
+  <div data-v2-pane="settings:content" hidden><div class="grid settings-grid v2-modules" id="v2ProductContent"></div><div id="v2ProductEditorContent" class="v2-product-editor" hidden></div></div>
 </section>
 <section id="marketing" class="view">
   <div class="v2-intro">Хабарлар, реклама, эслатмалар ва ҳамкорлар — бир-биридан аниқ ажратилган.</div>
@@ -1913,6 +1977,22 @@ body.locked .mobile-nav{pointer-events:none}
         selectV2Sub("payments","portfolio");
         return;
       }
+      if(PRODUCT_INLINE_MODULES[key]){
+        closeDrawer();
+        closeProductEditor();
+        state.activeModule=key;
+        switchTab("settings");
+        selectV2Sub("settings",PRODUCT_INLINE_MODULES[key][0]);
+        const host=$(PRODUCT_INLINE_MODULES[key][1]);
+        if(host){host.hidden=false;host.innerHTML='<p class="v2-ledger-note">Маълумотлар юкланмоқда…</p>';}
+        try{
+          const d=await loadManagement(false);
+          if(state.activeModule===key)PRODUCT_INLINE_RENDERERS[key](d);
+        }catch(e){
+          if(host)host.innerHTML='<div class="danger-note">Маълумот юкланмади. Янгилаб қайта урининг.</div>';
+        }
+        return;
+      }
       /* Reklama endi drawer emas, sozlamalar ichidagi bitta bo'lim. */
       if(key==="ads_hub"){ closeDrawer(); switchTab("marketing"); selectV2Sub("marketing","ads"); const h=$("adHub"); if(h) h.scrollIntoView({behavior:"smooth",block:"start"}); return openAdHub(state.adHub); }
       openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
@@ -1949,10 +2029,54 @@ body.locked .mobile-nav{pointer-events:none}
       if(!value) return "—";
       try{return new Date(value).toLocaleString("uz-UZ",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}catch(e){return value}
     }
+
+    /* Product V2: existing verified forms render inline in the actual section,
+       never in a cramped legacy drawer. Hooks / inputs and APIs stay identical. */
+    const PRODUCT_INLINE_MODULES={
+      hsk30:["tracks","v2ProductEditorTracks"],
+      course_access:["access","v2ProductEditorAccess"],
+      limits:["access","v2ProductEditorAccess"],
+      course_sales_experiment:["content","v2ProductEditorContent"],
+      audio:["content","v2ProductEditorContent"]
+    };
+    const PRODUCT_INLINE_RENDERERS={
+      hsk30:(d)=>renderHsk30(d),course_access:(d)=>renderCourseAccess(d),
+      limits:(d)=>renderLimits(d),course_sales_experiment:(d)=>renderCourseSalesExperiment(d),
+      audio:(d)=>renderAudio(d)
+    };
+    function closeProductEditor(){
+      const pane=$( "settings" );
+      if(!pane)return;
+      pane.querySelectorAll(".v2-product-editor").forEach(host=>{
+        host.innerHTML="";host.hidden=true;host.dataset.module="";
+      });
+      pane.querySelectorAll("[data-v2-pane] .v2-modules, [data-v2-pane] .v2-track-grid, [data-v2-pane] .v2-access-hint")
+        .forEach(el=>el.hidden=false);
+      if(PRODUCT_INLINE_MODULES[state.activeModule])state.activeModule=null;
+    }
+    function showProductEditor(title,sub,html){
+      const key=state.activeModule, meta=PRODUCT_INLINE_MODULES[key];
+      if(!meta)return openDrawer(title,sub,html);
+      const [pane,hostId]=meta,host=$(hostId);
+      if(!host)return;
+      closeProductEditor();
+      state.activeModule=key;
+      host.hidden=false;host.dataset.module=key;
+      const currentPane=host.closest("[data-v2-pane]");
+      if(currentPane)currentPane.querySelectorAll(".v2-modules,.v2-track-grid,.v2-access-hint").forEach(el=>el.hidden=true);
+      host.innerHTML='<header class="v2-product-editor-head">'+
+        '<div><span class="v2-ledger-eyebrow">PRODUCT / CONTROL</span>'+
+          '<h2>'+esc(title)+'</h2><p>'+esc(sub||"")+'</p></div>'+
+        '<div class="v2-product-editor-actions">'+
+          '<button type="button" class="button ghost" data-product-back>← Бўлимлар</button>'+
+          '<button type="button" class="button" data-product-refresh>↻ Янгилаш</button>'+
+        '</div></header><div class="v2-product-editor-body">'+html+'</div>';
+      host.scrollIntoView({block:"nearest"});
+    }
     function renderCourseAccess(d){
       const ca=d.course_access||{mode:"subscription",effective_mode:"subscription",free_until:null};
       const mode=ca.mode||"subscription", eff=ca.effective_mode||mode;
-      openDrawer("📚 Kurs access","Darslarda obuna yoki vaqtinchalik free rejim",`<div class="panel">
+      showProductEditor("📚 Kurs access","Darslarda obuna yoki vaqtinchalik free rejim",`<div class="panel">
         <div class="mcard">
           <h3>Joriy holat</h3>
           <p>${esc(courseAccessLabel(eff))}</p>
@@ -2082,7 +2206,7 @@ body.locked .mobile-nav{pointer-events:none}
         const rows=LIMIT_ACTIONS.map(([action,label])=>limitRow(plan,action,label,limitRule(rules,action))).join("");
         return `<div class="mcard"><h3>${esc(planLabel)}</h3>${rows}</div>`;
       }).join("");
-      openDrawer("🎚 Limitlar","Bepul va trial chegaralari. Obunachiga limit qo'yilmaydi.",`<div class="panel">
+      showProductEditor("🎚 Limitlar","Bepul va trial chegaralari. Obunachiga limit qo'yilmaydi.",`<div class="panel">
         ${body}
         <div class="mcard">
           <h3>Pro trial</h3>
@@ -2148,7 +2272,7 @@ body.locked .mobile-nav{pointer-events:none}
       const se=d.sales_experiment||{experiment_id:"sales_value_v1",mode:"off",treatment_percent:50,started_at:null};
       const mode=se.mode||"off", pct=Number(se.treatment_percent==null?50:se.treatment_percent);
       const effectivePct=Number(se.effective_treatment_percent==null?pct:se.effective_treatment_percent);
-      openDrawer("🧭 HSK sotuv tajribasi","sales_value_v1 A/B assignment va xavfsiz rollout",`<div class="panel">
+      showProductEditor("🧭 HSK sotuv tajribasi","sales_value_v1 A/B assignment va xavfsiz rollout",`<div class="panel">
         <div class="mcard">
           <h3>Joriy holat</h3>
           <p><b>${esc(se.experiment_id||"sales_value_v1")}</b> · ${esc(mode)} · treatment ${esc(effectivePct)}%</p>
@@ -2353,7 +2477,7 @@ body.locked .mobile-nav{pointer-events:none}
       const live=Array.isArray(h.live_levels)?h.live_levels:[];
       const qr=h.qr||{};
       const stats=h.stats||{};
-      openDrawer("🆕 HSK 3.0","Курс ва бир марталик доступни алоҳида бошқариш",`<div class="panel">
+      showProductEditor("🆕 HSK 3.0","Курс ва бир марталик доступни алоҳида бошқариш",`<div class="panel">
         <div class="mcard">
           <h3>Жорий rollout ҳолати <small>Жами · барча платформалар</small></h3>
           <div class="tags">
@@ -2843,7 +2967,7 @@ body.locked .mobile-nav{pointer-events:none}
     }
     function renderAudio(d){
       const rows=d.audio||[];
-      openDrawer("🎵 Audio boshqaruvi","Audio ro'yxatini tekshirish",`<div class="panel">
+      showProductEditor("🎵 Audio boshqaruvi","Audio ro'yxatini tekshirish",`<div class="panel">
         <div class="mcard"><h3>Qamrov</h3><p>${rows.map(r=>`${r.level}: ${r.lessons} dars`).join(" · ")}</p></div>
         <div class="mcard"><div class="frow two"><div><label>Daraja</label><select id="auLevel" class="select"><option value="hsk1">HSK1</option><option value="hsk2">HSK2</option><option value="hsk3">HSK3</option><option value="hsk4">HSK4</option></select></div>
           <div><label>Dars</label><input id="auLesson" class="input" type="number" min="1" value="1"></div></div>
@@ -2861,6 +2985,10 @@ body.locked .mobile-nav{pointer-events:none}
         if(v2SubState.payments==="portfolio")renderPortfolio(d);
         else if(v2SubState.payments==="prices")renderPrices(d);
         else renderPaymentMethods(d);
+      }
+      else if(PRODUCT_INLINE_MODULES[m] && state.tab==="settings"){
+        const d=await loadManagement(true);
+        PRODUCT_INLINE_RENDERERS[m](d);
       }
       else if(m && $("drawer").classList.contains("open")) await openModule(m);
       /* Panel «📣 Reklama» bo'limi ichida ochilgan bo'lsa, drawer yopiq —
@@ -3176,6 +3304,15 @@ body.locked .mobile-nav{pointer-events:none}
       if((el=T("[data-umsend]"))){ const text=($("umText").value||"").trim(); if(text.length<2){ toast("Matn juda qisqa"); return; } el.disabled=true; return apiPost("/api/admin-miniapp/users/message",{telegram_id:Number(el.dataset.umsend),text,translate:$("umTranslate").checked}).then(()=>{closeDrawer();toast("Xabar yuborildi");}).catch(x=>{toast(apiErr(x,"Xabar yuborilmadi"));el.disabled=false;}); }
       if((el=T("[data-uchat]"))) return openUserChat(el.dataset.uchat);
       if((el=T("[data-adhub]"))) return openAdHub(el.dataset.adhub);
+      if((el=T("[data-product-back]"))){closeProductEditor();return;}
+      if((el=T("[data-product-refresh]"))){
+        const m=state.activeModule;
+        if(!PRODUCT_INLINE_MODULES[m])return;
+        el.disabled=true;
+        return loadManagement(true).then(d=>PRODUCT_INLINE_RENDERERS[m](d))
+          .catch(()=>toast("Маълумотларни янгилаб бўлмади"))
+          .finally(()=>{if(el.isConnected)el.disabled=false;});
+      }
       if((el=T("[data-module]"))){
         // `data-uback` bo'lsa bo'lim profil kontekstida ochiladi va orqaga
         // qaytish tugmasi o'sha profilga olib boradi.
