@@ -2,33 +2,16 @@
 <html lang="uz">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>HSK AI — Admin panel</title>
   <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root{
-      --bg:#0f1216;
-      --bg-soft:#161b22;
-      --surface:#1b212b;
-      --surface-2:#232b37;
-      --ink:#f3f6fb;
-      --muted:#97a3b6;
-      --line:#2b3340;
-      --line-soft:#222a35;
-      --accent:#3b82f6;
-      --accent-soft:rgba(59,130,246,.16);
-      --green:#34d399;
-      --green-soft:rgba(52,211,153,.14);
-      --amber:#fbbf24;
-      --amber-soft:rgba(251,191,36,.14);
-      --red:#fb7185;
-      --red-soft:rgba(251,113,133,.14);
       --violet:#a78bfa;
       --violet-soft:rgba(167,139,250,.14);
       --radius:14px;
       --radius-sm:10px;
-      --shadow:0 20px 50px rgba(0,0,0,.45);
       --safe-top:env(safe-area-inset-top,0px);
       --safe-bottom:env(safe-area-inset-bottom,0px);
       --app-h:100dvh;
@@ -46,23 +29,20 @@
     h1,h2,h3,p{margin:0}
     .app{min-height:var(--app-h);display:grid;grid-template-rows:auto 1fr;grid-template-columns:minmax(0,1fr)}
     /* Topbar */
-    /* Eslatma: .topbar da backdrop-filter ISHLATILMAYDI — u position:fixed pastki
-       navigatsiya (.tabs) uchun containing-block yaratib, uni viewport pastiga emas,
-       topbar ichiga bog'lab qo'yadi. Shuning uchun to'q (opaque) fon. */
     .topbar{position:sticky;top:0;z-index:20;background:var(--bg-soft);border-bottom:1px solid var(--line)}
-    .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px}
+    
     .brand{display:flex;align-items:center;gap:10px;min-width:0}
     .brand-mark{width:38px;height:38px;border:1px solid var(--line);border-radius:11px;background:#080808;display:block;object-fit:cover;object-position:center;box-shadow:0 8px 18px rgba(0,0,0,.28);flex:none}
     .brand h1{font-size:16px;font-weight:850;line-height:1.05}
     .brand p{margin-top:2px;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .top-actions{display:flex;align-items:center;gap:8px}
-    .pill{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:11px;font-weight:800;white-space:nowrap}
+    
     .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px var(--green-soft)}
     .reload{width:38px;height:38px;border-radius:11px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;font-size:16px}
     /* Tabs */
-    .tabs{position:fixed;left:10px;right:10px;bottom:calc(8px + var(--safe-bottom));z-index:40;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:6px;background:rgba(27,33,43,.94);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+    
     .tab{height:50px;border-radius:11px;color:var(--muted);font-size:10px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
-    .tab .ic{font-size:17px;line-height:1}
+    
     .tab.active{background:var(--accent);color:#fff}
     main{padding:14px 14px calc(96px + var(--safe-bottom));min-width:0;overflow-x:hidden}
     .view{display:none;min-width:0}
@@ -77,7 +57,7 @@
     /* Cards grid */
     .grid{display:grid;gap:10px}
     .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
-    .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    
     .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px;min-height:96px;display:flex;flex-direction:column;justify-content:space-between}
     .stat .lab{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:850}
     .stat .val{font-size:24px;font-weight:950;line-height:1;margin:10px 0 6px;overflow-wrap:anywhere}
@@ -228,18 +208,18 @@
       body{padding:0;overflow:hidden}
       .app{grid-template-columns:280px minmax(0,1fr);grid-template-rows:1fr;height:var(--app-h);overflow:hidden}
       .topbar{height:var(--app-h);border-bottom:0;border-right:1px solid var(--line);position:static;display:grid;grid-template-rows:auto auto 1fr;align-content:start;overflow:auto}
-      .topbar-inner{flex-direction:column;align-items:stretch;gap:14px;padding:22px}
+      
       .brand p{white-space:normal}
       .top-actions{justify-content:space-between}
-      .tabs{position:static;grid-template-columns:1fr;gap:6px;padding:0 14px 16px;background:transparent;border:0;border-radius:0;box-shadow:none;backdrop-filter:none}
+      
       .tab{height:48px;flex-direction:row;justify-content:flex-start;gap:11px;padding:0 15px;font-size:13.5px;border-radius:12px}
-      .tab .ic{font-size:18px}
+      
       main{height:var(--app-h);overflow:auto;padding:26px 30px 40px}
       .g2{grid-template-columns:repeat(4,minmax(0,1fr))}
-      .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+      
       .stat .val{font-size:30px}
       .list{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-      .pboard{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:12px}
+      
       .settings-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .drawer{left:auto;top:0;right:0;bottom:0;width:min(560px,42vw);max-height:none;border-top:0;border-left:1px solid var(--line);border-radius:0;transform:translateX(106%)}
       .drawer.open{transform:translateX(0)}
@@ -249,6 +229,843 @@
     @media (min-width:1280px){
       .list{grid-template-columns:repeat(4,minmax(0,1fr))}
     }
+  
+/* Admin V2 exact prototype visual foundation */
+
+:root{color-scheme:dark;--bg2:#101721;--side:#0f151e;--surface2:#1a2532;--line2:#202c38;--text:#edf1f6;--sub:#b7c2d0;--brand:#e65d4f;--brandsoft:#392328;--blue:#79aaf2;--yellow:#eac082;--danger:#ef8b94;--r:14px;--shadow:0 24px 80px rgba(0,0,0,.48);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}body{overflow-x:hidden}button,input,textarea,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}button:disabled{opacity:.5;cursor:not-allowed}a{color:var(--blue)}.hidden,[hidden]{display:none!important}
+.shell{display:grid;grid-template-columns:258px minmax(0,1fr);min-height:100dvh}.sidebar{background:var(--side);border-right:1px solid var(--line2);padding:24px 14px 16px;display:flex;flex-direction:column;position:sticky;top:0;height:100dvh}.brand{display:flex;gap:12px;align-items:center;padding:2px 11px 26px}.brand-mark{height:41px;width:41px;background:#b94539;border-radius:13px;color:#fff;display:grid;place-items:center;font-size:18px;font-weight:900;box-shadow:inset 0 1px 0 #ffffff3d}.brand-name{font-size:17px;font-weight:850;letter-spacing:-.04em}.brand-meta{font-size:10px;letter-spacing:.12em;color:var(--muted);font-weight:750;margin-top:3px}.section-caption{color:#68798c;font-size:10px;letter-spacing:.12em;font-weight:850;text-transform:uppercase;padding:0 14px 12px}.sidebar nav{display:flex;flex-direction:column;gap:3px}.navbtn{width:100%;display:flex;align-items:center;gap:11px;min-height:47px;border:0;border-radius:11px;color:#a5b2c1;background:transparent;padding:9px 12px;text-align:left;font-weight:700;font-size:13px}.navbtn:hover,.navbtn.active{background:#222c39;color:#fff}.navbtn.active{box-shadow:inset 3px 0 0 var(--brand)}.navbtn .ni{width:21px;display:inline-flex;align-items:center;justify-content:center;opacity:.9}.navbtn.active .ni{color:#f38c7d}.navbtn .chev{margin-left:auto;opacity:.4}.side-spacer{flex:1}.side-bottom{border-top:1px solid var(--line2);padding:16px 11px 0;display:flex;flex-direction:column;gap:15px}.server{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--sub)}.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px #75c6a319}.profile{display:flex;align-items:center;gap:10px}.avatar{background:#3a2e2d;color:#f1b3a6;display:grid;place-items:center;border-radius:12px;width:34px;height:34px;font-weight:850;font-size:12px}.profile b{font-size:12px}.profile small{display:block;color:var(--muted);margin-top:2px;font-size:11px}
+.workspace{min-width:0;display:flex;flex-direction:column}.topbar{height:74px;border-bottom:1px solid var(--line2);display:flex;justify-content:space-between;align-items:center;padding:0 38px;background:rgba(12,17,24,.96);position:sticky;top:0;z-index:20;gap:14px}.breadcrumb{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted);font-weight:650}.breadcrumb b{color:var(--text)}.top-actions{display:flex;align-items:center;gap:10px}.circle-btn{border:1px solid var(--line);background:var(--surface);color:var(--sub);width:38px;height:38px;border-radius:11px;display:grid;place-items:center}.circle-btn:hover{background:var(--surface2);color:#fff}.search-btn{min-width:210px;height:39px;border-radius:10px;background:#171f2b;border:1px solid var(--line);display:flex;align-items:center;gap:9px;padding:0 12px;color:var(--muted);font-size:12px;text-align:left}.key{margin-left:auto;background:#252f3c;padding:3px 6px;border-radius:5px;color:#b4c0cf;font-size:10px}.content{width:100%;max-width:1550px;margin:0 auto;padding:34px 38px 70px}.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:27px}.eyebrow{font-size:10px;color:var(--brand);font-weight:850;letter-spacing:.16em;text-transform:uppercase;margin-bottom:9px}.page-head h1{font-size:28px;letter-spacing:-.045em;line-height:1.12;margin:0 0 8px;font-weight:830}.page-head p{color:var(--muted);font-size:13px;line-height:1.5;margin:0;max-width:680px}.page-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.button{border:1px solid var(--line);background:#1a2532;color:var(--text);padding:0 15px;min-height:42px;border-radius:10px;font-size:12px;font-weight:750;display:inline-flex;justify-content:center;align-items:center;gap:8px;white-space:nowrap}.button:hover{background:#243343}.button.primary{background:var(--brand);border-color:var(--brand);color:#fff}.button.primary:hover{background:#ce5045}.button.ghost{background:transparent}.button.danger{background:#4b282e;color:#ffc1c3;border-color:#754049}.button.small{min-height:35px;padding:0 10px}.button:disabled{opacity:.5}.button .icon{height:16px;width:16px}.muted{color:var(--muted)}.small{font-size:12px}.micro{font-size:10px}.bold{font-weight:770}.overline{font-size:10px;text-transform:uppercase;letter-spacing:.11em;font-weight:850;color:var(--muted)}.note{font-size:11px;color:var(--muted);line-height:1.6}.space{height:18px}.grid{display:grid;gap:14px}.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.col-main{grid-template-columns:minmax(0,1.65fr) minmax(270px,1fr)}.positive{color:var(--green)}.warning{color:var(--yellow)}.negative{color:var(--danger)}.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;min-width:0}.panel-heading{font-size:14px;font-weight:800;letter-spacing:-.02em}.panel-note{color:var(--muted);font-size:11px;margin-top:5px;line-height:1.45}.panel-link{font-size:11px;color:var(--blue);font-weight:730;border:0;background:transparent;padding:4px}.divide>*+*{border-top:1px solid var(--line2)}.status{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:8px;font-size:10px;font-weight:800;background:#20362f;color:#8be0b8;white-space:nowrap}.status.pending{background:#3b3329;color:#f1ce96}.status.error{background:#422b33;color:#ffabb4}.status.info{background:#263649;color:#99c4ff}.section-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:26px 0 13px}.section-bar h2{font-size:15px;letter-spacing:-.025em;margin:0}.section-bar p{margin:4px 0 0;color:var(--muted);font-size:11px}.bar{height:7px;background:#263341;border-radius:6px;overflow:hidden}.bar>i{height:100%;display:block;background:#db7265;border-radius:6px}.data-table{width:100%;border-collapse:collapse;min-width:570px}.table-scroll{width:100%;overflow:auto}.data-table th{text-align:left;color:#92a2b2;font-size:10px;font-weight:850;letter-spacing:.05em;padding:12px 18px;border-bottom:1px solid var(--line);white-space:nowrap;text-transform:uppercase}.data-table td{padding:15px 18px;border-bottom:1px solid var(--line2);font-size:12px;color:var(--sub)}.data-table tr:last-child td{border-bottom:0}.data-table th:last-child,.data-table td:last-child{text-align:right}.data-table tr:hover td{background:#ffffff05}.usercell{display:flex;align-items:center;gap:9px}.useravatar{border-radius:10px;background:#313e4f;color:#cddcf0;height:32px;width:32px;display:grid;place-items:center;font-size:11px;font-weight:850;flex:none}.usercell b{display:block;color:var(--text);font-size:12px}.usercell small{display:block;color:var(--muted);margin-top:3px}.tableaction{border:0;color:var(--blue);font-size:11px;background:transparent;font-weight:780;padding:8px}.subnav{display:flex;gap:18px;border-bottom:1px solid var(--line);margin:0 0 24px;overflow-x:auto;scrollbar-width:none}.subnav::-webkit-scrollbar{display:none}.subnav button{flex:none;border:0;background:transparent;padding:0 0 13px;min-height:37px;color:var(--muted);font-size:12px;font-weight:750;border-bottom:2px solid transparent}.subnav button.active{color:#fff;border-bottom-color:var(--brand)}.input,.select,.textarea{background:#101924;color:var(--text);border:1px solid #344151;border-radius:10px;width:100%;min-height:43px;padding:10px 12px;font-size:12px}.textarea{min-height:115px;resize:vertical;line-height:1.6}.input::placeholder,.textarea::placeholder{color:#61738a}.field{display:flex;flex-direction:column;gap:7px;min-width:0}.field label{font-size:11px;color:var(--sub);font-weight:760}.formrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.formstack{display:grid;gap:15px}.setting{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 0}.setting:first-child{padding-top:5px}.setting+.setting{border-top:1px solid var(--line2)}.setting b{font-size:12px}.setting p{font-size:11px;color:var(--muted);margin:5px 0 0;line-height:1.6}.setting .setting-main{min-width:0}.switch{appearance:none;flex:none;width:43px;height:26px;border-radius:100px;background:#455464;border:1px solid #536475;position:relative;cursor:pointer;transition:background .2s}.switch:before{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;background:#dbe2e9;border-radius:50%;transition:transform .2s}.switch:checked{background:#b95247;border-color:#ce695e}.switch:checked:before{transform:translateX(17px);background:#fff}.callout{padding:14px 15px;border:1px solid #3a3840;background:#24252e;border-radius:12px;display:flex;gap:12px;align-items:flex-start;color:#d0d5dc;font-size:12px;line-height:1.6}.callout .icon{color:#e3ba8b;width:18px;flex:none}.callout strong{color:#f2e1cc}.clean-list{display:flex;flex-direction:column}.clean-row{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 0;border-bottom:1px solid var(--line2)}.clean-row:last-child{border-bottom:0}.clean-row b{font-size:12px}.clean-row p{margin:4px 0 0;font-size:11px;color:var(--muted)}.option-list{display:grid;gap:9px}.radio-dot{width:18px;height:18px;border:2px solid #586779;border-radius:50%;flex:none}.selected .radio-dot{border-color:#e06c61;box-shadow:inset 0 0 0 4px #282329;background:#e06c61}.empty-panel{padding:28px;text-align:center;font-size:12px;color:var(--muted)}.pill-list{display:flex;flex-wrap:wrap;gap:7px}.spaced{display:flex;align-items:center;justify-content:space-between;gap:12px}.step{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:11px;font-weight:770;white-space:nowrap}.step em{font-style:normal;display:grid;place-items:center;background:#303b48;height:25px;width:25px;border-radius:50%;color:#b4c0cb}.step.active{color:#fff}.step.active em{background:var(--brand);color:#fff}.step-divider{height:1px;background:var(--line);width:30px}.separator{height:1px;background:var(--line);margin:15px 0}.right-align{text-align:right}.ghost-icon{height:16px;width:16px}
+/* overlays */
+.drawer{background:#131c27;border-left:1px solid #354250;width:min(490px,100%);height:100%;overflow:auto;box-shadow:var(--shadow);display:flex;flex-direction:column}.drawer h2{font-size:19px;margin:0;letter-spacing:-.03em}.modaloverlay{justify-content:center;align-items:center;padding:18px}.modal{width:min(480px,100%);border:1px solid var(--line);border-radius:18px;background:#17212c;padding:25px;box-shadow:var(--shadow)}.modal h2{font-size:18px;margin:0 0 10px}.modal p{font-size:12px;color:var(--muted);line-height:1.65;margin:0 0 18px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}.modal .alert{padding:12px;background:#29252b;border-radius:10px;color:#f4d6bd;border:1px solid #49383b;font-size:12px;line-height:1.5}.search-modal{width:min(630px,100%);padding:0;overflow:hidden}.search-modal input{height:65px;font-size:14px;width:100%;border:none;background:transparent;color:#fff;padding:0 22px;outline:0}.search-results{max-height:380px;overflow:auto;padding:6px 12px 12px}.search-result{border:0;width:100%;text-align:left;display:flex;align-items:center;gap:12px;color:var(--text);background:transparent;padding:13px;border-radius:10px;font-size:12px}.search-result:hover,.search-result:focus-visible{background:#293748}.search-result small{margin-left:auto;color:var(--muted)}.toast{position:fixed;bottom:24px;right:24px;z-index:100;background:#f1dfcd;color:#32231e;border-radius:11px;padding:12px 17px;box-shadow:var(--shadow);font-weight:750;font-size:12px;max-width:360px}
+.mobile-nav{display:none}.mobile-brand{display:none}
+@media(max-width:1170px){.cols-4{grid-template-columns:repeat(2,minmax(0,1fr))}.col-main{grid-template-columns:minmax(0,1fr)}.content{padding:28px 25px 60px}.topbar{padding:0 25px}.sidebar{width:224px}.shell{grid-template-columns:224px minmax(0,1fr)}}
+@media(max-width:760px){.shell{display:block}.sidebar{display:none}.topbar{height:64px;padding:0 16px;z-index:20}.mobile-brand{display:inline-flex;font-weight:850;letter-spacing:-.03em;color:#fff;font-size:15px}.breadcrumb{display:none}.search-btn{min-width:38px;width:38px;justify-content:center;padding:0}.search-btn span,.search-btn .key{display:none}.top-actions{gap:8px}.content{padding:22px 16px calc(110px + env(safe-area-inset-bottom))}.page-head{margin-bottom:22px;display:block}.page-head h1{font-size:24px}.page-actions{justify-content:flex-start;margin-top:16px}.cols-4{grid-template-columns:repeat(2,minmax(0,1fr))}.cols-3,.cols-2,.formrow{grid-template-columns:minmax(0,1fr)}.grid{gap:11px}.mobile-nav{display:grid;position:fixed;bottom:calc(9px + env(safe-area-inset-bottom));left:9px;right:9px;height:64px;background:#1b2632ed;z-index:30;border:1px solid #3a4654;border-radius:17px;box-shadow:0 15px 45px #0008;grid-template-columns:repeat(5,minmax(0,1fr));padding:5px;backdrop-filter:blur(16px)}.mobile-nav button{border:0;border-radius:12px;background:transparent;color:#a8b6c5;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;font-size:9px;font-weight:760;min-width:0}.mobile-nav button.active{background:#38323a;color:#fff}.mobile-nav button .icon{height:21px;width:21px}.drawer{width:100%;height:min(92dvh,950px);border-radius:20px 20px 0 0;border:1px solid #374657}.toast{left:16px;right:16px;bottom:calc(88px + env(safe-area-inset-bottom));max-width:none}.section-bar{align-items:flex-start}.step-divider{width:10px}}
+@media(max-width:370px){.top-actions .refresh-btn{display:none}.page-head h1{font-size:22px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Admin V2 accessibility pass: comfortable touch areas */
+.button{min-height:44px}.button.small{min-height:44px}.circle-btn{width:44px;height:44px;flex:none}.search-btn{height:44px}.subnav button{min-height:44px}.tableaction{min-height:44px}.navbtn>svg:last-child{margin-left:auto;opacity:.35}.mobile-nav button{min-height:50px}
+
+/* legacy component compatibility */
+
+/* Admin V2: visual adaptation only; server, authorization and payment handlers preserved. */
+:root{--bg:#0c1118;--bg-soft:#0f151e;--surface:#151e2a;--surface-2:#1a2532;--ink:#edf1f6;--muted:#94a3b5;--line:#293543;--line-soft:#202c38;--accent:#e65d4f;--accent-soft:#392328;--green:#75c6a3;--green-soft:#75c6a319;--amber:#eac082;--amber-soft:#eac08219;--red:#ef8b94;--red-soft:#ef8b9419}
+.app.shell{display:grid;grid-template-columns:258px minmax(0,1fr);grid-template-rows:auto;min-height:var(--app-h);height:auto;overflow:visible}.app.shell[hidden]{display:none!important}
+.sidebar{overflow:auto}.sidebar nav{display:flex;flex-direction:column;gap:3px}.sidebar .tab.navbtn{width:100%;height:auto;min-height:47px;display:flex;flex-direction:row;justify-content:flex-start;gap:11px;align-items:center;padding:9px 12px;color:#a5b2c1;background:transparent;border-radius:11px;font-size:13px;text-align:left;font-weight:700}.sidebar .tab.navbtn.active{background:#222c39;color:#fff;box-shadow:inset 3px 0 0 #e65d4f}.sidebar .tab.navbtn .ni{display:inline-flex}.sidebar .tab.navbtn svg:last-child{margin-left:auto;opacity:.4}.sidebar .tab.navbtn.active .ni{color:#f38c7d}
+.workspace{min-width:0;display:flex;flex-direction:column}.workspace .topbar{display:flex;flex-direction:row;align-items:center;justify-content:space-between;height:74px;min-height:74px;padding:0 38px;overflow:visible;position:sticky;top:0;background:rgba(12,17,24,.96);border-bottom:1px solid #202c38;border-right:0}.workspace .topbar .top-actions{display:flex;flex-direction:row;align-items:center;gap:10px}.workspace .topbar .reload{display:grid;width:44px;height:44px;color:var(--ink);background:var(--surface);border:1px solid var(--line)}.workspace .topbar .search-btn{height:44px;display:flex;align-items:center}
+.workspace>main.content{display:block;overflow:visible;min-width:0;width:100%;max-width:1550px;height:auto;margin:0 auto;padding:34px 38px 70px}.content .page-head{margin-bottom:27px}.content .page-head h1{color:#edf1f6}.content .view{min-width:0}
+.content .stat{min-height:137px;background:#151e2a!important;border:1px solid #293543!important;border-radius:14px;padding:17px 18px;display:flex;flex-direction:column;justify-content:flex-start}.content .stat .lab{font-size:11px;letter-spacing:0;text-transform:none;color:#b7c2d0;font-weight:650}.content .stat .val{font-size:29px;font-weight:850;letter-spacing:-.05em;line-height:1;margin:20px 0 5px}.content .stat .sub{font-size:11px;color:var(--muted);font-weight:500}
+.v2-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:26px}.v2-section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:25px 0 13px}.v2-section-title b{font-size:15px}.v2-section-title small{font-size:11px;color:var(--muted)}.v2-panels{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(275px,1fr);gap:14px}.v2-panel{min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:19px}.v2-panel-head{display:flex;gap:9px;justify-content:space-between;align-items:flex-start;margin-bottom:12px}.v2-panel-head h3{font-size:14px;margin:0 0 5px}.v2-panel-head p{color:var(--muted);font-size:11px}.v2-panel .btn.sec{flex-shrink:0;max-width:48%;height:auto;min-height:44px;white-space:normal}.v2-queue{display:grid!important;grid-template-columns:1fr!important;gap:0!important}.v2-queue .srow{border:0;border-bottom:1px solid var(--line-soft);background:none;border-radius:0;padding:14px 0;min-height:65px}.v2-queue .srow:last-child{border:0}.v2-finance{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.v2-finance .stat{min-height:108px;padding:12px}.v2-finance .stat .val{font-size:19px;margin:12px 0 5px}.v2-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.v2-actions .srow{display:flex;align-items:center;gap:12px;min-height:67px;background:var(--surface);border:1px solid var(--line);padding:13px}.v2-actions .srow>div{flex:1;min-width:0}.v2-actions .srow h3{font-size:12px}.v2-actions .srow p{font-size:11px}.v2-time,.v2-intro{color:var(--muted);font-size:12px;line-height:1.5;margin:16px 0}.v2-modules{margin-bottom:30px}.v2-modules .srow{border:1px solid var(--line);background:var(--surface);min-height:82px}.v2-modules .tag{display:none}
+.content .block,.content .mcard,.content .ncard,.content .ucard,.content .pcard,.content .srow{background:#151e2a;border-color:#293543}.content .sec-title{font-size:15px}.content .sec-note,.content .mcard p,.content .srow p{color:var(--muted)}.content .input,.content .select,.content .textarea{background:#1a2532;border-color:#293543}.content .period.active,.content .chip.active{background:#e65d4f;border-color:#e65d4f;color:#fff}.content .btn{min-height:44px}.content .btn.sec{background:#1a2532;color:#edf1f6;border:1px solid #293543}.content .btn.danger{background:#4b282e;color:#ffc1c3}.content .list:not(.v2-queue){grid-template-columns:1fr}
+.scrim{z-index:99}.drawer{z-index:100;display:grid;grid-template-rows:auto 1fr;position:fixed;left:0;right:0;top:auto;bottom:0;width:100%;height:auto;max-height:92dvh;overflow:hidden;transform:translateY(106%);border:1px solid #293543;border-radius:18px 18px 0 0;background:#131c27}.drawer.open{transform:translateY(0)}.drawer .dhead{display:grid;grid-template-columns:auto 1fr auto}.drawer .dbody{overflow:auto;max-height:calc(92dvh - 80px)}.toast{z-index:110}
+@media(min-width:860px){body:not(.locked){overflow-y:auto;overflow-x:hidden}.app.shell{grid-template-columns:258px minmax(0,1fr)}.sidebar{height:var(--app-h);position:sticky;top:0}.drawer{left:auto;right:0;top:0;bottom:0;width:min(560px,42vw);height:100dvh;max-height:none;border-radius:0;transform:translateX(106%)}.drawer.open{transform:translateX(0)}.drawer .dbody{max-height:none}.content .list:not(.v2-queue){grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1280px){.content .list:not(.v2-queue){grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1170px){.v2-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.v2-panels{grid-template-columns:1fr}.v2-actions{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:761px) and (max-width:1170px){.app.shell{grid-template-columns:224px minmax(0,1fr)}.sidebar{width:224px}.workspace .topbar{padding:0 25px}.workspace>main.content{padding:28px 25px 60px}}
+@media(max-width:760px){.app.shell{display:block}.sidebar{display:none!important}.workspace .topbar{height:64px;min-height:64px;padding:0 16px}.workspace .topbar .breadcrumb{display:none}.workspace .topbar .mobile-brand{display:inline-flex}.workspace .topbar .search-btn{width:44px;min-width:44px;justify-content:center;padding:0}.workspace .topbar .search-btn span,.workspace .topbar .search-btn .key{display:none}.workspace>main.content{padding:27px 16px calc(110px + var(--safe-bottom))}.v2-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.content .stat{min-height:127px;padding:15px}.content .stat .val{font-size:25px}.v2-panels,.v2-actions{grid-template-columns:1fr}.v2-panel{padding:16px}.content .settings-grid{grid-template-columns:1fr}.mobile-nav{display:grid;position:fixed;bottom:calc(8px + var(--safe-bottom));left:10px;right:10px;z-index:50;grid-template-columns:repeat(5,minmax(0,1fr));height:63px;gap:3px;padding:5px;background:#1b2531;border:1px solid #354353;border-radius:16px;box-shadow:var(--shadow)}.mobile-nav .tab{height:auto;min-height:52px;padding:5px 1px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10px;font-weight:700;background:none;color:#a5b2c1;border-radius:11px}.mobile-nav .tab.active{background:#36313a;color:#fff}.content .page-head{flex-direction:column}}
+@media(max-width:370px){.content .stat{padding:12px}.content .stat .val{font-size:22px}.v2-panel-head{flex-wrap:wrap}}
+
+
+/* V2 approved data table presentation; legacy user actions remain delegated. */
+.content #userList{display:block!important}
+.v2-users-desktop{display:block}
+.v2-users-mobile{display:none}
+.v2-pay-summary{grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:25px}
+.v2-pay-summary .stat{min-height:122px}
+.content .table-scroll{width:100%;overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+.content .data-table{width:100%;border-collapse:collapse;min-width:680px}
+.content .data-table th,.content .data-table td{padding:13px 16px;text-align:left;vertical-align:middle;border-bottom:1px solid var(--line-soft)}
+.content .data-table th{font-size:11px;color:var(--muted);font-weight:800}
+.content .data-table td{font-size:12px}
+.content .tableaction{min-height:44px;padding:9px 12px;white-space:nowrap;border-radius:8px;color:#79aaf2;font-weight:750}
+.content .usercell{display:flex;align-items:center;gap:10px;min-width:160px}
+.content .useravatar{display:grid;place-items:center;flex-shrink:0;width:36px;height:36px;border-radius:10px;background:#344253;color:#edf1f6;font-weight:850}
+.content .usercell small{display:block;margin-top:4px;font-size:11px;color:var(--muted)}
+@media(max-width:760px){.v2-users-desktop{display:none}.v2-users-mobile{display:grid;gap:10px}.v2-pay-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Approved V2 inner tab navigation, without rebuilding V1 data handlers. */
+.v2-subnav{margin:17px 0 24px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:6px;border:1px solid var(--line);background:#111b26;border-radius:12px;min-width:0}
+.v2-subnav [data-v2-sub]{min-height:44px;border:0;border-radius:9px;background:transparent;color:#aebac8;padding:9px 15px;font-size:12px;font-weight:750;cursor:pointer}
+.v2-subnav [data-v2-sub]:hover{color:var(--ink);background:#222c39}
+.v2-subnav [data-v2-sub].active{background:#293543;color:#f5f7fb;box-shadow:inset 0 -2px #e65d4f}
+[data-v2-pane][hidden]{display:none!important}
+.v2-access-hint{padding:15px 18px;background:#1a2532;border:1px solid #293543;border-radius:12px;color:#b7c2d0;font-size:12px;line-height:1.55;margin-bottom:25px}
+#statistics [data-v2-pane]{margin-bottom:15px}
+#marketing [data-v2-pane]>.sec:first-child,#system [data-v2-pane]>.sec:first-child{margin-top:0}
+@media(max-width:760px){.v2-subnav{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px -5px 22px;padding:5px}.v2-subnav button{white-space:nowrap;flex-shrink:0;padding:9px 12px}}
+
+/* Finance V2 internal screens re-use the original controls and API. */
+.v2-finance-heading{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:21px 22px;margin-bottom:15px}
+.v2-finance-heading h3{margin:0 0 7px;font-size:15px;color:var(--ink)}
+.v2-finance-heading p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}
+#payments [data-v2-pane]>.v2-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:760px){#payments [data-v2-pane]>.v2-actions{grid-template-columns:1fr}.v2-finance-heading{padding:16px}}
+
+/* Track cards: V2 HSK 2.0 / 3.0 pairing while keeping the live 3.0 form as a single authority. */
+.v2-track-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px}
+.v2-track-card{min-height:134px;display:flex;gap:14px;align-items:flex-start;padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.v2-track-icon{display:grid;place-items:center;flex-shrink:0;width:42px;height:42px;border-radius:11px;background:#273849;color:#b9d5ed;font-weight:850;font-size:12px}
+.v2-track-copy h3{margin:1px 0 8px;font-size:14px}
+.v2-track-copy p{margin:0 0 12px;color:var(--muted);font-size:12px;line-height:1.45}
+.v2-track-note{color:#b7c2d0;font-size:11px}
+.v2-track-grid .v2-track-actions{grid-template-columns:1fr;margin:0}
+.v2-track-grid .v2-track-actions .srow{min-height:134px;align-items:flex-start}
+@media(max-width:760px){.v2-track-grid{grid-template-columns:1fr}.v2-track-card{min-height:110px}.v2-track-grid .v2-track-actions .srow{min-height:110px}}
+
+
+/* Executive analytics: one clear source, no nested legacy reports. */
+.v2-simple-intro{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:21px 23px;margin:0 0 17px;border-radius:18px;
+  border:1px solid rgba(156,186,216,.19);
+  background:radial-gradient(ellipse 360px 180px at 92% 5%,rgba(227,93,78,.12),transparent 80%),
+             linear-gradient(125deg,#1d2b39,#121d29);
+  box-shadow:var(--v2-shadow);
+}
+.v2-intro-kicker{color:#f08b7e;font-size:10px;font-weight:900;letter-spacing:.13em}
+.v2-simple-intro h2{margin:9px 0 5px;font-size:20px;letter-spacing:-.04em}
+.v2-simple-intro p{font-size:12px;color:#a6b6c9;line-height:1.5}
+.v2-simple-intro .btn{white-space:nowrap;min-height:44px;flex-shrink:0}
+.v2-simple-pane{min-width:0;animation:fade .23s ease}
+.v2-simple-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:21px 0 14px}
+.v2-simple-head h3{font-size:17px;font-weight:820;letter-spacing:-.025em}
+.v2-simple-head p{color:var(--muted);font-size:12px;line-height:1.5}
+.v2-simple-metrics{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.v2-simple-metrics .stat{min-height:122px}
+.v2-simple-footnote{margin:15px 2px 0;color:#899bae;font-size:11.5px;line-height:1.6}
+.v2-client-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.v2-client-card{
+  position:relative;min-width:0;overflow:hidden;display:grid;align-content:start;gap:16px;
+  padding:20px;border-radius:17px;border:1px solid rgba(143,176,206,.21);
+  background:linear-gradient(155deg,#1b2938,#131f2b);
+  box-shadow:var(--v2-shadow);
+}
+.v2-client-card:before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,rgba(237,105,91,.85),transparent)}
+.v2-client-card header{display:flex;align-items:center;gap:10px}
+.v2-client-icon{width:37px;height:37px;display:grid;place-items:center;border-radius:11px;font-size:17px;color:#ffc1b9;background:#3b2b30}
+.v2-client-card h4{font-size:14px;letter-spacing:-.02em}
+.v2-client-card header p{color:var(--muted);font-size:11px;margin-top:3px}
+.v2-client-facts{display:grid;gap:11px}
+.v2-client-fact{min-width:0;display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding-bottom:10px;border-bottom:1px solid rgba(145,175,205,.12)}
+.v2-client-fact:last-child{padding-bottom:0;border:0}
+.v2-client-fact span{color:#a7b6c7;font-size:11.5px}
+.v2-client-fact strong{color:#f0f4f9;font-size:16px;letter-spacing:-.02em;overflow-wrap:anywhere;text-align:right;font-variant-numeric:tabular-nums}
+#statistics #rangeLabel{color:#9fafbf;font-size:11px;margin:5px 0 12px}
+@media(max-width:1160px){
+  .v2-simple-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .v2-client-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .v2-simple-intro{padding:17px;gap:12px;flex-wrap:wrap}
+  .v2-simple-intro h2{font-size:18px}
+  .v2-simple-intro .btn{width:100%}
+  .v2-simple-head{display:block;margin:19px 0 12px}
+  .v2-simple-head p{margin-top:4px}
+  .v2-client-cards{grid-template-columns:minmax(0,1fr)}
+  .v2-client-card{padding:17px;gap:13px}
+  .v2-client-facts{gap:9px}
+  .v2-simple-metrics .stat{min-height:118px}
+}
+@media(max-width:360px){.v2-simple-metrics{gap:8px}}
+/* One refresh action per screen: the topbar already owns refresh. */
+.workspace .page-head .page-actions [data-act="reload"]{display:none}
+.workspace .page-head .page-actions:empty{display:none}
+@media(max-width:370px){
+  .workspace .topbar .top-actions .refresh-btn{display:grid}
+}
+/* ===== Admin V2 refined surfaces: one presentation layer for real controls =====
+   Scoped to the production admin DOM; no API / backend or model fixture changes. */
+:root{
+  --telegram-content-top:0px;--telegram-content-bottom:0px;
+  --v2-glow:rgba(230,93,79,.16);
+  --v2-highlight:rgba(171,200,234,.075);
+  --v2-shadow:0 18px 50px rgba(0,0,0,.19),inset 0 1px rgba(255,255,255,.035);
+  --v2-ease:cubic-bezier(.22,1,.36,1);
+}
+body{
+  padding-top:max(var(--safe-top),var(--telegram-content-top));
+  padding-bottom:max(var(--safe-bottom),var(--telegram-content-bottom));
+  background:radial-gradient(ellipse 1100px 750px at 72% -22%,rgba(55,86,117,.13),transparent 72%),var(--bg);
+}
+.app.shell{
+  min-height:calc(var(--app-h) - max(var(--safe-top),var(--telegram-content-top)));
+}
+.sidebar{
+  background:linear-gradient(165deg,#101924 0%,#0c1118 76%);
+  border-right:1px solid rgba(134,163,195,.13);
+}
+.sidebar .brand-mark{
+  background:linear-gradient(145deg,#e36a59 0%,#b34138 100%);
+  box-shadow:0 8px 23px rgba(199,71,61,.19),inset 0 1px 0 #ffffff50;
+}
+.workspace .topbar{
+  background:rgba(12,17,24,.95);
+  -webkit-backdrop-filter:blur(18px);
+  backdrop-filter:blur(18px);
+  border-bottom-color:rgba(125,154,185,.14);
+}
+.workspace .topbar .mobile-brand{font-weight:850;letter-spacing:-.035em}
+.workspace>main.content{position:relative}
+.content .stat,.v2-panel,.v2-finance-heading,.v2-track-card,
+.content .block,.content .ucard,.content .pcard,.content .ncard,
+.content .srow,.content .mcard{
+  border-color:rgba(133,163,195,.17);
+  box-shadow:var(--v2-shadow);
+}
+.content .stat{
+  background:linear-gradient(135deg,#1a2633,#141e2a 85%)!important;
+  border-color:rgba(133,163,195,.21)!important;
+}
+.content .stat .val{font-variant-numeric:tabular-nums}
+.v2-panel{
+  background:linear-gradient(155deg,#17222f,#131d29);
+}
+.content .srow,
+.content .ucard,.content .pcard{
+  transition:border-color .2s ease,transform .3s var(--v2-ease),box-shadow .25s ease;
+}
+.v2-section-title b{letter-spacing:-.025em}
+.v2-subnav{
+  background:linear-gradient(120deg,#16212e,#121b26);
+  border-color:rgba(133,163,195,.19);
+}
+.v2-subnav [data-v2-sub].active{
+  background:linear-gradient(180deg,#303d4b,#252f3d);
+  box-shadow:inset 0 -2px #e65d4f,0 4px 16px rgba(0,0,0,.13);
+}
+.content .btn:not(.sec):not(.danger),.drawer .btn:not(.sec):not(.danger),
+.content .chip.active{
+  background:linear-gradient(135deg,#ee7264,#dc5449);
+  color:#fff;
+  box-shadow:0 7px 19px rgba(228,85,74,.16),inset 0 1px 0 rgba(255,255,255,.19);
+}
+.content .btn.sec,.drawer .btn.sec{
+  background:linear-gradient(180deg,#263443,#1e2a38);
+  border:1px solid rgba(151,177,203,.18);
+  color:#edf1f6;
+}
+.content .input:focus,.content .select:focus,.content .textarea:focus,
+.drawer .input:focus,.drawer .select:focus,.drawer .textarea:focus{
+  border-color:#ef8a7c;
+  box-shadow:0 0 0 3px var(--v2-glow);
+}
+:where(.content,.drawer) :where(.input,.select,.textarea){
+  min-width:0;max-width:100%;
+}
+.v2-pay-desktop{display:block}
+.v2-pay-mobile{display:none}
+.v2-pay-card{
+  min-width:0;
+  display:grid;gap:13px;
+  border:1px solid rgba(133,163,195,.23);
+  border-radius:17px;
+  background:linear-gradient(146deg,#1b2837,#151f2b);
+  box-shadow:var(--v2-shadow);
+  padding:17px;
+}
+.v2-pay-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.v2-pay-card-top>div:first-child{min-width:0}
+.v2-pay-id{font-size:11px;font-weight:850;letter-spacing:.06em;color:#eb8678}
+.v2-pay-person{margin:5px 0 2px;font-size:15px;font-weight:820;overflow-wrap:anywhere}
+.v2-pay-amount{font-size:18px;font-weight:850;letter-spacing:-.03em;white-space:nowrap;color:#f3f6fb}
+.v2-pay-meta{display:flex;flex-wrap:wrap;align-items:center;gap:7px}
+.v2-pay-meta>span:not(.tag){
+  padding:6px 9px;border:1px solid rgba(133,163,195,.13);
+  border-radius:8px;background:rgba(0,0,0,.13);
+  font-size:11px;color:#b6c7d8;
+  overflow-wrap:anywhere;
+}
+.v2-pay-open{
+  min-height:44px;width:100%;
+  display:flex;justify-content:space-between;align-items:center;
+  border-radius:11px;padding:0 13px;
+  background:rgba(230,93,79,.1);
+  color:#ffb8ad;font-weight:800;font-size:12px;
+}
+.v2-pay-open:focus-visible{outline:2px solid #e98c7e;outline-offset:2px}
+/* The real drawer is #drawer, not the inert .drawer-overlay prototype.
+   Use the same elevated surface language as the V2 sections. */
+#drawer{
+  color:var(--text);
+  background:linear-gradient(155deg,#172331 0%,#111b27 82%);
+  border-color:rgba(162,190,217,.22);
+  box-shadow:-22px 0 88px rgba(0,0,0,.48);
+  transition:transform .38s var(--v2-ease);
+  grid-template-rows:auto minmax(0,1fr);
+}
+#drawer.open{transform:translateX(0)}
+#drawer .dhead{
+  background:linear-gradient(120deg,rgba(50,69,88,.27),rgba(22,34,47,.2));
+  border-color:rgba(155,184,215,.15);
+  align-items:center;
+  padding:19px 20px 17px;
+}
+#drawer .dhead>div{min-width:0}
+#drawer .dtitle{font-size:17px;font-weight:850;letter-spacing:-.025em;line-height:1.25;overflow-wrap:anywhere}
+#drawer .dsub{line-height:1.4;overflow-wrap:anywhere}
+#drawer .close{
+  width:42px;height:42px;border-radius:13px;
+  flex-shrink:0;color:#dae5f1;
+  border:1px solid rgba(150,176,204,.15);
+  background:linear-gradient(135deg,#253444,#1d2a39);
+}
+#drawer .close:focus-visible{outline:2px solid #ef8a7c;outline-offset:2px}
+#drawer .dbody{
+  min-height:0;max-height:none;
+  padding:19px 20px calc(26px + max(var(--safe-bottom),var(--telegram-content-bottom)));
+  overscroll-behavior:contain;
+}
+#drawer .panel{
+  display:grid;gap:14px;background:transparent;
+  border:0;border-radius:0;box-shadow:none;
+  overflow:visible;padding:0;min-width:0;
+}
+#drawer .mcard{
+  min-width:0;
+  padding:17px;
+  border:1px solid rgba(157,187,217,.2);
+  border-radius:15px;
+  background:linear-gradient(145deg,#1d2937,#162130);
+  box-shadow:0 7px 23px rgba(0,0,0,.095),inset 0 1px 0 #ffffff08;
+}
+#drawer .mcard .mcard{background:rgba(7,15,24,.23);box-shadow:none;padding:13px}
+#drawer .mcard h3{font-size:14px;letter-spacing:-.014em}
+#drawer .mcard p{font-size:12px;line-height:1.6}
+#drawer .kv{gap:11px 13px;line-height:1.5}
+#drawer .kv span,#drawer .clean-row .note{color:#a8b9cc}
+#drawer .kv b,#drawer .clean-row b{color:#f1f5fa;font-variant-numeric:tabular-nums}
+#drawer .clean-row{min-width:0;padding:11px 0;align-items:flex-start}
+#drawer .clean-row>*{min-width:0;overflow-wrap:anywhere}
+#drawer .input,#drawer .select,#drawer .textarea{
+  background:#111c29;
+  border:1px solid #3b4c60;
+  color:#edf1f6;
+  border-radius:11px;
+  font-size:16px;
+}
+#drawer .frow label{font-size:12px;color:#aebdd0}
+#drawer .btn{min-height:44px}
+#drawer .danger-note{border-radius:13px;padding:14px;line-height:1.5}
+#drawer .dsec{border-color:rgba(133,163,195,.16);padding-bottom:17px;margin-bottom:18px}
+#drawer .dtitle-sm{font-size:11px;letter-spacing:.095em;color:#c1cfe0}
+#drawer .hint{line-height:1.55}
+#drawer .acc{background:#1a2634;border-color:rgba(148,181,212,.18);border-radius:13px}
+#drawer .v2-profile-details{margin:0 0 13px;overflow:hidden}
+#drawer .v2-profile-details>summary{
+  min-height:52px;padding:14px 16px;
+  color:#dce6f0;letter-spacing:-.01em;
+  font-weight:800;line-height:1.4;
+}
+#drawer .v2-profile-details[open]>summary{
+  color:#fff;background:rgba(230,93,79,.055);
+  border-bottom:1px solid rgba(150,181,212,.16);
+}
+#drawer .v2-profile-body{
+  padding:12px 15px 17px;
+  min-width:0;
+}
+#drawer .v2-profile-body .kv{margin:10px 0 13px}
+#drawer .v2-profile-body .ncnote{line-height:1.65}
+#drawer .v2-profile-body .idrow{align-items:flex-start;flex-wrap:wrap;overflow-wrap:anywhere}
+#drawer .v2-profile-body .idrow>div{min-width:0;flex:1}
+#drawer .v2-profile-body .idrow .tag{flex-shrink:0}
+
+#scrim.open{background:rgba(2,7,13,.69);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+body.locked .mobile-nav{pointer-events:none}
+@media(hover:hover) and (pointer:fine){
+  .content .srow:hover,.content .ucard:hover,
+  .content .pcard:hover,.v2-pay-card:hover{
+    border-color:rgba(235,136,123,.39);
+    transform:translateY(-2px);
+    box-shadow:0 13px 32px rgba(0,0,0,.23);
+  }
+  .v2-pay-open:hover{background:rgba(230,93,79,.19)}
+}
+@media(min-width:761px){
+  body{padding-top:0;padding-bottom:0}
+  .workspace .topbar{top:0}
+}
+@media(max-width:760px){
+  .workspace .topbar{
+    top:0; /* Telegram inset is reserved by body, no duplicate sticky offset */
+    min-height:61px;height:61px;padding:0 16px;
+    border-bottom:1px solid rgba(150,181,212,.16);
+    background:rgba(13,21,30,.94);
+  }
+  .workspace>main.content{
+    padding:19px 16px calc(112px + max(var(--safe-bottom),var(--telegram-content-bottom)));
+  }
+  .content .page-head{gap:13px;margin-bottom:23px}
+  .page-head h1{font-size:clamp(25px,7vw,32px);line-height:1.15}
+  .v2-kpis{gap:10px}
+  .content .stat{min-height:123px;border-radius:15px;padding:15px}
+  .content .stat .lab{font-size:11px;line-height:1.45}
+  .content .stat .val{font-size:clamp(23px,6vw,31px);margin:14px 0 6px}
+  .content .stat .sub{font-size:11px;line-height:1.5}
+  .v2-section-title{align-items:flex-start;flex-wrap:wrap;gap:6px}
+  .v2-panel{border-radius:16px}
+  .mobile-nav{
+    bottom:calc(10px + max(var(--safe-bottom),var(--telegram-content-bottom)));
+    left:12px;right:12px;
+    min-height:65px;height:65px;
+    padding:5px;gap:2px;
+    background:rgba(29,42,56,.93);
+    border:1px solid rgba(164,193,221,.22);
+    border-radius:19px;
+    -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+    box-shadow:0 15px 50px rgba(0,0,0,.43),inset 0 1px 0 #ffffff1c;
+  }
+  .mobile-nav .tab{border-radius:15px;font-size:10px}
+  .mobile-nav .tab.active{
+    background:linear-gradient(145deg,rgba(240,121,103,.19),rgba(159,84,99,.14));
+    box-shadow:inset 0 1px 0 rgba(247,174,162,.09);
+  }
+  .mobile-nav .tab.active svg{color:#ffb6a7}
+  .v2-pay-desktop{display:none}
+  .v2-pay-mobile{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+  #drawer{
+    left:0;right:0;
+    top:max(22px,var(--telegram-content-top));
+    bottom:0;
+    width:100%;
+    max-height:none;height:auto;
+    border-radius:23px 23px 0 0;
+    border:1px solid rgba(151,180,211,.26);
+    transform:translateY(110%);
+    box-shadow:0 -23px 75px rgba(0,0,0,.53);
+  }
+  #drawer.open{transform:translateY(0)}
+  #drawer:before{
+    content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);
+    width:36px;height:4px;border-radius:9px;
+    background:rgba(201,219,235,.23);pointer-events:none;
+  }
+  #drawer .dhead{padding:25px 15px 14px;gap:10px}
+  #drawer .dtitle{font-size:17px}
+  #drawer .dsub{font-size:11.5px}
+  #drawer .dbody{
+    padding:16px 15px calc(22px + max(var(--safe-bottom),var(--telegram-content-bottom)));
+  }
+  #drawer .mcard{padding:14px}
+  #drawer .clean-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:10px}
+  #drawer .kv{grid-template-columns:minmax(0,1fr) minmax(0,1fr);font-size:12px;gap:12px}
+  #drawer .frow.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #drawer .row>[data-pay]{flex:1;min-width:110px}
+  #drawer .panel .mcard{min-width:0}
+  .v2-subnav{scroll-snap-type:x proximity}
+  .v2-subnav [data-v2-sub]{scroll-snap-align:start}
+}
+@media(max-width:370px){
+  #drawer .frow.two{grid-template-columns:minmax(0,1fr)}
+  #drawer .kv{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}
+  .mobile-nav{left:7px;right:7px}
+  .content .stat{padding:12px}
+}
+@media(prefers-reduced-transparency:reduce){
+  .mobile-nav,.workspace .topbar{backdrop-filter:none;-webkit-backdrop-filter:none;background:#15202b}
+  #scrim.open{backdrop-filter:none;-webkit-backdrop-filter:none}
+}
+
+  
+/* Admin V2: genuine phone fullscreen and unclipped two-column tab selectors */
+.hsk30-funnel-mobile{display:none}
+@media(max-width:760px){
+  /* Reserve native Telegram chrome on the workspace, not body. Otherwise
+     iOS adds body-padding + sticky-top (2x) and toolbar covers the title. */
+  body{padding-top:0}
+  #loading{padding-top:max(var(--safe-top),var(--telegram-content-top))}
+  .workspace{padding-top:max(var(--safe-top),var(--telegram-content-top))}
+  .workspace .topbar{
+    top:max(var(--safe-top),var(--telegram-content-top));
+    min-height:56px;height:56px;
+    padding:0 14px;
+  }
+  .workspace>main.content{padding-top:15px;padding-inline:15px}
+  .content .page-head{margin-bottom:16px;gap:8px}
+  .content .page-head h1{font-size:clamp(24px,6.7vw,29px)}
+  .content .page-head p{font-size:13px;line-height:1.48}
+  /* Descriptions were printed twice: once in page-head and again in the pane */
+  .view>.v2-intro{display:none}
+  /* No horizontal partial tab labels: complete touch targets on two rows. */
+  .v2-subnav{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:5px;overflow:visible;flex-wrap:initial;
+    margin:12px 0 18px;padding:5px;
+    scroll-snap-type:none;
+  }
+  .v2-subnav [data-v2-sub]{
+    width:100%;min-width:0;min-height:49px;
+    white-space:normal;text-align:center;
+    line-height:1.3;font-size:12.5px;
+    padding:9px 7px;scroll-snap-align:none;
+    overflow-wrap:break-word;
+  }
+  .v2-subnav:has(>[data-v2-sub]:nth-child(3):last-child)>[data-v2-sub]:last-child{
+    grid-column:span 2;
+  }
+  .content .stat .sub,.content .srow p,.content .ncnote{font-size:12.5px;line-height:1.5}
+  .content .srow h3{font-size:14px}
+  #drawer .dbody{overflow-x:hidden;overscroll-behavior:contain}
+  #drawer .dtitle-sm,#drawer .ncnote,#drawer .mcard p{white-space:normal;overflow-wrap:anywhere}
+  #drawer .grid.g2,#drawer #hsk30Analytics .grid.g2{grid-template-columns:minmax(0,1fr)}
+  #drawer #hsk30Analytics{min-width:0;max-width:100%;overflow-wrap:anywhere}
+  #drawer #hsk30Analytics .grid.g2 section{max-width:100%;min-width:0;overflow-x:auto}
+  #drawer #hsk30Analytics .tags{flex-wrap:wrap}
+  #drawer #hsk30Analytics .tbl{width:100%;font-size:12px}
+  #drawer #hsk30Analytics .tbl th,#drawer #hsk30Analytics .tbl td{
+    padding:10px 6px;overflow-wrap:anywhere;
+    white-space:normal;
+  }
+  #drawer #hsk30Analytics>div[style*="overflow:auto"]{max-width:100%;overscroll-behavior-x:contain}
+  .hsk30-funnel-desktop{display:none}
+  .hsk30-funnel-mobile{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin:10px 0 15px}
+  .hsk30-funnel-step{
+    min-width:0;display:grid;grid-template-columns:minmax(0,1fr) auto;
+    align-items:start;gap:5px 10px;
+    padding:13px;border:1px solid rgba(153,182,211,.18);
+    border-radius:12px;background:linear-gradient(135deg,#192635,#14202d);
+  }
+  .hsk30-funnel-step>b{font-size:12.5px;line-height:1.42;overflow-wrap:anywhere}
+  .hsk30-funnel-count{color:#f1f6fa;font-size:16px;font-weight:850;font-variant-numeric:tabular-nums}
+  .hsk30-funnel-step>small{grid-column:1/-1;font-size:11.5px;color:var(--muted);line-height:1.4}
+}
+
+
+/* iOS Telegram WebView focus zoom guard.
+   WebKit auto-zooms inputs with computed text below 16px.
+   Do not disable manual pinch zoom via viewport restrictions. */
+@media(max-width:760px){
+  #app input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
+  #app select,#app textarea,
+  #drawer input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
+  #drawer select,#drawer textarea,
+  .search-modal input{
+    font-size:16px!important;
+  }
+  #users .toolbar{grid-template-columns:minmax(0,1fr) 46px;min-width:0;max-width:100%}
+  #users #search{min-width:0;max-width:100%;height:48px;font-size:16px!important}
+  #users .toolbar>.icon-btn{width:46px;min-width:46px}
+  #users .chips{max-width:100%;min-width:0}
+}
+
+  
+/* Finance / Portfolio — render real data in the page, not a legacy drawer. */
+#v2PortfolioView{display:grid;gap:19px;min-width:0}
+.v2-ledger-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;min-width:0}
+.v2-ledger-eyebrow{font-size:10px;font-weight:850;letter-spacing:.145em;text-transform:uppercase;color:#ec9286}
+.v2-ledger-heading h2{font-size:clamp(23px,3vw,30px);line-height:1.15;letter-spacing:-.045em;margin:7px 0}
+.v2-ledger-heading p{max-width:560px;font-size:12px;line-height:1.65;color:#a9b8c8}
+.v2-ledger-refresh{gap:9px;flex:none}
+.v2-ledger-overview{display:grid;grid-template-columns:minmax(270px,1.15fr) minmax(0,1.85fr);gap:13px;min-width:0}
+.v2-ledger-balance{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;justify-content:center;
+  min-height:177px;padding:25px;border:1px solid rgba(243,139,127,.29);border-radius:16px;
+  background:radial-gradient(circle at 100% 0%,rgba(234,104,88,.17),transparent 58%),linear-gradient(125deg,#28333f,#1b2532);
+  box-shadow:0 16px 35px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.08)}
+.v2-ledger-balance-label{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:700;line-height:1.45;color:#b9c7d7;position:relative;z-index:1}
+.v2-ledger-pulse{flex:none;width:7px;height:7px;background:#f18e80;border-radius:50%;box-shadow:0 0 0 4px rgba(242,118,103,.12)}
+.v2-ledger-balance-value{position:relative;z-index:1;margin:17px 0 11px;font-size:clamp(31px,4vw,42px);letter-spacing:-.065em;font-weight:850;line-height:1.04;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.v2-ledger-balance-foot{position:relative;z-index:1;font-size:11px;line-height:1.55;color:#aab9cb}
+.v2-ledger-separator{padding:0 4px;color:#657b91}
+.v2-ledger-deco{position:absolute;top:-25px;right:-28px;width:168px;height:168px;color:rgba(236,153,143,.10);z-index:0}
+.v2-ledger-metrics{min-width:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.v2-ledger-metric{display:flex;flex-direction:column;justify-content:space-between;gap:7px;min-height:176px;
+  border:1px solid #31404f;border-radius:15px;background:linear-gradient(145deg,#182330,#141e2a);
+  padding:22px 18px;min-width:0}
+.v2-ledger-metric-label{font-size:11px;font-weight:750;color:#b8c7d7}
+.v2-ledger-metric-value{font-size:clamp(19px,2.3vw,27px);font-weight:850;letter-spacing:-.045em;line-height:1.2;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.v2-ledger-metric.profit .v2-ledger-metric-value{color:#84d5b4}
+.v2-ledger-metric.expense .v2-ledger-metric-value{color:#f0a196}
+.v2-ledger-metric-foot{font-size:11px;color:#8899ad;line-height:1.45}
+.v2-ledger-note{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;background:rgba(33,42,53,.8);
+  border:1px solid rgba(176,163,142,.19);border-radius:12px;font-size:11px;color:#b8c3d0;line-height:1.65}
+.v2-ledger-note-icon{font-size:17px;line-height:1.3;color:#ecba87}
+.v2-ledger-content{display:grid;grid-template-columns:minmax(285px,.78fr) minmax(0,1.22fr);align-items:start;gap:14px;min-width:0}
+.v2-ledger-panel{background:linear-gradient(160deg,#182330,#151f2b);border:1px solid #31404e;
+  border-radius:17px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.045);min-width:0}
+.v2-ledger-panel-head{padding:21px 22px 17px;border-bottom:1px solid #263442}
+.v2-ledger-panel-head h3{font-size:16px;font-weight:800;letter-spacing:-.025em;margin:7px 0 5px}
+.v2-ledger-panel-head p{font-size:11px;line-height:1.5;color:#95a7bb}
+.v2-ledger-form{padding:21px 22px 23px;display:grid;gap:16px}
+.v2-ledger-form-row{display:grid;grid-template-columns:1fr 1fr;gap:11px;min-width:0}
+.v2-ledger-form .field{gap:8px}
+.v2-ledger-form .field label{font-size:11px;color:#b6c4d4}
+.v2-ledger-form .input,.v2-ledger-form .select{background:#101a26;border:1px solid #3a4a5c;border-radius:10px;
+  min-height:46px;max-width:100%;font-size:16px;outline:none;color:#edf1f6}
+.v2-ledger-form .input:focus,.v2-ledger-form .select:focus{border-color:#f08377;box-shadow:0 0 0 3px rgba(228,97,79,.14)}
+.v2-ledger-form .input::placeholder{color:#687a8f}
+.v2-ledger-form .v2-ledger-save{width:100%;min-height:48px;justify-content:center;margin-top:2px;font-size:13px}
+.v2-ledger-save span{margin-left:auto}
+.v2-ledger-records{max-height:620px;overflow-y:auto}
+.v2-ledger-record{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:13px;align-items:center;
+  padding:15px 20px;min-width:0;border-bottom:1px solid #263441}
+.v2-ledger-record:last-child{border-bottom:0}
+.v2-ledger-record-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#293b36;color:#81d8b5;font-size:19px}
+.v2-ledger-record-icon.negative{background:#382a34;color:#f4a59c}
+.v2-ledger-record-copy{min-width:0;display:grid;gap:5px}
+.v2-ledger-record-copy b{font-size:12px;font-weight:750;line-height:1.45;color:#eaf0f6;overflow-wrap:anywhere}
+.v2-ledger-record-copy small{font-size:10px;color:#93a4b7;line-height:1.45;overflow-wrap:anywhere}
+.v2-ledger-record-amount{font-size:13px;font-weight:850;white-space:nowrap;font-variant-numeric:tabular-nums;color:#eaf1f8}
+.v2-ledger-record-amount.positive{color:#7ccfae}
+.v2-ledger-record-amount.negative{color:#efa398}
+.v2-ledger-empty{padding:36px 20px;text-align:center;font-size:12px;color:#8c9eae}
+@media(max-width:1150px){
+ .v2-ledger-overview{grid-template-columns:1fr}
+ .v2-ledger-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .v2-ledger-content{grid-template-columns:1fr 1fr}
+}
+@media(max-width:760px){
+ #v2PortfolioView{gap:14px}
+ .v2-ledger-heading{gap:9px;align-items:flex-start}
+ .v2-ledger-heading h2{font-size:25px}
+ .v2-ledger-heading p{font-size:12px}
+ .v2-ledger-refresh{padding:0 10px;min-height:42px}
+ .v2-ledger-refresh span{display:none}
+ .v2-ledger-overview{gap:10px}
+ .v2-ledger-balance{min-height:160px;padding:21px}
+ .v2-ledger-balance-value{font-size:36px}
+ .v2-ledger-metrics{gap:9px}
+ .v2-ledger-metric{min-height:114px;padding:13px 10px;border-radius:13px}
+ .v2-ledger-metric-label{font-size:10px}
+ .v2-ledger-metric-value{font-size:18px}
+ .v2-ledger-metric-foot{font-size:9px}
+ .v2-ledger-content{grid-template-columns:1fr}
+ .v2-ledger-panel-head{padding:17px 18px 14px}
+ .v2-ledger-form{padding:18px;gap:14px}
+ .v2-ledger-records{max-height:none}
+ .v2-ledger-record{padding:14px 15px;gap:9px}
+ .v2-ledger-record-icon{width:36px;height:36px}
+ .v2-ledger-record-amount{font-size:12px}
+}
+@media(max-width:375px){
+ .v2-ledger-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .v2-ledger-metric.expense{grid-column:1/-1;min-height:94px}
+ .v2-ledger-form-row{grid-template-columns:1fr}
+}
+  
+/* Real Finance V2 pricing + bank management. No faux prototype actions. */
+#v2PricesView,#v2MethodsView{display:grid;gap:20px;min-width:0}
+.v2-price-grid,.v2-methods-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;min-width:0}
+.v2-price-tile{display:flex;flex-direction:column;align-items:stretch;gap:7px;min-width:0;
+  background:linear-gradient(147deg,#192634,#141e2a);border:1px solid #334251;border-radius:16px;
+  padding:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.v2-price-tile-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.v2-price-tile h3{font-size:15px;font-weight:800;letter-spacing:-.015em;margin:12px 0 0}
+.v2-price-current{font-size:29px;font-weight:850;letter-spacing:-.045em;line-height:1.15;margin-top:7px;font-variant-numeric:tabular-nums}
+.v2-price-foot{font-size:11px;color:#94a5b7}
+.v2-price-controls{display:flex;align-items:flex-end;gap:10px;min-width:0;
+  padding-top:16px;margin-top:auto;border-top:1px solid #293746}
+.v2-price-controls label{min-width:0;flex:1;font-size:11px;color:#b7c8d7;font-weight:700}
+.v2-price-controls .input{margin-top:8px;min-height:44px;font-size:16px;background:#101b29;border-color:#3a4b5e}
+.v2-price-controls .button{flex:none;min-height:44px}
+.v2-price-link{display:flex;align-items:center;gap:15px;text-align:left;width:100%;min-height:81px;
+  background:linear-gradient(125deg,#202d3b,#17212d);border:1px solid #37485a;border-radius:15px;
+  padding:17px 19px;color:#f3f6f9}
+.v2-price-link-icon{display:grid;place-items:center;flex:none;width:43px;height:43px;border-radius:12px;
+  background:rgba(234,113,94,.15);border:1px solid rgba(234,113,94,.25);color:#ef988a;font-size:13px;font-weight:850}
+.v2-price-link>span:nth-child(2){flex:1;min-width:0}
+.v2-price-link b{font-size:13px}
+.v2-price-link small{display:block;color:#9cafc2;font-size:11px;margin-top:6px;line-height:1.5}
+.v2-price-link>span:last-child{color:#e99588;font-size:20px}
+#v2MethodsView .v2-ledger-panel .textarea{background:#0f1a26;border:1px solid #3b4b5d;
+  border-radius:11px;line-height:1.55;font-size:15px;resize:vertical;min-height:110px}
+#v2MethodsView .v2-ledger-panel .textarea:focus{outline:none;border-color:#ed8e7f;box-shadow:0 0 0 3px rgba(239,137,124,.12)}
+#v2MethodsView .v2-ledger-panel .v2-ledger-form .button{width:100%}
+#v2MethodsView .v2-qr-tile .qr-price{grid-template-columns:repeat(2,minmax(0,1fr))}
+#v2MethodsView .v2-qr-tile .row{gap:10px}
+#v2MethodsView .v2-qr-tile .btn{min-height:43px;flex:1}
+#v2MethodsView .v2-qr-tile .frow{margin:0}
+#v2MethodsView .v2-qr-tile .ncnote{line-height:1.6}
+@media(hover:hover) and (pointer:fine){
+  .v2-price-tile:hover,.v2-price-link:hover{border-color:#667888}
+}
+@media(max-width:870px){.v2-price-grid,.v2-methods-grid{grid-template-columns:1fr}}
+@media(max-width:760px){
+ #v2PricesView,#v2MethodsView{gap:14px}
+ .v2-price-tile{padding:17px}
+ .v2-price-current{font-size:26px}
+ .v2-price-controls{gap:8px}
+ .v2-price-controls .button{padding:0 12px}
+ .v2-price-link{padding:14px;gap:10px}
+}
+@media(max-width:350px){.v2-price-controls{flex-wrap:wrap}.v2-price-controls .button{width:100%}}
+
+  
+/* Product V2 inline workspaces — no legacy modal forms. */
+.v2-product-editor{min-width:0;display:grid;gap:18px;animation:fade .22s ease}
+.v2-product-editor[hidden]{display:none!important}
+.v2-product-editor-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;
+  padding:24px 25px;border-radius:18px;
+  border:1px solid rgba(146,180,214,.23);
+  background:radial-gradient(circle at 80% -30%,rgba(231,102,80,.17),transparent 55%),
+    linear-gradient(140deg,#202f40,#15222f 75%);
+  box-shadow:0 14px 37px rgba(0,0,0,.17),inset 0 1px 0 rgba(255,255,255,.065)}
+.v2-product-editor-head h2{font-size:clamp(21px,2.5vw,29px);font-weight:850;margin:10px 0 8px;letter-spacing:-.035em}
+.v2-product-editor-head p{font-size:12px;color:#b8c7d7;line-height:1.6;max-width:580px}
+.v2-product-editor-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0}
+.v2-product-editor-body{min-width:0}
+.v2-product-editor-body>.panel{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:15px;
+ padding:0;border:0;background:transparent;box-shadow:none;overflow:visible
+}
+.v2-product-editor-body .mcard{
+ min-width:0;display:grid;align-content:start;gap:12px;
+ padding:22px;border:1px solid rgba(151,178,213,.21);border-radius:16px;
+ background:linear-gradient(145deg,#1b2938,#14202d);
+ box-shadow:0 8px 30px rgba(0,0,0,.13),inset 0 1px 0 rgba(255,255,255,.035)
+}
+.v2-product-editor-body .mcard h3{font-size:15px;letter-spacing:-.018em}
+.v2-product-editor-body .mcard p{font-size:12px;line-height:1.6}
+.v2-product-editor-body .mcard>.tags{gap:8px}
+.v2-product-editor-body .mcard .frow{min-width:0}
+.v2-product-editor-body .mcard .frow label{font-size:12px}
+.v2-product-editor-body .mcard .input,.v2-product-editor-body .mcard .select{
+ font-size:16px;background:#101d2a;border:1px solid #35475a;min-width:0;max-width:100%
+}
+.v2-product-editor-body .mcard .hint{line-height:1.65}
+.v2-product-editor-body .mcard .btn{max-width:100%;min-height:46px}
+.v2-product-editor-body .mcard .ncsw{min-height:36px;align-items:center;white-space:normal}
+.v2-product-editor-body [data-limit-row]{
+ display:grid;grid-template-columns:minmax(0,1.1fr) minmax(82px,.7fr) minmax(0,.6fr) minmax(100px,.8fr);
+ align-items:center;gap:10px;border-bottom:1px solid rgba(152,181,211,.11);padding:10px 0;margin:0
+}
+.v2-product-editor-body [data-limit-row] label{font-size:11px!important;line-height:1.45}
+.v2-product-editor-body [data-limit-row] label:has(input){display:flex;align-items:center;gap:7px}
+.v2-product-editor-body [data-limit-row] .input,.v2-product-editor-body [data-limit-row] .select{min-height:43px}
+.v2-product-editor-body [data-limit-row] .input:disabled{opacity:.48}
+#v2ProductEditorAccess:has([data-limit-row]) .mcard:has([data-limit-row]){grid-column:1/-1}
+#v2ProductEditorTracks .mcard:has(#hsk30Analytics){grid-column:1/-1}
+.v2-product-editor .panel>.btn:last-child{align-self:start}
+@media(max-width:980px){
+ .v2-product-editor-body>.panel{grid-template-columns:1fr}
+ .v2-product-editor-body .mcard:has(#hsk30Analytics){grid-column:auto}
+}
+@media(max-width:760px){
+ .v2-product-editor{gap:12px}
+ .v2-product-editor-head{flex-direction:column;padding:19px 17px;gap:16px}
+ .v2-product-editor-actions{width:100%;justify-content:stretch}
+ .v2-product-editor-actions .button{flex:1}
+ .v2-product-editor-body .mcard{padding:17px;gap:10px}
+ .v2-product-editor-body [data-limit-row]{
+    grid-template-columns:minmax(0,1fr) minmax(84px,.52fr);gap:7px 12px
+ }
+ .v2-product-editor-body [data-limit-row]>label:first-child{grid-column:1/-1}
+ .v2-product-editor-body .mcard .frow.two{grid-template-columns:1fr}
+}
+
+
+/* Admin V2 real marketing workspace: data handlers remain unchanged. */
+.v2-marketing-editor{display:grid;gap:15px;margin:20px 0 28px;min-width:0;scroll-margin-top:100px}
+.v2-marketing-editor[hidden]{display:none!important}
+.v2-marketing-editor-content>.panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;align-items:start;min-width:0;background:transparent;border:0;box-shadow:none;overflow:visible}
+.v2-marketing-editor-content .mcard{display:grid;align-content:start;gap:12px;min-width:0;padding:22px;background:linear-gradient(145deg,#1c2b3a,#14212f);border:1px solid rgba(153,186,221,.21);border-radius:17px;box-shadow:0 13px 36px rgba(0,0,0,.14),inset 0 1px 0 #ffffff09}
+.v2-marketing-editor-content .mcard h3{font-size:15px;letter-spacing:-.025em}
+.v2-marketing-editor-content .mcard .frow{min-width:0}
+.v2-marketing-editor-content .mcard .frow label{font-size:12px}
+.v2-marketing-editor-content :where(.input,.select,.textarea){min-width:0;max-width:100%;font-size:16px;background:#111e2b;border:1px solid #3a4e61}
+.v2-marketing-editor-content .mcard:has(#bcText){grid-row:span 2}
+.v2-marketing-editor-content #bcText{min-height:170px}
+.v2-marketing-editor-content .ncsw{white-space:normal;line-height:1.5}
+.v2-marketing-editor-content>.panel>.row:last-child{grid-column:1/-1;display:flex;justify-content:flex-end;gap:11px;padding:14px 0 0;border-top:1px solid rgba(157,184,214,.17)}
+.v2-marketing-editor-content>.panel>.row:last-child .btn{min-height:47px;padding:0 24px}
+.v2-marketing-editor-content #bcSend{background:linear-gradient(135deg,#ec7365,#d6534a);color:white;box-shadow:0 10px 22px rgba(226,89,73,.15)}
+.v2-editor-close{flex-shrink:0}
+@media(max-width:980px){.v2-marketing-editor-content>.panel{grid-template-columns:1fr}.v2-marketing-editor-content .mcard:has(#bcText){grid-row:auto}.v2-marketing-editor-content>.panel>.row:last-child{grid-column:auto}}
+@media(max-width:760px){.v2-marketing-editor{gap:12px;margin-top:14px;scroll-margin-top:80px}.v2-marketing-editor-content .mcard{padding:17px}.v2-marketing-editor-content>.panel>.row:last-child{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.v2-marketing-editor-content>.panel>.row:last-child .btn{padding:0 8px}}
+
+
+/* System V2 real management — same visual language as marketing. */
+#v2SystemEditor{scroll-margin-top:90px}
+#v2SystemEditor .v2-system-editor-content>.panel{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;min-width:0
+}
+#v2SystemEditor .mcard{min-width:0;align-content:start}
+#v2SystemEditor .mcard .row{justify-content:flex-start;gap:9px}
+#v2SystemEditor .mcard .btn{min-height:44px;max-width:100%}
+#v2SystemEditor .mcard .frow label{font-size:12px}
+#v2SystemEditor .mcard .input{font-size:16px;min-width:0}
+@media(max-width:950px){
+ #v2SystemEditor .v2-system-editor-content>.panel{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:760px){#v2SystemEditor .mcard{padding:17px}}
+
+/* Complete analytics archive: modern disclosure UI, original metric sources. */
+.v2-details-pane{min-width:0}
+.v2-details-pane>.v2-simple-head{margin-bottom:16px}
+.v2-legacy-intro{
+ display:grid;gap:7px;margin-bottom:16px;padding:17px 19px;border-radius:15px;
+ background:linear-gradient(110deg,rgba(62,100,132,.18),rgba(230,93,79,.065));
+ border:1px solid rgba(144,182,212,.23);font-size:12px;line-height:1.65;color:#b6c7d9
+}
+.v2-legacy-intro strong{color:#eaf1fa;font-size:13px}
+.v2-legacy-quality{
+ padding:12px 15px;margin-bottom:15px;border:1px solid var(--line);
+ border-radius:12px;color:#a8bcd0;font-size:12px;line-height:1.5;
+ overflow-wrap:anywhere
+}
+.v2-legacy-group{
+ min-width:0;margin-bottom:14px;border-radius:17px;
+ background:linear-gradient(150deg,#172433,#121c28);
+ border:1px solid rgba(148,184,213,.23);
+ box-shadow:0 14px 42px rgba(0,0,0,.13),inset 0 1px 0 rgba(255,255,255,.035);
+ overflow:hidden
+}
+.v2-legacy-group>summary{
+ list-style:none;cursor:pointer;min-height:75px;padding:19px 21px;
+ display:flex;align-items:center;justify-content:space-between;gap:16px;
+ color:#f0f5fb
+}
+.v2-legacy-group>summary::-webkit-details-marker{display:none}
+.v2-legacy-group>summary span:first-child{display:grid;gap:6px;min-width:0}
+.v2-legacy-group>summary strong{font-size:15px;letter-spacing:-.018em}
+.v2-legacy-group>summary small{font-size:12px;line-height:1.45;color:#99aec3;font-weight:500}
+.v2-legacy-group>summary span:last-child{
+ display:grid;place-items:center;flex:none;border-radius:10px;
+ width:34px;height:34px;background:#263647;font-size:20px;
+ color:#eaaa9f;transition:transform .2s ease
+}
+.v2-legacy-group[open]>summary{border-bottom:1px solid rgba(145,179,212,.19)}
+.v2-legacy-group[open]>summary span:last-child{transform:rotate(180deg)}
+.v2-legacy-group-body{padding:18px 20px 8px;min-width:0}
+.v2-details-pane .block{
+ min-width:0;max-width:100%;padding:19px;
+ margin-bottom:14px;overflow-x:auto;
+ border-radius:14px;border-color:rgba(149,184,214,.2);
+ background:linear-gradient(135deg,#1a2838,#162130)
+}
+.v2-details-pane .block-head{align-items:flex-start}
+.v2-details-pane .block-head h3{font-size:14px;color:#f2f6fd;line-height:1.4}
+.v2-details-pane .block-head p{font-size:12px;line-height:1.55;color:#a8b8cd}
+.v2-details-pane .explain{
+ background:#172333;border-color:rgba(128,162,198,.24);
+ color:#bacbdd;line-height:1.65;font-size:12px
+}
+.v2-details-pane .grid.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.v2-details-pane .stat{min-height:105px}
+.v2-details-pane .bar{
+ height:auto;display:grid;grid-template-columns:minmax(96px,.85fr) minmax(0,1fr) 46px;
+ align-items:center;gap:10px;margin:10px 0;
+ background:transparent;border-radius:0;overflow:visible;
+ color:#aebfd1;font-size:12px;line-height:1.45
+}
+.v2-details-pane .bar .track{min-width:0;background:#2c3b4d;height:9px;border-radius:999px;overflow:hidden}
+.v2-details-pane .bar .track>span{display:block;height:100%;background:linear-gradient(90deg,#e6695b,#8db7ee)}
+.v2-details-pane .bar>b{text-align:right;color:#f4f7fb;font-variant-numeric:tabular-nums}
+.v2-details-pane .tbl{min-width:450px;width:100%;font-size:12px}
+.v2-details-pane .tbl th,.v2-details-pane .tbl td{padding:10px 12px}
+.v2-details-pane .dtitle-sm{margin-top:8px}
+.v2-details-pane #reportText{max-width:100%;overflow-wrap:anywhere;white-space:pre-wrap}
+@media(max-width:760px){
+ #statistics .v2-subnav [data-v2-sub="statistics:details"]{grid-column:1/-1}
+ .v2-legacy-group>summary{padding:17px 15px;min-height:72px}
+ .v2-legacy-group>summary strong{font-size:14px}
+ .v2-legacy-group-body{padding:14px 12px 2px}
+ .v2-details-pane .block{padding:15px}
+ .v2-details-pane .bar{grid-template-columns:minmax(74px,.9fr) minmax(0,1fr) 38px;font-size:11px;gap:6px}
+ .v2-details-pane .grid.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .v2-details-pane .tbl{min-width:400px}
+}
+
   </style>
 </head>
 <body>
@@ -259,66 +1076,81 @@
     </div>
   </div>
 
-  <div id="app" class="app" hidden>
-    <aside class="topbar">
-      <div class="topbar-inner">
-        <div class="brand">
-          <img class="brand-mark" src="/assets/hsk-ai-avatar.webp" alt="" aria-hidden="true">
-          <div>
-            <h1>Admin panel</h1>
-            <p id="brandSub">Bot · foydalanuvchi · obuna · pul markazi</p>
-          </div>
-        </div>
-        <div class="top-actions">
-          <span class="pill"><span class="dot"></span><span id="liveLabel">Jonli</span></span>
-          <button class="reload" data-act="reload" title="Yangilash">⟳</button>
-        </div>
-      </div>
-      <nav class="tabs" id="tabs">
-        <button class="tab active" data-tab="dashboard"><span class="ic">🏠</span>Bosh</button>
-        <button class="tab" data-tab="statistics"><span class="ic">📊</span>Statistika</button>
-        <button class="tab" data-tab="users"><span class="ic">👥</span>Odamlar</button>
-        <button class="tab" data-tab="payments"><span class="ic">💳</span>To'lov</button>
-        <button class="tab" data-tab="settings"><span class="ic">⚙️</span>Boshqaruv</button>
-      </nav>
-    </aside>
-
-    <main>
+  <div id="app" class="app shell" hidden>
+  <aside class="sidebar"><div class="brand"><div class="brand-mark">学</div><div><div class="brand-name">HSK AI</div><div id="brandSub" class="brand-meta">CONTROL CENTER</div></div></div>
+    <div class="section-caption">WORKSPACE</div><nav id="tabs" aria-label="Asosiy navigatsiya"><button class="tab navbtn active" data-tab="dashboard"><span class="ni"><svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-8h6v8"/></svg></span><span>Bosh sahifa</span><svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><button class="tab navbtn " data-tab="statistics"><span class="ni"><svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h17M8 14l4-4 4 3 4-7"/></svg></span><span>Analitika</span><svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><button class="tab navbtn " data-tab="users"><span class="ni"><svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3a4 4 0 0 1 0 8"/></svg></span><span>Foydalanuvchilar</span><svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><button class="tab navbtn " data-tab="payments"><span class="ni"><svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="16" rx="2"/><path d="M2 10h20M16 15h2"/></svg></span><span>Moliya</span><svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><button class="tab navbtn " data-tab="settings"><span class="ni"><svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6v15M3 19V4a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v17a3 3 0 0 0-3-3H3zM12 7a3 3 0 0 1 3-3h4a2 2 0 0 1 2 2v12h-6a3 3 0 0 0-3 3"/></svg></span><span>Mahsulot</span><svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><button class="tab navbtn " data-tab="marketing"><span class="ni"><svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9v5a2 2 0 0 0 2 2h2l2 5h3l-2-5 10-4V8L10 4H5a2 2 0 0 0-2 2v3z"/></svg></span><span>Marketing</span><svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><button class="tab navbtn " data-tab="system"><span class="ni"><svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span><span>Tizim</span><svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></nav>
+    <div class="side-spacer"></div><div class="side-bottom"><div class="server"><i class="dot"></i><span id="liveLabel">Admin panel faol</span></div><div class="profile"><div class="avatar">AD</div><div><b>Administrator</b><small>Telegram Admin</small></div></div></div>
+  </aside>
+  <div class="workspace"><header class="topbar"><div class="breadcrumb"><span>HSK AI</span><span>/</span><b id="v2Crumb">Bosh sahifa</b></div>
+  <div class="mobile-brand">HSK AI <span style="color:#f08879;margin-left:5px">Admin</span></div>
+  <div class="top-actions"><button class="search-btn" data-v2-search><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><span>Bo‘lim yoki amal qidirish</span><small class="key">/</small></button>
+  <button class="reload circle-btn refresh-btn" data-act="reload" title="Yangilash"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-15-3l-2 2M3 5v5h5M4 13a8 8 0 0 0 15 3l2-2M21 19v-5h-5"/></svg></button></div></header>
+  <main class="content"><div class="page-head"><div><div class="eyebrow" id="v2Eyebrow">HSK AI / OVERVIEW</div><h1 id="v2Title">Bosh sahifa</h1><p id="v2Description">Bugungi holatni ko‘ring va muhim ishlarni shu yerdan boshlang.</p></div><div class="page-actions"><button class="btn sec" data-act="reload"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-15-3l-2 2M3 5v5h5M4 13a8 8 0 0 0 15 3l2-2M21 19v-5h-5"/></svg> Yangilash</button></div></div>
+  
       <!-- DASHBOARD -->
       <section id="dashboard" class="view active">
-        <div class="sec">
-          <div class="sec-head">
-            <div><div class="sec-title">Umumiy holat</div><div class="sec-note" id="generatedAt">—</div></div>
-          </div>
-          <div class="grid g2" id="summaryGrid"></div>
-        </div>
-        <div class="sec">
-          <div class="sec-head"><div class="sec-title">Segmentlar</div><button class="link-btn" data-tab-jump="users">Hammasi →</button></div>
-          <div class="chips" id="segmentChips"></div>
-        </div>
-        <div class="sec">
-          <div class="sec-head"><div><div class="sec-title">Tezkor moliya</div><div class="sec-note">To'liq davr bo'yicha kuzatilgan net</div></div><button class="link-btn" data-tab-jump="statistics">Batafsil →</button></div>
-          <div class="grid g2" id="financeQuick"></div>
-        </div>
-        <div class="sec">
-          <div class="sec-head"><div class="sec-title">Bugungi vazifalar</div></div>
-          <div class="list" id="queueList"></div>
-        </div>
-      </section>
+  <div id="summaryGrid" class="grid g2 v2-kpis"></div>
+  <div class="v2-section-title"><b>Operatsion markaz</b><small>Eng muhim ishlar birinchi</small></div>
+  <div class="v2-panels"><article class="v2-panel">
+    <div class="v2-panel-head"><div><h3>E’tibor talab qiladi</h3><p>To‘lov va foydalanuvchi holati</p></div><button class="btn sec" data-tab-jump="payments">Barcha to‘lovlar →</button></div>
+    <div id="queueList" class="list v2-queue"></div></article>
+    <article class="v2-panel"><div class="v2-panel-head"><div><h3>Moliyaviy holat</h3><p>Real server raqamlari</p></div><button class="btn sec" data-tab-jump="statistics">Batafsil →</button></div>
+    <div id="financeQuick" class="grid g2 v2-finance"></div></article></div>
+  <div class="v2-section-title"><b>Tezkor harakatlar</b></div>
+  <div class="v2-actions">
+    <button class="srow" data-tab-jump="users"><svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3a4 4 0 0 1 0 8"/></svg><div><h3>Foydalanuvchi topish</h3><p>ID yoki @username bo‘yicha</p></div><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+    <button class="srow" data-module="broadcast"><svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9v5a2 2 0 0 0 2 2h2l2 5h3l-2-5 10-4V8L10 4H5a2 2 0 0 0-2 2v3z"/></svg><div><h3>Ommaviy xabar</h3><p>Auditoriya, matn va test</p></div><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+    <button class="srow" data-module="limits"><svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg><div><h3>Limitlarni ko‘rish</h3><p>Free va Trial qoidalari</p></div><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+  </div>
+  <div class="v2-section-title"><b>Foydalanuvchi segmentlari</b><button class="link-btn" data-tab-jump="users">Hammasi →</button></div>
+  <div class="chips" id="segmentChips"></div><div class="v2-time" id="generatedAt">—</div>
+</section>
 
-      <!-- STATISTICS -->
+      <!-- ANALYTICS: three clients / one real finance source, max four facts per pane -->
       <section id="statistics" class="view">
-        <div class="sec-head" style="margin-bottom:8px">
-          <div><div class="sec-title">Chuqur statistika</div><div class="sec-note">Har bo'lim oddiy o'zbek tilida izohlangan</div></div>
-          <button class="link-btn" data-act="copy-report">Umumiy hisobotni nusxalash</button>
+        <div class="v2-simple-intro">
+          <div>
+            <span class="v2-intro-kicker">HSK AI / ANALYTICS</span>
+            <h2>Асосий рақамлар, холос.</h2>
+            <p>Битта маълумотлар базаси. Қайта-қайта такрорланадиган ҳисоботларсиз.</p>
+          </div>
+          <button type="button" class="btn sec" data-act="copy-report" title="Тўлиқ ҳисоботни нусхалаш">Ҳисоботни нусхалаш ↗</button>
         </div>
-        <div class="periods" id="periodTabs"></div>
-        <div class="range-lab" id="rangeLabel"></div>
-        <div class="explain" id="dataQuality" style="margin-bottom:12px"></div>
-
-        <!-- Advanced product metrics -->
+        <div class="periods" id="periodTabs" aria-label="Ҳисобот даври"></div>
+        <div class="range-lab" id="rangeLabel" role="status"></div>
+        <div class="subnav v2-subnav" role="tablist" aria-label="Аналитика бўлимлари">
+          <button type="button" role="tab" aria-selected="true" class="active" data-v2-sub="statistics:overview">Умумий</button>
+          <button type="button" role="tab" aria-selected="false" data-v2-sub="statistics:platform">Иловалар</button>
+          <button type="button" role="tab" aria-selected="false" data-v2-sub="statistics:funnel">Ўқиш</button>
+          <button type="button" role="tab" aria-selected="false" data-v2-sub="statistics:ai">Молия ва AI</button><button type="button" role="tab" aria-selected="false" data-v2-sub="statistics:details">Батафсил ҳисобот</button>
+        </div>
+        <div class="v2-simple-pane" data-v2-pane="statistics:overview">
+          <div class="v2-simple-head"><h3>Жами ҳолат</h3><p>Танланган даврнинг 4 та асосий кўрсаткичи</p></div>
+          <div id="overviewCards" class="grid g2 v2-simple-metrics"></div>
+          <p class="v2-simple-footnote">Фаоллик, фойдаланувчи ва тўловлар — реал сервер маълумотлари.</p>
+        </div>
+        <div class="v2-simple-pane" data-v2-pane="statistics:platform" hidden>
+          <div class="v2-simple-head"><h3>Учта илова — битта ҳисоб</h3><p>Mini App / Bot, Android ва Desktop бўйича тўловга олиб келган фаоллик</p></div>
+          <div class="v2-client-cards" id="v2UnifiedApps"></div>
+          <p class="v2-simple-footnote" id="v2SourceNote"></p>
+        </div>
+        <div class="v2-simple-pane" data-v2-pane="statistics:funnel" hidden>
+          <div class="v2-simple-head"><h3>Курсдаги ҳаракат</h3><p>Фақат очиш, бошлаш ва тугатиш</p></div>
+          <div id="v2LearningCards" class="grid g2 v2-simple-metrics"></div>
+          <p class="v2-simple-footnote">Ҳар бир рақам мустақил уникал фойдаланувчи сони. Уларни кетма-кет конверсия деб талқин қилманг.</p>
+        </div>
+        <div class="v2-simple-pane" data-v2-pane="statistics:ai" hidden>
+          <div class="v2-simple-head"><h3>Пул ҳаракати</h3><p>Тушум, AI сарфи, харажат ва кузатилган натижа</p></div>
+          <div id="v2FinanceCards" class="grid g2 v2-simple-metrics"></div>
+          <p id="v2FinanceNote" class="v2-simple-footnote"></p>
+        </div>
+<div class="v2-simple-pane v2-details-pane" data-v2-pane="statistics:details" hidden>
+<div class="v2-simple-head"><h3>Барча ҳисоботлар ва кўрсаткичлар</h3><p>12 та тўлиқ ҳисобот: фойдаланувчилар, иловалар, дарслар, тўловлар ва AI сарфи. Бўлим очилганда янги маълумотлар сервердан олинади.</p></div>
+<div class="v2-legacy-intro"><strong>Бу рақамлар нимани англатади?</strong><span>Ўрнатиш, фаоллик, обуна ойнасини очиш ва ҳақиқий тўлов — ҳар хил кўрсаткичлар. AI сарфи ҳисобланган тахмин, банк ҳисоб-фактураси эмас.</span></div>
+<div id="dataQuality" class="v2-legacy-quality" role="status"></div>
+<details class="v2-legacy-group" open><summary><span><strong>Фойдаланувчилар ва конверсия</strong><small>Курс, AI, қайта тўлов, келган манба ва умумий ҳолат</small></span><span aria-hidden="true">⌄</span></summary><div class="v2-legacy-group-body"><!-- Advanced product metrics -->
         <div class="block">
-          <div class="block-head"><span class="bi">📌</span><div><h3>Qo'shimcha product metrikalar</h3><p>Retention, vaqt, QA/Voice, payment abandon, revenue/payer va paid/free adoption</p></div></div>
+          <div class="block-head"><span class="bi">📌</span><div><h3>Маҳсулотнинг батафсил кўрсаткичлари</h3><p>Қайта келиш, фаоллик, AI саволлар, овозли машқлар ва тўловни охирига етказиш</p></div></div>
           <div class="explain" id="advancedExplain"></div>
           <div class="grid g2" id="advancedCards" style="margin-top:12px"></div>
           <div style="margin-top:12px">
@@ -330,10 +1162,32 @@
             <div id="featureAdoption"></div>
           </div>
         </div>
-
-        <!-- Connected desktop product -->
+<!-- Retention -->
         <div class="block">
-          <div class="block-head"><span class="bi">🖥</span><div><h3>HSK AI Desktop</h3><p>Funnel: tanlangan davr · health/platforma: oxirgi 30 kun</p></div></div>
+          <div class="block-head"><span class="bi">🔁</span><div><h3>Биринчи ва қайта тўловлар</h3><p>Обунани узайтириш ва ҳозирги тўловчи ҳолати; бу мижоз кетганини англатмайди</p></div></div>
+          <div class="grid g2" id="retentionCards"></div>
+          <div class="explain" id="retentionExplain"></div>
+        </div>
+<!-- General overview report -->
+        <div class="block">
+          <div class="block-head"><span class="bi">📋</span><div><h3>Тўлиқ умумий кўрсаткичлар</h3><p>Фойдаланувчилар, тўловлар ва курсдаги фаоллик</p></div></div>
+          <div class="grid g2" id="legacyOverviewCards"></div>
+          <div style="margin-top:12px">
+            <div class="dtitle-sm">Davrdagi mustaqil kurs ko'rsatkichlari</div>
+            <div id="conversionBars"></div>
+          </div>
+        </div>
+<!-- Source traffic (entry events) -->
+        <div class="block">
+          <div class="block-head"><span class="bi">🚪</span><div><h3>Обуна ойнасини очиш манбалари</h3><p>Охирги 7 кун ва бутун давр. Юқоридаги давр фильтридан мустақил.</p></div></div>
+          <div id="subEntryStats"><p class="empty">Yuklanmoqda…</p></div>
+          <div class="explain">Bu — obuna sahifasini <b>ochgan</b> odamlar (hali to'lamagan bo'lishi mumkin). Yuqoridagi "Қайси манбадан ҳақиқий тўлов келди?" esa real to'lovni ko'rsatadi. Ikkalasini solishtirsangiz: ko'p kirgan, lekin kam to'lagan manba — kuchsiz; kam kirgan, ko'p to'lagan manba — kuchli.</div>
+        </div>
+
+</div></details>
+<details class="v2-legacy-group"><summary><span><strong>Иловалар ва қурилмалар</strong><small>Desktop, Android, Mini App, версиялар ва қайдлар</small></span><span aria-hidden="true">⌄</span></summary><div class="v2-legacy-group-body"><!-- Connected desktop product -->
+        <div class="block">
+          <div class="block-head"><span class="bi">🖥</span><div><h3>Desktop — компьютер иловаси</h3><p>Юклашдан иловани биринчи очишгача. Фаоллик — охирги 30 кун.</p></div></div>
           <div class="grid g2" id="desktopCards"></div>
           <div style="margin-top:12px">
             <div class="dtitle-sm">Desktop voronkasi</div>
@@ -349,10 +1203,9 @@
           </div>
           <div class="explain" id="desktopExplain"></div>
         </div>
-
-        <!-- Native Android client -->
+<!-- Native Android client -->
         <div class="block">
-          <div class="block-head"><span class="bi">📱</span><div><h3>HSK AI Android</h3><p>Asosiy raqamlar — sodda ko'rinish</p></div></div>
+          <div class="block-head"><span class="bi">📱</span><div><h3>Android — телефон иловаси</h3><p>Юклаб олиш, фаоллик, версия ва тўловга ўтиш босқичлари</p></div></div>
           <div class="grid g2" id="androidCards"></div>
           <div class="ncnote" id="androidUpdateSummary" style="margin-top:12px"></div>
           <details class="acc" style="margin-top:12px">
@@ -370,73 +1223,44 @@
           </details>
           <div class="explain" id="androidExplain"></div>
         </div>
-
-        <!-- Unified client business schema -->
+<!-- Unified client business schema -->
         <div class="block">
-          <div class="block-head"><span class="bi">▦</span><div><h3>Mini App · Android · Desktop biznes</h3><p>Bitta payment/access schema bo'yicha client kesimi</p></div></div>
+          <div class="block-head"><span class="bi">▦</span><div><h3>Иловалар бўйича тўловлар</h3><p>Битта сервер ҳисобидан олинган тўлов ва обуна манбалари; ўрнатишлар сони эмас</p></div></div>
           <div class="grid g2" id="clientBusinessCards"></div>
           <div id="clientBusinessTable"></div>
           <div class="explain" id="clientBusinessExplain"></div>
         </div>
-
-        <!-- Cross-client device inventory -->
+<!-- Cross-client device inventory -->
         <div class="block">
-          <div class="block-head"><span class="bi">📲</span><div><h3>Qurilmalar va foydalanish</h3><p>Mini App platformasi + tasdiqlangan native install registry</p></div></div>
+          <div class="block-head"><span class="bi">📲</span><div><h3>Қурилмалар ва фойдаланиш</h3><p>Telegram Mini App ва тасдиқланган Android/компьютер иловалари</p></div></div>
           <div class="grid g2" id="clientDeviceCards"></div>
           <div id="clientDeviceTable" style="margin-top:12px"></div>
           <div class="explain" id="clientDeviceExplain"></div>
-        </div>
-
-        <!-- Finance -->
+        </div></div></details>
+<details class="v2-legacy-group"><summary><span><strong>Молия ва AI</strong><small>Харажатлар, ўртача чек, манба ва матнли ҳисобот</small></span><span aria-hidden="true">⌄</span></summary><div class="v2-legacy-group-body"><!-- Finance -->
         <div class="block">
-          <div class="block-head"><span class="bi">💰</span><div><h3>Kuzatilgan net va xarajat</h3><p>Obuna tushumi + qo'lda foyda − AI model estimate − rasxod</p></div></div>
+          <div class="block-head"><span class="bi">💰</span><div><h3>Тушум, харажат ва AI сарфи</h3><p>Обуна тушуми + қўлдаги фойда − AI тахминий сарфи − қўлдаги харажат</p></div></div>
           <div class="grid g2" id="financeCards"></div>
           <div class="explain" id="financeExplain"></div>
           <div id="aiUsageBreakdown"></div>
         </div>
-
-        <!-- Unit economics -->
+<!-- Unit economics -->
         <div class="block">
-          <div class="block-head"><span class="bi">📐</span><div><h3>Birlik iqtisodi</h3><p>ARPU, ARPPU, o'rtacha chek</p></div></div>
+          <div class="block-head"><span class="bi">📐</span><div><h3>Бир одам ва бир тўлов бўйича тушум</h3><p>Барча фойдаланувчи, тўловчи ва битта тўловга тўғри келган ўртача тушум</p></div></div>
           <div class="grid g2" id="unitCards"></div>
           <div class="explain" id="unitExplain"></div>
         </div>
-
-        <!-- Retention -->
+<!-- Sources -> paid -->
         <div class="block">
-          <div class="block-head"><span class="bi">🔁</span><div><h3>Obuna yangilash va hozirgi holat</h3><p>Qayta to'lov ulushi; all-time uchun payer snapshot</p></div></div>
-          <div class="grid g2" id="retentionCards"></div>
-          <div class="explain" id="retentionExplain"></div>
-        </div>
-
-        <!-- Sources -> paid -->
-        <div class="block">
-          <div class="block-head"><span class="bi">🧲</span><div><h3>Manba → pul</h3><p>Qaysi manba real pul olib keladi</p></div></div>
+          <div class="block-head"><span class="bi">🧲</span><div><h3>Қайси манбадан ҳақиқий тўлов келди?</h3><p>Фақат тасдиқланган тўловлар: ҳар бир манбанинг улуши</p></div></div>
           <div id="sourcesPaid"></div>
           <div class="explain" id="sourceAttributionExplain">Har to'lov paymentdan oldingi eng yaqin obuna-kirish manbasiga bog'lanadi.</div>
         </div>
-
-        <!-- General overview report -->
         <div class="block">
-          <div class="block-head"><span class="bi">📋</span><div><h3>Umumiy ko'rsatkichlar</h3><p>Foydalanuvchi, to'lov va kurs faolligi</p></div></div>
-          <div class="grid g2" id="overviewCards"></div>
-          <div style="margin-top:12px">
-            <div class="dtitle-sm">Davrdagi mustaqil kurs ko'rsatkichlari</div>
-            <div id="conversionBars"></div>
-          </div>
-        </div>
-
-        <!-- Source traffic (entry events) -->
-        <div class="block">
-          <div class="block-head"><span class="bi">🚪</span><div><h3>Obuna oynasiga kirish manbalari</h3><p>Alohida rolling 7 kun + all-time; yuqoridagi period tabiga bog'liq emas</p></div></div>
-          <div id="subEntryStats"><p class="empty">Yuklanmoqda…</p></div>
-          <div class="explain">Bu — obuna sahifasini <b>ochgan</b> odamlar (hali to'lamagan bo'lishi mumkin). Yuqoridagi "Manba → pul" esa real to'lovni ko'rsatadi. Ikkalasini solishtirsangiz: ko'p kirgan, lekin kam to'lagan manba — kuchsiz; kam kirgan, ko'p to'lagan manba — kuchli.</div>
-        </div>
-
-        <div class="block">
-          <div class="block-head"><span class="bi">📝</span><div><h3>To'liq matnli hisobot</h3><p>Nusxalab tashqariga yuborish uchun</p></div></div>
+          <div class="block-head"><span class="bi">📝</span><div><h3>Тўлиқ матнли ҳисобот</h3><p>Сервер ҳисоботини нусхалаб олиш учун</p></div></div>
           <pre id="reportText" style="white-space:pre-wrap;margin:0;font-size:12.5px;line-height:1.5;color:#d6deeb;font-family:inherit"></pre>
-        </div>
+        </div></div></details>
+</div>
       </section>
 
       <!-- USERS -->
@@ -452,33 +1276,56 @@
 
       <!-- PAYMENTS -->
       <section id="payments" class="view">
-        <div id="paymentBoard"></div>
+        <div class="v2-intro">Тўловларни текшириш, Pro тарифлар, банк реквизитлари ва портфель.</div>
+        <div class="subnav v2-subnav" role="tablist" aria-label="Moliya ichki bo‘limlari">
+          <button type="button" role="tab" aria-selected="true" class="active" data-v2-sub="payments:payments">Тўловлар</button>
+          <button type="button" role="tab" aria-selected="false" data-v2-sub="payments:prices">Нархлар</button>
+          <button type="button" role="tab" aria-selected="false" data-v2-sub="payments:methods">Тўлов усуллари</button>
+          <button type="button" role="tab" aria-selected="false" data-v2-sub="payments:portfolio">Портфель</button>
+        </div>
+        <div data-v2-pane="payments:payments">
+          <div id="paymentBoard"></div>
+        </div>
+        <div data-v2-pane="payments:prices" hidden>
+          <div id="v2PricesView" aria-live="polite"><div class="v2-finance-heading"><h3>Нархлар</h3><p>Тарифлар юкланмоқда…</p></div></div>
+        </div>
+        <div data-v2-pane="payments:methods" hidden>
+          <div id="v2MethodsView" aria-live="polite"><div class="v2-finance-heading"><h3>Тўлов усуллари</h3><p>Реквизитлар юкланмоқда…</p></div></div>
+        </div>
+        <div data-v2-pane="payments:portfolio" hidden>
+          <div id="v2PortfolioView" aria-live="polite">
+            <div class="v2-finance-heading"><h3>Портфель</h3><p>Сервер маълумотлари юкланмоқда…</p></div>
+          </div>
+        </div>
       </section>
 
       <!-- SETTINGS -->
       <section id="settings" class="view">
-        <div class="sec">
-          <div class="sec-head"><div class="sec-title">Boshqaruv bo'limlari</div></div>
-          <div class="grid settings-grid" id="moduleGrid"></div>
+  <div class="v2-intro">HSK 2.0/3.0, kursga kirish, лимитлар, Trial ва дарс воситалари.</div>
+  <div class="subnav v2-subnav" role="tablist" aria-label="settings ichki bo‘limlari"><button type="button" role="tab" aria-selected="true" class="active" data-v2-sub="settings:tracks">Курслар</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="settings:access">Лимит ва доступ</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="settings:content">Контент ва тестлар</button></div>
+  <div data-v2-pane="settings:tracks">
+    <div class="v2-track-grid">
+      <article class="v2-track-card">
+        <div class="v2-track-icon">2.0</div>
+        <div class="v2-track-copy">
+          <h3>HSK 2.0</h3>
+          <p>Классик стандарт. Фойдаланувчиларнинг аввалги курс прогресси сақланади.</p>
+          <span class="v2-track-note">Мавжуд версия · ушбу карточка маълумот учун</span>
         </div>
-        <div class="sec">
-          <div class="sec-head"><div><div class="sec-title">🤖 AI modeli</div><div class="sec-note">Gemini asosiy, OpenAI zaxira — qaysi Gemini modeli ishlashini tanlang</div></div></div>
-          <div id="aiModelBox"><p class="empty">Yuklanmoqda…</p></div>
-        </div>
-        <div class="sec">
-          <div class="sec-head"><div><div class="sec-title">🔔 Motivatsion eslatmalar</div><div class="sec-note">UZ/RU/TJ matn, yoqish/o'chirish, media</div></div></div>
-          <div class="grid" id="notifTemplates"><p class="empty">Yuklanmoqda…</p></div>
-        </div>
-        <!-- Reklamaga oid HAMMA narsa shu bitta bo'limda. Ilgari u uchga
-             bo'lingan edi (roliklar, "Reklama joylari", "App reklamasi") va
-             yana to'rtinchisi modul ro'yxatida turardi — admin qaysi biri
-             nimani boshqarishini chalkashtirardi. -->
-        <!-- Mini App reklamasiga oid HAMMA narsa shu bo'limda. Rolik va uning
-             joyi bitta ekranda: ikkalasi bir-birisiz ishlamaydi, ya'ni ikki
-             tanlovga bo'lish admin uchun ortiqcha qadam edi. Botdagi
-             reklama xabari bu yerdan CHIQARILDI — u Mini App rekalamasi
-             emas, oммавий хабарнинг ukasi. -->
-        <div class="sec" id="adHub">
+      </article>
+      <div class="grid settings-grid v2-modules v2-track-actions" id="moduleGrid"></div>
+    </div>
+    <div class="v2-access-hint">HSK 3.0 учун бир марталик тўлов курсга киришни очади, тўлиқ Pro дарслар эса алоҳида обуна талаб қилади.</div>
+    <div id="v2ProductEditorTracks" class="v2-product-editor" hidden></div>
+  </div>
+  <div data-v2-pane="settings:access" hidden><div class="grid settings-grid v2-modules" id="v2ProductAccess"></div><div id="v2ProductEditorAccess" class="v2-product-editor" hidden></div></div>
+  <div data-v2-pane="settings:content" hidden><div class="grid settings-grid v2-modules" id="v2ProductContent"></div><div id="v2ProductEditorContent" class="v2-product-editor" hidden></div></div>
+</section>
+<section id="marketing" class="view">
+  <div class="v2-intro">Хабарлар, реклама, эслатмалар ва ҳамкорлар — бир-биридан аниқ ажратилган.</div>
+  <div class="subnav v2-subnav" role="tablist" aria-label="marketing ichki bo‘limlari"><button type="button" role="tab" aria-selected="true" class="active" data-v2-sub="marketing:campaigns">Хабарлар</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="marketing:ads">Реклама</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="marketing:reminders">Эслатмалар</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="marketing:partners">Ҳамкорлар</button></div>
+  <div data-v2-pane="marketing:campaigns"><div class="grid settings-grid v2-modules" id="v2MarketingModules"></div><section id="v2MarketingCampaignEditor" class="v2-marketing-editor" hidden aria-label="Оммавий хабар таҳрири"></section></div>
+  <div data-v2-pane="marketing:ads" hidden>        <div class="sec" id="adHub">
           <div class="sec-head"><div><div class="sec-title">📣 Reklama</div><div class="sec-note">Mini App ichidagi reklama. Avval nima qilmoqchi ekaningizni tanlang</div></div></div>
           <div class="chips" id="adHubTabs" style="margin-bottom:9px">
             <button class="chip active" data-adhub="kurs">🎬 Kurs reklamasi</button>
@@ -518,12 +1365,29 @@
 
           <div id="adPaneIlova" data-adhub-pane hidden></div>
         </div>
-      </section>
-    </main>
-  </div>
+</div>
+  <div data-v2-pane="marketing:reminders" hidden>        <div class="sec">
+          <div class="sec-head"><div><div class="sec-title">🔔 Motivatsion eslatmalar</div><div class="sec-note">UZ/RU/TJ matn, yoqish/o'chirish, media</div></div></div>
+          <div class="grid" id="notifTemplates"><p class="empty">Yuklanmoqda…</p></div>
+        </div>
+</div>
+  <div data-v2-pane="marketing:partners" hidden><div class="grid settings-grid v2-modules" id="v2MarketingPartners"></div></div>
+</section>
+<section id="system" class="view">
+  <div class="v2-intro">AI модели, мажбурий каналлар ва ёрдам созламалари.</div>
+  <div class="subnav v2-subnav" role="tablist" aria-label="system ichki bo‘limlari"><button type="button" role="tab" aria-selected="true" class="active" data-v2-sub="system:model">AI модели</button><button type="button" role="tab" aria-selected="false" class="" data-v2-sub="system:settings">Каналлар ва ёрдам</button></div>
+  <div data-v2-pane="system:model">        <div class="sec">
+          <div class="sec-head"><div><div class="sec-title">🤖 AI modeli</div><div class="sec-note">Gemini asosiy, OpenAI zaxira — qaysi Gemini modeli ishlashini tanlang</div></div></div>
+          <div id="aiModelBox"><p class="empty">Yuklanmoqda…</p></div>
+        </div>
+</div>
+  <div data-v2-pane="system:settings" hidden><div class="grid settings-grid v2-modules" id="v2SystemModules"></div><section id="v2SystemEditor" class="v2-marketing-editor" hidden aria-label="Тизим таҳрири"></section></div>
+</section>
+</main></div><nav class="mobile-nav" aria-label="Mobil navigatsiya"><button class="tab active" data-tab="dashboard"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-8h6v8"/></svg><span>Bosh</span></button><button class="tab " data-tab="statistics"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h17M8 14l4-4 4 3 4-7"/></svg><span>Tahlil</span></button><button class="tab " data-tab="users"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3a4 4 0 0 1 0 8"/></svg><span>Odamlar</span></button><button class="tab " data-tab="payments"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="16" rx="2"/><path d="M2 10h20M16 15h2"/></svg><span>To‘lov</span></button><button class="tab " data-tab="menu"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Menyu</span></button></nav></div>
+
 
   <div id="scrim" class="scrim" data-act="close-drawer"></div>
-  <aside id="drawer" class="drawer" aria-hidden="true">
+  <aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-describedby="drawerSub" aria-hidden="true" tabindex="-1">
     <div class="dhead">
       <button class="close" id="drawerBack" data-act="drawer-back" title="Orqaga" hidden>←</button>
       <div><div class="dtitle" id="drawerTitle">—</div><div class="dsub" id="drawerSub"></div></div>
@@ -540,28 +1404,48 @@
     const state = {
       tab:"dashboard", filter:"all", search:"", statsPeriod:"all_time",
       overview:null, finance:null, financeError:false, management:null, remoteUsers:null, activeModule:null,
-      desktopStats:{}, desktopStatsLoading:{},
-      androidStats:{}, androidStatsLoading:{},
+      desktopStats:{},desktopStatsLoading:{},androidStats:{},androidStatsLoading:{},legacyEntryLoaded:false,
       // Profildan ochilgan bo'lim uchun: kimga tegishli va qayerga qaytish.
       drawerBack:null, activeUser:null,
       // «📣 Reklama» bo'limining ichida qaysi tanlov ochiq turibdi.
       adHub:"kurs"
     };
 
-    /* ---------- Telegram full-screen ---------- */
+    /* Fullscreen is requested only on phones. Telegram replaces its native
+       bar with floating controls in fullscreen; the native safe-area may
+       temporarily report zero, so reserve an iOS-specific control corridor.
+       On unsupported clients fullscreenFailed restores standard inset values. */
+    let adminFullscreenPending=false;
     function applyViewport(){
       const h = (tg && (tg.viewportStableHeight || tg.viewportHeight)) || window.innerHeight;
       if(h) document.documentElement.style.setProperty("--app-h", h + "px");
+      const content = (tg && tg.contentSafeAreaInset) || {};
+      const device = (tg && tg.safeAreaInset) || {};
+      const full=!!(tg && tg.isFullscreen) || adminFullscreenPending;
+      const ios=!!(tg && tg.platform==="ios") || /iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const clearance=full?(ios?112:86):0;
+      const clamp=(v,max)=>Math.max(0,Math.min(max,Number(v)||0));
+      const top=Math.min(190,Math.max(clamp(content.top,190),clamp(device.top,190),clearance));
+      const bottom=Math.max(clamp(content.bottom,100),clamp(device.bottom,100));
+      document.documentElement.style.setProperty("--telegram-content-top",top+"px");
+      document.documentElement.style.setProperty("--telegram-content-bottom",bottom+"px");
+      document.documentElement.dataset.adminFullscreen=full?"true":"false";
     }
     if(tg){
       try{ tg.ready(); }catch(e){}
       try{ tg.expand(); }catch(e){}
-      try{ tg.requestFullscreen && tg.requestFullscreen(); }catch(e){}
-      try{ tg.setHeaderColor && tg.setHeaderColor("#0f1216"); tg.setBackgroundColor && tg.setBackgroundColor("#0f1216"); }catch(e){}
-      try{ tg.onEvent("viewportChanged", applyViewport); }catch(e){}
+      try{ tg.setHeaderColor && tg.setHeaderColor("#0c1118"); tg.setBackgroundColor && tg.setBackgroundColor("#0c1118"); }catch(e){}
+      try{ tg.onEvent("viewportChanged",applyViewport); }catch(e){}
+      try{ tg.onEvent("contentSafeAreaChanged",applyViewport); }catch(e){}
+      try{ tg.onEvent("safeAreaChanged",applyViewport); }catch(e){}
+      try{ tg.onEvent("fullscreenChanged",()=>{adminFullscreenPending=!!tg.isFullscreen;applyViewport();}); }catch(e){}
+      try{ tg.onEvent("fullscreenFailed",()=>{adminFullscreenPending=false;applyViewport();}); }catch(e){}
+      if(window.matchMedia("(max-width:760px)").matches && typeof tg.requestFullscreen==="function"){
+        try{adminFullscreenPending=true;tg.requestFullscreen();}catch(e){adminFullscreenPending=false;}
+      }
     }
     applyViewport();
-    window.addEventListener("resize", applyViewport);
+    window.addEventListener("resize",applyViewport);
 
     /* ---------- helpers ---------- */
     function esc(v){ return String(v==null?"":v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c])); }
@@ -619,17 +1503,13 @@
       $("loading").hidden = false;
       state.finance=null;
       state.financeError=false;
-      state.desktopStats={};
-      state.desktopStatsLoading={};
-      state.androidStats={};
-      state.androidStatsLoading={};
-
-      let ov, fin, desktop;
+      state.desktopStats={};state.desktopStatsLoading={};
+      state.androidStats={};state.androidStatsLoading={};state.legacyEntryLoaded=false;
+      let ov, fin;
       try{
-        [ov, fin, desktop] = await Promise.all([
+        [ov, fin] = await Promise.all([
           apiPost("/api/admin-miniapp/overview",{}),
-          apiPost("/api/admin-miniapp/finance-stats",{}).catch(()=>null),
-          apiPost("/api/admin-miniapp/desktop-stats",{period:"all_time"}).catch(()=>null)
+          apiPost("/api/admin-miniapp/finance-stats",{}).catch(()=>null)
         ]);
       }catch(e){
         const c = e&&e.status;
@@ -642,7 +1522,6 @@
       state.overview = ov;
       state.finance = fin;
       state.financeError = !fin;
-      state.desktopStats.all_time=(desktop&&desktop.desktop)?desktop.desktop:{error:true};
       $("loading").hidden = true;
       $("app").hidden = false;
 
@@ -665,7 +1544,7 @@
       renderUserFilters(); renderUsers();
       renderPayments();
       renderModules();
-      loadSubEntry(); loadNotifications(); loadCourseAds();
+      loadNotifications(); loadCourseAds();
       loadManagement(true).then(renderAiModel).catch(()=>{});
     }
 
@@ -674,25 +1553,8 @@
     function renderDashboard(){
       const ov = state.overview;
       $("generatedAt").textContent = "Oxirgi yangilanish: " + (ov.generated_at || "—");
-      const desktop=state.desktopStats.all_time;
-      const android=state.androidStats.all_time;
-      const summary=(ov.summary||[]).slice();
-      if(android&&!android.error){
-        summary.push({
-          label:"Android WAU",
-          value:Number(android.active&&android.active.wau||0),
-          note:"HSK AI · 7 kun",
-          tone:"info"
-        });
-      }
-      if(desktop&&!desktop.error){
-        summary.push({
-          label:"Desktop WAU",
-          value:Number(desktop.active&&desktop.active.wau||0),
-          note:"HSK AI · 7 kun",
-          tone:"info"
-        });
-      }
+      // V2 hero: four verified overview KPIs; platform WAU remains in Analytics.
+      const summary=(ov.summary||[]).slice(0,4);
       $("summaryGrid").innerHTML = summary.map(i=>`
         <article class="stat ${i.tone||""}"><div class="lab">${esc(i.label)}</div>
           <div><div class="val">${esc(i.value)}</div><div class="sub">${esc(i.note)}</div></div></article>`).join("");
@@ -710,7 +1572,7 @@
         ].map(i=>`<article class="stat ${i.t}"><div class="lab">${i.l}</div><div><div class="val">${esc(i.v)}</div><div class="sub">${esc(i.s)}</div></div></article>`).join("");
       } else $("financeQuick").innerHTML="<p class='empty'>Moliyaviy statistika yuklanmadi.</p>";
       $("queueList").innerHTML = (ov.queue||[]).map((i,idx)=>`
-        <button class="srow" data-tab-jump="${i.section==="payments"?"payments":i.section==="ads"?"settings":"users"}">
+        <button class="srow" data-tab-jump="${i.section==="payments"?"payments":i.section==="ads"?"marketing":"users"}">
           <div><h3>${idx+1}. ${esc(i.title)}</h3><p>${esc(i.note)}</p></div>
           <span class="tag ${i.priority==="hozir"||i.priority==="иссиқ"||i.priority==="ҳозир"?"amber":"green"}">${esc(i.priority)}</span>
         </button>`).join("");
@@ -721,6 +1583,9 @@
     function overviewReport(){ const r=state.overview&&state.overview.statistics_reports; if(!Array.isArray(r)) return null; return r.find(x=>x.key===state.statsPeriod)||r[0]; }
     function cardHtml(i){ return `<article class="stat ${i.tone||""}"><div class="lab">${esc(i.label)}</div><div><div class="val">${esc(i.value)}</div><div class="sub">${esc(i.note)}</div></div></article>`; }
 
+    /* A single, readable report. Server reports and finance attribution remain
+       authoritative; device/install diagnostics are not blended into payer metrics. */
+    /* Restored detailed V1 reports, loaded only when the details tab opens. */
     async function loadDesktopStats(period){
       period=["all_time","weekly","monthly"].includes(period)?period:"all_time";
       if(state.desktopStats[period]||state.desktopStatsLoading[period]) return;
@@ -763,18 +1628,18 @@
       const entrySources=(promotion.entry_funnel&&promotion.entry_funnel.by_source)||{};
       const ai=snapshot.ai_pack||{}, sync=snapshot.sync||{}, updates=snapshot.updates||{}, versions=snapshot.versions||{};
       $("desktopCards").innerHTML=[
-        {label:"Tasdiqlangan first-open",value:desktopUsers(funnel,"verified_first_open"),note:"yuklash emas",tone:"good"},
-        {label:"Desktop DAU",value:Number(active.dau||0),note:"so'nggi 24 soat",tone:"info"},
-        {label:"Desktop WAU",value:Number(active.wau||0),note:"so'nggi 7 kun",tone:"info"},
-        {label:"Desktop MAU",value:Number(active.mau||0),note:"so'nggi 30 kun",tone:"good"}
+        {label:"Иловани биринчи марта очганлар",value:desktopUsers(funnel,"verified_first_open"),note:"Ҳақиқий очиш тасдиқланган",tone:"good"},
+        {label:"Desktop: 1 кунда фаол",value:Number(active.dau||0),note:"Охирги 24 соат",tone:"info"},
+        {label:"Desktop: 7 кунда фаол",value:Number(active.wau||0),note:"so'nggi 7 kun",tone:"info"},
+        {label:"Desktop: 30 кунда фаол",value:Number(active.mau||0),note:"so'nggi 30 kun",tone:"good"}
       ].map(cardHtml).join("");
 
       const steps=[
-        ["So'rov",desktopUsers(funnel,"download_requested")],
-        ["Yuklash/ulashish ochildi",desktopUsers(funnel,"download_started")],
-        ["Fayl URL ochildi",desktopUsers(funnel,"link_clicked")],
-        ["Akkaunt ulandi",desktopUsers(funnel,"session_linked")],
-        ["First open",desktopUsers(funnel,"verified_first_open")]
+        ["Юклаш сўрови",desktopUsers(funnel,"download_requested")],
+        ["Юклаш ёки улашиш ойнаси очилди",desktopUsers(funnel,"download_started")],
+        ["Файл ҳаволаси очилди",desktopUsers(funnel,"link_clicked")],
+        ["Аккаунт уланди",desktopUsers(funnel,"session_linked")],
+        ["Биринчи марта очилди",desktopUsers(funnel,"verified_first_open")]
       ];
       const maxStep=Math.max.apply(null,steps.map(x=>x[1]).concat([1]));
       $("desktopFunnel").innerHTML=steps.map(x=>`<div class="bar"><span>${esc(x[0])}</span><div class="track"><span style="width:${Math.round(x[1]/maxStep*100)}%"></span></div><b>${x[1]}</b></div>`).join("");
@@ -859,24 +1724,24 @@
         return source==="android_subscription"||source.startsWith("android_");
       });
       const androidCards=[
-        {label:"O'rnatilgan",value:num(reg.installed_devices),note:num(reg.installed_users)+" user · hozir ulangan",tone:"good"},
-        {label:"Bugun ishlatgan",value:num(active.dau),note:"user",tone:"info"},
-        {label:"7 kunda ishlatgan",value:num(active.wau),note:"user",tone:"info"},
-        {label:"30 kunda ishlatgan",value:num(active.mau),note:"user",tone:"good"}
+        {label:"Ҳозир уланган телефонлар",value:num(reg.installed_devices),note:num(reg.installed_users)+" user · hozir ulangan",tone:"good"},
+        {label:"Бугун ишлатганлар",value:num(active.dau),note:"user",tone:"info"},
+        {label:"7 кунда ишлатганлар",value:num(active.wau),note:"user",tone:"info"},
+        {label:"30 кунда ишлатганлар",value:num(active.mau),note:"user",tone:"good"}
       ];
       if(androidBiz){
         androidCards.push(
-          {label:"Android pullik",value:num(androidBiz.paying_users),note:num(androidBiz.payments)+" tasdiqlangan to'lov",tone:"good"},
-          {label:"Android tushum",value:androidBiz.revenue_text||"$0.00",note:num(androidBiz.entry_users)+" user obunani ochgan",tone:"info"}
+          {label:"Android: тўлов қилганлар",value:num(androidBiz.paying_users),note:num(androidBiz.payments)+" tasdiqlangan to'lov",tone:"good"},
+          {label:"Android: тасдиқланган тушум",value:androidBiz.revenue_text||"$0.00",note:num(androidBiz.entry_users)+" user obunani ochgan",tone:"info"}
         );
       }
       $("androidCards").innerHTML=androidCards.map(cardHtml).join("");
 
       const steps=[
-        ["APK so'raldi",stage("apk_requested")],
-        ["APK olgan",stage("apk_sent")],
-        ["Akkaunt ulagan",stage("session_linked")],
-        ["Birinchi marta ochgan",stage("first_open")]
+        ["APK сўралган",stage("apk_requested")],
+        ["APK юборилган",stage("apk_sent")],
+        ["Аккаунт боғлаган",stage("session_linked")],
+        ["Биринчи марта очган",stage("first_open")]
       ];
       const maxStep=Math.max.apply(null,steps.map(x=>x[1]).concat([1]));
       $("androidFunnel").innerHTML=steps.map(x=>`<div class="bar"><span>${esc(x[0])}</span><div class="track"><span style="width:${Math.round(x[1]/maxStep*100)}%"></span></div><b>${x[1]}</b></div>`).join("");
@@ -991,26 +1856,13 @@
       }
     }
 
-    function renderStatistics(){
-      const fin = state.finance;
-      const overviewPeriods=(state.overview&&state.overview.statistics_reports)||[];
-      const financePeriods=(fin&&fin.periods)||[];
-      const periods = financePeriods.length
-        ? financePeriods
-        : overviewPeriods.length
-        ? overviewPeriods
-        : [
-            {key:"weekly",title:"Haftalik",note:"Oxirgi 7 kun"},
-            {key:"monthly",title:"Oylik",note:"Oxirgi 30 kun"},
-            {key:"all_time",title:"To'liq",note:"Butun davr"}
-          ];
-      $("periodTabs").innerHTML = periods.map(p=>`<button class="period ${p.key===state.statsPeriod?"active":""}" data-period="${esc(p.key)}">${esc(p.title)} · ${esc(p.note)}</button>`).join("");
+    function renderStatisticsDetails(){
       const fp = financePeriod();
       const orep = overviewReport();
       const quality=(state.overview&&state.overview.data_quality)||{};
       const qualityRows=quality.rows||[];
       $("dataQuality").textContent=qualityRows.length
-        ? "Oxirgi DB yozuvi · "+qualityRows.map(row=>`${row.label}: ${row.status==="no_data"?"no data":row.last_at}`).join(" · ")
+        ? "Маълумот янгиланган сана · "+qualityRows.map(row=>`${row.label}: ${row.status==="no_data"?"no data":row.last_at}`).join(" · ")
         : "Data freshness ma'lumoti kelmadi.";
       renderAdvanced(orep);
       renderClientDevices();
@@ -1048,11 +1900,11 @@
           : "<p class='empty'>Bu davrda client attribution yo'q.</p>";
         $("clientBusinessExplain").textContent = cb.explain || "";
         $("financeCards").innerHTML = [
-          {label:"Daromad",value:fp.finance.revenue_text,note:fp.unit.approved_count+" ta to'lov",tone:"info"},
-          {label:"AI model estimate",value:fp.finance.ai_cost_text,note:"invoice emas · "+fp.finance.ai_share_pct+"%",tone:"warn"},
-          {label:"Qo'lda foyda",value:fp.finance.manual_profit_text||"$0.00",note:"portfel",tone:"good"},
-          {label:"Portfel rasxod",value:fp.finance.expense_text,note:"qo'lda kiritilgan",tone:"warn"},
-          {label:"Kuzatilgan net",value:fp.finance.net_text,note:"tracked marja "+fp.finance.margin_pct+"%",tone:fp.finance.net_positive?"good":"danger"}
+          {label:"Обуна тушуми",value:fp.finance.revenue_text,note:fp.unit.approved_count+" ta to'lov",tone:"info"},
+          {label:"AI сарфи (тахмин)",value:fp.finance.ai_cost_text,note:"invoice emas · "+fp.finance.ai_share_pct+"%",tone:"warn"},
+          {label:"Қўлда киритилган фойда",value:fp.finance.manual_profit_text||"$0.00",note:"portfel",tone:"good"},
+          {label:"Қўлда киритилган харажат",value:fp.finance.expense_text,note:"qo'lda kiritilgan",tone:"warn"},
+          {label:"Кузатилган натижа (тахмин)",value:fp.finance.net_text,note:"tracked marja "+fp.finance.margin_pct+"%",tone:fp.finance.net_positive?"good":"danger"}
         ].map(cardHtml).join("");
         $("financeExplain").innerHTML = esc(fp.finance.explain);
         $("aiUsageBreakdown").innerHTML = (fp.finance.ai_usage||[]).map(i=>`
@@ -1060,22 +1912,22 @@
           <p>${esc(i.requests)} so'rov · ${esc(i.tokens)} token</p></div>
           <b>${esc(i.cost_text)}</b></div>`).join("");
         $("unitCards").innerHTML = [
-          {label:"ARPU",value:fp.unit.arpu_text,note:(fp.unit.arpu_users||0)+(fp.key==="all_time"?" jami":" faol user"),tone:"info"},
-          {label:"ARPPU",value:fp.unit.arppu_text,note:"har pullik",tone:"good"},
-          {label:"O'rtacha chek",value:fp.unit.avg_check_text,note:"har to'lov",tone:"info"},
-          {label:"Pullik",value:fp.unit.paying_users,note:"shu davrdagi payer",tone:"good"}
+          {label:"ARPU — барчага ўртача тушум",value:fp.unit.arpu_text,note:(fp.unit.arpu_users||0)+(fp.key==="all_time"?" jami":" faol user"),tone:"info"},
+          {label:"ARPPU — тўловчига ўртача тушум",value:fp.unit.arppu_text,note:"har pullik",tone:"good"},
+          {label:"Битта тўловнинг ўртача суммаси",value:fp.unit.avg_check_text,note:"har to'lov",tone:"info"},
+          {label:"Пул тўлаганлар",value:fp.unit.paying_users,note:"shu davrdagi payer",tone:"good"}
         ].map(cardHtml).join("");
         $("unitExplain").innerHTML = esc(fp.unit.explain);
         const r=fp.retention;
         $("retentionCards").innerHTML = [
-          {label:"Yangi to'lov",value:r.new_paying,note:"birinchi marta",tone:"info"},
-          {label:"Yangilash",value:r.renewals,note:"qayta to'lov",tone:"good"},
+          {label:"Биринчи марта тўлаганлар",value:r.new_paying,note:"birinchi marta",tone:"info"},
+          {label:"Обунани қайта тўлаганлар",value:r.renewals,note:"qayta to'lov",tone:"good"},
           (fp.key==="all_time"
-            ? {label:"Ever yangilagan",value:(r.ever_renewed_share_pct==null?"—":r.ever_renewed_share_pct+"%"),note:"ever payer ichida",tone:"good"}
-            : {label:"Yangilash ulushi",value:r.renewal_share_pct+"%",note:"payment ulushi",tone:"good"}),
+            ? {label:"Бирор марта узайтирганлар",value:(r.ever_renewed_share_pct==null?"—":r.ever_renewed_share_pct+"%"),note:"ever payer ichida",tone:"good"}
+            : {label:"Қайта тўловлар улуши",value:r.renewal_share_pct+"%",note:"payment ulushi",tone:"good"}),
           (fp.key==="all_time"
-            ? {label:"Hozir inactive payer",value:(r.inactive_paid_share_pct==null?"—":r.inactive_paid_share_pct+"%"),note:"cohort churn emas",tone:"danger"}
-            : {label:"Faol obuna",value:r.active_paid_now,note:"hozir to'lovli",tone:"good"})
+            ? {label:"Ҳозир обунаси тугаган тўловчилар",value:(r.inactive_paid_share_pct==null?"—":r.inactive_paid_share_pct+"%"),note:"cohort churn emas",tone:"danger"}
+            : {label:"Ҳозир фаол обуналар",value:r.active_paid_now,note:"hozir to'lovli",tone:"good"})
         ].map(cardHtml).join("");
         $("retentionExplain").innerHTML = esc(r.explain);
         const sp = fp.sources_paid||[];
@@ -1086,7 +1938,7 @@
         $("sourceAttributionExplain").textContent=fp.source_attribution_explain||"";
       }
       // overview report cards + bars + text
-      $("overviewCards").innerHTML = ((orep&&orep.cards)||(state.overview.summary)||[]).map(cardHtml).join("");
+      $("legacyOverviewCards").innerHTML = ((orep&&orep.cards)||(state.overview.summary)||[]).map(cardHtml).join("");
       $("reportText").textContent = (orep&&orep.text) || state.overview.report_text || "";
       const course = (orep&&orep.course)||state.overview.course||{};
       const values=[Number(course.opened_users||0),Number(course.lesson_users||0),Number(course.completed_users||0)];
@@ -1107,6 +1959,91 @@
         $("subEntryStats").innerHTML = `<table class="tbl"><thead><tr><th>Manba</th><th class="r">Hafta<br><small>kirish/odam</small></th><th class="r">Jami<br><small>kirish/odam</small></th></tr></thead>
           <tbody>${d.rows.map(r=>`<tr><td><b>${esc(r.label)}</b></td><td class="r"><b>${r.total_week}</b>/${r.unique_week}</td><td class="r">${r.total_all}/${r.unique_all}</td></tr>`).join("")}</tbody></table>`;
       }catch(e){ $("subEntryStats").innerHTML="<p class='empty'>Xatolik</p>"; }
+    }
+
+
+    function renderStatistics(){
+      const fin = state.finance;
+      const orep = overviewReport();
+      const fp = financePeriod();
+      const periodList = fin&&Array.isArray(fin.periods)&&fin.periods.length
+        ? fin.periods
+        : (state.overview&&state.overview.statistics_reports||[]);
+      const periods = periodList.length ? periodList : [
+        {key:"weekly",title:"Haftalik",note:"7 kun"},
+        {key:"monthly",title:"Oylik",note:"30 kun"},
+        {key:"all_time",title:"Barchasi",note:"butun davr"}
+      ];
+      $("periodTabs").innerHTML = periods.map(p=>
+        '<button class="period '+(p.key===state.statsPeriod?'active':'')+
+        '" data-period="'+esc(p.key)+'">'+esc(p.title)+'</button>'
+      ).join("");
+      $("rangeLabel").textContent = fp
+        ? "Davr: "+(fp.range_label||fp.note||"—")
+        : "Davr: "+(orep&&orep.note||"—");
+
+      // All four counts come from one selected overview period.
+      const m=orep&&orep.metrics;
+      $("overviewCards").innerHTML = m ? [
+        {label:"Foydalanuvchilar",value:m.user_count,note:state.statsPeriod==="all_time"?"Jami ro'yxatdan o'tgan":"Yangi",tone:"info"},
+        {label:"Faol foydalanuvchi",value:m.active_users,note:state.statsPeriod==="all_time"?"Oxirgi 30 kun":"Shu davrda",tone:"good"},
+        {label:"To'lov qilgan",value:m.approved_payment_users,note:"Shu davrda tasdiqlangan",tone:"good"},
+        {label:"Tekshiruvdagi to'lov",value:m.pending_payments,note:"Admin tekshirishi kerak",tone:"warn"}
+      ].map(cardHtml).join("") : "<p class='empty'>Umumiy statistika hozircha mavjud emas.</p>";
+
+      // Course counts are individual unique users, not an ordered cohort funnel.
+      const course=orep&&orep.course;
+      $("v2LearningCards").innerHTML = course ? [
+        {label:"Kursni ochgan",value:course.opened_users,note:"Noyob foydalanuvchi",tone:"info"},
+        {label:"Darsni boshlagan",value:course.lesson_users,note:"Noyob foydalanuvchi",tone:"good"},
+        {label:"Darsni tugatgan",value:course.completed_users,note:"Noyob foydalanuvchi",tone:"good"}
+      ].map(cardHtml).join("") : "<p class='empty'>Bu davrda o‘qish statistikasi mavjud emas.</p>";
+
+      // The backend explicitly attributes one canonical Payment/SubscriptionEntry
+      // flow to miniapp / android / desktop. No guessed installs or MAU summing.
+      const business=fp&&fp.client_business;
+      const rows=business&&Array.isArray(business.rows)?business.rows:[];
+      if(!business){
+        $("v2UnifiedApps").innerHTML="<p class='empty'>Ilovalar bo‘yicha yagona to‘lov statistikasi yuklanmadi.</p>";
+        $("v2SourceNote").textContent="";
+      }else{
+        const defs=[
+          {key:"miniapp",title:"Mini App / Bot",icon:"✦"},
+          {key:"android",title:"Android",icon:"▣"},
+          {key:"desktop",title:"Desktop",icon:"▤"}
+        ];
+        $("v2UnifiedApps").innerHTML=defs.map(def=>{
+          const r=rows.find(x=>x.key===def.key)||{};
+          const facts=[
+            ["Obunaga kirgan",r.entry_users==null?"—":r.entry_users],
+            ["To‘lov qilgan",r.paying_users==null?"—":r.paying_users],
+            ["Daromad",r.revenue_text==null?"—":r.revenue_text]
+          ];
+          return '<article class="v2-client-card" data-client="'+def.key+'">'+
+            '<header><span class="v2-client-icon" aria-hidden="true">'+def.icon+'</span>'+
+            '<div><h4>'+esc(def.title)+'</h4><p>Tanlangan davr</p></div></header>'+
+            '<div class="v2-client-facts">'+facts.map(x=>
+              '<div class="v2-client-fact"><span>'+esc(x[0])+'</span><strong>'+esc(x[1])+'</strong></div>'
+            ).join("")+'</div></article>';
+        }).join("");
+        const unknown=rows.find(x=>x.key==="unknown");
+        $("v2SourceNote").textContent="Bu ko‘rsatkichlar qurilma o‘rnatishlari emas, to‘lov manbasi bo‘yicha hisoblangan."+
+          (unknown&&Number(unknown.payments||0)>0
+            ? " Manbasi noma'lum: "+Number(unknown.payments)+" ta tasdiqlangan to‘lov (uchta ilova yig‘indisiga kiritilmagan)."
+            : "");
+      }
+
+      const finance=fp&&fp.finance;
+      $("v2FinanceCards").innerHTML=finance ? [
+        {label:"Tasdiqlangan tushum",value:finance.revenue_text,note:"Obunalardan",tone:"good"},
+        {label:"AI сарфи (тахмин)",value:finance.ai_cost_text,note:"Invoice эмас",tone:"warn"},
+        {label:"Қўлда киритилган харажат",value:finance.expense_text,note:"Портфель харажати",tone:"warn"},
+        {label:"Кузатилган натижа",value:finance.net_text,note:"Бухгалтерия соф фойдаси эмас",tone:finance.net_positive?"good":"danger"}
+      ].map(cardHtml).join("") : "<p class='empty'>Молиявий ҳисобот ҳозирча мавжуд эмас.</p>";
+      $("v2FinanceNote").textContent=finance
+        ? "Натижа = обуна тушуми + қўлда киритилган фойда − AI тахминий сарфи − қўлдаги харажат. Солиқ ва бошқа ҳисобланмаган сарфлар кирмаслиги мумкин."
+        : "";
+      if(v2SubState.statistics==="details") renderStatisticsDetails();
     }
 
     function botReachabilitySourceLabel(source){
@@ -1255,7 +2192,7 @@
     function renderUsers(){
       renderTelegramReachability();
       const rows = filterUsers();
-      $("userList").innerHTML = rows.length ? rows.map(u=>{
+      const mobileCards = rows.length ? rows.map(u=>{
         const t = statusTone(u);
         return `<button class="ucard" data-user="${u.id}">
           <div class="uhead"><div><div class="uname">${esc(u.name)}</div>
@@ -1265,6 +2202,16 @@
           <div class="mini2"><div class="mini"><b>${esc(u.questions)}</b><span>AI savollar</span></div><div class="mini"><b>${esc(u.streak)}</b><span>seriya</span></div></div>
         </button>`;
       }).join("") : "<p class='empty'>Bu saralash bo'yicha foydalanuvchi topilmadi.</p>";
+      const records=rows.map(u=>'<tr>'+
+        '<td><div class="usercell"><div class="useravatar">'+esc((u.name||"U").charAt(0))+'</div><div><b>'+esc(u.name)+'</b><small>'+esc(u.username?"@"+u.username+" · ":"")+"ID "+esc(u.id)+'</small></div></div></td>'+
+        '<td>'+esc(u.level||"—")+'</td>'+
+        '<td>'+tag(u.plan,"blue")+'</td>'+
+        '<td>'+esc(u.method||"—")+'</td>'+
+        '<td>'+esc(u.last_active||"—")+'</td>'+
+        '<td><button class="tableaction" data-user="'+esc(u.id)+'">Profilni ochish →</button></td>'+
+      '</tr>').join("");
+      $("userList").innerHTML = rows.length ? '<div class="v2-users-desktop panel"><div class="table-scroll"><table class="data-table"><thead><tr><th>Foydalanuvchi</th><th>Daraja</th><th>Obuna</th><th>To‘lov usuli</th><th>Faollik</th><th>Harakat</th></tr></thead><tbody>'+records+'</tbody></table></div></div><div class="v2-users-mobile">'+mobileCards+'</div>' : mobileCards;
+
     }
     async function remoteSearch(q){
       const segment = state.filter==="bot_blocked" ? "bot_blocked" : "";
@@ -1282,33 +2229,67 @@
       return ({android:"📱 Android",miniapp:"Telegram Mini App",desktop:"Desktop",telegram_bot:"Telegram bot"})[source]||source||"Telegram bot";
     }
     function renderPayments(){
-      const latest = (state.overview.payments&&state.overview.payments.latest)||[];
-      const groups = [
-        ["To'lov tekshiruvda",latest.filter(p=>p.status==="pending")],
-        ["Oxirgi tasdiqlanganlar",latest.filter(p=>p.status==="approved")],
-        ["Rad etilganlar",latest.filter(p=>p.status==="rejected")]
-      ];
-      $("paymentBoard").innerHTML = groups.map(g=>`
-        <div class="sec">
-          <div class="sec-head"><div class="sec-title">${g[0]} <span style="color:var(--muted);font-weight:700">${g[1].length}</span></div></div>
-          <div class="grid pboard">
-            ${g[1].map(p=>`<article class="pcard">
-              <div class="phead"><div><div class="uname">${esc(p.name)}</div>
-                <div class="usub">${p.username?"@"+esc(p.username)+" · ":""}${p.telegram_id}<br>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.submitted_at||"—")}</div></div>
-                <div class="amount">${esc(p.amount)}</div></div>
-              <div class="tags">${tag(p.status_label,p.status==="approved"?"green":p.status==="pending"?"amber":"red")}${tag(paymentSourceLabel(p.source),p.source==="android"?"amber":"")}${tag(p.has_screenshot?"rasm bor":"rasm yo'q","")}</div>
-              ${p.status==="pending"?`<div class="row"><button class="btn" data-pay="${p.id}" data-pact="approve">Tasdiqlash</button><button class="btn sec" data-pay="${p.id}" data-pact="reject">Rad etish</button></div>`:""}
-            </article>`).join("") || "<p class='empty'>Hozircha bo'sh.</p>"}
-          </div>
-        </div>`).join("");
+      const latest=(state.overview.payments&&state.overview.payments.latest)||[];
+      const counts=state.overview.counts||{};
+      const stat=(title,value,description)=>'<article class="stat"><div class="lab">'+title+'</div><div><div class="val">'+esc(value)+'</div><div class="sub">'+description+'</div></div></article>';
+      const status=(p)=>tag(p.status_label||p.status,p.status==="approved"?"green":p.status==="pending"?"amber":"red");
+      const rows=latest.map(p=>'<tr>'+
+        '<td><b>#'+esc(p.id)+'</b><div class="note">'+esc(p.name||"—")+(p.username?' · @'+esc(p.username):"")+'</div></td>'+
+        '<td>'+esc(p.plan||"—")+'</td>'+
+        '<td>'+esc(p.method||"—")+'</td>'+
+        '<td><b>'+esc(p.amount)+'</b></td>'+
+        '<td>'+status(p)+'</td>'+
+        '<td><button class="tableaction" data-payment-preview="'+esc(p.id)+'">Ko‘rish →</button></td>'+
+      '</tr>').join("");
+      const mobileCards = latest.map(p=>'<article class="v2-pay-card">'+
+        '<div class="v2-pay-card-top"><div><span class="v2-pay-id">#'+esc(p.id)+'</span><div class="v2-pay-person">'+esc(p.name||"—")+'</div>'+
+        (p.username?'<div class="note">@'+esc(p.username)+'</div>':'')+'</div>'+
+        '<div class="v2-pay-amount">'+esc(p.amount||"—")+'</div></div>'+
+        '<div class="v2-pay-meta"><span>'+esc(p.plan||"—")+'</span><span>'+esc(p.method||"—")+'</span>'+status(p)+'</div>'+
+        '<button class="v2-pay-open" type="button" data-payment-preview="'+esc(p.id)+'">To‘lovni ko‘rish <span aria-hidden="true">↗</span></button>'+
+      '</article>').join("");
+      $("paymentBoard").innerHTML =
+        '<div class="grid v2-pay-summary">'+
+          stat("Tekshiruvda",counts.pending_payments||0,"Bank orqali tekshiriladi")+
+          stat("Tasdiqlangan",counts.approved_payments||0,"Jami tasdiqlangan to‘lovlar")+
+          stat("Rad etilgan",counts.rejected_payments||0,"Jami rad etilgan to‘lovlar")+
+        '</div>'+
+        '<div class="v2-section-title"><b>To‘lovlar ro‘yxati</b><small>Bankdagi tushumni tekshirib tasdiqlang</small></div>'+
+        '<div class="panel v2-pay-desktop"><div class="table-scroll"><table class="data-table">'+
+        '<thead><tr><th>ID / Foydalanuvchi</th><th>Tarif</th><th>Usul</th><th>Summa</th><th>Holat</th><th>Harakat</th></tr></thead>'+
+        '<tbody>'+ (rows||'<tr><td colspan="6" class="empty">Hozircha to‘lov yo‘q.</td></tr>')+'</tbody></table></div></div>'+
+        '<div class="v2-pay-mobile">'+(mobileCards||'<p class="empty">Hozircha to‘lov yo‘q.</p>')+'</div>';
+    }
+    function previewPayment(id){
+      const p=((state.overview.payments||{}).latest||[]).find(row=>String(row.id)===String(id));
+      if(!p)return;
+      const detail=(label,val)=>'<div class="clean-row"><span class="note">'+label+'</span><b>'+esc(val||"—")+'</b></div>';
+      openDrawer("To‘lov #"+p.id,(p.name||"—")+" · "+(p.submitted_at||""),
+        '<div class="panel"><div class="mcard"><h3>To‘lov ma’lumotlari</h3><div class="clean-list">'+
+        detail("Foydalanuvchi",p.name)+detail("Telegram ID",p.telegram_id)+
+        detail("Tarif",p.plan)+detail("To‘lov usuli",p.method)+detail("Summa",p.amount)+
+        detail("Holat",p.status_label||p.status)+detail("Manba",paymentSourceLabel(p.source))+detail("Kvitansiya",p.has_screenshot?"Yuklangan (bankda mustaqil tekshiring)":"Yuklanmagan")+
+        '</div></div><div class="danger-note">Tasdiqlashdan oldin bankda haqiqiy tushumni tekshiring. Skrinshotning o‘zi to‘lov isboti emas.</div>'+
+        (p.status==="pending"?'<div class="row"><button class="btn" data-pay="'+esc(p.id)+'" data-pact="approve">Tasdiqlash</button><button class="btn danger" data-pay="'+esc(p.id)+'" data-pact="reject">Rad etish</button></div>':"")+
+        '</div>');
     }
     async function reviewPayment(btn){
       const id=Number(btn.dataset.pay||0), action=btn.dataset.pact;
       if(!id||!action) return;
       let reason="";
+      if(action==="approve"){
+        const question="Bank hisobida haqiqiy tushum borligini mustaqil tekshirdingizmi? To‘lovni hozir tasdiqlaysiz.";
+        const approved=await new Promise(resolve=>{
+          if(tg&&typeof tg.showConfirm==="function"){
+            try{tg.showConfirm(question,ok=>resolve(!!ok));return;}catch(e){}
+          }
+          resolve(window.confirm(question));
+        });
+        if(!approved) return;
+      }
       if(action==="reject"){ reason=prompt("Rad sababini yozing","admin panel orqali rad etildi")||""; if(!reason.trim()) return; }
       btn.disabled=true;
-      try{ await apiPost("/api/admin-miniapp/payments/review",{payment_id:id,action,reason}); await reloadAll(action==="approve"?"To'lov tasdiqlandi":"To'lov rad etildi"); }
+      try{ await apiPost("/api/admin-miniapp/payments/review",{payment_id:id,action,reason}); closeDrawer(); await reloadAll(action==="approve"?"To'lov tasdiqlandi":"To'lov rad etildi"); }
       catch(e){ toast(apiErr(e,"To'lovni ko'rib bo'lmadi")); btn.disabled=false; }
     }
 
@@ -1317,8 +2298,34 @@
     /* ---------- USER DETAIL ---------- */
     /* Drawer ichi almashadi, shuning uchun profildan bo'lim ochilganda qaytish
        yo'li kerak. `state.drawerBack` — bir pog'onali orqaga qaytarish. */
-    function openDrawer(title,sub,html){ $("drawerTitle").textContent=title; $("drawerSub").textContent=sub||""; $("drawerBody").innerHTML=html; $("drawer").classList.add("open"); $("scrim").classList.add("open"); $("drawer").setAttribute("aria-hidden","false"); $("drawerBack").hidden=!state.drawerBack; }
-    function closeDrawer(){ $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); $("drawer").setAttribute("aria-hidden","true"); state.activeModule=null; state.drawerBack=null; $("drawerBack").hidden=true; }
+    let drawerReturnFocus = null;
+    function openDrawer(title,sub,html){
+      if(!$("drawer").classList.contains("open")) drawerReturnFocus=document.activeElement;
+      $("drawerTitle").textContent=title;
+      $("drawerSub").textContent=sub||"";
+      $("drawerBody").innerHTML=html;
+      $("drawerBody").scrollTop=0;
+      $("drawer").classList.add("open");
+      $("scrim").classList.add("open");
+      $("drawer").setAttribute("aria-hidden","false");
+      $("drawerBack").hidden=!state.drawerBack;
+      document.body.classList.add("locked");
+      const close=$("drawer").querySelector('[data-act="close-drawer"]');
+      if(close) close.focus({preventScroll:true});
+    }
+    function closeDrawer(){
+      const wasOpen=$("drawer").classList.contains("open");
+      $("drawer").classList.remove("open");
+      $("scrim").classList.remove("open");
+      $("drawer").setAttribute("aria-hidden","true");
+      document.body.classList.remove("locked");
+      state.activeModule=null;
+      state.drawerBack=null;
+      $("drawerBack").hidden=true;
+      const focus=drawerReturnFocus;
+      drawerReturnFocus=null;
+      if(wasOpen&&focus&&focus.isConnected&&typeof focus.focus==="function") focus.focus({preventScroll:true});
+    }
     function drawerBack(){ const back=state.drawerBack; state.drawerBack=null; if(back) back(); else closeDrawer(); }
 
     /* Bitta panel ikki joyda chiziladi: modul drawer'ida yoki «📣 Reklama»
@@ -1390,8 +2397,9 @@
           ${access.source==="manual_admin"?'<div class="ncnote" style="margin-top:10px">Bu access admin tomonidan qo\'lda berilgan. U to\'lov yoki daromad yozuvi hisoblanmaydi.</div>':""}
         </section>
 
-        <section class="dsec">
-          <div class="dtitle-sm">Telegram aloqa va HSK AI faolligi</div>
+        <details class="acc v2-profile-details">
+          <summary>Telegram алоқа ва HSK AI фаоллиги</summary>
+          <div class="v2-profile-body">
           <div class="ncnote" style="margin-top:8px"><b>${esc(tgDiag.title)}</b><br>${esc(tgDiag.text)}</div>
           <div class="kv" style="margin-top:10px">
             <span>Telegram xabari</span><b>${f.bot_blocked?"yetib bormaydi":"yetib borishi mumkin"}</b>
@@ -1418,10 +2426,13 @@
           </details>
 
           ${f.bot_blocked&&tgHistory.length===0?'<div class="ncnote" style="margin-top:10px">Bu eski yozuv bo\'lishi mumkin. Yangi block/unblock tarixi deploydan keyingi eventlardan boshlab to\'planadi.</div>':""}
-        </section>
 
-        <section class="dsec">
-          <div class="dtitle-sm">Qurilmalar va foydalanish</div>
+          </div>
+        </details>
+
+        <details class="acc v2-profile-details">
+          <summary>Қурилмалар ва фойдаланиш</summary>
+          <div class="v2-profile-body">
           <div class="ncnote" style="margin-top:8px">
             <b>Asosiy oxirgi client:</b> ${primaryDevice?esc(devicePlatformLabel(primaryDevice.platform)+" · "+primaryDevice.surface+" · "+primaryDevice.last_foreground_at):"hali aniqlanmagan"}
           </div>
@@ -1430,20 +2441,30 @@
           <div class="dtitle-sm" style="margin-top:12px">Native ilovalar</div>
           ${nativeDevicesHtml}
           <div class="ncnote" style="margin-top:10px">Native <b>server contact</b> foreground degani emas: Android widget background refresh ham sessionni tegishi mumkin. Faol foydalanish uchun foreground/open event alohida ko'rsatiladi.</div>
-        </section>
+
+          </div>
+        </details>
         <section class="dsec"><div class="dtitle-sm">O'qish</div><div class="kv">
           <span>Til</span><b>${esc(f.language)}</b><span>Daraja</span><b>${esc(f.level)}</b>
           <span>Rejim</span><b>${esc(f.mode||f.learning_mode)}</b><span>Savollar</span><b>${esc(f.questions)}</b>
           <span>Qo'shimcha AI savollar</span><b>${esc(bonus.left)} ta</b><span>Seriya</span><b>${esc(f.streak)} kun</b>
           <span>Bonus berilgan</span><b>${esc(bonus.total)} ta</b><span>Bonus ishlatilgan</span><b>${esc(bonus.used)} ta</b></div></section>
-        <section class="dsec"><div class="dtitle-sm">Referral</div><div class="kv">
+        <details class="acc v2-profile-details">
+          <summary>Referral маълумотлари</summary>
+          <div class="v2-profile-body"><div class="kv">
           <span>Taklif qilgan</span><b>${esc(referrerText)}</b>
           <span>O'z referral kodi</span><b>${esc(referral.own_code||f.referral_code||"kod yaratilmagan")}</b>
           <span>Takliflari</span><b>${esc(referral.invited_total||0)} ta</b>
-          <span>Faol referral</span><b>${esc(referral.invited_active||0)} ta</b></div></section>
-        <section class="dsec"><div class="dtitle-sm">To'lov tarixi</div><div class="panel">
+          <span>Faol referral</span><b>${esc(referral.invited_active||0)} ta</b>
+          </div>
+        </details>
+        <details class="acc v2-profile-details">
+          <summary>Тўлов тарихи</summary>
+          <div class="v2-profile-body"><div class="panel">
           ${pays.length?pays.map(p=>`<div class="mcard"><h3>#${p.id} · ${esc(p.status)}</h3><p>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.amount)}<br>Manba: ${esc(paymentSourceLabel(p.source))}<br>Yuborilgan: ${esc(p.submitted_at||"—")}<br>Ko'rilgan: ${esc(p.reviewed_at||"—")}${p.comment?" · "+esc(p.comment):""}</p></div>`).join(""):"<p class='empty'>To'lov tarixi yo'q.</p>"}
-        </div></section>
+        
+          </div>
+        </details>
         <section class="dsec"><div class="dtitle-sm">Admin amallari</div><div class="panel">
           <div class="mcard"><h3>Qo'lda paid obuna berish</h3>
             ${durationControlHtml("qaDays")}
@@ -1465,8 +2486,61 @@
     }
 
     /* ---------- MODULES (settings) ---------- */
+    const v2SubState={statistics:"overview",payments:"payments",settings:"tracks",marketing:"campaigns",system:"model"};
+    function selectV2Sub(tab,pane){
+      const container=$(tab);if(!container)return;
+      const choices=Array.from(container.querySelectorAll("[data-v2-sub]"));
+      const match=choices.find(item=>item.dataset.v2Sub===tab+":"+pane);
+      if(!match)return;
+      v2SubState[tab]=pane;
+      choices.forEach(item=>{
+        const selected=item===match;
+        item.classList.toggle("active",selected);
+        item.setAttribute("aria-selected",selected?"true":"false");
+      });
+      container.querySelectorAll("[data-v2-pane]").forEach(el=>{
+        el.hidden=(el.dataset.v2Pane!==tab+":"+pane);
+      });
+      if(tab==="statistics"&&pane==="details"&&state.overview){
+        renderStatisticsDetails();
+        if(!state.legacyEntryLoaded){state.legacyEntryLoaded=true;loadSubEntry();}
+      }
+      if(tab==="payments"&&["portfolio","prices","methods"].includes(pane)){
+        const hosts={portfolio:"v2PortfolioView",prices:"v2PricesView",methods:"v2MethodsView"};
+        for(const [key,id] of Object.entries(hosts)){
+          if(key===pane)continue;
+          const other=$(id);
+          if(other){other.innerHTML="";other.dataset.loaded="false";}
+        }
+        const host=$(hosts[pane]);
+        if(host&&host.dataset.loaded!=="true"&&host.dataset.loading!=="true"){
+          host.dataset.loading="true";
+          loadManagement(false).then(d=>{
+            if(v2SubState.payments!==pane)return;
+            if(pane==="portfolio")renderPortfolio(d);
+            else if(pane==="prices")renderPrices(d);
+            else renderPaymentMethods(d);
+          }).catch(()=>{
+            host.innerHTML='<div class="v2-ledger-note">Молия маълумотларини юклаб бўлмади. <button class="btn sec" data-module="'+(pane==="methods"?"prices":pane)+'">Қайта уриниш</button></div>';
+          }).finally(()=>{host.dataset.loading="false";});
+        }
+      }
+    }
     function renderModules(){
-      $("moduleGrid").innerHTML = (state.overview.modules||[]).map(m=>`<button class="srow" data-module="${m.key}"><div><h3>${m.icon} ${esc(m.title)}</h3><p>${esc(m.note)}</p></div><span class="tag green">ochish</span></button>`).join("");
+      const mods=state.overview.modules||[];
+      const groups={
+        moduleGrid:new Set(["hsk30"]),
+        v2ProductAccess:new Set(["course_access","limits"]),
+        v2ProductContent:new Set(["course_sales_experiment","audio"]),
+        v2MarketingModules:new Set(["broadcast","ads","release_feedback","discount"]),
+        v2MarketingPartners:new Set(["partners"]),
+        v2SystemModules:new Set(["channels","help"])
+      };
+      for(const [id,keys] of Object.entries(groups)){
+        const el=$(id);if(!el)continue;
+        el.innerHTML=mods.filter(m=>keys.has(m.key)).map(m=>`<button class="srow" data-module="${esc(m.key)}"><div><h3>${esc(m.icon)} ${esc(m.title)}</h3><p>${esc(m.note)}</p></div><span class="tag">Ochish</span></button>`).join("");
+      }
+      for(const [tab,pane] of Object.entries(v2SubState))selectV2Sub(tab,pane);
     }
     function renderAiModel(){
       const host=$("aiModelBox"); if(!host) return;
@@ -1497,11 +2571,65 @@
     }
 
     async function openModule(key,prefill){
+      if(key==="broadcast"){
+        closeDrawer();
+        switchTab("marketing");
+        selectV2Sub("marketing","campaigns");
+        state.activeModule="broadcast";
+        renderBroadcast();
+        const editor=$("v2MarketingCampaignEditor");
+        if(editor)editor.scrollIntoView({behavior:"smooth",block:"start"});
+        return;
+      }
       state.activeModule=key;
       if(key==="stats"){ closeDrawer(); switchTab("statistics"); return; }
       if(key==="user_search"){ closeDrawer(); switchTab("users"); $("search").focus(); return; }
+      if(key==="prices"){
+        closeDrawer();
+        const host=$("v2PricesView");
+        if(host){host.dataset.loaded="false";host.dataset.loading="false";}
+        switchTab("payments");
+        state.activeModule="prices";
+        selectV2Sub("payments","prices");
+        return;
+      }
+      if(key==="portfolio"){
+        closeDrawer();
+        const host=$("v2PortfolioView");
+        if(host){host.dataset.loaded="false";host.dataset.loading="false";}
+        switchTab("payments");
+        state.activeModule="portfolio";
+        selectV2Sub("payments","portfolio");
+        return;
+      }
+      if(PRODUCT_INLINE_MODULES[key]){
+        closeDrawer();
+        closeProductEditor();
+        switchTab("settings"); // Navigation closes any previous drawer and resets activeModule.
+        state.activeModule=key;
+        selectV2Sub("settings",PRODUCT_INLINE_MODULES[key][0]);
+        const host=$(PRODUCT_INLINE_MODULES[key][1]);
+        if(host){host.hidden=false;host.innerHTML='<p class="v2-ledger-note">Маълумотлар юкланмоқда…</p>';}
+        try{
+          const d=await loadManagement(false);
+          if(state.activeModule===key)PRODUCT_INLINE_RENDERERS[key](d);
+        }catch(e){
+          if(host)host.innerHTML='<div class="danger-note">Маълумот юкланмади. Янгилаб қайта урининг.</div>';
+        }
+        return;
+      }
+      if(key==="channels"||key==="help"){
+        closeDrawer();switchTab("system");selectV2Sub("system","settings");
+        state.activeModule=key;
+        const host=$("v2SystemEditor");
+        if(host){host.hidden=false;host.innerHTML='<p class="v2-ledger-note">Юкланмоқда…</p>';}
+        try{const d=await loadManagement(false);
+          if(state.activeModule===key){if(key==="channels")renderChannels(d);else renderHelp(d);}
+        }catch(e){if(host)host.innerHTML='<div class="danger-note">Маълумот юкланмади.</div>';}
+        return;
+      }
       /* Reklama endi drawer emas, sozlamalar ichidagi bitta bo'lim. */
-      if(key==="ads_hub"){ closeDrawer(); switchTab("settings"); const h=$("adHub"); if(h) h.scrollIntoView({behavior:"smooth",block:"start"}); return openAdHub(state.adHub); }
+      if(key==="ads_hub"){ closeDrawer(); switchTab("marketing"); selectV2Sub("marketing","ads"); const h=$("adHub"); if(h) h.scrollIntoView({behavior:"smooth",block:"start"}); return openAdHub(state.adHub); }
       openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
       let d;
       try{ d=await loadManagement(false); }catch(e){ $("drawerBody").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; return; }
@@ -1536,10 +2664,54 @@
       if(!value) return "—";
       try{return new Date(value).toLocaleString("uz-UZ",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}catch(e){return value}
     }
+
+    /* Product V2: existing verified forms render inline in the actual section,
+       never in a cramped legacy drawer. Hooks / inputs and APIs stay identical. */
+    const PRODUCT_INLINE_MODULES={
+      hsk30:["tracks","v2ProductEditorTracks"],
+      course_access:["access","v2ProductEditorAccess"],
+      limits:["access","v2ProductEditorAccess"],
+      course_sales_experiment:["content","v2ProductEditorContent"],
+      audio:["content","v2ProductEditorContent"]
+    };
+    const PRODUCT_INLINE_RENDERERS={
+      hsk30:(d)=>renderHsk30(d),course_access:(d)=>renderCourseAccess(d),
+      limits:(d)=>renderLimits(d),course_sales_experiment:(d)=>renderCourseSalesExperiment(d),
+      audio:(d)=>renderAudio(d)
+    };
+    function closeProductEditor(){
+      const pane=$( "settings" );
+      if(!pane)return;
+      pane.querySelectorAll(".v2-product-editor").forEach(host=>{
+        host.innerHTML="";host.hidden=true;host.dataset.module="";
+      });
+      pane.querySelectorAll("[data-v2-pane] .v2-modules, [data-v2-pane] .v2-track-grid, [data-v2-pane] .v2-access-hint")
+        .forEach(el=>el.hidden=false);
+      if(PRODUCT_INLINE_MODULES[state.activeModule])state.activeModule=null;
+    }
+    function showProductEditor(title,sub,html){
+      const key=state.activeModule, meta=PRODUCT_INLINE_MODULES[key];
+      if(!meta)return openDrawer(title,sub,html);
+      const [pane,hostId]=meta,host=$(hostId);
+      if(!host)return;
+      closeProductEditor();
+      state.activeModule=key;
+      host.hidden=false;host.dataset.module=key;
+      const currentPane=host.closest("[data-v2-pane]");
+      if(currentPane)currentPane.querySelectorAll(".v2-modules,.v2-track-grid,.v2-access-hint").forEach(el=>el.hidden=true);
+      host.innerHTML='<header class="v2-product-editor-head">'+
+        '<div><span class="v2-ledger-eyebrow">PRODUCT / CONTROL</span>'+
+          '<h2>'+esc(title)+'</h2><p>'+esc(sub||"")+'</p></div>'+
+        '<div class="v2-product-editor-actions">'+
+          '<button type="button" class="button ghost" data-product-back>← Бўлимлар</button>'+
+          '<button type="button" class="button" data-product-refresh>↻ Янгилаш</button>'+
+        '</div></header><div class="v2-product-editor-body">'+html+'</div>';
+      host.scrollIntoView({block:"nearest"});
+    }
     function renderCourseAccess(d){
       const ca=d.course_access||{mode:"subscription",effective_mode:"subscription",free_until:null};
       const mode=ca.mode||"subscription", eff=ca.effective_mode||mode;
-      openDrawer("📚 Kurs access","Darslarda obuna yoki vaqtinchalik free rejim",`<div class="panel">
+      showProductEditor("📚 Kurs access","Darslarda obuna yoki vaqtinchalik free rejim",`<div class="panel">
         <div class="mcard">
           <h3>Joriy holat</h3>
           <p>${esc(courseAccessLabel(eff))}</p>
@@ -1669,7 +2841,7 @@
         const rows=LIMIT_ACTIONS.map(([action,label])=>limitRow(plan,action,label,limitRule(rules,action))).join("");
         return `<div class="mcard"><h3>${esc(planLabel)}</h3>${rows}</div>`;
       }).join("");
-      openDrawer("🎚 Limitlar","Bepul va trial chegaralari. Obunachiga limit qo'yilmaydi.",`<div class="panel">
+      showProductEditor("🎚 Limitlar","Bepul va trial chegaralari. Obunachiga limit qo'yilmaydi.",`<div class="panel">
         ${body}
         <div class="mcard">
           <h3>Pro trial</h3>
@@ -1735,7 +2907,7 @@
       const se=d.sales_experiment||{experiment_id:"sales_value_v1",mode:"off",treatment_percent:50,started_at:null};
       const mode=se.mode||"off", pct=Number(se.treatment_percent==null?50:se.treatment_percent);
       const effectivePct=Number(se.effective_treatment_percent==null?pct:se.effective_treatment_percent);
-      openDrawer("🧭 HSK sotuv tajribasi","sales_value_v1 A/B assignment va xavfsiz rollout",`<div class="panel">
+      showProductEditor("🧭 HSK sotuv tajribasi","sales_value_v1 A/B assignment va xavfsiz rollout",`<div class="panel">
         <div class="mcard">
           <h3>Joriy holat</h3>
           <p><b>${esc(se.experiment_id||"sales_value_v1")}</b> · ${esc(mode)} · treatment ${esc(effectivePct)}%</p>
@@ -1875,6 +3047,15 @@
           return `<tr><td><b>${esc(step.label)}</b><div style="height:5px;background:var(--surface-2);border-radius:99px;margin-top:6px"><i style="display:block;height:5px;width:${width}%;background:var(--accent);border-radius:99px"></i></div></td><td class="r"><b>${count}</b></td><td class="r">${rate}</td></tr>`;
         }).join("");
       };
+      const funnelMobile=(rows,unit)=>{
+        return rows.map(step=>{
+          const count=Number(step[unit]||0);
+          const previous=unit==="users"?step.previous_users:step.previous_attempts;
+          const converted=step.converted_from_previous;
+          const rate=previous==null?"—":`${Number(converted||0)}/${Number(previous||0)} (${step.conversion_from_previous_pct==null?"—":`${Number(step.conversion_from_previous_pct).toFixed(1)}%`})`;
+          return `<article class="hsk30-funnel-step"><b>${esc(step.label)}</b><span class="hsk30-funnel-count">${count}</span><small>Ўтган / олдинги: ${rate}</small></article>`;
+        }).join("");
+      };
       const courseFunnelHtml=funnelTable(courseFunnel,"users");
       const paymentFunnelHtml=funnelTable(paymentFunnel,"attempts");
       const pay=data.payments||{};
@@ -1896,9 +3077,9 @@
       host.innerHTML=`
         <div class="tags" style="margin:4px 0 12px">${tag(`Mini App promo кўрган ${Number(courseFunnel[0]?.users||0)}`,"blue")}${tag(`Курс очган ${Number(data.track_activated_users||0)}`,"blue")}${tag(`HSK 3.0 тўлов уриниши ${Number(paymentFunnel[0]?.attempts||0)}`,"blue")}${outcomeTags}${tag(`Mini App promo кўрсатиш ${Number(data.promo_impressions||0)}`,"gold")}${tag(`Promo lifetime · барча платформа ${Number(data.promo_impressions_all_platforms_lifetime||0)}`,"gold")}</div>
         <div class="dtitle-sm">Курсга ўтиш · Mini App <small>User · шу даврдаги кетма-кет қадамлар</small></div>
-        <div style="overflow:auto"><table class="tbl"><thead><tr><th>Қадам</th><th class="r">User</th><th class="r">Ўтган / олдинги</th></tr></thead><tbody>${courseFunnelHtml||"<tr><td colspan='3' class='empty'>Mini App’да қайд этилган қадамлар ҳали йўқ.</td></tr>"}</tbody></table></div>
+        <div class="hsk30-funnel-mobile">${funnelMobile(courseFunnel,"users")||"<p class='empty'>Ҳозирча қайд йўқ.</p>"}</div><div class="hsk30-funnel-desktop" style="overflow:auto"><table class="tbl"><thead><tr><th>Қадам</th><th class="r">User</th><th class="r">Ўтган / олдинги</th></tr></thead><tbody>${courseFunnelHtml||"<tr><td colspan='3' class='empty'>Mini App’да қайд этилган қадамлар ҳали йўқ.</td></tr>"}</tbody></table></div>
         <div class="dtitle-sm" style="margin-top:14px">Тўлов жараёни · HSK 3.0 <small>Танланган даврда бошланган уриниш · Mini App / Android / Desktop</small></div>
-        <div style="overflow:auto"><table class="tbl"><thead><tr><th>Қадам</th><th class="r">Уриниш</th><th class="r">Ўтган / олдинги</th></tr></thead><tbody>${paymentFunnelHtml||"<tr><td colspan='3' class='empty'>ID билан боғланган HSK 3.0 checkout уриниши йўқ.</td></tr>"}</tbody></table></div>
+        <div class="hsk30-funnel-mobile">${funnelMobile(paymentFunnel,"attempts")||"<p class='empty'>Ҳозирча қайд йўқ.</p>"}</div><div class="hsk30-funnel-desktop" style="overflow:auto"><table class="tbl"><thead><tr><th>Қадам</th><th class="r">Уриниш</th><th class="r">Ўтган / олдинги</th></tr></thead><tbody>${paymentFunnelHtml||"<tr><td colspan='3' class='empty'>ID билан боғланган HSK 3.0 checkout уриниши йўқ.</td></tr>"}</tbody></table></div>
         <div class="ncnote" style="margin-top:8px">Attempt ID билан submit event’и топилмаган тўлов ёзуви: ${Number(data.unlinked_payment_records||0)}. Тўлов ҳолатлари пастдаги жадвалда барча платформа бўйича алоҳида саналган.</div>
         <div class="grid g2" style="margin-top:14px">
           <section><div class="dtitle-sm">Тўлов уринишлари қаерда тўхтади</div><table class="tbl"><tbody>${dropoffRows||"<tr><td class='empty'>Ташлаб кетган checkout уриниши йўқ.</td></tr>"}</tbody></table></section>
@@ -1931,7 +3112,7 @@
       const live=Array.isArray(h.live_levels)?h.live_levels:[];
       const qr=h.qr||{};
       const stats=h.stats||{};
-      openDrawer("🆕 HSK 3.0","Курс ва бир марталик доступни алоҳида бошқариш",`<div class="panel">
+      showProductEditor("🆕 HSK 3.0","Курс ва бир марталик доступни алоҳида бошқариш",`<div class="panel">
         <div class="mcard">
           <h3>Жорий rollout ҳолати <small>Жами · барча платформалар</small></h3>
           <div class="tags">
@@ -1996,15 +3177,63 @@
     }
 
     function renderPrices(d){
-      openDrawer("💳 Obuna narxlari","Narxlar darhol subscription Mini Appda ishlaydi",`<div class="panel">
-        ${(d.prices||[]).map(p=>`<div class="mcard" data-prow data-method="${p.method}" data-plan="${p.plan}">
-          <h3>${esc(p.method_label)} · ${esc(p.plan_label)}</h3><p>Joriy: ${esc(p.text)}</p>
-          <div class="row"><input class="input" data-pamount type="number" min="1" max="1000000" value="${p.amount}" style="max-width:170px"><button class="btn" data-psave>Saqlash</button></div>
-          ${priceQrHtml(p)}</div>`).join("")}
-        <div class="mcard"><h3>Dushanbe City rekviziti</h3><p>Tojikiston → Dushanbe City tanlagan userlarga chiqadi.</p><textarea id="payDetails" class="textarea" maxlength="1500">${esc(d.payment_details||"")}</textarea><button class="btn" data-pdsave>Rekvizitni saqlash</button></div>
-        <div class="mcard"><h3>Alif rekviziti</h3><p>Tojikiston → Alif, Rossiya, O'zbekiston va boshqa davlat kartalariga chiqadi.</p><textarea id="payDetailsAlif" class="textarea" maxlength="1500">${esc(d.payment_details_alif||"")}</textarea><button class="btn" data-pdsave data-bank="alif">Rekvizitni saqlash</button></div></div>`);
-      bindPriceQr();
-    }
+ const host=$("v2PricesView");if(!host)return;
+ const prices=Array.isArray(d.prices)?d.prices:[];
+ host.innerHTML=`
+  <div class="v2-ledger-heading">
+    <div><div class="v2-ledger-eyebrow">FINANCE / PRICING</div><h2>Тарифлар ва нархлар</h2><p>Ҳақиқий обуна тарифлари. Ўзгаришлар бевосита серверга сақланади.</p></div>
+    <button class="button v2-ledger-refresh" type="button" data-module="prices">↻ <span>Янгилаш</span></button>
+  </div>
+  <div class="v2-ledger-note"><span class="v2-ledger-note-icon" aria-hidden="true">ⓘ</span>
+    <span>Pro обуна нархи ва HSK 3.0 учун бир марталик кириш — алоҳида маҳсулотлар. Тарифни сақлашдан олдин валюта ва тўлов усулини текширинг.</span>
+  </div>
+  <div class="v2-price-grid">
+    ${prices.length?prices.map(p=>`<article class="v2-price-tile" data-prow data-method="${esc(p.method)}" data-plan="${esc(p.plan)}">
+      <div class="v2-price-tile-head"><div class="v2-ledger-eyebrow">${esc(p.method_label||p.method)}</div>${tag(p.plan_label||p.plan,"blue")}</div>
+      <h3>${esc(p.plan_label||p.plan)}</h3>
+      <div class="v2-price-current">${esc(p.text||moneyText(p.amount,p.currency))}</div>
+      <div class="v2-price-foot">Ҳозирги нарх</div>
+      <div class="v2-price-controls"><label>Янги нарх<input class="input" type="number" data-pamount min="1" max="1000000" inputmode="decimal" value="${esc(p.amount)}"></label>
+        <button class="button primary" type="button" data-psave>Сақлаш ↗</button></div>
+    </article>`).join(""):'<div class="v2-ledger-empty">Серверда тарифлар мавжуд эмас.</div>'}
+  </div>
+  <button class="v2-price-link" type="button" data-module="hsk30">
+    <span class="v2-price-link-icon">3.0</span><span><b>HSK 3.0 · бир марталик кириш</b><small>Unlock нархи ва курс ҳолати мустақил бошқарилади</small></span><span aria-hidden="true">↗</span>
+  </button>`;
+ host.dataset.loaded="true";
+}
+    function renderPaymentMethods(d){
+ const host=$("v2MethodsView");if(!host)return;
+ const prices=Array.isArray(d.prices)?d.prices:[];
+ const qrRows=prices.filter(p=>p.qr_method);
+ host.innerHTML=`
+  <div class="v2-ledger-heading"><div><div class="v2-ledger-eyebrow">FINANCE / PAYMENT METHODS</div>
+   <h2>Тўлов усуллари</h2><p>Банк реквизитлари ва QR кодларни бошқариш.</p></div>
+   <button class="button v2-ledger-refresh" type="button" data-module="prices">Нархлар ↗</button></div>
+  <div class="v2-methods-grid">
+    <section class="v2-ledger-panel">
+      <div class="v2-ledger-panel-head"><div class="v2-ledger-eyebrow">BANK DETAILS</div><h3>Dushanbe City</h3><p>Тожикистондаги Dushanbe City тўлови учун.</p></div>
+      <div class="v2-ledger-form"><div class="field"><label for="payDetails">Реквизитлар</label>
+        <textarea class="textarea" id="payDetails" maxlength="1500" rows="4">${esc(d.payment_details||"")}</textarea></div>
+        <button class="button primary" data-pdsave type="button">Реквизитларни сақлаш ↗</button></div>
+    </section>
+    <section class="v2-ledger-panel">
+      <div class="v2-ledger-panel-head"><div class="v2-ledger-eyebrow">BANK DETAILS</div><h3>Alif</h3><p>Тожикистон, хорижий карталар ва Alif тўлови учун.</p></div>
+      <div class="v2-ledger-form"><div class="field"><label for="payDetailsAlif">Реквизитлар</label>
+        <textarea class="textarea" id="payDetailsAlif" maxlength="1500" rows="4">${esc(d.payment_details_alif||"")}</textarea></div>
+        <button class="button primary" data-pdsave data-bank="alif" type="button">Реквизитларни сақлаш ↗</button></div>
+    </section>
+  </div>
+  <div class="v2-section-title"><b>QR тўловлар</b><small>Асосий ва 20% чегирма кодлари</small></div>
+  <div class="v2-methods-grid">
+   ${qrRows.length?qrRows.map(p=>`<article class="v2-ledger-panel v2-qr-tile" data-prow data-method="${esc(p.method)}" data-plan="${esc(p.plan)}">
+      <div class="v2-ledger-panel-head"><div class="v2-ledger-eyebrow">${esc(p.method_label||p.method)}</div>
+       <h3>${esc(p.plan_label||p.plan)}</h3><p>${esc(p.text||moneyText(p.amount,p.currency))}</p></div>
+      <div class="v2-ledger-form">${priceQrHtml(p)}</div>
+   </article>`).join(""):'<div class="v2-ledger-note">QR код талаб қиладиган тарифлар йўқ.</div>'}
+  </div>`;
+ host.dataset.loaded="true";bindPriceQr();
+}
     function bindPriceQr(){
       document.querySelectorAll("[data-prow]").forEach(row=>{
         const file=row.querySelector("[data-qrfile]"); if(!file) return;
@@ -2024,9 +3253,19 @@
       catch(e){ if(info) info.textContent="QR yuklanmadi"; toast(apiErr(e,"QR yuklanmadi")); }
       finally{ file.value=""; }
     }
+    function openSystemEditor(title,sub,html){
+      const host=$("v2SystemEditor");
+      if(!host||state.tab!=="system")return openDrawer(title,sub,html);
+      host.hidden=false;
+      host.innerHTML=`<div class="v2-product-editor-head"><div><div class="v2-ledger-eyebrow">SYSTEM / SETTINGS</div>
+        <h2>${esc(title)}</h2><p>${esc(sub)}</p></div>
+        <button type="button" class="button v2-editor-close" data-system-close>✕ <span>Ёпиш</span></button></div>
+        <div class="v2-marketing-editor-content v2-system-editor-content">${html}</div>`;
+      host.querySelector("[data-system-close]").onclick=()=>{host.hidden=true;host.innerHTML="";state.activeModule=null;};
+    }
     function renderChannels(d){
       const ch=d.channels||{};
-      openDrawer("📣 Majburiy kanal","Kanal majburiyligini panel ichida boshqarish",`<div class="panel">
+      openSystemEditor("📣 Majburiy kanal","Kanal majburiyligini panel ichida boshqarish",`<div class="panel">
         <div class="mcard"><h3>Majburiy obuna holati</h3><p>Hozir: ${ch.enabled?"yoqilgan":"o'chirilgan"}</p>
           <button class="btn ${ch.enabled?"sec":""}" data-chmode="${ch.enabled?"0":"1"}">${ch.enabled?"O'chirish":"Yoqish"}</button></div>
         <div class="mcard"><h3>Kanal qo'shish</h3>
@@ -2041,28 +3280,64 @@
     }
     function renderHelp(d){
       const h=d.help||{};
-      openDrawer("🆘 Yordam sozlamalari","Admin aloqa va 3 tildagi video linklar",`<div class="panel">
+      openSystemEditor("🆘 Yordam sozlamalari","Admin aloqa va 3 tildagi video linklar",`<div class="panel">
         <div class="mcard"><h3>Admin aloqa</h3><input id="adminContact" class="input" value="${esc(h.admin_contact||"")}" placeholder="@username yoki t.me/link"><button class="btn" data-hcontact>Saqlash</button></div>
         ${(h.links||[]).map(i=>`<div class="mcard" data-hrow data-key="${i.key}" data-lang="${i.lang}"><h3>${esc(i.icon)} ${esc(i.label)} · ${esc(i.lang.toUpperCase())}</h3>
           <input class="input" data-hvalue value="${esc(i.value||"")}" placeholder="https://..."><button class="btn" data-hsave>Saqlash</button></div>`).join("")}</div>`);
     }
     function renderPortfolio(d){
-      const p=d.portfolio||{}, s=p.summary||{};
-      openDrawer("💼 Portfel","Tushum va qo'lda kiritilgan operatsiyalar (AI xarajatsiz)",`<div class="panel">
-        <div class="mcard"><h3>Joriy holat</h3><div class="kv">
-          <span>Tasdiqlangan to'lov</span><b>${esc(s.approved_payments||0)}</b>
-          <span>Yalpi tushum</span><b>${esc(s.gross_revenue_usd||"$0.00")}</b>
-          <span>Qo'lda foyda</span><b>${esc(s.manual_profit_usd||"$0.00")}</b>
-          <span>Qo'lda rasxod</span><b>${esc(s.manual_expense_usd||"$0.00")}</b>
-          <span>Portfel balansi (AI xarajatsiz)</span><b>${esc(s.net_usd||"$0.00")}</b></div></div>
-        <div class="mcard"><h3>Amaliyot qo'shish</h3>
-          <div class="frow two"><div><label>Tur</label><select id="pfType" class="select"><option value="profit">Foyda</option><option value="expense">Rasxod</option></select></div>
-            <div><label>Valyuta</label><select id="pfCurrency" class="select"><option value="usd">USD</option><option value="tjs">TJS</option><option value="¥">CNY/¥</option></select></div></div>
-          <div class="frow"><label>Summa</label><input id="pfAmount" class="input" type="number" step="0.01" min="0"></div>
-          <div class="frow"><label>Sabab</label><input id="pfNote" class="input" placeholder="OpenAI to'lov, reklama, ..."></div>
-          <button class="btn" data-pfsave>Saqlash</button></div>
-        ${(p.history||[]).map(i=>`<div class="mcard"><h3>${i.type==="profit"?"+":"−"} ${esc(i.amount_usd)}</h3><p>${esc(i.source)} · ${esc(i.created_at)}<br>${esc(i.original||"")} ${esc(i.note||"")}</p></div>`).join("")||"<p class='empty'>Tarix bo'sh.</p>"}</div>`);
-    }
+  const host=$("v2PortfolioView");if(!host)return;
+  const p=d.portfolio||{}, s=p.summary||{}, h=Array.isArray(p.history)?p.history:[];
+  const display=(v,fallback)=>esc(v==null||v===""?fallback:v);
+  const stat=(label,value,sub,tone)=>'<article class="v2-ledger-metric '+tone+'"><div class="v2-ledger-metric-label">'+label+'</div><div class="v2-ledger-metric-value">'+display(value,"$0.00")+'</div><div class="v2-ledger-metric-foot">'+sub+'</div></article>';
+  host.innerHTML=`
+    <div class="v2-ledger-heading">
+      <div><div class="v2-ledger-eyebrow">FINANCE / PORTFOLIO</div><h2>Портфель</h2>
+      <p>Тасдиқланган тўловлар, қўлда киритилган фойда ва харажатлар.</p></div>
+      <button type="button" class="button v2-ledger-refresh" data-module="portfolio" aria-label="Портфельни янгилаш">↻ <span>Янгилаш</span></button>
+    </div>
+    <div class="v2-ledger-overview">
+      <section class="v2-ledger-balance">
+        <div class="v2-ledger-balance-label"><span class="v2-ledger-pulse"></span> Портфель баланси · AI харажатларисиз</div>
+        <div class="v2-ledger-balance-value">${display(s.net_usd,"$0.00")}</div>
+        <div class="v2-ledger-balance-foot">Сервер ҳисоблаган USD эквиваленти <span class="v2-ledger-separator">·</span> ${display(s.approved_payments,0)} та тасдиқланган тўлов</div>
+        <svg class="v2-ledger-deco" viewBox="0 0 170 160" fill="none" aria-hidden="true"><circle cx="138" cy="28" r="87" stroke="currentColor" stroke-width="1"/><circle cx="138" cy="28" r="65" stroke="currentColor" stroke-width="1"/><circle cx="138" cy="28" r="43" stroke="currentColor" stroke-width="1"/></svg>
+      </section>
+      <div class="v2-ledger-metrics">
+        ${stat("Ялпи тушум",s.gross_revenue_usd,"Тасдиқланган тўловлар","revenue")}
+        ${stat("Қўшимча фойда",s.manual_profit_usd,"Қўлда киритилган","profit")}
+        ${stat("Харажатлар",s.manual_expense_usd,"Қўлда киритилган","expense")}
+      </div>
+    </div>
+    <div class="v2-ledger-note"><span class="v2-ledger-note-icon" aria-hidden="true">ⓘ</span>
+      <span>Маблағлар сервер ҳисобида USD эквивалентида кўрсатилади. Турли валютадаги асл суммалар амалиётлар тарихида сақланади. AI сарфи бу балансга киритилмаган.</span>
+    </div>
+    <div class="v2-ledger-content">
+      <section class="v2-ledger-panel v2-ledger-entry">
+        <div class="v2-ledger-panel-head"><div class="v2-ledger-eyebrow">NEW ENTRY</div><h3>Янги амалиёт</h3><p>Фойда ёки харажатни ҳисобга қўшиш</p></div>
+        <div class="v2-ledger-form">
+          <div class="v2-ledger-form-row">
+            <div class="field"><label for="pfType">Амалиёт тури</label><select id="pfType" class="select"><option value="profit">＋ Фойда</option><option value="expense">－ Харажат</option></select></div>
+            <div class="field"><label for="pfCurrency">Валюта</label><select id="pfCurrency" class="select"><option value="usd">USD · $</option><option value="tjs">TJS · сомони</option><option value="¥">CNY · ¥</option></select></div>
+          </div>
+          <div class="field"><label for="pfAmount">Сумма</label><input id="pfAmount" class="input" type="number" inputmode="decimal" step="0.01" min="0.01" placeholder="0.00" autocomplete="off"></div>
+          <div class="field"><label for="pfNote">Изоҳ</label><input id="pfNote" class="input" type="text" placeholder="Масалан, реклама ёки қўшимча тушум" maxlength="500"></div>
+          <button type="button" class="button primary v2-ledger-save" data-pfsave>Амалиётни сақлаш <span aria-hidden="true">↗</span></button>
+        </div>
+      </section>
+      <section class="v2-ledger-panel v2-ledger-history">
+        <div class="v2-ledger-panel-head"><div class="v2-ledger-eyebrow">ACTIVITY</div><h3>Амалиётлар тарихи</h3><p>${h.length} та қайд · сервер маълумотлари</p></div>
+        <div class="v2-ledger-records">
+          ${h.length?h.map(i=>`<div class="v2-ledger-record">
+            <div class="v2-ledger-record-icon ${i.type==="profit"?"positive":"negative"}" aria-hidden="true">${i.type==="profit"?"↙":"↗"}</div>
+            <div class="v2-ledger-record-copy"><b>${display(i.note||i.source,"Амалиёт")}</b><small>${display(i.source,"—")} · ${display(i.created_at,"—")}</small>${i.original?`<small class="v2-ledger-original">${esc(i.original)}</small>`:""}</div>
+            <div class="v2-ledger-record-amount ${i.type==="profit"?"positive":"negative"}">${i.type==="profit"?"+":"−"} ${display(i.amount_usd,"$0.00")}</div>
+          </div>`).join(""):'<div class="v2-ledger-empty">Ҳозирча амалиётлар тарихи йўқ.</div>'}
+        </div>
+      </section>
+    </div>`;
+  host.dataset.loaded="true";
+}
     const BC_LANGS=[["tj","TJ"],["uz","UZ"],["ru","RU"]];
     const BC_FILTERS=[
       ["status","👤 Status",[["","Hammasi"],["free","Bepul"],["trial","Sinov"],["active","Faol"],["expired","Tugagan"],["blocked","Blok"]]],
@@ -2082,7 +3357,7 @@
       state.bc={content_type:"text",media_file_id:null};
       const filterHtml=BC_FILTERS.map(([k,label,opts])=>`<div class="frow"><label>${label}</label>
         <select id="bc_${k}" class="select" data-bcfilter>${opts.map(o=>`<option value="${o[0]}">${esc(o[1])}</option>`).join("")}</select></div>`).join("");
-      openDrawer("📢 Ommaviy xabar","To'liq segment + media + knopka + AI tarjima",`<div class="panel">
+      const formHtml=`<div class="panel">
         <div class="danger-note">Bu real yuborish. «Yuborish»dan oldin «Test» bilan o'zingizga ko'ring.</div>
         <div class="mcard"><h3>🎯 Segment</h3>
           <div class="frow"><label>🌐 Til (bo'sh = hammasi)</label><div class="row" id="bcLangs">
@@ -2102,7 +3377,23 @@
           <div class="frow" id="bcBtnTextRow" hidden><label>Knopka nomi (bo'sh = default)</label><input id="bcBtnText" class="input" maxlength="64"></div>
           <div class="frow" id="bcBtnUrlRow" hidden><label>Havola (https://… yoki @username)</label><input id="bcBtnUrl" class="input"></div></div>
         <div class="row"><button class="btn sec" id="bcTest" type="button">👁 Test (o'zimga)</button>
-          <button class="btn danger" id="bcSend" type="button">📢 Yuborish</button></div></div>`);
+          <button class="btn danger" id="bcSend" type="button">📢 Yuborish</button></div></div>`;
+      const editor=$("v2MarketingCampaignEditor");
+      if(editor && state.tab==="marketing"){
+        editor.hidden=false;
+        editor.innerHTML=`
+          <div class="v2-product-editor-head">
+            <div><div class="v2-ledger-eyebrow">MARKETING / BROADCAST</div><h2>Оммавий хабар</h2>
+              <p>Аудиторияни танлаш, матн ва медиа қўшиш, синов хабарини юбориш ва натижани тасдиқлаш.</p></div>
+            <button type="button" class="button v2-editor-close" data-bc-close>✕ <span>Ёпиш</span></button>
+          </div>
+          <div class="v2-marketing-editor-content">${formHtml}</div>`;
+        editor.querySelector("[data-bc-close]").onclick=()=>{
+          editor.hidden=true;editor.innerHTML="";state.activeModule=null;
+        };
+      }else{
+        openDrawer("📢 Ommaviy xabar","To'liq segment + media + knopka + AI tarjima",formHtml);
+      }
       bindBroadcast();
     }
     function bcCollect(){
@@ -2337,7 +3628,7 @@
     }
     function renderAudio(d){
       const rows=d.audio||[];
-      openDrawer("🎵 Audio boshqaruvi","Audio ro'yxatini tekshirish",`<div class="panel">
+      showProductEditor("🎵 Audio boshqaruvi","Audio ro'yxatini tekshirish",`<div class="panel">
         <div class="mcard"><h3>Qamrov</h3><p>${rows.map(r=>`${r.level}: ${r.lessons} dars`).join(" · ")}</p></div>
         <div class="mcard"><div class="frow two"><div><label>Daraja</label><select id="auLevel" class="select"><option value="hsk1">HSK1</option><option value="hsk2">HSK2</option><option value="hsk3">HSK3</option><option value="hsk4">HSK4</option></select></div>
           <div><label>Dars</label><input id="auLesson" class="input" type="number" min="1" value="1"></div></div>
@@ -2350,7 +3641,21 @@
       const m=state.activeModule, hub=state.adHub;
       state.management=null;
       await loadData();
-      if(m && $("drawer").classList.contains("open")) await openModule(m);
+      if(state.tab==="payments" && ["portfolio","prices","methods"].includes(v2SubState.payments) && !$("drawer").classList.contains("open")){
+        const d=await loadManagement(true);
+        if(v2SubState.payments==="portfolio")renderPortfolio(d);
+        else if(v2SubState.payments==="prices")renderPrices(d);
+        else renderPaymentMethods(d);
+      }
+      else if(PRODUCT_INLINE_MODULES[m] && state.tab==="settings"){
+        const d=await loadManagement(true);
+        PRODUCT_INLINE_RENDERERS[m](d);
+      }
+      else if((m==="channels"||m==="help") && state.tab==="system" && $("v2SystemEditor") && !$("v2SystemEditor").hidden){
+        const d=await loadManagement(true);
+        if(m==="channels")renderChannels(d);else renderHelp(d);
+      }
+      else if(m && $("drawer").classList.contains("open")) await openModule(m);
       /* Panel «📣 Reklama» bo'limi ichida ochilgan bo'lsa, drawer yopiq —
          o'sha yerda qayta chizamiz, aks holda admin saqlab bo'lib eski
          qiymatlarga qarab turardi. */
@@ -2603,10 +3908,33 @@
 
     /* ---------- tabs ---------- */
     function switchTab(tab){
-      state.tab=tab;
-      document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
+      if(tab==="menu"){
+        openDrawer("Menyu","Barcha bo‘limlar",'<div class="panel">'+[
+          ["settings","📚 Mahsulot"],["marketing","📣 Marketing"],["system","⚙️ Tizim"],["statistics","📊 Analitika"],["users","👥 Foydalanuvchilar"],["payments","💳 Moliya"]
+        ].map(([key,name])=>'<button class="srow" data-tab="'+key+'"><h3>'+name+'</h3><span>›</span></button>').join("")+'</div>');
+        return;
+      }
+      const pages={
+        dashboard:["HSK AI / OVERVIEW","Bosh sahifa","Bugungi holatni ko‘ring va muhim ishlarni shu yerdan boshlang."],
+        statistics:["HSK AI / ANALYTICS","Analitika","Platformalar, konversiya, retention va AI xarajatlari."],
+        users:["HSK AI / USERS","Foydalanuvchilar","Qidiruv, obunalar, foydalanuvchi profili va amallar."],
+        payments:["HSK AI / FINANCE","Moliya","To‘lovlarni tekshirish va tariflarni boshqarish."],
+        settings:["HSK AI / PRODUCT","Mahsulot","HSK 2.0/3.0, limitlar, Trial va kurs vositalari."],
+        marketing:["HSK AI / MARKETING","Marketing","Xabarlar, reklama, chegirma va eslatmalar."],
+        system:["HSK AI / SYSTEM","Tizim","AI model va tizim sozlamalari."]
+      };
+      if(!pages[tab])return;
+      closeDrawer();state.tab=tab;
+      if(v2SubState[tab])selectV2Sub(tab,v2SubState[tab]);
+      document.querySelectorAll(".tab").forEach(b=>{
+        const active=b.dataset.tab===tab||(b.dataset.tab==="menu"&&["settings","marketing","system"].includes(tab));
+        b.classList.toggle("active",active);
+        b.setAttribute("aria-current",active?"page":"false");
+      });
       document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===tab));
-      const main=document.querySelector("main"); if(main) main.scrollTo({top:0,behavior:"smooth"}); window.scrollTo({top:0});
+      ["v2Eyebrow","v2Title","v2Description"].forEach((id,i)=>{const n=$(id);if(n)n.textContent=pages[tab][i];});
+      if($("v2Crumb"))$("v2Crumb").textContent=pages[tab][1];
+      const main=document.querySelector("main");if(main)main.scrollTo({top:0,behavior:"instant"});window.scrollTo({top:0});
     }
 
     async function copyText(text,okMsg){
@@ -2633,6 +3961,7 @@
     document.addEventListener("click",(e)=>{
       const T=(s)=>e.target.closest(s);
       let el;
+      if((el=T("[data-payment-preview]"))) return previewPayment(el.dataset.paymentPreview);
       if((el=T("[data-pay]"))) return reviewPayment(el);
       if((el=T("[data-duration-target]"))){ const input=$(el.dataset.durationTarget); if(input) input.value=el.dataset.durationDays; return; }
       if((el=T("[data-copy]"))) return copyText(el.dataset.copy,"Telegram ID nusxalandi");
@@ -2640,6 +3969,15 @@
       if((el=T("[data-umsend]"))){ const text=($("umText").value||"").trim(); if(text.length<2){ toast("Matn juda qisqa"); return; } el.disabled=true; return apiPost("/api/admin-miniapp/users/message",{telegram_id:Number(el.dataset.umsend),text,translate:$("umTranslate").checked}).then(()=>{closeDrawer();toast("Xabar yuborildi");}).catch(x=>{toast(apiErr(x,"Xabar yuborilmadi"));el.disabled=false;}); }
       if((el=T("[data-uchat]"))) return openUserChat(el.dataset.uchat);
       if((el=T("[data-adhub]"))) return openAdHub(el.dataset.adhub);
+      if((el=T("[data-product-back]"))){closeProductEditor();return;}
+      if((el=T("[data-product-refresh]"))){
+        const m=state.activeModule;
+        if(!PRODUCT_INLINE_MODULES[m])return;
+        el.disabled=true;
+        return loadManagement(true).then(d=>PRODUCT_INLINE_RENDERERS[m](d))
+          .catch(()=>toast("Маълумотларни янгилаб бўлмади"))
+          .finally(()=>{if(el.isConnected)el.disabled=false;});
+      }
       if((el=T("[data-module]"))){
         // `data-uback` bo'lsa bo'lim profil kontekstida ochiladi va orqaga
         // qaytish tugmasi o'sha profilga olib boradi.
@@ -2732,6 +4070,8 @@
       if((el=T("[data-cafilter]"))){ caFilter=el.dataset.cafilter; renderCaLangFilter(); renderCourseAds(); return; }
       if((el=T("[data-seg]"))){ state.filter=el.dataset.seg; state.remoteUsers=null; renderDashboard(); renderUserFilters(); switchTab("users"); if(state.filter==="bot_blocked") return remoteSearch(state.search); renderUsers(); return; }
       if((el=T("[data-period]"))){ state.statsPeriod=el.dataset.period||"all_time"; renderStatistics(); return; }
+      if((el=T("[data-v2-search]"))){switchTab("users");$("search").focus();return;}
+      if((el=T("[data-v2-sub]"))){const parts=el.dataset.v2Sub.split(":");return selectV2Sub(parts[0],parts[1]);}
       if((el=T("[data-tab]"))) return switchTab(el.dataset.tab);
       if((el=T("[data-tab-jump]"))) return switchTab(el.dataset.tabJump);
       if((el=T("[data-act]"))){

@@ -1,0 +1,33 @@
+name: Admin V2 visual smoke
+
+on:
+  pull_request:
+    paths:
+      - "app/static/admin.html"
+      - "tests/admin_v2_browser_smoke.py"
+      - "tests/fixtures/admin_v2_approved_prototype.html"
+      - ".github/workflows/admin-v2-ui.yml"
+  workflow_dispatch:
+
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Chromium and Playwright
+        run: |
+          python -m pip install playwright pillow
+          python -m playwright install --with-deps chromium
+      - name: Verify Admin V2 mobile and desktop
+        run: python tests/admin_v2_browser_smoke.py --output /tmp/admin-v2-ui
+      - name: Upload visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-v2-ui-evidence
+          path: /tmp/admin-v2-ui/*.png
+          if-no-files-found: ignore

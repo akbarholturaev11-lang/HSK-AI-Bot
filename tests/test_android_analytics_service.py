@@ -415,48 +415,56 @@ class AndroidAnalyticsQueriesTest(unittest.IsolatedAsyncioTestCase):
 
 
 class AdminRenderResilienceTest(unittest.TestCase):
-    def test_android_summary_is_null_safe(self):
-        admin = open("app/static/admin.html", encoding="utf-8").read()
-        self.assertIn('const updateSummary=$("androidUpdateSummary");', admin)
-        self.assertIn('if(updateSummary) updateSummary.textContent=""', admin)
+    def test_admin_uses_canonical_cross_client_finance_summary(self):
+        with open("app/static/admin.html", encoding="utf-8") as handle:
+            admin = handle.read()
+        # Product analytics became one overview + one common finance source.
+        self.assertIn('id="v2UnifiedApps"', admin)
+        self.assertIn('id="v2LearningCards"', admin)
+        self.assertIn('id="v2FinanceCards"', admin)
+        for key in ("miniapp", "android", "desktop"):
+            self.assertIn('key:"' + key + '"', admin)
+        self.assertIn("fp.client_business", admin)
+        self.assertIn('apiPost("/api/admin-miniapp/finance-stats"', admin)
+        # Heavy client reports are now optional, not initial overview requests.
+        initial = admin.split("async function loadData(){", 1)[1].split("function renderAll(){", 1)[0]
+        self.assertNotIn('apiPost("/api/admin-miniapp/android-stats"', initial)
+        self.assertNotIn('apiPost("/api/admin-miniapp/desktop-stats"', initial)
+        self.assertIn('apiPost("/api/admin-miniapp/android-stats"', admin)
+        self.assertIn('apiPost("/api/admin-miniapp/desktop-stats"', admin)
 
     def test_render_error_is_not_reported_as_server_connection_error(self):
-        admin = open("app/static/admin.html", encoding="utf-8").read()
+        with open("app/static/admin.html", encoding="utf-8") as handle:
+            admin = handle.read()
         self.assertIn('console.error("Admin panel render xatosi",e);', admin)
         self.assertIn('toast("Panelning bir qismi yuklanmadi. Qayta ochish shart emas.");', admin)
 
 
-class AdminDesktopFunnelRenderTest(unittest.TestCase):
-    def test_desktop_funnel_uses_desktop_event_reader(self):
-        admin = open("app/static/admin.html", encoding="utf-8").read()
-        expected = '''const steps=[
-        ["So'rov",desktopUsers(funnel,"download_requested")],
-        ["Yuklash/ulashish ochildi",desktopUsers(funnel,"download_started")],
-        ["Fayl URL ochildi",desktopUsers(funnel,"link_clicked")],
-        ["Akkaunt ulandi",desktopUsers(funnel,"session_linked")],
-        ["First open",desktopUsers(funnel,"verified_first_open")]
-      ];'''
-        self.assertIn(expected, admin)
+class AdminAnalyticsClarityTest(unittest.TestCase):
+    def test_detailed_device_reports_exist_but_remain_collapsed_by_default(self):
+        with open("app/static/admin.html", encoding="utf-8") as handle:
+            admin = handle.read()
+        for detail in ('id="androidFunnel"', 'id="desktopFunnel"',
+                       'id="androidVersions"', 'id="advancedFunnel"',
+                       'id="clientDeviceTable"', 'id="unitCards"',
+                       'id="retentionCards"', 'id="subEntryStats"'):
+            self.assertIn(detail, admin)
+        self.assertIn('data-v2-sub="statistics:details"', admin)
+        self.assertIn('data-v2-pane="statistics:details" hidden', admin)
+        self.assertIn('if(tab==="statistics"&&pane==="details"&&state.overview)', admin)
+        self.assertIn("renderStatisticsDetails();", admin)
+        self.assertIn("loadSubEntry();", admin)
+        self.assertIn('id="v2UnifiedApps"', admin)
+        self.assertIn('id="overviewCards"', admin)
 
-
-class AndroidAdminCopyTest(unittest.TestCase):
-    def test_admin_android_block_is_simple_by_default(self):
-        admin = open("app/static/admin.html", encoding="utf-8").read()
-        for text_value in (
-            "O'rnatilgan",
-            "Bugun ishlatgan",
-            "7 kunda ishlatgan",
-            "30 kunda ishlatgan",
-            "Batafsil statistika",
-            "Yangilanish kerak:",
-        ):
-            with self.subTest(text_value=text_value):
-                self.assertIn(text_value, admin)
-
-    def test_update_event_is_not_called_a_device_count(self):
-        admin = open("app/static/admin.html", encoding="utf-8").read()
-        self.assertIn('"Update o\'rnatilgan",num(updates.installed&&updates.installed.events)+" marta"', admin)
-
+    def test_platform_cards_have_only_three_canonical_facts(self):
+        with open("app/static/admin.html", encoding="utf-8") as handle:
+            admin = handle.read()
+        for label in ("Obunaga kirgan", "To‘lov qilgan", "Daromad"):
+            self.assertIn(label, admin)
+        self.assertIn("noma'lum", admin)
+        self.assertIn("payment", admin.lower())
+        self.assertEqual(admin.count('data-v2-sub="statistics:platform"'), 1)
 
 if __name__ == "__main__":
     unittest.main()
