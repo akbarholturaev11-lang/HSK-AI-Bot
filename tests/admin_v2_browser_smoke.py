@@ -382,6 +382,9 @@ def main():
                         assert live.locator("#androidCards .stat").count() >= 4
                         assert live.locator("#desktopFunnel .bar").count() == 5
                         assert live.locator("#androidFunnel .bar").count() == 4
+                        finance_group = live.locator("#statistics .v2-legacy-group").nth(2)
+                        assert not finance_group.evaluate("(el)=>el.open")
+                        finance_group.locator("summary").first.click()
                         assert "Batafsil server hisobot" in live.locator("#reportText").inner_text()
                         assert live.locator("#overviewCards .stat").count() == 4, "Simple analytics were overwritten"
                         assert len(legacy_stats_requests) == 3, "Detailed endpoints not lazily loaded once each"
