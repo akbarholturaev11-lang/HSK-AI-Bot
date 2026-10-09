@@ -35,6 +35,27 @@ class TelegramBackDedupTests(unittest.TestCase):
         self.assertIn("can&&NavBack._telegramBackBound&&tg.initData", COURSE)
         self.assertIn("nativeBackBound=true", DICT)
 
+    def test_course_checkout_preserves_safe_return_context(self):
+        self.assertIn('function courseCheckoutReturnParams()', COURSE)
+        self.assertIn('q.set("return_to","course")', COURSE)
+        self.assertIn('q.set("return_tab",', COURSE)
+        self.assertIn('q.set("return_level",level)', COURSE)
+        self.assertIn('courseCheckoutReturnParams().toString()', COURSE)
+        self.assertIn('courseCheckoutReturnParams().forEach(function(value,key){q.set(key,value)})', COURSE)
+
+    def test_subscription_header_back_goes_to_course_not_wizard(self):
+        subscription = (STATIC / "subscription.html").read_text(encoding="utf-8")
+        self.assertIn('PARAMS.get("return_to")==="course"', subscription)
+        self.assertIn('if(!RETURN_TO_COURSE||!INIT_DATA)return;', subscription)
+        self.assertIn('back.onClick(returnToCourseFromCheckout)', subscription)
+        self.assertIn('back.show();', subscription)
+        self.assertIn('window.location.replace(courseReturnUrl())', subscription)
+        self.assertIn('return "/course-v3.html?"+query.toString()', subscription)
+        self.assertIn('const tab=["course","mashq","voice","rating","profile"].includes(requestedTab)?requestedTab:"course";', subscription)
+        self.assertIn('if(/^(?:hsk[1-4]|nhsk[1-3])$/.test(level||""))query.set("level",level)', subscription)
+        # The wizard's own step-back button remains independent of Telegram's Back.
+        self.assertIn('$("#backBtn").addEventListener("click",()=>setStep(state.step-1))', subscription)
+
     def test_existing_nested_navigation_and_gates_remain(self):
         self.assertIn('if(inner()){showHub();return}', COURSE)
         self.assertIn('if(reviewOpen()){closeReview();return}', COURSE)
