@@ -150,16 +150,22 @@ class Hsk30UnlockService:
                 )
                 or "usd"
             )
-            (display_amount, currency_label), = await self.currency.quote_display_amounts(
-                [price_tjs],
-                currency_code,
-                source_currency="TJS",
-            )
-            price_display = (
-                f"${display_amount}"
-                if currency_code == "usd"
-                else f"{display_amount} {currency_label}"
-            )
+            if currency_code == "cny":
+                # The HSK 3.0 China QR charges the configured face value in
+                # yuan, not the exchange-rate equivalent of the TJS base.
+                # Match the quote shown at Alipay/WeChat checkout.
+                price_display = f"{price_tjs} CNY"
+            else:
+                (display_amount, currency_label), = await self.currency.quote_display_amounts(
+                    [price_tjs],
+                    currency_code,
+                    source_currency="TJS",
+                )
+                price_display = (
+                    f"${display_amount}"
+                    if currency_code == "usd"
+                    else f"{display_amount} {currency_label}"
+                )
 
         return {
             "allowed": allowed,

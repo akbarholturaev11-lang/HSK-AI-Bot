@@ -20,6 +20,7 @@ from app.services.hsk30_unlock_service import (
     HSK30_UNLOCK_PAYMENT_ENABLED_KEY,
     HSK30_UNLOCK_PLAN_TYPE,
     HSK30_UNLOCK_PRICE_KEY,
+    Hsk30UnlockService,
 )
 from app.services.subscription_miniapp_service import (
     PAYMENT_DETAILS_KEY,
@@ -124,6 +125,69 @@ class Hsk30UnlockCheckoutTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(quote["discount_applied"])
         self.assertEqual(quote["discount_percent"], 0)
         self.assertEqual(quote["discount_source"], "none")
+
+    async def test_china_qr_quotes_yuan_without_changing_tjs_base(self):
+        for method in ("alipay", "wechat"):
+            with self.subTest(method=method):
+                async with self.sessions() as session:
+                    result = await SubscriptionMiniAppService(session).quote(
+                        telegram_id=5001,
+                        plan_type=HSK30_UNLOCK_PLAN_TYPE,
+                        payment_method=method,
+                        include_qr=False,
+                    )
+                self.assertTrue(result["ok"], result)
+                quote = result["quote"]
+                self.assertEqual(quote["base_amount"], 10)
+                self.assertEqual(quote["base_currency"], "TJS")
+                self.assertEqual(quote["pay_amount"], "10")
+                self.assertEqual(quote["pay_currency"], "CNY")
+                self.assertEqual(quote["pay_base_currency"], "CNY")
+
+    async def test_china_promo_displays_same_yuan_price_as_checkout(self):
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            user.subscription_currency = "cny"
+            await session.commit()
+
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            eligibility = await Hsk30UnlockService(session).payment_eligibility(
+                user, include_display_price=True
+            )
+        self.assertTrue(eligibility["allowed"])
+        self.assertEqual(eligibility["price_display"], "10 CNY")
+
+    async def test_china_qr_payment_records_actual_yuan_amount(self):
+        async with self.sessions() as session:
+            with (
+                patch.object(
+                    SubscriptionMiniAppService,
+                    "_qr_payload",
+                    return_value={"available": True},
+                ),
+                patch.object(
+                    AdminNotifyService,
+                    "notify_payment_review",
+                    return_value="HSK30_CHINA_RECEIPT",
+                ),
+            ):
+                result = await SubscriptionMiniAppService(session).submit(
+                    telegram_id=5001,
+                    plan_type=HSK30_UNLOCK_PLAN_TYPE,
+                    payment_method="alipay",
+                    card_country=None,
+                    screenshot_data_url=PNG_1X1_DATA_URL,
+                    bot=self.bot,
+                )
+
+        self.assertTrue(result["ok"], result)
+        async with self.sessions() as session:
+            payment = (await session.execute(select(Payment))).scalar_one()
+        self.assertEqual(payment.amount, 10)
+        self.assertEqual(payment.currency, "TJS")
+        self.assertEqual(payment.local_amount, "10")
+        self.assertEqual(payment.local_currency, "CNY")
 
     async def test_admin_can_disable_one_time_unlock_checkout(self):
         async with self.sessions() as session:
