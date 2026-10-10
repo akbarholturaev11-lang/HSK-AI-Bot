@@ -8,6 +8,7 @@ from pathlib import Path
 
 PROFILE = Path("app/static/course-v3.html").read_text(encoding="utf-8")
 ADS = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
+ANDROID_DIRECT_LIMIT = Path("android/app/src/direct/java/com/pomp/hskai/feature/limit/SectionLimitBlock.kt").read_text(encoding="utf-8")
 
 
 class MiniAppProfileHierarchyTests(unittest.TestCase):
@@ -55,6 +56,32 @@ class MiniAppLimitHierarchyTests(unittest.TestCase):
         self.assertIn("els.x.onclick", body)
         self.assertIn("stopPromo();", body)
         self.assertNotIn("startPromo();", body)
+
+
+    def test_trial_and_pro_are_the_only_limit_choices(self):
+        self.assertIn('els.ov.classList.add("trial-eligible")', ADS)
+        self.assertIn('els.ov.classList.remove("trial-eligible")', ADS)
+        self.assertIn('.caa-ov.limit.trial-eligible .caa-lim-ad{', ADS)
+        self.assertIn('.caa-ov.limit.trial-eligible .caa-pay{', ADS)
+        self.assertIn('var controls=[els.x,els.limAd,els.pay]', ADS)
+        self.assertIn('limitTrial:"Попробовать 7 дней бесплатно"', ADS)
+        self.assertIn('limitSubscribe:"Посмотреть тарифы Pro"', ADS)
+        # Trial appears before the Pro button in the limit card DOM.
+        layout = ADS.split('function ensureDom(){', 1)[1].split('var q =', 1)[0]
+        self.assertLess(layout.index('class="caa-limit-foot"'), layout.index('class="caa-cta caa-pay"'))
+
+
+class AndroidDirectLimitChoicesTests(unittest.TestCase):
+    def test_no_extra_later_button_but_close_x_still_works(self):
+        self.assertNotIn('R.string.limit_later', ANDROID_DIRECT_LIMIT)
+        self.assertNotIn('tertiaryLabel =', ANDROID_DIRECT_LIMIT)
+        self.assertIn('primaryLabel = if (trialOffered) stringResource(R.string.limit_try_trial)', ANDROID_DIRECT_LIMIT)
+        self.assertIn('secondaryLabel = if (trialOffered) stringResource(R.string.limit_unlock_button) else null', ANDROID_DIRECT_LIMIT)
+        self.assertIn('onPrimary = if (trialOffered) limit.actions.onStartTrial else openSubscription', ANDROID_DIRECT_LIMIT)
+        self.assertIn('onSecondary = if (trialOffered) openSubscription else null', ANDROID_DIRECT_LIMIT)
+        overlay = Path('android/app/src/main/java/com/pomp/hskai/feature/limit/SectionLimitOverlay.kt').read_text(encoding="utf-8")
+        self.assertIn('onClick = onClose', overlay)
+
 
 
 if __name__ == "__main__":
