@@ -9,14 +9,17 @@ Base: `main` at `5ed2984ef709440bb2f7d57a9f1399ee029c1cf0`. This audit is source
 3. **Profile's Pro state management**: Mini App's `proProfileCard()` contains paid, temporary, active trial and free paths with different CTAs. Android's `ProfileSubscriptionCard` has analogous but not identical paths. Keep renewal and status information visible; do not make a generic promotional banner override entitlement information.
 4. **Different purchase channels**: `app/static/course_v3_data/ads.js` -> `showLimitPromo()` creates the Mini App paywall. Android Direct uses `feature/limit/SectionLimitBlock.kt` under `src/direct`; Android Play uses a distinct `src/play` implementation. These paths MUST preserve different allowed payment actions. Server-side access and trial eligibility are authoritative.
 5. **Correct HSK 3.0 entitlement**: `CourseTrackAccess.allowed` accepts `UserAccessStateService.is_paid(user)` as sufficient access when HSK 3.0 is enabled; an active paid Pro subscriber must NOT pay the one-time HSK 3.0 entry fee. The one-time entry payment provides permanent track access to non-Pro users but does not remove lesson-start limits. Android benefit copy now describes HSK 2.0 and currently available HSK 3.0 levels. Check feature enablement and live level filters before advertising access.
-6. **Responsive layout**: both limit components scroll, but rendered safe-area, text wrap, bottom navigation and accessibility need on-device verification. Source alone cannot establish that every mobile size fits.
+6. **Mini App limit was using an ad carousel as its paywall**: `app/static/course_v3_data/ads.js` used the same rotating promo presentation for the limit as for advertisements. The limit now has a compact title, a server-supplied reason where available, Pro CTA, and server-controlled optional trial CTA. Carousel remains in ad flows only. The code used `if(!why)` after assigning a generic fallback `why`, making the precise limit-status fetch unreachable. It now fetches when no specific reason was passed.
+7. **Responsive layout**: both limit components scroll, but rendered safe-area, text wrap, bottom navigation and accessibility need on-device verification. Source alone cannot establish that every mobile size fits.
 
 ## Changes included in this branch
 
 - Android profile order: Hero → Daily goal → Stats → Calendar → Achievements → Subscription → Mistakes/Friends → Social.
 - Android Pro benefit line: describe automatic Pro access to HSK 3.0's available levels in Uzbek (default), Russian and Tajik. One-time fee is relevant only to non-Pro permanent track access.
 - **No** changes to pricing, trial status, quota policy, API endpoints, server entitlements or Google Play checkout logic.
-- **No** changes to the Mini App UI code in this first patch.
+- Mini App profile: added a compact 2-metric row for actual `MAP.progress.xp` and `MAP.progress.completed`, localized RU/TJ/UZ. Deliberately did not fabricate a Mini App mistakes count without a confirmed response field.
+- Mini App limit: specific `.limit` CSS hides the ad promo carousel, supplies a readable heading and uses the existing Pro + trial + close handlers without changing entitlement or purchase logic.
+- Regression source-contract tests: `tests/test_profile_limit_ui_contract.py` (not executed against a full runtime in this environment).
 
 ## Follow-up tasks (priority and acceptance criteria)
 
@@ -30,8 +33,8 @@ Base: `main` at `5ed2984ef709440bb2f7d57a9f1399ee029c1cf0`. This audit is source
 ### P1 — Profile information architecture parity
 
 - Match **hierarchy**, not necessarily identical native component implementation: progress/goal first, compact subscription status/renewal accessible, achievements and mistakes grouped, social links last.
-- Add a Mini App stats group only after confirming real API fields for XP, lessons and mistakes (or choose a truthfully available metric). Avoid duplicating streak in several equally prominent blocks.
-- Mini App 320px/375px/390px Telegram, Android small screen and tablet; test tap targets (minimum 44x44), scrolling and bottom-safe-area.
+- Mini App now shows XP and completed lessons from existing `MAP.progress` values; verify that both totals match the Android profile for the same account. The Android mistakes figure remains native-only until a confirmed equivalent payload is available. Avoid duplicating streak in several equally prominent blocks.
+- Mini App 320px/375px/390px Telegram (including short screens), Android small screen and tablet; test tap targets (minimum 44x44), scrolling and bottom-safe-area. For the compact limit ensure the reason is not obscured by the X, long Tajik/Russian lines wrap, and returning from subscription still works.
 - Profile CTA accessibility: free user can find subscribe; paid user can find renewal; no over-prominent hard sell above learning progress.
 
 ### P2 — Component cleanup after smoke verification
