@@ -11,6 +11,7 @@ from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.hsk30_feature_service import HSK30_ENABLED_SETTINGS_KEY, Hsk30FeatureService
 from app.services.hsk30_promo_service import Hsk30PromoService
+from app.services.hsk30_unlock_service import HSK30_UNLOCK_PRICE_KEY, Hsk30UnlockService
 
 
 def _user() -> User:
@@ -133,6 +134,32 @@ class Hsk30PromoServiceTests(unittest.IsolatedAsyncioTestCase):
             ready = await service.state(user, now=onboarded_at + timedelta(days=5))
             self.assertTrue(ready["eligible"])
             self.assertEqual(ready["reason"], "eligible")
+
+    async def test_china_unlock_display_converts_admin_tjs_price_by_configured_rates(self):
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            user.subscription_currency = "cny"
+            settings = BotSettingRepository(session)
+            await settings.set("subscription_visa_usd_tjs_rate", "10")
+            await settings.set("subscription_usd_cny_rate", "6")
+            await settings.set(HSK30_UNLOCK_PRICE_KEY, "10")
+            await session.commit()
+
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            service = Hsk30UnlockService(session)
+            first = await service.payment_eligibility(
+                user, include_display_price=True
+            )
+            self.assertEqual(first["price_tjs"], 10)
+            self.assertEqual(first["price_display"], "6 CNY")
+
+            await service.set_price_tjs(20)
+            second = await service.payment_eligibility(
+                user, include_display_price=True
+            )
+            self.assertEqual(second["price_tjs"], 20)
+            self.assertEqual(second["price_display"], "12 CNY")
 
     async def test_feature_off_hides_promo(self):
         async with self.sessions() as session:
