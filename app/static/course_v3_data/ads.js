@@ -472,7 +472,8 @@
     var returnFocus=limitReturnFocus;limitReturnFocus=null;
     closeOverlay();
     try{
-      els.ov.classList.remove("limit","trial-eligible");
+      els.ov.classList.remove("limit");
+      els.ov.classList.remove("trial-eligible");
       els.ov.removeAttribute("role");els.ov.removeAttribute("aria-modal");els.ov.removeAttribute("aria-label");
       els.limFoot.hidden=true;
       els.limAd.hidden=true;
