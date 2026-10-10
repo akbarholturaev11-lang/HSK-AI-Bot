@@ -33,15 +33,15 @@
 
   /* Darsdagi T() ad-* kalitlaridan olingan matnlar (3 til). */
   var I18N = {
-    uz:{adStart:"Bo'limdan oldingi reklama",adMiddle:"Qisqa reklama pauzasi",adEnd:"Yakuniy reklama",adReady:"Davom etish",adNote:"Rolikni oxirigacha ko'ring. HSK AI Pro reklamasisiz o'qiydi.",adSubTitle:"Obuna bo'ling — botdan reklamasiz va hech qanday limitsiz foydalaning",adSubPay:"HSK AI Pro ⭐️ olish",adVisit:"Havolaga o'tish",adOpenLink:"Reklama havolasini ochasizmi?",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",loading:"Reklama yuklanmoqda...",failed:"Reklama videosi yuklanmadi",failedNote:"Ekran qora qolsa, video MP4 H.264/AAC formatida bo'lishi kerak.",limitSubscribe:"HSK AI Pro ⭐️ olish",limitTrial:"Yoki 7 kun bepul sinash",limitWhy:"Bugungi bepul mashqing tugadi: «{s}» bepul rejimda kuniga 1 marta ochiladi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",limitWhyPlain:"Bugungi bepul limiting tugadi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",psWrite:"Hamkorlik uchun yozing",psTry:"Sinab ko'rish",psCopy:"Nusxalash",psCopied:"Nusxalandi ✓",psShare:"Do'stga yuborish",
+    uz:{adStart:"Bo'limdan oldingi reklama",adMiddle:"Qisqa reklama pauzasi",adEnd:"Yakuniy reklama",adReady:"Davom etish",adNote:"Rolikni oxirigacha ko'ring. HSK AI Pro reklamasisiz o'qiydi.",adSubTitle:"Obuna bo'ling — botdan reklamasiz va hech qanday limitsiz foydalaning",adSubPay:"HSK AI Pro ⭐️ olish",adVisit:"Havolaga o'tish",adOpenLink:"Reklama havolasini ochasizmi?",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",loading:"Reklama yuklanmoqda...",failed:"Reklama videosi yuklanmadi",failedNote:"Ekran qora qolsa, video MP4 H.264/AAC formatida bo'lishi kerak.",limitTitle:"Bepul limit tugadi",limitSubscribe:"HSK AI Pro ⭐️ olish",limitTrial:"Yoki 7 kun bepul sinash",limitWhy:"Bugungi bepul mashqing tugadi: «{s}» bepul rejimda kuniga 1 marta ochiladi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",limitWhyPlain:"Bugungi bepul limiting tugadi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",psWrite:"Hamkorlik uchun yozing",psTry:"Sinab ko'rish",psCopy:"Nusxalash",psCopied:"Nusxalandi ✓",psShare:"Do'stga yuborish",
         leLabel:"Dars yakuni · reklama",leNote:"Qisqa rolik. Obuna bo'lsangiz reklama umuman chiqmaydi.",leSubTitle:"Darsni tugatdingiz — endi to'liq yo'lni oching",leExternal:"Reklama havolasini ochish",
         appCta:"Yuklab olish",appCloseIn:"Yopish {s}s",
         f_recognition:"Ieroglif tanish",f_pronunciation:"Talaffuz mashqi",f_memorize:"Yodlash",f_training_test:"Test markazi",f_placement:"Daraja aniqlash testi",f_mistake_review:"Xatolar ustida ishlash"},
-    ru:{adStart:"Реклама перед разделом",adMiddle:"Короткая пауза",adEnd:"Последняя реклама",adReady:"Продолжить",adNote:"Посмотрите ролик до конца. С HSK AI Pro — без рекламы.",adSubTitle:"Оформите подписку — и пользуйтесь ботом без рекламы и без ограничений",adSubPay:"Получить HSK AI Pro ⭐️",adVisit:"Перейти по ссылке",adOpenLink:"Открыть ссылку рекламодателя?",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",loading:"Загрузка рекламы...",failed:"Видео рекламы не загрузилось",failedNote:"Если экран остаётся чёрным, нужен MP4 H.264/AAC.",limitSubscribe:"Получить HSK AI Pro ⭐️",limitTrial:"Или 7 дней бесплатно",limitWhy:"Бесплатная практика на сегодня закончилась: «{s}» в бесплатном режиме открывается 1 раз в день. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",limitWhyPlain:"Бесплатный лимит на сегодня исчерпан. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",psWrite:"Написать для сотрудничества",psTry:"Попробовать",psCopy:"Копировать",psCopied:"Скопировано ✓",psShare:"Другу",
+    ru:{adStart:"Реклама перед разделом",adMiddle:"Короткая пауза",adEnd:"Последняя реклама",adReady:"Продолжить",adNote:"Посмотрите ролик до конца. С HSK AI Pro — без рекламы.",adSubTitle:"Оформите подписку — и пользуйтесь ботом без рекламы и без ограничений",adSubPay:"Получить HSK AI Pro ⭐️",adVisit:"Перейти по ссылке",adOpenLink:"Открыть ссылку рекламодателя?",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",loading:"Загрузка рекламы...",failed:"Видео рекламы не загрузилось",failedNote:"Если экран остаётся чёрным, нужен MP4 H.264/AAC.",limitTitle:"Бесплатный лимит исчерпан",limitSubscribe:"Получить HSK AI Pro ⭐️",limitTrial:"Или 7 дней бесплатно",limitWhy:"Бесплатная практика на сегодня закончилась: «{s}» в бесплатном режиме открывается 1 раз в день. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",limitWhyPlain:"Бесплатный лимит на сегодня исчерпан. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",psWrite:"Написать для сотрудничества",psTry:"Попробовать",psCopy:"Копировать",psCopied:"Скопировано ✓",psShare:"Другу",
         leLabel:"Конец урока · реклама",leNote:"Короткий ролик. С подпиской рекламы не будет вообще.",leSubTitle:"Урок пройден — откройте весь путь",leExternal:"Открыть ссылку рекламы",
         appCta:"Скачать",appCloseIn:"Закрыть через {s}с",
         f_recognition:"Распознавание иероглифов",f_pronunciation:"Произношение",f_memorize:"Запоминание",f_training_test:"Тест-центр",f_placement:"Тест на уровень",f_mistake_review:"Работа над ошибками"},
-    tj:{adStart:"Реклама пеш аз бахш",adMiddle:"Танаффуси кӯтоҳи реклама",adEnd:"Рекламаи охирин",adReady:"Идома",adNote:"Роликро то охир бинед. Бо HSK AI Pro бе реклама.",adSubTitle:"Обуна шавед — аз бот бе реклама ва бе ягон маҳдудият истифода баред",adSubPay:"HSK AI Pro ⭐️ гирифтан",adVisit:"Гузаштан ба ҳавола",adOpenLink:"Ҳаволаи рекламаро мекушоед?",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",loading:"Реклама бор мешавад...",failed:"Видеои реклама бор нашуд",failedNote:"Агар экран сиёҳ монад, видео бояд MP4 H.264/AAC бошад.",limitSubscribe:"HSK AI Pro ⭐️ гирифтан",limitTrial:"Ё 7 рӯз ройгон санҷидан",limitWhy:"Машқи ройгони имрӯза тамом шуд: «{s}» дар ҳолати ройгон рӯзе 1 маротиба кушода мешавад. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",limitWhyPlain:"Лимити ройгони имрӯза тамом шуд. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",psWrite:"Барои ҳамкорӣ нависед",psTry:"Санҷидан",psCopy:"Нусха",psCopied:"Нусха шуд ✓",psShare:"Ба дӯст",
+    tj:{adStart:"Реклама пеш аз бахш",adMiddle:"Танаффуси кӯтоҳи реклама",adEnd:"Рекламаи охирин",adReady:"Идома",adNote:"Роликро то охир бинед. Бо HSK AI Pro бе реклама.",adSubTitle:"Обуна шавед — аз бот бе реклама ва бе ягон маҳдудият истифода баред",adSubPay:"HSK AI Pro ⭐️ гирифтан",adVisit:"Гузаштан ба ҳавола",adOpenLink:"Ҳаволаи рекламаро мекушоед?",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",loading:"Реклама бор мешавад...",failed:"Видеои реклама бор нашуд",failedNote:"Агар экран сиёҳ монад, видео бояд MP4 H.264/AAC бошад.",limitTitle:"Лимити ройгон тамом шуд",limitSubscribe:"HSK AI Pro ⭐️ гирифтан",limitTrial:"Ё 7 рӯз ройгон санҷидан",limitWhy:"Машқи ройгони имрӯза тамом шуд: «{s}» дар ҳолати ройгон рӯзе 1 маротиба кушода мешавад. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",limitWhyPlain:"Лимити ройгони имрӯза тамом шуд. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",psWrite:"Барои ҳамкорӣ нависед",psTry:"Санҷидан",psCopy:"Нусха",psCopied:"Нусха шуд ✓",psShare:"Ба дӯст",
         leLabel:"Анҷоми дарс · реклама",leNote:"Ролики кӯтоҳ. Бо обуна реклама тамоман намешавад.",leSubTitle:"Дарсро тамом кардед — тамоми роҳро кушоед",leExternal:"Кушодани ҳаволаи реклама",
         appCta:"Боргирӣ",appCloseIn:"Пӯшидан пас аз {s}с",
         f_recognition:"Шинохти иероглиф",f_pronunciation:"Машқи талаффуз",f_memorize:"Азёдкунӣ",f_training_test:"Маркази тест",f_placement:"Тести муайянкунии сатҳ",f_mistake_review:"Кор бар хатоҳо"}
@@ -121,8 +121,16 @@
      rejimda karusel o'z balandligini oladi va blok kerak bo'lsa scroll bo'ladi
      (aks holda promo bloki obuna kartasining ustiga chiqib ketardi). */
   +'.caa-ov.limit{overflow-y:auto;-webkit-overflow-scrolling:touch}'
-  +'.caa-ov.limit .caa-promo{height:auto;min-height:210px}'
-  +'.caa-ov.limit .caa-sub-t{display:none!important}'
+  /* A limit is an actionable state, not an advertising carousel. Keep the ad views unchanged. */
+  +'.caa-ov.limit .caa-box{display:flex;flex-direction:column;justify-content:center;min-height:100%;padding:calc(56px + env(safe-area-inset-top,0px)) 16px calc(20px + env(safe-area-inset-bottom,0px));gap:0}'
+  +'.caa-ov.limit .caa-promo{display:none!important}'
+  +'.caa-ov.limit .caa-meta{display:block;width:100%;max-width:420px;margin:0 auto}'
+  +'.caa-ov.limit .caa-sub{gap:14px;padding:23px 18px}'
+  +'.caa-ov.limit .caa-sub-t{display:block!important;font-size:21px!important;line-height:1.3;font-weight:700;margin:0}'
+  +'.caa-ov.limit .caa-why{margin:0;font-size:13px;line-height:1.5}'
+  +'.caa-ov.limit .caa-pay{min-height:52px;white-space:normal}'
+  +'.caa-ov.limit .caa-lim-ad{min-height:44px;white-space:normal;line-height:1.4}'
+  +'@media(max-height:580px){.caa-ov.limit .caa-box{justify-content:flex-start;padding-top:calc(54px + env(safe-area-inset-top,0px))}.caa-ov.limit .caa-sub{padding:16px 14px;gap:10px}}'
   +'.caa-sub-desc{margin:0 0 6px;font-size:13px;line-height:1.45;color:rgba(255,255,255,.72);text-align:center}'
   +'.caa-sub-desc[hidden]{display:none!important}'
   +'.caa-ov.limit .caa-sub-desc{display:none!important}'
@@ -477,7 +485,7 @@
     var t=T();
     var why=opts.reason||limitWhyText(CFG.feature);
     if(why){els.whyT.textContent=why;els.why.hidden=false}else{els.why.hidden=true}
-    if(!why){
+    if(!opts.reason){
       var statusFeature=CFG.feature||"lesson";
       function fetchLimitStatus(){
         return fetch("/api/v3/limits/status",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":CFG.initData||""},body:JSON.stringify({feature:statusFeature})})
@@ -492,7 +500,7 @@
           els.whyT.textContent=text;els.why.hidden=false;
         }).catch(function(){});
     }
-    els.subTitle.textContent="";
+    els.subTitle.textContent=t.limitTitle;
     els.subDesc.textContent="";
     els.subDesc.hidden=true;
     els.benefits.innerHTML="";
@@ -546,7 +554,7 @@
     els.x.setAttribute("aria-label",({uz:"Yopish",ru:"Закрыть",tj:"Пӯшидан"})[CFG.lang]||"Yopish");
     setSubVisible(true);
     els.pay.focus({preventScroll:true});
-    startPromo();
+    stopPromo();
   }
 
   /* ============================================================
