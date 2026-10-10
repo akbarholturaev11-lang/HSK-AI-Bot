@@ -8,13 +8,13 @@ Base: `main` at `5ed2984ef709440bb2f7d57a9f1399ee029c1cf0`. This audit is source
 2. **Mini App Profile composition**: `app/static/course-v3.html` -> `renderProfile()` renders header/settings, hero, daily goal, streak calendar, three achievements, `proProfileCard()`, mistakes/friends, social links. Android has a 3-metric stats card; Mini App's own `renderProfile()` currently has no equivalent despite global `.stats` CSS being defined for another user profile. Do not fabricate a mistakes count: verify the server response first.
 3. **Profile's Pro state management**: Mini App's `proProfileCard()` contains paid, temporary, active trial and free paths with different CTAs. Android's `ProfileSubscriptionCard` has analogous but not identical paths. Keep renewal and status information visible; do not make a generic promotional banner override entitlement information.
 4. **Different purchase channels**: `app/static/course_v3_data/ads.js` -> `showLimitPromo()` creates the Mini App paywall. Android Direct uses `feature/limit/SectionLimitBlock.kt` under `src/direct`; Android Play uses a distinct `src/play` implementation. These paths MUST preserve different allowed payment actions. Server-side access and trial eligibility are authoritative.
-5. **Potentially misleading Android benefit**: the 3 language `limit_benefit_lessons` resource strings claimed that all lessons were open. The separate HSK 3.0 entry payment can make this false without qualification. Updated the strings to distinguish Pro lessons and HSK 3.0 entry. Confirm business/legal wording before release.
+5. **Correct HSK 3.0 entitlement**: `CourseTrackAccess.allowed` accepts `UserAccessStateService.is_paid(user)` as sufficient access when HSK 3.0 is enabled; an active paid Pro subscriber must NOT pay the one-time HSK 3.0 entry fee. The one-time entry payment provides permanent track access to non-Pro users but does not remove lesson-start limits. Android benefit copy now describes HSK 2.0 and currently available HSK 3.0 levels. Check feature enablement and live level filters before advertising access.
 6. **Responsive layout**: both limit components scroll, but rendered safe-area, text wrap, bottom navigation and accessibility need on-device verification. Source alone cannot establish that every mobile size fits.
 
 ## Changes included in this branch
 
 - Android profile order: Hero → Daily goal → Stats → Calendar → Achievements → Subscription → Mistakes/Friends → Social.
-- Android Pro benefit line: clarify separate HSK 3.0 entry in Uzbek (default), Russian and Tajik.
+- Android Pro benefit line: describe automatic Pro access to HSK 3.0's available levels in Uzbek (default), Russian and Tajik. One-time fee is relevant only to non-Pro permanent track access.
 - **No** changes to pricing, trial status, quota policy, API endpoints, server entitlements or Google Play checkout logic.
 - **No** changes to the Mini App UI code in this first patch.
 
@@ -23,7 +23,7 @@ Base: `main` at `5ed2984ef709440bb2f7d57a9f1399ee029c1cf0`. This audit is source
 ### P0 — Paywall accuracy / access regression
 
 - Check free (trial eligible/ineligible), trial active, paid, temporary and expired accounts on Mini App, Android Direct and Android Play.
-- Confirm the wording and actual HSK 3.0 entitlement: separate entry fee does not imply Pro lessons are unlimited/free; Pro purchase alone should not silently bypass a required entry payment.
+- Confirm the correct entitlement matrix: paid Pro can access enabled/live HSK 3.0 without a separate unlock payment; free users may buy permanent track entry separately but still face configured lesson limits. Verify Pro expiry and unlocked_at combinations.
 - Verify the limit modal is closable, its reason is readable, its primary CTA is unambiguous, and it never offers a second trial.
 - Verify all three language layouts at narrow screen sizes and with larger font settings.
 
