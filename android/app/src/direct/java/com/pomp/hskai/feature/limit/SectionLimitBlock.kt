@@ -12,8 +12,9 @@ import com.pomp.hskai.R
  * the buttons can differ per channel without any screen knowing which build
  * it is running in.
  *
- * The second button offers the free trial while the server allows it, then
- * becomes a close action. An eligible user also has a quieter close action.
+ * When the server allows a trial, show exactly two choices: a free
+ * 7-day trial and the Pro subscription. Closing stays in the overlay's X.
+ * After trial eligibility ends, offer Pro only.
  *
  * @param resetAt server instant when the daily limit reopens, or null when
  *   nothing reopens (a subscription-only section). This channel offers a
@@ -31,20 +32,19 @@ fun SectionLimitBlock(
 ) {
     val error = limit.state.error
     val trialOffered = limit.state.trialEligible
+    val openSubscription: () -> Unit = { limit.actions.onUnlock(sourceKey) }
     LimitBlock(
         sectionTitle = sectionTitle,
         headline = stringResource(R.string.limit_unlock_headline),
-        // The subscription leads: it is the answer that lasts. The trial is
-        // the quieter alternative under it, not a competing shout.
-        primaryLabel = stringResource(R.string.limit_unlock_button),
-        onPrimary = { limit.actions.onUnlock(sourceKey) },
+        // Server-eligible trial first; Pro second. Dismiss remains on the X.
+        primaryLabel = if (trialOffered) stringResource(R.string.limit_try_trial)
+            else stringResource(R.string.limit_unlock_button),
+        onPrimary = if (trialOffered) limit.actions.onStartTrial else openSubscription,
         modifier = modifier,
         reason = reason,
         hint = stringResource(R.string.limit_unlock_hint),
-        secondaryLabel = if (trialOffered) stringResource(R.string.limit_try_trial) else stringResource(R.string.limit_later),
-        onSecondary = if (trialOffered) limit.actions.onStartTrial else onClose,
-        tertiaryLabel = if (trialOffered) stringResource(R.string.limit_later) else null,
-        onTertiary = if (trialOffered) onClose else null,
+        secondaryLabel = if (trialOffered) stringResource(R.string.limit_unlock_button) else null,
+        onSecondary = if (trialOffered) openSubscription else null,
         isBusy = limit.state.isBusy || limit.state.trialStarting,
         errorText = when {
             error != null -> stringResource(error.messageRes)
