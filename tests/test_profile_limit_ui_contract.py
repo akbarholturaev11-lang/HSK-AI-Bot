@@ -1,4 +1,4 @@
-"""Lightweight source contracts for the Mini App profile and limit paywall.
+"""Lightweight source contracts for Mini App profile and restored original limit UI.
 
 These checks do not replace Telegram WebView screenshots or end-to-end checkout
 testing. They prevent regressions in screen hierarchy and trial/Pro CTA wiring.
@@ -35,18 +35,20 @@ class MiniAppProfileHierarchyTests(unittest.TestCase):
                 self.assertIn(label, PROFILE)
 
 
-class MiniAppLimitHierarchyTests(unittest.TestCase):
-    def test_limit_is_not_the_ad_carousel(self):
-        self.assertIn(".caa-ov.limit .caa-promo{display:none!important}", ADS)
-        self.assertIn(".caa-ov.limit .caa-box{display:flex;", ADS)
-        self.assertIn("els.subTitle.textContent=t.limitTitle;", ADS)
+class MiniAppLimitRestorationTests(unittest.TestCase):
+    """The Mini App paywall must match the Oct 9 design, not the newer compact one."""
 
-    def test_authoritative_server_limit_copy_can_be_fetched(self):
-        self.assertIn("if(!opts.reason){", ADS)
-        self.assertIn('fetch("/api/v3/limits/status"', ADS)
-        self.assertIn("els.whyT.textContent=text;", ADS)
+    def test_original_carousel_and_heading(self):
+        self.assertNotIn(".caa-ov.limit .caa-promo{display:none!important}", ADS)
+        self.assertNotIn(".caa-ov.limit.trial-eligible .caa-lim-ad{", ADS)
+        self.assertIn('els.subTitle.textContent="";', ADS)
+        body = ADS.split("function showLimitPromo(opts){", 1)[1].split(
+            "/* ============================================================", 1
+        )[0]
+        self.assertIn("startPromo();", body)
+        self.assertIn("if(!why){", body)
 
-    def test_payment_trial_and_close_actions_stay_wired(self):
+    def test_original_trial_pro_and_close_handlers(self):
         body = ADS.split("function showLimitPromo(opts){", 1)[1].split(
             "/* ============================================================", 1
         )[0]
@@ -54,21 +56,9 @@ class MiniAppLimitHierarchyTests(unittest.TestCase):
         self.assertIn("opts.onTrial", body)
         self.assertIn("opts.trialEligible", body)
         self.assertIn("els.x.onclick", body)
-        self.assertIn("stopPromo();", body)
-        self.assertNotIn("startPromo();", body)
-
-
-    def test_trial_and_pro_are_the_only_limit_choices(self):
-        self.assertIn('els.ov.classList.add("trial-eligible")', ADS)
-        self.assertIn('els.ov.classList.remove("trial-eligible")', ADS)
-        self.assertIn('.caa-ov.limit.trial-eligible .caa-lim-ad{', ADS)
-        self.assertIn('.caa-ov.limit.trial-eligible .caa-pay{', ADS)
-        self.assertIn('var controls=[els.x,els.limAd,els.pay]', ADS)
-        self.assertIn('limitTrial:"Попробовать 7 дней бесплатно"', ADS)
-        self.assertIn('limitSubscribe:"Посмотреть тарифы Pro"', ADS)
-        # Trial appears before the Pro button in the limit card DOM.
-        layout = ADS.split('function ensureDom(){', 1)[1].split('var q =', 1)[0]
-        self.assertLess(layout.index('class="caa-limit-foot"'), layout.index('class="caa-cta caa-pay"'))
+        self.assertIn('limitTrial:"Или 7 дней бесплатно"', ADS)
+        self.assertIn('limitSubscribe:"Получить HSK AI Pro ⭐️"', ADS)
+        self.assertIn("var controls=[els.x,els.pay,els.limAd]", ADS)
 
 
 class AndroidDirectLimitChoicesTests(unittest.TestCase):
