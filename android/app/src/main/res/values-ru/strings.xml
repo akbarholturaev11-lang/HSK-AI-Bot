@@ -377,7 +377,7 @@
     <string name="ad_unavailable">Сейчас рекламы нет. Попробуйте позже.</string>
     <string name="limit_try_trial">7 дней Pro бесплатно</string>
     <string name="limit_screen_badge">HSK AI PRO ⭐</string>
-    <string name="limit_benefit_lessons">Все уроки открыты</string>
+    <string name="limit_benefit_lessons">Уроки Pro (доступ к HSK 3.0 оплачивается отдельно)</string>
     <string name="limit_benefit_practice">Практика без лимита</string>
     <string name="limit_benefit_voice">Разговоры с AI Voice</string>
     <string name="limit_later">Позже</string>
