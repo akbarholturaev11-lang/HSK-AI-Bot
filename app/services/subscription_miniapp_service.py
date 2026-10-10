@@ -405,9 +405,15 @@ class SubscriptionMiniAppService:
             discount_campaign_id=checkout_info["discount_campaign_id"],
             discount_title=checkout_info["discount_title"],
             discount_details=checkout_info["discount_details"],
-            card_country=quote.get("card_country") if payment_method == "visa" else None,
-            local_amount=quote.get("pay_amount") if payment_method == "visa" else None,
-            local_currency=quote.get("pay_currency") if payment_method == "visa" else None,
+            card_country=quote.get("card_country")
+            if payment_method == "visa" or plan_type == HSK30_UNLOCK_PLAN_TYPE
+            else None,
+            local_amount=quote.get("pay_amount")
+            if payment_method == "visa" or plan_type == HSK30_UNLOCK_PLAN_TYPE
+            else None,
+            local_currency=quote.get("pay_currency")
+            if payment_method == "visa" or plan_type == HSK30_UNLOCK_PLAN_TYPE
+            else None,
             exchange_rate=quote.get("exchange_rate") if payment_method == "visa" else None,
             source=source,
         )
@@ -731,6 +737,17 @@ class SubscriptionMiniAppService:
             else:
                 pay_base_amount = pay_amount
                 pay_base_currency = pay_currency
+        elif plan_type == HSK30_UNLOCK_PLAN_TYPE and PaymentQrCodeService.is_qr_method(payment_method):
+            # Admin manages the base price in TJS; China QR checkout pays its CNY equivalent.
+            # Keep checkout_info in TJS so uploaded QR keys and accounting remain unchanged.
+            normalized_country = "cn"
+            (pay_amount, pay_currency), = await self.currency_service.quote_display_amounts(
+                [int(checkout_info["final_amount"])],
+                "cny",
+                source_currency="TJS",
+            )
+            pay_base_amount = pay_amount
+            pay_base_currency = pay_currency
 
         return {
             "plan_type": plan_type,
