@@ -19,6 +19,8 @@ Base: `main` at `5ed2984ef709440bb2f7d57a9f1399ee029c1cf0`. This audit is source
 - **No** changes to pricing, trial status, quota policy, API endpoints, server entitlements or Google Play checkout logic.
 - Mini App profile: added a compact 2-metric row for actual `MAP.progress.xp` and `MAP.progress.completed`, localized RU/TJ/UZ. Deliberately did not fabricate a Mini App mistakes count without a confirmed response field.
 - Mini App limit: specific `.limit` CSS hides the ad promo carousel, supplies a readable heading and uses the existing Pro + trial + close handlers without changing entitlement or purchase logic.
+- Limit CTA hierarchy (2026-10-10 follow-up): remove the redundant **Later** button from Android Direct. If the server marks trial eligible, show exactly **7 days free trial** as primary and **View Pro plans** as secondary; otherwise show **View Pro plans** only. The top-right X always dismisses the full-screen overlay. Mini App follows the same two-option hierarchy, keeping its existing trial eligibility check and X close. Keyboard focus follows visual order.
+- Google Play distribution retains its separate, payment-safe flow (trial/recheck/support); do **not** add a noncompliant external checkout link or pretend its second button buys Pro.
 - Regression source-contract tests: `tests/test_profile_limit_ui_contract.py` (not executed against a full runtime in this environment).
 
 ## Follow-up tasks (priority and acceptance criteria)
