@@ -201,7 +201,7 @@
     if(!els||!els.ov.classList.contains("on")||!els.ov.classList.contains("limit"))return;
     if(event.key==="Escape"){event.preventDefault();els.x.click();return}
     if(event.key!=="Tab")return;
-    var controls=[els.x,els.pay,els.limAd].filter(function(node){return node&&!node.disabled&&!node.hidden&&node.getClientRects().length>0});
+    var controls=[els.x,els.limAd,els.pay].filter(function(node){return node&&!node.disabled&&!node.hidden&&node.getClientRects().length>0});
     if(!controls.length){event.preventDefault();return}
     var activeIndex=controls.indexOf(document.activeElement);
     if(activeIndex<0||(event.shiftKey&&activeIndex===0)){
