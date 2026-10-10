@@ -279,7 +279,7 @@ class AdFullscreenPlacementContractTests(unittest.TestCase):
         self.assertIn('recordView(appState.ad,appState.placement||"screen_center"', ADS)
 
     def test_cached_ad_module_is_refreshed(self):
-        self.assertIn('/course_v3_data/ads.js?v=20261009-limit-restore-1', self.COURSE)
+        self.assertIn('/course_v3_data/ads.js?v=20261010-ux-limit-two-cta-1', self.COURSE)
 
     def test_android_uses_fullscreen_for_lesson_end_only(self):
         self.assertIn('val placement: String = "screen_center"', self.ANDROID_VM)
