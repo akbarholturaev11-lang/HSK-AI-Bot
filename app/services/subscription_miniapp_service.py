@@ -406,8 +406,18 @@ class SubscriptionMiniAppService:
             discount_title=checkout_info["discount_title"],
             discount_details=checkout_info["discount_details"],
             card_country=quote.get("card_country") if payment_method == "visa" else None,
-            local_amount=quote.get("pay_amount") if payment_method == "visa" else None,
-            local_currency=quote.get("pay_currency") if payment_method == "visa" else None,
+            local_amount=(
+                quote.get("pay_amount")
+                if payment_method == "visa"
+                or (plan_type == HSK30_UNLOCK_PLAN_TYPE and payment_method in {"alipay", "wechat"})
+                else None
+            ),
+            local_currency=(
+                quote.get("pay_currency")
+                if payment_method == "visa"
+                or (plan_type == HSK30_UNLOCK_PLAN_TYPE and payment_method in {"alipay", "wechat"})
+                else None
+            ),
             exchange_rate=quote.get("exchange_rate") if payment_method == "visa" else None,
             source=source,
         )
@@ -712,6 +722,11 @@ class SubscriptionMiniAppService:
         pay_base_currency = str(checkout_info["currency"])
         exchange_rate = ""
         normalized_country = None
+        if plan_type == HSK30_UNLOCK_PLAN_TYPE and payment_method in {"alipay", "wechat"}:
+            # HSK 3.0 QR codes charge the face value in yuan. Keep the TJS
+            # administrative base price separate from the actual CNY payment.
+            pay_currency = "CNY"
+            pay_base_currency = "CNY"
         if payment_method == "visa":
             normalized_country = card_country if card_country in CARD_COUNTRIES else "tj"
             card_quote = await self.currency_service.quote_card_amount(
