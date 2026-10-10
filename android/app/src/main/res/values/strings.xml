@@ -416,7 +416,7 @@
          ochmaydi. O'sha joyda bepul haftalik sinov turadi. -->
     <string name="limit_try_trial">7 kun Pro\u2019ni bepul sinash</string>
     <string name="limit_screen_badge">HSK AI PRO ⭐</string>
-    <string name="limit_benefit_lessons">Barcha darslar ochiladi</string>
+    <string name="limit_benefit_lessons">Pro darslari (HSK 3.0 kirishi alohida to‘lanadi)</string>
     <string name="limit_benefit_practice">Cheksiz mashq va takrorlash</string>
     <string name="limit_benefit_voice">AI Voice bilan erkin suhbat</string>
     <string name="limit_later">Keyinroq</string>
