@@ -157,6 +157,47 @@ class Nhsk1LearningContractTests(unittest.TestCase):
                 self.assertNotIn("谢谢！", prompt)
                 self.assertNotIn("同学们，再见！", prompt)
 
+    def test_all_15_checkpoint_assessments_are_source_backed(self):
+        from scripts.hsk30.build_nhsk1_source_assessment import apply_nhsk1_source_checks
+        checkpoints = []
+        for order in range(1, 104):
+            path = Path("app/static/course_v3_data/nhsk1") / f"lesson_{order:02d}.json"
+            data = json.loads(path.read_text(encoding="utf-8"))
+            if not data.get("checkpoint"):
+                continue
+            checkpoints.append(data)
+            with self.subTest(source=data["source_lesson"]):
+                self.assertEqual([s["section_no"] for s in data["sections"]][-2:], [3, 4])
+                exits = data["sections"][-2]["cards"]
+                retries = data["sections"][-1]["cards"]
+                required = 3 if data["source_lesson"] == 1 else 2
+                self.assertEqual(len(exits), required)
+                self.assertEqual(len(retries), required)
+                self.assertEqual([c["learning_objective"] for c in exits],
+                                 [c["learning_objective"] for c in retries])
+                self.assertTrue(all(c["learning_check"] == "n1_exit_check_v1" for c in exits))
+                self.assertTrue(all(c["learning_retry"] == "n1_exit_check_v1" for c in retries))
+                if data["source_lesson"] == 1:
+                    continue
+                self.assertEqual(apply_nhsk1_source_checks(data), data)
+                audio, meaning = exits
+                alt_audio, alt_meaning = retries
+                words = {w["zh"] for w in data["active_words"]}
+                sentences = {ex["zh"] for g in data["grammar"] for ex in g["examples"]}
+                self.assertIn(audio["audio_text"], words)
+                self.assertIn(alt_audio["audio_text"], words)
+                self.assertNotEqual(audio["audio_text"], alt_audio["audio_text"])
+                self.assertTrue(all(x in words for x in audio["options"]))
+                self.assertTrue(all(contract.localized(x) for x in meaning["options"]))
+                self.assertNotEqual(meaning["prompt"]["uz"], alt_meaning["prompt"]["uz"])
+                for question in (meaning, alt_meaning):
+                    self.assertTrue(any(sentence in question["prompt"]["uz"]
+                                        for sentence in sentences))
+                    self.assertNotIn(question["options"][question["correct_index"]]["uz"],
+                                     question["prompt"]["uz"])
+        self.assertEqual(len(checkpoints), 15)
+        self.assertEqual({c["source_lesson"] for c in checkpoints}, set(range(1, 16)))
+
     def test_runtime_rejects_map_part_mismatch(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
