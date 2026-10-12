@@ -1,0 +1,38 @@
+name: Mandarin lesson TTS regression
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/services/tts_service.py"
+      - "app/api/android_course.py"
+      - "app/main.py"
+      - "tests/test_tts_service.py"
+      - ".github/workflows/mandarin-tts-ci.yml"
+  pull_request:
+    paths:
+      - "app/services/tts_service.py"
+      - "app/api/android_course.py"
+      - "app/main.py"
+      - "tests/test_tts_service.py"
+      - ".github/workflows/mandarin-tts-ci.yml"
+  workflow_dispatch:
+
+jobs:
+  tts-regressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Compile touched Python files
+        run: python -m py_compile app/services/tts_service.py app/api/android_course.py app/main.py tests/test_tts_service.py
+      - name: Check Edge outage and paid fallback handling
+        run: python -m unittest -v tests.test_tts_service
