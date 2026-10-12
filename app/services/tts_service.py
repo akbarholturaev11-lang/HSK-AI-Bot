@@ -1,103 +1,201 @@
-"""Shared Mandarin lesson speech with an MP3 cache and provider failover."""
+"""Mandarin lesson audio shared by Mini App and Android.
+
+Prefer Edge neural speech; if Microsoft's endpoint rejects synthesis, generate
+server-side audio with Gemini TTS. Edge uses MP3; Gemini PCM is wrapped in WAV.
+The caller must set the MIME type from the returned file suffix.
+"""
 from __future__ import annotations
 
 import asyncio
+import base64
+from collections import deque
 import hashlib
+from io import BytesIO
 import logging
 import os
 from pathlib import Path
 import re
 import time
+from uuid import uuid4
+import wave
 
-from openai import AsyncOpenAI
+import httpx
 
 VOICE = "zh-CN-XiaoxiaoNeural"
 RATE = "-10%"
+GEMINI_MODEL = "gemini-2.5-flash-preview-tts"
+GEMINI_VOICE = "Kore"
 log = logging.getLogger(__name__)
 _edge_retry_at = 0.0
 _locks: dict[str, asyncio.Lock] = {}
 _edge_gate = asyncio.Semaphore(2)
 _paid_gate = asyncio.Semaphore(3)
-_paid_times: list[float] = []
+_paid_times: deque[float] = deque()
 
 
 class TTSUnavailable(Exception):
-    pass
+    """No configured provider generated a valid audio file."""
 
 
-async def _edge(text: str, rate: str, path: Path) -> None:
+def _cache_dir() -> Path:
+    return Path(os.getenv("HSK_TTS_CACHE_DIR") or "app/static/audio/tts_cache")
+
+
+def _cache_key(text: str, rate: str) -> str:
+    # Keep existing Edge MP3 filenames valid across this migration.
+    return hashlib.sha1(f"{VOICE}|{rate}|{text}".encode("utf-8")).hexdigest()
+
+
+def _cached_audio(folder: Path, key: str) -> Path | None:
+    for suffix in (".mp3", ".wav"):
+        path = folder / (key + suffix)
+        if path.is_file() and path.stat().st_size > 128:
+            return path
+    return None
+
+
+def _wav_from_pcm(pcm: bytes, sample_rate: int = 24000) -> bytes:
+    if len(pcm) < 128 or len(pcm) % 2:
+        raise TTSUnavailable("gemini_invalid_pcm")
+    if sample_rate not in (8000, 16000, 22050, 24000, 32000, 44100, 48000):
+        raise TTSUnavailable("gemini_invalid_sample_rate")
+    output = BytesIO()
+    with wave.open(output, "wb") as audio_file:
+        audio_file.setnchannels(1)
+        audio_file.setsampwidth(2)
+        audio_file.setframerate(sample_rate)
+        audio_file.writeframes(pcm)
+    return output.getvalue()
+
+
+async def _edge(text: str, rate: str, destination: Path) -> None:
     global _edge_retry_at
     async with _edge_gate:
         if time.monotonic() < _edge_retry_at:
             raise TTSUnavailable("edge_paused")
         try:
             import edge_tts
-            await asyncio.wait_for(edge_tts.Communicate(text, VOICE, rate=rate).save(str(path)), 9)
-            if not path.is_file() or path.stat().st_size < 100:
+
+            await asyncio.wait_for(
+                edge_tts.Communicate(text, VOICE, rate=rate).save(str(destination)),
+                timeout=9,
+            )
+            if not destination.is_file() or destination.stat().st_size < 128:
                 raise TTSUnavailable("edge_empty")
-            _edge_retry_at = 0
+            _edge_retry_at = 0.0
         except Exception as exc:
+            # A 403 storm would otherwise trigger a fresh websocket per card.
             _edge_retry_at = time.monotonic() + (600 if "403" in str(exc) else 45)
             log.warning("Mandarin Edge TTS unavailable: %s", type(exc).__name__)
             raise
 
 
+async def _reserve_gemini_budget() -> None:
+    now = time.monotonic()
+    while _paid_times and _paid_times[0] <= now - 3600:
+        _paid_times.popleft()
+    try:
+        limit = max(0, int(os.getenv("HSK_TTS_GEMINI_MAX_HOURLY", "300")))
+    except ValueError:
+        limit = 300
+    if len(_paid_times) >= limit:
+        raise TTSUnavailable("gemini_hourly_cap")
+    _paid_times.append(now)
+
+
 async def _fallback(text: str, rate: str) -> bytes:
-    if not os.getenv("OPENAI_API_KEY") or os.getenv("HSK_TTS_OPENAI_ENABLED", "1") == "0":
-        raise TTSUnavailable("backup_disabled")
+    """Return playable RIFF/WAV bytes from Gemini's 24 kHz 16-bit PCM."""
+    key = os.getenv("GEMINI_API_KEY", "").strip()
+    if not key or os.getenv("HSK_TTS_GEMINI_ENABLED", "1").lower() in ("0", "false", "no"):
+        raise TTSUnavailable("gemini_disabled_or_no_key")
+
+    model = os.getenv("HSK_TTS_GEMINI_MODEL") or GEMINI_MODEL
+    if not re.fullmatch(r"gemini-[a-zA-Z0-9._-]+", model):
+        raise TTSUnavailable("gemini_invalid_model")
+
     async with _paid_gate:
-        now = time.monotonic()
-        _paid_times[:] = [at for at in _paid_times if at > now - 3600]
-        if len(_paid_times) >= int(os.getenv("HSK_TTS_OPENAI_MAX_HOURLY", "300")):
-            raise TTSUnavailable("backup_hourly_cap")
-        _paid_times.append(now)
-        model = os.getenv("HSK_TTS_OPENAI_MODEL", "gpt-4o-mini-tts")
-        options = dict(model=model, voice="coral", input=text, response_format="mp3",
-                       speed=max(.25, min(4.0, 1 + int(rate[:-1]) / 100)))
-        if model.startswith("gpt-4o"):
-            options["instructions"] = (
-                "Speak only the provided Chinese text in natural Standard Mandarin. "
-                "Use accurate tones and a patient teacher's voice. Do not translate."
+        await _reserve_gemini_budget()
+        pace = max(60, min(140, 100 + int(rate[:-1])))
+        payload = {
+            "contents": [{"parts": [{"text":
+                "Read ONLY the text between the Chinese brackets aloud in clear "
+                "Standard Mandarin (Putonghua), with correct tones and no "
+                f"extra words or translation. Speak at about {pace}% of normal "
+                f"speed: 【{text}】"
+            }]}],
+            "generationConfig": {
+                "responseModalities": ["AUDIO"],
+                "speechConfig": {
+                    "voiceConfig": {"prebuiltVoiceConfig": {"voiceName": GEMINI_VOICE}}
+                },
+            },
+        }
+        async with httpx.AsyncClient(timeout=httpx.Timeout(35.0, connect=5.0)) as client:
+            response = await client.post(
+                f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+                headers={"x-goog-api-key": key, "Content-Type": "application/json"},
+                json=payload,
             )
-        async with AsyncOpenAI(timeout=20, max_retries=0) as client:
-            response = await client.audio.speech.create(**options)
-            audio = response.content
-            if len(audio) < 100 or not (audio.startswith(b"ID3") or
-                    (audio[0] == 255 and audio[1] & 224 == 224)):
-                raise TTSUnavailable("invalid_audio")
-            return audio
+            response.raise_for_status()
+            data = response.json()
+
+        parts = (data.get("candidates") or [{}])[0].get("content", {}).get("parts") or []
+        inline = next((part.get("inlineData") or part.get("inline_data")
+                       for part in parts if part.get("inlineData") or part.get("inline_data")), None)
+        if not inline:
+            raise TTSUnavailable("gemini_missing_audio")
+        pcm = base64.b64decode(inline.get("data", ""), validate=True)
+        mime = str(inline.get("mimeType") or inline.get("mime_type") or "")
+        if pcm.startswith(b"RIFF") and pcm[8:12] == b"WAVE":
+            return pcm
+        if "audio/" not in mime.lower():
+            raise TTSUnavailable("gemini_unexpected_mime")
+        match = re.search(r"rate=(\d+)", mime)
+        return _wav_from_pcm(pcm, int(match.group(1)) if match else 24000)
 
 
 async def synthesize_chinese_mp3(text: str, rate: str = RATE) -> Path:
+    """Compatibility name: returns cached MP3 from Edge OR WAV from Gemini."""
     text = str(text or "").strip()
-    if len(text) > 240 or not re.search(r"[一-鿿]", text):
+    if not text or len(text) > 240 or not re.search(r"[一-鿿]", text):
         raise ValueError("invalid_mandarin_text")
     if not re.fullmatch(r"[+-]\d{1,3}%", rate):
         rate = RATE
-    folder = Path(os.getenv("HSK_TTS_CACHE_DIR", "app/static/audio/tts_cache"))
+
+    folder = _cache_dir()
     folder.mkdir(parents=True, exist_ok=True)
-    key = hashlib.sha1(f"{VOICE}|{rate}|{text}".encode()).hexdigest()
-    path = folder / f"{key}.mp3"
-    if path.is_file() and path.stat().st_size > 0:
-        return path
+    key = _cache_key(text, rate)
+    cached = _cached_audio(folder, key)
+    if cached is not None:
+        return cached
+
     async with _locks.setdefault(key, asyncio.Lock()):
-        if path.is_file() and path.stat().st_size > 0:
-            return path
-        tmp = folder / f"{key}.tmp"
+        cached = _cached_audio(folder, key)
+        if cached is not None:
+            return cached
+
+        temporary = folder / (key + "." + uuid4().hex + ".tmp")
         try:
             try:
-                await _edge(text, rate, tmp)
+                await _edge(text, rate, temporary)
+                destination = folder / (key + ".mp3")
                 provider = "edge"
             except Exception:
-                tmp.unlink(missing_ok=True)
+                temporary.unlink(missing_ok=True)
                 try:
-                    tmp.write_bytes(await _fallback(text, rate))
-                    provider = "openai"
+                    temporary.write_bytes(await _fallback(text, rate))
                 except Exception as exc:
-                    log.warning("Mandarin backup TTS failed: %s", type(exc).__name__)
+                    log.warning("Mandarin Gemini backup unavailable: %s status=%s",
+                                type(exc).__name__,
+                                getattr(getattr(exc, "response", None), "status_code", None))
                     raise TTSUnavailable("all_providers_failed") from exc
-            os.replace(tmp, path)
-            log.info("Mandarin TTS generated: provider=%s length=%d", provider, len(text))
-            return path
+                destination = folder / (key + ".wav")
+                provider = "gemini"
+
+            if not temporary.is_file() or temporary.stat().st_size < 128:
+                raise TTSUnavailable("tts_empty_audio")
+            os.replace(temporary, destination)
+            log.info("Mandarin TTS generated: provider=%s characters=%d", provider, len(text))
+            return destination
         finally:
-            tmp.unlink(missing_ok=True)
+            temporary.unlink(missing_ok=True)
