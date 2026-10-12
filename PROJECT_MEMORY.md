@@ -10829,3 +10829,17 @@ Safety:
 
 Follow-up:
 - Add per-objective correct/incorrect mastery and word-SRS due information only after designing append-only user event storage and new tracking tests.
+
+### 2026-10-12 — HSK 3.0 N1 15-unit checkpoint candidate (draft PR #142)
+
+Changed:
+- N1 all 103 parts validated and generator reproducibility checked.
+- Fifteen source lesson checkpoints now have 62 independent/alternate example cards total: source unit 1 manually authored 3+3; units 2–15 source-derived 2+2 each from verified vocab/pinyin/grammar/example translations. Checkpoint sections appended only, original graded card refs unchanged.
+- New shared Python builder `scripts/hsk30/build_nhsk1_source_assessment.py`; `scripts/gen_course_v3_from_seed.py` reapplies it whenever N1 runtime is rebuilt. 14 checkpoint JSON files updated with deterministic output. N1 Python QA checks all 15 and no-diff regeneration all 103 parts.
+- Android native ViewModel now handles conditional transfer for all N1 checkpoints. Server returns a compatibility projection without the conditional retry bank to older APKs without the `X-HSK-N1-Transfer: v1` header, recomputing counts; new Android adds the capability header.
+- Added backend unit tests for old APK projection and preview limit preservation, native Kotlin tests for parsing all 15 checkpoints.
+- Earlier plan integration included HSK 2.0/3.0 mistake isolation, canonical N1 mistake capture and listening weakness detection; Pro/trial/payment/limit logic unchanged.
+
+Unfinished verification:
+- Latest backend/Android CI and UZ/RU/TJ real-device educational UX review, plus old APK smoke test. Draft PR not merged to main.
+- Persistent per-objective mastery and 1-/7-day retention are not implemented; rollout is a checkpoint+conditional feedback candidate, not proof all 103 lessons have been hand-edited or educationally validated.
