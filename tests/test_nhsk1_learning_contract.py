@@ -67,6 +67,44 @@ class Nhsk1LearningContractTests(unittest.TestCase):
         }, "test")
         self.assertTrue(any("absent from bank" in x for x in errors))
 
+    def test_n1_pilot_feedback_present_on_all_four_parts(self):
+        from scripts.hsk30.apply_learning_overlays import (
+            apply_nhsk1_pilot_feedback, validate_pilot_overlay,
+        )
+        self.assertEqual(validate_pilot_overlay(), 27)
+        for part_no in range(1, 5):
+            with self.subTest(part=part_no):
+                path = Path("app/static/course_v3_data/nhsk1") / f"lesson_{part_no:02d}.json"
+                original = json.loads(path.read_text(encoding="utf-8"))
+                # Reapplying is idempotent, preserving all card positions and answers.
+                enhanced = apply_nhsk1_pilot_feedback(original)
+                self.assertEqual(original, enhanced)
+                marked = [card for section in original["sections"]
+                          for card in section["cards"]
+                          if card.get("learning_feedback") == "n1_context_v1"]
+                self.assertTrue(marked)
+                for card in marked:
+                    self.assertTrue(contract.localized(card["explanation"]))
+                    self.assertFalse(__import__("re").search(
+                        r"[\\u0400-\\u04ff]", card["explanation"]["uz"],
+                    ), "Uzbek teaching text must stay Latin-script")
+
+    def test_n1_overlay_fails_on_reordered_cards(self):
+        from scripts.hsk30.apply_learning_overlays import apply_nhsk1_pilot_feedback
+        path = Path("app/static/course_v3_data/nhsk1/lesson_01.json")
+        lesson = json.loads(path.read_text(encoding="utf-8"))
+        # The existing material_ref is positional: changed card order must
+        # never silently attach a teaching explanation to another answer.
+        lesson["sections"][0]["cards"][2]["correct_index"] = 0
+        with self.assertRaisesRegex(ValueError, "target changed"):
+            apply_nhsk1_pilot_feedback(lesson)
+
+    def test_n1_miniapp_renders_explanation_for_wrong_choice(self):
+        html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertIn('c.learning_feedback==="n1_context_v1"&&!Flow.challenge', html)
+        self.assertIn('esc(rightText)+" · "+esc(why)', html)
+        self.assertIn('c.learning_feedback==="n1_context_v1"?(esc(ans.join(" "))', html)
+
     def test_runtime_rejects_map_part_mismatch(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
