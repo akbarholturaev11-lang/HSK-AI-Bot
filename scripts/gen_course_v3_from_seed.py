@@ -1766,6 +1766,11 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
         out["exit_ticket"] = exit_ticket
     if sales_outcome:
         out["outcome"], out["next_outcome_preview"] = sales_outcome
+    # Keep authored teaching explanations across regeneration. This overlay
+    # changes no card identity, order, answer or material_ref positions.
+    if level == "nhsk1" and src == 1:
+        from scripts.hsk30.apply_learning_overlays import apply_nhsk1_pilot_feedback
+        out = apply_nhsk1_pilot_feedback(out)
     return out
 
 
