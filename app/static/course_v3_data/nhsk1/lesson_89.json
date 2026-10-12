@@ -953,6 +953,166 @@
           }
         }
       ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mustaqil bilim tekshiruvi",
+        "ru": "Проверка знаний",
+        "tj": "Санҷиши мустақили дониш"
+      },
+      "section_purpose": "learning_exit_check",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_13_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Tinglab taniy olasizmi?",
+            "ru": "Узнайте слово на слух",
+            "tj": "Калимаро аз шунидан шиносед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "问题",
+          "audio_pinyin": "wèntí",
+          "options": [
+            "可以",
+            "问题",
+            "打电话",
+            "一下"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "问题 (wèntí) — savol; muammo. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "问题 (wèntí) — вопрос; проблема. Сравните звучание с другими словами.",
+            "tj": "问题 (wèntí) — савол; масъала. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_13_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Jumlani tushundingizmi?",
+            "ru": "Проверьте понимание",
+            "tj": "Ҷумларо фаҳмидед?"
+          },
+          "prompt": {
+            "uz": "“你们可以看这本书。” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «你们可以看这本书。».",
+            "tj": "Тарҷумаи ҷумлаи «你们可以看这本书。»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Sizdan yana bir savol so‘rasam bo‘ladimi?",
+              "ru": "Можно задать вам ещё один вопрос?",
+              "tj": "Метавонам боз як савол пурсам?"
+            },
+            {
+              "uz": "Sizlar bu kitobni o‘qishingiz mumkin.",
+              "ru": "Вы можете прочитать эту книгу.",
+              "tj": "Шумо метавонед ин китобро хонед."
+            },
+            {
+              "uz": "O‘tirsam bo‘ladimi? Bo‘ladi, marhamat o‘tiring!",
+              "ru": "Можно сесть? Можно, присаживайтесь!",
+              "tj": "Нишастан мумкин? Мумкин, марҳамат нишинед!"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你们可以看这本书。 (Nǐmen kěyǐ kàn zhè běn shū.) — Sizlar bu kitobni o‘qishingiz mumkin.. “可以” fe’l oldidan kelib mumkinlik, qobiliyat yoki ruxsatni bildiradi.",
+            "ru": "你们可以看这本书。 (Nǐmen kěyǐ kàn zhè běn shū.) — Вы можете прочитать эту книгу.. “可以” ставится перед глаголом и выражает возможность, способность или разрешение.",
+            "tj": "你们可以看这本书。 (Nǐmen kěyǐ kàn zhè běn shū.) — Шумо метавонед ин китобро хонед.. “可以” пеш аз феъл омада, имкон, қобилият ё иҷозатро ифода мекунад."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Boshqa misolda qayta sinash",
+        "ru": "Другой пример",
+        "tj": "Мисоли дигар барои санҷиш"
+      },
+      "section_purpose": "learning_repair_bank",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_13_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Boshqa so'zni tinglang",
+            "ru": "Послушайте другое слово",
+            "tj": "Калимаи дигарро гӯш кунед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "打电话",
+          "audio_pinyin": "dǎ diànhuà",
+          "options": [
+            "可以",
+            "问题",
+            "打电话",
+            "一下"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "打电话 (dǎ diànhuà) — telefon qilmoq. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "打电话 (dǎ diànhuà) — звонить по телефону. Сравните звучание с другими словами.",
+            "tj": "打电话 (dǎ diànhuà) — телефон кардан. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_13_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Yangi jumlani tushuning",
+            "ru": "Поймите другое предложение",
+            "tj": "Ҷумлаи дигарро фаҳмед"
+          },
+          "prompt": {
+            "uz": "“我可以坐吗？可以，请坐！” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «我可以坐吗？可以，请坐！».",
+            "tj": "Тарҷумаи ҷумлаи «我可以坐吗？可以，请坐！»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Sizdan yana bir savol so‘rasam bo‘ladimi?",
+              "ru": "Можно задать вам ещё один вопрос?",
+              "tj": "Метавонам боз як савол пурсам?"
+            },
+            {
+              "uz": "Sizlar bu kitobni o‘qishingiz mumkin.",
+              "ru": "Вы можете прочитать эту книгу.",
+              "tj": "Шумо метавонед ин китобро хонед."
+            },
+            {
+              "uz": "O‘tirsam bo‘ladimi? Bo‘ladi, marhamat o‘tiring!",
+              "ru": "Можно сесть? Можно, присаживайтесь!",
+              "tj": "Нишастан мумкин? Мумкин, марҳамат нишинед!"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "我可以坐吗？可以，请坐！ (Wǒ kěyǐ zuò ma? Kěyǐ, qǐng zuò!) — O‘tirsam bo‘ladimi? Bo‘ladi, marhamat o‘tiring!. “可以” fe’l oldidan kelib mumkinlik, qobiliyat yoki ruxsatni bildiradi.",
+            "ru": "我可以坐吗？可以，请坐！ (Wǒ kěyǐ zuò ma? Kěyǐ, qǐng zuò!) — Можно сесть? Можно, присаживайтесь!. “可以” ставится перед глаголом и выражает возможность, способность или разрешение.",
+            "tj": "我可以坐吗？可以，请坐！ (Wǒ kěyǐ zuò ma? Kěyǐ, qǐng zuò!) — Нишастан мумкин? Мумкин, марҳамат нишинед!. “可以” пеш аз феъл омада, имкон, қобилият ё иҷозатро ифода мекунад."
+          }
+        }
+      ]
     }
   ]
 }

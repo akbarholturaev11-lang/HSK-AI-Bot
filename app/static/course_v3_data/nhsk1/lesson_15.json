@@ -894,6 +894,166 @@
           }
         }
       ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mustaqil bilim tekshiruvi",
+        "ru": "Проверка знаний",
+        "tj": "Санҷиши мустақили дониш"
+      },
+      "section_purpose": "learning_exit_check",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_03_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Tinglab taniy olasizmi?",
+            "ru": "Узнайте слово на слух",
+            "tj": "Калимаро аз шунидан шиносед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "哪",
+          "audio_pinyin": "nǎ",
+          "options": [
+            "人",
+            "这",
+            "女朋友",
+            "哪"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "哪 (nǎ) — qaysi. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "哪 (nǎ) — какой; который. Сравните звучание с другими словами.",
+            "tj": "哪 (nǎ) — кадом. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_03_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Jumlani tushundingizmi?",
+            "ru": "Проверьте понимание",
+            "tj": "Ҷумларо фаҳмидед?"
+          },
+          "prompt": {
+            "uz": "“我是法国人。” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «我是法国人。».",
+            "tj": "Тарҷумаи ҷумлаи «我是法国人。»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Men fransuzman.",
+              "ru": "Я француз.",
+              "tj": "Ман фаронсавӣ ҳастам."
+            },
+            {
+              "uz": "U xitoy tili o‘qituvchisi.",
+              "ru": "Она преподаватель китайского языка.",
+              "tj": "Ӯ омӯзгори забони чинӣ аст."
+            },
+            {
+              "uz": "Mening o‘qituvchim fransuz emas.",
+              "ru": "Мой преподаватель не француз.",
+              "tj": "Омӯзгори ман фаронсавӣ нест."
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我是法国人。 (Wǒ shì Fǎguó rén.) — Men fransuzman.. “是” shaxs yoki narsaning kim/nima ekanini ko‘rsatadi: A + 是 + B. Inkor shakli: 不是.",
+            "ru": "我是法国人。 (Wǒ shì Fǎguó rén.) — Я француз.. “是” указывает, кем/чем является лицо или предмет: A + 是 + B. Отрицание: 不是.",
+            "tj": "我是法国人。 (Wǒ shì Fǎguó rén.) — Ман фаронсавӣ ҳастам.. “是” нишон медиҳад, ки шахс ё чиз кӣ/чӣ аст: A + 是 + B. Инкор: 不是."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Boshqa misolda qayta sinash",
+        "ru": "Другой пример",
+        "tj": "Мисоли дигар барои санҷиш"
+      },
+      "section_purpose": "learning_repair_bank",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_03_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Boshqa so'zni tinglang",
+            "ru": "Послушайте другое слово",
+            "tj": "Калимаи дигарро гӯш кунед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "人",
+          "audio_pinyin": "rén",
+          "options": [
+            "人",
+            "这",
+            "女朋友",
+            "哪"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "人 (rén) — odam; kishi. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "人 (rén) — человек. Сравните звучание с другими словами.",
+            "tj": "人 (rén) — одам; шахс. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_03_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Yangi jumlani tushuning",
+            "ru": "Поймите другое предложение",
+            "tj": "Ҷумлаи дигарро фаҳмед"
+          },
+          "prompt": {
+            "uz": "“她是中文老师。” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «她是中文老师。».",
+            "tj": "Тарҷумаи ҷумлаи «她是中文老师。»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Men fransuzman.",
+              "ru": "Я француз.",
+              "tj": "Ман фаронсавӣ ҳастам."
+            },
+            {
+              "uz": "U xitoy tili o‘qituvchisi.",
+              "ru": "Она преподаватель китайского языка.",
+              "tj": "Ӯ омӯзгори забони чинӣ аст."
+            },
+            {
+              "uz": "Mening o‘qituvchim fransuz emas.",
+              "ru": "Мой преподаватель не француз.",
+              "tj": "Омӯзгори ман фаронсавӣ нест."
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "她是中文老师。 (Tā shì Zhōngwén lǎoshī.) — U xitoy tili o‘qituvchisi.. “是” shaxs yoki narsaning kim/nima ekanini ko‘rsatadi: A + 是 + B. Inkor shakli: 不是.",
+            "ru": "她是中文老师。 (Tā shì Zhōngwén lǎoshī.) — Она преподаватель китайского языка.. “是” указывает, кем/чем является лицо или предмет: A + 是 + B. Отрицание: 不是.",
+            "tj": "她是中文老师。 (Tā shì Zhōngwén lǎoshī.) — Ӯ омӯзгори забони чинӣ аст.. “是” нишон медиҳад, ки шахс ё чиз кӣ/чӣ аст: A + 是 + B. Инкор: 不是."
+          }
+        }
+      ]
     }
   ]
 }
