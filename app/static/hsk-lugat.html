@@ -255,7 +255,8 @@ html.fast-writer-sheet #app{max-width:none;overflow:hidden}
   .char-box-lg{width:min(420px,86vw);height:min(420px,86vw)}
 }
 /* Hide duplicate navigation only inside an authenticated Telegram WebApp. */
-html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
+html.hsk-telegram-back-active .hsk-native-back-duplicate,
+html.hsk-embedded .hsk-native-back-duplicate{display:none!important}
 </style>
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261008-scene-1">
 </head>
@@ -405,6 +406,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
 (function(){
   var validLangs = ['uz', 'ru', 'tj'];
   var params = new URLSearchParams(location.search || '');
+  document.documentElement.classList.toggle('hsk-embedded', params.get('embedded') === '1');
   if(window.HSK_FAST_WRITER){ initFastWriter(params); return; }
   var UI = {
     uz: {

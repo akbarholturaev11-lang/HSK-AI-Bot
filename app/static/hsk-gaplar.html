@@ -45,6 +45,7 @@
     button { color: inherit; }
     .page { width: min(100%, 620px); min-height: 100dvh; margin: 0 auto; padding: 14px 19px 28px; }
     .top { display: flex; align-items: center; min-height: 42px; gap: 11px; }
+    html.hsk-embedded .back { display: none; }
     .back { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: var(--card); color: var(--ink-soft); font-size: 23px; line-height: 1; cursor: pointer; }
     .eyebrow { color: var(--gold); font-size: 10px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
     .hero { padding: 19px 0 18px; }
@@ -105,6 +106,7 @@
     (function () {
       "use strict";
 
+      document.documentElement.classList.toggle("hsk-embedded",new URLSearchParams(location.search).get("embedded")==="1");
       var LANGUAGE = new URLSearchParams(location.search).get("lang") || "uz";
       if (!["uz", "ru", "tj"].includes(LANGUAGE)) LANGUAGE = "uz";
       var UI = {
