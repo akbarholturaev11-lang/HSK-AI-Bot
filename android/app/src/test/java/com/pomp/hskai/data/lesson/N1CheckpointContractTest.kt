@@ -14,14 +14,37 @@ import org.junit.Test
 
 /** The exact checked-in N1 checkpoint must be playable by the native parser. */
 class N1CheckpointContractTest {
-    private fun runtimeJson(): String {
-        val relative = "app/static/course_v3_data/nhsk1/lesson_04.json"
+    private fun runtimeJson(order: Int = 4): String {
+        val relative = "app/static/course_v3_data/nhsk1/lesson_${order.toString().padStart(2, '0')}.json"
         return sequenceOf(
             File("../$relative"),
             File("../../$relative"),
             File(relative),
         ).firstOrNull { it.isFile }?.readText(Charsets.UTF_8)
             ?: error("Missing checked-in N1 runtime checkpoint: $relative")
+    }
+
+    @Test fun nativeParsesEverySourceCheckpointWithTwoModes() {
+        val checkpoints = listOf(4, 9, 15, 25, 32, 39, 47, 54, 61, 68, 76, 83, 89, 97, 103)
+        for (order in checkpoints) {
+            val parsed = LessonParser.parse(
+                payload = Json.parseToJsonElement(runtimeJson(order)).jsonObject,
+                level = "nhsk1",
+                lessonOrder = order,
+                language = AppLanguage.UZBEK,
+            )
+            val original = parsed.sections.take(2)
+            assertEquals("Original checkpoint section refs must stay fixed: $order",
+                listOf(1, 2), original.map { it.sectionNo })
+            assertEquals(3, parsed.sections[2].sectionNo)
+            assertEquals(4, parsed.sections[3].sectionNo)
+            val count = if (order == 4) 3 else 2
+            assertEquals(count, parsed.sections[2].cards.size)
+            assertEquals(count, parsed.sections[3].cards.size)
+            assertTrue(parsed.sections.drop(2).flatMap { it.cards }.none { it is UnsupportedCard })
+            assertTrue(parsed.sections[2].cards[0] is ChoiceCard)
+            assertTrue(parsed.sections[3].cards[0] is ChoiceCard)
+        }
     }
 
     @Test fun parseAllSixNewQuestionsWithoutDroppingOldMaterialReferences() {
