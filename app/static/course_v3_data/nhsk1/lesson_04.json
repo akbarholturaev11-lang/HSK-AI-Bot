@@ -308,7 +308,7 @@
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "你们 (nǐmen) — кўпликдаги «сизлар»: nǐ + енгил оҳангли men. 您 (nín) эса бир кишига ҳурмат шакли.",
+            "uz": "你们 (nǐmen) — ko'plikdagi «sizlar»: nǐ + engil ohangli men. 您 (nín) esa bir kishiga hurmat shakli.",
             "ru": "你们 (nǐmen) — «вы» (мн. ч.): nǐ + нейтральный men. 您 (nín) — уважительное «Вы» одному человеку.",
             "tj": "你们 (nǐmen) — «шумо» (ҷамъ): nǐ + men бо оҳанги сабук. 您 (nín) — эҳтиром ба як нафар."
           },
@@ -434,7 +434,7 @@
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "老师 (lǎoshī) — устоз. Диалогда 老师，您好！ деб ўқитувчига ҳурмат билан салом берилади.",
+            "uz": "老师 (lǎoshī) — ustoz. Dialogda 老师，您好！ deb o'qituvchiga hurmat bilan salom beriladi.",
             "ru": "老师 (lǎoshī) — преподаватель. 老师，您好！ — уважительное приветствие учителя.",
             "tj": "老师 (lǎoshī) — устод. 老师，您好！ — саломи эҳтиромӣ ба омӯзгор."
           },
@@ -486,7 +486,7 @@
             ]
           },
           "explanation": {
-            "uz": "老师，您好！(Lǎoshī, nín hǎo!) — ўқитувчига ҳурматли салом. 老师 мурожаати ва 您 ҳурмат шаклига эътибор беринг.",
+            "uz": "老师，您好！(Lǎoshī, nín hǎo!) — o'qituvchiga hurmatli salom. 老师 murojaati va 您 hurmat shakliga e'tibor bering.",
             "ru": "老师，您好！(Lǎoshī, nín hǎo!) — приветствие учителя. 老师 — обращение, 您 — вежливое «Вы».",
             "tj": "老师，您好！(Lǎoshī, nín hǎo!) — салом ба устод. 老师 — муроҷиат, 您 — «Шумо»-и эҳтиромӣ."
           },
@@ -567,7 +567,7 @@
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "Диалог охирида AI小语 (Xiǎoyǔ) 王老师，你好！ — «Устоз Ван, салом!» дейди. Гапни диалогнинг охирги репликаси билан солиштиринг.",
+            "uz": "Dialog oxirida AI小语 (Xiǎoyǔ) 王老师，你好！ — «Ustoz Van, salom!» deydi. Gapni dialogning oxirgi replikasi bilan solishtiring.",
             "ru": "В конце диалога AI小语 (Xiǎoyǔ) говорит 王老师，你好！ — «Здравствуйте, учитель Ван!». Сверьте с последней репликой.",
             "tj": "Дар охири гуфтугӯ AI小语 (Xiǎoyǔ) мегӯяд: 王老师，你好！ — «Устод Ван, салом!». Ба ҷумлаи охир нигаред."
           },
@@ -600,7 +600,7 @@
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "Бўш жойга 王老师，你好！ тўғри келади: AI小语 (Xiǎoyǔ) устоз Ванга салом беряпти.",
+            "uz": "Bo'sh joyga 王老师，你好！ to'g'ri keladi: AI小语 (Xiǎoyǔ) ustoz Vanga salom beryapti.",
             "ru": "Пропущенная фраза — 王老师，你好！: AI小语 (Xiǎoyǔ) здоровается с учителем Ван.",
             "tj": "Ҷумлаи нопурра — 王老师，你好！: AI小语 (Xiǎoyǔ) ба устод Ван салом мегӯяд."
           },
@@ -622,7 +622,7 @@
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "AI小语 (AI Xiǎoyǔ) — персонажнинг исми. Бўш жойда 小 (xiǎo) бўлади; бу ерда иероглиф исм таркибига киради.",
+            "uz": "AI小语 (AI Xiǎoyǔ) — personajning ismi. Bo'sh joyda 小 (xiǎo) bo'ladi; bu erda ieroglif ism tarkibiga kiradi.",
             "ru": "AI小语 (AI Xiǎoyǔ) — имя персонажа. Пропущен иероглиф 小 (xiǎo), здесь это часть имени.",
             "tj": "AI小语 (AI Xiǎoyǔ) — номи қаҳрамон аст. Иероглифи гумшуда 小 (xiǎo) қисми ном мебошад."
           },
@@ -648,7 +648,7 @@
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "Биринчи репликада 王亦菲 (Wáng Yìfēi) AI小语，你好！ деб AI Сяоюйга салом беради; бу диалог бошланиши.",
+            "uz": "Birinchi replikada 王亦菲 (Wáng Yìfēi) AI小语，你好！ deb AI Syaoyuyga salom beradi; bu dialog boshlanishi.",
             "ru": "В первой реплике 王亦菲 (Wáng Yìfēi) говорит AI小语，你好！ — приветствие AI Сяоюй.",
             "tj": "Дар ҷумлаи аввал 王亦菲 (Wáng Yìfēi) мегӯяд AI小语，你好！ — салом ба AI Сяоюй."
           },
