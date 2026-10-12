@@ -1654,7 +1654,12 @@ function setSelectedLevel(lv){
   try{var u=new URL(location.href);u.searchParams.set("level",lv);history.replaceState(null,"",u.pathname+"?"+u.searchParams.toString())}catch(e){}
   return lv;
 }
-var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}try{tg.setHeaderColor("#FDF9F0");tg.setBackgroundColor("#FDF9F0")}catch(e){}}
+var tg=window.Telegram&&window.Telegram.WebApp;
+function syncCourseTelegramChrome(){
+  /* Telegram header state is native and may be reset between HTML documents. */
+  try{if(tg){tg.setHeaderColor("#FDF9F0");tg.setBackgroundColor("#FDF9F0")}}catch(e){}
+}
+if(tg){try{tg.ready();tg.expand()}catch(e){}syncCourseTelegramChrome()}
 var INIT_DATA=(tg&&tg.initData)||"";
 /* Bot username yagona manba: serverdan (BOT_USERNAME) keladi. Map javobida
    bot_username bo'lsa yangilanadi; bo'lmasa xavfsiz default ishlaydi. */
@@ -1686,7 +1691,7 @@ function pingMiniAppExit(){
 try{
   document.addEventListener("visibilitychange",function(){
     if(document.visibilityState==="hidden")pingMiniAppExit();
-    else{INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;refreshCourseProgress();queueHsk30PromoCheck()}
+    else{syncCourseTelegramChrome();INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;refreshCourseProgress();queueHsk30PromoCheck()}
   });
   window.addEventListener("pagehide",pingMiniAppExit);
   /* bfcache: sahifa xotiradan tiklanganda (obuna, lug'at yoki AI Voice
@@ -1695,6 +1700,7 @@ try{
      tiklanishda map qayta so'raladi. `persisted` bo'lmasa — bu oddiy
      yuklanish, hech narsa qilinmaydi. */
   window.addEventListener("pageshow",function(e){
+    syncCourseTelegramChrome();
     if(!e||!e.persisted)return;
     INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;clearDeferredCourseUnlock();
     if(!INIT_DATA||!MAP)return;
@@ -1932,6 +1938,7 @@ var MASHQ_ACCESS_PENDING=null;
 var App={
   setLang:function(l){if(!I18N[l])return;LANG=l;syncDocumentLanguage();renderAll()},
   show:function(s){
+    syncCourseTelegramChrome();
     if(s==="mashq"&&isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){
       var status=COURSE_TRACK_STATE,access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
       if(!access||!access.allowed){

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FDF9F0">
 <title>HSK Lug'at · Yangi so'zlar</title>
 <script>
 (function(){
@@ -1775,6 +1776,18 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     }catch(e){}
   }
 
+  function syncDictionaryTelegramChrome(){
+    var color=isLight?'#FDF9F0':'#002F49';
+    try{
+      var meta=document.querySelector('meta[name="theme-color"]');
+      if(meta)meta.setAttribute('content',color);
+      var webApp=window.Telegram&&window.Telegram.WebApp;
+      if(webApp){
+        if(typeof webApp.setHeaderColor==='function')webApp.setHeaderColor(color);
+        if(typeof webApp.setBackgroundColor==='function')webApp.setBackgroundColor(color);
+      }
+    }catch(e){}
+  }
   function init(){
     applyStaticText();
     renderList('');
@@ -1783,6 +1796,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     try{
       var tg = window.Telegram && window.Telegram.WebApp;
       if(tg && tg.ready) tg.ready();
+      syncDictionaryTelegramChrome();
       syncTelegramInsets();
       if(tg && tg.onEvent){
         ['viewportChanged','safeAreaChanged','contentSafeAreaChanged'].forEach(function(event){
@@ -1800,6 +1814,13 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
         !!(nativeBackBound && tg && tg.initData && tg.BackButton && typeof tg.BackButton.show === 'function'));
     }catch(e){}
   }
+  window.addEventListener('pageshow',function(){
+    syncDictionaryTelegramChrome();
+    try{var tg=window.Telegram&&window.Telegram.WebApp;if(tg&&tg.BackButton)tg.BackButton.show()}catch(e){}
+  });
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='visible')syncDictionaryTelegramChrome();
+  });
   init();
 })();
 

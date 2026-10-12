@@ -334,14 +334,37 @@
         if (dx >= 85 && Math.abs(dx) > Math.abs(dy) * 1.5) goBack();
       }, { passive: true });
       document.addEventListener("touchcancel", function () { edgeSwipe = null; }, { passive: true });
+      function syncPhraseTelegramChrome() {
+        var color = document.documentElement.getAttribute("data-theme") === "dark" ? "#151b18" : "#f5f2eb";
+        try {
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute("content", color);
+          var app = window.Telegram && window.Telegram.WebApp;
+          if (!app) return;
+          if (typeof app.setHeaderColor === "function") app.setHeaderColor(color);
+          if (typeof app.setBackgroundColor === "function") app.setBackgroundColor(color);
+        } catch (_) {}
+      }
       try {
         var webApp = window.Telegram && window.Telegram.WebApp;
+        if (webApp && webApp.ready) webApp.ready();
+        syncPhraseTelegramChrome();
         if (webApp && webApp.BackButton) {
           webApp.BackButton.show();
           webApp.BackButton.onClick(goBack);
           window.addEventListener("pagehide", function () { webApp.BackButton.hide(); }, { once: true });
         }
       } catch (_) { /* Standalone preview outside Telegram. */ }
+      window.addEventListener("pageshow", function () {
+        syncPhraseTelegramChrome();
+        try {
+          var webApp = window.Telegram && window.Telegram.WebApp;
+          if (webApp && webApp.BackButton) webApp.BackButton.show();
+        } catch (_) {}
+      });
+      document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "visible") syncPhraseTelegramChrome();
+      });
 
       function loadCatalog() {
         elements.error.hidden = true;
