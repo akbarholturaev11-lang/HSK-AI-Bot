@@ -948,6 +948,166 @@
           }
         }
       ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mustaqil bilim tekshiruvi",
+        "ru": "Проверка знаний",
+        "tj": "Санҷиши мустақили дониш"
+      },
+      "section_purpose": "learning_exit_check",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_05_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Tinglab taniy olasizmi?",
+            "ru": "Узнайте слово на слух",
+            "tj": "Калимаро аз шунидан шиносед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "月",
+          "audio_pinyin": "yuè",
+          "options": [
+            "今天",
+            "月",
+            "星期",
+            "星期日"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "月 (yuè) — oy. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "月 (yuè) — месяц. Сравните звучание с другими словами.",
+            "tj": "月 (yuè) — моҳ. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_05_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Jumlani tushundingizmi?",
+            "ru": "Проверьте понимание",
+            "tj": "Ҷумларо фаҳмидед?"
+          },
+          "prompt": {
+            "uz": "“今天星期四。” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «今天星期四。».",
+            "tj": "Тарҷумаи ҷумлаи «今天星期四。»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Bugun 8-sentabr.",
+              "ru": "Сегодня 8 сентября.",
+              "tj": "Имрӯз 8 сентябр аст."
+            },
+            {
+              "uz": "Bugun yakshanba.",
+              "ru": "Сегодня воскресенье.",
+              "tj": "Имрӯз якшанбе аст."
+            },
+            {
+              "uz": "Bugun payshanba.",
+              "ru": "Сегодня четверг.",
+              "tj": "Имрӯз панҷшанбе аст."
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "今天星期四。 (Jīntiān Xīngqīsì.) — Bugun payshanba.. Nominal gapda kesim ot yoki ot birikmasidan iborat bo‘lib, ko‘pincha vaqt, sana va yoshni bildiradi.",
+            "ru": "今天星期四。 (Jīntiān Xīngqīsì.) — Сегодня четверг.. В предложении с именным сказуемым сказуемое выражено существительным или именной группой; часто так говорят о времени, дате и возрасте.",
+            "tj": "今天星期四。 (Jīntiān Xīngqīsì.) — Имрӯз панҷшанбе аст.. Дар ҷумлаи номӣ хабар аз исм ё гурӯҳи исмӣ иборат буда, бештар вақт, сана ва синну солро ифода мекунад."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Boshqa misolda qayta sinash",
+        "ru": "Другой пример",
+        "tj": "Мисоли дигар барои санҷиш"
+      },
+      "section_purpose": "learning_repair_bank",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_05_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Boshqa so'zni tinglang",
+            "ru": "Послушайте другое слово",
+            "tj": "Калимаи дигарро гӯш кунед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "星期",
+          "audio_pinyin": "xīngqī",
+          "options": [
+            "今天",
+            "月",
+            "星期",
+            "星期日"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "星期 (xīngqī) — hafta. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "星期 (xīngqī) — неделя. Сравните звучание с другими словами.",
+            "tj": "星期 (xīngqī) — ҳафта. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_05_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Yangi jumlani tushuning",
+            "ru": "Поймите другое предложение",
+            "tj": "Ҷумлаи дигарро фаҳмед"
+          },
+          "prompt": {
+            "uz": "“今天9月8号。” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «今天9月8号。».",
+            "tj": "Тарҷумаи ҷумлаи «今天9月8号。»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Bugun 8-sentabr.",
+              "ru": "Сегодня 8 сентября.",
+              "tj": "Имрӯз 8 сентябр аст."
+            },
+            {
+              "uz": "Bugun yakshanba.",
+              "ru": "Сегодня воскресенье.",
+              "tj": "Имрӯз якшанбе аст."
+            },
+            {
+              "uz": "Bugun payshanba.",
+              "ru": "Сегодня четверг.",
+              "tj": "Имрӯз панҷшанбе аст."
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "今天9月8号。 (Jīntiān jiǔ yuè bā hào.) — Bugun 8-sentabr.. Xitoychada sana odatda kattadan kichikka: yil → oy → kun/sana → hafta kuni tartibida aytiladi.",
+            "ru": "今天9月8号。 (Jīntiān jiǔ yuè bā hào.) — Сегодня 8 сентября.. Дата по-китайски обычно выражается от крупной единицы к мелкой: год → месяц → число → день недели.",
+            "tj": "今天9月8号。 (Jīntiān jiǔ yuè bā hào.) — Имрӯз 8 сентябр аст.. Сана ба чинӣ одатан аз калон ба хурд гуфта мешавад: сол → моҳ → рӯз/сана → рӯзи ҳафта."
+          }
+        }
+      ]
     }
   ]
 }

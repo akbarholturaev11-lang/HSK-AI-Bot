@@ -301,6 +301,46 @@ async def _android_stroke_file(char: str) -> Path:
     return path
 
 
+# Explicit N1 transfer-practice capability flag. Older Android APKs do
+# not know conditional retry navigation, so do not send a retry bank to
+# them. The three independent exit questions remain available to all.
+def _legacy_n1_lesson_payload(result: dict, *, supports_transfer: bool) -> dict:
+    if (
+        supports_transfer or not isinstance(result, dict)
+        or result.get("level") != "nhsk1"
+    ):
+        return result
+    lesson = result.get("lesson")
+    if not isinstance(lesson, dict):
+        return result
+    sections = lesson.get("sections")
+    if not isinstance(sections, list):
+        return result
+    stripped = [
+        section for section in sections
+        if not (isinstance(section, dict) and section.get("section_purpose") == "learning_repair_bank")
+    ]
+    if len(stripped) == len(sections):
+        return result
+    # This is an outward-only projection; never modify stored/static
+    # course JSON or the server-authoritative mistake material references.
+    new_lesson = {**lesson, "sections": stripped}
+    total_cards = sum(
+        len(section.get("cards") or []) for section in stripped
+        if isinstance(section, dict)
+    )
+    return {
+        **result,
+        "lesson": new_lesson,
+        "total_cards": total_cards,
+        "preview_card_limit": (
+            max(1, total_cards // 2)
+            if result.get("preview_half")
+            else total_cards
+        ),
+    }
+
+
 def create_android_course_router(
     *,
     session_factory,
@@ -474,6 +514,12 @@ def create_android_course_router(
                     lesson_order=lesson_order,
                     access_ref=access_ref,
                 )
+            result = _legacy_n1_lesson_payload(
+                result,
+                supports_transfer=(
+                    request.headers.get("x-hsk-n1-transfer", "").strip().lower() == "v1"
+                ),
+            )
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, DesktopCourseError) as exc:
             return course_error_response(exc)

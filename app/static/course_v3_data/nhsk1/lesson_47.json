@@ -1070,6 +1070,166 @@
           }
         }
       ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mustaqil bilim tekshiruvi",
+        "ru": "Проверка знаний",
+        "tj": "Санҷиши мустақили дониш"
+      },
+      "section_purpose": "learning_exit_check",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_07_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Tinglab taniy olasizmi?",
+            "ru": "Узнайте слово на слух",
+            "tj": "Калимаро аз шунидан шиносед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "课",
+          "audio_pinyin": "kè",
+          "options": [
+            "现在",
+            "早上",
+            "分",
+            "课"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "课 (kè) — dars. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "课 (kè) — урок; занятие. Сравните звучание с другими словами.",
+            "tj": "课 (kè) — дарс. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_07_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Jumlani tushundingizmi?",
+            "ru": "Проверьте понимание",
+            "tj": "Ҷумларо фаҳмидед?"
+          },
+          "prompt": {
+            "uz": "“下午两点半” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «下午两点半».",
+            "tj": "Тарҷумаи ҷумлаи «下午两点半»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "ertalab 9:30",
+              "ru": "9:30 утра",
+              "tj": "субҳ 9:30"
+            },
+            {
+              "uz": "tushdan keyin 2:30",
+              "ru": "2:30 дня",
+              "tj": "баъди нисфирӯзӣ 2:30"
+            },
+            {
+              "uz": "kechqurun 9:10",
+              "ru": "9:10 вечера",
+              "tj": "шом 9:10"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "下午两点半 (xiàwǔ liǎng diǎn bàn) — tushdan keyin 2:30. Aniq soatni 点 va 分 bilan aytiladi. 早上、上午、下午、晚上 kabi vaqt otlari kunning vaqt oralig‘ini bildiradi va aniq soat oldidan kelishi mumkin.",
+            "ru": "下午两点半 (xiàwǔ liǎng diǎn bàn) — 2:30 дня. Точное время выражается с 点 и 分. Слова 早上、上午、下午、晚上 обозначают части дня и могут стоять перед конкретным временем.",
+            "tj": "下午两点半 (xiàwǔ liǎng diǎn bàn) — баъди нисфирӯзӣ 2:30. Вақти дақиқ бо 点 ва 分 ифода мешавад. 早上、上午、下午、晚上 қисми рӯзро нишон медиҳанд ва пеш аз вақти дақиқ омада метавонанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Boshqa misolda qayta sinash",
+        "ru": "Другой пример",
+        "tj": "Мисоли дигар барои санҷиш"
+      },
+      "section_purpose": "learning_repair_bank",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_07_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Boshqa so'zni tinglang",
+            "ru": "Послушайте другое слово",
+            "tj": "Калимаи дигарро гӯш кунед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "现在",
+          "audio_pinyin": "xiànzài",
+          "options": [
+            "现在",
+            "早上",
+            "分",
+            "课"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "现在 (xiànzài) — hozir. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "现在 (xiànzài) — сейчас. Сравните звучание с другими словами.",
+            "tj": "现在 (xiànzài) — ҳозир. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_07_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Yangi jumlani tushuning",
+            "ru": "Поймите другое предложение",
+            "tj": "Ҷумлаи дигарро фаҳмед"
+          },
+          "prompt": {
+            "uz": "“晚上九点十分” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «晚上九点十分».",
+            "tj": "Тарҷумаи ҷумлаи «晚上九点十分»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "ertalab 9:30",
+              "ru": "9:30 утра",
+              "tj": "субҳ 9:30"
+            },
+            {
+              "uz": "tushdan keyin 2:30",
+              "ru": "2:30 дня",
+              "tj": "баъди нисфирӯзӣ 2:30"
+            },
+            {
+              "uz": "kechqurun 9:10",
+              "ru": "9:10 вечера",
+              "tj": "шом 9:10"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "晚上九点十分 (wǎnshang jiǔ diǎn shí fēn) — kechqurun 9:10. Aniq soatni 点 va 分 bilan aytiladi. 早上、上午、下午、晚上 kabi vaqt otlari kunning vaqt oralig‘ini bildiradi va aniq soat oldidan kelishi mumkin.",
+            "ru": "晚上九点十分 (wǎnshang jiǔ diǎn shí fēn) — 9:10 вечера. Точное время выражается с 点 и 分. Слова 早上、上午、下午、晚上 обозначают части дня и могут стоять перед конкретным временем.",
+            "tj": "晚上九点十分 (wǎnshang jiǔ diǎn shí fēn) — шом 9:10. Вақти дақиқ бо 点 ва 分 ифода мешавад. 早上、上午、下午、晚上 қисми рӯзро нишон медиҳанд ва пеш аз вақти дақиқ омада метавонанд."
+          }
+        }
+      ]
     }
   ]
 }

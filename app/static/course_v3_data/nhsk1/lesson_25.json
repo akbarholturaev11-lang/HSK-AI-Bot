@@ -1144,6 +1144,166 @@
           }
         }
       ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mustaqil bilim tekshiruvi",
+        "ru": "Проверка знаний",
+        "tj": "Санҷиши мустақили дониш"
+      },
+      "section_purpose": "learning_exit_check",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_04_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Tinglab taniy olasizmi?",
+            "ru": "Узнайте слово на слух",
+            "tj": "Калимаро аз шунидан шиносед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "有",
+          "audio_pinyin": "yǒu",
+          "options": [
+            "有",
+            "个",
+            "呢",
+            "没有"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "有 (yǒu) — bor; ega bo‘lmoq. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "有 (yǒu) — иметь; есть. Сравните звучание с другими словами.",
+            "tj": "有 (yǒu) — доштан; ҳаст. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_04_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Jumlani tushundingizmi?",
+            "ru": "Проверьте понимание",
+            "tj": "Ҷумларо фаҳмидед?"
+          },
+          "prompt": {
+            "uz": "“她没有一个姐姐。” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «她没有一个姐姐。».",
+            "tj": "Тарҷумаи ҷумлаи «她没有一个姐姐。»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Uning yigirmata talabasi bor.",
+              "ru": "У неё двадцать студентов.",
+              "tj": "Ӯ бист донишҷӯ дорад."
+            },
+            {
+              "uz": "Uning opasi yo‘q.",
+              "ru": "У неё нет старшей сестры.",
+              "tj": "Ӯ хоҳари калон надорад."
+            },
+            {
+              "uz": "Mening opam yo‘q.",
+              "ru": "У меня нет старшей сестры.",
+              "tj": "Ман хоҳари калон надорам."
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "她没有一个姐姐。 (Tā méiyǒu yí ge jiějie.) — Uning opasi yo‘q.. “有” egalik yoki mavjudlikni bildiradi. Inkor shakli: 没/没有.",
+            "ru": "她没有一个姐姐。 (Tā méiyǒu yí ge jiějie.) — У неё нет старшей сестры.. “有” выражает наличие/обладание. Отрицание: 没/没有.",
+            "tj": "她没有一个姐姐。 (Tā méiyǒu yí ge jiějie.) — Ӯ хоҳари калон надорад.. “有” соҳибият ё мавҷудиятро ифода мекунад. Инкор: 没/没有."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Boshqa misolda qayta sinash",
+        "ru": "Другой пример",
+        "tj": "Мисоли дигар барои санҷиш"
+      },
+      "section_purpose": "learning_repair_bank",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_04_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Boshqa so'zni tinglang",
+            "ru": "Послушайте другое слово",
+            "tj": "Калимаи дигарро гӯш кунед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "个",
+          "audio_pinyin": "gè",
+          "options": [
+            "有",
+            "个",
+            "呢",
+            "没有"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "个 (gè) — umumiy o‘lchov so‘zi. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "个 (gè) — универсальное счётное слово. Сравните звучание с другими словами.",
+            "tj": "个 (gè) — воҳиди умумии ҳисоб. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_04_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Yangi jumlani tushuning",
+            "ru": "Поймите другое предложение",
+            "tj": "Ҷумлаи дигарро фаҳмед"
+          },
+          "prompt": {
+            "uz": "“我没/没有姐姐。” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «我没/没有姐姐。».",
+            "tj": "Тарҷумаи ҷумлаи «我没/没有姐姐。»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Uning yigirmata talabasi bor.",
+              "ru": "У неё двадцать студентов.",
+              "tj": "Ӯ бист донишҷӯ дорад."
+            },
+            {
+              "uz": "Uning opasi yo‘q.",
+              "ru": "У неё нет старшей сестры.",
+              "tj": "Ӯ хоҳари калон надорад."
+            },
+            {
+              "uz": "Mening opam yo‘q.",
+              "ru": "У меня нет старшей сестры.",
+              "tj": "Ман хоҳари калон надорам."
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "我没/没有姐姐。 (Wǒ méi/méiyǒu jiějie.) — Mening opam yo‘q.. “有” egalik yoki mavjudlikni bildiradi. Inkor shakli: 没/没有.",
+            "ru": "我没/没有姐姐。 (Wǒ méi/méiyǒu jiějie.) — У меня нет старшей сестры.. “有” выражает наличие/обладание. Отрицание: 没/没有.",
+            "tj": "我没/没有姐姐。 (Wǒ méi/méiyǒu jiějie.) — Ман хоҳари калон надорам.. “有” соҳибият ё мавҷудиятро ифода мекунад. Инкор: 没/没有."
+          }
+        }
+      ]
     }
   ]
 }

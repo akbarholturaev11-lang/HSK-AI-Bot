@@ -1,0 +1,76 @@
+name: HSK 3.0 N1 Learning Contract
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/hsk30-nhsk1-quality.yml"
+      - "scripts/hsk30/verify_nhsk1_learning_contract.py"
+      - "scripts/hsk30/apply_learning_overlays.py"
+      - "scripts/hsk30/build_nhsk1_source_assessment.py"
+      - "scripts/hsk30/test_nhsk1_miniapp_retry.cjs"
+      - "scripts/hsk30/learning_overlays/nhsk1_lesson_01*.json"
+      - "scripts/gen_course_v3_from_seed.py"
+      - "android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonViewModel.kt"
+      - "android/app/src/test/java/com/pomp/hskai/feature/lesson/N1ConditionalRetryTest.kt"
+      - "android/app/src/test/java/com/pomp/hskai/data/lesson/N1CheckpointContractTest.kt"
+      - "tests/test_nhsk1_learning_contract.py"
+      - "app/static/course_v3_data/nhsk1/**"
+      - "app/static/course_v3_data/nhsk1.json"
+  push:
+    branches:
+      - codex/hsk30-n1-quality-foundation
+    paths:
+      - ".github/workflows/hsk30-nhsk1-quality.yml"
+      - "scripts/hsk30/verify_nhsk1_learning_contract.py"
+      - "scripts/hsk30/apply_learning_overlays.py"
+      - "scripts/hsk30/build_nhsk1_source_assessment.py"
+      - "scripts/hsk30/test_nhsk1_miniapp_retry.cjs"
+      - "scripts/hsk30/learning_overlays/nhsk1_lesson_01*.json"
+      - "scripts/gen_course_v3_from_seed.py"
+      - "android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonViewModel.kt"
+      - "android/app/src/test/java/com/pomp/hskai/feature/lesson/N1ConditionalRetryTest.kt"
+      - "android/app/src/test/java/com/pomp/hskai/data/lesson/N1CheckpointContractTest.kt"
+      - "tests/test_nhsk1_learning_contract.py"
+      - "app/static/course_v3_data/nhsk1/**"
+      - "app/static/course_v3_data/nhsk1.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-n1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Python syntax
+        run: python -m py_compile scripts/hsk30/verify_nhsk1_learning_contract.py tests/test_nhsk1_learning_contract.py
+      - name: Learning contract unit tests
+        run: python -m unittest discover -s tests -p test_nhsk1_learning_contract.py -v
+      - name: Validate original N1 textbook source
+        run: python scripts/hsk30/verify_nhsk1_source.py
+      - name: Verify every N1 source checkpoint survives regeneration
+        run: |
+          python scripts/gen_course_v3_from_seed.py --track hsk30 --level nhsk1 --no-maps
+          git diff --exit-code -- app/static/course_v3_data/nhsk1/
+      - name: Check Mini App JavaScript syntax
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+          blocks = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", html, flags=re.I | re.S)
+          Path("/tmp/nhsk1-course-v3.js").write_text("\n".join(blocks), encoding="utf-8")
+          PY
+          node --check /tmp/nhsk1-course-v3.js
+      - name: Verify Mini App conditional retry behavior
+        run: node scripts/hsk30/test_nhsk1_miniapp_retry.cjs
+      - name: Validate N1 Course V3 delivery contract
+        run: python scripts/hsk30/verify_nhsk1_learning_contract.py

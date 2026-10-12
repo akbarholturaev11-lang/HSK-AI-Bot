@@ -985,6 +985,166 @@
           }
         }
       ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mustaqil bilim tekshiruvi",
+        "ru": "Проверка знаний",
+        "tj": "Санҷиши мустақили дониш"
+      },
+      "section_purpose": "learning_exit_check",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_09_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Tinglab taniy olasizmi?",
+            "ru": "Узнайте слово на слух",
+            "tj": "Калимаро аз шунидан шиносед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "家",
+          "audio_pinyin": "jiā",
+          "options": [
+            "前边",
+            "家",
+            "外边",
+            "椅子"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "家 (jiā) — tashkilot/korxona uchun o‘lchov so‘zi. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "家 (jiā) — счётное слово для семей/предприятий. Сравните звучание с другими словами.",
+            "tj": "家 (jiā) — воҳиди ҳисоб барои оила/корхона. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_09_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Jumlani tushundingizmi?",
+            "ru": "Проверьте понимание",
+            "tj": "Ҷумларо фаҳмидед?"
+          },
+          "prompt": {
+            "uz": "“学校前边有一家电影院。” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «学校前边有一家电影院。».",
+            "tj": "Тарҷумаи ҷумлаи «学校前边有一家电影院。»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Maktab oldida bitta kinoteatr bor.",
+              "ru": "Перед школой есть кинотеатр.",
+              "tj": "Пеши мактаб як кинотеатр ҳаст."
+            },
+            {
+              "uz": "Kinoteatr oldida supermarket bor.",
+              "ru": "Перед кинотеатром находится супермаркет.",
+              "tj": "Пеши кинотеатр як супермаркет аст."
+            },
+            {
+              "uz": "Stol ustida mushuk yo‘q.",
+              "ru": "На столе нет котёнка.",
+              "tj": "Рӯйи миз гурба нест."
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "学校前边有一家电影院。 (Xuéxiào qiánbian yǒu yì jiā diànyǐngyuàn.) — Maktab oldida bitta kinoteatr bor.. Mavjudlik gapi biror joyda kimdir yoki nimadir borligini bildiradi va odatda “有” yoki “是” bilan tuziladi. “有” inkor qilinganda obyekt oldida son+o‘lchov birikmasi kelmaydi.",
+            "ru": "学校前边有一家电影院。 (Xuéxiào qiánbian yǒu yì jiā diànyǐngyuàn.) — Перед школой есть кинотеатр.. Экзистенциальное предложение показывает наличие кого-либо или чего-либо в определённом месте и обычно строится с “有” или “是”. При отрицании с “有” перед объектом не ставится числительно-счётная группа.",
+            "tj": "学校前边有一家电影院。 (Xuéxiào qiánbian yǒu yì jiā diànyǐngyuàn.) — Пеши мактаб як кинотеатр ҳаст.. Ҷумлаи мавҷудият будани шахс ё чизро дар ҷойи муайян нишон медиҳад ва одатан бо “有” ё “是” сохта мешавад. Ҳангоми инкори “有” пеш аз объект таркиби рақам+воҳиди ҳисоб намеояд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Boshqa misolda qayta sinash",
+        "ru": "Другой пример",
+        "tj": "Мисоли дигар барои санҷиш"
+      },
+      "section_purpose": "learning_repair_bank",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_09_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Boshqa so'zni tinglang",
+            "ru": "Послушайте другое слово",
+            "tj": "Калимаи дигарро гӯш кунед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "外边",
+          "audio_pinyin": "wàibian",
+          "options": [
+            "前边",
+            "家",
+            "外边",
+            "椅子"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "外边 (wàibian) — tashqarida; tashqi tomon. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "外边 (wàibian) — снаружи; внешняя сторона. Сравните звучание с другими словами.",
+            "tj": "外边 (wàibian) — берун; тарафи берун. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_09_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Yangi jumlani tushuning",
+            "ru": "Поймите другое предложение",
+            "tj": "Ҷумлаи дигарро фаҳмед"
+          },
+          "prompt": {
+            "uz": "“电影院前边是一家超市。” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «电影院前边是一家超市。».",
+            "tj": "Тарҷумаи ҷумлаи «电影院前边是一家超市。»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Maktab oldida bitta kinoteatr bor.",
+              "ru": "Перед школой есть кинотеатр.",
+              "tj": "Пеши мактаб як кинотеатр ҳаст."
+            },
+            {
+              "uz": "Kinoteatr oldida supermarket bor.",
+              "ru": "Перед кинотеатром находится супермаркет.",
+              "tj": "Пеши кинотеатр як супермаркет аст."
+            },
+            {
+              "uz": "Stol ustida mushuk yo‘q.",
+              "ru": "На столе нет котёнка.",
+              "tj": "Рӯйи миз гурба нест."
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "电影院前边是一家超市。 (Diànyǐngyuàn qiánbian shì yì jiā chāoshì.) — Kinoteatr oldida supermarket bor.. Mavjudlik gapi biror joyda kimdir yoki nimadir borligini bildiradi va odatda “有” yoki “是” bilan tuziladi. “有” inkor qilinganda obyekt oldida son+o‘lchov birikmasi kelmaydi.",
+            "ru": "电影院前边是一家超市。 (Diànyǐngyuàn qiánbian shì yì jiā chāoshì.) — Перед кинотеатром находится супермаркет.. Экзистенциальное предложение показывает наличие кого-либо или чего-либо в определённом месте и обычно строится с “有” или “是”. При отрицании с “有” перед объектом не ставится числительно-счётная группа.",
+            "tj": "电影院前边是一家超市。 (Diànyǐngyuàn qiánbian shì yì jiā chāoshì.) — Пеши кинотеатр як супермаркет аст.. Ҷумлаи мавҷудият будани шахс ё чизро дар ҷойи муайян нишон медиҳад ва одатан бо “有” ё “是” сохта мешавад. Ҳангоми инкори “有” пеш аз объект таркиби рақам+воҳиди ҳисоб намеояд."
+          }
+        }
+      ]
     }
   ]
 }

@@ -1023,6 +1023,166 @@
           }
         }
       ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mustaqil bilim tekshiruvi",
+        "ru": "Проверка знаний",
+        "tj": "Санҷиши мустақили дониш"
+      },
+      "section_purpose": "learning_exit_check",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_12_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Tinglab taniy olasizmi?",
+            "ru": "Узнайте слово на слух",
+            "tj": "Калимаро аз шунидан шиносед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "天气",
+          "audio_pinyin": "tiānqì",
+          "options": [
+            "天气",
+            "天",
+            "了",
+            "雨"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "天气 (tiānqì) — ob-havo. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "天气 (tiānqì) — погода. Сравните звучание с другими словами.",
+            "tj": "天气 (tiānqì) — обу ҳаво. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_12_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Jumlani tushundingizmi?",
+            "ru": "Проверьте понимание",
+            "tj": "Ҷумларо фаҳмидед?"
+          },
+          "prompt": {
+            "uz": "“下雨了。” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «下雨了。».",
+            "tj": "Тарҷумаи ҷумлаи «下雨了。»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Yomg‘ir yog‘di.",
+              "ru": "Пошёл дождь.",
+              "tj": "Борон борид."
+            },
+            {
+              "uz": "Qor yog‘di.",
+              "ru": "Пошёл снег.",
+              "tj": "Барф борид."
+            },
+            {
+              "uz": "Juda chiroyli!",
+              "ru": "Очень красиво!",
+              "tj": "Хеле зебо!"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "下雨了。 (Xià yǔ le.) — Yomg‘ir yog‘di.. Bunday gap so‘z yoki iboradan tuziladi, ega va kesimga ajratilmaydi va og‘zaki nutqda ko‘p ishlatiladi.",
+            "ru": "下雨了。 (Xià yǔ le.) — Пошёл дождь.. Такие предложения состоят из слова или словосочетания без чёткого подлежащего и сказуемого и часто употребляются в разговорной речи.",
+            "tj": "下雨了。 (Xià yǔ le.) — Борон борид.. Ин гуна ҷумла аз калима ё ибора сохта шуда, мубтадо ва хабар ба таври равшан ҷудо намешаванд ва дар гуфтор бисёр истифода мешаванд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Boshqa misolda qayta sinash",
+        "ru": "Другой пример",
+        "tj": "Мисоли дигар барои санҷиш"
+      },
+      "section_purpose": "learning_repair_bank",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_12_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Boshqa so'zni tinglang",
+            "ru": "Послушайте другое слово",
+            "tj": "Калимаи дигарро гӯш кунед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "天",
+          "audio_pinyin": "tiān",
+          "options": [
+            "天气",
+            "天",
+            "了",
+            "雨"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "天 (tiān) — ob-havo; osmon. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "天 (tiān) — погода; небо. Сравните звучание с другими словами.",
+            "tj": "天 (tiān) — обу ҳаво; осмон. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_12_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Yangi jumlani tushuning",
+            "ru": "Поймите другое предложение",
+            "tj": "Ҷумлаи дигарро фаҳмед"
+          },
+          "prompt": {
+            "uz": "“下雪了。” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «下雪了。».",
+            "tj": "Тарҷумаи ҷумлаи «下雪了。»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Yomg‘ir yog‘di.",
+              "ru": "Пошёл дождь.",
+              "tj": "Борон борид."
+            },
+            {
+              "uz": "Qor yog‘di.",
+              "ru": "Пошёл снег.",
+              "tj": "Барф борид."
+            },
+            {
+              "uz": "Juda chiroyli!",
+              "ru": "Очень красиво!",
+              "tj": "Хеле зебо!"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "下雪了。 (Xià xuě le.) — Qor yog‘di.. Bunday gap so‘z yoki iboradan tuziladi, ega va kesimga ajratilmaydi va og‘zaki nutqda ko‘p ishlatiladi.",
+            "ru": "下雪了。 (Xià xuě le.) — Пошёл снег.. Такие предложения состоят из слова или словосочетания без чёткого подлежащего и сказуемого и часто употребляются в разговорной речи.",
+            "tj": "下雪了。 (Xià xuě le.) — Барф борид.. Ин гуна ҷумла аз калима ё ибора сохта шуда, мубтадо ва хабар ба таври равшан ҷудо намешаванд ва дар гуфтор бисёр истифода мешаванд."
+          }
+        }
+      ]
     }
   ]
 }

@@ -195,10 +195,11 @@
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "谢谢 — xièxie",
-            "ru": "谢谢 — xièxie",
-            "tj": "谢谢 — xièxie"
-          }
+            "uz": "谢谢 (xièxie) — «rahmat». Birinchi 谢 — to'rtinchi ohang; ikkinchisi odatda engil ohangda aytiladi.",
+            "ru": "谢谢 (xièxie) — «спасибо». Первый 谢 — четвёртый тон, второй обычно произносится нейтрально.",
+            "tj": "谢谢 (xièxie) — «раҳмат». 谢-и аввал оҳанги чорум, дуюм одатан оҳанги сабук дорад."
+          },
+          "learning_feedback": "n1_context_v1"
         },
         {
           "type": "active_word",
@@ -234,10 +235,11 @@
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "arzimaydi = 不客气 (bú kèqi)",
-            "ru": "не за что; пожалуйста = 不客气 (bú kèqi)",
-            "tj": "марҳамат; ҳеҷ гап не = 不客气 (bú kèqi)"
-          }
+            "uz": "不客气 (bú kèqi) — «arzimaydi». Birov 谢谢 (xièxie) — «rahmat» desa, shunday javob berish mumkin.",
+            "ru": "不客气 (bú kèqi) — «не за что». Так можно ответить на 谢谢 (xièxie) — «спасибо».",
+            "tj": "不客气 (bú kèqi) — «ҳеҷ гап не». Ин ҷавоб ба 谢谢 (xièxie) — «раҳмат» аст."
+          },
+          "learning_feedback": "n1_context_v1"
         },
         {
           "type": "active_word",
@@ -335,10 +337,11 @@
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "再见 = xayr; ko'rishguncha (zàijiàn)",
-            "ru": "再见 = до свидания (zàijiàn)",
-            "tj": "再见 = хайр; то боздид (zàijiàn)"
-          }
+            "uz": "再见 (zàijiàn) — xayrlashishda «ko'rishguncha»; 你好 (nǐ hǎo) esa uchrashgandagi salom.",
+            "ru": "再见 (zàijiàn) — «до свидания» при расставании; 你好 (nǐ hǎo) — приветствие при встрече.",
+            "tj": "再见 (zàijiàn) — «хайр» ҳангоми ҷудошавӣ; 你好 (nǐ hǎo) — салом ҳангоми вохӯрӣ."
+          },
+          "learning_feedback": "n1_context_v1"
         },
         {
           "type": "hanzi_choice",
@@ -464,10 +467,11 @@
             ]
           },
           "explanation": {
-            "uz": "同学们，再见！ — Talabalar, xayr!",
-            "ru": "同学们，再见！ — Студенты, до свидания!",
-            "tj": "同学们，再见！ — Донишҷӯён, хайр!"
-          }
+            "uz": "同学们，再见！(Tóngxuémen, zàijiàn!) — «Talabalar, xayr!». 们 ko'plikni, 再见 xayrlashishni bildiradi.",
+            "ru": "同学们，再见！(Tóngxuémen, zàijiàn!) — «Студенты, до свидания!». 们 обозначает множественное число, 再见 — прощание.",
+            "tj": "同学们，再见！(Tóngxuémen, zàijiàn!) — «Донишҷӯён, хайр!». 们 ҷамъро, 再见 хайрбодро нишон медиҳад."
+          },
+          "learning_feedback": "n1_context_v1"
         },
         {
           "type": "listening_choice",
@@ -533,10 +537,11 @@
             "再见"
           ],
           "explanation": {
-            "uz": "同学们，再见！ — Tóngxuémen, zàijiàn!",
-            "ru": "同学们，再见！ — Tóngxuémen, zàijiàn!",
-            "tj": "同学们，再见！ — Tóngxuémen, zàijiàn!"
-          }
+            "uz": "同学 + 们 = 同学们 («talabalar»); so'ng 再见 («xayr»). 们 so'zi 同学 dan keyin keladi.",
+            "ru": "同学 + 们 = 同学们 («студенты»); затем 再见 («до свидания»). Суффикс 们 идёт после 同学.",
+            "tj": "同学 + 们 = 同学们 («донишҷӯён»); баъд 再见 («хайр»). 们 пас аз 同学 меояд."
+          },
+          "learning_feedback": "n1_context_v1"
         },
         {
           "type": "pronunciation",
@@ -595,9 +600,9 @@
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "您 = Siz (hurmat shakli) (nín)",
-            "ru": "您 = Вы (уважительная форма) (nín)",
-            "tj": "您 = Шумо (шакли эҳтиромӣ) (nín)"
+            "uz": "您 (nín) — bir kishiga hurmat bilan murojaat. Masalan: 老师，您好！(Lǎoshī, nín hǎo!)",
+            "ru": "您 (nín) — вежливое обращение к одному человеку: 老师，您好！(Lǎoshī, nín hǎo!)",
+            "tj": "您 (nín) — муроҷиати эҳтиромӣ ба як нафар: 老师，您好！(Lǎoshī, nín hǎo!)"
           },
           "review_mix": true,
           "review_origin": "previous",
@@ -609,7 +614,8 @@
               "ru": "Вы (уважительная форма)",
               "tj": "Шумо (шакли эҳтиромӣ)"
             }
-          }
+          },
+          "learning_feedback": "n1_context_v1"
         },
         {
           "type": "translation_choice",

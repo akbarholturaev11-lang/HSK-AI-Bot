@@ -1012,6 +1012,166 @@
           }
         }
       ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mustaqil bilim tekshiruvi",
+        "ru": "Проверка знаний",
+        "tj": "Санҷиши мустақили дониш"
+      },
+      "section_purpose": "learning_exit_check",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_08_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Tinglab taniy olasizmi?",
+            "ru": "Узнайте слово на слух",
+            "tj": "Калимаро аз шунидан шиносед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "房间",
+          "audio_pinyin": "fángjiān",
+          "options": [
+            "房间",
+            "只",
+            "猫",
+            "没"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "房间 (fángjiān) — xona. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "房间 (fángjiān) — комната. Сравните звучание с другими словами.",
+            "tj": "房间 (fángjiān) — ҳуҷра. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_08_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Jumlani tushundingizmi?",
+            "ru": "Проверьте понимание",
+            "tj": "Ҷумларо фаҳмидед?"
+          },
+          "prompt": {
+            "uz": "“小雪的手机在桌子上呢。” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «小雪的手机在桌子上呢。».",
+            "tj": "Тарҷумаи ҷумлаи «小雪的手机在桌子上呢。»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Xona ichida kichik mushuk bor.",
+              "ru": "В комнате есть котёнок.",
+              "tj": "Дар ҳуҷра як гурбачаи хурд ҳаст."
+            },
+            {
+              "uz": "Kitob do‘koni tashqarisiga boraylik.",
+              "ru": "Давай пойдём к книжному магазину снаружи.",
+              "tj": "Биёед ба беруни мағозаи китоб равем."
+            },
+            {
+              "uz": "Xiaoxuening telefoni stol ustida.",
+              "ru": "Телефон Сяосюэ на столе.",
+              "tj": "Телефони Сяосюэ рӯйи миз аст."
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "小雪的手机在桌子上呢。 (Xiǎoxuě de shǒujī zài zhuōzi shàng ne.) — Xiaoxuening telefoni stol ustida.. Bu bosqichda joy va yo‘nalishni ifodalovchi 上、下、里、前、后、外、外边 o‘rganiladi.",
+            "ru": "小雪的手机在桌子上呢。 (Xiǎoxuě de shǒujī zài zhuōzi shàng ne.) — Телефон Сяосюэ на столе.. В этом уровне изучаются слова местоположения 上、下、里、前、后、外、外边.",
+            "tj": "小雪的手机在桌子上呢。 (Xiǎoxuě de shǒujī zài zhuōzi shàng ne.) — Телефони Сяосюэ рӯйи миз аст.. Дар ин сатҳ калимаҳои мавқеи 上、下、里、前、后、外、外边 омӯхта мешаванд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Boshqa misolda qayta sinash",
+        "ru": "Другой пример",
+        "tj": "Мисоли дигар барои санҷиш"
+      },
+      "section_purpose": "learning_repair_bank",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_08_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Boshqa so'zni tinglang",
+            "ru": "Послушайте другое слово",
+            "tj": "Калимаи дигарро гӯш кунед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "只",
+          "audio_pinyin": "zhī",
+          "options": [
+            "房间",
+            "只",
+            "猫",
+            "没"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "只 (zhī) — hayvonlar uchun o‘lchov so‘zi. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "只 (zhī) — счётное слово для животных. Сравните звучание с другими словами.",
+            "tj": "只 (zhī) — воҳиди ҳисоб барои ҳайвонот. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_08_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Yangi jumlani tushuning",
+            "ru": "Поймите другое предложение",
+            "tj": "Ҷумлаи дигарро фаҳмед"
+          },
+          "prompt": {
+            "uz": "“房间里有一只小猫。” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «房间里有一只小猫。».",
+            "tj": "Тарҷумаи ҷумлаи «房间里有一只小猫。»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Xona ichida kichik mushuk bor.",
+              "ru": "В комнате есть котёнок.",
+              "tj": "Дар ҳуҷра як гурбачаи хурд ҳаст."
+            },
+            {
+              "uz": "Kitob do‘koni tashqarisiga boraylik.",
+              "ru": "Давай пойдём к книжному магазину снаружи.",
+              "tj": "Биёед ба беруни мағозаи китоб равем."
+            },
+            {
+              "uz": "Xiaoxuening telefoni stol ustida.",
+              "ru": "Телефон Сяосюэ на столе.",
+              "tj": "Телефони Сяосюэ рӯйи миз аст."
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "房间里有一只小猫。 (Fángjiān lǐ yǒu yì zhī xiǎomāo.) — Xona ichida kichik mushuk bor.. Bu bosqichda joy va yo‘nalishni ifodalovchi 上、下、里、前、后、外、外边 o‘rganiladi.",
+            "ru": "房间里有一只小猫。 (Fángjiān lǐ yǒu yì zhī xiǎomāo.) — В комнате есть котёнок.. В этом уровне изучаются слова местоположения 上、下、里、前、后、外、外边.",
+            "tj": "房间里有一只小猫。 (Fángjiān lǐ yǒu yì zhī xiǎomāo.) — Дар ҳуҷра як гурбачаи хурд ҳаст.. Дар ин сатҳ калимаҳои мавқеи 上、下、里、前、后、外、外边 омӯхта мешаванд."
+          }
+        }
+      ]
     }
   ]
 }

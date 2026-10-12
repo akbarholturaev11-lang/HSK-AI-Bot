@@ -1019,6 +1019,166 @@
           }
         }
       ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mustaqil bilim tekshiruvi",
+        "ru": "Проверка знаний",
+        "tj": "Санҷиши мустақили дониш"
+      },
+      "section_purpose": "learning_exit_check",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_10_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Tinglab taniy olasizmi?",
+            "ru": "Узнайте слово на слух",
+            "tj": "Калимаро аз шунидан шиносед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "这些",
+          "audio_pinyin": "zhèxiē",
+          "options": [
+            "杯子",
+            "这边",
+            "这些",
+            "块"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "这些 (zhèxiē) — bular. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "这些 (zhèxiē) — эти. Сравните звучание с другими словами.",
+            "tj": "这些 (zhèxiē) — инҳо. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_10_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Jumlani tushundingizmi?",
+            "ru": "Проверьте понимание",
+            "tj": "Ҷумларо фаҳмидед?"
+          },
+          "prompt": {
+            "uz": "“六块零两分” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «六块零两分».",
+            "tj": "Тарҷумаи ҷумлаи «六块零两分»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "3 yuan 2 mao",
+              "ru": "3 юаня 2 мао",
+              "tj": "3 юан 2 мао"
+            },
+            {
+              "uz": "6 yuan 2 fen",
+              "ru": "6 юаней 2 фэня",
+              "tj": "6 юан 2 фэн"
+            },
+            {
+              "uz": "202 yuan 2 mao",
+              "ru": "202 юаня 2 мао",
+              "tj": "202 юан 2 мао"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "六块零两分 (liù kuài líng liǎng fēn) — 6 yuan 2 fen. RMB birliklari kattadan kichikka 元、角、分; og‘zaki nutqda 元 ko‘pincha 块, 角 esa 毛 deyiladi.",
+            "ru": "六块零两分 (liù kuài líng liǎng fēn) — 6 юаней 2 фэня. Единицы RMB от крупной к мелкой: 元、角、分; в разговорной речи 元 часто называют 块, а 角 — 毛.",
+            "tj": "六块零两分 (liù kuài líng liǎng fēn) — 6 юан 2 фэн. Воҳидҳои RMB аз калон ба хурд 元、角、分 мебошанд; дар гуфтор 元-ро 块 ва 角-ро 毛 мегӯянд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Boshqa misolda qayta sinash",
+        "ru": "Другой пример",
+        "tj": "Мисоли дигар барои санҷиш"
+      },
+      "section_purpose": "learning_repair_bank",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_10_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Boshqa so'zni tinglang",
+            "ru": "Послушайте другое слово",
+            "tj": "Калимаи дигарро гӯш кунед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "块",
+          "audio_pinyin": "kuài",
+          "options": [
+            "杯子",
+            "这边",
+            "这些",
+            "块"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "块 (kuài) — yuan uchun og‘zaki hisob birligi. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "块 (kuài) — разг. счётная единица юаня. Сравните звучание с другими словами.",
+            "tj": "块 (kuài) — воҳиди гуфтугӯии юан. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_10_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Yangi jumlani tushuning",
+            "ru": "Поймите другое предложение",
+            "tj": "Ҷумлаи дигарро фаҳмед"
+          },
+          "prompt": {
+            "uz": "“二百零二块两毛” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «二百零二块两毛».",
+            "tj": "Тарҷумаи ҷумлаи «二百零二块两毛»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "3 yuan 2 mao",
+              "ru": "3 юаня 2 мао",
+              "tj": "3 юан 2 мао"
+            },
+            {
+              "uz": "6 yuan 2 fen",
+              "ru": "6 юаней 2 фэня",
+              "tj": "6 юан 2 фэн"
+            },
+            {
+              "uz": "202 yuan 2 mao",
+              "ru": "202 юаня 2 мао",
+              "tj": "202 юан 2 мао"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "二百零二块两毛 (èrbǎi líng èr kuài liǎng máo) — 202 yuan 2 mao. RMB birliklari kattadan kichikka 元、角、分; og‘zaki nutqda 元 ko‘pincha 块, 角 esa 毛 deyiladi.",
+            "ru": "二百零二块两毛 (èrbǎi líng èr kuài liǎng máo) — 202 юаня 2 мао. Единицы RMB от крупной к мелкой: 元、角、分; в разговорной речи 元 часто называют 块, а 角 — 毛.",
+            "tj": "二百零二块两毛 (èrbǎi líng èr kuài liǎng máo) — 202 юан 2 мао. Воҳидҳои RMB аз калон ба хурд 元、角、分 мебошанд; дар гуфтор 元-ро 块 ва 角-ро 毛 мегӯянд."
+          }
+        }
+      ]
     }
   ]
 }
