@@ -10814,3 +10814,18 @@ Safety:
 
 Follow-up:
 - Review pedagogy and translations in a real lesson, refresh caches for content updates, then design stable question identities and adaptive retry before adding/removing question cards.
+
+### 2026-10-12 — Adapt N1 daily plan to lesson errors (draft PR #142)
+
+Changed:
+- Enabled HSK 3.0 `nhsk1/2/3` server-side canonical lesson mistake refs (strict checked-in answer verification remains).
+- Split learning-plan weakness and mistake totals by HSK 2.0 vs HSK 3.0; classify listening recognition from canonical material format, not pronunciation category.
+- Prioritized available N1 mistake review in `DailyPlanService` behind the course task. Locked tasks remain unissuable, plan stays stable for the local day.
+- Added tests for N1 exit/retry canonical recording, forged material rejection, track isolation, listening labels, N1 plan priority and unavailable features. Backend targeted CI now executes these tests.
+
+Safety:
+- No new database schema, API task type, Android native UI element, billing, trial or limit path changed.
+- Same-day stored plan remains frozen by design; new evidence affects the next generated daily plan.
+
+Follow-up:
+- Add per-objective correct/incorrect mastery and word-SRS due information only after designing append-only user event storage and new tracking tests.
