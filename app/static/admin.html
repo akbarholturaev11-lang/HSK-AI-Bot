@@ -8,23 +8,23 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root{
-      --bg:#0f1216;
-      --bg-soft:#161b22;
-      --surface:#1b212b;
-      --surface-2:#232b37;
-      --ink:#f3f6fb;
-      --muted:#97a3b6;
-      --line:#2b3340;
-      --line-soft:#222a35;
-      --accent:#3b82f6;
-      --accent-soft:rgba(59,130,246,.16);
-      --green:#34d399;
+      --bg:#0c1118;
+      --bg-soft:#0f151e;
+      --surface:#151e2a;
+      --surface-2:#1c2937;
+      --ink:#edf1f6;
+      --muted:#94a3b5;
+      --line:#293543;
+      --line-soft:#202c39;
+      --accent:#e65d4f;
+      --accent-soft:rgba(230,93,79,.12);
+      --green:#69c5a3;
       --green-soft:rgba(52,211,153,.14);
-      --amber:#fbbf24;
+      --amber:#e4b469;
       --amber-soft:rgba(251,191,36,.14);
-      --red:#fb7185;
+      --red:#ef8075;
       --red-soft:rgba(251,113,133,.14);
-      --violet:#a78bfa;
+      --violet:#b5a4d5;
       --violet-soft:rgba(167,139,250,.14);
       --radius:14px;
       --radius-sm:10px;
@@ -268,31 +268,244 @@
     .toast{position:fixed;left:14px;right:14px;bottom:calc(86px + var(--safe-bottom));z-index:100;background:var(--ink);color:#0f1216;border-radius:12px;padding:13px 15px;font-size:13px;font-weight:850;box-shadow:var(--shadow);opacity:0;visibility:hidden;transform:translateY(24px);transition:opacity .2s,transform .2s,visibility .2s}
     .toast.show{opacity:1;visibility:visible;transform:translateY(0)}
     .empty{color:var(--muted);font-size:12.5px;padding:14px;text-align:center}
-    /* Desktop / Mac */
-    @media (min-width:860px){
-      body{padding:0;overflow:hidden}
-      .app{grid-template-columns:280px minmax(0,1fr);grid-template-rows:1fr;height:var(--app-h);overflow:hidden}
-      .topbar{height:var(--app-h);border-bottom:0;border-right:1px solid var(--line);position:static;display:grid;grid-template-rows:auto auto 1fr;align-content:start;overflow:auto}
-      .topbar-inner{flex-direction:column;align-items:stretch;gap:14px;padding:22px}
-      .brand p{white-space:normal}
-      .top-actions{justify-content:space-between}
-      .tabs{position:static;grid-template-columns:1fr;gap:6px;padding:0 14px 16px;background:transparent;border:0;border-radius:0;box-shadow:none;backdrop-filter:none}
-      .tab{height:48px;flex-direction:row;justify-content:flex-start;gap:11px;padding:0 15px;font-size:13.5px;border-radius:12px}
-      .tab .ic{font-size:18px}
-      main{height:var(--app-h);overflow:auto;padding:26px 30px 40px}
+    /* Admin V2 presentation. Existing data and action hooks stay in place. */
+    :root{--admin-blue:#79aaf2;--admin-sub:#b7c2d0;--admin-sidebar:#0f151e}
+    body{padding:0}
+    button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--admin-blue);outline-offset:2px}
+    button:disabled{cursor:not-allowed}
+    .app{display:block;min-height:var(--app-h)}
+    .admin-sidebar{display:none}
+    .admin-workspace{min-width:0}
+    .admin-icon{display:block;flex:none;width:20px;height:20px}
+    .admin-chevron{width:14px;height:14px;flex:none;color:var(--muted);opacity:.45}
+    .admin-chevron .admin-icon{width:14px;height:14px}
+    [data-admin-icon]{display:inline-flex;align-items:center;justify-content:center}
+    .admin-topbar{height:calc(64px + var(--safe-top));position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:var(--safe-top) 16px 0;background:#0c1118;border-bottom:1px solid var(--line-soft)}
+    .admin-breadcrumb{display:none;align-items:center;gap:9px;color:var(--muted);font-size:12px;font-weight:650}
+    .admin-breadcrumb b{color:var(--ink)}
+    .admin-mobile-brand{display:flex;align-items:center;gap:5px;white-space:nowrap;font-weight:850;font-size:15px;letter-spacing:-.03em}
+    .admin-mobile-brand span{color:#f08879}
+    .admin-topbar .top-actions{gap:8px;flex:none}
+    .admin-search-open,.reload,.close{min-height:44px;min-width:44px;border:1px solid var(--line);border-radius:11px;background:var(--surface);color:var(--admin-sub);display:inline-flex;align-items:center;justify-content:center;gap:9px;flex:none}
+    .admin-search-open{width:44px;padding:0}
+    .admin-search-open>span:not([data-admin-icon]),.admin-search-open kbd{display:none}
+    .admin-search-open:hover,.reload:hover,.close:hover{background:var(--surface-2);color:var(--ink)}
+    .admin-search-open kbd{margin-left:auto;border:0;border-radius:5px;background:#252f3c;padding:3px 6px;color:#b4c0cf;font:inherit;font-size:10px}
+    .admin-workspace main{width:100%;max-width:1550px;min-width:0;margin:0 auto;padding:22px 16px calc(110px + var(--safe-bottom));overflow-x:clip}
+    .admin-page-head{display:block;margin-bottom:22px}
+    .admin-eyebrow{margin-bottom:9px;color:var(--accent);font-size:10px;font-weight:850;letter-spacing:.16em;text-transform:uppercase}
+    .admin-page-head h1{font-size:24px;line-height:1.12;letter-spacing:-.045em;font-weight:830;margin:0 0 8px}
+    .admin-page-head p{max-width:680px;color:var(--muted);font-size:13px;line-height:1.5}
+    .admin-page-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-start;margin-top:16px}
+    .admin-page-actions:empty{display:none}
+    .admin-page-actions .btn{white-space:nowrap}
+    #adminSubnav{display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line);margin:0 0 24px}
+    #adminSubnav::-webkit-scrollbar{display:none}
+    .admin-subbtn{flex:none;min-height:44px;padding:0 0 13px;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--muted);font-size:12px;font-weight:750;white-space:nowrap}
+    .admin-subbtn.active{border-bottom-color:var(--accent);color:var(--ink)}
+    .view.active{animation:fade .18s ease}
+    .tabs{left:9px;right:9px;bottom:calc(9px + var(--safe-bottom));height:64px;padding:5px;gap:0;z-index:30;background:#1b2632ed;border:1px solid #3a4654;border-radius:17px;box-shadow:0 15px 45px #0008}
+    .tab{min-width:0;height:52px;min-height:50px;gap:4px;border-radius:12px;color:#a8b6c5;font-size:9px;font-weight:760}
+    .tab .admin-icon{width:21px;height:21px}
+    .tab.active{background:#38323a;color:#fff}
+    .sec{margin-bottom:26px}
+    .sec-head{align-items:flex-start;gap:12px;margin:0 0 13px}
+    .sec-title{font-size:15px;letter-spacing:-.025em;font-weight:800}
+    .sec-note{font-size:11px;line-height:1.5}
+    .link-btn{min-height:44px;color:var(--admin-blue);font-size:11px;font-weight:750;white-space:normal;text-align:right}
+    .grid,.list{gap:11px}
+    .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .g3,.settings-grid,.frow.two{grid-template-columns:minmax(0,1fr)}
+    .stat{padding:15px;min-height:126px;justify-content:space-between;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+    .stat.good,.stat.warn,.stat.danger,.stat.info{background:var(--surface);border-color:var(--line)}
+    .stat .lab{font-size:11px;font-weight:650;text-transform:none;letter-spacing:0;color:var(--admin-sub);line-height:1.5}
+    .stat .val{font-size:26px;font-weight:850;letter-spacing:-.05em;line-height:1.12;margin:20px 0 5px}
+    .stat .sub{font-size:11px;line-height:1.45;font-weight:500;color:var(--muted)}
+    .block{padding:16px;border-radius:14px;margin-bottom:14px}
+    .block-head{align-items:flex-start;gap:10px;margin-bottom:17px}
+    .block-head h3{font-size:14px;font-weight:800;letter-spacing:-.02em}
+    .block-head p{font-size:11px;line-height:1.5;margin-top:5px}
+    .block-head .bi{background:#253241;color:#c6d7ec;border-radius:10px;width:34px;height:34px}
+    .block .stat,.mcard .stat{background:#131d29;min-height:120px}
+    .explain{background:#1a2532;border:1px solid var(--line);border-left:1px solid var(--line);padding:13px 14px;color:#b7c2d0;font-size:12px;line-height:1.65;border-radius:11px}
+    .explain b{color:var(--ink)}
+    .periods,.chips{gap:5px;flex-wrap:wrap;overflow-x:visible}
+    .period,.chip{height:auto;min-height:44px;padding:8px 12px;border-radius:9px;font-size:11px;font-weight:750;background:#161f2a;color:var(--muted)}
+    .period.active,.chip.active,.chip.on{background:#344152;border-color:#46586d;color:#fff}
+    .duration-presets .chip{height:auto;min-height:44px}
+    .toolbar{gap:8px;margin-bottom:16px}
+    .input,.select,.textarea,.nclang textarea{border-color:#344151;border-radius:10px;background:#101924;color:var(--ink);font-size:16px}
+    .input,.select{height:44px;min-height:44px;padding:0 12px}
+    .textarea{min-height:115px;padding:10px 12px;line-height:1.6}
+    .input::placeholder,.textarea::placeholder,.nclang textarea::placeholder{color:#7d8da3}
+    .input:focus,.select:focus,.textarea:focus,.nclang textarea:focus{border-color:var(--admin-blue);box-shadow:0 0 0 2px #79aaf21f}
+    .nclang textarea{font-size:16px;padding:10px 12px;line-height:1.6}
+    .frow{gap:7px;margin-bottom:13px}
+    .frow label,.nclang label{font-size:11px;font-weight:760;color:var(--admin-sub)}
+    .btn{height:auto;min-height:44px;padding:10px 15px;line-height:1.45;border:1px solid var(--accent);border-radius:10px;background:var(--accent);font-size:12px;font-weight:750}
+    .btn:hover{background:#ce5045;border-color:#ce5045}
+    .btn.sec{background:#1a2532;border-color:var(--line);color:var(--ink)}
+    .btn.sec:hover,.btn.ghost:hover{background:#243343;border-color:#3a4a5d}
+    .btn.ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+    .btn.danger{background:#4b282e;border-color:#754049;color:#ffc1c3}
+    .btn.danger:hover{background:#63343d;border-color:#99535e}
+    .btn .admin-icon{height:16px;width:16px}
+    .icon-btn{height:44px;width:44px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;color:var(--muted);font-weight:650}
+    .ucard,.pcard,.ncard,.srow{border-radius:14px;padding:16px;background:var(--surface);border-color:var(--line);min-width:0}
+    .ucard:hover,.srow:hover{background:#1a2532;border-color:#3a4a5d}
+    .uname{font-size:13px;font-weight:800}
+    .usub{font-size:11px;line-height:1.6;overflow-wrap:anywhere}
+    .uhead{grid-template-columns:minmax(0,1fr) auto}
+    .uhead .tag{max-width:145px;white-space:normal;text-align:center;justify-content:center}
+    .mini{background:#1a2532;padding:10px;border-radius:10px}
+    .mini b{font-size:14px;font-weight:800}
+    .mini span{font-size:10px;font-weight:600}
+    .srow{min-height:70px;gap:12px}
+    .srow h3{font-size:12px;font-weight:800;letter-spacing:-.01em}
+    .srow p{font-size:11px;line-height:1.5;margin-top:4px}
+    .srow:has(.admin-module-icon){grid-template-columns:36px minmax(0,1fr) auto}
+    .admin-module-icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:#253241;color:#c6d7ec}
+    .admin-module-icon .admin-icon{width:18px;height:18px}
+    .tag{height:auto;min-height:24px;padding:5px 8px;border-radius:8px;font-size:10px;font-weight:800;line-height:1.35;overflow-wrap:anywhere}
+    .tag.green{background:#20362f;color:#8be0b8}
+    .tag.blue{background:#263649;color:#99c4ff}
+    .tag.amber{background:#3b3329;color:#f1ce96}
+    .tag.red{background:#422b33;color:#ffabb4}
+    .tag.violet{background:#322b42;color:#d0b9f1}
+    .amount{font-size:20px;font-weight:850;letter-spacing:-.035em}
+    .mcard{padding:15px;border-radius:12px;gap:11px;border-color:var(--line)}
+    .mcard h3,.nctitle{font-size:13px;font-weight:800}
+    .mcard p,.ncnote{font-size:11px;line-height:1.6}
+    .mcard .mcard{padding:12px;background:#101924}
+    .ncph{color:var(--admin-blue);line-height:1.5}
+    .ncsw{min-height:36px}
+    input[type=checkbox]{accent-color:var(--accent)}
+    .hint,.empty{font-size:11px;line-height:1.6}
+    .danger-note{background:#2b222c;color:#f4c5c8;border-color:#63404b;font-size:11px;font-weight:600}
+    .acc{border-radius:12px;border-color:var(--line)}
+    .acc>summary{min-height:48px;font-size:12px;font-weight:750;padding:14px}
+    .accbody{padding:0 14px 14px;gap:12px}
+    .accbody .btn{white-space:normal}
+    .bar{font-size:11px;grid-template-columns:minmax(88px,130px) minmax(0,1fr) 50px;gap:9px}
+    .track{height:7px;background:#263341}
+    .track span{background:#db7265}
+    .admin-table-scroll{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;margin-top:8px;border-radius:8px}
+    .tbl{min-width:570px;font-size:12px}
+    .tbl th{padding:12px 14px;font-size:10px;letter-spacing:.05em;font-weight:850;color:#92a2b2;white-space:nowrap;border-bottom:1px solid var(--line)}
+    .tbl td{padding:14px;color:var(--admin-sub);border-color:var(--line-soft)}
+    .tbl b{color:var(--ink);font-weight:750}
+    .tbl tr:nth-child(even){background:transparent}
+    .tbl tr:hover td{background:#ffffff05}
+    .scrim{background:rgba(0,0,0,.64)}
+    .drawer{visibility:hidden;pointer-events:none;background:#131c27;border:1px solid #374657;border-radius:20px 20px 0 0;max-height:92dvh;width:100%;box-shadow:var(--shadow)}
+    .drawer.open{visibility:visible;pointer-events:auto}
+    body:has(#adminNavigator[open]){overflow:hidden}
+    .dhead{padding:19px 18px 15px;gap:10px;border-bottom-color:var(--line);grid-template-columns:auto minmax(0,1fr) auto}
+    .dhead:has(>#drawerBack[hidden]){grid-template-columns:minmax(0,1fr) auto}
+    .dtitle{font-size:19px;font-weight:800;letter-spacing:-.03em;line-height:1.3;overflow-wrap:anywhere}
+    .dsub{font-size:12px;color:var(--muted);line-height:1.5;margin-top:7px}
+    .dbody{padding:18px 18px calc(24px + var(--safe-bottom));min-height:0}
+    .close{width:44px;height:44px;font-size:18px;font-weight:650}
+    .dtitle-sm{font-size:10px;letter-spacing:.11em;font-weight:800;line-height:1.5}
+    .kv{font-size:12px;grid-template-columns:minmax(100px,.85fr) minmax(0,1fr);line-height:1.55}
+    .toast{left:16px;right:16px;bottom:calc(88px + var(--safe-bottom));font-size:12px;font-weight:750;max-width:none;background:#f1dfcd;color:#32231e;border-radius:11px}
+    .state{min-height:var(--app-h)}
+    .state-card{border-radius:14px;padding:25px;background:var(--surface);max-width:420px}
+    .state-card h2{font-size:19px;font-weight:800;letter-spacing:-.03em}
+    .state-card p{font-size:12px;line-height:1.65}
+    .admin-navigator{width:min(630px,calc(100% - 32px));max-height:min(80dvh,600px);border:1px solid var(--line);padding:0;border-radius:18px;background:#17212c;color:var(--ink);box-shadow:var(--shadow);overflow:hidden}
+    .admin-navigator::backdrop{background:rgba(0,0,0,.64)}
+    .admin-dialog-head{display:flex;align-items:center;gap:10px;padding:12px;border-bottom:1px solid var(--line)}
+    .admin-dialog-head .input{border:0;background:transparent;height:44px;min-width:0;padding:0 10px}
+    .admin-dialog-head .input:focus{box-shadow:none}
+    #adminNavResults{max-height:calc(80dvh - 90px);overflow:auto;padding:6px 12px 12px}
+    .admin-search-result{display:flex;align-items:center;gap:12px;width:100%;min-height:54px;padding:13px;border-radius:10px;text-align:left;color:var(--ink);font-size:12px;font-weight:650}
+    .admin-search-result:hover,.admin-search-result:focus-visible{background:#293748}
+    .admin-search-result>span{min-width:0;flex:1;display:block}
+    .admin-search-result small{display:block;margin-top:4px;color:var(--muted);font-size:10px;text-align:left;line-height:1.5}
+    .admin-search-result .admin-icon{color:var(--muted);width:18px;height:18px}
+    @media(min-width:761px){
+      body{overflow:hidden}
+      .app{display:grid;grid-template-columns:258px minmax(0,1fr);grid-template-rows:minmax(0,1fr);height:var(--app-h);overflow:hidden}
+      .admin-sidebar{display:flex;flex-direction:column;height:var(--app-h);min-height:0;padding:24px 14px 16px;background:var(--admin-sidebar);border-right:1px solid var(--line-soft)}
+      .admin-sidebar .brand{gap:12px;padding:2px 11px 26px;align-items:center}
+      .admin-sidebar .brand-mark{width:41px;height:41px;display:grid;place-items:center;background:#b94539;border:0;border-radius:13px;box-shadow:inset 0 1px 0 #ffffff3d;font-size:18px;font-weight:900;color:#fff}
+      .admin-sidebar .brand h1{font-size:17px;font-weight:850;letter-spacing:-.04em;line-height:1.2}
+      .admin-sidebar .brand p{font-size:10px;font-weight:750;letter-spacing:.12em;margin-top:3px;white-space:normal;line-height:1.5;color:var(--muted)}
+      .admin-caption{padding:0 14px 12px;color:#68798c;font-size:10px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+      #sidebarNav{display:flex;flex-direction:column;gap:3px;min-height:0;overflow-y:auto;padding:0 0 10px}
+      .admin-navbtn{width:100%;min-height:47px;padding:9px 12px;border-radius:11px;display:flex;align-items:center;gap:11px;text-align:left;font-weight:700;font-size:13px;color:#a5b2c1;flex:none}
+      .admin-navbtn:hover,.admin-navbtn.active{background:#222c39;color:#fff}
+      .admin-navbtn.active{box-shadow:inset 3px 0 0 var(--accent)}
+      .admin-navbtn .admin-icon{width:21px;height:21px;opacity:.9}
+      .admin-navbtn.active .admin-icon{color:#f38c7d}
+      .admin-navbtn .admin-chevron{margin-left:auto}
+      .admin-side-bottom{margin-top:auto;border-top:1px solid var(--line-soft);padding:16px 11px 0;display:flex;flex-direction:column;gap:15px;flex:none}
+      .admin-side-bottom .pill{background:transparent;border:0;padding:0;font-size:11px;font-weight:500;color:var(--admin-sub);gap:8px;white-space:normal}
+      .admin-profile{display:flex;align-items:center;gap:10px}
+      .admin-avatar{width:34px;height:34px;display:grid;place-items:center;flex:none;background:#3a2e2d;color:#f1b3a6;border-radius:12px;font-size:12px;font-weight:850}
+      .admin-profile b{font-size:12px;font-weight:750}
+      .admin-profile small{display:block;color:var(--muted);font-size:11px;line-height:1.5;margin-top:2px}
+      .admin-workspace{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+      .admin-topbar{position:relative;top:auto;height:74px;min-height:74px;padding:0 38px;flex:none}
+      .admin-breadcrumb{display:flex}
+      .admin-mobile-brand{display:none}
+      .admin-search-open{width:auto;min-width:210px;height:44px;padding:0 12px;border-radius:10px;background:#171f2b;color:var(--muted);font-size:12px;font-weight:500}
+      .admin-search-open>span:not([data-admin-icon]),.admin-search-open kbd{display:inline}
+      .admin-workspace main{flex:1;min-height:0;height:auto;overflow-y:auto;overflow-x:clip;padding:34px 38px 70px;scrollbar-color:#344151 transparent}
+      .admin-page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:27px}
+      .admin-page-head h1{font-size:28px}
+      .admin-page-actions{margin-top:0;justify-content:flex-end;flex:none;max-width:45%}
+      .tabs{display:none}
+      .grid,.list{gap:14px}
       .g2{grid-template-columns:repeat(4,minmax(0,1fr))}
       .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
-      .stat .val{font-size:30px}
-      .list{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-      .pboard{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:12px}
-      .settings-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .drawer{left:auto;top:0;right:0;bottom:0;width:min(560px,42vw);max-height:none;border-top:0;border-left:1px solid var(--line);border-radius:0;transform:translateX(106%)}
+      .settings-grid,.frow.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .list{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .pboard{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));align-items:start}
+      .stat{min-height:137px;padding:17px 18px}
+      .stat .val{font-size:29px}
+      .block{padding:19px}
+      .ucard,.pcard,.ncard,.srow{padding:17px 18px}
+      .input,.select,.textarea,.nclang textarea{font-size:13px}
+      .drawer{left:auto;top:0;right:0;bottom:0;width:min(490px,100%);max-height:none;border-top:0;border-right:0;border-bottom:0;border-left:1px solid #354250;border-radius:0;transform:translateX(106%)}
       .drawer.open{transform:translateX(0)}
-      .toast{left:auto;right:30px;bottom:30px;width:max-content;max-width:520px}
-      .sec-head{align-items:center}
+      .dhead{padding:25px 25px 19px}
+      .dbody{padding:23px 25px 28px}
+      .toast{left:auto;right:24px;bottom:24px;width:max-content;max-width:360px}
+      #adminNavResults{max-height:480px}
     }
-    @media (min-width:1280px){
-      .list{grid-template-columns:repeat(4,minmax(0,1fr))}
+    @media(min-width:761px) and (max-width:1170px){
+      .app{grid-template-columns:224px minmax(0,1fr)}
+      .admin-workspace main{padding:28px 25px 60px}
+      .admin-topbar{padding:0 25px}
+      .admin-page-actions{max-width:50%}
+      .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .admin-search-open{min-width:44px;width:44px;padding:0}
+      .admin-search-open>span:not([data-admin-icon]),.admin-search-open kbd{display:none}
+    }
+    @media(min-width:1280px){.list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media(max-width:370px){
+      .admin-topbar{gap:8px;padding-left:12px;padding-right:12px}
+      .admin-topbar .top-actions{gap:6px}
+      .admin-page-head h1{font-size:22px}
+      .stat .val{font-size:23px}
+      .stat{padding:13px}
+      .sec-head{gap:8px}
+      .uhead{grid-template-columns:minmax(0,1fr)}
+    }
+    @media(prefers-reduced-motion:reduce){
+      *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    }
+    @media(min-width:1171px){#dashboardQuickActions{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    .admin-user-table-head{display:none}
+    @media(min-width:1171px){
+      .admin-user-table-head{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.5fr) minmax(0,.75fr);gap:24px;padding:14px 18px;background:#131d29;border:1px solid var(--line);border-bottom:0;border-radius:14px 14px 0 0;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+      #userList{grid-template-columns:1fr;gap:0;border:1px solid var(--line);border-radius:0 0 14px 14px;overflow:hidden;background:var(--surface)}
+      #userList .ucard{grid-template-columns:minmax(0,1.2fr) minmax(0,1.5fr) minmax(0,.75fr);gap:24px;align-items:center;border:0;border-bottom:1px solid var(--line-soft);border-radius:0;min-height:104px}
+      #userList .ucard:last-child{border-bottom:0}
+      #userList .mini{padding:0;background:transparent}
     }
   </style>
 </head>
@@ -305,30 +518,33 @@
   </div>
 
   <div id="app" class="app" hidden>
-    <aside class="topbar">
-      <div class="topbar-inner">
-        <div class="brand">
-          <img class="brand-mark" src="/assets/hsk-ai-avatar.webp" alt="" aria-hidden="true">
-          <div>
-            <h1>Admin panel</h1>
-            <p id="brandSub">Bot · foydalanuvchi · obuna · pul markazi</p>
-          </div>
-        </div>
-        <div class="top-actions">
-          <span class="pill"><span class="dot"></span><span id="liveLabel">Jonli</span></span>
-          <button class="reload" data-act="reload" title="Yangilash">⟳</button>
-        </div>
+    <aside class="admin-sidebar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">学</span>
+        <div><h1>HSK AI</h1><p id="brandSub">CONTROL CENTER</p></div>
       </div>
-      <nav class="tabs" id="tabs">
-        <button class="tab active" data-tab="dashboard"><span class="ic">🏠</span>Bosh</button>
-        <button class="tab" data-tab="statistics"><span class="ic">📊</span>Statistika</button>
-        <button class="tab" data-tab="users"><span class="ic">👥</span>Odamlar</button>
-        <button class="tab" data-tab="payments"><span class="ic">💳</span>To'lov</button>
-        <button class="tab" data-tab="settings"><span class="ic">⚙️</span>Boshqaruv</button>
-      </nav>
+      <div class="admin-caption">WORKSPACE</div>
+      <nav id="sidebarNav" aria-label="Asosiy navigatsiya"></nav>
+      <div class="admin-side-bottom">
+        <div class="pill"><span class="dot"></span><span id="liveLabel">Server ma’lumotlari</span></div>
+        <div class="admin-profile"><div class="admin-avatar">AD</div><div><b>Administrator</b><small>HSK AI boshqaruvi</small></div></div>
+      </div>
     </aside>
-
-    <main>
+    <div class="admin-workspace">
+      <header class="admin-topbar">
+        <div class="admin-breadcrumb"><span>HSK AI</span><span>/</span><b id="breadcrumbTitle">Bosh sahifa</b></div>
+        <div class="admin-mobile-brand">HSK AI <span>Admin</span></div>
+        <div class="top-actions">
+          <button type="button" class="admin-search-open" data-admin-search aria-label="Bo‘lim yoki amal qidirish"><span data-admin-icon="search"></span><span>Bo‘lim yoki amal qidirish</span><kbd>/</kbd></button>
+          <button type="button" class="reload" data-act="reload" aria-label="Yangilash" title="Yangilash"><span data-admin-icon="refresh"></span></button>
+        </div>
+      </header>
+      <main id="adminMain">
+        <div class="admin-page-head">
+          <div><div class="admin-eyebrow" id="pageEyebrow">HSK AI / OVERVIEW</div><h1 id="pageTitle">Bosh sahifa</h1><p id="pageDescription">Bugungi holatni ko‘ring va muhim ishlarni shu yerdan boshlang.</p></div>
+          <div class="admin-page-actions" id="pageActions"></div>
+        </div>
+        <nav class="admin-subnav" id="adminSubnav" aria-label="Ichki bo‘limlar" hidden></nav>
       <!-- DASHBOARD -->
       <section id="dashboard" class="view active">
         <div class="sec">
@@ -349,6 +565,7 @@
           <div class="sec-head"><div class="sec-title">Bugungi vazifalar</div></div>
           <div class="list" id="queueList"></div>
         </div>
+      <div class="sec"><div class="sec-head"><div class="sec-title">Tezkor harakatlar</div></div><div class="grid settings-grid" id="dashboardQuickActions"></div></div>
       </section>
 
       <!-- STATISTICS -->
@@ -492,6 +709,7 @@
         </div>
         <div class="chips" id="userFilters" style="margin-bottom:12px"></div>
         <div id="telegramReachability" hidden></div>
+        <div class="admin-user-table-head" aria-hidden="true"><span>Foydalanuvchi</span><span>Obuna va kirish</span><span>Faollik</span></div>
         <div class="list" id="userList"></div>
       </section>
 
@@ -570,7 +788,9 @@
           <div id="adPaneIlova" data-adhub-pane hidden></div>
         </div>
       </section>
-    </main>
+      </main>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="Mobil navigatsiya"></nav>
   </div>
 
   <!-- Reklama qoidalari uchun alohida, telefonda ham qulay dialog.
@@ -597,8 +817,13 @@
     </section>
   </div>
 
+  <dialog id="adminNavigator" class="admin-navigator" aria-label="Bo‘lim yoki amal qidirish">
+    <div class="admin-dialog-head"><input id="adminNavSearch" class="input" type="search" placeholder="Bo‘lim yoki amal qidirish…" aria-label="Bo‘lim yoki amal qidirish" autocomplete="off"><button type="button" class="close" data-admin-close-nav aria-label="Yopish">✕</button></div>
+    <div id="adminNavResults"></div>
+  </dialog>
+
   <div id="scrim" class="scrim" data-act="close-drawer"></div>
-  <aside id="drawer" class="drawer" aria-hidden="true">
+  <aside id="drawer" class="drawer" aria-hidden="true" inert>
     <div class="dhead">
       <button class="close" id="drawerBack" data-act="drawer-back" title="Orqaga" hidden>←</button>
       <div><div class="dtitle" id="drawerTitle">—</div><div class="dsub" id="drawerSub"></div></div>
@@ -613,7 +838,7 @@
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     const $ = (id) => document.getElementById(id);
     const state = {
-      tab:"dashboard", filter:"all", search:"", statsPeriod:"all_time",
+      tab:"dashboard", adminRoute:"dashboard", adminSubs:{}, filter:"all", search:"", statsPeriod:"all_time",
       overview:null, finance:null, financeError:false, management:null, remoteUsers:null, activeModule:null,
       desktopStats:{}, desktopStatsLoading:{},
       androidStats:{}, androidStatsLoading:{},
@@ -632,7 +857,7 @@
       try{ tg.ready(); }catch(e){}
       try{ tg.expand(); }catch(e){}
       try{ tg.requestFullscreen && tg.requestFullscreen(); }catch(e){}
-      try{ tg.setHeaderColor && tg.setHeaderColor("#0f1216"); tg.setBackgroundColor && tg.setBackgroundColor("#0f1216"); }catch(e){}
+      try{ tg.setHeaderColor && tg.setHeaderColor("#0c1118"); tg.setBackgroundColor && tg.setBackgroundColor("#0c1118"); }catch(e){}
       try{ tg.onEvent("viewportChanged", applyViewport); }catch(e){}
     }
     applyViewport();
@@ -642,7 +867,10 @@
     function esc(v){ return String(v==null?"":v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c])); }
     function tag(label,color){ return `<span class="tag ${color||""}">${esc(label)}</span>`; }
     function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(window.tt); window.tt=setTimeout(()=>t.classList.remove("show"),2000); }
-    function setError(title,text){ $("loading").innerHTML=`<div class="state-card"><h2>${esc(title)}</h2><p>${esc(text)}</p></div>`; $("loading").hidden=false; $("app").hidden=true; }
+    function setError(title,text){
+      if($("adminNavigator").open)$("adminNavigator").close();
+      closeDrawer();closeAdRulesModal();
+      $("loading").innerHTML=`<div class="state-card"><h2>${esc(title)}</h2><p>${esc(text)}</p></div>`; $("loading").hidden=false; $("app").hidden=true; }
 
     async function apiPost(url,payload){
       const r = await fetch(url,{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":tg&&tg.initData?tg.initData:""},body:JSON.stringify(payload||{})});
@@ -776,6 +1004,12 @@
       const c = ov.segments||{};
       $("segmentChips").innerHTML = Object.keys(segmentLabels).map(k=>`
         <button class="chip ${state.filter===k?"active":""}" data-seg="${k}"><span>${segmentLabels[k][0]} ${c[k]||0}</span></button>`).join("");
+      const quickKeys=["user_search","broadcast","limits"];
+      $("dashboardQuickActions").innerHTML=quickKeys.flatMap(key=>{
+        const module=(ov.modules||[]).find(item=>item.key===key);if(!module)return [];
+        const icon=key==="user_search"?"users":key==="broadcast"?"mail":"sliders";
+        return [`<button type="button" class="srow" data-admin-module="${key}"><span class="admin-module-icon">${adminIcon(icon)}</span><div><h3>${esc(adminModuleLabel(module))}</h3><p>${esc(module.note)}</p></div><span class="admin-chevron">${adminIcon("chevron")}</span></button>`];
+      }).join("");
       const fa = financeAll();
       if(fa){
         const f=fa.finance, u=fa.unit;
@@ -787,7 +1021,7 @@
         ].map(i=>`<article class="stat ${i.t}"><div class="lab">${i.l}</div><div><div class="val">${esc(i.v)}</div><div class="sub">${esc(i.s)}</div></div></article>`).join("");
       } else $("financeQuick").innerHTML="<p class='empty'>Moliyaviy statistika yuklanmadi.</p>";
       $("queueList").innerHTML = (ov.queue||[]).map((i,idx)=>`
-        <button class="srow" data-tab-jump="${i.section==="payments"?"payments":i.section==="ads"?"settings":"users"}">
+        <button class="srow" ${i.section==="ads"?'data-admin-module="ads_hub"':`data-tab-jump="${i.section==="payments"?"payments":"users"}`} >
           <div><h3>${idx+1}. ${esc(i.title)}</h3><p>${esc(i.note)}</p></div>
           <span class="tag ${i.priority==="hozir"||i.priority==="иссиқ"||i.priority==="ҳозир"?"amber":"green"}">${esc(i.priority)}</span>
         </button>`).join("");
@@ -1374,7 +1608,7 @@
                 <div class="usub">${p.username?"@"+esc(p.username)+" · ":""}${p.telegram_id}<br>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.submitted_at||"—")}</div></div>
                 <div class="amount">${esc(p.amount)}</div></div>
               <div class="tags">${tag(p.status_label,p.status==="approved"?"green":p.status==="pending"?"amber":"red")}${tag(paymentSourceLabel(p.source),p.source==="android"?"amber":"")}${tag(p.has_screenshot?"rasm bor":"rasm yo'q","")}</div>
-              ${p.status==="pending"?`<div class="row"><button class="btn" data-pay="${p.id}" data-pact="approve">Tasdiqlash</button><button class="btn sec" data-pay="${p.id}" data-pact="reject">Rad etish</button></div>`:""}
+              ${p.status==="pending"?`<div class="row"><button class="btn" data-pay="${p.id}" data-pact="approve">Tasdiqlash</button><button class="btn danger" data-pay="${p.id}" data-pact="reject">Rad etish</button></div>`:""}
             </article>`).join("") || "<p class='empty'>Hozircha bo'sh.</p>"}
           </div>
         </div>`).join("");
@@ -1394,8 +1628,8 @@
     /* ---------- USER DETAIL ---------- */
     /* Drawer ichi almashadi, shuning uchun profildan bo'lim ochilganda qaytish
        yo'li kerak. `state.drawerBack` — bir pog'onali orqaga qaytarish. */
-    function openDrawer(title,sub,html){ $("drawerTitle").textContent=title; $("drawerSub").textContent=sub||""; $("drawerBody").innerHTML=html; $("drawer").classList.add("open"); $("scrim").classList.add("open"); $("drawer").setAttribute("aria-hidden","false"); $("drawerBack").hidden=!state.drawerBack; }
-    function closeDrawer(){ $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); $("drawer").setAttribute("aria-hidden","true"); state.activeModule=null; state.drawerBack=null; $("drawerBack").hidden=true; }
+    function openDrawer(title,sub,html){ $("drawerTitle").textContent=title; $("drawerSub").textContent=sub||""; $("drawerBody").innerHTML=html; $("drawer").inert=false; $("drawer").classList.add("open"); $("scrim").classList.add("open"); $("drawer").setAttribute("aria-hidden","false"); $("drawerBack").hidden=!state.drawerBack; }
+    function closeDrawer(){ $("drawer").inert=true; $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); $("drawer").setAttribute("aria-hidden","true"); state.activeModule=null; state.drawerBack=null; $("drawerBack").hidden=true; }
     function drawerBack(){ const back=state.drawerBack; state.drawerBack=null; if(back) back(); else closeDrawer(); }
 
     /* Bitta panel ikki joyda chiziladi: modul drawer'ida yoki «📣 Reklama»
@@ -1543,7 +1777,8 @@
 
     /* ---------- MODULES (settings) ---------- */
     function renderModules(){
-      $("moduleGrid").innerHTML = (state.overview.modules||[]).map(m=>`<button class="srow" data-module="${m.key}"><div><h3>${m.icon} ${esc(m.title)}</h3><p>${esc(m.note)}</p></div><span class="tag green">ochish</span></button>`).join("");
+      $("moduleGrid").innerHTML = (state.overview.modules||[]).map(m=>`<button class="srow" data-module="${esc(m.key)}"><span class="admin-module-icon">${adminIcon((adminRoutes[adminModuleGroups[m.key]?.[0]]||adminRoutes.system).icon)}</span><div><h3>${esc(adminModuleLabel(m))}</h3><p>${esc(m.note)}</p></div><span class="admin-chevron">${adminIcon("chevron")}</span></button>`).join("");
+      renderAdminChrome();
     }
     function renderAiModel(){
       const host=$("aiModelBox"); if(!host) return;
@@ -1553,7 +1788,7 @@
       const note=g.configured?"Gemini asosiy ishlaydi; xato bo'lsa OpenAI zaxira.":"Gemini API key sozlanmagan — hozircha OpenAI ishlaydi.";
       host.innerHTML=`<div class="mcard"><h3>Gemini modeli</h3><p>${esc(note)}</p><div class="row"><select class="input" id="aiModelSel" style="max-width:230px">${opts}</select><button class="btn" data-aimodelsave>Saqlash</button></div></div>`;
     }
-    function moduleTitle(key){ const m=(state.overview.modules||[]).find(x=>x.key===key); return m?`${m.icon} ${m.title}`:"Boshqaruv"; }
+    function moduleTitle(key){ const m=(state.overview.modules||[]).find(x=>x.key===key); return m?adminModuleLabel(m):"Boshqaruv"; }
 
     /* Profil kontekstida ochilgan bo'lim sarlavhasi: kim uchun ishlayotganimiz
        ko'rinib tursin. Kontekst bo'lmasa oddiy izoh qoladi. */
@@ -1578,7 +1813,7 @@
       if(key==="stats"){ closeDrawer(); switchTab("statistics"); return; }
       if(key==="user_search"){ closeDrawer(); switchTab("users"); $("search").focus(); return; }
       /* Reklama endi drawer emas, sozlamalar ichidagi bitta bo'lim. */
-      if(key==="ads_hub"){ closeDrawer(); switchTab("settings"); const h=$("adHub"); if(h) h.scrollIntoView({behavior:"smooth",block:"start"}); return openAdHub(state.adHub); }
+      if(key==="ads_hub"){ closeDrawer(); navigateAdmin("marketing","creatives"); const h=$("adHub"); if(h) h.scrollIntoView({behavior:"smooth",block:"start"}); return openAdHub(state.adHub); }
       openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
       let d;
       try{ d=await loadManagement(false); }catch(e){ $("drawerBody").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; return; }
@@ -2778,12 +3013,116 @@
       }finally{ input.value=""; }
     }
 
+    /* ---------- V2 presentation and navigation ---------- */
+    const adminIcons={house:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-8h6v8"/>',chart:'<path d="M4 19V5M4 19h17"/><path d="M8 14l4-4 4 3 4-7"/>',users:'<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',wallet:'<rect x="3" y="6" width="18" height="15" rx="2"/><path d="M3 10h18M7 6V4a1 1 0 0 1 1-1h12"/><path d="M16 16h2"/>',book:'<path d="M12 7c-3.4-2.2-6.9-2.2-10-1v14c4-1.1 7.4-.9 10 1 2.6-1.9 6-2.1 10-1V6c-3.1-1.2-6.6-1.2-10 1zM12 7v14"/>',megaphone:'<path d="m3 11 13-5v12L3 14zM16 9l4-2v10l-4-2M6 15l2 6h4l-3-6"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06-2 2-.06-.06a1.65 1.65 0 0 0-1.82-.33l-.19.08-.44 2.43h-2.8l-.44-2.43-.19-.08a1.65 1.65 0 0 0-1.82.33l-.06.06-2-2 .06-.06A1.65 1.65 0 0 0 8.36 15l-.08-.19L5.85 14v-2.8l2.43-.44.08-.19a1.65 1.65 0 0 0-.33-1.82l-.06-.06 2-2 .06.06a1.65 1.65 0 0 0 1.82.33l.19-.08.44-2.43h2.8l.44 2.43.19.08a1.65 1.65 0 0 0 1.82-.33l.06-.06 2 2-.06.06a1.65 1.65 0 0 0-.33 1.82l.08.19 2.43.44V14l-2.43.44z" transform="translate(-1 -1)"/>',search:'<circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/>',bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>',refresh:'<path d="M20 11a8 8 0 0 0-14-5L4 8M4 4v4h4M4 13a8 8 0 0 0 14 5l2-2M20 20v-4h-4"/>',chevron:'<path d="m9 18 6-6-6-6"/>',arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>',plus:'<path d="M12 5v14M5 12h14"/>',check:'<path d="m4 12 5 5L20 6"/>',close:'<path d="M18 6 6 18M6 6l12 12"/>',alert:'<path d="m12 3 10 18H2zM12 9v5m0 4h.01"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/>',credit:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>',spark:'<path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7zM19 18v4m-2-2h4"/>',menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',shield:'<path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/>',filter:'<path d="M4 7h16M7 12h10M10 17h4"/>',download:'<path d="M12 3v13m-5-5 5 5 5-5M4 18v3h16v-3"/>',mail:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="m3 6 9 7 9-7"/>',pie:'<path d="M12 3v9h9A9 9 0 1 1 12 3z"/><path d="M16 3v5h5"/>',sliders:'<path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3" fill="#15202c"/><circle cx="16" cy="17" r="3" fill="#15202c"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10h.01"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>'};
+    function adminIcon(key){
+      return `<svg class="admin-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${adminIcons[key]||adminIcons.settings}</svg>`;
+    }
+    const adminRoutes={
+      dashboard:{icon:"house",title:"Bosh sahifa",label:"OVERVIEW",description:"Bugungi holatni ko‘ring va muhim ishlarni shu yerdan boshlang.",tab:"dashboard"},
+      statistics:{icon:"chart",title:"Analitika",label:"ANALYTICS",description:"Foydalanuvchilar, kurs va ilovalar natijalarini kuzating.",tab:"statistics",subs:[["overview","Umumiy"],["platform","Platformalar"],["funnel","Konversiya"],["ai","AI xarajatlari"]]},
+      users:{icon:"users",title:"Foydalanuvchilar",label:"PEOPLE",description:"Foydalanuvchini toping, profil va kirish huquqini boshqaring.",tab:"users"},
+      finance:{icon:"wallet",title:"Moliya",label:"FINANCE",description:"To‘lovlar, tariflar, rekvizitlar va portfelni boshqaring.",tab:"payments",subs:[["payments","To‘lovlar"],["prices","Tariflar"],["methods","Rekvizitlar"],["portfolio","Portfel"]]},
+      product:{icon:"book",title:"Mahsulot",label:"PRODUCT",description:"Kurs, kirish qoidalari va o‘quv vositalarini boshqaring.",tab:"settings",subs:[["tracks","HSK 2.0 / 3.0"],["access","Dars va limitlar"],["trial","Trial"],["tools","Kontent va testlar"]]},
+      marketing:{icon:"megaphone",title:"Marketing",label:"MARKETING",description:"Kampaniyalar, reklama va eslatmalar bir joyda.",tab:"settings",subs:[["campaigns","Kampaniyalar"],["creatives","Reklama"],["notifications","Eslatmalar"],["partners","Hamkorlar"]]},
+      system:{icon:"settings",title:"Tizim",label:"SYSTEM",description:"AI modellari, kanallar va yordam sozlamalarini boshqaring.",tab:"settings",subs:[["models","AI modellari"],["channels","Kanallar"],["help","Yordam"]]}
+    };
+    const adminModuleLabels={stats:"Statistika",user_search:"Foydalanuvchi qidirish",portfolio:"Portfel",prices:"Obuna tariflari",hsk30:"HSK 3.0",course_access:"Kursga kirish",limits:"Limitlar",ads_hub:"Reklama",course_sales_experiment:"HSK sotuv A/B",channels:"Majburiy kanallar",delete_user:"Foydalanuvchini o‘chirish",broadcast:"Ommaviy xabar",ads:"Bot reklama xabari",release_feedback:"Yangilik fikri",discount:"Chegirma boshqaruvi",partners:"Hamkorlar",help:"Yordam sozlamalari",give_access:"Obuna berish",audio:"Audio boshqaruvi"};
+    function adminModuleLabel(module){return adminModuleLabels[module.key]||module.title;}
+    const adminModuleGroups={
+      prices:["finance","prices"],portfolio:["finance","portfolio"],
+      hsk30:["product","tracks"],course_access:["product","access"],limits:["product","access"],audio:["product","tools"],course_sales_experiment:["product","tools"],
+      broadcast:["marketing","campaigns"],ads:["marketing","campaigns"],discount:["marketing","campaigns"],release_feedback:["marketing","campaigns"],ads_hub:["marketing","creatives"],partners:["marketing","partners"],
+      channels:["system","channels"],help:["system","help"],give_access:["users"],delete_user:["users"],user_search:["users"],stats:["statistics"]
+    };
+    function initAdminChrome(){
+      $("sidebarNav").innerHTML=Object.entries(adminRoutes).map(([key,cfg])=>`<button type="button" class="admin-navbtn" data-admin-route="${key}">${adminIcon(cfg.icon)}<span>${cfg.title}</span><span class="admin-chevron">${adminIcon("chevron")}</span></button>`).join("");
+      const mobile=[["dashboard","house","Bosh"],["statistics","chart","Tahlil"],["users","users","Odamlar"],["finance","wallet","To‘lov"],["menu","menu","Menyu"]];
+      $("tabs").innerHTML=mobile.map(([key,icon,label])=>`<button type="button" class="tab" data-admin-route="${key}">${adminIcon(icon)}<span>${label}</span></button>`).join("");
+      document.querySelectorAll("[data-admin-icon]").forEach(el=>el.innerHTML=adminIcon(el.dataset.adminIcon));
+      const statGroups={platform:["desktopCards","androidCards","clientBusinessCards","clientDeviceCards"],funnel:["advancedCards","retentionCards","sourcesPaid","overviewCards","subEntryStats"],ai:["financeCards","unitCards"]};
+      Object.entries(statGroups).forEach(([group,ids])=>ids.forEach(id=>{const block=$(id)?.closest(".block");if(block)block.dataset.adminStat=group;}));
+      $("aiModelBox").closest(".sec").dataset.adminSetting="models";
+      $("notifTemplates").closest(".sec").dataset.adminSetting="notifications";
+      $("adHub").dataset.adminSetting="creatives";
+      const tables=new MutationObserver(wrapAdminTables);
+      tables.observe($("app"),{childList:true,subtree:true});tables.observe($("drawer"),{childList:true,subtree:true});
+      renderAdminChrome();
+    }
+    function wrapAdminTables(){
+      document.querySelectorAll("#app .tbl,#drawer .tbl").forEach(table=>{
+        if(table.parentElement.classList.contains("admin-table-scroll"))return;
+        const wrap=document.createElement("div");wrap.className="admin-table-scroll";wrap.tabIndex=0;
+        wrap.setAttribute("role","region");wrap.setAttribute("aria-label","Jadval — yon tomonga aylantirish mumkin");
+        table.before(wrap);wrap.append(table);
+      });
+    }
+    function adminSub(){const cfg=adminRoutes[state.adminRoute];return state.adminSubs[state.adminRoute]||cfg.subs?.[0][0]||"";}
+    function adminModuleVisible(key){
+      if(key==="ads_hub")return false; // The retained inline ad hub is already the full screen.
+      const group=adminModuleGroups[key];
+      if(!group)return state.adminRoute==="system"&&adminSub()==="models";
+      if(group[0]!==state.adminRoute)return false;
+      const sub=adminSub();
+      if(state.adminRoute==="finance"&&sub==="methods")return key==="prices";
+      if(state.adminRoute==="product"&&sub==="trial")return key==="limits";
+      return !group[1]||group[1]===sub;
+    }
+    function renderAdminChrome(){
+      const cfg=adminRoutes[state.adminRoute],sub=adminSub();
+      $("breadcrumbTitle").textContent=cfg.title;
+      $("pageTitle").textContent=cfg.title;$("pageEyebrow").textContent="HSK AI / "+cfg.label;$("pageDescription").textContent=cfg.description;
+      document.querySelectorAll("[data-admin-route]").forEach(btn=>{
+        const active=btn.dataset.adminRoute===state.adminRoute||(btn.dataset.adminRoute==="menu"&&["product","marketing","system"].includes(state.adminRoute));
+        btn.classList.toggle("active",active);if(active)btn.setAttribute("aria-current","page");else btn.removeAttribute("aria-current");
+      });
+      $("adminSubnav").hidden=!cfg.subs;
+      $("adminSubnav").innerHTML=(cfg.subs||[]).map(([key,label])=>`<button type="button" class="admin-subbtn ${sub===key?"active":""}" data-admin-sub="${key}" aria-current="${sub===key?"page":"false"}">${label}</button>`).join("");
+      let action=`<button class="btn sec" data-act="reload">${adminIcon("refresh")}Yangilash</button>`;
+      if(state.adminRoute==="marketing"&&sub==="campaigns"&&(state.overview?.modules||[]).some(m=>m.key==="broadcast"))action=`<button class="btn" data-module="broadcast">${adminIcon("plus")}Yangi kampaniya</button>`;
+      if(state.adminRoute==="users"&&(state.overview?.modules||[]).some(m=>m.key==="give_access"))action=`<button class="btn sec" data-admin-module="give_access">${adminIcon("plus")}Obuna berish</button>`;
+      $("pageActions").innerHTML=action;
+      let tab=cfg.tab;if(state.adminRoute==="finance"&&sub!=="payments")tab="settings";
+      state.tab=tab;document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===tab));
+      document.querySelectorAll("#statistics > .block").forEach(block=>block.hidden=state.adminRoute==="statistics"&&sub!=="overview"&&block.dataset.adminStat!==sub);
+      document.querySelectorAll("[data-admin-setting]").forEach(sec=>{
+        const type=sec.dataset.adminSetting;
+        sec.hidden=!(state.adminRoute==="system"&&type==="models"&&sub==="models")&&!(state.adminRoute==="marketing"&&type===sub);
+      });
+      const modules=[...$("moduleGrid").querySelectorAll("[data-module]")];
+      modules.forEach(btn=>btn.hidden=!adminModuleVisible(btn.dataset.module));
+      $("moduleGrid").closest(".sec").hidden=!modules.some(btn=>!btn.hidden);
+      wrapAdminTables();
+    }
+    function navigateAdmin(route,sub){
+      if(route==="menu"){openAdminNavigator();return;}
+      if(!adminRoutes[route])return;
+      if($("adminNavigator").open)$("adminNavigator").close();
+      closeDrawer();closeAdRulesModal();state.adminRoute=route;
+      if(sub&&adminRoutes[route].subs?.some(item=>item[0]===sub))state.adminSubs[route]=sub;
+      renderAdminChrome();
+      $("adminMain").scrollTo({top:0});window.scrollTo({top:0});
+    }
+    function openAdminNavigator(){
+      if($("app").hidden)return;
+      $("adminNavSearch").value="";renderAdminSearch();$("adminNavigator").showModal();$("adminNavSearch").focus();
+    }
+    function renderAdminSearch(){
+      const query=$("adminNavSearch").value.trim().toLocaleLowerCase();
+      const routes=Object.entries(adminRoutes).flatMap(([key,cfg])=>[{title:cfg.title,route:key,icon:cfg.icon,group:"Asosiy bo‘lim"},...(cfg.subs||[]).map(([sub,title])=>({title,route:key,sub,icon:cfg.icon,group:cfg.title}))]);
+      const modules=(state.overview?.modules||[]).map(m=>({title:adminModuleLabel(m),module:m.key,icon:(adminRoutes[adminModuleGroups[m.key]?.[0]]||adminRoutes.system).icon,group:"Boshqaruv amali"}));
+      const hits=[...routes,...modules].filter(item=>(item.title+" "+item.group).toLocaleLowerCase().includes(query));
+      $("adminNavResults").innerHTML=hits.length?hits.map(item=>`<button type="button" class="admin-search-result" ${item.module?`data-admin-module="${esc(item.module)}"`:`data-admin-route="${item.route}"${item.sub?` data-admin-target-sub="${item.sub}"`:""}`}>${adminIcon(item.icon)}<span>${esc(item.title)}<small>${esc(item.group)}</small></span>${adminIcon("chevron")}</button>`).join(""):"<p class='empty'>Mos bo‘lim topilmadi. Boshqa nom bilan qidiring.</p>";
+    }
+    function openAdminModule(key){
+      const target=adminModuleGroups[key]||["system","models"];
+      navigateAdmin(target[0],target[1]);return openModule(key);
+    }
+
     /* ---------- tabs ---------- */
     function switchTab(tab){
-      state.tab=tab;
-      document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
-      document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===tab));
-      const main=document.querySelector("main"); if(main) main.scrollTo({top:0,behavior:"smooth"}); window.scrollTo({top:0});
+      const routes={dashboard:"dashboard",statistics:"statistics",users:"users",payments:"finance",settings:"system"};
+      if(routes[tab])navigateAdmin(routes[tab],tab==="payments"?"payments":tab==="settings"?"models":undefined);
     }
 
     async function copyText(text,okMsg){
@@ -2810,6 +3149,11 @@
     document.addEventListener("click",(e)=>{
       const T=(s)=>e.target.closest(s);
       let el;
+      if((el=T("[data-admin-search]")))return openAdminNavigator();
+      if((el=T("[data-admin-close-nav]")))return $("adminNavigator").close();
+      if((el=T("[data-admin-route]")))return navigateAdmin(el.dataset.adminRoute,el.dataset.adminTargetSub);
+      if((el=T("[data-admin-sub]")))return navigateAdmin(state.adminRoute,el.dataset.adminSub);
+      if((el=T("[data-admin-module]")))return openAdminModule(el.dataset.adminModule);
       if((el=T("[data-pay]"))) return reviewPayment(el);
       if((el=T("[data-duration-target]"))){ const input=$(el.dataset.durationTarget); if(input) input.value=el.dataset.durationDays; return; }
       if((el=T("[data-copy]"))) return copyText(el.dataset.copy,"Telegram ID nusxalandi");
@@ -2932,6 +3276,13 @@
       }
     });
 
+    $("adminNavSearch").addEventListener("input",renderAdminSearch);
+    $("adminNavigator").addEventListener("click",e=>{if(e.target===$("adminNavigator"))$("adminNavigator").close();});
+    document.addEventListener("keydown",e=>{
+      const typing=e.target.closest("input,textarea,select,[contenteditable]");
+      if(!typing&&(e.key==="/"||((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"))&&!$("drawer").classList.contains("open")&&$("adRulesModal").hidden){e.preventDefault();openAdminNavigator();}
+    });
+    initAdminChrome();
     $("search").addEventListener("input",(e)=>{ state.search=e.target.value; clearTimeout(window.st); window.st=setTimeout(()=>remoteSearch(state.search),260); renderUsers(); });
     $("caFile").addEventListener("change",submitCourseAd);
     $("caLang").addEventListener("change",caTypeUI);
