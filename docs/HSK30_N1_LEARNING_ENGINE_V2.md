@@ -52,3 +52,20 @@ Unit tests: `python -m unittest discover -s tests -p test_nhsk1_learning_contrac
 5. Compare first-attempt accuracy, repair success and delayed retention against the original. Expand to the remaining 14 source lessons only after pilot evaluation.
 
 Release discipline: work on an isolated branch, require CI and migration review, then promote to `main`. Do not claim the production lessons have changed merely because the quality gate exists.
+
+## Pilot 1 delivered on draft PR #142 (2026-10-12)
+
+- Original source lesson 1, **runtime parts 1–4** now includes **27 contextual, three-language explanations**. Uzbek explanations use Latin script; Russian and Tajik use Cyrillic.
+- Authored source of truth: `scripts/hsk30/learning_overlays/nhsk1_lesson_01.json`.
+- `scripts/hsk30/apply_learning_overlays.py` validates part/section/card position, type and the expected correct answer **before** attaching feedback. The Course V3 generator reapplies the editorial overlay during future regenerations.
+- Mini App now shows the explanation after both right and wrong responses for **opted-in pilot cards** (`learning_feedback=n1_context_v1`); other levels and server-graded challenge behavior retain existing UX.
+- Android's existing lesson feedback panel already shows `card.explanation` for both right and wrong answers, so these content changes need no new Android card type.
+- Only card `explanation` and `learning_feedback` metadata changed in the four runtime JSON files. Verified against `main`: 7, 7, 6, 7 updated cards; all other lesson fields including section/card positions, options and answer keys remain identical.
+- CI: Python tests, N1 source audit, all 103 N1 lesson parts, Mini App JavaScript syntax, and **generator round-trip diff** passed.
+
+### Not yet delivered
+
+- New assessment/card types, retry-loop and stable ref migration are not part of this pilot.
+- Existing offline Android cache and an already-open Mini App may keep an older version until online reload/app reopen; explicit revision-aware invalidation is a separate project.
+- CI validates technical consistency and script correctness, **not** the teaching accuracy of every translation or real-device behavior.
+- Production `main` remains unchanged until PR approval/merge.
