@@ -83,3 +83,18 @@ Release discipline: work on an isolated branch, require CI and migration review,
 - Resume: Mini App retains a lightweight pilot failure map in its existing per-lesson mastery cache. Android's older resume store records only an index; if interrupted **after** the first exit question, the native client conservatively offers all alternate questions rather than incorrectly skipping missed skills. A future release should persist the exact per-objective result on Android.
 - Existing Android APK builds **do not have conditional skip code**: while they can render every extra standard card, old builds would offer all three retry cards unconditionally after a server release. **Release gate:** do not merge/deploy these content changes until the new native build and backend are tested together and an old-APK compatibility approach is approved.
 - This checks immediate transfer within the lesson; it does **not** establish 1-day or 7-day retention. No subscription, paywall, TJS unlock, trial or free-limit logic was changed.
+
+## Pilot 3: connect the N1 learner's daily plan to errors (draft PR #142)
+
+Existing architecture retained: `CourseTodayService` reads `LearningSignalsService`, calls the pure `DailyPlanService` and freezes task identity per level/day. Both Mini App and Android consume the same `today` payload. New rules do **not** bypass the authoritative access checker.
+
+**Important server bug fixed:** `CourseLessonMistakeMaterialService` previously rejected all `nhsk1..3` material refs. They are now accepted through the same checked-in-JSON, reference/answer verification used for HSK 2.0. HSK 3.0 N1 exit and retry errors can therefore enter `CourseMistakeService` and the existing target-based review bank.
+
+- `LearningSignalsService` isolates HSK 3.0 mistake weights from HSK 2.0 rows; the 2.0 view keeps legacy null-level rows.
+- Listening recognition errors use `material.format`, even when canonical mistake category is `pronunciation`. Actual spoken pronunciation errors still rank separately.
+- Both `mistakes_total` and weakness evidence ignore unresolvable `target_key="-"` rows.
+- For `nhsk1`, available mistake review is promoted above optional activities when the learner has outstanding mistakes. `continue_lesson` remains first; access-locked review is never issued; HSK 3.0 mock exam is still absent.
+- The daily plan is **frozen by local day**: same-day task identities are intentionally not rewritten mid-session. Fresh weakness evidence guides the next generated day plan.
+- Integration tests: real SQLite track isolation, listening classification, missing targets; original-json N1 mistake canonicalization and forgery rejection; N1 priority and feature-lock regressions.
+
+**Still not implemented:** accurate per-objective persistence for *correct* answers, explicit mastery-driven deferred planning, word-SRS-due task selection, and 1-/7-day retention analytics. These need their own schema/event tracking and careful migration, rather than conflating them with mistake counts.
