@@ -665,6 +665,104 @@
           }
         }
       ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mustaqil bilim tekshiruvi",
+        "ru": "Самостоятельная проверка знаний",
+        "tj": "Санҷиши мустақили дониш"
+      },
+      "section_purpose": "learning_exit_check",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "learning_objective": "polite_teacher_greeting",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Vaziyatni tushuning",
+            "ru": "Поймите ситуацию",
+            "tj": "Вазъиятро фаҳмед"
+          },
+          "prompt": {
+            "uz": "O'qituvchiga hurmat bilan qanday salom berasiz?",
+            "ru": "Как вежливо поприветствовать преподавателя?",
+            "tj": "Чӣ тавр ба омӯзгор бо эҳтиром салом медиҳед?"
+          },
+          "options": [
+            "老师，再见！",
+            "老师，您好！",
+            "谢谢！",
+            "你们好！"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "老师，您好！(Lǎoshī, nín hǎo!) — ustozga hurmat bilan salom berish. 您 (nín) bir kishiga hurmat bildiradi; 再见 xayrlashish uchun.",
+            "ru": "老师，您好！(Lǎoshī, nín hǎo!) — уважительное приветствие преподавателя. 您 (nín) выражает уважение к одному человеку, а 再见 означает прощание.",
+            "tj": "老师，您好！(Lǎoshī, nín hǎo!) — саломи эҳтиромӣ ба устод. 您 (nín) эҳтиром ба як нафарро нишон медиҳад, аммо 再见 барои хайрбод аст."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "learning_objective": "recognize_thanks",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Tinglab farqlang",
+            "ru": "Распознайте на слух",
+            "tj": "Аз шунидан фарқ кунед"
+          },
+          "prompt": {
+            "uz": "Qaysi iborani eshitdingiz?",
+            "ru": "Какую фразу вы услышали?",
+            "tj": "Кадом ибораро шунидед?"
+          },
+          "audio_text": "谢谢！",
+          "options": [
+            "再见！",
+            "不客气！",
+            "你们好！",
+            "谢谢！"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "谢谢！(Xièxie!) — «Rahmat!». Bunga 不客气！(Bú kèqi!) — «Arzimaydi!» deb javob berish mumkin.",
+            "ru": "谢谢！(Xièxie!) — «Спасибо!». В ответ можно сказать 不客气！(Bú kèqi!) — «Не за что!».",
+            "tj": "谢谢！(Xièxie!) — «Раҳмат!». Ҷавобаш 不客气！(Bú kèqi!) — «Ҳеҷ гап не!» мешавад."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "learning_objective": "farewell_to_students",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Jumla tuzing",
+            "ru": "Составьте фразу",
+            "tj": "Ҷумла созед"
+          },
+          "sentence": {
+            "uz": "Talabalarga xayrlashish so'zini ayting.",
+            "ru": "Попрощайтесь со студентами.",
+            "tj": "Бо донишҷӯён хайрбод гӯед."
+          },
+          "tokens": [
+            "再见",
+            "你们",
+            "们",
+            "同学",
+            "好"
+          ],
+          "answer_tokens": [
+            "同学",
+            "们",
+            "再见"
+          ],
+          "explanation": {
+            "uz": "同学们，再见！(Tóngxuémen, zàijiàn!) — «Talabalar, xayr!». 们 (men) ko'plik qo'shimchasi, 再见 (zàijiàn) xayrlashish.",
+            "ru": "同学们，再见！(Tóngxuémen, zàijiàn!) — «Студенты, до свидания!». 们 (men) — множественное число, 再见 — прощание.",
+            "tj": "同学们，再见！(Tóngxuémen, zàijiàn!) — «Донишҷӯён, хайр!». 们 (men) пасванди ҷамъ, 再见 — хайрбод."
+          }
+        }
+      ]
     }
   ]
 }
