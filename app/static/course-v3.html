@@ -4558,7 +4558,15 @@ Flow.pick=function(el,k){
   if(!ok)rememberLessonMistake(c,{selected_index:k,selected_answer:optText(c.options&&c.options[k])});
   beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");
   if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP)}
-  showBar(ok,ok?T().correct:T().wrong,ok?tr(c.explanation):T().rightAns+" "+(c.options&&typeof c.options[c.correct_index]!=="undefined"?optText(c.options[c.correct_index]):""));
+  var rightText=T().rightAns+" "+(c.options&&typeof c.options[c.correct_index]!=="undefined"?optText(c.options[c.correct_index]):"");
+  /* HSK 3.0 N1 pilot: explain WHY an answer is right or wrong. The content
+     itself opts in; normal course/challenge feedback remains unchanged. */
+  if(c.learning_feedback==="n1_context_v1"&&!Flow.challenge){
+    var why=tr(c.explanation);
+    showBar(ok,ok?T().correct:T().wrong,ok?esc(why):esc(rightText)+" · "+esc(why));
+  }else{
+    showBar(ok,ok?T().correct:T().wrong,ok?tr(c.explanation):rightText);
+  }
 };
 function cardBuilder(c){
   $("#f-cta").style.display="none";
@@ -4572,7 +4580,7 @@ function cardBuilder(c){
   }
   window._bldAdd=function(i){if(Flow.answered)return;if(line.indexOf(i)>=0)return;line.push(i);draw();if(line.length===(c.answer_tokens||[]).length){check()}};
   window._bldUn=function(pos){if(Flow.answered)return;line.splice(pos,1);draw()};
-  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=JSON.stringify(built)===JSON.stringify(c.answer_tokens);Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP);rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,(c.answer_tokens||[]).join(" ")+" — "+tr(c.explanation))}
+  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=JSON.stringify(built)===JSON.stringify(c.answer_tokens);Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP);rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,c.learning_feedback==="n1_context_v1"?(esc((c.answer_tokens||[]).join(" "))+" — "+esc(tr(c.explanation))):((c.answer_tokens||[]).join(" ")+" — "+tr(c.explanation)))}
   draw();
 }
 function cardReverse(c){
@@ -4593,7 +4601,7 @@ function cardReverse(c){
   }
   window._bldAdd=function(i){if(Flow.answered)return;if(line.indexOf(i)>=0)return;line.push(i);draw();if(line.length===ans.length){check()}};
   window._bldUn=function(pos){if(Flow.answered)return;line.splice(pos,1);draw()};
-  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=built.join(" ")===ans.join(" ");Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP);rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,ans.join(" ")+" — "+(c.zh||""))}
+  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=built.join(" ")===ans.join(" ");Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP);rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,c.learning_feedback==="n1_context_v1"?(esc(ans.join(" "))+" — "+esc(tr(c.explanation))):(ans.join(" ")+" — "+(c.zh||"")))}
   draw();
 }
 function cardMatch(c){
