@@ -2252,8 +2252,10 @@ async def v3_tts(text: str, rate: str = "-10%"):
             try:
                 import edge_tts
 
+                # Avoid unbounded hangs and reduce burst pressure on the upstream
+                # service. A 403 from Microsoft is not recoverable by retrying.
                 comm = edge_tts.Communicate(text, TTS_VOICE, rate=rate)
-                await comm.save(tmp)
+                await asyncio.wait_for(comm.save(tmp), timeout=15)
                 if not os.path.isfile(tmp) or os.path.getsize(tmp) == 0:
                     raise RuntimeError("empty tts output")
                 os.replace(tmp, path)
