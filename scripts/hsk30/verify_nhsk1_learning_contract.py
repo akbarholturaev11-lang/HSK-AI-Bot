@@ -166,6 +166,17 @@ def validate_lesson(lesson: object, *, number: int) -> tuple[list[str], list[str
                         errors.append(f"{sw}: all exit objectives must be unique")
                     if any(not isinstance(c, dict) or c.get("learning_check") != "n1_exit_check_v1" for c in cards):
                         errors.append(f"{sw}: invalid exit check content edition")
+            if section.get("section_purpose") == "learning_repair_bank":
+                if number != 4 or not lesson.get("checkpoint"):
+                    errors.append(f"{sw}: transfer retries only allowed on N1 first checkpoint")
+                if not isinstance(cards, list) or len(cards) != 3:
+                    errors.append(f"{sw}: conditional retry bank must have three alternatives")
+                else:
+                    objects = [str(c.get("learning_objective") or "") for c in cards if isinstance(c, dict)]
+                    if len(objects) != 3 or not all(objects) or len(set(objects)) != 3:
+                        errors.append(f"{sw}: retry objectives must be unique")
+                    if any(not isinstance(c, dict) or c.get("learning_retry") != "n1_exit_check_v1" for c in cards):
+                        errors.append(f"{sw}: invalid conditional retry version")
             if not isinstance(cards, list) or not cards:
                 errors.append(f"{sw}: no cards")
                 continue
