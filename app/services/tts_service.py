@@ -46,6 +46,25 @@ def _cache_key(text: str, rate: str) -> str:
     return hashlib.sha1(f"{VOICE}|{rate}|{text}".encode("utf-8")).hexdigest()
 
 
+def _bundled_word_audio(text: str, rate: str) -> Path | None:
+    """Reuse the Android APK's 1,247 existing Edge MP3s for the Mini App too.
+
+    These files were synthesized with the same Mandarin voice and -10% rate.
+    Using them directly avoids Edge websocket and Gemini generation latency,
+    including for a phrase that is being heard for the first time.
+    """
+    if rate != RATE or len(text) > 80:
+        return None
+    audio_dir = Path(__file__).resolve().parents[2] / (
+        "android/app/src/main/assets/audio/words"
+    )
+    name = "_".join(str(ord(char)) for char in text) + ".mp3"
+    path = audio_dir / name
+    if path.is_file() and path.stat().st_size > 128:
+        return path
+    return None
+
+
 def _cached_audio(folder: Path, key: str) -> Path | None:
     for suffix in (".mp3", ".wav"):
         path = folder / (key + suffix)
@@ -161,6 +180,10 @@ async def synthesize_chinese_mp3(text: str, rate: str = RATE) -> Path:
         raise ValueError("invalid_mandarin_text")
     if not re.fullmatch(r"[+-]\d{1,3}%", rate):
         rate = RATE
+
+    bundled = _bundled_word_audio(text, rate)
+    if bundled is not None:
+        return bundled
 
     folder = _cache_dir()
     folder.mkdir(parents=True, exist_ok=True)
