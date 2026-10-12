@@ -10799,3 +10799,18 @@ Risk:
 
 Follow-up:
 - Pilot source lesson 1 (N1 runtime parts 1–4), define stable question identity/cache migration before editing graded cards, then test Mini App and Android together.
+
+### 2026-10-12 — N1 pilot contextual feedback (draft PR #142)
+
+Changed:
+- Added 27 verified, source-lesson-1 contextual explanations in UZ (Latin), RU and TJ for `nhsk1` runtime lesson parts 1–4.
+- Authored feedback lives in `scripts/hsk30/learning_overlays/nhsk1_lesson_01.json`; `scripts/hsk30/apply_learning_overlays.py` guards section/card index, type and answer text, and `scripts/gen_course_v3_from_seed.py` reapplies the overlay to keep generated output reproducible.
+- Mini App opt-in rendering (`learning_feedback=n1_context_v1`) displays both correct-answer context and wrong-answer reasoning. Android already displays server-delivered `explanation` without parser changes.
+- N1 CI checks JS syntax, 9 focused unit tests, source validation, full 103-part contract and generator no-diff regeneration. Latest N1 run succeeded; generic Backend/Android runs are independent.
+
+Safety:
+- Verified `main` vs branch lesson payloads: aside from `explanation` and `learning_feedback`, all lesson fields are semantically identical — no graded card order, answer, material_ref, quiz, price, access or progress change.
+- Pending review; draft PR #142, `main` not changed.
+
+Follow-up:
+- Review pedagogy and translations in a real lesson, refresh caches for content updates, then design stable question identities and adaptive retry before adding/removing question cards.
