@@ -479,7 +479,8 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 /* generic screens */
 .phead{padding:4px 16px 0}
 .phead h1{font-size:24px;margin:6px 0 2px}.phead .sub{font-size:13px;color:var(--ink2);margin:0 0 12px}
-.row-card{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:0 16px 11px;width:calc(100% - 32px);font-family:inherit;color:var(--ink)}
+.row-card{position:relative;display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:0 16px 11px;width:calc(100% - 32px);font-family:inherit;color:var(--ink)}
+.new-section-badge{position:absolute;top:5px;right:8px;z-index:1;display:inline-flex;align-items:center;border-radius:999px;background:var(--jadebg);color:var(--jade-ink);padding:2px 6px;font-size:9px;font-weight:750;line-height:1.25;letter-spacing:.04em}
 .row-card .ti2{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
 .row-card .rt{flex:1;min-width:0}.row-card .rt b{font-size:15px;font-weight:500;display:block}.row-card .rt small{font-size:12px;color:var(--ink2)}
 .row-card .ar{color:var(--ink3);font-size:20px}
@@ -5063,6 +5064,28 @@ function flowDone(){
 }
 
 /* ---------- Mashq ---------- */
+var NEW_SECTION_BADGE_DURATION_MS=72*60*60*1000;
+/* Register each newly released practice section here; timestamps are bundled and never fetched. */
+var NEW_SECTION_RELEASES={"ready-phrases":1791821284000};
+var NEW_SECTION_BADGE_TIMERS={};
+function newSectionBadge(sectionId){
+  var releasedAt=NEW_SECTION_RELEASES[sectionId];
+  if(!Number.isFinite(releasedAt))return "";
+  var badgeId="new-section-badge-"+sectionId;
+  var now=Date.now();
+  if(now<releasedAt){
+    if(!NEW_SECTION_BADGE_TIMERS[sectionId])NEW_SECTION_BADGE_TIMERS[sectionId]=setTimeout(function(){delete NEW_SECTION_BADGE_TIMERS[sectionId];renderMashq()},releasedAt-now);
+    return "";
+  }
+  var remaining=releasedAt+NEW_SECTION_BADGE_DURATION_MS-now;
+  if(remaining<=0)return "";
+  if(!NEW_SECTION_BADGE_TIMERS[sectionId])NEW_SECTION_BADGE_TIMERS[sectionId]=setTimeout(function(){
+    delete NEW_SECTION_BADGE_TIMERS[sectionId];
+    var badge=document.getElementById(badgeId);
+    if(badge)badge.remove();
+  },remaining);
+  return '<span class="new-section-badge" id="'+badgeId+'" aria-label="Yangi bo‘lim">NEW</span>';
+}
 function renderMashq(){
   var t=T();
   $("#s-mashq").innerHTML='<div class="htop"><h1 class="section-title">'+t.nav.mashq+'</h1></div>'
@@ -5070,7 +5093,7 @@ function renderMashq(){
     +'<div class="sech">'+t.grammar+' · '+t.pron+'</div>'
     +'<div class="mashq-group" role="group" aria-label="'+esc(t.grammar+' · '+t.pron)+'">'
     +rowCard("t-amber",'<span class="han">字</span>',t.dict,t.dictSub,"App.openDict()","m-dict")
-+rowCard("t-jade",'<span class="han">句</span>',t.readyPhrases,t.readyPhrasesSub,"App.openPhrases()","m-ready-phrases")
+    +rowCard("t-jade",'<span class="han">句</span>',t.readyPhrases,t.readyPhrasesSub,"App.openPhrases()","m-ready-phrases","ready-phrases")
     +rowCard("t-blue",'<i class="ti ti-eye"></i>',t.recog,t.recogSub,"App.openRecog()","m-recog")
     +rowCard("t-jade",'<i class="ti ti-microphone"></i>',t.pron,t.pronSub,"App.openPron()","m-pron")+'</div>'
     +'<div class="sech">'+t.testCenter.split(" ")[0]+'</div>'
@@ -5078,7 +5101,7 @@ function renderMashq(){
     +rowCard("t-cin",'<i class="ti ti-certificate"></i>',t.testCenter,isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?trackUi().testSoon:t.testSub,"App.openTest()","m-test")
     +rowCard("t-cin",'<i class="ti ti-alert-triangle"></i>',t.mistakes,t.mistakesSub,"App.openMistakes()","m-mist")+'</div>';
 }
-function rowCard(cls,ic,title,sub,act,id){return '<button type="button" class="row-card"'+(id?' id="'+id+'"':'')+(act?' onclick="'+act+'"':'')+'><span class="ti2 '+cls+'" aria-hidden="true">'+ic+'</span><span class="rt"><b>'+esc(title)+'</b><small>'+esc(sub)+'</small></span><span class="ar" aria-hidden="true"><i class="ti ti-chevron-right"></i></span></button>'}
+function rowCard(cls,ic,title,sub,act,id,newSectionId){return '<button type="button" class="row-card"'+(id?' id="'+id+'"':'')+(act?' onclick="'+act+'"':'')+'><span class="ti2 '+cls+'" aria-hidden="true">'+ic+'</span><span class="rt"><b>'+esc(title)+'</b><small>'+esc(sub)+'</small></span>'+(newSectionId?newSectionBadge(newSectionId):'')+'<span class="ar" aria-hidden="true"><i class="ti ti-chevron-right"></i></span></button>'}
 
 /* ---------- Voice ---------- */
 function renderVoice(){
