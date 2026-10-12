@@ -107,6 +107,8 @@ class Nhsk1LearningContractTests(unittest.TestCase):
         self.assertIn('c.learning_feedback==="n1_context_v1"?(esc(ans.join(" "))', html)
         self.assertIn("function skipN1PilotRechecks(index)", html)
         self.assertIn("Flow.pilotFailures[card.learning_objective]=!ok", html)
+        self.assertIn('var N1_LESSON_CONTENT_REV="n1-learning-check-20261012-v2"', html)
+        self.assertIn('normalizeLevel(lv)==="nhsk1"?{cache:"no-store"}:{}', html)
 
     def test_n1_exit_check_is_append_only_and_android_compatible(self):
         from scripts.hsk30.apply_learning_overlays import apply_nhsk1_pilot_exit_check
