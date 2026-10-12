@@ -105,11 +105,13 @@ class AdminNotifyService:
                 "uz": "O'zbekiston kartasi",
                 "ru": "Rossiya kartasi",
                 "other": "Boshqa davlat kartasi",
+                "cn": "Xitoy",
             }.get(card_country or "", card_country or "-")
+            region_label = "To'lov hududi" if card_country == "cn" else "Karta davlati"
             lines.extend(
                 [
                     f"💵 To'lanadigan summa: {local_amount} {local_currency}",
-                    f"🌍 Karta davlati: {country_label}",
+                    f"🌍 {region_label}: {country_label}",
                 ]
             )
             if exchange_rate:

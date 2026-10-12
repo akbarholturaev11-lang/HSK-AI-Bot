@@ -253,6 +253,8 @@ html.fast-writer-sheet #app{max-width:none;overflow:hidden}
   .order-open-btn{margin-left:0;margin-right:auto}
   .char-box-lg{width:min(420px,86vw);height:min(420px,86vw)}
 }
+/* Hide duplicate navigation only inside an authenticated Telegram WebApp. */
+html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 </style>
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261008-scene-1">
 </head>
@@ -262,7 +264,7 @@ html.fast-writer-sheet #app{max-width:none;overflow:hidden}
   <div class="view" id="view-list">
     <div class="hero">
       <div class="hero-top">
-        <button class="list-back-btn" id="list-back-btn" aria-label="Orqaga">←</button>
+        <button class="list-back-btn hsk-native-back-duplicate" id="list-back-btn" aria-label="Orqaga">←</button>
         <div class="hero-copy">
           <div class="hero-title" id="hero-title">Ierogliflar lug‘ati</div>
         </div>
@@ -291,7 +293,7 @@ html.fast-writer-sheet #app{max-width:none;overflow:hidden}
 
   <div class="view hidden" id="view-detail">
     <div class="detail-header">
-      <button class="back-btn" id="back-btn" aria-label="Orqaga">←</button>
+      <button class="back-btn hsk-native-back-duplicate" id="back-btn" aria-label="Orqaga">←</button>
       <span class="detail-level" id="detail-level"></span>
     </div>
     <div class="detail-body">
@@ -1766,8 +1768,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
           tg.onEvent(event, syncTelegramInsets);
         });
       }
-      if(tg && tg.BackButton && tg.BackButton.show) tg.BackButton.show();
-      if(tg && tg.BackButton && tg.BackButton.onClick) {
+      var nativeBackBound=false;
+      if(tg && tg.BackButton && typeof tg.BackButton.onClick === 'function') {
         tg.BackButton.onClick(function(){
           if(!viewDetail.classList.contains('hidden')) {
             if(!strokeModal.classList.contains('hidden')) closeStrokeOrder();
@@ -1776,7 +1778,12 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
             goBackToStudy();
           }
         });
+        nativeBackBound=true;
       }
+      if(tg && tg.BackButton && typeof tg.BackButton.show === 'function') tg.BackButton.show();
+      // Telegram SDK can load in a normal browser: initData distinguishes a real launch.
+      document.documentElement.classList.toggle('hsk-telegram-back-active',
+        !!(nativeBackBound && tg && tg.initData && tg.BackButton && typeof tg.BackButton.show === 'function'));
     }catch(e){}
   }
   init();

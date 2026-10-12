@@ -5,6 +5,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -32,6 +33,9 @@ interface AndroidCourseApi {
         @Header("Authorization") authorization: String,
     ): Response<Hsk30PromoMarkResponse>
 
+    // Clients with conditional N1 remediation advertise the capability.
+    // Older APKs omit this header and receive only standard exit questions.
+    @Headers("X-HSK-N1-Transfer: v1")
     @GET("api/v3/android/course/lesson/{lessonOrder}")
     suspend fun lesson(
         @Header("Authorization") authorization: String,

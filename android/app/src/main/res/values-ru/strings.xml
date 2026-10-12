@@ -58,7 +58,7 @@
     <string name="offline_section_title">Для этого раздела нужен интернет</string>
     <string name="offline_section_body">Без интернета работают словарь и карта курса. Когда связь появится, приложение подключится само.</string>
     <string name="offline_lesson">Для урока нужен интернет</string>
-    <string name="offline_practice">Без интернета работает только словарь</string>
+    <string name="offline_practice">Без интернета работают словарь и готовые фразы</string>
     <string name="error_timeout">Сервер не ответил. Попробуйте ещё раз.</string>
     <string name="error_server">Временная ошибка сервера. Попробуйте немного позже.</string>
     <string name="error_unknown">Произошла непредвиденная ошибка.</string>
@@ -377,7 +377,7 @@
     <string name="ad_unavailable">Сейчас рекламы нет. Попробуйте позже.</string>
     <string name="limit_try_trial">7 дней Pro бесплатно</string>
     <string name="limit_screen_badge">HSK AI PRO ⭐</string>
-    <string name="limit_benefit_lessons">Все уроки открыты</string>
+    <string name="limit_benefit_lessons">Уроки HSK 2.0 и доступных уровней HSK 3.0</string>
     <string name="limit_benefit_practice">Практика без лимита</string>
     <string name="limit_benefit_voice">Разговоры с AI Voice</string>
     <string name="limit_later">Позже</string>
@@ -527,4 +527,22 @@
     <string name="hsk30_payment_rejected_title">Платёж за HSK 3.0 отклонён</string>
     <string name="hsk30_payment_rejected_body">Платёж не принят. Проверьте данные и отправьте его заново.</string>
     <string name="hsk30_payment_retry">Попробовать снова</string>
+    <string name="practice_ready_phrases_title">Готовые фразы</string>
+    <string name="practice_ready_phrases_body">300 китайских фраз · 12 тем</string>
+    <string name="practice_hsk30_locked">Для доступа к практикам HSK 3.0 нужно открыть курс.</string>
+    <string name="practice_hsk30_unlock">Открыть доступ к курсу</string>
+    <string name="ready_phrases_title">Готовые фразы</string>
+    <string name="ready_phrases_intro">Китайские фразы для повседневных ситуаций</string>
+    <string name="ready_phrases_search_hint">Поиск по китайскому, пиньиню или переводу</string>
+    <string name="ready_phrases_all">Все фразы</string>
+    <string name="ready_phrases_saved">Сохранённые</string>
+    <string name="ready_phrases_count">%1$d из %2$d фраз</string>
+    <string name="ready_phrases_save">Сохранить</string>
+    <string name="ready_phrases_copy">Копировать</string>
+    <string name="ready_phrases_copied">Китайская фраза скопирована</string>
+    <string name="ready_phrases_no_results">По запросу ничего не найдено.</string>
+    <string name="ready_phrases_no_saved">Сохранённые фразы появятся здесь.</string>
+    <string name="ready_phrases_load_failed">Не удалось прочитать подборку фраз.</string>
+    <string name="ready_phrases_retry">Повторить</string>
+    <string name="ready_phrases_back">Назад</string>
 </resources>

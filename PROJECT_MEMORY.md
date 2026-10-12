@@ -10780,3 +10780,72 @@ Risk:
 
 Follow-up:
 - Preserve deferred-response and real Compose regressions; verify the signed APK on the affected phone after deployment. These changes do not prove physical microphone behavior or production payment/provider operation.
+
+
+### 2026-10-12 — HSK 3.0 N1 quality foundation (draft PR #142)
+
+Changed:
+- Added read-only `scripts/hsk30/verify_nhsk1_learning_contract.py`, 6 focused unit tests and N1-only CI; checks 103 runtime parts/15 source lessons, map/checkpoint and answer contracts.
+- Defined learning-pilot and migration rules in `docs/HSK30_N1_LEARNING_ENGINE_V2.md`.
+
+Why:
+- Improve teaching content safely before editing lessons. Existing `material_ref` depends on section/card positions, and Mini App/Android cache differently.
+
+Files touched:
+- `scripts/hsk30/verify_nhsk1_learning_contract.py`, `tests/test_nhsk1_learning_contract.py`, `.github/workflows/hsk30-nhsk1-quality.yml`, `docs/HSK30_N1_LEARNING_ENGINE_V2.md`.
+
+Risk:
+- Quality gate only, no changes to lessons, payments, access, XP or live rendering; pedagogical validity still needs human audit.
+
+Follow-up:
+- Pilot source lesson 1 (N1 runtime parts 1–4), define stable question identity/cache migration before editing graded cards, then test Mini App and Android together.
+
+### 2026-10-12 — N1 pilot contextual feedback (draft PR #142)
+
+Changed:
+- Added 27 verified, source-lesson-1 contextual explanations in UZ (Latin), RU and TJ for `nhsk1` runtime lesson parts 1–4.
+- Authored feedback lives in `scripts/hsk30/learning_overlays/nhsk1_lesson_01.json`; `scripts/hsk30/apply_learning_overlays.py` guards section/card index, type and answer text, and `scripts/gen_course_v3_from_seed.py` reapplies the overlay to keep generated output reproducible.
+- Mini App opt-in rendering (`learning_feedback=n1_context_v1`) displays both correct-answer context and wrong-answer reasoning. Android already displays server-delivered `explanation` without parser changes.
+- N1 CI checks JS syntax, 9 focused unit tests, source validation, full 103-part contract and generator no-diff regeneration. Latest N1 run succeeded; generic Backend/Android runs are independent.
+
+Safety:
+- Verified `main` vs branch lesson payloads: aside from `explanation` and `learning_feedback`, all lesson fields are semantically identical — no graded card order, answer, material_ref, quiz, price, access or progress change.
+- Pending review; draft PR #142, `main` not changed.
+
+Follow-up:
+- Review pedagogy and translations in a real lesson, refresh caches for content updates, then design stable question identities and adaptive retry before adding/removing question cards.
+
+### 2026-10-12 — Adapt N1 daily plan to lesson errors (draft PR #142)
+
+Changed:
+- Enabled HSK 3.0 `nhsk1/2/3` server-side canonical lesson mistake refs (strict checked-in answer verification remains).
+- Split learning-plan weakness and mistake totals by HSK 2.0 vs HSK 3.0; classify listening recognition from canonical material format, not pronunciation category.
+- Prioritized available N1 mistake review in `DailyPlanService` behind the course task. Locked tasks remain unissuable, plan stays stable for the local day.
+- Added tests for N1 exit/retry canonical recording, forged material rejection, track isolation, listening labels, N1 plan priority and unavailable features. Backend targeted CI now executes these tests.
+
+Safety:
+- No new database schema, API task type, Android native UI element, billing, trial or limit path changed.
+- Same-day stored plan remains frozen by design; new evidence affects the next generated daily plan.
+
+Follow-up:
+- Add per-objective correct/incorrect mastery and word-SRS due information only after designing append-only user event storage and new tracking tests.
+
+### 2026-10-12 — HSK 3.0 N1 15-unit checkpoint candidate (draft PR #142)
+
+Changed:
+- N1 all 103 parts validated and generator reproducibility checked.
+- Fifteen source lesson checkpoints now have 62 independent/alternate example cards total: source unit 1 manually authored 3+3; units 2–15 source-derived 2+2 each from verified vocab/pinyin/grammar/example translations. Checkpoint sections appended only, original graded card refs unchanged.
+- New shared Python builder `scripts/hsk30/build_nhsk1_source_assessment.py`; `scripts/gen_course_v3_from_seed.py` reapplies it whenever N1 runtime is rebuilt. 14 checkpoint JSON files updated with deterministic output. N1 Python QA checks all 15 and no-diff regeneration all 103 parts.
+- Android native ViewModel now handles conditional transfer for all N1 checkpoints. Server returns a compatibility projection without the conditional retry bank to older APKs without the `X-HSK-N1-Transfer: v1` header, recomputing counts; new Android adds the capability header.
+- Added backend unit tests for old APK projection and preview limit preservation, native Kotlin tests for parsing all 15 checkpoints.
+- Earlier plan integration included HSK 2.0/3.0 mistake isolation, canonical N1 mistake capture and listening weakness detection; Pro/trial/payment/limit logic unchanged.
+
+Unfinished verification:
+- Latest backend/Android CI and UZ/RU/TJ real-device educational UX review, plus old APK smoke test. Draft PR not merged to main.
+- Persistent per-objective mastery and 1-/7-day retention are not implemented; rollout is a checkpoint+conditional feedback candidate, not proof all 103 lessons have been hand-edited or educationally validated.
+
+### 2026-10-13 — Tayyor gaplar offline katalogi
+
+- `scripts/ready_phrases/phrases.json` is the canonical 300-phrase/12-category source; `scripts/build_ready_phrases.py` validates and synchronizes Mini App and APK JSON assets.
+- Android search and favorites stay on-device (APK assets and DataStore). Mini App search, categories, copy, and favorites run client-side; only versioned static JSON is fetched.
+- HSK 3.0 locked users can still open local dictionary/phrasebook tools; server-backed practice remains behind the existing access gate.

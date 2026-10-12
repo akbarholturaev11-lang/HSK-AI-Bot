@@ -1,5 +1,6 @@
 package com.pomp.hskai.feature.lesson
 
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -33,6 +34,33 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+/* Shared N1 checkpoint transfer checks use a per-lesson retry bank in the
+ * server-provided lesson. Skip only the retry whose original objective passed.
+ * A resumed attempt with missing answer history deliberately shows the bank.
+ * The ordinary Course V3, paywall, material_ref and API count are unchanged. */
+internal fun nextN1PilotCardIndex(
+    lesson: com.pomp.hskai.domain.model.Lesson?,
+    startIndex: Int,
+    failedChecks: Set<Int>,
+    historyKnown: Boolean,
+): Int {
+    val checked = lesson ?: return startIndex
+    if (checked.level != "nhsk1" || !checked.isCheckpoint || checked.sections.none { it.purpose == "learning_repair_bank" }) return startIndex
+    var cursor = startIndex
+    var offset = 0
+    for (section in checked.sections) {
+        if (section.purpose == "learning_repair_bank") {
+            for (index in section.cards.indices) {
+                if (cursor == offset + index && historyKnown && index !in failedChecks) {
+                    cursor++
+                }
+            }
+        }
+        offset += section.cards.size
+    }
+    return cursor
+}
 
 /** What the learner has done with the card currently on screen. */
 sealed interface AnswerState {
@@ -253,6 +281,8 @@ class LessonViewModel(
     val state: StateFlow<LessonUiState> = _state.asStateFlow()
 
     private val mistakes = mutableListOf<CourseMistakeDto>()
+    private val n1FailedCheckIndices = mutableSetOf<Int>()
+    private var n1CheckHistoryKnown = true
     private var activeAttemptKey: String? = null
     private var eventId: String = ""
     private var loadGeneration: Long = 0
@@ -285,6 +315,8 @@ class LessonViewModel(
         activeAttemptKey = attemptKey
         eventId = eventIdFactory()
         mistakes.clear()
+        n1FailedCheckIndices.clear()
+        n1CheckHistoryKnown = true
         _state.value = LessonUiState()
         load()
     }
@@ -313,6 +345,15 @@ class LessonViewModel(
                     // nothing at all.
                     val saved = resumeStore?.lessonResumeIndex(level, lessonOrder) ?: 0
                     val cards = snapshot.lesson.cards.size
+                    val exitStart = snapshot.lesson.sections.takeWhile { it.purpose != "learning_exit_check" }
+                        .sumOf { it.cards.size }
+                    // Resume currently stores an index, not earlier answers.
+                    // If the learner already answered an exit question before
+                    // an interruption, the previous error history is unknown.
+                    // Showing all alternate examples is safer than silently
+                    // skipping the one that was missed.
+                    n1CheckHistoryKnown = saved <= exitStart
+                    n1FailedCheckIndices.clear()
                     _state.value = LessonUiState(
                         isLoading = false,
                         lesson = snapshot.lesson,
@@ -542,6 +583,24 @@ class LessonViewModel(
     }
 
     private fun record(correct: Boolean, explanation: String, chosen: String = "") {
+        // Capture failed objectives by exit-card position on N1 checkpoints.
+        // Android reuses its existing card renderers for the alternate bank.
+        val current = _state.value
+        val lesson = current.lesson
+        if (lesson?.level == "nhsk1" && lesson.isCheckpoint) {
+            var offset = 0
+            for (section in lesson.sections) {
+                val end = offset + section.cards.size
+                if (current.cardIndex in offset until end) {
+                    if (section.purpose == "learning_exit_check") {
+                        val check = current.cardIndex - offset
+                        if (correct) n1FailedCheckIndices.remove(check) else n1FailedCheckIndices.add(check)
+                    }
+                    break
+                }
+                offset = end
+            }
+        }
         _state.update {
             it.copy(
                 answer = AnswerState.Checked(correct, explanation, chosen),
@@ -557,7 +616,9 @@ class LessonViewModel(
     fun advance() {
         stopPronunciation()
         val current = _state.value
-        val next = current.cardIndex + 1
+        val next = nextN1PilotCardIndex(
+            current.lesson, current.cardIndex + 1, n1FailedCheckIndices, n1CheckHistoryKnown,
+        )
 
         if (!current.completionAllowed && next >= previewStopIndex()) {
             // The preview stops mid-lesson and cannot complete it. The server

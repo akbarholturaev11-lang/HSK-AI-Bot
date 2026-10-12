@@ -26,6 +26,11 @@ jobs:
           pip install -r requirements.txt aiosqlite
       - name: Run HSK 3.0 lesson limit regression
         run: python -m unittest tests.test_hsk30_lesson_limits tests.test_course_track_service tests.test_hsk30_promo_service tests.test_hsk30_switch_ui_contract tests.test_android_payment_method_dialog_contract
+      - name: Run HSK 3.0 currency checkout regressions
+        run: python -m unittest tests.test_hsk30_unlock_checkout tests.test_subscription_miniapp_card_banks
+      - name: Run learning plan and canonical mistake regressions
+        run: |
+          python -m unittest tests.test_daily_plan_service tests.test_learning_signals tests.test_course_lesson_mistake_material_service tests.test_android_n1_compat
       - name: Compile backend code
         run: |
           python -m compileall -q app tests
@@ -53,6 +58,6 @@ jobs:
         run: |
           python -m unittest tests.test_user_device_inventory_service tests.test_desktop_download_api tests.test_android_contextual_app_promo tests.test_android_analytics_service tests.test_android_push tests.test_android_account_notices tests.test_android_apk_download tests.test_admin_panel_has_no_dead_controls
       - name: Run advertisement placement, AI localization and default preset regressions
-        run: python -m unittest tests.test_ad_placement_service tests.test_course_ad_types tests.test_course_ad_translation_service tests.test_course_ads_module
+        run: python -m unittest tests.test_ad_placement_service tests.test_course_ad_types tests.test_course_ad_translation_service tests.test_course_ads_module tests.test_profile_limit_ui_contract
       - name: Check account deletion safety, request, and public instructions
         run: python -m unittest tests.test_admin_delete_safety tests.test_account_deletion_request tests.test_public_site

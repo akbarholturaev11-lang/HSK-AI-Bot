@@ -7,7 +7,7 @@
 -->
 <resources>
     <string name="limit_unlock_headline">Омӯзишро идома диҳед</string>
-    <string name="limit_unlock_button">HSK AI Pro гирифтан ⭐</string>
+    <string name="limit_unlock_button">Дидани тарифҳои Pro</string>
     <string name="limit_unlock_hint">Обуна баъди тасдиқи админ фаъол мешавад.</string>
     <string name="sub_title">HSK AI Pro</string>
     <string name="sub_intro">Мӯҳлати обуна ва усули пардохтро интихоб кунед.</string>

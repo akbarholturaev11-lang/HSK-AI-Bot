@@ -206,14 +206,6 @@ fun ProfileScreen(
                 )
             }
             item {
-                ProfileSubscriptionCard(
-                    accountIsPaid = account.isPaid,
-                    state = state,
-                    checkoutAvailable = subscriptionCheckoutAvailable,
-                    onOpenSubscription = onOpenSubscription,
-                )
-            }
-            item {
                 DailyGoalCard(
                     dailyXp = dailyXp,
                     dailyGoal = dailyGoal,
@@ -227,6 +219,15 @@ fun ProfileScreen(
                     completedLessons = courseProgress?.completedLessons
                         ?: state.profile?.stats?.completedLessons ?: 0,
                     streak = courseProgress?.streak ?: state.profile?.stats?.streak ?: 0,
+                )
+            }
+
+            item {
+                ProfileSubscriptionCard(
+                    accountIsPaid = account.isPaid,
+                    state = state,
+                    checkoutAvailable = subscriptionCheckoutAvailable,
+                    onOpenSubscription = onOpenSubscription,
                 )
             }
 

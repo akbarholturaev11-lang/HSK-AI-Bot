@@ -1,0 +1,332 @@
+{
+  "schema_version": 1,
+  "level": "nhsk1",
+  "source_lesson": 1,
+  "feedback_version": "n1_context_v1",
+  "cards": [
+    {
+      "part_no": 1,
+      "section_no": 1,
+      "card_no": 3,
+      "type": "meaning_guess",
+      "expected_answer": "salom",
+      "explanation": {
+        "uz": "你好 (nǐ hǎo) — bir kishiga salom berish. Bir nechta odamga murojaat qilsangiz, 大家好 (dàjiā hǎo) deyishingiz mumkin.",
+        "ru": "你好 (nǐ hǎo) — приветствие одному человеку. Для группы можно сказать 大家好 (dàjiā hǎo).",
+        "tj": "你好 (nǐ hǎo) — салом ба як нафар. Барои гурӯҳ метавонед 大家好 (dàjiā hǎo) гӯед."
+      }
+    },
+    {
+      "part_no": 1,
+      "section_no": 1,
+      "card_no": 5,
+      "type": "hanzi_choice",
+      "expected_answer": "大家",
+      "explanation": {
+        "uz": "大家 (dàjiā) — «hamma». 大家好 (dàjiā hǎo) — «Hammaga salom!»; 学生 (xuésheng) esa «talaba».",
+        "ru": "大家 (dàjiā) значит «все». 大家好 (dàjiā hǎo) — «Всем привет!»; 学生 (xuésheng) — «ученик».",
+        "tj": "大家 (dàjiā) маънои «ҳама»-ро дорад. 大家好 (dàjiā hǎo) — «Салом ба ҳама!»; 学生 (xuésheng) — «донишҷӯ»."
+      }
+    },
+    {
+      "part_no": 1,
+      "section_no": 1,
+      "card_no": 7,
+      "type": "pinyin_choice",
+      "expected_answer": "hǎo",
+      "explanation": {
+        "uz": "好 hǎo — uchinchi ohang. 你好 (nǐ hǎo) iborasida ham 好 uchinchi ohangda qoladi.",
+        "ru": "好 hǎo произносится третьим тоном. В 你好 (nǐ hǎo) слог 好 тоже сохраняет третий тон.",
+        "tj": "好 hǎo бо оҳанги сеюм талаффуз мешавад. Дар 你好 (nǐ hǎo) низ 好 оҳанги сеюм дорад."
+      }
+    },
+    {
+      "part_no": 1,
+      "section_no": 1,
+      "card_no": 9,
+      "type": "translation_choice",
+      "expected_answer": "学生",
+      "explanation": {
+        "uz": "学生 (xuésheng) — o'quvchi yoki talaba; 老师 (lǎoshī) — o'qituvchi. Ularni almashtirmang.",
+        "ru": "学生 (xuésheng) — ученик или студент; 老师 (lǎoshī) — преподаватель. Не путайте эти роли.",
+        "tj": "学生 (xuésheng) — хонанда ё донишҷӯ; 老师 (lǎoshī) — омӯзгор. Онҳоро омехта накунед."
+      }
+    },
+    {
+      "part_no": 1,
+      "section_no": 2,
+      "card_no": 2,
+      "type": "sentence_builder",
+      "expected_answer": "大家 好",
+      "explanation": {
+        "uz": "大家好！(Dàjiā hǎo!) — «Hammaga salom!». Avval kimga murojaat (大家), keyin salomlashish (好) keladi.",
+        "ru": "大家好！(Dàjiā hǎo!) — «Всем привет!». Сначала адресат 大家 («все»), затем 好 («привет»).",
+        "tj": "大家好！(Dàjiā hǎo!) — «Салом ба ҳама!». Аввал 大家 («ҳама»), баъд 好 («салом») меояд."
+      }
+    },
+    {
+      "part_no": 1,
+      "section_no": 2,
+      "card_no": 4,
+      "type": "reverse_builder",
+      "expected_answer": "大家好！",
+      "explanation": {
+        "uz": "大家好！(Dàjiā hǎo!) — ko'pchilikka salom. 大家 «hamma», 好 esa salomlashish ifodasi.",
+        "ru": "大家好！(Dàjiā hǎo!) — приветствие группе. 大家 значит «все», 好 здесь образует приветствие.",
+        "tj": "大家好！(Dàjiā hǎo!) — салом ба гурӯҳ. 大家 «ҳама», 好 қисми салом аст."
+      }
+    },
+    {
+      "part_no": 1,
+      "section_no": 3,
+      "card_no": 1,
+      "type": "meaning_guess",
+      "expected_answer": "hamma; barchangiz",
+      "explanation": {
+        "uz": "大家 (dàjiā) — ko'pchilikni anglatadi; 大家好! deb butun guruhga salom beriladi.",
+        "ru": "大家 (dàjiā) относится ко всей группе. 大家好! — приветствие всем сразу.",
+        "tj": "大家 (dàjiā) ба тамоми гурӯҳ ишора мекунад. 大家好! — салом ба ҳама."
+      }
+    },
+    {
+      "part_no": 2,
+      "section_no": 1,
+      "card_no": 2,
+      "type": "hanzi_choice",
+      "expected_answer": "们",
+      "explanation": {
+        "uz": "们 (men) — ko'plik qo'shimchasi: 你 (nǐ) — sen, 你们 (nǐmen) — sizlar. O'zi alohida salomlashish emas.",
+        "ru": "们 (men) — показатель множественного числа: 你 (nǐ) — ты, 你们 (nǐmen) — вы (мн. ч.).",
+        "tj": "们 (men) — пасванди ҷамъ: 你 (nǐ) — ту, 你们 (nǐmen) — шумо (ҷамъ)."
+      }
+    },
+    {
+      "part_no": 2,
+      "section_no": 1,
+      "card_no": 5,
+      "type": "pinyin_choice",
+      "expected_answer": "lǎoshī",
+      "explanation": {
+        "uz": "老师 (lǎoshī) — o'qituvchi. 老 — uchinchi ohang (lǎo), 师 — birinchi ohang (shī).",
+        "ru": "老师 (lǎoshī) — преподаватель. 老 — третий тон (lǎo), 师 — первый тон (shī).",
+        "tj": "老师 (lǎoshī) — омӯзгор. 老 — оҳанги сеюм (lǎo), 师 — оҳанги якум (shī)."
+      }
+    },
+    {
+      "part_no": 2,
+      "section_no": 1,
+      "card_no": 7,
+      "type": "translation_choice",
+      "expected_answer": "您",
+      "explanation": {
+        "uz": "您 (nín) — bir kishiga hurmat bilan «Siz» deyish. 你们 (nǐmen) — ko'p kishiga «sizlar»; farqi hurmat va sonda.",
+        "ru": "您 (nín) — вежливое «Вы» одному человеку. 你们 (nǐmen) — «вы» нескольким людям; это не одно и то же.",
+        "tj": "您 (nín) — «Шумо»-и эҳтиромӣ барои як нафар. 你们 (nǐmen) — «шумо» барои чанд нафар."
+      }
+    },
+    {
+      "part_no": 2,
+      "section_no": 1,
+      "card_no": 9,
+      "type": "listening_choice",
+      "expected_answer": "你们",
+      "explanation": {
+        "uz": "你们 (nǐmen) — «sizlar». Nutqda 你 (nǐ) va ko'plik 们 (men) birga keladi.",
+        "ru": "你们 (nǐmen) — «вы» во множественном числе: 你 (nǐ) плюс суффикс 们 (men).",
+        "tj": "你们 (nǐmen) — «шумо» дар ҷамъ: 你 (nǐ) ва пасванди 们 (men)."
+      }
+    },
+    {
+      "part_no": 2,
+      "section_no": 2,
+      "card_no": 2,
+      "type": "sentence_builder",
+      "expected_answer": "你们 好",
+      "explanation": {
+        "uz": "你们好！(Nǐmen hǎo!) — «Sizlarga salom!». 你们 «sizlar» so'zi 好 oldida turadi.",
+        "ru": "你们好！(Nǐmen hǎo!) — «Здравствуйте!» при обращении к группе. 你们 стоит перед 好.",
+        "tj": "你们好！(Nǐmen hǎo!) — «Ба шумо салом!» барои гурӯҳ. 你们 пеш аз 好 меояд."
+      }
+    },
+    {
+      "part_no": 2,
+      "section_no": 2,
+      "card_no": 3,
+      "type": "reverse_builder",
+      "expected_answer": "老师，您好！",
+      "explanation": {
+        "uz": "老师，您好！(Lǎoshī, nín hǎo!) — ustozga hurmatli salom. 老师 — murojaat, 您 — hurmat shakli.",
+        "ru": "老师，您好！(Lǎoshī, nín hǎo!) — вежливое приветствие учителя. 老师 — обращение, 您 — уважительная форма.",
+        "tj": "老师，您好！(Lǎoshī, nín hǎo!) — саломи эҳтиромӣ ба устод. 老师 — муроҷиат, 您 — шакли эҳтиромӣ."
+      }
+    },
+    {
+      "part_no": 2,
+      "section_no": 3,
+      "card_no": 2,
+      "type": "translation_choice",
+      "expected_answer": "老师",
+      "explanation": {
+        "uz": "老师 (lǎoshī) — o'qituvchi. 学生 (xuésheng) — talaba; darsda bu ikki rolni ajrating.",
+        "ru": "老师 (lǎoshī) — преподаватель, а 学生 (xuésheng) — учащийся. Это разные роли.",
+        "tj": "老师 (lǎoshī) — омӯзгор, аммо 学生 (xuésheng) — донишҷӯ. Ин ду нақш фарқ доранд."
+      }
+    },
+    {
+      "part_no": 3,
+      "section_no": 1,
+      "card_no": 2,
+      "type": "pinyin_choice",
+      "expected_answer": "xièxie",
+      "explanation": {
+        "uz": "谢谢 (xièxie) — «rahmat». Birinchi 谢 — to'rtinchi ohang; ikkinchisi odatda engil ohangda aytiladi.",
+        "ru": "谢谢 (xièxie) — «спасибо». Первый 谢 — четвёртый тон, второй обычно произносится нейтрально.",
+        "tj": "谢谢 (xièxie) — «раҳмат». 谢-и аввал оҳанги чорум, дуюм одатан оҳанги сабук дорад."
+      }
+    },
+    {
+      "part_no": 3,
+      "section_no": 1,
+      "card_no": 4,
+      "type": "translation_choice",
+      "expected_answer": "不客气",
+      "explanation": {
+        "uz": "不客气 (bú kèqi) — «arzimaydi». Birov 谢谢 (xièxie) — «rahmat» desa, shunday javob berish mumkin.",
+        "ru": "不客气 (bú kèqi) — «не за что». Так можно ответить на 谢谢 (xièxie) — «спасибо».",
+        "tj": "不客气 (bú kèqi) — «ҳеҷ гап не». Ин ҷавоб ба 谢谢 (xièxie) — «раҳмат» аст."
+      }
+    },
+    {
+      "part_no": 3,
+      "section_no": 1,
+      "card_no": 9,
+      "type": "meaning_guess",
+      "expected_answer": "xayr; ko'rishguncha",
+      "explanation": {
+        "uz": "再见 (zàijiàn) — xayrlashishda «ko'rishguncha»; 你好 (nǐ hǎo) esa uchrashgandagi salom.",
+        "ru": "再见 (zàijiàn) — «до свидания» при расставании; 你好 (nǐ hǎo) — приветствие при встрече.",
+        "tj": "再见 (zàijiàn) — «хайр» ҳангоми ҷудошавӣ; 你好 (nǐ hǎo) — салом ҳангоми вохӯрӣ."
+      }
+    },
+    {
+      "part_no": 3,
+      "section_no": 2,
+      "card_no": 1,
+      "type": "reverse_builder",
+      "expected_answer": "同学们，再见！",
+      "explanation": {
+        "uz": "同学们，再见！(Tóngxuémen, zàijiàn!) — «Talabalar, xayr!». 们 ko'plikni, 再见 xayrlashishni bildiradi.",
+        "ru": "同学们，再见！(Tóngxuémen, zàijiàn!) — «Студенты, до свидания!». 们 обозначает множественное число, 再见 — прощание.",
+        "tj": "同学们，再见！(Tóngxuémen, zàijiàn!) — «Донишҷӯён, хайр!». 们 ҷамъро, 再见 хайрбодро нишон медиҳад."
+      }
+    },
+    {
+      "part_no": 3,
+      "section_no": 2,
+      "card_no": 4,
+      "type": "sentence_builder",
+      "expected_answer": "同学 们 再见",
+      "explanation": {
+        "uz": "同学 + 们 = 同学们 («talabalar»); so'ng 再见 («xayr»). 们 so'zi 同学 dan keyin keladi.",
+        "ru": "同学 + 们 = 同学们 («студенты»); затем 再见 («до свидания»). Суффикс 们 идёт после 同学.",
+        "tj": "同学 + 们 = 同学们 («донишҷӯён»); баъд 再见 («хайр»). 们 пас аз 同学 меояд."
+      }
+    },
+    {
+      "part_no": 3,
+      "section_no": 3,
+      "card_no": 1,
+      "type": "meaning_guess",
+      "expected_answer": "Siz (hurmat shakli)",
+      "explanation": {
+        "uz": "您 (nín) — bir kishiga hurmat bilan murojaat. Masalan: 老师，您好！(Lǎoshī, nín hǎo!)",
+        "ru": "您 (nín) — вежливое обращение к одному человеку: 老师，您好！(Lǎoshī, nín hǎo!)",
+        "tj": "您 (nín) — муроҷиати эҳтиромӣ ба як нафар: 老师，您好！(Lǎoshī, nín hǎo!)"
+      }
+    },
+    {
+      "part_no": 4,
+      "section_no": 1,
+      "card_no": 1,
+      "type": "pinyin_choice",
+      "expected_answer": "nǐmen",
+      "explanation": {
+        "uz": "你们 (nǐmen) — ko'plikdagi «sizlar»: nǐ + engil ohangli men. 您 (nín) esa bir kishiga hurmat shakli.",
+        "ru": "你们 (nǐmen) — «вы» (мн. ч.): nǐ + нейтральный men. 您 (nín) — уважительное «Вы» одному человеку.",
+        "tj": "你们 (nǐmen) — «шумо» (ҷамъ): nǐ + men бо оҳанги сабук. 您 (nín) — эҳтиром ба як нафар."
+      }
+    },
+    {
+      "part_no": 4,
+      "section_no": 1,
+      "card_no": 4,
+      "type": "meaning_guess",
+      "expected_answer": "o'qituvchi; ustoz",
+      "explanation": {
+        "uz": "老师 (lǎoshī) — ustoz. Dialogda 老师，您好！ deb o'qituvchiga hurmat bilan salom beriladi.",
+        "ru": "老师 (lǎoshī) — преподаватель. 老师，您好！ — уважительное приветствие учителя.",
+        "tj": "老师 (lǎoshī) — устод. 老师，您好！ — саломи эҳтиромӣ ба омӯзгор."
+      }
+    },
+    {
+      "part_no": 4,
+      "section_no": 1,
+      "card_no": 5,
+      "type": "reverse_builder",
+      "expected_answer": "老师，您好！",
+      "explanation": {
+        "uz": "老师，您好！(Lǎoshī, nín hǎo!) — o'qituvchiga hurmatli salom. 老师 murojaati va 您 hurmat shakliga e'tibor bering.",
+        "ru": "老师，您好！(Lǎoshī, nín hǎo!) — приветствие учителя. 老师 — обращение, 您 — вежливое «Вы».",
+        "tj": "老师，您好！(Lǎoshī, nín hǎo!) — салом ба устод. 老师 — муроҷиат, 您 — «Шумо»-и эҳтиромӣ."
+      }
+    },
+    {
+      "part_no": 4,
+      "section_no": 2,
+      "card_no": 2,
+      "type": "quick_quiz",
+      "expected_answer": "王老师，你好！",
+      "explanation": {
+        "uz": "Dialog oxirida AI小语 (Xiǎoyǔ) 王老师，你好！ — «Ustoz Van, salom!» deydi. Gapni dialogning oxirgi replikasi bilan solishtiring.",
+        "ru": "В конце диалога AI小语 (Xiǎoyǔ) говорит 王老师，你好！ — «Здравствуйте, учитель Ван!». Сверьте с последней репликой.",
+        "tj": "Дар охири гуфтугӯ AI小语 (Xiǎoyǔ) мегӯяд: 王老师，你好！ — «Устод Ван, салом!». Ба ҷумлаи охир нигаред."
+      }
+    },
+    {
+      "part_no": 4,
+      "section_no": 2,
+      "card_no": 3,
+      "type": "dialog_cloze",
+      "expected_answer": "王老师，你好！",
+      "explanation": {
+        "uz": "Bo'sh joyga 王老师，你好！ to'g'ri keladi: AI小语 (Xiǎoyǔ) ustoz Vanga salom beryapti.",
+        "ru": "Пропущенная фраза — 王老师，你好！: AI小语 (Xiǎoyǔ) здоровается с учителем Ван.",
+        "tj": "Ҷумлаи нопурра — 王老师，你好！: AI小语 (Xiǎoyǔ) ба устод Ван салом мегӯяд."
+      }
+    },
+    {
+      "part_no": 4,
+      "section_no": 2,
+      "card_no": 4,
+      "type": "gap_fill",
+      "expected_answer": "小",
+      "explanation": {
+        "uz": "AI小语 (AI Xiǎoyǔ) — personajning ismi. Bo'sh joyda 小 (xiǎo) bo'ladi; bu erda ieroglif ism tarkibiga kiradi.",
+        "ru": "AI小语 (AI Xiǎoyǔ) — имя персонажа. Пропущен иероглиф 小 (xiǎo), здесь это часть имени.",
+        "tj": "AI小语 (AI Xiǎoyǔ) — номи қаҳрамон аст. Иероглифи гумшуда 小 (xiǎo) қисми ном мебошад."
+      }
+    },
+    {
+      "part_no": 4,
+      "section_no": 2,
+      "card_no": 5,
+      "type": "quick_quiz",
+      "expected_answer": "AI小语，你好！",
+      "explanation": {
+        "uz": "Birinchi replikada 王亦菲 (Wáng Yìfēi) AI小语，你好！ deb AI Syaoyuyga salom beradi; bu dialog boshlanishi.",
+        "ru": "В первой реплике 王亦菲 (Wáng Yìfēi) говорит AI小语，你好！ — приветствие AI Сяоюй.",
+        "tj": "Дар ҷумлаи аввал 王亦菲 (Wáng Yìfēi) мегӯяд AI小语，你好！ — салом ба AI Сяоюй."
+      }
+    }
+  ]
+}

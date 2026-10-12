@@ -16,10 +16,10 @@ from typing import Any
 
 LESSON_MISTAKE_MATERIAL_VERSION = 2
 LESSON_MATERIAL_LANGUAGES = {"uz", "ru", "tj"}
-LESSON_MATERIAL_LEVELS = {"hsk1", "hsk2", "hsk3", "hsk4"}
+LESSON_MATERIAL_LEVELS = {"hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3"}
 LESSON_STATIC_DIR = Path(__file__).resolve().parents[1] / "static" / "course_v3_data"
 _MATERIAL_REF_RE = re.compile(
-    r"^lesson:(hsk[1-4]):(\d+):section:(\d+):card:(\d+)$"
+    r"^lesson:(hsk[1-4]|nhsk[1-3]):(\d+):section:(\d+):card:(\d+)$"
 )
 
 

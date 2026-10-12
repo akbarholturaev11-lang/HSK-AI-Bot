@@ -948,6 +948,166 @@
           }
         }
       ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mustaqil bilim tekshiruvi",
+        "ru": "Проверка знаний",
+        "tj": "Санҷиши мустақили дониш"
+      },
+      "section_purpose": "learning_exit_check",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_06_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Tinglab taniy olasizmi?",
+            "ru": "Узнайте слово на слух",
+            "tj": "Калимаро аз шунидан шиносед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "去",
+          "audio_pinyin": "qù",
+          "options": [
+            "手机",
+            "号",
+            "去",
+            "哪儿"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "去 (qù) — bormoq. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "去 (qù) — идти; ехать. Сравните звучание с другими словами.",
+            "tj": "去 (qù) — рафтан. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_06_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_check": "n1_exit_check_v1",
+          "title": {
+            "uz": "Jumlani tushundingizmi?",
+            "ru": "Проверьте понимание",
+            "tj": "Ҷумларо фаҳмидед?"
+          },
+          "prompt": {
+            "uz": "“我想去超市。” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «我想去超市。».",
+            "tj": "Тарҷумаи ҷумлаи «我想去超市。»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Men supermarketga bormoqchiman.",
+              "ru": "Я хочу пойти в супермаркет.",
+              "tj": "Ман мехоҳам ба супермаркет равам."
+            },
+            {
+              "uz": "Akam dam olishni xohlamaydi.",
+              "ru": "Мой старший брат не хочет отдыхать.",
+              "tj": "Бародари калонам истироҳат кардан намехоҳад."
+            },
+            {
+              "uz": "Men supermarketga narsa sotib olish uchun bormoqchiman.",
+              "ru": "Я хочу пойти в супермаркет купить вещи.",
+              "tj": "Ман мехоҳам ба супермаркет рафта чиз харам."
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我想去超市。 (Wǒ xiǎng qù chāoshì.) — Men supermarketga bormoqchiman.. “想” fe’l oldidan kelib xohish yoki niyatni bildiradi.",
+            "ru": "我想去超市。 (Wǒ xiǎng qù chāoshì.) — Я хочу пойти в супермаркет.. “想” ставится перед глаголом и выражает желание или намерение.",
+            "tj": "我想去超市。 (Wǒ xiǎng qù chāoshì.) — Ман мехоҳам ба супермаркет равам.. “想” пеш аз феъл омада, хоҳиш ё ниятро ифода мекунад."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Boshqa misolda qayta sinash",
+        "ru": "Другой пример",
+        "tj": "Мисоли дигар барои санҷиш"
+      },
+      "section_purpose": "learning_repair_bank",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "learning_objective": "n1_source_06_listen",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Boshqa so'zni tinglang",
+            "ru": "Послушайте другое слово",
+            "tj": "Калимаи дигарро гӯш кунед"
+          },
+          "prompt": {
+            "uz": "Eshitilgan xitoycha so'zni tanlang.",
+            "ru": "Выберите услышанное китайское слово.",
+            "tj": "Калимаи чинии шунидашударо интихоб кунед."
+          },
+          "audio_text": "哪儿",
+          "audio_pinyin": "nǎr",
+          "options": [
+            "手机",
+            "号",
+            "去",
+            "哪儿"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "哪儿 (nǎr) — qayer. Talaffuzni qayta tinglab, so'zni farqlang.",
+            "ru": "哪儿 (nǎr) — где; куда. Сравните звучание с другими словами.",
+            "tj": "哪儿 (nǎr) — куҷо. Овозро боз шунида, калимаро фарқ кунед."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "learning_objective": "n1_source_06_sentence",
+          "learning_feedback": "n1_context_v1",
+          "learning_retry": "n1_exit_check_v1",
+          "title": {
+            "uz": "Yangi jumlani tushuning",
+            "ru": "Поймите другое предложение",
+            "tj": "Ҷумлаи дигарро фаҳмед"
+          },
+          "prompt": {
+            "uz": "“我哥哥不想休息。” jumlasining ma'nosini tanlang.",
+            "ru": "Выберите перевод фразы «我哥哥不想休息。».",
+            "tj": "Тарҷумаи ҷумлаи «我哥哥不想休息。»-ро интихоб кунед."
+          },
+          "options": [
+            {
+              "uz": "Men supermarketga bormoqchiman.",
+              "ru": "Я хочу пойти в супермаркет.",
+              "tj": "Ман мехоҳам ба супермаркет равам."
+            },
+            {
+              "uz": "Akam dam olishni xohlamaydi.",
+              "ru": "Мой старший брат не хочет отдыхать.",
+              "tj": "Бародари калонам истироҳат кардан намехоҳад."
+            },
+            {
+              "uz": "Men supermarketga narsa sotib olish uchun bormoqchiman.",
+              "ru": "Я хочу пойти в супермаркет купить вещи.",
+              "tj": "Ман мехоҳам ба супермаркет рафта чиз харам."
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我哥哥不想休息。 (Wǒ gēge bù xiǎng xiūxi.) — Akam dam olishni xohlamaydi.. “想” fe’l oldidan kelib xohish yoki niyatni bildiradi.",
+            "ru": "我哥哥不想休息。 (Wǒ gēge bù xiǎng xiūxi.) — Мой старший брат не хочет отдыхать.. “想” ставится перед глаголом и выражает желание или намерение.",
+            "tj": "我哥哥不想休息。 (Wǒ gēge bù xiǎng xiūxi.) — Бародари калонам истироҳат кардан намехоҳад.. “想” пеш аз феъл омада, хоҳиш ё ниятро ифода мекунад."
+          }
+        }
+      ]
     }
   ]
 }

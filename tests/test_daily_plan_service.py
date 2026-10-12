@@ -171,6 +171,31 @@ class WeaknessTests(unittest.TestCase):
         drills = [task for task in tasks if task["t"] == TASK_SKILL_DRILL]
         self.assertEqual(drills, [])
 
+    def test_n1_new_mistake_prioritizes_review_over_voice_for_short_plan(self):
+        active = signals(
+            level="nhsk1", plan_size=2, mistakes_total=1,
+            goal="daily_communication",
+            current_part=5, total_parts=103,
+            weakness={"word": 0, "grammar": 0, "character": 0,
+                      "pronunciation": 0, "listening": 1},
+        )
+        task_types = types(DailyPlanService.build(active, seed="pilot"))
+        self.assertEqual(task_types, [TASK_CONTINUE_LESSON, TASK_MISTAKE_REVIEW])
+
+    def test_n1_no_available_review_still_respects_entitlements(self):
+        active = signals(level="nhsk1", plan_size=2, mistakes_total=3,
+                         current_part=5, total_parts=103)
+        blocked = DailyPlanService.build(
+            active, access={"mistake_review": ACCESS_LOCKED}, seed="pilot",
+        )
+        self.assertNotIn(TASK_MISTAKE_REVIEW, types(blocked))
+        self.assertEqual(blocked[0]["t"], TASK_CONTINUE_LESSON)
+
+    def test_n1_review_is_never_issued_when_no_errors(self):
+        active = signals(level="nhsk1", plan_size=3, mistakes_total=0,
+                         current_part=5, total_parts=103)
+        self.assertNotIn(TASK_MISTAKE_REVIEW, types(DailyPlanService.build(active, seed="pilot")))
+
     def test_no_mistakes_means_no_review_task(self):
         tasks = DailyPlanService.build(signals(mistakes_total=0, plan_size=4), seed="u1")
         self.assertNotIn(TASK_MISTAKE_REVIEW, types(tasks))

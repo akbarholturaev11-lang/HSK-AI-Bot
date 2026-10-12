@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005-section-title">
 <script src="/assets/characters/hsk-character-pack.js?v=20260921c"></script>
 <script src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
-<script src="/assets/characters/hsk-study-preparing.js?v=20261008-1"></script>
+<script src="/assets/characters/hsk-study-preparing.js?v=20261009-compact-1"></script>
 <script src="/assets/characters/hsk-lesson-presentation.js?v=20260921c"></script>
 <style>
 :root{
@@ -280,6 +280,21 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .fcoach-col{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:8px}
 .fcoach-slot:empty{display:none}
 .fcoach-slot>*{margin:0!important}
+/* Keep translated question cards full-width inside the scrollable lesson body. */
+.fcoach-dock.question{align-items:center;margin-top:2px;margin-bottom:6px}
+.fcoach-dock.question .fcoach{width:72px;height:78px;min-height:78px;flex:0 0 72px}
+.fcoach-dock.question .fcoach-bubble{font-size:12px;line-height:1.35;padding:8px 11px}
+.fcoach-dock.question .fcoach-col{gap:0}
+.fbody .qcard{width:100%;min-width:0}
+.fbody .qcard .qh.qask{font-size:clamp(19px,5.2vw,25px);line-height:1.35;overflow-wrap:break-word;letter-spacing:normal}
+.fbody .opt .k{flex-shrink:0}
+@media(max-width:390px),(max-height:740px){
+  .fcoach-dock.question .fcoach{width:60px;height:66px;min-height:66px;flex-basis:60px}
+  .fcoach-dock.question{margin-top:0;margin-bottom:4px}
+  .fbody{padding-top:6px}
+  .fbody .qcard{padding:14px 12px;margin-bottom:12px}
+  .fbody .opt{min-height:50px;padding:11px 12px;margin-bottom:8px}
+}
 @media(max-height:650px){.fcoach{width:76px;height:82px;min-height:82px;flex-basis:76px}.fcoach-bubble{font-size:12px;padding:8px 11px}}
 .fbody{flex:1;min-height:0;overflow-y:auto;padding:10px 18px 20px}
 .kicker{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;padding:5px 11px;border-radius:12px;margin:4px 0 14px}
@@ -307,21 +322,6 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .opt.sel{border-color:var(--jade);background:var(--jadebg);color:var(--jade)}
 .opt.bad{border-color:var(--cin);background:var(--cinbg);color:var(--cin2)}
 .opt small{display:block;color:var(--ink3);font-size:12px;margin-top:2px}
-
-/* Compact lesson viewport: keep localized prompts and answer choices in
-   the same scroll area. The mascot remains a small instruction header. */
-@media(max-width:600px){
-  .fcoach-dock{margin:4px 16px 6px;gap:8px}
-  .fcoach{width:68px;height:76px;min-height:76px;flex:0 0 68px}
-  .fcoach-bubble{font-size:12px;line-height:1.4;padding:9px 11px}
-  .fbody{padding:8px 16px calc(18px + var(--safe-b))}
-  .qcard{padding:16px 13px;margin-bottom:14px}
-  .qcard .qh.qask{font-size:clamp(21px,6vw,27px);line-height:1.32;letter-spacing:0;overflow-wrap:anywhere}
-  .qcard .gap{font-size:clamp(21px,6vw,28px);overflow-wrap:anywhere}
-  .opt{min-width:0;padding:12px 13px;overflow-wrap:anywhere}
-  .opt .k{flex:0 0 23px}
-}
-
 /* teaching word */
 .wc{text-align:center;padding:8px 0}
 .wc .big{font-size:92px;line-height:1}
@@ -467,6 +467,10 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .lvb.goal{margin-left:6px;background:var(--jadebg);color:var(--jade)}
 .pro.pro-on{background:linear-gradient(135deg,#1f2a24,var(--ink))}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px 16px 0}
+.profile-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding-top:10px}
+.profile-stats .stat{padding:10px 8px;border-radius:12px}
+.profile-stats .stat b{font-size:18px;line-height:1.3}
+.profile-stats .stat small{display:block;margin-top:2px;font-size:12px;line-height:1.35}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:12px 4px;text-align:center}
 .stat b{display:block;font-size:20px;font-weight:600}.stat small{font-size:11px;color:var(--ink2)}
 .set{margin:0 16px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
@@ -1237,9 +1241,11 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
   100%{opacity:0;transform:translate(-50%,-100%) scale(.82)}
 }
 @media (prefers-reduced-motion:reduce){.node.unlock-reveal,.node.unlock-reveal .ring,.unlock-lock-pop{animation:none!important}}
+/* Telegram owns Back only after the host BackButton callback has been registered. */
+html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 </style>
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
-<link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261008-scene-1">
+<link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
 </head>
 <body class="hsk-scene-page">
 <div class="wrap">
@@ -1294,13 +1300,13 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261009-localized-copy"></script>
+<script defer src="/course_v3_data/ads.js?v=20261010-limit-original-restored-1"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
-  ru:{trialOn:"HSK AI Pro открыт на 7 дней",trialFail:"Сейчас не получилось",trialTitle:"HSK AI Pro — 7 дней бесплатно",trialBody:"Попробуете все основные возможности. Деньги автоматически не спишутся.",trialCta:"Попробовать 7 дней бесплатно",trialActive:"HSK AI Pro активен",trialLeft:"осталось дней: {n}",trialLeftHours:"Заканчивается сегодня · осталось часов: {n}",trialLeftSoon:"Заканчивается сегодня · меньше часа",trialUsed:"Пробный период уже использован",planPay:"Оформить HSK AI Pro",planFree:"Начать бесплатно",planTitle:"Ваш личный план готов",planBody:"Выберите, как начать. Бесплатно можно пользоваться всегда — с дневными лимитами.",nav:{course:"Курс",mashq:"Практика",voice:"AI Voice",rating:"Рейтинг",profile:"Профиль"},cont:"Продолжить",check:"Проверить",next:"Продолжить",lessons:"урок",unit:"Раздел",done:"завершено",here:"Вы здесь",stage:"этап",completeOf:"выполнено",finishPrev:"Завершите предыдущий урок",repeat:"Повторить",lessonDone:"Урок завершён!",lessonDoneSub:"Отличная работа. Следующий этап ждёт.",correct:"Верно!",wrong:"Неверно",rightAns:"Правильный ответ:",newWord:"Новое слово",grammar:"Грамматика",dialog:"Диалог",listen:"Послушать",buildSent:"Соберите предложение",matchPairs:"Соедините пары",say:"Произнесите",mashqSub:"Закрепление и проверка",dict:"Словарь иероглифов",dictSub:"HSK 1–4 · написание, пиньинь, значение",recog:"Распознавание иероглифов",recogSub:"Найдите нужный среди похожих",pron:"Произношение",pronSub:"Слушай, повторяй, проверка тонов",testCenter:"Тест-центр",testSub:"Экзамены HSK и определение уровня",mistakes:"Мои ошибки",mistakesSub:"Работа над слабыми местами",voiceTitle:"Поговорите с AI",voiceSub:"Живой разговор с пандой 阿宝. Слушай, говори, получай исправления.",voiceStart:"Начать разговор",league:"Лига 朱雀",you:"Вы",unlockTitle:"Откройте всё",unlockSub:"AI Voice, все уроки HSK 1–4 и безлимит",unlockBtn:"HSK AI Pro ⭐️",learner:"ученик",premium:"HSK AI Pro",xp:"XP",streak:"дней",rank:"место",lang:"Язык",notif:"Уведомления",goal:"Дневная цель",help:"Помощь",helpTitle:"Помощь",helpText:"Возникла ошибка или проблема в приложении? Коротко напишите админу и приложите screenshot — мы поможем.",helpBtn:"Написать админу",helpNoContact:"Контакт админа пока недоступен. Попробуйте позже.",on:"Вкл",friends:"Друзья",payTitle:"HSK AI Pro",paySub:"Откройте весь путь HSK",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",subscribe:"Получить HSK AI Pro ⭐️",later:"Позже",lockedLesson:"Этот урок в HSK AI Pro"},
-  uz:{trialOn:"HSK AI Pro 7 kunga ochildi",trialFail:"Hozir ochib bo'lmadi",trialTitle:"HSK AI Pro — 7 kun bepul",trialBody:"Barcha asosiy imkoniyatlarni sinab ko'rasiz. Avtomatik pul yechilmaydi.",trialCta:"7 kun bepul sinash",trialActive:"HSK AI Pro faol",trialLeft:"{n} kun qoldi",trialLeftHours:"Bugun tugaydi · {n} soat qoldi",trialLeftSoon:"Bugun tugaydi · 1 soatdan kam",trialUsed:"Sinov muddatidan foydalangansiz",planPay:"HSK AI Pro olish",planFree:"Bepul boshlash",planTitle:"Shaxsiy rejangiz tayyor",planBody:"Qanday boshlashni tanlang. Bepul rejimdan doim foydalanish mumkin — kunlik limitlar bilan.",nav:{course:"Kurs",mashq:"Mashq",voice:"AI Voice",rating:"Reyting",profile:"Profil"},cont:"Davom etish",check:"Tekshirish",next:"Davom etish",lessons:"dars",unit:"Bo'lim",done:"tugallandi",here:"Shu yerda",stage:"bosqich",completeOf:"bajarildi",finishPrev:"Avvalgi darsni tugating",repeat:"Takrorlash",lessonDone:"Dars tugadi!",lessonDoneSub:"Ajoyib! Keyingi bosqich kutyapti.",correct:"To'g'ri!",wrong:"Noto'g'ri",rightAns:"To'g'ri javob:",newWord:"Yangi so'z",grammar:"Grammatika",dialog:"Dialog",listen:"Tinglash",buildSent:"Gapni tuzing",matchPairs:"Juftlarni moslang",say:"Talaffuz qiling",mashqSub:"Mustahkamlash va sinash",dict:"Ieroglif lug'ati",dictSub:"HSK 1–4 · yozilishi, pinyin, ma'no",recog:"Ieroglif tanish",recogSub:"O'xshashlardan to'g'risini toping",pron:"Talaffuz mashqi",pronSub:"Eshit, takrorla, ton tekshiruvi",testCenter:"Test markazi",testSub:"HSK imtihonlari va daraja aniqlash",mistakes:"Xatolarim",mistakesSub:"Zaif joylar ustida ishlash",voiceTitle:"AI bilan gaplashing",voiceSub:"Panda 阿宝 bilan jonli suhbat. Eshit, gapir, tuzatish ol.",voiceStart:"Suhbatni boshlash",league:"朱雀 ligasi",you:"Siz",unlockTitle:"Hammasini oching",unlockSub:"AI Voice, barcha HSK 1–4 darslar va cheksiz",unlockBtn:"HSK AI Pro ⭐️",learner:"o'quvchi",premium:"HSK AI Pro",xp:"XP",streak:"kun",rank:"o'rin",lang:"Til",notif:"Bildirishnomalar",goal:"Kunlik maqsad",help:"Yordam",helpTitle:"Yordam",helpText:"Mini appda biror xatolik yoki muammo bo'lsa, adminga qisqa yozing va screenshot yuboring — yordam beramiz.",helpBtn:"Adminga yozish",helpNoContact:"Admin kontakti hozircha mavjud emas. Keyinroq urinib ko'ring.",on:"Yoq",friends:"Do'stlar",payTitle:"HSK AI Pro",paySub:"Butun HSK yo'lini oching",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",subscribe:"HSK AI Pro ⭐️ olish",later:"Keyinroq",lockedLesson:"Bu dars HSK AI Pro'da"},
-  tj:{trialOn:"HSK AI Pro ба 7 рӯз кушода шуд",trialFail:"Ҳозир нашуд",trialTitle:"HSK AI Pro — 7 рӯз ройгон",trialBody:"Ҳамаи имкониятҳои асосиро месанҷед. Худкор пул гирифта намешавад.",trialCta:"7 рӯз ройгон санҷидан",trialActive:"HSK AI Pro фаъол",trialLeft:"{n} рӯз монд",trialLeftHours:"Имрӯз тамом мешавад · {n} соат монд",trialLeftSoon:"Имрӯз тамом мешавад · камтар аз 1 соат",trialUsed:"Шумо аллакай санҷишро истифода бурдед",planPay:"HSK AI Pro гирифтан",planFree:"Ройгон оғоз кардан",planTitle:"Нақшаи шахсии шумо тайёр",planBody:"Интихоб кунед, ки чӣ тавр оғоз мекунед. Режими ройгон ҳамеша дастрас — бо маҳдудияти рӯзона.",nav:{course:"Курс",mashq:"Машқ",voice:"AI Voice",rating:"Рейтинг",profile:"Профил"},cont:"Идома",check:"Санҷидан",next:"Идома",lessons:"дарс",unit:"Фасл",done:"анҷом",here:"Ин ҷо",stage:"зина",completeOf:"иҷро шуд",finishPrev:"Дарси пешинаро анҷом диҳед",repeat:"Такрор",lessonDone:"Дарс анҷом ёфт!",lessonDoneSub:"Офарин! Зинаи навбатӣ интизор аст.",correct:"Дуруст!",wrong:"Нодуруст",rightAns:"Ҷавоби дуруст:",newWord:"Калимаи нав",grammar:"Грамматика",dialog:"Гуфтугӯ",listen:"Гӯш кардан",buildSent:"Ҷумларо созед",matchPairs:"Ҷуфтҳоро мувофиқ кунед",say:"Талаффуз кунед",mashqSub:"Мустаҳкам ва санҷиш",dict:"Луғати иероглиф",dictSub:"HSK 1–4 · навишт, пинйин, маъно",recog:"Шинохти иероглиф",recogSub:"Аз байни монандҳо дурустро ёбед",pron:"Машқи талаффуз",pronSub:"Гӯш кун, такрор кун",testCenter:"Маркази тест",testSub:"Имтиҳонҳои HSK ва муайянкунии сатҳ",mistakes:"Хатоҳои ман",mistakesSub:"Кор бар ҷойҳои заиф",voiceTitle:"Бо AI сӯҳбат кунед",voiceSub:"Сӯҳбати зинда бо панда 阿宝.",voiceStart:"Оғози сӯҳбат",league:"Лигаи 朱雀",you:"Шумо",unlockTitle:"Ҳамаро кушоед",unlockSub:"AI Voice ва ҳамаи дарсҳо",unlockBtn:"HSK AI Pro ⭐️",learner:"донишҷӯ",premium:"HSK AI Pro",xp:"XP",streak:"рӯз",rank:"ҷой",lang:"Забон",notif:"Огоҳиҳо",goal:"Ҳадафи рӯзона",help:"Кӯмак",helpTitle:"Кӯмак",helpText:"Дар mini app хатогӣ ё мушкилӣ пайдо шуд? Ба админ кӯтоҳ нависед ва screenshot фиристед — кӯмак мекунем.",helpBtn:"Ба админ навиштан",helpNoContact:"Тамоси админ ҳоло дастрас нест. Баъдтар кӯшиш кунед.",on:"Фаъол",friends:"Дӯстон",payTitle:"HSK AI Pro",paySub:"Тамоми роҳи HSK",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",subscribe:"HSK AI Pro ⭐️ гирифтан",later:"Дертар",lockedLesson:"Ин дарс дар HSK AI Pro аст"}
+  ru:{trialOn:"HSK AI Pro открыт на 7 дней",trialFail:"Сейчас не получилось",trialTitle:"HSK AI Pro — 7 дней бесплатно",trialBody:"Попробуете все основные возможности. Деньги автоматически не спишутся.",trialCta:"Попробовать 7 дней бесплатно",trialActive:"HSK AI Pro активен",trialLeft:"осталось дней: {n}",trialLeftHours:"Заканчивается сегодня · осталось часов: {n}",trialLeftSoon:"Заканчивается сегодня · меньше часа",trialUsed:"Пробный период уже использован",planPay:"Оформить HSK AI Pro",planFree:"Начать бесплатно",planTitle:"Ваш личный план готов",planBody:"Выберите, как начать. Бесплатно можно пользоваться всегда — с дневными лимитами.",nav:{course:"Курс",mashq:"Практика",voice:"AI Voice",rating:"Рейтинг",profile:"Профиль"},cont:"Продолжить",check:"Проверить",next:"Продолжить",lessons:"урок",unit:"Раздел",done:"завершено",here:"Вы здесь",stage:"этап",completeOf:"выполнено",finishPrev:"Завершите предыдущий урок",repeat:"Повторить",lessonDone:"Урок завершён!",lessonDoneSub:"Отличная работа. Следующий этап ждёт.",correct:"Верно!",wrong:"Неверно",rightAns:"Правильный ответ:",newWord:"Новое слово",grammar:"Грамматика",dialog:"Диалог",listen:"Послушать",buildSent:"Соберите предложение",matchPairs:"Соедините пары",say:"Произнесите",mashqSub:"Закрепление и проверка",dict:"Словарь иероглифов",dictSub:"HSK 1–4 · написание, пиньинь, значение",readyPhrases:"Готовые фразы",readyPhrasesSub:"Китайские фразы для повседневных ситуаций",recog:"Распознавание иероглифов",recogSub:"Найдите нужный среди похожих",pron:"Произношение",pronSub:"Слушай, повторяй, проверка тонов",testCenter:"Тест-центр",testSub:"Экзамены HSK и определение уровня",mistakes:"Мои ошибки",mistakesSub:"Работа над слабыми местами",voiceTitle:"Поговорите с AI",voiceSub:"Живой разговор с пандой 阿宝. Слушай, говори, получай исправления.",voiceStart:"Начать разговор",league:"Лига 朱雀",you:"Вы",unlockTitle:"Откройте всё",unlockSub:"AI Voice, все уроки HSK 1–4 и безлимит",unlockBtn:"HSK AI Pro ⭐️",learner:"ученик",premium:"HSK AI Pro",xp:"XP",streak:"дней",rank:"место",lang:"Язык",notif:"Уведомления",goal:"Дневная цель",help:"Помощь",helpTitle:"Помощь",helpText:"Возникла ошибка или проблема в приложении? Коротко напишите админу и приложите screenshot — мы поможем.",helpBtn:"Написать админу",helpNoContact:"Контакт админа пока недоступен. Попробуйте позже.",on:"Вкл",friends:"Друзья",payTitle:"HSK AI Pro",paySub:"Откройте весь путь HSK",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",subscribe:"Получить HSK AI Pro ⭐️",later:"Позже",lockedLesson:"Этот урок в HSK AI Pro"},
+  uz:{trialOn:"HSK AI Pro 7 kunga ochildi",trialFail:"Hozir ochib bo'lmadi",trialTitle:"HSK AI Pro — 7 kun bepul",trialBody:"Barcha asosiy imkoniyatlarni sinab ko'rasiz. Avtomatik pul yechilmaydi.",trialCta:"7 kun bepul sinash",trialActive:"HSK AI Pro faol",trialLeft:"{n} kun qoldi",trialLeftHours:"Bugun tugaydi · {n} soat qoldi",trialLeftSoon:"Bugun tugaydi · 1 soatdan kam",trialUsed:"Sinov muddatidan foydalangansiz",planPay:"HSK AI Pro olish",planFree:"Bepul boshlash",planTitle:"Shaxsiy rejangiz tayyor",planBody:"Qanday boshlashni tanlang. Bepul rejimdan doim foydalanish mumkin — kunlik limitlar bilan.",nav:{course:"Kurs",mashq:"Mashq",voice:"AI Voice",rating:"Reyting",profile:"Profil"},cont:"Davom etish",check:"Tekshirish",next:"Davom etish",lessons:"dars",unit:"Bo'lim",done:"tugallandi",here:"Shu yerda",stage:"bosqich",completeOf:"bajarildi",finishPrev:"Avvalgi darsni tugating",repeat:"Takrorlash",lessonDone:"Dars tugadi!",lessonDoneSub:"Ajoyib! Keyingi bosqich kutyapti.",correct:"To'g'ri!",wrong:"Noto'g'ri",rightAns:"To'g'ri javob:",newWord:"Yangi so'z",grammar:"Grammatika",dialog:"Dialog",listen:"Tinglash",buildSent:"Gapni tuzing",matchPairs:"Juftlarni moslang",say:"Talaffuz qiling",mashqSub:"Mustahkamlash va sinash",dict:"Ieroglif lug'ati",dictSub:"HSK 1–4 · yozilishi, pinyin, ma'no",readyPhrases:"Tayyor gaplar",readyPhrasesSub:"Kundalik vaziyatlar uchun xitoycha gaplar",recog:"Ieroglif tanish",recogSub:"O'xshashlardan to'g'risini toping",pron:"Talaffuz mashqi",pronSub:"Eshit, takrorla, ton tekshiruvi",testCenter:"Test markazi",testSub:"HSK imtihonlari va daraja aniqlash",mistakes:"Xatolarim",mistakesSub:"Zaif joylar ustida ishlash",voiceTitle:"AI bilan gaplashing",voiceSub:"Panda 阿宝 bilan jonli suhbat. Eshit, gapir, tuzatish ol.",voiceStart:"Suhbatni boshlash",league:"朱雀 ligasi",you:"Siz",unlockTitle:"Hammasini oching",unlockSub:"AI Voice, barcha HSK 1–4 darslar va cheksiz",unlockBtn:"HSK AI Pro ⭐️",learner:"o'quvchi",premium:"HSK AI Pro",xp:"XP",streak:"kun",rank:"o'rin",lang:"Til",notif:"Bildirishnomalar",goal:"Kunlik maqsad",help:"Yordam",helpTitle:"Yordam",helpText:"Mini appda biror xatolik yoki muammo bo'lsa, adminga qisqa yozing va screenshot yuboring — yordam beramiz.",helpBtn:"Adminga yozish",helpNoContact:"Admin kontakti hozircha mavjud emas. Keyinroq urinib ko'ring.",on:"Yoq",friends:"Do'stlar",payTitle:"HSK AI Pro",paySub:"Butun HSK yo'lini oching",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",subscribe:"HSK AI Pro ⭐️ olish",later:"Keyinroq",lockedLesson:"Bu dars HSK AI Pro'da"},
+  tj:{trialOn:"HSK AI Pro ба 7 рӯз кушода шуд",trialFail:"Ҳозир нашуд",trialTitle:"HSK AI Pro — 7 рӯз ройгон",trialBody:"Ҳамаи имкониятҳои асосиро месанҷед. Худкор пул гирифта намешавад.",trialCta:"7 рӯз ройгон санҷидан",trialActive:"HSK AI Pro фаъол",trialLeft:"{n} рӯз монд",trialLeftHours:"Имрӯз тамом мешавад · {n} соат монд",trialLeftSoon:"Имрӯз тамом мешавад · камтар аз 1 соат",trialUsed:"Шумо аллакай санҷишро истифода бурдед",planPay:"HSK AI Pro гирифтан",planFree:"Ройгон оғоз кардан",planTitle:"Нақшаи шахсии шумо тайёр",planBody:"Интихоб кунед, ки чӣ тавр оғоз мекунед. Режими ройгон ҳамеша дастрас — бо маҳдудияти рӯзона.",nav:{course:"Курс",mashq:"Машқ",voice:"AI Voice",rating:"Рейтинг",profile:"Профил"},cont:"Идома",check:"Санҷидан",next:"Идома",lessons:"дарс",unit:"Фасл",done:"анҷом",here:"Ин ҷо",stage:"зина",completeOf:"иҷро шуд",finishPrev:"Дарси пешинаро анҷом диҳед",repeat:"Такрор",lessonDone:"Дарс анҷом ёфт!",lessonDoneSub:"Офарин! Зинаи навбатӣ интизор аст.",correct:"Дуруст!",wrong:"Нодуруст",rightAns:"Ҷавоби дуруст:",newWord:"Калимаи нав",grammar:"Грамматика",dialog:"Гуфтугӯ",listen:"Гӯш кардан",buildSent:"Ҷумларо созед",matchPairs:"Ҷуфтҳоро мувофиқ кунед",say:"Талаффуз кунед",mashqSub:"Мустаҳкам ва санҷиш",dict:"Луғати иероглиф",dictSub:"HSK 1–4 · навишт, пинйин, маъно",readyPhrases:"Ибораҳои омода",readyPhrasesSub:"Ҷумлаҳои чинӣ барои ҳар рӯз",recog:"Шинохти иероглиф",recogSub:"Аз байни монандҳо дурустро ёбед",pron:"Машқи талаффуз",pronSub:"Гӯш кун, такрор кун",testCenter:"Маркази тест",testSub:"Имтиҳонҳои HSK ва муайянкунии сатҳ",mistakes:"Хатоҳои ман",mistakesSub:"Кор бар ҷойҳои заиф",voiceTitle:"Бо AI сӯҳбат кунед",voiceSub:"Сӯҳбати зинда бо панда 阿宝.",voiceStart:"Оғози сӯҳбат",league:"Лигаи 朱雀",you:"Шумо",unlockTitle:"Ҳамаро кушоед",unlockSub:"AI Voice ва ҳамаи дарсҳо",unlockBtn:"HSK AI Pro ⭐️",learner:"донишҷӯ",premium:"HSK AI Pro",xp:"XP",streak:"рӯз",rank:"ҷой",lang:"Забон",notif:"Огоҳиҳо",goal:"Ҳадафи рӯзона",help:"Кӯмак",helpTitle:"Кӯмак",helpText:"Дар mini app хатогӣ ё мушкилӣ пайдо шуд? Ба админ кӯтоҳ нависед ва screenshot фиристед — кӯмак мекунем.",helpBtn:"Ба админ навиштан",helpNoContact:"Тамоси админ ҳоло дастрас нест. Баъдтар кӯшиш кунед.",on:"Фаъол",friends:"Дӯстон",payTitle:"HSK AI Pro",paySub:"Тамоми роҳи HSK",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",subscribe:"HSK AI Pro ⭐️ гирифтан",later:"Дертар",lockedLesson:"Ин дарс дар HSK AI Pro аст"}
 };
 var LANG=(new URLSearchParams(location.search).get("lang")||"ru");if(!I18N[LANG])LANG="ru";
 function syncDocumentLanguage(){document.documentElement.lang=LANG==="tj"?"tg":LANG;}
@@ -1372,10 +1378,21 @@ function courseTrackStatus(force){
     .catch(function(e){COURSE_TRACK_PROMISE=null;throw e});
   return COURSE_TRACK_PROMISE;
 }
+/* Return only to the original Course V3 screen, never to an arbitrary URL.
+   The checkout is a separate document within the same Telegram Mini App. */
+function courseCheckoutReturnParams(){
+  var q=new URLSearchParams();
+  q.set("return_to","course");
+  q.set("return_tab",["course","mashq","voice","rating","profile"].indexOf(SCREEN)>=0?SCREEN:"course");
+  var level=(MAP&&MAP.level)||getSelectedLevel();
+  if(/^(?:hsk[1-4]|nhsk[1-3])$/.test(String(level)))q.set("return_level",level);
+  return q;
+}
 function openHsk30UnlockCheckout(){
   beginInternalNavigation();
   var q=new URLSearchParams();
   q.set("mode","hsk30_unlock");q.set("plan","hsk30_unlock");q.set("source","hsk30_unlock");q.set("lang",LANG);
+  courseCheckoutReturnParams().forEach(function(value,key){q.set(key,value)});
   location.href="/subscription.html?"+q.toString();
 }
 function renderHsk30AccessGate(status){
@@ -1833,20 +1850,23 @@ document.addEventListener("keydown",function(event){
     event.preventDefault();first.focus();
   }
 });
+var MASHQ_ACCESS_PENDING=null;
 var App={
   setLang:function(l){if(!I18N[l])return;LANG=l;syncDocumentLanguage();renderAll()},
   show:function(s){
     if(s==="mashq"&&isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){
       var status=COURSE_TRACK_STATE,access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-      if(access){if(!access.allowed){renderHsk30AccessGate(status);return}}
-      else{
-        courseTrackStatus(false).then(function(loaded){
-          var loadedAccess=loaded&&loaded.tracks&&loaded.tracks.hsk30&&loaded.tracks.hsk30.access;
-          if(loadedAccess&&loadedAccess.allowed)App.show(s);else renderHsk30AccessGate(loaded);
+      if(!access||!access.allowed){
+        /* Refresh cached denial after checkout, but never bypass server authorization. */
+        if(MASHQ_ACCESS_PENDING)return;
+        MASHQ_ACCESS_PENDING=courseTrackStatus(true).then(function(loaded){
+          var refreshed=loaded&&loaded.tracks&&loaded.tracks.hsk30&&loaded.tracks.hsk30.access;
+          if(refreshed&&refreshed.allowed){App.show("mashq");return}
+          renderHsk30AccessGate(loaded);
         }).catch(function(){
           var t=trackUi();
-          App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.tryAgain)+'</div></div><button class="sec" style="width:100%" onclick="App.show(\'mashq\')">'+esc(t.tryAgain)+'</button>');
-        });
+          App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.tryAgain)+'</div></div><button class="sec" style="width:100%" onclick="App.show(&quot;mashq&quot;)">'+esc(t.tryAgain)+'</button>');
+        }).then(function(){MASHQ_ACCESS_PENDING=null});
         return;
       }
     }
@@ -1913,7 +1933,8 @@ var App={
     CHECKOUT_NAVIGATING=true;
     var source=src||PAY_SOURCE||"v3_paywall";
     SALES_PAYWALL_ACTIVE=false;SALES_PAYWALL_IMPRESSION="";
-    var url="/subscription.html?lang="+LANG+"&source="+encodeURIComponent(source)+"&mode=subscription";
+    var url="/subscription.html?lang="+LANG+"&source="+encodeURIComponent(source)+"&mode=subscription"
+      +"&"+courseCheckoutReturnParams().toString();
     var clickId=["checkout",COURSE_SESSION_ID,Date.now(),Math.random().toString(36).slice(2,8)].join(":");
     trackCheckoutOpenedForRedirect(source,clickId);
     /* Same-origin subscription page: navigate inside the Telegram Mini App webview.
@@ -2242,6 +2263,10 @@ var App={
     var q=new URLSearchParams({theme:"light",lang:LANG,level:level,filter:level});
     location.href="/hsk-lugat.html?"+q.toString();
   },
+  openPhrases:function(){
+    beginInternalNavigation();
+    location.href="/hsk-gaplar.html?"+new URLSearchParams({lang:LANG,theme:"light"}).toString();
+  },
   openRecog:function(){RECOG.open()},
   openPron:function(){PRON.open()},
   openTest:function(){if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){showHsk30TestSoon();return}TEST.open()},
@@ -2384,12 +2409,20 @@ var LESSON_DATA_CACHE={},LESSON_DATA_PROMISES={},PRACTICE_PREFETCHED=false;
 var PRACTICE_LIMIT_STATUS_CACHE={},PRACTICE_LIMIT_STATUS_PROMISES={},PRACTICE_LIMIT_STATUS_VERSIONS={};
 function cloneJson(v){return JSON.parse(JSON.stringify(v))}
 function lessonDataKey(lv,n){return normalizeLevel(lv)+"-"+String(Number(n)||0)}
-function lessonDataUrl(lv,n){return "/course_v3_data/"+normalizeLevel(lv)+"/lesson_"+String(Number(n)||0).padStart(2,"0")+".json"}
+/* N1 checkpoint revision: a new teaching edition must not be hidden by
+   the browser/CDN cache's long lifetime for lesson JSON.
+   One URL across iOS and Android Mini App, without changing other tracks. */
+var N1_LESSON_CONTENT_REV="n1-learning-check-20261012-v2";
+function lessonDataUrl(lv,n){
+  var level=normalizeLevel(lv);
+  var url="/course_v3_data/"+level+"/lesson_"+String(Number(n)||0).padStart(2,"0")+".json";
+  return level==="nhsk1"?url+"?content_rev="+N1_LESSON_CONTENT_REV:url;
+}
 function loadLessonData(lv,n){
   var key=lessonDataKey(lv,n);
   if(LESSON_DATA_CACHE[key])return Promise.resolve(cloneJson(LESSON_DATA_CACHE[key]));
   if(LESSON_DATA_PROMISES[key])return LESSON_DATA_PROMISES[key].then(cloneJson);
-  LESSON_DATA_PROMISES[key]=fetch(lessonDataUrl(lv,n)).then(function(r){
+  LESSON_DATA_PROMISES[key]=fetch(lessonDataUrl(lv,n),normalizeLevel(lv)==="nhsk1"?{cache:"no-store"}:{}).then(function(r){
     if(!r.ok)throw new Error("not_found");
     return r.json();
   }).then(function(d){
@@ -2625,6 +2658,17 @@ function askStudyFocus(){
    "faqat Pro uchun" kabi noto'g'ri sababni aytmaydi — chegara admin sozlagan
    oynada qayta ochiladi. */
 var LIMIT_TEXT="",SECTION_LIMIT_TEXT="";
+/* Best-effort startup: a missing optional mascot script must not block a lesson. */
+function renderStudyPreparing(){
+  try{
+    if(window.HSKStudyPreparing&&typeof window.HSKStudyPreparing.render==="function"){
+      return window.HSKStudyPreparing.render(LANG);
+    }
+  }catch(err){try{console.warn("study_preparing_fallback",err)}catch(_){}}
+  var copy=LANG==="ru"?"Готовим упражнение":LANG==="tj"?"Машқ омода мешавад":"Mashq tayyorlanmoqda";
+  return '<div class="hsk-study-preparing" role="status" aria-live="polite">'
+    +'<div class="hsk-study-preparing-panda" aria-hidden="true">🐼</div><b>'+copy+'</b></div>';
+}
 function newPracticeAttemptRef(){return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
 function validatePracticeGate(o){
   if(o.status===403&&o.j&&o.j.error==="free_feature_limit_reached")return o;
@@ -3114,7 +3158,7 @@ function showSkipResult(pct,idx){
 }
 
 /* ---------- Lesson flow engine ---------- */
-var Flow={queue:[],i:0,answered:false,correct:0,graded:0,mistakes:[],test:null,challenge:null,lessonIdx:null,ad:null,startedAt:0,objectiveMastery:{},objectiveAttempts:{},pendingRepairs:[],exitRequired:[],salesOutcome:null,salesNextOutcome:null};
+var Flow={queue:[],i:0,answered:false,correct:0,graded:0,mistakes:[],test:null,challenge:null,lessonIdx:null,ad:null,startedAt:0,objectiveMastery:{},objectiveAttempts:{},pendingRepairs:[],pilotFailures:{},exitRequired:[],salesOutcome:null,salesNextOutcome:null};
 var Foundation={active:false,data:null,queue:[],i:0,answered:false,mastery:{},attempts:{},completed:false,speakingBonus:false,required:false,afterComplete:null,finishing:false,_micSession:null,_audioTimer:null,_renderToken:0};
 Foundation.stopAudio=function(){Foundation._renderToken++;if(Foundation._audioTimer)clearTimeout(Foundation._audioTimer);Foundation._audioTimer=null;stopTourAudio();stopSpeak()};
 Foundation.scheduleAudio=function(text,delay){var token=Foundation._renderToken;Foundation._audioTimer=setTimeout(function(){Foundation._audioTimer=null;if(Foundation.active&&token===Foundation._renderToken)foundationSpeak(text)},delay)};
@@ -3303,14 +3347,14 @@ function saveLessonMastery(){
   var lesson=flowLesson();if(!lesson)return;
   var exitQueue=lessonExitQueueState();
   try{localStorage.setItem(lessonMasteryKey((MAP&&MAP.level)||"hsk1",lesson.n),JSON.stringify({
-    version:MASTERY_VERSION,mastery:Flow.objectiveMastery||{},attempts:Flow.objectiveAttempts||{},pending:(Flow.pendingRepairs||[]).slice(0,20),exit_queue:exitQueue,at:Date.now()
+    version:MASTERY_VERSION,mastery:Flow.objectiveMastery||{},attempts:Flow.objectiveAttempts||{},pending:(Flow.pendingRepairs||[]).slice(0,20),pilot_failures:Flow.pilotFailures||{},exit_queue:exitQueue,at:Date.now()
   }))}catch(e){}
 }
 function restoreLessonMastery(level,lessonOrder,queue){
-  Flow.objectiveMastery={};Flow.objectiveAttempts={};Flow.pendingRepairs=[];Flow._restoredResumeIndex=null;
+  Flow.objectiveMastery={};Flow.objectiveAttempts={};Flow.pendingRepairs=[];Flow.pilotFailures={};Flow._restoredResumeIndex=null;
   var saved=null;try{saved=JSON.parse(localStorage.getItem(lessonMasteryKey(level,lessonOrder))||"null")}catch(e){}
   if(!saved||Number(saved.version)!==MASTERY_VERSION||Date.now()-Number(saved.at||0)>LESSON_RESUME_TTL_MS)return queue;
-  Flow.objectiveMastery=saved.mastery||{};Flow.objectiveAttempts=saved.attempts||{};Flow.pendingRepairs=Array.isArray(saved.pending)?saved.pending:[];
+  Flow.objectiveMastery=saved.mastery||{};Flow.objectiveAttempts=saved.attempts||{};Flow.pendingRepairs=Array.isArray(saved.pending)?saved.pending:[];Flow.pilotFailures=(saved.pilot_failures&&typeof saved.pilot_failures==="object")?saved.pilot_failures:{};
   var exitState=saved.exit_queue;
   if(exitState&&Array.isArray(exitState.cards)){
     var start=(queue||[]).findIndex(function(c){return c&&c._exitTicket});
@@ -3581,6 +3625,18 @@ function buildQueue(d){
   }
   return q;
 }
+/* N1 pilot transfer questions only appear for failed objectives. An unknown
+   resume history errs toward showing the extra practice, not skipping it. */
+function skipN1PilotRechecks(index){
+  while(index<(Flow.queue||[]).length){
+    var c=Flow.queue[index];
+    if(!c||c.learning_retry!=="n1_exit_check_v1")break;
+    var failures=Flow.pilotFailures||{};
+    if(!Object.prototype.hasOwnProperty.call(failures,c.learning_objective)||failures[c.learning_objective]!==false)break;
+    index++;
+  }
+  return index;
+}
 function flowProg(){$("#f-prog").style.width=Math.round(Flow.i/Flow.queue.length*100)+"%"}
 function hideBar(){$("#f-bar").className="fbar"}
 function flowCurrentCard(){return Flow.queue&&Flow.queue[Flow.i]?Flow.queue[Flow.i]:null}
@@ -3648,30 +3704,16 @@ function syncLessonCoachLine(){
   var dock=$("#f-coach-dock"),bubble=$("#f-coach-bubble"),slot=$("#f-coach-slot");
   if(!dock||!bubble)return;
   var q=document.querySelector("#f-body .qq");
-  var text=q?String(q.textContent||"").trim():"";
-  if(q&&text)q.style.display="none";
-  bubble.textContent=text;
-  dock.classList.toggle("mute",!text);
-  /* Savol personajning YONIGA ko'chiriladi: savol kartasi (`.qcard`) yoki
-     dialog (`.dia`) murabbiyning o'ng ustuniga o'tadi, javob tugmalari esa
-     `#f-body` da, to'liq enda qoladi. Kartasi yo'q turlar (quruvchi,
-     juftlik) o'z joyida qoladi — ko'chiradigan narsa yo'q. */
-  if(!slot)return;
-  slot.innerHTML="";
-  var material=document.querySelectorAll("#f-body > .qcard, #f-body > .dia");
-  if(!material.length){dock.classList.remove("beside");return}
-  // The coach row is outside the scrollable answer area. On phones, keep
-  // the question with its options so long localized prompts can scroll.
-  // Long material needs full width even in a wider browser window.
-  var narrow=window.innerWidth<=600;
-  var longMaterial=Array.prototype.some.call(material,function(node){
-    return (node.textContent||"").trim().length>22
-      || node.classList.contains("dia")
-      || !!node.querySelector(".gap");
-  });
-  if(narrow||longMaterial){dock.classList.remove("beside");return}
-  for(var i=0;i<material.length;i++)slot.appendChild(material[i]);
-  dock.classList.add("beside");
+  var line=q?String(q.textContent||"").trim():"";
+  if(q&&line)q.style.display="none";
+  bubble.textContent=line;
+  dock.classList.toggle("mute",!line);
+  /* The question/dialog remains in #f-body, which is scrollable. Reparenting it
+     beside the mascot narrowed long questions and pushed answers off screen. */
+  if(slot)slot.innerHTML="";
+  dock.classList.remove("beside");
+  dock.classList.toggle("question",!!document.querySelector("#f-body > .qcard, #f-body > .dia"));
+  var body=$("#f-body");if(body)body.scrollTop=0;
 }
 function renderLessonCoach(card,mood){
   var dock=$("#f-coach-dock"),host=$("#f-coach");
@@ -3755,6 +3797,10 @@ function showBar(ok,msg,sub){
   if(ok){if(Flow.streak>=5)haptic("heavy");else if(Flow.streak>=3)haptic("med")}
   if(!ok)Flow._wrongPending=true;
   recordObjectiveResult(Flow.queue&&Flow.queue[Flow.i],ok);
+  if(card&&card.learning_check==="n1_exit_check_v1"&&card.learning_objective&&!Flow.challenge&&!Flow.test){
+    Flow.pilotFailures[card.learning_objective]=!ok;
+    saveLessonMastery();
+  }
   if(Flow.queue&&Flow.queue[Flow.i]&&Flow.queue[Flow.i].objective_id)saveLessonResume(Flow.i+1);
   trackInteraction(ok);
   if(ok&&Flow.streak>=5&&Flow.streak%5===0)comboPop(Flow.streak);
@@ -4134,6 +4180,7 @@ function setWriteBtn(ch,meta){writeChar=ch||"";writeMeta=meta||{};var b=$("#writ
 function pinyinMode(){try{var v=localStorage.getItem("hsk_v3_pinyin");return v==="new"||v==="off"?v:"all"}catch(e){return "all"}}
 function applyPinyinMode(){var f=$("#flow");if(!f)return;var m=pinyinMode();f.classList.toggle("pyoff",m==="off");f.classList.toggle("pynew",m==="new")}
 function renderFlowCard(){
+  Flow.i=skipN1PilotRechecks(Flow.i);
   Flow.answered=false;hideBar();flowProg();
   if(Flow.i>=Flow.queue.length){var doneDock=$("#f-coach-dock");if(doneDock)doneDock.classList.remove("on");return flowDone()}
   saveLessonResume();
@@ -4514,7 +4561,7 @@ function cardChoice(c){
         :'<div class="qh han">'+esc(rw.zh||p)+'</div><div class="qpy">'+esc(rw.pinyin||"")+'</div>';
       head='<div class="qcard mix-review'+(isCur?" current":"")+'">'+badge+body+sent+'</div>';
     }
-    else head='<div class="qcard"><div class="qh qask han">'+esc(p)+'</div>'+sent+'</div>'}
+    else head='<div class="qcard"><div class="qh qask'+(/[\u3400-\u9fff]/.test(p)?" han":"")+'">'+esc(p)+'</div>'+sent+'</div>'}
   var opts=(c.options||[]).map(function(o,k){return '<button class="opt" data-k="'+k+'" onclick="Flow.pick(this,'+k+')"><span class="k">'+"ABCD"[k]+'</span>'+esc(optText(o))+'</button>'}).join("");
   $("#f-body").innerHTML='<div class="qq">'+esc(tr(c.title)||"")+'</div>'+audio+head+opts;
 }
@@ -4540,7 +4587,15 @@ Flow.pick=function(el,k){
   if(!ok)rememberLessonMistake(c,{selected_index:k,selected_answer:optText(c.options&&c.options[k])});
   beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");
   if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP)}
-  showBar(ok,ok?T().correct:T().wrong,ok?tr(c.explanation):T().rightAns+" "+(c.options&&typeof c.options[c.correct_index]!=="undefined"?optText(c.options[c.correct_index]):""));
+  var rightText=T().rightAns+" "+(c.options&&typeof c.options[c.correct_index]!=="undefined"?optText(c.options[c.correct_index]):"");
+  /* HSK 3.0 N1 pilot: explain WHY an answer is right or wrong. The content
+     itself opts in; normal course/challenge feedback remains unchanged. */
+  if((c.learning_feedback==="n1_context_v1"||(MAP&&normalizeLevel(MAP.level)==="nhsk1"&&c.explanation))&&!Flow.challenge){
+    var why=tr(c.explanation);
+    showBar(ok,ok?T().correct:T().wrong,ok?esc(why):esc(rightText)+" · "+esc(why));
+  }else{
+    showBar(ok,ok?T().correct:T().wrong,ok?tr(c.explanation):rightText);
+  }
 };
 function cardBuilder(c){
   $("#f-cta").style.display="none";
@@ -4554,7 +4609,7 @@ function cardBuilder(c){
   }
   window._bldAdd=function(i){if(Flow.answered)return;if(line.indexOf(i)>=0)return;line.push(i);draw();if(line.length===(c.answer_tokens||[]).length){check()}};
   window._bldUn=function(pos){if(Flow.answered)return;line.splice(pos,1);draw()};
-  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=JSON.stringify(built)===JSON.stringify(c.answer_tokens);Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP);rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,(c.answer_tokens||[]).join(" ")+" — "+tr(c.explanation))}
+  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=JSON.stringify(built)===JSON.stringify(c.answer_tokens);Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP);rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,c.learning_feedback==="n1_context_v1"?(esc((c.answer_tokens||[]).join(" "))+" — "+esc(tr(c.explanation))):((c.answer_tokens||[]).join(" ")+" — "+tr(c.explanation)))}
   draw();
 }
 function cardReverse(c){
@@ -4575,7 +4630,7 @@ function cardReverse(c){
   }
   window._bldAdd=function(i){if(Flow.answered)return;if(line.indexOf(i)>=0)return;line.push(i);draw();if(line.length===ans.length){check()}};
   window._bldUn=function(pos){if(Flow.answered)return;line.splice(pos,1);draw()};
-  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=built.join(" ")===ans.join(" ");Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP);rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,ans.join(" ")+" — "+(c.zh||""))}
+  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=built.join(" ")===ans.join(" ");Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP);rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,c.learning_feedback==="n1_context_v1"?(esc(ans.join(" "))+" — "+esc(tr(c.explanation))):(ans.join(" ")+" — "+(c.zh||"")))}
   draw();
 }
 function cardMatch(c){
@@ -4675,7 +4730,7 @@ Flow.next=function(){
   if(Flow.previewHalf&&nextI>=Flow.previewHalfAt&&nextI<Flow.queue.length){
     Flow.previewHalf=false;App.exitFlow();App.openPaywall("lockedLesson");return;
   }
-  Flow.i=nextI;
+  Flow.i=skipN1PilotRechecks(nextI);
   /* Repair queue indekslari dinamik. Har bir spacer/base o'tilganda semantic
      cursorni ham yangilaymiz — reload bir kartani takrorlamaydi yoki tashlamaydi. */
   Flow.answered=false;saveLessonMastery();
@@ -4876,6 +4931,7 @@ function renderMashq(){
     +'<div class="sech">'+t.grammar+' · '+t.pron+'</div>'
     +'<div class="mashq-group" role="group" aria-label="'+esc(t.grammar+' · '+t.pron)+'">'
     +rowCard("t-amber",'<span class="han">字</span>',t.dict,t.dictSub,"App.openDict()","m-dict")
++rowCard("t-jade",'<span class="han">句</span>',t.readyPhrases,t.readyPhrasesSub,"App.openPhrases()","m-ready-phrases")
     +rowCard("t-blue",'<i class="ti ti-eye"></i>',t.recog,t.recogSub,"App.openRecog()","m-recog")
     +rowCard("t-jade",'<i class="ti ti-microphone"></i>',t.pron,t.pronSub,"App.openPron()","m-pron")+'</div>'
     +'<div class="sech">'+t.testCenter.split(" ")[0]+'</div>'
@@ -5656,7 +5712,7 @@ function openInviteSheet(){
 	    +'</div>';
 
   $("#upov").innerHTML=
-    '<div class="uptop"><button class="upx" onclick="closeUserProfile()"><i class="ti ti-arrow-left"></i></button>'
+    '<div class="uptop"><button class="upx hsk-native-back-duplicate" onclick="closeUserProfile()"><i class="ti ti-arrow-left"></i></button>'
     +'<span style="font-size:14px;font-weight:500">'+esc(u.n)+'</span><div style="width:34px"></div></div>'
     +'<div class="uphero"><div class="av'+(isHan?" han":"")+'">'+u.a+(u.me?myAvatarImgHtml():avatarImgHtml(u.tgId))+(u.p?'<span class="cr"><i class="ti ti-crown" style="font-size:11px"></i></span>':'')+'</div>'
     +'<div class="nm">'+esc(u.n)+'</div><div class="un">'+esc(t.league)+'</div>'
@@ -5673,9 +5729,9 @@ function openInviteSheet(){
 }
 
 /* ---------- Profile ---------- */
-function pl(){return {ru:{calTitle:"Календарь ударов",calLong:"Рекорд: 23 дня",calDays:["П","В","С","Ч","П","С","В"],t1:"Победа лиги",t2:"30 дней",t3:"100 слов",tNext:"Дальше",ach:"Достижения",a1:"Первый шаг",a1d:"Выполнено",a2:"100 уроков",a3:"30 дней подряд",goalSet:"Дневная цель",goalLeft:"осталось",todayGoal:"Цель на сегодня",statusPro:"HSK AI Pro активен",statusTemp:"Временный доступ",statusTrial:"Пробный период",statusUntil:"до {d}",renew:"Продлить подписку",goalTitle:"Цель",settings:"Настройки",settingsSub:"Язык, уведомления, цель, способы входа",signin:"Способы входа",signinSub:"Один аккаунт, несколько способов входа",connect:"Подключить",connected:"Подключено",disconnect:"Отключить",unlinkWarn:"После отключения вы выйдете из аккаунта на других устройствах.",linkWait:"Подтвердите вход в браузере…",linkFail:"Не удалось подключить. Попробуйте ещё раз.",linkDone:"Подключено",social:"HSK AI в соцсетях"},
-  uz:{calTitle:"Ketma-ket kunlar",calLong:"Rekord: 23 kun",calDays:["D","S","C","P","J","S","Y"],t1:"Liga g'olibi",t2:"30 kun",t3:"100 so'z",tNext:"Keyingi",ach:"Yutuqlar",a1:"Birinchi qadam",a1d:"Bajarildi",a2:"100 dars",a3:"30 kun ketma-ket",goalSet:"Kunlik maqsad",goalLeft:"qoldi",todayGoal:"Bugungi maqsad",statusPro:"HSK AI Pro faol",statusTemp:"Vaqtinchalik kirish",statusTrial:"Sinov muddati",statusUntil:"{d} gacha",renew:"Obunani uzaytirish",goalTitle:"Maqsad",settings:"Sozlamalar",settingsSub:"Til, bildirishnoma, maqsad, kirish usullari",signin:"Kirish usullari",signinSub:"Bitta akkaunt, bir nechta kirish usuli",connect:"Ulash",connected:"Ulangan",disconnect:"Uzish",unlinkWarn:"Uzsangiz, boshqa qurilmalarda hisobdan chiqasiz.",linkWait:"Brauzerda tasdiqlashni kuting…",linkFail:"Ulab bo'lmadi. Qayta urinib ko'ring.",linkDone:"Ulandi",social:"HSK AI ijtimoiy tarmoqlarda"},
-  tj:{calTitle:"Рӯзҳои пайдарпай",calLong:"Рекорд: 23 рӯз",calDays:["Д","С","Ч","П","Ҷ","Ш","Я"],t1:"Ғолиби лига",t2:"30 рӯз",t3:"100 калима",tNext:"Баъдӣ",ach:"Дастовардҳо",a1:"Қадами аввал",a1d:"Иҷро шуд",a2:"100 дарс",a3:"30 рӯз пайдарпай",goalSet:"Ҳадафи рӯзона",goalLeft:"мондааст",todayGoal:"Ҳадафи имрӯза",statusPro:"HSK AI Pro фаъол",statusTemp:"Дастрасии муваққатӣ",statusTrial:"Давраи санҷишӣ",statusUntil:"то {d}",renew:"Дароз кардани обуна",goalTitle:"Ҳадаф",settings:"Танзимот",settingsSub:"Забон, огоҳиҳо, ҳадаф, усулҳои вуруд",signin:"Усулҳои вуруд",signinSub:"Як ҳисоб, якчанд усули вуруд",connect:"Пайваст кардан",connected:"Пайваст аст",disconnect:"Ҷудо кардан",unlinkWarn:"Пас аз ҷудо кардан дар дастгоҳҳои дигар аз ҳисоб мебароед.",linkWait:"Дар браузер тасдиқро интизор шавед…",linkFail:"Пайваст карда нашуд. Боз кӯшиш кунед.",linkDone:"Пайваст шуд",social:"HSK AI дар шабакаҳои иҷтимоӣ"}}[LANG]}
+function pl(){return {ru:{metricsLabel:"Статистика обучения",metricsXp:"Всего XP",metricsLessons:"Пройдено уроков",calTitle:"Календарь ударов",calLong:"Рекорд: 23 дня",calDays:["П","В","С","Ч","П","С","В"],t1:"Победа лиги",t2:"30 дней",t3:"100 слов",tNext:"Дальше",ach:"Достижения",a1:"Первый шаг",a1d:"Выполнено",a2:"100 уроков",a3:"30 дней подряд",goalSet:"Дневная цель",goalLeft:"осталось",todayGoal:"Цель на сегодня",statusPro:"HSK AI Pro активен",statusTemp:"Временный доступ",statusTrial:"Пробный период",statusUntil:"до {d}",renew:"Продлить подписку",goalTitle:"Цель",settings:"Настройки",settingsSub:"Язык, уведомления, цель, способы входа",signin:"Способы входа",signinSub:"Один аккаунт, несколько способов входа",connect:"Подключить",connected:"Подключено",disconnect:"Отключить",unlinkWarn:"После отключения вы выйдете из аккаунта на других устройствах.",linkWait:"Подтвердите вход в браузере…",linkFail:"Не удалось подключить. Попробуйте ещё раз.",linkDone:"Подключено",social:"HSK AI в соцсетях"},
+  uz:{metricsLabel:"O‘qish statistikasi",metricsXp:"Jami XP",metricsLessons:"Tugatilgan darslar",calTitle:"Ketma-ket kunlar",calLong:"Rekord: 23 kun",calDays:["D","S","C","P","J","S","Y"],t1:"Liga g'olibi",t2:"30 kun",t3:"100 so'z",tNext:"Keyingi",ach:"Yutuqlar",a1:"Birinchi qadam",a1d:"Bajarildi",a2:"100 dars",a3:"30 kun ketma-ket",goalSet:"Kunlik maqsad",goalLeft:"qoldi",todayGoal:"Bugungi maqsad",statusPro:"HSK AI Pro faol",statusTemp:"Vaqtinchalik kirish",statusTrial:"Sinov muddati",statusUntil:"{d} gacha",renew:"Obunani uzaytirish",goalTitle:"Maqsad",settings:"Sozlamalar",settingsSub:"Til, bildirishnoma, maqsad, kirish usullari",signin:"Kirish usullari",signinSub:"Bitta akkaunt, bir nechta kirish usuli",connect:"Ulash",connected:"Ulangan",disconnect:"Uzish",unlinkWarn:"Uzsangiz, boshqa qurilmalarda hisobdan chiqasiz.",linkWait:"Brauzerda tasdiqlashni kuting…",linkFail:"Ulab bo'lmadi. Qayta urinib ko'ring.",linkDone:"Ulandi",social:"HSK AI ijtimoiy tarmoqlarda"},
+  tj:{metricsLabel:"Омори омӯзиш",metricsXp:"XP-и умумӣ",metricsLessons:"Дарсҳои анҷомшуда",calTitle:"Рӯзҳои пайдарпай",calLong:"Рекорд: 23 рӯз",calDays:["Д","С","Ч","П","Ҷ","Ш","Я"],t1:"Ғолиби лига",t2:"30 рӯз",t3:"100 калима",tNext:"Баъдӣ",ach:"Дастовардҳо",a1:"Қадами аввал",a1d:"Иҷро шуд",a2:"100 дарс",a3:"30 рӯз пайдарпай",goalSet:"Ҳадафи рӯзона",goalLeft:"мондааст",todayGoal:"Ҳадафи имрӯза",statusPro:"HSK AI Pro фаъол",statusTemp:"Дастрасии муваққатӣ",statusTrial:"Давраи санҷишӣ",statusUntil:"то {d}",renew:"Дароз кардани обуна",goalTitle:"Ҳадаф",settings:"Танзимот",settingsSub:"Забон, огоҳиҳо, ҳадаф, усулҳои вуруд",signin:"Усулҳои вуруд",signinSub:"Як ҳисоб, якчанд усули вуруд",connect:"Пайваст кардан",connected:"Пайваст аст",disconnect:"Ҷудо кардан",unlinkWarn:"Пас аз ҷудо кардан дар дастгоҳҳои дигар аз ҳисоб мебароед.",linkWait:"Дар браузер тасдиқро интизор шавед…",linkFail:"Пайваст карда нашуд. Боз кӯшиш кунед.",linkDone:"Пайваст шуд",social:"HSK AI дар шабакаҳои иҷтимоӣ"}}[LANG]}
 /* Maqsad kodini (onboardingdagi tanlov) o'qiladigan nomga aylantiradi.
    Nomlar `studySetupT().goals` da — onboarding bilan AYNI manba, shunda
    profildagi maqsad tanlov ekranidagidek yoziladi. */
@@ -5992,6 +6048,7 @@ function renderProfile(){
   $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(t.nav.profile)+'</h1><button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div>'
     +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pname">'+(PROF.name||t.you)+'</div><div class="pun">'+(PROF.name?"@"+PROF.name.toLowerCase().replace(/\s+/g,"_"):"@hsk_ai")+'</div><span class="lvb"><i class="ti ti-bolt"></i> '+(MAP&&MAP.level?MAP.level.toUpperCase():"HSK 1")+' · '+t.league+'</span>'+(goalLabel()?'<span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span>':'')+'</div></div>'
     +'<div class="pgoal" onclick="App.goCurrentLesson()" style="cursor:pointer"><svg class="ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="30" cy="30" r="25" fill="none" stroke="'+(pct>=100?"var(--gold)":"var(--cin)")+'" stroke-width="6" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="'+off+'" transform="rotate(-90 30 30)"/><text x="30" y="35" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">'+pct+'%</text></svg><div class="gt"><b>'+p.todayGoal+'</b><small>'+todayXp+' / '+dailyGoal+' XP · '+Math.max(0,dailyGoal-todayXp)+' '+p.goalLeft+'</small></div><div class="fl"><b>'+streak+'</b><small>'+t.streak+'</small></div></div>'
+    +'<div class="stats profile-stats" role="group" aria-label="'+esc(p.metricsLabel)+'"><div class="stat"><b>'+Number(MAP&&MAP.progress&&MAP.progress.xp||0).toLocaleString("ru")+'</b><small>'+esc(p.metricsXp)+'</small></div><div class="stat"><b>'+completedLessons.toLocaleString("ru")+'</b><small>'+esc(p.metricsLessons)+'</small></div></div>'
     +'<div id="pomp-desktop-profile-root"></div>'
     +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+t.streak+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'
     +'<div class="sech">'+p.ach+'</div><div class="ach"><div class="arow"><div class="aic c3"><i class="ti ti-check"></i></div><div class="at"><div class="ah"><span>'+p.a1+'</span><small>'+(firstDone?p.a1d:"0 / 1")+'</small></div><div class="abar"><i style="width:'+(firstDone?100:0)+'%;background:var(--jade)"></i></div></div></div>'
@@ -6172,8 +6229,8 @@ var RECOG=(function(){
   }
 
   function shell(){
-    return '<div class="rc-top"><button class="rc-ix" onclick="RECOG.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="rc-pbar"><i id="rc-prog"></i></div><span class="rc-pill" id="rc-score">0 ✓</span></div>'
-      +'<div class="rc-body" id="rc-body">'+HSKStudyPreparing.render(LANG)+'</div>';
+    return '<div class="rc-top"><button class="rc-ix hsk-native-back-duplicate" onclick="RECOG.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="rc-pbar"><i id="rc-prog"></i></div><span class="rc-pill" id="rc-score">0 ✓</span></div>'
+      +'<div class="rc-body" id="rc-body">'+renderStudyPreparing()+'</div>';
   }
 
   // New openings consume new attempts; only a network retry reuses the ref.
@@ -6281,7 +6338,7 @@ var RECOG=(function(){
   }
   function gateStart(newAttempt){
     var ref=gateRef(newAttempt);
-    el("rc-body").innerHTML=HSKStudyPreparing.render(LANG);
+    el("rc-body").innerHTML=renderStudyPreparing();
     runGate(ref).then(function(o){
       if(SECTION!==API||ref!==ATTEMPT_REF)return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}
@@ -6324,9 +6381,9 @@ var PRON=(function(){
   function shell(){
     var t=L();
     return '<div class="pr-wrap">'
-      +'<div class="pr-top"><button class="pr-ix" onclick="PRON.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="pr-pbar"><i id="pr-prog"></i></div><span class="pr-pill" id="pr-cnt">1 / 10</span></div>'
+      +'<div class="pr-top"><button class="pr-ix hsk-native-back-duplicate" onclick="PRON.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="pr-pbar"><i id="pr-prog"></i></div><span class="pr-pill" id="pr-cnt">1 / 10</span></div>'
       +'<div class="pr-toast" id="pr-toast">+10 XP</div>'
-      +'<div class="pr-stage" id="pr-stage">'+HSKStudyPreparing.render(LANG)+'</div>'
+      +'<div class="pr-stage" id="pr-stage">'+renderStudyPreparing()+'</div>'
       +'<div class="pr-ctrl" id="pr-ctrl" style="display:none">'
       +'<div class="pr-micwrap" id="pr-micwrap"><button class="pr-mic" id="pr-mic" onclick="PRON.rec()" aria-label="Gapirish"><i class="ti ti-microphone"></i></button></div>'
       +'<div class="pr-hint" id="pr-hint"></div>'
@@ -6501,7 +6558,7 @@ var PRON=(function(){
   function gateStart(newAttempt){
     var ref=gateRef(newAttempt);
     el("pr-ctrl").style.display="none";el("pr-done").classList.remove("on");
-    el("pr-stage").innerHTML=HSKStudyPreparing.render(LANG);
+    el("pr-stage").innerHTML=renderStudyPreparing();
     runGate(ref).then(function(o){
       if(!live()||ref!==ATTEMPT_REF)return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}
@@ -6553,7 +6610,7 @@ var MIST=(function(){
   function shell(){
     var t=L();
     return '<div id="mk-root">'
-      +'<div class="top"><button class="ix" onclick="MIST.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><h1>'+esc(t.title)+'</h1></div>'
+      +'<div class="top"><button class="ix hsk-native-back-duplicate" onclick="MIST.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><h1>'+esc(t.title)+'</h1></div>'
       +'<div class="sub">'+esc(t.sub)+'</div>'
       +'<div id="mk-content"></div>'
       +'<div id="mk-review" class="rv" hidden>'
@@ -6777,7 +6834,7 @@ var TEST=(function(){
 
   function shell(){
     return '<div id="tc-root">'
-      +'<div id="tc-hub"><div class="top"><button class="ix" onclick="TEST.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><h1 id="tc-title"></h1></div>'
+      +'<div id="tc-hub"><div class="top"><button class="ix hsk-native-back-duplicate" onclick="TEST.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><h1 id="tc-title"></h1></div>'
       +'<div class="sub" id="tc-sub"></div>'
       +'<div class="place"><span class="gw han">级</span><b><i class="ti ti-target"></i> <span id="tc-ptitle"></span></b><p id="tc-psub"></p><button onclick="TEST.open2(\'placement\')"><i class="ti ti-player-play"></i> <span id="tc-pbtn"></span></button></div>'
       +'<div class="sech" id="tc-exhead"></div><div id="tc-exlist"></div></div>'
@@ -7747,7 +7804,7 @@ var NavBack={
      uchun ro'yxat selektorlardan iborat. Ilgari bu yerda eski overlayning
      id'si turardi — u olib tashlangandan keyin hech nimani to'smasdi. */
   BLOCK:["#paywall.on","#levelup.on",".caa-ov.on",".caa-app.on"],
-  _guarded:false,_g:null,
+  _guarded:false,_g:null,_telegramBackBound:false,
   _on:function(id){var e=document.getElementById(id);return !!(e&&e.classList.contains("on"))},
   blocked:function(){for(var i=0;i<NavBack.BLOCK.length;i++)if(document.querySelector(NavBack.BLOCK[i]))return true;return false},
   top:function(){
@@ -7787,7 +7844,15 @@ var NavBack={
   /* --- Telegram BackButton + Android hardware back --- */
   sync:function(){
     var can=NavBack.canGoBack();
-    try{if(tg&&tg.BackButton){can?tg.BackButton.show():tg.BackButton.hide()}}catch(e){}
+    var nativeBackActive=false;
+    try{
+      if(tg&&tg.BackButton){
+        can?tg.BackButton.show():tg.BackButton.hide();
+        nativeBackActive=!!(can&&NavBack._telegramBackBound&&tg.initData);
+      }
+    }catch(e){}
+    /* Keep in-page Back buttons for browsers / Android WebViews without Telegram navigation. */
+    document.documentElement.classList.toggle("hsk-telegram-back-active",nativeBackActive);
     /* Android "back" ni ushlash uchun bitta zaxira history yozuvi kerak.
        U popstate'da iste'mol qilinadi va qaytish bo'lsa qayta qo'yiladi. */
     if(can&&!NavBack._guarded){
@@ -7865,7 +7930,12 @@ var NavBack={
   },
 
   init:function(){
-    try{if(tg&&tg.BackButton&&tg.BackButton.onClick)tg.BackButton.onClick(function(){NavBack.goBack();NavBack.sync()})}catch(e){}
+    try{
+      if(tg&&tg.BackButton&&typeof tg.BackButton.onClick==="function"){
+        tg.BackButton.onClick(function(){NavBack.goBack();NavBack.sync()});
+        NavBack._telegramBackBound=true;
+      }
+    }catch(e){}
     window.addEventListener("popstate",NavBack.onPop);
     document.addEventListener("touchstart",NavBack.start,{passive:true});
     document.addEventListener("touchmove",NavBack.move,{passive:false});

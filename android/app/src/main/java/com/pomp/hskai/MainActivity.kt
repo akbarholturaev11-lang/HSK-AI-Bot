@@ -95,6 +95,7 @@ import com.pomp.hskai.feature.offline.OfflineRequired
 import com.pomp.hskai.feature.offline.rememberOfflineReconnect
 import com.pomp.hskai.feature.practice.DrillMode
 import com.pomp.hskai.feature.practice.PracticeRequest
+import com.pomp.hskai.feature.practice.ReadyPhrasesScreen
 import com.pomp.hskai.feature.practice.toRequest
 import com.pomp.hskai.feature.practice.PracticeScreen
 import com.pomp.hskai.feature.practice.PracticeViewModel
@@ -389,6 +390,7 @@ private fun AppRoot(
             val settingsReload by settingsViewModel.reload.collectAsStateWithLifecycle()
             var languagePickerOpen by remember { mutableStateOf(false) }
             var dictionaryOpen by remember { mutableStateOf(false) }
+            var phrasebookOpen by remember { mutableStateOf(false) }
             var adRequest by remember { mutableStateOf<AdRequest?>(null) }
             var screenCenterAdAsked by rememberSaveable { mutableStateOf(false) }
             val adsUnlockedAfterLimit by app.appSettings.adsUnlockedAfterLimit
@@ -699,11 +701,21 @@ private fun AppRoot(
 
             // Course refreshes server flags on return; secondary tabs keep
             // their existing lazy-load policy.
-            LaunchedEffect(selectedTab, offline) {
+            LaunchedEffect(
+                selectedTab,
+                offline,
+                courseState.map?.level,
+                courseState.map?.hsk30?.access?.allowed,
+                state.account.level,
+            ) {
                 if (offline) return@LaunchedEffect
                 when (selectedTab) {
                     MainTab.COURSE -> courseViewModel.load()
-                    MainTab.PRACTICE -> practiceViewModel.ensureMistakesLoaded()
+                    MainTab.PRACTICE -> {
+                        val level = (courseState.map?.level ?: state.account.level).trim().lowercase()
+                        val hsk30Locked = level.startsWith("nhsk") && courseState.map?.hsk30?.access?.allowed != true
+                        if (!hsk30Locked) practiceViewModel.ensureMistakesLoaded()
+                    }
                     MainTab.VOICE -> voiceViewModel.ensureStatusLoaded()
                     MainTab.RATING -> ratingViewModel.ensureLoaded()
                     else -> Unit
@@ -718,6 +730,7 @@ private fun AppRoot(
                 practiceRequest = null
                 openDrill = null
                 skipTestLesson = null
+                phrasebookOpen = false
                 dictionaryOpen = false
                 openChallenge = null
                 ratingUserOpen = null
@@ -791,12 +804,7 @@ private fun AppRoot(
             }
 
             fun openPracticeTab() {
-                if (hsk30ContentLocked()) {
-                    practiceRequest = null
-                    openHsk30ContentGate()
-                } else {
-                    selectedTab = MainTab.PRACTICE
-                }
+                selectedTab = MainTab.PRACTICE
             }
 
             // Lessons report progress to the server, so offline they say so
@@ -879,6 +887,10 @@ private fun AppRoot(
             }
 
             fun launchDrill(mode: DrillMode) {
+                if (hsk30ContentLocked()) {
+                    openHsk30ContentGate()
+                    return
+                }
                 // A drill is an attempt, not a reusable destination. A fresh
                 // key prevents a completed/result state from surviving into
                 // another mode or into a later run of the same mode.
@@ -934,6 +946,7 @@ private fun AppRoot(
                     // Show its section and drop it, so it cannot open a lesson
                     // on its own later.
                     val request = requestedDestination ?: return@LaunchedEffect
+                    phrasebookOpen = false
                     dictionaryOpen = false
                     selectedTab = request.destination.toTab() ?: selectedTab
                     onDestinationConsumed()
@@ -948,13 +961,9 @@ private fun AppRoot(
                 openChallenge = null
                 ratingChallengesOpen = false
                 ratingUserOpen = null
+                phrasebookOpen = false
                 dictionaryOpen = false
                 val destinationTab = destination.toTab()
-                if (destinationTab == MainTab.PRACTICE && hsk30ContentLocked()) {
-                    openHsk30ContentGate()
-                    onDestinationConsumed()
-                    return@LaunchedEffect
-                }
                 selectedTab = destinationTab ?: selectedTab
                 when (destination) {
                     AppDestination.CurrentLesson,
@@ -1191,6 +1200,13 @@ private fun AppRoot(
                         if (skipTestState.unlocked) courseViewModel.load()
                     },
                 )
+            } else if (phrasebookOpen) {
+                ReadyPhrasesScreen(
+                    language = currentLanguage,
+                    settings = app.appSettings,
+                    json = app.json,
+                    onBack = { phrasebookOpen = false },
+                )
             } else if (dictionaryOpen) {
                 val dictionaryViewModel: DictionaryViewModel = viewModel(
                     key = "dictionary-${state.account.language.backendCode}",
@@ -1329,14 +1345,25 @@ private fun AppRoot(
                                 hints = hints,
                                 onDismissHint = hintsViewModel::dismiss,
                                 onDismissLimit = practiceViewModel::dismissLimit,
-                                onOpenDictionary = { dictionaryOpen = true },
+                                onOpenDictionary = {
+                                    phrasebookOpen = false
+                                    dictionaryOpen = true
+                                },
+                                onOpenReadyPhrases = {
+                                    dictionaryOpen = false
+                                    phrasebookOpen = true
+                                },
                                 onStartPractice = { tool, level, language ->
-                                    practiceViewModel.startPractice(tool, level, language)
+                                    if (hsk30ContentLocked()) openHsk30ContentGate()
+                                    else practiceViewModel.startPractice(tool, level, language)
                                 },
                                 onSelectPracticeOption = practiceViewModel::selectPracticeOption,
                                 onAdvancePractice = practiceViewModel::advancePractice,
                                 onResetPractice = practiceViewModel::resetPractice,
-                                onStartMistakeReview = practiceViewModel::startMistakeReview,
+                                onStartMistakeReview = {
+                                    if (hsk30ContentLocked()) openHsk30ContentGate()
+                                    else practiceViewModel.startMistakeReview()
+                                },
                                 onAnswerReview = practiceViewModel::answerReview,
                                 onAnswerReviewTokens = practiceViewModel::answerReviewTokens,
                                 onSelectMistakeCategory = practiceViewModel::selectMistakeCategory,
@@ -1344,7 +1371,8 @@ private fun AppRoot(
                                 onResetReview = practiceViewModel::resetReview,
                                 onSpeakReview = practiceViewModel::playReviewAudio,
                                 onStartExam = { examLevel ->
-                                    practiceViewModel.startExam(examLevel, currentLanguage)
+                                    if (hsk30ContentLocked()) openHsk30ContentGate()
+                                    else practiceViewModel.startExam(examLevel, currentLanguage)
                                 },
                                 onSelectExamOption = practiceViewModel::selectExamOption,
                                 onAdvanceExam = practiceViewModel::advanceExam,
@@ -1353,6 +1381,8 @@ private fun AppRoot(
                                 request = practiceRequest,
                                 onRequestConsumed = { practiceRequest = null },
                                 offline = offline,
+                                hsk30Locked = hsk30ContentLocked(),
+                                onUnlockHsk30 = ::openHsk30ContentGate,
                                 modifier = contentModifier,
                             )
 

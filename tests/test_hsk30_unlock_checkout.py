@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
@@ -124,6 +124,102 @@ class Hsk30UnlockCheckoutTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(quote["discount_applied"])
         self.assertEqual(quote["discount_percent"], 0)
         self.assertEqual(quote["discount_source"], "none")
+
+    async def test_china_hsk30_qr_quote_converts_to_cny_but_keeps_admin_tjs_price(self):
+        async with self.sessions() as session:
+            settings = BotSettingRepository(session)
+            await settings.set("subscription_visa_usd_tjs_rate", "10")
+            await settings.set("subscription_usd_cny_rate", "7")
+            await session.commit()
+
+        for method in ("alipay", "wechat"):
+            with self.subTest(method=method):
+                async with self.sessions() as session:
+                    result = await SubscriptionMiniAppService(session).quote(
+                        telegram_id=5001,
+                        plan_type=HSK30_UNLOCK_PLAN_TYPE,
+                        payment_method=method,
+                        include_qr=False,
+                        mode="hsk30_unlock",
+                    )
+                self.assertTrue(result["ok"], result)
+                quote = result["quote"]
+                self.assertEqual(quote["base_amount"], 10)
+                self.assertEqual(quote["base_currency"], "TJS")
+                self.assertEqual(quote["final_amount"], 10)
+                self.assertEqual(quote["final_currency"], "TJS")
+                self.assertEqual(quote["pay_amount"], "7")
+                self.assertEqual(quote["pay_currency"], "CNY")
+                self.assertEqual(quote["pay_base_amount"], "7")
+                self.assertEqual(quote["pay_base_currency"], "CNY")
+                self.assertEqual(quote["card_country"], "cn")
+
+    async def test_china_hsk30_submit_stores_local_cny_and_keeps_qr_lookup_in_tjs(self):
+        async with self.sessions() as session:
+            settings = BotSettingRepository(session)
+            await settings.set("subscription_visa_usd_tjs_rate", "10")
+            await settings.set("subscription_usd_cny_rate", "7")
+            await session.commit()
+
+        async with self.sessions() as session:
+            service = SubscriptionMiniAppService(session)
+            with patch.object(
+                service, "_qr_payload", new_callable=AsyncMock, return_value={"available": True}
+            ), patch.object(
+                AdminNotifyService,
+                "notify_payment_review",
+                new_callable=AsyncMock,
+                return_value="HSK30_RECEIPT",
+            ):
+                result = await service.submit(
+                    telegram_id=5001,
+                    plan_type=HSK30_UNLOCK_PLAN_TYPE,
+                    payment_method="wechat",
+                    card_country=None,
+                    screenshot_data_url=PNG_1X1_DATA_URL,
+                    bot=self.bot,
+                    mode="hsk30_unlock",
+                )
+            payment = (await session.execute(select(Payment))).scalar_one()
+            self.assertTrue(result["ok"], result)
+            self.assertEqual(payment.amount, 10)
+            self.assertEqual(payment.currency, "TJS")
+            self.assertEqual(payment.local_amount, "7")
+            self.assertEqual(payment.local_currency, "CNY")
+            self.assertEqual(payment.card_country, "cn")
+            self.assertEqual(payment.payment_method, "wechat")
+
+            with patch(
+                "app.services.subscription_miniapp_service.PaymentQrCodeService.get_file_id",
+                new_callable=AsyncMock,
+                return_value="QR_FILE",
+            ) as lookup:
+                qr_id = await service._uploaded_qr_file_id(
+                    "wechat",
+                    HSK30_UNLOCK_PLAN_TYPE,
+                    {"final_amount": 10, "currency": "TJS"},
+                )
+                self.assertEqual(qr_id, "QR_FILE")
+                self.assertEqual(lookup.await_args.kwargs["amount"], 10)
+                self.assertEqual(lookup.await_args.kwargs["currency"], "TJS")
+
+    def test_china_hsk30_admin_review_shows_paid_cny_without_card_mislabel(self):
+        review = AdminNotifyService().build_payment_review_text(
+            lang="uz",
+            telegram_id=5001,
+            full_name="Test",
+            plan_type=HSK30_UNLOCK_PLAN_TYPE,
+            amount=10,
+            currency="TJS",
+            payment_id=1,
+            payment_method="alipay",
+            card_country="cn",
+            local_amount="7",
+            local_currency="CNY",
+        )
+        self.assertIn("💵 To'lanadigan summa: 7 CNY", review)
+        self.assertIn("🌍 To'lov hududi: Xitoy", review)
+        self.assertNotIn("🌍 Karta davlati:", review)
 
     async def test_admin_can_disable_one_time_unlock_checkout(self):
         async with self.sessions() as session:

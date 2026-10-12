@@ -6,7 +6,7 @@
 -->
 <resources>
     <string name="limit_unlock_headline">Продолжайте учиться</string>
-    <string name="limit_unlock_button">Получить HSK AI Pro ⭐</string>
+    <string name="limit_unlock_button">Посмотреть тарифы Pro</string>
     <string name="limit_unlock_hint">Подписка откроется после подтверждения администратором.</string>
     <string name="sub_title">HSK AI Pro</string>
     <string name="sub_intro">Выберите срок подписки и способ оплаты.</string>

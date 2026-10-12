@@ -106,6 +106,7 @@ fun PracticeScreen(
     onDismissHint: (String) -> Unit = {},
     onDismissLimit: () -> Unit = {},
     onOpenDictionary: () -> Unit,
+    onOpenReadyPhrases: () -> Unit = {},
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onSelectPracticeOption: (Int) -> Unit,
     onAdvancePractice: (String) -> Unit,
@@ -124,8 +125,10 @@ fun PracticeScreen(
     onResetExam: () -> Unit,
     request: PracticeRequest? = null,
     onRequestConsumed: () -> Unit = {},
-    /** Without the server only the dictionary works; the other tools say so. */
+    /** Without the server only bundled study tools work; the other tools say so. */
     offline: Boolean = false,
+    hsk30Locked: Boolean = false,
+    onUnlockHsk30: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var mistakesOpen by rememberSaveable { mutableStateOf(false) }
@@ -196,6 +199,7 @@ fun PracticeScreen(
                 hints = hints,
                 onDismissHint = onDismissHint,
                 onOpenDictionary = onOpenDictionary,
+                onOpenReadyPhrases = onOpenReadyPhrases,
                 onStartPractice = onStartPractice,
                 onOpenMistakes = { mistakesOpen = true },
                 onStartExam = onStartExam,
@@ -203,6 +207,8 @@ fun PracticeScreen(
                 request = request,
                 onRequestConsumed = onRequestConsumed,
                 offline = offline,
+                hsk30Locked = hsk30Locked,
+                onUnlockHsk30 = onUnlockHsk30,
             )
         }
 
@@ -269,6 +275,7 @@ private fun PracticeHome(
     hints: List<AndroidHintDto>,
     onDismissHint: (String) -> Unit,
     onOpenDictionary: () -> Unit,
+    onOpenReadyPhrases: () -> Unit,
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onOpenMistakes: () -> Unit,
     onStartExam: (String) -> Unit,
@@ -276,10 +283,12 @@ private fun PracticeHome(
     request: PracticeRequest?,
     onRequestConsumed: () -> Unit,
     offline: Boolean,
+    hsk30Locked: Boolean,
+    onUnlockHsk30: () -> Unit,
 ) {
     var openGroup by rememberSaveable { mutableStateOf<PracticeGroup?>(null) }
     // The dictionary is in the APK; every other tool asks the server first.
-    val toolsEnabled = !state.isStarting && !offline
+    val toolsEnabled = !state.isStarting && !offline && !hsk30Locked
     val placementTool = remember {
         PracticeToolSpec(
             mode = "placement",
@@ -290,10 +299,12 @@ private fun PracticeHome(
         )
     }
 
-    LaunchedEffect(request) {
+    LaunchedEffect(request, hsk30Locked) {
         if (request == null) return@LaunchedEffect
         // Offline a tool is not opened just to fail; the notice says why.
-        if (!offline) {
+        if (hsk30Locked) {
+            if (!offline) onUnlockHsk30()
+        } else if (!offline) {
             when (request) {
                 PracticeRequest.MISTAKES -> { openGroup = null; onOpenMistakes() }
                 PracticeRequest.RECOGNITION -> { openGroup = null; onOpenDrill(DrillMode.RECOGNITION) }
@@ -321,6 +332,16 @@ private fun PracticeHome(
             PracticeHeader(group = openGroup, onBack = { openGroup = null }, hints = hints, onDismissHint = onDismissHint)
             PracticeNotice(state = state, offline = offline)
         }
+        if (hsk30Locked && !offline) {
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(stringResource(R.string.practice_hsk30_locked), color = PompColors.InkSecondary)
+                    Button(onClick = onUnlockHsk30, modifier = Modifier.fillMaxWidth()) {
+                        Text(stringResource(R.string.practice_hsk30_unlock))
+                    }
+                }
+            }
+        }
         when (openGroup) {
             null -> {
                 item {
@@ -329,6 +350,8 @@ private fun PracticeHome(
                         GroupLabel(stringResource(R.string.practice_group_skills))
                         ToolGroup {
                             ToolRow("字", null, TintAmber, stringResource(R.string.practice_dictionary_title), stringResource(R.string.practice_dictionary_body), true, onClick = onOpenDictionary)
+                            ToolDivider()
+                            ToolRow("句", null, TintJade, stringResource(R.string.practice_ready_phrases_title), stringResource(R.string.practice_ready_phrases_body), true, onClick = onOpenReadyPhrases)
                             ToolDivider()
                             ToolRow(null, Icons.Filled.Visibility, TintBlue, stringResource(R.string.practice_characters_title), stringResource(R.string.practice_recognition_group_body), toolsEnabled) { onOpenDrill(DrillMode.RECOGNITION) }
                             ToolDivider()

@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -273,6 +274,22 @@ class AppSettings(context: Context) : LessonResumeStore {
         appContext.settingsDataStore.edit { it.remove(DICTIONARY_HISTORY_KEY) }
     }
 
+    val readyPhraseFavorites: Flow<Set<String>> = appContext.settingsDataStore.data
+        .map { it[READY_PHRASE_FAVORITES_KEY].orEmpty() }
+
+    suspend fun toggleReadyPhraseFavorite(id: String) {
+        if (id.isBlank()) return
+        appContext.settingsDataStore.edit { preferences ->
+            val favorites = preferences[READY_PHRASE_FAVORITES_KEY].orEmpty().toMutableSet()
+            if (!favorites.add(id)) favorites.remove(id)
+            preferences[READY_PHRASE_FAVORITES_KEY] = favorites
+        }
+    }
+
+    suspend fun clearReadyPhraseFavorites() {
+        appContext.settingsDataStore.edit { it.remove(READY_PHRASE_FAVORITES_KEY) }
+    }
+
     /**
      * Mini App `hsk_v3_lesson_resume:v2:<level>:<order>` — the card the learner
      * stopped on. Leaving a lesson halfway and starting it again from the top
@@ -328,6 +345,7 @@ class AppSettings(context: Context) : LessonResumeStore {
         val PAYMENT_REGION_KEY = stringPreferencesKey("payment_region:v1")
         val SUBSCRIPTION_DISPLAY_CURRENCY_KEY = stringPreferencesKey("subscription_display_currency:v1")
         val DICTIONARY_HISTORY_KEY = stringPreferencesKey("dictionary_history:v1")
+        val READY_PHRASE_FAVORITES_KEY = stringSetPreferencesKey("ready_phrase_favorites:v1")
 
         /** A dictionary entry never contains a line break. */
         const val HISTORY_SEPARATOR = "\n"
