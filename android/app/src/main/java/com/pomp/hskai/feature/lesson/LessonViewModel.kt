@@ -35,7 +35,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-/* Shared N1 first-lesson transfer checks use a three-item retry bank in the
+/* Shared N1 checkpoint transfer checks use a per-lesson retry bank in the
  * server-provided lesson. Skip only the retry whose original objective passed.
  * A resumed attempt with missing answer history deliberately shows the bank.
  * The ordinary Course V3, paywall, material_ref and API count are unchanged. */
@@ -46,7 +46,7 @@ internal fun nextN1PilotCardIndex(
     historyKnown: Boolean,
 ): Int {
     val checked = lesson ?: return startIndex
-    if (checked.level != "nhsk1" || checked.sourceLesson != 1 || checked.part != 4) return startIndex
+    if (checked.level != "nhsk1" || !checked.isCheckpoint || checked.sections.none { it.purpose == "learning_repair_bank" }) return startIndex
     var cursor = startIndex
     var offset = 0
     for (section in checked.sections) {
@@ -583,11 +583,11 @@ class LessonViewModel(
     }
 
     private fun record(correct: Boolean, explanation: String, chosen: String = "") {
-        // Capture only the three objective checks in the N1 first checkpoint.
+        // Capture failed objectives by exit-card position on N1 checkpoints.
         // Android reuses its existing card renderers for the alternate bank.
         val current = _state.value
         val lesson = current.lesson
-        if (lesson?.level == "nhsk1" && lesson.sourceLesson == 1 && lesson.part == 4) {
+        if (lesson?.level == "nhsk1" && lesson.isCheckpoint) {
             var offset = 0
             for (section in lesson.sections) {
                 val end = offset + section.cards.size
