@@ -48,7 +48,7 @@ button:active{transform:scale(.98)}
 .lang-btn.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
 .search-row{position:relative;display:flex;align-items:stretch}
 .search-wrap{position:relative;flex:1;min-width:0}
-#search{width:100%;padding:13px 84px 13px 44px;font-size:14px;font-weight:600;border-radius:14px;
+#search{width:100%;padding:13px 84px 13px 44px;font-size:16px;font-weight:600;border-radius:14px;
   background:var(--bg2);border:1.5px solid var(--border2);color:var(--text);outline:none;
   transition:border-color .15s ease, box-shadow .15s ease}
 #search::placeholder{color:var(--text2);font-weight:500}
@@ -1157,12 +1157,17 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   document.getElementById('pr-mem').onclick = function(){ goPractice('course_v3_memorize'); };
 
   function goBackToStudy(){
-    if(isLight){ location.href = '/course-v3.html?lang=' + currentLang + '&tab=mashq'; return; }
+    /* Prefer the existing course document to retain app state and scroll position. */
+    try{ sessionStorage.setItem('hsk_v3_resource_return', '1'); }catch(e){}
+    if(params.get('from') === 'course-v3' && history.length > 1){
+      history.back();
+      return;
+    }
     var url = new URL('/course-v3.html', location.origin);
     if(currentLevel !== 'all') url.searchParams.set('level', currentLevel);
     url.searchParams.set('lang', currentLang);
     url.searchParams.set('tab', 'mashq');
-    location.href = url.toString();
+    location.replace(url.toString());
   }
 
   /* ---------- list / search ---------- */
@@ -1656,12 +1661,28 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     listEl.scrollTop = scrollPos;
   }
 
-  backBtn.addEventListener('click', function(){
+  function handleDictionaryBack(){
     if(!strokeModal.classList.contains('hidden')){ closeStrokeOrder(); return; }
-    closeDetailView();
-  });
+    if(!viewDetail.classList.contains('hidden')){ closeDetailView(); return; }
+    goBackToStudy();
+  }
+  backBtn.addEventListener('click', handleDictionaryBack);
+  listBackBtn.addEventListener('click', handleDictionaryBack);
 
-  listBackBtn.addEventListener('click', goBackToStudy);
+  /* Edge swipe follows the same nested back order as Telegram BackButton. */
+  var edgeSwipe=null;
+  document.addEventListener('touchstart',function(ev){
+    if(ev.touches.length!==1){edgeSwipe=null;return;}
+    var t=ev.touches[0];
+    edgeSwipe=t.clientX<=28?{x:t.clientX,y:t.clientY}:null;
+  },{passive:true});
+  document.addEventListener('touchend',function(ev){
+    var start=edgeSwipe;edgeSwipe=null;
+    if(!start||!ev.changedTouches.length)return;
+    var t=ev.changedTouches[0],dx=t.clientX-start.x,dy=t.clientY-start.y;
+    if(dx>=85&&Math.abs(dx)>Math.abs(dy)*1.5)handleDictionaryBack();
+  },{passive:true});
+  document.addEventListener('touchcancel',function(){edgeSwipe=null;},{passive:true});
   filterToggle.addEventListener('click', function(){
     var collapsed = filterStack.classList.toggle('collapsed');
     var t = UI[currentLang] || UI.uz;
@@ -1770,14 +1791,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       }
       var nativeBackBound=false;
       if(tg && tg.BackButton && typeof tg.BackButton.onClick === 'function') {
-        tg.BackButton.onClick(function(){
-          if(!viewDetail.classList.contains('hidden')) {
-            if(!strokeModal.classList.contains('hidden')) closeStrokeOrder();
-            else closeDetailView();
-          } else {
-            goBackToStudy();
-          }
-        });
+        tg.BackButton.onClick(handleDictionaryBack);
         nativeBackBound=true;
       }
       if(tg && tg.BackButton && typeof tg.BackButton.show === 'function') tg.BackButton.show();

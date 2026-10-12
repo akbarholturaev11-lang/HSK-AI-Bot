@@ -549,6 +549,16 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 	.lr .nm small{display:block;font-size:11px;color:var(--ink3);margin-top:2px}
 	.lr.me{background:var(--cinbg);border-radius:11px;border-bottom:none;padding:10px 12px}
 	.lr.me .av{background:var(--cin);color:var(--cin-ink)}.lr.me .nm{font-weight:500;color:var(--cin2)}.lr.me .xp{color:var(--cin2)}
+/* Prevent long Telegram names and large XP totals from widening the mobile viewport. */
+#s-rating{min-width:0;max-width:100%;overflow-x:clip}
+.lr{max-width:calc(100% - 32px);min-width:0}
+.lr .rk,.lr .av,.lr .xp,.lr .med{flex-shrink:0}
+.lr .nm{min-width:0;overflow-wrap:anywhere;word-break:break-word}
+.lr .nm small{overflow-wrap:anywhere}
+.rt-league>div:nth-child(2){flex:1;min-width:0}
+.rt-league .nm2,.rt-league .sb{overflow-wrap:anywhere}
+.rt-cd{flex-shrink:0}
+.rt-zone{min-width:0;overflow-wrap:anywhere}
 .rt-league{display:flex;align-items:center;gap:13px;margin:8px 16px 6px;padding:14px;background:var(--card);border:1px solid var(--line);border-radius:16px}
 .rt-emb{width:50px;height:50px;border-radius:14px;background:var(--cin);border:2px solid var(--gold);color:var(--cin-ink);display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0}
 .rt-league .nm2{font-size:16px;font-weight:500}.rt-league .sb{font-size:12px;color:var(--ink2);margin-top:2px}
@@ -2335,12 +2345,12 @@ var App={
   openDict:function(){
     beginInternalNavigation();
     var level=normalizeLevel((MAP&&MAP.level)||getSelectedLevel());
-    var q=new URLSearchParams({theme:"light",lang:LANG,level:level,filter:level});
+    var q=new URLSearchParams({theme:"light",lang:LANG,level:level,filter:level,from:"course-v3"});
     location.href="/hsk-lugat.html?"+q.toString();
   },
   openPhrases:function(){
     beginInternalNavigation();
-    location.href="/hsk-gaplar.html?"+new URLSearchParams({lang:LANG,theme:"light"}).toString();
+    location.href="/hsk-gaplar.html?"+new URLSearchParams({lang:LANG,theme:"light",from:"course-v3"}).toString();
   },
   openRecog:function(){RECOG.open()},
   openPron:function(){PRON.open()},
@@ -7740,6 +7750,10 @@ $("#paywall").onclick=function(){App.closePaywall()};
 window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App=App;window.Flow=Flow;window.speak=speak;
 var finishHskLaunchSplash=(function(){
   var root=document.getElementById("hsk-launch-splash");if(!root)return function(){};
+  /* Returning from the dictionary/phrasebook is not a fresh app launch. */
+  var returning=false;
+  try{returning=sessionStorage.getItem("hsk_v3_resource_return")==="1";if(returning)sessionStorage.removeItem("hsk_v3_resource_return")}catch(e){}
+  if(returning){root.classList.add("is-done");root.remove();return function(){}}
   var bootReady=false,animationReady=false,closed=false;
   function closeIfReady(){if(!bootReady||!animationReady||closed)return;closed=true;clearTimeout(safetyTimer);root.classList.add("is-done");setTimeout(function(){if(root.parentNode)root.parentNode.removeChild(root)},260)}
   var safetyTimer=setTimeout(function(){bootReady=true;animationReady=true;closeIfReady()},7000);
@@ -8040,6 +8054,11 @@ var NavBack={
   }
 };
 NavBack.init();
+window.addEventListener("pageshow",function(ev){
+  if(!ev.persisted)return;
+  try{sessionStorage.removeItem("hsk_v3_resource_return")}catch(e){}
+  NavBack.sync(); /* Restore the Telegram BackButton on bfcache return. */
+});
 </script>
 <script src="/course_v3_data/desktop-download.js?v=20261003-1"></script>
 </body>
