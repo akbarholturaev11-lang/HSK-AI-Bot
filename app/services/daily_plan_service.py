@@ -213,6 +213,13 @@ class DailyPlanService:
             # Grammatika zaifligining yagona chorasi shu — unga mos drill yo'q.
             grammar = cls._weakness_scores(signals).get("grammar", 0.0)
             score = weights.get(TASK_MISTAKE_REVIEW, 1.0) + grammar
+            # In the N1 pilot the learner's missed listening/greeting/farewell
+            # check can now be resolved to the existing mistake-review bank.
+            # Place that review ahead of optional voice drills when the day
+            # only has one spare task slot. Do not invent a new, unopenable
+            # task type or change the course-first invariant.
+            if signals.level == "nhsk1":
+                score += 2.0
             candidates.append((score, TASK_MISTAKE_REVIEW, {"t": TASK_MISTAKE_REVIEW}))
 
         skill, skill_score = cls._best_skill(signals)
