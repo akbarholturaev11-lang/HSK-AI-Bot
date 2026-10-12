@@ -345,12 +345,14 @@ class LessonViewModel(
                     // nothing at all.
                     val saved = resumeStore?.lessonResumeIndex(level, lessonOrder) ?: 0
                     val cards = snapshot.lesson.cards.size
-                    val retryStart = snapshot.lesson.sections.takeWhile { it.purpose != "learning_repair_bank" }
+                    val exitStart = snapshot.lesson.sections.takeWhile { it.purpose != "learning_exit_check" }
                         .sumOf { it.cards.size }
-                    // The existing resume store saves only card index. If an
-                    // interrupted attempt resumes inside the retry bank, show
-                    // all alternate examples rather than skip a failed skill.
-                    n1CheckHistoryKnown = saved < retryStart
+                    // Resume currently stores an index, not earlier answers.
+                    // If the learner already answered an exit question before
+                    // an interruption, the previous error history is unknown.
+                    // Showing all alternate examples is safer than silently
+                    // skipping the one that was missed.
+                    n1CheckHistoryKnown = saved <= exitStart
                     n1FailedCheckIndices.clear()
                     _state.value = LessonUiState(
                         isLoading = false,
