@@ -69,3 +69,17 @@ Release discipline: work on an isolated branch, require CI and migration review,
 - Existing offline Android cache and an already-open Mini App may keep an older version until online reload/app reopen; explicit revision-aware invalidation is a separate project.
 - CI validates technical consistency and script correctness, **not** the teaching accuracy of every translation or real-device behavior.
 - Production `main` remains unchanged until PR approval/merge.
+
+## Pilot 2: independent exit and conditional transfer checks (draft PR #142)
+
+- N1 source lesson 1 ends with **three independent checks**: respectful teacher greeting, listening comprehension for a thank-you expression, and building a student farewell.
+- Each objective has a **different follow-up example** in an appended retry bank:
+  1. Respond respectfully to a teacher's `大家好！` after missing a polite greeting.
+  2. Recognize `不客气！` after confusing `谢谢！` in audio.
+  3. Build `老师，再见！` after missing `同学们，再见！`.
+- Mini App and the updated Android ViewModel both skip an alternate question if the corresponding independent check was correct; otherwise only that question appears. Incorrect answers still follow existing heart/mistake reporting and the UI shows the teacher-written explanation.
+- Sections `learning_exit_check` (3) and `learning_repair_bank` (4) are **appended** after the unchanged existing N1 checkpoint sections (1–2). Total cards 12 → 18, preserving all 12 original section/card `material_ref` values.
+- The new sections use existing `quick_quiz`, `listening_choice`, and `sentence_builder` types; server card count and Android parse count must match 18. Source content is authored in `scripts/hsk30/learning_overlays/nhsk1_lesson_01_exit.json`, reapplied during regeneration.
+- Resume: Mini App retains a lightweight pilot failure map in its existing per-lesson mastery cache. Android's older resume store records only an index; if interrupted **after** the first exit question, the native client conservatively offers all alternate questions rather than incorrectly skipping missed skills. A future release should persist the exact per-objective result on Android.
+- Existing Android APK builds **do not have conditional skip code**: while they can render every extra standard card, old builds would offer all three retry cards unconditionally after a server release. **Release gate:** do not merge/deploy these content changes until the new native build and backend are tested together and an old-APK compatibility approach is approved.
+- This checks immediate transfer within the lesson; it does **not** establish 1-day or 7-day retention. No subscription, paywall, TJS unlock, trial or free-limit logic was changed.
