@@ -10780,3 +10780,22 @@ Risk:
 
 Follow-up:
 - Preserve deferred-response and real Compose regressions; verify the signed APK on the affected phone after deployment. These changes do not prove physical microphone behavior or production payment/provider operation.
+
+
+### 2026-10-12 — HSK 3.0 N1 quality foundation (draft PR #142)
+
+Changed:
+- Added read-only `scripts/hsk30/verify_nhsk1_learning_contract.py`, 6 focused unit tests and N1-only CI; checks 103 runtime parts/15 source lessons, map/checkpoint and answer contracts.
+- Defined learning-pilot and migration rules in `docs/HSK30_N1_LEARNING_ENGINE_V2.md`.
+
+Why:
+- Improve teaching content safely before editing lessons. Existing `material_ref` depends on section/card positions, and Mini App/Android cache differently.
+
+Files touched:
+- `scripts/hsk30/verify_nhsk1_learning_contract.py`, `tests/test_nhsk1_learning_contract.py`, `.github/workflows/hsk30-nhsk1-quality.yml`, `docs/HSK30_N1_LEARNING_ENGINE_V2.md`.
+
+Risk:
+- Quality gate only, no changes to lessons, payments, access, XP or live rendering; pedagogical validity still needs human audit.
+
+Follow-up:
+- Pilot source lesson 1 (N1 runtime parts 1–4), define stable question identity/cache migration before editing graded cards, then test Mini App and Android together.
