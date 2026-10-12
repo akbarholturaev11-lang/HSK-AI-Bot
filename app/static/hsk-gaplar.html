@@ -310,6 +310,9 @@
       }
 
       function goBack() {
+        if (new URLSearchParams(location.search).get("embedded") === "1" && window.parent !== window && window.parent.RESOURCE) {
+          window.parent.RESOURCE.close(); return;
+        }
         try { sessionStorage.setItem("hsk_v3_resource_return", "1"); } catch (_) {}
         if (new URLSearchParams(location.search).get("from") === "course-v3" && history.length > 1) {
           history.back();
@@ -347,15 +350,18 @@
       }
       try {
         var webApp = window.Telegram && window.Telegram.WebApp;
-        if (webApp && webApp.ready) webApp.ready();
-        syncPhraseTelegramChrome();
-        if (webApp && webApp.BackButton) {
+        if (new URLSearchParams(location.search).get("embedded") !== "1") {
+          if (webApp && webApp.ready) webApp.ready();
+          syncPhraseTelegramChrome();
+        }
+        if (new URLSearchParams(location.search).get("embedded") !== "1" && webApp && webApp.BackButton) {
           webApp.BackButton.show();
           webApp.BackButton.onClick(goBack);
           window.addEventListener("pagehide", function () { webApp.BackButton.hide(); }, { once: true });
         }
       } catch (_) { /* Standalone preview outside Telegram. */ }
       window.addEventListener("pageshow", function () {
+        if (new URLSearchParams(location.search).get("embedded") === "1") return;
         syncPhraseTelegramChrome();
         try {
           var webApp = window.Telegram && window.Telegram.WebApp;
@@ -363,7 +369,7 @@
         } catch (_) {}
       });
       document.addEventListener("visibilitychange", function () {
-        if (document.visibilityState === "visible") syncPhraseTelegramChrome();
+        if (new URLSearchParams(location.search).get("embedded") !== "1" && document.visibilityState === "visible") syncPhraseTelegramChrome();
       });
 
       function loadCatalog() {

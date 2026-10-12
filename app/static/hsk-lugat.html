@@ -1151,6 +1151,10 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     var url = '/' + page + '.html?lang=' + currentLang + '&char=' + encodeURIComponent(currentWord.h) + '&from=lugat';
     if(isLight) url += '&theme=light';
     if(currentLevel !== 'all') url += '&level=' + currentLevel;
+    if(params.get('embedded') === '1' && window.parent !== window && window.parent.RESOURCE){
+      window.parent.RESOURCE.openPractice(url);
+      return;
+    }
     location.href = url;
   }
   document.getElementById('pr-pron').onclick = function(){ goPractice('course_v3_pronunciation'); };
@@ -1158,6 +1162,9 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   document.getElementById('pr-mem').onclick = function(){ goPractice('course_v3_memorize'); };
 
   function goBackToStudy(){
+    if(params.get('embedded') === '1' && window.parent !== window && window.parent.RESOURCE){
+      window.parent.RESOURCE.close();return;
+    }
     /* Prefer the existing course document to retain app state and scroll position. */
     try{ sessionStorage.setItem('hsk_v3_resource_return', '1'); }catch(e){}
     if(params.get('from') === 'course-v3' && history.length > 1){
@@ -1669,6 +1676,14 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   }
   backBtn.addEventListener('click', handleDictionaryBack);
   listBackBtn.addEventListener('click', handleDictionaryBack);
+  if(params.get('embedded') === '1'){
+    window.HSKResourceBack=handleDictionaryBack;
+    window.HSKResourcePause=function(){
+      try{if(_ttsAudio){_ttsAudio.pause();_ttsAudio=null}}catch(e){}
+      try{window.speechSynthesis.cancel()}catch(e){}
+      try{searchEl.blur()}catch(e){}
+    };
+  }
 
   /* Edge swipe follows the same nested back order as Telegram BackButton. */
   var edgeSwipe=null;
@@ -1795,31 +1810,36 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     if(deepChar){ openDeepChar(deepChar); }
     try{
       var tg = window.Telegram && window.Telegram.WebApp;
-      if(tg && tg.ready) tg.ready();
-      syncDictionaryTelegramChrome();
-      syncTelegramInsets();
+      if(params.get('embedded') !== '1'){
+        if(tg && tg.ready) tg.ready();
+        syncDictionaryTelegramChrome();
+        syncTelegramInsets();
+      }
       if(tg && tg.onEvent){
         ['viewportChanged','safeAreaChanged','contentSafeAreaChanged'].forEach(function(event){
           tg.onEvent(event, syncTelegramInsets);
         });
       }
       var nativeBackBound=false;
-      if(tg && tg.BackButton && typeof tg.BackButton.onClick === 'function') {
-        tg.BackButton.onClick(handleDictionaryBack);
-        nativeBackBound=true;
+      if(params.get('embedded') !== '1'){
+        if(tg && tg.BackButton && typeof tg.BackButton.onClick === 'function'){
+          tg.BackButton.onClick(handleDictionaryBack);
+          nativeBackBound=true;
+        }
+        if(tg && tg.BackButton && typeof tg.BackButton.show === 'function') tg.BackButton.show();
       }
-      if(tg && tg.BackButton && typeof tg.BackButton.show === 'function') tg.BackButton.show();
       // Telegram SDK can load in a normal browser: initData distinguishes a real launch.
       document.documentElement.classList.toggle('hsk-telegram-back-active',
         !!(nativeBackBound && tg && tg.initData && tg.BackButton && typeof tg.BackButton.show === 'function'));
     }catch(e){}
   }
   window.addEventListener('pageshow',function(){
+    if(params.get('embedded') === '1')return;
     syncDictionaryTelegramChrome();
     try{var tg=window.Telegram&&window.Telegram.WebApp;if(tg&&tg.BackButton)tg.BackButton.show()}catch(e){}
   });
   document.addEventListener('visibilitychange',function(){
-    if(document.visibilityState==='visible')syncDictionaryTelegramChrome();
+    if(params.get('embedded') !== '1'&&document.visibilityState==='visible')syncDictionaryTelegramChrome();
   });
   init();
 })();

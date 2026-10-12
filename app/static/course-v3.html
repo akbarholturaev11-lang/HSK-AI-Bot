@@ -831,6 +831,14 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
    shuning uchun asosiy ilovaning klasslari bilan to'qnashmaydi. */
 .secov{--redbg:#FBEDEA;position:fixed;inset:0;background:var(--paper);z-index:30;display:none;flex-direction:column;max-width:var(--read);margin:0 auto}
 .secov.on{display:flex}
+/* Cached resource screens stay in the course WebView: no document reload on return. */
+.resourceov{position:fixed;inset:0;z-index:35;max-width:var(--read);margin:0 auto;background:var(--paper);display:none;overflow:hidden}
+.resourceov.on{display:block}
+.resource-pane{position:absolute;inset:0;background:var(--paper)}
+.resource-pane[hidden],.resource-status[hidden]{display:none!important}
+.resource-frame{width:100%;height:100%;border:0;display:block;background:var(--paper)}
+.resource-status{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:var(--paper);color:var(--ink2);font-size:14px;padding:22px;text-align:center}
+.resource-status button{min-height:44px;padding:10px 20px;border:1px solid var(--line);border-radius:12px;background:var(--card);font:inherit;color:var(--ink)}
 .rc-top{display:flex;align-items:center;gap:11px;padding:calc(14px + var(--safe-t)) 16px 8px}
 .rc-ix{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:18px;display:flex;align-items:center;justify-content:center}
 .rc-pbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}
@@ -1350,6 +1358,10 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   <div class="sheet" id="paywall"><div class="si" onclick="event.stopPropagation()"><button class="sx" onclick="App.closePaywall()"><i class="ti ti-x"></i></button><div class="grip"></div><div id="paywall-body"></div></div></div>
 
   <div class="secov" id="secov"></div>
+  <div class="resourceov" id="resourceov" aria-hidden="true">
+    <section id="resource-dict" class="resource-pane" hidden aria-label="HSK dictionary"></section>
+    <section id="resource-phrases" class="resource-pane" hidden aria-label="HSK phrasebook"></section>
+  </div>
 
   <div class="flow" id="flow">
     <div class="ftop"><button class="fx" onclick="App.exitFlow()"><i class="ti ti-x"></i></button><div class="fpbar"><i id="f-prog"></i></div><button class="fgear" onclick="App.pinyinSheet()" aria-label="Pinyin"><i class="ti ti-settings"></i></button><span class="fheart"><i class="ti ti-heart"></i><span id="f-hp">5</span></span></div>
@@ -1961,7 +1973,7 @@ var App={
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
     if(s==="course"){drawTrails();scrollToCurrentNode()}else{window.scrollTo(0,0)}
     if(s==="course"&&previous!=="course"){refreshCourseProgress();queueHsk30PromoCheck()}
-    if(s==="mashq")prefetchPracticeAssets();
+    if(s==="mashq"){prefetchPracticeAssets();if(window.RESOURCE)RESOURCE.warm()}
     if(s==="voice")renderVoice();
     if(s==="rating")renderRating();
     if(s==="profile"){
@@ -2349,16 +2361,8 @@ var App={
   tourNext:function(){if(TOUR.i<TOUR.steps.length-1){TOUR.i++;tourRender()}else{App.tourEnd()}},
   tourEnd:function(){stopTourAudio();try{localStorage.setItem("hsk_v3_tour","1")}catch(e){}$("#tour").classList.remove("on")},
   toggleTourVoice:function(){TOURV=!TOURV;if(!TOURV){stopTourAudio()}tourRender(!TOURV)},
-  openDict:function(){
-    beginInternalNavigation();
-    var level=normalizeLevel((MAP&&MAP.level)||getSelectedLevel());
-    var q=new URLSearchParams({theme:"light",lang:LANG,level:level,filter:level,from:"course-v3"});
-    location.href="/hsk-lugat.html?"+q.toString();
-  },
-  openPhrases:function(){
-    beginInternalNavigation();
-    location.href="/hsk-gaplar.html?"+new URLSearchParams({lang:LANG,theme:"light",from:"course-v3"}).toString();
-  },
+  openDict:function(){RESOURCE.open("dict")},
+  openPhrases:function(){RESOURCE.open("phrases")},
   openRecog:function(){RECOG.open()},
   openPron:function(){PRON.open()},
   openTest:function(){if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){showHsk30TestSoon();return}TEST.open()},
@@ -6294,6 +6298,93 @@ function closeSection(){
   flushPendingCenterAd();
 }
 
+/* ---------- Dictionary + phrasebook: cached in-app resource screens ---------- */
+var RESOURCE=(function(){
+  var TYPES=["dict","phrases"],STATE={dict:{frame:null,url:"",loaded:false},phrases:{frame:null,url:"",loaded:false}};
+  var ACTIVE=null,WARMED=false;
+  function host(){return document.getElementById("resourceov")}
+  function pane(k){return document.getElementById("resource-"+k)}
+  function url(k){
+    var q=new URLSearchParams({lang:LANG,theme:"light",embedded:"1",from:"course-v3"});
+    if(k==="dict"){
+      var level=normalizeLevel((MAP&&MAP.level)||getSelectedLevel());
+      q.set("level",level);q.set("filter",level);
+      return "/hsk-lugat.html?"+q.toString();
+    }
+    return "/hsk-gaplar.html?"+q.toString();
+  }
+  function ensure(k){
+    var state=STATE[k],target=pane(k),next=url(k);
+    if(!target)return;
+    if(state.frame&&state.url===next)return state;
+    if(state.frame){state.frame.remove();state.frame=null}
+    state.url=next;state.loaded=false;target.replaceChildren();
+    var frame=document.createElement("iframe");
+    frame.className="resource-frame";frame.title=k==="dict"?"HSK dictionary":"HSK phrasebook";
+    frame.setAttribute("loading","eager");
+    frame.addEventListener("load",function(){
+      if(state.frame!==frame)return;
+      state.loaded=true;
+      var status=target.querySelector(".resource-status");
+      if(status)status.hidden=true;
+    });
+    var status=document.createElement("div");status.className="resource-status";
+    status.textContent=LANG==="ru"?"Загрузка…":LANG==="tj"?"Боргирӣ…":"Yuklanmoqda…";
+    target.appendChild(frame);target.appendChild(status);state.frame=frame;
+    frame.src=next;
+    return state;
+  }
+  function open(k){
+    if(TYPES.indexOf(k)<0)return;
+    ACTIVE=k;
+    var box=host();if(!box)return;
+    TYPES.forEach(function(key){var p=pane(key);if(p)p.hidden=key!==k});
+    box.classList.add("on");box.setAttribute("aria-hidden","false");
+    ensure(k);
+    try{NavBack.sync()}catch(e){}
+  }
+  function close(){
+    if(!ACTIVE)return;
+    var state=STATE[ACTIVE];
+    try{
+      var win=state.frame&&state.frame.contentWindow;
+      if(win&&typeof win.HSKResourcePause==="function")win.HSKResourcePause();
+      var active=win&&win.document&&win.document.activeElement;
+      if(active&&typeof active.blur==="function")active.blur();
+    }catch(e){}
+    ACTIVE=null;
+    host().classList.remove("on");host().setAttribute("aria-hidden","true");
+    TYPES.forEach(function(key){var p=pane(key);if(p)p.hidden=true});
+    try{NavBack.sync()}catch(e){}
+  }
+  function back(){
+    if(!ACTIVE)return false;
+    if(ACTIVE==="dict"){
+      try{
+        var frame=STATE.dict.frame,win=frame&&frame.contentWindow;
+        if(win&&typeof win.HSKResourceBack==="function"){win.HSKResourceBack();return true}
+      }catch(e){}
+    }
+    close();return true;
+  }
+  function openPractice(src){
+    // Keep the established exercise gates and its return path unchanged.
+    var allowed=["/course_v3_pronunciation.html","/course_v3_recognition.html","/course_v3_memorize.html"];
+    if(allowed.indexOf(String(src||"").split("?")[0])<0)return;
+    close();beginInternalNavigation();location.href=src;
+  }
+  function warm(){
+    if(WARMED)return;WARMED=true;
+    // Defer large dictionary assets until Practice is opened, not on initial course boot.
+    setTimeout(function(){if(!STATE.phrases.frame)ensure("phrases")},350);
+    var warmDict=function(){if(!STATE.dict.frame)ensure("dict")};
+    if(typeof requestIdleCallback==="function")requestIdleCallback(warmDict,{timeout:3500});
+    else setTimeout(warmDict,1700);
+  }
+  return {open:open,close:close,back:back,warm:warm,openPractice:openPractice};
+})();
+window.RESOURCE=RESOURCE;
+
 /* ---------- Ieroglif tanish ---------- */
 var RECOG=(function(){
   var LD={
@@ -7903,6 +7994,7 @@ var NavBack={
     {id:"sheet",   close:function(){App.closeSheet()}},
     {id:"upov",    close:function(){closeUserProfile()}},
     {id:"writeov", close:function(){App.closeWriter()}},
+    {id:"resourceov",close:function(){RESOURCE.back()}},
     {id:"secov",  close:function(){if(SECTION&&SECTION.close)SECTION.close()}},
     {id:"flow",    close:function(){App.exitFlow()}}
   ],
@@ -8053,7 +8145,7 @@ var NavBack={
        funksiyalariga tegmaslik uchun MutationObserver ishlatiladi. */
     try{
       var ids=NavBack.LAYERS.map(function(l){return l.id}).concat(NavBack.BLOCK)
-        .concat(["s-course","s-mashq","s-voice","s-rating","s-profile"]);
+        .concat(["s-course","s-mashq","s-voice","s-rating","s-profile","resourceov"]);
       var ob=new MutationObserver(function(){NavBack.sync();flushPendingCenterAd()});
       ids.forEach(function(id){var e=document.getElementById(id);if(e)ob.observe(e,{attributes:true,attributeFilter:["class"]})});
     }catch(e){}
