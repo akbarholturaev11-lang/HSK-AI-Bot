@@ -111,8 +111,8 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
         with patch.object(tts, "_edge", new=AsyncMock(side_effect=RuntimeError("403"))), \
              patch.object(tts, "_fallback", new=AsyncMock(side_effect=delayed_gemini)) as gemini:
             files = await asyncio.gather(
-                tts.synthesize_chinese_mp3("同学"),
-                tts.synthesize_chinese_mp3("同学"),
+                tts.synthesize_chinese_mp3("同学们，请听。"),
+                tts.synthesize_chinese_mp3("同学们，请听。"),
             )
             self.assertEqual(files[0], files[1])
             gemini.assert_awaited_once()
@@ -131,7 +131,7 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
              )):
             await tts.synthesize_chinese_mp3("你好")
             self.assertGreater(tts._edge_retry_at, time.monotonic())
-            await tts.synthesize_chinese_mp3("再见")
+            await tts.synthesize_chinese_mp3("下课了！")
             factory.assert_called_once()
 
     async def test_missing_two_providers_never_caches_an_error(self):
@@ -140,7 +140,7 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
                  side_effect=tts.TTSUnavailable("gemini_no_key")
              )):
             with self.assertRaises(tts.TTSUnavailable):
-                await tts.synthesize_chinese_mp3("谢谢")
+                await tts.synthesize_chinese_mp3("谢谢你！")
             self.assertEqual([], list(Path(self.directory.name).glob("*.wav")))
             self.assertEqual([], list(Path(self.directory.name).glob("*.mp3")))
 
@@ -176,13 +176,28 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(1, len(fake.calls))
 
     async def test_old_mp3_cache_key_remains_usable_after_migration(self):
-        old = Path(self.directory.name) / (tts._cache_key("谢谢", "-10%") + ".mp3")
+        old = Path(self.directory.name) / (tts._cache_key("谢谢你！", "-10%") + ".mp3")
         old.write_bytes(FAKE_MP3)
         with patch.object(tts, "_edge", new=AsyncMock()) as edge, \
              patch.object(tts, "_fallback", new=AsyncMock()) as gemini:
-            self.assertEqual(old, await tts.synthesize_chinese_mp3("谢谢"))
+            self.assertEqual(old, await tts.synthesize_chinese_mp3("谢谢你！"))
             edge.assert_not_awaited()
             gemini.assert_not_awaited()
+
+    async def test_bundled_word_is_instant_and_never_calls_external_tts(self):
+        # This is the word visible on the learner's first-card screenshot.
+        with patch.object(tts, "_edge", new=AsyncMock()) as edge, \
+             patch.object(tts, "_fallback", new=AsyncMock()) as gemini:
+            path = await tts.synthesize_chinese_mp3("谢谢")
+            self.assertTrue(path.is_file())
+            self.assertEqual(".mp3", path.suffix)
+            self.assertGreater(path.stat().st_size, 128)
+            self.assertIn("android/app/src/main/assets/audio/words", path.as_posix())
+            edge.assert_not_awaited()
+            gemini.assert_not_awaited()
+
+    async def test_nondefault_rate_does_not_reuse_bundled_default_audio(self):
+        self.assertIsNone(tts._bundled_word_audio("谢谢", "+10%"))
 
     async def test_gemini_invalid_audio_is_rejected(self):
         fake = FakeHttpClient(FakeGeminiResponse(pcm=b"broken", mime="audio/L16;rate=24000"))
