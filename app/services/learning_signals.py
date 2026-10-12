@@ -23,6 +23,7 @@ from sqlalchemy import func, or_, select
 from app.db.models.course_mistake import CourseMistake
 from app.db.models.course_xp_event import CourseXpEvent
 from app.services.course_daily_window import local_day_key
+from app.services.course_levels import is_hsk30_level
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.course_v3_parts import current_part, total_parts
 
@@ -118,7 +119,16 @@ class LearningSignalsService:
                         return "listening"
         return category if category in WEAKNESS_KEYS else "word"
 
-    async def _weakness(self, user_id: int) -> dict[str, int]:
+    @staticmethod
+    def _track_filter(level: str):
+        """Use the same track separation as CourseMistakeService reviews."""
+        return (
+            CourseMistake.level.like("nhsk%")
+            if is_hsk30_level(level)
+            else or_(CourseMistake.level.is_(None), ~CourseMistake.level.like("nhsk%"))
+        )
+
+    async def _weakness(self, user_id: int, *, level: str) -> dict[str, int]:
         weight = CourseMistake.wrong_count - CourseMistake.resolved_count
         result = await self.session.execute(
             select(
@@ -126,7 +136,12 @@ class LearningSignalsService:
                 CourseMistake.material_json,
                 weight.label("weight"),
             )
-            .where(CourseMistake.user_id == user_id, weight > 0)
+            .where(
+                CourseMistake.user_id == user_id,
+                weight > 0,
+                self._track_filter(level),
+                or_(CourseMistake.target_key.is_(None), CourseMistake.target_key != "-"),
+            )
             .order_by(weight.desc(), CourseMistake.last_seen_at.desc())
             .limit(WEAKNESS_SAMPLE_SIZE)
         )
@@ -136,12 +151,13 @@ class LearningSignalsService:
             scores[self._weakness_key(item)] += int(item_weight or 0)
         return scores
 
-    async def _mistakes_total(self, user_id: int) -> int:
+    async def _mistakes_total(self, user_id: int, *, level: str) -> int:
         weight = CourseMistake.wrong_count - CourseMistake.resolved_count
         result = await self.session.execute(
             select(func.coalesce(func.sum(weight), 0)).where(
                 CourseMistake.user_id == user_id,
                 CourseMistake.wrong_count > CourseMistake.resolved_count,
+                self._track_filter(level),
                 # "-" — takrorlab bo'lmaydigan eski yozuv (nishon ham, yaroqli
                 # savol ham yo'q): kunlik reja uni vazifa qilib bermasin.
                 or_(CourseMistake.target_key.is_(None), CourseMistake.target_key != "-"),
@@ -209,8 +225,8 @@ class LearningSignalsService:
         evidence, active_days = 0, 0
         user_id = int(getattr(user, "id", 0) or 0)
         if user_id:
-            weakness = await self._weakness(user_id)
-            mistakes_total = await self._mistakes_total(user_id)
+            weakness = await self._weakness(user_id, level=level)
+            mistakes_total = await self._mistakes_total(user_id, level=level)
             if gamification_day is not None:
                 today_xp, done_refs, done_types = await self._today(user_id, gamification_day)
                 evidence, active_days = await self._evidence_and_pace(user_id, gamification_day)
