@@ -108,3 +108,68 @@ def validate_pilot_overlay(path: Path = PILOT_PATH) -> int:
 
 if __name__ == "__main__":
     print(f"Validated {validate_pilot_overlay()} N1 pedagogical feedback entries")
+
+EXIT_CHECK_PATH = HERE / "learning_overlays" / "nhsk1_lesson_01_exit.json"
+
+
+def apply_nhsk1_pilot_exit_check(payload: dict, path: Path = EXIT_CHECK_PATH) -> dict:
+    """Append independent checks only AFTER the original checkpoint sections.
+
+    This preserves every pre-existing section/card index and graded material_ref,
+    and remains idempotent across repeated generator runs. Standard Course V3
+    card types are deliberately used: Mini App and Android can already render
+    and grade them, and the native API card count includes the new section.
+    """
+    if payload.get("level") != "nhsk1" or payload.get("source_lesson") != 1:
+        return payload
+    if payload.get("part_no") != 4:
+        return payload
+    if payload.get("lesson_id") != 4 or not payload.get("checkpoint"):
+        raise ValueError("N1 pilot final lesson identity/checkpoint changed")
+
+    overlay = json.loads(path.read_text(encoding="utf-8"))
+    if any(overlay.get(k) != v for k, v in {
+        "schema_version": 1, "level": "nhsk1", "source_lesson": 1,
+        "checkpoint_lesson_id": 4, "check_version": "n1_exit_check_v1",
+        "section_no": 3,
+    }.items()):
+        raise ValueError("N1 exit-check edition or metadata mismatch")
+    checks = overlay.get("cards")
+    if not isinstance(checks, list) or len(checks) != 3:
+        raise ValueError("N1 exit check must contain three objectives")
+    objectives = set()
+    for card in checks:
+        obj = card.get("learning_objective")
+        if not isinstance(obj, str) or not obj or obj in objectives:
+            raise ValueError("N1 exit check objectives must be unique")
+        objectives.add(obj)
+        if card.get("learning_check") != overlay["check_version"]:
+            raise ValueError(f"N1 check version missing for {obj}")
+        ex = card.get("explanation")
+        if not isinstance(ex, dict) or any(
+            not isinstance(ex.get(lang), str) or not ex[lang].strip()
+            for lang in LANGUAGES
+        ):
+            raise ValueError(f"N1 exit check explanation translation missing: {obj}")
+
+    sections = payload.get("sections")
+    if not isinstance(sections, list):
+        raise ValueError("N1 checkpoint sections missing")
+    found = [section for section in sections
+             if isinstance(section, dict) and section.get("section_no") == overlay["section_no"]]
+    if found:
+        if len(found) != 1 or found[0].get("section_purpose") != "learning_exit_check" or found[0].get("cards") != checks:
+            raise ValueError("N1 exit-check section was modified or collided")
+        return payload
+
+    # Only the original two checkpoint sections may precede this extension.
+    if [s.get("section_no") for s in sections] != [1, 2]:
+        raise ValueError("N1 base checkpoint section order changed")
+    result = deepcopy(payload)
+    result["sections"].append({
+        "section_no": overlay["section_no"],
+        "section_title": deepcopy(overlay["section_title"]),
+        "section_purpose": "learning_exit_check",
+        "cards": deepcopy(checks),
+    })
+    return result
