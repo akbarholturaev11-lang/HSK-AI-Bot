@@ -98,3 +98,22 @@ Existing architecture retained: `CourseTodayService` reads `LearningSignalsServi
 - Integration tests: real SQLite track isolation, listening classification, missing targets; original-json N1 mistake canonicalization and forgery rejection; N1 priority and feature-lock regressions.
 
 **Still not implemented:** accurate per-objective persistence for *correct* answers, explicit mastery-driven deferred planning, word-SRS-due task selection, and 1-/7-day retention analytics. These need their own schema/event tracking and careful migration, rather than conflating them with mistake counts.
+
+## N1-wide checkpoint implementation (2026-10-12)
+
+**15/15 textbook lesson checkpoints have independent assessment and alternate example banks.**
+
+- Source lesson 1 remains manually authored: **3 objective checks + 3 different retries**, with 27 additional contextual explanations across its first four runtime parts.
+- Source lessons 2–15: **2 independent checks + 2 different conditional retries each** (56 added cards), derived deterministically from **the original unit's own verified vocabulary, tonal pinyin, three-language translations and source grammar example translations**. Exactly **62 new checkpoint/repair cards** across the 15 lessons (6 + 56); the 27 contextual explanations are separate edits. Each unit uses four newly generated cards; no new card type.
+- Total 103 N1 runtime parts remain in their original order; only the 15 final parts receive extra **appended** section 3 (exit) and section 4 (alternate bank). Existing question keys and material references are unchanged.
+- Source-backed builder: `scripts/hsk30/build_nhsk1_source_assessment.py`. It fails if there are insufficient distinct authenticated source words or grammar translations. Neither AI-generated Chinese, new unverified translation nor fabricated answer key is required.
+- **Mini App** and **new Android app** dynamically skip a retry objective if its independent check was correct. Mistake capture is canonicalized against the server's checked-in JSON.
+- **Old Android APK protection:** the new Android client advertises `X-HSK-N1-Transfer: v1`. Without this capability header the server projects the same N1 payload **minus section 4** and recomputes total card/preview count. Older clients thus still receive the ordinary learning material and section 3 checks, but not conditional-only cards. No access policy or entitlement is changed. Desktop keeps its existing server course adapter and renders standard cards; it has no conditional-skip client in this pilot.
+- **Daily plan** keeps frozen same-day task identity and tracks errors by HSK 2.0/3.0 separately, promoting available N1 mistake review. Correct per-objective history and delayed retention metrics are future additions.
+- **CI gate:** regenerates **all 103 N1 runtime parts** and fails on any checked-in diff. Checks structure, translations, answer-index correctness and 15 authored/source-generated checkpoint contracts. Backend separately checks the old/new-APK projection and trial/limit regressions. Native unit tests exercise real checkpoint JSON parsing across all 15 source lessons.
+
+### Release review and outstanding limitations
+
+The automated gates prove deterministic generation, source provenance and cross-client schema compatibility; they do **not** prove the educational value of distractors or naturalness of each translation. Review the bilingual wording and audio on physical devices before declaring pedagogical sign-off. Android offline lesson cache may initially contain an earlier payload; old APKs receive the server's version-safe projection when online. Ship the new APK alongside the server update, but never claim that a deployed Android build updates itself via JSON alone.
+
+Do not merge this draft while required CI is failing. Controlled rollout: (1) full CI green, (2) manual Mini App and Android UZ/RU/TJ + old APK regression, (3) merge/deploy, (4) audit completion rate and mistake review conversion without claiming causal improvement from mere CI success.
