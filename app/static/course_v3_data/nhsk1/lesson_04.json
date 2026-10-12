@@ -763,6 +763,105 @@
           }
         }
       ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Boshqa misolda qayta sinash",
+        "ru": "Повторная проверка на другом примере",
+        "tj": "Санҷиши такрорӣ бо мисоли дигар"
+      },
+      "section_purpose": "learning_repair_bank",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "learning_objective": "polite_teacher_greeting",
+          "learning_retry": "n1_exit_check_v1",
+          "learning_feedback": "n1_context_v1",
+          "title": {
+            "uz": "Yangi vaziyat",
+            "ru": "Другая ситуация",
+            "tj": "Вазъияти дигар"
+          },
+          "prompt": {
+            "uz": "Ustoz «大家好！» dedi. Talabalar hurmat bilan nima deb javob beradi?",
+            "ru": "Преподаватель сказал «大家好！». Как студенты вежливо отвечают?",
+            "tj": "Устод «大家好！» гуфт. Донишҷӯён бо эҳтиром чӣ ҷавоб медиҳанд?"
+          },
+          "options": [
+            "你们好！",
+            "谢谢！",
+            "再见！",
+            "老师，您好！"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "Ustozga javob: 老师，您好！(Lǎoshī, nín hǎo!). 您 hurmat shakli; 你们 esa ko'plik.",
+            "ru": "Студенты отвечают 老师，您好！(Lǎoshī, nín hǎo!). 您 — вежливое «Вы» одному человеку, 你们 — множественное число.",
+            "tj": "Ҷавоб ба устод: 老师，您好！(Lǎoshī, nín hǎo!). 您 шакли эҳтиромӣ аст, 你们 бошад ҷамъ."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "learning_objective": "recognize_thanks",
+          "learning_retry": "n1_exit_check_v1",
+          "learning_feedback": "n1_context_v1",
+          "title": {
+            "uz": "Yana tinglang",
+            "ru": "Послушайте другой ответ",
+            "tj": "Ҷавоби дигарро гӯш кунед"
+          },
+          "prompt": {
+            "uz": "Endi qaysi javobni eshitdingiz?",
+            "ru": "Какой ответ вы услышали теперь?",
+            "tj": "Акнун кадом ҷавобро шунидед?"
+          },
+          "audio_text": "不客气！",
+          "options": [
+            "老师，再见！",
+            "不客气！",
+            "你好！",
+            "谢谢！"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "不客气！(Bú kèqi!) — «Arzimaydi!». Bu «Rahmat!» degan 谢谢！(Xièxie!) ga javob.",
+            "ru": "不客气！(Bú kèqi!) — «Не за что!», ответ на 谢谢！(Xièxie!) — «Спасибо!».",
+            "tj": "不客气！(Bú kèqi!) — «Ҳеҷ гап не!», ҷавоб ба 谢谢！(Xièxie!) — «Раҳмат!»."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "learning_objective": "farewell_to_students",
+          "learning_retry": "n1_exit_check_v1",
+          "learning_feedback": "n1_context_v1",
+          "title": {
+            "uz": "Boshqa jumla tuzing",
+            "ru": "Составьте другую фразу",
+            "tj": "Ҷумлаи дигар созед"
+          },
+          "sentence": {
+            "uz": "Endi o'qituvchiga xayr deb ayting.",
+            "ru": "Теперь попрощайтесь с преподавателем.",
+            "tj": "Акнун бо омӯзгор хайрбод гӯед."
+          },
+          "tokens": [
+            "好",
+            "老师",
+            "再见",
+            "谢谢"
+          ],
+          "answer_tokens": [
+            "老师",
+            "再见"
+          ],
+          "explanation": {
+            "uz": "老师，再见！(Lǎoshī, zàijiàn!) — «Ustoz, xayr!». Bu safar ko'plik 们 kerak emas.",
+            "ru": "老师，再见！(Lǎoshī, zàijiàn!) — «До свидания, преподаватель!». Здесь не нужен суффикс 们.",
+            "tj": "老师，再见！(Lǎoshī, zàijiàn!) — «Устод, хайр!». Ин ҷо пасванди ҷамъ 们 лозим нест."
+          }
+        }
+      ]
     }
   ]
 }
