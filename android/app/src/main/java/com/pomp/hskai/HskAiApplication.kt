@@ -170,7 +170,14 @@ class HskAiApplication : Application() {
 
     val lessonAudioPlayer: LessonAudioPlayer by lazy { AndroidLessonAudioPlayer(this) }
 
-    val ttsCache: TtsCache by lazy { DiskTtsCache(File(cacheDir, "tts")) }
+    // Pronunciation MP3/WAV files are durable study content, not a disposable cache.
+    // Existing MP3s from the previous cacheDir are migrated on first use.
+    val ttsCache: TtsCache by lazy {
+        DiskTtsCache(
+            dir = File(filesDir, "mandarin_audio"),
+            legacyDir = File(cacheDir, "tts"),
+        )
+    }
 
     val voiceRecorder: VoiceRecorder by lazy { AndroidVoiceRecorder(this) }
 

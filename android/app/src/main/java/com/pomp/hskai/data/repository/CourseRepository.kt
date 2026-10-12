@@ -636,7 +636,7 @@ class CourseRepository(
     suspend fun clearCache() {
         dao.clear()
         lessonDao?.clear()
-        ttsCache?.clear()
+        // Never erase downloaded pronunciations when account state or lessons change.
     }
 
     private suspend fun cached(error: ApiError): ApiResult<CourseMapSnapshot> {
@@ -661,7 +661,7 @@ class CourseRepository(
 
     companion object {
         private const val MAX_TTS_TEXT_LENGTH = 240
-        private const val MAX_TTS_AUDIO_BYTES = 2 * 1024 * 1024
+        private const val MAX_TTS_AUDIO_BYTES = 16 * 1024 * 1024
         private const val TTS_BUFFER_BYTES = 8 * 1024
         private const val DEFAULT_TTS_RATE = "-10%"
         private const val FOUNDATION_ID = "starter0_hsk1"

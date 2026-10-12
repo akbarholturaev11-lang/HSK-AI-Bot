@@ -1079,6 +1079,29 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(b"ID3-test-audio", response.content)
         generator.assert_awaited_once_with("你好")
 
+    async def test_tts_serves_gemini_wav_with_correct_mime_and_private_cache(self):
+        headers = await self._bearer()
+        with tempfile.TemporaryDirectory() as directory:
+            audio = Path(directory) / "lesson.wav"
+            wav_bytes = b"RIFF" + bytes(4) + b"WAVE" + bytes(256)
+            audio.write_bytes(wav_bytes)
+            with patch(
+                "app.api.android_course._android_tts_file",
+                new=AsyncMock(return_value=audio),
+            ) as generator:
+                response = await self.client.get(
+                    "/api/v3/android/tts",
+                    params={"text": "再见"},
+                    headers=headers,
+                )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual("audio/wav", response.headers["content-type"])
+        self.assertEqual("private, max-age=31536000, immutable",
+                         response.headers["cache-control"])
+        self.assertEqual(wav_bytes, response.content)
+        generator.assert_awaited_once_with("再见")
+
     async def test_map_is_served_with_no_store(self):
         response = await self.client.get(
             "/api/v3/android/course/map",
