@@ -21,7 +21,7 @@ class N1ConditionalRetryTest {
         )
         return Lesson(
             level = level, order = 4, sourceLesson = 1, part = part,
-            partCount = 4, isCheckpoint = true, title = "N1",
+            partCount = 4, isCheckpoint = (part == 4), title = "N1",
             subtitle = "N1 checkpoint", sections = sections,
         )
     }
