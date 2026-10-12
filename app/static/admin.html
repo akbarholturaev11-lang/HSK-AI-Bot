@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="uz">
+<html lang="uz-Cyrl">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>HSK AI — Admin panel</title>
+  <title>HSK AI — бошқарув панели</title>
   <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
@@ -440,12 +440,6 @@
       .admin-navbtn .admin-icon{width:21px;height:21px;opacity:.9}
       .admin-navbtn.active .admin-icon{color:#f38c7d}
       .admin-navbtn .admin-chevron{margin-left:auto}
-      .admin-side-bottom{margin-top:auto;border-top:1px solid var(--line-soft);padding:16px 11px 0;display:flex;flex-direction:column;gap:15px;flex:none}
-      .admin-side-bottom .pill{background:transparent;border:0;padding:0;font-size:11px;font-weight:500;color:var(--admin-sub);gap:8px;white-space:normal}
-      .admin-profile{display:flex;align-items:center;gap:10px}
-      .admin-avatar{width:34px;height:34px;display:grid;place-items:center;flex:none;background:#3a2e2d;color:#f1b3a6;border-radius:12px;font-size:12px;font-weight:850}
-      .admin-profile b{font-size:12px;font-weight:750}
-      .admin-profile small{display:block;color:var(--muted);font-size:11px;line-height:1.5;margin-top:2px}
       .admin-workspace{display:flex;flex-direction:column;min-height:0;overflow:hidden}
       .admin-topbar{position:relative;top:auto;height:74px;min-height:74px;padding:0 38px;flex:none}
       .admin-breadcrumb{display:flex}
@@ -512,8 +506,8 @@
 <body>
   <div id="loading" class="state">
     <div class="state-card">
-      <h2>Kirish tekshirilmoqda…</h2>
-      <p>Bu panel faqat Telegram admin tugmasi orqali ochilgan tekshirilgan sessiyada ishlaydi.</p>
+      <h2>Кириш текширилмоқда…</h2>
+      <p>Бу панел фақат Telegram админ тугмаси орқали очилган тасдиқланган сеансда ишлайди.</p>
     </div>
   </div>
 
@@ -521,58 +515,54 @@
     <aside class="admin-sidebar">
       <div class="brand">
         <span class="brand-mark" aria-hidden="true">学</span>
-        <div><h1>HSK AI</h1><p id="brandSub">CONTROL CENTER</p></div>
+        <div><h1>HSK AI</h1><p id="brandSub">БОШҚАРУ ПАНЕЛИ</p></div>
       </div>
-      <div class="admin-caption">WORKSPACE</div>
-      <nav id="sidebarNav" aria-label="Asosiy navigatsiya"></nav>
-      <div class="admin-side-bottom">
-        <div class="pill"><span class="dot"></span><span id="liveLabel">Server ma’lumotlari</span></div>
-        <div class="admin-profile"><div class="admin-avatar">AD</div><div><b>Administrator</b><small>HSK AI boshqaruvi</small></div></div>
-      </div>
+      <div class="admin-caption">БЎЛИМЛАР</div>
+      <nav id="sidebarNav" aria-label="Асосий навигация"></nav>
     </aside>
     <div class="admin-workspace">
       <header class="admin-topbar">
-        <div class="admin-breadcrumb"><span>HSK AI</span><span>/</span><b id="breadcrumbTitle">Bosh sahifa</b></div>
-        <div class="admin-mobile-brand">HSK AI <span>Admin</span></div>
+        <div class="admin-breadcrumb"><span>HSK AI</span><span>/</span><b id="breadcrumbTitle">Бош саҳифа</b></div>
+        <div class="admin-mobile-brand">HSK AI <span>Админ</span></div>
         <div class="top-actions">
-          <button type="button" class="admin-search-open" data-admin-search aria-label="Bo‘lim yoki amal qidirish"><span data-admin-icon="search"></span><span>Bo‘lim yoki amal qidirish</span><kbd>/</kbd></button>
-          <button type="button" class="reload" data-act="reload" aria-label="Yangilash" title="Yangilash"><span data-admin-icon="refresh"></span></button>
+          <button type="button" class="admin-search-open" data-admin-search aria-label="Бўлим ёки амал қидириш"><span data-admin-icon="search"></span><span>Бўлим ёки амал қидириш</span><kbd>/</kbd></button>
+          <button type="button" class="reload" data-act="reload" aria-label="Янгилаш" title="Янгилаш"><span data-admin-icon="refresh"></span></button>
         </div>
       </header>
       <main id="adminMain">
         <div class="admin-page-head">
-          <div><div class="admin-eyebrow" id="pageEyebrow">HSK AI / OVERVIEW</div><h1 id="pageTitle">Bosh sahifa</h1><p id="pageDescription">Bugungi holatni ko‘ring va muhim ishlarni shu yerdan boshlang.</p></div>
+          <div><div class="admin-eyebrow" id="pageEyebrow">HSK AI</div><h1 id="pageTitle">Бош саҳифа</h1><p id="pageDescription">Бугунги ҳолат ва муҳим ишлар.</p></div>
           <div class="admin-page-actions" id="pageActions"></div>
         </div>
-        <nav class="admin-subnav" id="adminSubnav" aria-label="Ichki bo‘limlar" hidden></nav>
+        <nav class="admin-subnav" id="adminSubnav" aria-label="Ички бўлимлар" hidden></nav>
       <!-- DASHBOARD -->
       <section id="dashboard" class="view active">
         <div class="sec">
           <div class="sec-head">
-            <div><div class="sec-title">Umumiy holat</div><div class="sec-note" id="generatedAt">—</div></div>
+            <div><div class="sec-title">Умумий ҳолат</div><div class="sec-note" id="generatedAt">—</div></div>
           </div>
           <div class="grid g2" id="summaryGrid"></div>
         </div>
         <div class="sec">
-          <div class="sec-head"><div class="sec-title">Segmentlar</div><button class="link-btn" data-tab-jump="users">Hammasi →</button></div>
+          <div class="sec-head"><div class="sec-title">Сегментлар</div><button class="link-btn" data-tab-jump="users">Барчаси →</button></div>
           <div class="chips" id="segmentChips"></div>
         </div>
         <div class="sec">
-          <div class="sec-head"><div><div class="sec-title">Tezkor moliya</div><div class="sec-note">To'liq davr bo'yicha kuzatilgan net</div></div><button class="link-btn" data-tab-jump="statistics">Batafsil →</button></div>
+          <div class="sec-head"><div><div class="sec-title">Қисқача молиявий кўрсаткичлар</div><div class="sec-note">Бутун давр бўйича соф натижа</div></div><button class="link-btn" data-tab-jump="statistics">Батафсил →</button></div>
           <div class="grid g2" id="financeQuick"></div>
         </div>
         <div class="sec">
-          <div class="sec-head"><div class="sec-title">Bugungi vazifalar</div></div>
+          <div class="sec-head"><div class="sec-title">Бугунги вазифалар</div></div>
           <div class="list" id="queueList"></div>
         </div>
-      <div class="sec"><div class="sec-head"><div class="sec-title">Tezkor harakatlar</div></div><div class="grid settings-grid" id="dashboardQuickActions"></div></div>
+      <div class="sec"><div class="sec-head"><div class="sec-title">Тезкор амаллар</div></div><div class="grid settings-grid" id="dashboardQuickActions"></div></div>
       </section>
 
       <!-- STATISTICS -->
       <section id="statistics" class="view">
         <div class="sec-head" style="margin-bottom:8px">
-          <div><div class="sec-title">Chuqur statistika</div><div class="sec-note">Har bo'lim oddiy o'zbek tilida izohlangan</div></div>
-          <button class="link-btn" data-act="copy-report">Umumiy hisobotni nusxalash</button>
+          <div><div class="sec-title">Батафсил статистика</div><div class="sec-note">Бўлимлар содда тилда тушунтирилган</div></div>
+          <button class="link-btn" data-act="copy-report">Умумий ҳисоботдан нусха олиш</button>
         </div>
         <div class="periods" id="periodTabs"></div>
         <div class="range-lab" id="rangeLabel"></div>
@@ -580,33 +570,33 @@
 
         <!-- Advanced product metrics -->
         <div class="block">
-          <div class="block-head"><span class="bi">📌</span><div><h3>Qo'shimcha product metrikalar</h3><p>Retention, vaqt, QA/Voice, payment abandon, revenue/payer va paid/free adoption</p></div></div>
+          <div class="block-head"><span class="bi">📌</span><div><h3>Қўшимча курс кўрсаткичлари</h3><p>Қайтиб келиш, вақт, савол-жавоб, овозли машқ, тўловдан қайтиш ва обунали ҳамда бепул фойдаланувчилар фаоллиги</p></div></div>
           <div class="explain" id="advancedExplain"></div>
           <div class="grid g2" id="advancedCards" style="margin-top:12px"></div>
           <div style="margin-top:12px">
-            <div class="dtitle-sm">Payment abandon funnel</div>
+            <div class="dtitle-sm">Тўловдан қайтиш босқичлари</div>
             <div id="advancedFunnel"></div>
           </div>
           <div style="margin-top:12px">
-            <div class="dtitle-sm">Feature adoption: paid / free</div>
+            <div class="dtitle-sm">Функциялардан фойдаланиш: обунали ва бепул</div>
             <div id="featureAdoption"></div>
           </div>
         </div>
 
         <!-- Connected desktop product -->
         <div class="block">
-          <div class="block-head"><span class="bi">🖥</span><div><h3>HSK AI Desktop</h3><p>Funnel: tanlangan davr · health/platforma: oxirgi 30 kun</p></div></div>
+          <div class="block-head"><span class="bi">🖥</span><div><h3>HSK AI компьютер дастури</h3><p>Танланган давр · платформа ҳолати: сўнгги 30 кун</p></div></div>
           <div class="grid g2" id="desktopCards"></div>
           <div style="margin-top:12px">
-            <div class="dtitle-sm">Desktop voronkasi</div>
+            <div class="dtitle-sm">Компьютер дастури бўйича ўтиш босқичлари</div>
             <div id="desktopFunnel"></div>
           </div>
           <div style="margin-top:12px">
-            <div class="dtitle-sm">Download manbalari</div>
+            <div class="dtitle-sm">Юклаб олиш манбалари</div>
             <div id="desktopPromotion"></div>
           </div>
           <div style="margin-top:12px">
-            <div class="dtitle-sm">Platforma va texnik holat</div>
+            <div class="dtitle-sm">Платформа ва техник ҳолат</div>
             <div id="desktopHealth"></div>
           </div>
           <div class="explain" id="desktopExplain"></div>
@@ -614,19 +604,19 @@
 
         <!-- Native Android client -->
         <div class="block">
-          <div class="block-head"><span class="bi">📱</span><div><h3>HSK AI Android</h3><p>Asosiy raqamlar — sodda ko'rinish</p></div></div>
+          <div class="block-head"><span class="bi">📱</span><div><h3>HSK AI Android</h3><p>Асосий кўрсаткичлар</p></div></div>
           <div class="grid g2" id="androidCards"></div>
           <div class="ncnote" id="androidUpdateSummary" style="margin-top:12px"></div>
           <details class="acc" style="margin-top:12px">
-            <summary>Batafsil statistika</summary>
+            <summary>Батафсил статистика</summary>
             <div class="accbody">
-              <div class="dtitle-sm">Yuklash jarayoni · user</div>
+              <div class="dtitle-sm">Юклаш жараёни · фойдаланувчи</div>
               <div id="androidFunnel"></div>
-              <div class="dtitle-sm" style="margin-top:14px">Android → obuna</div>
+              <div class="dtitle-sm" style="margin-top:14px">Android → обуна</div>
               <div id="androidSubscription"></div>
-              <div class="dtitle-sm" style="margin-top:14px">Qurilmalar</div>
+              <div class="dtitle-sm" style="margin-top:14px">Қурилмалар</div>
               <div id="androidDevices"></div>
-              <div class="dtitle-sm" style="margin-top:14px">Versiyalar · oxirgi 30 kun</div>
+              <div class="dtitle-sm" style="margin-top:14px">Версиялар · сўнгги 30 кун</div>
               <div id="androidVersions"></div>
             </div>
           </details>
@@ -635,7 +625,7 @@
 
         <!-- Unified client business schema -->
         <div class="block">
-          <div class="block-head"><span class="bi">▦</span><div><h3>Mini App · Android · Desktop biznes</h3><p>Bitta payment/access schema bo'yicha client kesimi</p></div></div>
+          <div class="block-head"><span class="bi">▦</span><div><h3>Мини-илова · Android · компьютер дастури</h3><p>Битта тўлов ва кириш тизими бўйича платформа кесими</p></div></div>
           <div class="grid g2" id="clientBusinessCards"></div>
           <div id="clientBusinessTable"></div>
           <div class="explain" id="clientBusinessExplain"></div>
@@ -643,7 +633,7 @@
 
         <!-- Cross-client device inventory -->
         <div class="block">
-          <div class="block-head"><span class="bi">📲</span><div><h3>Qurilmalar va foydalanish</h3><p>Mini App platformasi + tasdiqlangan native install registry</p></div></div>
+        <div class="block-head"><span class="bi">📲</span><div><h3>Қурилмалар ва фойдаланиш</h3><p>Мини-илова ва тасдиқланган ўрнатилган қурилмалар рўйхати</p></div></div>
           <div class="grid g2" id="clientDeviceCards"></div>
           <div id="clientDeviceTable" style="margin-top:12px"></div>
           <div class="explain" id="clientDeviceExplain"></div>
@@ -651,7 +641,7 @@
 
         <!-- Finance -->
         <div class="block">
-          <div class="block-head"><span class="bi">💰</span><div><h3>Kuzatilgan net va xarajat</h3><p>Obuna tushumi + qo'lda foyda − AI model estimate − rasxod</p></div></div>
+          <div class="block-head"><span class="bi">💰</span><div><h3>Соф тушум ва харажатлар</h3><p>Обуналардан тушум + қўлда киритилган фойда − сунъий интеллект харажатлари − бошқа сарфлар</p></div></div>
           <div class="grid g2" id="financeCards"></div>
           <div class="explain" id="financeExplain"></div>
           <div id="aiUsageBreakdown"></div>
@@ -659,44 +649,44 @@
 
         <!-- Unit economics -->
         <div class="block">
-          <div class="block-head"><span class="bi">📐</span><div><h3>Birlik iqtisodi</h3><p>ARPU, ARPPU, o'rtacha chek</p></div></div>
+          <div class="block-head"><span class="bi">📐</span><div><h3>Бир фойдаланувчига тўғри келадиган кўрсаткичлар</h3><p>ARPU, ARPPU, ўртача тўлов</p></div></div>
           <div class="grid g2" id="unitCards"></div>
           <div class="explain" id="unitExplain"></div>
         </div>
 
         <!-- Retention -->
         <div class="block">
-          <div class="block-head"><span class="bi">🔁</span><div><h3>Obuna yangilash va hozirgi holat</h3><p>Qayta to'lov ulushi; all-time uchun payer snapshot</p></div></div>
+          <div class="block-head"><span class="bi">🔁</span><div><h3>Обунани янгилаш ва жорий ҳолат</h3><p>Такрорий тўловлар улуши ва бутун даврда тўлов қилганлар</p></div></div>
           <div class="grid g2" id="retentionCards"></div>
           <div class="explain" id="retentionExplain"></div>
         </div>
 
         <!-- Sources -> paid -->
         <div class="block">
-          <div class="block-head"><span class="bi">🧲</span><div><h3>Manba → pul</h3><p>Qaysi manba real pul olib keladi</p></div></div>
+          <div class="block-head"><span class="bi">🧲</span><div><h3>Манба → тўлов</h3><p>Қайси манба тўлов олиб келишини кўрсатади</p></div></div>
           <div id="sourcesPaid"></div>
-          <div class="explain" id="sourceAttributionExplain">Har to'lov paymentdan oldingi eng yaqin obuna-kirish manbasiga bog'lanadi.</div>
+          <div class="explain" id="sourceAttributionExplain">Ҳар бир тўлов обуна саҳифасига киришнинг энг яқин манбасига боғланади.</div>
         </div>
 
         <!-- General overview report -->
         <div class="block">
-          <div class="block-head"><span class="bi">📋</span><div><h3>Umumiy ko'rsatkichlar</h3><p>Foydalanuvchi, to'lov va kurs faolligi</p></div></div>
+          <div class="block-head"><span class="bi">📋</span><div><h3>Умумий кўрсаткичлар</h3><p>Фойдаланувчилар, тўловлар ва курс фаоллиги</p></div></div>
           <div class="grid g2" id="overviewCards"></div>
           <div style="margin-top:12px">
-            <div class="dtitle-sm">Davrdagi mustaqil kurs ko'rsatkichlari</div>
+            <div class="dtitle-sm">Давр бўйича курс кўрсаткичлари</div>
             <div id="conversionBars"></div>
           </div>
         </div>
 
         <!-- Source traffic (entry events) -->
         <div class="block">
-          <div class="block-head"><span class="bi">🚪</span><div><h3>Obuna oynasiga kirish manbalari</h3><p>Alohida rolling 7 kun + all-time; yuqoridagi period tabiga bog'liq emas</p></div></div>
-          <div id="subEntryStats"><p class="empty">Yuklanmoqda…</p></div>
-          <div class="explain">Bu — obuna sahifasini <b>ochgan</b> odamlar (hali to'lamagan bo'lishi mumkin). Yuqoridagi "Manba → pul" esa real to'lovni ko'rsatadi. Ikkalasini solishtirsangiz: ko'p kirgan, lekin kam to'lagan manba — kuchsiz; kam kirgan, ko'p to'lagan manba — kuchli.</div>
+          <div class="block-head"><span class="bi">🚪</span><div><h3>Обуналар саҳифасига кириш манбалари</h3><p>Сўнгги 7 кун ва бутун давр алоҳида ҳисобланади</p></div></div>
+          <div id="subEntryStats"><p class="empty">Юкланмоқда…</p></div>
+          <div class="explain">Бу — обуна саҳифасини очган, ҳали тўлов қилмаган бўлиши мумкин бўлган фойдаланувчилар. Юқорида манбалар бўйича ҳақиқий тўловлар кўрсатилган.</div>
         </div>
 
         <div class="block">
-          <div class="block-head"><span class="bi">📝</span><div><h3>To'liq matnli hisobot</h3><p>Nusxalab tashqariga yuborish uchun</p></div></div>
+          <div class="block-head"><span class="bi">📝</span><div><h3>Ҳисобот матни</h3><p>Нусха олиб юбориш учун</p></div></div>
           <pre id="reportText" style="white-space:pre-wrap;margin:0;font-size:12.5px;line-height:1.5;color:#d6deeb;font-family:inherit"></pre>
         </div>
       </section>
@@ -704,12 +694,12 @@
       <!-- USERS -->
       <section id="users" class="view">
         <div class="toolbar">
-          <input id="search" class="input" placeholder="Ism, @username yoki ID bo'yicha qidirish" autocomplete="off">
+          <input id="search" class="input" placeholder="Исм, @фойдаланувчи номи ёки ID бўйича қидириш" autocomplete="off">
           <button class="icon-btn" data-act="clear-search">✕</button>
         </div>
         <div class="chips" id="userFilters" style="margin-bottom:12px"></div>
         <div id="telegramReachability" hidden></div>
-        <div class="admin-user-table-head" aria-hidden="true"><span>Foydalanuvchi</span><span>Obuna va kirish</span><span>Faollik</span></div>
+        <div class="admin-user-table-head" aria-hidden="true"><span>Фойдаланувчи</span><span>Обуналар ва кириш</span><span>Фаоллик</span></div>
         <div class="list" id="userList"></div>
       </section>
 
@@ -721,16 +711,16 @@
       <!-- SETTINGS -->
       <section id="settings" class="view">
         <div class="sec">
-          <div class="sec-head"><div class="sec-title">Boshqaruv bo'limlari</div></div>
+          <div class="sec-head"><div class="sec-title">Бошқарув бўлимлари</div></div>
           <div class="grid settings-grid" id="moduleGrid"></div>
         </div>
         <div class="sec">
-          <div class="sec-head"><div><div class="sec-title">🤖 AI modeli</div><div class="sec-note">Gemini asosiy, OpenAI zaxira — qaysi Gemini modeli ishlashini tanlang</div></div></div>
-          <div id="aiModelBox"><p class="empty">Yuklanmoqda…</p></div>
+          <div class="sec-head"><div><div class="sec-title">🤖 Сунъий интеллект модели</div><div class="sec-note">Асосийси — Gemini, захирада — OpenAI. Ишлатиладиган Gemini моделини танланг.</div></div></div>
+          <div id="aiModelBox"><p class="empty">Юкланмоқда…</p></div>
         </div>
         <div class="sec">
-          <div class="sec-head"><div><div class="sec-title">🔔 Motivatsion eslatmalar</div><div class="sec-note">UZ/RU/TJ matn, yoqish/o'chirish, media</div></div></div>
-          <div class="grid" id="notifTemplates"><p class="empty">Yuklanmoqda…</p></div>
+          <div class="sec-head"><div><div class="sec-title">🔔 Эслатмалар</div><div class="sec-note">Ўзбек, рус ва тожик тилларидаги матн, ёқиш/ўчириш ва медиа</div></div></div>
+          <div class="grid" id="notifTemplates"><p class="empty">Юкланмоқда…</p></div>
         </div>
         <!-- Reklamaga oid HAMMA narsa shu bitta bo'limda. Ilgari u uchga
              bo'lingan edi (roliklar, "Reklama joylari", "App reklamasi") va
@@ -743,46 +733,46 @@
              emas, oммавий хабарнинг ukasi. -->
         <div class="sec" id="adHub">
           <div class="sec-head ad-hub-heading">
-            <div><div class="sec-title">📣 Reklama</div><div class="sec-note">Mini App ichidagi reklamalaringizni boshqaring</div></div>
+            <div><div class="sec-title">📣 Реклама</div><div class="sec-note">Мини-иловадаги рекламаларни бошқаринг</div></div>
             <button type="button" class="ad-settings-trigger" id="adRulesGear" data-ad-rules-open
-              aria-label="Kurs reklamasi umumiy sozlamalarini ochish"
-              aria-haspopup="dialog" aria-controls="adRulesModal" title="Umumiy reklama sozlamalari">⚙️</button>
+              aria-label="Курс рекламасининг умумий созламаларини очиш"
+              aria-haspopup="dialog" aria-controls="adRulesModal" title="Умумий реклама созламалари">⚙️</button>
           </div>
           <div class="chips" id="adHubTabs" style="margin-bottom:9px">
-            <button class="chip active" data-adhub="kurs">🎬 Kurs reklamasi</button>
-            <button class="chip" data-adhub="ilova">💻 Ilova reklamasi</button>
+            <button class="chip active" data-adhub="kurs">🎬 Курс рекламаси</button>
+            <button class="chip" data-adhub="ilova">💻 Илова рекламаси</button>
           </div>
           <div class="hint" id="adHubNote" style="margin:0 2px 11px"></div>
 
           <div id="adPaneKurs" data-adhub-pane>
             <div class="mcard" style="margin-bottom:11px">
-              <h3>➕ Yangi reklama</h3>
+              <h3>➕ Янги реклама</h3>
               <div class="frow two">
-                <div><label id="caTitleLabel">Sarlavha (tojikcha)</label><input id="caTitle" class="input" maxlength="120" placeholder="Тоҷикӣ: реклама сарлавҳаси"></div>
-                <div><label>Video / surat davomiyligi (soniya)</label><input id="caDuration" class="input" type="number" min="5" max="120" value="7" title="Reklama mediasining davomiyligi. Yopish tugmasining vaqti pastdagi umumiy sozlamada."></div>
+                <div><label id="caTitleLabel">Сарлавҳа (тожикча)</label><input id="caTitle" class="input" maxlength="120" placeholder="Тоҷикӣ: реклама сарлавҳаси"></div>
+                <div><label>Видео ёки расм давомийлиги (сония)</label><input id="caDuration" class="input" type="number" min="5" max="120" value="7" title="Реклама медиасининг давомийлиги. Ёпиш вақти умумий созламаларда белгиланади."></div>
               </div>
               <div class="frow two">
-                <div><label>Reklama turi</label><select id="caType" class="select"><option value="odiy">📺 Oddiy reklama</option><option value="hamkorlik">🤝 Hamkorlik</option><option value="bot">🤖 Bot reklamasi</option><option value="dars_yakuni">👑 Obuna taklifi bilan</option></select></div>
-                <div><label>Til</label><select id="caLang" class="select"><option value="all">Barcha tillar</option><option value="uz">O'zbekcha</option><option value="ru">Ruscha</option><option value="tj">Tojikcha</option></select></div>
+                <div><label>Реклама тури</label><select id="caType" class="select"><option value="odiy">📺 Оддий реклама</option><option value="hamkorlik">🤝 Ҳамкорлик</option><option value="bot">🤖 Бот рекламаси</option><option value="dars_yakuni">👑 Обуна таклифи билан</option></select></div>
+                <div><label>Тил</label><select id="caLang" class="select"><option value="all">Барча тиллар</option><option value="uz">Ўзбекча</option><option value="ru">Русча</option><option value="tj">Тожикча</option></select></div>
               </div>
-              <div class="hint" id="caLanguageNote" style="margin:-4px 2px 6px">🌐 Barcha tillar: sarlavha va tugmani TOJIKCHA (кирилл) yozing. AI o'zbekcha va ruscha variantlarni yaratadi.</div>
+              <div class="hint" id="caLanguageNote" style="margin:-4px 2px 6px">🌐 Барча тиллар учун сарлавҳа ва тугмани ТОЖИКЧА (кирилл) ёзинг. Сунъий интеллект ўзбекча ва русча вариантларни тайёрлайди.</div>
               <div class="hint" id="caTypeNote" style="margin:-4px 2px 4px"></div>
 
-              <div class="frow" data-ca-field="button"><label id="caBtnLabel">Knopka nomi</label><input id="caBtnText" class="input" maxlength="64"></div>
-              <div class="frow" data-ca-field="link"><label id="caLinkLabel">Havola</label><input id="caLink" class="input" placeholder="https://..."><div class="hint" id="caLinkNote"></div></div>
+              <div class="frow" data-ca-field="button"><label id="caBtnLabel">Тугма номи</label><input id="caBtnText" class="input" maxlength="64"></div>
+              <div class="frow" data-ca-field="link"><label id="caLinkLabel">Ҳавола</label><input id="caLink" class="input" placeholder="https://..."><div class="hint" id="caLinkNote"></div></div>
               <div class="frow" style="margin-bottom:6px">
-                <label>📍 Reklama qayerda chiqsin?</label>
-                <div class="hint">Bitta yoki ikkala joyni tanlang. Bu tanlov faqat hozir yuklayotgan reklamangizga tegishli.</div>
+                <label>📍 Реклама қаерда кўрсатилсин?</label>
+                <div class="hint">Бир ёки иккала жойни танланг. Танлов фақат ҳозир юкланаётган рекламага тегишли.</div>
               </div>
-              <div id="caPlacementBox"><p class="empty">Yuklanmoqda…</p></div>
-              <div class="danger-note" id="caPlaceNone" hidden>Reklamani yuklash uchun kamida bitta joyni tanlang.</div>
-              <button class="btn" data-act="upload-ca">📎 Video yoki surat yuklash</button>
+              <div id="caPlacementBox"><p class="empty">Юкланмоқда…</p></div>
+              <div class="danger-note" id="caPlaceNone" hidden>Рекламани юклаш учун камида битта жойни танланг.</div>
+              <button class="btn" data-act="upload-ca">📎 Видео ёки расм юклаш</button>
               <input id="caFile" type="file" accept="video/*,image/*" hidden>
             </div>
 
-            <div class="sec-head" style="margin-top:14px"><div><div class="sec-title">📁 Yuklangan roliklar</div></div></div>
+            <div class="sec-head" style="margin-top:14px"><div><div class="sec-title">📁 Юкланган видеолар</div></div></div>
             <div class="chips" id="caLangFilter" style="margin-bottom:10px"></div>
-            <div class="grid" id="courseAds"><p class="empty">Yuklanmoqda…</p></div>
+            <div class="grid" id="courseAds"><p class="empty">Юкланмоқда…</p></div>
           </div>
 
           <div id="adPaneIlova" data-adhub-pane hidden></div>
@@ -790,7 +780,7 @@
       </section>
       </main>
     </div>
-    <nav class="tabs" id="tabs" aria-label="Mobil navigatsiya"></nav>
+    <nav class="tabs" id="tabs" aria-label="Мобил навигация"></nav>
   </div>
 
   <!-- Reklama qoidalari uchun alohida, telefonda ham qulay dialog.
@@ -801,31 +791,31 @@
       <div class="ad-rules-dialog-header">
         <div class="ad-rules-dialog-heading">
           <div class="ad-rules-dialog-icon" aria-hidden="true">⚙️</div>
-          <div><h2 id="adRulesTitle">Reklama sozlamalari</h2>
-            <p id="adRulesDescription">Barcha kurs reklamalarining umumiy ko'rsatish qoidalari</p></div>
+          <div><h2 id="adRulesTitle">Реклама созламалари</h2>
+            <p id="adRulesDescription">Курс рекламаларини кўрсатиш қоидалари</p></div>
         </div>
         <button class="ad-rules-dismiss" type="button" data-ad-rules-close
-          aria-label="Sozlamalarni yopish">✕</button>
+          aria-label="Созламаларни ёпиш">✕</button>
       </div>
       <div class="ad-rules-dialog-body">
-        <div id="adPlacementsBox"><p class="empty">Yuklanmoqda…</p></div>
+        <div id="adPlacementsBox"><p class="empty">Юкланмоқда…</p></div>
       </div>
       <div class="ad-rules-dialog-footer">
-        <button class="btn sec" type="button" data-ad-rules-close>Bekor qilish</button>
-        <button class="btn" type="button" data-adplacesave>💾 Saqlash</button>
+        <button class="btn sec" type="button" data-ad-rules-close>Бекор қилиш</button>
+        <button class="btn" type="button" data-adplacesave>💾 Сақлаш</button>
       </div>
     </section>
   </div>
 
-  <dialog id="adminNavigator" class="admin-navigator" aria-label="Bo‘lim yoki amal qidirish">
-    <div class="admin-dialog-head"><input id="adminNavSearch" class="input" type="search" placeholder="Bo‘lim yoki amal qidirish…" aria-label="Bo‘lim yoki amal qidirish" autocomplete="off"><button type="button" class="close" data-admin-close-nav aria-label="Yopish">✕</button></div>
+  <dialog id="adminNavigator" class="admin-navigator" aria-label="Бўлим ёки амал қидириш">
+    <div class="admin-dialog-head"><input id="adminNavSearch" class="input" type="search" placeholder="Бўлим ёки амал қидириш…" aria-label="Бўлим ёки амал қидириш" autocomplete="off"><button type="button" class="close" data-admin-close-nav aria-label="Ёпиш">✕</button></div>
     <div id="adminNavResults"></div>
   </dialog>
 
   <div id="scrim" class="scrim" data-act="close-drawer"></div>
   <aside id="drawer" class="drawer" aria-hidden="true" inert>
     <div class="dhead">
-      <button class="close" id="drawerBack" data-act="drawer-back" title="Orqaga" hidden>←</button>
+      <button class="close" id="drawerBack" data-act="drawer-back" title="Орқага" hidden>←</button>
       <div><div class="dtitle" id="drawerTitle">—</div><div class="dsub" id="drawerSub"></div></div>
       <button class="close" data-act="close-drawer">✕</button>
     </div>
@@ -844,7 +834,7 @@
       androidStats:{}, androidStatsLoading:{},
       // Profildan ochilgan bo'lim uchun: kimga tegishli va qayerga qaytish.
       drawerBack:null, activeUser:null,
-      // «📣 Reklama» bo'limining ichida qaysi tanlov ochiq turibdi.
+      // «📣 Реклама» bo'limining ichida qaysi tanlov ochiq turibdi.
       adHub:"kurs"
     };
 
@@ -888,35 +878,35 @@
     function apiErr(e,fallback){
       const k = e&&e.data&&e.data.error ? e.data.error : "";
       const m = {
-        invalid_telegram_init_data:"Telegram sessiya noto'g'ri", admin_only:"Admin ruxsati yo'q",
-        invalid_access_payload:"Telegram ID yoki muddat noto'g'ri (1–36500 kun)", user_or_plan_not_found:"Foydalanuvchi topilmadi",
-        payment_already_reviewed:"Bu to'lov allaqachon ko'rilgan", payment_not_found:"To'lov topilmadi",
-        user_not_found:"Foydalanuvchi topilmadi", invalid_price_payload:"Narx ma'lumoti noto'g'ri",
-        invalid_channel_payload:"Kanal ma'lumoti noto'g'ri", delete_confirmation_required:"O'chirish uchun IDni tasdiq maydoniga yozing",
-        cannot_delete_admin:"Admin akkauntini o'chirib bo'lmaydi", delete_failed:"Foydalanuvchini to'liq o'chirish yakunlanmadi. Hech narsa qisman saqlanmadi — qayta urinib ko'ring.",
-        cannot_block_admin:"Adminni bloklab bo'lmaydi", invalid_block_payload:"Blok ma'lumoti noto'g'ri",
-        invalid_user_payload:"Telegram ID noto'g'ri", user_is_blocked:"Foydalanuvchi bloklangan — avval blokdan chiqaring",
-        bot_blocked_by_user:"Foydalanuvchi botni bloklagan", send_failed:"Xabar yuborilmadi",
-        invalid_help_url:"Yordam linki noto'g'ri", invalid_contact:"Admin kontakt noto'g'ri",
-        invalid_course_access_policy:"Kurs access rejimi yoki muddat noto'g'ri",
-        invalid_course_sales_experiment:"Sotuv tajribasi rejimi yoki foizi noto'g'ri",
-        invalid_broadcast_text:"Xabar matni juda qisqa yoki uzun", invalid_campaign_payload:"Kampaniya ma'lumoti to'liq emas",
-        broadcast_text_too_long:"Matn juda uzun (media bilan max 1024)", media_too_large:"Fayl 25MB dan katta",
-        ad_translation_unavailable:"AI tarjima tayyorlay olmadi. Matnlarni tekshirib, qayta urinib ko'ring.",
-        invalid_ad_copy:"Barcha tillar uchun tojikcha sarlavha kerak (120 belgigacha).",
-        unsupported_media:"Fayl turi qo'llab-quvvatlanmaydi", media_upload_failed:"Media yuklab bo'lmadi",
-        ffmpeg_not_available:"Serverda ffmpeg yo'q. Deploy sozlamasini tekshiring.",
-        video_transcode_failed:"Video MP4 formatga o'tkazilmadi. Boshqa video bilan urinib ko'ring.",
-        qr_upload_failed:"QR yuklab bo'lmadi", invalid_qr_target:"QR uchun usul/tarif noto'g'ri", price_not_set:"Avval narxni saqlang"
+        invalid_telegram_init_data:"Telegram сеанси нотўғри", admin_only:"Админ рухсати йўқ",
+        invalid_access_payload:"Telegram ID ёки муддат нотўғри (1–36500 кун)", user_or_plan_not_found:"Фойдаланувчи топилмади",
+        payment_already_reviewed:"Бу тўлов аллақачон кўриб чиқилган", payment_not_found:"Тўлов топилмади",
+        user_not_found:"Фойдаланувчи топилмади", invalid_price_payload:"Нарх маълумоти нотўғри",
+        invalid_channel_payload:"Канал маълумоти нотўғри", delete_confirmation_required:"Ўчириш учун тасдиқ майдонига Telegram IDни киритинг",
+        cannot_delete_admin:"Админ профилини ўчириб бўлмайди", delete_failed:"Фойдаланувчининг маълумотларини тўлиқ ўчириб бўлмади. Ҳеч нарса қисман сақланмади. Қайта уриниб кўринг.",
+        cannot_block_admin:"Админни блоклаб бўлмайди", invalid_block_payload:"Блоклаш маълумоти нотўғри",
+        invalid_user_payload:"Telegram ID нотўғри", user_is_blocked:"Фойдаланувчи блокланган. Аввал блокдан чиқаринг.",
+        bot_blocked_by_user:"Фойдаланувчи ботни блоклаган", send_failed:"Хабар юборилмади",
+        invalid_help_url:"Ёрдам ҳаволаси нотўғри", invalid_contact:"Админ алоқаси нотўғри",
+        invalid_course_access_policy:"Курсга кириш режими ёки муддат нотўғри",
+        invalid_course_sales_experiment:"Сотув тажрибаси режими ёки улуши нотўғри",
+        invalid_broadcast_text:"Хабар матни жуда қисқа ёки узун", invalid_campaign_payload:"Кампания маълумоти тўлиқ эмас",
+        broadcast_text_too_long:"Матн жуда узун (медиа билан 1024 белгидан ошмасин)", media_too_large:"Файл 25 МБ дан катта",
+        ad_translation_unavailable:"Таржима тайёр бўлмади. Матнни текшириб, қайта уриниб кўринг.",
+        invalid_ad_copy:"Барча тиллар учун тожикча сарлавҳа керак (120 белгигача).",
+        unsupported_media:"Файл тури қўлланмайди", media_upload_failed:"Медиани юклаб бўлмади",
+        ffmpeg_not_available:"Серверда видео ишлов бериш хизмати йўқ. Созламаларни текширинг.",
+        video_transcode_failed:"Видеони MP4 форматга ўтказиб бўлмади. Бошқа видео билан уриниб кўринг.",
+        qr_upload_failed:"QR-кодни юклаб бўлмади", invalid_qr_target:"QR-код учун тўлов усули ёки тарифи нотўғри", price_not_set:"Аввал нархни сақланг"
       };
-      return m[k] || fallback || "Amal bajarilmadi";
+      return m[k] || fallback || "Амал бажарилмади";
     }
 
     const segmentLabels = {
-      all:["Hammasi","butun baza"], active_today:["Bugun aktiv","bugun botga kirgan"],
-      paid:["Obunachi","faol to'lov"], pending:["Tekshiruvda","unikal to'lovchi"],
-      wants_pay:["Issiq mijoz","48 soat ichida aktiv"], trial:["Pro sinov","haqiqiy Pro trial"], free:["Bepul","free-tier"],
-      expired:["Tugagan","muddati o'tgan"], blocked:["Bloklangan","admin blok"], bot_blocked:["Telegram yopiq","xabar yetib bormaydi"]
+      all:["Барчаси","бутун база"], active_today:["Бугун фаол","бугун ботга кирган"],
+      paid:["Обунали","фаол тўлов"], pending:["Текширувда","ноёб тўловчи"],
+      wants_pay:["Тўловга яқин","сўнгги 48 соатда фаол"], trial:["Про синови","ҳақиқий Про синови"], free:["Бепул","бепул режа"],
+      expired:["Муддати тугаган","обуна муддати тугаган"], blocked:["Блокланган","админ блоклаган"], bot_blocked:["Telegram ёпиқ","хабар етказилмайди"]
     };
 
     /* ---------- load ---------- */
@@ -978,23 +968,23 @@
     function financeAll(){ const f=state.finance; if(!f||!f.periods) return null; return f.periods.find(p=>p.key==="all_time")||f.periods[f.periods.length-1]; }
     function renderDashboard(){
       const ov = state.overview;
-      $("generatedAt").textContent = "Oxirgi yangilanish: " + (ov.generated_at || "—");
+      $("generatedAt").textContent = "Сўнгги янгиланиш: " + (ov.generated_at || "—");
       const desktop=state.desktopStats.all_time;
       const android=state.androidStats.all_time;
       const summary=(ov.summary||[]).slice();
       if(android&&!android.error){
         summary.push({
-          label:"Android WAU",
+          label:"Android ҳафталик фаол",
           value:Number(android.active&&android.active.wau||0),
-          note:"HSK AI · 7 kun",
+          note:"HSK AI · 7 кун",
           tone:"info"
         });
       }
       if(desktop&&!desktop.error){
         summary.push({
-          label:"Desktop WAU",
+          label:"Компьютер дастури ҳафталик фаол",
           value:Number(desktop.active&&desktop.active.wau||0),
-          note:"HSK AI · 7 kun",
+          note:"HSK AI · 7 кун",
           tone:"info"
         });
       }
@@ -1008,16 +998,16 @@
       $("dashboardQuickActions").innerHTML=quickKeys.flatMap(key=>{
         const module=(ov.modules||[]).find(item=>item.key===key);if(!module)return [];
         const icon=key==="user_search"?"users":key==="broadcast"?"mail":"sliders";
-        return [`<button type="button" class="srow" data-admin-module="${key}"><span class="admin-module-icon">${adminIcon(icon)}</span><div><h3>${esc(adminModuleLabel(module))}</h3><p>${esc(module.note)}</p></div><span class="admin-chevron">${adminIcon("chevron")}</span></button>`];
+        return [`<button type="button" class="srow" data-admin-module="${key}"><span class="admin-module-icon">${adminIcon(icon)}</span><div><h3>${esc(adminModuleLabel(module))}</h3><p>${esc(adminModuleNote(module))}</p></div><span class="admin-chevron">${adminIcon("chevron")}</span></button>`];
       }).join("");
       const fa = financeAll();
       if(fa){
         const f=fa.finance, u=fa.unit;
         $("financeQuick").innerHTML = [
-          {l:"Daromad",v:f.revenue_text,s:fa.unit.approved_count+" ta to'lov",t:"info"},
-          {l:"AI model estimate",v:f.ai_cost_text,s:"invoice emas · "+f.ai_share_pct+"%",t:"warn"},
-          {l:"Kuzatilgan net",v:f.net_text,s:"tracked marja "+f.margin_pct+"%",t:f.net_positive?"good":"danger"},
-          {l:"ARPPU",v:u.arppu_text,s:"har pullik",t:"good"}
+          {l:"Тушум",v:f.revenue_text,s:fa.unit.approved_count+" та тўлов",t:"info"},
+          {l:"Сунъий интеллект харажати",v:f.ai_cost_text,s:"тахминий ҳисоб · "+f.ai_share_pct+"%",t:"warn"},
+          {l:"Соф натижа",v:f.net_text,s:"Ҳисобланган маржа "+f.margin_pct+"%",t:f.net_positive?"good":"danger"},
+          {l:"Обунали фойдаланувчига тушум",v:u.arppu_text,s:"ҳар бир обуначига",t:"good"}
         ].map(i=>`<article class="stat ${i.t}"><div class="lab">${i.l}</div><div><div class="val">${esc(i.v)}</div><div class="sub">${esc(i.s)}</div></div></article>`).join("");
       } else $("financeQuick").innerHTML="<p class='empty'>Moliyaviy statistika yuklanmadi.</p>";
       $("queueList").innerHTML = (ov.queue||[]).map((i,idx)=>`
@@ -1054,7 +1044,7 @@
 
     function renderDesktopStats(snapshot,loading){
       if(!snapshot){
-        $("desktopCards").innerHTML=loading?"<p class='empty'>Yuklanmoqda…</p>":"<p class='empty'>Ma'lumot olinmoqda…</p>";
+        $("desktopCards").innerHTML=loading?"<p class='empty'>Юкланмоқда…</p>":"<p class='empty'>Ma'lumot olinmoqda…</p>";
         $("desktopFunnel").innerHTML="";
         $("desktopPromotion").innerHTML="";
         $("desktopHealth").innerHTML="";
@@ -1090,7 +1080,7 @@
       const maxStep=Math.max.apply(null,steps.map(x=>x[1]).concat([1]));
       $("desktopFunnel").innerHTML=steps.map(x=>`<div class="bar"><span>${esc(x[0])}</span><div class="track"><span style="width:${Math.round(x[1]/maxStep*100)}%"></span></div><b>${x[1]}</b></div>`).join("");
 
-      const sourceLabels={profile:"Profil",home_prompt:"Bosh sahifa",lesson_end_promo:"Dars yakuni",ad_promo:"Reklama yakuni"};
+      const sourceLabels={profile:"Profil",home_prompt:"Бош саҳифа",lesson_end_promo:"Dars yakuni",ad_promo:"Reklama yakuni"};
       const sourceRows=["profile","home_prompt","lesson_end_promo","ad_promo"].map(source=>{
         const entry=entrySources[source]||{}, promo=promoSources[source]||{};
         return {
@@ -1380,10 +1370,10 @@
         const r=fp.retention;
         $("retentionCards").innerHTML = [
           {label:"Yangi to'lov",value:r.new_paying,note:"birinchi marta",tone:"info"},
-          {label:"Yangilash",value:r.renewals,note:"qayta to'lov",tone:"good"},
+          {label:"Янгилаш",value:r.renewals,note:"qayta to'lov",tone:"good"},
           (fp.key==="all_time"
             ? {label:"Ever yangilagan",value:(r.ever_renewed_share_pct==null?"—":r.ever_renewed_share_pct+"%"),note:"ever payer ichida",tone:"good"}
-            : {label:"Yangilash ulushi",value:r.renewal_share_pct+"%",note:"payment ulushi",tone:"good"}),
+            : {label:"Янгилаш ulushi",value:r.renewal_share_pct+"%",note:"payment ulushi",tone:"good"}),
           (fp.key==="all_time"
             ? {label:"Hozir inactive payer",value:(r.inactive_paid_share_pct==null?"—":r.inactive_paid_share_pct+"%"),note:"cohort churn emas",tone:"danger"}
             : {label:"Faol obuna",value:r.active_paid_now,note:"hozir to'lovli",tone:"good"})
@@ -1632,7 +1622,7 @@
     function closeDrawer(){ $("drawer").inert=true; $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); $("drawer").setAttribute("aria-hidden","true"); state.activeModule=null; state.drawerBack=null; $("drawerBack").hidden=true; }
     function drawerBack(){ const back=state.drawerBack; state.drawerBack=null; if(back) back(); else closeDrawer(); }
 
-    /* Bitta panel ikki joyda chiziladi: modul drawer'ida yoki «📣 Reklama»
+    /* Bitta panel ikki joyda chiziladi: modul drawer'ida yoki «📣 Реклама»
        bo'limining ichida. `panelTarget` bo'sh bo'lsa — eski yo'l, drawer.
        Shu tufayli reklama panellari ikki nusxada yozilmaydi. */
     let panelTarget=null;
@@ -1655,7 +1645,7 @@
     async function openUser(id){
       const u = ((state.remoteUsers||[]).concat(state.overview.users||[])).find(x=>String(x.id)===String(id));
       if(!u) return;
-      openDrawer(u.name, `${u.username?"@"+u.username+" · ":""}${u.id} · ${u.last_active}`, "<p class='empty'>Yuklanmoqda…</p>");
+      openDrawer(u.name, `${u.username?"@"+u.username+" · ":""}${u.id} · ${u.last_active}`, "<p class='empty'>Юкланмоқда…</p>");
       let detail=null;
       try{ detail=await apiPost("/api/admin-miniapp/users/detail",{telegram_id:u.id}); }catch(e){ toast(apiErr(e,"Tafsilot yuklanmadi")); }
       const f=(detail&&detail.user)||u, pays=(detail&&detail.payments)||[];
@@ -1732,7 +1722,7 @@
         </section>
 
         <section class="dsec">
-          <div class="dtitle-sm">Qurilmalar va foydalanish</div>
+          <div class="dtitle-sm">Қурилмалар va foydalanish</div>
           <div class="ncnote" style="margin-top:8px">
             <b>Asosiy oxirgi client:</b> ${primaryDevice?esc(devicePlatformLabel(primaryDevice.platform)+" · "+primaryDevice.surface+" · "+primaryDevice.last_foreground_at):"hali aniqlanmagan"}
           </div>
@@ -1743,7 +1733,7 @@
           <div class="ncnote" style="margin-top:10px">Native <b>server contact</b> foreground degani emas: Android widget background refresh ham sessionni tegishi mumkin. Faol foydalanish uchun foreground/open event alohida ko'rsatiladi.</div>
         </section>
         <section class="dsec"><div class="dtitle-sm">O'qish</div><div class="kv">
-          <span>Til</span><b>${esc(f.language)}</b><span>Daraja</span><b>${esc(f.level)}</b>
+          <span>Тил</span><b>${esc(f.language)}</b><span>Daraja</span><b>${esc(f.level)}</b>
           <span>Rejim</span><b>${esc(f.mode||f.learning_mode)}</b><span>Savollar</span><b>${esc(f.questions)}</b>
           <span>Qo'shimcha AI savollar</span><b>${esc(bonus.left)} ta</b><span>Seriya</span><b>${esc(f.streak)} kun</b>
           <span>Bonus berilgan</span><b>${esc(bonus.total)} ta</b><span>Bonus ishlatilgan</span><b>${esc(bonus.used)} ta</b></div></section>
@@ -1770,14 +1760,14 @@
               <button class="btn sec" data-umsg="${f.id}" data-uname="${esc(f.name)}">✉️ Shaxsiy xabar yuborish</button>
               <button class="btn sec" data-module="give_access" data-prefill="${f.id}" data-uback="${f.id}">✅ Obuna berish</button>
               <button class="btn sec" data-module="discount" data-prefill="${f.id}" data-uback="${f.id}">🎁 Shu foydalanuvchiga chegirma</button>
-              <button class="btn danger" data-module="delete_user" data-prefill="${f.id}" data-uback="${f.id}">🗑 Foydalanuvchini o'chirish</button>
+              <button class="btn danger" data-module="delete_user" data-prefill="${f.id}" data-uback="${f.id}">🗑 Фойдаланувчиni o'chirish</button>
             </div></details>
         </div></section>`;
     }
 
     /* ---------- MODULES (settings) ---------- */
     function renderModules(){
-      $("moduleGrid").innerHTML = (state.overview.modules||[]).map(m=>`<button class="srow" data-module="${esc(m.key)}"><span class="admin-module-icon">${adminIcon((adminRoutes[adminModuleGroups[m.key]?.[0]]||adminRoutes.system).icon)}</span><div><h3>${esc(adminModuleLabel(m))}</h3><p>${esc(m.note)}</p></div><span class="admin-chevron">${adminIcon("chevron")}</span></button>`).join("");
+      $("moduleGrid").innerHTML = (state.overview.modules||[]).map(m=>`<button class="srow" data-module="${esc(m.key)}"><span class="admin-module-icon">${adminIcon((adminRoutes[adminModuleGroups[m.key]?.[0]]||adminRoutes.system).icon)}</span><div><h3>${esc(adminModuleLabel(m))}</h3><p>${esc(adminModuleNote(m))}</p></div><span class="admin-chevron">${adminIcon("chevron")}</span></button>`).join("");
       renderAdminChrome();
     }
     function renderAiModel(){
@@ -1814,7 +1804,7 @@
       if(key==="user_search"){ closeDrawer(); switchTab("users"); $("search").focus(); return; }
       /* Reklama endi drawer emas, sozlamalar ichidagi bitta bo'lim. */
       if(key==="ads_hub"){ closeDrawer(); navigateAdmin("marketing","creatives"); const h=$("adHub"); if(h) h.scrollIntoView({behavior:"smooth",block:"start"}); return openAdHub(state.adHub); }
-      openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
+      openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Юкланмоқда…</p>");
       let d;
       try{ d=await loadManagement(false); }catch(e){ $("drawerBody").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; return; }
       const map={prices:renderPrices,hsk30:renderHsk30,course_access:renderCourseAccess,limits:renderLimits,ad_placements:renderAdPlacements,course_sales_experiment:renderCourseSalesExperiment,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount",prefill),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
@@ -1993,7 +1983,7 @@
         <div class="mcard">
           <h3>🛡 Trial anti-abuse</h3>
           <p>Risk score serverda avtomatik hisoblanadi; admin sozlamasi yo'q. Raw IP va qurilma kaliti saqlanmaydi.</p>
-          <div id="trialRiskReport"><p class="empty">Yuklanmoqda…</p></div>
+          <div id="trialRiskReport"><p class="empty">Юкланмоқда…</p></div>
           <button class="btn" type="button" data-trial-risk-refresh>Hisobotni yangilash</button>
         </div>
         <button class="btn" data-limitsave>Saqlash</button>
@@ -2085,7 +2075,7 @@
         ? `<div class="hint" style="margin-top:10px">⚠️ Hozir ikki joyning qoidalari farq qiladi. Qo'lda sozlamalarni saqlasangiz, ikkala joyga bir xil auditoriya, kunlik chegara va yopish vaqti o'rnatiladi. Standartni tanlasangiz, har bir joy kuniga 1 martadan ko'rsatiladi.</div>`
         : "";
       const enabled=AD_PLACEMENTS.map(([k,l])=>`<label style="display:flex;align-items:center;gap:9px;padding:7px 0"><input type="checkbox" id="adOn_${k}"${cfg[k]&&cfg[k].enabled===false?"":" checked"}> <span>${esc(l)} faol</span></label>`).join("");
-      showPanel("⚙️ Reklama sozlamalari",
+      showPanel("⚙️ Реклама созламалари",
         "Standart sozlama tayyor. Faqat o'zgartirmoqchi bo'lsangiz, qo'lda sozlashni yoqing.",`<div class="panel">
         <div class="mcard">
           <label class="ad-rule-mode" for="adCustomMode">
@@ -2407,7 +2397,7 @@
       const f=file.files&&file.files[0]; if(!f) return;
       if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); file.value=""; return; }
       const box=row.querySelector("[data-qrbox]");
-      const info=row.querySelector("[data-qrinfo]"); if(info) info.textContent="Yuklanmoqda…";
+      const info=row.querySelector("[data-qrinfo]"); if(info) info.textContent="Юкланмоқда…";
       const fd=new FormData(); fd.append("method",row.dataset.method); fd.append("plan",row.dataset.plan); fd.append("scope",scope); fd.append("media",f);
       try{ await apiUpload("/api/admin-miniapp/prices/qr-upload",fd); toast("QR saqlandi"); if(info) info.textContent=`QR saqlandi ✅ ${qrInfoText(scope,box)}`; await afterModule("QR saqlandi"); }
       catch(e){ if(info) info.textContent="QR yuklanmadi"; toast(apiErr(e,"QR yuklanmadi")); }
@@ -2474,7 +2464,7 @@
       openDrawer("📢 Ommaviy xabar","To'liq segment + media + knopka + AI tarjima",`<div class="panel">
         <div class="danger-note">Bu real yuborish. «Yuborish»dan oldin «Test» bilan o'zingizga ko'ring.</div>
         <div class="mcard"><h3>🎯 Segment</h3>
-          <div class="frow"><label>🌐 Til (bo'sh = hammasi)</label><div class="row" id="bcLangs">
+          <div class="frow"><label>🌐 Тил (bo'sh = hammasi)</label><div class="row" id="bcLangs">
             ${BC_LANGS.map(l=>`<button type="button" class="chip" data-bclang="${l[0]}"><span>${l[1]}</span></button>`).join("")}</div></div>
           ${filterHtml}
           <div class="ncnote" id="bcCount">Auditoriya: hisoblanmoqda…</div></div>
@@ -2488,8 +2478,8 @@
             <div class="ncnote" id="bcMediaInfo">Media biriktirilmagan</div></div></div>
         <div class="mcard"><h3>🔘 Knopka (ixtiyoriy)</h3>
           <div class="frow"><label>Tur</label><select id="bcBtn" class="select">${BC_BUTTONS.map(o=>`<option value="${o[0]}">${esc(o[1])}</option>`).join("")}</select></div>
-          <div class="frow" id="bcBtnTextRow" hidden><label>Knopka nomi (bo'sh = default)</label><input id="bcBtnText" class="input" maxlength="64"></div>
-          <div class="frow" id="bcBtnUrlRow" hidden><label>Havola (https://… yoki @username)</label><input id="bcBtnUrl" class="input"></div></div>
+          <div class="frow" id="bcBtnTextRow" hidden><label>Тугма номи (bo'sh = default)</label><input id="bcBtnText" class="input" maxlength="64"></div>
+          <div class="frow" id="bcBtnUrlRow" hidden><label>Ҳавола (https://… yoki @username)</label><input id="bcBtnUrl" class="input"></div></div>
         <div class="row"><button class="btn sec" id="bcTest" type="button">👁 Test (o'zimga)</button>
           <button class="btn danger" id="bcSend" type="button">📢 Yuborish</button></div></div>`);
       bindBroadcast();
@@ -2528,7 +2518,7 @@
     async function bcUploadMedia(file){
       const f=file.files&&file.files[0]; if(!f) return;
       if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); file.value=""; return; }
-      $("bcMediaInfo").textContent="Yuklanmoqda…";
+      $("bcMediaInfo").textContent="Юкланмоқда…";
       const fd=new FormData(); fd.append("media",f);
       try{ const d=await apiUpload("/api/admin-miniapp/broadcast/upload-media",fd);
         state.bc={content_type:d.content_type,media_file_id:d.media_file_id};
@@ -2553,12 +2543,12 @@
     function campaignCard(i,kind){
       if(kind==="ad") return `<div class="mcard"><h3>#${i.id} · ${esc(i.title)} ${tag(i.active?"faol":"tugagan",i.active?"green":"")}</h3>
         <div class="kv"><span>Yuborilgan rounds</span><b>${esc(i.rounds_sent||0)}/${esc(i.send_count_total||1)}</b>
-          <span>Rejalashtirilgan raund</span><b>${esc(i.send_count_total||0)}</b><span>Tillar</span><b>${esc((i.languages||[]).join(", ")||"hammasi")}</b>
+          <span>Rejalashtirilgan raund</span><b>${esc(i.send_count_total||0)}</b><span>Тилlar</span><b>${esc((i.languages||[]).join(", ")||"hammasi")}</b>
           <span>Boshlanish</span><b>${esc(i.starts_at||"—")}</b><span>Tugash</span><b>${esc(i.ends_at||"—")}</b></div>
         <p>${esc(i.text||"")}</p></div>`;
       if(kind==="discount") return `<div class="mcard"><h3>#${i.id} · ${esc(i.title)} ${tag(i.active?"faol":"tugagan",i.active?"green":"")}</h3>
         <div class="kv"><span>Chegirma</span><b>${esc(i.percent)}%</b><span>Band/ishlatilgan</span><b>${esc(i.used||0)}</b>
-          <span>Status</span><b>${esc(i.audience_status||"barcha")}</b><span>Til</span><b>${esc(i.language||"barcha")}</b>
+          <span>Status</span><b>${esc(i.audience_status||"barcha")}</b><span>Тил</span><b>${esc(i.language||"barcha")}</b>
           <span>To'lov usuli</span><b>${esc(i.payment_method||"barcha")}</b><span>Tarif</span><b>${esc(i.plan_type||"barcha")}</b>
           <span>Boshlanish</span><b>${esc(i.starts_at||"—")}</b><span>Tugash</span><b>${esc(i.ends_at||"—")}</b></div></div>`;
       return `<div class="mcard"><h3>#${i.id} · ${esc(i.title)} ${tag(i.status||"—","")}</h3>
@@ -2572,14 +2562,14 @@
       // (discount_service, discount_notification_service), shuning uchun
       // segment tanlash o'rniga aniq target ko'rsatiladi.
       const targetId = kind==="discount" ? (prefill||"") : "";
-      const cfg={ad:["📣 Reklama kampaniyasi","ads","Segment + media + knopka bilan reklama."],release_feedback:["🆕 Yangilik fikri","release_feedback","Yangilik fikri baholash oqimi bilan."],discount:["🎁 Chegirma","discounts","Segment auditoriyaga chegirma."]}[kind];
+      const cfg={ad:["📣 Реклама kampaniyasi","ads","Segment + media + knopka bilan reklama."],release_feedback:["🆕 Yangilik fikri","release_feedback","Yangilik fikri baholash oqimi bilan."],discount:["🎁 Chegirma","discounts","Segment auditoriyaga chegirma."]}[kind];
       const rows=((d.campaigns||{})[cfg[1]]||[]);
       const sel=(id,label,opts)=>`<div class="frow"><label>${label}</label><select id="${id}" class="select">${opts.map(o=>`<option value="${o[0]}">${esc(o[1])}</option>`).join("")}</select></div>`;
       let form="";
       if(kind==="ad"){
         form=`<div class="frow"><label>Nomi</label><input id="cmTitle" class="input" maxlength="120"></div>
           <div class="frow"><label>Reklama matni</label><textarea id="cmText" class="textarea" maxlength="3500"></textarea></div>
-          <div class="frow"><label>🌐 Til (bo'sh = hammasi)</label><div class="row">${cmLangChips()}</div></div>
+          <div class="frow"><label>🌐 Тил (bo'sh = hammasi)</label><div class="row">${cmLangChips()}</div></div>
           ${sel("cm_track","🧭 Kurs versiyasi",[["","Hammasi"],["hsk20","HSK 2.0"],["hsk30","HSK 3.0"]])}
           ${sel("cm_level","📚 Daraja",[["","Hammasi"],["beginner","Boshlang'ich"],["hsk1","HSK1"],["hsk2","HSK2"],["hsk3","HSK3"],["hsk4","HSK4"],["nhsk1","HSK 3.0 · N1"],["nhsk2","HSK 3.0 · N2"],["nhsk3","HSK 3.0 · N3"]])}
           <label class="ncsw"><input type="checkbox" id="cmActiveSubs"> Faol obunachilarga ham yuborilsin</label>
@@ -2589,17 +2579,17 @@
               <input type="file" accept="image/*,video/*" id="cmMediaFile" hidden></div>
             <div class="ncnote" id="cmMediaInfo">Media biriktirilmagan</div></div>
           <div class="frow"><label>🔘 Knopka (ixtiyoriy)</label><select id="cmBtn" class="select">${BC_BUTTONS.map(o=>`<option value="${o[0]}">${esc(o[1])}</option>`).join("")}</select></div>
-          <div class="frow" id="cmBtnTextRow" hidden><label>Knopka nomi</label><input id="cmBtnText" class="input" maxlength="64"></div>
-          <div class="frow" id="cmBtnUrlRow" hidden><label>Havola</label><input id="cmBtnUrl" class="input"></div>
+          <div class="frow" id="cmBtnTextRow" hidden><label>Тугма номи</label><input id="cmBtnText" class="input" maxlength="64"></div>
+          <div class="frow" id="cmBtnUrlRow" hidden><label>Ҳавола</label><input id="cmBtnUrl" class="input"></div>
           <div class="frow two"><div><label>Necha marta (rounds)</label><input id="cmRounds" class="input" type="number" min="1" max="10" value="1"></div>
             <div><label>Davomiyligi (soat)</label><input id="cmHours" class="input" type="number" min="1" max="720" value="24"></div></div>`;
       } else if(kind==="discount"){
         const audience = targetId
           ? `<input type="hidden" id="cmTarget" value="${esc(targetId)}">
              <div class="ncnote">Bu chegirma faqat <b>${esc((state.activeUser&&state.activeUser.name)||targetId)}</b> · ${esc(targetId)} uchun amal qiladi. Segment tanlash kerak emas.</div>
-             <label class="ncsw"><input type="checkbox" id="cmNotify" checked> Foydalanuvchiga chegirma haqida xabar yuborilsin</label>`
+             <label class="ncsw"><input type="checkbox" id="cmNotify" checked> Фойдаланувчиga chegirma haqida xabar yuborilsin</label>`
           : `${sel("cm_status","👤 Auditoriya status",[["","Hammasi"],["free","Bepul"],["trial","Sinov"],["active","Faol"],["expired","Tugagan"]])}
-             ${sel("cm_language","🌐 Til",[["","Hammasi"],["tj","TJ"],["uz","UZ"],["ru","RU"]])}
+             ${sel("cm_language","🌐 Тил",[["","Hammasi"],["tj","TJ"],["uz","UZ"],["ru","RU"]])}
              ${sel("cm_level","📚 Daraja",[["","Hammasi"],["beginner","Boshlang'ich"],["hsk1","HSK1"],["hsk2","HSK2"],["hsk3","HSK3"],["hsk4","HSK4"]])}
              ${sel("cm_payment_method","🏦 To'lov usuli",[["","Hammasi"],["visa","Visa"],["alipay","Alipay"],["wechat","WeChat"]])}
              ${sel("cm_plan","📦 Tarif",[["","Hammasi"],["10_days","10 kun"],["1_month","1 oy"]])}
@@ -2634,7 +2624,7 @@
     async function cmUploadMedia(file){
       const f=file.files&&file.files[0]; if(!f) return;
       if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); file.value=""; return; }
-      $("cmMediaInfo").textContent="Yuklanmoqda…";
+      $("cmMediaInfo").textContent="Юкланмоқда…";
       const fd=new FormData(); fd.append("media",f);
       try{ const dd=await apiUpload("/api/admin-miniapp/broadcast/upload-media",fd);
         state.cm={content_type:dd.content_type,media_file_id:dd.media_file_id};
@@ -2705,24 +2695,24 @@
       </div>`);
     }
     function renderGiveAccess(prefill){
-      openDrawer("✅ Obuna berish",moduleSub("Foydalanuvchi ID va istalgan muddatni kiriting"),`<div class="panel"><div class="mcard">
+      openDrawer("✅ Обунани бериш",moduleSub("Фойдаланувчи ID ва муддатни киритинг"),`<div class="panel"><div class="mcard">
         <div class="frow"><label>Telegram ID</label><input id="gaId" class="input" inputmode="numeric" value="${esc(prefill||"")}"></div>
         ${durationControlHtml("gaDays")}
-        <button class="btn" data-gasave>Paid active qilish</button></div></div>`);
+        <button class="btn" data-gasave>Обунани фаоллаштириш</button></div></div>`);
     }
     function renderUserMessage(id,name){
       openDrawer("✉️ Shaxsiy xabar",`${name||""} · ${id}`,`<div class="panel"><div class="mcard">
         <p>Xabar faqat shu foydalanuvchiga boradi. Tarjima yoqilsa, matn uning tiliga o'giriladi.</p>
         <div class="frow"><label>Matn</label><textarea id="umText" class="textarea" maxlength="3500"></textarea></div>
-        <label class="ncsw"><input type="checkbox" id="umTranslate" checked> Foydalanuvchi tiliga tarjima qilinsin</label>
+        <label class="ncsw"><input type="checkbox" id="umTranslate" checked> Фойдаланувчи tiliga tarjima qilinsin</label>
         <button class="btn" data-umsend="${esc(id)}">Yuborish</button></div></div>`);
     }
     function renderDeleteUser(prefill){
-      openDrawer("🗑 Foydalanuvchini o'chirish",moduleSub("Xavfli amal: ID bilan tasdiqlanadi"),`<div class="panel">
-        <div class="danger-note">Bu foydalanuvchi va unga bog'liq BARCHA account ma'lumotini (kurs, xabar, fikr, referal, AI limit, qurilma/sessiya va login identity) o'chiradi. To'lovdagi screenshot/xabar va user bog'lanishi ham o'chadi; tasdiqlangan tranzaksiya faqat anonim moliyaviy tarix sifatida qoladi, shuning uchun umumiy finance statistikasi buzilmaydi. Qaytarib bo'lmaydi.</div>
+      openDrawer("🗑 Фойдаланувчини ўчириш",moduleSub("Хавфли амал. Telegram ID орқали тасдиқланади."),`<div class="panel">
+        <div class="danger-note">Фойдаланувчининг маълумотлари ва курс, хабар, фикр, таклиф ҳамда қурилма маълумотлари ўчирилади. Тасдиқланган тўловлар шахсдан ажратилган ҳолда молиявий ҳисобда қолади. Бу амални қайтариб бўлмайди.</div>
         <div class="mcard"><div class="frow"><label>Telegram ID</label><input id="delId" class="input" inputmode="numeric" value="${esc(prefill||"")}"></div>
-          <div class="frow"><label>Tasdiq uchun shu IDni qayta yozing</label><input id="delConfirm" class="input" inputmode="numeric"></div>
-          <button class="btn danger" data-deluser>O'chirish</button></div></div>`);
+          <div class="frow"><label>Тасдиқлаш учун шу IDни қайта киритинг</label><input id="delConfirm" class="input" inputmode="numeric"></div>
+          <button class="btn danger" data-deluser>Ўчириш</button></div></div>`);
     }
     function renderAudio(d){
       const rows=d.audio||[];
@@ -2776,9 +2766,9 @@
       return `<div class="ncard" data-nkey="${i.key}">
         <div class="nchead"><div><div class="nctitle">${esc(i.title)}</div><div class="ncnote">${esc(i.note)}</div><div class="ncph">O'zgaruvchilar: ${esc((i.placeholders||[]).join("  "))}</div></div>
           <label class="ncsw"><input type="checkbox" data-nc="enabled" ${i.enabled?"checked":""}> Yoqilgan</label></div>
-        <div class="nclang"><label>🇺🇿 O'zbekcha</label><textarea data-nc="text_uz" maxlength="3500" placeholder="${esc(i.default_uz)}">${esc(i.text_uz)}</textarea></div>
-        <div class="nclang"><label>🇷🇺 Ruscha</label><textarea data-nc="text_ru" maxlength="3500" placeholder="${esc(i.default_ru)}">${esc(i.text_ru)}</textarea></div>
-        <div class="nclang"><label>🇹🇯 Tojikcha</label><textarea data-nc="text_tj" maxlength="3500" placeholder="${esc(i.default_tj)}">${esc(i.text_tj)}</textarea></div>
+        <div class="nclang"><label>🇺🇿 Ўзбекча</label><textarea data-nc="text_uz" maxlength="3500" placeholder="${esc(i.default_uz)}">${esc(i.text_uz)}</textarea></div>
+        <div class="nclang"><label>🇷🇺 Русча</label><textarea data-nc="text_ru" maxlength="3500" placeholder="${esc(i.default_ru)}">${esc(i.text_ru)}</textarea></div>
+        <div class="nclang"><label>🇹🇯 Тожикча</label><textarea data-nc="text_tj" maxlength="3500" placeholder="${esc(i.default_tj)}">${esc(i.text_tj)}</textarea></div>
         <div class="ncmedia" data-ncmedia>${notifMedia(i)}</div>
         <div class="row"><button class="btn" data-nact="save">Saqlash</button><button class="btn sec" data-nact="upload">📎 Media yuklash</button>
           <button class="btn sec" data-nact="clear" ${i.media_url?"":"hidden"}>Mediani o'chirish</button>
@@ -2815,8 +2805,8 @@
     }
 
     /* ---------- course ads ---------- */
-    const CA_LANGS={all:"Barcha tillar",uz:"O'zbekcha",ru:"Ruscha",tj:"Tojikcha"};
-    const CA_TYPES={odiy:["📺 Oddiy","blue"],hamkorlik:["🤝 Hamkorlik","amber"],bot:["🤖 Bot","green"],dars_yakuni:["👑 Obuna taklifi",""]};
+    const CA_LANGS={all:"Барча тиллар",uz:"Ўзбекча",ru:"Русча",tj:"Тожикча"};
+    const CA_TYPES={odiy:["📺 Oddiy","blue"],hamkorlik:["🤝 Ҳамкорлик","amber"],bot:["🤖 Bot","green"],dars_yakuni:["👑 Obuna taklifi",""]};
     function caLangLabel(l){ return CA_LANGS[l]||CA_LANGS.all; }
     function caTypeMeta(t){ return CA_TYPES[t]||CA_TYPES.odiy; }
     let caItems=[], caFilter="all";
@@ -2841,7 +2831,7 @@
       const slotLine=`<div class="ncnote">${places}</div>`;
       return `<div class="ncard" data-ca="${i.id}">
         <div class="nchead"><div><div class="nctitle">${esc(i.title)}</div><div class="ncnote">${i.duration_seconds||7}s ${isPhoto?"surat":"video"} · yopish vaqti umumiy sozlamada · ${esc(i.created_at||"—")}</div>
-          ${i.link_url?`<div class="ncnote">🔗 <a href="${esc(i.link_url)}" target="_blank" rel="noopener">${esc(i.link_url)}</a></div>`:"<div class='ncnote'>Havola yo'q</div>"}${btnLine}${slotLine}</div>
+          ${i.link_url?`<div class="ncnote">🔗 <a href="${esc(i.link_url)}" target="_blank" rel="noopener">${esc(i.link_url)}</a></div>`:"<div class='ncnote'>Ҳавола yo'q</div>"}${btnLine}${slotLine}</div>
           <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:flex-end">${tag(tmeta[0],tmeta[1])}${tag(isPhoto?"🖼 surat":"🎬 video","violet")}${tag("🌐 "+caLangLabel(lang),"blue")}${tag(i.is_active?"faol":"o'chirilgan",i.is_active?"green":"red")}${tag(mediaOk?mediaWord+" bor":mediaWord+" yo'q",mediaOk?"green":"red")}</div></div>
         <div class="ncmedia">${mediaHtml}</div>
         <div class="row"><button class="btn sec" data-catoggle="${i.id}" data-active="${i.is_active?"0":"1"}">${i.is_active?"Faolsizlantirish":"Faollashtirish"}</button>
@@ -2899,16 +2889,16 @@
         fields:["link","button"],
         note:"Oddiy reklama: havola qo'shsangiz, reklama ichida o'zingiz nomlagan tugma chiqadi.",
         linkLabel:"Tugma ochadigan havola (ixtiyoriy)",
-        linkNote:"Havola bo'lmasa tugma ko'rinmaydi.",
+        linkNote:"Ҳавола bo'lmasa tugma ko'rinmaydi.",
         buttonLabel:"Tugma nomi (ixtiyoriy)",
         buttonPlaceholder:"Masalan: Batafsil bilish"
       },
       hamkorlik:{
         fields:["link","button"],
         note:"Hamkor reklamasi: rolik ostida bitta tashqi havola tugmasi chiqadi.",
-        linkLabel:"Havola / Instagram",
+        linkLabel:"Ҳавола / Instagram",
         linkNote:"@username yozsangiz ham bo'ladi — t.me havolasiga aylantiriladi.",
-        buttonLabel:"Knopka nomi",
+        buttonLabel:"Тугма номи",
         buttonPlaceholder:"Masalan: Hamkorlik uchun yozing"
       },
       bot:{
@@ -2916,7 +2906,7 @@
         note:"Bot reklamasi: ochish, nusxalash va ulashish tugmalari chiqadi.",
         linkLabel:"Bot havolasi",
         linkNote:"Masalan @darsi_chini_bot yoki to'liq t.me havolasi.",
-        buttonLabel:"Knopka nomi",
+        buttonLabel:"Тугма номи",
         buttonPlaceholder:"Masalan: Botni sinab ko'r"
       },
       dars_yakuni:{
@@ -2933,7 +2923,7 @@
       const spec=caSpec(), on=spec.fields;
       const multi=$("caLang")?.value==="all";
       const titleLabel=$("caTitleLabel");
-      if(titleLabel) titleLabel.textContent=multi?"Sarlavha (tojikcha)":"Sarlavha";
+      if(titleLabel) titleLabel.textContent=multi?"Сарлавҳа (тожикча)":"Sarlavha";
       const languageNote=$("caLanguageNote");
       if(languageNote) languageNote.hidden=!multi;
       document.querySelectorAll("[data-ca-field]").forEach(el=>{ el.hidden=on.indexOf(el.dataset.caField)<0; });
@@ -2941,7 +2931,7 @@
       set("caTypeNote",spec.note);
       set("caLinkLabel",spec.linkLabel);
       set("caLinkNote",spec.linkNote);
-      set("caBtnLabel",($("caLang")?.value==="all"?"Tojikcha — ":"")+(spec.buttonLabel||"Knopka nomi"));
+      set("caBtnLabel",($("caLang")?.value==="all"?"Тожикча — ":"")+(spec.buttonLabel||"Тугма номи"));
       const bt=$("caBtnText");
       if(bt){ bt.placeholder=multi?"Тоҷикӣ: матни тугма":(spec.buttonPlaceholder||""); }
       /* Yashiringan katakning qiymati qolib ketmasin — aks holda ko'rinmaydigan
@@ -2950,12 +2940,12 @@
       if(on.indexOf("link")<0){ const l=$("caLink"); if(l) l.value=""; }
     }
 
-    /* ---------- «📣 Reklama» bo'limi: hammasi bitta joyda ----------
+    /* ---------- «📣 Реклама» bo'limi: hammasi bitta joyda ----------
        Ilgari bular uch xil joyda edi (sozlamalardagi roliklar formasi, modul
        ro'yxatidagi «Reklama joylari» va «App reklamasi», plus «Reklama
        kampaniyasi»). Endi bitta bo'lim, ichida to'rt tanlov. */
     const AD_HUB={
-      kurs:{pane:"adPaneKurs",note:"Foydalanuvchi ko'radigan rolik va u qaysi joyda chiqishi — ikkalasi shu yerda. Rolik joysiz, joy roliksiz ishlamaydi."},
+      kurs:{pane:"adPaneKurs",note:"Фойдаланувчи ko'radigan rolik va u qaysi joyda chiqishi — ikkalasi shu yerda. Rolik joysiz, joy roliksiz ishlamaydi."},
       ilova:{pane:"adPaneIlova",note:"HSK AI ilovasini yuklab olishga chaqiruvchi promo: Mini App ochilganda va dars yakunida chiqadi. Media va platforma tugmalari shu yerda."}
     };
     async function openAdHub(key){
@@ -2971,7 +2961,7 @@
       const host=state.adHub==="kurs" ? $("adPlacementsBox") : $(cfg.pane);
       if(state.adHub==="kurs") caTypeUI();
       if(!host) return;
-      host.innerHTML="<p class='empty'>Yuklanmoqda…</p>";
+      host.innerHTML="<p class='empty'>Юкланмоқда…</p>";
       let d;
       try{ d=await loadManagement(false); }
       catch(e){ host.innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; if(state.adHub==="kurs"&&$("caPlacementBox")) $("caPlacementBox").innerHTML="<p class='empty'>Reklama joylari yuklanmadi.</p>"; return; }
@@ -2999,7 +2989,7 @@
       fd.append("media",f);
       try{
         if($("caLang").value==="all"&&!($("caTitle").value||"").trim()){
-          toast("Barcha tillar uchun tojikcha sarlavha kiriting"); return;
+          toast("Барча тиллар uchun tojikcha sarlavha kiriting"); return;
         }
         const result=await apiUpload("/api/admin-miniapp/course-ads/upload",fd);
         $("caTitle").value=""; $("caLink").value=""; $("caBtnText").value="";
@@ -3019,16 +3009,18 @@
       return `<svg class="admin-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${adminIcons[key]||adminIcons.settings}</svg>`;
     }
     const adminRoutes={
-      dashboard:{icon:"house",title:"Bosh sahifa",label:"OVERVIEW",description:"Bugungi holatni ko‘ring va muhim ishlarni shu yerdan boshlang.",tab:"dashboard"},
-      statistics:{icon:"chart",title:"Analitika",label:"ANALYTICS",description:"Foydalanuvchilar, kurs va ilovalar natijalarini kuzating.",tab:"statistics",subs:[["overview","Umumiy"],["platform","Platformalar"],["funnel","Konversiya"],["ai","AI xarajatlari"]]},
-      users:{icon:"users",title:"Foydalanuvchilar",label:"PEOPLE",description:"Foydalanuvchini toping, profil va kirish huquqini boshqaring.",tab:"users"},
-      finance:{icon:"wallet",title:"Moliya",label:"FINANCE",description:"To‘lovlar, tariflar, rekvizitlar va portfelni boshqaring.",tab:"payments",subs:[["payments","To‘lovlar"],["prices","Tariflar"],["methods","Rekvizitlar"],["portfolio","Portfel"]]},
-      product:{icon:"book",title:"Mahsulot",label:"PRODUCT",description:"Kurs, kirish qoidalari va o‘quv vositalarini boshqaring.",tab:"settings",subs:[["tracks","HSK 2.0 / 3.0"],["access","Dars va limitlar"],["trial","Trial"],["tools","Kontent va testlar"]]},
-      marketing:{icon:"megaphone",title:"Marketing",label:"MARKETING",description:"Kampaniyalar, reklama va eslatmalar bir joyda.",tab:"settings",subs:[["campaigns","Kampaniyalar"],["creatives","Reklama"],["notifications","Eslatmalar"],["partners","Hamkorlar"]]},
-      system:{icon:"settings",title:"Tizim",label:"SYSTEM",description:"AI modellari, kanallar va yordam sozlamalarini boshqaring.",tab:"settings",subs:[["models","AI modellari"],["channels","Kanallar"],["help","Yordam"]]}
+      dashboard:{icon:"house",title:"Бош саҳифа",label:"БОШ САҲИФА",description:"Бугунги ҳолат ва муҳим ишлар.",tab:"dashboard"},
+      statistics:{icon:"chart",title:"Таҳлиллар",label:"ТАҲЛИЛЛАР",description:"Фойдаланувчилар, курс ва иловалар натижалари.",tab:"statistics",subs:[["overview","Умумий"],["platform","Платформалар"],["funnel","Ўтиш кўрсаткичлари"],["ai","Сунъий интеллект харажатлари"]]},
+      users:{icon:"users",title:"Фойдаланувчилар",label:"ФОЙДАЛАНУВЧИЛАР",description:"Фойдаланувчилар, профиллар ва кириш ҳуқуқлари.",tab:"users"},
+      finance:{icon:"wallet",title:"Молия",label:"МОЛИЯ",description:"Тўловлар, тарифлар ва молиявий ҳисоб.",tab:"payments",subs:[["payments","Тўловлар"],["prices","Тарифлар"],["methods","Реквизитлар"],["portfolio","Харажатлар"]]},
+      product:{icon:"book",title:"Курс",label:"КУРС",description:"Курс, кириш қоидалари ва ўқув воситалари.",tab:"settings",subs:[["tracks","HSK 2.0 / 3.0"],["access","Дарслар ва чекловлар"],["trial","Синов муддати"],["tools","Материаллар ва тестлар"]]},
+      marketing:{icon:"megaphone",title:"Тарғибот",label:"ТАРҒИБОТ",description:"Кампаниялар, реклама ва эслатмалар.",tab:"settings",subs:[["campaigns","Кампаниялар"],["creatives","Реклама"],["notifications","Эслатмалар"],["partners","Ҳамкорлар"]]},
+      system:{icon:"settings",title:"Тизим",label:"ТИЗИМ",description:"Сунъий интеллект, каналлар ва ёрдам созламалари.",tab:"settings",subs:[["models","Сунъий интеллект моделлари"],["channels","Каналлар"],["help","Ёрдам"]]}
     };
-    const adminModuleLabels={stats:"Statistika",user_search:"Foydalanuvchi qidirish",portfolio:"Portfel",prices:"Obuna tariflari",hsk30:"HSK 3.0",course_access:"Kursga kirish",limits:"Limitlar",ads_hub:"Reklama",course_sales_experiment:"HSK sotuv A/B",channels:"Majburiy kanallar",delete_user:"Foydalanuvchini o‘chirish",broadcast:"Ommaviy xabar",ads:"Bot reklama xabari",release_feedback:"Yangilik fikri",discount:"Chegirma boshqaruvi",partners:"Hamkorlar",help:"Yordam sozlamalari",give_access:"Obuna berish",audio:"Audio boshqaruvi"};
+    const adminModuleLabels={stats:"Статистика",user_search:"Фойдаланувчи қидириш",portfolio:"Харажатлар",prices:"Обуналар тарифлари",hsk30:"HSK 3.0",course_access:"Курсга кириш",limits:"Чекловлар",ads_hub:"Реклама",course_sales_experiment:"HSK сотув тажрибаси",channels:"Мажбурий каналлар",delete_user:"Фойдаланувчини ўчириш",broadcast:"Оммавий хабар",ads:"Бот рекламаси",release_feedback:"Янгиликлар фикри",discount:"Чегирмалар",partners:"Ҳамкорлар",help:"Ёрдам созламалари",give_access:"Обунани бериш",audio:"Аудио бошқаруви"};
     function adminModuleLabel(module){return adminModuleLabels[module.key]||module.title;}
+    const adminModuleNotes={stats:"Умумий ҳисобот ва фойдаланувчилар фаоллиги",user_search:"ID ёки фойдаланувчи номи бўйича мини-иловада қидириш",portfolio:"Тушум, харажат ва соф фойда ҳисоботи",prices:"Visa, Alipay ва WeChat учун обуна нархлари",hsk30:"Курс, бир марталик тўлов ва нархни бошқариш",course_access:"Дарсдан олдин обунани талаб қилиш ёки вақтинча бепул режим",limits:"Бепул ва синов муддати учун кунлик чекловлар",ads_hub:"Мини-иловадаги реклама ва илова тарғиботи",course_sales_experiment:"Сотув тажрибаси ва қамров улушини бошқариш",channels:"Канал ҳаволаси ва мажбурий обуна",delete_user:"ID орқали тасдиқланадиган хавфли амал",broadcast:"Сегментни танлаб, хабар юбориш",ads:"Ботдаги хабар ва медиани сегментга юбориш",release_feedback:"Янгиликлар бўйича фикр сўраш",discount:"Чегирма кампаниясини яратиш ва кузатиш",partners:"Аризалар, тўловлар ва ҳамкорлар ҳисоботи",help:"Админ алоқаси ва видео ҳаволалар",give_access:"Фойдаланувчига қўлда кириш ҳуқуқини бериш",audio:"Курс аудио файлларини текшириш"};
+    function adminModuleNote(module){return adminModuleNotes[module.key]||module.note;}
     const adminModuleGroups={
       prices:["finance","prices"],portfolio:["finance","portfolio"],
       hsk30:["product","tracks"],course_access:["product","access"],limits:["product","access"],audio:["product","tools"],course_sales_experiment:["product","tools"],
@@ -3037,7 +3029,7 @@
     };
     function initAdminChrome(){
       $("sidebarNav").innerHTML=Object.entries(adminRoutes).map(([key,cfg])=>`<button type="button" class="admin-navbtn" data-admin-route="${key}">${adminIcon(cfg.icon)}<span>${cfg.title}</span><span class="admin-chevron">${adminIcon("chevron")}</span></button>`).join("");
-      const mobile=[["dashboard","house","Bosh"],["statistics","chart","Tahlil"],["users","users","Odamlar"],["finance","wallet","To‘lov"],["menu","menu","Menyu"]];
+      const mobile=[["dashboard","house","Саҳифа"],["statistics","chart","Таҳлил"],["users","users","Одамлар"],["finance","wallet","Тўлов"],["menu","menu","Меню"]];
       $("tabs").innerHTML=mobile.map(([key,icon,label])=>`<button type="button" class="tab" data-admin-route="${key}">${adminIcon(icon)}<span>${label}</span></button>`).join("");
       document.querySelectorAll("[data-admin-icon]").forEach(el=>el.innerHTML=adminIcon(el.dataset.adminIcon));
       const statGroups={platform:["desktopCards","androidCards","clientBusinessCards","clientDeviceCards"],funnel:["advancedCards","retentionCards","sourcesPaid","overviewCards","subEntryStats"],ai:["financeCards","unitCards"]};
@@ -3078,9 +3070,9 @@
       });
       $("adminSubnav").hidden=!cfg.subs;
       $("adminSubnav").innerHTML=(cfg.subs||[]).map(([key,label])=>`<button type="button" class="admin-subbtn ${sub===key?"active":""}" data-admin-sub="${key}" aria-current="${sub===key?"page":"false"}">${label}</button>`).join("");
-      let action=`<button class="btn sec" data-act="reload">${adminIcon("refresh")}Yangilash</button>`;
-      if(state.adminRoute==="marketing"&&sub==="campaigns"&&(state.overview?.modules||[]).some(m=>m.key==="broadcast"))action=`<button class="btn" data-module="broadcast">${adminIcon("plus")}Yangi kampaniya</button>`;
-      if(state.adminRoute==="users"&&(state.overview?.modules||[]).some(m=>m.key==="give_access"))action=`<button class="btn sec" data-admin-module="give_access">${adminIcon("plus")}Obuna berish</button>`;
+      let action="";
+      if(state.adminRoute==="marketing"&&sub==="campaigns"&&(state.overview?.modules||[]).some(m=>m.key==="broadcast"))action=`<button class="btn" data-module="broadcast">${adminIcon("plus")}Кампания яратиш</button>`;
+      if(state.adminRoute==="users"&&(state.overview?.modules||[]).some(m=>m.key==="give_access"))action=`<button class="btn sec" data-admin-module="give_access">${adminIcon("plus")}Обунани бериш</button>`;
       $("pageActions").innerHTML=action;
       let tab=cfg.tab;if(state.adminRoute==="finance"&&sub!=="payments")tab="settings";
       state.tab=tab;document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===tab));
@@ -3109,10 +3101,10 @@
     }
     function renderAdminSearch(){
       const query=$("adminNavSearch").value.trim().toLocaleLowerCase();
-      const routes=Object.entries(adminRoutes).flatMap(([key,cfg])=>[{title:cfg.title,route:key,icon:cfg.icon,group:"Asosiy bo‘lim"},...(cfg.subs||[]).map(([sub,title])=>({title,route:key,sub,icon:cfg.icon,group:cfg.title}))]);
-      const modules=(state.overview?.modules||[]).map(m=>({title:adminModuleLabel(m),module:m.key,icon:(adminRoutes[adminModuleGroups[m.key]?.[0]]||adminRoutes.system).icon,group:"Boshqaruv amali"}));
+      const routes=Object.entries(adminRoutes).flatMap(([key,cfg])=>[{title:cfg.title,route:key,icon:cfg.icon,group:"Асосий бўлим"},...(cfg.subs||[]).map(([sub,title])=>({title,route:key,sub,icon:cfg.icon,group:cfg.title}))]);
+      const modules=(state.overview?.modules||[]).map(m=>({title:adminModuleLabel(m),module:m.key,icon:(adminRoutes[adminModuleGroups[m.key]?.[0]]||adminRoutes.system).icon,group:"Бошқарув амали"}));
       const hits=[...routes,...modules].filter(item=>(item.title+" "+item.group).toLocaleLowerCase().includes(query));
-      $("adminNavResults").innerHTML=hits.length?hits.map(item=>`<button type="button" class="admin-search-result" ${item.module?`data-admin-module="${esc(item.module)}"`:`data-admin-route="${item.route}"${item.sub?` data-admin-target-sub="${item.sub}"`:""}`}>${adminIcon(item.icon)}<span>${esc(item.title)}<small>${esc(item.group)}</small></span>${adminIcon("chevron")}</button>`).join(""):"<p class='empty'>Mos bo‘lim topilmadi. Boshqa nom bilan qidiring.</p>";
+      $("adminNavResults").innerHTML=hits.length?hits.map(item=>`<button type="button" class="admin-search-result" ${item.module?`data-admin-module="${esc(item.module)}"`:`data-admin-route="${item.route}"${item.sub?` data-admin-target-sub="${item.sub}"`:""}`}>${adminIcon(item.icon)}<span>${esc(item.title)}<small>${esc(item.group)}</small></span>${adminIcon("chevron")}</button>`).join(""):"<p class='empty'>Мос бўлим топилмади. Бошқа номда қидиринг.</p>";
     }
     function openAdminModule(key){
       const target=adminModuleGroups[key]||["system","models"];
@@ -3255,8 +3247,8 @@
       if((el=T("[data-cmcreate]"))){ if(!confirm("Kampaniya rejalashtiriladi. Davom etasizmi?")) return; el.disabled=true; return cmCreate(el.dataset.cmcreate).then(()=>afterModule("Kampaniya yaratildi")).catch(x=>{toast(apiErr(x,"Yaratilmadi"));el.disabled=false;}); }
       if((el=T("[data-partner]"))){ const act=el.dataset.partner; if((act==="reject"||act==="block")&&!confirm("Davom etasizmi?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/partners/action",{partner_id:Number(el.dataset.pid||0),action:act}).then(()=>afterModule("Hamkor holati yangilandi")).catch(x=>{toast(apiErr(x,"Bajarilmadi"));el.disabled=false;}); }
       if((el=T("[data-gasave]"))){ el.disabled=true; return grantAccess($("gaId").value,$("gaDays").value).catch(x=>toast(apiErr(x,"Obuna berilmadi"))).finally(()=>{if(el.isConnected)el.disabled=false;}); }
-      if((el=T("[data-deluser]"))){ const id=$("delId").value.trim(), verify=$("delConfirm").value.trim(); if(!id||verify!==id){toast("Tasdiq maydoniga aynan shu Telegram IDni yozing"); $("delConfirm").focus(); return;} if(!confirm("Foydalanuvchi va barcha account ma'lumoti butunlay o'chiriladi. Davom etasizmi?")) return; const oldText=el.textContent; el.disabled=true; el.textContent="O'chirilmoqda…"; return apiPost("/api/admin-miniapp/users/delete",{telegram_id:id,confirm:verify}).then(()=>{closeDrawer();return loadData();}).then(()=>toast("Foydalanuvchi to'liq o'chirildi")).catch(x=>{toast(apiErr(x,"O'chirilmadi")); if(document.body.contains(el)){el.disabled=false;el.textContent=oldText;}}); }
-      if((el=T("[data-ublock]"))){ const blocked=el.dataset.blocked==="1"; if(!confirm(blocked?"Foydalanuvchi bloklanadi. Davom etasizmi?":"Foydalanuvchi blokdan chiqariladi. Davom etasizmi?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/users/block",{telegram_id:Number(el.dataset.ublock),blocked}).then(()=>{return openUser(el.dataset.ublock);}).then(()=>{loadData();toast(blocked?"Foydalanuvchi bloklandi":"Blokdan chiqarildi");}).catch(x=>{toast(apiErr(x,"Bajarilmadi"));el.disabled=false;}); }
+      if((el=T("[data-deluser]"))){ const id=$("delId").value.trim(), verify=$("delConfirm").value.trim(); if(!id||verify!==id){toast("Тасдиқ майдонига айнан шу Telegram IDни киритинг"); $("delConfirm").focus(); return;} if(!confirm("Фойдаланувчининг барча маълумотлари ўчирилади. Давом этасизми?")) return; const oldText=el.textContent; el.disabled=true; el.textContent="Ўчирилмоқда…"; return apiPost("/api/admin-miniapp/users/delete",{telegram_id:id,confirm:verify}).then(()=>{closeDrawer();return loadData();}).then(()=>toast("Фойдаланувчи тўлиқ ўчирилди")).catch(x=>{toast(apiErr(x,"Ўчириб бўлмади")); if(document.body.contains(el)){el.disabled=false;el.textContent=oldText;}}); }
+      if((el=T("[data-ublock]"))){ const blocked=el.dataset.blocked==="1"; if(!confirm(blocked?"Фойдаланувчи bloklanadi. Davom etasizmi?":"Фойдаланувчи blokdan chiqariladi. Davom etasizmi?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/users/block",{telegram_id:Number(el.dataset.ublock),blocked}).then(()=>{return openUser(el.dataset.ublock);}).then(()=>{loadData();toast(blocked?"Фойдаланувчи bloklandi":"Blokdan chiqarildi");}).catch(x=>{toast(apiErr(x,"Bajarilmadi"));el.disabled=false;}); }
       if((el=T("[data-aulist]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/audio/list",{level:$("auLevel").value,lesson_order:$("auLesson").value}).then(d=>{$("auResult").innerHTML=(d.items||[]).length?d.items.map(i=>`<div class="mcard"><h3>${esc(i.audio_type)}</h3><p>${esc(i.file_id)}</p></div>`).join(""):"<p class='empty'>Bu dars uchun audio yo'q.</p>";}).catch(x=>toast(apiErr(x,"Audio olinmadi"))).finally(()=>el.disabled=false); }
       if((el=T("[data-catoggle]"))){ const id=Number(el.dataset.catoggle), a=el.dataset.active==="1"; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/toggle",{ad_id:id,is_active:a}).then(()=>{toast(a?"Reklama yoqildi":"Reklama o'chirildi");loadCourseAds();}).catch(()=>{toast("Holatni o'zgartirib bo'lmadi");el.disabled=false;}); }
       if((el=T("[data-cadel]"))){ const id=Number(el.dataset.cadel); if(!confirm("Bu reklamani butunlay o'chirasizmi? Video fayl ham o'chadi.")) return; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/delete",{ad_id:id}).then(()=>{toast("Reklama o'chirildi");loadCourseAds();}).catch(()=>{toast("O'chirib bo'lmadi");el.disabled=false;}); }

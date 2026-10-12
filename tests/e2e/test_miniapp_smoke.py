@@ -2270,10 +2270,10 @@ def admin_payload():
             {"key": "all_time", "title": "To'liq", "note": "Butun davr", "cards": [], "course": {}, "metrics": {}, "text": "Real hisobot: 12 foydalanuvchi, 3 aktiv obuna.", "advanced": advanced},
         ],
         "summary": [
-            {"label": "Foydalanuvchilar", "value": 12, "note": "5 bugun aktiv", "tone": "info"},
-            {"label": "Aktiv obuna", "value": 3, "note": "hozir to'lovli", "tone": "good"},
-            {"label": "To'lov tekshiruvda", "value": 2, "note": "admin ko'rishi kerak", "tone": "warn"},
-            {"label": "Issiq mijozlar", "value": 4, "note": "obunaga yaqin", "tone": "danger"},
+            {"label": "Фойдаланувчилар", "value": 12, "note": "5 бугун фаол", "tone": "info"},
+            {"label": "Фаол обуна", "value": 3, "note": "ҳозир тўловли", "tone": "good"},
+            {"label": "Тўлов текширувда", "value": 2, "note": "админ кўриши керак", "tone": "warn"},
+            {"label": "Иссиқ мижозлар", "value": 4, "note": "обунага яқин", "tone": "danger"},
         ],
         "counts": {
             "paid_users": 3,
@@ -2629,7 +2629,13 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     page.goto(app_url("/admin.html"), wait_until="networkidle")
 
     expect(page.locator("#app")).to_be_visible()
-    expect(page.locator("#summaryGrid")).to_contain_text("Foydalanuvchilar")
+    expect(page.locator("#pageTitle")).to_contain_text("Бош саҳифа")
+    expect(page.locator("body")).not_to_contain_text("UI preview")
+    expect(page.locator("body")).not_to_contain_text("Administrator")
+    expect(page.locator(".admin-side-bottom")).to_have_count(0)
+    expect(page.locator('#pageActions [data-act="reload"]')).to_have_count(0)
+    expect(page.locator('[data-act="reload"]')).to_have_count(1)
+    expect(page.locator("#summaryGrid")).to_contain_text("Фойдаланувчилар")
     expect(page.locator("#summaryGrid")).to_contain_text("12")
     expect(page.locator("#reportText")).to_contain_text("Real hisobot")
     expect(page.locator("#dataQuality")).to_contain_text("Course event")
@@ -2662,7 +2668,7 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     page.keyboard.press("/")
     expect(page.locator("#adminNavigator")).to_be_visible()
     expect(page.locator("#adminNavSearch")).to_be_focused()
-    page.locator("#adminNavSearch").fill("Obuna berish")
+    page.locator("#adminNavSearch").fill("Обунани бериш")
     page.locator('#adminNavResults [data-admin-module="give_access"]').click()
     expect(page.locator("#adminNavigator")).not_to_be_visible()
     expect(page.locator("#gaDays")).to_be_visible()
