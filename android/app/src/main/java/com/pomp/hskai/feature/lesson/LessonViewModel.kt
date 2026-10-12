@@ -45,10 +45,11 @@ internal fun nextN1PilotCardIndex(
     failedChecks: Set<Int>,
     historyKnown: Boolean,
 ): Int {
-    if (lesson?.level != "nhsk1" || lesson.sourceLesson != 1 || lesson.part != 4) return startIndex
+    val checked = lesson ?: return startIndex
+    if (checked.level != "nhsk1" || checked.sourceLesson != 1 || checked.part != 4) return startIndex
     var cursor = startIndex
     var offset = 0
-    for (section in lesson.sections) {
+    for (section in checked.sections) {
         if (section.purpose == "learning_repair_bank") {
             for (index in section.cards.indices) {
                 if (cursor == offset + index && historyKnown && index !in failedChecks) {
