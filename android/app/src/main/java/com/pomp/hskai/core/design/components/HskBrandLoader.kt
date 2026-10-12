@@ -28,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -60,10 +61,12 @@ fun HskBrandLoader(
     modifier: Modifier = Modifier,
     compact: Boolean = false,
     launch: Boolean = false,
+    onLaunchAnimationFinished: () -> Unit = {},
 ) {
     val brandRevealStarted = remember { mutableStateOf(false) }
     val brandReveal = remember { Animatable(0f) }
     val goldWave = remember { Animatable(0f) }
+    val currentOnLaunchAnimationFinished by rememberUpdatedState(onLaunchAnimationFinished)
     LaunchedEffect(launch, brandRevealStarted.value) {
         if (!launch || !brandRevealStarted.value) return@LaunchedEffect
         coroutineScope {
@@ -79,6 +82,7 @@ fun HskBrandLoader(
                 animationSpec = tween(durationMillis = 900, easing = FastOutSlowInEasing),
             )
         }
+        currentOnLaunchAnimationFinished()
     }
 
     val transition = rememberInfiniteTransition(label = "hsk-brand-loader")
