@@ -17,6 +17,61 @@ class CourseLessonMistakeMaterialServiceTests(unittest.TestCase):
         self.assertNotIn("correct_answer:String(correctAnswer", html)
         self.assertNotIn("question:String(prompt", html)
 
+    def test_hsk30_n1_exit_mistake_is_verified_from_server_json(self):
+        items = CourseLessonMistakeMaterialService.canonicalize_items(
+            level="nhsk1",
+            lesson_order=4,
+            lang="uz",
+            items=[
+                {
+                    "material_ref": "lesson:nhsk1:4:section:3:card:1",
+                    "selected_index": 0,
+                    "question": "FORGED QUESTION",
+                    "correct_answer": "FORGED ANSWER",
+                },
+                {
+                    "material_ref": "lesson:nhsk1:4:section:3:card:1",
+                    "selected_index": 1,  # duplicate ref cannot erase the wrong answer
+                },
+            ],
+        )
+        self.assertEqual(len(items), 1)
+        wrong = items[0]
+        self.assertEqual(wrong["correct_answer"], "老师，您好！")
+        self.assertEqual(wrong["selected_answer"], "老师，再见！")
+        self.assertEqual(wrong["format"], "quick_quiz")
+        self.assertEqual(wrong["material"]["source"]["level"], "nhsk1")
+        self.assertNotEqual(wrong["question"], "FORGED QUESTION")
+
+    def test_hsk30_n1_retry_audio_mistake_retains_listening_stimulus(self):
+        items = CourseLessonMistakeMaterialService.canonicalize_items(
+            level="nhsk1",
+            lesson_order=4,
+            lang="tj",
+            items=[
+                {
+                    "material_ref": "lesson:nhsk1:4:section:4:card:2",
+                    "selected_index": 0,
+                }
+            ],
+        )
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["format"], "listening_choice")
+        self.assertEqual(items[0]["material"]["audio_text"], "不客气！")
+
+    def test_hsk30_mismatched_and_forged_material_is_rejected(self):
+        items = CourseLessonMistakeMaterialService.canonicalize_items(
+            level="nhsk1",
+            lesson_order=4,
+            lang="uz",
+            items=[
+                {"material_ref": "lesson:hsk1:4:section:3:card:1", "selected_index": 0},
+                {"material_ref": "lesson:nhsk2:4:section:3:card:1", "selected_index": 0},
+                {"material_ref": "lesson:nhsk1:4:section:3:card:1", "selected_index": 1},
+            ],
+        )
+        self.assertEqual(items, [])
+
     def test_choice_uses_canonical_source_and_ignores_client_answer_key(self):
         items = CourseLessonMistakeMaterialService.canonicalize_items(
             level="hsk1",
