@@ -48,14 +48,14 @@ def learner() -> User:
     )
 
 
-def mistake(key: str, *, category: str, weight: int, material: dict | None = None) -> CourseMistake:
+def mistake(key: str, *, category: str, weight: int, material: dict | None = None, level: str = "hsk1") -> CourseMistake:
     now = datetime.now(timezone.utc)
     return CourseMistake(
         user_id=1,
         mistake_key=key,
         category=category,
         source="lesson",
-        level="hsk1",
+        level=level,
         prompt="p",
         correct_answer="a",
         material_json=json.dumps(material) if material else None,
@@ -101,15 +101,15 @@ class LearningSignalsTests(unittest.IsolatedAsyncioTestCase):
                 session.add(row)
             await session.commit()
 
-    async def _load(self, *, completed=12, minutes=20, focus=None, goal="hsk_exam"):
+    async def _load(self, *, completed=12, minutes=20, focus=None, goal="hsk_exam", level="hsk1"):
         profile = CourseMiniAppProfile(
             user_id=1, goal=goal, daily_minutes=minutes, start_mode="lesson_1",
             timezone_offset_minutes=0, preferred_focus=focus, current_streak=3,
         )
-        progress = type("P", (), {"completed_lessons_count": completed, "level": "hsk1"})()
+        progress = type("P", (), {"completed_lessons_count": completed, "level": level})()
         async with self.factory() as session:
             service = LearningSignalsService(session)
-            return await service.load(self.user, profile=profile, progress=progress, level="hsk1")
+            return await service.load(self.user, profile=profile, progress=progress, level=level)
 
     async def test_listening_is_separated_without_a_schema_change(self):
         # `course_mistakes` da tinglash kategoriyasi YO'Q — u saqlangan
@@ -124,6 +124,44 @@ class LearningSignalsTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(signals.weakness["listening"], 5)
         self.assertEqual(signals.weakness["word"], 3)
         self.assertEqual(signals.weakness["grammar"], 2)
+
+    async def test_hsk30_plan_does_not_inherit_hsk20_errors(self):
+        await self._add(
+            mistake("legacy", category="grammar", weight=40, level="hsk1"),
+            mistake("new", category="word", weight=2, level="nhsk1"),
+            mistake("new-other", category="character", weight=5, level="nhsk2"),
+        )
+        n1 = await self._load(level="nhsk1")
+        old = await self._load(level="hsk1")
+        # All nhsk bands share a tracked HSK 3.0 mistake history, as do
+        # target reviews. The old 2.0 history never influences its plan.
+        self.assertEqual(n1.mistakes_total, 7)
+        self.assertEqual(n1.weakness["grammar"], 0)
+        self.assertEqual(n1.weakness["word"], 2)
+        self.assertEqual(n1.weakness["character"], 5)
+        self.assertEqual(old.mistakes_total, 40)
+        self.assertEqual(old.weakness["grammar"], 40)
+
+    async def test_listening_recognition_is_not_confused_with_pronunciation(self):
+        await self._add(
+            mistake("listen", category="pronunciation", weight=3,
+                    material={"format": "listening_choice", "audio_text": "谢谢！"},
+                    level="nhsk1"),
+            mistake("speak", category="pronunciation", weight=1,
+                    material={"format": "pronunciation", "audio_text": "谢谢！"},
+                    level="nhsk1"),
+        )
+        n1 = await self._load(level="nhsk1")
+        self.assertEqual(n1.weakness["listening"], 3)
+        self.assertEqual(n1.weakness["pronunciation"], 1)
+
+    async def test_unresolvable_old_error_never_appears_in_daily_review(self):
+        invalid = mistake("bad", category="word", weight=20, level="nhsk1")
+        invalid.target_key = "-"
+        await self._add(invalid, mistake("valid", category="word", weight=1, level="nhsk1"))
+        n1 = await self._load(level="nhsk1")
+        self.assertEqual(n1.mistakes_total, 1)
+        self.assertEqual(n1.weakness["word"], 1)
 
     async def test_resolved_mistakes_stop_counting(self):
         item = mistake("a", category="character", weight=4)
