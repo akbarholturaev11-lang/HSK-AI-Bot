@@ -102,7 +102,7 @@ class Nhsk1LearningContractTests(unittest.TestCase):
 
     def test_n1_miniapp_renders_explanation_for_wrong_choice(self):
         html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertIn('c.learning_feedback==="n1_context_v1"&&!Flow.challenge', html)
+        self.assertIn('c.learning_feedback==="n1_context_v1"||(MAP&&normalizeLevel(MAP.level)==="nhsk1"&&c.explanation)', html)
         self.assertIn('esc(rightText)+" · "+esc(why)', html)
         self.assertIn('c.learning_feedback==="n1_context_v1"?(esc(ans.join(" "))', html)
         self.assertIn("function skipN1PilotRechecks(index)", html)
