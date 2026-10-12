@@ -155,6 +155,17 @@ def validate_lesson(lesson: object, *, number: int) -> tuple[list[str], list[str
             if not nonempty(section.get("section_purpose")) or not localized(section.get("section_title")):
                 errors.append(f"{sw}: section purpose/title missing")
             cards = section.get("cards")
+            if section.get("section_purpose") == "learning_exit_check":
+                if number != 4 or not lesson.get("checkpoint"):
+                    errors.append(f"{sw}: independent exit check only allowed on first source checkpoint")
+                if not isinstance(cards, list) or len(cards) != 3:
+                    errors.append(f"{sw}: independent exit check must have three cards")
+                else:
+                    objectives = [str(c.get("learning_objective") or "") for c in cards if isinstance(c, dict)]
+                    if len(objectives) != 3 or not all(objectives) or len(set(objectives)) != 3:
+                        errors.append(f"{sw}: all exit objectives must be unique")
+                    if any(not isinstance(c, dict) or c.get("learning_check") != "n1_exit_check_v1" for c in cards):
+                        errors.append(f"{sw}: invalid exit check content edition")
             if not isinstance(cards, list) or not cards:
                 errors.append(f"{sw}: no cards")
                 continue
