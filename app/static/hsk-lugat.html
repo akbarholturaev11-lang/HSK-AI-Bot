@@ -257,6 +257,17 @@ html.fast-writer-sheet #app{max-width:none;overflow:hidden}
 /* Hide duplicate navigation only inside an authenticated Telegram WebApp. */
 html.hsk-telegram-back-active .hsk-native-back-duplicate,
 html.hsk-embedded .hsk-native-back-duplicate{display:none!important}
+/* Mirror Course V3 NavBack visuals for nested dictionary detail/stroke layers. */
+html.hsk-embedded .view.nb-drag,html.hsk-embedded .stroke-modal.nb-drag{
+  z-index:60;transition:none!important;will-change:transform;box-shadow:-12px 0 28px rgba(20,17,13,.16)
+}
+html.hsk-embedded .view.nb-snap,html.hsk-embedded .stroke-modal.nb-snap{
+  z-index:60;transition:transform .22s cubic-bezier(.32,.72,0,1)!important
+}
+html.hsk-embedded .nb-scrim{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:2}
+@media(prefers-reduced-motion:reduce){
+  html.hsk-embedded .view.nb-snap,html.hsk-embedded .stroke-modal.nb-snap{transition:none!important}
+}
 </style>
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261008-scene-1">
 </head>
@@ -1690,11 +1701,13 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   /* Edge swipe follows the same nested back order as Telegram BackButton. */
   var edgeSwipe=null;
   document.addEventListener('touchstart',function(ev){
+    if(params.get('embedded') === '1')return;
     if(ev.touches.length!==1){edgeSwipe=null;return;}
     var t=ev.touches[0];
     edgeSwipe=t.clientX<=28?{x:t.clientX,y:t.clientY}:null;
   },{passive:true});
   document.addEventListener('touchend',function(ev){
+    if(params.get('embedded') === '1')return;
     var start=edgeSwipe;edgeSwipe=null;
     if(!start||!ev.changedTouches.length)return;
     var t=ev.changedTouches[0],dx=t.clientX-start.x,dy=t.clientY-start.y;

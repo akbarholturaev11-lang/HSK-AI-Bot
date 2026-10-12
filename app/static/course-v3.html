@@ -6354,6 +6354,70 @@ var RESOURCE=(function(){
     }
     return "/hsk-gaplar.html?"+q.toString();
   }
+  /* Same-origin iframe touch events do not bubble to the course document.
+     Forward their physical coordinates into the existing animated NavBack. */
+  function wireSwipe(frame){
+    var childDoc;
+    try{childDoc=frame.contentDocument}catch(e){return}
+    if(!childDoc||frame._hskSwipeDoc===childDoc)return;
+    frame._hskSwipeDoc=childDoc;
+    var gesture=null;
+    childDoc.addEventListener("touchstart",function(ev){
+      if(ev.touches.length!==1||!ACTIVE||STATE[ACTIVE].frame!==frame)return;
+      var target=ev.target;
+      // Preserve horizontal scrolling of dictionary filters and phrase categories.
+      if(target&&target.closest&&target.closest(".filters,.filter-row"))return;
+      var t=ev.touches[0];
+      if(t.clientX>NavBack.EDGE)return;
+      gesture={x:t.clientX,y:t.clientY,
+        sx:Number.isFinite(t.screenX)?t.screenX:t.clientX,
+        sy:Number.isFinite(t.screenY)?t.screenY:t.clientY};
+      NavBack.start({touches:[{clientX:t.clientX,clientY:t.clientY}]});
+      if(!NavBack._s)gesture=null;
+    },{passive:true});
+    childDoc.addEventListener("touchmove",function(ev){
+      if(!gesture)return;
+      if(ev.touches.length!==1){gesture=null;NavBack.cancel();return}
+      var t=ev.touches[0],sx=Number.isFinite(t.screenX)?t.screenX:t.clientX;
+      var sy=Number.isFinite(t.screenY)?t.screenY:t.clientY;
+      // screenX/Y remain stable while the iframe itself follows the finger.
+      NavBack.move({
+        touches:[{clientX:gesture.x+sx-gesture.sx,clientY:gesture.y+sy-gesture.sy}],
+        cancelable:ev.cancelable,
+        preventDefault:function(){if(ev.cancelable)ev.preventDefault()}
+      });
+    },{passive:false});
+    childDoc.addEventListener("touchend",function(){
+      if(!gesture)return;
+      gesture=null;NavBack.end();
+    },{passive:true});
+    childDoc.addEventListener("touchcancel",function(){
+      if(!gesture)return;
+      gesture=null;NavBack.cancel();
+    },{passive:true});
+  }
+  function swipeTarget(){
+    if(ACTIVE!=="dict")return null;
+    try{
+      var frame=STATE.dict.frame,doc=frame&&frame.contentDocument;
+      if(!doc)return null;
+      var modal=doc.getElementById("stroke-modal");
+      if(modal&&!modal.classList.contains("hidden"))return modal;
+      var detail=doc.getElementById("view-detail");
+      if(detail&&!detail.classList.contains("hidden"))return detail;
+    }catch(e){}
+    return null;
+  }
+  function swipePreview(show,target){
+    // Reveal the dictionary list underneath a dragged detail screen.
+    if(!target||target.id!=="view-detail")return;
+    try{
+      var doc=target.ownerDocument,detail=doc.getElementById("view-detail");
+      var list=doc.getElementById("view-list");
+      if(detail&&list&&!detail.classList.contains("hidden"))
+        list.classList.toggle("hidden",!show);
+    }catch(e){}
+  }
   function ensure(k){
     var state=STATE[k],target=pane(k),next=url(k);
     if(!target)return;
@@ -6366,6 +6430,7 @@ var RESOURCE=(function(){
     frame.addEventListener("load",function(){
       if(state.frame!==frame)return;
       state.loaded=true;
+      wireSwipe(frame);
       var status=target.querySelector(".resource-status");
       if(status)status.hidden=true;
     });
@@ -6422,7 +6487,8 @@ var RESOURCE=(function(){
     if(typeof requestIdleCallback==="function")requestIdleCallback(warmDict,{timeout:3500});
     else setTimeout(warmDict,1700);
   }
-  return {open:open,close:close,back:back,warm:warm,openPractice:openPractice};
+  return {open:open,close:close,back:back,warm:warm,openPractice:openPractice,
+    swipeTarget:swipeTarget,swipePreview:swipePreview};
 })();
 window.RESOURCE=RESOURCE;
 
@@ -8113,7 +8179,13 @@ var NavBack={
   _s:null,
   target:function(){
     var l=NavBack.top();
-    if(l)return document.getElementById(l.id);
+    if(l){
+      if(l.id==="resourceov"){
+        var nested=RESOURCE.swipeTarget();
+        if(nested)return nested;
+      }
+      return document.getElementById(l.id);
+    }
     if(SCREEN!=="course"){var e=$("#s-"+SCREEN);if(e&&e.classList.contains("on"))return e}
     return null;
   },
@@ -8135,6 +8207,7 @@ var NavBack={
       if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>8){s.dead=true;return}
       if(dx<10)return;
       s.live=true;s.el.classList.add("nb-drag");
+      RESOURCE.swipePreview(true,s.el);
       s.scrim=document.createElement("div");s.scrim.className="nb-scrim";
       s.el.parentNode.insertBefore(s.scrim,s.el);
     }
@@ -8158,6 +8231,7 @@ var NavBack={
       el.classList.remove("nb-snap");el.style.transform="";
       if(scrim&&scrim.parentNode)scrim.parentNode.removeChild(scrim);
       if(done){NavBack.goBack();NavBack.sync()}
+      RESOURCE.swipePreview(false,el);
     },done?200:220);
     if(done)haptic("light");
   },
@@ -8167,6 +8241,7 @@ var NavBack={
     if(!s.live)return;
     s.el.classList.remove("nb-drag");s.el.classList.add("nb-snap");s.el.style.transform="";
     if(s.scrim&&s.scrim.parentNode)s.scrim.parentNode.removeChild(s.scrim);
+    RESOURCE.swipePreview(false,s.el);
     setTimeout(function(){s.el.classList.remove("nb-snap")},220);
   },
 

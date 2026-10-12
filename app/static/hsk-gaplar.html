@@ -328,11 +328,13 @@
       /* Edge swipe exits the phrasebook; category-chip horizontal scrolling remains available. */
       var edgeSwipe = null;
       document.addEventListener("touchstart", function (ev) {
+        if (document.documentElement.classList.contains("hsk-embedded")) return;
         if (ev.touches.length !== 1 || ev.target.closest(".filters")) { edgeSwipe = null; return; }
         var t = ev.touches[0];
         edgeSwipe = t.clientX <= 28 ? { x: t.clientX, y: t.clientY } : null;
       }, { passive: true });
       document.addEventListener("touchend", function (ev) {
+        if (document.documentElement.classList.contains("hsk-embedded")) return;
         var start = edgeSwipe; edgeSwipe = null;
         if (!start || !ev.changedTouches.length) return;
         var t = ev.changedTouches[0], dx = t.clientX - start.x, dy = t.clientY - start.y;
