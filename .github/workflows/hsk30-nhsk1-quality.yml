@@ -40,5 +40,23 @@ jobs:
         run: python -m unittest discover -s tests -p test_nhsk1_learning_contract.py -v
       - name: Validate original N1 textbook source
         run: python scripts/hsk30/verify_nhsk1_source.py
+      - name: Verify authored N1 overlay matches regenerated parts
+        run: |
+          python scripts/gen_course_v3_from_seed.py --track hsk30 --level nhsk1 --lesson 1 --no-maps
+          git diff --exit-code -- \
+            app/static/course_v3_data/nhsk1/lesson_01.json \
+            app/static/course_v3_data/nhsk1/lesson_02.json \
+            app/static/course_v3_data/nhsk1/lesson_03.json \
+            app/static/course_v3_data/nhsk1/lesson_04.json
+      - name: Check Mini App JavaScript syntax
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+          blocks = re.findall(r"<script(?:\\s[^>]*)?>(.*?)</script>", html, flags=re.I | re.S)
+          Path("/tmp/nhsk1-course-v3.js").write_text("\\n".join(blocks), encoding="utf-8")
+          PY
+          node --check /tmp/nhsk1-course-v3.js
       - name: Validate N1 Course V3 delivery contract
         run: python scripts/hsk30/verify_nhsk1_learning_contract.py
