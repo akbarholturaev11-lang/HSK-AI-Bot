@@ -2216,55 +2216,18 @@ async def course_v3_tour_audio(lang: str, key: str):
     return FileResponse(path, media_type="audio/mpeg")
 
 
-# --- Server-side Chinese TTS (edge-tts) with on-disk cache -------------------
-# Android WebView (Telegram) ko'pincha xitoy (zh-CN) speechSynthesis ovoziga ega
-# emas -> jimlik. Shuning uchun ovozni serverда generatsiya qilib, mp3 sifatida
-# beramiz. Har bir ibora birinchi so'rovда yaratilib diskка cache bo'ladi.
-TTS_VOICE = "zh-CN-XiaoxiaoNeural"
-TTS_CACHE_DIR = "app/static/audio/tts_cache"
-_tts_locks: dict[str, asyncio.Lock] = {}
-
-
+# --- Shared server-side Mandarin audio for Course V3 and Android -----------
 @app.get("/api/v3/tts")
 async def v3_tts(text: str, rate: str = "-10%"):
-    import hashlib
-    import re
+    from app.services.tts_service import synthesize_chinese_mp3
 
-    text = (text or "").strip()
-    # Faqat xitoycha iboralar: kamida bitta CJK belgisi bo'lishi shart va
-    # uzunlik cheklangan (abuse/disk to'lishining oldini olish uchun).
-    if not text or len(text) > 240 or not re.search(r"[一-鿿]", text):
+    try:
+        path = await synthesize_chinese_mp3(text, rate=rate)
+    except ValueError:
         return JSONResponse(status_code=400, content={"error": "bad_text"})
-    if not re.fullmatch(r"[+-]\d{1,3}%", rate):
-        rate = "-10%"
-
-    key = hashlib.sha1(f"{TTS_VOICE}|{rate}|{text}".encode("utf-8")).hexdigest()
-    os.makedirs(TTS_CACHE_DIR, exist_ok=True)
-    path = os.path.join(TTS_CACHE_DIR, key + ".mp3")
-
-    if os.path.isfile(path) and os.path.getsize(path) > 0:
-        return FileResponse(path, media_type="audio/mpeg", headers=STATIC_ASSET_HEADERS)
-
-    lock = _tts_locks.setdefault(key, asyncio.Lock())
-    async with lock:
-        if not (os.path.isfile(path) and os.path.getsize(path) > 0):
-            tmp = path + ".tmp"
-            try:
-                import edge_tts
-
-                # Avoid unbounded hangs and reduce burst pressure on the upstream
-                # service. A 403 from Microsoft is not recoverable by retrying.
-                comm = edge_tts.Communicate(text, TTS_VOICE, rate=rate)
-                await asyncio.wait_for(comm.save(tmp), timeout=15)
-                if not os.path.isfile(tmp) or os.path.getsize(tmp) == 0:
-                    raise RuntimeError("empty tts output")
-                os.replace(tmp, path)
-            except Exception as exc:  # noqa: BLE001
-                logging.warning("v3_tts generation failed: %s", exc)
-                with contextlib.suppress(Exception):
-                    os.remove(tmp)
-                return JSONResponse(status_code=502, content={"error": "tts_failed"})
-
+    except Exception as exc:  # noqa: BLE001
+        logging.warning("v3_tts providers unavailable: %s", type(exc).__name__)
+        return JSONResponse(status_code=502, content={"error": "tts_failed"})
     return FileResponse(path, media_type="audio/mpeg", headers=STATIC_ASSET_HEADERS)
 
 
