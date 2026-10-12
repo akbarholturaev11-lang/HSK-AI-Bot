@@ -2952,6 +2952,14 @@ async def v3_course_lesson_complete(request: Request):
             await session.commit()
             return JSONResponse(status_code=403, content=limit_status)
 
+        # Verify weekly rank before and after XP is awarded. Missing rating
+        # data must never prevent a successfully completed lesson.
+        rank_before = 0
+        try:
+            rank_before = int((await gamification.leaderboard(user)).get("rank") or 0)
+        except Exception:
+            pass
+
         await progress_repo.mark_lesson_completed(progress)
         snapshot = await gamification.award(
             user,
@@ -2960,6 +2968,13 @@ async def v3_course_lesson_complete(request: Request):
             base_xp=20,
             level=resolved_level,
         )
+
+        rank_after = 0
+        if rank_before:
+            try:
+                rank_after = int((await gamification.leaderboard(user)).get("rank") or 0)
+            except Exception:
+                pass
 
         # Keyingi qism bormi — manifest chegarasidan (legacy jadvaldan emas).
         # Manifest o'qilmasa (total_parts=0) band avto-o'tishi o'chiq qoladi.
@@ -3041,6 +3056,8 @@ async def v3_course_lesson_complete(request: Request):
                 "next_level_pending": next_level_pending,
                 "completed_lessons_count": int(getattr(progress, "completed_lessons_count", 0) or 0),
                 "gamification": snapshot,
+                "rank_before": rank_before,
+                "rank_after": rank_after,
             }
         )
 

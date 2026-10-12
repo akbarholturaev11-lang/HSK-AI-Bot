@@ -2112,25 +2112,20 @@ var App={
       if(ps.extended){setTimeout(function(){beep([392,523,659,784]);haptic("heavy")},350)}
     });
   },
-  showRankUp:function(){
-    var beforeRank=pendingRankUp&&pendingRankUp.before;pendingRankUp=null;
-    if(INIT_DATA){
-      var waitTexts={ru:["Проверяем рейтинг…","Секунду, обновляем вашу позицию."],uz:["Reyting tekshirilmoqda…","Bir soniya, o'rningizni yangilayapmiz."],tj:["Рейтинг санҷида мешавад…","Як лаҳза, ҷойи шуморо нав мекунем."]};
-      var wait=waitTexts[LANG]||waitTexts.uz;
-      $("#lu-panda").innerHTML=pandaChar("celebrate");
-      $("#lu-stage").innerHTML='<div class="ru-wrap"><h2>'+wait[0]+'</h2><p>'+wait[1]+'</p></div>';
-      loadLatestRating().then(function(){
-        var afterRank=currentRatingRank();
-        if(!beforeRank||!afterRank||afterRank>=beforeRank){App.closeLevelUp();return}
-        App.renderRankUpBoard();
-      }).catch(function(){App.closeLevelUp()});
-      return;
+  showRankUp:function(returnDest){
+    var ranks=pendingRankUp;pendingRankUp=null;
+    if(!ranks||!ranks.before||!ranks.after||ranks.after>=ranks.before||!INIT_DATA){
+      App.closeLevelUp(returnDest);return;
     }
-    /* Telegram tashqarisida (preview) reyting ma'lumoti yo'q — hech kimdan
-       o'tganini tasdiqlay olmaymiz, demak bayram oynasi ochilmaydi. */
-    App.closeLevelUp();
+    var waitTexts={ru:["Проверяем рейтинг…","Секунду, обновляем вашу позицию."],uz:["Reyting tekshirilmoqda…","Bir soniya, o'rningizni yangilayapmiz."],tj:["Рейтинг санҷида мешавад…","Як лаҳза, ҷойи шуморо нав мекунем."]};
+    var wait=waitTexts[LANG]||waitTexts.uz;
+    $("#lu-panda").innerHTML=pandaChar("celebrate");
+    $("#lu-stage").innerHTML='<div class="ru-wrap"><h2>'+wait[0]+'</h2><p>'+wait[1]+'</p></div>';
+    // Completion already verifies the promotion. A failed leaderboard
+    // refresh must not suppress the celebration.
+    loadLatestRating().then(function(){App.renderRankUpBoard(ranks,returnDest)},function(){App.renderRankUpBoard(ranks,returnDest)});
   },
-  renderRankUpBoard:function(){
+  renderRankUpBoard:function(ranks,returnDest){
     sortRatingUsers();
     var meIdx=ratingUsers.findIndex(function(u){return u.me});
     var meU=meIdx>=0?ratingUsers[meIdx]:null;
@@ -2138,11 +2133,12 @@ var App={
     var belowU=meIdx>=0&&meIdx<ratingUsers.length-1?ratingUsers[meIdx+1]:null;
     var passedU=belowU;
     /* Kimdandir o'tmagan bo'lsa — bo'sh "ko'tarildingiz" oynasini ko'rsatmaymiz. */
-    if(!meU||!passedU){App.closeLevelUp();return}
+    // A verified rank move can be shown even if neighbour details are missing.
     var RU={ru:{t:"Вы поднялись в рейтинге!",s:"{n} остался позади. Сегодняшний урок решил это."},
       uz:{t:"Reytingda ko'tarildingiz!",s:"{n} ortda qoldi. Buni bugungi darsingiz hal qildi."},
       tj:{t:"Дар рейтинг боло рафтед!",s:"{n} қафо монд. Инро дарси имрӯзаатон ҳал кард."}}[LANG]||{t:"",s:"{n}"};
-    var r={title:RU.t,sub:RU.s.replace("{n}",esc(passedU.n||"")),cont:T().cont};
+    var rankSummary=(LANG==="ru"?"Место ":LANG==="tj"?"Ҷойи ":"O'rin ")+"#"+ranks.before+" → #"+ranks.after;
+    var r={title:RU.t,sub:passedU?RU.s.replace("{n}",esc(passedU.n||"")):rankSummary,cont:T().cont};
     var rows=[];
 	    if(aboveU)rows.push({rk:meIdx,a:aboveU.a,n:aboveU.n,xp:(aboveU.weeklyXp||0).toLocaleString("ru")});
 	    if(meU)rows.push({rk:meIdx+1,a:meU.a||PROF.avatar||"阿",n:T().you,xp:ratingScore(meU).toLocaleString("ru"),me:1,from:aboveU?1:0});
@@ -2155,12 +2151,13 @@ var App={
       $("#levelup").classList.add("on");
       document.querySelectorAll("#lu-stage .ru-row").forEach(function(row){var f=+row.dataset.from;if(f)row.style.transform="translateY("+(f*58)+"px)"});
       setTimeout(function(){document.querySelectorAll("#lu-stage .ru-row").forEach(function(row){row.style.transform="translateY(0)"});luRain();beep([784,988,1175,1318]);haptic("ok")},420);
-      $("#lu-cta").setAttribute("onclick","App.closeLevelUp('rating')");$("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+r.cont;
+      $("#lu-cta").setAttribute("onclick",returnDest==="checkpoint_next"?"App.openCheckpointNext()":"App.closeLevelUp('rating')");$("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+r.cont;
     });
   },
   /* Reytingda haqiqatan ko'tarilgan bo'lsa — reyting ekraniga, aks holda
      o'quvchi kurs xaritasiga qaytadi (bo'sh reyting oynasi ochilmaydi). */
   openCheckpointNext:function(){
+    if(pendingRankUp){App.showRankUp("checkpoint_next");return}
     if(App.showSalesBridge())return;
     window._pendingStreak=null;pendingRankUp=null;App.closeLevelUp("checkpoint_next");
   },
@@ -2195,6 +2192,7 @@ var App={
     if(idx>=0&&allLessons()[idx])setTimeout(function(){openLessonSheet(idx)},80);
   },
   closeLevelUp:function(dest){
+    if(!dest&&pendingRankUp){App.showRankUp();return}
     var ov=$("#levelup");ov.classList.remove("on");ov.classList.remove("cine");ov.classList.remove("sales-bridge");
     var cine=$("#lu-cine");if(cine)cine.innerHTML="";
     App.exitFlow();
@@ -4911,7 +4909,7 @@ function loadLevel(lv){
   });
 }
 function applyLessonDone(cur,d){
-  var rankBefore=currentRatingRank();
+  var rankBefore=Number(d&&d.rank_before)||0;
   clearLessonResume((MAP&&MAP.level)||"hsk1",cur&&cur.n);
   clearLessonMastery((MAP&&MAP.level)||"hsk1",cur&&cur.n);
   var al=allLessons();
@@ -4943,7 +4941,9 @@ function applyLessonDone(cur,d){
     if(typeof d.completed_lessons_count!=="undefined")MAP.progress.completed=d.completed_lessons_count;
     ratingLoaded=false;
   }
-  pendingRankUp=(d&&d.gamification&&!d.duplicate)?{before:rankBefore}:null;
+  var rankAfter=Number(d&&d.rank_after)||0;
+  pendingRankUp=(d&&d.gamification&&!d.duplicate&&rankBefore>0&&rankAfter>0&&rankAfter<rankBefore)
+    ?{before:rankBefore,after:rankAfter}:null;
   var ni=al.indexOf(cur)+1,next=ni<al.length?al[ni]:null;
   var nextWasLocked=!!(next&&next.status==="locked");
   /* The current marker follows progress even when its allowance is spent.
