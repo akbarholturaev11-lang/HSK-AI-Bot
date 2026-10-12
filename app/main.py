@@ -2228,7 +2228,8 @@ async def v3_tts(text: str, rate: str = "-10%"):
     except Exception as exc:  # noqa: BLE001
         logging.warning("v3_tts providers unavailable: %s", type(exc).__name__)
         return JSONResponse(status_code=502, content={"error": "tts_failed"})
-    return FileResponse(path, media_type="audio/mpeg", headers=STATIC_ASSET_HEADERS)
+    media_type = "audio/wav" if path.suffix == ".wav" else "audio/mpeg"
+    return FileResponse(path, media_type=media_type, headers=STATIC_ASSET_HEADERS)
 
 
 # --- Yengil client-side diagnostika logi -----------------------------------
