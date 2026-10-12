@@ -4586,7 +4586,7 @@ Flow.pick=function(el,k){
   var rightText=T().rightAns+" "+(c.options&&typeof c.options[c.correct_index]!=="undefined"?optText(c.options[c.correct_index]):"");
   /* HSK 3.0 N1 pilot: explain WHY an answer is right or wrong. The content
      itself opts in; normal course/challenge feedback remains unchanged. */
-  if(c.learning_feedback==="n1_context_v1"&&!Flow.challenge){
+  if((c.learning_feedback==="n1_context_v1"||(MAP&&normalizeLevel(MAP.level)==="nhsk1"&&c.explanation))&&!Flow.challenge){
     var why=tr(c.explanation);
     showBar(ok,ok?T().correct:T().wrong,ok?esc(why):esc(rightText)+" · "+esc(why));
   }else{
