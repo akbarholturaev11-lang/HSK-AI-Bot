@@ -1,12 +1,14 @@
 package com.pomp.hskai.core.audio
 
 import java.io.File
+import java.security.MessageDigest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -14,91 +16,113 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class DiskTtsCacheTest {
 
-    private val dir = File(System.getProperty("java.io.tmpdir"), "tts-cache-${System.nanoTime()}")
-    private var clock = 1_000L
+    private val root = File(System.getProperty("java.io.tmpdir"), "tts-persistent-${System.nanoTime()}")
+    private val dir = File(root, "files/mandarin_audio")
+    private val oldDir = File(root, "cache/tts")
 
     @After
     fun tearDown() {
-        dir.deleteRecursively()
+        root.deleteRecursively()
     }
 
-    private fun cache(maxBytes: Long = 1024) = DiskTtsCache(
+    private fun cache() = DiskTtsCache(
         dir = dir,
-        maxBytes = maxBytes,
+        legacyDir = oldDir,
         ioDispatcher = UnconfinedTestDispatcher(),
-        now = { clock },
     )
 
     @Test
-    fun `audio written under a key comes back byte for byte`() = runTest {
-        val cache = cache()
-        val audio = ByteArray(64) { it.toByte() }
+    fun `phrase is stored byte for byte in durable filesDir`() = runTest {
+        val library = cache()
+        val audio = ByteArray(128) { it.toByte() }
 
-        cache.write("-10%|你好", audio)
-
-        assertArrayEquals(audio, cache.read("-10%|你好"))
+        library.write("-10%|你好", audio)
+        assertArrayEquals(audio, library.read("-10%|你好"))
+        assertEquals(1, dir.listFiles().orEmpty().size)
+        assertTrue(dir.listFiles()!!.single().name.endsWith(".audio"))
     }
 
     @Test
-    fun `a phrase that was never fetched reads as a miss`() = runTest {
-        assertNull(cache().read("-10%|谢谢"))
+    fun `cache can reopen in a new instance with network unavailable`() = runTest {
+        cache().write("-10%|你好", "saved-on-phone".toByteArray())
+
+        val reopened = cache()
+
+        assertEquals("saved-on-phone", String(reopened.read("-10%|你好")!!))
+        assertNull(reopened.read("-10%|谢谢"))
     }
 
     @Test
-    fun `the same phrase at a different rate is a different entry`() = runTest {
-        val cache = cache()
-        cache.write("-10%|你好", "slow".toByteArray())
+    fun `same phrase at another generation rate has another file`() = runTest {
+        val library = cache()
+        library.write("-10%|你好", "slow".toByteArray())
 
-        assertNull(cache.read("0%|你好"))
+        assertNull(library.read("0%|你好"))
     }
 
     @Test
-    fun `the least recently used phrase is dropped once the cap is passed`() = runTest {
-        val cache = cache(maxBytes = 300)
-        cache.write("a", ByteArray(120))
-        clock += 1_000
-        cache.write("b", ByteArray(120))
-        clock += 1_000
+    fun `first download is kept even if server might later return different audio`() = runTest {
+        val library = cache()
+        library.write("-10%|你好", "first-voice".toByteArray())
 
-        // Replaying "a" makes "b" the oldest, so the third write must evict "b".
-        cache.read("a")
-        clock += 1_000
-        cache.write("c", ByteArray(120))
+        library.write("-10%|你好", "second-voice".toByteArray())
 
-        assertNull(cache.read("b"))
-        assertEquals(120, cache.read("a")?.size)
-        assertEquals(120, cache.read("c")?.size)
+        assertEquals("first-voice", String(library.read("-10%|你好")!!))
     }
 
     @Test
-    fun `audio larger than the whole cache is not written`() = runTest {
-        val cache = cache(maxBytes = 100)
+    fun `files never expire when total bytes exceed the former 24 MB limit`() = runTest {
+        val library = cache()
+        val audio = ByteArray(9 * 1024 * 1024) { 42 }
+        for (word in listOf("你好", "再见", "谢谢")) {
+            library.write("-10%|" + word, audio)
+        }
 
-        cache.write("a", ByteArray(200))
-
-        assertNull(cache.read("a"))
+        assertTrue(dir.listFiles().orEmpty().sumOf { it.length() } > 24L * 1024 * 1024)
+        assertArrayEquals(audio, library.read("-10%|你好"))
+        assertArrayEquals(audio, library.read("-10%|再见"))
+        assertArrayEquals(audio, library.read("-10%|谢谢"))
     }
 
     @Test
-    fun `clearing leaves nothing behind`() = runTest {
-        val cache = cache()
-        cache.write("a", ByteArray(32))
+    fun `older cacheDir mp3 files migrate into filesDir instead of being lost`() = runTest {
+        val key = "-10%|你好"
+        val digest = MessageDigest.getInstance("SHA-256")
+            .digest(key.toByteArray(Charsets.UTF_8))
+            .joinToString(separator = "") { "%02x".format(it) }
+        oldDir.mkdirs()
+        val oldAudio = File(oldDir, "$digest.mp3")
+        oldAudio.writeBytes("old-mp3".toByteArray())
 
-        cache.clear()
+        val library = cache()
+        assertEquals("old-mp3", String(library.read(key)!!))
+        assertFalse(oldAudio.exists())
+        assertEquals(1, dir.listFiles().orEmpty().size)
 
-        assertNull(cache.read("a"))
+        // The migration no longer needs cacheDir to exist after first use.
+        oldDir.deleteRecursively()
+        assertEquals("old-mp3", String(cache().read(key)!!))
+    }
+
+    @Test
+    fun `explicit deletion is the only operation that removes stored recordings`() = runTest {
+        val library = cache()
+        library.write("a", ByteArray(32))
+
+        library.clear()
+
+        assertNull(library.read("a"))
         assertTrue(dir.listFiles().orEmpty().isEmpty())
     }
 
     @Test
-    fun `an unwritable directory degrades to a miss instead of throwing`() = runTest {
-        val file = File(dir.parentFile, "tts-not-a-dir-${System.nanoTime()}").also { it.writeText("x") }
-        try {
-            val cache = DiskTtsCache(dir = file, ioDispatcher = UnconfinedTestDispatcher())
-            cache.write("a", ByteArray(8))
-            assertNull(cache.read("a"))
-        } finally {
-            file.delete()
-        }
+    fun `an unwritable directory degrades gracefully instead of throwing`() = runTest {
+        root.mkdirs()
+        val notADir = File(root, "not-a-directory").also { it.writeText("x") }
+        val library = DiskTtsCache(dir = notADir, ioDispatcher = UnconfinedTestDispatcher())
+
+        library.write("a", ByteArray(8))
+
+        assertNull(library.read("a"))
     }
 }
