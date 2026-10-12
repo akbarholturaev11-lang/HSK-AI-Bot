@@ -152,24 +152,39 @@ def apply_nhsk1_pilot_exit_check(payload: dict, path: Path = EXIT_CHECK_PATH) ->
         ):
             raise ValueError(f"N1 exit check explanation translation missing: {obj}")
 
+    retry_cards = overlay.get("retry_cards")
+    if overlay.get("retry_section_no") != 4 or not isinstance(retry_cards, list) or len(retry_cards) != 3:
+        raise ValueError("N1 retry bank requires three alternate scenarios in section 4")
+    if [c.get("learning_objective") for c in retry_cards] != [c.get("learning_objective") for c in checks]:
+        raise ValueError("N1 retry scenarios must match independent exit objectives by position")
+    for c in retry_cards:
+        if c.get("learning_retry") != overlay["check_version"] or c.get("learning_feedback") != "n1_context_v1":
+            raise ValueError("N1 retry card version invalid")
+        if not isinstance(c.get("explanation"), dict) or any(not c["explanation"].get(lang) for lang in LANGUAGES):
+            raise ValueError("N1 retry card translations missing")
+
     sections = payload.get("sections")
     if not isinstance(sections, list):
         raise ValueError("N1 checkpoint sections missing")
-    found = [section for section in sections
-             if isinstance(section, dict) and section.get("section_no") == overlay["section_no"]]
-    if found:
-        if len(found) != 1 or found[0].get("section_purpose") != "learning_exit_check" or found[0].get("cards") != checks:
-            raise ValueError("N1 exit-check section was modified or collided")
-        return payload
-
-    # Only the original two checkpoint sections may precede this extension.
-    if [s.get("section_no") for s in sections] != [1, 2]:
-        raise ValueError("N1 base checkpoint section order changed")
-    result = deepcopy(payload)
-    result["sections"].append({
+    expected_sections = [{
         "section_no": overlay["section_no"],
         "section_title": deepcopy(overlay["section_title"]),
         "section_purpose": "learning_exit_check",
         "cards": deepcopy(checks),
-    })
+    }, {
+        "section_no": overlay["retry_section_no"],
+        "section_title": deepcopy(overlay["retry_section_title"]),
+        "section_purpose": "learning_repair_bank",
+        "cards": deepcopy(retry_cards),
+    }]
+    if [s.get("section_no") for s in sections if isinstance(s, dict)] == [1, 2, 3, 4]:
+        if sections[2:] != expected_sections:
+            raise ValueError("N1 exit-check/retry sections were modified or collided")
+        return payload
+    # Preserve all existing material references: append two sections, never
+    # insert or reorder the first 12 cards in sections 1 and 2.
+    if [s.get("section_no") for s in sections if isinstance(s, dict)] != [1, 2]:
+        raise ValueError("N1 base checkpoint section order changed")
+    result = deepcopy(payload)
+    result["sections"].extend(expected_sections)
     return result
