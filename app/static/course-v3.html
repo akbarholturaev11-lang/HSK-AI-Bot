@@ -3146,7 +3146,7 @@ function showSkipResult(pct,idx){
 }
 
 /* ---------- Lesson flow engine ---------- */
-var Flow={queue:[],i:0,answered:false,correct:0,graded:0,mistakes:[],test:null,challenge:null,lessonIdx:null,ad:null,startedAt:0,objectiveMastery:{},objectiveAttempts:{},pendingRepairs:[],exitRequired:[],salesOutcome:null,salesNextOutcome:null};
+var Flow={queue:[],i:0,answered:false,correct:0,graded:0,mistakes:[],test:null,challenge:null,lessonIdx:null,ad:null,startedAt:0,objectiveMastery:{},objectiveAttempts:{},pendingRepairs:[],pilotFailures:{},exitRequired:[],salesOutcome:null,salesNextOutcome:null};
 var Foundation={active:false,data:null,queue:[],i:0,answered:false,mastery:{},attempts:{},completed:false,speakingBonus:false,required:false,afterComplete:null,finishing:false,_micSession:null,_audioTimer:null,_renderToken:0};
 Foundation.stopAudio=function(){Foundation._renderToken++;if(Foundation._audioTimer)clearTimeout(Foundation._audioTimer);Foundation._audioTimer=null;stopTourAudio();stopSpeak()};
 Foundation.scheduleAudio=function(text,delay){var token=Foundation._renderToken;Foundation._audioTimer=setTimeout(function(){Foundation._audioTimer=null;if(Foundation.active&&token===Foundation._renderToken)foundationSpeak(text)},delay)};
@@ -3335,14 +3335,14 @@ function saveLessonMastery(){
   var lesson=flowLesson();if(!lesson)return;
   var exitQueue=lessonExitQueueState();
   try{localStorage.setItem(lessonMasteryKey((MAP&&MAP.level)||"hsk1",lesson.n),JSON.stringify({
-    version:MASTERY_VERSION,mastery:Flow.objectiveMastery||{},attempts:Flow.objectiveAttempts||{},pending:(Flow.pendingRepairs||[]).slice(0,20),exit_queue:exitQueue,at:Date.now()
+    version:MASTERY_VERSION,mastery:Flow.objectiveMastery||{},attempts:Flow.objectiveAttempts||{},pending:(Flow.pendingRepairs||[]).slice(0,20),pilot_failures:Flow.pilotFailures||{},exit_queue:exitQueue,at:Date.now()
   }))}catch(e){}
 }
 function restoreLessonMastery(level,lessonOrder,queue){
-  Flow.objectiveMastery={};Flow.objectiveAttempts={};Flow.pendingRepairs=[];Flow._restoredResumeIndex=null;
+  Flow.objectiveMastery={};Flow.objectiveAttempts={};Flow.pendingRepairs=[];Flow.pilotFailures={};Flow._restoredResumeIndex=null;
   var saved=null;try{saved=JSON.parse(localStorage.getItem(lessonMasteryKey(level,lessonOrder))||"null")}catch(e){}
   if(!saved||Number(saved.version)!==MASTERY_VERSION||Date.now()-Number(saved.at||0)>LESSON_RESUME_TTL_MS)return queue;
-  Flow.objectiveMastery=saved.mastery||{};Flow.objectiveAttempts=saved.attempts||{};Flow.pendingRepairs=Array.isArray(saved.pending)?saved.pending:[];
+  Flow.objectiveMastery=saved.mastery||{};Flow.objectiveAttempts=saved.attempts||{};Flow.pendingRepairs=Array.isArray(saved.pending)?saved.pending:[];Flow.pilotFailures=(saved.pilot_failures&&typeof saved.pilot_failures==="object")?saved.pilot_failures:{};
   var exitState=saved.exit_queue;
   if(exitState&&Array.isArray(exitState.cards)){
     var start=(queue||[]).findIndex(function(c){return c&&c._exitTicket});
@@ -3613,6 +3613,18 @@ function buildQueue(d){
   }
   return q;
 }
+/* N1 pilot transfer questions only appear for failed objectives. An unknown
+   resume history errs toward showing the extra practice, not skipping it. */
+function skipN1PilotRechecks(index){
+  while(index<(Flow.queue||[]).length){
+    var c=Flow.queue[index];
+    if(!c||c.learning_retry!=="n1_exit_check_v1")break;
+    var failures=Flow.pilotFailures||{};
+    if(!Object.prototype.hasOwnProperty.call(failures,c.learning_objective)||failures[c.learning_objective]!==false)break;
+    index++;
+  }
+  return index;
+}
 function flowProg(){$("#f-prog").style.width=Math.round(Flow.i/Flow.queue.length*100)+"%"}
 function hideBar(){$("#f-bar").className="fbar"}
 function flowCurrentCard(){return Flow.queue&&Flow.queue[Flow.i]?Flow.queue[Flow.i]:null}
@@ -3773,6 +3785,10 @@ function showBar(ok,msg,sub){
   if(ok){if(Flow.streak>=5)haptic("heavy");else if(Flow.streak>=3)haptic("med")}
   if(!ok)Flow._wrongPending=true;
   recordObjectiveResult(Flow.queue&&Flow.queue[Flow.i],ok);
+  if(card&&card.learning_check==="n1_exit_check_v1"&&card.learning_objective&&!Flow.challenge&&!Flow.test){
+    Flow.pilotFailures[card.learning_objective]=!ok;
+    saveLessonMastery();
+  }
   if(Flow.queue&&Flow.queue[Flow.i]&&Flow.queue[Flow.i].objective_id)saveLessonResume(Flow.i+1);
   trackInteraction(ok);
   if(ok&&Flow.streak>=5&&Flow.streak%5===0)comboPop(Flow.streak);
@@ -4152,6 +4168,7 @@ function setWriteBtn(ch,meta){writeChar=ch||"";writeMeta=meta||{};var b=$("#writ
 function pinyinMode(){try{var v=localStorage.getItem("hsk_v3_pinyin");return v==="new"||v==="off"?v:"all"}catch(e){return "all"}}
 function applyPinyinMode(){var f=$("#flow");if(!f)return;var m=pinyinMode();f.classList.toggle("pyoff",m==="off");f.classList.toggle("pynew",m==="new")}
 function renderFlowCard(){
+  Flow.i=skipN1PilotRechecks(Flow.i);
   Flow.answered=false;hideBar();flowProg();
   if(Flow.i>=Flow.queue.length){var doneDock=$("#f-coach-dock");if(doneDock)doneDock.classList.remove("on");return flowDone()}
   saveLessonResume();
@@ -4701,7 +4718,7 @@ Flow.next=function(){
   if(Flow.previewHalf&&nextI>=Flow.previewHalfAt&&nextI<Flow.queue.length){
     Flow.previewHalf=false;App.exitFlow();App.openPaywall("lockedLesson");return;
   }
-  Flow.i=nextI;
+  Flow.i=skipN1PilotRechecks(nextI);
   /* Repair queue indekslari dinamik. Har bir spacer/base o'tilganda semantic
      cursorni ham yangilaymiz — reload bir kartani takrorlamaydi yoki tashlamaydi. */
   Flow.answered=false;saveLessonMastery();
