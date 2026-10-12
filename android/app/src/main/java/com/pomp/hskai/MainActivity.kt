@@ -214,12 +214,19 @@ private fun AppRoot(
     val authState by authRepository.state.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     var offlineCourseEntry by rememberSaveable { mutableStateOf(false) }
+    var launchSplashMinimumElapsed by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         authRepository.bootstrap()
     }
+    LaunchedEffect(Unit) {
+        delay(3_000)
+        launchSplashMinimumElapsed = true
+    }
 
-    when (val state = authState) {
+    if (authState != AuthState.Unknown && !launchSplashMinimumElapsed) {
+        SplashScreen()
+    } else when (val state = authState) {
         AuthState.Unknown -> SplashScreen()
 
         is AuthState.BootstrapFailed -> {
@@ -1976,7 +1983,7 @@ private fun SplashScreen() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            HskBrandLoader()
+            HskBrandLoader(launch = true)
         }
     }
 }
