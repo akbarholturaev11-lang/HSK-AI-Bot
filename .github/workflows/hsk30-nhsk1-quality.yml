@@ -1,0 +1,44 @@
+name: HSK 3.0 N1 Learning Contract
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/hsk30-nhsk1-quality.yml"
+      - "scripts/hsk30/verify_nhsk1_learning_contract.py"
+      - "tests/test_nhsk1_learning_contract.py"
+      - "app/static/course_v3_data/nhsk1/**"
+      - "app/static/course_v3_data/nhsk1.json"
+  push:
+    branches:
+      - codex/hsk30-n1-quality-foundation
+    paths:
+      - ".github/workflows/hsk30-nhsk1-quality.yml"
+      - "scripts/hsk30/verify_nhsk1_learning_contract.py"
+      - "tests/test_nhsk1_learning_contract.py"
+      - "app/static/course_v3_data/nhsk1/**"
+      - "app/static/course_v3_data/nhsk1.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-n1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Python syntax
+        run: python -m py_compile scripts/hsk30/verify_nhsk1_learning_contract.py tests/test_nhsk1_learning_contract.py
+      - name: Learning contract unit tests
+        run: python -m unittest discover -s tests -p test_nhsk1_learning_contract.py -v
+      - name: Validate original N1 textbook source
+        run: python scripts/hsk30/verify_nhsk1_source.py
+      - name: Validate N1 Course V3 delivery contract
+        run: python scripts/hsk30/verify_nhsk1_learning_contract.py
