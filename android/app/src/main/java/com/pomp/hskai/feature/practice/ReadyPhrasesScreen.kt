@@ -32,10 +32,12 @@ import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -182,6 +184,8 @@ fun ReadyPhrasesScreen(
                     stringResource(R.string.ready_phrases_intro),
                     style = MaterialTheme.typography.bodySmall,
                     color = PompColors.InkSecondary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
@@ -193,6 +197,19 @@ fun ReadyPhrasesScreen(
             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
             placeholder = { Text(stringResource(R.string.ready_phrases_search_hint)) },
             shape = RoundedCornerShape(15.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = PompColors.Cinnabar,
+                unfocusedBorderColor = PompColors.Divider,
+                focusedTextColor = PompColors.Ink,
+                unfocusedTextColor = PompColors.Ink,
+                focusedContainerColor = PompColors.PaperRaised,
+                unfocusedContainerColor = PompColors.PaperRaised,
+                focusedLeadingIconColor = PompColors.Cinnabar,
+                unfocusedLeadingIconColor = PompColors.InkSecondary,
+                focusedPlaceholderColor = PompColors.InkDisabled,
+                unfocusedPlaceholderColor = PompColors.InkDisabled,
+                cursorColor = PompColors.Cinnabar,
+            ),
         )
         LazyRow(
             contentPadding = PaddingValues(vertical = 10.dp),
@@ -208,6 +225,12 @@ fun ReadyPhrasesScreen(
                     selected = selectedFilter == filter.id,
                     onClick = { selectedFilter = filter.id },
                     label = { Text(label, maxLines = 1) },
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = PompColors.JadeSoft,
+                        selectedLabelColor = PompColors.JadeInk,
+                        containerColor = PompColors.PaperRaised,
+                        labelColor = PompColors.InkSecondary,
+                    ),
                 )
             }
         }

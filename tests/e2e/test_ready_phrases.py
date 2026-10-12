@@ -1,5 +1,7 @@
 """Ready phrases remain a static, client-side study tool in the Mini App."""
 
+import json
+import re
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -38,6 +40,19 @@ def test_practice_menu_phrasebook_search_and_favorites_are_local():
             pytest.skip(f"Playwright Chromium is not installed: {exc}")
 
         page = browser.new_page(viewport={"width": 390, "height": 844}, is_mobile=True)
+        page.add_init_script("""
+            Date.now = () => Date.parse('2026-10-14T12:00:00+08:00');
+            const back = {
+                visible: false,
+                handler: null,
+                show() { this.visible = true; },
+                hide() { this.visible = false; },
+                onClick(handler) { this.handler = handler; },
+                offClick(handler) { if (this.handler === handler) this.handler = null; }
+            };
+            window.__hskBackButton = back;
+            window.Telegram = { WebApp: { BackButton: back } };
+        """)
         page.set_default_timeout(8000)
         api_requests = []
         page_errors = []
@@ -52,6 +67,7 @@ def test_practice_menu_phrasebook_search_and_favorites_are_local():
             page.evaluate("LANG='uz'; renderMashq()")
             row = page.locator("#m-ready-phrases")
             assert row.count() == 1
+            assert row.locator(".new-section-badge").inner_text() == "NEW"
             # The Mashq tab is hidden until selected; invoke its rendered button
             # handler to exercise the same navigation without bootstrapping a user.
             row.evaluate("element => element.click()")
@@ -62,11 +78,74 @@ def test_practice_menu_phrasebook_search_and_favorites_are_local():
 
             page.locator("#query").fill("ni hao")
             assert "你好" in " ".join(page.locator(".hanzi").all_text_contents())
+            assert page.locator("#back").count() == 0
+            assert page.locator("#intro").inner_text() == "Qidiring, saqlang, nusxalang."
             page.locator("#query").fill("")
             page.locator(".phrase").first.locator("button.save").click()
             page.get_by_role("button", name="Saqlanganlar").click()
             assert page.locator(".phrase").count() == 1
+            assert page.evaluate("window.__hskBackButton.visible") is True
+            assert page.evaluate("typeof window.__hskBackButton.handler") == "function"
+            page.evaluate("window.__hskBackButton.handler()")
+            page.wait_for_url(f"{BASE_URL}/course-v3.html")
             assert api_requests == []
+            assert page_errors == []
+        finally:
+            browser.close()
+
+
+def test_new_section_release_windows_match_on_android_and_mini_app():
+    miniapp = (STATIC_ROOT / "course-v3.html").read_text(encoding="utf-8")
+    android = (
+        Path(__file__).resolve().parents[2]
+        / "android/app/src/main/java/com/pomp/hskai/feature/practice/PracticeScreen.kt"
+    ).read_text(encoding="utf-8")
+    mini_registry = re.search(r"var NEW_SECTION_RELEASES=(\{[^;]+\});", miniapp)
+    assert mini_registry is not None
+    mini_releases = json.loads(mini_registry.group(1))
+
+    android_ids = dict(re.findall(r'private const val ([A-Z0-9_]+_SECTION_ID) = "([^"]+)"', android))
+    android_pairs = re.findall(r"([A-Z0-9_]+_SECTION_ID) to ([\d_]+)L", android)
+    android_releases = {android_ids[key]: int(value.replace("_", "")) for key, value in android_pairs}
+    assert mini_releases == android_releases
+
+
+def test_practice_new_badge_expires_after_72_hours():
+    with sync_playwright() as playwright:
+        try:
+            browser = playwright.chromium.launch(headless=True)
+        except Exception as exc:
+            pytest.skip(f"Playwright Chromium is not installed: {exc}")
+
+        page = browser.new_page(viewport={"width": 390, "height": 844}, is_mobile=True)
+        page.add_init_script("Date.now = () => Date.parse('2026-10-16T00:08:05+08:00')")
+        page.route(f"{BASE_URL}/**", _serve_static)
+        page.route("https://**/*", lambda route: route.fulfill(status=200, body=""))
+        try:
+            page.goto(f"{BASE_URL}/course-v3.html", wait_until="domcontentloaded")
+            page.evaluate("LANG='uz'; renderMashq()")
+            assert page.locator("#m-ready-phrases .new-section-badge").count() == 0
+        finally:
+            browser.close()
+
+
+def test_phrasebook_loads_outside_telegram_with_shared_theme_tokens():
+    with sync_playwright() as playwright:
+        try:
+            browser = playwright.chromium.launch(headless=True)
+        except Exception as exc:
+            pytest.skip(f"Playwright Chromium is not installed: {exc}")
+
+        page = browser.new_page(viewport={"width": 390, "height": 844}, is_mobile=True)
+        page_errors = []
+        page.on("pageerror", lambda error: page_errors.append(str(error)))
+        page.route(f"{BASE_URL}/**", _serve_static)
+        try:
+            page.goto(f"{BASE_URL}/hsk-gaplar.html?lang=uz&theme=dark", wait_until="domcontentloaded")
+            page.locator(".phrase").first.wait_for()
+            assert page.locator(".phrase").count() == 300
+            assert page.locator("#back").count() == 0
+            assert page.locator("body").evaluate("element => getComputedStyle(element).backgroundColor") == "rgb(0, 47, 73)"
             assert page_errors == []
         finally:
             browser.close()

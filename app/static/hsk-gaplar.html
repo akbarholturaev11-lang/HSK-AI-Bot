@@ -3,39 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f5f2eb">
+  <meta name="theme-color" content="#FDF9F0">
   <title>Tayyor gaplar · HSK AI</title>
+  <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005-section-title">
   <style>
     :root {
       color-scheme: light;
-      --paper: #f5f2eb;
-      --card: #fffefa;
-      --ink: #283a32;
-      --ink-soft: #68756c;
-      --ink-muted: #929b92;
-      --line: #e6e2d8;
-      --jade: #35694f;
-      --jade-soft: #e7efe8;
-      --gold: #927039;
-      --gold-soft: #f1ebdd;
-      --focus: #4e8164;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --paper: var(--hsk-paper);
+      --card: var(--hsk-paper-raised);
+      --ink: var(--hsk-ink);
+      --ink-soft: var(--hsk-ink-secondary);
+      --ink-muted: var(--hsk-ink-disabled);
+      --line: var(--hsk-divider);
+      --jade: var(--hsk-jade-ink);
+      --jade-soft: var(--hsk-jade-soft);
+      --gold: var(--hsk-gold);
+      --gold-ink: var(--hsk-gold-ink);
+      --gold-soft: var(--hsk-gold-soft);
+      --focus: var(--hsk-jade);
+      font-family: var(--hsk-font-ui);
       background: var(--paper);
       color: var(--ink);
     }
-    :root[data-theme="dark"] {
+    :root[data-hsk-theme="dark"] {
       color-scheme: dark;
-      --paper: #151b18;
-      --card: #1e2722;
-      --ink: #edf1e8;
-      --ink-soft: #b3bdb3;
-      --ink-muted: #8a968d;
-      --line: #303c35;
-      --jade: #9dc5a8;
-      --jade-soft: #263b2e;
-      --gold: #d3b77c;
-      --gold-soft: #3a3324;
-      --focus: #acd4b6;
     }
     * { box-sizing: border-box; }
     html, body { min-height: 100%; margin: 0; background: var(--paper); }
@@ -44,9 +35,8 @@
     button { color: inherit; }
     .page { width: min(100%, 620px); min-height: 100dvh; margin: 0 auto; padding: 14px 19px 28px; }
     .top { display: flex; align-items: center; min-height: 42px; gap: 11px; }
-    .back { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: var(--card); color: var(--ink-soft); font-size: 23px; line-height: 1; cursor: pointer; }
-    .eyebrow { color: var(--gold); font-size: 10px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
-    .hero { padding: 19px 0 18px; }
+    .eyebrow { color: var(--gold-ink); font-size: 10px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+    .hero { padding: 15px 0 18px; }
     h1 { margin: 0; font-size: clamp(28px, 8vw, 34px); line-height: 1.13; letter-spacing: -.045em; font-weight: 760; }
     .intro { max-width: 430px; margin: 8px 0 0; color: var(--ink-soft); font-size: 14px; line-height: 1.5; }
     .search { position: relative; display: block; }
@@ -57,7 +47,7 @@
     .filters { display: flex; gap: 7px; overflow-x: auto; padding: 14px 1px 7px; scrollbar-width: none; }
     .filters::-webkit-scrollbar { display: none; }
     .chip { flex: 0 0 auto; min-height: 35px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--ink-soft); font-size: 12px; font-weight: 650; white-space: nowrap; cursor: pointer; }
-    .chip[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+    .chip[aria-pressed="true"] { border-color: var(--hsk-jade); background: var(--jade-soft); color: var(--hsk-jade-ink); }
     .count { padding: 4px 1px 9px; color: var(--ink-muted); font-size: 11px; font-weight: 650; letter-spacing: .045em; }
     .list { display: grid; gap: 9px; }
     .phrase { min-width: 0; padding: 15px 15px 12px; border: 1px solid var(--line); border-radius: 15px; background: var(--card); }
@@ -82,7 +72,6 @@
 <body>
   <main class="page">
     <header class="top">
-      <button class="back" id="back" type="button" aria-label="Back">‹</button>
       <span class="eyebrow" id="eyebrow"></span>
     </header>
     <section class="hero" aria-labelledby="title">
@@ -107,13 +96,16 @@
       var LANGUAGE = new URLSearchParams(location.search).get("lang") || "uz";
       if (!["uz", "ru", "tj"].includes(LANGUAGE)) LANGUAGE = "uz";
       var UI = {
-        uz: {title:"Tayyor gaplar", intro:"Kundalik vaziyatlar uchun xitoycha gaplar.", eyebrow:"GAP JAMLANMASI", search:"Xitoycha, pinyin yoki tarjima bo‘yicha qidiring", all:"Barchasi", saved:"Saqlanganlar", count:"{shown} / {total} ta gap", save:"Saqlash", savedOne:"Saqlandi", removed:"Saqlanganlardan olib tashlandi", copy:"Nusxalash", copied:"Nusxalandi", empty:"Bu qidiruvga mos gap topilmadi. Boshqa so‘z bilan qidiring.", noSaved:"Saqlangan gaplaringiz shu yerda ko‘rinadi.", loadError:"Gaplar jamlanmasi yuklanmadi. Internetga ulaning va qayta urinib ko‘ring.", retry:"Qayta urinish", back:"Mashqlarga qaytish", storageError:"Saqlash imkoni bo‘lmadi. Telefon sozlamalarini tekshiring." },
-        ru: {title:"Готовые фразы", intro:"Китайские фразы для повседневных ситуаций.", eyebrow:"ПОДБОРКА ФРАЗ", search:"Поиск по китайскому, пиньиню или переводу", all:"Все фразы", saved:"Сохранённые", count:"{shown} из {total} фраз", save:"Сохранить", savedOne:"Сохранено", removed:"Удалено из сохранённых", copy:"Копировать", copied:"Скопировано", empty:"По этому запросу ничего не найдено. Попробуйте другие слова.", noSaved:"Сохранённые фразы появятся здесь.", loadError:"Не удалось загрузить фразы. Подключитесь к интернету и попробуйте ещё раз.", retry:"Повторить", back:"Назад к практике", storageError:"Не удалось сохранить. Проверьте настройки телефона." },
-        tj: {title:"Ибораҳои омода", intro:"Ҷумлаҳои чинӣ барои вазъиятҳои ҳаррӯза.", eyebrow:"ҶАМЪОВАРИИ ИБОРАҲО", search:"Ҷустуҷӯ бо чинӣ, пинйин ё тарҷума", all:"Ҳама", saved:"Нигоҳдоштаҳо", count:"{shown} аз {total} ҷумла", save:"Нигоҳ доштан", savedOne:"Нигоҳ дошта шуд", removed:"Аз нигоҳдоштаҳо бардошта шуд", copy:"Нусха бардоштан", copied:"Нусха бардошта шуд", empty:"Барои ин ҷустуҷӯ ҷумла ёфт нашуд. Калимаи дигарро ҷӯед.", noSaved:"Ибораҳои нигоҳдоштаатон дар ин ҷо намоиш мешаванд.", loadError:"Ибораҳо бор нашуданд. Ба интернет пайваст шуда, боз кӯшиш кунед.", retry:"Аз нав кӯшиш кардан", back:"Бозгашт ба машқ", storageError:"Захира карда нашуд. Танзимоти телефонро санҷед." }
+        uz: {title:"Tayyor gaplar", intro:"Qidiring, saqlang, nusxalang.", eyebrow:"GAP JAMLANMASI", search:"Xitoycha, pinyin yoki tarjima bo‘yicha qidiring", all:"Barchasi", saved:"Saqlanganlar", count:"{shown} / {total} ta gap", save:"Saqlash", savedOne:"Saqlandi", removed:"Saqlanganlardan olib tashlandi", copy:"Nusxalash", copied:"Nusxalandi", empty:"Bu qidiruvga mos gap topilmadi. Boshqa so‘z bilan qidiring.", noSaved:"Saqlangan gaplaringiz shu yerda ko‘rinadi.", loadError:"Gaplar jamlanmasi yuklanmadi. Internetga ulaning va qayta urinib ko‘ring.", retry:"Qayta urinish", storageError:"Saqlash imkoni bo‘lmadi. Telefon sozlamalarini tekshiring." },
+        ru: {title:"Готовые фразы", intro:"Найдите, сохраните, скопируйте.", eyebrow:"ПОДБОРКА ФРАЗ", search:"Поиск по китайскому, пиньиню или переводу", all:"Все фразы", saved:"Сохранённые", count:"{shown} из {total} фраз", save:"Сохранить", savedOne:"Сохранено", removed:"Удалено из сохранённых", copy:"Копировать", copied:"Скопировано", empty:"По этому запросу ничего не найдено. Попробуйте другие слова.", noSaved:"Сохранённые фразы появятся здесь.", loadError:"Не удалось загрузить фразы. Подключитесь к интернету и попробуйте ещё раз.", retry:"Повторить", storageError:"Не удалось сохранить. Проверьте настройки телефона." },
+        tj: {title:"Ибораҳои омода", intro:"Ҷӯед, нигоҳ доред, нусха гиред.", eyebrow:"ҶАМЪОВАРИИ ИБОРАҲО", search:"Ҷустуҷӯ бо чинӣ, пинйин ё тарҷума", all:"Ҳама", saved:"Нигоҳдоштаҳо", count:"{shown} аз {total} ҷумла", save:"Нигоҳ доштан", savedOne:"Нигоҳ дошта шуд", removed:"Аз нигоҳдоштаҳо бардошта шуд", copy:"Нусха бардоштан", copied:"Нусха бардошта шуд", empty:"Барои ин ҷустуҷӯ ҷумла ёфт нашуд. Калимаи дигарро ҷӯед.", noSaved:"Ибораҳои нигоҳдоштаатон дар ин ҷо намоиш мешаванд.", loadError:"Ибораҳо бор нашуданд. Ба интернет пайваст шуда, боз кӯшиш кунед.", retry:"Аз нав кӯшиш кардан", storageError:"Захира карда нашуд. Танзимоти телефонро санҷед." }
       };
       var text = UI[LANGUAGE];
       var theme = new URLSearchParams(location.search).get("theme");
-      if (theme === "dark") document.documentElement.dataset.theme = "dark";
+      if (theme === "dark") {
+        document.documentElement.dataset.hskTheme = "dark";
+        document.querySelector('meta[name="theme-color"]').content = "#002F49";
+      }
       document.documentElement.lang = LANGUAGE;
 
       var elements = {
@@ -139,7 +131,6 @@
       elements.query.placeholder = text.search;
       elements.query.setAttribute("aria-label", text.search);
       elements.filters.setAttribute("aria-label", text.all);
-      document.getElementById("back").setAttribute("aria-label", text.back);
 
       function readSavedIds() {
         try {
@@ -313,14 +304,16 @@
         else location.replace("/course-v3.html?tab=quiz&lang=" + encodeURIComponent(LANGUAGE));
       }
 
-      document.getElementById("back").addEventListener("click", goBack);
       elements.query.addEventListener("input", renderPhrases);
       try {
         var webApp = window.Telegram && window.Telegram.WebApp;
         if (webApp && webApp.BackButton) {
           webApp.BackButton.show();
           webApp.BackButton.onClick(goBack);
-          window.addEventListener("pagehide", function () { webApp.BackButton.hide(); }, { once: true });
+          window.addEventListener("pagehide", function () {
+            if (typeof webApp.BackButton.offClick === "function") webApp.BackButton.offClick(goBack);
+            webApp.BackButton.hide();
+          }, { once: true });
         }
       } catch (_) { /* Standalone preview outside Telegram. */ }
 
