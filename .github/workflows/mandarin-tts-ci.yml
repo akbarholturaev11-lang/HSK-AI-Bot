@@ -7,6 +7,8 @@ on:
       - "app/services/tts_service.py"
       - "app/api/android_course.py"
       - "app/main.py"
+      - "app/static/course-v3.html"
+      - "tests/test_miniapp_tts_first_listen.py"
       - "tests/test_tts_service.py"
       - ".github/workflows/mandarin-tts-ci.yml"
   pull_request:
@@ -14,6 +16,8 @@ on:
       - "app/services/tts_service.py"
       - "app/api/android_course.py"
       - "app/main.py"
+      - "app/static/course-v3.html"
+      - "tests/test_miniapp_tts_first_listen.py"
       - "tests/test_tts_service.py"
       - ".github/workflows/mandarin-tts-ci.yml"
   workflow_dispatch:
@@ -33,6 +37,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Compile touched Python files
-        run: python -m py_compile app/services/tts_service.py app/api/android_course.py app/main.py tests/test_tts_service.py
+        run: python -m py_compile app/services/tts_service.py app/api/android_course.py app/main.py tests/test_tts_service.py tests/test_miniapp_tts_first_listen.py
       - name: Check Edge outage and paid fallback handling
-        run: python -m unittest -v tests.test_tts_service
+        run: python -m unittest -v tests.test_tts_service tests.test_miniapp_tts_first_listen
