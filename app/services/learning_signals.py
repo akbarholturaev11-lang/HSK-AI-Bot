@@ -106,17 +106,22 @@ class LearningSignalsService:
         uchun saqlangan material formati bo'yicha ajratamiz.
         """
         category = str(getattr(item, "category", "") or "").strip().lower()
-        if category in ("word", "character"):
-            raw = getattr(item, "material_json", None)
-            if raw:
-                try:
-                    material = json.loads(raw)
-                except (TypeError, ValueError):
-                    material = {}
-                if isinstance(material, dict):
-                    fmt = str(material.get("format") or "").strip().lower()
-                    if fmt in LISTENING_FORMATS or material.get("audio_text"):
-                        return "listening"
+        # Both Mini App and Android categorize listening_choice differently:
+        # the canonical lesson material currently calls it pronunciation.
+        # Distinguish the audio comprehension signal from spoken response by
+        # material format, without modifying the mistake-review category.
+        raw = getattr(item, "material_json", None)
+        if raw:
+            try:
+                material = json.loads(raw)
+            except (TypeError, ValueError):
+                material = {}
+            if isinstance(material, dict):
+                fmt = str(material.get("format") or "").strip().lower()
+                if fmt in LISTENING_FORMATS or (
+                    bool(material.get("audio_text")) and fmt != "pronunciation"
+                ):
+                    return "listening"
         return category if category in WEAKNESS_KEYS else "word"
 
     @staticmethod
