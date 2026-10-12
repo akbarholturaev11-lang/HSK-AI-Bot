@@ -513,7 +513,7 @@ def create_android_course_router(
             path = await _android_tts_file(phrase)
             return FileResponse(
                 path,
-                media_type="audio/mpeg",
+                media_type="audio/wav" if path.suffix == ".wav" else "audio/mpeg",
                 headers=ANDROID_TTS_HEADERS,
             )
         except (DesktopAuthError, DesktopCourseError) as exc:
