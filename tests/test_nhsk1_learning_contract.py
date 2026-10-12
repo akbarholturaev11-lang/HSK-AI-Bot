@@ -106,6 +106,50 @@ class Nhsk1LearningContractTests(unittest.TestCase):
         self.assertIn('esc(rightText)+" · "+esc(why)', html)
         self.assertIn('c.learning_feedback==="n1_context_v1"?(esc(ans.join(" "))', html)
 
+    def test_n1_exit_check_is_append_only_and_android_compatible(self):
+        from scripts.hsk30.apply_learning_overlays import apply_nhsk1_pilot_exit_check
+        src = json.loads(Path(
+            "app/static/course_v3_data/nhsk1/lesson_04.json"
+        ).read_text(encoding="utf-8"))
+        enhanced = apply_nhsk1_pilot_exit_check(src)
+        self.assertEqual(src, enhanced, "The overlay must be reproducible and idempotent")
+        self.assertEqual([sec["section_no"] for sec in src["sections"]], [1, 2, 3])
+        self.assertEqual(src["sections"][-1]["section_purpose"], "learning_exit_check")
+        checks = src["sections"][-1]["cards"]
+        self.assertEqual(
+            [card["type"] for card in checks],
+            ["quick_quiz", "listening_choice", "sentence_builder"],
+        )
+        self.assertEqual(len({c["learning_objective"] for c in checks}), 3)
+        self.assertTrue(all(c["learning_check"] == "n1_exit_check_v1" for c in checks))
+        self.assertEqual(checks[1]["options"][checks[1]["correct_index"]], checks[1]["audio_text"])
+        self.assertEqual(checks[2]["answer_tokens"], ["同学", "们", "再见"])
+        # Existing Mini App and Android use these same three standard card
+        # types. An appended section keeps every old material_ref unchanged.
+        original = src.copy()
+        original["sections"] = src["sections"][:2]
+        self.assertEqual(original["sections"], enhanced["sections"][:2])
+
+    def test_n1_exit_check_rejects_conflicting_section(self):
+        from scripts.hsk30.apply_learning_overlays import apply_nhsk1_pilot_exit_check
+        data = json.loads(Path(
+            "app/static/course_v3_data/nhsk1/lesson_04.json"
+        ).read_text(encoding="utf-8"))
+        data["sections"][-1]["cards"][0]["correct_index"] = 0
+        with self.assertRaisesRegex(ValueError, "modified or collided"):
+            apply_nhsk1_pilot_exit_check(data)
+
+    def test_n1_exit_check_has_no_answer_leak_in_prompts(self):
+        data = json.loads(Path(
+            "app/static/course_v3_data/nhsk1/lesson_04.json"
+        ).read_text(encoding="utf-8"))
+        for card in data["sections"][-1]["cards"]:
+            for lang in ("uz", "ru", "tj"):
+                prompt = card.get("prompt", card.get("sentence", {}))[lang]
+                self.assertNotIn("老师，您好！", prompt)
+                self.assertNotIn("谢谢！", prompt)
+                self.assertNotIn("同学们，再见！", prompt)
+
     def test_runtime_rejects_map_part_mismatch(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
