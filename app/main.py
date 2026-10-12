@@ -2923,7 +2923,7 @@ async def v3_course_lesson_complete(request: Request):
         try:
             rank_before = int((await gamification.leaderboard(user)).get("rank") or 0)
         except Exception:
-            pass
+            logging.exception("Mini App rank_before lookup failed")
 
         await progress_repo.mark_lesson_completed(progress)
         snapshot = await gamification.award(
@@ -2935,11 +2935,25 @@ async def v3_course_lesson_complete(request: Request):
         )
 
         rank_after = 0
+        rank_up_board = []
         if rank_before:
             try:
-                rank_after = int((await gamification.leaderboard(user)).get("rank") or 0)
+                updated_rating = await gamification.leaderboard(user)
+                rank_after = int(updated_rating.get("rank") or 0)
+                if 0 < rank_after < rank_before:
+                    # Include only the neighbouring leaderboard rows. The
+                    # Mini App can celebrate immediately, without a second
+                    # HTTP request or a stale local leaderboard.
+                    leaderboard = updated_rating.get("leaderboard") or []
+                    me_idx = next(
+                        (idx for idx, row in enumerate(leaderboard)
+                         if row.get("is_current_user")),
+                        None,
+                    )
+                    if me_idx is not None:
+                        rank_up_board = leaderboard[max(0, me_idx - 1):me_idx + 2]
             except Exception:
-                pass
+                logging.exception("Mini App rank_after lookup failed")
 
         # Keyingi qism bormi — manifest chegarasidan (legacy jadvaldan emas).
         # Manifest o'qilmasa (total_parts=0) band avto-o'tishi o'chiq qoladi.
@@ -3023,6 +3037,7 @@ async def v3_course_lesson_complete(request: Request):
                 "gamification": snapshot,
                 "rank_before": rank_before,
                 "rank_after": rank_after,
+                "rank_up_board": rank_up_board,
             }
         )
 

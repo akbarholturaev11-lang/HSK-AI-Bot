@@ -40,12 +40,29 @@ class MiniAppLessonRankUpTests(unittest.TestCase):
         )
         self.assertIn("if(App.showSalesBridge())return;", COURSE)
 
-    def test_failed_rating_refresh_does_not_hide_verified_promotion(self):
-        self.assertIn(
-            "function(){App.renderRankUpBoard(ranks,returnDest)},"
-            "function(){App.renderRankUpBoard(ranks,returnDest)}",
-            COURSE,
-        )
+    def test_rank_up_is_immediate_not_blocked_by_leaderboard_refresh(self):
+        handler = COURSE.split("  showRankUp:function(returnDest){", 1)[1].split(
+            "  renderRankUpBoard:function", 1
+        )[0]
+        self.assertIn("App.renderRankUpBoard(ranks,returnDest);", handler)
+        self.assertIn("loadLatestRating().catch(function(){});", handler)
+        self.assertLess(handler.index("App.renderRankUpBoard"), handler.index("loadLatestRating"))
+        self.assertIn('$("#lu-cta").disabled=true;', handler)
+        self.assertIn('$("#lu-cta").disabled=false;', COURSE)
+
+    def test_completion_includes_immediate_rank_neighbours(self):
+        handler = MAIN.split('@app.post("/api/v3/lesson/complete")', 1)[1].split(
+            "def _voice_practice_user_id", 1
+        )[0]
+        self.assertIn('"rank_up_board": rank_up_board', handler)
+        self.assertIn("if 0 < rank_after < rank_before:", handler)
+        self.assertIn("leaderboard[max(0, me_idx - 1):me_idx + 2]", handler)
+        self.assertIn("logging.exception", handler)
+
+    def test_rank_board_fallback_uses_server_position(self):
+        self.assertIn("board:d.rank_up_board||[]", COURSE)
+        self.assertIn("rk:ranks.after", COURSE)
+        self.assertIn("cached.rank===ranks.after", COURSE)
 
 
 if __name__ == "__main__":

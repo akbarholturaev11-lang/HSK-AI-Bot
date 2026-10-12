@@ -2117,33 +2117,41 @@ var App={
     if(!ranks||!ranks.before||!ranks.after||ranks.after>=ranks.before||!INIT_DATA){
       App.closeLevelUp(returnDest);return;
     }
-    var waitTexts={ru:["Проверяем рейтинг…","Секунду, обновляем вашу позицию."],uz:["Reyting tekshirilmoqda…","Bir soniya, o'rningizni yangilayapmiz."],tj:["Рейтинг санҷида мешавад…","Як лаҳза, ҷойи шуморо нав мекунем."]};
-    var wait=waitTexts[LANG]||waitTexts.uz;
-    $("#lu-panda").innerHTML=pandaChar("celebrate");
-    $("#lu-stage").innerHTML='<div class="ru-wrap"><h2>'+wait[0]+'</h2><p>'+wait[1]+'</p></div>';
-    // Completion already verifies the promotion. A failed leaderboard
-    // refresh must not suppress the celebration.
-    loadLatestRating().then(function(){App.renderRankUpBoard(ranks,returnDest)},function(){App.renderRankUpBoard(ranks,returnDest)});
+    // Never gate a confirmed promotion behind a second network call.
+    // The old Continue action could dismiss the entire overlay while the
+    // leaderboard request was in flight and make the rank-up invisible.
+    $("#lu-cta").disabled=true;
+    App.renderRankUpBoard(ranks,returnDest);
+    // Refresh the general rating screen in the background; this cannot
+    // cancel, replace, or delay the already-running celebration.
+    loadLatestRating().catch(function(){});
   },
   renderRankUpBoard:function(ranks,returnDest){
-    sortRatingUsers();
-    var meIdx=ratingUsers.findIndex(function(u){return u.me});
-    var meU=meIdx>=0?ratingUsers[meIdx]:null;
-    var aboveU=meIdx>0?ratingUsers[meIdx-1]:null;
-    var belowU=meIdx>=0&&meIdx<ratingUsers.length-1?ratingUsers[meIdx+1]:null;
+    var users=(Array.isArray(ranks.board)?ranks.board:[]).map(normalizeSocialUser);
+    // Pre-deployment responses may not contain the compact board. Cached
+    // rows are only usable when their rank agrees with the server result.
+    if(!users.length){
+      var cached=ratingUsers.find(function(u){return u.me});
+      if(cached&&cached.rank===ranks.after)users=ratingUsers.slice();
+    }
+    users.sort(function(a,b){return a.rank-b.rank});
+    var meIdx=users.findIndex(function(u){return u.me&&u.rank===ranks.after});
+    var meU=meIdx>=0?users[meIdx]:null;
+    var aboveU=meIdx>0?users[meIdx-1]:null;
+    var belowU=meIdx>=0&&meIdx<users.length-1?users[meIdx+1]:null;
     var passedU=belowU;
-    /* Kimdandir o'tmagan bo'lsa — bo'sh "ko'tarildingiz" oynasini ko'rsatmaymiz. */
-    // A verified rank move can be shown even if neighbour details are missing.
+    // An authentic rank movement always gets a celebration, even if
+    // neighbour names are unavailable (the numeric ranks are server-owned).
     var RU={ru:{t:"Вы поднялись в рейтинге!",s:"{n} остался позади. Сегодняшний урок решил это."},
       uz:{t:"Reytingda ko'tarildingiz!",s:"{n} ortda qoldi. Buni bugungi darsingiz hal qildi."},
       tj:{t:"Дар рейтинг боло рафтед!",s:"{n} қафо монд. Инро дарси имрӯзаатон ҳал кард."}}[LANG]||{t:"",s:"{n}"};
     var rankSummary=(LANG==="ru"?"Место ":LANG==="tj"?"Ҷойи ":"O'rin ")+"#"+ranks.before+" → #"+ranks.after;
     var r={title:RU.t,sub:passedU?RU.s.replace("{n}",esc(passedU.n||"")):rankSummary,cont:T().cont};
     var rows=[];
-	    if(aboveU)rows.push({rk:meIdx,a:aboveU.a,n:aboveU.n,xp:(aboveU.weeklyXp||0).toLocaleString("ru")});
-	    if(meU)rows.push({rk:meIdx+1,a:meU.a||PROF.avatar||"阿",n:T().you,xp:ratingScore(meU).toLocaleString("ru"),me:1,from:aboveU?1:0});
-	    if(belowU)rows.push({rk:meIdx+2,a:belowU.a,n:belowU.n,xp:(belowU.weeklyXp||0).toLocaleString("ru"),from:-1});
-	    if(!rows.length)rows=[{rk:1,a:PROF.avatar||"阿",n:T().you,xp:currentUserWeeklyXp().toLocaleString("ru"),me:1,from:0}];
+	    if(aboveU)rows.push({rk:aboveU.rank,a:aboveU.a,n:aboveU.n,xp:(aboveU.weeklyXp||0).toLocaleString("ru")});
+	    if(meU)rows.push({rk:ranks.after,a:meU.a||PROF.avatar||"阿",n:T().you,xp:ratingScore(meU).toLocaleString("ru"),me:1,from:aboveU?1:0});
+	    if(belowU)rows.push({rk:belowU.rank,a:belowU.a,n:belowU.n,xp:(belowU.weeklyXp||0).toLocaleString("ru"),from:-1});
+	    if(!rows.length)rows=[{rk:ranks.after,a:PROF.avatar||"阿",n:T().you,xp:currentUserWeeklyXp().toLocaleString("ru"),me:1,from:0}];
     /* Yaqin kadr: panda uzoqdan otilib chiqadi — taxta shundan keyin ochiladi */
     cinePanda("zoom","celebrate",function(){
       $("#lu-panda").innerHTML=pandaChar("celebrate");
@@ -2152,6 +2160,7 @@ var App={
       document.querySelectorAll("#lu-stage .ru-row").forEach(function(row){var f=+row.dataset.from;if(f)row.style.transform="translateY("+(f*58)+"px)"});
       setTimeout(function(){document.querySelectorAll("#lu-stage .ru-row").forEach(function(row){row.style.transform="translateY(0)"});luRain();beep([784,988,1175,1318]);haptic("ok")},420);
       $("#lu-cta").setAttribute("onclick",returnDest==="checkpoint_next"?"App.openCheckpointNext()":"App.closeLevelUp('rating')");$("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+r.cont;
+      $("#lu-cta").disabled=false;
     });
   },
   /* Reytingda haqiqatan ko'tarilgan bo'lsa — reyting ekraniga, aks holda
@@ -4943,7 +4952,7 @@ function applyLessonDone(cur,d){
   }
   var rankAfter=Number(d&&d.rank_after)||0;
   pendingRankUp=(d&&d.gamification&&!d.duplicate&&rankBefore>0&&rankAfter>0&&rankAfter<rankBefore)
-    ?{before:rankBefore,after:rankAfter}:null;
+    ?{before:rankBefore,after:rankAfter,board:d.rank_up_board||[]}:null;
   var ni=al.indexOf(cur)+1,next=ni<al.length?al[ni]:null;
   var nextWasLocked=!!(next&&next.status==="locked");
   /* The current marker follows progress even when its allowance is spent.
