@@ -1,0 +1,86 @@
+"""Regression tests for HSK 3.0 N1 runtime content quality checks."""
+from __future__ import annotations
+
+import importlib.util
+import json
+from pathlib import Path
+import tempfile
+import unittest
+
+SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "hsk30" / "verify_nhsk1_learning_contract.py"
+spec = importlib.util.spec_from_file_location("nhsk1_contract", SCRIPT)
+contract = importlib.util.module_from_spec(spec)
+assert spec.loader is not None
+spec.loader.exec_module(contract)
+
+
+def localized(value: str) -> dict[str, str]:
+    return {lang: value for lang in ("uz", "ru", "tj")}
+
+
+def fixture() -> dict:
+    return {
+        "schema_version": 2, "level": "nhsk1", "lesson_id": 1,
+        "source_lesson": 1, "part_no": 1, "part_count": 1,
+        "checkpoint": True, "title": "你好", "subtitle": localized("Salom"),
+        "active_words": [{"zh": "你好", "pinyin": "nǐ hǎo", "meaning": localized("Salom")}],
+        "grammar": [], "dialogues": [], "sections": [
+            {"section_no": 1, "section_title": localized("So‘zlar"),
+             "section_purpose": "intro", "cards": [
+                 {"type": "active_word", "word": {"zh": "你好", "pinyin": "nǐ hǎo", "meaning": localized("Salom")}},
+                 {"type": "meaning_guess", "options": [localized("Salom"), localized("Rahmat")],
+                  "correct_index": 0, "explanation": localized("你好 — salom")},
+             ]},
+        ],
+    }
+
+
+class Nhsk1LearningContractTests(unittest.TestCase):
+    def test_minimal_compatible_lesson_passes(self):
+        errors, warnings = contract.validate_lesson(fixture(), number=1)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+    def test_invalid_choice_answer_fails(self):
+        lesson = fixture()
+        lesson["sections"][0]["cards"][1]["correct_index"] = 4
+        errors, _ = contract.validate_lesson(lesson, number=1)
+        self.assertTrue(any("correct_index out of range" in x for x in errors))
+
+    def test_invalid_translation_fails(self):
+        lesson = fixture()
+        del lesson["active_words"][0]["meaning"]["tj"]
+        errors, _ = contract.validate_lesson(lesson, number=1)
+        self.assertTrue(any("active_words" in x for x in errors))
+
+    def test_duplicate_answers_warn_without_blocking_migration(self):
+        lesson = fixture()
+        lesson["sections"][0]["cards"][1]["options"][1] = localized("Salom")
+        errors, warnings = contract.validate_lesson(lesson, number=1)
+        self.assertEqual(errors, [])
+        self.assertTrue(any("duplicate" in x for x in warnings))
+
+    def test_builder_rejects_answer_not_in_bank(self):
+        errors, _ = contract.validate_card({
+            "type": "sentence_builder", "tokens": ["你", "好"],
+            "answer_tokens": ["你", "们"], "explanation": localized("你好"),
+        }, "test")
+        self.assertTrue(any("absent from bank" in x for x in errors))
+
+    def test_runtime_rejects_map_part_mismatch(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "nhsk1").mkdir()
+            (root / "nhsk1" / "manifest.json").write_text(json.dumps({
+                "level": "nhsk1", "lesson_count": 1, "source_lesson_count": 15,
+            }), encoding="utf-8")
+            (root / "nhsk1" / "lesson_01.json").write_text(json.dumps(fixture()), encoding="utf-8")
+            (root / "nhsk1.json").write_text(json.dumps({
+                "level": "nhsk1", "units": [{"no": n, "lessons": []} for n in range(1, 16)],
+            }), encoding="utf-8")
+            errors, _, _ = contract.validate_runtime(root)
+            self.assertTrue(any("map/runtime part count mismatch" in x for x in errors))
+
+
+if __name__ == "__main__":
+    unittest.main()
