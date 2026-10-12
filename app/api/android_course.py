@@ -200,39 +200,14 @@ def _android_tts_text(value: str | None) -> str:
 
 
 async def _android_tts_file(text: str) -> Path:
-    """Create/reuse one deterministic MP3 without exposing arbitrary paths."""
+    """Use the same server MP3 cache and failover as the Mini App."""
+    from app.services.tts_service import synthesize_chinese_mp3
 
-    key = hashlib.sha256(
-        f"{ANDROID_TTS_VOICE}|{ANDROID_TTS_RATE}|{text}".encode("utf-8")
-    ).hexdigest()
-    ANDROID_TTS_CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    path = ANDROID_TTS_CACHE_DIR / f"android-{key}.mp3"
-    if path.is_file() and path.stat().st_size > 0:
-        return path
-
-    async with _ANDROID_TTS_GENERATION_LOCK:
-        if path.is_file() and path.stat().st_size > 0:
-            return path
-        tmp = path.with_suffix(".mp3.tmp")
-        try:
-            import edge_tts
-
-            await edge_tts.Communicate(
-                text,
-                ANDROID_TTS_VOICE,
-                rate=ANDROID_TTS_RATE,
-            ).save(str(tmp))
-            if not tmp.is_file() or tmp.stat().st_size <= 0:
-                raise RuntimeError("empty Android TTS output")
-            os.replace(tmp, path)
-        except Exception as exc:
-            logger.warning("Android TTS generation failed: %s", exc)
-            try:
-                tmp.unlink(missing_ok=True)
-            except OSError:
-                pass
-            raise DesktopCourseError("android_tts_failed", status_code=502) from exc
-    return path
+    try:
+        return await synthesize_chinese_mp3(text, rate=ANDROID_TTS_RATE)
+    except Exception as exc:
+        logger.warning("Android TTS providers unavailable: %s", type(exc).__name__)
+        raise DesktopCourseError("android_tts_failed", status_code=502) from exc
 
 
 ANDROID_STROKE_SOURCE = "https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0.1"
