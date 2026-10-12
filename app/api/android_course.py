@@ -467,7 +467,6 @@ def create_android_course_router(
         if (
             supports_transfer or not isinstance(result, dict)
             or result.get("level") != "nhsk1"
-            or int(result.get("lesson_order") or 0) != 4
         ):
             return result
         lesson = result.get("lesson")
