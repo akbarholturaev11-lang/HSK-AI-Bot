@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import re
 from pathlib import Path
 import tempfile
 import unittest
@@ -85,8 +86,8 @@ class Nhsk1LearningContractTests(unittest.TestCase):
                 self.assertTrue(marked)
                 for card in marked:
                     self.assertTrue(contract.localized(card["explanation"]))
-                    self.assertFalse(__import__("re").search(
-                        r"[\\u0400-\\u04ff]", card["explanation"]["uz"],
+                    self.assertFalse(re.search(
+                        r"[А-Яа-яЁёҚқҒғҲҳҶҷӢӣӮӯЎў]", card["explanation"]["uz"],
                     ), "Uzbek teaching text must stay Latin-script")
 
     def test_n1_overlay_fails_on_reordered_cards(self):
