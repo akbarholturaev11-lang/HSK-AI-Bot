@@ -1841,10 +1841,10 @@ function speak(t){
   if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;
   function playSource(src){
     if(tok!==window._ttsTok)return;
-    try{var a=new Audio(src);_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}
+    try{var a=new Audio(src);_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}
   }
   if(_ttsCache[t]){playSource(_ttsCache[t]);return}
-  if(_ttsPending[t]){_ttsPending[t].then(function(){if(tok===window._ttsTok)playSource(_ttsCache[t]||ttsUrl(t))});return}
+  if(_ttsPending[t]){_ttsPending[t].then(function(src){if(tok!==window._ttsTok)return;if(src)playSource(src);else _ttsFallback(t)});return}
   playSource(ttsUrl(t));
 }
 /* Kartadan o'ynash mumkin bo'lgan xitoycha matnlarni yig'ish (prefetch uchun) */
@@ -1861,12 +1861,40 @@ function cardAudioTexts(c){
   if(c.type==="_dialogue"&&c.d&&c.d.dialogue)c.d.dialogue.slice(0,3).forEach(function(l){if(l.zh)out.push(l.zh)});
   return out;
 }
+/* Keep background synthesis bounded: four cards can contain many dialogue
+   lines, and every unseen line costs an external Gemini call. Prioritize the
+   current card plus two upcoming utterances. */
 function prefetchUpcomingAudio(){
   try{
-    for(var i=Flow.i;i<Math.min(Flow.i+4,Flow.queue.length);i++){
-      cardAudioTexts(Flow.queue[i]).forEach(prefetchTTS);
+    var seen={},count=0;
+    for(var i=Flow.i;i<Math.min(Flow.i+5,Flow.queue.length)&&count<3;i++){
+      var texts=cardAudioTexts(Flow.queue[i]);
+      for(var j=0;j<texts.length&&count<3;j++){
+        var word=String(texts[j]||"").trim();
+        if(!word||seen[word])continue;
+        seen[word]=true;prefetchTTS(word);count++;
+      }
     }
   }catch(e){}
+}
+/* Fetch the first words while the learner is reading the lesson preview.
+   The lesson JSON is already public static course material; lesson-start
+   access control is unchanged and still enforced by reserveLessonStart(). */
+function warmLessonPreviewAudio(lv,n){
+  return loadLessonData(lv,n).then(function(d){
+    var first=[],seen={};
+    function offer(text){
+      text=String(text||"").trim();
+      if(!text||seen[text]||text.length>240||!/[一-鿿]/.test(text))return;
+      seen[text]=true;if(first.length<2)first.push(text);
+    }
+    (d.basics||[]).slice(0,5).forEach(function(c){cardAudioTexts(c).forEach(offer)});
+    (d.sections||[]).slice(0,2).forEach(function(sec){
+      (sec.cards||[]).slice(0,8).forEach(function(c){cardAudioTexts(c).forEach(offer)});
+    });
+    if(!first.length)(d.active_words||[]).slice(0,2).forEach(function(w){offer(w.zh)});
+    return Promise.all(first.map(prefetchTTS));
+  }).catch(function(){return null});
 }
 function haptic(t){try{tg&&tg.HapticFeedback&&(t==="ok"?tg.HapticFeedback.notificationOccurred("success"):t==="no"?tg.HapticFeedback.notificationOccurred("error"):t==="med"?tg.HapticFeedback.impactOccurred("medium"):t==="heavy"?tg.HapticFeedback.impactOccurred("heavy"):tg.HapticFeedback.impactOccurred("light"))}catch(e){}}
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
@@ -3128,6 +3156,8 @@ function openLessonSheet(idx){
   App.openSheet('<div class="shead">'+(chip?'<div class="py" style="margin-bottom:2px">'+esc(chip)+'</div>':'')
     +'<div class="zh han">'+esc(l.zh)+'</div><div class="py">'+esc(l.py||"")+'</div><div class="tr">'+esc(tr(l.tr))+'</div>'+(Number(l.src)===1?'<div class="tr" style="margin-top:5px;color:var(--cin2)">你好 · nǐ hǎo · '+esc(LANG==="ru"?"привет":LANG==="tj"?"салом":"salom")+'</div>':'')+stars+'</div>'
     +'<div class="pmeta"><span>'+n+' '+T().stage+'</span><span>'+prog+' / '+n+' '+T().completeOf+'</span></div><div class="secs">'+secs+'</div>'+cta);
+  /* Start fetching the initial pronunciation before "Continue" is tapped. */
+  warmLessonPreviewAudio((MAP&&MAP.level)||"hsk1",l.n);
 }
 
 /* ---------- Skip-ahead test (unlock a locked lesson by passing a quick test) ---------- */
@@ -3655,7 +3685,18 @@ function startLesson(idx,opts){
     });
     HP=5;$("#f-hp").textContent=HP;
     var revealLesson=function(){$("#flow").classList.add("on");renderFlowCard()};
-    if(lessonEntry&&lessonEntry.reveal)lessonEntry.reveal(revealLesson);else revealLesson();
+    /* The panda preparation scene already covers entry: spend at most 1.8 s
+       of that time waiting for the current card's first sound. Never block
+       the course indefinitely if a TTS provider is unavailable. */
+    var firstCardAudio=cardAudioTexts(Flow.queue[Flow.i])[0];
+    var audioWarmup=firstCardAudio?prefetchTTS(firstCardAudio):Promise.resolve(null);
+    var warmupTimer=null;
+    Promise.race([audioWarmup,new Promise(function(resolve){
+      warmupTimer=setTimeout(function(){resolve(null)},1800);
+    })]).then(function(){
+      if(warmupTimer!==null)clearTimeout(warmupTimer);
+      if(lessonEntry&&lessonEntry.reveal)lessonEntry.reveal(revealLesson);else revealLesson();
+    });
   }).catch(function(err){
     if(lessonEntry&&lessonEntry.cancel)lessonEntry.cancel();
     if(err&&err.data){handleLessonStartDenied(err,idx);return}
