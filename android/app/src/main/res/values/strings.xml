@@ -85,7 +85,7 @@
     <string name="offline_section_title">Bu bo‘lim uchun internet kerak</string>
     <string name="offline_section_body">Internetsiz lug‘at va kurs xaritasi ishlaydi. Aloqa tiklansa, ilova o‘zi ulanadi.</string>
     <string name="offline_lesson">Dars uchun internet kerak</string>
-    <string name="offline_practice">Internetsiz faqat lug‘at ishlaydi</string>
+    <string name="offline_practice">Internetsiz lug‘at va tayyor gaplar ishlaydi</string>
     <string name="error_timeout">Server javob bermadi. Qayta urinib ko\'ring.</string>
     <string name="error_server">Serverda vaqtinchalik nosozlik. Birozdan so\'ng urinib ko\'ring.</string>
     <string name="error_unknown">Kutilmagan xatolik yuz berdi.</string>
@@ -566,4 +566,22 @@
     <string name="hsk30_payment_rejected_title">HSK 3.0 to‘lovi rad etildi</string>
     <string name="hsk30_payment_rejected_body">To‘lovingiz qabul qilinmadi. Ma’lumotlarni tekshirib, to‘lovni boshidan yuboring.</string>
     <string name="hsk30_payment_retry">Qayta urinib ko‘rish</string>
+    <string name="practice_ready_phrases_title">Tayyor gaplar</string>
+    <string name="practice_ready_phrases_body">300 ta xitoycha gap · 12 mavzu</string>
+    <string name="practice_hsk30_locked">HSK 3.0 mashqlarini ochish uchun kursga kirish kerak.</string>
+    <string name="practice_hsk30_unlock">Kursga kirishni ochish</string>
+    <string name="ready_phrases_title">Tayyor gaplar</string>
+    <string name="ready_phrases_intro">Kundalik vaziyatlar uchun xitoycha gaplar</string>
+    <string name="ready_phrases_search_hint">Xitoycha, pinyin yoki tarjima bo‘yicha qidiring</string>
+    <string name="ready_phrases_all">Barchasi</string>
+    <string name="ready_phrases_saved">Saqlanganlar</string>
+    <string name="ready_phrases_count">%1$d / %2$d ta gap</string>
+    <string name="ready_phrases_save">Saqlash</string>
+    <string name="ready_phrases_copy">Nusxalash</string>
+    <string name="ready_phrases_copied">Xitoycha gap nusxalandi</string>
+    <string name="ready_phrases_no_results">Bu qidiruvga mos gap topilmadi.</string>
+    <string name="ready_phrases_no_saved">Saqlangan gaplaringiz shu yerda ko‘rinadi.</string>
+    <string name="ready_phrases_load_failed">Gaplar katalogini o‘qib bo‘lmadi.</string>
+    <string name="ready_phrases_retry">Qayta urinish</string>
+    <string name="ready_phrases_back">Orqaga</string>
 </resources>

@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f2eb">
+  <title>Tayyor gaplar · HSK AI</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5f2eb;
+      --card: #fffefa;
+      --ink: #283a32;
+      --ink-soft: #68756c;
+      --ink-muted: #929b92;
+      --line: #e6e2d8;
+      --jade: #35694f;
+      --jade-soft: #e7efe8;
+      --gold: #927039;
+      --gold-soft: #f1ebdd;
+      --focus: #4e8164;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --paper: #151b18;
+      --card: #1e2722;
+      --ink: #edf1e8;
+      --ink-soft: #b3bdb3;
+      --ink-muted: #8a968d;
+      --line: #303c35;
+      --jade: #9dc5a8;
+      --jade-soft: #263b2e;
+      --gold: #d3b77c;
+      --gold-soft: #3a3324;
+      --focus: #acd4b6;
+    }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; background: var(--paper); }
+    body { padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    .page { width: min(100%, 620px); min-height: 100dvh; margin: 0 auto; padding: 14px 19px 28px; }
+    .top { display: flex; align-items: center; min-height: 42px; gap: 11px; }
+    .back { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: var(--card); color: var(--ink-soft); font-size: 23px; line-height: 1; cursor: pointer; }
+    .eyebrow { color: var(--gold); font-size: 10px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+    .hero { padding: 19px 0 18px; }
+    h1 { margin: 0; font-size: clamp(28px, 8vw, 34px); line-height: 1.13; letter-spacing: -.045em; font-weight: 760; }
+    .intro { max-width: 430px; margin: 8px 0 0; color: var(--ink-soft); font-size: 14px; line-height: 1.5; }
+    .search { position: relative; display: block; }
+    .search-icon { position: absolute; top: 50%; left: 15px; transform: translateY(-50%); color: var(--ink-muted); font-size: 20px; pointer-events: none; }
+    .search input { width: 100%; height: 49px; padding: 0 14px 0 43px; border: 1px solid var(--line); border-radius: 14px; outline: 0; background: var(--card); color: var(--ink); font-size: 14px; }
+    .search input::placeholder { color: var(--ink-muted); }
+    .search input:focus { border-color: var(--focus); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 17%, transparent); }
+    .filters { display: flex; gap: 7px; overflow-x: auto; padding: 14px 1px 7px; scrollbar-width: none; }
+    .filters::-webkit-scrollbar { display: none; }
+    .chip { flex: 0 0 auto; min-height: 35px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--ink-soft); font-size: 12px; font-weight: 650; white-space: nowrap; cursor: pointer; }
+    .chip[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+    .count { padding: 4px 1px 9px; color: var(--ink-muted); font-size: 11px; font-weight: 650; letter-spacing: .045em; }
+    .list { display: grid; gap: 9px; }
+    .phrase { min-width: 0; padding: 15px 15px 12px; border: 1px solid var(--line); border-radius: 15px; background: var(--card); }
+    .phrase-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .hanzi { margin: 0; font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 27px; font-weight: 620; line-height: 1.4; overflow-wrap: anywhere; }
+    .save { flex: 0 0 auto; width: 37px; height: 37px; margin: -4px -5px 0 0; border: 0; border-radius: 50%; background: transparent; color: var(--ink-muted); font-size: 22px; line-height: 1; cursor: pointer; }
+    .save[aria-pressed="true"] { color: var(--gold); }
+    .pinyin { margin: 2px 0 0; color: var(--jade); font-size: 13px; font-weight: 680; line-height: 1.45; overflow-wrap: anywhere; }
+    .translation { margin: 6px 0 0; color: var(--ink-soft); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+    .phrase-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 11px; padding-top: 9px; border-top: 1px solid var(--line); }
+    .category { overflow: hidden; color: var(--ink-muted); font-size: 10px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+    .copy { flex: 0 0 auto; min-height: 32px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 9px; background: transparent; color: var(--ink-soft); font-size: 11px; font-weight: 700; cursor: pointer; }
+    .empty, .error { padding: 43px 18px; border: 1px dashed var(--line); border-radius: 15px; color: var(--ink-soft); text-align: center; font-size: 13px; line-height: 1.5; }
+    .error button { display: inline-block; margin-top: 12px; padding: 9px 15px; border: 0; border-radius: 10px; background: var(--ink); color: var(--paper); font-weight: 680; cursor: pointer; }
+    .toast { position: fixed; z-index: 2; left: 50%; bottom: calc(21px + env(safe-area-inset-bottom)); transform: translate(-50%, 10px); max-width: calc(100% - 32px); padding: 10px 14px; border-radius: 12px; background: var(--ink); color: var(--paper); font-size: 12px; opacity: 0; pointer-events: none; transition: opacity .16s, transform .16s; }
+    .toast.on { transform: translate(-50%, 0); opacity: 1; }
+    [hidden] { display: none !important; }
+    @media (min-width: 600px) { .page { padding-right: 24px; padding-left: 24px; } .list { gap: 11px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <button class="back" id="back" type="button" aria-label="Back">‹</button>
+      <span class="eyebrow" id="eyebrow"></span>
+    </header>
+    <section class="hero" aria-labelledby="title">
+      <h1 id="title"></h1>
+      <p class="intro" id="intro"></p>
+    </section>
+    <label class="search">
+      <span class="search-icon" aria-hidden="true">⌕</span>
+      <input id="query" type="search" autocomplete="off" enterkeyhint="search" maxlength="100">
+    </label>
+    <nav class="filters" id="filters" aria-label="Phrase categories"></nav>
+    <div class="count" id="count" aria-live="polite"></div>
+    <section class="list" id="list" aria-label="Phrases"></section>
+    <div class="empty" id="empty" hidden></div>
+    <div class="error" id="error" hidden></div>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+    (function () {
+      "use strict";
+
+      var LANGUAGE = new URLSearchParams(location.search).get("lang") || "uz";
+      if (!["uz", "ru", "tj"].includes(LANGUAGE)) LANGUAGE = "uz";
+      var UI = {
+        uz: {title:"Tayyor gaplar", intro:"Kundalik vaziyatlar uchun xitoycha gaplar.", eyebrow:"GAP JAMLANMASI", search:"Xitoycha, pinyin yoki tarjima bo‘yicha qidiring", all:"Barchasi", saved:"Saqlanganlar", count:"{shown} / {total} ta gap", save:"Saqlash", savedOne:"Saqlandi", removed:"Saqlanganlardan olib tashlandi", copy:"Nusxalash", copied:"Nusxalandi", empty:"Bu qidiruvga mos gap topilmadi. Boshqa so‘z bilan qidiring.", noSaved:"Saqlangan gaplaringiz shu yerda ko‘rinadi.", loadError:"Gaplar jamlanmasi yuklanmadi. Internetga ulaning va qayta urinib ko‘ring.", retry:"Qayta urinish", back:"Mashqlarga qaytish", storageError:"Saqlash imkoni bo‘lmadi. Telefon sozlamalarini tekshiring." },
+        ru: {title:"Готовые фразы", intro:"Китайские фразы для повседневных ситуаций.", eyebrow:"ПОДБОРКА ФРАЗ", search:"Поиск по китайскому, пиньиню или переводу", all:"Все фразы", saved:"Сохранённые", count:"{shown} из {total} фраз", save:"Сохранить", savedOne:"Сохранено", removed:"Удалено из сохранённых", copy:"Копировать", copied:"Скопировано", empty:"По этому запросу ничего не найдено. Попробуйте другие слова.", noSaved:"Сохранённые фразы появятся здесь.", loadError:"Не удалось загрузить фразы. Подключитесь к интернету и попробуйте ещё раз.", retry:"Повторить", back:"Назад к практике", storageError:"Не удалось сохранить. Проверьте настройки телефона." },
+        tj: {title:"Ибораҳои омода", intro:"Ҷумлаҳои чинӣ барои вазъиятҳои ҳаррӯза.", eyebrow:"ҶАМЪОВАРИИ ИБОРАҲО", search:"Ҷустуҷӯ бо чинӣ, пинйин ё тарҷума", all:"Ҳама", saved:"Нигоҳдоштаҳо", count:"{shown} аз {total} ҷумла", save:"Нигоҳ доштан", savedOne:"Нигоҳ дошта шуд", removed:"Аз нигоҳдоштаҳо бардошта шуд", copy:"Нусха бардоштан", copied:"Нусха бардошта шуд", empty:"Барои ин ҷустуҷӯ ҷумла ёфт нашуд. Калимаи дигарро ҷӯед.", noSaved:"Ибораҳои нигоҳдоштаатон дар ин ҷо намоиш мешаванд.", loadError:"Ибораҳо бор нашуданд. Ба интернет пайваст шуда, боз кӯшиш кунед.", retry:"Аз нав кӯшиш кардан", back:"Бозгашт ба машқ", storageError:"Захира карда нашуд. Танзимоти телефонро санҷед." }
+      };
+      var text = UI[LANGUAGE];
+      var theme = new URLSearchParams(location.search).get("theme");
+      if (theme === "dark") document.documentElement.dataset.theme = "dark";
+      document.documentElement.lang = LANGUAGE;
+
+      var elements = {
+        title: document.getElementById("title"),
+        intro: document.getElementById("intro"),
+        eyebrow: document.getElementById("eyebrow"),
+        query: document.getElementById("query"),
+        filters: document.getElementById("filters"),
+        count: document.getElementById("count"),
+        list: document.getElementById("list"),
+        empty: document.getElementById("empty"),
+        error: document.getElementById("error"),
+        toast: document.getElementById("toast")
+      };
+      var catalog = null;
+      var currentFilter = "all";
+      var savedIds = readSavedIds();
+      var toastTimer = 0;
+
+      elements.title.textContent = text.title;
+      elements.intro.textContent = text.intro;
+      elements.eyebrow.textContent = text.eyebrow;
+      elements.query.placeholder = text.search;
+      elements.query.setAttribute("aria-label", text.search);
+      elements.filters.setAttribute("aria-label", text.all);
+      document.getElementById("back").setAttribute("aria-label", text.back);
+
+      function readSavedIds() {
+        try {
+          var value = JSON.parse(localStorage.getItem("hsk_ai_ready_phrases:v1") || "[]");
+          return new Set(Array.isArray(value) ? value.filter(function (id) { return typeof id === "string"; }) : []);
+        } catch (_) { return new Set(); }
+      }
+
+      function persistSavedIds() {
+        try {
+          localStorage.setItem("hsk_ai_ready_phrases:v1", JSON.stringify(Array.from(savedIds)));
+          return true;
+        } catch (_) {
+          announce(text.storageError);
+          return false;
+        }
+      }
+
+      function announce(message) {
+        elements.toast.textContent = message;
+        elements.toast.classList.add("on");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { elements.toast.classList.remove("on"); }, 1600);
+      }
+
+      function normalize(value) {
+        return String(value || "")
+          .toLocaleLowerCase(LANGUAGE)
+          .normalize("NFD")
+          .replace(/\p{M}/gu, "")
+          .replace(/[’‘ʻ`´]/g, "'")
+          .replace(/[^\p{L}\p{N}一-鿿]/gu, "");
+      }
+
+      function queryTerms(value) {
+        return String(value || "").trim().split(/\s+/).map(normalize).filter(Boolean);
+      }
+
+      function searchableFields(phrase) {
+        return [phrase.zh, phrase.pinyin.replace(/ü/gi, "v")]
+          .concat(Object.keys(phrase.translations).map(function (lang) { return phrase.translations[lang]; }))
+          .map(normalize)
+          .filter(Boolean);
+      }
+
+      function rank(phrase, terms) {
+        var fields = searchableFields(phrase);
+        var matches = terms.map(function (term) {
+          if (fields.some(function (field) { return field === term; })) return 0;
+          if (fields.some(function (field) { return field.indexOf(term) === 0; })) return 1;
+          if (fields.some(function (field) { return field.indexOf(term) !== -1; })) return 2;
+          return -1;
+        });
+        return matches.some(function (match) { return match < 0; }) ? -1 : Math.max.apply(null, matches);
+      }
+
+      function makeButton(className, label, handler) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = className;
+        button.textContent = label;
+        button.setAttribute("aria-label", label);
+        button.addEventListener("click", handler);
+        return button;
+      }
+
+      function createFilter(id, label) {
+        var chip = makeButton("chip", label, function () {
+          currentFilter = id;
+          renderFilters();
+          renderPhrases();
+        });
+        chip.setAttribute("aria-pressed", String(currentFilter === id));
+        elements.filters.appendChild(chip);
+      }
+
+      function renderFilters() {
+        elements.filters.replaceChildren();
+        createFilter("all", text.all);
+        createFilter("saved", text.saved);
+        catalog.categories.forEach(function (category) {
+          createFilter(category.id, category.labels[LANGUAGE]);
+        });
+      }
+
+      function createPhraseCard(phrase, category) {
+        var card = document.createElement("article");
+        card.className = "phrase";
+        var top = document.createElement("div");
+        top.className = "phrase-top";
+        var hanzi = document.createElement("p");
+        hanzi.className = "hanzi";
+        hanzi.lang = "zh";
+        hanzi.textContent = phrase.zh;
+        var isSaved = savedIds.has(phrase.id);
+        var save = makeButton("save", isSaved ? "★" : "☆", function () {
+          var wasSaved = savedIds.has(phrase.id);
+          if (wasSaved) savedIds.delete(phrase.id); else savedIds.add(phrase.id);
+          if (!persistSavedIds()) {
+            if (wasSaved) savedIds.add(phrase.id); else savedIds.delete(phrase.id);
+            return;
+          }
+          announce(wasSaved ? text.removed : text.savedOne);
+          renderPhrases();
+        });
+        save.setAttribute("aria-label", isSaved ? text.savedOne : text.save);
+        save.setAttribute("aria-pressed", String(isSaved));
+        top.append(hanzi, save);
+
+        var pinyin = document.createElement("p");
+        pinyin.className = "pinyin";
+        pinyin.textContent = phrase.pinyin;
+        var translation = document.createElement("p");
+        translation.className = "translation";
+        translation.textContent = phrase.translations[LANGUAGE];
+        var bottom = document.createElement("div");
+        bottom.className = "phrase-bottom";
+        var categoryLabel = document.createElement("span");
+        categoryLabel.className = "category";
+        categoryLabel.textContent = category.labels[LANGUAGE];
+        var copy = makeButton("copy", text.copy, function () {
+          copyText(phrase.zh).then(function () { announce(text.copied); }).catch(function () { announce(text.copy); });
+        });
+        bottom.append(categoryLabel, copy);
+        card.append(top, pinyin, translation, bottom);
+        return card;
+      }
+
+      function renderPhrases() {
+        var query = queryTerms(elements.query.value);
+        var visible = catalog.phrases.map(function (phrase, position) {
+          return { phrase: phrase, rank: query.length ? rank(phrase, query) : 0, position: position };
+        }).filter(function (item) {
+          if (item.rank < 0) return false;
+          if (currentFilter === "saved") return savedIds.has(item.phrase.id);
+          return currentFilter === "all" || item.phrase.category_id === currentFilter;
+        }).sort(function (a, b) {
+          if (!query.length) return a.position - b.position;
+          return a.rank - b.rank || a.position - b.position;
+        });
+
+        elements.list.replaceChildren();
+        elements.count.textContent = text.count.replace("{shown}", String(visible.length)).replace("{total}", String(catalog.phrases.length));
+        elements.empty.hidden = visible.length > 0;
+        if (!visible.length) elements.empty.textContent = currentFilter === "saved" && !query ? text.noSaved : text.empty;
+        visible.forEach(function (item) {
+          var category = catalog.categories.find(function (entry) { return entry.id === item.phrase.category_id; });
+          if (category) elements.list.appendChild(createPhraseCard(item.phrase, category));
+        });
+      }
+
+      function copyText(value) {
+        if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(value);
+        return new Promise(function (resolve, reject) {
+          var field = document.createElement("textarea");
+          field.value = value;
+          field.setAttribute("readonly", "");
+          field.style.position = "fixed";
+          field.style.opacity = "0";
+          document.body.appendChild(field);
+          field.select();
+          var copied = false;
+          try { copied = document.execCommand("copy"); } catch (_) { copied = false; }
+          field.remove();
+          if (copied) resolve(); else reject(new Error("Clipboard unavailable"));
+        });
+      }
+
+      function goBack() {
+        if (history.length > 1) history.back();
+        else location.replace("/course-v3.html?tab=quiz&lang=" + encodeURIComponent(LANGUAGE));
+      }
+
+      document.getElementById("back").addEventListener("click", goBack);
+      elements.query.addEventListener("input", renderPhrases);
+      try {
+        var webApp = window.Telegram && window.Telegram.WebApp;
+        if (webApp && webApp.BackButton) {
+          webApp.BackButton.show();
+          webApp.BackButton.onClick(goBack);
+          window.addEventListener("pagehide", function () { webApp.BackButton.hide(); }, { once: true });
+        }
+      } catch (_) { /* Standalone preview outside Telegram. */ }
+
+      function loadCatalog() {
+        elements.error.hidden = true;
+        fetch("/course_v3_data/ready-phrases-v1.json", { cache: "force-cache" })
+          .then(function (response) { if (!response.ok) throw new Error("phrasebook unavailable"); return response.json(); })
+          .then(function (data) {
+            if (!data || !Array.isArray(data.categories) || !Array.isArray(data.phrases)) throw new Error("phrasebook has invalid data");
+            catalog = data;
+            renderFilters();
+            renderPhrases();
+          })
+          .catch(function () {
+            elements.error.replaceChildren();
+            var message = document.createElement("p");
+            message.textContent = text.loadError;
+            var retry = makeButton("retry", text.retry, loadCatalog);
+            retry.id = "retry";
+            elements.error.append(message, retry);
+            elements.error.hidden = false;
+          });
+      }
+
+      loadCatalog();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,3715 @@
+{
+  "version": 1,
+  "categories": [
+    {
+      "id": "greetings",
+      "sort_order": 1,
+      "labels": {
+        "uz": "Salomlashish va tanishish",
+        "ru": "Приветствие и знакомство",
+        "tj": "Салом ва шиносоӣ"
+      }
+    },
+    {
+      "id": "daily",
+      "sort_order": 2,
+      "labels": {
+        "uz": "Kundalik suhbat",
+        "ru": "Повседневное общение",
+        "tj": "Суҳбати ҳаррӯза"
+      }
+    },
+    {
+      "id": "family",
+      "sort_order": 3,
+      "labels": {
+        "uz": "Oila va uy",
+        "ru": "Семья и дом",
+        "tj": "Оила ва хона"
+      }
+    },
+    {
+      "id": "time",
+      "sort_order": 4,
+      "labels": {
+        "uz": "Vaqt va uchrashuv",
+        "ru": "Время и встречи",
+        "tj": "Вақт ва вохӯриҳо"
+      }
+    },
+    {
+      "id": "food",
+      "sort_order": 5,
+      "labels": {
+        "uz": "Ovqat va restoran",
+        "ru": "Еда и ресторан",
+        "tj": "Хӯрок ва тарабхона"
+      }
+    },
+    {
+      "id": "shopping",
+      "sort_order": 6,
+      "labels": {
+        "uz": "Xarid va pul",
+        "ru": "Покупки и деньги",
+        "tj": "Харид ва пул"
+      }
+    },
+    {
+      "id": "transport",
+      "sort_order": 7,
+      "labels": {
+        "uz": "Yo‘l va transport",
+        "ru": "Дорога и транспорт",
+        "tj": "Роҳ ва нақлиёт"
+      }
+    },
+    {
+      "id": "travel",
+      "sort_order": 8,
+      "labels": {
+        "uz": "Sayohat va mehmonxona",
+        "ru": "Путешествия и отель",
+        "tj": "Саёҳат ва меҳмонхона"
+      }
+    },
+    {
+      "id": "study",
+      "sort_order": 9,
+      "labels": {
+        "uz": "O‘qish va dars",
+        "ru": "Учёба и уроки",
+        "tj": "Таҳсил ва дарс"
+      }
+    },
+    {
+      "id": "work",
+      "sort_order": 10,
+      "labels": {
+        "uz": "Ish va muloqot",
+        "ru": "Работа и общение",
+        "tj": "Кор ва муошират"
+      }
+    },
+    {
+      "id": "health",
+      "sort_order": 11,
+      "labels": {
+        "uz": "Sog‘liq",
+        "ru": "Здоровье",
+        "tj": "Саломатӣ"
+      }
+    },
+    {
+      "id": "help",
+      "sort_order": 12,
+      "labels": {
+        "uz": "Muammo va yordam",
+        "ru": "Проблемы и помощь",
+        "tj": "Мушкилот ва ёрӣ"
+      }
+    }
+  ],
+  "phrases": [
+    {
+      "id": "phrase-f21408a7884add",
+      "category_id": "greetings",
+      "sort_order": 1,
+      "zh": "你好！",
+      "pinyin": "Nǐ hǎo!",
+      "translations": {
+        "uz": "Salom!",
+        "ru": "Привет!",
+        "tj": "Салом!"
+      }
+    },
+    {
+      "id": "phrase-d6b58845e75b4b",
+      "category_id": "greetings",
+      "sort_order": 2,
+      "zh": "您好！",
+      "pinyin": "Nín hǎo!",
+      "translations": {
+        "uz": "Salom (rasmiy)!",
+        "ru": "Здравствуйте!",
+        "tj": "Салом (расмӣ)!"
+      }
+    },
+    {
+      "id": "phrase-93ffb5f42f6f58",
+      "category_id": "greetings",
+      "sort_order": 3,
+      "zh": "你们好！",
+      "pinyin": "Nǐmen hǎo!",
+      "translations": {
+        "uz": "Hammangizga salom!",
+        "ru": "Здравствуйте все!",
+        "tj": "Ба ҳамаи шумо салом!"
+      }
+    },
+    {
+      "id": "phrase-2618cbc49c0b17",
+      "category_id": "greetings",
+      "sort_order": 4,
+      "zh": "谢谢！",
+      "pinyin": "Xièxie!",
+      "translations": {
+        "uz": "Rahmat!",
+        "ru": "Спасибо!",
+        "tj": "Раҳмат!"
+      }
+    },
+    {
+      "id": "phrase-31bce220d4a706",
+      "category_id": "greetings",
+      "sort_order": 5,
+      "zh": "谢谢你！",
+      "pinyin": "Xièxie nǐ!",
+      "translations": {
+        "uz": "Senga rahmat!",
+        "ru": "Спасибо тебе!",
+        "tj": "Аз ту ташаккур!"
+      }
+    },
+    {
+      "id": "phrase-e060003fa90789",
+      "category_id": "greetings",
+      "sort_order": 6,
+      "zh": "再见！",
+      "pinyin": "Zàijiàn!",
+      "translations": {
+        "uz": "Xayr!",
+        "ru": "До свидания!",
+        "tj": "Хайр!"
+      }
+    },
+    {
+      "id": "phrase-6f03168837ee30",
+      "category_id": "greetings",
+      "sort_order": 7,
+      "zh": "不客气！",
+      "pinyin": "Bú kèqi!",
+      "translations": {
+        "uz": "Iltimos (muammo yo'q)!",
+        "ru": "Не за что!",
+        "tj": "Хоҳиш мекунам!"
+      }
+    },
+    {
+      "id": "phrase-07494b9a5978c1",
+      "category_id": "greetings",
+      "sort_order": 8,
+      "zh": "你叫什么名字？",
+      "pinyin": "Nǐ jiào shénme míngzi?",
+      "translations": {
+        "uz": "Ismingiz nima?",
+        "ru": "Как вас зовут?",
+        "tj": "Номи шумо чист?"
+      }
+    },
+    {
+      "id": "phrase-b8b93721810d80",
+      "category_id": "greetings",
+      "sort_order": 9,
+      "zh": "你好！这个杯子多少钱？",
+      "pinyin": "Nǐ hǎo! Zhège bēizi duōshao qián?",
+      "translations": {
+        "uz": "Salom! Bu piyola qancha turadi?",
+        "ru": "Здравствуйте! Сколько стоит этот стакан?",
+        "tj": "Салом! Ин пиёла чанд пул аст?"
+      }
+    },
+    {
+      "id": "phrase-9dacf636cc7c2c",
+      "category_id": "greetings",
+      "sort_order": 10,
+      "zh": "前面那个人叫什么名字？",
+      "pinyin": "Qiánmiàn nàge rén jiào shénme míngzi?",
+      "translations": {
+        "uz": "Oldidagi odam nomi nima?",
+        "ru": "Как зовут человека спереди?",
+        "tj": "Номи одами пешаш чист?"
+      }
+    },
+    {
+      "id": "phrase-5f69db86fe91df",
+      "category_id": "greetings",
+      "sort_order": 11,
+      "zh": "后面那个人呢？他叫什么名字？",
+      "pinyin": "Hòumiàn nàge rén ne? Tā jiào shénme míngzi?",
+      "translations": {
+        "uz": "Orqasidagi odam-chi? Uning ismi nima?",
+        "ru": "А человек сзади? Как его зовут?",
+        "tj": "Одами қафоаш чӣ? Номаш чист?"
+      }
+    },
+    {
+      "id": "phrase-6c2bd507812901",
+      "category_id": "greetings",
+      "sort_order": 12,
+      "zh": "很高兴认识您！李小姐。",
+      "pinyin": "Hěn gāoxìng rènshi nín! Lǐ xiǎojiě.",
+      "translations": {
+        "uz": "Siz bilan tanishganimdan juda xursandman, Xonim Li!",
+        "ru": "Очень рад познакомиться с вами, мисс Ли!",
+        "tj": "Аз шиноси бо шумо бисёр хурсандам, хонум Ли!"
+      }
+    },
+    {
+      "id": "phrase-3118fa6eec6709",
+      "category_id": "greetings",
+      "sort_order": 13,
+      "zh": "我们是2011年9月认识的。",
+      "pinyin": "Wǒmen shì èr líng yī yī nián jiǔ yuè rènshi de.",
+      "translations": {
+        "uz": "Biz 2011-yilning sentabrida tanishdik.",
+        "ru": "Мы познакомились в сентябре 2011 года.",
+        "tj": "Мо дар моҳи сентябри соли 2011 шинос шудем."
+      }
+    },
+    {
+      "id": "phrase-5e3cab2f8de047",
+      "category_id": "greetings",
+      "sort_order": 14,
+      "zh": "认识你我也很高兴！",
+      "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng!",
+      "translations": {
+        "uz": "Siz bilan tanishganimdan men ham juda xursandman!",
+        "ru": "Мне тоже очень приятно познакомиться с вами!",
+        "tj": "Аз шиноси бо шумо ман ҳам бисёр хурсандам!"
+      }
+    },
+    {
+      "id": "phrase-eb08f407c75e6f",
+      "category_id": "greetings",
+      "sort_order": 15,
+      "zh": "你们在哪儿认识的？",
+      "pinyin": "Nǐmen zài nǎr rènshi de?",
+      "translations": {
+        "uz": "Siz ikkovingiz qayerda tanishdingiz?",
+        "ru": "Где вы двое познакомились?",
+        "tj": "Шумо дуто дар куҷо шинос шудед?"
+      }
+    },
+    {
+      "id": "phrase-64a9ddb17e2c86",
+      "category_id": "greetings",
+      "sort_order": 16,
+      "zh": "您好！您找谁？",
+      "pinyin": "Nín hǎo! Nín zhǎo shéi?",
+      "translations": {
+        "uz": "Salom! Kimni izlayapsiz?",
+        "ru": "Здравствуйте! Кого вы ищете?",
+        "tj": "Салом! Шумо киро меҷӯед?"
+      }
+    },
+    {
+      "id": "phrase-4c79c1fbd69184",
+      "category_id": "greetings",
+      "sort_order": 17,
+      "zh": "谢谢。希望以后能再见面。",
+      "pinyin": "Xièxie. Xīwàng yǐhòu néng zài jiàn miàn.",
+      "translations": {
+        "uz": "Rahmat. Kelajakda yana uchrashamiz degan umiddaman.",
+        "ru": "Спасибо. Надеюсь, в будущем сможем снова встретиться.",
+        "tj": "Ташаккур. Умедворам, ки баъд боз вохӯрем."
+      }
+    },
+    {
+      "id": "phrase-56c2406023f4e3",
+      "category_id": "greetings",
+      "sort_order": 18,
+      "zh": "谢谢老师！",
+      "pinyin": "Xièxie lǎoshī!",
+      "translations": {
+        "uz": "Rahmat, ustoz!",
+        "ru": "Спасибо, учитель!",
+        "tj": "Ташаккур, устод!"
+      }
+    },
+    {
+      "id": "phrase-69fd12592ac9bd",
+      "category_id": "greetings",
+      "sort_order": 19,
+      "zh": "谢谢你们来看我女儿。你送的小皮鞋和小帽子真漂亮！",
+      "pinyin": "Xièxie nǐmen lái kàn wǒ nǚ'ér. Nǐ sòng de xiǎo píxié hé xiǎo màozi zhēn piàoliang!",
+      "translations": {
+        "uz": "Qizimni ko'rgani kelganingiz uchun rahmat. Siz sovg'a qilgan kichik charm tufli va kichik shlyapa juda chiroyli!",
+        "ru": "Спасибо, что пришли посмотреть мою дочь. Маленькие кожаные туфельки и шапочка, которые ты подарила, очень красивые!",
+        "tj": "Ташаккур, ки духтарамро дидан омадед. Пойафзоли чармии хурд ва кулоҳи хурде, ки ту додӣ, хеле зебо аст!"
+      }
+    },
+    {
+      "id": "phrase-62c4d7eb63f2f7",
+      "category_id": "daily",
+      "sort_order": 1,
+      "zh": "太热了。",
+      "pinyin": "Tài rè le.",
+      "translations": {
+        "uz": "Juda issiq edi.",
+        "ru": "Было очень жарко.",
+        "tj": "Хеле гарм буд."
+      }
+    },
+    {
+      "id": "phrase-474ef451d754f7",
+      "category_id": "daily",
+      "sort_order": 2,
+      "zh": "不会来，天气太冷了。",
+      "pinyin": "Bú huì lái, tiānqì tài lěng le.",
+      "translations": {
+        "uz": "Kelmaydi, ob-havo juda sovuq.",
+        "ru": "Не придёт — погода слишком холодная.",
+        "tj": "Намеояд, обу ҳаво хеле сард аст."
+      }
+    },
+    {
+      "id": "phrase-3753a2ba92062e",
+      "category_id": "daily",
+      "sort_order": 3,
+      "zh": "喂，你在做什么呢？",
+      "pinyin": "Wèi, nǐ zài zuò shénme ne?",
+      "translations": {
+        "uz": "Allo, hozir nima qilyapsiz?",
+        "ru": "Алло, что вы сейчас делаете?",
+        "tj": "Алло, ҳоло чӣ мекунед?"
+      }
+    },
+    {
+      "id": "phrase-74d511e0b3e9dc",
+      "category_id": "daily",
+      "sort_order": 4,
+      "zh": "我在看书呢。",
+      "pinyin": "Wǒ zài kàn shū ne.",
+      "translations": {
+        "uz": "Men hozir kitob o'qiyapman.",
+        "ru": "Я сейчас читаю книгу.",
+        "tj": "Ман ҳоло китоб мехонам."
+      }
+    },
+    {
+      "id": "phrase-bfb2cea20d38a0",
+      "category_id": "daily",
+      "sort_order": 5,
+      "zh": "大卫也在看书吗？",
+      "pinyin": "Dàwèi yě zài kàn shū ma?",
+      "translations": {
+        "uz": "Devid ham kitob o'qiyaptimi?",
+        "ru": "Дэвид тоже читает?",
+        "tj": "Дэвид ҳам китоб мехонад?"
+      }
+    },
+    {
+      "id": "phrase-b1c18554fd26a2",
+      "category_id": "daily",
+      "sort_order": 6,
+      "zh": "你喜欢什么运动？",
+      "pinyin": "Nǐ xǐhuan shénme yùndòng?",
+      "translations": {
+        "uz": "Sen qanday sportni yaxshi ko'rasan?",
+        "ru": "Какой спорт ты любишь?",
+        "tj": "Ту кадом варзишро дӯст медорӣ?"
+      }
+    },
+    {
+      "id": "phrase-e596121f04f1ea",
+      "category_id": "daily",
+      "sort_order": 7,
+      "zh": "我最喜欢踢足球。",
+      "pinyin": "Wǒ zuì xǐhuan tī zúqiú.",
+      "translations": {
+        "uz": "Men futbol o'ynashni eng ko'p yaxshi ko'raman.",
+        "ru": "Больше всего я люблю играть в футбол.",
+        "tj": "Ман аз ҳама бештар футбол бозӣ кардан ро дӯст медорам."
+      }
+    },
+    {
+      "id": "phrase-a1d9d7e7586d00",
+      "category_id": "daily",
+      "sort_order": 8,
+      "zh": "好啊！",
+      "pinyin": "Hǎo a!",
+      "translations": {
+        "uz": "Ha, albatta!",
+        "ru": "Конечно!",
+        "tj": "Хуб, бале!"
+      }
+    },
+    {
+      "id": "phrase-451d987ec471a8",
+      "category_id": "daily",
+      "sort_order": 9,
+      "zh": "二十多岁。",
+      "pinyin": "Èrshí duō suì.",
+      "translations": {
+        "uz": "Yigirma yoshdan oshgan.",
+        "ru": "Больше двадцати лет.",
+        "tj": "Зиёда аз бист сол."
+      }
+    },
+    {
+      "id": "phrase-82352128684502",
+      "category_id": "daily",
+      "sort_order": 10,
+      "zh": "他多高？",
+      "pinyin": "Tā duō gāo?",
+      "translations": {
+        "uz": "Uning bo'yi qancha?",
+        "ru": "Какой у него рост?",
+        "tj": "Қади ӯ чанд аст?"
+      }
+    },
+    {
+      "id": "phrase-65519f5c5387a7",
+      "category_id": "daily",
+      "sort_order": 11,
+      "zh": "那会很累吧？",
+      "pinyin": "Nà huì hěn lèi ba?",
+      "translations": {
+        "uz": "U holda juda charchagan bo'lsa kerak?",
+        "ru": "Наверное, он очень устаёт?",
+        "tj": "Пас ӯ хеле хаста мешавад?"
+      }
+    },
+    {
+      "id": "phrase-1f18d9ae80c572",
+      "category_id": "daily",
+      "sort_order": 12,
+      "zh": "我每天六点起床。",
+      "pinyin": "Wǒ měitiān liù diǎn qǐchuáng.",
+      "translations": {
+        "uz": "Men har kuni soat oltida turaman.",
+        "ru": "Я каждый день встаю в шесть часов.",
+        "tj": "Ман ҳар рӯз соати шаш аз хоб мехезам."
+      }
+    },
+    {
+      "id": "phrase-8c4c39bd879b07",
+      "category_id": "daily",
+      "sort_order": 13,
+      "zh": "一米八几。",
+      "pinyin": "Yì mǐ bā jǐ.",
+      "translations": {
+        "uz": "Bir metr saksoni bir necha santimetr.",
+        "ru": "Метр восемьдесят с чем-то.",
+        "tj": "Як метру ҳаштоду чанд."
+      }
+    },
+    {
+      "id": "phrase-9377036747dc66",
+      "category_id": "daily",
+      "sort_order": 14,
+      "zh": "他每天回来都很累。",
+      "pinyin": "Tā měitiān huílái dōu hěn lèi.",
+      "translations": {
+        "uz": "U har kuni qaytib kelganida juda charchagan bo'ladi.",
+        "ru": "Он каждый день возвращается очень усталым.",
+        "tj": "Ӯ ҳар рӯз хеле хаста бармегардад."
+      }
+    },
+    {
+      "id": "phrase-e901c0edf3025c",
+      "category_id": "daily",
+      "sort_order": 15,
+      "zh": "你怎么知道这么多啊？",
+      "pinyin": "Nǐ zěnme zhīdào zhème duō a?",
+      "translations": {
+        "uz": "Sen bularni qanday bilasan?",
+        "ru": "Откуда ты так много знаешь?",
+        "tj": "Чӣ тавр ин қадар медонӣ?"
+      }
+    },
+    {
+      "id": "phrase-cecf85bdf60e95",
+      "category_id": "daily",
+      "sort_order": 16,
+      "zh": "这块手表是你的吗？",
+      "pinyin": "Zhè kuài shǒubiǎo shì nǐ de ma?",
+      "translations": {
+        "uz": "Bu qo'l soati seniki ekanmi?",
+        "ru": "Эти часы твои?",
+        "tj": "Ин соати дасти аз они туст?"
+      }
+    },
+    {
+      "id": "phrase-ca4219f9fd0f02",
+      "category_id": "daily",
+      "sort_order": 17,
+      "zh": "三千多块。",
+      "pinyin": "Sānqiān duō kuài.",
+      "translations": {
+        "uz": "Uch mingdan ortiq yuan.",
+        "ru": "Больше трёх тысяч юаней.",
+        "tj": "Зиёда аз се ҳазор юань."
+      }
+    },
+    {
+      "id": "phrase-637f168ed7f928",
+      "category_id": "daily",
+      "sort_order": 18,
+      "zh": "你喜欢踢足球吗？",
+      "pinyin": "Nǐ xǐhuan tī zúqiú ma?",
+      "translations": {
+        "uz": "Futbol o'ynashni yaxshi ko'rasanmi?",
+        "ru": "Тебе нравится играть в футбол?",
+        "tj": "Оё ту футбол бозӣ кардан ро дӯст медорӣ?"
+      }
+    },
+    {
+      "id": "phrase-0d09c291b7d661",
+      "category_id": "daily",
+      "sort_order": 19,
+      "zh": "非常喜欢。",
+      "pinyin": "Fēicháng xǐhuan.",
+      "translations": {
+        "uz": "Juda yaxshi ko'raman.",
+        "ru": "Очень нравится.",
+        "tj": "Хеле дӯст медорам."
+      }
+    },
+    {
+      "id": "phrase-29ba9e5b1d09fc",
+      "category_id": "daily",
+      "sort_order": 20,
+      "zh": "我十一岁的时候开始踢足球，已经踢了十年了。",
+      "pinyin": "Wǒ shíyī suì de shíhou kāishǐ tī zúqiú, yǐjīng tī le shí nián le.",
+      "translations": {
+        "uz": "Men o'n bir yoshimda futbol o'ynashni boshladim, allaqachon o'n yil bo'ldi.",
+        "ru": "Я начал играть в футбол в одиннадцать лет, уже прошло десять лет.",
+        "tj": "Ман дар синни ёздаҳсолагӣ футбол бозӣ карданро оғоз кардам, аллакай даҳ сол шудааст."
+      }
+    },
+    {
+      "id": "phrase-392383a8af63eb",
+      "category_id": "daily",
+      "sort_order": 21,
+      "zh": "你经常游泳吗？",
+      "pinyin": "Nǐ jīngcháng yóuyǒng ma?",
+      "translations": {
+        "uz": "Sen tez-tez suzasanmi?",
+        "ru": "Ты часто плаваешь?",
+        "tj": "Оё ту зуд-зуд шино мекунӣ?"
+      }
+    },
+    {
+      "id": "phrase-abd494a4717496",
+      "category_id": "daily",
+      "sort_order": 22,
+      "zh": "这个月我天天都游泳，我现在七十公斤了。",
+      "pinyin": "Zhège yuè wǒ tiāntiān dōu yóuyǒng, wǒ xiànzài qīshí gōngjīn le.",
+      "translations": {
+        "uz": "Bu oy har kuni suzaman, hozir yetmish kilogram bo'ldim.",
+        "ru": "В этом месяце я плаваю каждый день, сейчас вешу семьдесят килограмм.",
+        "tj": "Ин моҳ ман ҳар рӯз шино мекунам, ҳоло ҳафтод килограмм шудам."
+      }
+    },
+    {
+      "id": "phrase-adf19ef30617b2",
+      "category_id": "daily",
+      "sort_order": 23,
+      "zh": "外边天气很好，我们出去运动运动吧！",
+      "pinyin": "Wàibian tiānqì hěn hǎo, wǒmen chūqù yùndòng yùndòng ba!",
+      "translations": {
+        "uz": "Tashqarida havo juda yaxshi, chiqib sport qilaylik!",
+        "ru": "На улице хорошая погода, выйдем позанимаемся спортом!",
+        "tj": "Берун хаво хуб аст, биёем чоре варзиш кунем!"
+      }
+    },
+    {
+      "id": "phrase-d9d6ae81d1c12a",
+      "category_id": "daily",
+      "sort_order": 24,
+      "zh": "回来再打吧。找大卫有什么事情吗？",
+      "pinyin": "Huílái zài dǎ ba. Zhǎo Dàwèi yǒu shénme shìqing ma?",
+      "translations": {
+        "uz": "Qaytib kelgach qo'ng'iroq qilarsiz. Devidga nima ish bor?",
+        "ru": "Позвони потом, когда вернёшься. Какое дело к Дэвиду?",
+        "tj": "Баъди баргашт занг зан. Бо Дэвид чӣ кор дорӣ?"
+      }
+    },
+    {
+      "id": "phrase-41e054d78e4466",
+      "category_id": "daily",
+      "sort_order": 25,
+      "zh": "你打错了，我们这儿没有叫张欢的。",
+      "pinyin": "Nǐ dǎ cuò le, wǒmen zhèr méiyǒu jiào Zhāng Huān de.",
+      "translations": {
+        "uz": "Siz xato raqamga terdingiz, bizda Chjan Xuan ismli odam yo'q.",
+        "ru": "Вы набрали неправильный номер, у нас нет человека по имени Чжан Хуань.",
+        "tj": "Шумо рақами хато зададед, дар ин ҷо Чжан Хуан нест."
+      }
+    },
+    {
+      "id": "phrase-4d17cbc34d71d1",
+      "category_id": "daily",
+      "sort_order": 26,
+      "zh": "一个朋友。",
+      "pinyin": "Yí ge péngyou.",
+      "translations": {
+        "uz": "Bir do'stim.",
+        "ru": "Один друг.",
+        "tj": "Як дӯстам."
+      }
+    },
+    {
+      "id": "phrase-99076be93bdfce",
+      "category_id": "daily",
+      "sort_order": 27,
+      "zh": "什么朋友？是不是男朋友？",
+      "pinyin": "Shénme péngyou? Shì bú shì nán péngyou?",
+      "translations": {
+        "uz": "Qanday do'st? Yigit do'stingizmi?",
+        "ru": "Что за друг? Это случайно не парень?",
+        "tj": "Чӣ гуна дӯст? Магар дӯсти писарат аст?"
+      }
+    },
+    {
+      "id": "phrase-4006eec918cf0e",
+      "category_id": "family",
+      "sort_order": 1,
+      "zh": "你女儿几岁了？",
+      "pinyin": "Nǐ nǚ'ér jǐ suì le?",
+      "translations": {
+        "uz": "Qizingiz necha yoshda?",
+        "ru": "Сколько лет вашей дочери?",
+        "tj": "Духтаратон чанд сол дорад?"
+      }
+    },
+    {
+      "id": "phrase-96b1bc33792779",
+      "category_id": "family",
+      "sort_order": 2,
+      "zh": "她女儿呢？",
+      "pinyin": "Tā nǚ'ér ne?",
+      "translations": {
+        "uz": "Uning qizi-chi?",
+        "ru": "А её дочь?",
+        "tj": "Духтараш чӣ?"
+      }
+    },
+    {
+      "id": "phrase-1ac5ee2cf08950",
+      "category_id": "family",
+      "sort_order": 3,
+      "zh": "小猫在哪儿？",
+      "pinyin": "Xiǎo māo zài nǎr?",
+      "translations": {
+        "uz": "Mushuk qayerda?",
+        "ru": "Где кошка?",
+        "tj": "Гурба куҷост?"
+      }
+    },
+    {
+      "id": "phrase-2baccae0e5cb3e",
+      "category_id": "family",
+      "sort_order": 4,
+      "zh": "你爸爸在家吗？",
+      "pinyin": "Nǐ bàba zài jiā ma?",
+      "translations": {
+        "uz": "Otangiz uyda ekanmi?",
+        "ru": "Ваш папа дома?",
+        "tj": "Падари шумо дар хона аст?"
+      }
+    },
+    {
+      "id": "phrase-c2466f4795b5d0",
+      "category_id": "family",
+      "sort_order": 5,
+      "zh": "小猫在那儿。",
+      "pinyin": "Xiǎo māo zài nàr.",
+      "translations": {
+        "uz": "Mushuk u yerda.",
+        "ru": "Кошка вон там.",
+        "tj": "Гурба он ҷост."
+      }
+    },
+    {
+      "id": "phrase-c888fb998b0137",
+      "category_id": "family",
+      "sort_order": 6,
+      "zh": "不在家。",
+      "pinyin": "Bú zài jiā.",
+      "translations": {
+        "uz": "Uyda yo'q.",
+        "ru": "Нет, не дома.",
+        "tj": "Дар хона нест."
+      }
+    },
+    {
+      "id": "phrase-54eea7db27abf1",
+      "category_id": "family",
+      "sort_order": 7,
+      "zh": "小狗在哪儿？",
+      "pinyin": "Xiǎo gǒu zài nǎr?",
+      "translations": {
+        "uz": "It qayerda?",
+        "ru": "Где собака?",
+        "tj": "Саг куҷост?"
+      }
+    },
+    {
+      "id": "phrase-e4f54b06d888e4",
+      "category_id": "family",
+      "sort_order": 8,
+      "zh": "他在哪儿呢？",
+      "pinyin": "Tā zài nǎr ne?",
+      "translations": {
+        "uz": "Xo'sh, u qayerda?",
+        "ru": "Тогда где же он?",
+        "tj": "Пас ӯ куҷост?"
+      }
+    },
+    {
+      "id": "phrase-643b29546d9ef7",
+      "category_id": "family",
+      "sort_order": 9,
+      "zh": "小狗在椅子下面。",
+      "pinyin": "Xiǎo gǒu zài yǐzi xiàmian.",
+      "translations": {
+        "uz": "It stulning ostida.",
+        "ru": "Собака под стулом.",
+        "tj": "Саг зери курсӣ аст."
+      }
+    },
+    {
+      "id": "phrase-e5fd7f7afb7621",
+      "category_id": "family",
+      "sort_order": 10,
+      "zh": "六点三十分。",
+      "pinyin": "Liù diǎn sānshí fēn.",
+      "translations": {
+        "uz": "Soat olti yarimda.",
+        "ru": "В половине седьмого.",
+        "tj": "Соати шаш ва си дақиқа."
+      }
+    },
+    {
+      "id": "phrase-56ba0c368365f8",
+      "category_id": "family",
+      "sort_order": 11,
+      "zh": "桌子下面有个猫。",
+      "pinyin": "Zhuōzi xiàmiàn yǒu ge māo.",
+      "translations": {
+        "uz": "Stol ostida mushuk bor.",
+        "ru": "Под столом есть кошка.",
+        "tj": "Зери мӯия як гурба аст."
+      }
+    },
+    {
+      "id": "phrase-6d32ce4cbbd083",
+      "category_id": "family",
+      "sort_order": 12,
+      "zh": "那是我的猫，它叫花花。",
+      "pinyin": "Nà shì wǒ de māo, tā jiào Huāhua.",
+      "translations": {
+        "uz": "Bu mening mushugim, u Huahua deb ataladi.",
+        "ru": "Это моя кошка, её зовут Хуахуа.",
+        "tj": "Ин гурбаи ман аст, номаш Хуахуа аст."
+      }
+    },
+    {
+      "id": "phrase-0ad6da8beccc54",
+      "category_id": "family",
+      "sort_order": 13,
+      "zh": "它很漂亮。",
+      "pinyin": "Tā hěn piàoliang.",
+      "translations": {
+        "uz": "U juda chiroyli.",
+        "ru": "Она очень красивая.",
+        "tj": "Вай хеле зебо аст."
+      }
+    },
+    {
+      "id": "phrase-fe760bbe11b6db",
+      "category_id": "family",
+      "sort_order": 14,
+      "zh": "是啊，我觉得它的眼睛最漂亮。",
+      "pinyin": "Shì a, wǒ juéde tā de yǎnjing zuì piàoliang.",
+      "translations": {
+        "uz": "Ha, menimcha uning ko'zlari eng chiroyli.",
+        "ru": "Да, я думаю, что её глаза самые красивые.",
+        "tj": "Бале, ба назари ман чашмонаш аз ҳама зеботаранд."
+      }
+    },
+    {
+      "id": "phrase-a3b2d8d6f0f8b3",
+      "category_id": "family",
+      "sort_order": 15,
+      "zh": "三点多。",
+      "pinyin": "Sān diǎn duō.",
+      "translations": {
+        "uz": "Uchdan keyin (taxminan).",
+        "ru": "Около трёх (чуть после).",
+        "tj": "Каме баъд аз соати се."
+      }
+    },
+    {
+      "id": "phrase-955c45b2464c2e",
+      "category_id": "family",
+      "sort_order": 16,
+      "zh": "它多大了？",
+      "pinyin": "Tā duō dà le?",
+      "translations": {
+        "uz": "U qancha yoshda?",
+        "ru": "Сколько ей лет?",
+        "tj": "Вай чанд сол дорад?"
+      }
+    },
+    {
+      "id": "phrase-e179798ca9d750",
+      "category_id": "family",
+      "sort_order": 17,
+      "zh": "六个多月。",
+      "pinyin": "Liù ge duō yuè.",
+      "translations": {
+        "uz": "Olti oydan ziyod.",
+        "ru": "Больше шести месяцев.",
+        "tj": "Зиёда аз шаш моҳ."
+      }
+    },
+    {
+      "id": "phrase-a814228427a985",
+      "category_id": "family",
+      "sort_order": 18,
+      "zh": "这是谁的房间？",
+      "pinyin": "Zhè shì shéi de fángjiān?",
+      "translations": {
+        "uz": "Bu kimning xonasi?",
+        "ru": "Чья это комната?",
+        "tj": "Ин хонаи кист?"
+      }
+    },
+    {
+      "id": "phrase-ff9080111f187c",
+      "category_id": "family",
+      "sort_order": 19,
+      "zh": "不是我的。是我爸爸的。",
+      "pinyin": "Bú shì wǒ de. Shì wǒ bàba de.",
+      "translations": {
+        "uz": "Meniki emas. Bu dadasimniki.",
+        "ru": "Не мои. Это папины.",
+        "tj": "На, аз они ман нест. Аз они падарам аст."
+      }
+    },
+    {
+      "id": "phrase-80405fb5bfda3a",
+      "category_id": "family",
+      "sort_order": 20,
+      "zh": "这是我和我丈夫的，旁边那个小的房间是我女儿的。",
+      "pinyin": "Zhè shì wǒ hé wǒ zhàngfu de, pángbiān nàge xiǎo de fángjiān shì wǒ nǚ'ér de.",
+      "translations": {
+        "uz": "Bu men va erimning xonasi, yonidagi kichkina xona esa qizimniki.",
+        "ru": "Это наша с мужем комната, а маленькая комната рядом — дочкина.",
+        "tj": "Ин хонаи ман ва шавҳарам аст, ва хонаи хурде дар паҳлӯ аз они духтарам аст."
+      }
+    },
+    {
+      "id": "phrase-b05fe53ee80782",
+      "category_id": "family",
+      "sort_order": 21,
+      "zh": "你听，是不是送报纸的来了？",
+      "pinyin": "Nǐ tīng, shì bú shì sòng bàozhǐ de lái le?",
+      "translations": {
+        "uz": "Eshit, gazeta olib keladiganmi keldi?",
+        "ru": "Слышишь, это не газетчик пришёл?",
+        "tj": "Гӯш кун, оё рӯзнома оварандаи омад?"
+      }
+    },
+    {
+      "id": "phrase-852604554f97ac",
+      "category_id": "family",
+      "sort_order": 22,
+      "zh": "你女儿的房间真漂亮啊！都是粉色的。",
+      "pinyin": "Nǐ nǚ'ér de fángjiān zhēn piàoliang a! Dōu shì fěnsè de.",
+      "translations": {
+        "uz": "Qizingizning xonasi juda chiroyli! Hammasi pushti rangda.",
+        "ru": "Комната вашей дочки действительно красивая! Всё розовое.",
+        "tj": "Хонаи духтаратон воқеан зебо аст! Ҳама чиз гулобӣ ранг аст."
+      }
+    },
+    {
+      "id": "phrase-d76c8380d5270c",
+      "category_id": "family",
+      "sort_order": 23,
+      "zh": "我看一下。不是，是送牛奶的。",
+      "pinyin": "Wǒ kàn yíxià. Bú shì, shì sòng niúnǎi de.",
+      "translations": {
+        "uz": "Bir qarayayin. Yo'q, sut olib keladigan.",
+        "ru": "Посмотрю. Нет, это молочник.",
+        "tj": "Як нигоҳ мекунам. На, шир оварандаи аст."
+      }
+    },
+    {
+      "id": "phrase-866b13c2505c54",
+      "category_id": "family",
+      "sort_order": 24,
+      "zh": "是啊，粉色是我女儿最喜欢的颜色。",
+      "pinyin": "Shì a, fěnsè shì wǒ nǚ'ér zuì xǐhuan de yánsè.",
+      "translations": {
+        "uz": "Ha, pushti rang qizimning eng sevimli rangi.",
+        "ru": "Да, розовый — любимый цвет моей дочки.",
+        "tj": "Бале, гулобӣ ранги дӯстдоштатарини духтарам аст."
+      }
+    },
+    {
+      "id": "phrase-f7c0a5579b8728",
+      "category_id": "family",
+      "sort_order": 25,
+      "zh": "电话是谁打的？",
+      "pinyin": "Diànhuà shì shéi dǎ de?",
+      "translations": {
+        "uz": "Telefon kimdan edi?",
+        "ru": "Кто звонил?",
+        "tj": "Занг аз кӣ буд?"
+      }
+    },
+    {
+      "id": "phrase-b075765884e5ba",
+      "category_id": "family",
+      "sort_order": 26,
+      "zh": "不知道，是儿子接的。",
+      "pinyin": "Bù zhīdào, shì érzi jiē de.",
+      "translations": {
+        "uz": "Bilmadim, o'g'lim qabul qildi.",
+        "ru": "Не знаю, трубку взял сын.",
+        "tj": "Намедонам, писарам ҷавоб дод."
+      }
+    },
+    {
+      "id": "phrase-6afb5991baff7a",
+      "category_id": "family",
+      "sort_order": 27,
+      "zh": "那你准备做什么呢？",
+      "pinyin": "Nà nǐ zhǔnbèi zuò shénme ne?",
+      "translations": {
+        "uz": "Unda nima pishirmoqchisan?",
+        "ru": "Тогда что ты собираешься готовить?",
+        "tj": "Пас ту чӣ пухтан мехоҳӣ?"
+      }
+    },
+    {
+      "id": "phrase-dcd114f98aec3c",
+      "category_id": "time",
+      "sort_order": 1,
+      "zh": "她今年四岁了。",
+      "pinyin": "Tā jīnnián sì suì le.",
+      "translations": {
+        "uz": "U bu yil to'rt yoshga to'ldi.",
+        "ru": "Ей в этом году исполнилось четыре года.",
+        "tj": "Вай имсол чор сол шуд."
+      }
+    },
+    {
+      "id": "phrase-e443552af4530d",
+      "category_id": "time",
+      "sort_order": 2,
+      "zh": "她今年50岁了。",
+      "pinyin": "Tā jīnnián wǔshí suì le.",
+      "translations": {
+        "uz": "U bu yil ellik yoshga kirdi.",
+        "ru": "В этом году ей исполнилось пятьдесят.",
+        "tj": "Вай имсол панҷоҳ сол шуд."
+      }
+    },
+    {
+      "id": "phrase-6cf23a2f6f2a42",
+      "category_id": "time",
+      "sort_order": 3,
+      "zh": "她女儿今年20岁。",
+      "pinyin": "Tā nǚ'ér jīnnián èrshí suì.",
+      "translations": {
+        "uz": "Uning qizi bu yil yigirma yoshda.",
+        "ru": "Её дочери в этом году двадцать лет.",
+        "tj": "Духтараш имсол бист сол дорад."
+      }
+    },
+    {
+      "id": "phrase-974e1b896f3081",
+      "category_id": "time",
+      "sort_order": 4,
+      "zh": "昨天是几月几号？",
+      "pinyin": "Zuótiān shì jǐ yuè jǐ hào?",
+      "translations": {
+        "uz": "Kecha nechanchi oy, nechanchi sana edi?",
+        "ru": "Какое число какого месяца было вчера?",
+        "tj": "Дирӯз чанди моҳ ва чанди сана буд?"
+      }
+    },
+    {
+      "id": "phrase-95b58c85932c55",
+      "category_id": "time",
+      "sort_order": 5,
+      "zh": "明天星期六，你去学校吗？",
+      "pinyin": "Míngtiān xīngqī liù, nǐ qù xuéxiào ma?",
+      "translations": {
+        "uz": "Ertaga shanba — maktabga borасанmi?",
+        "ru": "Завтра суббота — ты идёшь в школу?",
+        "tj": "Фардо шанбе — ту ба мактаб меравӣ?"
+      }
+    },
+    {
+      "id": "phrase-dcfeefeffbaa99",
+      "category_id": "time",
+      "sort_order": 6,
+      "zh": "今天9月1号。",
+      "pinyin": "Jīntiān jiǔ yuè yī hào.",
+      "translations": {
+        "uz": "Bugun 1-sentabr.",
+        "ru": "Сегодня 1 сентября.",
+        "tj": "Имрӯз 1-уми сентябр аст."
+      }
+    },
+    {
+      "id": "phrase-67d656823175bd",
+      "category_id": "time",
+      "sort_order": 7,
+      "zh": "昨天是8月31号，星期二。",
+      "pinyin": "Zuótiān shì bā yuè sānshíyī hào, xīngqī èr.",
+      "translations": {
+        "uz": "Kecha 31-avgust, seshanba edi.",
+        "ru": "Вчера было 31 августа, вторник.",
+        "tj": "Дирӯз 31-уми август, сешанбе буд."
+      }
+    },
+    {
+      "id": "phrase-c55883b6f121cf",
+      "category_id": "time",
+      "sort_order": 8,
+      "zh": "今天星期几？",
+      "pinyin": "Jīntiān xīngqī jǐ?",
+      "translations": {
+        "uz": "Bugun haftaning nechanchi kuni?",
+        "ru": "Какой сегодня день недели?",
+        "tj": "Имрӯз кадом рӯзи ҳафта аст?"
+      }
+    },
+    {
+      "id": "phrase-de41660036bed8",
+      "category_id": "time",
+      "sort_order": 9,
+      "zh": "明天呢？",
+      "pinyin": "Míngtiān ne?",
+      "translations": {
+        "uz": "Ertaga-chi?",
+        "ru": "А завтра?",
+        "tj": "Фардо чӣ?"
+      }
+    },
+    {
+      "id": "phrase-517d017423ba41",
+      "category_id": "time",
+      "sort_order": 10,
+      "zh": "星期三。",
+      "pinyin": "Xīngqī sān.",
+      "translations": {
+        "uz": "Chorshanba.",
+        "ru": "Среда.",
+        "tj": "Чоршанбе."
+      }
+    },
+    {
+      "id": "phrase-2b1d986f1ee43a",
+      "category_id": "time",
+      "sort_order": 11,
+      "zh": "明天是9月2号，星期四。",
+      "pinyin": "Míngtiān shì jiǔ yuè èr hào, xīngqī sì.",
+      "translations": {
+        "uz": "Ertaga 2-sentabr, payshanba.",
+        "ru": "Завтра 2 сентября, четверг.",
+        "tj": "Фардо 2-юми сентябр, панҷшанбе аст."
+      }
+    },
+    {
+      "id": "phrase-e23d4956c53d6a",
+      "category_id": "time",
+      "sort_order": 12,
+      "zh": "下午你想做什么？",
+      "pinyin": "Xiàwǔ nǐ xiǎng zuò shénme?",
+      "translations": {
+        "uz": "Tushdan keyin nima qilmoqchisiz?",
+        "ru": "Что вы хотите делать во второй половине дня?",
+        "tj": "Баъд аз нисфирӯзӣ чӣ кардан мехоҳед?"
+      }
+    },
+    {
+      "id": "phrase-28e6dbe1ae960f",
+      "category_id": "time",
+      "sort_order": 13,
+      "zh": "下午我想去商店。",
+      "pinyin": "Xiàwǔ wǒ xiǎng qù shāngdiàn.",
+      "translations": {
+        "uz": "Tushdan keyin do'konga bormoqchiman.",
+        "ru": "После полудня я хочу сходить в магазин.",
+        "tj": "Баъд аз нисфирӯзӣ ба мағоза рафтан мехоҳам."
+      }
+    },
+    {
+      "id": "phrase-bf33372736e3e8",
+      "category_id": "time",
+      "sort_order": 14,
+      "zh": "现在几点？",
+      "pinyin": "Xiànzài jǐ diǎn?",
+      "translations": {
+        "uz": "Hozir soat necha?",
+        "ru": "Сколько сейчас времени?",
+        "tj": "Ҳоло соат чанд аст?"
+      }
+    },
+    {
+      "id": "phrase-62b2f5c96b0c7c",
+      "category_id": "time",
+      "sort_order": 15,
+      "zh": "爸爸什么时候回家？",
+      "pinyin": "Bàba shénme shíhou huí jiā?",
+      "translations": {
+        "uz": "Dada qachon uyga qaytadi?",
+        "ru": "Когда папа придёт домой?",
+        "tj": "Падар кай ба хона бармегардад?"
+      }
+    },
+    {
+      "id": "phrase-d9903cc13c2562",
+      "category_id": "time",
+      "sort_order": 16,
+      "zh": "我星期一去北京。",
+      "pinyin": "Wǒ xīngqī yī qù Běijīng.",
+      "translations": {
+        "uz": "Men dushanba kuni Pekinga boraman.",
+        "ru": "Я еду в Пекин в понедельник.",
+        "tj": "Ман рӯзи душанбе ба Пекин меравам."
+      }
+    },
+    {
+      "id": "phrase-0ee9922d8f797f",
+      "category_id": "time",
+      "sort_order": 17,
+      "zh": "下午五点。",
+      "pinyin": "Xiàwǔ wǔ diǎn.",
+      "translations": {
+        "uz": "Tushdan keyin soat beshda.",
+        "ru": "В пять часов вечера.",
+        "tj": "Соати панҷи баъдазнисфирӯзӣ."
+      }
+    },
+    {
+      "id": "phrase-ff2123b4f4fc7f",
+      "category_id": "time",
+      "sort_order": 18,
+      "zh": "中午几点吃饭？",
+      "pinyin": "Zhōngwǔ jǐ diǎn chī fàn?",
+      "translations": {
+        "uz": "Tushda soat nechada ovqatlanasiz?",
+        "ru": "В котором часу вы обедаете?",
+        "tj": "Нисфирӯзӣ соат чанд хӯрок мехӯред?"
+      }
+    },
+    {
+      "id": "phrase-f0105381733d78",
+      "category_id": "time",
+      "sort_order": 19,
+      "zh": "我们什么时候去看电影？",
+      "pinyin": "Wǒmen shénme shíhou qù kàn diànyǐng?",
+      "translations": {
+        "uz": "Biz qachon kinoga boramiz?",
+        "ru": "Когда мы идём в кино?",
+        "tj": "Мо кай ба кино меравем?"
+      }
+    },
+    {
+      "id": "phrase-72880d5acd800e",
+      "category_id": "time",
+      "sort_order": 20,
+      "zh": "星期五前能回家吗？",
+      "pinyin": "Xīngqī wǔ qián néng huí jiā ma?",
+      "translations": {
+        "uz": "Juma kunidan oldin uyga qayta olasizmi?",
+        "ru": "Вы сможете вернуться домой до пятницы?",
+        "tj": "Шумо метавонед пеш аз ҷумъа ба хона баргардед?"
+      }
+    },
+    {
+      "id": "phrase-8affdd8ed19862",
+      "category_id": "time",
+      "sort_order": 21,
+      "zh": "昨天北京的天气怎么样？",
+      "pinyin": "Zuótiān Běijīng de tiānqì zěnmeyàng?",
+      "translations": {
+        "uz": "Kecha Pekindagi ob-havo qanday edi?",
+        "ru": "Какая вчера была погода в Пекине?",
+        "tj": "Дирӯз дар Пекин обу ҳаво чӣ хел буд?"
+      }
+    },
+    {
+      "id": "phrase-758af9144dfd2f",
+      "category_id": "time",
+      "sort_order": 22,
+      "zh": "今天会下雨吗？",
+      "pinyin": "Jīntiān huì xià yǔ ma?",
+      "translations": {
+        "uz": "Bugun yomg'ir yog'adimi?",
+        "ru": "Сегодня будет дождь?",
+        "tj": "Имрӯз борон меборад?"
+      }
+    },
+    {
+      "id": "phrase-f5cb733a668dd2",
+      "category_id": "time",
+      "sort_order": 23,
+      "zh": "今天不会下雨。",
+      "pinyin": "Jīntiān bú huì xià yǔ.",
+      "translations": {
+        "uz": "Bugun yomg'ir yog'maydi.",
+        "ru": "Сегодня дождя не будет.",
+        "tj": "Имрӯз борон намеборад."
+      }
+    },
+    {
+      "id": "phrase-6ad7f14c4071b1",
+      "category_id": "time",
+      "sort_order": 24,
+      "zh": "明天呢？明天天气怎么样？",
+      "pinyin": "Míngtiān ne? Míngtiān tiānqì zěnmeyàng?",
+      "translations": {
+        "uz": "Ertaga-chi? Ertaga ob-havo qanday bo'ladi?",
+        "ru": "А завтра? Какая будет погода?",
+        "tj": "Фардо чӣ? Фардо обу ҳаво чӣ хел мешавад?"
+      }
+    },
+    {
+      "id": "phrase-4fcd6cda3ecaf6",
+      "category_id": "time",
+      "sort_order": 25,
+      "zh": "王小姐今天会来吗？",
+      "pinyin": "Wáng xiǎojiě jīntiān huì lái ma?",
+      "translations": {
+        "uz": "Xonim Van bugun keladimi?",
+        "ru": "Мисс Ван сегодня придёт?",
+        "tj": "Хонум Ван имрӯз меояд?"
+      }
+    },
+    {
+      "id": "phrase-2a4102c575205b",
+      "category_id": "time",
+      "sort_order": 26,
+      "zh": "明天天气很好，不冷不热。",
+      "pinyin": "Míngtiān tiānqì hěn hǎo, bù lěng bú rè.",
+      "translations": {
+        "uz": "Ertaga ob-havo yaxshi bo'ladi, na sovuq na issiq.",
+        "ru": "Завтра погода будет хорошей, ни холодно ни жарко.",
+        "tj": "Фардо обу ҳаво хуб мешавад, на сард на гарм."
+      }
+    },
+    {
+      "id": "phrase-176d245fe6f344",
+      "category_id": "time",
+      "sort_order": 27,
+      "zh": "昨天上午你在做什么呢？",
+      "pinyin": "Zuótiān shàngwǔ nǐ zài zuò shénme ne?",
+      "translations": {
+        "uz": "Kecha ertalab nima qilyotgan edingiz?",
+        "ru": "Что вы делали вчера утром?",
+        "tj": "Дирӯз субҳ чӣ мекардед?"
+      }
+    },
+    {
+      "id": "phrase-12af8732748947",
+      "category_id": "food",
+      "sort_order": 1,
+      "zh": "中国菜好吃吗？",
+      "pinyin": "Zhōngguó cài hǎochī ma?",
+      "translations": {
+        "uz": "Xitoy taomlari mazalimi?",
+        "ru": "Китайская еда вкусная?",
+        "tj": "Оё хӯроки чинӣ болаззат аст?"
+      }
+    },
+    {
+      "id": "phrase-b0b8b30d7e4f30",
+      "category_id": "food",
+      "sort_order": 2,
+      "zh": "中国菜很好吃。",
+      "pinyin": "Zhōngguó cài hěn hǎochī.",
+      "translations": {
+        "uz": "Xitoy taomlari juda mazali.",
+        "ru": "Китайская еда очень вкусная.",
+        "tj": "Хӯроки чинӣ хеле болаззат аст."
+      }
+    },
+    {
+      "id": "phrase-b445cb4c5e39f2",
+      "category_id": "food",
+      "sort_order": 3,
+      "zh": "你会做中国菜吗？",
+      "pinyin": "Nǐ huì zuò Zhōngguó cài ma?",
+      "translations": {
+        "uz": "Siz xitoy taomlarini tayyorlay olasizmi?",
+        "ru": "Вы умеете готовить китайскую еду?",
+        "tj": "Оё шумо метавонед хӯроки чинӣ тайёр кунед?"
+      }
+    },
+    {
+      "id": "phrase-b5c3959675ef4d",
+      "category_id": "food",
+      "sort_order": 4,
+      "zh": "我不会做。",
+      "pinyin": "Wǒ bú huì zuò.",
+      "translations": {
+        "uz": "Men tayyorlay olmayman.",
+        "ru": "Я не умею готовить.",
+        "tj": "Ман наметавонам тайёр кунам."
+      }
+    },
+    {
+      "id": "phrase-bda4c3df992669",
+      "category_id": "food",
+      "sort_order": 5,
+      "zh": "你想喝什么？",
+      "pinyin": "Nǐ xiǎng hē shénme?",
+      "translations": {
+        "uz": "Nima ichmoqchisiz?",
+        "ru": "Что вы хотите выпить?",
+        "tj": "Шумо чӣ нӯшидан мехоҳед?"
+      }
+    },
+    {
+      "id": "phrase-714591f8d0e37b",
+      "category_id": "food",
+      "sort_order": 6,
+      "zh": "我想喝茶。",
+      "pinyin": "Wǒ xiǎng hē chá.",
+      "translations": {
+        "uz": "Men choy ichmoqchiman.",
+        "ru": "Я хочу выпить чай.",
+        "tj": "Ман чой нӯшидан мехоҳам."
+      }
+    },
+    {
+      "id": "phrase-d437162c6903a6",
+      "category_id": "food",
+      "sort_order": 7,
+      "zh": "你想吃什么？",
+      "pinyin": "Nǐ xiǎng chī shénme?",
+      "translations": {
+        "uz": "Nima yemoqchisiz?",
+        "ru": "Что вы хотите поесть?",
+        "tj": "Шумо чӣ хӯрдан мехоҳед?"
+      }
+    },
+    {
+      "id": "phrase-314e4838f67df5",
+      "category_id": "food",
+      "sort_order": 8,
+      "zh": "我想吃米饭。",
+      "pinyin": "Wǒ xiǎng chī mǐfàn.",
+      "translations": {
+        "uz": "Men guruch yemoqchiman.",
+        "ru": "Я хочу поесть риса.",
+        "tj": "Ман биринҷ хӯрдан мехоҳам."
+      }
+    },
+    {
+      "id": "phrase-54d48e827816b8",
+      "category_id": "food",
+      "sort_order": 9,
+      "zh": "十二点吃饭。",
+      "pinyin": "Shí'èr diǎn chī fàn.",
+      "translations": {
+        "uz": "Soat o'n ikkida ovqatlanamiz.",
+        "ru": "Мы обедаем в двенадцать.",
+        "tj": "Мо соат дувоздаҳ хӯрок мехӯрем."
+      }
+    },
+    {
+      "id": "phrase-d81326fc714d60",
+      "category_id": "food",
+      "sort_order": 10,
+      "zh": "你多吃些水果，多喝水。",
+      "pinyin": "Nǐ duō chī xiē shuǐguǒ, duō hē shuǐ.",
+      "translations": {
+        "uz": "Ko'proq meva yeng, ko'proq suv iching.",
+        "ru": "Ешьте больше фруктов и пейте больше воды.",
+        "tj": "Бештар мева хӯред, бештар об нӯшед."
+      }
+    },
+    {
+      "id": "phrase-abae1bef8333b0",
+      "category_id": "food",
+      "sort_order": 11,
+      "zh": "我在睡觉呢。你呢？",
+      "pinyin": "Wǒ zài shuì jiào ne. Nǐ ne?",
+      "translations": {
+        "uz": "Men uxlayotgan edim. Siz-chi?",
+        "ru": "Я спал. А вы?",
+        "tj": "Ман мехобидам. Шумо чӣ?"
+      }
+    },
+    {
+      "id": "phrase-9da0b7c1c255c4",
+      "category_id": "food",
+      "sort_order": 12,
+      "zh": "我在家看电视呢。你喜欢看电视吗？",
+      "pinyin": "Wǒ zài jiā kàn diànshì ne. Nǐ xǐhuan kàn diànshì ma?",
+      "translations": {
+        "uz": "Men uyda televizor ko'rayotgan edim. Televizor ko'rishni yaxshi ko'rasizmi?",
+        "ru": "Я смотрел телевизор дома. Вам нравится смотреть телевизор?",
+        "tj": "Ман дар хона телевизор тамошо мекардам. Шумо телевизор тамошо карданро дӯст медоред?"
+      }
+    },
+    {
+      "id": "phrase-523d1aac9b6dfe",
+      "category_id": "food",
+      "sort_order": 13,
+      "zh": "他没看书，他在学做中国菜呢。",
+      "pinyin": "Tā méi kàn shū, tā zài xué zuò Zhōngguó cài ne.",
+      "translations": {
+        "uz": "U kitob o'qiyotgani yo'q, u hozir xitoy taomi pishirishni o'rganayapti.",
+        "ru": "Он не читает — он сейчас учится готовить китайскую еду.",
+        "tj": "Ӯ китоб намехонад, ӯ ҳоло тарзи пухтани хӯроки чинӣро меомӯзад."
+      }
+    },
+    {
+      "id": "phrase-a3440651a4c05f",
+      "category_id": "food",
+      "sort_order": 14,
+      "zh": "我不喜欢看电视，我喜欢看电影。",
+      "pinyin": "Wǒ bù xǐhuan kàn diànshì, wǒ xǐhuan kàn diànyǐng.",
+      "translations": {
+        "uz": "Men televizor ko'rishni yaxshi ko'rmayman, men kino ko'rishni yaxshi ko'raman.",
+        "ru": "Я не люблю смотреть телевизор — мне нравится кино.",
+        "tj": "Ман телевизор тамошо карданро дӯст надорам, ман кино тамошо карданро дӯст дорам."
+      }
+    },
+    {
+      "id": "phrase-2760ebb9e5a96c",
+      "category_id": "food",
+      "sort_order": 15,
+      "zh": "你们是怎么来饭店的？",
+      "pinyin": "Nǐmen shì zěnme lái fàndiàn de?",
+      "translations": {
+        "uz": "Siz restoranga qanday keldingiz?",
+        "ru": "Как вы добрались до ресторана?",
+        "tj": "Шумо ба тарабхона чӣ гуна омадед?"
+      }
+    },
+    {
+      "id": "phrase-c7e809a48335ba",
+      "category_id": "food",
+      "sort_order": 16,
+      "zh": "吃了。现在好多了。",
+      "pinyin": "Chī le. Xiànzài hǎo duō le.",
+      "translations": {
+        "uz": "Ichdim. Hozir ancha yaxshi.",
+        "ru": "Принял. Сейчас намного лучше.",
+        "tj": "Хӯрдам. Ҳоло хеле беҳтар шудам."
+      }
+    },
+    {
+      "id": "phrase-6698e4072a2acc",
+      "category_id": "food",
+      "sort_order": 17,
+      "zh": "休息一下吧，喝咖啡吗？",
+      "pinyin": "Xiūxi yíxià ba, hē kāfēi ma?",
+      "translations": {
+        "uz": "Bir oz dam oling, qahva ichasizmi?",
+        "ru": "Отдохни немного, будешь кофе?",
+        "tj": "Каме истироҳат кун, қаҳва менӯшӣ?"
+      }
+    },
+    {
+      "id": "phrase-507f8cc4b0a9ce",
+      "category_id": "food",
+      "sort_order": 18,
+      "zh": "我不想去外面吃，我想在家吃。",
+      "pinyin": "Wǒ bù xiǎng qù wàimiàn chī, wǒ xiǎng zài jiā chī.",
+      "translations": {
+        "uz": "Men tashqariga chiqib ovqatlanmoqchi emasman, uyda ovqatlanmoqchiman.",
+        "ru": "Я не хочу идти есть на улицу, хочу дома.",
+        "tj": "Ман намехоҳам берун рафта хӯрок хӯрам, мехоҳам дар хона хӯрам."
+      }
+    },
+    {
+      "id": "phrase-02a939754a2f2e",
+      "category_id": "food",
+      "sort_order": 19,
+      "zh": "不喝了，我已经喝两杯了。",
+      "pinyin": "Bù hē le, wǒ yǐjīng hē liǎng bēi le.",
+      "translations": {
+        "uz": "Ichmayman, allaqachon ikki stakan ichdim.",
+        "ru": "Нет, уже выпил две чашки.",
+        "tj": "Не, аллакай ду косача нӯшидам."
+      }
+    },
+    {
+      "id": "phrase-45d2952069552e",
+      "category_id": "food",
+      "sort_order": 20,
+      "zh": "就做你爱吃的鱼吧。",
+      "pinyin": "Jiù zuò nǐ ài chī de yú ba.",
+      "translations": {
+        "uz": "Sen sevadigan baliqni pishiraylik, shu bo'ladi.",
+        "ru": "Вот приготовлю рыбу, которую ты любишь.",
+        "tj": "Маҳз моҳии дӯстдоштатро мепазам."
+      }
+    },
+    {
+      "id": "phrase-c0ec55817d3efd",
+      "category_id": "food",
+      "sort_order": 21,
+      "zh": "以后我少喝一点儿，每天喝一杯。",
+      "pinyin": "Yǐhòu wǒ shǎo hē yìdiǎnr, měitiān hē yì bēi.",
+      "translations": {
+        "uz": "Keyingi vaqtda kamroq ichaman, har kuni bir stakan.",
+        "ru": "Впредь буду пить меньше — одну чашку в день.",
+        "tj": "Минбаъд камтар менӯшам, ҳар рӯз як косача."
+      }
+    },
+    {
+      "id": "phrase-c95ae2e1e665a5",
+      "category_id": "food",
+      "sort_order": 22,
+      "zh": "那你想吃什么？",
+      "pinyin": "Nà nǐ xiǎng chī shénme?",
+      "translations": {
+        "uz": "Unda nima yemoqchisan?",
+        "ru": "Тогда что ты хочешь поесть?",
+        "tj": "Пас ту чӣ хӯрдан мехоҳӣ?"
+      }
+    },
+    {
+      "id": "phrase-081379c16b5c9e",
+      "category_id": "food",
+      "sort_order": 23,
+      "zh": "来一点儿面条吧。",
+      "pinyin": "Lái yìdiǎnr miàntiáo ba.",
+      "translations": {
+        "uz": "Bir oz lag'mon gapirtiraylik.",
+        "ru": "Давай закажем немного лапши.",
+        "tj": "Каме лоғмон оварем."
+      }
+    },
+    {
+      "id": "phrase-c8dc397e45610a",
+      "category_id": "food",
+      "sort_order": 24,
+      "zh": "好吧，离这儿不远有一个中国饭馆，走几分钟就到了。",
+      "pinyin": "Hǎo ba, lí zhèr bù yuǎn yǒu yí ge Zhōngguó fànguǎn, zǒu jǐ fēnzhōng jiù dào le.",
+      "translations": {
+        "uz": "Mayli, bu yerdan uzoq bo'lmagan yerda xitoy restoran bor, bir necha daqiqa yursak yetib boramiz.",
+        "ru": "Хорошо, недалеко отсюда есть китайский ресторан, пешком несколько минут.",
+        "tj": "Хуб, аз ин ҷо дур нест як тарабхонаи чинӣ ҳаст, чанд дақиқа пиёда рафтем мерасем."
+      }
+    },
+    {
+      "id": "phrase-0971f581b35f0e",
+      "category_id": "food",
+      "sort_order": 25,
+      "zh": "好，不看了。给我一杯茶吧。",
+      "pinyin": "Hǎo，bù kàn le. Gěi wǒ yì bēi chá ba.",
+      "translations": {
+        "uz": "Yaxshi, o'qimayman. Menga bir piyola choy bering.",
+        "ru": "Хорошо, не буду читать. Дайте мне чашку чая.",
+        "tj": "Хуб, нахонам. Ба ман як коса чой диҳед."
+      }
+    },
+    {
+      "id": "phrase-02f6d2e58f7bf1",
+      "category_id": "food",
+      "sort_order": 26,
+      "zh": "正在准备午饭呢！",
+      "pinyin": "Zhèngzài zhǔnbèi wǔfàn ne!",
+      "translations": {
+        "uz": "Hozir tushlikni tayyorlayapti!",
+        "ru": "Сейчас готовит обед!",
+        "tj": "Ҳоло нисфирӯзиро тайёр мекунад!"
+      }
+    },
+    {
+      "id": "phrase-2e9dc7c1c8ce36",
+      "category_id": "shopping",
+      "sort_order": 1,
+      "zh": "28块。",
+      "pinyin": "Èrshíbā kuài.",
+      "translations": {
+        "uz": "28 yuan.",
+        "ru": "28 юаней.",
+        "tj": "28 юан."
+      }
+    },
+    {
+      "id": "phrase-e1cb3cb2e3cde1",
+      "category_id": "shopping",
+      "sort_order": 2,
+      "zh": "你想买什么？",
+      "pinyin": "Nǐ xiǎng mǎi shénme?",
+      "translations": {
+        "uz": "Nima sotib olmoqchisiz?",
+        "ru": "Что вы хотите купить?",
+        "tj": "Шумо чӣ харидан мехоҳед?"
+      }
+    },
+    {
+      "id": "phrase-9087fac63a2af4",
+      "category_id": "shopping",
+      "sort_order": 3,
+      "zh": "那个杯子多少钱？",
+      "pinyin": "Nàge bēizi duōshao qián?",
+      "translations": {
+        "uz": "U piyola qancha turadi?",
+        "ru": "Сколько стоит тот стакан?",
+        "tj": "Он пиёла чанд пул аст?"
+      }
+    },
+    {
+      "id": "phrase-5d460916b1079f",
+      "category_id": "shopping",
+      "sort_order": 4,
+      "zh": "我想买一个杯子。",
+      "pinyin": "Wǒ xiǎng mǎi yī gè bēizi.",
+      "translations": {
+        "uz": "Bir dona piyola sotib olmoqchiman.",
+        "ru": "Я хочу купить одну кружку.",
+        "tj": "Ман як дона пиёла харидан мехоҳам."
+      }
+    },
+    {
+      "id": "phrase-50fd8145800f44",
+      "category_id": "shopping",
+      "sort_order": 5,
+      "zh": "那个杯子18块钱。",
+      "pinyin": "Nàge bēizi shíbā kuài qián.",
+      "translations": {
+        "uz": "U piyola 18 yuan.",
+        "ru": "Тот стакан стоит 18 юаней.",
+        "tj": "Он пиёла 18 юан аст."
+      }
+    },
+    {
+      "id": "phrase-f4bf884665c704",
+      "category_id": "shopping",
+      "sort_order": 6,
+      "zh": "杯子在哪儿？",
+      "pinyin": "Bēizi zài nǎr?",
+      "translations": {
+        "uz": "Piyola qayerda?",
+        "ru": "Где стакан?",
+        "tj": "Пиёла куҷост?"
+      }
+    },
+    {
+      "id": "phrase-cc36c5d3ac1a78",
+      "category_id": "shopping",
+      "sort_order": 7,
+      "zh": "杯子在桌子里。",
+      "pinyin": "Bēizi zài zhuōzi lǐ.",
+      "translations": {
+        "uz": "Piyola stol ichida.",
+        "ru": "Стакан внутри стола.",
+        "tj": "Пиёла дохили мӣз аст."
+      }
+    },
+    {
+      "id": "phrase-d1cd2d4895da35",
+      "category_id": "shopping",
+      "sort_order": 8,
+      "zh": "他叫谢朋，在商店工作。",
+      "pinyin": "Tā jiào Xiè Péng, zài shāngdiàn gōngzuò.",
+      "translations": {
+        "uz": "Uning ismi She Pen, do'konda ishlaydi.",
+        "ru": "Его зовут Се Пэн — он работает в магазине.",
+        "tj": "Номаш Ше Пен аст, дар дӯкон кор мекунад."
+      }
+    },
+    {
+      "id": "phrase-acd4beb820928b",
+      "category_id": "shopping",
+      "sort_order": 9,
+      "zh": "王方的衣服太漂亮了！",
+      "pinyin": "Wáng Fāng de yīfu tài piàoliang le!",
+      "translations": {
+        "uz": "Van Fanning kiyimlari juda chiroyli!",
+        "ru": "Одежда Ван Фан такая красивая!",
+        "tj": "Либоси Ван Фан хеле зебо аст!"
+      }
+    },
+    {
+      "id": "phrase-5ca9a444928789",
+      "category_id": "shopping",
+      "sort_order": 10,
+      "zh": "我去商店买东西了。",
+      "pinyin": "Wǒ qù shāngdiàn mǎi dōngxi le.",
+      "translations": {
+        "uz": "Men do'konga narsa sotib olishga bordim.",
+        "ru": "Я ходил в магазин за покупками.",
+        "tj": "Ман ба дӯкон рафтам, чизҳо харидам."
+      }
+    },
+    {
+      "id": "phrase-9e6197e9b5c1e2",
+      "category_id": "shopping",
+      "sort_order": 11,
+      "zh": "是啊，她买了不少衣服。",
+      "pinyin": "Shì a, tā mǎile bùshǎo yīfu.",
+      "translations": {
+        "uz": "Ha, u juda ko'p kiyim sotib oldi.",
+        "ru": "Да уж — она купила немало одежды.",
+        "tj": "Ҳа, ӯ хеле зиёд либос харид."
+      }
+    },
+    {
+      "id": "phrase-64310b61da68d4",
+      "category_id": "shopping",
+      "sort_order": 12,
+      "zh": "你买什么了？",
+      "pinyin": "Nǐ mǎi shénme le?",
+      "translations": {
+        "uz": "Nima sotib oldingiz?",
+        "ru": "Что вы купили?",
+        "tj": "Шумо чӣ харидед?"
+      }
+    },
+    {
+      "id": "phrase-16029e64503d49",
+      "category_id": "shopping",
+      "sort_order": 13,
+      "zh": "我买了一点儿苹果。",
+      "pinyin": "Wǒ mǎile yīdiǎnr píngguǒ.",
+      "translations": {
+        "uz": "Men bir oz olma sotib oldim.",
+        "ru": "Я купил немного яблок.",
+        "tj": "Ман каме себ харидам."
+      }
+    },
+    {
+      "id": "phrase-f82f74370c9c59",
+      "category_id": "shopping",
+      "sort_order": 14,
+      "zh": "我没买，这些都是王方的东西。",
+      "pinyin": "Wǒ méi mǎi, zhèxiē dōu shì Wáng Fāng de dōngxi.",
+      "translations": {
+        "uz": "Men hech narsa sotib olmadim, bular hammasi Van Fanning narsalari.",
+        "ru": "Я ничего не купила — всё это вещи Ван Фан.",
+        "tj": "Ман ҳеҷ чиз нахаридам, инҳо ҳама чизҳои Ван Фан аст."
+      }
+    },
+    {
+      "id": "phrase-0e8d5019573142",
+      "category_id": "shopping",
+      "sort_order": 15,
+      "zh": "我们要不要买几个新的椅子？",
+      "pinyin": "Wǒmen yào bú yào mǎi jǐ ge xīn de yǐzi?",
+      "translations": {
+        "uz": "Bir nechta yangi stul sotib olishimiz kerakmi?",
+        "ru": "Нам купить несколько новых стульев?",
+        "tj": "Мо бояд чанд курсии нав харем?"
+      }
+    },
+    {
+      "id": "phrase-6a87417a71f517",
+      "category_id": "shopping",
+      "sort_order": 16,
+      "zh": "你看见我的杯子了吗？",
+      "pinyin": "Nǐ kànjian wǒ de bēizi le ma?",
+      "translations": {
+        "uz": "Mening stakanimni ko'rdingmi?",
+        "ru": "Ты видел мою кружку?",
+        "tj": "Оё косачаи маро дидӣ?"
+      }
+    },
+    {
+      "id": "phrase-7376d7d3857795",
+      "category_id": "shopping",
+      "sort_order": 17,
+      "zh": "这里有几个杯子，哪个是你的？",
+      "pinyin": "Zhèlǐ yǒu jǐ ge bēizi, nǎge shì nǐ de?",
+      "translations": {
+        "uz": "Bu yerda bir nechta stakan bor, qaysi biri seniki?",
+        "ru": "Здесь есть несколько кружек, которая твоя?",
+        "tj": "Инҷо чанд косача ҳаст, кадомаш аз они туст?"
+      }
+    },
+    {
+      "id": "phrase-02135c915fff95",
+      "category_id": "shopping",
+      "sort_order": 18,
+      "zh": "多少钱买的？",
+      "pinyin": "Duōshao qián mǎi de?",
+      "translations": {
+        "uz": "Uni qancha pulga sotib oldingiz?",
+        "ru": "За сколько купили?",
+        "tj": "Ба чанд харидаанд?"
+      }
+    },
+    {
+      "id": "phrase-0dac8299e7d469",
+      "category_id": "shopping",
+      "sort_order": 19,
+      "zh": "颜色还可以，就是有点儿大。",
+      "pinyin": "Yánsè hái kěyǐ, jiùshì yǒudiǎnr dà.",
+      "translations": {
+        "uz": "Rangi qabul qilarli, faqat biroz katta.",
+        "ru": "Цвет ничего, только немного велик.",
+        "tj": "Ранг қабул аст, фақат каме калон аст."
+      }
+    },
+    {
+      "id": "phrase-1e5ebed7cc13d2",
+      "category_id": "shopping",
+      "sort_order": 20,
+      "zh": "这件小的怎么样？",
+      "pinyin": "Zhè jiàn xiǎo de zěnmeyàng?",
+      "translations": {
+        "uz": "Bu kichkina kiyim qanday?",
+        "ru": "Как тебе вот этот поменьше?",
+        "tj": "Ин хурдтараш чӣ тавр?"
+      }
+    },
+    {
+      "id": "phrase-b40594af4b4873",
+      "category_id": "shopping",
+      "sort_order": 21,
+      "zh": "这件不错，就买这件吧。",
+      "pinyin": "Zhè jiàn búcuò, jiù mǎi zhè jiàn ba.",
+      "translations": {
+        "uz": "Bu yamon emas, mana shuni olavering.",
+        "ru": "Этот неплохой, вот его и покупай.",
+        "tj": "Ин бад нест, маҳз ҳамин харед."
+      }
+    },
+    {
+      "id": "phrase-33befb50a619ca",
+      "category_id": "shopping",
+      "sort_order": 22,
+      "zh": "你看看这几件衣服怎么样。",
+      "pinyin": "Nǐ kànkan zhè jǐ jiàn yīfu zěnmeyàng.",
+      "translations": {
+        "uz": "Bu bir nechta kiyimga bir qarab ber, qandayligini ayt.",
+        "ru": "Посмотри на эти несколько вещей, как они?",
+        "tj": "Ин чанд либосро каме бин, чӣ гуна?"
+      }
+    },
+    {
+      "id": "phrase-fb77c27498d630",
+      "category_id": "shopping",
+      "sort_order": 23,
+      "zh": "这件白的有点儿长，那件黑的有点儿贵。",
+      "pinyin": "Zhè jiàn bái de yǒudiǎnr cháng, nà jiàn hēi de yǒudiǎnr guì.",
+      "translations": {
+        "uz": "Bu oqi biroz uzun, u qorasi biroz qimmat.",
+        "ru": "Эта белая немного длинная, та чёрная немного дорогая.",
+        "tj": "Ин сафеда каме дароз, он сиёҳа каме гарон."
+      }
+    },
+    {
+      "id": "phrase-a404b6e4fa1b2e",
+      "category_id": "shopping",
+      "sort_order": 24,
+      "zh": "让我再看看。",
+      "pinyin": "Ràng wǒ zài kànkan.",
+      "translations": {
+        "uz": "Yana bir qarayin.",
+        "ru": "Дай посмотрю ещё раз.",
+        "tj": "Бигзор боз бинам."
+      }
+    },
+    {
+      "id": "phrase-fef35086163741",
+      "category_id": "shopping",
+      "sort_order": 25,
+      "zh": "你怎么买了这么多东西啊？",
+      "pinyin": "Nǐ zěnme mǎi le zhème duō dōngxi a?",
+      "translations": {
+        "uz": "Nima uchun bu qadar ko'p narsa sotib oldingiz?",
+        "ru": "Почему ты купил так много всего?",
+        "tj": "Чаро ту ин қадар зиёд чиз харидӣ?"
+      }
+    },
+    {
+      "id": "phrase-9223dec2dc9d17",
+      "category_id": "shopping",
+      "sort_order": 26,
+      "zh": "我看看买什么了。羊肉，鸡蛋，面条，西瓜……真不少！妈妈呢？",
+      "pinyin": "Wǒ kànkan mǎi shénme le. Yángròu，jīdàn，miàntiáo，xīguā…… zhēn bù shǎo! Māma ne?",
+      "translations": {
+        "uz": "Ko'ray-chi nima olibsiz. Qo'y go'shti, tuxum, erishta, tarvuz… juda ko'p! Ona-chi?",
+        "ru": "Дай посмотрю, что купил. Баранина, яйца, лапша, арбуз… действительно много! А мама?",
+        "tj": "Биё бинам чӣ харидӣ. Гӯшти гӯсфанд, тухм, лоғмон, тарбуз… воқеан зиёд! Модар чӣ?"
+      }
+    },
+    {
+      "id": "phrase-6e20cd4bb0d0c5",
+      "category_id": "transport",
+      "sort_order": 1,
+      "zh": "看见了，他去学开车了。",
+      "pinyin": "Kànjiàn le, tā qù xué kāi chē le.",
+      "translations": {
+        "uz": "Ko'rdim, u mashina haydashni o'rganishga ketdi.",
+        "ru": "Да, видел — он пошёл учиться водить машину.",
+        "tj": "Ҳа, дидам — ӯ рафт рондани мошинро биомӯзад."
+      }
+    },
+    {
+      "id": "phrase-2bd14225a8ff6b",
+      "category_id": "transport",
+      "sort_order": 2,
+      "zh": "我们是坐出租车来的。",
+      "pinyin": "Wǒmen shì zuò chūzūchē lái de.",
+      "translations": {
+        "uz": "Biz taksi bilan keldik.",
+        "ru": "Мы приехали на такси.",
+        "tj": "Мо бо таксӣ омадем."
+      }
+    },
+    {
+      "id": "phrase-729043e0f1739f",
+      "category_id": "transport",
+      "sort_order": 3,
+      "zh": "听张先生说，您是坐飞机来北京的？",
+      "pinyin": "Tīng Zhāng xiānsheng shuō, nín shì zuò fēijī lái Běijīng de?",
+      "translations": {
+        "uz": "Janob Jan aytishicha, siz Pekinga samolyot bilan kelgansiz?",
+        "ru": "Господин Чжан сказал, что вы прилетели в Пекин на самолёте?",
+        "tj": "Ҷаноб Чжан гуфт, ки шумо ба Пекин бо ҳавопаймо омадед?"
+      }
+    },
+    {
+      "id": "phrase-c1f24ca49e0229",
+      "category_id": "transport",
+      "sort_order": 4,
+      "zh": "他是和朋友一起开车来的。",
+      "pinyin": "Tā shì hé péngyou yīqǐ kāi chē lái de.",
+      "translations": {
+        "uz": "U do'sti bilan birga mashina haydab keldi.",
+        "ru": "Он приехал вместе с другом на машине.",
+        "tj": "Вай бо дӯсташ якҷоя бо мошин омад."
+      }
+    },
+    {
+      "id": "phrase-dc5155f5db9b4a",
+      "category_id": "transport",
+      "sort_order": 5,
+      "zh": "是的。",
+      "pinyin": "Shì de.",
+      "translations": {
+        "uz": "Ha, to'g'ri.",
+        "ru": "Да, именно.",
+        "tj": "Бале, дуруст."
+      }
+    },
+    {
+      "id": "phrase-5b5b34908dae35",
+      "category_id": "transport",
+      "sort_order": 6,
+      "zh": "你现在在哪儿呢？",
+      "pinyin": "Nǐ xiànzài zài nǎr ne?",
+      "translations": {
+        "uz": "Hozir qayerdasen?",
+        "ru": "Где ты сейчас?",
+        "tj": "Ту ҳоло куҷоӣ?"
+      }
+    },
+    {
+      "id": "phrase-47b92c317d9fa6",
+      "category_id": "transport",
+      "sort_order": 7,
+      "zh": "在去机场的路上。你已经到了吗？",
+      "pinyin": "Zài qù jīchǎng de lùshang. Nǐ yǐjīng dào le ma?",
+      "translations": {
+        "uz": "Aeroportga ketayotgan yo'ldaman. Sen allaqachon yetib kelding mi?",
+        "ru": "На пути в аэропорт. Ты уже добрался?",
+        "tj": "Дар роҳ ба фурудгоҳам. Оё ту аллакай расидӣ?"
+      }
+    },
+    {
+      "id": "phrase-615609d94f807e",
+      "category_id": "transport",
+      "sort_order": 8,
+      "zh": "很远，坐公共汽车要一个多小时呢！",
+      "pinyin": "Hěn yuǎn, zuò gōnggòng qìchē yào yí ge duō xiǎoshí ne!",
+      "translations": {
+        "uz": "Juda uzoq, avtobus bilan bir soatdan ko'proq vaqt ketadi!",
+        "ru": "Очень далеко, на автобусе больше часа!",
+        "tj": "Бисёр дур, бо автобус аз як соат зиёд лозим!"
+      }
+    },
+    {
+      "id": "phrase-c7d412f3f20627",
+      "category_id": "transport",
+      "sort_order": 9,
+      "zh": "坐公共汽车太慢了，你怎么不开车？",
+      "pinyin": "Zuò gōnggòng qìchē tài màn le, nǐ zěnme bù kāi chē?",
+      "translations": {
+        "uz": "Avtobus juda sekin, nega mashina haydamaysan?",
+        "ru": "На автобусе слишком медленно, почему ты не едешь на машине?",
+        "tj": "Бо автобус хеле суст, чаро ту мошин намерони?"
+      }
+    },
+    {
+      "id": "phrase-bb9aa345cd05a1",
+      "category_id": "transport",
+      "sort_order": 10,
+      "zh": "二十分钟就到。",
+      "pinyin": "Èrshí fēnzhōng jiù dào.",
+      "translations": {
+        "uz": "Yigirma daqiqada yetib boraman.",
+        "ru": "Через двадцать минут буду.",
+        "tj": "Дар бист дақиқа мерасам."
+      }
+    },
+    {
+      "id": "phrase-f1baaea4b035e4",
+      "category_id": "transport",
+      "sort_order": 11,
+      "zh": "开车也不快，路上车太多了！",
+      "pinyin": "Kāi chē yě bù kuài, lùshang chē tài duō le!",
+      "translations": {
+        "uz": "Mashina ham tez emas, yo'lda mashina juda ko'p!",
+        "ru": "На машине тоже не быстро, на дороге слишком много машин!",
+        "tj": "Мошин ҳам тез нест, дар роҳ мошин бисёр зиёд!"
+      }
+    },
+    {
+      "id": "phrase-744af90cc44982",
+      "category_id": "transport",
+      "sort_order": 12,
+      "zh": "从这儿一直往前走，到了前面的路口再往右走。",
+      "pinyin": "Cóng zhèr yìzhí wǎng qián zǒu, dào le qiánmian de lùkǒu zài wǎng yòu zǒu.",
+      "translations": {
+        "uz": "Bu yerdan to'g'ri oldinga boring, oldindagi chorrahaga yetgach o'ngga buriling.",
+        "ru": "Идите прямо отсюда, а на ближайшем перекрёстке поверните направо.",
+        "tj": "Аз ин ҷо рост пеш равед, ба чорраҳаи пеш расидед ба тарафи рост гардед."
+      }
+    },
+    {
+      "id": "phrase-65f663b214234e",
+      "category_id": "transport",
+      "sort_order": 13,
+      "zh": "没关系，我坐公共汽车。",
+      "pinyin": "Méi guānxi, wǒ zuò gōnggòng qìchē.",
+      "translations": {
+        "uz": "Muammo yo'q, men avtobus bilan boraman.",
+        "ru": "Ничего, я поеду на автобусе.",
+        "tj": "Мушкил нест, ман бо автобус мераваm."
+      }
+    },
+    {
+      "id": "phrase-889614cdaa6d76",
+      "category_id": "transport",
+      "sort_order": 14,
+      "zh": "没事，我出去叫辆出租车就行了。",
+      "pinyin": "Méi shì, wǒ chūqu jiào liàng chūzūchē jiù xíng le.",
+      "translations": {
+        "uz": "Hechqisi yo'q, chiqib taksi chaqirsam bo'ladi.",
+        "ru": "Ничего, выйду и вызову такси.",
+        "tj": "Ҳеҷ гап не, берун рафта таксӣ мегирам."
+      }
+    },
+    {
+      "id": "phrase-b4e2aed1fb46f1",
+      "category_id": "transport",
+      "sort_order": 15,
+      "zh": "学校里边比学校外边方便，附近有三四个车站。",
+      "pinyin": "Xuéxiào lǐbian bǐ xuéxiào wàibian fāngbiàn, fùjìn yǒu sān sì ge chēzhàn.",
+      "translations": {
+        "uz": "Maktab ichkarisidagisi tashqarisidagidan qulayroq, yaqin atrofda uch-to'rt bekat bor.",
+        "ru": "Внутри школы удобнее, чем за её пределами, рядом есть три-четыре остановки.",
+        "tj": "Дохили мактаб аз беруни мактаб қулайтар аст, дар наздикӣ се-чор истгоҳ ҳаст."
+      }
+    },
+    {
+      "id": "phrase-5398187528a2ec",
+      "category_id": "transport",
+      "sort_order": 16,
+      "zh": "是的，他正坐地铁来我们公司呢。",
+      "pinyin": "Shì de, tā zhèng zuò dìtiě lái wǒmen gōngsī ne.",
+      "translations": {
+        "uz": "Ha, u hozir metroda kompaniyamizga kelyapti.",
+        "ru": "Да, он сейчас едет в нашу компанию на метро.",
+        "tj": "Ҳа, ӯ ҳоло бо метро ба ширкати мо меояд."
+      }
+    },
+    {
+      "id": "phrase-d9b7cfeb6c21a8",
+      "category_id": "transport",
+      "sort_order": 17,
+      "zh": "你怎么才来？",
+      "pinyin": "Nǐ zěnme cái lái?",
+      "translations": {
+        "uz": "Nega endi kelding?",
+        "ru": "Почему ты только сейчас пришёл?",
+        "tj": "Чаро танҳо ҳоло омадӣ?"
+      }
+    },
+    {
+      "id": "phrase-b1512661d35bee",
+      "category_id": "transport",
+      "sort_order": 18,
+      "zh": "快点儿吧，飞机就要起飞了。",
+      "pinyin": "Kuài diǎnr ba, fēijī jiù yào qǐfēi le.",
+      "translations": {
+        "uz": "Tezroq bo'l, samolyot uchish arafasida.",
+        "ru": "Поторопись, самолёт вот-вот взлетит.",
+        "tj": "Зудтар, ҳавопаймо ҳозир парвоз мекунад."
+      }
+    },
+    {
+      "id": "phrase-042f5a323c6016",
+      "category_id": "transport",
+      "sort_order": 19,
+      "zh": "您有钱吗？司机把我送到机场的时候，我才发现忘记带钱包了。",
+      "pinyin": "Nín yǒu qián ma? Sījī bǎ wǒ sòng dào jīchǎng de shíhou, wǒ cái fāxiàn wàngjì dài qiánbāo le.",
+      "translations": {
+        "uz": "Sizda pul bormi? Haydovchi meni aeroportga olib kelganda, hamyonimni unutganimni payqadim.",
+        "ru": "У вас есть деньги? Когда водитель довёз меня до аэропорта, я только понял, что забыл кошелёк.",
+        "tj": "Шумо пул доред? Вақте ронанда маро ба фурудгоҳ овард, танҳо фаҳмидам, ки ҳамёнро фаромӯш кардаам."
+      }
+    },
+    {
+      "id": "phrase-9f88eb60717fee",
+      "category_id": "transport",
+      "sort_order": 20,
+      "zh": "我看你还是把重要的东西放在我这儿吧。",
+      "pinyin": "Wǒ kàn nǐ háishi bǎ zhòngyào de dōngxi fàng zài wǒ zhèr ba.",
+      "translations": {
+        "uz": "Menimcha, muhim narsalaringni baribir mening oldimga qo'yganing yaxshi.",
+        "ru": "Думаю, важные вещи тебе всё-таки лучше оставить у меня.",
+        "tj": "Ба фикрам, чизҳои муҳиматро беҳтараш назди ман гузор."
+      }
+    },
+    {
+      "id": "phrase-9c633dd2af5314",
+      "category_id": "transport",
+      "sort_order": 21,
+      "zh": "不是。没有公共汽车了，我是走回来的。",
+      "pinyin": "Bú shì. Méiyǒu gōnggòng qìchē le, wǒ shì zǒu huílai de.",
+      "translations": {
+        "uz": "Yo'q. Avtobus yo'q edi, men piyoda qaytib keldim.",
+        "ru": "Нет. Автобусов уже не было, я вернулся пешком.",
+        "tj": "Не. Автобус набуд, ман пиёда баргаштам."
+      }
+    },
+    {
+      "id": "phrase-74df20f05d20a6",
+      "category_id": "travel",
+      "sort_order": 1,
+      "zh": "你想在北京住几天？",
+      "pinyin": "Nǐ xiǎng zài Běijīng zhù jǐ tiān?",
+      "translations": {
+        "uz": "Pekinda necha kun qolmoqchisiz?",
+        "ru": "Сколько дней вы планируете пробыть в Пекине?",
+        "tj": "Шумо мехоҳед чанд рӯз дар Пекин бимонед?"
+      }
+    },
+    {
+      "id": "phrase-246e0b395a7af5",
+      "category_id": "travel",
+      "sort_order": 2,
+      "zh": "住三天。",
+      "pinyin": "Zhù sān tiān.",
+      "translations": {
+        "uz": "Uch kun.",
+        "ru": "Три дня.",
+        "tj": "Се рӯз."
+      }
+    },
+    {
+      "id": "phrase-599e38babc5ce2",
+      "category_id": "travel",
+      "sort_order": 3,
+      "zh": "李先生呢？",
+      "pinyin": "Lǐ xiānsheng ne?",
+      "translations": {
+        "uz": "Janob Li-chi?",
+        "ru": "А господин Ли?",
+        "tj": "Ҷаноб Ли чӣ?"
+      }
+    },
+    {
+      "id": "phrase-231d0f57a80b3c",
+      "category_id": "travel",
+      "sort_order": 4,
+      "zh": "九月去北京旅游最好。",
+      "pinyin": "Jiǔ yuè qù Běijīng lǚyóu zuì hǎo.",
+      "translations": {
+        "uz": "Sent'abrda Pekinga sayohat qilish eng yaxshi.",
+        "ru": "Лучше всего ехать в Пекин в сентябре.",
+        "tj": "Дар моҳи сентябр сафар ба Пекин аз ҳама беҳтар аст."
+      }
+    },
+    {
+      "id": "phrase-2a16b46334186d",
+      "category_id": "travel",
+      "sort_order": 5,
+      "zh": "去北京了？是去旅游吗？",
+      "pinyin": "Qù Běijīng le? Shì qù lǚyóu ma?",
+      "translations": {
+        "uz": "Pekinga ketdimi? Sayohatgami?",
+        "ru": "Уехал в Пекин? На экскурсию?",
+        "tj": "Ба Пекин рафт? Сайёҳӣ?"
+      }
+    },
+    {
+      "id": "phrase-788c95943c82c6",
+      "category_id": "travel",
+      "sort_order": 6,
+      "zh": "服务员，我房间的门打不开了。",
+      "pinyin": "Fúwùyuán, wǒ fángjiān de mén dǎ bù kāi le.",
+      "translations": {
+        "uz": "Ofitsiant, xonamning eshigi ochmayapti.",
+        "ru": "Сотрудник, дверь моего номера не открывается.",
+        "tj": "Хизматрасон, дари хонаи ман намекушояд."
+      }
+    },
+    {
+      "id": "phrase-296ede7a949281",
+      "category_id": "travel",
+      "sort_order": 7,
+      "zh": "您住哪个房间？",
+      "pinyin": "Nín zhù nǎ ge fángjiān?",
+      "translations": {
+        "uz": "Siz qaysi xonada turasiz?",
+        "ru": "В каком номере вы проживаете?",
+        "tj": "Шумо дар кадом хона ҳастед?"
+      }
+    },
+    {
+      "id": "phrase-85c207c615bb5b",
+      "category_id": "travel",
+      "sort_order": 8,
+      "zh": "我住三一七号房间。",
+      "pinyin": "Wǒ zhù sān yāo qī hào fángjiān.",
+      "translations": {
+        "uz": "Men 317-xonada turaman.",
+        "ru": "Я живу в номере 317.",
+        "tj": "Ман дар ҳуҷраи 317 зиндагӣ мекунам."
+      }
+    },
+    {
+      "id": "phrase-fb2e62f788e569",
+      "category_id": "travel",
+      "sort_order": 9,
+      "zh": "好的，我叫人去看看。",
+      "pinyin": "Hǎo de, wǒ jiào rén qù kànkan.",
+      "translations": {
+        "uz": "Xop, birovni yuborib qarayman.",
+        "ru": "Хорошо, пошлю кого-нибудь посмотреть.",
+        "tj": "Хуб, касеро мефиристам бинад."
+      }
+    },
+    {
+      "id": "phrase-780f8fc1a7dd12",
+      "category_id": "travel",
+      "sort_order": 10,
+      "zh": "我想去北京旅游，北京很不错，我去过一次。",
+      "pinyin": "Wǒ xiǎng qù Běijīng lǚyóu, Běijīng hěn búcuò, wǒ qùguo yí cì.",
+      "translations": {
+        "uz": "Pekinga sayohat qilmoqchiman, Pekin juda yaxshi joy, bir marta borgan edim.",
+        "ru": "Хочу съездить в Пекин, там очень хорошо, я уже был(а) там один раз.",
+        "tj": "Мехоҳам ба Пекин сафар кунам, Пекин хеле хуб аст, як маротиба рафтаам."
+      }
+    },
+    {
+      "id": "phrase-65f765574949bd",
+      "category_id": "travel",
+      "sort_order": 11,
+      "zh": "下个月我去旅游，你能跟我一起去吗？",
+      "pinyin": "Xià ge yuè wǒ qù lǚyóu, nǐ néng gēn wǒ yìqǐ qù ma?",
+      "translations": {
+        "uz": "Keyingi oy sayohatga boraman, men bilan birga bora olasanmi?",
+        "ru": "В следующем месяце я еду путешествовать, можешь поехать со мной?",
+        "tj": "Моҳи дигар ба сафар меравам, метавонӣ бо ман равӣ?"
+      }
+    },
+    {
+      "id": "phrase-cbc874bcd5503e",
+      "category_id": "travel",
+      "sort_order": 12,
+      "zh": "我还没想好呢。你觉得哪儿最好玩儿？",
+      "pinyin": "Wǒ hái méi xiǎng hǎo ne. Nǐ juéde nǎr zuì hǎowánr?",
+      "translations": {
+        "uz": "Hali o'ylab bo'lmadim. Seningcha qayer eng qiziqarli?",
+        "ru": "Я ещё не решил. Как ты думаешь, где интереснее всего?",
+        "tj": "Ҳанӯз фикр накардаам. Ба фикри ту куҷо аз ҳама ҷолиб аст?"
+      }
+    },
+    {
+      "id": "phrase-e87b72a906d75b",
+      "category_id": "travel",
+      "sort_order": 13,
+      "zh": "手机、电脑、地图，一个也不能少。",
+      "pinyin": "Shǒujī, diànnǎo, dìtú, yí ge yě bù néng shǎo.",
+      "translations": {
+        "uz": "Telefon, kompyuter, xarita: bittasi ham kam bo'lmasin.",
+        "ru": "Телефон, компьютер, карта: ни одной вещи нельзя забыть.",
+        "tj": "Телефон, компютер, харита: яктояш ҳам кам нашавад."
+      }
+    },
+    {
+      "id": "phrase-e70cdc016aced6",
+      "category_id": "travel",
+      "sort_order": 14,
+      "zh": "南方太热了，北方好一些，不冷也不热。",
+      "pinyin": "Nánfāng tài rè le, běifāng hǎo yìxiē, bù lěng yě bù rè.",
+      "translations": {
+        "uz": "Janub juda issiq. Shimol yaxshiroq, sovuq ham emas, issiq ham emas.",
+        "ru": "На юге слишком жарко. Север лучше: ни холодно, ни жарко.",
+        "tj": "Ҷануб хеле гарм аст. Шимол беҳтар, на сард асту на гарм."
+      }
+    },
+    {
+      "id": "phrase-99784c37ad43ad",
+      "category_id": "travel",
+      "sort_order": 15,
+      "zh": "我们是去旅游，不是搬家，还是少带一些吧。",
+      "pinyin": "Wǒmen shì qù lǚyóu, bú shì bān jiā, háishi shǎo dài yìxiē ba.",
+      "translations": {
+        "uz": "Biz sayohatga ketyapmiz, uy ko'chirmayapmiz. Baribir kamroq olganimiz yaxshi.",
+        "ru": "Мы едем путешествовать, а не переезжаем. Лучше взять поменьше.",
+        "tj": "Мо ба сафар меравем, на хона мекӯчонем. Беҳтараш камтар гирем."
+      }
+    },
+    {
+      "id": "phrase-6072f93276b67c",
+      "category_id": "travel",
+      "sort_order": 16,
+      "zh": "我没看见啊。",
+      "pinyin": "Wǒ méi kànjiàn a.",
+      "translations": {
+        "uz": "Ko'rmadim-ku.",
+        "ru": "Я не видела.",
+        "tj": "Надидам."
+      }
+    },
+    {
+      "id": "phrase-a4b3a1b6bd9cf7",
+      "category_id": "travel",
+      "sort_order": 17,
+      "zh": "怎么了？",
+      "pinyin": "Zěnme le?",
+      "translations": {
+        "uz": "Nima bo'ldi?",
+        "ru": "Что случилось?",
+        "tj": "Чӣ шуд?"
+      }
+    },
+    {
+      "id": "phrase-65d5090b3143ae",
+      "category_id": "travel",
+      "sort_order": 18,
+      "zh": "我离不开眼镜，没有眼镜，我一个字也看不清楚。",
+      "pinyin": "Wǒ lí bu kāi yǎnjing, méiyǒu yǎnjing, wǒ yí ge zì yě kàn bu qīngchu.",
+      "translations": {
+        "uz": "Men ko'zoynaksiz yurolmayman, ko'zoynaksiz bitta harfni ham aniq ko'rolmayman.",
+        "ru": "Я не могу без очков, без них я ни одного иероглифа не вижу ясно.",
+        "tj": "Ман бе айнак наметавонам, бе айнак ҳатто як ҳарфро равшан намебинам."
+      }
+    },
+    {
+      "id": "phrase-eb21ed28cbde52",
+      "category_id": "travel",
+      "sort_order": 19,
+      "zh": "你去房间找找，是不是刚才放在桌子上了？",
+      "pinyin": "Nǐ qù fángjiān zhǎozhao, shì bu shì gāngcái fàng zài zhuōzi shang le?",
+      "translations": {
+        "uz": "Xonaga borib qidirib ko'r, hozirgina stol ustiga qo'ymadingmi?",
+        "ru": "Пойди в комнату поищи, может, ты только что положил их на стол?",
+        "tj": "Ба хона рафта ҷустуҷӯ кун, шояд ҳозир ба рӯи миз гузошта будӣ?"
+      }
+    },
+    {
+      "id": "phrase-b953e21995bec3",
+      "category_id": "travel",
+      "sort_order": 20,
+      "zh": "我怎么看得到啊？你快过来帮忙啊。",
+      "pinyin": "Wǒ zěnme kàn de dào a? Nǐ kuài guòlai bāngmáng a.",
+      "translations": {
+        "uz": "Qanday qilib ko'ra olaman? Tez kelib yordam ber.",
+        "ru": "Как я смогу увидеть? Иди скорее помоги.",
+        "tj": "Чӣ тавр дида метавонам? Зуд биё, ёрӣ деҳ."
+      }
+    },
+    {
+      "id": "phrase-0b35a56f16ff50",
+      "category_id": "travel",
+      "sort_order": 21,
+      "zh": "好吧，我帮你去找找。",
+      "pinyin": "Hǎo ba, wǒ bāng nǐ qù zhǎozhao.",
+      "translations": {
+        "uz": "Mayli, qidirishga yordam beraman.",
+        "ru": "Ладно, помогу тебе поискать.",
+        "tj": "Хуб, ба ту дар ҷустуҷӯ ёрӣ медиҳам."
+      }
+    },
+    {
+      "id": "phrase-fc5a69385c037d",
+      "category_id": "travel",
+      "sort_order": 22,
+      "zh": "好吧，牛奶呢？",
+      "pinyin": "Hǎo ba, niúnǎi ne?",
+      "translations": {
+        "uz": "Mayli, sut qani?",
+        "ru": "Ладно, а где молоко?",
+        "tj": "Хуб, шир куҷост?"
+      }
+    },
+    {
+      "id": "phrase-94d9b4373e1b40",
+      "category_id": "travel",
+      "sort_order": 23,
+      "zh": "还差一双筷子，你去拿一下。",
+      "pinyin": "Hái chà yì shuāng kuàizi, nǐ qù ná yíxià.",
+      "translations": {
+        "uz": "Yana bir juft cho'pcha yetishmayapti, borib olib kel.",
+        "ru": "Не хватает ещё одной пары палочек, сходи принеси.",
+        "tj": "Боз як ҷуфт чӯбча намерасад, рафта биёр."
+      }
+    },
+    {
+      "id": "phrase-f31f722ceaf7f8",
+      "category_id": "study",
+      "sort_order": 1,
+      "zh": "你是老师吗？",
+      "pinyin": "Nǐ shì lǎoshī ma?",
+      "translations": {
+        "uz": "Siz o'qituvchimisiz?",
+        "ru": "Вы учитель?",
+        "tj": "Оё шумо муаллим ҳастед?"
+      }
+    },
+    {
+      "id": "phrase-c819b201a33473",
+      "category_id": "study",
+      "sort_order": 2,
+      "zh": "你是中国人吗？",
+      "pinyin": "Nǐ shì Zhōngguó rén ma?",
+      "translations": {
+        "uz": "Siz xitoylikmisiz?",
+        "ru": "Вы китаец/китаянка?",
+        "tj": "Оё шумо хитоӣ ҳастед?"
+      }
+    },
+    {
+      "id": "phrase-f13e832d02c814",
+      "category_id": "study",
+      "sort_order": 3,
+      "zh": "我叫李月。",
+      "pinyin": "Wǒ jiào Lǐ Yuè.",
+      "translations": {
+        "uz": "Mening ismim Li Yue.",
+        "ru": "Меня зовут Ли Юэ.",
+        "tj": "Номи ман Ли Юэ аст."
+      }
+    },
+    {
+      "id": "phrase-191b56be9f890b",
+      "category_id": "study",
+      "sort_order": 4,
+      "zh": "我不是老师，我是学生。",
+      "pinyin": "Wǒ bú shì lǎoshī, wǒ shì xuésheng.",
+      "translations": {
+        "uz": "Men o'qituvchi emasman, men talabaman.",
+        "ru": "Я не учитель, я студент.",
+        "tj": "Ман муаллим нестам, ман донишҷӯ ҳастам."
+      }
+    },
+    {
+      "id": "phrase-93954570f3c2c7",
+      "category_id": "study",
+      "sort_order": 5,
+      "zh": "我不是中国人，我是美国人。",
+      "pinyin": "Wǒ bú shì Zhōngguó rén, wǒ shì Měiguó rén.",
+      "translations": {
+        "uz": "Men xitoylik emasman, men amerikalikman.",
+        "ru": "Я не китаец, я американец.",
+        "tj": "Ман хитоӣ нестам, ман амрикоӣ ҳастам."
+      }
+    },
+    {
+      "id": "phrase-400ac16f7800ff",
+      "category_id": "study",
+      "sort_order": 6,
+      "zh": "她是谁？",
+      "pinyin": "Tā shì shéi?",
+      "translations": {
+        "uz": "U kim?",
+        "ru": "Кто она?",
+        "tj": "Вай кӣ аст?"
+      }
+    },
+    {
+      "id": "phrase-abbb1697ea77a0",
+      "category_id": "study",
+      "sort_order": 7,
+      "zh": "你是哪国人？",
+      "pinyin": "Nǐ shì nǎ guó rén?",
+      "translations": {
+        "uz": "Siz qaysi mamlakatdansiz?",
+        "ru": "Вы из какой страны?",
+        "tj": "Шумо аз кадом кишвар ҳастед?"
+      }
+    },
+    {
+      "id": "phrase-419cf303c9bb32",
+      "category_id": "study",
+      "sort_order": 8,
+      "zh": "他是谁？",
+      "pinyin": "Tā shì shéi?",
+      "translations": {
+        "uz": "U kim?",
+        "ru": "Кто он?",
+        "tj": "Вай кӣ аст?"
+      }
+    },
+    {
+      "id": "phrase-0c5f32ba725802",
+      "category_id": "study",
+      "sort_order": 9,
+      "zh": "她是我的汉语老师，她叫李月。",
+      "pinyin": "Tā shì wǒ de Hànyǔ lǎoshī, tā jiào Lǐ Yuè.",
+      "translations": {
+        "uz": "U mening xitoy tili o'qituvchim, uning ismi Li Yue.",
+        "ru": "Она моя преподаватель китайского, её зовут Ли Юэ.",
+        "tj": "Вай муаллимаи забони чинии ман аст, номаш Ли Юэ аст."
+      }
+    },
+    {
+      "id": "phrase-dafb46ca4fcc0d",
+      "category_id": "study",
+      "sort_order": 10,
+      "zh": "我是美国人。你呢？",
+      "pinyin": "Wǒ shì Měiguó rén. Nǐ ne?",
+      "translations": {
+        "uz": "Men amerikalikman. Siz-chi?",
+        "ru": "Я американец. А вы?",
+        "tj": "Ман амрикоӣ ҳастам. Шумо чӣ?"
+      }
+    },
+    {
+      "id": "phrase-b009a74552a2ce",
+      "category_id": "study",
+      "sort_order": 11,
+      "zh": "他是我同学。",
+      "pinyin": "Tā shì wǒ tóngxué.",
+      "translations": {
+        "uz": "U mening sinfdoshim.",
+        "ru": "Он мой одноклассник.",
+        "tj": "Вай ҳамсинфи ман аст."
+      }
+    },
+    {
+      "id": "phrase-872c924640757a",
+      "category_id": "study",
+      "sort_order": 12,
+      "zh": "我是中国人。",
+      "pinyin": "Wǒ shì Zhōngguó rén.",
+      "translations": {
+        "uz": "Men xitoylikman.",
+        "ru": "Я китаец.",
+        "tj": "Ман хитоӣ ҳастам."
+      }
+    },
+    {
+      "id": "phrase-fda6083294544d",
+      "category_id": "study",
+      "sort_order": 13,
+      "zh": "她呢？她是你同学吗？",
+      "pinyin": "Tā ne? Tā shì nǐ tóngxué ma?",
+      "translations": {
+        "uz": "U-chi? U ham sening sinfdoshing?",
+        "ru": "А она? Она тоже твой одноклассник?",
+        "tj": "Вай чӣ? Оё вай ҳам ҳамсинфи ту аст?"
+      }
+    },
+    {
+      "id": "phrase-16dc1e5c04bc46",
+      "category_id": "study",
+      "sort_order": 14,
+      "zh": "她不是我同学，她是我朋友。",
+      "pinyin": "Tā bú shì wǒ tóngxué, tā shì wǒ péngyou.",
+      "translations": {
+        "uz": "U mening sinfdoshim emas, u mening do'stim.",
+        "ru": "Она не моя одноклассница, она моя подруга.",
+        "tj": "Вай ҳамсинфи ман нест, вай дӯсти ман аст."
+      }
+    },
+    {
+      "id": "phrase-f21a87527b38a7",
+      "category_id": "study",
+      "sort_order": 15,
+      "zh": "你家有几口人？",
+      "pinyin": "Nǐ jiā yǒu jǐ kǒu rén?",
+      "translations": {
+        "uz": "Sizning oilangizda necha kishi bor?",
+        "ru": "Сколько человек в вашей семье?",
+        "tj": "Дар оилаи шумо чанд нафар аст?"
+      }
+    },
+    {
+      "id": "phrase-d65b98b338f4e5",
+      "category_id": "study",
+      "sort_order": 16,
+      "zh": "李老师多大了？",
+      "pinyin": "Lǐ lǎoshī duō dà le?",
+      "translations": {
+        "uz": "Muallima Li necha yoshda?",
+        "ru": "Сколько лет преподавателю Ли?",
+        "tj": "Муаллима Ли чанд сол дорад?"
+      }
+    },
+    {
+      "id": "phrase-d18cf1039233df",
+      "category_id": "study",
+      "sort_order": 17,
+      "zh": "我家有三口人。",
+      "pinyin": "Wǒ jiā yǒu sān kǒu rén.",
+      "translations": {
+        "uz": "Bizning oilamizda uch kishi bor.",
+        "ru": "В нашей семье трое человек.",
+        "tj": "Дар оилаи мо се нафар аст."
+      }
+    },
+    {
+      "id": "phrase-e2a5c3c9573795",
+      "category_id": "study",
+      "sort_order": 18,
+      "zh": "你会说汉语吗？",
+      "pinyin": "Nǐ huì shuō Hànyǔ ma?",
+      "translations": {
+        "uz": "Siz xitoycha gapira olasizmi?",
+        "ru": "Вы умеете говорить по-китайски?",
+        "tj": "Оё шумо метавонед ба забони чинӣ гап бизанед?"
+      }
+    },
+    {
+      "id": "phrase-e91975fd7f5451",
+      "category_id": "study",
+      "sort_order": 19,
+      "zh": "你会写汉字吗？",
+      "pinyin": "Nǐ huì xiě Hànzì ma?",
+      "translations": {
+        "uz": "Siz xitoy ierogliflarini yoza olasizmi?",
+        "ru": "Вы умеете писать иероглифы?",
+        "tj": "Оё шумо метавонед иероглифҳои чинӣ нависед?"
+      }
+    },
+    {
+      "id": "phrase-6f001975578843",
+      "category_id": "study",
+      "sort_order": 20,
+      "zh": "我会说汉语。",
+      "pinyin": "Wǒ huì shuō Hànyǔ.",
+      "translations": {
+        "uz": "Men xitoycha gapira olaman.",
+        "ru": "Я умею говорить по-китайски.",
+        "tj": "Ман метавонам ба забони чинӣ гап бизанам."
+      }
+    },
+    {
+      "id": "phrase-09e83703447696",
+      "category_id": "study",
+      "sort_order": 21,
+      "zh": "我会写。",
+      "pinyin": "Wǒ huì xiě.",
+      "translations": {
+        "uz": "Men yoza olaman.",
+        "ru": "Я умею писать.",
+        "tj": "Ман метавонам нависам."
+      }
+    },
+    {
+      "id": "phrase-c06c3382e849f6",
+      "category_id": "study",
+      "sort_order": 22,
+      "zh": "你妈妈会说汉语吗？",
+      "pinyin": "Nǐ māma huì shuō Hànyǔ ma?",
+      "translations": {
+        "uz": "Onangi xitoycha gapira oladimi?",
+        "ru": "Ваша мама умеет говорить по-китайски?",
+        "tj": "Оё модаратон метавонад ба забони чинӣ гап бизанад?"
+      }
+    },
+    {
+      "id": "phrase-9bb95867e5b694",
+      "category_id": "study",
+      "sort_order": 23,
+      "zh": "这个字怎么写？",
+      "pinyin": "Zhège zì zěnme xiě?",
+      "translations": {
+        "uz": "Bu ieroglif qanday yoziladi?",
+        "ru": "Как пишется этот иероглиф?",
+        "tj": "Ин иероглиф чӣ тавр навишта мешавад?"
+      }
+    },
+    {
+      "id": "phrase-88ca913e8eb483",
+      "category_id": "study",
+      "sort_order": 24,
+      "zh": "她不会说。",
+      "pinyin": "Tā bú huì shuō.",
+      "translations": {
+        "uz": "U gapira olmaydi.",
+        "ru": "Она не умеет говорить.",
+        "tj": "Вай наметавонад гап бизанад."
+      }
+    },
+    {
+      "id": "phrase-fab1826cb85d90",
+      "category_id": "study",
+      "sort_order": 25,
+      "zh": "我去学校。",
+      "pinyin": "Wǒ qù xuéxiào.",
+      "translations": {
+        "uz": "Men maktabga boraman.",
+        "ru": "Я иду в школу.",
+        "tj": "Ман ба мактаб мераваm."
+      }
+    },
+    {
+      "id": "phrase-7b7ffbe4321f5c",
+      "category_id": "study",
+      "sort_order": 26,
+      "zh": "你去学校做什么？",
+      "pinyin": "Nǐ qù xuéxiào zuò shénme?",
+      "translations": {
+        "uz": "Maktabga nima qilgani borasan?",
+        "ru": "Зачем ты идёшь в школу?",
+        "tj": "Ту ба мактаб барои чӣ меравӣ?"
+      }
+    },
+    {
+      "id": "phrase-55870455b78379",
+      "category_id": "work",
+      "sort_order": 1,
+      "zh": "你在哪儿工作？",
+      "pinyin": "Nǐ zài nǎr gōngzuò?",
+      "translations": {
+        "uz": "Siz qaerda ishlaysiz?",
+        "ru": "Где вы работаете?",
+        "tj": "Шумо дар куҷо кор мекунед?"
+      }
+    },
+    {
+      "id": "phrase-425575ee50688a",
+      "category_id": "work",
+      "sort_order": 2,
+      "zh": "我在学校工作。",
+      "pinyin": "Wǒ zài xuéxiào gōngzuò.",
+      "translations": {
+        "uz": "Men maktabda ishlayman.",
+        "ru": "Я работаю в школе.",
+        "tj": "Ман дар мактаб кор мекунам."
+      }
+    },
+    {
+      "id": "phrase-e096e6ffffd918",
+      "category_id": "work",
+      "sort_order": 3,
+      "zh": "你儿子在哪儿工作？",
+      "pinyin": "Nǐ érzi zài nǎr gōngzuò?",
+      "translations": {
+        "uz": "Sizning o'g'lingiz qaerda ishlaydi?",
+        "ru": "Где работает ваш сын?",
+        "tj": "Писари шумо дар куҷо кор мекунад?"
+      }
+    },
+    {
+      "id": "phrase-aa522ad7c770ec",
+      "category_id": "work",
+      "sort_order": 4,
+      "zh": "桌子上有什么？",
+      "pinyin": "Zhuōzi shàng yǒu shénme?",
+      "translations": {
+        "uz": "Stol ustida nima bor?",
+        "ru": "Что на столе?",
+        "tj": "Болои мӣз чӣ аст?"
+      }
+    },
+    {
+      "id": "phrase-bb1a08c25baff2",
+      "category_id": "work",
+      "sort_order": 5,
+      "zh": "桌子上有一个电脑和一本书。",
+      "pinyin": "Zhuōzi shàng yǒu yī gè diànnǎo hé yī běn shū.",
+      "translations": {
+        "uz": "Stol ustida bitta kompyuter va bitta kitob bor.",
+        "ru": "На столе стоит компьютер и лежит книга.",
+        "tj": "Болои мӣз як компютер ва як китоб аст."
+      }
+    },
+    {
+      "id": "phrase-f7d8df971cce42",
+      "category_id": "work",
+      "sort_order": 6,
+      "zh": "你看见张先生了吗？",
+      "pinyin": "Nǐ kànjiàn Zhāng xiānsheng le ma?",
+      "translations": {
+        "uz": "Janob Jangni ko'rdingizmi?",
+        "ru": "Вы видели господина Чжана?",
+        "tj": "Шумо ҷаноби Чжанро дидед?"
+      }
+    },
+    {
+      "id": "phrase-757919fa39a135",
+      "category_id": "work",
+      "sort_order": 7,
+      "zh": "40分钟后回来。",
+      "pinyin": "Sìshí fēnzhōng hòu huílai.",
+      "translations": {
+        "uz": "40 daqiqadan keyin qaytadi.",
+        "ru": "Вернётся через 40 минут.",
+        "tj": "Баъд аз 40 дақиқа бармегардад."
+      }
+    },
+    {
+      "id": "phrase-9850592dd63b07",
+      "category_id": "work",
+      "sort_order": 8,
+      "zh": "左边那个红色的是我的。",
+      "pinyin": "Zuǒbian nàge hóngsè de shì wǒ de.",
+      "translations": {
+        "uz": "Chap tomondagi qizil rangi meniki.",
+        "ru": "Вон та красная, слева — моя.",
+        "tj": "Он сурхе, ки тарафи чап аст, аз они ман аст."
+      }
+    },
+    {
+      "id": "phrase-39a5ca74ec44fe",
+      "category_id": "work",
+      "sort_order": 9,
+      "zh": "给你。",
+      "pinyin": "Gěi nǐ.",
+      "translations": {
+        "uz": "Ol, shunga.",
+        "ru": "Держи.",
+        "tj": "Бигир."
+      }
+    },
+    {
+      "id": "phrase-c5806f9e10b2fc",
+      "category_id": "work",
+      "sort_order": 10,
+      "zh": "已经两年多了，我是2011年来的。",
+      "pinyin": "Yǐjīng liǎng nián duō le, wǒ shì èr líng yī yī nián lái de.",
+      "translations": {
+        "uz": "Allaqachon ikki yildan oshdi, men 2011-yilda kelgan edim.",
+        "ru": "Уже больше двух лет, я приехал в 2011 году.",
+        "tj": "Аллакай зиёда аз ду сол, ман соли 2011 омадам."
+      }
+    },
+    {
+      "id": "phrase-f785afe2396a4e",
+      "category_id": "work",
+      "sort_order": 11,
+      "zh": "你认识谢先生吗？",
+      "pinyin": "Nǐ rènshi Xiè xiānsheng ma?",
+      "translations": {
+        "uz": "Xie janobini tanaysanmi?",
+        "ru": "Вы знакомы с господином Се?",
+        "tj": "Оё шумо ҷаноби Ксиеро мешиносед?"
+      }
+    },
+    {
+      "id": "phrase-96e2eb8a784df2",
+      "category_id": "work",
+      "sort_order": 12,
+      "zh": "认识，我们是大学同学，这个工作是他帮我介绍的。",
+      "pinyin": "Rènshi, wǒmen shì dàxué tóngxué, zhège gōngzuò shì tā bāng wǒ jièshào de.",
+      "translations": {
+        "uz": "Ha, biz universitetda bir guruhda o'qiganmiz, bu ishni u menga tavsiya qilgan edi.",
+        "ru": "Знаком, мы однокурсники в университете, именно он порекомендовал мне эту работу.",
+        "tj": "Мешиносам, мо дар донишгоҳ ҳамгурӯҳ будем, ӯ ин корро ба ман тавсия кард."
+      }
+    },
+    {
+      "id": "phrase-74533370fcee4d",
+      "category_id": "work",
+      "sort_order": 13,
+      "zh": "这两天怎么没看见小张？",
+      "pinyin": "Zhè liǎng tiān zěnme méi kànjian Xiǎo Zhāng?",
+      "translations": {
+        "uz": "Bu ikki kunda nega Kichik Jangni ko'rmadim?",
+        "ru": "Почему я не видел Маленького Чжана эти два дня?",
+        "tj": "Ин ду рӯз чаро Сяо Чжанро надидам?"
+      }
+    },
+    {
+      "id": "phrase-fa556a8364355f",
+      "category_id": "work",
+      "sort_order": 14,
+      "zh": "他去北京了。",
+      "pinyin": "Tā qù Běijīng le.",
+      "translations": {
+        "uz": "U Pekinga ketdi.",
+        "ru": "Он уехал в Пекин.",
+        "tj": "Вай ба Пекин рафтааст."
+      }
+    },
+    {
+      "id": "phrase-b41e1c165001e3",
+      "category_id": "work",
+      "sort_order": 15,
+      "zh": "你家离公司远吗？",
+      "pinyin": "Nǐ jiā lí gōngsī yuǎn ma?",
+      "translations": {
+        "uz": "Uying kompaniyadan uzoqmi?",
+        "ru": "Ваш дом далеко от компании?",
+        "tj": "Хонаи ту аз ширкат дур аст?"
+      }
+    },
+    {
+      "id": "phrase-b3238ea9decdd6",
+      "category_id": "work",
+      "sort_order": 16,
+      "zh": "你知道吗？大卫找到工作了。",
+      "pinyin": "Nǐ zhīdào ma? Dàwèi zhǎodào gōngzuò le.",
+      "translations": {
+        "uz": "Bilasizmi? Devid ish topdi.",
+        "ru": "Знаешь? Дэвид нашёл работу.",
+        "tj": "Медонӣ? Дэвид кор ёфт."
+      }
+    },
+    {
+      "id": "phrase-8491e7196b882a",
+      "category_id": "work",
+      "sort_order": 17,
+      "zh": "这是他的第一个工作，希望他能喜欢。",
+      "pinyin": "Zhè shì tā de dì yī ge gōngzuò, xīwàng tā néng xǐhuan.",
+      "translations": {
+        "uz": "Bu uning birinchi ishi, umid qilamanki yoqadi.",
+        "ru": "Это его первая работа, надеюсь, ему понравится.",
+        "tj": "Ин кори аввалинаш аст, умедворам, ки писандаш ояд."
+      }
+    },
+    {
+      "id": "phrase-5340e0687dd01a",
+      "category_id": "work",
+      "sort_order": 18,
+      "zh": "我弟弟让我帮他找个房子，现在他离公司有点儿远。",
+      "pinyin": "Wǒ dìdi ràng wǒ bāng tā zhǎo ge fángzi, xiànzài tā lí gōngsī yǒudiǎnr yuǎn.",
+      "translations": {
+        "uz": "Ukam menga unga uy topishda yordam berishimni so'radi, hozir u kompaniyadan biroz uzoqda turadi.",
+        "ru": "Мой младший брат попросил помочь найти ему жильё, сейчас он живёт немного далеко от компании.",
+        "tj": "Бародари хурдиам хоҳиш кард ба ӯ хона ёбам, ҳоло ӯ аз ширкат каме дур зиндагӣ мекунад."
+      }
+    },
+    {
+      "id": "phrase-7e53d304b7c580",
+      "category_id": "work",
+      "sort_order": 19,
+      "zh": "门开着呢，请进。",
+      "pinyin": "Mén kāi zhe ne, qǐng jìn.",
+      "translations": {
+        "uz": "Eshik ochiq turibdi, marhamat kiring.",
+        "ru": "Дверь открыта, пожалуйста, входите.",
+        "tj": "Дар кушода истодааст, марҳамат даред."
+      }
+    },
+    {
+      "id": "phrase-ef59876213054f",
+      "category_id": "work",
+      "sort_order": 20,
+      "zh": "那个手里拿着铅笔的呢？",
+      "pinyin": "Nàge shǒu lǐ ná zhe qiānbǐ de ne?",
+      "translations": {
+        "uz": "Qo'lida qalam ushlab turgan odam-chi?",
+        "ru": "А тот, кто держит в руке карандаш?",
+        "tj": "Он касе ки дар дасташ қалам дорад чӣ?"
+      }
+    },
+    {
+      "id": "phrase-36881a9a14bb81",
+      "category_id": "work",
+      "sort_order": 21,
+      "zh": "好的，谢谢！",
+      "pinyin": "Hǎo de, xièxie!",
+      "translations": {
+        "uz": "Yaxshi, rahmat!",
+        "ru": "Хорошо, спасибо!",
+        "tj": "Хуб, ташаккур!"
+      }
+    },
+    {
+      "id": "phrase-99ec3fe77ccd0d",
+      "category_id": "work",
+      "sort_order": 22,
+      "zh": "我不认识。",
+      "pinyin": "Wǒ bù rènshi.",
+      "translations": {
+        "uz": "Men uni tanimas.",
+        "ru": "Не знаю его.",
+        "tj": "Ман ӯро намешиносам."
+      }
+    },
+    {
+      "id": "phrase-c1d50cd2cbf208",
+      "category_id": "work",
+      "sort_order": 23,
+      "zh": "听说你去过中国，还想去吗？",
+      "pinyin": "Tīngshuō nǐ qùguo Zhōngguó, hái xiǎng qù ma?",
+      "translations": {
+        "uz": "Eshitdimki siz Xitoyga borgansiz, yana bormoqchimisiz?",
+        "ru": "Говорят, ты бывал(а) в Китае, хочешь съездить снова?",
+        "tj": "Шунидам ки шумо ба Чин рафтаед, боз рафтанӣ ҳастед?"
+      }
+    },
+    {
+      "id": "phrase-4fe4ede7f907dd",
+      "category_id": "work",
+      "sort_order": 24,
+      "zh": "我虽然去过好几次，但是还想再去中国玩儿。",
+      "pinyin": "Wǒ suīrán qùguo hǎo jǐ cì, dànshì hái xiǎng zài qù Zhōngguó wánr.",
+      "translations": {
+        "uz": "Men garchi bir necha marta borgan bo'lsam ham, lekin yana Xitoyga sayohat qilmoqchiman.",
+        "ru": "Хотя я там бывал(а) несколько раз, всё равно хочу снова поехать в Китай.",
+        "tj": "Гарчи ман чанд маротиба рафта бошам ҳам, аммо боз мехоҳам ба Чин барам сайр кунам."
+      }
+    },
+    {
+      "id": "phrase-11792b76a992fb",
+      "category_id": "work",
+      "sort_order": 25,
+      "zh": "那我们一起去吧。",
+      "pinyin": "Nà wǒmen yìqǐ qù ba.",
+      "translations": {
+        "uz": "Unda birga boraylik.",
+        "ru": "Тогда давай поедем вместе.",
+        "tj": "Пас биёед якҷоя биравем."
+      }
+    },
+    {
+      "id": "phrase-3003fe2f72dbae",
+      "category_id": "work",
+      "sort_order": 26,
+      "zh": "好啊，到时候我给你打电话。",
+      "pinyin": "Hǎo a, dào shíhou wǒ gěi nǐ dǎ diànhuà.",
+      "translations": {
+        "uz": "Yaxshi, o'sha vaqt kelganda telefon qilaman.",
+        "ru": "Хорошо, когда придёт время, позвоню тебе.",
+        "tj": "Хуб, вақташ расид занг мезанам."
+      }
+    },
+    {
+      "id": "phrase-044ba6f48b2c02",
+      "category_id": "health",
+      "sort_order": 1,
+      "zh": "我儿子在医院工作，他是医生。",
+      "pinyin": "Wǒ érzi zài yīyuàn gōngzuò, tā shì yīshēng.",
+      "translations": {
+        "uz": "O'g'lim kasalxonada ishlaydi, u shifokor.",
+        "ru": "Мой сын работает в больнице — он врач.",
+        "tj": "Писарам дар беморхона кор мекунад, ӯ духтур аст."
+      }
+    },
+    {
+      "id": "phrase-2ba33797513747",
+      "category_id": "health",
+      "sort_order": 2,
+      "zh": "他在医院。",
+      "pinyin": "Tā zài yīyuàn.",
+      "translations": {
+        "uz": "U kasalxonada.",
+        "ru": "Он в больнице.",
+        "tj": "Ӯ дар беморхона аст."
+      }
+    },
+    {
+      "id": "phrase-c21cfde0e73746",
+      "category_id": "health",
+      "sort_order": 3,
+      "zh": "她叫王方，在医院工作。",
+      "pinyin": "Tā jiào Wáng Fāng, zài yīyuàn gōngzuò.",
+      "translations": {
+        "uz": "Uning ismi Van Fan, kasalxonada ishlaydi.",
+        "ru": "Её зовут Ван Фан — она работает в больнице.",
+        "tj": "Номаш Ван Фан аст, дар беморхона кор мекунад."
+      }
+    },
+    {
+      "id": "phrase-d4655fdfa06d6e",
+      "category_id": "health",
+      "sort_order": 4,
+      "zh": "你身体怎么样？",
+      "pinyin": "Nǐ shēntǐ zěnmeyàng?",
+      "translations": {
+        "uz": "Sog'ligingiz qanday?",
+        "ru": "Как ваше здоровье?",
+        "tj": "Саломатии шумо чӣ хел аст?"
+      }
+    },
+    {
+      "id": "phrase-fcb20fc775fbfb",
+      "category_id": "health",
+      "sort_order": 5,
+      "zh": "我身体不太好。天气太热了，不爱吃饭。",
+      "pinyin": "Wǒ shēntǐ bú tài hǎo. Tiānqì tài rè le, bú ài chī fàn.",
+      "translations": {
+        "uz": "Sog'ligim unchalik yaxshi emas. Ob-havo juda issiq, ovqat yegim kelmayapti.",
+        "ru": "Здоровье не очень. Погода слишком жаркая, есть не хочется.",
+        "tj": "Саломатиям зияд хуб нест. Обу ҳаво хеле гарм аст, хӯрок хӯрданам намеояд."
+      }
+    },
+    {
+      "id": "phrase-a709c92e0c1c82",
+      "category_id": "health",
+      "sort_order": 6,
+      "zh": "谢谢你，医生。",
+      "pinyin": "Xièxie nǐ, yīshēng.",
+      "translations": {
+        "uz": "Rahmat, doktor.",
+        "ru": "Спасибо, доктор.",
+        "tj": "Ташаккур, духтур."
+      }
+    },
+    {
+      "id": "phrase-0d9c4b4a364087",
+      "category_id": "health",
+      "sort_order": 7,
+      "zh": "你很少生病，是不是喜欢运动？",
+      "pinyin": "Nǐ hěn shǎo shēngbìng, shì bú shì xǐhuan yùndòng?",
+      "translations": {
+        "uz": "Sen kamdan-kam kasal bo'lasan, sport qilishni yaxshi ko'rasanmi?",
+        "ru": "Ты редко болеешь, ты любишь спорт?",
+        "tj": "Ту кам касал мешавӣ, оё варзишро дӯст медорӣ?"
+      }
+    },
+    {
+      "id": "phrase-b8500896ee981d",
+      "category_id": "health",
+      "sort_order": 8,
+      "zh": "吃药了吗？现在身体怎么样？",
+      "pinyin": "Chī yào le ma? Xiànzài shēntǐ zěnmeyàng?",
+      "translations": {
+        "uz": "Dori ichdingmi? Hozir sog'liqing qanday?",
+        "ru": "Ты принял лекарство? Как сейчас самочувствие?",
+        "tj": "Оё дору хӯрдӣ? Ҳоло саломатиат чӣ тавр аст?"
+      }
+    },
+    {
+      "id": "phrase-fc15aa9088dc85",
+      "category_id": "health",
+      "sort_order": 9,
+      "zh": "医生说下个星期。",
+      "pinyin": "Yīshēng shuō xià ge xīngqī.",
+      "translations": {
+        "uz": "Shifokor keyingi haftada, dedi.",
+        "ru": "Врач сказал — на следующей неделе.",
+        "tj": "Духтур гуфт ҳафтаи оянда."
+      }
+    },
+    {
+      "id": "phrase-8f35684f156a9e",
+      "category_id": "health",
+      "sort_order": 10,
+      "zh": "是啊，咖啡喝多了对身体不好。",
+      "pinyin": "Shì a, kāfēi hē duō le duì shēntǐ bù hǎo.",
+      "translations": {
+        "uz": "Ha, qahvani ko'p ichish sog'liq uchun yaxshi emas.",
+        "ru": "Да, много кофе пить вредно для здоровья.",
+        "tj": "Бале, зиёд нӯшидани қаҳва барои саломатӣ зарар аст."
+      }
+    },
+    {
+      "id": "phrase-b36da17dd1baef",
+      "category_id": "health",
+      "sort_order": 11,
+      "zh": "别看报纸了，医生说你要多休息。",
+      "pinyin": "Bié kàn bàozhǐ le，yīshēng shuō nǐ yào duō xiūxi.",
+      "translations": {
+        "uz": "Gazeta o'qishni bas qil, shifokor ko'proq dam olishing kerak dedi.",
+        "ru": "Хватит читать газету, доктор сказал, что тебе нужно больше отдыхать.",
+        "tj": "Дигар рӯзнома нахон, духтур гуфт, ки ту бояд бештар истироҳат кунӣ."
+      }
+    },
+    {
+      "id": "phrase-a2eb71a1a8e97e",
+      "category_id": "health",
+      "sort_order": 12,
+      "zh": "医生说吃药后的两个小时不要喝茶。",
+      "pinyin": "Yīshēng shuō chī yàohòu de liǎng ge xiǎoshí búyào hē chá.",
+      "translations": {
+        "uz": "Shifokor dori ichganidan keyin ikki soat choy ichmaslik kerak dedi.",
+        "ru": "Доктор сказал, что два часа после приёма лекарства нельзя пить чай.",
+        "tj": "Духтур гуфт, ки ду соат баъд аз доруи хӯрдан чой нӯшидан мумкин нест."
+      }
+    },
+    {
+      "id": "phrase-fe217a24a5f385",
+      "category_id": "health",
+      "sort_order": 13,
+      "zh": "医生还说什么了？",
+      "pinyin": "Yīshēng hái shuō shénme le?",
+      "translations": {
+        "uz": "Shifokor yana nima dedi?",
+        "ru": "Что ещё сказал доктор?",
+        "tj": "Духтур боз чӣ гуфт?"
+      }
+    },
+    {
+      "id": "phrase-113b2d257943ba",
+      "category_id": "health",
+      "sort_order": 14,
+      "zh": "医生让你听我的。",
+      "pinyin": "Yīshēng ràng nǐ tīng wǒ de.",
+      "translations": {
+        "uz": "Shifokor menga quloq soling dedi.",
+        "ru": "Доктор сказал слушаться меня.",
+        "tj": "Духтур гуфт, ки ба ман гӯш кун."
+      }
+    },
+    {
+      "id": "phrase-8d6a170c0924fb",
+      "category_id": "health",
+      "sort_order": 15,
+      "zh": "我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。",
+      "pinyin": "Wǒ shuì de yě zǎo, wǒ měitiān wǎnshang shí diǎn jiù shuìjiào. Zǎo shuì zǎo qǐ duì shēntǐ hǎo.",
+      "translations": {
+        "uz": "Men ham erta yotaman, har kuni kechqurun o'n da yotaman. Erta yotib erta turish sog'liq uchun foydali.",
+        "ru": "Я тоже ложусь рано, каждый вечер в десять. Рано ложиться и рано вставать полезно для здоровья.",
+        "tj": "Ман ҳам барвақт мехобам, ҳар шаб соати даҳ мехобам. Барвақт хобидан ва барвақт бархестан барои саломатӣ муфид аст."
+      }
+    },
+    {
+      "id": "phrase-e5317ea5ee83a9",
+      "category_id": "health",
+      "sort_order": 16,
+      "zh": "我现在腿也疼，脚也疼。",
+      "pinyin": "Wǒ xiànzài tuǐ yě téng, jiǎo yě téng.",
+      "translations": {
+        "uz": "Hozir oyog'im ham, oyoq panjam ham og'riyapti.",
+        "ru": "Сейчас у меня болят и ноги, и стопы.",
+        "tj": "Ҳоло поям ҳам, кафи поям ҳам дард мекунад."
+      }
+    },
+    {
+      "id": "phrase-db0fb1c8328af3",
+      "category_id": "health",
+      "sort_order": 17,
+      "zh": "我听说你身体不舒服，怎么了？",
+      "pinyin": "Wǒ tīngshuō nǐ shēntǐ bù shūfu, zěnme le?",
+      "translations": {
+        "uz": "Eshitishimcha, mazang yo'q ekan, nima bo'ldi?",
+        "ru": "Я слышал, ты плохо себя чувствуешь, что случилось?",
+        "tj": "Шунидам, ки худро хуб ҳис намекунӣ, чӣ шуд?"
+      }
+    },
+    {
+      "id": "phrase-6a6c46b6cd4fce",
+      "category_id": "health",
+      "sort_order": 18,
+      "zh": "前几天有点儿发烧，现在好多了。",
+      "pinyin": "Qián jǐ tiān yǒudiǎnr fāshāo, xiànzài hǎoduō le.",
+      "translations": {
+        "uz": "Bir necha kun oldin biroz isitmam bor edi, hozir ancha yaxshi.",
+        "ru": "Несколько дней назад была небольшая температура, сейчас намного лучше.",
+        "tj": "Чанд рӯз пеш каме таб доштам, ҳоло хеле беҳтар аст."
+      }
+    },
+    {
+      "id": "phrase-4a46775bae55cc",
+      "category_id": "health",
+      "sort_order": 19,
+      "zh": "我儿子生病了，我要在家照顾他。",
+      "pinyin": "Wǒ érzi shēng bìng le, wǒ yào zài jiā zhàogù tā.",
+      "translations": {
+        "uz": "O'g'lim kasal bo'lib qoldi, uyda unga qarashim kerak.",
+        "ru": "Мой сын заболел, мне нужно дома ухаживать за ним.",
+        "tj": "Писарам бемор шуд, бояд дар хона ӯро нигоҳубин кунам."
+      }
+    },
+    {
+      "id": "phrase-cc58e4230dbb77",
+      "category_id": "health",
+      "sort_order": 20,
+      "zh": "谢谢，我要吃药，不喝茶了。",
+      "pinyin": "Xièxie, wǒ yào chī yào, bù hē chá le.",
+      "translations": {
+        "uz": "Rahmat, dori ichishim kerak, endi choy ichmayman.",
+        "ru": "Спасибо, мне нужно принять лекарство, чай уже не буду пить.",
+        "tj": "Ташаккур, бояд дору хӯрам, дигар чой намехӯрам."
+      }
+    },
+    {
+      "id": "phrase-c978a4accd8f85",
+      "category_id": "health",
+      "sort_order": 21,
+      "zh": "他吃药了吗？要不要去医院？",
+      "pinyin": "Tā chī yào le ma? Yào bu yào qù yīyuàn?",
+      "translations": {
+        "uz": "U dori ichdimi? Kasalxonaga borish kerakmi?",
+        "ru": "Он принял лекарство? Нужно ехать в больницу?",
+        "tj": "Ӯ дору хӯрд? Ба беморхона рафтан лозим аст?"
+      }
+    },
+    {
+      "id": "phrase-fa4329df39ba8c",
+      "category_id": "health",
+      "sort_order": 22,
+      "zh": "不用去医院，昨天吃了感冒药，现在好一些了。",
+      "pinyin": "Búyòng qù yīyuàn, zuótiān chī le gǎnmào yào, xiànzài hǎo yìxiē le.",
+      "translations": {
+        "uz": "Kasalxonaga borish shart emas, kecha shamollash dorisini ichdi, hozir biroz yaxshi.",
+        "ru": "В больницу не нужно, вчера принял лекарство от простуды, сейчас немного лучше.",
+        "tj": "Ба беморхона рафтан лозим нест, дирӯз доруи шамолхӯрӣ хӯрд, ҳоло каме беҳтар аст."
+      }
+    },
+    {
+      "id": "phrase-1a6cfecbad5391",
+      "category_id": "health",
+      "sort_order": 23,
+      "zh": "健康最重要，胖瘦没关系。",
+      "pinyin": "Jiànkāng zuì zhòngyào, pàng shòu méi guānxi.",
+      "translations": {
+        "uz": "Sog'liq eng muhim, semizlik yoki ozg'inlik muhim emas.",
+        "ru": "Здоровье важнее всего, полнота или худоба не имеют значения.",
+        "tj": "Саломатӣ аз ҳама муҳим аст, фарбеҳӣ ё лоғарӣ муҳим нест."
+      }
+    },
+    {
+      "id": "phrase-90fc99d30be987",
+      "category_id": "health",
+      "sort_order": 24,
+      "zh": "我这几天脚疼，没休息好。",
+      "pinyin": "Wǒ zhè jǐ tiān jiǎo téng, méi xiūxi hǎo.",
+      "translations": {
+        "uz": "Shu kunlarda oyog'im og'riyapti, yaxshi dam ololmadim.",
+        "ru": "В эти дни у меня болят ноги, я плохо отдыхал.",
+        "tj": "Ин чанд рӯз поям дард мекунад, хуб истироҳат накардам."
+      }
+    },
+    {
+      "id": "phrase-78477ae8b46424",
+      "category_id": "health",
+      "sort_order": 25,
+      "zh": "去医院了吗？医生说什么？",
+      "pinyin": "Qù yīyuàn le ma? Yīshēng shuō shénme?",
+      "translations": {
+        "uz": "Kasalxonaga bordingmi? Shifokor nima dedi?",
+        "ru": "Ходил в больницу? Что сказал врач?",
+        "tj": "Ба беморхона рафтӣ? Духтур чӣ гуфт?"
+      }
+    },
+    {
+      "id": "phrase-e3b6f9bd79e7f6",
+      "category_id": "health",
+      "sort_order": 26,
+      "zh": "医生说你爸爸一口酒都不能喝，别让他看见酒瓶子。",
+      "pinyin": "Yīshēng shuō nǐ bàba yì kǒu jiǔ dōu bù néng hē, bié ràng tā kànjiàn jiǔ píngzi.",
+      "translations": {
+        "uz": "Shifokor dadang bir qultum ham ichmasin dedi, unga shisha ko'rsatma.",
+        "ru": "Врач сказал, что твоему папе нельзя ни глотка алкоголя, не давай ему увидеть бутылку.",
+        "tj": "Духтур гуфт, ки падарат ҳатто як ҷуръа шароб ҳам нӯшидан мумкин нест, нагузор шишаро бинад."
+      }
+    },
+    {
+      "id": "phrase-144499c1a5460c",
+      "category_id": "help",
+      "sort_order": 1,
+      "zh": "对不起！",
+      "pinyin": "Duìbuqǐ!",
+      "translations": {
+        "uz": "Kechirasiz!",
+        "ru": "Извините!",
+        "tj": "Бубахшед!"
+      }
+    },
+    {
+      "id": "phrase-997ad25a75683d",
+      "category_id": "help",
+      "sort_order": 2,
+      "zh": "没关系！",
+      "pinyin": "Méi guānxi!",
+      "translations": {
+        "uz": "Hech gap emas!",
+        "ru": "Ничего страшного!",
+        "tj": "Майлаш!"
+      }
+    },
+    {
+      "id": "phrase-df8dea8dc6eaa5",
+      "category_id": "help",
+      "sort_order": 3,
+      "zh": "你再找找。是不是没带来？",
+      "pinyin": "Nǐ zài zhǎozhao. Shì bu shì méi dài lái?",
+      "translations": {
+        "uz": "Yana bir qidirib ko‘r. Balki olib kelmagandirsan?",
+        "ru": "Поищи ещё раз. Может, ты не принёс?",
+        "tj": "Боз як бор ҷустуҷӯ кун. Шояд онро наовардаӣ?"
+      }
+    },
+    {
+      "id": "phrase-6f07c1e49d74f8",
+      "category_id": "help",
+      "sort_order": 4,
+      "zh": "对不起，这个字我会读，不会写。",
+      "pinyin": "Duìbuqǐ, zhège zì wǒ huì dú, bú huì xiě.",
+      "translations": {
+        "uz": "Kechirasiz, bu ieroglifni o'qiy olaman, lekin yoza olmayman.",
+        "ru": "Извините, этот иероглиф я умею читать, но не умею писать.",
+        "tj": "Бубахшед, ин иероглифро ман метавонам бихонам, аммо навишта наметавонам."
+      }
+    },
+    {
+      "id": "phrase-f43232a52c9d45",
+      "category_id": "help",
+      "sort_order": 5,
+      "zh": "请问，今天几号？",
+      "pinyin": "Qǐngwèn, jīntiān jǐ hào?",
+      "translations": {
+        "uz": "Kechirasiz, bugun nechanchi sana?",
+        "ru": "Извините, какое сегодня число?",
+        "tj": "Бубахшед, имрӯз чанди сана аст?"
+      }
+    },
+    {
+      "id": "phrase-010c6d34bce7c7",
+      "category_id": "help",
+      "sort_order": 6,
+      "zh": "帮我看一下这件衣服怎么样。",
+      "pinyin": "Bāng wǒ kàn yíxià zhè jiàn yīfu zěnmeyàng.",
+      "translations": {
+        "uz": "Bu kiyimga bir qarab ber, qandayligini ayt.",
+        "ru": "Посмотри, как тебе эта одежда.",
+        "tj": "Ба ин либос як нигоҳ кун, чӣ тавр аст."
+      }
+    },
+    {
+      "id": "phrase-4b74b42731b066",
+      "category_id": "help",
+      "sort_order": 7,
+      "zh": "你好！请问张欢在吗？",
+      "pinyin": "Nǐ hǎo! Qǐngwèn Zhāng Huān zài ma?",
+      "translations": {
+        "uz": "Salom! Iltimos, Chjan Xuan bormi?",
+        "ru": "Здравствуйте! Скажите, Чжан Хуань здесь?",
+        "tj": "Салом! Лутфан, Чжан Хуан ҳаст?"
+      }
+    },
+    {
+      "id": "phrase-539dcfa7f7c66f",
+      "category_id": "help",
+      "sort_order": 8,
+      "zh": "对不起。",
+      "pinyin": "Duìbuqǐ.",
+      "translations": {
+        "uz": "Kechirasiz.",
+        "ru": "Извините.",
+        "tj": "Бубахшед."
+      }
+    },
+    {
+      "id": "phrase-5b7fd46e78203a",
+      "category_id": "help",
+      "sort_order": 9,
+      "zh": "没问题，非常欢迎。",
+      "pinyin": "Méi wèntí, fēicháng huānyíng.",
+      "translations": {
+        "uz": "Muammo yo'q, juda xush kelibsiz.",
+        "ru": "Нет проблем, очень рады.",
+        "tj": "Мушкил нест, хуш омадед."
+      }
+    },
+    {
+      "id": "phrase-8ba932cac08199",
+      "category_id": "help",
+      "sort_order": 10,
+      "zh": "看电视对学汉语有帮助。",
+      "pinyin": "Kàn diànshì duì xué Hànyǔ yǒu bāngzhù.",
+      "translations": {
+        "uz": "Televizor ko'rish xitoy tili o'rganishga yordam beradi.",
+        "ru": "Просмотр телевизора помогает в изучении китайского.",
+        "tj": "Тамошои телевизор дар омӯхтани чинӣ кӯмак мекунад."
+      }
+    },
+    {
+      "id": "phrase-e3ce740fce9734",
+      "category_id": "help",
+      "sort_order": 11,
+      "zh": "请问，这儿离新京宾馆远吗？",
+      "pinyin": "Qǐngwèn, zhèr lí Xīnjīng Bīnguǎn yuǎn ma?",
+      "translations": {
+        "uz": "Iltimos, bu yerdan Syanjin mehmonxonasigacha uzoqmi?",
+        "ru": "Скажите, пожалуйста, отсюда до гостиницы Синьцзин далеко?",
+        "tj": "Бубахшед, аз ин ҷо то меҳмонхонаи Синьцзин дур аст?"
+      }
+    },
+    {
+      "id": "phrase-da1c4f80f413ad",
+      "category_id": "help",
+      "sort_order": 12,
+      "zh": "请问，张先生在吗？",
+      "pinyin": "Qǐngwèn, Zhāng xiānsheng zài ma?",
+      "translations": {
+        "uz": "Iltimos, Chjan janob bormi?",
+        "ru": "Скажите, пожалуйста, господин Чжан здесь?",
+        "tj": "Бубахшед, ҷаноби Чжан ҳастанд?"
+      }
+    },
+    {
+      "id": "phrase-3881f060ec1f8e",
+      "category_id": "help",
+      "sort_order": 13,
+      "zh": "你能告诉我怎么走吗？",
+      "pinyin": "Nǐ néng gàosu wǒ zěnme zǒu ma?",
+      "translations": {
+        "uz": "Yo'lni aytib bera olasizmi?",
+        "ru": "Вы можете объяснить, как пройти?",
+        "tj": "Метавонед роҳро нишон диҳед?"
+      }
+    },
+    {
+      "id": "phrase-ca8fc112a1ca2c",
+      "category_id": "help",
+      "sort_order": 14,
+      "zh": "是啊，谢谢大家这一年对我的帮助！",
+      "pinyin": "Shì a, xièxie dàjiā zhè yì nián duì wǒ de bāngzhù!",
+      "translations": {
+        "uz": "Ha, hammaga bu yil menga bergan yordamlari uchun katta rahmat!",
+        "ru": "Да, спасибо всем за помощь в этом году!",
+        "tj": "Бале, ташаккур ба ҳама барои ёрии ин сол!"
+      }
+    },
+    {
+      "id": "phrase-658e28a60a5f69",
+      "category_id": "help",
+      "sort_order": 15,
+      "zh": "喂，你好，请问周明在吗？",
+      "pinyin": "Wèi, nǐ hǎo, qǐngwèn Zhōu Míng zài ma?",
+      "translations": {
+        "uz": "Alo, salom, Zhou Ming bormi?",
+        "ru": "Алло, здравствуйте, скажите, Чжоу Мин на месте?",
+        "tj": "Алло, салом, Zhou Ming ҳаст?"
+      }
+    },
+    {
+      "id": "phrase-32ceddc6ff2e13",
+      "category_id": "help",
+      "sort_order": 16,
+      "zh": "我看她总是笑着回答老师的问题。",
+      "pinyin": "Wǒ kàn tā zǒngshì xiàozhe huídá lǎoshī de wèntí.",
+      "translations": {
+        "uz": "Ko'rsam, u doim kulib o'qituvchining savollariga javob beradi.",
+        "ru": "Я вижу, она всегда отвечает на вопросы учителя с улыбкой.",
+        "tj": "Мебинам, вай ҳамеша бо табассум ба саволҳои муаллим ҷавоб медиҳад."
+      }
+    },
+    {
+      "id": "phrase-fa4190e7f2c8e3",
+      "category_id": "help",
+      "sort_order": 17,
+      "zh": "对不起，我明天不能和你们出去玩儿了。",
+      "pinyin": "Duìbuqǐ, wǒ míngtiān bù néng hé nǐmen chūqu wánr le.",
+      "translations": {
+        "uz": "Kechirasiz, ertaga sizlar bilan aylanishga chiqa olmayman.",
+        "ru": "Извините, завтра я не смогу пойти с вами гулять.",
+        "tj": "Бубахшед, пагоҳ бо шумо берун рафта наметавонам."
+      }
+    },
+    {
+      "id": "phrase-5358a3dfee84e6",
+      "category_id": "help",
+      "sort_order": 18,
+      "zh": "我的眼镜呢？怎么突然找不到了？你看见了吗？",
+      "pinyin": "Wǒ de yǎnjing ne? Zěnme tūrán zhǎo bu dào le? Nǐ kànjiàn le ma?",
+      "translations": {
+        "uz": "Ko'zoynagim qani? Qanday qilib birdan topolmay qoldim? Ko'rdingmi?",
+        "ru": "Где мои очки? Почему вдруг не могу их найти? Ты видела?",
+        "tj": "Айнакам куҷост? Чаро ногаҳон ёфта наметавонам? Дидӣ?"
+      }
+    },
+    {
+      "id": "phrase-023cb3d5133bf2",
+      "category_id": "help",
+      "sort_order": 19,
+      "zh": "我想请小丽吃饭，但是找不到好饭馆。",
+      "pinyin": "Wǒ xiǎng qǐng Xiǎolì chī fàn, dànshì zhǎo bu dào hǎo fànguǎnr.",
+      "translations": {
+        "uz": "Xiaolini ovqatga taklif qilmoqchiman, lekin yaxshi restoran topa olmayapman.",
+        "ru": "Я хочу пригласить Сяоли поесть, но не могу найти хороший ресторан.",
+        "tj": "Мехоҳам Сяолиро ба хӯрок даъват кунам, аммо тарабхонаи хуб ёфта наметавонам."
+      }
+    },
+    {
+      "id": "phrase-ba88091edc5ece",
+      "category_id": "help",
+      "sort_order": 20,
+      "zh": "对不起，周经理，来机场的路上我才发现忘带护照了。",
+      "pinyin": "Duìbuqǐ, Zhōu jīnglǐ, lái jīchǎng de lùshang wǒ cái fāxiàn wàng dài hùzhào le.",
+      "translations": {
+        "uz": "Kechirasiz, menejer Zhou, aeroportga kelayotgan yo'lda pasportimni unutganimni payqadim.",
+        "ru": "Извините, менеджер Чжоу, по дороге в аэропорт я только обнаружил, что забыл паспорт.",
+        "tj": "Бубахшед, мудир Чжоу, дар роҳи фурудгоҳ танҳо фаҳмидам, ки шиносномаро фаромӯш кардаам."
+      }
+    },
+    {
+      "id": "phrase-6ed70c8adef9d9",
+      "category_id": "help",
+      "sort_order": 21,
+      "zh": "对不起，我刚洗了个澡，没听见。有什么事吗？",
+      "pinyin": "Duìbuqǐ, wǒ gāng xǐ le ge zǎo, méi tīngjiàn. Yǒu shénme shì ma?",
+      "translations": {
+        "uz": "Kechirasiz, hozirgina cho'milgan edim, eshitmadim. Nima ish bor edi?",
+        "ru": "Извини, я только что принимал душ и не услышал. Что случилось?",
+        "tj": "Бубахшед, ҳозир оббозӣ карда будам, нашунидам. Чӣ кор буд?"
+      }
+    },
+    {
+      "id": "phrase-a287c39f1e40de",
+      "category_id": "help",
+      "sort_order": 22,
+      "zh": "写得不错，除了这个句子意思有些不清楚外，其他都没什么问题。",
+      "pinyin": "Xiě de búcuò, chúle zhè ge jùzi yìsi yǒuxiē bù qīngchu wài, qítā dōu méi shénme wèntí.",
+      "translations": {
+        "uz": "Yaxshi yozilgan, faqat bu gapning ma'nosi biroz noaniq, qolganlarida muammo yo'q.",
+        "ru": "Написано неплохо, кроме того, что смысл этого предложения немного неясен, с остальным проблем нет.",
+        "tj": "Хуб навишта шудааст, ба ғайр аз он ки маънои ин ҷумла каме норавшан аст, боқимонда мушкил надорад."
+      }
+    },
+    {
+      "id": "phrase-3c2e592596e4e1",
+      "category_id": "help",
+      "sort_order": 23,
+      "zh": "现在钱不是问题了，主要是没有时间。",
+      "pinyin": "Xiànzài qián bú shì wèntí le, zhǔyào shì méiyǒu shíjiān.",
+      "translations": {
+        "uz": "Hozir pul muammo emas, asosiysi vaqt yo'q.",
+        "ru": "Сейчас деньги уже не проблема, главное - нет времени.",
+        "tj": "Ҳоло пул мушкил нест, асосан вақт нест."
+      }
+    },
+    {
+      "id": "phrase-5e9d4bda5b6230",
+      "category_id": "help",
+      "sort_order": 24,
+      "zh": "没问题，只要我有，就一定会借给你的。还差多少？",
+      "pinyin": "Méi wèntí, zhǐyào wǒ yǒu, jiù yídìng huì jiè gěi nǐ de. Hái chà duōshao?",
+      "translations": {
+        "uz": "Muammo yo'q, menda bo'lsa, albatta senga qarz beraman. Yana qancha yetmayapti?",
+        "ru": "Без проблем, если у меня есть, я обязательно одолжу тебе. Сколько еще не хватает?",
+        "tj": "Мушкил нест, агар дошта бошам, ҳатман ба ту қарз медиҳам. Боз чанд камӣ дорад?"
+      }
+    },
+    {
+      "id": "phrase-bf00cb4cbb3259",
+      "category_id": "help",
+      "sort_order": 25,
+      "zh": "好，那你明天来上班吧。关于这个工作，还有什么问题吗？",
+      "pinyin": "Hǎo, nà nǐ míngtiān lái shàng bān ba. Guānyú zhège gōngzuò, hái yǒu shénme wèntí ma?",
+      "translations": {
+        "uz": "Yaxshi, unda ertaga ishga keling. Bu ish haqida yana savolingiz bormi?",
+        "ru": "Хорошо, тогда завтра приходите на работу. Есть еще вопросы по поводу этой работы?",
+        "tj": "Хуб, пас пагоҳ ба кор биёед. Дар бораи ин кор боз саволе доред?"
+      }
+    },
+    {
+      "id": "phrase-ad63637cf4df08",
+      "category_id": "help",
+      "sort_order": 26,
+      "zh": "我的照相机被谁拿走了？怎么找不到了？",
+      "pinyin": "Wǒ de zhàoxiàngjī bèi shéi ná zǒu le? Zěnme zhǎo bu dào le?",
+      "translations": {
+        "uz": "Fotoapparatimni kim olib ketdi? Nega topa olmayapman?",
+        "ru": "Кто забрал мой фотоаппарат? Почему я не могу его найти?",
+        "tj": "Фотоаппарати маро кӣ гирифта рафт? Чаро ёфта наметавонам?"
+      }
+    }
+  ]
+}

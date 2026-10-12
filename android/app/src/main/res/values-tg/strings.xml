@@ -59,7 +59,7 @@
     <string name="offline_section_title">Барои ин бахш интернет лозим аст</string>
     <string name="offline_section_body">Бе интернет луғат ва харитаи курс кор мекунанд. Вақте ки пайваст барқарор шавад, барнома худаш пайваст мешавад.</string>
     <string name="offline_lesson">Барои дарс интернет лозим аст</string>
-    <string name="offline_practice">Бе интернет танҳо луғат кор мекунад</string>
+    <string name="offline_practice">Бе интернет луғат ва ибораҳои омода кор мекунанд</string>
     <string name="error_timeout">Сервер ҷавоб надод. Аз нав кӯшиш кунед.</string>
     <string name="error_server">Хатогии муваққатии сервер. Каме дертар кӯшиш кунед.</string>
     <string name="error_unknown">Хатогии ғайричашмдошт рух дод.</string>
@@ -528,4 +528,22 @@
     <string name="hsk30_payment_rejected_title">Пардохти HSK 3.0 рад шуд</string>
     <string name="hsk30_payment_rejected_body">Пардохт қабул нашуд. Маълумотро санҷида, онро аз нав фиристед.</string>
     <string name="hsk30_payment_retry">Боз кӯшиш кардан</string>
+    <string name="practice_ready_phrases_title">Ибораҳои омода</string>
+    <string name="practice_ready_phrases_body">300 ҷумлаи чинӣ · 12 мавзӯъ</string>
+    <string name="practice_hsk30_locked">Барои машқҳои HSK 3.0 дастрасии курсро кушоед.</string>
+    <string name="practice_hsk30_unlock">Кушодани дастрасии курс</string>
+    <string name="ready_phrases_title">Ибораҳои омода</string>
+    <string name="ready_phrases_intro">Ҷумлаҳои чинӣ барои вазъиятҳои ҳаррӯза</string>
+    <string name="ready_phrases_search_hint">Ҷустуҷӯ бо чинӣ, пинйин ё тарҷума</string>
+    <string name="ready_phrases_all">Ҳама</string>
+    <string name="ready_phrases_saved">Нигоҳдоштаҳо</string>
+    <string name="ready_phrases_count">%1$d аз %2$d ҷумла</string>
+    <string name="ready_phrases_save">Нигоҳ доштан</string>
+    <string name="ready_phrases_copy">Нусха гирифтан</string>
+    <string name="ready_phrases_copied">Ҷумлаи чинӣ нусха шуд</string>
+    <string name="ready_phrases_no_results">Барои ин ҷустуҷӯ ҷумла ёфт нашуд.</string>
+    <string name="ready_phrases_no_saved">Ибораҳои нигоҳдоштаатон дар ин ҷо намоиш мешаванд.</string>
+    <string name="ready_phrases_load_failed">Маҷмӯаи ибораҳоро хонда нашуд.</string>
+    <string name="ready_phrases_retry">Аз нав кӯшиш кардан</string>
+    <string name="ready_phrases_back">Бозгашт</string>
 </resources>

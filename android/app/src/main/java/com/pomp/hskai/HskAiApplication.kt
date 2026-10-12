@@ -323,6 +323,7 @@ class HskAiApplication : Application() {
     suspend fun clearLocalData() {
         courseRepository.clearCache()
         appSettings.clearDictionaryHistory()
+        appSettings.clearReadyPhraseFavorites()
         appSettings.clearAdsUnlockedAfterLimit()
         appSettings.clearPaymentRegion()
         appSettings.clearSubscriptionDisplayCurrency()

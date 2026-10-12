@@ -10843,3 +10843,9 @@ Changed:
 Unfinished verification:
 - Latest backend/Android CI and UZ/RU/TJ real-device educational UX review, plus old APK smoke test. Draft PR not merged to main.
 - Persistent per-objective mastery and 1-/7-day retention are not implemented; rollout is a checkpoint+conditional feedback candidate, not proof all 103 lessons have been hand-edited or educationally validated.
+
+### 2026-10-13 — Tayyor gaplar offline katalogi
+
+- `scripts/ready_phrases/phrases.json` is the canonical 300-phrase/12-category source; `scripts/build_ready_phrases.py` validates and synchronizes Mini App and APK JSON assets.
+- Android search and favorites stay on-device (APK assets and DataStore). Mini App search, categories, copy, and favorites run client-side; only versioned static JSON is fetched.
+- HSK 3.0 locked users can still open local dictionary/phrasebook tools; server-backed practice remains behind the existing access gate.

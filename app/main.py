@@ -1850,6 +1850,11 @@ async def hsk_lugat_miniapp():
     return miniapp_file_response("app/static/hsk-lugat.html")
 
 
+@app.get("/hsk-gaplar.html")
+async def hsk_gaplar_miniapp():
+    return miniapp_file_response("app/static/hsk-gaplar.html")
+
+
 # hsk-data.js ikkiga bo'lindi: mashq sahifalari (recognition/pronunciation) faqat
 # WORDS'ga muhtoj, lekin ilgari 2.8 MB'lik to'liq faylni parse qilib turardi — bu
 # har ochilishda sezilarli kechikish berardi. STROKES/EXAMPLES/HSK4_GRAMMAR endi
@@ -2170,6 +2175,7 @@ async def course_v3_data_file(filename: str):
         "lesson_gate_hsk30.js": "application/javascript",
         "hsk30-words.js": "application/javascript",
         "hsk30-dictionary-examples.js": "application/javascript",
+        "ready-phrases-v1.json": "application/json",
     }
     if filename in public_assets:
         return static_asset_response(
