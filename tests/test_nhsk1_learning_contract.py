@@ -105,6 +105,8 @@ class Nhsk1LearningContractTests(unittest.TestCase):
         self.assertIn('c.learning_feedback==="n1_context_v1"&&!Flow.challenge', html)
         self.assertIn('esc(rightText)+" · "+esc(why)', html)
         self.assertIn('c.learning_feedback==="n1_context_v1"?(esc(ans.join(" "))', html)
+        self.assertIn("function skipN1PilotRechecks(index)", html)
+        self.assertIn("Flow.pilotFailures[card.learning_objective]=!ok", html)
 
     def test_n1_exit_check_is_append_only_and_android_compatible(self):
         from scripts.hsk30.apply_learning_overlays import apply_nhsk1_pilot_exit_check
@@ -113,9 +115,11 @@ class Nhsk1LearningContractTests(unittest.TestCase):
         ).read_text(encoding="utf-8"))
         enhanced = apply_nhsk1_pilot_exit_check(src)
         self.assertEqual(src, enhanced, "The overlay must be reproducible and idempotent")
-        self.assertEqual([sec["section_no"] for sec in src["sections"]], [1, 2, 3])
-        self.assertEqual(src["sections"][-1]["section_purpose"], "learning_exit_check")
-        checks = src["sections"][-1]["cards"]
+        self.assertEqual([sec["section_no"] for sec in src["sections"]], [1, 2, 3, 4])
+        self.assertEqual(src["sections"][2]["section_purpose"], "learning_exit_check")
+        self.assertEqual(src["sections"][3]["section_purpose"], "learning_repair_bank")
+        checks = src["sections"][2]["cards"]
+        retries = src["sections"][3]["cards"]
         self.assertEqual(
             [card["type"] for card in checks],
             ["quick_quiz", "listening_choice", "sentence_builder"],
@@ -124,6 +128,9 @@ class Nhsk1LearningContractTests(unittest.TestCase):
         self.assertTrue(all(c["learning_check"] == "n1_exit_check_v1" for c in checks))
         self.assertEqual(checks[1]["options"][checks[1]["correct_index"]], checks[1]["audio_text"])
         self.assertEqual(checks[2]["answer_tokens"], ["同学", "们", "再见"])
+        self.assertEqual([x["learning_objective"] for x in retries], [x["learning_objective"] for x in checks])
+        self.assertEqual([x["type"] for x in retries], [x["type"] for x in checks])
+        self.assertEqual(retries[1]["audio_text"], "不客气！")
         # Existing Mini App and Android use these same three standard card
         # types. An appended section keeps every old material_ref unchanged.
         original = src.copy()
@@ -135,7 +142,7 @@ class Nhsk1LearningContractTests(unittest.TestCase):
         data = json.loads(Path(
             "app/static/course_v3_data/nhsk1/lesson_04.json"
         ).read_text(encoding="utf-8"))
-        data["sections"][-1]["cards"][0]["correct_index"] = 0
+        data["sections"][2]["cards"][0]["correct_index"] = 0
         with self.assertRaisesRegex(ValueError, "modified or collided"):
             apply_nhsk1_pilot_exit_check(data)
 
@@ -143,7 +150,7 @@ class Nhsk1LearningContractTests(unittest.TestCase):
         data = json.loads(Path(
             "app/static/course_v3_data/nhsk1/lesson_04.json"
         ).read_text(encoding="utf-8"))
-        for card in data["sections"][-1]["cards"]:
+        for card in data["sections"][2]["cards"]:
             for lang in ("uz", "ru", "tj"):
                 prompt = card.get("prompt", card.get("sentence", {}))[lang]
                 self.assertNotIn("老师，您好！", prompt)
