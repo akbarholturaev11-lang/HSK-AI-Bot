@@ -1775,6 +1775,9 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
         )
         out = apply_nhsk1_pilot_feedback(out)
         out = apply_nhsk1_pilot_exit_check(out)
+    elif level == "nhsk1" and checkpoint and src >= 2:
+        from scripts.hsk30.build_nhsk1_source_assessment import apply_nhsk1_source_checks
+        out = apply_nhsk1_source_checks(out)
     return out
 
 
