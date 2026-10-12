@@ -8,6 +8,7 @@ on:
       - "scripts/hsk30/verify_nhsk1_learning_contract.py"
       - "scripts/hsk30/apply_learning_overlays.py"
       - "scripts/hsk30/build_nhsk1_source_assessment.py"
+      - "scripts/hsk30/test_nhsk1_miniapp_retry.cjs"
       - "scripts/hsk30/learning_overlays/nhsk1_lesson_01*.json"
       - "scripts/gen_course_v3_from_seed.py"
       - "android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonViewModel.kt"
@@ -24,6 +25,7 @@ on:
       - "scripts/hsk30/verify_nhsk1_learning_contract.py"
       - "scripts/hsk30/apply_learning_overlays.py"
       - "scripts/hsk30/build_nhsk1_source_assessment.py"
+      - "scripts/hsk30/test_nhsk1_miniapp_retry.cjs"
       - "scripts/hsk30/learning_overlays/nhsk1_lesson_01*.json"
       - "scripts/gen_course_v3_from_seed.py"
       - "android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonViewModel.kt"
@@ -68,5 +70,7 @@ jobs:
           Path("/tmp/nhsk1-course-v3.js").write_text("\n".join(blocks), encoding="utf-8")
           PY
           node --check /tmp/nhsk1-course-v3.js
+      - name: Verify Mini App conditional retry behavior
+        run: node scripts/hsk30/test_nhsk1_miniapp_retry.cjs
       - name: Validate N1 Course V3 delivery contract
         run: python scripts/hsk30/verify_nhsk1_learning_contract.py
