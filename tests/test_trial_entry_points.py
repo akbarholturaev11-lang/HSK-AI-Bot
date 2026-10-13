@@ -56,7 +56,7 @@ class TrialEntryPointTests(unittest.TestCase):
         # Trial is still available in onboarding/profile, never on a limit sheet.
         self.assertIn("isLimitPaywallContext(ctx)", COURSE)
         self.assertIn("!isLimitPaywallContext(ctx)&&trialEligible()", COURSE)
-        self.assertIn("trialStart(\\\"paywall_practice\\\")", COURSE)
+        self.assertIn('trialStart("paywall_practice")', COURSE)
         sheet = ADS.split("function showLimitPromo(opts){", 1)[1].split(
             "/* ============================================================", 1
         )[0]
