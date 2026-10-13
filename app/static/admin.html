@@ -271,7 +271,7 @@
     /* Admin V2 presentation. Existing data and action hooks stay in place. */
     :root{--admin-blue:#79aaf2;--admin-sub:#b7c2d0;--admin-sidebar:#0f151e}
     body{padding:0}
-    button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--admin-blue);outline-offset:2px}
+    button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--admin-blue);outline-offset:3px}
     button:disabled{cursor:not-allowed}
     .app{display:block;min-height:var(--app-h)}
     .admin-sidebar{display:none}
@@ -311,20 +311,20 @@
     .sec{margin-bottom:26px}
     .sec-head{align-items:flex-start;gap:12px;margin:0 0 13px}
     .sec-title{font-size:15px;letter-spacing:-.025em;font-weight:800}
-    .sec-note{font-size:11px;line-height:1.5}
+    .sec-note{font-size:12px;line-height:1.5}
     .link-btn{min-height:44px;color:var(--admin-blue);font-size:11px;font-weight:750;white-space:normal;text-align:right}
     .grid,.list{gap:11px}
     .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
     .g3,.settings-grid,.frow.two{grid-template-columns:minmax(0,1fr)}
     .stat{padding:15px;min-height:126px;justify-content:space-between;background:var(--surface);border:1px solid var(--line);border-radius:14px}
     .stat.good,.stat.warn,.stat.danger,.stat.info{background:var(--surface);border-color:var(--line)}
-    .stat .lab{font-size:11px;font-weight:650;text-transform:none;letter-spacing:0;color:var(--admin-sub);line-height:1.5}
-    .stat .val{font-size:26px;font-weight:850;letter-spacing:-.05em;line-height:1.12;margin:20px 0 5px}
-    .stat .sub{font-size:11px;line-height:1.45;font-weight:500;color:var(--muted)}
+    .stat .lab{font-size:12px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--admin-sub);line-height:1.5}
+    .stat .val{font-size:26px;font-weight:850;letter-spacing:-.035em;line-height:1.15;margin:16px 0 6px;font-variant-numeric:tabular-nums}
+    .stat .sub{font-size:12px;line-height:1.5;font-weight:500;color:var(--muted)}
     .block{padding:16px;border-radius:14px;margin-bottom:14px}
     .block-head{align-items:flex-start;gap:10px;margin-bottom:17px}
     .block-head h3{font-size:14px;font-weight:800;letter-spacing:-.02em}
-    .block-head p{font-size:11px;line-height:1.5;margin-top:5px}
+    .block-head p{font-size:12px;line-height:1.5;margin-top:5px}
     .block-head .bi{background:#253241;color:#c6d7ec;border-radius:10px;width:34px;height:34px}
     .block .stat,.mcard .stat{background:#131d29;min-height:120px}
     .explain{background:#1a2532;border:1px solid var(--line);border-left:1px solid var(--line);padding:13px 14px;color:#b7c2d0;font-size:12px;line-height:1.65;border-radius:11px}
@@ -341,7 +341,7 @@
     .input:focus,.select:focus,.textarea:focus,.nclang textarea:focus{border-color:var(--admin-blue);box-shadow:0 0 0 2px #79aaf21f}
     .nclang textarea{font-size:16px;padding:10px 12px;line-height:1.6}
     .frow{gap:7px;margin-bottom:13px}
-    .frow label,.nclang label{font-size:11px;font-weight:760;color:var(--admin-sub)}
+    .frow label,.nclang label{font-size:12px;font-weight:650;color:var(--admin-sub)}
     .btn{height:auto;min-height:44px;padding:10px 15px;line-height:1.45;border:1px solid var(--accent);border-radius:10px;background:var(--accent);font-size:12px;font-weight:750}
     .btn:hover{background:#ce5045;border-color:#ce5045}
     .btn.sec{background:#1a2532;border-color:var(--line);color:var(--ink)}
@@ -354,7 +354,7 @@
     .ucard,.pcard,.ncard,.srow{border-radius:14px;padding:16px;background:var(--surface);border-color:var(--line);min-width:0}
     .ucard:hover,.srow:hover{background:#1a2532;border-color:#3a4a5d}
     .uname{font-size:13px;font-weight:800}
-    .usub{font-size:11px;line-height:1.6;overflow-wrap:anywhere}
+    .usub{font-size:12px;line-height:1.6;overflow-wrap:anywhere}
     .uhead{grid-template-columns:minmax(0,1fr) auto}
     .uhead .tag{max-width:145px;white-space:normal;text-align:center;justify-content:center}
     .mini{background:#1a2532;padding:10px;border-radius:10px}
@@ -362,7 +362,7 @@
     .mini span{font-size:10px;font-weight:600}
     .srow{min-height:70px;gap:12px}
     .srow h3{font-size:12px;font-weight:800;letter-spacing:-.01em}
-    .srow p{font-size:11px;line-height:1.5;margin-top:4px}
+    .srow p{font-size:12px;line-height:1.5;margin-top:4px}
     .srow:has(.admin-module-icon){grid-template-columns:36px minmax(0,1fr) auto}
     .admin-module-icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:#253241;color:#c6d7ec}
     .admin-module-icon .admin-icon{width:18px;height:18px}
@@ -372,15 +372,15 @@
     .tag.amber{background:#3b3329;color:#f1ce96}
     .tag.red{background:#422b33;color:#ffabb4}
     .tag.violet{background:#322b42;color:#d0b9f1}
-    .amount{font-size:20px;font-weight:850;letter-spacing:-.035em}
+    .amount{font-size:20px;font-weight:750;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
     .mcard{padding:15px;border-radius:12px;gap:11px;border-color:var(--line)}
     .mcard h3,.nctitle{font-size:13px;font-weight:800}
-    .mcard p,.ncnote{font-size:11px;line-height:1.6}
+    .mcard p,.ncnote{font-size:12px;line-height:1.6}
     .mcard .mcard{padding:12px;background:#101924}
     .ncph{color:var(--admin-blue);line-height:1.5}
     .ncsw{min-height:36px}
     input[type=checkbox]{accent-color:var(--accent)}
-    .hint,.empty{font-size:11px;line-height:1.6}
+    .hint,.empty{font-size:12px;line-height:1.6}
     .danger-note{background:#2b222c;color:#f4c5c8;border-color:#63404b;font-size:11px;font-weight:600}
     .acc{border-radius:12px;border-color:var(--line)}
     .acc>summary{min-height:48px;font-size:12px;font-weight:750;padding:14px}
@@ -392,7 +392,7 @@
     .admin-table-scroll{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;margin-top:8px;border-radius:8px}
     .tbl{min-width:570px;font-size:12px}
     .tbl th{padding:12px 14px;font-size:10px;letter-spacing:.05em;font-weight:850;color:#92a2b2;white-space:nowrap;border-bottom:1px solid var(--line)}
-    .tbl td{padding:14px;color:var(--admin-sub);border-color:var(--line-soft)}
+    .tbl td{padding:14px;color:var(--admin-sub);border-color:var(--line-soft);font-variant-numeric:tabular-nums}
     .tbl b{color:var(--ink);font-weight:750}
     .tbl tr:nth-child(even){background:transparent}
     .tbl tr:hover td{background:#ffffff05}
@@ -423,6 +423,7 @@
     .admin-search-result:hover,.admin-search-result:focus-visible{background:#293748}
     .admin-search-result>span{min-width:0;flex:1;display:block}
     .admin-search-result small{display:block;margin-top:4px;color:var(--muted);font-size:10px;text-align:left;line-height:1.5}
+    .admin-navbtn,.admin-subbtn,.admin-search-open,.reload,.btn,.chip,.period,.srow{transition:background-color .14s ease,border-color .14s ease,color .14s ease}
     .admin-search-result .admin-icon{color:var(--muted);width:18px;height:18px}
     @media(min-width:761px){
       body{overflow:hidden}
@@ -435,7 +436,7 @@
       .admin-caption{padding:0 14px 12px;color:#68798c;font-size:10px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
       #sidebarNav{display:flex;flex-direction:column;gap:3px;min-height:0;overflow-y:auto;padding:0 0 10px}
       .admin-navbtn{width:100%;min-height:47px;padding:9px 12px;border-radius:11px;display:flex;align-items:center;gap:11px;text-align:left;font-weight:700;font-size:13px;color:#a5b2c1;flex:none}
-      .admin-navbtn:hover,.admin-navbtn.active{background:#222c39;color:#fff}
+      .admin-navbtn:hover,.admin-navbtn:focus-visible,.admin-navbtn.active{background:#222c39;color:#fff}
       .admin-navbtn.active{box-shadow:inset 3px 0 0 var(--accent)}
       .admin-navbtn .admin-icon{width:21px;height:21px;opacity:.9}
       .admin-navbtn.active .admin-icon{color:#f38c7d}
@@ -454,6 +455,7 @@
       .grid,.list{gap:14px}
       .g2{grid-template-columns:repeat(4,minmax(0,1fr))}
       .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+      #summaryGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
       .settings-grid,.frow.two{grid-template-columns:repeat(2,minmax(0,1fr))}
       .list{grid-template-columns:repeat(2,minmax(0,1fr))}
       .pboard{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));align-items:start}
@@ -476,6 +478,7 @@
       .admin-page-actions{max-width:50%}
       .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
       .g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+      #summaryGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .admin-search-open{min-width:44px;width:44px;padding:0}
       .admin-search-open>span:not([data-admin-icon]),.admin-search-open kbd{display:none}
     }
@@ -990,7 +993,7 @@
       }
       $("summaryGrid").innerHTML = summary.map(i=>`
         <article class="stat ${i.tone||""}"><div class="lab">${esc(metricLabel(i.label))}</div>
-          <div><div class="val">${esc(localizeAdminCopy(i.value))}</div><div class="sub">${esc(i.note)}</div></div></article>`).join("");
+          <div><div class="val">${esc(metricValue(i.value))}</div><div class="sub">${esc(i.note)}</div></div></article>`).join("");
       const c = ov.segments||{};
       $("segmentChips").innerHTML = Object.keys(segmentLabels).map(k=>`
         <button class="chip ${state.filter===k?"active":""}" data-seg="${k}"><span>${segmentLabels[k][0]} ${c[k]||0}</span></button>`).join("");
@@ -1013,20 +1016,20 @@
       $("queueList").innerHTML = (ov.queue||[]).map((i,idx)=>`
         <button class="srow" ${i.section==="ads"?'data-admin-module="ads_hub"':`data-tab-jump="${i.section==="payments"?"payments":"users"}`} >
           <div><h3>${idx+1}. ${esc(i.title)}</h3><p>${esc(i.note)}</p></div>
-          <span class="tag ${i.priority==="hozir"||i.priority==="иссиқ"||i.priority==="ҳозир"?"amber":"green"}">${esc(i.priority)}</span>
+          <span class="tag ${i.priority==="hozir"||i.priority==="иссиқ"||i.priority==="ҳозир"?"amber":"green"}">${esc(metricLabel(i.priority))}</span>
         </button>`).join("");
     }
 
     /* ---------- STATISTICS ---------- */
     function financePeriod(){ const f=state.finance; if(!f||!f.periods) return null; return f.periods.find(p=>p.key===state.statsPeriod)||f.periods[0]; }
     function overviewReport(){ const r=state.overview&&state.overview.statistics_reports; if(!Array.isArray(r)) return null; return r.find(x=>x.key===state.statsPeriod)||r[0]; }
-    const adminMetricLabels={"Sales A/B · 7d approved": "Сотув тажрибаси · 7 кунда тасдиқланган", "Obuna sahifasi": "Обуна саҳифаси", "Rekvizitni ko'rdi": "Тўлов маълумотларини кўрди", "Skrinshot tanladi": "Тўлов суратини танлади", "Skrinshot yubordi": "Тўлов суратини юборди", "Tasdiqlandi": "Тасдиқланди", "Ma’lumot yetarli emas": "Маълумот етарли эмас", "Ma'lumot yetarli emas": "Маълумот етарли эмас", "Signup → App D1": "Рўйхатдан ўтиш → 1-кунда қайтиш", "Signup → App D7": "Рўйхатдан ўтиш → 7-кунда қайтиш", "D1 recovery lift": "1-кунда қайтиш ўсиши", "Starter start → complete": "Бошланғич дарс: бошлаш → тугатиш", "Starter first-attempt": "Бошланғич дарс: биринчи уриниш", "Starter → HSK1 P1/P2/P3": "Бошланғич дарс → HSK1 босқичлари", "Checkpoint → paywall": "Текширув → обуна экрани", "Starter D1 learning": "Бошланғич дарс: 1-кун фаоллиги", "Avg session": "Ўртача машғулот вақти", "Lesson time": "Дарс вақти", "AI chat xabar/user": "Савол-жавоб: ҳар бир фойдаланувчига хабар", "Voice minutes": "Овозли машқ дақиқалари", "First payment": "Биринчи тўлов", "Davr revenue / payer": "Давр тушуми / тўловчи", "Taglangan CAC": "Белгиланган мижоз жалб қилиш харажати", "Unfinished notif": "Тугатилмаган дарс эслатмаси", "Direct start → dars ≤2m": "Тўғридан-тўғри бошлаш → 2 дақиқада дарс", "Onb → dars ≤2m": "Танишув → 2 дақиқада дарс"};
+    const adminMetricLabels={"Sales A/B · 7d approved": "Сотув тажрибаси · 7 кунда тасдиқланган", "Obuna sahifasi": "Обуна саҳифаси", "Rekvizitni ko'rdi": "Тўлов маълумотларини кўрди", "Skrinshot tanladi": "Тўлов суратини танлади", "Skrinshot yubordi": "Тўлов суратини юборди", "Tasdiqlandi": "Тасдиқланди", "Ma’lumot yetarli emas": "Маълумот етарли эмас", "Ma'lumot yetarli emas": "Маълумот етарли эмас", "Signup → App D1": "Рўйхатдан ўтиш → 1-кунда қайтиш", "Signup → App D7": "Рўйхатдан ўтиш → 7-кунда қайтиш", "D1 recovery lift": "1-кунда қайтиш ўсиши", "Starter start → complete": "Бошланғич дарс: бошлаш → тугатиш", "Starter first-attempt": "Бошланғич дарс: биринчи уриниш", "Starter → HSK1 P1/P2/P3": "Бошланғич дарс → HSK1 босқичлари", "Checkpoint → paywall": "Текширув → обуна экрани", "Starter D1 learning": "Бошланғич дарс: 1-кун фаоллиги", "Avg session": "Ўртача машғулот вақти", "Lesson time": "Дарс вақти", "AI chat xabar/user": "Савол-жавоб: ҳар бир фойдаланувчига хабар", "Voice minutes": "Овозли машқ дақиқалари", "First payment": "Биринчи тўлов", "Davr revenue / payer": "Давр тушуми / тўловчи", "Taglangan CAC": "Белгиланган мижоз жалб қилиш харажати", "Unfinished notif": "Тугатилмаган дарс эслатмаси", "Direct start → dars ≤2m": "Тўғридан-тўғри бошлаш → 2 дақиқада дарс", "Onb → dars ≤2m": "Танишув → 2 дақиқада дарс", "D1 retention": "1-кунда қайтиш", "D7 retention": "7-кунда қайтиш", "Course event": "Курс ҳодисаси", "hozir": "Ҳозир", "Conversion event": "Ўтиш ҳодисаси", "Payment": "Тўлов", "AI usage": "Сунъий интеллектдан фойдаланиш"};
     function metricLabel(value){return localizeAdminCopy(value);}
     function localizeAdminCopy(value){
       if(typeof value!=="string"||!/[A-Za-z]/.test(value)) return value;
       if(adminMetricLabels[value]) return adminMetricLabels[value];
       const saved=[];
-      let text=value.replace(/https?:\/\/\S+|@[A-Za-z0-9_]+|\b(?:HSK AI|Telegram|Android|Windows|macOS|Gemini|OpenAI|Alipay|WeChat|Visa|MacBook|ARPPU|ARPU|HSK|TJS|USD|CNY|RUB|UZS|ID|URL|IP|D1|D7)\b/g,word=>{saved.push(word);return "\uFFF4"+(saved.length-1)+"\uFFF5";});
+      let text=value.replace(/https?:\/\/\S+|@[A-Za-z0-9_]+|\b[A-Za-z][A-Za-z0-9]*(?:_[A-Za-z0-9]+)+\b|\b(?:HSK AI|Telegram|Android|Windows|macOS|Gemini|OpenAI|Alipay|WeChat|Visa|MacBook|iPhone|iPad|iOS|ARPPU|ARPU|HSK(?:[1-6])?|NHSK[1-6]|[NP][1-3]|TJS|USD|CNY|RUB|UZS|ID|URL|IP|DB|API|APK|MP4|SHA256|D1|D7)\b/g,word=>{saved.push(word);return "\uFFF4"+(saved.length-1)+"\uFFF5";});
       const words={"Mini App":"Мини-илова",Desktop:"Компьютер дастури",Checkout:"Тўлов жараёни",Feature:"Функция",Payment:"Тўлов",source:"манба",Avg:"Ўртача",min:"дақиқа",AI:"Сунъий интеллект"};
       Object.entries(words).forEach(([word,label])=>{text=text.replace(new RegExp("\\b"+word+"\\b","gi"),label);});
       text=text.replace(/o['’‘ʻʼ]/gi,x=>x[0]==="O"?"Ў":"ў").replace(/g['’‘ʻʼ]/gi,x=>x[0]==="G"?"Ғ":"ғ");
@@ -1037,7 +1040,13 @@
       return text.replace(/\uFFF4(\d+)\uFFF5/g,(_,index)=>saved[Number(index)]);
     }
 
-    function cardHtml(i){ return `<article class="stat ${i.tone||""}"><div class="lab">${esc(metricLabel(i.label))}</div><div><div class="val">${esc(localizeAdminCopy(i.value))}</div><div class="sub">${esc(localizeAdminCopy(i.note))}</div></div></article>`; }
+    function metricValue(value){
+      if(typeof value!=="string") return value;
+      if(value==="Mini App · Android · Desktop") return "Мини-илова · Android · компьютер дастури";
+      return value.replace(/^(~?[\d.,]+)\s+min$/, "$1 дақиқа");
+    }
+
+    function cardHtml(i){ return `<article class="stat ${i.tone||""}"><div class="lab">${esc(metricLabel(i.label))}</div><div><div class="val">${esc(metricValue(i.value))}</div><div class="sub">${esc(localizeAdminCopy(i.note))}</div></div></article>`; }
 
     async function loadDesktopStats(period){
       period=["all_time","weekly","monthly"].includes(period)?period:"all_time";
@@ -1328,7 +1337,7 @@
       const quality=(state.overview&&state.overview.data_quality)||{};
       const qualityRows=quality.rows||[];
       $("dataQuality").textContent=qualityRows.length
-        ? "Охирги DB ёзуви · "+qualityRows.map(row=>`${row.label}: ${row.status==="no_data"?"маълумот йўқ":row.last_at}`).join(" · ")
+        ? "Охирги маълумот · "+qualityRows.map(row=>`${metricLabel(row.label)}: ${row.status==="no_data"?"маълумот йўқ":row.last_at}`).join(" · ")
         : "Маълумотлар янгилиги маълумоти келмади.";
       renderAdvanced(orep);
       renderClientDevices();
@@ -1635,7 +1644,7 @@
     /* ---------- USER DETAIL ---------- */
     /* Drawer ichi almashadi, shuning uchun profildan bo'lim ochilganda qaytish
        yo'li kerak. `state.drawerBack` — bir pog'onali orqaga qaytarish. */
-    function openDrawer(title,sub,html){ $("drawerTitle").textContent=title; $("drawerSub").textContent=sub||""; $("drawerBody").innerHTML=html; $("drawer").inert=false; $("drawer").classList.add("open"); $("scrim").classList.add("open"); $("drawer").setAttribute("aria-hidden","false"); $("drawerBack").hidden=!state.drawerBack; }
+    function openDrawer(title,sub,html){ if($("app").hidden) return; $("drawerTitle").textContent=title; $("drawerSub").textContent=sub||""; $("drawerBody").innerHTML=html; $("drawer").inert=false; $("drawer").classList.add("open"); $("scrim").classList.add("open"); $("drawer").setAttribute("aria-hidden","false"); $("drawerBack").hidden=!state.drawerBack; }
     function closeDrawer(){ $("drawer").inert=true; $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); $("drawer").setAttribute("aria-hidden","true"); state.activeModule=null; state.drawerBack=null; $("drawerBack").hidden=true; }
     function drawerBack(){ const back=state.drawerBack; state.drawerBack=null; if(back) back(); else closeDrawer(); }
 
@@ -1656,7 +1665,7 @@
         <div class="duration-presets" aria-label="Тез муддат танлаш">
           ${[10,30,90].map(days=>`<button class="chip" type="button" data-duration-target="${inputId}" data-duration-days="${days}">${days} кун</button>`).join("")}
         </div>
-        <div class="ncnote">Фаол обунали обунада кунлар қолган муддат устига қўшилади. Бошқа ҳолатда бугундан бошланади.</div></div>`;
+        <div class="ncnote">Фаол обунада кунлар қолган муддат устига қўшилади. Бошқа ҳолатда бугундан бошланади.</div></div>`;
     }
 
     async function openUser(id){
@@ -1763,7 +1772,7 @@
           ${pays.length?pays.map(p=>`<div class="mcard"><h3>#${p.id} · ${esc(p.status)}</h3><p>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.amount)}<br>Манба: ${esc(paymentSourceLabel(p.source))}<br>Юборилган: ${esc(p.submitted_at||"—")}<br>Кўрилган: ${esc(p.reviewed_at||"—")}${p.comment?" · "+esc(p.comment):""}</p></div>`).join(""):"<p class='empty'>Тўлов тарихи йўқ.</p>"}
         </div></section>
         <section class="dsec"><div class="dtitle-sm">Админ амаллари</div><div class="panel">
-          <div class="mcard"><h3>Қўлда обунали обуна бериш</h3>
+          <div class="mcard"><h3>Қўлда обуна бериш</h3>
             ${durationControlHtml("qaDays")}
             <button class="btn" data-uaccess="${f.id}" data-uname="${esc(f.name)}" data-current-end="${esc(f.end_date||"")}">Обунани фаоллаштириш</button></div>
           ${f.status==="blocked"
@@ -2558,15 +2567,15 @@
     }
     function cmLangChips(){ return BC_LANGS.map(l=>`<button type="button" class="chip" data-cmlang="${l[0]}"><span>${l[1]}</span></button>`).join(""); }
     function campaignCard(i,kind){
-      if(kind==="ad") return `<div class="mcard"><h3>#${i.id} · ${esc(i.title)} ${tag(i.active?"фаол":"tugagan",i.active?"green":"")}</h3>
+      if(kind==="ad") return `<div class="mcard"><h3>#${i.id} · ${esc(i.title)} ${tag(i.active?"фаол":"тугаган",i.active?"green":"")}</h3>
         <div class="kv"><span>Юборишлар сони</span><b>${esc(i.rounds_sent||0)}/${esc(i.send_count_total||1)}</b>
-          <span>Режалаштирилган раунд</span><b>${esc(i.send_count_total||0)}</b><span>Тиллар</span><b>${esc((i.languages||[]).join(", ")||"hammasi")}</b>
+          <span>Режалаштирилган раунд</span><b>${esc(i.send_count_total||0)}</b><span>Тиллар</span><b>${esc((i.languages||[]).join(", ")||"ҳаммаси")}</b>
           <span>Бошланиш</span><b>${esc(i.starts_at||"—")}</b><span>Тугаш</span><b>${esc(i.ends_at||"—")}</b></div>
         <p>${esc(i.text||"")}</p></div>`;
-      if(kind==="discount") return `<div class="mcard"><h3>#${i.id} · ${esc(i.title)} ${tag(i.active?"фаол":"tugagan",i.active?"green":"")}</h3>
+      if(kind==="discount") return `<div class="mcard"><h3>#${i.id} · ${esc(i.title)} ${tag(i.active?"фаол":"тугаган",i.active?"green":"")}</h3>
         <div class="kv"><span>Чегирма</span><b>${esc(i.percent)}%</b><span>Банд/ишлатилган</span><b>${esc(i.used||0)}</b>
-          <span>Статус</span><b>${esc(i.audience_status||"barcha")}</b><span>Тил</span><b>${esc(i.language||"barcha")}</b>
-          <span>Тўлов усули</span><b>${esc(i.payment_method||"barcha")}</b><span>Тариф</span><b>${esc(i.plan_type||"barcha")}</b>
+          <span>Статус</span><b>${esc(i.audience_status||"барча")}</b><span>Тил</span><b>${esc(i.language||"барча")}</b>
+          <span>Тўлов усули</span><b>${esc(i.payment_method||"барча")}</b><span>Тариф</span><b>${esc(i.plan_type||"барча")}</b>
           <span>Бошланиш</span><b>${esc(i.starts_at||"—")}</b><span>Тугаш</span><b>${esc(i.ends_at||"—")}</b></div></div>`;
       return `<div class="mcard"><h3>#${i.id} · ${esc(i.title)} ${tag(i.status||"—","")}</h3>
         <div class="kv"><span>Юборилди</span><b>${esc(i.sent||0)}</b><span>Хато</span><b>${esc(i.failed||0)}</b><span>Вақт</span><b>${esc(i.send_at||"—")}</b></div>
@@ -2766,14 +2775,14 @@
       if(!Number.isSafeInteger(targetId)||targetId<=0||!durationDays) throw {data:{error:"invalid_access_payload"}};
       const o=options||{};
       const target=o.name?`${o.name} (${targetId})`:String(targetId);
-      const current=o.currentEnd?`\нҲозирги тугаш санаси: ${o.currentEnd}`:"";
-      if(!confirm(`${target} фойдаланувчига ${durationDays} кунлик обунали обуна берилсинми?${current}\нФаол обунали обуна бўлса, муддат узайтирилади.`)) return null;
+      const current=o.currentEnd?`\nҲозирги тугаш санаси: ${o.currentEnd}`:"";
+      if(!confirm(`${target} фойдаланувчига ${durationDays} кунлик обуна берилсинми?${current}\nФаол обуна бўлса, муддат узайтирилади.`)) return null;
       const result=await apiPost("/api/admin-miniapp/users/give-access",{telegram_id:targetId,duration_days:durationDays});
       state.management=null;
       await loadData();
       if(o.refreshUser) await openUser(targetId);
       else if(state.activeModule&&$("drawer").classList.contains("open")) await openModule(state.activeModule);
-      toast(`${durationDays} кунлик обунали обуна берилди · ${result.end_date} гача`);
+      toast(`${durationDays} кунлик обуна берилди · ${result.end_date} гача`);
       return result;
     }
 
@@ -2914,7 +2923,7 @@
         fields:["link","button"],
         note:"Ҳамкор рекламаси: ролик остида битта ташқи ҳавола тугмаси чиқади.",
         linkLabel:"Ҳавола / Инстаграм",
-        linkNote:"@username yozsangiz ham bo'ladi — t.me havolasiga aylantiriladi.",
+        linkNote:"@username ёзсангиз ҳам бўлади — t.me ҳаволасига айлантирилади.",
         buttonLabel:"Тугма номи",
         buttonPlaceholder:"Масалан: Ҳамкорлик учун ёзинг"
       },
@@ -2922,7 +2931,7 @@
         fields:["link","button"],
         note:"Бот рекламаси: очиш, нусхалаш ва улашиш тугмалари чиқади.",
         linkLabel:"Бот ҳаволаси",
-        linkNote:"Masalan @darsi_chini_bot yoki to'liq t.me havolasi.",
+        linkNote:"Масалан, @darsi_chini_bot ёки тўлиқ t.me ҳаволаси.",
         buttonLabel:"Тугма номи",
         buttonPlaceholder:"Масалан: Ботни синаб кўр"
       },
@@ -2931,7 +2940,7 @@
         note:"Дарс якунидаги обуна таклифи билан бирга чиқади.",
         linkLabel:"Ташқи ҳавола (ихтиёрий)",
         linkNote:"Бўш қолдирсангиз фақат обуна таклифи кўринади.",
-        buttonLabel:"Ташқи ҳавола кнопкаси",
+        buttonLabel:"Ташқи ҳавола тугмаси",
         buttonPlaceholder:"Масалан: Батафсил кўриш"
       }
     };
@@ -3150,7 +3159,7 @@
     }
     async function copyReport(){
       const orep=overviewReport();
-      const text=(orep&&orep.text)||(state.overview&&state.overview.report_text)||"";
+      const text=localizeAdminCopy((orep&&orep.text)||(state.overview&&state.overview.report_text)||"");
       return copyText(text,"Ҳисобот нусхаланди");
     }
 

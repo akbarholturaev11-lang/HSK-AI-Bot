@@ -127,8 +127,10 @@ def page():
     with sync_playwright() as playwright:
         try:
             browser = playwright.chromium.launch(headless=True)
-        except Exception as exc:
-            pytest.skip(f"Playwright Chromium is not installed: {exc}")
+        except playwright_api.Error as exc:
+            if "Executable doesn't exist at" in str(exc):
+                pytest.skip(f"Playwright Chromium is not installed: {exc}")
+            raise
         context = browser.new_context(viewport={"width": 390, "height": 844}, is_mobile=True)
         page = context.new_page()
         if BASE_URL == STATIC_BASE_URL:
@@ -2230,6 +2232,12 @@ def admin_payload():
             {"label": "D1 retention", "value": "50%", "note": "5/10 user", "tone": "good"},
             {"label": "D7 retention", "value": "30%", "note": "3/10 user", "tone": "good"},
             {"label": "Avg session", "value": "12 min", "note": "8 Mini App session", "tone": "info"},
+            {
+                "label": "Platforma belgilari",
+                "value": "iOS · iPhone · N1 · P1 · HSK3.0 · SHA256",
+                "note": "Rasmiy belgilar: iOS · iPhone · N1 · P1 · HSK3.0 · SHA256",
+                "tone": "info",
+            },
         ],
         "payment": {
             "funnel": {
@@ -2447,9 +2455,23 @@ def open_admin_route(page, route):
     assert page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
 
 
-@pytest.mark.parametrize("viewport_width", [390, 1280])
+@pytest.mark.parametrize("viewport_width", [390, 1440])
 def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport_width):
     page.set_viewport_size({"width": viewport_width, "height": 844})
+    page.add_init_script("""
+        window.__adminCopiedReport = null;
+        Object.defineProperty(navigator, "clipboard", {
+            configurable: true,
+            value: {writeText: async (text) => {window.__adminCopiedReport = text;}}
+        });
+        const originalExecCommand = document.execCommand.bind(document);
+        document.execCommand = (command, ...args) => {
+            if (command === "copy") {
+                window.__adminCopiedReport = document.activeElement.value;
+            }
+            return originalExecCommand(command, ...args);
+        };
+    """)
     grant_requests = []
     course_access_requests = []
     app_promo_requests = []
@@ -2637,24 +2659,34 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     expect(page.locator('[data-act="reload"]')).to_have_count(1)
     expect(page.locator("#summaryGrid")).to_contain_text("Фойдаланувчилар")
     expect(page.locator("#summaryGrid")).to_contain_text("12")
-    expect(page.locator("#reportText")).to_contain_text("Real hisobot")
-    expect(page.locator("#dataQuality")).to_contain_text("Course event")
+    expect(page.locator("#reportText")).to_contain_text("Реал ҳисобот")
+    expect(page.locator("#dataQuality")).to_contain_text("Курс ҳодисаси")
     expect(page.locator("#userList")).to_contain_text("Ali")
     expect(page.locator("#paymentBoard")).to_contain_text("99 TJS")
-    expect(page.locator("#financeCards")).to_contain_text("Kuzatilgan net")
-    expect(page.locator("#aiUsageBreakdown")).to_contain_text("gemini-2.5-flash · Bepul")
-    expect(page.locator("#aiUsageBreakdown")).to_contain_text("24000 token")
-    expect(page.locator("#aiUsageBreakdown")).to_contain_text("o4-mini · Pullik taxmin")
+    expect(page.locator("#financeCards")).to_contain_text("Соф натижа")
+    expect(page.locator("#aiUsageBreakdown")).to_contain_text("gemini-2.5-flash · Бепул")
+    expect(page.locator("#aiUsageBreakdown")).to_contain_text("24000 Токен")
+    expect(page.locator("#aiUsageBreakdown")).to_contain_text("o4-mini · Пуллик тахмин")
     expect(page.locator("#aiUsageBreakdown")).to_contain_text("$0.000000")
     expect(page.locator("#clientBusinessTable")).to_contain_text("Android")
-    expect(page.locator("#androidCards")).to_contain_text("O'rnatilgan")
-    expect(page.locator("#androidDevices")).to_contain_text("Hali ochilmagan")
+    expect(page.locator("#androidCards")).to_contain_text("Ўрнатилган")
+    expect(page.locator("#androidDevices")).to_contain_text("Ҳали очилмаган")
     expect(page.locator("#androidVersions")).to_contain_text("1.6.4")
-    expect(page.locator("#clientBusinessTable")).to_contain_text("Desktop")
-    expect(page.locator("#advancedCards")).to_contain_text("D1 retention")
-    expect(page.locator("#featureAdoption")).to_contain_text("Darslar")
+    expect(page.locator("#clientBusinessTable")).to_contain_text("Компьютер дастури")
+    expect(page.locator("#advancedCards")).to_contain_text("1-кунда қайтиш")
+    expect(page.locator("#advancedCards")).to_contain_text("7-кунда қайтиш")
+    expect(page.locator("#queueList")).to_contain_text("Ҳозир")
+    technical_card = page.locator("#advancedCards .stat").last
+    technical_value = admin_payload()["statistics_reports"][-1]["advanced"]["cards"][-1]["value"]
+    expect(technical_card.locator(".val")).to_have_text(technical_value)
+    expect(technical_card.locator(".sub")).to_contain_text(technical_value)
+    expect(page.locator("#featureAdoption")).to_contain_text("Дарслар")
 
     open_admin_route(page, "statistics")
+    page.locator('[data-act="copy-report"]').click()
+    expect(page.locator("#toast")).to_contain_text("Ҳисобот нусхаланди")
+    assert page.evaluate("window.__adminCopiedReport") == page.locator("#reportText").inner_text()
+    assert page.evaluate("state.overview.report_text") == admin_payload()["report_text"]
     page.locator('#adminSubnav [data-admin-sub="platform"]').click()
     expect(page.locator("#androidCards")).to_be_visible()
     expect(page.locator("#advancedCards")).to_be_hidden()
@@ -2681,6 +2713,22 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     expect(page.locator("#toast")).to_contain_text("1–36500")
     assert grant_requests == []
 
+    confirmation_messages = []
+
+    def dismiss_grant(dialog):
+        confirmation_messages.append(dialog.message)
+        dialog.dismiss()
+
+    page.once("dialog", dismiss_grant)
+    page.evaluate("""async () => await grantAccess(111, 45, {
+        name: "Ali", currentEnd: "01.07.2026 12:00"
+    })""")
+    assert len(confirmation_messages) == 1
+    assert "\nҲозирги тугаш санаси: 01.07.2026 12:00\n" in confirmation_messages[0]
+    assert len(confirmation_messages[0].splitlines()) == 3
+    assert "\\н" not in confirmation_messages[0]
+    assert grant_requests == []
+
     page.locator("#gaDays").fill("45")
     page.once("dialog", lambda dialog: dialog.accept())
     page.locator("[data-gasave]").click()
@@ -2696,7 +2744,7 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     page.locator("#courseAccessMode").select_option("free_until")
     page.locator("#courseAccessDays").fill("7")
     page.locator("[data-casave]").click()
-    expect(page.locator("#toast")).to_contain_text("Kurs access saqlandi")
+    expect(page.locator("#toast")).to_contain_text("Курс кириш ҳуқуқи сақланди")
     assert course_access_requests == [{"mode": "free_until", "duration_days": 7}]
 
     page.locator("#drawer [data-act='close-drawer']").click()
@@ -2709,7 +2757,7 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     page.locator('[data-ap-placement="home_prompt"]').click()
     expect(page.locator('[data-app-promo-media-upload]')).to_be_visible()
     page.locator("[data-app-promo-save]").click()
-    expect(page.locator("#toast")).to_contain_text("App reklamasi saqlandi")
+    expect(page.locator("#toast")).to_contain_text("Илова рекламаси сақланди")
     assert "daily_limit" not in app_promo_requests[-1]
     assert app_promo_requests[-1]["placements"]["home_prompt"] is False
     assert app_promo_requests[-1]["platforms"]["macos"] is True
@@ -2720,10 +2768,10 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     open_admin_route(page, "finance")
     expect(page.locator("#paymentBoard")).to_be_visible()
     page.locator('[data-pay="1"][data-pact="approve"]').click()
-    expect(page.locator("#toast")).to_contain_text("To'lov tasdiqlandi")
+    expect(page.locator("#toast")).to_contain_text("Тўлов тасдиқланди")
     page.once("dialog", lambda dialog: dialog.accept("Receipt does not match"))
     page.locator('[data-pay="1"][data-pact="reject"]').click()
-    expect(page.locator("#toast")).to_contain_text("To'lov rad etildi")
+    expect(page.locator("#toast")).to_contain_text("Тўлов рад этилди")
     assert payment_requests == [
         {"payment_id": 1, "action": "approve", "reason": ""},
         {"payment_id": 1, "action": "reject", "reason": "Receipt does not match"},
@@ -2737,13 +2785,18 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     expect(page.locator("#summaryGrid")).to_contain_text("12")
     assert page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
     assert runtime_errors == []
+    if os.getenv("ADMIN_E2E_SCREENSHOTS") == "1":
+        expect(page.locator("#toast")).not_to_be_visible()
+        screenshot_dir = APP_ROOT / "output/playwright"
+        screenshot_dir.mkdir(parents=True, exist_ok=True)
+        page.screenshot(path=str(screenshot_dir / f"admin-v2-{viewport_width}.png"), full_page=True)
 
 
 @pytest.mark.parametrize(
     ("status", "error", "title", "expired_session"),
     [
-        (401, "invalid_telegram_init_data", "Kirish rad etildi", False),
-        (403, "admin_only", "Admin ruxsati yo'q", True),
+        (401, "invalid_telegram_init_data", "Кириш рад этилди", False),
+        (403, "admin_only", "Админ рухсати йўқ", True),
     ],
 )
 def test_admin_auth_failure_hides_controls_and_cached_data(
@@ -2751,6 +2804,8 @@ def test_admin_auth_failure_hides_controls_and_cached_data(
 ):
     denied = not expired_session
     requests = []
+    hold_management = False
+    pending_management = []
     mock_telegram_ready(page, "query_id=admin-ui-smoke")
 
     def admin_api(route):
@@ -2763,6 +2818,8 @@ def test_admin_auth_failure_hides_controls_and_cached_data(
             json_response(route, admin_payload())
         elif path.endswith("/finance-stats"):
             json_response(route, admin_finance_payload())
+        elif path.endswith("/management") and hold_management:
+            pending_management.append(route)
         else:
             json_response(route, {"ok": True, "items": [], "rows": []})
 
@@ -2773,6 +2830,10 @@ def test_admin_auth_failure_hides_controls_and_cached_data(
         expect(page.locator("#summaryGrid")).to_contain_text("12")
         page.keyboard.press("/")
         expect(page.locator("#adminNavigator")).to_be_visible()
+        hold_management = True
+        with page.expect_request("**/api/admin-miniapp/management"):
+            page.evaluate("() => {state.management = null; void openModule('give_access');}")
+        expect(page.locator("#drawer")).to_be_visible()
         denied = True
         requests.clear()
         page.evaluate("loadData()")
@@ -2784,6 +2845,13 @@ def test_admin_auth_failure_hides_controls_and_cached_data(
     expect(page.locator("#drawer")).not_to_be_visible()
     expect(page.locator("#adRulesModal")).not_to_be_visible()
     expect(page.locator('[data-pay="1"]:visible')).to_have_count(0)
+    if expired_session:
+        assert len(pending_management) == 1
+        json_response(pending_management[0], {"ok": True, "items": [], "rows": []})
+        page.wait_for_function("state.management !== null")
+        expect(page.locator("#app")).to_be_hidden()
+        expect(page.locator("#drawer")).not_to_be_visible()
+        expect(page.locator("#gaId:visible")).to_have_count(0)
     assert not any(path.endswith("/payments/review") for path in requests)
     assert not any(path.endswith("/save") for path in requests)
 

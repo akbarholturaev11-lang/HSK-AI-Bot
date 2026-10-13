@@ -19,7 +19,7 @@ Short description:
 
 Frontend:
 - Telegram Mini App under `app/static/`; native Android uses Kotlin and Jetpack Compose.
-- Admin V2 remains a single `app/static/admin.html` with existing authenticated API/action handlers. Seven presentation routes in `adminRoutes` reuse the five original view IDs; `adminModuleGroups` maps existing backend module keys to inner navigation. Keep these mappings current when adding admin modules. The offline preview is fixture-only; production HTML always uses Telegram admin authentication.
+- Admin V2 remains a single `app/static/admin.html` with existing authenticated API/action handlers. Seven presentation routes in `adminRoutes` reuse the five original view IDs; `adminModuleGroups` maps existing backend module keys to inner navigation. Keep these mappings current when adding admin modules. The offline preview is fixture-only; production HTML always uses Telegram admin authentication. Admin drawers sit outside `#app`; `openDrawer` must refuse to open while `#app` is hidden, including after a delayed API response following session denial.
 - Lesson completion shows the result, then the streak celebration only when the server confirms a new counted day (`streak_updated`, positive streak, neither duplicate flag). Mini App consumes `_pendingStreak`; Android queues `STREAK` after `COMPLETE`. Checkpoint continuation retains the existing sales/access flow. Rank interstitials remain disabled.
 - Mini App's result CTA stops click propagation when opening the streak: otherwise the same tap reaches the newly registered cinematic skip listener and immediately skips the panda flight. Regression coverage: `tests/e2e/test_lesson_streak_celebration.py` and Android `LessonStreakCelebrationTest`.
 
