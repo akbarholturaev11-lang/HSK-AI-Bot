@@ -2229,6 +2229,11 @@ OFFLINE_WORD_INDEX = Path(__file__).resolve().parent / "static/audio/words-index
 async def course_v3_offline_word_audio(filename: str):
     import re
 
+    if filename == "client.js":
+        helper = Path(__file__).resolve().parent / "static/audio/words-client.js"
+        if not helper.is_file():
+            return JSONResponse(status_code=404, content={"error": "not_found"})
+        return FileResponse(helper, media_type="application/javascript", headers=STATIC_ASSET_HEADERS)
     if filename == "index.js":
         if not OFFLINE_WORD_INDEX.is_file():
             return JSONResponse(status_code=404, content={"error": "not_found"})
