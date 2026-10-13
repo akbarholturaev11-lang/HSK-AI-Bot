@@ -32,6 +32,9 @@
     * { box-sizing: border-box; }
     html, body { min-height: 100%; margin: 0; background: var(--paper); }
     body { padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
+    /* The parent Mini App owns the native Telegram safe top inset. */
+    html.hsk-embedded body { padding-top: 0; }
+    html.hsk-embedded .page { padding-top: 8px; }
     button, input { font: inherit; }
     button { color: inherit; }
     .page { width: min(100%, 620px); min-height: 100dvh; margin: 0 auto; padding: 12px 19px 28px; }

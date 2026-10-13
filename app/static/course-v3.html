@@ -88,6 +88,8 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 /* top */
 .htop{display:flex;align-items:center;gap:8px;padding:14px 16px 10px;position:sticky;top:var(--safe-t);background:var(--paper);z-index:4}
 .htop.profile-head{justify-content:space-between}
+/* Compact secondary tab headers; keep the native safe area in .wrap. */
+.scr:not(#s-course)>.htop{padding-top:6px}
 .section-title,.profile-title{margin:0;color:var(--ink);font-size:var(--hsk-section-title-size,20px);line-height:var(--hsk-section-title-line-height,1.2);font-weight:700;letter-spacing:-.01em}
 .section-title{flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .profile-settings{width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink2);box-shadow:0 2px 8px rgba(33,29,23,.08);cursor:pointer}
