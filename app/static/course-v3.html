@@ -1418,7 +1418,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v1"></script>
+<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -2947,6 +2947,11 @@ function renderStudyPreparing(){
   var copy=LANG==="ru"?"Готовим упражнение":LANG==="tj"?"Машқ омода мешавад":"Mashq tayyorlanmoqda";
   return '<div class="hsk-study-preparing" role="status" aria-live="polite">'
     +'<div class="hsk-study-preparing-panda" aria-hidden="true">🐼</div><b>'+copy+'</b></div>';
+}
+/* Panda only after an approved daily gate; a denied attempt shows Pro. */
+function renderPracticeGateChecking(){
+  var copy=LANG==="ru"?"Проверяем доступ…":LANG==="tj"?"Дастрасӣ санҷида мешавад…":"Ruxsat tekshirilmoqda…";
+  return '<div role="status" aria-live="polite" style="padding:50px 20px;text-align:center;color:var(--ink3);font-size:14px"><i class="ti ti-loader-2" aria-hidden="true" style="margin-right:7px"></i>'+esc(copy)+'</div>';
 }
 function newPracticeAttemptRef(){return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
 function validatePracticeGate(o){
@@ -6709,7 +6714,7 @@ var RECOG=(function(){
 
   function shell(){
     return '<div class="rc-top"><button class="rc-ix hsk-native-back-duplicate" onclick="RECOG.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="rc-pbar"><i id="rc-prog"></i></div><span class="rc-pill" id="rc-score">0 ✓</span></div>'
-      +'<div class="rc-body" id="rc-body">'+renderStudyPreparing()+'</div>';
+      +'<div class="rc-body" id="rc-body">'+renderPracticeGateChecking()+'</div>';
   }
 
   // New openings consume new attempts; only a network retry reuses the ref.
@@ -6808,7 +6813,7 @@ var RECOG=(function(){
     openSection(API);
     if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"recognition",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
     ensureData();
-    if(!INIT_DATA){start();return}
+    if(!INIT_DATA){el("rc-body").innerHTML=renderStudyPreparing();start();return}
     gateStart(true);
   }
   function replay(){
@@ -6817,10 +6822,11 @@ var RECOG=(function(){
   }
   function gateStart(newAttempt){
     var ref=gateRef(newAttempt);
-    el("rc-body").innerHTML=renderStudyPreparing();
+    el("rc-body").innerHTML=renderPracticeGateChecking();
     runGate(ref).then(function(o){
       if(SECTION!==API||ref!==ATTEMPT_REF)return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}
+      el("rc-body").innerHTML=renderStudyPreparing();
       start(ref);
     }).catch(function(){
       if(SECTION!==API||ref!==ATTEMPT_REF)return;
@@ -6862,7 +6868,7 @@ var PRON=(function(){
     return '<div class="pr-wrap">'
       +'<div class="pr-top"><button class="pr-ix hsk-native-back-duplicate" onclick="PRON.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="pr-pbar"><i id="pr-prog"></i></div><span class="pr-pill" id="pr-cnt">1 / 10</span></div>'
       +'<div class="pr-toast" id="pr-toast">+10 XP</div>'
-      +'<div class="pr-stage" id="pr-stage">'+renderStudyPreparing()+'</div>'
+      +'<div class="pr-stage" id="pr-stage">'+renderPracticeGateChecking()+'</div>'
       +'<div class="pr-ctrl" id="pr-ctrl" style="display:none">'
       +'<div class="pr-micwrap" id="pr-micwrap"><button class="pr-mic" id="pr-mic" onclick="PRON.rec()" aria-label="Gapirish"><i class="ti ti-microphone"></i></button></div>'
       +'<div class="pr-hint" id="pr-hint"></div>'
@@ -7027,7 +7033,7 @@ var PRON=(function(){
     busy=false;
     if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"pronunciation",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
     ensureData();
-    if(!INIT_DATA){start();return}
+    if(!INIT_DATA){el("pr-stage").innerHTML=renderStudyPreparing();start();return}
     gateStart(true);
   }
   function replay(){
@@ -7037,10 +7043,11 @@ var PRON=(function(){
   function gateStart(newAttempt){
     var ref=gateRef(newAttempt);
     el("pr-ctrl").style.display="none";el("pr-done").classList.remove("on");
-    el("pr-stage").innerHTML=renderStudyPreparing();
+    el("pr-stage").innerHTML=renderPracticeGateChecking();
     runGate(ref).then(function(o){
       if(!live()||ref!==ATTEMPT_REF)return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}
+      el("pr-stage").innerHTML=renderStudyPreparing();
       start(ref);
     }).catch(function(){
       if(!live()||ref!==ATTEMPT_REF)return;

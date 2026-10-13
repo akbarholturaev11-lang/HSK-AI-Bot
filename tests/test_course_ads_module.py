@@ -71,6 +71,51 @@ class CourseAdsModuleTests(unittest.TestCase):
         self.assertIn("closeLimit", _exported_names())
         self.assertIn("function _closeLimit(", ADS)
 
+
+    def test_limit_sheet_is_not_nested_in_hidden_ad_box(self):
+        """The limit backdrop must not hide its own sheet."""
+        from html.parser import HTMLParser
+
+        class ParentTracker(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.stack = []
+                self.parents = None
+
+            def handle_starttag(self, tag, attrs):
+                classes = dict(attrs).get("class", "").split()
+                if "caa-limit-sheet" in classes:
+                    self.parents = list(self.stack)
+                if tag not in {"img", "input", "br", "hr", "meta", "link"}:
+                    self.stack.append((tag, classes))
+
+            def handle_endtag(self, tag):
+                self.assert_tag = tag
+                while self.stack and self.stack[-1][0] != tag:
+                    self.stack.pop()
+                if self.stack:
+                    self.stack.pop()
+
+        start = ADS.index("ov.innerHTML = ''")
+        end = ADS.index("document.body.appendChild(ov)", start)
+        fragments = re.findall(r"'([^']*)'", ADS[start:end])
+        self.assertTrue(fragments)
+        parser = ParentTracker()
+        parser.feed("".join(fragments))
+        self.assertIsNotNone(parser.parents)
+        self.assertFalse(
+            any("caa-box" in classes for _, classes in parser.parents),
+            "Limit sheet is inside hidden .caa-box",
+        )
+        self.assertIn("align-items:center;justify-content:flex-end;overflow:hidden!important", ADS)
+
+    def test_denied_gate_does_not_show_panda_preparing(self):
+        course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertIn("function renderPracticeGateChecking()", course)
+        self.assertIn('el("rc-body").innerHTML=renderPracticeGateChecking();', course)
+        self.assertIn('el("pr-stage").innerHTML=renderPracticeGateChecking();', course)
+        self.assertEqual(course.count('if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}'), 2)
+
     def test_closing_the_paywall_puts_the_overlay_back(self):
         """`limit` klassi qaytarilmasa keyingi reklama paywall bo'lib ochiladi."""
         body = ADS[ADS.index("function _closeLimit("):]
@@ -279,7 +324,7 @@ class AdFullscreenPlacementContractTests(unittest.TestCase):
         self.assertIn('recordView(appState.ad,appState.placement||"screen_center"', ADS)
 
     def test_cached_ad_module_is_refreshed(self):
-        self.assertIn('/course_v3_data/ads.js?v=20261013-limit-sheet-v1', self.COURSE)
+        self.assertIn('/course_v3_data/ads.js?v=20261013-limit-sheet-v2', self.COURSE)
 
     def test_android_uses_fullscreen_for_lesson_end_only(self):
         self.assertIn('val placement: String = "screen_center"', self.ANDROID_VM)
