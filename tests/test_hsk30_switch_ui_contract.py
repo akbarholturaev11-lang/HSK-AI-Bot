@@ -42,6 +42,29 @@ class Hsk30SwitchUiContractTests(unittest.TestCase):
         self.assertIn("renderHsk30AccessGate(status)", switch)
         self.assertIn("/api/v3/course-tracks/switch", switch)
 
+    def test_panda_stays_visible_until_hsk30_course_map_is_rendered(self):
+        switch = self.mini.split("function switchCourseTrack(target,requestedLevel){", 1)[1].split(
+            "var HSK30_PROMO_CHECKED", 1
+        )[0]
+        self.assertIn('if(target==="hsk30")showCourseTrackSwitchPreparing(target)', switch)
+        self.assertNotIn('COURSE_TRACK_STATE=d;App.closeSheet()', switch)
+        self.assertIn("loadLevel(lv);", switch)
+
+        load = self.mini.split("function loadLevel(lv){", 1)[1].split(
+            "function applyLessonDone(", 1
+        )[0]
+        self.assertIn("if(!res||!res.data)hideCourseTrackSwitchPreparing();", load)
+        self.assertIn('renderAll();App.show("course");', load)
+        self.assertIn("hideCourseTrackSwitchPreparing();", load)
+        self.assertLess(
+            load.index('renderAll();App.show("course");'),
+            load.index("hideCourseTrackSwitchPreparing();", load.index('renderAll();App.show("course");')),
+        )
+
+        self.assertIn("if (state.isSwitchingTrack) {", self.android)
+        self.assertIn("LessonEntryOverlay(", self.android)
+        self.assertIn("titleRes = R.string.course_track_preparing_title", self.android)
+
     def test_android_picker_has_no_new_badges_or_secondary_confirm(self):
         picker = self.android.split("private fun Hsk30LevelChoiceDialog(", 1)[1].split(
             "private fun Hsk30PromoDialog(", 1
