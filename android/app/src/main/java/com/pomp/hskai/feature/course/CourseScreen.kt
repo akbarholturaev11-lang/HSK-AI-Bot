@@ -702,14 +702,14 @@ private fun CourseChoiceSheet(
             Spacer(Modifier.height(22.dp))
             Text(stringResource(R.string.course_choice_level), color = PompColors.InkSecondary, fontSize = 14.sp)
             Spacer(Modifier.height(9.dp))
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 available.forEach { level ->
-                    val label = if (selectedTrack == "hsk30") "N" + level.removePrefix("nhsk")
-                        else "HSK " + level.removePrefix("hsk")
+                    val label = "HSK " + level.removePrefix(if (selectedTrack == "hsk30") "nhsk" else "hsk")
                     CourseChoiceOption(
                         title = label,
                         selected = level == selectedLevel,
                         enabled = true,
+                        compact = true,
                         modifier = Modifier.weight(1f),
                         onClick = { selectedLevel = level },
                     )
@@ -760,28 +760,34 @@ private fun CourseChoiceOption(
     selected: Boolean,
     enabled: Boolean,
     modifier: Modifier = Modifier,
+    compact: Boolean = false,
     onClick: () -> Unit,
 ) {
     val border = if (selected) PompColors.Cinnabar else PompColors.Divider
     val background = if (selected) PompColors.CinnabarSoft else PompColors.Paper
     Row(
-        modifier = modifier.heightIn(min = 54.dp)
-            .clip(RoundedCornerShape(15.dp))
+        modifier = modifier.heightIn(min = if (compact) 46.dp else 54.dp)
+            .clip(RoundedCornerShape(if (compact) 12.dp else 15.dp))
             .background(background)
-            .border(BorderStroke(if (selected) 2.dp else 1.dp, border), RoundedCornerShape(15.dp))
+            .border(
+                BorderStroke(if (selected) 2.dp else 1.dp, border),
+                RoundedCornerShape(if (compact) 12.dp else 15.dp),
+            )
             .clickable(enabled = enabled, onClick = onClick)
-            .padding(horizontal = 7.dp, vertical = 12.dp),
+            .padding(horizontal = if (compact) 2.dp else 7.dp, vertical = if (compact) 9.dp else 12.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             title,
-            fontSize = 15.sp,
+            fontSize = if (compact) 12.sp else 15.sp,
             fontWeight = FontWeight.SemiBold,
             color = if (!enabled) PompColors.InkSecondary else if (selected) PompColors.CinnabarDark else PompColors.Ink,
             maxLines = 1,
         )
-        if (selected) {
+        // On a narrow Android device, four HSK level chips must fit in one row.
+        // The selected border/color conveys state without consuming chip width.
+        if (selected && !compact) {
             Spacer(Modifier.width(5.dp))
             Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(15.dp), tint = PompColors.CinnabarDark)
         }
