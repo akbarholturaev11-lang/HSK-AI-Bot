@@ -88,6 +88,8 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 /* top */
 .htop{display:flex;align-items:center;gap:8px;padding:14px 16px 10px;position:sticky;top:var(--safe-t);background:var(--paper);z-index:4}
 .htop.profile-head{justify-content:space-between}
+/* Compact secondary tab headers; keep the native safe area in .wrap. */
+.scr:not(#s-course)>.htop{padding-top:6px}
 .section-title,.profile-title{margin:0;color:var(--ink);font-size:var(--hsk-section-title-size,20px);line-height:var(--hsk-section-title-line-height,1.2);font-weight:700;letter-spacing:-.01em}
 .section-title{flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .profile-settings{width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink2);box-shadow:0 2px 8px rgba(33,29,23,.08);cursor:pointer}
@@ -2002,7 +2004,7 @@ var App={
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
     if(s==="course"){drawTrails();scrollToCurrentNode()}else{window.scrollTo(0,0)}
     if(s==="course"&&previous!=="course"){refreshCourseProgress();queueHsk30PromoCheck()}
-    if(s==="mashq"){prefetchPracticeAssets();if(window.RESOURCE)RESOURCE.warm()}
+    if(s==="mashq")schedulePracticeBackgroundLoad();
     if(s==="voice")renderVoice();
     if(s==="rating")renderRating();
     if(s==="profile"){
@@ -2580,6 +2582,29 @@ function prefetchPracticeAssets(){
     /* memo.js alohida memorize sahifasining o'z defer scripti; bu yerda
        oldindan 440 KB yuklash Course/Mashq oqimiga foyda bermaydi. */
   });
+}
+/* Practice first: display and paint the selected tab before mounting cached
+   dictionary/phrasebook WebViews or starting practice asset fetches.
+   Two animation frames guarantee a paint opportunity; the network work starts
+   in a separate task and never blocks App.show() or the tab's first frame. */
+var PRACTICE_BACKGROUND_SCHEDULED=false;
+function schedulePracticeBackgroundLoad(){
+  if(PRACTICE_BACKGROUND_SCHEDULED)return;
+  PRACTICE_BACKGROUND_SCHEDULED=true;
+  function afterPaint(){
+    setTimeout(function(){
+      PRACTICE_BACKGROUND_SCHEDULED=false;
+      // Do not waste resources if the user immediately switched away.
+      if(SCREEN!=="mashq")return;
+      prefetchPracticeAssets();
+      if(window.RESOURCE)RESOURCE.warm();
+    },0);
+  }
+  if(typeof requestAnimationFrame==="function"){
+    requestAnimationFrame(function(){requestAnimationFrame(afterPaint)});
+  }else{
+    setTimeout(afterPaint,50);
+  }
 }
 /* Limit holatini oldindan olish — bu endpoint foydalanishni SARFLAMAYDI.
    `daily-gate` ni bu yerda chaqirmaymiz: u bepul urinishni real sessiya
@@ -7983,9 +8008,31 @@ var finishHskLaunchSplash=(function(){
   try{returning=sessionStorage.getItem("hsk_v3_resource_return")==="1";if(returning)sessionStorage.removeItem("hsk_v3_resource_return")}catch(e){}
   if(returning){root.classList.add("is-done");root.remove();return function(){}}
   var bootReady=false,animationReady=false,closed=false;
-  function closeIfReady(){if(!bootReady||!animationReady||closed)return;closed=true;clearTimeout(safetyTimer);root.classList.add("is-done");setTimeout(function(){if(root.parentNode)root.parentNode.removeChild(root)},260)}
-  var safetyTimer=setTimeout(function(){bootReady=true;animationReady=true;closeIfReady()},7000);
   var motionReduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var launchAudio=null,feedbackTimers=[];
+  function launchPulse(style){
+    try{if(tg&&tg.HapticFeedback&&typeof tg.HapticFeedback.impactOccurred==="function")tg.HapticFeedback.impactOccurred(style)}catch(e){}
+  }
+  /* The launch MP3 is local, never synthesized. Autoplay is best-effort:
+     iOS Telegram may block it until a user gesture. Do not replay late. */
+  if(!motionReduced&&document.visibilityState!=="hidden"){
+    /* Do not request audio from offline/static previews that aren't inside Telegram. */
+    if(INIT_DATA&&tg&&tg.platform)try{
+      launchAudio=new Audio("/assets/hsk-launch-gold.mp3?v=20261013");
+      launchAudio.preload="auto";launchAudio.volume=0.4;
+      var playRequest=launchAudio.play();
+      if(playRequest&&typeof playRequest.catch==="function")playRequest.catch(function(){});
+    }catch(e){}
+    feedbackTimers.push(setTimeout(function(){launchPulse("light")},570));
+    feedbackTimers.push(setTimeout(function(){launchPulse("medium")},1910));
+  }
+  function stopLaunchEffects(){
+    feedbackTimers.forEach(clearTimeout);feedbackTimers=[];
+    try{if(launchAudio){launchAudio.pause();launchAudio=null}}catch(e){}
+  }
+  document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden")stopLaunchEffects()},{once:true});
+  function closeIfReady(){if(!bootReady||!animationReady||closed)return;closed=true;clearTimeout(safetyTimer);stopLaunchEffects();root.classList.add("is-done");setTimeout(function(){if(root.parentNode)root.parentNode.removeChild(root)},260)}
+  var safetyTimer=setTimeout(function(){bootReady=true;animationReady=true;closeIfReady()},7000);
   setTimeout(function(){animationReady=true;closeIfReady()},motionReduced?250:2920);
   return function(){bootReady=true;closeIfReady()};
 })();

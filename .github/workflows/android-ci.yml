@@ -199,6 +199,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements-dev.txt
 
+      - name: Check Golden Logo launch audio and haptics
+        run: python -m pytest -q tests/test_launch_feedback_contract.py
+
       # Only the suites this work touches. The full Playwright file still has
       # pre-existing baseline failures that are unrelated to Android.
       - name: Android and desktop auth suites

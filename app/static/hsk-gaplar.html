@@ -16,12 +16,12 @@
       --ink-soft: var(--hsk-ink-secondary);
       --ink-muted: var(--hsk-ink-disabled);
       --line: var(--hsk-divider);
-      --jade: var(--hsk-jade-ink);
-      --jade-soft: var(--hsk-jade-soft);
+      --accent-ink: var(--hsk-cinnabar-ink);
+      --accent-soft: var(--hsk-cinnabar-soft);
       --gold: var(--hsk-gold);
       --gold-ink: var(--hsk-gold-ink);
       --gold-soft: var(--hsk-gold-soft);
-      --focus: var(--hsk-jade);
+      --focus: var(--hsk-cinnabar);
       font-family: var(--hsk-font-ui);
       background: var(--paper);
       color: var(--ink);
@@ -32,14 +32,12 @@
     * { box-sizing: border-box; }
     html, body { min-height: 100%; margin: 0; background: var(--paper); }
     body { padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
+    /* The parent Mini App owns the native Telegram safe top inset. */
+    html.hsk-embedded body { padding-top: 0; }
+    html.hsk-embedded .page { padding-top: 8px; }
     button, input { font: inherit; }
     button { color: inherit; }
-    .page { width: min(100%, 620px); min-height: 100dvh; margin: 0 auto; padding: 14px 19px 28px; }
-    .top { display: flex; align-items: center; min-height: 42px; gap: 11px; }
-    .eyebrow { color: var(--gold-ink); font-size: 10px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
-    .hero { padding: 15px 0 18px; }
-    h1 { margin: 0; font-size: clamp(28px, 8vw, 34px); line-height: 1.13; letter-spacing: -.045em; font-weight: 760; }
-    .intro { max-width: 430px; margin: 8px 0 0; color: var(--ink-soft); font-size: 14px; line-height: 1.5; }
+    .page { width: min(100%, 620px); min-height: 100dvh; margin: 0 auto; padding: 12px 19px 28px; }
     .search { position: relative; display: block; }
     .search-icon { position: absolute; top: 50%; left: 15px; transform: translateY(-50%); color: var(--ink-muted); font-size: 20px; pointer-events: none; }
     .search input { width: 100%; height: 49px; padding: 0 14px 0 43px; border: 1px solid var(--line); border-radius: 14px; outline: 0; background: var(--card); color: var(--ink); font-size: 16px; }
@@ -48,7 +46,7 @@
     .filters { display: flex; gap: 7px; overflow-x: auto; padding: 14px 1px 7px; scrollbar-width: none; }
     .filters::-webkit-scrollbar { display: none; }
     .chip { flex: 0 0 auto; min-height: 35px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--ink-soft); font-size: 12px; font-weight: 650; white-space: nowrap; cursor: pointer; }
-    .chip[aria-pressed="true"] { border-color: var(--hsk-jade); background: var(--jade-soft); color: var(--hsk-jade-ink); }
+    .chip[aria-pressed="true"] { border-color: var(--hsk-cinnabar); background: var(--accent-soft); color: var(--accent-ink); }
     .count { padding: 4px 1px 9px; color: var(--ink-muted); font-size: 11px; font-weight: 650; letter-spacing: .045em; }
     .list { display: grid; gap: 9px; }
     .phrase { min-width: 0; padding: 15px 15px 12px; border: 1px solid var(--line); border-radius: 15px; background: var(--card); }
@@ -56,7 +54,7 @@
     .hanzi { margin: 0; font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 27px; font-weight: 620; line-height: 1.4; overflow-wrap: anywhere; }
     .save { flex: 0 0 auto; width: 37px; height: 37px; margin: -4px -5px 0 0; border: 0; border-radius: 50%; background: transparent; color: var(--ink-muted); font-size: 22px; line-height: 1; cursor: pointer; }
     .save[aria-pressed="true"] { color: var(--gold); }
-    .pinyin { margin: 2px 0 0; color: var(--jade); font-size: 13px; font-weight: 680; line-height: 1.45; overflow-wrap: anywhere; }
+    .pinyin { margin: 2px 0 0; color: var(--accent-ink); font-size: 13px; font-weight: 680; line-height: 1.45; overflow-wrap: anywhere; }
     .translation { margin: 6px 0 0; color: var(--ink-soft); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
     .phrase-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 11px; padding-top: 9px; border-top: 1px solid var(--line); }
     .category { overflow: hidden; color: var(--ink-muted); font-size: 10px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
@@ -72,13 +70,6 @@
 </head>
 <body>
   <main class="page">
-    <header class="top">
-      <span class="eyebrow" id="eyebrow"></span>
-    </header>
-    <section class="hero" aria-labelledby="title">
-      <h1 id="title"></h1>
-      <p class="intro" id="intro"></p>
-    </section>
     <label class="search">
       <span class="search-icon" aria-hidden="true">⌕</span>
       <input id="query" type="search" autocomplete="off" enterkeyhint="search" maxlength="100">
@@ -98,9 +89,9 @@
       var LANGUAGE = new URLSearchParams(location.search).get("lang") || "uz";
       if (!["uz", "ru", "tj"].includes(LANGUAGE)) LANGUAGE = "uz";
       var UI = {
-        uz: {title:"Tayyor gaplar", intro:"Qidiring, saqlang, nusxalang.", eyebrow:"GAP JAMLANMASI", search:"Xitoycha, pinyin yoki tarjima bo‘yicha qidiring", all:"Barchasi", saved:"Saqlanganlar", count:"{shown} / {total} ta gap", save:"Saqlash", savedOne:"Saqlandi", removed:"Saqlanganlardan olib tashlandi", copy:"Nusxalash", copied:"Nusxalandi", empty:"Bu qidiruvga mos gap topilmadi. Boshqa so‘z bilan qidiring.", noSaved:"Saqlangan gaplaringiz shu yerda ko‘rinadi.", loadError:"Gaplar jamlanmasi yuklanmadi. Internetga ulaning va qayta urinib ko‘ring.", retry:"Qayta urinish", storageError:"Saqlash imkoni bo‘lmadi. Telefon sozlamalarini tekshiring." },
-        ru: {title:"Готовые фразы", intro:"Найдите, сохраните, скопируйте.", eyebrow:"ПОДБОРКА ФРАЗ", search:"Поиск по китайскому, пиньиню или переводу", all:"Все фразы", saved:"Сохранённые", count:"{shown} из {total} фраз", save:"Сохранить", savedOne:"Сохранено", removed:"Удалено из сохранённых", copy:"Копировать", copied:"Скопировано", empty:"По этому запросу ничего не найдено. Попробуйте другие слова.", noSaved:"Сохранённые фразы появятся здесь.", loadError:"Не удалось загрузить фразы. Подключитесь к интернету и попробуйте ещё раз.", retry:"Повторить", storageError:"Не удалось сохранить. Проверьте настройки телефона." },
-        tj: {title:"Ибораҳои омода", intro:"Ҷӯед, нигоҳ доред, нусха гиред.", eyebrow:"ҶАМЪОВАРИИ ИБОРАҲО", search:"Ҷустуҷӯ бо чинӣ, пинйин ё тарҷума", all:"Ҳама", saved:"Нигоҳдоштаҳо", count:"{shown} аз {total} ҷумла", save:"Нигоҳ доштан", savedOne:"Нигоҳ дошта шуд", removed:"Аз нигоҳдоштаҳо бардошта шуд", copy:"Нусха бардоштан", copied:"Нусха бардошта шуд", empty:"Барои ин ҷустуҷӯ ҷумла ёфт нашуд. Калимаи дигарро ҷӯед.", noSaved:"Ибораҳои нигоҳдоштаатон дар ин ҷо намоиш мешаванд.", loadError:"Ибораҳо бор нашуданд. Ба интернет пайваст шуда, боз кӯшиш кунед.", retry:"Аз нав кӯшиш кардан", storageError:"Захира карда нашуд. Танзимоти телефонро санҷед." }
+        uz: {title:"Tayyor gaplar", search:"Xitoycha, pinyin yoki tarjima bo‘yicha qidiring", all:"Barchasi", saved:"Saqlanganlar", count:"{shown} / {total} ta gap", save:"Saqlash", savedOne:"Saqlandi", removed:"Saqlanganlardan olib tashlandi", copy:"Nusxalash", copied:"Nusxalandi", empty:"Bu qidiruvga mos gap topilmadi. Boshqa so‘z bilan qidiring.", noSaved:"Saqlangan gaplaringiz shu yerda ko‘rinadi.", loadError:"Gaplar jamlanmasi yuklanmadi. Internetga ulaning va qayta urinib ko‘ring.", retry:"Qayta urinish", storageError:"Saqlash imkoni bo‘lmadi. Telefon sozlamalarini tekshiring." },
+        ru: {title:"Готовые фразы", search:"Поиск по китайскому, пиньиню или переводу", all:"Все фразы", saved:"Сохранённые", count:"{shown} из {total} фраз", save:"Сохранить", savedOne:"Сохранено", removed:"Удалено из сохранённых", copy:"Копировать", copied:"Скопировано", empty:"По этому запросу ничего не найдено. Попробуйте другие слова.", noSaved:"Сохранённые фразы появятся здесь.", loadError:"Не удалось загрузить фразы. Подключитесь к интернету и попробуйте ещё раз.", retry:"Повторить", storageError:"Не удалось сохранить. Проверьте настройки телефона." },
+        tj: {title:"Ибораҳои омода", search:"Ҷустуҷӯ бо чинӣ, пинйин ё тарҷума", all:"Ҳама", saved:"Нигоҳдоштаҳо", count:"{shown} аз {total} ҷумла", save:"Нигоҳ доштан", savedOne:"Нигоҳ дошта шуд", removed:"Аз нигоҳдоштаҳо бардошта шуд", copy:"Нусха бардоштан", copied:"Нусха бардошта шуд", empty:"Барои ин ҷустуҷӯ ҷумла ёфт нашуд. Калимаи дигарро ҷӯед.", noSaved:"Ибораҳои нигоҳдоштаатон дар ин ҷо намоиш мешаванд.", loadError:"Ибораҳо бор нашуданд. Ба интернет пайваст шуда, боз кӯшиш кунед.", retry:"Аз нав кӯшиш кардан", storageError:"Захира карда нашуд. Танзимоти телефонро санҷед." }
       };
       var text = UI[LANGUAGE];
       var theme = new URLSearchParams(location.search).get("theme");
@@ -111,9 +102,6 @@
       document.documentElement.lang = LANGUAGE;
 
       var elements = {
-        title: document.getElementById("title"),
-        intro: document.getElementById("intro"),
-        eyebrow: document.getElementById("eyebrow"),
         query: document.getElementById("query"),
         filters: document.getElementById("filters"),
         count: document.getElementById("count"),
@@ -127,9 +115,9 @@
       var savedIds = readSavedIds();
       var toastTimer = 0;
 
-      elements.title.textContent = text.title;
-      elements.intro.textContent = text.intro;
-      elements.eyebrow.textContent = text.eyebrow;
+      // Keep the page named for assistive technologies without a redundant visible hero.
+      document.title = text.title + " · HSK AI";
+      document.querySelector(".page").setAttribute("aria-label", text.title);
       elements.query.placeholder = text.search;
       elements.query.setAttribute("aria-label", text.search);
       elements.filters.setAttribute("aria-label", text.all);

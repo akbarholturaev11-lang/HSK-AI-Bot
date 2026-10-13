@@ -76,11 +76,17 @@ def test_practice_menu_phrasebook_search_and_favorites_are_local():
             phrasebook.locator(".phrase").first.wait_for()
             assert page.locator("#resourceov.on").count() == 1
             assert phrasebook.locator(".phrase").count() == 300
+            # The phrasebook uses the same cinnabar accent as the main practice tab.
+            assert phrasebook.locator(".pinyin").first.evaluate("el => getComputedStyle(el).color") == "rgb(178, 53, 48)"
+            # The standalone phrasebook intentionally has no visible title/intro block.
+            assert phrasebook.locator(".top, .eyebrow, .hero, #title, #intro").count() == 0
+            assert phrasebook.locator(".page > .search").count() == 1
+            assert phrasebook.locator("#query").evaluate("el => el.getBoundingClientRect().top") <= 24
+            assert phrasebook.locator(".chip[aria-pressed='true']").first.evaluate("el => getComputedStyle(el).borderTopColor") == "rgb(224, 74, 64)"
 
             phrasebook.locator("#query").fill("ni hao")
             assert "你好" in " ".join(phrasebook.locator(".hanzi").all_text_contents())
             assert phrasebook.locator("#back").count() == 0
-            assert phrasebook.locator("#intro").inner_text() == "Qidiring, saqlang, nusxalang."
             phrasebook.locator("#query").fill("")
             phrasebook.locator(".phrase").first.locator("button.save").click()
             phrasebook.get_by_role("button", name="Saqlanganlar").click()
@@ -147,7 +153,24 @@ def test_phrasebook_loads_outside_telegram_with_shared_theme_tokens():
             page.locator(".phrase").first.wait_for()
             assert page.locator(".phrase").count() == 300
             assert page.locator("#back").count() == 0
+            assert page.locator(".page > .search").count() == 1
+            assert page.title() == "Tayyor gaplar · HSK AI"
             assert page.locator("body").evaluate("element => getComputedStyle(element).backgroundColor") == "rgb(0, 47, 73)"
+            # Dark mode must use the dark-theme cinnabar tokens (cyan), not hardcoded red.
+            assert page.locator(".pinyin").first.evaluate("el => getComputedStyle(el).color") == "rgb(126, 221, 246)"
+            assert page.locator(".chip[aria-pressed='true']").first.evaluate("el => getComputedStyle(el).backgroundColor") == "rgb(11, 76, 102)"
             assert page_errors == []
         finally:
             browser.close()
+
+
+def test_android_ready_phrases_search_follows_compact_back_control():
+    screen = (
+        Path(__file__).resolve().parents[2]
+        / "android/app/src/main/java/com/pomp/hskai/feature/practice/ReadyPhrasesScreen.kt"
+    ).read_text(encoding="utf-8")
+    layout = screen.split("fun ReadyPhrasesScreen(", 1)[1].split("private fun ReadyPhraseCard(", 1)[0]
+    assert "R.string.ready_phrases_title" not in layout
+    assert "R.string.ready_phrases_intro" not in layout
+    assert "R.string.ready_phrases_back" in layout
+    assert layout.index("IconButton(") < layout.index("OutlinedTextField(") < layout.index("LazyRow(")

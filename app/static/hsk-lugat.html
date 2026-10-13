@@ -36,6 +36,8 @@ button:active{transform:scale(.98)}
 #app{max-width:480px;margin:0 auto;height:100vh;height:100dvh;position:relative;overflow:hidden;background:var(--bg);}
 .view{position:absolute;inset:var(--safe-top) 0 var(--safe-bottom);display:flex;flex-direction:column;transition:opacity .16s ease;}
 .view.hidden{display:none}
+/* The parent WebView already accounts for native top insets in embedded mode. */
+html.hsk-embedded .view{top:0}
 
 /* ---- list view ---- */
 .hero{padding:16px 16px 14px;flex-shrink:0}

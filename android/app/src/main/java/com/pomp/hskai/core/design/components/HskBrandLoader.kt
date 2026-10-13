@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.progressBarRangeInfo
@@ -67,6 +68,23 @@ fun HskBrandLoader(
     val brandReveal = remember { Animatable(0f) }
     val goldWave = remember { Animatable(0f) }
     val currentOnLaunchAnimationFinished by rememberUpdatedState(onLaunchAnimationFinished)
+    val context = LocalContext.current
+    /* Cold-start only: synchronize the same Golden Logo chime and two haptics
+       with the shared reveal (crossings at 570ms, gold shimmer at 1910ms). */
+    LaunchedEffect(launch) {
+        if (!launch) return@LaunchedEffect
+        val feedback = HskLaunchFeedback(context.applicationContext)
+        try {
+            feedback.play()
+            delay(570)
+            feedback.pulse(strong = false)
+            delay(1340)
+            feedback.pulse(strong = true)
+            delay(1100)
+        } finally {
+            feedback.release()
+        }
+    }
     LaunchedEffect(launch, brandRevealStarted.value) {
         if (!launch || !brandRevealStarted.value) return@LaunchedEffect
         coroutineScope {
