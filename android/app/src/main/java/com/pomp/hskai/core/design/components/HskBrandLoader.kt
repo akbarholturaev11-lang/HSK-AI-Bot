@@ -1,18 +1,20 @@
 package com.pomp.hskai.core.design.components
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -47,9 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch as launchCoroutine
 
 /**
  * Branded loading state for HSK AI.
@@ -64,10 +64,17 @@ fun HskBrandLoader(
     launch: Boolean = false,
     onLaunchAnimationFinished: () -> Unit = {},
 ) {
-    val brandRevealStarted = remember { mutableStateOf(false) }
-    val brandReveal = remember { Animatable(0f) }
-    val goldWave = remember { Animatable(0f) }
+    // Mini App uses one deterministic 2,920ms CSS timeline. Do the same in
+    // Compose: chained springs previously delayed the knot, title and shimmer.
+    val elapsedMs = remember { Animatable(0f) }
     val currentOnLaunchAnimationFinished by rememberUpdatedState(onLaunchAnimationFinished)
+    LaunchedEffect(launch) {
+        if (launch) {
+            elapsedMs.snapTo(0f)
+            elapsedMs.animateTo(2920f, animationSpec = tween(2920, easing = LinearEasing))
+            currentOnLaunchAnimationFinished()
+        }
+    }
     val context = LocalContext.current
     /* Cold-start only: synchronize the same Golden Logo chime and two haptics
        with the shared reveal (crossings at 570ms, gold shimmer at 1910ms). */
@@ -85,23 +92,9 @@ fun HskBrandLoader(
             feedback.release()
         }
     }
-    LaunchedEffect(launch, brandRevealStarted.value) {
-        if (!launch || !brandRevealStarted.value) return@LaunchedEffect
-        coroutineScope {
-            launchCoroutine {
-                brandReveal.animateTo(
-                    targetValue = 1f,
-                    animationSpec = tween(durationMillis = 620, easing = FastOutSlowInEasing),
-                )
-            }
-            delay(560)
-            goldWave.animateTo(
-                targetValue = 1f,
-                animationSpec = tween(durationMillis = 900, easing = FastOutSlowInEasing),
-            )
-        }
-        currentOnLaunchAnimationFinished()
-    }
+    val titleReveal = launchPhase(elapsedMs.value, 1330f, 620f, HskEaseOut)
+    val bookReveal = launchPhase(elapsedMs.value, 1410f, 560f, HskEaseOut)
+    val goldWave = launchPhase(elapsedMs.value, 1910f, 900f, FastOutSlowInEasing)
 
     val transition = rememberInfiniteTransition(label = "hsk-brand-loader")
     val breathe by transition.animateFloat(
@@ -136,9 +129,9 @@ fun HskBrandLoader(
     val haloSize = if (compact) 24.dp else if (launch) 132.dp else 82.dp
     val sealSize = if (compact) 20.dp else if (launch) 96.dp else 58.dp
     val sealCorner = if (compact) 6.dp else 18.dp
-    val brandRed = if (launch) PompColors.LightCinnabar else PompColors.Cinnabar
+    val brandRed = if (launch) Color(0xFFF0614C) else PompColors.Cinnabar
     val density = LocalDensity.current
-    val shimmerStart = with(density) { (-120f + 260f * goldWave.value).dp.toPx() }
+    val shimmerStart = with(density) { (-120f + 260f * goldWave).dp.toPx() }
     val shimmerWidth = with(density) { 42.dp.toPx() }
     val goldShimmer = Brush.linearGradient(
         colors = listOf(
@@ -155,6 +148,9 @@ fun HskBrandLoader(
     Box(
         modifier = modifier
             .size(boxSize)
+            // CSS centers the full 96px seal + 22px gap + 36px title group.
+            // Its seal center is 29px above the viewport center.
+            .then(if (launch) Modifier.offset(y = (-29).dp) else Modifier)
             .semantics {
                 progressBarRangeInfo = ProgressBarRangeInfo.Indeterminate
             },
@@ -168,7 +164,14 @@ fun HskBrandLoader(
                     scaleY = haloScale
                 }
                 .background(
-                    color = brandRed.copy(alpha = haloAlpha),
+                    brush = if (launch) Brush.radialGradient(
+                        colors = listOf(
+                            brandRed.copy(alpha = 0.24f * haloAlpha),
+                            brandRed.copy(alpha = 0f),
+                        ),
+                    ) else Brush.radialGradient(
+                        colors = listOf(brandRed.copy(alpha = haloAlpha), brandRed.copy(alpha = haloAlpha)),
+                    ),
                     shape = CircleShape,
                 ),
         )
@@ -189,29 +192,37 @@ fun HskBrandLoader(
                     ),
                 ),
             shape = RoundedCornerShape(sealCorner),
-            color = brandRed,
+            color = if (launch) Color.Transparent else brandRed,
         ) {
-            if (launch) {
-                HskInterlacedKnot(
-                    modifier = Modifier.size(sealSize),
-                    onSpinStarted = { brandRevealStarted.value = true },
-                )
-            } else {
-                Image(
-                    painter = painterResource(R.drawable.ic_launcher_foreground),
-                    contentDescription = null,
-                    modifier = Modifier.size(sealSize),
-                )
+            Box(
+                modifier = Modifier.fillMaxSize().then(
+                    if (launch) Modifier.background(
+                        Brush.linearGradient(listOf(Color(0xFFF0614C), Color(0xFFC02F32))),
+                    ) else Modifier
+                ),
+            ) {
+                if (launch) {
+                    HskInterlacedKnot(
+                        modifier = Modifier.fillMaxSize(),
+                        elapsedMs = elapsedMs.value,
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
             }
         }
         if (launch) {
             Row(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .offset(y = 76.dp)
+                    .offset(y = 88.dp)
                     .graphicsLayer {
-                        alpha = brandReveal.value
-                        translationY = with(density) { 18.dp.toPx() } * (1f - brandReveal.value)
+                        alpha = titleReveal
+                        translationY = with(density) { 18.dp.toPx() } * (1f - titleReveal)
                     },
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -221,106 +232,94 @@ fun HskBrandLoader(
                     style = MaterialTheme.typography.titleLarge.copy(
                         brush = goldShimmer,
                         fontWeight = FontWeight.ExtraBold,
-                        letterSpacing = 1.5.sp,
+                        fontSize = 25.sp,
+                        letterSpacing = 2.7.sp,
                     ),
                 )
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.MenuBook,
                     contentDescription = null,
                     tint = PompColors.Gold,
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(24.dp).graphicsLayer {
+                        alpha = if (titleReveal <= 0f) 0f else bookReveal / titleReveal
+                        translationY = with(density) { 16.dp.toPx() } * (1f - bookReveal)
+                        rotationZ = -12f * (1f - bookReveal)
+                    },
                 )
             }
         }
     }
 }
 
-/** Assembles the two gold strands, then reveals the over-under crossings. */
+/* CSS curves and offsets from course-v3.html: the same visual timebase drives
+   the knot, title, book and gold flash, independent of device spring physics. */
+private val HskAssembleEase = CubicBezierEasing(0.18f, 0.82f, 0.28f, 1.16f)
+private val HskEaseOut = CubicBezierEasing(0.16f, 1f, 0.3f, 1f)
+private val HskSpinEase = CubicBezierEasing(0.24f, 0.82f, 0.32f, 1f)
+
+private fun launchPhase(
+    clockMs: Float,
+    startMs: Float,
+    durationMs: Float,
+    easing: androidx.compose.animation.core.Easing = LinearEasing,
+): Float {
+    if (clockMs <= startMs) return 0f
+    if (clockMs >= startMs + durationMs) return 1f
+    return easing.transform(((clockMs - startMs) / durationMs).coerceIn(0f, 1f))
+}
+
 @Composable
-private fun HskInterlacedKnot(
-    modifier: Modifier = Modifier,
-    onSpinStarted: () -> Unit,
-) {
-    val flatProgress = remember { Animatable(0f) }
-    val diagonalProgress = remember { Animatable(0f) }
-    val crossingProgress = remember { Animatable(0f) }
-    val settleScale = remember { Animatable(1f) }
-    val rotation = remember { Animatable(0f) }
+private fun HskInterlacedKnot(modifier: Modifier = Modifier, elapsedMs: Float) {
+    val flat = launchPhase(elapsedMs, 0f, 520f, HskAssembleEase)
+    val diagonal = launchPhase(elapsedMs, 80f, 530f, HskAssembleEase)
+    val crossing = launchPhase(elapsedMs, 570f, 240f, FastOutSlowInEasing)
+    val spin = launchPhase(elapsedMs, 1170f, 900f, HskSpinEase)
+    val settle = when {
+        elapsedMs < 890f -> 1f
+        elapsedMs < 1047f -> 1f + 0.035f * launchPhase(elapsedMs, 890f, 157f, HskEaseOut)
+        elapsedMs < 1170f -> 1.035f - 0.035f * launchPhase(elapsedMs, 1047f, 123f, HskEaseOut)
+        else -> 1f
+    }
     val density = LocalDensity.current
     val strandOffset = with(density) { 7.dp.toPx() }
-
-    LaunchedEffect(Unit) {
-        flatProgress.animateTo(
-            targetValue = 1f,
-            animationSpec = spring(dampingRatio = 0.76f, stiffness = 320f),
-        )
-        delay(80)
-        diagonalProgress.animateTo(
-            targetValue = 1f,
-            animationSpec = spring(dampingRatio = 0.68f, stiffness = 350f),
-        )
-        delay(90)
-        crossingProgress.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(durationMillis = 240, easing = FastOutSlowInEasing),
-        )
-        delay(80)
-        settleScale.animateTo(
-            targetValue = 1.035f,
-            animationSpec = spring(dampingRatio = 0.70f, stiffness = 420f),
-        )
-        settleScale.animateTo(
-            targetValue = 1f,
-            animationSpec = spring(dampingRatio = 0.82f, stiffness = 520f),
-        )
-        onSpinStarted()
-        rotation.animateTo(
-            targetValue = 360f,
-            animationSpec = tween(durationMillis = 900, easing = FastOutSlowInEasing),
-        )
-    }
-
     Box(
         modifier = modifier.graphicsLayer {
-            scaleX = settleScale.value
-            scaleY = settleScale.value
-            rotationZ = rotation.value
+            scaleX = settle
+            scaleY = settle
+            rotationZ = 360f * spin
         },
     ) {
         Image(
             painter = painterResource(R.drawable.ic_launcher_strand_a_base),
             contentDescription = null,
             modifier = Modifier.matchParentSize().graphicsLayer {
-                val progress = flatProgress.value
-                alpha = 0.76f + 0.24f * progress
-                scaleX = 0.86f + 0.14f * progress
-                scaleY = 0.86f + 0.14f * progress
-                rotationZ = -7f * (1f - progress)
-                translationX = -strandOffset * (1f - progress)
+                alpha = 0.76f + 0.24f * flat
+                scaleX = 0.86f + 0.14f * flat
+                scaleY = 0.86f + 0.14f * flat
+                rotationZ = -7f * (1f - flat)
+                translationX = -strandOffset * (1f - flat)
             },
         )
         Image(
             painter = painterResource(R.drawable.ic_launcher_strand_b),
             contentDescription = null,
             modifier = Modifier.matchParentSize().graphicsLayer {
-                val progress = diagonalProgress.value
-                alpha = 0.48f + 0.52f * progress
-                scaleX = 0.82f + 0.18f * progress
-                scaleY = 0.82f + 0.18f * progress
-                rotationZ = 8f * (1f - progress)
-                translationX = strandOffset * (1f - progress)
-                translationY = -strandOffset * 0.6f * (1f - progress)
+                alpha = 0.48f + 0.52f * diagonal
+                scaleX = 0.82f + 0.18f * diagonal
+                scaleY = 0.82f + 0.18f * diagonal
+                rotationZ = 8f * (1f - diagonal)
+                translationX = strandOffset * (1f - diagonal)
+                translationY = -strandOffset * 0.6f * (1f - diagonal)
             },
         )
         Image(
             painter = painterResource(R.drawable.ic_launcher_strand_a_overpass),
             contentDescription = null,
             modifier = Modifier.matchParentSize().graphicsLayer {
-                val progress = crossingProgress.value
-                alpha = progress
-                scaleX = 0.92f + 0.08f * progress
-                scaleY = 0.92f + 0.08f * progress
-                translationY = -strandOffset * 0.45f * (1f - progress)
+                alpha = crossing
+                scaleX = 0.92f + 0.08f * crossing
+                scaleY = 0.92f + 0.08f * crossing
+                translationY = -strandOffset * 0.45f * (1f - crossing)
             },
         )
     }

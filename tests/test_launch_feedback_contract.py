@@ -49,10 +49,39 @@ class LaunchFeedbackContractTests(unittest.TestCase):
         self.assertIn("Settings.System.HAPTIC_FEEDBACK_ENABLED", FEEDBACK)
         self.assertIn('android.permission.VIBRATE', manifest)
 
+    def test_android_launch_uses_mini_app_frame_accurate_timeline(self):
+        # A single absolute clock means no device-dependent chained spring delays.
+        self.assertIn("elapsedMs.animateTo(2920f", BRAND)
+        self.assertIn("tween(2920, easing = LinearEasing)", BRAND)
+        self.assertNotIn("spring(", BRAND)
+        for marker in (
+            "launchPhase(elapsedMs, 0f, 520f",
+            "launchPhase(elapsedMs, 80f, 530f",
+            "launchPhase(elapsedMs, 570f, 240f",
+            "launchPhase(elapsedMs, 1170f, 900f",
+            "launchPhase(elapsedMs.value, 1330f, 620f",
+            "launchPhase(elapsedMs.value, 1410f, 560f",
+            "launchPhase(elapsedMs.value, 1910f, 900f",
+        ):
+            self.assertIn(marker, BRAND, marker)
+        self.assertIn("Modifier.offset(y = (-29).dp)", BRAND)
+        self.assertIn(".offset(y = 88.dp)", BRAND)
+        self.assertIn("Brush.linearGradient(listOf(Color(0xFFF0614C), Color(0xFFC02F32)))", BRAND)
+        self.assertIn("Brush.radialGradient(", BRAND)
+        self.assertIn("fontSize = 25.sp", BRAND)
+        self.assertIn("letterSpacing = 2.7.sp", BRAND)
+        # These values must stay aligned with the Mini App stylesheet.
+        self.assertIn("hsk-launch-flat-weave 520ms", MINI)
+        self.assertIn("hsk-launch-diagonal-weave 530ms", MINI)
+        self.assertIn("hsk-launch-crossing-reveal 240ms", MINI)
+        self.assertIn("hsk-launch-turn 900ms", MINI)
+        self.assertIn("hsk-launch-brand-rise 620ms", MINI)
+        self.assertIn("hsk-launch-gold-wave 900ms", MINI)
+
     def test_android_release_version_advances_for_updated_apk(self):
         gradle = (ANDROID / "build.gradle.kts").read_text(encoding="utf-8")
-        self.assertIn('val appVersionName = "1.7.12"', gradle)
-        self.assertIn("val appVersionCode = 43", gradle)
+        self.assertIn('val appVersionName = "1.7.13"', gradle)
+        self.assertIn("val appVersionCode = 44", gradle)
 
 
 if __name__ == "__main__":
