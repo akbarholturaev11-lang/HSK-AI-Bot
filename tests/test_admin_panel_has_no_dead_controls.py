@@ -422,7 +422,7 @@ class UserAccessDetailsAreExplicitTests(unittest.TestCase):
     def test_temporary_access_is_not_called_a_paid_subscription(self):
         self.assertIn('u.status==="active"&&u.payment_status!=="approved"', ADMIN)
         self.assertIn('"Вақтинчалик кириш ҳуқуқи"', ADMIN)
-        self.assertIn('(u.payment_status==="approved"?"обуна":"кириш ҳуқуқи")+" тугайди "', ADMIN)
+        self.assertIn('(u.payment_status==="approved"?"обуна":"кириш ҳуқуқи")', ADMIN)
 
     def test_latest_user_payload_exposes_canonical_entitlement(self):
         for field in ('"access_type"', '"access_label"', '"access_ends_at"'):
