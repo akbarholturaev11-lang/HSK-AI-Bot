@@ -123,7 +123,7 @@ fun SectionLimitOverlay(
                         modifier = Modifier.size(76.dp)
                             .border(BorderStroke(3.dp, Color(0xFFEFB34A)), RoundedCornerShape(20.dp))
                             .background(
-                                Brush.linearGradient(listOf(Color(0xFFE63621), Color(0xFFBF1116))),
+                                Brush.linearGradient(listOf(Color(0xFFC96B60), Color(0xFFAC4C46))),
                                 RoundedCornerShape(20.dp),
                             ),
                         contentAlignment = Alignment.Center,
@@ -183,7 +183,7 @@ fun SectionLimitOverlay(
                                 modifier = Modifier.size(74.dp)
                                     .background(
                                         Brush.linearGradient(
-                                            listOf(Color(0xFFF3241D), Color(0xFFF75E18)),
+                                            listOf(Color(0xFFD5786B), Color(0xFFC2645A)),
                                         ),
                                         CircleShape,
                                     ),
@@ -216,7 +216,7 @@ fun SectionLimitOverlay(
                                             width = if (index == 2) 22.dp else 6.dp,
                                             height = 6.dp,
                                         ).background(
-                                            if (index == 2) Color(0xFFED3524) else Color(0xFFDFCFCE),
+                                            if (index == 2) Color(0xFFD2766B) else Color(0xFFDFCFCE),
                                             CircleShape,
                                         ),
                                     )
@@ -233,7 +233,7 @@ fun SectionLimitOverlay(
                         enabled = !limit.state.isBusy,
                         modifier = Modifier.fillMaxWidth().heightIn(min = 58.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFE93212),
+                            containerColor = Color(0xFFD2766B),
                             contentColor = Color(0xFF241917),
                         ),
                         shape = RoundedCornerShape(17.dp),

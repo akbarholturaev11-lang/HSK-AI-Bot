@@ -323,8 +323,18 @@ class AdFullscreenPlacementContractTests(unittest.TestCase):
         self.assertIn('e.sub.hidden=!!CFG.paid', ADS)
         self.assertIn('recordView(appState.ad,appState.placement||"screen_center"', ADS)
 
+    def test_limit_sheet_uses_soft_shared_accent(self):
+        """Limit-only CTA and illustration use the same softened cinnabar on both platforms."""
+        android = Path("android/app/src/main/java/com/pomp/hskai/feature/limit/SectionLimitOverlay.kt").read_text(encoding="utf-8")
+        self.assertIn("background:#D2766B", ADS)
+        self.assertIn("containerColor = Color(0xFFD2766B)", android)
+        self.assertIn("linear-gradient(145deg,#D5786B,#C2645A)", ADS)
+        self.assertIn("Color(0xFFD5786B)", android)
+        self.assertNotIn("#f52e16", ADS)
+        self.assertNotIn("Color(0xFFE93212)", android)
+
     def test_cached_ad_module_is_refreshed(self):
-        self.assertIn('/course_v3_data/ads.js?v=20261013-limit-sheet-v2', self.COURSE)
+        self.assertIn('/course_v3_data/ads.js?v=20261013-limit-sheet-v3', self.COURSE)
 
     def test_android_uses_fullscreen_for_lesson_end_only(self):
         self.assertIn('val placement: String = "screen_center"', self.ANDROID_VM)
