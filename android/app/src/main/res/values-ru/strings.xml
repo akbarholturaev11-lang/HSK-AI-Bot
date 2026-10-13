@@ -552,4 +552,26 @@
     <string name="course_choice_level">Уровень</string>
     <string name="course_choice_note">При смене версии прогресс сохраняется. Выбор другого уровня начнёт прогресс этой версии заново.</string>
     <string name="course_choice_confirm">Подтвердить</string>
+
+    <!-- Shared limit sheet: Android / Telegram Mini App visual parity -->
+    <string name="limit_sheet_heading">Готовы продолжить?</string>
+    <string name="limit_sheet_get_pro">Получить HSK AI Pro ⭐</string>
+    <string name="limit_sheet_check_access">Проверить доступ</string>
+    <string name="limit_sheet_reason_fallback">Бесплатный лимит раздела «%1$s» исчерпан. Продолжайте с Pro.</string>
+    <string name="limit_sheet_lesson_title">Продолжайте уроки без пауз</string>
+    <string name="limit_sheet_lesson_desc">Открывайте следующие уроки HSK и упражнения по подписке Pro.</string>
+    <string name="limit_sheet_practice_title">Закрепляйте знания на практике</string>
+    <string name="limit_sheet_practice_desc">С Pro дневной лимит не остановит упражнения и повторение.</string>
+    <string name="limit_sheet_test_title">Идите на экзамен уверенно</string>
+    <string name="limit_sheet_test_desc">Решайте больше тестов и узнавайте, какие темы стоит повторить.</string>
+    <string name="limit_sheet_mistakes_title">Разберите каждую ошибку</string>
+    <string name="limit_sheet_mistakes_desc">Работайте над ошибками и закрепляйте результат новыми заданиями.</string>
+    <string name="limit_sheet_voice_title">Говорите по-китайски свободнее</string>
+    <string name="limit_sheet_voice_desc">Продолжайте тренировать разговорную речь с AI Voice без лимита.</string>
+    <string name="limit_sheet_pron_title">Улучшайте произношение</string>
+    <string name="limit_sheet_pron_desc">Повторяйте слова вслух и отрабатывайте звучание.</string>
+    <string name="limit_sheet_recognition_title">Узнавайте иероглифы быстрее</string>
+    <string name="limit_sheet_recognition_desc">Продолжайте упражнения на распознавание иероглифов.</string>
+    <string name="limit_sheet_memorize_title">Запоминайте слова надолго</string>
+    <string name="limit_sheet_memorize_desc">Закрепляйте новую лексику с помощью повторений.</string>
 </resources>

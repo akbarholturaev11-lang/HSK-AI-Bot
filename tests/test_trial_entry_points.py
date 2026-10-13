@@ -52,23 +52,18 @@ class TrialEntryPointTests(unittest.TestCase):
         # Bir marta ko'rsatiladi.
         self.assertIn("hsk_v3_plan_choice", COURSE)
 
-    def test_the_paywall_offers_the_trial(self):
-        """Dars paywalli ham, mashq paywalli ham trialni taklif qiladi.
-
-        Dars uchun taklif ilgari `startLessonAdGate` ichida edi va o'sha
-        funksiya hech qachon chaqirilmasdi (`lessonNeedsAd()` doim `false`),
-        ya'ni test o'lik kodni tekshirib "o'tyapti" derdi. Endi u odam
-        ko'radigan `paywallHtml` ichida.
-        """
-        self.assertIn(r"App.startTrial(\'paywall_lesson\')", COURSE)
-        self.assertIn("trialStart(\"paywall_practice\")", COURSE)
-        # Reklama o'rniga trial — eski parametr qolmasin.
-        self.assertNotIn("onContinueAd:", COURSE)
-
-    def test_the_lesson_paywall_hides_the_trial_once_it_is_used(self):
-        # Trial olingan bo'lsa yagona tugma obuna bo'lib qoladi.
-        block = COURSE.split("function paywallHtml(ctx)")[1][:1600]
-        self.assertIn("trialEligible()", block)
+    def test_the_lesson_and_practice_limit_paywalls_offer_pro_only(self):
+        # Trial is still available in onboarding/profile, never on a limit sheet.
+        self.assertIn("isLimitPaywallContext(ctx)", COURSE)
+        self.assertIn("!isLimitPaywallContext(ctx)&&trialEligible()", COURSE)
+        self.assertIn('trialStart("paywall_practice")', COURSE)
+        sheet = ADS.split("function showLimitPromo(opts){", 1)[1].split(
+            "/* ============================================================", 1
+        )[0]
+        self.assertIn("els.limitPay.onclick", sheet)
+        self.assertNotIn("trialStatus(", sheet)
+        self.assertNotIn("showTrialButton(", sheet)
+        self.assertNotIn("opts.onTrial", sheet)
 
     def test_the_subscription_checkout_does_not_offer_the_trial(self):
         self.assertNotIn('id="trialOffer"', SUBSCRIPTION)
@@ -114,14 +109,12 @@ class AndroidOffersTheSameTrialTests(unittest.TestCase):
         self.assertNotIn("planChoiceSeen", ANDROID_MAIN)
         self.assertNotIn('onUnlock("onboarding_plan")', ANDROID_MAIN)
 
-    def test_the_limit_block_offers_the_trial_in_both_channels(self):
-        for name, source in (
-            ("direct", ANDROID_LIMIT_DIRECT),
-            ("play", ANDROID_LIMIT_PLAY),
-        ):
+    def test_the_limit_block_has_one_action_without_trial_in_both_channels(self):
+        for name, source in (("direct", ANDROID_LIMIT_DIRECT), ("play", ANDROID_LIMIT_PLAY)):
             with self.subTest(channel=name):
-                self.assertIn("limit.actions.onStartTrial", source)
-                self.assertIn("R.string.limit_try_trial", source)
+                self.assertNotIn("limit.actions.onStartTrial", source)
+                self.assertNotIn("R.string.limit_try_trial", source)
+                self.assertNotIn("secondaryLabel =", source)
 
     def test_the_profile_no_longer_carries_its_own_trial_card(self):
         """2026-09-20: profildagi karta ATAYLAB olib tashlandi.
