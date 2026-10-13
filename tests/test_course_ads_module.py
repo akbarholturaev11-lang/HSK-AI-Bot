@@ -72,6 +72,22 @@ class CourseAdsModuleTests(unittest.TestCase):
         self.assertIn("function _closeLimit(", ADS)
 
 
+    def test_launch_splash_stays_above_limit_and_ad_overlays(self):
+        """New limit sheets must not cover the HSK AI launch animation."""
+        course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        splash = re.search(
+            r"#hsk-launch-splash\\{[^}]*z-index:(\\d+);", course
+        )
+        limit_overlay = re.search(r"\\.caa-ov\\{[^}]*z-index:(\\d+);", ADS)
+        app_ad = re.search(r"\\.caa-app\\{[^}]*z-index:(\\d+);", ADS)
+        self.assertIsNotNone(splash)
+        self.assertIsNotNone(limit_overlay)
+        self.assertIsNotNone(app_ad)
+        self.assertGreater(
+            int(splash.group(1)),
+            max(int(limit_overlay.group(1)), int(app_ad.group(1))),
+        )
+
     def test_limit_sheet_is_not_nested_in_hidden_ad_box(self):
         """The limit backdrop must not hide its own sheet."""
         from html.parser import HTMLParser
