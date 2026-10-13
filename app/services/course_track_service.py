@@ -165,6 +165,7 @@ class CourseTrackService:
                 return {
                     "track": track,
                     "level": row.level,
+                    "has_state": True,
                     "completed_lessons_count": int(row.completed_lessons_count or 0),
                     "unlocked_at": row.unlocked_at.isoformat() if row.unlocked_at else None,
                     "unlock_payment_id": row.unlock_payment_id,
