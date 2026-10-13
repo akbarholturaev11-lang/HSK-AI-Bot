@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.pomp.hskai.R
+import com.pomp.hskai.core.design.PompColors
 
 /**
  * The same limit-only bottom sheet as Telegram Mini App.
@@ -123,7 +124,7 @@ fun SectionLimitOverlay(
                         modifier = Modifier.size(76.dp)
                             .border(BorderStroke(3.dp, Color(0xFFEFB34A)), RoundedCornerShape(20.dp))
                             .background(
-                                Brush.linearGradient(listOf(Color(0xFFC96B60), Color(0xFFAC4C46))),
+                                Brush.linearGradient(listOf(PompColors.Cinnabar, PompColors.CinnabarDark)),
                                 RoundedCornerShape(20.dp),
                             ),
                         contentAlignment = Alignment.Center,
@@ -183,7 +184,7 @@ fun SectionLimitOverlay(
                                 modifier = Modifier.size(74.dp)
                                     .background(
                                         Brush.linearGradient(
-                                            listOf(Color(0xFFD5786B), Color(0xFFC2645A)),
+                                            listOf(PompColors.Cinnabar, PompColors.CinnabarDark),
                                         ),
                                         CircleShape,
                                     ),
@@ -216,7 +217,7 @@ fun SectionLimitOverlay(
                                             width = if (index == 2) 22.dp else 6.dp,
                                             height = 6.dp,
                                         ).background(
-                                            if (index == 2) Color(0xFFD2766B) else Color(0xFFDFCFCE),
+                                            if (index == 2) PompColors.Cinnabar else Color(0xFFDFCFCE),
                                             CircleShape,
                                         ),
                                     )
@@ -233,15 +234,15 @@ fun SectionLimitOverlay(
                         enabled = !limit.state.isBusy,
                         modifier = Modifier.fillMaxWidth().heightIn(min = 58.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFD2766B),
-                            contentColor = Color(0xFF241917),
+                            containerColor = PompColors.Cinnabar,
+                            contentColor = PompColors.OnCinnabar,
                         ),
                         shape = RoundedCornerShape(17.dp),
                     ) {
                         if (limit.state.isBusy) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(20.dp),
-                                color = Color(0xFF241917),
+                                color = PompColors.OnCinnabar,
                                 strokeWidth = 2.dp,
                             )
                         } else {
