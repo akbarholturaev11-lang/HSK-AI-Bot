@@ -957,6 +957,7 @@
   function renderProfile() {
     var host = document.getElementById("pomp-desktop-profile-root");
     if (host && host.childElementCount) host.replaceChildren();
+    noteProfileAppsVisible();
     if (!focusProfileDownload || state.profileFocusDone || !window.HskProfileCarousel) return;
     var screen = document.getElementById("s-profile");
     if (!screen || !screen.classList.contains("on")) return;
@@ -973,6 +974,14 @@
   function showProfileAppsError(code) {
     var node=document.getElementById("hp-app-download-status");
     if (node) node.textContent=String(code||"");
+  }
+  function noteProfileAppsVisible() {
+    var screen = document.getElementById("s-profile");
+    var card = document.getElementById("hsk-profile-promo-root");
+    // An event is a real carousel impression, not a hidden profile render.
+    if (!screen || !screen.classList.contains("on") || document.hidden ||
+        !card || !card.isConnected || !card.classList.contains("hp-promo-apps")) return;
+    trackEntrySeen("profile", { placement: "profile_carousel" });
   }
   function openProfileAppsSite() { openTrackedLink(appsPageUrl()); }
   function openProfileApps() {
@@ -2407,6 +2416,7 @@
     renderProfile: renderProfile,
     openProfileApps: openProfileApps,
     openProfileAppsSite: openProfileAppsSite,
+    noteProfileAppsVisible: noteProfileAppsVisible,
     refreshAvailability: loadAvailability,
     mountAdPromoTrigger: mountAdPromoTrigger
   };
