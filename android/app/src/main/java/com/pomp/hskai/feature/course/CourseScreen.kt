@@ -47,6 +47,9 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberModalBottomSheetState
+import com.pomp.hskai.feature.assistant.AssistantModalBottomSheet as ModalBottomSheet
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -148,6 +151,7 @@ fun CourseScreen(
     AssistantScreen(courseAssistantContext(state), bottomBar = true)
     val map = state.map
     var pendingTrackSwitch by remember { mutableStateOf<Pair<String, String?>?>(null) }
+    var showCourseChoice by remember { mutableStateOf(false) }
     // The limit window belongs to the map, not to the lesson host: the Mini App
     // answers a spent allowance where the learner tapped, without loading a
     // lesson it already knows it will refuse.
@@ -212,6 +216,7 @@ fun CourseScreen(
                             onSwitchTrack = { targetTrack, targetLevel ->
                                 pendingTrackSwitch = targetTrack to targetLevel
                             },
+                            onOpenCourseChoice = { showCourseChoice = true },
                         )
                         if (!foundationMustComeFirst) {
                             map.today?.takeIf { it.tasks.isNotEmpty() }?.let { today ->
@@ -320,6 +325,22 @@ fun CourseScreen(
                 key = "course-track-switch",
                 titleRes = R.string.course_track_preparing_title,
                 subtitleRes = R.string.course_track_preparing_subtitle,
+            )
+        }
+
+        if (!hsk30Locked && showCourseChoice && hsk30 != null && !state.isSwitchingTrack) {
+            CourseChoiceSheet(
+                hsk30 = hsk30,
+                currentLevel = map.level,
+                onDismiss = { showCourseChoice = false },
+                onConfirm = { track, level ->
+                    showCourseChoice = false
+                    onSwitchTrack(track, level)
+                },
+                onLocked = {
+                    showCourseChoice = false
+                    onUnlockHsk30()
+                },
             )
         }
 
@@ -610,6 +631,157 @@ private fun Hsk30PromoDialog(
     }
 }
 
+/**
+ * Bottom sheet shared by HSK 2.0 and HSK 3.0. Changing the version
+ * preselects its saved band; tapping Confirm with this band sends null so
+ * the backend restores its checkpoint instead of creating a new track.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CourseChoiceSheet(
+    hsk30: com.pomp.hskai.domain.model.CourseHsk30,
+    currentLevel: String,
+    onDismiss: () -> Unit,
+    onConfirm: (String, String?) -> Unit,
+    onLocked: () -> Unit,
+) {
+    val activeTrack = if (currentLevel.startsWith("nhsk")) "hsk30" else "hsk20"
+    var selectedTrack by remember(activeTrack) { mutableStateOf(activeTrack) }
+    fun saved(track: String): String = if (track == "hsk30") {
+        hsk30.savedLevelHsk30.takeIf { it in hsk30.liveLevels }
+            ?: hsk30.liveLevels.firstOrNull() ?: "nhsk1"
+    } else {
+        hsk30.savedLevelHsk20.takeIf { it in listOf("hsk1", "hsk2", "hsk3", "hsk4") } ?: "hsk1"
+    }
+    var selectedLevel by remember(activeTrack) { mutableStateOf(saved(activeTrack)) }
+    val available = if (selectedTrack == "hsk30") {
+        hsk30.liveLevels.filter { it in listOf("nhsk1", "nhsk2", "nhsk3") }
+    } else listOf("hsk1", "hsk2", "hsk3", "hsk4")
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = PompColors.PaperRaised,
+    ) {
+        Column(
+            Modifier.fillMaxWidth().padding(start = 18.dp, end = 18.dp, bottom = 28.dp),
+        ) {
+            Text(
+                stringResource(R.string.course_choice_title),
+                fontSize = 23.sp,
+                fontWeight = FontWeight.Bold,
+                color = PompColors.Ink,
+            )
+            Spacer(Modifier.height(18.dp))
+            Text(stringResource(R.string.course_choice_version), color = PompColors.InkSecondary, fontSize = 14.sp)
+            Spacer(Modifier.height(9.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                listOf("hsk20", "hsk30").forEach { track ->
+                    val enabled = track != "hsk30" || (
+                        hsk30.access.featureEnabled && hsk30.liveLevels.isNotEmpty()
+                    )
+                    CourseChoiceOption(
+                        title = if (track == "hsk30") "HSK 3.0" else "HSK 2.0",
+                        selected = selectedTrack == track,
+                        enabled = enabled,
+                        modifier = Modifier.weight(1f),
+                        onClick = {
+                            selectedTrack = track
+                            selectedLevel = saved(track)
+                        },
+                    )
+                }
+            }
+            Spacer(Modifier.height(22.dp))
+            Text(stringResource(R.string.course_choice_level), color = PompColors.InkSecondary, fontSize = 14.sp)
+            Spacer(Modifier.height(9.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                available.forEach { level ->
+                    val label = if (selectedTrack == "hsk30") "N" + level.removePrefix("nhsk")
+                        else "HSK " + level.removePrefix("hsk")
+                    CourseChoiceOption(
+                        title = label,
+                        selected = level == selectedLevel,
+                        enabled = true,
+                        modifier = Modifier.weight(1f),
+                        onClick = { selectedLevel = level },
+                    )
+                }
+            }
+            Spacer(Modifier.height(14.dp))
+            Text(
+                stringResource(R.string.course_choice_note),
+                color = PompColors.InkSecondary,
+                fontSize = 12.sp,
+                lineHeight = 18.sp,
+            )
+            Spacer(Modifier.height(16.dp))
+            Button(
+                enabled = selectedLevel in available,
+                onClick = {
+                    if (selectedTrack == activeTrack && selectedLevel == currentLevel) {
+                        onDismiss()
+                    } else if (selectedTrack == "hsk30" && !hsk30.access.allowed) {
+                        onLocked()
+                    } else {
+                        onConfirm(
+                            selectedTrack,
+                            selectedLevel.takeIf { it != saved(selectedTrack) },
+                        )
+                    }
+                },
+                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = PompColors.Cinnabar,
+                    contentColor = PompColors.OnCinnabar,
+                ),
+                shape = RoundedCornerShape(15.dp),
+            ) {
+                Text(
+                    stringResource(R.string.course_choice_confirm),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun CourseChoiceOption(
+    title: String,
+    selected: Boolean,
+    enabled: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    val border = if (selected) PompColors.Cinnabar else PompColors.Divider
+    val background = if (selected) PompColors.CinnabarSoft else PompColors.Paper
+    Row(
+        modifier = modifier.heightIn(min = 54.dp)
+            .clip(RoundedCornerShape(15.dp))
+            .background(background)
+            .border(BorderStroke(if (selected) 2.dp else 1.dp, border), RoundedCornerShape(15.dp))
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(horizontal = 7.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            title,
+            fontSize = 15.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = if (!enabled) PompColors.InkSecondary else if (selected) PompColors.CinnabarDark else PompColors.Ink,
+            maxLines = 1,
+        )
+        if (selected) {
+            Spacer(Modifier.width(5.dp))
+            Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(15.dp), tint = PompColors.CinnabarDark)
+        }
+    }
+}
+
 private fun courseLevelLabel(level: String): String {
     val normalized = level.lowercase().trim()
     val nhsk = Regex("^nhsk([1-3])$").find(normalized)?.groupValues?.get(1)
@@ -627,6 +799,7 @@ private fun CourseHeader(
     onDismissHint: (String) -> Unit,
     isSwitchingTrack: Boolean,
     onSwitchTrack: (String, String?) -> Unit,
+    onOpenCourseChoice: () -> Unit,
 ) {
     val hsk30 = map.hsk30
     val activeTrack = hsk30?.activeTrack
@@ -645,14 +818,18 @@ private fun CourseHeader(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             HskSectionTitle(
-                text = courseLevelLabel(map.level),
-                modifier = if (canSwitchTrack) {
+                text = if (activeTrack == "hsk30") {
+                    "HSK 3.0 · N" + map.level.removePrefix("nhsk")
+                } else {
+                    "HSK 2.0 · " + courseLevelLabel(map.level)
+                },
+                modifier = if (hsk30 != null) {
                     Modifier.clickable(
                         enabled = !isSwitchingTrack,
                         role = Role.Button,
                         onClickLabel = switchVersionAction,
                     ) {
-                        onSwitchTrack(targetTrack, null)
+                        onOpenCourseChoice()
                     }
                 } else Modifier,
             )
