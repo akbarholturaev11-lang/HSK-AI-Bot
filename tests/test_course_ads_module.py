@@ -72,6 +72,22 @@ class CourseAdsModuleTests(unittest.TestCase):
         self.assertIn("function _closeLimit(", ADS)
 
 
+    def test_launch_splash_stays_above_limit_and_ad_overlays(self):
+        """New limit sheets must not cover the HSK AI launch animation."""
+        course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        splash = re.search(
+            r"#hsk-launch-splash\{[^}]*z-index:(\d+);", course
+        )
+        limit_overlay = re.search(r"\.caa-ov\{[^}]*z-index:(\d+);", ADS)
+        app_ad = re.search(r"\.caa-app\{[^}]*z-index:(\d+);", ADS)
+        self.assertIsNotNone(splash)
+        self.assertIsNotNone(limit_overlay)
+        self.assertIsNotNone(app_ad)
+        self.assertGreater(
+            int(splash.group(1)),
+            max(int(limit_overlay.group(1)), int(app_ad.group(1))),
+        )
+
     def test_limit_sheet_is_not_nested_in_hidden_ad_box(self):
         """The limit backdrop must not hide its own sheet."""
         from html.parser import HTMLParser
@@ -323,18 +339,24 @@ class AdFullscreenPlacementContractTests(unittest.TestCase):
         self.assertIn('e.sub.hidden=!!CFG.paid', ADS)
         self.assertIn('recordView(appState.ad,appState.placement||"screen_center"', ADS)
 
-    def test_limit_sheet_uses_soft_shared_accent(self):
-        """Limit-only CTA and illustration use the same softened cinnabar on both platforms."""
+    def test_limit_sheet_uses_shared_brand_cinnabar(self):
+        """Limit-only colors follow HSK AI tokens, not a separate muted palette."""
         android = Path("android/app/src/main/java/com/pomp/hskai/feature/limit/SectionLimitOverlay.kt").read_text(encoding="utf-8")
-        self.assertIn("background:#D2766B", ADS)
-        self.assertIn("containerColor = Color(0xFFD2766B)", android)
-        self.assertIn("linear-gradient(145deg,#D5786B,#C2645A)", ADS)
-        self.assertIn("Color(0xFFD5786B)", android)
-        self.assertNotIn("#f52e16", ADS)
-        self.assertNotIn("Color(0xFFE93212)", android)
+        tokens = Path("app/static/course_v3_data/design-tokens.css").read_text(encoding="utf-8")
+        self.assertIn("--hsk-cinnabar: #E04A40", tokens)
+        self.assertIn("--hsk-cinnabar-dark: #B23530", tokens)
+        self.assertEqual(ADS.count("var(--hsk-cinnabar,#E04A40)"), 4)
+        self.assertIn("var(--hsk-cinnabar-dark,#B23530)", ADS)
+        self.assertIn("var(--hsk-on-cinnabar,#160C09)", ADS)
+        self.assertIn("import com.pomp.hskai.core.design.PompColors", android)
+        self.assertIn("containerColor = PompColors.Cinnabar", android)
+        self.assertIn("contentColor = PompColors.OnCinnabar", android)
+        self.assertIn("PompColors.CinnabarDark", android)
+        self.assertNotIn("#D2766B", ADS)
+        self.assertNotIn("Color(0xFFD2766B)", android)
 
     def test_cached_ad_module_is_refreshed(self):
-        self.assertIn('/course_v3_data/ads.js?v=20261013-limit-sheet-v3', self.COURSE)
+        self.assertIn('/course_v3_data/ads.js?v=20261013-limit-sheet-v4', self.COURSE)
 
     def test_android_uses_fullscreen_for_lesson_end_only(self):
         self.assertIn('val placement: String = "screen_center"', self.ANDROID_VM)
