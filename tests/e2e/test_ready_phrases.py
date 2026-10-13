@@ -76,6 +76,10 @@ def test_practice_menu_phrasebook_search_and_favorites_are_local():
             phrasebook.locator(".phrase").first.wait_for()
             assert page.locator("#resourceov.on").count() == 1
             assert phrasebook.locator(".phrase").count() == 300
+            # The phrasebook uses the same cinnabar accent as the main practice tab.
+            assert phrasebook.locator(".pinyin").first.evaluate("el => getComputedStyle(el).color") == "rgb(178, 53, 48)"
+            assert phrasebook.locator(".eyebrow").evaluate("el => getComputedStyle(el).color") == "rgb(178, 53, 48)"
+            assert phrasebook.locator(".chip[aria-pressed='true']").first.evaluate("el => getComputedStyle(el).borderTopColor") == "rgb(224, 74, 64)"
 
             phrasebook.locator("#query").fill("ni hao")
             assert "你好" in " ".join(phrasebook.locator(".hanzi").all_text_contents())
@@ -148,6 +152,9 @@ def test_phrasebook_loads_outside_telegram_with_shared_theme_tokens():
             assert page.locator(".phrase").count() == 300
             assert page.locator("#back").count() == 0
             assert page.locator("body").evaluate("element => getComputedStyle(element).backgroundColor") == "rgb(0, 47, 73)"
+            # Dark mode must use the dark-theme cinnabar tokens (cyan), not hardcoded red.
+            assert page.locator(".pinyin").first.evaluate("el => getComputedStyle(el).color") == "rgb(126, 221, 246)"
+            assert page.locator(".chip[aria-pressed='true']").first.evaluate("el => getComputedStyle(el).backgroundColor") == "rgb(11, 76, 102)"
             assert page_errors == []
         finally:
             browser.close()
