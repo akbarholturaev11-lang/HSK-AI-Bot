@@ -246,6 +246,22 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .hsk30-switch-panda .hsk-character{height:100%;width:100%}
 .hsk30-switch-title{font-size:20px;line-height:1.3;font-weight:750;color:var(--ink)}
 .hsk30-switch-caption{margin:7px auto 0;font-size:14px;line-height:1.5;color:var(--ink2)}
+.course-heading-button{appearance:none;border:0;padding:4px 0;margin:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;min-height:44px}
+.course-heading-button:focus-visible{outline:3px solid var(--cin);outline-offset:3px;border-radius:8px}
+#sheet.course-choice-sheet .si{border-radius:26px 26px 0 0;max-height:85dvh;padding:8px 20px calc(22px + var(--safe-b));background:var(--paper)}
+#sheet.course-choice-sheet .sx{display:none}
+.course-choice-title{font-size:23px;font-weight:800;margin:14px 0 20px;color:var(--ink)}
+.course-choice-label{font-size:14px;font-weight:650;color:var(--ink2);margin:15px 0 9px}
+.course-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.course-choice-levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.course-choice-option{min-height:54px;border:1px solid var(--line);border-radius:15px;background:var(--card);color:var(--ink);font-size:16px;font-weight:750;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer}
+.course-choice-option[aria-pressed="true"]{background:var(--cinbg);border:2px solid var(--cin);color:var(--cin)}
+.course-choice-option:disabled{opacity:.4;cursor:not-allowed}
+.course-choice-option i{font-size:17px}
+.course-choice-note{font-size:12px;line-height:1.5;color:var(--ink2);margin:16px 0 12px}
+.course-choice-confirm{width:100%;min-height:52px;border:0;border-radius:15px;background:var(--cin);color:var(--cin-ink);font-size:16px;font-weight:750}
+.course-choice-confirm:disabled{opacity:.45}
+.course-choice-option:focus-visible,.course-choice-confirm:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
 .grip{width:40px;height:4px;border-radius:3px;background:var(--line);margin:8px auto 14px}
 .sx{position:absolute;right:14px;top:14px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:none;border:none;color:var(--ink2);font-size:22px}
 .shead{text-align:center;margin-bottom:14px}
@@ -1545,13 +1561,12 @@ function hideCourseTrackSwitchPreparing(){
 function switchCourseTrack(target,requestedLevel){
   target=target==="hsk30"?"hsk30":"hsk20";
   requestedLevel=requestedLevel?normalizeLevel(requestedLevel):"";
-  if(target===currentCourseTrack()){App.closeSheet();return}
+  if(target===currentCourseTrack()&&(!requestedLevel||requestedLevel===normalizeLevel((MAP&&MAP.level)||getSelectedLevel()))){App.closeSheet();return}
   var t=trackUi();
   courseTrackStatus(true).then(function(status){
     var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
     if(target==="hsk30"&&(!access||!access.allowed)){renderHsk30AccessGate(status);return null}
-    if(target==="hsk30")showCourseTrackSwitchPreparing(target);
-    else App.openSheet('<div class="shead"><div class="tr">'+esc(t.switching)+'</div></div>');
+    showCourseTrackSwitchPreparing(target);
     var switchPayload={target_track:target};
     if(requestedLevel)switchPayload.level=requestedLevel;
     return _apiPost("/api/v3/course-tracks/switch",switchPayload).then(function(r){
@@ -1560,8 +1575,7 @@ function switchCourseTrack(target,requestedLevel){
       COURSE_TRACK_STATE=d;
       var lv=normalizeLevel(d.active_level||(d.tracks&&d.tracks[target]&&d.tracks[target].level)||(target==="hsk30"?"nhsk1":"hsk1"));
       // Keep the panda loader up through the map fetch and render, not just the POST.
-      if(target!=="hsk30")App.closeSheet();
-      loadLevel(lv);
+      return loadLevel(lv);
     });
   }).catch(function(e){
     hideCourseTrackSwitchPreparing();
@@ -1672,15 +1686,74 @@ function requestCourseTrackSwitch(target){
     App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.courseVersion)+'</div><div class="tr">'+esc(t.tryAgain)+'</div></div><button class="sec" style="width:100%" onclick="openCourseTrackPicker()">'+esc(t.tryAgain)+'</button>');
   });
 }
+var COURSE_PICKER_STATUS=null,COURSE_PICKER_TRACK="",COURSE_PICKER_LEVEL="";
+function coursePickerCopy(){
+  return {
+    uz:{title:"Kursni tanlash",version:"Kurs versiyasi",level:"Daraja",note:"Versiyalar orasida almashganda o'qigan joyingiz saqlanadi. Boshqa darajani tanlash shu versiya progressini yangidan boshlaydi.",confirm:"Tasdiqlash"},
+    ru:{title:"Выбор курса",version:"Версия курса",level:"Уровень",note:"При смене версии прогресс сохраняется. Выбор другого уровня начнёт прогресс этой версии заново.",confirm:"Подтвердить"},
+    tj:{title:"Интихоби курс",version:"Версияи курс",level:"Сатҳ",note:"Ҳангоми иваз кардани версия пешрафт нигоҳ дошта мешавад. Интихоби сатҳи дигар пешрафти ин версияро аз нав оғоз мекунад.",confirm:"Тасдиқлаш"}
+  }[LANG]||{};
+}
+function coursePickerSavedLevel(track){
+  var tracks=COURSE_PICKER_STATUS&&COURSE_PICKER_STATUS.tracks||{};
+  var saved=String((tracks[track]&&tracks[track].level)||"").toLowerCase();
+  var allowed=track==="hsk30"?(tracks.hsk30&&tracks.hsk30.live_levels||[]):LEGACY_LEVELS;
+  return allowed.indexOf(saved)>=0?saved:(allowed[0]||(track==="hsk30"?"nhsk1":"hsk1"));
+}
+function renderCoursePicker(){
+  if(!COURSE_PICKER_STATUS)return;
+  var c=coursePickerCopy(),current=currentCourseTrack();
+  var h30=COURSE_PICKER_STATUS.tracks&&COURSE_PICKER_STATUS.tracks.hsk30||{};
+  var access=h30.access||{},hsk30Available=access.feature_enabled!==false&&(h30.live_levels||[]).length>0;
+  var levels=COURSE_PICKER_TRACK==="hsk30"?(h30.live_levels||[]).filter(function(l){return HSK30_LEVELS.indexOf(l)>=0}):LEGACY_LEVELS;
+  var levelButtons=levels.map(function(lv){
+    var selected=lv===COURSE_PICKER_LEVEL;
+    var name=(COURSE_PICKER_TRACK==="hsk30"?"N":"HSK ")+levelBand(lv);
+    return '<button type="button" class="course-choice-option" aria-pressed="'+selected+'" onclick="coursePickerSelectLevel(\''+lv+'\')">'+esc(name)+(selected?'<i class="ti ti-check" aria-hidden="true"></i>':'')+'</button>';
+  }).join("");
+  var versionButtons=["hsk20","hsk30"].map(function(track){
+    var selected=track===COURSE_PICKER_TRACK,disabled=track==="hsk30"&&!hsk30Available;
+    return '<button type="button" class="course-choice-option" aria-pressed="'+selected+'" '+(disabled?'disabled':'')+' onclick="coursePickerSelectTrack(\''+track+'\')">'+esc(track==="hsk30"?"HSK 3.0":"HSK 2.0")+(selected?'<i class="ti ti-check" aria-hidden="true"></i>':'')+'</button>';
+  }).join("");
+  var submitDisabled=!COURSE_PICKER_LEVEL||levels.indexOf(COURSE_PICKER_LEVEL)<0;
+  App.openSheet('<h2 class="course-choice-title">'+esc(c.title)+'</h2>'
+    +'<div class="course-choice-label">'+esc(c.version)+'</div><div class="course-choice-grid">'+versionButtons+'</div>'
+    +'<div class="course-choice-label">'+esc(c.level)+'</div><div class="course-choice-levels">'+levelButtons+'</div>'
+    +'<p class="course-choice-note">'+esc(c.note)+'</p>'
+    +'<button type="button" class="course-choice-confirm" '+(submitDisabled?'disabled':'')+' onclick="coursePickerConfirm()">'+esc(c.confirm)+'</button>');
+  $("#sheet").classList.add("course-choice-sheet");
+}
+function coursePickerSelectTrack(track){
+  if(!COURSE_PICKER_STATUS||["hsk20","hsk30"].indexOf(track)<0)return;
+  COURSE_PICKER_TRACK=track;
+  // Version changes default to its previously studied band. Never reset it.
+  COURSE_PICKER_LEVEL=coursePickerSavedLevel(track);
+  renderCoursePicker();
+}
+function coursePickerSelectLevel(level){
+  var permitted=COURSE_PICKER_TRACK==="hsk30"?(COURSE_PICKER_STATUS.tracks.hsk30.live_levels||[]):LEGACY_LEVELS;
+  if(permitted.indexOf(level)<0)return;
+  COURSE_PICKER_LEVEL=level;
+  renderCoursePicker();
+}
+function coursePickerConfirm(){
+  if(!COURSE_PICKER_STATUS||!COURSE_PICKER_LEVEL)return;
+  var track=COURSE_PICKER_TRACK,level=COURSE_PICKER_LEVEL;
+  var currentLevel=normalizeLevel((MAP&&MAP.level)||getSelectedLevel());
+  if(track===currentCourseTrack()&&level===currentLevel){App.closeSheet();return}
+  var saved=coursePickerSavedLevel(track);
+  // null means "restore the saved band", not "start N1 again".
+  switchCourseTrack(track,level===saved?null:level);
+}
 function openCourseTrackPicker(){
-  var t=trackUi(),cur=currentCourseTrack();
-  courseTrackStatus(false).catch(function(){return null}).then(function(status){
-    var h30=status&&status.tracks&&status.tracks.hsk30||{},access=h30.access;
-    var h30sub=access&&access.feature_enabled===false?t.disabled:(access&&access.allowed?t.current:t.hsk30Title);
-    var newTag="";
-    App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.courseVersion)+'</div></div>'
-      +'<button class="opt-row'+(cur==="hsk20"?" on":"")+'" onclick="App.pickCourseTrack(\'hsk20\')"><span class="han" style="font-size:20px;width:42px">2.0</span><span style="flex:1"><b>'+esc(t.hsk20)+'</b><small>'+esc(cur==="hsk20"?t.current:"")+'</small></span></button>'
-      +'<button class="opt-row'+(cur==="hsk30"?" on":"")+'" onclick="App.pickCourseTrack(\'hsk30\')"><span class="han" style="font-size:20px;width:42px">3.0</span><span style="flex:1"><b>'+esc(t.hsk30)+'</b>'+newTag+'<small>'+esc(cur==="hsk30"?t.current:h30sub)+'</small></span></button>');
+  courseTrackStatus(true).then(function(status){
+    COURSE_PICKER_STATUS=status;
+    COURSE_PICKER_TRACK=currentCourseTrack();
+    COURSE_PICKER_LEVEL=coursePickerSavedLevel(COURSE_PICKER_TRACK);
+    renderCoursePicker();
+  }).catch(function(){
+    var t=trackUi();
+    App.openSheet('<div class="shead"><div class="tr">'+esc(t.tryAgain)+'</div></div><button class="sec" onclick="openCourseTrackPicker()">'+esc(t.tryAgain)+'</button>');
   });
 }
 function showHsk30TestSoon(){
@@ -3049,7 +3122,7 @@ function renderCourse(){
   /* `.ctop` — YOPISHQOQ blok: daraja qatori, progress chizig'i va bugungi
      reja birga tepada qoladi. Ilgari faqat `.htop` yopishqoq edi va reja
      tasmasi pastga suriganda uning ostiga kirib ko'rinmay ketardi. */
-  var h='<div class="cleft"><div class="ctop"><div class="htop"><h1 class="section-title">'+esc(MAP.label)+'</h1>'
+  var h='<div class="cleft"><div class="ctop"><div class="htop"><h1 class="section-title"><button type="button" class="course-heading-button" onclick="App.courseTrackPicker()" aria-label="'+esc(trackUi().courseVersion)+'">'+esc(MAP.label)+'</button></h1>
     +'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>'
     +'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span>'
     +goalRingHtml()+'</div>'
