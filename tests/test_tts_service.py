@@ -141,6 +141,9 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
         with patch.object(tts, "_edge", new=AsyncMock(side_effect=RuntimeError("403"))), \
              patch.object(tts, "_fallback", new=AsyncMock(
                  side_effect=tts.TTSUnavailable("gemini_no_key")
+             )), \
+             patch.object(tts, "_public_mp3_fallback", new=AsyncMock(
+                 side_effect=tts.TTSUnavailable("licensed_word_recording_unavailable")
              )):
             with self.assertRaises(tts.TTSUnavailable):
                 await tts.synthesize_chinese_mp3("谢谢你！")
