@@ -253,7 +253,9 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .course-choice-title{font-size:23px;font-weight:800;margin:14px 0 20px;color:var(--ink)}
 .course-choice-label{font-size:14px;font-weight:650;color:var(--ink2);margin:15px 0 9px}
 .course-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.course-choice-levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.course-choice-levels{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.course-choice-levels.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.course-choice-levels .course-choice-option{min-width:0;min-height:46px;padding:8px 2px;font-size:clamp(11px,3.15vw,13px);line-height:1.15;white-space:nowrap;gap:2px;border-radius:12px}
 .course-choice-option{min-height:54px;border:1px solid var(--line);border-radius:15px;background:var(--card);color:var(--ink);font-size:16px;font-weight:750;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer}
 .course-choice-option[aria-pressed="true"]{background:rgba(231,66,58,.08);border:2px solid var(--cin);color:var(--cin)}
 .course-choice-option:disabled{opacity:.4;cursor:not-allowed}
@@ -1715,8 +1717,8 @@ function renderCoursePicker(){
   var levels=COURSE_PICKER_TRACK==="hsk30"?(h30.live_levels||[]).filter(function(l){return HSK30_LEVELS.indexOf(l)>=0}):LEGACY_LEVELS;
   var levelButtons=levels.map(function(lv){
     var selected=lv===COURSE_PICKER_LEVEL;
-    var name=(COURSE_PICKER_TRACK==="hsk30"?"N":"HSK ")+levelBand(lv);
-    return '<button type="button" class="course-choice-option" aria-pressed="'+selected+'" onclick="coursePickerSelectLevel(\''+lv+'\')">'+esc(name)+(selected?'<i class="ti ti-check" aria-hidden="true"></i>':'')+'</button>';
+    var name="HSK "+levelBand(lv);
+    return '<button type="button" class="course-choice-option" aria-pressed="'+selected+'" onclick="coursePickerSelectLevel(\''+lv+'\')">'+esc(name)+'</button>';
   }).join("");
   var versionButtons=["hsk20","hsk30"].map(function(track){
     var selected=track===COURSE_PICKER_TRACK,disabled=track==="hsk30"&&!hsk30Available;
@@ -1725,7 +1727,7 @@ function renderCoursePicker(){
   var submitDisabled=!COURSE_PICKER_LEVEL||levels.indexOf(COURSE_PICKER_LEVEL)<0;
   App.openSheet('<h2 class="course-choice-title">'+esc(c.title)+'</h2>'
     +'<div class="course-choice-label">'+esc(c.version)+'</div><div class="course-choice-grid">'+versionButtons+'</div>'
-    +'<div class="course-choice-label">'+esc(c.level)+'</div><div class="course-choice-levels">'+levelButtons+'</div>'
+    +'<div class="course-choice-label">'+esc(c.level)+'</div><div class="course-choice-levels'+(COURSE_PICKER_TRACK==="hsk30"?" three":"")+'">'+levelButtons+'</div>'
     +'<p class="course-choice-note">'+esc(c.note)+'</p>'
     +'<button type="button" class="course-choice-confirm" '+(submitDisabled?'disabled':'')+' onclick="coursePickerConfirm()">'+esc(c.confirm)+'</button>');
   $("#sheet").classList.add("course-choice-sheet");
