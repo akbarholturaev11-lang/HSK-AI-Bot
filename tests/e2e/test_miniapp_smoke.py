@@ -2439,6 +2439,15 @@ def admin_finance_payload():
 
 
 def open_admin_route(page, route):
+    route_titles = {
+        "dashboard": "Бош саҳифа",
+        "statistics": "Таҳлиллар",
+        "users": "Фойдаланувчилар",
+        "finance": "Молия",
+        "product": "Курс",
+        "marketing": "Тарғибот",
+        "system": "Тизим",
+    }
     sidebar_button = page.locator(f'#sidebarNav [data-admin-route="{route}"]')
     mobile_button = page.locator(f'#tabs [data-admin-route="{route}"]')
     if sidebar_button.is_visible():
@@ -2452,6 +2461,17 @@ def open_admin_route(page, route):
             f'#adminNavResults [data-admin-route="{route}"]:not([data-admin-target-sub])'
         ).click()
     expect(page.locator("#adminNavigator")).not_to_be_visible()
+    route_title = route_titles[route]
+    expect(page.locator("#pageTitle")).to_have_text(route_title)
+    main = page.locator("#adminMain")
+    expect(main.get_by_role("heading", name=route_title, exact=True)).to_have_count(1)
+    expect(main.get_by_text(route_title, exact=True).and_(page.locator(":visible"))).to_have_count(1)
+    expect(page.locator(".admin-breadcrumb, .admin-eyebrow")).to_have_count(0)
+    if route == "dashboard":
+        expect(page.locator("#generatedAt")).to_be_visible()
+        expect(page.locator("#generatedAt")).to_have_text("Янгиланди: 28.06.2026 11:30")
+    else:
+        expect(page.locator("#generatedAt")).to_be_hidden()
     assert page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
 
 

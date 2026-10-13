@@ -281,11 +281,9 @@
     .admin-chevron .admin-icon{width:14px;height:14px}
     [data-admin-icon]{display:inline-flex;align-items:center;justify-content:center}
     .admin-topbar{height:calc(64px + var(--safe-top));position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:var(--safe-top) 16px 0;background:#0c1118;border-bottom:1px solid var(--line-soft)}
-    .admin-breadcrumb{display:none;align-items:center;gap:9px;color:var(--muted);font-size:12px;font-weight:650}
-    .admin-breadcrumb b{color:var(--ink)}
     .admin-mobile-brand{display:flex;align-items:center;gap:5px;white-space:nowrap;font-weight:850;font-size:15px;letter-spacing:-.03em}
     .admin-mobile-brand span{color:#f08879}
-    .admin-topbar .top-actions{gap:8px;flex:none}
+    .admin-topbar .top-actions{gap:8px;flex:none;margin-left:auto}
     .admin-search-open,.reload,.close{min-height:44px;min-width:44px;border:1px solid var(--line);border-radius:11px;background:var(--surface);color:var(--admin-sub);display:inline-flex;align-items:center;justify-content:center;gap:9px;flex:none}
     .admin-search-open{width:44px;padding:0}
     .admin-search-open>span:not([data-admin-icon]),.admin-search-open kbd{display:none}
@@ -293,9 +291,8 @@
     .admin-search-open kbd{margin-left:auto;border:0;border-radius:5px;background:#252f3c;padding:3px 6px;color:#b4c0cf;font:inherit;font-size:10px}
     .admin-workspace main{width:100%;max-width:1550px;min-width:0;margin:0 auto;padding:22px 16px calc(110px + var(--safe-bottom));overflow-x:clip}
     .admin-page-head{display:block;margin-bottom:22px}
-    .admin-eyebrow{margin-bottom:9px;color:var(--accent);font-size:10px;font-weight:850;letter-spacing:.16em;text-transform:uppercase}
     .admin-page-head h1{font-size:24px;line-height:1.12;letter-spacing:-.045em;font-weight:830;margin:0 0 8px}
-    .admin-page-head p{max-width:680px;color:var(--muted);font-size:13px;line-height:1.5}
+    .admin-page-head p{color:var(--muted);font-size:12px;line-height:1.5}
     .admin-page-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-start;margin-top:16px}
     .admin-page-actions:empty{display:none}
     .admin-page-actions .btn{white-space:nowrap}
@@ -443,7 +440,6 @@
       .admin-navbtn .admin-chevron{margin-left:auto}
       .admin-workspace{display:flex;flex-direction:column;min-height:0;overflow:hidden}
       .admin-topbar{position:relative;top:auto;height:74px;min-height:74px;padding:0 38px;flex:none}
-      .admin-breadcrumb{display:flex}
       .admin-mobile-brand{display:none}
       .admin-search-open{width:auto;min-width:210px;height:44px;padding:0 12px;border-radius:10px;background:#171f2b;color:var(--muted);font-size:12px;font-weight:500}
       .admin-search-open>span:not([data-admin-icon]),.admin-search-open kbd{display:inline}
@@ -525,7 +521,6 @@
     </aside>
     <div class="admin-workspace">
       <header class="admin-topbar">
-        <div class="admin-breadcrumb"><span>HSK AI</span><span>/</span><b id="breadcrumbTitle">Бош саҳифа</b></div>
         <div class="admin-mobile-brand">HSK AI <span>Админ</span></div>
         <div class="top-actions">
           <button type="button" class="admin-search-open" data-admin-search aria-label="Бўлим ёки амал қидириш"><span data-admin-icon="search"></span><span>Бўлим ёки амал қидириш</span><kbd>/</kbd></button>
@@ -534,16 +529,13 @@
       </header>
       <main id="adminMain">
         <div class="admin-page-head">
-          <div><div class="admin-eyebrow" id="pageEyebrow">HSK AI</div><h1 id="pageTitle">Бош саҳифа</h1><p id="pageDescription">Бугунги ҳолат ва муҳим ишлар.</p></div>
+          <div><h1 id="pageTitle">Бош саҳифа</h1><p id="generatedAt">—</p></div>
           <div class="admin-page-actions" id="pageActions"></div>
         </div>
         <nav class="admin-subnav" id="adminSubnav" aria-label="Ички бўлимлар" hidden></nav>
       <!-- DASHBOARD -->
       <section id="dashboard" class="view active">
         <div class="sec">
-          <div class="sec-head">
-            <div><div class="sec-title">Умумий ҳолат</div><div class="sec-note" id="generatedAt">—</div></div>
-          </div>
           <div class="grid g2" id="summaryGrid"></div>
         </div>
         <div class="sec">
@@ -551,7 +543,7 @@
           <div class="chips" id="segmentChips"></div>
         </div>
         <div class="sec">
-          <div class="sec-head"><div><div class="sec-title">Қисқача молиявий кўрсаткичлар</div><div class="sec-note">Бутун давр бўйича соф натижа</div></div><button class="link-btn" data-tab-jump="statistics">Батафсил →</button></div>
+          <div class="sec-head"><div><div class="sec-title">Молиявий натижа</div><div class="sec-note">Бутун давр бўйича соф натижа</div></div><button class="link-btn" data-tab-jump="statistics">Батафсил →</button></div>
           <div class="grid g2" id="financeQuick"></div>
         </div>
         <div class="sec">
@@ -563,8 +555,7 @@
 
       <!-- STATISTICS -->
       <section id="statistics" class="view">
-        <div class="sec-head" style="margin-bottom:8px">
-          <div><div class="sec-title">Батафсил статистика</div><div class="sec-note">Бўлимлар содда тилда тушунтирилган</div></div>
+        <div class="sec-head" style="justify-content:flex-end;margin-bottom:8px">
           <button class="link-btn" data-act="copy-report">Умумий ҳисоботдан нусха олиш</button>
         </div>
         <div class="periods" id="periodTabs"></div>
@@ -607,7 +598,7 @@
 
         <!-- Native Android client -->
         <div class="block">
-          <div class="block-head"><span class="bi">📱</span><div><h3>HSK AI Android</h3><p>Асосий кўрсаткичлар</p></div></div>
+          <div class="block-head"><span class="bi">📱</span><div><h3>HSK AI Android</h3></div></div>
           <div class="grid g2" id="androidCards"></div>
           <div class="ncnote" id="androidUpdateSummary" style="margin-top:12px"></div>
           <details class="acc" style="margin-top:12px">
@@ -666,7 +657,7 @@
 
         <!-- Sources -> обунали -->
         <div class="block">
-          <div class="block-head"><span class="bi">🧲</span><div><h3>Манба → тўлов</h3><p>Қайси манба тўлов олиб келишини кўрсатади</p></div></div>
+          <div class="block-head"><span class="bi">🧲</span><div><h3>Манба → тўлов</h3></div></div>
           <div id="sourcesPaid"></div>
           <div class="explain" id="sourceAttributionExplain">Ҳар бир тўлов обуна саҳифасига киришнинг энг яқин манбасига боғланади.</div>
         </div>
@@ -689,7 +680,7 @@
         </div>
 
         <div class="block">
-          <div class="block-head"><span class="bi">📝</span><div><h3>Ҳисобот матни</h3><p>Нусха олиб юбориш учун</p></div></div>
+          <div class="block-head"><span class="bi">📝</span><div><h3>Ҳисобот матни</h3></div></div>
           <pre id="reportText" style="white-space:pre-wrap;margin:0;font-size:12.5px;line-height:1.5;color:#d6deeb;font-family:inherit"></pre>
         </div>
       </section>
@@ -714,7 +705,6 @@
       <!-- SETTINGS -->
       <section id="settings" class="view">
         <div class="sec">
-          <div class="sec-head"><div class="sec-title">Бошқарув бўлимлари</div></div>
           <div class="grid settings-grid" id="moduleGrid"></div>
         </div>
         <div class="sec">
@@ -736,7 +726,7 @@
              emas, oммавий хабарнинг ukasi. -->
         <div class="sec" id="adHub">
           <div class="sec-head ad-hub-heading">
-            <div><div class="sec-title">📣 Реклама</div><div class="sec-note">Мини-иловадаги рекламаларни бошқаринг</div></div>
+            <div><div class="sec-title">📣 Реклама</div></div>
             <button type="button" class="ad-settings-trigger" id="adRulesGear" data-ad-rules-open
               aria-label="Курс рекламасининг умумий созламаларини очиш"
               aria-haspopup="dialog" aria-controls="adRulesModal" title="Умумий реклама созламалари">⚙️</button>
@@ -971,7 +961,7 @@
     function financeAll(){ const f=state.finance; if(!f||!f.periods) return null; return f.periods.find(p=>p.key==="all_time")||f.periods[f.periods.length-1]; }
     function renderDashboard(){
       const ov = state.overview;
-      $("generatedAt").textContent = "Сўнгги янгиланиш: " + (ov.generated_at || "—");
+      $("generatedAt").textContent = "Янгиланди: " + (ov.generated_at || "—");
       const desktop=state.desktopStats.all_time;
       const android=state.androidStats.all_time;
       const summary=(ov.summary||[]).slice();
@@ -1830,7 +1820,7 @@
       if(key==="user_search"){ closeDrawer(); switchTab("users"); $("search").focus(); return; }
       /* Reklama endi drawer emas, sozlamalar ichidagi bitta bo'lim. */
       if(key==="ads_hub"){ closeDrawer(); navigateAdmin("marketing","creatives"); const h=$("adHub"); if(h) h.scrollIntoView({behavior:"smooth",block:"start"}); return openAdHub(state.adHub); }
-      openDrawer(moduleTitle(key),"Панел ичидаги реал бошқарув","<p class='empty'>Юкланмоқда…</p>");
+      openDrawer(moduleTitle(key),"","<p class='empty'>Юкланмоқда…</p>");
       let d;
       try{ d=await loadManagement(false); }catch(e){ $("drawerBody").innerHTML="<p class='empty'>Маълумот юкланмади.</p>"; return; }
       const map={prices:renderPrices,hsk30:renderHsk30,course_access:renderCourseAccess,limits:renderLimits,ad_placements:renderAdPlacements,course_sales_experiment:renderCourseSalesExperiment,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount",prefill),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
@@ -3035,13 +3025,13 @@
       return `<svg class="admin-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${adminIcons[key]||adminIcons.settings}</svg>`;
     }
     const adminRoutes={
-      dashboard:{icon:"house",title:"Бош саҳифа",label:"БОШ САҲИФА",description:"Бугунги ҳолат ва муҳим ишлар.",tab:"dashboard"},
-      statistics:{icon:"chart",title:"Таҳлиллар",label:"ТАҲЛИЛЛАР",description:"Фойдаланувчилар, курс ва иловалар натижалари.",tab:"statistics",subs:[["overview","Умумий"],["platform","Платформалар"],["funnel","Ўтиш кўрсаткичлари"],["ai","Сунъий интеллект харажатлари"]]},
-      users:{icon:"users",title:"Фойдаланувчилар",label:"ФОЙДАЛАНУВЧИЛАР",description:"Фойдаланувчилар, профиллар ва кириш ҳуқуқлари.",tab:"users"},
-      finance:{icon:"wallet",title:"Молия",label:"МОЛИЯ",description:"Тўловлар, тарифлар ва молиявий ҳисоб.",tab:"payments",subs:[["payments","Тўловлар"],["prices","Тарифлар"],["methods","Реквизитлар"],["portfolio","Харажатлар"]]},
-      product:{icon:"book",title:"Курс",label:"КУРС",description:"Курс, кириш қоидалари ва ўқув воситалари.",tab:"settings",subs:[["tracks","HSK 2.0 / 3.0"],["access","Дарслар ва чекловлар"],["trial","Синов муддати"],["tools","Материаллар ва тестлар"]]},
-      marketing:{icon:"megaphone",title:"Тарғибот",label:"ТАРҒИБОТ",description:"Кампаниялар, реклама ва эслатмалар.",tab:"settings",subs:[["campaigns","Кампаниялар"],["creatives","Реклама"],["notifications","Эслатмалар"],["partners","Ҳамкорлар"]]},
-      system:{icon:"settings",title:"Тизим",label:"ТИЗИМ",description:"Сунъий интеллект, каналлар ва ёрдам созламалари.",tab:"settings",subs:[["models","Сунъий интеллект моделлари"],["channels","Каналлар"],["help","Ёрдам"]]}
+      dashboard:{icon:"house",title:"Бош саҳифа",tab:"dashboard"},
+      statistics:{icon:"chart",title:"Таҳлиллар",tab:"statistics",subs:[["overview","Умумий"],["platform","Платформалар"],["funnel","Ўтиш кўрсаткичлари"],["ai","Сунъий интеллект харажатлари"]]},
+      users:{icon:"users",title:"Фойдаланувчилар",tab:"users"},
+      finance:{icon:"wallet",title:"Молия",tab:"payments",subs:[["payments","Тўловлар"],["prices","Тарифлар"],["methods","Реквизитлар"],["portfolio","Харажатлар"]]},
+      product:{icon:"book",title:"Курс",tab:"settings",subs:[["tracks","HSK 2.0 / 3.0"],["access","Дарслар ва чекловлар"],["trial","Синов муддати"],["tools","Материаллар ва тестлар"]]},
+      marketing:{icon:"megaphone",title:"Тарғибот",tab:"settings",subs:[["campaigns","Кампаниялар"],["creatives","Реклама"],["notifications","Эслатмалар"],["partners","Ҳамкорлар"]]},
+      system:{icon:"settings",title:"Тизим",tab:"settings",subs:[["models","Сунъий интеллект моделлари"],["channels","Каналлар"],["help","Ёрдам"]]}
     };
     const adminModuleLabels={stats:"Статистика",user_search:"Фойдаланувчи қидириш",portfolio:"Харажатлар",prices:"Обуналар тарифлари",hsk30:"HSK 3.0",course_access:"Курсга кириш",limits:"Чекловлар",ads_hub:"Реклама",course_sales_experiment:"HSK сотув тажрибаси",channels:"Мажбурий каналлар",delete_user:"Фойдаланувчини ўчириш",broadcast:"Оммавий хабар",ads:"Бот рекламаси",release_feedback:"Янгиликлар фикри",discount:"Чегирмалар",partners:"Ҳамкорлар",help:"Ёрдам созламалари",give_access:"Обунани бериш",audio:"Аудио бошқаруви"};
     function adminModuleLabel(module){return adminModuleLabels[module.key]||module.title;}
@@ -3088,8 +3078,8 @@
     }
     function renderAdminChrome(){
       const cfg=adminRoutes[state.adminRoute],sub=adminSub();
-      $("breadcrumbTitle").textContent=cfg.title;
-      $("pageTitle").textContent=cfg.title;$("pageEyebrow").textContent="HSK AI / "+cfg.label;$("pageDescription").textContent=cfg.description;
+      $("pageTitle").textContent=cfg.title;
+      $("generatedAt").hidden=state.adminRoute!=="dashboard";
       document.querySelectorAll("[data-admin-route]").forEach(btn=>{
         const active=btn.dataset.adminRoute===state.adminRoute||(btn.dataset.adminRoute==="menu"&&["product","marketing","system"].includes(state.adminRoute));
         btn.classList.toggle("active",active);if(active)btn.setAttribute("aria-current","page");else btn.removeAttribute("aria-current");
