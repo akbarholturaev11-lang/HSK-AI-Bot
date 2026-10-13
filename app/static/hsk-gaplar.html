@@ -34,12 +34,7 @@
     body { padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
     button, input { font: inherit; }
     button { color: inherit; }
-    .page { width: min(100%, 620px); min-height: 100dvh; margin: 0 auto; padding: 14px 19px 28px; }
-    .top { display: flex; align-items: center; min-height: 42px; gap: 11px; }
-    .eyebrow { color: var(--accent-ink); font-size: 10px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
-    .hero { padding: 15px 0 18px; }
-    h1 { margin: 0; font-size: clamp(28px, 8vw, 34px); line-height: 1.13; letter-spacing: -.045em; font-weight: 760; }
-    .intro { max-width: 430px; margin: 8px 0 0; color: var(--ink-soft); font-size: 14px; line-height: 1.5; }
+    .page { width: min(100%, 620px); min-height: 100dvh; margin: 0 auto; padding: 12px 19px 28px; }
     .search { position: relative; display: block; }
     .search-icon { position: absolute; top: 50%; left: 15px; transform: translateY(-50%); color: var(--ink-muted); font-size: 20px; pointer-events: none; }
     .search input { width: 100%; height: 49px; padding: 0 14px 0 43px; border: 1px solid var(--line); border-radius: 14px; outline: 0; background: var(--card); color: var(--ink); font-size: 16px; }
@@ -72,13 +67,6 @@
 </head>
 <body>
   <main class="page">
-    <header class="top">
-      <span class="eyebrow" id="eyebrow"></span>
-    </header>
-    <section class="hero" aria-labelledby="title">
-      <h1 id="title"></h1>
-      <p class="intro" id="intro"></p>
-    </section>
     <label class="search">
       <span class="search-icon" aria-hidden="true">⌕</span>
       <input id="query" type="search" autocomplete="off" enterkeyhint="search" maxlength="100">
@@ -98,9 +86,9 @@
       var LANGUAGE = new URLSearchParams(location.search).get("lang") || "uz";
       if (!["uz", "ru", "tj"].includes(LANGUAGE)) LANGUAGE = "uz";
       var UI = {
-        uz: {title:"Tayyor gaplar", intro:"Qidiring, saqlang, nusxalang.", eyebrow:"GAP JAMLANMASI", search:"Xitoycha, pinyin yoki tarjima bo‘yicha qidiring", all:"Barchasi", saved:"Saqlanganlar", count:"{shown} / {total} ta gap", save:"Saqlash", savedOne:"Saqlandi", removed:"Saqlanganlardan olib tashlandi", copy:"Nusxalash", copied:"Nusxalandi", empty:"Bu qidiruvga mos gap topilmadi. Boshqa so‘z bilan qidiring.", noSaved:"Saqlangan gaplaringiz shu yerda ko‘rinadi.", loadError:"Gaplar jamlanmasi yuklanmadi. Internetga ulaning va qayta urinib ko‘ring.", retry:"Qayta urinish", storageError:"Saqlash imkoni bo‘lmadi. Telefon sozlamalarini tekshiring." },
-        ru: {title:"Готовые фразы", intro:"Найдите, сохраните, скопируйте.", eyebrow:"ПОДБОРКА ФРАЗ", search:"Поиск по китайскому, пиньиню или переводу", all:"Все фразы", saved:"Сохранённые", count:"{shown} из {total} фраз", save:"Сохранить", savedOne:"Сохранено", removed:"Удалено из сохранённых", copy:"Копировать", copied:"Скопировано", empty:"По этому запросу ничего не найдено. Попробуйте другие слова.", noSaved:"Сохранённые фразы появятся здесь.", loadError:"Не удалось загрузить фразы. Подключитесь к интернету и попробуйте ещё раз.", retry:"Повторить", storageError:"Не удалось сохранить. Проверьте настройки телефона." },
-        tj: {title:"Ибораҳои омода", intro:"Ҷӯед, нигоҳ доред, нусха гиред.", eyebrow:"ҶАМЪОВАРИИ ИБОРАҲО", search:"Ҷустуҷӯ бо чинӣ, пинйин ё тарҷума", all:"Ҳама", saved:"Нигоҳдоштаҳо", count:"{shown} аз {total} ҷумла", save:"Нигоҳ доштан", savedOne:"Нигоҳ дошта шуд", removed:"Аз нигоҳдоштаҳо бардошта шуд", copy:"Нусха бардоштан", copied:"Нусха бардошта шуд", empty:"Барои ин ҷустуҷӯ ҷумла ёфт нашуд. Калимаи дигарро ҷӯед.", noSaved:"Ибораҳои нигоҳдоштаатон дар ин ҷо намоиш мешаванд.", loadError:"Ибораҳо бор нашуданд. Ба интернет пайваст шуда, боз кӯшиш кунед.", retry:"Аз нав кӯшиш кардан", storageError:"Захира карда нашуд. Танзимоти телефонро санҷед." }
+        uz: {title:"Tayyor gaplar", search:"Xitoycha, pinyin yoki tarjima bo‘yicha qidiring", all:"Barchasi", saved:"Saqlanganlar", count:"{shown} / {total} ta gap", save:"Saqlash", savedOne:"Saqlandi", removed:"Saqlanganlardan olib tashlandi", copy:"Nusxalash", copied:"Nusxalandi", empty:"Bu qidiruvga mos gap topilmadi. Boshqa so‘z bilan qidiring.", noSaved:"Saqlangan gaplaringiz shu yerda ko‘rinadi.", loadError:"Gaplar jamlanmasi yuklanmadi. Internetga ulaning va qayta urinib ko‘ring.", retry:"Qayta urinish", storageError:"Saqlash imkoni bo‘lmadi. Telefon sozlamalarini tekshiring." },
+        ru: {title:"Готовые фразы", search:"Поиск по китайскому, пиньиню или переводу", all:"Все фразы", saved:"Сохранённые", count:"{shown} из {total} фраз", save:"Сохранить", savedOne:"Сохранено", removed:"Удалено из сохранённых", copy:"Копировать", copied:"Скопировано", empty:"По этому запросу ничего не найдено. Попробуйте другие слова.", noSaved:"Сохранённые фразы появятся здесь.", loadError:"Не удалось загрузить фразы. Подключитесь к интернету и попробуйте ещё раз.", retry:"Повторить", storageError:"Не удалось сохранить. Проверьте настройки телефона." },
+        tj: {title:"Ибораҳои омода", search:"Ҷустуҷӯ бо чинӣ, пинйин ё тарҷума", all:"Ҳама", saved:"Нигоҳдоштаҳо", count:"{shown} аз {total} ҷумла", save:"Нигоҳ доштан", savedOne:"Нигоҳ дошта шуд", removed:"Аз нигоҳдоштаҳо бардошта шуд", copy:"Нусха бардоштан", copied:"Нусха бардошта шуд", empty:"Барои ин ҷустуҷӯ ҷумла ёфт нашуд. Калимаи дигарро ҷӯед.", noSaved:"Ибораҳои нигоҳдоштаатон дар ин ҷо намоиш мешаванд.", loadError:"Ибораҳо бор нашуданд. Ба интернет пайваст шуда, боз кӯшиш кунед.", retry:"Аз нав кӯшиш кардан", storageError:"Захира карда нашуд. Танзимоти телефонро санҷед." }
       };
       var text = UI[LANGUAGE];
       var theme = new URLSearchParams(location.search).get("theme");
@@ -111,9 +99,6 @@
       document.documentElement.lang = LANGUAGE;
 
       var elements = {
-        title: document.getElementById("title"),
-        intro: document.getElementById("intro"),
-        eyebrow: document.getElementById("eyebrow"),
         query: document.getElementById("query"),
         filters: document.getElementById("filters"),
         count: document.getElementById("count"),
@@ -127,9 +112,9 @@
       var savedIds = readSavedIds();
       var toastTimer = 0;
 
-      elements.title.textContent = text.title;
-      elements.intro.textContent = text.intro;
-      elements.eyebrow.textContent = text.eyebrow;
+      // Keep the page named for assistive technologies without a redundant visible hero.
+      document.title = text.title + " · HSK AI";
+      document.querySelector(".page").setAttribute("aria-label", text.title);
       elements.query.placeholder = text.search;
       elements.query.setAttribute("aria-label", text.search);
       elements.filters.setAttribute("aria-label", text.all);
