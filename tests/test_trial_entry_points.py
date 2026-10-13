@@ -86,7 +86,8 @@ class TrialEntryPointTests(unittest.TestCase):
 
     def test_the_profile_never_draws_two_subscription_cards(self):
         body = COURSE.split("function renderProfile()")[1][:4000]
-        self.assertEqual(1, body.count("proProfileCard()"))
+        self.assertEqual(1, body.count('<div id="hsk-profile-promo-root"></div>'))
+        self.assertNotIn("proProfileCard()", body)
         self.assertNotIn('<div class="pro"', body)
 
     def test_a_learner_who_used_the_trial_is_offered_only_the_purchase(self):
@@ -129,7 +130,8 @@ class AndroidOffersTheSameTrialTests(unittest.TestCase):
         qaytadi), va shu bilan birga trialga YO'L uzilib qolmasin.
         """
         self.assertNotIn("TrialCard(", ANDROID_PROFILE)
-        self.assertNotIn("onStartTrial", ANDROID_PROFILE)
+        self.assertIn("ProfilePromoCarousel(", ANDROID_PROFILE)
+        self.assertIn("onStartTrial = onStartTrial", ANDROID_PROFILE)
 
     def test_the_trial_is_still_reachable_from_the_limit_gate(self):
         # Karta ketdi, lekin `startTrial` o'z joyida va `LimitGate` ga
