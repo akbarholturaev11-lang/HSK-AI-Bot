@@ -104,15 +104,14 @@ class VoiceViewModelTest {
                 override suspend fun connect(sessionId: String): LiveVoiceConnection {
                     assertEquals("owned-session", sessionId)
                     return connect(++connections)
-                    // Dispose the ViewModel without reset(): reset() starts a fresh
-        // loadStatus() request that can outlive Dispatchers.resetMain().
-        // Clearing the owner cancels viewModelScope as the UI does on exit.
-        private val owner = ViewModelStore().apply { put("voice-test", vm) }
-        fun dispose() { owner.clear() }
-    }
+                }
             },
             liveVoiceAudioEngine = audio, liveIoDispatcher = dispatcher,
         )
+        // The reset() API starts a fresh status request, so it is not suitable
+        // for test teardown. Clearing the owning store cancels viewModelScope.
+        private val owner = ViewModelStore().apply { put("voice-test", vm) }
+        fun dispose() { owner.clear() }
     }
 
     @Test fun deliberateCloseAndLateEventsProduceOnlyOneReconnect() = runTest(dispatcher) {
