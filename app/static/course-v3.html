@@ -239,6 +239,13 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .hsk30-promo-action svg{width:20px;height:20px;flex-shrink:0}
 .hsk30-promo-stay{width:100%;min-height:48px;padding:12px;border:0;border-radius:12px;background:transparent;color:var(--ink2);font-size:14px;line-height:1.4;font-weight:600;display:flex;align-items:center;justify-content:center;text-align:center}
 .hsk30-promo-action:focus-visible,.hsk30-promo-stay:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+/* Dedicated course-switch loader: stay visible until the new course map renders. */
+#sheet.hsk30-switch-preparing .si{max-width:380px;text-align:center;padding:28px 20px 32px}
+#sheet.hsk30-switch-preparing .sx{display:none}
+.hsk30-switch-panda{height:145px;width:140px;max-width:40vw;margin:0 auto 14px;display:grid;place-items:center;overflow:hidden}
+.hsk30-switch-panda .hsk-character{height:100%;width:100%}
+.hsk30-switch-title{font-size:20px;line-height:1.3;font-weight:750;color:var(--ink)}
+.hsk30-switch-caption{margin:7px auto 0;font-size:14px;line-height:1.5;color:var(--ink2)}
 .grip{width:40px;height:4px;border-radius:3px;background:var(--line);margin:8px auto 14px}
 .sx{position:absolute;right:14px;top:14px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:none;border:none;color:var(--ink2);font-size:22px}
 .shead{text-align:center;margin-bottom:14px}
@@ -1511,6 +1518,30 @@ function showHsk30AccessGate(){
     App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.tryAgain)+'</div></div><button class="sec" style="width:100%" onclick="showHsk30AccessGate()">'+esc(t.tryAgain)+'</button>');
   });
 }
+var COURSE_TRACK_SWITCH_PREPARING=false;
+function showCourseTrackSwitchPreparing(target){
+  var copy={
+    uz:{title:"Kurs ochilmoqda…",subtitle:"Panda kursni tayyorlayapti"},
+    ru:{title:"Открываем курс…",subtitle:"Панда готовит ваш курс"},
+    tj:{title:"Курс кушода мешавад…",subtitle:"Панда курси шуморо омода мекунад"}
+  }[LANG]||{};
+  var panda=window.HSKCharacters&&typeof window.HSKCharacters.render==="function"
+    ?window.HSKCharacters.render("panda","loading")
+    :'<span aria-hidden="true" style="font-size:80px">🐼</span>';
+  COURSE_TRACK_SWITCH_PREPARING=true;
+  openHsk30BookSheet('<div role="status" aria-live="polite"><div class="hsk30-switch-panda" aria-hidden="true">'+panda+'</div>'
+    +'<div class="hsk30-switch-title">'+esc(copy.title)+'</div><p class="hsk30-switch-caption">'+esc(copy.subtitle)+'</p></div>',copy.title);
+  $("#sheet").classList.add("hsk30-switch-preparing");
+}
+function hideCourseTrackSwitchPreparing(){
+  if(!COURSE_TRACK_SWITCH_PREPARING)return;
+  COURSE_TRACK_SWITCH_PREPARING=false;
+  var sheet=$("#sheet");
+  if(sheet.classList.contains("hsk30-switch-preparing")){
+    sheet.classList.remove("hsk30-switch-preparing");
+    App.closeSheet();
+  }
+}
 function switchCourseTrack(target,requestedLevel){
   target=target==="hsk30"?"hsk30":"hsk20";
   requestedLevel=requestedLevel?normalizeLevel(requestedLevel):"";
@@ -1519,17 +1550,21 @@ function switchCourseTrack(target,requestedLevel){
   courseTrackStatus(true).then(function(status){
     var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
     if(target==="hsk30"&&(!access||!access.allowed)){renderHsk30AccessGate(status);return null}
-    App.openSheet('<div class="shead"><div class="tr">'+esc(t.switching)+'</div></div>');
+    if(target==="hsk30")showCourseTrackSwitchPreparing(target);
+    else App.openSheet('<div class="shead"><div class="tr">'+esc(t.switching)+'</div></div>');
     var switchPayload={target_track:target};
     if(requestedLevel)switchPayload.level=requestedLevel;
     return _apiPost("/api/v3/course-tracks/switch",switchPayload).then(function(r){
       return r.json().then(function(d){if(!r.ok||!d.ok)throw new Error(d.error||"course_track_failed");return d});
     }).then(function(d){
-      COURSE_TRACK_STATE=d;App.closeSheet();
+      COURSE_TRACK_STATE=d;
       var lv=normalizeLevel(d.active_level||(d.tracks&&d.tracks[target]&&d.tracks[target].level)||(target==="hsk30"?"nhsk1":"hsk1"));
+      // Keep the panda loader up through the map fetch and render, not just the POST.
+      if(target!=="hsk30")App.closeSheet();
       loadLevel(lv);
     });
   }).catch(function(e){
+    hideCourseTrackSwitchPreparing();
     var error=String(e&&e.message||"");
     if(target==="hsk30"&&/^hsk30_(unlock_required|payment_pending|disabled)/.test(error)){
       courseTrackStatus(true).then(renderHsk30AccessGate).catch(function(){openCourseTrackPicker()});
@@ -4998,11 +5033,18 @@ function _retryCourseMap(lv,tries){return new Promise(function(res){setTimeout(r
 function loadLevel(lv){
   clearDeferredCourseUnlock();
   lv=setSelectedLevel(lv);
-  if(!INIT_DATA){showAuthGate();return;}
-  loadCourseMap(lv).then(function(res){
+  if(!INIT_DATA){hideCourseTrackSwitchPreparing();showAuthGate();return;}
+  return loadCourseMap(lv).then(function(res){
+    // On failure dismiss the loader before opening the error/paywall sheet.
+    if(!res||!res.data)hideCourseTrackSwitchPreparing();
     if(showCourseMapFailure(res))return;
     var d=res.data;
-    hideAuthGate();MAP=rememberLimitText(d);adoptServerLang(d);adoptBotUsername(d);setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");prefetchNearbyLessons();
+    hideAuthGate();MAP=rememberLimitText(d);adoptServerLang(d);adoptBotUsername(d);setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");
+    hideCourseTrackSwitchPreparing();
+    prefetchNearbyLessons();
+  }).catch(function(){
+    hideCourseTrackSwitchPreparing();
+    showCourseLoadError();
   });
 }
 function applyLessonDone(cur,d){
