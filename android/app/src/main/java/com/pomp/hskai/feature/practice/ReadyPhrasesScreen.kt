@@ -166,28 +166,15 @@ fun ReadyPhrasesScreen(
             .navigationBarsPadding()
             .padding(horizontal = 16.dp),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
+        // A compact back control is enough here; search is the primary content.
+        IconButton(
+            onClick = onBack,
+            modifier = Modifier.padding(top = 4.dp, bottom = 6.dp).size(44.dp),
         ) {
-            IconButton(onClick = onBack, modifier = Modifier.size(44.dp)) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.ready_phrases_back))
-            }
-            Column(Modifier.weight(1f)) {
-                Text(
-                    stringResource(R.string.ready_phrases_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = PompColors.Ink,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    stringResource(R.string.ready_phrases_intro),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = PompColors.InkSecondary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
+            Icon(
+                Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.ready_phrases_back),
+            )
         }
         OutlinedTextField(
             value = query,
