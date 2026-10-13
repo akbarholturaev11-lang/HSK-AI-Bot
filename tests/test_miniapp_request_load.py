@@ -109,6 +109,14 @@ class MiniAppRequestLoadTests(unittest.TestCase):
         body = DESKTOP[start:DESKTOP.index("\n  function ", start + 1)]
         self.assertIn('document.getElementById("s-profile")', body)
         self.assertIn('!screen.classList.contains("on")', body)
+        visible = DESKTOP.split("function noteProfileAppsVisible()", 1)[1].split(
+            "\\n  function ", 1
+        )[0]
+        self.assertIn('!screen.classList.contains("on")', visible)
+        self.assertIn("document.hidden", visible)
+        self.assertIn('card.classList.contains("hp-promo-apps")', visible)
+        self.assertIn('trackEntrySeen("profile"', visible)
+
 
 
 if __name__ == "__main__":
