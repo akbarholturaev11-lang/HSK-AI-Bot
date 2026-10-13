@@ -81,6 +81,32 @@ class Hsk30SwitchUiContractTests(unittest.TestCase):
         self.assertIn("savedLevelHsk30", self.android)
         self.assertIn("onOpenCourseChoice()", self.android)
 
+    def test_course_picker_level_buttons_fit_one_row_and_use_hsk_labels(self):
+        # Legacy HSK 1–4 and new HSK 1–3 must never wrap into a second row.
+        self.assertIn(
+            ".course-choice-levels{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))",
+            self.mini,
+        )
+        self.assertIn(
+            ".course-choice-levels.three{grid-template-columns:repeat(3,minmax(0,1fr))}",
+            self.mini,
+        )
+        picker = self.mini.split("function renderCoursePicker(){", 1)[1].split(
+            "function coursePickerSelectTrack(", 1
+        )[0]
+        self.assertIn('var name="HSK "+levelBand(lv)', picker)
+        self.assertIn('COURSE_PICKER_TRACK==="hsk30"?" three":""', picker)
+        self.assertNotIn('?"N":"HSK "', picker)
+
+        native = self.android.split("private fun CourseChoiceSheet(", 1)[1].split(
+            "private fun courseLevelLabel(", 1
+        )[0]
+        self.assertIn('val label = "HSK " + level.removePrefix(', native)
+        self.assertIn("compact = true", native)
+        self.assertIn("Modifier.weight(1f)", native)
+        self.assertIn('fontSize = if (compact) 12.sp else 15.sp', native)
+        self.assertIn("if (selected && !compact)", native)
+
     def test_android_picker_has_no_new_badges_or_secondary_confirm(self):
         picker = self.android.split("private fun Hsk30LevelChoiceDialog(", 1)[1].split(
             "private fun Hsk30PromoDialog(", 1
