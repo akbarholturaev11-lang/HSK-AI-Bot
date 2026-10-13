@@ -108,6 +108,17 @@ async def _edge(text: str, rate: str, destination: Path) -> None:
             raise TTSUnavailable("edge_paused")
         try:
             import edge_tts
+            import edge_tts.communicate as edge_communicate
+            from edge_tts.constants import TRUSTED_CLIENT_TOKEN
+
+            # Microsoft started rejecting edge-tts 7.2.8's legacy Bing
+            # WebSocket endpoint with HTTP 403 in October 2026. Preserve
+            # the same neural voice, rate and authentication token; only
+            # use the working Edge Read Aloud synthesis endpoint.
+            edge_communicate.WSS_URL = (
+                "wss://api.msedgeservices.com/tts/cognitiveservices/websocket/v1"
+                f"?Ocp-Apim-Subscription-Key={TRUSTED_CLIENT_TOKEN}"
+            )
 
             await asyncio.wait_for(
                 edge_tts.Communicate(text, VOICE, rate=rate).save(str(destination)),
