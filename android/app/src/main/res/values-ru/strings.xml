@@ -545,4 +545,6 @@
     <string name="ready_phrases_load_failed">Не удалось прочитать подборку фраз.</string>
     <string name="ready_phrases_retry">Повторить</string>
     <string name="ready_phrases_back">Назад</string>
+    <string name="course_track_preparing_title">Открываем курс…</string>
+    <string name="course_track_preparing_subtitle">Панда готовит ваш курс</string>
 </resources>
