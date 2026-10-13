@@ -41,6 +41,38 @@ class OfflineAudioBundleTests(unittest.TestCase):
             {"你好", "大家好！", "妈妈", "你好吗？", "我很好。", "我们学习汉语。"},
         )
 
+    def test_generated_public_manifest_does_not_advertise_missing_mp3(self):
+        from unittest.mock import patch
+
+        with tempfile.TemporaryDirectory() as dirname:
+            out = Path(dirname) / "words"
+            index = Path(dirname) / "index.js"
+            out.mkdir()
+            long = "我们一起学习汉语。" * 15
+            words = ["你好", "大家好！", long]
+            for text in ("你好", long):
+                (out / offline.audio_name(text)).write_bytes(b"ID3" + bytes(256))
+            with patch.object(offline, "OUT", out), patch.object(offline, "INDEX", index):
+                with patch.object(offline, "corpus", return_value=words):
+                    self.assertEqual(offline.write_offline_index(), 0)
+            generated = index.read_text("utf-8")
+            self.assertIn("window.HSK_OFFLINE_AUDIO=new Set(", generated)
+            self.assertIn("window.HSK_OFFLINE_LONG_NAMES=", generated)
+            self.assertIn("你好", generated)
+            self.assertIn("sha1_", generated)
+            self.assertNotIn("大家好！", generated)
+
+    def test_miniapp_direct_audio_uses_original_server_only_as_fallback(self):
+        html = (offline.ROOT / "app/static/course-v3.html").read_text("utf-8")
+        backend = (offline.ROOT / "app/main.py").read_text("utf-8")
+        self.assertIn('src="/audio/words/index.js?', html)
+        self.assertIn('return "/audio/words/"+filename;', html)
+        self.assertIn('return ttsServerUrl(t);', html)
+        self.assertIn('if(src===server)throw err;', html)
+        self.assertIn('playSource(ttsServerUrl(t));return;', html)
+        self.assertIn('@app.get("/audio/words/{filename}")', backend)
+        self.assertIn('@app.get("/api/v3/tts")', backend)
+
     def test_fake_mp3_is_not_valid_and_valid_file_is_not_regenerated(self):
         with tempfile.TemporaryDirectory() as dirname:
             file = Path(dirname) / "audio.mp3"
