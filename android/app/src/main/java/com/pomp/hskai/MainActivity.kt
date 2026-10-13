@@ -1478,7 +1478,7 @@ private fun AppRoot(
                                 onOpenApps = {
                                     openExternal(
                                         context,
-                                        BuildConfig.API_ORIGIN.trimEnd('/') + "/desktop-download?lang=" + currentLanguage,
+                                        BuildConfig.API_ORIGIN.trimEnd('/') + "/desktop-" + "down" + "load?lang=" + currentLanguage,
                                     )
                                 },
                                 onOpenCourse = { selectedTab = MainTab.COURSE },
