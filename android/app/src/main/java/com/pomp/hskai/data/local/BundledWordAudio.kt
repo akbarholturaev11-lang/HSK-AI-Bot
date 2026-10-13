@@ -34,7 +34,15 @@ class BundledWordAudio(context: Context) {
         internal fun fileName(text: String): String? {
             val word = text.trim()
             if (word.none { it in '一'..'鿿' }) return null
-            return word.map { it.code }.joinToString("_") + ".mp3"
+            val name = word.map { it.code }.joinToString("_") + ".mp3"
+            if (name.toByteArray(Charsets.UTF_8).size <= 240) return name
+            // Long lesson sentences need a short, deterministic Android asset name.
+            // Keep this SHA-1 naming identical to the Python offline generator.
+            val digest = java.security.MessageDigest.getInstance("SHA-1")
+                .digest(word.toByteArray(Charsets.UTF_8))
+            return "sha1_" + digest.joinToString("") {
+                "%02x".format(it.toInt() and 0xff)
+            } + ".mp3"
         }
     }
 }

@@ -6,6 +6,8 @@
 <title>Talaffuz mashqi</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
+<script defer src="/audio/words/client.js?v=20261014-offline-1"></script>
 <style>
 :root{--ink:#211D17;--ink2:#665D50;--ink3:#A89E8E;--paper:#FDF9F0;--card:#FFFFFF;--line:#EAE0CC;--cin:#E04A40;--cin2:#B23530;--cinbg:#FDEBE7;--gold:#E9A916;--jade:#2FA06A;--jadebg:#E3F4EA;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -161,8 +163,43 @@ function clog(ev,msg,ex){try{var tg=window.Telegram&&window.Telegram.WebApp,c={u
 function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
 function stopSpeak(){window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_ttsAudio.onplaying=null;_ttsAudio.onerror=null;_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
 var _ttsCache={},_ttsPend={};
-function _ttsPrefetch(x){x=(x||"").trim();if(!x||x.length>240||_ttsCache[x]||_ttsPend[x]||!/[一-鿿]/.test(x))return;_ttsPend[x]=fetch("/api/v3/tts?text="+encodeURIComponent(x)).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){delete _ttsPend[x];if(b&&b.size)_ttsCache[x]=URL.createObjectURL(b)}).catch(function(){delete _ttsPend[x]})}
-function speak(t){if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;try{var a=new Audio(_ttsCache[t]||("/api/v3/tts?text="+encodeURIComponent(t)));if(!_ttsCache[t])_ttsPrefetch(t);_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}}
+function _ttsUrl(t){
+  return window.HSKOfflineAudio?window.HSKOfflineAudio.url(t):("/api/v3/tts?text="+encodeURIComponent(t));
+}
+function _ttsFetch(t){
+  return window.HSKOfflineAudio?window.HSKOfflineAudio.fetchAudio(t):
+    fetch("/api/v3/tts?text="+encodeURIComponent(t)).then(function(r){if(!r.ok)throw 0;return r.blob()});
+}
+function _ttsPrefetch(x){
+  x=(x||"").trim();
+  if(!x||x.length>240||_ttsCache[x]||_ttsPend[x]||!/[一-鿿]/.test(x))return;
+  _ttsPend[x]=_ttsFetch(x).then(function(b){
+    delete _ttsPend[x];if(b&&b.size)_ttsCache[x]=URL.createObjectURL(b);
+  }).catch(function(){delete _ttsPend[x]});
+}
+function speak(t){
+  t=String(t||"").trim();if(!t)return;
+  stopSpeak();
+  var tok=window._ttsTok,st=0,triedServer=false;
+  function onFailed(src,a){
+    if(tok!==window._ttsTok||st===2||_ttsAudio!==a)return;
+    if(!triedServer&&src.indexOf("/audio/words/")===0){
+      triedServer=true;playSource("/api/v3/tts?text="+encodeURIComponent(t));return;
+    }
+    st=2;_ttsFallback(t);
+  }
+  function playSource(src){
+    if(tok!==window._ttsTok)return;
+    try{
+      var a=new Audio(src);_ttsAudio=a;
+      a.onplaying=function(){if(tok!==window._ttsTok||st===2){try{a.pause()}catch(e){}return}st=1};
+      a.onerror=function(){if(st===0)onFailed(src,a)};
+      var p=a.play();if(p&&p.catch)p.catch(function(){if(st===0)onFailed(src,a)});
+    }catch(e){st=2;_ttsFallback(t)}
+  }
+  // Direct play keeps the iOS WebView gesture. No duplicate fetch on first tap.
+  playSource(_ttsCache[t]||_ttsUrl(t));
+}
 function haptic(ok){try{tg&&tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred(ok?"success":"error")}catch(e){}}
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
 function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}

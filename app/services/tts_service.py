@@ -50,6 +50,14 @@ def _cache_key(text: str, rate: str) -> str:
     return hashlib.sha1(f"{VOICE}|{rate}|{text}".encode("utf-8")).hexdigest()
 
 
+def _offline_audio_name(text: str) -> str:
+    """Match Android assets names, including long Chinese sentences."""
+    name = "_".join(str(ord(char)) for char in text) + ".mp3"
+    if len(name.encode("utf-8")) <= 240:
+        return name
+    return "sha1_" + hashlib.sha1(text.encode("utf-8")).hexdigest() + ".mp3"
+
+
 def _bundled_word_audio(text: str, rate: str) -> Path | None:
     """Reuse the Android APK's 1,247 existing Edge MP3s for the Mini App too.
 
@@ -57,12 +65,12 @@ def _bundled_word_audio(text: str, rate: str) -> Path | None:
     Using them directly avoids Edge websocket and Gemini generation latency,
     including for a phrase that is being heard for the first time.
     """
-    if rate != RATE or len(text) > 80:
+    if rate != RATE or len(text) > 240:
         return None
     audio_dir = Path(__file__).resolve().parents[2] / (
         "android/app/src/main/assets/audio/words"
     )
-    name = "_".join(str(ord(char)) for char in text) + ".mp3"
+    name = _offline_audio_name(text)
     path = audio_dir / name
     if path.is_file() and path.stat().st_size > 128:
         return path

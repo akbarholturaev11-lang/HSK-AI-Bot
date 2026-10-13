@@ -82,8 +82,10 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
                     await tts.synthesize_chinese_mp3(text)
 
     def test_nihao_fallback_mp3_contains_valid_cbr_audio_frames(self):
-        audio = tts._bundled_word_audio("你好", "-10%")
-        self.assertIsNotNone(audio)
+        # The pre-rendered Xiaoxiao asset now wins over this emergency
+        # recording. Validate the credited legacy fallback by its own file.
+        audio = Path(__file__).resolve().parents[1] / "app/static/audio/tts_fallback/nihao-cc-by-sa.mp3"
+        self.assertTrue(audio.is_file())
         data = audio.read_bytes()
         self.assertGreater(len(data), 16000)
         self.assertEqual(0, len(data) % 192)
@@ -137,7 +139,8 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_edge_403_falls_back_to_gemini_wav_and_caches_it(self):
         valid_wav = tts._wav_from_pcm(FAKE_PCM)
-        with patch.object(tts, "_edge", new=AsyncMock(side_effect=RuntimeError("403"))), \
+        with patch.object(tts, "_bundled_word_audio", return_value=None), \
+             patch.object(tts, "_edge", new=AsyncMock(side_effect=RuntimeError("403"))), \
              patch.object(tts, "_fallback", new=AsyncMock(return_value=valid_wav)) as gemini:
             first = await tts.synthesize_chinese_mp3("老师，再见！")
             second = await tts.synthesize_chinese_mp3("老师，再见！")
@@ -180,7 +183,8 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
             factory.assert_called_once()
 
     async def test_missing_two_providers_never_caches_an_error(self):
-        with patch.object(tts, "_edge", new=AsyncMock(side_effect=RuntimeError("403"))), \
+        with patch.object(tts, "_bundled_word_audio", return_value=None), \
+             patch.object(tts, "_edge", new=AsyncMock(side_effect=RuntimeError("403"))), \
              patch.object(tts, "_fallback", new=AsyncMock(
                  side_effect=tts.TTSUnavailable("gemini_no_key")
              )), \
@@ -226,7 +230,8 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
     async def test_old_mp3_cache_key_remains_usable_after_migration(self):
         old = Path(self.directory.name) / (tts._cache_key("谢谢你！", "-10%") + ".mp3")
         old.write_bytes(FAKE_MP3)
-        with patch.object(tts, "_edge", new=AsyncMock()) as edge, \
+        with patch.object(tts, "_bundled_word_audio", return_value=None), \
+             patch.object(tts, "_edge", new=AsyncMock()) as edge, \
              patch.object(tts, "_fallback", new=AsyncMock()) as gemini:
             self.assertEqual(old, await tts.synthesize_chinese_mp3("谢谢你！"))
             edge.assert_not_awaited()
@@ -299,7 +304,8 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
         cached = Path(self.directory.name) / (tts._cache_key(phrase, "-10%") + ".mp3")
         cached.write_bytes(FAKE_MP3)
         tts._gemini_retry_at = time.monotonic() + 500
-        with patch.object(tts, "_edge", new=AsyncMock()) as edge, \
+        with patch.object(tts, "_bundled_word_audio", return_value=None), \
+             patch.object(tts, "_edge", new=AsyncMock()) as edge, \
              patch.object(tts, "_fallback", new=AsyncMock()) as gemini:
             self.assertEqual(cached, await tts.synthesize_chinese_mp3(phrase))
             edge.assert_not_awaited()

@@ -41,6 +41,14 @@ class BundledWordAudioTest {
     }
 
     @Test
+    fun hsk30LessonPhraseIsInApkWithoutServer() {
+        // This used to trigger server TTS 502 when Microsoft Edge was blocked.
+        val mp3 = audio.find("大家好！")
+        assertNotNull("HSK 3.0 greeting must be pre-rendered", mp3)
+        assertTrue(mp3!!.size > 128)
+    }
+
+    @Test
     fun anythingElseIsNotBundled() {
         assertNull(audio.find("这不是词典里的句子"))
         assertNull(audio.find("hello"))

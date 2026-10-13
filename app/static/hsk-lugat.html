@@ -14,6 +14,8 @@
 })();
 </script>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
+<script defer src="/audio/words/client.js?v=20261014-offline-1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <style>
 :root{
@@ -1000,11 +1002,17 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   }
 
   var _ttsAudio = null, _ttsTok = 0, _ttsCache = {}, _ttsPend = {};
+  function _ttsUrl(x){
+    return window.HSKOfflineAudio?window.HSKOfflineAudio.url(x):('/api/v3/tts?text='+encodeURIComponent(x));
+  }
+  function _ttsFetch(x){
+    return window.HSKOfflineAudio?window.HSKOfflineAudio.fetchAudio(x):
+      fetch('/api/v3/tts?text='+encodeURIComponent(x)).then(function(r){if(!r.ok)throw 0;return r.blob()});
+  }
   function _ttsPrefetch(x){
     x = (x||'').trim();
     if(!x || x.length>240 || _ttsCache[x] || _ttsPend[x] || !/[一-鿿]/.test(x)) return;
-    _ttsPend[x] = fetch('/api/v3/tts?text=' + encodeURIComponent(x))
-      .then(function(r){ if(!r.ok) throw 0; return r.blob(); })
+    _ttsPend[x] = _ttsFetch(x)
       .then(function(b){ delete _ttsPend[x]; if(b && b.size) _ttsCache[x] = URL.createObjectURL(b); })
       .catch(function(){ delete _ttsPend[x]; });
   }
@@ -1019,20 +1027,29 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     }catch(e){}
   }
   function speak(textValue){
-    if(!textValue) return;
+    textValue=String(textValue||'').trim();if(!textValue)return;
     _ttsTok++;
-    try{ if(_ttsAudio){ _ttsAudio.onplaying=null; _ttsAudio.onerror=null; _ttsAudio.pause(); _ttsAudio = null; } }catch(e){}
-    try{ window.speechSynthesis.cancel(); }catch(e){}
-    var tok = _ttsTok, st = 0;
-    try{
-      var a = new Audio(_ttsCache[textValue] || ('/api/v3/tts?text=' + encodeURIComponent(textValue)));
-      if(!_ttsCache[textValue]) _ttsPrefetch(textValue);
-      _ttsAudio = a;
-      a.onplaying = function(){ if(tok!==_ttsTok){ try{a.pause();}catch(e){} return; } st=1; };
-      a.onerror = function(){ if(tok!==_ttsTok || st!==0) return; st=2; _ttsFallback(textValue); };
-      var p = a.play();
-      if(p && p.catch) p.catch(function(){});
-    }catch(e){ if(tok===_ttsTok && st===0){ st=2; _ttsFallback(textValue); } }
+    try{if(_ttsAudio){_ttsAudio.onplaying=null;_ttsAudio.onerror=null;_ttsAudio.pause();_ttsAudio=null}}catch(e){}
+    try{window.speechSynthesis.cancel()}catch(e){}
+    var tok=_ttsTok,st=0,triedServer=false;
+    function onFailed(src,a){
+      if(tok!==_ttsTok||st===2||_ttsAudio!==a)return;
+      if(!triedServer&&src.indexOf('/audio/words/')===0){
+        triedServer=true;playSource('/api/v3/tts?text='+encodeURIComponent(textValue));return;
+      }
+      st=2;_ttsFallback(textValue);
+    }
+    function playSource(src){
+      if(tok!==_ttsTok)return;
+      try{
+        var a=new Audio(src);_ttsAudio=a;
+        a.onplaying=function(){if(tok!==_ttsTok||st===2){try{a.pause()}catch(e){}return}st=1};
+        a.onerror=function(){if(st===0)onFailed(src,a)};
+        var p=a.play();if(p&&p.catch)p.catch(function(){if(st===0)onFailed(src,a)});
+      }catch(e){st=2;_ttsFallback(textValue)}
+    }
+    // The MP3 is cached by the browser; don't fetch it twice on first tap.
+    playSource(_ttsCache[textValue]||_ttsUrl(textValue));
   }
 
   var SEARCH_HISTORY_KEY = 'hsk_lugat_search_history_v1';

@@ -2218,6 +2218,40 @@ async def course_v3_tour_audio(lang: str, key: str):
     return FileResponse(path, media_type="audio/mpeg")
 
 
+# Public pre-rendered Mandarin MP3s. This is a static file read only:
+# no Edge/Gemini synthesis, no database work, no authentication round-trip.
+# Dynamic/new phrases still use the original /api/v3/tts endpoint.
+OFFLINE_WORD_AUDIO_DIR = (
+    Path(__file__).resolve().parents[1] / "android/app/src/main/assets/audio/words"
+)
+OFFLINE_WORD_INDEX = Path(__file__).resolve().parent / "static/audio/words-index.js"
+
+
+@app.get("/audio/words/{filename}")
+async def course_v3_offline_word_audio(filename: str):
+    import re
+
+    if filename == "client.js":
+        helper = Path(__file__).resolve().parent / "static/audio/words-client.js"
+        if not helper.is_file():
+            return JSONResponse(status_code=404, content={"error": "not_found"})
+        return FileResponse(helper, media_type="application/javascript", headers=STATIC_ASSET_HEADERS)
+    if filename == "index.js":
+        if not OFFLINE_WORD_INDEX.is_file():
+            return JSONResponse(status_code=404, content={"error": "not_found"})
+        return FileResponse(
+            OFFLINE_WORD_INDEX,
+            media_type="application/javascript",
+            headers=STATIC_ASSET_HEADERS,
+        )
+    if not re.fullmatch(r"(?:\d+(?:_\d+)*|sha1_[0-9a-f]{40})\.mp3", filename):
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    path = OFFLINE_WORD_AUDIO_DIR / filename
+    if not path.is_file() or path.stat().st_size < 128:
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    return FileResponse(path, media_type="audio/mpeg", headers=STATIC_ASSET_HEADERS)
+
+
 # --- Shared server-side Mandarin audio for Course V3 and Android -----------
 @app.get("/api/v3/tts")
 async def v3_tts(text: str, rate: str = "-10%"):
