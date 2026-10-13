@@ -990,7 +990,7 @@
       }
       $("summaryGrid").innerHTML = summary.map(i=>`
         <article class="stat ${i.tone||""}"><div class="lab">${esc(metricLabel(i.label))}</div>
-          <div><div class="val">${esc(i.value)}</div><div class="sub">${esc(i.note)}</div></div></article>`).join("");
+          <div><div class="val">${esc(localizeAdminCopy(i.value))}</div><div class="sub">${esc(i.note)}</div></div></article>`).join("");
       const c = ov.segments||{};
       $("segmentChips").innerHTML = Object.keys(segmentLabels).map(k=>`
         <button class="chip ${state.filter===k?"active":""}" data-seg="${k}"><span>${segmentLabels[k][0]} ${c[k]||0}</span></button>`).join("");
@@ -1037,7 +1037,7 @@
       return text.replace(/\uFFF4(\d+)\uFFF5/g,(_,index)=>saved[Number(index)]);
     }
 
-    function cardHtml(i){ return `<article class="stat ${i.tone||""}"><div class="lab">${esc(metricLabel(i.label))}</div><div><div class="val">${esc(i.value)}</div><div class="sub">${esc(localizeAdminCopy(i.note))}</div></div></article>`; }
+    function cardHtml(i){ return `<article class="stat ${i.tone||""}"><div class="lab">${esc(metricLabel(i.label))}</div><div><div class="val">${esc(localizeAdminCopy(i.value))}</div><div class="sub">${esc(localizeAdminCopy(i.note))}</div></div></article>`; }
 
     async function loadDesktopStats(period){
       period=["all_time","weekly","monthly"].includes(period)?period:"all_time";
@@ -1265,7 +1265,7 @@
       const rows = adoption.rows||[];
       $("featureAdoption").innerHTML = rows.length ? `<table class="tbl"><thead><tr>
           <th>Функция</th><th class="r">обунали</th><th class="r">бепул</th><th class="r">обунали %</th><th class="r">бепул %</th></tr></thead>
-        <tbody>${rows.map(r=>`<tr><td><b>${esc(r.label)}</b></td><td class="r">${esc(r.paid)}</td><td class="r">${esc(r.free)}</td><td class="r">${esc(r.paid_rate)}%</td><td class="r">${esc(r.free_rate)}%</td></tr>`).join("")}</tbody></table>
+        <tbody>${rows.map(r=>`<tr><td><b>${esc(metricLabel(r.label))}</b></td><td class="r">${esc(r.paid)}</td><td class="r">${esc(r.free)}</td><td class="r">${esc(r.paid_rate)}%</td><td class="r">${esc(r.free_rate)}%</td></tr>`).join("")}</tbody></table>
         <div class="explain">${esc(localizeAdminCopy(adoption.explain||""))} Ҳисоблаш базаси: обунали ${esc(adoption.paid_denominator||0)}, бепул ${esc(adoption.free_denominator||0)}.</div>`
       : "<p class='empty'>Функциялардан фойдаланиш маълумот йўқ</p>";
     }
@@ -1399,13 +1399,13 @@
         const sp = fp.sources_paid||[];
         $("sourcesPaid").innerHTML = sp.length ? `<table class="tbl"><thead><tr>
             <th>Манба</th><th class="r">Пуллик</th><th class="r">Тўлов</th><th class="r">Даромад</th></tr></thead>
-          <tbody>${sp.map(x=>`<tr><td><b>${esc(x.label)}</b></td><td class="r">${x.paying_users}</td><td class="r">${x.payments}</td><td class="r"><b>${esc(x.revenue_text)}</b></td></tr>`).join("")}</tbody></table>`
+          <tbody>${sp.map(x=>`<tr><td><b>${esc(metricLabel(x.label))}</b></td><td class="r">${x.paying_users}</td><td class="r">${x.payments}</td><td class="r"><b>${esc(x.revenue_text)}</b></td></tr>`).join("")}</tbody></table>`
           : "<p class='empty'>Бу даврда манбадан келган тўлов йўқ.</p>";
-        $("sourceAttributionExplain").textContent=fp.source_attribution_explain||"";
+        $("sourceAttributionExplain").textContent=localizeAdminCopy(fp.source_attribution_explain||"");
       }
       // overview report cards + bars + text
       $("overviewCards").innerHTML = ((orep&&orep.cards)||(state.overview.summary)||[]).map(cardHtml).join("");
-      $("reportText").textContent = (orep&&orep.text) || state.overview.report_text || "";
+      $("reportText").textContent = localizeAdminCopy((orep&&orep.text) || state.overview.report_text || "");
       const course = (orep&&orep.course)||state.overview.course||{};
       const values=[Number(course.opened_users||0),Number(course.lesson_users||0),Number(course.completed_users||0)];
       const maxValue=Math.max.apply(null,values.concat([1]));
@@ -1423,7 +1423,7 @@
         const d = await apiPost("/api/admin-miniapp/sub-entry-stats",{});
         if(!d.rows||!d.rows.length){ $("subEntryStats").innerHTML="<p class='empty'>Маълумот йўқ</p>"; return; }
         $("subEntryStats").innerHTML = `<table class="tbl"><thead><tr><th>Манба</th><th class="r">Ҳафта<br><small>кириш/одам</small></th><th class="r">Жами<br><small>кириш/одам</small></th></tr></thead>
-          <tbody>${d.rows.map(r=>`<tr><td><b>${esc(r.label)}</b></td><td class="r"><b>${r.total_week}</b>/${r.unique_week}</td><td class="r">${r.total_all}/${r.unique_all}</td></tr>`).join("")}</tbody></table>`;
+          <tbody>${d.rows.map(r=>`<tr><td><b>${esc(metricLabel(r.label))}</b></td><td class="r"><b>${r.total_week}</b>/${r.unique_week}</td><td class="r">${r.total_all}/${r.unique_all}</td></tr>`).join("")}</tbody></table>`;
       }catch(e){ $("subEntryStats").innerHTML="<p class='empty'>Хатолик</p>"; }
     }
 
