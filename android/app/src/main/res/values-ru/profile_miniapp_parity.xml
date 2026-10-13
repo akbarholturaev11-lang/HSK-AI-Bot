@@ -53,4 +53,7 @@
     <string name="profile_promo_hsk30_confirm_body">После подтверждения восстановится сохранённый уровень. При первом переходе выберите уровень.</string>
     <string name="profile_promo_pro_body">AI Voice, все уроки HSK и безлимитная практика</string>
     <string name="profile_promo_start_trial">Попробовать 7 дней бесплатно</string>
+    <string name="profile_promo_trial_days">Осталось дней: %1$d</string>
+    <string name="profile_promo_trial_hours">Осталось часов: %1$d</string>
+    <string name="profile_promo_trial_soon">Осталось меньше часа</string>
 </resources>
