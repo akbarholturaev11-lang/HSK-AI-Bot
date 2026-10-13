@@ -911,7 +911,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('openHsk30PromoLevelPicker()', carousel)
         self.assertIn('if(currentCourseTrack()==="hsk30")', carousel)
         self.assertIn('courseTrackStatus(true)', carousel)
-        self.assertIn('role="button"', carousel)
+        self.assertIn('root.setAttribute("role","button")', carousel)
         self.assertIn('min-height:170px', css)
         self.assertIn('"profile-carousel.js": "application/javascript"', main)
         self.assertIn('"profile-carousel.css": "text/css"', main)
