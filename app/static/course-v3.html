@@ -7,6 +7,8 @@
 <title>HSK AI</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<!-- Fast static Mandarin MP3 index; cached across Mini App visits. -->
+<script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <link rel="stylesheet" href="/assets/characters/hsk-character-pack.css?v=20260921c">
 <link rel="stylesheet" href="/assets/characters/hsk-character-motion.css?v=20260921c">
 <link rel="stylesheet" href="/assets/characters/hsk-lesson-presentation.css?v=20260921c">
@@ -1948,25 +1950,57 @@ function stopSpeak(){window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_tts
    qayta o'ynaydi; keyingi kartalar audiosi oldindan yuklab qo'yiladi, shunda
    ovoz tugmasi bosilganda kechikish bo'lmaydi. */
 var _ttsCache={},_ttsPending={};
-function ttsUrl(t){return "/api/v3/tts?text="+encodeURIComponent(t)}
+function ttsServerUrl(t){return "/api/v3/tts?text="+encodeURIComponent(t)}
+/* Known recordings load as public, cacheable MP3. Unknown/new sentences still
+   use the original server-side Edge/Gemini TTS; nothing is removed. */
+function ttsUrl(t){
+  t=String(t||"").trim();
+  var words=window.HSK_OFFLINE_AUDIO;
+  if(words&&words.has(t)){
+    var filename=Array.from(t).map(function(c){return c.charCodeAt(0)}).join("_")+".mp3";
+    if(filename.length>240)filename=(window.HSK_OFFLINE_LONG_NAMES||{})[t]||"";
+    if(filename)return "/audio/words/"+filename;
+  }
+  return ttsServerUrl(t);
+}
+function ttsFetch(t){
+  var src=ttsUrl(t),server=ttsServerUrl(t);
+  return fetch(src).then(function(r){if(!r.ok)throw new Error("tts_http_"+r.status);return r.blob()}).catch(function(err){
+    if(src===server)throw err; /* No repeated requests when the file is unknown. */
+    return fetch(server).then(function(r){if(!r.ok)throw new Error("tts_http_"+r.status);return r.blob()});
+  });
+}
 function prefetchTTS(t){
   t=(t||"").trim();
   if(!t||t.length>240||!/[一-鿿]/.test(t))return Promise.resolve(null);
   if(_ttsCache[t])return Promise.resolve(_ttsCache[t]);
   if(_ttsPending[t])return _ttsPending[t];
-  _ttsPending[t]=fetch(ttsUrl(t)).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){
+  _ttsPending[t]=ttsFetch(t).then(function(b){
     delete _ttsPending[t];if(b&&b.size){_ttsCache[t]=URL.createObjectURL(b);return _ttsCache[t]}return null;
   }).catch(function(){delete _ttsPending[t];return null});
   return _ttsPending[t];
 }
 function speak(t){
-  if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;
+  t=String(t||"").trim();
+  if(!t)return;stopSpeak();var tok=window._ttsTok,st=0,triedServer=false;
+  function failedSource(src,a){
+    if(tok!==window._ttsTok||st===2||(a&&_ttsAudio!==a))return;
+    if(!triedServer&&src.indexOf("/audio/words/")===0){
+      triedServer=true;playSource(ttsServerUrl(t));return;
+    }
+    st=2;_ttsFallback(t);
+  }
   function playSource(src){
     if(tok!==window._ttsTok)return;
-    try{var a=new Audio(src);_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok||st===2){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}
+    try{
+      var a=new Audio(src);_ttsAudio=a;
+      a.onplaying=function(){if(tok!==window._ttsTok||st===2){try{a.pause()}catch(e){}return}st=1};
+      a.onerror=function(){if(st===0)failedSource(src,a)};
+      var p=a.play();if(p&&p.catch)p.catch(function(){if(st===0)failedSource(src,a)});
+    }catch(e){failedSource(src,_ttsAudio)}
   }
   if(_ttsCache[t]){playSource(_ttsCache[t]);return}
-  if(_ttsPending[t]){ /* iOS requires play() inside the speaker-button gesture: do not await prefetch. */ playSource(ttsUrl(t));return}
+  if(_ttsPending[t]){ /* iOS needs play() inside the original click gesture. */ playSource(ttsUrl(t));return}
   playSource(ttsUrl(t));
 }
 /* Kartadan o'ynash mumkin bo'lgan xitoycha matnlarni yig'ish (prefetch uchun) */
@@ -7600,16 +7634,31 @@ function clog(ev,msg,ex){try{var tgw=window.Telegram&&window.Telegram.WebApp,c={
 function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=slowOn()?.68:.85;u.onstart=function(){vspeak(true)};u.onend=function(){vspeak(false)};u.onerror=function(){vspeak(false)};window.speechSynthesis.speak(u)}catch(e){}}
 function vspeak(on){try{var r=$("root");if(r)r.classList.toggle("vspeak",!!on)}catch(e){}}
 function stopSpeak(){vspeak(false);window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_ttsAudio.onplaying=null;_ttsAudio.onerror=null;_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
-function _ttsPrefetch(x){x=(x||"").trim();if(!x||x.length>240||!/[一-鿿]/.test(x))return Promise.resolve(null);if(_ttsCache[x])return Promise.resolve(_ttsCache[x]);if(_ttsPend[x])return _ttsPend[x];_ttsPend[x]=fetch("/api/v3/tts?text="+encodeURIComponent(x)).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){delete _ttsPend[x];if(b&&b.size){_ttsCache[x]=URL.createObjectURL(b);return _ttsCache[x]}return null}).catch(function(){delete _ttsPend[x];return null});return _ttsPend[x]}
+function _ttsPrefetch(x){x=(x||"").trim();if(!x||x.length>240||!/[一-鿿]/.test(x))return Promise.resolve(null);if(_ttsCache[x])return Promise.resolve(_ttsCache[x]);if(_ttsPend[x])return _ttsPend[x];_ttsPend[x]=ttsFetch(x).then(function(b){delete _ttsPend[x];if(b&&b.size){_ttsCache[x]=URL.createObjectURL(b);return _ttsCache[x]}return null}).catch(function(){delete _ttsPend[x];return null});return _ttsPend[x]}
 function speak(t){
-  if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;
+  t=String(t||"").trim();
+  if(!t)return;stopSpeak();var tok=window._ttsTok,st=0,triedServer=false;
+  function failedSource(src,a){
+    if(tok!==window._ttsTok||st===2||(a&&_ttsAudio!==a))return;
+    if(!triedServer&&src.indexOf("/audio/words/")===0){
+      triedServer=true;playSource(ttsServerUrl(t));return;
+    }
+    st=2;_ttsFallback(t);
+  }
   function playSource(src){
     if(tok!==window._ttsTok)return;
-    try{var a=new Audio(src);try{a.preservesPitch=true;a.mozPreservesPitch=true;a.webkitPreservesPitch=true}catch(e){}a.playbackRate=slowOn()?.75:1;_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1;vspeak(true)};a.onended=function(){if(tok===window._ttsTok)vspeak(false)};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}
+    try{
+      var a=new Audio(src);try{a.preservesPitch=true;a.mozPreservesPitch=true;a.webkitPreservesPitch=true}catch(e){}
+      a.playbackRate=slowOn()?.75:1;_ttsAudio=a;
+      a.onplaying=function(){if(tok!==window._ttsTok||st===2){try{a.pause()}catch(e){}return}st=1;vspeak(true)};
+      a.onended=function(){if(tok===window._ttsTok)vspeak(false)};
+      a.onerror=function(){if(st===0)failedSource(src,a)};
+      var p=a.play();if(p&&p.catch)p.catch(function(){if(st===0)failedSource(src,a)});
+    }catch(e){failedSource(src,_ttsAudio)}
   }
   if(_ttsCache[t]){playSource(_ttsCache[t]);return}
-  if(_ttsPend[t]){_ttsPend[t].then(function(){if(tok===window._ttsTok)playSource(_ttsCache[t]||("/api/v3/tts?text="+encodeURIComponent(t)))});return}
-  playSource("/api/v3/tts?text="+encodeURIComponent(t));
+  if(_ttsPend[t]){ /* Preserve iOS audio gesture while a prefetch is pending. */ playSource(ttsUrl(t));return}
+  playSource(ttsUrl(t));
 }
 var ac;function ring(s){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;s.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=f;o.connect(g);g.connect(ac.destination);var st=t+k*0.08;g.gain.setValueAtTime(0.0001,st);g.gain.exponentialRampToValueAtTime(0.1,st+0.02);g.gain.exponentialRampToValueAtTime(0.0001,st+0.15);o.start(st);o.stop(st+0.17)})}catch(e){}}
 
