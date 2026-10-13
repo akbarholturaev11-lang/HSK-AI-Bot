@@ -39,6 +39,10 @@
     root.innerHTML=html;
     root.className="hp-promo hp-promo-"+s.tone;
     root.setAttribute("aria-label",s.title+". "+(s.body||""));
+    if(s.kind==="apps"&&live()&&window.PompDesktopDownload&&
+        typeof PompDesktopDownload.noteProfileAppsVisible==="function"){
+      PompDesktopDownload.noteProfileAppsVisible();
+    }
     var act=root.querySelector(".hp-promo-action");
     act.addEventListener("click",function(event){event.stopPropagation();doAction(true)});
     root.querySelectorAll("[data-promo-dot]").forEach(function(dot){
