@@ -133,6 +133,9 @@ data class CourseHsk30NewBadge(
 data class CourseHsk30(
     val activeTrack: String,
     val activeLevel: String,
+    val savedLevelHsk20: String = "hsk1",
+    val savedLevelHsk30: String = "nhsk1",
+    val hasSavedHsk30: Boolean = false,
     val access: CourseHsk30Access,
     val liveLevels: List<String>,
     val paymentEnabled: Boolean,

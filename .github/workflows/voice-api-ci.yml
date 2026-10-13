@@ -1,0 +1,39 @@
+name: HSK 3.0 Voice API regression
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/api/desktop_voice.py"
+      - "app/api/android_features.py"
+      - "tests/test_android_voice_hsk30_contract.py"
+      - ".github/workflows/voice-api-ci.yml"
+  pull_request:
+    paths:
+      - "app/api/desktop_voice.py"
+      - "app/api/android_features.py"
+      - "tests/test_android_voice_hsk30_contract.py"
+      - ".github/workflows/voice-api-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  voice-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt aiosqlite
+      - name: Compile affected sources
+        run: python -m py_compile app/api/desktop_voice.py app/api/android_features.py tests/test_android_voice_hsk30_contract.py
+      - name: Exercise authenticated Android HSK 2.0 and 3.0 Voice routes
+        run: python -m unittest -v tests.test_android_voice_hsk30_contract

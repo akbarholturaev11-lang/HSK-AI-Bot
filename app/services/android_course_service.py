@@ -98,6 +98,9 @@ class AndroidCourseService(DesktopCourseService):
             "active_level": track_status.get("active_level") or str(
                 getattr(context.user, "level", "") or ""
             ),
+            "saved_level_hsk20": ((track_status.get("tracks") or {}).get("hsk20") or {}).get("level") or "hsk1",
+            "saved_level_hsk30": hsk30_track.get("level") or "nhsk1",
+            "has_saved_hsk30": bool(hsk30_track.get("has_state")),
             "access": hsk30_track.get("access") or {},
             "live_levels": list(hsk30_track.get("live_levels") or []),
             "new_badge": hsk30_track.get("new_badge") or {},

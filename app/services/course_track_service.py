@@ -28,6 +28,7 @@ class CourseTrackAccess:
     feature_enabled: bool
     paid_access: bool
     permanently_unlocked: bool
+    payment_enabled: bool = True
     payment_pending: bool = False
     provisional_access: bool = False
     payment_rejected: bool = False
@@ -35,7 +36,7 @@ class CourseTrackAccess:
     @property
     def allowed(self) -> bool:
         return self.feature_enabled and (
-            self.paid_access or self.permanently_unlocked or self.provisional_access
+            not self.payment_enabled or self.paid_access or self.permanently_unlocked or self.provisional_access
         )
 
     @property
@@ -46,6 +47,8 @@ class CourseTrackAccess:
             return "permanent_unlock"
         if self.paid_access:
             return "paid_subscription"
+        if not self.payment_enabled:
+            return "hsk30_free_access"
         if self.payment_pending:
             return "payment_pending"
         if self.payment_rejected:
@@ -57,6 +60,7 @@ class CourseTrackAccess:
             "feature_enabled": self.feature_enabled,
             "paid_access": self.paid_access,
             "permanently_unlocked": self.permanently_unlocked,
+            "payment_enabled": self.payment_enabled,
             "payment_pending": self.payment_pending,
             "provisional_access": self.provisional_access,
             "payment_rejected": self.payment_rejected,
@@ -119,11 +123,13 @@ class CourseTrackService:
         row = await self._state(int(user.id), TRACK_HSK30)
         permanently_unlocked = bool(row and row.unlocked_at)
         paid = UserAccessStateService.is_paid(user)
-        if not enabled or permanently_unlocked or paid:
+        payment_enabled = await self.hsk30_unlock.payment_enabled()
+        if not enabled or not payment_enabled or permanently_unlocked or paid:
             return CourseTrackAccess(
                 feature_enabled=enabled,
                 paid_access=paid,
                 permanently_unlocked=permanently_unlocked,
+                payment_enabled=payment_enabled,
             )
 
         review = await self.hsk30_unlock.review_state(user)
@@ -132,6 +138,7 @@ class CourseTrackService:
             feature_enabled=enabled,
             paid_access=paid,
             permanently_unlocked=permanently_unlocked,
+            payment_enabled=payment_enabled,
             payment_pending=pending,
             provisional_access=bool(review["provisional_access"]),
             payment_rejected=bool(review["payment_rejected"]),
@@ -158,13 +165,21 @@ class CourseTrackService:
                 return {
                     "track": track,
                     "level": row.level,
+                    "has_state": True,
                     "completed_lessons_count": int(row.completed_lessons_count or 0),
                     "unlocked_at": row.unlocked_at.isoformat() if row.unlocked_at else None,
                     "unlock_payment_id": row.unlock_payment_id,
                 }
             return {
                 "track": track,
-                "level": self.default_level(track),
+                "has_state": False,
+                # Legacy accounts have no per-track row until the first switch.
+                # Their active level is still real, and must be preselected.
+                "level": (
+                    str(getattr(user, "level", "") or "")
+                    if track == active_track
+                    else self.default_level(track)
+                ),
                 "completed_lessons_count": 0,
                 "unlocked_at": None,
                 "unlock_payment_id": None,

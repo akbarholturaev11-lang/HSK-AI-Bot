@@ -1018,6 +1018,8 @@
     function overviewReport(){ const r=state.overview&&state.overview.statistics_reports; if(!Array.isArray(r)) return null; return r.find(x=>x.key===state.statsPeriod)||r[0]; }
     const adminMetricLabels={"Sales A/B · 7d approved": "Сотув тажрибаси · 7 кунда тасдиқланган", "Obuna sahifasi": "Обуна саҳифаси", "Rekvizitni ko'rdi": "Тўлов маълумотларини кўрди", "Skrinshot tanladi": "Тўлов суратини танлади", "Skrinshot yubordi": "Тўлов суратини юборди", "Tasdiqlandi": "Тасдиқланди", "Ma’lumot yetarli emas": "Маълумот етарли эмас", "Ma'lumot yetarli emas": "Маълумот етарли эмас", "Signup → App D1": "Рўйхатдан ўтиш → 1-кунда қайтиш", "Signup → App D7": "Рўйхатдан ўтиш → 7-кунда қайтиш", "D1 recovery lift": "1-кунда қайтиш ўсиши", "Starter start → complete": "Бошланғич дарс: бошлаш → тугатиш", "Starter first-attempt": "Бошланғич дарс: биринчи уриниш", "Starter → HSK1 P1/P2/P3": "Бошланғич дарс → HSK1 босқичлари", "Checkpoint → paywall": "Текширув → обуна экрани", "Starter D1 learning": "Бошланғич дарс: 1-кун фаоллиги", "Avg session": "Ўртача машғулот вақти", "Lesson time": "Дарс вақти", "AI chat xabar/user": "Савол-жавоб: ҳар бир фойдаланувчига хабар", "Voice minutes": "Овозли машқ дақиқалари", "First payment": "Биринчи тўлов", "Davr revenue / payer": "Давр тушуми / тўловчи", "Taglangan CAC": "Белгиланган мижоз жалб қилиш харажати", "Unfinished notif": "Тугатилмаган дарс эслатмаси", "Direct start → dars ≤2m": "Тўғридан-тўғри бошлаш → 2 дақиқада дарс", "Onb → dars ≤2m": "Танишув → 2 дақиқада дарс", "D1 retention": "1-кунда қайтиш", "D7 retention": "7-кунда қайтиш", "Course event": "Курс ҳодисаси", "hozir": "Ҳозир", "Conversion event": "Ўтиш ҳодисаси", "Payment": "Тўлов", "AI usage": "Сунъий интеллектдан фойдаланиш"};
     function metricLabel(value){return localizeAdminCopy(value);}
+    function adminLanguageLabel(value){return ({uz:"Ўзбекча",ru:"Русча",tj:"Тожикча",tg:"Тожикча"})[String(value||"").toLowerCase()]||metricLabel(value);}
+    function adminPlanLabel(value){return ({"10_days":"10 кун","1_month":"1 ой","3_months":"3 ой"})[value]||metricLabel(value);}
     function localizeAdminCopy(value){
       if(typeof value!=="string"||!/[A-Za-z]/.test(value)) return value;
       if(adminMetricLabels[value]) return adminMetricLabels[value];
@@ -1580,9 +1582,9 @@
         const accessTag=end?tag((u.payment_status==="approved"?"обуна":"кириш ҳуқуқи")+(u.status==="expired"?" тугаган ":" тугайди ")+end,u.status==="expired"?"":u.payment_status==="approved"?"green":"violet"):"";
         return `<button class="ucard" data-user="${u.id}">
           <div class="uhead"><div><div class="uname">${esc(u.name)}</div>
-            <div class="usub">${u.username?"@"+esc(u.username)+" · ":""}${u.id}<br>${esc(u.language)} · ${esc(u.level)} · ${esc(u.last_active)}</div></div>
+            <div class="usub">${u.username?"@"+esc(u.username)+" · ":""}${u.id}<br>${esc(adminLanguageLabel(u.language))} · ${esc(u.level)} · ${esc(metricLabel(u.last_active))}</div></div>
             ${tag(t[0],t[1])}</div>
-          <div class="tags">${tag(u.plan,"blue")}${tag(u.method,"")}${u.bot_blocked?tag("ТГ ёпиқ","red"):""}${accessTag}</div>
+          <div class="tags">${tag(adminPlanLabel(u.plan),"blue")}${tag(metricLabel(u.method),"")}${u.bot_blocked?tag("ТГ ёпиқ","red"):""}${accessTag}</div>
           <div class="mini2"><div class="mini"><b>${esc(u.questions)}</b><span>Сунъий интеллектга саволлар</span></div><div class="mini"><b>${esc(u.streak)}</b><span>серия</span></div></div>
         </button>`;
       }).join("") : "<p class='empty'>Бу саралаш бўйича фойдаланувчи топилмади.</p>";
@@ -1697,7 +1699,7 @@
       if(state.moduleInline) closeDrawer();
       state.moduleInline=false; state.activeModule=null; state.modulePrefill=null;
       const requestId=++moduleRequestId;
-      openDrawer(u.name, `${u.username?"@"+u.username+" · ":""}${u.id} · ${u.last_active}`, "<p class='empty'>Юкланмоқда…</p>");
+      openDrawer(u.name, `${u.username?"@"+u.username+" · ":""}${u.id} · ${metricLabel(u.last_active)}`, "<p class='empty'>Юкланмоқда…</p>");
       let detail=null;
       try{ detail=await apiPost("/api/admin-miniapp/users/detail",{telegram_id:u.id}); }catch(e){ if(requestId===moduleRequestId&&!$("app").hidden) toast(apiErr(e,"Тафсилот юкланмади")); }
       if(requestId!==moduleRequestId||$("app").hidden) return;
@@ -1737,8 +1739,8 @@
           <span>Кириш ҳуқуқи тури</span><b>${esc(access.label||f.access_label||f.status_label||f.status)}</b>
           <span>Сабаб</span><b>${esc(access.source_label||"—")}</b>
           <span>Тўлов</span><b>${esc(f.has_pending_payment?"текширувда":(f.payment_label||f.payment_status))}</b>
-          <span>Тариф</span><b>${esc(f.plan||f.selected_plan_type||"—")}</b>
-          <span>Усул</span><b>${esc(f.method||f.payment_method||"—")}</b>
+          <span>Тариф</span><b>${esc(adminPlanLabel(f.plan||f.selected_plan_type||"—"))}</b>
+          <span>Усул</span><b>${esc(metricLabel(f.method||f.payment_method||"—"))}</b>
           <span>Бошланган</span><b>${esc(access.starts_at||f.start_date||"—")}</b>
           <span>Тугайди</span><b>${esc(access.ends_at||f.end_date||"—")}</b></div>
           ${access.source==="manual_admin"?"<div class=\"ncnote\" style=\"margin-top:10px\">Бу кириш ҳуқуқи Админ томонидан қўлда берилган. У тўлов ёки даромад ёзуви ҳисобланмайди.</div>":""}
@@ -1786,7 +1788,7 @@
           <div class="ncnote" style="margin-top:10px">Ўрнатилган <b>сервер билан алоқа</b> илова очилиши дегани эмас: Android видгет фонда янгиланиш ҳам сессионни тегиши мумкин. Фаол фойдаланиш учун илова очилиши/опен ҳодиса алоҳида кўрсатилади.</div>
         </section>
         <section class="dsec"><div class="dtitle-sm">Ўқиш</div><div class="kv">
-          <span>Тил</span><b>${esc(f.language)}</b><span>Даража</span><b>${esc(f.level)}</b>
+          <span>Тил</span><b>${esc(adminLanguageLabel(f.language))}</b><span>Даража</span><b>${esc(f.level)}</b>
           <span>Режим</span><b>${esc(f.mode||f.learning_mode)}</b><span>Саволлар</span><b>${esc(f.questions)}</b>
           <span>Қўшимча Сунъий интеллектга саволлар</span><b>${esc(bonus.left)} та</b><span>Серия</span><b>${esc(f.streak)} кун</b>
           <span>Бонус берилган</span><b>${esc(bonus.total)} та</b><span>Бонус ишлатилган</span><b>${esc(bonus.used)} та</b></div></section>
@@ -1819,8 +1821,9 @@
     }
 
     /* ---------- MODULES (settings) ---------- */
+    function adminModules(){return (state.overview.modules||[]).filter(module=>module.key!=="audio");}
     function renderModules(){
-      $("moduleGrid").innerHTML = (state.overview.modules||[]).map(m=>`<button class="srow" data-module="${esc(m.key)}"><span class="admin-module-icon">${adminIcon((adminRoutes[adminModuleGroups[m.key]?.[0]]||adminRoutes.system).icon)}</span><div><h3>${esc(adminModuleLabel(m))}</h3><p>${esc(adminModuleNote(m))}</p></div><span class="admin-chevron">${adminIcon("chevron")}</span></button>`).join("");
+      $("moduleGrid").innerHTML = adminModules().map(m=>`<button class="srow" data-module="${esc(m.key)}"><span class="admin-module-icon">${adminIcon((adminRoutes[adminModuleGroups[m.key]?.[0]]||adminRoutes.system).icon)}</span><div><h3>${esc(adminModuleLabel(m))}</h3><p>${esc(adminModuleNote(m))}</p></div><span class="admin-chevron">${adminIcon("chevron")}</span></button>`).join("");
       renderAdminChrome();
     }
     function renderAiModel(){
@@ -1855,7 +1858,7 @@
     }
 
     async function openModule(key,prefill){
-      if($("app").hidden) return;
+      if($("app").hidden||key==="audio") return;
       state.activeModule=key;
       state.modulePrefill=prefill==null?null:prefill;
       if(key==="stats"){ closeDrawer(); switchTab("statistics"); return; }
@@ -1868,7 +1871,7 @@
       let d;
       try{ d=await loadManagement(false); }catch(e){ if(requestId===moduleRequestId&&!$("app").hidden) $("drawerBody").innerHTML="<p class='empty'>Маълумот юкланмади. Янгилаш тугмасини босинг.</p>"; return; }
       if(requestId!==moduleRequestId||$("app").hidden) return;
-      const map={prices:adminSub()==="methods"&&state.adminRoute==="finance"?renderPaymentMethods:renderPrices,hsk30:renderHsk30,course_access:renderCourseAccess,limits:renderLimits,ad_placements:renderAdPlacements,course_sales_experiment:renderCourseSalesExperiment,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount",prefill),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
+      const map={prices:adminSub()==="methods"&&state.adminRoute==="finance"?renderPaymentMethods:renderPrices,hsk30:renderHsk30,course_access:renderCourseAccess,limits:renderLimits,ad_placements:renderAdPlacements,course_sales_experiment:renderCourseSalesExperiment,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount",prefill),partners:()=>renderPartners(d)};
       if(key==="broadcast") return renderBroadcast();
       if(key==="give_access") return renderGiveAccess(prefill);
       if(key==="delete_user") return renderDeleteUser(prefill);
@@ -2438,7 +2441,7 @@
     function renderPrices(d){
       openDrawer("Обуналар тарифлари","",`<div class="panel">
         ${(d.prices||[]).map(p=>`<div class="mcard" data-prow data-method="${p.method}" data-plan="${p.plan}">
-          <h3>${esc(p.method_label)} · ${esc(metricLabel(p.plan_label))}</h3><p>Жорий: ${esc(p.text)}</p>
+          <h3>${esc(p.method_label)} · ${esc(adminPlanLabel(p.plan_label))}</h3><p>Жорий: ${esc(p.text)}</p>
           <div class="row"><input class="input" data-pamount type="number" min="1" max="1000000" value="${p.amount}" style="max-width:170px"><button class="btn" data-psave>Сақлаш</button></div>
           </div>`).join("")||"<p class='empty'>Тарифлар топилмади.</p>"}</div>`);
     }
@@ -2447,7 +2450,7 @@
         <div class="mcard"><h3>Душанбе Сити реквизити</h3><p>Тожикистон → Душанбе Сити танлаган фойдаланувчиларга чиқади.</p><textarea id="payDetails" class="textarea" maxlength="1500">${esc(d.payment_details||"")}</textarea><button class="btn" data-pdsave>Реквизитни сақлаш</button></div>
         <div class="mcard"><h3>Алиф реквизити</h3><p>Тожикистон → Алиф, Россия, Ўзбекистон ва бошқа давлат карталарига чиқади.</p><textarea id="payDetailsAlif" class="textarea" maxlength="1500">${esc(d.payment_details_alif||"")}</textarea><button class="btn" data-pdsave data-bank="alif">Реквизитни сақлаш</button></div>
         ${(d.prices||[]).filter(p=>p.qr_method).map(p=>`<div class="mcard" data-prow data-method="${p.method}" data-plan="${p.plan}">
-          <h3>${esc(p.method_label)} · ${esc(metricLabel(p.plan_label))}</h3>${priceQrHtml(p)}</div>`).join("")}</div>`);
+          <h3>${esc(p.method_label)} · ${esc(adminPlanLabel(p.plan_label))}</h3>${priceQrHtml(p)}</div>`).join("")}</div>`);
       bindPriceQr();
     }
     function bindPriceQr(){
@@ -2488,7 +2491,7 @@
       const h=d.help||{};
       openDrawer("🆘 Ёрдам созламалари","Админ алоқа ва 3 тилдаги видео ҳаволалар",`<div class="panel">
         <div class="mcard"><h3>Админ алоқа</h3><input id="adminContact" class="input" value="${esc(h.admin_contact||"")}" placeholder="@username ёки т.ме/ҳавола"><button class="btn" data-hcontact>Сақлаш</button></div>
-        ${(h.links||[]).map(i=>`<div class="mcard" data-hrow data-key="${i.key}" data-lang="${i.lang}"><h3>${esc(i.icon)} ${esc(metricLabel(i.label))} · ${esc(({uz:"Ўзбекча",ru:"Русча",tj:"Тожикча",tg:"Тожикча"})[String(i.lang||"").toLowerCase()]||metricLabel(i.lang))}</h3>
+        ${(h.links||[]).map(i=>`<div class="mcard" data-hrow data-key="${i.key}" data-lang="${i.lang}"><h3>${esc(i.icon)} ${esc(metricLabel(i.label))} · ${esc(adminLanguageLabel(i.lang))}</h3>
           <input class="input" data-hvalue value="${esc(i.value||"")}" placeholder="https://..."><button class="btn" data-hsave>Сақлаш</button></div>`).join("")}</div>`);
     }
     function renderPortfolio(d){
@@ -2779,15 +2782,6 @@
         <div class="mcard"><div class="frow"><label>Telegram ID</label><input id="delId" class="input" inputmode="numeric" value="${esc(prefill||"")}"></div>
           <div class="frow"><label>Тасдиқлаш учун шу IDни қайта киритинг</label><input id="delConfirm" class="input" inputmode="numeric"></div>
           <button class="btn danger" data-deluser>Ўчириш</button></div></div>`);
-    }
-    function renderAudio(d){
-      const rows=d.audio||[];
-      openDrawer("🎵 Аудио бошқаруви","Аудио рўйхатини текшириш",`<div class="panel">
-        <div class="mcard"><h3>Қамров</h3><p>${rows.map(r=>`${r.level}: ${r.lessons} дарс`).join(" · ")}</p></div>
-        <div class="mcard"><div class="frow two"><div><label>Даража</label><select id="auLevel" class="select"><option value="hsk1">HSK1</option><option value="hsk2">HSK2</option><option value="hsk3">HSK3</option><option value="hsk4">HSK4</option></select></div>
-          <div><label>Дарс</label><input id="auLesson" class="input" type="number" min="1" value="1"></div></div>
-          <button class="btn" data-aulist>Рўйхатни кўриш</button></div>
-        <div id="auResult" class="panel"></div></div>`);
     }
 
     /* ---------- module actions ---------- */
@@ -3082,17 +3076,17 @@
       statistics:{icon:"chart",title:"Таҳлиллар",tab:"statistics",subs:[["overview","Умумий"],["platform","Платформалар"],["funnel","Ўтиш кўрсаткичлари"],["ai","Сунъий интеллект харажатлари"]]},
       users:{icon:"users",title:"Фойдаланувчилар",tab:"users"},
       finance:{icon:"wallet",title:"Молия",tab:"payments",subs:[["payments","Тўловлар"],["prices","Тарифлар"],["methods","Реквизитлар"],["portfolio","Харажатлар"]]},
-      product:{icon:"book",title:"Курс",tab:"settings",subs:[["tracks","HSK 2.0 / 3.0"],["access","Дарслар ва чекловлар"],["trial","Синов муддати"],["tools","Материаллар ва тестлар"]]},
+      product:{icon:"book",title:"Курс",tab:"settings",subs:[["tracks","HSK 2.0 / 3.0"],["access","Дарслар ва чекловлар"],["trial","Синов муддати"],["tools","Сотув тажрибаси"]]},
       marketing:{icon:"megaphone",title:"Тарғибот",tab:"settings",subs:[["campaigns","Кампаниялар"],["creatives","Реклама"],["notifications","Эслатмалар"],["partners","Ҳамкорлар"]]},
       system:{icon:"settings",title:"Тизим",tab:"settings",subs:[["models","Сунъий интеллект моделлари"],["channels","Каналлар"],["help","Ёрдам"]]}
     };
-    const adminModuleLabels={stats:"Статистика",user_search:"Фойдаланувчи қидириш",portfolio:"Харажатлар",prices:"Обуналар тарифлари",hsk30:"HSK 3.0",course_access:"Курсга кириш",limits:"Чекловлар",ads_hub:"Реклама",course_sales_experiment:"HSK сотув тажрибаси",channels:"Мажбурий каналлар",delete_user:"Фойдаланувчини ўчириш",broadcast:"Оммавий хабар",ads:"Бот рекламаси",release_feedback:"Янгиликлар фикри",discount:"Чегирмалар",partners:"Ҳамкорлар",help:"Ёрдам созламалари",give_access:"Обунани бериш",audio:"Аудио бошқаруви"};
+    const adminModuleLabels={stats:"Статистика",user_search:"Фойдаланувчи қидириш",portfolio:"Харажатлар",prices:"Обуналар тарифлари",hsk30:"HSK 3.0",course_access:"Курсга кириш",limits:"Чекловлар",ads_hub:"Реклама",course_sales_experiment:"HSK сотув тажрибаси",channels:"Мажбурий каналлар",delete_user:"Фойдаланувчини ўчириш",broadcast:"Оммавий хабар",ads:"Бот рекламаси",release_feedback:"Янгиликлар фикри",discount:"Чегирмалар",partners:"Ҳамкорлар",help:"Ёрдам созламалари",give_access:"Обунани бериш"};
     function adminModuleLabel(module){return adminModuleLabels[module.key]||module.title;}
-    const adminModuleNotes={stats:"Умумий ҳисобот ва фойдаланувчилар фаоллиги",user_search:"ID ёки фойдаланувчи номи бўйича мини-иловада қидириш",portfolio:"Тушум, харажат ва соф фойда ҳисоботи",prices:"Visa, Alipay ва WeChat учун обуна нархлари",hsk30:"Курс, бир марталик тўлов ва нархни бошқариш",course_access:"Дарсдан олдин обунани талаб қилиш ёки вақтинча бепул режим",limits:"Бепул ва синов муддати учун кунлик чекловлар",ads_hub:"Мини-иловадаги реклама ва илова тарғиботи",course_sales_experiment:"Сотув тажрибаси ва қамров улушини бошқариш",channels:"Канал ҳаволаси ва мажбурий обуна",delete_user:"ID орқали тасдиқланадиган хавфли амал",broadcast:"Сегментни танлаб, хабар юбориш",ads:"Ботдаги хабар ва медиани сегментга юбориш",release_feedback:"Янгиликлар бўйича фикр сўраш",discount:"Чегирма кампаниясини яратиш ва кузатиш",partners:"Аризалар, тўловлар ва ҳамкорлар ҳисоботи",help:"Админ алоқаси ва видео ҳаволалар",give_access:"Фойдаланувчига қўлда кириш ҳуқуқини бериш",audio:"Курс аудио файлларини текшириш"};
+    const adminModuleNotes={stats:"Умумий ҳисобот ва фойдаланувчилар фаоллиги",user_search:"ID ёки фойдаланувчи номи бўйича мини-иловада қидириш",portfolio:"Тушум, харажат ва соф фойда ҳисоботи",prices:"Visa, Alipay ва WeChat учун обуна нархлари",hsk30:"Курс, бир марталик тўлов ва нархни бошқариш",course_access:"Дарсдан олдин обунани талаб қилиш ёки вақтинча бепул режим",limits:"Бепул ва синов муддати учун кунлик чекловлар",ads_hub:"Мини-иловадаги реклама ва илова тарғиботи",course_sales_experiment:"Сотув тажрибаси ва қамров улушини бошқариш",channels:"Канал ҳаволаси ва мажбурий обуна",delete_user:"ID орқали тасдиқланадиган хавфли амал",broadcast:"Сегментни танлаб, хабар юбориш",ads:"Ботдаги хабар ва медиани сегментга юбориш",release_feedback:"Янгиликлар бўйича фикр сўраш",discount:"Чегирма кампаниясини яратиш ва кузатиш",partners:"Аризалар, тўловлар ва ҳамкорлар ҳисоботи",help:"Админ алоқаси ва видео ҳаволалар",give_access:"Фойдаланувчига қўлда кириш ҳуқуқини бериш"};
     function adminModuleNote(module){return adminModuleNotes[module.key]||module.note;}
     const adminModuleGroups={
       prices:["finance","prices"],portfolio:["finance","portfolio"],
-      hsk30:["product","tracks"],course_access:["product","access"],limits:["product","access"],audio:["product","tools"],course_sales_experiment:["product","tools"],
+      hsk30:["product","tracks"],course_access:["product","access"],limits:["product","access"],course_sales_experiment:["product","tools"],
       broadcast:["marketing","campaigns"],ads:["marketing","campaigns"],discount:["marketing","campaigns"],release_feedback:["marketing","campaigns"],ads_hub:["marketing","creatives"],partners:["marketing","partners"],
       channels:["system","channels"],help:["system","help"],give_access:["users"],delete_user:["users"],user_search:["users"],stats:["statistics"]
     };
@@ -3120,7 +3114,7 @@
     }
     function adminSub(){const cfg=adminRoutes[state.adminRoute];return state.adminSubs[state.adminRoute]||cfg.subs?.[0][0]||"";}
     function adminModuleVisible(key){
-      if(key==="ads_hub")return false; // The retained inline ad hub is already the full screen.
+      if(key==="audio"||key==="ads_hub")return false; // Legacy audio is retired; the ad hub has a dedicated screen.
       const group=adminModuleGroups[key];
       if(!group)return state.adminRoute==="system"&&adminSub()==="models";
       if(group[0]!==state.adminRoute)return false;
@@ -3182,11 +3176,12 @@
     function renderAdminSearch(){
       const query=$("adminNavSearch").value.trim().toLocaleLowerCase();
       const routes=Object.entries(adminRoutes).flatMap(([key,cfg])=>[{title:cfg.title,route:key,icon:cfg.icon,group:"Асосий бўлим"},...(cfg.subs||[]).map(([sub,title])=>({title,route:key,sub,icon:cfg.icon,group:cfg.title}))]);
-      const modules=(state.overview?.modules||[]).map(m=>({title:adminModuleLabel(m),module:m.key,icon:(adminRoutes[adminModuleGroups[m.key]?.[0]]||adminRoutes.system).icon,group:"Бошқарув амали"}));
+      const modules=adminModules().map(m=>({title:adminModuleLabel(m),module:m.key,icon:(adminRoutes[adminModuleGroups[m.key]?.[0]]||adminRoutes.system).icon,group:"Бошқарув амали"}));
       const hits=[...routes,...modules].filter(item=>(item.title+" "+item.group).toLocaleLowerCase().includes(query));
       $("adminNavResults").innerHTML=hits.length?hits.map(item=>`<button type="button" class="admin-search-result" ${item.module?`data-admin-module="${esc(item.module)}"`:`data-admin-route="${item.route}"${item.sub?` data-admin-target-sub="${item.sub}"`:""}`}>${adminIcon(item.icon)}<span>${esc(item.title)}<small>${esc(item.group)}</small></span>${adminIcon("chevron")}</button>`).join(""):"<p class='empty'>Мос бўлим топилмади. Бошқа номда қидиринг.</p>";
     }
     function openAdminModule(key){
+      if(key==="audio")return;
       const target=adminModuleGroups[key]||["system","models"];
       navigateAdmin(target[0],target[1]);return openModule(key);
     }
@@ -3329,7 +3324,6 @@
       if((el=T("[data-gasave]"))){ el.disabled=true; return grantAccess($("gaId").value,$("gaDays").value).catch(x=>toast(apiErr(x,"Обуна берилмади"))).finally(()=>{if(el.isConnected)el.disabled=false;}); }
       if((el=T("[data-deluser]"))){ const id=$("delId").value.trim(), verify=$("delConfirm").value.trim(); if(!id||verify!==id){toast("Тасдиқ майдонига айнан шу Telegram IDни киритинг"); $("delConfirm").focus(); return;} if(!confirm("Фойдаланувчининг барча маълумотлари ўчирилади. Давом этасизми?")) return; const oldText=el.textContent; el.disabled=true; el.textContent="Ўчирилмоқда…"; return apiPost("/api/admin-miniapp/users/delete",{telegram_id:id,confirm:verify}).then(()=>{closeDrawer();return loadData();}).then(()=>toast("Фойдаланувчи тўлиқ ўчирилди")).catch(x=>{toast(apiErr(x,"Ўчириб бўлмади")); if(document.body.contains(el)){el.disabled=false;el.textContent=oldText;}}); }
       if((el=T("[data-ublock]"))){ const blocked=el.dataset.blocked==="1"; if(!confirm(blocked?"Фойдаланувчи блокланади. Давом этасизми?":"Фойдаланувчи блокдан чиқарилади. Давом этасизми?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/users/block",{telegram_id:Number(el.dataset.ublock),blocked}).then(()=>{return openUser(el.dataset.ublock);}).then(()=>{loadData();toast(blocked?"Фойдаланувчи блокланди":"Блокдан чиқарилди");}).catch(x=>{toast(apiErr(x,"Бажарилмади"));el.disabled=false;}); }
-      if((el=T("[data-aulist]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/audio/list",{level:$("auLevel").value,lesson_order:$("auLesson").value}).then(d=>{$("auResult").innerHTML=(d.items||[]).length?d.items.map(i=>`<div class="mcard"><h3>${esc(i.audio_type)}</h3><p>${esc(i.file_id)}</p></div>`).join(""):"<p class='empty'>Бу дарс учун аудио йўқ.</p>";}).catch(x=>toast(apiErr(x,"Аудио олинмади"))).finally(()=>el.disabled=false); }
       if((el=T("[data-catoggle]"))){ const id=Number(el.dataset.catoggle), a=el.dataset.active==="1"; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/toggle",{ad_id:id,is_active:a}).then(()=>{toast(a?"Реклама ёқилди":"Реклама ўчирилди");loadCourseAds();}).catch(()=>{toast("Ҳолатни ўзгартириб бўлмади");el.disabled=false;}); }
       if((el=T("[data-cadel]"))){ const id=Number(el.dataset.cadel); if(!confirm("Бу рекламани бутунлай ўчирасизми? Видео файл ҳам ўчади.")) return; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/delete",{ad_id:id}).then(()=>{toast("Реклама ўчирилди");loadCourseAds();}).catch(()=>{toast("Ўчириб бўлмади");el.disabled=false;}); }
       if((el=T("[data-cafilter]"))){ caFilter=el.dataset.cafilter; renderCaLangFilter(); renderCourseAds(); return; }

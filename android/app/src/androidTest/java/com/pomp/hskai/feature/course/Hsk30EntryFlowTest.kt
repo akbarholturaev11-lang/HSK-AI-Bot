@@ -140,11 +140,65 @@ class Hsk30EntryFlowTest {
 
         cases.forEach { access ->
             compose.runOnIdle { state.value = courseState(access = access) }
-            compose.onNodeWithText("HSK 1").assertIsDisplayed()
+            compose.onNodeWithText("HSK 3.0 · N1").assertIsDisplayed()
             compose.onNodeWithText(strings.getString(R.string.hsk30_access_required_title)).assertDoesNotExist()
             compose.onNodeWithText(strings.getString(R.string.hsk30_access_unlock_button)).assertDoesNotExist()
             compose.onNodeWithText(strings.getString(R.string.hsk30_access_back_hsk20)).assertDoesNotExist()
         }
+    }
+
+    @Test fun disabledEntryPaymentWithFreeServerAccessKeepsCourseOpen() {
+        val freeAccess = lockedAccess.copy(
+            allowed = true,
+            reason = "hsk30_free_access",
+        )
+        val state = mutableStateOf(courseState(
+            access = freeAccess,
+            paymentEnabled = false,
+            priceDisplay = "",
+        ))
+        var payments = 0
+        showCourse(state, onUnlock = { payments++ })
+
+        compose.onNodeWithText("HSK 3.0 · N1").assertIsDisplayed()
+        compose.onNodeWithText(strings.getString(R.string.hsk30_access_required_title)).assertDoesNotExist()
+        compose.onNodeWithText(strings.getString(R.string.hsk30_access_unlock_button)).assertDoesNotExist()
+        compose.runOnIdle { assertEquals(0, payments) }
+    }
+
+    @Test fun pandaStaysVisibleWhileServerConfirmsFreeHsk30Course() {
+        val freeAccess = lockedAccess.copy(
+            allowed = true,
+            reason = "hsk30_free_access",
+        )
+        val state = mutableStateOf(
+            courseState(access = freeAccess, paymentEnabled = false, priceDisplay = "")
+                .copy(isSwitchingTrack = true)
+        )
+        showCourse(state)
+        compose.onNodeWithText(strings.getString(R.string.course_track_preparing_title))
+            .assertIsDisplayed()
+
+        compose.runOnIdle { state.value = state.value.copy(isSwitchingTrack = false) }
+        compose.onNodeWithText(strings.getString(R.string.course_track_preparing_title))
+            .assertDoesNotExist()
+        compose.onNodeWithText("HSK 3.0 · N1").assertIsDisplayed()
+    }
+
+    @Test fun courseHeaderPickerPreselectsSavedBandAndShowsVersions() {
+        val freeAccess = lockedAccess.copy(allowed = true, reason = "hsk30_free_access")
+        val state = mutableStateOf(courseState(access = freeAccess, paymentEnabled = false))
+        val calls = mutableListOf<Pair<String, String?>>()
+        showCourse(state, onSwitch = { track, level -> calls += track to level })
+
+        compose.onNodeWithText("HSK 3.0 · N1").performClick()
+        compose.onNodeWithText(strings.getString(R.string.course_choice_title)).assertIsDisplayed()
+        compose.onNodeWithText("HSK 2.0").assertIsDisplayed()
+        compose.onNodeWithText("HSK 3.0").assertIsDisplayed()
+        compose.onNodeWithText("HSK 2.0").performClick()
+        compose.onNodeWithText("HSK 3").assertIsDisplayed()
+        compose.onNodeWithText(strings.getString(R.string.course_choice_confirm)).performClick()
+        compose.runOnIdle { assertEquals(listOf("hsk20" to null), calls) }
     }
 
     @Test fun unavailablePaymentExplainsTheBlockAndStillAllowsReturning() {

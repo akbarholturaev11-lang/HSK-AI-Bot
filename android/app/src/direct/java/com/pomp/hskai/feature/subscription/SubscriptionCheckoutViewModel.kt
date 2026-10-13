@@ -47,7 +47,7 @@ internal fun regionMethods(region: String): List<String> =
 internal fun availableRegions(prices: Map<String, Map<String, SubscriptionPriceDto>>): List<String> =
     CHECKOUT_REGIONS.filter { region -> regionMethods(region).any { !prices[it].isNullOrEmpty() } }
 
-/** Only Tajikistan (the bank) and China (the wallet) ask for a payment type. */
+/** Tajikistan and China offer optional bank/wallet choices, not extra mandatory steps. */
 internal fun hasMethodStep(region: String): Boolean = region == "tj" || region == "cn"
 
 /** A wallet is selectable only if the chosen plan is priced for that wallet. */
@@ -60,12 +60,20 @@ internal fun availablePaymentOptions(
     else if (region == "tj" && prices["visa"]?.containsKey(plan) == true) CARD_BANKS
     else emptyList()
 
+/** A country selection is sufficient to continue; bank/wallet can be changed optionally. */
 internal fun checkoutFlow(region: String): List<CheckoutStep> =
-    if (hasMethodStep(region)) {
-        listOf(CheckoutStep.PLANS, CheckoutStep.METHOD, CheckoutStep.PAY)
-    } else {
-        listOf(CheckoutStep.PLANS, CheckoutStep.PAY)
-    }
+    listOf(CheckoutStep.PLANS, CheckoutStep.PAY)
+
+/** Match the checkout's display currency to the selected card country.
+ * The server remains authoritative for FX rates, quote and payable amount.
+ */
+internal fun currencyForRegion(region: String): String = when (region) {
+    "tj" -> "TJS"
+    "uz" -> "UZS"
+    "ru" -> "RUB"
+    "cn" -> "CNY"
+    else -> "USD"
+}
 
 internal fun defaultPaymentRegion(language: String): String = when (language.lowercase()) {
     "ru" -> "ru"
@@ -116,6 +124,8 @@ data class SubscriptionCheckoutState(
     val checkingPaymentStatus: Boolean = false,
     val paymentStatusMessageRes: Int? = null,
     val errorRes: Int? = null,
+    val regionDialogOpen: Boolean = false,
+    val regionDialogRequired: Boolean = false,
     val currencyDialogOpen: Boolean = false,
     val currencyDialogRequired: Boolean = false,
     val currencySaving: Boolean = false,
@@ -158,7 +168,8 @@ class SubscriptionCheckoutViewModel(
         clearReceipt()
         _state.update { it.copy(loading = true, overview = null, discount = null,
             quoting = false, errorRes = null, quote = null, discountStarting = false,
-            currencySaving = false, currencyDialogOpen = false, currencyDialogRequired = false,
+            currencySaving = false, regionDialogOpen = false, regionDialogRequired = false,
+            currencyDialogOpen = false, currencyDialogRequired = false,
             submitted = false, alreadyPending = false, pendingPaymentId = 0,
             provisionalAccess = false, paymentDecision = "", checkingPaymentStatus = false,
             paymentStatusMessageRes = null) }
@@ -172,14 +183,13 @@ class SubscriptionCheckoutViewModel(
                     val data = overviewResult.value
                     _state.update { current ->
                         val regions = availableRegions(data.prices)
-                        val region = current.region.takeIf { it in regions }
-                            ?: remembered?.takeIf { it in regions }
+                        val confirmedRegion = remembered?.takeIf { it in regions }
+                        val region = confirmedRegion
                             ?: defaultPaymentRegion(data.language).takeIf { it in regions }
                             ?: regions.firstOrNull().orEmpty()
                         val method = methodFor(region, current.method, data.prices)
-                        val needsCurrency = data.preferredCurrency.isNullOrBlank() &&
-                            data.checkoutAllowed && data.pendingPayment == null &&
-                            data.prices.values.any { it.isNotEmpty() }
+                        val needsRegion = confirmedRegion == null && data.checkoutAllowed &&
+                            data.pendingPayment == null && regions.isNotEmpty()
                         current.copy(
                             loading = false,
                             overview = data,
@@ -196,14 +206,23 @@ class SubscriptionCheckoutViewModel(
                             plan = planFor(method, current.plan, data.prices),
                             language = normalizeLanguage(data.language),
                             step = CheckoutStep.PLANS,
-                            currencyDialogOpen = needsCurrency,
-                            currencyDialogRequired = needsCurrency,
+                            regionDialogOpen = needsRegion,
+                            regionDialogRequired = needsRegion,
+                            currencyDialogOpen = false,
+                            currencyDialogRequired = false,
                             currencySaving = false,
                             currencyErrorRes = null,
                             errorRes = if (data.ok) null else R.string.sub_unavailable,
                         )
                     }
                     data.pendingPayment?.id?.takeIf { it > 0 }?.let(onPendingPayment)
+                    // Returning users are not prompted again; reconcile any older
+                    // manually chosen currency with their confirmed card country.
+                    val confirmed = remembered?.takeIf { it in availableRegions(data.prices) }
+                    if (confirmed != null && data.checkoutAllowed && data.pendingPayment == null &&
+                        data.preferredCurrency != currencyForRegion(confirmed)) {
+                        chooseCurrency(currencyForRegion(confirmed))
+                    }
                 }
                 is ApiResult.Failure -> _state.update {
                     it.copy(loading = false, errorRes = overviewResult.error.messageRes)
@@ -216,14 +235,29 @@ class SubscriptionCheckoutViewModel(
         if (submitInFlight) return
         val current = _state.value
         val prices = current.overview?.prices ?: return
-        if (region !in availableRegions(prices) || region == current.region) return
+        if (region !in availableRegions(prices) || current.currencySaving) return
         val method = methodFor(region, if (region == "cn") current.method else "visa", prices)
-        quoteGeneration++
-        clearReceipt()
+        if (region != current.region) {
+            quoteGeneration++
+            clearReceipt()
+        }
         _state.update { it.copy(region = region, method = method,
             country = if (method == "visa") region else it.country,
             plan = planFor(method, it.plan, prices),
+            regionDialogOpen = false, regionDialogRequired = false,
             quoting = false, quote = null, errorRes = null, receiptNoteRes = null) }
+        viewModelScope.launch { runCatching { saveRegion(region) } }
+        chooseCurrency(currencyForRegion(region))
+    }
+
+    fun openRegionSelector() {
+        if (_state.value.currencySaving) return
+        _state.update { it.copy(regionDialogOpen = true, currencyErrorRes = null) }
+    }
+
+    fun dismissRegionSelector() {
+        if (_state.value.regionDialogRequired || _state.value.currencySaving) return
+        _state.update { it.copy(regionDialogOpen = false) }
     }
 
     fun openCurrencySelector() {
@@ -241,7 +275,7 @@ class SubscriptionCheckoutViewModel(
         if (submitInFlight) return
         val current = _state.value
         if (current.currencySaving || currency !in SUBSCRIPTION_DISPLAY_CURRENCIES) return
-        if (!current.currencyDialogRequired && current.overview?.preferredCurrency == currency) {
+        if (current.overview?.preferredCurrency == currency) {
             _state.update { it.copy(currencyDialogOpen = false, currencyErrorRes = null) }
             return
         }
@@ -333,13 +367,14 @@ class SubscriptionCheckoutViewModel(
         if (submitInFlight) return
         val current = _state.value
         val overview = current.overview ?: return
-        if (current.loading || current.quoting || overview.checkoutAllowed != true) return
+        if (current.loading || current.quoting || current.currencySaving ||
+            current.regionDialogOpen || overview.checkoutAllowed != true ||
+            overview.preferredCurrency != currencyForRegion(current.region)) return
         when (current.step) {
             CheckoutStep.PLANS -> {
                 if (overview.prices[current.method]?.get(current.plan) == null) return
                 viewModelScope.launch { runCatching { saveRegion(current.region) } }
-                if (hasMethodStep(current.region)) _state.update { it.copy(step = CheckoutStep.METHOD) }
-                else loadQuote()
+                loadQuote()
             }
             CheckoutStep.METHOD -> if (overview.prices[current.method]?.get(current.plan) != null) loadQuote()
             else -> Unit

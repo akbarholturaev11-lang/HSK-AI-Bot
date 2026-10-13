@@ -32,6 +32,7 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.service = CourseTrackService(SimpleNamespace())
         self.service.hsk30_unlock = SimpleNamespace(
+            payment_enabled=AsyncMock(return_value=True),
             review_state=AsyncMock(return_value={
                 "pending_payment": None,
                 "payment_rejected": False,
@@ -56,6 +57,66 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
             needs_review_prompt=True,
             last_opened_at=None,
         )
+
+    async def test_disabling_unlock_payment_makes_hsk30_free_without_granting_pro(self):
+        self.service.hsk30_feature = SimpleNamespace(
+            is_enabled=AsyncMock(return_value=True),
+            live_levels=AsyncMock(return_value=("nhsk1", "nhsk2", "nhsk3")),
+        )
+        self.service.hsk30_unlock.payment_enabled.return_value = False
+        states = {}
+
+        async def get_state(user_id, track, for_update=False):
+            return states.get(track)
+
+        async def create_state(*, user_id, track, level, completed_lessons_count=0):
+            row = _FakeState(track=track, level=level, completed=completed_lessons_count)
+            states[track] = row
+            return row
+
+        self.service.state_repo = SimpleNamespace(
+            get=AsyncMock(side_effect=get_state),
+            create=AsyncMock(side_effect=create_state),
+            list_for_user=AsyncMock(side_effect=lambda user_id: list(states.values())),
+        )
+        self.service.progress_repo = SimpleNamespace(
+            get_by_user_id=AsyncMock(return_value=self.progress),
+        )
+        self.service._save_active_state = AsyncMock()
+        self.service.session = SimpleNamespace(flush=AsyncMock())
+
+        access = await self.service.hsk30_access(self.user)
+        self.assertTrue(access.allowed)
+        self.assertFalse(access.payment_enabled)
+        self.assertFalse(access.paid_access)
+        self.assertFalse(access.permanently_unlocked)
+        self.assertEqual("hsk30_free_access", access.reason)
+        self.service.hsk30_unlock.review_state.assert_not_awaited()
+
+        result = await self.service.switch(
+            self.user,
+            target_track=TRACK_HSK30,
+            requested_level="nhsk2",
+        )
+        self.assertEqual("nhsk2", self.user.level)
+        self.assertEqual(TRACK_HSK30, result["active_track"])
+        self.assertTrue(result["tracks"][TRACK_HSK30]["access"]["allowed"])
+        self.assertEqual("hsk30_free_access", result["tracks"][TRACK_HSK30]["access"]["reason"])
+        self.assertFalse(result["tracks"][TRACK_HSK30]["access"]["paid_access"])
+        self.assertIsNone(states[TRACK_HSK30].unlocked_at)
+
+        # Switching the one-time payment back on restores the entry paywall.
+        self.service.hsk30_unlock.payment_enabled.return_value = True
+        locked = await self.service.hsk30_access(self.user)
+        self.assertFalse(locked.allowed)
+        self.assertEqual("hsk30_unlock_required", locked.reason)
+
+        # Even free entry must not override the HSK 3.0 feature kill switch.
+        self.service.hsk30_feature.is_enabled.return_value = False
+        self.service.hsk30_unlock.payment_enabled.return_value = False
+        disabled = await self.service.hsk30_access(self.user)
+        self.assertFalse(disabled.allowed)
+        self.assertEqual("hsk30_disabled", disabled.reason)
 
     async def test_unpaid_user_cannot_switch_to_hsk30(self):
         self.service.hsk30_feature = SimpleNamespace(
@@ -532,6 +593,18 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(self.user.level, "hsk3")
         self.assertEqual(self.progress.level, "hsk3")
+        self.assertEqual(self.progress.completed_lessons_count, 17)
+        # Returning again without a level MUST recover N1 / checkpoint 4.
+        # Explicitly choosing N1 on the other hand must not be required.
+        await self.service.switch(self.user, target_track=TRACK_HSK30)
+        self.assertEqual(self.user.level, "nhsk1")
+        self.assertEqual(self.progress.level, "nhsk1")
+        self.assertEqual(self.progress.completed_lessons_count, 4)
+        self.assertEqual(hsk20.level, "hsk3")
+        self.assertEqual(hsk20.completed_lessons_count, 17)
+
+        await self.service.switch(self.user, target_track=TRACK_HSK20)
+        self.assertEqual(self.user.level, "hsk3")
         self.assertEqual(self.progress.completed_lessons_count, 17)
 
 
