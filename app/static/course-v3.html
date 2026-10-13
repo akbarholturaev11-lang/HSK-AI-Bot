@@ -1963,10 +1963,10 @@ function speak(t){
   if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;
   function playSource(src){
     if(tok!==window._ttsTok)return;
-    try{var a=new Audio(src);_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}
+    try{var a=new Audio(src);_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok||st===2){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}
   }
   if(_ttsCache[t]){playSource(_ttsCache[t]);return}
-  if(_ttsPending[t]){_ttsPending[t].then(function(src){if(tok!==window._ttsTok)return;if(src)playSource(src);else _ttsFallback(t)});return}
+  if(_ttsPending[t]){ /* iOS requires play() inside the speaker-button gesture: do not await prefetch. */ playSource(ttsUrl(t));return}
   playSource(ttsUrl(t));
 }
 /* Kartadan o'ynash mumkin bo'lgan xitoycha matnlarni yig'ish (prefetch uchun) */

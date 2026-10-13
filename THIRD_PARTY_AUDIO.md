@@ -11,6 +11,20 @@ audio repositories.
 These recordings have their own licenses. They are **not** part of HSK AI's
 proprietary source licensing.
 
+## Offline emergency recording for 你好
+
+The bundled `app/static/audio/tts_fallback/nihao-cc-by-sa.mp3` is an
+**adaptation** of two Mandarin syllable recordings (`ni2` + `hao3`),
+including the correct third-tone sandhi `ní hǎo`. Original speaker:
+**Chen Wang**; source: [hugolpz/audio-cmn](https://github.com/hugolpz/audio-cmn),
+`64k/syllabs/cmn-ni2.mp3` and `cmn-hao3.mp3`, curated/compressed by
+Hugo Lopez. Licensed under **Creative Commons Attribution-ShareAlike**,
+which also applies to the combined audio. Changes: removed each original
+MP3's metadata and gapless-control frame and joined the audio streams.
+This deliberately simple join can sound slower than naturally spoken 你好;
+it is an emergency fallback when normal audio is unavailable. Authors do
+not endorse HSK AI.
+
 ## Sources and attribution
 
 1. **你好 (nǐ hǎo)**: recording by **Sjors Provoost**, 15 February 2011,
