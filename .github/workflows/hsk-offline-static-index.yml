@@ -6,6 +6,10 @@ on:
       - feat/offline-tts-pilot-20261013
     paths:
       - ".github/workflows/hsk-offline-static-index.yml"
+      - "tests/test_tts_service.py"
+      - "tests/test_offline_hsk_audio.py"
+      - "app/static/course-v3.html"
+      - "scripts/build_hsk_offline_audio.py"
   workflow_dispatch:
 
 permissions:
