@@ -15,7 +15,7 @@
 </script>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
-<script defer src="/audio/words/client.js?v=20261014-offline-1"></script>
+<script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005">
 <style>
 :root{
@@ -1003,7 +1003,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
 
   var _ttsAudio = null, _ttsTok = 0, _ttsCache = {}, _ttsPend = {};
   function _ttsUrl(x){
-    return window.HSKOfflineAudio?window.HSKOfflineAudio.url(x):('/api/v3/tts?text='+encodeURIComponent(x));
+    return window.HSKOfflineAudio?(window.HSKOfflineAudio.cachedUrl(x)||window.HSKOfflineAudio.url(x)):('/api/v3/tts?text='+encodeURIComponent(x));
   }
   function _ttsFetch(x){
     return window.HSKOfflineAudio?window.HSKOfflineAudio.fetchAudio(x):
@@ -1043,7 +1043,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       if(tok!==_ttsTok)return;
       try{
         var a=new Audio(src);_ttsAudio=a;
-        a.onplaying=function(){if(tok!==_ttsTok||st===2){try{a.pause()}catch(e){}return}st=1};
+        a.onplaying=function(){if(tok!==_ttsTok||st===2){try{a.pause()}catch(e){}return}st=1;try{window.HSKOfflineAudio&&window.HSKOfflineAudio.rememberPlayed(textValue,src)}catch(e){}};
         a.onerror=function(){if(st===0)onFailed(src,a)};
         var p=a.play();if(p&&p.catch)p.catch(function(){if(st===0)onFailed(src,a)});
       }catch(e){st=2;_ttsFallback(textValue)}

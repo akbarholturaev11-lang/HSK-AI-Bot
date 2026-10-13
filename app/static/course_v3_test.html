@@ -7,7 +7,7 @@
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
-<script defer src="/audio/words/client.js?v=20261014-offline-1"></script>
+<script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <style>
 :root{--ink:#211D17;--ink2:#665D50;--ink3:#A89E8E;--paper:#FDF9F0;--card:#FFFFFF;--line:#EAE0CC;--cin:#E04A40;--cin2:#B23530;--cinbg:#FDEBE7;--gold:#E9A916;--goldbg:#FAF0D3;--jade:#2FA06A;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -118,7 +118,7 @@ function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catc
 function stopSpeak(){window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_ttsAudio.onplaying=null;_ttsAudio.onerror=null;_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
 var _ttsCache={},_ttsPend={};
 function _ttsUrl(t){
-  return window.HSKOfflineAudio?window.HSKOfflineAudio.url(t):("/api/v3/tts?text="+encodeURIComponent(t));
+  return window.HSKOfflineAudio?(window.HSKOfflineAudio.cachedUrl(t)||window.HSKOfflineAudio.url(t)):("/api/v3/tts?text="+encodeURIComponent(t));
 }
 function _ttsFetch(t){
   return window.HSKOfflineAudio?window.HSKOfflineAudio.fetchAudio(t):
@@ -146,7 +146,7 @@ function speak(t){
     if(tok!==window._ttsTok)return;
     try{
       var a=new Audio(src);_ttsAudio=a;
-      a.onplaying=function(){if(tok!==window._ttsTok||st===2){try{a.pause()}catch(e){}return}st=1};
+      a.onplaying=function(){if(tok!==window._ttsTok||st===2){try{a.pause()}catch(e){}return}st=1;try{window.HSKOfflineAudio&&window.HSKOfflineAudio.rememberPlayed(t,src)}catch(e){}};
       a.onerror=function(){if(st===0)onFailed(src,a)};
       var p=a.play();if(p&&p.catch)p.catch(function(){if(st===0)onFailed(src,a)});
     }catch(e){st=2;_ttsFallback(t)}

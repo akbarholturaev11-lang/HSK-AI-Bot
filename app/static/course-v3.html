@@ -9,6 +9,7 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <!-- Fast static Mandarin MP3 index; cached across Mini App visits. -->
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
+<script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <link rel="stylesheet" href="/assets/characters/hsk-character-pack.css?v=20260921c">
 <link rel="stylesheet" href="/assets/characters/hsk-character-motion.css?v=20260921c">
 <link rel="stylesheet" href="/assets/characters/hsk-lesson-presentation.css?v=20260921c">
@@ -1956,6 +1957,9 @@ function ttsServerUrl(t){return "/api/v3/tts?text="+encodeURIComponent(t)}
    use the original server-side Edge/Gemini TTS; nothing is removed. */
 function ttsUrl(t){
   t=String(t||"").trim();
+  // Generate once, then replay local IndexedDB bytes on future visits.
+  var saved=window.HSKOfflineAudio&&window.HSKOfflineAudio.cachedUrl(t);
+  if(saved)return saved;
   var words=window.HSK_OFFLINE_AUDIO;
   if(words&&words.has(t)){
     var filename=Array.from(t).map(function(c){return c.charCodeAt(0)}).join("_")+".mp3";
@@ -1965,6 +1969,7 @@ function ttsUrl(t){
   return ttsServerUrl(t);
 }
 function ttsFetch(t){
+  if(window.HSKOfflineAudio)return window.HSKOfflineAudio.fetchAudio(t);
   var src=ttsUrl(t),server=ttsServerUrl(t);
   return fetch(src).then(function(r){if(!r.ok)throw new Error("tts_http_"+r.status);return r.blob()}).catch(function(err){
     if(src===server)throw err; /* No repeated requests when the file is unknown. */
@@ -1995,7 +2000,7 @@ function speak(t){
     if(tok!==window._ttsTok)return;
     try{
       var a=new Audio(src);_ttsAudio=a;
-      a.onplaying=function(){if(tok!==window._ttsTok||st===2){try{a.pause()}catch(e){}return}st=1};
+      a.onplaying=function(){if(tok!==window._ttsTok||st===2){try{a.pause()}catch(e){}return}st=1;try{window.HSKOfflineAudio&&window.HSKOfflineAudio.rememberPlayed(t,src)}catch(e){}};
       a.onerror=function(){if(st===0)failedSource(src,a)};
       var p=a.play();if(p&&p.catch)p.catch(function(){if(st===0)failedSource(src,a)});
     }catch(e){failedSource(src,_ttsAudio)}
@@ -7603,7 +7608,7 @@ function speak(t){
     try{
       var a=new Audio(src);try{a.preservesPitch=true;a.mozPreservesPitch=true;a.webkitPreservesPitch=true}catch(e){}
       a.playbackRate=slowOn()?.75:1;_ttsAudio=a;
-      a.onplaying=function(){if(tok!==window._ttsTok||st===2){try{a.pause()}catch(e){}return}st=1;vspeak(true)};
+      a.onplaying=function(){if(tok!==window._ttsTok||st===2){try{a.pause()}catch(e){}return}st=1;vspeak(true);try{window.HSKOfflineAudio&&window.HSKOfflineAudio.rememberPlayed(t,src)}catch(e){}};
       a.onended=function(){if(tok===window._ttsTok)vspeak(false)};
       a.onerror=function(){if(st===0)failedSource(src,a)};
       var p=a.play();if(p&&p.catch)p.catch(function(){if(st===0)failedSource(src,a)});
