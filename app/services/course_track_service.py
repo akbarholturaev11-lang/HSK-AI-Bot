@@ -172,6 +172,7 @@ class CourseTrackService:
                 }
             return {
                 "track": track,
+                "has_state": False,
                 # Legacy accounts have no per-track row until the first switch.
                 # Their active level is still real, and must be preselected.
                 "level": (
