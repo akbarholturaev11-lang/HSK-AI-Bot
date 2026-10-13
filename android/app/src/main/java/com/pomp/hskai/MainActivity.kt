@@ -1474,6 +1474,16 @@ private fun AppRoot(
                                 hsk30Enabled = courseState.map?.hsk30?.access?.featureEnabled == true,
                                 hsk30IsNew = courseState.map?.hsk30?.newBadge?.isNew == true,
                                 hsk30LiveLevels = courseState.map?.hsk30?.liveLevels.orEmpty(),
+                                hsk30 = courseState.map?.hsk30,
+                                onOpenApps = {
+                                    openExternal(
+                                        context,
+                                        BuildConfig.API_ORIGIN.trimEnd('/') + "/desktop-download?lang=" + currentLanguage,
+                                    )
+                                },
+                                onOpenCourse = { selectedTab = MainTab.COURSE },
+                                onUnlockHsk30 = ::openHsk30ContentGate,
+                                onStartTrial = profileViewModel::startTrial,
                                 onSwitchCourseTrack = courseViewModel::switchCourseTrack,
                                 modifier = contentModifier,
                                 identities = identitiesState,
