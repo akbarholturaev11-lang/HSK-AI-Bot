@@ -1753,7 +1753,9 @@ function coursePickerConfirm(){
   switchCourseTrack(track,level===saved?null:level);
 }
 function openCourseTrackPicker(){
-  courseTrackStatus(true).then(function(status){
+  // Render from the existing server snapshot instantly; the actual switch
+  // always refreshes entitlements before POST.
+  courseTrackStatus(false).then(function(status){
     COURSE_PICKER_STATUS=status;
     COURSE_PICKER_TRACK=currentCourseTrack();
     COURSE_PICKER_LEVEL=coursePickerSavedLevel(COURSE_PICKER_TRACK);
