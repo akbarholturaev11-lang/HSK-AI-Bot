@@ -255,7 +255,7 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .course-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .course-choice-levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .course-choice-option{min-height:54px;border:1px solid var(--line);border-radius:15px;background:var(--card);color:var(--ink);font-size:16px;font-weight:750;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer}
-.course-choice-option[aria-pressed="true"]{background:var(--cinbg);border:2px solid var(--cin);color:var(--cin)}
+.course-choice-option[aria-pressed="true"]{background:rgba(231,66,58,.08);border:2px solid var(--cin);color:var(--cin)}
 .course-choice-option:disabled{opacity:.4;cursor:not-allowed}
 .course-choice-option i{font-size:17px}
 .course-choice-note{font-size:12px;line-height:1.5;color:var(--ink2);margin:16px 0 12px}
@@ -1698,7 +1698,7 @@ function coursePickerCopy(){
   return {
     uz:{title:"Kursni tanlash",version:"Kurs versiyasi",level:"Daraja",note:"Versiyalar orasida almashganda o'qigan joyingiz saqlanadi. Boshqa darajani tanlash shu versiya progressini yangidan boshlaydi.",confirm:"Tasdiqlash"},
     ru:{title:"Выбор курса",version:"Версия курса",level:"Уровень",note:"При смене версии прогресс сохраняется. Выбор другого уровня начнёт прогресс этой версии заново.",confirm:"Подтвердить"},
-    tj:{title:"Интихоби курс",version:"Версияи курс",level:"Сатҳ",note:"Ҳангоми иваз кардани версия пешрафт нигоҳ дошта мешавад. Интихоби сатҳи дигар пешрафти ин версияро аз нав оғоз мекунад.",confirm:"Тасдиқлаш"}
+    tj:{title:"Интихоби курс",version:"Версияи курс",level:"Сатҳ",note:"Ҳангоми иваз кардани версия пешрафт нигоҳ дошта мешавад. Интихоби сатҳи дигар пешрафти ин версияро аз нав оғоз мекунад.",confirm:"Тасдиқ кардан"}
   }[LANG]||{};
 }
 function coursePickerSavedLevel(track){
