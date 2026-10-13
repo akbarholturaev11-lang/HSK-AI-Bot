@@ -26,12 +26,12 @@ class PaymentMethodDialogContractTests(unittest.TestCase):
         self.assertIn("RoundedCornerShape(20.dp)", currency)
         self.assertIn("HskSceneSurface(modifier = Modifier.fillMaxSize())", self.host)
 
-    def test_method_selection_advances_without_an_extra_confirmation(self):
-        self.assertIn("state.step == CheckoutStep.METHOD", self.host)
-        self.assertIn("state.step != CheckoutStep.METHOD", self.host)
-        self.assertIn("model.chooseBank(bank)\n                model.next()", self.host)
-        self.assertIn("model.chooseMethod(method)\n                model.next()", self.host)
-        self.assertIn("onDismiss = model::back", self.host)
+    def test_method_selection_is_optional_and_quote_follows_plan_continue(self):
+        self.assertIn("listOf(CheckoutStep.PLANS, CheckoutStep.PAY)", self.model)
+        self.assertIn("model.chooseBank(bank); methodOpen = false", self.host)
+        self.assertIn("model.chooseMethod(method); methodOpen = false", self.host)
+        self.assertIn("CheckoutStep.PLANS ->", self.model)
+        self.assertIn("loadQuote()", self.model)
 
     def test_payment_choices_are_limited_to_priced_plan_and_region(self):
         self.assertIn('availablePaymentOptions(\n                        state.region, state.plan', self.host)
