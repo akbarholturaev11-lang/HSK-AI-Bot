@@ -108,7 +108,7 @@ class MiniAppRequestLoadTests(unittest.TestCase):
         start = DESKTOP.index("function renderProfile()")
         body = DESKTOP[start:DESKTOP.index("\n  function ", start + 1)]
         self.assertIn('document.getElementById("s-profile")', body)
-        self.assertIn('!profileScreen.classList.contains("on")', body)
+        self.assertIn('!screen.classList.contains("on")', body)
 
 
 if __name__ == "__main__":
