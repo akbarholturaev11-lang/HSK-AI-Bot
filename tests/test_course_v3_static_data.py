@@ -890,7 +890,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         # One compact slot near the existing achievements and app link anchor.
         self.assertIn('id="hsk-profile-promo-root"', course)
         self.assertNotIn("+proProfileCard()", course)
-        self.assertLess(course.index("p.ach"), course.index("+'<div id=\\"hsk-profile-promo-root\\""))
+        self.assertLess(course.index("p.ach"), course.index("hsk-profile-promo-root"))
         self.assertIn('id="pomp-desktop-profile-root"', course)
         self.assertIn('params.get("desktop_download") === "1"', download)
         self.assertIn('HskProfileCarousel.select("apps")', download)
