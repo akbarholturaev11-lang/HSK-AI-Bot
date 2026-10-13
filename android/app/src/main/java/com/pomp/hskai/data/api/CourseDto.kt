@@ -96,6 +96,7 @@ data class CourseHsk30Dto(
     @SerialName("active_level") val activeLevel: String = "",
     @SerialName("saved_level_hsk20") val savedLevelHsk20: String = "hsk1",
     @SerialName("saved_level_hsk30") val savedLevelHsk30: String = "nhsk1",
+    @SerialName("has_saved_hsk30") val hasSavedHsk30: Boolean = false,
     @SerialName("access") val access: CourseHsk30AccessDto = CourseHsk30AccessDto(),
     @SerialName("live_levels") val liveLevels: List<String> = listOf("nhsk1"),
     @SerialName("new_badge") val newBadge: CourseHsk30NewBadgeDto = CourseHsk30NewBadgeDto(),
