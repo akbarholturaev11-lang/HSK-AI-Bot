@@ -2383,6 +2383,8 @@ def admin_payload():
             {"key": "prices", "icon": "💳", "title": "Narxlar", "note": "Obuna narxlari", "section": "settings", "callback": "adm:prices"},
             {"key": "help", "icon": "🆘", "title": "Yordam", "note": "Aloqa", "section": "settings", "callback": "adm:help"},
             {"key": "hsk30", "icon": "📚", "title": "HSK 3.0", "note": "Kurs sozlamalari", "section": "settings", "callback": "adm:hsk30"},
+            {"key": "audio", "icon": "🎵", "title": "Аудио бошқаруви", "note": "Эски курс аудиоси", "section": "settings", "callback": "adm:audio_panel"},
+            {"key": "course_sales_experiment", "icon": "🧭", "title": "HSK сотув тажрибаси", "note": "Сотув экрани вариантлари", "section": "settings", "callback": "adm:course_sales_experiment"},
             {"key": "limits", "icon": "⚙️", "title": "Limitlar", "note": "Kunlik limitlar", "section": "settings", "callback": "adm:limits"},
             {"key": "discount", "icon": "🎁", "title": "Chegirma", "note": "Shaxsiy yoki segment", "section": "settings", "callback": "adm:discount"},
         ],
@@ -2808,6 +2810,16 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     expect(page.locator("#pageTitle")).to_contain_text("Бош саҳифа")
     expect(page.locator("body")).not_to_contain_text("UI preview")
     expect(page.locator("body")).not_to_contain_text("Administrator")
+    assert page.evaluate("state.overview.modules.some(module => module.key === 'audio')")
+    expect(page.locator('[data-module="audio"], [data-admin-module="audio"]')).to_have_count(0)
+    page.evaluate("openModule('audio'); openAdminModule('audio')")
+    assert page.evaluate("state.adminRoute") == "dashboard"
+    expect(page.locator("#modulePanel")).to_be_hidden()
+    expect(page.locator("#drawer")).not_to_have_class(re.compile(r"\bopen\b"))
+    page.locator("[data-admin-search]").click()
+    page.locator("#adminNavSearch").fill("Аудио")
+    expect(page.locator("#adminNavResults")).to_contain_text("Мос бўлим топилмади")
+    page.locator("[data-admin-close-nav]").click()
     expect(page.locator(".admin-side-bottom")).to_have_count(0)
     expect(page.locator('#pageActions [data-act="reload"]')).to_have_count(0)
     expect(page.locator('[data-act="reload"]')).to_have_count(1)
@@ -2994,6 +3006,13 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
         page.locator("#hsk30Enabled").scroll_into_view_if_needed()
         capture_admin_evidence(page, "hsk30-form", viewport_width)
         page.locator("#adminSubnav").scroll_into_view_if_needed()
+    expect(page.locator("#adminSubnav")).not_to_contain_text("Материаллар ва тестлар")
+    page.locator('#adminSubnav [data-admin-sub="tools"]').click()
+    expect_admin_inline_module(page, "course_sales_experiment")
+    expect(page.locator("#drawerTitle")).to_contain_text("HSK сотув тажрибаси")
+    expect(page.locator("#salesExperimentMode")).to_have_value("off")
+    expect(page.locator("#auLevel, #auLesson, [data-aulist]")).to_have_count(0)
+    capture_admin_evidence(page, "course-tools", viewport_width)
     page.locator('#adminSubnav [data-admin-sub="access"]').click()
     expect(page.locator("#modulePanel")).to_be_hidden()
     expect(page.locator("#hsk30Enabled:visible")).to_have_count(0)
