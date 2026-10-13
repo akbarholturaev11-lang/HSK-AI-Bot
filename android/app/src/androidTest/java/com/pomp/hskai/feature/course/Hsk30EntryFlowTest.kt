@@ -166,6 +166,25 @@ class Hsk30EntryFlowTest {
         compose.runOnIdle { assertEquals(0, payments) }
     }
 
+    @Test fun pandaStaysVisibleWhileServerConfirmsFreeHsk30Course() {
+        val freeAccess = lockedAccess.copy(
+            allowed = true,
+            reason = "hsk30_free_access",
+        )
+        val state = mutableStateOf(
+            courseState(access = freeAccess, paymentEnabled = false, priceDisplay = "")
+                .copy(isSwitchingTrack = true)
+        )
+        showCourse(state)
+        compose.onNodeWithText(strings.getString(R.string.course_track_preparing_title))
+            .assertIsDisplayed()
+
+        compose.runOnIdle { state.value = state.value.copy(isSwitchingTrack = false) }
+        compose.onNodeWithText(strings.getString(R.string.course_track_preparing_title))
+            .assertDoesNotExist()
+        compose.onNodeWithText("HSK 1").assertIsDisplayed()
+    }
+
     @Test fun unavailablePaymentExplainsTheBlockAndStillAllowsReturning() {
         val cases = listOf(
             courseState(paymentEnabled = false),
