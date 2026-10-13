@@ -16,12 +16,12 @@
       --ink-soft: var(--hsk-ink-secondary);
       --ink-muted: var(--hsk-ink-disabled);
       --line: var(--hsk-divider);
-      --jade: var(--hsk-jade-ink);
-      --jade-soft: var(--hsk-jade-soft);
+      --accent-ink: var(--hsk-cinnabar-ink);
+      --accent-soft: var(--hsk-cinnabar-soft);
       --gold: var(--hsk-gold);
       --gold-ink: var(--hsk-gold-ink);
       --gold-soft: var(--hsk-gold-soft);
-      --focus: var(--hsk-jade);
+      --focus: var(--hsk-cinnabar);
       font-family: var(--hsk-font-ui);
       background: var(--paper);
       color: var(--ink);
@@ -36,7 +36,7 @@
     button { color: inherit; }
     .page { width: min(100%, 620px); min-height: 100dvh; margin: 0 auto; padding: 14px 19px 28px; }
     .top { display: flex; align-items: center; min-height: 42px; gap: 11px; }
-    .eyebrow { color: var(--gold-ink); font-size: 10px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+    .eyebrow { color: var(--accent-ink); font-size: 10px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
     .hero { padding: 15px 0 18px; }
     h1 { margin: 0; font-size: clamp(28px, 8vw, 34px); line-height: 1.13; letter-spacing: -.045em; font-weight: 760; }
     .intro { max-width: 430px; margin: 8px 0 0; color: var(--ink-soft); font-size: 14px; line-height: 1.5; }
@@ -48,7 +48,7 @@
     .filters { display: flex; gap: 7px; overflow-x: auto; padding: 14px 1px 7px; scrollbar-width: none; }
     .filters::-webkit-scrollbar { display: none; }
     .chip { flex: 0 0 auto; min-height: 35px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--ink-soft); font-size: 12px; font-weight: 650; white-space: nowrap; cursor: pointer; }
-    .chip[aria-pressed="true"] { border-color: var(--hsk-jade); background: var(--jade-soft); color: var(--hsk-jade-ink); }
+    .chip[aria-pressed="true"] { border-color: var(--hsk-cinnabar); background: var(--accent-soft); color: var(--accent-ink); }
     .count { padding: 4px 1px 9px; color: var(--ink-muted); font-size: 11px; font-weight: 650; letter-spacing: .045em; }
     .list { display: grid; gap: 9px; }
     .phrase { min-width: 0; padding: 15px 15px 12px; border: 1px solid var(--line); border-radius: 15px; background: var(--card); }
@@ -56,7 +56,7 @@
     .hanzi { margin: 0; font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 27px; font-weight: 620; line-height: 1.4; overflow-wrap: anywhere; }
     .save { flex: 0 0 auto; width: 37px; height: 37px; margin: -4px -5px 0 0; border: 0; border-radius: 50%; background: transparent; color: var(--ink-muted); font-size: 22px; line-height: 1; cursor: pointer; }
     .save[aria-pressed="true"] { color: var(--gold); }
-    .pinyin { margin: 2px 0 0; color: var(--jade); font-size: 13px; font-weight: 680; line-height: 1.45; overflow-wrap: anywhere; }
+    .pinyin { margin: 2px 0 0; color: var(--accent-ink); font-size: 13px; font-weight: 680; line-height: 1.45; overflow-wrap: anywhere; }
     .translation { margin: 6px 0 0; color: var(--ink-soft); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
     .phrase-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 11px; padding-top: 9px; border-top: 1px solid var(--line); }
     .category { overflow: hidden; color: var(--ink-muted); font-size: 10px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
