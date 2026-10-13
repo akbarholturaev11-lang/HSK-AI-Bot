@@ -1572,8 +1572,8 @@ function selectHsk30PromoLevel(level){
 }
 function renderHsk30Promo(status,promo){
   var t=trackUi(),access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-  var paidAccess=!!(access&&access.paid_access),permanentlyUnlocked=!!(access&&access.permanently_unlocked),provisionalAccess=!!(access&&access.provisional_access);
-  var hasAccess=!!(access&&access.allowed&&(paidAccess||permanentlyUnlocked||provisionalAccess));
+  // The server also grants entry when the admin makes HSK 3.0 free.
+  var hasAccess=!!(access&&access.allowed);
   var recommended=(promo&&promo.recommended_level)||"nhsk1";
   var c=hsk30BookCopy(),body=hasAccess?t.promoBodyUnlocked:c.body;
   var actions=hsk30BookPrimary(t.promoOpen,"openHsk30PromoLevelPicker('"+recommended+"')");
