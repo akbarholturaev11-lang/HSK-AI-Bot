@@ -313,7 +313,12 @@ fun CourseScreen(
                 onDismiss = onDismissHsk30Promo,
                 onContinue = {
                     onDismissHsk30Promo()
-                    pendingTrackSwitch = "hsk30" to null
+                    if (hsk30.hasSavedHsk30) {
+                        if (hsk30.access.allowed) onSwitchTrack("hsk30", null)
+                        else onUnlockHsk30()
+                    } else {
+                        pendingTrackSwitch = "hsk30" to null
+                    }
                 },
             )
         }
