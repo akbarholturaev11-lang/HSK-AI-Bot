@@ -103,6 +103,7 @@ import com.pomp.hskai.feature.hint.SectionHint
 import com.pomp.hskai.feature.lesson.LessonCharacter
 import com.pomp.hskai.feature.lesson.LessonCharacterMood
 import com.pomp.hskai.feature.lesson.LessonCharacterReaction
+import com.pomp.hskai.feature.lesson.LessonEntryOverlay
 import com.pomp.hskai.feature.lesson.LessonCharacterStage
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.domain.model.CourseLesson
@@ -308,6 +309,17 @@ fun CourseScreen(
                     onDismissHsk30Promo()
                     pendingTrackSwitch = "hsk30" to null
                 },
+            )
+        }
+
+        // Covers both the server switch and the confirmed replacement course map.
+        // Also shown for free HSK 3.0 entry (no checkout involved).
+        if (state.isSwitchingTrack) {
+            LessonEntryOverlay(
+                alpha = 1f,
+                key = "course-track-switch",
+                titleRes = R.string.course_track_preparing_title,
+                subtitleRes = R.string.course_track_preparing_subtitle,
             )
         }
 
