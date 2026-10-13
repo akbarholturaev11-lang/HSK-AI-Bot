@@ -87,8 +87,8 @@ class AdminDeleteSafetyTest(unittest.TestCase):
     def test_admin_miniapp_delete_ui_has_loading_and_specific_errors(self):
         self.assertIn("cannot_delete_admin", ADMIN_UI)
         self.assertIn("delete_failed", ADMIN_UI)
-        self.assertIn("O'chirilmoqda…", ADMIN_UI)
-        self.assertIn("Foydalanuvchi to'liq o'chirildi", ADMIN_UI)
+        self.assertIn("Ўчирилмоқда…", ADMIN_UI)
+        self.assertIn("Фойдаланувчи тўлиқ ўчирилди", ADMIN_UI)
 
 
 if __name__ == "__main__":

@@ -127,8 +127,10 @@ def page():
     with sync_playwright() as playwright:
         try:
             browser = playwright.chromium.launch(headless=True)
-        except Exception as exc:
-            pytest.skip(f"Playwright Chromium is not installed: {exc}")
+        except playwright_api.Error as exc:
+            if "Executable doesn't exist at" in str(exc):
+                pytest.skip(f"Playwright Chromium is not installed: {exc}")
+            raise
         context = browser.new_context(viewport={"width": 390, "height": 844}, is_mobile=True)
         page = context.new_page()
         if BASE_URL == STATIC_BASE_URL:
@@ -2230,6 +2232,12 @@ def admin_payload():
             {"label": "D1 retention", "value": "50%", "note": "5/10 user", "tone": "good"},
             {"label": "D7 retention", "value": "30%", "note": "3/10 user", "tone": "good"},
             {"label": "Avg session", "value": "12 min", "note": "8 Mini App session", "tone": "info"},
+            {
+                "label": "Platforma belgilari",
+                "value": "iOS · iPhone · N1 · P1 · HSK3.0 · SHA256",
+                "note": "Rasmiy belgilar: iOS · iPhone · N1 · P1 · HSK3.0 · SHA256",
+                "tone": "info",
+            },
         ],
         "payment": {
             "funnel": {
@@ -2270,10 +2278,10 @@ def admin_payload():
             {"key": "all_time", "title": "To'liq", "note": "Butun davr", "cards": [], "course": {}, "metrics": {}, "text": "Real hisobot: 12 foydalanuvchi, 3 aktiv obuna.", "advanced": advanced},
         ],
         "summary": [
-            {"label": "Foydalanuvchilar", "value": 12, "note": "5 bugun aktiv", "tone": "info"},
-            {"label": "Aktiv obuna", "value": 3, "note": "hozir to'lovli", "tone": "good"},
-            {"label": "To'lov tekshiruvda", "value": 2, "note": "admin ko'rishi kerak", "tone": "warn"},
-            {"label": "Issiq mijozlar", "value": 4, "note": "obunaga yaqin", "tone": "danger"},
+            {"label": "Фойдаланувчилар", "value": 12, "note": "5 бугун фаол", "tone": "info"},
+            {"label": "Фаол обуна", "value": 3, "note": "ҳозир тўловли", "tone": "good"},
+            {"label": "Тўлов текширувда", "value": 2, "note": "админ кўриши керак", "tone": "warn"},
+            {"label": "Иссиқ мижозлар", "value": 4, "note": "обунага яқин", "tone": "danger"},
         ],
         "counts": {
             "paid_users": 3,
@@ -2352,8 +2360,8 @@ def admin_payload():
         "modules": [
             {"key": "stats", "icon": "📊", "title": "Statistika", "note": "Umumiy hisobot", "section": "statistics", "callback": "adm:stats"},
             {"key": "give_access", "icon": "✅", "title": "Obuna berish", "note": "Istalgan muddatga paid active", "section": "settings", "callback": "adm:giveaccess_info"},
-            {"key": "course_access", "icon": "📚", "title": "Kurs access", "note": "Paywall yoki reklama rejimi", "section": "settings", "callback": "adm:course_access"},
-            {"key": "app_promo", "icon": "💻", "title": "App reklamasi", "note": "Mini App app promosi", "section": "settings", "callback": "adm:app_promo"},
+            {"key": "course_access", "icon": "📚", "title": "Kurs access", "note": "Paywall yoki vaqtinchalik free rejimi", "section": "settings", "callback": "adm:course_access"},
+            {"key": "ads_hub", "icon": "📣", "title": "Reklama", "note": "Mini App reklama va ilova promosi", "section": "settings", "callback": "adm:ad_placements"},
         ],
         "monitor": {
             "ticker": [{"label": "24 soat aktiv", "value": 5, "tone": "up"}],
@@ -2430,10 +2438,64 @@ def admin_finance_payload():
     }
 
 
-def test_admin_control_renders_real_api_payload_without_demo_data(page):
+def open_admin_route(page, route):
+    route_titles = {
+        "dashboard": "Бош саҳифа",
+        "statistics": "Таҳлиллар",
+        "users": "Фойдаланувчилар",
+        "finance": "Молия",
+        "product": "Курс",
+        "marketing": "Тарғибот",
+        "system": "Тизим",
+    }
+    sidebar_button = page.locator(f'#sidebarNav [data-admin-route="{route}"]')
+    mobile_button = page.locator(f'#tabs [data-admin-route="{route}"]')
+    if sidebar_button.is_visible():
+        sidebar_button.click()
+    elif mobile_button.count():
+        mobile_button.click()
+    else:
+        page.locator('#tabs [data-admin-route="menu"]').click()
+        expect(page.locator("#adminNavigator")).to_be_visible()
+        page.locator(
+            f'#adminNavResults [data-admin-route="{route}"]:not([data-admin-target-sub])'
+        ).click()
+    expect(page.locator("#adminNavigator")).not_to_be_visible()
+    route_title = route_titles[route]
+    expect(page.locator("#pageTitle")).to_have_text(route_title)
+    main = page.locator("#adminMain")
+    expect(main.get_by_role("heading", name=route_title, exact=True)).to_have_count(1)
+    expect(main.get_by_text(route_title, exact=True).and_(page.locator(":visible"))).to_have_count(1)
+    expect(page.locator(".admin-breadcrumb, .admin-eyebrow")).to_have_count(0)
+    if route == "dashboard":
+        expect(page.locator("#generatedAt")).to_be_visible()
+        expect(page.locator("#generatedAt")).to_have_text("Янгиланди: 28.06.2026 11:30")
+    else:
+        expect(page.locator("#generatedAt")).to_be_hidden()
+    assert page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
+
+
+@pytest.mark.parametrize("viewport_width", [390, 1440])
+def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport_width):
+    page.set_viewport_size({"width": viewport_width, "height": 844})
+    page.add_init_script("""
+        window.__adminCopiedReport = null;
+        Object.defineProperty(navigator, "clipboard", {
+            configurable: true,
+            value: {writeText: async (text) => {window.__adminCopiedReport = text;}}
+        });
+        const originalExecCommand = document.execCommand.bind(document);
+        document.execCommand = (command, ...args) => {
+            if (command === "copy") {
+                window.__adminCopiedReport = document.activeElement.value;
+            }
+            return originalExecCommand(command, ...args);
+        };
+    """)
     grant_requests = []
     course_access_requests = []
     app_promo_requests = []
+    payment_requests = []
     runtime_errors = []
     page.on("pageerror", lambda error: runtime_errors.append(str(error)))
     page.on(
@@ -2476,10 +2538,10 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
             {
                 "ok": True,
                 "course_access": {
-                    "mode": "ads",
-                    "effective_mode": "ads",
-                    "free_active": False,
-                    "free_until": None,
+                    "mode": "free_until",
+                    "effective_mode": "free_until",
+                    "free_active": True,
+                    "free_until": "2026-07-05T11:35:00+00:00",
                     "saved_at": "2026-06-28T11:35:00+00:00",
                     "updated_by_telegram_id": 111,
                 },
@@ -2494,7 +2556,6 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
                 "ok": True,
                 "desktop_app_promo": {
                     "enabled": True,
-                    "daily_limit": 2,
                     "placements": {
                         "home_prompt": True,
                         "lesson_end_promo": True,
@@ -2503,7 +2564,7 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
                     "platforms": {
                         "macos": True,
                         "windows": True,
-                        "android": False,
+                        "android": True,
                         "ios": False,
                     },
                     "media_type": None,
@@ -2513,6 +2574,11 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
                 },
             },
         )
+
+    def review_payment(route):
+        payment_requests.append(json.loads(route.request.post_data or "{}"))
+        assert route.request.headers.get("x-telegram-init-data") == ""
+        json_response(route, {"ok": True})
 
     page.route("**/api/admin-miniapp/overview", lambda route: json_response(route, admin_payload()))
     page.route("**/api/admin-miniapp/finance-stats", lambda route: json_response(route, admin_finance_payload()))
@@ -2542,6 +2608,7 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     page.route("**/api/admin-miniapp/users/give-access", grant_access)
     page.route("**/api/admin-miniapp/course-access/save", save_course_access)
     page.route("**/api/admin-miniapp/desktop-promo/save", save_app_promo)
+    page.route("**/api/admin-miniapp/payments/review", review_payment)
     page.route(
         "**/api/admin-miniapp/android-stats",
         lambda route: json_response(
@@ -2604,27 +2671,58 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     page.goto(app_url("/admin.html"), wait_until="networkidle")
 
     expect(page.locator("#app")).to_be_visible()
-    expect(page.locator("#summaryGrid")).to_contain_text("Foydalanuvchilar")
+    expect(page.locator("#pageTitle")).to_contain_text("Бош саҳифа")
+    expect(page.locator("body")).not_to_contain_text("UI preview")
+    expect(page.locator("body")).not_to_contain_text("Administrator")
+    expect(page.locator(".admin-side-bottom")).to_have_count(0)
+    expect(page.locator('#pageActions [data-act="reload"]')).to_have_count(0)
+    expect(page.locator('[data-act="reload"]')).to_have_count(1)
+    expect(page.locator("#summaryGrid")).to_contain_text("Фойдаланувчилар")
     expect(page.locator("#summaryGrid")).to_contain_text("12")
-    expect(page.locator("#reportText")).to_contain_text("Real hisobot")
-    expect(page.locator("#dataQuality")).to_contain_text("Course event")
+    expect(page.locator("#reportText")).to_contain_text("Реал ҳисобот")
+    expect(page.locator("#dataQuality")).to_contain_text("Курс ҳодисаси")
     expect(page.locator("#userList")).to_contain_text("Ali")
     expect(page.locator("#paymentBoard")).to_contain_text("99 TJS")
-    expect(page.locator("#financeCards")).to_contain_text("Kuzatilgan net")
-    expect(page.locator("#aiUsageBreakdown")).to_contain_text("gemini-2.5-flash · Bepul")
-    expect(page.locator("#aiUsageBreakdown")).to_contain_text("24000 token")
-    expect(page.locator("#aiUsageBreakdown")).to_contain_text("o4-mini · Pullik taxmin")
+    expect(page.locator("#financeCards")).to_contain_text("Соф натижа")
+    expect(page.locator("#aiUsageBreakdown")).to_contain_text("gemini-2.5-flash · Бепул")
+    expect(page.locator("#aiUsageBreakdown")).to_contain_text("24000 Токен")
+    expect(page.locator("#aiUsageBreakdown")).to_contain_text("o4-mini · Пуллик тахмин")
     expect(page.locator("#aiUsageBreakdown")).to_contain_text("$0.000000")
     expect(page.locator("#clientBusinessTable")).to_contain_text("Android")
-    expect(page.locator("#androidCards")).to_contain_text("O'rnatgan qurilma")
-    expect(page.locator("#androidDevices")).to_contain_text("Ulagan, lekin ochmagan")
+    expect(page.locator("#androidCards")).to_contain_text("Ўрнатилган")
+    expect(page.locator("#androidDevices")).to_contain_text("Ҳали очилмаган")
     expect(page.locator("#androidVersions")).to_contain_text("1.6.4")
-    expect(page.locator("#clientBusinessTable")).to_contain_text("Desktop")
-    expect(page.locator("#advancedCards")).to_contain_text("D1 retention")
-    expect(page.locator("#featureAdoption")).to_contain_text("Darslar")
+    expect(page.locator("#clientBusinessTable")).to_contain_text("Компьютер дастури")
+    expect(page.locator("#advancedCards")).to_contain_text("1-кунда қайтиш")
+    expect(page.locator("#advancedCards")).to_contain_text("7-кунда қайтиш")
+    expect(page.locator("#queueList")).to_contain_text("Ҳозир")
+    technical_card = page.locator("#advancedCards .stat").last
+    technical_value = admin_payload()["statistics_reports"][-1]["advanced"]["cards"][-1]["value"]
+    expect(technical_card.locator(".val")).to_have_text(technical_value)
+    expect(technical_card.locator(".sub")).to_contain_text(technical_value)
+    expect(page.locator("#featureAdoption")).to_contain_text("Дарслар")
 
-    page.locator('[data-tab="settings"]').click()
-    page.locator('[data-module="give_access"]').click()
+    open_admin_route(page, "statistics")
+    page.locator('[data-act="copy-report"]').click()
+    expect(page.locator("#toast")).to_contain_text("Ҳисобот нусхаланди")
+    assert page.evaluate("window.__adminCopiedReport") == page.locator("#reportText").inner_text()
+    assert page.evaluate("state.overview.report_text") == admin_payload()["report_text"]
+    page.locator('#adminSubnav [data-admin-sub="platform"]').click()
+    expect(page.locator("#androidCards")).to_be_visible()
+    expect(page.locator("#advancedCards")).to_be_hidden()
+    page.locator('#adminSubnav [data-admin-sub="funnel"]').click()
+    expect(page.locator("#advancedCards")).to_be_visible()
+    expect(page.locator("#androidCards")).to_be_hidden()
+    page.locator('#adminSubnav [data-admin-sub="ai"]').click()
+    expect(page.locator("#financeCards")).to_be_visible()
+    open_admin_route(page, "users")
+    expect(page.locator("#userList")).to_be_visible()
+    page.keyboard.press("/")
+    expect(page.locator("#adminNavigator")).to_be_visible()
+    expect(page.locator("#adminNavSearch")).to_be_focused()
+    page.locator("#adminNavSearch").fill("Обунани бериш")
+    page.locator('#adminNavResults [data-admin-module="give_access"]').click()
+    expect(page.locator("#adminNavigator")).not_to_be_visible()
     expect(page.locator("#gaDays")).to_be_visible()
     page.locator('[data-duration-target="gaDays"][data-duration-days="90"]').click()
     expect(page.locator("#gaDays")).to_have_value("90")
@@ -2635,6 +2733,22 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     expect(page.locator("#toast")).to_contain_text("1–36500")
     assert grant_requests == []
 
+    confirmation_messages = []
+
+    def dismiss_grant(dialog):
+        confirmation_messages.append(dialog.message)
+        dialog.dismiss()
+
+    page.once("dialog", dismiss_grant)
+    page.evaluate("""async () => await grantAccess(111, 45, {
+        name: "Ali", currentEnd: "01.07.2026 12:00"
+    })""")
+    assert len(confirmation_messages) == 1
+    assert "\nҲозирги тугаш санаси: 01.07.2026 12:00\n" in confirmation_messages[0]
+    assert len(confirmation_messages[0].splitlines()) == 3
+    assert "\\н" not in confirmation_messages[0]
+    assert grant_requests == []
+
     page.locator("#gaDays").fill("45")
     page.once("dialog", lambda dialog: dialog.accept())
     page.locator("[data-gasave]").click()
@@ -2642,28 +2756,124 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     assert grant_requests == [{"telegram_id": 111, "duration_days": 45}]
 
     page.locator("#drawer [data-act='close-drawer']").click()
+    open_admin_route(page, "product")
+    page.locator('#adminSubnav [data-admin-sub="access"]').click()
     page.locator('[data-module="course_access"]').click()
     expect(page.locator("#courseAccessMode")).to_have_value("subscription")
-    page.locator("#courseAccessMode").select_option("ads")
+    expect(page.locator('#courseAccessMode option[value="ads"]')).to_have_count(0)
+    page.locator("#courseAccessMode").select_option("free_until")
+    page.locator("#courseAccessDays").fill("7")
     page.locator("[data-casave]").click()
-    expect(page.locator("#toast")).to_contain_text("Kurs access saqlandi")
-    assert course_access_requests == [{"mode": "ads"}]
+    expect(page.locator("#toast")).to_contain_text("Курс кириш ҳуқуқи сақланди")
+    assert course_access_requests == [{"mode": "free_until", "duration_days": 7}]
 
     page.locator("#drawer [data-act='close-drawer']").click()
-    page.locator('[data-module="app_promo"]').click()
-    expect(page.locator("#apDailyLimit")).to_be_visible()
-    page.locator("#apDailyLimit").select_option("2")
-    expect(page.locator('[data-ap-platform="android"]')).to_have_count(0)
+    open_admin_route(page, "marketing")
+    page.locator('#adminSubnav [data-admin-sub="creatives"]').click()
+    expect(page.locator("#adHub")).to_be_visible()
+    page.locator('[data-adhub="ilova"]').click()
+    expect(page.locator("#apDailyLimit")).to_have_count(0)
+    expect(page.locator('[data-ap-platform="android"]')).to_be_visible()
+    page.locator('[data-ap-placement="home_prompt"]').click()
     expect(page.locator('[data-app-promo-media-upload]')).to_be_visible()
     page.locator("[data-app-promo-save]").click()
-    expect(page.locator("#toast")).to_contain_text("App reklamasi saqlandi")
-    assert app_promo_requests[-1]["daily_limit"] == 2
+    expect(page.locator("#toast")).to_contain_text("Илова рекламаси сақланди")
+    assert "daily_limit" not in app_promo_requests[-1]
+    assert app_promo_requests[-1]["placements"]["home_prompt"] is False
     assert app_promo_requests[-1]["platforms"]["macos"] is True
     assert app_promo_requests[-1]["platforms"]["windows"] is True
-    assert app_promo_requests[-1]["platforms"]["android"] is False
+    assert app_promo_requests[-1]["platforms"]["android"] is True
     assert app_promo_requests[-1]["platforms"]["ios"] is False
+
+    open_admin_route(page, "finance")
+    expect(page.locator("#paymentBoard")).to_be_visible()
+    page.locator('[data-pay="1"][data-pact="approve"]').click()
+    expect(page.locator("#toast")).to_contain_text("Тўлов тасдиқланди")
+    page.once("dialog", lambda dialog: dialog.accept("Receipt does not match"))
+    page.locator('[data-pay="1"][data-pact="reject"]').click()
+    expect(page.locator("#toast")).to_contain_text("Тўлов рад этилди")
+    assert payment_requests == [
+        {"payment_id": 1, "action": "approve", "reason": ""},
+        {"payment_id": 1, "action": "reject", "reason": "Receipt does not match"},
+    ]
+
+    open_admin_route(page, "system")
+    expect(page.locator("#aiModelBox")).to_be_visible()
+    expect(page.locator("#adHub")).to_be_hidden()
+    open_admin_route(page, "dashboard")
+    expect(page.locator("#summaryGrid")).to_be_visible()
+    expect(page.locator("#summaryGrid")).to_contain_text("12")
     assert page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
     assert runtime_errors == []
+    if os.getenv("ADMIN_E2E_SCREENSHOTS") == "1":
+        expect(page.locator("#toast")).not_to_be_visible()
+        screenshot_dir = APP_ROOT / "output/playwright"
+        screenshot_dir.mkdir(parents=True, exist_ok=True)
+        page.screenshot(path=str(screenshot_dir / f"admin-v2-{viewport_width}.png"), full_page=True)
+
+
+@pytest.mark.parametrize(
+    ("status", "error", "title", "expired_session"),
+    [
+        (401, "invalid_telegram_init_data", "Кириш рад этилди", False),
+        (403, "admin_only", "Админ рухсати йўқ", True),
+    ],
+)
+def test_admin_auth_failure_hides_controls_and_cached_data(
+    page, status, error, title, expired_session
+):
+    denied = not expired_session
+    requests = []
+    hold_management = False
+    pending_management = []
+    mock_telegram_ready(page, "query_id=admin-ui-smoke")
+
+    def admin_api(route):
+        path = urlparse(route.request.url).path
+        requests.append(path)
+        assert route.request.headers.get("x-telegram-init-data") == "query_id=admin-ui-smoke"
+        if denied:
+            json_response(route, {"ok": False, "error": error}, status=status)
+        elif path.endswith("/overview"):
+            json_response(route, admin_payload())
+        elif path.endswith("/finance-stats"):
+            json_response(route, admin_finance_payload())
+        elif path.endswith("/management") and hold_management:
+            pending_management.append(route)
+        else:
+            json_response(route, {"ok": True, "items": [], "rows": []})
+
+    page.route("**/api/admin-miniapp/**", admin_api)
+    page.goto(app_url("/admin.html"), wait_until="networkidle")
+    if expired_session:
+        expect(page.locator("#app")).to_be_visible()
+        expect(page.locator("#summaryGrid")).to_contain_text("12")
+        page.keyboard.press("/")
+        expect(page.locator("#adminNavigator")).to_be_visible()
+        hold_management = True
+        with page.expect_request("**/api/admin-miniapp/management"):
+            page.evaluate("() => {state.management = null; void openModule('give_access');}")
+        expect(page.locator("#drawer")).to_be_visible()
+        denied = True
+        requests.clear()
+        page.evaluate("loadData()")
+
+    expect(page.locator("#loading")).to_be_visible()
+    expect(page.locator("#loading")).to_contain_text(title)
+    expect(page.locator("#app")).to_be_hidden()
+    expect(page.locator("#adminNavigator")).not_to_be_visible()
+    expect(page.locator("#drawer")).not_to_be_visible()
+    expect(page.locator("#adRulesModal")).not_to_be_visible()
+    expect(page.locator('[data-pay="1"]:visible')).to_have_count(0)
+    if expired_session:
+        assert len(pending_management) == 1
+        json_response(pending_management[0], {"ok": True, "items": [], "rows": []})
+        page.wait_for_function("state.management !== null")
+        expect(page.locator("#app")).to_be_hidden()
+        expect(page.locator("#drawer")).not_to_be_visible()
+        expect(page.locator("#gaId:visible")).to_have_count(0)
+    assert not any(path.endswith("/payments/review") for path in requests)
+    assert not any(path.endswith("/save") for path in requests)
 
 
 def test_subscription_page_smoke(page):

@@ -97,8 +97,8 @@ class Hsk30ReleaseControlTests(unittest.TestCase):
         self.assertIn('id="hsk30Enabled"', ADMIN)
         self.assertIn('data-hsk30save', ADMIN)
         self.assertIn('/api/admin-miniapp/hsk30/settings', ADMIN)
-        self.assertIn('OFF → ON', ADMIN)
-        self.assertIn('NEW', ADMIN)
+        self.assertIn('ўчирилган → ёқилган', ADMIN)
+        self.assertIn('ЯНГИ', ADMIN)
 
 
 class TheLimitPanelCoversEveryEnforcedActionTests(unittest.TestCase):
@@ -362,8 +362,8 @@ class SimplifiedPlacementControlsTests(unittest.TestCase):
 
     def test_legacy_differences_are_disclosed(self):
         self.assertIn('const different=fields.some', ADMIN)
-        self.assertIn("ikkala joyga bir xil auditoriya", ADMIN.lower())
-        self.assertIn("Bu video davomiyligidan BOSHQA sozlama.", ADMIN)
+        self.assertIn("иккала жойга бир хил аудитория", ADMIN.lower())
+        self.assertIn("Бу видео давомийлигидан БОШҚА созлама.", ADMIN)
 
     def test_standard_mode_hides_unneeded_settings(self):
         self.assertIn('id="adCustomMode"', ADMIN)
@@ -399,7 +399,7 @@ class SimplifiedPlacementControlsTests(unittest.TestCase):
 class OrdinaryAdCtaContractTests(unittest.TestCase):
     def test_custom_cta_is_available_for_regular_ads(self):
         self.assertIn('odiy:{\n        fields:["link","button"]', ADMIN)
-        self.assertIn('buttonLabel:"Tugma nomi (ixtiyoriy)"', ADMIN)
+        self.assertIn('buttonLabel:"Тугма номи (ихтиёрий)"', ADMIN)
         self.assertIn('const btnLine=(i.button_text)?', ADMIN)
         self.assertIn('fd.append("button_text",caFields.indexOf("button")<0?', ADMIN)
 
@@ -407,22 +407,22 @@ class OrdinaryAdCtaContractTests(unittest.TestCase):
 class UserAccessDetailsAreExplicitTests(unittest.TestCase):
     def test_user_detail_separates_access_from_payment(self):
         for label in (
-            "Access turi",
-            "Sabab",
-            "Boshlangan",
-            "Tugaydi",
-            "Qo'shimcha AI savollar",
-            "Taklif qilgan",
-            "O'z referral kodi",
-            "Faol referral",
+            "Кириш ҳуқуқи тури",
+            "Сабаб",
+            "Бошланган",
+            "Тугайди",
+            "Қўшимча Сунъий интеллектга саволлар",
+            "Таклиф қилган",
+            "Ўз Таклиф коди",
+            "Фаол Таклиф",
         ):
             with self.subTest(label=label):
                 self.assertIn(label, ADMIN)
 
     def test_temporary_access_is_not_called_a_paid_subscription(self):
         self.assertIn('u.status==="active"&&u.payment_status!=="approved"', ADMIN)
-        self.assertIn('"Vaqtinchalik access"', ADMIN)
-        self.assertIn('(u.payment_status==="approved"?"obuna":"access")+" tugaydi "', ADMIN)
+        self.assertIn('"Вақтинчалик кириш ҳуқуқи"', ADMIN)
+        self.assertIn('(u.payment_status==="approved"?"обуна":"кириш ҳуқуқи")+" тугайди "', ADMIN)
 
     def test_latest_user_payload_exposes_canonical_entitlement(self):
         for field in ('"access_type"', '"access_label"', '"access_ends_at"'):

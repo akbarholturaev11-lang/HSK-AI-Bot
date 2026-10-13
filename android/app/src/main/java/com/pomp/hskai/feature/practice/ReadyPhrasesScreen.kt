@@ -166,28 +166,15 @@ fun ReadyPhrasesScreen(
             .navigationBarsPadding()
             .padding(horizontal = 16.dp),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
+        // A compact back control is enough here; search is the primary content.
+        IconButton(
+            onClick = onBack,
+            modifier = Modifier.padding(top = 4.dp, bottom = 6.dp).size(44.dp),
         ) {
-            IconButton(onClick = onBack, modifier = Modifier.size(44.dp)) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.ready_phrases_back))
-            }
-            Column(Modifier.weight(1f)) {
-                Text(
-                    stringResource(R.string.ready_phrases_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = PompColors.Ink,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    stringResource(R.string.ready_phrases_intro),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = PompColors.InkSecondary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
+            Icon(
+                Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.ready_phrases_back),
+            )
         }
         OutlinedTextField(
             value = query,
@@ -226,8 +213,8 @@ fun ReadyPhrasesScreen(
                     onClick = { selectedFilter = filter.id },
                     label = { Text(label, maxLines = 1) },
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = PompColors.JadeSoft,
-                        selectedLabelColor = PompColors.JadeInk,
+                        selectedContainerColor = PompColors.CinnabarSoft,
+                        selectedLabelColor = PompColors.CinnabarInk,
                         containerColor = PompColors.PaperRaised,
                         labelColor = PompColors.InkSecondary,
                     ),
@@ -247,7 +234,7 @@ fun ReadyPhrasesScreen(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-            ) { CircularProgressIndicator(color = PompColors.Jade) }
+            ) { CircularProgressIndicator(color = PompColors.Cinnabar) }
             loadError -> Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -310,7 +297,7 @@ private fun ReadyPhraseCard(
             Row(verticalAlignment = Alignment.Top) {
                 Column(Modifier.weight(1f)) {
                     Text(phrase.zh, fontSize = 25.sp, lineHeight = 34.sp, color = PompColors.Ink, fontWeight = FontWeight.Medium)
-                    Text(phrase.pinyin, style = MaterialTheme.typography.bodyMedium, color = PompColors.Jade, fontWeight = FontWeight.SemiBold)
+                    Text(phrase.pinyin, style = MaterialTheme.typography.bodyMedium, color = PompColors.CinnabarInk, fontWeight = FontWeight.SemiBold)
                 }
                 IconButton(onClick = onSave, modifier = Modifier.size(38.dp)) {
                     Icon(
