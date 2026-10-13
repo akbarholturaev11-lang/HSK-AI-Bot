@@ -171,7 +171,13 @@ class CourseTrackService:
                 }
             return {
                 "track": track,
-                "level": self.default_level(track),
+                # Legacy accounts have no per-track row until the first switch.
+                # Their active level is still real, and must be preselected.
+                "level": (
+                    str(getattr(user, "level", "") or "")
+                    if track == active_track
+                    else self.default_level(track)
+                ),
                 "completed_lessons_count": 0,
                 "unlocked_at": None,
                 "unlock_payment_id": None,
