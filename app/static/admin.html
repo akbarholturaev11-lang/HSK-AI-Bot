@@ -492,13 +492,16 @@
       *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
     }
     @media(min-width:1171px){#dashboardQuickActions{grid-template-columns:repeat(3,minmax(0,1fr))}}
-    .admin-user-table-head{display:none}
-    @media(min-width:1171px){
-      .admin-user-table-head{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.5fr) minmax(0,.75fr);gap:24px;padding:14px 18px;background:#131d29;border:1px solid var(--line);border-bottom:0;border-radius:14px 14px 0 0;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
-      #userList{grid-template-columns:1fr;gap:0;border:1px solid var(--line);border-radius:0 0 14px 14px;overflow:hidden;background:var(--surface)}
-      #userList .ucard{grid-template-columns:minmax(0,1.2fr) minmax(0,1.5fr) minmax(0,.75fr);gap:24px;align-items:center;border:0;border-bottom:1px solid var(--line-soft);border-radius:0;min-height:104px}
-      #userList .ucard:last-child{border-bottom:0}
-      #userList .mini{padding:0;background:transparent}
+    #userList{align-items:start}
+    #userList .ucard{height:100%;align-content:start}
+    .drawer.inline{position:static;inset:auto;z-index:auto;width:100%;max-height:none;transform:none;transition:none;background:transparent;border:0;border-radius:0;box-shadow:none}
+    .drawer.inline .dhead{padding:0 0 18px;border:0}
+    .drawer.inline .dbody{padding:0;overflow:visible}
+    .drawer.inline .panel{gap:16px}
+    @media(min-width:761px){
+      .drawer.inline[data-inline-module=prices] .dbody>.panel,
+      .drawer.inline[data-inline-module=help] .dbody>.panel,
+      .drawer.inline[data-inline-module=channels] .dbody>.panel{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
     }
   </style>
 </head>
@@ -693,7 +696,6 @@
         </div>
         <div class="chips" id="userFilters" style="margin-bottom:12px"></div>
         <div id="telegramReachability" hidden></div>
-        <div class="admin-user-table-head" aria-hidden="true"><span>Фойдаланувчи</span><span>Обуналар ва кириш</span><span>Фаоллик</span></div>
         <div class="list" id="userList"></div>
       </section>
 
@@ -707,6 +709,7 @@
         <div class="sec">
           <div class="grid settings-grid" id="moduleGrid"></div>
         </div>
+        <div id="modulePanel" hidden></div>
         <div class="sec">
           <div class="sec-head"><div><div class="sec-title">🤖 Сунъий интеллект модели</div><div class="sec-note">Асосийси — Gemini, захирада — OpenAI. Ишлатиладиган Gemini моделини танланг.</div></div></div>
           <div id="aiModelBox"><p class="empty">Юкланмоқда…</p></div>
@@ -826,7 +829,7 @@
       desktopStats:{}, desktopStatsLoading:{},
       androidStats:{}, androidStatsLoading:{},
       // Profildan ochilgan bo'lim uchun: kimga tegishli va qayerga qaytish.
-      drawerBack:null, activeUser:null,
+      drawerBack:null, activeUser:null, moduleInline:false, modulePrefill:null,
       // «📣 Реклама» bo'limining ichida qaysi tanlov ochiq turibdi.
       adHub:"kurs"
     };
@@ -1573,12 +1576,13 @@
       renderTelegramReachability();
       const rows = filterUsers();
       $("userList").innerHTML = rows.length ? rows.map(u=>{
-        const t = statusTone(u);
+        const t = statusTone(u),end=u.access_ends_at||u.end_date;
+        const accessTag=end?tag((u.payment_status==="approved"?"обуна":"кириш ҳуқуқи")+(u.status==="expired"?" тугаган ":" тугайди ")+end,u.status==="expired"?"":u.payment_status==="approved"?"green":"violet"):"";
         return `<button class="ucard" data-user="${u.id}">
           <div class="uhead"><div><div class="uname">${esc(u.name)}</div>
             <div class="usub">${u.username?"@"+esc(u.username)+" · ":""}${u.id}<br>${esc(u.language)} · ${esc(u.level)} · ${esc(u.last_active)}</div></div>
             ${tag(t[0],t[1])}</div>
-          <div class="tags">${tag(u.plan,"blue")}${tag(u.method,"")}${u.bot_blocked?tag("ТГ ёпиқ","red"):""}${u.access_ends_at?tag((u.payment_status==="approved"?"обуна":"кириш ҳуқуқи")+" тугайди "+u.access_ends_at,u.payment_status==="approved"?"green":"violet"):(u.end_date?tag((u.payment_status==="approved"?"обуна":"кириш ҳуқуқи")+" тугайди "+u.end_date,u.payment_status==="approved"?"green":"violet"):"")}</div>
+          <div class="tags">${tag(u.plan,"blue")}${tag(u.method,"")}${u.bot_blocked?tag("ТГ ёпиқ","red"):""}${accessTag}</div>
           <div class="mini2"><div class="mini"><b>${esc(u.questions)}</b><span>Сунъий интеллектга саволлар</span></div><div class="mini"><b>${esc(u.streak)}</b><span>серия</span></div></div>
         </button>`;
       }).join("") : "<p class='empty'>Бу саралаш бўйича фойдаланувчи топилмади.</p>";
@@ -1629,13 +1633,41 @@
       catch(e){ toast(apiErr(e,"Тўловни кўриб бўлмади")); btn.disabled=false; }
     }
 
-    async function reloadAll(msg){ state.management=null; await loadData(); if(msg) toast(msg); }
+    async function reloadAll(msg){
+      const m=state.activeModule,prefill=state.modulePrefill,requestId=moduleRequestId,context=state.adminRoute+":"+adminSub();
+      state.management=null; await loadData();
+      if(m&&requestId===moduleRequestId&&state.activeModule===m&&context===state.adminRoute+":"+adminSub()&&$("drawer").classList.contains("open")) await openModule(m,prefill);
+      if(msg) toast(msg);
+    }
 
     /* ---------- USER DETAIL ---------- */
     /* Drawer ichi almashadi, shuning uchun profildan bo'lim ochilganda qaytish
        yo'li kerak. `state.drawerBack` — bir pog'onali orqaga qaytarish. */
-    function openDrawer(title,sub,html){ if($("app").hidden) return; $("drawerTitle").textContent=title; $("drawerSub").textContent=sub||""; $("drawerBody").innerHTML=html; $("drawer").inert=false; $("drawer").classList.add("open"); $("scrim").classList.add("open"); $("drawer").setAttribute("aria-hidden","false"); $("drawerBack").hidden=!state.drawerBack; }
-    function closeDrawer(){ $("drawer").inert=true; $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); $("drawer").setAttribute("aria-hidden","true"); state.activeModule=null; state.drawerBack=null; $("drawerBack").hidden=true; }
+    let moduleRequestId=0;
+    function openDrawer(title,sub,html){
+      if($("app").hidden) return;
+      const drawer=$("drawer"),inline=state.moduleInline;
+      if(inline){ $("modulePanel").hidden=false; $("modulePanel").append(drawer); }
+      else{ document.body.insertBefore(drawer,$("toast")); $("modulePanel").hidden=true; }
+      drawer.classList.toggle("inline",inline);
+      // Keep presentation metadata separate from delegated data-module actions.
+      drawer.dataset.inlineModule=state.activeModule||"";
+      $("drawerTitle").textContent=title; $("drawerSub").textContent=sub||"";
+      $("drawerSub").hidden=!sub; $("drawerBody").innerHTML=html;
+      drawer.inert=false; drawer.classList.add("open");
+      $("scrim").classList.toggle("open",!inline);
+      drawer.setAttribute("aria-hidden","false"); $("drawerBack").hidden=!state.drawerBack;
+      if(inline) $("moduleGrid").closest(".sec").hidden=true;
+    }
+    function closeDrawer(){
+      const drawer=$("drawer"),wasInline=state.moduleInline;
+      ++moduleRequestId;
+      drawer.inert=true; drawer.classList.remove("open","inline");
+      document.body.insertBefore(drawer,$("toast")); $("modulePanel").hidden=true;
+      $("scrim").classList.remove("open"); drawer.setAttribute("aria-hidden","true");
+      state.activeModule=null; state.moduleInline=false; state.modulePrefill=null; state.drawerBack=null; $("drawerBack").hidden=true;
+      if(wasInline) renderAdminChrome(false);
+    }
     function drawerBack(){ const back=state.drawerBack; state.drawerBack=null; if(back) back(); else closeDrawer(); }
 
     /* Bitta panel ikki joyda chiziladi: modul drawer'ida yoki «📣 Реклама»
@@ -1659,11 +1691,16 @@
     }
 
     async function openUser(id){
+      if($("app").hidden) return;
       const u = ((state.remoteUsers||[]).concat(state.overview.users||[])).find(x=>String(x.id)===String(id));
       if(!u) return;
+      if(state.moduleInline) closeDrawer();
+      state.moduleInline=false; state.activeModule=null; state.modulePrefill=null;
+      const requestId=++moduleRequestId;
       openDrawer(u.name, `${u.username?"@"+u.username+" · ":""}${u.id} · ${u.last_active}`, "<p class='empty'>Юкланмоқда…</p>");
       let detail=null;
-      try{ detail=await apiPost("/api/admin-miniapp/users/detail",{telegram_id:u.id}); }catch(e){ toast(apiErr(e,"Тафсилот юкланмади")); }
+      try{ detail=await apiPost("/api/admin-miniapp/users/detail",{telegram_id:u.id}); }catch(e){ if(requestId===moduleRequestId&&!$("app").hidden) toast(apiErr(e,"Тафсилот юкланмади")); }
+      if(requestId!==moduleRequestId||$("app").hidden) return;
       const f=(detail&&detail.user)||u, pays=(detail&&detail.payments)||[];
       const access=f.access||{};
       const referral=f.referral||{};
@@ -1794,7 +1831,10 @@
       const note=g.configured?"Gemini асосий ишлайди; хато бўлса OpenAI захира.":"Gemini API кей созланмаган — ҳозирча OpenAI ишлайди.";
       host.innerHTML=`<div class="mcard"><h3>Gemini модели</h3><p>${esc(note)}</p><div class="row"><select class="input" id="aiModelSel" style="max-width:230px">${opts}</select><button class="btn" data-aimodelsave>Сақлаш</button></div></div>`;
     }
-    function moduleTitle(key){ const m=(state.overview.modules||[]).find(x=>x.key===key); return m?adminModuleLabel(m):"Бошқарув"; }
+    function moduleTitle(key){
+      if(key==="prices"&&state.adminRoute==="finance"&&adminSub()==="methods") return "Тўлов реквизитлари";
+      const m=(state.overview.modules||[]).find(x=>x.key===key); return m?adminModuleLabel(m):"Бошқарув";
+    }
 
     /* Profil kontekstida ochilgan bo'lim sarlavhasi: kim uchun ishlayotganimiz
        ko'rinib tursin. Kontekst bo'lmasa oddiy izoh qoladi. */
@@ -1815,15 +1855,20 @@
     }
 
     async function openModule(key,prefill){
+      if($("app").hidden) return;
       state.activeModule=key;
+      state.modulePrefill=prefill==null?null:prefill;
       if(key==="stats"){ closeDrawer(); switchTab("statistics"); return; }
       if(key==="user_search"){ closeDrawer(); switchTab("users"); $("search").focus(); return; }
       /* Reklama endi drawer emas, sozlamalar ichidagi bitta bo'lim. */
       if(key==="ads_hub"){ closeDrawer(); navigateAdmin("marketing","creatives"); const h=$("adHub"); if(h) h.scrollIntoView({behavior:"smooth",block:"start"}); return openAdHub(state.adHub); }
+      const requestId=++moduleRequestId;
+      state.moduleInline=state.tab==="settings"&&!state.drawerBack;
       openDrawer(moduleTitle(key),"","<p class='empty'>Юкланмоқда…</p>");
       let d;
-      try{ d=await loadManagement(false); }catch(e){ $("drawerBody").innerHTML="<p class='empty'>Маълумот юкланмади.</p>"; return; }
-      const map={prices:renderPrices,hsk30:renderHsk30,course_access:renderCourseAccess,limits:renderLimits,ad_placements:renderAdPlacements,course_sales_experiment:renderCourseSalesExperiment,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount",prefill),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
+      try{ d=await loadManagement(false); }catch(e){ if(requestId===moduleRequestId&&!$("app").hidden) $("drawerBody").innerHTML="<p class='empty'>Маълумот юкланмади. Янгилаш тугмасини босинг.</p>"; return; }
+      if(requestId!==moduleRequestId||$("app").hidden) return;
+      const map={prices:adminSub()==="methods"&&state.adminRoute==="finance"?renderPaymentMethods:renderPrices,hsk30:renderHsk30,course_access:renderCourseAccess,limits:renderLimits,ad_placements:renderAdPlacements,course_sales_experiment:renderCourseSalesExperiment,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount",prefill),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
       if(key==="broadcast") return renderBroadcast();
       if(key==="give_access") return renderGiveAccess(prefill);
       if(key==="delete_user") return renderDeleteUser(prefill);
@@ -2391,13 +2436,18 @@
     }
 
     function renderPrices(d){
-      openDrawer("💳 Обуна нархлари","Нархлар дарҳол обуна мини-иловасида ишлайди",`<div class="panel">
+      openDrawer("Обуналар тарифлари","",`<div class="panel">
         ${(d.prices||[]).map(p=>`<div class="mcard" data-prow data-method="${p.method}" data-plan="${p.plan}">
-          <h3>${esc(p.method_label)} · ${esc(p.plan_label)}</h3><p>Жорий: ${esc(p.text)}</p>
+          <h3>${esc(p.method_label)} · ${esc(metricLabel(p.plan_label))}</h3><p>Жорий: ${esc(p.text)}</p>
           <div class="row"><input class="input" data-pamount type="number" min="1" max="1000000" value="${p.amount}" style="max-width:170px"><button class="btn" data-psave>Сақлаш</button></div>
-          ${priceQrHtml(p)}</div>`).join("")}
+          </div>`).join("")||"<p class='empty'>Тарифлар топилмади.</p>"}</div>`);
+    }
+    function renderPaymentMethods(d){
+      openDrawer("Тўлов реквизитлари","",`<div class="panel">
         <div class="mcard"><h3>Душанбе Сити реквизити</h3><p>Тожикистон → Душанбе Сити танлаган фойдаланувчиларга чиқади.</p><textarea id="payDetails" class="textarea" maxlength="1500">${esc(d.payment_details||"")}</textarea><button class="btn" data-pdsave>Реквизитни сақлаш</button></div>
-        <div class="mcard"><h3>Алиф реквизити</h3><p>Тожикистон → Алиф, Россия, Ўзбекистон ва бошқа давлат карталарига чиқади.</p><textarea id="payDetailsAlif" class="textarea" maxlength="1500">${esc(d.payment_details_alif||"")}</textarea><button class="btn" data-pdsave data-bank="alif">Реквизитни сақлаш</button></div></div>`);
+        <div class="mcard"><h3>Алиф реквизити</h3><p>Тожикистон → Алиф, Россия, Ўзбекистон ва бошқа давлат карталарига чиқади.</p><textarea id="payDetailsAlif" class="textarea" maxlength="1500">${esc(d.payment_details_alif||"")}</textarea><button class="btn" data-pdsave data-bank="alif">Реквизитни сақлаш</button></div>
+        ${(d.prices||[]).filter(p=>p.qr_method).map(p=>`<div class="mcard" data-prow data-method="${p.method}" data-plan="${p.plan}">
+          <h3>${esc(p.method_label)} · ${esc(metricLabel(p.plan_label))}</h3>${priceQrHtml(p)}</div>`).join("")}</div>`);
       bindPriceQr();
     }
     function bindPriceQr(){
@@ -2438,7 +2488,7 @@
       const h=d.help||{};
       openDrawer("🆘 Ёрдам созламалари","Админ алоқа ва 3 тилдаги видео ҳаволалар",`<div class="panel">
         <div class="mcard"><h3>Админ алоқа</h3><input id="adminContact" class="input" value="${esc(h.admin_contact||"")}" placeholder="@username ёки т.ме/ҳавола"><button class="btn" data-hcontact>Сақлаш</button></div>
-        ${(h.links||[]).map(i=>`<div class="mcard" data-hrow data-key="${i.key}" data-lang="${i.lang}"><h3>${esc(i.icon)} ${esc(metricLabel(i.label))} · ${esc(i.lang.toUpperCase())}</h3>
+        ${(h.links||[]).map(i=>`<div class="mcard" data-hrow data-key="${i.key}" data-lang="${i.lang}"><h3>${esc(i.icon)} ${esc(metricLabel(i.label))} · ${esc(({uz:"Ўзбекча",ru:"Русча",tj:"Тожикча",tg:"Тожикча"})[String(i.lang||"").toLowerCase()]||metricLabel(i.lang))}</h3>
           <input class="input" data-hvalue value="${esc(i.value||"")}" placeholder="https://..."><button class="btn" data-hsave>Сақлаш</button></div>`).join("")}</div>`);
     }
     function renderPortfolio(d){
@@ -2742,10 +2792,10 @@
 
     /* ---------- module actions ---------- */
     async function afterModule(msg){
-      const m=state.activeModule, hub=state.adHub;
+      const m=state.activeModule,prefill=state.modulePrefill,requestId=moduleRequestId,hub=state.adHub,context=state.adminRoute+":"+adminSub();
       state.management=null;
       await loadData();
-      if(m && $("drawer").classList.contains("open")) await openModule(m);
+      if(m&&requestId===moduleRequestId&&state.activeModule===m&&context===state.adminRoute+":"+adminSub()&&$("drawer").classList.contains("open")) await openModule(m,prefill);
       /* Reklama umumiy qoidalari alohida modalga chiziladi. Saqlashdan
          keyin serverdan yangilangan qiymatni qayta olib kelamiz. */
       else if(hub) await openAdHub(hub);
@@ -2767,11 +2817,14 @@
       const target=o.name?`${o.name} (${targetId})`:String(targetId);
       const current=o.currentEnd?`\nҲозирги тугаш санаси: ${o.currentEnd}`:"";
       if(!confirm(`${target} фойдаланувчига ${durationDays} кунлик обуна берилсинми?${current}\nФаол обуна бўлса, муддат узайтирилади.`)) return null;
+      const requestId=moduleRequestId;
       const result=await apiPost("/api/admin-miniapp/users/give-access",{telegram_id:targetId,duration_days:durationDays});
       state.management=null;
       await loadData();
-      if(o.refreshUser) await openUser(targetId);
-      else if(state.activeModule&&$("drawer").classList.contains("open")) await openModule(state.activeModule);
+      if(requestId===moduleRequestId){
+        if(o.refreshUser) await openUser(targetId);
+        else if(state.activeModule&&$("drawer").classList.contains("open")) await openModule(state.activeModule,state.modulePrefill);
+      }
       toast(`${durationDays} кунлик обуна берилди · ${result.end_date} гача`);
       return result;
     }
@@ -3076,7 +3129,7 @@
       if(state.adminRoute==="product"&&sub==="trial")return key==="limits";
       return !group[1]||group[1]===sub;
     }
-    function renderAdminChrome(){
+    function renderAdminChrome(autoOpen=true){
       const cfg=adminRoutes[state.adminRoute],sub=adminSub();
       $("pageTitle").textContent=cfg.title;
       $("generatedAt").hidden=state.adminRoute!=="dashboard";
@@ -3099,8 +3152,19 @@
       });
       const modules=[...$("moduleGrid").querySelectorAll("[data-module]")];
       modules.forEach(btn=>btn.hidden=!adminModuleVisible(btn.dataset.module));
-      $("moduleGrid").closest(".sec").hidden=!modules.some(btn=>!btn.hidden);
+      const visible=modules.filter(btn=>!btn.hidden);
+      const inlineOpen=state.moduleInline&&$("drawer").classList.contains("open");
+      $("moduleGrid").closest(".sec").hidden=inlineOpen||!visible.length;
+      if(state.adminRoute==="finance"&&sub==="methods"){
+        const priceModule=visible.find(btn=>btn.dataset.module==="prices");
+        if(priceModule){priceModule.querySelector("h3").textContent="Тўлов реквизитлари";priceModule.querySelector("p").textContent="Банк маълумотлари ва тўлов QR кодлари";}
+      }else{
+        const priceModule=modules.find(btn=>btn.dataset.module==="prices");
+        if(priceModule){priceModule.querySelector("h3").textContent=adminModuleLabels.prices;priceModule.querySelector("p").textContent=adminModuleNotes.prices;}
+      }
       wrapAdminTables();
+      const dedicatedSection=[...document.querySelectorAll("[data-admin-setting]")].some(sec=>!sec.hidden);
+      if(autoOpen&&tab==="settings"&&!inlineOpen&&!dedicatedSection&&visible.length===1) void openModule(visible[0].dataset.module);
     }
     function navigateAdmin(route,sub){
       if(route==="menu"){openAdminNavigator();return;}
@@ -3275,7 +3339,7 @@
       if((el=T("[data-tab-jump]"))) return switchTab(el.dataset.tabJump);
       if((el=T("[data-act]"))){
         const n=el.dataset.act;
-        if(n==="reload") return loadData();
+        if(n==="reload") return reloadAll();
         if(n==="clear-search"){ $("search").value=""; state.search=""; state.remoteUsers=null; if(state.filter==="bot_blocked") return remoteSearch(""); renderUsers(); return; }
         if(n==="copy-report") return copyReport();
         if(n==="upload-ca"){ if(!caPlacementsValue()){ toast("Аввал камида битта реклама жойини танланг"); caPlaceWarnUI(); return; } $("caFile").click(); return; }

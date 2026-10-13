@@ -2352,7 +2352,25 @@ def admin_payload():
                 "questions": "2/5",
                 "bonus_left": 0,
                 "streak": 4,
-            }
+            },
+            {
+                "id": 222, "name": "Madina", "username": "madina",
+                "language": "Русский", "level": "HSK2", "mode": "Kurs",
+                "status": "active", "status_label": "Faol",
+                "payment_status": "pending", "payment_label": "Tekshiruvda",
+                "plan": "3 oy", "method": "WeChat Pay", "end_date": None,
+                "last_active": "bugun", "active_today": True, "hot_lead": True,
+                "questions": "1/5", "bonus_left": 0, "streak": 2,
+            },
+            {
+                "id": 333, "name": "Rustam", "username": "rustam",
+                "language": "Тоҷикӣ", "level": "HSK3", "mode": "Kurs",
+                "status": "expired", "status_label": "Muddati tugagan",
+                "payment_status": "approved", "payment_label": "Tasdiqlangan",
+                "plan": "1 oy", "method": "Visa", "end_date": "20.06.2026 12:00",
+                "last_active": "kecha", "active_today": False, "hot_lead": False,
+                "questions": "0/5", "bonus_left": 0, "streak": 0,
+            },
         ],
         "queue": [
             {"title": "To'lov tekshiruvi", "note": "2 ta to'lov admin tasdig'ini kutyapti", "priority": "hozir", "section": "payments"}
@@ -2362,6 +2380,11 @@ def admin_payload():
             {"key": "give_access", "icon": "✅", "title": "Obuna berish", "note": "Istalgan muddatga paid active", "section": "settings", "callback": "adm:giveaccess_info"},
             {"key": "course_access", "icon": "📚", "title": "Kurs access", "note": "Paywall yoki vaqtinchalik free rejimi", "section": "settings", "callback": "adm:course_access"},
             {"key": "ads_hub", "icon": "📣", "title": "Reklama", "note": "Mini App reklama va ilova promosi", "section": "settings", "callback": "adm:ad_placements"},
+            {"key": "prices", "icon": "💳", "title": "Narxlar", "note": "Obuna narxlari", "section": "settings", "callback": "adm:prices"},
+            {"key": "help", "icon": "🆘", "title": "Yordam", "note": "Aloqa", "section": "settings", "callback": "adm:help"},
+            {"key": "hsk30", "icon": "📚", "title": "HSK 3.0", "note": "Kurs sozlamalari", "section": "settings", "callback": "adm:hsk30"},
+            {"key": "limits", "icon": "⚙️", "title": "Limitlar", "note": "Kunlik limitlar", "section": "settings", "callback": "adm:limits"},
+            {"key": "discount", "icon": "🎁", "title": "Chegirma", "note": "Shaxsiy yoki segment", "section": "settings", "callback": "adm:discount"},
         ],
         "monitor": {
             "ticker": [{"label": "24 soat aktiv", "value": 5, "tone": "up"}],
@@ -2372,6 +2395,57 @@ def admin_payload():
             ],
         },
     }
+
+
+def admin_management_payload():
+    return {
+        "ok": True,
+        "course_access": {
+            "mode": "subscription", "effective_mode": "subscription",
+            "free_active": False, "free_until": None,
+            "saved_at": None, "updated_by_telegram_id": None,
+        },
+        "prices": [
+            {
+                "method": method, "method_label": label, "plan": "1_month",
+                "plan_label": "1 oy", "amount": amount, "currency": currency,
+                "text": f"{amount} {currency}", "qr_method": qr_method, "qr_set": False,
+            }
+            for method, label, amount, currency, qr_method in [
+                ("visa", "Visa", 99, "TJS", False),
+                ("alipay", "Alipay", 79, "¥", True),
+                ("wechat", "WeChat Pay", 89, "¥", True),
+            ]
+        ],
+        "payment_details": "TEST DC instructions",
+        "payment_details_alif": "TEST Alif instructions",
+        "help": {
+            "admin_contact": "@test_support",
+            "links": [{"key": "course", "lang": "uz", "icon": "📚", "label": "Kurs", "value": "https://example.test/help/course"}],
+        },
+        "hsk30": {
+            "enabled": True, "unlock_payment_enabled": True,
+            "unlock_price_tjs": 10, "live_levels": ["nhsk1", "nhsk2"],
+            "qr": {"alipay": False, "wechat": False}, "stats": {},
+        },
+    }
+
+
+def expect_admin_inline_module(page, key):
+    expect(page.locator(f'#modulePanel #drawer.inline[data-inline-module="{key}"]')).to_be_visible()
+    expect(page.locator("#drawer")).to_have_css("position", "static")
+    expect(page.locator("#scrim")).not_to_have_class(re.compile(r"\bopen\b"))
+    expect(page.locator("#scrim")).to_have_css("pointer-events", "none")
+    assert page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
+
+
+def capture_admin_evidence(page, view, viewport_width):
+    if os.getenv("ADMIN_E2E_SCREENSHOTS") != "1":
+        return
+    screenshot_dir = Path(os.getenv("ADMIN_E2E_SCREENSHOT_DIR", str(APP_ROOT / "output/playwright")))
+    screenshot_dir.mkdir(parents=True, exist_ok=True)
+    expect(page.locator("#toast")).not_to_be_visible()
+    page.screenshot(path=str(screenshot_dir / f"admin-{view}-{viewport_width}.png"), full_page=True)
 
 
 def admin_finance_payload():
@@ -2496,6 +2570,12 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     course_access_requests = []
     app_promo_requests = []
     payment_requests = []
+    price_requests = []
+    payment_details_requests = []
+    qr_requests = []
+    help_requests = []
+    campaign_requests = []
+    management = admin_management_payload()
     runtime_errors = []
     page.on("pageerror", lambda error: runtime_errors.append(str(error)))
     page.on(
@@ -2533,6 +2613,10 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
 
     def save_course_access(route):
         course_access_requests.append(json.loads(route.request.post_data or "{}"))
+        management["course_access"].update({
+            "mode": "free_until", "effective_mode": "free_until", "free_active": True,
+            "free_until": "2026-07-05T11:35:00+00:00",
+        })
         json_response(
             route,
             {
@@ -2580,25 +2664,47 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
         assert route.request.headers.get("x-telegram-init-data") == ""
         json_response(route, {"ok": True})
 
+    def save_price(route):
+        payload = json.loads(route.request.post_data or "{}")
+        price_requests.append(payload)
+        price = next(item for item in management["prices"] if item["method"] == payload["method"] and item["plan"] == payload["plan"])
+        price["amount"] = payload["amount"]
+        price["text"] = f'{price["amount"]} {price["currency"]}'
+        json_response(route, {"ok": True, "price": price})
+
+    def save_payment_details(route):
+        payload = json.loads(route.request.post_data or "{}")
+        payment_details_requests.append(payload)
+        key = "payment_details_alif" if payload["bank"] == "alif" else "payment_details"
+        management[key] = payload["payment_details"]
+        json_response(route, {"ok": True})
+
+    def upload_qr(route):
+        assert route.request.headers["content-type"].startswith("multipart/form-data; boundary=")
+        body = route.request.post_data_buffer or b""
+        for key, value in [("method", "alipay"), ("plan", "1_month"), ("scope", "main")]:
+            assert f'name="{key}"\r\n\r\n{value}\r\n'.encode() in body
+        assert b'filename="test-qr.png"' in body
+        qr_requests.append({"method": "alipay", "plan": "1_month", "scope": "main"})
+        management["prices"][1]["qr_set"] = True
+        json_response(route, {"ok": True})
+
+    def save_help(route):
+        payload = json.loads(route.request.post_data or "{}")
+        help_requests.append(payload)
+        management["help"]["admin_contact"] = payload["value"]
+        json_response(route, {"ok": True})
+
+    def create_campaign(route):
+        campaign_requests.append(json.loads(route.request.post_data or "{}"))
+        json_response(route, {"ok": True})
+
     page.route("**/api/admin-miniapp/overview", lambda route: json_response(route, admin_payload()))
     page.route("**/api/admin-miniapp/finance-stats", lambda route: json_response(route, admin_finance_payload()))
     page.route("**/api/admin-miniapp/sub-entry-stats", lambda route: json_response(route, {"ok": True, "rows": []}))
     page.route(
         "**/api/admin-miniapp/management",
-        lambda route: json_response(
-            route,
-            {
-                "ok": True,
-                "course_access": {
-                    "mode": "subscription",
-                    "effective_mode": "subscription",
-                    "free_active": False,
-                    "free_until": None,
-                    "saved_at": None,
-                    "updated_by_telegram_id": None,
-                },
-            },
-        ),
+        lambda route: json_response(route, management),
     )
     page.route(
         "**/api/admin-miniapp/notifications",
@@ -2609,6 +2715,13 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     page.route("**/api/admin-miniapp/course-access/save", save_course_access)
     page.route("**/api/admin-miniapp/desktop-promo/save", save_app_promo)
     page.route("**/api/admin-miniapp/payments/review", review_payment)
+    page.route("**/api/admin-miniapp/prices/save", save_price)
+    page.route("**/api/admin-miniapp/payment-details/save", save_payment_details)
+    page.route("**/api/admin-miniapp/prices/qr-upload", upload_qr)
+    page.route("**/api/admin-miniapp/help/save", save_help)
+    page.route("**/api/admin-miniapp/campaigns/create", create_campaign)
+    page.route("**/api/admin-miniapp/hsk30/stats", lambda route: json_response(route, {"ok": True}))
+    page.route("**/api/admin-miniapp/users/detail", lambda route: json_response(route, {"ok": True, "user": admin_payload()["users"][0], "payments": []}))
     page.route(
         "**/api/admin-miniapp/android-stats",
         lambda route: json_response(
@@ -2717,6 +2830,66 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     expect(page.locator("#financeCards")).to_be_visible()
     open_admin_route(page, "users")
     expect(page.locator("#userList")).to_be_visible()
+    cards = page.locator("#userList .ucard")
+    expect(cards).to_have_count(3)
+    expect(cards.nth(0)).to_contain_text("Ali")
+    expect(cards.nth(0)).to_contain_text("2/5")
+    expect(cards.nth(1)).to_contain_text("Madina")
+    expect(cards.nth(1)).to_contain_text("Тўлов текширувда")
+    expect(cards.nth(2)).to_contain_text("Муддати тугаган")
+    expired_access_tag = cards.nth(2).locator(".tag").filter(has_text="20.06.2026 12:00")
+    expect(expired_access_tag).to_have_text("обуна тугаган 20.06.2026 12:00")
+    expect(expired_access_tag).not_to_have_class(re.compile(r"\bgreen\b"))
+    assert cards.first.evaluate("el => parseFloat(getComputedStyle(el).borderRadius)") > 0
+    first_box, second_box = cards.nth(0).bounding_box(), cards.nth(1).bounding_box()
+    if viewport_width == 1440:
+        assert abs(first_box["y"] - second_box["y"]) < 2
+        assert second_box["x"] >= first_box["x"] + first_box["width"]
+    else:
+        assert abs(first_box["x"] - second_box["x"]) < 2
+        assert second_box["y"] >= first_box["y"] + first_box["height"]
+    page.locator('#userFilters [data-seg="pending"]').click()
+    expect(cards).to_have_count(1)
+    expect(cards.first).to_contain_text("Madina")
+    page.locator('#userFilters [data-seg="all"]').click()
+    expect(cards).to_have_count(3)
+    capture_admin_evidence(page, "users", viewport_width)
+    cards.first.click()
+    expect(page.locator("#drawer")).to_be_visible()
+    expect(page.locator("#drawer")).not_to_have_class(re.compile(r"\binline\b"))
+    expect(page.locator("#drawerTitle")).to_have_text("Ali")
+    expect(page.locator("#scrim")).to_have_class(re.compile(r"\bopen\b"))
+    expect(page.locator("#qaDays")).to_be_visible()
+    expect(page.locator("#modulePanel")).to_be_hidden()
+    discount_button = page.locator('#drawer [data-module="discount"][data-uback="111"]')
+    page.locator("#drawer details").filter(
+        has=page.locator('[data-module="discount"][data-uback="111"]')
+    ).locator("summary").click()
+    expect(discount_button).to_be_visible()
+    discount_button.click()
+    expect(page.locator("#cmTarget")).to_have_value("111")
+    expect(page.locator("#drawerSub")).to_contain_text("Ali · 111")
+    expect(page.locator("#drawerBack")).to_be_visible()
+    expect(page.locator("#drawer")).not_to_have_class(re.compile(r"\binline\b"))
+    page.evaluate("reloadAll()")
+    expect(page.locator("#cmTarget")).to_have_value("111")
+    expect(page.locator("#cm_status, #cm_language, #cmNotifySegment")).to_have_count(0)
+    page.locator("#cmTitle").fill("TEST personal discount")
+    page.locator("#cmText").fill("TEST Ali only")
+    page.locator("#cmNotify").uncheck()
+    page.once("dialog", lambda dialog: dialog.accept())
+    page.locator('[data-cmcreate="discount"]').click()
+    expect(page.locator("#toast")).to_contain_text("Кампания яратилди")
+    assert campaign_requests == [{
+        "kind": "discount", "title": "TEST personal discount", "text": "TEST Ali only",
+        "hours": "24", "percent": "20", "target_telegram_id": "111", "notify_enabled": False,
+    }]
+    expect(page.locator("#cmTarget")).to_have_value("111")
+    expect(page.locator("#cm_status, #cmNotifySegment")).to_have_count(0)
+    page.locator("#drawerBack").click()
+    expect(page.locator("#drawerTitle")).to_have_text("Ali")
+    expect(page.locator("#qaDays")).to_be_visible()
+    page.locator("#drawer [data-act='close-drawer']").click()
     page.keyboard.press("/")
     expect(page.locator("#adminNavigator")).to_be_visible()
     expect(page.locator("#adminNavSearch")).to_be_focused()
@@ -2757,8 +2930,19 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
 
     page.locator("#drawer [data-act='close-drawer']").click()
     open_admin_route(page, "product")
+    expect_admin_inline_module(page, "hsk30")
+    expect(page.locator("#hsk30Enabled")).to_be_checked()
+    expect(page.locator("#hsk30Price")).to_have_value("10")
+    capture_admin_evidence(page, "hsk30", viewport_width)
+    if viewport_width == 1440 and os.getenv("ADMIN_E2E_SCREENSHOTS") == "1":
+        page.locator("#hsk30Enabled").scroll_into_view_if_needed()
+        capture_admin_evidence(page, "hsk30-form", viewport_width)
+        page.locator("#adminSubnav").scroll_into_view_if_needed()
     page.locator('#adminSubnav [data-admin-sub="access"]').click()
+    expect(page.locator("#modulePanel")).to_be_hidden()
+    expect(page.locator("#hsk30Enabled:visible")).to_have_count(0)
     page.locator('[data-module="course_access"]').click()
+    expect_admin_inline_module(page, "course_access")
     expect(page.locator("#courseAccessMode")).to_have_value("subscription")
     expect(page.locator('#courseAccessMode option[value="ads"]')).to_have_count(0)
     page.locator("#courseAccessMode").select_option("free_until")
@@ -2766,6 +2950,8 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     page.locator("[data-casave]").click()
     expect(page.locator("#toast")).to_contain_text("Курс кириш ҳуқуқи сақланди")
     assert course_access_requests == [{"mode": "free_until", "duration_days": 7}]
+    expect_admin_inline_module(page, "course_access")
+    expect(page.locator("#courseAccessMode")).to_have_value("free_until")
 
     page.locator("#drawer [data-act='close-drawer']").click()
     open_admin_route(page, "marketing")
@@ -2797,9 +2983,84 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
         {"payment_id": 1, "action": "reject", "reason": "Receipt does not match"},
     ]
 
+    page.locator('#adminSubnav [data-admin-sub="prices"]').click()
+    expect_admin_inline_module(page, "prices")
+    price_row = page.locator('#drawer [data-prow][data-method="alipay"][data-plan="1_month"]')
+    expect(price_row.locator("h3")).to_have_text("Alipay · 1 ой")
+    assert page.evaluate("state.management.prices.find(p => p.method === 'alipay').plan") == "1_month"
+    assert page.evaluate("state.management.prices.find(p => p.method === 'alipay').plan_label") == "1 oy"
+    expect(page.locator("#drawer [data-pamount]")).to_have_count(3)
+    expect(page.locator("#drawer [data-psave]")).to_have_count(3)
+    expect(page.locator("#drawer #payDetails, #drawer #payDetailsAlif, #drawer [data-qrbtn], #drawer [data-qrfile]")).to_have_count(0)
+    price_row.locator("[data-pamount]").fill("123")
+    price_row.locator("[data-psave]").click()
+    expect(page.locator("#toast")).to_contain_text("Нарх сақланди")
+    expect(price_row.locator("[data-psave]")).to_be_enabled()
+    assert price_requests == [{"method": "alipay", "plan": "1_month", "amount": 123}]
+    expect_admin_inline_module(page, "prices")
+    expect(price_row.locator("[data-pamount]")).to_have_value("123")
+    capture_admin_evidence(page, "tariffs", viewport_width)
+
+    page.locator('#adminSubnav [data-admin-sub="methods"]').click()
+    expect_admin_inline_module(page, "prices")
+    expect(page.locator("#drawerTitle")).to_have_text("Тўлов реквизитлари")
+    expect(page.locator("#drawer [data-pamount], #drawer [data-psave]")).to_have_count(0)
+    expect(page.locator("#payDetails")).to_have_value("TEST DC instructions")
+    expect(page.locator("#payDetailsAlif")).to_have_value("TEST Alif instructions")
+    expect(page.locator("#drawer [data-qrfile]")).to_have_count(2)
+    expect(price_row.locator("h3")).to_have_text("Alipay · 1 ой")
+    expect(price_row.locator("[data-qrbtn][data-scope='main']")).to_be_visible()
+    expect(price_row).to_contain_text("123 ¥")
+    capture_admin_evidence(page, "requisites", viewport_width)
+    dc_instructions = "TEST DC\nRecipient Ali — keep exact text"
+    alif_instructions = "TEST Alif\nКириллча матн + ASCII reference N1"
+    page.locator("#payDetails").fill(dc_instructions)
+    page.locator('#drawer [data-pdsave]:not([data-bank])').click()
+    expect(page.locator("#toast")).to_contain_text("Реквизит сақланди")
+    expect(page.locator('#drawer [data-pdsave]:not([data-bank])')).to_be_enabled()
+    expect(page.locator("#payDetails")).to_have_value(dc_instructions)
+    page.locator("#payDetailsAlif").fill(alif_instructions)
+    page.locator('#drawer [data-pdsave][data-bank="alif"]').click()
+    expect(page.locator('#drawer [data-pdsave][data-bank="alif"]')).to_be_enabled()
+    expect(page.locator("#payDetailsAlif")).to_have_value(alif_instructions)
+    assert payment_details_requests == [
+        {"payment_details": dc_instructions, "bank": ""},
+        {"payment_details": alif_instructions, "bank": "alif"},
+    ]
+    price_row.locator("[data-qrfile]").set_input_files({
+        "name": "test-qr.png", "mimeType": "image/png",
+        "buffer": base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/lAAAAABJRU5ErkJggg=="),
+    })
+    expect(page.locator("#toast")).to_contain_text("QR сақланди")
+    assert qr_requests == [{"method": "alipay", "plan": "1_month", "scope": "main"}]
+    expect_admin_inline_module(page, "prices")
+    expect(page.locator("#drawer [data-psave]")).to_have_count(0)
+    page.locator('#adminSubnav [data-admin-sub="prices"]').click()
+    expect(price_row.locator("[data-pamount]")).to_have_value("123")
+    expect(page.locator("#drawer [data-qrfile], #drawer #payDetails")).to_have_count(0)
+    page.locator('#adminSubnav [data-admin-sub="methods"]').click()
+    expect(page.locator("#payDetails")).to_have_value(dc_instructions)
+    expect(page.locator("#payDetailsAlif")).to_have_value(alif_instructions)
+
     open_admin_route(page, "system")
     expect(page.locator("#aiModelBox")).to_be_visible()
     expect(page.locator("#adHub")).to_be_hidden()
+    expect(page.locator("#modulePanel")).to_be_hidden()
+    page.locator('#adminSubnav [data-admin-sub="help"]').click()
+    expect_admin_inline_module(page, "help")
+    expect(page.locator("#adminContact")).to_have_value("@test_support")
+    expect(page.locator('#drawer [data-hrow][data-lang="uz"] h3')).to_contain_text("Ўзбекча")
+    assert page.evaluate("state.management.help.links[0].lang") == "uz"
+    capture_admin_evidence(page, "help", viewport_width)
+    page.locator("#adminContact").fill("@new_test_support")
+    page.locator("[data-hcontact]").click()
+    expect(page.locator("[data-hcontact]")).to_be_enabled()
+    expect(page.locator("#adminContact")).to_have_value("@new_test_support")
+    assert help_requests == [{"target": "admin_contact", "value": "@new_test_support"}]
+    expect_admin_inline_module(page, "help")
+    page.locator('#adminSubnav [data-admin-sub="models"]').click()
+    expect(page.locator("#modulePanel")).to_be_hidden()
+    expect(page.locator("#adminContact:visible")).to_have_count(0)
     open_admin_route(page, "dashboard")
     expect(page.locator("#summaryGrid")).to_be_visible()
     expect(page.locator("#summaryGrid")).to_contain_text("12")
@@ -2852,8 +3113,8 @@ def test_admin_auth_failure_hides_controls_and_cached_data(
         expect(page.locator("#adminNavigator")).to_be_visible()
         hold_management = True
         with page.expect_request("**/api/admin-miniapp/management"):
-            page.evaluate("() => {state.management = null; void openModule('give_access');}")
-        expect(page.locator("#drawer")).to_be_visible()
+            page.evaluate("() => {state.management = null; navigateAdmin('system', 'help');}")
+        expect_admin_inline_module(page, "help")
         denied = True
         requests.clear()
         page.evaluate("loadData()")
@@ -2867,13 +3128,107 @@ def test_admin_auth_failure_hides_controls_and_cached_data(
     expect(page.locator('[data-pay="1"]:visible')).to_have_count(0)
     if expired_session:
         assert len(pending_management) == 1
-        json_response(pending_management[0], {"ok": True, "items": [], "rows": []})
+        json_response(pending_management[0], admin_management_payload())
         page.wait_for_function("state.management !== null")
         expect(page.locator("#app")).to_be_hidden()
         expect(page.locator("#drawer")).not_to_be_visible()
-        expect(page.locator("#gaId:visible")).to_have_count(0)
+        expect(page.locator("#modulePanel")).to_be_hidden()
+        expect(page.locator("#adminContact:visible")).to_have_count(0)
     assert not any(path.endswith("/payments/review") for path in requests)
     assert not any(path.endswith("/save") for path in requests)
+
+
+@pytest.mark.parametrize("viewport_width", [390, 1440])
+def test_admin_navigation_ignores_delayed_module_and_user_responses(page, viewport_width):
+    page.set_viewport_size({"width": viewport_width, "height": 844})
+    hold_management = False
+    hold_details = False
+    pending_management = []
+    pending_details = []
+    runtime_errors = []
+    page.on("pageerror", lambda error: runtime_errors.append(str(error)))
+
+    def admin_api(route):
+        path = urlparse(route.request.url).path
+        if path.endswith("/overview"):
+            json_response(route, admin_payload())
+        elif path.endswith("/finance-stats"):
+            json_response(route, admin_finance_payload())
+        elif path.endswith("/management"):
+            if hold_management:
+                pending_management.append(route)
+            else:
+                json_response(route, admin_management_payload())
+        elif path.endswith("/users/detail") and hold_details:
+            pending_details.append(route)
+        else:
+            json_response(route, {"ok": True, "items": [], "rows": []})
+
+    page.route("**/api/admin-miniapp/**", admin_api)
+    page.goto(app_url("/admin.html"), wait_until="networkidle")
+    page.wait_for_function("state.management !== null")
+    hold_management = True
+    page.evaluate("state.management = null")
+    open_admin_route(page, "system")
+    with page.expect_request("**/api/admin-miniapp/management"):
+        page.locator('#adminSubnav [data-admin-sub="help"]').click()
+    expect_admin_inline_module(page, "help")
+    open_admin_route(page, "users")
+    assert len(pending_management) == 1
+    json_response(pending_management[0], admin_management_payload())
+    page.wait_for_function("state.management !== null")
+    expect(page.locator("#modulePanel")).to_be_hidden()
+    expect(page.locator("#drawer")).not_to_be_visible()
+    expect(page.locator("#adminContact:visible")).to_have_count(0)
+    expect(page.locator("#userList")).to_be_visible()
+
+    # Prices and requisites reuse one backend module key. An old prices reply
+    # must not replace the selected requisites screen when requests complete out of order.
+    page.evaluate("state.management = null")
+    open_admin_route(page, "finance")
+    with page.expect_request("**/api/admin-miniapp/management"):
+        page.locator('#adminSubnav [data-admin-sub="prices"]').click()
+    expect_admin_inline_module(page, "prices")
+    with page.expect_request("**/api/admin-miniapp/management"):
+        page.locator('#adminSubnav [data-admin-sub="methods"]').click()
+    assert len(pending_management) == 3
+    json_response(pending_management[2], admin_management_payload())
+    expect(page.locator("#payDetails")).to_have_value("TEST DC instructions")
+    with page.expect_response("**/api/admin-miniapp/management") as stale_response:
+        json_response(pending_management[1], admin_management_payload())
+    stale_response.value.finished()
+    page.evaluate("() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))")
+    expect_admin_inline_module(page, "prices")
+    expect(page.locator("#drawerTitle")).to_have_text("Тўлов реквизитлари")
+    expect(page.locator("#drawer [data-pamount], #drawer [data-psave]")).to_have_count(0)
+    expect(page.locator("#payDetails")).to_have_value("TEST DC instructions")
+    expect(page.locator('#adminSubnav [data-admin-sub="methods"]')).to_have_attribute("aria-current", "page")
+
+    # A user detail request uses the same drawer DOM; its late reply must not
+    # overwrite a newer inline route or bring its scrim back.
+    hold_management = False
+    hold_details = True
+    open_admin_route(page, "users")
+    with page.expect_request("**/api/admin-miniapp/users/detail"):
+        page.locator('#userList [data-user="111"]').click()
+    expect(page.locator("#drawer")).to_be_visible()
+    expect(page.locator("#drawer")).not_to_have_class(re.compile(r"\binline\b"))
+    expect(page.locator("#scrim")).to_have_class(re.compile(r"\bopen\b"))
+    page.locator("#drawer [data-act='close-drawer']").click()
+    expect(page.locator("#drawer")).not_to_be_visible()
+    open_admin_route(page, "finance")
+    expect_admin_inline_module(page, "prices")
+    expect(page.locator("#payDetails")).to_have_value("TEST DC instructions")
+    assert len(pending_details) == 1
+    with page.expect_response("**/api/admin-miniapp/users/detail") as detail_response:
+        json_response(pending_details[0], {"ok": True, "user": admin_payload()["users"][0], "payments": []})
+    detail_response.value.finished()
+    page.evaluate("() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))")
+    expect_admin_inline_module(page, "prices")
+    expect(page.locator("#drawerTitle")).to_have_text("Тўлов реквизитлари")
+    expect(page.locator("#drawer #qaDays, #drawer [data-uaccess]")).to_have_count(0)
+    expect(page.locator("#payDetails")).to_have_value("TEST DC instructions")
+    assert runtime_errors == []
 
 
 def test_subscription_page_smoke(page):
