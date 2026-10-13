@@ -53,4 +53,7 @@
     <string name="profile_promo_hsk30_confirm_body">Баъд аз тасдиқ сатҳи пешина барқарор мешавад. Ҳангоми бори аввал сатҳро интихоб мекунед.</string>
     <string name="profile_promo_pro_body">AI Voice, ҳамаи дарсҳои HSK ва машқҳои бемаҳдуд</string>
     <string name="profile_promo_start_trial">7 рӯз ройгон санҷидан</string>
+    <string name="profile_promo_trial_days">%1$d рӯз монд</string>
+    <string name="profile_promo_trial_hours">%1$d соат монд</string>
+    <string name="profile_promo_trial_soon">Камтар аз як соат монд</string>
 </resources>
