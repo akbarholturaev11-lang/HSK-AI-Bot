@@ -37,10 +37,12 @@ import com.pomp.hskai.data.repository.FeatureRepository
 import java.io.File
 import java.lang.reflect.Proxy
 import java.util.Locale
+import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
 import kotlin.coroutines.resume
 import org.junit.After
+import org.junit.Before
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -67,12 +69,32 @@ class SubscriptionCheckoutHostTest {
     private var pending: SubscriptionPendingDto? = null
     private var closeCount = 0
     private var deferSubmit = false
+    private var originalPaymentRegion: String? = null
     @Volatile private var submitContinuation: Continuation<Any?>? = null
+
+    @Before
+    fun prepareSavedPaymentRegion() {
+        // The fake quote is TJS-only. Model a returning customer who has
+        // already confirmed Tajikistan so no UZS currency refresh is needed.
+        // Region-picking UX is tested separately; these tests exercise the
+        // product/quote/receipt and stale-result navigation contracts.
+        val settings = (context.applicationContext as HskAiApplication).appSettings
+        runBlocking {
+            originalPaymentRegion = settings.paymentRegion()
+            settings.setPaymentRegion("tj")
+        }
+    }
 
     @After
     fun tearDown() {
         compose.runOnIdle { owner.clear() }
-        (context.applicationContext as HskAiApplication).paymentDecisionMonitor.clear()
+        val app = context.applicationContext as HskAiApplication
+        runBlocking {
+            val old = originalPaymentRegion
+            if (old == null) app.appSettings.clearPaymentRegion()
+            else app.appSettings.setPaymentRegion(old)
+        }
+        app.paymentDecisionMonitor.clear()
     }
 
     private fun repository(): FeatureRepository {
@@ -151,7 +173,11 @@ class SubscriptionCheckoutHostTest {
     }
 
     private fun expectPlan(resource: Int) {
-        compose.onNodeWithText(copy.getString(resource)).assertIsDisplayed()
+        val text = copy.getString(resource)
+        compose.waitUntil(10_000) {
+            compose.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
+        }
+        compose.onNodeWithText(text).assertIsDisplayed()
     }
 
     private fun reopen(nextOrigin: String) {
@@ -164,16 +190,13 @@ class SubscriptionCheckoutHostTest {
     }
 
     private fun advanceToPayment() {
-        val continueLabel = copy.getString(R.string.action_continue)
-        if (compose.onAllNodesWithText(continueLabel).fetchSemanticsNodes().isNotEmpty()) {
-            compose.onNodeWithText(continueLabel).performClick()
-        }
-        if (compose.onAllNodesWithText("Dushanbe City").fetchSemanticsNodes().isNotEmpty()) {
-            // The centered picker confirms the method and requests its quote
-            // on this tap; there is no separate METHOD Continue button.
-            compose.onNodeWithText("Dushanbe City").assertIsDisplayed().performClick()
-        } else {
-            compose.onNodeWithText(copy.getString(R.string.sub_continue_country)).performClick()
+        // A saved country uses the two-step flow: plans -> quote/payment.
+        // Bank selection is optional and never needs a second Continue.
+        compose.onNodeWithText(copy.getString(R.string.action_continue))
+            .assertIsDisplayed().performClick()
+        val submit = copy.getString(R.string.sub_submit)
+        compose.waitUntil(10_000) {
+            compose.onAllNodesWithText(submit).fetchSemanticsNodes().isNotEmpty()
         }
         compose.waitForIdle()
     }
