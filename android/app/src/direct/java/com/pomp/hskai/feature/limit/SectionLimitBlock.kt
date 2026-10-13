@@ -31,30 +31,19 @@ fun SectionLimitBlock(
     resetAt: String? = null,
 ) {
     val error = limit.state.error
-    val trialOffered = limit.state.trialEligible
     val openSubscription: () -> Unit = { limit.actions.onUnlock(sourceKey) }
     LimitBlock(
         sectionTitle = sectionTitle,
         headline = stringResource(R.string.limit_unlock_headline),
-        // Server-eligible trial first; Pro second. Dismiss remains on the X.
-        primaryLabel = if (trialOffered) stringResource(R.string.limit_try_trial)
-            else stringResource(R.string.limit_unlock_button),
-        onPrimary = if (trialOffered) limit.actions.onStartTrial else openSubscription,
+        primaryLabel = stringResource(R.string.limit_unlock_button),
+        onPrimary = openSubscription,
         modifier = modifier,
         reason = reason,
-        hint = stringResource(R.string.limit_unlock_hint),
-        secondaryLabel = if (trialOffered) stringResource(R.string.limit_unlock_button) else null,
-        onSecondary = if (trialOffered) openSubscription else null,
-        isBusy = limit.state.isBusy || limit.state.trialStarting,
+        // The reference design has one CTA, no trial or footnote.
+        isBusy = limit.state.isBusy,
         errorText = when {
             error != null -> stringResource(error.messageRes)
-            limit.state.trialError.isNotBlank() -> stringResource(R.string.limit_trial_failed)
             else -> null
-        },
-        noticeText = if (limit.state.recheckFoundNothing) {
-            stringResource(R.string.limit_recheck_none)
-        } else {
-            null
         },
     )
 }
