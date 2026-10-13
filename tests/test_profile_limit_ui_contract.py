@@ -19,7 +19,7 @@ class MiniAppProfileHierarchyTests(unittest.TestCase):
         self.assertIn("class=\"stats profile-stats\"", body)
         self.assertIn("Number(MAP&&MAP.progress&&MAP.progress.xp||0)", body)
         self.assertIn("completedLessons.toLocaleString", body)
-        self.assertLess(body.index("profile-stats"), body.index("proProfileCard()"))
+        self.assertLess(body.index("profile-stats"), body.index('hsk-profile-promo-root'))\n        self.assertNotIn("proProfileCard()", body)
         self.assertLess(body.index('class="pgoal"'), body.index("profile-stats"))
 
     def test_localized_stat_labels_exist(self):
