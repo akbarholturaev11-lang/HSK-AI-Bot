@@ -19,14 +19,20 @@ class SubscriptionCheckoutFlowTest {
     }
 
     @Test
-    fun `plans come first and only Tajikistan and China ask for a payment type`() {
-        val withMethod = listOf(CheckoutStep.PLANS, CheckoutStep.METHOD, CheckoutStep.PAY)
+    fun `country selection leads directly to payment in every region`() {
         val direct = listOf(CheckoutStep.PLANS, CheckoutStep.PAY)
-        assertEquals(withMethod, checkoutFlow("tj"))
-        assertEquals(withMethod, checkoutFlow("cn"))
-        assertEquals(direct, checkoutFlow("ru"))
-        assertEquals(direct, checkoutFlow("uz"))
-        assertEquals(direct, checkoutFlow("other"))
+        listOf("tj", "uz", "ru", "cn", "other").forEach { region ->
+            assertEquals(direct, checkoutFlow(region))
+        }
+    }
+
+    @Test
+    fun `each card country determines its displayed currency without a second picker`() {
+        assertEquals("TJS", currencyForRegion("tj"))
+        assertEquals("UZS", currencyForRegion("uz"))
+        assertEquals("RUB", currencyForRegion("ru"))
+        assertEquals("CNY", currencyForRegion("cn"))
+        assertEquals("USD", currencyForRegion("other"))
     }
 
     @Test
