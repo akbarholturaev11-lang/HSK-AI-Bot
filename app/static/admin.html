@@ -515,7 +515,7 @@
     <aside class="admin-sidebar">
       <div class="brand">
         <span class="brand-mark" aria-hidden="true">学</span>
-        <div><h1>HSK AI</h1><p id="brandSub">БОШҚАРУ ПАНЕЛИ</p></div>
+        <div><h1>HSK AI</h1><p id="brandSub">БОШҚАРУВ ПАНЕЛИ</p></div>
       </div>
       <div class="admin-caption">БЎЛИМЛАР</div>
       <nav id="sidebarNav" aria-label="Асосий навигация"></nav>
@@ -1021,8 +1021,23 @@
     function financePeriod(){ const f=state.finance; if(!f||!f.periods) return null; return f.periods.find(p=>p.key===state.statsPeriod)||f.periods[0]; }
     function overviewReport(){ const r=state.overview&&state.overview.statistics_reports; if(!Array.isArray(r)) return null; return r.find(x=>x.key===state.statsPeriod)||r[0]; }
     const adminMetricLabels={"Sales A/B · 7d approved": "Сотув тажрибаси · 7 кунда тасдиқланган", "Obuna sahifasi": "Обуна саҳифаси", "Rekvizitni ko'rdi": "Тўлов маълумотларини кўрди", "Skrinshot tanladi": "Тўлов суратини танлади", "Skrinshot yubordi": "Тўлов суратини юборди", "Tasdiqlandi": "Тасдиқланди", "Ma’lumot yetarli emas": "Маълумот етарли эмас", "Ma'lumot yetarli emas": "Маълумот етарли эмас", "Signup → App D1": "Рўйхатдан ўтиш → 1-кунда қайтиш", "Signup → App D7": "Рўйхатдан ўтиш → 7-кунда қайтиш", "D1 recovery lift": "1-кунда қайтиш ўсиши", "Starter start → complete": "Бошланғич дарс: бошлаш → тугатиш", "Starter first-attempt": "Бошланғич дарс: биринчи уриниш", "Starter → HSK1 P1/P2/P3": "Бошланғич дарс → HSK1 босқичлари", "Checkpoint → paywall": "Текширув → обуна экрани", "Starter D1 learning": "Бошланғич дарс: 1-кун фаоллиги", "Avg session": "Ўртача машғулот вақти", "Lesson time": "Дарс вақти", "AI chat xabar/user": "Савол-жавоб: ҳар бир фойдаланувчига хабар", "Voice minutes": "Овозли машқ дақиқалари", "First payment": "Биринчи тўлов", "Davr revenue / payer": "Давр тушуми / тўловчи", "Taglangan CAC": "Белгиланган мижоз жалб қилиш харажати", "Unfinished notif": "Тугатилмаган дарс эслатмаси", "Direct start → dars ≤2m": "Тўғридан-тўғри бошлаш → 2 дақиқада дарс", "Onb → dars ≤2m": "Танишув → 2 дақиқада дарс"};
-    function metricLabel(value){return adminMetricLabels[value]||value;}
-    function cardHtml(i){ return `<article class="stat ${i.tone||""}"><div class="lab">${esc(metricLabel(i.label))}</div><div><div class="val">${esc(i.value)}</div><div class="sub">${esc(i.note)}</div></div></article>`; }
+    function metricLabel(value){return localizeAdminCopy(value);}
+    function localizeAdminCopy(value){
+      if(typeof value!=="string"||!/[A-Za-z]/.test(value)) return value;
+      if(adminMetricLabels[value]) return adminMetricLabels[value];
+      const saved=[];
+      let text=value.replace(/https?:\/\/\S+|@[A-Za-z0-9_]+|\b(?:HSK AI|Telegram|Android|Windows|macOS|Gemini|OpenAI|Alipay|WeChat|Visa|MacBook|ARPPU|ARPU|HSK|TJS|USD|CNY|RUB|UZS|ID|URL|IP|D1|D7)\b/g,word=>{saved.push(word);return "\uFFF4"+(saved.length-1)+"\uFFF5";});
+      const words={"Mini App":"Мини-илова",Desktop:"Компьютер дастури",Checkout:"Тўлов жараёни",Feature:"Функция",Payment:"Тўлов",source:"манба",Avg:"Ўртача",min:"дақиқа",AI:"Сунъий интеллект"};
+      Object.entries(words).forEach(([word,label])=>{text=text.replace(new RegExp("\\b"+word+"\\b","gi"),label);});
+      text=text.replace(/o['’‘ʻʼ]/gi,x=>x[0]==="O"?"Ў":"ў").replace(/g['’‘ʻʼ]/gi,x=>x[0]==="G"?"Ғ":"ғ");
+      const pairs={sh:"ш",ch:"ч",yo:"ё",yu:"ю",ya:"я",ye:"е"};
+      text=text.replace(/sh|ch|yo|yu|ya|ye/gi,x=>x[0]===x[0].toUpperCase()?pairs[x.toLowerCase()].toUpperCase():pairs[x.toLowerCase()]);
+      const letters={a:"а",b:"б",c:"к",d:"д",e:"е",f:"ф",g:"г",h:"ҳ",i:"и",j:"ж",k:"к",l:"л",m:"м",n:"н",o:"о",p:"п",q:"қ",r:"р",s:"с",t:"т",u:"у",v:"в",w:"в",x:"х",y:"й",z:"з"};
+      text=text.replace(/[A-Za-z]/g,x=>x===x.toUpperCase()?letters[x.toLowerCase()].toUpperCase():letters[x]);
+      return text.replace(/\uFFF4(\d+)\uFFF5/g,(_,index)=>saved[Number(index)]);
+    }
+
+    function cardHtml(i){ return `<article class="stat ${i.tone||""}"><div class="lab">${esc(metricLabel(i.label))}</div><div><div class="val">${esc(i.value)}</div><div class="sub">${esc(localizeAdminCopy(i.note))}</div></div></article>`; }
 
     async function loadDesktopStats(period){
       period=["all_time","weekly","monthly"].includes(period)?period:"all_time";
@@ -1195,7 +1210,7 @@
             </tbody></table>`
           : "<p class='empty'>Бу даврда Android обуна маълумоти йўқ.</p>";
         const sourceTable=androidSources.length
-          ? `<table class="tbl" style="margin-top:10px"><thead><tr><th>Обунага олиб келган бўлим</th><th class="r">Пуллик</th><th class="r">Тўлов</th><th class="r">Даромад</th></tr></thead><tbody>${androidSources.map(row=>`<tr><td><b>${esc(row.label)}</b></td><td class="r">${num(row.paying_users)}</td><td class="r">${num(row.payments)}</td><td class="r"><b>${esc(row.revenue_text)}</b></td></tr>`).join("")}</tbody></table>`
+          ? `<table class="tbl" style="margin-top:10px"><thead><tr><th>Обунага олиб келган бўлим</th><th class="r">Пуллик</th><th class="r">Тўлов</th><th class="r">Даромад</th></tr></thead><tbody>${androidSources.map(row=>`<tr><td><b>${esc(localizeAdminCopy(row.label))}</b></td><td class="r">${num(row.paying_users)}</td><td class="r">${num(row.payments)}</td><td class="r"><b>${esc(row.revenue_text)}</b></td></tr>`).join("")}</tbody></table>`
           : "";
         subscription.innerHTML=business+sourceTable;
       }
@@ -1236,7 +1251,7 @@
         $("featureAdoption").innerHTML = "<p class='empty'>Маълумот йўқ</p>";
         return;
       }
-      $("advancedExplain").textContent = adv.explain || "";
+      $("advancedExplain").textContent = localizeAdminCopy(adv.explain || "");
       $("advancedCards").innerHTML = (adv.cards||[]).map(cardHtml).join("");
       const funnel = (adv.payment&&adv.payment.funnel)||{};
       const steps = funnel.steps||[];
@@ -1244,14 +1259,14 @@
       $("advancedFunnel").innerHTML = steps.length ? steps.map(s=>{
         const pct = Math.round((Number(s.users||0)/maxStep)*100);
         return `<div class="bar"><span>${esc(s.label)}</span><div class="track"><span style="width:${Math.min(pct,100)}%"></span></div><b>${esc(s.users)}</b></div>`;
-      }).join("") + `<div class="explain">Энг катта тарк этиш: <b>${esc(funnel.abandon_step||"—")}</b> — ${esc(funnel.abandon_count||0)} Фойдаланувчи (${esc(funnel.abandon_rate||0)}%). ${esc(funnel.explain||"")}</div>`
+      }).join("") + `<div class="explain">Энг катта тарк этиш: <b>${esc(localizeAdminCopy(funnel.abandon_step||"—"))}</b> — ${esc(funnel.abandon_count||0)} Фойдаланувчи (${esc(funnel.abandon_rate||0)}%). ${esc(localizeAdminCopy(funnel.explain||""))}</div>`
       : "<p class='empty'>ўтиш босқичлари маълумот йўқ</p>";
       const adoption = adv.feature_adoption||{};
       const rows = adoption.rows||[];
       $("featureAdoption").innerHTML = rows.length ? `<table class="tbl"><thead><tr>
-          <th>Феатуре</th><th class="r">обунали</th><th class="r">бепул</th><th class="r">обунали %</th><th class="r">бепул %</th></tr></thead>
+          <th>Функция</th><th class="r">обунали</th><th class="r">бепул</th><th class="r">обунали %</th><th class="r">бепул %</th></tr></thead>
         <tbody>${rows.map(r=>`<tr><td><b>${esc(r.label)}</b></td><td class="r">${esc(r.paid)}</td><td class="r">${esc(r.free)}</td><td class="r">${esc(r.paid_rate)}%</td><td class="r">${esc(r.free_rate)}%</td></tr>`).join("")}</tbody></table>
-        <div class="explain">${esc(adoption.explain||"")} Ҳисоблаш базаси: обунали ${esc(adoption.paid_denominator||0)}, бепул ${esc(adoption.free_denominator||0)}.</div>`
+        <div class="explain">${esc(localizeAdminCopy(adoption.explain||""))} Ҳисоблаш базаси: обунали ${esc(adoption.paid_denominator||0)}, бепул ${esc(adoption.free_denominator||0)}.</div>`
       : "<p class='empty'>Функциялардан фойдаланиш маълумот йўқ</p>";
     }
 
@@ -1307,7 +1322,7 @@
             {key:"monthly",title:"Ойлик",note:"Охирги 30 кун"},
             {key:"all_time",title:"Тўлиқ",note:"Бутун давр"}
           ];
-      $("periodTabs").innerHTML = periods.map(p=>`<button class="period ${p.key===state.statsPeriod?"active":""}" data-period="${esc(p.key)}">${esc(p.title)} · ${esc(p.note)}</button>`).join("");
+      $("periodTabs").innerHTML = periods.map(p=>`<button class="period ${p.key===state.statsPeriod?"active":""}" data-period="${esc(p.key)}">${esc(localizeAdminCopy(p.title))} · ${esc(localizeAdminCopy(p.note))}</button>`).join("");
       const fp = financePeriod();
       const orep = overviewReport();
       const quality=(state.overview&&state.overview.data_quality)||{};
@@ -1347,9 +1362,9 @@
           : "<p class='empty'>Платформа кесими бўйича маълумот йўқ.</p>";
         $("clientBusinessTable").innerHTML = cbRows.length ? `<table class="tbl"><thead><tr>
             <th>Платформа</th><th class="r">Кириш<br><small>ҳодиса/фойдаланувчи</small></th><th class="r">Пуллик</th><th class="r">Тўлов</th><th class="r">Даромад</th></tr></thead>
-          <tbody>${cbRows.map(row=>`<tr><td><b>${esc(row.label)}</b><br><small>${esc(row.note)}</small></td><td class="r"><b>${esc(row.entries)}</b>/${esc(row.entry_users)}</td><td class="r">${esc(row.paying_users)}</td><td class="r">${esc(row.payments)}</td><td class="r"><b>${esc(row.revenue_text)}</b></td></tr>`).join("")}</tbody></table>`
+          <tbody>${cbRows.map(row=>`<tr><td><b>${esc(localizeAdminCopy(row.label))}</b><br><small>${esc(localizeAdminCopy(row.note))}</small></td><td class="r"><b>${esc(row.entries)}</b>/${esc(row.entry_users)}</td><td class="r">${esc(row.paying_users)}</td><td class="r">${esc(row.payments)}</td><td class="r"><b>${esc(row.revenue_text)}</b></td></tr>`).join("")}</tbody></table>`
           : "<p class='empty'>Бу даврда Платформа манбага боғлаш йўқ.</p>";
-        $("clientBusinessExplain").textContent = cb.explain || "";
+        $("clientBusinessExplain").textContent = localizeAdminCopy(cb.explain || "");
         $("financeCards").innerHTML = [
           {label:"Даромад",value:fp.finance.revenue_text,note:fp.unit.approved_count+" та тўлов",tone:"info"},
           {label:"Сунъий интеллект харажати (тахмин)",value:fp.finance.ai_cost_text,note:"ҳисоб-фактура эмас · "+fp.finance.ai_share_pct+"%",tone:"warn"},
@@ -1357,7 +1372,7 @@
           {label:"Бошқа харажатлар",value:fp.finance.expense_text,note:"қўлда киритилган",tone:"warn"},
           {label:"Соф натижа",value:fp.finance.net_text,note:"ҳисобланган маржа "+fp.finance.margin_pct+"%",tone:fp.finance.net_positive?"good":"danger"}
         ].map(cardHtml).join("");
-        $("financeExplain").innerHTML = esc(fp.finance.explain);
+        $("financeExplain").innerHTML = esc(localizeAdminCopy(fp.finance.explain));
         $("aiUsageBreakdown").innerHTML = (fp.finance.ai_usage||[]).map(i=>`
           <div class="srow"><div><h3>${esc(i.model)} · ${esc(metricLabel(i.label))}</h3>
           <p>${esc(i.requests)} сўров · ${esc(i.tokens)} Токен</p></div>
@@ -1368,7 +1383,7 @@
           {label:"Ўртача чек",value:fp.unit.avg_check_text,note:"ҳар тўлов",tone:"info"},
           {label:"Пуллик",value:fp.unit.paying_users,note:"шу даврдаги тўловчи",tone:"good"}
         ].map(cardHtml).join("");
-        $("unitExplain").innerHTML = esc(fp.unit.explain);
+        $("unitExplain").innerHTML = esc(localizeAdminCopy(fp.unit.explain));
         const r=fp.retention;
         $("retentionCards").innerHTML = [
           {label:"Янги тўлов",value:r.new_paying,note:"биринчи марта",tone:"info"},
@@ -1380,7 +1395,7 @@
             ? {label:"Ҳозир фаол эмас тўловчи",value:(r.inactive_paid_share_pct==null?"—":r.inactive_paid_share_pct+"%"),note:"гуруҳда фойдаланишни тўхтатиш эмас",tone:"danger"}
             : {label:"Фаол обуна",value:r.active_paid_now,note:"ҳозир тўловли",tone:"good"})
         ].map(cardHtml).join("");
-        $("retentionExplain").innerHTML = esc(r.explain);
+        $("retentionExplain").innerHTML = esc(localizeAdminCopy(r.explain));
         const sp = fp.sources_paid||[];
         $("sourcesPaid").innerHTML = sp.length ? `<table class="tbl"><thead><tr>
             <th>Манба</th><th class="r">Пуллик</th><th class="r">Тўлов</th><th class="r">Даромад</th></tr></thead>
@@ -1677,7 +1692,7 @@
       const causeTone=Number(blockCause.score||0)>=80?"green":Number(blockCause.score||0)>=60?"amber":"red";
       const causeEvidence=(blockCause.evidence||[]).map(x=>"• "+esc(x)).join("<br>");
       const causeAlternatives=(blockCause.alternatives||[]).map(a=>`<div class="idrow" style="margin-bottom:8px"><div><b>${esc(a.title)}</b><div class="usub">${(a.evidence||[]).map(esc).join(" · ")}</div></div><span class="usub">${esc(a.confidence)} · ${esc(a.score)}/100</span></div>`).join("");
-      const causeHtml=f.bot_blocked?`<div class="mcard" style="margin-top:12px"><div class="uhead"><div><div class="uname">Эҳтимолий блок сабаби</div><div class="usub">Реал ҳодисалар асосида. Telegram фойдаланувчининг сабабини матн ко\'ринишида бермайди.</div></div>${tag((blockCause.confidence||"паст")+" ишонч",causeTone)}</div><div style="margin-top:10px"><b>${esc(blockCause.title||"Сабабни ишончли ажратиб бўлмади")}</b></div>${blockCause.score?`<div class="tags" style="margin-top:8px">${tag("Далил кучи: "+blockCause.score+"/100",causeTone)}${tag(blockCause.data_quality_label||"Маълумот сифати номаълум","")}</div>`:""}${causeEvidence?`<div class="ncnote" style="margin-top:10px"><b>Нимага шундай деяпмиз:</b><br>${causeEvidence}</div>`:""}${blockCause.note?`<div class="explain" style="margin-top:8px">${esc(blockCause.note)}</div>`:""}${causeAlternatives?`<details class="acc" style="margin-top:10px"><summary>Бошқа эҳтимоллар</summary><div class="accbody">${causeAlternatives}</div></details>`:""}<div class="ncnote" style="margin-top:10px"><b>Муҳим:</b> ${esc(blockCause.disclaimer||"Бу эҳтимолий хулоса, аниқ сабаб эмас.")}</div></div>`:"";
+      const causeHtml=f.bot_blocked?`<div class="mcard" style="margin-top:12px"><div class="uhead"><div><div class="uname">Эҳтимолий блок сабаби</div><div class="usub">Реал ҳодисалар асосида. Telegram фойдаланувчининг сабабини матн кўринишида бермайди.</div></div>${tag((blockCause.confidence||"паст")+" ишонч",causeTone)}</div><div style="margin-top:10px"><b>${esc(blockCause.title||"Сабабни ишончли ажратиб бўлмади")}</b></div>${blockCause.score?`<div class="tags" style="margin-top:8px">${tag("Далил кучи: "+blockCause.score+"/100",causeTone)}${tag(blockCause.data_quality_label||"Маълумот сифати номаълум","")}</div>`:""}${causeEvidence?`<div class="ncnote" style="margin-top:10px"><b>Нимага шундай деяпмиз:</b><br>${causeEvidence}</div>`:""}${blockCause.note?`<div class="explain" style="margin-top:8px">${esc(blockCause.note)}</div>`:""}${causeAlternatives?`<details class="acc" style="margin-top:10px"><summary>Бошқа эҳтимоллар</summary><div class="accbody">${causeAlternatives}</div></details>`:""}<div class="ncnote" style="margin-top:10px"><b>Муҳим:</b> ${esc(blockCause.disclaimer||"Бу эҳтимолий хулоса, аниқ сабаб эмас.")}</div></div>`:"";
       $("drawerBody").innerHTML = `
         <section class="dsec"><div class="dtitle-sm">Рухсат ва обуна</div>
           <div class="idrow"><span style="color:var(--muted);font-size:13px">Telegram ID</span><b>${esc(f.id)}</b>
@@ -1893,7 +1908,7 @@
       ["speaking.session","Гапириш"],
       ["practice.*","Машқ бўлимлари"],
       ["practice.placement","Даража аниқлаш тести"],
-      ["study.quiz","Қуиз"],
+      ["study.quiz","Тест"],
       ["study.audio","Аудио"],
       ["study.flashcard_translate","Карточка таржимаси"]
     ];
@@ -1950,9 +1965,9 @@
         const risk=(data&&data.risk)||{}, sum=risk.summary||{}, examples=risk.examples||[];
         const cards=`
           <div class="grid g2">
-            <div class="mini"><b>${Number(sum.trial_starts||0)}</b><span>Синов муддати старт</span></div>
+            <div class="mini"><b>${Number(sum.trial_starts||0)}</b><span>Синовни бошлаш</span></div>
             <div class="mini"><b>${Number(sum.device_reuse||0)}</b><span>Қурилма такрори</span></div>
-            <div class="mini"><b>${Number(sum.shared_ip||0)}</b><span>Шаред IP</span></div>
+            <div class="mini"><b>${Number(sum.shared_ip||0)}</b><span>Умумий IP</span></div>
             <div class="mini"><b>${Number(sum.account_under_1h||0)}</b><span>&lt;1 соат аккаунт</span></div>
           </div>`;
         const rows=examples.length?examples.map(item=>{
@@ -1963,7 +1978,7 @@
         }).join(""):"<p class='empty'>7 кунда шубҳали сигнал ёзилмаган.</p>";
         box.innerHTML=cards+`<div class="hint" style="margin-top:10px">Режим: <b>ЭНФОРКЕД</b> · тҳрешолд <b>${Number(risk.threshold||80)}/100</b>. Тҳрешолдга етган ҳисобга Синов муддати таклифи Фойдаланувчи интерфейс'да кўрсатилмайди. Хавф баҳоси — ички баҳо, фрауд фоизи эмас.</div><div style="margin-top:10px">${rows}</div>`;
       }catch(e){
-        box.innerHTML="<div class='danger-note'>Анти-абусе ҳисоботи юкланмади.</div>";
+        box.innerHTML="<div class='danger-note'>Хавф ҳисоботи юкланмади.</div>";
       }
     }
     function renderLimits(d){
@@ -1973,7 +1988,7 @@
         const rows=LIMIT_ACTIONS.map(([action,label])=>limitRow(plan,action,label,limitRule(rules,action))).join("");
         return `<div class="mcard"><h3>${esc(planLabel)}</h3>${rows}</div>`;
       }).join("");
-      openDrawer("🎚 Лимитлар","Бепул ва Синов муддати чегаралари. Обуначига лимит қўйилмайди.",`<div class="panel">
+      openDrawer("🎚 Лимитлар","Бепул режим ва синов муддати чекловлари. Обуначига лимит қўйилмайди.",`<div class="panel">
         ${body}
         <div class="mcard">
           <h3>Про синови</h3>
