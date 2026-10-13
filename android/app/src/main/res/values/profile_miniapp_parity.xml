@@ -53,4 +53,7 @@
     <string name="profile_promo_hsk30_confirm_body">Tasdiqdan so‘ng avval o‘qigan darajangiz tiklanadi. Birinchi marta bo‘lsa darajani tanlaysiz.</string>
     <string name="profile_promo_pro_body">AI Voice, barcha HSK darslari va cheksiz mashqlar</string>
     <string name="profile_promo_start_trial">7 kun bepul sinash</string>
+    <string name="profile_promo_trial_days">%1$d kun qoldi</string>
+    <string name="profile_promo_trial_hours">%1$d soat qoldi</string>
+    <string name="profile_promo_trial_soon">1 soatdan kam qoldi</string>
 </resources>
