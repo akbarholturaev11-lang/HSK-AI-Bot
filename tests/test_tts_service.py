@@ -90,7 +90,7 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
         # The original VBR/Xing headers were stripped before joining the
         # CC BY-SA Mandarin ni2 and hao3 recordings at 48 kHz / 64 kbit.
         for offset in range(0, len(data), 192):
-            self.assertEqual(data[offset:offset + 4], b"\\xff\\xfb\\x54\\xc4")
+            self.assertEqual(data[offset:offset + 4], b"\xff\xfb\x54\xc4")
         if shutil.which("ffprobe"):
             probe = subprocess.run(
                 ["ffprobe", "-v", "error", "-show_entries",
