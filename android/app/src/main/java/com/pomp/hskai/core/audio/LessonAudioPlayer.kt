@@ -18,7 +18,7 @@ interface LessonAudioPlayer {
     fun release()
 }
 
-/** Plays a server-verified MP3 from the private app cache. */
+/** Plays MP3 from Edge or WAV from Gemini using the right Android decoder. */
 class AndroidLessonAudioPlayer(context: Context) : LessonAudioPlayer {
 
     private val cacheDir = File(context.applicationContext.cacheDir, "lesson_audio")
@@ -29,7 +29,13 @@ class AndroidLessonAudioPlayer(context: Context) : LessonAudioPlayer {
         require(mp3.isNotEmpty()) { "Empty lesson audio" }
         val file = withContext(Dispatchers.IO) {
             cacheDir.mkdirs()
-            File.createTempFile("lesson-", ".mp3", cacheDir).also { it.writeBytes(mp3) }
+            // Gemini produces WAV whereas Microsoft Edge produces MP3.
+            // Some Android MediaPlayer implementations select codecs by extension.
+            val wav = mp3.size >= 12 &&
+                mp3.copyOfRange(0, 4).contentEquals("RIFF".toByteArray()) &&
+                mp3.copyOfRange(8, 12).contentEquals("WAVE".toByteArray())
+            File.createTempFile("lesson-", if (wav) ".wav" else ".mp3", cacheDir)
+                .also { it.writeBytes(mp3) }
         }
 
         withContext(Dispatchers.Main.immediate) {

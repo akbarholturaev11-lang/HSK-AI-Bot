@@ -51,12 +51,12 @@ def test_practice_menu_phrasebook_search_and_favorites_are_local():
                 offClick(handler) { if (this.handler === handler) this.handler = null; }
             };
             window.__hskBackButton = back;
-            window.Telegram = { WebApp: { BackButton: back } };
+            window.Telegram = { WebApp: { BackButton: back, initData: "test" } };
         """)
         page.set_default_timeout(8000)
         api_requests = []
         page_errors = []
-        page.on("request", lambda request: api_requests.append(request.url) if "/api/" in request.url else None)
+        page.on("request", lambda request: api_requests.append(request.url) if "/api/" in request.url and request.frame.url.startswith(f"{BASE_URL}/hsk-gaplar.html") else None)
         page.on("pageerror", lambda error: page_errors.append(str(error)))
         page.route(f"{BASE_URL}/**", _serve_static)
         page.route("https://**/*", lambda route: route.fulfill(status=200, body=""))
@@ -68,26 +68,28 @@ def test_practice_menu_phrasebook_search_and_favorites_are_local():
             row = page.locator("#m-ready-phrases")
             assert row.count() == 1
             assert row.locator(".new-section-badge").inner_text() == "NEW"
-            # The Mashq tab is hidden until selected; invoke its rendered button
-            # handler to exercise the same navigation without bootstrapping a user.
+            # The Mashq tab is hidden until selected; exercise the rendered row
+            # handler, which opens the cached resource overlay without reloading.
             row.evaluate("element => element.click()")
 
-            page.locator(".phrase").first.wait_for()
-            assert page.url.startswith(f"{BASE_URL}/hsk-gaplar.html")
-            assert page.locator(".phrase").count() == 300
+            phrasebook = page.frame_locator("#resource-phrases iframe.resource-frame")
+            phrasebook.locator(".phrase").first.wait_for()
+            assert page.locator("#resourceov.on").count() == 1
+            assert phrasebook.locator(".phrase").count() == 300
 
-            page.locator("#query").fill("ni hao")
-            assert "你好" in " ".join(page.locator(".hanzi").all_text_contents())
-            assert page.locator("#back").count() == 0
-            assert page.locator("#intro").inner_text() == "Qidiring, saqlang, nusxalang."
-            page.locator("#query").fill("")
-            page.locator(".phrase").first.locator("button.save").click()
-            page.get_by_role("button", name="Saqlanganlar").click()
-            assert page.locator(".phrase").count() == 1
+            phrasebook.locator("#query").fill("ni hao")
+            assert "你好" in " ".join(phrasebook.locator(".hanzi").all_text_contents())
+            assert phrasebook.locator("#back").count() == 0
+            assert phrasebook.locator("#intro").inner_text() == "Qidiring, saqlang, nusxalang."
+            phrasebook.locator("#query").fill("")
+            phrasebook.locator(".phrase").first.locator("button.save").click()
+            phrasebook.get_by_role("button", name="Saqlanganlar").click()
+            assert phrasebook.locator(".phrase").count() == 1
             assert page.evaluate("window.__hskBackButton.visible") is True
             assert page.evaluate("typeof window.__hskBackButton.handler") == "function"
             page.evaluate("window.__hskBackButton.handler()")
-            page.wait_for_url(f"{BASE_URL}/course-v3.html")
+            page.wait_for_function("!document.getElementById('resourceov').classList.contains('on')")
+            assert page.url.startswith(f"{BASE_URL}/course-v3.html")
             assert api_requests == []
             assert page_errors == []
         finally:

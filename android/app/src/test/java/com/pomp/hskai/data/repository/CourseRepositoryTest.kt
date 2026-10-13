@@ -598,15 +598,24 @@ class CourseRepositoryTest {
     }
 
     @Test
-    fun `clearing the cache drops downloaded audio too`() = runTest {
+    fun `clearing course progress never deletes previously downloaded pronunciations`() = runTest {
+        val api = FakeCourseApi()
         val cache = FakeTtsCache()
-        val repository = repository(FakeCourseApi(), FakeCourseMapDao(), ttsCache = cache)
+        val repository = repository(api, FakeCourseMapDao(), ttsCache = cache)
         repository.ttsAudio("\u4f60\u597d")
 
         repository.clearCache()
 
-        assertEquals(1, cache.cleared)
-        assertTrue(cache.entries.isEmpty())
+        assertEquals(0, cache.cleared)
+        assertEquals(1, cache.entries.size)
+        val offline = repository(
+            api = api,
+            dao = FakeCourseMapDao(),
+            token = { ApiResult.Failure(ApiError.SessionExpired) },
+            ttsCache = cache,
+        )
+        assertEquals("audio", String((offline.ttsAudio("\u4f60\u597d") as ApiResult.Success).value))
+        assertEquals(1, api.ttsCalls)
     }
 
     @Test

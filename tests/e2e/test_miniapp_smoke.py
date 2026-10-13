@@ -294,9 +294,15 @@ def test_course_v3_opens_static_map_and_query_lesson_sheet(page):
 
     page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&lesson=1&onboarded=1"), wait_until="networkidle")
 
+    splash = page.locator("#hsk-launch-splash")
+    expect(splash).to_be_visible()
+    expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
+    assert page.evaluate(
+        """() => document.elementFromPoint(innerWidth / 2, innerHeight / 2)
+            ?.closest("#hsk-launch-splash") !== null"""
+    )
     expect(page.locator("#s-course")).to_contain_text("HSK 1")
     expect(page.locator("#s-course")).to_contain_text("你好")
-    expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
     expect(page.locator("#sheet")).to_contain_text("你好")
     expect(page.locator("#sheet")).to_contain_text("Yangi so'zlar")
 

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FDF9F0">
 <title>HSK Lug'at · Yangi so'zlar</title>
 <script>
 (function(){
@@ -48,7 +49,7 @@ button:active{transform:scale(.98)}
 .lang-btn.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
 .search-row{position:relative;display:flex;align-items:stretch}
 .search-wrap{position:relative;flex:1;min-width:0}
-#search{width:100%;padding:13px 84px 13px 44px;font-size:14px;font-weight:600;border-radius:14px;
+#search{width:100%;padding:13px 84px 13px 44px;font-size:16px;font-weight:600;border-radius:14px;
   background:var(--bg2);border:1.5px solid var(--border2);color:var(--text);outline:none;
   transition:border-color .15s ease, box-shadow .15s ease}
 #search::placeholder{color:var(--text2);font-weight:500}
@@ -254,7 +255,19 @@ html.fast-writer-sheet #app{max-width:none;overflow:hidden}
   .char-box-lg{width:min(420px,86vw);height:min(420px,86vw)}
 }
 /* Hide duplicate navigation only inside an authenticated Telegram WebApp. */
-html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
+html.hsk-telegram-back-active .hsk-native-back-duplicate,
+html.hsk-embedded .hsk-native-back-duplicate{display:none!important}
+/* Mirror Course V3 NavBack visuals for nested dictionary detail/stroke layers. */
+html.hsk-embedded .view.nb-drag,html.hsk-embedded .stroke-modal.nb-drag{
+  z-index:60;transition:none!important;will-change:transform;box-shadow:-12px 0 28px rgba(20,17,13,.16)
+}
+html.hsk-embedded .view.nb-snap,html.hsk-embedded .stroke-modal.nb-snap{
+  z-index:60;transition:transform .22s cubic-bezier(.32,.72,0,1)!important
+}
+html.hsk-embedded .nb-scrim{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:2}
+@media(prefers-reduced-motion:reduce){
+  html.hsk-embedded .view.nb-snap,html.hsk-embedded .stroke-modal.nb-snap{transition:none!important}
+}
 </style>
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261008-scene-1">
 </head>
@@ -404,6 +417,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
 (function(){
   var validLangs = ['uz', 'ru', 'tj'];
   var params = new URLSearchParams(location.search || '');
+  document.documentElement.classList.toggle('hsk-embedded', params.get('embedded') === '1');
   if(window.HSK_FAST_WRITER){ initFastWriter(params); return; }
   var UI = {
     uz: {
@@ -1150,6 +1164,10 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     var url = '/' + page + '.html?lang=' + currentLang + '&char=' + encodeURIComponent(currentWord.h) + '&from=lugat';
     if(isLight) url += '&theme=light';
     if(currentLevel !== 'all') url += '&level=' + currentLevel;
+    if(params.get('embedded') === '1' && window.parent !== window && window.parent.RESOURCE){
+      window.parent.RESOURCE.openPractice(url);
+      return;
+    }
     location.href = url;
   }
   document.getElementById('pr-pron').onclick = function(){ goPractice('course_v3_pronunciation'); };
@@ -1157,12 +1175,20 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   document.getElementById('pr-mem').onclick = function(){ goPractice('course_v3_memorize'); };
 
   function goBackToStudy(){
-    if(isLight){ location.href = '/course-v3.html?lang=' + currentLang + '&tab=mashq'; return; }
+    if(params.get('embedded') === '1' && window.parent !== window && window.parent.RESOURCE){
+      window.parent.RESOURCE.close();return;
+    }
+    /* Prefer the existing course document to retain app state and scroll position. */
+    try{ sessionStorage.setItem('hsk_v3_resource_return', '1'); }catch(e){}
+    if(params.get('from') === 'course-v3' && history.length > 1){
+      history.back();
+      return;
+    }
     var url = new URL('/course-v3.html', location.origin);
     if(currentLevel !== 'all') url.searchParams.set('level', currentLevel);
     url.searchParams.set('lang', currentLang);
     url.searchParams.set('tab', 'mashq');
-    location.href = url.toString();
+    location.replace(url.toString());
   }
 
   /* ---------- list / search ---------- */
@@ -1656,12 +1682,38 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     listEl.scrollTop = scrollPos;
   }
 
-  backBtn.addEventListener('click', function(){
+  function handleDictionaryBack(){
     if(!strokeModal.classList.contains('hidden')){ closeStrokeOrder(); return; }
-    closeDetailView();
-  });
+    if(!viewDetail.classList.contains('hidden')){ closeDetailView(); return; }
+    goBackToStudy();
+  }
+  backBtn.addEventListener('click', handleDictionaryBack);
+  listBackBtn.addEventListener('click', handleDictionaryBack);
+  if(params.get('embedded') === '1'){
+    window.HSKResourceBack=handleDictionaryBack;
+    window.HSKResourcePause=function(){
+      try{if(_ttsAudio){_ttsAudio.pause();_ttsAudio=null}}catch(e){}
+      try{window.speechSynthesis.cancel()}catch(e){}
+      try{searchEl.blur()}catch(e){}
+    };
+  }
 
-  listBackBtn.addEventListener('click', goBackToStudy);
+  /* Edge swipe follows the same nested back order as Telegram BackButton. */
+  var edgeSwipe=null;
+  document.addEventListener('touchstart',function(ev){
+    if(params.get('embedded') === '1')return;
+    if(ev.touches.length!==1){edgeSwipe=null;return;}
+    var t=ev.touches[0];
+    edgeSwipe=t.clientX<=28?{x:t.clientX,y:t.clientY}:null;
+  },{passive:true});
+  document.addEventListener('touchend',function(ev){
+    if(params.get('embedded') === '1')return;
+    var start=edgeSwipe;edgeSwipe=null;
+    if(!start||!ev.changedTouches.length)return;
+    var t=ev.changedTouches[0],dx=t.clientX-start.x,dy=t.clientY-start.y;
+    if(dx>=85&&Math.abs(dx)>Math.abs(dy)*1.5)handleDictionaryBack();
+  },{passive:true});
+  document.addEventListener('touchcancel',function(){edgeSwipe=null;},{passive:true});
   filterToggle.addEventListener('click', function(){
     var collapsed = filterStack.classList.toggle('collapsed');
     var t = UI[currentLang] || UI.uz;
@@ -1754,6 +1806,18 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     }catch(e){}
   }
 
+  function syncDictionaryTelegramChrome(){
+    var color=isLight?'#FDF9F0':'#002F49';
+    try{
+      var meta=document.querySelector('meta[name="theme-color"]');
+      if(meta)meta.setAttribute('content',color);
+      var webApp=window.Telegram&&window.Telegram.WebApp;
+      if(webApp){
+        if(typeof webApp.setHeaderColor==='function')webApp.setHeaderColor(color);
+        if(typeof webApp.setBackgroundColor==='function')webApp.setBackgroundColor(color);
+      }
+    }catch(e){}
+  }
   function init(){
     applyStaticText();
     renderList('');
@@ -1761,31 +1825,37 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     if(deepChar){ openDeepChar(deepChar); }
     try{
       var tg = window.Telegram && window.Telegram.WebApp;
-      if(tg && tg.ready) tg.ready();
-      syncTelegramInsets();
+      if(params.get('embedded') !== '1'){
+        if(tg && tg.ready) tg.ready();
+        syncDictionaryTelegramChrome();
+        syncTelegramInsets();
+      }
       if(tg && tg.onEvent){
         ['viewportChanged','safeAreaChanged','contentSafeAreaChanged'].forEach(function(event){
           tg.onEvent(event, syncTelegramInsets);
         });
       }
       var nativeBackBound=false;
-      if(tg && tg.BackButton && typeof tg.BackButton.onClick === 'function') {
-        tg.BackButton.onClick(function(){
-          if(!viewDetail.classList.contains('hidden')) {
-            if(!strokeModal.classList.contains('hidden')) closeStrokeOrder();
-            else closeDetailView();
-          } else {
-            goBackToStudy();
-          }
-        });
-        nativeBackBound=true;
+      if(params.get('embedded') !== '1'){
+        if(tg && tg.BackButton && typeof tg.BackButton.onClick === 'function'){
+          tg.BackButton.onClick(handleDictionaryBack);
+          nativeBackBound=true;
+        }
+        if(tg && tg.BackButton && typeof tg.BackButton.show === 'function') tg.BackButton.show();
       }
-      if(tg && tg.BackButton && typeof tg.BackButton.show === 'function') tg.BackButton.show();
       // Telegram SDK can load in a normal browser: initData distinguishes a real launch.
       document.documentElement.classList.toggle('hsk-telegram-back-active',
         !!(nativeBackBound && tg && tg.initData && tg.BackButton && typeof tg.BackButton.show === 'function'));
     }catch(e){}
   }
+  window.addEventListener('pageshow',function(){
+    if(params.get('embedded') === '1')return;
+    syncDictionaryTelegramChrome();
+    try{var tg=window.Telegram&&window.Telegram.WebApp;if(tg&&tg.BackButton)tg.BackButton.show()}catch(e){}
+  });
+  document.addEventListener('visibilitychange',function(){
+    if(params.get('embedded') !== '1'&&document.visibilityState==='visible')syncDictionaryTelegramChrome();
+  });
   init();
 })();
 

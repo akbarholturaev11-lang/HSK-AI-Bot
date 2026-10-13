@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <meta name="theme-color" content="#FDF9F0">
   <title>Tayyor gaplar · HSK AI</title>
   <link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005-section-title">
@@ -41,7 +42,7 @@
     .intro { max-width: 430px; margin: 8px 0 0; color: var(--ink-soft); font-size: 14px; line-height: 1.5; }
     .search { position: relative; display: block; }
     .search-icon { position: absolute; top: 50%; left: 15px; transform: translateY(-50%); color: var(--ink-muted); font-size: 20px; pointer-events: none; }
-    .search input { width: 100%; height: 49px; padding: 0 14px 0 43px; border: 1px solid var(--line); border-radius: 14px; outline: 0; background: var(--card); color: var(--ink); font-size: 14px; }
+    .search input { width: 100%; height: 49px; padding: 0 14px 0 43px; border: 1px solid var(--line); border-radius: 14px; outline: 0; background: var(--card); color: var(--ink); font-size: 16px; }
     .search input::placeholder { color: var(--ink-muted); }
     .search input:focus { border-color: var(--focus); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 17%, transparent); }
     .filters { display: flex; gap: 7px; overflow-x: auto; padding: 14px 1px 7px; scrollbar-width: none; }
@@ -93,6 +94,7 @@
     (function () {
       "use strict";
 
+      document.documentElement.classList.toggle("hsk-embedded",new URLSearchParams(location.search).get("embedded")==="1");
       var LANGUAGE = new URLSearchParams(location.search).get("lang") || "uz";
       if (!["uz", "ru", "tj"].includes(LANGUAGE)) LANGUAGE = "uz";
       var UI = {
@@ -300,14 +302,52 @@
       }
 
       function goBack() {
-        if (history.length > 1) history.back();
-        else location.replace("/course-v3.html?tab=quiz&lang=" + encodeURIComponent(LANGUAGE));
+        if (new URLSearchParams(location.search).get("embedded") === "1" && window.parent !== window && window.parent.RESOURCE) {
+          window.parent.RESOURCE.close(); return;
+        }
+        try { sessionStorage.setItem("hsk_v3_resource_return", "1"); } catch (_) {}
+        if (new URLSearchParams(location.search).get("from") === "course-v3" && history.length > 1) {
+          history.back();
+          return;
+        }
+        location.replace("/course-v3.html?tab=mashq&lang=" + encodeURIComponent(LANGUAGE));
       }
 
       elements.query.addEventListener("input", renderPhrases);
+      /* Edge swipe exits the phrasebook; category-chip horizontal scrolling remains available. */
+      var edgeSwipe = null;
+      document.addEventListener("touchstart", function (ev) {
+        if (document.documentElement.classList.contains("hsk-embedded")) return;
+        if (ev.touches.length !== 1 || ev.target.closest(".filters")) { edgeSwipe = null; return; }
+        var t = ev.touches[0];
+        edgeSwipe = t.clientX <= 28 ? { x: t.clientX, y: t.clientY } : null;
+      }, { passive: true });
+      document.addEventListener("touchend", function (ev) {
+        if (document.documentElement.classList.contains("hsk-embedded")) return;
+        var start = edgeSwipe; edgeSwipe = null;
+        if (!start || !ev.changedTouches.length) return;
+        var t = ev.changedTouches[0], dx = t.clientX - start.x, dy = t.clientY - start.y;
+        if (dx >= 85 && Math.abs(dx) > Math.abs(dy) * 1.5) goBack();
+      }, { passive: true });
+      document.addEventListener("touchcancel", function () { edgeSwipe = null; }, { passive: true });
+      function syncPhraseTelegramChrome() {
+        var color = getComputedStyle(document.documentElement).getPropertyValue("--hsk-paper").trim() || "#FDF9F0";
+        try {
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute("content", color);
+          var app = window.Telegram && window.Telegram.WebApp;
+          if (!app) return;
+          if (typeof app.setHeaderColor === "function") app.setHeaderColor(color);
+          if (typeof app.setBackgroundColor === "function") app.setBackgroundColor(color);
+        } catch (_) {}
+      }
       try {
         var webApp = window.Telegram && window.Telegram.WebApp;
-        if (webApp && webApp.BackButton) {
+        if (new URLSearchParams(location.search).get("embedded") !== "1") {
+          if (webApp && webApp.ready) webApp.ready();
+          syncPhraseTelegramChrome();
+        }
+        if (new URLSearchParams(location.search).get("embedded") !== "1" && webApp && webApp.BackButton) {
           webApp.BackButton.show();
           webApp.BackButton.onClick(goBack);
           window.addEventListener("pagehide", function () {
@@ -316,6 +356,17 @@
           }, { once: true });
         }
       } catch (_) { /* Standalone preview outside Telegram. */ }
+      window.addEventListener("pageshow", function () {
+        if (new URLSearchParams(location.search).get("embedded") === "1") return;
+        syncPhraseTelegramChrome();
+        try {
+          var webApp = window.Telegram && window.Telegram.WebApp;
+          if (webApp && webApp.BackButton) webApp.BackButton.show();
+        } catch (_) {}
+      });
+      document.addEventListener("visibilitychange", function () {
+        if (new URLSearchParams(location.search).get("embedded") !== "1" && document.visibilityState === "visible") syncPhraseTelegramChrome();
+      });
 
       function loadCatalog() {
         elements.error.hidden = true;

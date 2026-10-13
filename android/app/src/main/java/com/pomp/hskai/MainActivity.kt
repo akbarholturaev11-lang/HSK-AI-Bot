@@ -214,13 +214,17 @@ private fun AppRoot(
     val authState by authRepository.state.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     var offlineCourseEntry by rememberSaveable { mutableStateOf(false) }
+    var launchSplashAnimationFinished by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         authRepository.bootstrap()
     }
+    val onLaunchSplashAnimationFinished = { launchSplashAnimationFinished = true }
 
-    when (val state = authState) {
-        AuthState.Unknown -> SplashScreen()
+    if (authState == AuthState.Unknown || !launchSplashAnimationFinished) {
+        SplashScreen(onLaunchSplashAnimationFinished)
+    } else when (val state = authState) {
+        AuthState.Unknown -> SplashScreen(onLaunchSplashAnimationFinished)
 
         is AuthState.BootstrapFailed -> {
             val courseEntry = offlineCourseEntry || requestedDestination?.destination?.toTab() == MainTab.COURSE
@@ -1969,14 +1973,17 @@ private fun rememberSessionViewModelStoreOwner(): SessionViewModelStoreOwner {
 }
 
 @Composable
-private fun SplashScreen() {
+private fun SplashScreen(onLaunchAnimationFinished: (() -> Unit)? = null) {
     Surface(color = PompColors.Paper, modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            HskBrandLoader()
+            HskBrandLoader(
+                launch = onLaunchAnimationFinished != null,
+                onLaunchAnimationFinished = { onLaunchAnimationFinished?.invoke() },
+            )
         }
     }
 }

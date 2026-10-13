@@ -37,6 +37,39 @@ html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-famil
 .wrap{max-width:var(--shell);margin:0 auto;min-height:100vh;position:relative;padding-top:var(--safe-t)}
 .scr{display:none;padding-bottom:calc(82px + var(--safe-b))}
 .scr.on{display:block}
+#hsk-launch-splash{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:var(--safe-t) 16px var(--safe-b);background:var(--paper);opacity:1;visibility:visible;transition:opacity .24s ease,visibility .24s ease}
+#hsk-launch-splash.is-done{opacity:0;visibility:hidden;pointer-events:none}
+.hsk-launch-stage{position:relative;display:flex;flex-direction:column;align-items:center}
+.hsk-launch-halo{position:absolute;top:48px;left:50%;width:132px;height:132px;border-radius:50%;background:radial-gradient(circle,rgba(224,74,64,.24),rgba(224,74,64,0));opacity:.1;transform:translate(-50%,-50%) scale(.84);animation:hsk-launch-halo-breathe 1.45s ease-in-out infinite alternate}
+.hsk-launch-seal{position:relative;display:grid;place-items:center;width:96px;height:96px;overflow:hidden;border-radius:18px;background:linear-gradient(135deg,#F0614C,#C02F32);box-shadow:0 10px 26px rgba(158,48,39,.25);animation:hsk-launch-seal-breathe 1.1s ease-in-out infinite alternate}
+.hsk-launch-knot,.hsk-launch-spin{position:absolute;inset:0;transform-origin:50% 50%}
+.hsk-launch-knot{animation:hsk-launch-settle 280ms ease-out 890ms both}
+.hsk-launch-spin{animation:hsk-launch-turn 900ms cubic-bezier(.24,.82,.32,1) 1170ms forwards}
+.hsk-launch-logo{display:block;width:100%;height:100%;overflow:visible}
+.hsk-launch-piece{transform-box:fill-box;transform-origin:50% 50%}
+.hsk-launch-flat{opacity:.76;transform:translate(-7px,0) rotate(-7deg) scale(.86)}
+.hsk-launch-diagonal{opacity:.48;transform:translate(7px,-4px) rotate(8deg) scale(.82)}
+.hsk-launch-crossings{opacity:0;transform:translateY(-3px) scale(.92)}
+.hsk-launch-brandline{display:flex;align-items:center;gap:12px;min-height:36px;margin-top:22px;opacity:0;transform:translateY(18px)}
+.hsk-launch-title{margin:0;background:linear-gradient(105deg,#D99A16 0%,#D99A16 39%,#FFF7C8 48%,#F7C948 52%,#D9920F 62%,#D99A16 100%);background-position:100% 0;background-size:240% 100%;background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;color:#D99A16;font-size:25px;font-weight:800;letter-spacing:.11em;line-height:1;text-shadow:0 0 14px rgba(247,201,72,.2)}
+.hsk-launch-book{width:24px;height:24px;color:#E2A51D;opacity:0}
+#hsk-launch-splash.is-playing .hsk-launch-flat{animation:hsk-launch-flat-weave 520ms cubic-bezier(.18,.82,.28,1.16) both}
+#hsk-launch-splash.is-playing .hsk-launch-diagonal{animation:hsk-launch-diagonal-weave 530ms cubic-bezier(.18,.82,.28,1.16) 80ms both}
+#hsk-launch-splash.is-playing .hsk-launch-crossings{animation:hsk-launch-crossing-reveal 240ms ease-out 570ms both}
+#hsk-launch-splash.is-playing .hsk-launch-brandline{animation:hsk-launch-brand-rise 620ms cubic-bezier(.16,1,.3,1) 1330ms both}
+#hsk-launch-splash.is-playing .hsk-launch-title{animation:hsk-launch-gold-wave 900ms ease-in-out 1910ms 1 both}
+#hsk-launch-splash.is-playing .hsk-launch-book{animation:hsk-launch-book-rise 560ms cubic-bezier(.16,1,.3,1) 1410ms both}
+@keyframes hsk-launch-seal-breathe{to{transform:scale(1.04)}}
+@keyframes hsk-launch-halo-breathe{to{opacity:.24;transform:translate(-50%,-50%) scale(1.16)}}
+@keyframes hsk-launch-flat-weave{to{opacity:1;transform:translate(0) rotate(0) scale(1)}}
+@keyframes hsk-launch-diagonal-weave{to{opacity:1;transform:translate(0) rotate(0) scale(1)}}
+@keyframes hsk-launch-crossing-reveal{to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes hsk-launch-settle{0%{transform:scale(1)}56%{transform:scale(1.035)}100%{transform:scale(1)}}
+@keyframes hsk-launch-turn{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes hsk-launch-brand-rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes hsk-launch-book-rise{from{opacity:0;transform:translateY(16px) rotate(-12deg) scale(.84)}to{opacity:1;transform:translateY(0) rotate(0) scale(1)}}
+@keyframes hsk-launch-gold-wave{from{background-position:100% 0}to{background-position:0 0}}
+@media(prefers-reduced-motion:reduce){#hsk-launch-splash,#hsk-launch-splash *{animation:none!important;transition:none!important}#hsk-launch-splash .hsk-launch-flat,#hsk-launch-splash .hsk-launch-diagonal,#hsk-launch-splash .hsk-launch-crossings,#hsk-launch-splash .hsk-launch-brandline,#hsk-launch-splash .hsk-launch-book{opacity:1;transform:none}}
 button{cursor:pointer;touch-action:manipulation}
 button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px solid var(--cin2);outline-offset:3px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
@@ -517,6 +550,16 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 	.lr .nm small{display:block;font-size:11px;color:var(--ink3);margin-top:2px}
 	.lr.me{background:var(--cinbg);border-radius:11px;border-bottom:none;padding:10px 12px}
 	.lr.me .av{background:var(--cin);color:var(--cin-ink)}.lr.me .nm{font-weight:500;color:var(--cin2)}.lr.me .xp{color:var(--cin2)}
+/* Prevent long Telegram names and large XP totals from widening the mobile viewport. */
+#s-rating{min-width:0;max-width:100%;overflow-x:clip}
+.lr{max-width:calc(100% - 32px);min-width:0}
+.lr .rk,.lr .av,.lr .xp,.lr .med{flex-shrink:0}
+.lr .nm{min-width:0;overflow-wrap:anywhere;word-break:break-word}
+.lr .nm small{overflow-wrap:anywhere}
+.rt-league>div:nth-child(2){flex:1;min-width:0}
+.rt-league .nm2,.rt-league .sb{overflow-wrap:anywhere}
+.rt-cd{flex-shrink:0}
+.rt-zone{min-width:0;overflow-wrap:anywhere}
 .rt-league{display:flex;align-items:center;gap:13px;margin:8px 16px 6px;padding:14px;background:var(--card);border:1px solid var(--line);border-radius:16px}
 .rt-emb{width:50px;height:50px;border-radius:14px;background:var(--cin);border:2px solid var(--gold);color:var(--cin-ink);display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0}
 .rt-league .nm2{font-size:16px;font-weight:500}.rt-league .sb{font-size:12px;color:var(--ink2);margin-top:2px}
@@ -789,6 +832,14 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
    shuning uchun asosiy ilovaning klasslari bilan to'qnashmaydi. */
 .secov{--redbg:#FBEDEA;position:fixed;inset:0;background:var(--paper);z-index:30;display:none;flex-direction:column;max-width:var(--read);margin:0 auto}
 .secov.on{display:flex}
+/* Cached resource screens stay in the course WebView: no document reload on return. */
+.resourceov{position:fixed;inset:0;z-index:35;max-width:var(--read);margin:0 auto;background:var(--paper);display:none;overflow:hidden}
+.resourceov.on{display:block}
+.resource-pane{position:absolute;inset:0;background:var(--paper)}
+.resource-pane[hidden],.resource-status[hidden]{display:none!important}
+.resource-frame{width:100%;height:100%;border:0;display:block;background:var(--paper)}
+.resource-status{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:var(--paper);color:var(--ink2);font-size:14px;padding:22px;text-align:center}
+.resource-status button{min-height:44px;padding:10px 20px;border:1px solid var(--line);border-radius:12px;background:var(--card);font:inherit;color:var(--ink)}
 .rc-top{display:flex;align-items:center;gap:11px;padding:calc(14px + var(--safe-t)) 16px 8px}
 .rc-ix{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:18px;display:flex;align-items:center;justify-content:center}
 .rc-pbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}
@@ -1249,6 +1300,41 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
 </head>
 <body class="hsk-scene-page">
+<div id="hsk-launch-splash" class="is-playing" role="img" aria-label="HSK AI">
+  <div class="hsk-launch-stage">
+    <div class="hsk-launch-halo" aria-hidden="true"></div>
+    <div class="hsk-launch-seal" aria-hidden="true">
+      <div class="hsk-launch-knot">
+        <div class="hsk-launch-spin">
+          <svg class="hsk-launch-logo" viewBox="0 0 108 108" aria-hidden="true">
+            <defs>
+              <linearGradient id="hsk-launch-casing" x1="0" y1="0" x2="108" y2="108" gradientUnits="userSpaceOnUse"><stop stop-color="#F0614C"/><stop offset="1" stop-color="#C02F32"/></linearGradient>
+              <linearGradient id="hsk-launch-gold" x1="0" y1="28" x2="0" y2="80" gradientUnits="userSpaceOnUse"><stop stop-color="#F7C948"/><stop offset="1" stop-color="#D9920F"/></linearGradient>
+            </defs>
+            <g class="hsk-launch-piece hsk-launch-flat">
+              <path d="M39.5 35h29a4.5 4.5 0 0 1 4.5 4.5v29a4.5 4.5 0 0 1-4.5 4.5h-29a4.5 4.5 0 0 1-4.5-4.5v-29a4.5 4.5 0 0 1 4.5-4.5Z" fill="none" stroke="url(#hsk-launch-casing)" stroke-width="9.5" stroke-linejoin="round"/>
+              <path d="M39.5 35h29a4.5 4.5 0 0 1 4.5 4.5v29a4.5 4.5 0 0 1-4.5 4.5h-29a4.5 4.5 0 0 1-4.5-4.5v-29a4.5 4.5 0 0 1 4.5-4.5Z" fill="none" stroke="url(#hsk-launch-gold)" stroke-width="6" stroke-linejoin="round"/>
+            </g>
+            <g class="hsk-launch-piece hsk-launch-diagonal">
+              <path d="m57.18 30.31 20.51 20.51a4.5 4.5 0 0 1 0 6.36L57.18 77.69a4.5 4.5 0 0 1-6.36 0L30.31 57.18a4.5 4.5 0 0 1 0-6.36l20.51-20.51a4.5 4.5 0 0 1 6.36 0Z" fill="none" stroke="url(#hsk-launch-casing)" stroke-width="9.5" stroke-linejoin="round"/>
+              <path d="m57.18 30.31 20.51 20.51a4.5 4.5 0 0 1 0 6.36L57.18 77.69a4.5 4.5 0 0 1-6.36 0L30.31 57.18a4.5 4.5 0 0 1 0-6.36l20.51-20.51a4.5 4.5 0 0 1 6.36 0Z" fill="none" stroke="url(#hsk-launch-gold)" stroke-width="6" stroke-linejoin="round"/>
+            </g>
+            <g class="hsk-launch-piece hsk-launch-crossings">
+              <path d="M39.5 35h13.4M73 39.5v13.4M68.5 73H55.1M35 68.5V55.1" fill="none" stroke="url(#hsk-launch-casing)" stroke-width="9.5"/>
+              <path d="M39.5 35h13.4M73 39.5v13.4M68.5 73H55.1M35 68.5V55.1" fill="none" stroke="url(#hsk-launch-gold)" stroke-width="6"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="hsk-launch-brandline">
+      <p class="hsk-launch-title">HSK AI</p>
+      <svg class="hsk-launch-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 7v14"/><path d="M3 18V5a2 2 0 0 1 2-2h3a4 4 0 0 1 4 4 4 4 0 0 1 4-4h3a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-3a4 4 0 0 0-4 2 4 4 0 0 0-4-2H5a2 2 0 0 1-2-2Z"/>
+      </svg>
+    </div>
+  </div>
+</div>
 <div class="wrap">
   <div class="scr on" id="s-course"><div class="loading">…</div></div>
   <div class="scr" id="s-mashq"></div>
@@ -1273,6 +1359,10 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   <div class="sheet" id="paywall"><div class="si" onclick="event.stopPropagation()"><button class="sx" onclick="App.closePaywall()"><i class="ti ti-x"></i></button><div class="grip"></div><div id="paywall-body"></div></div></div>
 
   <div class="secov" id="secov"></div>
+  <div class="resourceov" id="resourceov" aria-hidden="true">
+    <section id="resource-dict" class="resource-pane" hidden aria-label="HSK dictionary"></section>
+    <section id="resource-phrases" class="resource-pane" hidden aria-label="HSK phrasebook"></section>
+  </div>
 
   <div class="flow" id="flow">
     <div class="ftop"><button class="fx" onclick="App.exitFlow()"><i class="ti ti-x"></i></button><div class="fpbar"><i id="f-prog"></i></div><button class="fgear" onclick="App.pinyinSheet()" aria-label="Pinyin"><i class="ti ti-settings"></i></button><span class="fheart"><i class="ti ti-heart"></i><span id="f-hp">5</span></span></div>
@@ -1577,7 +1667,12 @@ function setSelectedLevel(lv){
   try{var u=new URL(location.href);u.searchParams.set("level",lv);history.replaceState(null,"",u.pathname+"?"+u.searchParams.toString())}catch(e){}
   return lv;
 }
-var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}try{tg.setHeaderColor("#FDF9F0");tg.setBackgroundColor("#FDF9F0")}catch(e){}}
+var tg=window.Telegram&&window.Telegram.WebApp;
+function syncCourseTelegramChrome(){
+  /* Telegram header state is native and may be reset between HTML documents. */
+  try{if(tg){tg.setHeaderColor("#FDF9F0");tg.setBackgroundColor("#FDF9F0")}}catch(e){}
+}
+if(tg){try{tg.ready();tg.expand()}catch(e){}syncCourseTelegramChrome()}
 var INIT_DATA=(tg&&tg.initData)||"";
 /* Bot username yagona manba: serverdan (BOT_USERNAME) keladi. Map javobida
    bot_username bo'lsa yangilanadi; bo'lmasa xavfsiz default ishlaydi. */
@@ -1609,7 +1704,7 @@ function pingMiniAppExit(){
 try{
   document.addEventListener("visibilitychange",function(){
     if(document.visibilityState==="hidden")pingMiniAppExit();
-    else{INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;refreshCourseProgress();queueHsk30PromoCheck()}
+    else{syncCourseTelegramChrome();INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;refreshCourseProgress();queueHsk30PromoCheck()}
   });
   window.addEventListener("pagehide",pingMiniAppExit);
   /* bfcache: sahifa xotiradan tiklanganda (obuna, lug'at yoki AI Voice
@@ -1618,6 +1713,7 @@ try{
      tiklanishda map qayta so'raladi. `persisted` bo'lmasa — bu oddiy
      yuklanish, hech narsa qilinmaydi. */
   window.addEventListener("pageshow",function(e){
+    syncCourseTelegramChrome();
     if(!e||!e.persisted)return;
     INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;clearDeferredCourseUnlock();
     if(!INIT_DATA||!MAP)return;
@@ -1746,10 +1842,10 @@ function speak(t){
   if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;
   function playSource(src){
     if(tok!==window._ttsTok)return;
-    try{var a=new Audio(src);_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}
+    try{var a=new Audio(src);_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}
   }
   if(_ttsCache[t]){playSource(_ttsCache[t]);return}
-  if(_ttsPending[t]){_ttsPending[t].then(function(){if(tok===window._ttsTok)playSource(_ttsCache[t]||ttsUrl(t))});return}
+  if(_ttsPending[t]){_ttsPending[t].then(function(src){if(tok!==window._ttsTok)return;if(src)playSource(src);else _ttsFallback(t)});return}
   playSource(ttsUrl(t));
 }
 /* Kartadan o'ynash mumkin bo'lgan xitoycha matnlarni yig'ish (prefetch uchun) */
@@ -1766,12 +1862,40 @@ function cardAudioTexts(c){
   if(c.type==="_dialogue"&&c.d&&c.d.dialogue)c.d.dialogue.slice(0,3).forEach(function(l){if(l.zh)out.push(l.zh)});
   return out;
 }
+/* Keep background synthesis bounded: four cards can contain many dialogue
+   lines, and every unseen line costs an external Gemini call. Prioritize the
+   current card plus two upcoming utterances. */
 function prefetchUpcomingAudio(){
   try{
-    for(var i=Flow.i;i<Math.min(Flow.i+4,Flow.queue.length);i++){
-      cardAudioTexts(Flow.queue[i]).forEach(prefetchTTS);
+    var seen={},count=0;
+    for(var i=Flow.i;i<Math.min(Flow.i+5,Flow.queue.length)&&count<3;i++){
+      var texts=cardAudioTexts(Flow.queue[i]);
+      for(var j=0;j<texts.length&&count<3;j++){
+        var word=String(texts[j]||"").trim();
+        if(!word||seen[word])continue;
+        seen[word]=true;prefetchTTS(word);count++;
+      }
     }
   }catch(e){}
+}
+/* Fetch the first words while the learner is reading the lesson preview.
+   The lesson JSON is already public static course material; lesson-start
+   access control is unchanged and still enforced by reserveLessonStart(). */
+function warmLessonPreviewAudio(lv,n){
+  return loadLessonData(lv,n).then(function(d){
+    var first=[],seen={};
+    function offer(text){
+      text=String(text||"").trim();
+      if(!text||seen[text]||text.length>240||!/[一-鿿]/.test(text))return;
+      seen[text]=true;if(first.length<2)first.push(text);
+    }
+    (d.basics||[]).slice(0,5).forEach(function(c){cardAudioTexts(c).forEach(offer)});
+    (d.sections||[]).slice(0,2).forEach(function(sec){
+      (sec.cards||[]).slice(0,8).forEach(function(c){cardAudioTexts(c).forEach(offer)});
+    });
+    if(!first.length)(d.active_words||[]).slice(0,2).forEach(function(w){offer(w.zh)});
+    return Promise.all(first.map(prefetchTTS));
+  }).catch(function(){return null});
 }
 function haptic(t){try{tg&&tg.HapticFeedback&&(t==="ok"?tg.HapticFeedback.notificationOccurred("success"):t==="no"?tg.HapticFeedback.notificationOccurred("error"):t==="med"?tg.HapticFeedback.impactOccurred("medium"):t==="heavy"?tg.HapticFeedback.impactOccurred("heavy"):tg.HapticFeedback.impactOccurred("light"))}catch(e){}}
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
@@ -1855,6 +1979,7 @@ var MASHQ_ACCESS_PENDING=null;
 var App={
   setLang:function(l){if(!I18N[l])return;LANG=l;syncDocumentLanguage();renderAll()},
   show:function(s){
+    syncCourseTelegramChrome();
     if(s==="mashq"&&isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){
       var status=COURSE_TRACK_STATE,access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
       if(!access||!access.allowed){
@@ -1877,7 +2002,7 @@ var App={
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
     if(s==="course"){drawTrails();scrollToCurrentNode()}else{window.scrollTo(0,0)}
     if(s==="course"&&previous!=="course"){refreshCourseProgress();queueHsk30PromoCheck()}
-    if(s==="mashq")prefetchPracticeAssets();
+    if(s==="mashq"){prefetchPracticeAssets();if(window.RESOURCE)RESOURCE.warm()}
     if(s==="voice")renderVoice();
     if(s==="rating")renderRating();
     if(s==="profile"){
@@ -2045,42 +2170,46 @@ var App={
       if(ps.extended){setTimeout(function(){beep([392,523,659,784]);haptic("heavy")},350)}
     });
   },
-  showRankUp:function(){
-    var beforeRank=pendingRankUp&&pendingRankUp.before;pendingRankUp=null;
-    if(INIT_DATA){
-      var waitTexts={ru:["Проверяем рейтинг…","Секунду, обновляем вашу позицию."],uz:["Reyting tekshirilmoqda…","Bir soniya, o'rningizni yangilayapmiz."],tj:["Рейтинг санҷида мешавад…","Як лаҳза, ҷойи шуморо нав мекунем."]};
-      var wait=waitTexts[LANG]||waitTexts.uz;
-      $("#lu-panda").innerHTML=pandaChar("celebrate");
-      $("#lu-stage").innerHTML='<div class="ru-wrap"><h2>'+wait[0]+'</h2><p>'+wait[1]+'</p></div>';
-      loadLatestRating().then(function(){
-        var afterRank=currentRatingRank();
-        if(!beforeRank||!afterRank||afterRank>=beforeRank){App.closeLevelUp();return}
-        App.renderRankUpBoard();
-      }).catch(function(){App.closeLevelUp()});
-      return;
+  showRankUp:function(returnDest){
+    var ranks=pendingRankUp;pendingRankUp=null;
+    if(!ranks||!ranks.before||!ranks.after||ranks.after>=ranks.before||!INIT_DATA){
+      App.closeLevelUp(returnDest);return;
     }
-    /* Telegram tashqarisida (preview) reyting ma'lumoti yo'q — hech kimdan
-       o'tganini tasdiqlay olmaymiz, demak bayram oynasi ochilmaydi. */
-    App.closeLevelUp();
+    // Never gate a confirmed promotion behind a second network call.
+    // The old Continue action could dismiss the entire overlay while the
+    // leaderboard request was in flight and make the rank-up invisible.
+    $("#lu-cta").disabled=true;
+    App.renderRankUpBoard(ranks,returnDest);
+    // Refresh the general rating screen in the background; this cannot
+    // cancel, replace, or delay the already-running celebration.
+    loadLatestRating().catch(function(){});
   },
-  renderRankUpBoard:function(){
-    sortRatingUsers();
-    var meIdx=ratingUsers.findIndex(function(u){return u.me});
-    var meU=meIdx>=0?ratingUsers[meIdx]:null;
-    var aboveU=meIdx>0?ratingUsers[meIdx-1]:null;
-    var belowU=meIdx>=0&&meIdx<ratingUsers.length-1?ratingUsers[meIdx+1]:null;
+  renderRankUpBoard:function(ranks,returnDest){
+    var users=(Array.isArray(ranks.board)?ranks.board:[]).map(normalizeSocialUser);
+    // Pre-deployment responses may not contain the compact board. Cached
+    // rows are only usable when their rank agrees with the server result.
+    if(!users.length){
+      var cached=ratingUsers.find(function(u){return u.me});
+      if(cached&&cached.rank===ranks.after)users=ratingUsers.slice();
+    }
+    users.sort(function(a,b){return a.rank-b.rank});
+    var meIdx=users.findIndex(function(u){return u.me&&u.rank===ranks.after});
+    var meU=meIdx>=0?users[meIdx]:null;
+    var aboveU=meIdx>0?users[meIdx-1]:null;
+    var belowU=meIdx>=0&&meIdx<users.length-1?users[meIdx+1]:null;
     var passedU=belowU;
-    /* Kimdandir o'tmagan bo'lsa — bo'sh "ko'tarildingiz" oynasini ko'rsatmaymiz. */
-    if(!meU||!passedU){App.closeLevelUp();return}
+    // An authentic rank movement always gets a celebration, even if
+    // neighbour names are unavailable (the numeric ranks are server-owned).
     var RU={ru:{t:"Вы поднялись в рейтинге!",s:"{n} остался позади. Сегодняшний урок решил это."},
       uz:{t:"Reytingda ko'tarildingiz!",s:"{n} ortda qoldi. Buni bugungi darsingiz hal qildi."},
       tj:{t:"Дар рейтинг боло рафтед!",s:"{n} қафо монд. Инро дарси имрӯзаатон ҳал кард."}}[LANG]||{t:"",s:"{n}"};
-    var r={title:RU.t,sub:RU.s.replace("{n}",esc(passedU.n||"")),cont:T().cont};
+    var rankSummary=(LANG==="ru"?"Место ":LANG==="tj"?"Ҷойи ":"O'rin ")+"#"+ranks.before+" → #"+ranks.after;
+    var r={title:RU.t,sub:passedU?RU.s.replace("{n}",esc(passedU.n||"")):rankSummary,cont:T().cont};
     var rows=[];
-	    if(aboveU)rows.push({rk:meIdx,a:aboveU.a,n:aboveU.n,xp:(aboveU.weeklyXp||0).toLocaleString("ru")});
-	    if(meU)rows.push({rk:meIdx+1,a:meU.a||PROF.avatar||"阿",n:T().you,xp:ratingScore(meU).toLocaleString("ru"),me:1,from:aboveU?1:0});
-	    if(belowU)rows.push({rk:meIdx+2,a:belowU.a,n:belowU.n,xp:(belowU.weeklyXp||0).toLocaleString("ru"),from:-1});
-	    if(!rows.length)rows=[{rk:1,a:PROF.avatar||"阿",n:T().you,xp:currentUserWeeklyXp().toLocaleString("ru"),me:1,from:0}];
+	    if(aboveU)rows.push({rk:aboveU.rank,a:aboveU.a,n:aboveU.n,xp:(aboveU.weeklyXp||0).toLocaleString("ru")});
+	    if(meU)rows.push({rk:ranks.after,a:meU.a||PROF.avatar||"阿",n:T().you,xp:ratingScore(meU).toLocaleString("ru"),me:1,from:aboveU?1:0});
+	    if(belowU)rows.push({rk:belowU.rank,a:belowU.a,n:belowU.n,xp:(belowU.weeklyXp||0).toLocaleString("ru"),from:-1});
+	    if(!rows.length)rows=[{rk:ranks.after,a:PROF.avatar||"阿",n:T().you,xp:currentUserWeeklyXp().toLocaleString("ru"),me:1,from:0}];
     /* Yaqin kadr: panda uzoqdan otilib chiqadi — taxta shundan keyin ochiladi */
     cinePanda("zoom","celebrate",function(){
       $("#lu-panda").innerHTML=pandaChar("celebrate");
@@ -2088,12 +2217,14 @@ var App={
       $("#levelup").classList.add("on");
       document.querySelectorAll("#lu-stage .ru-row").forEach(function(row){var f=+row.dataset.from;if(f)row.style.transform="translateY("+(f*58)+"px)"});
       setTimeout(function(){document.querySelectorAll("#lu-stage .ru-row").forEach(function(row){row.style.transform="translateY(0)"});luRain();beep([784,988,1175,1318]);haptic("ok")},420);
-      $("#lu-cta").setAttribute("onclick","App.closeLevelUp('rating')");$("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+r.cont;
+      $("#lu-cta").setAttribute("onclick",returnDest==="checkpoint_next"?"App.openCheckpointNext()":"App.closeLevelUp('rating')");$("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+r.cont;
+      $("#lu-cta").disabled=false;
     });
   },
   /* Reytingda haqiqatan ko'tarilgan bo'lsa — reyting ekraniga, aks holda
      o'quvchi kurs xaritasiga qaytadi (bo'sh reyting oynasi ochilmaydi). */
   openCheckpointNext:function(){
+    if(pendingRankUp){App.showRankUp("checkpoint_next");return}
     if(App.showSalesBridge())return;
     window._pendingStreak=null;pendingRankUp=null;App.closeLevelUp("checkpoint_next");
   },
@@ -2128,6 +2259,7 @@ var App={
     if(idx>=0&&allLessons()[idx])setTimeout(function(){openLessonSheet(idx)},80);
   },
   closeLevelUp:function(dest){
+    if(!dest&&pendingRankUp){App.showRankUp();return}
     var ov=$("#levelup");ov.classList.remove("on");ov.classList.remove("cine");ov.classList.remove("sales-bridge");
     var cine=$("#lu-cine");if(cine)cine.innerHTML="";
     App.exitFlow();
@@ -2258,16 +2390,8 @@ var App={
   tourNext:function(){if(TOUR.i<TOUR.steps.length-1){TOUR.i++;tourRender()}else{App.tourEnd()}},
   tourEnd:function(){stopTourAudio();try{localStorage.setItem("hsk_v3_tour","1")}catch(e){}$("#tour").classList.remove("on")},
   toggleTourVoice:function(){TOURV=!TOURV;if(!TOURV){stopTourAudio()}tourRender(!TOURV)},
-  openDict:function(){
-    beginInternalNavigation();
-    var level=normalizeLevel((MAP&&MAP.level)||getSelectedLevel());
-    var q=new URLSearchParams({theme:"light",lang:LANG,level:level,filter:level});
-    location.href="/hsk-lugat.html?"+q.toString();
-  },
-  openPhrases:function(){
-    beginInternalNavigation();
-    location.href="/hsk-gaplar.html?"+new URLSearchParams({lang:LANG,theme:"light"}).toString();
-  },
+  openDict:function(){RESOURCE.open("dict")},
+  openPhrases:function(){RESOURCE.open("phrases")},
   openRecog:function(){RECOG.open()},
   openPron:function(){PRON.open()},
   openTest:function(){if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){showHsk30TestSoon();return}TEST.open()},
@@ -3033,6 +3157,8 @@ function openLessonSheet(idx){
   App.openSheet('<div class="shead">'+(chip?'<div class="py" style="margin-bottom:2px">'+esc(chip)+'</div>':'')
     +'<div class="zh han">'+esc(l.zh)+'</div><div class="py">'+esc(l.py||"")+'</div><div class="tr">'+esc(tr(l.tr))+'</div>'+(Number(l.src)===1?'<div class="tr" style="margin-top:5px;color:var(--cin2)">你好 · nǐ hǎo · '+esc(LANG==="ru"?"привет":LANG==="tj"?"салом":"salom")+'</div>':'')+stars+'</div>'
     +'<div class="pmeta"><span>'+n+' '+T().stage+'</span><span>'+prog+' / '+n+' '+T().completeOf+'</span></div><div class="secs">'+secs+'</div>'+cta);
+  /* Start fetching the initial pronunciation before "Continue" is tapped. */
+  warmLessonPreviewAudio((MAP&&MAP.level)||"hsk1",l.n);
 }
 
 /* ---------- Skip-ahead test (unlock a locked lesson by passing a quick test) ---------- */
@@ -3560,7 +3686,18 @@ function startLesson(idx,opts){
     });
     HP=5;$("#f-hp").textContent=HP;
     var revealLesson=function(){$("#flow").classList.add("on");renderFlowCard()};
-    if(lessonEntry&&lessonEntry.reveal)lessonEntry.reveal(revealLesson);else revealLesson();
+    /* The panda preparation scene already covers entry: spend at most 1.8 s
+       of that time waiting for the current card's first sound. Never block
+       the course indefinitely if a TTS provider is unavailable. */
+    var firstCardAudio=cardAudioTexts(Flow.queue[Flow.i])[0];
+    var audioWarmup=firstCardAudio?prefetchTTS(firstCardAudio):Promise.resolve(null);
+    var warmupTimer=null;
+    Promise.race([audioWarmup,new Promise(function(resolve){
+      warmupTimer=setTimeout(function(){resolve(null)},1800);
+    })]).then(function(){
+      if(warmupTimer!==null)clearTimeout(warmupTimer);
+      if(lessonEntry&&lessonEntry.reveal)lessonEntry.reveal(revealLesson);else revealLesson();
+    });
   }).catch(function(err){
     if(lessonEntry&&lessonEntry.cancel)lessonEntry.cancel();
     if(err&&err.data){handleLessonStartDenied(err,idx);return}
@@ -4844,7 +4981,7 @@ function loadLevel(lv){
   });
 }
 function applyLessonDone(cur,d){
-  var rankBefore=currentRatingRank();
+  var rankBefore=Number(d&&d.rank_before)||0;
   clearLessonResume((MAP&&MAP.level)||"hsk1",cur&&cur.n);
   clearLessonMastery((MAP&&MAP.level)||"hsk1",cur&&cur.n);
   var al=allLessons();
@@ -4876,7 +5013,9 @@ function applyLessonDone(cur,d){
     if(typeof d.completed_lessons_count!=="undefined")MAP.progress.completed=d.completed_lessons_count;
     ratingLoaded=false;
   }
-  pendingRankUp=(d&&d.gamification&&!d.duplicate)?{before:rankBefore}:null;
+  var rankAfter=Number(d&&d.rank_after)||0;
+  pendingRankUp=(d&&d.gamification&&!d.duplicate&&rankBefore>0&&rankAfter>0&&rankAfter<rankBefore)
+    ?{before:rankBefore,after:rankAfter,board:d.rank_up_board||[]}:null;
   var ni=al.indexOf(cur)+1,next=ni<al.length?al[ni]:null;
   var nextWasLocked=!!(next&&next.status==="locked");
   /* The current marker follows progress even when its allowance is spent.
@@ -6222,6 +6361,159 @@ function closeSection(){
   refreshCourseProgress();
   flushPendingCenterAd();
 }
+
+/* ---------- Dictionary + phrasebook: cached in-app resource screens ---------- */
+var RESOURCE=(function(){
+  var TYPES=["dict","phrases"],STATE={dict:{frame:null,url:"",loaded:false},phrases:{frame:null,url:"",loaded:false}};
+  var ACTIVE=null,WARMED=false;
+  function host(){return document.getElementById("resourceov")}
+  function pane(k){return document.getElementById("resource-"+k)}
+  function url(k){
+    var q=new URLSearchParams({lang:LANG,theme:"light",embedded:"1",from:"course-v3"});
+    if(k==="dict"){
+      var level=normalizeLevel((MAP&&MAP.level)||getSelectedLevel());
+      q.set("level",level);q.set("filter",level);
+      return "/hsk-lugat.html?"+q.toString();
+    }
+    return "/hsk-gaplar.html?"+q.toString();
+  }
+  /* Same-origin iframe touch events do not bubble to the course document.
+     Forward their physical coordinates into the existing animated NavBack. */
+  function wireSwipe(frame){
+    var childDoc;
+    try{childDoc=frame.contentDocument}catch(e){return}
+    if(!childDoc||frame._hskSwipeDoc===childDoc)return;
+    frame._hskSwipeDoc=childDoc;
+    var gesture=null;
+    childDoc.addEventListener("touchstart",function(ev){
+      if(ev.touches.length!==1||!ACTIVE||STATE[ACTIVE].frame!==frame)return;
+      var target=ev.target;
+      // Preserve horizontal scrolling of dictionary filters and phrase categories.
+      if(target&&target.closest&&target.closest(".filters,.filter-row"))return;
+      var t=ev.touches[0];
+      if(t.clientX>NavBack.EDGE)return;
+      gesture={x:t.clientX,y:t.clientY,
+        sx:Number.isFinite(t.screenX)?t.screenX:t.clientX,
+        sy:Number.isFinite(t.screenY)?t.screenY:t.clientY};
+      NavBack.start({touches:[{clientX:t.clientX,clientY:t.clientY}]});
+      if(!NavBack._s)gesture=null;
+    },{passive:true});
+    childDoc.addEventListener("touchmove",function(ev){
+      if(!gesture)return;
+      if(ev.touches.length!==1){gesture=null;NavBack.cancel();return}
+      var t=ev.touches[0],sx=Number.isFinite(t.screenX)?t.screenX:t.clientX;
+      var sy=Number.isFinite(t.screenY)?t.screenY:t.clientY;
+      // screenX/Y remain stable while the iframe itself follows the finger.
+      NavBack.move({
+        touches:[{clientX:gesture.x+sx-gesture.sx,clientY:gesture.y+sy-gesture.sy}],
+        cancelable:ev.cancelable,
+        preventDefault:function(){if(ev.cancelable)ev.preventDefault()}
+      });
+    },{passive:false});
+    childDoc.addEventListener("touchend",function(){
+      if(!gesture)return;
+      gesture=null;NavBack.end();
+    },{passive:true});
+    childDoc.addEventListener("touchcancel",function(){
+      if(!gesture)return;
+      gesture=null;NavBack.cancel();
+    },{passive:true});
+  }
+  function swipeTarget(){
+    if(ACTIVE!=="dict")return null;
+    try{
+      var frame=STATE.dict.frame,doc=frame&&frame.contentDocument;
+      if(!doc)return null;
+      var modal=doc.getElementById("stroke-modal");
+      if(modal&&!modal.classList.contains("hidden"))return modal;
+      var detail=doc.getElementById("view-detail");
+      if(detail&&!detail.classList.contains("hidden"))return detail;
+    }catch(e){}
+    return null;
+  }
+  function swipePreview(show,target){
+    // Reveal the dictionary list underneath a dragged detail screen.
+    if(!target||target.id!=="view-detail")return;
+    try{
+      var doc=target.ownerDocument,detail=doc.getElementById("view-detail");
+      var list=doc.getElementById("view-list");
+      if(detail&&list&&!detail.classList.contains("hidden"))
+        list.classList.toggle("hidden",!show);
+    }catch(e){}
+  }
+  function ensure(k){
+    var state=STATE[k],target=pane(k),next=url(k);
+    if(!target)return;
+    if(state.frame&&state.url===next)return state;
+    if(state.frame){state.frame.remove();state.frame=null}
+    state.url=next;state.loaded=false;target.replaceChildren();
+    var frame=document.createElement("iframe");
+    frame.className="resource-frame";frame.title=k==="dict"?"HSK dictionary":"HSK phrasebook";
+    frame.setAttribute("loading","eager");
+    frame.addEventListener("load",function(){
+      if(state.frame!==frame)return;
+      state.loaded=true;
+      wireSwipe(frame);
+      var status=target.querySelector(".resource-status");
+      if(status)status.hidden=true;
+    });
+    var status=document.createElement("div");status.className="resource-status";
+    status.textContent=LANG==="ru"?"Загрузка…":LANG==="tj"?"Боргирӣ…":"Yuklanmoqda…";
+    target.appendChild(frame);target.appendChild(status);state.frame=frame;
+    frame.src=next;
+    return state;
+  }
+  function open(k){
+    if(TYPES.indexOf(k)<0)return;
+    ACTIVE=k;
+    var box=host();if(!box)return;
+    TYPES.forEach(function(key){var p=pane(key);if(p)p.hidden=key!==k});
+    box.classList.add("on");box.setAttribute("aria-hidden","false");
+    ensure(k);
+    try{NavBack.sync()}catch(e){}
+  }
+  function close(){
+    if(!ACTIVE)return;
+    var state=STATE[ACTIVE];
+    try{
+      var win=state.frame&&state.frame.contentWindow;
+      if(win&&typeof win.HSKResourcePause==="function")win.HSKResourcePause();
+      var active=win&&win.document&&win.document.activeElement;
+      if(active&&typeof active.blur==="function")active.blur();
+    }catch(e){}
+    ACTIVE=null;
+    host().classList.remove("on");host().setAttribute("aria-hidden","true");
+    TYPES.forEach(function(key){var p=pane(key);if(p)p.hidden=true});
+    try{NavBack.sync()}catch(e){}
+  }
+  function back(){
+    if(!ACTIVE)return false;
+    if(ACTIVE==="dict"){
+      try{
+        var frame=STATE.dict.frame,win=frame&&frame.contentWindow;
+        if(win&&typeof win.HSKResourceBack==="function"){win.HSKResourceBack();return true}
+      }catch(e){}
+    }
+    close();return true;
+  }
+  function openPractice(src){
+    // Keep the established exercise gates and its return path unchanged.
+    var allowed=["/course_v3_pronunciation.html","/course_v3_recognition.html","/course_v3_memorize.html"];
+    if(allowed.indexOf(String(src||"").split("?")[0])<0)return;
+    close();beginInternalNavigation();location.href=src;
+  }
+  function warm(){
+    if(WARMED)return;WARMED=true;
+    // Defer large dictionary assets until Practice is opened, not on initial course boot.
+    setTimeout(function(){if(!STATE.phrases.frame)ensure("phrases")},350);
+    var warmDict=function(){if(!STATE.dict.frame)ensure("dict")};
+    if(typeof requestIdleCallback==="function")requestIdleCallback(warmDict,{timeout:3500});
+    else setTimeout(warmDict,1700);
+  }
+  return {open:open,close:close,back:back,warm:warm,openPractice:openPractice,
+    swipeTarget:swipeTarget,swipePreview:swipePreview};
+})();
+window.RESOURCE=RESOURCE;
 
 /* ---------- Ieroglif tanish ---------- */
 var RECOG=(function(){
@@ -7684,11 +7976,24 @@ navInit();
 $("#sheet").onclick=function(){App.closeSheet()};
 $("#paywall").onclick=function(){App.closePaywall()};
 window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App=App;window.Flow=Flow;window.speak=speak;
+var finishHskLaunchSplash=(function(){
+  var root=document.getElementById("hsk-launch-splash");if(!root)return function(){};
+  /* Returning from the dictionary/phrasebook is not a fresh app launch. */
+  var returning=false;
+  try{returning=sessionStorage.getItem("hsk_v3_resource_return")==="1";if(returning)sessionStorage.removeItem("hsk_v3_resource_return")}catch(e){}
+  if(returning){root.classList.add("is-done");root.remove();return function(){}}
+  var bootReady=false,animationReady=false,closed=false;
+  function closeIfReady(){if(!bootReady||!animationReady||closed)return;closed=true;clearTimeout(safetyTimer);root.classList.add("is-done");setTimeout(function(){if(root.parentNode)root.parentNode.removeChild(root)},260)}
+  var safetyTimer=setTimeout(function(){bootReady=true;animationReady=true;closeIfReady()},7000);
+  var motionReduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  setTimeout(function(){animationReady=true;closeIfReady()},motionReduced?250:2920);
+  return function(){bootReady=true;closeIfReady()};
+})();
 (function(){
   var bootLevel=getSelectedLevel();
-  if(!INIT_DATA){showAuthGate();return;}
+  if(!INIT_DATA){showAuthGate();finishHskLaunchSplash();return;}
   loadCourseMap(bootLevel).then(function(res){
-    if(showCourseMapFailure(res))return;
+    if(showCourseMapFailure(res)){finishHskLaunchSplash();return;}
     var d=res.data;
     hideAuthGate();MAP=rememberLimitText(d);adoptServerLang(d);adoptBotUsername(d);adoptStudySetup(d);setSelectedLevel(MAP.level||bootLevel);if(d.user)PROF=d.user;syncNotify();
     var bootParams=new URLSearchParams(location.search);
@@ -7696,13 +8001,13 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
        qurilma yoki cache tozalanganda server holati noto'g'ri redirectni to'xtatadi. */
     if(d.user&&d.user.onboarding_completed===false){
       var onbQuery=new URLSearchParams(bootParams.toString());onbQuery.set("lang",LANG);
-      beginInternalNavigation();location.replace("/course_v3_onboarding.html?"+onbQuery.toString());return;
+      finishHskLaunchSplash();beginInternalNavigation();location.replace("/course_v3_onboarding.html?"+onbQuery.toString());return;
     }
     if(d.user&&typeof d.user.onboarding_completed!=="boolean"){
       var cachedOnboarding=false;try{cachedOnboarding=!!localStorage.getItem("hsk_v3_onb")}catch(e){}
       if(!cachedOnboarding&&!bootParams.get("onboarded")){
         var fallbackQuery=new URLSearchParams(bootParams.toString());fallbackQuery.set("lang",LANG);
-        beginInternalNavigation();location.replace("/course_v3_onboarding.html?"+fallbackQuery.toString());return;
+        finishHskLaunchSplash();beginInternalNavigation();location.replace("/course_v3_onboarding.html?"+fallbackQuery.toString());return;
       }
     }
     if(d.user&&d.user.onboarding_completed===true){try{localStorage.setItem("hsk_v3_onb","1")}catch(e){}}
@@ -7723,6 +8028,7 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
     prefetchNearbyLessons();
     var sp=bootParams;
     App.show(sp.get("tab")||"course");
+    finishHskLaunchSplash();
     var initialLesson=Number(sp.get("lesson")||0);
     // resume=1: aniq lesson berilmagan bo'lsa, server progresidan JORIY qismni
     // (status==="current") topib darhol ochamiz — botdagi "Davom" / profil
@@ -7818,6 +8124,7 @@ var NavBack={
     {id:"sheet",   close:function(){App.closeSheet()}},
     {id:"upov",    close:function(){closeUserProfile()}},
     {id:"writeov", close:function(){App.closeWriter()}},
+    {id:"resourceov",close:function(){RESOURCE.back()}},
     {id:"secov",  close:function(){if(SECTION&&SECTION.close)SECTION.close()}},
     {id:"flow",    close:function(){App.exitFlow()}}
   ],
@@ -7895,7 +8202,13 @@ var NavBack={
   _s:null,
   target:function(){
     var l=NavBack.top();
-    if(l)return document.getElementById(l.id);
+    if(l){
+      if(l.id==="resourceov"){
+        var nested=RESOURCE.swipeTarget();
+        if(nested)return nested;
+      }
+      return document.getElementById(l.id);
+    }
     if(SCREEN!=="course"){var e=$("#s-"+SCREEN);if(e&&e.classList.contains("on"))return e}
     return null;
   },
@@ -7917,6 +8230,7 @@ var NavBack={
       if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>8){s.dead=true;return}
       if(dx<10)return;
       s.live=true;s.el.classList.add("nb-drag");
+      RESOURCE.swipePreview(true,s.el);
       s.scrim=document.createElement("div");s.scrim.className="nb-scrim";
       s.el.parentNode.insertBefore(s.scrim,s.el);
     }
@@ -7940,6 +8254,7 @@ var NavBack={
       el.classList.remove("nb-snap");el.style.transform="";
       if(scrim&&scrim.parentNode)scrim.parentNode.removeChild(scrim);
       if(done){NavBack.goBack();NavBack.sync()}
+      RESOURCE.swipePreview(false,el);
     },done?200:220);
     if(done)haptic("light");
   },
@@ -7949,6 +8264,7 @@ var NavBack={
     if(!s.live)return;
     s.el.classList.remove("nb-drag");s.el.classList.add("nb-snap");s.el.style.transform="";
     if(s.scrim&&s.scrim.parentNode)s.scrim.parentNode.removeChild(s.scrim);
+    RESOURCE.swipePreview(false,s.el);
     setTimeout(function(){s.el.classList.remove("nb-snap")},220);
   },
 
@@ -7968,7 +8284,7 @@ var NavBack={
        funksiyalariga tegmaslik uchun MutationObserver ishlatiladi. */
     try{
       var ids=NavBack.LAYERS.map(function(l){return l.id}).concat(NavBack.BLOCK)
-        .concat(["s-course","s-mashq","s-voice","s-rating","s-profile"]);
+        .concat(["s-course","s-mashq","s-voice","s-rating","s-profile","resourceov"]);
       var ob=new MutationObserver(function(){NavBack.sync();flushPendingCenterAd()});
       ids.forEach(function(id){var e=document.getElementById(id);if(e)ob.observe(e,{attributes:true,attributeFilter:["class"]})});
     }catch(e){}
@@ -7976,6 +8292,11 @@ var NavBack={
   }
 };
 NavBack.init();
+window.addEventListener("pageshow",function(ev){
+  if(!ev.persisted)return;
+  try{sessionStorage.removeItem("hsk_v3_resource_return")}catch(e){}
+  NavBack.sync(); /* Restore the Telegram BackButton on bfcache return. */
+});
 </script>
 <script src="/course_v3_data/desktop-download.js?v=20261003-1"></script>
 </body>
