@@ -9,6 +9,8 @@ from pathlib import Path
 import tempfile
 import time
 import unittest
+
+import httpx
 from unittest.mock import AsyncMock, patch
 import wave
 
@@ -69,6 +71,7 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
         tts._locks.clear()
         tts._paid_times.clear()
         tts._edge_retry_at = 0
+        tts._gemini_retry_at = 0
 
     async def test_rejects_non_chinese_and_oversized_text(self):
         for text in ("hello", "", "你" * 241):
@@ -205,6 +208,57 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
              patch.object(tts.httpx, "AsyncClient", return_value=fake):
             with self.assertRaises(tts.TTSUnavailable):
                 await tts._fallback("你好", "-10%")
+
+    async def test_gemini_429_opens_circuit_and_skips_repeated_paid_requests(self):
+        response = httpx.Response(
+            429,
+            headers={"Retry-After": "120"},
+            request=httpx.Request("POST", "https://example.test/tts"),
+        )
+        fake = FakeHttpClient(response=response)
+        with patch.dict(os.environ, {"GEMINI_API_KEY": "test-key"}), \
+             patch.object(tts.httpx, "AsyncClient", return_value=fake):
+            with self.assertRaises(httpx.HTTPStatusError):
+                await tts._fallback("请坐", "-10%")
+            self.assertGreaterEqual(tts._gemini_retry_at - time.monotonic(), 110)
+            with self.assertRaisesRegex(tts.TTSUnavailable, "gemini_cooling_down"):
+                await tts._fallback("再见", "-10%")
+        self.assertEqual(1, len(fake.calls))
+
+    async def test_gemini_503_trips_circuit_but_other_errors_do_not(self):
+        for status in (503, 400):
+            with self.subTest(status=status):
+                tts._gemini_retry_at = 0
+                response = httpx.Response(
+                    status,
+                    request=httpx.Request("POST", "https://example.test/tts"),
+                )
+                fake = FakeHttpClient(response=response)
+                with patch.dict(os.environ, {"GEMINI_API_KEY": "test-key"}), \
+                     patch.object(tts.httpx, "AsyncClient", return_value=fake):
+                    with self.assertRaises(httpx.HTTPStatusError):
+                        await tts._fallback("请坐", "-10%")
+                self.assertEqual(status == 503, tts._gemini_retry_at > time.monotonic())
+
+    def test_retry_after_is_bounded_and_invalid_values_are_safe(self):
+        for raw, low, high in (("1", 29, 31), ("999999", 119, 121),
+                               ("600", 599, 601), ("broken", 119, 121)):
+            with self.subTest(retry_after=raw):
+                response = httpx.Response(429, headers={"Retry-After": raw})
+                delay = tts._gemini_retry_delay(response)
+                self.assertGreaterEqual(delay, low)
+                self.assertLessEqual(delay, high)
+
+    async def test_cached_audio_remains_available_while_gemini_is_cooling_down(self):
+        phrase = "谢谢你！"
+        cached = Path(self.directory.name) / (tts._cache_key(phrase, "-10%") + ".mp3")
+        cached.write_bytes(FAKE_MP3)
+        tts._gemini_retry_at = time.monotonic() + 500
+        with patch.object(tts, "_edge", new=AsyncMock()) as edge, \
+             patch.object(tts, "_fallback", new=AsyncMock()) as gemini:
+            self.assertEqual(cached, await tts.synthesize_chinese_mp3(phrase))
+            edge.assert_not_awaited()
+            gemini.assert_not_awaited()
 
 
 if __name__ == "__main__":

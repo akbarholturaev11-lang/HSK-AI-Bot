@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import asyncio
 import base64
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from collections import deque
 import hashlib
 from io import BytesIO
@@ -27,6 +29,7 @@ GEMINI_MODEL = "gemini-2.5-flash-preview-tts"
 GEMINI_VOICE = "Kore"
 log = logging.getLogger(__name__)
 _edge_retry_at = 0.0
+_gemini_retry_at = 0.0
 _locks: dict[str, asyncio.Lock] = {}
 _edge_gate = asyncio.Semaphore(2)
 _paid_gate = asyncio.Semaphore(3)
@@ -122,6 +125,24 @@ async def _reserve_gemini_budget() -> None:
     _paid_times.append(now)
 
 
+def _gemini_retry_delay(response: httpx.Response) -> float:
+    """Respect provider Retry-After while bounding an in-process circuit break."""
+    value = str(response.headers.get("Retry-After") or "").strip()
+    try:
+        seconds = float(value)
+    except ValueError:
+        try:
+            date = parsedate_to_datetime(value)
+            if date.tzinfo is None:
+                date = date.replace(tzinfo=timezone.utc)
+            seconds = (date - datetime.now(timezone.utc)).total_seconds()
+        except (TypeError, ValueError, OverflowError, IndexError):
+            seconds = 120.0
+    if not 0 <= seconds <= 86400:
+        seconds = 120.0
+    return min(900.0, max(30.0, seconds))
+
+
 async def _fallback(text: str, rate: str) -> bytes:
     """Return playable RIFF/WAV bytes from Gemini's 24 kHz 16-bit PCM."""
     key = os.getenv("GEMINI_API_KEY", "").strip()
@@ -132,7 +153,10 @@ async def _fallback(text: str, rate: str) -> bytes:
     if not re.fullmatch(r"gemini-[a-zA-Z0-9._-]+", model):
         raise TTSUnavailable("gemini_invalid_model")
 
+    global _gemini_retry_at
     async with _paid_gate:
+        if time.monotonic() < _gemini_retry_at:
+            raise TTSUnavailable("gemini_cooling_down")
         await _reserve_gemini_budget()
         pace = max(60, min(140, 100 + int(rate[:-1])))
         payload = {
@@ -155,7 +179,15 @@ async def _fallback(text: str, rate: str) -> bytes:
                 headers={"x-goog-api-key": key, "Content-Type": "application/json"},
                 json=payload,
             )
-            response.raise_for_status()
+            try:
+                response.raise_for_status()
+            except httpx.HTTPStatusError as exc:
+                if exc.response.status_code in (429, 503):
+                    _gemini_retry_at = max(
+                        _gemini_retry_at,
+                        time.monotonic() + _gemini_retry_delay(exc.response),
+                    )
+                raise
             data = response.json()
 
         parts = (data.get("candidates") or [{}])[0].get("content", {}).get("parts") or []
