@@ -27,6 +27,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "android/app/src/main/assets/audio/words"
 COURSES = ROOT / "app/static/course_v3_data"
+INDEX = ROOT / "app/static/audio/words-index.js"
 VOICE = "zh-CN-XiaoxiaoNeural"
 RATE = "-10%"
 HANZI = re.compile(r"[\u3400-\u9fff]")
@@ -110,9 +111,44 @@ def corpus(extra_files: list[Path], only: list[str]) -> list[str]:
     return sorted(texts, key=lambda text: (len(text), text))
 
 
+def write_offline_index() -> int:
+    """Small public manifest: only shipped MP3s are eligible for direct fetch.
+
+    Short file names are reconstructed client-side with UTF-16 code units
+    (equivalent to Kotlin Char.code for our current BMP Mandarin corpus).
+    Only long phrases require an explicit sha1 filename map.
+    """
+    words = corpus([], [])
+    existing = [word for word in words if valid_audio(OUT / audio_name(word))]
+    short = [word for word in existing if not audio_name(word).startswith("sha1_")]
+    long = {word: audio_name(word) for word in existing
+            if audio_name(word).startswith("sha1_")}
+    script = (
+        "/* Pre-rendered Mandarin words only. Never an access or paywall gate. */\n"
+        "window.HSK_OFFLINE_AUDIO=new Set("
+        + json.dumps(short + list(long), ensure_ascii=False, separators=(",", ":"))
+        + ");\n"
+        "window.HSK_OFFLINE_LONG_NAMES="
+        + json.dumps(long, ensure_ascii=False, separators=(",", ":"))
+        + ";\n"
+    )
+    INDEX.parent.mkdir(parents=True, exist_ok=True)
+    INDEX.write_text(script, encoding="utf-8")
+    print(f"Offline manifest: {len(existing)}/{len(words)} ready; "
+          f"{len(long)} hashed long phrases; {INDEX.stat().st_size} bytes.",
+          flush=True)
+    # A stale or missing audio asset must never be advertised as present.
+    if len(existing) != len(words):
+        print("WARNING: incomplete audio corpus; missing entries use server TTS.",
+              file=sys.stderr)
+    return 0
+
+
 async def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--write-index", action="store_true",
+                        help="Write public JS index of existing MP3s; no TTS")
     parser.add_argument("--limit", type=int, default=0,
                         help="Generate at most N missing files; zero means all")
     parser.add_argument("--delay", type=float, default=2.0,
@@ -121,6 +157,8 @@ async def main() -> int:
     parser.add_argument("--only", action="append", default=[],
                         help="Test specific Mandarin text before the batch")
     args = parser.parse_args()
+    if args.write_index:
+        return write_offline_index()
     words = corpus(args.input, args.only)
     missing = [text for text in words if not valid_audio(OUT / audio_name(text))]
     print(f"Source lessons: {len(list(COURSES.glob('*/lesson_*.json')))}")
