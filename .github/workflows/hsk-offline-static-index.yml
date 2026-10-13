@@ -10,6 +10,14 @@ on:
       - "tests/test_offline_hsk_audio.py"
       - "app/static/course-v3.html"
       - "scripts/build_hsk_offline_audio.py"
+      - "scripts/check_offline_audio_client.cjs"
+      - "app/static/audio/words-client.js"
+      - "app/main.py"
+      - "app/static/course_v3_pronunciation.html"
+      - "app/static/course_v3_recognition.html"
+      - "app/static/course_v3_memorize.html"
+      - "app/static/course_v3_test.html"
+      - "app/static/hsk-lugat.html"
   workflow_dispatch:
 
 permissions:
@@ -37,19 +45,7 @@ jobs:
         run: |
           python -m py_compile app/main.py scripts/build_hsk_offline_audio.py
           python -m unittest -v tests.test_offline_hsk_audio tests.test_miniapp_tts_first_listen tests.test_tts_service
-          node - <<'NODE'
-          const fs = require('fs');
-          const html = fs.readFileSync('app/static/course-v3.html','utf8');
-          const index = fs.readFileSync('app/static/audio/words-index.js','utf8');
-          new Function(index);
-          const pattern = /<script\b[^>]*>([\s\S]*?)<\/script>/g;
-          let m, count=0;
-          while ((m=pattern.exec(html)) !== null) {
-            if (!m[1].trim()) continue;
-            new Function(m[1]); count++;
-          }
-          console.log('Validated inline scripts:', count);
-          NODE
+          node scripts/check_offline_audio_client.cjs
       - name: Commit index, never regenerate MP3s on Railway
         run: |
           git config user.name "github-actions[bot]"
