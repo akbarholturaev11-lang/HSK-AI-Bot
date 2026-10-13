@@ -6827,7 +6827,7 @@ var RECOG=(function(){
     gateStart(true);
   }
   function replay(){
-    if(!INIT_DATA){showPracticeAuthRequired(SECTION===RECOG?"rc-body":"pr-stage");return}
+    if(!INIT_DATA){showPracticeAuthRequired("rc-body");return}
     gateStart(true);
   }
   function gateStart(newAttempt){
@@ -7047,7 +7047,7 @@ var PRON=(function(){
     gateStart(true);
   }
   function replay(){
-    if(!INIT_DATA){showPracticeAuthRequired(SECTION===RECOG?"rc-body":"pr-stage");return}
+    if(!INIT_DATA){showPracticeAuthRequired("pr-stage");return}
     gateStart(true);
   }
   function gateStart(newAttempt){
