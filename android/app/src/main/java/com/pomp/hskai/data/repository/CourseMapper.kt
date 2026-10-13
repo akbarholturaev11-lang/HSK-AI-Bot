@@ -126,6 +126,7 @@ object CourseMapper {
                     activeLevel = hsk30.activeLevel,
                     savedLevelHsk20 = hsk30.savedLevelHsk20,
                     savedLevelHsk30 = hsk30.savedLevelHsk30,
+                    hasSavedHsk30 = hsk30.hasSavedHsk30,
                     access = CourseHsk30Access(
                         featureEnabled = hsk30.access.featureEnabled,
                         paidAccess = hsk30.access.paidAccess,
