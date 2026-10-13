@@ -79,14 +79,33 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
                 with self.assertRaises(ValueError):
                     await tts.synthesize_chinese_mp3(text)
 
+    async def test_nihao_offline_pronunciation_never_calls_external_providers(self):
+        # HSK 3.0 listening to 你好 returned 502 with Edge and Gemini down.
+        bundled = tts._bundled_word_audio("你好", "-10%")
+        self.assertIsNotNone(bundled)
+        self.assertTrue(bundled.is_file())
+        self.assertGreater(bundled.stat().st_size, 1024)
+        with (
+            patch.object(tts, "_edge", new=AsyncMock()) as edge,
+            patch.object(tts, "_fallback", new=AsyncMock()) as gemini,
+            patch.object(tts, "_public_mp3_fallback", new=AsyncMock()) as remote,
+        ):
+            result = await tts.synthesize_chinese_mp3("你好")
+            self.assertEqual(bundled, result)
+            self.assertEqual(".mp3", result.suffix)
+            edge.assert_not_awaited()
+            gemini.assert_not_awaited()
+            remote.assert_not_awaited()
+        self.assertIsNone(tts._bundled_word_audio("你好", "+10%"))
+
     async def test_edge_success_is_cached_as_mp3_without_gemini(self):
         async def edge(text, rate, path):
             Path(path).write_bytes(FAKE_MP3)
 
         with patch.object(tts, "_edge", new=AsyncMock(side_effect=edge)) as generate, \
              patch.object(tts, "_fallback", new=AsyncMock()) as gemini:
-            first = await tts.synthesize_chinese_mp3("你好")
-            second = await tts.synthesize_chinese_mp3("你好")
+            first = await tts.synthesize_chinese_mp3("你好，世界")
+            second = await tts.synthesize_chinese_mp3("你好，世界")
             self.assertEqual(".mp3", first.suffix)
             self.assertEqual(first, second)
             self.assertEqual(FAKE_MP3, first.read_bytes())
@@ -132,7 +151,7 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
              patch.object(tts, "_fallback", new=AsyncMock(
                  return_value=tts._wav_from_pcm(FAKE_PCM)
              )):
-            await tts.synthesize_chinese_mp3("你好")
+            await tts.synthesize_chinese_mp3("你好，世界")
             self.assertGreater(tts._edge_retry_at, time.monotonic())
             await tts.synthesize_chinese_mp3("下课了！")
             factory.assert_called_once()
@@ -264,7 +283,7 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
             gemini.assert_not_awaited()
 
 
-    async def test_nihao_uses_licensed_mp3_when_both_tts_providers_fail(self):
+    async def test_other_word_uses_licensed_mp3_when_both_tts_providers_fail(self):
         with patch.object(tts, "_edge", new=AsyncMock(side_effect=RuntimeError("403"))), \
              patch.object(tts, "_fallback", new=AsyncMock(
                  side_effect=tts.TTSUnavailable("gemini_cooling_down")
@@ -272,12 +291,12 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
              patch.object(tts, "_public_mp3_fallback", new=AsyncMock(
                  return_value=FAKE_MP3
              )) as recording:
-            first = await tts.synthesize_chinese_mp3("你好")
-            second = await tts.synthesize_chinese_mp3("你好")
+            first = await tts.synthesize_chinese_mp3("晚上好")
+            second = await tts.synthesize_chinese_mp3("晚上好")
             self.assertEqual(first, second)
             self.assertEqual(".mp3", first.suffix)
             self.assertEqual(FAKE_MP3, first.read_bytes())
-            recording.assert_awaited_once_with("你好", "-10%")
+            recording.assert_awaited_once_with("晚上好", "-10%")
 
     async def test_licensed_recording_is_not_used_when_gemini_works(self):
         with patch.object(tts, "_edge", new=AsyncMock(side_effect=RuntimeError("403"))), \
@@ -285,7 +304,7 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
                  return_value=tts._wav_from_pcm(FAKE_PCM)
              )), \
              patch.object(tts, "_public_mp3_fallback", new=AsyncMock()) as recording:
-            result = await tts.synthesize_chinese_mp3("你好")
+            result = await tts.synthesize_chinese_mp3("晚上好")
             self.assertEqual(".wav", result.suffix)
             recording.assert_not_awaited()
 
