@@ -827,7 +827,7 @@ private fun CourseHeader(
                 text = if (activeTrack == "hsk30") {
                     "HSK 3.0 · N" + map.level.removePrefix("nhsk")
                 } else {
-                    "HSK 2.0 · " + courseLevelLabel(map.level)
+                    "HSK 2.0 · " + map.level.removePrefix("hsk")
                 },
                 modifier = if (hsk30 != null) {
                     Modifier.clickable(
