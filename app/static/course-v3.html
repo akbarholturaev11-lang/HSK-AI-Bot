@@ -6167,23 +6167,8 @@ function closeHint(key){
   if(node&&node.parentNode)node.parentNode.removeChild(node);
   _apiPost("/api/v3/hints/dismiss",{hint:key}).catch(function(){});
 }
-/* Profildagi HSK AI Pro kartasi — BITTA.
-
-   Ilgari bu yerda ikkita bir xil qora karta ketma-ket chiqardi: biri
-   "7 kun bepul", ikkinchisi "Hammasini oching". Ikkalasi ham ayni bitta
-   obuna haqida edi va odam ularni ikki xil narsa deb o'qirdi.
-
-   Endi bitta karta, holatga qarab:
-     • obunachi          — karta yo'q;
-     • trial ishlayapti  — holat, tugmasiz;
-     • trial olinmagan   — asosiy "7 kun bepul sinash" + past "Pro olish";
-     • trial ishlatilgan — FAQAT "HSK AI Pro ⭐️ olish", boshqa hech narsa. */
-/* Profil status kartasi — foydalanuvchining HAQIQIY holatiga moslashadi.
-   Holat va muddat serverdan (`MAP.user.plan` / `access_ends_at`), markaziy
-   entitlement dvigatelidan keladi:
-     • pro/temp — obuna FAOL: holatni aytamiz, taklif qilmaymiz;
-     • trial    — sinov muddati: nechchi kun qolganini aytamiz;
-     • free     — taklif (obuna / trial). */
+/* Pro/trial status is now rendered by the compact profile carousel.
+   Server entitlement logic and the existing trialLeftText helper are shared. */
 /* Trialdan qancha qolgani.
 
    Ilgari bu yerda faqat `Math.ceil(ms/86400000)` bor edi. `ceil` tufayli
@@ -6202,41 +6187,6 @@ function trialLeftText(ends){
   var hours=Math.floor(ms/3600000);
   if(hours<1)return String(t.trialLeftSoon||"");
   return String(t.trialLeftHours||"{n}").replace("{n}",hours);
-}
-function proProfileCard(){
-  var t=T(),p=pl();
-  var u=(MAP&&MAP.user)||{};
-  var plan=u.plan||(isPaidUser()?"pro":"free");
-  var ends=u.access_ends_at||null;
-  var head='<span class="gw han">会</span>';
-
-  if(plan==="pro"||plan==="temp"){
-    var title=plan==="pro"?p.statusPro:p.statusTemp;
-    var until=ends?String(p.statusUntil).replace("{d}",fmtAccessDate(ends)):"";
-    var cta=plan==="pro"
-      ? '<button class="profile-renew" onclick="App.goPay(\'profile_renewal\')"><i class="ti ti-refresh"></i> '+esc(p.renew)+'</button>'
-      : '<button class="profile-renew" onclick="App.goPay(\'profile_subscription\')"><i class="ti ti-crown"></i> '+esc(t.unlockBtn||"")+'</button>';
-    return '<div class="pro pro-on">'+head
-      +'<h3><i class="ti ti-circle-check-filled" style="color:var(--gold);font-size:16px;vertical-align:-2px"></i> '+esc(title)+'</h3>'
-      +(until?'<p>'+esc(until)+'</p>':'<p style="margin:0"></p>')+cta+'</div>';
-  }
-
-  if(plan==="trial"){
-    var left=trialLeftText(ends);
-    return '<div class="pro pro-on">'+head
-      +'<h3><i class="ti ti-clock-hour-4" style="color:var(--gold);font-size:16px;vertical-align:-2px"></i> '+esc(p.statusTrial)+'</h3>'
-      +'<p>'+esc(left)+'</p>'
-      +'<b class="prolink" style="margin-left:0" onclick="App.openPaywall(\'profile\')">'+esc(t.unlockBtn||"")+' &rarr;</b></div>';
-  }
-
-  var canTrial=!!(TRIAL_STATE&&TRIAL_STATE.eligible);
-  return '<div class="pro">'+head
-    +'<h3>'+esc(t.unlockTitle||"")+'</h3><p>'+esc(t.unlockSub||"")+'</p>'
-    +(canTrial
-      ? '<button onclick="App.startTrial(\'profile\')">'+esc(t.trialCta||"")+'</button>'
-        +'<b class="prolink" onclick="App.openPaywall(\'profile\')">'+esc(t.unlockBtn||"")+' &rarr;</b>'
-      : '<button onclick="App.openPaywall(\'profile\')">'+esc(t.unlockBtn||"")+' &rarr;</button>')
-    +'</div>';
 }
 /* ---------- Kirish usullari (Google / Apple) + ijtimoiy tarmoqlar ---------- */
 
