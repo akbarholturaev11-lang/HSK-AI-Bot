@@ -2147,6 +2147,16 @@ var App={
     flushPendingCenterAd();
   },
   openPaywall:function(ctx){
+    if(isLimitPaywallContext(ctx)&&window.CourseAds&&CourseAds.showLimitPromo){
+      var isPron=ctx==="pronLimit",feature=isPron?"pronunciation":"lesson";
+      var source=isPron?"v3_pronunciation_limit":"v3_locked_lesson";
+      PAY_SOURCE=source;
+      trackCourseEvent("paywall_seen",{source:source,dedupe_key:lessonEventKey("paywall_seen",source,Date.now())});
+      if($("#sheet").classList.contains("on"))App.closeSheet();
+      CourseAds.config({lang:LANG,initData:INIT_DATA,feature:feature,level:(MAP&&MAP.level)||"hsk1"});
+      CourseAds.showLimitPromo({feature:feature,reason:payWhyText(ctx),onSubscribe:function(){App.goPay(source)}});
+      return;
+    }
     if(!TRIAL_LOADED&&INIT_DATA){trialFetchStatus().then(function(){App.openPaywall(ctx)});return}
     if(salesValueTreatment()&&salesValueCourseContext(ctx)&&!salesValueContentValid(SALES_VALUE_STATE.outcome,SALES_VALUE_STATE.nextOutcome)&&!SALES_VALUE_PRIME_DONE){
       primeSalesValueContent().then(function(){App.openPaywall(ctx)});return;
@@ -6463,6 +6473,9 @@ function payWhyHtml(ctx){
   if(!why)return "";
   return '<div class="paywhy"><i class="ti ti-info-circle"></i><span>'+esc(why)+'</span></div>';
 }
+function isLimitPaywallContext(ctx){
+  return ctx==="lockedLesson"||ctx==="pronLimit"||!!(ctx&&typeof ctx==="object"&&ctx.lesson);
+}
 function paywallHtml(ctx){
   if(salesValueCoursePaywall(ctx))return salesOutcomePaywallHtml(ctx);
   var t=T();var ctxTitle=getPaywallTitle(ctx);
@@ -6476,10 +6489,10 @@ function paywallHtml(ctx){
        mashq limitidagi kabi. Ilgari bu taklif faqat hech qachon
        chaqirilmaydigan funksiya ichida turardi, ya'ni dars paywallida
        trial umuman ko'rinmasdi. */
-    +(trialEligible()
+    +(!isLimitPaywallContext(ctx)&&trialEligible()
       ? '<button class="scta" style="margin-top:8px;background:var(--card);color:var(--ink);border:1px solid var(--line)" onclick="App.startTrial(\'paywall_lesson\')"><i class="ti ti-gift"></i> '+esc(t.trialCta||"")+'</button>'
       : '')
-    +payHintHtml();
+    +(isLimitPaywallContext(ctx)?'':payHintHtml());
 }
 
 /* ---------- boot ---------- */
@@ -8010,6 +8023,11 @@ function toggleDialog(){
   $("dtoggleic").className=on?"ti ti-chevron-up":"ti ti-messages";
 }
 function showPaywall(){
+  if(window.CourseAds&&CourseAds.showLimitPromo){
+    CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"voice",level:(MAP&&MAP.level)||"hsk1"});
+    CourseAds.showLimitPromo({feature:"voice",reason:L.limitWhy||"",onSubscribe:function(){App.goPay("v3_voice_limit")},onBack:function(){$("paywall").classList.remove("on")}});
+    return;
+  }
   $("pwchar").innerHTML=chr("happy",persona);
   $("pwh").textContent=L.limitTitle;$("pwp").textContent=L.limitSub;
   if(L.limitWhy){$("pwwhyt").textContent=L.limitWhy;$("pwwhy").hidden=false}else{$("pwwhy").hidden=true}
