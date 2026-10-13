@@ -1608,6 +1608,9 @@ function openHsk30PromoLevelPicker(recommended){
   courseTrackStatus(true).then(function(status){
     var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
     if(!access||access.feature_enabled===false){renderHsk30AccessGate(status);return}
+    if(status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.has_state){
+      switchCourseTrack("hsk30",null);return;
+    }
     openHsk30LevelPicker(status,recommended);
   }).catch(function(){showHsk30AccessGate()});
 }
