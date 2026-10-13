@@ -40,12 +40,12 @@
     root.className="hp-promo hp-promo-"+s.tone;
     root.setAttribute("aria-label",s.title+". "+(s.body||""));
     var act=root.querySelector(".hp-promo-action");
-    act.addEventListener("click",function(event){event.stopPropagation();doAction()});
+    act.addEventListener("click",function(event){event.stopPropagation();doAction(true)});
     root.querySelectorAll("[data-promo-dot]").forEach(function(dot){
       dot.addEventListener("click",function(event){event.stopPropagation();advance(Number(dot.dataset.promoDot))});
     });
   }
-  function doAction(){
+  function doAction(explicitCta){
     if(Date.now()<suppressClickUntil)return;
     var kind=ORDER[current];
     if(kind==="apps"){
@@ -54,7 +54,7 @@
     }
     if(kind==="hsk30"){openHsk30();return}
     var p=proDetails();
-    if(p.action==="trial"){if(!TRIAL_LOADED||!trialEligible())return;App.startTrial("profile");return}
+    if(p.action==="trial"&&explicitCta===true){if(!TRIAL_LOADED||!trialEligible())return;App.startTrial("profile");return}
     App.goPay(p.renew?"profile_renewal":"profile_subscription");
   }
   function openHsk30(){
