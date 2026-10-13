@@ -553,4 +553,26 @@
     <string name="course_choice_level">Сатҳ</string>
     <string name="course_choice_note">Ҳангоми иваз кардани версия пешрафт нигоҳ дошта мешавад. Интихоби сатҳи дигар пешрафти ин версияро аз нав оғоз мекунад.</string>
     <string name="course_choice_confirm">Тасдиқ кардан</string>
+
+    <!-- Shared limit sheet: Android / Telegram Mini App visual parity -->
+    <string name="limit_sheet_heading">Барои идома омодаед?</string>
+    <string name="limit_sheet_get_pro">Гирифтани HSK AI Pro ⭐</string>
+    <string name="limit_sheet_check_access">Санҷидани дастрасӣ</string>
+    <string name="limit_sheet_reason_fallback">Лимити ройгони бахши «%1$s» тамом шуд. Бо Pro идома диҳед.</string>
+    <string name="limit_sheet_lesson_title">Дарсҳоро бе таваққуф давом диҳед</string>
+    <string name="limit_sheet_lesson_desc">Дарсҳои минбаъдаи HSK ва машқҳоро бо Pro кушоед.</string>
+    <string name="limit_sheet_practice_title">Донишро бо машқ мустаҳкам кунед</string>
+    <string name="limit_sheet_practice_desc">Бо Pro лимити ҳаррӯза машқ ва такрорро қатъ намекунад.</string>
+    <string name="limit_sheet_test_title">Ба имтиҳон бо боварӣ равед</string>
+    <string name="limit_sheet_test_desc">Тестҳои бештар ҳал кунед ва мавзӯъҳои заифро муайян намоед.</string>
+    <string name="limit_sheet_mistakes_title">Ҳар хатогиро таҳлил кунед</string>
+    <string name="limit_sheet_mistakes_desc">Хатоҳоро такрор кунед ва бо супоришҳои нав беҳтар шавед.</string>
+    <string name="limit_sheet_voice_title">Бо чинӣ озодтар гап занед</string>
+    <string name="limit_sheet_voice_desc">Бо AI Voice бе лимит гуфтугӯро машқ кунед.</string>
+    <string name="limit_sheet_pron_title">Талаффузро беҳтар кунед</string>
+    <string name="limit_sheet_pron_desc">Калимаҳоро такрор карда, талаффузи худро машқ кунед.</string>
+    <string name="limit_sheet_recognition_title">Иероглифҳоро зудтар шиносед</string>
+    <string name="limit_sheet_recognition_desc">Машқҳои шинохти иероглифҳоро бе таваққуф идома диҳед.</string>
+    <string name="limit_sheet_memorize_title">Калимаҳоро беҳтар дар хотир доред</string>
+    <string name="limit_sheet_memorize_desc">Бо такрор калимаҳои навро мустаҳкам кунед.</string>
 </resources>
