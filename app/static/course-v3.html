@@ -2004,7 +2004,7 @@ var App={
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
     if(s==="course"){drawTrails();scrollToCurrentNode()}else{window.scrollTo(0,0)}
     if(s==="course"&&previous!=="course"){refreshCourseProgress();queueHsk30PromoCheck()}
-    if(s==="mashq"){prefetchPracticeAssets();if(window.RESOURCE)RESOURCE.warm()}
+    if(s==="mashq")schedulePracticeBackgroundLoad();
     if(s==="voice")renderVoice();
     if(s==="rating")renderRating();
     if(s==="profile"){
@@ -2582,6 +2582,29 @@ function prefetchPracticeAssets(){
     /* memo.js alohida memorize sahifasining o'z defer scripti; bu yerda
        oldindan 440 KB yuklash Course/Mashq oqimiga foyda bermaydi. */
   });
+}
+/* Practice first: display and paint the selected tab before mounting cached
+   dictionary/phrasebook WebViews or starting practice asset fetches.
+   Two animation frames guarantee a paint opportunity; the network work starts
+   in a separate task and never blocks App.show() or the tab's first frame. */
+var PRACTICE_BACKGROUND_SCHEDULED=false;
+function schedulePracticeBackgroundLoad(){
+  if(PRACTICE_BACKGROUND_SCHEDULED)return;
+  PRACTICE_BACKGROUND_SCHEDULED=true;
+  function afterPaint(){
+    setTimeout(function(){
+      PRACTICE_BACKGROUND_SCHEDULED=false;
+      // Do not waste resources if the user immediately switched away.
+      if(SCREEN!=="mashq")return;
+      prefetchPracticeAssets();
+      if(window.RESOURCE)RESOURCE.warm();
+    },0);
+  }
+  if(typeof requestAnimationFrame==="function"){
+    requestAnimationFrame(function(){requestAnimationFrame(afterPaint)});
+  }else{
+    setTimeout(afterPaint,50);
+  }
 }
 /* Limit holatini oldindan olish — bu endpoint foydalanishni SARFLAMAYDI.
    `daily-gate` ni bu yerda chaqirmaymiz: u bepul urinishni real sessiya
