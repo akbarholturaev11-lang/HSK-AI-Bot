@@ -422,19 +422,19 @@ class AdminRenderResilienceTest(unittest.TestCase):
 
     def test_render_error_is_not_reported_as_server_connection_error(self):
         admin = open("app/static/admin.html", encoding="utf-8").read()
-        self.assertIn('console.error("Admin panel render xatosi",e);', admin)
-        self.assertIn('toast("Panelning bir qismi yuklanmadi. Qayta ochish shart emas.");', admin)
+        self.assertIn('console.error("Админ панел рендер хатоси",e);', admin)
+        self.assertIn('toast("Панелнинг бир қисми юкланмади. Қайта очиш шарт эмас.");', admin)
 
 
 class AdminDesktopFunnelRenderTest(unittest.TestCase):
     def test_desktop_funnel_uses_desktop_event_reader(self):
         admin = open("app/static/admin.html", encoding="utf-8").read()
         expected = '''const steps=[
-        ["So'rov",desktopUsers(funnel,"download_requested")],
-        ["Yuklash/ulashish ochildi",desktopUsers(funnel,"download_started")],
-        ["Fayl URL ochildi",desktopUsers(funnel,"link_clicked")],
-        ["Akkaunt ulandi",desktopUsers(funnel,"session_linked")],
-        ["First open",desktopUsers(funnel,"verified_first_open")]
+        ["Сўров",desktopUsers(funnel,"download_requested")],
+        ["Юклаш/улашиш очилди",desktopUsers(funnel,"download_started")],
+        ["Файл URL очилди",desktopUsers(funnel,"link_clicked")],
+        ["Аккаунт уланди",desktopUsers(funnel,"session_linked")],
+        ["Биринчи очилиш",desktopUsers(funnel,"verified_first_open")]
       ];'''
         self.assertIn(expected, admin)
 
@@ -443,19 +443,19 @@ class AndroidAdminCopyTest(unittest.TestCase):
     def test_admin_android_block_is_simple_by_default(self):
         admin = open("app/static/admin.html", encoding="utf-8").read()
         for text_value in (
-            "O'rnatilgan",
-            "Bugun ishlatgan",
-            "7 kunda ishlatgan",
-            "30 kunda ishlatgan",
-            "Batafsil statistika",
-            "Yangilanish kerak:",
+            "Ўрнатилган",
+            "Бугун ишлатган",
+            "7 кунда ишлатган",
+            "30 кунда ишлатган",
+            "Батафсил статистика",
+            "Янгиланиш керак:",
         ):
             with self.subTest(text_value=text_value):
                 self.assertIn(text_value, admin)
 
     def test_update_event_is_not_called_a_device_count(self):
         admin = open("app/static/admin.html", encoding="utf-8").read()
-        self.assertIn('"Update o\'rnatilgan",num(updates.installed&&updates.installed.events)+" marta"', admin)
+        self.assertIn('"Янгиланиш ўрнатилган",num(updates.installed&&updates.installed.events)+" марта"', admin)
 
 
 if __name__ == "__main__":

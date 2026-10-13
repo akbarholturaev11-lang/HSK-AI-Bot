@@ -952,103 +952,69 @@
     return status;
   }
 
+  /* The old full-height apps card is replaced by the compact profile carousel.
+     Automatic app promos and download requests still use this module. */
   function renderProfile() {
     var host = document.getElementById("pomp-desktop-profile-root");
-    if (!host) return;
-    var profileScreen = document.getElementById("s-profile");
-    if (profileScreen && !profileScreen.classList.contains("on")) return;
-    host.replaceChildren();
-    if (isDesktop || !state.availabilityLoaded) {
+    if (host && host.childElementCount) host.replaceChildren();
+    noteProfileAppsVisible();
+    if (!focusProfileDownload || state.profileFocusDone || !window.HskProfileCarousel) return;
+    var screen = document.getElementById("s-profile");
+    if (!screen || !screen.classList.contains("on")) return;
+    state.profileFocusDone = true;
+    HskProfileCarousel.select("apps");
+    var card = document.getElementById("hsk-profile-promo-root");
+    if (card) {
+      card.classList.add("pdd-card-focus");
+      card.focus({preventScroll:true});
+      card.scrollIntoView({behavior:"smooth",block:"center"});
+      setTimeout(function(){card.classList.remove("pdd-card-focus")},1800);
+    }
+  }
+  function showProfileAppsError(code) {
+    var node=document.getElementById("hp-app-download-status");
+    if (node) node.textContent=String(code||"");
+  }
+  function noteProfileAppsVisible() {
+    var screen = document.getElementById("s-profile");
+    var card = document.getElementById("hsk-profile-promo-root");
+    // An event is a real carousel impression, not a hidden profile render.
+    if (!screen || !screen.classList.contains("on") || document.hidden ||
+        !card || !card.isConnected || !card.classList.contains("hp-promo-apps")) return;
+    trackEntrySeen("profile", { placement: "profile_carousel" });
+  }
+  function openProfileAppsSite() { openTrackedLink(appsPageUrl()); }
+  function openProfileApps() {
+    trackEntrySeen("profile",{placement:"profile_carousel"});
+    // Only the Telegram Mini App on Android can send an APK back to the chat.
+    // The Android native app and iOS/Mac/Windows go straight to the website.
+    if (detectPlatform() !== "android" || !telegramInitData()) {
+      openProfileAppsSite();
       return;
     }
-
-    var copy = text();
-    var card = element("section", "pdd-card");
-    card.setAttribute("aria-labelledby", "pdd-profile-title");
-    var main = element("div", "pdd-card-main");
-    var head = element("div", "pdd-card-head");
-    var seal = element("img", "pdd-seal");
-    seal.src = "/assets/hsk-ai-logo-256.png";
-    seal.alt = "";
-    seal.setAttribute("aria-hidden", "true");
-    seal.width = 46;
-    seal.height = 46;
-    head.appendChild(seal);
-    var content = element("div", "pdd-card-copy");
-    var title = element("h3", "", copy.cardTitle);
-    title.id = "pdd-profile-title";
-    content.appendChild(title);
-    head.appendChild(content);
-    main.appendChild(head);
-    main.appendChild(buildProfileDeviceVisual());
-    var actions = buildActions("profile");
-    // The page behind this one reads the device and opens its tab, which is
-    // the part the two buttons above cannot do: they name a platform, and the
-    // learner holding a phone is not on either of them.
-    actions.appendChild(buildAppsPageButton());
-    main.appendChild(actions);
-    if (!hasAvailablePlatform()) {
-      var availability = element(
-        "div",
-        "pdd-availability-note" +
-          (state.availabilityError ? " is-error" : "")
-      );
-      availability.setAttribute("role", "status");
-      availability.appendChild(
-        icon(state.availabilityError ? "wifi-off" : "clock")
-      );
-      var availabilityCopy = element(
-        "span",
-        "",
-        state.availabilityError ? copy.availabilityError : copy.preparing
-      );
-      availability.appendChild(availabilityCopy);
-      if (state.availabilityError) {
-        var retry = element(
-          "button",
-          "pdd-availability-retry",
-          state.availabilityLoading ? copy.checkingStatus : copy.retryStatus
-        );
-        retry.type = "button";
-        retry.disabled = state.availabilityLoading;
-        retry.addEventListener("click", function () {
-          loadAvailability();
-        });
-        availability.appendChild(retry);
-      }
-      main.appendChild(availability);
-    }
-    main.appendChild(buildInlineStatus());
-    card.appendChild(main);
-    host.appendChild(card);
-    if (hasAvailablePlatform()) {
-      trackEntrySeen("profile", { placement: "profile_card" });
-    }
-    syncControls();
-    if (focusProfileDownload && !state.profileFocusDone) {
-      state.profileFocusDone = true;
-      card.tabIndex = -1;
-      window.setTimeout(function () {
-        if (!card.isConnected) return;
-        card.classList.add("pdd-card-focus");
-        try {
-          card.focus({ preventScroll: true });
-        } catch (error) {
-          card.focus();
-        }
-        card.scrollIntoView({
-          behavior:
-            window.matchMedia &&
-            window.matchMedia("(prefers-reduced-motion: reduce)").matches
-              ? "auto"
-              : "smooth",
-          block: "center"
-        });
-        window.setTimeout(function () {
-          card.classList.remove("pdd-card-focus");
-        }, 1800);
-      }, 260);
-    }
+    var copy = {
+      ru:{title:"Приложения HSK AI",apk:"Получить APK в Telegram",site:"Открыть сайт загрузки",close:"Отмена",missing:"Сейчас APK недоступен"},
+      uz:{title:"HSK AI ilovalari",apk:"APK ni Telegram chatga olish",site:"Yuklash saytini ochish",close:"Bekor qilish",missing:"APK hozircha mavjud emas"},
+      tj:{title:"Барномаҳои HSK AI",apk:"Гирифтани APK дар Telegram",site:"Кушодани сомонаи боргирӣ",close:"Бекор кардан",missing:"APK ҳоло дастрас нест"}
+    }[language()] || {};
+    if(!window.App || !App.openSheet){openProfileAppsSite();return}
+    App.openSheet('<h2 class="hp-confirm-title">'+copy.title+'</h2>'
+      +'<div class="hp-confirm-buttons"><button type="button" id="hp-app-apk">'+copy.apk+'</button>'
+      +'<button type="button" id="hp-app-site">'+copy.site+'</button>'
+      +'<button type="button" class="hp-confirm-cancel" id="hp-app-cancel">'+copy.close+'</button></div>'
+      +'<p role="status" aria-live="polite" id="hp-app-download-status" class="hp-confirm-body"></p>');
+    document.getElementById("sheet").classList.add("profile-apps-choice");
+    var apk=document.getElementById("hp-app-apk");
+    apk.disabled=state.availabilityLoaded && !isPlatformAvailable("android");
+    if(apk.disabled)showProfileAppsError(copy.missing);
+    apk.onclick=function(){
+      if(state.pendingPlatform)return;
+      apk.disabled=true;
+      showProfileAppsError("…");
+      sendAndroidToChat("profile");
+    };
+    document.getElementById("hp-app-site").onclick=function(){App.closeSheet();openProfileAppsSite()};
+    document.getElementById("hp-app-cancel").onclick=function(){App.closeSheet()};
   }
 
   function platformLabel(platform) {
@@ -1445,11 +1411,15 @@
             ? data.error
             : "android_apk_send_failed";
         syncControls();
+        showProfileAppsError(state.errorCode);
+        var retry=document.getElementById("hp-app-apk");if(retry)retry.disabled=false;
       })
       .catch(function () {
         state.pendingPlatform = "";
         state.errorCode = "network_error";
         syncControls();
+        showProfileAppsError(state.errorCode);
+        var retry=document.getElementById("hp-app-apk");if(retry)retry.disabled=false;
       });
   }
 
@@ -2444,6 +2414,9 @@
   window.PompDesktopDownload = {
     queuePromo: queuePromo,
     renderProfile: renderProfile,
+    openProfileApps: openProfileApps,
+    openProfileAppsSite: openProfileAppsSite,
+    noteProfileAppsVisible: noteProfileAppsVisible,
     refreshAvailability: loadAvailability,
     mountAdPromoTrigger: mountAdPromoTrigger
   };

@@ -44,4 +44,16 @@
     <string name="profile_app_permissions_desc">Mikrofon va bildirishnoma ruxsatlarini Android sozlamalarida boshqaring.</string>
     <string name="profile_security_note">Telegram nikini bu yerda o‘zgartirib bo‘lmaydi. Google va Apple shu HSK AI hisobiga qo‘shimcha kirish usuli sifatida ulanadi.</string>
     <string name="profile_app_version">Ilova versiyasi</string>
+    <string name="profile_promo_apps">HSK AI ilovalari</string>
+    <string name="profile_promo_apps_body">Android, MacBook va Windows uchun ilovalar</string>
+    <string name="profile_promo_apps_open">Ilovalarni ko‘rish</string>
+    <string name="profile_promo_hsk30_body">Yangi HSK 1–3 kursi. Oldingi progress saqlanadi.</string>
+    <string name="profile_promo_hsk30_open">HSK 3.0 ga o‘tish</string>
+    <string name="profile_promo_hsk30_confirm">HSK 3.0 ga o‘tasizmi?</string>
+    <string name="profile_promo_hsk30_confirm_body">Tasdiqdan so‘ng avval o‘qigan darajangiz tiklanadi. Birinchi marta bo‘lsa darajani tanlaysiz.</string>
+    <string name="profile_promo_pro_body">AI Voice, barcha HSK darslari va cheksiz mashqlar</string>
+    <string name="profile_promo_start_trial">7 kun bepul sinash</string>
+    <string name="profile_promo_trial_days">%1$d kun qoldi</string>
+    <string name="profile_promo_trial_hours">%1$d soat qoldi</string>
+    <string name="profile_promo_trial_soon">1 soatdan kam qoldi</string>
 </resources>

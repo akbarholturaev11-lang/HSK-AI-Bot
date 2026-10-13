@@ -2171,6 +2171,8 @@ async def course_v3_data_file(filename: str):
         "design-tokens.css": "text/css",
         "desktop-download.css": "text/css",
         "desktop-download.js": "application/javascript",
+        "profile-carousel.css": "text/css",
+        "profile-carousel.js": "application/javascript",
         "lesson_gate.js": "application/javascript",
         "lesson_gate_hsk30.js": "application/javascript",
         "hsk30-words.js": "application/javascript",
