@@ -579,8 +579,8 @@ private fun Hsk30PromoDialog(
     onDismiss: () -> Unit,
     onContinue: () -> Unit,
 ) {
-    val hasAccess = hsk30.access.allowed &&
-        (hsk30.access.paidAccess || hsk30.access.permanentlyUnlocked || hsk30.access.provisionalAccess)
+    // HSK 3.0 track access can also be free when the admin disables entry payment.
+    val hasAccess = hsk30.access.allowed
     Hsk30BookDialog(isNew = hsk30.newBadge.isNew, onDismiss = onDismiss) {
         Hsk30BookTitle(
             title = stringResource(if (hasAccess) R.string.hsk30_promo_switch else R.string.hsk30_promo_title),

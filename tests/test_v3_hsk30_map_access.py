@@ -28,6 +28,7 @@ from app.services.course_track_service import CourseTrackService
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.entitlements.state import access_expires_at, resolve_state
 from app.services.hsk30_feature_service import Hsk30FeatureService
+from app.services.hsk30_unlock_service import Hsk30UnlockService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 
@@ -108,6 +109,46 @@ class Hsk30MapAccessTests(unittest.IsolatedAsyncioTestCase):
             material = await LessonAccessService(session).status(user, level="nhsk1", lesson_order=1, consume=True)
         self.assertFalse(material["allowed"])
         self.assertEqual("hsk30_unlock_required", material["error"])
+
+    async def test_admin_disabling_entry_payment_opens_free_map_but_not_pro(self):
+        async with self.sessions() as session:
+            await Hsk30UnlockService(session).set_payment_enabled(False)
+            await session.commit()
+
+        response = await self.client.get(
+            "/api/v3/map",
+            headers={"X-Telegram-Init-Data": signed_init_data()},
+        )
+        self.assertEqual(200, response.status_code, response.text[:500])
+        data = response.json()
+        self.assertEqual("nhsk1", data["level"])
+        self.assertFalse(data["user"]["is_paid"])
+        self.assertNotEqual("pro", data["user"]["plan"])
+
+        async with self.sessions() as session:
+            user = await UserRepository(session).get_by_telegram_id(7100)
+            access = await CourseTrackService(session).hsk30_access(user)
+            self.assertTrue(access.allowed)
+            self.assertFalse(access.permanently_unlocked)
+            self.assertFalse(access.paid_access)
+            self.assertEqual("hsk30_free_access", access.reason)
+            lesson = await LessonAccessService(session).status(
+                user, level="nhsk1", lesson_order=1, consume=False,
+            )
+            self.assertTrue(lesson["hsk30_access"]["allowed"])
+            self.assertFalse(lesson["hsk30_access"]["paid_access"])
+            self.assertEqual("hsk30_free_access", lesson["hsk30_access"]["reason"])
+
+        # The paid entry policy must return as soon as the admin re-enables it.
+        async with self.sessions() as session:
+            await Hsk30UnlockService(session).set_payment_enabled(True)
+            await session.commit()
+        locked = await self.client.get(
+            "/api/v3/map",
+            headers={"X-Telegram-Init-Data": signed_init_data()},
+        )
+        self.assertEqual(403, locked.status_code)
+        self.assertEqual("hsk30_unlock_required", locked.json()["error"])
 
     async def test_feature_disabled_still_blocks_map(self):
         async with self.sessions() as session:
