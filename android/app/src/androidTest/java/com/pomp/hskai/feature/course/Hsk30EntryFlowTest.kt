@@ -147,6 +147,25 @@ class Hsk30EntryFlowTest {
         }
     }
 
+    @Test fun disabledEntryPaymentWithFreeServerAccessKeepsCourseOpen() {
+        val freeAccess = lockedAccess.copy(
+            allowed = true,
+            reason = "hsk30_free_access",
+        )
+        val state = mutableStateOf(courseState(
+            access = freeAccess,
+            paymentEnabled = false,
+            priceDisplay = "",
+        ))
+        var payments = 0
+        showCourse(state, onUnlock = { payments++ })
+
+        compose.onNodeWithText("HSK 1").assertIsDisplayed()
+        compose.onNodeWithText(strings.getString(R.string.hsk30_access_required_title)).assertDoesNotExist()
+        compose.onNodeWithText(strings.getString(R.string.hsk30_access_unlock_button)).assertDoesNotExist()
+        compose.runOnIdle { assertEquals(0, payments) }
+    }
+
     @Test fun unavailablePaymentExplainsTheBlockAndStillAllowsReturning() {
         val cases = listOf(
             courseState(paymentEnabled = false),
