@@ -94,6 +94,7 @@ import com.pomp.hskai.core.network.MediaUrl
 import com.pomp.hskai.core.settings.AppSettings
 import com.pomp.hskai.core.settings.AppThemeMode
 import com.pomp.hskai.data.api.AndroidHintDto
+import com.pomp.hskai.domain.model.CourseHsk30
 import com.pomp.hskai.domain.model.CourseProgress
 import com.pomp.hskai.domain.model.CourseUser
 import com.pomp.hskai.feature.assistant.AssistantScreen
@@ -139,6 +140,11 @@ fun ProfileScreen(
     hsk30Enabled: Boolean = false,
     hsk30IsNew: Boolean = false,
     hsk30LiveLevels: List<String> = listOf("nhsk1"),
+    hsk30: CourseHsk30? = null,
+    onOpenApps: () -> Unit = {},
+    onOpenCourse: () -> Unit = {},
+    onUnlockHsk30: () -> Unit = {},
+    onStartTrial: () -> Unit = {},
     onSwitchCourseTrack: (String, String?) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier,
     identities: IdentitiesUiState = IdentitiesUiState(),
@@ -154,6 +160,8 @@ fun ProfileScreen(
     AssistantScreen(profileAssistantContext(state), bottomBar = true, showButton = false)
     var settingsOpen by remember { mutableStateOf(false) }
     var courseVersionPickerOpen by remember { mutableStateOf(false) }
+    var profileHsk30ConfirmOpen by remember { mutableStateOf(false) }
+    var profileHsk30LevelOpen by remember { mutableStateOf(false) }
     var appearancePickerOpen by remember { mutableStateOf(false) }
     var identitiesOpen by remember { mutableStateOf(false) }
     var notificationsOpen by remember { mutableStateOf(false) }
@@ -223,11 +231,19 @@ fun ProfileScreen(
             }
 
             item {
-                ProfileSubscriptionCard(
+                ProfilePromoCarousel(
                     accountIsPaid = account.isPaid,
                     state = state,
                     checkoutAvailable = subscriptionCheckoutAvailable,
+                    onOpenApps = onOpenApps,
+                    onOpenHsk30 = {
+                        when {
+                            courseTrack == "hsk30" -> onOpenCourse()
+                            hsk30 != null -> profileHsk30ConfirmOpen = true
+                        }
+                    },
                     onOpenSubscription = onOpenSubscription,
+                    onStartTrial = onStartTrial,
                 )
             }
 
@@ -302,6 +318,35 @@ fun ProfileScreen(
             onOpenPrivacy = { settingsOpen = false; privacyOpen = true },
             onLogout = { settingsOpen = false; onLogout() },
             onUnlinkDevice = { settingsOpen = false; onUnlinkDevice() },
+        )
+    }
+
+    // Separate profile entry flow: never alter the working course/settings pickers.
+    if (profileHsk30ConfirmOpen) {
+        ProfileHsk30EntryConfirmDialog(
+            onDismiss = { profileHsk30ConfirmOpen = false },
+            onConfirm = {
+                profileHsk30ConfirmOpen = false
+                val target = hsk30
+                if (target != null) {
+                    when {
+                        !target.access.featureEnabled -> Unit
+                        !target.access.allowed -> onUnlockHsk30()
+                        target.hasSavedHsk30 -> onSwitchCourseTrack("hsk30", null)
+                        else -> profileHsk30LevelOpen = true
+                    }
+                }
+            },
+        )
+    }
+    if (profileHsk30LevelOpen && hsk30 != null) {
+        ProfileHsk30FirstLevelDialog(
+            hsk30 = hsk30,
+            onChoose = { level ->
+                profileHsk30LevelOpen = false
+                onSwitchCourseTrack("hsk30", level)
+            },
+            onDismiss = { profileHsk30LevelOpen = false },
         )
     }
 
@@ -413,121 +458,6 @@ private fun ProfileToolbar(
                     contentDescription = stringResource(R.string.profile_mini_settings),
                     tint = PompColors.InkSecondary,
                     modifier = Modifier.size(21.dp),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ProfileSubscriptionCard(
-    accountIsPaid: Boolean,
-    state: ProfileUiState,
-    checkoutAvailable: Boolean,
-    onOpenSubscription: (renewal: Boolean) -> Unit,
-) {
-    val subscription = state.profile?.subscription
-    val isPaid = subscription?.isPaid == true || accountIsPaid
-    val trial = state.trial
-    val trialActive = trial?.active == true
-    val isTemporary = !isPaid && subscription?.status == "temporary_trial"
-    val isExpired = !isPaid && !trialActive && subscription?.status == "expired"
-    val statusRes = when {
-        isPaid -> R.string.profile_subscription_status_paid
-        subscription == null && state.isLoading -> R.string.state_loading
-        subscription == null -> R.string.profile_subscription_status_unavailable
-        trialActive -> R.string.profile_subscription_status_trial
-        isTemporary -> R.string.profile_subscription_status_temporary
-        isExpired -> R.string.profile_subscription_status_expired
-        else -> R.string.profile_subscription_status_free
-    }
-    val expiry = when {
-        isPaid || isTemporary -> subscription?.until
-        trialActive -> trial?.endsAt
-        else -> null
-    }
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        shadowElevation = 8.dp,
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    stringResource(R.string.profile_subscription_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = PompColors.Ink,
-                    modifier = Modifier.weight(1f),
-                )
-                Surface(
-                    color = if (isPaid || trialActive) PompColors.JadeSoft else PompColors.PaperRaised,
-                    shape = RoundedCornerShape(999.dp),
-                    border = BorderStroke(
-                        1.dp,
-                        if (isPaid || trialActive) PompColors.Jade else PompColors.Divider,
-                    ),
-                ) {
-                    Text(
-                        stringResource(statusRes),
-                        color = if (isPaid || trialActive) PompColors.JadeInk else PompColors.InkSecondary,
-                        style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                    )
-                }
-            }
-            expiry?.let {
-                Text(
-                    stringResource(R.string.profile_subscription_until, profileExpiryText(it)),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = PompColors.InkSecondary,
-                )
-            }
-            if (trialActive) {
-                Text(
-                    stringResource(R.string.profile_trial_active_body),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = PompColors.InkSecondary,
-                )
-            } else if (isTemporary) {
-                Text(
-                    stringResource(R.string.profile_subscription_temporary_body),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = PompColors.InkSecondary,
-                )
-            } else if (subscription != null && !isPaid) {
-                Text(
-                    stringResource(R.string.profile_subscription_free_body),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = PompColors.InkSecondary,
-                )
-            }
-
-            if (checkoutAvailable && subscription != null) {
-                Button(
-                    onClick = { onOpenSubscription(isPaid) },
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = PompColors.Cinnabar),
-                ) {
-                    Text(
-                        stringResource(
-                            when {
-                                isPaid -> R.string.profile_subscription_renew
-                                isExpired -> R.string.profile_subscription_restore
-                                else -> R.string.profile_subscription_buy
-                            }
-                        ),
-                        color = PompColors.OnCinnabar,
-                    )
-                }
-            } else if (!checkoutAvailable && subscription != null && !isPaid) {
-                Text(
-                    stringResource(R.string.profile_subscription_play_blocked),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = PompColors.InkSecondary,
                 )
             }
         }
