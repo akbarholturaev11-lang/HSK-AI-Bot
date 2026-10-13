@@ -78,6 +78,14 @@ class LaunchFeedbackContractTests(unittest.TestCase):
         self.assertIn("hsk-launch-brand-rise 620ms", MINI)
         self.assertIn("hsk-launch-gold-wave 900ms", MINI)
 
+    def test_android_starting_window_does_not_flash_duplicate_logo(self):
+        # Android's static starting window should not display a finished logo
+        # before the Compose knot assembly begins.
+        splash = (ANDROID / "src/main/res/drawable/splash_window_background.xml").read_text(encoding="utf-8")
+        self.assertIn('@color/pomp_paper', splash)
+        self.assertNotIn('@drawable/ic_launcher_foreground', splash)
+        self.assertNotIn('92dp', splash)
+
     def test_android_release_version_advances_for_updated_apk(self):
         gradle = (ANDROID / "build.gradle.kts").read_text(encoding="utf-8")
         self.assertIn('val appVersionName = "1.7.13"', gradle)

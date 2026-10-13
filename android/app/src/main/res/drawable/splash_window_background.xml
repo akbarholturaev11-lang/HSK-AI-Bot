@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Keep the pre-Compose starting window neutral. The native HSKBrandLoader
+     owns the Golden Logo animation; a second static logo flashes/jumps before
+     the knot starts and makes Android diverge from Telegram Mini App. -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/pomp_paper" />
-    <item
-        android:width="92dp"
-        android:height="92dp"
-        android:gravity="center">
-        <shape android:shape="rectangle">
-            <corners android:radius="24dp" />
-            <gradient
-                android:angle="135"
-                android:startColor="#FFF0614C"
-                android:endColor="#FFC02F32" />
-        </shape>
-    </item>
-    <item
-        android:width="92dp"
-        android:height="92dp"
-        android:drawable="@drawable/ic_launcher_foreground"
-        android:gravity="center" />
 </layer-list>
