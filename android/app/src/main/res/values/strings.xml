@@ -584,4 +584,6 @@
     <string name="ready_phrases_load_failed">Gaplar katalogini o‘qib bo‘lmadi.</string>
     <string name="ready_phrases_retry">Qayta urinish</string>
     <string name="ready_phrases_back">Orqaga</string>
+    <string name="course_track_preparing_title">Kurs ochilmoqda…</string>
+    <string name="course_track_preparing_subtitle">Panda kursni tayyorlayapti</string>
 </resources>
