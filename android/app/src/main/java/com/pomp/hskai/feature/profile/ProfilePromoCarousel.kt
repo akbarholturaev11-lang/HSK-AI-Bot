@@ -42,6 +42,8 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.domain.model.CourseHsk30
 import kotlinx.coroutines.delay
+import java.time.Duration
+import java.time.Instant
 
 private val PromoGold = Color(0xFFEFB32B)
 private val PromoPaper = Color(0xFF211D17)
@@ -100,9 +102,7 @@ internal fun ProfilePromoCarousel(
                 isPaid || isTemporary ->
                     subscription?.until?.let { stringResource(R.string.profile_subscription_until, it.take(10)) }
                         ?: stringResource(R.string.profile_promo_pro_body)
-                trialActive ->
-                    state.trial?.endsAt?.let { stringResource(R.string.profile_subscription_until, it.take(10)) }
-                        ?: stringResource(R.string.profile_trial_active_body)
+                trialActive -> trialTimeRemaining(state.trial?.endsAt)
                 else -> stringResource(R.string.profile_promo_pro_body)
             }
             action = when {
@@ -196,6 +196,20 @@ internal fun ProfilePromoCarousel(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun trialTimeRemaining(endsAt: String?): String {
+    val end = endsAt?.let { runCatching { Instant.parse(it) }.getOrNull() }
+        ?: return stringResource(R.string.profile_trial_active_body)
+    val remainingMinutes = Duration.between(Instant.now(), end).toMinutes()
+    return when {
+        remainingMinutes > 1440L ->
+            stringResource(R.string.profile_promo_trial_days, (remainingMinutes + 1439L) / 1440L)
+        remainingMinutes > 60L ->
+            stringResource(R.string.profile_promo_trial_hours, (remainingMinutes + 59L) / 60L)
+        else -> stringResource(R.string.profile_promo_trial_soon)
     }
 }
 
