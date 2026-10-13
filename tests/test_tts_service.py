@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import asyncio
 import base64
+import shutil
+import subprocess
 from io import BytesIO
 import os
 from pathlib import Path
@@ -78,6 +80,27 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
             with self.subTest(text_length=len(text)):
                 with self.assertRaises(ValueError):
                     await tts.synthesize_chinese_mp3(text)
+
+    def test_nihao_fallback_mp3_contains_valid_cbr_audio_frames(self):
+        audio = tts._bundled_word_audio("你好", "-10%")
+        self.assertIsNotNone(audio)
+        data = audio.read_bytes()
+        self.assertGreater(len(data), 16000)
+        self.assertEqual(0, len(data) % 192)
+        # The original VBR/Xing headers were stripped before joining the
+        # CC BY-SA Mandarin ni2 and hao3 recordings at 48 kHz / 64 kbit.
+        for offset in range(0, len(data), 192):
+            self.assertEqual(data[offset:offset + 4], b"\\xff\\xfb\\x54\\xc4")
+        if shutil.which("ffprobe"):
+            probe = subprocess.run(
+                ["ffprobe", "-v", "error", "-show_entries",
+                 "stream=codec_name,sample_rate", "-of", "default=noprint_wrappers=1",
+                 str(audio)],
+                capture_output=True, text=True, timeout=8,
+            )
+            self.assertEqual(0, probe.returncode, probe.stderr)
+            self.assertIn("codec_name=mp3", probe.stdout)
+            self.assertIn("sample_rate=48000", probe.stdout)
 
     async def test_nihao_offline_pronunciation_never_calls_external_providers(self):
         # HSK 3.0 listening to 你好 returned 502 with Edge and Gemini down.
