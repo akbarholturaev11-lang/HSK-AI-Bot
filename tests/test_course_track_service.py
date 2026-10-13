@@ -594,6 +594,18 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.user.level, "hsk3")
         self.assertEqual(self.progress.level, "hsk3")
         self.assertEqual(self.progress.completed_lessons_count, 17)
+        # Returning again without a level MUST recover N1 / checkpoint 4.
+        # Explicitly choosing N1 on the other hand must not be required.
+        await self.service.switch(self.user, target_track=TRACK_HSK30)
+        self.assertEqual(self.user.level, "nhsk1")
+        self.assertEqual(self.progress.level, "nhsk1")
+        self.assertEqual(self.progress.completed_lessons_count, 4)
+        self.assertEqual(hsk20.level, "hsk3")
+        self.assertEqual(hsk20.completed_lessons_count, 17)
+
+        await self.service.switch(self.user, target_track=TRACK_HSK20)
+        self.assertEqual(self.user.level, "hsk3")
+        self.assertEqual(self.progress.completed_lessons_count, 17)
 
 
 class Hsk30UnlockServiceTests(unittest.IsolatedAsyncioTestCase):
