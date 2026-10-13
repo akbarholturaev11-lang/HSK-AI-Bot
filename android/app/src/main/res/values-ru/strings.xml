@@ -545,4 +545,11 @@
     <string name="ready_phrases_load_failed">Не удалось прочитать подборку фраз.</string>
     <string name="ready_phrases_retry">Повторить</string>
     <string name="ready_phrases_back">Назад</string>
+    <string name="course_track_preparing_title">Открываем курс…</string>
+    <string name="course_track_preparing_subtitle">Панда готовит ваш курс</string>
+    <string name="course_choice_title">Выбор курса</string>
+    <string name="course_choice_version">Версия курса</string>
+    <string name="course_choice_level">Уровень</string>
+    <string name="course_choice_note">При смене версии прогресс сохраняется. Выбор другого уровня начнёт прогресс этой версии заново.</string>
+    <string name="course_choice_confirm">Подтвердить</string>
 </resources>

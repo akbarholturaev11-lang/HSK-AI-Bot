@@ -68,10 +68,9 @@ class MiniAppRequestLoadTests(unittest.TestCase):
         )
         self.assertIn("openDict:function(){", COURSE)
         self.assertIn("beginInternalNavigation();", COURSE)
-        self.assertIn(
-            'location.href="/hsk-lugat.html?"+q.toString()',
-            COURSE,
-        )
+        # Dictionary is now an in-Mini-App resource, not an HTML redirect.
+        # Only actual checkout navigation suppresses the exit ping.
+        self.assertIn('openDict:function(){RESOURCE.open("dict")}', COURSE)
         self.assertIn(
             "beginInternalNavigation();\n    setTimeout(function(){location.href=url},40)",
             COURSE,

@@ -546,4 +546,11 @@
     <string name="ready_phrases_load_failed">Маҷмӯаи ибораҳоро хонда нашуд.</string>
     <string name="ready_phrases_retry">Аз нав кӯшиш кардан</string>
     <string name="ready_phrases_back">Бозгашт</string>
+    <string name="course_track_preparing_title">Курс кушода мешавад…</string>
+    <string name="course_track_preparing_subtitle">Панда курси шуморо омода мекунад</string>
+    <string name="course_choice_title">Интихоби курс</string>
+    <string name="course_choice_version">Версияи курс</string>
+    <string name="course_choice_level">Сатҳ</string>
+    <string name="course_choice_note">Ҳангоми иваз кардани версия пешрафт нигоҳ дошта мешавад. Интихоби сатҳи дигар пешрафти ин версияро аз нав оғоз мекунад.</string>
+    <string name="course_choice_confirm">Тасдиқ кардан</string>
 </resources>

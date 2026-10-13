@@ -162,7 +162,7 @@ fun SubscriptionCheckoutHost(
         if (token != null) model.selectReceipt(context, uri, token)
     }
     var supportOpen by remember(model) { mutableStateOf(false) }
-    var routeOpen by remember(model) { mutableStateOf(false) }
+    var methodOpen by remember(model) { mutableStateOf(false) }
     var inviteOpen by remember(model) { mutableStateOf(false) }
     var waitingInvite by remember(model) { mutableStateOf(false) }
     var qrPreview by remember(model) { mutableStateOf(false) }
@@ -187,6 +187,7 @@ fun SubscriptionCheckoutHost(
             qrPreview -> qrPreview = false
             inviteOpen -> inviteOpen = false
             supportOpen -> supportOpen = false
+            methodOpen -> methodOpen = false
             state.isWaitingForHsk30Review -> Unit
             stepIndex > 0 -> model.back()
             else -> onClose()
@@ -252,8 +253,9 @@ fun SubscriptionCheckoutHost(
                 when (state.step) {
                     CheckoutStep.PLANS -> PlansContent(
                         state = state, copy = copy, onPlan = model::choosePlan,
-                        onCurrency = model::openCurrencySelector,
-                        onRoute = { routeOpen = true },
+                        onRoute = model::openRegionSelector,
+                        onMethod = { methodOpen = true },
+                        onRetryCurrency = { model.chooseCurrency(currencyForRegion(state.region)) },
                         onDiscount = { waitingInvite = true; model.startDiscount() },
                     )
                     CheckoutStep.METHOD -> Text(
@@ -311,7 +313,9 @@ fun SubscriptionCheckoutHost(
                 })
                 val enabled = when (state.step) {
                     CheckoutStep.PAY -> state.quote != null && state.receiptName.isNotBlank()
-                    else -> state.overview?.prices?.get(state.method)?.get(state.plan) != null
+                    else -> !state.currencySaving && !state.regionDialogOpen &&
+                        state.overview?.preferredCurrency == currencyForRegion(state.region) &&
+                        state.overview?.prices?.get(state.method)?.get(state.plan) != null
                 }
                 val primaryAction: () -> Unit = when {
                     state.step == CheckoutStep.PAY -> model::submit
@@ -376,36 +380,43 @@ fun SubscriptionCheckoutHost(
                 })
         }
     }
-    if (routeOpen) {
-        CheckoutSheet(onDismiss = { routeOpen = false }) {
-            RegionContent(state = state, copy = copy, onRegion = {
-                model.chooseRegion(it)
-                routeOpen = false
-            })
+    // One centred prompt asks only for the card country. Its currency is
+    // derived and saved by the ViewModel; no independent currency picker.
+    if (state.regionDialogOpen && !state.loading &&
+        state.overview?.checkoutAllowed == true) {
+        Dialog(
+            onDismissRequest = model::dismissRegionSelector,
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                dismissOnBackPress = !state.regionDialogRequired,
+                dismissOnClickOutside = !state.regionDialogRequired,
+            ),
+        ) {
+            Column(
+                Modifier.fillMaxWidth(0.92f).heightIn(max = 650.dp)
+                    .background(C.surface, RoundedCornerShape(20.dp))
+                    .padding(18.dp).verticalScroll(rememberScrollState()),
+            ) {
+                RegionContent(state = state, copy = copy, onRegion = model::chooseRegion)
+                if (!state.regionDialogRequired) {
+                    TextButton(onClick = model::dismissRegionSelector,
+                        modifier = Modifier.align(Alignment.End)) {
+                        Text(copy.getString(R.string.action_close), color = C.accentInk)
+                    }
+                }
+            }
         }
     }
-    if (state.currencyDialogOpen) {
-        CurrencyPreferenceDialog(
-            state = state,
-            copy = copy,
-            onDismiss = model::dismissCurrencySelector,
-            onChoose = model::chooseCurrency,
-        )
-    }
-    if (state.step == CheckoutStep.METHOD && !state.currencyDialogOpen &&
-        !state.loading && state.overview?.checkoutAllowed == true) {
+    // Optional: only for users who want to change the default bank/wallet.
+    // This is never another mandatory checkout step.
+    if (methodOpen && !state.loading && !state.currencySaving &&
+        state.overview?.checkoutAllowed == true) {
         PaymentMethodDialog(
             state = state,
             copy = copy,
-            onDismiss = model::back,
-            onBank = { bank ->
-                model.chooseBank(bank)
-                model.next()
-            },
-            onMethod = { method ->
-                model.chooseMethod(method)
-                model.next()
-            },
+            onDismiss = { methodOpen = false },
+            onBank = { bank -> model.chooseBank(bank); methodOpen = false },
+            onMethod = { method -> model.chooseMethod(method); methodOpen = false },
         )
     }
     if (inviteOpen) {
@@ -462,16 +473,30 @@ private fun RegionContent(state: SubscriptionCheckoutState, copy: Context, onReg
 private fun PlansContent(
     state: SubscriptionCheckoutState, copy: Context,
     onPlan: (String) -> Unit,
-    onCurrency: () -> Unit,
     onRoute: () -> Unit,
+    onMethod: () -> Unit,
+    onRetryCurrency: () -> Unit,
     onDiscount: () -> Unit,
 ) {
     Text(copy.getString(R.string.sub_plans_heading), color = C.text, fontSize = 16.sp, fontWeight = FontWeight.Black)
     Spacer(Modifier.height(10.dp))
-    CurrencySelectorButton(state, copy, onCurrency)
-    Spacer(Modifier.height(8.dp))
-    PaymentRouteButton(state, copy, onClick = onRoute)
+    CardCountrySelectorButton(state, copy, onClick = onRoute)
+    if (hasMethodStep(state.region)) {
+        Spacer(Modifier.height(8.dp))
+        PaymentMethodButton(state, copy, onClick = onMethod)
+    }
     Spacer(Modifier.height(12.dp))
+    // Never display prices under a stale currency while the server refreshes.
+    if (state.currencySaving || state.overview?.preferredCurrency != currencyForRegion(state.region)) {
+        if (state.currencySaving) {
+            CircularProgressIndicator(color = C.accent)
+        } else {
+            MessageCard(copy.getString(state.currencyErrorRes ?: R.string.sub_currency_refresh_failed))
+            Spacer(Modifier.height(8.dp))
+            SmallAction(copy.getString(R.string.sub_retry), onClick = onRetryCurrency)
+        }
+        return
+    }
     val prices = state.overview?.prices?.get(state.method).orEmpty()
     if (state.isHsk30Unlock) {
         prices[state.plan]?.let { price ->
@@ -783,39 +808,42 @@ private fun renewalDates(state: SubscriptionCheckoutState): RenewalDates? {
 }
 
 @Composable
-private fun CurrencySelectorButton(
+private fun CardCountrySelectorButton(
     state: SubscriptionCheckoutState,
     copy: Context,
     onClick: () -> Unit,
 ) {
-    val currency = state.overview?.displayCurrency.orEmpty()
+    val country = state.region
+    val currency = currencyForRegion(country)
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 56.dp).border(1.dp, C.accentLine, PompShapes.Medium)
-            .background(C.accentSoft, PompShapes.Medium).clickable(role = Role.Button, onClick = onClick)
+        Modifier.fillMaxWidth().heightIn(min = 62.dp)
+            .border(1.dp, C.accentLine, PompShapes.Medium)
+            .background(C.accentSoft, PompShapes.Medium)
+            .clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = 13.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        Text(REGION_FLAGS[country] ?: "🌐", fontSize = 25.sp)
+        Spacer(Modifier.width(10.dp))
         Column(Modifier.weight(1f)) {
-            Text(copy.getString(R.string.sub_currency_label), color = C.muted, fontSize = 11.sp,
+            Text(copy.getString(R.string.sub_route_title), color = C.muted, fontSize = 11.sp,
                 fontWeight = FontWeight.Bold)
-            Text(
-                if (currency.isBlank()) copy.getString(R.string.sub_currency_loading)
-                else "$currency — ${copy.getString(currencyTitleId(currency))}",
-                color = C.text,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Black,
-            )
+            Text("${copy.getString(regionTitleId(country))} · $currency",
+                color = C.text, fontSize = 14.sp, fontWeight = FontWeight.Black)
         }
-        Text("⌄", color = C.accentInk, fontSize = 20.sp, fontWeight = FontWeight.Black)
+        Text(copy.getString(R.string.sub_change), color = C.accentInk, fontSize = 12.sp,
+            fontWeight = FontWeight.Bold)
     }
 }
 
 @Composable
-private fun PaymentRouteButton(state: SubscriptionCheckoutState, copy: Context, onClick: () -> Unit) {
-    val route = if (state.region == "cn") {
+private fun PaymentMethodButton(
+    state: SubscriptionCheckoutState, copy: Context, onClick: () -> Unit,
+) {
+    val method = if (state.region == "cn") {
         copy.getString(if (state.method == "wechat") R.string.sub_wechat else R.string.sub_alipay)
     } else {
-        "${copy.getString(R.string.sub_card)} · ${copy.getString(regionTitleId(state.region))}"
+        BANK_NAMES[state.bank].orEmpty()
     }
     Row(
         Modifier.fillMaxWidth().heightIn(min = 56.dp).border(1.dp, C.line, PompShapes.Medium)
@@ -826,61 +854,10 @@ private fun PaymentRouteButton(state: SubscriptionCheckoutState, copy: Context, 
         Column(Modifier.weight(1f)) {
             Text(copy.getString(R.string.sub_payment_route_label), color = C.muted, fontSize = 11.sp,
                 fontWeight = FontWeight.Bold)
-            Text(route, color = C.text, fontSize = 13.sp, fontWeight = FontWeight.ExtraBold)
+            Text(method, color = C.text, fontSize = 13.sp, fontWeight = FontWeight.ExtraBold)
         }
         Text(copy.getString(R.string.sub_change), color = C.accentInk, fontSize = 12.sp,
             fontWeight = FontWeight.Bold)
-    }
-}
-
-@Composable
-private fun CurrencyPreferenceDialog(
-    state: SubscriptionCheckoutState,
-    copy: Context,
-    onDismiss: () -> Unit,
-    onChoose: (String) -> Unit,
-) {
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(
-            usePlatformDefaultWidth = false,
-            dismissOnBackPress = !state.currencyDialogRequired,
-            dismissOnClickOutside = !state.currencyDialogRequired,
-        ),
-    ) {
-        Column(
-            Modifier.fillMaxWidth(0.92f).heightIn(max = 620.dp)
-                .background(C.surface, RoundedCornerShape(20.dp)).padding(18.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(9.dp),
-        ) {
-            Text(copy.getString(R.string.sub_currency_title), color = C.text, fontSize = 20.sp,
-                lineHeight = 24.sp, fontWeight = FontWeight.Black)
-            Text(copy.getString(R.string.sub_currency_body), color = C.muted, fontSize = 13.sp,
-                lineHeight = 19.sp)
-            ChoiceGroup {
-                SUBSCRIPTION_DISPLAY_CURRENCIES.forEachIndexed { index, currency ->
-                    ChoiceCard(
-                        null,
-                        currency,
-                        copy.getString(currencyTitleId(currency)),
-                        state.overview?.displayCurrency == currency,
-                        onClick = { if (!state.currencySaving) onChoose(currency) },
-                    )
-                    if (index < SUBSCRIPTION_DISPLAY_CURRENCIES.lastIndex) ChoiceDivider()
-                }
-            }
-            state.currencyErrorRes?.let { MessageCard(copy.getString(it)) }
-            if (state.currencySaving) {
-                CircularProgressIndicator(color = C.accent, modifier = Modifier.align(Alignment.CenterHorizontally))
-            }
-            if (!state.currencyDialogRequired) {
-                TextButton(onClick = onDismiss, enabled = !state.currencySaving,
-                    modifier = Modifier.align(Alignment.End)) {
-                    Text(copy.getString(R.string.action_close), color = C.accentInk)
-                }
-            }
-        }
     }
 }
 

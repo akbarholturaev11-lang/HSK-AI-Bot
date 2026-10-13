@@ -584,4 +584,11 @@
     <string name="ready_phrases_load_failed">Gaplar katalogini o‘qib bo‘lmadi.</string>
     <string name="ready_phrases_retry">Qayta urinish</string>
     <string name="ready_phrases_back">Orqaga</string>
+    <string name="course_track_preparing_title">Kurs ochilmoqda…</string>
+    <string name="course_track_preparing_subtitle">Panda kursni tayyorlayapti</string>
+    <string name="course_choice_title">Kursni tanlash</string>
+    <string name="course_choice_version">Kurs versiyasi</string>
+    <string name="course_choice_level">Daraja</string>
+    <string name="course_choice_note">Versiyalar o‘rtasida o‘qigan joyingiz saqlanadi. Boshqa darajani tanlash shu versiya progressini qaytadan boshlaydi.</string>
+    <string name="course_choice_confirm">Tasdiqlash</string>
 </resources>

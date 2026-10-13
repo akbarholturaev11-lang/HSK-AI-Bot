@@ -144,11 +144,17 @@ def create_course_tracks_router(*, session_factory, settings_obj) -> APIRouter:
                     getattr(user, "level", None)
                 )
                 before_level = str(getattr(user, "level", "") or "")
-                result = await CourseTrackService(session).switch(
-                    user,
-                    target_track=body.target_track,
-                    requested_level=body.level,
-                )
+                track_service = CourseTrackService(session)
+                if body.target_track == before_track and body.level:
+                    # Changing a band is explicit; switching versions without a
+                    # level always restores the previously saved band/progress.
+                    result = await track_service.change_level(user, body.level)
+                else:
+                    result = await track_service.switch(
+                        user,
+                        target_track=body.target_track,
+                        requested_level=body.level,
+                    )
                 after_level = str(getattr(user, "level", "") or "")
                 after_track = CourseTrackService.track_for_level(after_level)
                 if (
