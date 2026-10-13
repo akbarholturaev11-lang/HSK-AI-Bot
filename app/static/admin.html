@@ -1018,6 +1018,8 @@
     function overviewReport(){ const r=state.overview&&state.overview.statistics_reports; if(!Array.isArray(r)) return null; return r.find(x=>x.key===state.statsPeriod)||r[0]; }
     const adminMetricLabels={"Sales A/B · 7d approved": "Сотув тажрибаси · 7 кунда тасдиқланган", "Obuna sahifasi": "Обуна саҳифаси", "Rekvizitni ko'rdi": "Тўлов маълумотларини кўрди", "Skrinshot tanladi": "Тўлов суратини танлади", "Skrinshot yubordi": "Тўлов суратини юборди", "Tasdiqlandi": "Тасдиқланди", "Ma’lumot yetarli emas": "Маълумот етарли эмас", "Ma'lumot yetarli emas": "Маълумот етарли эмас", "Signup → App D1": "Рўйхатдан ўтиш → 1-кунда қайтиш", "Signup → App D7": "Рўйхатдан ўтиш → 7-кунда қайтиш", "D1 recovery lift": "1-кунда қайтиш ўсиши", "Starter start → complete": "Бошланғич дарс: бошлаш → тугатиш", "Starter first-attempt": "Бошланғич дарс: биринчи уриниш", "Starter → HSK1 P1/P2/P3": "Бошланғич дарс → HSK1 босқичлари", "Checkpoint → paywall": "Текширув → обуна экрани", "Starter D1 learning": "Бошланғич дарс: 1-кун фаоллиги", "Avg session": "Ўртача машғулот вақти", "Lesson time": "Дарс вақти", "AI chat xabar/user": "Савол-жавоб: ҳар бир фойдаланувчига хабар", "Voice minutes": "Овозли машқ дақиқалари", "First payment": "Биринчи тўлов", "Davr revenue / payer": "Давр тушуми / тўловчи", "Taglangan CAC": "Белгиланган мижоз жалб қилиш харажати", "Unfinished notif": "Тугатилмаган дарс эслатмаси", "Direct start → dars ≤2m": "Тўғридан-тўғри бошлаш → 2 дақиқада дарс", "Onb → dars ≤2m": "Танишув → 2 дақиқада дарс", "D1 retention": "1-кунда қайтиш", "D7 retention": "7-кунда қайтиш", "Course event": "Курс ҳодисаси", "hozir": "Ҳозир", "Conversion event": "Ўтиш ҳодисаси", "Payment": "Тўлов", "AI usage": "Сунъий интеллектдан фойдаланиш"};
     function metricLabel(value){return localizeAdminCopy(value);}
+    function adminLanguageLabel(value){return ({uz:"Ўзбекча",ru:"Русча",tj:"Тожикча",tg:"Тожикча"})[String(value||"").toLowerCase()]||metricLabel(value);}
+    function adminPlanLabel(value){return ({"10_days":"10 кун","1_month":"1 ой","3_months":"3 ой"})[value]||metricLabel(value);}
     function localizeAdminCopy(value){
       if(typeof value!=="string"||!/[A-Za-z]/.test(value)) return value;
       if(adminMetricLabels[value]) return adminMetricLabels[value];
@@ -1580,9 +1582,9 @@
         const accessTag=end?tag((u.payment_status==="approved"?"обуна":"кириш ҳуқуқи")+(u.status==="expired"?" тугаган ":" тугайди ")+end,u.status==="expired"?"":u.payment_status==="approved"?"green":"violet"):"";
         return `<button class="ucard" data-user="${u.id}">
           <div class="uhead"><div><div class="uname">${esc(u.name)}</div>
-            <div class="usub">${u.username?"@"+esc(u.username)+" · ":""}${u.id}<br>${esc(u.language)} · ${esc(u.level)} · ${esc(u.last_active)}</div></div>
+            <div class="usub">${u.username?"@"+esc(u.username)+" · ":""}${u.id}<br>${esc(adminLanguageLabel(u.language))} · ${esc(u.level)} · ${esc(metricLabel(u.last_active))}</div></div>
             ${tag(t[0],t[1])}</div>
-          <div class="tags">${tag(u.plan,"blue")}${tag(u.method,"")}${u.bot_blocked?tag("ТГ ёпиқ","red"):""}${accessTag}</div>
+          <div class="tags">${tag(adminPlanLabel(u.plan),"blue")}${tag(metricLabel(u.method),"")}${u.bot_blocked?tag("ТГ ёпиқ","red"):""}${accessTag}</div>
           <div class="mini2"><div class="mini"><b>${esc(u.questions)}</b><span>Сунъий интеллектга саволлар</span></div><div class="mini"><b>${esc(u.streak)}</b><span>серия</span></div></div>
         </button>`;
       }).join("") : "<p class='empty'>Бу саралаш бўйича фойдаланувчи топилмади.</p>";
@@ -1697,7 +1699,7 @@
       if(state.moduleInline) closeDrawer();
       state.moduleInline=false; state.activeModule=null; state.modulePrefill=null;
       const requestId=++moduleRequestId;
-      openDrawer(u.name, `${u.username?"@"+u.username+" · ":""}${u.id} · ${u.last_active}`, "<p class='empty'>Юкланмоқда…</p>");
+      openDrawer(u.name, `${u.username?"@"+u.username+" · ":""}${u.id} · ${metricLabel(u.last_active)}`, "<p class='empty'>Юкланмоқда…</p>");
       let detail=null;
       try{ detail=await apiPost("/api/admin-miniapp/users/detail",{telegram_id:u.id}); }catch(e){ if(requestId===moduleRequestId&&!$("app").hidden) toast(apiErr(e,"Тафсилот юкланмади")); }
       if(requestId!==moduleRequestId||$("app").hidden) return;
@@ -1737,8 +1739,8 @@
           <span>Кириш ҳуқуқи тури</span><b>${esc(access.label||f.access_label||f.status_label||f.status)}</b>
           <span>Сабаб</span><b>${esc(access.source_label||"—")}</b>
           <span>Тўлов</span><b>${esc(f.has_pending_payment?"текширувда":(f.payment_label||f.payment_status))}</b>
-          <span>Тариф</span><b>${esc(f.plan||f.selected_plan_type||"—")}</b>
-          <span>Усул</span><b>${esc(f.method||f.payment_method||"—")}</b>
+          <span>Тариф</span><b>${esc(adminPlanLabel(f.plan||f.selected_plan_type||"—"))}</b>
+          <span>Усул</span><b>${esc(metricLabel(f.method||f.payment_method||"—"))}</b>
           <span>Бошланган</span><b>${esc(access.starts_at||f.start_date||"—")}</b>
           <span>Тугайди</span><b>${esc(access.ends_at||f.end_date||"—")}</b></div>
           ${access.source==="manual_admin"?"<div class=\"ncnote\" style=\"margin-top:10px\">Бу кириш ҳуқуқи Админ томонидан қўлда берилган. У тўлов ёки даромад ёзуви ҳисобланмайди.</div>":""}
@@ -1786,7 +1788,7 @@
           <div class="ncnote" style="margin-top:10px">Ўрнатилган <b>сервер билан алоқа</b> илова очилиши дегани эмас: Android видгет фонда янгиланиш ҳам сессионни тегиши мумкин. Фаол фойдаланиш учун илова очилиши/опен ҳодиса алоҳида кўрсатилади.</div>
         </section>
         <section class="dsec"><div class="dtitle-sm">Ўқиш</div><div class="kv">
-          <span>Тил</span><b>${esc(f.language)}</b><span>Даража</span><b>${esc(f.level)}</b>
+          <span>Тил</span><b>${esc(adminLanguageLabel(f.language))}</b><span>Даража</span><b>${esc(f.level)}</b>
           <span>Режим</span><b>${esc(f.mode||f.learning_mode)}</b><span>Саволлар</span><b>${esc(f.questions)}</b>
           <span>Қўшимча Сунъий интеллектга саволлар</span><b>${esc(bonus.left)} та</b><span>Серия</span><b>${esc(f.streak)} кун</b>
           <span>Бонус берилган</span><b>${esc(bonus.total)} та</b><span>Бонус ишлатилган</span><b>${esc(bonus.used)} та</b></div></section>
@@ -2438,7 +2440,7 @@
     function renderPrices(d){
       openDrawer("Обуналар тарифлари","",`<div class="panel">
         ${(d.prices||[]).map(p=>`<div class="mcard" data-prow data-method="${p.method}" data-plan="${p.plan}">
-          <h3>${esc(p.method_label)} · ${esc(metricLabel(p.plan_label))}</h3><p>Жорий: ${esc(p.text)}</p>
+          <h3>${esc(p.method_label)} · ${esc(adminPlanLabel(p.plan_label))}</h3><p>Жорий: ${esc(p.text)}</p>
           <div class="row"><input class="input" data-pamount type="number" min="1" max="1000000" value="${p.amount}" style="max-width:170px"><button class="btn" data-psave>Сақлаш</button></div>
           </div>`).join("")||"<p class='empty'>Тарифлар топилмади.</p>"}</div>`);
     }
@@ -2447,7 +2449,7 @@
         <div class="mcard"><h3>Душанбе Сити реквизити</h3><p>Тожикистон → Душанбе Сити танлаган фойдаланувчиларга чиқади.</p><textarea id="payDetails" class="textarea" maxlength="1500">${esc(d.payment_details||"")}</textarea><button class="btn" data-pdsave>Реквизитни сақлаш</button></div>
         <div class="mcard"><h3>Алиф реквизити</h3><p>Тожикистон → Алиф, Россия, Ўзбекистон ва бошқа давлат карталарига чиқади.</p><textarea id="payDetailsAlif" class="textarea" maxlength="1500">${esc(d.payment_details_alif||"")}</textarea><button class="btn" data-pdsave data-bank="alif">Реквизитни сақлаш</button></div>
         ${(d.prices||[]).filter(p=>p.qr_method).map(p=>`<div class="mcard" data-prow data-method="${p.method}" data-plan="${p.plan}">
-          <h3>${esc(p.method_label)} · ${esc(metricLabel(p.plan_label))}</h3>${priceQrHtml(p)}</div>`).join("")}</div>`);
+          <h3>${esc(p.method_label)} · ${esc(adminPlanLabel(p.plan_label))}</h3>${priceQrHtml(p)}</div>`).join("")}</div>`);
       bindPriceQr();
     }
     function bindPriceQr(){
@@ -2488,7 +2490,7 @@
       const h=d.help||{};
       openDrawer("🆘 Ёрдам созламалари","Админ алоқа ва 3 тилдаги видео ҳаволалар",`<div class="panel">
         <div class="mcard"><h3>Админ алоқа</h3><input id="adminContact" class="input" value="${esc(h.admin_contact||"")}" placeholder="@username ёки т.ме/ҳавола"><button class="btn" data-hcontact>Сақлаш</button></div>
-        ${(h.links||[]).map(i=>`<div class="mcard" data-hrow data-key="${i.key}" data-lang="${i.lang}"><h3>${esc(i.icon)} ${esc(metricLabel(i.label))} · ${esc(({uz:"Ўзбекча",ru:"Русча",tj:"Тожикча",tg:"Тожикча"})[String(i.lang||"").toLowerCase()]||metricLabel(i.lang))}</h3>
+        ${(h.links||[]).map(i=>`<div class="mcard" data-hrow data-key="${i.key}" data-lang="${i.lang}"><h3>${esc(i.icon)} ${esc(metricLabel(i.label))} · ${esc(adminLanguageLabel(i.lang))}</h3>
           <input class="input" data-hvalue value="${esc(i.value||"")}" placeholder="https://..."><button class="btn" data-hsave>Сақлаш</button></div>`).join("")}</div>`);
     }
     function renderPortfolio(d){

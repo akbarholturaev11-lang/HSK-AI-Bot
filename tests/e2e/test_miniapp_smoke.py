@@ -2367,7 +2367,7 @@ def admin_payload():
                 "language": "Тоҷикӣ", "level": "HSK3", "mode": "Kurs",
                 "status": "expired", "status_label": "Muddati tugagan",
                 "payment_status": "approved", "payment_label": "Tasdiqlangan",
-                "plan": "1 oy", "method": "Visa", "end_date": "20.06.2026 12:00",
+                "plan": "3_months", "method": "Visa", "end_date": "20.06.2026 12:00",
                 "last_active": "kecha", "active_today": False, "hot_lead": False,
                 "questions": "0/5", "bonus_left": 0, "streak": 0,
             },
@@ -2575,6 +2575,13 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     qr_requests = []
     help_requests = []
     campaign_requests = []
+    search_requests = []
+    detail_requests = []
+    search_user = {
+        **admin_payload()["users"][0],
+        "id": 444, "name": "Ali Search", "username": "ali_search",
+        "language": "uz", "plan": "1 oy", "method": "Visa/karta",
+    }
     management = admin_management_payload()
     runtime_errors = []
     page.on("pageerror", lambda error: runtime_errors.append(str(error)))
@@ -2699,6 +2706,19 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
         campaign_requests.append(json.loads(route.request.post_data or "{}"))
         json_response(route, {"ok": True})
 
+    def search_users(route):
+        search_requests.append(json.loads(route.request.post_data or "{}"))
+        json_response(route, {"ok": True, "users": [search_user]})
+
+    def user_detail(route):
+        payload = json.loads(route.request.post_data or "{}")
+        detail_requests.append(payload)
+        user = (
+            {**search_user, "plan": None, "selected_plan_type": "1_month"}
+            if payload["telegram_id"] == 444 else admin_payload()["users"][0]
+        )
+        json_response(route, {"ok": True, "user": user, "payments": []})
+
     page.route("**/api/admin-miniapp/overview", lambda route: json_response(route, admin_payload()))
     page.route("**/api/admin-miniapp/finance-stats", lambda route: json_response(route, admin_finance_payload()))
     page.route("**/api/admin-miniapp/sub-entry-stats", lambda route: json_response(route, {"ok": True, "rows": []}))
@@ -2721,7 +2741,8 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     page.route("**/api/admin-miniapp/help/save", save_help)
     page.route("**/api/admin-miniapp/campaigns/create", create_campaign)
     page.route("**/api/admin-miniapp/hsk30/stats", lambda route: json_response(route, {"ok": True}))
-    page.route("**/api/admin-miniapp/users/detail", lambda route: json_response(route, {"ok": True, "user": admin_payload()["users"][0], "payments": []}))
+    page.route("**/api/admin-miniapp/users/search", search_users)
+    page.route("**/api/admin-miniapp/users/detail", user_detail)
     page.route(
         "**/api/admin-miniapp/android-stats",
         lambda route: json_response(
@@ -2832,11 +2853,18 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     expect(page.locator("#userList")).to_be_visible()
     cards = page.locator("#userList .ucard")
     expect(cards).to_have_count(3)
-    expect(cards.nth(0)).to_contain_text("Ali")
+    expect(cards.nth(0).locator(".uname")).to_have_text("Ali")
+    expect(cards.nth(0)).to_have_attribute("data-user", "111")
+    expect(cards.nth(0).locator(".usub")).to_contain_text("Ўзбекча")
+    expect(cards.nth(0).locator(".tags .tag").filter(has_text=re.compile(r"^1 ой$"))).to_have_count(1)
+    assert page.evaluate("state.overview.users[0].language") == "O'zbekcha"
+    assert page.evaluate("state.overview.users[0].plan") == "1 oy"
     expect(cards.nth(0)).to_contain_text("2/5")
     expect(cards.nth(1)).to_contain_text("Madina")
     expect(cards.nth(1)).to_contain_text("Тўлов текширувда")
     expect(cards.nth(2)).to_contain_text("Муддати тугаган")
+    expect(cards.nth(2).locator(".tags .tag").filter(has_text=re.compile(r"^3 ой$"))).to_have_count(1)
+    assert page.evaluate("state.overview.users[2].plan") == "3_months"
     expired_access_tag = cards.nth(2).locator(".tag").filter(has_text="20.06.2026 12:00")
     expect(expired_access_tag).to_have_text("обуна тугаган 20.06.2026 12:00")
     expect(expired_access_tag).not_to_have_class(re.compile(r"\bgreen\b"))
@@ -2854,6 +2882,34 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     page.locator('#userFilters [data-seg="all"]').click()
     expect(cards).to_have_count(3)
     capture_admin_evidence(page, "users", viewport_width)
+    with page.expect_request("**/api/admin-miniapp/users/search"):
+        page.locator("#search").fill("Ali Search")
+    expect(cards).to_have_count(1)
+    search_card = page.locator('#userList [data-user="444"]')
+    expect(search_card.locator(".uname")).to_have_text("Ali Search")
+    expect(search_card.locator(".usub")).to_contain_text("Ўзбекча")
+    expect(search_card.locator(".tags .tag").filter(has_text=re.compile(r"^1 ой$"))).to_have_count(1)
+    expect(search_card.locator(".tags .tag").filter(has_text=re.compile(r"^Visa/карта$"))).to_have_count(1)
+    assert search_requests == [{"query": "Ali Search", "segment": "", "limit": 1000}]
+    assert page.evaluate("state.remoteUsers[0].language") == "uz"
+    assert page.evaluate("state.remoteUsers[0].plan") == "1 oy"
+    assert page.evaluate("state.remoteUsers[0].method") == "Visa/karta"
+    with page.expect_response("**/api/admin-miniapp/users/detail") as search_detail_response:
+        search_card.click()
+    expect(page.locator("#drawerTitle")).to_have_text("Ali Search")
+    expect(page.locator("#drawerBody .kv b").filter(has_text=re.compile(r"^Ўзбекча$"))).to_have_count(1)
+    expect(page.locator("#drawerBody .kv b").filter(has_text=re.compile(r"^1 ой$"))).to_have_count(1)
+    expect(page.locator("#drawerBody .kv b").filter(has_text=re.compile(r"^Visa/карта$"))).to_have_count(1)
+    raw_detail_user = search_detail_response.value.json()["user"]
+    assert raw_detail_user["plan"] is None
+    assert raw_detail_user["selected_plan_type"] == "1_month"
+    assert detail_requests[-1] == {"telegram_id": 444}
+    assert page.evaluate("state.remoteUsers[0].language") == "uz"
+    assert page.evaluate("state.remoteUsers[0].method") == "Visa/karta"
+    page.locator("#drawer [data-act='close-drawer']").click()
+    page.locator('[data-act="clear-search"]').click()
+    expect(page.locator("#search")).to_have_value("")
+    expect(cards).to_have_count(3)
     cards.first.click()
     expect(page.locator("#drawer")).to_be_visible()
     expect(page.locator("#drawer")).not_to_have_class(re.compile(r"\binline\b"))
