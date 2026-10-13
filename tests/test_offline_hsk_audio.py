@@ -73,6 +73,43 @@ class OfflineAudioBundleTests(unittest.TestCase):
         self.assertIn('@app.get("/audio/words/{filename}")', backend)
         self.assertIn('@app.get("/api/v3/tts")', backend)
 
+    def test_practice_and_dictionary_static_audio_before_server_fallback(self):
+        root = offline.ROOT
+        helper = (root / "app/static/audio/words-client.js").read_text("utf-8")
+        backend = (root / "app/main.py").read_text("utf-8")
+        self.assertIn("window.HSKOfflineAudio=", helper)
+        self.assertIn('if(src===server)throw err;', helper)
+        self.assertIn('return "/audio/words/"+file;', helper)
+        self.assertIn('if filename == "client.js":', backend)
+        pages = (
+            "course_v3_pronunciation.html",
+            "course_v3_recognition.html",
+            "course_v3_memorize.html",
+            "course_v3_test.html",
+            "hsk-lugat.html",
+        )
+        for name in pages:
+            with self.subTest(name=name):
+                html = (root / "app/static" / name).read_text("utf-8")
+                self.assertIn('/audio/words/index.js?', html)
+                self.assertIn('/audio/words/client.js?', html)
+                self.assertIn('window.HSKOfflineAudio.url(', html)
+                self.assertIn('window.HSKOfflineAudio.fetchAudio(', html)
+                self.assertIn("playSource(", html)
+                self.assertIn("/api/v3/tts?text=", html)
+
+    def test_android_bundled_file_is_preferred_before_cache_and_network(self):
+        # Check the implementation order, not a mocked network response:
+        # user devices must play their APK assets without a request.
+        source = (offline.ROOT /
+                  "android/app/src/main/java/com/pomp/hskai/data/repository/CourseRepository.kt").read_text("utf-8")
+        start = source.index("    suspend fun ttsAudio(text: String)")
+        section = source[start:source.index("    private fun ttsCacheKey", start)]
+        self.assertLess(section.index("bundledAudio?.find(phrase)"),
+                        section.index("ttsCache?.read(cacheKey)"))
+        self.assertLess(section.index("ttsCache?.read(cacheKey)"),
+                        section.index("api.tts("))
+
     def test_fake_mp3_is_not_valid_and_valid_file_is_not_regenerated(self):
         with tempfile.TemporaryDirectory() as dirname:
             file = Path(dirname) / "audio.mp3"
