@@ -18,6 +18,7 @@ import os
 from pathlib import Path
 import re
 import time
+from urllib.parse import quote
 from uuid import uuid4
 import wave
 
@@ -205,6 +206,65 @@ async def _fallback(text: str, rate: str) -> bytes:
         return _wav_from_pcm(pcm, int(match.group(1)) if match else 24000)
 
 
+def _public_mp3_urls(text: str, rate: str) -> tuple[str, ...]:
+    """Public, credited Mandarin word recordings. Never send personal data."""
+    if rate != RATE:
+        return ()
+    # This emergency source is for isolated words, not AI conversations or
+    # long lesson sentences; trimming end punctuation does not change speech.
+    word = text.strip().rstrip("。！？!?.,，")
+    if not re.fullmatch(r"[\u3400-\u9fff]{1,12}", word):
+        return ()
+    urls: list[str] = []
+    if word == "你好":
+        # Sjors Provoost, CC BY-SA 3.0. Wikimedia Commons' MP3 transcode
+        # preserves compatibility with Android 1.7.10's MP3-only playback.
+        urls.append(
+            "https://upload.wikimedia.org/wikipedia/commons/transcoded/"
+            "7/7d/Zh_n%C7%90_h%C7%8Eo.ogg/Zh_n%C7%90_h%C7%8Eo.ogg.mp3"
+        )
+    # SWAC human recordings assembled by hugolpz/audio-cmn (CC BY-SA).
+    # This is a best-effort network fallback, not an always-on dependency.
+    urls.append(
+        "https://raw.githubusercontent.com/hugolpz/audio-cmn/master/64k/hsk/"
+        "cmn-" + quote(word, safe="") + ".mp3"
+    )
+    return tuple(urls)
+
+
+def _valid_mp3(data: bytes) -> bool:
+    return 128 <= len(data) <= 1024 * 1024 and (
+        data.startswith(b"ID3") or
+        (len(data) >= 2 and data[0] == 0xFF and (data[1] & 0xE0) == 0xE0)
+    )
+
+
+async def _public_mp3_fallback(text: str, rate: str) -> bytes:
+    """Last resort: return real human speech in MP3 for older APKs.
+
+    The URL list is controlled by the server and contains public word
+    content only. Bad responses are never cached or served as audio.
+    """
+    urls = _public_mp3_urls(text, rate)
+    if not urls:
+        raise TTSUnavailable("no_licensed_word_recording")
+    async with httpx.AsyncClient(
+        timeout=httpx.Timeout(5.0, connect=3.0), follow_redirects=True
+    ) as client:
+        for url in urls:
+            try:
+                response = await client.get(url, headers={"Accept": "audio/mpeg"})
+                if response.status_code != 200:
+                    continue
+                if _valid_mp3(response.content):
+                    log.info("Mandarin licensed recording fallback succeeded")
+                    return response.content
+            except (httpx.HTTPError, TimeoutError):
+                continue
+    raise TTSUnavailable("licensed_word_recording_unavailable")
+
+
+
 async def synthesize_chinese_mp3(text: str, rate: str = RATE) -> Path:
     """Compatibility name: returns cached MP3 from Edge OR WAV from Gemini."""
     text = str(text or "").strip()
@@ -243,9 +303,15 @@ async def synthesize_chinese_mp3(text: str, rate: str = RATE) -> Path:
                     log.warning("Mandarin Gemini backup unavailable: %s status=%s",
                                 type(exc).__name__,
                                 getattr(getattr(exc, "response", None), "status_code", None))
-                    raise TTSUnavailable("all_providers_failed") from exc
-                destination = folder / (key + ".wav")
-                provider = "gemini"
+                    try:
+                        temporary.write_bytes(await _public_mp3_fallback(text, rate))
+                    except Exception as backup_exc:
+                        raise TTSUnavailable("all_providers_failed") from backup_exc
+                    destination = folder / (key + ".mp3")
+                    provider = "licensed_word_recording"
+                else:
+                    destination = folder / (key + ".wav")
+                    provider = "gemini"
 
             if not temporary.is_file() or temporary.stat().st_size < 128:
                 raise TTSUnavailable("tts_empty_audio")
