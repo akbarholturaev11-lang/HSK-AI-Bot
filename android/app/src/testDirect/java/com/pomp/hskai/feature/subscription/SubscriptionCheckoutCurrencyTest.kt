@@ -51,7 +51,7 @@ class SubscriptionCheckoutCurrencyTest {
         prices = prices(if (mode == "hsk30_unlock") mode else "1_month", currency),
     )
 
-    private fun model(origin: String): SubscriptionCheckoutViewModel {
+    private fun model(origin: String, savedRegion: String? = null): SubscriptionCheckoutViewModel {
         // Only these two endpoints are allowed: no quote, payment or subscription activation.
         val api = Proxy.newProxyInstance(
             AndroidFeatureApi::class.java.classLoader,
@@ -71,7 +71,10 @@ class SubscriptionCheckoutCurrencyTest {
                 else -> error("Unexpected endpoint: ${method.name}")
             }
         } as AndroidFeatureApi
-        return SubscriptionCheckoutViewModel(FeatureRepository(api, { ApiResult.Success("token") }), origin)
+        return SubscriptionCheckoutViewModel(
+            FeatureRepository(api, { ApiResult.Success("token") }), origin,
+            savedRegion = { savedRegion },
+        )
     }
 
     @Test
@@ -81,8 +84,10 @@ class SubscriptionCheckoutCurrencyTest {
         val model = model("hsk30_content")
         model.load()
         advanceUntilIdle()
-        model.openCurrencySelector()
-        model.chooseCurrency("RUB")
+        assertTrue(model.state.value.regionDialogRequired)
+        assertTrue(model.state.value.regionDialogOpen)
+        assertFalse(model.state.value.currencyDialogOpen)
+        model.chooseRegion("ru")
         advanceUntilIdle()
 
         assertEquals(listOf("hsk30_content", "hsk30_content"), origins)
@@ -102,14 +107,29 @@ class SubscriptionCheckoutCurrencyTest {
         val model = model("hsk30_content")
         model.load()
         advanceUntilIdle()
-        model.openCurrencySelector()
-        model.chooseCurrency("RUB")
+        model.chooseRegion("ru")
         advanceUntilIdle()
 
         assertEquals(original, model.state.value.overview)
         assertEquals(R.string.sub_currency_refresh_failed, model.state.value.currencyErrorRes)
         assertFalse(model.state.value.currencySaving)
-        assertTrue(model.state.value.currencyDialogOpen)
+        assertFalse(model.state.value.regionDialogOpen)
+        assertEquals("TJS", model.state.value.overview!!.preferredCurrency)
+    }
+
+    @Test
+    fun `remembered country needs no new prompt and reconciles old currency automatically`() = runTest(dispatcher) {
+        overviews.add(Response.success(overview("subscription", "TJS")))
+        val model = model("profile_subscription", savedRegion = "ru")
+        model.load()
+        advanceUntilIdle()
+
+        assertFalse(model.state.value.regionDialogRequired)
+        assertFalse(model.state.value.regionDialogOpen)
+        assertFalse(model.state.value.currencyDialogOpen)
+        assertEquals("ru", model.state.value.region)
+        assertEquals("RUB", model.state.value.overview!!.preferredCurrency)
+        assertEquals("RUB", model.state.value.overview!!.displayCurrency)
     }
 
     @Test
@@ -118,7 +138,7 @@ class SubscriptionCheckoutCurrencyTest {
         val model = model("profile_subscription")
         model.load()
         advanceUntilIdle()
-        model.chooseCurrency("RUB")
+        model.chooseRegion("ru")
         advanceUntilIdle()
 
         assertEquals(listOf("profile_subscription"), origins)
