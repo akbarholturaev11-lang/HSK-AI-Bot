@@ -7985,9 +7985,31 @@ var finishHskLaunchSplash=(function(){
   try{returning=sessionStorage.getItem("hsk_v3_resource_return")==="1";if(returning)sessionStorage.removeItem("hsk_v3_resource_return")}catch(e){}
   if(returning){root.classList.add("is-done");root.remove();return function(){}}
   var bootReady=false,animationReady=false,closed=false;
-  function closeIfReady(){if(!bootReady||!animationReady||closed)return;closed=true;clearTimeout(safetyTimer);root.classList.add("is-done");setTimeout(function(){if(root.parentNode)root.parentNode.removeChild(root)},260)}
-  var safetyTimer=setTimeout(function(){bootReady=true;animationReady=true;closeIfReady()},7000);
   var motionReduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var launchAudio=null,feedbackTimers=[];
+  function launchPulse(style){
+    try{if(tg&&tg.HapticFeedback&&typeof tg.HapticFeedback.impactOccurred==="function")tg.HapticFeedback.impactOccurred(style)}catch(e){}
+  }
+  /* The launch MP3 is local, never synthesized. Autoplay is best-effort:
+     iOS Telegram may block it until a user gesture. Do not replay late. */
+  if(!motionReduced&&document.visibilityState!=="hidden"){
+    /* Do not request audio from offline/static previews that aren't inside Telegram. */
+    if(INIT_DATA&&tg&&tg.platform)try{
+      launchAudio=new Audio("/assets/hsk-launch-gold.mp3?v=20261013");
+      launchAudio.preload="auto";launchAudio.volume=0.4;
+      var playRequest=launchAudio.play();
+      if(playRequest&&typeof playRequest.catch==="function")playRequest.catch(function(){});
+    }catch(e){}
+    feedbackTimers.push(setTimeout(function(){launchPulse("light")},570));
+    feedbackTimers.push(setTimeout(function(){launchPulse("medium")},1910));
+  }
+  function stopLaunchEffects(){
+    feedbackTimers.forEach(clearTimeout);feedbackTimers=[];
+    try{if(launchAudio){launchAudio.pause();launchAudio=null}}catch(e){}
+  }
+  document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden")stopLaunchEffects()},{once:true});
+  function closeIfReady(){if(!bootReady||!animationReady||closed)return;closed=true;clearTimeout(safetyTimer);stopLaunchEffects();root.classList.add("is-done");setTimeout(function(){if(root.parentNode)root.parentNode.removeChild(root)},260)}
+  var safetyTimer=setTimeout(function(){bootReady=true;animationReady=true;closeIfReady()},7000);
   setTimeout(function(){animationReady=true;closeIfReady()},motionReduced?250:2920);
   return function(){bootReady=true;closeIfReady()};
 })();
