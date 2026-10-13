@@ -65,7 +65,8 @@ DesktopVoiceRole = Annotated[
     ),
 ]
 DesktopVoiceLevel = Literal[
-    "beginner", "hsk1", "hsk2", "hsk3", "hsk4", "hsk1_2", "hsk3_4"
+    "beginner", "hsk1", "hsk2", "hsk3", "hsk4", "hsk1_2", "hsk3_4",
+    "nhsk1", "nhsk2", "nhsk3",
 ]
 DesktopVoiceLanguage = Literal["uz", "ru", "tj"]
 DesktopVoiceVoice = Literal["female", "male"]
