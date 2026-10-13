@@ -31,6 +31,12 @@ class LessonStreakCelebrationTest {
             ),
         )
 
+    private fun rankedOutcome(updated: Boolean = true, duplicate: Boolean = false) =
+        outcome(updated = updated, duplicate = duplicate).copy(
+            rankBefore = 14,
+            rankAfter = 9,
+        )
+
     private fun waitForText(text: String) {
         compose.waitUntil(timeoutMillis = 10_000) {
             runCatching { compose.onNodeWithText(text).assertIsDisplayed() }.isSuccess
@@ -73,4 +79,62 @@ class LessonStreakCelebrationTest {
             assertEquals(index + 1, exits)
         }
     }
+    @Test fun confirmedRankUpFollowsStreakBeforeReturningToCourse() {
+        var exits = 0
+        compose.setContent {
+            PompHskAiTheme { LessonCompletionCelebration(rankedOutcome(), onExit = { exits++ }) }
+        }
+        val next = strings.getString(R.string.lesson_next)
+        val days = strings.getString(R.string.lesson_streak_days)
+        val rankTitle = strings.getString(R.string.lesson_rank_title)
+        val back = strings.getString(R.string.lesson_back_to_course)
+        waitForText(next)
+        compose.onNodeWithText(next).performClick()
+        waitForText(days)
+        compose.onNodeWithText(next).performClick()
+        waitForText(rankTitle)
+        compose.onNodeWithText("#14 → #9").assertIsDisplayed()
+        assertEquals(0, exits)
+        waitForText(back)
+        compose.onNodeWithText(back).performClick()
+        assertEquals(1, exits)
+    }
+
+    @Test fun confirmedRankUpWithoutStreakStillAppears() {
+        var exits = 0
+        compose.setContent {
+            PompHskAiTheme {
+                LessonCompletionCelebration(rankedOutcome(updated = false), onExit = { exits++ })
+            }
+        }
+        val next = strings.getString(R.string.lesson_next)
+        val rankTitle = strings.getString(R.string.lesson_rank_title)
+        val back = strings.getString(R.string.lesson_back_to_course)
+        waitForText(next)
+        compose.onNodeWithText(next).performClick()
+        waitForText(rankTitle)
+        compose.onNodeWithText("#14 → #9").assertIsDisplayed()
+        compose.onNodeWithText(back).performClick()
+        assertEquals(1, exits)
+    }
+
+    @Test fun duplicateCompletionDoesNotReplayRankUp() {
+        var exits = 0
+        compose.setContent {
+            PompHskAiTheme {
+                LessonCompletionCelebration(
+                    rankedOutcome(updated = false, duplicate = true),
+                    onExit = { exits++ },
+                )
+            }
+        }
+        val back = strings.getString(R.string.lesson_back_to_course)
+        val rankTitle = strings.getString(R.string.lesson_rank_title)
+        waitForText(back)
+        compose.onNodeWithText(rankTitle).assertDoesNotExist()
+        compose.onNodeWithText(back).performClick()
+        assertEquals(1, exits)
+    }
+
+
 }

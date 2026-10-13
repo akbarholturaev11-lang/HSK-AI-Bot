@@ -1,6 +1,7 @@
 package com.pomp.hskai.core.audio
 
 import java.io.File
+import java.io.FileOutputStream
 import java.security.MessageDigest
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -9,97 +10,131 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 /**
- * Pronunciation audio the server has already produced for a phrase.
+ * Lesson pronunciations already obtained from the server.
  *
- * The Mini App keeps fetched TTS in a blob cache, so the second tap on a
- * speaker plays instantly; Android re-downloaded the same MP3 on every tap.
- * Nothing here is private or account-scoped — it is the course's own Chinese,
- * byte-identical for every learner — so the ordinary app cache directory is
- * the right home for it.
+ * These are shared course materials, not session secrets. Saving them in the
+ * app's filesDir makes them available offline even after Android clears its
+ * disposable cacheDir or the learner signs out. App uninstall / Clear Storage
+ * still removes private app files.
  */
 interface TtsCache {
     suspend fun read(key: String): ByteArray?
     suspend fun write(key: String, audio: ByteArray)
+    /** Explicit, user-requested deletion only; never called by logout. */
     suspend fun clear()
 }
 
 /**
- * A size-capped least-recently-used cache on disk.
+ * Permanent, append-only pronunciation library.
  *
- * Recency is the file's own modification time, stamped on every read, so a
- * phrase the learner keeps replaying outlives one they met once. Every
- * operation swallows its own IO failure: a cache that cannot be read or
- * written must degrade to a plain download, never to a broken speaker.
+ * Unlike an LRU cache, no phrase is automatically evicted and a previously
+ * downloaded phrase is never overwritten. A file remains available for as long
+ * as the user keeps the app's data and the device storage remains intact.
+ *
+ * On first access, existing MP3s from the old cacheDir/tts are migrated into
+ * filesDir before Android can purge them. Migration is idempotent and only
+ * deletes legacy files after a complete persistent copy exists.
  */
 class DiskTtsCache(
     private val dir: File,
-    private val maxBytes: Long = DEFAULT_MAX_BYTES,
+    private val legacyDir: File? = null,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val now: () -> Long = System::currentTimeMillis,
 ) : TtsCache {
 
     private val writeLock = Mutex()
+    private var legacyMigrationDone = false
 
     override suspend fun read(key: String): ByteArray? = withContext(ioDispatcher) {
-        val file = File(dir, fileName(key))
+        migrateLegacyEntries()
         runCatching {
+            val file = File(dir, persistentFileName(key))
             if (!file.isFile) return@runCatching null
-            val bytes = file.readBytes()
-            if (bytes.isEmpty()) {
-                file.delete()
-                return@runCatching null
-            }
-            file.setLastModified(now())
-            bytes
+            file.readBytes().takeIf { it.isNotEmpty() }
         }.getOrNull()
     }
 
     override suspend fun write(key: String, audio: ByteArray) {
-        if (audio.isEmpty() || audio.size > maxBytes) return
+        if (audio.isEmpty() || audio.size > MAX_SINGLE_AUDIO_BYTES) return
         withContext(ioDispatcher) {
+            migrateLegacyEntries()
             writeLock.withLock {
                 runCatching {
                     dir.mkdirs()
-                    val target = File(dir, fileName(key))
-                    // Written aside and renamed, so a cancelled write can never
-                    // leave a half MP3 under a key a later read would trust.
-                    val staging = File(dir, target.name + ".part")
-                    staging.writeBytes(audio)
-                    if (target.exists()) target.delete()
-                    if (!staging.renameTo(target)) staging.delete() else target.setLastModified(now())
-                    trim()
+                    val target = File(dir, persistentFileName(key))
+                    if (!target.isFile || target.length() == 0L) {
+                        storeAtomically(target, audio)
+                    }
                 }
             }
         }
     }
 
+    /**
+     * Only explicit "delete downloaded pronunciations" features should use
+     * this. Repository clearCache() must NOT touch the audio library.
+     */
     override suspend fun clear() {
         withContext(ioDispatcher) {
             writeLock.withLock {
-                runCatching { dir.listFiles()?.forEach { it.delete() } }
+                runCatching {
+                    dir.listFiles()?.filter { it.isFile && it.name.endsWith(".audio") }
+                        ?.forEach { it.delete() }
+                }
             }
         }
     }
 
-    /** Drops the least recently used files until the directory is under cap. */
-    private fun trim() {
-        val files = dir.listFiles()?.filter { it.isFile } ?: return
-        var total = files.sumOf { it.length() }
-        if (total <= maxBytes) return
-        files.sortedBy { it.lastModified() }.forEach { file ->
-            if (total <= maxBytes) return
-            val size = file.length()
-            if (file.delete()) total -= size
+    private suspend fun migrateLegacyEntries() {
+        if (legacyMigrationDone) return
+        writeLock.withLock {
+            if (legacyMigrationDone) return@withLock
+            val old = legacyDir
+            if (old == null || !old.isDirectory) {
+                legacyMigrationDone = true
+                return@withLock
+            }
+            val result = runCatching {
+                dir.mkdirs()
+                if (!dir.isDirectory) error("Cannot create persistent audio directory")
+                old.listFiles().orEmpty().filter { file ->
+                    file.isFile && LEGACY_NAME.matches(file.name) && file.length() > 0
+                }.forEach { source ->
+                    val target = File(dir, source.name.removeSuffix(".mp3") + ".audio")
+                    if (!target.isFile || target.length() == 0L) {
+                        storeAtomically(target, source.readBytes())
+                    }
+                    if (target.isFile && target.length() == source.length()) {
+                        source.delete()
+                    }
+                }
+            }
+            // Retry migration on the next access after a disk IO failure.
+            legacyMigrationDone = result.isSuccess
         }
     }
 
-    private fun fileName(key: String): String {
-        val digest = MessageDigest.getInstance("SHA-256").digest(key.toByteArray())
-        return digest.joinToString(separator = "") { "%02x".format(it) } + ".mp3"
+    private fun storeAtomically(target: File, bytes: ByteArray) {
+        val temporary = File.createTempFile("lesson-tts-", ".part", dir)
+        try {
+            FileOutputStream(temporary).use { stream ->
+                stream.write(bytes)
+                stream.fd.sync()
+            }
+            if (!temporary.renameTo(target)) error("Audio persistence rename failed")
+        } finally {
+            temporary.delete()
+        }
     }
 
+    private fun digest(key: String): String {
+        val hash = MessageDigest.getInstance("SHA-256").digest(key.toByteArray(Charsets.UTF_8))
+        return hash.joinToString(separator = "") { "%02x".format(it) }
+    }
+
+    private fun persistentFileName(key: String) = digest(key) + ".audio"
+
     private companion object {
-        /** Roughly a few hundred short phrases; a card's audio is ~10-30 KB. */
-        const val DEFAULT_MAX_BYTES = 24L * 1024 * 1024
+        private const val MAX_SINGLE_AUDIO_BYTES = 16 * 1024 * 1024
+        private val LEGACY_NAME = Regex("[0-9a-f]{64}\\.mp3")
     }
 }

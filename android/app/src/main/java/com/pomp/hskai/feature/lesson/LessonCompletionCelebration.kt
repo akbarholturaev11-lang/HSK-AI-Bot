@@ -91,6 +91,7 @@ internal fun LessonCompletionCelebration(
     val verifiedRankUp = rankUp ?: outcome.let {
         if (
             !it.duplicate &&
+            !it.gamification.duplicate &&
             it.rankBefore > 0 &&
             it.rankAfter > 0 &&
             it.rankAfter < it.rankBefore
@@ -102,7 +103,7 @@ internal fun LessonCompletionCelebration(
     }
     // The result comes first; show the streak scene only when the server
     // confirms this completion extended today's run.
-    val scenes = remember(outcome) {
+    val scenes = remember(outcome, verifiedRankUp) {
         buildList {
             add(CelebrationScene.COMPLETE)
             if (
@@ -112,6 +113,11 @@ internal fun LessonCompletionCelebration(
                 gamification.streak > 0
             ) {
                 add(CelebrationScene.STREAK)
+            }
+            // Rank data and the animation already exist. The scene must be
+            // queued after the result (and optional streak) to be visible.
+            if (verifiedRankUp != null) {
+                add(CelebrationScene.RANK_UP)
             }
         }
     }

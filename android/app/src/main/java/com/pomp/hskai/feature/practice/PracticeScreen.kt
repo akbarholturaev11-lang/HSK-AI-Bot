@@ -95,6 +95,7 @@ import com.pomp.hskai.core.navigation.PracticeTool
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.limit.SectionLimitOverlay
 import com.pomp.hskai.core.design.components.rememberExitGuard
+import kotlinx.coroutines.delay
 
 @Composable
 fun PracticeScreen(
@@ -266,6 +267,42 @@ private val TintBlue = RowTint(PompColors.TileBlueSoft, PompColors.TileBlueInk)
 private val TintJade = RowTint(PompColors.JadeSoft, PompColors.Jade)
 private val TintCinnabar = RowTint(PompColors.CinnabarSoft, PompColors.Cinnabar)
 
+private const val READY_PHRASES_SECTION_ID = "ready-phrases"
+private const val NEW_SECTION_BADGE_DURATION_MS = 72L * 60 * 60 * 1000
+// Register each newly released practice section here; keep the Mini App registry in sync.
+private val NEW_SECTION_RELEASES = mapOf(READY_PHRASES_SECTION_ID to 1_791_821_284_000L)
+
+internal fun isPracticeSectionNew(releasedAtMillis: Long, nowMillis: Long): Boolean =
+    nowMillis >= releasedAtMillis && nowMillis < releasedAtMillis + NEW_SECTION_BADGE_DURATION_MS
+
+@Composable
+private fun NewSectionBadge(releasedAtMillis: Long, modifier: Modifier = Modifier) {
+    var visible by remember(releasedAtMillis) {
+        mutableStateOf(isPracticeSectionNew(releasedAtMillis, System.currentTimeMillis()))
+    }
+    LaunchedEffect(releasedAtMillis) {
+        val beforeRelease = releasedAtMillis - System.currentTimeMillis()
+        if (beforeRelease > 0) delay(beforeRelease)
+        visible = isPracticeSectionNew(releasedAtMillis, System.currentTimeMillis())
+        val untilExpiry = releasedAtMillis + NEW_SECTION_BADGE_DURATION_MS - System.currentTimeMillis()
+        if (untilExpiry > 0) delay(untilExpiry)
+        visible = false
+    }
+    if (visible) {
+        Surface(color = PompColors.JadeSoft, shape = CircleShape, modifier = modifier) {
+            Text(
+                text = "NEW",
+                modifier = Modifier.padding(horizontal = 6.dp, vertical = 1.dp),
+                color = PompColors.JadeInk,
+                fontSize = 9.sp,
+                lineHeight = 10.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.35.sp,
+            )
+        }
+    }
+}
+
 @Composable
 private fun PracticeHome(
     state: PracticeUiState,
@@ -351,7 +388,7 @@ private fun PracticeHome(
                         ToolGroup {
                             ToolRow("字", null, TintAmber, stringResource(R.string.practice_dictionary_title), stringResource(R.string.practice_dictionary_body), true, onClick = onOpenDictionary)
                             ToolDivider()
-                            ToolRow("句", null, TintJade, stringResource(R.string.practice_ready_phrases_title), stringResource(R.string.practice_ready_phrases_body), true, onClick = onOpenReadyPhrases)
+                            ToolRow("句", null, TintJade, stringResource(R.string.practice_ready_phrases_title), stringResource(R.string.practice_ready_phrases_body), true, newSectionId = READY_PHRASES_SECTION_ID, onClick = onOpenReadyPhrases)
                             ToolDivider()
                             ToolRow(null, Icons.Filled.Visibility, TintBlue, stringResource(R.string.practice_characters_title), stringResource(R.string.practice_recognition_group_body), toolsEnabled) { onOpenDrill(DrillMode.RECOGNITION) }
                             ToolDivider()
@@ -366,7 +403,7 @@ private fun PracticeHome(
                         ToolGroup {
                             ToolRow(null, Icons.Filled.WorkspacePremium, TintCinnabar, stringResource(R.string.practice_group_tests), stringResource(R.string.practice_test_center_body), toolsEnabled) { openGroup = PracticeGroup.TEST }
                             ToolDivider()
-                            ToolRow(null, Icons.Filled.WarningAmber, TintCinnabar, stringResource(R.string.practice_mistakes_title), stringResource(R.string.practice_mistakes_body, total), toolsEnabled, state.isLoadingMistakes && !offline, onOpenMistakes)
+                            ToolRow(null, Icons.Filled.WarningAmber, TintCinnabar, stringResource(R.string.practice_mistakes_title), stringResource(R.string.practice_mistakes_body, total), toolsEnabled, state.isLoadingMistakes && !offline, onClick = onOpenMistakes)
                         }
                     }
                 }
@@ -609,28 +646,38 @@ private fun ToolRow(
     body: String,
     enabled: Boolean,
     busy: Boolean = false,
+    newSectionId: String? = null,
     onClick: () -> Unit,
 ) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .heightIn(min = 68.dp)
-            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Surface(color = tint.background, shape = RoundedCornerShape(12.dp), modifier = Modifier.size(40.dp)) {
-            Box(contentAlignment = Alignment.Center) {
-                if (icon != null) Icon(icon, contentDescription = null, tint = tint.foreground, modifier = Modifier.size(22.dp))
-                else Text(glyph.orEmpty(), style = MaterialTheme.typography.titleMedium, color = tint.foreground)
+    Box(Modifier.fillMaxWidth().heightIn(min = 68.dp)) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = 68.dp)
+                .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+                .padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Surface(color = tint.background, shape = RoundedCornerShape(12.dp), modifier = Modifier.size(40.dp)) {
+                Box(contentAlignment = Alignment.Center) {
+                    if (icon != null) Icon(icon, contentDescription = null, tint = tint.foreground, modifier = Modifier.size(22.dp))
+                    else Text(glyph.orEmpty(), style = MaterialTheme.typography.titleMedium, color = tint.foreground)
+                }
             }
-        }
-        Column(Modifier.weight(1f).padding(start = 12.dp)) {
+            Column(Modifier.weight(1f).padding(start = 12.dp)) {
                 Text(title, style = MaterialTheme.typography.titleMedium, color = if (enabled) PompColors.Ink else PompColors.InkDisabled)
                 Text(body, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
+            }
+            if (busy) HskBrandLoader(compact = true)
+            else Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = PompColors.InkDisabled)
         }
-        if (busy) HskBrandLoader(compact = true)
-        else Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = PompColors.InkDisabled)
+        val releasedAtMillis = newSectionId?.let(NEW_SECTION_RELEASES::get)
+        if (releasedAtMillis != null) {
+            NewSectionBadge(
+                releasedAtMillis = releasedAtMillis,
+                modifier = Modifier.align(Alignment.TopEnd).padding(top = 5.dp, end = 9.dp),
+            )
+        }
     }
 }
 
