@@ -591,4 +591,26 @@
     <string name="course_choice_level">Daraja</string>
     <string name="course_choice_note">Versiyalar o‘rtasida o‘qigan joyingiz saqlanadi. Boshqa darajani tanlash shu versiya progressini qaytadan boshlaydi.</string>
     <string name="course_choice_confirm">Tasdiqlash</string>
+
+    <!-- Shared limit sheet: Android / Telegram Mini App visual parity -->
+    <string name="limit_sheet_heading">Davom etishga tayyormisiz?</string>
+    <string name="limit_sheet_get_pro">HSK AI Pro ⭐ olish</string>
+    <string name="limit_sheet_check_access">Kirish huquqini tekshirish</string>
+    <string name="limit_sheet_reason_fallback">%1$s bo‘limida bepul limit tugadi. Pro bilan davom eting.</string>
+    <string name="limit_sheet_lesson_title">Darslarni tanaffussiz davom ettiring</string>
+    <string name="limit_sheet_lesson_desc">HSK kursidagi keyingi darslar va mashqlarga Pro orqali o‘ting.</string>
+    <string name="limit_sheet_practice_title">Mashqlar bilan bilimingizni mustahkamlang</string>
+    <string name="limit_sheet_practice_desc">Pro bilan mashqlar va takrorlashda kunlik limit to‘xtatmaydi.</string>
+    <string name="limit_sheet_test_title">Imtihonga ishonch bilan boring</string>
+    <string name="limit_sheet_test_desc">Ko‘proq test ishlang va qaysi mavzularni mustahkamlashni biling.</string>
+    <string name="limit_sheet_mistakes_title">Xatolaringiz ustida qayta ishlang</string>
+    <string name="limit_sheet_mistakes_desc">Har bir xatoni tahlil qilib, o‘xshash savollar bilan mashq qiling.</string>
+    <string name="limit_sheet_voice_title">Xitoycha erkinroq gapiring</string>
+    <string name="limit_sheet_voice_desc">AI Voice bilan suhbat mashqlarini limitsiz davom ettiring.</string>
+    <string name="limit_sheet_pron_title">Talaffuzingizni yaxshilang</string>
+    <string name="limit_sheet_pron_desc">So‘zlarni qayta aytib, talaffuzni mashq qiling.</string>
+    <string name="limit_sheet_recognition_title">Ierogliflarni tezroq taning</string>
+    <string name="limit_sheet_recognition_desc">Ieroglif tanish mashqlarini davom ettirib, yodda saqlang.</string>
+    <string name="limit_sheet_memorize_title">Yangi so‘zlarni puxta yodlang</string>
+    <string name="limit_sheet_memorize_desc">Takrorlash mashqlari bilan o‘rgangan so‘zlarni mustahkamlang.</string>
 </resources>
