@@ -143,28 +143,41 @@ async def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     completed = 0
     failed = 0
+    consecutive_failures = 0
     to_create = missing[:args.limit] if args.limit > 0 else missing
     for text in to_create:
         target = OUT / audio_name(text)
         temporary = target.with_suffix(".mp3.part")
-        try:
-            await asyncio.wait_for(
-                edge_tts.Communicate(text, VOICE, rate=RATE).save(str(temporary)),
-                timeout=25,
-            )
-            if not valid_audio(temporary):
-                raise ValueError("Invalid or empty MP3")
-            temporary.replace(target)
-            completed += 1
-            print(f"GENERATED {completed}/{len(to_create)} {text}", flush=True)
-        except Exception as exc:
-            failed += 1
-            print(f"FAILED {text!r}: {type(exc).__name__}: "
-                  f"{str(exc).split('url=')[0][:140]}", file=sys.stderr, flush=True)
-            temporary.unlink(missing_ok=True)
-            if failed >= 3:
-                print("Stopping after three errors to limit provider load.",
+        generated = False
+        for attempt in range(3):
+            try:
+                await asyncio.wait_for(
+                    edge_tts.Communicate(text, VOICE, rate=RATE).save(str(temporary)),
+                    timeout=25,
+                )
+                if not valid_audio(temporary):
+                    raise ValueError("Invalid or empty MP3")
+                temporary.replace(target)
+                completed += 1
+                consecutive_failures = 0
+                generated = True
+                print(f"GENERATED {completed}/{len(to_create)} {text}", flush=True)
+                break
+            except Exception as exc:
+                temporary.unlink(missing_ok=True)
+                status = getattr(exc, "status", None)
+                print(f"RETRY {attempt+1}/3 {text!r}: "
+                      f"{type(exc).__name__} status={status}",
                       file=sys.stderr, flush=True)
+                if attempt < 2:
+                    # Back off instead of hammering Microsoft's rate limiter.
+                    await asyncio.sleep(20 * (attempt + 1) if status == 429 else 5)
+        if not generated:
+            failed += 1
+            consecutive_failures += 1
+            if consecutive_failures >= 3:
+                print("Stopping after three consecutive failures to avoid "
+                      "provider overload.", file=sys.stderr, flush=True)
                 break
         await asyncio.sleep(max(1.0, args.delay))
     print(f"Done: generated={completed}, errors={failed}; "
