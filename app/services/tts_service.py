@@ -66,6 +66,16 @@ def _bundled_word_audio(text: str, rate: str) -> Path | None:
     path = audio_dir / name
     if path.is_file() and path.stat().st_size > 128:
         return path
+
+    # HSK 3.0 greeting is absent from the bundled Xiaoxiao word MP3s.
+    # Use the local CC BY-SA pronunciation (ni2 + hao3 with tone sandhi).
+    # This avoids Edge/Gemini network failures; attribution in THIRD_PARTY_AUDIO.md.
+    if text == "你好":
+        emergency = Path(__file__).resolve().parents[2] / (
+            "app/static/audio/tts_fallback/nihao-cc-by-sa.mp3"
+        )
+        if emergency.is_file() and emergency.stat().st_size > 128:
+            return emergency
     return None
 
 
