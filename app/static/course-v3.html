@@ -2959,6 +2959,16 @@ function validatePracticeGate(o){
   if(o.status<200||o.status>=300||!o.j||o.j.ok!==true||o.j.allowed!==true)throw new Error("practice_gate_unavailable");
   return o;
 }
+/* Missing Telegram credentials must not silently bypass the server's lifetime limit. */
+function showPracticeAuthRequired(elementId){
+  var node=document.getElementById(elementId);if(!node)return;
+  var copy={
+    uz:{body:"Mashq uchun Telegram orqali qayta kiring. Ruxsat tekshirilmaguncha mashq ochilmaydi.",retry:"Qayta ochish"},
+    ru:{body:"Откройте мини-приложение заново через Telegram. Без проверки доступа упражнение недоступно.",retry:"Открыть заново"},
+    tj:{body:"Мини-барномаро аз Telegram дубора кушоед. Бе санҷиши дастрасӣ машқ оғоз намешавад.",retry:"Аз нав кушодан"}
+  }[LANG]||{};
+  node.innerHTML='<div role="alert" style="padding:28px 18px;text-align:center;color:var(--ink2)"><p>'+esc(copy.body)+'</p><button class="sec" style="margin-top:12px" onclick="location.reload()">'+esc(copy.retry)+'</button></div>';
+}
 function practiceGateErrorCopy(){return ({
   uz:{body:"Ruxsatni tekshirib bo'lmadi. Internetni tekshirib, qayta urining.",retry:"Qayta urinish"},
   ru:{body:"Не удалось проверить доступ. Проверьте интернет и повторите.",retry:"Повторить"},
@@ -6813,11 +6823,11 @@ var RECOG=(function(){
     openSection(API);
     if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"recognition",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
     ensureData();
-    if(!INIT_DATA){el("rc-body").innerHTML=renderStudyPreparing();start();return}
+    if(!INIT_DATA){showPracticeAuthRequired("rc-body");return}
     gateStart(true);
   }
   function replay(){
-    if(!INIT_DATA){start();return}
+    if(!INIT_DATA){showPracticeAuthRequired(SECTION===RECOG?"rc-body":"pr-stage");return}
     gateStart(true);
   }
   function gateStart(newAttempt){
@@ -7033,11 +7043,11 @@ var PRON=(function(){
     busy=false;
     if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"pronunciation",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
     ensureData();
-    if(!INIT_DATA){el("pr-stage").innerHTML=renderStudyPreparing();start();return}
+    if(!INIT_DATA){showPracticeAuthRequired("pr-stage");return}
     gateStart(true);
   }
   function replay(){
-    if(!INIT_DATA){start();return}
+    if(!INIT_DATA){showPracticeAuthRequired(SECTION===RECOG?"rc-body":"pr-stage");return}
     gateStart(true);
   }
   function gateStart(newAttempt){
