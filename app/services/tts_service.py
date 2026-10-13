@@ -119,7 +119,7 @@ async def _edge(text: str, rate: str, destination: Path) -> None:
         except Exception as exc:
             # A 403 storm would otherwise trigger a fresh websocket per card.
             _edge_retry_at = time.monotonic() + (600 if "403" in str(exc) else 45)
-            log.warning("Mandarin Edge TTS unavailable: %s", type(exc).__name__)
+            log.warning("Mandarin Edge TTS unavailable: type=%s status=%s message=%s", type(exc).__name__, getattr(exc, "status_code", None) or getattr(exc, "status", None), str(exc)[:350])
             raise
 
 
