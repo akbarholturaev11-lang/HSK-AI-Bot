@@ -76,10 +76,10 @@ class CourseAdsModuleTests(unittest.TestCase):
         """New limit sheets must not cover the HSK AI launch animation."""
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
         splash = re.search(
-            r"#hsk-launch-splash\\{[^}]*z-index:(\\d+);", course
+            r"#hsk-launch-splash\{[^}]*z-index:(\d+);", course
         )
-        limit_overlay = re.search(r"\\.caa-ov\\{[^}]*z-index:(\\d+);", ADS)
-        app_ad = re.search(r"\\.caa-app\\{[^}]*z-index:(\\d+);", ADS)
+        limit_overlay = re.search(r"\.caa-ov\{[^}]*z-index:(\d+);", ADS)
+        app_ad = re.search(r"\.caa-app\{[^}]*z-index:(\d+);", ADS)
         self.assertIsNotNone(splash)
         self.assertIsNotNone(limit_overlay)
         self.assertIsNotNone(app_ad)
