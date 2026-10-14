@@ -1345,6 +1345,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 </style>
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261014-compact-1" rel="stylesheet">
+<link href="/course_v3_data/rating-podium.css?v=20261014-1" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
 </head>
 <body class="hsk-scene-page">
@@ -2187,7 +2188,8 @@ document.addEventListener("keydown",function(event){
 var MASHQ_ACCESS_PENDING=null;
 var App={
   setLang:function(l){if(!I18N[l])return;LANG=l;syncDocumentLanguage();renderAll()},
-  show:function(s){
+  show:function(s,ratingSource){
+    if(s==="rating")ratingTabCur=ratingSource==="friends"?"friends":"league";
     syncCourseTelegramChrome();
     if(s==="mashq"&&isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){
       var status=COURSE_TRACK_STATE,access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
@@ -2625,7 +2627,7 @@ var App={
     try{if(tg&&tg.openLink){tg.openLink(c);return}}catch(e){}
     try{location.href=c}catch(e){}},
   openVoiceCall:function(role){VOICE.open(role)},
-  openFriends:function(){ratingTabCur="friends";App.show("rating");renderRating()},
+  openFriends:function(){App.show("rating","friends")},
   /* HSK AI rasmiy sahifasini tashqarida ochadi. URL ro'yxatdan olinadi —
      klient hech qachon ixtiyoriy manzil ochmaydi. */
   openSettings:function(){
@@ -5694,7 +5696,7 @@ function pandaChar(mood,opts){
 
 /* ---------- Rating (league + challenge) ---------- */
 // Real users come from server /api/miniapp/gamification.
-	var ratingTabCur="league",ratingUsers=[],ratingMeta={loaded:false,error:false,leagueSize:0,resetAtMs:null},referralUsers=[],referralMeta={loaded:false,error:false,joined:0,active:0,required:0};
+	var ratingTabCur="league",ratingUsers=[],ratingMeta={loaded:false,error:false,leagueSize:0,league:"",resetAtMs:null},referralUsers=[],referralMeta={loaded:false,error:false,joined:0,active:0,required:0};
 function rl(){return {ru:{promote:"Топ 5 поднимаются выше",demote:"Зона понижения",liga:"Лига",friends:"Друзья",refs:"Мои приглашённые",members:"учеников",left:"осталось",ch:"Вызов",chDone:"Вызов отправлен",invite:"Пригласить друзей",inviteSub:"Позови друга и сразись в лиге или тестах — покажи, кто лучший! 🔥",refSub:"Здесь видны ученики, которые пришли по вашей ссылке. Откройте профиль, напишите или отправьте дуэль.",msg:"Написать",weekRank:"место",loadErr:"Рейтинг не загрузился",refLoadErr:"Список друзей не загрузился",empty:"Пока нет реальных участников лиги",refEmpty:"По вашей ссылке пока никто не зашёл",pending:"ждём активности",active:"активный",totalXp:"всего XP"},
 	  uz:{promote:"Top 5 yuqoriga ko'tariladi",demote:"Tushish zonasi",liga:"Liga",friends:"Do'stlar",refs:"Referallarim",members:"o'quvchi",left:"qoldi",ch:"Belashuv",chDone:"Chaqiruv yuborildi",invite:"Do'st taklif qilish",inviteSub:"Do'stingni chaqir va ligada yoki testda kuch sina — kim zo'rligini ko'rsat! 🔥",refSub:"Sizning havolangizdan kirgan o'quvchilar shu yerda. Profilini oching, yozing yoki belashuv yuboring.",msg:"Yozish",weekRank:"o'rin",loadErr:"Reyting yuklanmadi",refLoadErr:"Do'stlar ro'yxati yuklanmadi",empty:"Ligada hali real ishtirokchi yo'q",refEmpty:"Havolangizdan hali hech kim kirmagan",pending:"aktivlik kutilmoqda",active:"aktiv",totalXp:"jami XP"},
 	  tj:{promote:"Топ 5 боло мебароянд",demote:"Минтақаи поёншавӣ",liga:"Лига",friends:"Дӯстон",refs:"Рефералҳои ман",members:"донишҷӯ",left:"мондааст",ch:"Мубориза",chDone:"Даъват фиристода шуд",invite:"Даъвати дӯстон",inviteSub:"Дӯстатро даъват кун ва дар лига ё тест мубориза кун — нишон деҳ, ки кӣ беҳтар аст! 🔥",refSub:"Донишҷӯёне, ки аз пайванди шумо омаданд, ин ҷо ҳастанд. Профилро кушоед, нависед ё рақобат фиристед.",msg:"Навиштан",weekRank:"ҷой",loadErr:"Рейтинг бор нашуд",refLoadErr:"Рӯйхати дӯстон бор нашуд",empty:"Дар лига ҳоло иштирокчии воқеӣ нест",refEmpty:"Аз пайванди шумо ҳоло касе надаромадааст",pending:"фаъолият интизор",active:"фаъол",totalXp:"XP умумӣ"}}[LANG]}
@@ -5760,6 +5762,7 @@ function applyRatingPayload(d){
     loaded:true,
     error:false,
     leagueSize:Number(d.league_size||0),
+    league:String(d.league||""),
     resetAtMs:Number(d.weekly_reset_seconds||0)>0?Date.now()+Number(d.weekly_reset_seconds||0)*1000:null
   };
 	  ratingUsers=(d.leaderboard||[]).map(normalizeSocialUser);
@@ -5794,7 +5797,7 @@ function renderRating(){
   if(!ratingLoaded&&INIT_DATA){
     ratingLoaded=true;
     var t=T();
-    $("#s-rating").innerHTML='<div class="htop"><h1 class="section-title">'+t.nav.rating+'</h1></div><div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
+    $("#s-rating").innerHTML='<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
     loadLatestRating().then(function(){
       _renderRatingContent();
     }).catch(function(){ratingMeta={loaded:true,error:true,leagueSize:0,resetAtMs:null};ratingUsers=[];_renderRatingContent()});
@@ -5804,12 +5807,53 @@ function renderRating(){
 }
 function retryRating(){ratingLoaded=false;renderRating()}
 function retryReferrals(){referralMeta={loaded:false,error:false,joined:0,active:0,required:0};_renderRatingContent()}
+/* Trophy art is decorative; leagues and member count are supplied by the server.
+   Backend leagues use lifetime XP, whereas the row ranking uses weekly XP. */
+function ratingCupSvg(metal,isCenter){
+  var palette={gold:["#fff8b6","#ffcf44","#b9670a","#ffe684"],silver:["#f3f9ff","#a9b4c5","#53657c","#dce4f0"],bronze:["#ffe2b6","#c47736","#793b18","#f8b472"]}[metal]||["#fff8b6","#ffcf44","#b9670a","#ffe684"];
+  var id="rating-cup-"+metal;
+  return '<svg viewBox="0 0 150 160" role="img" aria-label="'+(isCenter?"1":"")+'">'
+    +'<defs><linearGradient id="'+id+'" x1="0" y1="0" x2="1" y2=".9"><stop stop-color="'+palette[0]+'"/><stop offset=".28" stop-color="'+palette[1]+'"/><stop offset=".65" stop-color="'+palette[2]+'"/><stop offset=".83" stop-color="'+palette[3]+'"/><stop offset="1" stop-color="'+palette[2]+'"/></linearGradient><linearGradient id="'+id+'-base" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+palette[0]+'"/><stop offset="1" stop-color="'+palette[2]+'"/></linearGradient></defs>'
+    +(isCenter?'<path d="M31 73Q9 91 25 125L43 115L49 78Z" fill="#a82b28"/><path d="M120 72Q146 90 124 129L106 111L101 74Z" fill="#a82b28"/>':'')
+    +'<path d="M37 45C-2 27 3 93 35 86" fill="none" stroke="'+palette[2]+'" stroke-width="11" stroke-linecap="round"/><path d="M37 45C8 35 14 83 34 79" fill="none" stroke="'+palette[0]+'" stroke-width="5" stroke-linecap="round"/>'
+    +'<path d="M113 45C152 27 147 93 115 86" fill="none" stroke="'+palette[2]+'" stroke-width="11" stroke-linecap="round"/><path d="M113 45C142 35 136 83 116 79" fill="none" stroke="'+palette[0]+'" stroke-width="5" stroke-linecap="round"/>'
+    +'<path d="M30 27L120 27L113 78Q102 113 75 114Q48 113 37 78Z" fill="url(#'+id+')" stroke="'+palette[2]+'" stroke-width="1.5"/>'
+    +'<ellipse cx="75" cy="27" rx="45" ry="7" fill="url(#'+id+'-base)" stroke="'+palette[2]+'" stroke-width="2"/>'
+    +'<ellipse cx="75" cy="28" rx="38" ry="4" fill="'+palette[2]+'" opacity=".28"/>'
+    +'<circle cx="75" cy="73" r="25" fill="none" stroke="'+palette[0]+'" stroke-width="3" opacity=".82"/>'
+    +'<circle cx="75" cy="73" r="20" fill="none" stroke="'+palette[2]+'" stroke-width="1.5" opacity=".55"/>'
+    +'<path d="M58 87Q46 73 58 57M92 87Q104 73 92 57" fill="none" stroke="'+palette[0]+'" stroke-width="3.5" stroke-linecap="round" opacity=".8"/>'
+    +(isCenter?'<text x="75" y="85" text-anchor="middle" font-size="30" font-weight="800" fill="'+palette[2]+'" font-family="Georgia,serif">1</text>':'<path d="M75 60L79 70L90 71L81 79L83 90L75 85L67 90L69 79L60 71L71 70Z" fill="'+palette[0]+'" opacity=".75"/>')
+    +'<path d="M68 112L82 112L85 134L65 134Z" fill="url(#'+id+')" stroke="'+palette[2]+'" stroke-width="1"/>'
+    +'<ellipse cx="75" cy="137" rx="26" ry="7" fill="url(#'+id+'-base)" stroke="'+palette[2]+'"/>'
+    +'<rect x="37" y="137" width="76" height="12" rx="4" fill="url(#'+id+')" stroke="'+palette[2]+'" stroke-width="1.5"/>'
+    +'<ellipse cx="75" cy="140" rx="34" ry="3" fill="'+palette[0]+'" opacity=".5"/></svg>';
+}
+function ratingPodiumHtml(memberCount){
+  var r=rl(),lang=LANG||"ru",leagues=["Bronze","Silver","Gold","Sapphire"];
+  var index=leagues.indexOf(ratingMeta.league);
+  if(index<0)index=0;
+  var sideIndices=index<=1?[index+1,index+2]:[index-1,index===2?index+1:index-2];
+  var glyphs=["玄武","朱雀","青龙","凤凰"];
+  function tierName(i){
+    var noun=lang==="ru"?"Лига ":lang==="tj"?"Лигаи ":"Ligasi ";
+    return lang==="uz"?glyphs[i]+" ligasi":noun+glyphs[i];
+  }
+  function item(i,metal,center){
+    return '<div class="rating-podium-item'+(center?' main':'')+'"><div class="rating-cup">'+ratingCupSvg(metal,center)+'</div><div class="rating-pedestal"><span class="rating-cup-label han">'+esc(tierName(i))+'</span>'+(center?'<strong class="rating-cup-count">'+Number(memberCount).toLocaleString("ru")+'</strong>':'')+'</div></div>';
+  }
+  var membersLabel=lang==="ru"?"участников всего":lang==="tj"?"иштирокчӣ дар маҷмӯъ":"jami ishtirokchi";
+  return '<div class="rating-podium">'
+    +'<div class="rating-podium-list">'+item(sideIndices[0],"silver",false)+item(index,"gold",true)+item(sideIndices[1],"bronze",false)+'</div>'
+    +'<div class="rating-podium-meta"><i class="ti ti-users" aria-hidden="true"></i> '+esc(membersLabel)
+    +' <span aria-hidden="true">·</span><i class="ti ti-clock" aria-hidden="true"></i> '+esc(ratingCountdownText())+' '+esc(r.left)+'</div></div>';
+}
+
 function _renderRatingContent(){
   var t=T(),r=rl();
   sortRatingUsers();
   var memberCount=Number(ratingMeta.leagueSize||ratingUsers.length||0);
-	  var h='<div class="htop"><h1 class="section-title">'+t.nav.rating+'</h1></div>'
-	    +'<div class="rt-seg" role="group" aria-label="'+esc(r.liga+" · "+r.friends)+'"><button type="button" aria-pressed="'+(ratingTabCur==="league"?"true":"false")+'" class="'+(ratingTabCur==="league"?"on":"")+'" onclick="setRatingTab(\'league\')">'+r.liga+'</button><button type="button" aria-pressed="'+(ratingTabCur==="friends"?"true":"false")+'" class="'+(ratingTabCur==="friends"?"on":"")+'" onclick="setRatingTab(\'friends\')">'+r.friends+'</button></div>';
+  var h=ratingTabCur==="friends"?'<h1 class="rating-friends-heading">'+esc(r.friends)+'</h1>':'';
 	  if(ratingTabCur==="friends"){
 	    if(!referralMeta.loaded&&INIT_DATA){
 	      referralMeta.loaded=true;
@@ -5839,23 +5883,22 @@ function _renderRatingContent(){
 	    h+='<div class="rt-invite"><span class="han">榜</span><p>'+esc(r.loadErr)+'</p><button type="button" class="scta" onclick="retryRating()">'+esc(ratingRetryText())+'</button></div>';
 	    $("#s-rating").innerHTML=h;return;
 	  }
-	  h+='<div class="rt-league"><div class="rt-emb han">朱</div><div><div class="nm2">'+t.league+'</div><div class="sb"><i class="ti ti-users" style="font-size:12px"></i> '+memberCount+' '+r.members+'</div></div><div class="rt-cd"><b>'+ratingCountdownText()+'</b><small>'+r.left+'</small></div></div>'
-	    +'<div class="rt-ladder"><span class="rt-step han">玄</span><span class="rt-step line"></span><span class="rt-step cur han">朱</span><span class="rt-step line"></span><span class="rt-step han">龙</span><span class="rt-step line"></span><span class="rt-step han">凤</span></div>';
+  h+=ratingPodiumHtml(memberCount);
   if(!ratingUsers.length){
     h+='<div class="rt-invite"><span class="han">榜</span><p>'+esc(r.empty)+'</p></div>';
     $("#s-rating").innerHTML=h;return;
   }
-  if(ratingUsers.length>=5)h+='<div class="rt-zone up"><i class="ti ti-arrow-up"></i> '+r.promote+' <span class="ln"></span></div>';
+  if(ratingUsers.length>=5)h+='<div class="rating-podium-queue"><i class="ti ti-chart-no-axes-column-increasing"></i> '+esc(LANG==="ru"?"Недельный рейтинг · Топ 5":LANG==="tj"?"Рейтинги ҳафта · Топ 5":"Haftalik reyting · Top 5")+'</div>';
   var med=["g","s","b"];
   ratingUsers.forEach(function(u,i){
-    if(ratingUsers.length>=8&&i===ratingUsers.length-2)h+='<div class="rt-zone dn"><span class="ln"></span><i class="ti ti-arrow-down"></i> '+r.demote+' <span class="ln"></span></div>';
+
     var rk=i<3?'<span class="med '+med[i]+'">'+(i+1)+'</span>':'<span class="rk">'+(i+1)+'</span>';
     var pm=u.p?'<span class="pm"><i class="ti ti-crown"></i></span>':'';
 	    h+='<button type="button" class="lr'+(u.me?' me':'')+'" onclick="openRatingUser('+i+',\'rating\')">'+rk+'<span class="av'+(u.me?' han':'')+'">'+u.a+(u.me?myAvatarImgHtml():avatarImgHtml(u.tgId))+'</span><span class="nm">'+esc(u.n)+pm+'</span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></button>';
 	  });
   $("#s-rating").innerHTML=h;
 }
-function setRatingTab(tab){ratingTabCur=tab;ratingLoaded=true;_renderRatingContent()}
+
 
 /* ---------- Clipboard / share / toast helpers ---------- */
 var _writeTmpls=[];
