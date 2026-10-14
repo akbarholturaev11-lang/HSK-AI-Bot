@@ -107,6 +107,19 @@ class Hsk30SwitchUiContractTests(unittest.TestCase):
         self.assertIn('fontSize = if (compact) 12.sp else 15.sp', native)
         self.assertIn("if (selected && !compact)", native)
 
+    def test_android_hsk30_book_art_has_native_software_renderer_and_fallback(self):
+        # The bundled JPEG must remain visible on OEMs that fail to render the
+        # old Compose Multiply tint. Never leave the header as a blank spacer.
+        header = (
+            ANDROID / "core" / "design" / "components" / "Hsk30BooksHeader.kt"
+        ).read_text(encoding="utf-8")
+        self.assertIn("AndroidView(", header)
+        self.assertIn("ImageView.ScaleType.CENTER_CROP", header)
+        self.assertIn("setLayerType(View.LAYER_TYPE_SOFTWARE, null)", header)
+        self.assertIn("Hsk30BooksFallback(Modifier.matchParentSize())", header)
+        self.assertIn("R.drawable.hsk30_course_books", header)
+        self.assertNotIn("ColorFilter.tint", header)
+
     def test_android_picker_has_no_new_badges_or_secondary_confirm(self):
         picker = self.android.split("private fun Hsk30LevelChoiceDialog(", 1)[1].split(
             "private fun Hsk30PromoDialog(", 1
