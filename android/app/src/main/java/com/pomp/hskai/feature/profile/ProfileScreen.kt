@@ -512,9 +512,6 @@ private fun ProfileHero(
     }
 }
 
-    }
-}
-
 private fun profileAvatarDrawable(key: String): Int? = when (key) {
     "panda_cheer" -> R.drawable.widget_panda_cheer
     "panda_streak" -> R.drawable.widget_panda_streak
