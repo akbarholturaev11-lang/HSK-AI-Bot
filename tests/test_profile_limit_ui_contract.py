@@ -11,6 +11,20 @@ ADS = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
 ANDROID_DIRECT_LIMIT = Path("android/app/src/direct/java/com/pomp/hskai/feature/limit/SectionLimitBlock.kt").read_text(encoding="utf-8")
 
 
+class MiniAppProfilePagodaAssetTests(unittest.TestCase):
+    def test_selected_profile_background_has_a_public_route(self):
+        main = Path("app/main.py").read_text(encoding="utf-8")
+        css = Path("app/static/course_v3_data/profile-carousel.css").read_text(encoding="utf-8")
+        svg_path = Path("app/static/assets/hsk-profile-pagoda.svg")
+        self.assertTrue(svg_path.exists(), "Profile artwork must ship with server")
+        self.assertIn('@app.get("/assets/hsk-profile-pagoda.svg")', main)
+        self.assertIn('"app/static/assets/hsk-profile-pagoda.svg",', main)
+        self.assertIn('"image/svg+xml",', main)
+        self.assertIn('url("/assets/hsk-profile-pagoda.svg?v=20261014-2")', css)
+        self.assertIn('profile-carousel.css?v=20261014-pagoda-2', PROFILE)
+        self.assertIn("viewBox", svg_path.read_text(encoding="utf-8"))
+
+
 class MiniAppProfileHierarchyTests(unittest.TestCase):
     def test_real_progress_fields_are_used_for_metrics(self):
         body = PROFILE.split("function renderProfile(){", 1)[1].split(

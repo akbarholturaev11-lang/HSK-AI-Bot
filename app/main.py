@@ -2110,6 +2110,15 @@ async def hsk30_course_books():
         "image/jpeg",
     )
 
+
+@app.get("/assets/hsk-profile-pagoda.svg")
+async def hsk_profile_pagoda():
+    # Explicit allowlisted profile asset: /assets is not a generic static mount.
+    return static_asset_response(
+        "app/static/assets/hsk-profile-pagoda.svg",
+        "image/svg+xml",
+    )
+
 COURSE_CHARACTER_ASSETS = {
     "hsk-character-pack.css": "text/css",
     "hsk-character-motion.css": "text/css",
