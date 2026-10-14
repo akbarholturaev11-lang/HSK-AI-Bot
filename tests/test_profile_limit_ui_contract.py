@@ -87,8 +87,11 @@ class MiniAppProfileHierarchyTests(unittest.TestCase):
             "/* ---------- sales_value_v1", 1
         )[0]
         self.assertIn("var nickname=esc(PROF.name||t.you)", body)
-        self.assertIn("var showCrown=!isPaidUser()", body)
-        self.assertIn("App.goPay(\\'profile_crown\\')", body)
+        self.assertIn("var showProLink=!paid&&!trialActive", body)
+        self.assertIn("profile_after_streak", body)
+        self.assertIn("profileAccuracyHtml()", body)
+        self.assertIn("profile-access-badge", body)
+        self.assertNotIn("profile_crown", body)
         self.assertIn("profile-friends-link", body)
         self.assertIn("completedLessons=Number(MAP&&MAP.progress&&MAP.progress.completed||0)", body)
         self.assertIn("streak=Number(MAP&&MAP.progress&&MAP.progress.streak||0)", body)
@@ -108,7 +111,10 @@ class MiniAppProfileHierarchyTests(unittest.TestCase):
     def test_android_profile_has_matching_header_and_compact_friends(self):
         native = Path("android/app/src/main/java/com/pomp/hskai/feature/profile/ProfileScreen.kt").read_text(encoding="utf-8")
         self.assertIn("private fun ProfileFriendsLink(", native)
-        self.assertIn("showProCrown = subscriptionCheckoutAvailable", native)
+        self.assertNotIn("showProCrown =", native)
+        self.assertIn("ProfileProCta", native)
+        self.assertIn("ProfileAccuracyRings", native)
+        self.assertIn("state.profile?.subscription?.isPaid != true", native)
         self.assertIn("state.trial?.active != true", native)
         self.assertIn("SocialLinksRow(onOpen = onOpenSupport)", native)
         self.assertNotIn("item { StatsGrid(state) }", native)
