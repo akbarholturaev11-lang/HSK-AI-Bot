@@ -1640,6 +1640,37 @@ function renderHsk30Promo(status,promo){
     +'<h2 class="hsk30-promo-title">'+esc(hasAccess?t.promoOpen:c.title)+'</h2><p class="hsk30-promo-copy">'+esc(body)+'</p>'
     +hsk30BookPrice(status)+'<div class="hsk30-promo-actions">'+actions+'</div>',hasAccess?t.promoOpen:c.title);
 }
+/* Profile and settings use the existing BOOK-cover HSK 3.0 modal.
+   The compact version/level selector remains on the course-path heading.
+   Do not mutate progress, purchase permissions, or the switch endpoint. */
+function openProfileCourseVersionBook(){
+  // Prevent a late settings request from replacing this selected dialog.
+  SETTINGS_SHEET=false;
+  courseTrackStatus(true).then(function(status){
+    var t=trackUi(),cur=currentCourseTrack();
+    var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access||{};
+    if(cur==="hsk20"&&(!access.allowed||access.feature_enabled===false)){
+      renderHsk30AccessGate(status);
+      return;
+    }
+    var incoming=cur==="hsk20",title=incoming?t.promoSwitch:t.courseVersion;
+    var body=incoming?t.promoBodyUnlocked:t.current;
+    var primary=incoming
+      ?hsk30BookPrimary(t.promoOpen,"openHsk30PromoLevelPicker()")
+      :hsk30BookPrimary(t.backTo20,"switchCourseTrack('hsk20',null)");
+    var secondary='<button class="hsk30-promo-stay" onclick="App.closeSheet()">'
+      +esc(incoming?t.stay:t.close)+'</button>';
+    openHsk30BookSheet(hsk30BookHeader(status,false)
+      +'<h2 class="hsk30-promo-title">'+esc(title)+'</h2>'
+      +'<p class="hsk30-promo-copy">'+esc(body)+'</p>'
+      +'<div class="hsk30-promo-actions">'+primary+secondary+'</div>',title);
+  }).catch(function(){
+    var t=trackUi();
+    App.openSheet('<div class="shead"><div class="tr">'+esc(t.tryAgain)+'</div></div>'
+      +'<button class="sec" onclick="openProfileCourseVersionBook()">'
+      +esc(t.tryAgain)+'</button>');
+  });
+}
 function maybeShowHsk30Promo(){
   if(currentCourseTrack()!=="hsk20"||!INIT_DATA){HSK30_PROMO_PENDING=false;HSK30_PROMO_READY=null;return Promise.resolve(false)}
   if(HSK30_PROMO_CHECKED)return Promise.resolve(false);
@@ -2686,6 +2717,7 @@ var App={
       +choices.map(function(lv){var n=names[lv];return '<button class="opt-row'+(cur===lv?' on':'')+'" onclick="App.pickLevel(\''+lv+'\')"><span class="han" style="font-size:22px;width:34px;text-align:center">'+n[0]+'</span><span style="flex:1"><b style="display:block">'+n[1]+'</b><small style="color:var(--ink2)">'+sub[lv]+'</small></span>'+(cur===lv?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""));
   },
   courseTrackPicker:function(){openCourseTrackPicker()},
+  profileCourseVersionBook:function(){openProfileCourseVersionBook()},
   pickCourseTrack:function(track){requestCourseTrackSwitch(track)},
   openHsk30Gate:function(){showHsk30AccessGate()},
   pickLevel:function(lv){App.closeSheet();loadLevel(lv)},
@@ -6301,7 +6333,7 @@ function courseVersionSettingsRowHtml(){
   var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
   if((!access||access.feature_enabled!==true)&&currentCourseTrack()!=="hsk30")return "";
   var t=trackUi(),track=currentCourseTrack();
-  return '<button class="srow" onclick="App.courseTrackPicker()"><i class="ti ti-switch-horizontal"></i> '+esc(t.courseVersion)
+  return '<button class="srow" onclick="App.profileCourseVersionBook()"><i class="ti ti-switch-horizontal"></i> '+esc(t.courseVersion)
     +'<span class="sv">'+esc(track==="hsk30"?t.hsk30:t.hsk20)+' <i class="ti ti-chevron-right"></i></span></button>';
 }
 function settingsSheetHtml(){
@@ -8514,6 +8546,6 @@ window.addEventListener("pageshow",function(ev){
 });
 </script>
 <script src="/course_v3_data/desktop-download.js?v=20261013-profile-1"></script>
-<script src="/course_v3_data/profile-carousel.js?v=20261014-pagoda-1"></script>
+<script src="/course_v3_data/profile-carousel.js?v=20261014-booksheet-2"></script>
 </body>
 </html>

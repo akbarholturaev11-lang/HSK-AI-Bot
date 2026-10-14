@@ -63,22 +63,7 @@
   }
   function openHsk30(){
     if(currentCourseTrack()==="hsk30"){App.show("course");return}
-    var copy=strings();
-    courseTrackStatus(true).then(function(status){
-      var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-      if(!access||access.feature_enabled===false){renderHsk30AccessGate(status);return}
-      var html='<h2 class="hp-confirm-title">'+esc(copy.confirmTitle)+'</h2>'
-        +'<p class="hp-confirm-body">'+esc(copy.confirmBody)+'</p>'
-        +'<div class="hp-confirm-buttons"><button type="button" onclick="HskProfileCarousel.confirmHsk30()">'+esc(copy.confirm)+'</button>'
-        +'<button type="button" class="hp-confirm-cancel" onclick="App.closeSheet()">'+esc(copy.cancel)+'</button></div>';
-      App.openSheet(html);
-      document.getElementById("sheet").classList.add("profile-apps-choice");
-    }).catch(function(){showHsk30AccessGate()});
-  }
-  function confirmHsk30(){
-    App.closeSheet();
-    // Centralized course-track flow restores saved band when has_state is true.
-    openHsk30PromoLevelPicker();
+    openProfileCourseVersionBook();
   }
   function mount(){
     root=document.getElementById("hsk-profile-promo-root");
@@ -106,7 +91,6 @@
   window.HskProfileCarousel={
     mount:mount,pause:stop,
     select:function(kind){var n=ORDER.indexOf(kind);if(n>=0){current=n;render();start()}},
-    confirmHsk30:confirmHsk30,
     openApps:function(){current=0;render();if(window.PompDesktopDownload)PompDesktopDownload.openProfileApps()}
   };
   // On initial deep links, course-v3 may already have rendered profile.

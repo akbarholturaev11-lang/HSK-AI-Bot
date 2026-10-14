@@ -52,6 +52,35 @@ class MiniAppProfileCarouselArtworkTests(unittest.TestCase):
         self.assertTrue(Path("android/app/src/main/res/drawable/profile_promo_pro.xml").exists())
         self.assertIn("profile-carousel.css?v=20261014-themed-1", PROFILE)
 
+class MiniAppCourseVersionNavigationTests(unittest.TestCase):
+    def test_settings_uses_original_hsk30_book_dialog(self):
+        carousel = Path("app/static/course_v3_data/profile-carousel.js").read_text(encoding="utf-8")
+        self.assertIn('onclick="App.profileCourseVersionBook()"', PROFILE)
+        self.assertIn("function openProfileCourseVersionBook(){", PROFILE)
+        body = PROFILE.split("function openProfileCourseVersionBook(){", 1)[1].split(
+            "function maybeShowHsk30Promo(){", 1
+        )[0]
+        self.assertIn("SETTINGS_SHEET=false;", body)
+        self.assertIn("hsk30BookHeader(status,false)", body)
+        self.assertIn("openHsk30BookSheet(", body)
+        self.assertIn("renderHsk30AccessGate(status)", body)
+        self.assertIn("openHsk30PromoLevelPicker()", body)
+        self.assertIn("switchCourseTrack('hsk20',null)", body)
+        self.assertIn("openProfileCourseVersionBook();", carousel)
+        self.assertNotIn("HskProfileCarousel.confirmHsk30()", carousel)
+        self.assertIn("profile-carousel.js?v=20261014-booksheet-2", PROFILE)
+
+    def test_course_path_header_still_uses_compact_version_and_level_picker(self):
+        course = PROFILE.split("function renderCourse(){", 1)[1].split(
+            "function render", 1
+        )[0]
+        self.assertIn('onclick="App.courseTrackPicker()"', course)
+        self.assertIn("courseTrackPicker:function(){openCourseTrackPicker()}", PROFILE)
+        self.assertIn('class="course-choice-grid"', PROFILE)
+        self.assertIn('class="course-choice-levels', PROFILE)
+        self.assertIn("coursePickerSavedLevel(track)", PROFILE)
+
+
 class MiniAppProfileHierarchyTests(unittest.TestCase):
     def test_real_progress_fields_are_used_for_metrics(self):
         body = PROFILE.split("function renderProfile(){", 1)[1].split(
