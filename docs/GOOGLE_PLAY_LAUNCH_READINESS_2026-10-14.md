@@ -65,23 +65,51 @@ offering account creation.
 Docs:
 https://support.google.com/googleplay/android-developer/answer/13327111
 
-## Monetization decision before Play submission
+## Monetization decision before Play submission (extensible architecture)
 
-**Current Play variant is consumption-only.** Users can log in and consume
-content already unlocked via the shared backend, but cannot purchase Pro or
-HSK 3.0 in this Play build.
+**Today the Play variant is consumption-only, not permanently free-only.**
+Users can access server-unlocked lessons, but cannot purchase Pro or HSK 3.0
+inside the current Play APK. This is an interim release choice.
 
-For paid conversion inside a Play-installed app, implement a policy-compliant
-Google Play Billing product and subscription flow (or confirm an eligible
-alternative billing program), with server-side purchase verification,
-acknowledgment, state transitions, cancellations, renewals and refunds.
-Do not silently route Play users to the direct APK's checkout or Telegram
-payment pages. Review any support and profile links which could indirectly
-lead to checkout.
+**Later, Play can have its own Google Play Billing subscriptions and one-off
+HSK 3.0 unlock**, without changing the existing bank/card/manual checkout
+used by `direct` or Telegram. Keep payment providers separate:
 
-A consumption-only first release is permitted by Google's payments guidance.
-It has a conversion cost: Play users cannot buy from within the app.
-The choice must be explicit before publishing.
+| Distribution | Purchase UI and payment | Access on successful payment |
+| --- | --- | --- |
+| `direct` APK / site | Existing HSK AI backend checkout | Shared backend entitlement |
+| `play` APK (current) | Consumption-only, no in-app purchase | Read shared backend entitlement |
+| `play` APK (future) | Google Play Billing Library | Server-verified shared backend entitlement |
+
+**Architecture and future change contract**:
+
+1. `android/app/src/direct/...` remains the direct checkout host.
+   `android/app/src/play/...` contains its **own** checkout host and limit
+   gate. They share *signatures and entitlement results*, not payment UI.
+2. Replace `src/play/.../SubscriptionCheckoutHost.kt`'s temporary no-op
+   with native Play Billing product selection, purchase handling and status UI
+   when that phase is approved. Update `src/play/.../LimitGateHost.kt`
+   accordingly; **do not modify the direct checkout**.
+3. Verify Play purchase tokens **server-side** using Google's API and only
+   then grant/renew/revoke `Pro` and HSK 3.0 access through the existing
+   shared user entitlement service. Record purchase origin to reconcile
+   renewals, cancellation, refunds and duplicate grants.
+4. Implement acknowledgments, pending purchases, subscription status
+   transitions, subscription-management deep links and restore purchases.
+   Avoid charging again for entitlements already provided elsewhere.
+5. No external direct checkout or payment steering in the Play build unless
+   specifically allowed under an applicable, verified Google program.
+   Do not share `direct`'s billing view model with Play.
+
+**CI compatibility:** `android/tools/check_play_release_contract.py`
+guards package identity, release signing, direct/Play separation and
+install/update permissions; it intentionally does **not** require Play
+checkout to remain a no-op or `canSubscribe = false`. Thus adding Google
+Play Billing later does not require disabling safety checks.
+
+The consumption-only first release has a conversion cost. Decide when
+Google Play Billing should launch **before** publishing. Nothing in this
+preflight adds billing or changes existing payment flows.
 
 Docs:
 https://support.google.com/googleplay/android-developer/answer/10281818
