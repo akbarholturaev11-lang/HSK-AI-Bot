@@ -1,5 +1,6 @@
 package com.pomp.hskai.feature.course
 
+import android.graphics.BitmapFactory
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertIsDisplayed
@@ -24,6 +25,7 @@ import com.pomp.hskai.data.repository.CourseMapSnapshot
 import com.pomp.hskai.data.repository.CourseMapper
 import com.pomp.hskai.feature.limit.LimitGate
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -104,6 +106,15 @@ class Hsk30EntryFlowTest {
                 )
             }
         }
+    }
+
+
+    @Test fun bundledHsk30BookImageDecodesOnAndroid() {
+        val bitmap = requireNotNull(
+            BitmapFactory.decodeResource(strings, R.drawable.hsk30_course_books)
+        ) { "Packaged HSK 3.0 JPEG failed to decode on this Android device" }
+        assertTrue(bitmap.width >= 640 && bitmap.height >= 400)
+        bitmap.recycle()
     }
 
     @Test fun lockedN1N2AndN3OpenPaymentOnceAndReturnToTheLegacyTrack() {
