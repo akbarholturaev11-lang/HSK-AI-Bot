@@ -61,6 +61,10 @@
     <string name="profile_subscription_status_trial">Sinov davri</string>
     <string name="profile_subscription_status_temporary">Vaqtinchalik kirish</string>
     <string name="profile_subscription_status_expired">Muddati tugagan</string>
+    <string name="profile_access_free">Bepul</string>
+    <string name="profile_access_trial">Sinov muddati</string>
+    <string name="profile_access_pro">Pro</string>
+    <string name="profile_get_pro">Pro olish</string>
     <string name="profile_subscription_status_free">Bepul tarif</string>
     <string name="profile_subscription_status_unavailable">Holatni yangilash uchun bosing</string>
     <string name="profile_subscription_until">%1$s gacha faol</string>
