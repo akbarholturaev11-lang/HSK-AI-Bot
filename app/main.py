@@ -5122,6 +5122,58 @@ async def miniapp_onboarding(request: Request):
     return JSONResponse(status_code=status_code, content=result)
 
 
+@app.get("/api/miniapp/onboarding/status")
+async def miniapp_onboarding_status(request: Request):
+    """Read-only confirmation of a previously saved Mini App onboarding choice.
+
+    Used only after a lost/invalid POST response. Do not repeat onboarding
+    mutations to determine whether the first request was committed.
+    """
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(
+            status_code=401,
+            content={"ok": False, "error": "invalid_telegram_init_data"},
+            headers={"Cache-Control": "no-store"},
+        )
+
+    async with async_session_maker() as session:
+        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        if not user:
+            return JSONResponse(
+                status_code=403,
+                content={"ok": False, "error": "access_start_first"},
+                headers={"Cache-Control": "no-store"},
+            )
+        result = await session.execute(
+            select(CourseMiniAppProfile).where(CourseMiniAppProfile.user_id == user.id)
+        )
+        profile = result.scalar_one_or_none()
+        completed = bool(profile and profile.onboarding_completed_at is not None)
+        foundation_required = False
+        if completed and str(user.level or "").strip().lower() == "beginner":
+            foundation = await CourseMiniAppProfileService(session).foundation_status(user)
+            foundation_required = bool(foundation["required"] and not foundation["completed"])
+
+        return JSONResponse(
+            content={
+                "ok": True,
+                "saved": completed,
+                "level": str(user.level or "").strip().lower(),
+                "profile": {
+                    "goal": profile.goal,
+                    "daily_minutes": profile.daily_minutes,
+                    "start_mode": profile.start_mode,
+                } if completed else None,
+                "foundation_required": foundation_required,
+            },
+            headers={"Cache-Control": "no-store"},
+        )
+
+
 @app.get("/api/miniapp/lesson")
 async def miniapp_lesson(
     request: Request,
