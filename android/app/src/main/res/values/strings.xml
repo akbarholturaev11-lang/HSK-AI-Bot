@@ -425,6 +425,7 @@
     <string name="lesson_pinyin_all">Hammasida ko‘rsatish</string>
     <string name="lesson_pinyin_new">Faqat yangi so‘zlarda</string>
     <string name="lesson_pinyin_off">Yashirish</string>
+    <string name="profile_access_trial">✦ Pro · Sinov</string>
     <string name="profile_accuracy_overall">Umumiy</string>
     <string name="profile_accuracy_today">Bugun</string>
     <string name="profile_accuracy_count">%1$d baholangan javob</string>
