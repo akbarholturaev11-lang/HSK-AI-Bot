@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="800dp" android:height="400dp"
+    android:viewportWidth="800" android:viewportHeight="400">
+    <!-- Transparent accents over a Compose brown-gold gradient; reserve the left for legible text. -->
+    <path android:fillColor="#DFA247" android:fillAlpha=".15" android:pathData="M490,400 C555,329 621,264 800,177 L800,400 Z"/>
+    <path android:fillColor="#E2A65B" android:fillAlpha=".07" android:pathData="M525,400 C600,330 698,314 800,322 L800,400 Z"/>
+    <path android:strokeColor="#FFC672" android:strokeAlpha=".46" android:strokeWidth="2"
+        android:pathData="M442,372 C484,288 545,243 616,219 C684,196 738,158 783,74"/>
+    <path android:strokeColor="#FFE0A0" android:strokeAlpha=".27" android:strokeWidth="1.8"
+        android:pathData="M494,395 C518,327 573,285 646,255 C724,224 763,174 790,122"/>
+    <path android:strokeColor="#FFC05D" android:strokeAlpha=".42" android:strokeWidth="4"
+        android:pathData="M432,398 C494,334 577,294 661,272 C729,254 766,220 800,169"/>
+    <path android:strokeColor="#FBD58B" android:strokeAlpha=".7" android:strokeWidth="3"
+        android:pathData="M690,83 V106 M678.5,94.5 H701.5"/>
+    <path android:strokeColor="#FBD58B" android:strokeAlpha=".55" android:strokeWidth="2"
+        android:pathData="M555,178 V194 M547,186 H563 M770,285 V303 M761,294 H779"/>
+    <path android:strokeColor="#F9BD6D" android:strokeAlpha=".19" android:strokeWidth="1"
+        android:pathData="M668,95 A22,22 0,1 0,712 95 A22,22 0,1 0,668 95"/>
+    <path android:fillColor="#FFD48C" android:fillAlpha=".62"
+        android:pathData="M619,128 a3,3 0,1 0,6 0 a3,3 0,1 0,-6 0 M744,215 a2,2 0,1 0,4 0 a2,2 0,1 0,-4 0 M573,285 a2,2 0,1 0,4 0 a2,2 0,1 0,-4 0"/>
+</vector>

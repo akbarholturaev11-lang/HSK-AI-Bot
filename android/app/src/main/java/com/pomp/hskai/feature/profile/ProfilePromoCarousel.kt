@@ -146,13 +146,24 @@ internal fun ProfilePromoCarousel(
         shadowElevation = 5.dp,
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
-            if (kind == "hsk30") {
+            if (kind == "hsk30" || kind == "pro") {
+                // Background-only artwork. Pro actions and Play checkout restrictions are untouched.
+                val illustratedGradient = if (kind == "hsk30") {
+                    listOf(Color(0xFF31231E), Color(0xFF854627))
+                } else {
+                    listOf(Color(0xFF241C20), Color(0xFF593728))
+                }
+                val artwork = if (kind == "hsk30") {
+                    R.drawable.profile_promo_pagoda
+                } else {
+                    R.drawable.profile_promo_pro
+                }
                 Box(
                     Modifier.matchParentSize()
-                        .background(Brush.horizontalGradient(listOf(Color(0xFF31231E), Color(0xFF854627))))
+                        .background(Brush.horizontalGradient(illustratedGradient))
                 )
                 Image(
-                    painter = painterResource(R.drawable.profile_promo_pagoda),
+                    painter = painterResource(artwork),
                     contentDescription = null,
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier.matchParentSize(),

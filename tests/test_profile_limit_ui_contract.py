@@ -21,9 +21,36 @@ class MiniAppProfilePagodaAssetTests(unittest.TestCase):
         self.assertIn('"app/static/assets/hsk-profile-pagoda.svg",', main)
         self.assertIn('"image/svg+xml",', main)
         self.assertIn('url("/assets/hsk-profile-pagoda.svg?v=20261014-2")', css)
-        self.assertIn('profile-carousel.css?v=20261014-pagoda-2', PROFILE)
+        self.assertIn('profile-carousel.css?v=20261014-themed-1', PROFILE)
         self.assertIn("viewBox", svg_path.read_text(encoding="utf-8"))
 
+
+class MiniAppProfileCarouselArtworkTests(unittest.TestCase):
+    def test_every_slide_has_its_own_locally_served_art(self):
+        main = Path("app/main.py").read_text(encoding="utf-8")
+        css = Path("app/static/course_v3_data/profile-carousel.css").read_text(encoding="utf-8")
+        for slide, filename in (
+            ("version", "hsk-profile-pagoda.svg"),
+            ("apps", "hsk-profile-apps.svg"),
+            ("pro", "hsk-profile-pro.svg"),
+        ):
+            with self.subTest(slide=slide):
+                self.assertIn(f".hp-promo-{slide}", css)
+                self.assertIn(f'url("/assets/{filename}?v=', css)
+                self.assertIn(f'@app.get("/assets/{filename}")', main)
+                self.assertIn(f'"app/static/assets/{filename}"', main)
+                self.assertTrue((Path("app/static/assets") / filename).exists())
+
+    def test_native_pro_uses_distinct_art_and_never_offers_apps_slide(self):
+        native = Path(
+            "android/app/src/main/java/com/pomp/hskai/feature/profile/ProfilePromoCarousel.kt"
+        ).read_text(encoding="utf-8")
+        self.assertIn("R.drawable.profile_promo_pro", native)
+        self.assertIn("R.drawable.profile_promo_pagoda", native)
+        self.assertIn('listOf("hsk30", "pro")', native)
+        self.assertNotIn('listOf("apps",', native)
+        self.assertTrue(Path("android/app/src/main/res/drawable/profile_promo_pro.xml").exists())
+        self.assertIn("profile-carousel.css?v=20261014-themed-1", PROFILE)
 
 class MiniAppProfileHierarchyTests(unittest.TestCase):
     def test_real_progress_fields_are_used_for_metrics(self):

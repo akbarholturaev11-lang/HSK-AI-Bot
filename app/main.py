@@ -2119,6 +2119,23 @@ async def hsk_profile_pagoda():
         "image/svg+xml",
     )
 
+
+@app.get("/assets/hsk-profile-pro.svg")
+async def hsk_profile_pro_artwork():
+    return static_asset_response(
+        "app/static/assets/hsk-profile-pro.svg",
+        "image/svg+xml",
+    )
+
+
+@app.get("/assets/hsk-profile-apps.svg")
+async def hsk_profile_apps_artwork():
+    return static_asset_response(
+        "app/static/assets/hsk-profile-apps.svg",
+        "image/svg+xml",
+    )
+
+
 COURSE_CHARACTER_ASSETS = {
     "hsk-character-pack.css": "text/css",
     "hsk-character-motion.css": "text/css",

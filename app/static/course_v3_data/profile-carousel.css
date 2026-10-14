@@ -34,3 +34,21 @@
 .hp-promo-footer{animation:hp-promo-slide-enter .32s ease-out both}
 @keyframes hp-promo-slide-enter{from{opacity:.55;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.hp-promo-content,.hp-promo-footer{animation:none!important}}
+
+/* Illustrated slides: maintain the existing card box, CTA, dots and hit targets. */
+.hp-promo-apps{
+  background:#222326 url("/assets/hsk-profile-apps.svg?v=20261014-1") center center/cover no-repeat;
+  isolation:isolate;
+}
+.hp-promo-pro{
+  background:#221b1c url("/assets/hsk-profile-pro.svg?v=20261014-1") center center/cover no-repeat;
+  isolation:isolate;
+}
+.hp-promo-apps::before,.hp-promo-pro::before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(90deg,rgba(25,24,23,.78) 0%,rgba(28,26,25,.47) 53%,rgba(26,23,23,.03) 100%);
+}
+.hp-promo-apps .hp-promo-icon{color:#A6DBBE;background:rgba(205,245,221,.11)}
+.hp-promo-apps .hp-promo-action{background:#EAB43B;color:#211B15}
+.hp-promo-pro .hp-promo-icon{color:#FFCB69;background:rgba(255,217,151,.11)}
+.hp-promo-pro .hp-promo-action{background:#FFBD23;color:#211B15}
