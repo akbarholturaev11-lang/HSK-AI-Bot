@@ -50,6 +50,18 @@ def test_failed_submission_counts_and_legacy_quiz():
     assert r["overall"]["wrong"] == 12
 
 
+def test_repeated_practice_scoring_and_legacy_deduplication():
+    rows = [
+        event("training_completed", None, {"mode": "training", "score": 4, "total": 10}, hour=11, day=13),
+        event("training_completed", None, {"mode": "training", "score": 3, "total": 10}, hour=12, day=14),
+        event("practice_attempt_scored", None, {"mode": "training", "score": 3, "total": 10}, hour=12, day=14),
+        event("practice_attempt_scored", None, {"mode": "training", "score": 8, "total": 10}, hour=13, day=14),
+    ]
+    result = accuracy_summary(rows, [], now=datetime(2026, 10, 14, 15, tzinfo=UTC))
+    assert result["overall"] == {"percent": 50, "correct": 15, "total": 30, "wrong": 15}
+    assert result["today"] == {"percent": 55, "correct": 11, "total": 20, "wrong": 9}
+
+
 def test_invalid_or_client_only_events_never_inflate_score():
     rows = [
         event("test_completed", None, {"score": 100}),  # percentage-only client score
