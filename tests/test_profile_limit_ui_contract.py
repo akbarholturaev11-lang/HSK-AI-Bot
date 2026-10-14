@@ -21,7 +21,7 @@ class MiniAppProfilePagodaAssetTests(unittest.TestCase):
         self.assertIn('"app/static/assets/hsk-profile-pagoda.svg",', main)
         self.assertIn('"image/svg+xml",', main)
         self.assertIn('url("/assets/hsk-profile-pagoda.svg?v=20261014-2")', css)
-        self.assertIn('profile-carousel.css?v=20261014-themed-1', PROFILE)
+        self.assertIn('profile-carousel.css?v=20261014-compact-1', PROFILE)
         self.assertIn("viewBox", svg_path.read_text(encoding="utf-8"))
 
 
@@ -50,7 +50,7 @@ class MiniAppProfileCarouselArtworkTests(unittest.TestCase):
         self.assertIn('listOf("hsk30", "pro")', native)
         self.assertNotIn('listOf("apps",', native)
         self.assertTrue(Path("android/app/src/main/res/drawable/profile_promo_pro.xml").exists())
-        self.assertIn("profile-carousel.css?v=20261014-themed-1", PROFILE)
+        self.assertIn("profile-carousel.css?v=20261014-compact-1", PROFILE)
 
 class MiniAppCourseVersionNavigationTests(unittest.TestCase):
     def test_settings_uses_original_hsk30_book_dialog(self):
@@ -82,16 +82,37 @@ class MiniAppCourseVersionNavigationTests(unittest.TestCase):
 
 
 class MiniAppProfileHierarchyTests(unittest.TestCase):
-    def test_real_progress_fields_are_used_for_metrics(self):
+    def test_profile_reduced_hierarchy_and_real_achievement_progress(self):
         body = PROFILE.split("function renderProfile(){", 1)[1].split(
             "/* ---------- sales_value_v1", 1
         )[0]
-        self.assertIn("class=\"stats profile-stats\"", body)
-        self.assertIn("Number(MAP&&MAP.progress&&MAP.progress.xp||0)", body)
-        self.assertIn("completedLessons.toLocaleString", body)
-        self.assertLess(body.index("profile-stats"), body.index('hsk-profile-promo-root'))
-        self.assertNotIn("proProfileCard()", body)
-        self.assertLess(body.index('class="pgoal"'), body.index("profile-stats"))
+        self.assertIn("var nickname=esc(PROF.name||t.you)", body)
+        self.assertIn("var showCrown=!isPaidUser()", body)
+        self.assertIn("App.goPay(\\'profile_crown\\')", body)
+        self.assertIn("profile-friends-link", body)
+        self.assertIn("completedLessons=Number(MAP&&MAP.progress&&MAP.progress.completed||0)", body)
+        self.assertIn("streak=Number(MAP&&MAP.progress&&MAP.progress.streak||0)", body)
+        self.assertIn("profile-compact-ach", body)
+        self.assertLess(body.index("profile-friends-link"), body.index("streakCalHtml()"))
+        self.assertLess(body.index("profile-compact-ach"), body.index("hsk-profile-promo-root"))
+        for removed in ('class="pgoal"', 'class="stats profile-stats"', "t.mistakesSub",
+                        "p.a1", "socialLinksHtml()"):
+            self.assertNotIn(removed, body)
+
+    def test_social_links_are_in_settings_instead_of_profile(self):
+        settings = PROFILE.split("function settingsSheetHtml(){", 1)[1].split(
+            "function refreshSettingsRows()", 1
+        )[0]
+        self.assertIn("socialLinksHtml()", settings)
+
+    def test_android_profile_has_matching_header_and_compact_friends(self):
+        native = Path("android/app/src/main/java/com/pomp/hskai/feature/profile/ProfileScreen.kt").read_text(encoding="utf-8")
+        self.assertIn("private fun ProfileFriendsLink(", native)
+        self.assertIn("showProCrown = subscriptionCheckoutAvailable", native)
+        self.assertIn("state.trial?.active != true", native)
+        self.assertIn("SocialLinksRow(onOpen = onOpenSupport)", native)
+        self.assertNotIn("item { StatsGrid(state) }", native)
+        self.assertNotIn("DailyGoalCard(\n", native.split("LazyColumn(", 1)[1].split("if (settingsOpen)", 1)[0])
 
     def test_localized_stat_labels_exist(self):
         for label in (

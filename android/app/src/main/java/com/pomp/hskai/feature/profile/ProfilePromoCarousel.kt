@@ -177,22 +177,22 @@ internal fun ProfilePromoCarousel(
                 )
             }
             Column(
-                modifier = Modifier.fillMaxWidth().heightIn(min = 170.dp).padding(17.dp),
+                modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp).padding(14.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Box(
-                        modifier = Modifier.size(46.dp).background(Color.White.copy(alpha = 0.12f), RoundedCornerShape(13.dp)),
+                        modifier = Modifier.size(40.dp).background(Color.White.copy(alpha = 0.12f), RoundedCornerShape(11.dp)),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Text(mark, fontSize = 26.sp, fontWeight = FontWeight.Medium, color = PromoGold)
+                        Text(mark, fontSize = 23.sp, fontWeight = FontWeight.Medium, color = PromoGold)
                     }
                     Column(Modifier.weight(1f)) {
-                        Text(title, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text(title, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
                         Text(
                             summary,
                             fontSize = 12.sp,
-                            lineHeight = 17.sp,
+                            lineHeight = 16.sp,
                             color = Color.White.copy(alpha = 0.77f),
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
@@ -211,7 +211,7 @@ internal fun ProfilePromoCarousel(
                             if (kind == "pro" && canTrial) onStartTrial()
                             else openCard()
                         },
-                        modifier = Modifier.weight(1f, fill = false).heightIn(min = 40.dp),
+                        modifier = Modifier.weight(1f, fill = false).heightIn(min = 36.dp),
                         shape = RoundedCornerShape(11.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = PromoGold, contentColor = PromoPaper),
                     ) {
