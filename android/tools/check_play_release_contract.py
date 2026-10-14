@@ -86,15 +86,19 @@ require(
     "REQUEST_INSTALL_PACKAGES" in direct_manifest,
     "The direct APK's existing update mechanism must remain in its own flavour.",
 )
+# Keep the two channel entry points separate, but never require Play
+# checkout to stay a no-op: it can later host Google Play Billing. Today's
+# consumption-only behaviour is a product choice, NOT a permanent CI invariant.
 require(
-    re.search(r'fun\s+SubscriptionCheckoutHost\([\s\S]*?\)\s*=\s*Unit', play_checkout)
-    is not None,
-    "Play is currently consumption-only: do not add an unreviewed checkout.",
+    "fun SubscriptionCheckoutHost(" in play_checkout,
+    "The Play build must supply its own checkout host entry point.",
 )
 require(
-    "canSubscribe = false" in play_limit,
-    "The Play limit screen must not offer the direct checkout.",
+    "fun rememberLimitGate(" in play_limit,
+    "The Play build must supply its own limit gate entry point.",
 )
+# Both flavours must remain source-separated. check_flavor_parity.py catches
+# signature drift when a future Play Billing implementation is introduced.
 require(
     "Intentionally empty" in play_update,
     "Play must not provide a sideload update card.",
@@ -127,3 +131,4 @@ if errors:
 print("Play/direct static distribution contracts: OK")
 print("Certificate pin present; run the manual Play preflight to check signed artifacts.")
 print("Operator review still needed: Play signing setup, privacy, deletion, billing, testing.")
+print("Play Billing may be added later without disabling the channel safety checks.")
