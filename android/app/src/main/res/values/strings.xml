@@ -425,11 +425,11 @@
     <string name="lesson_pinyin_all">Hammasida ko‘rsatish</string>
     <string name="lesson_pinyin_new">Faqat yangi so‘zlarda</string>
     <string name="lesson_pinyin_off">Yashirish</string>
-    <string name="profile_accuracy_overall">Overall</string>
-    <string name="profile_accuracy_today">Today</string>
-    <string name="profile_accuracy_count">%1$d graded answers</string>
-    <string name="profile_accuracy_note">Based on verified answers · older history may be incomplete</string>
-    <string name="profile_buy_pro">Get Pro</string>
+    <string name="profile_accuracy_overall">Umumiy</string>
+    <string name="profile_accuracy_today">Bugun</string>
+    <string name="profile_accuracy_count">%1$d baholangan javob</string>
+    <string name="profile_accuracy_note">Faqat tekshirilgan javoblar · eski tarix to‘liq bo‘lmasligi mumkin</string>
+    <string name="profile_buy_pro">Pro olish</string>
     <string name="profile_calendar_title">Ketma-ket kunlar</string>
     <string name="profile_achievements">Yutuqlar</string>
     <string name="profile_ach_first">Birinchi qadam</string>
