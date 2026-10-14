@@ -1,19 +1,19 @@
 /* Rating podium, HSK AI design tokens; only presentation, no ranking logic. */
-#s-rating .rating-podium{margin:0 10px 6px;padding:0 0 10px;position:relative;isolation:isolate;overflow:hidden}
+#s-rating .rating-podium{margin:0 10px 3px;padding:0 0 6px;position:relative;isolation:isolate;overflow:hidden}
 #s-rating .rating-podium::before{content:"";position:absolute;z-index:-1;inset:0 0 33px;background:
  radial-gradient(ellipse at 50% 94%,rgba(209,195,162,.28),transparent 65%),
  linear-gradient(165deg,transparent 42%,rgba(195,192,174,.16) 43%,transparent 70%);
  pointer-events:none}
-#s-rating .rating-podium-list{display:grid;grid-template-columns:1fr 1.22fr 1fr;gap:0;align-items:end;padding:4px 3px 0}
+#s-rating .rating-podium-list{display:grid;grid-template-columns:1fr 1.22fr 1fr;gap:2px;align-items:end;padding:4px 3px 0;max-width:335px;margin:0 auto}
 #s-rating .rating-podium-item{min-width:0;display:flex;flex-direction:column;align-items:center;position:relative;text-align:center}
 #s-rating .rating-podium-item.main{z-index:2}
-#s-rating .rating-cup{display:block;width:100%;max-width:148px;aspect-ratio:150/160;overflow:visible;filter:drop-shadow(0 5px 4px rgba(82,62,34,.23))}
-#s-rating .rating-podium-item.main .rating-cup{max-width:173px}
+#s-rating .rating-cup{display:block;width:100%;max-width:76px;aspect-ratio:150/160;overflow:visible;filter:drop-shadow(0 5px 4px rgba(82,62,34,.23))}
+#s-rating .rating-podium-item.main .rating-cup{max-width:90px}
 #s-rating .rating-cup svg{width:100%;height:100%;display:block}
-#s-rating .rating-pedestal{width:100%;min-height:76px;background:linear-gradient(145deg,#fffdf7,#e9deca 90%);border:1px solid rgba(172,152,116,.28);border-radius:22px 22px 13px 13px;box-shadow:0 8px 14px rgba(104,84,55,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:7px 2px 9px}
-#s-rating .rating-podium-item.main .rating-pedestal{min-height:93px;background:linear-gradient(150deg,#fffef8,#f3e0b6 85%);border-color:#ead4a7}
-#s-rating .rating-cup-label{font-size:clamp(10px,3vw,14px);font-weight:600;color:var(--ink);line-height:1.18;max-width:100%;overflow-wrap:anywhere}
-#s-rating .rating-podium-item.main .rating-cup-label{font-size:clamp(12px,3.5vw,16px)}
+#s-rating .rating-pedestal{width:100%;min-height:54px;background:linear-gradient(145deg,#fffdf7,#e9deca 90%);border:1px solid rgba(172,152,116,.28);border-radius:14px 14px 10px 10px;box-shadow:0 8px 14px rgba(104,84,55,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:5px 2px 6px}
+#s-rating .rating-podium-item.main .rating-pedestal{min-height:65px;background:linear-gradient(150deg,#fffef8,#f3e0b6 85%);border-color:#ead4a7}
+#s-rating .rating-cup-label{font-size:clamp(10px,2.7vw,12px);font-weight:600;color:var(--ink);line-height:1.18;max-width:100%;overflow-wrap:anywhere}
+#s-rating .rating-podium-item.main .rating-cup-label{font-size:clamp(11px,3.0vw,13px)}
 #s-rating .rating-cup-count{font-size:clamp(20px,6.3vw,27px);font-weight:800;color:#a67616;line-height:1}
 #s-rating .rating-podium-meta{display:flex;gap:8px;align-items:center;justify-content:center;min-height:34px;margin:6px 10px 4px;color:var(--ink2);font-size:12px}
 #s-rating .rating-podium-meta i{font-size:16px}
@@ -30,7 +30,7 @@
 #s-rating .lr.me{padding:10px 8px;border-radius:12px}
 @media(max-width:340px){
  #s-rating .rating-podium{margin:0 4px}
- #s-rating .rating-pedestal{min-height:71px}
- #s-rating .rating-podium-item.main .rating-pedestal{min-height:86px}
+ #s-rating .rating-pedestal{min-height:50px}
+ #s-rating .rating-podium-item.main .rating-pedestal{min-height:60px}
  #s-rating .rating-cup-label{font-size:10px}
 }
