@@ -237,6 +237,7 @@ jobs:
             tests/test_desktop_subscription_api.py \
             tests/test_identity_link_service.py \
             tests/test_miniapp_profile_status.py \
+            tests/test_profile_answer_accuracy.py \
             tests/test_miniapp_request_load.py \
             tests/test_mistake_review_contract.py \
             tests/test_trial_entry_points.py \
