@@ -50,7 +50,7 @@ internal fun StreakCalendar(progress: CourseProgress?, dailyXp: Int) {
             trailing = "$streak ${stringResource(R.string.profile_streak)}",
         )
         Surface(
-            color = PompColors.PaperRaised,
+            color = PompColors.PaperRaised.copy(alpha = 0.72f),
             shape = RoundedCornerShape(16.dp),
             border = BorderStroke(1.dp, PompColors.Divider),
             modifier = Modifier.fillMaxWidth(),
@@ -175,7 +175,7 @@ private fun CompactAchievementCard(
     modifier: Modifier = Modifier,
 ) {
     Surface(
-        color = PompColors.PaperRaised,
+        color = PompColors.PaperRaised.copy(alpha = 0.72f),
         shape = RoundedCornerShape(13.dp),
         border = BorderStroke(1.dp, PompColors.Divider),
         modifier = modifier,

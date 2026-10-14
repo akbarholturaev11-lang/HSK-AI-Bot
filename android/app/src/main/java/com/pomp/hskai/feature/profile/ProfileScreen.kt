@@ -204,10 +204,6 @@ fun ProfileScreen(
         ) {
             item {
                 ProfileToolbar(
-                    nickname = state.profile?.user?.name?.takeIf { it.isNotBlank() }
-                        ?: account.displayName.takeIf { it.isNotBlank() }
-                        ?: state.profile?.user?.telegramUsername?.takeIf { it.isNotBlank() }
-                        ?: "HSK AI",
                     onOpenSettings = openSettings,
                     hints = hints,
                     onDismissHint = onDismissHint,
@@ -425,7 +421,6 @@ fun ProfileScreen(
 
 @Composable
 private fun ProfileToolbar(
-    nickname: String,
     onOpenSettings: () -> Unit,
     hints: List<AndroidHintDto>,
     onDismissHint: (String) -> Unit,
@@ -435,7 +430,7 @@ private fun ProfileToolbar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = nickname,
+            text = stringResource(R.string.nav_profile),
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             color = PompColors.Ink,
@@ -506,19 +501,28 @@ private fun ProfileHero(
                     }
                 }
             }
-            Column(modifier = Modifier.padding(start = 14.dp).weight(1f)) {
-                val username = profile?.user?.telegramUsername?.trim().orEmpty()
-                if (username.isNotBlank()) {
-                    Text(
-                        text = "@$username",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = PompColors.InkSecondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Spacer(Modifier.height(6.dp))
-                }
-                AccessPill(isPaid = profile?.subscription?.isPaid == true || account.isPaid, trialActive = state.trial?.active == true)
+            val nickname = profile?.user?.name?.takeIf { it.isNotBlank() }
+                ?: account.displayName.takeIf { it.isNotBlank() }
+                ?: profile?.user?.telegramUsername?.takeIf { it.isNotBlank() }
+                ?: "HSK AI"
+            Row(
+                modifier = Modifier.padding(start = 12.dp).weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = nickname,
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = PompColors.Ink,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+                AccessPill(
+                    isPaid = profile?.subscription?.isPaid == true || account.isPaid,
+                    trialActive = state.trial?.active == true,
+                )
             }
     }
 }
@@ -603,7 +607,7 @@ private fun ProfileFriendsLink(onOpenFriends: () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp),
         shape = RoundedCornerShape(12.dp),
-        color = PompColors.PaperRaised,
+        color = PompColors.PaperRaised.copy(alpha = 0.72f),
         border = BorderStroke(1.dp, PompColors.Divider),
     ) {
         Row(

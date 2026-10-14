@@ -556,7 +556,17 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .profile-compact-ach .at .ah small{font-size:11px}
 .profile-compact-ach .abar{margin-top:7px;height:5px}
 @media(max-width:340px){.profile-compact-ach .arow{padding:8px;gap:6px}.profile-compact-ach .aic{width:26px;height:26px;flex-basis:26px}}
-.phero{display:flex;align-items:center;gap:14px;padding:10px 16px 2px}
+.rating-title{margin:5px 16px 10px;font-size:var(--hsk-section-title-size,20px)}
+#s-profile .profile-accuracy,#s-profile .profile-friends-link,#s-profile .profile-compact-ach .arow,#s-profile .card2{background:color-mix(in srgb,var(--card) 72%,transparent);border-color:color-mix(in srgb,var(--line) 65%,transparent)}
+#s-profile .profile-accuracy .accuracy-ring::before{background:var(--paper)}
+#s-profile .hp-promo{filter:saturate(.88);box-shadow:none}
+.phero{display:flex;align-items:center;gap:12px;padding:10px 16px 2px}
+.profile-hero-content{flex:1;min-width:0}
+.profile-identity-row{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.profile-display-name{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:17px;font-weight:700;color:var(--ink)}
+.profile-identity-row .profile-access-badge{margin:0;flex-shrink:0}
+.profile-goal-row{margin-top:6px}
+.profile-goal-row .lvb.goal{margin:0}
 .pav{width:70px;height:70px;border-radius:18px;background:var(--cin);border:2px solid var(--cin2);color:var(--cin-ink);display:flex;align-items:center;justify-content:center;font-size:30px;position:relative;flex-shrink:0}
 .pav .ed{position:absolute;right:-5px;bottom:-5px;width:24px;height:24px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-size:12px;display:flex;align-items:center;justify-content:center}
 .pname{font-size:19px;font-weight:500}.pun{font-size:13px;color:var(--ink3)}
@@ -5872,7 +5882,7 @@ function _renderRatingContent(){
   var t=T(),r=rl();
   sortRatingUsers();
   var memberCount=Number(ratingMeta.leagueSize||ratingUsers.length||0);
-  var h=ratingTabCur==="friends"?'<h1 class="rating-friends-heading">'+esc(r.friends)+'</h1>':'';
+  var h=ratingTabCur==="friends"?'<h1 class="rating-friends-heading">'+esc(r.friends)+'</h1>':'<h1 class="section-title rating-title">'+esc(LANG==="ru"?"Рейтинг":LANG==="tj"?"Рейтинг":"Reyting")+'</h1>';
 	  if(ratingTabCur==="friends"){
 	    if(!referralMeta.loaded&&INIT_DATA){
 	      referralMeta.loaded=true;
@@ -6501,12 +6511,11 @@ function profileAccuracyHtml(){
   var c=profileCopy(),data=PROFILE_DETAIL&&PROFILE_DETAIL.stats&&PROFILE_DETAIL.stats.answer_accuracy;
   function item(label,score){
     var pct=score&&Number.isFinite(Number(score.percent))&&score.percent!==null?Math.max(0,Math.min(100,Math.round(Number(score.percent)))):null;
-    var total=score&&Number(score.total)||0,deg=pct===null?0:pct*3.6;
+    var deg=pct===null?0:pct*3.6;
     return '<div><div class="accuracy-ring" style="--accuracy-deg:'+deg+'deg"><strong>'+(pct===null?'—':pct+'%')+'</strong></div>'
-      +'<div class="accuracy-label">'+esc(label)+'</div><div class="accuracy-note">'+total+' '+esc(c.answers)+'</div></div>';
+      +'<div class="accuracy-label">'+esc(label)+'</div></div>';
   }
-  return '<div class="profile-accuracy">'+item(c.overall,data&&data.overall)+item(c.today,data&&data.today)+'</div>'
-    +'<div class="profile-accuracy-help">'+esc(c.note)+'</div>';
+  return '<div class="profile-accuracy">'+item(c.overall,data&&data.overall)+item(c.today,data&&data.today)+'</div>';
 }
 function renderProfile(){
   var t=T(),p=pl(),c=profileCopy();
@@ -6518,11 +6527,11 @@ function renderProfile(){
   var trialActive=!!(TRIAL_STATE&&TRIAL_STATE.active);
   var showProLink=!paid&&!trialActive;
   var nickname=esc(PROF.name||t.you);
-  var username=PROFILE_DETAIL&&PROFILE_DETAIL.user&&PROFILE_DETAIL.user.telegram_username;
-  var handle=username?"@"+esc(username):(PROF.name?"@"+esc(PROF.name.toLowerCase().replace(/\s+/g,"_")):"@hsk_ai");
-  $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+nickname+'</h1><div class="profile-head-actions">'
+  $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(LANG==="ru"?"Профиль":LANG==="tj"?"Профил":"Profil")+'</h1><div class="profile-head-actions">'
     +'<button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div></div>'
-    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pun">'+handle+'</div><span class="profile-access-badge'+(paid||trialActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):esc(c.free))+'</span>'+(goalLabel()?'<span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span>':'')+'</div></div>'
+    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div>'
+    +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):esc(c.free))+'</span></div>'
+    +(goalLabel()?'<div class="profile-goal-row"><span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span></div>':'')+'</div></div>'
     +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(t.friends)+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
     +profileAccuracyHtml()
     +'<div id="pomp-desktop-profile-root"></div>'
