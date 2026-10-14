@@ -63,32 +63,29 @@ internal fun RatingPodium(league: String, memberCount: Int, resetSeconds: Long) 
                 league = LEAGUE_LADDER[leftIndex].first,
                 metal = CupMetal.SILVER,
                 isCenter = false,
-                count = null,
                 modifier = Modifier.weight(1f),
             )
             CupWithPedestal(
                 league = league,
                 metal = CupMetal.GOLD,
                 isCenter = true,
-                count = memberCount,
                 modifier = Modifier.weight(1.22f),
             )
             CupWithPedestal(
                 league = LEAGUE_LADDER[rightIndex].first,
                 metal = CupMetal.BRONZE,
                 isCenter = false,
-                count = null,
                 modifier = Modifier.weight(1f),
             )
         }
         Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 2.dp),
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 2.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(Icons.Filled.Group, contentDescription = null, tint = PompColors.InkSecondary, modifier = Modifier.size(14.dp))
             Spacer(Modifier.width(5.dp))
-            Text(stringResource(R.string.rating_tab_league), color = PompColors.InkSecondary, fontSize = 12.sp)
+            Text(memberCount.toString() + " " + stringResource(R.string.rating_tab_league), color = PompColors.InkSecondary, fontSize = 12.sp)
             Spacer(Modifier.width(12.dp))
             Text("·", color = PompColors.InkDisabled, fontSize = 14.sp)
             Spacer(Modifier.width(12.dp))
@@ -121,22 +118,21 @@ private fun CupWithPedestal(
     league: String,
     metal: CupMetal,
     isCenter: Boolean,
-    count: Int?,
     modifier: Modifier,
 ) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
-            modifier = Modifier.fillMaxWidth().height(if (isCenter) 162.dp else 139.dp),
+            modifier = Modifier.fillMaxWidth().height(if (isCenter) 83.dp else 71.dp),
             contentAlignment = Alignment.Center,
         ) {
-            TrophyIllustration(metal = metal, modifier = Modifier.fillMaxWidth().height(if (isCenter) 160.dp else 136.dp))
+            TrophyIllustration(metal = metal, modifier = Modifier.width(if (isCenter) 88.dp else 75.dp).height(if (isCenter) 82.dp else 70.dp))
             if (isCenter) {
                 Text(
                     "1",
-                    fontSize = 26.sp,
+                    fontSize = 15.sp,
                     color = metal.dark,
                     fontWeight = FontWeight.Black,
-                    modifier = Modifier.padding(top = 2.dp),
+                    modifier = Modifier.padding(top = 1.dp),
                 )
             }
         }
@@ -146,27 +142,24 @@ private fun CupWithPedestal(
         ) else Brush.linearGradient(listOf(Color(0xFFFFFDF8), Color(0xFFE9DECA)))
         Column(
             modifier = Modifier.fillMaxWidth()
-                .height(if (isCenter) 98.dp else 78.dp)
+                .height(if (isCenter) 65.dp else 54.dp)
                 .background(bg, shape)
                 .border(BorderStroke(1.dp, Color(0xFFE4D3B5)), shape)
-                .padding(horizontal = 2.dp, vertical = 10.dp),
+                .padding(horizontal = 2.dp, vertical = 5.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
                 stringResource(R.string.rating_league_name, podiumLeagueName(league)),
-                fontSize = if (isCenter) 14.sp else 11.sp,
-                lineHeight = if (isCenter) 17.sp else 14.sp,
+                fontSize = if (isCenter) 12.sp else 10.sp,
+                lineHeight = if (isCenter) 15.sp else 12.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = PompColors.Ink,
                 textAlign = TextAlign.Center,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
-            if (count != null) {
-                Spacer(Modifier.height(4.dp))
-                Text(count.toString(), color = Color(0xFFA97618), fontWeight = FontWeight.Bold, fontSize = 25.sp)
-            }
+
         }
     }
 }
