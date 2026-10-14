@@ -1307,7 +1307,16 @@ private fun AppRoot(
                     MainScaffold(
                         selectedTab = selectedTab,
                         onTabSelected = {
-                            if (it == MainTab.PRACTICE) openPracticeTab() else selectedTab = it
+                            when (it) {
+                                MainTab.PRACTICE -> openPracticeTab()
+                                MainTab.RATING -> {
+                                    // The bottom Rating button is always the league entry.
+                                    // Profile Friends is the separate referral entry.
+                                    ratingViewModel.selectTab(RatingTab.LEAGUE)
+                                    selectedTab = MainTab.RATING
+                                }
+                                else -> selectedTab = it
+                            }
                         },
                         bottomBarVisible = !voiceCallActive,
                         topNotice = reconnect?.let { retry ->
