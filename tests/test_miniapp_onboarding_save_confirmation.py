@@ -3,6 +3,7 @@
 The confirmation route is read-only. Its payload is the persisted user level
 and profile preferences, not a client-submitted success flag.
 """
+import os
 import unittest
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
@@ -12,6 +13,10 @@ from unittest.mock import AsyncMock, patch
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
+
+# The main module constructs an aiogram Bot at import time. This is a fake
+# syntactically valid test token; no network calls are made by these tests.
+os.environ.setdefault("BOT_TOKEN", "123456:AA_MiniAppOnboardingTestToken")
 
 from app import main as main_module
 
