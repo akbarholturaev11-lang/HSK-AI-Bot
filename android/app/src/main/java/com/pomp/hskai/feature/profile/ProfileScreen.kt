@@ -88,7 +88,7 @@ import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.PompShapes
 import com.pomp.hskai.core.design.PompSpacing
 import com.pomp.hskai.core.design.components.HskBrandLoader
-import com.pomp.hskai.core.design.components.Hsk30BooksHeader
+import com.pomp.hskai.feature.course.Hsk30LevelChoiceDialog
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskSectionTitle
 import com.pomp.hskai.core.navigation.LocalMainBottomInset
@@ -165,8 +165,7 @@ fun ProfileScreen(
 ) {
     AssistantScreen(profileAssistantContext(state), bottomBar = true, showButton = false)
     var settingsOpen by remember { mutableStateOf(false) }
-    var courseVersionPickerOpen by remember { mutableStateOf(false) }
-    var profileHsk30ConfirmOpen by remember { mutableStateOf(false) }
+    var profileHsk30BookOpen by remember { mutableStateOf(false) }
     var profileHsk30LevelOpen by remember { mutableStateOf(false) }
     var appearancePickerOpen by remember { mutableStateOf(false) }
     var identitiesOpen by remember { mutableStateOf(false) }
@@ -240,7 +239,7 @@ fun ProfileScreen(
                     onOpenHsk30 = {
                         when {
                             courseTrack == "hsk30" -> onOpenCourse()
-                            hsk30 != null -> profileHsk30ConfirmOpen = true
+                            hsk30 != null -> profileHsk30BookOpen = true
                         }
                     },
                     onOpenSubscription = onOpenSubscription,
@@ -282,7 +281,7 @@ fun ProfileScreen(
             onOpenLanguage = { settingsOpen = false; onOpenLanguage() },
             onOpenCourseVersion = {
                 settingsOpen = false
-                courseVersionPickerOpen = true
+                profileHsk30BookOpen = true
             },
             onOpenAppearance = { settingsOpen = false; appearancePickerOpen = true },
             onOpenNotifications = { settingsOpen = false; notificationsOpen = true },
@@ -305,42 +304,40 @@ fun ProfileScreen(
         )
     }
 
-    // Separate profile entry flow: never alter the working course/settings pickers.
-    if (profileHsk30ConfirmOpen) {
-        ProfileHsk30EntryConfirmDialog(
-            onDismiss = { profileHsk30ConfirmOpen = false },
-            onConfirm = {
-                profileHsk30ConfirmOpen = false
-                val target = hsk30
-                if (target != null) {
-                    when {
-                        !target.access.featureEnabled -> Unit
-                        !target.access.allowed -> onUnlockHsk30()
-                        target.hasSavedHsk30 -> onSwitchCourseTrack("hsk30", null)
-                        else -> profileHsk30LevelOpen = true
-                    }
+    // Profile and Settings share the native book-cover entry. The course-path
+    // header retains its separate compact version/level selector.
+    if (profileHsk30BookOpen && hsk30 != null) {
+        ProfileHsk30BookEntryDialog(
+            hsk30 = hsk30,
+            currentTrack = courseTrack,
+            onDismiss = { profileHsk30BookOpen = false },
+            onUnlock = {
+                profileHsk30BookOpen = false
+                onUnlockHsk30()
+            },
+            onContinue = {
+                profileHsk30BookOpen = false
+                when {
+                    !hsk30.access.featureEnabled -> Unit
+                    !hsk30.access.allowed -> onUnlockHsk30()
+                    hsk30.hasSavedHsk30 -> onSwitchCourseTrack("hsk30", null)
+                    else -> profileHsk30LevelOpen = true
                 }
+            },
+            onReturnHsk20 = {
+                profileHsk30BookOpen = false
+                onSwitchCourseTrack("hsk20", null)
             },
         )
     }
     if (profileHsk30LevelOpen && hsk30 != null) {
-        ProfileHsk30FirstLevelDialog(
-            hsk30 = hsk30,
+        Hsk30LevelChoiceDialog(
+            levels = hsk30.liveLevels,
             onChoose = { level ->
                 profileHsk30LevelOpen = false
                 onSwitchCourseTrack("hsk30", level)
             },
             onDismiss = { profileHsk30LevelOpen = false },
-        )
-    }
-
-    if (courseVersionPickerOpen) {
-        CourseVersionPickerSheet(
-            currentTrack = courseTrack,
-            hsk30IsNew = hsk30IsNew,
-            hsk30LiveLevels = hsk30LiveLevels,
-            onSwitch = onSwitchCourseTrack,
-            onDismiss = { courseVersionPickerOpen = false },
         )
     }
 
@@ -1002,222 +999,6 @@ private fun ProfileSettingsDivider() {
             .height(1.dp)
             .background(PompColors.Divider),
     )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun CourseVersionPickerSheet(
-    currentTrack: String,
-    hsk30IsNew: Boolean,
-    hsk30LiveLevels: List<String>,
-    onSwitch: (String, String?) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var pendingTrack by remember(currentTrack) { mutableStateOf<String?>(null) }
-    var pendingLevel by remember(currentTrack) { mutableStateOf<String?>(null) }
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = PompColors.Paper,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 18.dp)
-                .padding(bottom = 28.dp),
-        ) {
-            val targetTrack = pendingTrack
-            if (targetTrack == "hsk30" && pendingLevel == null) {
-                Hsk30BooksHeader(isNew = hsk30IsNew, modifier = Modifier.fillMaxWidth())
-                Spacer(Modifier.height(16.dp))
-                Text(
-                    stringResource(R.string.hsk30_level_picker_title),
-                    color = PompColors.Ink,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
-                    stringResource(R.string.hsk30_level_picker_body),
-                    color = PompColors.InkSecondary,
-                    fontSize = 13.sp,
-                    lineHeight = 19.sp,
-                    modifier = Modifier.padding(top = 6.dp, bottom = 12.dp),
-                )
-                hsk30LiveLevels
-                    .filter { Regex("^nhsk[1-3]$").matches(it.lowercase()) }
-                    .distinct()
-                    .forEach { level ->
-                        val band = Regex("^nhsk([1-3])$").find(level.lowercase())
-                            ?.groupValues?.getOrNull(1)
-                            ?: level
-                        Surface(
-                            color = PompColors.PaperRaised,
-                            shape = RoundedCornerShape(14.dp),
-                            border = BorderStroke(1.dp, PompColors.Divider),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 8.dp)
-                                .heightIn(min = 48.dp)
-                                .clickable { pendingLevel = level },
-                        ) {
-                            Box(
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                Text(
-                                    "HSK $band" + if (hsk30IsNew) " · NEW" else "",
-                                    color = PompColors.Ink,
-                                    fontWeight = FontWeight.SemiBold,
-                                )
-                            }
-                        }
-                    }
-                OutlinedButton(
-                    onClick = {
-                        pendingTrack = null
-                        pendingLevel = null
-                    },
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
-                    shape = RoundedCornerShape(14.dp),
-                ) {
-                    Text(stringResource(R.string.action_cancel), color = PompColors.Ink)
-                }
-            } else if (targetTrack != null) {
-                if (targetTrack == "hsk30") {
-                    Hsk30BooksHeader(isNew = hsk30IsNew, modifier = Modifier.fillMaxWidth())
-                    Spacer(Modifier.height(16.dp))
-                }
-                val targetLabel = if (targetTrack == "hsk30") "HSK 3.0" else "HSK 2.0"
-                Text(
-                    stringResource(R.string.profile_course_version_confirm_title, targetLabel),
-                    color = PompColors.Ink,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
-                    stringResource(R.string.profile_course_version_confirm_body),
-                    color = PompColors.InkSecondary,
-                    fontSize = 13.sp,
-                    lineHeight = 19.sp,
-                    modifier = Modifier.padding(top = 6.dp, bottom = 16.dp),
-                )
-                Surface(
-                    color = PompColors.Cinnabar,
-                    shape = RoundedCornerShape(14.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 48.dp)
-                        .clickable {
-                            onSwitch(targetTrack, pendingLevel)
-                            onDismiss()
-                        },
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            stringResource(R.string.action_continue),
-                            color = Color.White,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                    }
-                }
-                Spacer(Modifier.height(10.dp))
-                OutlinedButton(
-                    onClick = {
-                        pendingTrack = null
-                        pendingLevel = null
-                    },
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
-                    shape = RoundedCornerShape(14.dp),
-                ) {
-                    Text(stringResource(R.string.action_cancel), color = PompColors.Ink)
-                }
-            } else {
-                Text(
-                    stringResource(R.string.profile_course_version),
-                    color = PompColors.Ink,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
-                    stringResource(R.string.hsk30_promo_body),
-                    color = PompColors.InkSecondary,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(top = 5.dp, bottom = 14.dp),
-                )
-                Surface(
-                    color = PompColors.PaperRaised,
-                    shape = RoundedCornerShape(16.dp),
-                    border = BorderStroke(1.dp, PompColors.Divider),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Column {
-                        MiniSettingsRow(
-                            Icons.Filled.TrackChanges,
-                            "HSK 2.0",
-                            true,
-                            {
-                                if (currentTrack == "hsk20") {
-                                    onDismiss()
-                                } else {
-                                    pendingTrack = "hsk20"
-                                    pendingLevel = null
-                                }
-                            },
-                        ) {
-                            if (currentTrack == "hsk20") {
-                                Text("✓", color = PompColors.Jade, fontWeight = FontWeight.Bold)
-                            } else {
-                                SettingsChevron()
-                            }
-                        }
-                        SettingsDivider()
-                        MiniSettingsRow(
-                            Icons.Filled.TrackChanges,
-                            "HSK 3.0",
-                            true,
-                            {
-                                when {
-                                    currentTrack == "hsk30" -> onDismiss()
-                                    else -> {
-                                        pendingTrack = "hsk30"
-                                        pendingLevel = null
-                                    }
-                                }
-                            },
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                if (hsk30IsNew) {
-                                    Text(
-                                        "NEW",
-                                        color = PompColors.CinnabarDark,
-                                        fontSize = 8.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier
-                                            .background(
-                                                PompColors.Cinnabar.copy(alpha = 0.12f),
-                                                RoundedCornerShape(5.dp),
-                                            )
-                                            .padding(horizontal = 4.dp, vertical = 1.dp),
-                                    )
-                                    Spacer(Modifier.width(6.dp))
-                                }
-                                when {
-                                    currentTrack == "hsk30" ->
-                                        Text("✓", color = PompColors.Jade, fontWeight = FontWeight.Bold)
-                                    else -> SettingsChevron()
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

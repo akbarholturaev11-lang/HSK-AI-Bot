@@ -412,7 +412,7 @@ fun CourseScreen(
 }
 
 @Composable
-private fun Hsk30BookDialog(
+internal fun Hsk30BookDialog(
     isNew: Boolean,
     onDismiss: () -> Unit,
     dismissible: Boolean = true,
@@ -453,7 +453,7 @@ private fun Hsk30BookDialog(
 }
 
 @Composable
-private fun Hsk30BookTitle(title: String, body: String) {
+internal fun Hsk30BookTitle(title: String, body: String) {
     Text(
         title,
         color = PompColors.Ink,
@@ -473,7 +473,7 @@ private fun Hsk30BookTitle(title: String, body: String) {
 }
 
 @Composable
-private fun Hsk30BookPrice(price: String) {
+internal fun Hsk30BookPrice(price: String) {
     Spacer(Modifier.height(20.dp))
     Box(Modifier.fillMaxWidth().height(1.dp).background(PompColors.Divider))
     Row(
@@ -505,7 +505,7 @@ private fun Hsk30BookPrice(price: String) {
 }
 
 @Composable
-private fun Hsk30BookPrimary(label: String, enabled: Boolean = true, onClick: () -> Unit) {
+internal fun Hsk30BookPrimary(label: String, enabled: Boolean = true, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         enabled = enabled,
@@ -530,7 +530,7 @@ private fun Hsk30BookPrimary(label: String, enabled: Boolean = true, onClick: ()
 }
 
 @Composable
-private fun Hsk30BookSecondary(label: String, onClick: () -> Unit) {
+internal fun Hsk30BookSecondary(label: String, onClick: () -> Unit) {
     Spacer(Modifier.height(8.dp))
     TextButton(onClick = onClick, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
         Text(
@@ -585,7 +585,7 @@ private fun Hsk30LockedEntryDialog(
 }
 
 @Composable
-private fun Hsk30LevelChoiceDialog(
+internal fun Hsk30LevelChoiceDialog(
     levels: List<String>,
     onDismiss: () -> Unit,
     onChoose: (String) -> Unit,

@@ -17,13 +17,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +41,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
+import com.pomp.hskai.feature.course.Hsk30BookSecondary
+import com.pomp.hskai.feature.course.Hsk30BookPrimary
+import com.pomp.hskai.feature.course.Hsk30BookPrice
+import com.pomp.hskai.feature.course.Hsk30BookTitle
+import com.pomp.hskai.feature.course.Hsk30BookDialog
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.domain.model.CourseHsk30
 import kotlinx.coroutines.delay
@@ -250,47 +253,87 @@ private fun trialTimeRemaining(endsAt: String?): String {
     }
 }
 
-/** Profile CTA only: confirmation first, saved band restored with null level. */
+/** Same book-cover entry as the native course promo and the Mini App.
+ * Permissions, saved levels, and actual course switching remain outside this UI. */
 @Composable
-internal fun ProfileHsk30EntryConfirmDialog(
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.profile_promo_hsk30_confirm)) },
-        text = { Text(stringResource(R.string.profile_promo_hsk30_confirm_body)) },
-        confirmButton = {
-            TextButton(onClick = onConfirm) { Text(stringResource(R.string.action_continue)) }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
-        },
-    )
-}
-
-@Composable
-internal fun ProfileHsk30FirstLevelDialog(
+internal fun ProfileHsk30BookEntryDialog(
     hsk30: CourseHsk30,
-    onChoose: (String) -> Unit,
+    currentTrack: String,
+    onContinue: () -> Unit,
+    onUnlock: () -> Unit,
+    onReturnHsk20: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.hsk30_level_picker_title)) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                hsk30.liveLevels.filter { it in listOf("nhsk1", "nhsk2", "nhsk3") }.forEach { level ->
-                    Button(
-                        modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
-                        onClick = { onChoose(level) },
-                        colors = ButtonDefaults.buttonColors(containerColor = PompColors.Cinnabar),
-                    ) { Text("HSK " + level.removePrefix("nhsk")) }
-                }
+    val on30 = currentTrack == "hsk30"
+    val enabled = hsk30.access.featureEnabled
+    val accessGranted = enabled && hsk30.access.allowed
+    val paymentAvailable = enabled && hsk30.paymentEnabled &&
+        hsk30.priceTjs > 0 && hsk30.priceDisplay.isNotBlank()
+
+    Hsk30BookDialog(isNew = hsk30.newBadge.isNew, onDismiss = onDismiss) {
+        when {
+            on30 -> {
+                Hsk30BookTitle(
+                    title = stringResource(R.string.profile_course_version),
+                    body = stringResource(R.string.profile_course_version_confirm_body),
+                )
+                Spacer(Modifier.height(20.dp))
+                Hsk30BookPrimary(
+                    label = stringResource(R.string.hsk30_access_back_hsk20),
+                    onClick = onReturnHsk20,
+                )
             }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
-        },
-    )
+            !enabled -> {
+                Hsk30BookTitle(
+                    title = stringResource(R.string.hsk30_promo_title),
+                    body = stringResource(R.string.hsk30_unlock_unavailable),
+                )
+                Spacer(Modifier.height(20.dp))
+            }
+            !accessGranted -> {
+                Hsk30BookTitle(
+                    title = stringResource(
+                        if (hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_title
+                        else R.string.hsk30_access_required_title,
+                    ),
+                    body = stringResource(
+                        if (hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_body
+                        else R.string.hsk30_access_required_body,
+                    ),
+                )
+                if (hsk30.priceDisplay.isNotBlank()) {
+                    Hsk30BookPrice(hsk30.priceDisplay)
+                } else {
+                    Spacer(Modifier.height(20.dp))
+                }
+                if (!paymentAvailable) {
+                    Text(
+                        stringResource(R.string.hsk30_unlock_unavailable),
+                        color = PompColors.InkSecondary,
+                        modifier = Modifier.padding(bottom = 12.dp),
+                    )
+                }
+                Hsk30BookPrimary(
+                    label = stringResource(R.string.hsk30_access_unlock_button),
+                    enabled = paymentAvailable,
+                    onClick = onUnlock,
+                )
+            }
+            else -> {
+                Hsk30BookTitle(
+                    title = stringResource(R.string.hsk30_promo_switch),
+                    body = stringResource(R.string.hsk30_promo_body_unlocked),
+                )
+                Spacer(Modifier.height(20.dp))
+                Hsk30BookPrimary(
+                    label = stringResource(R.string.hsk30_promo_switch),
+                    onClick = onContinue,
+                )
+            }
+        }
+        Hsk30BookSecondary(
+            label = stringResource(if (on30) R.string.action_cancel else R.string.hsk30_promo_stay),
+            onClick = onDismiss,
+        )
+    }
 }
