@@ -529,6 +529,22 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .t-amber{background:#F8EFD9;color:#B07A1E}.t-blue{background:#E7F0F8;color:#2F6F9E}.t-jade{background:var(--jadebg);color:var(--jade)}.t-cin{background:var(--cinbg);color:var(--cin2)}
 .sech{font-size:13px;color:var(--ink2);font-weight:500;margin:18px 18px 9px}
 /* profile */
+.profile-access-badge{display:inline-flex;align-items:center;gap:5px;margin-top:7px;border-radius:999px;padding:4px 11px;font-size:12px;font-weight:650;color:var(--ink2);background:var(--paper);border:1px solid var(--line)}
+.profile-access-badge.pro{background:linear-gradient(115deg,#2b2018,#684124);color:#ffe4a1;border-color:#c49a49;box-shadow:0 1px 6px rgba(82,57,21,.10)}
+.profile-accuracy{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:11px 16px 4px;overflow:hidden;border-radius:17px;border:1px solid var(--line);background:var(--card)}
+.profile-accuracy>div{min-width:0;text-align:center;padding:10px 5px 12px}
+.profile-accuracy>div+div{border-left:1px solid var(--line)}
+.profile-accuracy .accuracy-ring{width:83px;height:83px;margin:0 auto 7px;position:relative;border-radius:50%;background:conic-gradient(var(--jade) var(--accuracy-deg,0deg),var(--line) var(--accuracy-deg,0deg));display:grid;place-items:center}
+.profile-accuracy .accuracy-ring::before{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--card)}
+.profile-accuracy .accuracy-ring strong{z-index:1;font-size:20px;color:var(--ink);font-weight:750}
+.profile-accuracy .accuracy-label{font-size:13px;font-weight:650;color:var(--ink)}
+.profile-accuracy .accuracy-note{font-size:11px;color:var(--ink2);margin-top:3px}
+.profile-accuracy-help{padding:0 19px 4px;color:var(--ink3);font-size:10px;line-height:1.35;text-align:center}
+.profile-pro-link{margin:10px 16px 0;width:calc(100% - 32px);min-height:42px;padding:9px 12px;display:flex;align-items:center;gap:9px;border:1px solid rgba(194,146,57,.32);border-radius:12px;background:var(--goldbg);color:var(--ink);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.profile-pro-link i.ti-crown{color:var(--gold);font-size:21px}
+.profile-pro-link i.ti-chevron-right{margin-left:auto;color:var(--gold)}
+#s-profile .profile-friends-link,#s-profile .profile-compact-ach .arow,#s-profile .card2,#s-profile .profile-accuracy{box-shadow:none}
+#s-profile .profile-compact-ach .arow,#s-profile .card2{background:var(--card);border-color:var(--line)}
 .profile-friends-link{margin:9px 16px 3px;width:calc(100% - 32px);min-height:42px;padding:8px 12px;display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;font-size:13px;font-weight:600;text-align:left;cursor:pointer}
 .profile-friends-link .ti-users{font-size:18px;color:var(--jade)}
 .profile-friends-link .ti-chevron-right{margin-left:auto;color:var(--ink3);font-size:16px}
@@ -1345,7 +1361,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 </style>
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261014-compact-1" rel="stylesheet">
-<link href="/course_v3_data/rating-podium.css?v=20261014-1" rel="stylesheet">
+<link href="/course_v3_data/rating-podium.css?v=20261014-2" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
 </head>
 <body class="hsk-scene-page">
@@ -2219,6 +2235,7 @@ var App={
     if(s!=="profile"&&window.HskProfileCarousel)window.HskProfileCarousel.pause();
     if(s==="profile"){
       renderProfile();
+      loadProfileDetail();
       if(!TRIAL_LOADED)trialFetchStatus().then(function(){if(SCREEN==="profile")renderProfile()});
     }
     /* Kirish usullari faqat profil ochilganda va bir marta so'raladi.
@@ -5842,12 +5859,12 @@ function ratingPodiumHtml(memberCount){
     return lang==="uz"?glyphs[i]+" ligasi":noun+glyphs[i];
   }
   function item(i,metal,center){
-    return '<div class="rating-podium-item'+(center?' main':'')+'"><div class="rating-cup">'+ratingCupSvg(metal,center)+'</div><div class="rating-pedestal"><span class="rating-cup-label han">'+esc(tierName(i))+'</span>'+(center?'<strong class="rating-cup-count">'+Number(memberCount).toLocaleString("ru")+'</strong>':'')+'</div></div>';
+    return '<div class="rating-podium-item'+(center?' main':'')+'"><div class="rating-cup">'+ratingCupSvg(metal,center)+'</div><div class="rating-pedestal"><span class="rating-cup-label han">'+esc(tierName(i))+'</span>'+''+'</div></div>';
   }
   var membersLabel=lang==="ru"?"участников всего":lang==="tj"?"иштирокчӣ дар маҷмӯъ":"jami ishtirokchi";
   return '<div class="rating-podium">'
     +'<div class="rating-podium-list">'+item(sideIndices[0],"silver",false)+item(index,"gold",true)+item(sideIndices[1],"bronze",false)+'</div>'
-    +'<div class="rating-podium-meta"><i class="ti ti-users" aria-hidden="true"></i> '+esc(membersLabel)
+    +'<div class="rating-podium-meta"><i class="ti ti-users" aria-hidden="true"></i> '+Number(memberCount).toLocaleString("ru")+' '+esc(membersLabel)
     +' <span aria-hidden="true">·</span><i class="ti ti-clock" aria-hidden="true"></i> '+esc(ratingCountdownText())+' '+esc(r.left)+'</div></div>';
 }
 
@@ -6460,23 +6477,57 @@ function pollSignInLink(pending,deadline){
   },2000);
 }
 
+var PROFILE_DETAIL=null;
+var PROFILE_DETAIL_PENDING=false;
+function profileCopy(){
+  return ({
+    tj:{free:"Ройгон",trial:"Pro · Озмоиш",today:"Имрӯз",overall:"Ҳамагӣ",pro:"Гирифтани Pro",answers:"ҷавоби арзёбишуда",note:"Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад"},
+    ru:{free:"Бесплатно",trial:"Pro · Пробный",today:"Сегодня",overall:"Всего",pro:"Получить Pro",answers:"проверенных ответов",note:"Только проверенные ответы · история может быть неполной"},
+    uz:{free:"Bepul",trial:"Pro · Sinov",today:"Bugun",overall:"Umumiy",pro:"Pro olish",answers:"baholangan javob",note:"Faqat tekshirilgan javoblar · eski tarix to'liq bo'lmasligi mumkin"}
+  })[LANG]||{};
+}
+function loadProfileDetail(){
+  if(PROFILE_DETAIL_PENDING)return;
+  PROFILE_DETAIL_PENDING=true;
+  _apiGet("/api/miniapp/profile").then(function(r){if(!r.ok)throw Error("profile");return r.json()}).then(function(d){
+    if(!d||!d.ok)throw Error("profile");
+    PROFILE_DETAIL=d;
+  }).catch(function(){PROFILE_DETAIL=null}).then(function(){
+    PROFILE_DETAIL_PENDING=false;
+    if(SCREEN==="profile")renderProfile();
+  });
+}
+function profileAccuracyHtml(){
+  var c=profileCopy(),data=PROFILE_DETAIL&&PROFILE_DETAIL.stats&&PROFILE_DETAIL.stats.answer_accuracy;
+  function item(label,score){
+    var pct=score&&Number.isFinite(Number(score.percent))&&score.percent!==null?Math.max(0,Math.min(100,Math.round(Number(score.percent)))):null;
+    var total=score&&Number(score.total)||0,deg=pct===null?0:pct*3.6;
+    return '<div><div class="accuracy-ring" style="--accuracy-deg:'+deg+'deg"><strong>'+(pct===null?'—':pct+'%')+'</strong></div>'
+      +'<div class="accuracy-label">'+esc(label)+'</div><div class="accuracy-note">'+total+' '+esc(c.answers)+'</div></div>';
+  }
+  return '<div class="profile-accuracy">'+item(c.overall,data&&data.overall)+item(c.today,data&&data.today)+'</div>'
+    +'<div class="profile-accuracy-help">'+esc(c.note)+'</div>';
+}
 function renderProfile(){
-  var t=T(),p=pl();
+  var t=T(),p=pl(),c=profileCopy();
   var streak=Number(MAP&&MAP.progress&&MAP.progress.streak||0);
   var completedLessons=Number(MAP&&MAP.progress&&MAP.progress.completed||0);
   var lessonAchPct=Math.min(100,Math.round(completedLessons/100*100));
   var streakAchPct=Math.min(100,Math.round(streak/30*100));
-  var plan=String((MAP&&MAP.user&&MAP.user.plan)||(PROF&&PROF.plan)||"").toLowerCase();
+  var paid=PROFILE_DETAIL&&PROFILE_DETAIL.subscription?!!PROFILE_DETAIL.subscription.is_paid:isPaidUser();
   var trialActive=!!(TRIAL_STATE&&TRIAL_STATE.active);
-  var showCrown=!isPaidUser()&&!trialActive&&plan!=="trial"&&plan!=="temp"&&plan!=="pro";
+  var showProLink=!paid&&!trialActive;
   var nickname=esc(PROF.name||t.you);
+  var username=PROFILE_DETAIL&&PROFILE_DETAIL.user&&PROFILE_DETAIL.user.telegram_username;
+  var handle=username?"@"+esc(username):(PROF.name?"@"+esc(PROF.name.toLowerCase().replace(/\s+/g,"_")):"@hsk_ai");
   $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+nickname+'</h1><div class="profile-head-actions">'
-    +(showCrown?'<button class="profile-pro-cta" type="button" aria-label="HSK AI Pro" onclick="App.goPay(\'profile_crown\')"><i class="ti ti-crown" aria-hidden="true"></i></button>':'')
     +'<button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div></div>'
-    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pname">'+nickname+'</div><div class="pun">'+(PROF.name?"@"+esc(PROF.name.toLowerCase().replace(/\s+/g,"_")):"@hsk_ai")+'</div>'+(goalLabel()?'<span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span>':'')+'</div></div>'
+    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pun">'+handle+'</div><span class="profile-access-badge'+(paid||trialActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):esc(c.free))+'</span>'+(goalLabel()?'<span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span>':'')+'</div></div>'
     +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(t.friends)+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
+    +profileAccuracyHtml()
     +'<div id="pomp-desktop-profile-root"></div>'
     +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+t.streak+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'
+    +(showProLink?'<button type="button" class="profile-pro-link" onclick="App.goPay(\'profile_after_streak\')"><i class="ti ti-crown" aria-hidden="true"></i><span>'+esc(c.pro)+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>':'')
     +'<div class="sech">'+p.ach+'</div><div class="profile-compact-ach">'
     +'<div class="arow"><div class="aic c1"><i class="ti ti-book"></i></div><div class="at"><div class="ah"><span>'+p.a2+'</span><small>'+completedLessons+' / 100</small></div><div class="abar"><i style="width:'+lessonAchPct+'%"></i></div></div></div>'
     +'<div class="arow"><div class="aic c2"><i class="ti ti-flame"></i></div><div class="at"><div class="ah"><span>'+p.a3+'</span><small>'+streak+' / 30</small></div><div class="abar"><i style="width:'+streakAchPct+'%"></i></div></div></div></div>'
