@@ -37,6 +37,10 @@
     <string name="profile_subscription_status_trial">Давраи санҷишӣ</string>
     <string name="profile_subscription_status_temporary">Дастрасии муваққатӣ</string>
     <string name="profile_subscription_status_expired">Муҳлат ба охир расид</string>
+    <string name="profile_access_free">Ройгон</string>
+    <string name="profile_access_trial">Давраи санҷишӣ</string>
+    <string name="profile_access_pro">Pro</string>
+    <string name="profile_get_pro">Гирифтани Pro</string>
     <string name="profile_subscription_status_free">Тарифи ройгон</string>
     <string name="profile_subscription_status_unavailable">Барои санҷиши ҳолат навсозӣ кунед</string>
     <string name="profile_subscription_until">То %1$s фаъол</string>
