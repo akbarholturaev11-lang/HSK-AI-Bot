@@ -1,4 +1,5 @@
 import json
+from uuid import uuid4
 from pathlib import Path
 
 from sqlalchemy import select
@@ -735,6 +736,17 @@ class CourseMiniAppPracticeService:
                 "recommendation": recommendation,
                 "wrong": json.dumps(wrong, ensure_ascii=False)[:4000],
             },
+        )
+        # Legacy *_completed telemetry is idempotent once per feature; a separate
+        # server-graded attempt signal preserves accuracy on later practice days.
+        await analytics.record_server_event(
+            event_name="practice_attempt_scored",
+            telegram_id=telegram_id,
+            user_id=user.id,
+            level=level,
+            session_id=expected_session,
+            dedupe_key=f"practice-attempt:{uuid4().hex}",
+            payload={"mode": mode, "skill": skill, "score": score, "total": total, "percent": percent},
         )
         reward = await self.gamification.award(
             user,
