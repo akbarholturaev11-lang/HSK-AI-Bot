@@ -10850,3 +10850,26 @@ Unfinished verification:
 - `scripts/ready_phrases/phrases.json` is the canonical 300-phrase/12-category source; `scripts/build_ready_phrases.py` validates and synchronizes Mini App and APK JSON assets.
 - Android search and favorites stay on-device (APK assets and DataStore). Mini App search, categories, copy, and favorites run client-side; only versioned static JSON is fetched.
 - HSK 3.0 locked users can still open local dictionary/phrasebook tools; server-backed practice remains behind the existing access gate.
+
+### 2026-10-14 — QA Telegram plain-text formatting fix
+
+Changed:
+- Added a narrowly scoped Markdown-emphasis cleanup for AI tutor replies, keeping Chinese text, pinyin, translations, and literal multiplication.
+- Applied it before storing/sending text QA and image QA replies (voice QA uses the same text QA service).
+- Updated the QA prompt to avoid presentation Markdown.
+
+Why:
+- Telegram's QA reply path sends text without Markdown parsing; generated ** markers were visible to learners.
+
+Files touched:
+- app/services/qa_text_format.py
+- app/services/qa_service.py
+- app/services/image_qa_service.py
+- app/prompts/qa_system.txt
+- tests/test_qa_text_format.py
+
+Risk:
+- Low; limited to AI QA output, not HTML-formatted system/course/payment messages.
+
+Follow-up:
+- Check Tajik/Russian/Uzbek text, voice-QA, and image-QA replies in Telegram after deployment.
