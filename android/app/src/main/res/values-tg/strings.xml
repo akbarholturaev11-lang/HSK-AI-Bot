@@ -388,6 +388,12 @@
     <string name="lesson_pinyin_all">Дар ҳама ҷо нишон додан</string>
     <string name="lesson_pinyin_new">Танҳо дар калимаҳои нав</string>
     <string name="lesson_pinyin_off">Пинҳон кардан</string>
+    <string name="profile_accuracy_overall">Ҳамагӣ</string>
+    <string name="profile_accuracy_today">Имрӯз</string>
+    <string name="profile_accuracy_count">%1$d ҷавоби арзёбишуда</string>
+    <string name="profile_accuracy_note">Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад</string>
+    <string name="profile_buy_pro">Гирифтани Pro</string>
+    <string name="profile_access_trial">✦ Pro · Озмоиш</string>
     <string name="profile_calendar_title">Рӯзҳои пайдарпай</string>
     <string name="profile_achievements">Дастовардҳо</string>
     <string name="profile_ach_first">Қадами аввал</string>
