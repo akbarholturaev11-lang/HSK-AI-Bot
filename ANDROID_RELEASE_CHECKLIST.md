@@ -147,28 +147,27 @@ Ikkalasini ham parol menejerida zaxiralang. Bugun.
 
 ---
 
-## 4. Play Market — keyinroq
+## 4. Google Play — 2026-10-14 tayyorgarlik
 
-Tartibi shu, chunki eng uzun qism kod emas, kutish:
+Google tekshiruvi boshlangan, ammo akkaunt va ilova hali tasdiqlangan deb
+hisoblanmaydi. Eskirgan qisqa checklist o‘rniga quyidagi hujjatdagi aniq
+release va policy talablarini tekshiring:
 
-- [ ] **Play Console akkauntini oching** ($25, bir marta). Buni birinchi qiling —
-      shaxsiy akkaunt bo'lsa, production'dan oldin **12 ta tester bilan 14 kun
-      yopiq test** talab qilinadi. Bu kalendar vaqti, ishlash vaqti emas.
-      (Tashkilot akkauntiga bu talab tegishli emas. Qoidalar o'zgargan bo'lishi
-      mumkin — Play Console'da o'zingiz tasdiqlang.)
-- [ ] **Play App Signing'ga BIZNING kalitimizni yuklang** —
-      `~/.pomp-hskai/pomp-hskai-release.jks`. Google o'z kalitini yaratishni
-      taklif qiladi; rozi bo'lsangiz, botdan o'rnatgan odamlar Play versiyasiga
-      **yangilana olmaydi**. Bu qaror bir marta qilinadi va keyin tuzatib
-      bo'lmaydi.
-- [ ] Store listing: nom, tavsif, skrinshotlar — uch tilda (uz/ru/tj)
-- [ ] Maxfiylik siyosati sahifasi (URL kerak bo'ladi)
-- [ ] Data safety formasi
-- [ ] AAB yig'ish: `cd android && ./gradlew bundlePlayRelease`
+**[Google Play launch readiness](docs/GOOGLE_PLAY_LAUNCH_READINESS_2026-10-14.md)**
 
-**Play chiqqandan keyin ham `direct` kanal kerak bo'ladi:** Play Services yo'q
-telefonlar, botdan o'rnatganlar, va Play moderatsiyada turganda tezkor tuzatish
-chiqarish uchun.
+Muhim:
+
+- Mavjud direct APK signing key'ini birinchi Play App Signing uchun
+  **app signing key** sifatida import qilish kerak. Bu upload key bilan bir
+  xil tushuncha emas; Google yangi app signing key yaratsa, eski APK
+  o‘rnatmalari ustiga Play yangilanishi ishlamasligi mumkin.
+- Play Console ruxsatisiz chiqarishni boshlamang. Yangi personal developer
+  akkauntlarda 12 tester / 14 kun closed testing talabi bo‘lishi mumkin.
+- Play kanalida hali Google Play Billing yo‘q: hozircha consumption-only.
+- Google/Apple orqali kirgan, Telegramga ulanmagan foydalanuvchi uchun
+  account deletion oqimini tekshirish va to‘ldirish kerak.
+- **Actions -> Android Play preflight** signed direct APK va Play AAB
+  sertifikatlarini solishtiradi, lekin Google'ga avtomatik yuklamaydi.
 
 ---
 

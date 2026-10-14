@@ -1,0 +1,139 @@
+name: Android Play preflight
+
+# Deliberately manual. This builds a signed Play AAB for review, but NEVER
+# uploads it to Google Play or publishes the direct APK to R2.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  signed-play:
+    name: Verify signed Play and direct packages
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate committed Gradle wrapper
+        run: |
+          set -euo pipefail
+          for f in android/gradlew android/gradlew.bat \
+            android/gradle/wrapper/gradle-wrapper.jar \
+            android/gradle/wrapper/gradle-wrapper.properties; do
+            test -f "$f" || { echo "::error::Missing $f"; exit 1; }
+          done
+          chmod +x android/gradlew
+      - uses: gradle/actions/wrapper-validation@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Check Play and direct source separation
+        working-directory: android
+        run: |
+          set -euo pipefail
+          python3 tools/check_play_release_contract.py
+          python3 tools/check_flavor_parity.py
+          python3 tools/check_strings_translated.py
+
+      - name: Restore the EXISTING release signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.POMP_ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.POMP_ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.POMP_ANDROID_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          for name in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS; do
+            test -n "$(printenv "$name")" || {
+              echo "::error::Missing release signing configuration: $name"
+              exit 1
+            }
+          done
+          test "$#" -eq 0
+          test "$(printf '%s' "$KEYSTORE_BASE64" | wc -c)" -ge 1000 || {
+            echo "::error::Keystore secret does not look like a real keystore"
+            exit 1
+          }
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks"
+          expected="$(awk '/^[[:space:]]*RELEASE_CERT_SHA256: /{print $2; exit}' .github/workflows/android-release.yml)"
+          test -n "$expected" || { echo "::error::Missing pinned direct signing key"; exit 1; }
+          actual="$(keytool -list -v -keystore "$RUNNER_TEMP/release.jks" \
+            -storepass "$KEYSTORE_PASSWORD" -alias "$KEY_ALIAS" \
+            | awk '/^[[:space:]]*SHA256:/{print $2;exit}' | tr -d ':' | tr '[:upper:]' '[:lower:]')"
+          test "$actual" = "$expected" || {
+            echo "::error::Signing key differs from installed direct APKs."
+            exit 1
+          }
+          echo "Release certificate matches the direct APK's pinned signing identity."
+
+      - name: Unit tests, lint, signed direct and Play builds
+        working-directory: android
+        env:
+          POMP_ANDROID_KEYSTORE_FILE: ${{ runner.temp }}/release.jks
+          POMP_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.POMP_ANDROID_KEYSTORE_PASSWORD }}
+          POMP_ANDROID_KEY_ALIAS: ${{ secrets.POMP_ANDROID_KEY_ALIAS }}
+          POMP_ANDROID_KEY_PASSWORD: ${{ secrets.POMP_ANDROID_KEY_PASSWORD }}
+          POMP_FIREBASE_APP_ID: ${{ vars.POMP_FIREBASE_APP_ID }}
+          POMP_FIREBASE_SENDER_ID: ${{ vars.POMP_FIREBASE_SENDER_ID }}
+          POMP_FIREBASE_PROJECT_ID: ${{ vars.POMP_FIREBASE_PROJECT_ID }}
+          POMP_FIREBASE_API_KEY: ${{ vars.POMP_FIREBASE_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$POMP_ANDROID_KEY_PASSWORD" || { echo "::error::Missing signing key password"; exit 1; }
+          ./gradlew --no-daemon testPlayDebugUnitTest lintPlayDebug \
+            assembleDirectRelease assemblePlayRelease bundlePlayRelease
+
+      - name: Validate signatures, package identity, and Play permissions
+        id: signed
+        run: |
+          set -euo pipefail
+          play_apk="$(find android/app/build/outputs/apk/play/release -maxdepth 1 -name '*.apk' -print -quit)"
+          direct_apk="$(find android/app/build/outputs/apk/direct/release -maxdepth 1 -name '*.apk' -print -quit)"
+          aab="$(find android/app/build/outputs/bundle/playRelease -maxdepth 1 -name '*.aab' -print -quit)"
+          test -n "$play_apk" && test -n "$direct_apk" && test -n "$aab" || {
+            echo "::error::Missing Play APK, direct APK or Play AAB"; exit 1;
+          }
+          expected="$(awk '/^[[:space:]]*RELEASE_CERT_SHA256: /{print $2; exit}' .github/workflows/android-release.yml)"
+          build_tools="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)"
+          for apk in "$play_apk" "$direct_apk"; do
+            certs="$("$build_tools/apksigner" verify --print-certs "$apk")"
+            actual="$(printf '%s\n' "$certs" | awk '/certificate SHA-256 digest/ {print $NF;exit}')"
+            test "$actual" = "$expected" || { echo "::error::Wrong APK signing key: $apk"; exit 1; }
+            "$build_tools/aapt2" dump badging "$apk" | grep -q "package: name='com.pomp.hskai' " || {
+              echo "::error::Wrong Android applicationId in $apk"; exit 1;
+            }
+          done
+          if "$build_tools/aapt2" dump permissions "$play_apk" | grep -q REQUEST_INSTALL_PACKAGES; then
+            echo "::error::Play APK includes sideload install permission"; exit 1;
+          fi
+          "$build_tools/aapt2" dump permissions "$direct_apk" | grep -q REQUEST_INSTALL_PACKAGES || {
+            echo "::error::Direct APK lost its update permission"; exit 1;
+          }
+          jarsigner -verify "$aab" | grep -q "jar verified." || {
+            echo "::error::Play AAB signature verification failed"; exit 1;
+          }
+          aab_cert="$(keytool -printcert -jarfile "$aab" \
+            | awk '/^[[:space:]]*SHA256:/{print $2;exit}' | tr -d ':' | tr '[:upper:]' '[:lower:]')"
+          test "$aab_cert" = "$expected" || {
+            echo "::error::Play AAB does not use existing direct release key"; exit 1;
+          }
+          echo "aab=$aab" >> "$GITHUB_OUTPUT"
+          echo "Direct and Play APKs use the same app id and signing key."
+          echo "Play APK excludes sideload permission; AAB signature verified."
+          echo "::notice::In Play Console choose the EXISTING direct app signing key; the upload certificate alone is not enough."
+
+      - name: Upload Play AAB for manual Play Console submission
+        uses: actions/upload-artifact@v4
+        with:
+          name: hsk-ai-play-preflight-aab
+          path: ${{ steps.signed.outputs.aab }}
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Remove temporary keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.jks"

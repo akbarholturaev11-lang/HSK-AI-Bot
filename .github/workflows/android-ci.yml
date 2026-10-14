@@ -126,6 +126,9 @@ jobs:
       - name: Check the distribution flavours have not drifted
         run: python3 tools/check_flavor_parity.py
 
+      - name: Check Google Play channel and key safeguards
+        run: python3 tools/check_play_release_contract.py
+
       - name: Check every string exists in uz, ru and tg
         run: python3 tools/check_strings_translated.py
 
