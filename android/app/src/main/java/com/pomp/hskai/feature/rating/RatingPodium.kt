@@ -101,6 +101,15 @@ internal fun RatingPodium(league: String, memberCount: Int, resetSeconds: Long) 
     }
 }
 
+/** Full Chinese tier names for the illustrated podium only; other badge labels stay unchanged. */
+private fun podiumLeagueName(league: String): String = when (league.lowercase()) {
+    "bronze" -> "玄武"
+    "silver" -> "朱雀"
+    "gold" -> "青龙"
+    "sapphire" -> "凤凰"
+    else -> leagueGlyph(league)
+}
+
 private enum class CupMetal(val light: Color, val medium: Color, val dark: Color, val gloss: Color) {
     GOLD(Color(0xFFFFF3AF), Color(0xFFFFC538), Color(0xFFAD6510), Color(0xFFFFE79D)),
     SILVER(Color(0xFFF8FBFF), Color(0xFFAFBECC), Color(0xFF5B7087), Color(0xFFE4EFF8)),
@@ -145,7 +154,7 @@ private fun CupWithPedestal(
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
-                stringResource(R.string.rating_league_name, leagueGlyph(league)),
+                stringResource(R.string.rating_league_name, podiumLeagueName(league)),
                 fontSize = if (isCenter) 14.sp else 11.sp,
                 lineHeight = if (isCenter) 17.sp else 14.sp,
                 fontWeight = FontWeight.SemiBold,
