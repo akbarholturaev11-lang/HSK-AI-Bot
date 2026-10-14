@@ -348,8 +348,10 @@ fun AssistantModalBottomSheet(
     containerColor: Color = PompColors.PaperRaised.copy(
         alpha = if (PompColors.IsDark) 0.92f else 0.86f,
     ),
+    showAssistant: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    if (!showAssistant) AssistantHidden()
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         modifier = modifier,
@@ -361,10 +363,12 @@ fun AssistantModalBottomSheet(
         dragHandle = { AssistantDragHandle() },
     ) {
         content()
-        val binding = LocalAssistant.current
-        val state = binding?.controller?.state?.collectAsStateWithLifecycle()?.value
-        if (state?.enabled == true) Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.End) {
-            AssistantButton(onClick = binding.open)
+        if (showAssistant) {
+            val binding = LocalAssistant.current
+            val state = binding?.controller?.state?.collectAsStateWithLifecycle()?.value
+            if (state?.enabled == true) Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.End) {
+                AssistantButton(onClick = binding.open)
+            }
         }
     }
 }

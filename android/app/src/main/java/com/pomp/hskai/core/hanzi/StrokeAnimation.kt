@@ -61,7 +61,7 @@ data class CharacterStrokes(
  *
  * **How long it takes.** Each stroke's duration follows its own length, so a
  * long sweeping stroke is not over in the same instant as a short tick, and
- * the strokes are separated by a pause. Both are the Mini App's numbers.
+ * the strokes are separated by a pause, with a slower native learning pace.
  *
  * The stroke paths are given in a grid whose y axis points up, so the whole
  * set is flipped once and scaled to the canvas — by [HanziGrid], the same
@@ -101,8 +101,8 @@ fun StrokeAnimation(
             return@LaunchedEffect
         }
         if (!isPlaying) return@LaunchedEffect
-        // One stroke at a time, each paced by its own length, with the Mini
-        // App's pause in between. Animating the whole character as a single
+        // One stroke at a time, each paced by its own length, with a short
+        // pause in between. Animating the whole character as a single
         // linear sweep was what made it read as fast and mechanical.
         val nextStroke = progress.value.toInt().coerceAtLeast(0)
         for (index in nextStroke until strokes.medians.size) {
@@ -205,14 +205,14 @@ internal fun partial(path: Path, fraction: Float): Path {
     return cut
 }
 
-// hanzi-writer's own pacing: `(length + 600) / 3` at its default speed of 1.
+// Keep length-based timing, about 30% slower than hanzi-writer's default pace.
 private const val STROKE_DURATION_BASE = 600f
-private const val STROKE_DURATION_DIVISOR = 3f
-private const val MIN_STROKE_MILLIS = 220
-private const val MAX_STROKE_MILLIS = 900
+private const val STROKE_DURATION_DIVISOR = 2.3f
+private const val MIN_STROKE_MILLIS = 290
+private const val MAX_STROKE_MILLIS = 1200
 
-/** `delayBetweenStrokes` on the Mini App's dictionary writer. */
-internal const val DELAY_BETWEEN_STROKES_MILLIS = 280L
+/** A brief pause makes each stroke's start and order easier to follow. */
+internal const val DELAY_BETWEEN_STROKES_MILLIS = 380L
 
 /**
  * Brush width as a share of the 1024 grid.

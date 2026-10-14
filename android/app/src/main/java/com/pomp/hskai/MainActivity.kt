@@ -429,7 +429,11 @@ private fun AppRoot(
                 onDispose { widgetLifecycle.removeObserver(observer) }
             }
             LaunchedEffect(widgetForegroundTick, offline) {
-                if (widgetForegroundTick > 0 && !offline) courseViewModel.load()
+                if (widgetForegroundTick > 0 && !offline) {
+                    courseViewModel.load()
+                    // External Pro grants/expiry must reach the shared access refresh effect.
+                    profileViewModel.load()
+                }
             }
 
             // Onboarding uses the same full-screen widget prompt as the daily reminder.
@@ -1295,6 +1299,7 @@ private fun AppRoot(
                 val voiceCallActive = selectedTab == MainTab.VOICE &&
                     voiceState.hasSession &&
                     voiceState.result == null
+                val practiceImmersive = selectedTab == MainTab.PRACTICE && practiceState.isImmersive
 
                 // Kurs is the home screen: back from any other tab lands on it,
                 // and only back from Kurs leaves the app. Registered before the
@@ -1309,7 +1314,7 @@ private fun AppRoot(
                         onTabSelected = {
                             if (it == MainTab.PRACTICE) openPracticeTab() else selectedTab = it
                         },
-                        bottomBarVisible = !voiceCallActive,
+                        bottomBarVisible = !voiceCallActive && !practiceImmersive,
                         topNotice = reconnect?.let { retry ->
                             { OfflineBanner(retrying = retry.retrying, onRetry = retry::retryNow) }
                         },

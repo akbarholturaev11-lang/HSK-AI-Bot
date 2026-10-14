@@ -95,7 +95,7 @@ fun WordDrillScreen(
     onRetry: () -> Unit,
     onClose: () -> Unit,
 ) {
-    AssistantScreen(wordDrillAssistantContext(state), bottomBar = false)
+    AssistantScreen(wordDrillAssistantContext(state), bottomBar = false, showButton = false)
     // Mid-drill the ✕ and the phone's back ask first; the back used to close
     // the app. The loader, the limit block and the summary just leave.
     val requestClose = rememberExitGuard(

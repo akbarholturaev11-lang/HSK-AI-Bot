@@ -66,6 +66,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
@@ -667,11 +668,14 @@ private fun CourseChoiceSheet(
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
+        modifier = Modifier.testTag("course-choice-sheet"),
         sheetState = sheetState,
         containerColor = PompColors.PaperRaised,
+        showAssistant = false,
     ) {
         Column(
-            Modifier.fillMaxWidth().padding(start = 18.dp, end = 18.dp, bottom = 28.dp),
+            Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
+                .padding(start = 18.dp, end = 18.dp, bottom = 16.dp),
         ) {
             Text(
                 stringResource(R.string.course_choice_title),

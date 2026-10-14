@@ -157,6 +157,33 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
         progress = await CourseProgressRepository(session).get_by_user_id(1)
         return int(progress.completed_lessons_count or 0)
 
+    async def test_track_switch_records_analytics_for_the_authenticated_user(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            await AndroidCourseService(session, _settings()).switch_course_track(
+                token, target_track="hsk20", level="hsk2",
+            )
+            event = (await session.execute(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == "course_track_switched",
+            ))).scalar_one()
+            self.assertEqual((1, 1001), (event.user_id, event.telegram_id))
+            self.assertEqual("android_course_track", event.source)
+            self.assertEqual("hsk2", event.level)
+
+    async def test_promo_shown_records_analytics_for_the_authenticated_user(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            with patch(
+                "app.services.android_course_service.Hsk30PromoService.mark_shown",
+                new=AsyncMock(return_value={"recorded": True, "shown_count": 1}),
+            ):
+                await AndroidCourseService(session, _settings()).mark_hsk30_promo_shown(token)
+            event = (await session.execute(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.event_name == "hsk30_promo_shown",
+            ))).scalar_one()
+            self.assertEqual((1, 1001), (event.user_id, event.telegram_id))
+            self.assertEqual({"shown_count": 1}, json.loads(event.payload_json))
+
     @staticmethod
     def _flatten(data):
         return [lesson for unit in data["units"] for lesson in unit["lessons"]]

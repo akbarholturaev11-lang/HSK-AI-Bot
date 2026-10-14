@@ -22,6 +22,7 @@ Frontend:
 - Admin V2 remains a single `app/static/admin.html` with existing authenticated API/action handlers. Seven presentation routes in `adminRoutes` reuse the five original view IDs; `adminModuleGroups` maps backend module keys to inner navigation. Route settings reuse the same `#drawer` DOM inside `#modulePanel` in the main content; user/profile actions retain the overlay drawer. Single-module tabs open their form directly. Finance `prices` and `methods` share the backend `prices` permission but render separate tariff and bank/QR forms. Keep IDs unique, preserve route context when refreshing after saves, and invalidate pending module/user-detail renders on navigation or session denial. `openDrawer` and `openModule` must refuse to open while `#app` is hidden. The offline preview is fixture-only; production always uses Telegram admin authentication.
 - Lesson completion shows the result, then the streak celebration only when the server confirms a new counted day (`streak_updated`, positive streak, neither duplicate flag). Mini App consumes `_pendingStreak`; Android queues `STREAK` after `COMPLETE`. Checkpoint continuation retains the existing sales/access flow. Rank interstitials remain disabled.
 - Mini App's result CTA stops click propagation when opening the streak: otherwise the same tap reaches the newly registered cinematic skip listener and immediately skips the panda flight. Regression coverage: `tests/e2e/test_lesson_streak_celebration.py` and Android `LessonStreakCelebrationTest`.
+- Android practice attempts and completion scenes share `PracticeUiState.isImmersive`: `MainActivity` hides the tab bar and `PracticeScreen` suppresses the floating assistant until the attempt/result exits. `SectionLimitOverlay` suppresses the assistant independently and pins its action outside scrollable content. Preserve `PracticeImmersiveLayoutTest` and `SectionLimitOverlayTest` to prevent covered continuation/purchase actions.
 
 Backend:
 - FastAPI API plus Aiogram bot handlers; async SQLAlchemy services own business rules.
@@ -254,6 +255,33 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 ---
 
 ## 10. Recent Important Changes
+
+### 2026-10-14 — Android assistant photo runtime dependency
+
+Changed:
+- `Pillow==12.3.0` is pinned in backend `requirements.txt`; real PNG upload normalization and invalid-image regressions cover `decode_media()`.
+Why:
+- Production photo requests returned HTTP 500 / `ModuleNotFoundError: PIL` before reaching the AI provider. The import is lazy, so ordinary text-assistant tests did not detect the missing runtime dependency.
+Files touched:
+- `requirements.txt`, `tests/test_android_assistant_service.py`.
+Risk:
+- Low: no access/payment rule changes. A backend rebuild is required; an Android APK update alone cannot repair this server failure.
+Follow-up:
+- After deployment, retry a real Pro photo request and verify normalization, the provider reply and HTTP 200. Keep image tests running after installing only production requirements.
+
+### 2026-10-14 — Android tashqi Pro grantini foregroundda yangilash
+
+Changed:
+- MainActivity foregroundga qaytganda kurs bilan birga profil/trial holatini ham qayta o'qiydi. Admin yoki bot orqali berilgan Pro umumiy access refresh oqimiga yetib boradi.
+- Android kurs tracki va HSK 3.0 promo analitikasi `user_id` argumentidan foydalanadi; noto'g'ri `user` argumenti hodisani saqlashni buzgan.
+Why:
+- Pro serverda faol bo'lsa ham ochiq ilova profili bepul holatda qolgan; cold restartdan keyingina yangilangan.
+Files touched:
+- `android/app/src/main/java/com/pomp/hskai/MainActivity.kt`, `app/services/android_course_service.py`, `tests/test_android_course_api.py`.
+Risk:
+- Low: access qarori, muddat va limitlar serverda qoladi; foregroundda qo'shimcha profil/trial o'qish bajariladi. Backend analitika fixi productionga chiqarilmaguncha eski server xatosi qoladi.
+Follow-up:
+- Pro grantini ilovani qayta o'rnatmasdan background/resume bilan tekshiring; analitika regressiyasi haqiqiy hodisa qatori saqlanganini tekshiradi.
 
 ### 2026-10-07 — Android Foundation completion wire contract
 
@@ -8351,6 +8379,11 @@ Risk:
 ---
 
 ## 11. Known Problems
+
+### Placement quiz context (Pixel Pro QA, 2026-10-14)
+
+- HSK1 lesson 2 placement material (`hsk1:2:1`) shows only `____` for a fill-blank question. `_blank_sentence()` in `course_miniapp_lesson_service.py` permits replacing the entire source phrase (e.g. 不客气), leaving no context.
+- Open: reject such generated clozes using source-backed material and add a regression. Preserve in-flight practice grading/session compatibility; never show the explanation or answer key as a pre-answer hint. Pro access and result submission themselves worked.
 
 ### Problem 1
 Problem:

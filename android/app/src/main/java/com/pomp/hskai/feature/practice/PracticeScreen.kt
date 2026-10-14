@@ -133,7 +133,11 @@ fun PracticeScreen(
     modifier: Modifier = Modifier,
 ) {
     var mistakesOpen by rememberSaveable { mutableStateOf(false) }
-    AssistantScreen(practiceAssistantContext(state, level, mistakesOpen), bottomBar = true)
+    AssistantScreen(
+        practiceAssistantContext(state, level, mistakesOpen),
+        bottomBar = !state.isImmersive,
+        showButton = !state.isImmersive,
+    )
 
     HskSceneSurface(
         modifier = modifier.fillMaxSize(),

@@ -131,6 +131,10 @@ data class PracticeUiState(
     val isPracticeRunning: Boolean get() = session != null && result == null
     val isReviewRunning: Boolean get() = reviewSession != null && reviewResult == null
     val isExamRunning: Boolean get() = examSession != null && examResult == null
+    /** Attempts and their completion scenes own the whole learning surface. */
+    val isImmersive: Boolean
+        get() = isStarting || isPracticeRunning || isReviewRunning || isExamRunning ||
+            result != null || reviewResult != null || examResult != null
 }
 
 class PracticeViewModel(
