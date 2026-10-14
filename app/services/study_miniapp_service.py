@@ -103,9 +103,6 @@ class StudyMiniAppService:
         progress = await self.progress_repo.get_by_user_id(user.id)
         gamification = await CourseGamificationService(self.session).snapshot(user, profile=profile)
         support_url = await get_admin_contact_url(self.session)
-        accuracy = await CourseAnswerAccuracyService(self.session).summarize(
-            user_id=user.id, timezone_offset_minutes=profile.timezone_offset_minutes,
-        )
         return {
             "status": "active" if paid else access_state,
             "language": getattr(user, "language", None) or "uz",
@@ -135,6 +132,9 @@ class StudyMiniAppService:
         features = await CourseMiniAppAccessService(self.session).get_entitlements(user)
         progress = await self.progress_repo.get_by_user_id(user.id)
         support_url = await get_admin_contact_url(self.session)
+        accuracy = await CourseAnswerAccuracyService(self.session).summarize(
+            user_id=user.id, timezone_offset_minutes=profile.timezone_offset_minutes,
+        )
         mistakes_result = await self.session.execute(
             select(func.coalesce(func.sum(CourseMistake.wrong_count - CourseMistake.resolved_count), 0)).where(
                 CourseMistake.user_id == user.id,
