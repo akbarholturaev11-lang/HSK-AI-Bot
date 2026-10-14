@@ -386,6 +386,7 @@
     <string name="lesson_pinyin_all">Показывать везде</string>
     <string name="lesson_pinyin_new">Только в новых словах</string>
     <string name="lesson_pinyin_off">Скрыть</string>
+    <string name="profile_access_trial">✦ Pro · Пробный</string>
     <string name="profile_accuracy_overall">Всего</string>
     <string name="profile_accuracy_today">Сегодня</string>
     <string name="profile_accuracy_count">%1$d проверенных ответов</string>
