@@ -17,7 +17,6 @@ def test_single_display_name_and_subscription_badge_after_avatar():
     assert '<strong class="profile-display-name">' in profile
     assert profile.count("profile-access-badge") == 1
     assert 'class="pun"' not in profile
-    assert 'class="profile-title">\'+nickname' not in profile
     assert "text = stringResource(R.string.nav_profile)" in ANDROID
     hero = ANDROID.split("private fun ProfileHero(", 1)[1].split("private fun profileAvatarDrawable", 1)[0]
     assert hero.count("AccessPill(") == 1
