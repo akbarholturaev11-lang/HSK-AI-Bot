@@ -93,10 +93,7 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .htop.profile-head{justify-content:space-between}
 .profile-head .profile-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .profile-head-actions{display:flex;align-items:center;gap:3px;flex-shrink:0}
-.profile-head .profile-settings,.profile-head .profile-pro-cta{width:42px;height:42px;flex:0 0 42px;border:0;box-shadow:none;background:transparent}
-.profile-head .profile-pro-cta{display:grid;place-items:center;color:var(--gold);cursor:pointer;border-radius:50%}
-.profile-head .profile-pro-cta i{font-size:25px}
-.profile-head .profile-pro-cta:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.profile-head .profile-settings{width:42px;height:42px;flex:0 0 42px;border:0;box-shadow:none;background:transparent}
 /* Compact secondary tab headers; keep the native safe area in .wrap. */
 .scr:not(#s-course)>.htop{padding-top:6px}
 .section-title,.profile-title{margin:0;color:var(--ink);font-size:var(--hsk-section-title-size,20px);line-height:var(--hsk-section-title-line-height,1.2);font-weight:700;letter-spacing:-.01em}
@@ -529,6 +526,22 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .t-amber{background:#F8EFD9;color:#B07A1E}.t-blue{background:#E7F0F8;color:#2F6F9E}.t-jade{background:var(--jadebg);color:var(--jade)}.t-cin{background:var(--cinbg);color:var(--cin2)}
 .sech{font-size:13px;color:var(--ink2);font-weight:500;margin:18px 18px 9px}
 /* profile */
+#s-profile .profile-friends-link,
+#s-profile .card2,
+#s-profile .profile-compact-ach .arow{background:color-mix(in srgb,var(--card) 55%,var(--paper) 45%);border-color:color-mix(in srgb,var(--line) 72%,transparent)}
+#s-profile .profile-friends-link{transition:background .18s ease}
+#s-profile .profile-friends-link:active{background:var(--card)}
+.profile-access-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;line-height:1.25;font-weight:700;padding:4px 9px;border-radius:999px;border:1px solid transparent}
+.profile-access-status.free{background:color-mix(in srgb,var(--line) 35%,var(--paper) 65%);color:var(--ink2);border-color:var(--line)}
+.profile-access-status.trial{background:color-mix(in srgb,var(--jadebg) 65%,var(--paper) 35%);color:var(--jade)}
+.profile-access-status.pro{background:linear-gradient(115deg,#fff1c9,#f5d482 58%,#f4b96c);border-color:#e5c17a;color:#88520e;box-shadow:0 1px 4px rgba(170,110,31,.10)}
+.profile-meta-line{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px}
+.profile-meta-line .lvb{margin-top:0}
+.profile-upgrade-link{display:flex;align-items:center;gap:10px;min-height:44px;width:calc(100% - 32px);margin:10px 16px 3px;padding:9px 12px;border-radius:12px;border:1px solid color-mix(in srgb,var(--gold) 32%,var(--line));background:color-mix(in srgb,var(--goldbg) 22%,var(--paper) 78%);color:var(--ink);font:inherit;font-size:13px;font-weight:650;text-align:left;cursor:pointer}
+.profile-upgrade-link .ti-crown{font-size:19px;color:var(--gold)}
+.profile-upgrade-link .ti-chevron-right{margin-left:auto;color:var(--ink3)}
+.profile-upgrade-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
 .profile-friends-link{margin:9px 16px 3px;width:calc(100% - 32px);min-height:42px;padding:8px 12px;display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;font-size:13px;font-weight:600;text-align:left;cursor:pointer}
 .profile-friends-link .ti-users{font-size:18px;color:var(--jade)}
 .profile-friends-link .ti-chevron-right{margin-left:auto;color:var(--ink3);font-size:16px}
@@ -6415,23 +6428,35 @@ function pollSignInLink(pending,deadline){
   },2000);
 }
 
+function profileAccessLabels(){
+  return ({
+    ru:{free:"Бесплатно",trial:"Пробный период",pro:"Pro",upgrade:"Получить Pro"},
+    tj:{free:"Ройгон",trial:"Давраи санҷишӣ",pro:"Pro",upgrade:"Гирифтани Pro"},
+    uz:{free:"Bepul",trial:"Sinov muddati",pro:"Pro",upgrade:"Pro olish"}
+  })[LANG]||{free:"Bepul",trial:"Sinov muddati",pro:"Pro",upgrade:"Pro olish"};
+}
 function renderProfile(){
-  var t=T(),p=pl();
+  var t=T(),p=pl(),a=profileAccessLabels();
   var streak=Number(MAP&&MAP.progress&&MAP.progress.streak||0);
   var completedLessons=Number(MAP&&MAP.progress&&MAP.progress.completed||0);
   var lessonAchPct=Math.min(100,Math.round(completedLessons/100*100));
   var streakAchPct=Math.min(100,Math.round(streak/30*100));
   var plan=String((MAP&&MAP.user&&MAP.user.plan)||(PROF&&PROF.plan)||"").toLowerCase();
-  var trialActive=!!(TRIAL_STATE&&TRIAL_STATE.active);
-  var showCrown=!isPaidUser()&&!trialActive&&plan!=="trial"&&plan!=="temp"&&plan!=="pro";
+  var isPro=isPaidUser();
+  var trialActive=!isPro&&(!!(TRIAL_STATE&&TRIAL_STATE.active)||plan==="trial"||plan==="temp"||plan==="temporary_trial");
+  var showUpgrade=!isPro&&!trialActive;
+  var accessClass=isPro?"pro":trialActive?"trial":"free";
+  var accessLabel=isPro?a.pro:trialActive?a.trial:a.free;
+  var accessIcon=isPro?"crown":trialActive?"clock":"user";
   var nickname=esc(PROF.name||t.you);
+  var handle=PROF.username?String(PROF.username).replace(/^@/,""):String(PROF.name||"hsk_ai").toLowerCase().replace(/\s+/g,"_");
   $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+nickname+'</h1><div class="profile-head-actions">'
-    +(showCrown?'<button class="profile-pro-cta" type="button" aria-label="HSK AI Pro" onclick="App.goPay(\'profile_crown\')"><i class="ti ti-crown" aria-hidden="true"></i></button>':'')
     +'<button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div></div>'
-    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pname">'+nickname+'</div><div class="pun">'+(PROF.name?"@"+esc(PROF.name.toLowerCase().replace(/\s+/g,"_")):"@hsk_ai")+'</div>'+(goalLabel()?'<span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span>':'')+'</div></div>'
+    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div style="min-width:0"><div class="pun">@'+esc(handle)+'</div><div class="profile-meta-line"><span class="profile-access-status '+accessClass+'"><i class="ti ti-'+accessIcon+'" aria-hidden="true"></i>'+esc(accessLabel)+'</span>'+(goalLabel()?'<span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span>':'')+'</div></div></div>'
     +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(t.friends)+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
     +'<div id="pomp-desktop-profile-root"></div>'
     +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+t.streak+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'
+    +(showUpgrade?'<button type="button" class="profile-upgrade-link" onclick="App.goPay(\'profile_upgrade\')"><i class="ti ti-crown" aria-hidden="true"></i><span>'+esc(a.upgrade)+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>':'')
     +'<div class="sech">'+p.ach+'</div><div class="profile-compact-ach">'
     +'<div class="arow"><div class="aic c1"><i class="ti ti-book"></i></div><div class="at"><div class="ah"><span>'+p.a2+'</span><small>'+completedLessons+' / 100</small></div><div class="abar"><i style="width:'+lessonAchPct+'%"></i></div></div></div>'
     +'<div class="arow"><div class="aic c2"><i class="ti ti-flame"></i></div><div class="at"><div class="ah"><span>'+p.a3+'</span><small>'+streak+' / 30</small></div><div class="abar"><i style="width:'+streakAchPct+'%"></i></div></div></div></div>'
