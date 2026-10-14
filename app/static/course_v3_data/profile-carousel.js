@@ -1,7 +1,7 @@
 (function(){
   "use strict";
   /* Compact profile-only carousel. Paywall and course switch remain server-owned. */
-  var current=0, timer=null, root=null, suppressClickUntil=0;
+  var current=1, timer=null, root=null, suppressClickUntil=0;
   var ORDER=["apps","hsk30","pro"];
   var LABELS={
     ru:{apps:"Приложения HSK AI",appsBody:"Android, MacBook и Windows — учитесь на своём устройстве",appsCta:"Смотреть приложения",newBody:"Новые учебники HSK 1–3. Ваш прогресс сохранится.",versionCta:"Выбрать версию",confirmTitle:"Перейти на HSK 3.0?",confirmBody:"После подтверждения откроется сохранённый уровень или выбор уровня при первом переходе.",confirm:"Продолжить",cancel:"Отмена",proActive:"Подписка активна",proAction:"Тарифы HSK AI Pro",renew:"Продлить Pro",loading:"Проверяем доступ…"},

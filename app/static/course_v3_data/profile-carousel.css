@@ -24,3 +24,13 @@
 .hp-confirm-buttons button{width:100%;min-height:48px;border:0;border-radius:13px;background:var(--cin);color:var(--cin-ink);font-weight:700}
 .hp-confirm-buttons .hp-confirm-cancel{background:transparent;color:var(--ink2)}
 @media(prefers-reduced-motion:reduce){.hp-promo,.hp-promo *{transition:none!important;animation:none!important}}
+/* 2026-10-14: Selected HSK 3.0 pagoda card, same 170px slot/17px radius. */
+.hp-promo-version{background:#31231e url("/assets/hsk-profile-pagoda.svg?v=20261014-1") center center/cover no-repeat;isolation:isolate}
+.hp-promo-version::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(28,21,18,.76) 0%,rgba(37,24,20,.48) 52%,rgba(29,22,19,.02) 100%);z-index:-1}
+.hp-promo-version .hp-promo-icon{background:rgba(255,255,255,.13);color:#ffbd23}
+.hp-promo-version .hp-promo-action{background:#ffbd23;color:#211b15}
+.hp-promo-content,.hp-promo-footer{position:relative;z-index:1}
+.hp-promo-content{animation:hp-promo-slide-enter .28s ease-out both}
+.hp-promo-footer{animation:hp-promo-slide-enter .32s ease-out both}
+@keyframes hp-promo-slide-enter{from{opacity:.55;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.hp-promo-content,.hp-promo-footer{animation:none!important}}

@@ -235,7 +235,6 @@ fun ProfileScreen(
                     accountIsPaid = account.isPaid,
                     state = state,
                     checkoutAvailable = subscriptionCheckoutAvailable,
-                    onOpenApps = onOpenApps,
                     onOpenHsk30 = {
                         when {
                             courseTrack == "hsk30" -> onOpenCourse()

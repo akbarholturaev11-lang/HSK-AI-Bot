@@ -1,5 +1,6 @@
 package com.pomp.hskai.feature.profile
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.matchParentSize
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -32,8 +34,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -54,19 +59,21 @@ internal fun ProfilePromoCarousel(
     state: ProfileUiState,
     accountIsPaid: Boolean,
     checkoutAvailable: Boolean,
-    onOpenApps: () -> Unit,
     onOpenHsk30: () -> Unit,
     onOpenSubscription: (Boolean) -> Unit,
     onStartTrial: () -> Unit,
 ) {
-    // The Play flavour intentionally does not expose subscription purchase UI.
+    // Do not advertise app downloads inside the installed Android app.
+    // Play continues to hide checkout/Pro, without changing purchase policy.
     val slides = remember(checkoutAvailable) {
-        if (checkoutAvailable) listOf("apps", "hsk30", "pro") else listOf("apps", "hsk30")
+        if (checkoutAvailable) listOf("hsk30", "pro") else listOf("hsk30")
     }
     var index by remember(slides) { mutableIntStateOf(0) }
     LaunchedEffect(index, slides) {
-        delay(4800)
-        index = (index + 1) % slides.size
+        if (slides.size > 1) {
+            delay(4800)
+            index = (index + 1) % slides.size
+        }
     }
     val kind = slides[index]
     val subscription = state.profile?.subscription
@@ -79,17 +86,11 @@ internal fun ProfilePromoCarousel(
     val action: String
     val mark: String
     when (kind) {
-        "apps" -> {
-            title = stringResource(R.string.profile_promo_apps)
-            summary = stringResource(R.string.profile_promo_apps_body)
-            action = stringResource(R.string.profile_promo_apps_open)
-            mark = "📱"
-        }
         "hsk30" -> {
             title = "HSK 3.0"
             summary = stringResource(R.string.profile_promo_hsk30_body)
             action = stringResource(R.string.profile_promo_hsk30_open)
-            mark = "📚"
+            mark = "▤"
         }
         else -> {
             title = when {
@@ -110,12 +111,11 @@ internal fun ProfilePromoCarousel(
                 canTrial -> stringResource(R.string.profile_promo_start_trial)
                 else -> stringResource(R.string.profile_subscription_buy)
             }
-            mark = "⭐"
+            mark = "★"
         }
     }
     val openCard = {
         when (kind) {
-            "apps" -> onOpenApps()
             "hsk30" -> onOpenHsk30()
             else -> onOpenSubscription(isPaid)
         }
@@ -128,12 +128,16 @@ internal fun ProfilePromoCarousel(
                 detectHorizontalDragGestures(
                     onDragStart = { drag = 0f },
                     onDragEnd = {
-                        if (drag < -35f) index = (index + 1) % slides.size
-                        else if (drag > 35f) index = (index + slides.size - 1) % slides.size
+                        if (slides.size > 1) {
+                            if (drag < -35f) index = (index + 1) % slides.size
+                            else if (drag > 35f) index = (index + slides.size - 1) % slides.size
+                        }
                     },
                     onHorizontalDrag = { change, distance ->
-                        change.consume()
-                        drag += distance
+                        if (slides.size > 1) {
+                            change.consume()
+                            drag += distance
+                        }
                     },
                 )
             }
@@ -142,56 +146,79 @@ internal fun ProfilePromoCarousel(
         color = PromoPaper,
         shadowElevation = 5.dp,
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth().heightIn(min = 170.dp).padding(17.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            if (kind == "hsk30") {
                 Box(
-                    modifier = Modifier.size(46.dp).background(Color.White.copy(alpha = 0.12f), RoundedCornerShape(13.dp)),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(mark, fontSize = 23.sp)
-                }
-                Column(Modifier.weight(1f)) {
-                    Text(title, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    Text(
-                        summary,
-                        fontSize = 12.sp,
-                        lineHeight = 17.sp,
-                        color = Color.White.copy(alpha = 0.72f),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-                Text("›", color = Color.White.copy(alpha = 0.65f), fontSize = 24.sp)
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Button(
-                    enabled = kind != "pro" || (!state.trialStarting && checkoutAvailable),
-                    onClick = {
-                        if (kind == "pro" && canTrial) onStartTrial()
-                        else openCard()
-                    },
-                    modifier = Modifier.weight(1f, fill = false).heightIn(min = 40.dp),
-                    shape = RoundedCornerShape(11.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = PromoGold, contentColor = PromoPaper),
-                ) {
-                    Text(action, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, maxLines = 2)
-                }
-                Spacer(Modifier.width(9.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
-                    slides.forEachIndexed { dot, _ ->
-                        Box(
-                            Modifier
-                                .size(width = if (dot == index) 19.dp else 6.dp, height = 6.dp)
-                                .background(if (dot == index) PromoGold else Color.White.copy(alpha = 0.35f), CircleShape)
-                                .clickable { index = dot },
+                    Modifier.matchParentSize()
+                        .background(Brush.horizontalGradient(listOf(Color(0xFF31231E), Color(0xFF854627))))
+                )
+                Image(
+                    painter = painterResource(R.drawable.profile_promo_pagoda),
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier.matchParentSize(),
+                )
+                Box(
+                    Modifier.matchParentSize().background(
+                        Brush.horizontalGradient(
+                            listOf(Color(0xDA201916), Color(0x8E2A1E19), Color(0x16251C18))
                         )
+                    )
+                )
+            }
+            Column(
+                modifier = Modifier.fillMaxWidth().heightIn(min = 170.dp).padding(17.dp),
+                verticalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Box(
+                        modifier = Modifier.size(46.dp).background(Color.White.copy(alpha = 0.12f), RoundedCornerShape(13.dp)),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(mark, fontSize = 26.sp, fontWeight = FontWeight.Medium, color = PromoGold)
+                    }
+                    Column(Modifier.weight(1f)) {
+                        Text(title, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text(
+                            summary,
+                            fontSize = 12.sp,
+                            lineHeight = 17.sp,
+                            color = Color.White.copy(alpha = 0.77f),
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                    Text("›", color = Color.White.copy(alpha = 0.65f), fontSize = 24.sp)
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Button(
+                        enabled = kind != "pro" || (!state.trialStarting && checkoutAvailable),
+                        onClick = {
+                            if (kind == "pro" && canTrial) onStartTrial()
+                            else openCard()
+                        },
+                        modifier = Modifier.weight(1f, fill = false).heightIn(min = 40.dp),
+                        shape = RoundedCornerShape(11.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = PromoGold, contentColor = PromoPaper),
+                    ) {
+                        Text(action, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, maxLines = 2)
+                    }
+                    if (slides.size > 1) {
+                        Spacer(Modifier.width(9.dp))
+                        Row(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
+                            slides.forEachIndexed { dot, _ ->
+                                Box(
+                                    Modifier
+                                        .size(width = if (dot == index) 19.dp else 6.dp, height = 6.dp)
+                                        .background(if (dot == index) PromoGold else Color.White.copy(alpha = 0.35f), CircleShape)
+                                        .clickable { index = dot },
+                                )
+                            }
+                        }
                     }
                 }
             }
