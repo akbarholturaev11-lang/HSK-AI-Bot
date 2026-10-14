@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material.icons.filled.Widgets
@@ -178,6 +179,13 @@ fun ProfileScreen(
         settingsOpen = true
     }
 
+    val isPro = account.isPaid || state.profile?.subscription?.isPaid == true
+    val trialActive = !isPro && (
+        state.trial?.active == true ||
+            state.profile?.subscription?.status == "temporary_trial"
+    )
+    val showUpgrade = subscriptionCheckoutAvailable && !isPro && !trialActive
+
     HskSceneSurface(modifier = modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -193,12 +201,6 @@ fun ProfileScreen(
             item {
                 ProfileToolbar(
                     nickname = state.profile?.user?.name?.takeIf { it.isNotBlank() } ?: account.displayName,
-                    showProCrown = subscriptionCheckoutAvailable &&
-                        !account.isPaid &&
-                        state.profile?.subscription?.isPaid != true &&
-                        state.trial?.active != true &&
-                        state.profile?.subscription?.status != "temporary_trial",
-                    onOpenPro = { onOpenSubscription(false) },
                     onOpenSettings = openSettings,
                     hints = hints,
                     onDismissHint = onDismissHint,
@@ -210,6 +212,8 @@ fun ProfileScreen(
                     account = account,
                     state = state,
                     courseUser = courseUser,
+                    isPro = isPro,
+                    isTrial = trialActive,
                     onOpenAccount = {
                         identitiesOpen = true
                         onLoadIdentities()
@@ -218,6 +222,9 @@ fun ProfileScreen(
             }
             item { ProfileFriendsLink(onOpenFriends = onOpenFriends) }
             item { StreakCalendar(progress = courseProgress, dailyXp = dailyXp) }
+            if (showUpgrade) {
+                item { ProfileUpgradeLink(onClick = { onOpenSubscription(false) }) }
+            }
             item {
                 Achievements(
                     completedLessons = courseProgress?.completedLessons
@@ -410,8 +417,6 @@ fun ProfileScreen(
 @Composable
 private fun ProfileToolbar(
     nickname: String,
-    showProCrown: Boolean,
-    onOpenPro: () -> Unit,
     onOpenSettings: () -> Unit,
     hints: List<AndroidHintDto>,
     onDismissHint: (String) -> Unit,
@@ -430,14 +435,6 @@ private fun ProfileToolbar(
             modifier = Modifier.weight(1f),
         )
         SectionHint(hints = hints, section = "profile", onDismiss = onDismissHint)
-        if (showProCrown) {
-            Box(
-                modifier = Modifier.size(42.dp).clickable(onClick = onOpenPro),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text("👑", fontSize = 24.sp, textAlign = TextAlign.Center)
-            }
-        }
         Box(
             modifier = Modifier.size(42.dp).clickable(onClick = onOpenSettings),
             contentAlignment = Alignment.Center,
@@ -466,6 +463,8 @@ private fun ProfileHero(
     account: LinkedAccount,
     state: ProfileUiState,
     courseUser: CourseUser?,
+    isPro: Boolean,
+    isTrial: Boolean,
     onOpenAccount: () -> Unit,
 ) {
     val profile = state.profile
@@ -500,14 +499,22 @@ private fun ProfileHero(
                     }
                 }
             }
-            Column(modifier = Modifier.padding(start = 14.dp).weight(1f)) {
-                Text(
-                    text = profile?.user?.name?.ifBlank { account.displayName } ?: account.displayName,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = PompColors.Ink,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+            Column(
+                modifier = Modifier.padding(start = 14.dp).weight(1f),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                // Only show the real Telegram username, not a second copy of the display name.
+                val username = profile?.user?.telegramUsername.orEmpty().trim().removePrefix("@")
+                if (username.isNotBlank()) {
+                    Text(
+                        text = "@$username",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = PompColors.InkSecondary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+                ProfileAccessStatus(isPro = isPro, isTrial = isTrial)
             }
     }
 }
@@ -588,12 +595,74 @@ private fun StatMetric(label: String, value: String, modifier: Modifier = Modifi
 }
 
 @Composable
+private fun ProfileAccessStatus(isPro: Boolean, isTrial: Boolean) {
+    val label = when {
+        isPro -> stringResource(R.string.profile_access_pro)
+        isTrial -> stringResource(R.string.profile_access_trial)
+        else -> stringResource(R.string.profile_access_free)
+    }
+    val bg = when {
+        isPro -> PompColors.GoldSoft
+        isTrial -> PompColors.JadeSoft
+        else -> PompColors.PaperRaised.copy(alpha = 0.75f)
+    }
+    val fg = when {
+        isPro -> PompColors.GoldInk
+        isTrial -> PompColors.JadeInk
+        else -> PompColors.InkSecondary
+    }
+    Surface(
+        color = bg,
+        shape = RoundedCornerShape(50),
+        border = BorderStroke(1.dp, if (isPro) PompColors.Gold.copy(alpha = 0.6f) else PompColors.Divider.copy(alpha = 0.55f)),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 9.dp, vertical = 5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+            if (isPro) {
+                Icon(Icons.Filled.WorkspacePremium, contentDescription = null, tint = fg, modifier = Modifier.size(14.dp))
+            }
+            Text(label, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = fg)
+        }
+    }
+}
+
+@Composable
+private fun ProfileUpgradeLink(onClick: () -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp),
+        shape = RoundedCornerShape(12.dp),
+        color = PompColors.GoldSoft.copy(alpha = 0.30f),
+        border = BorderStroke(1.dp, PompColors.Gold.copy(alpha = 0.35f)),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)
+                .padding(horizontal = 12.dp, vertical = 11.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(Icons.Filled.WorkspacePremium, contentDescription = null, tint = PompColors.GoldInk, modifier = Modifier.size(19.dp))
+            Spacer(Modifier.width(9.dp))
+            Text(
+                text = stringResource(R.string.profile_get_pro),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = PompColors.Ink,
+                modifier = Modifier.weight(1f),
+            )
+            Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = PompColors.InkSecondary, modifier = Modifier.size(18.dp))
+        }
+    }
+}
+
+@Composable
 private fun ProfileFriendsLink(onOpenFriends: () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp),
         shape = RoundedCornerShape(12.dp),
-        color = PompColors.PaperRaised,
-        border = BorderStroke(1.dp, PompColors.Divider),
+        color = PompColors.PaperRaised.copy(alpha = 0.72f),
+        border = BorderStroke(1.dp, PompColors.Divider.copy(alpha = 0.65f)),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().clickable(onClick = onOpenFriends)
