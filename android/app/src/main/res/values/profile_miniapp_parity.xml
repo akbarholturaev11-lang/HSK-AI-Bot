@@ -6,6 +6,10 @@
     <string name="profile_mini_group_title">Xatolarim · Do\'stlar</string>
     <string name="profile_mini_mistakes_subtitle">Zaif joylar ustida ishlash</string>
     <string name="profile_mini_settings">Sozlamalar</string>
+    <string name="profile_settings_intro">O‘qish, ilova va hisob sozlamalari</string>
+    <string name="profile_settings_section_learning">O‘qish</string>
+    <string name="profile_settings_section_app">Ilova</string>
+    <string name="profile_settings_section_account">Hisob va xavfsizlik</string>
     <string name="profile_mini_daily_goal">Kunlik maqsad</string>
     <string name="profile_mini_today_xp">Bugun %1$d/%2$d XP</string>
     <string name="profile_mini_total_xp">Umumiy XP</string>

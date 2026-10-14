@@ -6,6 +6,10 @@
     <string name="profile_mini_group_title">Хатоҳои ман · Дӯстон</string>
     <string name="profile_mini_mistakes_subtitle">Кор бар ҷойҳои заиф</string>
     <string name="profile_mini_settings">Танзимот</string>
+    <string name="profile_settings_intro">Омӯзиш, барнома ва ҳисоб</string>
+    <string name="profile_settings_section_learning">Омӯзиш</string>
+    <string name="profile_settings_section_app">Барнома</string>
+    <string name="profile_settings_section_account">Ҳисоб ва амният</string>
     <string name="profile_mini_daily_goal">Ҳадафи рӯзона</string>
     <string name="profile_mini_today_xp">Имрӯз %1$d/%2$d XP</string>
     <string name="profile_mini_total_xp">XP-и умумӣ</string>

@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Language
@@ -67,11 +70,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.R
@@ -263,7 +269,7 @@ fun ProfileScreen(
     }
 
     if (settingsOpen) {
-        ProfileSettingsSheet(
+        ProfileSettingsScreen(
             account = account,
             state = state,
             settings = settings,
@@ -692,7 +698,7 @@ private fun LevelLeaguePill(level: String, league: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ProfileSettingsSheet(
+private fun ProfileSettingsScreen(
     account: LinkedAccount,
     state: ProfileUiState,
     settings: ProfileSettingsState,
@@ -715,133 +721,190 @@ private fun ProfileSettingsSheet(
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val supportUrl = state.profile?.supportUrl.orEmpty()
     var confirmUnlink by remember { mutableStateOf(false) }
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = PompColors.Paper) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 720.dp)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 28.dp),
-        ) {
-            Text(
-                stringResource(R.string.profile_mini_settings),
-                color = PompColors.Ink,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(start = 2.dp, bottom = 12.dp),
-            )
-            Surface(
-                color = PompColors.PaperRaised,
-                shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(1.dp, PompColors.Divider),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Column {
-                    MiniSettingsRow(Icons.Filled.Language, stringResource(R.string.profile_language), !settings.isBusy, onOpenLanguage) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(account.language.backendCode.uppercase(), color = PompColors.InkSecondary, fontSize = 13.sp)
-                            Spacer(Modifier.width(4.dp)); SettingsChevron()
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+    ) {
+        Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
+            Column(Modifier.fillMaxSize()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Surface(
+                        color = PompColors.PaperRaised,
+                        shape = CircleShape,
+                        border = BorderStroke(1.dp, PompColors.Divider),
+                        modifier = Modifier.size(48.dp).clickable(role = Role.Button, onClick = onDismiss),
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.action_back),
+                                tint = PompColors.Ink,
+                                modifier = Modifier.size(22.dp),
+                            )
                         }
                     }
-                    if (showCourseVersion) {
-                        SettingsDivider()
-                        MiniSettingsRow(
-                            Icons.Filled.TrackChanges,
-                            stringResource(R.string.profile_course_version),
-                            true,
-                            onOpenCourseVersion,
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.profile_mini_settings),
+                            color = PompColors.Ink,
+                            fontSize = 21.sp,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            stringResource(R.string.profile_settings_intro),
+                            color = PompColors.InkSecondary,
+                            fontSize = 12.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
+                Box(Modifier.fillMaxWidth().height(1.dp).background(PompColors.Divider))
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(start = 18.dp, top = 18.dp, end = 18.dp, bottom = 28.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                ) {
+                    item {
+                        SettingsCategory(stringResource(R.string.profile_settings_section_learning), Icons.Filled.TrackChanges) {
+                            ProfileSettingsItem(
+                                Icons.Filled.Language,
+                                stringResource(R.string.profile_language),
+                                account.language.backendCode.uppercase(),
+                                !settings.isBusy,
+                                onOpenLanguage,
+                            )
+                            if (showCourseVersion) {
+                                ProfileSettingsDivider()
+                                ProfileSettingsItem(
+                                    Icons.Filled.TrackChanges,
+                                    stringResource(R.string.profile_course_version),
                                     if (courseTrack == "hsk30") "HSK 3.0" else "HSK 2.0",
-                                    color = PompColors.InkSecondary,
-                                    fontSize = 13.sp,
+                                    true,
+                                    onOpenCourseVersion,
                                 )
-                                Spacer(Modifier.width(4.dp)); SettingsChevron()
+                            }
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(
+                                Icons.Filled.TrackChanges,
+                                stringResource(R.string.profile_mini_daily_goal),
+                                "$dailyGoal XP",
+                                true,
+                                onOpenGoal,
+                            )
+                        }
+                    }
+                    item {
+                        SettingsCategory(stringResource(R.string.profile_settings_section_app), Icons.Filled.Settings) {
+                            ProfileSettingsItem(
+                                Icons.Filled.Settings,
+                                stringResource(R.string.profile_appearance),
+                                stringResource(themeMode.labelRes()),
+                                true,
+                                onOpenAppearance,
+                            )
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(
+                                Icons.Filled.Notifications,
+                                stringResource(R.string.profile_notifications),
+                                stringResource(
+                                    if (notificationsEnabled) R.string.profile_notifications_status_on
+                                    else R.string.profile_notifications_status_off,
+                                ),
+                                true,
+                                onOpenNotifications,
+                            )
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(
+                                Icons.Filled.Widgets,
+                                stringResource(R.string.profile_widgets),
+                                stringResource(
+                                    if (widgetInstalled) R.string.profile_widget_installed
+                                    else R.string.profile_widget_not_installed,
+                                ),
+                                true,
+                                onOpenWidget,
+                            )
+                        }
+                    }
+                    item {
+                        SettingsCategory(stringResource(R.string.profile_settings_section_account), Icons.Filled.PersonOutline) {
+                            ProfileSettingsItem(
+                                Icons.Filled.PersonOutline,
+                                stringResource(R.string.profile_account_title),
+                                stringResource(R.string.profile_account_subtitle),
+                                true,
+                                onOpenAccount,
+                            )
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(
+                                Icons.Filled.Lock,
+                                stringResource(R.string.profile_privacy_security),
+                                null,
+                                true,
+                                onOpenPrivacy,
+                            )
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(
+                                Icons.AutoMirrored.Filled.HelpOutline,
+                                stringResource(R.string.profile_help),
+                                stringResource(
+                                    if (supportUrl.isBlank()) R.string.profile_help_unavailable
+                                    else R.string.profile_help_action,
+                                ),
+                                supportUrl.isNotBlank(),
+                            ) { if (supportUrl.isNotBlank()) onOpenSupport(supportUrl) }
+                        }
+                    }
+                    item {
+                        settings.error?.let { error ->
+                            ErrorPill(stringResource(error.messageRes))
+                            Spacer(Modifier.height(12.dp))
+                        }
+                        Surface(
+                            color = PompColors.PaperRaised,
+                            shape = RoundedCornerShape(14.dp),
+                            border = BorderStroke(1.dp, PompColors.Divider),
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 13.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                Text(stringResource(R.string.profile_app_version), color = PompColors.InkSecondary, fontSize = 13.sp)
+                                Text(BuildConfig.VERSION_NAME, color = PompColors.Ink, fontSize = 13.sp, fontWeight = FontWeight.Medium)
                             }
                         }
                     }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.Settings, stringResource(R.string.profile_appearance), true, onOpenAppearance) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(stringResource(themeMode.labelRes()), color = PompColors.InkSecondary, fontSize = 13.sp)
-                            Spacer(Modifier.width(4.dp)); SettingsChevron()
+                    item { SocialLinksRow(onOpen = onOpenSupport) }
+                    item {
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            OutlinedButton(
+                                onClick = onLogout,
+                                modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp),
+                                shape = RoundedCornerShape(15.dp),
+                            ) {
+                                Text(stringResource(R.string.profile_logout), color = PompColors.Ink)
+                            }
+                            OutlinedButton(
+                                onClick = { confirmUnlink = true },
+                                modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp),
+                                shape = RoundedCornerShape(15.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = PompColors.FlameInk),
+                            ) {
+                                Text(stringResource(R.string.profile_unlink_device), color = PompColors.FlameInk)
+                            }
                         }
-                    }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.Notifications, stringResource(R.string.profile_notifications), true, onOpenNotifications) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                stringResource(
-                                    if (notificationsEnabled) R.string.profile_notifications_status_on
-                                    else R.string.profile_notifications_status_off
-                                ),
-                                color = PompColors.InkSecondary,
-                                fontSize = 13.sp,
-                            )
-                            Spacer(Modifier.width(4.dp)); SettingsChevron()
-                        }
-                    }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.Widgets, stringResource(R.string.profile_widgets), true, onOpenWidget) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = stringResource(
-                                    if (widgetInstalled) R.string.profile_widget_installed
-                                    else R.string.profile_widget_not_installed
-                                ),
-                                color = if (widgetInstalled) PompColors.Jade else PompColors.InkSecondary,
-                                fontSize = 12.sp,
-                            )
-                            Spacer(Modifier.width(4.dp))
-                            SettingsChevron()
-                        }
-                    }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.TrackChanges, stringResource(R.string.profile_mini_daily_goal), true, onOpenGoal) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("$dailyGoal XP", color = PompColors.InkSecondary, fontSize = 13.sp)
-                            Spacer(Modifier.width(4.dp)); SettingsChevron()
-                        }
-                    }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.PersonOutline, stringResource(R.string.profile_account_title), true, onOpenAccount) { SettingsChevron() }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.Lock, stringResource(R.string.profile_privacy_security), true, onOpenPrivacy) { SettingsChevron() }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.HelpOutline, stringResource(R.string.profile_help), supportUrl.isNotBlank(), { onOpenSupport(supportUrl) }) {
-                        if (supportUrl.isBlank()) Text(stringResource(R.string.profile_help_unavailable), color = PompColors.InkSecondary, fontSize = 12.sp)
-                        else SettingsChevron()
-                    }
-                    SettingsDivider()
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        Icon(Icons.Filled.Settings, contentDescription = null, tint = PompColors.InkSecondary, modifier = Modifier.size(19.dp))
-                        Text(stringResource(R.string.profile_app_version), color = PompColors.Ink, fontSize = 14.sp, modifier = Modifier.weight(1f))
-                        Text(BuildConfig.VERSION_NAME, color = PompColors.InkSecondary, fontSize = 13.sp)
-                    }
-                    settings.error?.let { error ->
-                        Box(Modifier.padding(horizontal = 14.dp, vertical = 8.dp)) { ErrorPill(stringResource(error.messageRes)) }
                     }
                 }
             }
-            Spacer(Modifier.height(20.dp))
-            OutlinedButton(onClick = onLogout, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp), shape = RoundedCornerShape(14.dp)) {
-                Text(stringResource(R.string.profile_logout), color = PompColors.Ink)
-            }
-            Spacer(Modifier.height(10.dp))
-            OutlinedButton(onClick = { confirmUnlink = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp), shape = RoundedCornerShape(14.dp)) {
-                Text(stringResource(R.string.profile_unlink_device), color = PompColors.FlameInk)
-            }
-            Spacer(Modifier.height(18.dp))
-            SocialLinksRow(onOpen = onOpenSupport)
         }
     }
     if (confirmUnlink) {
@@ -861,6 +924,84 @@ private fun ProfileSettingsSheet(
             },
         )
     }
+}
+
+@Composable
+private fun SettingsCategory(
+    title: String,
+    icon: ImageVector,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Icon(icon, contentDescription = null, tint = PompColors.CinnabarInk, modifier = Modifier.size(18.dp))
+            Text(title, color = PompColors.Ink, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+        }
+        Surface(
+            color = PompColors.PaperRaised,
+            shape = RoundedCornerShape(18.dp),
+            border = BorderStroke(1.dp, PompColors.Divider),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Column(content = content)
+        }
+    }
+}
+
+@Composable
+private fun ProfileSettingsItem(
+    icon: ImageVector,
+    label: String,
+    summary: String?,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 68.dp)
+            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Surface(color = PompColors.CinnabarSoft, shape = RoundedCornerShape(12.dp), modifier = Modifier.size(38.dp)) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(icon, contentDescription = null, tint = PompColors.CinnabarInk, modifier = Modifier.size(19.dp))
+            }
+        }
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(
+                label,
+                color = PompColors.Ink,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            summary?.let {
+                Text(
+                    it,
+                    color = PompColors.InkSecondary,
+                    fontSize = 12.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+        if (enabled) SettingsChevron()
+    }
+}
+
+@Composable
+private fun ProfileSettingsDivider() {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .padding(start = 64.dp, end = 14.dp)
+            .height(1.dp)
+            .background(PompColors.Divider),
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

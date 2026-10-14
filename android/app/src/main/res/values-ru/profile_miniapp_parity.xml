@@ -6,6 +6,10 @@
     <string name="profile_mini_group_title">Мои ошибки · Друзья</string>
     <string name="profile_mini_mistakes_subtitle">Работа над слабыми местами</string>
     <string name="profile_mini_settings">Настройки</string>
+    <string name="profile_settings_intro">Обучение, приложение и аккаунт</string>
+    <string name="profile_settings_section_learning">Обучение</string>
+    <string name="profile_settings_section_app">Приложение</string>
+    <string name="profile_settings_section_account">Аккаунт и безопасность</string>
     <string name="profile_mini_daily_goal">Дневная цель</string>
     <string name="profile_mini_today_xp">Сегодня %1$d/%2$d XP</string>
     <string name="profile_mini_total_xp">Всего XP</string>
