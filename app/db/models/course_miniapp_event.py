@@ -9,6 +9,7 @@ from app.db.base import Base
 
 COURSE_MINIAPP_EVENT_NAMES = (
     "section_attempt_scored",
+    "practice_attempt_scored",
     "hint_dismissed",
     "miniapp_opened",
     "onboarding_started",
