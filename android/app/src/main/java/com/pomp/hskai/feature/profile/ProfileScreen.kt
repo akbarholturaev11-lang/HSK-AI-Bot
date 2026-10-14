@@ -503,7 +503,7 @@ private fun ProfileHero(
                     )
                     Spacer(Modifier.height(6.dp))
                 }
-                AccessPill(isPaid = profile?.subscription?.isPaid == true || account.isPaid)
+                AccessPill(isPaid = profile?.subscription?.isPaid == true || account.isPaid, trialActive = state.trial?.active == true)
             }
     }
 }
@@ -660,17 +660,21 @@ internal fun ProfileActionCard(icon: ImageVector, iconBackground: Color, iconTin
 }
 
 @Composable
-private fun AccessPill(isPaid: Boolean, modifier: Modifier = Modifier) {
+private fun AccessPill(isPaid: Boolean, trialActive: Boolean = false, modifier: Modifier = Modifier) {
     Surface(
-        color = if (isPaid) Color(0xFF3C2B1C) else PompColors.PaperRaised,
+        color = if (isPaid || trialActive) Color(0xFF3C2B1C) else PompColors.PaperRaised,
         shape = RoundedCornerShape(999.dp),
-        border = BorderStroke(1.dp, if (isPaid) Color(0xFFB68D45) else PompColors.Divider),
+        border = BorderStroke(1.dp, if (isPaid || trialActive) Color(0xFFB68D45) else PompColors.Divider),
         modifier = modifier,
     ) {
         Text(
-            text = if (isPaid) "✦ Pro" else stringResource(R.string.synced_access_free),
+            text = when {
+                isPaid -> "✦ Pro"
+                trialActive -> stringResource(R.string.profile_access_trial)
+                else -> stringResource(R.string.synced_access_free)
+            },
             style = MaterialTheme.typography.labelMedium,
-            color = if (isPaid) Color(0xFFFFD999) else PompColors.InkSecondary,
+            color = if (isPaid || trialActive) Color(0xFFFFD999) else PompColors.InkSecondary,
             maxLines = 1,
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
         )
