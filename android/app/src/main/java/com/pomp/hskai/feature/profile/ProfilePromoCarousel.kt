@@ -147,7 +147,7 @@ internal fun ProfilePromoCarousel(
             .clickable(onClick = openCard),
         shape = RoundedCornerShape(17.dp),
         color = PromoPaper,
-        shadowElevation = 5.dp,
+        shadowElevation = 0.dp,
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             if (kind == "hsk30" || kind == "pro") {
@@ -180,6 +180,8 @@ internal fun ProfilePromoCarousel(
                     )
                 )
             }
+            // Muted artwork only: labels and CTA retain full contrast.
+            Box(Modifier.matchParentSize().background(Color(0x18DDD1BE)))
             Column(
                 modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp).padding(14.dp),
                 verticalArrangement = Arrangement.SpaceBetween,

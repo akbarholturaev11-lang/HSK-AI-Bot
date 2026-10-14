@@ -113,9 +113,12 @@ fun RatingScreen(
                     modifier = Modifier.fillMaxWidth().heightIn(min = 30.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    if (state.tab == RatingTab.FRIENDS) {
-                        HskSectionTitle(stringResource(R.string.rating_tab_friends))
-                    }
+                    HskSectionTitle(
+                        stringResource(
+                            if (state.tab == RatingTab.FRIENDS) R.string.rating_tab_friends
+                            else R.string.nav_rating
+                        )
+                    )
                     SectionHint(hints = hints, section = "rating", onDismiss = onDismissHint)
                     Spacer(Modifier.weight(1f))
                     ChallengeBell(

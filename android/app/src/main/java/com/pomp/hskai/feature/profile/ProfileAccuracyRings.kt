@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
@@ -43,7 +42,7 @@ internal fun ProfileAccuracyRings(accuracy: AndroidProfileAccuracyDto?) {
     val today = accuracy?.today ?: AndroidAnswerAccuracyBreakdownDto()
     Surface(
         shape = RoundedCornerShape(17.dp),
-        color = PompColors.PaperRaised,
+        color = PompColors.PaperRaised.copy(alpha = 0.72f),
         border = BorderStroke(1.dp, PompColors.Divider),
         modifier = Modifier.fillMaxWidth(),
     ) {
@@ -53,14 +52,7 @@ internal fun ProfileAccuracyRings(accuracy: AndroidProfileAccuracyDto?) {
                 Box(Modifier.width(1.dp).height(118.dp).background(PompColors.Divider))
                 AccuracyRing(today, stringResource(R.string.profile_accuracy_today), Modifier.weight(1f))
             }
-            Text(
-                text = stringResource(R.string.profile_accuracy_note),
-                fontSize = 10.sp,
-                lineHeight = 13.sp,
-                color = PompColors.InkSecondary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp, bottom = 9.dp),
-            )
+
         }
     }
 }
@@ -88,8 +80,6 @@ private fun AccuracyRing(data: AndroidAnswerAccuracyBreakdownDto, title: String,
         }
         Spacer(Modifier.height(7.dp))
         Text(title, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = PompColors.Ink)
-        Text(stringResource(R.string.profile_accuracy_count, data.total),
-            fontSize = 11.sp, color = PompColors.InkSecondary)
     }
 }
 
