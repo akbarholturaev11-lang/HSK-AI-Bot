@@ -17,6 +17,7 @@ ACCURACY_EVENTS = (
     "section_completed",
     "section_attempt_scored",
     "training_completed",
+    "practice_attempt_scored",
     "test_completed",
     "mistake_review_answered",
 )
@@ -64,6 +65,7 @@ def accuracy_summary(event_rows, quiz_rows, *, timezone_offset_minutes: int = 0,
     offset_minutes = max(-720, min(840, int(timezone_offset_minutes or 0)))
     local_day = (now_utc + timedelta(minutes=offset_minutes)).date()
     scored_starts = {}
+    practice_first = {}
     decoded = []
     for name, lesson_id, raw, created_at in event_rows:
         stamp = _utc(created_at)
@@ -71,6 +73,12 @@ def accuracy_summary(event_rows, quiz_rows, *, timezone_offset_minutes: int = 0,
             continue
         payload = _payload(raw)
         decoded.append((name, lesson_id, payload, stamp))
+        if name == "practice_attempt_scored":
+            mode = str(payload.get("mode") or "")
+            if mode in {"training", "mock", "placement"}:
+                legacy_event = "training_completed" if mode == "training" else "test_completed"
+                if legacy_event not in practice_first or stamp < practice_first[legacy_event]:
+                    practice_first[legacy_event] = stamp
         if name == "section_attempt_scored":
             section = str(payload.get("section_key") or "")
             if section:
@@ -97,7 +105,14 @@ def accuracy_summary(event_rows, quiz_rows, *, timezone_offset_minutes: int = 0,
             if key in scored_starts and stamp >= scored_starts[key]:
                 continue
             pair = _safe_pair(payload)
-        elif name in {"section_attempt_scored", "test_completed", "training_completed"}:
+        elif name in {"test_completed", "training_completed"}:
+            # The first new practice-scored event was written just after the
+            # corresponding legacy completion. Do not double-count that pair.
+            first = practice_first.get(name)
+            if first and abs((stamp - first).total_seconds()) <= 10:
+                continue
+            pair = _safe_pair(payload)
+        elif name in {"section_attempt_scored", "practice_attempt_scored"}:
             pair = _safe_pair(payload)
         elif name == "mistake_review_answered":
             if payload.get("answer_type") == "tokens" and isinstance(payload.get("correct"), bool):
