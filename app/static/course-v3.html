@@ -5794,6 +5794,8 @@ function applyRatingPayload(d){
 	  });
 	}
 function renderRating(){
+  // Friends fetches referrals directly; it must not wait for a leaderboard request.
+  if(ratingTabCur==="friends"){_renderRatingContent();return}
   if(!ratingLoaded&&INIT_DATA){
     ratingLoaded=true;
     var t=T();
