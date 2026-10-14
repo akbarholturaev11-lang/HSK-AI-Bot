@@ -121,7 +121,7 @@ class Hsk30SwitchUiContractTests(unittest.TestCase):
         self.assertNotIn("ColorFilter.tint", header)
 
     def test_android_picker_has_no_new_badges_or_secondary_confirm(self):
-        picker = self.android.split("private fun Hsk30LevelChoiceDialog(", 1)[1].split(
+        picker = self.android.split("internal fun Hsk30LevelChoiceDialog(", 1)[1].split(
             "private fun Hsk30PromoDialog(", 1
         )[0]
         self.assertIn('label = "HSK $band"', picker)
