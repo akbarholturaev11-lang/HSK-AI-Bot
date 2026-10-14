@@ -172,11 +172,7 @@ fun ProfileScreen(
     val appSettings = remember(context) { AppSettings(context) }
     val themeMode by appSettings.themeMode.collectAsState(initial = AppThemeMode.DEFAULT)
     val scope = rememberCoroutineScope()
-    val openMistakes = onOpenMistakes ?: {
-        val uri = Uri.parse(DeepLinkRouter.uriFor(AppDestination.Practice(PracticeTool.MISTAKES)))
-        runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, uri).setPackage(context.packageName)) }
-        Unit
-    }
+    // Mistakes remains available from Practice; it is no longer a profile entry.
     val openSettings = {
         widgetInstalled = WidgetScheduler.hasWidgets(context)
         settingsOpen = true
@@ -196,6 +192,13 @@ fun ProfileScreen(
         ) {
             item {
                 ProfileToolbar(
+                    nickname = state.profile?.user?.name?.takeIf { it.isNotBlank() } ?: account.displayName,
+                    showProCrown = subscriptionCheckoutAvailable &&
+                        !account.isPaid &&
+                        state.profile?.subscription?.isPaid != true &&
+                        state.trial?.active != true &&
+                        state.profile?.subscription?.status != "temporary_trial",
+                    onOpenPro = { onOpenSubscription(false) },
                     onOpenSettings = openSettings,
                     hints = hints,
                     onDismissHint = onDismissHint,
@@ -213,14 +216,7 @@ fun ProfileScreen(
                     },
                 )
             }
-            item {
-                DailyGoalCard(
-                    dailyXp = dailyXp,
-                    dailyGoal = dailyGoal,
-                    onOpenGoal = onOpenGoal,
-                )
-            }
-            item { StatsGrid(state) }
+            item { ProfileFriendsLink(onOpenFriends = onOpenFriends) }
             item { StreakCalendar(progress = courseProgress, dailyXp = dailyXp) }
             item {
                 Achievements(
@@ -246,29 +242,12 @@ fun ProfileScreen(
                 )
             }
 
-            item {
-                Text(
-                    text = stringResource(R.string.profile_mini_group_title),
-                    color = PompColors.InkSecondary,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(start = 2.dp, top = 4.dp, bottom = 1.dp),
-                )
-            }
-            item {
-                ProfileQuickLinks(
-                    onOpenMistakes = openMistakes,
-                    onOpenFriends = onOpenFriends,
-                )
-            }
-
             // Compiled only into the `direct` build; the Play flavour has a
             // no-op here, because Play updates the app itself.
             item { AppUpdateCard() }
             // `onOpenSupport` is the screen's "open this URL outside the app"
             // callback (MainActivity wires it to openExternal); the social row
             // needs exactly that and nothing support-specific.
-            item { SocialLinksRow(onOpen = onOpenSupport) }
 
             state.error?.let { error ->
                 item { ErrorPill(text = stringResource(error.messageRes), onClick = onRefresh) }
@@ -430,35 +409,45 @@ fun ProfileScreen(
 
 @Composable
 private fun ProfileToolbar(
+    nickname: String,
+    showProCrown: Boolean,
+    onOpenPro: () -> Unit,
     onOpenSettings: () -> Unit,
     hints: List<AndroidHintDto>,
     onDismissHint: (String) -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+        modifier = Modifier.fillMaxWidth().heightIn(min = 46.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        HskSectionTitle(
-            text = stringResource(R.string.nav_profile),
+        Text(
+            text = nickname,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            color = PompColors.Ink,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f),
         )
         SectionHint(hints = hints, section = "profile", onDismiss = onDismissHint)
-        Spacer(Modifier.width(PompSpacing.Small))
-        Surface(
-            onClick = onOpenSettings,
-            color = PompColors.PaperRaised,
-            shape = CircleShape,
-            border = BorderStroke(1.dp, PompColors.Divider),
-            modifier = Modifier.size(44.dp),
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    Icons.Filled.Settings,
-                    contentDescription = stringResource(R.string.profile_mini_settings),
-                    tint = PompColors.InkSecondary,
-                    modifier = Modifier.size(21.dp),
-                )
+        if (showProCrown) {
+            Box(
+                modifier = Modifier.size(42.dp).clickable(onClick = onOpenPro),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text("👑", fontSize = 24.sp, textAlign = TextAlign.Center)
             }
+        }
+        Box(
+            modifier = Modifier.size(42.dp).clickable(onClick = onOpenSettings),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                Icons.Filled.Settings,
+                contentDescription = stringResource(R.string.profile_mini_settings),
+                tint = PompColors.InkSecondary,
+                modifier = Modifier.size(23.dp),
+            )
         }
     }
 }
@@ -480,19 +469,14 @@ private fun ProfileHero(
     onOpenAccount: () -> Unit,
 ) {
     val profile = state.profile
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        shadowElevation = 10.dp,
-    ) {
-        Row(modifier = Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             val customAvatar = profileAvatarDrawable(profile?.user?.avatarKey.orEmpty())
             val photo = courseUser?.avatarUrl?.let { MediaUrl.resolve(it, BuildConfig.API_ORIGIN) }
             Surface(
                 onClick = onOpenAccount,
                 color = PompColors.Cinnabar,
                 shape = RoundedCornerShape(18.dp),
-                modifier = Modifier.size(54.dp),
+                modifier = Modifier.size(60.dp),
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     when {
@@ -519,22 +503,15 @@ private fun ProfileHero(
             Column(modifier = Modifier.padding(start = 14.dp).weight(1f)) {
                 Text(
                     text = profile?.user?.name?.ifBlank { account.displayName } ?: account.displayName,
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.titleLarge,
                     color = PompColors.Ink,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Spacer(Modifier.height(4.dp))
-                LevelLeaguePill(
-                    level = (profile?.user?.level ?: account.level).uppercase(),
-                    league = profile?.stats?.league.orEmpty(),
-                )
             }
-            AccessPill(
-                isPaid = profile?.subscription?.isPaid == true || account.isPaid,
-                modifier = Modifier.align(Alignment.Top),
-            )
-        }
+    }
+}
+
     }
 }
 
@@ -614,29 +591,23 @@ private fun StatMetric(label: String, value: String, modifier: Modifier = Modifi
 }
 
 @Composable
-private fun ProfileQuickLinks(onOpenMistakes: () -> Unit, onOpenFriends: () -> Unit) {
+private fun ProfileFriendsLink(onOpenFriends: () -> Unit) {
     Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = PompShapes.Medium,
+        modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp),
+        shape = RoundedCornerShape(12.dp),
         color = PompColors.PaperRaised,
         border = BorderStroke(1.dp, PompColors.Divider),
     ) {
-        Column {
-            ProfileQuickLinkRow(
-                icon = Icons.Filled.WarningAmber,
-                title = stringResource(R.string.practice_mistakes_title),
-                subtitle = stringResource(R.string.profile_mini_mistakes_subtitle),
-                iconTint = PompColors.FlameInk,
-                onClick = onOpenMistakes,
-            )
-            SettingsDivider()
-            ProfileQuickLinkRow(
-                icon = Icons.Filled.People,
-                title = stringResource(R.string.profile_friends),
-                subtitle = null,
-                iconTint = PompColors.JadeInk,
-                onClick = onOpenFriends,
-            )
+        Row(
+            modifier = Modifier.fillMaxWidth().clickable(onClick = onOpenFriends)
+                .padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(Icons.Filled.People, contentDescription = null, tint = PompColors.JadeInk, modifier = Modifier.size(19.dp))
+            Spacer(Modifier.width(9.dp))
+            Text(stringResource(R.string.profile_friends), fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+                color = PompColors.Ink, modifier = Modifier.weight(1f))
+            SettingsChevron()
         }
     }
 }
@@ -872,6 +843,8 @@ private fun ProfileSettingsSheet(
             OutlinedButton(onClick = { confirmUnlink = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp), shape = RoundedCornerShape(14.dp)) {
                 Text(stringResource(R.string.profile_unlink_device), color = PompColors.FlameInk)
             }
+            Spacer(Modifier.height(18.dp))
+            SocialLinksRow(onOpen = onOpenSupport)
         }
     }
     if (confirmUnlink) {
