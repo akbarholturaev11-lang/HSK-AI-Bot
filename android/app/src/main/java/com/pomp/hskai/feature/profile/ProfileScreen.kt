@@ -204,13 +204,10 @@ fun ProfileScreen(
         ) {
             item {
                 ProfileToolbar(
-                    nickname = state.profile?.user?.name?.takeIf { it.isNotBlank() } ?: account.displayName,
-                    showProCrown = subscriptionCheckoutAvailable &&
-                        !account.isPaid &&
-                        state.profile?.subscription?.isPaid != true &&
-                        state.trial?.active != true &&
-                        state.profile?.subscription?.status != "temporary_trial",
-                    onOpenPro = { onOpenSubscription(false) },
+                    nickname = state.profile?.user?.name?.takeIf { it.isNotBlank() }
+                        ?: account.displayName.takeIf { it.isNotBlank() }
+                        ?: state.profile?.user?.telegramUsername?.takeIf { it.isNotBlank() }
+                        ?: "HSK AI",
                     onOpenSettings = openSettings,
                     hints = hints,
                     onDismissHint = onDismissHint,
@@ -229,7 +226,16 @@ fun ProfileScreen(
                 )
             }
             item { ProfileFriendsLink(onOpenFriends = onOpenFriends) }
+            item { ProfileAccuracyRings(state.profile?.stats?.answerAccuracy) }
             item { StreakCalendar(progress = courseProgress, dailyXp = dailyXp) }
+            if (subscriptionCheckoutAvailable &&
+                !account.isPaid &&
+                state.profile?.subscription?.isPaid != true &&
+                state.trial?.active != true &&
+                state.profile?.subscription?.status != "temporary_trial"
+            ) {
+                item { ProfileProCta(onClick = { onOpenSubscription(false) }) }
+            }
             item {
                 Achievements(
                     completedLessons = courseProgress?.completedLessons
@@ -420,8 +426,6 @@ fun ProfileScreen(
 @Composable
 private fun ProfileToolbar(
     nickname: String,
-    showProCrown: Boolean,
-    onOpenPro: () -> Unit,
     onOpenSettings: () -> Unit,
     hints: List<AndroidHintDto>,
     onDismissHint: (String) -> Unit,
@@ -440,14 +444,6 @@ private fun ProfileToolbar(
             modifier = Modifier.weight(1f),
         )
         SectionHint(hints = hints, section = "profile", onDismiss = onDismissHint)
-        if (showProCrown) {
-            Box(
-                modifier = Modifier.size(42.dp).clickable(onClick = onOpenPro),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text("👑", fontSize = 24.sp, textAlign = TextAlign.Center)
-            }
-        }
         Box(
             modifier = Modifier.size(42.dp).clickable(onClick = onOpenSettings),
             contentAlignment = Alignment.Center,
@@ -502,8 +498,8 @@ private fun ProfileHero(
                             modifier = Modifier.fillMaxSize(),
                         )
                         else -> Text(
-                            text = profile?.user?.avatar?.ifBlank { "HSK" }
-                                ?: account.displayName.take(2).uppercase(),
+                            text = profile?.user?.avatar?.takeIf { it.isNotBlank() }
+                                ?: account.displayName.take(2).uppercase().ifBlank { "HSK" },
                             style = MaterialTheme.typography.titleLarge,
                             color = PompColors.Paper,
                         )
@@ -511,13 +507,18 @@ private fun ProfileHero(
                 }
             }
             Column(modifier = Modifier.padding(start = 14.dp).weight(1f)) {
-                Text(
-                    text = profile?.user?.name?.ifBlank { account.displayName } ?: account.displayName,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = PompColors.Ink,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                val username = profile?.user?.telegramUsername?.trim().orEmpty()
+                if (username.isNotBlank()) {
+                    Text(
+                        text = "@$username",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = PompColors.InkSecondary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Spacer(Modifier.height(6.dp))
+                }
+                AccessPill(isPaid = profile?.subscription?.isPaid == true || account.isPaid, trialActive = state.trial?.active == true)
             }
     }
 }
@@ -674,19 +675,21 @@ internal fun ProfileActionCard(icon: ImageVector, iconBackground: Color, iconTin
 }
 
 @Composable
-private fun AccessPill(isPaid: Boolean, modifier: Modifier = Modifier) {
+private fun AccessPill(isPaid: Boolean, trialActive: Boolean = false, modifier: Modifier = Modifier) {
     Surface(
-        color = if (isPaid) PompColors.JadeSoft else PompColors.PaperRaised,
+        color = if (isPaid || trialActive) Color(0xFF3C2B1C) else PompColors.PaperRaised,
         shape = RoundedCornerShape(999.dp),
-        border = BorderStroke(1.dp, if (isPaid) PompColors.Jade else PompColors.Divider),
+        border = BorderStroke(1.dp, if (isPaid || trialActive) Color(0xFFB68D45) else PompColors.Divider),
         modifier = modifier,
     ) {
         Text(
-            text = stringResource(
-                if (isPaid) R.string.synced_access_paid else R.string.synced_access_free,
-            ),
+            text = when {
+                isPaid -> "✦ Pro"
+                trialActive -> stringResource(R.string.profile_access_trial)
+                else -> stringResource(R.string.synced_access_free)
+            },
             style = MaterialTheme.typography.labelMedium,
-            color = if (isPaid) PompColors.JadeInk else PompColors.InkSecondary,
+            color = if (isPaid || trialActive) Color(0xFFFFD999) else PompColors.InkSecondary,
             maxLines = 1,
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
         )

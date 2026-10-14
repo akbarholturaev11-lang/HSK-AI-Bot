@@ -11,8 +11,8 @@ SERVICE = Path("app/services/course_gamification_service.py").read_text(encoding
 
 
 class RatingPodiumUiTests(unittest.TestCase):
-    def test_web_renders_one_server_member_count_in_centre_only(self):
-        self.assertIn("rating-podium.css?v=20261014-1", WEB)
+    def test_web_displays_member_count_only_beside_league_label(self):
+        self.assertIn("rating-podium.css?v=20261014-2", WEB)
         self.assertIn('"rating-podium.css": "text/css"', Path("app/main.py").read_text(encoding="utf-8"))
         self.assertIn("function ratingPodiumHtml(memberCount)", WEB)
         self.assertIn("league:String(d.league||\"\")", WEB)
@@ -22,7 +22,9 @@ class RatingPodiumUiTests(unittest.TestCase):
         self.assertIn("item(index,\"gold\",true)", body)
         self.assertIn("item(sideIndices[0],\"silver\",false)", body)
         self.assertIn("item(sideIndices[1],\"bronze\",false)", body)
-        self.assertIn("center?'<strong class=\"rating-cup-count\">'", body)
+        self.assertNotIn("rating-cup-count", body)
+        self.assertIn("Number(memberCount).toLocaleString", body)
+        self.assertIn("rating-podium-meta", body)
         self.assertIn("rating-podium-list", CSS)
 
     def test_switcher_is_removed_but_own_entry_buttons_keep_routes(self):
@@ -48,8 +50,9 @@ class RatingPodiumUiTests(unittest.TestCase):
         self.assertIn("RatingPodium(", ANDROID)
         self.assertNotIn("item { LeagueLadder", ANDROID)
         self.assertIn("LEAGUE_LADDER.indexOfFirst", PODIUM)
-        self.assertIn("count = memberCount", PODIUM)
-        self.assertEqual(PODIUM.count("count = null"), 2)
+        self.assertIn('memberCount.toString() + " "', PODIUM)
+        self.assertNotIn("count = memberCount", PODIUM)
+        self.assertIn("83.dp else 71.dp", PODIUM)
         self.assertIn("onOpenChallenges", ANDROID)
         self.assertIn("ratingViewModel.selectTab(RatingTab.LEAGUE)", MAIN)
         self.assertIn("ratingViewModel.selectTab(RatingTab.FRIENDS)", MAIN)

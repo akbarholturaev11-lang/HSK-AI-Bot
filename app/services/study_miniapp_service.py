@@ -13,6 +13,7 @@ from app.services.course_trial_service import CourseTrialService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_answer_accuracy_service import CourseAnswerAccuracyService
 from app.services.support_contact_service import get_admin_contact_url
 from app.services.user_access_state_service import UserAccessStateService
 from app.db.models.course_mistake import CourseMistake
@@ -131,6 +132,9 @@ class StudyMiniAppService:
         features = await CourseMiniAppAccessService(self.session).get_entitlements(user)
         progress = await self.progress_repo.get_by_user_id(user.id)
         support_url = await get_admin_contact_url(self.session)
+        accuracy = await CourseAnswerAccuracyService(self.session).summarize(
+            user_id=user.id, timezone_offset_minutes=profile.timezone_offset_minutes,
+        )
         mistakes_result = await self.session.execute(
             select(func.coalesce(func.sum(CourseMistake.wrong_count - CourseMistake.resolved_count), 0)).where(
                 CourseMistake.user_id == user.id,
@@ -166,6 +170,7 @@ class StudyMiniAppService:
                 "weekly_xp": gamification["weekly_xp"],
                 "completed_lessons": int(getattr(progress, "completed_lessons_count", 0) or 0),
                 "mistakes": int(mistakes_result.scalar_one() or 0),
+                "answer_accuracy": accuracy,
             },
             "subscription": {
                 "status": "active" if paid else access_state,

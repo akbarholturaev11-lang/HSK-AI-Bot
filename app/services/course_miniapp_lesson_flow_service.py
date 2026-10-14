@@ -1,4 +1,5 @@
 import json
+from uuid import uuid4
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -1835,6 +1836,24 @@ class CourseMiniAppLessonFlowService:
         if not graded:
             return {"ok": False, "error": "course_lesson_has_no_graded_activities"}
         percent = round((correct_count / len(graded)) * 100)
+        # Record every server-graded attempt, including sub-60% attempts.
+        # A unique server-generated key lets real retries count without double-counting
+        # the section_completed telemetry for successful submissions.
+        await CourseMiniAppAnalyticsService(self.session).record_server_event(
+            event_name="section_attempt_scored",
+            telegram_id=telegram_id,
+            user_id=user.id,
+            level=str(lesson.level),
+            lesson_id=lesson.id,
+            lesson_order=lesson.lesson_order,
+            dedupe_key=f"section-attempt:{uuid4().hex}",
+            payload={
+                "section_key": section["section_key"],
+                "correct": correct_count,
+                "total": len(graded),
+                "percent": percent,
+            },
+        )
         await self.mistakes.record_items(
             user,
             wrong_items,
