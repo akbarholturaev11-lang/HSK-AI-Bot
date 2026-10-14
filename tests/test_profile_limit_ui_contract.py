@@ -87,8 +87,15 @@ class MiniAppProfileHierarchyTests(unittest.TestCase):
             "/* ---------- sales_value_v1", 1
         )[0]
         self.assertIn("var nickname=esc(PROF.name||t.you)", body)
-        self.assertIn("var showCrown=!isPaidUser()", body)
-        self.assertIn("App.goPay(\\'profile_crown\\')", body)
+        self.assertIn("var isPro=isPaidUser();", body)
+        self.assertIn("var showUpgrade=!isPro&&!trialActive;", body)
+        self.assertIn("App.goPay(\\'profile_upgrade\\')", body)
+        self.assertIn('profile-access-status', body)
+        self.assertIn("profile-upgrade-link", body)
+        self.assertNotIn("profile_crown", body)
+        self.assertNotIn('class="pname"', body)
+        self.assertLess(body.index("streakCalHtml()"), body.index("profile-upgrade-link"))
+        self.assertLess(body.index("profile-upgrade-link"), body.index("profile-compact-ach"))
         self.assertIn("profile-friends-link", body)
         self.assertIn("completedLessons=Number(MAP&&MAP.progress&&MAP.progress.completed||0)", body)
         self.assertIn("streak=Number(MAP&&MAP.progress&&MAP.progress.streak||0)", body)
@@ -108,11 +115,28 @@ class MiniAppProfileHierarchyTests(unittest.TestCase):
     def test_android_profile_has_matching_header_and_compact_friends(self):
         native = Path("android/app/src/main/java/com/pomp/hskai/feature/profile/ProfileScreen.kt").read_text(encoding="utf-8")
         self.assertIn("private fun ProfileFriendsLink(", native)
-        self.assertIn("showProCrown = subscriptionCheckoutAvailable", native)
-        self.assertIn("state.trial?.active != true", native)
+        self.assertIn("val showUpgrade = subscriptionCheckoutAvailable && !isPro && !trialActive", native)
+        self.assertIn("state.trial?.active == true", native)
+        self.assertIn("ProfileUpgradeLink(onClick = { onOpenSubscription(false) })", native)
+        self.assertIn("ProfileAccessStatus(isPro = isPro, isTrial = isTrial)", native)
+        self.assertIn("telegramUsername", native)
+        self.assertNotIn("showProCrown", native)
+        self.assertNotIn('text = profile?.user?.name?.ifBlank', native)
         self.assertIn("SocialLinksRow(onOpen = onOpenSupport)", native)
         self.assertNotIn("item { StatsGrid(state) }", native)
         self.assertNotIn("DailyGoalCard(\n", native.split("LazyColumn(", 1)[1].split("if (settingsOpen)", 1)[0])
+
+    def test_profile_subscription_badges_are_localized_and_checkout_is_not_play_only(self):
+        android = Path("android/app/src/main/java/com/pomp/hskai/feature/profile/ProfileScreen.kt").read_text(encoding="utf-8")
+        self.assertIn('subscriptionCheckoutAvailable: Boolean = BuildConfig.FLAVOR == "direct"', android)
+        self.assertIn('item { ProfileUpgradeLink(onClick = { onOpenSubscription(false) }) }', android)
+        self.assertIn('color = PompColors.GoldSoft.copy(alpha = 0.30f)', android)
+        for directory in ("values", "values-ru", "values-tg"):
+            xml = Path(f"android/app/src/main/res/{directory}/strings.xml").read_text(encoding="utf-8")
+            for name in ("profile_access_free", "profile_access_trial", "profile_access_pro", "profile_get_pro"):
+                self.assertIn(f'name="{name}"', xml)
+        self.assertIn("profileAccessLabels()", PROFILE)
+        self.assertIn('var showUpgrade=!isPro&&!trialActive;', PROFILE)
 
     def test_localized_stat_labels_exist(self):
         for label in (
