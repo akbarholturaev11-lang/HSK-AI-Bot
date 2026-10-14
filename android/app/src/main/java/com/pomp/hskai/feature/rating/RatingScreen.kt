@@ -102,7 +102,7 @@ fun RatingScreen(
             contentPadding = PaddingValues(
                 start = 20.dp,
                 end = 20.dp,
-                top = 20.dp,
+                top = 6.dp,
                 // The tab bar floats over the list; the last row clears it here.
                 bottom = 20.dp + LocalMainBottomInset.current,
             ),
@@ -110,25 +110,19 @@ fun RatingScreen(
         ) {
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 30.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    HskSectionTitle(stringResource(R.string.nav_rating))
-                    Spacer(Modifier.width(8.dp))
-                    SectionHint(
-                        hints = hints,
-                        section = "rating",
-                        onDismiss = onDismissHint,
-                    )
+                    if (state.tab == RatingTab.FRIENDS) {
+                        HskSectionTitle(stringResource(R.string.rating_tab_friends))
+                    }
+                    SectionHint(hints = hints, section = "rating", onDismiss = onDismissHint)
                     Spacer(Modifier.weight(1f))
                     ChallengeBell(
                         pendingCount = state.pendingChallenges.size,
                         onClick = onOpenChallenges,
                     )
                 }
-            }
-            item {
-                TabSwitch(selected = state.tab, onSelect = onSelectTab)
             }
 
             if (state.challengeDelivery != null || state.challengeError != null) {
@@ -142,13 +136,12 @@ fun RatingScreen(
 
             if (state.tab == RatingTab.LEAGUE && rating != null) {
                 item {
-                    LeagueCard(
+                    RatingPodium(
                         league = rating.league,
                         memberCount = rating.leagueSize,
                         resetSeconds = rating.weeklyResetSeconds,
                     )
                 }
-                item { LeagueLadder(rating.league) }
             }
 
             if (state.isLoading) {
@@ -173,7 +166,7 @@ fun RatingScreen(
                     }
                     val rows = rating?.leaderboard.orEmpty()
                     if (rows.size >= PROMOTION_ZONE) {
-                        item { PromotionZone() }
+                        item { WeeklyTopFiveTitle() }
                     }
                     if (rows.isNotEmpty()) {
                         item {
@@ -721,163 +714,7 @@ private fun ratingLevelLabel(level: String): String {
 }
 
 @Composable
-private fun TabSwitch(selected: RatingTab, onSelect: (RatingTab) -> Unit) {
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        shadowElevation = 5.dp,
-    ) {
-        Row(modifier = Modifier.padding(4.dp).selectableGroup()) {
-            TabButton(
-                label = stringResource(R.string.rating_tab_league),
-                selected = selected == RatingTab.LEAGUE,
-                onClick = { onSelect(RatingTab.LEAGUE) },
-                modifier = Modifier.weight(1f),
-            )
-            TabButton(
-                label = stringResource(R.string.rating_tab_friends),
-                selected = selected == RatingTab.FRIENDS,
-                onClick = { onSelect(RatingTab.FRIENDS) },
-                modifier = Modifier.weight(1f),
-            )
-        }
-    }
-}
-
-@Composable
-private fun TabButton(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        color = if (selected) PompColors.Cinnabar else PompColors.PaperRaised,
-        shape = RoundedCornerShape(11.dp),
-        modifier = modifier
-            .heightIn(min = 44.dp)
-            .selectable(selected = selected, role = Role.Tab, onClick = onClick),
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.titleSmall,
-                color = if (selected) PompColors.OnCinnabar else PompColors.InkSecondary,
-            )
-        }
-    }
-}
-
-@Composable
-private fun LeagueCard(league: String, memberCount: Int, resetSeconds: Long) {
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        shadowElevation = 7.dp,
-    ) {
-        Row(
-            modifier = Modifier.padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Surface(
-                color = PompColors.Cinnabar,
-                shape = RoundedCornerShape(14.dp),
-                border = BorderStroke(2.dp, PompColors.Gold),
-            ) {
-                Text(
-                    text = leagueGlyph(league),
-                    style = PompTextStyles.hanziMedium,
-                    color = PompColors.Paper,
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 12.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.rating_league_name, leagueGlyph(league)),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = PompColors.Ink,
-                )
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        Icons.Filled.Group,
-                        contentDescription = null,
-                        tint = PompColors.InkSecondary,
-                        modifier = Modifier.size(14.dp),
-                    )
-                    Spacer(Modifier.width(5.dp))
-                    Text(
-                        text = stringResource(R.string.rating_members, memberCount),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = PompColors.InkSecondary,
-                    )
-                }
-            }
-            if (resetSeconds > 0) {
-                Surface(color = PompColors.CinnabarSoft, shape = RoundedCornerShape(12.dp)) {
-                    Column(
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text(
-                            text = countdownText(resetSeconds),
-                            style = MaterialTheme.typography.titleSmall,
-                            color = PompColors.CinnabarDark,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Text(
-                            text = stringResource(R.string.rating_time_left),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = PompColors.CinnabarDark,
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun LeagueLadder(current: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-    ) {
-        LEAGUE_LADDER.forEachIndexed { index, (name, glyph) ->
-            if (index > 0) {
-                Box(
-                    modifier = Modifier
-                        .width(18.dp)
-                        .height(1.dp)
-                        .background(PompColors.Divider),
-                )
-            }
-            val isCurrent = name.equals(current, ignoreCase = true)
-            Surface(
-                color = if (isCurrent) PompColors.GoldSoft else PompColors.PaperRaised,
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(
-                    1.dp,
-                    if (isCurrent) PompColors.Gold else PompColors.Divider,
-                ),
-            ) {
-                Text(
-                    text = glyph,
-                    style = PompTextStyles.hanziSmall,
-                    color = if (isCurrent) PompColors.Gold else PompColors.InkDisabled,
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun PromotionZone() {
+private fun WeeklyTopFiveTitle() {
     Row(
         modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -890,16 +727,13 @@ private fun PromotionZone() {
         )
         Spacer(Modifier.width(6.dp))
         Text(
-            text = stringResource(R.string.rating_promote, PROMOTION_ZONE),
+            text = stringResource(R.string.rating_weekly_top_five),
             style = MaterialTheme.typography.bodyMedium,
             color = PompColors.GoldInk,
         )
         Spacer(Modifier.width(8.dp))
         Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(1.dp)
-                .background(PompColors.Divider),
+            modifier = Modifier.weight(1f).height(1.dp).background(PompColors.Divider),
         )
     }
 }

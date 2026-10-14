@@ -247,6 +247,7 @@
     <string name="rating_league_name">Лигаи %1$s</string>
     <string name="rating_members">%1$d донишҷӯ</string>
     <string name="rating_time_left">мондааст</string>
+    <string name="rating_weekly_top_five">Рейтинги ҳафта · Топ 5</string>
     <string name="rating_promote">Топ %1$d боло мебароянд</string>
     <string name="rating_empty">Рейтинг ҳоло шакл нагирифтааст.</string>
     <string name="rating_friends_empty">Ҳоло дӯсти даъватшуда нест.</string>

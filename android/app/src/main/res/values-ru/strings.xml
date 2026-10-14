@@ -246,6 +246,7 @@
     <string name="rating_league_name">Лига %1$s</string>
     <string name="rating_members">%1$d учеников</string>
     <string name="rating_time_left">осталось</string>
+    <string name="rating_weekly_top_five">Недельный рейтинг · Топ 5</string>
     <string name="rating_promote">Топ %1$d поднимаются выше</string>
     <string name="rating_empty">Рейтинг ещё не сформирован.</string>
     <string name="rating_friends_empty">Пока нет приглашённых друзей.</string>
