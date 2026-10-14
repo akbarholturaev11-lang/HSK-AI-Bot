@@ -36,6 +36,10 @@
     <string name="profile_subscription_status_trial">Пробный период</string>
     <string name="profile_subscription_status_temporary">Временный доступ</string>
     <string name="profile_subscription_status_expired">Срок истёк</string>
+    <string name="profile_access_free">Бесплатно</string>
+    <string name="profile_access_trial">Пробный период</string>
+    <string name="profile_access_pro">Pro</string>
+    <string name="profile_get_pro">Получить Pro</string>
     <string name="profile_subscription_status_free">Бесплатный тариф</string>
     <string name="profile_subscription_status_unavailable">Обновите, чтобы проверить статус</string>
     <string name="profile_subscription_until">Действует до %1$s</string>
