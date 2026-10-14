@@ -6436,9 +6436,9 @@ var PROFILE_DETAIL=null;
 var PROFILE_DETAIL_PENDING=false;
 function profileCopy(){
   return ({
-    tj:{free:"Ройгон",today:"Имрӯз",overall:"Ҳамагӣ",pro:"Гирифтани Pro",answers:"ҷавоби арзёбишуда",note:"Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад"},
-    ru:{free:"Бесплатно",today:"Сегодня",overall:"Всего",pro:"Получить Pro",answers:"проверенных ответов",note:"Только проверенные ответы · история может быть неполной"},
-    uz:{free:"Bepul",today:"Bugun",overall:"Umumiy",pro:"Pro olish",answers:"baholangan javob",note:"Faqat tekshirilgan javoblar · eski tarix to'liq bo'lmasligi mumkin"}
+    tj:{free:"Ройгон",trial:"Pro · Озмоиш",today:"Имрӯз",overall:"Ҳамагӣ",pro:"Гирифтани Pro",answers:"ҷавоби арзёбишуда",note:"Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад"},
+    ru:{free:"Бесплатно",trial:"Pro · Пробный",today:"Сегодня",overall:"Всего",pro:"Получить Pro",answers:"проверенных ответов",note:"Только проверенные ответы · история может быть неполной"},
+    uz:{free:"Bepul",trial:"Pro · Sinov",today:"Bugun",overall:"Umumiy",pro:"Pro olish",answers:"baholangan javob",note:"Faqat tekshirilgan javoblar · eski tarix to'liq bo'lmasligi mumkin"}
   })[LANG]||{};
 }
 function loadProfileDetail(){
@@ -6477,7 +6477,7 @@ function renderProfile(){
   var handle=username?"@"+esc(username):(PROF.name?"@"+esc(PROF.name.toLowerCase().replace(/\s+/g,"_")):"@hsk_ai");
   $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+nickname+'</h1><div class="profile-head-actions">'
     +'<button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div></div>'
-    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pun">'+handle+'</div><span class="profile-access-badge'+(paid?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':esc(c.free))+'</span>'+(goalLabel()?'<span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span>':'')+'</div></div>'
+    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pun">'+handle+'</div><span class="profile-access-badge'+(paid||trialActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):esc(c.free))+'</span>'+(goalLabel()?'<span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span>':'')+'</div></div>'
     +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(t.friends)+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
     +profileAccuracyHtml()
     +'<div id="pomp-desktop-profile-root"></div>'
