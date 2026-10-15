@@ -6,8 +6,8 @@
     <string name="bug_report_question">Чӣ рӯй дод?</string>
     <string name="bug_report_hint">Мушкилотро муфассал нависед...</string>
     <string name="bug_report_screenshot">Илова кардани акси экран</string>
-    <string name="bug_report_no_screenshot">Гирифтани акси экран имкон надошт. Метавонед танҳо матн фиристед.</string>
-    <string name="bug_report_privacy">Акси экран танҳо бо иҷозати шумо фиристода мешавад. Маълумоти шахсиро санҷед.</string>
+    <string name="bug_report_no_screenshot">Гирифтани акси экран имкон надошт. Аз галерея интихоб кунед ё фиристодани онро хомӯш кунед.</string>
+    <string name="bug_report_privacy">Фиристодани акси экран пешфарз фаъол аст. Маълумоти шахсиро санҷед ё фиристоданро хомӯш кунед.</string>
     <string name="bug_report_send">Фиристодан</string>
     <string name="bug_report_failed">Паём фиристода нашуд. Интернетро санҷида, дубора кӯшиш кунед.</string>
     <string name="bug_report_success">Паёми шумо қабул шуд. Ташаккур!</string>
@@ -594,4 +594,10 @@
     <string name="limit_sheet_recognition_desc">Машқҳои шинохти иероглифҳоро бе таваққуф идома диҳед.</string>
     <string name="limit_sheet_memorize_title">Калимаҳоро беҳтар дар хотир доред</string>
     <string name="limit_sheet_memorize_desc">Бо такрор калимаҳои навро мустаҳкам кунед.</string>
+    <string name="bug_report_intro_title">Дар бораи хатогӣ хабар медиҳед?</string>
+    <string name="bug_report_intro_body">Агар барнома дуруст кор накунад, ба мо хабар диҳед, то онро беҳтар созем.</string>
+    <string name="bug_report_intro_action">Дар бораи хатогӣ хабар додан</string>
+    <string name="bug_report_pick_screenshot">Интихоби акси экран аз галерея</string>
+    <string name="bug_report_screenshot_required">Акси экранро интихоб кунед ё фиристодани онро хомӯш кунед.</string>
+    <string name="bug_report_thanks_title">Ташаккур барои фикру мулоҳизаатон!</string>
 </resources>

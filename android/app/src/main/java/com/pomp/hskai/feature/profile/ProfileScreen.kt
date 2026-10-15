@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.graphics.Bitmap
+import android.view.View
 import android.provider.Settings
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -59,6 +60,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -150,6 +152,7 @@ fun ProfileScreen(
     onOpenWidget: () -> Unit,
     onOpenSupport: (String) -> Unit,
     onReportProblem: (Bitmap?) -> Unit = {},
+    reportVisible: Boolean = false,
     onRefresh: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
@@ -176,6 +179,11 @@ fun ProfileScreen(
 ) {
     AssistantScreen(profileAssistantContext(state), bottomBar = true, showButton = false)
     var settingsOpen by remember { mutableStateOf(false) }
+    // Shake-triggered reporting must not remain hidden behind the full-screen
+    // Settings Dialog, which owns a separate Android window.
+    LaunchedEffect(reportVisible) {
+        if (reportVisible) settingsOpen = false
+    }
     var profileHsk30BookOpen by remember { mutableStateOf(false) }
     var profileHsk30LevelOpen by remember { mutableStateOf(false) }
     var appearancePickerOpen by remember { mutableStateOf(false) }
@@ -307,9 +315,14 @@ fun ProfileScreen(
             },
             onOpenGoal = { settingsOpen = false; onOpenGoal() },
             onOpenSupport = { url -> settingsOpen = false; onOpenSupport(url) },
-            onReportProblem = { screenshot ->
-                settingsOpen = false
-                onReportProblem(screenshot)
+            onReportProblem = { visibleDialogView ->
+                // Keep the Settings Dialog attached until PixelCopy has captured
+                // the actual visible window; then dismiss it and open the report.
+                scope.launch {
+                    val screenshot = captureReportScreen(visibleDialogView)
+                    settingsOpen = false
+                    onReportProblem(screenshot)
+                }
             },
             shakeToReport = shakeToReport,
             onSetShakeToReport = { enabled ->
@@ -740,7 +753,7 @@ private fun ProfileSettingsScreen(
     onOpenWidget: () -> Unit,
     onOpenGoal: () -> Unit,
     onOpenSupport: (String) -> Unit,
-    onReportProblem: (Bitmap?) -> Unit,
+    onReportProblem: (View) -> Unit,
     shakeToReport: Boolean,
     onSetShakeToReport: (Boolean) -> Unit,
     onOpenAccount: () -> Unit,
@@ -910,7 +923,7 @@ private fun ProfileSettingsScreen(
                                 stringResource(R.string.bug_report_title),
                                 null,
                                 true,
-                                { onReportProblem(captureReportScreen(view)) },
+                                { onReportProblem(view) },
                             )
                             ProfileSettingsDivider()
                             Row(

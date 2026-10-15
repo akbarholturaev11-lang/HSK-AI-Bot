@@ -70,6 +70,7 @@ import com.pomp.hskai.core.navigation.toTab
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.feature.auth.LinkScreen
 import com.pomp.hskai.feature.feedback.BugReportDialog
+import com.pomp.hskai.feature.feedback.BugReportIntroSheet
 import com.pomp.hskai.feature.feedback.ShakeToReport
 import com.pomp.hskai.feature.feedback.captureReportScreen
 import com.pomp.hskai.feature.onboarding.NotificationPrimerScreen
@@ -314,7 +315,7 @@ private fun AppRoot(
                 }
             }
             if (!localeReady) {
-                SplashScreen()
+                LaunchWaitScreen()
                 return
             }
             val sessionOwner = rememberSessionViewModelStoreOwner()
@@ -717,19 +718,52 @@ private fun AppRoot(
             val shakeToReportEnabled by app.appSettings.shakeToReport
                 .collectAsStateWithLifecycle(initialValue = false)
             var bugReportOpen by remember { mutableStateOf(false) }
+            var bugReportIntroVisible by remember { mutableStateOf(false) }
+            var bugReportCapturing by remember { mutableStateOf(false) }
+            var introCaptureGeneration by remember { mutableStateOf(0) }
             var bugReportScreenshot by remember { mutableStateOf<Bitmap?>(null) }
             var bugReportSource by remember { mutableStateOf("") }
-            val openBugReport: (Bitmap?) -> Unit = { visibleWindowScreenshot ->
-                if (!bugReportOpen) {
-                    bugReportSource = selectedTab.name.lowercase()
-                    bugReportScreenshot =
-                        visibleWindowScreenshot ?: captureReportScreen(bugReportRootView)
-                    bugReportOpen = true
+
+            // Opening the Settings entry goes directly to the form, but a
+            // shake must first show the compact confirmation bottom sheet.
+            val openBugReport: (Bitmap?) -> Unit = { settingsSnapshot ->
+                if (!bugReportOpen && !bugReportIntroVisible && !bugReportCapturing) {
+                    bugReportCapturing = true
+                    scope.launch {
+                        bugReportSource = selectedTab.name.lowercase()
+                        bugReportScreenshot = settingsSnapshot
+                            ?: captureReportScreen(bugReportRootView)
+                        bugReportCapturing = false
+                        bugReportOpen = true
+                    }
                 }
             }
             ShakeToReport(
-                enabled = shakeToReportEnabled && !bugReportOpen,
-                onShake = { openBugReport(null) },
+                enabled = shakeToReportEnabled &&
+                    !bugReportOpen && !bugReportIntroVisible && !bugReportCapturing,
+                onShake = {
+                    if (!bugReportOpen && !bugReportIntroVisible && !bugReportCapturing) {
+                        // Present the FIRST sheet immediately. Keep it in place
+                        // while screenshot capture loads instead of leaving the
+                        // app unresponsive for up to the PixelCopy timeout.
+                        bugReportSource = selectedTab.name.lowercase()
+                        bugReportCapturing = true
+                        bugReportIntroVisible = true
+                        introCaptureGeneration += 1
+                        val captureGeneration = introCaptureGeneration
+                        scope.launch {
+                            // PixelCopy targets the Activity window, not the
+                            // sheet's separate window, so the overlay stays
+                            // outside the captured image.
+                            val snapshot = captureReportScreen(bugReportRootView)
+                            if (bugReportIntroVisible &&
+                                captureGeneration == introCaptureGeneration) {
+                                bugReportScreenshot = snapshot
+                                bugReportCapturing = false
+                            }
+                        }
+                    }
+                },
             )
 
             // Course refreshes server flags on return; secondary tabs keep
@@ -1084,7 +1118,7 @@ private fun AppRoot(
                     },
                 )
             } else if (onboardingState.loading && !onboardingUnknown) {
-                SplashScreen()
+                LaunchWaitScreen()
             } else if (!onboardingState.completed && !onboardingUnknown) {
                 OnboardingScreen(
                     language = currentLanguage,
@@ -1506,6 +1540,7 @@ private fun AppRoot(
                                 },
                                 onOpenSupport = { url -> openExternal(context, url) },
                                 onReportProblem = openBugReport,
+                                reportVisible = bugReportOpen || bugReportIntroVisible,
                                 onRefresh = profileViewModel::load,
                                 onLogout = { signOut(false) },
                                 onUnlinkDevice = { signOut(true) },
@@ -1706,6 +1741,27 @@ private fun AppRoot(
                         }
                     },
                     containerColor = PompColors.Paper,
+                )
+            }
+            if (bugReportIntroVisible) {
+                BugReportIntroSheet(
+                    loading = bugReportCapturing,
+                    shakeEnabled = shakeToReportEnabled,
+                    onShakeChanged = { enabled ->
+                        scope.launch { app.appSettings.setShakeToReport(enabled) }
+                    },
+                    onContinue = {
+                        if (!bugReportCapturing) {
+                            bugReportIntroVisible = false
+                            bugReportOpen = true
+                        }
+                    },
+                    onDismiss = {
+                        introCaptureGeneration += 1
+                        bugReportIntroVisible = false
+                        bugReportScreenshot = null
+                        bugReportCapturing = false
+                    },
                 )
             }
             if (bugReportOpen) {
@@ -2031,6 +2087,20 @@ private fun rememberSessionViewModelStoreOwner(): SessionViewModelStoreOwner {
         onDispose(owner::clear)
     }
     return owner
+}
+
+/**
+ * After the one-time 2,920ms Golden Logo finishes, leave its complete final
+ * frame on screen until the authenticated content finishes loading. No second
+ * startup animation or second audio/haptic event is allowed.
+ */
+@Composable
+private fun LaunchWaitScreen() {
+    Surface(color = PompColors.Paper, modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            HskBrandLoader(launch = true, holdLaunchFrame = true)
+        }
+    }
 }
 
 @Composable

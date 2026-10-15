@@ -12,8 +12,8 @@
     <string name="bug_report_question">Nima sodir bo‘ldi?</string>
     <string name="bug_report_hint">Muammoni batafsil yozing...</string>
     <string name="bug_report_screenshot">Skrinshot qo‘shish</string>
-    <string name="bug_report_no_screenshot">Bu ekranning suratini olish imkoni bo‘lmadi. Matn yuborish mumkin.</string>
-    <string name="bug_report_privacy">Skrinshot faqat shu tugma yoqilganda yuboriladi. Shaxsiy ma’lumotlar ko‘rinmasligini tekshiring.</string>
+    <string name="bug_report_no_screenshot">Ekran suratini avtomatik olish imkoni bo‘lmadi. Galereyadan tanlang yoki skrinshotni o‘chiring.</string>
+    <string name="bug_report_privacy">Skrinshot yuborish oldindan yoqilgan. Undagi shaxsiy ma’lumotlarni tekshiring; istasangiz o‘chirishingiz mumkin.</string>
     <string name="bug_report_send">Xabar yuborish</string>
     <string name="bug_report_failed">Xabar yuborilmadi. Internetni tekshirib, qayta urinib ko‘ring.</string>
     <string name="bug_report_success">Xabaringiz qabul qilindi. Rahmat!</string>
@@ -632,4 +632,10 @@
     <string name="limit_sheet_recognition_desc">Ieroglif tanish mashqlarini davom ettirib, yodda saqlang.</string>
     <string name="limit_sheet_memorize_title">Yangi so‘zlarni puxta yodlang</string>
     <string name="limit_sheet_memorize_desc">Takrorlash mashqlari bilan o‘rgangan so‘zlarni mustahkamlang.</string>
+    <string name="bug_report_intro_title">Xatolik haqida xabar berasizmi?</string>
+    <string name="bug_report_intro_body">Agar ilova noto‘g‘ri ishlayotgan bo‘lsa, bu haqda bizga xabar bering.</string>
+    <string name="bug_report_intro_action">Xatolik haqida xabar berish</string>
+    <string name="bug_report_pick_screenshot">Galereyadan skrinshot tanlash</string>
+    <string name="bug_report_screenshot_required">Skrinshotni tanlang yoki uni yuborishni o‘chiring.</string>
+    <string name="bug_report_thanks_title">Fikringiz uchun rahmat!</string>
 </resources>

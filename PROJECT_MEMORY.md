@@ -10916,3 +10916,13 @@ Follow-up:
 - Adapter DTO/API and `FeatureRepository.sendBugReport` are common code for both `direct` and `play` distributions; new copy UZ/RU/TJ. Failure returns 503; a simple per-process 60-second repeat throttle returns 429 (for multiple backend instances, add shared rate limiting if abuse becomes material).
 - Regression tests: `AndroidBugReportApiTests`, authenticated-route allow-list and AndroidFeatureApi fake. GitHub draft PR #168 (`codex/android-bug-report`) targets `main`. Deploy server before new Android APK; ensure Android CI, direct/play builds, emulator and real device checks pass before release.
 - Open verification: shake trigger reliability/sensitivity, native dialog visual quality/light/dark/320dp font scaling, and whether the screenshot faithfully represents a modal Settings window (Activity `LocalView` snapshots may capture the underlying content instead of a separate Dialog window). Existing support link remains unaffected.
+
+
+### 2026-10-15 — Android report bug UI: confirmation, screenshot, fixed send
+
+- Shake reporting uses `ShakeGestureDetector` with two gravity-filtered acceleration peaks instead of the old raw 25 m/s² threshold; only active in foreground and the saved shake preference is honored (default ON unless user opted out).
+- Shake opens `BugReportIntroSheet.kt`, a compact first-step bottom sheet with "Report an error" action and the shake preference. Pressing the action opens `BugReportDialog.kt`; tapping Settings > Report Problem opens the full form directly.
+- Screen capture occurs **before** the confirmation/form overlay. `ReportScreenCapture.kt` uses PixelCopy of the active Android Window and a decorView Canvas fallback. Settings entry captures the visible Settings Dialog before dismissing that window. FLAG_SECURE content is not captured. PixelCopy may time out; do not recycle destination until the async operation has finished.
+- Form screenshot attachment defaults ON, with live preview and explicit toggle OFF; if automatic screenshot capture fails, a device photo-picker fallback allows the learner to choose an image, or disable screenshot and send text only. Sending is always a deliberate submit action, never triggered by shake.
+- The report form uses `imePadding()` and a non-scrolling Send footer below a separately scrollable form body; the keyboard must not hide the button. UZ/RU/TJ copy and `tests/test_android_bug_report_flow_contract.py` cover the two-step flow.
+- PR #170 (`codex/fix-shake-report-sensor-20261015`) contains this combined fix. Android CI plus physical-device regression are required. Existing 1.7.15 APK predates this PR and cannot include the fixes; after merge release must bump versionCode.

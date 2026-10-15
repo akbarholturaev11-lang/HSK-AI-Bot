@@ -5,8 +5,8 @@
     <string name="bug_report_question">Что случилось?</string>
     <string name="bug_report_hint">Расскажите нам о проблеме...</string>
     <string name="bug_report_screenshot">Добавить снимок экрана</string>
-    <string name="bug_report_no_screenshot">Не удалось снять экран. Вы можете отправить текст без снимка.</string>
-    <string name="bug_report_privacy">Снимок отправляется только после вашего согласия. Проверьте, нет ли личных данных.</string>
+    <string name="bug_report_no_screenshot">Не удалось автоматически снять экран. Выберите снимок из галереи или отключите его отправку.</string>
+    <string name="bug_report_privacy">Снимок экрана включён по умолчанию. Проверьте личные данные на снимке или отключите отправку.</string>
     <string name="bug_report_send">Отправить</string>
     <string name="bug_report_failed">Не удалось отправить. Проверьте интернет и попробуйте ещё раз.</string>
     <string name="bug_report_success">Сообщение отправлено. Спасибо!</string>
@@ -593,4 +593,10 @@
     <string name="limit_sheet_recognition_desc">Продолжайте упражнения на распознавание иероглифов.</string>
     <string name="limit_sheet_memorize_title">Запоминайте слова надолго</string>
     <string name="limit_sheet_memorize_desc">Закрепляйте новую лексику с помощью повторений.</string>
+    <string name="bug_report_intro_title">Сообщить об ошибке?</string>
+    <string name="bug_report_intro_body">Если что-то работает некорректно, расскажите нам об этом, чтобы помочь улучшить HSK AI.</string>
+    <string name="bug_report_intro_action">Сообщить об ошибке</string>
+    <string name="bug_report_pick_screenshot">Выбрать снимок из галереи</string>
+    <string name="bug_report_screenshot_required">Выберите снимок экрана или отключите его отправку.</string>
+    <string name="bug_report_thanks_title">Спасибо за ваш отзыв!</string>
 </resources>

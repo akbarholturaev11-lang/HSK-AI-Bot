@@ -78,6 +78,22 @@ class LaunchFeedbackContractTests(unittest.TestCase):
         self.assertIn("hsk-launch-brand-rise 620ms", MINI)
         self.assertIn("hsk-launch-gold-wave 900ms", MINI)
 
+    def test_one_golden_logo_is_held_until_loading_finishes_without_replay(self):
+        activity = (ANDROID / "src/main/java/com/pomp/hskai/MainActivity.kt").read_text(encoding="utf-8")
+        # The main Golden Logo animates once. Other loading states reuse its
+        # completed final frame, never the former second breathing loader.
+        self.assertIn("SplashScreen(onLaunchSplashAnimationFinished)", activity)
+        self.assertIn("private fun LaunchWaitScreen()", activity)
+        self.assertIn("HskBrandLoader(launch = true, holdLaunchFrame = true)", activity)
+        self.assertNotIn("SplashScreen()", activity)
+        self.assertIn("holdLaunchFrame: Boolean = false", BRAND)
+        self.assertIn("Animatable(if (launch && holdLaunchFrame) 2920f else 0f)", BRAND)
+        self.assertIn("elapsedMs.snapTo(2920f)", BRAND)
+        self.assertIn("if (holdLaunchFrame) return@LaunchedEffect", BRAND)
+        self.assertIn("feedback.pulse(strong = false)", BRAND)
+        self.assertIn("feedback.pulse(strong = true)", BRAND)
+        self.assertIn("VibratorManager::class.java", FEEDBACK)
+
     def test_android_starting_window_does_not_flash_duplicate_logo(self):
         # Android's static starting window should not display a finished logo
         # before the Compose knot assembly begins.

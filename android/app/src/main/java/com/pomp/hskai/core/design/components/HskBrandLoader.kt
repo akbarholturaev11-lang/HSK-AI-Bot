@@ -62,17 +62,28 @@ fun HskBrandLoader(
     modifier: Modifier = Modifier,
     compact: Boolean = false,
     launch: Boolean = false,
+    holdLaunchFrame: Boolean = false,
     onLaunchAnimationFinished: () -> Unit = {},
 ) {
     // Mini App uses one deterministic 2,920ms CSS timeline. Do the same in
     // Compose: chained springs previously delayed the knot, title and shimmer.
-    val elapsedMs = remember { Animatable(0f) }
+    val elapsedMs = remember(launch, holdLaunchFrame) {
+        // Initialize the holding composition on the finished frame itself:
+        // no one-frame flash of a partially assembled knot during navigation.
+        Animatable(if (launch && holdLaunchFrame) 2920f else 0f)
+    }
     val currentOnLaunchAnimationFinished by rememberUpdatedState(onLaunchAnimationFinished)
-    LaunchedEffect(launch) {
+    LaunchedEffect(launch, holdLaunchFrame) {
         if (launch) {
-            elapsedMs.snapTo(0f)
-            elapsedMs.animateTo(2920f, animationSpec = tween(2920, easing = LinearEasing))
-            currentOnLaunchAnimationFinished()
+            if (holdLaunchFrame) {
+                // Loading outlived the first Golden Logo animation. Keep its
+                // finished artwork visible instead of replaying a second loader.
+                elapsedMs.snapTo(2920f)
+            } else {
+                elapsedMs.snapTo(0f)
+                elapsedMs.animateTo(2920f, animationSpec = tween(2920, easing = LinearEasing))
+                currentOnLaunchAnimationFinished()
+            }
         }
     }
     val context = LocalContext.current
@@ -80,6 +91,8 @@ fun HskBrandLoader(
        with the shared reveal (crossings at 570ms, gold shimmer at 1910ms). */
     LaunchedEffect(launch) {
         if (!launch) return@LaunchedEffect
+        // Holding the final frame is visual only; no second chime or vibration.
+        if (holdLaunchFrame) return@LaunchedEffect
         val feedback = HskLaunchFeedback(context.applicationContext)
         try {
             feedback.play()
