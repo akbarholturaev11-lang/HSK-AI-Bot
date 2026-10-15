@@ -1,30 +1,40 @@
 package com.pomp.hskai.feature.feedback
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Base64
-import android.view.View
+import android.view.WindowManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,12 +44,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.view.drawToBitmap
+import androidx.compose.ui.window.DialogWindowProvider
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.network.ApiResult
@@ -49,21 +61,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/** Capture the current Android window BEFORE the report modal is shown. */
-fun captureReportScreen(view: View): Bitmap? =
-    runCatching {
-        if (view.width <= 0 || view.height <= 0) null else view.drawToBitmap()
-    }.getOrNull()
-
-/**
- * A screenshot is never uploaded simply because the report was opened.
- * Only the explicitly enabled screenshot switch allows transmission.
- */
+/** Screenshot is local until the user explicitly taps Send; never auto-submit. */
 internal fun jpegReportScreenshot(bitmap: Bitmap): String? {
     if (bitmap.width <= 0 || bitmap.height <= 0) return null
-    val maxSide = maxOf(bitmap.width, bitmap.height)
-    val scaled = if (maxSide > 900) {
-        val ratio = 900f / maxSide
+    val longest = maxOf(bitmap.width, bitmap.height)
+    val scaled = if (longest > 900) {
+        val ratio = 900f / longest
         Bitmap.createScaledBitmap(
             bitmap,
             (bitmap.width * ratio).toInt().coerceAtLeast(1),
@@ -76,12 +79,30 @@ internal fun jpegReportScreenshot(bitmap: Bitmap): String? {
             scaled.compress(Bitmap.CompressFormat.JPEG, 60, stream)
             stream.toByteArray()
         }
-        if (bytes.size > 550 * 1024) null
+        if (bytes.isEmpty() || bytes.size > 550 * 1024) null
         else "data:image/jpeg;base64," + Base64.encodeToString(bytes, Base64.NO_WRAP)
     } finally {
         if (scaled !== bitmap) scaled.recycle()
     }
 }
+
+/** User-selected screenshot fallback when a device denies direct window capture. */
+private fun readScreenshot(context: android.content.Context, uri: Uri): Bitmap? =
+    runCatching {
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        context.contentResolver.openInputStream(uri)?.use {
+            BitmapFactory.decodeStream(it, null, bounds)
+        }
+        if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return@runCatching null
+        val sample = BitmapFactory.Options().apply {
+            var factor = 1
+            while (maxOf(bounds.outWidth, bounds.outHeight) / factor > 1500) factor *= 2
+            inSampleSize = factor
+        }
+        context.contentResolver.openInputStream(uri)?.use {
+            BitmapFactory.decodeStream(it, null, sample)
+        }
+    }.getOrNull()
 
 @Composable
 fun BugReportDialog(
@@ -91,100 +112,177 @@ fun BugReportDialog(
     onDismiss: () -> Unit,
 ) {
     var description by remember { mutableStateOf("") }
-    var attachScreenshot by remember { mutableStateOf(false) }
+    // Default ON. The learner can always turn this OFF before sending.
+    var attachScreenshot by remember { mutableStateOf(true) }
+    var preview by remember(screenshot) { mutableStateOf(screenshot) }
     var busy by remember { mutableStateOf(false) }
     var failed by remember { mutableStateOf(false) }
+    var missingScreenshot by remember { mutableStateOf(false) }
     var sent by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            preview = readScreenshot(context, uri)
+            missingScreenshot = preview == null
+        }
+    }
 
     Dialog(
         onDismissRequest = { if (!busy) onDismiss() },
-        properties = DialogProperties(usePlatformDefaultWidth = false),
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = false,
+        ),
     ) {
-        Surface(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            color = PompColors.Paper,
-            shape = RoundedCornerShape(24.dp),
+        val dialogView = LocalView.current
+        DisposableEffect(dialogView) {
+            val window = (dialogView.parent as? DialogWindowProvider)?.window
+            window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+            onDispose { }
+        }
+
+        // The keyboard shrinks the available content area; only the fields
+        // scroll. The Send button is outside that scroll area and stays visible.
+        Box(
+            modifier = Modifier.fillMaxSize().statusBarsPadding()
+                .navigationBarsPadding().imePadding(),
+            contentAlignment = Alignment.Center,
         ) {
-            Column(
-                modifier = Modifier
-                    .heightIn(max = 680.dp)
-                    .verticalScroll(rememberScrollState())
-                    .padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp),
+            Surface(
+                modifier = Modifier.fillMaxWidth(0.96f).fillMaxHeight(0.94f),
+                color = PompColors.Paper,
+                shape = RoundedCornerShape(24.dp),
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        stringResource(R.string.bug_report_title),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = PompColors.Ink,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.weight(1f),
-                    )
-                    TextButton(onClick = onDismiss, enabled = !busy) {
-                        Text(stringResource(R.string.action_close))
-                    }
-                }
-                if (sent) {
-                    Text(stringResource(R.string.bug_report_success), color = PompColors.Ink)
-                    Button(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
-                        Text(stringResource(R.string.action_close))
-                    }
-                } else {
-                    Text(
-                        stringResource(R.string.bug_report_question),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = PompColors.Ink,
-                    )
-                    OutlinedTextField(
-                        value = description,
-                        onValueChange = { description = it.take(2000); failed = false },
-                        modifier = Modifier.fillMaxWidth().heightIn(min = 165.dp),
-                        placeholder = { Text(stringResource(R.string.bug_report_hint)) },
-                        minLines = 4,
-                        maxLines = 8,
-                        supportingText = { Text("${description.length} / 2000") },
-                        enabled = !busy,
-                    )
+                Column {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Text(stringResource(R.string.bug_report_screenshot), color = PompColors.Ink)
-                        Switch(
-                            checked = attachScreenshot && screenshot != null,
-                            onCheckedChange = { attachScreenshot = it; failed = false },
-                            enabled = screenshot != null && !busy,
-                        )
-                    }
-                    if (screenshot != null && attachScreenshot) {
-                        Image(
-                            bitmap = screenshot.asImageBitmap(),
-                            contentDescription = stringResource(R.string.bug_report_screenshot),
-                            modifier = Modifier.fillMaxWidth().height(130.dp),
-                            contentScale = ContentScale.Fit,
-                        )
-                    }
-                    Text(
-                        stringResource(
-                            if (screenshot == null) R.string.bug_report_no_screenshot
-                            else R.string.bug_report_privacy,
+                        modifier = Modifier.fillMaxWidth().padding(
+                            start = 18.dp, end = 12.dp, top = 16.dp, bottom = 8.dp,
                         ),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = PompColors.InkSecondary,
-                    )
-                    if (failed) {
-                        Text(stringResource(R.string.bug_report_failed), color = MaterialTheme.colorScheme.error)
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            stringResource(R.string.bug_report_title),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = PompColors.Ink,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.weight(1f),
+                        )
+                        TextButton(onClick = onDismiss, enabled = !busy) {
+                            Text(stringResource(R.string.action_close))
+                        }
                     }
+                    if (sent) {
+                        Column(
+                            modifier = Modifier.weight(1f).padding(20.dp),
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            Text(
+                                stringResource(R.string.bug_report_success),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = PompColors.Ink,
+                            )
+                        }
+                    } else {
+                        Column(
+                            modifier = Modifier.weight(1f)
+                                .verticalScroll(rememberScrollState())
+                                .padding(horizontal = 18.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            Text(
+                                stringResource(R.string.bug_report_question),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = PompColors.Ink,
+                            )
+                            OutlinedTextField(
+                                value = description,
+                                onValueChange = { description = it.take(2000); failed = false },
+                                modifier = Modifier.fillMaxWidth(),
+                                placeholder = { Text(stringResource(R.string.bug_report_hint)) },
+                                minLines = 3,
+                                maxLines = 6,
+                                supportingText = { Text("${description.length} / 2000") },
+                                enabled = !busy,
+                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                Text(
+                                    stringResource(R.string.bug_report_screenshot),
+                                    color = PompColors.Ink,
+                                )
+                                Switch(
+                                    checked = attachScreenshot,
+                                    onCheckedChange = {
+                                        attachScreenshot = it
+                                        missingScreenshot = false
+                                    },
+                                    enabled = !busy,
+                                )
+                            }
+                            if (attachScreenshot) {
+                                if (preview != null) {
+                                    Image(
+                                        bitmap = preview!!.asImageBitmap(),
+                                        contentDescription = stringResource(R.string.bug_report_screenshot),
+                                        modifier = Modifier.fillMaxWidth().height(112.dp),
+                                        contentScale = ContentScale.Fit,
+                                    )
+                                } else {
+                                    Text(
+                                        stringResource(R.string.bug_report_no_screenshot),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = PompColors.InkSecondary,
+                                    )
+                                    OutlinedButton(
+                                        onClick = { picker.launch("image/*") },
+                                        enabled = !busy,
+                                    ) {
+                                        Text(stringResource(R.string.bug_report_pick_screenshot))
+                                    }
+                                }
+                                Text(
+                                    stringResource(R.string.bug_report_privacy),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = PompColors.InkSecondary,
+                                )
+                            }
+                            if (missingScreenshot) {
+                                Text(
+                                    stringResource(R.string.bug_report_screenshot_required),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            }
+                            if (failed) {
+                                Text(
+                                    stringResource(R.string.bug_report_failed),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            }
+                        }
+                    }
+                    HorizontalDivider(color = PompColors.Divider)
                     Button(
                         onClick = {
                             if (busy) return@Button
+                            if (sent) {
+                                onDismiss()
+                                return@Button
+                            }
+                            if (attachScreenshot && preview == null) {
+                                missingScreenshot = true
+                                return@Button
+                            }
                             busy = true
                             failed = false
                             scope.launch {
-                                val encoded = if (attachScreenshot && screenshot != null) {
-                                    withContext(Dispatchers.Default) { jpegReportScreenshot(screenshot) }
+                                val encoded = if (attachScreenshot && preview != null) {
+                                    withContext(Dispatchers.Default) { jpegReportScreenshot(preview!!) }
                                 } else ""
                                 if (attachScreenshot && encoded == null) {
                                     busy = false
@@ -201,13 +299,19 @@ fun BugReportDialog(
                                 busy = false
                             }
                         },
-                        modifier = Modifier.fillMaxWidth(),
-                        enabled = description.trim().length >= 5 && !busy,
+                        modifier = Modifier.fillMaxWidth().padding(
+                            start = 18.dp, end = 18.dp, top = 12.dp, bottom = 14.dp,
+                        ),
+                        enabled = sent || (description.trim().length >= 5 && !busy),
                     ) {
-                        if (busy) CircularProgressIndicator(
-                            modifier = Modifier.height(18.dp),
-                            strokeWidth = 2.dp,
-                        ) else Text(stringResource(R.string.bug_report_send))
+                        if (busy) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.height(18.dp),
+                                strokeWidth = 2.dp,
+                            )
+                        } else Text(
+                            stringResource(if (sent) R.string.action_close else R.string.bug_report_send)
+                        )
                     }
                 }
             }
