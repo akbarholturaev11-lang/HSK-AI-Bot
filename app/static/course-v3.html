@@ -6458,9 +6458,11 @@ function courseVersionSettingsRowHtml(){
   var status=COURSE_TRACK_STATE;
   var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
   if((!access||access.feature_enabled!==true)&&currentCourseTrack()!=="hsk30")return "";
-  var t=trackUi(),track=currentCourseTrack();
-  return '<button class="srow" onclick="App.profileCourseVersionBook()"><i class="ti ti-switch-horizontal"></i> '+esc(t.courseVersion)
-    +'<span class="sv">'+esc(track==="hsk30"?t.hsk30:t.hsk20)+' <i class="ti ti-chevron-right"></i></span></button>';
+  // Display only the active HSK band in profile settings. Tapping still
+  // opens the existing book-cover screen for switching the course version.
+  var level=(MAP&&MAP.level)||getSelectedLevel();
+  return '<button class="srow" onclick="App.profileCourseVersionBook()"><i class="ti ti-switch-horizontal"></i> '+esc(coursePickerCopy().level)
+    +'<span class="sv">'+esc(courseLevelLabel(level))+' <i class="ti ti-chevron-right"></i></span></button>';
 }
 function settingsSheetHtml(){
   var t=T(),p=pl();
