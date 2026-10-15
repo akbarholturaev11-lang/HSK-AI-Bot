@@ -49,9 +49,10 @@ internal data class PompPalette(
 
 object PompColors {
     val LightPaper = Color(0xFFFDF9F0)
-    // Checkout-style warm paper for standard Android cards (not pure white).
-    // Retains contrast against the light canvas via the shared divider/border.
-    val LightPaperRaised = Color(0xFFFBF6ED)
+    val LightPaperRaised = Color(0xFFFFFFFF)
+    // Deliberately separate from the white raised-surface token: standard
+    // content panels use the Mini App's warm checkout-card tone.
+    val LightCardSurface = Color(0xFFFBF6ED)
     val LightInk = Color(0xFF211D17)
     val LightInkSecondary = Color(0xFF665D50)
     val LightInkDisabled = Color(0xFFA89E8E)
@@ -147,6 +148,7 @@ object PompColors {
 
     val Paper: Color get() = activePalette.paper
     val PaperRaised: Color get() = activePalette.paperRaised
+    val CardSurface: Color get() = if (IsDark) activePalette.paperRaised else LightCardSurface
     val Ink: Color get() = activePalette.ink
     val InkSecondary: Color get() = activePalette.inkSecondary
     val InkDisabled: Color get() = activePalette.inkDisabled
