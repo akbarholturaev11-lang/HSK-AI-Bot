@@ -1,0 +1,56 @@
+"""Regression guardrails for the Android shake-to-report UX and screenshot flow."""
+
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+ANDROID = ROOT / "android/app/src/main/java/com/pomp/hskai"
+
+
+class AndroidBugReportFlowContracts(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.main = (ANDROID / "MainActivity.kt").read_text(encoding="utf-8")
+        cls.form = (ANDROID / "feature/feedback/BugReportDialog.kt").read_text(encoding="utf-8")
+        cls.intro = (ANDROID / "feature/feedback/BugReportIntroSheet.kt").read_text(encoding="utf-8")
+        cls.capture = (ANDROID / "feature/feedback/ReportScreenCapture.kt").read_text(encoding="utf-8")
+        cls.profile = (ANDROID / "feature/profile/ProfileScreen.kt").read_text(encoding="utf-8")
+
+    def test_shake_confirmation_precedes_report_form(self):
+        self.assertIn("bugReportIntroVisible = true", self.main)
+        self.assertIn("BugReportIntroSheet(", self.main)
+        self.assertIn("onContinue = {", self.main)
+        self.assertIn("bugReportOpen = true", self.main)
+        self.assertIn("ShakeToReport(", self.main)
+        self.assertIn("enabled = shakeToReportEnabled &&", self.main)
+        self.assertIn("onShakeChanged", self.intro)
+
+    def test_screenshot_capture_precedes_confirmation_and_has_fallback(self):
+        self.assertLess(
+            self.main.index("bugReportScreenshot = captureReportScreen(bugReportRootView)"),
+            self.main.index("bugReportIntroVisible = true"),
+        )
+        self.assertIn("PixelCopy.request(", self.capture)
+        self.assertIn("root.draw(canvas)", self.capture)
+        self.assertIn("FLAG_SECURE", self.capture)
+        self.assertIn("val screenshot = captureReportScreen(visibleDialogView)", self.profile)
+
+    def test_attach_is_on_by_default_but_can_be_disabled(self):
+        self.assertIn("var attachScreenshot by remember { mutableStateOf(true) }", self.form)
+        self.assertIn("checked = attachScreenshot", self.form)
+        self.assertIn("onCheckedChange", self.form)
+        self.assertIn("screenshotDataUrl = encoded.orEmpty()", self.form)
+        self.assertIn('picker.launch("image/*")', self.form)
+
+    def test_fixed_send_action_is_not_inside_scroll_column(self):
+        scroll = self.form.index(".verticalScroll(rememberScrollState())")
+        divider = self.form.index("HorizontalDivider(color = PompColors.Divider)")
+        submit = self.form.index("enabled = sent || (description.trim().length >= 5 && !busy)")
+        self.assertLess(scroll, divider)
+        self.assertLess(divider, submit)
+        self.assertIn(".imePadding()", self.form)
+        self.assertIn("SOFT_INPUT_ADJUST_RESIZE", self.form)
+
+
+if __name__ == "__main__":
+    unittest.main()
