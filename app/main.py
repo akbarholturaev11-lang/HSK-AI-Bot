@@ -2249,7 +2249,7 @@ async def course_v3_tour_audio(lang: str, key: str):
 # no Edge/Gemini synthesis, no database work, no authentication round-trip.
 # Dynamic/new phrases still use the original /api/v3/tts endpoint.
 OFFLINE_WORD_AUDIO_DIR = (
-    Path(__file__).resolve().parents[1] / "android/app/src/main/assets/audio/words"
+    Path(__file__).resolve().parents[1] / "offline_audio/words"
 )
 OFFLINE_WORD_INDEX = Path(__file__).resolve().parent / "static/audio/words-index.js"
 

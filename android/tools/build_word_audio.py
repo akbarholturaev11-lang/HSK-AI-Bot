@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bundle every dictionary word's pronunciation into the APK.
+"""Generate every dictionary word's pronunciation into the shared CDN corpus.
 
 The dictionary's words and writing order already travel with the app. The
 sound did not: the listen button asked the server to synthesise the word, so
@@ -7,7 +7,7 @@ with no connection it said nothing. This renders the same audio the server
 would — same voice, same rate, read from `app/api/android_course.py` so the
 two cannot drift — once, at build time.
 
-  assets/audio/words/<code points>.mp3   one file per word, e.g. 你们 ->
+  offline_audio/words/<code points>.mp3   one file per word, e.g. 你们 ->
                                          20320_20204.mp3
 
 The server's MP3 is 48 kbps with silence at both ends. For a spoken word that
@@ -38,7 +38,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 ASSETS = ROOT / "android" / "app" / "src" / "main" / "assets"
-AUDIO_DIR = ASSETS / "audio" / "words"
+AUDIO_DIR = ROOT / "offline_audio" / "words"
 SERVER_TTS = ROOT / "app" / "api" / "android_course.py"
 
 SAMPLE_RATE = 24_000
@@ -148,7 +148,7 @@ async def main_async(force: bool) -> int:
         path.unlink()
 
     total = sum(path.stat().st_size for path in AUDIO_DIR.glob("*.mp3"))
-    print(f"audio/words/: {len(wanted) - len(failed)} files, {total / 1024 / 1024:.1f} MB"
+    print(f"offline_audio/words/: {len(wanted) - len(failed)} files, {total / 1024 / 1024:.1f} MB"
           + (f", removed {len(stale)} stale" if stale else ""))
     if failed:
         print(f"{len(failed)} word(s) failed; run again to retry them")

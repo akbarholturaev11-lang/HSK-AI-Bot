@@ -98,17 +98,22 @@ class OfflineAudioBundleTests(unittest.TestCase):
                 self.assertIn("playSource(", html)
                 self.assertIn("/api/v3/tts?text=", html)
 
-    def test_android_bundled_file_is_preferred_before_cache_and_network(self):
-        # Check the implementation order, not a mocked network response:
-        # user devices must play their APK assets without a request.
+    def test_android_cache_then_cdn_then_backend_tts(self):
+        # Permanent cache must win offline; CDN is public and never generates.
         source = (offline.ROOT /
                   "android/app/src/main/java/com/pomp/hskai/data/repository/CourseRepository.kt").read_text("utf-8")
         start = source.index("    suspend fun ttsAudio(text: String)")
         section = source[start:source.index("    private fun ttsCacheKey", start)]
-        self.assertLess(section.index("bundledAudio?.find(phrase)"),
-                        section.index("ttsCache?.read(cacheKey)"))
         self.assertLess(section.index("ttsCache?.read(cacheKey)"),
+                        section.index("cdnAudio?.find(phrase)"))
+        self.assertLess(section.index("cdnAudio?.find(phrase)"),
                         section.index("api.tts("))
+        self.assertIn("ttsCache?.write(cacheKey, audio)", section)
+
+    def test_android_apk_does_not_bundle_mandarin_mp3_corpus(self):
+        assets = offline.ROOT / "android/app/src/main/assets"
+        self.assertFalse(list(assets.rglob("*.mp3")), "MP3 corpus belongs in R2, not APK")
+        self.assertTrue((offline.ROOT / "offline_audio/words/19968.mp3").is_file())
 
     def test_fake_mp3_is_not_valid_and_valid_file_is_not_regenerated(self):
         with tempfile.TemporaryDirectory() as dirname:

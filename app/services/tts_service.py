@@ -59,7 +59,7 @@ def _offline_audio_name(text: str) -> str:
 
 
 def _bundled_word_audio(text: str, rate: str) -> Path | None:
-    """Reuse the Android APK's 1,247 existing Edge MP3s for the Mini App too.
+    """Reuse the pre-rendered Mandarin MP3 corpus for Mini App and Android.
 
     These files were synthesized with the same Mandarin voice and -10% rate.
     Using them directly avoids Edge websocket and Gemini generation latency,
@@ -68,7 +68,7 @@ def _bundled_word_audio(text: str, rate: str) -> Path | None:
     if rate != RATE or len(text) > 240:
         return None
     audio_dir = Path(__file__).resolve().parents[2] / (
-        "android/app/src/main/assets/audio/words"
+        "offline_audio/words"
     )
     name = _offline_audio_name(text)
     path = audio_dir / name

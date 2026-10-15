@@ -3,8 +3,8 @@
 
 Source: deployed static course_v3_data/<level>/lesson_*.json, all 2.0 / 3.0
 levels. Extract only fields the lesson UI may speak, never translation
-explanations. One file is bundled in Android APK and reused by Mini App's
-backend without an extra Microsoft request.
+explanations. One file is stored in the shared offline_audio corpus and uploaded to
+Cloudflare R2 for Android; Mini App can reuse it without synthesis.
 
 Examples:
   python scripts/build_hsk_offline_audio.py --dry-run
@@ -25,7 +25,7 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "android/app/src/main/assets/audio/words"
+OUT = ROOT / "offline_audio/words"
 COURSES = ROOT / "app/static/course_v3_data"
 INDEX = ROOT / "app/static/audio/words-index.js"
 VOICE = "zh-CN-XiaoxiaoNeural"

@@ -24,7 +24,8 @@ import com.pomp.hskai.data.api.AndroidOnboardingApi
 import com.pomp.hskai.data.api.AndroidStudyPreferencesApi
 import com.pomp.hskai.data.local.BundledDictionaryInsights
 import com.pomp.hskai.data.local.BundledStrokes
-import com.pomp.hskai.data.local.BundledWordAudio
+import com.pomp.hskai.data.local.CdnWordAudio
+import com.pomp.hskai.data.local.WordAudioSource
 import com.pomp.hskai.data.local.HskAiDatabase
 import com.pomp.hskai.data.repository.AssetBundledDictionarySource
 import com.pomp.hskai.data.repository.CourseRepository
@@ -247,7 +248,7 @@ class HskAiApplication : Application() {
             onSessionExpired = authRepository::invalidateSession,
             ttsCache = ttsCache,
             bundledStrokes = bundledStrokes,
-            bundledAudio = bundledWordAudio,
+            cdnAudio = cdnWordAudio,
         )
     }
 
@@ -294,8 +295,20 @@ class HskAiApplication : Application() {
         BundledStrokes(context = this, json = json)
     }
 
-    /** The dictionary words' pronunciation, so listening needs no connection either. */
-    private val bundledWordAudio: BundledWordAudio by lazy { BundledWordAudio(this) }
+    /** CDN downloads are public and must never carry API credentials or redirects. */
+    private val cdnWordAudio: WordAudioSource by lazy {
+        CdnWordAudio(
+            baseOrigin = BuildConfig.AUDIO_CDN_ORIGIN,
+            client = OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .callTimeout(15, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(false)
+                .followRedirects(false)
+                .followSslRedirects(false)
+                .build(),
+        )
+    }
 
     /** Examples and character breakdowns for the dictionary entry. */
     val dictionaryInsights: DictionaryInsightsSource by lazy {
