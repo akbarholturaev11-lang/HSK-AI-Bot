@@ -48,7 +48,9 @@ class CdnWordAudio(
                     while (true) {
                         val count = stream.read(buffer)
                         if (count < 0) break
-                        if (output.size() + count > MAX_AUDIO_BYTES) return@use null
+                        if (output.size() + count > MAX_AUDIO_BYTES) {
+                            throw java.io.IOException("CDN audio exceeds maximum")
+                        }
                         output.write(buffer, 0, count)
                     }
                 }
