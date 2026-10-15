@@ -60,8 +60,8 @@ suspend fun captureReportScreen(view: View): Bitmap? {
         }
     } == true
     if (successfulCopy) return copy
-    copy.recycle()
-
+    // Do not recycle the destination here: after a timeout PixelCopy can
+    // still finish asynchronously and write to this bitmap.
     // UI-thread fallback. Capture decorView rather than a nested ComposeView.
     return runCatching {
         Bitmap.createBitmap(dstWidth, dstHeight, Bitmap.Config.ARGB_8888).also { bitmap ->
