@@ -598,4 +598,5 @@
     <string name="bug_report_intro_action">Сообщить об ошибке</string>
     <string name="bug_report_pick_screenshot">Выбрать снимок из галереи</string>
     <string name="bug_report_screenshot_required">Выберите снимок экрана или отключите его отправку.</string>
+    <string name="bug_report_thanks_title">Спасибо за ваш отзыв!</string>
 </resources>
