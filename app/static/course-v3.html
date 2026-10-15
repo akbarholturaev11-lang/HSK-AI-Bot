@@ -557,7 +557,9 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .profile-compact-ach .abar{margin-top:7px;height:5px}
 @media(max-width:340px){.profile-compact-ach .arow{padding:8px;gap:6px}.profile-compact-ach .aic{width:26px;height:26px;flex-basis:26px}}
 .rating-title{margin:5px 16px 10px;font-size:var(--hsk-section-title-size,20px)}
-#s-profile .profile-accuracy,#s-profile .profile-friends-link,#s-profile .profile-compact-ach .arow,#s-profile .card2{background:color-mix(in srgb,var(--card) 72%,transparent);border-color:color-mix(in srgb,var(--line) 65%,transparent)}
+/* Profile panels use the same warm paper surface and divider as subscription checkout.
+   Keep semantic status, progress and Pro promotion colors unchanged. */
+#s-profile .profile-accuracy,#s-profile .profile-friends-link,#s-profile .profile-compact-ach .arow,#s-profile .ach .arow,#s-profile .card2,#s-profile .profile-quick-links,#s-profile .profile-stats .stat,#s-profile .set,#s-profile .pgoal,#s-profile .social-btn{background:var(--paper);border-color:var(--line);box-shadow:none}
 #s-profile .profile-accuracy .accuracy-ring::before{background:var(--paper)}
 #s-profile .hp-promo{filter:saturate(.88);box-shadow:none}
 .phero{display:flex;align-items:center;gap:12px;padding:10px 16px 2px}
