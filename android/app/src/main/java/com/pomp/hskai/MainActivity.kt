@@ -69,6 +69,7 @@ import com.pomp.hskai.core.navigation.SessionViewModelStoreOwner
 import com.pomp.hskai.core.navigation.toTab
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.feature.auth.LinkScreen
+import com.pomp.hskai.core.settings.DEFAULT_SHAKE_TO_REPORT
 import com.pomp.hskai.feature.feedback.BugReportDialog
 import com.pomp.hskai.feature.feedback.ShakeToReport
 import com.pomp.hskai.feature.feedback.captureReportScreen
@@ -713,7 +714,7 @@ private fun AppRoot(
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
             val bugReportRootView = LocalView.current
             val shakeToReportEnabled by app.appSettings.shakeToReport
-                .collectAsStateWithLifecycle(initialValue = false)
+                .collectAsStateWithLifecycle(initialValue = DEFAULT_SHAKE_TO_REPORT)
             var bugReportOpen by remember { mutableStateOf(false) }
             var bugReportScreenshot by remember { mutableStateOf<Bitmap?>(null) }
             var bugReportSource by remember { mutableStateOf("") }
