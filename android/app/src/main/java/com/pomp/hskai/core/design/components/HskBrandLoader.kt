@@ -67,7 +67,11 @@ fun HskBrandLoader(
 ) {
     // Mini App uses one deterministic 2,920ms CSS timeline. Do the same in
     // Compose: chained springs previously delayed the knot, title and shimmer.
-    val elapsedMs = remember { Animatable(0f) }
+    val elapsedMs = remember(launch, holdLaunchFrame) {
+        // Initialize the holding composition on the finished frame itself:
+        // no one-frame flash of a partially assembled knot during navigation.
+        Animatable(if (launch && holdLaunchFrame) 2920f else 0f)
+    }
     val currentOnLaunchAnimationFinished by rememberUpdatedState(onLaunchAnimationFinished)
     LaunchedEffect(launch, holdLaunchFrame) {
         if (launch) {
