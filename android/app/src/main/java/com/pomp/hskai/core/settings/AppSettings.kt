@@ -103,6 +103,14 @@ class AppSettings(context: Context) : LessonResumeStore {
     val pinyinVisibility: Flow<PinyinVisibility> = appContext.settingsDataStore.data
         .map { PinyinVisibility.fromWireValue(it[PINYIN_KEY]) }
 
+    /** Disabled until user opts in; only active while the app is in foreground. */
+    val shakeToReport: Flow<Boolean> = appContext.settingsDataStore.data
+        .map { it[SHAKE_TO_REPORT_KEY] ?: false }
+
+    suspend fun setShakeToReport(enabled: Boolean) {
+        appContext.settingsDataStore.edit { it[SHAKE_TO_REPORT_KEY] = enabled }
+    }
+
     val themeMode: Flow<AppThemeMode> = appContext.settingsDataStore.data
         .map { AppThemeMode.fromWireValue(it[THEME_MODE_KEY]) }
 
@@ -335,6 +343,7 @@ class AppSettings(context: Context) : LessonResumeStore {
 
         val PINYIN_KEY = stringPreferencesKey("pinyin_visibility")
         val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
+        val SHAKE_TO_REPORT_KEY = booleanPreferencesKey("shake_to_report:v1")
         val DAILY_GOAL_KEY = intPreferencesKey("daily_goal_xp")
         val LAST_STUDY_SETUP_ASKED_AT_KEY = longPreferencesKey("hsk_v3_setup_asked")
         val LAST_REMINDER_DATE_KEY = stringPreferencesKey("last_reminder_date")
