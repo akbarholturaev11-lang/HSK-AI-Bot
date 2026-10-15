@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +29,7 @@ import com.pomp.hskai.core.design.PompColors
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BugReportIntroSheet(
+    loading: Boolean,
     shakeEnabled: Boolean,
     onShakeChanged: (Boolean) -> Unit,
     onContinue: () -> Unit,
@@ -55,9 +58,18 @@ fun BugReportIntroSheet(
             )
             Button(
                 onClick = onContinue,
+                enabled = !loading,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(stringResource(R.string.bug_report_intro_action))
+                if (loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(18.dp),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = 2.dp,
+                    )
+                } else {
+                    Text(stringResource(R.string.bug_report_intro_action))
+                }
             }
             HorizontalDivider(color = PompColors.Divider)
             Row(
