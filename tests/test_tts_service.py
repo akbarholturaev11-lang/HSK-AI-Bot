@@ -245,7 +245,7 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(path.is_file())
             self.assertEqual(".mp3", path.suffix)
             self.assertGreater(path.stat().st_size, 128)
-            self.assertIn("android/app/src/main/assets/audio/words", path.as_posix())
+            self.assertIn("offline_audio/words", path.as_posix())
             edge.assert_not_awaited()
             gemini.assert_not_awaited()
 
