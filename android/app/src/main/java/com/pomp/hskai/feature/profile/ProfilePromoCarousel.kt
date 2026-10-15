@@ -273,7 +273,7 @@ internal fun ProfileHsk30BookEntryDialog(
     val paymentAvailable = enabled && hsk30.paymentEnabled &&
         hsk30.priceTjs > 0 && hsk30.priceDisplay.isNotBlank()
 
-    Hsk30BookDialog(isNew = hsk30.newBadge.isNew, onDismiss = onDismiss) {
+    Hsk30BookDialog(isNew = false, onDismiss = onDismiss) {
         when {
             on30 -> {
                 Hsk30BookTitle(
