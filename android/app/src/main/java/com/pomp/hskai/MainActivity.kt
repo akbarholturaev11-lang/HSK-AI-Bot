@@ -742,13 +742,21 @@ private fun AppRoot(
                     !bugReportOpen && !bugReportIntroVisible && !bugReportCapturing,
                 onShake = {
                     if (!bugReportOpen && !bugReportIntroVisible && !bugReportCapturing) {
+                        // Present the FIRST sheet immediately. Keep it in place
+                        // while screenshot capture loads instead of leaving the
+                        // app unresponsive for up to the PixelCopy timeout.
+                        bugReportSource = selectedTab.name.lowercase()
                         bugReportCapturing = true
+                        bugReportIntroVisible = true
                         scope.launch {
-                            // Capture before the confirmation sheet is displayed.
-                            bugReportScreenshot = captureReportScreen(bugReportRootView)
-                            bugReportSource = selectedTab.name.lowercase()
-                            bugReportCapturing = false
-                            bugReportIntroVisible = true
+                            // PixelCopy targets the Activity window, not the
+                            // sheet's separate window, so the overlay stays
+                            // outside the captured image.
+                            val snapshot = captureReportScreen(bugReportRootView)
+                            if (bugReportIntroVisible) {
+                                bugReportScreenshot = snapshot
+                                bugReportCapturing = false
+                            }
                         }
                     }
                 },
@@ -1733,17 +1741,21 @@ private fun AppRoot(
             }
             if (bugReportIntroVisible) {
                 BugReportIntroSheet(
+                    loading = bugReportCapturing,
                     shakeEnabled = shakeToReportEnabled,
                     onShakeChanged = { enabled ->
                         scope.launch { app.appSettings.setShakeToReport(enabled) }
                     },
                     onContinue = {
-                        bugReportIntroVisible = false
-                        bugReportOpen = true
+                        if (!bugReportCapturing) {
+                            bugReportIntroVisible = false
+                            bugReportOpen = true
+                        }
                     },
                     onDismiss = {
                         bugReportIntroVisible = false
                         bugReportScreenshot = null
+                        bugReportCapturing = false
                     },
                 )
             }
