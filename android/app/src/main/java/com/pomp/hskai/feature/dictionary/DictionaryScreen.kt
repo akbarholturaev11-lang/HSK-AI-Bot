@@ -563,7 +563,7 @@ private fun StrokeOrderPlayer(
                         )
                     },
                 shape = RoundedCornerShape(22.dp),
-                color = PompColors.PaperRaised,
+                color = PompColors.CardSurface,
                 border = BorderStroke(1.dp, PompColors.Divider),
             ) {
                 Box(Modifier.fillMaxWidth().aspectRatio(1f), contentAlignment = Alignment.Center) {
@@ -781,7 +781,7 @@ private fun PartsSection(breakdowns: List<CharacterBreakdown>, showCharacter: Bo
                             )
                         }
                         Surface(
-                            color = PompColors.PaperRaised,
+                            color = PompColors.CardSurface,
                             shape = RoundedCornerShape(14.dp),
                             border = BorderStroke(1.dp, PompColors.Divider),
                             modifier = Modifier.weight(1f),
@@ -827,7 +827,7 @@ private fun ExamplesSection(examples: List<ExampleSentence>, word: String) {
         examples.forEachIndexed { index, example ->
             if (index > 0) Spacer(Modifier.height(8.dp))
             Surface(
-                color = PompColors.PaperRaised,
+                color = PompColors.CardSurface,
                 shape = RoundedCornerShape(14.dp),
                 border = BorderStroke(1.dp, PompColors.Divider),
                 modifier = Modifier.fillMaxWidth(),
@@ -933,7 +933,7 @@ private fun NeighbourButton(
     Surface(
         onClick = onClick,
         enabled = enabled,
-        color = PompColors.PaperRaised,
+        color = PompColors.CardSurface,
         shape = RoundedCornerShape(14.dp),
         border = BorderStroke(1.dp, PompColors.Divider),
         modifier = modifier.fillMaxSize(),
