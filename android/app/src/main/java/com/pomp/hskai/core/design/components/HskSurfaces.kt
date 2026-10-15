@@ -36,7 +36,7 @@ fun HskGlassSurface(
     val surface = if (PompColors.IsDark) {
         PompColors.PaperRaised.copy(alpha = 0.88f)
     } else {
-        PompColors.PaperRaised.copy(alpha = 0.98f)
+        PompColors.CardSurface.copy(alpha = 0.98f)
     }
     val border = if (PompColors.IsDark) {
         PompColors.Divider.copy(alpha = 0.86f)
