@@ -1713,7 +1713,7 @@ class AndroidBugReportApiTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_screenshot_is_opt_in_and_jpeg_only(self):
         import base64
-        screenshot = base64.b64encode(b"\\xff\\xd8\\xffimage").decode()
+        screenshot = base64.b64encode(b"\xff\xd8\xffimage").decode()
         response = await self.client.post(
             "/api/v3/android/bug-report",
             headers=self.headers,
