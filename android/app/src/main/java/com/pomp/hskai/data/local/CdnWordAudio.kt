@@ -57,8 +57,8 @@ class CdnWordAudio(
                 output.toByteArray().takeIf { bytes ->
                     bytes.size >= 128 &&
                         (bytes.take(3).toByteArray().contentEquals("ID3".toByteArray()) ||
-                            (bytes[0].toInt() and 0xff == 0xff &&
-                                bytes[1].toInt() and 0xe0 == 0xe0))
+                            ((bytes[0].toInt() and 0xff) == 0xff &&
+                                (bytes[1].toInt() and 0xe0) == 0xe0))
                 }
             }
         }.getOrNull()
