@@ -634,7 +634,7 @@ private fun ProfileFriendsLink(onOpenFriends: () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp),
         shape = RoundedCornerShape(12.dp),
-        color = PompColors.PaperRaised.copy(alpha = 0.72f),
+        color = PompColors.CardSurface.copy(alpha = 0.92f),
         border = BorderStroke(1.dp, PompColors.Divider),
     ) {
         Row(
@@ -798,7 +798,7 @@ private fun ProfileSettingsScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     Surface(
-                        color = PompColors.PaperRaised,
+                        color = PompColors.CardSurface,
                         shape = CircleShape,
                         border = BorderStroke(1.dp, PompColors.Divider),
                         modifier = Modifier.size(48.dp).clickable(role = Role.Button, onClick = onDismiss),
@@ -962,7 +962,7 @@ private fun ProfileSettingsScreen(
                             Spacer(Modifier.height(12.dp))
                         }
                         Surface(
-                            color = PompColors.PaperRaised,
+                            color = PompColors.CardSurface,
                             shape = RoundedCornerShape(14.dp),
                             border = BorderStroke(1.dp, PompColors.Divider),
                             modifier = Modifier.fillMaxWidth(),
@@ -1032,7 +1032,7 @@ private fun SettingsCategory(
             Text(title, color = PompColors.Ink, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
         }
         Surface(
-            color = PompColors.PaperRaised,
+            color = PompColors.CardSurface,
             shape = RoundedCornerShape(18.dp),
             border = BorderStroke(1.dp, PompColors.Divider),
             modifier = Modifier.fillMaxWidth(),
@@ -1111,7 +1111,7 @@ private fun NotificationsCategoriesSheet(
             Text(stringResource(R.string.profile_notifications), color = PompColors.Ink, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(14.dp))
             Surface(
-                color = PompColors.PaperRaised,
+                color = PompColors.CardSurface,
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(1.dp, PompColors.Divider),
                 modifier = Modifier.fillMaxWidth(),
@@ -1160,7 +1160,7 @@ private fun StudyReminderSettingsSheet(
                 modifier = Modifier.padding(top = 5.dp, bottom = 14.dp),
             )
             Surface(
-                color = PompColors.PaperRaised,
+                color = PompColors.CardSurface,
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(1.dp, PompColors.Divider),
                 modifier = Modifier.fillMaxWidth(),
@@ -1213,7 +1213,7 @@ private fun PrivacySecuritySheet(
             Text(stringResource(R.string.profile_privacy_security), color = PompColors.Ink, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(14.dp))
             Surface(
-                color = PompColors.PaperRaised,
+                color = PompColors.CardSurface,
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(1.dp, PompColors.Divider),
                 modifier = Modifier.fillMaxWidth(),
@@ -1277,7 +1277,7 @@ internal fun SocialLinksRow(onOpen: (String) -> Unit) {
         ) {
             SOCIAL_LINKS.forEach { (label, icon, url) ->
                 Surface(
-                    color = PompColors.PaperRaised,
+                    color = PompColors.CardSurface,
                     shape = RoundedCornerShape(15.dp),
                     border = BorderStroke(1.dp, PompColors.Divider),
                     modifier = Modifier
