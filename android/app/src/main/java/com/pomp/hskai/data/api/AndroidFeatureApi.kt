@@ -12,6 +12,12 @@ import retrofit2.http.Query
 
 interface AndroidFeatureApi {
 
+    @POST("api/v3/android/bug-report")
+    suspend fun sendBugReport(
+        @Header("Authorization") authorization: String,
+        @Body body: AndroidBugReportRequest,
+    ): Response<AndroidBugReportResponse>
+
     @GET("api/v3/android/profile")
     suspend fun profile(
         @Header("Authorization") authorization: String,

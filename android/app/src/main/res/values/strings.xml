@@ -7,6 +7,18 @@
     never rename the folder and never send "tg" to the API.
 -->
 <resources>
+    <!-- Opt-in native issue reporting -->
+    <string name="bug_report_title">Muammo haqida xabar berish</string>
+    <string name="bug_report_question">Nima sodir bo‘ldi?</string>
+    <string name="bug_report_hint">Muammoni batafsil yozing...</string>
+    <string name="bug_report_screenshot">Skrinshot qo‘shish</string>
+    <string name="bug_report_no_screenshot">Bu ekranning suratini olish imkoni bo‘lmadi. Matn yuborish mumkin.</string>
+    <string name="bug_report_privacy">Skrinshot faqat shu tugma yoqilganda yuboriladi. Shaxsiy ma’lumotlar ko‘rinmasligini tekshiring.</string>
+    <string name="bug_report_send">Xabar yuborish</string>
+    <string name="bug_report_failed">Xabar yuborilmadi. Internetni tekshirib, qayta urinib ko‘ring.</string>
+    <string name="bug_report_success">Xabaringiz qabul qilindi. Rahmat!</string>
+    <string name="bug_report_shake">Xabar berish uchun telefonni silkiting</string>
+    <string name="bug_report_shake_summary">Faqat ilova ochiq turganda ishlaydi</string>
     <!-- Brand name and language endonyms are shown identically in every
          locale, so they are deliberately not translated. Without this, lint's
          MissingTranslation check fails the build. -->

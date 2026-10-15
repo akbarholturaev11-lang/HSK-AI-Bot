@@ -8,7 +8,13 @@ the shared native access token and delegates to those same services.
 
 from __future__ import annotations
 
+import base64
+import binascii
 import logging
+import time
+from html import escape
+from aiogram.types import BufferedInputFile
+from app.services.admin_notify_service import AdminNotifyService
 from typing import Annotated, Any, Callable, Literal, TypeVar
 
 from fastapi import APIRouter, Request
@@ -111,6 +117,8 @@ PayloadModel = TypeVar("PayloadModel", bound=BaseModel)
 MIN_TIMEZONE_OFFSET = -720
 MAX_TIMEZONE_OFFSET = 840
 MAX_ANDROID_JSON_BODY_BYTES = 16 * 1024
+MAX_ANDROID_BUG_REPORT_BODY_BYTES = 800 * 1024
+MAX_ANDROID_BUG_REPORT_IMAGE_BYTES = 550 * 1024
 ANDROID_PROFILE_AVATARS = {"", "panda_cheer", "panda_streak", "panda_worried"}
 
 ANDROID_CHECKOUT_ORIGIN_SOURCES = {
@@ -173,6 +181,38 @@ class AndroidProfileUpdateRequest(BaseModel):
 
     display_name: str = Field(default="", max_length=80)
     avatar_key: str = Field(default="", max_length=32)
+
+
+class AndroidBugReportRequest(BaseModel):
+    """Android issue report; screenshot is included only with user consent."""
+
+    model_config = ConfigDict(extra="forbid")
+    description: str = Field(min_length=5, max_length=2000)
+    screenshot_data_url: str = Field(default="", max_length=750_000)
+    app_version: str = Field(default="", max_length=40)
+    screen: str = Field(default="", max_length=80)
+
+    @model_validator(mode="after")
+    def validate_description(self):
+        self.description = self.description.strip()
+        if len(self.description) < 5:
+            raise ValueError("description too short")
+        return self
+
+
+def _bug_report_image(data_url: str) -> bytes | None:
+    if not data_url:
+        return None
+    prefix = "data:image/jpeg;base64,"
+    if not data_url.startswith(prefix):
+        raise AndroidFeatureError("android_request_invalid", status_code=422)
+    try:
+        raw = base64.b64decode(data_url[len(prefix):], validate=True)
+    except (ValueError, binascii.Error) as exc:
+        raise AndroidFeatureError("android_request_invalid", status_code=422) from exc
+    if not raw.startswith(b"\xff\xd8\xff") or len(raw) > MAX_ANDROID_BUG_REPORT_IMAGE_BYTES:
+        raise AndroidFeatureError("android_request_invalid", status_code=422)
+    return raw
 
 
 class AndroidVoiceStartRequest(DesktopVoiceStartRequest):
@@ -644,6 +684,9 @@ def create_android_features_router(
     ),
 ) -> APIRouter:
     router = APIRouter(tags=["android-features"])
+    # Per-process short throttle; distributed deployment additionally needs a
+    # central rate limiter. This prevents common accidental repeat submits.
+    bug_report_last_sent: dict[int, float] = {}
 
     async def _context(session, request: Request):
         return await DesktopAuthService(session, settings_obj).authenticate(
@@ -2092,6 +2135,63 @@ def create_android_features_router(
             logger.exception("Android voice session end failed")
             return _error_response(
                 AndroidFeatureError("android_voice_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/android/bug-report")
+    async def android_bug_report(request: Request):
+        try:
+            if request.query_params:
+                raise AndroidFeatureError("android_request_invalid", status_code=422)
+            async with session_factory() as session:
+                user = await _user(session, request)
+                report = await _validated_payload(
+                    request,
+                    AndroidBugReportRequest,
+                    max_body_bytes=MAX_ANDROID_BUG_REPORT_BODY_BYTES,
+                )
+            screenshot = _bug_report_image(report.screenshot_data_url)
+            now = time.monotonic()
+            if now - bug_report_last_sent.get(user.id, -1e12) < 60:
+                raise AndroidFeatureError("android_bug_report_rate_limited", status_code=429)
+            if bot is None:
+                raise AndroidFeatureError("android_bug_report_unavailable", status_code=503)
+            recipient_ids = AdminNotifyService()._feedback_recipient_ids()
+            if not recipient_ids:
+                raise AndroidFeatureError("android_bug_report_unavailable", status_code=503)
+            heading = "🐞 HSK AI Android — muammo xabari"
+            message = (
+                f"{heading}\n"
+                f"👤 {escape(str(user.full_name or '-'))}\n"
+                f"🆔 Telegram: {user.telegram_id}\n"
+                f"📱 Versiya: {escape(report.app_version)}\n"
+                f"📍 Ekran: {escape(report.screen)}\n\n"
+                f"📝 {escape(report.description)}"
+            )
+            delivered = 0
+            for chat_id in recipient_ids:
+                try:
+                    if screenshot is not None:
+                        await bot.send_photo(
+                            chat_id=chat_id,
+                            photo=BufferedInputFile(screenshot, filename="android-bug-report.jpg"),
+                            caption=heading,
+                        )
+                    await bot.send_message(chat_id=chat_id, text=message)
+                    delivered += 1
+                except Exception:
+                    logger.exception("Android bug report delivery failed (chat_id=%s)", chat_id)
+            if not delivered:
+                raise AndroidFeatureError("android_bug_report_unavailable", status_code=503)
+            bug_report_last_sent[user.id] = now
+            return JSONResponse(
+                content={"ok": True}, headers={"Cache-Control": "no-store"},
+            )
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android bug report failed")
+            return _error_response(
+                AndroidFeatureError("android_bug_report_unavailable", status_code=503)
             )
 
     return router

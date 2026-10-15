@@ -10906,3 +10906,13 @@ Risk:
 
 Follow-up:
 - Check Tajik/Russian/Uzbek text, voice-QA, and image-QA replies in Telegram after deployment.
+
+
+### 2026-10-15 — Android ilovada muammo haqida xabar berish
+
+- Native `Profil → Sozlamalar → Muammo haqida xabar berish` Compose dialog (`feature/feedback/BugReportDialog.kt`): 5–2000-belgi description, screenshot preview, screenshot attachment OFF by default; screenshot JPEG compressed on-device, ~550 KiB cap. User explicitly opts in to each screenshot; text-only works.
+- Optional `Shake to report` via `feature/feedback/ShakeToReport.kt` and `AppSettings.shakeToReport`, default OFF, accelerometer listens only foreground/resumed. No global sensor or recording permission.
+- Backend bearer-auth `POST /api/v3/android/bug-report` inside `app/api/android_features.py`, max request ~800 KiB, JPEG validation, response `{"ok": true}`; reuses `AdminNotifyService()._feedback_recipient_ids()` to send issue text and optional JPEG to Telegram admin recipients. No new DB tables; no payment/entitlement behavior touched. Sender/recipient API stays server-side.
+- Adapter DTO/API and `FeatureRepository.sendBugReport` are common code for both `direct` and `play` distributions; new copy UZ/RU/TJ. Failure returns 503; a simple per-process 60-second repeat throttle returns 429 (for multiple backend instances, add shared rate limiting if abuse becomes material).
+- Regression tests: `AndroidBugReportApiTests`, authenticated-route allow-list and AndroidFeatureApi fake. GitHub draft PR #168 (`codex/android-bug-report`) targets `main`. Deploy server before new Android APK; ensure Android CI, direct/play builds, emulator and real device checks pass before release.
+- Open verification: shake trigger reliability/sensitivity, native dialog visual quality/light/dark/320dp font scaling, and whether the screenshot faithfully represents a modal Settings window (Activity `LocalView` snapshots may capture the underlying content instead of a separate Dialog window). Existing support link remains unaffected.
