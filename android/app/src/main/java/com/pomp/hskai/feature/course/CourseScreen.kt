@@ -551,7 +551,7 @@ private fun Hsk30LockedEntryDialog(
 ) {
     val paymentAvailable = hsk30.paymentEnabled && hsk30.priceTjs > 0 &&
         hsk30.priceDisplay.isNotBlank()
-    Hsk30BookDialog(isNew = hsk30.newBadge.isNew, onDismiss = {}, dismissible = false) {
+    Hsk30BookDialog(isNew = false, onDismiss = {}, dismissible = false) {
         Hsk30BookTitle(
             title = stringResource(
                 if (hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_title
@@ -621,7 +621,7 @@ private fun Hsk30PromoDialog(
 ) {
     // HSK 3.0 track access can also be free when the admin disables entry payment.
     val hasAccess = hsk30.access.allowed
-    Hsk30BookDialog(isNew = hsk30.newBadge.isNew, onDismiss = onDismiss) {
+    Hsk30BookDialog(isNew = false, onDismiss = onDismiss) {
         Hsk30BookTitle(
             title = stringResource(if (hasAccess) R.string.hsk30_promo_switch else R.string.hsk30_promo_title),
             body = stringResource(
@@ -737,7 +737,7 @@ private fun CourseChoiceSheet(
                     } else {
                         onConfirm(
                             selectedTrack,
-                            selectedLevel.takeIf { it != saved(selectedTrack) },
+                            selectedLevel.takeIf { selectedTrack == activeTrack || it != saved(selectedTrack) },
                         )
                     }
                 },
@@ -834,11 +834,8 @@ private fun CourseHeader(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             HskSectionTitle(
-                text = if (activeTrack == "hsk30") {
-                    "HSK 3.0 · N" + map.level.removePrefix("nhsk")
-                } else {
-                    "HSK 2.0 · " + map.level.removePrefix("hsk")
-                },
+                text = (if (activeTrack == "hsk30") "HSK 3.0" else "HSK 2.0") +
+                    " · " + courseLevelLabel(map.level),
                 modifier = if (hsk30 != null) {
                     Modifier.clickable(
                         enabled = !isSwitchingTrack,
@@ -849,19 +846,6 @@ private fun CourseHeader(
                     }
                 } else Modifier,
             )
-            if (map.level.startsWith("nhsk", ignoreCase = true)) {
-                Spacer(Modifier.width(5.dp))
-                Text(
-                    text = "NEW",
-                    color = PompColors.CinnabarDark,
-                    fontSize = 8.sp,
-                    lineHeight = 10.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .background(PompColors.CinnabarSoft, RoundedCornerShape(5.dp))
-                        .padding(horizontal = 4.dp, vertical = 2.dp),
-                )
-            }
         }
         Spacer(Modifier.width(8.dp))
         SectionHint(hints = hints, section = "course", onDismiss = onDismissHint)
