@@ -6,6 +6,7 @@ import android.media.MediaPlayer
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.os.VibratorManager
 import android.provider.Settings
 import com.pomp.hskai.R
 
@@ -33,7 +34,13 @@ internal class HskLaunchFeedback(private val context: Context) {
                     context.contentResolver, Settings.System.HAPTIC_FEEDBACK_ENABLED, 1
                 ) == 0
             ) return
-            val vibrator = context.getSystemService(Vibrator::class.java) ?: return
+            // API 31+ exposes the real device vibrator through VibratorManager.
+            // Older devices retain the legacy fallback; no activity context needed.
+            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                context.getSystemService(VibratorManager::class.java)?.defaultVibrator
+            } else {
+                context.getSystemService(Vibrator::class.java)
+            } ?: return
             if (!vibrator.hasVibrator()) return
             val duration = if (strong) 22L else 12L
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
