@@ -1,6 +1,6 @@
-# One-time workflow for the explicitly requested shake-to-report update.
+# One-time workflow to publish the explicitly requested CDN-slim audio APK.
 # Standard release pipeline performs testing, signing and R2 publishing.
-name: Request Android 1.7.15 shake-default release
+name: Request Android 1.7.16 slim audio release
 on:
   push:
     branches: [main]
@@ -18,8 +18,8 @@ jobs:
       - name: Guard release version
         run: |
           set -euo pipefail
-          grep -Fqx 'val appVersionName = "1.7.15"' <(sed -n '/^val appVersionName = /p' android/app/build.gradle.kts)
-          grep -Fqx 'val appVersionCode = 46' <(sed -n '/^val appVersionCode = /p' android/app/build.gradle.kts)
+          grep -Fqx 'val appVersionName = "1.7.16"' <(sed -n '/^val appVersionName = /p' android/app/build.gradle.kts)
+          grep -Fqx 'val appVersionCode = 47' <(sed -n '/^val appVersionCode = /p' android/app/build.gradle.kts)
       - name: Trigger signed release and Cloudflare R2 publish
         env:
           GH_TOKEN: ${{ github.token }}
@@ -27,4 +27,4 @@ jobs:
         run: |
           set -euo pipefail
           gh workflow run android-release.yml --ref main --field publish_to_r2=true
-          echo "Standard Android 1.7.15 release workflow dispatched."
+          echo "Standard Android 1.7.16 release workflow dispatched."
