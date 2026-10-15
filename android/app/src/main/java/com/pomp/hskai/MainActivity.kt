@@ -70,6 +70,7 @@ import com.pomp.hskai.core.navigation.toTab
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.feature.auth.LinkScreen
 import com.pomp.hskai.feature.feedback.BugReportDialog
+import com.pomp.hskai.feature.feedback.BugReportIntroSheet
 import com.pomp.hskai.feature.feedback.ShakeToReport
 import com.pomp.hskai.feature.feedback.captureReportScreen
 import com.pomp.hskai.feature.onboarding.NotificationPrimerScreen
@@ -717,19 +718,40 @@ private fun AppRoot(
             val shakeToReportEnabled by app.appSettings.shakeToReport
                 .collectAsStateWithLifecycle(initialValue = false)
             var bugReportOpen by remember { mutableStateOf(false) }
+            var bugReportIntroVisible by remember { mutableStateOf(false) }
+            var bugReportCapturing by remember { mutableStateOf(false) }
             var bugReportScreenshot by remember { mutableStateOf<Bitmap?>(null) }
             var bugReportSource by remember { mutableStateOf("") }
-            val openBugReport: (Bitmap?) -> Unit = { visibleWindowScreenshot ->
-                if (!bugReportOpen) {
-                    bugReportSource = selectedTab.name.lowercase()
-                    bugReportScreenshot =
-                        visibleWindowScreenshot ?: captureReportScreen(bugReportRootView)
-                    bugReportOpen = true
+
+            // Opening the Settings entry goes directly to the form, but a
+            // shake must first show the compact confirmation bottom sheet.
+            val openBugReport: (Bitmap?) -> Unit = { settingsSnapshot ->
+                if (!bugReportOpen && !bugReportIntroVisible && !bugReportCapturing) {
+                    bugReportCapturing = true
+                    scope.launch {
+                        bugReportSource = selectedTab.name.lowercase()
+                        bugReportScreenshot = settingsSnapshot
+                            ?: captureReportScreen(bugReportRootView)
+                        bugReportCapturing = false
+                        bugReportOpen = true
+                    }
                 }
             }
             ShakeToReport(
-                enabled = shakeToReportEnabled && !bugReportOpen,
-                onShake = { openBugReport(null) },
+                enabled = shakeToReportEnabled &&
+                    !bugReportOpen && !bugReportIntroVisible && !bugReportCapturing,
+                onShake = {
+                    if (!bugReportOpen && !bugReportIntroVisible && !bugReportCapturing) {
+                        bugReportCapturing = true
+                        scope.launch {
+                            // Capture before the confirmation sheet is displayed.
+                            bugReportScreenshot = captureReportScreen(bugReportRootView)
+                            bugReportSource = selectedTab.name.lowercase()
+                            bugReportCapturing = false
+                            bugReportIntroVisible = true
+                        }
+                    }
+                },
             )
 
             // Course refreshes server flags on return; secondary tabs keep
@@ -1506,7 +1528,7 @@ private fun AppRoot(
                                 },
                                 onOpenSupport = { url -> openExternal(context, url) },
                                 onReportProblem = openBugReport,
-                                reportVisible = bugReportOpen,
+                                reportVisible = bugReportOpen || bugReportIntroVisible,
                                 onRefresh = profileViewModel::load,
                                 onLogout = { signOut(false) },
                                 onUnlinkDevice = { signOut(true) },
@@ -1707,6 +1729,22 @@ private fun AppRoot(
                         }
                     },
                     containerColor = PompColors.Paper,
+                )
+            }
+            if (bugReportIntroVisible) {
+                BugReportIntroSheet(
+                    shakeEnabled = shakeToReportEnabled,
+                    onShakeChanged = { enabled ->
+                        scope.launch { app.appSettings.setShakeToReport(enabled) }
+                    },
+                    onContinue = {
+                        bugReportIntroVisible = false
+                        bugReportOpen = true
+                    },
+                    onDismiss = {
+                        bugReportIntroVisible = false
+                        bugReportScreenshot = null
+                    },
                 )
             }
             if (bugReportOpen) {
