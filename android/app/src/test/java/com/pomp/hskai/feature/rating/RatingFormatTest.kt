@@ -35,6 +35,23 @@ class RatingFormatTest {
         assertEquals("0m", countdownText(0))
     }
 
+    @Test
+    fun `both HSK curricula use the same level numbering`() {
+        for (band in 1..3) {
+            assertEquals("HSK $band", ratingLevelLabel("hsk$band"))
+            assertEquals("HSK $band NEW", ratingLevelLabel("nhsk$band"))
+        }
+        assertEquals("HSK 4", ratingLevelLabel("hsk4"))
+    }
+
+    @Test
+    fun `new badge is only for rating users on the new curriculum`() {
+        assertEquals("HSK 1", ratingLevelLabel("beginner"))
+        assertEquals("HSK 1 NEW", ratingLevelLabel("nbeginner"))
+        assertEquals("HSK 2 NEW", ratingLevelLabel(" NHSK2 "))
+        assertEquals("HSK", ratingLevelLabel(""))
+    }
+
     /** A clock skew must not render a negative countdown. */
     @Test
     fun `a negative countdown is clamped`() {
