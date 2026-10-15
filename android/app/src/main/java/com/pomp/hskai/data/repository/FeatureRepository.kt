@@ -14,6 +14,8 @@ import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.PaymentDecisionStatusResponse
 import com.pomp.hskai.data.api.AndroidHintDismissRequest
 import com.pomp.hskai.data.api.AndroidHintDismissResponse
+import com.pomp.hskai.data.api.AndroidBugReportRequest
+import com.pomp.hskai.data.api.AndroidBugReportResponse
 import com.pomp.hskai.data.api.AndroidProfileResponse
 import com.pomp.hskai.data.api.AndroidProfileUpdateRequest
 import com.pomp.hskai.data.api.AndroidSubscriptionCurrencyPreferenceRequest
@@ -105,6 +107,19 @@ class FeatureRepository(
     },
     private val appSettings: AppSettings? = null,
 ) {
+
+    suspend fun sendBugReport(description: String, screenshotDataUrl: String, screen: String): ApiResult<AndroidBugReportResponse> =
+        authorized {
+            checkoutReceiptApi.sendBugReport(
+                it,
+                AndroidBugReportRequest(
+                    description = description,
+                    screenshotDataUrl = screenshotDataUrl,
+                    appVersion = BuildConfig.VERSION_NAME,
+                    screen = screen,
+                ),
+            )
+        }
 
     suspend fun profile(): ApiResult<AndroidProfileResponse> = authorized {
         api.profile(it)
