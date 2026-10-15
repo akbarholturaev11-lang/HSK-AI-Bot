@@ -31,6 +31,8 @@ from app.services.android_live_voice_service import live_voice_available
 from app.api.android_assistant import create_android_assistant_router
 from app.api.desktop_auth import create_desktop_auth_router
 from app.api.native_oauth import create_native_oauth_router
+from app.api.account_deletion import create_account_deletion_router, notify_deletion_request
+from app.services.account_deletion_service import AccountDeletionService
 from app.api.desktop_course import create_desktop_course_router
 from app.api.desktop_download import create_desktop_download_router
 from app.api.desktop_subscription import create_desktop_subscription_router
@@ -614,6 +616,8 @@ async def _desktop_auth_retention_scheduler() -> None:
                     session,
                     settings,
                 ).cleanup_expired_records()
+            async with async_session_maker() as session:
+                await AccountDeletionService(session, settings).cleanup()
             if any(result.values()):
                 logger.info("Desktop auth retention cleanup: %s", result)
         except Exception:
@@ -659,6 +663,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(create_public_site_router(settings_obj=settings))
+app.include_router(create_account_deletion_router(
+    session_factory=async_session_maker, settings_obj=settings,
+    notifier=lambda result: notify_deletion_request(bot, settings, result),
+))
 app.add_middleware(GZipMiddleware, minimum_size=1024)
 # Bloklangan foydalanuvchi Mini App API'laridan foydalana olmasin.
 # Admin panel API'lari o'z `_admin_auth_error()` tekshiruvi bilan ishlaydi.

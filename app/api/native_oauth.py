@@ -36,6 +36,7 @@ from app.services.desktop_auth_service import (
 from app.repositories.user_repo import UserRepository
 from app.services.identity_link_service import IdentityLinkError, IdentityLinkService
 from app.services.telegram_webapp_auth import extract_fresh_verified_webapp_user_id
+from app.services.account_deletion_service import AccountDeletionService, STATE_PREFIX, BROWSER_COOKIE
 from app.services.native_oauth_service import (
     BROWSER_REDIRECT_MODE,
     NATIVE_ID_TOKEN_MODE,
@@ -121,6 +122,15 @@ _PAGE_HEADERS = {
     "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'",
     "X-Content-Type-Options": "nosniff",
 }
+
+
+def _deletion_page():
+    return HTMLResponse(
+        '<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1">'
+        '<title>HSK AI account deletion verification</title>'
+        '<h1>Account ownership verified</h1>'
+        '<p>Return to the original HSK AI account-deletion tab to review the account and confirm your request. '
+        'No deletion request has been submitted yet.</p>', headers=_PAGE_HEADERS)
 _PAGE_TEMPLATE = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -303,6 +313,7 @@ def create_native_oauth_router(
 
     @router.get("/api/v3/native-auth/oauth/callback/google")
     async def google_callback(
+        request: Request,
         state: OAuthState | None = None,
         code: OAuthCode | None = None,
         error: str | None = None,
@@ -311,9 +322,15 @@ def create_native_oauth_router(
             return _page("&#10005;", "oauth_cancelled")
         try:
             async with session_factory() as session:
-                await service_factory(session, settings_obj).complete_callback(
-                    provider="google", state=state, code=code
-                )
+                if state.startswith(STATE_PREFIX):
+                    await AccountDeletionService(session, settings_obj).complete_oauth(
+                        provider="google", state=state, code=code,
+                        browser=request.cookies.get(BROWSER_COOKIE))
+                    return _deletion_page()
+                else:
+                    await service_factory(session, settings_obj).complete_callback(
+                        provider="google", state=state, code=code
+                    )
             return _page("&#10003;", "ok")
         except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
             return _page("&#10005;", exc.code)
@@ -333,12 +350,18 @@ def create_native_oauth_router(
             return _page("&#10005;", "oauth_cancelled")
         try:
             async with session_factory() as session:
-                await service_factory(session, settings_obj).complete_callback(
-                    provider="apple",
-                    state=state,
-                    code=code,
-                    apple_user=form.get("user"),
-                )
+                if state.startswith(STATE_PREFIX):
+                    await AccountDeletionService(session, settings_obj).complete_oauth(
+                        provider="apple", state=state, code=code,
+                        browser=request.cookies.get(BROWSER_COOKIE))
+                    return _deletion_page()
+                else:
+                    await service_factory(session, settings_obj).complete_callback(
+                        provider="apple",
+                        state=state,
+                        code=code,
+                        apple_user=form.get("user"),
+                    )
             return _page("&#10003;", "ok")
         except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
             return _page("&#10005;", exc.code)

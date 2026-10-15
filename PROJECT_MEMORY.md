@@ -206,6 +206,12 @@ Important fields:
 
 ## 7. Current Business Logic
 
+### Account deletion
+- Android submits a request using its current native session; public `/account-deletion` verifies an existing Google/Apple subject or Telegram private-chat identity, then requires explicit final confirmation. No deletion route creates accounts, links identities, matches email, or issues login tokens.
+- Migration `0101_account_deletion_requests` adds the durable queue keyed to `users.id`: 10-minute ownership proof, one active request/account, a 30-day processing target, and anonymous completion receipts retained for 30 days. Notifications are best effort after commit; submitted/overdue requests never expire away.
+- `UserRepository.delete_by_user_id` shares the existing complete purge and financial retention with the legacy Telegram entrypoint; null Telegram IDs cannot match other accounts' null rows. Operator completion is explicit and transactional; retained payout evidence/freeform ledger notes require individual retention review.
+- Runbook: `docs/ACCOUNT_DELETION_OPERATIONS.md`. Deploy backend/schema before the updated Android client and verify real provider callbacks after deployment. This change does not add provider-only account creation.
+
 ### User onboarding
 Current flow:
 1. Unknown / needs inspection

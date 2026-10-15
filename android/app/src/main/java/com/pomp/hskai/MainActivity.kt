@@ -94,6 +94,7 @@ import com.pomp.hskai.feature.profile.IdentitiesViewModel
 import com.pomp.hskai.feature.profile.IdentitiesViewModelFactory
 import com.pomp.hskai.feature.profile.ProfileScreen
 import com.pomp.hskai.feature.profile.ProfileSettingsViewModel
+import com.pomp.hskai.feature.profile.AccountDeletionViewModel
 import com.pomp.hskai.feature.profile.ProfileViewModel
 import com.pomp.hskai.feature.profile.labelRes
 import com.pomp.hskai.feature.offline.OfflineBanner
@@ -397,6 +398,11 @@ private fun AppRoot(
                 ),
             )
             val settingsState by settingsViewModel.state.collectAsStateWithLifecycle()
+            val accountDeletionViewModel: AccountDeletionViewModel = viewModel(
+                viewModelStoreOwner = sessionOwner,
+                factory = AccountDeletionViewModel.Factory(app.accountDeletionRepository),
+            )
+            val accountDeletionState by accountDeletionViewModel.state.collectAsStateWithLifecycle()
             val settingsReload by settingsViewModel.reload.collectAsStateWithLifecycle()
             var languagePickerOpen by remember { mutableStateOf(false) }
             var dictionaryOpen by remember { mutableStateOf(false) }
@@ -1573,6 +1579,10 @@ private fun AppRoot(
                                     checkoutVisible = true
                                 },
                                 subscriptionCheckoutAvailable = BuildConfig.FLAVOR == "direct",
+                                accountDeletion = accountDeletionState,
+                                onRequestAccountDeletion = accountDeletionViewModel::open,
+                                onConfirmAccountDeletion = accountDeletionViewModel::confirm,
+                                onDismissAccountDeletion = accountDeletionViewModel::dismiss,
                             )
                         }
                     }

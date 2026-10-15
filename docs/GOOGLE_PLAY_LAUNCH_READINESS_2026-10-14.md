@@ -45,22 +45,31 @@ app-signing key, not a brand-new Google-generated signing key.
 Docs:
 https://developer.android.com/studio/publish/app-signing
 
-## Critical blocker 2 — account deletion independent of Telegram
+## Account deletion independent of Telegram — implemented, release verification pending
 
-The Android profile opens `/account-deletion`, which currently instructs the
-user to submit a request through a **linked Telegram account**. Google/Apple
-users without a linked Telegram account may be unable to use that path.
+The 2026-10-15 patch removes the Telegram-only request dependency:
+- Android Profile / Security prepares a deletion challenge with the existing
+  authenticated session and submits only after explicit in-app confirmation.
+- `/account-deletion` provides public Google, Apple and Telegram ownership
+  verification, explicit confirmation, a durable receipt and status checking.
+- Google/Apple callbacks resolve only an existing `(provider, subject HMAC)`;
+  they never create/link an account, match email or issue login tokens.
+- Requests use internal `users.id`; cleanup supports accounts with no Telegram
+  ID without migrating or changing existing sign-in/account-creation rules.
+- Submitted requests remain in the operator queue until processed. The target
+  is 30 days; existing approved-payment/accounting retention is preserved.
 
-Before production, implement and test a request flow that works with ANY
-HSK AI account identity (Telegram, Google, or Apple), including:
-- an authenticated in-app deletion request or verified-account flow;
-- an external, publicly accessible web route to request deletion;
-- user ownership verification and timely deletion of shared account data;
-- documented exceptional retention, confirmation and operational handling.
+Deploy the backend/schema and updated Android builds before marking the live
+requirement complete. Run the Google/Apple/Telegram live checklist and operate
+the deletion queue as described in `docs/ACCOUNT_DELETION_OPERATIONS.md`.
+Apple is offered only when its existing credentials are configured; Google
+web verification requires the existing desktop/web OAuth credentials. Reuse
+the already registered native OAuth callback URLs; no new redirect is needed.
 
-Do not claim this requirement is complete because a static URL returns 200.
-Google Play requires both in-app and external account-deletion options for apps
-offering account creation.
+Regression coverage exercises provider-only accounts, native and public proof,
+browser binding, expired/tampered/replayed proof, duplicate requests, durable
+acknowledgment, operator cleanup and financial retention, plus mobile web and
+both Android flavors. A static URL returning 200 is insufficient release proof.
 
 Docs:
 https://support.google.com/googleplay/android-developer/answer/13327111

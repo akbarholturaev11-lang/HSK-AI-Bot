@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="account_deletion_account">Hisob: %1$s</string>
+    <string name="account_deletion_scope">Bu so‘rov shu HSK AI hisobini va unga bog‘langan Telegram, Google yoki Apple kirishlarini qamraydi. Profil, dars progressi va mashq ma’lumotlarini o‘chirishni so‘raysiz. So‘rov 30 kun ichida ko‘rib chiqiladi.</string>
+    <string name="account_deletion_retention">Qonun, moliyaviy hisob va xavfsizlik talablariga ko‘ra zarur to‘lov, firibgarlikka qarshi va xavfsizlik yozuvlari saqlanishi mumkin.</string>
+    <string name="account_deletion_confirm">O‘chirish so‘rovini tasdiqlash</string>
+    <string name="account_deletion_verifying">Hisob egaligi tekshirilmoqda…</string>
+    <string name="account_deletion_submitting">So‘rov yuborilmoqda…</string>
+    <string name="account_deletion_open_web">Ommaviy web sahifani ochish</string>
+    <string name="account_deletion_received">So‘rov qabul qilindi</string>
+    <string name="account_deletion_submitted">Holat: yuborildi. Hisob hali o‘chirilmagan; so‘rov ko‘rib chiqiladi.</string>
+    <string name="account_deletion_request_id">So‘rov raqami: %1$s</string>
+    <string name="account_deletion_due">Ko‘rib chiqish muddati: %1$s</string>
+    <string name="account_deletion_verify_again">Tasdiqlash muddati tugagan yoki yaroqsiz. Qayta urinib, hisob egaligini yana tasdiqlang.</string>
+</resources>

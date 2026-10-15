@@ -119,7 +119,11 @@ class BlockedUserApiMiddleware:
             return await self.app(scope, receive, send)
 
         path = scope.get("path") or ""
-        if not path.startswith(GUARDED_PATH_PREFIX) or path.startswith(EXEMPT_PATH_PREFIXES):
+        if path in {
+            "/api/account-deletion/prepare", "/api/account-deletion/start",
+            "/api/account-deletion/status", "/api/account-deletion/confirm",
+            "/api/account-deletion/providers",
+        } or not path.startswith(GUARDED_PATH_PREFIX) or path.startswith(EXEMPT_PATH_PREFIXES):
             return await self.app(scope, receive, send)
 
         init_data = _init_data_header(scope)

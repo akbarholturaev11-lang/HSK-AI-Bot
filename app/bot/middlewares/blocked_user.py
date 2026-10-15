@@ -21,6 +21,7 @@ from app.bot.utils.i18n import t
 from app.repositories.user_repo import UserRepository
 from app.services.required_channel_service import is_admin_user
 from app.services.support_contact_service import get_admin_contact_html
+from app.bot.handlers.account_deletion import is_account_deletion_event
 
 # Bir foydalanuvchiga blok xabari shu oraliqda faqat bir marta yuboriladi.
 # Aks holda user 50 marta tugma bossa 50 ta bir xil xabar keladi.
@@ -61,6 +62,9 @@ class BlockedUserMiddleware(BaseMiddleware):
     ):
         tg_user = getattr(event, "from_user", None)
         if not tg_user:
+            return await handler(event, data)
+
+        if is_account_deletion_event(event):
             return await handler(event, data)
 
         # Admin hech qachon bloklanmaydi — aks holda panelga kira olmay qoladi.

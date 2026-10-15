@@ -177,6 +177,10 @@ fun ProfileScreen(
     profileSaving: Boolean = false,
     onOpenSubscription: (renewal: Boolean) -> Unit = {},
     subscriptionCheckoutAvailable: Boolean = BuildConfig.FLAVOR == "direct",
+    accountDeletion: AccountDeletionUiState = AccountDeletionUiState(),
+    onRequestAccountDeletion: () -> Unit = {},
+    onConfirmAccountDeletion: () -> Unit = {},
+    onDismissAccountDeletion: () -> Unit = {},
 ) {
     AssistantScreen(profileAssistantContext(state), bottomBar = true, showButton = false)
     var settingsOpen by remember { mutableStateOf(false) }
@@ -421,7 +425,7 @@ fun ProfileScreen(
             },
             onDeleteAccount = {
                 privacyOpen = false
-                onOpenSupport(BuildConfig.API_ORIGIN.trimEnd('/') + "/account-deletion")
+                onRequestAccountDeletion()
             },
             onPermissions = {
                 val intent = Intent(
@@ -431,6 +435,19 @@ fun ProfileScreen(
                 runCatching { context.startActivity(intent) }
             },
             onDismiss = { privacyOpen = false },
+        )
+    }
+
+    if (accountDeletion.isOpen) {
+        AccountDeletionDialog(
+            state = accountDeletion,
+            onConfirm = onConfirmAccountDeletion,
+            onRetry = onRequestAccountDeletion,
+            onDismiss = onDismissAccountDeletion,
+            onOpenWeb = {
+                onDismissAccountDeletion()
+                onOpenSupport(BuildConfig.API_ORIGIN.trimEnd('/') + "/account-deletion")
+            },
         )
     }
 

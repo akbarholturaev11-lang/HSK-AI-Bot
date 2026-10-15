@@ -16,6 +16,7 @@ import com.pomp.hskai.core.settings.AppSettings
 import com.pomp.hskai.core.storage.SecureCredentialStore
 import com.pomp.hskai.core.auth.CredentialManagerGoogleIdTokenProvider
 import com.pomp.hskai.data.api.AndroidAuthApi
+import com.pomp.hskai.data.api.AccountDeletionApi
 import com.pomp.hskai.data.api.NativeOAuthApi
 import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.AndroidFeatureApi
@@ -29,6 +30,7 @@ import com.pomp.hskai.data.local.WordAudioSource
 import com.pomp.hskai.data.local.HskAiDatabase
 import com.pomp.hskai.data.repository.AssetBundledDictionarySource
 import com.pomp.hskai.data.repository.CourseRepository
+import com.pomp.hskai.data.repository.AccountDeletionRepository
 import com.pomp.hskai.data.repository.DictionaryInsightsSource
 import com.pomp.hskai.data.repository.DictionaryRepository
 import com.pomp.hskai.data.repository.FeatureRepository
@@ -249,6 +251,14 @@ class HskAiApplication : Application() {
             ttsCache = ttsCache,
             bundledStrokes = bundledStrokes,
             cdnAudio = cdnWordAudio,
+        )
+    }
+
+    val accountDeletionRepository: AccountDeletionRepository by lazy {
+        AccountDeletionRepository(
+            api = retrofit.create(AccountDeletionApi::class.java),
+            accessToken = authRepository::accessToken,
+            onSessionExpired = authRepository::invalidateSession,
         )
     }
 

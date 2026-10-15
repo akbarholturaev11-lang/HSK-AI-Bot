@@ -32,23 +32,38 @@ class AccountDeletionRequestTests(unittest.IsolatedAsyncioTestCase):
         await begin_account_deletion(message)
         message.answer.assert_not_awaited()
 
-    async def test_confirm_forwards_identity_and_acknowledges_only_after_delivery(self):
+    async def test_confirm_persists_before_notifying_and_acknowledging(self):
         request = callback()
-        with patch("app.bot.handlers.account_deletion.settings") as settings:
+        result = {"request_id": "verified-receipt", "status": "submitted", "due_at": "2026-11-14"}
+        with patch("app.bot.handlers.account_deletion.settings") as settings, \
+                patch("app.bot.handlers.account_deletion.AccountDeletionService") as service:
             settings.admin_id_list = [456]
-            await confirm_account_deletion(request)
+            service.return_value.submit_telegram = AsyncMock(return_value=result)
+            await confirm_account_deletion(request, object())
+            service.return_value.submit_telegram.assert_awaited_once_with(123)
         request.bot.send_message.assert_awaited_once()
         self.assertEqual(request.bot.send_message.await_args.args[0], 456)
-        self.assertIn("123", request.bot.send_message.await_args.args[1])
+        self.assertIn("verified-receipt", request.bot.send_message.await_args.args[1])
         request.message.edit_reply_markup.assert_awaited_once_with(reply_markup=None)
         request.message.answer.assert_awaited_once()
 
-    async def test_failed_delivery_does_not_acknowledge_request(self):
+    async def test_failed_persistence_does_not_acknowledge_request(self):
         request = callback()
-        request.bot.send_message.side_effect = RuntimeError("offline")
-        with patch("app.bot.handlers.account_deletion.settings") as settings:
-            settings.admin_id_list = [456]
-            await confirm_account_deletion(request)
+        with patch("app.bot.handlers.account_deletion.AccountDeletionService") as service:
+            service.return_value.submit_telegram = AsyncMock(side_effect=RuntimeError("offline"))
+            await confirm_account_deletion(request, object())
         request.message.edit_reply_markup.assert_not_awaited()
         request.message.answer.assert_not_awaited()
         self.assertTrue(request.answer.await_args.kwargs["show_alert"])
+
+    async def test_notification_failure_keeps_durable_receipt(self):
+        request = callback()
+        request.bot.send_message.side_effect = RuntimeError("offline")
+        with patch("app.bot.handlers.account_deletion.settings") as settings, \
+                patch("app.bot.handlers.account_deletion.AccountDeletionService") as service:
+            settings.admin_id_list = [456]
+            service.return_value.submit_telegram = AsyncMock(return_value={
+                "request_id": "saved-receipt", "status": "submitted", "due_at": "2026-11-14"})
+            await confirm_account_deletion(request, object())
+        self.assertIn("saved-receipt", request.message.answer.await_args.args[0])
+        request.message.edit_reply_markup.assert_awaited_once()
