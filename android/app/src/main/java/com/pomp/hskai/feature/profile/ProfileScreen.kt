@@ -3,6 +3,7 @@ package com.pomp.hskai.feature.profile
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.graphics.Bitmap
 import android.provider.Settings
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -96,6 +97,7 @@ import com.pomp.hskai.core.design.PompShapes
 import com.pomp.hskai.core.design.PompSpacing
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.feature.course.Hsk30LevelChoiceDialog
+import com.pomp.hskai.feature.feedback.captureReportScreen
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskSectionTitle
 import com.pomp.hskai.core.navigation.LocalMainBottomInset
@@ -146,7 +148,7 @@ fun ProfileScreen(
     onToggleNotifications: (Boolean) -> Unit,
     onOpenWidget: () -> Unit,
     onOpenSupport: (String) -> Unit,
-    onReportProblem: () -> Unit = {},
+    onReportProblem: (Bitmap?) -> Unit = {},
     onRefresh: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
@@ -304,7 +306,10 @@ fun ProfileScreen(
             },
             onOpenGoal = { settingsOpen = false; onOpenGoal() },
             onOpenSupport = { url -> settingsOpen = false; onOpenSupport(url) },
-            onReportProblem = { settingsOpen = false; onReportProblem() },
+            onReportProblem = { screenshot ->
+                settingsOpen = false
+                onReportProblem(screenshot)
+            },
             shakeToReport = shakeToReport,
             onSetShakeToReport = { enabled ->
                 scope.launch { appSettings.setShakeToReport(enabled) }
@@ -734,7 +739,7 @@ private fun ProfileSettingsScreen(
     onOpenWidget: () -> Unit,
     onOpenGoal: () -> Unit,
     onOpenSupport: (String) -> Unit,
-    onReportProblem: () -> Unit,
+    onReportProblem: (Bitmap?) -> Unit,
     shakeToReport: Boolean,
     onSetShakeToReport: (Boolean) -> Unit,
     onOpenAccount: () -> Unit,
@@ -904,7 +909,7 @@ private fun ProfileSettingsScreen(
                                 stringResource(R.string.bug_report_title),
                                 null,
                                 true,
-                                onReportProblem,
+                                { onReportProblem(captureReportScreen(view)) },
                             )
                             ProfileSettingsDivider()
                             Row(
