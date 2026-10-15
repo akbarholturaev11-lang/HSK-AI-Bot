@@ -302,7 +302,8 @@ fun ProfileScreen(
             themeMode = themeMode,
             dailyGoal = dailyGoal,
             notificationsEnabled = notificationsEnabled,
-            courseTrack = courseTrack,
+            currentLevel = hsk30?.activeLevel?.takeIf { it.isNotBlank() }
+                ?: state.profile?.user?.level.orEmpty(),
             showCourseVersion = hsk30Enabled || courseTrack == "hsk30",
             onDismiss = { settingsOpen = false },
             onOpenLanguage = { settingsOpen = false; onOpenLanguage() },
@@ -461,6 +462,17 @@ fun ProfileScreen(
             onDismiss = { appearancePickerOpen = false },
         )
     }
+}
+
+/** The profile deliberately shows the HSK band only; the switching action is unchanged. */
+private fun profileHskLevelLabel(level: String): String {
+    val normalized = level.trim().lowercase()
+    val band = when (normalized) {
+        "beginner", "nbeginner" -> 1
+        else -> Regex("^(?:n?hsk)([1-4])$").matchEntire(normalized)
+            ?.groupValues?.get(1)?.toIntOrNull()
+    }
+    return band?.let { "HSK $it" } ?: "—"
 }
 
 @Composable
@@ -766,7 +778,7 @@ private fun ProfileSettingsScreen(
     themeMode: AppThemeMode,
     dailyGoal: Int,
     notificationsEnabled: Boolean,
-    courseTrack: String,
+    currentLevel: String,
     showCourseVersion: Boolean,
     onDismiss: () -> Unit,
     onOpenLanguage: () -> Unit,
@@ -865,8 +877,8 @@ private fun ProfileSettingsScreen(
                                 ProfileSettingsDivider()
                                 ProfileSettingsItem(
                                     Icons.Filled.TrackChanges,
-                                    stringResource(R.string.profile_course_version),
-                                    if (courseTrack == "hsk30") "HSK 3.0" else "HSK 2.0",
+                                    stringResource(R.string.course_choice_level),
+                                    profileHskLevelLabel(currentLevel),
                                     true,
                                     onOpenCourseVersion,
                                 )
