@@ -625,7 +625,7 @@ private fun GroupLabel(text: String) {
 private fun ToolGroup(content: @Composable ColumnScope.() -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        color = PompColors.PaperRaised,
+        color = PompColors.CardSurface,
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, PompColors.Divider),
     ) {
