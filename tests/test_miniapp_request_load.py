@@ -93,7 +93,8 @@ class MiniAppRequestLoadTests(unittest.TestCase):
         self.assertIn("/^nhsk[1-3]$/", ONBOARDING)
         self.assertIn("h30PriceLabel", ONBOARDING)
         self.assertIn("if(h30Ready&&access&&!access.allowed&&hsk30PaymentEnabled())h30Meta.push(hsk30Price())", ONBOARDING)
-        self.assertIn('var h30Meta=["NEW"]', ONBOARDING)
+        self.assertIn("var h30Meta=[]", ONBOARDING)
+        self.assertNotIn('var h30Meta=["NEW"]', ONBOARDING)
 
     def test_hsk30_disabled_onboarding_uses_single_version_copy(self):
         self.assertIn('onlyHsk20:"Сейчас доступен HSK 2.0. Продолжим с него."', ONBOARDING)
