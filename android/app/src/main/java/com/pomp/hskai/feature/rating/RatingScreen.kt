@@ -449,7 +449,7 @@ fun RatingUserScreen(
                                     enabled = !isChallengeBusy && challengeDelivery == null,
                                     modifier = Modifier.weight(1f).heightIn(min = 52.dp),
                                     shape = RoundedCornerShape(14.dp),
-                                    color = PompColors.PaperRaised,
+                                    color = PompColors.CardSurface,
                                     contentColor = PompColors.Ink,
                                     border = BorderStroke(1.dp, PompColors.Divider),
                                 ) {
@@ -832,7 +832,7 @@ private fun PendingChallengeRow(
             onClick = { onRespond(duel.id, false) },
             enabled = !busy,
             shape = RoundedCornerShape(11.dp),
-            color = PompColors.PaperRaised,
+            color = PompColors.CardSurface,
             border = BorderStroke(1.dp, PompColors.Divider),
         ) {
             Text(
