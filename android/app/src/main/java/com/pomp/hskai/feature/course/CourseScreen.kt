@@ -660,7 +660,8 @@ private fun CourseChoiceSheet(
     } else {
         hsk30.savedLevelHsk20.takeIf { it in listOf("hsk1", "hsk2", "hsk3", "hsk4") } ?: "hsk1"
     }
-    var selectedLevel by remember(activeTrack) { mutableStateOf(saved(activeTrack)) }
+    // The active version opens at its actual band; other versions reopen at their saved band.
+    var selectedLevel by remember(activeTrack, currentLevel) { mutableStateOf(currentLevel) }
     val available = if (selectedTrack == "hsk30") {
         hsk30.liveLevels.filter { it in listOf("nhsk1", "nhsk2", "nhsk3") }
     } else listOf("hsk1", "hsk2", "hsk3", "hsk4")
