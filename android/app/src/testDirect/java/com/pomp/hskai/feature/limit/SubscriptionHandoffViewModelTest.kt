@@ -258,6 +258,11 @@ private class FakeFeatureApi(
         return openResponse
     }
 
+    override suspend fun sendBugReport(
+        authorization: String,
+        body: com.pomp.hskai.data.api.AndroidBugReportRequest,
+    ): Response<com.pomp.hskai.data.api.AndroidBugReportResponse> = error("unexpected call")
+
     override suspend fun profile(authorization: String): Response<AndroidProfileResponse> =
         error("unexpected call")
 
