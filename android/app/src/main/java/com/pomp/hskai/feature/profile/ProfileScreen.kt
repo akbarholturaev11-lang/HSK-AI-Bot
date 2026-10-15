@@ -102,6 +102,7 @@ import com.pomp.hskai.feature.course.Hsk30LevelChoiceDialog
 import com.pomp.hskai.core.settings.DEFAULT_SHAKE_TO_REPORT
 import com.pomp.hskai.feature.feedback.captureReportScreen
 import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.design.components.HskProCrownBadge
 import com.pomp.hskai.core.design.components.HskSectionTitle
 import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.feature.update.AppUpdateCard
@@ -712,17 +713,23 @@ private fun AccessPill(isPaid: Boolean, trialActive: Boolean = false, modifier: 
         border = BorderStroke(1.dp, if (isPaid || trialActive) Color(0xFFB68D45) else PompColors.Divider),
         modifier = modifier,
     ) {
-        Text(
-            text = when {
-                isPaid -> "✦ Pro"
-                trialActive -> stringResource(R.string.profile_access_trial)
-                else -> stringResource(R.string.synced_access_free)
-            },
-            style = MaterialTheme.typography.labelMedium,
-            color = if (isPaid || trialActive) Color(0xFFFFD999) else PompColors.InkSecondary,
-            maxLines = 1,
+        Row(
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-        )
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+            if (isPaid) HskProCrownBadge(size = 15.dp)
+            Text(
+                text = when {
+                    isPaid -> "Pro"
+                    trialActive -> stringResource(R.string.profile_access_trial)
+                    else -> stringResource(R.string.synced_access_free)
+                },
+                style = MaterialTheme.typography.labelMedium,
+                color = if (isPaid || trialActive) Color(0xFFFFD999) else PompColors.InkSecondary,
+                maxLines = 1,
+            )
+        }
     }
 }
 
