@@ -35,7 +35,6 @@ import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PersonAdd
-import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -61,6 +60,7 @@ import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskContentSkeleton
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.design.components.HskProCrownBadge
 import com.pomp.hskai.core.design.components.HskSectionTitle
 import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.core.network.ApiError
@@ -547,22 +547,7 @@ private fun ProfileAvatar(name: String, premium: Boolean, avatarKey: String) {
                 modifier = Modifier.size(78.dp),
             )
         }
-        if (premium) {
-            Surface(
-                color = PompColors.Gold,
-                shape = CircleShape,
-                modifier = Modifier.align(Alignment.BottomEnd).size(25.dp),
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Filled.WorkspacePremium,
-                        contentDescription = stringResource(R.string.rating_premium),
-                        tint = PompColors.Paper,
-                        modifier = Modifier.size(15.dp),
-                    )
-                }
-            }
-        }
+        if (premium) HskProCrownBadge(modifier = Modifier.align(Alignment.BottomEnd), size = 23.dp)
     }
 }
 
@@ -748,8 +733,8 @@ private fun LeagueRow(
 ) {
     val name = row.name.ifBlank { row.username.ifBlank { stringResource(R.string.rating_unnamed) } }
     val rowTint = when {
-        row.isPaid -> PompColors.GoldSoft.copy(alpha = 0.38f)
         row.isCurrentUser -> PompColors.CinnabarSoft.copy(alpha = 0.42f)
+        row.isPaid -> PompColors.GoldSoft.copy(alpha = 0.38f)
         else -> Color.Transparent
     }
     Row(
@@ -778,36 +763,14 @@ private fun LeagueRow(
             )
             if (row.isPaid) {
                 Spacer(Modifier.width(6.dp))
-                Surface(
-                    color = PompColors.GoldSoft,
-                    shape = RoundedCornerShape(999.dp),
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(
-                            Icons.Filled.WorkspacePremium,
-                            contentDescription = stringResource(R.string.rating_premium),
-                            tint = PompColors.Gold,
-                            modifier = Modifier.size(12.dp),
-                        )
-                        Spacer(Modifier.width(3.dp))
-                        Text(
-                            text = stringResource(R.string.rating_premium),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = PompColors.GoldInk,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                    }
-                }
+                HskProCrownBadge(size = 15.dp)
             }
         }
         Spacer(Modifier.width(8.dp))
         Text(
             text = row.xp.toString(),
             style = MaterialTheme.typography.titleSmall,
-            color = if (row.isPaid) PompColors.Gold else PompColors.InkSecondary,
+            color = if (row.isCurrentUser) PompColors.CinnabarDark else if (row.isPaid) PompColors.GoldInk else PompColors.InkSecondary,
         )
     }
 }
@@ -1037,12 +1000,7 @@ private fun FriendRow(
                     )
                     if (friend.isPaid) {
                         Spacer(Modifier.width(5.dp))
-                        Icon(
-                            imageVector = Icons.Filled.WorkspacePremium,
-                            contentDescription = stringResource(R.string.rating_premium),
-                            tint = PompColors.Gold,
-                            modifier = Modifier.size(14.dp),
-                        )
+                        HskProCrownBadge(size = 15.dp)
                     }
                 }
                 Spacer(Modifier.height(3.dp))
@@ -1151,22 +1109,7 @@ private fun InitialsAvatar(
                 modifier = Modifier.size(35.dp),
             )
         }
-        if (premium) {
-            Surface(
-                color = PompColors.Gold,
-                shape = CircleShape,
-                modifier = Modifier.size(15.dp).align(Alignment.BottomEnd),
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        Icons.Filled.WorkspacePremium,
-                        contentDescription = stringResource(R.string.rating_premium),
-                        tint = PompColors.Paper,
-                        modifier = Modifier.size(9.dp),
-                    )
-                }
-            }
-        }
+        if (premium) HskProCrownBadge(modifier = Modifier.align(Alignment.BottomEnd), size = 15.dp)
     }
 }
 
