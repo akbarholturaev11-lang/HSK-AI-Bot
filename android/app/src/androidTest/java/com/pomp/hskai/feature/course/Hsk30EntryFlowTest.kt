@@ -165,7 +165,7 @@ class Hsk30EntryFlowTest {
 
         cases.forEach { access ->
             compose.runOnIdle { state.value = courseState(access = access) }
-            compose.onNodeWithText("HSK 3.0 · N1").assertIsDisplayed()
+            compose.onNodeWithText("HSK 3.0 · HSK 1").assertIsDisplayed()
             compose.onNodeWithText(strings.getString(R.string.hsk30_access_required_title)).assertDoesNotExist()
             compose.onNodeWithText(strings.getString(R.string.hsk30_access_unlock_button)).assertDoesNotExist()
             compose.onNodeWithText(strings.getString(R.string.hsk30_access_back_hsk20)).assertDoesNotExist()
@@ -185,7 +185,7 @@ class Hsk30EntryFlowTest {
         var payments = 0
         showCourse(state, onUnlock = { payments++ })
 
-        compose.onNodeWithText("HSK 3.0 · N1").assertIsDisplayed()
+        compose.onNodeWithText("HSK 3.0 · HSK 1").assertIsDisplayed()
         compose.onNodeWithText(strings.getString(R.string.hsk30_access_required_title)).assertDoesNotExist()
         compose.onNodeWithText(strings.getString(R.string.hsk30_access_unlock_button)).assertDoesNotExist()
         compose.runOnIdle { assertEquals(0, payments) }
@@ -207,7 +207,7 @@ class Hsk30EntryFlowTest {
         compose.runOnIdle { state.value = state.value.copy(isSwitchingTrack = false) }
         compose.onNodeWithText(strings.getString(R.string.course_track_preparing_title))
             .assertDoesNotExist()
-        compose.onNodeWithText("HSK 3.0 · N1").assertIsDisplayed()
+        compose.onNodeWithText("HSK 3.0 · HSK 1").assertIsDisplayed()
     }
 
     @Test fun courseHeaderPickerPreselectsSavedBandAndShowsVersions() {
@@ -216,7 +216,7 @@ class Hsk30EntryFlowTest {
         val calls = mutableListOf<Pair<String, String?>>()
         showCourse(state, onSwitch = { track, level -> calls += track to level })
 
-        compose.onNodeWithText("HSK 3.0 · N1").performClick()
+        compose.onNodeWithText("HSK 3.0 · HSK 1").performClick()
         compose.onNodeWithText(strings.getString(R.string.course_choice_title)).assertIsDisplayed()
         compose.onNodeWithText("HSK 2.0").assertIsDisplayed()
         compose.onNodeWithText("HSK 3.0").assertIsDisplayed()
