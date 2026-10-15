@@ -25,11 +25,16 @@ class AndroidBugReportFlowContracts(unittest.TestCase):
         self.assertIn("enabled = shakeToReportEnabled &&", self.main)
         self.assertIn("onShakeChanged", self.intro)
 
-    def test_screenshot_capture_precedes_confirmation_and_has_fallback(self):
+    def test_initial_sheet_stays_visible_during_capture_and_has_fallback(self):
         self.assertLess(
-            self.main.index("bugReportScreenshot = captureReportScreen(bugReportRootView)"),
             self.main.index("bugReportIntroVisible = true"),
+            self.main.index("val snapshot = captureReportScreen(bugReportRootView)"),
         )
+        self.assertIn("loading = bugReportCapturing", self.main)
+        self.assertIn("enabled = !loading", self.intro)
+        self.assertIn("CircularProgressIndicator(", self.intro)
+        self.assertIn("if (!bugReportCapturing) {", self.main)
+        self.assertIn("captureGeneration == introCaptureGeneration", self.main)
         self.assertIn("PixelCopy.request(", self.capture)
         self.assertIn("root.draw(canvas)", self.capture)
         self.assertIn("FLAG_SECURE", self.capture)
