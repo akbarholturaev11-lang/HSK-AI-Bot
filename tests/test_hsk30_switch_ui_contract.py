@@ -135,6 +135,25 @@ class Hsk30SwitchUiContractTests(unittest.TestCase):
         self.assertIn('LevelOption("nhsk1", "HSK 1"', android_onboard)
         self.assertNotIn('badge = if (option.isNew) copy.newBadge', android_onboard)
 
+    def test_profile_settings_show_active_band_only_in_both_clients(self):
+        settings = self.mini.split("function courseVersionSettingsRowHtml(){", 1)[1].split(
+            "function settingsSheetHtml(){", 1
+        )[0]
+        self.assertIn("courseLevelLabel(level)", settings)
+        self.assertIn("coursePickerCopy().level", settings)
+        self.assertIn("App.profileCourseVersionBook()", settings)
+        self.assertNotIn("track===\"hsk30\"?t.hsk30:t.hsk20", settings)
+
+        profile = (ANDROID / "feature" / "profile" / "ProfileScreen.kt").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("profileHskLevelLabel(currentLevel)", profile)
+        self.assertIn("hsk30?.activeLevel?.takeIf", profile)
+        self.assertIn("stringResource(R.string.course_choice_level)", profile)
+        self.assertIn('return band?.let { "HSK $it" } ?: "—"', profile)
+        self.assertIn("onOpenCourseVersion,", profile)
+        self.assertNotIn('if (courseTrack == "hsk30") "HSK 3.0" else "HSK 2.0"', profile)
+
     def test_android_hsk30_book_art_has_native_software_renderer_and_fallback(self):
         # The bundled JPEG must remain visible on OEMs that fail to render the
         # old Compose Multiply tint. Never leave the header as a blank spacer.
