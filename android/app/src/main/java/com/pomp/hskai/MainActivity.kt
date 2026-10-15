@@ -717,16 +717,17 @@ private fun AppRoot(
             var bugReportOpen by remember { mutableStateOf(false) }
             var bugReportScreenshot by remember { mutableStateOf<Bitmap?>(null) }
             var bugReportSource by remember { mutableStateOf("") }
-            val openBugReport = {
+            val openBugReport: (Bitmap?) -> Unit = { visibleWindowScreenshot ->
                 if (!bugReportOpen) {
                     bugReportSource = selectedTab.name.lowercase()
-                    bugReportScreenshot = captureReportScreen(bugReportRootView)
+                    bugReportScreenshot =
+                        visibleWindowScreenshot ?: captureReportScreen(bugReportRootView)
                     bugReportOpen = true
                 }
             }
             ShakeToReport(
                 enabled = shakeToReportEnabled && !bugReportOpen,
-                onShake = openBugReport,
+                onShake = { openBugReport(null) },
             )
 
             // Course refreshes server flags on return; secondary tabs keep
