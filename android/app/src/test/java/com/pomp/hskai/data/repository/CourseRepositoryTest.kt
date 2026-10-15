@@ -2,6 +2,7 @@ package com.pomp.hskai.data.repository
 
 import androidx.compose.ui.geometry.Offset
 import com.pomp.hskai.core.audio.TtsCache
+import com.pomp.hskai.data.local.WordAudioSource
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.data.api.AndroidCourseApi
@@ -331,6 +332,7 @@ class CourseRepositoryTest {
         offsetMinutes: Int = 300,
         onSessionExpired: suspend () -> Unit = {},
         ttsCache: TtsCache? = null,
+        cdnAudio: WordAudioSource? = null,
         lessonDao: LessonCacheDao? = null,
         foundationApi: AndroidFoundationApi? = null,
     ) = CourseRepository(
@@ -342,6 +344,7 @@ class CourseRepositoryTest {
         foundationApi = foundationApi,
         onSessionExpired = onSessionExpired,
         ttsCache = ttsCache,
+        cdnAudio = cdnAudio,
         now = { 1_700_000_000_000L },
         timezoneOffsetMinutes = { offsetMinutes },
     )
@@ -551,6 +554,45 @@ class CourseRepositoryTest {
 
         assertEquals(1, cache.clearCalls)
         assertTrue(cache.rows.isEmpty())
+    }
+
+    @Test
+    fun `CDN phrase is fetched once then saved for permanent offline replay`() = runTest {
+        val api = FakeCourseApi()
+        val cache = FakeTtsCache()
+        var cdnCalls = 0
+        val cdn = WordAudioSource { text ->
+            cdnCalls++
+            if (text == "你好") "prerendered".toByteArray() else null
+        }
+        val first = repository(
+            api, FakeCourseMapDao(), ttsCache = cache, cdnAudio = cdn,
+            token = { ApiResult.Failure(ApiError.SessionExpired) },
+        ).ttsAudio("你好")
+        val second = repository(
+            api, FakeCourseMapDao(), ttsCache = cache, cdnAudio = cdn,
+            token = { ApiResult.Failure(ApiError.SessionExpired) },
+        ).ttsAudio("你好")
+
+        assertEquals("prerendered", String((first as ApiResult.Success).value))
+        assertEquals("prerendered", String((second as ApiResult.Success).value))
+        assertEquals(1, cdnCalls)
+        assertEquals(0, api.ttsCalls)
+        assertEquals(1, cache.entries.size)
+    }
+
+    @Test
+    fun `CDN miss leaves original authenticated TTS fallback intact`() = runTest {
+        val api = FakeCourseApi()
+        val cache = FakeTtsCache()
+        var cdnCalls = 0
+        val cdn = WordAudioSource { cdnCalls++; null }
+        val repo = repository(api, FakeCourseMapDao(), ttsCache = cache, cdnAudio = cdn)
+
+        assertEquals("audio", String((repo.ttsAudio("你好") as ApiResult.Success).value))
+        assertEquals("audio", String((repo.ttsAudio("你好") as ApiResult.Success).value))
+        assertEquals(1, cdnCalls)
+        assertEquals(1, api.ttsCalls)
     }
 
     @Test
