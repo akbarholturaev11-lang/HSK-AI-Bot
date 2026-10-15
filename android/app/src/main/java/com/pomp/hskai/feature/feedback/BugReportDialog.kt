@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -47,6 +48,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -172,19 +174,7 @@ fun BugReportDialog(
                             Text(stringResource(R.string.action_close))
                         }
                     }
-                    if (sent) {
-                        Column(
-                            modifier = Modifier.weight(1f).padding(20.dp),
-                            verticalArrangement = Arrangement.Center,
-                        ) {
-                            Text(
-                                stringResource(R.string.bug_report_success),
-                                style = MaterialTheme.typography.titleMedium,
-                                color = PompColors.Ink,
-                            )
-                        }
-                    } else {
-                        Column(
+                    Column(
                             modifier = Modifier.weight(1f)
                                 .verticalScroll(rememberScrollState())
                                 .padding(horizontal = 18.dp),
@@ -265,15 +255,11 @@ fun BugReportDialog(
                                 )
                             }
                         }
-                    }
                     HorizontalDivider(color = PompColors.Divider)
                     Button(
                         onClick = {
                             if (busy) return@Button
-                            if (sent) {
-                                onDismiss()
-                                return@Button
-                            }
+                            if (sent) return@Button
                             if (attachScreenshot && preview == null) {
                                 missingScreenshot = true
                                 return@Button
@@ -302,7 +288,7 @@ fun BugReportDialog(
                         modifier = Modifier.fillMaxWidth().padding(
                             start = 18.dp, end = 18.dp, top = 12.dp, bottom = 14.dp,
                         ),
-                        enabled = sent || (description.trim().length >= 5 && !busy),
+                        enabled = !sent && description.trim().length >= 5 && !busy,
                     ) {
                         if (busy) {
                             CircularProgressIndicator(
@@ -310,11 +296,33 @@ fun BugReportDialog(
                                 strokeWidth = 2.dp,
                             )
                         } else Text(
-                            stringResource(if (sent) R.string.action_close else R.string.bug_report_send)
+                            stringResource(R.string.bug_report_send)
                         )
                     }
                 }
             }
         }
+    }
+    if (sent) {
+        AlertDialog(
+            onDismissRequest = { /* Explicit acknowledgement keeps OK predictable. */ },
+            title = {
+                Text(
+                    text = stringResource(R.string.bug_report_thanks_title),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = PompColors.Ink,
+                )
+            },
+            confirmButton = {
+                Button(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
+                    Text("OK")
+                }
+            },
+            containerColor = PompColors.PaperRaised,
+            shape = RoundedCornerShape(28.dp),
+        )
     }
 }
