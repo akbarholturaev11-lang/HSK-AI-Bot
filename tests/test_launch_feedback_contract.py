@@ -88,8 +88,8 @@ class LaunchFeedbackContractTests(unittest.TestCase):
 
     def test_android_release_version_does_not_regress(self):
         gradle = (ANDROID / "build.gradle.kts").read_text(encoding="utf-8")
-        name = re.search(r'val appVersionName = "(\\d+)\\.(\\d+)\\.(\\d+)"', gradle)
-        code = re.search(r"val appVersionCode = (\\d+)", gradle)
+        name = re.search(r'val appVersionName = "(\d+)\.(\d+)\.(\d+)"', gradle)
+        code = re.search(r"val appVersionCode = (\d+)", gradle)
         self.assertIsNotNone(name)
         self.assertIsNotNone(code)
         # Baseline recorded after the Golden Logo release; later releases advance.
