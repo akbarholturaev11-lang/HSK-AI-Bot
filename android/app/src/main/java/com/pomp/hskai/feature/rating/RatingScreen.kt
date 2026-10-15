@@ -363,12 +363,25 @@ fun RatingUserScreen(
                 ) {
                     ProfileAvatar(name = name, premium = user.isPaid, avatarKey = user.avatarKey)
                     Spacer(Modifier.height(12.dp))
-                    Text(
-                        text = name,
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = PompColors.Ink,
-                        textAlign = TextAlign.Center,
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = name,
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = PompColors.Ink,
+                            textAlign = TextAlign.Center,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f, fill = false),
+                        )
+                        if (user.isPaid) {
+                            Spacer(Modifier.width(7.dp))
+                            HskProCrownBadge(size = 18.dp)
+                        }
+                    }
                     Spacer(Modifier.height(4.dp))
                     Text(
                         text = stringResource(R.string.rating_league_name, leagueGlyph(league)),
@@ -387,13 +400,7 @@ fun RatingUserScreen(
                             containerColor = PompColors.GoldSoft,
                             contentColor = PompColors.Gold,
                         )
-                        if (user.isPaid) {
-                            ProfileBadge(
-                                text = stringResource(R.string.rating_premium),
-                                containerColor = PompColors.GoldSoft,
-                                contentColor = PompColors.Gold,
-                            )
-                        }
+                        if (user.isPaid) ProfileProBadge()
                     }
                 }
             }
@@ -560,6 +567,20 @@ private fun ProfileBadge(text: String, containerColor: Color, contentColor: Colo
             color = contentColor,
             modifier = Modifier.padding(horizontal = 11.dp, vertical = 6.dp),
         )
+    }
+}
+
+@Composable
+private fun ProfileProBadge() {
+    Surface(color = PompColors.GoldSoft, shape = RoundedCornerShape(999.dp)) {
+        Row(
+            modifier = Modifier.padding(horizontal = 9.dp, vertical = 5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+            HskProCrownBadge(size = 15.dp)
+            Text("Pro", style = MaterialTheme.typography.labelMedium, color = PompColors.GoldInk)
+        }
     }
 }
 
