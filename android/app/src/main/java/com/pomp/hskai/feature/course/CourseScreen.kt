@@ -835,8 +835,7 @@ private fun CourseHeader(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             HskSectionTitle(
-                text = (if (activeTrack == "hsk30") "HSK 3.0" else "HSK 2.0") +
-                    " · " + courseLevelLabel(map.level),
+                text = courseLevelLabel(map.level),
                 modifier = if (hsk30 != null) {
                     Modifier.clickable(
                         enabled = !isSwitchingTrack,
