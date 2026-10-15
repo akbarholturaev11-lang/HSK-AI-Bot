@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Tajik. Android qualifier is "tg"; the backend language code stays "tj". -->
 <resources>
+    <!-- Opt-in native issue reporting -->
+    <string name="bug_report_title">Дар бораи мушкилот хабар диҳед</string>
+    <string name="bug_report_question">Чӣ рӯй дод?</string>
+    <string name="bug_report_hint">Мушкилотро муфассал нависед...</string>
+    <string name="bug_report_screenshot">Илова кардани акси экран</string>
+    <string name="bug_report_no_screenshot">Гирифтани акси экран имкон надошт. Метавонед танҳо матн фиристед.</string>
+    <string name="bug_report_privacy">Акси экран танҳо бо иҷозати шумо фиристода мешавад. Маълумоти шахсиро санҷед.</string>
+    <string name="bug_report_send">Фиристодан</string>
+    <string name="bug_report_failed">Паём фиристода нашуд. Интернетро санҷида, дубора кӯшиш кунед.</string>
+    <string name="bug_report_success">Паёми шумо қабул шуд. Ташаккур!</string>
+    <string name="bug_report_shake">Барои хабар додан телефонро ҷунбонед</string>
+    <string name="bug_report_shake_summary">Танҳо дар вақти кушода будани барнома кор мекунад</string>
     <string name="onboarding_language_title">Забонро интихоб кунед</string>
     <string name="onboarding_language_subtitle">Курс, тарҷумаҳо ва ёдоварӣ бо ҳамин забон мешаванд.</string>
     <string name="action_continue">Идома додан</string>
