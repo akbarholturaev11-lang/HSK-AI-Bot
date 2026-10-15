@@ -718,8 +718,15 @@ private fun ChallengeFeedbackBanner(
 }
 
 private fun ratingLevelLabel(level: String): String {
-    val normalized = level.lowercase().removePrefix("hsk").trim()
-    return normalized.toIntOrNull()?.let { "HSK $it" } ?: level.uppercase().ifBlank { "HSK" }
+    val key = level.trim().lowercase()
+    val isNewCurriculum = key.startsWith("nhsk") || key == "nbeginner"
+    val band = when (key) {
+        "beginner", "nbeginner" -> 1
+        else -> Regex("^(?:n?hsk)([1-4])$").matchEntire(key)
+            ?.groupValues?.get(1)?.toIntOrNull()
+    }
+    val label = band?.let { "HSK $it" } ?: "HSK"
+    return label + if (isNewCurriculum) " NEW" else ""
 }
 
 @Composable
