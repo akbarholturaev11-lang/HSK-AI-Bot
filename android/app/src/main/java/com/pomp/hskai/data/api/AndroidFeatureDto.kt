@@ -15,6 +15,19 @@ data class AndroidProfileResponse(
 )
 
 @Serializable
+data class AndroidBugReportRequest(
+    val description: String,
+    @SerialName("screenshot_data_url") val screenshotDataUrl: String = "",
+    @SerialName("app_version") val appVersion: String,
+    val screen: String = "",
+)
+
+@Serializable
+data class AndroidBugReportResponse(
+    val ok: Boolean = false,
+)
+
+@Serializable
 data class AndroidProfileUserDto(
     @SerialName("name") val name: String = "",
     @SerialName("avatar") val avatar: String = "",
