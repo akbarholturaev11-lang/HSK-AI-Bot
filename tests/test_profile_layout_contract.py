@@ -23,6 +23,24 @@ def test_single_display_name_and_subscription_badge_after_avatar():
     assert 'text = "@$username"' not in hero
 
 
+
+def test_paid_pro_status_is_inline_without_brown_card_in_both_apps():
+    # A paid learner still sees the crown and "Pro", but not an oversized tile.
+    assert ".profile-access-badge.pro{background:transparent" in WEB
+    assert ".profile-access-badge.pro .ti-crown" in WEB
+    assert "profile-access-badge'+(paid||trialActive?' pro':'')" in WEB
+    assert "background:linear-gradient(115deg,#2b2018,#684124)" not in WEB
+
+    pill = ANDROID.split("private fun AccessPill(", 1)[1].split(
+        "private fun LevelLeaguePill(", 1
+    )[0]
+    assert "color = if (active) Color.Transparent else PompColors.PaperRaised" in pill
+    assert "border = if (active) null else BorderStroke" in pill
+    assert "if (isPaid) HskProCrownBadge(size = 15.dp)" in pill
+    assert 'isPaid -> "Pro"' in pill
+    assert "Color(0xFF3C2B1C)" not in pill
+
+
 def test_accuracy_compact_and_profile_surfaces_soft():
     web_rings = WEB.split("function profileAccuracyHtml(){", 1)[1].split("function renderProfile(){", 1)[0]
     assert "profile-accuracy-help" not in web_rings
