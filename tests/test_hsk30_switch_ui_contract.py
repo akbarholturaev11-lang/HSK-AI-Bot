@@ -72,7 +72,7 @@ class Hsk30SwitchUiContractTests(unittest.TestCase):
             "var COURSE_PICKER_STATUS=", 1
         )[1]
         self.assertIn("COURSE_PICKER_LEVEL=coursePickerSavedLevel(track)", picker)
-        self.assertIn("switchCourseTrack(track,level===saved?null:level)", picker)
+        self.assertIn("switchCourseTrack(track,(track===currentCourseTrack()||level!==saved)?level:null)", picker)
         self.assertIn("course-choice-sheet", picker)
         self.assertIn("showCourseTrackSwitchPreparing(target);", self.mini)
 
@@ -106,6 +106,33 @@ class Hsk30SwitchUiContractTests(unittest.TestCase):
         self.assertIn("Modifier.weight(1f)", native)
         self.assertIn('fontSize = if (compact) 12.sp else 15.sp', native)
         self.assertIn("if (selected && !compact)", native)
+
+    def test_consistent_hsk_bands_and_rating_only_new_badge(self):
+        # Curriculum is carried separately. Learner-facing band labels stay
+        # HSK 1..4 / HSK 1..3, with NEW reserved for rating presentation.
+        label = self.mini.split("function courseLevelLabel(lv){", 1)[1].split(
+            "function ratingLevelLabel(lv){", 1
+        )[0]
+        rating = self.mini.split("function ratingLevelLabel(lv){", 1)[1].split("/*", 1)[0]
+        self.assertIn('return "HSK "+levelBand(', label)
+        self.assertNotIn('NEW', label)
+        self.assertIn('isHsk30Level(lv)?" NEW":""', rating)
+        self.assertIn('ratingLevelLabel(u.level', self.mini)
+        self.assertIn('courseLevelLabel((MAP&&MAP.level)||getSelectedLevel())', self.mini)
+        self.assertIn('courseLevelLabel(map.level)', self.android)
+        self.assertNotIn('"HSK 3.0 · N"', self.android)
+        self.assertIn(
+            'selectedLevel.takeIf { selectedTrack == activeTrack || it != saved(selectedTrack) }',
+            self.android,
+        )
+        onboard = (ROOT / "app" / "static" / "course_v3_onboarding.html").read_text(encoding="utf-8")
+        self.assertNotIn('isHsk30Level(key)?\'<span class="new-tag">NEW', onboard)
+        self.assertNotIn('var meta=["NEW"]', onboard)
+        android_onboard = (ANDROID / "feature" / "onboarding" / "OnboardingScreen.kt").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('LevelOption("nhsk1", "HSK 1"', android_onboard)
+        self.assertNotIn('badge = if (option.isNew) copy.newBadge', android_onboard)
 
     def test_android_hsk30_book_art_has_native_software_renderer_and_fallback(self):
         # The bundled JPEG must remain visible on OEMs that fail to render the
