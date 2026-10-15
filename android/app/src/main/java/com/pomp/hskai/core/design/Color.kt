@@ -49,7 +49,9 @@ internal data class PompPalette(
 
 object PompColors {
     val LightPaper = Color(0xFFFDF9F0)
-    val LightPaperRaised = Color(0xFFFFFFFF)
+    // Checkout-style warm paper for standard Android cards (not pure white).
+    // Retains contrast against the light canvas via the shared divider/border.
+    val LightPaperRaised = Color(0xFFFBF6ED)
     val LightInk = Color(0xFF211D17)
     val LightInkSecondary = Color(0xFF665D50)
     val LightInkDisabled = Color(0xFFA89E8E)
