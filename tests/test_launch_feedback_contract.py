@@ -86,10 +86,15 @@ class LaunchFeedbackContractTests(unittest.TestCase):
         self.assertNotIn('@drawable/ic_launcher_foreground', splash)
         self.assertNotIn('92dp', splash)
 
-    def test_android_release_version_advances_for_updated_apk(self):
+    def test_android_release_version_does_not_regress(self):
         gradle = (ANDROID / "build.gradle.kts").read_text(encoding="utf-8")
-        self.assertIn('val appVersionName = "1.7.13"', gradle)
-        self.assertIn("val appVersionCode = 44", gradle)
+        name = re.search(r'val appVersionName = "(\\d+)\\.(\\d+)\\.(\\d+)"', gradle)
+        code = re.search(r"val appVersionCode = (\\d+)", gradle)
+        self.assertIsNotNone(name)
+        self.assertIsNotNone(code)
+        # Baseline recorded after the Golden Logo release; later releases advance.
+        self.assertGreaterEqual(tuple(map(int, name.groups())), (1, 7, 13))
+        self.assertGreaterEqual(int(code.group(1)), 44)
 
 
 if __name__ == "__main__":
