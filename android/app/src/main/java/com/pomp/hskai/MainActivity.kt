@@ -1506,6 +1506,7 @@ private fun AppRoot(
                                 },
                                 onOpenSupport = { url -> openExternal(context, url) },
                                 onReportProblem = openBugReport,
+                                reportVisible = bugReportOpen,
                                 onRefresh = profileViewModel::load,
                                 onLogout = { signOut(false) },
                                 onUnlinkDevice = { signOut(true) },
