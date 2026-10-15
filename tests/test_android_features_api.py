@@ -1660,3 +1660,99 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class AndroidBugReportApiTests(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:", poolclass=StaticPool,
+        )
+        async with self.engine.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        async with self.sessions() as session:
+            session.add(_user(99, 987654, "Android learner"))
+            await session.commit()
+
+        self.bot = SimpleNamespace(send_photo=AsyncMock(), send_message=AsyncMock())
+        self.app = FastAPI()
+        self.app.include_router(create_android_features_router(
+            session_factory=self.sessions, settings_obj=_settings(), bot=self.bot,
+        ))
+        self.auth = patch.object(
+            DesktopAuthService, "authenticate",
+            AsyncMock(return_value=SimpleNamespace(user=SimpleNamespace(telegram_id=987654))),
+        )
+        self.auth.start()
+        self.addCleanup(self.auth.stop)
+        self.admins = patch(
+            "app.api.android_features.AdminNotifyService._feedback_recipient_ids",
+            return_value=[123456],
+        )
+        self.admins.start()
+        self.addCleanup(self.admins.stop)
+        self.client = AsyncClient(
+            transport=ASGITransport(app=self.app), base_url="http://android.test",
+        )
+        self.headers = {"Authorization": "Bearer token"}
+
+    async def asyncTearDown(self):
+        await self.client.aclose()
+        await self.engine.dispose()
+
+    async def test_text_report_is_delivered_without_screenshot(self):
+        response = await self.client.post(
+            "/api/v3/android/bug-report",
+            headers=self.headers,
+            json={"description": "Audio stopped unexpectedly", "app_version": "1.7.13", "screen": "course"},
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(response.json()["ok"])
+        self.bot.send_message.assert_awaited_once()
+        self.bot.send_photo.assert_not_awaited()
+
+    async def test_screenshot_is_opt_in_and_jpeg_only(self):
+        import base64
+        screenshot = base64.b64encode(b"\\xff\\xd8\\xffimage").decode()
+        response = await self.client.post(
+            "/api/v3/android/bug-report",
+            headers=self.headers,
+            json={
+                "description": "Cannot open the lesson",
+                "screenshot_data_url": "data:image/jpeg;base64," + screenshot,
+            },
+        )
+        self.assertEqual(200, response.status_code)
+        self.bot.send_photo.assert_awaited_once()
+        self.bot.send_message.assert_awaited_once()
+
+    async def test_rejects_invalid_image_and_empty_description(self):
+        response = await self.client.post(
+            "/api/v3/android/bug-report",
+            headers=self.headers,
+            json={"description": " ", "screenshot_data_url": "data:text/html;base64,SGk="},
+        )
+        self.assertEqual(422, response.status_code)
+        self.bot.send_message.assert_not_awaited()
+
+    async def test_report_is_rate_limited_after_success(self):
+        payload = {"description": "The page becomes blank on start"}
+        first = await self.client.post(
+            "/api/v3/android/bug-report", headers=self.headers, json=payload,
+        )
+        second = await self.client.post(
+            "/api/v3/android/bug-report", headers=self.headers, json=payload,
+        )
+        self.assertEqual(200, first.status_code)
+        self.assertEqual(429, second.status_code)
+        self.bot.send_message.assert_awaited_once()
+
+    async def test_admin_delivery_failure_returns_error(self):
+        self.bot.send_message.side_effect = RuntimeError("telegram unavailable")
+        response = await self.client.post(
+            "/api/v3/android/bug-report",
+            headers=self.headers,
+            json={"description": "Failed to load the test screen"},
+        )
+        self.assertEqual(503, response.status_code)
+        self.assertFalse(response.json()["ok"])
