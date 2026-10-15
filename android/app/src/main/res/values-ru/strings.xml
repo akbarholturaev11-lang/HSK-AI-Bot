@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Opt-in native issue reporting -->
+    <string name="bug_report_title">Сообщить о проблеме</string>
+    <string name="bug_report_question">Что случилось?</string>
+    <string name="bug_report_hint">Расскажите нам о проблеме...</string>
+    <string name="bug_report_screenshot">Добавить снимок экрана</string>
+    <string name="bug_report_no_screenshot">Не удалось снять экран. Вы можете отправить текст без снимка.</string>
+    <string name="bug_report_privacy">Снимок отправляется только после вашего согласия. Проверьте, нет ли личных данных.</string>
+    <string name="bug_report_send">Отправить</string>
+    <string name="bug_report_failed">Не удалось отправить. Проверьте интернет и попробуйте ещё раз.</string>
+    <string name="bug_report_success">Сообщение отправлено. Спасибо!</string>
+    <string name="bug_report_shake">Встряхните телефон, чтобы сообщить о проблеме</string>
+    <string name="bug_report_shake_summary">Работает только в открытом приложении</string>
     <string name="onboarding_language_title">Выберите язык</string>
     <string name="onboarding_language_subtitle">Курс, переводы и напоминания будут на этом языке.</string>
     <string name="action_continue">Продолжить</string>
