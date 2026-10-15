@@ -150,6 +150,7 @@ fun ProfileScreen(
     onOpenWidget: () -> Unit,
     onOpenSupport: (String) -> Unit,
     onReportProblem: (Bitmap?) -> Unit = {},
+    reportVisible: Boolean = false,
     onRefresh: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
@@ -176,6 +177,11 @@ fun ProfileScreen(
 ) {
     AssistantScreen(profileAssistantContext(state), bottomBar = true, showButton = false)
     var settingsOpen by remember { mutableStateOf(false) }
+    // Shake-triggered reporting must not remain hidden behind the full-screen
+    // Settings Dialog, which owns a separate Android window.
+    LaunchedEffect(reportVisible) {
+        if (reportVisible) settingsOpen = false
+    }
     var profileHsk30BookOpen by remember { mutableStateOf(false) }
     var profileHsk30LevelOpen by remember { mutableStateOf(false) }
     var appearancePickerOpen by remember { mutableStateOf(false) }
