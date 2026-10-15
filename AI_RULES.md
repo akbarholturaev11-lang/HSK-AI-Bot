@@ -2,18 +2,14 @@
 
 ## Main Rules
 
-1. Always read `AGENTS.md` and `PROJECT_MEMORY.md` before making changes.
-2. Do not redesign the project unless explicitly requested.
-3. Do not delete working code without explaining why.
-4. Make the smallest safe change possible.
-5. Preserve existing business logic.
-6. Never expose or write secrets.
-7. Do not put API keys, tokens, passwords, real database URLs, private links, or payment credentials into memory files.
-8. If database schema changes, document the migration.
-9. If payment/subscription/access logic changes, document the risk.
-10. After important changes, update `PROJECT_MEMORY.md`.
-11. If something is unclear, inspect the code first instead of guessing.
-12. Do not invent features that are not already present in the project.
+1. Follow the session startup order in `AGENTS.md` before changing code or project docs.
+2. Do not redesign or rewrite the whole project; keep architecture changes within the requested task scope and ask if a broader redesign is needed.
+3. Do not remove working code; remove code only when it is proven dead and the cleanup is in scope, and record the evidence and reason.
+4. Preserve existing business logic.
+5. If database schema changes, document the migration.
+6. If payment/subscription/access logic changes, document the risk and never silently alter existing payment policy.
+7. If something is unclear, inspect the code first instead of guessing.
+8. Do not invent features or business logic that are not present in the project; inspect the existing contract first.
 
 ---
 
@@ -24,7 +20,7 @@ After important updates to the Telegram Mini App, course/lesson flow, quiz flow,
 Cover at least:
 - App opens successfully.
 - `?lesson=5` routing works.
-- `?tab=quiz`, `?tab=words`, and `?tab=grammar` routing works where supported.
+- `?tab=` routing works for the current navigation IDs: `course`, `mashq`, `profile`, `rating`, and `voice`.
 - Quiz can be completed and shows a score.
 - Backend progress events are sent/saved.
 - API errors fall back to `localStorage` where the Mini App supports fallback.
@@ -36,19 +32,7 @@ Cover at least:
 
 ## Git Push And Main Branch Rule
 
-- Keep exactly three active collaboration branches:
-  - `main` — canonical production branch; only tested work is allowed here.
-  - `codex/local-ai` — local Codex/local AI work branch; local tests run here before promotion.
-  - `codex/cloud-ai` — cloud AI work branch; changes stay here until tested and promoted.
-- Cloud AI agents work on `codex/cloud-ai`. They must run the relevant tests before pushing to `main`. If their environment cannot run tests, they must leave a clear context/instructions file that explains what changed, what must be tested locally, and the exact safe promotion path for local Codex.
-- Local Codex/local AI agents work on `codex/local-ai`, run the relevant tests, then promote tested commits to `main`.
-- After tested work reaches `main`, sync both `codex/local-ai` and `codex/cloud-ai` back to `main` so future agents do not build on stale code.
-- Before deleting or pruning old branches, create or verify a recoverable backup bundle/ref list. Never use force-push, reset, or branch deletion in a way that can lose code.
-- When the user says `push`, asks to publish to GitHub, or requests a deploy push without naming a separate branch or PR workflow, treat `origin/main` as the final target.
-- A feature-branch push is not completion. Do not report success until the intended commit is confirmed on the remote `origin/main` ref.
-- Fetch the current remote state before pushing and inspect the intended commit against `origin/main` history.
-- If the working tree is dirty or histories diverge, do not include unrelated user changes, force-push, or reset. Create a clean temporary worktree from `origin/main`, cherry-pick only the intended commit, and push `HEAD:main`.
-- After pushing, verify the remote `origin/main` ref again and report the commit hash that reached `main`.
+Git branch, recovery, test, and push/promotion rules are maintained in `AGENTS.md` under “Git intizomi”. Follow that single repository-wide policy; this file does not define a separate branch count or push workflow.
 
 ---
 
@@ -85,6 +69,7 @@ Write only important decisions and important changes.
 Keep entries short.
 Do not document every small edit.
 Do not duplicate Git commit history.
+Update the relevant topic section instead of appending a dated task log; keep files-touched and follow-up summaries in the task response.
 
 ---
 
@@ -116,31 +101,6 @@ Do not update `PROJECT_MEMORY.md` for:
 
 ---
 
-## Change Summary Format
-
-When updating `PROJECT_MEMORY.md`, use this format:
-
-```md
-### YYYY-MM-DD — Short title
-
-Changed:
-- 
-
-Why:
-- 
-
-Files touched:
-- 
-
-Risk:
-- 
-
-Follow-up:
-- 
-```
-
----
-
 ## Security Rules
 
 Never store these anywhere in memory files:
@@ -153,21 +113,4 @@ Never store these anywhere in memory files:
 - Payment credentials
 - Admin private information
 
-Use placeholders only:
-- `BOT_TOKEN`
-- `DATABASE_URL`
-- `OPENAI_API_KEY`
-- `ADMIN_IDS`
-
----
-
-## Do Not Do
-
-- Do not rewrite the whole project.
-- Do not change architecture without permission.
-- Do not invent missing business logic.
-- Do not silently change payment or subscription rules.
-- Do not store secrets.
-- Do not add unnecessary libraries.
-- Do not overcomplicate simple flows.
-- Do not update memory for tiny changes.
+When documentation needs a credential example, use the variable name from `.env.example` and a non-secret placeholder value; never copy a real credential.

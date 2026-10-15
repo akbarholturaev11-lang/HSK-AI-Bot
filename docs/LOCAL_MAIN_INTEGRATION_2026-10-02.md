@@ -1,5 +1,10 @@
 # Local AI promotion to main — 2026-10-02
 
+> Historical integration and validation record for the 2026-10-02 candidate.
+> Commit IDs and test totals below describe that run only; they are not the
+> current branch state, current test baseline, release approval, or proof of a
+> live deployment. Re-run relevant checks before relying on them today.
+
 ## Scope and source of truth
 
 Owner requested all accumulated updates on main, including other contributors'

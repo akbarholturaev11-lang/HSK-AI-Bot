@@ -1,6 +1,13 @@
 # Admin statistics and Gemini free-tier accounting
 
-## Ready locally
+> Historical rollout snapshot recorded 2026-09-08 at commit `bed81212`.
+> Local implementation claims below are source-level and were checked against
+> the current checkout during the 2026-10-15 documentation audit. Deployment,
+> production database migration, live billing tier, and learner/admin messages
+> have not been verified by this snapshot. Do not treat its pending steps or
+> test outcomes as today's live status.
+
+## Local implementation at the snapshot
 
 - New Gemini free-tier requests retain tokens and log $0; paid-tier Gemini and
   OpenAI fallback retain estimated costs. Usage tier is recorded with each event.
@@ -23,7 +30,7 @@
 5. Open admin statistics in Telegram: currency totals, voice, weekly D7,
    free vs paid AI rows and source freshness. Compare with read-only SQL totals.
 
-## Historical reconciliation — still pending
+## Historical reconciliation note (status as of the snapshot)
 
 The local environment has no production DB credentials or configured AI keys.
 The date range when Gemini was free has not been established. Do not infer that
@@ -47,7 +54,7 @@ budgets, refund OpenAI costs, or revive expired subscriptions automatically.
 Historical budget exhaustion/cooldown may still block access until this is done.
 Existing gates are intentionally preserved to prevent unbudgeted paid fallback.
 
-## Verification
+## Verification snapshot — 2026-09-08 (`bed81212`)
 
 - Billing/statistics focused suite: 62 passed and 64 subtests passed.
 - Full backend suite: 1194 passed, 14206 subtests passed; three known unrelated
@@ -56,6 +63,16 @@ Existing gates are intentionally preserved to prevent unbudgeted paid fallback.
 - Six course/map/lesson/exam/subscription browser smoke scenarios: passed.
 - Migration: legacy cost preserved, default legacy tier, repeated upgrade and
   downgrade verified on SQLite. Production PostgreSQL migration not yet run.
+
+These are historical test results, not a current pass/fail baseline. Re-run the
+relevant checks before relying on them; the three listed failures must not be
+assumed to still fail.
+
+## Source audit recheck — 2026-10-15
+
+`venv_311/bin/python -m pytest tests/test_admin_billing_regressions.py -q`:
+10 passed. This rechecks the local billing/statistics contracts only; it does
+not verify the production database, live billing tier, or deployment.
 
 ## Admin release feedback draft
 

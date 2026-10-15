@@ -8,11 +8,14 @@ All explanations, questions, summaries, and status updates must be written in Uz
 
 Before making any code change, always read the project guidance files first and follow their rules.
 
-Required first-read files:
-- PROJECT_MEMORY.md
-- CLAUDE.md
-- README.md if present
-- relevant docs or rules files inside the project
+Read these existing root files before code changes:
+- `AGENTS.md`
+- `AI_RULES.md`
+- `PROJECT_MEMORY.md`
+
+Read `CLAUDE.md` as Claude-specific guidance, plus the README and other docs
+relevant to the task. The repository's `AGENTS.md` defines the shared session
+startup and memory rules.
 
 When the work touches the Android app, read these first:
 - ANDROID_CONTEXT.md — current state, open bugs, where things live
@@ -27,15 +30,23 @@ Do not guess the architecture. Follow the existing project structure and rules.
 
 ## Language and Mini App Change Rules
 
-When adding or changing any user-facing text, first check whether it needs all 3 supported languages:
+When adding or changing user-facing text, identify the languages supported by
+that surface and keep the text in sync across them. For surfaces supporting
+all three project languages, those are:
 
 - Russian
 - Tajik
 - Uzbek
 
-Do not add new visible text in only one language unless the user explicitly approves it.
+Do not add new visible text in only a subset of a surface's supported languages
+unless the user explicitly approves it.
 
-Before changing Mini App interface, ask the user first if the change affects:
+Before editing Mini App UI, follow the UI audit steps in `AGENTS.md`: report the
+weak points, user impact, exact proposed changes, files, and risk. After that
+audit, proceed within the requested scope; do not ask for approval again when
+the user has already requested that UI change. Ask only when an unresolved
+choice would change product behavior, learning flow, business rules, or expand
+the requested scope. The audit applies especially to changes affecting:
 
 - layout
 - navigation
@@ -47,7 +58,8 @@ Before changing Mini App interface, ask the user first if the change affects:
 - AI Voice UI
 - any visible user experience
 
-Do not add cringe UI, unnecessary animations, random badges, confusing buttons, or decorative elements without approval.
+Avoid awkward UI, unnecessary animation, random badges, confusing buttons, and
+decoration without a clear user benefit.
 
 Mini App changes must be:
 - clean
@@ -56,4 +68,6 @@ Mini App changes must be:
 - useful
 - consistent with existing design
 
-If unsure, stop and ask before editing.
+If uncertainty would materially change behavior, content, or scope and cannot
+be resolved from the request or existing code, ask. Otherwise proceed using the
+best-supported interpretation.

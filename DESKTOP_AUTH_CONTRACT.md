@@ -11,10 +11,10 @@ same internal user (see "Provider identity" below). A provider login never
 creates a parallel subscription/progress account; linking requires an
 authenticated session, and identities are never reassigned between users.
 
-No public Pomp DMG, EXE or GGUF artifact is enabled yet. Their source, build
-configuration and release metadata remain in this repository. A local ARM64
-macOS test DMG exists outside Git; public artifacts will be stored on approved
-release storage/CDN.
+Release availability depends on deployment configuration and release storage.
+Source defaults keep desktop downloads and updates disabled and leave the
+release-manifest URL blank. This contract describes the implementation; it does
+not assert which artifacts are currently published or enabled in production.
 
 ## Direct-download acquisition
 
@@ -41,14 +41,16 @@ approved HTTPS. Only authenticated `desktop_first_open` counts as a verified
 installation.
 
 The current tracked download token is replayable and its click analytics are
-deduplicated. Token expiry or deliberate one-time consumption must be chosen
-and implemented before public installer release.
+deduplicated. Its configured lifetime defaults to 24 hours and is bounded to
+5 minutes–7 days; the download endpoint rejects expired tokens with HTTP 410.
 
-The final artifact response, including the response after any redirect, must
-send `Content-Disposition: attachment` and
-`Access-Control-Allow-Origin: https://web.telegram.org`. These headers are
-release-storage/CDN configuration, not proof that a download or install
-finished.
+The `/downloads/{platform}` link uses normal browser navigation, and the API
+redirect adds `Content-Disposition` plus
+`Access-Control-Allow-Origin: https://web.telegram.org`. The final artifact
+response must also send `Content-Disposition: attachment` with a safe filename
+so the browser downloads the file. CORS on the artifact host is not required
+for this navigation flow; add it if a future client fetches the bytes
+cross-origin. Headers do not prove that a download or install finished.
 
 ## Native security boundary
 
@@ -131,14 +133,18 @@ placed in URLs, logs, analytics, local/session storage or JavaScript responses.
 
 - `DESKTOP_AUTH_SIGNING_SECRET` must be a private deployment secret of at least
   32 characters. Desktop auth is unavailable when it is absent or weak.
-- Link start has per-installation and global server caps. Production ingress
-  should additionally rate-limit the public endpoint. The current global
-  database `count → insert` guard is not atomic under a parallel burst.
+- Link start enforces a per-installation cap (5 requests per 5 minutes) and a
+  configurable global cap (120 per 60 seconds by default). On PostgreSQL, a
+  transaction-scoped advisory lock serializes the global count/check and insert
+  across application processes. An ingress-level limit can provide additional
+  defense in depth; it is deployment configuration, not this service guard.
 - Auth JSON bodies are capped and validation errors return only stable codes
   with `Cache-Control: no-store`; production ingress should mirror the body-size
   limit.
-- Expired link/session cleanup and a tracked-download token expiry policy are
-  required before public release.
+- The hourly retention task deletes expired link requests and expired or
+  revoked sessions after the configured retention period (30 days by default,
+  bounded to 1–365 days). Cleanup failure is logged and retried on the next
+  hourly run; authentication continues to reject expired/revoked records.
 - Direct-download work must not enable `DESKTOP_DOWNLOADS_ENABLED` before signed
   installers and real release URLs exist.
 - Server errors return stable codes and never include raw secrets or tokens.

@@ -19,8 +19,11 @@ Native Android home-screen widget for HSK AI. It is a Glance widget owned by the
 
 ## Panda qachon nima deydi
 
-Bitta dvigatel bor — `WidgetVisualResolver`. U ikki narsani o‘qiydi:
-foydalanuvchining **mahalliy vaqti** va **bugungi dars bajarilganmi**.
+Bitta dvigatel bor — `WidgetVisualResolver`. Oddiy holatni foydalanuvchining
+**mahalliy vaqti** va **bugungi dars bajarilganiga** qarab tanlaydi. Alohida
+`MILESTONE` signali uchun esa bugun bajarilgandan keyingi server `streak` ham
+o‘qiladi; u vaqt bo‘yicha kayfiyatni almashtirmaydi, faqat milestone matnini
+qo‘shadi.
 
 ### Mahalliy vaqt bo‘yicha holatlar
 
@@ -96,7 +99,7 @@ tilda ham to‘liq.
 - `WidgetSnapshot` contains only a small progress projection — including today's XP and the server's goal for today. Tokens, user IDs and lesson content never enter the widget store or launcher intent.
 - New `WidgetSnapshot` fields must have a default. A cache written by an older build that no longer decodes is dropped, and a dropped cache tells a linked learner to link their account.
 - A goal of `0` means "not known yet": the widget then shows the lifetime XP it used to show and claims nothing about today.
-- Every widget/notification open gets an authenticated server access check in `MainActivity`; failures land on Course and do not auto-open a lesson later.
+- When online, every widget/notification lesson open gets a fresh authenticated server access check in `MainActivity`; a failed or stale check lands on Course and consumes the pending destination. Offline, no server check is possible: the app lands on the requested section and also consumes the destination, so a later connection cannot unexpectedly open a lesson.
 - `WidgetStore.epoch` changes on link/logout. A late network response from the previous account is ignored, and the panda's variant may change with it.
 - The widget renders from the local cache only. Glance never performs a network call; background refresh is hourly best effort and Android/WorkManager may delay it. A finished lesson reaches the widget through the existing snapshot publish, which re-renders immediately.
 - Local reminder is opt-in, checked from 20:00 onward, and `WidgetStore.remindOnce` caps delivery to one per local server day. It is separate from the widget's visual state.

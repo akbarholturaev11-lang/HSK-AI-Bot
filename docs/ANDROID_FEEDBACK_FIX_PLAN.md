@@ -1,5 +1,10 @@
 # Android foydalanuvchi feedbackini tuzatish rejasi
 
+> Tarixiy implementatsiya va QA qaydi (2026-10-01). Undagi “bajarildi”, test
+> muhiti va “keyingi ish” bandlari o‘sha sanadagi holatni bildiradi; bugungi
+> test natijasi, production/backend deploy yoki release tasdig‘i emas. Hozirgi
+> holatni Android CI va `ANDROID_RELEASE_CHECKLIST.md` bilan qayta tekshiring.
+
 Sana: 2026-10-01. Holat: 1A, 1B, 2, 3, 4A va 4B implementatsiya qilindi;
 yakuniy QA qoldi.
 Asos: [Android audit](USER_FEEDBACK_AUDIT_2026-10-01.md).

@@ -1,6 +1,10 @@
 # HSK 1–5: rasmiy holat
 
-Tekshiruv: 2026-09-05. Bu qayd avtomatik yangilanmaydi.
+Tarixiy tekshiruv: 2026-09-05. Bu qayd avtomatik yangilanmaydi. Unda
+2026-09-20 imtihoni o'sha sanada kelajakdagi pilot sifatida ko'rsatilgan;
+ushbu fayl pilotdan keyingi natija yoki rasmiy jadval o'zgarishini bildirmaydi.
+Bugungi imtihon sanasi va markazlar holatini user-facing matnga qo'shishdan oldin
+CTI rasmiy sahifalaridan qayta tekshiring.
 
 ## Uch xil manba
 

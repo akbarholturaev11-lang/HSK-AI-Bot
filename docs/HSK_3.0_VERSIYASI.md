@@ -7,7 +7,8 @@ Test markazi ataylab “Tez orada” turadi.
 
 Release cheklovi: `hsk30_enabled` deploy bilan avtomatik yoqilmaydi;
 `hsk30_live_levels` canonical qiymati `nhsk1,nhsk2,nhsk3`. N4 live emas.
-Release feedback draft: `RELEASE_FEEDBACK_HSK30.md`.
+Optional, manually approved feedback copy (not a release gate):
+[`RELEASE_FEEDBACK_HSK30.md`](archive/release-feedback/RELEASE_FEEDBACK_HSK30.md).
 
 Research: `research/hsk-3.0/`.
 

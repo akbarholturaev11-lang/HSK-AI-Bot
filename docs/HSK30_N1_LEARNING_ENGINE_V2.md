@@ -1,8 +1,17 @@
 # HSK 3.0 N1 — Learning Engine V2 groundwork
 
-Status: **phase 1 / contract only**. No production lesson, answer key, access, XP, paywall, Android or Mini App flow is changed by this phase.
+Status (2026-10-15 source audit): the N1 checkpoint/repair implementation and
+runtime content are present in this checkout. Local `main` (`77065ee4`) contains
+implementation commit `39f086f5`. `verify_nhsk1_learning_contract.py` passes all
+103 parts/15 units with 0 warnings; `tests/test_android_n1_compat.py` passes 4
+tests plus 4 subtests. These checks establish local source compatibility, not
+remote deployment, physical-device behavior or pedagogical approval.
 
-## Current architecture (checked against main)
+The pilot notes below are dated snapshots. Terms such as “phase 1”, “draft PR”,
+“not yet delivered” and old merge/release gates describe their original stage;
+they do not state today's remote or production status.
+
+## Current architecture in source
 
 - Source: `scripts/hsk30/seed_nhsk1_lesson_XX.py` + verified textbook extraction.
 - Runtime: `app/static/course_v3_data/nhsk1/lesson_XX.json`, `nhsk1.json` and `nhsk1/manifest.json`.
@@ -10,7 +19,7 @@ Status: **phase 1 / contract only**. No production lesson, answer key, access, X
 - Android reads the **same server-side JSON** through `/api/v3/android/course/lesson/{lessonOrder}` and uses `LessonParser` with a separate offline cache. New card types require corresponding Android and Mini App renderer support.
 - Server entitlements, lesson-completion dedupe, and mistake-record flow remain authoritative.
 
-## Learning design contract (next phase)
+## Learning design contract and remaining goals
 
 For each original textbook lesson (possibly split into multiple runtime parts):
 
@@ -33,7 +42,7 @@ Keep the source textbook Chinese and pinyin traceable. Add localizations and new
 - Keep 2.0 / 3.0 track separation, 10 TJS unlock, Pro entitlement, trial and daily limits unchanged.
 - Required translation languages are Uzbek, Russian and Tajik (Tajik uses Cyrillic).
 
-## Phase 1 quality gate
+## Structural quality gate
 
 Run `python scripts/hsk30/verify_nhsk1_learning_contract.py`.
 
@@ -43,7 +52,7 @@ Repeated answer choices and missing pedagogical explanations are **warnings** du
 
 Unit tests: `python -m unittest discover -s tests -p test_nhsk1_learning_contract.py -v`. GitHub Actions checks the source textbook index and the N1 runtime contract for proposed N1 edits.
 
-## First pilot: source lesson 1 (runtime parts 1–4)
+## Initial pilot criteria: source lesson 1 (runtime parts 1–4)
 
 1. Record the existing cards, translations, explanations, and learning outcome.
 2. Define objective-level success criteria for greetings and the teacher/student exchange.
@@ -53,7 +62,7 @@ Unit tests: `python -m unittest discover -s tests -p test_nhsk1_learning_contrac
 
 Release discipline: work on an isolated branch, require CI and migration review, then promote to `main`. Do not claim the production lessons have changed merely because the quality gate exists.
 
-## Pilot 1 delivered on draft PR #142 (2026-10-12)
+## Pilot 1 implementation snapshot (2026-10-12; then draft PR #142)
 
 - Original source lesson 1, **runtime parts 1–4** now includes **27 contextual, three-language explanations**. Uzbek explanations use Latin script; Russian and Tajik use Cyrillic.
 - Authored source of truth: `scripts/hsk30/learning_overlays/nhsk1_lesson_01.json`.
@@ -63,14 +72,16 @@ Release discipline: work on an isolated branch, require CI and migration review,
 - Only card `explanation` and `learning_feedback` metadata changed in the four runtime JSON files. Verified against `main`: 7, 7, 6, 7 updated cards; all other lesson fields including section/card positions, options and answer keys remain identical.
 - CI: Python tests, N1 source audit, all 103 N1 lesson parts, Mini App JavaScript syntax, and **generator round-trip diff** passed.
 
-### Not yet delivered
+### Not yet delivered at the Pilot 1 snapshot
 
 - New assessment/card types, retry-loop and stable ref migration are not part of this pilot.
 - Existing offline Android cache and an already-open Mini App may keep an older version until online reload/app reopen; explicit revision-aware invalidation is a separate project.
 - CI validates technical consistency and script correctness, **not** the teaching accuracy of every translation or real-device behavior.
-- Production `main` remains unchanged until PR approval/merge.
+- At that snapshot, promotion was pending. The current local `main` contains
+  implementation commit `39f086f5`; this repository state does not prove a
+  remote merge or production deployment.
 
-## Pilot 2: independent exit and conditional transfer checks (draft PR #142)
+## Pilot 2 implementation snapshot (2026-10-12; then draft PR #142)
 
 - N1 source lesson 1 ends with **three independent checks**: respectful teacher greeting, listening comprehension for a thank-you expression, and building a student farewell.
 - Each objective has a **different follow-up example** in an appended retry bank:
@@ -81,10 +92,14 @@ Release discipline: work on an isolated branch, require CI and migration review,
 - Sections `learning_exit_check` (3) and `learning_repair_bank` (4) are **appended** after the unchanged existing N1 checkpoint sections (1–2). Total cards 12 → 18, preserving all 12 original section/card `material_ref` values.
 - The new sections use existing `quick_quiz`, `listening_choice`, and `sentence_builder` types; server card count and Android parse count must match 18. Source content is authored in `scripts/hsk30/learning_overlays/nhsk1_lesson_01_exit.json`, reapplied during regeneration.
 - Resume: Mini App retains a lightweight pilot failure map in its existing per-lesson mastery cache. Android's older resume store records only an index; if interrupted **after** the first exit question, the native client conservatively offers all alternate questions rather than incorrectly skipping missed skills. A future release should persist the exact per-objective result on Android.
-- Existing Android APK builds **do not have conditional skip code**: while they can render every extra standard card, old builds would offer all three retry cards unconditionally after a server release. **Release gate:** do not merge/deploy these content changes until the new native build and backend are tested together and an old-APK compatibility approach is approved.
+- At the Pilot 2 snapshot, old APK compatibility was an open release gate. The
+  later N1-wide implementation added a capability header and server projection
+  that omits conditional-only cards for clients without it; the current
+  `tests/test_android_n1_compat.py` passes. That does not verify a physical old
+  APK or the deployed server.
 - This checks immediate transfer within the lesson; it does **not** establish 1-day or 7-day retention. No subscription, paywall, TJS unlock, trial or free-limit logic was changed.
 
-## Pilot 3: connect the N1 learner's daily plan to errors (draft PR #142)
+## Pilot 3 implementation snapshot (2026-10-12; then draft PR #142)
 
 Existing architecture retained: `CourseTodayService` reads `LearningSignalsService`, calls the pure `DailyPlanService` and freezes task identity per level/day. Both Mini App and Android consume the same `today` payload. New rules do **not** bypass the authoritative access checker.
 
@@ -116,4 +131,8 @@ Existing architecture retained: `CourseTodayService` reads `LearningSignalsServi
 
 The automated gates prove deterministic generation, source provenance and cross-client schema compatibility; they do **not** prove the educational value of distractors or naturalness of each translation. Review the bilingual wording and audio on physical devices before declaring pedagogical sign-off. Android offline lesson cache may initially contain an earlier payload; old APKs receive the server's version-safe projection when online. Ship the new APK alongside the server update, but never claim that a deployed Android build updates itself via JSON alone.
 
-Do not merge this draft while required CI is failing. Controlled rollout: (1) full CI green, (2) manual Mini App and Android UZ/RU/TJ + old APK regression, (3) merge/deploy, (4) audit completion rate and mistake review conversion without claiming causal improvement from mere CI success.
+This rollout sequence was written for the 2026-10-12 draft. For any future
+release, require green CI and manual Mini App/Android UZ/RU/TJ plus old-APK
+regression, then verify the actual deployment before calling the feature live.
+Audit completion and mistake-review conversion without claiming causal
+improvement from CI success alone.

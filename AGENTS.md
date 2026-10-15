@@ -9,7 +9,6 @@ Men Akbar. Telegram botlar, web loyihalar, AI servislar va avtomatlashtirish ust
 - Asosiy vosita: Codex
 - Javob tili: Uzbek (lotin)
 - Kod tili: English
-- Keraksiz uzun tushuntirish bermagin
 - Menga yoqish uchun emas, to‘g‘ri javob ber
 - Agar fikrim zaif bo‘lsa, to‘g‘ri ayt
 - Variant ko‘paytirma, eng yaxshi yo‘lni tavsiya qil
@@ -45,18 +44,7 @@ Oddiy assistant emas, natija beradigan engineer bo‘l.
 
 ## Kod yozish standarti
 
-Har doim:
-
-- clean code
-- readable structure
-- reusable components
-- maintainable logic
-- scalable approach
-- minimal complexity
-
-Mavjud project style’ni saqla. Keraksiz refactor qilma.
-
-Yangi fayl yaratishdan oldin mavjud kodni tekshir.
+Mavjud project style va tuzilishini saqla. Talabni bajaradigan eng sodda, tushunarli va qo‘llab-quvvatlash oson yechimni tanla; qayta ishlatiladigan abstraksiyani faqat real takrorni kamaytirsa qo‘sh. Yangi dependency’ni faqat real talab uchun zarur bo‘lsa qo‘sh va avval mavjud kutubxonalarni tekshir. Bog‘liq bo‘lmagan refactor qilma. Yangi fayl ochishdan oldin mavjud kodni tekshir va kerak bo‘lsa kengaytir.
 
 ---
 
@@ -66,8 +54,8 @@ Bug topsang quyidagicha ishlagin:
 
 1. Root cause top
 2. Minimal fix qil
-3. Side effects tekshir
-4. Future prevention yoz
+3. Muhim side-effectlarni tekshir
+4. Takrorlanadigan muammo bo‘lsa, uni tutib qoladigan regression test yoki guard qo‘sh
 
 Format:
 
@@ -82,10 +70,9 @@ Format:
 
 Har session boshida:
 
-1. Project structure’ni tekshir
-2. Kerak bo‘lsa oldingi loglarni o‘qi
-3. TODO larni ko‘r
-4. Eng muhim taskni top
+1. `AGENTS.md` va `AI_RULES.md`ni o‘qi; `PROJECT_MEMORY.md`, tegishli log va TODO’ni “Memory tizimi” bo‘yicha tekshir.
+2. Vazifaga tegishli project structure va working tree holatini tekshir.
+3. User so‘rovi va joriy holatga qarab asosiy ishni aniqlab ol.
 
 Har taskdan keyin:
 
@@ -101,32 +88,34 @@ qisqa yoz.
 
 ### Fayllar
 
-- MEMORY.md = doimiy faktlar
-- memory/YYYY-MM-DD.md = kunlik log
+- PROJECT_MEMORY.md = loyiha uchun yagona doimiy faktlar va invariantlar manbai
+- memory/YYYY-MM-DD.md = faqat kerak bo‘lsa yoziladigan lokal ish tarixi
 - knowledge/bugs/ = bug saboqlari
-- TODO.md = joriy vazifalar
+- TODO.md = mavjud bo‘lsa joriy vazifalar
 
 ### Session boshida
 
 Agar mavjud bo‘lsa:
 
-1. MEMORY.md o‘qi
-2. bugungi logni o‘qi
+1. PROJECT_MEMORY.md o‘qi
+2. tegishli memory/YYYY-MM-DD.md ish tarixini tekshir
 3. TODO.md ni tekshir
 
 ### Session davomida
 
-- Katta o‘zgarish bo‘lsa log yoz
-- Muhim qaror bo‘lsa MEMORY.md ga yoz
+- PROJECT_MEMORY.md dagi update siyosatiga mos muhim, doimiy qarorni shu faylga kirit
+- Faqat foydali bo‘lsa memory/YYYY-MM-DD.md ga qisqa ish qaydi yoz; diary yaratma
 - Takror bug bo‘lsa knowledge/bugs ga yoz
 
 ### Session oxirida
 
-Yoz:
+Foydalanuvchiga qisqa ayt:
 
 - Nima qilindi
 - Nima qoldi
 - Keyingi step
+
+Har taskdan keyin kunlik log yaratish shart emas.
 
 ---
 
@@ -137,15 +126,15 @@ Agar git ishlatilsa:
 - kichik commitlar qil
 - working state saqla
 - commit message aniq bo‘lsin
-- Repositoryda 3 ta asosiy branch bo'ladi:
+- Repositoryda 3 ta asosiy, doimiy branch bo'ladi. Vazifani izolyatsiya qilish uchun qo‘shimcha vaqtinchalik branch yoki worktree ishlatish mumkin; ular asosiy branchlar hisoblanmaydi:
   - `main` — glavniy/production branch. Faqat testdan o'tgan ish shu yerga chiqadi.
-  - `codex/local-ai` — lokal Codex/local AI ish branchi. Lokal testlar shu branchda bajariladi.
-  - `codex/cloud-ai` — cloud/oblaka AI agentlari ish branchi. Test qilinmaguncha o'zgarish shu branchda turadi.
+  - `codex/local-ai` — lokal Codex/local AI uchun asosiy ish branchi; odatiy lokal testlar shu branchda bajariladi.
+  - `codex/cloud-ai` — cloud/oblaka AI agentlari uchun asosiy ish branchi; test qilinmaguncha o'zgarish shu branchda turadi.
 - Cloud AI ishni tugatsa, avval testlarni o'tkazsin. Agar cloud muhitida test o'tkazish imkoni bo'lmasa, context/yuriqnoma faylida nima o'zgargani, qanday test qilish va `main`ga qanday chiqarish kerakligini aniq qoldirsin; keyin lokal Codex `codex/local-ai`da test qilib push qiladi.
-- Lokal AI/Codex ishni `codex/local-ai`da qiladi, testlarni o'tkazadi, keyin `main`ga push qiladi.
+- Lokal AI/Codex odatda `codex/local-ai`da ishlaydi. Vazifa mavjud yoki ataylab ajratilgan vaqtinchalik branch/worktree’da boshlangan bo‘lsa, o‘sha joyda davom etadi va tegishli testlarni o‘tkazadi. Task scope’idagi o‘zgarishlar testlardan o‘tgach, alohida to‘xtab push ruxsatini so‘ramasdan `origin/main`ga chiqariladi; unrelated user o‘zgarishlari qo‘shilmaydi.
 - `main`ga push qilingandan keyin `codex/local-ai` va `codex/cloud-ai` `main` bilan tenglashtiriladi, shunda keyingi AI eski kod ustidan ishlamaydi.
 - Eski branchlarni o'chirishdan oldin backup bundle yoki aniq recover yo'li bo'lishi shart; kod yo'qolishi mumkin bo'lgan force/reset/delete ishlarini tasdiqsiz qilma.
-- User `push qil`, `GitHubga chiqar` yoki deploy uchun push qilishni so‘rasa, alohida branch yoki PR aytilmagan bo‘lsa yakuniy target `origin/main` bo‘lsin.
+- Testdan o‘tgan task o‘zgarishlari uchun odatiy yakuniy target `origin/main`; user alohida branch yoki PR so‘rasa, o‘sha target ishlatiladi. Pushni userdan qayta tasdiqlatish shart emas.
 - Feature branchga push qilish ish tugadi degani emas. Kerakli commit `origin/main` ga yetib borganini remote ref orqali tekshirmaguncha push muvaffaqiyatli deb xabar berma.
 - Pushdan oldin remote holatini yangila va intended commit bilan `origin/main` history holatini tekshir.
 - Dirty working tree yoki branch divergence bo‘lsa unrelated user o‘zgarishlarini commit qilma, force push qilma va reset qilma. `origin/main` dan vaqtinchalik toza worktree yaratib, faqat intended commitni cherry-pick qil va `HEAD:main` ga push qil.
@@ -166,7 +155,7 @@ Har doim:
 
 - .env ni commit qilma
 - secret topilsa ogohlantir
-- destructive action oldidan tasdiq so‘ra
+- Destructive amaldan oldin aniq tasdiq ol; foydalanuvchi shu amal va qamrovga oldindan ruxsat bergan bo‘lsa, qayta so‘rama.
 - deploy oldidan syntax/import check qil
 - database delete/reset oldidan ogohlantir
 
@@ -251,19 +240,6 @@ Maqsad:
 
 ---
 
-## FINAL LAW
-
-Biz gaplashish uchun gaplashmaymiz.
-
-Biz:
-
-- build qilamiz
-- earn qilamiz
-- learn qilamiz
-- protect qilamiz
-- scale qilamiz
-- win qilamiz
-
 ## graphify
 
 This project has a graphify knowledge graph at graphify-out/.
@@ -290,8 +266,6 @@ Do not break:
 - backend result flow
 - subscription/payment logic
 - referral logic
-
-Prefer small safe patches over full rewrites.
 
 Before editing UI code, first provide:
 1. weak points
@@ -342,14 +316,15 @@ Avoid:
 - unclear correct/wrong feedback
 - too much text on one screen
 - hidden progress
-- changing logic without permission
 
 ## Testing
 
-After changes, check:
-- app opens on mobile viewport
-- Telegram WebApp SDK does not crash outside Telegram
-- quiz still submits result
-- homework still submits result
-- lesson navigation still works
-- no console errors
+Mini App, Telegram integration, UI yoki learning-flow o‘zgarishidan keyin ta’sirlangan yo‘lga mos smoke checklarni bajargin:
+- layout yoki route o‘zgarsa, ilova mobile viewport’da ochiladi
+- Telegram SDK/auth o‘zgarsa, ilova Telegram tashqarisida ham qulamaydi
+- quiz/practice o‘zgarsa, natija yuboriladi
+- homework o‘zgarsa, submission ishlaydi
+- lesson navigation o‘zgarsa, darslar orasida yurish ishlaydi
+- tekshirilgan ekranlarda console error yo‘q
+
+Hujjat-only o‘zgarishlarda aloqasiz Mini App smoke testlarni talab qilma; backend o‘zgarishiga mos backend testini tanla.

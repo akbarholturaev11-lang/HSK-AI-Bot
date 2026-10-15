@@ -4,7 +4,7 @@ This directory is the canonical Tauri v2 desktop client inside the shared
 `HSK AI bot` repository. Telegram bot, Mini App, backend, subscription,
 progress, referrals, analytics and desktop remain one product ecosystem.
 
-## Desktop 1.3 result
+## Desktop client capabilities
 
 - Product identity: `HSK AI` / `com.pomp.hskai`
 - Main window: `1180x780`, minimum `720x560`
@@ -13,7 +13,10 @@ progress, referrals, analytics and desktop remain one product ecosystem.
 - Right-edge circular AI launcher and focused drawer
 - Explicit Telegram device-link approval UI
 - Server-authoritative course map, access, progress and completion
-- Free-course parity: two full parts, then a non-rewarding half-preview boundary
+- Course access: server-side entitlement and configured lesson-limit policy;
+  Desktop currently serves the full lesson when access is allowed and does not
+  apply a client-side half-lesson preview (`DesktopCourseService.preview_half`
+  is false).
 - Uzbek, Russian and Tajik profile/language switching
 - Renderers for every checked-in Course v3 card type
 - Retry-safe lesson completion with stable event IDs
@@ -88,17 +91,22 @@ rebuilds trusted review material from the checked-in lesson JSON.
 
 ## Download and account flow
 
-The Mini App requests a tracked installer page and opens the branded
-`/desktop-download` site with `Telegram.WebApp.openLink`. The user then downloads
-the current macOS or Windows installer directly from `/downloads/{platform}`.
-No installer or link is sent into bot chat, and the Mini App is not closed.
+The Mini App opens the shared branded `/desktop-download` page with
+`Telegram.WebApp.openLink`. The backend exposes only currently configured
+releases there: macOS and Windows installers use `/downloads/{platform}`, and
+Android can use `/downloads/android` when a direct URL exists. Android also has
+its separate bot-chat delivery path when the current release is available by
+Telegram `file_id`. Desktop installers are downloaded directly; the Mini App
+does not close or send a desktop installer through the bot.
 
 After installation, the desktop app shows a short code. The bot displays the
 device information and requires an explicit approve/cancel action. Opening the
 deep-link alone never links an account.
 
-Future Google/email login must be added as another identity provider linked to
-the same internal user, not as a second progress/subscription account.
+Desktop has Google and Apple OAuth flows. Provider identities link to the same
+internal `users.id`, so course progress and subscription are shared rather than
+creating a separate provider account. Email is metadata, not an account lookup
+or ownership proof. See `../DESKTOP_AUTH_CONTRACT.md` and `../OAUTH_SETUP.md`.
 
 ## Local preview
 
@@ -150,31 +158,28 @@ venv_311/bin/python -m pytest -q tests/test_desktop_course_api.py
 venv_311/bin/python -m pytest -q tests/e2e/test_desktop_ui_preview.py
 ```
 
-## Release status
+## Build and release source
 
-Version `1.3.0` includes the signed-updater client/backend, native local-AI
-commands and a tag/manual GitHub Actions pipeline for universal macOS DMG and
-Windows x64 NSIS artifacts. Release CI fetches the pinned llama.cpp `b10223`
-runtime and fails closed unless every upstream archive matches its exact
-SHA-256. Runtime binaries and installers remain outside Git. Before public
-release the following still remain:
+Source version is `1.4.3` in `desktop/package.json`,
+`desktop/src-tauri/tauri.conf.json`, and `desktop/src-tauri/Cargo.toml`. This
+source value does not prove which version is currently published or installed.
 
-- offline course cache, durable action queue and conflict-safe sync;
-- GitHub/R2 secrets, real public artifact URLs and updater metadata;
-- universal macOS and Windows builds from the release workflow;
-- clean-machine install/uninstall tests;
-- clean-machine automatic-update tests;
-- free-plan unsigned macOS/Windows warning instructions;
-- public link-start hardening/cleanup gates documented in
-  `../DESKTOP_AUTH_CONTRACT.md`.
+`.github/workflows/desktop-release.yml` accepts a `desktop-v<version>` tag
+only when it matches the source version and points to a commit contained in
+`origin/main`. Manual releases must run from `main`. The workflow builds a
+universal macOS DMG and Windows x64 NSIS installer; R2 publishing is controlled
+by the workflow input. It pins llama.cpp `b10223` and verifies upstream
+archives against recorded SHA-256 values.
 
-Installer downloads and updates remain disabled until verified HTTPS artifacts
-and release metadata are configured. Built DMG, EXE, updater and GGUF files must
-stay outside Git on approved release storage/CDN.
+Backend download and updater defaults in `app/config.py` are
+`DESKTOP_DOWNLOADS_ENABLED=false`, `DESKTOP_RELEASE_MANIFEST_URL` blank, and
+`DESKTOP_UPDATES_ENABLED=false`. These are source defaults, not proof of live
+production settings. Check the hosting environment and current release
+manifest before reporting whether downloads or updates are enabled.
 
-The release workflow intentionally reads only
+The workflow expects signing material through
 `TAURI_SIGNING_PRIVATE_KEY_V4` and
-`TAURI_SIGNING_PRIVATE_KEY_PASSWORD_V4`. The corresponding private key stays
-outside the repository; never commit or print it. The same workflow requires
-the bucket-scoped `R2_*` secrets and `R2_PUBLIC_BASE_URL` Actions variable when
-`publish_to_r2=true`.
+`TAURI_SIGNING_PRIVATE_KEY_PASSWORD_V4`, plus bucket-scoped `R2_*` secrets and
+`R2_PUBLIC_BASE_URL` when publishing to R2. Keep values outside the repository.
+Generated installers, updater artifacts, and GGUF files stay outside Git on
+approved release storage.

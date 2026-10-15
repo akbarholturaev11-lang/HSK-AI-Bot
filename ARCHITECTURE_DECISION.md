@@ -1,7 +1,12 @@
 # ARCHITECTURE_DECISION.md — Daily Plan / Personalizatsiya
 
-Holat: **MUZLATILGAN** (2026-09-05)
-Branch: `codex/local-ai`
+Holat: **tarixiy, muzlatilgan task snapshoti** (2026-09-05)
+O'sha paytdagi branch: `codex/local-ai`
+
+Bu fayl 2026-09-05 dagi Daily Plan/Personalizatsiya ishini qayd etadi. U bugungi
+umumiy arxitektura yoki amaldagi production holati uchun manba emas. Shu feature
+bo'yicha hozirgi qoidani ishlatishdan oldin kod va joriy entitlement sozlamasini
+tekshiring; eski test, branch va release holatini hozirgi deb ko'chirmang.
 ## Baseline (ish boshlanishidan OLDINGI holat)
 
 Yangi ish bularni buzgan deb o'ylamang — hammasi oldindan mavjud:
@@ -19,8 +24,9 @@ Yangi ish bularni buzgan deb o'ylamang — hammasi oldindan mavjud:
 E2E faqat `venv_311/bin/python` da ishlaydi (`.venv` da playwright yo'q):
 `venv_311/bin/python -m pytest tests/e2e -q`
 
-Bu fayl — implementatsiya kontrakti. Kod yozishdan oldin o'qiladi, ish davomida
-o'zgartirilmaydi. O'zgartirish kerak bo'lsa avval shu fayl yangilanadi.
+Quyidagi implementatsiya kontrakti o'sha taskning scope'i uchun muzlatilgan edi.
+Hozirgi kod bilan zid joylar alohida audit qilinmoqda; tasdiqlangan source drift
+shu hujjatda tarixiy izoh bilan tuzatiladi.
 
 ---
 
@@ -406,19 +412,27 @@ har bosqich oxirida ilova ishlaydigan holatda.
 - `PROJECT_MEMORY.md` yangilash (AI_RULES formatida)
 - **Faqat shundan keyin** `main` haqida gap boradi
 
-### PUSH QOIDASI (2026-09-05, foydalanuvchi ko'rsatmasi)
+### PUSH QOIDASI — 2026-09-05 dagi task yozuvi (tarixiy)
 
-**Ish tugamaguncha `main` ga push YO'Q.** Barcha bosqichlar `codex/local-ai`
-branchida, faqat lokal commitlar bilan. `main` ga chiqarish — butun ish
-tugab, real testlar o'tkazilib, ishlayotganiga to'liq ishonch hosil
-qilingandan keyin va faqat foydalanuvchi aytganda. Oraliq bosqichda push
-qilinmaydi.
+Quyidagi eski task ko‘rsatmasi keyinchalik `AGENTS.md`dagi umumiy siyosat bilan
+almashtirildi. Hozirgi qoida: task scope’idagi o‘zgarishlar tegishli testlardan
+o‘tgach, user har safar alohida aytishini kutmasdan `origin/main`ga chiqariladi.
+Unrelated user o‘zgarishlari commit/push qilinmaydi; dirty tree yoki branch
+farqi bo‘lsa `AGENTS.md`dagi xavfsiz clean-worktree tartibi amal qiladi. Bu
+tarixiy paragraf hozirgi push siyosati emas. (`D08`)
 
 ---
 
 ## 7. Qabul qilingan qarorlar (2026-09-05)
 
 ### Qaror A — Mini App mashq gate egaligi → **LIMIT O'ZGARMAYDI**
+
+> **Tarixiy qaror:** quyidagi limit taqqoslash 2026-09-05 dagi implementatsiya
+> snapshotini tasvirlaydi; joriy limit manbai emas. Hozir Mini App va Android
+> gate'lari bir xil `EntitlementEngine` sozlamasidan foydalanadi: default
+> `practice.*` — kuniga 1, `placement` — umrda 1 marta. Admin saqlagan
+> `entitlement_limits_v1` JSON bu qiymatlarni o'zgartirishi mumkin. Hozirgi
+> production JSON qiymati ushbu repo'dan aniqlanmaydi.
 
 Mini App o'zining `daily-gate` / `ad-gate` yo'lida qoladi: bepul foydalanuvchiga
 `recognition` / `memorize` / `pronunciation` kalitlari bo'yicha **umrda 1 marta**.

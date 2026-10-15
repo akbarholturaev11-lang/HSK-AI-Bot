@@ -40,17 +40,19 @@ checksums so a committed binary cannot be swapped for a tampered one.
 
 Requires JDK 17 and `compileSdk 36` installed through the Android SDK Manager.
 
-Six static checks run before Gradle in CI and take about a second each. They
-exist because the Kotlin compiler needs the Android SDK, which is not always
-available where these sources are edited:
+Nine project-specific checks run before Gradle in both Android CI and the
+release workflow. The workflows are the source of truth for this list; run
+these scripts locally to catch contract, asset, and reference mismatches early:
 
 ```bash
 python3 tools/check_interface_fakes.py     # a fake fell behind its interface
 python3 tools/check_named_arguments.py     # a call passes a name that is gone
 python3 tools/check_flavor_parity.py       # the flavours can no longer swap
+python3 tools/check_play_release_contract.py  # Play billing/signing safeguards
 python3 tools/check_strings_translated.py  # a string is missing uz, ru or tg
 python3 tools/check_palette_matches_miniapp.py  # a colour drifted from the Mini App
 python3 tools/check_stroke_assets.py       # the bundled stroke data fell behind
+python3 tools/check_dictionary_assets.py   # dictionary assets are incomplete
 python3 tools/check_unresolved_references.py  # a called name is not imported
 ```
 
@@ -142,21 +144,31 @@ future update — through the bot today, through Play later — must be signed w
 the same key, and a direct-install APK signed by a different key will not
 upgrade over the installed one.
 
-## Distribution: the bot hands out the APK
+## Android release delivery
 
-There is no Play listing yet. The whole channel is the Telegram bot: the admin
-uploads one signed `direct` release APK, Telegram keeps the bytes, and every
-learner afterwards receives that same `file_id`. Nothing of ours serves the
-download and there is no second copy to drift out of sync with the first.
+The source supports two delivery paths for a signed `direct` APK: the release
+workflow can publish an artifact and `android/latest.json` manifest to the
+configured object storage, and the admin bot can store a release for Telegram
+delivery. `AndroidReleaseService` prefers a resolvable manifest and falls back
+to the admin-published bot record; the bot reuses a Telegram `file_id` for the
+matching version or fetches the artifact once and caches the returned ID.
+
+`/downloads/android` redirects to the artifact only when the resolved release
+has a direct download URL. A bot-only release can still be delivered in chat
+without a public download link. Whether a Play Store listing or any live
+release is currently available cannot be established from repository source;
+check Play Console and deployed release settings before describing live
+availability.
 
 ```bash
 cd android && ./gradlew assembleDirectRelease
 # → app/build/outputs/apk/direct/release/hsk-ai-<version>-<code>-direct-release.apk
 ```
 
-Then, in the bot: **Admin panel → 📱 Android ilova → ⬆️ Yangi APK yuklash**,
-send the file as a *document*, confirm the version, publish. Learners reach it
-with `/android` or the **📱 Android ilova** button in their profile.
+For the bot-delivery path, open **Admin panel → 📱 Android ilova → ⬆️ Yangi
+APK yuklash** in Telegram. Send the file as a *document*, confirm the version,
+and publish. Learners reach it with `/android` or the **📱 Android ilova**
+button in their profile.
 **🚫 Tarqatishni to'xtatish** stops the handout immediately — one settings
 write, no deploy.
 
@@ -191,7 +203,7 @@ Telegram's copy of the APK follows on its own. The first learner who asks after
 a release is served straight from storage, and what Telegram hands back is
 cached against that version code, so everyone after them gets a `file_id`. A
 `file_id` from an older build is never attached to a newer version — that would
-announce 1.2.0 and deliver 1.1.0.
+announce one release while delivering a different APK.
 
 It refuses to publish an APK signed by anything but the expected key: the
 certificate SHA-256 is pinned in the workflow, because an APK signed by a

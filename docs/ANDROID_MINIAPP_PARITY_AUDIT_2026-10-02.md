@@ -3,6 +3,12 @@
 > Quyidagi audit dastlabki checkoutlar holatini qayd etadi. Keyingi main
 > nusxasidagi tekshiruv va push doirasi fayl oxirida yozilgan.
 
+> 2026-10-02 tarixiy branch-parity snapshoti. Quyidagi “open/mos emas”
+> topilmalari bugungi backlog emas: masalan, joriy `VoiceViewModel.applyTurn()`
+> `chineseReply`ni ovoz chiqarib o‘qiydi, Android subscription currency
+> preference endpointlari ham mavjud. Har bir topilmani joriy checkout’da
+> qayta tekshirmasdan hozirgi defect yoki release dalili deb ishlatmang.
+
 **Xulosa: barcha o'zgarishlar hali mos emas.** Profilning yangi Mini App
 ko'rinishi shu checkoutda ishlaydi, ammo `codex/local-ai`ga yetmagan.
 Voice audio oqimi, Mini App valyuta oqimi va bir nechta UI holati qolgan.

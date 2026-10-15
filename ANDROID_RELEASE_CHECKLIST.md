@@ -4,133 +4,128 @@ Bu fayl esdan chiqmasligi uchun. Har safar ochib, ustidan yurib chiqing.
 
 ---
 
-## 0. HOZIR
+## 0. JORIY RELEASE HOLATINI TEKSHIRISH
 
-Bajarilgan:
+Bu faylda jonli release holati saqlanmaydi. Release yoki muammoni tekshirishdan
+oldin:
 
-- [x] APK botga yuklandi
-- [x] R2'ga qo'yildi
-- [x] Yangilanish havolasi botga berildi
-- [x] Server jonli tekshirildi — eski versiya so'raganda yangilanish beradi,
-      hozirgi versiya so'raganda hech narsa bermaydi, `/downloads/android` ishlaydi
+- GitHub Actions’dagi eng so‘nggi **Android release** run natijasini tekshiring;
+  workflow `workflow_dispatch` orqali qo‘lda boshlanadi.
+- R2’dagi `android/latest.json` manifestini va uning `version_code` qiymatini
+  ko‘ring; fayl mavjudligi yoki serverga deploy qilinganini checkoutning o‘zi
+  tasdiqlamaydi.
+- `ANDROID_RELEASE_MANIFEST_URL` konfiguratsiyasi production’da yoqilganmi va
+  botning hozirgi APK holatini deployed server/admin paneldan tasdiqlang.
 
-Qolgan:
-
-- [ ] **Botdagi APK'ni almashtirish.** Botdagi fayl R2 dagidan boshqa
-      (3 766 687 bayt ≠ 3 784 820 bayt). Botdagisi — yangilanish kodi
-      yozilishidan OLDINGI build. Ya'ni botdan yuklab olgan odamda
-      yangilanish kartasi bo'lmaydi.
-
-      **Admin panel → 📱 Android ilova → ⬆️ Yangi APK yuklash** → yangi faylni
-      yuboring. Keyin havola avtomatik o'chadi, shuning uchun
-      **🔗 Yangilanish havolasini qo'shish** ni qaytadan bosib, o'sha havolani
-      qayta tashlang:
-
-      ```
-      https://pub-9b135bd734b04a5e9fe059a4dfd7d804.r2.dev/android/v1.1.0/hsk-ai-1.1.0-2-direct-release.apk
-      ```
-
-- [ ] **📤 O'zimga yuborib ko'rish** — kelgan faylni telefonga o'rnating
-- [ ] Ilovani ochib, Profilga kiring — hammasi joyidami?
+Quyidagi release qadamlarida source code va workflow kontrakti berilgan; bu
+jonli release yoki ishlab turgan server holati deb talqin qilinmasin.
 
 ## 1. HAR SAFAR yangi versiya chiqarganda
 
-Ikki yo'l bor. Avtomat yoqilgan bo'lsa (2-bo'limga qarang) — faqat 1.1 va 1.2.
+Asosiy yo‘l — GitHub release workflow: uni har release’da qo‘lda ishga tushiring
+(1.2), sozlamalarini 2-bo‘limdan tekshiring. `ANDROID_RELEASE_MANIFEST_URL`
+ishlatilmasa yoki manifest o‘qilmasa, pastdagi bot-panel fallback’iga o‘ting.
+Har ikki yo‘ldan keyin 1.3 dagi qurilma tekshiruvini bajaring.
 
 ### 1.1 Versiya raqamini oshiring — BU ENG KO'P UNUTILADIGANI
 
-`android/app/build.gradle.kts` faylida, tepada:
+`android/app/build.gradle.kts` dagi `appVersionName` va `appVersionCode` —
+build versiyasining source of truth’i. Yangi release’da nomni yangilang va
+`appVersionCode` ni R2’dagi eng so‘nggi e’lon qilingan qiymatdan kattaroq
+qiling; aniq `+1` shart emas. Teng yoki past code bilan yangi artifact
+chiqarmang. Workflow past code’ni rad etadi, ammo teng code’li boshqa
+artifact’ni alohida to‘xtatmaydi — publishdan oldin `android/latest.json`
+bilan qo‘lda solishtiring. Aynan bir xil APK’ni rerun qilish mumkin.
+Android’ning keyingi release uchun kattaroq qiymat talab qiladigan
+[rasmiy versiya qoidasiga](https://developer.android.com/studio/publish/versioning)
+ham amal qiling. Bu hujjatdagi eski raqamlarni yangi release uchun ko‘chirmang.
 
-```kotlin
-val appVersionName = "1.2.0"   // odamlar ko'radigan raqam
-val appVersionCode = 3         // ← BUNI HAR SAFAR +1 QILING
-```
-
-**`appVersionCode` oshmasa, hech kim yangilanishni ko'rmaydi.** Ilova faqat shu
-raqamni solishtiradi, nomni emas.
-
-### 1.2 AVTOMAT: GitHub'da tugmani bosing
+### 1.2 GitHub release workflow
 
 **Actions → Android release → Run workflow.**
 
-Bo'ldi. U o'zi: testlardan o'tkazadi, imzolaydi, R2'ga qo'yadi va
-`android/latest.json` ni yangilaydi. Server bir daqiqada yangi versiyani
-ko'radi. **Havolani hech qayerga tashlash kerak emas.**
+Workflow faqat qo‘lda ishga tushadi. U statik tekshiruvlar, Android test/lint
+va emulator regressiyalarini bajaradi, APK imzosini tekshiradi va artifact
+yaratadi. `publish_to_r2` default `true`; uni `false` qilsangiz APK R2’ga
+chiqmaydi. Muvaffaqiyatli publish `android/latest.json` ni ham yangilaydi.
+Run summary’da publish natijasini, Actions run’dagi Artifacts bo‘limida esa APK’ni
+tekshiring.
 
-Botdagi fayl ham o'zi yangilanadi: birinchi odam `/android` so'raganda bot
-faylni R2'dan olib yuboradi, Telegram nusxasini saqlab qo'yadi, keyingilarga
-bir zumda ketadi.
+Production’da `ANDROID_RELEASE_MANIFEST_URL` sozlangan bo‘lsa, server manifestni
+o‘qiydi; default cache muddati 60 soniya. Sozlama/deploy holatini Actions run
+yoki checkout kodi tasdiqlamaydi. Bot manifestdagi APK’ni `/android` so‘ralganda
+R2’dan bir marta olib Telegram `file_id` sini saqlaydi; keyin shu buildni
+Telegram’dan qayta yuboradi.
 
 ---
 
-### QO'LDA (avtomat yoqilmagan bo'lsa)
+### Manual fallback — manifest ishlatilmayotganda
 
-**Yig'ish:**
+Production `ANDROID_RELEASE_MANIFEST_URL` bo‘sh bo‘lsa yoki manifestni o‘qib
+bo‘lmasa, bot admin panelidagi release ishlatiladi. Yaroqli manifest mavjud
+bo‘lsa u ustun turadi; panelga yuklangan APK amalda tarqatilayotgan buildni
+almashtirmaydi. Bunday holatda GitHub release workflow’dan foydalaning.
+
+**Yig‘ish:**
 
 ```bash
-cd "/Users/kaijimima1234/Projects/HSK AI bot/android" && ./gradlew assembleDirectRelease
+cd android && ./gradlew assembleDirectRelease
 ```
 
-Fayl: `android/app/build/outputs/apk/direct/release/hsk-ai-<versiya>-<kod>-direct-release.apk`
+`direct` + `release` imzolangan APK’ni yuboring. Build fayli
+`hsk-ai-<versiya>-<kod>-direct-release.apk` ko‘rinishida chiqadi; nomini
+o‘zgartirmang. Admin panel `play` yoki `debug` build’ni rad etadi.
 
-**Fayl nomini o'zgartirmang** — bot nomdan versiyani o'qiydi va `play` yoki
-`debug` build'ni shu nom orqali rad etadi.
+**Bot admin panelida chiqarish:**
 
-**R2'ga qo'yish:** `dash.cloudflare.com` → R2 → `hsk-ai-releases` → `android/` →
-**Добавить папку** → `v1.2.0` → ichiga kirib **Upload**.
+1. Android ilova panelida **Yangi APK yuklash**ni tanlab, APK’ni siqmasdan,
+   hujjat sifatida yuboring va chiqish tasdig‘ini bering.
+2. Ilova ichidagi yangilash kerak bo‘lsa, **Yangilanish havolasini qo‘shish**ni
+   tanlang va aynan shu APK’ning to‘g‘ridan-to‘g‘ri `https://...apk` URL’ini
+   kiriting (masalan, public R2 URL).
+3. **O‘zimga yuborib ko‘rish** bilan Telegram faylini, avvalgi versiyadagi
+   qurilmada esa yangi-versiya kartasi va o‘rnatishni tekshiring.
 
-> Safari sahifani tarjima qilsa, fayl nomi ekranda rus tilida ko'rinishi mumkin
-> (`прямой-релиз`). Bu faqat ko'rinish — haqiqiy fayl to'g'ri nom bilan turadi.
-
-**Botga berish:**
-
-1. **Admin panel → 📱 Android ilova → ⬆️ Yangi APK yuklash** → faylni yuboring
-2. **🔗 Yangilanish havolasini qo'shish** → R2 havolasini tashlang
-
-⚠️ Yangi APK chiqarganingizda eski havola **avtomatik o'chadi** — yangi versiya
-eski fayl bilan reklama qilinib qolmasin. Ya'ni havolani **har safar qaytadan**
-qo'yish kerak.
+Yangi APK chiqarilganda oldingi release yozuvi va update URL o‘rniga yangi
+release yoziladi. O‘z-o‘zini yangilash havolasi kerak bo‘lsa, yangi build uchun
+uni qayta kiriting.
 
 ### 1.3 Tekshirish
 
 - [ ] **📤 O'zimga yuborib ko'rish** — fayl keldimi, versiyasi to'g'rimi?
 - [ ] Eski versiyali telefonda Profilga kiring — «Yangi versiya» kartasi chiqdimi?
 
-## 2. BIR MARTA: GitHub avtomatini yoqish
+## 2. GitHub release workflow sozlamalari
 
-Yoqsangiz, 1.2 va 1.3 qadamlar kerak bo'lmaydi — GitHub o'zi yig'adi va R2'ga qo'yadi.
+`.github/workflows/android-release.yml` allaqachon mavjud va har release’da
+Actions’dan qo‘lda ishga tushadi. Repo checkouti GitHub’dagi secret/variable
+qiymatlari borligini yoki workflow avval muvaffaqiyatli ishlaganini ko‘rsatmaydi;
+release’dan oldin Settings va eng so‘nggi Actions run’ni tekshiring.
 
-Qayerga: GitHub → repo → **Settings → Secrets and variables → Actions →
-New repository secret**. To'rtta qiymat:
+**Actions → Settings → Secrets and variables → Actions** ichida:
 
-| Nomi | Qiymati |
-|---|---|
-| `POMP_ANDROID_KEYSTORE_BASE64` | pastdagi buyruq natijasi |
-| `POMP_ANDROID_KEYSTORE_PASSWORD` | `~/.pomp-hskai/MUHIM-OQING.txt` faylida |
-| `POMP_ANDROID_KEY_ALIAS` | `pomp-hskai` |
-| `POMP_ANDROID_KEY_PASSWORD` | parol bilan bir xil |
+| Turi | Nomi | Qachon kerak |
+|---|---|---|
+| Secret | `POMP_ANDROID_KEYSTORE_BASE64` | Har run; release `.jks` faylining base64 qiymati |
+| Secret | `POMP_ANDROID_KEYSTORE_PASSWORD` | Har run |
+| Secret | `POMP_ANDROID_KEY_ALIAS` | Har run |
+| Secret | `POMP_ANDROID_KEY_PASSWORD` | Har run |
+| Variable | `POMP_FIREBASE_APP_ID`, `POMP_FIREBASE_SENDER_ID`, `POMP_FIREBASE_PROJECT_ID`, `POMP_FIREBASE_API_KEY` | Har run; payment push build configuration |
+| Secret | `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_ACCOUNT_ID`, `R2_BUCKET` | Faqat `publish_to_r2=true` bo‘lsa |
+| Variable | `R2_PUBLIC_BASE_URL` | Faqat R2 publish uchun |
 
-Birinchisi uchun (natija clipboard'ga tushadi):
+Local release keystore uchun base64 qiymatni quyidagicha olasiz; command
+natijasi secret bo‘lgani uchun uni hujjatga, chatga yoki logga qo‘ymang:
 
 ```bash
 base64 -i ~/.pomp-hskai/pomp-hskai-release.jks | tr -d '\n' | pbcopy
 ```
 
-Keyin serverga manifest qayerdaligini ayting. Railway → Variables:
-
-```
-ANDROID_RELEASE_MANIFEST_URL=https://pub-9b135bd734b04a5e9fe059a4dfd7d804.r2.dev/android/latest.json
-```
-
-⚠️ Bu qiymatni **workflow birinchi marta muvaffaqiyatli o'tgandan keyin** qo'ying —
-aks holda server yo'q faylni so'rab turadi. (Zarari yo'q: manifest topilmasa
-server eski qo'lda qo'yilgan yo'lga qaytadi.)
-
-Keyin: GitHub → **Actions → Android release → Run workflow**.
-
-R2 parollari allaqachon GitHub'da (desktop uchun qo'shilgan) — ularga tegmaysiz.
-
-Bu workflow hali bir marta ham ishlamagan. Birinchi ishga tushirish sinov.
+Serverdagi `ANDROID_RELEASE_MANIFEST_URL` default bo‘yicha bo‘sh. Production
+server manifestni avtomatik ishlatishi kerak bo‘lsa, deployment variable’ni
+R2’dagi `android/latest.json` URL’iga sozlab, deployed serverdan manifest
+o‘qilishini tekshiring. Variable yoki live deployment holati bu repo’dan
+tasdiqlanmaydi; bo‘sh bo‘lsa botning manual admin-panel release yo‘li ishlaydi.
 
 ---
 

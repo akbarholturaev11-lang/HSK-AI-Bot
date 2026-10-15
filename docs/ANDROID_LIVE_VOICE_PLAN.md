@@ -1,16 +1,24 @@
 **HSK AI — Android Live Voice implementatsiya rejasi**
 
-Sana: 2026-10-02, Asia/Shanghai. Tekshirilgan kod: `a348fb16`.
-Holat: birinchi implementatsiya yozildi, feature flag o'chiq. Android `direct`
-va `play` flavor Kotlin compile o'tdi, `Pixel_8` emulyatorida ilova ochildi.
-Python testlarini ishga tushirish uchun muhitda FastAPI/SQLAlchemy yo'q.
-Haqiqiy Gemini Live akkaunt testi, usage semantikasi/xarajat tekshiruvi,
-fizik qurilmada audio testi, migration deploy va pilot hali bajarilmagan.
+Sana: 2026-10-02, Asia/Shanghai. Tekshirilgan tarixiy kod: `a348fb16`.
+O'sha snapshot holati: birinchi implementatsiya yozilgan, Android `direct` va
+`play` flavor Kotlin compile o'tgan, `Pixel_8` emulyatorida ilova ochilgan.
+Python testlari o'sha muhitda FastAPI/SQLAlchemy yo'qligi sabab ishga tushmagan.
+Gemini Live akkaunt testi, usage/xarajat tekshiruvi, fizik qurilma testi,
+migration deploy va pilot ham o'sha snapshotda bajarilmagan; bu bugungi natijalar
+haqida xulosa bermaydi.
 
-Hozirgi scope: migration `0095_android_live_voice`, authenticated Android WSS
+Joriy checkout'dagi source defaultlari Live'ni yopiq tutadi: feature flag `false`,
+Gemini billing tier `free`, allowlist bo'sh. `live_voice_available()` flag,
+API key, `paid` tier, aynan `gemini-3.8-live` modeli, musbat sessiya budjeti va
+aniq user allowlist (yoki `*`)ni talab qiladi. Ishlab turgan deployment override
+va provider holati bu source'dan aniqlanmaydi.
+
+O'sha snapshot scope'i: migration `0095_android_live_voice`, authenticated Android WSS
 relay, `turn/live` sessiya ajratilishi, sessiya ulanish lease/resumption,
-usage log, 180 soniya/7 dialog/`$0.15` sessiya chegarasi va Android PCM audio
-ekrani. `ANDROID_VOICE_LIVE_ENABLED` default `false`; paid Gemini billing,
+usage log, 180 soniya/`$0.15` Live sessiya chegarasi va Android PCM audio
+ekrani. 7 dialog — o‘quv yakunlanish mezoni, Live sessiya limiti emas.
+`ANDROID_VOICE_LIVE_ENABLED` default `false`; paid Gemini billing,
 musbat cap va aniq user allowlist ham talab qilinadi. Rejaning worker bilan
 kechiktirilgan enrichment, billing rezerv/reconciliation, qayta yuklangandan
 keyin UI sessiyasini tiklash, fon lifecycle va to'liq telemetriya bosqichlari
@@ -30,18 +38,18 @@ Hozirgi gate mavjud `GEMINI_API_KEY` va `GEMINI_BILLING_TIER=paid` qiymatlarini 
 
 OpenAI Realtime ham nutqdan nutqqa suhbat, foydalanuvchining AI gapini bo'lishi va WebRTC/WebSocket ulanishini qo'llab-quvvatlaydi. Hozirgi Gemini SDK/provayder infratuzilmasi sabab reja bitta Live integratsiyasiga tayangan. Gemini prototipi sifat yoki mavjudlik mezonidan o'tmasa, provider qarori qayta ko'rib chiqiladi. [Official OpenAI documentation](https://developers.openai.com/api/docs/guides/realtime).
 
-**2. Hozirgi kodda aniqlangan holat va UI auditi**
+**2. 2026-10-02 tarixiy snapshotda ko‘rilgan holat va UI takliflari**
 
 | Kuzatilgan holat | O'quvchiga ta'siri | Taklif etilgan o'zgarish | Fayl |
 |---|---|---|---|
 | `MediaRecorder` butun `.m4a` faylni yozadi va Base64 qilib yuboradi | Gapni aytish va yuborish uchun mikrofonni qayta bosish kerak | AudioRecord bilan kichik PCM bo'laklarini uzluksiz yuborish | `core/audio/VoiceRecorder.kt`, yangi `LiveVoiceAudioEngine.kt` |
 | Backend avval STT, keyin alohida matnli AI so'rovini bajaradi | Har gapdan keyin bir necha bosqichli kutish paydo bo'ladi | Native speech-to-speech oqimi; transkript va o'quv tekshiruvi orqa fonda | `app/services/voice_practice_service.py`, yangi Live provider/service |
 | `canAnswer` va recording guard `isSending` paytida mikrofonni cheklaydi | Javob vaqtida foydalanuvchi tabiiy aralasha olmaydi | Live rejimda audio kirishi va chiqishi alohida boshqariladi | `feature/voice/VoiceViewModel.kt` |
-| `speak()` ochilish salomlashuvida chaqiriladi; `applyTurn()` oddiy javob uchun uni chaqirmaydi | Har bir AI javobining ovozga aylanishi hozirgi kodda kafolatlanmagan | Har bir Live javob audio player oqimida kuzatiladi; zaxira rejimida TTS chaqiruvi alohida tuzatiladi | `VoiceViewModel.kt` |
+| `a348fb16` snapshotida `speak()` opening salomlashuvida chaqirilgan, oddiy `applyTurn()` reply uchun emas | Shu snapshotda fallback TTS har javobga kafolatlanmagan | Joriy source’da `applyTurn()` endi `speak(response.chineseReply)` chaqiradi; Live provider playback/interruption baribir alohida prototip va audio QA talab qiladi | `VoiceViewModel.kt` |
 | Ekran qolgan barcha holatlarda "gapiryapti" deydi; panda doim Talk mood'da | Kutish, jimlik va haqiqiy ovoz farqlanmaydi | Animatsiya va holat AudioRecord/AudioTrack daliliga bog'lanadi | `feature/voice/VoiceCallScreen.kt` |
 | Tarix, xato va baho bitta tayyor JSON javobdan olinadi | Jonli audio kelayotganda bu kontraktni aynan takrorlash ovozni kechiktiradi | Audio/transkript oqimi va tekshirilgan o'quv metadata uchun alohida eventlar | API/DTO, yangi enrichment service |
 
-UI uchun aniq taklif: birlamchi "Suhbatni boshlash" tugmasi; suhbat ichida mikrofonni o'chirish/yoqish, suhbatni tugatish, matn yozish va "Nima deyish?". Mikrofon jonli rejimda yozib-yuborish tugmasi bo'lmaydi. Yuqorida server bergan vaqt va 7 dialog progressi ko'rsatiladi. Xitoycha javob hanzi bilan paydo bo'ladi, tekshirilgan pinyin va tarjima tayyor bo'lganda qo'shiladi. Pastdagi boshqaruv klaviatura va Android navigation inset'lariga mos bo'ladi.
+UI uchun aniq taklif: birlamchi "Suhbatni boshlash" tugmasi; suhbat ichida mikrofonni o'chirish/yoqish, suhbatni tugatish, matn yozish va "Nima deyish?". Mikrofon jonli rejimda yozib-yuborish tugmasi bo'lmaydi. Yuqorida server bergan vaqt va dialog soni ko'rsatiladi; 7 dialogni sessiya limiti sifatida ko'rsatmaydi. Yetti yakunlangan turn o'quv yakunlanish mezonini bildiradi. Xitoycha javob hanzi bilan paydo bo'ladi, tekshirilgan pinyin va tarjima tayyor bo'lganda qo'shiladi. Pastdagi boshqaruv klaviatura va Android navigation inset'lariga mos bo'ladi.
 
 UI xavfi o'rta: boshqaruv va lifecycle o'zgaradi. Backend/audio xavfi yuqori: uzluksiz ulanish, xarajat va parallel eventlar boshqariladi. Native `direct` va `play` variantlari bir xil Live funksiyani oladi, paywall har bir variantning mavjud siyosati orqali ochiladi.
 
@@ -127,7 +135,7 @@ Transkriptning o'zi ton/talaffuzni ishonchli o'lchamaydi. Grammar/word tuzatishl
 
 **6. Limit, xarajat va DB o'zgarishi**
 
-Amaldagi `SPEAKING_SESSION` entitlement engine kirish qarorini beradi. Bepul kvota hardcode qilinmaydi. Hozirgi maksimal 7 dialog saqlanadi. Live uchun boshlang'ich taklif: 180 soniya yoki 7 hisoblanadigan dialogdan qaysi biri oldin tugasa, sessiya tugaydi. Qo'shimcha vaqt chegarasi yangi operational cheklov sifatida ekranda oldindan ko'rsatiladi; bu qiymat prototip/pilotdan keyin yakunlanadi.
+Amaldagi `SPEAKING_SESSION` entitlement engine kirish qarorini beradi. Bepul kvota hardcode qilinmaydi. Kodda `MAX_DIALOGS_PER_SESSION = 0`, ya'ni dialoglar soniga sessiya cap'i yo'q; `VOICE_COMPLETION_MIN_TURNS = 7` esa yetti turn'dan keyin o'quv natijasini completed deb belgilaydi. Android Live uchun amaldagi server chegarasi sozlamadan olinadigan 30–180 soniya (default 180) va sessiya xarajati default `$0.15` cap'idir. Bu qiymatlar tarixiy live config emas, checkout'dagi kod/defaultlardir; production flag, billing tier va user allowlist alohida tekshiriladi.
 
 Bepul slot birinchi haqiqiy user gapiga AI javobi kelganida bir marta sarflanadi. Intro, jimlik, permission denial va provider ishga tushmasligi slot/XP bermaydi. Tugallanmagan input count bo'lmaydi. Mazmunli AI javobi chiqqandan keyingi barge-in alohida yangi bepul sessiyaga aylanmaydi. Dialog hisoblash chegarasi provider event fixture'lari bilan yozilib, bir marta transaction'da saqlanadi.
 
@@ -178,7 +186,7 @@ Bosqichlar ketma-ket bajariladi. Har bosqich natijasi keyingisi uchun shart; pro
 | 3. Android audio | AudioRecord/AudioTrack/AEC, socket, permission/focus, composite holat, lifecycle va audio route | Jismoniy telefonlarda har AI javobi eshitiladi, app o'z ovozini user deb olmaydi, mic mute/background capture'ni yopadi |
 | 4. O'quv integratsiyasi va UI | Lesson snapshot, prompt, async enrichment, hanzi/pinyin/tarjima, hints, yakuniy natija, mistakes va XP | AI darajaga mos gapiradi, metadata aynan eshitilgan javob transcript'iga bog'langan, tekshirilmagan gapga yaxshi baho berilmaydi |
 | 5. Qayta tiklash va regression | Wi-Fi/LTE almashish, server restart, token expiry, process death, transport downgrade, Play/direct, shared backend smoke | Quota/reward/cost ikki marta yozilmaydi; ikkala APK build o'tadi; kurs/quiz/homework/API oqimlari o'tadi |
-| 6. Pilot va chiqarish | Allowlist, 20–30 tester, kamida 100 sessiya/500 dialog; xarajat, nosozlik va ovoz sifati kuzatuvi | Quyidagi chiqarish mezonlari bajariladi; admin uchun release feedback draft tayyor |
+| 6. Pilot va chiqarish | Allowlist, 20–30 tester, kamida 100 sessiya/500 dialog; xarajat, nosozlik va ovoz sifati kuzatuvi | Quyidagi chiqarish mezonlari bajariladi. Release feedback qoralamasi faqat admin alohida kampaniyani ma’qullasa tayyorlanadi; release gate emas. |
 
 V1 uchun rejalashtirilgan sifat mezonlari, prototip/pilot natijasi sifatida o'lchanadi:
 
