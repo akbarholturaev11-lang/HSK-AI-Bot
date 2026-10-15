@@ -1835,7 +1835,8 @@ function coursePickerConfirm(){
   if(track===currentCourseTrack()&&level===currentLevel){App.closeSheet();return}
   var saved=coursePickerSavedLevel(track);
   // null means "restore the saved band", not "start N1 again".
-  switchCourseTrack(track,level===saved?null:level);
+  // Same-version band changes must send the explicit level; null only restores another version.
+  switchCourseTrack(track,(track===currentCourseTrack()||level!==saved)?level:null);
 }
 function openCourseTrackPicker(){
   // Render from the existing server snapshot instantly; the actual switch
