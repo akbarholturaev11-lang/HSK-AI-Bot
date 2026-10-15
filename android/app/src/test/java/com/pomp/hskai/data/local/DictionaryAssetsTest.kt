@@ -85,10 +85,10 @@ class DictionaryAssetsTest {
 
     @Test
     fun `audio file names follow the word's code points`() {
-        assertEquals("20320_20204.mp3", BundledWordAudio.fileName("你们"))
-        assertEquals("26149_40_22825_41.mp3", BundledWordAudio.fileName(" 春(天) "))
-        assertNull(BundledWordAudio.fileName("hello"))
-        assertNull(BundledWordAudio.fileName(""))
+        assertEquals("20320_20204.mp3", CdnWordAudio.fileName("你们"))
+        assertEquals("26149_40_22825_41.mp3", CdnWordAudio.fileName(" 春(天) "))
+        assertNull(CdnWordAudio.fileName("hello"))
+        assertNull(CdnWordAudio.fileName(""))
     }
 
     private fun dictionaryWords(): List<String> {
@@ -115,15 +115,14 @@ class DictionaryAssetsTest {
     }
 
     @Test
-    fun `every dictionary word has its pronunciation in the apk`() {
-        // The generator is Python and the reader is Kotlin; this is where the
-        // two have to agree on a name for every single word.
+    fun `every dictionary word has a pre-rendered CDN pronunciation`() {
+        // The Python uploader and the Android CDN reader must agree on names.
         val words = dictionaryWords()
         assertTrue(words.size > 1000)
 
         val silent = words.filter { word ->
-            val name = BundledWordAudio.fileName(word)
-            name == null || !File(assets, "audio/words/$name").isFile
+            val name = CdnWordAudio.fileName(word)
+            name == null || !File("../../offline_audio/words/$name").isFile
         }
 
         assertEquals(emptyList<String>(), silent)
