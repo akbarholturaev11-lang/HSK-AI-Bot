@@ -2528,7 +2528,7 @@ var App={
       /* Birinchi dars tugagach kunlik vaqt va fokus so'raladi — bayram,
          reklama va desktop promo'dan KEYIN, ya'ni hech biri bilan
          to'qnashmaydi. Server javob bermaguncha so'ralmaydi. */
-      if(studySetupPending())setTimeout(askStudyTime,700);
+      if(studySetupPending())setTimeout(askPendingStudySetup,700);
     };
     /* Bepul userga dars yakuni reklamasi — bayram/streak/reyting ekranlaridan
        KEYIN, xaritaga qaytishdan oldin. Reklama yo'q yoki yuklanmasa jim o'tadi. */
@@ -2744,9 +2744,15 @@ var App={
       else renderAll();
     })},
   pickStudyTime:function(v){App.closeSheet();
-    savePreferences({daily_minutes:v}).then(function(){setTimeout(askStudyFocus,220)})},
+    savePreferences({daily_minutes:v}).then(function(saved){
+      if(saved&&saved.ok){markStudySetupTimeAnswered();setTimeout(askStudyFocus,220);return}
+      toast(serverSaveErrorText(),2200);askStudyTime();
+    })},
   pickStudyFocus:function(k){App.closeSheet();
-    savePreferences({preferred_focus:k}).then(function(){renderAll()})},
+    savePreferences({preferred_focus:k}).then(function(saved){
+      if(saved&&saved.ok){renderAll();return}
+      toast(serverSaveErrorText(),2200);askStudyFocus();
+    })},
   levelPicker:function(){
     var names={
       hsk1:["你好","HSK 1"],hsk2:["谢谢","HSK 2"],hsk3:["明白","HSK 3"],hsk4:["流利","HSK 4"],
@@ -3016,6 +3022,27 @@ function studySetupT(){return {
    sessiyada tugatgan o'quvchi uchun false bo'ladi, shuning uchun dars
    tugagandagi chaqiruv unga tayanmaydi. */
 var SETUP_ASK_GAP_MS=24*60*60*1000;
+/* If time was chosen but the focus sheet was dismissed, retry ONLY the
+   unanswered focus question on the next eligible visit. Scope this local
+   marker to the Telegram account, not to every account on the device. */
+function studySetupTimeKey(){
+  var userId=String((tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user&&tg.initDataUnsafe.user.id)||"");
+  return "hsk_v3_setup_minutes_chosen"+(userId?"_"+userId:"");
+}
+function studySetupTimeAnswered(){
+  try{return localStorage.getItem(studySetupTimeKey())==="1"}catch(e){return false}
+}
+function markStudySetupTimeAnswered(){
+  try{localStorage.setItem(studySetupTimeKey(),"1")}catch(e){}
+}
+function askPendingStudySetup(){
+  if(!STUDY_SETUP)return;
+  if(!STUDY_SETUP.goal_chosen){askStudyGoal();return}
+  if(!STUDY_SETUP.preferred_focus){
+    if(studySetupTimeAnswered())askStudyFocus();
+    else askStudyTime();
+  }
+}
 function studySetupAnswered(){
   if(!STUDY_SETUP)return false;
   /* Maqsad savoli onboardingga KEYIN qo'shildi, shuning uchun eski
@@ -3046,6 +3073,7 @@ function askStudyTime(){
     +[5,10,15,20,30].map(function(v){return '<button class="opt-row'+(v===cur?" on":"")+'" onclick="App.pickStudyTime('+v+')"><i class="ti ti-clock"></i> '+v+' '+esc(s.min)+(v===cur?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""));
 }
 function askStudyFocus(){
+  markStudySetupAsked();
   var s=studySetupT();var keys=["speaking","listening","vocabulary","grammar","none"];
   var icons={speaking:"microphone",listening:"headphones",vocabulary:"language-hiragana",grammar:"list-check",none:"circle-dashed"};
   App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(s.focusQ)+'</div><div class="tr">'+esc(s.focusSub)+'</div></div>'
@@ -8392,7 +8420,7 @@ var finishHskLaunchSplash=(function(){
        o'quvchi (masalan boshqa qurilmada tugatgan) — xarita chizilgach
        so'raymiz. Yopib yuborsa 24 soat qayta so'ralmaydi. */
     if(STUDY_SETUP&&STUDY_SETUP.pending&&studySetupPending())
-      setTimeout(STUDY_SETUP.pending_goal?askStudyGoal:askStudyTime,1200);
+      setTimeout(askPendingStudySetup,1200);
     prefetchNearbyLessons();
     var sp=bootParams;
     App.show(sp.get("tab")||"course");
