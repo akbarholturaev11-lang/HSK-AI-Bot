@@ -146,6 +146,7 @@ fun ProfileScreen(
     onToggleNotifications: (Boolean) -> Unit,
     onOpenWidget: () -> Unit,
     onOpenSupport: (String) -> Unit,
+    onReportProblem: () -> Unit = {},
     onRefresh: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
@@ -183,6 +184,7 @@ fun ProfileScreen(
     var widgetInstalled by remember(context) { mutableStateOf(WidgetScheduler.hasWidgets(context)) }
     val appSettings = remember(context) { AppSettings(context) }
     val themeMode by appSettings.themeMode.collectAsState(initial = AppThemeMode.DEFAULT)
+    val shakeToReport by appSettings.shakeToReport.collectAsState(initial = false)
     val scope = rememberCoroutineScope()
     // Mistakes remains available from Practice; it is no longer a profile entry.
     val openSettings = {
@@ -302,6 +304,11 @@ fun ProfileScreen(
             },
             onOpenGoal = { settingsOpen = false; onOpenGoal() },
             onOpenSupport = { url -> settingsOpen = false; onOpenSupport(url) },
+            onReportProblem = { settingsOpen = false; onReportProblem() },
+            shakeToReport = shakeToReport,
+            onSetShakeToReport = { enabled ->
+                scope.launch { appSettings.setShakeToReport(enabled) }
+            },
             onOpenAccount = {
                 settingsOpen = false
                 identitiesOpen = true
@@ -727,6 +734,9 @@ private fun ProfileSettingsScreen(
     onOpenWidget: () -> Unit,
     onOpenGoal: () -> Unit,
     onOpenSupport: (String) -> Unit,
+    onReportProblem: () -> Unit,
+    shakeToReport: Boolean,
+    onSetShakeToReport: (Boolean) -> Unit,
     onOpenAccount: () -> Unit,
     onOpenPrivacy: () -> Unit,
     onLogout: () -> Unit,
@@ -888,6 +898,36 @@ private fun ProfileSettingsScreen(
                                 ),
                                 supportUrl.isNotBlank(),
                             ) { if (supportUrl.isNotBlank()) onOpenSupport(supportUrl) }
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(
+                                Icons.Filled.WarningAmber,
+                                stringResource(R.string.bug_report_title),
+                                null,
+                                true,
+                                onReportProblem,
+                            )
+                            ProfileSettingsDivider()
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        stringResource(R.string.bug_report_shake),
+                                        color = PompColors.Ink,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                    )
+                                    Text(
+                                        stringResource(R.string.bug_report_shake_summary),
+                                        color = PompColors.InkSecondary,
+                                        style = MaterialTheme.typography.bodySmall,
+                                    )
+                                }
+                                Switch(
+                                    checked = shakeToReport,
+                                    onCheckedChange = onSetShakeToReport,
+                                )
+                            }
                         }
                     }
                     item {
