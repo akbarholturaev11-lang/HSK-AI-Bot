@@ -1,0 +1,30 @@
+# One-time workflow for the explicitly requested shake-to-report update.
+# Standard release pipeline performs testing, signing and R2 publishing.
+name: Request Android 1.7.15 shake-default release
+on:
+  push:
+    branches: [main]
+    paths:
+      - "android/app/build.gradle.kts"
+permissions:
+  contents: read
+  actions: write
+jobs:
+  dispatch:
+    name: Dispatch signed Android release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Guard release version
+        run: |
+          set -euo pipefail
+          grep -Fqx 'val appVersionName = "1.7.15"' <(sed -n '/^val appVersionName = /p' android/app/build.gradle.kts)
+          grep -Fqx 'val appVersionCode = 46' <(sed -n '/^val appVersionCode = /p' android/app/build.gradle.kts)
+      - name: Trigger signed release and Cloudflare R2 publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh workflow run android-release.yml --ref main --field publish_to_r2=true
+          echo "Standard Android 1.7.15 release workflow dispatched."
