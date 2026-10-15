@@ -1,0 +1,33 @@
+# One-shot, explicitly requested direct APK release. Remove after dispatch.
+# The actual signing and R2 publication stay in android-release.yml.
+name: Request Android 1.7.14 release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "android/app/build.gradle.kts"
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  dispatch:
+    name: Dispatch signed Android release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Guard the explicitly approved version
+        run: |
+          set -euo pipefail
+          grep -Fqx 'val appVersionName = "1.7.14"' <(sed -n '/^val appVersionName = /p' android/app/build.gradle.kts)
+          grep -Fqx 'val appVersionCode = 45' <(sed -n '/^val appVersionCode = /p' android/app/build.gradle.kts)
+      - name: Request existing signed and published release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh workflow run android-release.yml --ref main --field publish_to_r2=true
+          echo "Triggered standard Android release workflow for main."
