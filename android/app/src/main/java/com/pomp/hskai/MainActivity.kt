@@ -2073,13 +2073,17 @@ private fun rememberSessionViewModelStoreOwner(): SessionViewModelStoreOwner {
 }
 
 /**
- * The first cold-start Golden Logo is the *only* launch animation.
- * During post-auth/bootstrap loading, show a static paper window rather than
- * launching HskBrandLoader's second breathing/halo animation.
+ * After the one-time 2,920ms Golden Logo finishes, leave its complete final
+ * frame on screen until the authenticated content finishes loading. No second
+ * startup animation or second audio/haptic event is allowed.
  */
 @Composable
 private fun LaunchWaitScreen() {
-    Surface(color = PompColors.Paper, modifier = Modifier.fillMaxSize()) {}
+    Surface(color = PompColors.Paper, modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            HskBrandLoader(launch = true, holdLaunchFrame = true)
+        }
+    }
 }
 
 @Composable
