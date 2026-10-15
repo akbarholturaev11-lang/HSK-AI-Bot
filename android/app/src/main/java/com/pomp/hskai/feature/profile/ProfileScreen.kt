@@ -97,6 +97,7 @@ import com.pomp.hskai.core.design.PompShapes
 import com.pomp.hskai.core.design.PompSpacing
 import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.feature.course.Hsk30LevelChoiceDialog
+import com.pomp.hskai.core.settings.DEFAULT_SHAKE_TO_REPORT
 import com.pomp.hskai.feature.feedback.captureReportScreen
 import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.core.design.components.HskSectionTitle
@@ -186,7 +187,7 @@ fun ProfileScreen(
     var widgetInstalled by remember(context) { mutableStateOf(WidgetScheduler.hasWidgets(context)) }
     val appSettings = remember(context) { AppSettings(context) }
     val themeMode by appSettings.themeMode.collectAsState(initial = AppThemeMode.DEFAULT)
-    val shakeToReport by appSettings.shakeToReport.collectAsState(initial = false)
+    val shakeToReport by appSettings.shakeToReport.collectAsState(initial = DEFAULT_SHAKE_TO_REPORT)
     val scope = rememberCoroutineScope()
     // Mistakes remains available from Practice; it is no longer a profile entry.
     val openSettings = {
