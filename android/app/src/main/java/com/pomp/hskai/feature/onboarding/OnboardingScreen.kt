@@ -816,21 +816,6 @@ private fun CourseVersionSwitch(
                                 fontWeight = FontWeight.SemiBold,
                                 lineHeight = 14.sp,
                             )
-                            if (track == "hsk30") {
-                                Spacer(Modifier.width(4.dp))
-                                Text(
-                                    copy.newBadge,
-                                    color = PompColors.CinnabarDark,
-                                    fontSize = 8.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier
-                                        .background(
-                                            PompColors.Cinnabar.copy(alpha = 0.12f),
-                                            RoundedCornerShape(5.dp),
-                                        )
-                                        .padding(horizontal = 4.dp, vertical = 1.dp),
-                                )
-                            }
                         }
                         if (
                             track == "hsk30" &&
@@ -879,9 +864,9 @@ private fun LevelChoices(
             else -> listOf("Новый стандарт · уровень 1", "Новый стандарт · уровень 2", "Новый стандарт · уровень 3")
         }
         listOf(
-            LevelOption("nhsk1", "HSK 1", hsk30Descriptions[0], isNew = true),
-            LevelOption("nhsk2", "HSK 2", hsk30Descriptions[1], isNew = true),
-            LevelOption("nhsk3", "HSK 3", hsk30Descriptions[2], isNew = true),
+            LevelOption("nhsk1", "HSK 1", hsk30Descriptions[0]),
+            LevelOption("nhsk2", "HSK 2", hsk30Descriptions[1]),
+            LevelOption("nhsk3", "HSK 3", hsk30Descriptions[2]),
         ).filter { it.key in liveHsk30Levels }
     } else {
         listOf(
@@ -903,7 +888,7 @@ private fun LevelChoices(
                 subtitle = option.subtitle,
                 leading = { LevelBars(active = index) },
                 onClick = { onSelected(option.key) },
-                badge = if (option.isNew) copy.newBadge else null,
+                badge = null,
             )
         }
     }
@@ -1100,10 +1085,6 @@ private fun SelectedLevelSummary(copy: OnboardingCopy, level: String, track: Str
         Text("${copy.selected}:", color = PompColors.InkSecondary, fontSize = 12.sp, lineHeight = 18.sp)
         Spacer(Modifier.width(4.dp))
         Text(title, color = PompColors.Ink, fontSize = 12.sp, lineHeight = 18.sp)
-        if (track == "hsk30") {
-            Spacer(Modifier.width(6.dp))
-            NewBadge(copy.newBadge)
-        }
     }
 }
 
