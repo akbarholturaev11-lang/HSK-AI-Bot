@@ -31,7 +31,7 @@ Foydalanuvchi eskirgan vaqtinchalik fayllarni o‘chirishga ruxsat berdi. Faqat 
 Tiklash nusxalari SHA-256 tengligi tekshirilgan holda repo tashqarisida saqlandi:
 `/Users/kaijimima1234/.codex/doc-audit-backups/hsk-ai-2026-10-14-212715/`.
 
-Tarixiy audit, source material, litsenziya, release draft va biznes qarori fayllari o‘chirilmagan. Kod, database, branchlar va remote o‘zgartirilmagan.
+Tarixiy audit, source material, litsenziya, release draft va biznes qarori fayllari o‘chirilmagan. Fayl tozalash bosqichida kod, database va branchlar o‘zgartirilmadi; hujjatlarni `origin/main`ga chiqarish keyin alohida Git amali sifatida bajarildi.
 17 ta root-level release-feedback campaign qoralamasi user qarori bilan `docs/archive/release-feedback/`ga ko‘chirildi; index va `docs/HSK_3.0_VERSIYASI.md` havolasi yangilandi. `tools/voice-studio/RELEASE_FEEDBACK.md` mustaqil utilita hujjati bo‘lgani uchun arxivlashga kiritilmadi.
 
 ## Dastlabki topilmalar — navbat bilan tekshiriladi
