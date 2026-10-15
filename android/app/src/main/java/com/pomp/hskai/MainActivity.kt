@@ -720,6 +720,7 @@ private fun AppRoot(
             var bugReportOpen by remember { mutableStateOf(false) }
             var bugReportIntroVisible by remember { mutableStateOf(false) }
             var bugReportCapturing by remember { mutableStateOf(false) }
+            var introCaptureGeneration by remember { mutableStateOf(0) }
             var bugReportScreenshot by remember { mutableStateOf<Bitmap?>(null) }
             var bugReportSource by remember { mutableStateOf("") }
 
@@ -748,12 +749,15 @@ private fun AppRoot(
                         bugReportSource = selectedTab.name.lowercase()
                         bugReportCapturing = true
                         bugReportIntroVisible = true
+                        introCaptureGeneration += 1
+                        val captureGeneration = introCaptureGeneration
                         scope.launch {
                             // PixelCopy targets the Activity window, not the
                             // sheet's separate window, so the overlay stays
                             // outside the captured image.
                             val snapshot = captureReportScreen(bugReportRootView)
-                            if (bugReportIntroVisible) {
+                            if (bugReportIntroVisible &&
+                                captureGeneration == introCaptureGeneration) {
                                 bugReportScreenshot = snapshot
                                 bugReportCapturing = false
                             }
@@ -1753,6 +1757,7 @@ private fun AppRoot(
                         }
                     },
                     onDismiss = {
+                        introCaptureGeneration += 1
                         bugReportIntroVisible = false
                         bugReportScreenshot = null
                         bugReportCapturing = false
