@@ -88,6 +88,41 @@ jobs:
         uses: ./.github/actions/android-flow-regressions
         timeout-minutes: 25
 
+      # Static MP3s must be live on R2 before publishing a slim APK.
+      # This never invokes Edge/Gemini and only uploads pre-rendered assets.
+      - name: Publish and verify immutable Mandarin audio corpus on R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_PUBLIC_BASE_URL: ${{ vars.R2_PUBLIC_BASE_URL }}
+        run: |
+          set -euo pipefail
+          for key in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY R2_ACCOUNT_ID R2_BUCKET R2_PUBLIC_BASE_URL; do
+            test -n "${!key}" || { echo "::error::$key missing; cannot publish slim APK"; exit 1; }
+          done
+          case "$R2_PUBLIC_BASE_URL" in
+            https://*) ;;
+            *) echo "::error::R2 public base must use HTTPS"; exit 1 ;;
+          esac
+          corpus="offline_audio/words"
+          test -d "$corpus" || { echo "::error::Shared Mandarin MP3 corpus missing"; exit 1; }
+          count="$(find "$corpus" -maxdepth 1 -name '*.mp3' -type f | wc -l)"
+          test "$count" -ge 4000 || { echo "::error::Incomplete audio corpus: $count"; exit 1; }
+          endpoint="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 sync "$corpus/" "s3://${R2_BUCKET}/android/audio/words/v1/" \
+            --endpoint-url "$endpoint" --only-show-errors --size-only \
+            --content-type "audio/mpeg" --cache-control "public, max-age=31536000, immutable"
+          # A successful S3 upload is insufficient if the PUBLIC endpoint is broken.
+          cdn="${R2_PUBLIC_BASE_URL%/}/android/audio/words/v1/19968.mp3"
+          curl --fail --silent --show-error --location --max-time 25 "$cdn" -o /tmp/mandarin-cdn-check.mp3
+          test "$(stat -c%s /tmp/mandarin-cdn-check.mp3)" -gt 128 || {
+            echo "::error::Public R2 CDN returned an invalid Mandarin MP3"; exit 1;
+          }
+          echo "Published $count pre-generated MP3s to public R2 CDN."
+
       - name: Restore the release keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.POMP_ANDROID_KEYSTORE_BASE64 }}
@@ -137,6 +172,7 @@ jobs:
       - name: Build the signed direct release
         working-directory: android
         env:
+          POMP_AUDIO_CDN_ORIGIN: ${{ vars.R2_PUBLIC_BASE_URL }}
           POMP_FIREBASE_APP_ID: ${{ vars.POMP_FIREBASE_APP_ID }}
           POMP_FIREBASE_SENDER_ID: ${{ vars.POMP_FIREBASE_SENDER_ID }}
           POMP_FIREBASE_PROJECT_ID: ${{ vars.POMP_FIREBASE_PROJECT_ID }}
