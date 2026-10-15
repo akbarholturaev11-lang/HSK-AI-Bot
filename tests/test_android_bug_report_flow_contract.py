@@ -42,6 +42,17 @@ class AndroidBugReportFlowContracts(unittest.TestCase):
         self.assertIn("screenshotDataUrl = encoded.orEmpty()", self.form)
         self.assertIn('picker.launch("image/*")', self.form)
 
+    def test_success_requires_explicit_ok_and_closes_entire_report(self):
+        self.assertIn("sent = response is ApiResult.Success && response.value.ok", self.form)
+        self.assertIn("if (sent) {", self.form)
+        self.assertIn("AlertDialog(", self.form)
+        self.assertIn("R.string.bug_report_thanks_title", self.form)
+        self.assertIn('Text("OK")', self.form)
+        self.assertIn("Button(onClick = onDismiss", self.form)
+        for locale in ("values", "values-ru", "values-tg"):
+            strings = (ROOT / "android/app/src/main/res" / locale / "strings.xml").read_text(encoding="utf-8")
+            self.assertIn('name="bug_report_thanks_title"', strings)
+
     def test_fixed_send_action_is_not_inside_scroll_column(self):
         scroll = self.form.index(".verticalScroll(rememberScrollState())")
         divider = self.form.index("HorizontalDivider(color = PompColors.Divider)")
