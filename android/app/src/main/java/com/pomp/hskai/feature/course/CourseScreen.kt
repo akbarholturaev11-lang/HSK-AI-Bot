@@ -837,14 +837,14 @@ private fun CourseHeader(
             HskSectionTitle(
                 text = courseLevelLabel(map.level),
                 modifier = if (hsk30 != null) {
-                    Modifier.clickable(
+                    Modifier.testTag("course-level-heading").clickable(
                         enabled = !isSwitchingTrack,
                         role = Role.Button,
                         onClickLabel = switchVersionAction,
                     ) {
                         onOpenCourseChoice()
                     }
-                } else Modifier,
+                } else Modifier.testTag("course-level-heading"),
             )
         }
         Spacer(Modifier.width(8.dp))
