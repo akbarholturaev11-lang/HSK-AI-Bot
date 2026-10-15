@@ -728,7 +728,7 @@ private fun ReviewTokenBuilder(
 ) {
     Column {
         Surface(
-            color = PompColors.PaperRaised,
+            color = PompColors.CardSurface,
             shape = RoundedCornerShape(12.dp),
             border = BorderStroke(1.dp, PompColors.Divider),
             modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp),
