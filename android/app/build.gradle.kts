@@ -44,6 +44,15 @@ val hasReleaseSigning = releaseStoreFile != null &&
 val appVersionName = "1.7.15"
 val appVersionCode = 46
 
+val audioCdnOrigin: String = (
+    (project.findProperty("POMP_AUDIO_CDN_ORIGIN") as String?)
+        ?: System.getenv("POMP_AUDIO_CDN_ORIGIN")
+).orEmpty().trim().trimEnd('/')
+
+require(audioCdnOrigin.isEmpty() || audioCdnOrigin.startsWith("https://")) {
+    "POMP_AUDIO_CDN_ORIGIN must be an https origin"
+}
+
 val apiOrigin: String = (project.findProperty("POMP_API_ORIGIN") as String?)
     ?.trim()
     ?.trimEnd('/')
@@ -90,6 +99,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "API_ORIGIN", "\"$apiOrigin\"")
+        buildConfigField("String", "AUDIO_CDN_ORIGIN", buildString(audioCdnOrigin))
         buildConfigField("String", "DEEP_LINK_SCHEME", "\"pomp-hsk-ai\"")
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")
         buildConfigField("String", "FIREBASE_APP_ID", buildString(firebaseOption("POMP_FIREBASE_APP_ID")))
