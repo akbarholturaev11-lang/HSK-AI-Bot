@@ -532,7 +532,9 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .sech{font-size:13px;color:var(--ink2);font-weight:500;margin:18px 18px 9px}
 /* profile */
 .profile-access-badge{display:inline-flex;align-items:center;gap:5px;margin-top:7px;border-radius:999px;padding:4px 11px;font-size:12px;font-weight:650;color:var(--ink2);background:var(--paper);border:1px solid var(--line)}
-.profile-access-badge.pro{background:linear-gradient(115deg,#2b2018,#684124);color:#ffe4a1;border-color:#c49a49;box-shadow:0 1px 6px rgba(82,57,21,.10)}
+/* The paid status is an inline icon/label, not a separate brown card. */
+.profile-access-badge.pro{background:transparent;color:var(--gold-ink);border:0;box-shadow:none;padding:0;font-size:13px;font-weight:750;white-space:nowrap;line-height:1.25}
+.profile-access-badge.pro .ti-crown{color:var(--gold);font-size:15px;line-height:1}
 .profile-accuracy{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:11px 16px 4px;overflow:hidden;border-radius:17px;border:1px solid var(--line);background:var(--card)}
 .profile-accuracy>div{min-width:0;text-align:center;padding:10px 5px 12px}
 .profile-accuracy>div+div{border-left:1px solid var(--line)}
