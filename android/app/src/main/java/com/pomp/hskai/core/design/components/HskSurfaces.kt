@@ -36,17 +36,17 @@ fun HskGlassSurface(
     val surface = if (PompColors.IsDark) {
         PompColors.PaperRaised.copy(alpha = 0.88f)
     } else {
-        Color.White.copy(alpha = 0.72f)
+        PompColors.PaperRaised.copy(alpha = 0.98f)
     }
     val border = if (PompColors.IsDark) {
         PompColors.Divider.copy(alpha = 0.86f)
     } else {
-        Color.White.copy(alpha = 0.92f)
+        PompColors.Divider.copy(alpha = 0.92f)
     }
     val topWash = if (PompColors.IsDark) {
         Color.White.copy(alpha = 0.05f)
     } else {
-        Color.White.copy(alpha = 0.30f)
+        Color.White.copy(alpha = 0.05f)
     }
     val decoratedModifier = modifier.shadow(
         elevation = shadowElevation,
