@@ -31,6 +31,19 @@ fun leagueGlyph(league: String): String =
         ?: league.takeIf { it.isNotBlank() }
         ?: LEAGUE_LADDER.first().second
 
+/** Public HSK bands are identical across curricula; NEW appears only in rating. */
+fun ratingLevelLabel(level: String): String {
+    val key = level.trim().lowercase()
+    val isNewCurriculum = key.startsWith("nhsk") || key == "nbeginner"
+    val band = when (key) {
+        "beginner", "nbeginner" -> 1
+        else -> Regex("^(?:n?hsk)([1-4])$").matchEntire(key)
+            ?.groupValues?.get(1)?.toIntOrNull()
+    }
+    val label = band?.let { "HSK $it" } ?: "HSK"
+    return label + if (isNewCurriculum) " NEW" else ""
+}
+
 /** "3d 8h" style countdown for the weekly league reset chip. */
 fun countdownText(seconds: Long): String {
     val total = seconds.coerceAtLeast(0)
