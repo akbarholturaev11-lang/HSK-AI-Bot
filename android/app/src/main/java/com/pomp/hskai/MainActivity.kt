@@ -712,6 +712,8 @@ private fun AppRoot(
             var ratingUserOpen by remember { mutableStateOf<RatingEntryDto?>(null) }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
             val bugReportRootView = LocalView.current
+            // Start the sensor only after the saved preference has loaded, so a
+            // previously disabled gesture cannot briefly activate at app startup.
             val shakeToReportEnabled by app.appSettings.shakeToReport
                 .collectAsStateWithLifecycle(initialValue = false)
             var bugReportOpen by remember { mutableStateOf(false) }

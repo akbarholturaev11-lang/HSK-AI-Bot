@@ -20,6 +20,12 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
 
 private val subscriptionDisplayCurrencies = setOf("TJS", "UZS", "RUB", "CNY", "USD")
 
+/** Default ON for installs that never changed the setting; explicit OFF is persistent. */
+internal const val DEFAULT_SHAKE_TO_REPORT = true
+
+internal fun resolveShakeToReportPreference(saved: Boolean?): Boolean =
+    saved ?: DEFAULT_SHAKE_TO_REPORT
+
 private fun normalizeSubscriptionDisplayCurrency(value: String?): String? =
     value?.trim()?.uppercase()?.takeIf { it in subscriptionDisplayCurrencies }
 
@@ -103,9 +109,9 @@ class AppSettings(context: Context) : LessonResumeStore {
     val pinyinVisibility: Flow<PinyinVisibility> = appContext.settingsDataStore.data
         .map { PinyinVisibility.fromWireValue(it[PINYIN_KEY]) }
 
-    /** Disabled until user opts in; only active while the app is in foreground. */
+    /** Enabled by default, but only listens in the foreground and honors saved OFF. */
     val shakeToReport: Flow<Boolean> = appContext.settingsDataStore.data
-        .map { it[SHAKE_TO_REPORT_KEY] ?: false }
+        .map { resolveShakeToReportPreference(it[SHAKE_TO_REPORT_KEY]) }
 
     suspend fun setShakeToReport(enabled: Boolean) {
         appContext.settingsDataStore.edit { it[SHAKE_TO_REPORT_KEY] = enabled }

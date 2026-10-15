@@ -16,7 +16,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlin.math.sqrt
 
-/** Foreground-only accelerometer listener; no sensor is registered before opt-in. */
+/** Foreground-only accelerometer listener; users can disable the default-on gesture. */
 @Composable
 fun ShakeToReport(enabled: Boolean, onShake: () -> Unit) {
     val context = LocalContext.current
