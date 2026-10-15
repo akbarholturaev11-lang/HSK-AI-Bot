@@ -6,7 +6,7 @@ import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.hanzi.CharacterStrokes
 import com.pomp.hskai.data.local.BundledStrokes
-import com.pomp.hskai.data.local.BundledWordAudio
+import com.pomp.hskai.data.local.WordAudioSource
 import androidx.compose.ui.geometry.Offset
 import com.pomp.hskai.core.network.apiCall
 import com.pomp.hskai.data.api.AndroidCourseApi
@@ -72,8 +72,8 @@ class CourseRepository(
     private val ttsCache: TtsCache? = null,
     /** The writing order shipped in the APK. Absent in tests. */
     private val bundledStrokes: BundledStrokes? = null,
-    /** Every dictionary word's pronunciation, shipped in the APK. Absent in tests. */
-    private val bundledAudio: BundledWordAudio? = null,
+    /** Immutable R2 corpus; absent in tests or when the CDN is not configured. */
+    private val cdnAudio: WordAudioSource? = null,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val now: () -> Long = System::currentTimeMillis,
     private val timezoneOffsetMinutes: () -> Int = {
@@ -476,11 +476,16 @@ class CourseRepository(
         // is already drawn on the screen that is asking to hear it, so replaying
         // our own copy of its audio opens nothing a session would have gated.
         // It also makes the second tap instant and survives a dropped network.
-        // A dictionary word is in the APK, rendered with the server's voice and
-        // rate: it plays with no connection and costs no request at all.
-        bundledAudio?.find(phrase)?.let { return ApiResult.Success(it) }
+        // Permanent disk cache first: an already played phrase must never
+        // touch the CDN, the API or the authentication service again.
         val cacheKey = ttsCacheKey(phrase)
         ttsCache?.read(cacheKey)?.let { return ApiResult.Success(it) }
+        // Public, pre-generated audio bypasses Railway and synthesis.
+        // On the first successful fetch, save permanently for offline replay.
+        cdnAudio?.find(phrase)?.let { audio ->
+            ttsCache?.write(cacheKey, audio)
+            return ApiResult.Success(audio)
+        }
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
