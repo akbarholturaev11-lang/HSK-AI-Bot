@@ -128,6 +128,7 @@ class Hsk30SwitchUiContractTests(unittest.TestCase):
         onboard = (ROOT / "app" / "static" / "course_v3_onboarding.html").read_text(encoding="utf-8")
         self.assertNotIn('isHsk30Level(key)?\'<span class="new-tag">NEW', onboard)
         self.assertNotIn('var meta=["NEW"]', onboard)
+        self.assertNotIn('var h30Meta=["NEW"]', onboard)
         android_onboard = (ANDROID / "feature" / "onboarding" / "OnboardingScreen.kt").read_text(
             encoding="utf-8"
         )
