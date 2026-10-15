@@ -48,6 +48,12 @@ class ShakeGestureDetectorTest {
         idle(detector, 990)
         assertFalse(peak(detector, 1200))
         idle(detector, 1300)
+        // Let the low-pass gravity baseline settle while the phone is still.
+        idle(detector, 1700)
+        idle(detector, 2100)
+        idle(detector, 2400)
+        idle(detector, 3000)
+        idle(detector, 4800)
         assertFalse(peak(detector, 5000))
         idle(detector, 5100)
         assertTrue(peak(detector, 5400))
