@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.activity.ComponentActivity
@@ -38,6 +39,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -67,6 +69,9 @@ import com.pomp.hskai.core.navigation.SessionViewModelStoreOwner
 import com.pomp.hskai.core.navigation.toTab
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.feature.auth.LinkScreen
+import com.pomp.hskai.feature.feedback.BugReportDialog
+import com.pomp.hskai.feature.feedback.ShakeToReport
+import com.pomp.hskai.feature.feedback.captureReportScreen
 import com.pomp.hskai.feature.onboarding.NotificationPrimerScreen
 import com.pomp.hskai.feature.auth.LinkViewModel
 import com.pomp.hskai.feature.assistant.AssistantModalBottomSheet as ModalBottomSheet
@@ -706,6 +711,23 @@ private fun AppRoot(
             var ratingChallengesOpen by rememberSaveable { mutableStateOf(false) }
             var ratingUserOpen by remember { mutableStateOf<RatingEntryDto?>(null) }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
+            val bugReportRootView = LocalView.current
+            val shakeToReportEnabled by app.appSettings.shakeToReport
+                .collectAsStateWithLifecycle(initialValue = false)
+            var bugReportOpen by remember { mutableStateOf(false) }
+            var bugReportScreenshot by remember { mutableStateOf<Bitmap?>(null) }
+            var bugReportSource by remember { mutableStateOf("") }
+            val openBugReport = {
+                if (!bugReportOpen) {
+                    bugReportSource = selectedTab.name.lowercase()
+                    bugReportScreenshot = captureReportScreen(bugReportRootView)
+                    bugReportOpen = true
+                }
+            }
+            ShakeToReport(
+                enabled = shakeToReportEnabled && !bugReportOpen,
+                onShake = openBugReport,
+            )
 
             // Course refreshes server flags on return; secondary tabs keep
             // their existing lazy-load policy.
@@ -1480,6 +1502,7 @@ private fun AppRoot(
                                     widgetSetupOpen = true
                                 },
                                 onOpenSupport = { url -> openExternal(context, url) },
+                                onReportProblem = openBugReport,
                                 onRefresh = profileViewModel::load,
                                 onLogout = { signOut(false) },
                                 onUnlinkDevice = { signOut(true) },
@@ -1680,6 +1703,17 @@ private fun AppRoot(
                         }
                     },
                     containerColor = PompColors.Paper,
+                )
+            }
+            if (bugReportOpen) {
+                BugReportDialog(
+                    repository = app.featureRepository,
+                    screenshot = bugReportScreenshot,
+                    screen = bugReportSource,
+                    onDismiss = {
+                        bugReportOpen = false
+                        bugReportScreenshot = null
+                    },
                 )
             }
         }
