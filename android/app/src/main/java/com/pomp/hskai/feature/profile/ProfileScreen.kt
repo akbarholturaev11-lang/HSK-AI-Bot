@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.graphics.Bitmap
+import android.view.View
 import android.provider.Settings
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -314,9 +315,14 @@ fun ProfileScreen(
             },
             onOpenGoal = { settingsOpen = false; onOpenGoal() },
             onOpenSupport = { url -> settingsOpen = false; onOpenSupport(url) },
-            onReportProblem = { screenshot ->
-                settingsOpen = false
-                onReportProblem(screenshot)
+            onReportProblem = { visibleDialogView ->
+                // Keep the Settings Dialog attached until PixelCopy has captured
+                // the actual visible window; then dismiss it and open the report.
+                scope.launch {
+                    val screenshot = captureReportScreen(visibleDialogView)
+                    settingsOpen = false
+                    onReportProblem(screenshot)
+                }
             },
             shakeToReport = shakeToReport,
             onSetShakeToReport = { enabled ->
@@ -747,7 +753,7 @@ private fun ProfileSettingsScreen(
     onOpenWidget: () -> Unit,
     onOpenGoal: () -> Unit,
     onOpenSupport: (String) -> Unit,
-    onReportProblem: (Bitmap?) -> Unit,
+    onReportProblem: (View) -> Unit,
     shakeToReport: Boolean,
     onSetShakeToReport: (Boolean) -> Unit,
     onOpenAccount: () -> Unit,
@@ -917,7 +923,7 @@ private fun ProfileSettingsScreen(
                                 stringResource(R.string.bug_report_title),
                                 null,
                                 true,
-                                { onReportProblem(captureReportScreen(view)) },
+                                { onReportProblem(view) },
                             )
                             ProfileSettingsDivider()
                             Row(
