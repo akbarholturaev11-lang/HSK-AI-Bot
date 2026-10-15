@@ -315,7 +315,7 @@ private fun AppRoot(
                 }
             }
             if (!localeReady) {
-                SplashScreen()
+                LaunchWaitScreen()
                 return
             }
             val sessionOwner = rememberSessionViewModelStoreOwner()
@@ -1106,7 +1106,7 @@ private fun AppRoot(
                     },
                 )
             } else if (onboardingState.loading && !onboardingUnknown) {
-                SplashScreen()
+                LaunchWaitScreen()
             } else if (!onboardingState.completed && !onboardingUnknown) {
                 OnboardingScreen(
                     language = currentLanguage,
@@ -2070,6 +2070,16 @@ private fun rememberSessionViewModelStoreOwner(): SessionViewModelStoreOwner {
         onDispose(owner::clear)
     }
     return owner
+}
+
+/**
+ * The first cold-start Golden Logo is the *only* launch animation.
+ * During post-auth/bootstrap loading, show a static paper window rather than
+ * launching HskBrandLoader's second breathing/halo animation.
+ */
+@Composable
+private fun LaunchWaitScreen() {
+    Surface(color = PompColors.Paper, modifier = Modifier.fillMaxSize()) {}
 }
 
 @Composable
