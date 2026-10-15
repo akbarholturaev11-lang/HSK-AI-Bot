@@ -724,14 +724,16 @@ internal fun ProfileActionCard(icon: ImageVector, iconBackground: Color, iconTin
 
 @Composable
 private fun AccessPill(isPaid: Boolean, trialActive: Boolean = false, modifier: Modifier = Modifier) {
+    val active = isPaid || trialActive
     Surface(
-        color = if (isPaid || trialActive) Color(0xFF3C2B1C) else PompColors.PaperRaised,
+        // Keep the crown and label; an oversized brown pill is not a profile card.
+        color = if (active) Color.Transparent else PompColors.PaperRaised,
         shape = RoundedCornerShape(999.dp),
-        border = BorderStroke(1.dp, if (isPaid || trialActive) Color(0xFFB68D45) else PompColors.Divider),
+        border = if (active) null else BorderStroke(1.dp, PompColors.Divider),
         modifier = modifier,
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+            modifier = if (active) Modifier else Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(5.dp),
         ) {
@@ -743,7 +745,7 @@ private fun AccessPill(isPaid: Boolean, trialActive: Boolean = false, modifier: 
                     else -> stringResource(R.string.synced_access_free)
                 },
                 style = MaterialTheme.typography.labelMedium,
-                color = if (isPaid || trialActive) Color(0xFFFFD999) else PompColors.InkSecondary,
+                color = if (active) PompColors.GoldInk else PompColors.InkSecondary,
                 maxLines = 1,
             )
         }
