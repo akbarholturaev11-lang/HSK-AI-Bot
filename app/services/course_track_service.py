@@ -47,6 +47,8 @@ class CourseTrackAccess:
             return "permanent_unlock"
         if self.paid_access:
             return "paid_subscription"
+        if self.provisional_access:
+            return "payment_pending"
         if not self.payment_enabled:
             return "hsk30_free_access"
         if self.payment_pending:
@@ -123,13 +125,21 @@ class CourseTrackService:
         row = await self._state(int(user.id), TRACK_HSK30)
         permanently_unlocked = bool(row and row.unlocked_at)
         paid = UserAccessStateService.is_paid(user)
+        # Subscription receipt previews include the same course-track access
+        # as a paid subscription, but do not claim an approved payment.
+        # One-time HSK 3.0 unlocks and seven-day trial rules remain separate.
+        subscription_preview = bool(
+            getattr(user, "payment_preview_payment_id", None) is not None
+            and getattr(user, "status", "") != "blocked"
+        )
         payment_enabled = await self.hsk30_unlock.payment_enabled()
-        if not enabled or not payment_enabled or permanently_unlocked or paid:
+        if not enabled or not payment_enabled or permanently_unlocked or paid or subscription_preview:
             return CourseTrackAccess(
                 feature_enabled=enabled,
                 paid_access=paid,
                 permanently_unlocked=permanently_unlocked,
                 payment_enabled=payment_enabled,
+                provisional_access=bool(subscription_preview and not paid and payment_enabled and enabled and not permanently_unlocked),
             )
 
         review = await self.hsk30_unlock.review_state(user)

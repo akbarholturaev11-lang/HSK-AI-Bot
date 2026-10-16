@@ -46,6 +46,7 @@ jobs:
           python -m unittest tests.test_payment_review_preview
           tests.test_subscription_miniapp_submit tests.test_subscription_service
           tests.test_hsk30_admin_payment_flow tests.test_access_state_service
+          tests.test_voice_practice_daily_limit
       - name: Check Alembic has exactly one head
         run: |
           python - <<'PY'

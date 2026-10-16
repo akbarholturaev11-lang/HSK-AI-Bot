@@ -107,6 +107,11 @@ def resolve_state(user, *, now: datetime | None = None) -> str:
         return EntitlementState.BLOCKED
     if legacy == UserAccessState.PAID:
         return EntitlementState.PRO_ACTIVE
+    # A pending receipt must not hide an independently active seven-day Pro
+    # trial. Preserve existing referral/feedback-before-trial precedence when
+    # no receipt preview is involved.
+    if getattr(user, "payment_preview_payment_id", None) is not None and has_active_pro_trial(user, now=now):
+        return EntitlementState.TRIAL_ACTIVE
     if legacy == UserAccessState.TEMPORARY_TRIAL:
         return EntitlementState.TEMP_ACCESS
     if has_active_pro_trial(user, now=now):

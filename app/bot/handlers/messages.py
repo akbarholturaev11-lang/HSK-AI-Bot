@@ -1006,7 +1006,18 @@ async def handle_voice_message(message: Message, state: FSMContext, session):
         return
 
     can_use, message_key = await access_service.can_use_text_ai(message.from_user.id)
-    if not can_use and message_key in {"access_blocked", "access_payment_pending_review"}:
+    # Voice has a separate free daily quota, but an unverified receipt
+    # cannot evade its fixed AI cost cap by switching from text to audio.
+    preview_ai_cap_hit = bool(
+        not can_use
+        and user
+        and getattr(user, "payment_preview_payment_id", None) is not None
+        and message_key in {"ai_budget_depleted", "ai_budget_cooldown"}
+    )
+    if not can_use and (
+        message_key in {"access_blocked", "access_payment_pending_review"}
+        or preview_ai_cap_hit
+    ):
         kwargs = {}
         if message_key == "access_blocked":
             kwargs["support_contact"] = await get_admin_contact_html(session, "ADMIN")

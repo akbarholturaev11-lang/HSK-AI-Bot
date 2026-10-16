@@ -285,7 +285,15 @@ class AccessService:
                 return allowed, reason
         if resolve_state(user) == EntitlementState.TRIAL_ACTIVE or has_active_pro_trial(user):
             return await self._can_use_ai_budget(telegram_id)
-        if getattr(user, "payment_preview_payment_id", None) is not None and not self._is_paid_user(user):
+        if (
+            getattr(user, "payment_preview_payment_id", None) is not None
+            and not self._is_paid_user(user)
+            and not (
+                user.status == "active"
+                and getattr(user, "end_date", None)
+                and not self._is_date_expired(user.end_date)
+            )
+        ):
             return await self._can_use_payment_preview_ai(user)
 
         if user.status != "active":
@@ -335,7 +343,15 @@ class AccessService:
             return allowed, reason
         if resolve_state(user) == EntitlementState.TRIAL_ACTIVE or has_active_pro_trial(user):
             return await self._can_use_ai_budget(telegram_id)
-        if getattr(user, "payment_preview_payment_id", None) is not None and not self._is_paid_user(user):
+        if (
+            getattr(user, "payment_preview_payment_id", None) is not None
+            and not self._is_paid_user(user)
+            and not (
+                user.status == "active"
+                and getattr(user, "end_date", None)
+                and not self._is_date_expired(user.end_date)
+            )
+        ):
             return await self._can_use_payment_preview_ai(user)
 
         if user.status != "active":

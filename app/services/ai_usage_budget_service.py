@@ -255,6 +255,12 @@ class AIUsageBudgetService:
         preview = result.scalar_one_or_none()
         if not preview or preview.status != "active" or self.is_total_budget_depleted(preview):
             return BudgetAccessResult(allowed=False, message_key="ai_budget_depleted", budget_depleted=True)
+        # A receipt preview may be scheduled behind an existing paid/trial
+        # budget. If the original budget disappeared, do not treat the gap
+        # as an unlimited AI allowance.
+        if self._as_utc(preview.starts_at) > datetime.now(timezone.utc):
+            if await self.get_active_budget(telegram_id) is None:
+                return BudgetAccessResult(allowed=False, message_key="ai_budget_depleted", budget_depleted=True)
         return await self.can_use_ai(telegram_id)
 
     async def expire_active_budgets(self, telegram_id: int) -> None:

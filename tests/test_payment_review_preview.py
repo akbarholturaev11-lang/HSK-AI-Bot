@@ -12,6 +12,7 @@ from app.db.models.ai_usage import AIUsageBudget
 from app.db.models.payment import Payment
 from app.db.models.user import User
 from app.db.session import _BOOTSTRAP_COLUMNS
+from app.services.access_service import AccessService
 from app.services.ai_usage_budget_service import (
     AIUsageBudgetService,
     PAYMENT_PREVIEW_AI_CAP_USD,
@@ -23,6 +24,7 @@ from app.services.entitlements.state import (
 from app.services.payment_review_preview_service import PaymentReviewPreviewService
 from app.services.subscription_service import SubscriptionService
 from app.services.user_access_state_service import UserAccessStateService, UserAccessState
+from app.services.voice_practice_service import VoicePracticeService, VoicePracticeError
 
 
 class PaymentReviewPreviewTests(unittest.IsolatedAsyncioTestCase):
@@ -189,6 +191,7 @@ class PaymentReviewPreviewTests(unittest.IsolatedAsyncioTestCase):
             pending = await self._new_payment(session)
             preview = PaymentReviewPreviewService(session)
             self.assertTrue(await preview.claim(user, pending))
+            self.assertEqual(resolve_state(user), EntitlementState.TRIAL_ACTIVE)
             budget = (await session.execute(select(AIUsageBudget))).scalar_one()
             self.assertGreaterEqual(
                 AIUsageBudgetService(session)._as_utc(budget.starts_at),
@@ -211,6 +214,46 @@ class PaymentReviewPreviewTests(unittest.IsolatedAsyncioTestCase):
                 user.telegram_id, payment.id
             )).allowed)
             self.assertEqual(resolve_state(user), EntitlementState.TEMP_ACCESS)
+
+    async def test_deferred_budget_cannot_grant_unmetered_ai(self):
+        async with self.sessions() as session:
+            user = await self._user(session)
+            pending = await self._new_payment(session)
+            self.assertTrue(await PaymentReviewPreviewService(session).claim(user, pending))
+            budget = (await session.execute(select(AIUsageBudget))).scalar_one()
+            budget.starts_at = datetime.now(timezone.utc) + timedelta(days=3)
+            # Previous code returned allowed=True when no other eligible budget
+            # existed, letting the pending receipt bypass its $0.50 cap.
+            verdict = await AIUsageBudgetService(session).can_use_payment_preview_ai(
+                user.telegram_id, pending.id
+            )
+            self.assertFalse(verdict.allowed)
+
+    async def test_referral_active_window_keeps_prior_ai_allowance(self):
+        async with self.sessions() as session:
+            user = await self._user(session)
+            user.status = "active"
+            user.payment_status = "none"
+            user.start_date = datetime.now(timezone.utc)
+            user.end_date = datetime.now(timezone.utc) + timedelta(days=2)
+            pending = await self._new_payment(session)
+            self.assertTrue(await PaymentReviewPreviewService(session).claim(user, pending))
+            # This bonus window is independent of the receipt preview.
+            allowed, error = await AccessService(session).can_use_text_ai(user.telegram_id)
+            self.assertTrue(allowed, error)
+            self.assertFalse(UserAccessStateService.is_paid(user))
+
+    async def test_voice_preview_spending_cap(self):
+        async with self.sessions() as session:
+            user = await self._user(session)
+            receipt = await self._new_payment(session)
+            self.assertTrue(await PaymentReviewPreviewService(session).claim(user, receipt))
+            voice = VoicePracticeService(session)
+            await voice._ensure_pending_receipt_ai_budget(user)
+            budget = (await session.execute(select(AIUsageBudget))).scalar_one()
+            budget.segment_1_spent_usd = PAYMENT_PREVIEW_AI_CAP_USD
+            with self.assertRaises(VoicePracticeError):
+                await voice._ensure_pending_receipt_ai_budget(user)
 
     async def test_hsk30_unlock_and_blocked_accounts_do_not_spend_ticket(self):
         async with self.sessions() as session:
