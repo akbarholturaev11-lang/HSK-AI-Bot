@@ -2,8 +2,8 @@
 from alembic import op
 import sqlalchemy as sa
 
-revision = "0104_native_ai_voice_ownership"
-down_revision = "0103_native_account_foundation"
+revision = "0105_native_ai_voice_ownership"
+down_revision = "0104_native_account_foundation"
 branch_labels = None
 depends_on = None
 TABLES = ("ai_usage_budgets", "ai_usage_events", "voice_practice_sessions")

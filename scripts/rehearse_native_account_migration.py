@@ -1,4 +1,4 @@
-"""Read-only evidence for a 0101 -> 0104 staging migration and backup restores.
+"""Read-only evidence for a 0102 -> 0105 staging migration and backup restores.
 
 This script never migrates, dumps, restores, or imports application settings.
 Run ``snapshot`` on the isolated restored database before/after the operator's
@@ -28,8 +28,8 @@ import sys
 from urllib.parse import parse_qsl, unquote, urlsplit
 
 
-BASE_REVISION = "0101_account_deletion_requests"
-HEAD_REVISION = "0104_native_ai_voice_ownership"
+BASE_REVISION = "0102_payment_review_preview"
+HEAD_REVISION = "0105_native_ai_voice_ownership"
 FOUNDATION = {
     "account_notice_deliveries": "telegram_id",
     "conversion_funnel_events": "telegram_id",
@@ -160,18 +160,20 @@ def validate_destination(url, approved, production_url):
 
 def validate_inventory(inventory):
     if inventory.get("read_only") is not True or inventory.get("alembic_revisions") != [BASE_REVISION]:
-        raise RehearsalError("expected_readonly_0101_inventory")
+        raise RehearsalError("expected_readonly_baseline_inventory")
     tables = {}
     for column in inventory["columns"]:
         table, name = column["table_name"], column["column_name"]
         if not IDENTIFIER.fullmatch(table) or not IDENTIFIER.fullmatch(name):
             raise RehearsalError("invalid_inventory_identifier")
         tables.setdefault(table, []).append(name)
-    required = {"users": {"id", "telegram_id"}, "desktop_devices": {"telegram_id"},
+    required = {"users": {"id", "telegram_id", "payment_preview_available", "payment_preview_payment_id"}, "desktop_devices": {"telegram_id"},
                 "desktop_link_requests": {"intent", "status"}}
     required |= {table: {"id", column} | ({"user_id"} if table in FOUNDATION else set())
                  for table, column in OWNERS.items()}
-    required |= {table: {"id"} for group in CRITICAL.values() for table in group}
+    for group in CRITICAL.values():
+        for table in group:
+            required.setdefault(table, set()).add("id")
     for table, columns in required.items():
         if not columns.issubset(tables.get(table, [])):
             raise RehearsalError("inventory_missing_migration_columns")

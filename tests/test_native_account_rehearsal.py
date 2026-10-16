@@ -22,6 +22,8 @@ APPROVED = {"purpose": "staging", "host": "stage.example.test", "port": 1234, "d
 
 def table(table_name, *, migrated=False, mutate=None):
     row = {"id": 42, "value": "private learner evidence"}
+    if table_name == "users":
+        row.update(payment_preview_available=False, payment_preview_payment_id=73)
     if table_name in helper.OWNERS:
         row[helper.OWNERS[table_name]] = 1001
         if table_name in helper.FOUNDATION or migrated:
@@ -142,6 +144,39 @@ class DestinationSafetyTests(unittest.TestCase):
 
 
 class PreservationTests(unittest.TestCase):
+    def test_current_preview_inventory_is_required_and_stale_inventory_is_refused(self):
+        self.assertEqual(helper.BASE_REVISION, "0102_payment_review_preview")
+        self.assertEqual(helper.HEAD_REVISION, "0105_native_ai_voice_ownership")
+        before, _ = snapshots()
+        inventory = {"read_only": True, "alembic_revisions": [helper.BASE_REVISION], "columns": [
+            {"table_name": name.split(".")[0], "column_name": name.split(".")[1]}
+            for name in before["column_schema"]]}
+        self.assertIn("payment_preview_available", helper.validate_inventory(inventory)["users"])
+        for revision in ("0101_account_deletion_requests", "0102_native_identity_accounts", "0104_native_ai_voice_ownership"):
+            with self.subTest(revision=revision), self.assertRaisesRegex(helper.RehearsalError, "expected_readonly_baseline_inventory"):
+                helper.validate_inventory(inventory | {"alembic_revisions": [revision]})
+        for table_name, column_name in (("users", "payment_preview_payment_id"), ("users", "telegram_id"), ("ai_usage_budgets", "user_telegram_id")):
+            missing = inventory | {"columns": [column for column in inventory["columns"]
+                                               if (column["table_name"], column["column_name"]) != (table_name, column_name)]}
+            with self.subTest(missing=column_name), self.assertRaisesRegex(helper.RehearsalError, "inventory_missing_migration_columns"):
+                helper.validate_inventory(missing)
+
+    def test_receipt_preview_state_must_survive_native_migration_and_backup_restore(self):
+        before, after = snapshots()
+        self.assertTrue(helper.compare_snapshots(before, after, "migration")["ok"])
+        self.assertTrue(helper.compare_snapshots(after, copy.deepcopy(after), "restore")["ok"])
+        for field, value in (("payment_preview_available", True), ("payment_preview_payment_id", None)):
+            with self.subTest(field=field):
+                changed = copy.deepcopy(after)
+                changed["tables"]["users"] = table("users", migrated=True, mutate=lambda row: row.update({field: value}))
+                changed["critical"]["billing"] = helper.digest(KEY, {
+                    name: changed["tables"][name]["migration_legacy_digest"] for name in helper.CRITICAL["billing"]})
+                for mode, source in (("migration", before), ("restore", after)):
+                    result = helper.compare_snapshots(source, changed, mode)
+                    self.assertFalse(result["ok"])
+                    self.assertIn("rows_changed:users", result["failures"])
+                    self.assertFalse(result["critical_values_preserved"]["billing"])
+
     def test_only_lossless_pg18_literal_array_cast_distribution_is_normalized(self):
         source = "CHECK ((status)::text = ANY ((ARRAY['pending'::character varying, 'approved'::character varying])::text[]))"
         restored = "CHECK ((status)::text = ANY (ARRAY[('pending'::character varying)::text, ('approved'::character varying)::text]))"

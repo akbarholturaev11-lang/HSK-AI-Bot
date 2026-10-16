@@ -142,7 +142,7 @@ availability and the remaining Telegram-only actions.
 
 ## Schema and rollout
 
-1. Apply `alembic upgrade head` through `0104_native_ai_voice_ownership` using
+1. Apply `alembic upgrade head` through `0105_native_ai_voice_ownership` using
    the normal deployment migration process before releasing new clients.
 2. Deploy the backend and then the tested Android/desktop clients. No new
    provider secret or redirect URI is introduced by this feature.
@@ -155,12 +155,18 @@ availability and the remaining Telegram-only actions.
 
 Migration details:
 
-- `0102`: nullable real Telegram metadata on users/devices, selected language
+- `0103` (after `0102_payment_review_preview`): nullable real Telegram metadata on users/devices, selected language
   and identity/session proof snapshots on link requests. Existing pending link
   proofs without a session snapshot expire and must be started again.
-- `0103`: nullable transport metadata, canonical-owner backfill and canonical
+- `0104`: nullable transport metadata, canonical-owner backfill and canonical
   event/notification dedupe keys.
-- `0104`: canonical AI budget/event/voice ownership, backfill and deletion FKs.
+- `0105`: canonical AI budget/event/voice ownership, backfill and deletion FKs.
+
+The existing receipt-preview opportunity and payment pointer survive these
+migrations. Its separate capped budget now records canonical ownership while
+retaining real Telegram compatibility. The preview remains unpaid, does not
+replace an existing paid/referral/Pro-trial window and cannot be claimed through
+the Telegram-only receipt flow by a provider-only account.
 
 Upgrades tolerate an already bootstrapped schema. Downgrades preflight and
 refuse provider-only data rather than discarding accounts or progress. Do not

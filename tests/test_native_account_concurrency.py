@@ -11,6 +11,7 @@ from app.db.base import Base
 from app.db.models.user import User
 from app.db.models.user_identity import UserIdentity
 from app.services.desktop_auth_service import DesktopAuthService
+from app.services.entitlements.state import EntitlementState, has_full_access, resolve_state
 from app.services.identity_link_service import IdentityLinkError, IdentityLinkService
 from tests.test_native_oauth_api import _settings, _verified
 
@@ -61,7 +62,23 @@ class NativeAccountConcurrencyTests(unittest.IsolatedAsyncioTestCase):
         # Both verified claims have the same email; it must not merge the accounts.
         self.assertNotEqual(user_ids['google'], user_ids['apple'])
         async with self.sessions() as session:
-            self.assertEqual((await session.execute(select(func.count(User.id)))).scalar_one(), 2)
+            users = list((await session.execute(select(User))).scalars())
+            self.assertEqual(len(users), 2)
+            users_by_id = {user.id: user for user in users}
+            for provider, user_id in user_ids.items():
+                with self.subTest(provider=provider, policy='starter'):
+                    user = users_by_id[user_id]
+                    self.assertIsNone(user.telegram_id)
+                    self.assertTrue(user.payment_preview_available)
+                    self.assertIsNone(user.payment_preview_payment_id)
+                    self.assertEqual((user.status, user.payment_status), ('trial', 'none'))
+                    self.assertIsNone(user.start_date)
+                    self.assertIsNone(user.end_date)
+                    self.assertFalse(user.trial_used)
+                    self.assertIsNone(user.pro_trial_started_at)
+                    self.assertIsNone(user.pro_trial_ends_at)
+                    self.assertEqual(resolve_state(user), EntitlementState.FREE)
+                    self.assertFalse(has_full_access(resolve_state(user)))
             identities = list((await session.execute(select(UserIdentity))).scalars())
             self.assertEqual(len(identities), 2)
             service = IdentityLinkService(session, _settings())
@@ -70,7 +87,6 @@ class NativeAccountConcurrencyTests(unittest.IsolatedAsyncioTestCase):
                 [(provider, service.subject_hash(provider, subject), user_ids[provider])
                  for provider, subject in subjects.items()],
             )
-            self.assertEqual(list((await session.execute(select(User.telegram_id))).scalars()), [None, None])
 
     async def test_parallel_unlinks_wait_for_account_lock_and_keep_one_method(self):
         async with self.sessions() as session:

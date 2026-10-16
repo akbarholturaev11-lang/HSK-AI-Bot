@@ -2,8 +2,8 @@
 from alembic import op
 import sqlalchemy as sa
 
-revision = "0102_native_identity_accounts"
-down_revision = "0101_account_deletion_requests"
+revision = "0103_native_identity_accounts"
+down_revision = "0102_payment_review_preview"
 branch_labels = None
 depends_on = None
 

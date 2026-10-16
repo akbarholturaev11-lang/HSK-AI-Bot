@@ -215,7 +215,7 @@ class NativeAccountLiveTransportTests(unittest.TestCase):
 
 class NativeAIVoiceMigrationTests(unittest.TestCase):
     def setUp(self):
-        path = Path(__file__).resolve().parents[1] / "alembic/versions/0104_native_ai_voice_ownership.py"
+        path = Path(__file__).resolve().parents[1] / "alembic/versions/0105_native_ai_voice_ownership.py"
         spec = importlib.util.spec_from_file_location("native_ai_voice_migration", path)
         self.migration = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(self.migration)
