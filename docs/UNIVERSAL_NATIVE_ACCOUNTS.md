@@ -5,6 +5,54 @@ Google and Apple can each be a first sign-in method. Provider availability
 still depends on existing server credentials and the registered application
 and redirect configuration in `OAUTH_SETUP.md`.
 
+## Release hold
+
+The owner requires all seven acceptance conditions below to be verified before
+merging or pushing this feature to `main`, deploying it, or opening registration
+to general use. Passing isolated tests does not waive missing product behavior
+or real provider/staging checks. Keep the feature on `codex/universal-sign-in`
+until the evidence is complete.
+
+| Required condition | Current evidence and remaining gate |
+| --- | --- |
+| Existing Telegram Pro, XP, lessons, rating and payments stay unchanged | Backend and Android regression suites pass; a representative existing-account comparison on the staging copy is still required. |
+| Google/Apple users without Telegram can register, start a lesson, use AI Voice and buy Pro | Signup/learning/AI/voice have integration coverage. Provider-only Pro checkout is currently unavailable (`payment_telegram_required`); real provider and purchase tests remain required. |
+| Parallel registration for one Google/Apple identity creates one `users.id` | Real PostgreSQL concurrency tests pass; retain this check in CI and the staging rehearsal. |
+| Linking cannot grant access to another learner's Pro or progress | Ownership and identity/session revocation regressions cover isolation; verify the complete staged client flow as well. |
+| A blocked account cannot evade its restriction through Google/Apple | Both-provider API tests cover blocking before verification and between approval and token consumption; refresh/revoked-proof protections also pass. Real staged provider walkthroughs remain required. |
+| Android, desktop and Telegram Mini App show the same account data | A backend integration test checks explicitly linked Android/Windows/macOS logins plus MiniApp profile data share Pro, lesson progress, XP and rating. Installed-client comparison remains required. A Telegram-free account cannot authenticate a Telegram Mini App without a real Telegram identity. |
+| Migrations pass on a staging copy matching the real schema, and backup restore succeeds | Disposable-database migration tests pass. No deployed staging-copy or backup-restore rehearsal has been completed. |
+
+The inspected Railway project currently has a production environment only.
+Do not run feature migrations or test registrations against production to fill
+the staging evidence gap. Do not describe the feature as launch-ready until
+all rows have dated, reproducible evidence.
+
+Read-only production schema inspection on 2026-10-16 found PostgreSQL 18 and
+Alembic revision `0101_account_deletion_requests`. `users.telegram_id` and
+`desktop_devices.telegram_id` are still required. `payments` still requires
+`user_telegram_id` and has no canonical `user_id`. This is schema inventory,
+not a staging migration or a backup-restore test.
+
+### Outstanding purchase implementation
+
+Provider-only purchase requires an end-to-end canonical ownership change;
+simply removing the Telegram guard is unsafe. Payment drafts/history/status,
+admin approval/rejection, paid-term activation, paid AI budgets and device
+notifications must all resolve the same authenticated `users.id`. A NULL
+Telegram field must never select another provider-only user's payment or
+notification device. Preserve prices, discounts, approval policy, renewal
+dates and financial retention; financial records must not disappear through
+a new cascading account-owner FK.
+
+Android Play is currently consumption-only, with no BillingClient, backend
+purchase-token verification or configured store-product integration. Direct
+and desktop manual payment support does not prove Play in-app purchasing.
+Play purchase acceptance requires configured products/testers, real store
+verification and acknowledgement, replay/account-binding checks and
+subscription lifecycle reconciliation. See the official
+[Play Billing integration guide](https://developer.android.com/google/play/billing/integrate.html).
+
 ## Identity and access
 
 - Google/Apple creation follows the existing signature, issuer, audience,
@@ -88,9 +136,30 @@ database and disposable per-test schemas through
 ```sh
 python -m unittest tests.test_native_account_signup tests.test_native_account_migration \
   tests.test_native_account_learning tests.test_native_account_ai_voice \
-  tests.test_native_account_lifecycle tests.test_desktop_provider_accounts
+  tests.test_native_account_lifecycle tests.test_desktop_provider_accounts \
+  tests.test_native_account_acceptance
 python -m unittest tests.test_native_account_concurrency
 ```
+
+Validation on 2026-10-16, integrated source commit `2b6d87ed`:
+
+- Backend regression selection: 933 tests and 679 subtests passed.
+- New backend CI selection against isolated PostgreSQL: 44 tests passed,
+  including concurrent registration and identity-change tests.
+- Additional acceptance/security selection: 65 tests and 15 subtests passed,
+  including both-provider block boundaries and legacy paid-account data
+  shared across native APIs and the MiniApp profile service. OIDC verification
+  is mocked in this selection.
+- Android Direct/Play: 1009 unit tests, 26 native Compose checks, nine static
+  gates and four app/test APK builds passed.
+- Shared desktop: 29 JavaScript contracts, 24 Rust tests and five focused
+  browser authentication checks passed. Five unrelated failures in the full
+  desktop browser suite also reproduce on the previous deletion baseline;
+  the full desktop browser suite is not green.
+
+These checks do not satisfy the outstanding release gates above. In
+particular, a safe error for unsupported checkout is not a successful Pro
+purchase, and a mocked voice/provider response is not a real service test.
 
 Native and browser fixtures do not prove real provider console configuration,
 deployed migration status or signed store/installer release. Those checks

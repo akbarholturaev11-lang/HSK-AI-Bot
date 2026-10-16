@@ -30,6 +30,7 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 - Migrations `0102`–`0104` make Telegram metadata nullable, backfill canonical owners, add canonical dedupe constraints and AI/voice FKs. Downgrade refuses native data. Existing starter access policy, paid dates, trial eligibility, billing amounts and referral rules remain authoritative.
 - Identity changes serialize on the user row and cannot remove the last sign-in method. Approved sign-in proofs retain the exact identity ID; native link proofs retain their originating session ID and are revalidated before use. Blocked accounts cannot refresh; raw session validation remains available for the narrow account-deletion path.
 - Existing manual payment and referral flows still require a real Telegram identity and return explicit availability errors for provider-only accounts. This does not introduce store billing or automatic Telegram attachment. Rollout/test details: `docs/UNIVERSAL_NATIVE_ACCOUNTS.md`.
+- Universal-registration release is on hold: do not merge/push it to `main` or open registration until all seven owner acceptance gates in `docs/UNIVERSAL_NATIVE_ACCOUNTS.md` are evidenced, including Telegram-free Pro purchase, existing-account and cross-client parity, and real-schema staging migration plus backup restore. Unit/integration fixtures alone do not satisfy real provider/staging checks.
 
 ## Important decisions and operational caveats
 
