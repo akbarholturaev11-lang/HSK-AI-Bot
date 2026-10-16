@@ -4,6 +4,7 @@ from aiogram.types import CallbackQuery
 from app.repositories.payment_repo import PaymentRepository
 from app.repositories.user_repo import UserRepository
 from app.services.subscription_service import SubscriptionService
+from app.services.payment_review_preview_service import PaymentReviewPreviewService
 from app.services.payment_notify_service import PaymentNotifyService
 from app.services.partner_service import PartnerService
 from app.services.conversion_funnel_service import ConversionFunnelService
@@ -188,6 +189,7 @@ async def admin_payment_reject_handler(callback: CallbackQuery, session):
     user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
     if user and payment.plan_type != HSK30_UNLOCK_PLAN_TYPE:
         await user_repo.set_selected_plan_type(user, None)
+        await PaymentReviewPreviewService(session).review(user, payment, approved=False)
     await session.commit()
     await ConversionFunnelService().record(
         event_name=(
@@ -264,6 +266,7 @@ async def admin_payment_reject_with_reason_handler(callback: CallbackQuery, sess
     user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
     if user:
         await user_repo.set_selected_plan_type(user, None)
+        await PaymentReviewPreviewService(session).review(user, payment, approved=False)
     await session.commit()
     await ConversionFunnelService().record(
         event_name="payment_rejected",
