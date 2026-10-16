@@ -169,7 +169,7 @@ class PaymentReviewPreviewTests(unittest.IsolatedAsyncioTestCase):
             await preview.review(user, payment, approved=False)
             self.assertEqual(UserAccessStateService.classify(user), UserAccessState.PAID)
             self.assertEqual(user.payment_status, "approved")
-            self.assertGreater(user.end_date, datetime.now(timezone.utc))
+            self.assertGreater(AIUsageBudgetService(session)._as_utc(user.end_date), datetime.now(timezone.utc))
 
     async def test_preview_budget_is_not_unlimited_after_exhaustion(self):
         async with self.sessions() as session:
