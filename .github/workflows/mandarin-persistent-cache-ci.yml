@@ -1,0 +1,38 @@
+name: Mandarin persistent local TTS cache
+
+on:
+  push:
+    branches:
+      - feat/persist-dynamic-mandarin-audio-20261014
+  pull_request:
+    paths:
+      - app/static/audio/words-client.js
+      - app/static/course-v3.html
+      - app/static/course_v3_*.html
+      - app/static/hsk-lugat.html
+      - scripts/check_offline_audio_client.cjs
+      - tests/test_offline_hsk_audio.py
+
+permissions:
+  contents: read
+
+jobs:
+  persistent-cache-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Simulate IndexedDB, offline re-open, server miss, and iOS first play
+        run: node scripts/check_offline_audio_client.cjs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install TTS regression dependencies
+        run: python -m pip install edge-tts==7.2.8 httpx==0.28.1
+      - name: Run Mandarin audio and Mini App regressions
+        run: |
+          python -m unittest -v tests.test_miniapp_tts_first_listen tests.test_offline_hsk_audio tests.test_tts_service
+          python -m py_compile app/services/tts_service.py

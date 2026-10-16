@@ -1,73 +1,29 @@
-# Mistake review replay contract fix
+# Mistake review listening contract
 
-## Problem
-`Xatolarim` review can currently emit a listening task with answer options but without playable audio. The backend treats `sentence` as sufficient context for a listening prompt, while the Mini App only renders the audio control when `audio_text` exists.
+Status (2026-10-15 source audit): the missing-audio replay bug is fixed in
+`CourseMistakeService._review_question`. The regression file
+`tests/test_mistake_review_contract.py` passes all 10 tests. This records local
+source behavior; it does not claim a separate production rollout.
 
-## Root cause
-In `CourseMistakeService._review_question` the current guard is effectively:
+## Current invariants
 
-```python
-if (needs_listen or needs_fill) and not sentence and not audio_text:
-    return None
-```
+- A `listening_choice` mistake is replayable only when `audio_text` exists. A
+  sentence alone cannot stand in for the audio prompt.
+- Fill and dialog-cloze tasks need a visible sentence/context or playable audio.
+- Listening prompts hide pinyin before the learner answers. Old records that
+  copied the spoken answer into `sentence` have that duplicate answer removed.
+- The immutable review-session snapshot preserves `material_version`,
+  `material_ref`, `format`, `language`, and the interaction content required to
+  replay the task.
+- If required source material is missing or the format cannot be reproduced,
+  the task is skipped instead of being converted into a different question.
 
-For `listening_choice`, a non-empty `sentence` therefore allows the question through even when `audio_text` is empty.
+Relevant source: `app/services/course_mistake_service.py`.
 
-The immutable retry snapshot also drops interaction metadata (`format`, `language`, `material_version`, `material_ref`), so a retry cannot reliably validate or reproduce the original interaction contract.
-
-## Required code change
-Patch `app/services/course_mistake_service.py`:
-
-1. Listening tasks MUST require `audio_text`; a sentence is never a substitute for audio.
-2. Fill/dialog tasks may continue to require their visible sentence/context as appropriate.
-3. Preserve these fields in `_review_session_question`:
-   - `material_version`
-   - `material_ref`
-   - `format`
-   - `language`
-4. Never issue an unanswerable task. If required material is missing, skip it and select another mistake from the candidate pool.
-
-Recommended guard:
-
-```python
-if needs_listen and not audio_text:
-    return None
-if needs_fill and not sentence and not audio_text:
-    return None
-```
-
-Recommended snapshot additions:
-
-```python
-"material_version": int(question.get("material_version") or MISTAKE_REVIEW_MATERIAL_VERSION),
-"material_ref": cls._text(question.get("material_ref"), 160),
-"format": cls._text(question.get("format"), 64),
-"language": cls._language(question.get("language")),
-```
-
-## Regression tests
-`tests/test_mistake_review_contract.py` was added and must pass. It locks three invariants:
-
-- listening + sentence + no audio => not reviewable;
-- listening + audio => audio preserved and pinyin hidden before answer;
-- retry snapshot preserves the interaction contract.
-
-## Local validation
-Run on `codex/local-ai` after syncing this cloud branch:
+Verify after changing this contract:
 
 ```bash
-python -m unittest tests.test_mistake_review_contract tests.test_course_mistake_service
-python -m py_compile app/services/course_mistake_service.py
-graphify update .
+venv_311/bin/python -m pytest tests/test_mistake_review_contract.py -q
 ```
 
-Then verify the Mini App manually:
-
-- open `Xatolarim`;
-- start review containing a listening mistake;
-- confirm the audio button is present and speaks the original `audio_text`;
-- confirm no listening question can be shown without audio;
-- retry the same review and confirm the same interaction type/material is preserved.
-
-## Branch discipline
-Cloud changes stay on `codex/cloud-ai` until local tests pass. Do not push this contract change to `main` before validation.
+A passing test checks the replay contract, not the production deployment.

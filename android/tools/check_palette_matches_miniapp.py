@@ -28,6 +28,7 @@ COLORS = ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "pomp" / "
 MAPPING = {
     "LightPaper": "hsk-paper",
     "LightPaperRaised": "hsk-paper-raised",
+    "LightCardSurface": "hsk-card-surface",
     "LightInk": "hsk-ink",
     "LightInkSecondary": "hsk-ink-secondary",
     "LightInkDisabled": "hsk-ink-disabled",

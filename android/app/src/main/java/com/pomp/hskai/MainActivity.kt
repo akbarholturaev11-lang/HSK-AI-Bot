@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.activity.ComponentActivity
@@ -38,6 +39,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -67,6 +69,10 @@ import com.pomp.hskai.core.navigation.SessionViewModelStoreOwner
 import com.pomp.hskai.core.navigation.toTab
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.feature.auth.LinkScreen
+import com.pomp.hskai.feature.feedback.BugReportDialog
+import com.pomp.hskai.feature.feedback.BugReportIntroSheet
+import com.pomp.hskai.feature.feedback.ShakeToReport
+import com.pomp.hskai.feature.feedback.captureReportScreen
 import com.pomp.hskai.feature.onboarding.NotificationPrimerScreen
 import com.pomp.hskai.feature.auth.LinkViewModel
 import com.pomp.hskai.feature.assistant.AssistantModalBottomSheet as ModalBottomSheet
@@ -88,6 +94,7 @@ import com.pomp.hskai.feature.profile.IdentitiesViewModel
 import com.pomp.hskai.feature.profile.IdentitiesViewModelFactory
 import com.pomp.hskai.feature.profile.ProfileScreen
 import com.pomp.hskai.feature.profile.ProfileSettingsViewModel
+import com.pomp.hskai.feature.profile.AccountDeletionViewModel
 import com.pomp.hskai.feature.profile.ProfileViewModel
 import com.pomp.hskai.feature.profile.labelRes
 import com.pomp.hskai.feature.offline.OfflineBanner
@@ -309,7 +316,7 @@ private fun AppRoot(
                 }
             }
             if (!localeReady) {
-                SplashScreen()
+                LaunchWaitScreen()
                 return
             }
             val sessionOwner = rememberSessionViewModelStoreOwner()
@@ -391,6 +398,11 @@ private fun AppRoot(
                 ),
             )
             val settingsState by settingsViewModel.state.collectAsStateWithLifecycle()
+            val accountDeletionViewModel: AccountDeletionViewModel = viewModel(
+                viewModelStoreOwner = sessionOwner,
+                factory = AccountDeletionViewModel.Factory(app.accountDeletionRepository),
+            )
+            val accountDeletionState by accountDeletionViewModel.state.collectAsStateWithLifecycle()
             val settingsReload by settingsViewModel.reload.collectAsStateWithLifecycle()
             var languagePickerOpen by remember { mutableStateOf(false) }
             var dictionaryOpen by remember { mutableStateOf(false) }
@@ -429,7 +441,11 @@ private fun AppRoot(
                 onDispose { widgetLifecycle.removeObserver(observer) }
             }
             LaunchedEffect(widgetForegroundTick, offline) {
-                if (widgetForegroundTick > 0 && !offline) courseViewModel.load()
+                if (widgetForegroundTick > 0 && !offline) {
+                    courseViewModel.load()
+                    // External Pro grants/expiry must reach the shared access refresh effect.
+                    profileViewModel.load()
+                }
             }
 
             // Onboarding uses the same full-screen widget prompt as the daily reminder.
@@ -702,6 +718,59 @@ private fun AppRoot(
             var ratingChallengesOpen by rememberSaveable { mutableStateOf(false) }
             var ratingUserOpen by remember { mutableStateOf<RatingEntryDto?>(null) }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
+            val bugReportRootView = LocalView.current
+            // Start the sensor only after the saved preference has loaded, so a
+            // previously disabled gesture cannot briefly activate at app startup.
+            val shakeToReportEnabled by app.appSettings.shakeToReport
+                .collectAsStateWithLifecycle(initialValue = false)
+            var bugReportOpen by remember { mutableStateOf(false) }
+            var bugReportIntroVisible by remember { mutableStateOf(false) }
+            var bugReportCapturing by remember { mutableStateOf(false) }
+            var introCaptureGeneration by remember { mutableStateOf(0) }
+            var bugReportScreenshot by remember { mutableStateOf<Bitmap?>(null) }
+            var bugReportSource by remember { mutableStateOf("") }
+
+            // Opening the Settings entry goes directly to the form, but a
+            // shake must first show the compact confirmation bottom sheet.
+            val openBugReport: (Bitmap?) -> Unit = { settingsSnapshot ->
+                if (!bugReportOpen && !bugReportIntroVisible && !bugReportCapturing) {
+                    bugReportCapturing = true
+                    scope.launch {
+                        bugReportSource = selectedTab.name.lowercase()
+                        bugReportScreenshot = settingsSnapshot
+                            ?: captureReportScreen(bugReportRootView)
+                        bugReportCapturing = false
+                        bugReportOpen = true
+                    }
+                }
+            }
+            ShakeToReport(
+                enabled = shakeToReportEnabled &&
+                    !bugReportOpen && !bugReportIntroVisible && !bugReportCapturing,
+                onShake = {
+                    if (!bugReportOpen && !bugReportIntroVisible && !bugReportCapturing) {
+                        // Present the FIRST sheet immediately. Keep it in place
+                        // while screenshot capture loads instead of leaving the
+                        // app unresponsive for up to the PixelCopy timeout.
+                        bugReportSource = selectedTab.name.lowercase()
+                        bugReportCapturing = true
+                        bugReportIntroVisible = true
+                        introCaptureGeneration += 1
+                        val captureGeneration = introCaptureGeneration
+                        scope.launch {
+                            // PixelCopy targets the Activity window, not the
+                            // sheet's separate window, so the overlay stays
+                            // outside the captured image.
+                            val snapshot = captureReportScreen(bugReportRootView)
+                            if (bugReportIntroVisible &&
+                                captureGeneration == introCaptureGeneration) {
+                                bugReportScreenshot = snapshot
+                                bugReportCapturing = false
+                            }
+                        }
+                    }
+                },
+            )
 
             // Course refreshes server flags on return; secondary tabs keep
             // their existing lazy-load policy.
@@ -1055,7 +1124,7 @@ private fun AppRoot(
                     },
                 )
             } else if (onboardingState.loading && !onboardingUnknown) {
-                SplashScreen()
+                LaunchWaitScreen()
             } else if (!onboardingState.completed && !onboardingUnknown) {
                 OnboardingScreen(
                     language = currentLanguage,
@@ -1295,6 +1364,7 @@ private fun AppRoot(
                 val voiceCallActive = selectedTab == MainTab.VOICE &&
                     voiceState.hasSession &&
                     voiceState.result == null
+                val practiceImmersive = selectedTab == MainTab.PRACTICE && practiceState.isImmersive
 
                 // Kurs is the home screen: back from any other tab lands on it,
                 // and only back from Kurs leaves the app. Registered before the
@@ -1307,9 +1377,18 @@ private fun AppRoot(
                     MainScaffold(
                         selectedTab = selectedTab,
                         onTabSelected = {
-                            if (it == MainTab.PRACTICE) openPracticeTab() else selectedTab = it
+                            when (it) {
+                                MainTab.PRACTICE -> openPracticeTab()
+                                MainTab.RATING -> {
+                                    // The bottom Rating button is always the league entry.
+                                    // Profile Friends is the separate referral entry.
+                                    ratingViewModel.selectTab(RatingTab.LEAGUE)
+                                    selectedTab = MainTab.RATING
+                                }
+                                else -> selectedTab = it
+                            }
                         },
-                        bottomBarVisible = !voiceCallActive,
+                        bottomBarVisible = !voiceCallActive && !practiceImmersive,
                         topNotice = reconnect?.let { retry ->
                             { OfflineBanner(retrying = retry.retrying, onRetry = retry::retryNow) }
                         },
@@ -1466,6 +1545,8 @@ private fun AppRoot(
                                     widgetSetupOpen = true
                                 },
                                 onOpenSupport = { url -> openExternal(context, url) },
+                                onReportProblem = openBugReport,
+                                reportVisible = bugReportOpen || bugReportIntroVisible,
                                 onRefresh = profileViewModel::load,
                                 onLogout = { signOut(false) },
                                 onUnlinkDevice = { signOut(true) },
@@ -1474,6 +1555,16 @@ private fun AppRoot(
                                 hsk30Enabled = courseState.map?.hsk30?.access?.featureEnabled == true,
                                 hsk30IsNew = courseState.map?.hsk30?.newBadge?.isNew == true,
                                 hsk30LiveLevels = courseState.map?.hsk30?.liveLevels.orEmpty(),
+                                hsk30 = courseState.map?.hsk30,
+                                onOpenApps = {
+                                    openExternal(
+                                        context,
+                                        BuildConfig.API_ORIGIN.trimEnd('/') + "/desktop-" + "down" + "load?lang=" + currentLanguage,
+                                    )
+                                },
+                                onOpenCourse = { selectedTab = MainTab.COURSE },
+                                onUnlockHsk30 = ::openHsk30ContentGate,
+                                onStartTrial = profileViewModel::startTrial,
                                 onSwitchCourseTrack = courseViewModel::switchCourseTrack,
                                 modifier = contentModifier,
                                 identities = identitiesState,
@@ -1488,6 +1579,10 @@ private fun AppRoot(
                                     checkoutVisible = true
                                 },
                                 subscriptionCheckoutAvailable = BuildConfig.FLAVOR == "direct",
+                                accountDeletion = accountDeletionState,
+                                onRequestAccountDeletion = accountDeletionViewModel::open,
+                                onConfirmAccountDeletion = accountDeletionViewModel::confirm,
+                                onDismissAccountDeletion = accountDeletionViewModel::dismiss,
                             )
                         }
                     }
@@ -1656,6 +1751,38 @@ private fun AppRoot(
                         }
                     },
                     containerColor = PompColors.Paper,
+                )
+            }
+            if (bugReportIntroVisible) {
+                BugReportIntroSheet(
+                    loading = bugReportCapturing,
+                    shakeEnabled = shakeToReportEnabled,
+                    onShakeChanged = { enabled ->
+                        scope.launch { app.appSettings.setShakeToReport(enabled) }
+                    },
+                    onContinue = {
+                        if (!bugReportCapturing) {
+                            bugReportIntroVisible = false
+                            bugReportOpen = true
+                        }
+                    },
+                    onDismiss = {
+                        introCaptureGeneration += 1
+                        bugReportIntroVisible = false
+                        bugReportScreenshot = null
+                        bugReportCapturing = false
+                    },
+                )
+            }
+            if (bugReportOpen) {
+                BugReportDialog(
+                    repository = app.featureRepository,
+                    screenshot = bugReportScreenshot,
+                    screen = bugReportSource,
+                    onDismiss = {
+                        bugReportOpen = false
+                        bugReportScreenshot = null
+                    },
                 )
             }
         }
@@ -1970,6 +2097,20 @@ private fun rememberSessionViewModelStoreOwner(): SessionViewModelStoreOwner {
         onDispose(owner::clear)
     }
     return owner
+}
+
+/**
+ * After the one-time 2,920ms Golden Logo finishes, leave its complete final
+ * frame on screen until the authenticated content finishes loading. No second
+ * startup animation or second audio/haptic event is allowed.
+ */
+@Composable
+private fun LaunchWaitScreen() {
+    Surface(color = PompColors.Paper, modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            HskBrandLoader(launch = true, holdLaunchFrame = true)
+        }
+    }
 }
 
 @Composable

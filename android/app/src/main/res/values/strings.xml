@@ -7,6 +7,18 @@
     never rename the folder and never send "tg" to the API.
 -->
 <resources>
+    <!-- Opt-in native issue reporting -->
+    <string name="bug_report_title">Muammo haqida xabar berish</string>
+    <string name="bug_report_question">Nima sodir bo‘ldi?</string>
+    <string name="bug_report_hint">Muammoni batafsil yozing...</string>
+    <string name="bug_report_screenshot">Skrinshot qo‘shish</string>
+    <string name="bug_report_no_screenshot">Ekran suratini avtomatik olish imkoni bo‘lmadi. Galereyadan tanlang yoki skrinshotni o‘chiring.</string>
+    <string name="bug_report_privacy">Skrinshot yuborish oldindan yoqilgan. Undagi shaxsiy ma’lumotlarni tekshiring; istasangiz o‘chirishingiz mumkin.</string>
+    <string name="bug_report_send">Xabar yuborish</string>
+    <string name="bug_report_failed">Xabar yuborilmadi. Internetni tekshirib, qayta urinib ko‘ring.</string>
+    <string name="bug_report_success">Xabaringiz qabul qilindi. Rahmat!</string>
+    <string name="bug_report_shake">Xabar berish uchun telefonni silkiting</string>
+    <string name="bug_report_shake_summary">Faqat ilova ochiq turganda ishlaydi</string>
     <!-- Brand name and language endonyms are shown identically in every
          locale, so they are deliberately not translated. Without this, lint's
          MissingTranslation check fails the build. -->
@@ -283,6 +295,7 @@
     <string name="rating_league_name">%1$s ligasi</string>
     <string name="rating_members">%1$d o‘quvchi</string>
     <string name="rating_time_left">qoldi</string>
+    <string name="rating_weekly_top_five">Haftalik reyting · Top 5</string>
     <string name="rating_promote">Top %1$d yuqoriga chiqadi</string>
     <string name="rating_empty">Reyting hali shakllanmagan.</string>
     <string name="rating_friends_empty">Hozircha taklif qilingan do‘st yo‘q.</string>
@@ -425,6 +438,12 @@
     <string name="lesson_pinyin_all">Hammasida ko‘rsatish</string>
     <string name="lesson_pinyin_new">Faqat yangi so‘zlarda</string>
     <string name="lesson_pinyin_off">Yashirish</string>
+    <string name="profile_accuracy_overall">Umumiy</string>
+    <string name="profile_accuracy_today">Bugun</string>
+    <string name="profile_accuracy_count">%1$d baholangan javob</string>
+    <string name="profile_accuracy_note">Faqat tekshirilgan javoblar · eski tarix to‘liq bo‘lmasligi mumkin</string>
+    <string name="profile_buy_pro">Pro olish</string>
+    <string name="profile_access_trial">✦ Pro · Sinov</string>
     <string name="profile_calendar_title">Ketma-ket kunlar</string>
     <string name="profile_achievements">Yutuqlar</string>
     <string name="profile_ach_first">Birinchi qadam</string>
@@ -591,4 +610,32 @@
     <string name="course_choice_level">Daraja</string>
     <string name="course_choice_note">Versiyalar o‘rtasida o‘qigan joyingiz saqlanadi. Boshqa darajani tanlash shu versiya progressini qaytadan boshlaydi.</string>
     <string name="course_choice_confirm">Tasdiqlash</string>
+
+    <!-- Shared limit sheet: Android / Telegram Mini App visual parity -->
+    <string name="limit_sheet_heading">Davom etishga tayyormisiz?</string>
+    <string name="limit_sheet_get_pro">HSK AI Pro ⭐ olish</string>
+    <string name="limit_sheet_check_access">Kirish huquqini tekshirish</string>
+    <string name="limit_sheet_reason_fallback">%1$s bo‘limida bepul limit tugadi. Pro bilan davom eting.</string>
+    <string name="limit_sheet_lesson_title">Darslarni tanaffussiz davom ettiring</string>
+    <string name="limit_sheet_lesson_desc">HSK kursidagi keyingi darslar va mashqlarga Pro orqali o‘ting.</string>
+    <string name="limit_sheet_practice_title">Mashqlar bilan bilimingizni mustahkamlang</string>
+    <string name="limit_sheet_practice_desc">Pro bilan mashqlar va takrorlashda kunlik limit to‘xtatmaydi.</string>
+    <string name="limit_sheet_test_title">Imtihonga ishonch bilan boring</string>
+    <string name="limit_sheet_test_desc">Ko‘proq test ishlang va qaysi mavzularni mustahkamlashni biling.</string>
+    <string name="limit_sheet_mistakes_title">Xatolaringiz ustida qayta ishlang</string>
+    <string name="limit_sheet_mistakes_desc">Har bir xatoni tahlil qilib, o‘xshash savollar bilan mashq qiling.</string>
+    <string name="limit_sheet_voice_title">Xitoycha erkinroq gapiring</string>
+    <string name="limit_sheet_voice_desc">AI Voice bilan suhbat mashqlarini limitsiz davom ettiring.</string>
+    <string name="limit_sheet_pron_title">Talaffuzingizni yaxshilang</string>
+    <string name="limit_sheet_pron_desc">So‘zlarni qayta aytib, talaffuzni mashq qiling.</string>
+    <string name="limit_sheet_recognition_title">Ierogliflarni tezroq taning</string>
+    <string name="limit_sheet_recognition_desc">Ieroglif tanish mashqlarini davom ettirib, yodda saqlang.</string>
+    <string name="limit_sheet_memorize_title">Yangi so‘zlarni puxta yodlang</string>
+    <string name="limit_sheet_memorize_desc">Takrorlash mashqlari bilan o‘rgangan so‘zlarni mustahkamlang.</string>
+    <string name="bug_report_intro_title">Xatolik haqida xabar berasizmi?</string>
+    <string name="bug_report_intro_body">Agar ilova noto‘g‘ri ishlayotgan bo‘lsa, bu haqda bizga xabar bering.</string>
+    <string name="bug_report_intro_action">Xatolik haqida xabar berish</string>
+    <string name="bug_report_pick_screenshot">Galereyadan skrinshot tanlash</string>
+    <string name="bug_report_screenshot_required">Skrinshotni tanlang yoki uni yuborishni o‘chiring.</string>
+    <string name="bug_report_thanks_title">Fikringiz uchun rahmat!</string>
 </resources>

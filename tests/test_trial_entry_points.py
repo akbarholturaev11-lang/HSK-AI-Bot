@@ -6,8 +6,8 @@ xususiyat emas. Shu fayl to'rtala kirish nuqtasi joyida turganini tekshiradi:
 * onboardingdan keyingi tanlov ekrani,
 * limitga urilgandagi paywall,
 * obuna sahifasi,
-* profil kartasi (Mini App'da; Android profilidan u 2026-09-20 da olib
-  tashlandi — sabab `ANDROID_CONTEXT.md` §3.5.1 da).
+* profil karuseli (Mini App va Android direct versiyasida).
+  Google Play versiyasida xarid tugmasi yo'q.
 
 Ustiga bitta qat'iy qoida: klient "bu odam trial ola oladimi" degan qarorni
 O'ZI qabul qilmaydi. Bir Telegram akkaunt bir marta trial olishi kerak va
@@ -22,6 +22,7 @@ from pathlib import Path
 COURSE = Path("app/static/course-v3.html").read_text(encoding="utf-8")
 SUBSCRIPTION = Path("app/static/subscription.html").read_text(encoding="utf-8")
 ADS = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
+CAROUSEL = Path("app/static/course_v3_data/profile-carousel.js").read_text(encoding="utf-8")
 
 ANDROID = Path("android/app/src/main/java/com/pomp/hskai")
 ANDROID_MAIN = (ANDROID / "MainActivity.kt").read_text(encoding="utf-8")
@@ -52,61 +53,60 @@ class TrialEntryPointTests(unittest.TestCase):
         # Bir marta ko'rsatiladi.
         self.assertIn("hsk_v3_plan_choice", COURSE)
 
-    def test_the_paywall_offers_the_trial(self):
-        """Dars paywalli ham, mashq paywalli ham trialni taklif qiladi.
-
-        Dars uchun taklif ilgari `startLessonAdGate` ichida edi va o'sha
-        funksiya hech qachon chaqirilmasdi (`lessonNeedsAd()` doim `false`),
-        ya'ni test o'lik kodni tekshirib "o'tyapti" derdi. Endi u odam
-        ko'radigan `paywallHtml` ichida.
-        """
-        self.assertIn(r"App.startTrial(\'paywall_lesson\')", COURSE)
-        self.assertIn("trialStart(\"paywall_practice\")", COURSE)
-        # Reklama o'rniga trial — eski parametr qolmasin.
-        self.assertNotIn("onContinueAd:", COURSE)
-
-    def test_the_lesson_paywall_hides_the_trial_once_it_is_used(self):
-        # Trial olingan bo'lsa yagona tugma obuna bo'lib qoladi.
-        block = COURSE.split("function paywallHtml(ctx)")[1][:1600]
-        self.assertIn("trialEligible()", block)
+    def test_the_lesson_and_practice_limit_paywalls_offer_pro_only(self):
+        # Trial is still available in onboarding/profile, never on a limit sheet.
+        self.assertIn("isLimitPaywallContext(ctx)", COURSE)
+        self.assertIn("!isLimitPaywallContext(ctx)&&trialEligible()", COURSE)
+        self.assertIn('trialStart("paywall_practice")', COURSE)
+        sheet = ADS.split("function showLimitPromo(opts){", 1)[1].split(
+            "/* ============================================================", 1
+        )[0]
+        self.assertIn("els.limitPay.onclick", sheet)
+        self.assertNotIn("trialStatus(", sheet)
+        self.assertNotIn("showTrialButton(", sheet)
+        self.assertNotIn("opts.onTrial", sheet)
 
     def test_the_subscription_checkout_does_not_offer_the_trial(self):
         self.assertNotIn('id="trialOffer"', SUBSCRIPTION)
         self.assertNotIn('"/api/v3/trial/start"', SUBSCRIPTION)
         self.assertNotIn("loadTrial();", SUBSCRIPTION)
 
-    def test_the_profile_shows_a_trial_card(self):
-        """Profilda BITTA HSK AI Pro kartasi.
-
-        Ilgari ikkita qora karta ketma-ket chiqardi — "7 kun bepul" va
-        "Hammasini oching" — ikkalasi ham ayni bitta obuna haqida. Odam
-        ularni ikki xil mahsulot deb o'qirdi.
-        """
-        self.assertIn("function proProfileCard()", COURSE)
-        self.assertIn(r"App.startTrial(\'profile\')", COURSE)
-        # Faol trialda qolgan kun ko'rsatiladi — endi server yorlig'i
-        # (MAP.user.plan) orqali, markaziy dvigateldan.
-        self.assertIn('if(plan==="trial")', COURSE)
-        self.assertIn("trialLeft", COURSE)
+    def test_the_profile_carousel_uses_server_trial_status(self):
+        self.assertIn('id="hsk-profile-promo-root"', COURSE)
+        self.assertIn('var ORDER=["apps","hsk30","pro"]', CAROUSEL)
+        self.assertIn('if(plan==="trial")', CAROUSEL)
+        self.assertIn("trialLeftText(until)", CAROUSEL)
+        self.assertIn("TRIAL_LOADED&&trialEligible()", CAROUSEL)
+        self.assertIn('App.startTrial("profile")', CAROUSEL)
+        self.assertNotIn("function proProfileCard()", COURSE)
 
     def test_the_profile_never_draws_two_subscription_cards(self):
         body = COURSE.split("function renderProfile()")[1][:4000]
-        self.assertEqual(1, body.count("proProfileCard()"))
+        self.assertEqual(1, body.count('<div id="hsk-profile-promo-root"></div>'))
+        self.assertNotIn("proProfileCard()", body)
         self.assertNotIn('<div class="pro"', body)
 
     def test_a_learner_who_used_the_trial_is_offered_only_the_purchase(self):
-        card = COURSE.split("function proProfileCard()")[1][:2400]
-        self.assertIn("canTrial", card)
-        self.assertIn("trialCta", card)
-        self.assertIn("unlockBtn", card)
+        self.assertIn('TRIAL_LOADED&&trialEligible()?t.trialCta:t.unlockBtn', CAROUSEL)
+        self.assertIn('TRIAL_LOADED&&trialEligible()?"trial":"pay"', CAROUSEL)
+        self.assertIn('App.goPay(', CAROUSEL)
+        self.assertIn('if(!TRIAL_LOADED||!trialEligible())return;', CAROUSEL)
+
+    def test_only_explicit_trial_cta_can_start_the_trial(self):
+        # Clicking the body of a trial-eligible Pro card opens checkout;
+        # clicking the dedicated 7-day CTA starts the server-authorised trial.
+        self.assertIn('function doAction(explicitCta){', CAROUSEL)
+        self.assertIn('act.addEventListener("click",function(event){event.stopPropagation();doAction(true)})', CAROUSEL)
+        self.assertIn('if(p.action==="trial"&&explicitCta===true)', CAROUSEL)
+        self.assertIn('App.goPay(p.renew?', CAROUSEL)
+        self.assertNotIn('if(p.action==="trial"){', CAROUSEL)
 
 
 class AndroidOffersTheSameTrialTests(unittest.TestCase):
-    """Android trial faqat foydalanuvchi ehtiyoj sezadigan joyda taklif qilinadi.
+    """Android direct profilidagi ixcham Pro karuseli server trial holatiga amal qiladi.
 
-    Onboardingdan keyin alohida Pro/trial oynasi chiqmaydi. Trial yo'qolgani
-    yo'q: lesson/practice limiti tugagach mavjud limit paywalli server bergan
-    eligibility bo'yicha aynan shu taklifni ko'rsatadi.
+    Onboardingdan keyin majburiy alohida Pro/trial oynasi chiqmaydi.
+    Limit paywalliga va Google Play obuna mexanizmiga tegilmaydi.
     """
 
     def test_onboarding_does_not_interrupt_with_a_plan_choice(self):
@@ -114,29 +114,18 @@ class AndroidOffersTheSameTrialTests(unittest.TestCase):
         self.assertNotIn("planChoiceSeen", ANDROID_MAIN)
         self.assertNotIn('onUnlock("onboarding_plan")', ANDROID_MAIN)
 
-    def test_the_limit_block_offers_the_trial_in_both_channels(self):
-        for name, source in (
-            ("direct", ANDROID_LIMIT_DIRECT),
-            ("play", ANDROID_LIMIT_PLAY),
-        ):
+    def test_the_limit_block_has_one_action_without_trial_in_both_channels(self):
+        for name, source in (("direct", ANDROID_LIMIT_DIRECT), ("play", ANDROID_LIMIT_PLAY)):
             with self.subTest(channel=name):
-                self.assertIn("limit.actions.onStartTrial", source)
-                self.assertIn("R.string.limit_try_trial", source)
+                self.assertNotIn("limit.actions.onStartTrial", source)
+                self.assertNotIn("R.string.limit_try_trial", source)
+                self.assertNotIn("secondaryLabel =", source)
 
-    def test_the_profile_no_longer_carries_its_own_trial_card(self):
-        """2026-09-20: profildagi karta ATAYLAB olib tashlandi.
-
-        Sabab `ANDROID_CONTEXT.md` §3.5.1 da: profil uchta blokdan tozalandi
-        va `TrialCard` shulardan biri edi. Trial yo'qolgani yo'q — limitga
-        urilgandagi paywall uni ikkala flavourda ham taklif qiladi, ya'ni u
-        aynan konversiya bo'ladigan joyda qoladi (yuqoridagi test).
-
-        Bu yerda ikki narsa qotiriladi: karta qaytib kelib qolmasin (u bilan
-        birga `ProfileScreen` ga o'lik `onStartTrial` parametri ham
-        qaytadi), va shu bilan birga trialga YO'L uzilib qolmasin.
-        """
+    def test_profile_has_one_carousel_and_reuses_the_existing_trial_callback(self):
         self.assertNotIn("TrialCard(", ANDROID_PROFILE)
-        self.assertNotIn("onStartTrial", ANDROID_PROFILE)
+        self.assertIn("ProfilePromoCarousel(", ANDROID_PROFILE)
+        self.assertIn("onStartTrial = onStartTrial", ANDROID_PROFILE)
+        self.assertIn("onStartTrial = profileViewModel::startTrial", ANDROID_MAIN)
 
     def test_the_trial_is_still_reachable_from_the_limit_gate(self):
         # Karta ketdi, lekin `startTrial` o'z joyida va `LimitGate` ga

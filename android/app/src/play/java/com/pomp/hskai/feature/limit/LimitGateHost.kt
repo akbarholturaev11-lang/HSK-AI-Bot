@@ -17,8 +17,9 @@ import com.pomp.hskai.data.repository.FeatureRepository
 /**
  * The limit gate for the Google Play channel.
  *
- * This build has no subscription flow of its own and never sends the learner
- * out of the app to pay. It does two things: re-read access from the server,
+ * Today this build is consumption-only, so it never sends the learner out
+ * of the app to pay. This is temporary, NOT a permanent subscription ban:
+ * a future Play Billing implementation may enable native purchases here. It does two things: re-read access from the server,
  * and open support. A subscription bought through any other channel shows up
  * here on the next read, because access is only ever the server's answer.
  *
@@ -64,6 +65,8 @@ fun rememberLimitGate(
             trialEligible = trialEligible,
             trialStarting = trialStarting,
             trialError = trialError,
+            // Consumption-only today; native Google Play Billing can later
+            // expose purchases without routing to the direct checkout.
             canSubscribe = false,
         ),
         actions = LimitGateActions(

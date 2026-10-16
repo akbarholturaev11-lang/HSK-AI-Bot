@@ -1,10 +1,11 @@
 # Android — AI uchun kontekst
 
-Bu fayl yangi chat boshlanganda AI kontekstni tez tiklashi uchun. Jarayon
-(release qanday chiqariladi) — alohida faylda: `ANDROID_RELEASE_CHECKLIST.md`.
-
-Batafsil tarix `PROJECT_MEMORY.md` da, sanalar bo'yicha. Bu yerda faqat
-hozirgi holat va hali ochiq muammolar.
+Bu fayl Android kodi, oqimlari va hozir tekshirilishi kerak bo‘lgan holatlar
+uchun kontekst beradi. Release amallari alohida `ANDROID_RELEASE_CHECKLIST.md`
+da. Sana bilan yozilgan bo‘limlar tarixiy yozuv: eski branch, release,
+production config yoki taskga berilgan ruxsatni bugungi holat deb olmang; yangi
+ishdan oldin tegishli source va amaldagi policy’ni tekshiring. Doimiy project
+kontekst `PROJECT_MEMORY.md`da saqlanadi, u sanali changelog emas.
 
 ---
 
@@ -33,33 +34,47 @@ build'da ekanini bilmay chaqiradi.
 
 ## 2. Hozirgi holat
 
-- Versiya: `android/app/build.gradle.kts` tepasidagi `appVersionName` /
-  `appVersionCode`. **Har release'da `appVersionCode` +1 bo'lishi SHART** —
-  yangilanish faqat shu raqamni solishtiradi.
-- Imzo kaliti: `~/.pomp-hskai/pomp-hskai-release.jks`, parol shu papkadagi
-  `MUHIM-OQING.txt` da. Repodan tashqarida. Yo'qolsa yangilanish chiqmaydi.
-- Tarqatish: bot orqali (APK chatga tushadi) + R2 dagi fayl.
-  `hsk-ai-releases` bucket, `android/v<versiya>/`, public base
-  `https://pub-9b135bd734b04a5e9fe059a4dfd7d804.r2.dev`.
+- Source versiya: `android/app/build.gradle.kts` tepasidagi `appVersionName` /
+  `appVersionCode`. Yangi release uchun `appVersionCode` oshiriladi. Workflow
+  past code’ni rad etadi, lekin teng code’ga faqat byte-identical mavjud
+  artifact rerun’iga ruxsat beradi; yangi build’da teng code’ni oldini
+  oladigan alohida qat’iy guard yo‘q. Chiqarishdagi aniq qadamlar
+  `ANDROID_RELEASE_CHECKLIST.md`da.
+- Release signing: workflow himoyalangan GitHub Actions secrets orqali
+  keystore va parol kutadi; kutiladigan secret nomlari va release tekshiruvi
+  `ANDROID_RELEASE_CHECKLIST.md`da. Source fayllar secret qiymatlari mavjud
+  yoki to‘g‘ri sozlanganini isbotlamaydi; credential qiymati yoki joylashuvini
+  kontekst hujjatlariga yozmang.
+- APK tarqatish workflow’da optional R2 publish va backend release manifesti
+  orqali boshqariladi. Manifest sozlanmagan yoki yaroqsiz bo‘lsa, hujjatdagi
+  bot-admin fallback ishlatilishi mumkin. Joriy bucket, public URL va
+  production manifest qiymatini repo kodi tasdiqlamaydi; release holatini
+  `ANDROID_RELEASE_CHECKLIST.md` va hosting sozlamalaridan tekshiring.
 - Yo'l bitta: bot profilidagi «📱 HSK AI ilovalari» → Mini App profilidagi
   karta (`?tab=profile&desktop_download=1`, karta fokuslanadi) → Android
   chipi (`POST /api/miniapp/event` → `android_apk_to_chat`) → Mini App
   yopiladi, APK chatga tushadi. `/android` buyrug'i va eski xabarlardagi
-  `android_app:get` tugmasi ham ishlayveradi. Saytdagi (`/desktop-download`)
-  Android tugmasi esa faylni to'g'ridan-to'g'ri yuklaydi — u R2 linkini talab
-  qiladi.
+  `android_app:get` tugmasi ham ishlaydi. Saytdagi `/desktop-download` sahifasi
+  Android uchun direct linkni faqat joriy release’da download URL mavjud
+  bo‘lsa ko‘rsatadi; u Telegram `file_id`ning o‘zi bilan link yasamaydi va
+  URL albatta R2 bo‘lishi shart emas. Backendning stable route’i
+  `/downloads/android`; joriy release manbasi `ANDROID_RELEASE_CHECKLIST.md`da.
 - Yangilanishdan xabar berish (faqat `direct`): ilova ochilganda va kuniga bir
   marta fonda `…/android-update/check` so'raladi (`UpdateWatch`). Har release
   uchun **bitta** bildirishnoma (`app_updates_alerts` kanali, `UpdateNotices`), va
   `versionCode` farqi ≥ 2 bo'lsa tab paneli ustida yopib bo'lmaydigan qator
-  (`AppUpdateBanner`). Bitta release qoldirilsa — faqat profildagi karta.
-- Release avtomati: `.github/workflows/android-release.yml` (qo'lda ishga
-  tushiriladi). 2026-09-20 holatiga ko'ra **besh marta muvaffaqiyatli
-  o'tgan** (oxirgisi 1.3.4, versionCode 9), hammasi `main` dan. Ya'ni imzo va R2 sirlari GitHub'da sozlangan
-  va ishlaydi. Release faqat `main` dan chiqariladi: manifest versionCode
-  orqaga ketishini rad etadi, shuning uchun boshqa branch'dan chiqarilgan
-  release keyingi `main` release'ini bloklaydi.
-- Play Market: yo'q. Akkaunt ham ochilmagan.
+  (`AppUpdateBanner`); farq 1 bo'lsa yangilanish faqat profildagi kartada
+  ko‘rsatiladi. Threshold sonli farqni ishlatadi, published release sonini
+  emas; code increment convention workflow’da qat’iy tekshirilmaydi.
+- Release avtomati `.github/workflows/android-release.yml` orqali qo‘lda
+  (`workflow_dispatch`) boshlanadi. Workflow’da `main` branch bilan cheklov
+  yo‘q; manifestdan past `versionCode` rad etiladi. Release tanlash, publish
+  va live holat uchun `ANDROID_RELEASE_CHECKLIST.md`ga qarang — eski Actions
+  natijalari, signing secret’lar yoki production sozlamalari bu faylda
+  current fact sifatida saqlanmaydi.
+- Play flavor va Play release contract kodi repoda bor. Play Console account,
+  listing va tarqatilgan release holati tashqi tizimda; source code buni
+  tasdiqlamaydi.
 
 ### 2026-09-27: obuna va telefon bildirishnomalari (1.6.12 / 27)
 
@@ -157,49 +172,23 @@ ovozi ko'pincha yo'q.
 `ListeningQuestionTest` buni mixlab qo'ydi: 您 ekranda faqat bitta variant
 sifatida uchraydi, ikkita bo'lsa — xato qaytgan.
 
-### 3.2 Mini App va ilova bitta akkauntda boshqa-boshqa narsa ko'rsatadi
+### 3.2 Mini App va Androidda liga nomi farq qiladi — ochiq
 
-Bir foydalanuvchi, bir payt, ikki klient:
+Kunlik maqsad sinxronlanishi va qolgan XP manfiy ko‘rinishi 2026-09-15 da
+tuzatilgan. Eski 45/40 va -5/5 jadvali joriy holat emas. Avvalgi “Sayohat” va
+“Bepul rejim” qatori ham ikki xil maydonni solishtirgan: `travel` — Mini App
+onboardingidagi o‘quv maqsadi, Android `AccessPill` esa obuna holatini ko‘rsatadi.
 
-| | Mini App | Android |
-|---|---|---|
-| Kunlik maqsad | 45 / **40** XP | 45 / **50** XP |
-| Qoldi | **−5** | 5 |
-| Liga | **朱雀** | **Bronze** |
-| Holat | Sayohat | Bepul rejim |
+Liga nomi esa source’da hanuz farq qiladi:
 
-Uchta alohida sabab:
+- Mini App `course-v3.html` uchala tilda ham `朱雀` nomini qattiq yozib ko‘rsatadi.
+- `CourseGamificationService` XP pog‘onasi nomini, masalan `Bronze`, qaytaradi;
+  Android `CourseGamificationDto` va profil pill’i server yuborgan nomni ko‘rsatadi.
 
-**(a) ~~Kunlik maqsad sinxronlanmaydi~~ — TUZATILDI 2026-09-15.** Server
-profilda `daily_goal_xp` saqlaydi va Mini App uni o'qib-yozardi; Android esa
-faqat telefon ichida saqlardi va hech qachon yubormasdi. Endi:
-
-- `AndroidStudyPreferencesRequest` va `set_study_preferences` `daily_goal_xp`
-  qabul qiladi va Mini App bilan **bitta setter**ga beradi
-  (`CourseMiniAppProfileService.set_daily_goal_xp`), ya'ni ikkalasi boshqacha
-  qisqartira olmaydi.
-- Android kurs xaritasi kelganda `studySetup.dailyGoalXp` ni lokal
-  DataStore'ga ko'chiradi — lokal qiymat endi manba emas, **oyna**.
-- Maqsad tanlanganda serverga yuboriladi (`chooseDailyGoalXp`).
-- `DailyGoal.CHOICES` Mini App bilan tenglashtirildi: `[20,30,40,50,80]`.
-  Ilgari `[10,20,30,50]` edi — **40 ni tanlashning iloji yo'q edi**.
-- `DailyGoal.sanitize` endi ro'yxat emas, serverning chegarasi (10..500).
-  Ilgari ro'yxatda yo'q qiymatni jimgina 50 ga aylantirardi — muammoning
-  yarmi aynan shu edi.
-
-**(b) ~~«−5 qoldi»~~ — TUZATILDI 2026-09-15.** `course-v3.html:5303` da
-`(dailyGoal-todayXp)` to'g'ridan-to'g'ri chop etilardi. Endi
-`Math.max(0,...)`. `tests/test_miniapp_daily_goal_left.py` mixlab qo'ydi.
-
-**(c) Liga nomi — Mini App qattiq yozib qo'yilgan.** Server haqiqiy pog'ona
-nomlarini beradi (`app/services/course_gamification_service.py`: `Bronze`,
-...). Android o'shani ko'rsatadi. Mini App esa serverникini e'tiborsiz
-qoldirib, i18n ichidagi `league:"朱雀 ligasi"` ni va `course-v3.html:5132`
-dagi qattiq `朱雀` nishonini chiqaradi.
-
-Qaysi biri to'g'ri ekani — mahsulot qarori. Agar 朱雀 brend bo'lsa, Android
-ham shuni ko'rsatishi kerak; agar pog'ona nomi bo'lsa, Mini App serverdan
-o'qishi kerak. Hozir ikkalasi bir-biriga zid.
+Egasining 2026-10-15 qarori: bular alohida tushuncha bo‘lib qoladi. Mini App
+`朱雀` brend ligasini ko‘rsatadi; Android server hisoblagan XP pog‘onasini
+(`Bronze`, `Silver`, `Gold` va boshqalar) ko‘rsatadi. Ikki yuzadagi nomlarni
+bir xil qilish uchun o‘zgartirmang.
 
 ### 3.3 ~~Ilova sekin ochiladi~~ — TUZATILDI 2026-09-15
 
@@ -1151,46 +1140,22 @@ emulyatorda o'tkazib bo'lmadi — ichki telefonda samolyot rejimida sinash kerak
 - Android'da `Yodlash` ekrani yo'q.
 - Darsni tugatish hali ham internet talab qiladi; offline'da retry CTA'ga
   tushadi. Navbatga qo'yib keyin yuborish yo'q.
-- `versionCode` qo'lda yoziladi va oshirilmaganini hech narsa ushlamaydi.
+- Egasi tanlagan release qoidasi: har bir yangi release `versionCode`ni oxirgi
+  published qiymatdan kattaroq qiladi; aynan `+1` bo‘lishi shart emas. Aynan
+  bir xil APK’ni qayta ishga tushirish mumkin. Workflow past code’ni rad etadi,
+  ammo teng code bilan boshqa artifact’ni alohida bloklamaydi; shu sabab yangi
+  release oldidan published manifest bilan qo‘lda solishtiring.
 
-## 4. YAQINDA TUZATILGAN — lekin hali tarqatilmagan
+## 4. Tarixiy implementation qaydi — R8 serialization muammosi (1.1.0)
 
-### R8 `@Serializable` modellarni o'chirib yuborgan (1.1.0 dagi eng katta xato)
-
-`android/app/proguard-rules.pro` ga qo'shilgan:
-
-```proguard
--keep,allowobfuscation @kotlinx.serialization.Serializable class ** { *; }
-```
-
-Qoidasiz **oltita** model APK'dan butunlay yo'qolgan va ularni qaytaradigan
-har bir so'rov **tarmoqqa chiqmasdan** yiqilgan:
-
-| Model | Qaysi so'rov | Foydalanuvchi nima ko'rgan |
-|---|---|---|
-| `AndroidHintDismissResponse` | `/android/hints/dismiss` | tushuntiruvchi yozuv har kirganda qaytadi |
-| `DrillReportResponse` | `/android/practice/report` | mashq natijasi yozilmaydi → Xatolar/Testlar sonlari zid |
-| `DrillGateResponse` | `/android/practice/gate` | «Ieroglif tanish» ochilmaydi |
-| `AndroidAdViewResponse` | `/android/ad/view` | reklama hisoblanmaydi |
-| `OkResponse` | `/preferences/language`, `/preferences/notifications` | til va bildirishnoma sozlamasi saqlanmaydi |
-| `RevokeResponse` | `/android-auth/revoke` | akkauntni uzish ishlamaydi |
-
-**Qanday tekshirilgan:** qoida bilan va qoidasiz ikkita release build yig'ilib,
-dex ichidagi serial nomlari solishtirilgan — qoidasiz `DrillGateResponse` 0
-marta, qoida bilan 2 marta uchraydi; `data.api` modellari 127 ga qarshi 133.
-Qoidasiz yig'ilgan APK hajmi **3 784 820 bayt** — bu R2 va botdagi hozirgi
-1.1.0 faylning aynan hajmi, ya'ni **tarqatilayotgan build o'sha buzuq build**.
-
-Tekshirishni takrorlash:
-
-```bash
-unzip -p app.apk 'classes*.dex' | strings | grep -c "DrillGateResponse"
-```
-
-**Nega `-if` ishlamaydi:** R8 da `-if` sharti faqat allaqachon «tirik» deb
-topilgan klassga qaraladi. O'chirilgan klassni u qaytara olmaydi. Shuning
-uchun shartsiz `-keep` kerak. `allowobfuscation` nom o'zgarishiga ruxsat
-beradi, ya'ni APK kichik qoladi.
+1.1.0 release davrida R8 `@Serializable` response modellarini olib tashlab,
+API javoblarini o‘qishni buzgan. Hozirgi source’da umumiy keep qoida
+`android/app/proguard-rules.pro`da bor va release build minification’dan
+o‘tadi. Eski 1.1.0 APK hajmi hamda o‘sha paytdagi tarqatish holati tarixiy
+dalil; bugungi APK yoki production release holatini bildirmaydi. Joriy
+release’ni tekshirish uchun `ANDROID_RELEASE_CHECKLIST.md`ga qarang. R8
+qoidalarini o‘zgartirsangiz, imzolangan release build’da serializable
+network model’lar saqlanishini tasdiqlang.
 
 ## 4.5 Saytdagi yuklab olish
 
@@ -1317,8 +1282,12 @@ yaxshi.
 
 ## 6. Ishlash qoidalari
 
-- **Har o'zgarishdan keyin:** yettita statik tekshiruv, keyin
-  `./gradlew testDirectDebugUnitTest testPlayDebugUnitTest lintDirectDebug lintPlayDebug`.
+- **Statik gate va Gradle tekshiruvlari:** ayni vaqtdagi aniq buyruqlar
+  `android/README.md`da. Android CI va release workflow’lari Gradle’dan oldin
+  to‘qqizta project-specific statik tekshiruvni ishga tushiradi; CI workflow’lari
+  tekshiruvlar ro‘yxati va bajarilish tartibining source of truth’idir. Lokal
+  ishda o‘zgarishga mos tekshiruvlarni bajaring, kengroq PR/release gate’larini
+  README va workflow’dan oling.
 - **Matn qo'shsangiz** — uchta tilda (uz/ru/tg). `check_strings_translated.py`
   buni majburlaydi. Backend kodlari `uz/ru/tj`, Android qualifierlari
   `values/values-ru/values-tg` — `tj` va `tg` farqini `core/i18n/AppLanguage`
@@ -1329,7 +1298,12 @@ yaxshi.
   `connectedDirectDebugAndroidTest` har safar ilovani o'chirib qayta
   o'rnatadi — ya'ni ulangan Telegram sessiyasi yo'qoladi va qayta ulash kerak.
 
-## 7. 2026-10-04 — limit, joriy tugun va HSK 3.0 eslatmasi
+## 7. Tarixiy snapshot — 2026-10-04 limit, joriy tugun va HSK 3.0 eslatmasi
+
+Quyidagi branch, commit, test natijalari va o‘sha task uchun berilgan
+commit/push ruxsati 2026-10-04 holatidir. Ular joriy branch/deploy holatini
+ko‘rsatmaydi va keyingi ish uchun push ruxsati bermaydi. Saqlangan regressiya
+tafsilotlarini yangidan ishlatishdan oldin source’da tekshiring.
 
 Cloud ish branchi: `codex/cloud-ai`. User commit/push uchun aniq ruxsat berdi.
 Tekshirilgan kod GitHubdagi `feat/android-miniapp-limits-hsk30-reminder`

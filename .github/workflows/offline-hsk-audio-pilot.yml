@@ -1,0 +1,51 @@
+name: HSK offline Mandarin audio pilot
+
+on:
+  push:
+    branches:
+      - feat/offline-tts-pilot-20261013
+    paths:
+      - ".github/workflows/offline-hsk-audio-pilot.yml"
+      - "scripts/build_hsk_offline_audio.py"
+      - "tests/test_offline_hsk_audio.py"
+      - "app/services/tts_service.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  render-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: true
+      - name: Install Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install isolated TTS and test dependencies
+        run: python -m pip install edge-tts==7.2.8 httpx==0.28.1
+      - name: Validate parser and filename compatibility
+        run: |
+          python -m py_compile scripts/build_hsk_offline_audio.py app/services/tts_service.py
+          python -m unittest -v tests.test_offline_hsk_audio
+      - name: Count missing assets across HSK 2.0 and HSK 3.0
+        run: python scripts/build_hsk_offline_audio.py --dry-run
+      - name: Live fresh Microsoft Edge TTS smoke test
+        run: python scripts/build_hsk_offline_audio.py --only "大家好！" --limit 1 --delay 2
+      - name: Generate 24 missing lessons assets
+        run: python scripts/build_hsk_offline_audio.py --limit 24 --delay 2
+      - name: Commit shared Mandarin MP3 files to this feature branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f android/app/src/main/assets/audio/words/
+          if ! git diff --cached --quiet; then
+            git commit -m "feat(tts): bundle pilot offline Mandarin lesson audio"
+            git push origin HEAD:feat/offline-tts-pilot-20261013
+          fi

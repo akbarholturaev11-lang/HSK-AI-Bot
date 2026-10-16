@@ -22,6 +22,7 @@ from app.services.entitlements.state import EntitlementState, access_expires_at,
 
 
 MINIAPP = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+CAROUSEL = Path("app/static/course_v3_data/profile-carousel.js").read_text(encoding="utf-8")
 
 
 class _User:
@@ -83,14 +84,16 @@ class MiniAppProfileMarkupTests(unittest.TestCase):
             self.assertIn(plan, main)
 
     def test_the_status_card_reads_the_server_plan(self):
-        self.assertIn("var plan=u.plan||(isPaidUser()?", MINIAPP)
+        self.assertIn("plan=u.plan||(isPaidUser()?", CAROUSEL)
         # Faol holat (pro/temp) taklif EMAS — holatni aytadi.
-        self.assertIn('if(plan==="pro"||plan==="temp")', MINIAPP)
-        self.assertIn('if(plan==="trial")', MINIAPP)
+        self.assertIn('if(plan==="pro"||plan==="temp")', CAROUSEL)
+        self.assertIn('if(plan==="trial")', CAROUSEL)
 
     def test_the_end_date_comes_from_the_server(self):
         self.assertIn("function fmtAccessDate(iso)", MINIAPP)
-        self.assertIn("u.access_ends_at", MINIAPP)
+        self.assertIn("until=u.access_ends_at||null", CAROUSEL)
+        self.assertIn("fmtAccessDate(until)", CAROUSEL)
+        self.assertIn("trialLeftText(until)", CAROUSEL)
 
     def test_the_goal_badge_uses_the_onboarding_labels(self):
         # Maqsad nomlari onboarding bilan AYNI manba (studySetupT), ya'ni

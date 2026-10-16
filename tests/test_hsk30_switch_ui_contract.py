@@ -72,7 +72,7 @@ class Hsk30SwitchUiContractTests(unittest.TestCase):
             "var COURSE_PICKER_STATUS=", 1
         )[1]
         self.assertIn("COURSE_PICKER_LEVEL=coursePickerSavedLevel(track)", picker)
-        self.assertIn("switchCourseTrack(track,level===saved?null:level)", picker)
+        self.assertIn("switchCourseTrack(track,(track===currentCourseTrack()||level!==saved)?level:null)", picker)
         self.assertIn("course-choice-sheet", picker)
         self.assertIn("showCourseTrackSwitchPreparing(target);", self.mini)
 
@@ -107,8 +107,77 @@ class Hsk30SwitchUiContractTests(unittest.TestCase):
         self.assertIn('fontSize = if (compact) 12.sp else 15.sp', native)
         self.assertIn("if (selected && !compact)", native)
 
+    def test_consistent_hsk_bands_and_rating_only_new_badge(self):
+        # Curriculum is carried separately. Learner-facing band labels stay
+        # HSK 1..4 / HSK 1..3, with NEW reserved for rating presentation.
+        label = self.mini.split("function courseLevelLabel(lv){", 1)[1].split(
+            "function ratingLevelLabel(lv){", 1
+        )[0]
+        rating = self.mini.split("function ratingLevelLabel(lv){", 1)[1].split("/*", 1)[0]
+        self.assertIn('return "HSK "+levelBand(', label)
+        self.assertNotIn('NEW', label)
+        self.assertIn('isHsk30Level(lv)?" NEW":""', rating)
+        self.assertIn('ratingLevelLabel(u.level', self.mini)
+        self.assertIn('courseLevelLabel((MAP&&MAP.level)||getSelectedLevel())', self.mini)
+        self.assertIn('courseLevelLabel(map.level)', self.android)
+        self.assertNotIn('"HSK 3.0 · N"', self.android)
+        self.assertIn(
+            'selectedLevel.takeIf { selectedTrack == activeTrack || it != saved(selectedTrack) }',
+            self.android,
+        )
+        onboard = (ROOT / "app" / "static" / "course_v3_onboarding.html").read_text(encoding="utf-8")
+        self.assertNotIn('isHsk30Level(key)?\'<span class="new-tag">NEW', onboard)
+        self.assertNotIn('var meta=["NEW"]', onboard)
+        self.assertNotIn('var h30Meta=["NEW"]', onboard)
+        android_onboard = (ANDROID / "feature" / "onboarding" / "OnboardingScreen.kt").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('LevelOption("nhsk1", "HSK 1"', android_onboard)
+        self.assertNotIn('badge = if (option.isNew) copy.newBadge', android_onboard)
+
+    def test_profile_settings_keep_version_while_course_headers_show_level_only(self):
+        settings = self.mini.split("function courseVersionSettingsRowHtml(){", 1)[1].split(
+            "function settingsSheetHtml(){", 1
+        )[0]
+        self.assertIn("App.profileCourseVersionBook()", settings)
+        self.assertIn("t.courseVersion", settings)
+        self.assertIn('track==="hsk30"?t.hsk30:t.hsk20', settings)
+        self.assertNotIn("courseLevelLabel(level)", settings)
+
+        course_header = self.mini.split("function renderCourse(){", 1)[1].split(
+            "function renderPractice(", 1
+        )[0]
+        self.assertIn("App.courseTrackPicker()", course_header)
+        self.assertIn('esc(courseLevelLabel((MAP&&MAP.level)||getSelectedLevel()))', course_header)
+        self.assertNotIn('esc(currentCourseTrack()==="hsk30"?"HSK 3.0":"HSK 2.0")', course_header)
+
+        profile = (ANDROID / "feature" / "profile" / "ProfileScreen.kt").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("stringResource(R.string.profile_course_version)", profile)
+        self.assertIn('if (courseTrack == "hsk30") "HSK 3.0" else "HSK 2.0"', profile)
+        self.assertIn("onOpenCourseVersion,", profile)
+        self.assertNotIn("profileHskLevelLabel(currentLevel)", profile)
+
+        self.assertIn('text = courseLevelLabel(map.level)', self.android)
+        self.assertIn('Modifier.testTag("course-level-heading")', self.android)
+        self.assertNotIn('text = (if (activeTrack == "hsk30")', self.android)
+
+    def test_android_hsk30_book_art_has_native_software_renderer_and_fallback(self):
+        # The bundled JPEG must remain visible on OEMs that fail to render the
+        # old Compose Multiply tint. Never leave the header as a blank spacer.
+        header = (
+            ANDROID / "core" / "design" / "components" / "Hsk30BooksHeader.kt"
+        ).read_text(encoding="utf-8")
+        self.assertIn("AndroidView(", header)
+        self.assertIn("ImageView.ScaleType.CENTER_CROP", header)
+        self.assertIn("setLayerType(View.LAYER_TYPE_SOFTWARE, null)", header)
+        self.assertIn("Hsk30BooksFallback(Modifier.matchParentSize())", header)
+        self.assertIn("R.drawable.hsk30_course_books", header)
+        self.assertNotIn("ColorFilter.tint", header)
+
     def test_android_picker_has_no_new_badges_or_secondary_confirm(self):
-        picker = self.android.split("private fun Hsk30LevelChoiceDialog(", 1)[1].split(
+        picker = self.android.split("internal fun Hsk30LevelChoiceDialog(", 1)[1].split(
             "private fun Hsk30PromoDialog(", 1
         )[0]
         self.assertIn('label = "HSK $band"', picker)

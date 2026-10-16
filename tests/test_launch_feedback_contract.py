@@ -49,10 +49,68 @@ class LaunchFeedbackContractTests(unittest.TestCase):
         self.assertIn("Settings.System.HAPTIC_FEEDBACK_ENABLED", FEEDBACK)
         self.assertIn('android.permission.VIBRATE', manifest)
 
-    def test_android_release_version_advances_for_updated_apk(self):
+    def test_android_launch_uses_mini_app_frame_accurate_timeline(self):
+        # A single absolute clock means no device-dependent chained spring delays.
+        self.assertIn("elapsedMs.animateTo(2920f", BRAND)
+        self.assertIn("tween(2920, easing = LinearEasing)", BRAND)
+        self.assertNotIn("spring(", BRAND)
+        for marker in (
+            "launchPhase(elapsedMs, 0f, 520f",
+            "launchPhase(elapsedMs, 80f, 530f",
+            "launchPhase(elapsedMs, 570f, 240f",
+            "launchPhase(elapsedMs, 1170f, 900f",
+            "launchPhase(elapsedMs.value, 1330f, 620f",
+            "launchPhase(elapsedMs.value, 1410f, 560f",
+            "launchPhase(elapsedMs.value, 1910f, 900f",
+        ):
+            self.assertIn(marker, BRAND, marker)
+        self.assertIn("Modifier.offset(y = (-29).dp)", BRAND)
+        self.assertIn(".offset(y = 88.dp)", BRAND)
+        self.assertIn("Brush.linearGradient(listOf(Color(0xFFF0614C), Color(0xFFC02F32)))", BRAND)
+        self.assertIn("Brush.radialGradient(", BRAND)
+        self.assertIn("fontSize = 25.sp", BRAND)
+        self.assertIn("letterSpacing = 2.7.sp", BRAND)
+        # These values must stay aligned with the Mini App stylesheet.
+        self.assertIn("hsk-launch-flat-weave 520ms", MINI)
+        self.assertIn("hsk-launch-diagonal-weave 530ms", MINI)
+        self.assertIn("hsk-launch-crossing-reveal 240ms", MINI)
+        self.assertIn("hsk-launch-turn 900ms", MINI)
+        self.assertIn("hsk-launch-brand-rise 620ms", MINI)
+        self.assertIn("hsk-launch-gold-wave 900ms", MINI)
+
+    def test_one_golden_logo_is_held_until_loading_finishes_without_replay(self):
+        activity = (ANDROID / "src/main/java/com/pomp/hskai/MainActivity.kt").read_text(encoding="utf-8")
+        # The main Golden Logo animates once. Other loading states reuse its
+        # completed final frame, never the former second breathing loader.
+        self.assertIn("SplashScreen(onLaunchSplashAnimationFinished)", activity)
+        self.assertIn("private fun LaunchWaitScreen()", activity)
+        self.assertIn("HskBrandLoader(launch = true, holdLaunchFrame = true)", activity)
+        self.assertNotIn("SplashScreen()", activity)
+        self.assertIn("holdLaunchFrame: Boolean = false", BRAND)
+        self.assertIn("Animatable(if (launch && holdLaunchFrame) 2920f else 0f)", BRAND)
+        self.assertIn("elapsedMs.snapTo(2920f)", BRAND)
+        self.assertIn("if (holdLaunchFrame) return@LaunchedEffect", BRAND)
+        self.assertIn("feedback.pulse(strong = false)", BRAND)
+        self.assertIn("feedback.pulse(strong = true)", BRAND)
+        self.assertIn("VibratorManager::class.java", FEEDBACK)
+
+    def test_android_starting_window_does_not_flash_duplicate_logo(self):
+        # Android's static starting window should not display a finished logo
+        # before the Compose knot assembly begins.
+        splash = (ANDROID / "src/main/res/drawable/splash_window_background.xml").read_text(encoding="utf-8")
+        self.assertIn('@color/pomp_paper', splash)
+        self.assertNotIn('@drawable/ic_launcher_foreground', splash)
+        self.assertNotIn('92dp', splash)
+
+    def test_android_release_version_does_not_regress(self):
         gradle = (ANDROID / "build.gradle.kts").read_text(encoding="utf-8")
-        self.assertIn('val appVersionName = "1.7.12"', gradle)
-        self.assertIn("val appVersionCode = 43", gradle)
+        name = re.search(r'val appVersionName = "(\d+)\.(\d+)\.(\d+)"', gradle)
+        code = re.search(r"val appVersionCode = (\d+)", gradle)
+        self.assertIsNotNone(name)
+        self.assertIsNotNone(code)
+        # Baseline recorded after the Golden Logo release; later releases advance.
+        self.assertGreaterEqual(tuple(map(int, name.groups())), (1, 7, 13))
+        self.assertGreaterEqual(int(code.group(1)), 44)
 
 
 if __name__ == "__main__":

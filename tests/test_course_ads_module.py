@@ -71,6 +71,67 @@ class CourseAdsModuleTests(unittest.TestCase):
         self.assertIn("closeLimit", _exported_names())
         self.assertIn("function _closeLimit(", ADS)
 
+
+    def test_launch_splash_stays_above_limit_and_ad_overlays(self):
+        """New limit sheets must not cover the HSK AI launch animation."""
+        course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        splash = re.search(
+            r"#hsk-launch-splash\{[^}]*z-index:(\d+);", course
+        )
+        limit_overlay = re.search(r"\.caa-ov\{[^}]*z-index:(\d+);", ADS)
+        app_ad = re.search(r"\.caa-app\{[^}]*z-index:(\d+);", ADS)
+        self.assertIsNotNone(splash)
+        self.assertIsNotNone(limit_overlay)
+        self.assertIsNotNone(app_ad)
+        self.assertGreater(
+            int(splash.group(1)),
+            max(int(limit_overlay.group(1)), int(app_ad.group(1))),
+        )
+
+    def test_limit_sheet_is_not_nested_in_hidden_ad_box(self):
+        """The limit backdrop must not hide its own sheet."""
+        from html.parser import HTMLParser
+
+        class ParentTracker(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.stack = []
+                self.parents = None
+
+            def handle_starttag(self, tag, attrs):
+                classes = dict(attrs).get("class", "").split()
+                if "caa-limit-sheet" in classes:
+                    self.parents = list(self.stack)
+                if tag not in {"img", "input", "br", "hr", "meta", "link"}:
+                    self.stack.append((tag, classes))
+
+            def handle_endtag(self, tag):
+                self.assert_tag = tag
+                while self.stack and self.stack[-1][0] != tag:
+                    self.stack.pop()
+                if self.stack:
+                    self.stack.pop()
+
+        start = ADS.index("ov.innerHTML = ''")
+        end = ADS.index("document.body.appendChild(ov)", start)
+        fragments = re.findall(r"'([^']*)'", ADS[start:end])
+        self.assertTrue(fragments)
+        parser = ParentTracker()
+        parser.feed("".join(fragments))
+        self.assertIsNotNone(parser.parents)
+        self.assertFalse(
+            any("caa-box" in classes for _, classes in parser.parents),
+            "Limit sheet is inside hidden .caa-box",
+        )
+        self.assertIn("align-items:center;justify-content:flex-end;overflow:hidden!important", ADS)
+
+    def test_denied_gate_does_not_show_panda_preparing(self):
+        course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertIn("function renderPracticeGateChecking()", course)
+        self.assertIn('el("rc-body").innerHTML=renderPracticeGateChecking();', course)
+        self.assertIn('el("pr-stage").innerHTML=renderPracticeGateChecking();', course)
+        self.assertEqual(course.count('if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}'), 2)
+
     def test_closing_the_paywall_puts_the_overlay_back(self):
         """`limit` klassi qaytarilmasa keyingi reklama paywall bo'lib ochiladi."""
         body = ADS[ADS.index("function _closeLimit("):]
@@ -278,8 +339,24 @@ class AdFullscreenPlacementContractTests(unittest.TestCase):
         self.assertIn('e.sub.hidden=!!CFG.paid', ADS)
         self.assertIn('recordView(appState.ad,appState.placement||"screen_center"', ADS)
 
+    def test_limit_sheet_uses_shared_brand_cinnabar(self):
+        """Limit-only colors follow HSK AI tokens, not a separate muted palette."""
+        android = Path("android/app/src/main/java/com/pomp/hskai/feature/limit/SectionLimitOverlay.kt").read_text(encoding="utf-8")
+        tokens = Path("app/static/course_v3_data/design-tokens.css").read_text(encoding="utf-8")
+        self.assertIn("--hsk-cinnabar: #E04A40", tokens)
+        self.assertIn("--hsk-cinnabar-dark: #B23530", tokens)
+        self.assertEqual(ADS.count("var(--hsk-cinnabar,#E04A40)"), 4)
+        self.assertIn("var(--hsk-cinnabar-dark,#B23530)", ADS)
+        self.assertIn("var(--hsk-on-cinnabar,#160C09)", ADS)
+        self.assertIn("import com.pomp.hskai.core.design.PompColors", android)
+        self.assertIn("containerColor = PompColors.Cinnabar", android)
+        self.assertIn("contentColor = PompColors.OnCinnabar", android)
+        self.assertIn("PompColors.CinnabarDark", android)
+        self.assertNotIn("#D2766B", ADS)
+        self.assertNotIn("Color(0xFFD2766B)", android)
+
     def test_cached_ad_module_is_refreshed(self):
-        self.assertIn('/course_v3_data/ads.js?v=20261010-limit-original-restored-1', self.COURSE)
+        self.assertIn('/course_v3_data/ads.js?v=20261013-limit-sheet-v4', self.COURSE)
 
     def test_android_uses_fullscreen_for_lesson_end_only(self):
         self.assertIn('val placement: String = "screen_center"', self.ANDROID_VM)

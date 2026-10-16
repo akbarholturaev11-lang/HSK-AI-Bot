@@ -1,5 +1,10 @@
 # HSK AI Android — UI v2 rejasi
 
+> This plan was last updated in the repository on 2026-09-20. The design
+> direction and proposed migration waves remain planning context; its branch,
+> current-status and next-task notes are historical. Check current code and
+> `AGENTS.md` before treating any checklist or rollout item as today's state.
+
 ## Maqsad
 
 Android ilovani funksional logikani o'zgartirmasdan professional, bir xil va
@@ -87,9 +92,9 @@ Boshlang'ich tokenlar:
 
 ### Phase 2 — loading va state system
 
-Yaratiladi:
+Rejalashtirilgan komponentlar:
 
-- [ ] `HskSkeleton`
+- [x] `HskSkeleton` API mavjud; 2026-10-15 source auditida hozircha ekran call-site’i topilmadi.
 - [ ] `HskLoadingBlock`
 - [ ] `HskEmptyState`
 - [ ] `HskErrorState`
@@ -202,25 +207,13 @@ Real blur faqat:
 - light/dark kontrast;
 - uz/ru/tg uzun matnlarda overflow tekshiruvi.
 
-## Majburiy test gate
+## Validation gate
 
-Har Android o'zgarishida:
-
-```bash
-python3 tools/check_interface_fakes.py
-python3 tools/check_named_arguments.py
-python3 tools/check_flavor_parity.py
-python3 tools/check_strings_translated.py
-python3 tools/check_palette_matches_miniapp.py
-python3 tools/check_stroke_assets.py
-
-./gradlew --no-daemon testPlayDebugUnitTest testDirectDebugUnitTest
-./gradlew --no-daemon lintPlayDebug lintDirectDebug
-./gradlew --no-daemon assemblePlayDebug assembleDirectDebug
-./gradlew --no-daemon bundlePlayRelease bundleDirectRelease
-```
-
-CI yashil bo'lmasdan UI wave keyingi bosqichga o'tmaydi.
+For an Android change, use `android/README.md` and the active Android workflow
+as the exact source for checks. As of this plan audit, CI runs nine project
+checkers, unit tests and lint for both flavours, emulator flow regressions,
+debug assembly and release-bundle validation. Keep the visual QA below for a
+large UI wave; a passing build does not prove the visual/accessibility review.
 
 ## Visual QA
 
@@ -236,9 +229,14 @@ Har katta wave tugagach kamida:
 
 ko'rib chiqiladi.
 
-## Branch / rollout
+## Historical branch / rollout snapshot — 2026-09-20
 
-Hozirgi ish:
+These bullets record the task's intended workflow on that date; they are not a
+current branch or promotion rule. Use `AGENTS.md` for the repository policy.
+The old push-vs-PR/promotion wording is part of the unresolved policy review in
+`docs/DOCUMENTATION_AUDIT_2026-10-14.md` (D08).
+
+Task snapshot:
 
 - development: `codex/cloud-ai`;
 - `main` to'g'ridan-to'g'ri UI commit olmaydi;
@@ -248,20 +246,15 @@ Hozirgi ish:
 Android UI kodi production foydalanuvchiga faqat yangi APK release qilingandan
 keyin yetib boradi.
 
-## Hozirgi status
+## Current source status — 2026-10-15 audit
 
-Bajarilgan:
-
-- native design-system foundation;
-- HSK AI branded non-spinning loader;
-- floating glass bottom navigation;
-- Course / Voice / Profile / Practice / Dictionary spinner migratsiyasi;
-- Profile glass pilot.
-
-Keyingi aniq ish:
-
-1. CI compile/lint natijasini tozalash.
-2. Profile visual pilot'ni real screenshot bilan tekshirish.
-3. `HskSkeleton` va state primitives.
-4. Dictionary + Rating glass migration.
-5. Button inventory va `Button/OutlinedButton/Surface(onClick)` migratsiyasi.
+- `HskGlassSurface`, `HskPrimaryButton`, `HskGlassButton`, the branded loader
+  and floating glass navigation exist in source.
+- Glass/primary-button call-sites span several feature screens, so the old
+  "Profile pilot first" sequence is no longer a reliable current backlog.
+- `HskSkeleton` has an implementation but no screen call-site in this
+  checkout. The other proposed loading, empty/error and interaction primitives
+  remain partial or absent; check their source before taking a checklist item.
+- No device screenshot, accessibility review, Play/Direct release, or live
+  rollout is established by this source audit. This section describes the
+  checkout only.

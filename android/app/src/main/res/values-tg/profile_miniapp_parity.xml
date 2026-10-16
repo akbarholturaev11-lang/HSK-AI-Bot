@@ -6,6 +6,10 @@
     <string name="profile_mini_group_title">Хатоҳои ман · Дӯстон</string>
     <string name="profile_mini_mistakes_subtitle">Кор бар ҷойҳои заиф</string>
     <string name="profile_mini_settings">Танзимот</string>
+    <string name="profile_settings_intro">Омӯзиш, барнома ва ҳисоб</string>
+    <string name="profile_settings_section_learning">Омӯзиш</string>
+    <string name="profile_settings_section_app">Барнома</string>
+    <string name="profile_settings_section_account">Ҳисоб ва амният</string>
     <string name="profile_mini_daily_goal">Ҳадафи рӯзона</string>
     <string name="profile_mini_today_xp">Имрӯз %1$d/%2$d XP</string>
     <string name="profile_mini_total_xp">XP-и умумӣ</string>
@@ -44,4 +48,16 @@
     <string name="profile_app_permissions_desc">Микрофон ва огоҳиҳоро дар танзимоти Android идора кунед.</string>
     <string name="profile_security_note">Ники Telegram дар ин ҷо тағйир дода намешавад. Google ва Apple танҳо ҳамчун усули иловагии вуруд ба ҳамин ҳисоби HSK AI пайваст мешаванд.</string>
     <string name="profile_app_version">Версияи барнома</string>
+    <string name="profile_promo_apps">Барномаҳои HSK AI</string>
+    <string name="profile_promo_apps_body">Барномаҳо барои Android, MacBook ва Windows</string>
+    <string name="profile_promo_apps_open">Дидани барномаҳо</string>
+    <string name="profile_promo_hsk30_body">Курси нави HSK 1–3. Пешрафти шумо нигоҳ дошта мешавад.</string>
+    <string name="profile_promo_hsk30_open">Гузаштан ба HSK 3.0</string>
+    <string name="profile_promo_hsk30_confirm">Ба HSK 3.0 гузарем?</string>
+    <string name="profile_promo_hsk30_confirm_body">Баъд аз тасдиқ сатҳи пешина барқарор мешавад. Ҳангоми бори аввал сатҳро интихоб мекунед.</string>
+    <string name="profile_promo_pro_body">AI Voice, ҳамаи дарсҳои HSK ва машқҳои бемаҳдуд</string>
+    <string name="profile_promo_start_trial">7 рӯз ройгон санҷидан</string>
+    <string name="profile_promo_trial_days">%1$d рӯз монд</string>
+    <string name="profile_promo_trial_hours">%1$d соат монд</string>
+    <string name="profile_promo_trial_soon">Камтар аз як соат монд</string>
 </resources>

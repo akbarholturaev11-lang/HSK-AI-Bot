@@ -6,6 +6,10 @@
     <string name="profile_mini_group_title">Мои ошибки · Друзья</string>
     <string name="profile_mini_mistakes_subtitle">Работа над слабыми местами</string>
     <string name="profile_mini_settings">Настройки</string>
+    <string name="profile_settings_intro">Обучение, приложение и аккаунт</string>
+    <string name="profile_settings_section_learning">Обучение</string>
+    <string name="profile_settings_section_app">Приложение</string>
+    <string name="profile_settings_section_account">Аккаунт и безопасность</string>
     <string name="profile_mini_daily_goal">Дневная цель</string>
     <string name="profile_mini_today_xp">Сегодня %1$d/%2$d XP</string>
     <string name="profile_mini_total_xp">Всего XP</string>
@@ -44,4 +48,16 @@
     <string name="profile_app_permissions_desc">Микрофон и уведомления можно контролировать в настройках Android.</string>
     <string name="profile_security_note">Ник Telegram здесь не изменяется. Google и Apple подключаются только как дополнительные способы входа в тот же аккаунт HSK AI.</string>
     <string name="profile_app_version">Версия приложения</string>
+    <string name="profile_promo_apps">Приложения HSK AI</string>
+    <string name="profile_promo_apps_body">Приложения для Android, MacBook и Windows</string>
+    <string name="profile_promo_apps_open">Смотреть приложения</string>
+    <string name="profile_promo_hsk30_body">Новый курс HSK 1–3. Ваш прогресс сохраняется.</string>
+    <string name="profile_promo_hsk30_open">Перейти на HSK 3.0</string>
+    <string name="profile_promo_hsk30_confirm">Перейти на HSK 3.0?</string>
+    <string name="profile_promo_hsk30_confirm_body">После подтверждения восстановится сохранённый уровень. При первом переходе выберите уровень.</string>
+    <string name="profile_promo_pro_body">AI Voice, все уроки HSK и безлимитная практика</string>
+    <string name="profile_promo_start_trial">Попробовать 7 дней бесплатно</string>
+    <string name="profile_promo_trial_days">Осталось дней: %1$d</string>
+    <string name="profile_promo_trial_hours">Осталось часов: %1$d</string>
+    <string name="profile_promo_trial_soon">Осталось меньше часа</string>
 </resources>

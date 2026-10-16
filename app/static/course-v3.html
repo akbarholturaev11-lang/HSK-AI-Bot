@@ -7,10 +7,13 @@
 <title>HSK AI</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<!-- Fast static Mandarin MP3 index; cached across Mini App visits. -->
+<script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
+<script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
 <link rel="stylesheet" href="/assets/characters/hsk-character-pack.css?v=20260921c">
 <link rel="stylesheet" href="/assets/characters/hsk-character-motion.css?v=20260921c">
 <link rel="stylesheet" href="/assets/characters/hsk-lesson-presentation.css?v=20260921c">
-<link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261005-section-title">
+<link rel="stylesheet" href="/course_v3_data/design-tokens.css?v=20261015-card-surface-1">
 <script src="/assets/characters/hsk-character-pack.js?v=20260921c"></script>
 <script src="/assets/characters/hsk-character-motion.js?v=20260921c"></script>
 <script src="/assets/characters/hsk-study-preparing.js?v=20261009-compact-1"></script>
@@ -37,7 +40,7 @@ html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-famil
 .wrap{max-width:var(--shell);margin:0 auto;min-height:100vh;position:relative;padding-top:var(--safe-t)}
 .scr{display:none;padding-bottom:calc(82px + var(--safe-b))}
 .scr.on{display:block}
-#hsk-launch-splash{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:var(--safe-t) 16px var(--safe-b);background:var(--paper);opacity:1;visibility:visible;transition:opacity .24s ease,visibility .24s ease}
+#hsk-launch-splash{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:var(--safe-t) 16px var(--safe-b);background:var(--paper);opacity:1;visibility:visible;transition:opacity .24s ease,visibility .24s ease}
 #hsk-launch-splash.is-done{opacity:0;visibility:hidden;pointer-events:none}
 .hsk-launch-stage{position:relative;display:flex;flex-direction:column;align-items:center}
 .hsk-launch-halo{position:absolute;top:48px;left:50%;width:132px;height:132px;border-radius:50%;background:radial-gradient(circle,rgba(224,74,64,.24),rgba(224,74,64,0));opacity:.1;transform:translate(-50%,-50%) scale(.84);animation:hsk-launch-halo-breathe 1.45s ease-in-out infinite alternate}
@@ -88,6 +91,12 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 /* top */
 .htop{display:flex;align-items:center;gap:8px;padding:14px 16px 10px;position:sticky;top:var(--safe-t);background:var(--paper);z-index:4}
 .htop.profile-head{justify-content:space-between}
+.profile-head .profile-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profile-head-actions{display:flex;align-items:center;gap:3px;flex-shrink:0}
+.profile-head .profile-settings,.profile-head .profile-pro-cta{width:42px;height:42px;flex:0 0 42px;border:0;box-shadow:none;background:transparent}
+.profile-head .profile-pro-cta{display:grid;place-items:center;color:var(--gold);cursor:pointer;border-radius:50%}
+.profile-head .profile-pro-cta i{font-size:25px}
+.profile-head .profile-pro-cta:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 /* Compact secondary tab headers; keep the native safe area in .wrap. */
 .scr:not(#s-course)>.htop{padding-top:6px}
 .section-title,.profile-title{margin:0;color:var(--ink);font-size:var(--hsk-section-title-size,20px);line-height:var(--hsk-section-title-line-height,1.2);font-weight:700;letter-spacing:-.01em}
@@ -517,10 +526,53 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 .mashq-group .row-card .ti2,.profile-quick-links .row-card .ti2{width:40px;height:40px;border-radius:var(--hsk-radius-medium);font-size:20px}
 .mashq-group .row-card .rt small,.profile-quick-links .row-card .rt small{font-size:13px;line-height:1.35}
 .mashq-group .row-card:focus-visible,.profile-quick-links .row-card:focus-visible{position:relative;outline:2px solid var(--cin2);outline-offset:-3px}
+/* Practice card groups use the same warm cream surface as checkout details. */
+#s-mashq .mashq-group{background:var(--hsk-card-surface,var(--paper));border-color:var(--line)}
 .t-amber{background:#F8EFD9;color:#B07A1E}.t-blue{background:#E7F0F8;color:#2F6F9E}.t-jade{background:var(--jadebg);color:var(--jade)}.t-cin{background:var(--cinbg);color:var(--cin2)}
 .sech{font-size:13px;color:var(--ink2);font-weight:500;margin:18px 18px 9px}
 /* profile */
-.phero{display:flex;align-items:center;gap:14px;padding:10px 16px 2px}
+.profile-access-badge{display:inline-flex;align-items:center;gap:5px;margin-top:7px;border-radius:999px;padding:4px 11px;font-size:12px;font-weight:650;color:var(--ink2);background:var(--paper);border:1px solid var(--line)}
+/* The paid status is an inline icon/label, not a separate brown card. */
+.profile-access-badge.pro{background:transparent;color:var(--gold-ink);border:0;box-shadow:none;padding:0;font-size:13px;font-weight:750;white-space:nowrap;line-height:1.25}
+.profile-access-badge.pro .ti-crown{color:var(--gold);font-size:15px;line-height:1}
+.profile-accuracy{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:11px 16px 4px;overflow:hidden;border-radius:17px;border:1px solid var(--line);background:var(--card)}
+.profile-accuracy>div{min-width:0;text-align:center;padding:10px 5px 12px}
+.profile-accuracy>div+div{border-left:1px solid var(--line)}
+.profile-accuracy .accuracy-ring{width:83px;height:83px;margin:0 auto 7px;position:relative;border-radius:50%;background:conic-gradient(var(--jade) var(--accuracy-deg,0deg),var(--line) var(--accuracy-deg,0deg));display:grid;place-items:center}
+.profile-accuracy .accuracy-ring::before{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--card)}
+.profile-accuracy .accuracy-ring strong{z-index:1;font-size:20px;color:var(--ink);font-weight:750}
+.profile-accuracy .accuracy-label{font-size:13px;font-weight:650;color:var(--ink)}
+.profile-accuracy .accuracy-note{font-size:11px;color:var(--ink2);margin-top:3px}
+.profile-accuracy-help{padding:0 19px 4px;color:var(--ink3);font-size:10px;line-height:1.35;text-align:center}
+.profile-pro-link{margin:10px 16px 0;width:calc(100% - 32px);min-height:42px;padding:9px 12px;display:flex;align-items:center;gap:9px;border:1px solid rgba(194,146,57,.32);border-radius:12px;background:var(--goldbg);color:var(--ink);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.profile-pro-link i.ti-crown{color:var(--gold);font-size:21px}
+.profile-pro-link i.ti-chevron-right{margin-left:auto;color:var(--gold)}
+#s-profile .profile-friends-link,#s-profile .profile-compact-ach .arow,#s-profile .card2,#s-profile .profile-accuracy{box-shadow:none}
+#s-profile .profile-compact-ach .arow,#s-profile .card2{background:var(--card);border-color:var(--line)}
+.profile-friends-link{margin:9px 16px 3px;width:calc(100% - 32px);min-height:42px;padding:8px 12px;display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;font-size:13px;font-weight:600;text-align:left;cursor:pointer}
+.profile-friends-link .ti-users{font-size:18px;color:var(--jade)}
+.profile-friends-link .ti-chevron-right{margin-left:auto;color:var(--ink3);font-size:16px}
+.profile-compact-ach{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:0 16px}
+.profile-compact-ach .arow{min-width:0;padding:10px;gap:8px;align-items:flex-start;border-radius:13px}
+.profile-compact-ach .aic{height:30px;width:30px;flex:0 0 30px;border-radius:9px;font-size:16px}
+.profile-compact-ach .at .ah{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:36px;line-height:1.2;font-size:12px}
+.profile-compact-ach .at .ah span{font-weight:600}
+.profile-compact-ach .at .ah small{font-size:11px}
+.profile-compact-ach .abar{margin-top:7px;height:5px}
+@media(max-width:340px){.profile-compact-ach .arow{padding:8px;gap:6px}.profile-compact-ach .aic{width:26px;height:26px;flex-basis:26px}}
+.rating-title{margin:5px 16px 10px;font-size:var(--hsk-section-title-size,20px)}
+/* Profile panels use the same warm paper surface and divider as subscription checkout.
+   Keep semantic status, progress and Pro promotion colors unchanged. */
+#s-profile .profile-accuracy,#s-profile .profile-friends-link,#s-profile .profile-compact-ach .arow,#s-profile .ach .arow,#s-profile .card2,#s-profile .profile-quick-links,#s-profile .profile-stats .stat,#s-profile .set,#s-profile .pgoal,#s-profile .social-btn{background:var(--hsk-card-surface,var(--paper));border-color:var(--line);box-shadow:none}
+#s-profile .profile-accuracy .accuracy-ring::before{background:var(--paper)}
+#s-profile .hp-promo{filter:saturate(.88);box-shadow:none}
+.phero{display:flex;align-items:center;gap:12px;padding:10px 16px 2px}
+.profile-hero-content{flex:1;min-width:0}
+.profile-identity-row{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.profile-display-name{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:17px;font-weight:700;color:var(--ink)}
+.profile-identity-row .profile-access-badge{margin:0;flex-shrink:0}
+.profile-goal-row{margin-top:6px}
+.profile-goal-row .lvb.goal{margin:0}
 .pav{width:70px;height:70px;border-radius:18px;background:var(--cin);border:2px solid var(--cin2);color:var(--cin-ink);display:flex;align-items:center;justify-content:center;font-size:30px;position:relative;flex-shrink:0}
 .pav .ed{position:absolute;right:-5px;bottom:-5px;width:24px;height:24px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-size:12px;display:flex;align-items:center;justify-content:center}
 .pname{font-size:19px;font-weight:500}.pun{font-size:13px;color:var(--ink3)}
@@ -1324,6 +1376,8 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 </style>
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
+<link href="/course_v3_data/profile-carousel.css?v=20261014-compact-1" rel="stylesheet">
+<link href="/course_v3_data/rating-podium.css?v=20261014-2" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
 </head>
 <body class="hsk-scene-page">
@@ -1418,7 +1472,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261010-limit-original-restored-1"></script>
+<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -1459,7 +1513,7 @@ var HSK30_BOOK_COPY={
 function hsk30BookCopy(){return HSK30_BOOK_COPY[LANG]||HSK30_BOOK_COPY.uz}
 function hsk30BookHeader(status,showNew){
   var h30=status&&status.tracks&&status.tracks.hsk30||{},t=trackUi();
-  var badge=showNew!==false&&h30.new_badge&&h30.new_badge.is_new?'<span class="hsk30-book-new">NEW</span>':"";
+  var badge=""; // NEW is reserved for level labels within rating.
   return '<div class="hsk30-book-header"><span>HSK 3.0</span>'+badge+'</div>'
     +'<div class="hsk30-promo-books"><img src="/assets/hsk30-course-books.jpg?v=20261004" alt="'+esc(t.promoBooksAlt)+'" loading="eager" decoding="async"></div>';
 }
@@ -1636,6 +1690,37 @@ function renderHsk30Promo(status,promo){
     +'<h2 class="hsk30-promo-title">'+esc(hasAccess?t.promoOpen:c.title)+'</h2><p class="hsk30-promo-copy">'+esc(body)+'</p>'
     +hsk30BookPrice(status)+'<div class="hsk30-promo-actions">'+actions+'</div>',hasAccess?t.promoOpen:c.title);
 }
+/* Profile and settings use the existing BOOK-cover HSK 3.0 modal.
+   The compact version/level selector remains on the course-path heading.
+   Do not mutate progress, purchase permissions, or the switch endpoint. */
+function openProfileCourseVersionBook(){
+  // Prevent a late settings request from replacing this selected dialog.
+  SETTINGS_SHEET=false;
+  courseTrackStatus(true).then(function(status){
+    var t=trackUi(),cur=currentCourseTrack();
+    var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access||{};
+    if(cur==="hsk20"&&(!access.allowed||access.feature_enabled===false)){
+      renderHsk30AccessGate(status);
+      return;
+    }
+    var incoming=cur==="hsk20",title=incoming?t.promoSwitch:t.courseVersion;
+    var body=incoming?t.promoBodyUnlocked:t.current;
+    var primary=incoming
+      ?hsk30BookPrimary(t.promoOpen,"openHsk30PromoLevelPicker()")
+      :hsk30BookPrimary(t.backTo20,"switchCourseTrack('hsk20',null)");
+    var secondary='<button class="hsk30-promo-stay" onclick="App.closeSheet()">'
+      +esc(incoming?t.stay:t.close)+'</button>';
+    openHsk30BookSheet(hsk30BookHeader(status,false)
+      +'<h2 class="hsk30-promo-title">'+esc(title)+'</h2>'
+      +'<p class="hsk30-promo-copy">'+esc(body)+'</p>'
+      +'<div class="hsk30-promo-actions">'+primary+secondary+'</div>',title);
+  }).catch(function(){
+    var t=trackUi();
+    App.openSheet('<div class="shead"><div class="tr">'+esc(t.tryAgain)+'</div></div>'
+      +'<button class="sec" onclick="openProfileCourseVersionBook()">'
+      +esc(t.tryAgain)+'</button>');
+  });
+}
 function maybeShowHsk30Promo(){
   if(currentCourseTrack()!=="hsk20"||!INIT_DATA){HSK30_PROMO_PENDING=false;HSK30_PROMO_READY=null;return Promise.resolve(false)}
   if(HSK30_PROMO_CHECKED)return Promise.resolve(false);
@@ -1752,7 +1837,8 @@ function coursePickerConfirm(){
   if(track===currentCourseTrack()&&level===currentLevel){App.closeSheet();return}
   var saved=coursePickerSavedLevel(track);
   // null means "restore the saved band", not "start N1 again".
-  switchCourseTrack(track,level===saved?null:level);
+  // Same-version band changes must send the explicit level; null only restores another version.
+  switchCourseTrack(track,(track===currentCourseTrack()||level!==saved)?level:null);
 }
 function openCourseTrackPicker(){
   // Render from the existing server snapshot instantly; the actual switch
@@ -1948,25 +2034,61 @@ function stopSpeak(){window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_tts
    qayta o'ynaydi; keyingi kartalar audiosi oldindan yuklab qo'yiladi, shunda
    ovoz tugmasi bosilganda kechikish bo'lmaydi. */
 var _ttsCache={},_ttsPending={};
-function ttsUrl(t){return "/api/v3/tts?text="+encodeURIComponent(t)}
+function ttsServerUrl(t){return "/api/v3/tts?text="+encodeURIComponent(t)}
+/* Known recordings load as public, cacheable MP3. Unknown/new sentences still
+   use the original server-side Edge/Gemini TTS; nothing is removed. */
+function ttsUrl(t){
+  t=String(t||"").trim();
+  // Generate once, then replay local IndexedDB bytes on future visits.
+  var saved=window.HSKOfflineAudio&&window.HSKOfflineAudio.cachedUrl(t);
+  if(saved)return saved;
+  var words=window.HSK_OFFLINE_AUDIO;
+  if(words&&words.has(t)){
+    var filename=Array.from(t).map(function(c){return c.charCodeAt(0)}).join("_")+".mp3";
+    if(filename.length>240)filename=(window.HSK_OFFLINE_LONG_NAMES||{})[t]||"";
+    if(filename)return "/audio/words/"+filename;
+  }
+  return ttsServerUrl(t);
+}
+function ttsFetch(t){
+  if(window.HSKOfflineAudio)return window.HSKOfflineAudio.fetchAudio(t);
+  var src=ttsUrl(t),server=ttsServerUrl(t);
+  return fetch(src).then(function(r){if(!r.ok)throw new Error("tts_http_"+r.status);return r.blob()}).catch(function(err){
+    if(src===server)throw err; /* No repeated requests when the file is unknown. */
+    return fetch(server).then(function(r){if(!r.ok)throw new Error("tts_http_"+r.status);return r.blob()});
+  });
+}
 function prefetchTTS(t){
   t=(t||"").trim();
   if(!t||t.length>240||!/[一-鿿]/.test(t))return Promise.resolve(null);
   if(_ttsCache[t])return Promise.resolve(_ttsCache[t]);
   if(_ttsPending[t])return _ttsPending[t];
-  _ttsPending[t]=fetch(ttsUrl(t)).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){
+  _ttsPending[t]=ttsFetch(t).then(function(b){
     delete _ttsPending[t];if(b&&b.size){_ttsCache[t]=URL.createObjectURL(b);return _ttsCache[t]}return null;
   }).catch(function(){delete _ttsPending[t];return null});
   return _ttsPending[t];
 }
 function speak(t){
-  if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;
+  t=String(t||"").trim();
+  if(!t)return;stopSpeak();var tok=window._ttsTok,st=0,triedServer=false;
+  function failedSource(src,a){
+    if(tok!==window._ttsTok||st===2||(a&&_ttsAudio!==a))return;
+    if(!triedServer&&src.indexOf("/audio/words/")===0){
+      triedServer=true;playSource(ttsServerUrl(t));return;
+    }
+    st=2;_ttsFallback(t);
+  }
   function playSource(src){
     if(tok!==window._ttsTok)return;
-    try{var a=new Audio(src);_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}
+    try{
+      var a=new Audio(src);_ttsAudio=a;
+      a.onplaying=function(){if(tok!==window._ttsTok||st===2){try{a.pause()}catch(e){}return}st=1;try{window.HSKOfflineAudio&&window.HSKOfflineAudio.rememberPlayed(t,src)}catch(e){}};
+      a.onerror=function(){if(st===0)failedSource(src,a)};
+      var p=a.play();if(p&&p.catch)p.catch(function(){if(st===0)failedSource(src,a)});
+    }catch(e){failedSource(src,_ttsAudio)}
   }
   if(_ttsCache[t]){playSource(_ttsCache[t]);return}
-  if(_ttsPending[t]){_ttsPending[t].then(function(src){if(tok!==window._ttsTok)return;if(src)playSource(src);else _ttsFallback(t)});return}
+  if(_ttsPending[t]){ /* iOS needs play() inside the original click gesture. */ playSource(ttsUrl(t));return}
   playSource(ttsUrl(t));
 }
 /* Kartadan o'ynash mumkin bo'lgan xitoycha matnlarni yig'ish (prefetch uchun) */
@@ -2099,7 +2221,8 @@ document.addEventListener("keydown",function(event){
 var MASHQ_ACCESS_PENDING=null;
 var App={
   setLang:function(l){if(!I18N[l])return;LANG=l;syncDocumentLanguage();renderAll()},
-  show:function(s){
+  show:function(s,ratingSource){
+    if(s==="rating")ratingTabCur=ratingSource==="friends"?"friends":"league";
     syncCourseTelegramChrome();
     if(s==="mashq"&&isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){
       var status=COURSE_TRACK_STATE,access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
@@ -2126,8 +2249,10 @@ var App={
     if(s==="mashq")schedulePracticeBackgroundLoad();
     if(s==="voice")renderVoice();
     if(s==="rating")renderRating();
+    if(s!=="profile"&&window.HskProfileCarousel)window.HskProfileCarousel.pause();
     if(s==="profile"){
       renderProfile();
+      loadProfileDetail();
       if(!TRIAL_LOADED)trialFetchStatus().then(function(){if(SCREEN==="profile")renderProfile()});
     }
     /* Kirish usullari faqat profil ochilganda va bir marta so'raladi.
@@ -2135,10 +2260,10 @@ var App={
     if(s==="profile"&&!SIGNIN_STATE.loaded)loadSignInMethods();
     if(s!=="profile")stopSignInPoll();
     if(s==="course"&&window._pendingXpFly){var fx=window._pendingXpFly;window._pendingXpFly=0;setTimeout(function(){flyXp(fx)},350)}},
-  openSheet:function(html){var sheet=$("#sheet");if(!sheet.classList.contains("on"))SHEET_RETURN_FOCUS=document.activeElement;sheet.classList.remove("hsk30-promo-center","hsk30-book-card","course-choice-sheet");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");$("#sheet-body").innerHTML=html;var title=sheet.querySelector("#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role='heading'],#sheet-body .shead .tr");if(title){if(!title.id)title.id="hsk-sheet-title";sheet.setAttribute("aria-labelledby",title.id)}else{sheet.setAttribute("aria-label",LANG==="ru"?"Диалог HSK AI":LANG==="tj"?"Муколамаи HSK AI":"HSK AI oynasi")}var close=sheet.querySelector(".sx");if(close)close.setAttribute("aria-label",LANG==="ru"?"Закрыть":LANG==="tj"?"Пӯшидан":"Yopish");sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.classList.add("on");setSheetBackgroundInert(true);focusSheetStart(sheet);startSheetPromo("#sheet")},
+  openSheet:function(html){var sheet=$("#sheet");if(!sheet.classList.contains("on"))SHEET_RETURN_FOCUS=document.activeElement;sheet.classList.remove("hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");$("#sheet-body").innerHTML=html;var title=sheet.querySelector("#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role='heading'],#sheet-body .shead .tr");if(title){if(!title.id)title.id="hsk-sheet-title";sheet.setAttribute("aria-labelledby",title.id)}else{sheet.setAttribute("aria-label",LANG==="ru"?"Диалог HSK AI":LANG==="tj"?"Муколамаи HSK AI":"HSK AI oynasi")}var close=sheet.querySelector(".sx");if(close)close.setAttribute("aria-label",LANG==="ru"?"Закрыть":LANG==="tj"?"Пӯшидан":"Yopish");sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.classList.add("on");setSheetBackgroundInert(true);focusSheetStart(sheet);startSheetPromo("#sheet")},
   closeSheet:function(){
     SETTINGS_SHEET=false;
-    var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");sheet.removeAttribute("tabindex");stopSheetPromo();setSheetBackgroundInert(false);var returnFocus=SHEET_RETURN_FOCUS;SHEET_RETURN_FOCUS=null;if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
+    var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");sheet.removeAttribute("tabindex");stopSheetPromo();setSheetBackgroundInert(false);var returnFocus=SHEET_RETURN_FOCUS;SHEET_RETURN_FOCUS=null;if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
     var revealUnlock=!!window._pendingUnlockAfterSheet;window._pendingUnlockAfterSheet=false;
     /* Qulf ochilishi animatsiyasi ustiga reklama chiqmaydi — u o'quvchi
        kutgan mukofot. Kechiktirilgan markaz reklamasi keyingi safar
@@ -2147,6 +2272,16 @@ var App={
     flushPendingCenterAd();
   },
   openPaywall:function(ctx){
+    if(isLimitPaywallContext(ctx)&&window.CourseAds&&CourseAds.showLimitPromo){
+      var isPron=ctx==="pronLimit",feature=isPron?"pronunciation":"lesson";
+      var source=isPron?"v3_pronunciation_limit":"v3_locked_lesson";
+      PAY_SOURCE=source;
+      trackCourseEvent("paywall_seen",{source:source,dedupe_key:lessonEventKey("paywall_seen",source,Date.now())});
+      if($("#sheet").classList.contains("on"))App.closeSheet();
+      CourseAds.config({lang:LANG,initData:INIT_DATA,feature:feature,level:(MAP&&MAP.level)||"hsk1"});
+      CourseAds.showLimitPromo({feature:feature,reason:payWhyText(ctx),onSubscribe:function(){App.goPay(source)}});
+      return;
+    }
     if(!TRIAL_LOADED&&INIT_DATA){trialFetchStatus().then(function(){App.openPaywall(ctx)});return}
     if(salesValueTreatment()&&salesValueCourseContext(ctx)&&!salesValueContentValid(SALES_VALUE_STATE.outcome,SALES_VALUE_STATE.nextOutcome)&&!SALES_VALUE_PRIME_DONE){
       primeSalesValueContent().then(function(){App.openPaywall(ctx)});return;
@@ -2400,7 +2535,7 @@ var App={
       /* Birinchi dars tugagach kunlik vaqt va fokus so'raladi — bayram,
          reklama va desktop promo'dan KEYIN, ya'ni hech biri bilan
          to'qnashmaydi. Server javob bermaguncha so'ralmaydi. */
-      if(studySetupPending())setTimeout(askStudyTime,700);
+      if(studySetupPending())setTimeout(askPendingStudySetup,700);
     };
     /* Bepul userga dars yakuni reklamasi — bayram/streak/reyting ekranlaridan
        KEYIN, xaritaga qaytishdan oldin. Reklama yo'q yoki yuklanmasa jim o'tadi. */
@@ -2526,7 +2661,7 @@ var App={
     try{if(tg&&tg.openLink){tg.openLink(c);return}}catch(e){}
     try{location.href=c}catch(e){}},
   openVoiceCall:function(role){VOICE.open(role)},
-  openFriends:function(){ratingTabCur="friends";App.show("rating");renderRating()},
+  openFriends:function(){App.show("rating","friends")},
   /* HSK AI rasmiy sahifasini tashqarida ochadi. URL ro'yxatdan olinadi —
      klient hech qachon ixtiyoriy manzil ochmaydi. */
   openSettings:function(){
@@ -2616,13 +2751,19 @@ var App={
       else renderAll();
     })},
   pickStudyTime:function(v){App.closeSheet();
-    savePreferences({daily_minutes:v}).then(function(){setTimeout(askStudyFocus,220)})},
+    savePreferences({daily_minutes:v}).then(function(saved){
+      if(saved&&saved.ok){markStudySetupTimeAnswered();setTimeout(askStudyFocus,220);return}
+      toast(serverSaveErrorText(),2200);askStudyTime();
+    })},
   pickStudyFocus:function(k){App.closeSheet();
-    savePreferences({preferred_focus:k}).then(function(){renderAll()})},
+    savePreferences({preferred_focus:k}).then(function(saved){
+      if(saved&&saved.ok){renderAll();return}
+      toast(serverSaveErrorText(),2200);askStudyFocus();
+    })},
   levelPicker:function(){
     var names={
       hsk1:["你好","HSK 1"],hsk2:["谢谢","HSK 2"],hsk3:["明白","HSK 3"],hsk4:["流利","HSK 4"],
-      nhsk1:["你好","HSK 1 NEW"],nhsk2:["谢谢","HSK 2 NEW"],nhsk3:["明白","HSK 3 NEW"]
+      nhsk1:["你好","HSK 1"],nhsk2:["谢谢","HSK 2"],nhsk3:["明白","HSK 3"]
     };
     var sub={
       ru:{hsk1:"С нуля",hsk2:"Базовое общение",hsk3:"Повседневное общение",hsk4:"Свободное общение",nhsk1:"Новый стандарт · HSK 1",nhsk2:"Новый стандарт · HSK 2",nhsk3:"Новый стандарт · HSK 3",title:"Выберите уровень"},
@@ -2635,6 +2776,7 @@ var App={
       +choices.map(function(lv){var n=names[lv];return '<button class="opt-row'+(cur===lv?' on':'')+'" onclick="App.pickLevel(\''+lv+'\')"><span class="han" style="font-size:22px;width:34px;text-align:center">'+n[0]+'</span><span style="flex:1"><b style="display:block">'+n[1]+'</b><small style="color:var(--ink2)">'+sub[lv]+'</small></span>'+(cur===lv?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""));
   },
   courseTrackPicker:function(){openCourseTrackPicker()},
+  profileCourseVersionBook:function(){openProfileCourseVersionBook()},
   pickCourseTrack:function(track){requestCourseTrackSwitch(track)},
   openHsk30Gate:function(){showHsk30AccessGate()},
   pickLevel:function(lv){App.closeSheet();loadLevel(lv)},
@@ -2887,6 +3029,27 @@ function studySetupT(){return {
    sessiyada tugatgan o'quvchi uchun false bo'ladi, shuning uchun dars
    tugagandagi chaqiruv unga tayanmaydi. */
 var SETUP_ASK_GAP_MS=24*60*60*1000;
+/* If time was chosen but the focus sheet was dismissed, retry ONLY the
+   unanswered focus question on the next eligible visit. Scope this local
+   marker to the Telegram account, not to every account on the device. */
+function studySetupTimeKey(){
+  var userId=String((tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user&&tg.initDataUnsafe.user.id)||"");
+  return "hsk_v3_setup_minutes_chosen"+(userId?"_"+userId:"");
+}
+function studySetupTimeAnswered(){
+  try{return localStorage.getItem(studySetupTimeKey())==="1"}catch(e){return false}
+}
+function markStudySetupTimeAnswered(){
+  try{localStorage.setItem(studySetupTimeKey(),"1")}catch(e){}
+}
+function askPendingStudySetup(){
+  if(!STUDY_SETUP)return;
+  if(!STUDY_SETUP.goal_chosen){askStudyGoal();return}
+  if(!STUDY_SETUP.preferred_focus){
+    if(studySetupTimeAnswered())askStudyFocus();
+    else askStudyTime();
+  }
+}
 function studySetupAnswered(){
   if(!STUDY_SETUP)return false;
   /* Maqsad savoli onboardingga KEYIN qo'shildi, shuning uchun eski
@@ -2917,6 +3080,7 @@ function askStudyTime(){
     +[5,10,15,20,30].map(function(v){return '<button class="opt-row'+(v===cur?" on":"")+'" onclick="App.pickStudyTime('+v+')"><i class="ti ti-clock"></i> '+v+' '+esc(s.min)+(v===cur?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""));
 }
 function askStudyFocus(){
+  markStudySetupAsked();
   var s=studySetupT();var keys=["speaking","listening","vocabulary","grammar","none"];
   var icons={speaking:"microphone",listening:"headphones",vocabulary:"language-hiragana",grammar:"list-check",none:"circle-dashed"};
   App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(s.focusQ)+'</div><div class="tr">'+esc(s.focusSub)+'</div></div>'
@@ -2938,11 +3102,26 @@ function renderStudyPreparing(){
   return '<div class="hsk-study-preparing" role="status" aria-live="polite">'
     +'<div class="hsk-study-preparing-panda" aria-hidden="true">🐼</div><b>'+copy+'</b></div>';
 }
+/* Panda only after an approved daily gate; a denied attempt shows Pro. */
+function renderPracticeGateChecking(){
+  var copy=LANG==="ru"?"Проверяем доступ…":LANG==="tj"?"Дастрасӣ санҷида мешавад…":"Ruxsat tekshirilmoqda…";
+  return '<div role="status" aria-live="polite" style="padding:50px 20px;text-align:center;color:var(--ink3);font-size:14px"><i class="ti ti-loader-2" aria-hidden="true" style="margin-right:7px"></i>'+esc(copy)+'</div>';
+}
 function newPracticeAttemptRef(){return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
 function validatePracticeGate(o){
   if(o.status===403&&o.j&&o.j.error==="free_feature_limit_reached")return o;
   if(o.status<200||o.status>=300||!o.j||o.j.ok!==true||o.j.allowed!==true)throw new Error("practice_gate_unavailable");
   return o;
+}
+/* Missing Telegram credentials must not silently bypass the server's lifetime limit. */
+function showPracticeAuthRequired(elementId){
+  var node=document.getElementById(elementId);if(!node)return;
+  var copy={
+    uz:{body:"Mashq uchun Telegram orqali qayta kiring. Ruxsat tekshirilmaguncha mashq ochilmaydi.",retry:"Qayta ochish"},
+    ru:{body:"Откройте мини-приложение заново через Telegram. Без проверки доступа упражнение недоступно.",retry:"Открыть заново"},
+    tj:{body:"Мини-барномаро аз Telegram дубора кушоед. Бе санҷиши дастрасӣ машқ оғоз намешавад.",retry:"Аз нав кушодан"}
+  }[LANG]||{};
+  node.innerHTML='<div role="alert" style="padding:28px 18px;text-align:center;color:var(--ink2)"><p>'+esc(copy.body)+'</p><button class="sec" style="margin-top:12px" onclick="location.reload()">'+esc(copy.retry)+'</button></div>';
 }
 function practiceGateErrorCopy(){return ({
   uz:{body:"Ruxsatni tekshirib bo'lmadi. Internetni tekshirib, qayta urining.",retry:"Qayta urinish"},
@@ -3133,7 +3312,7 @@ function renderCourse(){
   /* `.ctop` — YOPISHQOQ blok: daraja qatori, progress chizig'i va bugungi
      reja birga tepada qoladi. Ilgari faqat `.htop` yopishqoq edi va reja
      tasmasi pastga suriganda uning ostiga kirib ko'rinmay ketardi. */
-  var h='<div class="cleft"><div class="ctop"><div class="htop"><h1 class="section-title"><button type="button" class="course-heading-button" onclick="App.courseTrackPicker()" aria-label="'+esc(trackUi().courseVersion)+'">'+esc(MAP.label)+'</button></h1>'
+  var h='<div class="cleft"><div class="ctop"><div class="htop"><h1 class="section-title"><button type="button" class="course-heading-button" onclick="App.courseTrackPicker()" aria-label="'+esc(trackUi().courseVersion)+'">'+esc(courseLevelLabel((MAP&&MAP.level)||getSelectedLevel()))+'</button></h1>'
     +'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>'
     +'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span>'
     +goalRingHtml()+'</div>'
@@ -3490,7 +3669,7 @@ function startFoundationFromMap(restart,afterComplete){
       Foundation.active=true;Foundation.required=true;Foundation.afterComplete=afterComplete||null;
       var close=document.querySelector("#flow .fx"),heart=document.querySelector("#flow .fheart"),gear=document.querySelector("#flow .fgear");
       if(close)close.style.visibility="hidden";if(heart)heart.style.display="none";if(gear)gear.style.display="none";
-      $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-wifi-off"></i> 0 dan asoslar</div><div class="foundation-hero"><h2>'+esc(unavailable)+'</h2><p>'+esc(LANG==="ru"?"Проверьте интернет и повторите загрузку.":LANG==="tj"?"Интернетро санҷед ва аз нав бор кунед.":"Internetni tekshiring va qayta yuklang.")+'</p></div>';
+      $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-wifi-off"></i> '+esc(LANG==="ru"?"Основы с нуля":LANG==="tj"?"Асосҳо аз сифр":"0 dan asoslar")+'</div><div class="foundation-hero"><h2>'+esc(unavailable)+'</h2><p>'+esc(LANG==="ru"?"Проверьте интернет и повторите загрузку.":LANG==="tj"?"Интернетро санҷед ва аз нав бор кунед.":"Internetni tekshiring va qayta yuklang.")+'</p></div>';
       var cta=$("#f-cta");cta.style.display="flex";cta.disabled=false;cta.innerHTML='<i class="ti ti-refresh"></i> '+esc(LANG==="ru"?"Повторить":LANG==="tj"?"Аз нав":"Qayta urinish");
       cta.onclick=function(){Foundation.active=false;startFoundationFromMap(false,afterComplete)};$("#flow").classList.add("on");return;
     }
@@ -3795,7 +3974,7 @@ function showLessonCompleteRetry(msg){
   if(cta){
     cta.style.display="flex";
     cta.disabled=false;
-    cta.innerHTML='<i class="ti ti-refresh"></i> '+(LANG==="ru"?"Повторить":LANG==="tg"?"Такрор кардан":"Qayta urinish");
+    cta.innerHTML='<i class="ti ti-refresh"></i> '+(LANG==="ru"?"Повторить":LANG==="tj"?"Такрор кардан":"Qayta urinish");
     cta.onclick=function(){setLessonFlowControls();flowDone()};
     setTimeout(function(){try{cta.scrollIntoView({block:"end"})}catch(e){}},20);
   }
@@ -5579,7 +5758,7 @@ function pandaChar(mood,opts){
 
 /* ---------- Rating (league + challenge) ---------- */
 // Real users come from server /api/miniapp/gamification.
-	var ratingTabCur="league",ratingUsers=[],ratingMeta={loaded:false,error:false,leagueSize:0,resetAtMs:null},referralUsers=[],referralMeta={loaded:false,error:false,joined:0,active:0,required:0};
+	var ratingTabCur="league",ratingUsers=[],ratingMeta={loaded:false,error:false,leagueSize:0,league:"",resetAtMs:null},referralUsers=[],referralMeta={loaded:false,error:false,joined:0,active:0,required:0};
 function rl(){return {ru:{promote:"Топ 5 поднимаются выше",demote:"Зона понижения",liga:"Лига",friends:"Друзья",refs:"Мои приглашённые",members:"учеников",left:"осталось",ch:"Вызов",chDone:"Вызов отправлен",invite:"Пригласить друзей",inviteSub:"Позови друга и сразись в лиге или тестах — покажи, кто лучший! 🔥",refSub:"Здесь видны ученики, которые пришли по вашей ссылке. Откройте профиль, напишите или отправьте дуэль.",msg:"Написать",weekRank:"место",loadErr:"Рейтинг не загрузился",refLoadErr:"Список друзей не загрузился",empty:"Пока нет реальных участников лиги",refEmpty:"По вашей ссылке пока никто не зашёл",pending:"ждём активности",active:"активный",totalXp:"всего XP"},
 	  uz:{promote:"Top 5 yuqoriga ko'tariladi",demote:"Tushish zonasi",liga:"Liga",friends:"Do'stlar",refs:"Referallarim",members:"o'quvchi",left:"qoldi",ch:"Belashuv",chDone:"Chaqiruv yuborildi",invite:"Do'st taklif qilish",inviteSub:"Do'stingni chaqir va ligada yoki testda kuch sina — kim zo'rligini ko'rsat! 🔥",refSub:"Sizning havolangizdan kirgan o'quvchilar shu yerda. Profilini oching, yozing yoki belashuv yuboring.",msg:"Yozish",weekRank:"o'rin",loadErr:"Reyting yuklanmadi",refLoadErr:"Do'stlar ro'yxati yuklanmadi",empty:"Ligada hali real ishtirokchi yo'q",refEmpty:"Havolangizdan hali hech kim kirmagan",pending:"aktivlik kutilmoqda",active:"aktiv",totalXp:"jami XP"},
 	  tj:{promote:"Топ 5 боло мебароянд",demote:"Минтақаи поёншавӣ",liga:"Лига",friends:"Дӯстон",refs:"Рефералҳои ман",members:"донишҷӯ",left:"мондааст",ch:"Мубориза",chDone:"Даъват фиристода шуд",invite:"Даъвати дӯстон",inviteSub:"Дӯстатро даъват кун ва дар лига ё тест мубориза кун — нишон деҳ, ки кӣ беҳтар аст! 🔥",refSub:"Донишҷӯёне, ки аз пайванди шумо омаданд, ин ҷо ҳастанд. Профилро кушоед, нависед ё рақобат фиристед.",msg:"Навиштан",weekRank:"ҷой",loadErr:"Рейтинг бор нашуд",refLoadErr:"Рӯйхати дӯстон бор нашуд",empty:"Дар лига ҳоло иштирокчии воқеӣ нест",refEmpty:"Аз пайванди шумо ҳоло касе надаромадааст",pending:"фаъолият интизор",active:"фаъол",totalXp:"XP умумӣ"}}[LANG]}
@@ -5593,8 +5772,12 @@ function ratingCountdownText(){
   return m+"m";
 }
 	function courseLevelLabel(lv){
-	  lv=normalizeLevel(lv||((MAP&&MAP.level)||"hsk1"));
-	  return isHsk30Level(lv)?("HSK "+levelBand(lv)+" NEW"):lv.toUpperCase().replace("HSK","HSK ");
+	  // Canonical learner-facing band label for both curriculum versions.
+	  return "HSK "+levelBand(lv||((MAP&&MAP.level)||"hsk1"));
+	}
+	function ratingLevelLabel(lv){
+	  // NEW belongs to the rating presentation of an HSK 3.0 band.
+	  return courseLevelLabel(lv)+(isHsk30Level(lv)?" NEW":"");
 	}
 	/* Haqiqiy Telegram avatarlari: harf zaxira bo'lib qoladi, rasm ustidan yopadi.
 	   Rasm topilmasa (404) img o'chadi va harf ko'rinaveradi. */
@@ -5645,6 +5828,7 @@ function applyRatingPayload(d){
     loaded:true,
     error:false,
     leagueSize:Number(d.league_size||0),
+    league:String(d.league||""),
     resetAtMs:Number(d.weekly_reset_seconds||0)>0?Date.now()+Number(d.weekly_reset_seconds||0)*1000:null
   };
 	  ratingUsers=(d.leaderboard||[]).map(normalizeSocialUser);
@@ -5676,10 +5860,12 @@ function applyRatingPayload(d){
 	  });
 	}
 function renderRating(){
+  // Friends fetches referrals directly; it must not wait for a leaderboard request.
+  if(ratingTabCur==="friends"){_renderRatingContent();return}
   if(!ratingLoaded&&INIT_DATA){
     ratingLoaded=true;
     var t=T();
-    $("#s-rating").innerHTML='<div class="htop"><h1 class="section-title">'+t.nav.rating+'</h1></div><div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
+    $("#s-rating").innerHTML='<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
     loadLatestRating().then(function(){
       _renderRatingContent();
     }).catch(function(){ratingMeta={loaded:true,error:true,leagueSize:0,resetAtMs:null};ratingUsers=[];_renderRatingContent()});
@@ -5689,12 +5875,53 @@ function renderRating(){
 }
 function retryRating(){ratingLoaded=false;renderRating()}
 function retryReferrals(){referralMeta={loaded:false,error:false,joined:0,active:0,required:0};_renderRatingContent()}
+/* Trophy art is decorative; leagues and member count are supplied by the server.
+   Backend leagues use lifetime XP, whereas the row ranking uses weekly XP. */
+function ratingCupSvg(metal,isCenter){
+  var palette={gold:["#fff8b6","#ffcf44","#b9670a","#ffe684"],silver:["#f3f9ff","#a9b4c5","#53657c","#dce4f0"],bronze:["#ffe2b6","#c47736","#793b18","#f8b472"]}[metal]||["#fff8b6","#ffcf44","#b9670a","#ffe684"];
+  var id="rating-cup-"+metal;
+  return '<svg viewBox="0 0 150 160" role="img" aria-label="'+(isCenter?"1":"")+'">'
+    +'<defs><linearGradient id="'+id+'" x1="0" y1="0" x2="1" y2=".9"><stop stop-color="'+palette[0]+'"/><stop offset=".28" stop-color="'+palette[1]+'"/><stop offset=".65" stop-color="'+palette[2]+'"/><stop offset=".83" stop-color="'+palette[3]+'"/><stop offset="1" stop-color="'+palette[2]+'"/></linearGradient><linearGradient id="'+id+'-base" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+palette[0]+'"/><stop offset="1" stop-color="'+palette[2]+'"/></linearGradient></defs>'
+    +(isCenter?'<path d="M31 73Q9 91 25 125L43 115L49 78Z" fill="#a82b28"/><path d="M120 72Q146 90 124 129L106 111L101 74Z" fill="#a82b28"/>':'')
+    +'<path d="M37 45C-2 27 3 93 35 86" fill="none" stroke="'+palette[2]+'" stroke-width="11" stroke-linecap="round"/><path d="M37 45C8 35 14 83 34 79" fill="none" stroke="'+palette[0]+'" stroke-width="5" stroke-linecap="round"/>'
+    +'<path d="M113 45C152 27 147 93 115 86" fill="none" stroke="'+palette[2]+'" stroke-width="11" stroke-linecap="round"/><path d="M113 45C142 35 136 83 116 79" fill="none" stroke="'+palette[0]+'" stroke-width="5" stroke-linecap="round"/>'
+    +'<path d="M30 27L120 27L113 78Q102 113 75 114Q48 113 37 78Z" fill="url(#'+id+')" stroke="'+palette[2]+'" stroke-width="1.5"/>'
+    +'<ellipse cx="75" cy="27" rx="45" ry="7" fill="url(#'+id+'-base)" stroke="'+palette[2]+'" stroke-width="2"/>'
+    +'<ellipse cx="75" cy="28" rx="38" ry="4" fill="'+palette[2]+'" opacity=".28"/>'
+    +'<circle cx="75" cy="73" r="25" fill="none" stroke="'+palette[0]+'" stroke-width="3" opacity=".82"/>'
+    +'<circle cx="75" cy="73" r="20" fill="none" stroke="'+palette[2]+'" stroke-width="1.5" opacity=".55"/>'
+    +'<path d="M58 87Q46 73 58 57M92 87Q104 73 92 57" fill="none" stroke="'+palette[0]+'" stroke-width="3.5" stroke-linecap="round" opacity=".8"/>'
+    +(isCenter?'<text x="75" y="85" text-anchor="middle" font-size="30" font-weight="800" fill="'+palette[2]+'" font-family="Georgia,serif">1</text>':'<path d="M75 60L79 70L90 71L81 79L83 90L75 85L67 90L69 79L60 71L71 70Z" fill="'+palette[0]+'" opacity=".75"/>')
+    +'<path d="M68 112L82 112L85 134L65 134Z" fill="url(#'+id+')" stroke="'+palette[2]+'" stroke-width="1"/>'
+    +'<ellipse cx="75" cy="137" rx="26" ry="7" fill="url(#'+id+'-base)" stroke="'+palette[2]+'"/>'
+    +'<rect x="37" y="137" width="76" height="12" rx="4" fill="url(#'+id+')" stroke="'+palette[2]+'" stroke-width="1.5"/>'
+    +'<ellipse cx="75" cy="140" rx="34" ry="3" fill="'+palette[0]+'" opacity=".5"/></svg>';
+}
+function ratingPodiumHtml(memberCount){
+  var r=rl(),lang=LANG||"ru",leagues=["Bronze","Silver","Gold","Sapphire"];
+  var index=leagues.indexOf(ratingMeta.league);
+  if(index<0)index=0;
+  var sideIndices=index<=1?[index+1,index+2]:[index-1,index===2?index+1:index-2];
+  var glyphs=["玄武","朱雀","青龙","凤凰"];
+  function tierName(i){
+    var noun=lang==="ru"?"Лига ":lang==="tj"?"Лигаи ":"Ligasi ";
+    return lang==="uz"?glyphs[i]+" ligasi":noun+glyphs[i];
+  }
+  function item(i,metal,center){
+    return '<div class="rating-podium-item'+(center?' main':'')+'"><div class="rating-cup">'+ratingCupSvg(metal,center)+'</div><div class="rating-pedestal"><span class="rating-cup-label han">'+esc(tierName(i))+'</span>'+''+'</div></div>';
+  }
+  var membersLabel=lang==="ru"?"участников всего":lang==="tj"?"иштирокчӣ дар маҷмӯъ":"jami ishtirokchi";
+  return '<div class="rating-podium">'
+    +'<div class="rating-podium-list">'+item(sideIndices[0],"silver",false)+item(index,"gold",true)+item(sideIndices[1],"bronze",false)+'</div>'
+    +'<div class="rating-podium-meta"><i class="ti ti-users" aria-hidden="true"></i> '+Number(memberCount).toLocaleString("ru")+' '+esc(membersLabel)
+    +' <span aria-hidden="true">·</span><i class="ti ti-clock" aria-hidden="true"></i> '+esc(ratingCountdownText())+' '+esc(r.left)+'</div></div>';
+}
+
 function _renderRatingContent(){
   var t=T(),r=rl();
   sortRatingUsers();
   var memberCount=Number(ratingMeta.leagueSize||ratingUsers.length||0);
-	  var h='<div class="htop"><h1 class="section-title">'+t.nav.rating+'</h1></div>'
-	    +'<div class="rt-seg" role="group" aria-label="'+esc(r.liga+" · "+r.friends)+'"><button type="button" aria-pressed="'+(ratingTabCur==="league"?"true":"false")+'" class="'+(ratingTabCur==="league"?"on":"")+'" onclick="setRatingTab(\'league\')">'+r.liga+'</button><button type="button" aria-pressed="'+(ratingTabCur==="friends"?"true":"false")+'" class="'+(ratingTabCur==="friends"?"on":"")+'" onclick="setRatingTab(\'friends\')">'+r.friends+'</button></div>';
+  var h=ratingTabCur==="friends"?'<h1 class="rating-friends-heading">'+esc(r.friends)+'</h1>':'<h1 class="section-title rating-title">'+esc(LANG==="ru"?"Рейтинг":LANG==="tj"?"Рейтинг":"Reyting")+'</h1>';
 	  if(ratingTabCur==="friends"){
 	    if(!referralMeta.loaded&&INIT_DATA){
 	      referralMeta.loaded=true;
@@ -5716,7 +5943,7 @@ function _renderRatingContent(){
 	      var st=u.refStatus==="active"?r.active:r.pending;
 	      var badge='<span class="ref-badge '+(u.refStatus==="active"?"":"wait")+'">'+esc(st)+'</span>';
 	      var pm=u.p?'<span class="pm"><i class="ti ti-crown"></i></span>':'';
-	    h+='<button type="button" class="lr" onclick="openRatingUser('+i+',\'referrals\')"><span class="rk">'+(i+1)+'</span><span class="av">'+u.a+avatarImgHtml(u.tgId)+'</span><span class="nm">'+esc(u.n)+pm+'<small>'+badge+' · '+esc(courseLevelLabel(u.level||((MAP&&MAP.level)||"hsk1")))+' · '+esc(r.totalXp)+': '+u.totalXp.toLocaleString("ru")+'</small></span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></button>';
+	    h+='<button type="button" class="lr" onclick="openRatingUser('+i+',\'referrals\')"><span class="rk">'+(i+1)+'</span><span class="av">'+u.a+avatarImgHtml(u.tgId)+'</span><span class="nm">'+esc(u.n)+pm+'<small>'+badge+' · '+esc(ratingLevelLabel(u.level||((MAP&&MAP.level)||"hsk1")))+' · '+esc(r.totalXp)+': '+u.totalXp.toLocaleString("ru")+'</small></span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></button>';
 	    });
 	    $("#s-rating").innerHTML=h;return;
 	  }
@@ -5724,23 +5951,22 @@ function _renderRatingContent(){
 	    h+='<div class="rt-invite"><span class="han">榜</span><p>'+esc(r.loadErr)+'</p><button type="button" class="scta" onclick="retryRating()">'+esc(ratingRetryText())+'</button></div>';
 	    $("#s-rating").innerHTML=h;return;
 	  }
-	  h+='<div class="rt-league"><div class="rt-emb han">朱</div><div><div class="nm2">'+t.league+'</div><div class="sb"><i class="ti ti-users" style="font-size:12px"></i> '+memberCount+' '+r.members+'</div></div><div class="rt-cd"><b>'+ratingCountdownText()+'</b><small>'+r.left+'</small></div></div>'
-	    +'<div class="rt-ladder"><span class="rt-step han">玄</span><span class="rt-step line"></span><span class="rt-step cur han">朱</span><span class="rt-step line"></span><span class="rt-step han">龙</span><span class="rt-step line"></span><span class="rt-step han">凤</span></div>';
+  h+=ratingPodiumHtml(memberCount);
   if(!ratingUsers.length){
     h+='<div class="rt-invite"><span class="han">榜</span><p>'+esc(r.empty)+'</p></div>';
     $("#s-rating").innerHTML=h;return;
   }
-  if(ratingUsers.length>=5)h+='<div class="rt-zone up"><i class="ti ti-arrow-up"></i> '+r.promote+' <span class="ln"></span></div>';
+  if(ratingUsers.length>=5)h+='<div class="rating-podium-queue"><i class="ti ti-chart-no-axes-column-increasing"></i> '+esc(LANG==="ru"?"Недельный рейтинг · Топ 5":LANG==="tj"?"Рейтинги ҳафта · Топ 5":"Haftalik reyting · Top 5")+'</div>';
   var med=["g","s","b"];
   ratingUsers.forEach(function(u,i){
-    if(ratingUsers.length>=8&&i===ratingUsers.length-2)h+='<div class="rt-zone dn"><span class="ln"></span><i class="ti ti-arrow-down"></i> '+r.demote+' <span class="ln"></span></div>';
+
     var rk=i<3?'<span class="med '+med[i]+'">'+(i+1)+'</span>':'<span class="rk">'+(i+1)+'</span>';
     var pm=u.p?'<span class="pm"><i class="ti ti-crown"></i></span>':'';
 	    h+='<button type="button" class="lr'+(u.me?' me':'')+'" onclick="openRatingUser('+i+',\'rating\')">'+rk+'<span class="av'+(u.me?' han':'')+'">'+u.a+(u.me?myAvatarImgHtml():avatarImgHtml(u.tgId))+'</span><span class="nm">'+esc(u.n)+pm+'</span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></button>';
 	  });
   $("#s-rating").innerHTML=h;
 }
-function setRatingTab(tab){ratingTabCur=tab;ratingLoaded=true;_renderRatingContent()}
+
 
 /* ---------- Clipboard / share / toast helpers ---------- */
 var _writeTmpls=[];
@@ -5998,7 +6224,7 @@ function openInviteSheet(){
 	  var userXp=ratingScore(u);
 	  var lvlLbl=LANG==="ru"?"уровень":LANG==="tj"?"сатҳ":"daraja";
 	  var isHan=/[一-鿿]/.test(u.a);
-	  var uLevel=courseLevelLabel(u.level||((MAP&&MAP.level)||"hsk1"));
+	  var uLevel=ratingLevelLabel(u.level||((MAP&&MAP.level)||"hsk1"));
 
   /* rivalry bar */
 	  var rivHtml="";
@@ -6140,23 +6366,8 @@ function closeHint(key){
   if(node&&node.parentNode)node.parentNode.removeChild(node);
   _apiPost("/api/v3/hints/dismiss",{hint:key}).catch(function(){});
 }
-/* Profildagi HSK AI Pro kartasi — BITTA.
-
-   Ilgari bu yerda ikkita bir xil qora karta ketma-ket chiqardi: biri
-   "7 kun bepul", ikkinchisi "Hammasini oching". Ikkalasi ham ayni bitta
-   obuna haqida edi va odam ularni ikki xil narsa deb o'qirdi.
-
-   Endi bitta karta, holatga qarab:
-     • obunachi          — karta yo'q;
-     • trial ishlayapti  — holat, tugmasiz;
-     • trial olinmagan   — asosiy "7 kun bepul sinash" + past "Pro olish";
-     • trial ishlatilgan — FAQAT "HSK AI Pro ⭐️ olish", boshqa hech narsa. */
-/* Profil status kartasi — foydalanuvchining HAQIQIY holatiga moslashadi.
-   Holat va muddat serverdan (`MAP.user.plan` / `access_ends_at`), markaziy
-   entitlement dvigatelidan keladi:
-     • pro/temp — obuna FAOL: holatni aytamiz, taklif qilmaymiz;
-     • trial    — sinov muddati: nechchi kun qolganini aytamiz;
-     • free     — taklif (obuna / trial). */
+/* Pro/trial status is now rendered by the compact profile carousel.
+   Server entitlement logic and the existing trialLeftText helper are shared. */
 /* Trialdan qancha qolgani.
 
    Ilgari bu yerda faqat `Math.ceil(ms/86400000)` bor edi. `ceil` tufayli
@@ -6175,41 +6386,6 @@ function trialLeftText(ends){
   var hours=Math.floor(ms/3600000);
   if(hours<1)return String(t.trialLeftSoon||"");
   return String(t.trialLeftHours||"{n}").replace("{n}",hours);
-}
-function proProfileCard(){
-  var t=T(),p=pl();
-  var u=(MAP&&MAP.user)||{};
-  var plan=u.plan||(isPaidUser()?"pro":"free");
-  var ends=u.access_ends_at||null;
-  var head='<span class="gw han">会</span>';
-
-  if(plan==="pro"||plan==="temp"){
-    var title=plan==="pro"?p.statusPro:p.statusTemp;
-    var until=ends?String(p.statusUntil).replace("{d}",fmtAccessDate(ends)):"";
-    var cta=plan==="pro"
-      ? '<button class="profile-renew" onclick="App.goPay(\'profile_renewal\')"><i class="ti ti-refresh"></i> '+esc(p.renew)+'</button>'
-      : '<button class="profile-renew" onclick="App.goPay(\'profile_subscription\')"><i class="ti ti-crown"></i> '+esc(t.unlockBtn||"")+'</button>';
-    return '<div class="pro pro-on">'+head
-      +'<h3><i class="ti ti-circle-check-filled" style="color:var(--gold);font-size:16px;vertical-align:-2px"></i> '+esc(title)+'</h3>'
-      +(until?'<p>'+esc(until)+'</p>':'<p style="margin:0"></p>')+cta+'</div>';
-  }
-
-  if(plan==="trial"){
-    var left=trialLeftText(ends);
-    return '<div class="pro pro-on">'+head
-      +'<h3><i class="ti ti-clock-hour-4" style="color:var(--gold);font-size:16px;vertical-align:-2px"></i> '+esc(p.statusTrial)+'</h3>'
-      +'<p>'+esc(left)+'</p>'
-      +'<b class="prolink" style="margin-left:0" onclick="App.openPaywall(\'profile\')">'+esc(t.unlockBtn||"")+' &rarr;</b></div>';
-  }
-
-  var canTrial=!!(TRIAL_STATE&&TRIAL_STATE.eligible);
-  return '<div class="pro">'+head
-    +'<h3>'+esc(t.unlockTitle||"")+'</h3><p>'+esc(t.unlockSub||"")+'</p>'
-    +(canTrial
-      ? '<button onclick="App.startTrial(\'profile\')">'+esc(t.trialCta||"")+'</button>'
-        +'<b class="prolink" onclick="App.openPaywall(\'profile\')">'+esc(t.unlockBtn||"")+' &rarr;</b>'
-      : '<button onclick="App.openPaywall(\'profile\')">'+esc(t.unlockBtn||"")+' &rarr;</button>')
-    +'</div>';
 }
 /* ---------- Kirish usullari (Google / Apple) + ijtimoiy tarmoqlar ---------- */
 
@@ -6285,7 +6461,7 @@ function courseVersionSettingsRowHtml(){
   var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
   if((!access||access.feature_enabled!==true)&&currentCourseTrack()!=="hsk30")return "";
   var t=trackUi(),track=currentCourseTrack();
-  return '<button class="srow" onclick="App.courseTrackPicker()"><i class="ti ti-switch-horizontal"></i> '+esc(t.courseVersion)
+  return '<button class="srow" onclick="App.profileCourseVersionBook()"><i class="ti ti-switch-horizontal"></i> '+esc(t.courseVersion)
     +'<span class="sv">'+esc(track==="hsk30"?t.hsk30:t.hsk20)+' <i class="ti ti-chevron-right"></i></span></button>';
 }
 function settingsSheetHtml(){
@@ -6299,7 +6475,7 @@ function settingsSheetHtml(){
     +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
     +signInMethodsRowsHtml()
     +'<button class="srow" onclick="App.openHelp()"><i class="ti ti-help-circle"></i> '+t.help+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button>'
-    +'</div>';
+    +'</div>'+socialLinksHtml();
 }
 
 /* Varaq ichidan boshqa varaq ochilsa (til, maqsad, bildirishnoma tasdig'i),
@@ -6350,29 +6526,62 @@ function pollSignInLink(pending,deadline){
   },2000);
 }
 
+var PROFILE_DETAIL=null;
+var PROFILE_DETAIL_PENDING=false;
+function profileCopy(){
+  return ({
+    tj:{free:"Ройгон",trial:"Pro · Озмоиш",today:"Имрӯз",overall:"Ҳамагӣ",pro:"Гирифтани Pro",answers:"ҷавоби арзёбишуда",note:"Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад"},
+    ru:{free:"Бесплатно",trial:"Pro · Пробный",today:"Сегодня",overall:"Всего",pro:"Получить Pro",answers:"проверенных ответов",note:"Только проверенные ответы · история может быть неполной"},
+    uz:{free:"Bepul",trial:"Pro · Sinov",today:"Bugun",overall:"Umumiy",pro:"Pro olish",answers:"baholangan javob",note:"Faqat tekshirilgan javoblar · eski tarix to'liq bo'lmasligi mumkin"}
+  })[LANG]||{};
+}
+function loadProfileDetail(){
+  if(PROFILE_DETAIL_PENDING)return;
+  PROFILE_DETAIL_PENDING=true;
+  _apiGet("/api/miniapp/profile").then(function(r){if(!r.ok)throw Error("profile");return r.json()}).then(function(d){
+    if(!d||!d.ok)throw Error("profile");
+    PROFILE_DETAIL=d;
+  }).catch(function(){PROFILE_DETAIL=null}).then(function(){
+    PROFILE_DETAIL_PENDING=false;
+    if(SCREEN==="profile")renderProfile();
+  });
+}
+function profileAccuracyHtml(){
+  var c=profileCopy(),data=PROFILE_DETAIL&&PROFILE_DETAIL.stats&&PROFILE_DETAIL.stats.answer_accuracy;
+  function item(label,score){
+    var pct=score&&Number.isFinite(Number(score.percent))&&score.percent!==null?Math.max(0,Math.min(100,Math.round(Number(score.percent)))):null;
+    var deg=pct===null?0:pct*3.6;
+    return '<div><div class="accuracy-ring" style="--accuracy-deg:'+deg+'deg"><strong>'+(pct===null?'—':pct+'%')+'</strong></div>'
+      +'<div class="accuracy-label">'+esc(label)+'</div></div>';
+  }
+  return '<div class="profile-accuracy">'+item(c.overall,data&&data.overall)+item(c.today,data&&data.today)+'</div>';
+}
 function renderProfile(){
-  var t=T(),p=pl();
-  var streak=Number(MAP&&MAP.progress&&MAP.progress.streak||0),todayXp=dailyXpVal();
-  var pct=Math.round(Math.min(todayXp/dailyGoal,1)*100),off=Math.round(157-157*Math.min(todayXp/dailyGoal,1));
+  var t=T(),p=pl(),c=profileCopy();
+  var streak=Number(MAP&&MAP.progress&&MAP.progress.streak||0);
   var completedLessons=Number(MAP&&MAP.progress&&MAP.progress.completed||0);
-  var firstDone=completedLessons>=1;
   var lessonAchPct=Math.min(100,Math.round(completedLessons/100*100));
   var streakAchPct=Math.min(100,Math.round(streak/30*100));
-  $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(t.nav.profile)+'</h1><button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div>'
-    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pname">'+(PROF.name||t.you)+'</div><div class="pun">'+(PROF.name?"@"+PROF.name.toLowerCase().replace(/\s+/g,"_"):"@hsk_ai")+'</div><span class="lvb"><i class="ti ti-bolt"></i> '+(MAP&&MAP.level?MAP.level.toUpperCase():"HSK 1")+' · '+t.league+'</span>'+(goalLabel()?'<span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span>':'')+'</div></div>'
-    +'<div class="pgoal" onclick="App.goCurrentLesson()" style="cursor:pointer"><svg class="ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="30" cy="30" r="25" fill="none" stroke="'+(pct>=100?"var(--gold)":"var(--cin)")+'" stroke-width="6" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="'+off+'" transform="rotate(-90 30 30)"/><text x="30" y="35" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">'+pct+'%</text></svg><div class="gt"><b>'+p.todayGoal+'</b><small>'+todayXp+' / '+dailyGoal+' XP · '+Math.max(0,dailyGoal-todayXp)+' '+p.goalLeft+'</small></div><div class="fl"><b>'+streak+'</b><small>'+t.streak+'</small></div></div>'
-    +'<div class="stats profile-stats" role="group" aria-label="'+esc(p.metricsLabel)+'"><div class="stat"><b>'+Number(MAP&&MAP.progress&&MAP.progress.xp||0).toLocaleString("ru")+'</b><small>'+esc(p.metricsXp)+'</small></div><div class="stat"><b>'+completedLessons.toLocaleString("ru")+'</b><small>'+esc(p.metricsLessons)+'</small></div></div>'
+  var paid=PROFILE_DETAIL&&PROFILE_DETAIL.subscription?!!PROFILE_DETAIL.subscription.is_paid:isPaidUser();
+  var trialActive=!!(TRIAL_STATE&&TRIAL_STATE.active);
+  var showProLink=!paid&&!trialActive;
+  var nickname=esc(PROF.name||t.you);
+  $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(LANG==="ru"?"Профиль":LANG==="tj"?"Профил":"Profil")+'</h1><div class="profile-head-actions">'
+    +'<button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div></div>'
+    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div>'
+    +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):esc(c.free))+'</span></div>'
+    +(goalLabel()?'<div class="profile-goal-row"><span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span></div>':'')+'</div></div>'
+    +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(t.friends)+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
+    +profileAccuracyHtml()
     +'<div id="pomp-desktop-profile-root"></div>'
     +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+t.streak+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'
-    +'<div class="sech">'+p.ach+'</div><div class="ach"><div class="arow"><div class="aic c3"><i class="ti ti-check"></i></div><div class="at"><div class="ah"><span>'+p.a1+'</span><small>'+(firstDone?p.a1d:"0 / 1")+'</small></div><div class="abar"><i style="width:'+(firstDone?100:0)+'%;background:var(--jade)"></i></div></div></div>'
+    +(showProLink?'<button type="button" class="profile-pro-link" onclick="App.goPay(\'profile_after_streak\')"><i class="ti ti-crown" aria-hidden="true"></i><span>'+esc(c.pro)+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>':'')
+    +'<div class="sech">'+p.ach+'</div><div class="profile-compact-ach">'
     +'<div class="arow"><div class="aic c1"><i class="ti ti-book"></i></div><div class="at"><div class="ah"><span>'+p.a2+'</span><small>'+completedLessons+' / 100</small></div><div class="abar"><i style="width:'+lessonAchPct+'%"></i></div></div></div>'
     +'<div class="arow"><div class="aic c2"><i class="ti ti-flame"></i></div><div class="at"><div class="ah"><span>'+p.a3+'</span><small>'+streak+' / 30</small></div><div class="abar"><i style="width:'+streakAchPct+'%"></i></div></div></div></div>'
-    +proProfileCard()
-    +'<div class="sech">'+t.mistakes+' · '+t.friends+'</div><div class="profile-quick-links" role="group" aria-label="'+esc(t.mistakes+' · '+t.friends)+'">'
-    +rowCard("t-cin",'<i class="ti ti-alert-triangle"></i>',t.mistakes,t.mistakesSub,"App.openMistakes()")
-    +rowCard("t-jade",'<i class="ti ti-users"></i>',t.friends,"","App.openFriends()")+'</div>'
-    +socialLinksHtml()
+    +'<div id="hsk-profile-promo-root"></div>'
     +'<div style="height:14px"></div>';
+  if(window.HskProfileCarousel)window.HskProfileCarousel.mount();
   if(window.PompDesktopDownload&&window.PompDesktopDownload.renderProfile)window.PompDesktopDownload.renderProfile();
 }
 
@@ -6463,6 +6672,9 @@ function payWhyHtml(ctx){
   if(!why)return "";
   return '<div class="paywhy"><i class="ti ti-info-circle"></i><span>'+esc(why)+'</span></div>';
 }
+function isLimitPaywallContext(ctx){
+  return ctx==="lockedLesson"||ctx==="pronLimit"||!!(ctx&&typeof ctx==="object"&&ctx.lesson);
+}
 function paywallHtml(ctx){
   if(salesValueCoursePaywall(ctx))return salesOutcomePaywallHtml(ctx);
   var t=T();var ctxTitle=getPaywallTitle(ctx);
@@ -6476,10 +6688,10 @@ function paywallHtml(ctx){
        mashq limitidagi kabi. Ilgari bu taklif faqat hech qachon
        chaqirilmaydigan funksiya ichida turardi, ya'ni dars paywallida
        trial umuman ko'rinmasdi. */
-    +(trialEligible()
+    +(!isLimitPaywallContext(ctx)&&trialEligible()
       ? '<button class="scta" style="margin-top:8px;background:var(--card);color:var(--ink);border:1px solid var(--line)" onclick="App.startTrial(\'paywall_lesson\')"><i class="ti ti-gift"></i> '+esc(t.trialCta||"")+'</button>'
       : '')
-    +payHintHtml();
+    +(isLimitPaywallContext(ctx)?'':payHintHtml());
 }
 
 /* ---------- boot ---------- */
@@ -6696,7 +6908,7 @@ var RECOG=(function(){
 
   function shell(){
     return '<div class="rc-top"><button class="rc-ix hsk-native-back-duplicate" onclick="RECOG.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="rc-pbar"><i id="rc-prog"></i></div><span class="rc-pill" id="rc-score">0 ✓</span></div>'
-      +'<div class="rc-body" id="rc-body">'+renderStudyPreparing()+'</div>';
+      +'<div class="rc-body" id="rc-body">'+renderPracticeGateChecking()+'</div>';
   }
 
   // New openings consume new attempts; only a network retry reuses the ref.
@@ -6795,19 +7007,20 @@ var RECOG=(function(){
     openSection(API);
     if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"recognition",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
     ensureData();
-    if(!INIT_DATA){start();return}
+    if(!INIT_DATA){showPracticeAuthRequired("rc-body");return}
     gateStart(true);
   }
   function replay(){
-    if(!INIT_DATA){start();return}
+    if(!INIT_DATA){showPracticeAuthRequired("rc-body");return}
     gateStart(true);
   }
   function gateStart(newAttempt){
     var ref=gateRef(newAttempt);
-    el("rc-body").innerHTML=renderStudyPreparing();
+    el("rc-body").innerHTML=renderPracticeGateChecking();
     runGate(ref).then(function(o){
       if(SECTION!==API||ref!==ATTEMPT_REF)return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}
+      el("rc-body").innerHTML=renderStudyPreparing();
       start(ref);
     }).catch(function(){
       if(SECTION!==API||ref!==ATTEMPT_REF)return;
@@ -6849,7 +7062,7 @@ var PRON=(function(){
     return '<div class="pr-wrap">'
       +'<div class="pr-top"><button class="pr-ix hsk-native-back-duplicate" onclick="PRON.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="pr-pbar"><i id="pr-prog"></i></div><span class="pr-pill" id="pr-cnt">1 / 10</span></div>'
       +'<div class="pr-toast" id="pr-toast">+10 XP</div>'
-      +'<div class="pr-stage" id="pr-stage">'+renderStudyPreparing()+'</div>'
+      +'<div class="pr-stage" id="pr-stage">'+renderPracticeGateChecking()+'</div>'
       +'<div class="pr-ctrl" id="pr-ctrl" style="display:none">'
       +'<div class="pr-micwrap" id="pr-micwrap"><button class="pr-mic" id="pr-mic" onclick="PRON.rec()" aria-label="Gapirish"><i class="ti ti-microphone"></i></button></div>'
       +'<div class="pr-hint" id="pr-hint"></div>'
@@ -7014,20 +7227,21 @@ var PRON=(function(){
     busy=false;
     if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"pronunciation",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
     ensureData();
-    if(!INIT_DATA){start();return}
+    if(!INIT_DATA){showPracticeAuthRequired("pr-stage");return}
     gateStart(true);
   }
   function replay(){
-    if(!INIT_DATA){start();return}
+    if(!INIT_DATA){showPracticeAuthRequired("pr-stage");return}
     gateStart(true);
   }
   function gateStart(newAttempt){
     var ref=gateRef(newAttempt);
     el("pr-ctrl").style.display="none";el("pr-done").classList.remove("on");
-    el("pr-stage").innerHTML=renderStudyPreparing();
+    el("pr-stage").innerHTML=renderPracticeGateChecking();
     runGate(ref).then(function(o){
       if(!live()||ref!==ATTEMPT_REF)return;
       if(o.status===403){rememberSectionLimit(o.j);showLimit(false);return}
+      el("pr-stage").innerHTML=renderStudyPreparing();
       start(ref);
     }).catch(function(){
       if(!live()||ref!==ATTEMPT_REF)return;
@@ -7570,16 +7784,31 @@ function clog(ev,msg,ex){try{var tgw=window.Telegram&&window.Telegram.WebApp,c={
 function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=slowOn()?.68:.85;u.onstart=function(){vspeak(true)};u.onend=function(){vspeak(false)};u.onerror=function(){vspeak(false)};window.speechSynthesis.speak(u)}catch(e){}}
 function vspeak(on){try{var r=$("root");if(r)r.classList.toggle("vspeak",!!on)}catch(e){}}
 function stopSpeak(){vspeak(false);window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_ttsAudio.onplaying=null;_ttsAudio.onerror=null;_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
-function _ttsPrefetch(x){x=(x||"").trim();if(!x||x.length>240||!/[一-鿿]/.test(x))return Promise.resolve(null);if(_ttsCache[x])return Promise.resolve(_ttsCache[x]);if(_ttsPend[x])return _ttsPend[x];_ttsPend[x]=fetch("/api/v3/tts?text="+encodeURIComponent(x)).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){delete _ttsPend[x];if(b&&b.size){_ttsCache[x]=URL.createObjectURL(b);return _ttsCache[x]}return null}).catch(function(){delete _ttsPend[x];return null});return _ttsPend[x]}
+function _ttsPrefetch(x){x=(x||"").trim();if(!x||x.length>240||!/[一-鿿]/.test(x))return Promise.resolve(null);if(_ttsCache[x])return Promise.resolve(_ttsCache[x]);if(_ttsPend[x])return _ttsPend[x];_ttsPend[x]=ttsFetch(x).then(function(b){delete _ttsPend[x];if(b&&b.size){_ttsCache[x]=URL.createObjectURL(b);return _ttsCache[x]}return null}).catch(function(){delete _ttsPend[x];return null});return _ttsPend[x]}
 function speak(t){
-  if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;
+  t=String(t||"").trim();
+  if(!t)return;stopSpeak();var tok=window._ttsTok,st=0,triedServer=false;
+  function failedSource(src,a){
+    if(tok!==window._ttsTok||st===2||(a&&_ttsAudio!==a))return;
+    if(!triedServer&&src.indexOf("/audio/words/")===0){
+      triedServer=true;playSource(ttsServerUrl(t));return;
+    }
+    st=2;_ttsFallback(t);
+  }
   function playSource(src){
     if(tok!==window._ttsTok)return;
-    try{var a=new Audio(src);try{a.preservesPitch=true;a.mozPreservesPitch=true;a.webkitPreservesPitch=true}catch(e){}a.playbackRate=slowOn()?.75:1;_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1;vspeak(true)};a.onended=function(){if(tok===window._ttsTok)vspeak(false)};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}
+    try{
+      var a=new Audio(src);try{a.preservesPitch=true;a.mozPreservesPitch=true;a.webkitPreservesPitch=true}catch(e){}
+      a.playbackRate=slowOn()?.75:1;_ttsAudio=a;
+      a.onplaying=function(){if(tok!==window._ttsTok||st===2){try{a.pause()}catch(e){}return}st=1;vspeak(true);try{window.HSKOfflineAudio&&window.HSKOfflineAudio.rememberPlayed(t,src)}catch(e){}};
+      a.onended=function(){if(tok===window._ttsTok)vspeak(false)};
+      a.onerror=function(){if(st===0)failedSource(src,a)};
+      var p=a.play();if(p&&p.catch)p.catch(function(){if(st===0)failedSource(src,a)});
+    }catch(e){failedSource(src,_ttsAudio)}
   }
   if(_ttsCache[t]){playSource(_ttsCache[t]);return}
-  if(_ttsPend[t]){_ttsPend[t].then(function(){if(tok===window._ttsTok)playSource(_ttsCache[t]||("/api/v3/tts?text="+encodeURIComponent(t)))});return}
-  playSource("/api/v3/tts?text="+encodeURIComponent(t));
+  if(_ttsPend[t]){ /* Preserve iOS audio gesture while a prefetch is pending. */ playSource(ttsUrl(t));return}
+  playSource(ttsUrl(t));
 }
 var ac;function ring(s){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;s.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=f;o.connect(g);g.connect(ac.destination);var st=t+k*0.08;g.gain.setValueAtTime(0.0001,st);g.gain.exponentialRampToValueAtTime(0.1,st+0.02);g.gain.exponentialRampToValueAtTime(0.0001,st+0.15);o.start(st);o.stop(st+0.17)})}catch(e){}}
 
@@ -8010,6 +8239,11 @@ function toggleDialog(){
   $("dtoggleic").className=on?"ti ti-chevron-up":"ti ti-messages";
 }
 function showPaywall(){
+  if(window.CourseAds&&CourseAds.showLimitPromo){
+    CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"voice",level:(MAP&&MAP.level)||"hsk1"});
+    CourseAds.showLimitPromo({feature:"voice",reason:L.limitWhy||"",onSubscribe:function(){App.goPay("v3_voice_limit")},onBack:function(){$("paywall").classList.remove("on")}});
+    return;
+  }
   $("pwchar").innerHTML=chr("happy",persona);
   $("pwh").textContent=L.limitTitle;$("pwp").textContent=L.limitSub;
   if(L.limitWhy){$("pwwhyt").textContent=L.limitWhy;$("pwwhy").hidden=false}else{$("pwwhy").hidden=true}
@@ -8197,7 +8431,7 @@ var finishHskLaunchSplash=(function(){
        o'quvchi (masalan boshqa qurilmada tugatgan) — xarita chizilgach
        so'raymiz. Yopib yuborsa 24 soat qayta so'ralmaydi. */
     if(STUDY_SETUP&&STUDY_SETUP.pending&&studySetupPending())
-      setTimeout(STUDY_SETUP.pending_goal?askStudyGoal:askStudyTime,1200);
+      setTimeout(askPendingStudySetup,1200);
     prefetchNearbyLessons();
     var sp=bootParams;
     App.show(sp.get("tab")||"course");
@@ -8471,6 +8705,7 @@ window.addEventListener("pageshow",function(ev){
   NavBack.sync(); /* Restore the Telegram BackButton on bfcache return. */
 });
 </script>
-<script src="/course_v3_data/desktop-download.js?v=20261003-1"></script>
+<script src="/course_v3_data/desktop-download.js?v=20261013-profile-1"></script>
+<script src="/course_v3_data/profile-carousel.js?v=20261014-booksheet-2"></script>
 </body>
 </html>

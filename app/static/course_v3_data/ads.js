@@ -181,13 +181,15 @@
   +'.caa-desktop{display:none;width:100%}'
   +'.caa-desktop:not([hidden]){display:block}';
 
+  CSS += "\n.caa-ov.limit{max-width:none!important;margin:0!important;background:rgba(12,12,17,.58)!important;display:flex!important;align-items:center;justify-content:flex-end;overflow:hidden!important;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);color:#282524}\n.caa-ov.limit .caa-box,.caa-ov.limit>.caa-x{display:none!important}\n.caa-limit-sheet{display:none}\n.caa-ov.limit .caa-limit-sheet{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:13px;box-sizing:border-box;width:100%;max-width:480px;max-height:calc(100dvh - 16px - env(safe-area-inset-top,0px));max-height:calc(100vh - 16px - env(safe-area-inset-top,0px));overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:radial-gradient(ellipse at 8% 42%,rgba(255,231,202,.55),transparent 48%),radial-gradient(ellipse at 85% 8%,rgba(218,246,236,.65),transparent 48%),#fffdf7;border-radius:29px 29px 0 0;padding:14px 20px calc(20px + env(safe-area-inset-bottom,0px));box-shadow:0 -12px 55px rgba(13,10,5,.2);font-family:inherit}\n.caa-ls-handle{width:58px;height:5px;border-radius:8px;background:#dcd8d1;align-self:center;flex:none}\n.caa-ls-close{position:absolute;right:14px;top:29px;width:38px;height:38px;border:none;border-radius:50%;background:transparent;color:#77716c;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer}\n.caa-ls-mark{align-self:center;display:flex;align-items:center;justify-content:center;width:76px;height:76px;margin-top:9px;border-radius:20px;border:3px solid #efb34a;background:linear-gradient(145deg,var(--hsk-cinnabar,#E04A40),var(--hsk-cinnabar-dark,#B23530));color:#ffd568;font-size:42px;font-weight:800;box-shadow:0 5px 16px rgba(158,48,39,.18)}\n.caa-ls-heading{color:#33312f;text-align:center;font-size:19px;line-height:1.3;font-weight:600;margin:1px 0 3px}\n.caa-ls-why{display:flex;align-items:flex-start;gap:10px;text-align:left;color:#605d59;font-size:14px;line-height:1.52;border:1px solid #e6dcd0;border-radius:17px;background:rgba(255,255,255,.60);padding:14px 15px}\n.caa-ls-why i{flex:none;color:#bc803b;font-size:19px;margin-top:1px}\n.caa-ls-promo{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:9px;min-height:206px;padding:24px 16px 19px;border:1px solid #ecd8ce;border-radius:21px;background:radial-gradient(ellipse at 8% 70%,rgba(244,216,238,.5),transparent 58%),radial-gradient(ellipse at 83% 25%,rgba(254,226,202,.7),transparent 60%),#fff3ee}\n.caa-ls-icon{display:flex;align-items:center;justify-content:center;width:74px;height:74px;border-radius:50%;background:linear-gradient(145deg,var(--hsk-cinnabar,#E04A40),var(--hsk-cinnabar-dark,#B23530));color:#231d1b;font-size:32px;box-shadow:0 9px 24px rgba(158,48,39,.18);margin-bottom:6px}\n.caa-ls-title{font-size:20px;line-height:1.28;font-weight:800;color:#302c2b;letter-spacing:-.02em}\n.caa-ls-desc{font-size:14.5px;line-height:1.45;color:#6b625f;max-width:290px}\n.caa-ls-dots{display:flex;justify-content:center;gap:6px;margin-top:5px}\n.caa-ls-dots i{height:6px;width:6px;border-radius:6px;background:#dfcfce}\n.caa-ls-dots i.on{width:22px;background:var(--hsk-cinnabar,#E04A40)}\n.caa-ls-pay{border:none;border-radius:17px;background:var(--hsk-cinnabar,#E04A40);color:var(--hsk-on-cinnabar,#160C09);width:100%;min-height:58px;padding:14px 12px;display:flex;align-items:center;justify-content:center;gap:9px;font-family:inherit;font-size:17px;line-height:1.25;font-weight:750;cursor:pointer;box-shadow:0 7px 19px rgba(158,48,39,.19)}\n.caa-ls-pay i{font-size:21px}\n.caa-ls-pay:active{transform:translateY(1px)}\n@media(max-height:690px){.caa-ov.limit .caa-limit-sheet{gap:9px;padding-top:9px}.caa-ls-mark{width:60px;height:60px;font-size:34px}.caa-ls-promo{min-height:160px;padding:15px 13px}.caa-ls-icon{width:56px;height:56px;font-size:26px}}\n";
+
   var els = null;
   var limitReturnFocus = null;
   document.addEventListener("keydown",function(event){
     if(!els||!els.ov.classList.contains("on")||!els.ov.classList.contains("limit"))return;
-    if(event.key==="Escape"){event.preventDefault();els.x.click();return}
+    if(event.key==="Escape"){event.preventDefault();els.limitClose.click();return}
     if(event.key!=="Tab")return;
-    var controls=[els.x,els.pay,els.limAd].filter(function(node){return node&&!node.disabled&&!node.hidden&&node.getClientRects().length>0});
+    var controls=[els.limitClose,els.limitPay].filter(function(node){return node&&!node.disabled&&!node.hidden&&node.getClientRects().length>0});
     if(!controls.length){event.preventDefault();return}
     var activeIndex=controls.indexOf(document.activeElement);
     if(activeIndex<0||(event.shiftKey&&activeIndex===0)){
@@ -217,8 +219,16 @@
       +'<button class="caa-cta caa-pay"></button><button class="caa-cta ghost caa-ext" hidden></button><button class="caa-cta ghost caa-cont"></button><div class="caa-desktop" hidden></div>'
       +'<div class="caa-limit-foot" hidden><button class="caa-limit-link ad caa-lim-ad" hidden></button></div></div>'
       +'</div>'
-      +'<button class="caa-x" aria-label="close"><i class="ti ti-x"></i></button>'
-      +'</div>';
+      +'</div>' // Close .caa-box; otherwise display:none hides the limit sheet.
+      +'<section class="caa-limit-sheet" aria-label="HSK AI Pro">'
+      +'<div class="caa-ls-handle"></div>'
+      +'<button type="button" class="caa-ls-close" aria-label="Close"><i class="ti ti-x"></i></button>'
+      +'<div class="caa-ls-mark han" aria-hidden="true">会</div><h2 class="caa-ls-heading"></h2>'
+      +'<div class="caa-ls-why"><i class="ti ti-info-circle"></i><span class="caa-ls-why-text"></span></div>'
+      +'<div class="caa-ls-promo"><div class="caa-ls-icon"><i class="ti ti-clipboard-check"></i></div><strong class="caa-ls-title"></strong><div class="caa-ls-desc"></div><div class="caa-ls-dots"></div></div>'
+      +'<button type="button" class="caa-ls-pay"><i class="ti ti-lock-open"></i><span class="caa-ls-pay-text"></span></button>'
+      +'</section>'
+            +'<button class="caa-x" aria-label="close"><i class="ti ti-x"></i></button>';
     document.body.appendChild(ov);
     var q = function(s){return ov.querySelector(s)};
     els = {ov:ov, box:q(".caa-box"), label:q(".caa-label"), count:q(".caa-count"), vwrap:q(".caa-vwrap"),
@@ -227,7 +237,7 @@
       title:q(".caa-title"), note:q(".caa-note"), ps:q(".caa-ps"), cta0:q(".caa-cta0"), sub:q(".caa-sub"),
       subTitle:q(".caa-sub-t"), subDesc:q(".caa-sub-desc"), why:q(".caa-why"), whyT:q(".caa-why-t"),
       benefits:q(".caa-benefits"), pay:q(".caa-pay"), external:q(".caa-ext"), cont:q(".caa-cont"),
-      desktop:q(".caa-desktop"), limFoot:q(".caa-limit-foot"), limAd:q(".caa-lim-ad"), x:q(".caa-x")};
+      desktop:q(".caa-desktop"), limFoot:q(".caa-limit-foot"), limAd:q(".caa-lim-ad"), x:q(".caa-x"), limitSheet:q(".caa-limit-sheet"), limitClose:q(".caa-ls-close"), limitHeading:q(".caa-ls-heading"), limitWhy:q(".caa-ls-why-text"), limitIcon:q(".caa-ls-icon"), limitTitle:q(".caa-ls-title"), limitDesc:q(".caa-ls-desc"), limitDots:q(".caa-ls-dots"), limitPay:q(".caa-ls-pay"), limitPayText:q(".caa-ls-pay-text")};
     els.vwrap.addEventListener("click", openAdLink);
     els.ps.addEventListener("click", onPsClick);
     return els;
@@ -465,88 +475,80 @@
       els.limAd.onclick=null;
       els.pay.onclick=null;
       els.x.onclick=null;
+      els.limitPay.onclick=null;
+      els.limitClose.onclick=null;
     }catch(e){}
     resetState();
     if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
   }
 
+  /* Every gated Mini App section uses the same bottom sheet. Trial remains
+     available from onboarding/profile, but never from a limit overlay. */
+  var LIMIT_HEADINGS={
+    uz:"Davom etishga tayyormisiz?",ru:"Готовы продолжить?",tj:"Барои идома омодаед?"
+  };
+  var LIMIT_REASONS={
+    uz:{recognition:"Ieroglif tanish uchun bepul limit tugadi.",pronunciation:"Talaffuz mashqi uchun bepul limit tugadi.",memorize:"So‘z yodlash uchun bepul limit tugadi.",training_test:"Bugungi bepul test urinishingiz tugadi.",placement:"Daraja aniqlash testining bepul limiti tugadi.",mistake_review:"Xatolar ustida ishlash uchun bepul limit tugadi.",voice:"AI Voice uchun bepul limit tugadi.",lesson:"Bepul darslar limitingiz tugadi."},
+    ru:{recognition:"Лимит распознавания иероглифов исчерпан.",pronunciation:"Лимит упражнений на произношение исчерпан.",memorize:"Лимит запоминания слов исчерпан.",training_test:"Бесплатная попытка теста использована.",placement:"Лимит теста на уровень исчерпан.",mistake_review:"Лимит работы над ошибками исчерпан.",voice:"Лимит AI Voice исчерпан.",lesson:"Лимит бесплатных уроков исчерпан."},
+    tj:{recognition:"Лимити шинохти иероглифҳо тамом шуд.",pronunciation:"Лимити машқи талаффуз тамом шуд.",memorize:"Лимити азёдкунии калимаҳо тамом шуд.",training_test:"Кӯшиши ройгони тест тамом шуд.",placement:"Лимити тести муайянкунии сатҳ тамом шуд.",mistake_review:"Лимити кор бо хатоҳо тамом шуд.",voice:"Лимити AI Voice тамом шуд.",lesson:"Лимити дарсҳои ройгон тамом шуд."}
+  };
+  function limitFeature(opts){
+    var f=String(opts.feature||CFG.feature||"lesson");
+    if(f==="mock"||f==="practice_mock")return "training_test";
+    if(f.indexOf("mistake")>=0)return "mistake_review";
+    if(f.indexOf("placement")>=0)return "placement";
+    if(f.indexOf("test")>=0)return "training_test";
+    if(f.indexOf("voice")>=0)return "voice";
+    return f;
+  }
+  function startLimitSlides(feature){
+    stopPromo();
+    var slides=promoSlides(),initial=({voice:0,pronunciation:0,lesson:1,recognition:1,memorize:1,training_test:2,placement:2,mistake_review:3})[feature]||0;
+    var idx=initial;
+    function render(){
+      var slide=slides[idx];
+      els.limitIcon.innerHTML='<i class="ti ti-'+esc(slide.i)+'"></i>';
+      els.limitTitle.textContent=slide.t;
+      els.limitDesc.textContent=slide.s;
+      els.limitDots.innerHTML=slides.map(function(_,i){return '<i class="'+(idx===i?"on":"")+'"></i>'}).join("");
+    }
+    render();
+    promoStop=setInterval(function(){idx=(idx+1)%slides.length;render()},4500);
+  }
   function showLimitPromo(opts){
     opts=opts||{};
     ensureDom();
     hidePs();hideLessonEndExternal();els.desktop.hidden=true;
-    var t=T();
-    var why=opts.reason||limitWhyText(CFG.feature);
-    if(why){els.whyT.textContent=why;els.why.hidden=false}else{els.why.hidden=true}
-    if(!why){
-      var statusFeature=CFG.feature||"lesson";
-      function fetchLimitStatus(){
-        return fetch("/api/v3/limits/status",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":CFG.initData||""},body:JSON.stringify({feature:statusFeature})})
-          .then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error("limit_status");return d})});
-      }
-      var statusPromise=null;
-      try{if(window.CourseLimitStatus&&typeof window.CourseLimitStatus.get==="function")statusPromise=window.CourseLimitStatus.get(statusFeature)}catch(e){}
-      (statusPromise||fetchLimitStatus()).catch(function(){return fetchLimitStatus()}).then(function(d){
-          if(!d||!d.ok||!d.limit_text||!els.ov.classList.contains("limit"))return;
-          var text=d.limit_text;
-          if(d.window==="daily"&&d.reset_at){var reset=new Date(d.reset_at);if(!isNaN(reset.getTime()))text+=" · "+reset.toLocaleString()}
-          els.whyT.textContent=text;els.why.hidden=false;
-        }).catch(function(){});
-    }
-    els.subTitle.textContent="";
-    els.subDesc.textContent="";
-    els.subDesc.hidden=true;
-    els.benefits.innerHTML="";
-    els.pay.style.display="";
-    els.pay.innerHTML=esc(t.limitSubscribe||t.adSubPay);
-    els.pay.onclick=function(){var cb=opts.onSubscribe;_closeLimit();if(typeof cb==="function")cb()};
-    els.cont.style.display="none";
-    /* Pastdagi ikkilamchi tugma. Ilgari "reklama bilan davom etish" edi —
-       reklama endi hech narsani ochmaydi, shuning uchun o'sha joyda 7 kunlik
-       bepul Pro taklifi turadi. Faqat odam hali trial olmagan bo'lsa. */
-    /* Trialni ALLAQACHON ishlatgan odamga limitda BITTA tugma qoladi:
-       "HSK AI Pro ⭐️ olish". Boshqa hech narsa taklif qilinmaydi — na
-       reklama (u hech narsani ochmaydi), na ikkinchi bor trial.
-
-       Shuning uchun pastki konteyner ham yopiq turadi: bo'sh bo'lsa u
-       tugmasiz bo'shliq bo'lib ko'rinardi. */
-    els.limFoot.hidden=true;
-    /* Trial tugmasi: chaqiruvchi aytmasa, modulning o'zi serverdan so'raydi.
-       Shunday qilib taklif TO'RTALA sahifada ham bir xil chiqadi. */
-    function showTrialButton(onTrial){
-      els.limFoot.hidden=false;
-      els.limAd.hidden=false;
-      els.limAd.innerHTML=esc(t.limitTrial);
-      els.limAd.onclick=function(){
-        _closeLimit();
-        if(typeof onTrial==="function")onTrial();
-        else trialStart(opts.source||"paywall");
-      };
-    }
-    els.limAd.hidden=true;
-    if(opts.trialEligible&&typeof opts.onTrial==="function"){
-      showTrialButton(opts.onTrial);
-    }else if(opts.trialEligible===undefined){
-      trialStatus().then(function(eligible){
-        /* Oyna shu orada yopilgan bo'lishi mumkin — tugmani tiriltirmaymiz. */
-        if(eligible&&els.ov.classList.contains("limit"))showTrialButton(opts.onTrial);
-      });
-    }
-    /* Chiqish — o'ng yuqori burchakdagi X (pastda "orqaga" tugma yo'q). */
-    els.x.onclick=function(){var cb=opts.onBack;_closeLimit();if(typeof cb==="function")cb()};
+    var lang=I18N[CFG.lang]?CFG.lang:"uz",feature=limitFeature(opts);
+    els.limitHeading.textContent=LIMIT_HEADINGS[lang];
+    els.limitWhy.textContent=opts.reason||LIMIT_REASONS[lang][feature]||limitWhyText(feature);
+    els.limitPayText.textContent=T().limitSubscribe||T().adSubPay;
+    els.limitPay.onclick=function(){
+      var cb=opts.onSubscribe||CFG.onSubscribe;
+      _closeLimit();
+      if(typeof cb==="function")cb();
+    };
+    els.limitClose.setAttribute("aria-label",({uz:"Yopish",ru:"Закрыть",tj:"Пӯшидан"})[lang]);
+    els.limitClose.onclick=function(){
+      var cb=opts.onBack;_closeLimit();if(typeof cb==="function")cb();
+    };
     limitReturnFocus=document.activeElement;
-    /* Media yo'q — to'g'ridan promo (done) ko'rinishi. */
-    try{els.video.pause();els.video.removeAttribute("src");els.video.load()}catch(e){}
-    try{els.photo.removeAttribute("src");els.photo.hidden=true;els.video.hidden=false}catch(e){}
-    els.vwrap.style.display="none";
-    setStatus("");
-    els.ov.classList.add("on","caa-done","limit");
+    els.ov.classList.add("on","limit");
     els.ov.setAttribute("aria-hidden","false");
-    els.ov.setAttribute("role","dialog");els.ov.setAttribute("aria-modal","true");
-    els.ov.setAttribute("aria-label",({uz:"Bepul limit tugadi",ru:"Бесплатный лимит исчерпан",tj:"Лимити ройгон тамом шуд"})[CFG.lang]||"Bepul limit tugadi");
-    els.x.setAttribute("aria-label",({uz:"Yopish",ru:"Закрыть",tj:"Пӯшидан"})[CFG.lang]||"Yopish");
-    setSubVisible(true);
-    els.pay.focus({preventScroll:true});
-    startPromo();
+    els.ov.setAttribute("role","dialog");
+    els.ov.setAttribute("aria-modal","true");
+    els.ov.setAttribute("aria-label",LIMIT_HEADINGS[lang]);
+    if(!opts.reason&&CFG.initData){
+      var currentFeature=feature;
+      fetch("/api/v3/limits/status",{
+        method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":CFG.initData},
+        body:JSON.stringify({feature:currentFeature})
+      }).then(function(r){return r.ok?r.json():null}).then(function(d){
+        if(d&&d.ok&&d.limit_text&&els.ov.classList.contains("limit"))els.limitWhy.textContent=d.limit_text;
+      }).catch(function(){});
+    }
+    startLimitSlides(feature);
+    els.limitPay.focus({preventScroll:true});
   }
 
   /* ============================================================

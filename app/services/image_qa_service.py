@@ -10,6 +10,7 @@ from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.image_analyzer_service import ImageAnalyzerService
 from app.services.image_explainer_service import ImageExplainerService
 from app.services.referral_service import ReferralService
+from app.services.qa_text_format import clean_ai_qa_markup
 
 
 class ImageQAService:
@@ -83,7 +84,7 @@ class ImageQAService:
             user_language=user.language,
             user_level=user.level,
         )
-        assistant_reply = (assistant_reply or "").strip()
+        assistant_reply = clean_ai_qa_markup(assistant_reply)
         if not assistant_reply:
             return "ai_empty_response"
 

@@ -50,7 +50,7 @@ internal fun StreakCalendar(progress: CourseProgress?, dailyXp: Int) {
             trailing = "$streak ${stringResource(R.string.profile_streak)}",
         )
         Surface(
-            color = PompColors.PaperRaised,
+            color = PompColors.PaperRaised.copy(alpha = 0.72f),
             shape = RoundedCornerShape(16.dp),
             border = BorderStroke(1.dp, PompColors.Divider),
             modifier = Modifier.fillMaxWidth(),
@@ -141,106 +141,74 @@ private fun DayCell(
 internal fun Achievements(completedLessons: Int, streak: Int) {
     Column {
         SectionHeader(title = stringResource(R.string.profile_achievements))
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            AchievementRow(
-                icon = Icons.Filled.Check,
-                tint = PompColors.Jade,
-                tintSoft = PompColors.JadeSoft,
-                title = stringResource(R.string.profile_ach_first),
-                detail = if (completedLessons >= 1) stringResource(R.string.profile_ach_first_done) else "0 / 1",
-                fraction = if (completedLessons >= 1) 1f else 0f,
-                barColor = PompColors.Jade,
-            )
-            AchievementRow(
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            CompactAchievementCard(
                 icon = Icons.Filled.MenuBook,
                 tint = PompColors.Cinnabar,
                 tintSoft = PompColors.CinnabarSoft,
                 title = stringResource(R.string.profile_ach_lessons),
                 detail = "$completedLessons / 100",
                 fraction = (completedLessons / 100f).coerceIn(0f, 1f),
-                barColor = PompColors.Cinnabar,
+                modifier = Modifier.weight(1f),
             )
-            AchievementRow(
+            CompactAchievementCard(
                 icon = Icons.Filled.LocalFireDepartment,
                 tint = PompColors.Gold,
                 tintSoft = PompColors.GoldSoft,
                 title = stringResource(R.string.profile_ach_streak),
                 detail = "$streak / 30",
                 fraction = (streak / 30f).coerceIn(0f, 1f),
-                barColor = PompColors.Cinnabar,
+                modifier = Modifier.weight(1f),
             )
         }
     }
 }
 
 @Composable
-private fun AchievementRow(
+private fun CompactAchievementCard(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     tint: Color,
     tintSoft: Color,
     title: String,
     detail: String,
     fraction: Float,
-    barColor: Color,
+    modifier: Modifier = Modifier,
 ) {
     Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(14.dp),
+        color = PompColors.PaperRaised.copy(alpha = 0.72f),
+        shape = RoundedCornerShape(13.dp),
         border = BorderStroke(1.dp, PompColors.Divider),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
     ) {
-        Row(
-            modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        Column(
+            modifier = Modifier.padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(7.dp),
         ) {
-            Surface(
-                color = tintSoft,
-                shape = RoundedCornerShape(11.dp),
-                modifier = Modifier.size(38.dp),
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = null,
-                        tint = tint,
-                        modifier = Modifier.size(18.dp),
-                    )
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Surface(color = tintSoft, shape = RoundedCornerShape(9.dp), modifier = Modifier.size(30.dp)) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(17.dp))
+                    }
                 }
+                Text(
+                    title,
+                    fontSize = 12.sp,
+                    lineHeight = 15.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = PompColors.Ink,
+                    maxLines = 2,
+                    modifier = Modifier.weight(1f),
+                )
             }
-            Column(modifier = Modifier.weight(1f)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-                        fontWeight = FontWeight.Medium,
-                        color = PompColors.Ink,
-                    )
-                    Text(
-                        text = detail,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-                        color = PompColors.InkSecondary,
-                    )
-                }
-                Spacer(Modifier.height(7.dp))
+            Text(detail, fontSize = 11.sp, color = PompColors.InkSecondary)
+            Box(
+                modifier = Modifier.fillMaxWidth().height(5.dp)
+                    .clip(RoundedCornerShape(5.dp)).background(PompColors.Divider),
+            ) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(7.dp)
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(PompColors.Divider),
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(fraction)
-                            .height(7.dp)
-                            .clip(RoundedCornerShape(5.dp))
-                            .background(barColor),
-                    )
-                }
+                    modifier = Modifier.fillMaxWidth(fraction).height(5.dp)
+                        .clip(RoundedCornerShape(5.dp)).background(PompColors.Cinnabar),
+                )
             }
         }
     }

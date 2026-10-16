@@ -159,7 +159,7 @@ class AndroidCourseService(DesktopCourseService):
         if before_track != after_track or before_level != after_level:
             await CourseMiniAppAnalyticsService(self.session).record_server_event(
                 event_name="course_track_switched",
-                user=context.user,
+                user_id=int(context.user.id),
                 telegram_id=int(context.user.telegram_id),
                 source="android_course_track",
                 level=after_level,
@@ -179,7 +179,7 @@ class AndroidCourseService(DesktopCourseService):
         if result.get("recorded"):
             await CourseMiniAppAnalyticsService(self.session).record_server_event(
                 event_name="hsk30_promo_shown",
-                user=context.user,
+                user_id=int(context.user.id),
                 telegram_id=int(context.user.telegram_id),
                 source="android_course_track",
                 level=str(getattr(context.user, "level", "") or ""),

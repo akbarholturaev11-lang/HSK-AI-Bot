@@ -3,6 +3,8 @@ package com.pomp.hskai.feature.profile
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.graphics.Bitmap
+import android.view.View
 import android.provider.Settings
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -11,6 +13,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,8 +21,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
@@ -27,6 +32,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Language
@@ -53,6 +60,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,13 +74,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.core.view.WindowCompat
 import coil.compose.AsyncImage
 import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.R
@@ -82,8 +98,11 @@ import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.PompShapes
 import com.pomp.hskai.core.design.PompSpacing
 import com.pomp.hskai.core.design.components.HskBrandLoader
-import com.pomp.hskai.core.design.components.Hsk30BooksHeader
+import com.pomp.hskai.feature.course.Hsk30LevelChoiceDialog
+import com.pomp.hskai.core.settings.DEFAULT_SHAKE_TO_REPORT
+import com.pomp.hskai.feature.feedback.captureReportScreen
 import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.design.components.HskProCrownBadge
 import com.pomp.hskai.core.design.components.HskSectionTitle
 import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.feature.update.AppUpdateCard
@@ -94,6 +113,7 @@ import com.pomp.hskai.core.network.MediaUrl
 import com.pomp.hskai.core.settings.AppSettings
 import com.pomp.hskai.core.settings.AppThemeMode
 import com.pomp.hskai.data.api.AndroidHintDto
+import com.pomp.hskai.domain.model.CourseHsk30
 import com.pomp.hskai.domain.model.CourseProgress
 import com.pomp.hskai.domain.model.CourseUser
 import com.pomp.hskai.feature.assistant.AssistantScreen
@@ -132,6 +152,8 @@ fun ProfileScreen(
     onToggleNotifications: (Boolean) -> Unit,
     onOpenWidget: () -> Unit,
     onOpenSupport: (String) -> Unit,
+    onReportProblem: (Bitmap?) -> Unit = {},
+    reportVisible: Boolean = false,
     onRefresh: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
@@ -139,6 +161,11 @@ fun ProfileScreen(
     hsk30Enabled: Boolean = false,
     hsk30IsNew: Boolean = false,
     hsk30LiveLevels: List<String> = listOf("nhsk1"),
+    hsk30: CourseHsk30? = null,
+    onOpenApps: () -> Unit = {},
+    onOpenCourse: () -> Unit = {},
+    onUnlockHsk30: () -> Unit = {},
+    onStartTrial: () -> Unit = {},
     onSwitchCourseTrack: (String, String?) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier,
     identities: IdentitiesUiState = IdentitiesUiState(),
@@ -150,10 +177,20 @@ fun ProfileScreen(
     profileSaving: Boolean = false,
     onOpenSubscription: (renewal: Boolean) -> Unit = {},
     subscriptionCheckoutAvailable: Boolean = BuildConfig.FLAVOR == "direct",
+    accountDeletion: AccountDeletionUiState = AccountDeletionUiState(),
+    onRequestAccountDeletion: () -> Unit = {},
+    onConfirmAccountDeletion: () -> Unit = {},
+    onDismissAccountDeletion: () -> Unit = {},
 ) {
     AssistantScreen(profileAssistantContext(state), bottomBar = true, showButton = false)
     var settingsOpen by remember { mutableStateOf(false) }
-    var courseVersionPickerOpen by remember { mutableStateOf(false) }
+    // Shake-triggered reporting must not remain hidden behind the full-screen
+    // Settings Dialog, which owns a separate Android window.
+    LaunchedEffect(reportVisible) {
+        if (reportVisible) settingsOpen = false
+    }
+    var profileHsk30BookOpen by remember { mutableStateOf(false) }
+    var profileHsk30LevelOpen by remember { mutableStateOf(false) }
     var appearancePickerOpen by remember { mutableStateOf(false) }
     var identitiesOpen by remember { mutableStateOf(false) }
     var notificationsOpen by remember { mutableStateOf(false) }
@@ -163,12 +200,9 @@ fun ProfileScreen(
     var widgetInstalled by remember(context) { mutableStateOf(WidgetScheduler.hasWidgets(context)) }
     val appSettings = remember(context) { AppSettings(context) }
     val themeMode by appSettings.themeMode.collectAsState(initial = AppThemeMode.DEFAULT)
+    val shakeToReport by appSettings.shakeToReport.collectAsState(initial = DEFAULT_SHAKE_TO_REPORT)
     val scope = rememberCoroutineScope()
-    val openMistakes = onOpenMistakes ?: {
-        val uri = Uri.parse(DeepLinkRouter.uriFor(AppDestination.Practice(PracticeTool.MISTAKES)))
-        runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, uri).setPackage(context.packageName)) }
-        Unit
-    }
+    // Mistakes remains available from Practice; it is no longer a profile entry.
     val openSettings = {
         widgetInstalled = WidgetScheduler.hasWidgets(context)
         settingsOpen = true
@@ -205,15 +239,17 @@ fun ProfileScreen(
                     },
                 )
             }
-            item {
-                DailyGoalCard(
-                    dailyXp = dailyXp,
-                    dailyGoal = dailyGoal,
-                    onOpenGoal = onOpenGoal,
-                )
-            }
-            item { StatsGrid(state) }
+            item { ProfileFriendsLink(onOpenFriends = onOpenFriends) }
+            item { ProfileAccuracyRings(state.profile?.stats?.answerAccuracy) }
             item { StreakCalendar(progress = courseProgress, dailyXp = dailyXp) }
+            if (subscriptionCheckoutAvailable &&
+                !account.isPaid &&
+                state.profile?.subscription?.isPaid != true &&
+                state.trial?.active != true &&
+                state.profile?.subscription?.status != "temporary_trial"
+            ) {
+                item { ProfileProCta(onClick = { onOpenSubscription(false) }) }
+            }
             item {
                 Achievements(
                     completedLessons = courseProgress?.completedLessons
@@ -223,27 +259,18 @@ fun ProfileScreen(
             }
 
             item {
-                ProfileSubscriptionCard(
+                ProfilePromoCarousel(
                     accountIsPaid = account.isPaid,
                     state = state,
                     checkoutAvailable = subscriptionCheckoutAvailable,
+                    onOpenHsk30 = {
+                        when {
+                            courseTrack == "hsk30" -> onOpenCourse()
+                            hsk30 != null -> profileHsk30BookOpen = true
+                        }
+                    },
                     onOpenSubscription = onOpenSubscription,
-                )
-            }
-
-            item {
-                Text(
-                    text = stringResource(R.string.profile_mini_group_title),
-                    color = PompColors.InkSecondary,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(start = 2.dp, top = 4.dp, bottom = 1.dp),
-                )
-            }
-            item {
-                ProfileQuickLinks(
-                    onOpenMistakes = openMistakes,
-                    onOpenFriends = onOpenFriends,
+                    onStartTrial = onStartTrial,
                 )
             }
 
@@ -253,7 +280,6 @@ fun ProfileScreen(
             // `onOpenSupport` is the screen's "open this URL outside the app"
             // callback (MainActivity wires it to openExternal); the social row
             // needs exactly that and nothing support-specific.
-            item { SocialLinksRow(onOpen = onOpenSupport) }
 
             state.error?.let { error ->
                 item { ErrorPill(text = stringResource(error.messageRes), onClick = onRefresh) }
@@ -269,7 +295,7 @@ fun ProfileScreen(
     }
 
     if (settingsOpen) {
-        ProfileSettingsSheet(
+        ProfileSettingsScreen(
             account = account,
             state = state,
             settings = settings,
@@ -282,7 +308,7 @@ fun ProfileScreen(
             onOpenLanguage = { settingsOpen = false; onOpenLanguage() },
             onOpenCourseVersion = {
                 settingsOpen = false
-                courseVersionPickerOpen = true
+                profileHsk30BookOpen = true
             },
             onOpenAppearance = { settingsOpen = false; appearancePickerOpen = true },
             onOpenNotifications = { settingsOpen = false; notificationsOpen = true },
@@ -294,6 +320,19 @@ fun ProfileScreen(
             },
             onOpenGoal = { settingsOpen = false; onOpenGoal() },
             onOpenSupport = { url -> settingsOpen = false; onOpenSupport(url) },
+            onReportProblem = { visibleDialogView ->
+                // Keep the Settings Dialog attached until PixelCopy has captured
+                // the actual visible window; then dismiss it and open the report.
+                scope.launch {
+                    val screenshot = captureReportScreen(visibleDialogView)
+                    settingsOpen = false
+                    onReportProblem(screenshot)
+                }
+            },
+            shakeToReport = shakeToReport,
+            onSetShakeToReport = { enabled ->
+                scope.launch { appSettings.setShakeToReport(enabled) }
+            },
             onOpenAccount = {
                 settingsOpen = false
                 identitiesOpen = true
@@ -305,13 +344,40 @@ fun ProfileScreen(
         )
     }
 
-    if (courseVersionPickerOpen) {
-        CourseVersionPickerSheet(
+    // Profile and Settings share the native book-cover entry. The course-path
+    // header retains its separate compact version/level selector.
+    if (profileHsk30BookOpen && hsk30 != null) {
+        ProfileHsk30BookEntryDialog(
+            hsk30 = hsk30,
             currentTrack = courseTrack,
-            hsk30IsNew = hsk30IsNew,
-            hsk30LiveLevels = hsk30LiveLevels,
-            onSwitch = onSwitchCourseTrack,
-            onDismiss = { courseVersionPickerOpen = false },
+            onDismiss = { profileHsk30BookOpen = false },
+            onUnlock = {
+                profileHsk30BookOpen = false
+                onUnlockHsk30()
+            },
+            onContinue = {
+                profileHsk30BookOpen = false
+                when {
+                    !hsk30.access.featureEnabled -> Unit
+                    !hsk30.access.allowed -> onUnlockHsk30()
+                    hsk30.hasSavedHsk30 -> onSwitchCourseTrack("hsk30", null)
+                    else -> profileHsk30LevelOpen = true
+                }
+            },
+            onReturnHsk20 = {
+                profileHsk30BookOpen = false
+                onSwitchCourseTrack("hsk20", null)
+            },
+        )
+    }
+    if (profileHsk30LevelOpen && hsk30 != null) {
+        Hsk30LevelChoiceDialog(
+            levels = hsk30.liveLevels,
+            onChoose = { level ->
+                profileHsk30LevelOpen = false
+                onSwitchCourseTrack("hsk30", level)
+            },
+            onDismiss = { profileHsk30LevelOpen = false },
         )
     }
 
@@ -359,7 +425,7 @@ fun ProfileScreen(
             },
             onDeleteAccount = {
                 privacyOpen = false
-                onOpenSupport(BuildConfig.API_ORIGIN.trimEnd('/') + "/account-deletion")
+                onRequestAccountDeletion()
             },
             onPermissions = {
                 val intent = Intent(
@@ -369,6 +435,19 @@ fun ProfileScreen(
                 runCatching { context.startActivity(intent) }
             },
             onDismiss = { privacyOpen = false },
+        )
+    }
+
+    if (accountDeletion.isOpen) {
+        AccountDeletionDialog(
+            state = accountDeletion,
+            onConfirm = onConfirmAccountDeletion,
+            onRetry = onRequestAccountDeletion,
+            onDismiss = onDismissAccountDeletion,
+            onOpenWeb = {
+                onDismissAccountDeletion()
+                onOpenSupport(BuildConfig.API_ORIGIN.trimEnd('/') + "/account-deletion")
+            },
         )
     }
 
@@ -391,145 +470,29 @@ private fun ProfileToolbar(
     onDismissHint: (String) -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+        modifier = Modifier.fillMaxWidth().heightIn(min = 46.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        HskSectionTitle(
+        Text(
             text = stringResource(R.string.nav_profile),
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            color = PompColors.Ink,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f),
         )
         SectionHint(hints = hints, section = "profile", onDismiss = onDismissHint)
-        Spacer(Modifier.width(PompSpacing.Small))
-        Surface(
-            onClick = onOpenSettings,
-            color = PompColors.PaperRaised,
-            shape = CircleShape,
-            border = BorderStroke(1.dp, PompColors.Divider),
-            modifier = Modifier.size(44.dp),
+        Box(
+            modifier = Modifier.size(42.dp).clickable(onClick = onOpenSettings),
+            contentAlignment = Alignment.Center,
         ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    Icons.Filled.Settings,
-                    contentDescription = stringResource(R.string.profile_mini_settings),
-                    tint = PompColors.InkSecondary,
-                    modifier = Modifier.size(21.dp),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ProfileSubscriptionCard(
-    accountIsPaid: Boolean,
-    state: ProfileUiState,
-    checkoutAvailable: Boolean,
-    onOpenSubscription: (renewal: Boolean) -> Unit,
-) {
-    val subscription = state.profile?.subscription
-    val isPaid = subscription?.isPaid == true || accountIsPaid
-    val trial = state.trial
-    val trialActive = trial?.active == true
-    val isTemporary = !isPaid && subscription?.status == "temporary_trial"
-    val isExpired = !isPaid && !trialActive && subscription?.status == "expired"
-    val statusRes = when {
-        isPaid -> R.string.profile_subscription_status_paid
-        subscription == null && state.isLoading -> R.string.state_loading
-        subscription == null -> R.string.profile_subscription_status_unavailable
-        trialActive -> R.string.profile_subscription_status_trial
-        isTemporary -> R.string.profile_subscription_status_temporary
-        isExpired -> R.string.profile_subscription_status_expired
-        else -> R.string.profile_subscription_status_free
-    }
-    val expiry = when {
-        isPaid || isTemporary -> subscription?.until
-        trialActive -> trial?.endsAt
-        else -> null
-    }
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        shadowElevation = 8.dp,
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    stringResource(R.string.profile_subscription_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = PompColors.Ink,
-                    modifier = Modifier.weight(1f),
-                )
-                Surface(
-                    color = if (isPaid || trialActive) PompColors.JadeSoft else PompColors.PaperRaised,
-                    shape = RoundedCornerShape(999.dp),
-                    border = BorderStroke(
-                        1.dp,
-                        if (isPaid || trialActive) PompColors.Jade else PompColors.Divider,
-                    ),
-                ) {
-                    Text(
-                        stringResource(statusRes),
-                        color = if (isPaid || trialActive) PompColors.JadeInk else PompColors.InkSecondary,
-                        style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                    )
-                }
-            }
-            expiry?.let {
-                Text(
-                    stringResource(R.string.profile_subscription_until, profileExpiryText(it)),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = PompColors.InkSecondary,
-                )
-            }
-            if (trialActive) {
-                Text(
-                    stringResource(R.string.profile_trial_active_body),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = PompColors.InkSecondary,
-                )
-            } else if (isTemporary) {
-                Text(
-                    stringResource(R.string.profile_subscription_temporary_body),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = PompColors.InkSecondary,
-                )
-            } else if (subscription != null && !isPaid) {
-                Text(
-                    stringResource(R.string.profile_subscription_free_body),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = PompColors.InkSecondary,
-                )
-            }
-
-            if (checkoutAvailable && subscription != null) {
-                Button(
-                    onClick = { onOpenSubscription(isPaid) },
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = PompColors.Cinnabar),
-                ) {
-                    Text(
-                        stringResource(
-                            when {
-                                isPaid -> R.string.profile_subscription_renew
-                                isExpired -> R.string.profile_subscription_restore
-                                else -> R.string.profile_subscription_buy
-                            }
-                        ),
-                        color = PompColors.OnCinnabar,
-                    )
-                }
-            } else if (!checkoutAvailable && subscription != null && !isPaid) {
-                Text(
-                    stringResource(R.string.profile_subscription_play_blocked),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = PompColors.InkSecondary,
-                )
-            }
+            Icon(
+                Icons.Filled.Settings,
+                contentDescription = stringResource(R.string.profile_mini_settings),
+                tint = PompColors.InkSecondary,
+                modifier = Modifier.size(23.dp),
+            )
         }
     }
 }
@@ -551,19 +514,14 @@ private fun ProfileHero(
     onOpenAccount: () -> Unit,
 ) {
     val profile = state.profile
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        shadowElevation = 10.dp,
-    ) {
-        Row(modifier = Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             val customAvatar = profileAvatarDrawable(profile?.user?.avatarKey.orEmpty())
             val photo = courseUser?.avatarUrl?.let { MediaUrl.resolve(it, BuildConfig.API_ORIGIN) }
             Surface(
                 onClick = onOpenAccount,
                 color = PompColors.Cinnabar,
                 shape = RoundedCornerShape(18.dp),
-                modifier = Modifier.size(54.dp),
+                modifier = Modifier.size(60.dp),
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     when {
@@ -579,33 +537,37 @@ private fun ProfileHero(
                             modifier = Modifier.fillMaxSize(),
                         )
                         else -> Text(
-                            text = profile?.user?.avatar?.ifBlank { "HSK" }
-                                ?: account.displayName.take(2).uppercase(),
+                            text = profile?.user?.avatar?.takeIf { it.isNotBlank() }
+                                ?: account.displayName.take(2).uppercase().ifBlank { "HSK" },
                             style = MaterialTheme.typography.titleLarge,
                             color = PompColors.Paper,
                         )
                     }
                 }
             }
-            Column(modifier = Modifier.padding(start = 14.dp).weight(1f)) {
+            val nickname = profile?.user?.name?.takeIf { it.isNotBlank() }
+                ?: account.displayName.takeIf { it.isNotBlank() }
+                ?: profile?.user?.telegramUsername?.takeIf { it.isNotBlank() }
+                ?: "HSK AI"
+            Row(
+                modifier = Modifier.padding(start = 12.dp).weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
                 Text(
-                    text = profile?.user?.name?.ifBlank { account.displayName } ?: account.displayName,
-                    style = MaterialTheme.typography.headlineSmall,
+                    text = nickname,
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Bold,
                     color = PompColors.Ink,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
                 )
-                Spacer(Modifier.height(4.dp))
-                LevelLeaguePill(
-                    level = (profile?.user?.level ?: account.level).uppercase(),
-                    league = profile?.stats?.league.orEmpty(),
+                AccessPill(
+                    isPaid = profile?.subscription?.isPaid == true || account.isPaid,
+                    trialActive = state.trial?.active == true,
                 )
             }
-            AccessPill(
-                isPaid = profile?.subscription?.isPaid == true || account.isPaid,
-                modifier = Modifier.align(Alignment.Top),
-            )
-        }
     }
 }
 
@@ -685,29 +647,23 @@ private fun StatMetric(label: String, value: String, modifier: Modifier = Modifi
 }
 
 @Composable
-private fun ProfileQuickLinks(onOpenMistakes: () -> Unit, onOpenFriends: () -> Unit) {
+private fun ProfileFriendsLink(onOpenFriends: () -> Unit) {
     Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = PompShapes.Medium,
-        color = PompColors.PaperRaised,
+        modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp),
+        shape = RoundedCornerShape(12.dp),
+        color = PompColors.CardSurface.copy(alpha = 0.92f),
         border = BorderStroke(1.dp, PompColors.Divider),
     ) {
-        Column {
-            ProfileQuickLinkRow(
-                icon = Icons.Filled.WarningAmber,
-                title = stringResource(R.string.practice_mistakes_title),
-                subtitle = stringResource(R.string.profile_mini_mistakes_subtitle),
-                iconTint = PompColors.FlameInk,
-                onClick = onOpenMistakes,
-            )
-            SettingsDivider()
-            ProfileQuickLinkRow(
-                icon = Icons.Filled.People,
-                title = stringResource(R.string.profile_friends),
-                subtitle = null,
-                iconTint = PompColors.JadeInk,
-                onClick = onOpenFriends,
-            )
+        Row(
+            modifier = Modifier.fillMaxWidth().clickable(onClick = onOpenFriends)
+                .padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(Icons.Filled.People, contentDescription = null, tint = PompColors.JadeInk, modifier = Modifier.size(19.dp))
+            Spacer(Modifier.width(9.dp))
+            Text(stringResource(R.string.profile_friends), fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+                color = PompColors.Ink, modifier = Modifier.weight(1f))
+            SettingsChevron()
         }
     }
 }
@@ -767,22 +723,32 @@ internal fun ProfileActionCard(icon: ImageVector, iconBackground: Color, iconTin
 }
 
 @Composable
-private fun AccessPill(isPaid: Boolean, modifier: Modifier = Modifier) {
+private fun AccessPill(isPaid: Boolean, trialActive: Boolean = false, modifier: Modifier = Modifier) {
+    val active = isPaid || trialActive
     Surface(
-        color = if (isPaid) PompColors.JadeSoft else PompColors.PaperRaised,
+        // Keep the crown and label; an oversized brown pill is not a profile card.
+        color = if (active) Color.Transparent else PompColors.PaperRaised,
         shape = RoundedCornerShape(999.dp),
-        border = BorderStroke(1.dp, if (isPaid) PompColors.Jade else PompColors.Divider),
+        border = if (active) null else BorderStroke(1.dp, PompColors.Divider),
         modifier = modifier,
     ) {
-        Text(
-            text = stringResource(
-                if (isPaid) R.string.synced_access_paid else R.string.synced_access_free,
-            ),
-            style = MaterialTheme.typography.labelMedium,
-            color = if (isPaid) PompColors.JadeInk else PompColors.InkSecondary,
-            maxLines = 1,
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-        )
+        Row(
+            modifier = if (active) Modifier else Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+            if (isPaid) HskProCrownBadge(size = 15.dp)
+            Text(
+                text = when {
+                    isPaid -> "Pro"
+                    trialActive -> stringResource(R.string.profile_access_trial)
+                    else -> stringResource(R.string.synced_access_free)
+                },
+                style = MaterialTheme.typography.labelMedium,
+                color = if (active) PompColors.GoldInk else PompColors.InkSecondary,
+                maxLines = 1,
+            )
+        }
     }
 }
 
@@ -795,7 +761,7 @@ private fun LevelLeaguePill(level: String, league: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ProfileSettingsSheet(
+private fun ProfileSettingsScreen(
     account: LinkedAccount,
     state: ProfileUiState,
     settings: ProfileSettingsState,
@@ -813,135 +779,244 @@ private fun ProfileSettingsSheet(
     onOpenWidget: () -> Unit,
     onOpenGoal: () -> Unit,
     onOpenSupport: (String) -> Unit,
+    onReportProblem: (View) -> Unit,
+    shakeToReport: Boolean,
+    onSetShakeToReport: (Boolean) -> Unit,
     onOpenAccount: () -> Unit,
     onOpenPrivacy: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val supportUrl = state.profile?.supportUrl.orEmpty()
     var confirmUnlink by remember { mutableStateOf(false) }
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = PompColors.Paper) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 720.dp)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 28.dp),
-        ) {
-            Text(
-                stringResource(R.string.profile_mini_settings),
-                color = PompColors.Ink,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(start = 2.dp, bottom = 12.dp),
-            )
-            Surface(
-                color = PompColors.PaperRaised,
-                shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(1.dp, PompColors.Divider),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Column {
-                    MiniSettingsRow(Icons.Filled.Language, stringResource(R.string.profile_language), !settings.isBusy, onOpenLanguage) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(account.language.backendCode.uppercase(), color = PompColors.InkSecondary, fontSize = 13.sp)
-                            Spacer(Modifier.width(4.dp)); SettingsChevron()
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = false,
+        ),
+    ) {
+        val view = LocalView.current
+        DisposableEffect(view) {
+            val window = (view.parent as? DialogWindowProvider)?.window
+            window?.let { dialogWindow ->
+                dialogWindow.statusBarColor = android.graphics.Color.TRANSPARENT
+                dialogWindow.navigationBarColor = android.graphics.Color.TRANSPARENT
+                WindowCompat.getInsetsController(dialogWindow, view).apply {
+                    isAppearanceLightStatusBars = true
+                    isAppearanceLightNavigationBars = true
+                }
+            }
+            onDispose { }
+        }
+        Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
+            Column(Modifier.fillMaxSize().statusBarsPadding()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Surface(
+                        color = PompColors.CardSurface,
+                        shape = CircleShape,
+                        border = BorderStroke(1.dp, PompColors.Divider),
+                        modifier = Modifier.size(48.dp).clickable(role = Role.Button, onClick = onDismiss),
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.action_back),
+                                tint = PompColors.Ink,
+                                modifier = Modifier.size(22.dp),
+                            )
                         }
                     }
-                    if (showCourseVersion) {
-                        SettingsDivider()
-                        MiniSettingsRow(
-                            Icons.Filled.TrackChanges,
-                            stringResource(R.string.profile_course_version),
-                            true,
-                            onOpenCourseVersion,
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.profile_mini_settings),
+                            color = PompColors.Ink,
+                            fontSize = 21.sp,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            stringResource(R.string.profile_settings_intro),
+                            color = PompColors.InkSecondary,
+                            fontSize = 12.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
+                Box(Modifier.fillMaxWidth().height(1.dp).background(PompColors.Divider))
+                LazyColumn(
+                    modifier = Modifier.weight(1f).fillMaxWidth().navigationBarsPadding()
+                        .testTag("profile-settings-scroll"),
+                    contentPadding = PaddingValues(start = 18.dp, top = 18.dp, end = 18.dp, bottom = 28.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                ) {
+                    item {
+                        SettingsCategory(stringResource(R.string.profile_settings_section_learning), Icons.Filled.TrackChanges) {
+                            ProfileSettingsItem(
+                                Icons.Filled.Language,
+                                stringResource(R.string.profile_language),
+                                account.language.backendCode.uppercase(),
+                                !settings.isBusy,
+                                onOpenLanguage,
+                            )
+                            if (showCourseVersion) {
+                                ProfileSettingsDivider()
+                                ProfileSettingsItem(
+                                    Icons.Filled.TrackChanges,
+                                    stringResource(R.string.profile_course_version),
                                     if (courseTrack == "hsk30") "HSK 3.0" else "HSK 2.0",
-                                    color = PompColors.InkSecondary,
-                                    fontSize = 13.sp,
+                                    true,
+                                    onOpenCourseVersion,
                                 )
-                                Spacer(Modifier.width(4.dp)); SettingsChevron()
+                            }
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(
+                                Icons.Filled.TrackChanges,
+                                stringResource(R.string.profile_mini_daily_goal),
+                                "$dailyGoal XP",
+                                true,
+                                onOpenGoal,
+                            )
+                        }
+                    }
+                    item {
+                        SettingsCategory(stringResource(R.string.profile_settings_section_app), Icons.Filled.Settings) {
+                            ProfileSettingsItem(
+                                Icons.Filled.Settings,
+                                stringResource(R.string.profile_appearance),
+                                stringResource(themeMode.labelRes()),
+                                true,
+                                onOpenAppearance,
+                            )
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(
+                                Icons.Filled.Notifications,
+                                stringResource(R.string.profile_notifications),
+                                stringResource(
+                                    if (notificationsEnabled) R.string.profile_notifications_status_on
+                                    else R.string.profile_notifications_status_off,
+                                ),
+                                true,
+                                onOpenNotifications,
+                            )
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(
+                                Icons.Filled.Widgets,
+                                stringResource(R.string.profile_widgets),
+                                stringResource(
+                                    if (widgetInstalled) R.string.profile_widget_installed
+                                    else R.string.profile_widget_not_installed,
+                                ),
+                                true,
+                                onOpenWidget,
+                            )
+                        }
+                    }
+                    item {
+                        SettingsCategory(stringResource(R.string.profile_settings_section_account), Icons.Filled.PersonOutline) {
+                            ProfileSettingsItem(
+                                Icons.Filled.PersonOutline,
+                                stringResource(R.string.profile_account_title),
+                                stringResource(R.string.profile_account_subtitle),
+                                true,
+                                onOpenAccount,
+                            )
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(
+                                Icons.Filled.Lock,
+                                stringResource(R.string.profile_privacy_security),
+                                null,
+                                true,
+                                onOpenPrivacy,
+                            )
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(
+                                Icons.AutoMirrored.Filled.HelpOutline,
+                                stringResource(R.string.profile_help),
+                                stringResource(
+                                    if (supportUrl.isBlank()) R.string.profile_help_unavailable
+                                    else R.string.profile_help_action,
+                                ),
+                                supportUrl.isNotBlank(),
+                            ) { if (supportUrl.isNotBlank()) onOpenSupport(supportUrl) }
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(
+                                Icons.Filled.WarningAmber,
+                                stringResource(R.string.bug_report_title),
+                                null,
+                                true,
+                                { onReportProblem(view) },
+                            )
+                            ProfileSettingsDivider()
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        stringResource(R.string.bug_report_shake),
+                                        color = PompColors.Ink,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                    )
+                                    Text(
+                                        stringResource(R.string.bug_report_shake_summary),
+                                        color = PompColors.InkSecondary,
+                                        style = MaterialTheme.typography.bodySmall,
+                                    )
+                                }
+                                Switch(
+                                    checked = shakeToReport,
+                                    onCheckedChange = onSetShakeToReport,
+                                )
                             }
                         }
                     }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.Settings, stringResource(R.string.profile_appearance), true, onOpenAppearance) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(stringResource(themeMode.labelRes()), color = PompColors.InkSecondary, fontSize = 13.sp)
-                            Spacer(Modifier.width(4.dp)); SettingsChevron()
+                    item {
+                        settings.error?.let { error ->
+                            ErrorPill(stringResource(error.messageRes))
+                            Spacer(Modifier.height(12.dp))
+                        }
+                        Surface(
+                            color = PompColors.CardSurface,
+                            shape = RoundedCornerShape(14.dp),
+                            border = BorderStroke(1.dp, PompColors.Divider),
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 13.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                Text(stringResource(R.string.profile_app_version), color = PompColors.InkSecondary, fontSize = 13.sp)
+                                Text(BuildConfig.VERSION_NAME, color = PompColors.Ink, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                            }
                         }
                     }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.Notifications, stringResource(R.string.profile_notifications), true, onOpenNotifications) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                stringResource(
-                                    if (notificationsEnabled) R.string.profile_notifications_status_on
-                                    else R.string.profile_notifications_status_off
-                                ),
-                                color = PompColors.InkSecondary,
-                                fontSize = 13.sp,
-                            )
-                            Spacer(Modifier.width(4.dp)); SettingsChevron()
+                    item { SocialLinksRow(onOpen = onOpenSupport) }
+                    item {
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            OutlinedButton(
+                                onClick = onLogout,
+                                modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp),
+                                shape = RoundedCornerShape(15.dp),
+                            ) {
+                                Text(stringResource(R.string.profile_logout), color = PompColors.Ink)
+                            }
+                            OutlinedButton(
+                                onClick = { confirmUnlink = true },
+                                modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp),
+                                shape = RoundedCornerShape(15.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = PompColors.FlameInk),
+                            ) {
+                                Text(stringResource(R.string.profile_unlink_device), color = PompColors.FlameInk)
+                            }
                         }
-                    }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.Widgets, stringResource(R.string.profile_widgets), true, onOpenWidget) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = stringResource(
-                                    if (widgetInstalled) R.string.profile_widget_installed
-                                    else R.string.profile_widget_not_installed
-                                ),
-                                color = if (widgetInstalled) PompColors.Jade else PompColors.InkSecondary,
-                                fontSize = 12.sp,
-                            )
-                            Spacer(Modifier.width(4.dp))
-                            SettingsChevron()
-                        }
-                    }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.TrackChanges, stringResource(R.string.profile_mini_daily_goal), true, onOpenGoal) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("$dailyGoal XP", color = PompColors.InkSecondary, fontSize = 13.sp)
-                            Spacer(Modifier.width(4.dp)); SettingsChevron()
-                        }
-                    }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.PersonOutline, stringResource(R.string.profile_account_title), true, onOpenAccount) { SettingsChevron() }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.Lock, stringResource(R.string.profile_privacy_security), true, onOpenPrivacy) { SettingsChevron() }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.HelpOutline, stringResource(R.string.profile_help), supportUrl.isNotBlank(), { onOpenSupport(supportUrl) }) {
-                        if (supportUrl.isBlank()) Text(stringResource(R.string.profile_help_unavailable), color = PompColors.InkSecondary, fontSize = 12.sp)
-                        else SettingsChevron()
-                    }
-                    SettingsDivider()
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        Icon(Icons.Filled.Settings, contentDescription = null, tint = PompColors.InkSecondary, modifier = Modifier.size(19.dp))
-                        Text(stringResource(R.string.profile_app_version), color = PompColors.Ink, fontSize = 14.sp, modifier = Modifier.weight(1f))
-                        Text(BuildConfig.VERSION_NAME, color = PompColors.InkSecondary, fontSize = 13.sp)
-                    }
-                    settings.error?.let { error ->
-                        Box(Modifier.padding(horizontal = 14.dp, vertical = 8.dp)) { ErrorPill(stringResource(error.messageRes)) }
                     }
                 }
-            }
-            Spacer(Modifier.height(20.dp))
-            OutlinedButton(onClick = onLogout, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp), shape = RoundedCornerShape(14.dp)) {
-                Text(stringResource(R.string.profile_logout), color = PompColors.Ink)
-            }
-            Spacer(Modifier.height(10.dp))
-            OutlinedButton(onClick = { confirmUnlink = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp), shape = RoundedCornerShape(14.dp)) {
-                Text(stringResource(R.string.profile_unlink_device), color = PompColors.FlameInk)
             }
         }
     }
@@ -964,220 +1039,82 @@ private fun ProfileSettingsSheet(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CourseVersionPickerSheet(
-    currentTrack: String,
-    hsk30IsNew: Boolean,
-    hsk30LiveLevels: List<String>,
-    onSwitch: (String, String?) -> Unit,
-    onDismiss: () -> Unit,
+private fun SettingsCategory(
+    title: String,
+    icon: ImageVector,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var pendingTrack by remember(currentTrack) { mutableStateOf<String?>(null) }
-    var pendingLevel by remember(currentTrack) { mutableStateOf<String?>(null) }
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = PompColors.Paper,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 18.dp)
-                .padding(bottom = 28.dp),
+    Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Icon(icon, contentDescription = null, tint = PompColors.CinnabarInk, modifier = Modifier.size(18.dp))
+            Text(title, color = PompColors.Ink, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+        }
+        Surface(
+            color = PompColors.CardSurface,
+            shape = RoundedCornerShape(18.dp),
+            border = BorderStroke(1.dp, PompColors.Divider),
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            val targetTrack = pendingTrack
-            if (targetTrack == "hsk30" && pendingLevel == null) {
-                Hsk30BooksHeader(isNew = hsk30IsNew, modifier = Modifier.fillMaxWidth())
-                Spacer(Modifier.height(16.dp))
-                Text(
-                    stringResource(R.string.hsk30_level_picker_title),
-                    color = PompColors.Ink,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
-                    stringResource(R.string.hsk30_level_picker_body),
-                    color = PompColors.InkSecondary,
-                    fontSize = 13.sp,
-                    lineHeight = 19.sp,
-                    modifier = Modifier.padding(top = 6.dp, bottom = 12.dp),
-                )
-                hsk30LiveLevels
-                    .filter { Regex("^nhsk[1-3]$").matches(it.lowercase()) }
-                    .distinct()
-                    .forEach { level ->
-                        val band = Regex("^nhsk([1-3])$").find(level.lowercase())
-                            ?.groupValues?.getOrNull(1)
-                            ?: level
-                        Surface(
-                            color = PompColors.PaperRaised,
-                            shape = RoundedCornerShape(14.dp),
-                            border = BorderStroke(1.dp, PompColors.Divider),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 8.dp)
-                                .heightIn(min = 48.dp)
-                                .clickable { pendingLevel = level },
-                        ) {
-                            Box(
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                Text(
-                                    "HSK $band" + if (hsk30IsNew) " · NEW" else "",
-                                    color = PompColors.Ink,
-                                    fontWeight = FontWeight.SemiBold,
-                                )
-                            }
-                        }
-                    }
-                OutlinedButton(
-                    onClick = {
-                        pendingTrack = null
-                        pendingLevel = null
-                    },
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
-                    shape = RoundedCornerShape(14.dp),
-                ) {
-                    Text(stringResource(R.string.action_cancel), color = PompColors.Ink)
-                }
-            } else if (targetTrack != null) {
-                if (targetTrack == "hsk30") {
-                    Hsk30BooksHeader(isNew = hsk30IsNew, modifier = Modifier.fillMaxWidth())
-                    Spacer(Modifier.height(16.dp))
-                }
-                val targetLabel = if (targetTrack == "hsk30") "HSK 3.0" else "HSK 2.0"
-                Text(
-                    stringResource(R.string.profile_course_version_confirm_title, targetLabel),
-                    color = PompColors.Ink,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
-                    stringResource(R.string.profile_course_version_confirm_body),
-                    color = PompColors.InkSecondary,
-                    fontSize = 13.sp,
-                    lineHeight = 19.sp,
-                    modifier = Modifier.padding(top = 6.dp, bottom = 16.dp),
-                )
-                Surface(
-                    color = PompColors.Cinnabar,
-                    shape = RoundedCornerShape(14.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 48.dp)
-                        .clickable {
-                            onSwitch(targetTrack, pendingLevel)
-                            onDismiss()
-                        },
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            stringResource(R.string.action_continue),
-                            color = Color.White,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                    }
-                }
-                Spacer(Modifier.height(10.dp))
-                OutlinedButton(
-                    onClick = {
-                        pendingTrack = null
-                        pendingLevel = null
-                    },
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
-                    shape = RoundedCornerShape(14.dp),
-                ) {
-                    Text(stringResource(R.string.action_cancel), color = PompColors.Ink)
-                }
-            } else {
-                Text(
-                    stringResource(R.string.profile_course_version),
-                    color = PompColors.Ink,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
-                    stringResource(R.string.hsk30_promo_body),
-                    color = PompColors.InkSecondary,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(top = 5.dp, bottom = 14.dp),
-                )
-                Surface(
-                    color = PompColors.PaperRaised,
-                    shape = RoundedCornerShape(16.dp),
-                    border = BorderStroke(1.dp, PompColors.Divider),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Column {
-                        MiniSettingsRow(
-                            Icons.Filled.TrackChanges,
-                            "HSK 2.0",
-                            true,
-                            {
-                                if (currentTrack == "hsk20") {
-                                    onDismiss()
-                                } else {
-                                    pendingTrack = "hsk20"
-                                    pendingLevel = null
-                                }
-                            },
-                        ) {
-                            if (currentTrack == "hsk20") {
-                                Text("✓", color = PompColors.Jade, fontWeight = FontWeight.Bold)
-                            } else {
-                                SettingsChevron()
-                            }
-                        }
-                        SettingsDivider()
-                        MiniSettingsRow(
-                            Icons.Filled.TrackChanges,
-                            "HSK 3.0",
-                            true,
-                            {
-                                when {
-                                    currentTrack == "hsk30" -> onDismiss()
-                                    else -> {
-                                        pendingTrack = "hsk30"
-                                        pendingLevel = null
-                                    }
-                                }
-                            },
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                if (hsk30IsNew) {
-                                    Text(
-                                        "NEW",
-                                        color = PompColors.CinnabarDark,
-                                        fontSize = 8.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier
-                                            .background(
-                                                PompColors.Cinnabar.copy(alpha = 0.12f),
-                                                RoundedCornerShape(5.dp),
-                                            )
-                                            .padding(horizontal = 4.dp, vertical = 1.dp),
-                                    )
-                                    Spacer(Modifier.width(6.dp))
-                                }
-                                when {
-                                    currentTrack == "hsk30" ->
-                                        Text("✓", color = PompColors.Jade, fontWeight = FontWeight.Bold)
-                                    else -> SettingsChevron()
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            Column(content = content)
         }
     }
+}
+
+@Composable
+private fun ProfileSettingsItem(
+    icon: ImageVector,
+    label: String,
+    summary: String?,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 68.dp)
+            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Surface(color = PompColors.CinnabarSoft, shape = RoundedCornerShape(12.dp), modifier = Modifier.size(38.dp)) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(icon, contentDescription = null, tint = PompColors.CinnabarInk, modifier = Modifier.size(19.dp))
+            }
+        }
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(
+                label,
+                color = PompColors.Ink,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            summary?.let {
+                Text(
+                    it,
+                    color = PompColors.InkSecondary,
+                    fontSize = 12.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+        if (enabled) SettingsChevron()
+    }
+}
+
+@Composable
+private fun ProfileSettingsDivider() {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .padding(start = 64.dp, end = 14.dp)
+            .height(1.dp)
+            .background(PompColors.Divider),
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -1193,7 +1130,7 @@ private fun NotificationsCategoriesSheet(
             Text(stringResource(R.string.profile_notifications), color = PompColors.Ink, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(14.dp))
             Surface(
-                color = PompColors.PaperRaised,
+                color = PompColors.CardSurface,
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(1.dp, PompColors.Divider),
                 modifier = Modifier.fillMaxWidth(),
@@ -1242,7 +1179,7 @@ private fun StudyReminderSettingsSheet(
                 modifier = Modifier.padding(top = 5.dp, bottom = 14.dp),
             )
             Surface(
-                color = PompColors.PaperRaised,
+                color = PompColors.CardSurface,
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(1.dp, PompColors.Divider),
                 modifier = Modifier.fillMaxWidth(),
@@ -1295,7 +1232,7 @@ private fun PrivacySecuritySheet(
             Text(stringResource(R.string.profile_privacy_security), color = PompColors.Ink, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(14.dp))
             Surface(
-                color = PompColors.PaperRaised,
+                color = PompColors.CardSurface,
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(1.dp, PompColors.Divider),
                 modifier = Modifier.fillMaxWidth(),
@@ -1359,7 +1296,7 @@ internal fun SocialLinksRow(onOpen: (String) -> Unit) {
         ) {
             SOCIAL_LINKS.forEach { (label, icon, url) ->
                 Surface(
-                    color = PompColors.PaperRaised,
+                    color = PompColors.CardSurface,
                     shape = RoundedCornerShape(15.dp),
                     border = BorderStroke(1.dp, PompColors.Divider),
                     modifier = Modifier

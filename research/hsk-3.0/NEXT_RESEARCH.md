@@ -1,5 +1,8 @@
 # Keyingi research ishlari — faqat HSK 1–5
 
+Research snapshot sanasi: **2026-09-05**. Quyidagi backlog o'sha paytdagi
+holatni qayd etadi; runtime kod yoki release holatini avtomatik yangilamaydi.
+
 ## Tayyor
 
 - Rasmiy yangi syllabus, competence va test sample manbalari topildi.
@@ -22,7 +25,12 @@
 | 6 | Original dars materiallari yozish | Syllabusga mos original dialog, misol, mashq va audio script; manba qamrovi qayd etilgan |
 | 7 | Imtihon yangilanishlarini tekshirish | Final format, scoring va test markazidagi amal qilish holati tasdiqlangan |
 
-Hozir hech qanday production import, seed, JSON kontent generatsiyasi yoki yangi versiya kodi rejalashtirilgan ish sifatida bajarilmadi. Keyingi kodlash alohida topshiriq bo‘ladi.
+2026-09-05 dagi “production import/seed/JSON generation hali yo‘q” qaydi endi
+joriy holat emas: repo'da HSK 3.0 source seedlari va runtime JSON bor. Amaldagi
+source-to-runtime oqimi uchun `scripts/hsk30/README.md`,
+`docs/HSK_3.0_VERSIYASI.md` va tegishli verifierlardan foydalaning. Bu research
+backlog to'liq kitob nashri, provenance va tahrir tekshiruvlarini saqlaydi;
+deployment yoki production rollout statusini bildirmaydi.
 
 ## Keyingi tadqiqotda saqlanadigan maydonlar
 

@@ -58,6 +58,10 @@ class UserAccessStateService:
             return UserAccessState.BLOCKED
         if status == "active" and payment_status == "approved" and has_active_end:
             return UserAccessState.PAID
+        # An unreviewed receipt can open content, but it is never a paid sale.
+        # Keep this separate from 7-day trial and the paid subscription dates.
+        if getattr(user, "payment_preview_payment_id", None) is not None:
+            return UserAccessState.TEMPORARY_TRIAL
         if status == "active" and payment_status == "approved":
             return UserAccessState.EXPIRED
         if status == "active" and has_active_end:

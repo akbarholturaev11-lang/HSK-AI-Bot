@@ -21,6 +21,9 @@ COOLDOWN_HOURS = 6
 REFERRAL_TRIAL_PLAN_TYPE = "referral_trial_3_days"
 RELEASE_FEEDBACK_TRIAL_PLAN_TYPE = "release_feedback_trial"
 PRO_TRIAL_PLAN_TYPE = "pro_trial_7_days"
+PAYMENT_PREVIEW_PLAN_TYPE = "payment_review_preview"
+# Unverified receipts can be false. Never allocate an unrestricted AI budget.
+PAYMENT_PREVIEW_AI_CAP_USD = 0.50
 BUDGET_EPSILON_USD = 0.000001
 
 MODEL_PRICING_USD_PER_1M = {
@@ -184,6 +187,82 @@ class AIUsageBudgetService:
         await self.session.flush()
         return budget
 
+    async def create_payment_preview_budget(self, user, payment) -> AIUsageBudget:
+        """Create a capped, non-revenue budget without replacing paid/trial budgets.
+
+        If a real budget is currently active, the preview starts after it ends.
+        Receipt access itself lasts until admin review; only AI spending is capped.
+        """
+        now = datetime.now(timezone.utc)
+        starts_at = now
+        existing = await self.get_active_budget(int(user.telegram_id))
+        if existing:
+            starts_at = max(now, self._as_utc(existing.ends_at))
+        # A paid subscriber may have no tracked AI budget (legacy/imported
+        # grants). The receipt preview must never preempt their paid term.
+        if getattr(user, "status", None) == "active" and getattr(user, "end_date", None):
+            # Existing paid/referral/feedback windows keep their original AI budget.
+            starts_at = max(starts_at, self._as_utc(user.end_date))
+        if (getattr(user, "pro_trial_ends_at", None)
+                and not getattr(user, "pro_trial_revoked_at", None)):
+            trial_end = self._as_utc(user.pro_trial_ends_at)
+            if trial_end > now:
+                starts_at = max(starts_at, trial_end)
+        budget = AIUsageBudget(
+            user_telegram_id=int(user.telegram_id),
+            payment_id=int(payment.id),
+            plan_type=PAYMENT_PREVIEW_PLAN_TYPE,
+            amount=0,
+            currency="USD",
+            total_budget_usd=PAYMENT_PREVIEW_AI_CAP_USD,
+            segment_1_budget_usd=PAYMENT_PREVIEW_AI_CAP_USD / 2,
+            segment_2_budget_usd=PAYMENT_PREVIEW_AI_CAP_USD / 2,
+            segment_1_spent_usd=0.0,
+            segment_2_spent_usd=0.0,
+            current_window_spent_usd=0.0,
+            window_started_at=now,
+            cooldown_until=None,
+            starts_at=starts_at,
+            ends_at=starts_at + timedelta(days=3650),
+            status="active",
+            created_at=now,
+            updated_at=now,
+        )
+        self.session.add(budget)
+        await self.session.flush()
+        return budget
+
+    async def expire_payment_preview_budget(self, payment_id: int) -> None:
+        result = await self.session.execute(
+            select(AIUsageBudget).where(
+                AIUsageBudget.payment_id == int(payment_id),
+                AIUsageBudget.plan_type == PAYMENT_PREVIEW_PLAN_TYPE,
+                AIUsageBudget.status == "active",
+            )
+        )
+        for budget in result.scalars().all():
+            await self.expire_budget(budget)
+
+    async def can_use_payment_preview_ai(self, telegram_id: int, payment_id: int) -> BudgetAccessResult:
+        """Fail closed if a preview cap is exhausted or its budget was revoked."""
+        result = await self.session.execute(
+            select(AIUsageBudget).where(
+                AIUsageBudget.user_telegram_id == int(telegram_id),
+                AIUsageBudget.payment_id == int(payment_id),
+                AIUsageBudget.plan_type == PAYMENT_PREVIEW_PLAN_TYPE,
+            )
+        )
+        preview = result.scalar_one_or_none()
+        if not preview or preview.status != "active" or self.is_total_budget_depleted(preview):
+            return BudgetAccessResult(allowed=False, message_key="ai_budget_depleted", budget_depleted=True)
+        # A receipt preview may be scheduled behind an existing paid/trial
+        # budget. If the original budget disappeared, do not treat the gap
+        # as an unlimited AI allowance.
+        if self._as_utc(preview.starts_at) > datetime.now(timezone.utc):
+            if await self.get_active_budget(telegram_id) is None:
+                return BudgetAccessResult(allowed=False, message_key="ai_budget_depleted", budget_depleted=True)
+        return await self.can_use_ai(telegram_id)
+
     async def expire_active_budgets(self, telegram_id: int) -> None:
         budgets = await self._list_active_budgets(telegram_id)
         now = datetime.now(timezone.utc)
@@ -207,6 +286,7 @@ class AIUsageBudgetService:
             REFERRAL_TRIAL_PLAN_TYPE,
             RELEASE_FEEDBACK_TRIAL_PLAN_TYPE,
             PRO_TRIAL_PLAN_TYPE,
+            PAYMENT_PREVIEW_PLAN_TYPE,
         }
 
     def total_spent_usd(self, budget: AIUsageBudget) -> float:

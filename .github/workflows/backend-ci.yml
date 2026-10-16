@@ -24,6 +24,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt aiosqlite
+      - name: Check real Android assistant photo decoding
+        run: python -m unittest tests.test_android_assistant_service.AssistantImageTransportTests
+      - name: Verify onboarding save confirmation and recovery
+        run: python -m unittest tests.test_miniapp_onboarding_save_confirmation tests.test_course_miniapp_onboarding
       - name: Run HSK 3.0 lesson limit regression
         run: python -m unittest tests.test_hsk30_lesson_limits tests.test_course_track_service tests.test_hsk30_promo_service tests.test_hsk30_switch_ui_contract tests.test_android_payment_method_dialog_contract
       - name: Run HSK 3.0 currency checkout regressions
@@ -31,12 +35,22 @@ jobs:
       - name: Run learning plan and canonical mistake regressions
         run: |
           python -m unittest tests.test_daily_plan_service tests.test_learning_signals tests.test_course_lesson_mistake_material_service tests.test_android_n1_compat
+      - name: Test multilingual inventory and Mini App locale regressions
+        run: |
+          python -m unittest tests.test_i18n_inventory tests.test_i18n_ui_regressions
+          python scripts/i18n_inventory.py --output /tmp/hsk-i18n-audit.json
       - name: Compile backend code
         run: |
           python -m compileall -q app tests
       - name: Run block, feedback, and admin integrity tests
         run: |
           python -m unittest tests.test_bot_block_status_service tests.test_bot_feedback_service tests.test_admin_stats_integrity
+      - name: Test one-time receipt previews and adjacent billing regressions
+        run: >-
+          python -m unittest tests.test_payment_review_preview
+          tests.test_subscription_miniapp_submit tests.test_subscription_service
+          tests.test_hsk30_admin_payment_flow tests.test_access_state_service
+          tests.test_voice_practice_daily_limit
       - name: Check Alembic has exactly one head
         run: |
           python - <<'PY'
@@ -58,6 +72,9 @@ jobs:
         run: |
           python -m unittest tests.test_user_device_inventory_service tests.test_desktop_download_api tests.test_android_contextual_app_promo tests.test_android_analytics_service tests.test_android_push tests.test_android_account_notices tests.test_android_apk_download tests.test_admin_panel_has_no_dead_controls
       - name: Run advertisement placement, AI localization and default preset regressions
-        run: python -m unittest tests.test_ad_placement_service tests.test_course_ad_types tests.test_course_ad_translation_service tests.test_course_ads_module tests.test_profile_limit_ui_contract
-      - name: Check account deletion safety, request, and public instructions
-        run: python -m unittest tests.test_admin_delete_safety tests.test_account_deletion_request tests.test_public_site
+        run: python -m unittest tests.test_ad_placement_service tests.test_course_ad_types tests.test_course_ad_translation_service tests.test_course_ads_module tests.test_profile_limit_ui_contract tests.test_profile_answer_accuracy
+      - name: Check account deletion ownership, retention, migration, and public instructions
+        run: >-
+          python -m unittest tests.test_admin_delete_safety tests.test_account_deletion_request
+          tests.test_account_deletion_api tests.test_account_deletion_cleanup
+          tests.test_account_deletion_migration tests.test_public_site

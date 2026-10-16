@@ -118,9 +118,8 @@ fun MainScaffold(
     selectedTab: MainTab = MainTab.COURSE,
     onTabSelected: (MainTab) -> Unit,
     /**
-     * False turns a tab into a full-screen one — the AI Voice conversation is
-     * the only one today. A call is not a place to switch sections from, and
-     * the Mini App shows no tabs there either.
+     * Calls, practice attempts and completion scenes use the whole surface.
+     * Their own exit action restores the section navigation.
      */
     bottomBarVisible: Boolean = true,
     /**

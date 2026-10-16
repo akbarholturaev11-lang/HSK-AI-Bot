@@ -1,8 +1,12 @@
-# Iyeroglifni tez eslab qolish — modul spetsifikatsiyasi
+# Mini App yodlash — modul dizayn spetsifikatsiyasi
 
-> **Format:** `course_v3_memorize.html` + `course_v3_data/memo/*.json`
+> **Joriy source:** `app/static/course_v3_memorize.html` +
+> `app/static/course_v3_data/memo.js` (`MEMO_UI`, `MEMO_BASE`, `MEMO_DATA`)
 > **Til:** uz / ru / tj (har bir matn 3 tilda)
-> **Status:** dizayn (tasdiqdan keyin data + kod yoziladi)
+> **Holat (2026-10-15 source audit):** Mini App'da implementatsiya bor; bu
+> hujjatning barcha sxema va learning talablari bajarilganini isbotlamaydi.
+> Android'da mos Yodlash ekrani yo'q: `PracticeTool.MEMORIZE.toRequest()` hozir
+> `null` qaytaradi. Live/release holati lokal source'dan aniqlanmaydi.
 
 ---
 
@@ -38,7 +42,11 @@ Har 1–2 bosqichda user **tanlaydi / taxmin qiladi / teradi**. Faqat o'qish bo'
 
 ---
 
-## 2. DATA SXEMA (per-iyeroglif) — modulning "format"i
+## 2. Taklif qilingan data sxemasi (per-iyeroglif)
+
+Quyidagi JSONC — dizayn namunasidir, runtime fayl formati emas. Joriy kontent
+`memo.js` ichida JavaScript obyektlari sifatida saqlanadi; yangi JSON fayl yo'li
+qo'shishdan oldin loader va asset pipeline'ni tekshiring.
 
 Har bir iyeroglif bitta JSON obyekt. `t(...)` belgisi — `{uz,ru,tj}` ko'p tilli matn.
 

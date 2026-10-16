@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Tajik. Android qualifier is "tg"; the backend language code stays "tj". -->
 <resources>
+    <!-- Opt-in native issue reporting -->
+    <string name="bug_report_title">Дар бораи мушкилот хабар диҳед</string>
+    <string name="bug_report_question">Чӣ рӯй дод?</string>
+    <string name="bug_report_hint">Мушкилотро муфассал нависед...</string>
+    <string name="bug_report_screenshot">Илова кардани акси экран</string>
+    <string name="bug_report_no_screenshot">Гирифтани акси экран имкон надошт. Аз галерея интихоб кунед ё фиристодани онро хомӯш кунед.</string>
+    <string name="bug_report_privacy">Фиристодани акси экран пешфарз фаъол аст. Маълумоти шахсиро санҷед ё фиристоданро хомӯш кунед.</string>
+    <string name="bug_report_send">Фиристодан</string>
+    <string name="bug_report_failed">Паём фиристода нашуд. Интернетро санҷида, дубора кӯшиш кунед.</string>
+    <string name="bug_report_success">Паёми шумо қабул шуд. Ташаккур!</string>
+    <string name="bug_report_shake">Барои хабар додан телефонро ҷунбонед</string>
+    <string name="bug_report_shake_summary">Танҳо дар вақти кушода будани барнома кор мекунад</string>
     <string name="onboarding_language_title">Забонро интихоб кунед</string>
     <string name="onboarding_language_subtitle">Курс, тарҷумаҳо ва ёдоварӣ бо ҳамин забон мешаванд.</string>
     <string name="action_continue">Идома додан</string>
@@ -247,6 +259,7 @@
     <string name="rating_league_name">Лигаи %1$s</string>
     <string name="rating_members">%1$d донишҷӯ</string>
     <string name="rating_time_left">мондааст</string>
+    <string name="rating_weekly_top_five">Рейтинги ҳафта · Топ 5</string>
     <string name="rating_promote">Топ %1$d боло мебароянд</string>
     <string name="rating_empty">Рейтинг ҳоло шакл нагирифтааст.</string>
     <string name="rating_friends_empty">Ҳоло дӯсти даъватшуда нест.</string>
@@ -387,6 +400,12 @@
     <string name="lesson_pinyin_all">Дар ҳама ҷо нишон додан</string>
     <string name="lesson_pinyin_new">Танҳо дар калимаҳои нав</string>
     <string name="lesson_pinyin_off">Пинҳон кардан</string>
+    <string name="profile_accuracy_overall">Ҳамагӣ</string>
+    <string name="profile_accuracy_today">Имрӯз</string>
+    <string name="profile_accuracy_count">%1$d ҷавоби арзёбишуда</string>
+    <string name="profile_accuracy_note">Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад</string>
+    <string name="profile_buy_pro">Гирифтани Pro</string>
+    <string name="profile_access_trial">✦ Pro · Озмоиш</string>
     <string name="profile_calendar_title">Рӯзҳои пайдарпай</string>
     <string name="profile_achievements">Дастовардҳо</string>
     <string name="profile_ach_first">Қадами аввал</string>
@@ -553,4 +572,32 @@
     <string name="course_choice_level">Сатҳ</string>
     <string name="course_choice_note">Ҳангоми иваз кардани версия пешрафт нигоҳ дошта мешавад. Интихоби сатҳи дигар пешрафти ин версияро аз нав оғоз мекунад.</string>
     <string name="course_choice_confirm">Тасдиқ кардан</string>
+
+    <!-- Shared limit sheet: Android / Telegram Mini App visual parity -->
+    <string name="limit_sheet_heading">Барои идома омодаед?</string>
+    <string name="limit_sheet_get_pro">Гирифтани HSK AI Pro ⭐</string>
+    <string name="limit_sheet_check_access">Санҷидани дастрасӣ</string>
+    <string name="limit_sheet_reason_fallback">Лимити ройгони бахши «%1$s» тамом шуд. Бо Pro идома диҳед.</string>
+    <string name="limit_sheet_lesson_title">Дарсҳоро бе таваққуф давом диҳед</string>
+    <string name="limit_sheet_lesson_desc">Дарсҳои минбаъдаи HSK ва машқҳоро бо Pro кушоед.</string>
+    <string name="limit_sheet_practice_title">Донишро бо машқ мустаҳкам кунед</string>
+    <string name="limit_sheet_practice_desc">Бо Pro лимити ҳаррӯза машқ ва такрорро қатъ намекунад.</string>
+    <string name="limit_sheet_test_title">Ба имтиҳон бо боварӣ равед</string>
+    <string name="limit_sheet_test_desc">Тестҳои бештар ҳал кунед ва мавзӯъҳои заифро муайян намоед.</string>
+    <string name="limit_sheet_mistakes_title">Ҳар хатогиро таҳлил кунед</string>
+    <string name="limit_sheet_mistakes_desc">Хатоҳоро такрор кунед ва бо супоришҳои нав беҳтар шавед.</string>
+    <string name="limit_sheet_voice_title">Бо чинӣ озодтар гап занед</string>
+    <string name="limit_sheet_voice_desc">Бо AI Voice бе лимит гуфтугӯро машқ кунед.</string>
+    <string name="limit_sheet_pron_title">Талаффузро беҳтар кунед</string>
+    <string name="limit_sheet_pron_desc">Калимаҳоро такрор карда, талаффузи худро машқ кунед.</string>
+    <string name="limit_sheet_recognition_title">Иероглифҳоро зудтар шиносед</string>
+    <string name="limit_sheet_recognition_desc">Машқҳои шинохти иероглифҳоро бе таваққуф идома диҳед.</string>
+    <string name="limit_sheet_memorize_title">Калимаҳоро беҳтар дар хотир доред</string>
+    <string name="limit_sheet_memorize_desc">Бо такрор калимаҳои навро мустаҳкам кунед.</string>
+    <string name="bug_report_intro_title">Дар бораи хатогӣ хабар медиҳед?</string>
+    <string name="bug_report_intro_body">Агар барнома дуруст кор накунад, ба мо хабар диҳед, то онро беҳтар созем.</string>
+    <string name="bug_report_intro_action">Дар бораи хатогӣ хабар додан</string>
+    <string name="bug_report_pick_screenshot">Интихоби акси экран аз галерея</string>
+    <string name="bug_report_screenshot_required">Акси экранро интихоб кунед ё фиристодани онро хомӯш кунед.</string>
+    <string name="bug_report_thanks_title">Ташаккур барои фикру мулоҳизаатон!</string>
 </resources>

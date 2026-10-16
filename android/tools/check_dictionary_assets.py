@@ -8,7 +8,7 @@ travels inside the APK: the word list, the writing order (checked by
   assets/hsk-examples.json    rebuilt from the course and must match it
   assets/hanzi-parts.json     rebuilt from dictionary_insights/parts and must
                               match it
-  assets/audio/words/*.mp3    one per word, or the listen button is silent
+  offline_audio/words/*.mp3       one per word, published to R2 before release
 
 A generated file nobody regenerated looks exactly like one that was never
 meant to have more in it, so the stale case fails here rather than on a
@@ -76,7 +76,7 @@ def main() -> int:
     silent = [word for word in words if not (AUDIO_DIR / audio_name(word)).is_file()]
     if silent:
         problems.append(
-            f"{len(silent)} word(s) have no bundled audio, e.g. {''.join(silent[:8])} — run: {REBUILD_AUDIO}"
+            f"{len(silent)} word(s) have no pre-rendered audio, e.g. {''.join(silent[:8])} — run: {REBUILD_AUDIO}"
         )
 
     # Every entry the dictionary can open shows a real sentence, and every

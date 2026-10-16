@@ -118,6 +118,38 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(disabled.allowed)
         self.assertEqual("hsk30_disabled", disabled.reason)
 
+    async def test_pending_subscription_preview_opens_hsk30_but_not_paid(self):
+        self.service.hsk30_feature = SimpleNamespace(
+            is_enabled=AsyncMock(return_value=True),
+        )
+        self.service.state_repo = SimpleNamespace(get=AsyncMock(return_value=None))
+        self.user.payment_preview_payment_id = 91
+
+        access = await self.service.hsk30_access(self.user)
+        self.assertTrue(access.allowed)
+        self.assertTrue(access.provisional_access)
+        self.assertFalse(access.paid_access)
+        self.assertFalse(access.permanently_unlocked)
+        self.assertEqual(access.reason, "payment_pending")
+        self.service.hsk30_unlock.review_state.assert_not_awaited()
+        self.service.hsk30_unlock.payment_enabled.return_value = False
+        free = await self.service.hsk30_access(self.user)
+        self.assertEqual(free.reason, "hsk30_free_access")
+        self.assertFalse(free.provisional_access)
+        self.service.hsk30_unlock.payment_enabled.return_value = True
+
+        # Admin rejection removes only the temporary permission.
+        self.user.payment_preview_payment_id = None
+        access = await self.service.hsk30_access(self.user)
+        self.assertFalse(access.allowed)
+        self.assertEqual(access.reason, "hsk30_unlock_required")
+
+        # Account blocks still take precedence over any pending receipt.
+        self.user.status = "blocked"
+        self.user.payment_preview_payment_id = 91
+        access = await self.service.hsk30_access(self.user)
+        self.assertFalse(access.allowed)
+
     async def test_unpaid_user_cannot_switch_to_hsk30(self):
         self.service.hsk30_feature = SimpleNamespace(
             is_enabled=AsyncMock(return_value=True),

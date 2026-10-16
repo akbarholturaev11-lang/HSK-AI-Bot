@@ -10,6 +10,7 @@ import com.pomp.hskai.data.api.VoiceEndResponse
 import com.pomp.hskai.data.api.VoiceStartResponse
 import com.pomp.hskai.data.api.VoiceStatusResponse
 import com.pomp.hskai.data.repository.FeatureRepository
+import androidx.lifecycle.ViewModelStore
 import java.io.IOException
 import java.lang.reflect.Proxy
 import kotlinx.coroutines.CompletableDeferred
@@ -107,6 +108,10 @@ class VoiceViewModelTest {
             },
             liveVoiceAudioEngine = audio, liveIoDispatcher = dispatcher,
         )
+        // The reset() API starts a fresh status request, so it is not suitable
+        // for test teardown. Clearing the owning store cancels viewModelScope.
+        private val owner = ViewModelStore().apply { put("voice-test", vm) }
+        fun dispose() { owner.clear() }
     }
 
     @Test fun deliberateCloseAndLateEventsProduceOnlyOneReconnect() = runTest(dispatcher) {
@@ -123,7 +128,7 @@ class VoiceViewModelTest {
             assertEquals(1, f.first.closes)
             assertTrue(f.vm.state.value.isLiveConnected)
             assertNull(f.vm.state.value.error)
-        } finally { f.vm.reset() }
+        } finally { f.dispose(); runCurrent() }
     }
 
     @Test fun endingDuringReconnectDoesNotReopenTheMicrophone() = runTest(dispatcher) {
@@ -138,7 +143,7 @@ class VoiceViewModelTest {
             assertEquals(1, f.ends)
             assertFalse(f.audio.playing)
             assertNotNull(f.vm.state.value.result)
-        } finally { f.vm.reset() }
+        } finally { f.dispose(); runCurrent() }
     }
 
     @Test fun endingDuringPendingConnectionCannotResurrectTheCall() = runTest(dispatcher) {
@@ -153,7 +158,7 @@ class VoiceViewModelTest {
             assertEquals(0, f.audio.starts)
             assertEquals(1, f.ends)
             assertNull(f.vm.state.value.sessionId)
-        } finally { f.vm.reset() }
+        } finally { f.dispose(); runCurrent() }
     }
 
     @Test fun aFailedReconnectRetriesWithoutStartingANewConversation() = runTest(dispatcher) {
@@ -169,7 +174,7 @@ class VoiceViewModelTest {
             assertEquals(3, f.connections)
             assertEquals(1, f.starts)
             assertTrue(f.vm.state.value.isLiveConnected)
-        } finally { f.vm.reset() }
+        } finally { f.dispose(); runCurrent() }
     }
 
     @Test fun budgetLimitEndsTheCallWithoutRetryOrFallback() = runTest(dispatcher) {
@@ -183,7 +188,7 @@ class VoiceViewModelTest {
             assertEquals(1, f.starts)
             assertEquals(1, f.ends)
             assertNotNull(f.vm.state.value.result)
-        } finally { f.vm.reset() }
+        } finally { f.dispose(); runCurrent() }
     }
 
     @Test fun reconnectAfterACompletedTurnIsBoundedAndKeepsTheConversation() = runTest(dispatcher) {
@@ -209,7 +214,7 @@ class VoiceViewModelTest {
             assertTrue(f.vm.state.value.error is ApiError.Server)
             advanceTimeBy(10_000); runCurrent()
             assertEquals(4, f.connections)
-        } finally { f.vm.reset() }
+        } finally { f.dispose(); runCurrent() }
     }
 
     @Test fun aSessionExpiredDuringConnectEndsWithoutRetrying() = runTest(dispatcher) {
@@ -223,7 +228,7 @@ class VoiceViewModelTest {
             assertEquals(1, f.starts)
             assertEquals(1, f.ends)
             assertNotNull(f.vm.state.value.result)
-        } finally { f.vm.reset() }
+        } finally { f.dispose(); runCurrent() }
     }
 
     @Test fun reopeningTheVoiceTabRefreshesAStaleError() = runTest(dispatcher) {
@@ -238,6 +243,6 @@ class VoiceViewModelTest {
             assertEquals(2, f.statusCalls)
             assertNull(f.vm.state.value.error)
             assertEquals(3, f.vm.state.value.remainingLimit)
-        } finally { f.vm.reset() }
+        } finally { f.dispose(); runCurrent() }
     }
 }

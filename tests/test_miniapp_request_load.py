@@ -93,7 +93,8 @@ class MiniAppRequestLoadTests(unittest.TestCase):
         self.assertIn("/^nhsk[1-3]$/", ONBOARDING)
         self.assertIn("h30PriceLabel", ONBOARDING)
         self.assertIn("if(h30Ready&&access&&!access.allowed&&hsk30PaymentEnabled())h30Meta.push(hsk30Price())", ONBOARDING)
-        self.assertIn('var h30Meta=["NEW"]', ONBOARDING)
+        self.assertIn("var h30Meta=[]", ONBOARDING)
+        self.assertNotIn('var h30Meta=["NEW"]', ONBOARDING)
 
     def test_hsk30_disabled_onboarding_uses_single_version_copy(self):
         self.assertIn('onlyHsk20:"Сейчас доступен HSK 2.0. Продолжим с него."', ONBOARDING)
@@ -108,7 +109,13 @@ class MiniAppRequestLoadTests(unittest.TestCase):
         start = DESKTOP.index("function renderProfile()")
         body = DESKTOP[start:DESKTOP.index("\n  function ", start + 1)]
         self.assertIn('document.getElementById("s-profile")', body)
-        self.assertIn('!profileScreen.classList.contains("on")', body)
+        self.assertIn('!screen.classList.contains("on")', body)
+        visible = DESKTOP.split("function noteProfileAppsVisible()", 1)[1].split("function openProfileAppsSite()", 1)[0]
+        self.assertIn('!screen.classList.contains("on")', visible)
+        self.assertIn("document.hidden", visible)
+        self.assertIn('card.classList.contains("hp-promo-apps")', visible)
+        self.assertIn('trackEntrySeen("profile"', visible)
+
 
 
 if __name__ == "__main__":

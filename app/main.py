@@ -31,6 +31,8 @@ from app.services.android_live_voice_service import live_voice_available
 from app.api.android_assistant import create_android_assistant_router
 from app.api.desktop_auth import create_desktop_auth_router
 from app.api.native_oauth import create_native_oauth_router
+from app.api.account_deletion import create_account_deletion_router, notify_deletion_request
+from app.services.account_deletion_service import AccountDeletionService
 from app.api.desktop_course import create_desktop_course_router
 from app.api.desktop_download import create_desktop_download_router
 from app.api.desktop_subscription import create_desktop_subscription_router
@@ -614,6 +616,8 @@ async def _desktop_auth_retention_scheduler() -> None:
                     session,
                     settings,
                 ).cleanup_expired_records()
+            async with async_session_maker() as session:
+                await AccountDeletionService(session, settings).cleanup()
             if any(result.values()):
                 logger.info("Desktop auth retention cleanup: %s", result)
         except Exception:
@@ -659,6 +663,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(create_public_site_router(settings_obj=settings))
+app.include_router(create_account_deletion_router(
+    session_factory=async_session_maker, settings_obj=settings,
+    notifier=lambda result: notify_deletion_request(bot, settings, result),
+))
 app.add_middleware(GZipMiddleware, minimum_size=1024)
 # Bloklangan foydalanuvchi Mini App API'laridan foydalana olmasin.
 # Admin panel API'lari o'z `_admin_auth_error()` tekshiruvi bilan ishlaydi.
@@ -2110,6 +2118,32 @@ async def hsk30_course_books():
         "image/jpeg",
     )
 
+
+@app.get("/assets/hsk-profile-pagoda.svg")
+async def hsk_profile_pagoda():
+    # Explicit allowlisted profile asset: /assets is not a generic static mount.
+    return static_asset_response(
+        "app/static/assets/hsk-profile-pagoda.svg",
+        "image/svg+xml",
+    )
+
+
+@app.get("/assets/hsk-profile-pro.svg")
+async def hsk_profile_pro_artwork():
+    return static_asset_response(
+        "app/static/assets/hsk-profile-pro.svg",
+        "image/svg+xml",
+    )
+
+
+@app.get("/assets/hsk-profile-apps.svg")
+async def hsk_profile_apps_artwork():
+    return static_asset_response(
+        "app/static/assets/hsk-profile-apps.svg",
+        "image/svg+xml",
+    )
+
+
 COURSE_CHARACTER_ASSETS = {
     "hsk-character-pack.css": "text/css",
     "hsk-character-motion.css": "text/css",
@@ -2171,6 +2205,9 @@ async def course_v3_data_file(filename: str):
         "design-tokens.css": "text/css",
         "desktop-download.css": "text/css",
         "desktop-download.js": "application/javascript",
+        "profile-carousel.css": "text/css",
+        "rating-podium.css": "text/css",
+        "profile-carousel.js": "application/javascript",
         "lesson_gate.js": "application/javascript",
         "lesson_gate_hsk30.js": "application/javascript",
         "hsk30-words.js": "application/javascript",
@@ -2214,6 +2251,40 @@ async def course_v3_tour_audio(lang: str, key: str):
     if not os.path.isfile(path):
         return JSONResponse(status_code=404, content={"error": "not_found"})
     return FileResponse(path, media_type="audio/mpeg")
+
+
+# Public pre-rendered Mandarin MP3s. This is a static file read only:
+# no Edge/Gemini synthesis, no database work, no authentication round-trip.
+# Dynamic/new phrases still use the original /api/v3/tts endpoint.
+OFFLINE_WORD_AUDIO_DIR = (
+    Path(__file__).resolve().parents[1] / "offline_audio/words"
+)
+OFFLINE_WORD_INDEX = Path(__file__).resolve().parent / "static/audio/words-index.js"
+
+
+@app.get("/audio/words/{filename}")
+async def course_v3_offline_word_audio(filename: str):
+    import re
+
+    if filename == "client.js":
+        helper = Path(__file__).resolve().parent / "static/audio/words-client.js"
+        if not helper.is_file():
+            return JSONResponse(status_code=404, content={"error": "not_found"})
+        return FileResponse(helper, media_type="application/javascript", headers=STATIC_ASSET_HEADERS)
+    if filename == "index.js":
+        if not OFFLINE_WORD_INDEX.is_file():
+            return JSONResponse(status_code=404, content={"error": "not_found"})
+        return FileResponse(
+            OFFLINE_WORD_INDEX,
+            media_type="application/javascript",
+            headers=STATIC_ASSET_HEADERS,
+        )
+    if not re.fullmatch(r"(?:\d+(?:_\d+)*|sha1_[0-9a-f]{40})\.mp3", filename):
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    path = OFFLINE_WORD_AUDIO_DIR / filename
+    if not path.is_file() or path.stat().st_size < 128:
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    return FileResponse(path, media_type="audio/mpeg", headers=STATIC_ASSET_HEADERS)
 
 
 # --- Shared server-side Mandarin audio for Course V3 and Android -----------
@@ -5057,6 +5128,58 @@ async def miniapp_onboarding(request: Request):
         return result
     status_code = 409 if result.get("error") == "course_level_change_requires_placement" else 400
     return JSONResponse(status_code=status_code, content=result)
+
+
+@app.get("/api/miniapp/onboarding/status")
+async def miniapp_onboarding_status(request: Request):
+    """Read-only confirmation of a previously saved Mini App onboarding choice.
+
+    Used only after a lost/invalid POST response. Do not repeat onboarding
+    mutations to determine whether the first request was committed.
+    """
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(
+            status_code=401,
+            content={"ok": False, "error": "invalid_telegram_init_data"},
+            headers={"Cache-Control": "no-store"},
+        )
+
+    async with async_session_maker() as session:
+        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        if not user:
+            return JSONResponse(
+                status_code=403,
+                content={"ok": False, "error": "access_start_first"},
+                headers={"Cache-Control": "no-store"},
+            )
+        result = await session.execute(
+            select(CourseMiniAppProfile).where(CourseMiniAppProfile.user_id == user.id)
+        )
+        profile = result.scalar_one_or_none()
+        completed = bool(profile and profile.onboarding_completed_at is not None)
+        foundation_required = False
+        if completed and str(user.level or "").strip().lower() == "beginner":
+            foundation = await CourseMiniAppProfileService(session).foundation_status(user)
+            foundation_required = bool(foundation["required"] and not foundation["completed"])
+
+        return JSONResponse(
+            content={
+                "ok": True,
+                "saved": completed,
+                "level": str(user.level or "").strip().lower(),
+                "profile": {
+                    "goal": profile.goal,
+                    "daily_minutes": profile.daily_minutes,
+                    "start_mode": profile.start_mode,
+                } if completed else None,
+                "foundation_required": foundation_required,
+            },
+            headers={"Cache-Control": "no-store"},
+        )
 
 
 @app.get("/api/miniapp/lesson")

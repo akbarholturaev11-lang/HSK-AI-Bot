@@ -577,6 +577,29 @@ class VoicePracticeService:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         return self._is_paid(user)
 
+    async def _ensure_pending_receipt_ai_budget(self, user) -> None:
+        """Check the separate unverified-receipt cap for Voice and Live turns.
+
+        A prior nonpaid bonus or an active trial must retain its original
+        allowances. Never conflate a pending receipt with billing-paid access.
+        """
+        payment_id = getattr(user, "payment_preview_payment_id", None)
+        if payment_id is None:
+            return
+        end_date = getattr(user, "end_date", None)
+        if (getattr(user, "status", None) == "active" and end_date
+                and AIUsageBudgetService(self.session)._as_utc(end_date) > datetime.now(timezone.utc)):
+            return
+        result = await AIUsageBudgetService(self.session).can_use_payment_preview_ai(
+            int(user.telegram_id), int(payment_id)
+        )
+        if not result.allowed:
+            raise VoicePracticeError(
+                result.message_key or "ai_budget_depleted",
+                "Pending payment preview AI budget exhausted.",
+                403,
+            )
+
     async def _ensure_budget_available(self, telegram_id: int) -> None:
         access = await AIUsageBudgetService(self.session).can_use_ai(telegram_id)
         if access.allowed:
@@ -817,6 +840,8 @@ class VoicePracticeService:
             raise VoicePracticeError("LIMIT_EXCEEDED", "Voice Practice limit reached.", 403)
         if await self._is_paid_telegram_user(telegram_id) or state == EntitlementState.TRIAL_ACTIVE:
             await self._ensure_budget_available(telegram_id)
+        else:
+            await self._ensure_pending_receipt_ai_budget(user)
         # Switching modes must never renew the Live clock or its USD cap.
         started_at = item.live_started_at
         if started_at:
@@ -1158,6 +1183,8 @@ class VoicePracticeService:
                 raise VoicePracticeError("LIMIT_EXCEEDED", "Voice Practice limit reached.", 403)
             if state == EntitlementState.TRIAL_ACTIVE:
                 await self._ensure_budget_available(telegram_id)
+            else:
+                await self._ensure_pending_receipt_ai_budget(user)
 
         transcribe_record = None
         reply_record = None
@@ -1265,6 +1292,8 @@ class VoicePracticeService:
                 raise VoicePracticeError("access_blocked", "Access blocked.", 403)
             if state == EntitlementState.TRIAL_ACTIVE:
                 await self._ensure_budget_available(telegram_id)
+            else:
+                await self._ensure_pending_receipt_ai_budget(user)
 
         reply = {
             "chinese_reply": spoken_reply,

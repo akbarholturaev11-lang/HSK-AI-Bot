@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import asyncio
 import base64
+import shutil
+import subprocess
 from io import BytesIO
 import os
 from pathlib import Path
@@ -79,14 +81,56 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
                 with self.assertRaises(ValueError):
                     await tts.synthesize_chinese_mp3(text)
 
+    def test_nihao_fallback_mp3_contains_valid_cbr_audio_frames(self):
+        # The pre-rendered Xiaoxiao asset now wins over this emergency
+        # recording. Validate the credited legacy fallback by its own file.
+        audio = Path(__file__).resolve().parents[1] / "app/static/audio/tts_fallback/nihao-cc-by-sa.mp3"
+        self.assertTrue(audio.is_file())
+        data = audio.read_bytes()
+        self.assertGreater(len(data), 16000)
+        self.assertEqual(0, len(data) % 192)
+        # The original VBR/Xing headers were stripped before joining the
+        # CC BY-SA Mandarin ni2 and hao3 recordings at 48 kHz / 64 kbit.
+        for offset in range(0, len(data), 192):
+            self.assertEqual(data[offset:offset + 4], b"\xff\xfb\x54\xc4")
+        if shutil.which("ffprobe"):
+            probe = subprocess.run(
+                ["ffprobe", "-v", "error", "-show_entries",
+                 "stream=codec_name,sample_rate", "-of", "default=noprint_wrappers=1",
+                 str(audio)],
+                capture_output=True, text=True, timeout=8,
+            )
+            self.assertEqual(0, probe.returncode, probe.stderr)
+            self.assertIn("codec_name=mp3", probe.stdout)
+            self.assertIn("sample_rate=48000", probe.stdout)
+
+    async def test_nihao_offline_pronunciation_never_calls_external_providers(self):
+        # HSK 3.0 listening to 你好 returned 502 with Edge and Gemini down.
+        bundled = tts._bundled_word_audio("你好", "-10%")
+        self.assertIsNotNone(bundled)
+        self.assertTrue(bundled.is_file())
+        self.assertGreater(bundled.stat().st_size, 1024)
+        with (
+            patch.object(tts, "_edge", new=AsyncMock()) as edge,
+            patch.object(tts, "_fallback", new=AsyncMock()) as gemini,
+            patch.object(tts, "_public_mp3_fallback", new=AsyncMock()) as remote,
+        ):
+            result = await tts.synthesize_chinese_mp3("你好")
+            self.assertEqual(bundled, result)
+            self.assertEqual(".mp3", result.suffix)
+            edge.assert_not_awaited()
+            gemini.assert_not_awaited()
+            remote.assert_not_awaited()
+        self.assertIsNone(tts._bundled_word_audio("你好", "+10%"))
+
     async def test_edge_success_is_cached_as_mp3_without_gemini(self):
         async def edge(text, rate, path):
             Path(path).write_bytes(FAKE_MP3)
 
         with patch.object(tts, "_edge", new=AsyncMock(side_effect=edge)) as generate, \
              patch.object(tts, "_fallback", new=AsyncMock()) as gemini:
-            first = await tts.synthesize_chinese_mp3("你好")
-            second = await tts.synthesize_chinese_mp3("你好")
+            first = await tts.synthesize_chinese_mp3("你好，世界")
+            second = await tts.synthesize_chinese_mp3("你好，世界")
             self.assertEqual(".mp3", first.suffix)
             self.assertEqual(first, second)
             self.assertEqual(FAKE_MP3, first.read_bytes())
@@ -95,7 +139,8 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_edge_403_falls_back_to_gemini_wav_and_caches_it(self):
         valid_wav = tts._wav_from_pcm(FAKE_PCM)
-        with patch.object(tts, "_edge", new=AsyncMock(side_effect=RuntimeError("403"))), \
+        with patch.object(tts, "_bundled_word_audio", return_value=None), \
+             patch.object(tts, "_edge", new=AsyncMock(side_effect=RuntimeError("403"))), \
              patch.object(tts, "_fallback", new=AsyncMock(return_value=valid_wav)) as gemini:
             first = await tts.synthesize_chinese_mp3("老师，再见！")
             second = await tts.synthesize_chinese_mp3("老师，再见！")
@@ -132,15 +177,19 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
              patch.object(tts, "_fallback", new=AsyncMock(
                  return_value=tts._wav_from_pcm(FAKE_PCM)
              )):
-            await tts.synthesize_chinese_mp3("你好")
+            await tts.synthesize_chinese_mp3("你好，世界")
             self.assertGreater(tts._edge_retry_at, time.monotonic())
             await tts.synthesize_chinese_mp3("下课了！")
             factory.assert_called_once()
 
     async def test_missing_two_providers_never_caches_an_error(self):
-        with patch.object(tts, "_edge", new=AsyncMock(side_effect=RuntimeError("403"))), \
+        with patch.object(tts, "_bundled_word_audio", return_value=None), \
+             patch.object(tts, "_edge", new=AsyncMock(side_effect=RuntimeError("403"))), \
              patch.object(tts, "_fallback", new=AsyncMock(
                  side_effect=tts.TTSUnavailable("gemini_no_key")
+             )), \
+             patch.object(tts, "_public_mp3_fallback", new=AsyncMock(
+                 side_effect=tts.TTSUnavailable("licensed_word_recording_unavailable")
              )):
             with self.assertRaises(tts.TTSUnavailable):
                 await tts.synthesize_chinese_mp3("谢谢你！")
@@ -181,7 +230,8 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
     async def test_old_mp3_cache_key_remains_usable_after_migration(self):
         old = Path(self.directory.name) / (tts._cache_key("谢谢你！", "-10%") + ".mp3")
         old.write_bytes(FAKE_MP3)
-        with patch.object(tts, "_edge", new=AsyncMock()) as edge, \
+        with patch.object(tts, "_bundled_word_audio", return_value=None), \
+             patch.object(tts, "_edge", new=AsyncMock()) as edge, \
              patch.object(tts, "_fallback", new=AsyncMock()) as gemini:
             self.assertEqual(old, await tts.synthesize_chinese_mp3("谢谢你！"))
             edge.assert_not_awaited()
@@ -195,7 +245,7 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(path.is_file())
             self.assertEqual(".mp3", path.suffix)
             self.assertGreater(path.stat().st_size, 128)
-            self.assertIn("android/app/src/main/assets/audio/words", path.as_posix())
+            self.assertIn("offline_audio/words", path.as_posix())
             edge.assert_not_awaited()
             gemini.assert_not_awaited()
 
@@ -254,11 +304,112 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
         cached = Path(self.directory.name) / (tts._cache_key(phrase, "-10%") + ".mp3")
         cached.write_bytes(FAKE_MP3)
         tts._gemini_retry_at = time.monotonic() + 500
-        with patch.object(tts, "_edge", new=AsyncMock()) as edge, \
+        with patch.object(tts, "_bundled_word_audio", return_value=None), \
+             patch.object(tts, "_edge", new=AsyncMock()) as edge, \
              patch.object(tts, "_fallback", new=AsyncMock()) as gemini:
             self.assertEqual(cached, await tts.synthesize_chinese_mp3(phrase))
             edge.assert_not_awaited()
             gemini.assert_not_awaited()
+
+
+    async def test_other_word_uses_licensed_mp3_when_both_tts_providers_fail(self):
+        with patch.object(tts, "_edge", new=AsyncMock(side_effect=RuntimeError("403"))), \
+             patch.object(tts, "_fallback", new=AsyncMock(
+                 side_effect=tts.TTSUnavailable("gemini_cooling_down")
+             )), \
+             patch.object(tts, "_public_mp3_fallback", new=AsyncMock(
+                 return_value=FAKE_MP3
+             )) as recording:
+            first = await tts.synthesize_chinese_mp3("晚上好")
+            second = await tts.synthesize_chinese_mp3("晚上好")
+            self.assertEqual(first, second)
+            self.assertEqual(".mp3", first.suffix)
+            self.assertEqual(FAKE_MP3, first.read_bytes())
+            recording.assert_awaited_once_with("晚上好", "-10%")
+
+    async def test_licensed_recording_is_not_used_when_gemini_works(self):
+        with patch.object(tts, "_edge", new=AsyncMock(side_effect=RuntimeError("403"))), \
+             patch.object(tts, "_fallback", new=AsyncMock(
+                 return_value=tts._wav_from_pcm(FAKE_PCM)
+             )), \
+             patch.object(tts, "_public_mp3_fallback", new=AsyncMock()) as recording:
+            result = await tts.synthesize_chinese_mp3("晚上好")
+            self.assertEqual(".wav", result.suffix)
+            recording.assert_not_awaited()
+
+    def test_licensed_urls_only_allow_public_isolated_chinese_words(self):
+        links = tts._public_mp3_urls("你好", "-10%")
+        self.assertEqual(2, len(links))
+        self.assertIn("wikimedia.org", links[0])
+        self.assertIn("hugolpz/audio-cmn", links[1])
+        self.assertEqual(links, tts._public_mp3_urls("你好！", "-10%"))
+        for text, rate in (
+            ("", "-10%"), ("hello", "-10%"),
+            ("你好，世界", "-10%"), ("你好" * 10, "-10%"),
+            ("你好", "+10%"), ("你好/../../etc/passwd", "-10%"),
+        ):
+            with self.subTest(text=text, rate=rate):
+                self.assertEqual((), tts._public_mp3_urls(text, rate))
+
+    async def test_licensed_source_rejects_error_pages_and_bad_audio(self):
+        class PublicResponse:
+            def __init__(self, status, content):
+                self.status_code, self.content = status, content
+
+        class FakePublicClient:
+            def __init__(self, *args, **kwargs):
+                self.responses = [
+                    PublicResponse(404, b"missing"),
+                    PublicResponse(200, b"<html>not audio</html>"),
+                ]
+                self.urls = []
+
+            async def __aenter__(self):
+                return self
+
+            async def __aexit__(self, *args):
+                return False
+
+            async def get(self, url, **kwargs):
+                self.urls.append(url)
+                return self.responses.pop(0)
+
+        with patch.object(tts.httpx, "AsyncClient", FakePublicClient):
+            with self.assertRaisesRegex(tts.TTSUnavailable, "licensed_word_recording_unavailable"):
+                await tts._public_mp3_fallback("你好", "-10%")
+
+    async def test_licensed_source_can_return_verified_mp3(self):
+        class FakePublicClient:
+            def __init__(self, *args, **kwargs):
+                self.seen = []
+
+            async def __aenter__(self):
+                return self
+
+            async def __aexit__(self, *args):
+                return False
+
+            async def get(self, url, **kwargs):
+                self.seen.append(url)
+                return type("Response", (), {
+                    "status_code": 200, "content": FAKE_MP3
+                })()
+
+        with patch.object(tts.httpx, "AsyncClient", FakePublicClient):
+            self.assertEqual(FAKE_MP3, await tts._public_mp3_fallback("你好", "-10%"))
+
+    async def test_no_word_recording_does_not_poison_cache(self):
+        with patch.object(tts, "_edge", new=AsyncMock(side_effect=RuntimeError("403"))), \
+             patch.object(tts, "_fallback", new=AsyncMock(
+                 side_effect=tts.TTSUnavailable("gemini_cooling_down")
+             )), \
+             patch.object(tts, "_public_mp3_fallback", new=AsyncMock(
+                 side_effect=tts.TTSUnavailable("licensed_word_recording_unavailable")
+             )):
+            with self.assertRaises(tts.TTSUnavailable):
+                await tts.synthesize_chinese_mp3("同学好")
+        self.assertEqual([], list(Path(self.directory.name).glob("*.mp3")))
+        self.assertEqual([], list(Path(self.directory.name).glob("*.wav")))
 
 
 if __name__ == "__main__":

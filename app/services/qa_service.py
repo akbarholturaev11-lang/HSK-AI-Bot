@@ -6,6 +6,7 @@ from aiogram import Bot
 from app.repositories.user_repo import UserRepository
 from app.repositories.message_repo import MessageRepository
 from app.services.ai_service import AIService
+from app.services.qa_text_format import clean_ai_qa_markup
 from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.referral_service import ReferralService
 from app.services.access_service import AccessService
@@ -128,7 +129,7 @@ class QAService:
             model_override=QA_MODEL,
             max_completion_tokens=QA_MAX_COMPLETION_TOKENS,
         )
-        assistant_reply = (usage_result.content or "").strip()
+        assistant_reply = clean_ai_qa_markup(usage_result.content)
         if not assistant_reply:
             return "ai_empty_response"
 

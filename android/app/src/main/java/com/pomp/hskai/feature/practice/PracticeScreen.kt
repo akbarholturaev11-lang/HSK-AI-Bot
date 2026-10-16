@@ -133,7 +133,11 @@ fun PracticeScreen(
     modifier: Modifier = Modifier,
 ) {
     var mistakesOpen by rememberSaveable { mutableStateOf(false) }
-    AssistantScreen(practiceAssistantContext(state, level, mistakesOpen), bottomBar = true)
+    AssistantScreen(
+        practiceAssistantContext(state, level, mistakesOpen),
+        bottomBar = !state.isImmersive,
+        showButton = !state.isImmersive,
+    )
 
     HskSceneSurface(
         modifier = modifier.fillMaxSize(),
@@ -621,7 +625,7 @@ private fun GroupLabel(text: String) {
 private fun ToolGroup(content: @Composable ColumnScope.() -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        color = PompColors.PaperRaised,
+        color = PompColors.CardSurface,
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, PompColors.Divider),
     ) {

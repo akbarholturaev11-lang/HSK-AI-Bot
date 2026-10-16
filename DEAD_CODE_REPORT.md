@@ -1,17 +1,24 @@
-# O'lik kod hisoboti — HSK AI bot
+# Tarixiy o'lik kod snapshoti — HSK AI bot
 
-Statik tahlil: AST + butun repo bo'ylab token qidiruvi (1065 fayl).
+Snapshot commiti: `56701b51` (2026-08-14). O'sha checkoutda AST + token
+qidiruvi 1065 faylni ko'rgan. Bu hisobot joriy dead-code ro'yxati emas: kod,
+testlar va line reference'lar o'zgargan bo'lishi mumkin. Hech bir nomzodni
+faqat shu eski ro'yxatga qarab o'chirmang; har birini joriy reference, dynamic
+entry point, test va build bilan qayta tekshiring.
 
 **Metod va istisnolar**
 
 - Chiqarib tashlandi: `@router.*` va `@app.*` handlerlari, testlar, alembic `upgrade`/`downgrade`, dunder metodlar
 - Qidiruvga kirdi: `.py .html .js .json .toml .yml .md .txt .kt .sh` + alohida `.rs .css .xml .kts .properties .patch`
 - Chiqarib tashlangan papkalar: `.git .claude/worktrees venv .venv node_modules __pycache__ graphify-out build target dist tmp output` va `*.bak*`, `*.save`
-- Loyihada dinamik chaqiruv (`getattr(sys.modules)`, `globals()[]`, `eval`, `importlib.import_module`) **yo'q** — tekshirildi, shuning uchun statik tahlil ishonchli
+- Scan dynamic chaqiruv graphini to'liq yechmaydi. Report tayyorlangandan keyin
+  source tree’da `importlib.import_module` ishlatadigan seed generator va
+  verifier skriptlar mavjud; shuning uchun eski “dinamik chaqiruv yo'q” xulosasi
+  noto'g'ri, token qidiruvi ham mustaqil o'chirish isboti bo'la olmaydi.
 - `import ... as ...` aliaslari hisobga olindi (`current_car`/`current_part` kabi yolg'on ijobiylar olib tashlandi)
 
 
-## 1. To'g'ridan-to'g'ri o'lik — 33 ta
+## 1. 2026-08-14 dagi to'g'ridan-to'g'ri o'lik nomzodlar — 33 ta
 
 Butun repoda **atigi 1 marta** uchraydi: o'z ta'rifi. Hech kim import ham qilmaydi.
 
@@ -98,7 +105,7 @@ Butun repoda **atigi 1 marta** uchraydi: o'z ta'rifi. Hech kim import ham qilmay
 - `171-175` (5 qator) — `def get_block_by_no`
 
 
-## 2. Tranzitiv o'lik — 45 ta
+## 2. 2026-08-14 dagi tranzitiv o'lik nomzodlar — 45 ta
 
 Faqat import qatorlarida yoki boshqa o'lik funksiya ichida uchraydi. Tirik chaqiruvchi yo'q.
 
@@ -179,7 +186,7 @@ Faqat import qatorlarida yoki boshqa o'lik funksiya ichida uchraydi. Tirik chaqi
 - `114-144` (31 qator) — `def build_admin_discount_block`
 
 
-## 3. To'liq o'lik modullar — 5 ta
+## 3. 2026-08-14 da import topilmagan modullar — 5 ta
 
 Hech qayerdan import qilinmaydi, Procfile/railway/nixpacks/scripts da ham yo'q.
 
@@ -190,7 +197,7 @@ Hech qayerdan import qilinmaydi, Procfile/railway/nixpacks/scripts da ham yo'q.
 - **app/services/background_tasks.py** (11 qator) — `run_background` — hech qayerda ishlatilmaydi
 
 
-## 4. Ishlatilmaydigan i18n kalitlari — 97 ta
+## 4. 2026-08-14 da ishlatilmayotgandek ko'ringan i18n kalitlari — 97 ta
 
 Har biri 3 tilda takrorlanadi → taxminan **291 qator matn**.
 

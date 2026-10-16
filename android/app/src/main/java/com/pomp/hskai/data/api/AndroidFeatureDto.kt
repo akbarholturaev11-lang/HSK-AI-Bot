@@ -15,6 +15,19 @@ data class AndroidProfileResponse(
 )
 
 @Serializable
+data class AndroidBugReportRequest(
+    val description: String,
+    @SerialName("screenshot_data_url") val screenshotDataUrl: String = "",
+    @SerialName("app_version") val appVersion: String,
+    val screen: String = "",
+)
+
+@Serializable
+data class AndroidBugReportResponse(
+    val ok: Boolean = false,
+)
+
+@Serializable
 data class AndroidProfileUserDto(
     @SerialName("name") val name: String = "",
     @SerialName("avatar") val avatar: String = "",
@@ -39,6 +52,24 @@ data class AndroidProfileStatsDto(
     @SerialName("weekly_xp") val weeklyXp: Int = 0,
     @SerialName("completed_lessons") val completedLessons: Int = 0,
     @SerialName("mistakes") val mistakes: Int = 0,
+    @SerialName("answer_accuracy") val answerAccuracy: AndroidProfileAccuracyDto = AndroidProfileAccuracyDto(),
+)
+
+@Serializable
+data class AndroidAnswerAccuracyBreakdownDto(
+    @SerialName("percent") val percent: Int? = null,
+    @SerialName("correct") val correct: Int = 0,
+    @SerialName("total") val total: Int = 0,
+    @SerialName("wrong") val wrong: Int = 0,
+)
+
+@Serializable
+data class AndroidProfileAccuracyDto(
+    @SerialName("overall") val overall: AndroidAnswerAccuracyBreakdownDto = AndroidAnswerAccuracyBreakdownDto(),
+    @SerialName("today") val today: AndroidAnswerAccuracyBreakdownDto = AndroidAnswerAccuracyBreakdownDto(),
+    @SerialName("local_date") val localDate: String = "",
+    @SerialName("scope") val scope: String = "",
+    @SerialName("partial_history") val partialHistory: Boolean = true,
 )
 
 @Serializable

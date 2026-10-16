@@ -1,9 +1,13 @@
 # Tayyor gaplar — Android va Telegram Mini App
 
-Holat: 2026-10-12 da reja amalga oshirildi. Quyidagi arxitektura va qabul
-mezonlari yakuniy implementatsiyaga moslashtirildi.
+Holat (2026-10-15 source audit): implementatsiya mavjud.
+`python3 scripts/build_ready_phrases.py --check` manba va Mini App/Android asset nusxalari mosligini tasdiqladi: 300 gap,
+12 mavzu, uz/ru/tj. Mini App `hsk-gaplar.html` statik JSON'ni yuklaydi; Android
+gaplarni APK asset'idan o'qiydi. Bu lokal source tekshiruvi, live rollout dalili
+emas.
 
-Sana: 2026-10-12. Holat: reja; dastur kodi va kontent hali o‘zgartirilmagan.
+Reja sanasi: 2026-10-12. Quyidagi arxitektura va qabul mezonlari implementatsiya
+doirasini qayd etadi; ular bugungi release holatini o'zlari isbotlamaydi.
 
 ## 1. Natija va doira
 

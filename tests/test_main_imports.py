@@ -80,6 +80,10 @@ class MainModuleImportTests(unittest.TestCase):
             "/api/admin-miniapp/limits/save",
             "/api/admin-miniapp/ad-placements/save",
             "/assets/hsk-ai-devices.jpg",
+            "/api/account-deletion/prepare",
+            "/api/account-deletion/start",
+            "/api/account-deletion/status",
+            "/api/account-deletion/confirm",
         ):
             with self.subTest(path=path):
                 self.assertIn(path, paths)

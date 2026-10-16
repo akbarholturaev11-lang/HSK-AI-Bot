@@ -120,6 +120,16 @@ sealed interface ApiError {
 
                 "oauth_link_rate_limited" -> R.string.error_link_rate_limited
 
+                "deletion_expired",
+                "deletion_invalid",
+                "deletion_verification_required",
+                -> R.string.account_deletion_verify_again
+
+                "deletion_rate_limited" -> R.string.error_link_rate_limited
+                "deletion_unavailable",
+                "deletion_provider_unavailable",
+                -> R.string.error_auth_unavailable
+
                 "free_feature_limit_reached",
                 "LIMIT_EXCEEDED",
                 "PRONOUNCE_LIMIT_EXCEEDED",

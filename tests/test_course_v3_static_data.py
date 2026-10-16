@@ -876,65 +876,46 @@ class CourseV3StaticMapTests(unittest.TestCase):
             # (`app/main.py`, STATIC_ASSET_HEADERS), ya'ni faylni o'zgartirish
             # YETARLI EMAS — `?v=` ko'tarilmasa eski nusxa brauzerda qoladi.
             self.assertIn(
-                "/course_v3_data/desktop-download.js?v=20261003-1", html, page
+                "/course_v3_data/desktop-download.js?v=", html, page
             )
             self.assertIn("/course_v3_data/ads.js?v=20260923-2", html, page)
 
-    def test_desktop_profile_card_is_early_clear_and_deep_linkable(self):
+    def test_profile_carousel_replaces_full_height_app_card_and_keeps_deep_link(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
         download = (BASE / "desktop-download.js").read_text(encoding="utf-8")
-        download_css = (BASE / "desktop-download.css").read_text(encoding="utf-8")
+        carousel = (BASE / "profile-carousel.js").read_text(encoding="utf-8")
+        css = (BASE / "profile-carousel.css").read_text(encoding="utf-8")
         main = Path("app/main.py").read_text(encoding="utf-8")
 
-        goal_position = course.index("+'<div class=\"pgoal\"")
-        desktop_position = course.index(
-            "+'<div id=\"pomp-desktop-profile-root\"></div>'"
-        )
-        calendar_position = course.index("p.calTitle", desktop_position)
-        self.assertLess(goal_position, desktop_position)
-        self.assertLess(desktop_position, calendar_position)
-
-        # The card is no longer the desktop client's alone: one button under
-        # the platform pair opens the page that carries every client and picks
-        # the device itself. The AirDrop hint went with the old framing — the
-        # destination sheet still explains the transfer where it matters.
-        self.assertEqual(download.count("appsPage:"), 3)
-        self.assertNotIn("mobileCardHint", download)
-        self.assertNotIn("pdd-mobile-hint", download)
-        self.assertIn("actions.appendChild(buildAppsPageButton())", download)
-        # Every offered platform on one line; the count drives the grid.
-        self.assertIn('actions.dataset.pddColumns = String(shown || 1)', download)
-        self.assertIn('.pdd-actions[data-pdd-columns="3"]', download_css)
-        self.assertIn('new URL("/desktop-download", window.location.origin)', download)
-        self.assertIn('url.searchParams.set("lang", language())', download)
-        # No platform is pinned: the page reads the device it was opened on.
-        self.assertNotIn('searchParams.set("platform"', download)
-        self.assertEqual(download.count("previewTranslation:"), 3)
-        self.assertIn("main.appendChild(buildProfileDeviceVisual())", download)
-        self.assertNotIn("main.appendChild(buildBenefits(true))", download)
-        self.assertIn("copy.macUnavailable", download)
-        self.assertIn("copy.windowsUnavailable", download)
-        self.assertIn("if (isDesktop || !state.availabilityLoaded)", download)
-
-        self.assertIn(
-            'params.get("desktop_download") === "1"', download
-        )
-        self.assertIn('card.classList.add("pdd-card-focus")', download)
-        self.assertIn("card.focus({ preventScroll: true })", download)
-        self.assertIn("card.scrollIntoView({", download)
-        self.assertEqual(download.count("availabilityError:"), 4)
-        self.assertEqual(download.count("retryStatus:"), 3)
-        self.assertIn('state.availabilityError ? " is-error" : ""', download)
-        self.assertIn("loadAvailability();", download)
-
-        # Android is the one platform whose file never leaves Telegram: the
-        # Mini App asks the bot for it rather than opening anything, so the
-        # server side of that request has to exist.
+        # One compact slot near the existing achievements and app link anchor.
+        self.assertIn('id="hsk-profile-promo-root"', course)
+        self.assertNotIn("+proProfileCard()", course)
+        self.assertLess(course.index("p.ach"), course.index("hsk-profile-promo-root"))
+        self.assertIn('id="pomp-desktop-profile-root"', course)
+        self.assertIn('params.get("desktop_download") === "1"', download)
+        self.assertIn('HskProfileCarousel.select("apps")', download)
+        self.assertNotIn('host.appendChild(card)', download)
+        self.assertIn("function openProfileApps()", download)
+        self.assertIn('detectPlatform() !== "android" || !telegramInitData()', download)
+        self.assertIn("openProfileAppsSite();", download)
+        self.assertIn('sendAndroidToChat("profile")', download)
+        self.assertIn('event: "android_apk_to_chat"', download)
         self.assertIn('if event == "android_apk_to_chat":', main)
-        self.assertIn("sent = await send_android_app(", main)
         self.assertIn('return {"ok": False, "error": "android_apk_send_failed"}', main)
-        self.assertEqual(download.count("sendingToChat:"), 3)
-        self.assertEqual(download.count("chatSendFailed:"), 3)
+
+        # The carousel owns only presentation, not subscriptions or saved progress.
+        self.assertIn('var ORDER=["apps","hsk30","pro"]', carousel)
+        self.assertIn('TRIAL_LOADED&&trialEligible()', carousel)
+        self.assertIn('App.startTrial("profile")', carousel)
+        self.assertIn('App.goPay(', carousel)
+        self.assertIn('openHsk30PromoLevelPicker()', carousel)
+        self.assertIn('if(currentCourseTrack()==="hsk30")', carousel)
+        self.assertIn('courseTrackStatus(true)', carousel)
+        self.assertIn('root.setAttribute("role","button")', carousel)
+        self.assertIn('min-height:170px', css)
+        self.assertIn('"profile-carousel.js": "application/javascript"', main)
+        self.assertIn('"profile-carousel.css": "text/css"', main)
+        self.assertIn('/course_v3_data/profile-carousel.js?v=20261013-1', course)
 
     def test_admin_has_app_promo_controls(self):
         html = Path("app/static/admin.html").read_text(encoding="utf-8")

@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Opt-in native issue reporting -->
+    <string name="bug_report_title">Сообщить о проблеме</string>
+    <string name="bug_report_question">Что случилось?</string>
+    <string name="bug_report_hint">Расскажите нам о проблеме...</string>
+    <string name="bug_report_screenshot">Добавить снимок экрана</string>
+    <string name="bug_report_no_screenshot">Не удалось автоматически снять экран. Выберите снимок из галереи или отключите его отправку.</string>
+    <string name="bug_report_privacy">Снимок экрана включён по умолчанию. Проверьте личные данные на снимке или отключите отправку.</string>
+    <string name="bug_report_send">Отправить</string>
+    <string name="bug_report_failed">Не удалось отправить. Проверьте интернет и попробуйте ещё раз.</string>
+    <string name="bug_report_success">Сообщение отправлено. Спасибо!</string>
+    <string name="bug_report_shake">Встряхните телефон, чтобы сообщить о проблеме</string>
+    <string name="bug_report_shake_summary">Работает только в открытом приложении</string>
     <string name="onboarding_language_title">Выберите язык</string>
     <string name="onboarding_language_subtitle">Курс, переводы и напоминания будут на этом языке.</string>
     <string name="action_continue">Продолжить</string>
@@ -246,6 +258,7 @@
     <string name="rating_league_name">Лига %1$s</string>
     <string name="rating_members">%1$d учеников</string>
     <string name="rating_time_left">осталось</string>
+    <string name="rating_weekly_top_five">Недельный рейтинг · Топ 5</string>
     <string name="rating_promote">Топ %1$d поднимаются выше</string>
     <string name="rating_empty">Рейтинг ещё не сформирован.</string>
     <string name="rating_friends_empty">Пока нет приглашённых друзей.</string>
@@ -386,6 +399,12 @@
     <string name="lesson_pinyin_all">Показывать везде</string>
     <string name="lesson_pinyin_new">Только в новых словах</string>
     <string name="lesson_pinyin_off">Скрыть</string>
+    <string name="profile_accuracy_overall">Всего</string>
+    <string name="profile_accuracy_today">Сегодня</string>
+    <string name="profile_accuracy_count">%1$d проверенных ответов</string>
+    <string name="profile_accuracy_note">Только проверенные ответы · старая история может быть неполной</string>
+    <string name="profile_buy_pro">Получить Pro</string>
+    <string name="profile_access_trial">✦ Pro · Пробный</string>
     <string name="profile_calendar_title">Календарь ударов</string>
     <string name="profile_achievements">Достижения</string>
     <string name="profile_ach_first">Первый шаг</string>
@@ -552,4 +571,32 @@
     <string name="course_choice_level">Уровень</string>
     <string name="course_choice_note">При смене версии прогресс сохраняется. Выбор другого уровня начнёт прогресс этой версии заново.</string>
     <string name="course_choice_confirm">Подтвердить</string>
+
+    <!-- Shared limit sheet: Android / Telegram Mini App visual parity -->
+    <string name="limit_sheet_heading">Готовы продолжить?</string>
+    <string name="limit_sheet_get_pro">Получить HSK AI Pro ⭐</string>
+    <string name="limit_sheet_check_access">Проверить доступ</string>
+    <string name="limit_sheet_reason_fallback">Бесплатный лимит раздела «%1$s» исчерпан. Продолжайте с Pro.</string>
+    <string name="limit_sheet_lesson_title">Продолжайте уроки без пауз</string>
+    <string name="limit_sheet_lesson_desc">Открывайте следующие уроки HSK и упражнения по подписке Pro.</string>
+    <string name="limit_sheet_practice_title">Закрепляйте знания на практике</string>
+    <string name="limit_sheet_practice_desc">С Pro дневной лимит не остановит упражнения и повторение.</string>
+    <string name="limit_sheet_test_title">Идите на экзамен уверенно</string>
+    <string name="limit_sheet_test_desc">Решайте больше тестов и узнавайте, какие темы стоит повторить.</string>
+    <string name="limit_sheet_mistakes_title">Разберите каждую ошибку</string>
+    <string name="limit_sheet_mistakes_desc">Работайте над ошибками и закрепляйте результат новыми заданиями.</string>
+    <string name="limit_sheet_voice_title">Говорите по-китайски свободнее</string>
+    <string name="limit_sheet_voice_desc">Продолжайте тренировать разговорную речь с AI Voice без лимита.</string>
+    <string name="limit_sheet_pron_title">Улучшайте произношение</string>
+    <string name="limit_sheet_pron_desc">Повторяйте слова вслух и отрабатывайте звучание.</string>
+    <string name="limit_sheet_recognition_title">Узнавайте иероглифы быстрее</string>
+    <string name="limit_sheet_recognition_desc">Продолжайте упражнения на распознавание иероглифов.</string>
+    <string name="limit_sheet_memorize_title">Запоминайте слова надолго</string>
+    <string name="limit_sheet_memorize_desc">Закрепляйте новую лексику с помощью повторений.</string>
+    <string name="bug_report_intro_title">Сообщить об ошибке?</string>
+    <string name="bug_report_intro_body">Если что-то работает некорректно, расскажите нам об этом, чтобы помочь улучшить HSK AI.</string>
+    <string name="bug_report_intro_action">Сообщить об ошибке</string>
+    <string name="bug_report_pick_screenshot">Выбрать снимок из галереи</string>
+    <string name="bug_report_screenshot_required">Выберите снимок экрана или отключите его отправку.</string>
+    <string name="bug_report_thanks_title">Спасибо за ваш отзыв!</string>
 </resources>

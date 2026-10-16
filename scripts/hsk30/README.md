@@ -47,7 +47,8 @@ The generated bundle is derived only from the verified lesson seeds and the book
 
 ## N2 extraction
 
-Canonical source is the exact Git LFS object from `main`:
+Canonical source record (the local Git LFS object was checksum-verified on
+2026-10-15):
 
 - path: `HSK 3.0 PDF/新HSK2 教材.pdf`
 - SHA-256: `12a7ca82d9ede40e7bcdad36b4198e20db311d378d407b1f80dcc9b26b48f003`
@@ -55,4 +56,17 @@ Canonical source is the exact Git LFS object from `main`:
 - pages: 164 scanned pages
 - printed-page offset: PDF page = printed page + 16 for lesson content
 
-Current progress: course outline + lessons 1-2 verified from rendered pages.
+Current local extraction snapshot (2026-10-15): all 15 source-lesson seed files
+exist, and `python scripts/hsk30/verify_nhsk2_source.py` passes their structural,
+count and vocabulary-index checks. The source index has 207 rows, 206 unique
+spellings, 10 beyond-syllabus rows and 3 proper nouns. The runtime directory
+currently contains 73 mini-lesson JSON files. These checks do not independently
+prove every dialogue line against the rendered PDF pages or establish a live
+production rollout.
+
+To rebuild and verify the normalized bundle after a source change:
+
+```bash
+python scripts/hsk30/verify_nhsk2_source.py
+python scripts/hsk30/build_nhsk2_source_bundle.py
+```

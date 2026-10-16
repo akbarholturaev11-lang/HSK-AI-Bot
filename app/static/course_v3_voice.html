@@ -202,6 +202,7 @@ button{font-family:inherit;border:none;background:none;color:inherit}
     <button class="b2" onclick="goBack()" id="pwb2"></button>
   </div></div>
 </div>
+<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script>
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
@@ -538,13 +539,18 @@ function toggleDialog(){
   $("dtoggleic").className=on?"ti ti-chevron-up":"ti ti-messages";
 }
 function showPaywall(){
+  if(window.CourseAds&&CourseAds.showLimitPromo){
+    CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"voice",level:(params.get("level")||"hsk1")});
+    CourseAds.showLimitPromo({feature:"voice",reason:L.limitWhy||"",onSubscribe:goPremium,onBack:goBack});
+    return;
+  }
   $("pwchar").innerHTML=chr("happy",persona);
   $("pwh").textContent=L.limitTitle;$("pwp").textContent=L.limitSub;
   if(L.limitWhy){$("pwwhyt").textContent=L.limitWhy;$("pwwhy").hidden=false}else{$("pwwhy").hidden=true}
   $("pwb").textContent=L.premiumBtn;$("pwb2").textContent=L.exit;
   $("paywall").classList.add("on");
 }
-function goPremium(){location.href="/subscription.html?lang="+LANG}
+function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_voice_limit&mode=subscription"}
 function softReset(){
   started=false;sess=null;turn=0;lessonWords=[];reviewWords=[];
   closeKb();setName();setChar("happy");setStatus("");setHold(L.holdMic);chatClear();setCnt();

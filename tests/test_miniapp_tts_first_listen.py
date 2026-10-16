@@ -20,9 +20,13 @@ class MiniappFirstListenTests(unittest.TestCase):
         self.assertIn("Promise.race([audioWarmup", LESSON)
         self.assertIn("},1800);", LESSON)
 
-    def test_provider_failure_does_not_trigger_duplicate_tts_fetch(self):
-        self.assertIn("if(src)playSource(src);else _ttsFallback(t)", AUDIO)
-        self.assertNotIn("playSource(_ttsCache[t]||ttsUrl(t))", AUDIO)
+    def test_pending_prefetch_does_not_lose_ios_audio_playback_gesture(self):
+        self.assertIn("if(_ttsPending[t]){", AUDIO)
+        self.assertIn("playSource(ttsUrl(t));return", AUDIO)
+        self.assertNotIn("_ttsPending[t].then(function(src)", AUDIO)
+
+    def test_fallback_cannot_overlap_a_late_media_onplaying_event(self):
+        self.assertIn("tok!==window._ttsTok||st===2", AUDIO)
 
     def test_background_prefetch_bounded_to_three_phrases(self):
         self.assertIn("count<3", AUDIO)

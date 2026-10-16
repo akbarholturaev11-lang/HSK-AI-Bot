@@ -66,6 +66,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
@@ -411,7 +412,7 @@ fun CourseScreen(
 }
 
 @Composable
-private fun Hsk30BookDialog(
+internal fun Hsk30BookDialog(
     isNew: Boolean,
     onDismiss: () -> Unit,
     dismissible: Boolean = true,
@@ -452,7 +453,7 @@ private fun Hsk30BookDialog(
 }
 
 @Composable
-private fun Hsk30BookTitle(title: String, body: String) {
+internal fun Hsk30BookTitle(title: String, body: String) {
     Text(
         title,
         color = PompColors.Ink,
@@ -472,7 +473,7 @@ private fun Hsk30BookTitle(title: String, body: String) {
 }
 
 @Composable
-private fun Hsk30BookPrice(price: String) {
+internal fun Hsk30BookPrice(price: String) {
     Spacer(Modifier.height(20.dp))
     Box(Modifier.fillMaxWidth().height(1.dp).background(PompColors.Divider))
     Row(
@@ -504,7 +505,7 @@ private fun Hsk30BookPrice(price: String) {
 }
 
 @Composable
-private fun Hsk30BookPrimary(label: String, enabled: Boolean = true, onClick: () -> Unit) {
+internal fun Hsk30BookPrimary(label: String, enabled: Boolean = true, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         enabled = enabled,
@@ -529,7 +530,7 @@ private fun Hsk30BookPrimary(label: String, enabled: Boolean = true, onClick: ()
 }
 
 @Composable
-private fun Hsk30BookSecondary(label: String, onClick: () -> Unit) {
+internal fun Hsk30BookSecondary(label: String, onClick: () -> Unit) {
     Spacer(Modifier.height(8.dp))
     TextButton(onClick = onClick, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
         Text(
@@ -550,7 +551,7 @@ private fun Hsk30LockedEntryDialog(
 ) {
     val paymentAvailable = hsk30.paymentEnabled && hsk30.priceTjs > 0 &&
         hsk30.priceDisplay.isNotBlank()
-    Hsk30BookDialog(isNew = hsk30.newBadge.isNew, onDismiss = {}, dismissible = false) {
+    Hsk30BookDialog(isNew = false, onDismiss = {}, dismissible = false) {
         Hsk30BookTitle(
             title = stringResource(
                 if (hsk30.access.paymentRejected) R.string.hsk30_payment_rejected_title
@@ -584,7 +585,7 @@ private fun Hsk30LockedEntryDialog(
 }
 
 @Composable
-private fun Hsk30LevelChoiceDialog(
+internal fun Hsk30LevelChoiceDialog(
     levels: List<String>,
     onDismiss: () -> Unit,
     onChoose: (String) -> Unit,
@@ -620,7 +621,7 @@ private fun Hsk30PromoDialog(
 ) {
     // HSK 3.0 track access can also be free when the admin disables entry payment.
     val hasAccess = hsk30.access.allowed
-    Hsk30BookDialog(isNew = hsk30.newBadge.isNew, onDismiss = onDismiss) {
+    Hsk30BookDialog(isNew = false, onDismiss = onDismiss) {
         Hsk30BookTitle(
             title = stringResource(if (hasAccess) R.string.hsk30_promo_switch else R.string.hsk30_promo_title),
             body = stringResource(
@@ -659,7 +660,8 @@ private fun CourseChoiceSheet(
     } else {
         hsk30.savedLevelHsk20.takeIf { it in listOf("hsk1", "hsk2", "hsk3", "hsk4") } ?: "hsk1"
     }
-    var selectedLevel by remember(activeTrack) { mutableStateOf(saved(activeTrack)) }
+    // The active version opens at its actual band; other versions reopen at their saved band.
+    var selectedLevel by remember(activeTrack, currentLevel) { mutableStateOf(currentLevel) }
     val available = if (selectedTrack == "hsk30") {
         hsk30.liveLevels.filter { it in listOf("nhsk1", "nhsk2", "nhsk3") }
     } else listOf("hsk1", "hsk2", "hsk3", "hsk4")
@@ -667,11 +669,14 @@ private fun CourseChoiceSheet(
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
+        modifier = Modifier.testTag("course-choice-sheet"),
         sheetState = sheetState,
         containerColor = PompColors.PaperRaised,
+        showAssistant = false,
     ) {
         Column(
-            Modifier.fillMaxWidth().padding(start = 18.dp, end = 18.dp, bottom = 28.dp),
+            Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
+                .padding(start = 18.dp, end = 18.dp, bottom = 16.dp),
         ) {
             Text(
                 stringResource(R.string.course_choice_title),
@@ -733,7 +738,7 @@ private fun CourseChoiceSheet(
                     } else {
                         onConfirm(
                             selectedTrack,
-                            selectedLevel.takeIf { it != saved(selectedTrack) },
+                            selectedLevel.takeIf { selectedTrack == activeTrack || it != saved(selectedTrack) },
                         )
                     }
                 },
@@ -830,34 +835,17 @@ private fun CourseHeader(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             HskSectionTitle(
-                text = if (activeTrack == "hsk30") {
-                    "HSK 3.0 · N" + map.level.removePrefix("nhsk")
-                } else {
-                    "HSK 2.0 · " + map.level.removePrefix("hsk")
-                },
+                text = courseLevelLabel(map.level),
                 modifier = if (hsk30 != null) {
-                    Modifier.clickable(
+                    Modifier.testTag("course-level-heading").clickable(
                         enabled = !isSwitchingTrack,
                         role = Role.Button,
                         onClickLabel = switchVersionAction,
                     ) {
                         onOpenCourseChoice()
                     }
-                } else Modifier,
+                } else Modifier.testTag("course-level-heading"),
             )
-            if (map.level.startsWith("nhsk", ignoreCase = true)) {
-                Spacer(Modifier.width(5.dp))
-                Text(
-                    text = "NEW",
-                    color = PompColors.CinnabarDark,
-                    fontSize = 8.sp,
-                    lineHeight = 10.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .background(PompColors.CinnabarSoft, RoundedCornerShape(5.dp))
-                        .padding(horizontal = 4.dp, vertical = 2.dp),
-                )
-            }
         }
         Spacer(Modifier.width(8.dp))
         SectionHint(hints = hints, section = "course", onDismiss = onDismissHint)

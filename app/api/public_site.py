@@ -9,6 +9,7 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 from fastapi import APIRouter, Request
 from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, RedirectResponse, Response
 
+from app.public_site.account_deletion_render import render_account_deletion
 from app.public_site.content import DOWNLOAD_PATH, GOOGLE_SIGNIN_PRIVACY_PAGES, PAGES
 from app.public_site.render import (
     BOT_URL,
@@ -148,25 +149,11 @@ def create_public_site_router(*, settings_obj):
 
     @router.get("/account-deletion")
     async def account_deletion():
-        # The Telegram identity is shared with the bot, Mini App and desktop.
-        # Deletion therefore starts as a verified support request, not an
-        # unreviewed client-side action against one installation.
-        body = """<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Delete your HSK AI account</title><meta name="robots" content="index,follow">
-<style>body{font-family:system-ui,-apple-system,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.6;color:#211d17}h1,h2{line-height:1.2}a{color:#9d321c}</style></head>
-<body><h1>Request deletion of your HSK AI account</h1>
-<p>HSK AI is published by Pomp HSK AI. Your account is shared by the Android app, Telegram bot, Mini App and desktop clients. Deleting the app or unlinking a device does not delete the account.</p>
-<h2>How to request deletion</h2>
-<p>Open the <a href="https://t.me/darsi_chini_bot?start=account_deletion">official HSK AI Telegram bot</a> from the Telegram account linked to HSK AI and tap <strong>O‘chirishni so‘rash</strong> (Request deletion) in its confirmation message. The bot forwards your request to an administrator; it does not delete anything immediately. Support will verify that you control the account before processing your request. Do not send passwords or identity documents in the chat.</p>
-<h2>What the request covers</h2>
-<p>Request deletion of your account identifiers, linked sign-in identities, profile, study progress, mistakes, voice activity and subscription records across HSK AI services. Some records may need to be retained where required for legal, payment, security or fraud-prevention reasons; support will explain any such retention when handling your request.</p>
-<p>See the <a href="/privacy">privacy policy</a> for how your data is used.</p>
-</body></html>"""
-        return HTMLResponse(body, headers={
-            "Cache-Control": "public, max-age=300",
+        return HTMLResponse(render_account_deletion(), headers={
+            "Cache-Control": "no-store",
             "Referrer-Policy": "no-referrer",
             "X-Content-Type-Options": "nosniff",
+            "Content-Security-Policy": "default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
         })
 
     @router.get("/terms")
@@ -241,6 +228,7 @@ def create_public_site_router(*, settings_obj):
         router.add_api_route("/" + key + ".txt", verification, methods=["GET"])
 
     assets = {"site.css": (STATIC / "public-site.css", "text/css"),
+              "account-deletion.js": (STATIC / "account-deletion.js", "application/javascript"),
               "avatar.webp": (STATIC / "assets/hsk-ai-avatar.webp", "image/webp"),
               "logo.png": (STATIC / "assets/hsk-ai-logo-256.png", "image/png"),
               "social-cover.webp": (STATIC / "assets/hsk-ai-cover.webp", "image/webp")}

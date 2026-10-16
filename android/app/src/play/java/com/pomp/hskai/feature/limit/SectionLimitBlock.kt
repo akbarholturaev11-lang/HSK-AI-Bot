@@ -34,9 +34,7 @@ fun SectionLimitBlock(
     resetAt: String? = null,
 ) {
     val reopensAt = ResetTime.localClock(resetAt)
-    val hasSupport = limit.state.supportUrl.isNotBlank()
     val error = limit.state.error
-    val trialOffered = limit.state.trialEligible
     val checkLabel = stringResource(R.string.limit_check_account)
     LimitBlock(
         sectionTitle = sectionTitle,
@@ -45,36 +43,14 @@ fun SectionLimitBlock(
         } else {
             stringResource(R.string.limit_locked_headline)
         },
-        // A free week opens the section now and costs the learner nothing, so
-        // it leads while it is available; re-checking the account then becomes
-        // the quieter second option.
-        primaryLabel = if (trialOffered) {
-            stringResource(R.string.limit_try_trial)
-        } else {
-            checkLabel
-        },
-        onPrimary = if (trialOffered) {
-            limit.actions.onStartTrial
-        } else {
-            limit.actions.onRecheck
-        },
+        primaryLabel = checkLabel,
+        onPrimary = limit.actions.onRecheck,
         modifier = modifier,
         reason = reason,
-        hint = stringResource(R.string.limit_status_hint),
-        secondaryLabel = if (trialOffered) checkLabel else null,
-        onSecondary = if (trialOffered) limit.actions.onRecheck else null,
-        tertiaryLabel = if (hasSupport) stringResource(R.string.limit_support) else null,
-        onTertiary = if (hasSupport) limit.actions.onSupport else null,
-        isBusy = limit.state.isBusy || limit.state.trialStarting,
+        isBusy = limit.state.isBusy,
         errorText = when {
             error != null -> stringResource(error.messageRes)
-            limit.state.trialError.isNotBlank() -> stringResource(R.string.limit_trial_failed)
             else -> null
-        },
-        noticeText = if (limit.state.recheckFoundNothing) {
-            stringResource(R.string.limit_recheck_none)
-        } else {
-            null
         },
     )
 }

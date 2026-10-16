@@ -1,17 +1,24 @@
 package com.pomp.hskai.feature.course
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.pomp.hskai.R
+import com.pomp.hskai.HskAiApplication
 import com.pomp.hskai.core.design.PompHskAiTheme
 import com.pomp.hskai.data.api.CourseHsk30AccessDto
 import com.pomp.hskai.data.api.CourseHsk30Dto
@@ -23,16 +30,22 @@ import com.pomp.hskai.data.api.LocalizedText
 import com.pomp.hskai.data.repository.CourseMapSnapshot
 import com.pomp.hskai.data.repository.CourseMapper
 import com.pomp.hskai.feature.limit.LimitGate
+import com.pomp.hskai.feature.assistant.AssistantBinding
+import com.pomp.hskai.feature.assistant.LocalAssistant
+import com.pomp.hskai.feature.assistant.ScreenRegistry
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
 
 /** Server access and payment availability drive the real course entry dialog. */
 @RunWith(AndroidJUnit4::class)
 class Hsk30EntryFlowTest {
     @get:Rule val compose = createComposeRule()
     private val strings = InstrumentationRegistry.getInstrumentation().targetContext.resources
+    private val assistantRegistry = ScreenRegistry()
     private val lockedAccess = CourseHsk30AccessDto(
         featureEnabled = true,
         allowed = false,
@@ -87,23 +100,36 @@ class Hsk30EntryFlowTest {
         onUnlock: () -> Unit = {},
         onSwitch: (String, String?) -> Unit = { _, _ -> },
     ) {
+        val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as HskAiApplication
+        val binding = AssistantBinding(assistantRegistry, app.assistant, {}, { _, _ -> })
         compose.setContent {
-            PompHskAiTheme {
-                CourseScreen(
-                    state = state.value,
-                    dailyGoal = 30,
-                    limit = LimitGate(),
-                    onLesson = {},
-                    onTodayTask = {},
-                    onOpenGoal = {},
-                    onOpenChest = {},
-                    onChestRewardConsumed = {},
-                    onSwitchTrack = onSwitch,
-                    onUnlockHsk30 = onUnlock,
-                    onRetry = {},
-                )
+            CompositionLocalProvider(LocalAssistant provides binding) {
+                PompHskAiTheme {
+                    CourseScreen(
+                        state = state.value,
+                        dailyGoal = 30,
+                        limit = LimitGate(),
+                        onLesson = {},
+                        onTodayTask = {},
+                        onOpenGoal = {},
+                        onOpenChest = {},
+                        onChestRewardConsumed = {},
+                        onSwitchTrack = onSwitch,
+                        onUnlockHsk30 = onUnlock,
+                        onRetry = {},
+                    )
+                }
             }
         }
+    }
+
+
+    @Test fun bundledHsk30BookImageDecodesOnAndroid() {
+        val bitmap = requireNotNull(
+            BitmapFactory.decodeResource(strings, R.drawable.hsk30_course_books)
+        ) { "Packaged HSK 3.0 JPEG failed to decode on this Android device" }
+        assertTrue(bitmap.width >= 640 && bitmap.height >= 400)
+        bitmap.recycle()
     }
 
     @Test fun lockedN1N2AndN3OpenPaymentOnceAndReturnToTheLegacyTrack() {
@@ -140,7 +166,7 @@ class Hsk30EntryFlowTest {
 
         cases.forEach { access ->
             compose.runOnIdle { state.value = courseState(access = access) }
-            compose.onNodeWithText("HSK 3.0 · N1").assertIsDisplayed()
+            compose.onNodeWithTag("course-level-heading").assertTextEquals("HSK 1")
             compose.onNodeWithText(strings.getString(R.string.hsk30_access_required_title)).assertDoesNotExist()
             compose.onNodeWithText(strings.getString(R.string.hsk30_access_unlock_button)).assertDoesNotExist()
             compose.onNodeWithText(strings.getString(R.string.hsk30_access_back_hsk20)).assertDoesNotExist()
@@ -160,7 +186,7 @@ class Hsk30EntryFlowTest {
         var payments = 0
         showCourse(state, onUnlock = { payments++ })
 
-        compose.onNodeWithText("HSK 3.0 · N1").assertIsDisplayed()
+        compose.onNodeWithTag("course-level-heading").assertTextEquals("HSK 1")
         compose.onNodeWithText(strings.getString(R.string.hsk30_access_required_title)).assertDoesNotExist()
         compose.onNodeWithText(strings.getString(R.string.hsk30_access_unlock_button)).assertDoesNotExist()
         compose.runOnIdle { assertEquals(0, payments) }
@@ -182,7 +208,7 @@ class Hsk30EntryFlowTest {
         compose.runOnIdle { state.value = state.value.copy(isSwitchingTrack = false) }
         compose.onNodeWithText(strings.getString(R.string.course_track_preparing_title))
             .assertDoesNotExist()
-        compose.onNodeWithText("HSK 3.0 · N1").assertIsDisplayed()
+        compose.onNodeWithTag("course-level-heading").assertTextEquals("HSK 1")
     }
 
     @Test fun courseHeaderPickerPreselectsSavedBandAndShowsVersions() {
@@ -191,14 +217,35 @@ class Hsk30EntryFlowTest {
         val calls = mutableListOf<Pair<String, String?>>()
         showCourse(state, onSwitch = { track, level -> calls += track to level })
 
-        compose.onNodeWithText("HSK 3.0 · N1").performClick()
+        compose.onNodeWithTag("course-level-heading").assertTextEquals("HSK 1").performClick()
         compose.onNodeWithText(strings.getString(R.string.course_choice_title)).assertIsDisplayed()
         compose.onNodeWithText("HSK 2.0").assertIsDisplayed()
         compose.onNodeWithText("HSK 3.0").assertIsDisplayed()
+        compose.onNodeWithContentDescription(strings.getString(R.string.assistant_open)).assertDoesNotExist()
+        compose.runOnIdle { assertTrue(assistantRegistry.current!!.hidesAssistant) }
+        val sheet = compose.onNodeWithTag("course-choice-sheet").fetchSemanticsNode().boundsInRoot
+        val confirm = compose.onNodeWithText(strings.getString(R.string.course_choice_confirm))
+            .fetchSemanticsNode().boundsInRoot
+        assertTrue(
+            "Course selection must not reserve an empty assistant row below Confirm",
+            sheet.bottom - confirm.bottom <= 80f * strings.displayMetrics.density,
+        )
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        // Wait for the native sheet window to reach the display compositor.
+        instrumentation.waitForIdleSync()
+        Thread.sleep(500)
+        val image = requireNotNull(instrumentation.uiAutomation.takeScreenshot())
+        File(instrumentation.targetContext.getExternalFilesDir(null), "ui-fix-course-choice.png")
+            .outputStream().use {
+                image.compress(Bitmap.CompressFormat.PNG, 100, it)
+            }
         compose.onNodeWithText("HSK 2.0").performClick()
         compose.onNodeWithText("HSK 3").assertIsDisplayed()
         compose.onNodeWithText(strings.getString(R.string.course_choice_confirm)).performClick()
-        compose.runOnIdle { assertEquals(listOf("hsk20" to null), calls) }
+        compose.runOnIdle {
+            assertEquals(listOf("hsk20" to null), calls)
+            assertTrue(!assistantRegistry.current!!.hidesAssistant)
+        }
     }
 
     @Test fun unavailablePaymentExplainsTheBlockAndStillAllowsReturning() {

@@ -35,7 +35,6 @@ import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PersonAdd
-import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -61,6 +60,7 @@ import com.pomp.hskai.core.design.components.HskBrandLoader
 import com.pomp.hskai.core.design.components.HskContentSkeleton
 import com.pomp.hskai.core.design.components.HskGlassIconButton
 import com.pomp.hskai.core.design.components.HskGlassSurface
+import com.pomp.hskai.core.design.components.HskProCrownBadge
 import com.pomp.hskai.core.design.components.HskSectionTitle
 import com.pomp.hskai.core.navigation.LocalMainBottomInset
 import com.pomp.hskai.core.network.ApiError
@@ -102,7 +102,7 @@ fun RatingScreen(
             contentPadding = PaddingValues(
                 start = 20.dp,
                 end = 20.dp,
-                top = 20.dp,
+                top = 6.dp,
                 // The tab bar floats over the list; the last row clears it here.
                 bottom = 20.dp + LocalMainBottomInset.current,
             ),
@@ -110,25 +110,22 @@ fun RatingScreen(
         ) {
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 30.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    HskSectionTitle(stringResource(R.string.nav_rating))
-                    Spacer(Modifier.width(8.dp))
-                    SectionHint(
-                        hints = hints,
-                        section = "rating",
-                        onDismiss = onDismissHint,
+                    HskSectionTitle(
+                        stringResource(
+                            if (state.tab == RatingTab.FRIENDS) R.string.rating_tab_friends
+                            else R.string.nav_rating
+                        )
                     )
+                    SectionHint(hints = hints, section = "rating", onDismiss = onDismissHint)
                     Spacer(Modifier.weight(1f))
                     ChallengeBell(
                         pendingCount = state.pendingChallenges.size,
                         onClick = onOpenChallenges,
                     )
                 }
-            }
-            item {
-                TabSwitch(selected = state.tab, onSelect = onSelectTab)
             }
 
             if (state.challengeDelivery != null || state.challengeError != null) {
@@ -142,13 +139,12 @@ fun RatingScreen(
 
             if (state.tab == RatingTab.LEAGUE && rating != null) {
                 item {
-                    LeagueCard(
+                    RatingPodium(
                         league = rating.league,
                         memberCount = rating.leagueSize,
                         resetSeconds = rating.weeklyResetSeconds,
                     )
                 }
-                item { LeagueLadder(rating.league) }
             }
 
             if (state.isLoading) {
@@ -173,7 +169,7 @@ fun RatingScreen(
                     }
                     val rows = rating?.leaderboard.orEmpty()
                     if (rows.size >= PROMOTION_ZONE) {
-                        item { PromotionZone() }
+                        item { WeeklyTopFiveTitle() }
                     }
                     if (rows.isNotEmpty()) {
                         item {
@@ -367,12 +363,25 @@ fun RatingUserScreen(
                 ) {
                     ProfileAvatar(name = name, premium = user.isPaid, avatarKey = user.avatarKey)
                     Spacer(Modifier.height(12.dp))
-                    Text(
-                        text = name,
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = PompColors.Ink,
-                        textAlign = TextAlign.Center,
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = name,
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = PompColors.Ink,
+                            textAlign = TextAlign.Center,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f, fill = false),
+                        )
+                        if (user.isPaid) {
+                            Spacer(Modifier.width(7.dp))
+                            HskProCrownBadge(size = 18.dp)
+                        }
+                    }
                     Spacer(Modifier.height(4.dp))
                     Text(
                         text = stringResource(R.string.rating_league_name, leagueGlyph(league)),
@@ -391,13 +400,7 @@ fun RatingUserScreen(
                             containerColor = PompColors.GoldSoft,
                             contentColor = PompColors.Gold,
                         )
-                        if (user.isPaid) {
-                            ProfileBadge(
-                                text = stringResource(R.string.rating_premium),
-                                containerColor = PompColors.GoldSoft,
-                                contentColor = PompColors.Gold,
-                            )
-                        }
+                        if (user.isPaid) ProfileProBadge()
                     }
                 }
             }
@@ -446,7 +449,7 @@ fun RatingUserScreen(
                                     enabled = !isChallengeBusy && challengeDelivery == null,
                                     modifier = Modifier.weight(1f).heightIn(min = 52.dp),
                                     shape = RoundedCornerShape(14.dp),
-                                    color = PompColors.PaperRaised,
+                                    color = PompColors.CardSurface,
                                     contentColor = PompColors.Ink,
                                     border = BorderStroke(1.dp, PompColors.Divider),
                                 ) {
@@ -551,22 +554,7 @@ private fun ProfileAvatar(name: String, premium: Boolean, avatarKey: String) {
                 modifier = Modifier.size(78.dp),
             )
         }
-        if (premium) {
-            Surface(
-                color = PompColors.Gold,
-                shape = CircleShape,
-                modifier = Modifier.align(Alignment.BottomEnd).size(25.dp),
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Filled.WorkspacePremium,
-                        contentDescription = stringResource(R.string.rating_premium),
-                        tint = PompColors.Paper,
-                        modifier = Modifier.size(15.dp),
-                    )
-                }
-            }
-        }
+        if (premium) HskProCrownBadge(modifier = Modifier.align(Alignment.BottomEnd), size = 23.dp)
     }
 }
 
@@ -579,6 +567,20 @@ private fun ProfileBadge(text: String, containerColor: Color, contentColor: Colo
             color = contentColor,
             modifier = Modifier.padding(horizontal = 11.dp, vertical = 6.dp),
         )
+    }
+}
+
+@Composable
+private fun ProfileProBadge() {
+    Surface(color = PompColors.GoldSoft, shape = RoundedCornerShape(999.dp)) {
+        Row(
+            modifier = Modifier.padding(horizontal = 9.dp, vertical = 5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+            HskProCrownBadge(size = 15.dp)
+            Text("Pro", style = MaterialTheme.typography.labelMedium, color = PompColors.GoldInk)
+        }
     }
 }
 
@@ -715,169 +717,8 @@ private fun ChallengeFeedbackBanner(
     }
 }
 
-private fun ratingLevelLabel(level: String): String {
-    val normalized = level.lowercase().removePrefix("hsk").trim()
-    return normalized.toIntOrNull()?.let { "HSK $it" } ?: level.uppercase().ifBlank { "HSK" }
-}
-
 @Composable
-private fun TabSwitch(selected: RatingTab, onSelect: (RatingTab) -> Unit) {
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        shadowElevation = 5.dp,
-    ) {
-        Row(modifier = Modifier.padding(4.dp).selectableGroup()) {
-            TabButton(
-                label = stringResource(R.string.rating_tab_league),
-                selected = selected == RatingTab.LEAGUE,
-                onClick = { onSelect(RatingTab.LEAGUE) },
-                modifier = Modifier.weight(1f),
-            )
-            TabButton(
-                label = stringResource(R.string.rating_tab_friends),
-                selected = selected == RatingTab.FRIENDS,
-                onClick = { onSelect(RatingTab.FRIENDS) },
-                modifier = Modifier.weight(1f),
-            )
-        }
-    }
-}
-
-@Composable
-private fun TabButton(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        color = if (selected) PompColors.Cinnabar else PompColors.PaperRaised,
-        shape = RoundedCornerShape(11.dp),
-        modifier = modifier
-            .heightIn(min = 44.dp)
-            .selectable(selected = selected, role = Role.Tab, onClick = onClick),
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.titleSmall,
-                color = if (selected) PompColors.OnCinnabar else PompColors.InkSecondary,
-            )
-        }
-    }
-}
-
-@Composable
-private fun LeagueCard(league: String, memberCount: Int, resetSeconds: Long) {
-    HskGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        shadowElevation = 7.dp,
-    ) {
-        Row(
-            modifier = Modifier.padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Surface(
-                color = PompColors.Cinnabar,
-                shape = RoundedCornerShape(14.dp),
-                border = BorderStroke(2.dp, PompColors.Gold),
-            ) {
-                Text(
-                    text = leagueGlyph(league),
-                    style = PompTextStyles.hanziMedium,
-                    color = PompColors.Paper,
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 12.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.rating_league_name, leagueGlyph(league)),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = PompColors.Ink,
-                )
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        Icons.Filled.Group,
-                        contentDescription = null,
-                        tint = PompColors.InkSecondary,
-                        modifier = Modifier.size(14.dp),
-                    )
-                    Spacer(Modifier.width(5.dp))
-                    Text(
-                        text = stringResource(R.string.rating_members, memberCount),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = PompColors.InkSecondary,
-                    )
-                }
-            }
-            if (resetSeconds > 0) {
-                Surface(color = PompColors.CinnabarSoft, shape = RoundedCornerShape(12.dp)) {
-                    Column(
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text(
-                            text = countdownText(resetSeconds),
-                            style = MaterialTheme.typography.titleSmall,
-                            color = PompColors.CinnabarDark,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Text(
-                            text = stringResource(R.string.rating_time_left),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = PompColors.CinnabarDark,
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun LeagueLadder(current: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-    ) {
-        LEAGUE_LADDER.forEachIndexed { index, (name, glyph) ->
-            if (index > 0) {
-                Box(
-                    modifier = Modifier
-                        .width(18.dp)
-                        .height(1.dp)
-                        .background(PompColors.Divider),
-                )
-            }
-            val isCurrent = name.equals(current, ignoreCase = true)
-            Surface(
-                color = if (isCurrent) PompColors.GoldSoft else PompColors.PaperRaised,
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(
-                    1.dp,
-                    if (isCurrent) PompColors.Gold else PompColors.Divider,
-                ),
-            ) {
-                Text(
-                    text = glyph,
-                    style = PompTextStyles.hanziSmall,
-                    color = if (isCurrent) PompColors.Gold else PompColors.InkDisabled,
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun PromotionZone() {
+private fun WeeklyTopFiveTitle() {
     Row(
         modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -890,16 +731,13 @@ private fun PromotionZone() {
         )
         Spacer(Modifier.width(6.dp))
         Text(
-            text = stringResource(R.string.rating_promote, PROMOTION_ZONE),
+            text = stringResource(R.string.rating_weekly_top_five),
             style = MaterialTheme.typography.bodyMedium,
             color = PompColors.GoldInk,
         )
         Spacer(Modifier.width(8.dp))
         Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(1.dp)
-                .background(PompColors.Divider),
+            modifier = Modifier.weight(1f).height(1.dp).background(PompColors.Divider),
         )
     }
 }
@@ -911,8 +749,8 @@ private fun LeagueRow(
 ) {
     val name = row.name.ifBlank { row.username.ifBlank { stringResource(R.string.rating_unnamed) } }
     val rowTint = when {
-        row.isPaid -> PompColors.GoldSoft.copy(alpha = 0.38f)
         row.isCurrentUser -> PompColors.CinnabarSoft.copy(alpha = 0.42f)
+        row.isPaid -> PompColors.GoldSoft.copy(alpha = 0.38f)
         else -> Color.Transparent
     }
     Row(
@@ -941,36 +779,14 @@ private fun LeagueRow(
             )
             if (row.isPaid) {
                 Spacer(Modifier.width(6.dp))
-                Surface(
-                    color = PompColors.GoldSoft,
-                    shape = RoundedCornerShape(999.dp),
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(
-                            Icons.Filled.WorkspacePremium,
-                            contentDescription = stringResource(R.string.rating_premium),
-                            tint = PompColors.Gold,
-                            modifier = Modifier.size(12.dp),
-                        )
-                        Spacer(Modifier.width(3.dp))
-                        Text(
-                            text = stringResource(R.string.rating_premium),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = PompColors.GoldInk,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                    }
-                }
+                HskProCrownBadge(size = 15.dp)
             }
         }
         Spacer(Modifier.width(8.dp))
         Text(
             text = row.xp.toString(),
             style = MaterialTheme.typography.titleSmall,
-            color = if (row.isPaid) PompColors.Gold else PompColors.InkSecondary,
+            color = if (row.isCurrentUser) PompColors.CinnabarDark else if (row.isPaid) PompColors.GoldInk else PompColors.InkSecondary,
         )
     }
 }
@@ -1011,7 +827,7 @@ private fun PendingChallengeRow(
             onClick = { onRespond(duel.id, false) },
             enabled = !busy,
             shape = RoundedCornerShape(11.dp),
-            color = PompColors.PaperRaised,
+            color = PompColors.CardSurface,
             border = BorderStroke(1.dp, PompColors.Divider),
         ) {
             Text(
@@ -1200,12 +1016,7 @@ private fun FriendRow(
                     )
                     if (friend.isPaid) {
                         Spacer(Modifier.width(5.dp))
-                        Icon(
-                            imageVector = Icons.Filled.WorkspacePremium,
-                            contentDescription = stringResource(R.string.rating_premium),
-                            tint = PompColors.Gold,
-                            modifier = Modifier.size(14.dp),
-                        )
+                        HskProCrownBadge(size = 15.dp)
                     }
                 }
                 Spacer(Modifier.height(3.dp))
@@ -1314,22 +1125,7 @@ private fun InitialsAvatar(
                 modifier = Modifier.size(35.dp),
             )
         }
-        if (premium) {
-            Surface(
-                color = PompColors.Gold,
-                shape = CircleShape,
-                modifier = Modifier.size(15.dp).align(Alignment.BottomEnd),
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        Icons.Filled.WorkspacePremium,
-                        contentDescription = stringResource(R.string.rating_premium),
-                        tint = PompColors.Paper,
-                        modifier = Modifier.size(9.dp),
-                    )
-                }
-            }
-        }
+        if (premium) HskProCrownBadge(modifier = Modifier.align(Alignment.BottomEnd), size = 15.dp)
     }
 }
 

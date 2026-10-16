@@ -1,5 +1,7 @@
+import base64
 import json
 import unittest
+from io import BytesIO
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -15,11 +17,45 @@ from app.db.models.message import Message
 from app.db.models.user import User
 from app.services.assistant_service import (
     AssistantInput,
+    AssistantError,
     AssistantService,
     ScreenContext,
+    decode_media,
     parse_answer,
     request_payload,
 )
+
+
+class AssistantImageTransportTests(unittest.TestCase):
+    def test_photo_upload_normalizes_a_real_png_to_a_decodable_jpeg(self):
+        from PIL import Image
+
+        source = BytesIO()
+        Image.new("RGBA", (32, 24), (255, 0, 0, 128)).save(source, "PNG")
+        data = AssistantInput(
+            client_message_id="11111111-1111-4111-8111-111111111111",
+            text="Read this photo",
+            kind="image",
+            media_data_url="data:image/png;base64," + base64.b64encode(source.getvalue()).decode(),
+        )
+        raw, mime, filename = decode_media(data)
+
+        self.assertEqual(("image/jpeg", "question.jpg"), (mime, filename))
+        with Image.open(BytesIO(raw)) as image:
+            image.load()
+            self.assertEqual((32, 24), image.size)
+            self.assertEqual("RGB", image.mode)
+            self.assertEqual("JPEG", image.format)
+
+    def test_invalid_photo_bytes_return_a_media_error(self):
+        data = AssistantInput(
+            client_message_id="11111111-1111-4111-8111-111111111111",
+            kind="image",
+            media_data_url="data:image/png;base64," + base64.b64encode(b"not a photo").decode(),
+        )
+        with self.assertRaises(AssistantError) as error:
+            decode_media(data)
+        self.assertEqual("assistant_media_invalid", error.exception.code)
 
 
 def _user(user_id=1, telegram_id=4200) -> User:

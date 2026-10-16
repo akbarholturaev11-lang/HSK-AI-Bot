@@ -2,6 +2,7 @@
 :root {
   --hsk-paper: #FDF9F0;
   --hsk-paper-raised: #FFFFFF;
+  --hsk-card-surface: #FBF6ED;
   --hsk-ink: #211D17;
   --hsk-ink-secondary: #665D50;
   --hsk-ink-disabled: #A89E8E;
@@ -45,6 +46,7 @@
   color-scheme: dark;
   --hsk-paper: #002F49;
   --hsk-paper-raised: #073B55;
+  --hsk-card-surface: #073B55;
   --hsk-ink: #F5FAFD;
   --hsk-ink-secondary: #B8CDDA;
   --hsk-ink-disabled: #7FA3B5;
