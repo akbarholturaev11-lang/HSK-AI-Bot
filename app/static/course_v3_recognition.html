@@ -343,7 +343,7 @@ function finish(){
   if(window.PracticeCoach)PracticeCoach.finish(score,quiz.length,L.doneSub);
   beep([523,659,784,1046]);haptic(true);
 }
-function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function(res){buildPool();if(!pool.length){document.getElementById("body").innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}/* Server ro'yxati faqat pool yetarli bo'lganda ishlatiladi: 4 tadan kam bo'lsa chalg'ituvchi topilmaydi. */
+function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function(res){buildPool();if(!pool.length){document.getElementById("body").innerHTML='<div class="loading">'+tr({uz:"Ma'lumot yuklanmadi",ru:"Не удалось загрузить данные",tj:"Маълумот бор нашуд"})+'</div>';return}/* Server ro'yxati faqat pool yetarli bo'lganda ishlatiladi: 4 tadan kam bo'lsa chalg'ituvchi topilmaydi. */
 var targets=pool.length>=4?planTargets(res&&res[2]):[];makeQuiz(targets);qi=0;score=0;document.getElementById("score").textContent="0 ✓";
 if(window.PracticeCoach){PracticeCoach.init({after:".top",lang:LANG});PracticeCoach.reset()}
 render()})}

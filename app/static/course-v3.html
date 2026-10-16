@@ -3669,7 +3669,7 @@ function startFoundationFromMap(restart,afterComplete){
       Foundation.active=true;Foundation.required=true;Foundation.afterComplete=afterComplete||null;
       var close=document.querySelector("#flow .fx"),heart=document.querySelector("#flow .fheart"),gear=document.querySelector("#flow .fgear");
       if(close)close.style.visibility="hidden";if(heart)heart.style.display="none";if(gear)gear.style.display="none";
-      $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-wifi-off"></i> 0 dan asoslar</div><div class="foundation-hero"><h2>'+esc(unavailable)+'</h2><p>'+esc(LANG==="ru"?"Проверьте интернет и повторите загрузку.":LANG==="tj"?"Интернетро санҷед ва аз нав бор кунед.":"Internetni tekshiring va qayta yuklang.")+'</p></div>';
+      $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-wifi-off"></i> '+esc(LANG==="ru"?"Основы с нуля":LANG==="tj"?"Асосҳо аз сифр":"0 dan asoslar")+'</div><div class="foundation-hero"><h2>'+esc(unavailable)+'</h2><p>'+esc(LANG==="ru"?"Проверьте интернет и повторите загрузку.":LANG==="tj"?"Интернетро санҷед ва аз нав бор кунед.":"Internetni tekshiring va qayta yuklang.")+'</p></div>';
       var cta=$("#f-cta");cta.style.display="flex";cta.disabled=false;cta.innerHTML='<i class="ti ti-refresh"></i> '+esc(LANG==="ru"?"Повторить":LANG==="tj"?"Аз нав":"Qayta urinish");
       cta.onclick=function(){Foundation.active=false;startFoundationFromMap(false,afterComplete)};$("#flow").classList.add("on");return;
     }
@@ -3974,7 +3974,7 @@ function showLessonCompleteRetry(msg){
   if(cta){
     cta.style.display="flex";
     cta.disabled=false;
-    cta.innerHTML='<i class="ti ti-refresh"></i> '+(LANG==="ru"?"Повторить":LANG==="tg"?"Такрор кардан":"Qayta urinish");
+    cta.innerHTML='<i class="ti ti-refresh"></i> '+(LANG==="ru"?"Повторить":LANG==="tj"?"Такрор кардан":"Qayta urinish");
     cta.onclick=function(){setLessonFlowControls();flowDone()};
     setTimeout(function(){try{cta.scrollIntoView({block:"end"})}catch(e){}},20);
   }
