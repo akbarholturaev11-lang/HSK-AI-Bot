@@ -194,7 +194,8 @@ class PaymentService:
             discount_title=checkout_info["discount_title"],
             discount_details=checkout_info["discount_details"],
         )
-        await PaymentReviewPreviewService(self.session).claim(user, payment)
+        if screenshot_file_id:
+            await PaymentReviewPreviewService(self.session).claim(user, payment)
         await self.session.commit()
         return payment, ""
 
@@ -245,6 +246,8 @@ class PaymentService:
         pending_payment = await self.payment_repo.get_latest_pending_by_user(telegram_id)
         if pending_payment:
             await self.payment_repo.update_screenshot(pending_payment, screenshot_file_id)
+            user = await self.user_repo.get_by_telegram_id(telegram_id)
+            await PaymentReviewPreviewService(self.session).claim(user, pending_payment)
             await self.session.commit()
             return pending_payment, "updated"
 
