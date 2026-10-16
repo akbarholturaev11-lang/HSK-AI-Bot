@@ -181,6 +181,25 @@ class PaymentReviewPreviewTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(user.payment_status, "approved")
             self.assertGreater(AIUsageBudgetService(session)._as_utc(user.end_date), datetime.now(timezone.utc))
 
+    async def test_existing_seven_day_pro_trial_is_not_spent_or_revoked(self):
+        async with self.sessions() as session:
+            user = await self._user(session)
+            user.trial_used = True
+            user.pro_trial_ends_at = datetime.now(timezone.utc) + timedelta(days=4)
+            pending = await self._new_payment(session)
+            preview = PaymentReviewPreviewService(session)
+            self.assertTrue(await preview.claim(user, pending))
+            budget = (await session.execute(select(AIUsageBudget))).scalar_one()
+            self.assertGreaterEqual(
+                AIUsageBudgetService(session)._as_utc(budget.starts_at),
+                AIUsageBudgetService(session)._as_utc(user.pro_trial_ends_at),
+            )
+            pending.payment_status = "rejected"
+            await preview.review(user, pending, approved=False)
+            self.assertEqual(resolve_state(user), EntitlementState.TRIAL_ACTIVE)
+            self.assertIsNone(user.pro_trial_revoked_at)
+            self.assertTrue(user.trial_used)
+
     async def test_preview_budget_is_not_unlimited_after_exhaustion(self):
         async with self.sessions() as session:
             user = await self._user(session)
