@@ -11,6 +11,7 @@ from app.db.base import Base
 from app.db.models.ai_usage import AIUsageBudget
 from app.db.models.payment import Payment
 from app.db.models.user import User
+from app.db.session import _BOOTSTRAP_COLUMNS
 from app.services.ai_usage_budget_service import (
     AIUsageBudgetService,
     PAYMENT_PREVIEW_AI_CAP_USD,
@@ -56,6 +57,15 @@ class PaymentReviewPreviewTests(unittest.IsolatedAsyncioTestCase):
         return (await session.execute(
             select(User).where(User.telegram_id == 954001)
         )).scalar_one()
+
+    async def test_railway_bootstrap_has_safe_defaults_for_existing_users(self):
+        self.assertEqual(
+            _BOOTSTRAP_COLUMNS["users"]["payment_preview_available"],
+            "BOOLEAN DEFAULT true NOT NULL",
+        )
+        self.assertEqual(
+            _BOOTSTRAP_COLUMNS["users"]["payment_preview_payment_id"], "INTEGER"
+        )
 
     async def test_receipt_opens_unpaid_preview_only_once(self):
         async with self.sessions() as session:
