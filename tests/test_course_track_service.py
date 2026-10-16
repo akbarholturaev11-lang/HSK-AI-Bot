@@ -132,6 +132,11 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(access.permanently_unlocked)
         self.assertEqual(access.reason, "payment_pending")
         self.service.hsk30_unlock.review_state.assert_not_awaited()
+        self.service.hsk30_unlock.payment_enabled.return_value = False
+        free = await self.service.hsk30_access(self.user)
+        self.assertEqual(free.reason, "hsk30_free_access")
+        self.assertFalse(free.provisional_access)
+        self.service.hsk30_unlock.payment_enabled.return_value = True
 
         # Admin rejection removes only the temporary permission.
         self.user.payment_preview_payment_id = None
