@@ -8,7 +8,7 @@ and redirect configuration in `OAUTH_SETUP.md`.
 ## Release hold
 
 The owner requires all seven acceptance conditions below to be verified before
-merging or pushing this feature to `main`, deploying it, or opening registration
+merging or pushing this feature to `main`, deploying it to production, or opening registration
 to general use. Passing isolated tests does not waive missing product behavior
 or real provider/staging checks. Keep the feature on `codex/universal-sign-in`
 until the evidence is complete.
@@ -16,12 +16,12 @@ until the evidence is complete.
 | Required condition | Current evidence and remaining gate |
 | --- | --- |
 | Existing Telegram Pro, XP, lessons, rating and payments stay unchanged | Backend/Android regressions and real-copy migration digests pass: all legacy billing, progress and XP/rating values are preserved. Real installed-client walkthroughs remain required. |
-| Google/Apple users without Telegram can register, start a lesson, use AI Voice and buy Pro | Signup/learning/AI/voice have integration coverage. Provider-only Pro checkout is currently unavailable (`payment_telegram_required`); real provider and purchase tests remain required. |
+| Google/Apple users without Telegram can register, start a lesson, use AI Voice and buy Pro | Signup/learning/AI/voice and canonical manual Pro checkout/approval have integration coverage. Direct Android and desktop need no Telegram for Pro; real provider, upstream Voice and purchase walkthroughs remain required. Play still has no in-app billing. |
 | Parallel registration for one Google/Apple identity creates one `users.id` | Railway staging PostgreSQL 18 passes four concurrent Google attempts and four Apple attempts: one account per exact provider identity, with no email merge. Retain this check in CI. |
 | Linking cannot grant access to another learner's Pro or progress | Ownership and identity/session revocation regressions cover isolation; verify the complete staged client flow as well. |
-| A blocked account cannot evade its restriction through Google/Apple | Both-provider API tests cover blocking before verification and between approval and token consumption; refresh/revoked-proof protections also pass. Real staged provider walkthroughs remain required. |
+| A blocked account cannot evade its restriction through Google/Apple | Google/Apple identities already linked to a blocked canonical account cannot sign in, consume approved proof, refresh or attach another login. Both-provider regressions pass; real staged provider walkthroughs remain required. An unrelated new provider subject cannot be inferred to belong to the same person from email. |
 | Android, desktop and Telegram Mini App show the same account data | A backend integration test checks explicitly linked Android/Windows/macOS logins plus MiniApp profile data share Pro, lesson progress, XP and rating. Installed-client comparison remains required. A Telegram-free account cannot authenticate a Telegram Mini App without a real Telegram identity. |
-| Migrations pass on a staging copy matching the real schema, and backup restore succeeds | Historical `0101 → 0104` rehearsal passed with exact pre/post-migration restores. Production has since advanced to `0102_payment_review_preview`; integrate the new main and repeat against that current baseline before clearing this gate. |
+| Migrations pass on a staging copy matching the real schema, and backup restore succeeds | PASS: isolated Railway PostgreSQL 18 copy matching `0102_payment_review_preview` passed upgrades through `0106`, with exact pre/post-backup restores over 61 tables and 190,155 legacy rows. Evidence below; this does not clear other release gates. |
 
 Railway now has an isolated staging PostgreSQL service. No app or bot was
 deployed, and no application environment or shared variables were cloned;
@@ -31,40 +31,34 @@ has since advanced main and production to `0102_payment_review_preview`. Do not 
 registrations against production. Do not describe the feature as launch-ready
 until all rows have dated, reproducible evidence.
 
-Read-only production schema inspection on 2026-10-16 found PostgreSQL 18 and
-Alembic revision `0101_account_deletion_requests`. `users.telegram_id` and
-`desktop_devices.telegram_id` are still required. `payments` still requires
-`user_telegram_id` and has no canonical `user_id`. This is schema inventory,
-not a staging migration or a backup-restore test.
+Read-only production inspection found PostgreSQL 18 at
+`0102_payment_review_preview` after upstream `3fffa42e`. Production still
+requires Telegram on users/devices/payments and has no canonical payment
+owner column. The universal-account changes remain confined to this branch
+and isolated staging.
 
-### Completed database rehearsal
+### Completed database rehearsals
 
-The later rehearsal on 2026-10-16 passed for the original `0101` baseline.
-Final verification then found upstream `3fffa42e` and production revision
-`0102_payment_review_preview`; the current-baseline database gate is open again
-until integration and a fresh rehearsal. The historical
-[sanitized evidence](UNIVERSAL_NATIVE_ACCOUNTS_STAGING_2026-10-16.json)
-records the migration, both restores, concurrency results and outstanding
-release gates without row values, credentials or database endpoints.
+The production-schema copy passed the full `0102 → 0106` chain on 2026-10-17:
+61 data tables, 190,155 legacy rows, 2,118 users and 100 payments. All 835
+source column descriptors, 682 constraints and 301 indexes matched the
+restored baseline. Exact migration and pre/post-backup restore comparisons
+preserved billing, progress, XP/rating, account keys and sequences. All 13,905
+expected owners were backfilled, including 97 existing payments; the remaining
+historical financial records were preserved. Receipt-preview flags and pointers
+were unchanged. The source backup came from the earlier verified `0102` copy;
+the production schema head was rechecked read-only before this fresh rehearsal.
+See [current sanitized evidence](UNIVERSAL_NATIVE_ACCOUNTS_STAGING_PAYMENTS_2026-10-17.json).
 
-- The real `0101` backup was restored into two newly created staging databases.
-  The baseline matched all 833 source column descriptors, 681 constraints and
-  301 indexes. PostgreSQL's proven lossless literal-array cast rewrite in ten
-  CHECKs and one partial index is normalized only for this inventory match.
-- `0101 → 0104` passed over 61 data tables and 189,368 legacy rows, including
-  2,113 accounts and 98 payment records. All existing rows and values were
-  preserved except the declared canonical backfills and pending-link expiry.
-  All 13,782 expected AI/voice owners were filled correctly; no owner or dedupe
-  conflicts were found.
-- Both the pre-migration and post-migration backups were restored into fresh
-  databases. Exact schema, row multiset, account-key and sequence comparisons
-  passed, including billing, progress, XP and rating digests. Live before/after
-  hashes preserve defaults, widths, precision, constraints and indexes exactly
-  except the explicitly permitted migration changes.
-- Backups are retained privately outside Git. Staging has no running app or bot
-  and this rehearsal made no production writes, production deployment or main
-  push. This proves the database gate; it does not prove live OAuth, AI Voice,
-  installed-client parity or Pro purchasing.
+The earlier
+[`0102 → 0105` evidence](UNIVERSAL_NATIVE_ACCOUNTS_STAGING_PREVIEW_2026-10-17.json)
+and [`0101 → 0104` evidence](UNIVERSAL_NATIVE_ACCOUNTS_STAGING_2026-10-16.json)
+remain historical records of those exact revisions.
+
+Backups are retained privately outside Git. Staging runs no app or bot;
+these rehearsals make no production writes, production deployment or main
+push. Database preservation does not prove real OAuth, upstream AI Voice,
+installed-client parity or successful bank/store purchases.
 
 `scripts/rehearse_native_account_migration.py` only reads and compares; it never
 migrates or restores a database. It requires an explicit approved staging
@@ -76,23 +70,39 @@ empty staging database for restore. Run `snapshot` before and after, then
 `compare --mode migration`; compare each backup restore to its own source with
 `compare --mode restore`.
 
-### Outstanding purchase implementation
+### Canonical Pro purchasing
 
-Provider-only purchase requires an end-to-end canonical ownership change;
-simply removing the Telegram guard is unsafe. Payment drafts/history/status,
-admin approval/rejection, paid-term activation, paid AI budgets and device
-notifications must all resolve the same authenticated `users.id`. A NULL
-Telegram field must never select another provider-only user's payment or
-notification device. Preserve prices, discounts, approval policy, renewal
-dates and financial retention; financial records must not disappear through
-a new cascading account-owner FK.
+Manual Pro purchases belong to `users.id`, independently of the login provider.
+Direct Android and both desktop platforms reuse the existing prices, discounts,
+bank/card details, QR payloads, receipt upload and human admin review. New
+payments carry the canonical owner and optional real Telegram metadata;
+migration `0106` backfills existing positive Telegram owners. Bare numeric
+service arguments remain real Telegram IDs, never canonical IDs.
 
-Android Play is currently consumption-only, with no BillingClient, backend
-purchase-token verification or configured store-product integration. Direct
-and desktop manual payment support does not prove Play in-app purchasing.
-Play purchase acceptance requires configured products/testers, real store
-verification and acknowledgement, replay/account-binding checks and
-subscription lifecycle reconciliation. See the official
+Checkout locks the canonical user before checking pending payments. Both admin
+review surfaces use the same lock order and the existing one-time status
+transition, so replay cannot extend paid terms twice. Bot receipt edits use the
+same order, check failed status transitions and recheck the fresh selected plan;
+a late screenshot cannot reopen a reviewed payment or claim a new preview.
+Receipt approval cannot unblock a blocked owner; the separate explicit manual
+admin grant keeps its existing behavior. Approval updates only the
+owner's existing 10/30/90-day period, paid AI budget and preview ticket. Rejection
+revokes only that receipt's preview without refunding the ticket or changing a
+paid term. Status, history, discounts, finance and Android push targets use the
+same owner; matching NULL Telegram metadata grants no access to another user.
+
+Approved financial facts do not cascade with account deletion. Purge removes
+receipt evidence and positive account association while preserving the existing
+anonymous accounting grouping and totals. Other payment state is deleted.
+The separate HSK 3.0 one-time checkout and Telegram referral/handoff paths remain
+explicitly Telegram-specific; this Pro change does not silently open them.
+
+Android Play remains consumption-only, without BillingClient, server purchase
+verification or configured store products/testers. Manual Direct/desktop
+checkout does not prove Play purchasing. Play requires configured products/base
+plans, real store verification and acknowledgement, replay/account binding,
+restore and subscription lifecycle reconciliation through the same canonical
+entitlements. See the official
 [Play Billing integration guide](https://developer.android.com/google/play/billing/integrate.html).
 
 ## Identity and access
@@ -115,11 +125,10 @@ subscription lifecycle reconciliation. See the official
   database. Legacy integer service callers still mean real Telegram IDs.
   Canonical backfilled rows and narrowly scoped legacy fallbacks remain
   compatible; a missing Telegram ID never authorizes other NULL-owner rows.
-- Manual Telegram checkout and referral rewards retain their current policy.
-  Provider-only accounts can read their subscription state, but these actions
-  return `payment_telegram_required` / `referral_telegram_required` instead of
-  fabricating an ID, payment or invitation. This change does not add store
-  billing, email merging or a Telegram-attachment feature.
+- Direct/desktop Pro checkout works for canonical provider-only accounts.
+  Telegram handoff, HSK 3.0 one-time purchase and referral rewards retain their
+  real-Telegram requirements with explicit availability errors. No synthetic
+  Telegram ID, automatic email merge or store billing is introduced.
 
 ## Session and identity safety
 
@@ -142,7 +151,10 @@ availability and the remaining Telegram-only actions.
 
 ## Schema and rollout
 
-1. Apply `alembic upgrade head` through `0105_native_ai_voice_ownership` using
+Run these steps only after all release gates above are satisfied. This
+checklist does not authorize a production migration or release during the hold.
+
+1. Apply `alembic upgrade head` through `0106_canonical_payment_ownership` using
    the normal deployment migration process before releasing new clients.
 2. Deploy the backend and then the tested Android/desktop clients. No new
    provider secret or redirect URI is introduced by this feature.
@@ -161,12 +173,16 @@ Migration details:
 - `0104`: nullable transport metadata, canonical-owner backfill and canonical
   event/notification dedupe keys.
 - `0105`: canonical AI budget/event/voice ownership, backfill and deletion FKs.
+- `0106`: canonical payment ownership and payment/entry Telegram nullability;
+  positive Telegram-owner backfills preserve amounts, statuses and dates. The
+  financial owner has no cascading FK; purge explicitly anonymizes approved
+  facts. Downgrade preflights both payment and entry data.
 
 The existing receipt-preview opportunity and payment pointer survive these
 migrations. Its separate capped budget now records canonical ownership while
 retaining real Telegram compatibility. The preview remains unpaid, does not
-replace an existing paid/referral/Pro-trial window and cannot be claimed through
-the Telegram-only receipt flow by a provider-only account.
+replace an existing paid/referral/Pro-trial window and is claimed only after an owned receipt is submitted. Signup alone never
+claims a preview; canonical Pro receipts follow the same one-ticket/$0.50 policy.
 
 Upgrades tolerate an already bootstrapped schema. Downgrades preflight and
 refuse provider-only data rather than discarding accounts or progress. Do not
@@ -185,29 +201,46 @@ database and disposable per-test schemas through
 python -m unittest tests.test_native_account_signup tests.test_native_account_migration \
   tests.test_native_account_learning tests.test_native_account_ai_voice \
   tests.test_native_account_lifecycle tests.test_desktop_provider_accounts \
-  tests.test_native_account_acceptance
+  tests.test_native_account_acceptance tests.test_payment_review_preview \
+  tests.test_native_account_payments tests.test_native_payment_repository \
+  tests.test_native_payment_migration tests.test_native_payment_discounts_finance \
+  tests.test_payment_service_receipt_lock
 python -m unittest tests.test_native_account_concurrency
 python -m unittest tests.test_native_account_rehearsal
 ```
 
-Validation on 2026-10-16, integrated source commit `2b6d87ed`:
+Validation on 2026-10-17, source `09aa4d48` (backend base `3fffa42e`):
 
-- Backend regression selection: 933 tests and 679 subtests passed.
-- New backend CI selection against isolated PostgreSQL: 44 tests passed,
-  including concurrent registration and identity-change tests.
-- Additional acceptance/security selection: 65 tests and 15 subtests passed,
-  including both-provider block boundaries and legacy paid-account data
-  shared across native APIs and the MiniApp profile service. OIDC verification
-  is mocked in this selection.
-- Staging helper, migration and acceptance selection: 25 tests passed. The
-  PostgreSQL 18 staging concurrency selection passed three tests and two
-  provider subtests. CI uses PostgreSQL 18 to match the deployed database major.
-- Android Direct/Play: 1009 unit tests, 26 native Compose checks, nine static
-  gates and four app/test APK builds passed.
-- Shared desktop: 29 JavaScript contracts, 24 Rust tests and five focused
-  browser authentication checks passed. Five unrelated failures in the full
-  desktop browser suite also reproduce on the previous deletion baseline;
-  the full desktop browser suite is not green.
+- Final integrated backend selection: 1,070 tests and 766 subtests passed,
+  with seven existing configuration/asyncpg cleanup warnings. Four PostgreSQL
+  cases are skipped in this SQLite selection and run separately below.
+- Isolated Railway PostgreSQL 18 payment concurrency: two tests passed. Parallel
+  requests for the same canonical user share one pending payment; another user
+  remains independent. The earlier first-signup race also passed one test and
+  four subtests, using four concurrent attempts per Google/Apple subject and
+  safe starter/preview defaults. External identity verification is mocked.
+- Isolated Railway PostgreSQL 18 receipt/admin concurrency: both races passed,
+  in addition to the local PostgreSQL 15 run within the 51-test
+  receipt/preview/checkout selection, with no skips. Reviewed
+  receipt edits cannot claim another preview or open a replacement payment;
+  user-before-payment locking prevents the old bot/admin deadlock.
+- Current desktop browser checkout: three checks passed, including successful
+  receipt submission without Telegram and the server-restricted error state.
+  Real bearer Android Direct tests cover overview, quote, currency, receipt,
+  duplicate submission, canonical status and other-account refusal.
+- Historical Android validation at pre-rebase `2b6d87ed`: 1009 unit tests,
+  26 native Compose checks, nine static gates and four app/test APK builds
+  passed across Direct/Play. Historical shared desktop validation passed
+  29 JavaScript contracts, 24 Rust tests and five focused auth browser checks.
+  Five unrelated full desktop browser failures also reproduce on the deletion
+  baseline; the full desktop browser suite is not green.
+
+Android/desktop source is unchanged by this canonical payment integration; full
+client build/unit suites were not rerun against `09aa4d48`. Current backend and
+browser checks do not replace installed-client/provider/purchase acceptance.
+Later main `160a51d6` was inspected: its changes since the backend reference are
+Mini App localization/inventory and CI, with no auth, payment backend or schema
+change. It is not claimed as this feature's fully integrated test baseline.
 
 These checks do not satisfy the outstanding release gates above. In
 particular, a safe error for unsupported checkout is not a successful Pro
