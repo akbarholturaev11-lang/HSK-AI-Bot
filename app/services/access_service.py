@@ -202,6 +202,12 @@ class AccessService:
     async def _can_use_daily_text_limit(self, user) -> Tuple[bool, str]:
         return await self._configured_ai_access(user, A.AI_TEXT, "access_daily_limit_reached")
 
+    async def _can_use_payment_preview_ai(self, user) -> Tuple[bool, str]:
+        result = await AIUsageBudgetService(self.session).can_use_payment_preview_ai(
+            int(user.telegram_id), int(user.payment_preview_payment_id)
+        )
+        return result.allowed, result.message_key
+
     async def _can_use_ai_budget(self, telegram_id: int) -> Tuple[bool, str]:
         budget_access = await AIUsageBudgetService(self.session).can_use_ai(telegram_id)
         if not budget_access.allowed:
@@ -279,6 +285,8 @@ class AccessService:
                 return allowed, reason
         if resolve_state(user) == EntitlementState.TRIAL_ACTIVE:
             return await self._can_use_ai_budget(telegram_id)
+        if getattr(user, "payment_preview_payment_id", None) is not None and not self._is_paid_user(user):
+            return await self._can_use_payment_preview_ai(user)
 
         if user.status != "active":
             has_pending_payment = await self.payment_repo.has_pending_by_user(telegram_id)
@@ -327,6 +335,8 @@ class AccessService:
             return allowed, reason
         if resolve_state(user) == EntitlementState.TRIAL_ACTIVE:
             return await self._can_use_ai_budget(telegram_id)
+        if getattr(user, "payment_preview_payment_id", None) is not None and not self._is_paid_user(user):
+            return await self._can_use_payment_preview_ai(user)
 
         if user.status != "active":
             has_pending_payment = await self.payment_repo.has_pending_by_user(telegram_id)
