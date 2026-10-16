@@ -39,6 +39,8 @@ jobs:
         run: |
           python -m unittest tests.test_i18n_inventory tests.test_i18n_ui_regressions
           python scripts/i18n_inventory.py --output /tmp/hsk-i18n-audit.json
+          python -m unittest tests.test_i18n_source_audit
+          python scripts/i18n_source_audit.py --output /tmp/hsk-i18n-source-audit.json
       - name: Compile backend code
         run: |
           python -m compileall -q app tests
