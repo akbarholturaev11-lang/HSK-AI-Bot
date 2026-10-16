@@ -438,7 +438,7 @@ function nextChar(){DI++;startChar()}
 /* boot */
 function boot(){Promise.all([LV_READY,SCRIPTS_READY]).then(function(){
   loadData();
-  if(!KEYS.length){B.innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}
+  if(!KEYS.length){B.innerHTML='<div class="loading">'+t({uz:"Ma'lumot yuklanmadi",ru:"Не удалось загрузить данные",tj:"Маълумот бор нашуд"})+'</div>';return}
   buildDeck();DI=0;startChar();
 })}
 /* Sessiya boshlashdan oldin kunlik limitni tekshiramiz (server tomonda). */
