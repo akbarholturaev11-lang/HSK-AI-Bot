@@ -139,7 +139,7 @@ class CourseTrackService:
                 paid_access=paid,
                 permanently_unlocked=permanently_unlocked,
                 payment_enabled=payment_enabled,
-                provisional_access=subscription_preview and not paid,
+                provisional_access=bool(subscription_preview and not paid and payment_enabled and enabled and not permanently_unlocked),
             )
 
         review = await self.hsk30_unlock.review_state(user)
