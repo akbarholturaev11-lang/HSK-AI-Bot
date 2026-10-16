@@ -10,11 +10,13 @@ from typing import Any
 from aiogram import Bot
 
 from app.config import settings
+from app.db.models.user import User
 from app.public_site.render import public_origin
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.payment_repo import PaymentRepository
 from app.repositories.user_repo import UserRepository
 from app.services.admin_notify_service import AdminNotifyService
+from app.services.account_identity import actual_telegram_id
 from app.services.discount_service import DiscountService
 from app.services.hsk30_unlock_service import (
     HSK30_UNLOCK_PLAN_TYPE,
@@ -113,21 +115,25 @@ class SubscriptionMiniAppService:
 
     async def overview(
         self,
-        telegram_id: int,
+        telegram_id: int | User,
         bot: Bot | None = None,
         mode: str | None = None,
         campaign_id: int | None = None,
         feedback_id: int | None = None,
     ) -> dict[str, Any]:
         mode = self._normalize_mode(mode)
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = await self.payment_repo.resolve_owner(telegram_id)
         if not user:
             return {"ok": False, "error": "access_start_first"}
+        if mode == "hsk30_unlock" and actual_telegram_id(user) is None:
+            return {"ok": False, "error": "payment_telegram_required"}
 
-        pending_payment = await self.payment_repo.get_latest_pending_by_user(telegram_id)
+        pending_payment = await self.payment_repo.get_latest_pending_by_user(user)
         if pending_payment:
             pending_payload = self._pending_payment_payload(pending_payment)
             if str(pending_payment.plan_type or "") == HSK30_UNLOCK_PLAN_TYPE:
+                if actual_telegram_id(user) is None:
+                    return {"ok": False, "error": "payment_telegram_required"}
                 pending_payload["provisional_access"] = await Hsk30UnlockService(
                     self.session
                 ).is_provisional_payment(user, pending_payment)
@@ -186,10 +192,10 @@ class SubscriptionMiniAppService:
                 "hsk30_unlock": eligibility,
             }
 
-        await self.user_repo.ensure_referral_code(user)
-        discount_service = DiscountService(self.session)
-        await discount_service.sync_referral_discount_progress(user)
-        await self.session.commit()
+        if actual_telegram_id(user) is not None:
+            await self.user_repo.ensure_referral_code(user)
+            await DiscountService(self.session).sync_referral_discount_progress(user)
+            await self.session.commit()
         payment_details = await self.payment_details()
         prices = await self._prices_payload(
             user,
@@ -226,10 +232,14 @@ class SubscriptionMiniAppService:
             "payment_details_configured": bool(payment_details),
         }
 
-    async def start_discount(self, telegram_id: int, bot: Bot | None = None) -> dict[str, Any]:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+    async def start_discount(self, telegram_id: int | User, bot: Bot | None = None) -> dict[str, Any]:
+        user = await self.payment_repo.resolve_owner(telegram_id, lock=True)
         if not user:
             return {"ok": False, "error": "access_start_first"}
+        if user.status == "blocked":
+            return {"ok": False, "error": "user_blocked"}
+        if actual_telegram_id(user) is None:
+            return {"ok": False, "error": "referral_telegram_required"}
 
         await self.user_repo.ensure_referral_code(user)
         if not user.discount_used and not user.discount_offer_started_at:
@@ -242,7 +252,7 @@ class SubscriptionMiniAppService:
     async def quote(
         self,
         *,
-        telegram_id: int,
+        telegram_id: int | User,
         plan_type: str,
         payment_method: str,
         card_country: str | None = None,
@@ -254,11 +264,15 @@ class SubscriptionMiniAppService:
         feedback_id: int | None = None,
     ) -> dict[str, Any]:
         mode = self._normalize_mode(mode)
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = await self.payment_repo.resolve_owner(telegram_id)
         if not user:
             return {"ok": False, "error": "access_start_first"}
+        if user.status == "blocked":
+            return {"ok": False, "error": "user_blocked"}
 
         if plan_type == HSK30_UNLOCK_PLAN_TYPE:
+            if actual_telegram_id(user) is None:
+                return {"ok": False, "error": "payment_telegram_required"}
             eligibility = await Hsk30UnlockService(self.session).payment_eligibility(user)
             if not eligibility["allowed"]:
                 return {"ok": False, "error": eligibility["reason"]}
@@ -303,7 +317,7 @@ class SubscriptionMiniAppService:
     async def submit(
         self,
         *,
-        telegram_id: int,
+        telegram_id: int | User,
         plan_type: str,
         payment_method: str,
         card_country: str | None,
@@ -316,16 +330,22 @@ class SubscriptionMiniAppService:
         source: str = "miniapp",
     ) -> dict[str, Any]:
         mode = self._normalize_mode(mode)
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        # Serialize the pending check and receipt creation across all clients.
+        # An integer still means a genuine Telegram ID; User means users.id.
+        user = await self.payment_repo.resolve_owner(telegram_id, lock=True)
         if not user:
             return {"ok": False, "error": "access_start_first"}
+        if user.status == "blocked":
+            return {"ok": False, "error": "user_blocked"}
 
         if plan_type == HSK30_UNLOCK_PLAN_TYPE:
+            if actual_telegram_id(user) is None:
+                return {"ok": False, "error": "payment_telegram_required"}
             eligibility = await Hsk30UnlockService(self.session).payment_eligibility(user)
             if not eligibility["allowed"]:
                 return {"ok": False, "error": eligibility["reason"]}
 
-        pending_payment = await self.payment_repo.get_latest_pending_by_user(telegram_id)
+        pending_payment = await self.payment_repo.get_latest_pending_by_user(user)
         if pending_payment:
             if str(pending_payment.plan_type or "") != str(plan_type or ""):
                 return {
@@ -394,7 +414,7 @@ class SubscriptionMiniAppService:
         if plan_type != HSK30_UNLOCK_PLAN_TYPE:
             user.selected_plan_type = None
         payment = await self.payment_repo.create(
-            user_telegram_id=telegram_id,
+            user_telegram_id=user,
             plan_type=plan_type,
             amount=int(checkout_info["final_amount"]),
             currency=str(checkout_info["currency"]),
@@ -434,8 +454,8 @@ class SubscriptionMiniAppService:
             )
         except Exception:
             logger.exception(
-                "payment review not delivered to admins telegram_id=%s payment_id=%s",
-                telegram_id,
+                "payment review not delivered to admins user_id=%s payment_id=%s",
+                user.id,
                 getattr(payment, "id", None),
             )
             await self.session.rollback()
@@ -577,7 +597,7 @@ class SubscriptionMiniAppService:
         }
 
     async def _discount_payload(self, user, bot: Bot | None = None) -> dict[str, Any] | None:
-        if getattr(user, "discount_used", False):
+        if actual_telegram_id(user) is None or getattr(user, "discount_used", False):
             return None
         referral_count, referral_available = await DiscountService(self.session).sync_referral_discount_progress(user)
         referral_code = getattr(user, "referral_code", None)

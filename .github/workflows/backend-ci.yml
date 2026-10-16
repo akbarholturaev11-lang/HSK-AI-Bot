@@ -95,3 +95,6 @@ jobs:
           tests.test_native_account_ai_voice tests.test_native_account_lifecycle
           tests.test_native_account_admin tests.test_desktop_provider_accounts
           tests.test_native_account_acceptance tests.test_native_account_rehearsal
+          tests.test_native_account_payments tests.test_native_payment_repository
+          tests.test_native_payment_migration tests.test_native_payment_discounts_finance
+          tests.test_payment_service_receipt_lock

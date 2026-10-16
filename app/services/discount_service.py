@@ -6,6 +6,7 @@ from app.db.models.discount_campaign import DiscountCampaign
 from app.repositories.bot_feedback_repo import BotFeedbackRepository
 from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.referral_repo import ReferralRepository
+from app.services.account_identity import actual_telegram_id
 
 
 REFERRAL_DISCOUNT_REQUIRED = 3
@@ -41,7 +42,7 @@ class DiscountService:
         self.referral_repo = ReferralRepository(session)
 
     async def sync_referral_discount_progress(self, user) -> tuple[int, bool]:
-        if not user:
+        if not user or actual_telegram_id(user) is None:
             return 0, False
 
         changed = False
@@ -169,6 +170,8 @@ class DiscountService:
         user,
         feedback_id: Optional[int] = None,
     ) -> DiscountChoice:
+        if not user or actual_telegram_id(user) is None:
+            return DiscountChoice()
         if feedback_id is not None:
             feedback = await self.feedback_repo.get_available_price_offer(
                 feedback_id=feedback_id,
@@ -217,7 +220,7 @@ class DiscountService:
         user,
         now: datetime,
     ) -> Optional[DiscountChoice]:
-        last_usage = await self.repo.get_user_last_usage(campaign.id, user.telegram_id)
+        last_usage = await self.repo.get_user_last_usage(campaign.id, user)
         if campaign.repeat_interval_days:
             if last_usage and last_usage.submitted_at:
                 next_allowed = last_usage.submitted_at.timestamp() + campaign.repeat_interval_days * 86400
@@ -232,7 +235,7 @@ class DiscountService:
         used = await self.repo.count_used(
             campaign.id,
             now=now,
-            exclude_user_telegram_id=user.telegram_id,
+            exclude_user=user,
         )
         if campaign.quota_total and used >= campaign.quota_total:
             return None

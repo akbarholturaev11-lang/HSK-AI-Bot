@@ -159,7 +159,7 @@ class PaymentReviewPreviewTests(unittest.IsolatedAsyncioTestCase):
             _BOOTSTRAP_COLUMNS["users"]["payment_preview_payment_id"], "INTEGER"
         )
 
-    async def test_provider_only_account_cannot_claim_or_replenish_a_receipt_preview(self):
+    async def test_provider_only_account_cannot_claim_or_replenish_another_accounts_receipt(self):
         async with self.sessions() as session:
             user = await UserRepository(session).create_provider_account(
                 full_name="Provider learner", language="uz"
@@ -182,6 +182,64 @@ class PaymentReviewPreviewTests(unittest.IsolatedAsyncioTestCase):
             self.assertFalse(user.payment_preview_available)
             self.assertIsNone(user.payment_preview_payment_id)
             self.assertEqual(resolve_state(user), EntitlementState.FREE)
+
+    async def test_provider_receipt_preview_uses_canonical_owner_and_same_single_ticket(self):
+        async with self.sessions() as session:
+            owner = await UserRepository(session).create_provider_account(full_name="Google learner", language="uz")
+            other = await UserRepository(session).create_provider_account(full_name="Apple learner", language="uz")
+            payment = Payment(user_id=owner.id, user_telegram_id=None, plan_type="1_month", amount=100,
+                              currency="TJS", payment_status="pending")
+            session.add(payment)
+            await session.flush()
+            preview = PaymentReviewPreviewService(session)
+            self.assertFalse(await preview.claim(other, payment))
+            self.assertTrue(await preview.claim(owner, payment))
+            self.assertFalse(await preview.claim(owner, payment))
+            budget = (await session.scalars(select(AIUsageBudget))).one()
+            self.assertEqual((budget.user_id, budget.user_telegram_id, budget.total_budget_usd), (owner.id, None, PAYMENT_PREVIEW_AI_CAP_USD))
+            self.assertEqual(owner.payment_preview_payment_id, payment.id)
+            self.assertEqual(resolve_state(owner), EntitlementState.TEMP_ACCESS)
+            self.assertFalse(is_billing_paid(owner))
+
+            # A pending receipt cannot refill the opportunity through review.
+            await preview.review(owner, payment, approved=True)
+            self.assertFalse(owner.payment_preview_available)
+            payment.payment_status = "rejected"
+            await preview.review(other, payment, approved=False)
+            self.assertEqual(owner.payment_preview_payment_id, payment.id)
+            await preview.review(owner, payment, approved=False)
+            self.assertIsNone(owner.payment_preview_payment_id)
+            self.assertFalse(owner.payment_preview_available)
+            self.assertEqual(budget.status, "expired")
+
+            second = Payment(user_id=owner.id, user_telegram_id=None, plan_type="1_month", amount=100,
+                             currency="TJS", payment_status="pending")
+            session.add(second)
+            await session.flush()
+            self.assertFalse(await preview.claim(owner, second))
+            second.payment_status = "approved"
+            await preview.review(owner, second, approved=True)
+            self.assertTrue(owner.payment_preview_available)
+            self.assertTrue(other.payment_preview_available)
+            self.assertIsNone(other.payment_preview_payment_id)
+            self.assertIsNone(owner.telegram_id)
+            self.assertIsNone(other.telegram_id)
+
+    async def test_canonical_payment_owner_cannot_be_overridden_by_telegram_metadata(self):
+        async with self.sessions() as session:
+            telegram_user = await self._user(session)
+            owner = await UserRepository(session).create_provider_account(full_name="Provider learner", language="uz")
+            payment = Payment(user_id=owner.id, user_telegram_id=telegram_user.telegram_id,
+                              plan_type="1_month", amount=100, currency="TJS", payment_status="pending")
+            session.add(payment)
+            await session.flush()
+            preview = PaymentReviewPreviewService(session)
+            self.assertFalse(await preview.claim(telegram_user, payment))
+            payment.payment_status = "approved"
+            telegram_user.payment_preview_available = False
+            await preview.review(telegram_user, payment, approved=True)
+            self.assertFalse(telegram_user.payment_preview_available)
+            self.assertEqual((await session.scalars(select(AIUsageBudget))).all(), [])
 
     async def test_another_users_receipt_cannot_claim_or_replenish_a_preview(self):
         async with self.sessions() as session:

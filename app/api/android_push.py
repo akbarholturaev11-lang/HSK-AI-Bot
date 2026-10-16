@@ -135,12 +135,8 @@ def create_android_push_router(*, session_factory, settings_obj: Any) -> APIRout
                 raise DesktopAuthError("android_request_invalid", status_code=422)
             async with session_factory() as session:
                 current = await context(session, request)
-                payment = await PaymentRepository(session).get_by_id(payment_id)
-                if (
-                    payment is None
-                    or current.user.telegram_id is None
-                    or payment.user_telegram_id != current.user.telegram_id
-                ):
+                payment = await PaymentRepository(session).get_by_id(payment_id, actor=current.user)
+                if payment is None:
                     raise DesktopAuthError("payment_not_found", status_code=404)
                 result = {
                     "ok": True,

@@ -235,7 +235,7 @@ class AccessService:
     async def can_use_free_daily_voice(self, user) -> Tuple[bool, str]:
         return await self._configured_ai_access(user, A.AI_VOICE, "access_daily_voice_limit_reached")
 
-    async def downgrade_expired_active_users(self) -> tuple[int, list[int]]:
+    async def downgrade_expired_active_users(self) -> tuple[int, list[int | User]]:
         result = await self.session.execute(
             select(User).where(
                 User.status == "active",
@@ -244,21 +244,21 @@ class AccessService:
         )
         users = list(result.scalars().all())
         changed = 0
-        expired_paid_telegram_ids = []
+        expired_paid_actors = []
 
         for user in users:
             if not self._is_date_expired(user.end_date):
                 continue
             was_paid = getattr(user, "payment_status", "") == "approved"
             await self._normalize_expired_active_user(user)
-            if was_paid and user.telegram_id:
-                expired_paid_telegram_ids.append(user.telegram_id)
+            if was_paid:
+                expired_paid_actors.append(user.telegram_id if user.telegram_id else user)
             changed += 1
 
         if changed:
             await self.session.commit()
 
-        return changed, expired_paid_telegram_ids
+        return changed, expired_paid_actors
 
     async def can_use_text_ai(
         self,
@@ -302,7 +302,7 @@ class AccessService:
             return await self._can_use_payment_preview_ai(user)
 
         if user.status != "active":
-            has_pending_payment = (await self.payment_repo.has_pending_by_user(user.telegram_id) if user.telegram_id else False)
+            has_pending_payment = await self.payment_repo.has_pending_by_user(user)
             if has_pending_payment:
                 return False, "access_payment_pending_review"
 
@@ -362,7 +362,7 @@ class AccessService:
             return await self._can_use_payment_preview_ai(user)
 
         if user.status != "active":
-            has_pending_payment = (await self.payment_repo.has_pending_by_user(user.telegram_id) if user.telegram_id else False)
+            has_pending_payment = await self.payment_repo.has_pending_by_user(user)
             if has_pending_payment:
                 return False, "access_payment_pending_review"
 

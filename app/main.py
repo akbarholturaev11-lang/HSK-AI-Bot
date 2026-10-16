@@ -15,7 +15,7 @@ from aiogram import Bot
 from aiogram.types import BufferedInputFile
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
-from sqlalchemy import func, or_, select
+from sqlalchemy import and_, func, or_, select
 from sqlalchemy.orm import defer
 from starlette.middleware.gzip import GZipMiddleware
 
@@ -182,6 +182,7 @@ from app.services.subscription_service import (
     normalize_manual_subscription_days,
 )
 from app.services.payment_review_preview_service import PaymentReviewPreviewService
+from app.services.account_identity import owner_clause
 from app.services.subscription_price_service import PAYMENT_METHODS, PLANS, SubscriptionPriceService
 from app.services.subscription_currency_service import format_subscription_price
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
@@ -442,8 +443,8 @@ def _prepare_course_ad_image_file(data: bytes, *, raw_ext: str, telegram_id: int
     return final_name
 
 
-async def _send_subscription_expired_offer(session, telegram_id: int) -> None:
-    user = await UserRepository(session).get_by_telegram_id(telegram_id)
+async def _send_subscription_expired_offer(session, telegram_id) -> None:
+    user = await UserRepository(session).get_by_actor(telegram_id)
     if not user:
         return
     if getattr(user, "subscription_expired_offer_sent_at", None):
@@ -473,7 +474,7 @@ async def _send_subscription_expired_offer(session, telegram_id: int) -> None:
             text=t("subscription_expired_soft_text", lang),
             action="subscription",
             source="subscription_churn",
-            dedupe_key=f"subscription_expired_offer:{telegram_id}",
+            dedupe_key=f"subscription_expired_offer:{user.telegram_id}" if user.telegram_id else f"subscription_expired_offer:user:{user.id}",
             params={"template": "subscription_expired_soft_text"},
         )
         await SubscriptionChurnService(session).mark_expired_offer_sent(user)
@@ -1392,7 +1393,7 @@ async def _admin_access_meta(session, user, payments: list) -> dict:
             await session.execute(
                 select(AIUsageBudget)
                 .where(
-                    AIUsageBudget.user_telegram_id == user.telegram_id,
+                    owner_clause(AIUsageBudget, user),
                     AIUsageBudget.plan_type == REFERRAL_TRIAL_PLAN_TYPE,
                 )
                 .order_by(AIUsageBudget.id.desc())
@@ -1501,7 +1502,7 @@ async def _admin_referral_meta(session, user) -> dict:
 
 
 async def _admin_user_payload(session, user) -> dict:
-    payments = await PaymentRepository(session).list_by_user(user.telegram_id, limit=10)
+    payments = await PaymentRepository(session).list_by_user(user, limit=10)
     access = await _admin_access_meta(session, user, payments)
     referral = await _admin_referral_meta(session, user)
     bonus_total = int(user.bonus_questions or 0)
@@ -1511,7 +1512,7 @@ async def _admin_user_payload(session, user) -> dict:
             await session.execute(
                 select(Payment.id)
                 .where(
-                    Payment.user_telegram_id == user.telegram_id,
+                    owner_clause(Payment, user),
                     Payment.payment_status == "pending",
                 )
                 .limit(1)
@@ -1699,14 +1700,14 @@ async def _review_admin_payment(
     if payment.payment_status != "pending":
         return {"ok": False, "error": "payment_already_reviewed"}, 409
 
+    # Checkout locks User before Payment. Reviews use the same order, and a
+    # canonical owner never falls back to another learner's Telegram metadata.
+    user = await payment_repo.get_owner(payment, lock=True)
     if action == "approve":
+        if not user:
+            return {"ok": False, "error": "user_not_found"}, 404
         if not await payment_repo.approve(payment, admin_comment="approved by admin mini app"):
             return {"ok": False, "error": "payment_already_reviewed"}, 409
-
-        user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
-        if not user:
-            await session.rollback()
-            return {"ok": False, "error": "user_not_found"}, 404
 
         if payment.plan_type == HSK30_UNLOCK_PLAN_TYPE:
             granted = await Hsk30UnlockService(session).grant(
@@ -1753,7 +1754,7 @@ async def _review_admin_payment(
             return {"ok": True, "status": "approved", "product": HSK30_UNLOCK_PLAN_TYPE}, 200
 
         activated = await SubscriptionService(session).activate_plan(
-            telegram_id=payment.user_telegram_id,
+            telegram_id=user,
             plan_type=payment.plan_type,
             discount_source=payment.discount_source,
             payment=payment,
@@ -1813,7 +1814,6 @@ async def _review_admin_payment(
         comment = (reason or "rejected by admin mini app").strip()[:300]
         if not await payment_repo.reject(payment, admin_comment=comment):
             return {"ok": False, "error": "payment_already_reviewed"}, 409
-        user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
         if user and payment.plan_type != HSK30_UNLOCK_PLAN_TYPE:
             await user_repo.set_selected_plan_type(user, None)
             await PaymentReviewPreviewService(session).review(user, payment, approved=False)
@@ -3759,15 +3759,18 @@ async def admin_miniapp_users_search(request: Request):
             ).scalars().all()
         )
 
-        user_ids = [int(user.telegram_id) for user in users if user.telegram_id]
+        user_ids = [user.id for user in users]
         pending_ids = {
             int(value)
             for value in (
                 await session.execute(
-                    select(func.distinct(Payment.user_telegram_id)).where(
-                        Payment.payment_status == "pending",
-                        Payment.user_telegram_id.in_(user_ids),
-                    )
+                    select(func.distinct(User.id))
+                    .join(Payment, or_(
+                        Payment.user_id == User.id,
+                        and_(Payment.user_id.is_(None), User.telegram_id > 0,
+                             Payment.user_telegram_id == User.telegram_id),
+                    ))
+                    .where(Payment.payment_status == "pending", User.id.in_(user_ids))
                 )
             ).scalars().all()
             if value
@@ -3781,7 +3784,7 @@ async def admin_miniapp_users_search(request: Request):
             _admin_user_card_payload(
                 user,
                 now=now,
-                has_pending_payment=user.telegram_id in pending_ids,
+                has_pending_payment=user.id in pending_ids,
             )
             for user in users
         ],

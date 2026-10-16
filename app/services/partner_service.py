@@ -215,6 +215,9 @@ class PartnerService:
             return None, Decimal("0.00"), False
         if str(getattr(payment, "plan_type", "") or "") == HSK30_UNLOCK_PLAN_TYPE:
             return None, Decimal("0.00"), False
+        if not getattr(payment, "user_telegram_id", None):
+            # Partner attribution remains a real Telegram referral contract.
+            return None, Decimal("0.00"), False
         if await self.repo.get_credit_by_payment(payment.id):
             return None, Decimal("0.00"), False
         referral = await self.repo.get_referral_by_invited_user(payment.user_telegram_id)

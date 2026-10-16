@@ -1258,9 +1258,25 @@ def _bot_not_blocked_filter():
 
 def _no_pending_payment_filter():
     return ~select(Payment.id).where(
-        Payment.user_telegram_id == User.telegram_id,
+        _payment_user_join(),
         Payment.payment_status == "pending",
     ).exists()
+
+
+def _payment_user_join():
+    return or_(
+        Payment.user_id == User.id,
+        and_(Payment.user_id.is_(None), User.telegram_id.is_not(None),
+             Payment.user_telegram_id == User.telegram_id),
+    )
+
+
+def _payment_account_key(payment_id, user_id, telegram_id):
+    if user_id is not None:
+        return ("user", int(user_id))
+    if telegram_id is not None:
+        return ("telegram", int(telegram_id))
+    return ("payment", int(payment_id))
 
 
 def admin_miniapp_today_start(now: datetime) -> datetime:
@@ -1724,16 +1740,17 @@ class AdminMiniAppService:
 
     async def _approved_payment_user_count(self, since: datetime | None = None) -> int:
         conditions = [Payment.payment_status == "approved", *self._approved_payment_period_conditions(since)]
-        stmt = select(func.count(func.distinct(Payment.user_telegram_id))).select_from(Payment).where(*conditions)
-        return (await self.session.execute(stmt)).scalar() or 0
+        return len(await self._payment_account_keys(*conditions))
+
+    async def _payment_account_keys(self, *conditions):
+        rows = (await self.session.execute(
+            select(Payment.id, func.coalesce(Payment.user_id, User.id), Payment.user_telegram_id)
+            .outerjoin(User, _payment_user_join()).where(*conditions)
+        )).all()
+        return {_payment_account_key(pid, uid, tid) for pid, uid, tid in rows}
 
     async def _pending_payment_user_count(self) -> int:
-        stmt = (
-            select(func.count(func.distinct(Payment.user_telegram_id)))
-            .select_from(Payment)
-            .where(Payment.payment_status == "pending")
-        )
-        return (await self.session.execute(stmt)).scalar() or 0
+        return len(await self._payment_account_keys(Payment.payment_status == "pending"))
 
     async def _qa_user_count(self) -> int:
         stmt = (
@@ -2264,15 +2281,15 @@ class AdminMiniAppService:
             await self.session.execute(
                 select(
                     Payment.id,
-                    Payment.user_telegram_id,
+                    User.telegram_id,
                     Payment.payment_status,
                     Payment.amount,
                     Payment.currency,
                     Payment.base_amount,
                     Payment.reviewed_at,
                     Payment.submitted_at,
-                ).where(
-                    Payment.user_telegram_id.in_(assigned_ids),
+                ).join(User, _payment_user_join()).where(
+                    User.telegram_id.in_(assigned_ids),
                     Payment.payment_status.in_(("pending", "approved", "rejected")),
                 )
             )
@@ -2535,24 +2552,26 @@ class AdminMiniAppService:
         rows = (
             await self.session.execute(
                 select(
+                    Payment.id,
+                    func.coalesce(Payment.user_id, User.id),
                     Payment.user_telegram_id,
                     Payment.amount,
                     Payment.currency,
                     Payment.base_amount,
                     Payment.reviewed_at,
                     Payment.submitted_at,
-                ).where(Payment.payment_status == "approved")
+                ).outerjoin(User, _payment_user_join()).where(Payment.payment_status == "approved")
             )
         ).all()
         approved = []
-        for user_id, amount, currency, base_amount, reviewed_at, submitted_at in rows:
+        for payment_id, user_id, telegram_id, amount, currency, base_amount, reviewed_at, submitted_at in rows:
             at = _as_utc(reviewed_at or submitted_at)
             if not at:
                 continue
             usd = _amount_to_usd(amount, currency, base_amount=base_amount)
             approved.append(
                 {
-                    "user_id": int(user_id),
+                    "user_id": _payment_account_key(payment_id, user_id, telegram_id),
                     "at": at,
                     "usd": float(usd or 0.0),
                     "priced": usd is not None,
@@ -2564,7 +2583,7 @@ class AdminMiniAppService:
         paying_users = len({item["user_id"] for item in in_period})
         revenue_per_payer = revenue_usd / paying_users if paying_users else 0.0
 
-        first_by_user: dict[int, dict] = {}
+        first_by_user: dict[tuple[str, int], dict] = {}
         for item in sorted(approved, key=lambda value: value["at"]):
             first_by_user.setdefault(item["user_id"], item)
         first_in_period = [
@@ -2616,16 +2635,24 @@ class AdminMiniAppService:
             "funnel": funnel,
         }
 
-    async def _user_created_map(self, telegram_ids: list[int]) -> dict[int, datetime]:
-        ids = list({int(value) for value in telegram_ids if value})
-        if not ids:
+    async def _user_created_map(self, account_keys: list[tuple[str, int]]) -> dict:
+        user_ids = {value for kind, value in account_keys if kind == "user"}
+        telegram_ids = {value for kind, value in account_keys if kind == "telegram" and value > 0}
+        if not user_ids and not telegram_ids:
             return {}
         rows = (
             await self.session.execute(
-                select(User.telegram_id, User.created_at).where(User.telegram_id.in_(ids))
+                select(User.id, User.telegram_id, User.created_at).where(
+                    or_(User.id.in_(user_ids), User.telegram_id.in_(telegram_ids))
+                )
             )
         ).all()
-        return {int(telegram_id): _as_utc(created_at) for telegram_id, created_at in rows}
+        result = {}
+        for user_id, telegram_id, created_at in rows:
+            result[("user", user_id)] = _as_utc(created_at)
+            if telegram_id is not None:
+                result[("telegram", telegram_id)] = _as_utc(created_at)
+        return result
 
     async def _marketing_expense_usd(self, *, since: datetime | None) -> float:
         text = func.lower(func.coalesce(PortfolioTransaction.note, ""))
@@ -3013,17 +3040,7 @@ class AdminMiniAppService:
         today_start: datetime,
         hot_since: datetime,
     ) -> list[dict]:
-        pending_user_ids = {
-            int(value)
-            for value in (
-                await self.session.execute(
-                    select(func.distinct(Payment.user_telegram_id)).where(
-                        Payment.payment_status == "pending"
-                    )
-                )
-            ).scalars().all()
-            if value
-        }
+        pending_user_ids = await self._payment_account_keys(Payment.payment_status == "pending")
         rows = (await self.session.execute(
             select(User, CourseMiniAppProfile)
             .outerjoin(CourseMiniAppProfile, CourseMiniAppProfile.user_id == User.id)
@@ -3033,6 +3050,7 @@ class AdminMiniAppService:
         return [
             {
                 "id": item.telegram_id,
+                "account_id": item.id,
                 "name": item.full_name or "Номсиз",
                 "username": item.username,
                 "language": _language_label(item.language),
@@ -3046,7 +3064,7 @@ class AdminMiniAppService:
                 "last_bot_block_check_at": _dt(item.last_bot_block_check_at),
                 "payment_status": item.payment_status,
                 "payment_label": _payment_label(item.payment_status),
-                "has_pending_payment": item.telegram_id in pending_user_ids,
+                "has_pending_payment": ("user", item.id) in pending_user_ids,
                 "plan": _plan_label(item.selected_plan_type),
                 "method": _method_label(item.payment_method),
                 "end_date": _dt(item.end_date),
@@ -3059,7 +3077,7 @@ class AdminMiniAppService:
                 "active_today": is_admin_active_today(item, today_start),
                 "hot_lead": (
                     is_admin_hot_lead(item, hot_since)
-                    and item.telegram_id not in pending_user_ids
+                    and ("user", item.id) not in pending_user_ids
                 ),
                 "questions": f"{item.questions_used}/{item.question_limit}",
                 "bonus_left": max((item.bonus_questions or 0) - (item.bonus_questions_used or 0), 0),
@@ -3073,7 +3091,7 @@ class AdminMiniAppService:
         pending_rows = (
             await self.session.execute(
                 select(Payment, User)
-                .outerjoin(User, User.telegram_id == Payment.user_telegram_id)
+                .outerjoin(User, _payment_user_join())
                 .where(Payment.payment_status == "pending")
                 .order_by(Payment.submitted_at.desc())
             )
@@ -3081,7 +3099,7 @@ class AdminMiniAppService:
         recent_rows = (
             await self.session.execute(
                 select(Payment, User)
-                .outerjoin(User, User.telegram_id == Payment.user_telegram_id)
+                .outerjoin(User, _payment_user_join())
                 .where(Payment.payment_status.in_(("approved", "rejected")))
                 .order_by(func.coalesce(Payment.reviewed_at, Payment.submitted_at).desc())
                 .limit(60)
@@ -3093,7 +3111,8 @@ class AdminMiniAppService:
             result.append(
                 {
                     "id": payment.id,
-                    "telegram_id": payment.user_telegram_id,
+                    "telegram_id": user.telegram_id if user is not None else payment.user_telegram_id,
+                    "account_id": payment.user_id if payment.user_id is not None else getattr(user, "id", None),
                     "name": getattr(user, "full_name", None) or "Номсиз",
                     "username": getattr(user, "username", None),
                     "status": payment.payment_status,

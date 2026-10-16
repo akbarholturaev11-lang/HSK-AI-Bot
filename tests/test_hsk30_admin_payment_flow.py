@@ -58,7 +58,7 @@ class Hsk30AdminPaymentFlowTests(unittest.IsolatedAsyncioTestCase):
                 return True
 
             payment_repo.approve = AsyncMock(side_effect=approve)
-            user_repo_cls.return_value.get_by_telegram_id = AsyncMock(return_value=user)
+            payment_repo.get_owner = AsyncMock(return_value=user)
             unlock_cls.return_value.grant = AsyncMock(return_value=True)
             funnel_cls.return_value.record = AsyncMock()
             analytics_cls.return_value.record_server_event = AsyncMock(
@@ -114,7 +114,7 @@ class Hsk30AdminPaymentFlowTests(unittest.IsolatedAsyncioTestCase):
             payment_repo.get_by_id = AsyncMock(return_value=payment)
             payment_repo.reject = AsyncMock(return_value=True)
             user_repo = user_repo_cls.return_value
-            user_repo.get_by_telegram_id = AsyncMock(return_value=user)
+            payment_repo.get_owner = AsyncMock(return_value=user)
             user_repo.set_selected_plan_type = AsyncMock()
             notify_cls.return_value.notify_hsk30_unlock_rejected = AsyncMock()
             notify_cls.return_value.notify_payment_rejected = AsyncMock()

@@ -1,16 +1,27 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
-from sqlalchemy import and_, func, or_, select
+from sqlalchemy import and_, false, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.discount_campaign import DiscountCampaign
 from app.db.models.payment import Payment
+from app.repositories.payment_repo import PaymentRepository
+from app.services.account_identity import account_user_id, actual_telegram_id, owner_clause
 
 
 class DiscountCampaignRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
+
+    async def _payment_owner_filter(self, actor):
+        owner = await PaymentRepository(self.session).resolve_owner(actor)
+        if owner is not None:
+            return owner_clause(Payment, owner)
+        telegram_id = actual_telegram_id(actor)
+        if account_user_id(actor) is None and telegram_id is not None:
+            return and_(Payment.user_id.is_(None), Payment.user_telegram_id == telegram_id)
+        return false()
 
     async def create(
         self,
@@ -129,6 +140,7 @@ class DiscountCampaignRepository:
         *,
         now: Optional[datetime] = None,
         exclude_user_telegram_id: Optional[int] = None,
+        exclude_user=None,
     ) -> int:
         now = now or datetime.now(timezone.utc)
         fresh_draft_after = now - timedelta(minutes=30)
@@ -142,8 +154,11 @@ class DiscountCampaignRepository:
                 ),
             ),
         )
-        if exclude_user_telegram_id:
-            query = query.where(Payment.user_telegram_id != exclude_user_telegram_id)
+        actor = exclude_user if exclude_user is not None else exclude_user_telegram_id
+        if actor is not None:
+            # NULL ownership belongs to other legacy/native rows, not to the
+            # excluded learner. SQL NOT(NULL) would incorrectly drop those.
+            query = query.where(~func.coalesce(await self._payment_owner_filter(actor), False))
         result = await self.session.execute(query)
         return result.scalar() or 0
 
@@ -155,7 +170,7 @@ class DiscountCampaignRepository:
         result = await self.session.execute(
             select(Payment)
             .where(Payment.discount_campaign_id == campaign_id)
-            .where(Payment.user_telegram_id == user_telegram_id)
+            .where(await self._payment_owner_filter(user_telegram_id))
             .where(Payment.payment_status.in_(("pending", "approved")))
             .order_by(Payment.submitted_at.desc())
             .limit(1)

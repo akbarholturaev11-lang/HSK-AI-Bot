@@ -33,6 +33,7 @@ def _install_native_fixture(
     pending_payment=None,
     local_ai_ready=False,
     provider_only=False,
+    checkout_telegram_required=False,
 ):
     lesson_rows = []
     for lesson_order in sorted(lessons):
@@ -53,6 +54,7 @@ def _install_native_fixture(
         )
     fixture = {
         "providerOnly": provider_only,
+        "checkoutTelegramRequired": checkout_telegram_required,
         "lessons": {str(key): value for key, value in lessons.items()},
         "delays": {str(key): value for key, value in (delays or {}).items()},
         "update": update
@@ -115,7 +117,9 @@ def _install_native_fixture(
                     bootstrap: {{
                       ok: true,
                       authenticated: true,
-                      user: {{ name: "Fixture User", language: "uz", level: "hsk1", is_paid: {str(is_paid).lower()} }}
+                      user: {{ name: "Fixture User", user_id: 1,
+                        telegram_id: fixture.providerOnly ? null : 1001,
+                        language: "uz", level: "hsk1", is_paid: {str(is_paid).lower()} }}
                     }}
                   }};
                 }}
@@ -132,13 +136,13 @@ def _install_native_fixture(
                       is_paid: paid,
                       expires_at: paid ? "2026-12-31T00:00:00Z" : null
                     }},
-                    checkout_allowed: !fixture.providerOnly && !paid && !pending,
-                    read_only_reason: fixture.providerOnly ? "payment_telegram_required" : paid
+                    checkout_allowed: !fixture.checkoutTelegramRequired && !paid && !pending,
+                    read_only_reason: fixture.checkoutTelegramRequired ? "payment_telegram_required" : paid
                       ? "desktop_subscription_active"
                       : pending ? "desktop_subscription_pending" : null,
-                    attempt_id: !fixture.providerOnly && !paid && !pending ? "desktop-e2e-attempt-1234" : null,
+                    attempt_id: !fixture.checkoutTelegramRequired && !paid && !pending ? "desktop-e2e-attempt-1234" : null,
                     pending_payment: pending,
-                    prices: !fixture.providerOnly && !paid && !pending ? {{
+                    prices: !fixture.checkoutTelegramRequired && !paid && !pending ? {{
                       visa: {{
                         "10_days": {{ final_amount: 45, currency: "TJS", discount_applied: false }},
                         "1_month": {{ final_amount: 95, currency: "TJS", discount_applied: false }},
@@ -597,9 +601,11 @@ def test_auth_start_blocks_competing_provider_until_native_reply(desktop_ui_url,
     assert errors == []
 
 
+@pytest.mark.parametrize("provider_only", [False, True], ids=["telegram", "provider-only"])
 def test_desktop_subscription_checkout_becomes_pending(
     desktop_ui_url,
     browser_page,
+    provider_only,
 ):
     page, errors = browser_page
     _install_native_fixture(
@@ -620,6 +626,7 @@ def test_desktop_subscription_checkout_becomes_pending(
             )
         },
         is_paid=False,
+        provider_only=provider_only,
     )
     page.goto(desktop_ui_url, wait_until="networkidle")
     page.locator("#workspace").wait_for(state="visible")
@@ -643,9 +650,9 @@ def test_desktop_subscription_checkout_becomes_pending(
     assert errors == []
 
 
-def test_provider_only_checkout_explains_existing_payment_boundary(desktop_ui_url, browser_page):
+def test_server_restricted_checkout_explains_payment_boundary(desktop_ui_url, browser_page):
     page, errors = browser_page
-    _install_native_fixture(page, {1: _lesson_payload(1, [])}, is_paid=False, provider_only=True)
+    _install_native_fixture(page, {1: _lesson_payload(1, [])}, is_paid=False, provider_only=True, checkout_telegram_required=True)
     page.goto(desktop_ui_url, wait_until="networkidle")
     page.locator("#workspace").wait_for(state="visible")
     page.locator("#show-subscription").click()

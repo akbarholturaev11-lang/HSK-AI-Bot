@@ -15,6 +15,7 @@ from app.config import settings
 from app.db.models.android_push import AndroidPushToken
 from app.db.models.desktop import DesktopDevice
 from app.services.android_push_service import AndroidPushService
+from app.services.account_identity import owner_clause
 
 
 logger = logging.getLogger(__name__)
@@ -42,7 +43,7 @@ class AndroidPaymentPushService(AndroidPushService):
         )
         return result.accepted
 
-    async def notify(self, *, telegram_id: int, payment_id: int, status: str) -> None:
+    async def notify(self, *, telegram_id: int | None, payment_id: int, status: str, user_id: int | None = None) -> None:
         if status not in {"approved", "rejected"} or not self.configured:
             return
         rows = (
@@ -50,7 +51,7 @@ class AndroidPaymentPushService(AndroidPushService):
                 select(AndroidPushToken.token, AndroidPushToken.device_id)
                 .join(DesktopDevice, AndroidPushToken.device_id == DesktopDevice.id)
                 .where(
-                    DesktopDevice.telegram_id == telegram_id,
+                    owner_clause(DesktopDevice, telegram_id, user_id=user_id, telegram_column="telegram_id"),
                     DesktopDevice.platform == "android",
                     DesktopDevice.revoked_at.is_(None),
                 )

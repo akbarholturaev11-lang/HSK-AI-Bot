@@ -1128,8 +1128,6 @@ def create_android_features_router(
             )
             async with session_factory() as session:
                 user = await _user(session, request)
-                if actual_telegram_id(user) is None:
-                    raise AndroidFeatureError("payment_telegram_required", status_code=409)
                 await UserRepository(session).set_subscription_currency(
                     user,
                     payload.currency,
@@ -1152,7 +1150,7 @@ def create_android_features_router(
                         status_code=409,
                     )
                 price_overview = await checkout.checkout.overview(
-                    user.telegram_id,
+                    user,
                     bot=bot,
                     mode="subscription",
                 )

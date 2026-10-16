@@ -107,7 +107,7 @@ class PaymentService:
         force_feedback_discount: bool = False,
         feedback_id: Optional[int] = None,
     ):
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = await self.payment_repo.resolve_owner(telegram_id, lock=True)
         if not user:
             return None, None, "access_start_first"
 
@@ -122,10 +122,11 @@ class PaymentService:
         if not checkout_info:
             return None, None, "payment_invalid_plan"
 
-        draft = await self.payment_repo.get_latest_draft_by_user(telegram_id)
+        draft = await self.payment_repo.get_latest_draft_by_user(user)
         if draft:
-            await self.payment_repo.update_checkout(
+            updated = await self.payment_repo.update_checkout(
                 draft,
+                actor=user,
                 plan_type=plan_type,
                 amount=checkout_info["final_amount"],
                 currency=checkout_info["currency"],
@@ -138,11 +139,13 @@ class PaymentService:
                 discount_title=checkout_info["discount_title"],
                 discount_details=checkout_info["discount_details"],
             )
+            if not updated:
+                return None, None, "payment_already_reviewed"
             await self.session.commit()
             return draft, checkout_info, ""
 
         payment = await self.payment_repo.create(
-            user_telegram_id=telegram_id,
+            user_telegram_id=user,
             plan_type=plan_type,
             amount=checkout_info["final_amount"],
             currency=checkout_info["currency"],
@@ -166,7 +169,7 @@ class PaymentService:
         force_admin_discount: bool = False,
         admin_discount_campaign_id: Optional[int] = None,
     ):
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = await self.payment_repo.resolve_owner(telegram_id, lock=True)
         if not user:
             return None, "access_start_first"
 
@@ -180,7 +183,7 @@ class PaymentService:
             return None, "payment_invalid_plan"
 
         payment = await self.payment_repo.create(
-            user_telegram_id=telegram_id,
+            user_telegram_id=user,
             plan_type=plan_type,
             amount=checkout_info["final_amount"],
             currency=checkout_info["currency"],
@@ -211,10 +214,14 @@ class PaymentService:
         plan_type: str,
         screenshot_file_id: str,
     ):
-        draft_payment = await self.payment_repo.get_latest_draft_by_user(telegram_id)
+        # Every writer, including bot resubmission and admin review, must lock
+        # the canonical account before touching its payment row.
+        user = await self.payment_repo.resolve_owner(telegram_id, lock=True)
+        if user is None:
+            return None, "access_start_first"
+        draft_payment = await self.payment_repo.get_latest_draft_by_user(user)
 
         if draft_payment:
-            user = await self.user_repo.get_by_telegram_id(telegram_id)
             checkout_info = await self.get_checkout_info(
                 user=user,
                 plan_type=plan_type,
@@ -224,8 +231,9 @@ class PaymentService:
             )
             if not checkout_info:
                 return None, "payment_invalid_plan"
-            await self.payment_repo.update_checkout(
+            updated = await self.payment_repo.update_checkout(
                 draft_payment,
+                actor=user,
                 plan_type=plan_type,
                 amount=checkout_info["final_amount"],
                 currency=checkout_info["currency"],
@@ -239,20 +247,29 @@ class PaymentService:
                 discount_title=checkout_info["discount_title"],
                 discount_details=checkout_info["discount_details"],
             )
+            if not updated:
+                return None, "payment_already_reviewed"
             await PaymentReviewPreviewService(self.session).claim(user, draft_payment)
             await self.session.commit()
             return draft_payment, "updated"
 
-        pending_payment = await self.payment_repo.get_latest_pending_by_user(telegram_id)
+        pending_payment = await self.payment_repo.get_latest_pending_by_user(user)
         if pending_payment:
-            await self.payment_repo.update_screenshot(pending_payment, screenshot_file_id)
-            user = await self.user_repo.get_by_telegram_id(telegram_id)
+            updated = await self.payment_repo.update_screenshot(pending_payment, screenshot_file_id, actor=user)
+            if not updated:
+                return None, "payment_already_reviewed"
             await PaymentReviewPreviewService(self.session).claim(user, pending_payment)
             await self.session.commit()
             return pending_payment, "updated"
 
+        # The bot selected this plan before receiving the photo. A review
+        # which won the account lock clears that selection; the delayed photo
+        # must not silently become a new payment after the old one was reviewed.
+        if user.selected_plan_type != plan_type:
+            return None, "payment_already_reviewed"
+
         payment, error_key = await self.create_pending_payment(
-            telegram_id=telegram_id,
+            telegram_id=user,
             plan_type=plan_type,
             screenshot_file_id=screenshot_file_id,
         )

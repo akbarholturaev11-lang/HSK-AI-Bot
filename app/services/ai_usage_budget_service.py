@@ -106,6 +106,10 @@ class AIUsageBudgetService:
         *,
         preserve_existing: bool = False,
     ) -> Optional[AIUsageBudget]:
+        canonical_id = getattr(payment, "user_id", None)
+        telegram_id = actual_telegram_id(getattr(payment, "user_telegram_id", None))
+        if canonical_id is None and telegram_id is None:
+            return None
         rates = await self._live_or_manual_usd_rates()
         total_budget = self._ai_budget_usd(payment.amount, payment.currency, rates)
         budget_amount = payment.amount
@@ -121,12 +125,13 @@ class AIUsageBudgetService:
         # Keep its budget alive until its own end date; the new payment gets a
         # separate budget row for the next period.
         if not preserve_existing:
-            await self.expire_active_budgets(payment.user_telegram_id)
+            await self.expire_active_budgets(telegram_id, user_id=canonical_id)
 
         now = datetime.now(timezone.utc)
         segment_budget = total_budget / SEGMENT_COUNT
         budget = AIUsageBudget(
-            user_telegram_id=payment.user_telegram_id,
+            user_id=canonical_id,
+            user_telegram_id=telegram_id,
             payment_id=payment.id,
             plan_type=payment.plan_type,
             amount=budget_amount,

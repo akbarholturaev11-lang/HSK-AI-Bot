@@ -369,7 +369,7 @@ class AdminHsk30AnalyticsService:
         rejection_reasons: Counter[str] = Counter()
 
         for payment in payment_rows:
-            telegram_id = account_key(payment.user_telegram_id)
+            telegram_id = account_key(payment.user_telegram_id, payment.user_id)
             if telegram_id is None:
                 continue
             status = str(payment.payment_status or "unknown")

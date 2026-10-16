@@ -52,13 +52,12 @@ async def admin_payment_approve_handler(callback: CallbackQuery, session):
         await callback.answer("Bu to'lov allaqachon ko'rib chiqilgan", show_alert=True)
         return
 
+    user = await payment_repo.get_owner(payment, lock=True)
+    if not user:
+        await callback.answer("Foydalanuvchi topilmadi", show_alert=True)
+        return
     if not await payment_repo.approve(payment, admin_comment="approved by admin"):
         await callback.answer("Bu to'lov allaqachon ko'rib chiqilgan", show_alert=True)
-        return
-    user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
-    if not user:
-        await session.rollback()
-        await callback.answer("Foydalanuvchi topilmadi", show_alert=True)
         return
 
     if payment.plan_type == HSK30_UNLOCK_PLAN_TYPE:
@@ -93,7 +92,7 @@ async def admin_payment_approve_handler(callback: CallbackQuery, session):
         await callback.message.edit_reply_markup(reply_markup=None)
         chat_id = payment.user_telegram_id
         for msg_id in [payment.checkout_msg_id, payment.screenshot_msg_id, payment.waiting_msg_id]:
-            if msg_id:
+            if msg_id and chat_id:
                 try:
                     await callback.bot.delete_message(chat_id=chat_id, message_id=msg_id)
                 except Exception:
@@ -106,7 +105,7 @@ async def admin_payment_approve_handler(callback: CallbackQuery, session):
         return
 
     activated = await subscription_service.activate_plan(
-        telegram_id=payment.user_telegram_id,
+        telegram_id=user,
         plan_type=payment.plan_type,
         discount_source=payment.discount_source,
         payment=payment,
@@ -142,7 +141,7 @@ async def admin_payment_approve_handler(callback: CallbackQuery, session):
 
     chat_id = payment.user_telegram_id
     for msg_id in [payment.checkout_msg_id, payment.screenshot_msg_id, payment.waiting_msg_id]:
-        if msg_id:
+        if msg_id and chat_id:
             try:
                 await callback.bot.delete_message(chat_id=chat_id, message_id=msg_id)
             except Exception:
@@ -183,10 +182,10 @@ async def admin_payment_reject_handler(callback: CallbackQuery, session):
         await callback.answer("Bu to'lov allaqachon ko'rib chiqilgan", show_alert=True)
         return
 
+    user = await payment_repo.get_owner(payment, lock=True)
     if not await payment_repo.reject(payment, admin_comment="rejected by admin"):
         await callback.answer("Bu to'lov allaqachon ko'rib chiqilgan", show_alert=True)
         return
-    user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
     if user and payment.plan_type != HSK30_UNLOCK_PLAN_TYPE:
         await user_repo.set_selected_plan_type(user, None)
         await PaymentReviewPreviewService(session).review(user, payment, approved=False)
@@ -259,12 +258,12 @@ async def admin_payment_reject_with_reason_handler(callback: CallbackQuery, sess
         return
 
     reason_label = REJECT_REASON_LABELS.get(reason_code, "Boshqa sabab")
+    user = await payment_repo.get_owner(payment, lock=True)
     if not await payment_repo.reject(payment, admin_comment=reason_label):
         await callback.answer("Bu to'lov allaqachon ko'rib chiqilgan", show_alert=True)
         return
 
-    user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
-    if user:
+    if user and payment.plan_type != HSK30_UNLOCK_PLAN_TYPE:
         await user_repo.set_selected_plan_type(user, None)
         await PaymentReviewPreviewService(session).review(user, payment, approved=False)
     await session.commit()

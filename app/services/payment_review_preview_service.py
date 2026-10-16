@@ -7,7 +7,8 @@ additional access. A pending receipt is NOT revenue or an approved payment.
 from sqlalchemy import select
 
 from app.db.models.user import User
-from app.services.account_identity import actual_telegram_id
+from app.repositories.payment_repo import PaymentRepository
+from app.services.account_identity import account_user_id
 from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.subscription_service import PLAN_DURATIONS
 
@@ -17,15 +18,17 @@ class PaymentReviewPreviewService:
         self.session = session
 
     @staticmethod
-    def _eligible(user, payment) -> bool:
-        telegram_id = actual_telegram_id(user)
+    def _owns(user, payment) -> bool:
+        if not user or not payment or account_user_id(user) is None:
+            return False
+        return PaymentRepository.is_owned_by(payment, user)
+
+    @classmethod
+    def _eligible(cls, user, payment) -> bool:
         return bool(
-            user
-            and payment
-            and telegram_id is not None
+            cls._owns(user, payment)
             and payment.plan_type in PLAN_DURATIONS
             and payment.payment_status == "pending"
-            and actual_telegram_id(payment.user_telegram_id) == telegram_id
             and user.status != "blocked"
         )
 
@@ -36,11 +39,11 @@ class PaymentReviewPreviewService:
         # Force a fresh row under lock, even when an earlier query loaded user
         # into this transaction's identity map before the concurrent claimant.
         result = await self.session.execute(
-            select(User).where(User.telegram_id == int(user.telegram_id))
+            select(User).where(User.id == int(user.id))
             .with_for_update().execution_options(populate_existing=True)
         )
         locked = result.scalar_one_or_none()
-        if not locked or not getattr(locked, "payment_preview_available", True):
+        if not self._eligible(locked, payment) or not getattr(locked, "payment_preview_available", True):
             return False
         locked.payment_preview_available = False
         locked.payment_preview_payment_id = int(payment.id)
@@ -52,11 +55,12 @@ class PaymentReviewPreviewService:
         """Called only after a payment status transition succeeds (same transaction)."""
         if not user or not payment or getattr(payment, "plan_type", None) not in PLAN_DURATIONS:
             return
-        telegram_id = actual_telegram_id(user)
-        if telegram_id is None or actual_telegram_id(payment.user_telegram_id) != telegram_id:
+        if not self._owns(user, payment):
+            return
+        if payment.payment_status != ("approved" if approved else "rejected"):
             return
         result = await self.session.execute(
-            select(User).where(User.telegram_id == int(user.telegram_id))
+            select(User).where(User.id == int(user.id))
             .with_for_update().execution_options(populate_existing=True)
         )
         locked = result.scalar_one_or_none()
