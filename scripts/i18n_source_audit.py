@@ -240,17 +240,25 @@ def scan_source(path: Path, root: Path, group: str, all_hits: bool = False) -> d
                         "line": source.count("\n", 0, hit.start()) + 1,
                         "sample": value[:140],
                     })
-    report["candidate_literals"] = report.get("candidate_literals", 0) + len(
-        [hit for hit in additions if hit["kind"] != "placeholder_mismatch"]
+    legacy_count = report.get("candidate_literals", 0)
+    report["candidate_literals"] = legacy_count + sum(
+        hit["kind"] != "placeholder_mismatch" for hit in additions
     )
-    report["candidate_kinds"] = dict(sorted(Counter(
+    kinds = Counter(
         hit.get("kind", "unknown") for hit in additions
         if hit.get("kind") != "placeholder_mismatch"
-    ).items()))
+    )
+    # Explicitly account for inherited scanner candidates. Review counts
+    # and per-kind totals must not contradict each other.
+    if legacy_count:
+        kinds["legacy_scan_candidate"] += legacy_count
+    report["candidate_kinds"] = dict(sorted(kinds.items()))
     if all_hits:
         report.setdefault("samples", []).extend(additions)
     else:
-        report["samples"] = (report.get("samples", []) + additions)[:12]
+        # Avoid hiding all new detectors when the inherited scanner has
+        # already filled its default twelve review samples.
+        report["samples"] = (report.get("samples", [])[:6] + additions[:6])[:12]
     return report
 
 

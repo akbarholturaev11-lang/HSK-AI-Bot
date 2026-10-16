@@ -44,6 +44,21 @@ async def process(message, bot):
             self.assertTrue(any(s["sample"] == "Boshlash" for s in found))
             self.assertTrue(any(s["sample"] == "Начать" for s in found))
 
+    def test_new_detector_samples_are_visible_when_legacy_hits_exceed_limit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            page = root / "app/static/page.html"
+            page.parent.mkdir(parents=True)
+            markup = "".join("<span>Legacy copy %s</span>" % i for i in range(17))
+            page.write_text(markup + '<input placeholder="Distinct new candidate">',
+                            encoding="utf-8")
+            report = scan_source(page, root, "miniapp_ui")
+            self.assertEqual(len(report["samples"]), 7)
+            self.assertTrue(any(x.get("sample") == "Distinct new candidate"
+                                for x in report["samples"]))
+            self.assertEqual(sum(report["candidate_kinds"].values()),
+                             report["candidate_literals"])
+
     def test_detects_placeholder_drift_without_changing_lesson_data(self):
         lesson = {
             "question": {"uz": "{count} ta savol", "ru": "{n} вопросов",
