@@ -261,7 +261,7 @@ class OAuthAssertTests(_Base):
         )
         return response.json()
 
-    async def test_unknown_identity_is_told_to_use_telegram_first(self):
+    async def test_unknown_verified_identity_creates_account_without_returning_tokens(self):
         started = await self._start()
         with patch(
             "app.services.google_auth.verify_android_id_token",
@@ -276,10 +276,14 @@ class OAuthAssertTests(_Base):
                     "id_token": "t" * 64,
                 },
             )
-        self.assertEqual(response.status_code, 409)
-        self.assertEqual(
-            response.json()["error"], "oauth_telegram_account_required"
-        )
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("access_token", response.json())
+        self.assertNotIn("refresh_token", response.json())
+        async with self.sessions() as session:
+            identity = (await session.execute(select(UserIdentity))).scalars().one()
+            user = await session.get(User, identity.user_id)
+            self.assertIsNone(user.telegram_id)
+            self.assertNotIn(user.id, {1, 2})
 
     async def test_linked_identity_approves_the_row_without_returning_tokens(self):
         async with self.sessions() as session:

@@ -10,9 +10,11 @@ from typing import Any
 from uuid import uuid4
 
 from sqlalchemy import and_, delete, func, or_, select, text
+from sqlalchemy.exc import IntegrityError
 
 from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
 from app.db.models.user import User
+from app.db.models.user_identity import UserIdentity
 from app.repositories.user_repo import UserRepository
 from app.services.course_miniapp_analytics_service import (
     CourseMiniAppAnalyticsService,
@@ -343,6 +345,8 @@ class DesktopAuthService:
         flow: str = TELEGRAM_FLOW,
         intent: str = SIGNIN_INTENT,
         bind_user_id: int | None = None,
+        language: str | None = None,
+        bind_session_id: str | None = None,
     ) -> dict[str, Any]:
         self._signing_secret()
         if platform not in NATIVE_PLATFORMS | LINK_ONLY_PLATFORMS:
@@ -427,6 +431,8 @@ class DesktopAuthService:
             flow=flow,
             intent=intent,
             bind_user_id=int(bind_user_id) if bind_user_id else None,
+            language=language if language in {"uz", "ru", "tj"} else None,
+            bind_session_id=bind_session_id,
             status="pending",
             expires_at=now + timedelta(seconds=self._link_ttl()),
         )
@@ -662,7 +668,23 @@ class DesktopAuthService:
             telegram_id
         )
         if not user:
-            raise DesktopAuthError("desktop_user_not_found", status_code=404)
+            # A private-chat confirmation proves the real Telegram identity.
+            # Create only after that consent, with the same starter policy.
+            if int(telegram_id) <= 0:
+                raise DesktopAuthError("desktop_link_invalid", status_code=403)
+            try:
+                async with self.session.begin_nested():
+                    user = await UserRepository(self.session).create(
+                        telegram_id=int(telegram_id),
+                        language=link_request.language or "tj",
+                        learning_mode="course",
+                    )
+            except IntegrityError:
+                user = await UserRepository(self.session).get_by_telegram_id_for_update(telegram_id)
+                if user is None:
+                    raise DesktopAuthError("desktop_link_invalid", status_code=409)
+        if user.status == "blocked":
+            raise DesktopAuthError("user_blocked", status_code=403)
         link_request.status = "approved"
         link_request.approved_user_id = user.id
         link_request.approved_telegram_id = user.telegram_id
@@ -824,9 +846,24 @@ class DesktopAuthService:
         if (
             link_request.status != "approved"
             or not link_request.approved_user_id
-            or not link_request.approved_telegram_id
+            or (link_request.flow == TELEGRAM_FLOW and not link_request.approved_telegram_id)
         ):
             raise DesktopAuthError("desktop_link_invalid", status_code=409)
+
+        approved_user = await UserRepository(self.session).get_by_user_id(
+            link_request.approved_user_id, lock=True)
+        if not approved_user or approved_user.status == "blocked":
+            raise DesktopAuthError("user_blocked", status_code=403)
+        if approved_user.telegram_id != link_request.approved_telegram_id:
+            raise DesktopAuthError("desktop_link_invalid", status_code=409)
+        if link_request.flow in {"google", "apple"}:
+            identity = (await self.session.execute(select(UserIdentity.id).where(
+                UserIdentity.id == link_request.approved_identity_id,
+                UserIdentity.user_id == approved_user.id,
+                UserIdentity.provider == link_request.flow,
+            ))).scalar_one_or_none()
+            if identity is None:
+                raise DesktopAuthError("oauth_identity_not_found", status_code=409)
 
         device_result = await self.session.execute(
             select(DesktopDevice)
@@ -843,14 +880,14 @@ class DesktopAuthService:
                     "desktop_device_bound_to_other_user", status_code=409
                 )
             device.user_id = int(link_request.approved_user_id)
-            device.telegram_id = int(link_request.approved_telegram_id)
+            device.telegram_id = link_request.approved_telegram_id
             device.revoked_at = None
             device.first_open_at = None
         elif not device:
             device = DesktopDevice(
                 id=str(uuid4()),
                 user_id=int(link_request.approved_user_id),
-                telegram_id=int(link_request.approved_telegram_id),
+                telegram_id=link_request.approved_telegram_id,
                 installation_key_hash=link_request.installation_key_hash,
                 platform=link_request.platform,
                 app_version=link_request.app_version,
@@ -907,7 +944,7 @@ class DesktopAuthService:
                 device.id,
             )
             await self.session.rollback()
-        if linked_platform == "android":
+        if linked_platform == "android" and linked_telegram_id:
             try:
                 from app.services.referral_service import ReferralService
 
@@ -971,6 +1008,9 @@ class DesktopAuthService:
         ):
             raise DesktopAuthError("desktop_session_revoked", status_code=401)
 
+        user = await UserRepository(self.session).get_by_user_id(device.user_id)
+        if not user or user.status == "blocked":
+            raise DesktopAuthError("user_blocked", status_code=403)
         new_refresh = self._refresh_token()
         desktop_session.previous_refresh_token_hash = (
             desktop_session.refresh_token_hash

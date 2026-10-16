@@ -1649,6 +1649,7 @@ def _admin_user_card_payload(
     access_end = access_expires_at(user, access_state, now=now)
     return {
         "id": user.telegram_id,
+        "account_id": user.id,
         "name": user.full_name or "Nomsiz",
         "username": user.username,
         "language": user.language or "—",
@@ -3756,7 +3757,7 @@ async def admin_miniapp_users_search(request: Request):
             ).scalars().all()
         )
 
-        user_ids = [int(user.telegram_id) for user in users]
+        user_ids = [int(user.telegram_id) for user in users if user.telegram_id]
         pending_ids = {
             int(value)
             for value in (

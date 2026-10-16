@@ -13,6 +13,7 @@ from app.repositories.user_repo import UserRepository
 from app.repositories.message_repo import MessageRepository
 from app.repositories.payment_repo import PaymentRepository
 from app.services.admin_access import ensure_admin_active, is_admin_user
+from app.services.account_identity import account_user_id
 from app.services.ai_provider import gemini_active
 from app.services.ai_usage_budget_service import AIUsageBudgetService, REFERRAL_TRIAL_PLAN_TYPE
 from app.services.user_access_state_service import UserAccessStateService
@@ -73,7 +74,7 @@ class AccessService:
         return bool(user) and self._is_paid_user(user)
 
     async def _has_active_release_feedback_trial(self, user) -> bool:
-        if not user or user.status != "active" or self._is_paid_user(user):
+        if not user or not user.telegram_id or user.status != "active" or self._is_paid_user(user):
             return False
         if self._is_date_expired(user.end_date):
             return False
@@ -140,7 +141,7 @@ class AccessService:
 
     async def _get_current_referral_trial_budget(self, budget_service: AIUsageBudgetService, user):
         budget = await budget_service.get_latest_budget(
-            user.telegram_id,
+            user,
             plan_type=REFERRAL_TRIAL_PLAN_TYPE,
         )
         if budget and self._is_same_active_window(user, budget):
@@ -148,7 +149,9 @@ class AccessService:
         return None
 
     async def downgrade_non_paid_active_if_budget_depleted(self, telegram_id: int) -> bool:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user or user.status != "active" or self._is_paid_user(user):
             return False
         if await self._has_active_release_feedback_trial(user):
@@ -170,7 +173,7 @@ class AccessService:
 
     async def _can_use_non_paid_active_budget(self, user) -> Tuple[bool, str, bool, bool]:
         budget_service = AIUsageBudgetService(self.session)
-        budget = await budget_service.get_active_budget(user.telegram_id)
+        budget = await budget_service.get_active_budget(user)
         if not budget:
             budget = await self._get_current_referral_trial_budget(budget_service, user)
             if not budget:
@@ -182,7 +185,7 @@ class AccessService:
             await self._move_to_free_user(user)
             return False, "", True, True
 
-        budget_access = await budget_service.can_use_ai(user.telegram_id)
+        budget_access = await budget_service.can_use_ai(user)
         if not budget_access.allowed:
             if budget_access.budget_depleted:
                 await self._move_to_free_user(user)
@@ -204,7 +207,7 @@ class AccessService:
 
     async def _can_use_payment_preview_ai(self, user) -> Tuple[bool, str]:
         result = await AIUsageBudgetService(self.session).can_use_payment_preview_ai(
-            int(user.telegram_id), int(user.payment_preview_payment_id)
+            user, int(user.payment_preview_payment_id)
         )
         return result.allowed, result.message_key
 
@@ -248,7 +251,7 @@ class AccessService:
                 continue
             was_paid = getattr(user, "payment_status", "") == "approved"
             await self._normalize_expired_active_user(user)
-            if was_paid:
+            if was_paid and user.telegram_id:
                 expired_paid_telegram_ids.append(user.telegram_id)
             changed += 1
 
@@ -263,11 +266,13 @@ class AccessService:
         *,
         enforce_daily_limit: bool = True,
     ) -> Tuple[bool, str]:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return False, "access_start_first"
 
-        if is_admin_user(telegram_id):
+        if user.telegram_id and is_admin_user(user.telegram_id):
             await ensure_admin_active(self.session, user)
             return True, ""
 
@@ -297,7 +302,7 @@ class AccessService:
             return await self._can_use_payment_preview_ai(user)
 
         if user.status != "active":
-            has_pending_payment = await self.payment_repo.has_pending_by_user(telegram_id)
+            has_pending_payment = (await self.payment_repo.has_pending_by_user(user.telegram_id) if user.telegram_id else False)
             if has_pending_payment:
                 return False, "access_payment_pending_review"
 
@@ -327,11 +332,13 @@ class AccessService:
         return False, "access_start_first"
 
     async def can_use_image_ai(self, telegram_id: int) -> Tuple[bool, str]:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return False, "access_start_first"
 
-        if is_admin_user(telegram_id):
+        if user.telegram_id and is_admin_user(user.telegram_id):
             await ensure_admin_active(self.session, user)
             return True, ""
 
@@ -355,7 +362,7 @@ class AccessService:
             return await self._can_use_payment_preview_ai(user)
 
         if user.status != "active":
-            has_pending_payment = await self.payment_repo.has_pending_by_user(telegram_id)
+            has_pending_payment = (await self.payment_repo.has_pending_by_user(user.telegram_id) if user.telegram_id else False)
             if has_pending_payment:
                 return False, "access_payment_pending_review"
 
@@ -389,7 +396,9 @@ class AccessService:
         if not consume_daily_limit:
             return
 
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return
         if await self._has_active_release_feedback_trial(user):

@@ -330,7 +330,7 @@ class ReferralService:
             return
 
         referrer = await self.user_repo.get_by_referral_code(code)
-        if not referrer:
+        if not referrer or not referrer.telegram_id:
             return
 
         if referrer.telegram_id == invited_user_telegram_id:

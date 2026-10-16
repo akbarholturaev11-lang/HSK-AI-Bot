@@ -9,6 +9,7 @@ from sqlalchemy import select
 
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.services.conversion_funnel_service import ConversionFunnelService
+from app.services.account_identity import owner_clause
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.hsk30_unlock_service import HSK30_UNLOCK_PLAN_TYPE
 from app.services.subscription_entry_analytics_service import (
@@ -115,6 +116,11 @@ class DesktopSubscriptionService:
         if restriction:
             code, status_code = restriction
             raise DesktopSubscriptionError(code, status_code=status_code)
+        # Existing receipt/payment ownership is Telegram-based. A provider
+        # account can study and use its trial, but must not share NULL payment
+        # records with other accounts or mint a synthetic payment identity.
+        if not user.telegram_id:
+            raise DesktopSubscriptionError("payment_telegram_required", status_code=409)
 
     @staticmethod
     def _service_error(result: dict[str, Any]) -> DesktopSubscriptionError:
@@ -174,7 +180,7 @@ class DesktopSubscriptionService:
 
     async def trial_start(self, access_token: str) -> dict[str, Any]:
         """Trialni boshlaydi. Qaror va cheklovlar SERVERDA — klient faqat
-        so'raydi (bir Telegram akkaunt bir marta)."""
+        so'raydi (bir hisob bir marta)."""
         context = await self._context(access_token)
         return await ProTrialService(self.session).start(
             context.user, source="desktop_trial", client="desktop"
@@ -188,6 +194,17 @@ class DesktopSubscriptionService:
     ) -> dict[str, Any]:
         context = await self._context(access_token)
         mode = self._checkout_mode(entry_source=entry_source)
+        if not context.user.telegram_id:
+            return {
+                "ok": True, "source": self.source, "mode": mode,
+                "access": self._access_payload(context.user),
+                "checkout_allowed": False,
+                "read_only_reason": "payment_telegram_required",
+                "attempt_id": None, "pending_payment": None,
+                "offer": None, "discount": None, "prices": {},
+                "card_prices": {}, "payment_details": "",
+                "payment_details_configured": False,
+            }
         result = self._checked_result(
             await self.checkout.overview(
                 context.user.telegram_id,
@@ -324,8 +341,7 @@ class DesktopSubscriptionService:
             await self.session.execute(
                 select(ConversionFunnelEvent.id)
                 .where(
-                    ConversionFunnelEvent.telegram_id
-                    == int(context.user.telegram_id),
+                    owner_clause(ConversionFunnelEvent, context.user, telegram_column="telegram_id"),
                     ConversionFunnelEvent.event_name == "checkout_opened",
                     # Android checkout-open events use the originating section
                     # (for attribution), while follow-up stages use this

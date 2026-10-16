@@ -27,7 +27,7 @@ class LessonAccessService:
 
     async def _reserved(self, user, reference):
         result = await self.session.execute(select(CourseMiniAppEvent.id).where(
-            CourseMiniAppEvent.telegram_id == user.telegram_id,
+            CourseMiniAppEvent.user_id == user.id,
             CourseMiniAppEvent.event_name == COURSE_DAILY_EVENT_NAME,
             CourseMiniAppEvent.session_id == "lesson",
             CourseMiniAppEvent.dedupe_key.endswith(f":ref:{reference}"),

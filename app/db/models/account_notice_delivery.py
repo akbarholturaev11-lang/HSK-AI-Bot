@@ -24,7 +24,7 @@ class AccountNoticeDelivery(Base):
         index=True,
         nullable=True,
     )
-    telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     key: Mapped[str] = mapped_column(String(64), nullable=False)
     language: Mapped[str] = mapped_column(String(8), default="ru", nullable=False)
     # Plain text for the phone; the Telegram copy keeps its HTML in the payload.

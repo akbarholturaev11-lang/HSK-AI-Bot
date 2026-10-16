@@ -17,7 +17,6 @@ from typing import Any, Callable
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
-from app.repositories.user_repo import UserRepository
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
 from app.services.referral_service import (
     REFERRAL_TRIAL_REQUIRED_ACTIVE,
@@ -123,13 +122,15 @@ def create_desktop_referral_router(
                 context = await DesktopAuthService(session, settings_obj).authenticate(
                     _access_token(request)
                 )
-                user = await UserRepository(session).get_by_telegram_id(
-                    int(context.user.telegram_id)
-                )
+                user = context.user
                 if not user:
                     raise DesktopReferralError(
                         "desktop_referral_user_not_found",
                         status_code=404,
+                    )
+                if not user.telegram_id:
+                    raise DesktopReferralError(
+                        "desktop_referral_telegram_required", status_code=409,
                     )
                 service = service_factory(session)
                 items = await service.list_miniapp_referrals(

@@ -75,6 +75,7 @@ class OAuthStartRequest(BaseModel):
     installation_key: InstallationKey
     provider: Provider
     mode: Literal["native_id_token", "browser_redirect"]
+    language: Literal["uz", "ru", "tj"] | None = None
 
 
 class OAuthAssertRequest(BaseModel):
@@ -268,6 +269,7 @@ def create_native_oauth_router(
                     app_version=payload.app_version,
                     installation_key=payload.installation_key.get_secret_value(),
                     intent=SIGNIN_INTENT,
+                    language=payload.language,
                 )
             content: dict[str, Any] = {
                 "ok": True,
@@ -398,7 +400,7 @@ def create_native_oauth_router(
         try:
             payload = await validated_auth_payload(request, IdentityLinkStartRequest)
             async with session_factory() as session:
-                actor, _ = await _actor(session, request)
+                actor, origin_session_id = await _actor(session, request)
                 if payload.platform == MINIAPP_PLATFORM:
                     if payload.mode != BROWSER_REDIRECT_MODE:
                         raise NativeOAuthError(
@@ -424,6 +426,7 @@ def create_native_oauth_router(
                     installation_key=installation_key,
                     intent=LINK_INTENT,
                     bind_user_id=int(actor.id),
+                    bind_session_id=origin_session_id,
                 )
             content: dict[str, Any] = {
                 "ok": True,

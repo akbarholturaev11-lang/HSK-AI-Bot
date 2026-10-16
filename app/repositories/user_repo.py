@@ -13,18 +13,34 @@ class UserRepository:
         self.session = session
 
     async def get_by_telegram_id(self, telegram_id: int) -> Optional[User]:
+        if telegram_id is None or int(telegram_id) <= 0:
+            return None
         result = await self.session.execute(
             select(User).where(User.telegram_id == telegram_id)
         )
         return result.scalar_one_or_none()
 
     async def get_by_telegram_id_for_update(self, telegram_id: int) -> Optional[User]:
+        if telegram_id is None or int(telegram_id) <= 0:
+            return None
         result = await self.session.execute(
             select(User)
             .where(User.telegram_id == telegram_id)
             .with_for_update()
         )
         return result.scalar_one_or_none()
+
+    async def get_by_user_id(self, user_id: int, *, lock: bool = False) -> Optional[User]:
+        query = select(User).where(User.id == int(user_id))
+        if lock:
+            query = query.with_for_update()
+        return (await self.session.execute(query.execution_options(populate_existing=True))).scalar_one_or_none()
+
+    async def get_by_actor(self, actor) -> Optional[User]:
+        """Re-read canonical ownership and current access state for native calls."""
+        if hasattr(actor, "id") and hasattr(actor, "telegram_id"):
+            return await self.get_by_user_id(actor.id)
+        return await self.get_by_telegram_id(actor)
 
     async def find_by_identifier(self, identifier: str) -> Optional[User]:
         value = (identifier or "").strip()
@@ -70,7 +86,7 @@ class UserRepository:
 
     async def create(
         self,
-        telegram_id: int,
+        telegram_id: int | None,
         full_name: Optional[str] = None,
         username: Optional[str] = None,
         language: str = "tj",
@@ -93,7 +109,7 @@ class UserRepository:
             questions_used=0,
             bonus_questions=0,
             bonus_questions_used=0,
-            referral_code=self._generate_referral_code(),
+            referral_code=self._generate_referral_code() if telegram_id else None,
             start_date=None,
             end_date=None,
             discount_referral_count=0,
@@ -106,6 +122,14 @@ class UserRepository:
         self.session.add(user)
         await self.session.flush()
         return user
+
+    async def create_provider_account(self, *, full_name: str | None, language: str | None) -> User:
+        """Same starter access policy, without inventing a Telegram identity."""
+        return await self.create(
+            telegram_id=None, full_name=(full_name or "HSK Student")[:255],
+            language=language if language in {"uz", "ru", "tj"} else "ru",
+            learning_mode="course",
+        )
 
     async def update_last_active(self, user: User) -> None:
         user.last_active_at = datetime.now(timezone.utc)
@@ -182,7 +206,7 @@ class UserRepository:
         await self.session.flush()
 
     async def ensure_referral_code(self, user: User) -> None:
-        if user.referral_code:
+        if not user.telegram_id or user.referral_code:
             return
 
         user.referral_code = self._generate_referral_code()
@@ -568,6 +592,9 @@ class UserRepository:
 
         # Faqat users.id bilan bog'langan account state.
         by_user_id = [
+            (AIUsageEvent, AIUsageEvent.user_id),
+            (AIUsageBudget, AIUsageBudget.user_id),
+            (VoicePracticeSession, VoicePracticeSession.user_id),
             (OnboardingTipEvent, OnboardingTipEvent.user_id),
             (CourseAttempt, CourseAttempt.user_id),
             (CourseProgress, CourseProgress.user_id),

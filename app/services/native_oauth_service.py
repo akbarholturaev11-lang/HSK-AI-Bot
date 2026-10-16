@@ -25,8 +25,9 @@ from urllib.parse import urlparse
 
 from sqlalchemy import select
 
-from app.db.models.desktop import DesktopLinkRequest
+from app.db.models.desktop import DesktopLinkRequest, DesktopDevice, DesktopSession
 from app.db.models.user import User
+from app.repositories.user_repo import UserRepository
 from app.services import apple_auth, google_auth
 from app.services.desktop_auth_service import (
     LINK_INTENT,
@@ -151,6 +152,8 @@ class NativeOAuthService:
         installation_key: str,
         intent: str = SIGNIN_INTENT,
         bind_user_id: int | None = None,
+        language: str | None = None,
+        bind_session_id: str | None = None,
     ) -> OAuthStart:
         if provider not in PROVIDERS:
             raise NativeOAuthError("oauth_provider_unsupported", status_code=422)
@@ -174,6 +177,8 @@ class NativeOAuthService:
             flow=provider,
             intent=intent,
             bind_user_id=bind_user_id,
+            language=language,
+            bind_session_id=bind_session_id,
         )
         link_request_id = started["link_request_id"]
         nonce = self.nonce(link_request_id)
@@ -249,6 +254,20 @@ class NativeOAuthService:
             if not user_id:
                 await self._fail(row, "oauth_state_invalid")
                 raise NativeOAuthError("oauth_state_invalid", status_code=400)
+            # Wait for concurrent disconnect/revocation before accepting a
+            # proof started under that native session. Mini App proof uses
+            # fresh signed Telegram initData instead of a native session.
+            await UserRepository(self.session).get_by_user_id(user_id, lock=True)
+            if row.bind_session_id or row.platform != "miniapp":
+                origin = (await self.session.execute(select(DesktopSession.id)
+                    .join(DesktopDevice, DesktopDevice.id == DesktopSession.device_id)
+                    .where(DesktopSession.id == row.bind_session_id,
+                           DesktopSession.revoked_at.is_(None),
+                           DesktopSession.expires_at > _utcnow(),
+                           DesktopDevice.user_id == user_id,
+                           DesktopDevice.revoked_at.is_(None)))).scalar_one_or_none()
+                if origin is None:
+                    raise DesktopAuthError("desktop_session_revoked", status_code=401)
             await self.identities.link_to_user(verified, user_id=user_id)
             row.status = LINKED_STATUS
             row.approved_user_id = user_id
@@ -257,7 +276,8 @@ class NativeOAuthService:
             return {"ok": True, "status": LINKED_STATUS, "provider": verified.provider}
 
         user_id = await self.identities.resolve_signin(
-            verified, installation_key_hash=row.installation_key_hash
+            verified, installation_key_hash=row.installation_key_hash,
+            allow_create=True, language=row.language,
         )
         user = await self.session.get(User, user_id)
         if user is None:
@@ -268,6 +288,8 @@ class NativeOAuthService:
         row.status = "approved"
         row.approved_user_id = user_id
         row.approved_telegram_id = user.telegram_id
+        identity = await self.identities._by_subject(verified.provider, verified.subject)
+        row.approved_identity_id = identity.id
         row.approved_at = _utcnow()
         await self.session.commit()
         return {"ok": True, "status": "approved", "provider": verified.provider}

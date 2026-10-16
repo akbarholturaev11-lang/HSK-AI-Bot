@@ -204,7 +204,7 @@ class AssistantService:
         if not restricted:
             access = AccessService(self.session)
             decision = await EntitlementEngine(self.session).check(user, KINDS[data.kind])
-            allowed, reason = await access.can_use_text_ai(user.telegram_id, enforce_daily_limit=False)
+            allowed, reason = await access.can_use_text_ai(user, enforce_daily_limit=False)
             if not decision.allowed:
                 allowed, reason = False, "free_feature_limit_reached"
             if not allowed:
@@ -336,7 +336,7 @@ class AssistantService:
 
     async def record_usage(self, user, usage, source):
         if usage:
-            await AIUsageBudgetService(self.session).record_usage(telegram_id=user.telegram_id, result=usage, source=source)
+            await AIUsageBudgetService(self.session).record_usage(telegram_id=user, result=usage, source=source)
             await self.session.commit()
 
     @staticmethod

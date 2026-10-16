@@ -34,11 +34,13 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import uuid4
 
-from sqlalchemy import select, update
+from sqlalchemy import select, update, text
+from sqlalchemy.exc import IntegrityError
 
 from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.user import User
 from app.db.models.user_identity import UserIdentity
+from app.repositories.user_repo import UserRepository
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.oidc_verifier import VerifiedIdentity
 from app.services.user_access_state_service import (
@@ -115,23 +117,41 @@ class IdentityLinkService:
         verified: VerifiedIdentity,
         *,
         installation_key_hash: str,
+        allow_create: bool = False,
+        language: str | None = None,
     ) -> int:
         """Return the internal user id this provider identity may sign in as.
 
-        Phase 1 never creates an account: Telegram remains the only user
-        factory, so an unrecognised identity is told to sign in with Telegram
-        once and connect the provider from Profile.
+        Only the server's verified signin flow can allow creation. Explicit
+        identity linking never silently creates/merges an account, and an
+        already-bound installation never authorizes attaching another identity.
         """
+
+        if allow_create and verified.provider in {"google", "apple"}:
+            # Serialize first signup for a provider subject across replicas.
+            if self.session.get_bind().dialect.name == "postgresql":
+                key = int(self.subject_hash(verified.provider, verified.subject)[:15], 16)
+                await self.session.execute(text("SELECT pg_advisory_xact_lock(:key)"), {"key": key})
 
         identity = await self._by_subject(
             verified.provider, verified.subject, lock=True
         )
         if identity is None:
-            # Deliberately the same answer whether or not this device is
-            # already bound to someone: a bound device is not consent.
-            raise IdentityLinkError(
-                "oauth_telegram_account_required", status_code=409
-            )
+            if not allow_create or verified.provider not in {"google", "apple"}:
+                raise IdentityLinkError("oauth_telegram_account_required", status_code=409)
+            if await self._device_owner(installation_key_hash) is not None:
+                raise IdentityLinkError("desktop_device_bound_to_other_user", status_code=409)
+            try:
+                # Roll back both inserts together if a concurrent signup or
+                # explicit link wins the unique provider-subject constraint.
+                async with self.session.begin_nested():
+                    user = await UserRepository(self.session).create_provider_account(
+                        full_name=verified.display_name, language=language)
+                    identity = await self.link_to_user(verified, user_id=user.id)
+            except IntegrityError:
+                identity = await self._by_subject(verified.provider, verified.subject, lock=True)
+                if identity is None:
+                    raise IdentityLinkError("oauth_signup_unavailable", status_code=409)
 
         user_id = int(identity.user_id)
         owner = await self._device_owner(installation_key_hash)
@@ -165,7 +185,10 @@ class IdentityLinkService:
     ) -> UserIdentity:
         """Attach a verified identity to an already authenticated user."""
 
-        user = await self.session.get(User, int(user_id))
+        user = (await self.session.execute(
+            select(User).where(User.id == int(user_id)).with_for_update()
+            .execution_options(populate_existing=True)
+        )).scalar_one_or_none()
         if not user:
             raise IdentityLinkError("oauth_identity_not_found", status_code=404)
         # A blocked account must not gain new ways in either.
@@ -241,6 +264,12 @@ class IdentityLinkService:
         user_id: int,
         keep_session_id: str | None = None,
     ) -> dict[str, Any]:
+        # Serialize all identity changes for this account, including two
+        # simultaneous disconnects of its last remaining sign-in methods.
+        user = (await self.session.execute(
+            select(User).where(User.id == int(user_id)).with_for_update()
+            .execution_options(populate_existing=True)
+        )).scalar_one_or_none()
         result = await self.session.execute(
             select(UserIdentity)
             .where(UserIdentity.id == str(identity_id or ""))
@@ -252,7 +281,6 @@ class IdentityLinkService:
         if identity is None or int(identity.user_id) != int(user_id):
             raise IdentityLinkError("oauth_identity_not_found", status_code=404)
 
-        user = await self.session.get(User, int(user_id))
         remaining = await self.session.execute(
             select(UserIdentity).where(
                 UserIdentity.user_id == int(user_id),
@@ -260,9 +288,7 @@ class IdentityLinkService:
             )
         )
         has_other_identity = remaining.scalars().first() is not None
-        # Phase 1 users always have Telegram, so this only bites once
-        # telegram_id becomes nullable. Keeping it now means Phase 2 cannot
-        # accidentally ship an account nobody can sign in to.
+        # A provider-only account must retain at least one usable sign-in.
         if not has_other_identity and not (user and user.telegram_id):
             raise IdentityLinkError("oauth_last_identity", status_code=409)
 

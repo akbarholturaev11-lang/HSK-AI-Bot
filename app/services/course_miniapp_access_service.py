@@ -13,6 +13,7 @@ from app.db.models.course_feature_usage import COURSE_FEATURE_KEYS, CourseFeatur
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.user import User
+from app.services.account_identity import owner_clause
 from app.services import course_daily_window
 from app.services.entitlements.state import has_full_access, resolve_state
 from app.services.limit_notification_service import LimitNotificationService
@@ -420,7 +421,7 @@ class CourseMiniAppAccessService:
         offset_minutes: int = 0,
     ) -> int:
         conditions = [
-            CourseMiniAppEvent.telegram_id == int(telegram_id),
+            owner_clause(CourseMiniAppEvent, telegram_id, telegram_column="telegram_id"),
             CourseMiniAppEvent.event_name == COURSE_DAILY_EVENT_NAME,
             CourseMiniAppEvent.session_id == feature_key,
         ]
@@ -487,7 +488,7 @@ class CourseMiniAppAccessService:
             return {"allowed": False, "is_paid": False, "limit": limit, "used": limit, "remaining": 0}
         offset = await self._learner_offset_minutes(user)
         used = await self._daily_used_today(
-            user.telegram_id, feature_key, lifetime=lifetime, offset_minutes=offset
+            user, feature_key, lifetime=lifetime, offset_minutes=offset
         )
         return {
             "allowed": used < limit,
@@ -554,7 +555,7 @@ class CourseMiniAppAccessService:
         )
 
         used = await self._daily_used_today(
-            locked_user.telegram_id, feature_key, lifetime=lifetime, offset_minutes=offset
+            locked_user, feature_key, lifetime=lifetime, offset_minutes=offset
         )
 
         if lifetime and feature_key in COURSE_FEATURE_KEYS:
@@ -569,7 +570,7 @@ class CourseMiniAppAccessService:
         if dedupe_key:
             existing_result = await self.session.execute(
                 select(CourseMiniAppEvent.id).where(
-                    CourseMiniAppEvent.telegram_id == int(locked_user.telegram_id),
+                    CourseMiniAppEvent.user_id == locked_user.id,
                     CourseMiniAppEvent.event_name == COURSE_DAILY_EVENT_NAME,
                     CourseMiniAppEvent.dedupe_key == dedupe_key,
                 )
@@ -622,7 +623,7 @@ class CourseMiniAppAccessService:
             dedupe_key = f"daily:{feature_key}:{day_key}:{used + 1}"
         event = CourseMiniAppEvent(
             user_id=locked_user.id,
-            telegram_id=int(locked_user.telegram_id),
+            telegram_id=locked_user.telegram_id,
             event_name=COURSE_DAILY_EVENT_NAME,
             source="course_v3",
             session_id=feature_key,
@@ -637,7 +638,7 @@ class CourseMiniAppAccessService:
             if dedupe_key and clean_ref:
                 duplicate_result = await self.session.execute(
                     select(CourseMiniAppEvent.id).where(
-                        CourseMiniAppEvent.telegram_id == int(locked_user.telegram_id),
+                        CourseMiniAppEvent.user_id == locked_user.id,
                         CourseMiniAppEvent.event_name == COURSE_DAILY_EVENT_NAME,
                         CourseMiniAppEvent.dedupe_key == dedupe_key,
                     )
@@ -654,7 +655,7 @@ class CourseMiniAppAccessService:
             # aks holda poyga yo'lida UTC+5 o'quvchi UTC oynasi bilan sanaladi va
             # limiti kun o'rtasida noto'g'ri joyda yangilanadi.
             used_again = await self._daily_used_today(
-                locked_user.telegram_id,
+                locked_user,
                 feature_key,
                 lifetime=lifetime,
                 offset_minutes=offset,

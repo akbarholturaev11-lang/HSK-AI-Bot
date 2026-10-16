@@ -1,3 +1,4 @@
+from app.services.account_identity import account_user_id
 from app.repositories.user_repo import UserRepository
 from app.services.course_engine_service import CourseEngineService
 from app.services.course_levels import (
@@ -246,7 +247,9 @@ class CourseMiniAppOnboardingService:
         )
         activation_variant = str(activation_variant or "legacy_or_standard").strip()[:32]
 
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return {"ok": False, "error": "access_start_first"}
 
@@ -376,7 +379,7 @@ class CourseMiniAppOnboardingService:
         for event_name, payload, dedupe_key in event_payloads:
             await analytics.record_server_event(
                 event_name=event_name,
-                telegram_id=telegram_id,
+                telegram_id=user.telegram_id,
                 user_id=user.id,
                 source="course_onboarding",
                 level=launch_level,

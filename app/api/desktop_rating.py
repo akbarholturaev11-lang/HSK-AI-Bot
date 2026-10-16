@@ -20,7 +20,6 @@ from typing import Any, Callable
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
-from app.repositories.user_repo import UserRepository
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
 
@@ -63,7 +62,7 @@ def _timezone_offset(request: Request) -> int | None:
     return offset
 
 
-def challenge_ref(telegram_id: Any, secret: str) -> str:
+def challenge_ref(telegram_id: Any, secret: str, *, user_id: Any = None) -> str:
     """An opaque stand-in for a learner on someone else's leaderboard.
 
     A challenge needs to name its opponent, and the leaderboard deliberately
@@ -74,14 +73,16 @@ def challenge_ref(telegram_id: Any, secret: str) -> str:
     """
 
     try:
-        identifier = int(telegram_id or 0)
+        real_telegram_id = int(telegram_id or 0)
+        canonical = real_telegram_id <= 0
+        identifier = int(user_id or 0) if canonical else real_telegram_id
     except (TypeError, ValueError):
         identifier = 0
     if identifier <= 0 or not secret:
         return ""
     digest = hmac.new(
         str(secret).encode("utf-8"),
-        f"challenge:{identifier}".encode("utf-8"),
+        f"challenge:{'user:' if canonical else ''}{identifier}".encode("utf-8"),
         hashlib.sha256,
     ).hexdigest()
     return digest[:32]
@@ -91,7 +92,7 @@ def _public_entry(entry: dict[str, Any], *, secret: str = "") -> dict[str, Any]:
     """Strip personal identifiers the desktop UI does not render."""
 
     return {
-        "challenge_ref": challenge_ref(entry.get("telegram_id"), secret),
+        "challenge_ref": challenge_ref(entry.get("telegram_id"), secret, user_id=entry.get("user_id")),
         "rank": int(entry.get("rank") or 0),
         "name": str(entry.get("name") or "").strip()[:40],
         "username": str(entry.get("username") or "").strip()[:32],
@@ -163,9 +164,7 @@ def create_desktop_rating_router(
                 context = await DesktopAuthService(session, settings_obj).authenticate(
                     _access_token(request)
                 )
-                user = await UserRepository(session).get_by_telegram_id(
-                    int(context.user.telegram_id)
-                )
+                user = context.user
                 if not user:
                     raise DesktopRatingError(
                         "desktop_rating_user_not_found",

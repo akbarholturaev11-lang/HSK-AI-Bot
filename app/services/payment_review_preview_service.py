@@ -7,6 +7,7 @@ additional access. A pending receipt is NOT revenue or an approved payment.
 from sqlalchemy import select
 
 from app.db.models.user import User
+from app.services.account_identity import actual_telegram_id
 from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.subscription_service import PLAN_DURATIONS
 
@@ -17,12 +18,14 @@ class PaymentReviewPreviewService:
 
     @staticmethod
     def _eligible(user, payment) -> bool:
+        telegram_id = actual_telegram_id(user)
         return bool(
             user
             and payment
+            and telegram_id is not None
             and payment.plan_type in PLAN_DURATIONS
             and payment.payment_status == "pending"
-            and int(payment.user_telegram_id) == int(user.telegram_id)
+            and actual_telegram_id(payment.user_telegram_id) == telegram_id
             and user.status != "blocked"
         )
 
@@ -48,6 +51,9 @@ class PaymentReviewPreviewService:
     async def review(self, user, payment, *, approved: bool) -> None:
         """Called only after a payment status transition succeeds (same transaction)."""
         if not user or not payment or getattr(payment, "plan_type", None) not in PLAN_DURATIONS:
+            return
+        telegram_id = actual_telegram_id(user)
+        if telegram_id is None or actual_telegram_id(payment.user_telegram_id) != telegram_id:
             return
         result = await self.session.execute(
             select(User).where(User.telegram_id == int(user.telegram_id))

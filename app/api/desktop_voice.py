@@ -253,11 +253,11 @@ def create_desktop_voice_router(
 ) -> APIRouter:
     router = APIRouter(tags=["desktop-voice"])
 
-    async def _telegram_id(session, request: Request) -> int:
+    async def _actor(session, request: Request):
         context = await DesktopAuthService(session, settings_obj).authenticate(
             _access_token(request)
         )
-        return int(context.user.telegram_id)
+        return context.user
 
     @router.get("/api/v3/desktop/voice/status")
     async def desktop_voice_status(request: Request):
@@ -269,8 +269,8 @@ def create_desktop_voice_router(
                     422,
                 )
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
-                result = await service_factory(session).user_status(telegram_id)
+                actor = await _actor(session, request)
+                result = await service_factory(session).user_status(actor)
             return JSONResponse(
                 content=result,
                 headers={"Cache-Control": "no-store"},
@@ -304,9 +304,9 @@ def create_desktop_voice_router(
                     422,
                 )
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await service_factory(session).start_session(
-                    telegram_id,
+                    actor,
                     role=payload.role,
                     level=payload.level,
                     language=payload.language,
@@ -338,9 +338,9 @@ def create_desktop_voice_router(
             )
             audio_bytes, filename = _decode_audio_data_url(payload.audio_data_url)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await service_factory(session).process_message(
-                    telegram_id,
+                    actor,
                     session_id=payload.session_id,
                     audio_bytes=audio_bytes,
                     filename=filename,
@@ -371,9 +371,9 @@ def create_desktop_voice_router(
             )
             audio_bytes, filename = _decode_audio_data_url(payload.audio_data_url)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await service_factory(session).score_pronunciation(
-                    telegram_id,
+                    actor,
                     target=payload.target,
                     target_pinyin=payload.target_pinyin,
                     audio_bytes=audio_bytes,
@@ -402,9 +402,9 @@ def create_desktop_voice_router(
         try:
             payload = await _validated_payload(request, DesktopVoiceEndRequest)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await service_factory(session).end_session(
-                    telegram_id,
+                    actor,
                     payload.session_id,
                 )
             return JSONResponse(

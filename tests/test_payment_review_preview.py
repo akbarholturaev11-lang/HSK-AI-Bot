@@ -12,6 +12,7 @@ from app.db.models.ai_usage import AIUsageBudget
 from app.db.models.payment import Payment
 from app.db.models.user import User
 from app.db.session import _BOOTSTRAP_COLUMNS
+from app.repositories.user_repo import UserRepository
 from app.services.access_service import AccessService
 from app.services.ai_usage_budget_service import (
     AIUsageBudgetService,
@@ -68,6 +69,94 @@ class PaymentReviewPreviewTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(
             _BOOTSTRAP_COLUMNS["users"]["payment_preview_payment_id"], "INTEGER"
         )
+
+    async def test_provider_only_account_cannot_claim_or_replenish_a_receipt_preview(self):
+        async with self.sessions() as session:
+            user = await UserRepository(session).create_provider_account(
+                full_name="Provider learner", language="uz"
+            )
+            self.assertIsNone(user.telegram_id)
+            self.assertTrue(user.payment_preview_available)
+            self.assertIsNone(user.payment_preview_payment_id)
+            self.assertEqual(resolve_state(user), EntitlementState.FREE)
+            payment = await self._new_payment(session)
+            preview = PaymentReviewPreviewService(session)
+
+            self.assertFalse(await preview.claim(user, payment))
+            self.assertTrue(user.payment_preview_available)
+            self.assertIsNone(user.payment_preview_payment_id)
+            self.assertEqual((await session.execute(select(AIUsageBudget))).scalars().all(), [])
+
+            user.payment_preview_available = False
+            payment.payment_status = "approved"
+            await preview.review(user, payment, approved=True)
+            self.assertFalse(user.payment_preview_available)
+            self.assertIsNone(user.payment_preview_payment_id)
+            self.assertEqual(resolve_state(user), EntitlementState.FREE)
+
+    async def test_another_users_receipt_cannot_claim_or_replenish_a_preview(self):
+        async with self.sessions() as session:
+            user = User(telegram_id=954002, full_name="Other learner")
+            session.add(user)
+            await session.flush()
+            payment = await self._new_payment(session)
+            preview = PaymentReviewPreviewService(session)
+
+            self.assertFalse(await preview.claim(user, payment))
+            self.assertTrue(user.payment_preview_available)
+            self.assertIsNone(user.payment_preview_payment_id)
+            user.payment_preview_available = False
+            payment.payment_status = "approved"
+            await preview.review(user, payment, approved=True)
+            self.assertFalse(user.payment_preview_available)
+            self.assertEqual((await session.execute(select(AIUsageBudget))).scalars().all(), [])
+
+    async def test_preview_budget_follows_canonical_owner_and_rejects_other_accounts(self):
+        async with self.sessions() as session:
+            owner = await self._user(session)
+            other = User(telegram_id=954002, full_name="Other Telegram learner")
+            session.add(other)
+            native = await UserRepository(session).create_provider_account(
+                full_name="Provider learner", language="uz"
+            )
+            payment = await self._new_payment(session)
+            self.assertTrue(await PaymentReviewPreviewService(session).claim(owner, payment))
+            budget = (await session.execute(select(AIUsageBudget))).scalar_one()
+            self.assertEqual(budget.user_id, owner.id)
+            # Canonical ownership remains sufficient when a legacy identity
+            # column is absent; it must never turn into a NULL-owner match.
+            budget.user_telegram_id = None
+            await session.flush()
+            service = AIUsageBudgetService(session)
+            self.assertTrue((await service.can_use_payment_preview_ai(owner, payment.id)).allowed)
+            self.assertTrue((await AccessService(session).can_use_text_ai(owner))[0])
+            self.assertTrue((await AccessService(session).can_use_image_ai(owner))[0])
+            await VoicePracticeService(session)._ensure_pending_receipt_ai_budget(owner)
+            for actor in (other, native):
+                with self.subTest(user_id=actor.id):
+                    self.assertFalse((await service.can_use_payment_preview_ai(actor, payment.id)).allowed)
+
+    async def test_revoked_or_missing_preview_budget_denies_text_image_and_voice(self):
+        async with self.sessions() as session:
+            user = await self._user(session)
+            payment = await self._new_payment(session)
+            self.assertTrue(await PaymentReviewPreviewService(session).claim(user, payment))
+            budget = (await session.execute(select(AIUsageBudget))).scalar_one()
+            for state in ("revoked", "missing"):
+                with self.subTest(budget=state):
+                    if state == "revoked":
+                        await AIUsageBudgetService(session).expire_budget(budget)
+                    else:
+                        await session.delete(budget)
+                    await session.flush()
+                    verdict = await AIUsageBudgetService(session).can_use_payment_preview_ai(user, payment.id)
+                    self.assertFalse(verdict.allowed)
+                    self.assertEqual(verdict.message_key, "ai_budget_depleted")
+                    self.assertFalse((await AccessService(session).can_use_text_ai(user))[0])
+                    self.assertFalse((await AccessService(session).can_use_image_ai(user))[0])
+                    with self.assertRaises(VoicePracticeError) as rejected:
+                        await VoicePracticeService(session)._ensure_pending_receipt_ai_budget(user)
+                    self.assertEqual(rejected.exception.code, "ai_budget_depleted")
 
     async def test_receipt_opens_unpaid_preview_only_once(self):
         async with self.sessions() as session:

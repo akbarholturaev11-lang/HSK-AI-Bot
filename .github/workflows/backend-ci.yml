@@ -14,6 +14,18 @@ jobs:
   targeted-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    services:
+      native-postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: native_accounts_test
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - "127.0.0.1:5432:5432"
+        options: >-
+          --health-cmd "pg_isready -U postgres -d native_accounts_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -74,3 +86,11 @@ jobs:
           python -m unittest tests.test_admin_delete_safety tests.test_account_deletion_request
           tests.test_account_deletion_api tests.test_account_deletion_cleanup
           tests.test_account_deletion_migration tests.test_public_site
+      - name: Check native signup, canonical ownership, and concurrent identity changes
+        env:
+          NATIVE_ACCOUNT_TEST_DATABASE_URL: postgresql+asyncpg://postgres@127.0.0.1:5432/native_accounts_test
+        run: >-
+          python -m unittest tests.test_native_account_signup tests.test_native_account_migration
+          tests.test_native_account_concurrency tests.test_native_account_learning
+          tests.test_native_account_ai_voice tests.test_native_account_lifecycle
+          tests.test_native_account_admin tests.test_desktop_provider_accounts

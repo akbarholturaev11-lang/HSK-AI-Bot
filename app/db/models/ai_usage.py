@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import BigInteger, DateTime, Float, Integer, String
+from sqlalchemy import BigInteger, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -11,7 +11,8 @@ class AIUsageBudget(Base):
     __tablename__ = "ai_usage_budgets"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    user_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=True)
+    user_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     payment_id: Mapped[Optional[int]] = mapped_column(Integer, index=True, nullable=True)
     plan_type: Mapped[str] = mapped_column(String(32), nullable=False)
     amount: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -48,7 +49,8 @@ class AIUsageEvent(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     budget_id: Mapped[Optional[int]] = mapped_column(Integer, index=True, nullable=True)
-    user_telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    user_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=True)
+    user_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     source: Mapped[str] = mapped_column(String(32), nullable=False)
     model: Mapped[str] = mapped_column(String(80), nullable=False)
     prompt_tokens: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

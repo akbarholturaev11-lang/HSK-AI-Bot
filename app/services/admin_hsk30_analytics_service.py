@@ -15,6 +15,9 @@ from app.db.models.user import User
 from app.services.hsk30_unlock_service import HSK30_UNLOCK_PLAN_TYPE
 
 
+AccountKey = tuple[str, int]
+
+
 class AdminHsk30AnalyticsService:
     """Build the HSK 3.0 rollout funnel from existing product and payment data."""
 
@@ -99,18 +102,48 @@ class AdminHsk30AnalyticsService:
             course_stmt = course_stmt.where(CourseMiniAppEvent.created_at >= since)
         course_events = list((await self.session.execute(course_stmt)).scalars().all())
 
+        users_by_id: dict[int, User] = {}
+        users_by_tg: dict[int, User] = {}
+
+        async def remember_accounts(rows, *, telegram_column="telegram_id"):
+            user_ids = {int(row.user_id) for row in rows if getattr(row, "user_id", None)}
+            telegram_ids = {int(getattr(row, telegram_column)) for row in rows if getattr(row, telegram_column, None)}
+            if not user_ids and not telegram_ids:
+                return
+            resolved = (await self.session.execute(select(User).where(or_(
+                User.id.in_(user_ids), User.telegram_id.in_(telegram_ids),
+            )))).scalars().all()
+            for user in resolved:
+                users_by_id[int(user.id)] = user
+                if user.telegram_id:
+                    users_by_tg[int(user.telegram_id)] = user
+
+        def account_key(telegram_id, user_id=None) -> AccountKey | None:
+            # Canonical keys are internal grouping values, never synthetic
+            # Telegram identities. Unknown retained financial rows keep their
+            # existing Telegram namespace until an account can be resolved.
+            user = users_by_tg.get(int(telegram_id)) if telegram_id else None
+            uid = user_id or (user.id if user else None)
+            if uid:
+                return ("user", int(uid))
+            return ("telegram", int(telegram_id)) if telegram_id else None
+
+        await remember_accounts(course_events)
+
         # Course funnel users come only from event rows emitted by the Mini App.
         # The profile counter below is shared by Mini App, Desktop, and Android.
         promo_impressions = 0
-        promo_dismiss_users: set[int] = set()
-        course_stage_times: dict[int, dict[str, list[datetime]]] = defaultdict(
+        promo_dismiss_users: set[AccountKey] = set()
+        course_stage_times: dict[AccountKey, dict[str, list[datetime]]] = defaultdict(
             lambda: defaultdict(list)
         )
         error_rows: list[dict] = []
-        latest_course_event: dict[int, tuple[datetime, str, dict, str]] = {}
+        latest_course_event: dict[AccountKey, tuple[datetime, str, dict, str]] = {}
 
         for event in course_events:
-            telegram_id = int(event.telegram_id)
+            telegram_id = account_key(event.telegram_id, event.user_id)
+            if telegram_id is None:
+                continue
             payload = self._payload(event.payload_json)
             name = str(event.event_name)
             promo_impressions += int(name == "hsk30_promo_shown")
@@ -124,7 +157,7 @@ class AdminHsk30AnalyticsService:
                 course_stage_times[telegram_id]["level_selected"].append(event.created_at)
             elif name == "hsk30_checkout_failed":
                 error_rows.append({
-                    "telegram_id": telegram_id,
+                    "account_key": telegram_id,
                     "stage": str(payload.get("stage") or "checkout"),
                     "error": str(payload.get("error") or "unknown_error")[:80],
                     "method": str(payload.get("payment_method") or "")[:16],
@@ -175,7 +208,7 @@ class AdminHsk30AnalyticsService:
 
         # Keep Mini App course steps in sequence. A later event counts only when
         # the same user has the preceding event in the selected reporting window.
-        course_reached: dict[str, set[int]] = {
+        course_reached: dict[str, set[AccountKey]] = {
             "promo_shown": set(),
             "promo_cta": set(),
             "level_selected": set(),
@@ -219,9 +252,12 @@ class AdminHsk30AnalyticsService:
         if since is not None:
             entry_stmt = entry_stmt.where(SubscriptionEntryEvent.created_at >= since)
         entry_rows = list((await self.session.execute(entry_stmt)).scalars().all())
-        latest_entries: dict[int, SubscriptionEntryEvent] = {}
+        await remember_accounts(entry_rows)
+        latest_entries: dict[AccountKey, SubscriptionEntryEvent] = {}
         for entry in entry_rows:
-            telegram_id = int(entry.telegram_id)
+            telegram_id = account_key(entry.telegram_id, entry.user_id)
+            if telegram_id is None:
+                continue
             previous = latest_entries.get(telegram_id)
             if previous is None or entry.created_at > previous.created_at:
                 latest_entries[telegram_id] = entry
@@ -239,7 +275,8 @@ class AdminHsk30AnalyticsService:
             (await self.session.execute(checkout_events_stmt)).scalars().all(),
             key=lambda event: event.created_at,
         )
-        hsk30_attempts: dict[tuple[int, str], dict] = {}
+        await remember_accounts(checkout_event_rows)
+        hsk30_attempts: dict[tuple[AccountKey, str], dict] = {}
 
         # First identify real HSK 3.0 checkout starts. Stage and submit events
         # are then attached only to that user's same attempt_id.
@@ -255,7 +292,9 @@ class AdminHsk30AnalyticsService:
                 or str(event.source or "") == HSK30_UNLOCK_PLAN_TYPE
             ):
                 continue
-            telegram_id = int(event.telegram_id)
+            telegram_id = account_key(event.telegram_id, event.user_id)
+            if telegram_id is None:
+                continue
             attempt_id = str(payload.get("attempt_id") or "").strip()
             if not attempt_id:
                 continue
@@ -268,12 +307,14 @@ class AdminHsk30AnalyticsService:
                 "payment_id": None,
             })
 
-        checkout_events: dict[int, list[tuple[datetime, str, dict, str]]] = defaultdict(list)
+        checkout_events: dict[AccountKey, list[tuple[datetime, str, dict, str]]] = defaultdict(list)
         attempt_payment_ids: set[int] = set()
         for event in checkout_event_rows:
             payload = self._payload(event.payload_json)
             attempt_id = str(payload.get("attempt_id") or "").strip()
-            telegram_id = int(event.telegram_id)
+            telegram_id = account_key(event.telegram_id, event.user_id)
+            if telegram_id is None:
+                continue
             if (
                 event.event_name == "payment_screenshot_submitted"
                 and attempt_id
@@ -314,9 +355,10 @@ class AdminHsk30AnalyticsService:
         if since is not None:
             payment_stmt = payment_stmt.where(Payment.submitted_at >= since)
         payment_rows = list((await self.session.execute(payment_stmt)).scalars().all())
-        latest_payments: dict[int, Payment] = {}
+        await remember_accounts(payment_rows, telegram_column="user_telegram_id")
+        latest_payments: dict[AccountKey, Payment] = {}
         payment_status_counts: Counter[str] = Counter()
-        payment_status_users: dict[str, set[int]] = defaultdict(set)
+        payment_status_users: dict[str, set[AccountKey]] = defaultdict(set)
         payment_methods: dict[str, dict] = defaultdict(lambda: {
             "payments": 0,
             "users": set(),
@@ -327,7 +369,9 @@ class AdminHsk30AnalyticsService:
         rejection_reasons: Counter[str] = Counter()
 
         for payment in payment_rows:
-            telegram_id = int(payment.user_telegram_id)
+            telegram_id = account_key(payment.user_telegram_id)
+            if telegram_id is None:
+                continue
             status = str(payment.payment_status or "unknown")
             method = str(payment.payment_method or "unknown")
             payment_status_counts[status] += 1
@@ -350,7 +394,7 @@ class AdminHsk30AnalyticsService:
             ("track_activated", "HSK 3.0 курси очилди"),
         ]
         course_funnel = []
-        previous_course_users: set[int] | None = None
+        previous_course_users: set[AccountKey] | None = None
         for key, label in course_stages:
             users = course_reached[key]
             converted = (
@@ -377,7 +421,7 @@ class AdminHsk30AnalyticsService:
             })
             previous_course_users = users
 
-        payment_reached: dict[str, set[tuple[int, str]]] = {
+        payment_reached: dict[str, set[tuple[AccountKey, str]]] = {
             "checkout_opened": set(),
             "instructions": set(),
             "receipt_selected": set(),
@@ -411,7 +455,7 @@ class AdminHsk30AnalyticsService:
             ("payment_submitted", "Тўлов юборилди"),
         ]
         payment_funnel = []
-        previous_attempts: set[tuple[int, str]] | None = None
+        previous_attempts: set[tuple[AccountKey, str]] | None = None
         for key, label in payment_stages:
             attempts = payment_reached[key]
             converted = (
@@ -453,7 +497,7 @@ class AdminHsk30AnalyticsService:
             )
         ]
 
-        user_stages: dict[int, tuple[datetime, str, dict]] = {
+        user_stages: dict[AccountKey, tuple[datetime, str, dict]] = {
             telegram_id: (created_at, stage, payload)
             for telegram_id, (created_at, stage, payload, _source)
             in latest_course_event.items()
@@ -479,7 +523,7 @@ class AdminHsk30AnalyticsService:
                         {**payload, "source": source},
                     )
         for row in error_rows:
-            telegram_id = int(row["telegram_id"])
+            telegram_id = row["account_key"]
             previous = user_stages.get(telegram_id)
             if previous is None or row["created_at"] > previous[0]:
                 user_stages[telegram_id] = (
@@ -500,6 +544,8 @@ class AdminHsk30AnalyticsService:
             | attempt_users
         )
         for telegram_id in candidate_users:
+            user = (users_by_id.get(telegram_id[1]) if telegram_id[0] == "user"
+                    else users_by_tg.get(telegram_id[1]))
             entry = latest_entries.get(telegram_id)
             payment = latest_payments.get(telegram_id)
             if (
@@ -525,10 +571,12 @@ class AdminHsk30AnalyticsService:
                 status = "not_submitted"
 
             recent_rows.append({
-                "telegram_id": telegram_id,
-                "user_id": None,
-                "name": "",
-                "username": "",
+                "telegram_id": (user.telegram_id if user else
+                                telegram_id[1] if telegram_id[0] == "telegram" else None),
+                "user_id": (int(user.id) if user else
+                            telegram_id[1] if telegram_id[0] == "user" else None),
+                "name": str(user.full_name or "")[:100] if user else "",
+                "username": str(user.username or "")[:64] if user else "",
                 "last_step": last_step,
                 "last_step_label": self.STAGE_LABELS.get(last_step, "Checkout тўхтаган"),
                 "status": status,
@@ -541,22 +589,6 @@ class AdminHsk30AnalyticsService:
                 "reason": str(last_payload.get("reason") or last_payload.get("error") or ""),
                 "last_seen_at": last_at,
             })
-
-        if recent_rows:
-            users_by_tg = {
-                int(user.telegram_id): user
-                for user in (await self.session.execute(
-                    select(User).where(
-                        User.telegram_id.in_([row["telegram_id"] for row in recent_rows])
-                    )
-                )).scalars().all()
-            }
-            for row in recent_rows:
-                user = users_by_tg.get(row["telegram_id"])
-                if user:
-                    row["user_id"] = int(user.id)
-                    row["name"] = str(user.full_name or "")[:100]
-                    row["username"] = str(user.username or "")[:64]
 
         recent_rows.sort(key=lambda row: row["last_seen_at"] or datetime.min.replace(tzinfo=timezone.utc), reverse=True)
 

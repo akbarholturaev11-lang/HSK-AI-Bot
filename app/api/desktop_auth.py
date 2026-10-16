@@ -53,6 +53,7 @@ class DesktopLinkStartRequest(BaseModel):
     platform: Literal["macos", "windows"]
     app_version: AppVersion
     installation_key: InstallationKey
+    language: Literal["uz", "ru", "tj"] | None = None
 
 
 class DesktopLinkStatusRequest(BaseModel):
@@ -152,6 +153,7 @@ def create_desktop_auth_router(
                     platform=payload.platform,
                     app_version=payload.app_version,
                     installation_key=payload.installation_key.get_secret_value(),
+                    language=payload.language,
                 )
             return JSONResponse(
                 content=result,

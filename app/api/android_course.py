@@ -663,9 +663,7 @@ def create_android_course_router(
                 context = await DesktopAuthService(session, settings_obj).authenticate(
                     bearer_access_token(request),
                 )
-                user = await UserRepository(session).get_by_telegram_id(
-                    int(context.user.telegram_id),
-                )
+                user = context.user
                 language = getattr(user, "language", None)
 
             version = dictionary_version()
