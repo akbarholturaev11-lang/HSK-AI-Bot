@@ -15,7 +15,7 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 
 ## Data model and business logic
 
-- `users` is the internal learner account, keyed by unique `telegram_id`. Subscription state includes `status`, `payment_status`, `start_date`, and `end_date`; there is no `subscription_until` column.
+- `users.id` is the canonical learner account key; unique `telegram_id` is optional and always a real Telegram identity. Subscription state includes `status`, `payment_status`, `start_date`, and `end_date`; there is no `subscription_until` column.
 - `payments` records the learner, plan, amount/currency, `payment_status`, submission/review timestamps, and payment evidence or discount metadata. Check `app/db/models/payment.py` for the current schema before changing payment code.
 - Paid access requires approved payment state and an unexpired `end_date`. `app/services/subscription_service.py` owns paid-term activation and renewal; `app/services/user_access_state_service.py` distinguishes paid access from temporary trials and free/expired states.
 - Temporary trial and referral benefits are not paid billing records. Keep their access predicates distinct from paid subscription checks.
@@ -23,6 +23,13 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 - Course progress, attempts, learner state, mistakes/mastery, XP, and AI budgets are represented by separate model families and services. Preserve server-owned result and access decisions across clients.
 - `user_identities` links Google/Apple provider identities to `users.id`. Match accounts by provider subject identity; email/display metadata is not proof of ownership and must not be used to merge accounts.
 - Verified account-deletion requests enter `account_deletion_requests` via migration `0101_account_deletion_requests`; each account can have one active request with a 30-day processing target. Purging requires an explicit operator action, and documented financial-retention exceptions remain. Deletion does not cancel external-store renewals; see `docs/ACCOUNT_DELETION_OPERATIONS.md`.
+
+## Native account identity
+- Google/Apple first sign-in creates `users.id` only after existing OIDC verification; a known `(provider, subject_hash)` signs into its owner. Telegram private-chat approval can create a new Telegram learner. Email equality and a bound installation never authorize account merging/linking; no fake Telegram ID is stored.
+- Native learning, profile, progress, trial/risk, ad caps, AI budgets, voice and notices use canonical user ownership. Legacy integer service arguments remain real Telegram IDs. Missing Telegram metadata must never become an ownership query matching all NULL rows.
+- Migrations `0102`–`0104` make Telegram metadata nullable, backfill canonical owners, add canonical dedupe constraints and AI/voice FKs. Downgrade refuses native data. Existing starter access policy, paid dates, trial eligibility, billing amounts and referral rules remain authoritative.
+- Identity changes serialize on the user row and cannot remove the last sign-in method. Approved sign-in proofs retain the exact identity ID; native link proofs retain their originating session ID and are revalidated before use. Blocked accounts cannot refresh; raw session validation remains available for the narrow account-deletion path.
+- Existing manual payment and referral flows still require a real Telegram identity and return explicit availability errors for provider-only accounts. This does not introduce store billing or automatic Telegram attachment. Rollout/test details: `docs/UNIVERSAL_NATIVE_ACCOUNTS.md`.
 
 ## Important decisions and operational caveats
 

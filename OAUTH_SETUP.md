@@ -1,7 +1,11 @@
 # Google / Apple kirishni yoqish
 
-Kod tayyor va productionda. Faqat credential'lar yo'q, shuning uchun tugmalar
-ko'rinmaydi (fail-closed). Quyidagilarni to'ldirgach o'zi ochiladi.
+Provider tugmalari serverdagi konfiguratsiya to'liq bo'lgandagina ko'rinadi
+(fail-closed). Quyida sozlash tartibi keltirilgan; bu hujjat production
+credential'lari yoki real callback hozir tekshirilganini bildirmaydi.
+
+Universal akkaunt yaratish, migratsiya va release tekshiruvlari:
+[`docs/UNIVERSAL_NATIVE_ACCOUNTS.md`](docs/UNIVERSAL_NATIVE_ACCOUNTS.md).
 
 Production domeni: `telegram-chinese-bot-production.up.railway.app`
 
