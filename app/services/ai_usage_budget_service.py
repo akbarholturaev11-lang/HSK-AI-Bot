@@ -198,6 +198,12 @@ class AIUsageBudgetService:
         existing = await self.get_active_budget(int(user.telegram_id))
         if existing:
             starts_at = max(now, self._as_utc(existing.ends_at))
+        # A paid subscriber may have no tracked AI budget (legacy/imported
+        # grants). The receipt preview must never preempt their paid term.
+        if (getattr(user, "status", None) == "active"
+                and getattr(user, "payment_status", None) == "approved"
+                and getattr(user, "end_date", None)):
+            starts_at = max(starts_at, self._as_utc(user.end_date))
         budget = AIUsageBudget(
             user_telegram_id=int(user.telegram_id),
             payment_id=int(payment.id),
