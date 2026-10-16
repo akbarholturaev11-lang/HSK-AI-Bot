@@ -26,7 +26,7 @@ def table(table_name, *, migrated=False, mutate=None):
         row.update(payment_preview_available=False, payment_preview_payment_id=73)
     if table_name in helper.OWNERS:
         row[helper.OWNERS[table_name]] = 1001
-        if table_name in helper.FOUNDATION or migrated:
+        if table_name not in helper.NEW_OWNER_COLUMNS or migrated:
             row["user_id"] = 7 if migrated else None
         if table_name in helper.DEDUPE:
             row.update({helper.DEDUPE[table_name]: "opened", "dedupe_key": "dedupe"})
@@ -35,7 +35,7 @@ def table(table_name, *, migrated=False, mutate=None):
         if migrated:
             row.update(language=None, bind_session_id=None, approved_identity_id=None)
     baseline_columns = sorted(name for name in row if not (
-        migrated and ((table_name in helper.AI_VOICE and name == "user_id") or
+        migrated and ((table_name in helper.NEW_OWNER_COLUMNS and name == "user_id") or
                       (table_name == "desktop_link_requests" and name in ("language", "bind_session_id", "approved_identity_id")))))
     if mutate:
         mutate(row)
@@ -58,7 +58,7 @@ def snapshots():
         after_schema[name + "." + column]["nullable"] = True
     for name in ("language", "bind_session_id", "approved_identity_id"):
         after_schema["desktop_link_requests." + name] = {"type": "varchar", "nullable": True}
-    for name in helper.AI_VOICE:
+    for name in helper.NEW_OWNER_COLUMNS:
         after_schema[name + ".user_id"] = {"type": "int4", "nullable": True}
     def report(tables, schema, migrated):
         constraints = {"users.users_telegram_id_key": {"kind": "u", "columns": ["telegram_id"], "definition_digest": "unique-tg"},
@@ -146,7 +146,7 @@ class DestinationSafetyTests(unittest.TestCase):
 class PreservationTests(unittest.TestCase):
     def test_current_preview_inventory_is_required_and_stale_inventory_is_refused(self):
         self.assertEqual(helper.BASE_REVISION, "0102_payment_review_preview")
-        self.assertEqual(helper.HEAD_REVISION, "0105_native_ai_voice_ownership")
+        self.assertEqual(helper.HEAD_REVISION, "0106_canonical_payment_ownership")
         before, _ = snapshots()
         inventory = {"read_only": True, "alembic_revisions": [helper.BASE_REVISION], "columns": [
             {"table_name": name.split(".")[0], "column_name": name.split(".")[1]}
@@ -235,7 +235,7 @@ class PreservationTests(unittest.TestCase):
 
     def test_unexpected_schema_change_and_owner_conflict_block(self):
         before, after = snapshots()
-        after["column_schema"]["payments.user_telegram_id"] = {"type": "int8", "nullable": True}
+        after["column_schema"]["payments.unexpected_provider_key"] = {"type": "int8", "nullable": True}
         before["tables"]["trial_risk_events"]["owners"]["existing_owner_conflicts"] = 1
         failures = helper.compare_snapshots(before, after, "migration")["failures"]
         self.assertIn("unexpected_schema_columns", failures)
@@ -273,6 +273,32 @@ class PreservationTests(unittest.TestCase):
         for row_id in (1, 2):
             summary.add({"id": row_id, "user_id": None, "telegram_id": 1001, "event_name": "opened", "dedupe_key": "same"})
         self.assertEqual(summary.finish()["owners"]["canonical_duplicate_groups"], 1)
+
+    def test_payment_owner_and_entry_backfills_and_financial_values_are_required(self):
+        for table_name in ("payments", "subscription_entry_events"):
+            before, after = snapshots()
+            after["tables"][table_name]["owners"]["actual_digest"] = "wrong-or-missing-owner"
+            with self.subTest(table=table_name):
+                self.assertIn("owner_backfill:" + table_name, helper.compare_snapshots(before, after, "migration")["failures"])
+        before, after = snapshots()
+        after["tables"]["payments"]["migration_legacy_digest"] = "changed-approved-amount-or-status"
+        self.assertIn("rows_changed:payments", helper.compare_snapshots(before, after, "migration")["failures"])
+
+    def test_payment_index_column_and_nullable_metadata_cannot_be_missing(self):
+        for kind, name in (("index_metadata", "payments.ix_payments_user_id"),
+                           ("column_schema", "payments.user_id"),
+                           ("column_schema", "subscription_entry_events.telegram_id")):
+            before, after = snapshots()
+            del after[kind][name]
+            with self.subTest(missing=name):
+                self.assertFalse(helper.compare_snapshots(before, after, "migration")["ok"])
+
+    def test_anonymized_financial_sentinels_cannot_be_backfilled_as_real_identities(self):
+        summary = helper.TableSummary("payments", ["id", "user_telegram_id"],
+            ["id", "user_telegram_id"], {-7: 99, 1001: 7}, KEY, True)
+        summary.add({"id": 1, "user_telegram_id": -7})
+        summary.add({"id": 2, "user_telegram_id": 1001})
+        self.assertEqual(summary.finish()["owners"]["backfillable_rows"], 1)
 
     def test_multiset_digest_is_deterministic_and_duplicate_sensitive(self):
         values = [datetime(2026, 10, 16, tzinfo=timezone.utc), Decimal("12.00"), b"private"]

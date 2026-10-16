@@ -411,7 +411,7 @@ class UserRepository:
 
         Barcha amallar caller ochgan BITTA DB transaction ichida bajariladi.
         """
-        from sqlalchemy import delete as sql_delete, false, update as sql_update
+        from sqlalchemy import and_, delete as sql_delete, false, update as sql_update
 
         from app.db.models.account_notice_delivery import AccountNoticeDelivery
         from app.db.models.ad_campaign import AdCampaignDelivery
@@ -458,6 +458,7 @@ class UserRepository:
         from app.db.models.user_client_presence import AppPromoState, UserClientPresence
         from app.db.models.user_identity import UserIdentity
         from app.db.models.voice_practice_session import VoicePracticeSession
+        from app.services.account_identity import owner_clause
 
         # Both entry points already hold the users row lock. Commit/rollback
         # remains owned by the caller.
@@ -490,15 +491,23 @@ class UserRepository:
         # Manfiy users.id real Telegram user ID bo'la olmaydi va har bir o'chirilgan
         # account uchun unique bo'ladi.
         anonymous_telegram_id = -uid
+        payment_owner = owner_clause(Payment, user)
         approved_payment_ids = select(Payment.id).where(
-            telegram_match(Payment.user_telegram_id),
+            payment_owner,
             Payment.payment_status == "approved",
+        )
+        other_canonical_payment_ids = select(Payment.id).where(
+            Payment.user_id.is_not(None), Payment.user_id != uid,
         )
         await self.session.execute(
             sql_update(PortfolioTransaction)
             .where(
                 or_(
-                    telegram_match(PortfolioTransaction.user_telegram_id),
+                    and_(
+                        telegram_match(PortfolioTransaction.user_telegram_id),
+                        or_(PortfolioTransaction.payment_id.is_(None),
+                            PortfolioTransaction.payment_id.not_in(other_canonical_payment_ids)),
+                    ),
                     PortfolioTransaction.payment_id.in_(approved_payment_ids),
                 )
             )
@@ -507,10 +516,11 @@ class UserRepository:
         await self.session.execute(
             sql_update(Payment)
             .where(
-                telegram_match(Payment.user_telegram_id),
+                payment_owner,
                 Payment.payment_status == "approved",
             )
             .values(
+                user_id=None,
                 user_telegram_id=anonymous_telegram_id,
                 screenshot_file_id=None,
                 admin_comment=None,
@@ -522,7 +532,7 @@ class UserRepository:
         # Draft/pending/rejected payment account state; accountingga kirmaydi.
         await self.session.execute(
             sql_delete(Payment).where(
-                telegram_match(Payment.user_telegram_id),
+                payment_owner,
                 Payment.payment_status != "approved",
             )
         )
@@ -688,10 +698,7 @@ class UserRepository:
         )
         await self.session.execute(
             sql_delete(SubscriptionEntryEvent).where(
-                or_(
-                    SubscriptionEntryEvent.user_id == uid,
-                    telegram_match(SubscriptionEntryEvent.telegram_id),
-                )
+                owner_clause(SubscriptionEntryEvent, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(

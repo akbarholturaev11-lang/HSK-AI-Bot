@@ -29,7 +29,7 @@ from urllib.parse import parse_qsl, unquote, urlsplit
 
 
 BASE_REVISION = "0102_payment_review_preview"
-HEAD_REVISION = "0105_native_ai_voice_ownership"
+HEAD_REVISION = "0106_canonical_payment_ownership"
 FOUNDATION = {
     "account_notice_deliveries": "telegram_id",
     "conversion_funnel_events": "telegram_id",
@@ -40,14 +40,16 @@ FOUNDATION = {
 }
 AI_VOICE = {name: "user_telegram_id" for name in (
     "ai_usage_budgets", "ai_usage_events", "voice_practice_sessions")}
-OWNERS = FOUNDATION | AI_VOICE
+PURCHASE = {"payments": "user_telegram_id", "subscription_entry_events": "telegram_id"}
+OWNERS = FOUNDATION | AI_VOICE | PURCHASE
+NEW_OWNER_COLUMNS = set(AI_VOICE) | {"payments"}
 DEDUPE = {"course_miniapp_events": "event_name", "course_user_notifications": "key"}
 NEW_UNIQUES = {table: ("uq_" + table + "_user_" + ("event" if field == "event_name" else "key") + "_dedupe",
                        ["user_id", field, "dedupe_key"]) for table, field in DEDUPE.items()}
 ADDED_CONSTRAINTS = {table + "." + name for table, (name, fields) in NEW_UNIQUES.items()} | {
     table + ".fk_" + table + "_user_id" for table in AI_VOICE}
 ADDED_INDEXES = {table + "." + name for table, (name, fields) in NEW_UNIQUES.items()} | {
-    table + ".ix_" + table + "_user_id" for table in AI_VOICE}
+    table + ".ix_" + table + "_user_id" for table in NEW_OWNER_COLUMNS}
 NULLABLE = {("users", "telegram_id"), ("desktop_devices", "telegram_id")} | set(OWNERS.items())
 CRITICAL = {
     "billing": ("users", "payments", "portfolio_transactions", "ai_usage_budgets"),
@@ -169,7 +171,7 @@ def validate_inventory(inventory):
         tables.setdefault(table, []).append(name)
     required = {"users": {"id", "telegram_id", "payment_preview_available", "payment_preview_payment_id"}, "desktop_devices": {"telegram_id"},
                 "desktop_link_requests": {"intent", "status"}}
-    required |= {table: {"id", column} | ({"user_id"} if table in FOUNDATION else set())
+    required |= {table: {"id", column} | ({"user_id"} if table not in NEW_OWNER_COLUMNS else set())
                  for table, column in OWNERS.items()}
     for group in CRITICAL.values():
         for table in group:
@@ -210,7 +212,7 @@ class TableSummary:
         if self.table in OWNERS:
             tid = row[OWNERS[self.table]]
             actual = row.get("user_id")
-            matched = self.users.get(tid) if tid is not None else None
+            matched = self.users.get(tid) if tid is not None and (self.table not in PURCHASE or tid > 0) else None
             expected = actual if actual is not None else matched
             self.backfillable += int(actual is None and matched is not None)
             self.unresolved += int(actual is None and tid is not None and matched is None)
@@ -324,6 +326,13 @@ async def collect_snapshot(connection, inventory, key):
                                   row["definition"] == "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE" for row in constraints)
         migration_contract &= column_lookup.get((table, "user_id"), {}).get("column_default") is None
         migration_contract &= index_lookup.get((table, "ix_" + table + "_user_id")) == f"CREATE INDEX ix_{table}_user_id ON public.{table} USING btree (user_id)"
+    migration_contract &= schema.get("payments.user_id") == {"type": "int4", "nullable": True}
+    migration_contract &= column_lookup.get(("payments", "user_id"), {}).get("column_default") is None
+    migration_contract &= index_lookup.get(("payments", "ix_payments_user_id")) == "CREATE INDEX ix_payments_user_id ON public.payments USING btree (user_id)"
+    # Retained financial facts are explicitly anonymized by account purge;
+    # no account FK may cascade their deletion or silently change this policy.
+    migration_contract &= not any(row["table_name"] == "payments" and row["type"] == "f"
+                                  and "user_id" in row["columns"] for row in constraints)
     critical = {group: digest(key, {table: tables[table]["migration_legacy_digest"] for table in names})
                 for group, names in CRITICAL.items()}
     preflight = [reason + ":" + table for table, summary in tables.items() if table in OWNERS
@@ -383,7 +392,7 @@ def compare_snapshots(before, after, mode):
             if after["column_metadata"].get(column) != before["column_metadata"].get(column):
                 failures.append("legacy_column_modifiers_changed:" + column)
         added = {"desktop_link_requests." + name for name in ("language", "bind_session_id", "approved_identity_id")}
-        added |= {table + ".user_id" for table in AI_VOICE}
+        added |= {table + ".user_id" for table in NEW_OWNER_COLUMNS}
         if set(after["column_schema"]) != set(before["column_schema"]) | added:
             failures.append("unexpected_schema_columns")
         for name, definition in before["constraint_metadata"].items():
