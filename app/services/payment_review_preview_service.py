@@ -47,7 +47,7 @@ class PaymentReviewPreviewService:
 
     async def review(self, user, payment, *, approved: bool) -> None:
         """Called only after a payment status transition succeeds (same transaction)."""
-        if not user or not payment or payment.plan_type not in PLAN_DURATIONS:
+        if not user or not payment or getattr(payment, "plan_type", None) not in PLAN_DURATIONS:
             return
         result = await self.session.execute(
             select(User).where(User.telegram_id == int(user.telegram_id))
