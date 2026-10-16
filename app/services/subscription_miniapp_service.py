@@ -26,6 +26,7 @@ from app.services.payment_qr_code_service import (
     SUBSCRIPTION_DISCOUNT_20_QR_SCOPE,
 )
 from app.services.payment_service import PaymentService
+from app.services.payment_review_preview_service import PaymentReviewPreviewService
 from app.services.subscription_currency_service import SubscriptionCurrencyService
 from app.services.subscription_price_service import PLANS, SubscriptionPriceService
 from app.services.support_contact_service import get_admin_contact_url
@@ -441,6 +442,9 @@ class SubscriptionMiniAppService:
             return {"ok": False, "error": "admin_notification_failed"}
         if file_id:
             payment.screenshot_file_id = file_id
+        # Claim only AFTER admins actually receive the receipt. Rollback on
+        # failed delivery must not spend the one-time opportunity.
+        await PaymentReviewPreviewService(self.session).claim(user, payment)
         await self.session.commit()
 
         provisional_access = (
