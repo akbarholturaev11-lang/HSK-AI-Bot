@@ -26,7 +26,7 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 
 ## Important decisions and operational caveats
 
-- Localization expansion is **local-first**: author shared translations centrally in GitHub, then generate bundled Android/Mini App/Desktop resources and local Bot/backend catalogs at build/deploy time; never require a per-UI-string runtime API. Keep existing `uz/ru/tj`, native source IDs, entitlements, and client backward compatibility while migrating incrementally. See `docs/I18N_LOCAL_FIRST_WORKPLAN.md` and `localization/surface_registry.json` (preparation stage only).
+- Localization expansion is **local-first**: author shared translations centrally in GitHub, then generate bundled Android/Mini App/Desktop resources and local Bot/backend catalogs at build/deploy time; never require a per-UI-string runtime API. Keep existing `uz/ru/tj`, native source IDs, entitlements, and client backward compatibility while migrating incrementally. **Continue from `localization/PLAN_SCHEMA_ORDER.md` first** (plan, schema, phase order and verified status), then `docs/I18N_LOCAL_FIRST_WORKPLAN.md` and `localization/surface_registry.json`. Preparation stage only.
 - Keep the HSK course and canonical lesson order/content at the center of the product. Supporting features should not replace the learning path.
 - Mini App `朱雀` is a brand league; Android XP tiers remain the server-defined progression. These are separate representations, not interchangeable ranks.
 - Each Android release must use a `versionCode` greater than the latest published release; it need not increase by exactly one. Verify the artifact against the release manifest because the current workflow does not reject every equal-code/different-artifact case.

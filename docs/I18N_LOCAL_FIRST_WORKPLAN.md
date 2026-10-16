@@ -6,6 +6,7 @@
 **Source-of-truth decision:** edit translations once in GitHub; build **separate local artifacts**
 for Android, Mini App, Desktop and Python bot/backend. No per-string translation API.
 
+**Primary continuation checklist and phase/status ledger:** `localization/PLAN_SCHEMA_ORDER.md`.
 This document is an execution plan, NOT a claim that the migration is done.
 Previous architectural context: `docs/I18N_MULTILANGUAGE_MIGRATION.md`.
 Surface register: `localization/surface_registry.json`.
