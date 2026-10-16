@@ -2,6 +2,7 @@ from typing import Optional
 
 from app.repositories.payment_repo import PaymentRepository
 from app.repositories.user_repo import UserRepository
+from app.services.payment_review_preview_service import PaymentReviewPreviewService
 from app.services.discount_service import DiscountService
 from app.services.subscription_price_service import SubscriptionPriceService
 
@@ -193,6 +194,7 @@ class PaymentService:
             discount_title=checkout_info["discount_title"],
             discount_details=checkout_info["discount_details"],
         )
+        await PaymentReviewPreviewService(self.session).claim(user, payment)
         await self.session.commit()
         return payment, ""
 
@@ -236,6 +238,7 @@ class PaymentService:
                 discount_title=checkout_info["discount_title"],
                 discount_details=checkout_info["discount_details"],
             )
+            await PaymentReviewPreviewService(self.session).claim(user, draft_payment)
             await self.session.commit()
             return draft_payment, "updated"
 
