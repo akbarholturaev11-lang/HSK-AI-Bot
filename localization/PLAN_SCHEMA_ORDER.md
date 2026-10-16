@@ -172,11 +172,25 @@ Do not mark implementation complete based on the plan being written.
 | Isolated branch from main | DONE | branch exists |
 | Local-first architecture decision | DONE | plan + `PROJECT_MEMORY.md` |
 | Surface source registry | INITIAL | `localization/surface_registry.json` |
-| Full reviewed inventory/baselines (P0) | NOT STARTED | pending |
+| Full reviewed inventory/baselines (P0) | IN PROGRESS | supplemental source audit + git-blob baseline created; manual review, runtime screenshots and full scope still pending |
 | Generated canonical catalogs + validators (P1) | NOT STARTED | pending |
 | Platform runtime migrations (P2) | NOT STARTED | pending |
 | Versioned lesson locale overlays (P3) | NOT STARTED | pending |
 | Any new language enabled (P4) | NOT STARTED | prohibited until gates |
+
+### P0 progress (evidence at the time of this update)
+
+- Supplementary read-only scanner: `scripts/i18n_source_audit.py`
+  (nested UI files, Python Bot copy, Android direct/play resource parity,
+  JSON placeholders, file SHA-256 and registry anchors).
+- Scanner regression tests: `tests/test_i18n_source_audit.py`.
+- Source byte freeze: `localization/baselines/source_git_blobs.json`.
+  It snapshots 746 current HSK 2.0/3.0 lesson JSON files plus
+  8 legacy content files, 54 UI catalog source files
+  and 3 generator/audit sources from baseline commit
+  `160a51d69f3324e3162375213ec61b5587b19533`. This proves *file identity at baseline*, not semantic correctness.
+- P0 remains **IN PROGRESS**. Do not activate a new language; screenshot,
+  device/offline, manual translation and access-security review is outstanding.
 
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
