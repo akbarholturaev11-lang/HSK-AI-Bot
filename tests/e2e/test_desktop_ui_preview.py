@@ -32,6 +32,7 @@ def _install_native_fixture(
     is_paid=True,
     pending_payment=None,
     local_ai_ready=False,
+    provider_only=False,
 ):
     lesson_rows = []
     for lesson_order in sorted(lessons):
@@ -51,6 +52,7 @@ def _install_native_fixture(
             }
         )
     fixture = {
+        "providerOnly": provider_only,
         "lessons": {str(key): value for key, value in lessons.items()},
         "delays": {str(key): value for key, value in (delays or {}).items()},
         "update": update
@@ -130,13 +132,13 @@ def _install_native_fixture(
                       is_paid: paid,
                       expires_at: paid ? "2026-12-31T00:00:00Z" : null
                     }},
-                    checkout_allowed: !paid && !pending,
-                    read_only_reason: paid
+                    checkout_allowed: !fixture.providerOnly && !paid && !pending,
+                    read_only_reason: fixture.providerOnly ? "payment_telegram_required" : paid
                       ? "desktop_subscription_active"
                       : pending ? "desktop_subscription_pending" : null,
-                    attempt_id: !paid && !pending ? "desktop-e2e-attempt-1234" : null,
+                    attempt_id: !fixture.providerOnly && !paid && !pending ? "desktop-e2e-attempt-1234" : null,
                     pending_payment: pending,
-                    prices: !paid && !pending ? {{
+                    prices: !fixture.providerOnly && !paid && !pending ? {{
                       visa: {{
                         "10_days": {{ final_amount: 45, currency: "TJS", discount_applied: false }},
                         "1_month": {{ final_amount: 95, currency: "TJS", discount_applied: false }},
@@ -532,6 +534,69 @@ def test_explicit_telegram_link_flow(desktop_ui_url, browser_page):
     assert errors == []
 
 
+@pytest.mark.parametrize("platform,provider,language", [("macos", "google", "ru"), ("windows", "apple", "tj")])
+def test_provider_signin_keeps_language_and_retry_on_both_platforms(
+    desktop_ui_url, browser_page, platform, provider, language,
+):
+    page, errors = browser_page
+    page.add_init_script(script=f"""
+      window.__AUTH_CALLS = [];
+      window.__TAURI__ = {{ core: {{ invoke: async (command, args = {{}}) => {{
+        window.__AUTH_CALLS.push({{ command, args }});
+        if (command === 'desktop_app_info') return {{ productName: 'HSK AI', version: 'test', platform: '{platform}' }};
+        if (command === 'desktop_auth_status') return {{ linked: false }};
+        if (command === 'desktop_oauth_providers') return {{ providers: ['google', 'apple'] }};
+        if (command === 'desktop_oauth_start') {{
+          if (window.__AUTH_CALLS.filter(c => c.command === command).length === 1) throw new Error('oauth_exchange_failed');
+          return {{ status: 'pending', displayCode: '', expiresIn: 300 }};
+        }}
+        if (command === 'desktop_oauth_open') return {{ ok: true }};
+        if (command === 'desktop_link_poll') return {{ status: 'pending' }};
+        throw new Error('desktop_operation_not_allowed');
+      }} }} }};
+    """)
+    page.goto(desktop_ui_url, wait_until="networkidle")
+    page.locator("#auth-screen").wait_for(state="visible")
+    page.locator("#auth-language").select_option(language)
+    page.locator(f"#auth-{provider}").click()
+    page.locator("#retry-link").wait_for(state="visible")
+    page.locator("#retry-link").click()
+    playwright.expect(page.locator("#auth-language")).to_be_disabled()
+    playwright.expect(page.locator("#auth-code-wrap")).to_be_hidden()
+    playwright.expect(page.locator("#auth-steps")).to_be_hidden()
+    playwright.expect(page.locator("#open-telegram")).to_be_hidden()
+    page.wait_for_function("window.__AUTH_CALLS.some(c => c.command === 'desktop_oauth_open')")
+    starts = page.evaluate("window.__AUTH_CALLS.filter(c => c.command === 'desktop_oauth_start')")
+    assert len(starts) == 2
+    assert all(call["args"] == {"provider": provider, "language": language} for call in starts)
+    assert errors == []
+
+
+def test_auth_start_blocks_competing_provider_until_native_reply(desktop_ui_url, browser_page):
+    page, errors = browser_page
+    page.add_init_script(script="""
+      window.__AUTH_CALLS = [];
+      window.__TAURI__ = { core: { invoke: async (command, args = {}) => {
+        window.__AUTH_CALLS.push({ command, args });
+        if (command === 'desktop_app_info') return { productName: 'HSK AI', version: 'test', platform: 'macos' };
+        if (command === 'desktop_auth_status') return { linked: false };
+        if (command === 'desktop_oauth_providers') return { providers: ['google', 'apple'] };
+        if (command === 'desktop_link_start') return new Promise(resolve => { window.__RELEASE_START = () => resolve({ status: 'pending', displayCode: 'HSK4827X', expiresIn: 300 }); });
+        if (command === 'desktop_link_poll') return { status: 'pending' };
+        throw new Error('desktop_operation_not_allowed');
+      } } };
+    """)
+    page.goto(desktop_ui_url, wait_until="networkidle")
+    page.locator("#start-link").click()
+    playwright.expect(page.locator("#auth-google")).to_be_disabled()
+    playwright.expect(page.locator("#auth-apple")).to_be_disabled()
+    page.locator("#auth-google").dispatch_event("click")
+    assert page.evaluate("window.__AUTH_CALLS.filter(c => c.command === 'desktop_oauth_start').length") == 0
+    page.evaluate("window.__RELEASE_START()")
+    playwright.expect(page.locator("#auth-code-wrap")).to_be_visible()
+    assert errors == []
+
+
 def test_desktop_subscription_checkout_becomes_pending(
     desktop_ui_url,
     browser_page,
@@ -575,6 +640,19 @@ def test_desktop_subscription_checkout_becomes_pending(
     page.locator("#payment-submit").click()
     page.get_by_role("heading", name="To‘lov yuborildi").wait_for()
     assert page.evaluate("window.__DESKTOP_FIXTURE__.subscription.submissions") == 1
+    assert errors == []
+
+
+def test_provider_only_checkout_explains_existing_payment_boundary(desktop_ui_url, browser_page):
+    page, errors = browser_page
+    _install_native_fixture(page, {1: _lesson_payload(1, [])}, is_paid=False, provider_only=True)
+    page.goto(desktop_ui_url, wait_until="networkidle")
+    page.locator("#workspace").wait_for(state="visible")
+    page.locator("#show-subscription").click()
+    page.get_by_text("To‘lov uchun Telegram bilan bog‘langan hisob talab qilinadi.", exact=False).wait_for()
+    assert page.locator('[data-testid="subscription-plan"]').count() == 0
+    assert page.locator("#payment-submit").count() == 0
+    assert page.evaluate("window.__DESKTOP_FIXTURE__.subscription.submissions") == 0
     assert errors == []
 
 

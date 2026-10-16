@@ -28,6 +28,8 @@ const dom = {
   auth: $("#auth-screen"),
   authTitle: $("#auth-title"),
   authDescription: $("#auth-description"),
+  authLanguage: $("#auth-language"),
+  authSteps: $("#auth-steps"),
   authCodeWrap: $("#auth-code-wrap"),
   authCodeLabel: $("#auth-code-label"),
   authCode: $("#auth-code"),
@@ -136,6 +138,9 @@ const state = {
   authPollTimer: null,
   authPolling: false,
   authLinkedPending: false,
+  authProvider: "telegram",
+  authGeneration: 0,
+  authStarting: false,
   telegramOpened: false,
   pendingBootstrap: null,
   railOpen: false,
@@ -319,6 +324,8 @@ function applyStaticText() {
   dom.bootMessage.textContent = t("appPreparing");
   dom.authTitle.textContent = t("authTitle");
   dom.authDescription.textContent = t("authDescription");
+  dom.authLanguage.setAttribute("aria-label", t("interfaceLanguage"));
+  dom.authLanguage.value = getLanguage();
   dom.authCodeLabel.textContent = t("authCodeLabel");
   dom.authStep1.textContent = t("authStep1");
   dom.authStep2.textContent = t("authStep2");
@@ -792,11 +799,16 @@ function clearAuthTimers() {
 
 function resetAuthForm() {
   clearAuthTimers();
+  state.authGeneration += 1;
+  state.authStarting = false;
   state.authDeadline = 0;
   state.authLinkedPending = false;
+  state.authProvider = "telegram";
   state.telegramOpened = false;
   state.pendingBootstrap = null;
   dom.authCodeWrap.hidden = true;
+  dom.authSteps.hidden = true;
+  dom.authLanguage.disabled = false;
   dom.authCode.textContent = "";
   dom.authExpiry.textContent = "";
   dom.authStatus.textContent = "";
@@ -883,24 +895,42 @@ function updateAuthCountdown() {
 
 function expireLink(message) {
   clearAuthTimers();
+  state.authGeneration += 1;
+  state.authDeadline = 0;
   dom.authExpiry.textContent = "";
   dom.authStatus.textContent = "";
   dom.authError.textContent = message;
   dom.openTelegram.hidden = true;
   dom.retryLink.hidden = false;
   dom.retryLink.disabled = false;
+  dom.startLink.hidden = false;
+  dom.startLink.disabled = false;
+  dom.authGoogle.disabled = false;
+  dom.authApple.disabled = false;
+  dom.authLanguage.disabled = false;
 }
 
 async function startLink() {
+  if (state.authStarting || state.authPolling || state.authLinkedPending) return;
+  const generation = ++state.authGeneration;
+  state.authStarting = true;
   clearAuthTimers();
+  state.authProvider = "telegram";
   state.telegramOpened = false;
+  dom.authCodeWrap.hidden = true;
+  dom.authSteps.hidden = false;
+  dom.openTelegram.hidden = true;
+  dom.authLanguage.disabled = true;
   dom.authError.textContent = "";
   dom.authStatus.textContent = t("authStarting");
   dom.startLink.disabled = true;
   dom.retryLink.disabled = true;
+  dom.authGoogle.disabled = true;
+  dom.authApple.disabled = true;
 
   try {
-    const result = await desktopBridge.linkStart();
+    const result = await desktopBridge.linkStart(getLanguage());
+    if (generation !== state.authGeneration) return;
     if (
       result?.status !== "pending" ||
       !result.displayCode ||
@@ -921,10 +951,18 @@ async function startLink() {
     state.authCountdownTimer = setInterval(updateAuthCountdown, 1000);
     scheduleLinkPoll(900);
   } catch (error) {
+    if (generation !== state.authGeneration) return;
     dom.startLink.disabled = false;
     dom.retryLink.disabled = false;
+    dom.authLanguage.disabled = false;
     dom.authStatus.textContent = "";
     dom.authError.textContent = errorMessage(error);
+  } finally {
+    if (generation === state.authGeneration) {
+      state.authStarting = false;
+      dom.authGoogle.disabled = false;
+      dom.authApple.disabled = false;
+    }
   }
 }
 
@@ -937,8 +975,17 @@ async function startLink() {
  * holds it and opens the browser itself.
  */
 async function startProviderLink(provider) {
+  if (state.authStarting || state.authPolling || state.authLinkedPending) return;
+  const generation = ++state.authGeneration;
+  state.authStarting = true;
   clearAuthTimers();
+  state.authProvider = provider;
   state.telegramOpened = false;
+  dom.authCodeWrap.hidden = true;
+  dom.authCode.textContent = "";
+  dom.authSteps.hidden = true;
+  dom.openTelegram.hidden = true;
+  dom.authLanguage.disabled = true;
   dom.authError.textContent = "";
   dom.authStatus.textContent = t("authStarting");
   dom.startLink.disabled = true;
@@ -947,7 +994,8 @@ async function startProviderLink(provider) {
   dom.authApple.disabled = true;
 
   try {
-    const result = await desktopBridge.oauthStart(provider);
+    const result = await desktopBridge.oauthStart(provider, getLanguage());
+    if (generation !== state.authGeneration) return;
     if (
       result?.status !== "pending" ||
       !Number.isFinite(Number(result.expiresIn))
@@ -955,6 +1003,7 @@ async function startProviderLink(provider) {
       throw new Error("desktop_link_payload_invalid");
     }
     await desktopBridge.oauthOpen();
+    if (generation !== state.authGeneration) return;
     // A provider row has no display code: nothing to show, nothing to copy.
     dom.authCodeWrap.hidden = true;
     dom.startLink.hidden = true;
@@ -968,12 +1017,17 @@ async function startProviderLink(provider) {
     state.authCountdownTimer = setInterval(updateAuthCountdown, 1000);
     scheduleLinkPoll(2000);
   } catch (error) {
+    if (generation !== state.authGeneration) return;
     dom.startLink.disabled = false;
     dom.retryLink.disabled = false;
     dom.authGoogle.disabled = false;
     dom.authApple.disabled = false;
+    dom.authLanguage.disabled = false;
+    dom.retryLink.hidden = false;
     dom.authStatus.textContent = "";
     dom.authError.textContent = errorMessage(error);
+  } finally {
+    if (generation === state.authGeneration) state.authStarting = false;
   }
 }
 
@@ -1011,13 +1065,17 @@ async function pollLink() {
     return;
   }
   state.authPolling = true;
+  const generation = state.authGeneration;
   try {
     const result = await desktopBridge.linkPoll();
+    if (generation !== state.authGeneration) return;
     if (result?.status === "linked") {
       clearAuthTimers();
       dom.authError.textContent = "";
       dom.authStatus.textContent = t("authLinked");
       state.authLinkedPending = true;
+      dom.authGoogle.disabled = true;
+      dom.authApple.disabled = true;
       state.pendingBootstrap = result.bootstrap || null;
       dom.openTelegram.hidden = true;
       dom.retryLink.hidden = false;
@@ -1035,6 +1093,7 @@ async function pollLink() {
     }
     scheduleLinkPoll();
   } catch (error) {
+    if (generation !== state.authGeneration) return;
     if (
       error?.code === "desktop_link_expired" ||
       Date.now() >= state.authDeadline
@@ -1050,19 +1109,22 @@ async function pollLink() {
       scheduleLinkPoll(3500);
     }
   } finally {
-    state.authPolling = false;
+    if (generation === state.authGeneration) state.authPolling = false;
   }
 }
 
 async function resumeLinkedBootstrap() {
+  const generation = state.authGeneration;
   dom.retryLink.disabled = true;
   try {
     const bootstrap =
       state.pendingBootstrap || (await desktopBridge.bootstrap());
+    if (generation !== state.authGeneration) return;
     state.pendingBootstrap = null;
     state.authLinkedPending = false;
     await enterWorkspace(bootstrap);
   } catch (error) {
+    if (generation !== state.authGeneration) return;
     if (isSessionError(error)) {
       showAuth({ expired: true });
       return;
@@ -4601,8 +4663,9 @@ function renderCourseError(error) {
 // through to the generic message: the reason is either not actionable by the
 // learner, or would help someone tune a forgery.
 const PROVIDER_ERROR_TEXT = Object.freeze({
-  oauth_telegram_account_required: "authNeedsTelegram",
   user_blocked: "accessBlocked",
+  payment_telegram_required: "paymentTelegramRequired",
+  desktop_referral_telegram_required: "referralTelegramRequired",
 });
 const PROVIDER_FAILURE_CODES = new Set([
   "oauth_state_invalid",
@@ -6002,9 +6065,17 @@ function bindEvents() {
     if (document.visibilityState === "visible") refreshDesktopSyncOnFocus();
   });
   dom.startLink.addEventListener("click", startLink);
+  dom.authLanguage.addEventListener("change", () => {
+    const language = normalizeLanguage(dom.authLanguage.value);
+    setUiLanguage(language);
+    saveLanguage(language);
+    applyStaticText();
+  });
   dom.retryLink.addEventListener("click", () => {
     if (state.authLinkedPending) {
       resumeLinkedBootstrap();
+    } else if (state.authProvider !== "telegram") {
+      startProviderLink(state.authProvider);
     } else {
       startLink();
     }

@@ -6,10 +6,11 @@ The Telegram Mini App, bot, backend and desktop client use one canonical
 account, subscription, referral, course-progress and analytics system. The
 desktop client does not create a second account or payment system.
 
-Google and Apple sign-in are implemented as additional identities linked to the
-same internal user (see "Provider identity" below). A provider login never
-creates a parallel subscription/progress account; linking requires an
-authenticated session, and identities are never reassigned between users.
+Google and Apple resolve an existing verified provider subject or create a new
+canonical user on first sign-in. To reuse an existing account through another
+provider, sign in to that account and explicitly connect the provider first.
+Email equality never merges accounts. Linked identities share that user's
+subscription and progress and are never reassigned between users.
 
 Release availability depends on deployment configuration and release storage.
 Source defaults keep desktop downloads and updates disabled and leave the
@@ -153,8 +154,9 @@ placed in URLs, logs, analytics, local/session storage or JavaScript responses.
 
 ## Provider identity
 
-Google and Apple are additional ways to prove an existing account. They are not
-a second account system and they do not mint their own sessions.
+Google and Apple can create a canonical account on first verified sign-in or
+prove an existing account by provider subject. Explicit linking still requires
+an authenticated account. OAuth callbacks do not mint their own sessions.
 
 - `user_identities` holds one row per `(provider, subject)`. `UNIQUE (provider,
   subject_hash)` makes an identity belong to at most one internal user,
@@ -177,7 +179,7 @@ a second account system and they do not mint their own sessions.
   would turn a provider login into subscription takeover.
 - **A bound device is not consent.** An unrecognised identity arriving on a
   device already signed in as user X is refused with
-  `oauth_telegram_account_required`, never auto-linked. Linking is only ever an
+  `desktop_device_bound_to_other_user`, never auto-linked. Linking is only ever an
   explicit, bearer-authenticated action.
 - **Identities are never reassigned.** A `(provider, subject)` already bound to
   another user returns `oauth_identity_bound_to_other_user`; the row is not
@@ -203,9 +205,17 @@ a second account system and they do not mint their own sessions.
   URL and opens the system browser itself, against a compile-time allowlist of
   `accounts.google.com/o/oauth2/v2/auth` and
   `appleid.apple.com/auth/authorize`.
-- Phase 1 does not create accounts: Telegram remains the only user factory, and
-  an unknown identity is told to sign in with Telegram once and connect the
-  provider from Profile.
+- A verified Google/Apple sign-in on an unbound installation creates a canonical
+  `users.id` and its unique provider identity atomically. Its Telegram ID stays
+  NULL. The selected UZ/RU/TJ language initializes only a new account; existing
+  preferences remain server-owned. Email equality never merges accounts.
+- macOS and Windows share the same provider buttons, pre-auth language selector,
+  Rust browser-opening commands and polling/session flow. Only configured
+  providers are offered. Provider verification never shows a Telegram code.
+- Course, practice, leaderboard, AI and voice ownership use the authenticated
+  canonical User. Existing manual payments and referral attribution still
+  require a real Telegram identity; provider-only accounts receive explicit
+  read-only/unavailable responses rather than synthetic IDs or shared NULL data.
 - The Telegram Mini App can attach a provider from Profile, proving identity
   with fresh `initData` instead of a bearer token. `miniapp` is not a native
   platform: it owns no device, is accepted only on `intent="link"` rows, is

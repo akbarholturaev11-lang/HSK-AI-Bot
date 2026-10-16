@@ -290,6 +290,16 @@ export class DesktopSubscriptionController {
       return;
     }
 
+    if (this.overview.read_only_reason === "payment_telegram_required") {
+      const unavailable = node("section", "subscription-state card-panel");
+      unavailable.append(
+        node("h3", "", this.t("accountAccess")),
+        node("p", "muted", this.t("paymentTelegramRequired")),
+      );
+      this.host.append(unavailable);
+      return;
+    }
+
     this.ensureSelection();
     this.host.append(this.renderCheckout());
   }

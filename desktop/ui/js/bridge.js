@@ -134,13 +134,13 @@ function stableErrorCode(error) {
         : "";
   const normalized = raw.toLowerCase();
   const stableMatch = normalized.match(
-    /\b(desktop|course|auth|link|local_ai|practice|rating|notifications)_[a-z0-9_]{2,72}\b/,
+    /\b(desktop|course|auth|link|oauth|oidc|local_ai|practice|rating|notifications)_[a-z0-9_]{2,72}\b/,
   );
   if (stableMatch) {
     return stableMatch[0];
   }
   const accessMatch = normalized.match(
-    /\b(free_feature_limit_reached|invalid_lesson_order|invalid_language|invalid_screenshot|invalid_practice_session|unknown_training_skill|payment_invalid_plan|payment_details_missing|qr_not_ready|admin_notification_failed|checkout_attempt_not_opened)\b/,
+    /\b(user_blocked|payment_telegram_required|free_feature_limit_reached|invalid_lesson_order|invalid_language|invalid_screenshot|invalid_practice_session|unknown_training_skill|payment_invalid_plan|payment_details_missing|qr_not_ready|admin_notification_failed|checkout_attempt_not_opened)\b/,
   );
   if (accessMatch) {
     return accessMatch[0];
@@ -694,8 +694,10 @@ export const desktopBridge = Object.freeze({
     return invokeCommand(COMMANDS.authStatus);
   },
 
-  linkStart() {
-    return invokeCommand(COMMANDS.linkStart);
+  linkStart(language = null) {
+    return invokeCommand(COMMANDS.linkStart, {
+      language: language == null ? null : assertLanguage(language),
+    });
   },
 
   linkPoll() {
@@ -704,6 +706,24 @@ export const desktopBridge = Object.freeze({
 
   linkOpenTelegram() {
     return invokeCommand(COMMANDS.linkOpenTelegram);
+  },
+
+  oauthProviders() {
+    return invokeCommand(COMMANDS.oauthProviders);
+  },
+
+  oauthStart(provider, language = null) {
+    if (provider !== "google" && provider !== "apple") {
+      throw new DesktopBridgeError("oauth_provider_unsupported");
+    }
+    return invokeCommand(COMMANDS.oauthStart, {
+      provider,
+      language: language == null ? null : assertLanguage(language),
+    });
+  },
+
+  oauthOpen() {
+    return invokeCommand(COMMANDS.oauthOpen);
   },
 
   openExternalUrl(url) {

@@ -23,6 +23,9 @@ const expectedCommands = [
   "desktop_link_start",
   "desktop_link_poll",
   "desktop_link_open_telegram",
+  "desktop_oauth_providers",
+  "desktop_oauth_start",
+  "desktop_oauth_open",
   "desktop_open_external_url",
   "desktop_bootstrap",
   "desktop_logout",
@@ -123,6 +126,27 @@ test("frontend bridge and Rust expose the same named commands", async () => {
   for (const command of expectedCommands) {
     assert.match(bridge, new RegExp(`"${command}"`));
     assert.match(rust, new RegExp(`\\b${command}\\b`));
+  }
+});
+
+test("native signin bridge forwards language and rejects unsupported providers", async () => {
+  const calls = [];
+  globalThis.__TAURI__ = { core: { invoke: async (command, args) => {
+    calls.push({ command, args });
+    return { status: "pending", expiresIn: 300 };
+  } } };
+  try {
+    const { desktopBridge } = await import("./js/bridge.js");
+    await desktopBridge.linkStart("ru");
+    await desktopBridge.oauthStart("apple", "tj");
+    assert.deepEqual(calls, [
+      { command: "desktop_link_start", args: { language: "ru" } },
+      { command: "desktop_oauth_start", args: { provider: "apple", language: "tj" } },
+    ]);
+    assert.throws(() => desktopBridge.oauthStart("unknown", "uz"));
+    assert.throws(() => desktopBridge.oauthStart("google", "en"));
+  } finally {
+    delete globalThis.__TAURI__;
   }
 });
 

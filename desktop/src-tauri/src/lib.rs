@@ -1115,7 +1115,11 @@ fn validate_subscription_prices(value: Option<&Value>) -> Result<(), String> {
             return Err("desktop_subscription_payload_invalid".into());
         };
         for (plan, price) in plans {
-            if !matches!(plan.as_str(), "10_days" | "1_month" | "3_months" | "hsk30_unlock") || !price.is_object() {
+            if !matches!(
+                plan.as_str(),
+                "10_days" | "1_month" | "3_months" | "hsk30_unlock"
+            ) || !price.is_object()
+            {
                 return Err("desktop_subscription_payload_invalid".into());
             }
         }
@@ -1982,7 +1986,10 @@ async fn desktop_auth_status(
 #[tauri::command]
 async fn desktop_link_start(
     state: tauri::State<'_, DesktopState>,
+    language: Option<String>,
 ) -> Result<DesktopLinkDisplay, String> {
+    let language = language.as_deref().map(validate_language).transpose()?;
+    clear_pending_link(&state)?;
     let response = state
         .client
         .post(api_url("/api/v3/desktop-auth/link/start")?)
@@ -1990,6 +1997,7 @@ async fn desktop_link_start(
             "platform": platform()?,
             "app_version": env!("CARGO_PKG_VERSION"),
             "installation_key": installation_key()?,
+            "language": language,
         }))
         .send()
         .await
@@ -2062,46 +2070,65 @@ async fn desktop_link_poll(
         .send()
         .await
         .map_err(|_| "desktop_api_unavailable".to_string())?;
-    let linked: LinkStatusResponse = match decode_response(response).await {
-        Ok(value) => value,
-        Err(error) => {
-            if let Some(status) = terminal_link_status(&error) {
-                clear_pending_link(&state)?;
-                return Ok(DesktopLinkPoll {
-                    status: status.into(),
-                    bootstrap: None,
-                });
-            }
-            return Err(error);
+    let response_result: Result<LinkStatusResponse, String> = decode_response(response).await;
+    let access_token = {
+        // A retry/provider switch may replace the pending request while this
+        // network poll is in flight. A stale reply must never clear that new
+        // request or store credentials for the abandoned flow.
+        let mut current = state
+            .pending_link
+            .lock()
+            .map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+        if current.as_ref().map(|link| link.link_request_id.as_str())
+            != Some(pending.link_request_id.as_str())
+        {
+            return Ok(DesktopLinkPoll {
+                status: "cancelled".into(),
+                bootstrap: None,
+            });
         }
+        let linked = match response_result {
+            Ok(value) => value,
+            Err(error) => {
+                if let Some(status) = terminal_link_status(&error) {
+                    *current = None;
+                    return Ok(DesktopLinkPoll {
+                        status: status.into(),
+                        bootstrap: None,
+                    });
+                }
+                return Err(error);
+            }
+        };
+        if linked.status == "pending" {
+            return Ok(DesktopLinkPoll {
+                status: "pending".into(),
+                bootstrap: None,
+            });
+        }
+        if matches!(linked.status.as_str(), "cancelled" | "expired") {
+            *current = None;
+            return Ok(DesktopLinkPoll {
+                status: linked.status,
+                bootstrap: None,
+            });
+        }
+        if linked.status != "linked" {
+            return Err("desktop_api_invalid_response".into());
+        }
+        let access_token = linked
+            .access_token
+            .filter(|value| (20..=4_096).contains(&value.len()))
+            .ok_or_else(|| "desktop_api_invalid_response".to_string())?;
+        let refresh_token = linked
+            .refresh_token
+            .filter(|value| (32..=512).contains(&value.len()))
+            .ok_or_else(|| "desktop_api_invalid_response".to_string())?;
+        write_credential(KEYRING_REFRESH_ACCOUNT, &refresh_token)?;
+        store_access_token(&state, Some(access_token.clone()))?;
+        *current = None;
+        access_token
     };
-    if linked.status == "pending" {
-        return Ok(DesktopLinkPoll {
-            status: "pending".into(),
-            bootstrap: None,
-        });
-    }
-    if matches!(linked.status.as_str(), "cancelled" | "expired") {
-        clear_pending_link(&state)?;
-        return Ok(DesktopLinkPoll {
-            status: linked.status,
-            bootstrap: None,
-        });
-    }
-    if linked.status != "linked" {
-        return Err("desktop_api_invalid_response".into());
-    }
-    let access_token = linked
-        .access_token
-        .filter(|value| (20..=4_096).contains(&value.len()))
-        .ok_or_else(|| "desktop_api_invalid_response".to_string())?;
-    let refresh_token = linked
-        .refresh_token
-        .filter(|value| (32..=512).contains(&value.len()))
-        .ok_or_else(|| "desktop_api_invalid_response".to_string())?;
-    write_credential(KEYRING_REFRESH_ACCOUNT, &refresh_token)?;
-    store_access_token(&state, Some(access_token.clone()))?;
-    clear_pending_link(&state)?;
     // Linking is already committed and credentials are stored. A transient
     // bootstrap failure must not turn the client back into a consumed-code
     // polling loop; the webview can retry the separate bootstrap command.
@@ -2168,10 +2195,13 @@ async fn desktop_oauth_providers(
 async fn desktop_oauth_start(
     state: tauri::State<'_, DesktopState>,
     provider: String,
+    language: Option<String>,
 ) -> Result<DesktopLinkDisplay, String> {
     if provider != "google" && provider != "apple" {
         return Err("oauth_provider_unsupported".into());
     }
+    let language = language.as_deref().map(validate_language).transpose()?;
+    clear_pending_link(&state)?;
     let response = state
         .client
         .post(api_url("/api/v3/native-auth/oauth/start")?)
@@ -2181,6 +2211,7 @@ async fn desktop_oauth_start(
             "installation_key": installation_key()?,
             "provider": provider,
             "mode": "browser_redirect",
+            "language": language,
         }))
         .send()
         .await
@@ -2286,9 +2317,7 @@ async fn desktop_course_track_switch(
 }
 
 #[tauri::command]
-async fn desktop_hsk30_promo_shown(
-    state: tauri::State<'_, DesktopState>,
-) -> Result<Value, String> {
+async fn desktop_hsk30_promo_shown(state: tauri::State<'_, DesktopState>) -> Result<Value, String> {
     authenticated_post_json(
         &state,
         "/api/v3/desktop/course/hsk30/promo-shown",
@@ -2298,9 +2327,7 @@ async fn desktop_hsk30_promo_shown(
 }
 
 #[tauri::command]
-async fn desktop_sync(
-    state: tauri::State<'_, DesktopState>,
-) -> Result<Value, String> {
+async fn desktop_sync(state: tauri::State<'_, DesktopState>) -> Result<Value, String> {
     authenticated_get_json(&state, "/api/v3/desktop/sync").await
 }
 
@@ -2872,15 +2899,16 @@ mod tests {
     use super::{
         api_url, available_update_status, clear_local_auth_with, course_map_path,
         current_access_token, is_allowed_external_url, is_allowed_oauth_authorize_url,
-        is_allowed_telegram_link,
-        local_ai_analytics_payload, no_update_status, terminal_link_status,
-        validate_checkout_attempt_id, validate_course_level, validate_course_track, validate_event_id, validate_language, validate_lesson_order,
+        is_allowed_telegram_link, local_ai_analytics_payload, no_update_status,
+        terminal_link_status, validate_checkout_attempt_id, validate_course_level,
+        validate_course_track, validate_event_id, validate_language, validate_lesson_order,
         validate_mistakes, validate_subscription_country, validate_subscription_image_data_url,
-        validate_subscription_method, validate_subscription_mode, validate_subscription_overview_response,
-        validate_subscription_plan, validate_subscription_quote_response,
-        validate_subscription_submit_response, validate_tts_text, DesktopLinkDisplay, DesktopState,
-        PendingLink, MAX_MISTAKES, MAX_NATIVE_EVENT_DURATION_MS, MAX_NATIVE_EVENT_SIZE_BYTES,
-        MAX_UPDATE_NOTES_CHARS, MAX_UPDATE_VERSION_CHARS,
+        validate_subscription_method, validate_subscription_mode,
+        validate_subscription_overview_response, validate_subscription_plan,
+        validate_subscription_quote_response, validate_subscription_submit_response,
+        validate_tts_text, DesktopLinkDisplay, DesktopState, PendingLink, MAX_MISTAKES,
+        MAX_NATIVE_EVENT_DURATION_MS, MAX_NATIVE_EVENT_SIZE_BYTES, MAX_UPDATE_NOTES_CHARS,
+        MAX_UPDATE_VERSION_CHARS,
     };
     use serde_json::{json, to_value, Value};
 
@@ -3229,10 +3257,16 @@ mod tests {
     #[test]
     fn desktop_subscription_inputs_are_strictly_bounded() {
         assert_eq!(validate_subscription_plan("1_month"), Ok("1_month"));
-        assert_eq!(validate_subscription_plan("hsk30_unlock"), Ok("hsk30_unlock"));
+        assert_eq!(
+            validate_subscription_plan("hsk30_unlock"),
+            Ok("hsk30_unlock")
+        );
         assert!(validate_subscription_plan("lifetime").is_err());
         assert_eq!(validate_subscription_mode(None), Ok("subscription"));
-        assert_eq!(validate_subscription_mode(Some("hsk30_unlock")), Ok("hsk30_unlock"));
+        assert_eq!(
+            validate_subscription_mode(Some("hsk30_unlock")),
+            Ok("hsk30_unlock")
+        );
         assert!(validate_subscription_mode(Some("admin")).is_err());
         assert_eq!(validate_subscription_method("visa"), Ok("visa"));
         assert!(validate_subscription_method("crypto").is_err());
@@ -3287,6 +3321,12 @@ mod tests {
             }
         });
         assert!(validate_subscription_overview_response(&overview).is_ok());
+        let mut provider_only = overview.clone();
+        provider_only["checkout_allowed"] = json!(false);
+        provider_only["read_only_reason"] = json!("payment_telegram_required");
+        provider_only["attempt_id"] = Value::Null;
+        provider_only["prices"] = json!({});
+        assert!(validate_subscription_overview_response(&provider_only).is_ok());
 
         let quote = json!({
             "ok": true,

@@ -21,10 +21,15 @@
         <section class="auth-card" aria-labelledby="auth-title">
           <span class="panda-mascot panda-badge" aria-hidden="true"></span>
           <p class="eyebrow">HSK AI Desktop</p>
-          <h1 id="auth-title">Telegram akkauntingizni ulang</h1>
+          <h1 id="auth-title">HSK AI’ga kiring yoki ro‘yxatdan o‘ting</h1>
           <p class="muted" id="auth-description">
-            Obuna, daraja va progress bir xil akkauntdan olinadi.
+            Google, Apple yoki Telegram bilan davom eting. Yangi foydalanuvchi uchun hisob avtomatik yaratiladi.
           </p>
+          <select class="setting-select" id="auth-language" aria-label="Til">
+            <option value="uz">O‘zbekcha</option>
+            <option value="ru">Русский</option>
+            <option value="tj">Тоҷикӣ</option>
+          </select>
 
           <div class="auth-code-wrap" id="auth-code-wrap" hidden>
             <span class="auth-code-label" id="auth-code-label">Tasdiqlash kodi</span>
@@ -35,7 +40,7 @@
           </div>
           <p class="auth-expiry" id="auth-expiry"></p>
 
-          <ol class="auth-steps">
+          <ol class="auth-steps" id="auth-steps" hidden>
             <li id="auth-step-1">Telegramni oching.</li>
             <li id="auth-step-2">Ekrandagi 8 belgili kodni bot chatiga qo‘lda yuboring.</li>
             <li id="auth-step-3">Qurilmani tekshirib, tasdiqlash tugmasini bosing.</li>
@@ -43,13 +48,13 @@
 
           <div class="auth-actions">
             <button class="primary-button" id="start-link" type="button">
-              Telegram bilan ulash
+              Telegram bilan davom etish
             </button>
             <button class="primary-button" id="open-telegram" type="button" hidden>
               Telegramni ochish
             </button>
             <button class="secondary-button" id="retry-link" type="button" hidden>
-              Yangi kod olish
+              Qayta urinish
             </button>
           </div>
           <div class="auth-providers" id="auth-providers" hidden>
