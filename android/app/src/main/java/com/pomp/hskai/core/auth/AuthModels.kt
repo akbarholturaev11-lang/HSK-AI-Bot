@@ -30,7 +30,7 @@ sealed interface AuthState {
     /** Credentials not yet read from disk. */
     data object Unknown : AuthState
 
-    /** No usable refresh token; the user must link through Telegram. */
+    /** No usable refresh token; the user must choose a sign-in method. */
     data object Unauthenticated : AuthState
 
     /**
@@ -100,4 +100,10 @@ data class LinkedIdentity(
     val provider: AuthProvider,
     val emailMasked: String?,
     val displayName: String?,
+)
+
+/** Sign-in methods belong to one internal HSK AI account; Telegram is optional. */
+data class LinkedAccountIdentities(
+    val telegramLinked: Boolean,
+    val identities: List<LinkedIdentity>,
 )

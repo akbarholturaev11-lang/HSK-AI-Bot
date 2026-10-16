@@ -62,6 +62,7 @@ class LinkViewModel(
     private var pollJob: Job? = null
     /** The in-flight start of a link, so stepping back can cancel it. */
     private var startJob: Job? = null
+    private var attemptGeneration = 0L
 
     /**
      * Loads the provider list.
@@ -76,12 +77,12 @@ class LinkViewModel(
         }
     }
 
-    fun signInWithGoogle(activity: Activity?) = startProvider(AuthProvider.GOOGLE) {
-        authRepository.startGoogleSignIn(activity = activity)
+    fun signInWithGoogle(activity: Activity?, language: AppLanguage? = null) = startProvider(AuthProvider.GOOGLE) {
+        authRepository.startGoogleSignIn(activity = activity, language = language)
     }
 
-    fun signInWithApple() = startProvider(AuthProvider.APPLE) {
-        authRepository.startAppleSignIn()
+    fun signInWithApple(language: AppLanguage? = null) = startProvider(AuthProvider.APPLE) {
+        authRepository.startAppleSignIn(language = language)
     }
 
     /** The screen calls this once it has opened the browser. */
@@ -100,9 +101,9 @@ class LinkViewModel(
      */
     fun continueWithTelegram(language: AppLanguage) {
         val current = _state.value
-        if (current.isRequestingCode) return
+        if (current.isRequestingCode || current.busyProvider?.let { it != AuthProvider.TELEGRAM } == true) return
         val pending = current.pending
-        if (pending == null || current.isExpired || remainingSeconds(pending) <= 0) {
+        if (pending == null || pending.provider != AuthProvider.TELEGRAM || current.isExpired || remainingSeconds(pending) <= 0) {
             requestCode(openTelegram = true, language = language)
             return
         }
@@ -118,28 +119,21 @@ class LinkViewModel(
 
     /** Steps back from a provider that was started, back to the cards. */
     fun dismissWaiting() {
-        startJob?.cancel()
-        _state.update {
-            it.copy(
-                isRequestingCode = false,
-                busyProvider = null,
-                pendingTelegramUrl = null,
-                error = null,
-            )
-        }
+        cancelAttempt()
+        _state.value = LinkUiState(providers = _state.value.providers)
     }
 
     private fun startProvider(
         provider: AuthProvider,
         start: suspend () -> ApiResult<PendingLink>,
     ) {
-        if (_state.value.busyProvider != null) return
-        pollJob?.cancel()
-        _state.update {
-            it.copy(busyProvider = provider, error = null, isExpired = false)
-        }
+        if (_state.value.busyProvider != null || _state.value.isRequestingCode) return
+        val generation = cancelAttempt()
+        _state.value = LinkUiState(providers = _state.value.providers, busyProvider = provider)
         startJob = viewModelScope.launch {
-            when (val result = start()) {
+            val result = start()
+            if (attemptGeneration != generation) return@launch
+            when (result) {
                 is ApiResult.Failure -> _state.update {
                     it.copy(
                         busyProvider = null,
@@ -162,7 +156,7 @@ class LinkViewModel(
                             pendingBrowserUrl = pending.authorizeUrl.ifEmpty { null },
                         )
                     }
-                    startPolling(pending)
+                    startPolling(pending, generation)
                 }
             }
         }
@@ -179,12 +173,14 @@ class LinkViewModel(
         openTelegram: Boolean = false,
         language: AppLanguage? = null,
     ) {
-        if (_state.value.isRequestingCode) return
-        pollJob?.cancel()
+        if (_state.value.isRequestingCode || _state.value.busyProvider != null) return
+        val generation = cancelAttempt()
         val providers = _state.value.providers
         _state.value = LinkUiState(isRequestingCode = true, providers = providers)
         startJob = viewModelScope.launch {
-            when (val result = authRepository.startLink(language)) {
+            val result = authRepository.startLink(language)
+            if (attemptGeneration != generation) return@launch
+            when (result) {
                 is ApiResult.Failure -> _state.value =
                     LinkUiState(error = result.error, providers = providers)
 
@@ -200,7 +196,7 @@ class LinkViewModel(
                             .ifEmpty { null }
                             .takeIf { openTelegram },
                     )
-                    startPolling(pending)
+                    startPolling(pending, generation)
                 }
             }
         }
@@ -208,9 +204,10 @@ class LinkViewModel(
 
     fun dismissError() = _state.update { it.copy(error = null) }
 
-    private fun startPolling(pending: PendingLink) {
+    private fun startPolling(pending: PendingLink, generation: Long) {
         pollJob = viewModelScope.launch {
             while (true) {
+                if (attemptGeneration != generation) return@launch
                 val remaining = remainingSeconds(pending)
                 _state.update { it.copy(secondsRemaining = remaining) }
                 if (remaining <= 0) {
@@ -223,7 +220,9 @@ class LinkViewModel(
                     }
                     return@launch
                 }
-                when (val result = authRepository.pollLink(pending)) {
+                val result = authRepository.pollLink(pending)
+                if (attemptGeneration != generation) return@launch
+                when (result) {
                     is ApiResult.Success -> if (result.value) {
                         _state.update {
                             it.copy(
@@ -263,9 +262,15 @@ class LinkViewModel(
         ((pending.expiresAtMillis - now()) / 1_000L).coerceAtLeast(0L).toInt()
 
     override fun onCleared() {
+        cancelAttempt()
+        super.onCleared()
+    }
+
+    private fun cancelAttempt(): Long {
+        attemptGeneration++
         startJob?.cancel()
         pollJob?.cancel()
-        super.onCleared()
+        return attemptGeneration
     }
 
     private companion object {

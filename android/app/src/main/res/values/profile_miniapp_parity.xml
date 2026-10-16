@@ -46,7 +46,7 @@
     <string name="profile_delete_account">Hisobni o‘chirishni so‘rash</string>
     <string name="profile_app_permissions">Ilova ruxsatlari</string>
     <string name="profile_app_permissions_desc">Mikrofon va bildirishnoma ruxsatlarini Android sozlamalarida boshqaring.</string>
-    <string name="profile_security_note">Telegram nikini bu yerda o‘zgartirib bo‘lmaydi. Google va Apple shu HSK AI hisobiga qo‘shimcha kirish usuli sifatida ulanadi.</string>
+    <string name="profile_security_note">Hisobingizga Telegram, Google yoki Apple orqali kirishingiz mumkin. Ulangan usullar bir HSK AI hisobi, obuna va progressga tegishli.</string>
     <string name="profile_app_version">Ilova versiyasi</string>
     <string name="profile_promo_apps">HSK AI ilovalari</string>
     <string name="profile_promo_apps_body">Android, MacBook va Windows uchun ilovalar</string>

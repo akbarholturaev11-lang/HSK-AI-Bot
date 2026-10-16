@@ -16,6 +16,8 @@ import com.pomp.hskai.data.api.OAuthAssertRequest
 import com.pomp.hskai.data.api.OAuthStartRequest
 import com.pomp.hskai.data.api.RefreshRequest
 import com.pomp.hskai.data.api.RevokeRequest
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -105,6 +107,8 @@ class AuthRepository(
                 )
             )
         }
+        // A dismissed provider attempt must not install credentials from a late response.
+        currentCoroutineContext().ensureActive()
         return when (result) {
             is ApiResult.Failure -> result
             is ApiResult.Success -> {
@@ -140,7 +144,7 @@ class AuthRepository(
         val result = apiCall { oauth.providers() }
         val offered = when (result) {
             is ApiResult.Failure -> return emptyList()
-            is ApiResult.Success -> result.value.providers
+            is ApiResult.Success -> if (result.value.ok) result.value.providers else return emptyList()
         }
         return offered.mapNotNull(AuthProvider::fromWire).filter { provider ->
             // Google additionally needs a client id compiled into this build;
@@ -159,6 +163,7 @@ class AuthRepository(
     suspend fun startGoogleSignIn(
         activity: Activity? = null,
         bindToCurrentAccount: Boolean = false,
+        language: AppLanguage? = null,
     ): ApiResult<PendingLink> {
         val oauth = oauthApi ?: return ApiResult.Failure(ApiError.Unknown)
         val google = googleIdTokens ?: return ApiResult.Failure(ApiError.Unknown)
@@ -168,6 +173,7 @@ class AuthRepository(
                 provider = AuthProvider.GOOGLE,
                 mode = MODE_NATIVE_ID_TOKEN,
                 bindToCurrentAccount = bindToCurrentAccount,
+                language = language,
             )
         ) {
             is ApiResult.Failure -> return started
@@ -204,13 +210,17 @@ class AuthRepository(
      * Custom Tab and keeps polling; the browser leg finishes on the server, so
      * no inbound deep link and no new allowlisted destination are needed.
      */
-    suspend fun startAppleSignIn(bindToCurrentAccount: Boolean = false): ApiResult<PendingLink> {
+    suspend fun startAppleSignIn(
+        bindToCurrentAccount: Boolean = false,
+        language: AppLanguage? = null,
+    ): ApiResult<PendingLink> {
         val oauth = oauthApi ?: return ApiResult.Failure(ApiError.Unknown)
         return startProviderLink(
             oauth = oauth,
             provider = AuthProvider.APPLE,
             mode = MODE_BROWSER_REDIRECT,
             bindToCurrentAccount = bindToCurrentAccount,
+            language = language,
         )
     }
 
@@ -219,6 +229,7 @@ class AuthRepository(
         provider: AuthProvider,
         mode: String,
         bindToCurrentAccount: Boolean,
+        language: AppLanguage?,
     ): ApiResult<PendingLink> {
         val body = OAuthStartRequest(
             platform = "android",
@@ -226,6 +237,7 @@ class AuthRepository(
             installationKey = store.installationKey(),
             provider = provider.wire,
             mode = mode,
+            language = language?.backendCode.takeUnless { bindToCurrentAccount },
         )
         val result = if (bindToCurrentAccount) {
             val token = when (val access = accessToken()) {
@@ -269,25 +281,28 @@ class AuthRepository(
 
     // ------------------------------------------------------ linked identities
 
-    suspend fun linkedIdentities(): ApiResult<List<LinkedIdentity>> {
-        val oauth = oauthApi ?: return ApiResult.Success(emptyList())
+    suspend fun linkedIdentities(): ApiResult<LinkedAccountIdentities> {
+        val oauth = oauthApi ?: return ApiResult.Success(LinkedAccountIdentities(false, emptyList()))
         val token = when (val access = accessToken()) {
             is ApiResult.Failure -> return access
             is ApiResult.Success -> access.value
         }
         return when (val result = apiCall { oauth.identities("Bearer $token") }) {
             is ApiResult.Failure -> result
-            is ApiResult.Success -> ApiResult.Success(
-                result.value.identities.mapNotNull { dto ->
-                    AuthProvider.fromWire(dto.provider)?.let { provider ->
-                        LinkedIdentity(
-                            id = dto.id,
-                            provider = provider,
-                            emailMasked = dto.emailMasked,
-                            displayName = dto.displayName,
-                        )
-                    }
-                }
+            is ApiResult.Success -> if (!result.value.ok) ApiResult.Failure(ApiError.Unknown) else ApiResult.Success(
+                LinkedAccountIdentities(
+                    telegramLinked = result.value.telegramLinked,
+                    identities = result.value.identities.mapNotNull { dto ->
+                        AuthProvider.fromWire(dto.provider)?.let { provider ->
+                            LinkedIdentity(
+                                id = dto.id,
+                                provider = provider,
+                                emailMasked = dto.emailMasked,
+                                displayName = dto.displayName,
+                            )
+                        }
+                    },
+                )
             )
         }
     }

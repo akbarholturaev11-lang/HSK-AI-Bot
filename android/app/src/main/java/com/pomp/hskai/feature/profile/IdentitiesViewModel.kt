@@ -20,14 +20,16 @@ import kotlinx.coroutines.launch
 
 data class IdentitiesUiState(
     val isLoading: Boolean = false,
-    val telegramLinked: Boolean = true,
+    val telegramLinked: Boolean = false,
     val identities: List<LinkedIdentity> = emptyList(),
     val available: List<AuthProvider> = emptyList(),
     val busyProvider: AuthProvider? = null,
     val pendingBrowserUrl: String? = null,
     val sessionsRevoked: Int? = null,
     val error: ApiError? = null,
-)
+) {
+    val canUnlinkProvider: Boolean get() = !isLoading && (telegramLinked || identities.size > 1)
+}
 
 /**
  * Manages the sign-in methods attached to the current account.
@@ -45,12 +47,16 @@ class IdentitiesViewModel(
     val state: StateFlow<IdentitiesUiState> = _state.asStateFlow()
 
     private var pollJob: Job? = null
+    private var refreshGeneration = 0L
 
     fun refresh() {
+        val generation = ++refreshGeneration
         _state.update { it.copy(isLoading = true, error = null, sessionsRevoked = null) }
         viewModelScope.launch {
             val available = authRepository.availableProviders()
-            when (val result = authRepository.linkedIdentities()) {
+            val result = authRepository.linkedIdentities()
+            if (refreshGeneration != generation) return@launch
+            when (result) {
                 is ApiResult.Failure -> _state.update {
                     it.copy(isLoading = false, available = available, error = result.error)
                 }
@@ -58,7 +64,8 @@ class IdentitiesViewModel(
                 is ApiResult.Success -> _state.update {
                     it.copy(
                         isLoading = false,
-                        identities = result.value,
+                        identities = result.value.identities,
+                        telegramLinked = result.value.telegramLinked,
                         available = available,
                     )
                 }
@@ -67,7 +74,7 @@ class IdentitiesViewModel(
     }
 
     fun connect(provider: AuthProvider, activity: Activity?) {
-        if (_state.value.busyProvider != null) return
+        if (_state.value.busyProvider != null || _state.value.isLoading || provider == AuthProvider.TELEGRAM) return
         pollJob?.cancel()
         _state.update { it.copy(busyProvider = provider, error = null, sessionsRevoked = null) }
         viewModelScope.launch {
@@ -141,12 +148,18 @@ class IdentitiesViewModel(
     }
 
     fun disconnect(identityId: String) {
-        if (_state.value.busyProvider != null) return
+        if (_state.value.busyProvider != null || _state.value.isLoading) return
+        if (!_state.value.canUnlinkProvider) {
+            _state.update { it.copy(error = ApiError.fromCode("oauth_last_identity")) }
+            return
+        }
+        val provider = _state.value.identities.firstOrNull { it.id == identityId }?.provider ?: return
+        _state.update { it.copy(busyProvider = provider, error = null, sessionsRevoked = null) }
         viewModelScope.launch {
             when (val result = authRepository.unlinkIdentity(identityId)) {
-                is ApiResult.Failure -> _state.update { it.copy(error = result.error) }
+                is ApiResult.Failure -> _state.update { it.copy(busyProvider = null, error = result.error) }
                 is ApiResult.Success -> {
-                    _state.update { it.copy(sessionsRevoked = result.value) }
+                    _state.update { it.copy(busyProvider = null, sessionsRevoked = result.value) }
                     refresh()
                 }
             }

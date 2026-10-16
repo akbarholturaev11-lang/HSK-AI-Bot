@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -85,7 +87,8 @@ fun IdentitiesSheet(
         containerColor = PompColors.Paper,
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(bottom = 28.dp),
+            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp).padding(bottom = 28.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
@@ -161,17 +164,24 @@ fun IdentitiesSheet(
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
-            Spacer(Modifier.height(10.dp))
-            ReadOnlyField(
-                label = stringResource(R.string.profile_account_telegram),
-                value = user?.telegramUsername?.takeIf { it.isNotBlank() }?.let { "@$it" } ?: "—",
-            )
+            if (state.telegramLinked) {
+                Spacer(Modifier.height(10.dp))
+                ReadOnlyField(
+                    label = stringResource(R.string.profile_account_telegram),
+                    value = user?.telegramUsername?.takeIf { it.isNotBlank() }?.let { "@$it" } ?: "—",
+                )
+            }
             user?.phone?.takeIf { it.isNotBlank() }?.let { phone ->
                 Spacer(Modifier.height(10.dp))
                 ReadOnlyField(
                     label = stringResource(R.string.profile_account_phone),
                     value = phone,
                 )
+            }
+
+            if (!state.isLoading && state.identities.size == 1 && !state.telegramLinked) {
+                Spacer(Modifier.height(10.dp))
+                IdentityNotice(stringResource(R.string.error_oauth_last_identity))
             }
 
             Spacer(Modifier.height(16.dp))
@@ -268,14 +278,14 @@ private fun ProviderAccountRow(
         if (identity != null) {
             TextButton(
                 onClick = { onDisconnect(identity.id) },
-                enabled = state.busyProvider == null,
+                enabled = state.busyProvider == null && state.canUnlinkProvider,
             ) {
                 Text(stringResource(R.string.profile_account_disconnect), color = PompColors.FlameInk)
             }
         } else if (canConnect) {
             OutlinedButton(
                 onClick = { onConnect(provider, context as? Activity) },
-                enabled = state.busyProvider == null,
+                enabled = state.busyProvider == null && !state.isLoading,
             ) {
                 Text(stringResource(R.string.profile_account_connect))
             }

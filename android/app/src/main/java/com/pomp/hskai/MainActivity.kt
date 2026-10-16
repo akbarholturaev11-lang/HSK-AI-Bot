@@ -283,8 +283,10 @@ private fun AppRoot(
                 onContinueWithTelegram = {
                     viewModel.continueWithTelegram(AppLocale.current(localeHost))
                 },
-                onSignInWithGoogle = { viewModel.signInWithGoogle(localeHost as? Activity) },
-                onSignInWithApple = viewModel::signInWithApple,
+                onSignInWithGoogle = {
+                    viewModel.signInWithGoogle(localeHost as? Activity, AppLocale.current(localeHost))
+                },
+                onSignInWithApple = { viewModel.signInWithApple(AppLocale.current(localeHost)) },
                 onBrowserUrlOpened = viewModel::browserUrlOpened,
                 onTelegramUrlOpened = viewModel::telegramUrlOpened,
                 onDismissWaiting = viewModel::dismissWaiting,

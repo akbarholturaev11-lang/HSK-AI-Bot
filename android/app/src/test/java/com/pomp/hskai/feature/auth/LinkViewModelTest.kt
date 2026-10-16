@@ -1,0 +1,176 @@
+package com.pomp.hskai.feature.auth
+
+import com.pomp.hskai.core.auth.AuthProvider
+import com.pomp.hskai.core.auth.AuthRepository
+import com.pomp.hskai.core.i18n.AppLanguage
+import com.pomp.hskai.core.storage.CredentialStore
+import com.pomp.hskai.data.api.AndroidAuthApi
+import com.pomp.hskai.data.api.BootstrapResponse
+import com.pomp.hskai.data.api.IdentitiesResponse
+import com.pomp.hskai.data.api.IdentityLinkStatusRequest
+import com.pomp.hskai.data.api.IdentityLinkStatusResponse
+import com.pomp.hskai.data.api.IdentityUnlinkRequest
+import com.pomp.hskai.data.api.IdentityUnlinkResponse
+import com.pomp.hskai.data.api.LinkStartRequest
+import com.pomp.hskai.data.api.LinkStartResponse
+import com.pomp.hskai.data.api.LinkStatusRequest
+import com.pomp.hskai.data.api.LinkStatusResponse
+import com.pomp.hskai.data.api.NativeOAuthApi
+import com.pomp.hskai.data.api.OAuthAssertRequest
+import com.pomp.hskai.data.api.OAuthAssertResponse
+import com.pomp.hskai.data.api.OAuthStartRequest
+import com.pomp.hskai.data.api.OAuthStartResponse
+import com.pomp.hskai.data.api.ProvidersResponse
+import com.pomp.hskai.data.api.RefreshRequest
+import com.pomp.hskai.data.api.RefreshResponse
+import com.pomp.hskai.data.api.RevokeRequest
+import com.pomp.hskai.data.api.RevokeResponse
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runCurrent
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.withContext
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Test
+import retrofit2.Response
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class LinkViewModelTest {
+    private val dispatcher = StandardTestDispatcher()
+    @Before fun setUp() = Dispatchers.setMain(dispatcher)
+    @After fun tearDown() = Dispatchers.resetMain()
+
+    @Test fun dismissedAppleStartCannotReplaceTheNewTelegramAttempt() = runTest(dispatcher) {
+        val f = Fixture()
+        val lateApple = CompletableDeferred<Response<OAuthStartResponse>>()
+        f.providerStart = { withContext(NonCancellable) { lateApple.await() } }
+        f.model.signInWithApple(AppLanguage.RUSSIAN)
+        runCurrent()
+        f.model.dismissWaiting()
+        f.model.continueWithTelegram(AppLanguage.TAJIK)
+        runCurrent()
+        assertEquals("tj", f.lastTelegramStart?.language)
+        assertEquals(AuthProvider.TELEGRAM, f.model.state.value.pending?.provider)
+
+        lateApple.complete(providerPending())
+        runCurrent()
+        assertEquals(AuthProvider.TELEGRAM, f.model.state.value.busyProvider)
+        assertNull(f.model.state.value.pendingBrowserUrl)
+        assertTrue(f.model.state.value.pendingTelegramUrl.orEmpty().startsWith("https://t.me/"))
+        f.model.dismissWaiting()
+    }
+
+    @Test fun dismissedProviderPollCannotPersistItsLateSessionTokens() = runTest(dispatcher) {
+        val f = Fixture()
+        val lateTokens = CompletableDeferred<Response<LinkStatusResponse>>()
+        f.linkStatus = { withContext(NonCancellable) { lateTokens.await() } }
+        f.model.signInWithApple(AppLanguage.UZBEK)
+        runCurrent()
+        assertEquals(1, f.polls)
+        f.model.dismissWaiting()
+        lateTokens.complete(Response.success(LinkStatusResponse(
+            ok = true, status = "linked", accessToken = "late-access",
+            accessExpiresIn = 900, refreshToken = "late-refresh",
+        )))
+        runCurrent()
+        assertNull(f.savedRefresh)
+        assertNull(f.model.state.value.pending)
+        assertNull(f.model.state.value.pendingBrowserUrl)
+        assertNull(f.model.state.value.error)
+        assertFalse(f.model.state.value.isLinked)
+    }
+
+    @Test fun preparingTelegramBlocksOtherCardsAndDismissalStartsANewProviderWithItsLanguage() = runTest(dispatcher) {
+        val f = Fixture()
+        val lateTelegram = CompletableDeferred<Response<LinkStartResponse>>()
+        f.telegramStart = { withContext(NonCancellable) { lateTelegram.await() } }
+        f.model.continueWithTelegram(AppLanguage.UZBEK)
+        f.model.signInWithGoogle(null, AppLanguage.RUSSIAN)
+        assertTrue(f.model.state.value.isRequestingCode)
+        runCurrent()
+        assertEquals(0, f.providerStarts)
+        f.model.dismissWaiting()
+        f.model.signInWithApple(AppLanguage.TAJIK)
+        runCurrent()
+        assertEquals("tj", f.lastProviderStart?.language)
+        lateTelegram.complete(telegramPending())
+        runCurrent()
+        f.model.continueWithTelegram(AppLanguage.RUSSIAN)
+        assertEquals(1, f.telegramStarts)
+        assertEquals(AuthProvider.APPLE, f.model.state.value.pending?.provider)
+        assertNull(f.model.state.value.pendingTelegramUrl)
+        f.model.dismissWaiting()
+    }
+
+    private class Fixture {
+        var savedRefresh: String? = null
+        var telegramStarts = 0
+        var providerStarts = 0
+        var polls = 0
+        var lastTelegramStart: LinkStartRequest? = null
+        var lastProviderStart: OAuthStartRequest? = null
+        var telegramStart: suspend () -> Response<LinkStartResponse> = { telegramPending() }
+        var providerStart: suspend () -> Response<OAuthStartResponse> = { providerPending() }
+        var linkStatus: suspend () -> Response<LinkStatusResponse> = {
+            Response.success(LinkStatusResponse(ok = true, status = "pending"))
+        }
+        private val store = object : CredentialStore {
+            override suspend fun installationKey() = "k".repeat(64)
+            override suspend fun refreshToken() = savedRefresh
+            override suspend fun saveRefreshToken(token: String) { savedRefresh = token }
+            override suspend fun cachedAccount(): String? = null
+            override suspend fun saveCachedAccount(value: String) = Unit
+            override suspend fun clearSession() { savedRefresh = null }
+            override suspend fun clearEverything() = clearSession()
+        }
+        private val authApi = object : AndroidAuthApi {
+            override suspend fun startLink(body: LinkStartRequest): Response<LinkStartResponse> {
+                telegramStarts++
+                lastTelegramStart = body
+                return telegramStart()
+            }
+            override suspend fun linkStatus(body: LinkStatusRequest): Response<LinkStatusResponse> {
+                polls++
+                return linkStatus()
+            }
+            override suspend fun refresh(body: RefreshRequest): Response<RefreshResponse> = error("Unexpected refresh")
+            override suspend fun revoke(authorization: String, body: RevokeRequest): Response<RevokeResponse> = error("Unexpected revoke")
+            override suspend fun bootstrap(authorization: String, appVersion: String): Response<BootstrapResponse> = error("Unexpected bootstrap")
+        }
+        private val oauthApi = object : NativeOAuthApi {
+            override suspend fun providers(platform: String) = Response.success(ProvidersResponse(ok = true, providers = listOf("apple")))
+            override suspend fun oauthStart(body: OAuthStartRequest): Response<OAuthStartResponse> {
+                providerStarts++
+                lastProviderStart = body
+                return providerStart()
+            }
+            override suspend fun oauthAssert(body: OAuthAssertRequest): Response<OAuthAssertResponse> = error("Unexpected assert")
+            override suspend fun identities(authorization: String): Response<IdentitiesResponse> = error("Unexpected identities")
+            override suspend fun identityLinkStart(authorization: String, body: OAuthStartRequest): Response<OAuthStartResponse> = error("Unexpected linking")
+            override suspend fun identityLinkStatus(authorization: String, body: IdentityLinkStatusRequest): Response<IdentityLinkStatusResponse> = error("Unexpected linking poll")
+            override suspend fun identityUnlink(authorization: String, body: IdentityUnlinkRequest): Response<IdentityUnlinkResponse> = error("Unexpected unlink")
+        }
+        val model = LinkViewModel(AuthRepository(authApi, store, "test", oauthApi = oauthApi, now = { 0L }), now = { 0L })
+    }
+
+    private companion object {
+        fun providerPending() = Response.success(OAuthStartResponse(
+            ok = true, status = "pending", linkRequestId = "apple-request", pollingSecret = "s".repeat(43),
+            expiresIn = 600, authorizeUrl = "https://appleid.apple.com/auth/authorize?state=opaque",
+        ))
+        fun telegramPending() = Response.success(LinkStartResponse(
+            ok = true, status = "pending", linkRequestId = "telegram-request", displayCode = "HSK12345",
+            pollingSecret = "t".repeat(43), botDeepLink = "https://t.me/example_bot?start=android_link_example", expiresIn = 600,
+        ))
+    }
+}

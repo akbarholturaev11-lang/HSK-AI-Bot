@@ -46,7 +46,7 @@
     <string name="profile_delete_account">Запросить удаление аккаунта</string>
     <string name="profile_app_permissions">Разрешения приложения</string>
     <string name="profile_app_permissions_desc">Микрофон и уведомления можно контролировать в настройках Android.</string>
-    <string name="profile_security_note">Ник Telegram здесь не изменяется. Google и Apple подключаются только как дополнительные способы входа в тот же аккаунт HSK AI.</string>
+    <string name="profile_security_note">В аккаунт можно войти через Telegram, Google или Apple. Подключённые способы относятся к одному аккаунту HSK AI, подписке и прогрессу.</string>
     <string name="profile_app_version">Версия приложения</string>
     <string name="profile_promo_apps">Приложения HSK AI</string>
     <string name="profile_promo_apps_body">Приложения для Android, MacBook и Windows</string>

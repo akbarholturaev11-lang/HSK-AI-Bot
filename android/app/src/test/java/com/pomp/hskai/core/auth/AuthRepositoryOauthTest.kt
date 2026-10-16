@@ -3,6 +3,7 @@ package com.pomp.hskai.core.auth
 import android.app.Activity
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
+import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.storage.CredentialStore
 import com.pomp.hskai.data.api.AndroidAuthApi
 import com.pomp.hskai.data.api.BootstrapResponse
@@ -95,12 +96,14 @@ private open class OauthFakeApi : NativeOAuthApi {
     var startCalls = 0
     var linkStartCalls = 0
     var lastAssert: OAuthAssertRequest? = null
+    var lastStart: OAuthStartRequest? = null
 
     override suspend fun providers(platform: String): Response<ProvidersResponse> =
         Response.success(ProvidersResponse(ok = true, providers = listOf("google", "apple")))
 
     override suspend fun oauthStart(body: OAuthStartRequest): Response<OAuthStartResponse> {
         startCalls++
+        lastStart = body
         return Response.success(
             OAuthStartResponse(
                 ok = true,
@@ -292,10 +295,45 @@ class AuthRepositoryOauthTest {
     }
 
     @Test
+    fun `both provider signups carry the chosen language while linking leaves preferences unchanged`() = runTest {
+        val oauth = OauthFakeApi()
+        val store = OauthFakeStore().apply { storedRefresh = "pomp_r1_existing" }
+        val repo = repository(oauth = oauth, store = store)
+
+        repo.startGoogleSignIn(language = AppLanguage.UZBEK).success()
+        assertEquals("uz", oauth.lastStart?.language)
+        repo.startAppleSignIn(language = AppLanguage.TAJIK).success()
+        assertEquals("tj", oauth.lastStart?.language)
+        repo.startGoogleSignIn(bindToCurrentAccount = true, language = AppLanguage.UZBEK).success()
+        assertEquals(null, oauth.lastStart?.language)
+        repo.startAppleSignIn(bindToCurrentAccount = true, language = AppLanguage.TAJIK).success()
+        assertEquals(null, oauth.lastStart?.language)
+    }
+
+    @Test
+    fun `provider only identities retain the absence of Telegram and malformed envelopes fail closed`() = runTest {
+        val store = OauthFakeStore().apply { storedRefresh = "pomp_r1_existing" }
+        val oauth = object : OauthFakeApi() {
+            var ok = true
+            override suspend fun identities(authorization: String): Response<IdentitiesResponse> =
+                Response.success(IdentitiesResponse(ok = ok, telegramLinked = false,
+                    identities = listOf(IdentityDto(id = "google-only", provider = "google"))))
+        }
+        val repo = repository(oauth = oauth, store = store)
+        val methods = repo.linkedIdentities().success()
+        assertFalse(methods.telegramLinked)
+        assertEquals("google-only", methods.identities.single().id)
+        oauth.ok = false
+        assertEquals(ApiError.Unknown, repo.linkedIdentities().failure())
+    }
+
+    @Test
     fun `unknown providers are dropped instead of being rendered`() = runTest {
         val store = OauthFakeStore().apply { storedRefresh = "pomp_r1_existing" }
-        val identities = repository(store = store).linkedIdentities().success()
+        val linked = repository(store = store).linkedIdentities().success()
+        val identities = linked.identities
 
+        assertTrue(linked.telegramLinked)
         assertEquals(1, identities.size)
         assertEquals(AuthProvider.GOOGLE, identities.first().provider)
         assertEquals("a***e@example.com", identities.first().emailMasked)

@@ -19,7 +19,7 @@
 
     <!-- Login screen: welcome and the three ways in -->
     <string name="auth_welcome_greeting">Хуш омадед</string>
-    <string name="auth_choose_method">Роҳи воридшавиро интихоб кунед</string>
+    <string name="auth_choose_method">Усули вуруд ё сохтани ҳисоби навро интихоб кунед</string>
     <string name="auth_tagline">Ояндаи беҳтар — бо дониш</string>
     <string name="auth_waiting_telegram">Тасдиқро дар Telegram интизорем…</string>
     <string name="auth_open_telegram_again">Telegram-ро аз нав кушоед</string>
@@ -37,7 +37,7 @@
 
     <string name="profile_logout">Баромадан</string>
     <string name="profile_unlink_device">Ҷудо кардани ин дастгоҳ</string>
-    <string name="profile_unlink_explain">Дастгоҳ ҷудо мешавад ва дафъаи оянда тавассути Telegram аз нав пайваст мешавед.</string>
+    <string name="profile_unlink_explain">Дастгоҳ ҷудо мешавад. Дафъаи оянда бо усули ба ҳисобатон пайвастшуда аз нав ворид шавед.</string>
     <string name="profile_refresh">Навсозӣ</string>
     <string name="profile_xp">XP</string>
     <string name="profile_streak">Пайдарпай</string>
@@ -75,10 +75,11 @@
     <string name="error_timeout">Сервер ҷавоб надод. Аз нав кӯшиш кунед.</string>
     <string name="error_server">Хатогии муваққатии сервер. Каме дертар кӯшиш кунед.</string>
     <string name="error_unknown">Хатогии ғайричашмдошт рух дод.</string>
-    <string name="error_session_expired">Муҳлати сессия гузашт. Тавассути Telegram аз нав пайваст шавед.</string>
+    <string name="error_session_expired">Муҳлати сессия гузашт. Ба ҳисобатон аз нав ворид шавед.</string>
+    <string name="error_telegram_account_required">Ин имконият ҳоло барои ҳисобҳои ба Telegram пайвастшуда дастрас аст.</string>
     <string name="error_link_invalid">Рамз нодуруст, муҳлаташ гузашта ё аллакай истифода шудааст.</string>
     <string name="error_link_rate_limited">Кӯшишҳо аз ҳад зиёд шуданд. Пас аз чанд дақиқа кӯшиш кунед.</string>
-    <string name="error_device_bound">Ин дастгоҳ ба ҳисоби дигари Telegram пайваст аст. Аввал онро ҷудо кунед.</string>
+    <string name="error_device_bound">Ин дастгоҳ ба ҳисоби дигари HSK AI пайваст аст. Аввал онро ҷудо кунед.</string>
     <string name="error_auth_unavailable">Хидмати пайвастшавӣ муваққатан дастрас нест.</string>
     <string name="error_feature_limit">Лимити ройгон тамом шуд. Бо Premium идома диҳед.</string>
     <string name="error_no_mistakes">Ҳоло хато барои такрор нест.</string>
@@ -479,7 +480,7 @@
     <string name="challenge_decline">Рад</string>
     <string name="challenge_start">Оғоз</string>
     <string name="challenge_waiting">Ҷавобро интизорем</string>
-    <string name="profile_avatar_note">Аватар аз профили Telegram шумо гирифта мешавад</string>
+    <string name="profile_avatar_note">Аватарро дар бахши «Ҳисоб» иваз карда метавонед.</string>
     <string name="profile_friends">Дӯстон</string>
     <string name="profile_referral_copy">Нусхабардории пайванд</string>
     <string name="profile_referral_share">Мубодила</string>
@@ -500,8 +501,8 @@
     <string name="hint_open">Шарҳ</string>
     <string name="auth_provider_waiting">Интизори тасдиқ…</string>
     <string name="error_provider_cancelled">Вуруд бекор карда шуд.</string>
-    <string name="error_provider_unavailable">Ин усул ҳоло дастрас нест. Тавассути Telegram ворид шавед.</string>
-    <string name="error_oauth_needs_telegram">Ин ҳисоб ҳанӯз пайваст нашудааст. Аввал тавассути Telegram ворид шавед, сипас онро дар профил пайваст кунед.</string>
+    <string name="error_provider_unavailable">Ин усули вуруд ҳоло дастрас нест. Такрор кунед ё усули дигари ба ҳисобатон пайвастшударо интихоб кунед.</string>
+    <string name="error_oauth_needs_telegram">Ин усули вуруд ба ҳисобатон пайваст нест. Бо усули пайвастшуда ворид шуда, баъд усули навро дар профил илова кунед.</string>
     <string name="error_oauth_other_account">Ин ҳисоб ба корбари дигар пайваст аст.</string>
     <string name="error_oauth_already_linked">Ин усул аллакай пайваст аст. Аввал онро ҷудо кунед.</string>
     <string name="error_oauth_last_identity">Ин ягона усули вуруд аст — онро ҷудо кардан мумкин нест.</string>

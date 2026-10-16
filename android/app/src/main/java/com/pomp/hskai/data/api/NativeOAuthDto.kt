@@ -19,6 +19,8 @@ data class OAuthStartRequest(
     @SerialName("provider") val provider: String,
     /** `native_id_token` for Google (Credential Manager), `browser_redirect` for Apple. */
     @SerialName("mode") val mode: String,
+    /** Initial language for a new account; existing account preferences are server-owned. */
+    @SerialName("language") val language: String? = null,
 )
 
 @Serializable

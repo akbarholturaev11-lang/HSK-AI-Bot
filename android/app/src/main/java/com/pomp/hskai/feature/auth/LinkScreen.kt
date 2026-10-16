@@ -72,8 +72,8 @@ import com.pomp.hskai.core.i18n.AppLanguage
 /**
  * The way into the app: one card per sign-in provider.
  *
- * Telegram is always offered, because it is the only flow that can create an
- * account. Google and Apple appear only when the server reports them, so a
+ * Telegram is always offered. Google and Apple sign in or create an account
+ * when the server reports them, so a
  * build or deployment without OAuth credentials shows a Telegram-only screen
  * rather than a button that fails when tapped.
  *
