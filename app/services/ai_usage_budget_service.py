@@ -200,10 +200,14 @@ class AIUsageBudgetService:
             starts_at = max(now, self._as_utc(existing.ends_at))
         # A paid subscriber may have no tracked AI budget (legacy/imported
         # grants). The receipt preview must never preempt their paid term.
-        if (getattr(user, "status", None) == "active"
-                and getattr(user, "payment_status", None) == "approved"
-                and getattr(user, "end_date", None)):
+        if getattr(user, "status", None) == "active" and getattr(user, "end_date", None):
+            # Existing paid/referral/feedback windows keep their original AI budget.
             starts_at = max(starts_at, self._as_utc(user.end_date))
+        if (getattr(user, "pro_trial_ends_at", None)
+                and not getattr(user, "pro_trial_revoked_at", None)):
+            trial_end = self._as_utc(user.pro_trial_ends_at)
+            if trial_end > now:
+                starts_at = max(starts_at, trial_end)
         budget = AIUsageBudget(
             user_telegram_id=int(user.telegram_id),
             payment_id=int(payment.id),
