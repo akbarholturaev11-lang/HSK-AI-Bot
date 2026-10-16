@@ -181,6 +181,7 @@ from app.services.subscription_service import (
     SubscriptionService,
     normalize_manual_subscription_days,
 )
+from app.services.payment_review_preview_service import PaymentReviewPreviewService
 from app.services.subscription_price_service import PAYMENT_METHODS, PLANS, SubscriptionPriceService
 from app.services.subscription_currency_service import format_subscription_price
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
@@ -1815,6 +1816,7 @@ async def _review_admin_payment(
         user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
         if user and payment.plan_type != HSK30_UNLOCK_PLAN_TYPE:
             await user_repo.set_selected_plan_type(user, None)
+            await PaymentReviewPreviewService(session).review(user, payment, approved=False)
         await session.commit()
         await ConversionFunnelService().record(
             event_name=(

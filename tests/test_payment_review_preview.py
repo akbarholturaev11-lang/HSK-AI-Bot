@@ -61,6 +61,95 @@ class PaymentReviewPreviewTests(unittest.IsolatedAsyncioTestCase):
             select(User).where(User.telegram_id == 954001)
         )).scalar_one()
 
+    async def _admin_miniapp_reject(self, session, payment):
+        from tests.test_main_imports import MainModuleImportTests
+
+        main = MainModuleImportTests._import_main()
+        with (
+            patch.object(main.ConversionFunnelService, "record", new=AsyncMock(return_value=True)),
+            patch.object(main.PaymentNotifyService, "notify_payment_rejected", new=AsyncMock()),
+            patch.object(main.PaymentNotifyService, "notify_hsk30_unlock_rejected", new=AsyncMock()),
+        ):
+            return await main._review_admin_payment(
+                session, payment_id=payment.id, action="reject", reason="Invalid receipt",
+            )
+
+    async def test_admin_miniapp_rejection_revokes_preview_without_recharging_ticket(self):
+        async with self.sessions() as session:
+            user = await self._user(session)
+            payment = await self._new_payment(session)
+            self.assertTrue(await PaymentReviewPreviewService(session).claim(user, payment))
+            payment_id = payment.id
+            await session.commit()
+
+            self.assertEqual(await self._admin_miniapp_reject(session, payment), (
+                {"ok": True, "status": "rejected"}, 200,
+            ))
+        async with self.sessions() as session:
+            user = await self._user(session)
+            payment = await session.get(Payment, payment_id)
+            budget = (await session.execute(select(AIUsageBudget))).scalar_one()
+            self.assertEqual(payment.payment_status, "rejected")
+            self.assertIsNone(user.payment_preview_payment_id)
+            self.assertFalse(user.payment_preview_available)
+            self.assertEqual(budget.status, "expired")
+            self.assertEqual(UserAccessStateService.classify(user), UserAccessState.FREE)
+            self.assertEqual(resolve_state(user), EntitlementState.FREE)
+            self.assertFalse((await AIUsageBudgetService(session).can_use_payment_preview_ai(user, payment_id)).allowed)
+            self.assertEqual(await self._admin_miniapp_reject(session, payment), (
+                {"ok": False, "error": "payment_already_reviewed"}, 409,
+            ))
+            self.assertFalse(user.payment_preview_available)
+
+    async def test_admin_miniapp_rejected_renewal_keeps_paid_term_and_budget(self):
+        async with self.sessions() as session:
+            user = await self._user(session)
+            now = datetime.now(timezone.utc)
+            user.status, user.payment_status = "active", "approved"
+            user.start_date, user.end_date = now, now + timedelta(days=8)
+            paid_before = (user.status, user.payment_status, user.start_date, user.end_date)
+            budgets = AIUsageBudgetService(session)
+            paid_budget = await budgets.create_fixed_budget(
+                telegram_id=user.telegram_id, user_id=user.id, plan_type="1_month",
+                amount=100, currency="TJS", total_budget_usd=2,
+                starts_at=user.start_date, ends_at=user.end_date,
+            )
+            paid_budget.current_window_spent_usd = 0.12
+            payment = await self._new_payment(session)
+            self.assertTrue(await PaymentReviewPreviewService(session).claim(user, payment))
+            await session.commit()
+
+            self.assertEqual((await self._admin_miniapp_reject(session, payment))[1], 200)
+            await session.refresh(user)
+            await session.refresh(paid_budget)
+            self.assertEqual((user.status, user.payment_status,
+                budgets._as_utc(user.start_date), budgets._as_utc(user.end_date)), paid_before)
+            self.assertEqual(UserAccessStateService.classify(user), UserAccessState.PAID)
+            self.assertIsNone(user.payment_preview_payment_id)
+            self.assertFalse(user.payment_preview_available)
+            self.assertEqual((paid_budget.status, paid_budget.total_budget_usd, paid_budget.current_window_spent_usd), ("active", 2, 0.12))
+            preview_budget = (await session.execute(select(AIUsageBudget).where(
+                AIUsageBudget.payment_id == payment.id,
+            ))).scalar_one()
+            self.assertEqual(preview_budget.status, "expired")
+
+    async def test_admin_miniapp_hsk30_rejection_keeps_other_subscription_preview(self):
+        async with self.sessions() as session:
+            user = await self._user(session)
+            subscription = await self._new_payment(session)
+            self.assertTrue(await PaymentReviewPreviewService(session).claim(user, subscription))
+            unlock = await self._new_payment(session, plan="hsk30_unlock")
+            await session.commit()
+
+            self.assertEqual((await self._admin_miniapp_reject(session, unlock))[1], 200)
+            await session.refresh(user)
+            await session.refresh(subscription)
+            self.assertEqual(user.payment_preview_payment_id, subscription.id)
+            self.assertFalse(user.payment_preview_available)
+            self.assertEqual(subscription.payment_status, "pending")
+            self.assertEqual(UserAccessStateService.classify(user), UserAccessState.TEMPORARY_TRIAL)
+            self.assertEqual((await session.execute(select(AIUsageBudget))).scalar_one().status, "active")
+
     async def test_railway_bootstrap_has_safe_defaults_for_existing_users(self):
         self.assertEqual(
             _BOOTSTRAP_COLUMNS["users"]["payment_preview_available"],
