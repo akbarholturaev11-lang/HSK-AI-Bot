@@ -24,6 +24,7 @@ from app.services.entitlements.state import (
 from app.services.payment_review_preview_service import PaymentReviewPreviewService
 from app.services.subscription_service import SubscriptionService
 from app.services.user_access_state_service import UserAccessStateService, UserAccessState
+from app.services.voice_practice_service import VoicePracticeService, VoicePracticeError
 
 
 class PaymentReviewPreviewTests(unittest.IsolatedAsyncioTestCase):
@@ -241,6 +242,18 @@ class PaymentReviewPreviewTests(unittest.IsolatedAsyncioTestCase):
             allowed, error = await AccessService(session).can_use_text_ai(user.telegram_id)
             self.assertTrue(allowed, error)
             self.assertFalse(UserAccessStateService.is_paid(user))
+
+    async def test_voice_preview_spending_cap(self):
+        async with self.sessions() as session:
+            user = await self._user(session)
+            receipt = await self._new_payment(session)
+            self.assertTrue(await PaymentReviewPreviewService(session).claim(user, receipt))
+            voice = VoicePracticeService(session)
+            await voice._ensure_pending_receipt_ai_budget(user)
+            budget = (await session.execute(select(AIUsageBudget))).scalar_one()
+            budget.segment_1_spent_usd = PAYMENT_PREVIEW_AI_CAP_USD
+            with self.assertRaises(VoicePracticeError):
+                await voice._ensure_pending_receipt_ai_budget(user)
 
     async def test_hsk30_unlock_and_blocked_accounts_do_not_spend_ticket(self):
         async with self.sessions() as session:
