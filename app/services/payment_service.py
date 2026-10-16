@@ -2,6 +2,7 @@ from typing import Optional
 
 from app.repositories.payment_repo import PaymentRepository
 from app.repositories.user_repo import UserRepository
+from app.services.payment_review_preview_service import PaymentReviewPreviewService
 from app.services.discount_service import DiscountService
 from app.services.subscription_price_service import SubscriptionPriceService
 
@@ -193,6 +194,8 @@ class PaymentService:
             discount_title=checkout_info["discount_title"],
             discount_details=checkout_info["discount_details"],
         )
+        if screenshot_file_id:
+            await PaymentReviewPreviewService(self.session).claim(user, payment)
         await self.session.commit()
         return payment, ""
 
@@ -236,12 +239,15 @@ class PaymentService:
                 discount_title=checkout_info["discount_title"],
                 discount_details=checkout_info["discount_details"],
             )
+            await PaymentReviewPreviewService(self.session).claim(user, draft_payment)
             await self.session.commit()
             return draft_payment, "updated"
 
         pending_payment = await self.payment_repo.get_latest_pending_by_user(telegram_id)
         if pending_payment:
             await self.payment_repo.update_screenshot(pending_payment, screenshot_file_id)
+            user = await self.user_repo.get_by_telegram_id(telegram_id)
+            await PaymentReviewPreviewService(self.session).claim(user, pending_payment)
             await self.session.commit()
             return pending_payment, "updated"
 

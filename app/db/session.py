@@ -35,6 +35,9 @@ from app.db.base import Base
 
 _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
     "users": {
+        # init_db() patches production PostgreSQL without running Alembic.
+        "payment_preview_available": "BOOLEAN DEFAULT true NOT NULL",
+        "payment_preview_payment_id": "INTEGER",
         "pending_checkout_msg_id": "INTEGER",
         "voice_mode": "VARCHAR(20) DEFAULT 'none' NOT NULL",
         "username": "VARCHAR(64)",

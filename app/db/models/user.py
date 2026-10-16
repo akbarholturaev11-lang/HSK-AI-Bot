@@ -27,6 +27,10 @@ class User(Base):
 
     status: Mapped[str] = mapped_column(String(16), default="free", nullable=False)
     payment_status: Mapped[str] = mapped_column(String(16), default="none", nullable=False)
+    # A single reversible trust slot for unreviewed subscription receipts.
+    # Never combine this with paid subscription dates or the seven-day Pro trial.
+    payment_preview_available: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true", nullable=False)
+    payment_preview_payment_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 
     question_limit: Mapped[int] = mapped_column(Integer, default=5, nullable=False)
     questions_used: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

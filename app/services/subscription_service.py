@@ -98,6 +98,9 @@ class SubscriptionService:
             await self.feedback_repo.mark_latest_price_offer_used(telegram_id)
 
         if payment is not None:
+            # Only a real admin-approved subscription replenishes the one slot.
+            from app.services.payment_review_preview_service import PaymentReviewPreviewService
+            await PaymentReviewPreviewService(self.session).review(user, payment, approved=True)
             await AIUsageBudgetService(self.session).create_for_payment(
                 payment=payment,
                 starts_at=period_starts_at,
