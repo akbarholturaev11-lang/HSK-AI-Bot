@@ -3,7 +3,7 @@ from typing import Tuple
 
 from app.services.entitlements.engine import EntitlementEngine
 from app.services.entitlements import actions as A
-from app.services.entitlements.state import resolve_state, EntitlementState
+from app.services.entitlements.state import resolve_state, EntitlementState, has_active_pro_trial
 
 from sqlalchemy import select
 
