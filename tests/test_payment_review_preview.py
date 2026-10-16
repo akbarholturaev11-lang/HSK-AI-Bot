@@ -141,7 +141,7 @@ class PaymentReviewPreviewTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(UserAccessStateService.classify(user), UserAccessState.PAID)
             self.assertTrue(user.payment_preview_available)
             self.assertIsNone(user.payment_preview_payment_id)
-            self.assertGreater(user.end_date, datetime.now(timezone.utc))
+            self.assertGreater(AIUsageBudgetService(session)._as_utc(user.end_date), datetime.now(timezone.utc))
             self.assertEqual(
                 (await session.execute(
                     select(AIUsageBudget).where(AIUsageBudget.payment_id == payment.id)
