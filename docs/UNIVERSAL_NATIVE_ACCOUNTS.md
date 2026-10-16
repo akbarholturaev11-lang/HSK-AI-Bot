@@ -15,24 +15,66 @@ until the evidence is complete.
 
 | Required condition | Current evidence and remaining gate |
 | --- | --- |
-| Existing Telegram Pro, XP, lessons, rating and payments stay unchanged | Backend and Android regression suites pass; a representative existing-account comparison on the staging copy is still required. |
+| Existing Telegram Pro, XP, lessons, rating and payments stay unchanged | Backend/Android regressions and real-copy migration digests pass: all legacy billing, progress and XP/rating values are preserved. Real installed-client walkthroughs remain required. |
 | Google/Apple users without Telegram can register, start a lesson, use AI Voice and buy Pro | Signup/learning/AI/voice have integration coverage. Provider-only Pro checkout is currently unavailable (`payment_telegram_required`); real provider and purchase tests remain required. |
-| Parallel registration for one Google/Apple identity creates one `users.id` | Real PostgreSQL concurrency tests pass; retain this check in CI and the staging rehearsal. |
+| Parallel registration for one Google/Apple identity creates one `users.id` | Railway staging PostgreSQL 18 passes four concurrent Google attempts and four Apple attempts: one account per exact provider identity, with no email merge. Retain this check in CI. |
 | Linking cannot grant access to another learner's Pro or progress | Ownership and identity/session revocation regressions cover isolation; verify the complete staged client flow as well. |
 | A blocked account cannot evade its restriction through Google/Apple | Both-provider API tests cover blocking before verification and between approval and token consumption; refresh/revoked-proof protections also pass. Real staged provider walkthroughs remain required. |
 | Android, desktop and Telegram Mini App show the same account data | A backend integration test checks explicitly linked Android/Windows/macOS logins plus MiniApp profile data share Pro, lesson progress, XP and rating. Installed-client comparison remains required. A Telegram-free account cannot authenticate a Telegram Mini App without a real Telegram identity. |
-| Migrations pass on a staging copy matching the real schema, and backup restore succeeds | Disposable-database migration tests pass. No deployed staging-copy or backup-restore rehearsal has been completed. |
+| Migrations pass on a staging copy matching the real schema, and backup restore succeeds | Historical `0101 → 0104` rehearsal passed with exact pre/post-migration restores. Production has since advanced to `0102_payment_review_preview`; integrate the new main and repeat against that current baseline before clearing this gate. |
 
-The inspected Railway project currently has a production environment only.
-Do not run feature migrations or test registrations against production to fill
-the staging evidence gap. Do not describe the feature as launch-ready until
-all rows have dated, reproducible evidence.
+Railway now has an isolated staging PostgreSQL service. No app or bot was
+deployed, and no application environment or shared variables were cloned;
+the database copy contains private learner data and must stay restricted. This
+task made no production deployment. Independent upstream receipt-preview work
+has since advanced main and production to `0102_payment_review_preview`. Do not run feature migrations or test
+registrations against production. Do not describe the feature as launch-ready
+until all rows have dated, reproducible evidence.
 
 Read-only production schema inspection on 2026-10-16 found PostgreSQL 18 and
 Alembic revision `0101_account_deletion_requests`. `users.telegram_id` and
 `desktop_devices.telegram_id` are still required. `payments` still requires
 `user_telegram_id` and has no canonical `user_id`. This is schema inventory,
 not a staging migration or a backup-restore test.
+
+### Completed database rehearsal
+
+The later rehearsal on 2026-10-16 passed for the original `0101` baseline.
+Final verification then found upstream `3fffa42e` and production revision
+`0102_payment_review_preview`; the current-baseline database gate is open again
+until integration and a fresh rehearsal. The historical
+[sanitized evidence](UNIVERSAL_NATIVE_ACCOUNTS_STAGING_2026-10-16.json)
+records the migration, both restores, concurrency results and outstanding
+release gates without row values, credentials or database endpoints.
+
+- The real `0101` backup was restored into two newly created staging databases.
+  The baseline matched all 833 source column descriptors, 681 constraints and
+  301 indexes. PostgreSQL's proven lossless literal-array cast rewrite in ten
+  CHECKs and one partial index is normalized only for this inventory match.
+- `0101 → 0104` passed over 61 data tables and 189,368 legacy rows, including
+  2,113 accounts and 98 payment records. All existing rows and values were
+  preserved except the declared canonical backfills and pending-link expiry.
+  All 13,782 expected AI/voice owners were filled correctly; no owner or dedupe
+  conflicts were found.
+- Both the pre-migration and post-migration backups were restored into fresh
+  databases. Exact schema, row multiset, account-key and sequence comparisons
+  passed, including billing, progress, XP and rating digests. Live before/after
+  hashes preserve defaults, widths, precision, constraints and indexes exactly
+  except the explicitly permitted migration changes.
+- Backups are retained privately outside Git. Staging has no running app or bot
+  and this rehearsal made no production writes, production deployment or main
+  push. This proves the database gate; it does not prove live OAuth, AI Voice,
+  installed-client parity or Pro purchasing.
+
+`scripts/rehearse_native_account_migration.py` only reads and compares; it never
+migrates or restores a database. It requires an explicit approved staging
+host/port/database, a production endpoint deny check, TLS, the read-only source
+catalog inventory and one private random HMAC key shared by the run. Reports
+are created with mode `0600` and never overwrite previous evidence. Migration
+and `pg_dump`/`pg_restore` remain separate operator actions; always target a new,
+empty staging database for restore. Run `snapshot` before and after, then
+`compare --mode migration`; compare each backup restore to its own source with
+`compare --mode restore`.
 
 ### Outstanding purchase implementation
 
@@ -139,6 +181,7 @@ python -m unittest tests.test_native_account_signup tests.test_native_account_mi
   tests.test_native_account_lifecycle tests.test_desktop_provider_accounts \
   tests.test_native_account_acceptance
 python -m unittest tests.test_native_account_concurrency
+python -m unittest tests.test_native_account_rehearsal
 ```
 
 Validation on 2026-10-16, integrated source commit `2b6d87ed`:
@@ -150,6 +193,9 @@ Validation on 2026-10-16, integrated source commit `2b6d87ed`:
   including both-provider block boundaries and legacy paid-account data
   shared across native APIs and the MiniApp profile service. OIDC verification
   is mocked in this selection.
+- Staging helper, migration and acceptance selection: 25 tests passed. The
+  PostgreSQL 18 staging concurrency selection passed three tests and two
+  provider subtests. CI uses PostgreSQL 18 to match the deployed database major.
 - Android Direct/Play: 1009 unit tests, 26 native Compose checks, nine static
   gates and four app/test APK builds passed.
 - Shared desktop: 29 JavaScript contracts, 24 Rust tests and five focused

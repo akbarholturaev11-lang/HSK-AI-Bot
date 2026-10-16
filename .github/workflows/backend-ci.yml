@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 10
     services:
       native-postgres:
-        image: postgres:16
+        image: postgres:18
         env:
           POSTGRES_DB: native_accounts_test
           POSTGRES_USER: postgres
@@ -94,4 +94,4 @@ jobs:
           tests.test_native_account_concurrency tests.test_native_account_learning
           tests.test_native_account_ai_voice tests.test_native_account_lifecycle
           tests.test_native_account_admin tests.test_desktop_provider_accounts
-          tests.test_native_account_acceptance
+          tests.test_native_account_acceptance tests.test_native_account_rehearsal

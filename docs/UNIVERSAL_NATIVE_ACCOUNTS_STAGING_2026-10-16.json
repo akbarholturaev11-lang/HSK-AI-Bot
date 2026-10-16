@@ -1,0 +1,110 @@
+{
+  "date": "2026-10-16",
+  "timezone": "Asia/Shanghai",
+  "release_status": "HOLD",
+  "feature_source_commit": "2b6d87ed",
+  "production_source_commit_at_rehearsal": "82553a1c260bb143356c165c6eeea704a2b9286c",
+  "environment": "Railway isolated staging database only",
+  "postgresql_major": 18,
+  "source_schema_revision": "0101_account_deletion_requests",
+  "migrated_schema_revision": "0104_native_ai_voice_ownership",
+  "source_inventory_matched": true,
+  "data_tables": 61,
+  "legacy_rows": 189368,
+  "representative_legacy_counts": {
+    "users": 2113,
+    "payments": 98,
+    "course_progress": 1326,
+    "course_attempts": 1447,
+    "course_miniapp_profiles": 776,
+    "course_xp_events": 2178
+  },
+  "canonical_owner_backfills_verified": 13782,
+  "schema_normalization_note": "Only the proven lossless unbounded-varchar literal-array to text-array deparser rewrite is normalized for the production-inventory match; live preservation hashes stay exact.",
+  "comparisons": {
+    "restore-before": {
+      "critical_values_preserved": {
+        "billing": true,
+        "progress": true,
+        "xp_rating": true
+      },
+      "failures": [],
+      "migration_head": [
+        "0101_account_deletion_requests"
+      ],
+      "mode": "restore",
+      "ok": true,
+      "owner_backfill_verified": false
+    },
+    "migration": {
+      "critical_values_preserved": {
+        "billing": true,
+        "progress": true,
+        "xp_rating": true
+      },
+      "failures": [],
+      "migration_head": [
+        "0104_native_ai_voice_ownership"
+      ],
+      "mode": "migration",
+      "ok": true,
+      "owner_backfill_verified": true
+    },
+    "restore-after": {
+      "critical_values_preserved": {
+        "billing": true,
+        "progress": true,
+        "xp_rating": true
+      },
+      "failures": [],
+      "migration_head": [
+        "0104_native_ai_voice_ownership"
+      ],
+      "mode": "restore",
+      "ok": true,
+      "owner_backfill_verified": false
+    }
+  },
+  "account_keys_preserved": true,
+  "sequence_state_preserved": true,
+  "before_backup": {
+    "backup_sha256": "1d173e6e147f2d47dd84d4485429ebed1946573467dd6294c7a66c3dd77d1ae5",
+    "backup_bytes": 9675929,
+    "source_read_only": true,
+    "destination_isolated_staging": true
+  },
+  "after_backup": {
+    "bytes": 9706439,
+    "sha256": "325a4ddc9dfe974ac2b8c91079ed5c22728fd7d01fb36dad2ce460be7d09f125"
+  },
+  "postgresql_concurrency": {
+    "tests_passed": 3,
+    "provider_subtests_passed": 2,
+    "parallel_attempts_per_provider": 4,
+    "google_accounts_created": 1,
+    "apple_accounts_created": 1,
+    "same_email_did_not_merge_accounts": true,
+    "oidc_verification": "test fixtures; no real provider walkthrough"
+  },
+  "focused_regression_tests_passed": 25,
+  "isolation": {
+    "production_writes": false,
+    "production_migration": false,
+    "production_deployment": false,
+    "staging_app_or_bot_deployed": false,
+    "main_pushed": false,
+    "public_registration_opened": false
+  },
+  "outstanding_release_gates": [
+    "Repeat migration/restore rehearsal against current0102receipt-previewbaseline after integration.",
+    "Provider-only Pro purchase is unsupported by current code.",
+    "Google Play Billing integration and Console products/license testers are not configured.",
+    "Real Google/Apple signup and AI Voice walkthroughs are not completed.",
+    "Installed Android, macOS, Windows and signed Telegram Mini App parity walkthroughs are not completed."
+  ],
+  "baseline_superseded_by": {
+    "main_commit": "3fffa42ecd9b53bf06f39c7c5f12dde08fcc030f",
+    "production_revision": "0102_payment_review_preview",
+    "current_baseline_gate": "Requires integration and new rehearsal; historical comparisons remain valid only for recorded0101source."
+  }
+}

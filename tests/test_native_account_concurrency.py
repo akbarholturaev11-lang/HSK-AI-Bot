@@ -34,18 +34,43 @@ class NativeAccountConcurrencyTests(unittest.IsolatedAsyncioTestCase):
             await connection.execute(text(f'DROP SCHEMA {self.schema} CASCADE'))
         await self.admin.dispose()
 
-    async def test_parallel_first_provider_signups_create_one_account(self):
-        async def signup(index):
+    async def test_parallel_first_provider_signups_create_one_account_per_provider(self):
+        subjects = {'google': 'concurrent-google-signup', 'apple': 'concurrent-apple-signup'}
+        start = asyncio.Event()
+
+        async def signup(provider, index):
             async with self.sessions() as session:
+                await start.wait()
                 uid = await IdentityLinkService(session, _settings()).resolve_signin(
-                    _verified(subject='concurrent-signup'), installation_key_hash=f'install-{index}', allow_create=True)
+                    _verified(provider=provider, subject=subjects[provider]),
+                    installation_key_hash=f'install-{provider}-{index}', allow_create=True)
                 await session.commit()
-                return uid
-        ids = await asyncio.wait_for(asyncio.gather(*(signup(i) for i in range(4))), timeout=15)
-        self.assertEqual(len(set(ids)), 1)
+                return provider, uid
+
+        tasks = [asyncio.create_task(signup(provider, index))
+                 for provider in subjects for index in range(4)]
+        start.set()
+        outcomes = await asyncio.wait_for(asyncio.gather(*tasks), timeout=15)
+        user_ids = {}
+        for provider in subjects:
+            with self.subTest(provider=provider):
+                ids = [uid for actual_provider, uid in outcomes if actual_provider == provider]
+                self.assertEqual(len(ids), 4)
+                self.assertEqual(len(set(ids)), 1)
+                user_ids[provider] = ids[0]
+        # Both verified claims have the same email; it must not merge the accounts.
+        self.assertNotEqual(user_ids['google'], user_ids['apple'])
         async with self.sessions() as session:
-            self.assertEqual((await session.execute(select(func.count(User.id)))).scalar_one(), 1)
-            self.assertEqual((await session.execute(select(func.count(UserIdentity.id)))).scalar_one(), 1)
+            self.assertEqual((await session.execute(select(func.count(User.id)))).scalar_one(), 2)
+            identities = list((await session.execute(select(UserIdentity))).scalars())
+            self.assertEqual(len(identities), 2)
+            service = IdentityLinkService(session, _settings())
+            self.assertCountEqual(
+                [(identity.provider, identity.subject_hash, identity.user_id) for identity in identities],
+                [(provider, service.subject_hash(provider, subject), user_ids[provider])
+                 for provider, subject in subjects.items()],
+            )
+            self.assertEqual(list((await session.execute(select(User.telegram_id))).scalars()), [None, None])
 
     async def test_parallel_unlinks_wait_for_account_lock_and_keep_one_method(self):
         async with self.sessions() as session:
