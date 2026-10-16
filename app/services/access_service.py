@@ -283,7 +283,7 @@ class AccessService:
             )
             if not allowed:
                 return allowed, reason
-        if resolve_state(user) == EntitlementState.TRIAL_ACTIVE:
+        if resolve_state(user) == EntitlementState.TRIAL_ACTIVE or has_active_pro_trial(user):
             return await self._can_use_ai_budget(telegram_id)
         if getattr(user, "payment_preview_payment_id", None) is not None and not self._is_paid_user(user):
             return await self._can_use_payment_preview_ai(user)
@@ -333,7 +333,7 @@ class AccessService:
         allowed, reason = await self._configured_ai_access(user, A.AI_PHOTO, "access_daily_image_limit_reached")
         if not allowed:
             return allowed, reason
-        if resolve_state(user) == EntitlementState.TRIAL_ACTIVE:
+        if resolve_state(user) == EntitlementState.TRIAL_ACTIVE or has_active_pro_trial(user):
             return await self._can_use_ai_budget(telegram_id)
         if getattr(user, "payment_preview_payment_id", None) is not None and not self._is_paid_user(user):
             return await self._can_use_payment_preview_ai(user)
