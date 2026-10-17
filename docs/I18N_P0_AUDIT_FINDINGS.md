@@ -235,3 +235,49 @@ APK, Mini App runtime, or lesson source data was altered.
 **P0 remains IN PROGRESS.** No P1 generated catalog or target-runtime
 migration is implemented. Refer to `localization/PLAN_SCHEMA_ORDER.md`
 for the exact commit sequence, verified tests and next gates.
+
+## P0 fourth source review — Android XML and lesson assessment shape (2026-10-17)
+
+The preparation branch has a new read-only Android XML audit:
+`scripts/i18n_android_resource_audit.py`, regression
+`tests/test_i18n_android_resource_audit.py`, and backend CI artifact
+`hsk-i18n-android-xml-audit.json`. Unlike the existing name-only Android
+scanner, it parses XML, inventories `string` / `plurals` /
+`string-array`, and compares existing ru/tg resources from each
+`main/direct/play` source set for placeholder types/positions and
+plural/array shape without emitting translation text.
+
+**Measured result:** [CI 39000462115](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39000462115)
+concluded **SUCCESS**, with **24 compared resource pairs and 0 XML
+structural/placeholder review findings**. This does not validate translation
+quality, Android lint/rendering or Android direct/Play billing behavior.
+
+The existing `scripts/i18n_p0_contract_audit.py` also checks current
+`correct_index` bounds against list or locale-keyed option arrays in all
+seven lesson tracks. Issues are structural only: no answer values, words,
+pinyin, questions, or user data appear in the emitted report. Regression
+tests cover valid and out-of-range options without touching grading.
+[CI 39000552111](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39000552111)
+passed its localization-specific unit/audit step; full job must be
+verified separately before claiming a complete backend pass.
+
+**Confirmed source-only hardcoded copy finding:** user-facing messages
+in `app/bot/handlers/account_deletion.py` are Uzbek constants, including
+verification and confirmation callbacks. No runtime locale lookup is used
+by these handlers. This is a specific learner-message gap, not an
+automatic claim that every scanner candidate is a defect. P0 leaves
+the deletion/ownership flow unchanged pending localized bot message
+fixtures and correct user-language lookup tests.
+
+**Confirmed static exposure review target:** course lesson JSON contains
+`correct_index` keys in exercise cards, and `app/main.py`
+defines a direct static lesson route with no handler-level dependency.
+Actual unauthenticated availability, globally applied middleware,
+Pro exposure and private exam grading need independent checks. Do not
+publish newly generated paid bundles or exam keys while unresolved.
+
+**Remaining:** rendered 3-language UI/quiz and notification baselines,
+WebView/offline/device testing, manual candidate triage, full course
+entitlement review and verified language fallback precedence.
+P0 remains IN PROGRESS; no changes to live client strings, lesson data,
+access control, payments, or account state have been made.
