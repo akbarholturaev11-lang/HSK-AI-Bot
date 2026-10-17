@@ -53,7 +53,7 @@ async def send(bot, message):
                 "uz": "Salom", "ru": "Привет", "tj": "Салом"
             }}), encoding="utf-8")
             producer = root / "scripts/build_ready_phrases.py"
-            producer.write_text("PHRASE_VERSION = 1\\n", encoding="utf-8")
+            producer.write_text("PHRASE_VERSION = 1\n", encoding="utf-8")
             result = inventory(root)
             paths = {row["path"]: row for row in result["files"]}
             self.assertEqual(paths["scripts/ready_phrases/phrases.json"]["group"],
