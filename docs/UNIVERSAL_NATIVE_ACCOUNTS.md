@@ -434,3 +434,66 @@ Android/DMG/EXE parity, or Mini App account-link walkthroughs. Those are the
 remaining acceptance checks. Play has no purchase test in the current scope.
 The full desktop/older Mini App UI suites also need their baseline gaps reviewed
 before claiming all project regressions green. `main` and production remain held.
+
+
+## 2026-10-17 Android OAuth failure / browser-return audit
+
+**Production evidence (read-only Railway inspection):** current live service is
+on `main` commit `160a51d69f3324e3162375213ec61b5587b19533`,
+**not** `codex/universal-sign-in`. The app service is healthy (one active
+replica), but the separate production PostgreSQL service reports two warnings.
+The staging environment has its PostgreSQL service and no universal-login
+application deployment. Production variable names contain both Google client
+IDs, desktop web secret, Google enable flag and OAuth redirect origin, but
+their values were redacted; Apple variable names were absent. These facts
+**do not** verify that credentials/callbacks work.
+
+Five Android/OkHttp attempts on 2026-10-17 reached
+`POST /api/v3/native-auth/oauth/start` and received HTTP 200; the subsequent
+`POST /api/v3/native-auth/oauth/assert` requests all received HTTP 422.
+The request/response bodies are not present in available HTTP logs, so the
+specific server error code was not recoverable. A concrete contract mismatch
+was identified: Kotlin `OAuthAssertRequest.provider = "google"` could be
+omitted by `kotlinx.serialization` with default `encodeDefaults=false`,
+while the FastAPI assertion requires `provider`. The DTO now has a required
+provider field and an explicit serialization regression test. This explains
+a plausible direct cause for the 422 responses but is not an E2E replay.
+
+The branch's Android Google sign-in and profile attachment now use the
+existing browser redirect/PKCE + confidential web-client exchange instead of
+depending on Credential Manager UI/Google Play Services. Legacy native
+assertion remains implemented internally; its Android-specific audience is
+never accepted for the browser-client token exchange. Android browser Google
+start fails closed if the separate web-client ID/secret is missing. The
+callback hands control back using only a fixed
+`pomp-hsk-ai://oauth-return` link when the successfully verified request is
+from Android; token/session credentials never appear in that URL. The callback
+page attempts to launch the app and provides a visible link in browsers that
+block scripted app launches. The existing singleTask Android MainActivity
+accepts that scheme. A live device/browser test is still mandatory (some
+browser/OS combinations block automatic handoff and a killed app process may
+lose in-memory polling state).
+
+Desktop macOS/Windows provider sign-in already uses a system-browser redirect,
+PKCE and the existing Rust-owned device/session polling, without embedding
+credentials in the webview. Telegram device links and subsequent attachment
+are separate confirmation flows with an account-binding proof. **However**,
+the currently inspected desktop Profile UI renders a Telegram identity
+attachment row only, not controls to attach Google or Apple to an already
+signed-in desktop account. Those additional Profile controls remain a separate
+product gap; backend identity endpoints alone do not provide a finished
+desktop flow. Desktop OS protocol registration and automatic window
+foregrounding were not added; the desktop app still completes sign-in by
+polling. Google/Apple desktop/provider use cannot be marked verified solely
+from code inspection.
+
+**New tests were committed but not executed in this audit.** No PR-triggered
+workflow run or combined commit status appeared for the inspected HEAD.
+Do not count the historic tests recorded earlier in this document as test
+results for these new patches. Next release gates: run Python OAuth API tests,
+Android JVM/UI/real-device browser tests, desktop Rust/JS regressions; deploy
+to an isolated staging application with real provider test credentials;
+validate Android Google/Apple auto-return/manual fallback, cancellation,
+existing account attachment, Telegram approval, session/entitlement isolation
+and installed macOS/Windows flow. Do **not** merge into `main`, deploy
+production, migrate its database or claim release-ready before sign-off.
