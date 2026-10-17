@@ -1078,6 +1078,51 @@ Do not mark implementation complete based on the plan being written.
   PR #179 Draft. No app runtime, production, billing, lesson or
   grading values changed.
 
+### P0 nineteenth implementation slice — 2026-10-17 (WebView local state account-boundary inventory)
+
+- **New source-only cache-scope registry:** `localization/review/miniapp_client_storage_scope_20261017.json`
+  added in `46fcea3da1e592d5b348416ea3b4d8ce55fbc959`.
+  It classifies 22 quoted-literal `localStorage`/`sessionStorage`
+  operations across course Mini App and `course_v3_memorize.html`,
+  grouped into 11 key classes; plus five dynamic key constructors.
+  The registry distinguishes UX flags from progress/mastery and
+  notes source-level user scope, not a confirmed account leak.
+- **Important separate unscoped personal learning state:** the course
+  page's `lessonResumeKey()` is level+order only and
+  `lessonDataKey()` is a page-memory level+order cache; the
+  memorization page reads/writes per-Hanzi mastery and errors under
+  a single unscoped `hsk_memo` key. `lessonMasteryKey()` and
+  `foundationCacheKey()` do use `localUserScope()`; the setup
+  time key uses a different explicit Telegram user-ID suffix.
+  `localUserScope()` reads `tg.initDataUnsafe` and is only
+  client-side scoping, never server-proven authorization.
+- **Read-only regression:** `scripts/i18n_miniapp_storage_scope_audit.py`
+  (`b64a8752ff7e18af9a58d6922baa1c56d914d4f8`) compares exact
+  reviewed literal operations, dynamic constructors and
+  identity-scope flags without inspecting browser/user content.
+  `tests/test_i18n_miniapp_storage_scope_audit.py`
+  (`dbc7e88288ffcfdbd79a44b10d50b76bfcca48e3`)
+  tests new-key drift, lost mastery scoping and memorization
+  storage changes. `e3e11dd883cb888060f394b9875548d930b09807`
+  adds both to the fast CI and archives
+  `miniapp-storage-scope.json`.
+  An initial run flagged a multiline setup-time constructor due
+  to a scanner limitation; `9653d78d98e4e4cf90ec1de7359c91c2a896bb22`
+  corrected it. [Fast P0 run 39026289977](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39026289977)
+  finished **SUCCESS**, including all 5 new tests.
+- **Detailed audit findings:** `docs/I18N_P0_AUDIT_FINDINGS.md`
+  updated in `dc7156705930e290a8fc81cffb7bff1cdd1c3202`.
+  This slice made no WebView/browser, Mini App runtime, lesson,
+  progress, subscription, payment, Railway staging or production
+  changes; branch only, PR #179 remains Draft.
+- **Unclosed QA:** simulate two approved/disposable users on the same
+  Telegram WebView origin and verify no account A resume/mastery/
+  memorize history or in-flight authorized lesson cache appears
+  under account B. Define safe key/version migration and cleanup
+  before code changes. Existing 24 anonymous staging status-only
+  results and 746 source grading-field findings still stand.
+  P0 IN PROGRESS, P1–P4 NOT STARTED.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
