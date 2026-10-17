@@ -5,6 +5,13 @@ The validation deliberately rejects production Railway and inherited BOT_TOKEN.
 """
 from urllib.parse import urlsplit
 
+def normalize_staging_db_url(url):
+    """Railway Postgres publishes a driverless URL; app needs asyncpg."""
+    if url.startswith("postgresql://"):
+        return "postgresql+asyncpg://" + url[len("postgresql://"):]
+    return url
+
+
 def validate_staging_environment(env):
     if env.get("HSK_STAGING_QA_MODE") != "1":
         raise RuntimeError("QA boot requires explicit HSK_STAGING_QA_MODE=1")
