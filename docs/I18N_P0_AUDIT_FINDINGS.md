@@ -608,3 +608,11 @@ The maps contain translatable labels/content metadata and a
 `progress` template; they are not guaranteed to be free of all
 commercially restricted learner text. No live user-specific
 response/proxy or native client was tested.
+
+**Naming-variant hardening:** Source guard normalization also catches
+`correctIndex`, `answer-key` and similar camelCase/kebab-case fields;
+the synthetic fixture tests verify four forbidden grading paths
+without exposing actual answer values. Verified in
+[fast P0 CI 39011475458](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39011475458),
+conclusion **SUCCESS**. This is protection for future map edits, not a
+claim that runtime Pro content access has been fixed.
