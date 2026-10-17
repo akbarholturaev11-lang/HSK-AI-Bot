@@ -262,6 +262,48 @@ Do not mark implementation complete based on the plan being written.
   expansion. **P1/P2/P3/P4 remain NOT STARTED**; no runtime clients or new
   languages were changed.
 
+### P0 fourth implementation slice — 2026-10-17 (Android XML and lesson answer-shape guards)
+
+- **New source-only audit:** `scripts/i18n_android_resource_audit.py`
+  (commit `e0df6734a9a32a8ed7958a9286c7c74456051dda`)
+  parses actual Android XML from each `main/direct/play` source set and checks
+  existing `values-ru` / `values-tg` for matching string keys, printf and
+  named placeholders, plural quantities, string-array lengths, and
+  `formatted` flags. Reports only key names and token signatures — **never
+  translated values**. `tests/test_i18n_android_resource_audit.py` added in
+  `e4e207c93fe885c5af77d4a289a3b29c58c3567d`.
+- **CI:** `f614bbc07487102a1ae43a41c53abba6172c990d` added
+  `/tmp/hsk-i18n-android-xml-audit.json` to the localization audit artifact.
+  [GitHub Actions 39000462115](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39000462115)
+  **completed SUCCESS**; measured **24 XML comparison pairs, 0 review
+  findings**. This is XML contract checking, not Android UI/runtime verification.
+- **Existing lesson assessment shape audit enhanced:**
+  `90f164e36d4e0e2c09a5599096cacdfb576eedfc` and regression tests
+  `bf71e1ea37e0532ba6eed88cc97ecb2a815836ac` now report missing/
+  invalid `correct_index` positions against same-card options, including
+  current locale-keyed option lists. Do not publish answer values, change
+  quiz grading, or mutate lesson JSON. In [CI 39000552111](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39000552111),
+  localization-specific tests completed **SUCCESS**; recheck overall workflow
+  conclusion before calling the entire backend run green.
+- **Manual source review:** account-deletion bot flow
+  (`app/bot/handlers/account_deletion.py`) contains user-facing Uzbek-only
+  confirmation and callback text without per-locale lookup; this is a
+  confirmed source-level localization gap, unlike heuristic audit candidates.
+  Runtime translation is **not** changed at P0. Existing static lesson JSON
+  includes `correct_index` fields; `app/main.py` has a static lesson
+  endpoint without handler-level auth. Inspect middleware, actual deployed
+  access and course material before releasing any newly generated public
+  translation packs.
+- **Limitations:** XML audit does not validate string semantics, native
+  formatting/lint, accessibility or real hardware; the lesson audit checks
+  option-index *shape*, not answer correctness, stable ID grading or progress
+  behavior. Device/WebView/desktop screenshots, live offline behavior, manual
+  locale review, security/entitlement and remaining P0 review queue are
+  **still open**. P0 IN PROGRESS; P1/P2/P3/P4 NOT STARTED.
+- **Branch discipline:** changes are pushed only to
+  `codex/i18n-local-first-foundation-20261017` / PR #179 Draft. Do not
+  merge into `main` or reset `codex/local-ai` and `codex/cloud-ai`.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
