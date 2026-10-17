@@ -33,19 +33,22 @@ SCAN_GLOBS = {
         "scripts/hsk30/generated/**/*.json",
     ),
     "bundled_content": (
-        "android/app/src/main/assets/**/*.json",
+        "android/app/src/**/assets/**/*.json",
+        "scripts/ready_phrases/**/*.json",
         "app/static/hsk-*.js",
         "app/static/course_v3_data/hsk30-*.js",
     ),
     "miniapp_ui": ("app/static/**/*.html", "app/static/**/*.js"),
     "android_ui": ("android/app/src/**/*.kt", "android/app/src/**/res/values*/*.xml"),
-    "desktop_ui": ("desktop/ui/**/*.html", "desktop/ui/**/*.js"),
+    "desktop_ui": ("desktop/ui/**/*.html", "desktop/ui/**/*.js",
+                   "desktop/ui/**/*.json"),
     "bot_backend": (
         "app/bot/**/*.py", "app/api/**/*.py", "app/services/**/*.py",
         "app/repositories/**/*.py", "app/public_site/**/*.py", "app/main.py",
     ),
     "generators": (
         "scripts/gen_course_v3_from_seed.py", "scripts/hsk30/**/*.py",
+        "scripts/build_ready_phrases.py", "scripts/hsk4_upper_i18n.py",
         "scripts/seed_hsk*_lesson_*.py",
     ),
 }
@@ -68,6 +71,15 @@ MESSAGE_METHODS = frozenset({
     "answer_video", "send_animation",
 })
 BUTTON_CLASSES = frozenset({"InlineKeyboardButton", "KeyboardButton", "MenuButtonWebApp"})
+# Positional caption arguments differ from message text. The old scanner
+# accidentally classified photo/document paths as learner-facing messages.
+MESSAGE_TEXT_ARG = {
+    "send_message": 1,
+    "send_photo": 2, "send_video": 2,
+    "send_document": 2, "send_animation": 2,
+    "answer_photo": 1, "answer_video": 1,
+}
+
 
 
 def _markers(value: str) -> list[str]:
@@ -127,7 +139,7 @@ def python_message_candidates(source: str) -> list[dict]:
         )
         value_node = None
         if method in MESSAGE_METHODS:
-            arg = 1 if method.startswith("send_") else 0
+            arg = MESSAGE_TEXT_ARG.get(method, 0)
             if len(call.args) > arg:
                 value_node = call.args[arg]
             if value_node is None:
