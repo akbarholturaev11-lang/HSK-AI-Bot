@@ -318,7 +318,8 @@ The fallback evidence was added to the same read-only P0 audit
 (`7e7bf7220e504a9b0df58418c9e2d95dcd79afe7`) and real-repository
 regressions (`9a10e479356af88243a0b3e52b696928c0ee53f9`),
 [CI run 39006142928](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39006142928).
-Its overall conclusion must be checked before declaring the entire run passed.
+The localization-specific tests and the complete `Backend targeted tests`
+job both concluded **SUCCESS**. No native-device or live-production check is implied.
 
 This slice did **not** change UI copy, callbacks, Android source resources,
 lesson JSON, user locale preference, auth, payment, access policy or runtime
