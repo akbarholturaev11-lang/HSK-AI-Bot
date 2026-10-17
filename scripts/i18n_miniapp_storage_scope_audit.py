@@ -27,7 +27,7 @@ REQUIRED_KEY_FUNCTIONS = {
 
 def _function_line(source: str, name: str) -> str:
     match = re.search(
-        r"\bfunction\s+" + re.escape(name) + r"\s*\([^)]*\)\s*\{([^\n]*)", source
+        r"\bfunction\s+" + re.escape(name) + r"\s*\([^)]*\)\s*\{([\s\S]{0,750}?)\}", source
     )
     return match.group(1) if match else ""
 
