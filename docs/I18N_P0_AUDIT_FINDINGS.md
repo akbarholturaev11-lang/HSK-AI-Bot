@@ -285,3 +285,42 @@ WebView/offline/device testing, manual candidate triage, full course
 entitlement review and verified language fallback precedence.
 P0 remains IN PROGRESS; no changes to live client strings, lesson data,
 access control, payments, or account state have been made.
+
+## P0 fifth audit — Bot/Desktop source catalog parity and divergent fallbacks (2026-10-17)
+
+A deterministic read-only script `scripts/i18n_catalog_contract_audit.py`
+extracts the current Python Bot literal translation tables using `ast`,
+without importing or executing the bot, and inventories the present Desktop
+JS messages object. It checks locale key sets, named placeholders, HTML tag
+counts, Bot merge order and duplicate definitions. It produces no translation
+values, learner content or credentials.
+
+**Measured [GitHub Actions 39005975851](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39005975851)
+artifact:** Desktop has exactly **797 keys per each of uz/ru/tj**; effective
+Bot `TEXTS` contains **253**, and Bot `COURSE_I18N` contains **92** keys per
+locale. Across the nine Bot source tables, final Bot catalogs and Desktop,
+**0 missing localized keys, 0 named-placeholder drifts and 0 HTML tag-count
+drifts** were reported. The existing Bot `ONBOARDING_TIP_I18N` overrides
+the `TEXTS` key `referral_trial_access_unlocked` in all three languages
+(3 recorded overrides). These are source parity checks, not proof that
+all UI strings are translated or rendered correctly.
+
+**Confirmed source-level fallback inconsistency** (not an established
+user-visible bug): Mini App course uses **ru** as its initial unknown-language
+fallback, while Mini App subscription and Desktop use **uz**. Bot's
+`t(..., lang="ru")` and Android's `AppLanguage.DEFAULT = RUSSIAN`
+use **ru**. The preparation manifest proposes **uz**. Course can
+subsequently use the authenticated account's supported language when it
+arrives. This observation requires an explicit precedence contract and
+runtime tests before localization adapters are switched.
+
+The fallback evidence was added to the same read-only P0 audit
+(`7e7bf7220e504a9b0df58418c9e2d95dcd79afe7`) and real-repository
+regressions (`9a10e479356af88243a0b3e52b696928c0ee53f9`),
+[CI run 39006142928](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39006142928).
+Its overall conclusion must be checked before declaring the entire run passed.
+
+This slice did **not** change UI copy, callbacks, Android source resources,
+lesson JSON, user locale preference, auth, payment, access policy or runtime
+delivery. The planned shared source-of-truth catalogs and all runtime
+migrations remain **NOT STARTED**. P0 review and device QA continue.
