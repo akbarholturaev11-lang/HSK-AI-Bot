@@ -460,3 +460,42 @@ stable source references, validate translation/HTML safety manually,
 review real API and edge-route protection, and run client-level
 locale/fallback/offline regression tests before closing P0.
 No runtime modifications were made.
+
+## P0 eighth audit — manually classified Mini App source hotspots (2026-10-17)
+
+The existing residual hotspot scanner is intentionally heuristic.
+We inspected the actual `app/static/course-v3.html` source and recorded
+**21 distinct reviewed source line anchors** in
+`localization/review/miniapp_course_hotspot_triage.json`. This is a
+*partial* review, not 21 of 125 interchangeable individual patterns:
+a single condensed JavaScript source line can contain multiple
+`LANG` checks. The full source scan previously measured 125
+`LANG` occurrences, not 125 distinct text strings.
+
+The reviewed sample includes visible/accessibility UI copy, lesson
+prompts, errors, rating/profile/navigation strings, lesson glosses,
+access/limit status text, plus three **non-text transformations**:
+`tj` to HTML `tg` locale adaptation, Russian plural grammar,
+and TTS preferred-voice language lookup. These must preserve
+their behavior during any build-time translation migration.
+None was automatically translated, refactored or moved.
+
+The source triage test
+`tests/test_i18n_miniapp_hotspot_triage.py` checks the known file/line
+anchors, categories, explicit review status, and data-only vs
+behavioral distinction. It was verified in
+[fast P0 CI 39008283996](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39008283996)
+(**SUCCESS**). If source lines change, the test fails closed and
+requires re-review rather than silently retaining stale classifications.
+
+**CI efficiency:** source-only P0 checks and full backend tests now
+have PR-scoped concurrency groups with `cancel-in-progress: true`
+(commit `0b002834` for backend, `e3244675` for fast P0), to
+avoid paying for several obsolete full runs on sequential commits.
+An intentionally cancelled old run is *not* a regression test failure.
+
+**Important remaining work:** review the other source hotspots,
+check correct translation and escaping of those visual strings,
+actual 3-language on-device screens, WebView cache/fallback flows,
+and real static course entitlement/exam exposure. Neither P0 nor any
+generated runtime translation target is complete.
