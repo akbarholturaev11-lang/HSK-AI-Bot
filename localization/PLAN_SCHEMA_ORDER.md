@@ -412,6 +412,23 @@ Do not mark implementation complete based on the plan being written.
   keys in every catalog; some legitimate page catalogs have 2–7 keys.
   This overly strict test assertion was fixed in `1db94831`. The
   subsequent localization CI step passed in run 39007054885.
+- **Legacy formatter verification:** CI artifact from
+  [run 39007233003](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39007233003)
+  confirms `countAll(n, level)`, `countResults(n)` and `strokes(n)`
+  each appear in uz/ru/tj (9 source function entries) with **0 parameter
+  signature mismatches**. This does not certify the output translations.
+- **Residual Mini App hotspots:** `6a1023cf186e68593de5fd974bb9e02821615468`
+  and regression `fbce628576dfaf2048ac5daf46c477430b80c550`
+  add read-only counts and line locations to the Mini App report. In
+  [run 39007408199](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39007408199),
+  the localization test/audit step completed SUCCESS. Across 11 selected
+  HTML pages: **11 inline localized t/tr object calls, 126 LANG branches,
+  54 JS locale-object declarations, 59 markup attribute candidates**.
+  These are heuristic source pattern occurrences (not errors), may include
+  already audited dictionaries, and do **not** prove 100% copy coverage.
+  The concentration of 125 LANG branches in `course-v3.html` and nine
+  inline locale calls in `course_v3_memorize.html` should be prioritized
+  for manual classification before generated catalogs.
 - **Still open:** these 18 selected literal dictionaries are not *all*
   Mini App UI copy. Other inline ternaries, runtime-composed strings,
   localized callback copy, HTML attributes, static asset caching, actual
