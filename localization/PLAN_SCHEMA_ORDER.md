@@ -189,6 +189,10 @@ Do not mark implementation complete based on the plan being written.
   8 legacy content files, 54 UI catalog source files
   and 3 generator/audit sources from baseline commit
   `160a51d69f3324e3162375213ec61b5587b19533`. This proves *file identity at baseline*, not semantic correctness.
+- Verified P0 CI report: `docs/I18N_P0_AUDIT_FINDINGS.md` (source scanner
+  2,681 paths; 70,813 recognized locale maps; 7,951 **review candidates**;
+  Android 24 parity pairs; 811 frozen files matched; 0 baseline blockers).
+  Automated detection is incomplete and does not verify translation quality.
 - P0 remains **IN PROGRESS**. Do not activate a new language; screenshot,
   device/offline, manual translation and access-security review is outstanding.
 
