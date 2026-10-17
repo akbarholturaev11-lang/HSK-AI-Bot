@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-17T08:30:38Z",
+  "environment": "Railway staging only",
+  "staging_origin": "https://hsk-ai-p0-qa-staging.up.railway.app",
+  "workflow_run_id": 39017607269,
+  "workflow_run_url": "https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39017607269",
+  "workflow_artifact_id": 12095158928,
+  "read_policy": "GET+Range: bytes=0-0; status only; response body not read",
+  "performed_requests": 15,
+  "navigation_maps": {
+    "tracks": [
+      "hsk1",
+      "hsk2",
+      "hsk3",
+      "hsk4",
+      "nhsk1",
+      "nhsk2",
+      "nhsk3"
+    ],
+    "http_status": 206,
+    "count": 7
+  },
+  "legacy_lessons": {
+    "path_pattern": "/course_v3_data/{track}/lesson_01.json",
+    "http_status": 206,
+    "count": 7,
+    "anonymous_access_confirmed": true
+  },
+  "private_exam": {
+    "path": "/course_v3_data/exams/p0-privacy-probe.json",
+    "http_status": 404,
+    "protection_confirmed_for_path": true
+  },
+  "review_findings": [
+    "Anonymous access to each of seven sampled lesson JSON routes is confirmed at staging, not necessarily production.",
+    "Response bodies were not read; actual Pro entitlement bypass and other routes are not evaluated."
+  ],
+  "unresolved": [
+    "Anonymous /api/v3/android and /api/v3/desktop lesson endpoints",
+    "Authenticated Free/Trial/Pro/blocked access matrix",
+    "Paid/advanced lesson content classification",
+    "Mini App prefetch quota and cross-account cache isolation on actual clients"
+  ]
+}
