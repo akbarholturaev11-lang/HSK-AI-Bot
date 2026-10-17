@@ -18,8 +18,22 @@ LOCALES = ("uz", "ru", "tj")
 TARGETS = (
     ("app/static/course-v3.html", "I18N"),
     ("app/static/course-v3.html", "TRACK_UI"),
+    ("app/static/course-v3.html", "HSK30_BOOK_COPY"),
     ("app/static/subscription.html", "I18N"),
+    ("app/static/course_v3_test.html", "L"),
+    ("app/static/course_v3_test.html", "EM"),
+    ("app/static/course_v3_test.html", "HSK30_SOON"),
+    ("app/static/course_v3_test.html", "PT"),
+    ("app/static/course_v3_mistakes.html", "L"),
+    ("app/static/course_v3_pronunciation.html", "L"),
+    ("app/static/course_v3_recognition.html", "L"),
     ("app/static/course_v3_onboarding.html", "L"),
+    ("app/static/course_v3_voice.html", "L"),
+    ("app/static/hsk-lugat.html", "UI"),
+    ("app/static/hsk-lugat.html", "practiceLabels"),
+    ("app/static/hsk-lugat.html", "memoLabels"),
+    ("app/static/hsk-lugat.html", "messages"),
+    ("app/static/hsk-gaplar.html", "UI"),
 )
 NAME = re.compile(r"^\s*([A-Za-z_$][\w$]*)\s*:\s*", re.S)
 VARIABLE = re.compile(r"(?<![$\{])\{([A-Za-z_]\w*)\}(?!\})")
