@@ -344,6 +344,17 @@ Do not mark implementation complete based on the plan being written.
   [CI run 39006142928](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39006142928)
   is the validation reference for fallback tests; only mark successful
   after checking the actual workflow result.
+- **Additional entitlement exposure source review:** `app/main.py`
+  registers `/course_v3_data/{level}/{filename}` and returns
+  `static_json_response(...)` without handler-level authentication or
+  entitlement checks. The installed `BlockedUserApiMiddleware` in
+  `app/services/blocked_user_guard.py` explicitly only guards `/api/`
+  requests, so **that middleware does not protect the static lesson route**.
+  JSON source includes `correct_index` fields. Other reverse proxies,
+  deployment access and any real-world request outcomes are not verified;
+  public paid-content/assessment exposure is a P0 security blocker for any
+  new publicly readable locale pack. Do not modify active payment/auth/grading
+  flows as part of this source-only audit.
 - **P0 remains IN PROGRESS:** Mini App per-page dictionaries need
   authoritative key/placeholder classification and rendered screenshots;
   verify language/account state precedence on device, Telegram WebView
