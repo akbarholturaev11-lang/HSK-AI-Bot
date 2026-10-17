@@ -69,6 +69,67 @@ class BaselineGuardTests(unittest.TestCase):
             result = check_baseline(root, baseline)
             self.assertEqual(result["findings"][0]["issue"], "lesson_identity_mismatch")
 
+    def test_only_exact_reviewed_ui_new_blob_can_pass(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            lesson = root / "app/static/course_v3_data/hsk1/lesson_01.json"
+            baseline = fixture(lesson, '{"level":"hsk1","lesson_id":1}')
+            ui = root / "desktop/ui/js/i18n.js"
+            ui.parent.mkdir(parents=True)
+            original = b"old catalog source"
+            updated = b"new catalog source"
+            ui.write_bytes(original)
+            old_blob = git_blob_sha1(original)
+            new_blob = git_blob_sha1(updated)
+            baseline["sources"]["ui_catalog_origins"].append({
+                "path": "desktop/ui/js/i18n.js",
+                "git_blob_sha1": old_blob,
+                "bytes": len(original),
+            })
+            baseline["source_count"] = 2
+            reviewed = {
+                "schema_version": 1,
+                "baseline_main_commit": baseline["baseline_main_commit"],
+                "files": {
+                    "desktop/ui/js/i18n.js": {
+                        "baseline_sha1": old_blob,
+                        "reviewed_sha1": new_blob,
+                        "reason": "Reviewed common-message migration",
+                    },
+                },
+            }
+            ui.write_bytes(updated)
+            self.assertEqual(check_baseline(root, baseline)["review_blockers"], 1)
+            report = check_baseline(root, baseline, reviewed)
+            self.assertEqual(report["review_blockers"], 0)
+            self.assertEqual(report["reviewed_ui_changes"], 1)
+            self.assertEqual(report["status"],
+                             "byte_baseline_intact_with_reviewed_ui")
+            ui.write_bytes(b"unreviewed third edit")
+            self.assertEqual(check_baseline(root, baseline, reviewed)["review_blockers"], 1)
+
+    def test_reviewed_ui_manifest_cannot_hide_changed_lesson_blob(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            lesson = root / "app/static/course_v3_data/hsk1/lesson_01.json"
+            baseline = fixture(lesson, '{"level":"hsk1","lesson_id":1}')
+            original = baseline["sources"]["lessons"][0]["git_blob_sha1"]
+            new_bytes = b'{"level":"hsk1","lesson_id":2}'
+            lesson.write_bytes(new_bytes)
+            reviewed = {
+                "schema_version": 1,
+                "baseline_main_commit": baseline["baseline_main_commit"],
+                "files": {
+                    "app/static/course_v3_data/hsk1/lesson_01.json": {
+                        "baseline_sha1": original,
+                        "reviewed_sha1": git_blob_sha1(new_bytes),
+                        "reason": "Attempt to waive lesson changes",
+                    },
+                },
+            }
+            with self.assertRaisesRegex(ValueError, "non-UI"):
+                check_baseline(root, baseline, reviewed)
+
     def test_unsafe_paths_and_duplicate_records_are_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
