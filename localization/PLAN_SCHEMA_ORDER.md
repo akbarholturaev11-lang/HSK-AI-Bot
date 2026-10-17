@@ -202,6 +202,19 @@ Do not mark implementation complete based on the plan being written.
 - P0 remains **IN PROGRESS**. Do not activate a new language; screenshot,
   device/offline, manual translation and access-security review is outstanding.
 
+### P0 second implementation slice (verified localization CI)
+
+- Commit `fbd31e6898966b3a8ac41c3001bbd4bb3b4f3c77`: frozen 7-track
+  `uz/ru/tj` source samples + guards, with lesson identity, Chinese, pinyin
+  and sample text comparisons.
+- Commit `80554cb4d337d56b8c761f401e3239398836fe61`: review queue classifier (provisional, not proof of
+  actual translation defects), unit tests and CI JSON artifact.
+- `docs/I18N_P0_AUDIT_FINDINGS.md` records the measured CI queue:
+  7,951 candidates across 2,681 sources; 21 selected 3-language source
+  sample pairs match exactly. See GitHub Actions run `38998775540`.
+- Manual review and runtime screenshots remain pending; milestone **P0 remains
+  IN PROGRESS**, and P1 runtime wiring is not authorized by this milestone.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.

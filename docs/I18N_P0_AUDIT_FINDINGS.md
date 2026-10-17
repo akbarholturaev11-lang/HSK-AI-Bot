@@ -96,6 +96,55 @@ have been manually audited.
    value while Android/HTML should use BCP-47 `tg`. Browser HTTP cache
    by itself does not prove Mini App offline capability.
 
+## P0 follow-on: learner-text samples and prioritized review queue
+
+The isolated branch now includes `scripts/i18n_lesson_samples.py`,
+`tests/test_i18n_lesson_samples.py`,
+`localization/baselines/lesson_locale_samples.json`, and
+`scripts/i18n_review_queue.py` with its tests.
+This is **still a source-level audit**, not proof of running UI translations.
+
+- For **all seven course tracks** (hsk1–4 and nhsk1–3), the first lesson's
+  Chinese title, first word/pinyin, card type, ID and section counts were
+  frozen alongside exact `uz/ru/tj` subtitles and first-word meanings.
+  Result: **7 lessons x 3 languages = 21 source sample pairs; 0 differences**.
+  The full 746-file byte baseline remains the broader historical guard.
+- CI [run 38998775540](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/38998775540)
+  archived the source samples and review queue in the
+  `hsk-i18n-p0-audit` artifact, which is retained temporarily by GitHub.
+  The localization-specific test step passed.
+- The read-only queue presents the **75 highest-priority of 86 source files**
+  containing scanner candidates; its source classification is tentative.
+  All 2,681 sources remain in the complete raw audit.
+- Actual preliminary file-level queue totals from CI:
+
+| Provisional area | Source files scanned | Candidates to classify |
+| --- | ---: | ---: |
+| Learner frontend (Mini App, Android, Desktop) | 416 | **7,037** |
+| Bot / learner messaging | 60 | **197** |
+| Admin or operator | 28 | **691** |
+| Lesson source content | 800 | **18** |
+| Generated/packaged dictionary and phrase data | 1,063 | **0** |
+| Lesson/source generators | 114 | **0** |
+| Backend unknown | 200 | **8** |
+| **Total** | **2,681** | **7,951** |
+
+Zero *heuristic literal hits* in packaged data and generators does **not**
+mean those resources lack language-specific text or are ready for new languages.
+Their nested localized maps, hardcoded locale loops and generated outputs need
+separate review. Candidates include repeated strings, identifiers and
+non-learner text, so do not label them all as defects.
+
+Priority file samples from the ranked artifact:
+`desktop/ui/js/i18n.js` (2,396 candidates),
+`app/static/course-v3.html` (2,217),
+`app/static/subscription.html` (502), followed by Mini App test,
+onboarding, ads, voice and dictionary screens.
+
+**Still pending:** reviewed candidate disposition, browser/native screenshots,
+full offline/WebView tests, API rendered lesson snapshots, public lesson
+entitlement/security audit and new-language coverage gates.
+
 ## Next P0 acceptance gates (not completed)
 
 - Source-by-source classification of the review candidates: active
