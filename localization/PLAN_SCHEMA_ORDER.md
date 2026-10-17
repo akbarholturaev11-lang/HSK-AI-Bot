@@ -579,6 +579,53 @@ Do not mark implementation complete based on the plan being written.
   P1/P2/P3/P4 NOT STARTED; no production runtime, accounts, payments,
   lesson JSON or grading changed, and PR #179 remains Draft.
 
+### P0 tenth implementation slice — 2026-10-17 (exam/lesson static-delivery threat boundary)
+
+- **New AST-only audit:** `scripts/i18n_route_boundary_audit.py`
+  (`f6c00f2f2ea5dfa78a58b25e61fa1f3d11322bbb`) inspects exactly three
+  public course JSON route patterns in `app/main.py` plus
+  `GUARDED_PATH_PREFIX` in `app/services/blocked_user_guard.py`.
+  It emits only named paths, policy booleans and issue codes.
+  No app import, database, live HTTP, lesson text or correct answers.
+- **Security regressions:** `tests/test_i18n_route_boundary_audit.py`
+  (`3044e2cf0149a5bcf7e9a997b854cd7ba9cac579`) verifies
+  private exam route **404 without FileResponse**; detects unsafe
+  route-policy relaxation and loss of seven-track/`lesson_*.json`
+  validation. The current legacy lesson exposure is a **review blocker,
+  not a test failure**, because production permissions and client
+  compatibility are unverified. The top-level public curriculum JSON
+  map route is a separate content-classification target.
+- **CI:** `a1f00c63a4a43c38141ea0ca2393e7e9731e4f2a`
+  runs the new tests and archives `static-route-security.json` under
+  the isolated `Local-first localization P0 guards` job. The
+  [run 39010834743](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39010834743)
+  completed **SUCCESS** and its downloaded artifact was inspected:
+  `status=SOURCE_REVIEW_REQUIRED`; lesson `serves_file=true`,
+  `handler_dependency=false`, filename/track checks present,
+  middleware only `/api/`; exam `explicit_404_return=true`,
+  `serves_file=false`. Report contains two source-level review
+  findings: existing public lesson JSON and top-level curriculum maps.
+- **Client compatibility confirmed from source:** `app/static/course-v3.html`
+  `lessonDataUrl`/`loadLessonData` call bare `fetch` on
+  `/course_v3_data/{track}/lesson_*.json`, with N1 content revision
+  and special `cache:"no-store"`; it does **not** pass
+  `X-Telegram-Init-Data` on this fetch. The **exam** flow uses
+  `/api/v3/exams/start` and `/complete` with initData separately.
+  Do not put a new authentication requirement on the old static URL
+  alone, as legacy Mini App lessons can break.
+- **Proposed migration gate, not a runtime modification:**
+  `docs/I18N_P0_LESSON_DELIVERY_SECURITY_DESIGN.md`
+  (`c95a77c7e9d882bc6b06d4e3ecf00a9be575831a`) records a
+  controlled QA identity/entitlement matrix, gated versioned lesson
+  delivery, compatible client rollouts, private cache policy, and
+  eventual closure of unintended public exposure. No API is yet
+  implemented and **no live billing/access claims are made**.
+- **Still blocking P0:** deployment/proxy and true anonymous Free/Pro
+  fetch experiments, older native/desktop client audit, UI/offline
+  screenshot evidence, translation QA and entitlement-controlled
+  lesson bundle design. P1/P2/P3/P4 NOT STARTED. No runtime, grading,
+  payments, lesson data or user state changed. PR #179 Draft.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
