@@ -215,6 +215,47 @@ Do not mark implementation complete based on the plan being written.
 - Manual review and runtime screenshots remain pending; milestone **P0 remains
   IN PROGRESS**, and P1 runtime wiring is not authorized by this milestone.
 
+### P0 third audit slice — 2026-10-17 (localization CI step verified; P0 still open)
+
+- **Code changes (isolated branch only):**
+  - `69105affaadf922a6ec4fb8d859436873de39ab1` and
+    `14d66730941510b9f81e1913f08546a54bb8dab0`:
+    new read-only `scripts/i18n_p0_contract_audit.py` plus
+    `tests/test_i18n_p0_contract_audit.py`. Validate current `uz/ru/tj`
+    and `tj -> tg` declarations, inspect the exact lesson route signature,
+    and inspect all seven lesson source directories for **structural**
+    answer-like fields. Output includes paths/counts only, never answer values.
+  - `161c128b59b7ec0b2d41031bf5376f403ce45531`:
+    add P0 guard to `.github/workflows/backend-ci.yml`, archive the
+    `hsk-i18n-p0-contract.json` artifact.
+  - `a383e8f86f82a95252d0dd825a57eaac5e8ac567`:
+    fix Telegram message-vs-media-caption positional-argument classification
+    and cover previously unscanned ready-phrase producer/source paths.
+  - `30b43d142a92cafcab24b5ca55f6fe30a452f231` and
+    `89c80ed1284525bfd083ff17bbb44ebabebf7129`:
+    regression coverage for captions, file-name false positives and phrase inventory.
+  - `eec01bb140c3861d4b26ffda80a8f409ca6c1715`:
+    align `localization/surface_registry.json` patterns and verified source anchors.
+- **Verification:** [GitHub Actions run 38999948668](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/38999948668)
+  passed its `Test multilingual inventory and Mini App locale regressions` step,
+  including the new script's 746-file P0 command. This is **not** native-device
+  testing, a complete security audit or approval to migrate clients.
+  Check the run's overall conclusion before claiming the entire backend job passed.
+- **Security observation:** `app/main.py` serves lesson JSON through
+  `/course_v3_data/{level}/{filename}` without a handler-level dependency;
+  global middleware, production access and paid-content exposure remain to be
+  investigated. Do **not** change entitlement/payment in this P0 slice.
+- **Fallback observation:** current Android `AppLanguage.DEFAULT = RUSSIAN`
+  while `localization/manifest.json` has `default_locale = uz`. Do not silently
+  align these until runtime language/account preference precedence is verified.
+- **Open P0 gates:** manually classify remaining candidate strings, review
+  complete public lesson payload/answer confidentiality, capture 3-language
+  *rendered* UI and quiz snapshots, and test real WebView/native offline,
+  Android direct/play, Desktop macOS/Windows and account-language fallback.
+  Previous scanner numeric totals are historical; use the latest CI artifact
+  after expanded phrase scanning to measure new totals. **P1/P2/P3/P4 remain
+  NOT STARTED**; no runtime clients or new languages were changed.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
