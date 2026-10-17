@@ -70,6 +70,12 @@ def check_baseline(root: Path, baseline: dict) -> dict:
                 raise ValueError("invalid baseline Git blob for " + relative)
             if not isinstance(item.get("bytes"), int) or item["bytes"] < 0:
                 raise ValueError("invalid baseline file size for " + relative)
+            lesson_match = LESSON_FILE.match(relative)
+            # Track counts describe the *recorded baseline*, not only files
+            # still present on disk. A missing file must remain a review
+            # finding rather than turning into a misleading schema error.
+            if lesson_match:
+                lesson_tracks[lesson_match.group(1)] += 1
             path = root / relative
             issue = None
             if not path.is_file():
@@ -81,9 +87,7 @@ def check_baseline(root: Path, baseline: dict) -> dict:
                         issue = "byte_size_changed"
                     if git_blob_sha1(raw) != expected:
                         issue = "source_bytes_changed"
-                    lesson_match = LESSON_FILE.match(relative)
                     if lesson_match:
-                        lesson_tracks[lesson_match.group(1)] += 1
                         try:
                             lesson = json.loads(raw.decode("utf-8"))
                         except (UnicodeError, json.JSONDecodeError):
@@ -108,7 +112,9 @@ def check_baseline(root: Path, baseline: dict) -> dict:
     declared_tracks = baseline.get("track_counts")
     if not isinstance(declared_tracks, dict) or set(declared_tracks) != EXPECTED_TRACKS:
         raise ValueError("baseline track counts incomplete")
-    if dict(lesson_tracks) != declared_tracks:
+    # Counter omits keys with zero observations; the manifest lists all
+    # seven tracks explicitly, including empty tracks in minimal test data.
+    if {track: lesson_tracks[track] for track in EXPECTED_TRACKS} != declared_tracks:
         raise ValueError("baseline lesson file counts disagree with track counts")
     return {
         "schema_version": 1,
