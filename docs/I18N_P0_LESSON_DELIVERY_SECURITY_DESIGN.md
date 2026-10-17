@@ -247,3 +247,44 @@ account-A content renders after user B signs in to the same WebView.
 Measure offline/timeout behavior, content revision updates and
 returned `401/403/429` statuses without logging tokens or
 answer strings. No such live QA has been performed by this P0 audit.
+
+## Authenticated reservation is not authenticated content delivery
+
+A new P0 source audit and *offline synthetic* HTTP test establish
+the exact current split in Mini App trust boundaries:
+
+1. When the current lesson is deliberately started with
+   `X-Telegram-Init-Data`, the Mini App sends
+   `POST /api/v3/lesson/start`. The server verifies the signature,
+   user existence, sequence and quota, using
+   `LessonAccessService.status(..., consume=True)`.
+2. Only after the successful start does the Mini App issue a distinct,
+   anonymous `GET /course_v3_data/{level}/lesson_N.json` for the
+   actual cards and assessment data. That GET is **not bound** to the
+   prior authenticated reservation, and 14 sampled first/last
+   staging lesson URLs returned 206 without credentials.
+3. With no Telegram initData, the current frontend
+   `reserveLessonStart()` takes its compatibility fallback and
+   *skips* the protected POST; the unauthenticated GET remains
+   reachable. A frontend check does not protect static server data.
+4. Other callers of `loadLessonData()` need non-consuming or
+   otherwise separately authorized semantics; forcing
+   `consume=True` for speculative fetches is unsafe.
+
+Before choosing a replacement API, decide explicitly whether a
+lesson-body download requires an already granted and bound
+reservation token, a separately verified user/session access
+decision, or a versioned short-lived offline capability. Every
+approach requires replay prevention or server-side policy checks,
+account/lesson binding, no shared cache, a bounded offline policy,
+an upgrade path for existing deployed Mini App/Android/Desktop
+versions and independent assessment secrecy review.
+
+The **synthetic-only** ASGI regression
+`tests/test_i18n_miniapp_reservation_asgi.py` verifies no-signature
+401, forged-signature 401, sequential unlock 403, mock quota 403,
+and `consume=True` for an intentionally started eligible lesson.
+All mocked calls are local; this is **not** an actual end-to-end
+quota or billing test. Avoid implementing an auth migration merely
+because these checks are green. The remaining disposable-account
+staging access matrix and device cache QA are release blockers.
