@@ -22,7 +22,7 @@
     },
     {
       "line": 2336,
-      "anchor": "write-loading-text",
+      "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
       "reason": "Writer iframe loading status",
       "review": "source_classified_only"
@@ -57,21 +57,21 @@
     },
     {
       "line": 3101,
-      "anchor": "study_preparing_fallback",
+      "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
       "reason": "Exercise loading fallback; keep Panda loading behavior",
       "review": "source_classified_only"
     },
     {
       "line": 3107,
-      "anchor": "renderPracticeGateChecking",
+      "anchor": "LANG===\"ru\"",
       "category": "access_copy",
       "reason": "Practice gate loading text; leave access checks unchanged",
       "review": "source_classified_only"
     },
     {
       "line": 3381,
-      "anchor": "function nodeSub(l)",
+      "anchor": "LANG===\"ru\"",
       "category": "lesson_navigation_copy",
       "reason": "Checkpoint/lesson part name with numeric parts",
       "review": "source_classified_only"
@@ -120,21 +120,21 @@
     },
     {
       "line": 5446,
-      "anchor": "status.is_paid||status.remaining",
+      "anchor": "LANG===\"ru\"",
       "category": "quota_ui_copy",
       "reason": "AI Voice remaining quota display; billing unchanged",
       "review": "source_classified_only"
     },
     {
       "line": 5770,
-      "anchor": "ratingMeta.resetAtMs",
+      "anchor": "LANG===\"ru\"",
       "category": "time_formatting_copy",
       "reason": "Countdown abbreviations require locale-aware formatter",
       "review": "source_classified_only"
     },
     {
       "line": 6008,
-      "anchor": "function chCooldownText",
+      "anchor": "LANG===\"ru\"",
       "category": "cooldown_copy",
       "reason": "Challenge-rate-limit message uses minutes variable",
       "review": "source_classified_only"
@@ -148,7 +148,7 @@
     },
     {
       "line": 7561,
-      "anchor": "showGateLoading",
+      "anchor": "LANG===\"ru\"",
       "category": "access_copy",
       "reason": "Test entitlement/limit progress label",
       "review": "source_classified_only"
