@@ -43,7 +43,7 @@ class ClientLessonTransportTests(unittest.TestCase):
 
         broken = dict(sources)
         broken["android_repository"] = broken["android_repository"].replace(
-            'error is ApiError.Offline && error !is ApiError.Timeout',
+            'error !is ApiError.Offline && error !is ApiError.Timeout',
             'error is ApiError.Unauthorized',
         )
         missing_fallback_guard = contract(broken)
