@@ -53,7 +53,8 @@ jobs:
             tests.test_i18n_route_boundary_audit \
             tests.test_i18n_client_lesson_compat_audit \
             tests.test_i18n_miniapp_lesson_fetch_audit \
-            tests.test_i18n_staging_anon_route_probe
+            tests.test_i18n_staging_anon_route_probe \
+            tests.test_i18n_staging_boot_guard
       - name: Read-only P0 source checks
         run: |
           mkdir -p /tmp/i18n-p0
