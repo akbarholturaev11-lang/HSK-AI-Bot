@@ -142,8 +142,17 @@ def flatten(value: str, path: str, leaves: dict, issues: list, depth: int = 0) -
             "tags": sorted(Counter(TAG.findall(value)).items()),
         }
     else:
-        leaves[path] = {"type": "expression"}
-        issues.append({"path": path, "issue": "dynamic_value"})
+        legacy = re.match(r"^function\\s*\\(([^)]*)\\)\\s*\\{", value)
+        if legacy:
+            params = [x.strip() for x in legacy.group(1).split(",") if x.strip()]
+            if not all(re.fullmatch(r"[A-Za-z_$][\\w$]*", x) for x in params):
+                issues.append({"path": path, "issue": "unsupported_function_parameter"})
+            leaves[path] = {"type": "legacy_callable", "parameters": params}
+            issues.append({"path": path, "issue": "legacy_function_copy",
+                           "parameters": params})
+        else:
+            leaves[path] = {"type": "expression"}
+            issues.append({"path": path, "issue": "dynamic_value"})
 
 
 def compare_literal(source: str) -> dict:
@@ -160,7 +169,7 @@ def compare_literal(source: str) -> dict:
         leaves[locale] = {}
         flatten(locale_src[locale], "", leaves[locale], issues)
     all_keys = sorted(set().union(*(set(leaves[locale]) for locale in LOCALES)))
-    missing, mismatch, markup, types = [], [], [], []
+    missing, mismatch, markup, types, callables = [], [], [], [], []
     for key in all_keys:
         present = [loc for loc in LOCALES if key in leaves[loc]]
         absent = [loc for loc in LOCALES if loc not in present]
@@ -171,6 +180,11 @@ def compare_literal(source: str) -> dict:
             current = leaves[loc][key]
             if current["type"] != first["type"]:
                 types.append({"path": key, "locale": loc})
+            if current["type"] == "legacy_callable" and first["type"] == "legacy_callable":
+                if current["parameters"] != first["parameters"]:
+                    callables.append({"path": key, "locale": loc,
+                                      "reference_params": first["parameters"],
+                                      "locale_params": current["parameters"]})
             if current["type"] != "literal" or first["type"] != "literal":
                 continue
             if current["variables"] != first["variables"]:
@@ -183,7 +197,8 @@ def compare_literal(source: str) -> dict:
         "leaf_counts": {loc: len(leaves[loc]) for loc in LOCALES},
         "leaf_union": len(all_keys), "missing_leaves": missing,
         "placeholder_drift": mismatch, "html_tag_count_drift": markup,
-        "value_type_drift": types, "parse_review": issues,
+        "value_type_drift": types, "legacy_function_parameter_drift": callables,
+        "parse_review": issues,
     }
 
 
