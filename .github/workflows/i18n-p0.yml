@@ -58,7 +58,8 @@ jobs:
             tests.test_i18n_miniapp_reservation_boundary_audit \
             tests.test_i18n_legacy_lesson_content_risk_audit \
             tests.test_i18n_miniapp_storage_scope_audit \
-            tests.test_i18n_build_local_catalogs
+            tests.test_i18n_build_local_catalogs \
+            tests.test_i18n_common_ui_adoption
       - name: Read-only P0 source checks
         run: |
           mkdir -p /tmp/i18n-p0
