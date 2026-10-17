@@ -14,17 +14,19 @@ from app.services.desktop_auth_service import DesktopAuthService
 from app.services.entitlements.state import EntitlementState, has_full_access, resolve_state
 from app.services.identity_link_service import IdentityLinkError, IdentityLinkService
 from tests.test_native_oauth_api import _settings, _verified
+from tests.native_postgres_deadlines import postgres_timeout
 
 
 @unittest.skipUnless(os.environ.get('NATIVE_ACCOUNT_TEST_DATABASE_URL'), 'requires isolated PostgreSQL test database')
 class NativeAccountConcurrencyTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.schema = 'native_test_' + uuid4().hex
-        self.admin = create_async_engine(os.environ['NATIVE_ACCOUNT_TEST_DATABASE_URL'])
+        self.admin = create_async_engine(os.environ['NATIVE_ACCOUNT_TEST_DATABASE_URL'],
+            connect_args={'timeout': postgres_timeout(60)})
         async with self.admin.begin() as connection:
             await connection.execute(text(f'CREATE SCHEMA {self.schema}'))
         self.engine = create_async_engine(os.environ['NATIVE_ACCOUNT_TEST_DATABASE_URL'],
-            connect_args={'server_settings': {'search_path': self.schema + ',public'}})
+            connect_args={'timeout': postgres_timeout(60), 'server_settings': {'search_path': self.schema + ',public'}})
         async with self.engine.begin() as connection:
             await connection.run_sync(Base.metadata.create_all)
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
@@ -51,7 +53,7 @@ class NativeAccountConcurrencyTests(unittest.IsolatedAsyncioTestCase):
         tasks = [asyncio.create_task(signup(provider, index))
                  for provider in subjects for index in range(4)]
         start.set()
-        outcomes = await asyncio.wait_for(asyncio.gather(*tasks), timeout=15)
+        outcomes = await asyncio.wait_for(asyncio.gather(*tasks), timeout=postgres_timeout(15))
         user_ids = {}
         for provider in subjects:
             with self.subTest(provider=provider):

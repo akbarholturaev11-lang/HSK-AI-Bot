@@ -31,6 +31,7 @@ from app.services.hsk30_feature_service import HSK30_ENABLED_SETTINGS_KEY
 from app.services.hsk30_unlock_service import HSK30_UNLOCK_PLAN_TYPE, HSK30_UNLOCK_PRICE_KEY, Hsk30UnlockService
 from app.services.payment_notify_service import PaymentNotifyService
 from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY, SubscriptionMiniAppService
+from tests.native_postgres_deadlines import postgres_timeout
 
 
 PNG = ("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk"
@@ -338,11 +339,12 @@ class NativeHsk30PaymentTests(unittest.IsolatedAsyncioTestCase):
 class NativeHsk30ConcurrencyTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.schema = "native_hsk30_test_" + uuid4().hex
-        self.admin = create_async_engine(os.environ["NATIVE_ACCOUNT_TEST_DATABASE_URL"])
+        self.admin = create_async_engine(os.environ["NATIVE_ACCOUNT_TEST_DATABASE_URL"],
+            connect_args={"timeout": postgres_timeout(60)})
         async with self.admin.begin() as connection:
             await connection.execute(text(f"CREATE SCHEMA {self.schema}"))
         self.engine = create_async_engine(os.environ["NATIVE_ACCOUNT_TEST_DATABASE_URL"],
-            connect_args={"server_settings": {"search_path": self.schema + ",public"}})
+            connect_args={"timeout": postgres_timeout(60), "server_settings": {"search_path": self.schema + ",public"}})
         async with self.engine.begin() as connection:
             await connection.run_sync(Base.metadata.create_all)
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
@@ -369,7 +371,7 @@ class NativeHsk30ConcurrencyTests(unittest.IsolatedAsyncioTestCase):
                 self.assertTrue(result["ok"], result)
                 return uid, result["payment_id"]
         with patch.object(AdminNotifyService, "notify_payment_review", new=AsyncMock(return_value="HSK30_RECEIPT")) as deliver:
-            results = await asyncio.wait_for(asyncio.gather(*(submit(uid) for uid in (1, 1, 1, 1, 2, 2))), timeout=15)
+            results = await asyncio.wait_for(asyncio.gather(*(submit(uid) for uid in (1, 1, 1, 1, 2, 2))), timeout=postgres_timeout(15))
             self.assertEqual(deliver.await_count, 2)
         for uid in (1, 2):
             self.assertEqual(len({pid for actual, pid in results if actual == uid}), 1)
@@ -395,7 +397,7 @@ class NativeHsk30ConcurrencyTests(unittest.IsolatedAsyncioTestCase):
                 result = await Hsk30UnlockService(session).grant(user=user, payment=payment)
                 await session.commit()
                 return result
-        self.assertEqual(await asyncio.wait_for(asyncio.gather(*(grant(pid) for pid in ids)), timeout=15), [True, True])
+        self.assertEqual(await asyncio.wait_for(asyncio.gather(*(grant(pid) for pid in ids)), timeout=postgres_timeout(15)), [True, True])
         async with self.sessions() as session:
             rows = list((await session.scalars(select(CourseTrackState))).all())
             self.assertEqual(len(rows), 1)
@@ -447,7 +449,7 @@ class NativeHsk30ConcurrencyTests(unittest.IsolatedAsyncioTestCase):
                         await service.switch(await session.get(User, uid), target_track="hsk30", allow_locked_hsk30=True)
                         await session.commit()
 
-                await asyncio.wait_for(asyncio.gather(approve(), switch()), timeout=15)
+                await asyncio.wait_for(asyncio.gather(approve(), switch()), timeout=postgres_timeout(15))
                 async with self.sessions() as session:
                     state = await session.scalar(select(CourseTrackState).where(
                         CourseTrackState.user_id == uid, CourseTrackState.track == "hsk30"))

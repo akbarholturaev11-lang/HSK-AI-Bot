@@ -18,6 +18,7 @@ from app.db.models.user import User
 from app.repositories.referral_repo import ReferralRepository
 from app.repositories.user_repo import UserRepository
 from app.services.referral_service import ReferralService
+from tests.native_postgres_deadlines import postgres_timeout
 
 
 @unittest.skipUnless(os.environ.get("NATIVE_ACCOUNT_TEST_DATABASE_URL"), "requires isolated PostgreSQL test database")
@@ -25,11 +26,11 @@ class UniversalReferralConcurrencyTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         url = os.environ["NATIVE_ACCOUNT_TEST_DATABASE_URL"]
         self.schema = "referral_race_test_" + uuid4().hex
-        self.admin = create_async_engine(url)
+        self.admin = create_async_engine(url, connect_args={"timeout": postgres_timeout(60)})
         async with self.admin.begin() as connection:
             await connection.execute(text(f"CREATE SCHEMA {self.schema}"))
-        self.engine = create_async_engine(url, connect_args={"server_settings": {
-            "search_path": self.schema + ",public", "lock_timeout": "5s", "statement_timeout": "15s"}})
+        self.engine = create_async_engine(url, connect_args={"timeout": postgres_timeout(60), "server_settings": {
+            "search_path": self.schema + ",public", "lock_timeout": f"{postgres_timeout(5)}s", "statement_timeout": f"{postgres_timeout(15)}s"}})
         async with self.engine.begin() as connection:
             await connection.run_sync(Base.metadata.create_all)
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
@@ -57,10 +58,10 @@ class UniversalReferralConcurrencyTests(unittest.IsolatedAsyncioTestCase):
                 # Match the native Assistant's pending-success transaction:
                 # these FK key shares remain held during referral activation.
                 await session.flush()
-                await asyncio.wait_for(barrier.wait(), timeout=15)
+                await asyncio.wait_for(barrier.wait(), timeout=postgres_timeout(15))
                 await ReferralService(session).activate_referral_if_eligible(None, user)
                 await session.commit()
-        await asyncio.wait_for(asyncio.gather(*(answer_and_activate(uid) for uid in user_ids)), timeout=45)
+        await asyncio.wait_for(asyncio.gather(*(answer_and_activate(uid) for uid in user_ids)), timeout=postgres_timeout(45))
 
     async def test_parallel_fifth_and_sixth_native_invites_grant_one_trial_and_preserve_both_bonuses(self):
         async with self.sessions() as session:
