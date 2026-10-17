@@ -96,13 +96,13 @@ class LinkViewModel(
      */
     fun loadProviders() {
         viewModelScope.launch {
-            val providers = authRepository.availableProviders()
+            val providers = authRepository.availableBrowserProviders()
             _state.update { it.copy(providers = providers) }
         }
     }
 
     fun signInWithGoogle(activity: Activity?, language: AppLanguage? = null) = startProvider(AuthProvider.GOOGLE) {
-        authRepository.startGoogleSignIn(activity = activity, language = language)
+        authRepository.startGoogleBrowserSignIn(language = language)
     }
 
     fun signInWithApple(language: AppLanguage? = null) = startProvider(AuthProvider.APPLE) {
