@@ -975,6 +975,61 @@ Do not mark implementation complete based on the plan being written.
   No runtime route, lesson content, payment, production or main
   change occurred. P0 IN PROGRESS, P1-P4 NOT STARTED.
 
+### P0 seventeenth implementation slice — 2026-10-17 (Mini App reservation-vs-content boundary)
+
+- **Auth/lesson-start source contract:** `18a2d5d55da7259087484a174bb5700f8c8baa58`
+  adds `scripts/i18n_miniapp_reservation_boundary_audit.py`. It
+  checks the *actual* nested `v3_course_lesson_start` handler in
+  `app/api/miniapp_entitlements.py` with Python AST and the
+  `app/static/course-v3.html` call boundary without importing the
+  production app or touching a database. It guards Telegram initData
+  verification, no-identity **401**, user lookup, lesson bounds,
+  next-in-sequence **403**, `LessonAccessService.status(..., consume=True)`,
+  transaction commit and the Mini App's reservation-before-JSON
+  order. Source-only reviews still explicitly flag:
+  `loadLessonData()` uses an independent **public static JSON GET**,
+  and `reserveLessonStart()` returns client-side allowed when
+  `INIT_DATA` is unavailable. The guarded start route is not a
+  substitute for authenticated content delivery.
+- **Source regression tests:** `0a65c40c554eb75b451d5a0d628fb4cda9dbc40a`
+  adds `tests/test_i18n_miniapp_reservation_boundary_audit.py`
+  with seven cases for current source and negative mutations
+  (removing 401, `consume=True`, next-lesson gating,
+  reservation sequencing or direct JSON fetch). `b3548b22fedaa69130f33fa82a7ef749bdbbb100`
+  integrates both the read-only JSON report
+  `miniapp-reservation-boundary.json` and tests in fast P0 CI.
+  [P0 run 39022062198](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39022062198)
+  completed **SUCCESS**.
+- **Synthetic, HTTP-level contract:** `55758779a09604302dde196c98997cabcabbb454`
+  adds `tests/test_i18n_miniapp_reservation_asgi.py`,
+  constructing an isolated FastAPI router with a **synthetic**
+  Telegram HMAC test fixture and mocked DB, progress, user
+  and entitlement services. Five tests verify: no token or
+  forged initData gives 401 **without opening a DB session**;
+  a valid synthetic signature passes exactly one
+  `consume=True` invocation; out-of-order lessons return 403
+  without consumption; a mock quota-denial returns 403.
+  The fake service does not actually spend user quota.
+  `399b0c0d6ccc59b95c6b565d1e22f1cd62f34884`
+  invokes this test in Backend CI.
+  [Backend run 39022244643](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39022244643)
+  completed **SUCCESS**, including the new ASGI tests.
+- **Known P0 issue confirmed but NOT fixed:** 24 staging
+  anonymous GET-status probes already show both the first
+  and final lesson files per track return HTTP 206, while
+  anonymous Android/Desktop content APIs return 401.
+  The Mini App's authenticated start check does not authorize
+  subsequent static JSON download. A transition must separate
+  speculative/non-consuming previews, skip tests and
+  foundation content from intentional quota-consuming lesson
+  starts. Test Free/Trial/Pro/blocked users, paid lessons,
+  quota snapshots and WebView account-switch cache isolation
+  on isolated disposable staging fixtures.
+- **Safety:** no production source behavior, lesson bodies,
+  answers, billing, bot token, DB rows, production Railway
+  or `main` changes. PR #179 remains Draft.
+  P0 IN PROGRESS; P1-P4 NOT STARTED.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
