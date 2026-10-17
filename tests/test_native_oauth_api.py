@@ -170,6 +170,44 @@ class ProviderAvailabilityTests(_Base):
         self.assertEqual(response.json()["providers"], ["google"])
         self.assertEqual(response.headers["Cache-Control"], "no-store")
 
+    async def test_miniapp_google_requires_the_browser_client_pair(self):
+        # Credential Manager configuration cannot complete a Mini App browser
+        # redirect. Discovery must not offer a card that can only fail later.
+        for client_id, client_secret, expected in (
+            ("", "", []),
+            ("222-desktop.apps.googleusercontent.com", "", []),
+            ("", "desktop-secret", []),
+            ("222-desktop.apps.googleusercontent.com", "desktop-secret", ["google"]),
+        ):
+            with self.subTest(client_id=bool(client_id), secret=bool(client_secret)):
+                self.settings.GOOGLE_DESKTOP_CLIENT_ID = client_id
+                self.settings.GOOGLE_DESKTOP_CLIENT_SECRET = client_secret
+                response = await self.client.get(
+                    "/api/v3/native-auth/providers?platform=miniapp"
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.json()["providers"], expected)
+                self.assertEqual(response.headers["Cache-Control"], "no-store")
+
+        # Existing Android native discovery keeps its independent audience.
+        self.settings.GOOGLE_DESKTOP_CLIENT_ID = ""
+        self.settings.GOOGLE_DESKTOP_CLIENT_SECRET = ""
+        response = await self.client.get(
+            "/api/v3/native-auth/providers?platform=android"
+        )
+        self.assertEqual(response.json()["providers"], ["google"])
+
+    async def test_miniapp_google_is_available_with_browser_only_configuration(self):
+        self.settings.GOOGLE_ANDROID_WEB_CLIENT_ID = ""
+        response = await self.client.get(
+            "/api/v3/native-auth/providers?platform=miniapp"
+        )
+        self.assertEqual(response.json()["providers"], ["google"])
+        response = await self.client.get(
+            "/api/v3/native-auth/providers?platform=android"
+        )
+        self.assertEqual(response.json()["providers"], [])
+
     async def test_apple_is_hidden_while_unconfigured(self):
         response = await self.client.get("/api/v3/native-auth/providers")
         self.assertNotIn("apple", response.json()["providers"])
@@ -720,6 +758,21 @@ class MiniAppLinkTests(_Base):
             ).scalars().one()
         self.assertEqual(row.intent, "link")
         self.assertEqual(row.bind_user_id, 1)
+
+    async def test_miniapp_browser_start_refuses_android_only_configuration(self):
+        self.settings.GOOGLE_DESKTOP_CLIENT_ID = ""
+        self.settings.GOOGLE_DESKTOP_CLIENT_SECRET = ""
+        response = await self.client.post(
+            "/api/v3/native-auth/identities/link/start",
+            json=self._miniapp_body(),
+            headers={"X-Telegram-Init-Data": self._init_data()},
+        )
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json()["error"], "oauth_provider_unconfigured")
+        # Refuse before making a pending proof that cannot be completed.
+        async with self.sessions() as session:
+            rows = (await session.execute(select(DesktopLinkRequest))).scalars().all()
+        self.assertEqual(rows, [])
 
     async def test_a_miniapp_row_can_never_become_a_session(self):
         started = (

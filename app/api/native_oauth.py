@@ -250,7 +250,7 @@ def create_native_oauth_router(
 
     @router.get("/api/v3/native-auth/providers")
     async def providers(platform: str | None = None):
-        normalized = platform if platform in {"android", "macos", "windows"} else None
+        normalized = platform if platform in {"android", "macos", "windows", MINIAPP_PLATFORM} else None
         return JSONResponse(
             content={
                 "ok": True,

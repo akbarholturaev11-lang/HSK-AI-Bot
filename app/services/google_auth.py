@@ -71,7 +71,8 @@ def is_configured(settings_obj: Any, *, platform: str | None = None) -> bool:
         return False
     if platform == "android":
         return bool(android_client_id(settings_obj))
-    if platform in {"macos", "windows"}:
+    # Mini App linking also opens the browser redirect/code-exchange flow.
+    if platform in {"macos", "windows", "miniapp"}:
         return bool(desktop_client_id(settings_obj) and desktop_client_secret(settings_obj))
     return bool(
         android_client_id(settings_obj)
