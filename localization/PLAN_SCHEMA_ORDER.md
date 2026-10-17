@@ -822,6 +822,58 @@ Do not mark implementation complete based on the plan being written.
   source runtime changes, login sessions, secrets or device QA.
   P0 IN PROGRESS, P1/P2/P3/P4 NOT STARTED; PR #179 Draft.
 
+### P0 fourteenth slice — 2026-10-17 (isolated Railway staging QA boot)
+
+- **Staging-only startup entrypoint:** `app/staging_qa.py` initially added
+  in `df83951c06513db4a4dc843fa95008a4eed7c0ec` and subsequently
+  corrected in `9eaf2da37e676689f8462bf8253047d329e7dfe4`.
+  This imports the production FastAPI route graph but substitutes a QA
+  lifespan which **does not start Telegram polling, reminder/notification
+  schedulers, campaign sends, lesson seeding or cleanup background
+  workers**. It uses a deliberately fake Bot token, not the real bot.
+  The normal `app.main:app` startup remains unchanged.
+- **Fail-closed environment guard:** `scripts/i18n_staging_boot_guard.py`
+  (`655dc71d52481a89960e1ce8ee82265ba058efcf`) refuses non-staging
+  Railway environments, inherited real BOT_TOKEN, paid AI credentials,
+  wrong DB host and missing QA-mode confirmation. Driver-only
+  PostgreSQL URL normalization (`87a8a0902347bbbf9a2db1096953a4aa451563cd`)
+  adapts Railway's native Postgres URL to SQLAlchemy asyncpg without
+  altering the host/user/database. `tests/test_i18n_staging_boot_guard.py`
+  (`41272648cdef4efbc7495ddf8466d42d8241dd6e`, extended in
+  `e08ef58a99a6e1fcef6876fddbc4aff3c14caa8e`) exercises guard
+  failures and source invariants.
+- **CI validation:** `9fb670839c88aa2c76ed244c1202e09f4acde20d`
+  integrates guard tests into fast P0 CI. `f03969f6516d0dc99d030dba91ef5b02a0ce830b`
+  adds full-dependency ASGI import smoke-test to Backend targeted CI
+  without database connection or lifespan startup. For that commit,
+  [P0 CI 39016160568](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39016160568)
+  and [Backend CI 39016160563](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39016160563)
+  completed **SUCCESS**; ASGI import smoke passed.
+- **Railway isolation:** staging project `patient-friendship` contains
+  independent staging PostgreSQL `Postgres-Iy93`. New dedicated service
+  `hsk-ai-p0-qa` was staged with source
+  `akbarholturaev11-lang/HSK-AI-Bot`, PR #179 branch pinned to
+  `f03969f6516d0dc99d030dba91ef5b02a0ce830b`. Explicit
+  service variables reference **only** staging Postgres, disable paid
+  AI/push/OAuth and use an inert bot username; no production
+  secrets were copied. Startup command points to `app.staging_qa:app`,
+  sleep mode enabled, `/health` probe configured. Staged changes were
+  reviewed as creation-only, then committed to staging (not production).
+- **Deployment startup issue and recovery:** first staging deployment
+  failed to import `app.main` because canonical
+  `PUBLIC_SITE_URL`/`MINI_APP_BASE_URL` values were blank.
+  Corrected only the **staging service variables** to inert reserved
+  `https://hsk-p0-staging.invalid` and matching Mini App page URL;
+  a fresh deployment was automatically triggered. Until Railway reports
+  healthy, DO NOT claim any live staging HTTP/Free/Pro QA completed.
+  No staging public domain was created in this step yet.
+- **P0 still open:** once backend is healthy, attach/verify a
+  staging-only HTTPS domain, run safe anonymous status probe, then
+  separate disposable-account Free/Trial/Pro entitlement/no-consume/
+  cache-switch QA. Never use the production bot token or production
+  database. No normal app source, paid access, lesson, account or
+  production service was modified; PR #179 remains Draft.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
