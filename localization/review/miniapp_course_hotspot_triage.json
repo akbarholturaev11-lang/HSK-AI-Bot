@@ -11,35 +11,40 @@
       "anchor": "syncDocumentLanguage()",
       "category": "locale_adapter",
       "reason": "Preserve tj -> tg document tag; not translatable copy",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 1
     },
     {
       "line": 2263,
       "anchor": "aria-label",
       "category": "accessibility_copy",
       "reason": "Dialog and close labels require localized accessibility keys",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 4
     },
     {
       "line": 2336,
       "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
       "reason": "Writer iframe loading status",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
     },
     {
       "line": 2397,
       "anchor": "nextLabel",
       "category": "navigation_copy",
       "reason": "Lesson transition CTA",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
     },
     {
       "line": 2412,
       "anchor": "n%10===1",
       "category": "locale_grammar",
       "reason": "Russian plural selection is logic, not a text literal",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 1
     },
     {
       "line": 2423,
@@ -54,35 +59,40 @@
       "anchor": "rankSummary",
       "category": "formatted_copy",
       "reason": "Rank numbers and arrow must be placeholders, not concatenated fragments",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
     },
     {
       "line": 2726,
       "anchor": "avatarEdit:function()",
       "category": "profile_copy",
       "reason": "Telegram avatar explanation",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
     },
     {
       "line": 3101,
       "anchor": "LANG===\"ru\"",
       "category": "loading_copy",
       "reason": "Exercise loading fallback; keep Panda loading behavior",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
     },
     {
       "line": 3107,
       "anchor": "LANG===\"ru\"",
       "category": "access_copy",
       "reason": "Practice gate loading text; leave access checks unchanged",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
     },
     {
       "line": 3381,
       "anchor": "LANG===\"ru\"",
       "category": "lesson_navigation_copy",
       "reason": "Checkpoint/lesson part name with numeric parts",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
     },
     {
       "line": 3382,
@@ -105,7 +115,8 @@
       "anchor": "你好 · nǐ hǎo",
       "category": "lesson_example_translation",
       "reason": "Chinese and pinyin are immutable; only gloss is localized",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
     },
     {
       "line": 3666,
@@ -120,7 +131,8 @@
       "anchor": "foundation-step",
       "category": "error_recovery_copy",
       "reason": "Foundation load/retry UI, HTML escaping required",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 4
     },
     {
       "line": 3673,
@@ -151,7 +163,8 @@
       "anchor": "Не удалось сохранить результат",
       "category": "result_error_copy",
       "reason": "Quiz progress persistence error",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
     },
     {
       "line": 3977,
@@ -174,7 +187,8 @@
       "anchor": "exit_ticket",
       "category": "assessment_ui_copy",
       "reason": "Assessment card title only; preserve grading IDs",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
     },
     {
       "line": 4690,
@@ -189,7 +203,8 @@
       "anchor": "Что означает?",
       "category": "assessment_ui_copy",
       "reason": "Quiz prompt; preserve correct option calculation",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
     },
     {
       "line": 4760,
@@ -228,14 +243,16 @@
       "anchor": "var pref=LANG",
       "category": "tts_language_adapter",
       "reason": "Voice-language selection logic, not static translated message",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
     },
     {
       "line": 5446,
       "anchor": "LANG===\"ru\"",
       "category": "quota_ui_copy",
       "reason": "AI Voice remaining quota display; billing unchanged",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 1
     },
     {
       "line": 5448,
@@ -258,7 +275,8 @@
       "anchor": "LANG===\"ru\"",
       "category": "time_formatting_copy",
       "reason": "Countdown abbreviations require locale-aware formatter",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
     },
     {
       "line": 5771,
@@ -313,7 +331,8 @@
       "anchor": "LANG===\"ru\"",
       "category": "cooldown_copy",
       "reason": "Challenge-rate-limit message uses minutes variable",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 1
     },
     {
       "line": 6009,
@@ -448,7 +467,8 @@
       "anchor": "profile-title",
       "category": "profile_copy",
       "reason": "Profile heading",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
     },
     {
       "line": 6824,
@@ -463,7 +483,8 @@
       "anchor": "LANG===\"ru\"",
       "category": "access_copy",
       "reason": "Test entitlement/limit progress label",
-      "review": "source_classified_only"
+      "review": "source_classified_only",
+      "predicate_occurrences": 2
     }
   ]
 }
