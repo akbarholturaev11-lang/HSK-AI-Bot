@@ -535,3 +535,43 @@ dynamic translated lesson content), user-facing correctness, real
 WebView offline/cache behavior, Android/Desktop builds, production
 Pro/Free lesson HTTP authorization and exam secrecy. P0 remains open,
 and this audit made no runtime behavior changes.
+
+## P0 tenth audit — lesson/public JSON and exam/404 route source boundary (2026-10-17)
+
+**Reproducible read-only source check:** `scripts/i18n_route_boundary_audit.py`
+and `tests/test_i18n_route_boundary_audit.py` analyze three existing
+`GET /course_v3_data/...` route decorators and the blocked-user
+middleware prefix with Python AST, **without importing the app**.
+[Fast P0 CI 39010834743](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39010834743)
+completed **SUCCESS**; the archived `static-route-security.json`
+was downloaded and inspected:
+
+| Source boundary | Verified result |
+| --- | --- |
+| Legacy lesson GET `/{level}/{filename}` | Serves JSON file |
+| Handler-level dependency | Absent |
+| Track and lesson filename regex constraints | Present |
+| Blocked-user middleware | Guards `/api/` only |
+| Exam file GET `/exams/{filename}` | Explicit 404, no file serving |
+| Top-level map GET `/{filename}` | Public JSON file serving |
+| Audit status | `SOURCE_REVIEW_REQUIRED` |
+
+Two **source-level findings**, not exploit confirmations: a direct
+lesson file path without handler entitlement and a public curriculum
+map-serving path that requires payload classification before new
+locale packs are published.
+
+**Compatibility observation:** the current Mini App `lessonDataUrl`
+fetches public lesson JSON directly; `loadLessonData` does not send
+the Telegram initData header on this fetch, and uses a special
+revision/cache policy for N1. Exams instead use
+`/api/v3/exams/start` and `/complete` with initData.
+Blocking the legacy URL in isolation risks client regressions; it is
+not a safe localization-only fix.
+
+**Planned, not implemented:** `docs/I18N_P0_LESSON_DELIVERY_SECURITY_DESIGN.md`
+defines staged real-world access QA (anonymous/Free/Trial/Pro/blocked),
+replacement authorized lesson delivery, versioned offline-aware caches
+and phased clients, then potential legacy route closure **after** testing.
+No permission or payment policy was changed and no actual production
+HTTP/proxy or native/WebView E2E tests were run. P0 remains IN PROGRESS.
