@@ -51,7 +51,8 @@ jobs:
             tests.test_i18n_miniapp_hotspot_triage \
             tests.test_i18n_memorize_inline_triage \
             tests.test_i18n_route_boundary_audit \
-            tests.test_i18n_client_lesson_compat_audit
+            tests.test_i18n_client_lesson_compat_audit \
+            tests.test_i18n_miniapp_lesson_fetch_audit
       - name: Read-only P0 source checks
         run: |
           mkdir -p /tmp/i18n-p0
@@ -67,6 +68,7 @@ jobs:
           python scripts/i18n_public_bundle_guard.py --output /tmp/i18n-p0/public-pack-security.json
           python scripts/i18n_route_boundary_audit.py --output /tmp/i18n-p0/static-route-security.json
           python scripts/i18n_client_lesson_compat_audit.py --output /tmp/i18n-p0/native-lesson-compatibility.json
+          python scripts/i18n_miniapp_lesson_fetch_audit.py --output /tmp/i18n-p0/miniapp-fetch-intents.json
       - name: Upload read-only P0 reports
         if: always()
         uses: actions/upload-artifact@v4
