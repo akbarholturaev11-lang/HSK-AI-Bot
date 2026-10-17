@@ -60,4 +60,6 @@
     <string name="profile_promo_trial_days">%1$d рӯз монд</string>
     <string name="profile_promo_trial_hours">%1$d соат монд</string>
     <string name="profile_promo_trial_soon">Камтар аз як соат монд</string>
+    <string name="profile_promo_link_body">Ба ҳамин профил бо %1$s ҳам ворид шавед. Pro ва пешрафти омӯзиш дар ҳамин ҳисоб мемонанд.</string>
+    <string name="profile_promo_page">Корти %1$d аз %2$d</string>
 </resources>

@@ -1376,7 +1376,7 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 </style>
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
-<link href="/course_v3_data/profile-carousel.css?v=20261014-compact-1" rel="stylesheet">
+<link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
 <link href="/course_v3_data/rating-podium.css?v=20261014-2" rel="stylesheet">
 <link rel="stylesheet" href="/assets/characters/hsk-scene-background.css?v=20261009-preparing-compact-1">
 </head>
@@ -2258,7 +2258,10 @@ var App={
     /* Kirish usullari faqat profil ochilganda va bir marta so'raladi.
        Sozlanmagan deployda ro'yxat bo'sh qaytadi va bo'lim chizilmaydi. */
     if(s==="profile"&&!SIGNIN_STATE.loaded)loadSignInMethods();
-    if(s!=="profile")stopSignInPoll();
+    if(s!=="profile"){
+      stopSignInPoll();
+      if(SIGNIN_STATE.busy&&!SIGNIN_PENDING){SIGNIN_STATE.generation++;SIGNIN_STATE.busy=""}
+    }else if(SIGNIN_PENDING&&!signInPollTimer){pollSignInLink(SIGNIN_PENDING,SIGNIN_PENDING.deadline)}
     if(s==="course"&&window._pendingXpFly){var fx=window._pendingXpFly;window._pendingXpFly=0;setTimeout(function(){flyXp(fx)},350)}},
   openSheet:function(html){var sheet=$("#sheet");if(!sheet.classList.contains("on"))SHEET_RETURN_FOCUS=document.activeElement;sheet.classList.remove("hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");$("#sheet-body").innerHTML=html;var title=sheet.querySelector("#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role='heading'],#sheet-body .shead .tr");if(title){if(!title.id)title.id="hsk-sheet-title";sheet.setAttribute("aria-labelledby",title.id)}else{sheet.setAttribute("aria-label",LANG==="ru"?"Диалог HSK AI":LANG==="tj"?"Муколамаи HSK AI":"HSK AI oynasi")}var close=sheet.querySelector(".sx");if(close)close.setAttribute("aria-label",LANG==="ru"?"Закрыть":LANG==="tj"?"Пӯшидан":"Yopish");sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.classList.add("on");setSheetBackgroundInert(true);focusSheetStart(sheet);startSheetPromo("#sheet")},
   closeSheet:function(){
@@ -2681,18 +2684,25 @@ var App={
      yaratmaydi va sessiya bermaydi — server `intent=link` qatorini
      sessiyaga almashtirishni rad etadi. */
   connectIdentity:function(provider){
-    if(SIGNIN_STATE.busy)return;
-    var p=pl();
+    if(SIGNIN_STATE.busy||!INIT_DATA||!SIGNIN_STATE.loaded||
+        ["google","apple"].indexOf(provider)<0||SIGNIN_STATE.providers.indexOf(provider)<0||
+        SIGNIN_STATE.identities.some(function(it){return it.provider===provider}))return;
+    var p=pl(),generation=++SIGNIN_STATE.generation;
     SIGNIN_STATE.busy=provider;SIGNIN_STATE.note="";refreshSettingsRows();
     _apiPost("/api/v3/native-auth/identities/link/start",{
       platform:"miniapp",app_version:"1.0.0",provider:provider,mode:"browser_redirect"
     }).then(function(r){return r.json()}).then(function(d){
-      if(!d||!d.ok||!d.authorize_url||d.authorize_url.indexOf("https://")!==0){
-        SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkFail;renderPrefreshSettingsRows();
+      if(generation!==SIGNIN_STATE.generation)return;
+      if(!validSignInLinkStart(d,provider)){
+        SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkFail;refreshSettingsRows();return;
       }
+      var pending={id:d.link_request_id,secret:d.polling_secret,provider:provider,generation:generation,
+        deadline:Date.now()+Number(d.expires_in)*1000};
+      SIGNIN_PENDING=pending;
       openSupportLink(d.authorize_url);
-      pollSignInLink({id:d.link_request_id,secret:d.polling_secret},Date.now()+Math.max(60,Number(d.expires_in)||600)*1000);
+      pollSignInLink(pending,pending.deadline);
     }).catch(function(){
+      if(generation!==SIGNIN_STATE.generation)return;
       SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkFail;refreshSettingsRows();
     });
   },
@@ -6422,7 +6432,8 @@ var SOCIAL_LINKS=[
 
 /* Serverning provider ro'yxati va ulangan identity'lar. Yuklanmaguncha
    bo'lim umuman chizilmaydi — sozlanmagan deploy'da qator ko'rinmaydi. */
-var SIGNIN_STATE={loaded:false,providers:[],identities:[],busy:"",note:""};
+var SIGNIN_STATE={loaded:false,providers:[],identities:[],busy:"",note:"",generation:0};
+var SIGNIN_LOAD_GENERATION=0,SIGNIN_PENDING=null;
 
 function signInProviderLabel(id){return id==="google"?"Google":id==="apple"?"Apple":id}
 
@@ -6494,17 +6505,36 @@ function backToSettingsOrClose(){
    chiqarmasligi kerak. */
 function loadSignInMethods(){
   if(!INIT_DATA)return;
+  var generation=++SIGNIN_LOAD_GENERATION;
   Promise.all([
-    _apiGet("/api/v3/native-auth/providers").then(function(r){return r.json()}).catch(function(){return null}),
+    _apiGet("/api/v3/native-auth/providers?platform=miniapp").then(function(r){return r.json()}).catch(function(){return null}),
     _apiGet("/api/v3/native-auth/identities").then(function(r){return r.json()}).catch(function(){return null})
   ]).then(function(res){
+    if(generation!==SIGNIN_LOAD_GENERATION)return;
     var prov=res[0],ident=res[1];
-    SIGNIN_STATE.providers=(prov&&prov.ok&&Array.isArray(prov.providers))?prov.providers:[];
-    SIGNIN_STATE.identities=(ident&&ident.ok&&Array.isArray(ident.identities))?ident.identities:[];
-    SIGNIN_STATE.loaded=true;
+    var valid=prov&&prov.ok===true&&Array.isArray(prov.providers)&&
+      ident&&ident.ok===true&&Array.isArray(ident.identities)&&ident.identities.every(function(it){
+        return it&&typeof it.id==="string"&&it.id.length>0&&typeof it.provider==="string";
+      });
+    SIGNIN_STATE.loaded=!!valid;
+    SIGNIN_STATE.providers=valid?["google","apple"].filter(function(id){return prov.providers.indexOf(id)>=0}):[];
+    if(valid)SIGNIN_STATE.identities=ident.identities.filter(function(it){return ["google","apple"].indexOf(it.provider)>=0});
     if(SCREEN==="profile")renderProfile();
     if(SETTINGS_SHEET)App.openSettings();
   }).catch(function(){});
+}
+
+function validSignInLinkStart(data,provider){
+  if(!data||data.ok!==true||typeof data.link_request_id!=="string"||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(data.link_request_id)||
+      typeof data.polling_secret!=="string"||data.polling_secret.length<32||data.polling_secret.length>512||
+      !Number.isInteger(data.expires_in)||data.expires_in<1||data.expires_in>3600)return false;
+  try{
+    var url=new URL(data.authorize_url);
+    return url.protocol==="https:"&&!url.username&&!url.password&&!url.port&&!url.hash&&
+      (provider==="google"?url.hostname==="accounts.google.com"&&url.pathname==="/o/oauth2/v2/auth":
+       provider==="apple"&&url.hostname==="appleid.apple.com"&&url.pathname==="/auth/authorize");
+  }catch(e){return false}
 }
 
 var signInPollTimer=null;
@@ -6512,17 +6542,31 @@ function stopSignInPoll(){if(signInPollTimer){clearTimeout(signInPollTimer);sign
 
 function pollSignInLink(pending,deadline){
   stopSignInPoll();
-  if(Date.now()>deadline){SIGNIN_STATE.busy="";if(SCREEN==="profile")renderProfile();return}
+  if(!pending||pending!==SIGNIN_PENDING||pending.generation!==SIGNIN_STATE.generation)return;
+  if(Date.now()>deadline){
+    SIGNIN_PENDING=null;SIGNIN_STATE.busy="";SIGNIN_STATE.note=pl().linkFail;refreshSettingsRows();return;
+  }
+  if(SCREEN!=="profile")return;
   signInPollTimer=setTimeout(function(){
+    signInPollTimer=null;
     _apiPost("/api/v3/native-auth/identities/link/status",{link_request_id:pending.id,polling_secret:pending.secret})
       .then(function(r){return r.json()})
       .then(function(d){
+        if(pending!==SIGNIN_PENDING||pending.generation!==SIGNIN_STATE.generation)return;
         var p=pl();
-        if(d&&d.status==="linked"){SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkDone;loadSignInMethods();return}
-        if(d&&(d.status==="failed"||d.status==="expired")){SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkFail;refreshSettingsRows();return}
+        if(d&&d.ok===true&&d.status==="linked"){
+          SIGNIN_PENDING=null;SIGNIN_STATE.busy="";SIGNIN_STATE.loaded=false;SIGNIN_STATE.note=p.linkDone;
+          refreshSettingsRows();loadSignInMethods();return;
+        }
+        if(!d||d.ok!==true||["failed","expired","denied"].indexOf(d.status)>=0){
+          SIGNIN_PENDING=null;SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkFail;refreshSettingsRows();return;
+        }
+        if(d.status!=="pending"){
+          SIGNIN_PENDING=null;SIGNIN_STATE.busy="";SIGNIN_STATE.note=p.linkFail;refreshSettingsRows();return;
+        }
         pollSignInLink(pending,deadline);
       })
-      .catch(function(){pollSignInLink(pending,deadline)});
+      .catch(function(){if(pending===SIGNIN_PENDING&&pending.generation===SIGNIN_STATE.generation)pollSignInLink(pending,deadline)});
   },2000);
 }
 
@@ -6580,6 +6624,7 @@ function renderProfile(){
     +'<div class="arow"><div class="aic c1"><i class="ti ti-book"></i></div><div class="at"><div class="ah"><span>'+p.a2+'</span><small>'+completedLessons+' / 100</small></div><div class="abar"><i style="width:'+lessonAchPct+'%"></i></div></div></div>'
     +'<div class="arow"><div class="aic c2"><i class="ti ti-flame"></i></div><div class="at"><div class="ah"><span>'+p.a3+'</span><small>'+streak+' / 30</small></div><div class="abar"><i style="width:'+streakAchPct+'%"></i></div></div></div></div>'
     +'<div id="hsk-profile-promo-root"></div>'
+    +(SIGNIN_STATE.note?'<p class="hp-promo-note" role="status">'+esc(SIGNIN_STATE.note)+'</p>':"")
     +'<div style="height:14px"></div>';
   if(window.HskProfileCarousel)window.HskProfileCarousel.mount();
   if(window.PompDesktopDownload&&window.PompDesktopDownload.renderProfile)window.PompDesktopDownload.renderProfile();
@@ -8706,6 +8751,6 @@ window.addEventListener("pageshow",function(ev){
 });
 </script>
 <script src="/course_v3_data/desktop-download.js?v=20261013-profile-1"></script>
-<script src="/course_v3_data/profile-carousel.js?v=20261014-booksheet-2"></script>
+<script src="/course_v3_data/profile-carousel.js?v=20261017-link-cards-1"></script>
 </body>
 </html>

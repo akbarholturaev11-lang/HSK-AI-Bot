@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 
 data class IdentitiesUiState(
     val isLoading: Boolean = false,
+    val hasLoaded: Boolean = false,
     val telegramLinked: Boolean = false,
     val identities: List<LinkedIdentity> = emptyList(),
     val available: List<AuthProvider> = emptyList(),
@@ -57,7 +58,7 @@ class IdentitiesViewModel(
     fun refresh() {
         cancelConnection()
         val generation = ++refreshGeneration
-        _state.update { it.copy(isLoading = true, error = null, sessionsRevoked = null) }
+        _state.update { it.copy(isLoading = true, hasLoaded = false, error = null, sessionsRevoked = null) }
         viewModelScope.launch {
             val available = authRepository.availableProviders()
             val result = authRepository.linkedIdentities()
@@ -70,6 +71,7 @@ class IdentitiesViewModel(
                 is ApiResult.Success -> _state.update {
                     it.copy(
                         isLoading = false,
+                        hasLoaded = true,
                         identities = result.value.identities,
                         telegramLinked = result.value.telegramLinked,
                         available = available,

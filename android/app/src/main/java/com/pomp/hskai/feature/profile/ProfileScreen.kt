@@ -2,6 +2,8 @@ package com.pomp.hskai.feature.profile
 
 import android.app.Activity
 import android.content.Intent
+import android.content.Context
+import android.content.ContextWrapper
 import android.net.Uri
 import android.graphics.Bitmap
 import android.view.View
@@ -60,6 +62,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -199,6 +203,10 @@ fun ProfileScreen(
     var notificationDetailOpen by remember { mutableStateOf(false) }
     var privacyOpen by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        // A provider/browser round trip must not cancel the active link proof.
+        if (identities.busyProvider == null) onLoadIdentities()
+    }
     var widgetInstalled by remember(context) { mutableStateOf(WidgetScheduler.hasWidgets(context)) }
     val appSettings = remember(context) { AppSettings(context) }
     val themeMode by appSettings.themeMode.collectAsState(initial = AppThemeMode.DEFAULT)
@@ -273,6 +281,11 @@ fun ProfileScreen(
                     },
                     onOpenSubscription = onOpenSubscription,
                     onStartTrial = onStartTrial,
+                    identities = identities,
+                    onConnectIdentity = { provider ->
+                        identitiesOpen = true
+                        onConnectIdentity(provider, context.profileActivity())
+                    },
                 )
             }
 
@@ -1388,4 +1401,11 @@ private fun AppThemeMode.descriptionRes(): Int = when (this) {
     AppThemeMode.LIGHT -> R.string.profile_theme_light_subtitle
     AppThemeMode.DARK -> R.string.profile_theme_dark_subtitle
     AppThemeMode.SYSTEM -> R.string.profile_theme_system_subtitle
+}
+
+/** LocalContext may be wrapped by a localized/theme context. */
+private tailrec fun Context.profileActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.profileActivity()
+    else -> null
 }

@@ -47,6 +47,7 @@ class IdentitiesViewModelTest {
     private class Fixture(var telegramLinked: Boolean, providers: List<String>) {
         var unlinks = 0
         var unlinkError: String? = null
+        var identitiesError = false
         var linkStarts = 0
         var linkPolls = 0
         var linkCancels = 0
@@ -79,8 +80,9 @@ class IdentitiesViewModelTest {
         private val oauthApi = object : NativeOAuthApi {
             override suspend fun providers(platform: String) =
                 Response.success(ProvidersResponse(ok = true, providers = listOf("google", "apple")))
-            override suspend fun identities(authorization: String) =
-                Response.success(IdentitiesResponse(ok = true, telegramLinked = telegramLinked, identities = identities))
+            override suspend fun identities(authorization: String): Response<IdentitiesResponse> =
+                if (identitiesError) Response.error(503, "{}".toResponseBody())
+                else Response.success(IdentitiesResponse(ok = true, telegramLinked = telegramLinked, identities = identities))
             override suspend fun identityUnlink(authorization: String, body: IdentityUnlinkRequest): Response<IdentityUnlinkResponse> {
                 unlinks++
                 return unlinkError?.let { Response.error(409,
@@ -117,6 +119,24 @@ class IdentitiesViewModelTest {
         )
         fun load() { model.refresh() }
 
+    }
+
+    @Test fun promosWaitForAnAuthoritativeReadAndHideAgainAfterARefreshFailure() = runTest(dispatcher) {
+        val f = Fixture(false, listOf("google"))
+        assertFalse(f.model.state.value.hasLoaded)
+        assertEquals(listOf(ProfilePromoPage.HSK30), profilePromoPages(false, f.model.state.value))
+        f.load()
+        assertFalse(f.model.state.value.hasLoaded)
+        runCurrent()
+        assertTrue(f.model.state.value.hasLoaded)
+        assertEquals(listOf(ProfilePromoPage.HSK30, ProfilePromoPage.TELEGRAM, ProfilePromoPage.APPLE),
+            profilePromoPages(false, f.model.state.value))
+        f.identitiesError = true
+        f.load()
+        assertFalse(f.model.state.value.hasLoaded)
+        runCurrent()
+        assertFalse(f.model.state.value.hasLoaded)
+        assertEquals(listOf(ProfilePromoPage.HSK30), profilePromoPages(false, f.model.state.value))
     }
 
     @Test fun providerOnlyAccountKeepsItsSoleSignInMethodAndLearnsTheRealTelegramState() = runTest(dispatcher) {
