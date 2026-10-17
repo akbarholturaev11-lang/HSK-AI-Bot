@@ -81,6 +81,14 @@ GOOGLE_DESKTOP_CLIENT_ID=<B ning Client ID>
 GOOGLE_DESKTOP_CLIENT_SECRET=<B ning Client secret>
 ```
 
+Mini App ham Google ulash uchun brauzer redirect/code-exchange oqimidan
+foydalanadi. Shu sabab `/api/v3/native-auth/providers?platform=miniapp` Google’ni
+faqat `GOOGLE_DESKTOP_CLIENT_ID` va `GOOGLE_DESKTOP_CLIENT_SECRET` ikkalasi ham
+mavjud bo‘lsa ko‘rsatadi. Faqat Android Web client A sozlangani Mini App uchun
+yetarli emas. Android native discovery esa mustaqil ravishda
+`GOOGLE_ANDROID_WEB_CLIENT_ID`ni tekshiradi; token audience tekshiruvlari
+birlashtirilmaydi.
+
 ### 1.2 Ikkita Android client yarating
 
 Bular env qiymat bermaydi — ular Google'ga "shu ilova so'ray oladi" deb
@@ -198,8 +206,13 @@ curl -s "https://telegram-chinese-bot-production.up.railway.app/api/v3/native-au
 - `{"ok":true,"providers":["google"]}` → Google tayyor
 - `{"ok":true,"providers":["google","apple"]}` → ikkalasi tayyor
 
-Keyin Mini App profilida **Sozlamalar → Kirish usullari** bo'limi o'zi
-paydo bo'ladi. Desktop kirish ekranida ham tugmalar chiqadi.
+Mini App uchun alohida `?platform=miniapp` bilan tekshiring: Android uchun
+Google ko‘rinishi Mini App browser konfiguratsiyasi tayyorligini bildirmaydi.
+Profil karuselida faqat sozlangan va hali ulanmagan Google/Apple uchun alohida
+ulash kartalari ko‘rinadi. Ulangan provider kartasi qayta chiqmaydi;
+**Sozlamalar → Kirish usullari** bo‘limida mavjud bog‘lanishlarni boshqarish
+saqlanadi. Desktop kirish ekranida ham sozlangan provider tugmalari chiqadi.
+Bu javoblar real callback muvaffaqiyatini tasdiqlamaydi.
 
 Android'dagi Google tugmasi uchun 1.6.3 chiqarish kerak.
 

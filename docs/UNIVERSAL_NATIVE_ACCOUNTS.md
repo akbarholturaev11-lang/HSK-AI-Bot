@@ -228,6 +228,24 @@ verification. Extra person-level detection across unrelated new provider
 identities is outside scope by the owner's decision; existing linked-account
 blocks remain enforced. The release hold stays active until real acceptance.
 
+### Profile account-link cards
+
+The existing profile promo slot now contains separate swipeable cards. Mini App
+keeps Apps, HSK 3.0 and Pro, followed by each configured, unlinked Google/Apple
+method. It already authenticates Telegram and does not advertise attaching it.
+Android offers an unlinked Telegram method plus configured, unlinked Google/Apple
+methods; Play still excludes the Pro purchase/trial promo.
+
+Link cards appear only after successful server provider and identity reads.
+Connected methods are omitted, including after a completed link refresh; failed
+or incomplete discovery does not guess that a method is unlinked. Existing
+settings retain identity management and disconnect safeguards. Cards invoke the
+same authenticated link flows and server-owned HSK 3.0, trial and checkout actions.
+Native swipes, dots and keyboard navigation change cards without activating them.
+Pending link actions cannot duplicate a start; leaving and returning to the Mini
+App profile resumes the same proof, and late replies cannot restart a completed
+or replaced attempt. This presentation change adds no migration or access rule.
+
 ## Schema and rollout
 
 Use an isolated staging application and the dedicated staging databases for
@@ -335,7 +353,7 @@ Prior Pro/HSK 3.0/referral validation on 2026-10-17 (before Telegram attachment)
   deletion baseline. An unrelated Android profile NEW-badge source assertion
   also predates this task. These suites are not claimed green.
 
-Current Telegram-attachment validation on 2026-10-17 at `df09354a`:
+Telegram-attachment validation on 2026-10-17 at `df09354a`:
 
 The [sanitized attachment evidence](UNIVERSAL_NATIVE_ACCOUNTS_TELEGRAM_LINK_2026-10-17.json)
 records this source revision and separates code checks from the owner's real tests.
@@ -365,6 +383,23 @@ records this source revision and separates code checks from the owner's real tes
 - Schema stays at `0107_canonical_referral_owners`; no new migration, staging
   application deployment or production write was needed for attachment. The
   earlier full real-copy migration/backup evidence remains revision-specific.
+
+Profile-card validation on 2026-10-17 at `6de94094` and `dfecb272`:
+
+- **32 unique new Mini App browser cases passed** across runs of 29, one and
+  two cases. Coverage includes configured/unlinked filtering, discovery failure,
+  mobile UZ/RU/TJ layout, real scrolling and mouse drag, keyboard/reduced-motion
+  behavior, link start validation, busy state, navigation resume and late replies.
+- **141 backend/source/config tests and 36 subtests passed**, including Mini App
+  browser-client provider discovery and existing identity/link isolation rules.
+- Android: **563 Direct + 518 Play JVM tests (1,081 total)** and **36 emulator
+  tests passed**. Cases cover dynamic provider cards, linked-method removal,
+  swipe/navigation actions, cancellation and the Play no-purchase contract.
+- **Four adjacent Mini App route/receipt/HSK 3.0/Voice smoke checks passed**.
+- The old HSK 3.0 NEW-badge source expectation and old Profile Apps download
+  smoke fixture also fail on the unchanged prior HEAD. The affected scope above
+  is green; the complete older UI suites are not claimed green. Historical
+  baseline gaps and real-client release gates remain unchanged.
 
 ### Owner's remaining real-client walkthrough
 
