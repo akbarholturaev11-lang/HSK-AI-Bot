@@ -176,9 +176,24 @@ rather than hiding or rewriting the failing test.
 
 The first audit's **2,681 source paths / 7,951 broad literal candidates**
 are a historical snapshot, not refreshed totals after scanner coverage expanded.
-The current report is produced in [CI run 38999948668](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/38999948668)
-and is archived under `hsk-i18n-p0-audit`. The localization-specific test
-step passed. Check the complete workflow conclusion independently.
+The refreshed report from [CI run 38999948668](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/38999948668)
+is archived under `hsk-i18n-p0-audit`. The entire `Backend targeted tests`
+job **passed** (not just its localization step). Measured P0 source results:
+
+| Current expanded P0 scan | Verified count |
+| --- | ---: |
+| Scanned source files | **2,684** |
+| Detected localized JSON maps | **71,125** |
+| Broad review candidates (not confirmed defects) | **7,954** |
+| Candidate-bearing source files | **87** |
+| Highest-priority files included in review queue | **75** |
+| Parse/read errors | **0** |
+| Frozen baseline sources / byte-review blockers | **811 / 0** |
+| Seven-track, three-language lesson source sample differences | **0** |
+| Lesson JSON files inspected by structural route guard | **746** |
+
+These numbers are automated evidence, **not** UI translation-completeness,
+runtime authorization or translation-quality certifications.
 
 ### Source-level findings and corrections
 
