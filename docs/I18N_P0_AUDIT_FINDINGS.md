@@ -785,14 +785,57 @@ internal `GET /health` **200 OK**. Staging Postgres and API service
 are both **Online**. Production remains on the untouched `main`
 backend and its independent database.
 
-**Not yet validated:** no external anonymous status-only HTTP probe
-completed because the available execution environment could not
-resolve the new public Railway hostname. No response body or private
+**Updated staging verification:** the local execution environment
+could not resolve Railway DNS, but a dedicated isolated GitHub Actions
+runner later completed two HTTP-status-only probes. The latest 17-path
+staging run (39017842475) is recorded below. No response body or private
 answers were read. The randomized fake bot token is intentionally
 not a functioning Telegram login, so genuine Free/Trial/Pro/blocked
 test sessions still need an isolated test bot or approved disposable
 QA authentication fixtures. No real paid user, quota, cache isolation
-or client E2E test is established by this startup success. The
-[staging runbook](../docs/I18N_P0_STAGING_ACCESS_RUNBOOK.md) documents
-the exact status-only command and manual QA criteria. Staging may
-incur Railway compute charges, with sleep enabled. P0 remains open.
+or client E2E test has been established. The
+[staging runbook](../docs/I18N_P0_STAGING_ACCESS_RUNBOOK.md) records
+the anonymous observed statuses and remaining manual QA criteria.
+Staging may incur Railway compute charges, with sleep enabled.
+P0 remains open.
+
+## P0 fifteenth audit — live staging anonymous HTTP route matrix (2026-10-17)
+
+After staging became healthy, GitHub Actions runner reached the exact
+staging origin `https://hsk-ai-p0-qa-staging.up.railway.app`.
+The isolated, restricted workflow
+[P0 staging run 39017842475](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39017842475)
+completed **SUCCESS**. Its downloadable `hsk-p0-staging-anon-status`
+artifact was independently parsed and matched the workflow logs.
+
+| Anonymous GET Range route group | Count | Staging HTTP result |
+| --- | ---: | --- |
+| Seven public course navigation maps | 7 | **206 Partial Content** (7/7) |
+| Seven raw `/course_v3_data/{track}/lesson_01.json` | 7 | **206 Partial Content** (7/7) |
+| Android `/api/v3/android/course/lesson/1` | 1 | **401 Unauthorized** |
+| Desktop `/api/v3/desktop/course/lesson/1` | 1 | **401 Unauthorized** |
+| One private `/course_v3_data/exams/...` probe | 1 | **404 Not Found** |
+
+- Exactly **17 anonymous requests** were made on staging; `/health`
+  independently gave 200 during workflow warmup. The probe used
+  `Range: bytes=0-0`, never called `response.read()`, sent no Bearer
+  or Telegram initData, and did not store body, headers or answers.
+- **Confirmed:** anonymous partial content is delivered on all seven
+  sampled *legacy lesson JSON* tracks in staging, matching the known
+  lack of handler-level entitlement. These are seven **P0 manual
+  review findings** requiring a compatible migration.
+- **Confirmed:** the native Android/Desktop lesson API rejected the
+  sampled anonymous calls with 401, and the private exam probe returned
+  404. This does not establish authenticated rights handling.
+- **Not tested:** production URLs, paid/advanced lesson files,
+  Free/Trial/Pro/blocked accounts, daily quota spending, unauthorized
+  cache reuse, frontend race conditions or device-specific behavior.
+  A status-only response on lesson #1 does **not** prove a paid bypass.
+- Earlier [15-route run 39017607269](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39017607269)
+  showed 7 legacy 206, 7 navigation 206 and exam 404. The updated
+  17-route run additionally confirmed two native API 401 denials.
+- Evidence file: `localization/review/staging_anonymous_http_results_20261017.json`.
+  Regression audit: `scripts/i18n_staging_anon_route_probe.py` and
+  `tests/test_i18n_staging_anon_route_probe.py`.
+  Do **not** close P0 or modify the current Mini App static route
+  without the staged authenticated QA and old-client compatibility plan.
