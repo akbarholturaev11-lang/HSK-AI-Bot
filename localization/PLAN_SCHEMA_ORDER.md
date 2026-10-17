@@ -1254,6 +1254,58 @@ Do not mark implementation complete based on the plan being written.
   intentionally deferred until code completion by user request.
   P0 security unresolved; P1/P2 partial; P3/P4 NOT STARTED.
 
+### P1/P2 continuation — 2026-10-17 (course catalog drift guard, new chat)
+
+- **Current branch verified:** `codex/i18n-local-first-foundation-20261017`
+  was at `c6cffdb1254e7fe41b9e1fd4858b102aa499523b` before this
+  slice, a later commit extracting existing Tajik Mini App course UI
+  strings into `localization/ui/tj/course.json`. The prior P0
+  source audits and source-level staging findings are still present
+  in the repository. PR #179 remains Draft against unchanged `main`.
+- **Source check:** `localization/ui/{uz,ru,tj}/course.json` contain
+  **86 keys per locale**, with identical key sets and named placeholder
+  signatures; two keys contain `{n}`. No independent translation
+  quality or device UI/online entitlement claim follows from this.
+- **Source-only guard:** commit `31e8b2e9a35535c1ca880e761c14a74873b744d5`
+  adds `scripts/i18n_course_ui_catalog_guard.py`. It validates
+  JSON key uniqueness (including duplicate metadata keys), strict
+  namespace/version/locale metadata, exactly 86 UI messages,
+  safe plain string values without HTML, named placeholder counts
+  across all three languages and absence of answer/grading fields.
+  It emits a small metadata-only JSON report, never UI text or
+  lesson/quiz answers.
+- **Regression tests and CI:** commit
+  `761184fc907476a12941119778a20b2516ff61ef` adds
+  `tests/test_i18n_course_ui_catalog_guard.py` for real source,
+  synthetic missing keys, placeholder drift, raw HTML, duplicate
+  JSON keys and forbidden grading-field entries. Commit
+  `8908867c5bfb7f4a30ccd9b3d6c0a431bfeada35` integrates
+  the tests and `course-ui-catalog.json` source-only artifact in
+  `.github/workflows/i18n-p0.yml`.
+  [Fast P0 CI 39032399943](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39032399943)
+  completed **SUCCESS**. No production runtime, lesson, locale
+  activation, billing, secrets or server routes changed.
+- **Current infrastructure blocker:** read-only Railway discovery
+  shows that the previously used `hsk-ai-p0-qa` application
+  service is **absent** from current Railway staging; the staging
+  environment now has PostgreSQL only. Do not reuse old staging
+  health/HTTP evidence as proof of today's server availability.
+  Reprovisioning a cost-bearing staging application requires an
+  explicit new operator decision, isolated credentials and no
+  production secrets. No staging deployment was made in this slice.
+- **Independent Android CI warning:** at prior HEAD
+  `c6cffdb...`, Android CI run
+  [39029757839](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39029757839)
+  FAILED in two `VoiceScreenBackTest` emulator focus/root-view
+  assertions; Backend and P0 source CI PASSED. Root cause vs
+  locale code is not established. This Android release gate must be
+  triaged independently; do not call Android fully green.
+- **Open scope:** manually verify UI language switching across native
+  apps, Telegram WebView account isolation, offline/cache behavior
+  and Pro/Free lesson entitlement; legacy anonymous lesson URLs remain
+  an unresolved P0 security finding. P1/P2 code adoption partial,
+  P3/P4 NOT STARTED; `main` must not be merged.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
