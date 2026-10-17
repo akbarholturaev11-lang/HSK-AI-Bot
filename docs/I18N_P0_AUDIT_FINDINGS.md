@@ -686,3 +686,46 @@ This is **source-based** evidence, not demonstrated data isolation
 between real accounts on installed phones. QA still needs account A
 authorized lesson -> offline -> explicit logout or revoked session ->
 account B sign in, plus race conditions with concurrent writes.
+
+## P0 twelfth audit — six distinct Mini App lesson-data access intents (2026-10-17)
+
+A further source call-graph review of `app/static/course-v3.html`
+found **six direct calls** to `loadLessonData()` besides its
+function declaration. Each is registered, by exact source
+line/ordinal and behavior, in
+`localization/review/miniapp_lesson_fetch_calls.json`.
+
+| Direct caller | Source line | Critical constraint |
+| --- | ---: | --- |
+| Paywall sales prime | 1978 | Background marketing preview is not a learner-opened lesson |
+| Preview audio warmer | 2128 | Runs before Continue, must not spend a daily opening |
+| Nearby lesson prefetch | 2913 | Fetches current/next during idle; may fetch not-yet-entitled content |
+| Skip-ahead test | 3533 | Uses static lesson cards as questions; requires separate authorization and answer-key safety |
+| Starter 0 foundation | 3665 | Must preserve prerequisite access outside paid lesson consumption |
+| User-entered lesson | 3995 | **Only** direct caller sequenced after `reserveLessonStart(l)` |
+
+This makes a direct global replacement of `loadLessonData()`
+with native Android/Desktop `consume=True` lesson APIs unsafe:
+it could charge a Free learner's daily allowance for idle prefetch,
+audio warming, paywall rendering or a foundation step. An authenticated,
+typed content strategy is needed, not only adding headers to the
+existing fetch. The separate
+[security design](../docs/I18N_P0_LESSON_DELIVERY_SECURITY_DESIGN.md)
+describes the proposed, **unimplemented** access separation.
+
+**WebView cache identity observation:** `LESSON_DATA_CACHE`/
+`LESSON_DATA_PROMISES` and `lessonDataKey` use level/order only;
+the `lessonResumeKey` localStorage key also lacks `localUserScope`,
+whereas the mastery cache key does include it. This may require
+identity-aware cache keys or invalidation when introducing new
+protected lesson bodies. The source alone does **not** demonstrate
+an actual leak across Telegram accounts.
+
+`scripts/i18n_miniapp_lesson_fetch_audit.py` plus
+`tests/test_i18n_miniapp_lesson_fetch_audit.py` fail when six
+documented read sites are changed without review, when a new
+caller appears, or when the interactive reservation order is
+lost. [P0 CI 39013692471](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39013692471)
+completed **SUCCESS** with this guard and its 6 unit tests.
+No new runtime route or quota behavior was implemented.
+P0 is still open pending controlled staging and device-level QA.
