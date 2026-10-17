@@ -171,3 +171,52 @@ The guard was corrected in
 The subsequent localization CI step passed and its baseline artifact
 reported 811 checked files and zero blockers. Keep this regression guard
 rather than hiding or rewriting the failing test.
+
+## Additional P0 evidence — source scanner corrections and compatibility guard (2026-10-17)
+
+The first audit's **2,681 source paths / 7,951 broad literal candidates**
+are a historical snapshot, not refreshed totals after scanner coverage expanded.
+The current report is produced in [CI run 38999948668](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/38999948668)
+and is archived under `hsk-i18n-p0-audit`. The localization-specific test
+step passed. Check the complete workflow conclusion independently.
+
+### Source-level findings and corrections
+
+- Existing `python_message_candidates` used positional index 1 for all
+  `send_*` calls. For `send_photo`, `send_document`, `send_video` and
+  `send_animation`, index 1 is usually a *media object/path*, not a caption.
+  Index 2 carries an optional positional caption; `answer_photo` and
+  `answer_video` use index 1. Scanner argument selection now distinguishes
+  these cases, with regression tests; this reduces misleading media-path hits
+  and captures previously omitted user-facing captions. Counts may shift.
+- `scripts/ready_phrases/phrases.json` and
+  `scripts/build_ready_phrases.py` were absent from the expanded P0 scan
+  globs. Both now have coverage and registry references. Nested Android assets
+  and Desktop JSON sources also have expanded matching patterns.
+- The new `scripts/i18n_p0_contract_audit.py` validates manifest/registry
+  compatibility, forbids accidental P0 runtime-language activation, and reports
+  structural answer-like fields from the seven HSK 2.0/3.0 course tracks,
+  without serializing any lesson text or correct answers.
+- The `/course_v3_data/{level}/{filename}` FastAPI handler in
+  `app/main.py` returns static lesson JSON and has no direct signature-level
+  dependency. This is **a security review finding, not proof** that a learner
+  can bypass subscriptions; check global middleware, deployed routes,
+  the contents of public lesson JSON and separate exam APIs.
+- `AppLanguage.DEFAULT` in Android is `RUSSIAN`, while the planning
+  manifest's default is `uz`. This is **an unresolved precedence mismatch**,
+  not proof of wrong language in the active app. Inspect account-selected,
+  device-selected and unknown-locale fallback behavior before migration.
+
+### Validation scope and remaining blockers
+
+Localization CI now runs `tests.test_i18n_p0_contract_audit` and the
+read-only 746-source lesson route/structure report in addition to existing
+frozen-byte, placeholder and 7-track sample guards. This cannot replace
+review of literal candidates, actual rendered copy, Android resources after
+compilation, Telegram WebView caching, direct/Play payment parity, or
+Windows/macOS desktop behavior. No Pro/free/trial, auth, grading, progress,
+APK, Mini App runtime, or lesson source data was altered.
+
+**P0 remains IN PROGRESS.** No P1 generated catalog or target-runtime
+migration is implemented. Refer to `localization/PLAN_SCHEMA_ORDER.md`
+for the exact commit sequence, verified tests and next gates.
