@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "baseline_main_commit": "160a51d69f3324e3162375213ec61b5587b19533",
+  "purpose": "Explicit exact reviewed P2 UI source changes. Lesson, answer and generator source hashes retain original P0 invariant.",
+  "files": {
+    "desktop/ui/js/i18n.js": {
+      "baseline_sha1": "30e85aad8aa00689c6bba01980a56eadc928638e",
+      "reviewed_sha1": "3f22321d3b88bf633110495422585cc85ad09ce9",
+      "reason": "Desktop eleven common keys now prefer generated local JS bundled copy; old messages remain identical fallbacks. Shared Tauri macOS/Windows source."
+    },
+    "app/static/course-v3.html": {
+      "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
+      "reviewed_sha1": "56617e70c28d1435f651c912580bc6340a1bc05e",
+      "reason": "Mini App loads generated local common JS once, using it for reviewed rating heading with existing localized fallback and identical physical source-line positions."
+    }
+  }
+}
