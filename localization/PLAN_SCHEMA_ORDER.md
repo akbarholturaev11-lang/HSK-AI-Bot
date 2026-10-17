@@ -1343,3 +1343,46 @@ Keep GitHub's branch current without force-resetting unrelated user work.
 - **Next:** adopt one explicitly reviewed existing Mini App `course`
   string with exact fallback parity, then audit native-device offline and
   cross-account behavior before expanding; verify Android CI separately.
+
+### P2 second UI adoption slice — 2026-10-17 (Mini App profile/settings)
+
+- Branch-only implementation commit
+  [`6e1c4de22a19e4bfa529ddf490cf90c41fb5202d`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/commit/6e1c4de22a19e4bfa529ddf490cf90c41fb5202d)
+  updates **only** `app/static/course-v3.html`,
+  `localization/baselines/reviewed_ui_changes.json` and
+  `tests/test_i18n_common_ui_adoption.py`.
+- Mini App now statically loads the already-generated
+  `/course_v3_data/hsk-course-i18n.js?v=20261017-course-v1`
+  before its inline application script. The synchronous local
+  `courseMessage(key,fallback)` only reads the window-bundled
+  `HSKAI_COURSE_I18N[LANG]` table; **there is no new runtime per-label API**.
+  No fallback locale or preference order changed.
+- Exactly **four reviewed keys / five use sites** migrate to generated
+  local values, with the **exact original inline expression retained**
+  as fallback: `lang` (settings + language picker), `notif`
+  (settings), `friends` (profile), `helpTitle` (help sheet).
+  Existing Russian, Uzbek and Tajik source messages were compared
+  byte-for-byte against current I18N values before replacement.
+  Source file keeps **8,712 lines**, leaving previously reviewed
+  60/125 predicate anchors and 6 lesson fetch call sites at their
+  original physical lines.
+- Updated reviewed Git blob allowlist now records Mini App SHA-1
+  `4766abaa898616bbf54f5844206c3364c3e68d43`; no
+  source lesson or answer-key checksum waiver was introduced.
+- [Fast P0 CI 39033908596](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39033908596)
+  finished **SUCCESS**, including **138 tests**. Deterministic course
+  UI build check shows three locales, six generated assets, **zero
+  stale outputs**. Lesson-fetch and Mini App storage source
+  regressions report zero contract deviations.
+- **Limitations:** static source and CI assertions are not Telegram
+  WebView screenshots, cache/offline QA or real-account switching
+  tests. Mobile browser must load one small versioned script asset
+  (normal browser caching applies; it is not zero HTTP traffic).
+  Public original lesson JSON and grading-field exposure remain
+  an unresolved P0 review boundary. Android emulator/full CI and
+  backend independent tests must be checked by their own job result.
+  No production deployment, auth, billing, quiz, XP, progress, answer
+  keys or new locales were changed in this slice.
+- **Next:** continue incremental screens after separately verifying
+  real-device/offline copies; keep `main`, `codex/local-ai`,
+  `codex/cloud-ai` unchanged. PR #179 stays Draft.
