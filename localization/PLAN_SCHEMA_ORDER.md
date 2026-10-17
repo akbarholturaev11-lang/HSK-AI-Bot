@@ -364,6 +364,62 @@ Do not mark implementation complete based on the plan being written.
   Do not enable new languages, rewrite live clients, or merge this PR.
   P1/P2/P3/P4 remain NOT STARTED.
 
+### P0 sixth implementation slice — 2026-10-17 (Mini App page-local catalog inventory)
+
+- **Source-only Mini App inventory:** `scripts/i18n_miniapp_catalog_audit.py`
+  (commit `b68aa4d034f5bbdcb2ee78a0658726c472277a76`) with regression
+  tests `tests/test_i18n_miniapp_catalog_audit.py`
+  (`dc365513922c4df0fcfc403fe7b550307ccebf95`). It safely scans
+  selected literal JS maps without rendering, executing JS, downloading
+  locale resources, or changing any UI/lesson/payment logic. Nested objects,
+  list entries, named placeholders, HTML tag counts, and duplicate
+  literal properties produce reviewable key-path metadata, never translated
+  text, payment data, quiz answers or user state.
+- **CI:** `7107dff7f081032b1550fd34b244f8e75305860e` added read-only
+  `hsk-i18n-miniapp-catalog-audit.json` to the existing backend P0 CI
+  artifact. [Run 39006879202](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39006879202)
+  completed SUCCESS for its initial four-catalog slice. First measured
+  **339 leaf keys per locale** across course (86), course track-switcher
+  (32), subscription (190), and onboarding (31), with no missing
+  keys, placeholder drift, or HTML tag-count drift.
+- **Expanded coverage:** `f8ee81f5de4beddc0cb71da2e00becc505f013d7`
+  and regression maintenance
+  `efb6f96e16889173595a753faa725dab8b7e4e0e` and
+  `1db9483104f2fb3c581fd2f6441c6bac77868e1c`
+  inspect **18 verified embedded dictionaries** spanning course,
+  test center, mistakes, pronunciation, recognition, onboarding, voice,
+  subscription, HSK dictionary and ready phrases. CI artifact from
+  [run 39007054885](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39007054885):
+  **578 leaf keys in each of uz/ru/tj**, 0 missing key paths,
+  0 named placeholder mismatches, 0 HTML tag-count mismatches,
+  0 value-type mismatches. HSK dictionary contains three
+  `function(...)` value keys (`countAll`, `countResults`, `strokes`)
+  in each language (9 source values) which require migration-specific
+  handling; they are **not confirmed translation defects**.
+- **Scanner precision:** `731ef349f0d9da8756f136edf82b3e376eb6baf3`,
+  `5ec4c9b75e1c788a7c5584db3f75d676730cdb0e` and
+  regression `1cc6c6d7d0dda76e4566fe35fb69b0e6eeea65c7`
+  distinguish legacy formatter functions from ordinary dynamic expressions
+  and test callable argument signatures without evaluating functions.
+  [Run 39007233003](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39007233003)
+  is the verification target; check final CI conclusion before declaring pass.
+- **Registry:** `6155b669e83172af8c58a55ece71ad0d46bedcc4` adds
+  missing course onboarding, AI voice, pronunciation, recognition,
+  memorization and ready-phrases page anchors to the Mini App registry.
+- **Known CI adjustment:** first expanded CI
+  [run 39007010367](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39007010367)
+  failed solely because the audit test incorrectly demanded more than 10
+  keys in every catalog; some legitimate page catalogs have 2–7 keys.
+  This overly strict test assertion was fixed in `1db94831`. The
+  subsequent localization CI step passed in run 39007054885.
+- **Still open:** these 18 selected literal dictionaries are not *all*
+  Mini App UI copy. Other inline ternaries, runtime-composed strings,
+  localized callback copy, HTML attributes, static asset caching, actual
+  WebView language changes, device screenshots and linguistic QA are not
+  certified. Existing static course JSON exposure, entitlement controls
+  and course/quiz privacy remain review blockers.
+  **P0 IN PROGRESS; P1/P2/P3/P4 NOT STARTED. No runtime changed.**
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
