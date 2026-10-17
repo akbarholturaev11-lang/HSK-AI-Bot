@@ -342,8 +342,9 @@ Do not mark implementation complete based on the plan being written.
   a valid account-language response. This is source-level evidence,
   **not** proof that a particular user sees incorrect copy.
   [CI run 39006142928](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39006142928)
-  is the validation reference for fallback tests; only mark successful
-  after checking the actual workflow result.
+  completed **SUCCESS** for the localization test step **and** the overall
+  `Backend targeted tests` job. This does not certify client runtime,
+  production access controls, or translation semantics.
 - **Additional entitlement exposure source review:** `app/main.py`
   registers `/course_v3_data/{level}/{filename}` and returns
   `static_json_response(...)` without handler-level authentication or
