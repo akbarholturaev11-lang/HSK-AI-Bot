@@ -1,0 +1,94 @@
+# P0 staging-only lesson-delivery security QA runbook
+
+**State: prepared, NOT executed against a staging or production server.**
+Owner approval is required before changing live lesson routes, auth, quotas,
+or the Mini App JSON loader. This runbook is for trained QA with isolated,
+disposable staging accounts only.
+
+## What the automated probe can establish
+
+`scripts/i18n_staging_anon_route_probe.py` performs a
+small, **anonymous GET-status-only** check of **15 URL paths**:
+7 top-level course maps, 7 `lesson_01.json` paths and one
+private exam JSON path. It intentionally does **not** fetch private
+entitlement state, use authentication credentials, consume lessons, or
+read response bodies. The report records only path, HTTP status and
+coarse error class. A 200/206 on anonymous lesson JSON means content was
+served, **not proof of a subscription/payment bypass**. Other proxies,
+tokens, Android/desktop builds and frontend behavior are out of scope.
+
+To create an offline plan (safe at any time, **0 network calls**):
+
+```bash
+python scripts/i18n_staging_anon_route_probe.py \
+  --output /tmp/hsk-p0-staging-anon-plan.json
+```
+
+After a real isolated QA HTTPS domain is provisioned and verified,
+a human QA operator may explicitly opt in:
+
+```bash
+python scripts/i18n_staging_anon_route_probe.py \
+  --execute \
+  --base-url https://qa.example.test \
+  --confirmed-host qa.example.test \
+  --output /tmp/hsk-p0-staging-anon-status.json
+```
+
+Replace `qa.example.test` with the **actual authorized
+staging** hostname. Never use the example hostname as if it exists;
+never use the deployed production Railway domain. The script rejects
+hosts without a QA/staging marker, plaintext HTTP, host mismatches,
+embedded secrets, production names and redirects. CI runs the offline
+plan only, with **no live requests**.
+
+Review `exam_404_verified`. If false, block
+the rollout and inspect exam-route handling and upstream routing.
+If anonymous lesson paths return 200/206, treat as **source exposure
+confirmed at that staging origin** requiring entitlement review.
+Other statuses may reflect staging routing, middleware or downtime;
+a 401/403/404 alone is not proof every paid content path is secure.
+
+## Follow-up authenticated QA: manual, not automated by this script
+
+Use disposable accounts, a staging test database and entitlement
+fixtures. Run **before and after** each scenario with server-side
+quota/progress snapshots stored in a restricted staging QA area.
+Only save counters/statuses/opaque test IDs in shared reports. Never
+include Telegram initData, Bearer tokens, receipts, payment details,
+Chinese lesson bodies, graded answer keys, or other private content.
+
+| Scenario | Test action | Required invariant |
+| --- | --- | --- |
+| Anonymous | Request the static lesson URL directly and the exam path | Report precise status only; exam file is 404; any anonymously served lesson requires review |
+| Free, no quota use yet | Open course map; wait for nearby-lesson prefetch | **0** additional lesson consumptions |
+| Free, no quota use yet | Open paywall and sales preview (HSK1 lesson 3) | **0** additional lesson consumptions |
+| Free, no quota use yet | Open preview sheet and warm audio before Continue | **0** additional lesson consumptions |
+| Free, eligible | Explicitly start a current lesson | A single entitlement/reservation action; preserve grading and progress IDs |
+| Free, quota exhausted | Attempt locked/next lesson | Denied by server; no silent cached-data override |
+| Trial / Pro | Explicitly open an eligible lesson, then next unavailable lesson | Only entitled/unlocked content; do not assume Pro overrides progression |
+| Pending / rejected receipt | Retry lesson after admin decision | Existing receipt/entitlement policy; no accidental temporary bypass |
+| Starter 0 | Begin foundation before ordinary lesson | Foundation-specific policy; no unintended normal lesson spend |
+| Skip-ahead | Open quiz, retry/complete | Separately authorized quiz material; no public answer-key exposure |
+| Blocked / expired login | Attempt API requests and reopening cached lesson | Explicit denial in online state; no server response-to-cache bypass |
+| Android offline | Open previously downloaded authorized lesson, then disconnect | Only already cached authorized lesson per offline policy; do not test private content on shared device |
+| Same WebView account A→B | A loads course lesson/resume; log out and log in as B; revisit level | B never sees A's cached lesson/resume/progress; reject in-flight A response |
+| Cache revision | Change lesson source revision or switch course track | Correct version and locale, no stale lesson/language contamination |
+| Android direct/Play and Desktop | Repeat minimal lesson/progression and logout checks on supported builds | Preserve Bearer authorization and existing cache behavior; no regressions |
+
+## Decision and rollback gate
+
+Before implementing any secure endpoint or removing anonymous static
+lesson content, obtain: named staging server owner; approved disposable
+account list; client versions for Telegram iOS/Android, Android direct,
+Android Play and Desktop; tested Free/Trial/Pro/blocked states;
+no-consume background evidence; account-switch cache isolation;
+content revision/integrity strategy; phased rollout and explicit
+fallback/deprecation period for old clients. A new authorized endpoint
+must **not** reuse a quota-consuming start action for speculative
+prefetch, preview or the Starter/skip workflow.
+
+Do **not** merge a runtime change into `main` on the
+basis of passing source-only tests or this anonymous probe. P0 remains
+open pending these independent human checks. No accounts, deployed
+routes or billing state were touched while preparing this runbook.
