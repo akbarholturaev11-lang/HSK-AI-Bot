@@ -27,6 +27,41 @@ async def process(message, bot):
         self.assertIn("Confirm deletion", labels)
         self.assertTrue(any("Waiting for " in s for s in labels))
 
+    def test_telegram_media_scanner_reads_caption_not_file_path(self):
+        source = '''
+async def send(bot, message):
+    await bot.send_photo(123, "photo.jpg", "Photo caption")
+    await bot.send_document(123, "invoice.pdf")
+    await bot.send_message(123, "Direct text")
+    await message.answer_photo("image.jpg", caption="Reply caption")
+'''
+        found = python_message_candidates(source)
+        samples = [row["sample"] for row in found]
+        self.assertIn("Photo caption", samples)
+        self.assertIn("Direct text", samples)
+        self.assertIn("Reply caption", samples)
+        self.assertNotIn("photo.jpg", samples)
+        self.assertNotIn("invoice.pdf", samples)
+        self.assertNotIn("image.jpg", samples)
+
+    def test_ready_phrase_source_and_generator_are_scanned(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            phrase = root / "scripts/ready_phrases/phrases.json"
+            phrase.parent.mkdir(parents=True)
+            phrase.write_text(json.dumps({"greeting": {
+                "uz": "Salom", "ru": "Привет", "tj": "Салом"
+            }}), encoding="utf-8")
+            producer = root / "scripts/build_ready_phrases.py"
+            producer.write_text("PHRASE_VERSION = 1\\n", encoding="utf-8")
+            result = inventory(root)
+            paths = {row["path"]: row for row in result["files"]}
+            self.assertEqual(paths["scripts/ready_phrases/phrases.json"]["group"],
+                             "bundled_content")
+            self.assertEqual(paths["scripts/build_ready_phrases.py"]["group"],
+                             "generators")
+            self.assertEqual(paths["scripts/ready_phrases/phrases.json"]["localized_maps"], 1)
+
     def test_discovers_html_attributes_and_inline_js_catalog_candidates(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
