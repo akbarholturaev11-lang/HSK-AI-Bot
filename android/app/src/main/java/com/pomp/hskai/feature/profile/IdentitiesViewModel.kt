@@ -60,7 +60,7 @@ class IdentitiesViewModel(
         val generation = ++refreshGeneration
         _state.update { it.copy(isLoading = true, hasLoaded = false, error = null, sessionsRevoked = null) }
         viewModelScope.launch {
-            val available = authRepository.availableProviders()
+            val available = authRepository.availableBrowserProviders()
             val result = authRepository.linkedIdentities()
             if (refreshGeneration != generation) return@launch
             when (result) {
@@ -94,8 +94,7 @@ class IdentitiesViewModel(
         // proof returned by a late response. Its generation cannot update UI.
         viewModelScope.launch {
             val started = when (provider) {
-                AuthProvider.GOOGLE -> authRepository.startGoogleSignIn(
-                    activity = activity,
+                AuthProvider.GOOGLE -> authRepository.startGoogleBrowserSignIn(
                     bindToCurrentAccount = true,
                 )
                 AuthProvider.APPLE -> authRepository.startAppleSignIn(bindToCurrentAccount = true)
