@@ -198,7 +198,9 @@ class AuthRepository(
         val oauth = oauthApi ?: return emptyList()
         return when (val result = apiCall { oauth.providers("macos") }) {
             is ApiResult.Failure -> emptyList()
-            is ApiResult.Success -> result.value.providers.mapNotNull(AuthProvider::fromWire)
+            is ApiResult.Success -> if (result.value.ok) {
+                result.value.providers.mapNotNull(AuthProvider::fromWire)
+            } else emptyList()
         }
     }
 
