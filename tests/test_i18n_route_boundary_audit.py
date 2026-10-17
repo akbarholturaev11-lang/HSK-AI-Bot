@@ -1,9 +1,12 @@
 """Contract tests for public lesson JSON route and private exams, AST only."""
 import json
 from pathlib import Path
+import tempfile
 import unittest
 
-from scripts.i18n_route_boundary_audit import audit, middleware_boundary, routes
+from scripts.i18n_route_boundary_audit import (
+    MAP_TRACKS, audit, curriculum_map_shapes, middleware_boundary, routes,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 SAMPLE = '''
@@ -63,6 +66,42 @@ class RouteBoundaryContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "contract changed"):
             routes(SAMPLE.replace('@app.get("/course_v3_data/exams/{filename}")',
                                   '@app.get("/not-exam")'))
+
+    def test_public_curriculum_map_shape_and_private_answer_detection(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            folder = root / "app/static/course_v3_data"
+            folder.mkdir(parents=True)
+            for track in MAP_TRACKS:
+                (folder / (track + ".json")).write_text(json.dumps({
+                    "level": track,
+                    "units": [{"lessons": [{"n": 1, "title": "SENSITIVE_LESSON_NAME"}]}],
+                }), encoding="utf-8")
+            result = curriculum_map_shapes(root)
+            self.assertEqual(result["maps_checked"], 7)
+            self.assertEqual(result["lesson_navigation_entries"], 7)
+            self.assertEqual(result["private_assessment_key_occurrences"], 0)
+            self.assertNotIn("SENSITIVE_LESSON_NAME", json.dumps(result))
+            exposed = folder / "hsk1.json"
+            exposed.write_text(json.dumps({
+                "units": [{"lessons": [{"n": 1, "correct_index": 0,
+                                         "answer_key": "SECRET_ANSWER"}]}],
+            }), encoding="utf-8")
+            finding = curriculum_map_shapes(root)
+            self.assertEqual(finding["private_assessment_key_occurrences"], 2)
+            self.assertNotIn("SECRET_ANSWER", json.dumps(finding))
+            self.assertEqual(
+                finding["maps"][0]["private_assessment_key_paths"],
+                ["$.units[].lessons[].correct_index", "$.units[].lessons[].answer_key"]
+            )
+
+    def test_existing_seven_curriculum_maps_contain_navigation_not_grading_keys(self):
+        result = curriculum_map_shapes(ROOT)
+        self.assertEqual(result["maps_checked"], 7)
+        self.assertEqual(result["lesson_navigation_entries"], 746)
+        self.assertEqual(result["private_assessment_key_occurrences"], 0)
+        self.assertTrue(all(row["lesson_navigation_entries"] > 0
+                            for row in result["maps"]))
 
     def test_real_source_route_security_state_without_app_import(self):
         main = (ROOT / "app/main.py").read_text(encoding="utf-8")
