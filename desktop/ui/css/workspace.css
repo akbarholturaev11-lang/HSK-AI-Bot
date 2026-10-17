@@ -8452,3 +8452,12 @@ html.lesson-active .ai-drawer.is-open {
     max-width: 90%;
   }
 }
+
+.identity-link-shell {
+  width: min(560px, calc(100vw - 32px));
+  padding: 28px;
+}
+
+.identity-link-shell h2 {
+  margin-top: 0;
+}

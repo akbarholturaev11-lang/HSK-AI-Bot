@@ -9,6 +9,11 @@ const COMMANDS = Object.freeze({
   oauthProviders: "desktop_oauth_providers",
   oauthStart: "desktop_oauth_start",
   oauthOpen: "desktop_oauth_open",
+  identityMethods: "desktop_identity_methods",
+  telegramIdentityStart: "desktop_telegram_identity_start",
+  identityLinkPoll: "desktop_identity_link_poll",
+  identityLinkOpen: "desktop_identity_link_open",
+  identityLinkCancel: "desktop_identity_link_cancel",
   openExternalUrl: "desktop_open_external_url",
   bootstrap: "desktop_bootstrap",
   logout: "desktop_logout",
@@ -48,6 +53,12 @@ const COMMANDS = Object.freeze({
 });
 
 const ALLOWED_COMMANDS = new Set(Object.values(COMMANDS));
+function assertIdentityAttempt(value) {
+  if (typeof value !== "string" || !/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(value)) {
+    throw new DesktopBridgeError("desktop_identity_attempt_invalid");
+  }
+  return value;
+}
 const SUPPORTED_LANGUAGES = new Set(["uz", "ru", "tj"]);
 const SUBSCRIPTION_PLANS = new Set(["10_days", "1_month", "3_months", "hsk30_unlock"]);
 const SUBSCRIPTION_METHODS = new Set(["visa", "alipay", "wechat"]);
@@ -732,6 +743,26 @@ export const desktopBridge = Object.freeze({
 
   oauthOpen() {
     return invokeCommand(COMMANDS.oauthOpen);
+  },
+
+  identityMethods() {
+    return invokeCommand(COMMANDS.identityMethods);
+  },
+
+  telegramIdentityStart(attemptId) {
+    return invokeCommand(COMMANDS.telegramIdentityStart, { attemptId: assertIdentityAttempt(attemptId) });
+  },
+
+  identityLinkPoll(attemptId) {
+    return invokeCommand(COMMANDS.identityLinkPoll, { attemptId: assertIdentityAttempt(attemptId) });
+  },
+
+  identityLinkOpen(attemptId) {
+    return invokeCommand(COMMANDS.identityLinkOpen, { attemptId: assertIdentityAttempt(attemptId) });
+  },
+
+  identityLinkCancel(attemptId) {
+    return invokeCommand(COMMANDS.identityLinkCancel, { attemptId: assertIdentityAttempt(attemptId) });
   },
 
   openExternalUrl(url) {

@@ -86,10 +86,24 @@ struct PendingLink {
     authorize_url: String,
 }
 
+#[derive(Clone)]
+struct PendingIdentityLink {
+    link_request_id: String,
+    polling_secret: String,
+    authorize_url: String,
+}
+
+#[derive(Default)]
+struct IdentityLinkState {
+    attempt_id: Option<String>,
+    pending: Option<PendingIdentityLink>,
+}
+
 struct DesktopState {
     client: Client,
     access_token: Mutex<Option<String>>,
     pending_link: Mutex<Option<PendingLink>>,
+    identity_link: Mutex<IdentityLinkState>,
     pending_update: Mutex<Option<Update>>,
     refresh_guard: tokio::sync::Mutex<()>,
     update_guard: tokio::sync::Mutex<()>,
@@ -108,6 +122,7 @@ impl DesktopState {
             client,
             access_token: Mutex::new(None),
             pending_link: Mutex::new(None),
+            identity_link: Mutex::new(IdentityLinkState::default()),
             pending_update: Mutex::new(None),
             refresh_guard: tokio::sync::Mutex::new(()),
             update_guard: tokio::sync::Mutex::new(()),
@@ -255,6 +270,10 @@ fn api_url(path: &str) -> Result<String, String> {
     match path {
         "/api/v3/desktop-auth/link/start"
         | "/api/v3/native-auth/oauth/start"
+        | "/api/v3/native-auth/identities"
+        | "/api/v3/native-auth/identities/link/start"
+        | "/api/v3/native-auth/identities/link/status"
+        | "/api/v3/native-auth/identities/link/cancel"
         | "/api/v3/native-auth/providers?platform=macos"
         | "/api/v3/native-auth/providers?platform=windows"
         | "/api/v3/desktop-auth/link/status"
@@ -809,6 +828,31 @@ fn is_allowed_oauth_authorize_url(url: &str) -> bool {
         && parsed.query().is_some_and(|query| !query.is_empty())
 }
 
+fn is_identity_attempt_id(value: &str) -> bool {
+    value.len() == 36 && value.bytes().enumerate().all(|(index, byte)| {
+        if [8, 13, 18, 23].contains(&index) { byte == b'-' }
+        else { byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte) }
+    })
+}
+
+/// A link proof is a distinct bot action, never the Telegram sign-in action.
+fn is_allowed_telegram_identity_url(url: &str, request_id: &str) -> bool {
+    let Ok(parsed) = reqwest::Url::parse(url) else { return false; };
+    let bot = parsed.path().strip_prefix('/').unwrap_or("");
+    let expected = format!("tg_identity_{request_id}");
+    parsed.scheme() == "https"
+        && parsed.host_str() == Some("t.me")
+        && parsed.port().is_none()
+        && parsed.username().is_empty()
+        && parsed.password().is_none()
+        && parsed.fragment().is_none()
+        && (5..=32).contains(&bot.len())
+        && bot.bytes().all(|byte| byte.is_ascii_alphanumeric() || byte == b'_')
+        && is_identity_attempt_id(request_id)
+        && parsed.query_pairs().count() == 1
+        && parsed.query_pairs().next().is_some_and(|(key, value)| key == "start" && value == expected)
+}
+
 fn has_only_query_keys(parsed: &reqwest::Url, allowed: &[&str]) -> bool {
     parsed
         .query_pairs()
@@ -1305,7 +1349,10 @@ fn clear_pending_link(state: &DesktopState) -> Result<(), String> {
 fn clear_in_memory_auth(state: &DesktopState) -> Result<(), String> {
     let access_error = store_access_token(state, None).err();
     let pending_error = clear_pending_link(state).err();
-    access_error.or(pending_error).map_or(Ok(()), Err)
+    let identity_error = state.identity_link.lock().map(|mut link| {
+        *link = IdentityLinkState::default();
+    }).map_err(|_| "desktop_auth_state_unavailable".to_string()).err();
+    access_error.or(pending_error).or(identity_error).map_or(Ok(()), Err)
 }
 
 fn clear_local_auth_with<F>(state: &DesktopState, delete_refresh: F) -> Result<(), String>
@@ -2322,6 +2369,134 @@ fn desktop_open_external_url(app: tauri::AppHandle, url: String) -> Result<(), S
 }
 
 #[tauri::command]
+async fn desktop_identity_methods(state: tauri::State<'_, DesktopState>) -> Result<Value, String> {
+    let value = authenticated_get_json(&state, "/api/v3/native-auth/identities").await?;
+    let linked = value.get("telegram_linked").and_then(Value::as_bool)
+        .ok_or_else(|| "desktop_api_invalid_response".to_string())?;
+    Ok(json!({ "telegram_linked": linked }))
+}
+
+async fn cancel_identity_proof(state: &DesktopState, pending: PendingIdentityLink) {
+    // Cancellation is best effort when offline; expiry and the bot's explicit
+    // approval remain server-owned. Never log the native proof on failure.
+    let _ = authenticated_post_json(state, "/api/v3/native-auth/identities/link/cancel", &json!({
+        "link_request_id": pending.link_request_id,
+        "polling_secret": pending.polling_secret,
+    })).await;
+}
+
+fn take_identity_link(state: &DesktopState, attempt_id: Option<&str>) -> Result<Option<PendingIdentityLink>, String> {
+    let mut current = state.identity_link.lock().map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+    if attempt_id.is_some() && current.attempt_id.as_deref() != attempt_id { return Ok(None); }
+    current.attempt_id = None;
+    Ok(current.pending.take())
+}
+
+#[tauri::command]
+async fn desktop_telegram_identity_start(
+    state: tauri::State<'_, DesktopState>, attempt_id: String,
+) -> Result<DesktopLinkDisplay, String> {
+    if !is_identity_attempt_id(&attempt_id) { return Err("desktop_identity_attempt_invalid".into()); }
+    let previous = {
+        let mut current = state.identity_link.lock().map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+        current.attempt_id = Some(attempt_id.clone());
+        current.pending.take()
+    };
+    if let Some(pending) = previous { cancel_identity_proof(&state, pending).await; }
+    let value = authenticated_post_json(&state, "/api/v3/native-auth/identities/link/start", &json!({
+        "provider": "telegram", "mode": "telegram_approval",
+        "platform": platform()?, "app_version": env!("CARGO_PKG_VERSION"),
+        "installation_key": installation_key()?,
+    })).await?;
+    let started: OAuthStartResponse = serde_json::from_value(value)
+        .map_err(|_| "desktop_api_invalid_response".to_string())?;
+    if !is_identity_attempt_id(&started.link_request_id)
+        || !(32..=512).contains(&started.polling_secret.len())
+        || !(1..=3_600).contains(&started.expires_in)
+        || !is_allowed_telegram_identity_url(&started.authorize_url, &started.link_request_id)
+    { return Err("desktop_api_invalid_response".into()); }
+    let pending = PendingIdentityLink {
+        link_request_id: started.link_request_id, polling_secret: started.polling_secret,
+        authorize_url: started.authorize_url,
+    };
+    let abandoned = {
+        let mut current = state.identity_link.lock().map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+        if current.attempt_id.as_deref() != Some(attempt_id.as_str()) { true }
+        else { current.pending = Some(pending.clone()); false }
+    };
+    if abandoned {
+        cancel_identity_proof(&state, pending).await;
+        return Err("oauth_cancelled".into());
+    }
+    Ok(DesktopLinkDisplay { status: "pending", display_code: String::new(), expires_in: started.expires_in })
+}
+
+fn identity_pending(state: &DesktopState, attempt_id: &str) -> Result<PendingIdentityLink, String> {
+    if !is_identity_attempt_id(attempt_id) { return Err("desktop_identity_attempt_invalid".into()); }
+    let current = state.identity_link.lock().map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+    if current.attempt_id.as_deref() != Some(attempt_id) { return Err("oauth_cancelled".into()); }
+    current.pending.clone().ok_or_else(|| "oauth_cancelled".to_string())
+}
+
+fn identity_poll_display(value: &Value) -> Result<Value, String> {
+    let status = value.get("status").and_then(Value::as_str)
+        .filter(|status| matches!(*status, "pending" | "linked" | "denied" | "failed" | "expired" | "cancelled"))
+        .ok_or_else(|| "desktop_api_invalid_response".to_string())?;
+    let error = value.get("error").and_then(Value::as_str).filter(|code| matches!(*code,
+        "oauth_identity_bound_to_other_user" | "oauth_identity_already_linked"));
+    // Ignore every unrequested field, especially credentials or raw proof data.
+    Ok(json!({ "status": status, "error": error }))
+}
+
+#[tauri::command]
+async fn desktop_identity_link_poll(
+    state: tauri::State<'_, DesktopState>, attempt_id: String,
+) -> Result<Value, String> {
+    let pending = identity_pending(&state, &attempt_id)?;
+    let result = authenticated_post_json(&state, "/api/v3/native-auth/identities/link/status", &json!({
+        "link_request_id": pending.link_request_id, "polling_secret": pending.polling_secret,
+    })).await;
+    // A dismiss, logout or replacement invalidates late success and failure.
+    let mut current = state.identity_link.lock().map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+    if current.attempt_id.as_deref() != Some(attempt_id.as_str()) { return Ok(json!({ "status": "cancelled" })); }
+    let value = match result {
+        Ok(value) => value,
+        Err(error) => match terminal_link_status(&error) {
+            Some(status) => json!({ "status": status }),
+            None => return Err(error),
+        },
+    };
+    let display = identity_poll_display(&value)?;
+    if display["status"] != "pending" { *current = IdentityLinkState::default(); }
+    // Linking adds a method to the current account. Never store or return a
+    // token pair, even if an unexpected API payload happens to contain one.
+    Ok(display)
+}
+
+#[tauri::command]
+fn desktop_identity_link_open(
+    app: tauri::AppHandle, state: tauri::State<'_, DesktopState>, attempt_id: String,
+) -> Result<(), String> {
+    let pending = identity_pending(&state, &attempt_id)?;
+    if !is_allowed_telegram_identity_url(&pending.authorize_url, &pending.link_request_id) {
+        return Err("desktop_link_invalid".into());
+    }
+    app.opener().open_url(pending.authorize_url, None::<&str>)
+        .map_err(|_| "desktop_link_open_failed".to_string())
+}
+
+#[tauri::command]
+async fn desktop_identity_link_cancel(
+    state: tauri::State<'_, DesktopState>, attempt_id: String,
+) -> Result<(), String> {
+    if !is_identity_attempt_id(&attempt_id) { return Err("desktop_identity_attempt_invalid".into()); }
+    if let Some(pending) = take_identity_link(&state, Some(&attempt_id))? {
+        cancel_identity_proof(&state, pending).await;
+    }
+    Ok(())
+}
+
+#[tauri::command]
 async fn desktop_bootstrap(state: tauri::State<'_, DesktopState>) -> Result<Value, String> {
     authenticated_bootstrap(&state).await
 }
@@ -2829,6 +3004,9 @@ async fn desktop_logout(
     state: tauri::State<'_, DesktopState>,
     local_ai: tauri::State<'_, LocalAiManager>,
 ) -> Result<(), String> {
+    if let Some(pending) = take_identity_link(&state, None)? {
+        cancel_identity_proof(&state, pending).await;
+    }
     local_ai.stop_all(&app).await;
     let revoke_result: Result<(), String> = async {
         let mut access_token = current_access_token(&state)?;
@@ -2880,6 +3058,11 @@ pub fn run() {
             desktop_oauth_providers,
             desktop_oauth_start,
             desktop_oauth_open,
+            desktop_identity_methods,
+            desktop_telegram_identity_start,
+            desktop_identity_link_poll,
+            desktop_identity_link_open,
+            desktop_identity_link_cancel,
             desktop_open_external_url,
             desktop_bootstrap,
             desktop_logout,
@@ -2947,6 +3130,9 @@ mod tests {
         validate_tts_text, DesktopLinkDisplay, DesktopState, PendingLink, MAX_MISTAKES,
         MAX_NATIVE_EVENT_DURATION_MS, MAX_NATIVE_EVENT_SIZE_BYTES, MAX_UPDATE_NOTES_CHARS,
         MAX_UPDATE_VERSION_CHARS,
+        identity_pending, is_allowed_telegram_identity_url, is_identity_attempt_id,
+        take_identity_link, PendingIdentityLink,
+        identity_poll_display,
     };
     use serde_json::{json, to_value, Value};
 
@@ -3090,6 +3276,14 @@ mod tests {
             expires_in: 300,
             authorize_url: String::new(),
         });
+        let mut identity = state.identity_link.lock().expect("identity state");
+        identity.attempt_id = Some("abcdef12-1234-5678-9012-abcdef123456".into());
+        identity.pending = Some(PendingIdentityLink {
+            link_request_id: "abcdef12-1234-5678-9012-abcdef123456".into(),
+            polling_secret: "p".repeat(32),
+            authorize_url: "https://t.me/test_bot?start=tg_identity_abcdef12-1234-5678-9012-abcdef123456".into(),
+        });
+        drop(identity);
 
         let result =
             clear_local_auth_with(&state, || Err("desktop_secure_storage_unavailable".into()));
@@ -3100,6 +3294,66 @@ mod tests {
         );
         assert_eq!(current_access_token(&state), Ok(None));
         assert!(state.pending_link.lock().expect("link state").is_none());
+        let identity = state.identity_link.lock().expect("identity state");
+        assert!(identity.pending.is_none());
+        assert!(identity.attempt_id.is_none());
+    }
+
+    #[test]
+    fn telegram_identity_opener_only_allows_matching_dedicated_proof() {
+        let id = "abcdef12-1234-5678-9012-abcdef123456";
+        let good = format!("https://t.me/test_bot?start=tg_identity_{id}");
+        assert!(is_identity_attempt_id(id));
+        assert!(is_allowed_telegram_identity_url(&good, id));
+        assert!(!is_identity_attempt_id("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+        for bad in [
+            good.replace("https:", "http:"), good.replace("t.me/", "t.me.evil.example/"),
+            good.replace("t.me/", "evil.example@t.me/"), good.replace("t.me/", "t.me:8443/"),
+            good.replace("test_bot?", "test_bot/extra?"), good.replace("tg_identity_", "desktop_"),
+            format!("{good}&start=desktop_link"), format!("{good}&redirect=https://evil.example"),
+            format!("{good}#fragment"), "https://t.me/test_bot?start=desktop_link".into(),
+        ] { assert!(!is_allowed_telegram_identity_url(&bad, id), "unexpected bot link allowed"); }
+        assert!(!is_allowed_telegram_identity_url(&good, "abcdef12-1234-5678-9012-abcdef123457"));
+        // This proof cannot be used by the existing Telegram sign-in opener.
+        assert!(!is_allowed_telegram_link(&good));
+    }
+
+    #[test]
+    fn identity_cancellation_is_scoped_to_the_attempt_and_never_changes_tokens() {
+        let state = DesktopState::new();
+        *state.access_token.lock().expect("token") = Some("existing-access-token".into());
+        let id = "abcdef12-1234-5678-9012-abcdef123456";
+        let other = "abcdef12-1234-5678-9012-abcdef123457";
+        {
+            let mut identity = state.identity_link.lock().expect("identity state");
+            identity.attempt_id = Some(id.into());
+            identity.pending = Some(PendingIdentityLink {
+                link_request_id: id.into(), polling_secret: "p".repeat(32),
+                authorize_url: format!("https://t.me/test_bot?start=tg_identity_{id}"),
+            });
+        }
+        assert!(identity_pending(&state, other).is_err());
+        assert!(take_identity_link(&state, Some(other)).expect("stale cancel").is_none());
+        assert!(identity_pending(&state, id).is_ok());
+        assert!(take_identity_link(&state, Some(id)).expect("cancel").is_some());
+        assert!(identity_pending(&state, id).is_err());
+        assert_eq!(current_access_token(&state), Ok(Some("existing-access-token".into())));
+        assert!(state.pending_link.lock().expect("signin state").is_none());
+    }
+
+    #[test]
+    fn identity_poll_exposes_only_bounded_status_and_safe_conflict() {
+        let display = identity_poll_display(&json!({
+            "status": "linked", "access_token": "unrequested-secret",
+            "refresh_token": "unrequested-secret", "polling_secret": "unrequested-secret",
+            "user_id": 999, "bootstrap": {"user": {"id": 999}},
+            "error": "untrusted backend text",
+        })).expect("safe status");
+        assert_eq!(display, json!({"status": "linked", "error": null}));
+        assert_eq!(identity_poll_display(&json!({"status": "denied", "error": "oauth_identity_bound_to_other_user"})).expect("conflict"),
+            json!({"status": "denied", "error": "oauth_identity_bound_to_other_user"}));
+        assert!(identity_poll_display(&json!({"status": "authenticated"})).is_err());
+        assert!(identity_poll_display(&json!({"status": 1})).is_err());
     }
 
     #[test]

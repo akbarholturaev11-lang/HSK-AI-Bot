@@ -173,6 +173,10 @@ const state = {
   referralModalOpen: false,
   referralPreviousFocus: null,
   referralCopied: false,
+  telegramLinked: null,
+  identityMethodsStatus: "idle",
+  identityMethodsGeneration: 0,
+  telegramIdentityFlow: null,
   goal: null,
   onboardingOpen: false,
   onboardingStep: 0,
@@ -860,6 +864,10 @@ function showAuth({ expired = false } = {}) {
   closeAi();
   stopNotificationRefresh();
   resetAiSession();
+  closeTelegramIdentity({ restoreFocus: false });
+  state.telegramLinked = null;
+  state.identityMethodsStatus = "idle";
+  state.identityMethodsGeneration += 1;
   voice.dispose();
   practice.dispose();
   vocabulary.dispose();
@@ -1773,6 +1781,7 @@ function toggleNotifications() {
 }
 
 function routeTo(view) {
+  if (view !== "profile") closeTelegramIdentity({ restoreFocus: false });
   if (view === "subscription") state.subscriptionMode = "subscription";
   state.view = view;
   renderActiveView();
@@ -4577,6 +4586,7 @@ function renderProfile() {
   accountHead.append(accountCopy);
 
   const accountCard = element("article", "profile-account card-panel");
+  accountCard.append(telegramIdentityRow());
   const manage = element("button", "secondary-button", t("manageSubscription"));
   manage.type = "button";
   manage.addEventListener("click", () => routeTo("subscription"));
@@ -4621,6 +4631,141 @@ function renderProfile() {
     accountHead,
     accountCard,
   );
+}
+
+function telegramIdentityRow() {
+  if (state.identityMethodsStatus === "idle") void loadIdentityMethods();
+  if (state.telegramLinked === true) {
+    return settingRow("Telegram", t("telegramIdentityConnectedBody"), element("span", "tag green", t("telegramIdentityConnected")));
+  }
+  const loading = state.identityMethodsStatus === "loading";
+  const failed = state.identityMethodsStatus === "error";
+  const button = element("button", "secondary-button", t(failed ? "retry" : "telegramIdentityConnect"));
+  button.type = "button";
+  button.dataset.role = "telegram-identity-connect";
+  button.disabled = loading;
+  button.addEventListener("click", () => {
+    if (failed) void loadIdentityMethods();
+    else openTelegramIdentity();
+  });
+  return settingRow("Telegram", t(failed ? "telegramIdentityLoadFailed" : "telegramIdentityBody"), button);
+}
+
+async function loadIdentityMethods() {
+  const generation = ++state.identityMethodsGeneration;
+  state.identityMethodsStatus = "loading";
+  try {
+    const result = await desktopBridge.identityMethods();
+    if (generation !== state.identityMethodsGeneration) return;
+    if (typeof result?.telegram_linked !== "boolean") throw new Error("desktop_api_invalid_response");
+    state.telegramLinked = result.telegram_linked;
+    state.identityMethodsStatus = "ready";
+  } catch (error) {
+    if (generation !== state.identityMethodsGeneration) return;
+    if (isSessionError(error)) { showAuth({ expired: true }); return; }
+    state.identityMethodsStatus = "error";
+  }
+  if (state.view === "profile") renderProfile();
+}
+
+function closeTelegramIdentity({ restoreFocus = true, cancel = true } = {}) {
+  const flow = state.telegramIdentityFlow;
+  if (!flow) return;
+  state.telegramIdentityFlow = null;
+  window.clearTimeout(flow.timer);
+  flow.layer.remove();
+  if (cancel) void desktopBridge.identityLinkCancel(flow.attemptId).catch(() => {});
+  if (restoreFocus && flow.previousFocus?.isConnected) flow.previousFocus.focus();
+}
+
+function telegramIdentityError(error) {
+  if (["oauth_telegram_bound_to_other_user", "oauth_telegram_already_linked", "oauth_identity_bound_to_other_user", "oauth_identity_already_linked"].includes(error?.code)) {
+    return t("telegramIdentityConflict");
+  }
+  return errorMessage(error) || t("telegramIdentityDenied");
+}
+
+async function openTelegramIdentity() {
+  if (state.telegramLinked || state.identityMethodsStatus !== "ready" || state.telegramIdentityFlow) return;
+  const layer = element("div", "referral-layer identity-link-layer");
+  const shell = element("section", "referral-shell identity-link-shell");
+  shell.setAttribute("role", "dialog");
+  shell.setAttribute("aria-modal", "true");
+  shell.setAttribute("aria-label", t("telegramIdentityTitle"));
+  const status = element("p", "muted", t("telegramIdentityPreparing"));
+  status.setAttribute("role", "status");
+  status.setAttribute("aria-live", "polite");
+  const open = element("button", "primary-button", t("telegramIdentityOpen"));
+  open.type = "button";
+  open.disabled = true;
+  const close = element("button", "secondary-button", t("close"));
+  close.type = "button";
+  close.addEventListener("click", () => closeTelegramIdentity());
+  const actions = element("div", "payment-methods");
+  actions.append(open, close);
+  shell.append(element("h2", "", t("telegramIdentityTitle")), element("p", "muted", t("telegramIdentityConfirmBody")), status, actions);
+  layer.append(shell);
+  const flow = { attemptId: crypto.randomUUID(), layer, status, open, timer: null, deadline: 0, previousFocus: document.activeElement };
+  state.telegramIdentityFlow = flow;
+  const active = () => state.telegramIdentityFlow === flow;
+  const finish = (message) => {
+    if (!active()) return;
+    window.clearTimeout(flow.timer);
+    open.disabled = true;
+    status.textContent = message;
+    void desktopBridge.identityLinkCancel(flow.attemptId).catch(() => {});
+  };
+  const openBot = async () => {
+    if (!active() || open.disabled) return;
+    try { await desktopBridge.identityLinkOpen(flow.attemptId); }
+    catch (error) { if (active()) status.textContent = telegramIdentityError(error); }
+  };
+  const poll = async () => {
+    if (!active()) return;
+    if (Date.now() >= flow.deadline) { finish(t("telegramIdentityExpired")); return; }
+    try {
+      const result = await desktopBridge.identityLinkPoll(flow.attemptId);
+      if (!active()) return;
+      if (result?.status === "linked") {
+        closeTelegramIdentity({ cancel: false, restoreFocus: false });
+        state.telegramLinked = true;
+        if (state.view === "profile") renderProfile();
+        showToast(t("telegramIdentityConnected"));
+        return;
+      }
+      if (["denied", "failed", "cancelled", "expired"].includes(result?.status)) {
+        finish(result.error ? telegramIdentityError({ code: result.error }) : t(result.status === "expired" ? "telegramIdentityExpired" : "telegramIdentityDenied"));
+        return;
+      }
+      if (result?.status !== "pending") throw new Error("desktop_api_invalid_response");
+    } catch (error) {
+      if (!active()) return;
+      if (isSessionError(error)) { showAuth({ expired: true }); return; }
+      finish(telegramIdentityError(error));
+      return;
+    }
+    flow.timer = window.setTimeout(poll, 2000);
+  };
+  open.addEventListener("click", () => void openBot());
+  layer.addEventListener("click", (event) => { if (event.target === layer) closeTelegramIdentity(); });
+  shell.addEventListener("keydown", (event) => { if (event.key === "Tab") trapFocusWithin(shell, event); });
+  document.body.append(layer);
+  close.focus();
+  try {
+    const result = await desktopBridge.telegramIdentityStart(flow.attemptId);
+    if (!active()) { void desktopBridge.identityLinkCancel(flow.attemptId).catch(() => {}); return; }
+    const expires = Number(result?.expiresIn);
+    if (result?.status !== "pending" || !Number.isInteger(expires) || expires < 1 || expires > 3600) throw new Error("desktop_api_invalid_response");
+    flow.deadline = Date.now() + expires * 1000;
+    status.textContent = t("telegramIdentityWaiting");
+    open.disabled = false;
+    await openBot();
+    if (active()) void poll();
+  } catch (error) {
+    if (!active()) return;
+    if (isSessionError(error)) { showAuth({ expired: true }); return; }
+    finish(telegramIdentityError(error));
+  }
 }
 
 function setReduceMotion(enabled) {
@@ -6266,7 +6411,9 @@ function bindEvents() {
     }
     // Escape behaves like "Keyinroq": the goal stays unset, so onboarding
     // comes back on the next start instead of being lost silently.
-    if (state.referralModalOpen) {
+    if (state.telegramIdentityFlow) {
+      closeTelegramIdentity();
+    } else if (state.referralModalOpen) {
       closeReferralModal();
     } else if (state.onboardingOpen) {
       closeOnboarding();

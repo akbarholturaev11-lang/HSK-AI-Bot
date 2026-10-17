@@ -27,6 +27,11 @@ const expectedCommands = [
   "desktop_oauth_providers",
   "desktop_oauth_start",
   "desktop_oauth_open",
+  "desktop_identity_methods",
+  "desktop_telegram_identity_start",
+  "desktop_identity_link_poll",
+  "desktop_identity_link_open",
+  "desktop_identity_link_cancel",
   "desktop_open_external_url",
   "desktop_bootstrap",
   "desktop_logout",
@@ -179,6 +184,35 @@ test("signup invitations remain bounded metadata on both native starts", async (
   } finally {
     delete globalThis.__TAURI__;
   }
+});
+
+test("Telegram identity linking uses separate authenticated native commands and bounded attempts", async () => {
+  const calls = [];
+  globalThis.__TAURI__ = { core: { invoke: async (command, args) => {
+    calls.push({ command, args });
+    return { status: "pending", expiresIn: 300 };
+  } } };
+  try {
+    const { desktopBridge } = await import("./js/bridge.js");
+    const attemptId = "abcdef12-1234-5678-9012-abcdef123456";
+    await desktopBridge.identityMethods();
+    await desktopBridge.telegramIdentityStart(attemptId);
+    await desktopBridge.identityLinkOpen(attemptId);
+    await desktopBridge.identityLinkPoll(attemptId);
+    await desktopBridge.identityLinkCancel(attemptId);
+    assert.deepEqual(calls.map(({ command }) => command), [
+      "desktop_identity_methods", "desktop_telegram_identity_start", "desktop_identity_link_open", "desktop_identity_link_poll", "desktop_identity_link_cancel",
+    ]);
+    for (const entry of calls.slice(1)) assert.deepEqual(entry.args, { attemptId });
+    const count = calls.length;
+    for (const bad of [null, "", "p".repeat(36), `${attemptId}?admin=true`, attemptId.toUpperCase()]) {
+      assert.throws(() => desktopBridge.telegramIdentityStart(bad), /desktop_identity_attempt_invalid/);
+      assert.throws(() => desktopBridge.identityLinkPoll(bad), /desktop_identity_attempt_invalid/);
+      assert.throws(() => desktopBridge.identityLinkOpen(bad), /desktop_identity_attempt_invalid/);
+      assert.throws(() => desktopBridge.identityLinkCancel(bad), /desktop_identity_attempt_invalid/);
+    }
+    assert.equal(calls.length, count);
+  } finally { delete globalThis.__TAURI__; }
 });
 
 test("invitation QR fits both old and universal links without truncating payload", async () => {
