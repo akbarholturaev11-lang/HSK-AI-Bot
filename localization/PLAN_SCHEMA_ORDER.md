@@ -859,20 +859,35 @@ Do not mark implementation complete based on the plan being written.
   secrets were copied. Startup command points to `app.staging_qa:app`,
   sleep mode enabled, `/health` probe configured. Staged changes were
   reviewed as creation-only, then committed to staging (not production).
-- **Deployment startup issue and recovery:** first staging deployment
-  failed to import `app.main` because canonical
-  `PUBLIC_SITE_URL`/`MINI_APP_BASE_URL` values were blank.
-  Corrected only the **staging service variables** to inert reserved
-  `https://hsk-p0-staging.invalid` and matching Mini App page URL;
-  a fresh deployment was automatically triggered. Until Railway reports
-  healthy, DO NOT claim any live staging HTTP/Free/Pro QA completed.
-  No staging public domain was created in this step yet.
-- **P0 still open:** once backend is healthy, attach/verify a
-  staging-only HTTPS domain, run safe anonymous status probe, then
-  separate disposable-account Free/Trial/Pro entitlement/no-consume/
-  cache-switch QA. Never use the production bot token or production
-  database. No normal app source, paid access, lesson, account or
-  production service was modified; PR #179 remains Draft.
+- **Deployment error recovered:** the first staging startup failed
+  because `PUBLIC_SITE_URL` and `MINI_APP_BASE_URL` were blank,
+  violating public-site canonical HTTPS URL validation. The staging-only
+  values were first set to an inert .invalid origin and then to
+  `https://hsk-ai-p0-qa-staging.up.railway.app`. No production
+  variable was changed.
+- **Safer fake token:** `094d9a69592a58a17a089ba3f406a0ad173a93e2`
+  replaces a predictable dummy Telegram token with a **cryptographically
+  random per-start fake token** in the staging-only entrypoint.
+  `c73ee00891e7be6fa8eca59d5b54e29c24c36fe4` updates tests.
+  [Fast P0 CI 39016794297](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39016794297)
+  completed **SUCCESS**; Backend import smoke for the randomized
+  token also completed SUCCESS in run 39016794371.
+- **Actual Railway staging outcome:** isolated service
+  `hsk-ai-p0-qa`, staging Postgres `Postgres-Iy93`, Railway-managed
+  domain `https://hsk-ai-p0-qa-staging.up.railway.app`.
+  The latest staging deployment `cf4e66c5-8134-40e5-9f78-68b07b26b244`
+  builds exactly commit `c73ee00891e7be6fa8eca59d5b54e29c24c36fe4`
+  and reports **SUCCESS / Online**. Railway startup logs confirm
+  `Application startup complete` and internal `GET /health`
+  **200 OK**. `app.staging_qa:app` skips Telegram polling/schedulers,
+  uses isolated Postgres and no production Bot/AI secrets.
+- **Still blocking P0:** no external anonymous HTTP route scan was
+  executed (current execution environment cannot resolve the staging
+  domain); no disposable Free/Trial/Pro/blocked auth fixtures or
+  Mini App/Android WebView QA yet. User-authorized staging compute is
+  now running and may incur Railway usage charges; sleep is enabled.
+  P0 stays IN PROGRESS, P1/P2/P3/P4 NOT STARTED.
+  No production or main changes; PR #179 remains Draft.
 
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
