@@ -192,3 +192,58 @@ Room clearing, older installed APKs and device security remain
 separate QA cases. Release gate: with account A's downloaded Pro
 lesson on disk, sign out (including offline), sign into B, and
 confirm A's course/lesson cache is not available to B.
+
+## Mini App speculative fetch vs paid lesson consumption — P0 source gate
+
+The current `app/static/course-v3.html` uses one legacy
+`loadLessonData(level, order)` helper for **six direct calls** with
+fundamentally different intents. See the precise, revision-bound register
+`localization/review/miniapp_lesson_fetch_calls.json`, checked by
+`scripts/i18n_miniapp_lesson_fetch_audit.py` in the fast P0 CI.
+
+| Source owner | Existing behavior | Mandatory rule for a future authenticated replacement |
+| --- | --- | --- |
+| `primeSalesValueContent` | Reads HSK1 lesson 3 for the paywall sales preview | Serve **public-safe redacted marketing metadata**, not the lesson JSON. No quota consumption |
+| `warmLessonPreviewAudio` | Reads lesson material to warm TTS before Continue is tapped | Use only public or already-authorized audio/text; no entitlement consume |
+| `prefetchNearbyLessons` | Idle preloads current + nearby lesson, potentially ahead of permission | Only redacted map metadata or a separately defined **non-consuming** authorized preview. No automatic paid lesson delivery |
+| `startSkipTest` | Builds the skip-unlock quiz from the static lesson content | Independently authorize the quiz-material workflow; do not accidentally charge ordinary lesson opening or export grading keys |
+| `startFoundationFromMap` | Loads the Starter 0 foundation from HSK1 lesson 1 | Preserve Starter 0 access and offline prerequisites; do not spend an unrelated Free lesson slot |
+| `startLesson` | Calls `reserveLessonStart(l)` and **then** reads the lesson body | The only normal interactive start. Return a permission-checked lesson bound to the approved start and source revision; never duplicate daily consumption |
+
+**Design invariant:** Replacing every `loadLessonData()` call with
+the native API's `LessonAccessService.status(..., consume=True)`
+would make invisible background prefetch, sales previews and audio
+warming consume learner allowances. Therefore a new *typed* delivery
+boundary must separate `public_safe_preview`, `authorized_readonly`,
+`foundation`, `skip_material` and `entitled_interactive` semantics.
+Names describe proposed behavior, **not implemented routes**.
+Correct-answer data is never distributed as an unprotected locale
+overlay. Preserve current lesson, checkpoint, progress and exam IDs.
+
+### Mini App cache and identity edge cases
+
+Current `LESSON_DATA_CACHE`/`LESSON_DATA_PROMISES` are page-memory
+stores indexed only by level/order. Current `lessonResumeKey()`
+persists the UI resume position by level/order without
+`localUserScope()`, while `lessonMasteryKey()` **does** include that
+identity helper. These are code observations, *not a demonstrated
+account-to-account leak*. Before introducing authorized lesson
+bodies, verify account identity and content revision in cache keys,
+invalidate memory and persistent data after logout/account switch,
+and reject in-flight responses from the previous account.
+Check bfcache and Telegram WebView lifecycle independently of
+Android Room storage; do not treat the two caches as equivalent.
+
+### Additional manual QA before P1 or secure-route rollout
+
+On controlled staging with disposable accounts and status-only
+telemetry, confirm that opening a paywall, showing the lesson preview
+sheet, warming initial TTS, booting the course page, and background
+loading the nearby lesson each result in **zero** consumed daily
+lesson slots. Test the separate skip test and Starter 0 policies as
+their own flows. Confirm exactly one correct reservation when an
+eligible learner deliberately starts a lesson, and no denied or
+account-A content renders after user B signs in to the same WebView.
+Measure offline/timeout behavior, content revision updates and
+returned `401/403/429` statuses without logging tokens or
+answer strings. No such live QA has been performed by this P0 audit.
