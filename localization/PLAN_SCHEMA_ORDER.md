@@ -489,6 +489,46 @@ Do not mark implementation complete based on the plan being written.
   No client runtime, payments, account data, lesson source or grading
   logic changed. P0 IN PROGRESS, P1/P2/P3/P4 NOT STARTED.
 
+### P0 eighth implementation slice — 2026-10-17 (reviewed Mini App branches + CI deduplication)
+
+- **First source-classified copy/logic slice:** `ec6ba1f58af3a202799ce6e44ff2766c1759db08`
+  adds `localization/review/miniapp_course_hotspot_triage.json` with
+  **21 specifically reviewed source line anchors** in
+  `app/static/course-v3.html`. These are NOT 21 unique ternary
+  expressions, and not exhaustive: prior broad source scan found 125
+  `LANG` branch *occurrences* on that page. Grouped categories include:
+  accessibility labels, loading/access state copy, review/error/assessment
+  copy, lesson-example glosses, time/count formatting, profile text,
+  locale adapter `tj -> tg`, Russian plural selection, and TTS
+  language selection. The latter three are **runtime language logic,
+  not plain translatable text**; they must not be mechanically replaced
+  with static dictionary strings. No learner copy or app runtime was changed.
+- **Regression:** `21c91aa2c147d796f61754cf5f5001de892b6b3a`
+  aligned anchors to exact source lines. Test
+  `tests/test_i18n_miniapp_hotspot_triage.py` added in
+  `71d127c74b4fa515459bf94089afda4b29f5a9f3` enforces the
+  21 reviewed line/anchor/category contract, catches source drift, and
+  explicitly distinguishes copy classes from locale/grammar/TTS logic.
+  `4681df1b5c66659cfc7fcf3e325f8d13e4d013dc` added this
+  test to the dedicated P0 workflow.
+  [Fast CI 39008283996](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39008283996)
+  concluded **SUCCESS** with this new source triage test included.
+- **Reduced superseded CI work:** `0b002834f27bae17fc49731d465cdf27fa252e48`
+  and `e3244675cbc755b88401d756e2d1cad91d2aeaba` add scoped
+  `concurrency` groups and `cancel-in-progress: true` to both
+  Backend targeted tests and Local-first P0 workflows. New PR commits
+  can cancel obsolete runs **of the same PR**, without cancelling
+  checks of another PR. Such cancellation is expected, not a
+  test failure. Re-check the latest, non-cancelled workflow conclusion
+  before claiming it passed.
+- **P0 remains open:** only 21 specifically named course source lines
+  were classified in this slice; all remaining Mini App inline branches,
+  other platform callbacks/attributes, manual translation quality,
+  actual runtime locale/cache/device behavior, and public Pro/exam
+  source entitlement safety are still awaiting review.
+  P1/P2/P3/P4 NOT STARTED; neither `main` nor runtime client code
+  was modified.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
