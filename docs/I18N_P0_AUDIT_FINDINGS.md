@@ -258,8 +258,9 @@ seven lesson tracks. Issues are structural only: no answer values, words,
 pinyin, questions, or user data appear in the emitted report. Regression
 tests cover valid and out-of-range options without touching grading.
 [CI 39000552111](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39000552111)
-passed its localization-specific unit/audit step; full job must be
-verified separately before claiming a complete backend pass.
+passed the localization-specific unit/audit step and the overall
+`Backend targeted tests` job concluded **SUCCESS**. This is not a
+native-device test, production authorization test or full P0 approval.
 
 **Confirmed source-only hardcoded copy finding:** user-facing messages
 in `app/bot/handlers/account_deletion.py` are Uzbek constants, including
