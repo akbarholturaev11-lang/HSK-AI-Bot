@@ -257,6 +257,22 @@ class OAuthStartTests(_Base):
         # The desktop client secret must never reach a URL.
         self.assertNotIn("desktop-secret", url)
 
+    async def test_android_google_browser_requires_confidential_web_client(self):
+        # Android browser Google code exchange uses the desktop/web client pair,
+        # never the native ID-token client; fail before reserving a link row.
+        self.settings.GOOGLE_DESKTOP_CLIENT_SECRET = ""
+        response = await self.client.post(
+            "/api/v3/native-auth/oauth/start",
+            json=self._start_body(platform="android", mode="browser_redirect"),
+        )
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json()["error"], "oauth_provider_unconfigured")
+        async with self.sessions() as session:
+            self.assertEqual(
+                (await session.execute(select(DesktopLinkRequest))).scalars().all(),
+                [],
+            )
+
     async def test_credential_manager_mode_is_android_and_google_only(self):
         for label, body in (
             ("desktop platform", self._start_body(platform="macos")),
