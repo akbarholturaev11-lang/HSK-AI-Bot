@@ -21,6 +21,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                               .read_text(encoding="utf-8"))
         self.assertEqual(set(approved["files"]), {
             "desktop/ui/js/i18n.js", "app/static/course-v3.html",
+            "app/bot/utils/i18n.py",
         })
         self.assertEqual(approved["baseline_main_commit"],
                          baseline["baseline_main_commit"])
@@ -81,6 +82,19 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                         new["hsk_common_navigation_" + key],
                         old["nav_" + key],
                     )
+
+    def test_bot_common_namespace_is_local_and_preserves_legacy_translation(self):
+        from app.bot.utils.i18n import t
+
+        self.assertEqual(t("common.navigation.course", lang="uz"), "Kurs")
+        self.assertEqual(t("common.navigation.practice", lang="ru"), "Практика")
+        self.assertEqual(t("common.navigation.profile", lang="tj"), "Профил")
+        self.assertEqual(t("common.navigation.profile", lang="tg"), "Профил")
+        self.assertEqual(t("common.auth.expires", lang="ru", time="5 min"),
+                         "Код действует ещё 5 min")
+        self.assertEqual(t("common.not_approved", lang="uz"),
+                         "common.not_approved")
+        self.assertEqual(t("welcome", lang="uz", name="QA"), "Xush kelibsiz, QA!")
 
     def test_platform_bundles_contain_only_ui_not_lessons_or_entitlements(self):
         for file in (
