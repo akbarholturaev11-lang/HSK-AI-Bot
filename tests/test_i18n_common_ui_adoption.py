@@ -109,5 +109,44 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             self.assertNotIn("BOT_TOKEN", text)
 
 
+    def test_miniapp_course_reviewed_profile_settings_copy(self):
+        """Four unchanged translations / five display points, one static asset."""
+        import re
+
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertEqual(html.count(
+            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261017-course-v1"></script>'
+        ), 1)
+        self.assertLess(html.index("hsk-course-i18n.js"),
+                        html.index("function courseMessage("))
+        self.assertIn("window.HSKAI_COURSE_I18N", html)
+        self.assertEqual(html.count('courseMessage("lang",t.lang)'), 2)
+        self.assertEqual(html.count('courseMessage("notif",t.notif)'), 1)
+        self.assertEqual(html.count('esc(courseMessage("friends",t.friends))'), 1)
+        self.assertEqual(html.count('esc(courseMessage("helpTitle",t.helpTitle))'), 1)
+        self.assertIn('catalog&&catalog[LANG]&&Object.prototype.hasOwnProperty.call(catalog[LANG],key)?catalog[LANG][key]:fallback', html)
+        self.assertNotIn("fetch('/api/i18n/", html)
+        self.assertNotIn('fetch("/api/i18n/', html)
+        # Validate generated values against the actual original inline UI copy,
+        # rather than relying on the extracted JSON alone.
+        legacy = {
+            "ru": html.splitlines()[1478],
+            "uz": html.splitlines()[1479],
+            "tj": html.splitlines()[1480],
+        }
+        for locale, inline in legacy.items():
+            catalog = json.loads(
+                (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
+            )["messages"]
+            for key in ("lang", "notif", "friends", "helpTitle"):
+                with self.subTest(locale=locale, key=key):
+                    found = re.search(r"(?:^|[,{}])" + re.escape(key) + r':"([^"]*)"', inline)
+                    self.assertIsNotNone(found)
+                    self.assertEqual(found.group(1), catalog[key])
+        # Quiz, premium and account-state copy is deliberately not routed by
+        # this very small profile/settings migration.
+        self.assertNotIn('courseMessage("trialLeft"', html)
+        self.assertNotIn('courseMessage("correct"', html)
+
 if __name__ == "__main__":
     unittest.main()

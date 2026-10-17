@@ -10,8 +10,8 @@
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
-      "reviewed_sha1": "56617e70c28d1435f651c912580bc6340a1bc05e",
-      "reason": "Mini App loads generated local common JS once, using it for reviewed rating heading with existing localized fallback and identical physical source-line positions."
+      "reviewed_sha1": "4766abaa898616bbf54f5844206c3364c3e68d43",
+      "reason": "Mini App loads both generated common and course local JS statically; 4 reviewed course UI keys (lang/notif/friends/helpTitle) in five profile/settings display points retain exact 3-locale inline fallbacks. All original source-line positions preserved; no lesson/quiz/access change."
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",
