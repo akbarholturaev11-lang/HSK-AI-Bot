@@ -42,7 +42,9 @@ data class OAuthStartResponse(
 data class OAuthAssertRequest(
     @SerialName("link_request_id") val linkRequestId: String,
     @SerialName("polling_secret") val pollingSecret: String,
-    @SerialName("provider") val provider: String = "google",
+    // Required by FastAPI: no default, or kotlinx.serialization omits it
+    // with encodeDefaults=false and /oauth/assert rejects the payload (422).
+    @SerialName("provider") val provider: String,
     @SerialName("id_token") val idToken: String,
 )
 
