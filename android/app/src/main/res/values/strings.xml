@@ -642,4 +642,6 @@
     <string name="bug_report_pick_screenshot">Galereyadan skrinshot tanlash</string>
     <string name="bug_report_screenshot_required">Skrinshotni tanlang yoki uni yuborishni o‘chiring.</string>
     <string name="bug_report_thanks_title">Fikringiz uchun rahmat!</string>
+    <string name="profile_telegram_link_hint">Telegram botida tasdiqlab ulang.</string>
+    <string name="profile_telegram_link_waiting">Botdagi so‘rovni tekshiring va Telegramni shu akkauntga ulashni tasdiqlang. Boshqa akkauntlar birlashtirilmaydi.</string>
 </resources>

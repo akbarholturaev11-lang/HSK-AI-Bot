@@ -191,6 +191,13 @@ class LinkViewModelTest {
             override suspend fun identities(authorization: String): Response<IdentitiesResponse> = error("Unexpected identities")
             override suspend fun identityLinkStart(authorization: String, body: OAuthStartRequest): Response<OAuthStartResponse> = error("Unexpected linking")
             override suspend fun identityLinkStatus(authorization: String, body: IdentityLinkStatusRequest): Response<IdentityLinkStatusResponse> = error("Unexpected linking poll")
+            override suspend fun identityLinkCancel(
+                authorization: String,
+                body: IdentityLinkStatusRequest,
+            ): Response<IdentityLinkStatusResponse> = Response.success(
+                IdentityLinkStatusResponse(ok = true, status = "denied", provider = "telegram"),
+            )
+
             override suspend fun identityUnlink(authorization: String, body: IdentityUnlinkRequest): Response<IdentityUnlinkResponse> = error("Unexpected unlink")
         }
         val model = LinkViewModel(AuthRepository(authApi, store, "test", oauthApi = oauthApi, now = { 0L }), now = { 0L })

@@ -75,13 +75,13 @@ enum class AuthProvider(val wire: String) {
 /**
  * A link attempt in progress. Secrets stay in memory only.
  *
- * All three providers share this type on purpose: whichever way the account is
- * proven, the session is always collected by polling the same
- * `android-auth/link/status` endpoint, so there is one polling path in the app.
+ * Sign-in attempts collect their session through `android-auth/link/status`.
+ * Authenticated account attachments instead poll `identities/link/status` and
+ * never replace the current account's session.
  *
- * [displayCode] and [botDeepLink] are filled only for Telegram; [nonce] only
- * for a Credential Manager flow; [authorizeUrl] only for a browser flow. None
- * of them is ever logged.
+ * [displayCode] and [botDeepLink] are filled only for Telegram sign-in; [nonce]
+ * only for Credential Manager. [authorizeUrl] is used for an Apple browser
+ * flow or an explicit Telegram attachment confirmation. Secrets stay in memory.
  */
 data class PendingLink(
     val linkRequestId: String,
@@ -92,6 +92,8 @@ data class PendingLink(
     val provider: AuthProvider = AuthProvider.TELEGRAM,
     val nonce: String = "",
     val authorizeUrl: String = "",
+    /** Local guard for account-link attempts; never sent to the server or persisted. */
+    internal val sessionGeneration: Long? = null,
 )
 
 /** An identity attached to the current account, as the server reports it. */

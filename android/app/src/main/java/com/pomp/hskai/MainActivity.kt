@@ -384,7 +384,7 @@ private fun AppRoot(
             val profileState by profileViewModel.state.collectAsStateWithLifecycle()
             val identitiesViewModel: IdentitiesViewModel = viewModel(
                 viewModelStoreOwner = sessionOwner,
-                factory = IdentitiesViewModelFactory(app.authRepository),
+                factory = IdentitiesViewModelFactory(app.authRepository, onLinked = profileViewModel::load),
             )
             val identitiesState by identitiesViewModel.state.collectAsStateWithLifecycle()
             val hintsViewModel: HintsViewModel = viewModel(
@@ -1579,6 +1579,8 @@ private fun AppRoot(
                                 onConnectIdentity = identitiesViewModel::connect,
                                 onDisconnectIdentity = identitiesViewModel::disconnect,
                                 onIdentitiesBrowserOpened = identitiesViewModel::browserUrlOpened,
+                                onCancelIdentityConnection = identitiesViewModel::cancelConnection,
+                                onReopenIdentityTelegram = identitiesViewModel::reopenTelegram,
                                 onSaveProfile = profileViewModel::saveProfile,
                                 profileSaving = profileState.profileSaving,
                                 onOpenSubscription = { renewal ->

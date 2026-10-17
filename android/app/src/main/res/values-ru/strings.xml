@@ -603,4 +603,6 @@
     <string name="bug_report_pick_screenshot">Выбрать снимок из галереи</string>
     <string name="bug_report_screenshot_required">Выберите снимок экрана или отключите его отправку.</string>
     <string name="bug_report_thanks_title">Спасибо за ваш отзыв!</string>
+    <string name="profile_telegram_link_hint">Подключите с подтверждением в Telegram-боте.</string>
+    <string name="profile_telegram_link_waiting">Проверьте запрос в боте и подтвердите подключение Telegram к этому аккаунту. Другие аккаунты не объединяются.</string>
 </resources>

@@ -43,6 +43,12 @@ interface NativeOAuthApi {
         @Body body: IdentityLinkStatusRequest,
     ): Response<IdentityLinkStatusResponse>
 
+    @POST("api/v3/native-auth/identities/link/cancel")
+    suspend fun identityLinkCancel(
+        @Header("Authorization") authorization: String,
+        @Body body: IdentityLinkStatusRequest,
+    ): Response<IdentityLinkStatusResponse>
+
     @POST("api/v3/native-auth/identities/unlink")
     suspend fun identityUnlink(
         @Header("Authorization") authorization: String,

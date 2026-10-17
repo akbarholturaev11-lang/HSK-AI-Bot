@@ -25,6 +25,7 @@ data class IdentitiesUiState(
     val available: List<AuthProvider> = emptyList(),
     val busyProvider: AuthProvider? = null,
     val pendingBrowserUrl: String? = null,
+    val telegramApprovalUrl: String? = null,
     val sessionsRevoked: Int? = null,
     val error: ApiError? = null,
 ) {
@@ -41,6 +42,8 @@ data class IdentitiesUiState(
  */
 class IdentitiesViewModel(
     private val authRepository: AuthRepository,
+    private val onLinked: () -> Unit = {},
+    private val now: () -> Long = System::currentTimeMillis,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(IdentitiesUiState())
@@ -48,8 +51,11 @@ class IdentitiesViewModel(
 
     private var pollJob: Job? = null
     private var refreshGeneration = 0L
+    private var operationGeneration = 0L
+    private var pendingLink: PendingLink? = null
 
     fun refresh() {
+        cancelConnection()
         val generation = ++refreshGeneration
         _state.update { it.copy(isLoading = true, error = null, sessionsRevoked = null) }
         viewModelScope.launch {
@@ -74,9 +80,16 @@ class IdentitiesViewModel(
     }
 
     fun connect(provider: AuthProvider, activity: Activity?) {
-        if (_state.value.busyProvider != null || _state.value.isLoading || provider == AuthProvider.TELEGRAM) return
+        val current = _state.value
+        if (current.busyProvider != null || current.isLoading) return
+        if (provider == AuthProvider.TELEGRAM && current.telegramLinked) return
+        if (provider != AuthProvider.TELEGRAM && provider !in current.available) return
+        val generation = ++operationGeneration
+        refreshGeneration++
         pollJob?.cancel()
         _state.update { it.copy(busyProvider = provider, error = null, sessionsRevoked = null) }
+        // Keep a start request alive after dismissal long enough to cancel a
+        // proof returned by a late response. Its generation cannot update UI.
         viewModelScope.launch {
             val started = when (provider) {
                 AuthProvider.GOOGLE -> authRepository.startGoogleSignIn(
@@ -84,24 +97,29 @@ class IdentitiesViewModel(
                     bindToCurrentAccount = true,
                 )
                 AuthProvider.APPLE -> authRepository.startAppleSignIn(bindToCurrentAccount = true)
-                AuthProvider.TELEGRAM -> return@launch
+                AuthProvider.TELEGRAM -> authRepository.startTelegramIdentityLink()
+            }
+            if (generation != operationGeneration) {
+                if (started is ApiResult.Success) cancelPendingTelegram(started.value)
+                return@launch
             }
             when (started) {
                 is ApiResult.Failure -> _state.update {
                     it.copy(
                         busyProvider = null,
-                        error = started.error.takeIf { error ->
-                            error !is ApiError.ProviderCancelled
-                        },
+                        error = started.error.takeIf { error -> error !is ApiError.ProviderCancelled },
                     )
                 }
-
                 is ApiResult.Success -> {
                     val pending = started.value
+                    pendingLink = pending
                     _state.update {
-                        it.copy(pendingBrowserUrl = pending.authorizeUrl.ifEmpty { null })
+                        it.copy(
+                            pendingBrowserUrl = pending.authorizeUrl.ifEmpty { null },
+                            telegramApprovalUrl = pending.authorizeUrl.takeIf { provider == AuthProvider.TELEGRAM },
+                        )
                     }
-                    startPolling(pending)
+                    startPolling(pending, generation)
                 }
             }
         }
@@ -109,41 +127,79 @@ class IdentitiesViewModel(
 
     fun browserUrlOpened() = _state.update { it.copy(pendingBrowserUrl = null) }
 
+    fun reopenTelegram() {
+        if (_state.value.busyProvider == AuthProvider.TELEGRAM) {
+            _state.update { it.copy(pendingBrowserUrl = it.telegramApprovalUrl) }
+        }
+    }
+
+    /** Closing the sheet cannot leave an invisible proof polling or reopen Telegram later. */
+    fun cancelConnection() {
+        operationGeneration++
+        refreshGeneration++
+        pollJob?.cancel()
+        pollJob = null
+        val abandoned = pendingLink
+        pendingLink = null
+        _state.update {
+            it.copy(busyProvider = null, pendingBrowserUrl = null, telegramApprovalUrl = null, isLoading = false)
+        }
+        if (abandoned != null) viewModelScope.launch { cancelPendingTelegram(abandoned) }
+    }
+
+    private suspend fun cancelPendingTelegram(pending: PendingLink) {
+        if (pending.provider == AuthProvider.TELEGRAM) authRepository.cancelIdentityLink(pending)
+    }
+
     fun dismissError() = _state.update { it.copy(error = null, sessionsRevoked = null) }
 
-    private fun startPolling(pending: PendingLink) {
+    private fun finishConnection(error: ApiError? = null) {
+        pendingLink = null
+        _state.update {
+            it.copy(busyProvider = null, pendingBrowserUrl = null, telegramApprovalUrl = null, error = error)
+        }
+    }
+
+    private fun startPolling(pending: PendingLink, generation: Long) {
         pollJob = viewModelScope.launch {
             repeat(MAX_POLLS) {
-                when (val result = authRepository.pollIdentityLink(pending)) {
+                if (generation != operationGeneration) return@launch
+                if (now() >= pending.expiresAtMillis) {
+                    finishConnection(ApiError.fromCode("desktop_link_expired"))
+                    return@launch
+                }
+                val result = authRepository.pollIdentityLink(pending)
+                if (generation != operationGeneration) return@launch
+                when (result) {
                     is ApiResult.Success -> when (result.value) {
                         "linked" -> {
-                            _state.update { it.copy(busyProvider = null) }
+                            finishConnection()
+                            onLinked()
+                            // End this poll before refresh cancels its job.
+                            pollJob = null
                             refresh()
                             return@launch
                         }
-
                         "expired" -> {
-                            _state.update {
-                                it.copy(busyProvider = null, error = ApiError.Unknown)
-                            }
+                            finishConnection(ApiError.fromCode("desktop_link_expired"))
+                            return@launch
+                        }
+                        "denied" -> {
+                            finishConnection(ApiError.fromCode("oauth_cancelled"))
                             return@launch
                         }
                     }
-
                     is ApiResult.Failure -> {
-                        val transient = result.error is ApiError.Offline ||
-                            result.error is ApiError.Timeout
+                        val transient = result.error is ApiError.Offline || result.error is ApiError.Timeout
                         if (!transient) {
-                            _state.update {
-                                it.copy(busyProvider = null, error = result.error)
-                            }
+                            finishConnection(result.error)
                             return@launch
                         }
                     }
                 }
                 delay(POLL_INTERVAL_MILLIS)
             }
-            _state.update { it.copy(busyProvider = null) }
+            if (generation == operationGeneration) finishConnection(ApiError.fromCode("desktop_link_expired"))
         }
     }
 
@@ -154,9 +210,12 @@ class IdentitiesViewModel(
             return
         }
         val provider = _state.value.identities.firstOrNull { it.id == identityId }?.provider ?: return
+        val generation = ++operationGeneration
         _state.update { it.copy(busyProvider = provider, error = null, sessionsRevoked = null) }
         viewModelScope.launch {
-            when (val result = authRepository.unlinkIdentity(identityId)) {
+            val result = authRepository.unlinkIdentity(identityId)
+            if (generation != operationGeneration) return@launch
+            when (result) {
                 is ApiResult.Failure -> _state.update { it.copy(busyProvider = null, error = result.error) }
                 is ApiResult.Success -> {
                     _state.update { it.copy(busyProvider = null, sessionsRevoked = result.value) }
@@ -167,6 +226,8 @@ class IdentitiesViewModel(
     }
 
     override fun onCleared() {
+        operationGeneration++
+        refreshGeneration++
         pollJob?.cancel()
         super.onCleared()
     }
@@ -181,8 +242,9 @@ class IdentitiesViewModel(
 
 class IdentitiesViewModelFactory(
     private val authRepository: AuthRepository,
+    private val onLinked: () -> Unit = {},
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
-        IdentitiesViewModel(authRepository) as T
+        IdentitiesViewModel(authRepository, onLinked = onLinked) as T
 }

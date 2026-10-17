@@ -29,6 +29,8 @@ import com.pomp.hskai.data.api.RevokeRequest
 import com.pomp.hskai.data.api.RevokeResponse
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -95,6 +97,8 @@ private open class OauthFakeAuthApi : AndroidAuthApi {
     ): Response<BootstrapResponse> = throw NotImplementedError()
 }
 
+private const val TELEGRAM_IDENTITY_URL = "https://t.me/HSKAI_bot?start=tg_identity_3f2504e0-4f89-11d3-9a0c-0305e82c3301"
+
 private open class OauthFakeApi : NativeOAuthApi {
     var startCalls = 0
     var linkStartCalls = 0
@@ -117,6 +121,8 @@ private open class OauthFakeApi : NativeOAuthApi {
                 nonce = if (body.mode == "native_id_token") "n".repeat(64) else "",
                 authorizeUrl = if (body.mode == "browser_redirect") {
                     "https://appleid.apple.com/auth/authorize?client_id=x"
+                } else if (body.mode == "telegram_approval") {
+                    TELEGRAM_IDENTITY_URL
                 } else {
                     ""
                 },
@@ -154,6 +160,13 @@ private open class OauthFakeApi : NativeOAuthApi {
         body: IdentityLinkStatusRequest,
     ): Response<IdentityLinkStatusResponse> =
         Response.success(IdentityLinkStatusResponse(ok = true, status = "linked", provider = "google"))
+
+    override suspend fun identityLinkCancel(
+        authorization: String,
+        body: IdentityLinkStatusRequest,
+    ): Response<IdentityLinkStatusResponse> = Response.success(
+        IdentityLinkStatusResponse(ok = true, status = "denied", provider = "telegram"),
+    )
 
     override suspend fun identityUnlink(
         authorization: String,
@@ -469,4 +482,228 @@ class AuthRepositoryOauthTest {
         assertEquals("oauth_telegram_account_required", (error as ApiError.Server).code)
         assertFalse(error.messageRes == 0)
     }
+    @Test
+    fun `telegram attachment is authenticated and never invokes sign in or assertion endpoints`() = runTest {
+        var authorization = ""
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStart(auth: String, body: OAuthStartRequest): Response<OAuthStartResponse> {
+                authorization = auth
+                return super.identityLinkStart(auth, body)
+            }
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "pomp_r1_existing" }
+        val repo = repository(oauth = oauth, store = store)
+        repo.updateSignupReferralCode("ra_abcdef12")
+        val pending = repo.startTelegramIdentityLink().success()
+        assertEquals("Bearer access-token", authorization)
+        assertEquals(1, oauth.linkStartCalls)
+        assertEquals("telegram", oauth.lastStart?.provider)
+        assertEquals("telegram_approval", oauth.lastStart?.mode)
+        assertEquals("android", oauth.lastStart?.platform)
+        assertEquals(null, oauth.lastStart?.language)
+        assertEquals(null, oauth.lastStart?.referralCode)
+        assertEquals(null, oauth.lastAssert)
+        assertEquals(AuthProvider.TELEGRAM, pending.provider)
+        assertEquals(TELEGRAM_IDENTITY_URL, pending.authorizeUrl)
+        assertTrue(pending.botDeepLink.isEmpty())
+        assertTrue(pending.displayCode.isEmpty())
+    }
+
+    @Test
+    fun `telegram attachment cannot start without the existing account session`() = runTest {
+        val oauth = OauthFakeApi()
+        assertEquals(ApiError.SessionExpired, repository(oauth = oauth).startTelegramIdentityLink().failure())
+        assertEquals(0, oauth.linkStartCalls)
+        assertEquals(0, oauth.startCalls)
+    }
+
+    @Test
+    fun `telegram proof URL allows only the dedicated bot confirmation link`() {
+        assertTrue(isTelegramIdentityLinkUrl(TELEGRAM_IDENTITY_URL))
+        assertTrue(isTelegramIdentityLinkUrl(TELEGRAM_IDENTITY_URL, "3f2504e0-4f89-11d3-9a0c-0305e82c3301"))
+        assertFalse(isTelegramIdentityLinkUrl(TELEGRAM_IDENTITY_URL, "3f2504e0-4f89-11d3-9a0c-0305e82c3302"))
+        for (url in listOf(
+            TELEGRAM_IDENTITY_URL.replace("https://", "http://"),
+            TELEGRAM_IDENTITY_URL.replace("t.me/", "t.me.evil.example/"),
+            TELEGRAM_IDENTITY_URL.replace("t.me/", "evil.example@t.me/"),
+            TELEGRAM_IDENTITY_URL.replace("t.me/", "t.me:443/"),
+            TELEGRAM_IDENTITY_URL.replace("tg_identity_", "android_link_"),
+            TELEGRAM_IDENTITY_URL + "&other=1",
+            TELEGRAM_IDENTITY_URL + "#fragment",
+            "https://t.me/HSKAI_bot?start=tg_identity_bad",
+            "tg://resolve?domain=HSKAI_bot",
+        )) assertFalse(url, isTelegramIdentityLinkUrl(url))
+    }
+
+    @Test
+    fun `an unsafe Telegram authorization URL is refused before browser navigation`() = runTest {
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStart(authorization: String, body: OAuthStartRequest) =
+                Response.success(OAuthStartResponse(ok = true, linkRequestId = "id", pollingSecret = "secret",
+                    expiresIn = 600, authorizeUrl = "https://evil.example/?start=tg_identity_test"))
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        assertEquals(ApiError.Unknown, repository(oauth = oauth, store = store).startTelegramIdentityLink().failure())
+    }
+
+    @Test
+    fun `Telegram URL must name the same pending request returned to this account`() = runTest {
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStart(authorization: String, body: OAuthStartRequest) =
+                Response.success(OAuthStartResponse(ok = true,
+                    linkRequestId = "3f2504e0-4f89-11d3-9a0c-0305e82c3302",
+                    pollingSecret = "s".repeat(43), expiresIn = 600, authorizeUrl = TELEGRAM_IDENTITY_URL))
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        assertEquals(ApiError.Unknown, repository(oauth = oauth, store = store).startTelegramIdentityLink().failure())
+    }
+
+    @Test
+    fun `Telegram linked denied and expired statuses never collect another session token`() = runTest {
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        val auth = OauthFakeAuthApi()
+        val oauth = object : OauthFakeApi() {
+            var status = "pending"
+            override suspend fun identityLinkStatus(authorization: String, body: IdentityLinkStatusRequest) =
+                Response.success(IdentityLinkStatusResponse(ok = true, status = status, provider = "telegram"))
+        }
+        val repo = repository(oauth = oauth, auth = auth, store = store)
+        val pending = repo.startTelegramIdentityLink().success()
+        val existingRefresh = store.storedRefresh
+        for (status in listOf("pending", "denied", "expired", "linked")) {
+            oauth.status = status
+            assertEquals(status, repo.pollIdentityLink(pending).success())
+        }
+        assertEquals(0, auth.linkStatusCalls)
+        assertEquals(existingRefresh, store.storedRefresh)
+    }
+
+    @Test
+    fun `telegram identity collision stays a server failure and keeps the current account`() = runTest {
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStatus(authorization: String, body: IdentityLinkStatusRequest) =
+                Response.success(IdentityLinkStatusResponse(ok = true, status = "denied", provider = "telegram",
+                    error = "oauth_identity_bound_to_other_user"))
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        val repo = repository(oauth = oauth, store = store)
+        val pending = repo.startTelegramIdentityLink().success()
+        val previous = store.storedRefresh
+        assertEquals(ApiError.fromCode("oauth_identity_bound_to_other_user"), repo.pollIdentityLink(pending).failure())
+        assertEquals(previous, store.storedRefresh)
+    }
+
+    @Test
+    fun `telegram cancellation uses the original request proof with current bearer`() = runTest {
+        var received: IdentityLinkStatusRequest? = null
+        var authorization = ""
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkCancel(auth: String, body: IdentityLinkStatusRequest): Response<IdentityLinkStatusResponse> {
+                authorization = auth
+                received = body
+                return Response.success(IdentityLinkStatusResponse(ok = true, status = "denied", provider = "telegram"))
+            }
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        val repo = repository(oauth = oauth, store = store)
+        val pending = repo.startTelegramIdentityLink().success()
+        val previous = store.storedRefresh
+        assertEquals("denied", repo.cancelIdentityLink(pending).success())
+        assertEquals("Bearer access-token", authorization)
+        assertEquals(pending.linkRequestId, received?.linkRequestId)
+        assertEquals(pending.pollingSecret, received?.pollingSecret)
+        assertEquals(previous, store.storedRefresh)
+    }
+
+    @Test
+    fun `a late Telegram start response after logout cannot open a proof`() = runTest {
+        val started = CompletableDeferred<Unit>()
+        val reply = CompletableDeferred<Unit>()
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStart(authorization: String, body: OAuthStartRequest): Response<OAuthStartResponse> {
+                started.complete(Unit)
+                reply.await()
+                return super.identityLinkStart(authorization, body)
+            }
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        val repo = repository(oauth = oauth, store = store)
+        val attempt = async { repo.startTelegramIdentityLink() }
+        started.await()
+        repo.invalidateSession()
+        reply.complete(Unit)
+        assertEquals(ApiError.SessionExpired, attempt.await().failure())
+        assertEquals(null, store.storedRefresh)
+    }
+
+    @Test
+    fun `pending Telegram proof cannot poll or cancel under a replacement session`() = runTest {
+        var statusCalls = 0
+        var cancelCalls = 0
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStatus(authorization: String, body: IdentityLinkStatusRequest): Response<IdentityLinkStatusResponse> {
+                statusCalls++
+                return super.identityLinkStatus(authorization, body)
+            }
+            override suspend fun identityLinkCancel(authorization: String, body: IdentityLinkStatusRequest): Response<IdentityLinkStatusResponse> {
+                cancelCalls++
+                return super.identityLinkCancel(authorization, body)
+            }
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        val repo = repository(oauth = oauth, store = store)
+        val pending = repo.startTelegramIdentityLink().success()
+        repo.invalidateSession()
+        store.storedRefresh = "replacement-account-refresh"
+        assertEquals(ApiError.SessionExpired, repo.pollIdentityLink(pending).failure())
+        assertEquals(ApiError.SessionExpired, repo.cancelIdentityLink(pending).failure())
+        assertEquals(0, statusCalls)
+        assertEquals(0, cancelCalls)
+    }
+
+    @Test
+    fun `a cancelled identity poll cannot publish its late linked response`() = runTest {
+        val waiting = CompletableDeferred<Unit>()
+        val reply = CompletableDeferred<Unit>()
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStatus(authorization: String, body: IdentityLinkStatusRequest): Response<IdentityLinkStatusResponse> {
+                waiting.complete(Unit)
+                withContext(NonCancellable) { reply.await() }
+                return Response.success(IdentityLinkStatusResponse(ok = true, status = "linked", provider = "telegram"))
+            }
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        val repo = repository(oauth = oauth, store = store)
+        val pending = repo.startTelegramIdentityLink().success()
+        var linked = false
+        val poll = async { linked = repo.pollIdentityLink(pending) is ApiResult.Success }
+        waiting.await()
+        poll.cancel()
+        reply.complete(Unit)
+        poll.join()
+        assertFalse(linked)
+    }
+
+    @Test
+    fun `identity poll response arriving after logout cannot refresh another account`() = runTest {
+        val waiting = CompletableDeferred<Unit>()
+        val reply = CompletableDeferred<Unit>()
+        val oauth = object : OauthFakeApi() {
+            override suspend fun identityLinkStatus(authorization: String, body: IdentityLinkStatusRequest): Response<IdentityLinkStatusResponse> {
+                waiting.complete(Unit)
+                reply.await()
+                return Response.success(IdentityLinkStatusResponse(ok = true, status = "linked", provider = "telegram"))
+            }
+        }
+        val store = OauthFakeStore().apply { storedRefresh = "existing" }
+        val repo = repository(oauth = oauth, store = store)
+        val pending = repo.startTelegramIdentityLink().success()
+        val poll = async { repo.pollIdentityLink(pending) }
+        waiting.await()
+        repo.invalidateSession()
+        reply.complete(Unit)
+        assertEquals(ApiError.SessionExpired, poll.await().failure())
+        assertEquals(null, store.storedRefresh)
+    }
+
 }

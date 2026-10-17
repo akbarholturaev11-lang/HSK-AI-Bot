@@ -173,6 +173,8 @@ fun ProfileScreen(
     onConnectIdentity: (AuthProvider, Activity?) -> Unit = { _, _ -> },
     onDisconnectIdentity: (String) -> Unit = {},
     onIdentitiesBrowserOpened: () -> Unit = {},
+    onCancelIdentityConnection: () -> Unit = {},
+    onReopenIdentityTelegram: () -> Unit = {},
     onSaveProfile: (String, String) -> Unit = { _, _ -> },
     profileSaving: Boolean = false,
     onOpenSubscription: (renewal: Boolean) -> Unit = {},
@@ -390,6 +392,8 @@ fun ProfileScreen(
             onConnect = onConnectIdentity,
             onDisconnect = onDisconnectIdentity,
             onBrowserUrlOpened = onIdentitiesBrowserOpened,
+            onCancelConnection = onCancelIdentityConnection,
+            onReopenTelegram = onReopenIdentityTelegram,
             onDismiss = { identitiesOpen = false },
         )
     }

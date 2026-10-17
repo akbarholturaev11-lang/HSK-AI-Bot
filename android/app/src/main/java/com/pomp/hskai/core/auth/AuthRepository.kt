@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.net.URI
 
 /**
  * Owns the Android session: device linking, token rotation and sign-out.
@@ -198,6 +199,10 @@ class AuthRepository(
             GoogleIdTokenResult.Failed -> return ApiResult.Failure(ApiError.Unknown)
         }
 
+        currentCoroutineContext().ensureActive()
+        if (pending.sessionGeneration != null && !sessionIsCurrent(pending.sessionGeneration)) {
+            return ApiResult.Failure(ApiError.SessionExpired)
+        }
         val asserted = apiCall {
             oauth.oauthAssert(
                 OAuthAssertRequest(
@@ -207,6 +212,10 @@ class AuthRepository(
                     idToken = idToken,
                 )
             )
+        }
+        currentCoroutineContext().ensureActive()
+        if (pending.sessionGeneration != null && !sessionIsCurrent(pending.sessionGeneration)) {
+            return ApiResult.Failure(ApiError.SessionExpired)
         }
         return when (asserted) {
             is ApiResult.Failure -> asserted
@@ -235,6 +244,18 @@ class AuthRepository(
         )
     }
 
+    /** Telegram is attached only through the authenticated bot-confirmation flow. */
+    suspend fun startTelegramIdentityLink(): ApiResult<PendingLink> {
+        val oauth = oauthApi ?: return ApiResult.Failure(ApiError.Unknown)
+        return startProviderLink(
+            oauth = oauth,
+            provider = AuthProvider.TELEGRAM,
+            mode = MODE_TELEGRAM_APPROVAL,
+            bindToCurrentAccount = true,
+            language = null,
+        )
+    }
+
     private suspend fun startProviderLink(
         oauth: NativeOAuthApi,
         provider: AuthProvider,
@@ -252,14 +273,20 @@ class AuthRepository(
             language = language?.backendCode.takeUnless { bindToCurrentAccount },
             referralCode = referralCode,
         )
-        val result = if (bindToCurrentAccount) {
-            val token = when (val access = accessToken()) {
-                is ApiResult.Failure -> return access
-                is ApiResult.Success -> access.value
+        val session = if (bindToCurrentAccount) {
+            when (val proof = authenticatedSession()) {
+                is ApiResult.Failure -> return proof
+                is ApiResult.Success -> proof.value
             }
-            apiCall { oauth.identityLinkStart("Bearer $token", body) }
+        } else null
+        val result = if (session != null) {
+            apiCall { oauth.identityLinkStart("Bearer ${session.token}", body) }
         } else {
             apiCall { oauth.oauthStart(body) }
+        }
+        currentCoroutineContext().ensureActive()
+        if (session != null && !sessionIsCurrent(session.generation)) {
+            return ApiResult.Failure(ApiError.SessionExpired)
         }
         return when (result) {
             is ApiResult.Failure -> result
@@ -267,9 +294,10 @@ class AuthRepository(
                 val payload = result.value
                 val usable = payload.ok &&
                     payload.linkRequestId.isNotEmpty() &&
-                    payload.pollingSecret.isNotEmpty() &&
+                    payload.pollingSecret.isNotEmpty() && payload.expiresIn > 0 &&
                     when (mode) {
                         MODE_NATIVE_ID_TOKEN -> payload.nonce.isNotEmpty()
+                        MODE_TELEGRAM_APPROVAL -> isTelegramIdentityLinkUrl(payload.authorizeUrl, payload.linkRequestId)
                         else -> payload.authorizeUrl.startsWith("https://")
                     }
                 if (!usable) {
@@ -285,6 +313,7 @@ class AuthRepository(
                             provider = provider,
                             nonce = payload.nonce,
                             authorizeUrl = payload.authorizeUrl,
+                            sessionGeneration = session?.generation,
                         )
                     )
                 }
@@ -323,31 +352,78 @@ class AuthRepository(
     /** One poll of an `intent=link` attempt. Never returns a session token. */
     suspend fun pollIdentityLink(pending: PendingLink): ApiResult<String> {
         val oauth = oauthApi ?: return ApiResult.Failure(ApiError.Unknown)
-        val token = when (val access = accessToken()) {
-            is ApiResult.Failure -> return access
-            is ApiResult.Success -> access.value
+        val session = when (val proof = authenticatedSession()) {
+            is ApiResult.Failure -> return proof
+            is ApiResult.Success -> proof.value
+        }
+        if (pending.sessionGeneration != null && pending.sessionGeneration != session.generation) {
+            return ApiResult.Failure(ApiError.SessionExpired)
         }
         val result = apiCall {
             oauth.identityLinkStatus(
-                "Bearer $token",
+                "Bearer ${session.token}",
                 IdentityLinkStatusRequest(
                     linkRequestId = pending.linkRequestId,
                     pollingSecret = pending.pollingSecret,
                 ),
             )
         }
+        currentCoroutineContext().ensureActive()
+        if (!sessionIsCurrent(session.generation)) return ApiResult.Failure(ApiError.SessionExpired)
         return when (result) {
             is ApiResult.Failure -> result
             is ApiResult.Success -> {
                 val body = result.value
-                if (body.status == "failed") {
+                if (!body.ok || body.provider != pending.provider.wire) {
+                    ApiResult.Failure(ApiError.Unknown)
+                } else if (body.status == "failed" || (body.status == "denied" && body.error != null)) {
                     ApiResult.Failure(ApiError.fromCode(body.error))
-                } else {
+                } else if (body.status in setOf("pending", "linked", "expired", "denied")) {
                     ApiResult.Success(body.status)
+                } else {
+                    ApiResult.Failure(ApiError.Unknown)
                 }
             }
         }
     }
+
+    /** Cancels only a pending attachment; an approved identity is never removed. */
+    suspend fun cancelIdentityLink(pending: PendingLink): ApiResult<String> {
+        val oauth = oauthApi ?: return ApiResult.Failure(ApiError.Unknown)
+        val session = when (val proof = authenticatedSession()) {
+            is ApiResult.Failure -> return proof
+            is ApiResult.Success -> proof.value
+        }
+        if (pending.sessionGeneration != null && pending.sessionGeneration != session.generation) {
+            return ApiResult.Failure(ApiError.SessionExpired)
+        }
+        return when (val result = apiCall {
+            oauth.identityLinkCancel(
+                "Bearer ${session.token}",
+                IdentityLinkStatusRequest(pending.linkRequestId, pending.pollingSecret),
+            )
+        }) {
+            is ApiResult.Failure -> result
+            is ApiResult.Success -> if (result.value.ok) ApiResult.Success(result.value.status)
+                else ApiResult.Failure(ApiError.Unknown)
+        }
+    }
+
+    private data class AuthenticatedSession(val token: String, val generation: Long)
+
+    private suspend fun authenticatedSession(): ApiResult<AuthenticatedSession> {
+        val token = when (val result = accessToken()) {
+            is ApiResult.Failure -> return result
+            is ApiResult.Success -> result.value
+        }
+        return refreshMutex.withLock {
+            if (accessToken?.value != token) ApiResult.Failure(ApiError.SessionExpired)
+            else ApiResult.Success(AuthenticatedSession(token, sessionGeneration))
+        }
+    }
+
+    private suspend fun sessionIsCurrent(generation: Long): Boolean =
+        refreshMutex.withLock { sessionGeneration == generation && accessToken != null }
 
     /**
      * Removes a provider identity.
@@ -523,6 +599,7 @@ class AuthRepository(
     private companion object {
         const val MODE_NATIVE_ID_TOKEN = "native_id_token"
         const val MODE_BROWSER_REDIRECT = "browser_redirect"
+        const val MODE_TELEGRAM_APPROVAL = "telegram_approval"
     }
 
     /**
@@ -550,3 +627,13 @@ class AuthRepository(
         _state.value = AuthState.Unauthenticated
     }
 }
+
+/** The account-attachment URL cannot become a generic external navigation. */
+internal fun isTelegramIdentityLinkUrl(value: String, requestId: String? = null): Boolean = runCatching {
+    val uri = URI(value)
+    uri.scheme == "https" && uri.rawAuthority == "t.me" && uri.rawFragment == null &&
+        Regex("/[A-Za-z0-9_]{5,32}").matches(uri.rawPath.orEmpty()) &&
+        Regex("start=tg_identity_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
+            .matches(uri.rawQuery.orEmpty()) &&
+        (requestId == null || uri.rawQuery == "start=tg_identity_$requestId")
+}.getOrDefault(false)

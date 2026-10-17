@@ -604,4 +604,6 @@
     <string name="bug_report_pick_screenshot">Интихоби акси экран аз галерея</string>
     <string name="bug_report_screenshot_required">Акси экранро интихоб кунед ё фиристодани онро хомӯш кунед.</string>
     <string name="bug_report_thanks_title">Ташаккур барои фикру мулоҳизаатон!</string>
+    <string name="profile_telegram_link_hint">Бо тасдиқ дар боти Telegram пайваст кунед.</string>
+    <string name="profile_telegram_link_waiting">Дархостро дар бот санҷед ва пайваст кардани Telegram-ро ба ҳамин ҳисоб тасдиқ кунед. Ҳисобҳои дигар якҷо намешаванд.</string>
 </resources>
