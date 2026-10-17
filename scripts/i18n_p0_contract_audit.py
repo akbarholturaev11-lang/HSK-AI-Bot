@@ -117,6 +117,47 @@ def structural_answer_fields(value: object, prefix: str = "$") -> Counter:
     return paths
 
 
+
+def assessment_shape_candidates(value: object, at: str = "$") -> list[dict]:
+    """Check a correct_index points inside its current option list or locale lists.
+
+    Emit structural paths and issue codes only; no actual correct index,
+    learner answer, translated options, or private assessment contents.
+    """
+    findings = []
+    if isinstance(value, dict):
+        if "correct_index" in value and "options" in value:
+            index, options = value["correct_index"], value["options"]
+            if not isinstance(index, int) or isinstance(index, bool):
+                findings.append({"path": at, "issue": "invalid_correct_index_type"})
+            elif isinstance(options, list):
+                if index < 0 or index >= len(options):
+                    findings.append({"path": at, "issue": "correct_index_out_of_bounds"})
+            elif isinstance(options, dict):
+                locale_options = {
+                    lang: items for lang, items in options.items()
+                    if lang in ("uz", "ru", "tj")
+                }
+                if not locale_options:
+                    findings.append({"path": at, "issue": "unclassified_options_mapping"})
+                else:
+                    for lang, items in locale_options.items():
+                        if not isinstance(items, list):
+                            findings.append({"path": at, "locale": lang,
+                                             "issue": "options_not_a_list"})
+                        elif index < 0 or index >= len(items):
+                            findings.append({"path": at, "locale": lang,
+                                             "issue": "correct_index_out_of_bounds"})
+            else:
+                findings.append({"path": at, "issue": "unclassified_options_shape"})
+        for key, child in value.items():
+            findings.extend(assessment_shape_candidates(child, at + "." + str(key)))
+    elif isinstance(value, list):
+        for child in value:
+            findings.extend(assessment_shape_candidates(child, at + "[]"))
+    return findings
+
+
 def run_audit(root: Path) -> dict:
     manifest = json.loads((root / "localization/manifest.json").read_text(encoding="utf-8"))
     registry = json.loads((root / "localization/surface_registry.json").read_text(encoding="utf-8"))
@@ -124,6 +165,7 @@ def run_audit(root: Path) -> dict:
     route = lesson_route_contract((root / "app/main.py").read_text(encoding="utf-8"))
     by_track = {}
     candidate_paths = Counter()
+    assessment_findings = []
     for track in TRACKS:
         directory = root / "app/static/course_v3_data" / track
         if not directory.is_dir():
@@ -137,6 +179,10 @@ def run_audit(root: Path) -> dict:
             if not isinstance(data, dict):
                 raise ValueError("invalid lesson root object " + str(file))
             candidate_paths.update(structural_answer_fields(data))
+            for finding in assessment_shape_candidates(data):
+                assessment_findings.append({
+                    "file": file.relative_to(root).as_posix(), **finding
+                })
     return {
         "schema_version": 1,
         "status": "P0_manual_security_review_required",
@@ -145,10 +191,13 @@ def run_audit(root: Path) -> dict:
         "scanned_lesson_files": sum(by_track.values()),
         "lesson_files_by_track": by_track,
         "answer_like_field_occurrences": sum(candidate_paths.values()),
+        "assessment_shape_review_count": len(assessment_findings),
+        "assessment_shape_findings": assessment_findings,
         "answer_like_structural_paths": dict(sorted(candidate_paths.items())),
         "limitations": [
             "A route decorator is not an evaluation of middleware, authentication or authorization.",
             "An answer-like field name is a review candidate, not proof of a private exam key.",
+            "Assessment shape checking cannot establish grading correctness or verify client rendering.",
             "Old static lessons may already be visible; do not publish additional locked content or answer keys.",
             "This report does not contain lesson text, answer values, user information or runtime HTTP responses.",
         ],
