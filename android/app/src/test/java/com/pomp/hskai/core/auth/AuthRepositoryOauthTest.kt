@@ -280,6 +280,19 @@ class AuthRepositoryOauthTest {
     }
 
     @Test
+    fun `Google assertion always serializes required provider for FastAPI`() {
+        val json = Json.encodeToString(
+            OAuthAssertRequest(
+                linkRequestId = "link-id",
+                pollingSecret = "secret",
+                provider = "google",
+                idToken = "jwt-token",
+            )
+        )
+        assertTrue(json.contains("\"provider\":\"google\""))
+    }
+
+    @Test
     fun `google sign-in still collects its session from the existing link endpoint`() = runTest {
         val auth = OauthFakeAuthApi()
         val store = OauthFakeStore()
