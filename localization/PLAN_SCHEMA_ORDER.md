@@ -238,9 +238,14 @@ Do not mark implementation complete based on the plan being written.
     align `localization/surface_registry.json` patterns and verified source anchors.
 - **Verification:** [GitHub Actions run 38999948668](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/38999948668)
   passed its `Test multilingual inventory and Mini App locale regressions` step,
-  including the new script's 746-file P0 command. This is **not** native-device
-  testing, a complete security audit or approval to migrate clients.
-  Check the run's overall conclusion before claiming the entire backend job passed.
+  including the new script's 746-file P0 command. The full
+  `Backend targeted tests / targeted-tests` job also **concluded SUCCESS**
+  (GitHub Actions run 38999948668). This is **not** native-device testing,
+  a complete security audit or approval to migrate clients.
+  Latest automated source audit: **2,684 scanned files**, **71,125 detected
+  locale maps**, **7,954 review candidates**, **0 parse/read errors**;
+  frozen baseline **811 checked / 0 blockers**, seven-track source samples
+  **0 deviations**. Review queue: 87 candidate-bearing source files, 75 shown.
 - **Security observation:** `app/main.py` serves lesson JSON through
   `/course_v3_data/{level}/{filename}` without a handler-level dependency;
   global middleware, production access and paid-content exposure remain to be
@@ -252,9 +257,10 @@ Do not mark implementation complete based on the plan being written.
   complete public lesson payload/answer confidentiality, capture 3-language
   *rendered* UI and quiz snapshots, and test real WebView/native offline,
   Android direct/play, Desktop macOS/Windows and account-language fallback.
-  Previous scanner numeric totals are historical; use the latest CI artifact
-  after expanded phrase scanning to measure new totals. **P1/P2/P3/P4 remain
-  NOT STARTED**; no runtime clients or new languages were changed.
+  The prior scanner totals (2,681 files / 7,951 candidates) are historical;
+  updated figures appear above and in the CI artifact after phrase coverage
+  expansion. **P1/P2/P3/P4 remain NOT STARTED**; no runtime clients or new
+  languages were changed.
 
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
