@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "status": "SIX_DIRECT_READ_CALLS_SOURCE_REVIEWED_NO_RUNTIME_MIGRATION",
+  "source": "app/static/course-v3.html",
+  "source_revision": "90c60558279041fefde8922af5faf92c80754bca",
+  "scope": "All six direct loadLessonData(...) expressions, not the function declaration, on this Mini App page. Indirect callers to warmLessonPreviewAudio, prefetchNearbyLessons and primeSalesValueContent are separately described in the notes.",
+  "read_calls": [
+    {
+      "ordinal": 1,
+      "line": 1978,
+      "anchor": "loadLessonData(\"hsk1\",3)",
+      "owner": "primeSalesValueContent",
+      "intent": "paywall_preview_prime",
+      "expected_future_policy": "public_redacted_preview_only",
+      "cost_sensitive": true,
+      "reason": "Marketing/sales preview executes without starting a lesson; do not spend Free lesson quota or publish all of lesson 3."
+    },
+    {
+      "ordinal": 2,
+      "line": 2128,
+      "anchor": "loadLessonData(lv,n)",
+      "owner": "warmLessonPreviewAudio",
+      "intent": "audio_preload_before_continue",
+      "expected_future_policy": "public_or_previous_authorized_audio_only",
+      "cost_sensitive": true,
+      "reason": "Called before the learner taps Continue; speculative audio warming must not consume entitlement or fetch protected cards."
+    },
+    {
+      "ordinal": 3,
+      "line": 2913,
+      "anchor": "loadLessonData(lv,l.n)",
+      "owner": "prefetchNearbyLessons",
+      "intent": "background_nearby_prefetch",
+      "expected_future_policy": "non_consuming_metadata_only",
+      "cost_sensitive": true,
+      "reason": "Idle prefetch may fetch next lesson including locked content; moving to a consume=True endpoint would silently spend the daily limit."
+    },
+    {
+      "ordinal": 4,
+      "line": 3533,
+      "anchor": "loadLessonData(MAP.level||\"hsk1\",l.n)",
+      "owner": "startSkipTest",
+      "intent": "skip_test_question_generation",
+      "expected_future_policy": "separately_authorized_skip_test_material",
+      "cost_sensitive": true,
+      "reason": "Skip-test currently builds a quiz from static lesson content, not from the normal interactive lesson-start entitlement path."
+    },
+    {
+      "ordinal": 5,
+      "line": 3665,
+      "anchor": "loadLessonData(\"hsk1\",1)",
+      "owner": "startFoundationFromMap",
+      "intent": "starter_foundation_content",
+      "expected_future_policy": "foundation_specific_access_or_public_safe_bootstrap",
+      "cost_sensitive": true,
+      "reason": "Starter 0 prerequisite must remain reachable under the established foundation policy and cannot burn unrelated daily lesson quota."
+    },
+    {
+      "ordinal": 6,
+      "line": 3995,
+      "anchor": "loadLessonData(lv,l.n)",
+      "owner": "startLesson",
+      "intent": "interactive_lesson_after_reservation",
+      "expected_future_policy": "authenticated_entitled_lesson_after_start",
+      "cost_sensitive": true,
+      "reason": "Only this call follows reserveLessonStart(l); preserve one start/consume decision and progress/quiz identities."
+    }
+  ],
+  "additional_indirect_entrypoints": [
+    {
+      "line": 3484,
+      "name": "warmLessonPreviewAudio",
+      "intent": "preview_on_sheet_open"
+    },
+    {
+      "line": 5307,
+      "name": "prefetchNearbyLessons",
+      "intent": "track_switch_background"
+    },
+    {
+      "line": 8435,
+      "name": "prefetchNearbyLessons",
+      "intent": "initial_course_boot_background"
+    },
+    {
+      "line": 2287,
+      "name": "primeSalesValueContent",
+      "intent": "subscription_paywall_lazy_prime"
+    }
+  ],
+  "cache_scope_review": [
+    {
+      "key": "LESSON_DATA_CACHE",
+      "observation": "Page memory keyed only by normalized level and lesson order, not user identity; no live account-switch isolation QA."
+    },
+    {
+      "key": "lessonResumeKey",
+      "observation": "localStorage key contains level and lesson order but not localUserScope(); verify account switch and potential progress mixing."
+    },
+    {
+      "key": "lessonMasteryKey",
+      "observation": "Mastery key includes localUserScope(); keep identity-aware versioning."
+    }
+  ],
+  "limits": "Source call-site classification only. Does not inspect real credentials, static URL network permissions, mobile binaries, browser cache invalidation or QA screenshots. No runtime or payment policy changed."
+}
