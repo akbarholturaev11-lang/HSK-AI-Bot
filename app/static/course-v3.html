@@ -1472,7 +1472,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script>
+<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261017-common-v1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261017-course-v1"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -2023,7 +2023,7 @@ function activationVariant(){
   }catch(e){return"standard"}
 }
 function T(){return I18N[LANG]}
-function tr(v){return !v?"":(typeof v==="string"?v:(v[LANG]||v.ru||v.uz||""))}
+function tr(v){return !v?"":(typeof v==="string"?v:(v[LANG]||v.ru||v.uz||""))}function commonMessage(key,fallback){var catalog=window.HSKAI_COMMON_I18N;return catalog&&catalog[LANG]&&Object.prototype.hasOwnProperty.call(catalog[LANG],key)?catalog[LANG][key]:fallback}function courseMessage(key,fallback){var catalog=window.HSKAI_COURSE_I18N;return catalog&&catalog[LANG]&&Object.prototype.hasOwnProperty.call(catalog[LANG],key)?catalog[LANG][key]:fallback}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function $(s){return document.querySelector(s)}
 var _ttsAudio=null;
@@ -2653,9 +2653,9 @@ var App={
   openTest:function(){if(isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){showHsk30TestSoon();return}TEST.open()},
   openMistakes:function(){MIST.open()},
   openHelp:function(){var t=T();var c=(MAP&&MAP.admin_contact)||"";
-    var btn=c?'<button class="scta" onclick="App.contactAdmin()"><i class="ti ti-brand-telegram"></i> '+esc(t.helpBtn)+'</button>'
-      :'<div class="tr" style="margin-top:6px;color:var(--ink2)">'+esc(t.helpNoContact)+'</div>';
-    App.openSheet('<div class="shead"><div style="width:52px;height:52px;border-radius:15px;background:var(--card);border:1px solid var(--line);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px"><i class="ti ti-lifebuoy"></i></div><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(t.helpTitle)+'</div><div class="tr">'+esc(t.helpText)+'</div></div>'+btn);},
+    var btn=c?'<button class="scta" onclick="App.contactAdmin()"><i class="ti ti-brand-telegram"></i> '+esc(courseMessage("helpBtn",t.helpBtn))+'</button>'
+      :'<div class="tr" style="margin-top:6px;color:var(--ink2)">'+esc(courseMessage("helpNoContact",t.helpNoContact))+'</div>';
+    App.openSheet('<div class="shead"><div style="width:52px;height:52px;border-radius:15px;background:var(--card);border:1px solid var(--line);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px"><i class="ti ti-lifebuoy"></i></div><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(courseMessage("helpTitle",t.helpTitle))+'</div><div class="tr">'+esc(courseMessage("helpText",t.helpText))+'</div></div>'+btn);},
   contactAdmin:function(){var c=(MAP&&MAP.admin_contact)||"";if(!c){return}App.closeSheet();
     try{if(tg&&tg.openTelegramLink&&/^https:\/\/t\.me\//i.test(c)){tg.openTelegramLink(c);return}}catch(e){}
     try{if(tg&&tg.openLink){tg.openLink(c);return}}catch(e){}
@@ -2782,7 +2782,7 @@ var App={
   pickLevel:function(lv){App.closeSheet();loadLevel(lv)},
   goCurrentLesson:function(){var idx=-1;allLessons().forEach(function(l,i){if(l.status==="current")idx=i});App.show("course");if(idx>=0)setTimeout(function(){openLessonSheet(idx)},60)},
   langPicker:function(){var t=T();var names={uz:"O'zbekcha",ru:"Русский",tj:"Тоҷикӣ"};
-    App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+t.lang+'</div></div>'
+    App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+courseMessage("lang",t.lang)+'</div></div>'
       +["uz","ru","tj"].map(function(l){return '<button class="sec'+(l===LANG?' cur':'')+'" style="width:100%;margin-bottom:8px" onclick="App.pickLang(\''+l+'\')"><span class="si2">'+(l===LANG?'<i class="ti ti-check"></i>':'')+'</span><b>'+names[l]+'</b></button>'}).join(""));},
   pickLang:function(l){var back=SETTINGS_SHEET;App.closeSheet();App.setLang(l);
     if(back)App.openSettings();
@@ -5418,18 +5418,18 @@ function newSectionBadge(sectionId){
 }
 function renderMashq(){
   var t=T();
-  $("#s-mashq").innerHTML='<div class="htop"><h1 class="section-title">'+t.nav.mashq+'</h1></div>'
-    +'<div class="phead"><div class="sub">'+t.mashqSub+'</div></div>'
-    +'<div class="sech">'+t.grammar+' · '+t.pron+'</div>'
-    +'<div class="mashq-group" role="group" aria-label="'+esc(t.grammar+' · '+t.pron)+'">'
-    +rowCard("t-amber",'<span class="han">字</span>',t.dict,t.dictSub,"App.openDict()","m-dict")
-    +rowCard("t-jade",'<span class="han">句</span>',t.readyPhrases,t.readyPhrasesSub,"App.openPhrases()","m-ready-phrases","ready-phrases")
-    +rowCard("t-blue",'<i class="ti ti-eye"></i>',t.recog,t.recogSub,"App.openRecog()","m-recog")
-    +rowCard("t-jade",'<i class="ti ti-microphone"></i>',t.pron,t.pronSub,"App.openPron()","m-pron")+'</div>'
-    +'<div class="sech">'+t.testCenter.split(" ")[0]+'</div>'
-    +'<div class="mashq-group" role="group" aria-label="'+esc(t.testCenter.split(" ")[0]+' · '+t.mistakes)+'">'
-    +rowCard("t-cin",'<i class="ti ti-certificate"></i>',t.testCenter,isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?trackUi().testSoon:t.testSub,"App.openTest()","m-test")
-    +rowCard("t-cin",'<i class="ti ti-alert-triangle"></i>',t.mistakes,t.mistakesSub,"App.openMistakes()","m-mist")+'</div>';
+  $("#s-mashq").innerHTML='<div class="htop"><h1 class="section-title">'+courseMessage("nav.mashq",t.nav.mashq)+'</h1></div>'
+    +'<div class="phead"><div class="sub">'+courseMessage("mashqSub",t.mashqSub)+'</div></div>'
+    +'<div class="sech">'+courseMessage("grammar",t.grammar)+' · '+courseMessage("pron",t.pron)+'</div>'
+    +'<div class="mashq-group" role="group" aria-label="'+esc(courseMessage("grammar",t.grammar)+' · '+courseMessage("pron",t.pron))+'">'
+    +rowCard("t-amber",'<span class="han">字</span>',courseMessage("dict",t.dict),courseMessage("dictSub",t.dictSub),"App.openDict()","m-dict")
+    +rowCard("t-jade",'<span class="han">句</span>',courseMessage("readyPhrases",t.readyPhrases),courseMessage("readyPhrasesSub",t.readyPhrasesSub),"App.openPhrases()","m-ready-phrases","ready-phrases")
+    +rowCard("t-blue",'<i class="ti ti-eye"></i>',courseMessage("recog",t.recog),courseMessage("recogSub",t.recogSub),"App.openRecog()","m-recog")
+    +rowCard("t-jade",'<i class="ti ti-microphone"></i>',courseMessage("pron",t.pron),courseMessage("pronSub",t.pronSub),"App.openPron()","m-pron")+'</div>'
+    +'<div class="sech">'+courseMessage("testCenter",t.testCenter).split(" ")[0]+'</div>'
+    +'<div class="mashq-group" role="group" aria-label="'+esc(courseMessage("testCenter",t.testCenter).split(" ")[0]+' · '+courseMessage("mistakes",t.mistakes))+'">'
+    +rowCard("t-cin",'<i class="ti ti-certificate"></i>',courseMessage("testCenter",t.testCenter),isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?trackUi().testSoon:courseMessage("testSub",t.testSub),"App.openTest()","m-test")
+    +rowCard("t-cin",'<i class="ti ti-alert-triangle"></i>',courseMessage("mistakes",t.mistakes),courseMessage("mistakesSub",t.mistakesSub),"App.openMistakes()","m-mist")+'</div>';
 }
 function rowCard(cls,ic,title,sub,act,id,newSectionId){return '<button type="button" class="row-card"'+(id?' id="'+id+'"':'')+(act?' onclick="'+act+'"':'')+'><span class="ti2 '+cls+'" aria-hidden="true">'+ic+'</span><span class="rt"><b>'+esc(title)+'</b><small>'+esc(sub)+'</small></span>'+(newSectionId?newSectionBadge(newSectionId):'')+'<span class="ar" aria-hidden="true"><i class="ti ti-chevron-right"></i></span></button>'}
 
@@ -5437,7 +5437,7 @@ function rowCard(cls,ic,title,sub,act,id,newSectionId){return '<button type="but
 function renderVoice(){
   var t=T();
   $("#s-voice").innerHTML='<div class="htop"><h1 class="section-title">AI Voice</h1></div>'
-    +'<div class="voicebox"><div class="pd">'+pandaChar("talk")+'</div><h3>'+t.voiceTitle+'</h3><p>'+t.voiceSub+'</p><p class="voice-quota" id="voice-quota" role="status" aria-live="polite" hidden></p><button onclick="App.openVoiceCall()"><i class="ti ti-phone"></i> '+t.voiceStart+'</button></div>';
+    +'<div class="voicebox"><div class="pd">'+pandaChar("talk")+'</div><h3>'+courseMessage("voiceTitle",t.voiceTitle)+'</h3><p>'+courseMessage("voiceSub",t.voiceSub)+'</p><p class="voice-quota" id="voice-quota" role="status" aria-live="polite" hidden></p><button onclick="App.openVoiceCall()"><i class="ti ti-phone"></i> '+courseMessage("voiceStart",t.voiceStart)+'</button></div>';
   if(INIT_DATA&&window.CourseLimitStatus){
     CourseLimitStatus.get("voice").then(function(status){
       var quota=document.getElementById("voice-quota");
@@ -5921,7 +5921,7 @@ function _renderRatingContent(){
   var t=T(),r=rl();
   sortRatingUsers();
   var memberCount=Number(ratingMeta.leagueSize||ratingUsers.length||0);
-  var h=ratingTabCur==="friends"?'<h1 class="rating-friends-heading">'+esc(r.friends)+'</h1>':'<h1 class="section-title rating-title">'+esc(LANG==="ru"?"Рейтинг":LANG==="tj"?"Рейтинг":"Reyting")+'</h1>';
+  var h=ratingTabCur==="friends"?'<h1 class="rating-friends-heading">'+esc(r.friends)+'</h1>':'<h1 class="section-title rating-title">'+esc(commonMessage("navigation.rating",LANG==="ru"?"Рейтинг":LANG==="tj"?"Рейтинг":"Reyting"))+'</h1>';
 	  if(ratingTabCur==="friends"){
 	    if(!referralMeta.loaded&&INIT_DATA){
 	      referralMeta.loaded=true;
@@ -6468,13 +6468,13 @@ function settingsSheetHtml(){
   var t=T(),p=pl();
   return '<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(p.settings)+'</div></div>'
     +'<div class="set" style="margin:0">'
-    +'<button class="srow" onclick="App.langPicker()"><i class="ti ti-language"></i> '+t.lang+'<span class="sv">'+LANG.toUpperCase()+' <i class="ti ti-chevron-right"></i></span></button>'
+    +'<button class="srow" onclick="App.langPicker()"><i class="ti ti-language"></i> '+courseMessage("lang",t.lang)+'<span class="sv">'+LANG.toUpperCase()+' <i class="ti ti-chevron-right"></i></span></button>'
     +courseVersionSettingsRowHtml()
-    +'<button class="srow" onclick="App.notifToggle()"><i class="ti ti-bell"></i> '+t.notif+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
+    +'<button class="srow" onclick="App.notifToggle()"><i class="ti ti-bell"></i> '+courseMessage("notif",t.notif)+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
     +(notifOn?'<div class="srow-note">'+notifTimesHtml()+'</div>':'')
     +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
     +signInMethodsRowsHtml()
-    +'<button class="srow" onclick="App.openHelp()"><i class="ti ti-help-circle"></i> '+t.help+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button>'
+    +'<button class="srow" onclick="App.openHelp()"><i class="ti ti-help-circle"></i> '+courseMessage("help",t.help)+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button>'
     +'</div>'+socialLinksHtml();
 }
 
@@ -6566,15 +6566,15 @@ function renderProfile(){
   var trialActive=!!(TRIAL_STATE&&TRIAL_STATE.active);
   var showProLink=!paid&&!trialActive;
   var nickname=esc(PROF.name||t.you);
-  $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(LANG==="ru"?"Профиль":LANG==="tj"?"Профил":"Profil")+'</h1><div class="profile-head-actions">'
+  $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(courseMessage("nav.profile",LANG==="ru"?"Профиль":LANG==="tj"?"Профил":"Profil"))+'</h1><div class="profile-head-actions">'
     +'<button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div></div>'
     +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div>'
     +'<div class="profile-hero-content"><div class="profile-identity-row"><strong class="profile-display-name">'+nickname+'</strong><span class="profile-access-badge'+(paid||trialActive?' pro':'')+'">'+(paid?'<i class="ti ti-crown"></i> Pro':trialActive?'<i class="ti ti-crown"></i> '+esc(c.trial):esc(c.free))+'</span></div>'
     +(goalLabel()?'<div class="profile-goal-row"><span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span></div>':'')+'</div></div>'
-    +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(t.friends)+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
+    +'<button type="button" class="profile-friends-link" onclick="App.openFriends()"><i class="ti ti-users" aria-hidden="true"></i><span>'+esc(courseMessage("friends",t.friends))+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
     +profileAccuracyHtml()
     +'<div id="pomp-desktop-profile-root"></div>'
-    +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+t.streak+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'
+    +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+courseMessage("streak",t.streak)+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'
     +(showProLink?'<button type="button" class="profile-pro-link" onclick="App.goPay(\'profile_after_streak\')"><i class="ti ti-crown" aria-hidden="true"></i><span>'+esc(c.pro)+'</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>':'')
     +'<div class="sech">'+p.ach+'</div><div class="profile-compact-ach">'
     +'<div class="arow"><div class="aic c1"><i class="ti ti-book"></i></div><div class="at"><div class="ah"><span>'+p.a2+'</span><small>'+completedLessons+' / 100</small></div><div class="abar"><i style="width:'+lessonAchPct+'%"></i></div></div></div>'

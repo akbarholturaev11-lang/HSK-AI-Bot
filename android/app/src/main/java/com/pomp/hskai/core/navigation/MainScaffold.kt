@@ -58,11 +58,11 @@ import com.pomp.hskai.core.design.components.HskGlassSurface
 import com.pomp.hskai.feature.update.AppUpdateBanner
 
 enum class MainTab(val labelRes: Int, val icon: ImageVector) {
-    COURSE(R.string.nav_course, Icons.Filled.Map),
-    PRACTICE(R.string.nav_practice, Icons.Filled.Style),
+    COURSE(R.string.hsk_common_navigation_course, Icons.Filled.Map),
+    PRACTICE(R.string.hsk_common_navigation_practice, Icons.Filled.Style),
     VOICE(R.string.nav_ai, Icons.Filled.Mic),
-    RATING(R.string.nav_rating, Icons.Filled.EmojiEvents),
-    PROFILE(R.string.nav_profile, Icons.Filled.Person),
+    RATING(R.string.hsk_common_navigation_rating, Icons.Filled.EmojiEvents),
+    PROFILE(R.string.hsk_common_navigation_profile, Icons.Filled.Person),
     ;
 
     val isCentre: Boolean get() = this == VOICE

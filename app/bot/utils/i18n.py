@@ -1,3 +1,5 @@
+from app.bot.generated.common_i18n import COMMON_MESSAGES
+
 TEXTS = {
     "tj": {
         "welcome": "Хуш омадед, {name}!",
@@ -461,6 +463,18 @@ def _lookup_text(key: str, lang: str):
 
 
 def t(key: str, lang: str = "ru", **kwargs) -> str:
+    # Generated UI namespace is local Python data; legacy keys retain their
+    # existing Gemini-aware lookup, wording and Russian fallback behavior.
+    if key.startswith("common."):
+        code = "tj" if lang in ("tg", "tg-TJ") else lang
+        code = code if code in COMMON_MESSAGES else "ru"
+        template = COMMON_MESSAGES[code].get(key[len("common."):])
+        if template is None:
+            return key
+        try:
+            return template.format(**kwargs) if kwargs else template
+        except (KeyError, ValueError):
+            return template
     lang = lang if lang in TEXTS else "ru"
 
     # Gemini yoqilganda limitlar boshqacha (matn cheksiz, rasm/ovoz 5/kun), shuning

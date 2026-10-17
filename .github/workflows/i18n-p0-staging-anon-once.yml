@@ -1,0 +1,89 @@
+name: P0 one-shot staging anonymous HTTP audit
+
+# Explicit status-only staging check when THIS workflow is updated
+# committed to the isolated P0 branch. Subsequent ordinary pushes do
+# not repeat it. Manual reruns require GitHub workflow_dispatch.
+on:
+  push:
+    branches:
+      - codex/i18n-local-first-foundation-20261017
+    paths:
+      - .github/workflows/i18n-p0-staging-anon-once.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  anon-route-status-only:
+    if: github.ref == 'refs/heads/codex/i18n-local-first-foundation-20261017'
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Confirm staging server awake (no body read)
+        run: |
+          python - <<'PY'
+          import time
+          from urllib.request import Request, build_opener
+          from urllib.error import URLError, HTTPError
+          from scripts.i18n_staging_anon_route_probe import RejectRedirects, staging_origin
+          url = staging_origin(
+              'https://hsk-ai-p0-qa-staging.up.railway.app',
+              'hsk-ai-p0-qa-staging.up.railway.app',
+          ) + '/health'
+          opener = build_opener(RejectRedirects())
+          for attempt in range(6):
+              try:
+                  with opener.open(Request(url, method='GET'), timeout=10) as response:
+                      code = response.status  # Intentionally never read body
+                  print('Staging health HTTP status:', code)
+                  if code == 200:
+                      break
+              except (URLError, HTTPError, OSError) as exc:
+                  print('Health retry', attempt + 1, ':', type(exc).__name__)
+              time.sleep(5)
+          else:
+              print('Health was not confirmed; probe records transport errors if unreachable')
+          PY
+      - name: Execute explicitly scoped anonymous GET-status probe
+        run: |
+          python scripts/i18n_staging_anon_route_probe.py \
+            --execute \
+            --timeout 12 \
+            --base-url https://hsk-ai-p0-qa-staging.up.railway.app \
+            --confirmed-host hsk-ai-p0-qa-staging.up.railway.app \
+            --output /tmp/hsk-p0-anon-staging-status.json
+      - name: Print status counts only
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from collections import Counter
+          from pathlib import Path
+          p = Path('/tmp/hsk-p0-anon-staging-status.json')
+          if not p.is_file():
+              print('No staging report; probe may have rejected or failed')
+              raise SystemExit(0)
+          r = json.loads(p.read_text())
+          print('Performed:', r['performed_requests'])
+          print('Status counts:', dict(sorted(Counter(
+              f"{i['kind']}:{i['http_status'] if i['http_status'] is not None else i['error']}"
+              for i in r['cases']).items())))
+          print('Anonymous lessons HTTP 200/206:', r['anonymous_lesson_success_count'])
+          print('Late-course lessons HTTP 200/206:', r.get('anonymous_late_lesson_success_count', 0))
+          print('Native lesson APIs HTTP 401/403:', r.get('native_api_denied_without_bearer_count', 0))
+          print('Exam HTTP 404 verified:', r['exam_404_verified'])
+          print('Review findings:', len(r['findings']))
+          PY
+      - name: Archive status-only staging result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hsk-p0-staging-anon-status
+          path: /tmp/hsk-p0-anon-staging-status.json
+          if-no-files-found: warn
+          retention-days: 14

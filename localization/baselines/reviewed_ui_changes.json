@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "baseline_main_commit": "160a51d69f3324e3162375213ec61b5587b19533",
+  "purpose": "Explicit exact reviewed P2 UI source changes. Lesson, answer and generator source hashes retain original P0 invariant.",
+  "files": {
+    "desktop/ui/js/i18n.js": {
+      "baseline_sha1": "30e85aad8aa00689c6bba01980a56eadc928638e",
+      "reviewed_sha1": "3f22321d3b88bf633110495422585cc85ad09ce9",
+      "reason": "Desktop eleven common keys now prefer generated local JS bundled copy; old messages remain identical fallbacks. Shared Tauri macOS/Windows source."
+    },
+    "app/static/course-v3.html": {
+      "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
+      "reviewed_sha1": "b4938fbd17e0713683659fe67393fb9a32f96814",
+      "reason": "Mini App loads generated static common/course catalogs and now routes 28 reviewed course UI keys total (previous 4 plus 24 practice/voice/help/profile keys) through exact 3-locale inline fallbacks. 8712 physical source lines, lesson fetch/assessment/access/payment unchanged."
+    },
+    "app/bot/utils/i18n.py": {
+      "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",
+      "reviewed_sha1": "aca144788d5376c209c86e69dc62781bc382ce10",
+      "reason": "Expose generated canonical common UI keys through a namespaced Bot t() branch; all legacy key dispatch, Gemini variant and fallback unchanged."
+    }
+  }
+}

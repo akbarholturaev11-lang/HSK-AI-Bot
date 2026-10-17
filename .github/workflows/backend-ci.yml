@@ -10,6 +10,10 @@ on:
       - ".github/workflows/backend-ci.yml"
   workflow_dispatch:
 
+concurrency:
+  group: backend-targeted-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   targeted-tests:
     runs-on: ubuntu-latest
@@ -24,12 +28,26 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt aiosqlite
+      - name: Smoke import staging ASGI entrypoint without database or Telegram startup
+        env:
+          HSK_STAGING_QA_MODE: "1"
+          RAILWAY_ENVIRONMENT_NAME: staging
+          HSK_STAGING_DB_HOST: localhost
+          DATABASE_URL: postgresql://qa:qa@localhost:5432/qa
+        run: |
+          python - <<'PY'
+          from app.staging_qa import app, staging_qa_lifespan
+          assert app.router.lifespan_context is staging_qa_lifespan
+          print("staging ASGI route graph imported; no startup, DB or Telegram operations")
+          PY
       - name: Check real Android assistant photo decoding
         run: python -m unittest tests.test_android_assistant_service.AssistantImageTransportTests
       - name: Verify onboarding save confirmation and recovery
         run: python -m unittest tests.test_miniapp_onboarding_save_confirmation tests.test_course_miniapp_onboarding
       - name: Run HSK 3.0 lesson limit regression
         run: python -m unittest tests.test_hsk30_lesson_limits tests.test_course_track_service tests.test_hsk30_promo_service tests.test_hsk30_switch_ui_contract tests.test_android_payment_method_dialog_contract
+      - name: Verify synthetic Mini App lesson reservation auth and quota boundary
+        run: python -m unittest tests.test_i18n_miniapp_reservation_asgi
       - name: Run HSK 3.0 currency checkout regressions
         run: python -m unittest tests.test_hsk30_unlock_checkout tests.test_subscription_miniapp_card_banks
       - name: Run learning plan and canonical mistake regressions
@@ -39,6 +57,39 @@ jobs:
         run: |
           python -m unittest tests.test_i18n_inventory tests.test_i18n_ui_regressions
           python scripts/i18n_inventory.py --output /tmp/hsk-i18n-audit.json
+          python -m unittest tests.test_i18n_source_audit
+          python scripts/i18n_source_audit.py --output /tmp/hsk-i18n-source-audit.json
+          python -m unittest tests.test_i18n_baseline_guard
+          python scripts/i18n_baseline_guard.py --output /tmp/hsk-i18n-baseline-guard.json
+          python -m unittest tests.test_i18n_lesson_samples
+          python scripts/i18n_lesson_samples.py --output /tmp/hsk-i18n-lesson-samples.json
+          python -m unittest tests.test_i18n_review_queue
+          python scripts/i18n_review_queue.py --source /tmp/hsk-i18n-source-audit.json --output /tmp/hsk-i18n-review-queue.json
+          python -m unittest tests.test_i18n_p0_contract_audit
+          python scripts/i18n_p0_contract_audit.py --output /tmp/hsk-i18n-p0-contract.json
+          python -m unittest tests.test_i18n_android_resource_audit
+          python scripts/i18n_android_resource_audit.py --output /tmp/hsk-i18n-android-xml-audit.json
+          python -m unittest tests.test_i18n_catalog_contract_audit
+          python scripts/i18n_catalog_contract_audit.py --output /tmp/hsk-i18n-catalog-contract-audit.json
+          python -m unittest tests.test_i18n_miniapp_catalog_audit
+          python scripts/i18n_miniapp_catalog_audit.py --output /tmp/hsk-i18n-miniapp-catalog-audit.json
+      - name: Save P0 localization audit reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hsk-i18n-p0-audit
+          path: |
+            /tmp/hsk-i18n-audit.json
+            /tmp/hsk-i18n-source-audit.json
+            /tmp/hsk-i18n-baseline-guard.json
+            /tmp/hsk-i18n-lesson-samples.json
+            /tmp/hsk-i18n-review-queue.json
+            /tmp/hsk-i18n-p0-contract.json
+            /tmp/hsk-i18n-android-xml-audit.json
+            /tmp/hsk-i18n-catalog-contract-audit.json
+            /tmp/hsk-i18n-miniapp-catalog-audit.json
+          if-no-files-found: warn
+          retention-days: 14
       - name: Compile backend code
         run: |
           python -m compileall -q app tests
