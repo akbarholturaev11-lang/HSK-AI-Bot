@@ -889,6 +889,51 @@ Do not mark implementation complete based on the plan being written.
   P0 stays IN PROGRESS, P1/P2/P3/P4 NOT STARTED.
   No production or main changes; PR #179 remains Draft.
 
+### P0 fifteenth implementation slice — 2026-10-17 (live anonymous staging boundary)
+
+- **Status-only staging proof:** [one-shot run 39017607269](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39017607269)
+  reached staging and recorded **15 GET-status checks**: seven
+  static navigation maps returned HTTP 206, seven direct lesson JSONs
+  returned HTTP 206, and the private exam route returned HTTP 404.
+  The artifact was downloaded and parsed; zero response bodies,
+  tokens, payments or answer keys were read.
+- **Expanded native authorization contrast:** commit
+  `b9394c537947ebca7c05ab606a05f8538ab9606a`
+  adds anonymous `GET /api/v3/android/course/lesson/1` and
+  `GET /api/v3/desktop/course/lesson/1` probes; commit
+  `8f8fa41a000ebe18e09e8e86d5ca0d37d2c51fb3`
+  updates offline negative tests and expected counts to **17**.
+  `09dc71d3c13bb827575b459219de3bf3af339622`
+  re-ran the exact staging-only status probe through the path-restricted
+  GitHub Action, with no production domains, API credentials or bodies.
+- **Measured expanded outcome:** [staging CI 39017842475](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39017842475)
+  **SUCCESS**, status-only JSON artifact ID `12095930491`
+  independently parsed. **17 requests, 7/7 legacy lesson 206,
+  7/7 navigation maps 206, Android API 401, Desktop API 401,
+  private exam probe 404, exactly seven legacy access review findings.**
+  This confirms **staging** anonymous legacy partial-content exposure
+  and denial of these two sampled native anonymous API calls.
+  A response from a first lesson is not proof of live paid bypass.
+- **Evidence and reporting:** `localization/review/staging_anonymous_http_results_20261017.json`
+  initially created at `da9c27387a3778cfbd0c8832b9c8e7e2b21f8983`
+  and updated to the 17-route result at
+  `6bbd705f2f03d55bcfa24400bdde3229afa745ff`.
+  `docs/I18N_P0_STAGING_ACCESS_RUNBOOK.md` updated in
+  `d26e8e241e422d4d4bea8993845e0742d2af1493`,
+  `docs/I18N_P0_AUDIT_FINDINGS.md` in
+  `c05978c552b3e7a1d65759b6ac61fda2a5b8203d`.
+  These replace outdated "staging unreachable" claims with
+  measured HTTP evidence and explicit untested dimensions.
+- **P0 blockers remain:** anonymous and authorized *premium lesson*
+  payload classification; disposable Free/Trial/Pro/blocked users;
+  quiz/grading and quota policy; Mini App preview/warmup/prefetch
+  no-consume rules; cache isolation; old native clients; edge/CDN.
+  Only plan an authenticated migration with verified backwards
+  compatibility, do not blindly lock the public route, and **do not
+  merge runtime or payment changes to main**. P0 IN PROGRESS,
+  P1-P4 NOT STARTED. Staging service and production untouched in
+  this slice.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
