@@ -62,7 +62,7 @@ def contract(sources: dict[str, str]) -> dict:
                 miniapp, r"fetch\(lessonDataUrl\(lv,n\)",
             ),
             "n1_revision_bound_to_url": _has(
-                miniapp, r"return level===.nhsk1.\?url\+.content_rev=",
+                miniapp, r'return level==="nhsk1"\?url\+"\?content_rev="',
             ),
         },
         "android": {
@@ -79,7 +79,7 @@ def contract(sources: dict[str, str]) -> dict:
             "offline_cache_limited_to_transport_failures": _has(
                 android_repo,
                 r"private suspend fun cachedLesson\([\s\S]{0,500}"
-                r"error is ApiError\.Offline && error !is ApiError\.Timeout",
+                r"error !is ApiError\.Offline && error !is ApiError\.Timeout",
             ),
             "logout_clears_lesson_cache": 'DELETE FROM course_lesson_cache' in android_cache,
             "server_bearer_required": _has(
