@@ -49,6 +49,8 @@ jobs:
           python scripts/i18n_review_queue.py --source /tmp/hsk-i18n-source-audit.json --output /tmp/hsk-i18n-review-queue.json
           python -m unittest tests.test_i18n_p0_contract_audit
           python scripts/i18n_p0_contract_audit.py --output /tmp/hsk-i18n-p0-contract.json
+          python -m unittest tests.test_i18n_android_resource_audit
+          python scripts/i18n_android_resource_audit.py --output /tmp/hsk-i18n-android-xml-audit.json
       - name: Save P0 localization audit reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -61,6 +63,7 @@ jobs:
             /tmp/hsk-i18n-lesson-samples.json
             /tmp/hsk-i18n-review-queue.json
             /tmp/hsk-i18n-p0-contract.json
+            /tmp/hsk-i18n-android-xml-audit.json
           if-no-files-found: warn
           retention-days: 14
       - name: Compile backend code
