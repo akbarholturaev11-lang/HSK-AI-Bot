@@ -159,7 +159,7 @@ purchases or friend referrals, and no synthetic Telegram ID is used.
   authenticate that account and explicitly connect the provider from Profile.
   Matching email never merges accounts or moves progress/subscriptions.
 - A real Telegram user ID stays unique and optional. Google/Apple users have
-  `telegram_id = NULL`; internal numeric account IDs are never substituted
+  `telegram_id = NULL` until explicit attachment; internal numeric account IDs are never substituted
   into Telegram columns or sent as Telegram chat IDs.
 - The existing starter policy is reused (`status=trial`, five initial
   questions, no paid or Pro-trial dates). This is distinct from the explicitly
@@ -192,6 +192,41 @@ Android and shared desktop code guard late start/poll replies and competing
 provider attempts. Cancellation cannot install credentials from an abandoned
 attempt or consume the new attempt's response. UZ/RU/TJ copy describes provider
 availability, optional signup invitations and the remaining Telegram transport actions.
+
+### Attaching Telegram after Google/Apple signup
+
+Android and the shared macOS/Windows desktop profile expose an explicit Telegram
+connect action while no Telegram identity is attached. It starts a native
+bearer-authenticated request using the existing identity endpoint with
+`provider="telegram"`, `mode="telegram_approval"`, installation key and platform.
+The existing `intent="link"`, `bind_user_id` and `bind_session_id` columns keep
+the target canonical account and originating session fixed; no migration is needed.
+
+The allowlisted `https://t.me/<bot>?start=tg_identity_<uuid>` URL opens a
+dedicated private-chat confirmation before ordinary onboarding. The bot shows
+the canonical account ID and requesting device; the Telegram user must explicitly
+approve. Opening the link alone never attaches an identity or creates a learner.
+An existing Telegram owner cannot be moved or merged, even when the email,
+display name or person appears to match. An attached Telegram remains immutable.
+
+Approval rechecks target ownership, current block state, expiry, reservation,
+originating session and installation under database locks. Ordinary Telegram
+signin/code callbacks cannot approve identity-link rows. Polling never mints
+tokens. Explicit cancellation or dismissal cancels a pending proof; late client
+responses are ignored and abandoned proof starts are cancelled. A cancellation
+that loses to an already committed approval reports linked and does not detach
+the approved identity. Revoked origin proofs cannot approve later.
+
+Adding Telegram keeps canonical payments, HSK 3.0 grants, referrals, progress,
+XP, AI budgets and Voice usage intact. Real-Telegram integer callers resolve
+the same `users.id`, including historical native rows with NULL transport
+metadata; another canonical owner's stale Telegram metadata grants no access.
+No historical transport metadata rewrite or new user/session is needed.
+
+The owner will test real provider/Voice/installed-client behavior after code
+verification. Extra person-level detection across unrelated new provider
+identities is outside scope by the owner's decision; existing linked-account
+blocks remain enforced. The release hold stays active until real acceptance.
 
 ## Schema and rollout
 
@@ -258,14 +293,17 @@ python -m unittest tests.test_native_account_signup tests.test_native_account_mi
   tests.test_universal_referrals tests.test_universal_referral_migration
 python -m unittest tests.test_native_account_concurrency \
   tests.test_universal_referral_concurrency
+python -m unittest tests.test_telegram_identity_link tests.test_telegram_link_acceptance
 python -m unittest tests.test_native_account_rehearsal
 ```
 
-Current business code is `7685d7d6`, integrated with `main` `160a51d6` at
+The Pro/HSK 3.0/referral business code is `7685d7d6`, integrated with `main` `160a51d6` at
 `5b55cc3d`. The later `116ff346` changes only bounded remote PostgreSQL test
 deadlines. Native source files are unchanged by the main localization merge.
+Explicit provider-first Telegram attachment follows in backend `618253ff`,
+Android `bb6ad356` and shared desktop `df09354a`.
 
-Validation on 2026-10-17:
+Prior Pro/HSK 3.0/referral validation on 2026-10-17 (before Telegram attachment):
 
 - Integrated backend selection at `5b55cc3d`: **1,189 tests and 814 subtests
   passed**, nine PostgreSQL cases skipped, seven existing configuration/asyncpg
@@ -296,6 +334,58 @@ Validation on 2026-10-17:
   Five older full desktop browser failures were already reproduced on the
   deletion baseline. An unrelated Android profile NEW-badge source assertion
   also predates this task. These suites are not claimed green.
+
+Current Telegram-attachment validation on 2026-10-17 at `df09354a`:
+
+The [sanitized attachment evidence](UNIVERSAL_NATIVE_ACCOUNTS_TELEGRAM_LINK_2026-10-17.json)
+records this source revision and separates code checks from the owner's real tests.
+
+- Integrated backend: **1,224 tests and 832 subtests passed**, no skips,
+  seven existing configuration/asyncpg cleanup warnings. The dedicated local
+  PostgreSQL 15 database exercised real same-Telegram competing targets,
+  ordinary-signup/attachment and originating-session revocation races, plus
+  the existing identity/payment/referral races.
+- Google-first and Apple-first acceptance fixtures exercise actual API starts,
+  private-bot proof services and status without new users or tokens. Exact
+  paid/HSK 3.0/referral/progress/XP/budget snapshots stay unchanged; Android,
+  Windows, macOS and Mini App resolve the same owner after attachment.
+- Two new ownership tests failed against the prior transport-only query and
+  pass with canonical resolution: pre-link native budget/Voice history remains
+  visible to Telegram, and stale metadata cannot authorize a foreign owner.
+- Android: **555 Direct + 510 Play unit tests**, **12 emulator Compose tests**,
+  all **nine static checks**, and both release Kotlin compilations passed.
+  This includes proof URL/request matching, cancellation, session replacement,
+  late responses, existing Google/Apple linking and provider login.
+- Desktop: **32 JavaScript and 28 Rust tests**, **17 new attachment browser
+  cases** and **16 adjacent login/referral/Pro/HSK 3.0 browser cases** passed.
+  Both macOS and Windows fixtures cover success, conflicts, cancellation,
+  expiry and late responses. Native proof/token fields never reach the webview.
+- Mini App: the same **four affected route/receipt/HSK 3.0/Voice smoke checks**
+  passed again. Broader baseline UI gaps listed above remain outside this change.
+- Schema stays at `0107_canonical_referral_owners`; no new migration, staging
+  application deployment or production write was needed for attachment. The
+  earlier full real-copy migration/backup evidence remains revision-specific.
+
+### Owner's remaining real-client walkthrough
+
+Run on an isolated staging backend with its own configured OAuth callbacks and
+matching test clients. This feature has not been deployed as a staging app or
+production app; local fixtures are not a substitute for that setup.
+
+1. On fresh Google-first and Apple-first test accounts, record Pro/HSK 3.0,
+   lesson progress and XP. From Profile connect an unused Telegram identity,
+   verify the bot's target account/device, and explicitly approve. Reopen the
+   account on Android, macOS, Windows and Telegram Mini App and compare values.
+2. Repeat with bot rejection, closing the app flow before approval, an expired
+   request and a Telegram identity already belonging to another test account.
+   A foreign identity must stay with its existing owner; accounts never merge.
+3. Use the real Voice provider and save a lesson result before/after attachment.
+   Check usage/limits stay shared and a blocked linked account stays blocked.
+4. On Direct APK and desktop submit a test receipt through the existing admin
+   review process and verify only that canonical owner's Pro/HSK 3.0 changes.
+   Play must expose existing access without purchases or external payment links.
+5. Keep `main`, production migration and public registration held until these
+   owner-run checks and the remaining acceptance rows are recorded.
 
 PostgreSQL CI uses a local PostgreSQL 18 service. For an explicitly isolated
 remote staging test database, `NATIVE_ACCOUNT_TEST_TIMEOUT_SECONDS=180` allows

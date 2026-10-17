@@ -231,6 +231,15 @@ an authenticated account. OAuth callbacks do not mint their own sessions.
   refused outright by the sign-in endpoint, and its installation key is derived
   server-side from the account so the per-installation rate limit still
   applies. It is another client for linking, not another way in.
+- A provider-first desktop account can attach an unused Telegram identity from
+  the existing profile area. Both macOS and Windows call authenticated
+  `/api/v3/native-auth/identities/link/start` with `provider="telegram"` and
+  `mode="telegram_approval"`. A dedicated `tg_identity_<uuid>` private-bot
+  confirmation names the target account and device. Status/cancel reuse the
+  native identity endpoints and never replace credentials. Pending proofs stay
+  in native memory, are bound to the originating session/installation, and are
+  cancelled when the flow is dismissed or abandoned. Existing Telegram owners
+  are never merged or reassigned; an attached Telegram remains read-only.
 
 ## Phase 1 endpoints
 

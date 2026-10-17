@@ -18,6 +18,12 @@ mavjud hisob profilidan aniq ulanadi. Email tengligi hisoblarni birlashtirmaydi.
 Kirish — `LinkScreen` dagi uchta karta: Telegram (kodsiz,
 botdagi bitta tasdiq), Google va Apple (server taklif qilsa).
 
+Google/Apple bilan ochilgan hisobga profilidan Telegram keyin ulanishi mumkin:
+ilovadagi sessiya va o‘rnatishga bog‘langan so‘rov bot shaxsiy chatida alohida
+tasdiqlanadi. Boshqa hisobning Telegram’i ko‘chirilmaydi; ulangan Telegram
+o‘qish uchun ko‘rsatiladi. Yangi user yoki sessiya yaratilmaydi, mavjud Pro,
+progress va Voice/AI sarfi saqlanadi. Oynani yopish kutilayotgan so‘rovni bekor qiladi.
+
 Direct APK’da Pro va alohida HSK 3.0 xaridi mavjud chek/admin oqimi bilan
 `users.id`ga yoziladi. Referral kodi yangi hisob yaratilishidan oldin qabul
 qilinadi; bonus va chegirmaning mavjud shartlari saqlanadi. Play hozircha

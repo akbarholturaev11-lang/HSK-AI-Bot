@@ -13,6 +13,12 @@ provider’ni profilidan ulang; bir xil email hisoblarni birlashtirmaydi. Pro,
 HSK 3.0 xaridi va referral hisobning `users.id` kalitiga tegishli. Native
 registratsiyadagi ixtiyoriy taklif kodi faqat yangi hisobga biriktiriladi.
 
+Google/Apple bilan ochilgan hisobga keyin Telegram ulash uchun Android yoki
+desktop profilidagi Telegram ulash amalidan foydalaniladi. Bot shaxsiy chatida
+aynan ko‘rsatilgan akkauntga ulash alohida tasdiqlanadi. Telegram boshqa HSK AI
+hisobiga tegishli bo‘lsa, ulash rad etiladi; hisoblar avtomatik birlashmaydi.
+Bu yo‘l yangi akkaunt ochmaydi va Pro, progress yoki AI limitini yangilamaydi.
+
 Hozirgi Play ilovasida xarid yo‘q. Saytdagi Direct APK va desktop mavjud
 chek/admin tasdiqlash oqimidan foydalanadi. Bu branch `main`/production’ga
 qabul tekshiruvlari tugamaguncha chiqarilmaydi. Staging OAuth tekshiruvida

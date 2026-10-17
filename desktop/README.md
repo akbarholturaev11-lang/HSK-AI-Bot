@@ -112,6 +112,12 @@ macOS and Windows share this flow and the existing manual receipt checkout.
 See `../DESKTOP_AUTH_CONTRACT.md`, `../OAUTH_SETUP.md` and the release hold in
 `../docs/UNIVERSAL_NATIVE_ACCOUNTS.md`.
 
+Provider-first accounts can connect an unused Telegram identity from Profile
+on both macOS and Windows. The bot names the canonical target account and
+requires explicit private-chat confirmation. Closing the pending flow cancels
+its proof; it never signs into another account, merges existing owners or
+replaces the desktop session.
+
 ## Local preview
 
 The mock is deliberately available only on localhost with `mock=1`; production

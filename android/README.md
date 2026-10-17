@@ -12,6 +12,11 @@ APK keeps manual payment and receipt review for every sign-in method. Universal
 registration remains held from `main` and production pending the acceptance
 checks in `../docs/UNIVERSAL_NATIVE_ACCOUNTS.md`.
 
+Provider-first learners can attach an unused Telegram identity from Profile.
+The dedicated private-bot confirmation requires explicit approval; dismissal
+cancels a pending proof. Existing Telegram owners are never moved or merged,
+and attachment preserves Pro, progress and AI/Voice usage.
+
 ## One-time bootstrap: the Gradle wrapper
 
 `gradlew`, `gradlew.bat` and `gradle/wrapper/gradle-wrapper.jar` **must be
