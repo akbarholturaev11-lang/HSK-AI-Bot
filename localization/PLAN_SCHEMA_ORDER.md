@@ -804,8 +804,21 @@ Do not mark implementation complete based on the plan being written.
   anonymous/public route checks, Free/Trial/Pro/pending/blocked
   entitlement scenarios, non-consuming background fetches and
   Mini App/Android account A→B offline cache isolation.
-- **Still blocked:** no staging server or disposable QA users
-  were selected/authorized. No live HTTP requests, lesson consumption,
+- **Railway read-only environment discovery:** `patient-friendship`
+  has staging and production environments. **Staging has ONLY a
+  successful `Postgres-Iy93` database; it has NO deployed HSK AI
+  backend service and NO HTTPS app domain.** Production separately
+  runs HSK AI from the GitHub `main` branch and PostgreSQL.
+  The source-only probe therefore remains unexecuted; do not
+  redirect tests to the production service. This was read-only
+  Railway inspection, with no secrets accessed or deployment changed.
+  Operator approval is required for any paid/cost-bearing staging
+  backend creation, isolated database wiring and QA credentials.
+  The discovery is recorded in
+  `docs/I18N_P0_STAGING_ACCESS_RUNBOOK.md`
+  (commit `df31c4f6538257885471dad4805f8fab6d89ecb5`).
+- **Still blocked:** no usable staging application server and
+  no disposable QA users were selected/authorized. No live HTTP requests, lesson consumption,
   source runtime changes, login sessions, secrets or device QA.
   P0 IN PROGRESS, P1/P2/P3/P4 NOT STARTED; PR #179 Draft.
 
