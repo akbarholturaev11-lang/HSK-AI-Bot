@@ -529,6 +529,56 @@ Do not mark implementation complete based on the plan being written.
   P1/P2/P3/P4 NOT STARTED; neither `main` nor runtime client code
   was modified.
 
+### P0 ninth implementation slice — 2026-10-17 (complete explicit course LANG-line triage + memorize inline review)
+
+- **Source-level classification completed for one finite scanner rule:**
+  `ca2ff5ca0db0205f9afc09e2277ad62136dcc2a5` extended
+  `localization/review/miniapp_course_hotspot_triage.json` from
+  **21 to 60 unique physical source lines**, capturing **all 125**
+  occurrences of the specific `LANG ==/=== 'uz'|'ru'|'tj'`
+  predicate pattern currently found in `app/static/course-v3.html`.
+  `ab582405d2095a18e230473d38f2afa88fb4b081` also froze
+  the matching predicate count for each reviewed line.
+  Classification includes UI/error/assessment, XP/rating/referral,
+  quiz/lesson text, accessibility, time/quantity formatting, plus
+  non-text locale/grammar/TTS behavior. All 60 source anchors and
+  125 predicate occurrences were checked against the current source.
+  This is **not** a claim that all page strings, indirect locale maps,
+  or each predicate's rendered outcome is human-approved.
+- **Fail-closed source regression:** `5b839c701c604cf15c454af4bee7b266fc0ad758`
+  revised `tests/test_i18n_miniapp_hotspot_triage.py` to compare
+  the exact set of reviewed line numbers and per-line predicate counts
+  against source scanning, and to reject new unreviewed explicit
+  `LANG` predicates. Distinguishes brand/invariant and locale/grammar/
+  TTS logic from translation copy. Avoid mechanical conversion of
+  logical branches to mere strings.
+- **Memorization inline strings reviewed separately:**
+  `38124cee50345906abc58d88e23d49c6ffe1f07c` adds
+  `localization/review/miniapp_memorize_inline_triage.json`
+  classifying **all nine currently matched** `t({uz:...})` inline
+  message expressions in `app/static/course_v3_memorize.html`.
+  Eight are static learner-facing UI actions/status labels.
+  The remaining question includes the canonical Chinese character
+  `H` in each of three language variants. Future P1 migration must
+  preserve that dynamic input using a named `{hanzi}` parameter,
+  without modifying quiz distractors, card IDs or answer selection.
+  `6cffbc9fc8950ceeebe5745b99abd5a430101583` added
+  source-location and interpolation tests.
+  `25e907237d83750cb834bc7766c711d9779edad7` runs these in
+  the dedicated localization P0 CI.
+- **Verified:** [fast P0 run 39008932889](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39008932889)
+  completed **SUCCESS**, including source triage tests and all
+  read-only P0 audits. Latest full Backend targeted CI conclusion
+  must be checked independently; do not infer Android, Desktop or
+  actual WebView tests from this source-only workflow.
+- **Remaining P0:** the 60/125 and nine/9 scopes are only these two
+  explicit code patterns, not full localization coverage. Remaining
+  Mini App inline/object/HTML copy, Bot/notification manual review,
+  actual 3-language rendered and offline UI, and existing public
+  course JSON entitlement/answer-key exposure still block P0 closure.
+  P1/P2/P3/P4 NOT STARTED; no production runtime, accounts, payments,
+  lesson JSON or grading changed, and PR #179 remains Draft.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
