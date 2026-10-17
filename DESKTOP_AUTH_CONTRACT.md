@@ -212,10 +212,19 @@ an authenticated account. OAuth callbacks do not mint their own sessions.
 - macOS and Windows share the same provider buttons, pre-auth language selector,
   Rust browser-opening commands and polling/session flow. Only configured
   providers are offered. Provider verification never shows a Telegram code.
-- Course, practice, leaderboard, AI and voice ownership use the authenticated
-  canonical User. Existing manual payments and referral attribution still
-  require a real Telegram identity; provider-only accounts receive explicit
-  read-only/unavailable responses rather than synthetic IDs or shared NULL data.
+- Course, practice, leaderboard, AI, voice, manual Pro and the separate
+  HSK 3.0 purchase use the authenticated canonical User. Referrals use
+  canonical inviter/invited owners with optional real Telegram metadata.
+  Signup accepts an optional `referral_code` (up to 64 characters), snapshots
+  it on the pending sign-in and applies it only when that verified sign-in
+  creates a new account. Existing sign-ins and explicit identity linking never
+  change attribution. No synthetic IDs or shared NULL ownership are used.
+- Native invitation sharing uses the first-party `/apps?ref=CODE&mode=trial`
+  page; the existing discount page omits `mode=trial`. Raw/ref-prefixed trial
+  codes and Android/iOS discount prefixes keep their separate reward rules.
+  Desktop and newly installed clients accept a pasted code before first
+  sign-in. Android also accepts its allowlisted referral deep link. This code
+  is invitation attribution, never an authentication or account-link proof.
 - The Telegram Mini App can attach a provider from Profile, proving identity
   with fresh `initData` instead of a bearer token. `miniapp` is not a native
   platform: it owns no device, is accepted only on `intent="link"` rows, is

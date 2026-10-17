@@ -5,6 +5,12 @@ Google and Apple can each be a first sign-in method. Provider availability
 still depends on existing server credentials and the registered application
 and redirect configuration in `OAUTH_SETUP.md`.
 
+The owner confirmed on 2026-10-17 that this Play release has no purchases.
+Play reads existing account entitlements; Billing implementation and Console
+products/testers are a future phase. Direct APK and desktop retain the existing
+manual Pro and HSK 3.0 checkout for all three sign-in methods. Friend referrals
+and referral discounts also use canonical account ownership.
+
 ## Release hold
 
 The owner requires all seven acceptance conditions below to be verified before
@@ -16,20 +22,22 @@ until the evidence is complete.
 | Required condition | Current evidence and remaining gate |
 | --- | --- |
 | Existing Telegram Pro, XP, lessons, rating and payments stay unchanged | Backend/Android regressions and real-copy migration digests pass: all legacy billing, progress and XP/rating values are preserved. Real installed-client walkthroughs remain required. |
-| Google/Apple users without Telegram can register, start a lesson, use AI Voice and buy Pro | Signup/learning/AI/voice and canonical manual Pro checkout/approval have integration coverage. Direct Android and desktop need no Telegram for Pro; real provider, upstream Voice and purchase walkthroughs remain required. Play still has no in-app billing. |
+| Google/Apple users without Telegram can register, start a lesson, use AI Voice and buy Pro | Signup/learning/AI/voice and canonical manual Pro/HSK 3.0 checkout/approval have integration coverage. Direct Android and desktop need no Telegram; real provider, upstream Voice, referral and purchase walkthroughs remain required. Play consumes existing access without a purchase test in this release. |
 | Parallel registration for one Google/Apple identity creates one `users.id` | Railway staging PostgreSQL 18 passes four concurrent Google attempts and four Apple attempts: one account per exact provider identity, with no email merge. Retain this check in CI. |
 | Linking cannot grant access to another learner's Pro or progress | Ownership and identity/session revocation regressions cover isolation; verify the complete staged client flow as well. |
 | A blocked account cannot evade its restriction through Google/Apple | Google/Apple identities already linked to a blocked canonical account cannot sign in, consume approved proof, refresh or attach another login. Both-provider regressions pass; real staged provider walkthroughs remain required. An unrelated new provider subject cannot be inferred to belong to the same person from email. |
 | Android, desktop and Telegram Mini App show the same account data | A backend integration test checks explicitly linked Android/Windows/macOS logins plus MiniApp profile data share Pro, lesson progress, XP and rating. Installed-client comparison remains required. A Telegram-free account cannot authenticate a Telegram Mini App without a real Telegram identity. |
-| Migrations pass on a staging copy matching the real schema, and backup restore succeeds | PASS: isolated Railway PostgreSQL 18 copy matching `0102_payment_review_preview` passed upgrades through `0106`, with exact pre/post-backup restores over 61 tables and 190,155 legacy rows. Evidence below; this does not clear other release gates. |
+| Migrations pass on a staging copy matching the real schema, and backup restore succeeds | PASS: isolated Railway PostgreSQL 18 copy matching `0102_payment_review_preview` passed upgrades through `0107`, with exact pre/post-backup restores over 61 tables and 190,155 legacy rows, including 214 referrals. Evidence below; this does not clear other release gates. |
 
-Railway now has an isolated staging PostgreSQL service. No app or bot was
-deployed, and no application environment or shared variables were cloned;
-the database copy contains private learner data and must stay restricted. This
-task made no production deployment. Independent upstream receipt-preview work
-has since advanced main and production to `0102_payment_review_preview`. Do not run feature migrations or test
-registrations against production. Do not describe the feature as launch-ready
-until all rows have dated, reproducible evidence.
+Railway has an isolated staging PostgreSQL service. This feature uses fresh,
+separate migration/restore/test databases there. The universal application has
+not been deployed. A separate `hsk-ai-p0-qa` service from the i18n branch now
+exists in staging; its presence is not universal-account/provider acceptance
+evidence. Its existing build was refreshed only to apply a staging credential
+rotation. This task made no production deployment. The database copies contain
+private learner data and must stay restricted. Do not run feature migrations
+or test registrations against production. Do not describe the feature as
+launch-ready until all required rows have reproducible evidence.
 
 Read-only production inspection found PostgreSQL 18 at
 `0102_payment_review_preview` after upstream `3fffa42e`. Production still
@@ -39,23 +47,26 @@ and isolated staging.
 
 ### Completed database rehearsals
 
-The production-schema copy passed the full `0102 → 0106` chain on 2026-10-17:
-61 data tables, 190,155 legacy rows, 2,118 users and 100 payments. All 835
-source column descriptors, 682 constraints and 301 indexes matched the
+The source-schema copy passed the full `0102 → 0107` chain on 2026-10-17:
+61 data tables, 190,155 legacy rows, 2,118 users, 100 payments and 214 referrals.
+All 835 source column descriptors, 682 constraints and 301 indexes matched the
 restored baseline. Exact migration and pre/post-backup restore comparisons
-preserved billing, progress, XP/rating, account keys and sequences. All 13,905
-expected owners were backfilled, including 97 existing payments; the remaining
-historical financial records were preserved. Receipt-preview flags and pointers
-were unchanged. The source backup came from the earlier verified `0102` copy;
-the production schema head was rechecked read-only before this fresh rehearsal.
-See [current sanitized evidence](UNIVERSAL_NATIVE_ACCOUNTS_STAGING_PAYMENTS_2026-10-17.json).
+preserved billing, progress, XP/rating, referral reward/discount flags, account
+keys and sequences. All 14,333 expected owner backfills were verified, including
+97 payments and 428 referral endpoints. Receipt-preview flags/pointers were
+unchanged. The trusted backup/catalog came from the verified `0102` copy made
+earlier on the same date; no new production connection was needed for `0107`.
+See [current sanitized evidence](UNIVERSAL_NATIVE_ACCOUNTS_STAGING_REFERRALS_2026-10-17.json).
+
+The prior [`0102 → 0106` payment evidence](UNIVERSAL_NATIVE_ACCOUNTS_STAGING_PAYMENTS_2026-10-17.json)
+is retained as the exact earlier revision's record.
 
 The earlier
 [`0102 → 0105` evidence](UNIVERSAL_NATIVE_ACCOUNTS_STAGING_PREVIEW_2026-10-17.json)
 and [`0101 → 0104` evidence](UNIVERSAL_NATIVE_ACCOUNTS_STAGING_2026-10-16.json)
 remain historical records of those exact revisions.
 
-Backups are retained privately outside Git. Staging runs no app or bot;
+Backups are retained privately outside Git. No universal app or bot was deployed;
 these rehearsals make no production writes, production deployment or main
 push. Database preservation does not prove real OAuth, upstream AI Voice,
 installed-client parity or successful bank/store purchases.
@@ -94,16 +105,49 @@ same owner; matching NULL Telegram metadata grants no access to another user.
 Approved financial facts do not cascade with account deletion. Purge removes
 receipt evidence and positive account association while preserving the existing
 anonymous accounting grouping and totals. Other payment state is deleted.
-The separate HSK 3.0 one-time checkout and Telegram referral/handoff paths remain
-explicitly Telegram-specific; this Pro change does not silently open them.
+The separate HSK 3.0 one-time checkout now uses the same canonical payment
+owner and existing configurable price (default 10 TJS). Its first-receipt
+provisional access, permanent grant and rejection are independent of Pro:
+approval does not change subscription dates, grant a paid AI budget or restore
+the subscription receipt-preview ticket. Another account's pending or approved
+payment cannot grant access. Blocked owners cannot purchase or receive a grant.
 
-Android Play remains consumption-only, without BillingClient, server purchase
-verification or configured store products/testers. Manual Direct/desktop
-checkout does not prove Play purchasing. Play requires configured products/base
-plans, real store verification and acknowledgement, replay/account binding,
-restore and subscription lifecycle reconciliation through the same canonical
-entitlements. See the official
-[Play Billing integration guide](https://developer.android.com/google/play/billing/integrate.html).
+Android Play remains consumption-only without a purchase UI or external
+payment steering. A future Billing phase would require store verification,
+account binding, acknowledgement, restore and lifecycle reconciliation through
+canonical entitlements; it is outside this release's acceptance scope.
+
+### Canonical invitations
+
+`referrals.referrer_user_id` and `invited_user_id` own friend attribution;
+real Telegram IDs are optional transport metadata. One canonical invited owner
+is unique. Trial links use `/apps?ref=CODE&mode=trial`; the existing discount
+link omits `mode=trial`. Raw/ref-prefixed codes remain trial invitations and
+`ra_`/`ri_` keep their Android/iOS discount requirements. Desktop is not silently
+treated as an Android discount installation.
+
+An optional code is captured before native sign-in and stored on that pending
+attempt. It attaches only when verified Google, Apple or Telegram sign-in
+creates a new user. Returning sign-in and explicit provider linking never
+replace an inviter. Legacy Telegram `/start` eligibility remains unchanged.
+The public page shows a copyable code and Android installed-app handoff; a
+new installation or desktop accepts pasted code before account creation.
+
+Existing two-question qualification, five-question bonus, five-active-friend
+trial counter, three-day/$2 trial reward and three-qualified-friend discount
+rules are preserved, including their current counting-window behavior.
+Successful native Assistant messages provide equivalent two-question evidence;
+procedural help, failed answers and request replay do not count. No daily
+quota or `questions_used` policy changes. Server-owned installation ownership
+still gates Android discount qualification. The authenticated overview shows
+reward state; bot notifications are sent only for a real Telegram identity.
+Offline desktop AI turns are not server-verifiable and do not count as
+qualifying questions; the same canonical account's successful online Android
+Assistant or Telegram AI questions count.
+
+Telegram chat handoff and the separate bot-operated affiliate partner program
+still need their actual Telegram transport. They do not block native manual
+purchases or friend referrals, and no synthetic Telegram ID is used.
 
 ## Identity and access
 
@@ -125,10 +169,10 @@ entitlements. See the official
   database. Legacy integer service callers still mean real Telegram IDs.
   Canonical backfilled rows and narrowly scoped legacy fallbacks remain
   compatible; a missing Telegram ID never authorizes other NULL-owner rows.
-- Direct/desktop Pro checkout works for canonical provider-only accounts.
-  Telegram handoff, HSK 3.0 one-time purchase and referral rewards retain their
-  real-Telegram requirements with explicit availability errors. No synthetic
-  Telegram ID, automatic email merge or store billing is introduced.
+- Direct/desktop Pro, HSK 3.0 and friend referrals work for canonical
+  provider-only accounts. Telegram chat handoff still needs a real Telegram
+  identity. No synthetic Telegram ID, automatic email merge or store billing
+  is introduced.
 
 ## Session and identity safety
 
@@ -147,14 +191,16 @@ user cannot refresh; account deletion retains its narrow blocked-user path.
 Android and shared desktop code guard late start/poll replies and competing
 provider attempts. Cancellation cannot install credentials from an abandoned
 attempt or consume the new attempt's response. UZ/RU/TJ copy describes provider
-availability and the remaining Telegram-only actions.
+availability, optional signup invitations and the remaining Telegram transport actions.
 
 ## Schema and rollout
 
-Run these steps only after all release gates above are satisfied. This
-checklist does not authorize a production migration or release during the hold.
+Use an isolated staging application and the dedicated staging databases for
+pre-release provider/client checks. The following production rollout runs only
+after all release gates above are satisfied; it does not authorize a production
+migration or release during the hold.
 
-1. Apply `alembic upgrade head` through `0106_canonical_payment_ownership` using
+1. Apply `alembic upgrade head` through `0107_canonical_referral_owners` using
    the normal deployment migration process before releasing new clients.
 2. Deploy the backend and then the tested Android/desktop clients. No new
    provider secret or redirect URI is introduced by this feature.
@@ -177,6 +223,10 @@ Migration details:
   positive Telegram-owner backfills preserve amounts, statuses and dates. The
   financial owner has no cascading FK; purge explicitly anonymizes approved
   facts. Downgrade preflights both payment and entry data.
+- `0107`: canonical referral inviter/invited owners, their backfills/FKs and
+  invited-owner uniqueness; nullable real Telegram metadata and the optional
+  signup code on pending sign-ins. Downgrade refuses unrepresentable native
+  referrals or pending signup attribution.
 
 The existing receipt-preview opportunity and payment pointer survive these
 migrations. Its separate capped budget now records canonical ownership while
@@ -204,48 +254,58 @@ python -m unittest tests.test_native_account_signup tests.test_native_account_mi
   tests.test_native_account_acceptance tests.test_payment_review_preview \
   tests.test_native_account_payments tests.test_native_payment_repository \
   tests.test_native_payment_migration tests.test_native_payment_discounts_finance \
-  tests.test_payment_service_receipt_lock
-python -m unittest tests.test_native_account_concurrency
+  tests.test_payment_service_receipt_lock tests.test_native_hsk30_payments \
+  tests.test_universal_referrals tests.test_universal_referral_migration
+python -m unittest tests.test_native_account_concurrency \
+  tests.test_universal_referral_concurrency
 python -m unittest tests.test_native_account_rehearsal
 ```
 
-Validation on 2026-10-17, source `09aa4d48` (backend base `3fffa42e`):
+Current business code is `7685d7d6`, integrated with `main` `160a51d6` at
+`5b55cc3d`. The later `116ff346` changes only bounded remote PostgreSQL test
+deadlines. Native source files are unchanged by the main localization merge.
 
-- Final integrated backend selection: 1,070 tests and 766 subtests passed,
-  with seven existing configuration/asyncpg cleanup warnings. Four PostgreSQL
-  cases are skipped in this SQLite selection and run separately below.
-- Isolated Railway PostgreSQL 18 payment concurrency: two tests passed. Parallel
-  requests for the same canonical user share one pending payment; another user
-  remains independent. The earlier first-signup race also passed one test and
-  four subtests, using four concurrent attempts per Google/Apple subject and
-  safe starter/preview defaults. External identity verification is mocked.
-- Isolated Railway PostgreSQL 18 receipt/admin concurrency: both races passed,
-  in addition to the local PostgreSQL 15 run within the 51-test
-  receipt/preview/checkout selection, with no skips. Reviewed
-  receipt edits cannot claim another preview or open a replacement payment;
-  user-before-payment locking prevents the old bot/admin deadlock.
-- Current desktop browser checkout: three checks passed, including successful
-  receipt submission without Telegram and the server-restricted error state.
-  Real bearer Android Direct tests cover overview, quote, currency, receipt,
-  duplicate submission, canonical status and other-account refusal.
-- Historical Android validation at pre-rebase `2b6d87ed`: 1009 unit tests,
-  26 native Compose checks, nine static gates and four app/test APK builds
-  passed across Direct/Play. Historical shared desktop validation passed
-  29 JavaScript contracts, 24 Rust tests and five focused auth browser checks.
-  Five unrelated full desktop browser failures also reproduce on the deletion
-  baseline; the full desktop browser suite is not green.
+Validation on 2026-10-17:
 
-Android/desktop source is unchanged by this canonical payment integration; full
-client build/unit suites were not rerun against `09aa4d48`. Current backend and
-browser checks do not replace installed-client/provider/purchase acceptance.
-Later main `160a51d6` was inspected: its changes since the backend reference are
-Mini App localization/inventory and CI, with no auth, payment backend or schema
-change. It is not claimed as this feature's fully integrated test baseline.
+- Integrated backend selection at `5b55cc3d`: **1,189 tests and 814 subtests
+  passed**, nine PostgreSQL cases skipped, seven existing configuration/asyncpg
+  cleanup warnings. Real PostgreSQL checks cover those skipped cases separately.
+- Real local PostgreSQL 15 checks: **12 tests and six subtests passed**, covering canonical payment/receipt races,
+  HSK 3.0 first receipt/permanent grant/course-switch races, native identity
+  races and simultaneous referral rewards. The course-switch test reproduced
+  deadlock and first-state failure before the User-before-state fix, then passed
+  for both existing and absent target track states.
+- Railway staging PostgreSQL 18: **six tests and six subtests passed** for
+  concurrent Google/Apple signup, HSK 3.0 receipt/grant/course-switch races and
+  simultaneous referral rewards. All used isolated test databases.
+- Android: **534 Direct + 489 Play unit tests**, nine native auth Compose
+  checks, nine static gates and four debug/unsigned-release app builds passed.
+  This includes the Play consumption-only contract and Direct checkout tests.
+- Shared desktop: **31 JavaScript contracts, 25 Rust tests and 13 focused
+  auth/referral browser checks** passed. Rendered invite QR codes were decoded
+  back to their exact payload for macOS and Windows platform fixtures.
+- Public download/provider/referral instructions plus Pro/HSK 3.0 checkout:
+  **17 browser checks passed**. HSK 3.0 runs the actual existing profile-setting
+  to receipt/pending flow for Google/macOS and Apple/Windows fixtures.
+- Mini App affected smoke: **four checks passed** for map/lesson routing,
+  subscription receipt flow, HSK 3.0 pending state and AI Voice rendering.
+  Backend course/progress/quiz/entitlement regressions also pass.
+- Seven broader Mini App expectations still fail identically on the untouched
+  `8f1dca88` baseline: old onboarding-step expectations, three paywall-language
+  expectations, recognition fallback/result and exam static-resource checks.
+  Five older full desktop browser failures were already reproduced on the
+  deletion baseline. An unrelated Android profile NEW-badge source assertion
+  also predates this task. These suites are not claimed green.
 
-These checks do not satisfy the outstanding release gates above. In
-particular, a safe error for unsupported checkout is not a successful Pro
-purchase, and a mocked voice/provider response is not a real service test.
+PostgreSQL CI uses a local PostgreSQL 18 service. For an explicitly isolated
+remote staging test database, `NATIVE_ACCOUNT_TEST_TIMEOUT_SECONDS=180` allows
+network/proxy latency; the override is test-only and bounded at 300 seconds.
+Ordinary CI deadlines and production timeouts are unchanged. Do not print full
+database-driver locals or rendered connection variables when a test fails.
 
-Native and browser fixtures do not prove real provider console configuration,
-deployed migration status or signed store/installer release. Those checks
-remain part of the rollout above.
+Native/browser fixtures do not prove real Google/Apple console configuration,
+upstream AI Voice, bank payment review with real accounts, signed installed
+Android/DMG/EXE parity, or Mini App account-link walkthroughs. Those are the
+remaining acceptance checks. Play has no purchase test in the current scope.
+The full desktop/older Mini App UI suites also need their baseline gaps reviewed
+before claiming all project regressions green. `main` and production remain held.

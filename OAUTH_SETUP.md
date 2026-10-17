@@ -7,6 +7,18 @@ credential'lari yoki real callback hozir tekshirilganini bildirmaydi.
 Universal akkaunt yaratish, migratsiya va release tekshiruvlari:
 [`docs/UNIVERSAL_NATIVE_ACCOUNTS.md`](docs/UNIVERSAL_NATIVE_ACCOUNTS.md).
 
+Google va Apple birinchi tasdiqlangan kirishda Telegramsiz yangi HSK AI hisobini
+yaratadi. Avvaldan progress yoki obuna bor bo‘lsa, o‘sha hisobga kirib, boshqa
+provider’ni profilidan ulang; bir xil email hisoblarni birlashtirmaydi. Pro,
+HSK 3.0 xaridi va referral hisobning `users.id` kalitiga tegishli. Native
+registratsiyadagi ixtiyoriy taklif kodi faqat yangi hisobga biriktiriladi.
+
+Hozirgi Play ilovasida xarid yo‘q. Saytdagi Direct APK va desktop mavjud
+chek/admin tasdiqlash oqimidan foydalanadi. Bu branch `main`/production’ga
+qabul tekshiruvlari tugamaguncha chiqarilmaydi. Staging OAuth tekshiruvida
+staging’ning o‘z origin/callback va provider client sozlamalaridan foydalaning;
+production konfiguratsiyasini sinov uchun o‘zgartirmang.
+
 Production domeni: `telegram-chinese-bot-production.up.railway.app`
 
 ---

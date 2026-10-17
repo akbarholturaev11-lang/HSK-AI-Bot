@@ -86,17 +86,20 @@ Android acknowledgment confirms submission; it does not claim immediate purge.
 account/profile/learning/mistake/voice/AI state, sign-in identities, devices,
 sessions, push/presence, referrals and personalized discount campaigns. A null
 Telegram ID never matches unrelated null rows or global campaigns/ledger data.
+Friend referrals are removed by either canonical inviter/invited owner, including
+provider-only accounts; their optional Telegram metadata is not the owner key.
 
 Existing financial exceptions remain:
 
-- Pending/rejected payments are deleted. Approved payment facts remain with an
-  anonymous negative internal ID; screenshots, comments and Telegram message
-  references are cleared.
+- Pending/rejected payments are deleted. Approved Pro and one-time HSK 3.0
+  payment facts remain with an anonymous negative internal ID; canonical
+  `payments.user_id`, screenshots, comments and Telegram message references
+  are cleared. No User FK cascades approved accounting facts.
 - Portfolio transactions retain accounting facts under that anonymous ID.
   Their freeform ledger notes may contain personal information; review these
   for a justified accounting/legal exception or redact them before closing
   the support case.
-- Partner/referral records are anonymized and partner identity/access fields
+- Affiliate partner/referral financial records are anonymized and partner identity/access fields
   are redacted. Existing partner payout evidence, payout/account details,
   holder/bank information, proofs and notes are retained by the current purge.
   Review personal details and retain only those required for a documented

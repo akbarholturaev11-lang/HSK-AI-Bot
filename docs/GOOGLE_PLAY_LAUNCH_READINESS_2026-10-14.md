@@ -80,6 +80,15 @@ https://support.google.com/googleplay/android-developer/answer/13327111
 Users can access server-unlocked lessons, but cannot purchase Pro or HSK 3.0
 inside the current Play APK. This is an interim release choice.
 
+The owner confirmed this release scope on 2026-10-17: no subscriptions are
+sold in the Play app. Play Billing products, license testers and purchase code
+are therefore a future phase, not a missing purchase requirement for this
+consumption-only release. Verify that Play has no external payment steering
+and reads the same canonical account's existing Pro/HSK 3.0 access. The website
+Direct APK and desktop retain manual payments for Google, Apple and Telegram
+accounts. Universal registration is still held from `main` and production by
+`docs/UNIVERSAL_NATIVE_ACCOUNTS.md` until its code and acceptance checks finish.
+
 **Later, Play can have its own Google Play Billing subscriptions and one-off
 HSK 3.0 unlock**, without changing the existing bank/card/manual checkout
 used by `direct` or Telegram. Keep payment providers separate:
@@ -116,9 +125,9 @@ install/update permissions; it intentionally does **not** require Play
 checkout to remain a no-op or `canSubscribe = false`. Thus adding Google
 Play Billing later does not require disabling safety checks.
 
-The consumption-only first release has a conversion cost. Decide when
-Google Play Billing should launch **before** publishing. Nothing in this
-preflight adds billing or changes existing payment flows.
+The current decision is a consumption-only first release. A later Billing
+phase needs its own approval, implementation and real store tests. Nothing in
+this preflight adds billing or changes existing payment flows.
 
 Docs:
 https://support.google.com/googleplay/android-developer/answer/10281818

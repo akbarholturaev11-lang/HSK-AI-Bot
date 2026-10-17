@@ -12,9 +12,18 @@ kontekst `PROJECT_MEMORY.md`da saqlanadi, u sanali changelog emas.
 ## 1. Ilova nima va qayerda
 
 Native Kotlin/Compose klient, `android/` papkasida. Bot, Mini App, macOS va
-Windows bilan **bir xil backend**, bir xil Telegram akkaunt, bir xil obuna va
-progress. Kirish — `LinkScreen` dagi uchta karta: Telegram (kodsiz,
+Windows bilan **bir xil backend** va yagona `users.id` akkaunti, obuna va
+progress. Google/Apple orqali Telegramsiz hisob ochiladi; boshqa kirish usuli
+mavjud hisob profilidan aniq ulanadi. Email tengligi hisoblarni birlashtirmaydi.
+Kirish — `LinkScreen` dagi uchta karta: Telegram (kodsiz,
 botdagi bitta tasdiq), Google va Apple (server taklif qilsa).
+
+Direct APK’da Pro va alohida HSK 3.0 xaridi mavjud chek/admin oqimi bilan
+`users.id`ga yoziladi. Referral kodi yangi hisob yaratilishidan oldin qabul
+qilinadi; bonus va chegirmaning mavjud shartlari saqlanadi. Play hozircha
+xaridsiz, shu hisobdagi kirish holatini o‘qiydi. Universal o‘zgarishlarni
+`main`/production’ga chiqarish hali bloklangan; qabul shartlari
+`docs/UNIVERSAL_NATIVE_ACCOUNTS.md`da.
 
 **Ikkita flavour, va bu farq muhim:**
 
@@ -753,9 +762,10 @@ Bilib qo'yish kerak:
   SHA-1 + Play App Signing yoqilgan bo'lsa Play SHA-1) va
   `com.pomp.hskai.debug`. `play` va `direct` bir xil `applicationId` ishlatadi,
   shuning uchun ular uchun alohida client kerak emas.
-- Hozircha Telegramsiz akkaunt ochib bo'lmaydi. Noma'lum Google/Apple akkaunt
-  `oauth_telegram_account_required` oladi va ilova "avval Telegram orqali
-  kiring, keyin profilda ulang" deydi.
+- Bu sanali bo‘lim yozilgan paytda noma’lum Google/Apple akkauntga
+  `oauth_telegram_account_required` qaytardi. Universal oqimda birinchi
+  tasdiqlangan Google/Apple kirishi yangi `users.id` yaratadi; Telegram shart
+  emas. Joriy kontrakt yuqoridagi bo‘lim va `PROJECT_MEMORY.md`da.
 
 Qamrov: `AuthRepositoryOauthTest` (13 ta), `check_strings_translated.py` va
 `check_flavor_parity.py` o'tadi.

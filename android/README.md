@@ -1,9 +1,16 @@
 # Pomp HSK AI — Android client
 
-Native Kotlin/Compose client of the existing HSK AI backend. Same Telegram
-account, same subscription, same course progress as the bot, Mini App, macOS
-and Windows clients. The Android client reuses the shared backend auth and
-course contracts.
+Native Kotlin/Compose client of the existing HSK AI backend. One canonical
+`users.id` owns subscriptions, HSK 3.0 purchases, referrals and course progress
+across Android, macOS, Windows and explicitly linked Telegram clients.
+Google or Apple can create an account without Telegram. Add another sign-in
+method from the existing account's profile; equal email addresses do not merge
+accounts. The Android client reuses the shared backend auth and course contracts.
+
+The current Play flavor has no purchase flow. The website-distributed Direct
+APK keeps manual payment and receipt review for every sign-in method. Universal
+registration remains held from `main` and production pending the acceptance
+checks in `../docs/UNIVERSAL_NATIVE_ACCOUNTS.md`.
 
 ## One-time bootstrap: the Gradle wrapper
 

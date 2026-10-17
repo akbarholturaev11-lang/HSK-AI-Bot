@@ -99,14 +99,18 @@ its separate bot-chat delivery path when the current release is available by
 Telegram `file_id`. Desktop installers are downloaded directly; the Mini App
 does not close or send a desktop installer through the bot.
 
-After installation, the desktop app shows a short code. The bot displays the
+When Telegram is selected after installation, the desktop app shows a short code. The bot displays the
 device information and requires an explicit approve/cancel action. Opening the
 deep-link alone never links an account.
 
-Desktop has Google and Apple OAuth flows. Provider identities link to the same
-internal `users.id`, so course progress and subscription are shared rather than
-creating a separate provider account. Email is metadata, not an account lookup
-or ownership proof. See `../DESKTOP_AUTH_CONTRACT.md` and `../OAUTH_SETUP.md`.
+Google and Apple OAuth can each create a canonical `users.id` without Telegram;
+an already linked provider opens its existing owner. Course progress, Pro,
+the separate HSK 3.0 purchase and referrals belong to that account. Add another
+sign-in method from its profile; email is metadata, never a merge or ownership
+proof. An optional invitation code is entered before creating a new account.
+macOS and Windows share this flow and the existing manual receipt checkout.
+See `../DESKTOP_AUTH_CONTRACT.md`, `../OAUTH_SETUP.md` and the release hold in
+`../docs/UNIVERSAL_NATIVE_ACCOUNTS.md`.
 
 ## Local preview
 

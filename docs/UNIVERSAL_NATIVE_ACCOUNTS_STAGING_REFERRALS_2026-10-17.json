@@ -1,0 +1,174 @@
+{
+  "date": "2026-10-17",
+  "feature_branch": "codex/universal-sign-in",
+  "feature_code_commit": "7685d7d6",
+  "integrated_runtime_commit": "5b55cc3d",
+  "main_integrated": "160a51d6",
+  "remote_test_deadlines_commit": "116ff346",
+  "release_hold": {
+    "main_push_authorized": false,
+    "production_universal_deployed": false,
+    "play_purchases": "out_of_scope_consumption_only_by_owner_decision",
+    "remaining": [
+      "real Google/Apple sign-in and linking",
+      "real upstream AI Voice",
+      "actual Direct/desktop receipt/admin review with disposable provider accounts",
+      "installed Android/macOS/Windows/MiniApp parity",
+      "review existing broader UI baseline gaps"
+    ]
+  },
+  "staging": {
+    "postgresql_major": 18,
+    "fresh_isolated_migration_restore_and_test_databases": true,
+    "source_revision": "0102_payment_review_preview",
+    "target_revision": "0107_canonical_referral_owners",
+    "source_backup_from_verified_copy_on": "2026-10-17",
+    "production_connection_made_for_this_rehearsal": false,
+    "production_writes": false,
+    "source_schema_columns": 835,
+    "legacy_data_tables": 61,
+    "legacy_rows": 190155,
+    "legacy_users": 2118,
+    "legacy_payments": 100,
+    "legacy_referrals": 214,
+    "owner_backfills": 14333,
+    "referral_owner_backfills": 428,
+    "comparisons": {
+      "backup_before": {
+        "critical_values_preserved": {
+          "billing": true,
+          "progress": true,
+          "referrals": true,
+          "xp_rating": true
+        },
+        "failures": [],
+        "migration_head": [
+          "0102_payment_review_preview"
+        ],
+        "mode": "restore",
+        "ok": true,
+        "owner_backfill_verified": false
+      },
+      "migration": {
+        "critical_values_preserved": {
+          "billing": true,
+          "progress": true,
+          "referrals": true,
+          "xp_rating": true
+        },
+        "failures": [],
+        "migration_head": [
+          "0107_canonical_referral_owners"
+        ],
+        "mode": "migration",
+        "ok": true,
+        "owner_backfill_verified": true
+      },
+      "backup_after": {
+        "critical_values_preserved": {
+          "billing": true,
+          "progress": true,
+          "referrals": true,
+          "xp_rating": true
+        },
+        "failures": [],
+        "migration_head": [
+          "0107_canonical_referral_owners"
+        ],
+        "mode": "restore",
+        "ok": true,
+        "owner_backfill_verified": false
+      }
+    },
+    "private_backups_retained_outside_git": true,
+    "backup_fingerprints": {
+      "production-readonly-0102.dump": {
+        "bytes": 9712076,
+        "sha256": "871a524998529853acdef032cf34222eb60045089c8a9c667ba8a0fe5a284055"
+      },
+      "staging-after-0107.dump": {
+        "bytes": 9736587,
+        "sha256": "8e61563613bdc51aa0cb0d59c91b6f762e263bfbd4bd47ad5940fc3f5739e288"
+      }
+    },
+    "universal_application_deployed": false,
+    "separate_existing_i18n_qa_is_universal_acceptance_evidence": false
+  },
+  "tests": {
+    "integrated_backend": {
+      "source": "5b55cc3d",
+      "passed": 1189,
+      "subtests_passed": 814,
+      "postgresql_skipped": 9,
+      "existing_warnings": 7
+    },
+    "local_postgresql15": {
+      "passed": 12,
+      "subtests_passed": 6,
+      "coverage": "all nine skipped payment/referral races plus three identity races"
+    },
+    "railway_postgresql18": {
+      "hsk30": {
+        "tests_passed": 3,
+        "subtests_passed": 2,
+        "summary": "3 passed, 2 subtests passed in 633.22s (0:10:33)"
+      },
+      "referral": {
+        "tests_passed": 2,
+        "subtests_passed": 0,
+        "summary": "2 passed in 417.27s (0:06:57)"
+      },
+      "signup": {
+        "tests_passed": 1,
+        "subtests_passed": 4,
+        "summary": "1 passed, 4 subtests passed in 195.25s (0:03:15)"
+      }
+    },
+    "android": {
+      "direct_unit_passed": 534,
+      "play_unit_passed": 489,
+      "auth_compose_passed": 9,
+      "static_contracts_passed": 9,
+      "debug_and_unsigned_release_builds": 4,
+      "signed_installed_device_acceptance": false
+    },
+    "desktop": {
+      "javascript_passed": 31,
+      "rust_passed": 25,
+      "auth_referral_browser_passed": 13,
+      "actual_rendered_qr_roundtrips": "macOS and Windows fixtures decoded exactly",
+      "installed_dmg_exe_acceptance": false
+    },
+    "public_and_checkout_browser": {
+      "passed": 17,
+      "includes": "public referral/provider instructions, existing Pro and HSK3 checkout"
+    },
+    "affected_miniapp_browser": {
+      "passed": 4,
+      "includes": "map/lesson route, subscription receipt, HSK3 pending, Voice rendering"
+    },
+    "known_preexisting_gaps": {
+      "miniapp_baseline_commit": "8f1dca88",
+      "miniapp_failures_reproduced": 7,
+      "older_full_desktop_failures_reproduced_previously": 5,
+      "android_profile_new_badge_source_assertion_already_mismatched": true
+    }
+  },
+  "staging_credential_maintenance": {
+    "staging_password_rotated": true,
+    "old_password_rejected": true,
+    "new_connection_verified": true,
+    "staging_database_variables_updated": true,
+    "existing_qa_database_variable_updated": true,
+    "qa_existing_build_refresh_succeeded": true,
+    "production_changed": false
+  },
+  "graph": {
+    "built_from_commit": "116ff346d20befda40a828c0defcdd3721f85220",
+    "nodes": 16604,
+    "edges": 50570,
+    "semantic_nodes_preserved": 59,
+    "prior_inferred_edge_records_preserved": 7195,
+    "api_tokens_used": 0
+  }
+}
