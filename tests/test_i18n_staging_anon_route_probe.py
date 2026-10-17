@@ -27,7 +27,7 @@ class StagingAnonymousProbeTests(unittest.TestCase):
         result = probe(open_request=cannot_open)
         self.assertEqual(result["status"], "NOT_EXECUTED_STAGING_TARGET_REQUIRED")
         self.assertEqual(result["performed_requests"], 0)
-        self.assertEqual(result["planned_requests"], 2 * len(TRACKS) + 3)
+        self.assertEqual(result["planned_requests"], 3 * len(TRACKS) + 3)
         self.assertEqual(result["findings"], [])
         self.assertFalse(any(c["http_status"] is not None for c in result["cases"]))
 
@@ -61,17 +61,29 @@ class StagingAnonymousProbeTests(unittest.TestCase):
             return result
         result = probe(execute=True, base_url="https://qa.example.test",
                        confirmed_host="qa.example.test", open_request=fake_open)
-        self.assertEqual(result["performed_requests"], 17)
+        self.assertEqual(result["performed_requests"], 24)
         self.assertTrue(result["exam_404_verified"])
         self.assertEqual(result["anonymous_lesson_success_count"], 7)
         self.assertEqual(result["native_api_denied_without_bearer_count"], 2)
-        self.assertEqual(len(responses), 17)
+        self.assertEqual(result["anonymous_late_lesson_success_count"], 7)
+        self.assertEqual(len(responses), 24)
         self.assertTrue(all(r.closed and r.body_reads == 0 for r in responses))
-        self.assertEqual(len(result["findings"]), 7)
+        self.assertEqual(len(result["findings"]), 14)
         for req in requests:
             self.assertEqual(req.get_method(), "GET")
             self.assertNotIn("authorization", {k.lower() for k in req.headers})
             self.assertNotIn("x-telegram-init-data", {k.lower() for k in req.headers})
+
+    def test_late_lesson_file_probes_are_real_source_paths(self):
+        from scripts.i18n_staging_anon_route_probe import LAST_LESSON_BY_TRACK
+        all_cases = cases()
+        late_cases = [c for c in all_cases if c["kind"] == "late_legacy_lesson"]
+        self.assertEqual(len(late_cases), 7)
+        self.assertEqual(
+            [(x["track"], x["path"]) for x in late_cases],
+            [(level, f"/course_v3_data/{level}/lesson_{LAST_LESSON_BY_TRACK[level]}.json")
+             for level in TRACKS],
+        )
 
     def test_non_404_exam_never_counts_as_protected(self):
         result = probe(execute=True, base_url="https://staging.example.test",
