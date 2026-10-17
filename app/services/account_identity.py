@@ -1,5 +1,5 @@
 """Canonical ownership for native accounts; legacy Telegram callers stay valid."""
-from sqlalchemy import and_, false, or_
+from sqlalchemy import and_, false, or_, select
 
 
 def account_user_id(actor):
@@ -29,4 +29,16 @@ def owner_clause(model, actor, *, telegram_column="user_telegram_id", user_id=No
     if uid is not None:
         canonical = model.user_id == int(uid)
         return or_(canonical, and_(model.user_id.is_(None), telegram_field == tid)) if tid else canonical
-    return telegram_field == tid if tid else false()
+    if not tid:
+        return false()
+    # A Telegram identity may be attached after native data was created. Its
+    # old rows still have NULL transport metadata, so resolve the real TG ID
+    # to its canonical owner instead of requiring a historical metadata rewrite.
+    # Non-NULL canonical ownership always wins over stale Telegram metadata.
+    from app.db.models.user import User
+
+    canonical_id = (
+        select(User.id).where(User.telegram_id == tid).correlate(None).scalar_subquery()
+    )
+    return or_(model.user_id == canonical_id,
+               and_(model.user_id.is_(None), telegram_field == tid))

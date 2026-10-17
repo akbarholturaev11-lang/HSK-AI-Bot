@@ -30,6 +30,7 @@ from app.api.desktop_auth import (
 from app.services.desktop_auth_service import (
     LINK_INTENT,
     SIGNIN_INTENT,
+    TELEGRAM_APPROVAL_MODE,
     DesktopAuthError,
     DesktopAuthService,
 )
@@ -97,8 +98,8 @@ class IdentityLinkStartRequest(BaseModel):
     # per-account value so the existing per-installation rate limit still
     # applies. Native clients must still send their real key.
     installation_key: InstallationKey | None = None
-    provider: Provider
-    mode: Literal["native_id_token", "browser_redirect"]
+    provider: Literal["google", "apple", "telegram"]
+    mode: Literal["native_id_token", "browser_redirect", "telegram_approval"]
 
 
 class IdentityLinkStatusRequest(BaseModel):
@@ -420,6 +421,14 @@ def create_native_oauth_router(
                     )
                 else:
                     installation_key = payload.installation_key.get_secret_value()
+                if payload.provider == "telegram":
+                    if payload.mode != TELEGRAM_APPROVAL_MODE or payload.platform == MINIAPP_PLATFORM:
+                        raise NativeOAuthError("oauth_mode_unsupported", status_code=422)
+                    started = await DesktopAuthService(session, settings_obj).start_telegram_identity_link(
+                        user_id=int(actor.id), session_id=origin_session_id,
+                        platform=payload.platform, app_version=payload.app_version,
+                        installation_key=installation_key)
+                    return JSONResponse(content=started, headers=_NO_STORE)
                 started = await service_factory(session, settings_obj).start(
                     provider=payload.provider,
                     mode=payload.mode,
@@ -468,6 +477,23 @@ def create_native_oauth_router(
             return auth_error_response(exc)
         except Exception:
             logger.exception("Identity link status failed")
+            return _unavailable()
+
+    @router.post("/api/v3/native-auth/identities/link/cancel")
+    async def identity_link_cancel(request: Request):
+        try:
+            payload = await validated_auth_payload(request, IdentityLinkStatusRequest)
+            async with session_factory() as session:
+                actor, origin_session_id = await _actor(session, request)
+                result = await DesktopAuthService(session, settings_obj).cancel_telegram_identity_link(
+                    link_request_id=payload.link_request_id,
+                    polling_secret=payload.polling_secret.get_secret_value(),
+                    user_id=int(actor.id), session_id=origin_session_id)
+            return JSONResponse(content=result, headers=_NO_STORE)
+        except DesktopAuthError as exc:
+            return auth_error_response(exc)
+        except Exception:
+            logger.exception("Identity link cancellation failed")
             return _unavailable()
 
     @router.post("/api/v3/native-auth/identities/unlink")

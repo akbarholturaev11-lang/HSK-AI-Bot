@@ -9,7 +9,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 from uuid import uuid4
 
-from sqlalchemy import and_, delete, func, or_, select, text
+from sqlalchemy import and_, delete, func, or_, select, text, update
 from sqlalchemy.exc import IntegrityError
 
 from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
@@ -30,6 +30,8 @@ MOBILE_PLATFORMS = {"android"}
 # receives the polling secret separately and the bot only sees this one-time
 # request identifier.
 ANDROID_LINK_PREFIX = "android_link_"
+TELEGRAM_IDENTITY_LINK_PREFIX = "tg_identity_"
+TELEGRAM_APPROVAL_MODE = "telegram_approval"
 # Every native client allowed to open a Telegram device link. The desktop-only
 # set stays separate so desktop consumers (downloads, release manifest, admin
 # desktop statistics) keep their current meaning and are not silently widened.
@@ -142,6 +144,12 @@ class DesktopAuthService:
         """
 
         if str(getattr(link_request, "flow", TELEGRAM_FLOW) or TELEGRAM_FLOW) != TELEGRAM_FLOW:
+            raise DesktopAuthError("desktop_link_invalid", status_code=404)
+
+    @classmethod
+    def _require_telegram_signin(cls, link_request) -> None:
+        cls._require_telegram_flow(link_request)
+        if str(link_request.intent or SIGNIN_INTENT) != SIGNIN_INTENT:
             raise DesktopAuthError("desktop_link_invalid", status_code=404)
 
     def identity_subject_hash(self, provider: str, subject: str) -> str:
@@ -472,6 +480,165 @@ class DesktopAuthService:
             )
         return payload
 
+    async def _telegram_link_origin(self, *, user_id, session_id, installation_hash, platform):
+        """Lock/revalidate the native proof; revocation cannot pass this check."""
+        origin = (await self.session.execute(select(DesktopSession)
+            .where(DesktopSession.id == session_id)
+            .with_for_update().execution_options(populate_existing=True))).scalar_one_or_none()
+        now = _utcnow()
+        if (origin is None or origin.revoked_at is not None
+                or (_as_utc(origin.expires_at) or now) <= now):
+            raise DesktopAuthError("desktop_session_revoked", status_code=401)
+        device = (await self.session.execute(select(DesktopDevice)
+            .where(DesktopDevice.id == origin.device_id)
+            .with_for_update().execution_options(populate_existing=True))).scalar_one_or_none()
+        if (device is None or device.revoked_at is not None
+                or int(device.user_id) != int(user_id)
+                or device.installation_key_hash != installation_hash
+                or device.platform != platform):
+            raise DesktopAuthError("desktop_session_revoked", status_code=401)
+        return origin
+
+    async def start_telegram_identity_link(self, *, user_id: int, session_id: str,
+            platform: str, app_version: str, installation_key: str) -> dict[str, Any]:
+        if platform not in NATIVE_PLATFORMS:
+            raise DesktopAuthError("desktop_platform_invalid", status_code=422)
+        await self._acquire_link_start_rate_limit_lock()
+        user = await UserRepository(self.session).get_by_user_id(user_id, lock=True)
+        if user is None or user.status == "blocked":
+            raise DesktopAuthError("user_blocked", status_code=403)
+        if user.telegram_id is not None:
+            raise DesktopAuthError("oauth_identity_bound_to_other_user", status_code=409)
+        await self._telegram_link_origin(user_id=user.id, session_id=session_id,
+            installation_hash=self._hash("installation", installation_key), platform=platform)
+        started = await self.start_link(platform=platform, app_version=app_version,
+            installation_key=installation_key, flow=TELEGRAM_FLOW, intent=LINK_INTENT,
+            bind_user_id=user.id, bind_session_id=session_id, language=user.language)
+        username = str(getattr(self.settings, "BOT_USERNAME", "") or "darsi_chini_bot").strip().lstrip("@")
+        return {key: started[key] for key in ("ok", "status", "link_request_id", "polling_secret", "expires_in")} | {
+            "authorize_url": f"https://t.me/{username}?start={TELEGRAM_IDENTITY_LINK_PREFIX}{started['link_request_id']}"}
+
+    async def _telegram_identity_request(self, link_request_id: str, *, user_id: int | None = None,
+            polling_secret: str | None = None):
+        # Read only the owner first, then lock user -> request -> origin session
+        # -> device. A competing disconnect holds the same user lock.
+        snapshot = (await self.session.execute(select(DesktopLinkRequest.bind_user_id,
+            DesktopLinkRequest.flow, DesktopLinkRequest.intent)
+            .where(DesktopLinkRequest.id == str(link_request_id or "")))).first()
+        if (snapshot is None or snapshot.flow != TELEGRAM_FLOW or snapshot.intent != LINK_INTENT
+                or not snapshot.bind_user_id or (user_id is not None and snapshot.bind_user_id != user_id)):
+            raise DesktopAuthError("desktop_link_invalid", status_code=401)
+        user = await UserRepository(self.session).get_by_user_id(snapshot.bind_user_id, lock=True)
+        row = await self._locked_link_request_by_id(link_request_id)
+        if (row.flow != TELEGRAM_FLOW or row.intent != LINK_INTENT or row.bind_user_id != snapshot.bind_user_id
+                or (polling_secret is not None and not hmac.compare_digest(
+                    str(row.polling_secret_hash or ""), self._hash("polling", polling_secret)))):
+            raise DesktopAuthError("desktop_link_invalid", status_code=401)
+        if user is None or user.status == "blocked":
+            raise DesktopAuthError("user_blocked", status_code=403)
+        await self._telegram_link_origin(user_id=user.id, session_id=row.bind_session_id,
+            installation_hash=row.installation_key_hash, platform=row.platform)
+        if (_as_utc(row.expires_at) or _utcnow()) <= _utcnow():
+            if row.status != "linked":
+                row.status = "expired"
+                await self.session.commit()
+            raise DesktopAuthError("desktop_link_expired", status_code=410)
+        return user, row
+
+    async def _telegram_identity_owner_available(self, user, row, telegram_id: int) -> None:
+        if int(telegram_id) <= 0:
+            raise DesktopAuthError("desktop_link_invalid", status_code=403)
+        other = (await self.session.execute(select(User.id).where(
+            User.telegram_id == int(telegram_id), User.id != user.id))).scalar_one_or_none()
+        if other is not None or (user.telegram_id is not None and int(user.telegram_id) != int(telegram_id)):
+            row.status = "denied"
+            row.link_failure_code = "oauth_identity_bound_to_other_user"
+            await self.session.commit()
+            raise DesktopAuthError("oauth_identity_bound_to_other_user", status_code=409)
+
+    async def telegram_identity_confirmation(self, *, link_request_id: str, telegram_id: int):
+        user, row = await self._telegram_identity_request(link_request_id)
+        if row.status != "pending" or row.consumed_at is not None:
+            raise DesktopAuthError("desktop_link_consumed", status_code=409)
+        if row.approved_telegram_id is not None and int(row.approved_telegram_id) != int(telegram_id):
+            raise DesktopAuthError("desktop_link_invalid", status_code=403)
+        await self._telegram_identity_owner_available(user, row, telegram_id)
+        row.approved_telegram_id = int(telegram_id)
+        await self.session.commit()
+        return {"ok": True, "link_request_id": row.id, "user_id": user.id,
+                "platform": row.platform, "app_version": row.app_version,
+                "language": user.language if user.language in {"uz", "ru", "tj"} else "ru"}
+
+    async def approve_telegram_identity(self, *, link_request_id: str, telegram_id: int):
+        user, row = await self._telegram_identity_request(link_request_id)
+        # Only the Telegram user shown the explicit target-account confirmation
+        # may approve; an ordinary signin/code callback cannot authorize this.
+        if int(row.approved_telegram_id or 0) != int(telegram_id):
+            raise DesktopAuthError("desktop_link_invalid", status_code=403)
+        await self._telegram_identity_owner_available(user, row, telegram_id)
+        if row.status == "linked" and user.telegram_id == int(telegram_id):
+            await self.session.commit()
+            return {"ok": True, "status": "linked", "duplicate": True}
+        if row.status != "pending" or row.consumed_at is not None:
+            raise DesktopAuthError("desktop_link_consumed", status_code=409)
+        try:
+            async with self.session.begin_nested():
+                user.telegram_id = int(telegram_id)
+                await self.session.flush()
+                await self.session.execute(update(DesktopDevice).where(DesktopDevice.user_id == user.id)
+                    .values(telegram_id=int(telegram_id)))
+        except IntegrityError:
+            # A simultaneous ordinary Telegram signup or another target may
+            # win the unique identity; never move/merge its data onto this user.
+            row.status = "denied"
+            row.link_failure_code = "oauth_identity_bound_to_other_user"
+            await self.session.commit()
+            raise DesktopAuthError("oauth_identity_bound_to_other_user", status_code=409) from None
+        row.status = "linked"
+        row.approved_user_id = user.id
+        row.approved_at = _utcnow()
+        await self.session.commit()
+        return {"ok": True, "status": "linked", "duplicate": False}
+
+    async def deny_telegram_identity(self, *, link_request_id: str, telegram_id: int):
+        _, row = await self._telegram_identity_request(link_request_id)
+        if int(row.approved_telegram_id or 0) != int(telegram_id):
+            raise DesktopAuthError("desktop_link_invalid", status_code=403)
+        if row.status != "pending" or row.consumed_at is not None:
+            raise DesktopAuthError("desktop_link_consumed", status_code=409)
+        row.status = "denied"
+        await self.session.commit()
+        return {"ok": True, "status": "denied"}
+
+    async def cancel_telegram_identity_link(self, *, link_request_id: str, polling_secret: str,
+            user_id: int, session_id: str):
+        _, row = await self._telegram_identity_request(link_request_id,
+            user_id=user_id, polling_secret=polling_secret)
+        if row.bind_session_id != session_id:
+            raise DesktopAuthError("desktop_link_invalid", status_code=401)
+        if row.status == "pending":
+            row.status = "denied"
+        elif row.status not in {"denied", "linked"}:
+            raise DesktopAuthError("desktop_link_consumed", status_code=409)
+        await self.session.commit()
+        return {"ok": True, "status": row.status, "provider": TELEGRAM_FLOW}
+
+    async def telegram_identity_link_status(self, *, link_request_id: str, polling_secret: str, user_id: int):
+        try:
+            user, row = await self._telegram_identity_request(link_request_id,
+                user_id=user_id, polling_secret=polling_secret)
+        except DesktopAuthError as exc:
+            if exc.code == "desktop_link_expired":
+                return {"ok": True, "status": "expired", "provider": TELEGRAM_FLOW}
+            raise
+        if row.status == "linked" and (user.telegram_id != row.approved_telegram_id or row.approved_user_id != user.id):
+            raise DesktopAuthError("desktop_link_invalid", status_code=409)
+        result = {"ok": True, "status": row.status, "provider": TELEGRAM_FLOW}
+        if row.link_failure_code:
+            result["error"] = row.link_failure_code
+        await self.session.commit()
+        return result
+
     async def link_request_preview(
         self,
         *,
@@ -487,13 +654,13 @@ class DesktopAuthService:
         result = await self.session.execute(
             select(DesktopLinkRequest)
             .where(DesktopLinkRequest.id == request_id)
-            .with_for_update()
+            .with_for_update().execution_options(populate_existing=True)
         )
         link_request = result.scalar_one_or_none()
         now = _utcnow()
         if not link_request:
             raise DesktopAuthError("desktop_link_invalid", status_code=404)
-        self._require_telegram_flow(link_request)
+        self._require_telegram_signin(link_request)
         if platform and link_request.platform != platform:
             raise DesktopAuthError("desktop_link_invalid", status_code=403)
         if (_as_utc(link_request.expires_at) or now) <= now:
@@ -530,7 +697,7 @@ class DesktopAuthService:
         self._signing_secret()
         link_request = await self._locked_link_request_by_id(link_request_id)
         now = _utcnow()
-        self._require_telegram_flow(link_request)
+        self._require_telegram_signin(link_request)
         if platform and link_request.platform != platform:
             raise DesktopAuthError("desktop_link_invalid", status_code=403)
         if (_as_utc(link_request.expires_at) or now) <= now:
@@ -581,7 +748,7 @@ class DesktopAuthService:
         link_request = await self._locked_link_request_by_id(link_request_id)
         # The flow guard comes first: a provider row is not the bot's to touch,
         # whatever platform it names.
-        self._require_telegram_flow(link_request)
+        self._require_telegram_signin(link_request)
         if platform and link_request.platform != platform:
             raise DesktopAuthError("desktop_link_invalid", status_code=403)
         return await self._approve_locked(link_request, telegram_id)
@@ -599,7 +766,7 @@ class DesktopAuthService:
         link_request = await self._locked_link_request_by_id(link_request_id)
         # The flow guard comes first: a provider row is not the bot's to touch,
         # whatever platform it names.
-        self._require_telegram_flow(link_request)
+        self._require_telegram_signin(link_request)
         if platform and link_request.platform != platform:
             raise DesktopAuthError("desktop_link_invalid", status_code=403)
         return await self._cancel_locked(link_request, telegram_id)
@@ -611,7 +778,7 @@ class DesktopAuthService:
         result = await self.session.execute(
             select(DesktopLinkRequest)
             .where(DesktopLinkRequest.id == request_id)
-            .with_for_update()
+            .with_for_update().execution_options(populate_existing=True)
         )
         link_request = result.scalar_one_or_none()
         if not link_request:
@@ -649,7 +816,7 @@ class DesktopAuthService:
         """
 
         now = _utcnow()
-        self._require_telegram_flow(link_request)
+        self._require_telegram_signin(link_request)
         if (_as_utc(link_request.expires_at) or now) <= now:
             link_request.status = "expired"
             await self.session.commit()
@@ -737,7 +904,7 @@ class DesktopAuthService:
             or link_request.consumed_at is not None
         ):
             raise DesktopAuthError("desktop_link_invalid", status_code=404)
-        self._require_telegram_flow(link_request)
+        self._require_telegram_signin(link_request)
         expires_at = _as_utc(link_request.expires_at) or now
         if expires_at <= now:
             raise DesktopAuthError("desktop_link_expired", status_code=410)
@@ -790,7 +957,7 @@ class DesktopAuthService:
         """Invalidate a locked, pending request. Shared for the same reason."""
 
         now = _utcnow()
-        self._require_telegram_flow(link_request)
+        self._require_telegram_signin(link_request)
         if (_as_utc(link_request.expires_at) or now) <= now:
             link_request.status = "expired"
             await self.session.commit()
@@ -868,7 +1035,7 @@ class DesktopAuthService:
             link_request.approved_user_id, lock=True)
         if not approved_user or approved_user.status == "blocked":
             raise DesktopAuthError("user_blocked", status_code=403)
-        if approved_user.telegram_id != link_request.approved_telegram_id:
+        if link_request.flow == TELEGRAM_FLOW and approved_user.telegram_id != link_request.approved_telegram_id:
             raise DesktopAuthError("desktop_link_invalid", status_code=409)
         if link_request.flow in {"google", "apple"}:
             identity = (await self.session.execute(select(UserIdentity.id).where(
@@ -878,6 +1045,10 @@ class DesktopAuthService:
             ))).scalar_one_or_none()
             if identity is None:
                 raise DesktopAuthError("oauth_identity_not_found", status_code=409)
+            # Attaching Telegram after provider approval must not invalidate a
+            # legitimate pending sign-in. Provider ownership is the immutable
+            # approved identity; Telegram here is current transport metadata.
+            link_request.approved_telegram_id = approved_user.telegram_id
 
         device_result = await self.session.execute(
             select(DesktopDevice)
@@ -911,6 +1082,7 @@ class DesktopAuthService:
         else:
             device.platform = link_request.platform
             device.app_version = link_request.app_version
+            device.telegram_id = link_request.approved_telegram_id
             device.revoked_at = None
 
         refresh_token = self._refresh_token()

@@ -420,6 +420,9 @@ class NativeOAuthService:
             )
         )
         row = result.scalar_one_or_none()
+        if row is not None and row.flow == "telegram":
+            return await self.auth.telegram_identity_link_status(
+                link_request_id=link_request_id, polling_secret=polling_secret, user_id=user_id)
         if (
             row is None
             or row.intent != LINK_INTENT

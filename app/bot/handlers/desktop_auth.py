@@ -1,3 +1,5 @@
+from html import escape
+
 from aiogram import F, Router
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
@@ -19,6 +21,7 @@ from app.services.onboarding_service import (
 )
 from app.services.desktop_auth_service import (
     ANDROID_LINK_PREFIX,
+    TELEGRAM_IDENTITY_LINK_PREFIX,
     MOBILE_PLATFORMS,
     DesktopAuthError,
     DesktopAuthService,
@@ -228,6 +231,89 @@ _ANDROID_COPY = {
         "invalid": "Истиноди пайвастшавӣ гузаштааст. Аз барнома аз нав оғоз кунед.",
     },
 }
+
+
+_TELEGRAM_IDENTITY_COPY = {
+    "uz": {
+        "confirm": "<b>Telegram’ni akkauntga ulash</b>\n\nHSK AI akkaunt ID: <code>{user_id}</code>\nQurilma: <b>{platform}</b>\nVersiya: <b>{version}</b>\n\nIlovadagi aynan shu akkauntni o‘zingiz ochib, Telegram ulashni boshlagan bo‘lsangiz tasdiqlang. Tasdiqlagach, shu Telegram orqali ushbu akkauntga kirish mumkin bo‘ladi.",
+        "approve": "Telegram’ni shu akkauntga ulash", "cancel": "Bekor qilish",
+        "ok": "Telegram akkauntingizga ulandi. HSK AI ilovasiga qayting.",
+        "denied": "Telegram ulash bekor qilindi.",
+        "invalid": "Bu ulash so‘rovi eskirgan yoki yaroqsiz. Ilovada qayta boshlang.",
+        "conflict": "Bu Telegram boshqa HSK AI akkauntiga tegishli. Akkauntlar birlashtirilmaydi.",
+    },
+    "ru": {
+        "confirm": "<b>Подключить Telegram к аккаунту</b>\n\nID аккаунта HSK AI: <code>{user_id}</code>\nУстройство: <b>{platform}</b>\nВерсия: <b>{version}</b>\n\nПодтверждайте, только если вы сами открыли именно этот аккаунт в приложении и начали подключение Telegram. После подтверждения этот Telegram позволит войти в указанный аккаунт.",
+        "approve": "Подключить Telegram к этому аккаунту", "cancel": "Отменить",
+        "ok": "Telegram подключён к вашему аккаунту. Вернитесь в HSK AI.",
+        "denied": "Подключение Telegram отменено.",
+        "invalid": "Запрос истёк или недействителен. Начните заново в приложении.",
+        "conflict": "Этот Telegram принадлежит другому аккаунту HSK AI. Аккаунты не объединяются.",
+    },
+    "tj": {
+        "confirm": "<b>Пайваст кардани Telegram ба ҳисоб</b>\n\nID ҳисоби HSK AI: <code>{user_id}</code>\nДастгоҳ: <b>{platform}</b>\nВерсия: <b>{version}</b>\n\nТанҳо агар худатон ҳамин ҳисобро дар барнома кушода, пайвасткунии Telegram-ро оғоз карда бошед, тасдиқ кунед. Баъд аз тасдиқ тавассути ҳамин Telegram ба ҳисоби нишоншуда ворид шудан мумкин аст.",
+        "approve": "Пайваст кардани Telegram ба ҳамин ҳисоб", "cancel": "Бекор кардан",
+        "ok": "Telegram ба ҳисоби шумо пайваст шуд. Ба HSK AI баргардед.",
+        "denied": "Пайвасткунии Telegram бекор шуд.",
+        "invalid": "Муҳлати дархост гузашт ё он беэътибор аст. Дар барнома аз нав оғоз кунед.",
+        "conflict": "Ин Telegram ба ҳисоби дигари HSK AI тааллуқ дорад. Ҳисобҳо якҷоя намешаванд.",
+    },
+}
+
+
+def _private_identity_event(event) -> bool:
+    message = event.message if isinstance(event, CallbackQuery) else event
+    return bool(message and str(message.chat.type) == "private"
+                and int(message.chat.id) == int(event.from_user.id))
+
+
+@router.message(CommandStart(deep_link=True),
+    F.text.regexp(r"^/start(?:@\w+)?\s+tg_identity_[0-9a-fA-F-]{36}\s*$"))
+async def begin_telegram_identity_link(message: Message, state: FSMContext, session) -> None:
+    # This path must never run ordinary Telegram onboarding: the native bearer
+    # already selected an existing canonical target and no new user is needed.
+    if not _private_identity_event(message):
+        return
+    request_id = str(message.text or "").strip().split()[-1][len(TELEGRAM_IDENTITY_LINK_PREFIX):]
+    language = "ru"
+    try:
+        confirmation = await DesktopAuthService(session, settings).telegram_identity_confirmation(
+            link_request_id=request_id, telegram_id=message.from_user.id)
+        language = confirmation["language"]
+    except DesktopAuthError as exc:
+        key = "conflict" if exc.code == "oauth_identity_bound_to_other_user" else "invalid"
+        await message.answer(_TELEGRAM_IDENTITY_COPY[language][key], parse_mode="HTML")
+        return
+    await state.clear()
+    copy = _TELEGRAM_IDENTITY_COPY[language]
+    await message.answer(copy["confirm"].format(user_id=confirmation["user_id"],
+        platform=_platform_label(confirmation["platform"]), version=escape(str(confirmation["app_version"]))),
+        parse_mode="HTML", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text=copy["approve"], callback_data=f"tg_identity:approve:{request_id}")],
+            [InlineKeyboardButton(text=copy["cancel"], callback_data=f"tg_identity:cancel:{request_id}")],
+        ]))
+
+
+@router.callback_query(F.data.regexp(r"^tg_identity:(?:approve|cancel):[0-9a-fA-F-]{36}$"))
+async def confirm_telegram_identity_link(callback: CallbackQuery, session) -> None:
+    if not _private_identity_event(callback):
+        await callback.answer()
+        return
+    language = await _language(session, callback.from_user.id)
+    _, action, request_id = str(callback.data or "").split(":", 2)
+    service = DesktopAuthService(session, settings)
+    try:
+        if action == "approve":
+            await service.approve_telegram_identity(link_request_id=request_id, telegram_id=callback.from_user.id)
+        else:
+            await service.deny_telegram_identity(link_request_id=request_id, telegram_id=callback.from_user.id)
+    except DesktopAuthError as exc:
+        key = "conflict" if exc.code == "oauth_identity_bound_to_other_user" else "invalid"
+        await callback.answer(_TELEGRAM_IDENTITY_COPY[language][key], show_alert=True)
+        return
+    if callback.message:
+        await callback.message.edit_text(_TELEGRAM_IDENTITY_COPY[language]["ok" if action == "approve" else "denied"], parse_mode="HTML")
+    await callback.answer()
 
 
 def _android_language_keyboard() -> InlineKeyboardMarkup:
