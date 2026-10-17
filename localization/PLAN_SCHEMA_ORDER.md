@@ -659,6 +659,59 @@ Do not mark implementation complete based on the plan being written.
 - No production behavior, published assets, lesson data, source
   translations, progress or payments changed. P0 IN PROGRESS.
 
+### P0 eleventh implementation slice — 2026-10-17 (Android/Desktop/Mini App transport matrix)
+
+- **Cross-client source audit:** `scripts/i18n_client_lesson_compat_audit.py`
+  (`d6408b7fc8c3cbabfe0162d4d649496d2fcac992`) compares the
+  present three clients and server delivery paths without importing
+  application modules, using native devices, accessing tokens, or making
+  HTTP requests. `tests/test_i18n_client_lesson_compat_audit.py`
+  (`230db4bcb0d7f03ae967ebc211aa467fef757628`) exercises
+  fail-closed mutations of the native endpoint/auth contracts and
+  Android offline cache boundary. CI integration
+  `5de7fe968615a390ea0ba970778beb5536a1e206` archives
+  `native-lesson-compatibility.json`.
+- **Verified code distinction:** the Mini App `lessonDataUrl()` currently
+  fetches a raw unauthenticated `/course_v3_data/{level}/lesson_*.json`
+  URL; native Android Retrofit instead calls
+  `api/v3/android/course/lesson/{lessonOrder}` with Bearer auth and
+  Android service inherits `DesktopCourseService.lesson()`.
+  Rust/Tauri Desktop UI calls `desktop_lesson_data` through the
+  bridge and `authenticated_get_json` with Bearer auth. The
+  **native backend** checks sequential unlock, applies
+  `LessonAccessService.status(..., consume=True)`, and marks lesson
+  API replies `Cache-Control: no-store`. These are source contracts,
+  NOT proof of deployed Free/Trial/Pro behavior.
+- **Android offline safety observed:** after a successful authorized
+  lesson reply the Room `LessonCacheEntity` stores its validated
+  envelope. Cached fallback is only used for network `Offline` or
+  `Timeout`, never a server-authored 401/403/limit denial; Room DAO
+  has a logout clear operation. Play/direct share the main-source
+  lesson transport; released APK versions and device behavior not
+  yet proven.
+- **Validation:** `14f57acb033f2bfba174b7f40b4d5b41976e4a41`
+  corrected the scanner's N1 revision and Offline/Timeout source
+  patterns; `3202231e4b9ee07bcca189b67c77c46896b178fd`
+  adjusted its deliberately broken-cache negative fixture. An
+  earlier CI failed this *fixture* assertion only, not the product
+  runtime; [P0 run 39012530053](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39012530053)
+  subsequently completed **SUCCESS** including the new audit and
+  unit tests. Its source-only report must be kept separate from
+  live HTTP/QA claims.
+- **Updated migration design:** `docs/I18N_P0_LESSON_DELIVERY_SECURITY_DESIGN.md`
+  (`01eaa17c1d51d47f72b7bd99a5f296ccddf5d20a`) records the
+  existing authenticated native code paths and Android cache policy,
+  narrows the immediate remediation priority to Mini App, and adds
+  explicit anonymous/Free/Trial/Pro/blocked/expired/offline QA matrix.
+  No production code, old URL routing, Pro entitlement rules,
+  TTS, lesson content, Play checkout or progress changed.
+- **P0 remains IN PROGRESS:** audit all potentially released client
+  variants, execute access matrix against a controlled staging
+  deployment, inspect edge/CDN policy and mixed-account caches,
+  and prove locale/offline behavior on devices. Legacy public
+  lesson JSON exposure remains a blocker. P1/P2/P3/P4 NOT STARTED,
+  branch only and Draft PR #179 unchanged.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
