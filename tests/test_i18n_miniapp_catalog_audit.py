@@ -34,6 +34,18 @@ class MiniappCatalogAuditTests(unittest.TestCase):
         self.assertTrue(any(x["issue"] == "duplicate_property" for x in report["parse_review"]))
         self.assertTrue(any(x["issue"] == "dynamic_value" for x in report["parse_review"]))
 
+    def test_legacy_function_copy_parameters_are_reviewed(self):
+        source = """{
+            uz:{count:function(n, level){return level+n;}},
+            ru:{count:function(n, level){return level+n;}},
+            tj:{count:function(n, amount){return amount+n;}}
+        }"""
+        result = compare_literal(source)
+        self.assertEqual(len([row for row in result["parse_review"]
+                              if row["issue"] == "legacy_function_copy"]), 3)
+        self.assertEqual(result["legacy_function_parameter_drift"][0]["locale"], "tj")
+        self.assertEqual(result["missing_leaves"], [])
+
     def test_rejects_bad_source(self):
         with self.assertRaises(ValueError):
             split_top('{uz:{k:"unterminated},')
