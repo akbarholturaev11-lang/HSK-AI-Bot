@@ -48,10 +48,10 @@ class MiniappCatalogAuditTests(unittest.TestCase):
         for row in report["catalogs"]:
             self.assertEqual(set(row["leaf_counts"]), {"uz","ru","tj"})
             self.assertGreater(min(row["leaf_counts"].values()), 10)
-            # Deviations are surfaced as candidates, not automatically labelled defects.
-            self.assertEqual(row["leaf_union"], len(set().union(
-                *[set() for _ in ()]
-            )) if False else row["leaf_union"])
+            # Deviations are candidates, not automatically confirmed defects.
+            self.assertGreaterEqual(row["leaf_union"], max(row["leaf_counts"].values()))
+            self.assertIsInstance(row["placeholder_drift"], list)
+            self.assertIsInstance(row["parse_review"], list)
 
 
 if __name__ == "__main__":
