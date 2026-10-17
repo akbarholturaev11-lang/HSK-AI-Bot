@@ -309,6 +309,49 @@ Do not mark implementation complete based on the plan being written.
   `codex/i18n-local-first-foundation-20261017` / PR #179 Draft. Do not
   merge into `main` or reset `codex/local-ai` and `codex/cloud-ai`.
 
+### P0 fifth audit slice — 2026-10-17 (Bot/Desktop catalogs and source fallback precedence)
+
+- **Read-only catalog tool:** `scripts/i18n_catalog_contract_audit.py`
+  (commit `fe1f6e8cfffa51daba3716a5c558fe6439f1728b`) parses Python
+  Bot i18n dictionaries using `ast.literal_eval` (without importing
+  application/runtime modules) and scans the existing Desktop JS catalog
+  as source text. It compares the three legacy locales for missing keys,
+  named placeholder signatures, and HTML tag-count differences. Also
+  records Bot dictionary merge order, duplicate definitions and overrides.
+  The matching regression suite was added in `2da4bec180e8ab700c188026a34a94496dd535a6`.
+- **CI:** `988e690389ffdcd04ea13d46a2a8e350f6b9ba00` runs the audit
+  and archives `hsk-i18n-catalog-contract-audit.json` along with previous
+  P0 reports. [GitHub Actions run 39005975851](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39005975851)
+  passed its localization-specific test step. Results were read directly
+  from the archived CI artifact: Desktop messages **797 keys in each
+  uz/ru/tj locale**, Bot effective `TEXTS` **253 keys each** and
+  `COURSE_I18N` **92 keys each**; **0 missing keys, 0 named-placeholder
+  mismatches and 0 HTML tag-count drift** in these catalogs. The nine
+  individual Bot source tables are also internally parity-consistent.
+- **Bot override evidence:** `ONBOARDING_TIP_I18N` replaces the existing
+  `referral_trial_access_unlocked` `TEXTS` key for each of three
+  languages (**3 source overrides**). This is visible in the code's
+  `setdefault(...).update(...)` order; confirm intended policy before
+  editing the translation source. No runtime changes made.
+- **Fallback review added:** `7e7bf7220e504a9b0df58418c9e2d95dcd79afe7`
+  and regression tests `9a10e479356af88243a0b3e52b696928c0ee53f9`
+  report default source locale by surface. Existing fallbacks differ:
+  Mini App course **ru**, Mini App subscription **uz**, Desktop **uz**,
+  Bot **ru**, Android **ru**, proposed localization manifest **uz**.
+  Mini App course can later replace its initial query-language choice with
+  a valid account-language response. This is source-level evidence,
+  **not** proof that a particular user sees incorrect copy.
+  [CI run 39006142928](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39006142928)
+  is the validation reference for fallback tests; only mark successful
+  after checking the actual workflow result.
+- **P0 remains IN PROGRESS:** Mini App per-page dictionaries need
+  authoritative key/placeholder classification and rendered screenshots;
+  verify language/account state precedence on device, Telegram WebView
+  offline static cache, Desktop Windows/macOS behavior, Bot callback language,
+  static JSON entitlement/answer exposure, and manual review candidates.
+  Do not enable new languages, rewrite live clients, or merge this PR.
+  P1/P2/P3/P4 remain NOT STARTED.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
