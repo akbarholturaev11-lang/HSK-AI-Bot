@@ -20,7 +20,13 @@
         "app/static/course_v3_test.html",
         "app/static/course_v3_mistakes.html",
         "app/static/hsk-lugat.html",
-        "app/static/course_v3_data/memo.js"
+        "app/static/course_v3_data/memo.js",
+        "app/static/course_v3_onboarding.html",
+        "app/static/course_v3_voice.html",
+        "app/static/course_v3_pronunciation.html",
+        "app/static/course_v3_recognition.html",
+        "app/static/course_v3_memorize.html",
+        "app/static/hsk-gaplar.html"
       ],
       "inventory_patterns": [
         "app/static/**/*.html",
