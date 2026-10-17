@@ -404,7 +404,10 @@ class NativeOAuthService:
             # Apple sends the display name only with the first authorization.
             verified = apple_auth.merge_first_authorization_name(verified, apple_user)
 
-        return await self._verify_or_fail(row, self._finish(row, verified))
+        completed = await self._verify_or_fail(row, self._finish(row, verified))
+        # The callback page may bring ONLY its originating Android app back to
+        # foreground; this metadata never becomes a token or a redirect target.
+        return {**completed, "platform": row.platform}
 
     # --- link-intent polling (never returns tokens) ----------------------
     async def link_status(
