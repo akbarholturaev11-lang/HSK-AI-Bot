@@ -29,6 +29,9 @@ FORBIDDEN_KEYS = frozenset({
     "answer_id", "answer_key", "correct_answer", "correct_index",
     "correct_option", "correct_option_id", "correct_option_index",
     "expected_answer", "grading_key", "is_correct", "right_answer",
+    # Word-order and fill-blank exercises may carry the solution in tokens
+    # rather than a multiple-choice correct_index.
+    "answer_tokens", "correct_tokens", "solution_tokens", "expected_tokens",
 })
 
 
