@@ -46,6 +46,8 @@ jobs:
         run: python -m unittest tests.test_miniapp_onboarding_save_confirmation tests.test_course_miniapp_onboarding
       - name: Run HSK 3.0 lesson limit regression
         run: python -m unittest tests.test_hsk30_lesson_limits tests.test_course_track_service tests.test_hsk30_promo_service tests.test_hsk30_switch_ui_contract tests.test_android_payment_method_dialog_contract
+      - name: Verify synthetic Mini App lesson reservation auth and quota boundary
+        run: python -m unittest tests.test_i18n_miniapp_reservation_asgi
       - name: Run HSK 3.0 currency checkout regressions
         run: python -m unittest tests.test_hsk30_unlock_checkout tests.test_subscription_miniapp_card_banks
       - name: Run learning plan and canonical mistake regressions
