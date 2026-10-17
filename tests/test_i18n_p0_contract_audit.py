@@ -5,7 +5,8 @@ import tempfile
 import unittest
 
 from scripts.i18n_p0_contract_audit import (
-    lesson_route_contract, locale_contract, run_audit, structural_answer_fields,
+    assessment_shape_candidates, lesson_route_contract, locale_contract,
+    run_audit, structural_answer_fields,
 )
 
 
@@ -66,6 +67,29 @@ async def course_v3_lesson_file(level, filename):
         self.assertEqual(fields["$.sections[].cards[].answer"], 1)
         self.assertEqual(fields["$.sections[].cards[].correct_answer"], 1)
         self.assertNotIn("SENSITIVE", json.dumps(fields))
+
+    def test_assessment_shape_check_only_emits_paths_not_answers(self):
+        data = {"sections": [{"cards": [
+            {"type": "choice", "options": ["SECRET_A", "SECRET_B"],
+             "correct_index": 1},
+            {"type": "choice", "options": ["SECRET_X"],
+             "correct_index": 2},
+            {"type": "choice", "options": {"uz": ["A"], "ru": [],
+                                         "tj": ["B"]}, "correct_index": 0},
+        ]}]}
+        findings = assessment_shape_candidates(data)
+        self.assertEqual(len(findings), 2)
+        self.assertTrue(all(item["issue"] == "correct_index_out_of_bounds"
+                            for item in findings))
+        self.assertNotIn("SECRET", json.dumps(findings))
+
+    def test_unreviewed_dynamic_shapes_are_candidates_not_silent_passes(self):
+        result = assessment_shape_candidates({"correct_index": True,
+                                               "options": ["a", "b"]})
+        self.assertEqual(result[0]["issue"], "invalid_correct_index_type")
+        result = assessment_shape_candidates({"correct_index": 0,
+                                               "options": {"dynamic": "value"}})
+        self.assertEqual(result[0]["issue"], "unclassified_options_mapping")
 
     def test_seven_track_fixture_and_no_content_mutation(self):
         with tempfile.TemporaryDirectory() as temp:
