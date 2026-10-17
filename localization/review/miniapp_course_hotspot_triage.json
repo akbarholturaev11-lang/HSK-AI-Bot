@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "status": "PARTIAL_SOURCE_REVIEW_NOT_RUNTIME_VALIDATION",
+  "source": "app/static/course-v3.html",
+  "source_revision": "555068673652cebb621323986c2be4c36d00b14e",
+  "counting_note": "These are 21 manually source-inspected line anchors, not 21 unique locale predicates. Several compressed source lines contain multiple language branches; 125 branch occurrences remain the full coarse regex count.",
+  "coverage_note": "Classification is first-pass for named high-risk hotspots only; other branches and pages remain unreviewed. No migrated runtime changes are authorized.",
+  "classifications": [
+    {
+      "line": 1484,
+      "anchor": "syncDocumentLanguage()",
+      "category": "locale_adapter",
+      "reason": "Preserve tj -> tg document tag; not translatable copy",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 2263,
+      "anchor": "aria-label",
+      "category": "accessibility_copy",
+      "reason": "Dialog and close labels require localized accessibility keys",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 2336,
+      "anchor": "write-loading-text",
+      "category": "loading_copy",
+      "reason": "Writer iframe loading status",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 2397,
+      "anchor": "nextLabel",
+      "category": "navigation_copy",
+      "reason": "Lesson transition CTA",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 2412,
+      "anchor": "n%10===1",
+      "category": "locale_grammar",
+      "reason": "Russian plural selection is logic, not a text literal",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 2462,
+      "anchor": "rankSummary",
+      "category": "formatted_copy",
+      "reason": "Rank numbers and arrow must be placeholders, not concatenated fragments",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 2726,
+      "anchor": "avatarEdit:function()",
+      "category": "profile_copy",
+      "reason": "Telegram avatar explanation",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 3101,
+      "anchor": "study_preparing_fallback",
+      "category": "loading_copy",
+      "reason": "Exercise loading fallback; keep Panda loading behavior",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 3107,
+      "anchor": "renderPracticeGateChecking",
+      "category": "access_copy",
+      "reason": "Practice gate loading text; leave access checks unchanged",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 3381,
+      "anchor": "function nodeSub(l)",
+      "category": "lesson_navigation_copy",
+      "reason": "Checkpoint/lesson part name with numeric parts",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 3481,
+      "anchor": "你好 · nǐ hǎo",
+      "category": "lesson_example_translation",
+      "reason": "Chinese and pinyin are immutable; only gloss is localized",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 3672,
+      "anchor": "foundation-step",
+      "category": "error_recovery_copy",
+      "reason": "Foundation load/retry UI, HTML escaping required",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 3750,
+      "anchor": "Не удалось сохранить результат",
+      "category": "result_error_copy",
+      "reason": "Quiz progress persistence error",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 4079,
+      "anchor": "exit_ticket",
+      "category": "assessment_ui_copy",
+      "reason": "Assessment card title only; preserve grading IDs",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 4754,
+      "anchor": "Что означает?",
+      "category": "assessment_ui_copy",
+      "reason": "Quiz prompt; preserve correct option calculation",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 5207,
+      "anchor": "var pref=LANG",
+      "category": "tts_language_adapter",
+      "reason": "Voice-language selection logic, not static translated message",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 5446,
+      "anchor": "status.is_paid||status.remaining",
+      "category": "quota_ui_copy",
+      "reason": "AI Voice remaining quota display; billing unchanged",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 5770,
+      "anchor": "ratingMeta.resetAtMs",
+      "category": "time_formatting_copy",
+      "reason": "Countdown abbreviations require locale-aware formatter",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 6008,
+      "anchor": "function chCooldownText",
+      "category": "cooldown_copy",
+      "reason": "Challenge-rate-limit message uses minutes variable",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 6569,
+      "anchor": "profile-title",
+      "category": "profile_copy",
+      "reason": "Profile heading",
+      "review": "source_classified_only"
+    },
+    {
+      "line": 7561,
+      "anchor": "showGateLoading",
+      "category": "access_copy",
+      "reason": "Test entitlement/limit progress label",
+      "review": "source_classified_only"
+    }
+  ]
+}
