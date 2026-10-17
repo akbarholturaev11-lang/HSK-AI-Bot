@@ -176,6 +176,65 @@ def audit(main_source: str, guard_source: str) -> dict:
     }
 
 
+
+MAP_TRACKS = ("hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3")
+PRIVATE_ASSESSMENT_KEYS = frozenset({
+    "correct_index", "correct_answer", "correct_option_id",
+    "answer_key", "grading_key", "expected_answer",
+})
+
+
+def _assessment_key_paths(node: object, at: str = "$") -> list[str]:
+    found = []
+    if isinstance(node, dict):
+        for key, value in node.items():
+            here = at + "." + str(key)
+            if str(key) in PRIVATE_ASSESSMENT_KEYS:
+                found.append(here)
+            found.extend(_assessment_key_paths(value, here))
+    elif isinstance(node, list):
+        for item in node:
+            found.extend(_assessment_key_paths(item, at + "[]"))
+    return found
+
+
+def curriculum_map_shapes(root: Path = ROOT) -> dict:
+    """Inspect seven top-level curriculum maps; never serialize their contents."""
+    maps = []
+    for level in MAP_TRACKS:
+        rel = f"app/static/course_v3_data/{level}.json"
+        data = json.loads((root / rel).read_text(encoding="utf-8"))
+        if not isinstance(data, dict) or not isinstance(data.get("units"), list):
+            raise ValueError(f"Invalid course map structure: {rel}")
+        units = data["units"]
+        if not units or any(not isinstance(u, dict) or
+                            not isinstance(u.get("lessons"), list) for u in units):
+            raise ValueError(f"Malformed course units: {rel}")
+        lesson_items = [lesson for unit in units for lesson in unit["lessons"]]
+        if not lesson_items or not all(isinstance(item, dict) for item in lesson_items):
+            raise ValueError(f"Invalid course lesson navigation entries: {rel}")
+        keys = _assessment_key_paths(data)
+        maps.append({
+            "level": level, "source_path": rel, "unit_count": len(units),
+            "lesson_navigation_entries": len(lesson_items),
+            "top_level_field_names": sorted(data.keys()),
+            "lesson_entry_field_names": sorted(set().union(
+                *(set(item.keys()) for item in lesson_items)
+            )),
+            "private_assessment_key_paths": keys,
+        })
+    return {
+        "maps_checked": len(maps),
+        "lesson_navigation_entries": sum(m["lesson_navigation_entries"] for m in maps),
+        "private_assessment_key_occurrences": sum(
+            len(m["private_assessment_key_paths"]) for m in maps
+        ),
+        "maps": maps,
+        "limits": "Structural keys only: public lesson metadata still requires content and entitlement review",
+    }
+
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--root", type=Path, default=ROOT)
@@ -186,6 +245,15 @@ def main() -> int:
             (args.root / "app/main.py").read_text(encoding="utf-8"),
             (args.root / "app/services/blocked_user_guard.py").read_text(encoding="utf-8"),
         )
+        report["curriculum_maps"] = curriculum_map_shapes(args.root)
+        for nav_map in report["curriculum_maps"]["maps"]:
+            for key_path in nav_map["private_assessment_key_paths"]:
+                report["findings"].append({
+                    "route": MAP_ROUTE, "file": nav_map["source_path"],
+                    "path": key_path,
+                    "issue": "public_curriculum_map_contains_private_assessment_key",
+                    "severity": "stop_the_release",
+                })
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     except (OSError, UnicodeError, ValueError, SyntaxError) as exc:
