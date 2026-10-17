@@ -878,3 +878,51 @@ with the 15/17/24-request evolution preserved. Source tests for the
 24-path version passed in fast P0 CI before this remote probe.
 P0 remains IN PROGRESS until disposable authenticated-user tests,
 quota/caching checks and reviewed migration compatibility exist.
+
+## P0 seventeenth audit — real Mini App lesson start vs raw JSON (2026-10-17)
+
+The Mini App **authorization/start route and the JSON body route
+have different trust boundaries**. `app/static/course-v3.html`
+normally calls `reserveLessonStart(l)` before `loadLessonData(lv,l.n)`.
+For a selected current lesson with Telegram initData, reservation
+calls `POST /api/v3/lesson/start`. The handler in
+`app/api/miniapp_entitlements.py` verifies Telegram initData,
+returns **401** for unauthenticated users, checks account existence
+and current next lesson, invokes
+`LessonAccessService.status(..., consume=True)`, and commits its
+result. Separate public `GET /course_v3_data/{level}/lesson_N.json`
+downloads remain **anonymous**, so reservation does **not** itself
+protect the subsequent content bytes.
+
+Another compatibility finding: when initData is missing (or the
+lesson is not the current node), `reserveLessonStart()` returns
+a resolved client-side allowed promise without making the protected
+POST. This is client-side UI behavior, not server permission, and
+should not be conflated with the server's authenticated API.
+Do not fix by charging all `loadLessonData()` callers: paywall,
+background prefetch, TTS warm-up, Starter 0 and skip tests call it
+without a paid-lesson start.
+
+**Regression coverage:** the read-only
+`scripts/i18n_miniapp_reservation_boundary_audit.py` and
+`tests/test_i18n_miniapp_reservation_boundary_audit.py`
+fail if the verified start/source contract is silently weakened
+or replaced without review. The synthetic HTTP/ASGI test module
+`tests/test_i18n_miniapp_reservation_asgi.py` uses locally
+generated test-only Telegram signatures and mocked repository,
+progress and quota services: missing/forged signature -> **401**,
+out-of-sequence lesson -> **403**, synthetic valid user -> one
+`consume=True` service call, synthetic quota denial -> **403**.
+No real Telegram account, database, paid limit or remote host
+was touched by these tests.
+
+[P0 CI 39022062198](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39022062198)
+**SUCCESS**; [Backend CI 39022244643](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39022244643)
+**SUCCESS**, including the synthetic ASGI tests.
+
+**Unresolved:** identify non-consuming and
+post-reservation authorized content endpoints, construct disposable
+staging test identities to exercise actual Free/Trial/Pro/blocked
+quota behavior, and prove cache isolation in WebView and native
+clients. This audit is not a paid-access bypass confirmation
+and does not authorize runtime changes.
