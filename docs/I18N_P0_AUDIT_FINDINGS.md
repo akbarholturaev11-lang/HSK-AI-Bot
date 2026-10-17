@@ -499,3 +499,39 @@ check correct translation and escaping of those visual strings,
 actual 3-language on-device screens, WebView cache/fallback flows,
 and real static course entitlement/exam exposure. Neither P0 nor any
 generated runtime translation target is complete.
+
+## P0 ninth audit — explicit Mini App course predicates and memorization inline calls (2026-10-17)
+
+**Verified, narrowly scoped source classification:** all **125** currently
+detected `LANG ==/===` comparisons against `uz/ru/tj` in
+`app/static/course-v3.html` occur on **60 distinct physical lines**.
+`localization/review/miniapp_course_hotspot_triage.json` now classifies
+all those 60 lines. The source-only regression compares the exact
+60 line set and per-line counts and fails when new matching lines
+appear without manual review. This is *not* a semantic review of each
+of 125 expressions in every runtime state, nor proof of comprehensive
+translation coverage. Notable non-copy branches preserve
+`tj -> tg` HTML language mapping, Russian plurals, and preferred
+TTS language; these are not candidates for blind text extraction.
+
+The separate `app/static/course_v3_memorize.html` source contains
+exactly **nine** `t({uz:...})` / `tr({uz:...})` message calls,
+all inventoried in
+`localization/review/miniapp_memorize_inline_triage.json`.
+Eight are static copy candidates; one is a dynamic question that
+concatenates the Chinese `H` Hanzi source into three language-specific
+messages. Migration must preserve `H` via a named `{hanzi}`
+placeholder and leave quiz-option and answer identity alone.
+Its regression verifies nine ordinal/line anchors and the Hanzi
+input in all three existing language choices.
+
+[Fast GitHub Actions 39008932889](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39008932889)
+concluded **SUCCESS** with both regression modules and the complete
+set of existing read-only P0 source checks.
+
+**Scope not validated:** all remaining Mini App source idioms (language
+object selection, language-sensitive DOM updates, HTML attributes,
+dynamic translated lesson content), user-facing correctness, real
+WebView offline/cache behavior, Android/Desktop builds, production
+Pro/Free lesson HTTP authorization and exam secrecy. P0 remains open,
+and this audit made no runtime behavior changes.
