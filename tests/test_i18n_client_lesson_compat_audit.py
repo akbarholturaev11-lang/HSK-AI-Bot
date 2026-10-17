@@ -51,10 +51,14 @@ class ClientLessonTransportTests(unittest.TestCase):
                             for row in missing_fallback_guard["failures"]))
 
         broken = dict(sources)
-        broken["android_main_activity"] = broken["android_main_activity"].replace(
-            'authRepository.logout(unlinkDevice = unlink)\\n                    app.clearLocalData()',
-            'authRepository.logout(unlinkDevice = unlink)\\n                    // wipe removed',
+        activity = sources["android_main_activity"]
+        sign_out_start = activity.index("val signOut: (Boolean) -> Unit")
+        first_part, sign_out = activity[:sign_out_start], activity[sign_out_start:]
+        self.assertIn("app.clearLocalData()", sign_out)
+        broken["android_main_activity"] = first_part + sign_out.replace(
+            "app.clearLocalData()", "// deliberately removed cache clearing", 1,
         )
+        self.assertNotEqual(broken["android_main_activity"], activity)
         missing_logout_cleanup = contract(broken)
         self.assertTrue(any(row["check"] == "sign_out_invokes_cache_cleanup"
                             for row in missing_logout_cleanup["failures"]))
