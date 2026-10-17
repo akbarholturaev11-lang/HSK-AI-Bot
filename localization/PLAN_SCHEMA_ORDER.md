@@ -934,6 +934,47 @@ Do not mark implementation complete based on the plan being written.
   P1-P4 NOT STARTED. Staging service and production untouched in
   this slice.
 
+### P0 sixteenth slice — 2026-10-17 (live late-course anonymous HTTP sampling)
+
+- **Source verified seven actual late-course filenames:** `hsk1/lesson_63.json`,
+  `hsk2/lesson_72.json`, `hsk3/lesson_109.json`,
+  `hsk4/lesson_181.json`, `nhsk1/lesson_103.json`,
+  `nhsk2/lesson_73.json`, `nhsk3/lesson_145.json`.
+  Every corresponding GitHub track directory has consecutive
+  `lesson_N.json` files; this is *source existence* only.
+- **24-status audit implementation:** `ca9694e5da5c53a042a72191b6d69503827b8157`
+  added exact last-lesson `late_legacy_lesson` cases and a separate
+  `anonymous_late_lesson_success_count` report field.
+  `e0726c169ae827645cf9e0be0821ad2d249de257` expanded the
+  offline/negative tests; fast P0 CI passed on that source revision.
+  `faa9629c422404d88da1ba05ffc12e9f3d1692c2`
+  explicitly re-ran the restricted staging-only GitHub workflow.
+- **Confirmed actual staging statuses:** [run 39018359239](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39018359239)
+  completed **SUCCESS**. Its archived JSON artifact `12095103604`
+  was downloaded and independently parsed: **24 anonymous GET
+  status-only requests**, 7/7 first-lesson 206, 7/7 last-lesson 206,
+  7/7 map 206, Android API 401, Desktop API 401, exam 404.
+  The status-only script read **no lesson/answer bodies**, used no
+  Telegram/Pro tokens, and produced **14** exposure review findings.
+- **Updated evidence:** `b4b8cf64906ef73a1cb03c7aa3f53fb78368c181`
+  updated `localization/review/staging_anonymous_http_results_20261017.json`;
+  `17706db1f829a63bf4138bc1fc4619efa3a5e9b0` updated the
+  staging QA runbook;
+  `1a5090190e024850f665cb68242237821a2fa4a7` updated
+  `docs/I18N_P0_AUDIT_FINDINGS.md`.
+- **Security implication:** the sampled anonymous staging legacy
+  content exposure extends beyond initial HSK lessons into late
+  lessons. **Not established** that an individual late lesson
+  is paid or that production allows the same request; do not
+  classify this as a verified Pro payment bypass. Existing native
+  API 401 and private exam 404 status observations remain valid.
+- **Open gates:** disposable authenticated Free/Trial/Pro users,
+  real quota and entitlement status tests, Mini App background
+  prefetched-content redaction, cache account-switch isolation,
+  old client compatibility and controlled migration strategy.
+  No runtime route, lesson content, payment, production or main
+  change occurred. P0 IN PROGRESS, P1-P4 NOT STARTED.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
