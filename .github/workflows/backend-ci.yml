@@ -10,6 +10,10 @@ on:
       - ".github/workflows/backend-ci.yml"
   workflow_dispatch:
 
+concurrency:
+  group: backend-targeted-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   targeted-tests:
     runs-on: ubuntu-latest
