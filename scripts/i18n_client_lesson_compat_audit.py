@@ -20,6 +20,8 @@ FILES = {
     "android_api": "android/app/src/main/java/com/pomp/hskai/data/api/AndroidCourseApi.kt",
     "android_repository": "android/app/src/main/java/com/pomp/hskai/data/repository/CourseRepository.kt",
     "android_cache": "android/app/src/main/java/com/pomp/hskai/data/local/LessonCache.kt",
+    "android_app": "android/app/src/main/java/com/pomp/hskai/HskAiApplication.kt",
+    "android_main_activity": "android/app/src/main/java/com/pomp/hskai/MainActivity.kt",
     "desktop_lesson": "desktop/ui/js/lesson.js",
     "desktop_bridge": "desktop/ui/js/bridge.js",
     "desktop_rust": "desktop/src-tauri/src/lib.rs",
@@ -44,6 +46,8 @@ def contract(sources: dict[str, str]) -> dict:
     android_api = sources["android_api"]
     android_repo = sources["android_repository"]
     android_cache = sources["android_cache"]
+    android_app = sources["android_app"]
+    android_activity = sources["android_main_activity"]
     desktop_js = sources["desktop_lesson"]
     bridge = sources["desktop_bridge"]
     rust = sources["desktop_rust"]
@@ -81,7 +85,23 @@ def contract(sources: dict[str, str]) -> dict:
                 r"private suspend fun cachedLesson\([\s\S]{0,500}"
                 r"error !is ApiError\.Offline && error !is ApiError\.Timeout",
             ),
-            "logout_clears_lesson_cache": 'DELETE FROM course_lesson_cache' in android_cache,
+            "dao_supports_lesson_cache_clear": 'DELETE FROM course_lesson_cache' in android_cache,
+            "repository_clear_wipes_both_account_caches": _has(
+                android_repo, r'suspend fun clearCache\(\)\s*\{\s*'
+                r'dao\.clear\(\)\s*lessonDao\?\.clear\(\)',
+            ),
+            "app_session_cleanup_calls_repository_clear": _has(
+                android_app, r'suspend fun clearLocalData\(\)\s*\{\s*'
+                r'courseRepository\.clearCache\(\)',
+            ),
+            "sign_out_invokes_cache_cleanup": _has(
+                android_activity, r'authRepository\.logout\([^)]*\)\s*'
+                r'app\.clearLocalData\(\)',
+            ),
+            "unauthenticated_ui_clears_cache": _has(
+                android_activity, r'AuthState\.Unauthenticated\s*->[\s\S]{0,850}'
+                r'app\.clearLocalData\(\)',
+            ),
             "server_bearer_required": _has(
                 backend_android,
                 r'@router\.get\("/api/v3/android/course/lesson/\{lesson_order\}"\)'
@@ -147,6 +167,7 @@ def contract(sources: dict[str, str]) -> dict:
             "Mini App current public lesson GET still has no request authentication and needs a separate design.",
             "Android and Desktop secure API source contracts do not prove live deployment or account-state behavior.",
             "Native Android offline cache reuses already-fetched lessons only on Offline/Timeout errors, per source.",
+            "Account session cache clearing is evidenced by source call chains; an actual device/session switch still needs E2E QA.",
             "Play/direct share main-source Retrofit lesson transport; build/flavor E2E remains untested.",
             "Does not inspect every native WebView/network call site or old released APK/desktop binaries.",
         ],
