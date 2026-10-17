@@ -1220,6 +1220,40 @@ Do not mark implementation complete based on the plan being written.
   P3/P4 NOT STARTED. No deployment, production or main changes
   were performed in this slice, as user requested code-first workflow.
 
+### P2 first slice follow-up — Android navigation + Bot local lookup
+
+- **Android:** `9f3b7f75bd846e551312b8d40b5992ce9ac8ab4a`
+  changes only the four `MainTab` navigation label resources in
+  `android/app/src/main/java/com/pomp/hskai/core/navigation/MainScaffold.kt`
+  to generated `hsk_common_navigation_*`. Source XML for Uzbek
+  default, Russian and Tajik is byte-equivalent to pre-existing
+  `nav_*` strings. Main-source Compose navigation is shared by
+  direct and Play builds. No billing/payment label changed.
+  `6bdf3f3b48b1466d212992f984a907b5a76dfcb9`
+  adds Android XML / legacy parity assertions to P2 tests.
+- **Bot:** `021620528ef2bd9ecddec6380f34c42ab5fd4df6`
+  adds a namespaced `common.<key>` lookup to the existing Bot
+  `t(key, lang, **kwargs)` function. Values are loaded from the
+  generated *local Python constant* only, with `tg`→`tj`
+  compatibility and original Bot Russian fallback for unknown
+  locales. Non-common Bot keys continue using the original
+  Gemini-aware legacy logic; payments/notifications unaffected.
+  `b91f9cddd1e052e49a0af2c112d838d083681791`
+  marks the generated folder a package.
+- **Exact source-blob review:** the
+  `localization/baselines/reviewed_ui_changes.json` manifest now
+  also pins the old and new hashes of `app/bot/utils/i18n.py`
+  (`f911721071f4c64fe0d1219e4c73e3d92b3d062a`).
+  `ab532f14ecf0f66d8bad1b79175af3aef162023c`
+  adds Bot runtime adapter tests and retains the original test
+  for lesson/source hash integrity; no lesson blob exception exists.
+- **Scope:** Android **four** navigation labels, Desktop 11 keys,
+  Mini App one heading, Bot generated common-key lookup. This is
+  NOT full locale migration and not a launch. All source changes
+  remain Draft PR #179, not `main`. Device/HTTP manual QA is
+  intentionally deferred until code completion by user request.
+  P0 security unresolved; P1/P2 partial; P3/P4 NOT STARTED.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
