@@ -1,6 +1,6 @@
 # P0 staging-only lesson-delivery security QA runbook
 
-**State: prepared, NOT executed against a staging or production server.**
+**State: anonymous status-only staging checks EXECUTED; authenticated Free/Trial/Pro QA NOT YET EXECUTED.**
 Owner approval is required before changing live lesson routes, auth, quotas,
 or the Mini App JSON loader. This runbook is for trained QA with isolated,
 disposable staging accounts only.
@@ -8,8 +8,9 @@ disposable staging accounts only.
 ## What the automated probe can establish
 
 `scripts/i18n_staging_anon_route_probe.py` performs a
-small, **anonymous GET-status-only** check of **15 URL paths**:
-7 top-level course maps, 7 `lesson_01.json` paths and one
+small, **anonymous GET-status-only** check of **17 URL paths**:
+7 top-level course maps, 7 `lesson_01.json` paths, two anonymous
+native Android/Desktop lesson APIs, and one
 private exam JSON path. It intentionally does **not** fetch private
 entitlement state, use authentication credentials, consume lessons, or
 read response bodies. The report records only path, HTTP status and
@@ -124,15 +125,39 @@ staging database was initialized but its user-data contents were not
 independently inspected for existing fixtures. Staging compute may incur
 Railway usage charges; sleep mode is enabled.
 
-**Still not executed:** anonymous status-only remote route probe and
-any Free/Trial/Pro/pending/blocked identity test. The operator's
-execution environment currently cannot resolve the new Railway host;
-we did **not** fall back to production, read lesson JSON bodies or
-claim remote access restrictions. The API health status above comes
-from Railway's own deployment/health logs, not an independent external
-HTTP probe. A real Telegram login on staging also needs an approved
-isolated test bot or separate disposable QA signing fixture: the
-randomized dummy token is intentionally not a functioning Telegram bot.
+**Live anonymous check now confirmed on staging:** a dedicated,
+scoped [GitHub Actions run 39017842475](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39017842475)
+successfully reached the QA HTTPS origin, woke it using `GET /health`
+(**200 OK**), and sent exactly **17 anonymous GET Range-status
+requests** without reading or recording response bodies.
+
+- Seven navigation maps returned **HTTP 206**.
+- Seven static `/course_v3_data/{track}/lesson_01.json` returned
+  **HTTP 206**, confirming anonymous partial delivery from all seven
+  sampled legacy lesson paths *on staging*.
+- Native Android and Desktop `/api/v3/{platform}/course/lesson/1`
+  each returned **HTTP 401 Unauthorized**, confirming this particular
+  no-Bearer request is denied.
+- The private exam file probe returned **HTTP 404**.
+- **Seven source-exposure review findings** remain for legacy lesson
+  files; the native API denial is not a verified Pro access matrix.
+
+The artifact `hsk-p0-staging-anon-status` was downloaded and verified
+and the status-only evidence has been committed to
+`localization/review/staging_anonymous_http_results_20261017.json`.
+The first limited pass,
+[run 39017607269](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39017607269),
+tested 15 paths; the second extended pass is the current evidence.
+No result above was measured on production.
+
+**Still not executed:** Free, Trial, Pro, pending receipt, blocked or
+expired authenticated sessions; paid/advanced lesson reachability;
+production proxy/CDN behavior; quota-consuming preview behavior;
+account A-to-B cache isolation or real-device tests. The randomized
+dummy Telegram token is deliberately not a functioning bot, so these
+require an isolated test bot or approved disposable signing fixture
+and QA permissions. An anonymous 206 means the content was served,
+not that a Pro payment bypass has been tested or established.
 
 For an authorized operator who can resolve staging DNS, run:
 
