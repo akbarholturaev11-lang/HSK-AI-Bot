@@ -6,6 +6,7 @@ all localization code is implemented and a controlled test cycle begins.
 import json
 from pathlib import Path
 import unittest
+import xml.etree.ElementTree as ET
 
 from scripts.i18n_baseline_guard import git_blob_sha1
 
@@ -61,6 +62,25 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('commonMessage("navigation.rating",', html)
         self.assertIn('LANG==="ru"?"Рейтинг":LANG==="tj"?"Рейтинг":"Reyting"', html)
         self.assertNotIn('fetch("/api/i18n/', html)
+
+    def test_android_navigation_resources_same_as_legacy_in_all_locales(self):
+        kotlin = (ROOT / "android/app/src/main/java/com/pomp/hskai/core/navigation/MainScaffold.kt"
+                  ).read_text(encoding="utf-8")
+        names = ("course", "practice", "rating", "profile")
+        for key in names:
+            self.assertIn("R.string.hsk_common_navigation_" + key, kotlin)
+        for suffix in ("", "-ru", "-tg"):
+            with self.subTest(qualifier=suffix):
+                root = ROOT / "android/app/src/main/res"
+                original = ET.parse(root / f"values{suffix}/strings.xml").getroot()
+                generated = ET.parse(root / f"values{suffix}/hsk_common_i18n.xml").getroot()
+                old = {e.attrib["name"]: e.text for e in original.findall("string")}
+                new = {e.attrib["name"]: e.text for e in generated.findall("string")}
+                for key in names:
+                    self.assertEqual(
+                        new["hsk_common_navigation_" + key],
+                        old["nav_" + key],
+                    )
 
     def test_platform_bundles_contain_only_ui_not_lessons_or_entitlements(self):
         for file in (
