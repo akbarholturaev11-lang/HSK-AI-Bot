@@ -166,7 +166,17 @@ class NativeOAuthService:
             provider != "google" or platform != "android"
         ):
             raise NativeOAuthError("oauth_mode_unsupported", status_code=422)
-        if provider not in available_providers(self.settings, platform=platform):
+        # An Android browser redirect uses the confidential *web* client,
+        # exactly as desktop does. Check its credentials BEFORE reserving a
+        # one-time link row; the native Credential Manager audience stays
+        # Android-specific and is never accepted by this browser flow.
+        configured_platform = (
+            "macos" if provider == "google" and mode == BROWSER_REDIRECT_MODE
+            else platform
+        )
+        if provider not in available_providers(
+            self.settings, platform=configured_platform
+        ):
             raise NativeOAuthError("oauth_provider_unconfigured", status_code=503)
 
         # Reuses the existing admission path, so the advisory-lock
