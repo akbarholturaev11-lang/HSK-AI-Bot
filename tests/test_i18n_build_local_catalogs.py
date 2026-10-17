@@ -25,6 +25,8 @@ class CommonLocalCatalogTests(unittest.TestCase):
 
     def test_source_strings_match_existing_desktop_three_language_baseline(self):
         source = (ROOT / "desktop/ui/js/i18n.js").read_text(encoding="utf-8")
+        # Only the legacy 3-locale data object, not the adapter key map below.
+        source = source.split("let activeLanguage =", 1)[0]
         mapping = {
             "course": "navigation.course",
             "practice": "navigation.practice",
