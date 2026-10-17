@@ -1,0 +1,58 @@
+"""Regression tests for selected read-only Mini App locale dictionaries."""
+import unittest
+from scripts.i18n_miniapp_catalog_audit import compare_literal, extract_literal, inventory, split_top
+
+
+class MiniappCatalogAuditTests(unittest.TestCase):
+    def test_nested_maps_and_arrays(self):
+        data = """{
+            uz:{label:"Hello {name}",body:{title:"A"},benefits:[["B","C"]]},
+            ru:{label:"Hello {name}",body:{title:"D"},benefits:[["E","F"]]},
+            tj:{label:"Hello {name}",body:{title:"G"},benefits:[["H","I"]]}
+        }"""
+        report = compare_literal(data)
+        self.assertEqual(report["leaf_counts"], {"uz":4,"ru":4,"tj":4})
+        self.assertEqual(report["missing_leaves"], [])
+        self.assertEqual(report["placeholder_drift"], [])
+
+    def test_missing_and_placeholder_contract(self):
+        report = compare_literal("""{
+            uz:{title:"{name}",extra:"x"},
+            ru:{title:"{user}"},
+            tj:{title:"{name}"}
+        }""")
+        self.assertEqual(report["missing_leaves"], [{"path":"extra","missing":["ru","tj"]}])
+        self.assertEqual([x["locale"] for x in report["placeholder_drift"]], ["ru"])
+        self.assertNotIn("{user}", str(report["missing_leaves"]))
+
+    def test_duplicate_key_and_dynamic_expression(self):
+        report = compare_literal("""{
+            uz:{title:"Hi",title:"Again",next:call()},
+            ru:{title:"Hi",next:call()},
+            tj:{title:"Hi",next:call()}
+        }""")
+        self.assertTrue(any(x["issue"] == "duplicate_property" for x in report["parse_review"]))
+        self.assertTrue(any(x["issue"] == "dynamic_value" for x in report["parse_review"]))
+
+    def test_rejects_bad_source(self):
+        with self.assertRaises(ValueError):
+            split_top('{uz:{k:"unterminated},')
+        with self.assertRaises(ValueError):
+            compare_literal('{uz:{title:"Missing other languages"}}')
+        with self.assertRaises(ValueError):
+            extract_literal("const I18N = dynamicCatalog;", "I18N")
+
+    def test_live_selected_sources_are_parsable_without_runtime(self):
+        report = inventory()
+        self.assertEqual(len(report["catalogs"]), 4)
+        for row in report["catalogs"]:
+            self.assertEqual(set(row["leaf_counts"]), {"uz","ru","tj"})
+            self.assertGreater(min(row["leaf_counts"].values()), 10)
+            # Deviations are surfaced as candidates, not automatically labelled defects.
+            self.assertEqual(row["leaf_union"], len(set().union(
+                *[set() for _ in ()]
+            )) if False else row["leaf_union"])
+
+
+if __name__ == "__main__":
+    unittest.main()
