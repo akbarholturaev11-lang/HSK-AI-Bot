@@ -422,10 +422,10 @@ class OAuthAssertTests(_Base):
 
 
 class OAuthCallbackTests(_Base):
-    async def _browser_start(self):
+    async def _browser_start(self, platform="macos"):
         response = await self.client.post(
             "/api/v3/native-auth/oauth/start",
-            json=self._start_body(platform="macos", mode="browser_redirect"),
+            json=self._start_body(platform=platform, mode="browser_redirect"),
         )
         payload = response.json()
         async with self.sessions() as session:
@@ -458,6 +458,27 @@ class OAuthCallbackTests(_Base):
             self.assertNotIn(leaked, body)
         self.assertEqual(response.headers["Cache-Control"], "no-store")
         self.assertEqual(response.headers["Referrer-Policy"], "no-referrer")
+        self.assertNotIn("pomp-hsk-ai://oauth-return", body)
+
+    async def test_android_google_browser_callback_reopens_app_without_tokens(self):
+        _, state = await self._browser_start(platform="android")
+        with patch(
+            "app.services.google_auth.exchange_code", return_value="id-token"
+        ), patch(
+            "app.services.google_auth.verify_desktop_id_token",
+            return_value=_verified(),
+        ):
+            response = await self.client.get(
+                "/api/v3/native-auth/oauth/callback/google",
+                params={"state": state, "code": "auth-code"},
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("pomp-hsk-ai://oauth-return", response.text)
+        self.assertIn('href="pomp-hsk-ai://oauth-return"', response.text)
+        self.assertIn("script-src 'sha256-", response.headers["Content-Security-Policy"])
+        for forbidden in ("id-token", "auth-code", state, "alice@example.com"):
+            self.assertNotIn(forbidden, response.text)
+        self.assertEqual(response.headers["Cache-Control"], "no-store")
 
     async def test_tampered_state_is_refused(self):
         payload, state = await self._browser_start()
@@ -470,6 +491,7 @@ class OAuthCallbackTests(_Base):
             )
         self.assertEqual(response.status_code, 200)
         self.assertIn("oauth_state_invalid", response.text)
+        self.assertNotIn("pomp-hsk-ai://oauth-return", response.text)
         exchange.assert_not_called()
 
     async def test_state_from_another_request_cannot_be_replayed(self):
