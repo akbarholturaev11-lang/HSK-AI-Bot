@@ -1030,6 +1030,54 @@ Do not mark implementation complete based on the plan being written.
   or `main` changes. PR #179 remains Draft.
   P0 IN PROGRESS; P1-P4 NOT STARTED.
 
+### P0 eighteenth implementation slice — 2026-10-17 (source assessment fields in legacy lesson JSON)
+
+- **Reason for further audit:** source inspection confirmed that `answer_tokens` in
+  word-order exercises also contains solution-like structure distinct from
+  `correct_index`. It is possible for future public locale packs to
+  leak these arrays even if index keys are excluded.
+- **Publish guard hardened:** `0659e4e9b919cec5b7de08e09c61fb323b5e49a6`
+  added `answer_tokens`, `correct_tokens`, `solution_tokens` and
+  `expected_tokens` to `scripts/i18n_public_bundle_guard.py`
+  forbidden grading fields (camelCase/kebab normalized).
+  `8173f8e178986b1e40752223fd3bfda1443519bf` tests these
+  synthetic keys without leaking answer values. Existing public
+  legacy lesson JSON is NOT remediated by this new-pack guard.
+- **New all-source inventory:** `ec86b03ed6afb6d3281354f5eca13730b468037e`
+  added `scripts/i18n_legacy_lesson_content_risk_audit.py`:
+  scans seven tracks' `lesson_*.json` files, counts ONLY
+  preclassified grading key names, and reports first and last
+  source lesson per track with no Hanzi, pinyin, translations,
+  options, answer values, tokens or user data.
+  `941d3b8239b15d87727b72764b40ebcea0c66ce2` added
+  mutation/secret-free output and 746-source regression tests.
+  `5267aa05fd961d9acaa94e1028c7ffcc138ce630` integrated
+  `public-lesson-source-risk.json` into P0 CI artifact.
+  An initial standalone CLI import failed while the unittest path
+  worked; `88daad0b2cbc4d23c094981c33b22eb529c871b6`
+  corrected both package and direct-script imports.
+- **Verified CI artifact:** [P0 run 39025089879](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39025089879)
+  completed **SUCCESS**. Downloaded and examined artifact
+  `12098177455`: 746 source lesson JSON files, **746/746
+  include assessment-related field names**, with **6,449
+  `correct_index` occurrences** and **704 `answer_tokens`
+  occurrences**; exactly fourteen first/last track samples.
+  The source report and test do NOT claim that all 746 URLs
+  were HTTP tested or that each is paid. Existing separate
+  [staging 24-status run 39018359239](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39018359239)
+  confirmed anonymous HTTP 206 only for fourteen sampled first/last
+  files, not all sources.
+- **Permanent handoff result:** `localization/review/legacy_lesson_grading_field_summary_20261017.json`
+  (`a00b0c3cec5c0cc7888218eb3d3fb12b3a777810`) stores
+  source counts plus sampled field-name counts without answers.
+- **Open gate:** actual authenticated Free/Trial/Pro entitlements,
+  advanced paid-lesson classification, Mini App speculative
+  no-consume fetches, A->B cache isolation and native/old-client
+  migration validation. Do not make a public locale bundle out
+  of raw lesson JSON. P0 IN PROGRESS, P1–P4 NOT STARTED,
+  PR #179 Draft. No app runtime, production, billing, lesson or
+  grading values changed.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
