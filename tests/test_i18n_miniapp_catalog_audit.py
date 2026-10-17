@@ -1,6 +1,10 @@
 """Regression tests for selected read-only Mini App locale dictionaries."""
 import unittest
-from scripts.i18n_miniapp_catalog_audit import compare_literal, extract_literal, inventory, split_top
+from pathlib import Path
+import tempfile
+from scripts.i18n_miniapp_catalog_audit import (
+    compare_literal, extract_literal, inventory, source_hotspots, split_top,
+)
 
 
 class MiniappCatalogAuditTests(unittest.TestCase):
@@ -54,9 +58,30 @@ class MiniappCatalogAuditTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             extract_literal("const I18N = dynamicCatalog;", "I18N")
 
+    def test_inline_hotspots_only_emit_counts_and_line_numbers(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp) / "app/static"
+            folder.mkdir(parents=True)
+            (folder / "fixture.html").write_text(
+                '<button aria-label="Sensitive copy"></button>\n'
+                't({uz:"Hello",ru:"Hi",tj:"Salom"})\n'
+                'if(LANG==="ru"){}\n'
+                'var UI={uz:{a:"A"},ru:{a:"B"},tj:{a:"C"}};\n',
+                encoding="utf-8",
+            )
+            hits = source_hotspots(Path(tmp), pages=("fixture.html",))
+            summary = hits["fixture.html"]
+            self.assertEqual(summary["inline_locale_call"]["candidate_count"], 1)
+            self.assertEqual(summary["language_branch"]["candidate_count"], 1)
+            self.assertEqual(summary["locale_object_declaration"]["candidate_count"], 1)
+            self.assertEqual(summary["markup_attribute_candidate"]["candidate_count"], 1)
+            self.assertNotIn("Sensitive copy", str(summary))
+
     def test_live_selected_sources_are_parsable_without_runtime(self):
         report = inventory()
         self.assertEqual(len(report["catalogs"]), 18)
+        self.assertGreater(report["source_hotspots"]["course-v3.html"]["language_branch"]["candidate_count"], 0)
+        self.assertGreater(report["source_hotspots"]["course_v3_memorize.html"]["inline_locale_call"]["candidate_count"], 0)
         for row in report["catalogs"]:
             self.assertEqual(set(row["leaf_counts"]), {"uz","ru","tj"})
             self.assertGreater(min(row["leaf_counts"].values()), 0)
