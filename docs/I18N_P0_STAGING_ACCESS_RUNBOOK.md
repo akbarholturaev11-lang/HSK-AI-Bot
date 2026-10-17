@@ -93,27 +93,58 @@ basis of passing source-only tests or this anonymous probe. P0 remains
 open pending these independent human checks. No accounts, deployed
 routes or billing state were touched while preparing this runbook.
 
-## Railway environment readiness — verified read-only on 2026-10-17
+## Railway staging backend — provisioned and health verified (2026-10-17)
 
-Railway project `patient-friendship` has both `production` and
-`staging` environments. The staging environment is not currently
-a testable HSK AI backend: its inventory contains one running
-`Postgres-Iy93` service only. The HSK AI backend service does
-**not** exist in that staging environment and it has **no staging
-public HTTPS domain**. Production has the `telegram-chinese-bot`
-backend from `akbarholturaev11-lang/HSK-AI-Bot` branch `main`,
-as well as its own PostgreSQL service. Both production deployments
-were reported healthy during read-only inventory.
+**Supersedes the earlier database-only staging discovery.** Railway project
+`patient-friendship`, environment `staging`, now runs two independent
+services: staging PostgreSQL `Postgres-Iy93` and the new
+`hsk-ai-p0-qa` API service. The staging API is sourced from PR #179's
+branch, pinned to commit `c73ee00891e7be6fa8eca59d5b54e29c24c36fe4`
+with a separate, staging-only startup module `app/staging_qa.py`.
 
-**Conclusion:** the status-only HTTP probe must remain OFFLINE;
-there is no valid staging application origin. Never fall back to
-the production Railway URL. Do not interpret the healthy staging
-PostgreSQL service as meaning the app/API itself is deployed.
+**QA HTTPS origin:** `https://hsk-ai-p0-qa-staging.up.railway.app`
+(Railway-managed domain). `PUBLIC_SITE_URL` and
+`MINI_APP_BASE_URL` now point to this staging origin. A prior first
+attempt failed because both were blank; this was corrected strictly in
+staging service variables. The latest deployment
+`cf4e66c5-8134-40e5-9f78-68b07b26b244` reports **SUCCESS**.
+Railway's service startup log confirms `Application startup complete`
+and internal `GET /health` responded **200 OK**; staging backend and
+database both report **Online**.
 
-**Operator decision required before live QA:** approve creating a
-separate staging backend from the agreed GitHub branch, review
-staging-only variables, database isolation/migrations and costs,
-provision a staging-only HTTPS domain, and define disposable
-Free/Trial/Pro accounts. Do not reuse production secrets or the
-production database. None of these deployment actions has been
-performed by this P0 task.
+**Safety:** production `app.main:app` entrypoint was not changed.
+Staging's `app.staging_qa:app` deliberately skips Telegram polling,
+notification/reminder/campaign schedulers and background seeding,
+injects a **per-start randomized fake Telegram token** (does not accept
+a real BOT_TOKEN), refuses inherited paid AI credentials, and validates
+that the asyncpg DATABASE_URL hostname matches the configured staging
+PostgreSQL host. Admin/push/OAuth are disabled on staging. The two
+environments' databases/services are separately configured; the live
+staging database was initialized but its user-data contents were not
+independently inspected for existing fixtures. Staging compute may incur
+Railway usage charges; sleep mode is enabled.
+
+**Still not executed:** anonymous status-only remote route probe and
+any Free/Trial/Pro/pending/blocked identity test. The operator's
+execution environment currently cannot resolve the new Railway host;
+we did **not** fall back to production, read lesson JSON bodies or
+claim remote access restrictions. The API health status above comes
+from Railway's own deployment/health logs, not an independent external
+HTTP probe. A real Telegram login on staging also needs an approved
+isolated test bot or separate disposable QA signing fixture: the
+randomized dummy token is intentionally not a functioning Telegram bot.
+
+For an authorized operator who can resolve staging DNS, run:
+
+```bash
+python scripts/i18n_staging_anon_route_probe.py --execute \
+  --base-url https://hsk-ai-p0-qa-staging.up.railway.app \
+  --confirmed-host hsk-ai-p0-qa-staging.up.railway.app \
+  --output /tmp/hsk-p0-staging-anon-status.json
+```
+
+This **only** reports HTTP statuses. Do not infer a billing bypass
+without the manual account/entitlement matrix, and do not run against
+production. Complete the no-consume prefetch and same-WebView A->B
+cache checks on disposable staging accounts before any authorization
+runtime migration or P0 closure.
