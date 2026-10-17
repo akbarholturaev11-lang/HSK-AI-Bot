@@ -47,6 +47,10 @@ jobs:
       - name: Run learning plan and canonical mistake regressions
         run: |
           python -m unittest tests.test_daily_plan_service tests.test_learning_signals tests.test_course_lesson_mistake_material_service tests.test_android_n1_compat
+      - name: Test multilingual inventory and Mini App locale regressions
+        run: |
+          python -m unittest tests.test_i18n_inventory tests.test_i18n_ui_regressions
+          python scripts/i18n_inventory.py --output /tmp/hsk-i18n-audit.json
       - name: Compile backend code
         run: |
           python -m compileall -q app tests

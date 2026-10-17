@@ -409,7 +409,7 @@ function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function
     if(pool.length<8)pool=all.filter(function(w){var l=wordLvNum(w);return l&&l<=n});
     if(pool.length<8)pool=all;
   }
-  if(!pool.length){document.getElementById('stage').innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}
+  if(!pool.length){document.getElementById('stage').innerHTML='<div class="loading">'+tr({uz:"Ma'lumot yuklanmadi",ru:"Не удалось загрузить данные",tj:"Маълумот бор нашуд"})+'</div>';return}
   /* Server tartibi birinchi; qolgani mavjud pooldan to'ldiriladi.
      Ro'yxat SHU YERDA qotadi va sessiya davomida o'zgarmaydi — reklama
      oralig'i `list.length` ga tayanadi. */

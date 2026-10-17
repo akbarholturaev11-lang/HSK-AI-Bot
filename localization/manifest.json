@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "status": "preparation_only_no_runtime_switch",
+  "source_of_truth": "localization",
+  "default_locale": "uz",
+  "locales": [
+    {
+      "id": "uz",
+      "tag": "uz",
+      "name": "O‘zbekcha"
+    },
+    {
+      "id": "ru",
+      "tag": "ru",
+      "name": "Русский"
+    },
+    {
+      "id": "tj",
+      "tag": "tg",
+      "name": "Тоҷикӣ"
+    }
+  ],
+  "backend_compatibility_aliases": {
+    "tg": "tj",
+    "tg-TJ": "tj"
+  },
+  "content_source_locale": "zh-Hans",
+  "planned_locales": [],
+  "required_translation_status": "reviewed",
+  "notes": "Do not advertise or enable a new locale until lesson content, UI, errors, notifications, offline bundles and regression tests are complete."
+}
