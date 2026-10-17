@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "observed_at_utc": "2026-10-17T08:34:13Z",
+  "observed_at_utc": "2026-10-17T08:42:34Z",
   "environment": "Railway staging only",
   "staging_origin": "https://hsk-ai-p0-qa-staging.up.railway.app",
-  "workflow_run_id": 39017842475,
-  "workflow_run_url": "https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39017842475",
-  "workflow_artifact_id": 12095930491,
+  "workflow_run_id": 39018359239,
+  "workflow_run_url": "https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39018359239",
+  "workflow_artifact_id": 12095103604,
   "read_policy": "GET+Range: bytes=0-0; status only; response body not read",
-  "performed_requests": 17,
+  "performed_requests": 24,
   "navigation_maps": {
     "tracks": [
       "hsk1",
@@ -33,16 +33,15 @@
     "protection_confirmed_for_path": true
   },
   "review_findings": [
-    "All seven sampled static lesson JSON URLs returned HTTP 206 to anonymous GET Range request on staging.",
-    "Android and Desktop lesson API endpoints returned HTTP 401 to anonymous GET requests on staging.",
-    "Private exam URL returned HTTP 404. No lesson content or exam answer body was read.",
-    "These tests do not establish production security, Pro billing bypass, premium lesson coverage or authenticated entitlement behavior."
+    "Anonymous HTTP 206 confirmed for first and final lesson URLs on all seven HSK tracks in staging: 14 observed accessible lesson paths.",
+    "Seven course maps returned 206; two native Bearer lesson APIs returned 401; private exam probe returned 404.",
+    "Range GET status only; no lesson or answer bytes read. This does not prove Pro payment bypass or any production behavior."
   ],
   "unresolved": [
-    "Authenticated Free/Trial/Pro/pending/blocked access decisions and quota counters",
-    "Premium/advanced lesson JSON exposure and source body content classification",
-    "Mini App prefetch cost isolation, WebView account switch/cache and offline behavior",
-    "Old supported APK/Desktop client E2E and production proxy review"
+    "Are the 14 sampled first/late lesson files classified as paid content under actual Free/Trial/Pro policy?",
+    "Authenticated Free/Trial/Pro/pending/blocked access decisions, daily quota counters and prefetch no-consume tests",
+    "Mini App identity-bound cache / WebView account-switch and offline security behavior",
+    "Legacy supported APK/Desktop compatibility, CDN rules and source revision migration plan"
   ],
   "previous_probe": {
     "workflow_run_id": 39017607269,
@@ -58,5 +57,28 @@
       "/api/v3/desktop/course/lesson/1"
     ],
     "interpretation": "Bearer boundary rejected these two anonymous staging GET requests; does not prove all credential or entitlement states"
+  },
+  "probe_history": [
+    {
+      "run_id": 39017842475,
+      "request_count": 17,
+      "first_lesson_successes": 7,
+      "native_denial_count": 2
+    }
+  ],
+  "late_legacy_lessons": {
+    "path_pattern": "/course_v3_data/{track}/lesson_{last}.json",
+    "source_verified_last_lesson_numbers": {
+      "hsk1": 63,
+      "hsk2": 72,
+      "hsk3": 109,
+      "hsk4": 181,
+      "nhsk1": 103,
+      "nhsk2": 73,
+      "nhsk3": 145
+    },
+    "http_status": 206,
+    "count": 7,
+    "anonymous_access_confirmed": true
   }
 }
