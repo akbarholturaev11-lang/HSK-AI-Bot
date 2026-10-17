@@ -705,6 +705,22 @@ Do not mark implementation complete based on the plan being written.
   explicit anonymous/Free/Trial/Pro/blocked/expired/offline QA matrix.
   No production code, old URL routing, Pro entitlement rules,
   TTS, lesson content, Play checkout or progress changed.
+- **Cache reset chain expanded:** `b4231e2229f301c8a0ef4b0975bb600a2bbaa07d`
+  extended native checks to `HskAiApplication.kt` and
+  `MainActivity.kt`: explicit Android sign-out and
+  `AuthState.Unauthenticated` both invoke
+  `app.clearLocalData()`, which calls
+  `courseRepository.clearCache()` and both map/lesson DAO
+  clear methods. A deliberately removed logout call is a
+  regression test fixture (`6949c4463646ccd570a847af60593edf3e453915`,
+  corrected in `c3c18c5809d7469ef43fb722e622c6fe1af3b11d`).
+  The first fixture did not actually alter its target and caused
+  a P0 test failure; the corrected
+  [fast P0 run 39012928501](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39012928501)
+  completed **SUCCESS**. This is source-level regression,
+  not proof of rapid real-device multi-account logout behavior.
+  [Security design](../docs/I18N_P0_LESSON_DELIVERY_SECURITY_DESIGN.md)
+  now includes an A->B account cache isolation QA case.
 - **P0 remains IN PROGRESS:** audit all potentially released client
   variants, execute access matrix against a controlled staging
   deployment, inspect edge/CDN policy and mixed-account caches,
