@@ -438,6 +438,57 @@ Do not mark implementation complete based on the plan being written.
   and course/quiz privacy remain review blockers.
   **P0 IN PROGRESS; P1/P2/P3/P4 NOT STARTED. No runtime changed.**
 
+### P0 seventh implementation slice — 2026-10-17 (fast CI + future public pack leak guard)
+
+- **CI coverage defect verified:** previously the `.github/workflows/backend-ci.yml`
+  pull-request path filter included `app/**` and `tests/**` but **not**
+  isolated changes to `localization/**`, `scripts/i18n_*.py`, Desktop UI
+  or Android source resources. Such diffs could silently skip the P0 checks
+  unless another tracked file also changed.
+- **Isolated, cost-conscious mitigation:** commit
+  `1fe5ca00b0776465a05af60f352ec942d34e4be5` adds
+  `.github/workflows/i18n-p0.yml`, a separate Python 3.11 **stdlib-only**
+  P0 workflow covering the above source paths plus app/static, bot,
+  service and API code, without pip installation or production runtime
+  dependencies. It keeps the existing full Backend targeted tests as a
+  separate check; the fast workflow scans source snapshots and archives
+  all read-only P0 JSON reports. It is triggered by pull requests and
+  explicit manual dispatch, **not** by every push without an open PR.
+- **Future publicly distributed bundle guard:** commits
+  `922dafe2cbd59ccc17b78f636fe5550296027918` and
+  `630e47fb6c883afa9998cc08afe98aadeda72523` add
+  `scripts/i18n_public_bundle_guard.py` and
+  `tests/test_i18n_public_bundle_guard.py`. This checks known **proposed**
+  JSON output roots under `app/static/i18n`, `app/static/locales`,
+  `app/static/course_v3_data/locales`,
+  `localization/generated/web` and `localization/generated/miniapp`
+  for key names used as private grading/assessment answers.
+  Mixed-case variants are normalized; generic learner-facing UI labels
+  `correct`, `answer`, `solution` are permitted.
+  Source content values are NEVER emitted into reports.
+  The guard fails its CI step on forbidden keys or unreadable JSON.
+  **This is NOT a proof that existing public legacy lesson JSON is protected**,
+  and does not inspect JS bundles or arbitrary unlisted output roots.
+- **CI integration:** `210bcab9569256f3fc9529e93ac6bdca281507de`
+  executes the new security unit tests and scans candidate output roots
+  in the fast P0 workflow. [Fast CI 39008015762](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39008015762)
+  completed **SUCCESS** for unit tests and read-only audits.
+  Its `public-pack-security.json` artifact reports
+  `status=NO_PACKS_YET`, `checked_json_packs=0`, `findings=[]`.
+  This **must never be described as having validated actual generated
+  language packs**. Synthetic regression fixtures prove the guard blocks
+  `correct_index`, `answerKey`, malformed JSON and allows ordinary
+  translated answer labels. The separate full backend CI for the last
+  workflow edit should be independently checked before claiming it passed.
+- **P0 unresolved security blockers:** existing public lesson
+  `/course_v3_data/{level}/{filename}` route without a handler auth
+  dependency, answer indices in legacy JSON, reverse-proxy/deployment
+  behavior unverified. The new guard only prevents a subset of **future
+  known-path JSON** leaks; it does NOT remediate this legacy exposure.
+  Formal human review of the current entitlement boundary is still needed.
+  No client runtime, payments, account data, lesson source or grading
+  logic changed. P0 IN PROGRESS, P1/P2/P3/P4 NOT STARTED.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
