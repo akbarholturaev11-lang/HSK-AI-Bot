@@ -58,11 +58,14 @@ Avval OAuth consent screen'ni to'ldiring (External, ilova nomi, support email).
 
 ### 1.1 Ikkita Web client yarating — bitta emas
 
-Bu muhim: Android va desktop **bir xil client ID ishlatmasligi kerak**. Aks
-holda Android uchun chiqarilgan token desktop endpointida qayta ishlatilishi
-mumkin bo'ladi (cross-client replay). Kod buni ataylab ajratgan.
+Muhim: native Android Credential Manager orqali olingan ID token uchun A
+audience ishlatiladi. Android/desktop browser authorization-code oqimi esa B
+web client ID + serverdagi secret + PKCE'dan foydalanadi. Native ID token
+faqat `oauth/assert`'da A audience bilan tekshiriladi; browser ID token
+faqat server callback'ida B audience bilan tekshiriladi. Bu ikkisini bitta
+audience ro'yxati qilib qo'shmang (cross-client replay xavfi).
 
-**Web client A — "HSK AI Android"**
+**Web client A — "HSK AI Android Credential Manager (legacy/native)"**
 - Create credentials → OAuth client ID → **Web application**
 - Redirect URI kerak emas
 - Olingan Client ID →
@@ -71,7 +74,7 @@ mumkin bo'ladi (cross-client replay). Kod buni ataylab ajratgan.
 GOOGLE_ANDROID_WEB_CLIENT_ID=<A ning Client ID>
 ```
 
-**Web client B — "HSK AI Desktop"**
+**Web client B — "HSK AI Browser (Android + Desktop)"**
 - Create credentials → OAuth client ID → **Web application**
 - Authorized redirect URIs → yuqoridagi Google redirect URI'ni qo'shing
 - Olingan Client ID va Client secret →
@@ -91,8 +94,10 @@ birlashtirilmaydi.
 
 ### 1.2 Ikkita Android client yarating
 
-Bular env qiymat bermaydi — ular Google'ga "shu ilova so'ray oladi" deb
-aytadi. Ikkalasi ham kerak: relizga chiqqan ilova va debug build.
+Bular native Credential Manager oqimi uchun Google'ga "shu ilova so'ray oladi"
+deb aytadi. Browser OAuth uchun Android SHA-1 talab qilinmaydi. Legacy/native
+yo'lni keyin qayta yoqish mumkin bo'lishi uchun A client va SHA-1 sozlamalarini
+o'chirib yubormang.
 
 | Package name | SHA-1 sertifikat barmoq izi |
 |---|---|
@@ -115,17 +120,33 @@ GOOGLE_OAUTH_ENABLED=true
 
 ### 1.4 Android ilovasiga ham kerak
 
-`GOOGLE_ANDROID_WEB_CLIENT_ID` ilovaga **kompilyatsiya paytida** kiradi.
+`GOOGLE_ANDROID_WEB_CLIENT_ID` eski native Credential Manager oqimi uchun
+ilovaga **kompilyatsiya paytida** kiradi. Yangilangan Android login/profil Google
+brauzer orqali B web client'ga o'tadi; undan foydalanish uchun APK'ga A client
+ID'ni qo'shish shart emas. Eski native yo'lni saqlash kerak bo'lsa
 `android/gradle.properties`:
 
 ```
 POMP_GOOGLE_WEB_CLIENT_ID=<Web client A ning Client ID — server bilan AYNAN bir xil>
 ```
 
-Keyin yangi versiya chiqarish kerak (1.6.3). Bu qiymat maxfiy emas.
+Yangilangan Android APK tarqatilmaguncha foydalanuvchilarda eski Google
+Credential Manager logikasi qoladi. Client ID maxfiy emas.
 
-**Desktop va Apple uchun ilovani yangilash shart emas** — ular brauzer orqali
-ishlaydi, faqat server sozlamasi yetadi.
+**Android browser handoff:** Google yoki Apple tasdiqlangach HTTPS callback
+`pomp-hsk-ai://oauth-return` orqali avvalgi Android ilovasini ochishga
+urinadi. Android Manifest allaqachon bu scheme'ni qabul qiladi,
+`MainActivity` esa `singleTask`; yangi session browser URL orqali emas,
+faqat oldingi pending link polling secret'iga ega ilovaga yuboriladi.
+Chrome/Custom Tabs avtomatik handoff'ni cheklasa, sahifada
+`HSK AI ↗` qo'lda bosiladigan havola bor. Desktop callback app'ni
+avtomatik ochmaydi; desktop avvalgi polling holatini yakunlaydi.
+
+**Deployment:** Bu o'zgarishlar faqat `codex/universal-sign-in` branch'ida.
+Provider callback va klient eski production bilan birga yangilanmasdan ishlaydi
+deb taxmin qilmang. Real Google callback, Android return va Apple testlari
+izolatsiyalangan staging ilova muhitida o'tkazilmaguncha production yoki
+`main`'ga chiqarmang.
 
 ---
 
@@ -214,7 +235,8 @@ ulash kartalari ko‘rinadi. Ulangan provider kartasi qayta chiqmaydi;
 saqlanadi. Desktop kirish ekranida ham sozlangan provider tugmalari chiqadi.
 Bu javoblar real callback muvaffaqiyatini tasdiqlamaydi.
 
-Android'dagi Google tugmasi uchun 1.6.3 chiqarish kerak.
+Android Google browser kirishi va callback'dan qaytish uchun ushbu branch'dan
+yangi Android reliz APK'si kerak; hozirgi production APK avtomatik o'zgarmaydi.
 
 ---
 
