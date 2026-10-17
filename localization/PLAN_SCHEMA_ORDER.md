@@ -421,7 +421,8 @@ Do not mark implementation complete based on the plan being written.
   and regression `fbce628576dfaf2048ac5daf46c477430b80c550`
   add read-only counts and line locations to the Mini App report. In
   [run 39007408199](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39007408199),
-  the localization test/audit step completed SUCCESS. Across 11 selected
+  the localization test/audit step and the full `Backend targeted tests` job
+  both completed **SUCCESS**. Across 11 selected
   HTML pages: **11 inline localized t/tr object calls, 126 LANG branches,
   54 JS locale-object declarations, 59 markup attribute candidates**.
   These are heuristic source pattern occurrences (not errors), may include
