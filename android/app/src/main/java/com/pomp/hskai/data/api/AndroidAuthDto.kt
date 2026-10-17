@@ -9,6 +9,7 @@ data class LinkStartRequest(
     @SerialName("app_version") val appVersion: String,
     @SerialName("installation_key") val installationKey: String,
     @SerialName("language") val language: String? = null,
+    @SerialName("referral_code") val referralCode: String? = null,
 )
 
 @Serializable

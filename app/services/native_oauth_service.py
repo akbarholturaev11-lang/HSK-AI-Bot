@@ -154,6 +154,7 @@ class NativeOAuthService:
         bind_user_id: int | None = None,
         language: str | None = None,
         bind_session_id: str | None = None,
+        referral_code: str | None = None,
     ) -> OAuthStart:
         if provider not in PROVIDERS:
             raise NativeOAuthError("oauth_provider_unsupported", status_code=422)
@@ -179,6 +180,7 @@ class NativeOAuthService:
             bind_user_id=bind_user_id,
             language=language,
             bind_session_id=bind_session_id,
+            referral_code=referral_code,
         )
         link_request_id = started["link_request_id"]
         nonce = self.nonce(link_request_id)
@@ -277,7 +279,7 @@ class NativeOAuthService:
 
         user_id = await self.identities.resolve_signin(
             verified, installation_key_hash=row.installation_key_hash,
-            allow_create=True, language=row.language,
+            allow_create=True, language=row.language, referral_code=getattr(row, "referral_code", None),
         )
         user = await self.session.get(User, user_id)
         if user is None:

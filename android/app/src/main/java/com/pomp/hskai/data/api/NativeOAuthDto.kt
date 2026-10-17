@@ -21,6 +21,8 @@ data class OAuthStartRequest(
     @SerialName("mode") val mode: String,
     /** Initial language for a new account; existing account preferences are server-owned. */
     @SerialName("language") val language: String? = null,
+    /** Creation-only attribution. Never supplied when linking an existing account. */
+    @SerialName("referral_code") val referralCode: String? = null,
 )
 
 @Serializable

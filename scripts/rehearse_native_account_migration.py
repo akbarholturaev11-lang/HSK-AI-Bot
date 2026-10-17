@@ -1,4 +1,4 @@
-"""Read-only evidence for a 0102 -> 0105 staging migration and backup restores.
+"""Read-only evidence for a 0102 -> 0107 staging migration and backup restores.
 
 This script never migrates, dumps, restores, or imports application settings.
 Run ``snapshot`` on the isolated restored database before/after the operator's
@@ -29,7 +29,7 @@ from urllib.parse import parse_qsl, unquote, urlsplit
 
 
 BASE_REVISION = "0102_payment_review_preview"
-HEAD_REVISION = "0106_canonical_payment_ownership"
+HEAD_REVISION = "0107_canonical_referral_owners"
 FOUNDATION = {
     "account_notice_deliveries": "telegram_id",
     "conversion_funnel_events": "telegram_id",
@@ -42,6 +42,8 @@ AI_VOICE = {name: "user_telegram_id" for name in (
     "ai_usage_budgets", "ai_usage_events", "voice_practice_sessions")}
 PURCHASE = {"payments": "user_telegram_id", "subscription_entry_events": "telegram_id"}
 OWNERS = FOUNDATION | AI_VOICE | PURCHASE
+REFERRAL_OWNERS = {"referrer_user_id": "referrer_telegram_id", "invited_user_id": "invited_user_telegram_id"}
+OWNER_COLUMNS = {table: {"user_id": field} for table, field in OWNERS.items()} | {"referrals": REFERRAL_OWNERS}
 NEW_OWNER_COLUMNS = set(AI_VOICE) | {"payments"}
 DEDUPE = {"course_miniapp_events": "event_name", "course_user_notifications": "key"}
 NEW_UNIQUES = {table: ("uq_" + table + "_user_" + ("event" if field == "event_name" else "key") + "_dedupe",
@@ -50,11 +52,15 @@ ADDED_CONSTRAINTS = {table + "." + name for table, (name, fields) in NEW_UNIQUES
     table + ".fk_" + table + "_user_id" for table in AI_VOICE}
 ADDED_INDEXES = {table + "." + name for table, (name, fields) in NEW_UNIQUES.items()} | {
     table + ".ix_" + table + "_user_id" for table in NEW_OWNER_COLUMNS}
-NULLABLE = {("users", "telegram_id"), ("desktop_devices", "telegram_id")} | set(OWNERS.items())
+ADDED_CONSTRAINTS |= {"referrals.fk_referrals_" + name + "_users" for name in REFERRAL_OWNERS} | {"referrals.uq_referrals_invited_user_id"}
+ADDED_INDEXES |= {"referrals.ix_referrals_referrer_user_id", "referrals.uq_referrals_invited_user_id"}
+NULLABLE = {("users", "telegram_id"), ("desktop_devices", "telegram_id")} | set(OWNERS.items()) | {
+    ("referrals", field) for field in REFERRAL_OWNERS.values()}
 CRITICAL = {
     "billing": ("users", "payments", "portfolio_transactions", "ai_usage_budgets"),
     "progress": ("course_progress", "course_attempts", "course_word_mastery"),
     "xp_rating": ("course_xp_events", "course_miniapp_profiles"),
+    "referrals": ("referrals",),
 }
 IDENTIFIER = re.compile(r"^[a-z_][a-z0-9_]*$")
 
@@ -173,6 +179,7 @@ def validate_inventory(inventory):
                 "desktop_link_requests": {"intent", "status"}}
     required |= {table: {"id", column} | ({"user_id"} if table not in NEW_OWNER_COLUMNS else set())
                  for table, column in OWNERS.items()}
+    required["referrals"] = {"id", *REFERRAL_OWNERS.values()}
     for group in CRITICAL.values():
         for table in group:
             required.setdefault(table, set()).add("id")
@@ -209,18 +216,21 @@ class TableSummary:
         original = {name: row[name] for name in self.legacy}
         self.raw.add(original)
         normalized = dict(original)
-        if self.table in OWNERS:
-            tid = row[OWNERS[self.table]]
-            actual = row.get("user_id")
-            matched = self.users.get(tid) if tid is not None and (self.table not in PURCHASE or tid > 0) else None
+        for owner_column, telegram_column in OWNER_COLUMNS.get(self.table, {}).items():
+            tid = row[telegram_column]
+            actual = row.get(owner_column)
+            real_id_required = self.table in PURCHASE or self.table == "referrals"
+            matched = self.users.get(tid) if tid is not None and (not real_id_required or tid > 0) else None
             expected = actual if actual is not None else matched
             self.backfillable += int(actual is None and matched is not None)
             self.unresolved += int(actual is None and tid is not None and matched is None)
             self.owner_conflicts += int(actual is not None and matched is not None and actual != matched)
-            self.actual_owner.add([row["id"], actual])
-            self.expected_owner.add([row["id"], expected])
-            if "user_id" in normalized:
-                normalized["user_id"] = expected
+            self.actual_owner.add([row["id"], owner_column, actual])
+            self.expected_owner.add([row["id"], owner_column, expected])
+            if owner_column in normalized:
+                normalized[owner_column] = expected
+            if self.table == "referrals" and owner_column == "invited_user_id" and expected is not None:
+                self.dedupe[(expected,)] += 1
             if self.table in DEDUPE:
                 values = (expected, row[DEDUPE[self.table]], row["dedupe_key"])
                 if all(value is not None for value in values):
@@ -233,7 +243,7 @@ class TableSummary:
     def finish(self):
         result = {"rows": self.count, "columns": self.columns, "full_digest": self.full.finish(),
                   "raw_legacy_digest": self.raw.finish(), "migration_legacy_digest": self.normal.finish()}
-        if self.table in OWNERS:
+        if self.table in OWNER_COLUMNS:
             result["owners"] = {"actual_digest": self.actual_owner.finish(), "expected_digest": self.expected_owner.finish(),
                                 "backfillable_rows": self.backfillable, "unresolved_legacy_rows": self.unresolved,
                                 "existing_owner_conflicts": self.owner_conflicts,
@@ -311,7 +321,7 @@ async def collect_snapshot(connection, inventory, key):
     constraint_lookup = {(row["table_name"], row["name"]): row for row in constraints}
     index_lookup = {(row["tablename"], row["indexname"]): row["indexdef"] for row in indexes}
     migration_contract = all(schema.get(table + "." + name, {}).get("nullable") for table, name in NULLABLE)
-    for name, length in (("language", 8), ("bind_session_id", 36), ("approved_identity_id", 36)):
+    for name, length in (("language", 8), ("bind_session_id", 36), ("approved_identity_id", 36), ("referral_code", 64)):
         field = column_lookup.get(("desktop_link_requests", name), {})
         migration_contract &= field.get("udt_name") == "varchar" and field.get("is_nullable") == "YES"
         migration_contract &= field.get("character_maximum_length") == length and field.get("column_default") is None
@@ -333,9 +343,17 @@ async def collect_snapshot(connection, inventory, key):
     # no account FK may cascade their deletion or silently change this policy.
     migration_contract &= not any(row["table_name"] == "payments" and row["type"] == "f"
                                   and "user_id" in row["columns"] for row in constraints)
+    for name in REFERRAL_OWNERS:
+        migration_contract &= schema.get("referrals." + name) == {"type": "int4", "nullable": True}
+        migration_contract &= column_lookup.get(("referrals", name), {}).get("column_default") is None
+        constraint = constraint_lookup.get(("referrals", "fk_referrals_" + name + "_users"), {})
+        migration_contract &= constraint.get("definition") == f"FOREIGN KEY ({name}) REFERENCES users(id) ON DELETE CASCADE"
+    migration_contract &= constraint_lookup.get(("referrals", "uq_referrals_invited_user_id"), {}).get("definition") == "UNIQUE (invited_user_id)"
+    migration_contract &= index_lookup.get(("referrals", "uq_referrals_invited_user_id")) == "CREATE UNIQUE INDEX uq_referrals_invited_user_id ON public.referrals USING btree (invited_user_id)"
+    migration_contract &= index_lookup.get(("referrals", "ix_referrals_referrer_user_id")) == "CREATE INDEX ix_referrals_referrer_user_id ON public.referrals USING btree (referrer_user_id)"
     critical = {group: digest(key, {table: tables[table]["migration_legacy_digest"] for table in names})
                 for group, names in CRITICAL.items()}
-    preflight = [reason + ":" + table for table, summary in tables.items() if table in OWNERS
+    preflight = [reason + ":" + table for table, summary in tables.items() if table in OWNER_COLUMNS
                  for reason in ("existing_owner_conflicts", "canonical_duplicate_groups") if summary["owners"][reason]]
     inventory_columns = {row["table_name"] + "." + row["column_name"]: row for row in inventory["columns"]}
     live_inventory_columns = {row["table_name"] + "." + row["column_name"]:
@@ -391,8 +409,9 @@ def compare_snapshots(before, after, mode):
                 failures.append("legacy_schema_changed:" + column)
             if after["column_metadata"].get(column) != before["column_metadata"].get(column):
                 failures.append("legacy_column_modifiers_changed:" + column)
-        added = {"desktop_link_requests." + name for name in ("language", "bind_session_id", "approved_identity_id")}
+        added = {"desktop_link_requests." + name for name in ("language", "bind_session_id", "approved_identity_id", "referral_code")}
         added |= {table + ".user_id" for table in NEW_OWNER_COLUMNS}
+        added |= {"referrals." + name for name in REFERRAL_OWNERS}
         if set(after["column_schema"]) != set(before["column_schema"]) | added:
             failures.append("unexpected_schema_columns")
         for name, definition in before["constraint_metadata"].items():
@@ -421,7 +440,7 @@ def compare_snapshots(before, after, mode):
         field = "migration_legacy_digest" if mode == "migration" else "full_digest"
         if original["rows"] != current.get("rows") or original[field] != current.get(field):
             failures.append("rows_changed:" + table)
-        if mode == "migration" and table in OWNERS:
+        if mode == "migration" and table in OWNER_COLUMNS:
             if original["owners"]["expected_digest"] != current.get("owners", {}).get("actual_digest"):
                 failures.append("owner_backfill:" + table)
             if original["owners"]["canonical_duplicate_groups"]:

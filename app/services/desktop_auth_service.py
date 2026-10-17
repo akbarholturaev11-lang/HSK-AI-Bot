@@ -347,6 +347,7 @@ class DesktopAuthService:
         bind_user_id: int | None = None,
         language: str | None = None,
         bind_session_id: str | None = None,
+        referral_code: str | None = None,
     ) -> dict[str, Any]:
         self._signing_secret()
         if platform not in NATIVE_PLATFORMS | LINK_ONLY_PLATFORMS:
@@ -375,6 +376,10 @@ class DesktopAuthService:
                 "desktop_installation_key_invalid", status_code=422
             )
 
+        if referral_code is not None and (not isinstance(referral_code, str) or len(referral_code) > 64):
+            raise DesktopAuthError("desktop_referral_request_invalid", status_code=422)
+        if intent != SIGNIN_INTENT and referral_code:
+            raise DesktopAuthError("desktop_link_intent_invalid", status_code=422)
         await self._acquire_link_start_rate_limit_lock()
         now = _utcnow()
         installation_hash = self._hash("installation", installation_key)
@@ -433,6 +438,7 @@ class DesktopAuthService:
             bind_user_id=int(bind_user_id) if bind_user_id else None,
             language=language if language in {"uz", "ru", "tj"} else None,
             bind_session_id=bind_session_id,
+            referral_code=referral_code.strip() if referral_code else None,
             status="pending",
             expires_at=now + timedelta(seconds=self._link_ttl()),
         )
@@ -502,6 +508,7 @@ class DesktopAuthService:
             "link_request_id": link_request.id,
             "platform": link_request.platform,
             "app_version": link_request.app_version,
+            "referral_code": link_request.referral_code,
             "expires_in": max(0, int((expires_at - now).total_seconds())),
         }
 
@@ -667,6 +674,7 @@ class DesktopAuthService:
         user = await UserRepository(self.session).get_by_telegram_id_for_update(
             telegram_id
         )
+        created_user = False
         if not user:
             # A private-chat confirmation proves the real Telegram identity.
             # Create only after that consent, with the same starter policy.
@@ -679,12 +687,18 @@ class DesktopAuthService:
                         language=link_request.language or "tj",
                         learning_mode="course",
                     )
+                    created_user = True
             except IntegrityError:
                 user = await UserRepository(self.session).get_by_telegram_id_for_update(telegram_id)
                 if user is None:
                     raise DesktopAuthError("desktop_link_invalid", status_code=409)
         if user.status == "blocked":
             raise DesktopAuthError("user_blocked", status_code=403)
+        if created_user and getattr(link_request, "referral_code", None):
+            from app.services.referral_service import ReferralService
+            await ReferralService(self.session).attach_referral_if_needed(
+                user, link_request.referral_code, commit=False,
+            )
         link_request.status = "approved"
         link_request.approved_user_id = user.id
         link_request.approved_telegram_id = user.telegram_id
@@ -917,7 +931,7 @@ class DesktopAuthService:
         link_request.consumed_at = now
         linked_device_id = device.id
         linked_platform = device.platform
-        linked_telegram_id = device.telegram_id
+        linked_user_id = device.user_id
         # Persist the device/session/token state before optional analytics.
         # Course analytics is best-effort and must never roll back credentials
         # that have already been returned to the native client.
@@ -944,12 +958,12 @@ class DesktopAuthService:
                 device.id,
             )
             await self.session.rollback()
-        if linked_platform == "android" and linked_telegram_id:
+        if linked_platform == "android":
             try:
                 from app.services.referral_service import ReferralService
 
                 await ReferralService(self.session).qualify_android_discount_referral(
-                    linked_telegram_id
+                    await UserRepository(self.session).get_by_user_id(linked_user_id)
                 )
             except Exception:
                 logger.exception(

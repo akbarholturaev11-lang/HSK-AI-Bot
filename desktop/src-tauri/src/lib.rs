@@ -383,6 +383,20 @@ fn validate_language(language: &str) -> Result<&'static str, String> {
     }
 }
 
+fn validate_signup_referral(value: Option<&str>) -> Result<Option<&str>, String> {
+    let code = value.unwrap_or("").trim();
+    if code.is_empty() { return Ok(None); }
+    let payload = code.strip_prefix("ref_")
+        .or_else(|| code.strip_prefix("ra_"))
+        .or_else(|| code.strip_prefix("ri_"))
+        .unwrap_or(code);
+    if code.len() > 64 || payload.len() != 8
+        || !payload.bytes().all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte)) {
+        return Err("signup_referral_invalid".into());
+    }
+    Ok(Some(code))
+}
+
 fn validate_subscription_plan(plan: &str) -> Result<&'static str, String> {
     match plan.trim().to_ascii_lowercase().as_str() {
         "10_days" => Ok("10_days"),
@@ -818,6 +832,25 @@ fn is_allowed_referral_share_link(url: &str) -> bool {
     let Ok(parsed) = reqwest::Url::parse(url) else {
         return false;
     };
+    if parsed.scheme() != "https"
+        || parsed.port().is_some()
+        || !parsed.username().is_empty()
+        || parsed.password().is_some()
+        || parsed.fragment().is_some()
+    {
+        return false;
+    }
+    if parsed.origin().ascii_serialization() == API_ORIGIN {
+        let code_ok = single_query_value(&parsed, "ref").is_some_and(|code| {
+            code.len() == 8 && code.bytes().all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+        });
+        let mode_ok = if parsed.query_pairs().any(|(key, _)| key == "mode") {
+            single_query_value(&parsed, "mode").is_some_and(|mode| mode == "trial" || mode == "discount")
+        } else {
+            true
+        };
+        return parsed.path() == "/apps" && code_ok && mode_ok && has_only_query_keys(&parsed, &["ref", "mode"]);
+    }
     let path_ok = parsed.path_segments().is_some_and(|segments| {
         let parts = segments.filter(|part| !part.is_empty()).collect::<Vec<_>>();
         parts.len() == 1
@@ -829,9 +862,8 @@ fn is_allowed_referral_share_link(url: &str) -> bool {
     let mut query = parsed.query_pairs();
     let start_ok = query.next().is_some_and(|(key, value)| {
         key == "start"
-            && value.starts_with("ref_")
-            && (5..=128).contains(&value.len())
-            && value[4..]
+            && (1..=128).contains(&value.len())
+            && value
                 .bytes()
                 .all(|byte| byte.is_ascii_alphanumeric() || byte == b'_' || byte == b'-')
     });
@@ -1987,8 +2019,10 @@ async fn desktop_auth_status(
 async fn desktop_link_start(
     state: tauri::State<'_, DesktopState>,
     language: Option<String>,
+    referral_code: Option<String>,
 ) -> Result<DesktopLinkDisplay, String> {
     let language = language.as_deref().map(validate_language).transpose()?;
+    let referral_code = validate_signup_referral(referral_code.as_deref())?;
     clear_pending_link(&state)?;
     let response = state
         .client
@@ -1998,6 +2032,7 @@ async fn desktop_link_start(
             "app_version": env!("CARGO_PKG_VERSION"),
             "installation_key": installation_key()?,
             "language": language,
+            "referral_code": referral_code,
         }))
         .send()
         .await
@@ -2196,11 +2231,13 @@ async fn desktop_oauth_start(
     state: tauri::State<'_, DesktopState>,
     provider: String,
     language: Option<String>,
+    referral_code: Option<String>,
 ) -> Result<DesktopLinkDisplay, String> {
     if provider != "google" && provider != "apple" {
         return Err("oauth_provider_unsupported".into());
     }
     let language = language.as_deref().map(validate_language).transpose()?;
+    let referral_code = validate_signup_referral(referral_code.as_deref())?;
     clear_pending_link(&state)?;
     let response = state
         .client
@@ -2212,6 +2249,7 @@ async fn desktop_oauth_start(
             "provider": provider,
             "mode": "browser_redirect",
             "language": language,
+            "referral_code": referral_code,
         }))
         .send()
         .await
@@ -2902,7 +2940,7 @@ mod tests {
         is_allowed_telegram_link, local_ai_analytics_payload, no_update_status,
         terminal_link_status, validate_checkout_attempt_id, validate_course_level,
         validate_course_track, validate_event_id, validate_language, validate_lesson_order,
-        validate_mistakes, validate_subscription_country, validate_subscription_image_data_url,
+        validate_mistakes, validate_signup_referral, is_allowed_referral_share_link, validate_subscription_country, validate_subscription_image_data_url,
         validate_subscription_method, validate_subscription_mode,
         validate_subscription_overview_response, validate_subscription_plan,
         validate_subscription_quote_response, validate_subscription_submit_response,
@@ -3185,6 +3223,25 @@ mod tests {
         assert!(!is_allowed_external_url(
             "tg://resolve?domain=darsi_chini_bot"
         ));
+    }
+
+    #[test]
+    fn signup_invites_are_exact_optional_metadata() {
+        assert_eq!(validate_signup_referral(None), Ok(None));
+        assert_eq!(validate_signup_referral(Some("  ")), Ok(None));
+        for code in ["abcdef12", "ref_abcdef12", "ra_abcdef12", "ri_abcdef12"] {
+            assert_eq!(validate_signup_referral(Some(code)), Ok(Some(code)));
+        }
+        for code in ["abcdef", "ABCDEF12", "ref_ref_abcdef12", "abcdef12?admin=true", "https://evil.example/abcdef12"] {
+            assert!(validate_signup_referral(Some(code)).is_err());
+        }
+        for suffix in ["", "&mode=trial", "&mode=discount"] {
+            assert!(is_allowed_referral_share_link(&format!("https://telegram-chinese-bot-production.up.railway.app/apps?ref=abcdef12{suffix}")));
+        }
+        for suffix in ["&mode=trial&mode=discount", "&ref=aaaaaaaa", "&admin=true", "#fragment"] {
+            assert!(!is_allowed_referral_share_link(&format!("https://telegram-chinese-bot-production.up.railway.app/apps?ref=abcdef12{suffix}")));
+        }
+        assert!(!is_allowed_referral_share_link("https://evil.example/apps?ref=abcdef12&mode=trial"));
     }
 
     #[test]

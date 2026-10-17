@@ -30,6 +30,7 @@ class DesktopLinkRequest(Base):
     platform: Mapped[str] = mapped_column(String(16), nullable=False)
     app_version: Mapped[str] = mapped_column(String(40), nullable=False)
     language: Mapped[Optional[str]] = mapped_column(String(8), nullable=True)
+    referral_code: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
     # Proof snapshots are deliberately not FKs: identity removal must not
     # lock pending request rows in reverse order. Consumers revalidate them.
     bind_session_id: Mapped[Optional[str]] = mapped_column(String(36), nullable=True)

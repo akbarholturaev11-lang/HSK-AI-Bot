@@ -33,13 +33,19 @@ def table(table_name, *, migrated=False, mutate=None):
     if table_name == "desktop_link_requests":
         row.update(intent="link", status="expired" if migrated else "pending")
         if migrated:
-            row.update(language=None, bind_session_id=None, approved_identity_id=None)
+            row.update(language=None, bind_session_id=None, approved_identity_id=None, referral_code=None)
+    if table_name == "referrals":
+        row.update(referrer_telegram_id=1001, invited_user_telegram_id=1002,
+                   status="active", bonus_granted=True, trial_reward_counted=True, counts_for_discount=True)
+        if migrated:
+            row.update(referrer_user_id=7, invited_user_id=8)
     baseline_columns = sorted(name for name in row if not (
         migrated and ((table_name in helper.NEW_OWNER_COLUMNS and name == "user_id") or
-                      (table_name == "desktop_link_requests" and name in ("language", "bind_session_id", "approved_identity_id")))))
+                      (table_name == "desktop_link_requests" and name in ("language", "bind_session_id", "approved_identity_id", "referral_code")) or
+                      (table_name == "referrals" and name in helper.REFERRAL_OWNERS))))
     if mutate:
         mutate(row)
-    summary = helper.TableSummary(table_name, sorted(row), baseline_columns, {1001: 7}, KEY, not migrated)
+    summary = helper.TableSummary(table_name, sorted(row), baseline_columns, {1001: 7, 1002: 8}, KEY, not migrated)
     summary.add(row)
     return summary.finish()
 
@@ -56,10 +62,12 @@ def snapshots():
     after_schema = copy.deepcopy(before_schema)
     for name, column in helper.NULLABLE:
         after_schema[name + "." + column]["nullable"] = True
-    for name in ("language", "bind_session_id", "approved_identity_id"):
+    for name in ("language", "bind_session_id", "approved_identity_id", "referral_code"):
         after_schema["desktop_link_requests." + name] = {"type": "varchar", "nullable": True}
     for name in helper.NEW_OWNER_COLUMNS:
         after_schema[name + ".user_id"] = {"type": "int4", "nullable": True}
+    for name in helper.REFERRAL_OWNERS:
+        after_schema["referrals." + name] = {"type": "int4", "nullable": True}
     def report(tables, schema, migrated):
         constraints = {"users.users_telegram_id_key": {"kind": "u", "columns": ["telegram_id"], "definition_digest": "unique-tg"},
                        "course_progress.course_progress_user_id_fkey": {"kind": "f", "columns": ["user_id"], "definition_digest": "progress-fk"}}
@@ -146,7 +154,7 @@ class DestinationSafetyTests(unittest.TestCase):
 class PreservationTests(unittest.TestCase):
     def test_current_preview_inventory_is_required_and_stale_inventory_is_refused(self):
         self.assertEqual(helper.BASE_REVISION, "0102_payment_review_preview")
-        self.assertEqual(helper.HEAD_REVISION, "0106_canonical_payment_ownership")
+        self.assertEqual(helper.HEAD_REVISION, "0107_canonical_referral_owners")
         before, _ = snapshots()
         inventory = {"read_only": True, "alembic_revisions": [helper.BASE_REVISION], "columns": [
             {"table_name": name.split(".")[0], "column_name": name.split(".")[1]}
@@ -312,6 +320,28 @@ class PreservationTests(unittest.TestCase):
         self.assertEqual(one.finish(), reordered.finish())
         self.assertNotEqual(one.finish(), duplicated.finish())
         self.assertNotEqual(helper.digest(KEY, values), helper.digest(b"different-key", values))
+
+    def test_both_referral_owners_and_reward_state_must_survive(self):
+        for owner in helper.REFERRAL_OWNERS:
+            before, after = snapshots()
+            after["tables"]["referrals"] = table("referrals", migrated=True, mutate=lambda row: row.update({owner: None}))
+            result = helper.compare_snapshots(before, after, "migration")
+            self.assertIn("owner_backfill:referrals", result["failures"])
+        for field in ("bonus_granted", "trial_reward_counted", "counts_for_discount"):
+            before, after = snapshots()
+            after["tables"]["referrals"] = table("referrals", migrated=True, mutate=lambda row: row.update({field: False}))
+            self.assertIn("rows_changed:referrals", helper.compare_snapshots(before, after, "migration")["failures"])
+
+    def test_duplicate_referral_invited_owner_and_missing_constraints_are_detected(self):
+        summary = helper.TableSummary("referrals", ["id", *helper.REFERRAL_OWNERS.values()],
+            ["id", *helper.REFERRAL_OWNERS.values()], {1001: 7, 1002: 8}, KEY, True)
+        for row_id in (1, 2):
+            summary.add({"id": row_id, "referrer_telegram_id": 1001, "invited_user_telegram_id": 1002})
+        self.assertEqual(summary.finish()["owners"]["canonical_duplicate_groups"], 1)
+        for name in ("referrals.fk_referrals_invited_user_id_users", "referrals.uq_referrals_invited_user_id"):
+            before, after = snapshots()
+            del after["constraint_metadata"][name]
+            self.assertIn("unexpected_schema_constraints", helper.compare_snapshots(before, after, "migration")["failures"])
 
 
 if __name__ == "__main__":

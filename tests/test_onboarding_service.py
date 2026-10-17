@@ -168,14 +168,15 @@ class ReferralServiceTests(unittest.IsolatedAsyncioTestCase):
         session = SimpleNamespace(commit=AsyncMock())
         service = ReferralService(session)
         invited = SimpleNamespace(
+            id=1, status="free", referrer_id=None,
             telegram_id=123,
             referred_by_telegram_id=777,
             questions_used=2,
         )
-        referrer = SimpleNamespace(telegram_id=777)
+        referrer = SimpleNamespace(id=2, status="free", telegram_id=777)
         referral = SimpleNamespace(referrer_telegram_id=777, status="pending")
         service.user_repo = SimpleNamespace(
-            get_by_telegram_id=AsyncMock(side_effect=[invited, referrer]),
+            get_by_actor=AsyncMock(return_value=invited),
             get_by_referral_code=AsyncMock(return_value=referrer),
             set_referred_by=AsyncMock(),
         )
@@ -188,27 +189,25 @@ class ReferralServiceTests(unittest.IsolatedAsyncioTestCase):
 
         await service.attach_referral_if_needed(
             invited_user_telegram_id=123,
-            referral_code="abc123",
+            referral_code="abc12345",
             bot=bot,
         )
 
         service.referral_repo.create.assert_not_awaited()
-        service.activate_referral_if_eligible.assert_awaited_once_with(
-            bot=bot,
-            invited_user_telegram_id=123,
-        )
+        service.activate_referral_if_eligible.assert_awaited_once_with(bot, invited)
 
     async def test_attach_referral_activates_immediately_when_user_already_eligible(self):
         session = SimpleNamespace(commit=AsyncMock())
         service = ReferralService(session)
         invited = SimpleNamespace(
+            id=1, status="free", referrer_id=None,
             telegram_id=123,
             referred_by_telegram_id=None,
             questions_used=2,
         )
-        referrer = SimpleNamespace(telegram_id=777)
+        referrer = SimpleNamespace(id=2, status="free", telegram_id=777)
         service.user_repo = SimpleNamespace(
-            get_by_telegram_id=AsyncMock(side_effect=[invited, referrer]),
+            get_by_actor=AsyncMock(return_value=invited),
             get_by_referral_code=AsyncMock(return_value=referrer),
             set_referred_by=AsyncMock(),
         )
@@ -221,19 +220,16 @@ class ReferralServiceTests(unittest.IsolatedAsyncioTestCase):
 
         await service.attach_referral_if_needed(
             invited_user_telegram_id=123,
-            referral_code="abc123",
+            referral_code="abc12345",
             bot=bot,
         )
 
         service.referral_repo.create.assert_awaited_once_with(
-            referrer_telegram_id=777,
-            invited_user_telegram_id=123,
+            referrer_telegram_id=referrer,
+            invited_user_telegram_id=invited,
             discount_platform="unknown",
         )
-        service.activate_referral_if_eligible.assert_awaited_once_with(
-            bot=bot,
-            invited_user_telegram_id=123,
-        )
+        service.activate_referral_if_eligible.assert_awaited_once_with(bot, invited)
 
 
 class ReferralStartPayloadTests(unittest.IsolatedAsyncioTestCase):
@@ -258,13 +254,14 @@ class ReferralStartPayloadTests(unittest.IsolatedAsyncioTestCase):
         session = SimpleNamespace(commit=AsyncMock())
         service = ReferralService(session)
         invited = SimpleNamespace(
+            id=1, status="free", referrer_id=None,
             telegram_id=123,
             referred_by_telegram_id=None,
             questions_used=0,
         )
-        referrer = SimpleNamespace(telegram_id=777)
+        referrer = SimpleNamespace(id=2, status="free", telegram_id=777)
         service.user_repo = SimpleNamespace(
-            get_by_telegram_id=AsyncMock(side_effect=[invited, referrer]),
+            get_by_actor=AsyncMock(return_value=invited),
             get_by_referral_code=AsyncMock(return_value=referrer),
             set_referred_by=AsyncMock(),
         )
@@ -276,14 +273,14 @@ class ReferralStartPayloadTests(unittest.IsolatedAsyncioTestCase):
 
         await service.attach_referral_if_needed(
             invited_user_telegram_id=123,
-            referral_code="ref_abc123",
+            referral_code="ref_abc12345",
             bot=SimpleNamespace(),
         )
 
-        service.user_repo.get_by_referral_code.assert_awaited_once_with("abc123")
+        service.user_repo.get_by_referral_code.assert_awaited_once_with("abc12345")
         service.referral_repo.create.assert_awaited_once_with(
-            referrer_telegram_id=777,
-            invited_user_telegram_id=123,
+            referrer_telegram_id=referrer,
+            invited_user_telegram_id=invited,
             discount_platform="unknown",
         )
 
@@ -306,7 +303,7 @@ class StartHandlerOnboardingTests(unittest.IsolatedAsyncioTestCase):
             onboarding.return_value.get_or_create_user = AsyncMock(return_value=(user, True))
             users.return_value.get_by_referral_code = AsyncMock(return_value=SimpleNamespace(telegram_id=777))
             referrals.return_value.get_by_invited_user_telegram_id = AsyncMock(
-                return_value=SimpleNamespace(referrer_telegram_id=777, discount_platform="android")
+                return_value=SimpleNamespace(referrer_user_id=None, referrer_telegram_id=777, discount_platform="android")
             )
             send_apk.return_value = True
             await cmd_start(message, state, SimpleNamespace(), SimpleNamespace(args="ra_a1b2c3d4"))
@@ -333,7 +330,7 @@ class StartHandlerOnboardingTests(unittest.IsolatedAsyncioTestCase):
         ) as referrals:
             users.return_value.get_by_referral_code = AsyncMock(return_value=SimpleNamespace(telegram_id=777))
             referrals.return_value.get_by_invited_user_telegram_id = AsyncMock(
-                return_value=SimpleNamespace(referrer_telegram_id=888, discount_platform="android")
+                return_value=SimpleNamespace(referrer_user_id=None, referrer_telegram_id=888, discount_platform="android")
             )
             sent = await _send_android_referral_apk(
                 message, SimpleNamespace(), user, "ra_a1b2c3d4"

@@ -331,6 +331,10 @@ class AssistantService:
         conversation = await self.session.get(AssistantConversation, row.conversation_id)
         if conversation.title == "HSK AI":
             conversation.title = (data.text or ctx.title or "HSK AI")[:100]
+        await self.session.flush()
+        if not restricted:
+            from app.services.referral_service import ReferralService
+            await ReferralService(self.session).activate_referral_if_eligible(None, user)
         await self.session.commit()
         logger.info("assistant_completed kind=%s restricted=%s", data.kind, restricted)
 

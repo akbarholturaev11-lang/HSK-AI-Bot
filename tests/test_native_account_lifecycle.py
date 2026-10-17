@@ -181,13 +181,11 @@ class NativeAccountLifecycleTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(notice.telegram_sent_at)
             bot.send_message.assert_not_awaited()
 
-    async def test_old_provider_referral_code_cannot_break_new_telegram_onboarding(self):
+    async def test_provider_referral_attributes_new_telegram_onboarding_canonically(self):
         async with self.sessions() as session:
             provider = await session.get(User, 1)
             await UserRepository(session).ensure_referral_code(provider)
-            self.assertIsNone(provider.referral_code)
-            # A stale code from an earlier build still fails closed at the
-            # service boundary, preserving the newcomer and billing policy.
+            self.assertTrue(provider.referral_code)
             provider.referral_code = "a1b2c3d4"
             await session.commit()
             newcomer, created = await OnboardingService(session).get_or_create_user(
@@ -196,7 +194,8 @@ class NativeAccountLifecycleTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(created)
             self.assertEqual(newcomer.telegram_id, 7007)
             self.assertIsNone(newcomer.referred_by_telegram_id)
-            self.assertIsNone((await session.execute(select(Referral))).scalars().first())
+            self.assertEqual((await session.scalar(select(Referral))).referrer_user_id, provider.id)
+            self.assertEqual(newcomer.referrer_id, provider.id)
             self.assertIsNone(provider.telegram_id)
             self.assertNotEqual(provider.id, newcomer.id)
 
@@ -229,9 +228,11 @@ class NativeAccountLifecycleTests(unittest.IsolatedAsyncioTestCase):
             after = await client.get("/api/v3/android/trial/status")
             self.assertFalse(after.json()["trial"]["eligible"])
             referral = await client.get("/api/v3/android/referral/overview")
-            self.assertEqual(referral.status_code, 409, referral.text)
-            self.assertEqual(referral.json()["error"], "referral_telegram_required")
+            self.assertEqual(referral.status_code, 200, referral.text)
+            self.assertIn("&mode=trial", referral.json()["link"])
             payment = await client.post("/api/v3/android/subscription/open")
+            # This compatibility endpoint opens the Telegram checkout. Native
+            # Direct checkout uses the dedicated quote/receipt endpoints.
             self.assertEqual(payment.status_code, 409, payment.text)
             self.assertEqual(payment.json()["error"], "payment_telegram_required")
             currency = await client.put("/api/v3/android/subscription/currency-preference", json={"currency": "USD"})
@@ -241,7 +242,7 @@ class NativeAccountLifecycleTests(unittest.IsolatedAsyncioTestCase):
             provider = await session.get(User, 1)
             other = await session.get(User, 2)
             self.assertIsNone(provider.telegram_id)
-            self.assertIsNone(provider.referral_code)
+            self.assertTrue(provider.referral_code)
             self.assertFalse(other.trial_used)
             self.assertEqual(provider.subscription_currency, "USD")
         bot.send_message.assert_not_awaited()

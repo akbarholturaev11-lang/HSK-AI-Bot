@@ -76,6 +76,7 @@ class OAuthStartRequest(BaseModel):
     provider: Provider
     mode: Literal["native_id_token", "browser_redirect"]
     language: Literal["uz", "ru", "tj"] | None = None
+    referral_code: str | None = Field(default=None, max_length=64)
 
 
 class OAuthAssertRequest(BaseModel):
@@ -270,6 +271,7 @@ def create_native_oauth_router(
                     installation_key=payload.installation_key.get_secret_value(),
                     intent=SIGNIN_INTENT,
                     language=payload.language,
+                    **({"referral_code": payload.referral_code} if payload.referral_code else {}),
                 )
             content: dict[str, Any] = {
                 "ok": True,

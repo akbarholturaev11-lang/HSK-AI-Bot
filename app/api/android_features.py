@@ -95,6 +95,7 @@ from app.services.trial_risk_service import TrialRiskService
 from app.services.referral_service import (
     REFERRAL_TRIAL_REQUIRED_ACTIVE,
     ReferralService,
+    public_apps_url,
 )
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.subscription_entry_analytics_service import (
@@ -1650,8 +1651,6 @@ def create_android_features_router(
             timezone_offset = _timezone_offset(request)
             async with session_factory() as session:
                 user = await _user(session, request)
-                if actual_telegram_id(user) is None:
-                    raise AndroidFeatureError("referral_telegram_required", status_code=409)
                 service = referral_service_factory(session)
                 await service.user_repo.ensure_referral_code(user)
                 items = await service.list_miniapp_referrals(
@@ -1676,7 +1675,7 @@ def create_android_features_router(
                 content={
                     "ok": True,
                     "code": code,
-                    "link": _invite_link(getattr(settings_obj, "BOT_USERNAME", ""), code),
+                    "link": public_apps_url(settings_obj, code, trial=True),
                     "invited": len(rows),
                     "activated": activated,
                     "trial_progress": int(trial_progress or 0),

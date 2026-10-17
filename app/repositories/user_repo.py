@@ -109,7 +109,7 @@ class UserRepository:
             questions_used=0,
             bonus_questions=0,
             bonus_questions_used=0,
-            referral_code=self._generate_referral_code() if telegram_id else None,
+            referral_code=self._generate_referral_code(),
             start_date=None,
             end_date=None,
             discount_referral_count=0,
@@ -146,15 +146,14 @@ class UserRepository:
     async def set_referred_by(
         self,
         user: User,
-        referrer_telegram_id: int,
+        referrer_telegram_id: int | User,
     ) -> None:
         # already set → skip
         if user.referrer_id:
             return
 
-        user.referred_by_telegram_id = referrer_telegram_id
-
-        referrer = await self.get_by_telegram_id(referrer_telegram_id)
+        referrer = await self.get_by_actor(referrer_telegram_id)
+        user.referred_by_telegram_id = getattr(referrer, "telegram_id", None)
         if referrer:
             user.referrer_id = referrer.id
 
@@ -206,10 +205,16 @@ class UserRepository:
         await self.session.flush()
 
     async def ensure_referral_code(self, user: User) -> None:
-        if not user.telegram_id or user.referral_code:
+        if user.referral_code:
             return
-
-        user.referral_code = self._generate_referral_code()
+        # Existing provider accounts can first open this screen on several
+        # clients at once. Serialize initialization so a returned share URL
+        # cannot be replaced by a second concurrently generated code.
+        await self.session.flush()
+        owner = await self.get_by_user_id(user.id, lock=True)
+        if owner is None or owner.referral_code:
+            return
+        owner.referral_code = self._generate_referral_code()
         await self.session.flush()
 
     async def set_referral_trial_progress_message(
@@ -746,8 +751,10 @@ class UserRepository:
         await self.session.execute(
             sql_delete(Referral).where(
                 or_(
-                    telegram_match(Referral.referrer_telegram_id),
-                    telegram_match(Referral.invited_user_telegram_id),
+                    Referral.referrer_user_id == uid,
+                    Referral.invited_user_id == uid,
+                    and_(Referral.referrer_user_id.is_(None), telegram_match(Referral.referrer_telegram_id)),
+                    and_(Referral.invited_user_id.is_(None), telegram_match(Referral.invited_user_telegram_id)),
                 )
             )
         )

@@ -64,8 +64,8 @@ def structured_data(path, origin):
          "url": origin + localized_home,
          "inLanguage": ["tg", "ru", "uz"], "publisher": {"@id": origin + "/#organization"}},
         {"@type": "SoftwareApplication", "@id": origin + "/#application", "name": "HSK AI",
-         "applicationCategory": "EducationalApplication", "operatingSystem": "Telegram Mini App",
-         "url": origin + localized_home, "installUrl": BOT_URL, "inLanguage": ["tg", "ru", "uz"],
+         "applicationCategory": "EducationalApplication", "operatingSystem": ["Android", "macOS", "Windows", "Telegram Mini App"],
+         "url": origin + localized_home, "installUrl": origin + DOWNLOAD_PATH, "inLanguage": ["tg", "ru", "uz"],
          "description": PAGES[localized_home]["intro"], "publisher": {"@id": origin + "/#organization"}},
         {"@type": "WebPage", "@id": origin + path + "#page", "url": origin + path,
          "name": page["title"], "description": page["description"], "inLanguage": page["lang"],
@@ -137,9 +137,9 @@ def render_page(path, settings_obj, tags=None):
     secondary = f'<a class="secondary-cta" href="{esc(download_url)}">{esc(DOWNLOAD_CTA[lang])}</a>'
     greetings = {"tg": "Салом", "ru": "Привет", "uz": "Salom"}
     hero_kicker = {
-        "tg": {"guide": "РОҲНАМОИ HSK AI", "default": "HSK 1–4 · TELEGRAM MINI APP"},
-        "ru": {"guide": "РУКОВОДСТВО HSK AI", "default": "HSK 1–4 · TELEGRAM MINI APP"},
-        "uz": {"guide": "HSK AI QO‘LLANMASI", "default": "HSK 1–4 · TELEGRAM MINI APP"},
+        "tg": {"guide": "РОҲНАМОИ HSK AI", "default": "HSK 1–4 · ANDROID · DESKTOP · MINI APP"},
+        "ru": {"guide": "РУКОВОДСТВО HSK AI", "default": "HSK 1–4 · ANDROID · DESKTOP · MINI APP"},
+        "uz": {"guide": "HSK AI QO‘LLANMASI", "default": "HSK 1–4 · ANDROID · DESKTOP · MINI APP"},
     }[lang]["guide" if str(page.get("translation_group", "")).startswith("guide") else "default"]
     example_label = {"tg": "Намуна", "ru": "Пример", "uz": "Namuna"}[lang]
     translation = {"tg": "салом", "ru": "здравствуйте", "uz": "salom"}[lang]

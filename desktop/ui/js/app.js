@@ -29,6 +29,9 @@ const dom = {
   authTitle: $("#auth-title"),
   authDescription: $("#auth-description"),
   authLanguage: $("#auth-language"),
+  authReferral: $("#auth-referral"),
+  authReferralLabel: $("#auth-referral-label"),
+  authReferralHint: $("#auth-referral-hint"),
   authSteps: $("#auth-steps"),
   authCodeWrap: $("#auth-code-wrap"),
   authCodeLabel: $("#auth-code-label"),
@@ -326,6 +329,8 @@ function applyStaticText() {
   dom.authDescription.textContent = t("authDescription");
   dom.authLanguage.setAttribute("aria-label", t("interfaceLanguage"));
   dom.authLanguage.value = getLanguage();
+  dom.authReferralLabel.textContent = t("authReferralCode");
+  dom.authReferralHint.textContent = t("authReferralHint");
   dom.authCodeLabel.textContent = t("authCodeLabel");
   dom.authStep1.textContent = t("authStep1");
   dom.authStep2.textContent = t("authStep2");
@@ -809,6 +814,7 @@ function resetAuthForm() {
   dom.authCodeWrap.hidden = true;
   dom.authSteps.hidden = true;
   dom.authLanguage.disabled = false;
+  dom.authReferral.disabled = false;
   dom.authCode.textContent = "";
   dom.authExpiry.textContent = "";
   dom.authStatus.textContent = "";
@@ -908,10 +914,24 @@ function expireLink(message) {
   dom.authGoogle.disabled = false;
   dom.authApple.disabled = false;
   dom.authLanguage.disabled = false;
+  dom.authReferral.disabled = false;
+}
+
+function validSignupReferral() {
+  const code = dom.authReferral.value.trim();
+  const valid = !code || /^(?:ref_|r[ai]_)?[0-9a-f]{8}$/.test(code);
+  dom.authReferral.setAttribute("aria-invalid", valid ? "false" : "true");
+  if (!valid) {
+    dom.authError.textContent = t("authReferralInvalid");
+    dom.authReferral.focus();
+  }
+  return valid;
 }
 
 async function startLink() {
   if (state.authStarting || state.authPolling || state.authLinkedPending) return;
+  if (!validSignupReferral()) return;
+  const referralCode = dom.authReferral.value.trim();
   const generation = ++state.authGeneration;
   state.authStarting = true;
   clearAuthTimers();
@@ -921,6 +941,7 @@ async function startLink() {
   dom.authSteps.hidden = false;
   dom.openTelegram.hidden = true;
   dom.authLanguage.disabled = true;
+  dom.authReferral.disabled = true;
   dom.authError.textContent = "";
   dom.authStatus.textContent = t("authStarting");
   dom.startLink.disabled = true;
@@ -929,7 +950,7 @@ async function startLink() {
   dom.authApple.disabled = true;
 
   try {
-    const result = await desktopBridge.linkStart(getLanguage());
+    const result = await desktopBridge.linkStart(getLanguage(), referralCode);
     if (generation !== state.authGeneration) return;
     if (
       result?.status !== "pending" ||
@@ -955,6 +976,7 @@ async function startLink() {
     dom.startLink.disabled = false;
     dom.retryLink.disabled = false;
     dom.authLanguage.disabled = false;
+    dom.authReferral.disabled = false;
     dom.authStatus.textContent = "";
     dom.authError.textContent = errorMessage(error);
   } finally {
@@ -976,6 +998,8 @@ async function startLink() {
  */
 async function startProviderLink(provider) {
   if (state.authStarting || state.authPolling || state.authLinkedPending) return;
+  if (!validSignupReferral()) return;
+  const referralCode = dom.authReferral.value.trim();
   const generation = ++state.authGeneration;
   state.authStarting = true;
   clearAuthTimers();
@@ -986,6 +1010,7 @@ async function startProviderLink(provider) {
   dom.authSteps.hidden = true;
   dom.openTelegram.hidden = true;
   dom.authLanguage.disabled = true;
+  dom.authReferral.disabled = true;
   dom.authError.textContent = "";
   dom.authStatus.textContent = t("authStarting");
   dom.startLink.disabled = true;
@@ -994,7 +1019,7 @@ async function startProviderLink(provider) {
   dom.authApple.disabled = true;
 
   try {
-    const result = await desktopBridge.oauthStart(provider, getLanguage());
+    const result = await desktopBridge.oauthStart(provider, getLanguage(), referralCode);
     if (generation !== state.authGeneration) return;
     if (
       result?.status !== "pending" ||
@@ -1023,6 +1048,7 @@ async function startProviderLink(provider) {
     dom.authGoogle.disabled = false;
     dom.authApple.disabled = false;
     dom.authLanguage.disabled = false;
+    dom.authReferral.disabled = false;
     dom.retryLink.hidden = false;
     dom.authStatus.textContent = "";
     dom.authError.textContent = errorMessage(error);
@@ -1070,6 +1096,7 @@ async function pollLink() {
     const result = await desktopBridge.linkPoll();
     if (generation !== state.authGeneration) return;
     if (result?.status === "linked") {
+      dom.authReferral.value = "";
       clearAuthTimers();
       dom.authError.textContent = "";
       dom.authStatus.textContent = t("authLinked");
@@ -3396,12 +3423,27 @@ function referralStartCode(code) {
 
 function referralLinkFrom(value, code) {
   const link = String(value || "").trim();
+  try {
+    const publicLink = new URL(link);
+    if (publicLink.origin === "https://telegram-chinese-bot-production.up.railway.app" &&
+      publicLink.pathname === "/apps" &&
+      !publicLink.username && !publicLink.password && !publicLink.port && !publicLink.hash &&
+      publicLink.searchParams.getAll("ref").length === 1 &&
+      /^[0-9a-f]{8}$/.test(publicLink.searchParams.get("ref") || "") &&
+      publicLink.searchParams.getAll("mode").length === 1 &&
+      publicLink.searchParams.get("mode") === "trial" &&
+      [...publicLink.searchParams.keys()].every(key => ["ref", "mode"].includes(key))) {
+      return publicLink.href;
+    }
+  } catch { /* Older servers can still return the Telegram invite below. */ }
   if (/^https:\/\/t\.me\/[A-Za-z0-9_]{5,32}\?start=[A-Za-z0-9_-]+$/.test(link)) {
     return link.replace(/\?start=ref_/, "?start=");
   }
   const start = referralStartCode(code);
   if (!start) return "";
-  return `https://t.me/${referralBotUsername()}?start=${encodeURIComponent(start)}`;
+  return /^[0-9a-f]{8}$/.test(start)
+    ? `https://telegram-chinese-bot-production.up.railway.app/apps?ref=${start}&mode=trial`
+    : "";
 }
 
 function currentReferralData() {
@@ -3741,8 +3783,10 @@ function makeReferralQrDataUrl(text) {
 
 function referralQrMatrix(text) {
   const bytes = new TextEncoder().encode(text);
-  const dataCodewords = 80;
-  const errorCodewords = 20;
+  // Version 5-L fits the first-party invitation URL; old short links stay v4-L.
+  const large = bytes.length > 78;
+  const dataCodewords = large ? 108 : 80;
+  const errorCodewords = large ? 26 : 20;
   const totalBits = dataCodewords * 8;
   const bits = [];
   const pushBits = (value, count) => {
@@ -3765,7 +3809,7 @@ function referralQrMatrix(text) {
   const payloadBits = [];
   payload.forEach((byte) => pushCodewordBits(payloadBits, byte));
 
-  const base = referralQrBaseMatrix();
+  const base = referralQrBaseMatrix(large ? 37 : 33);
   let best = null;
   let bestPenalty = Number.POSITIVE_INFINITY;
   for (let mask = 0; mask < 8; mask += 1) {
@@ -3785,8 +3829,7 @@ function pushCodewordBits(bits, byte) {
   for (let i = 7; i >= 0; i -= 1) bits.push((byte >>> i) & 1);
 }
 
-function referralQrBaseMatrix() {
-  const size = 33;
+function referralQrBaseMatrix(size) {
   const matrix = Array.from({ length: size }, () => Array(size).fill(false));
   const reserved = Array.from({ length: size }, () => Array(size).fill(false));
   const set = (row, col, value, reserve = true) => {
@@ -3811,7 +3854,7 @@ function referralQrBaseMatrix() {
   for (let y = -2; y <= 2; y += 1) {
     for (let x = -2; x <= 2; x += 1) {
       const distance = Math.max(Math.abs(x), Math.abs(y));
-      set(26 + y, 26 + x, distance !== 1);
+      set(size - 7 + y, size - 7 + x, distance !== 1);
     }
   }
   for (let i = 0; i < size; i += 1) {
@@ -3873,13 +3916,13 @@ function referralQrWriteFormat(matrix, mask) {
   const size = matrix.length;
   const bits = referralQrFormatBits(mask);
   const bit = (index) => Boolean((bits >>> index) & 1);
-  for (let i = 0; i <= 5; i += 1) matrix[8][i] = bit(i);
-  matrix[8][7] = bit(6);
+  for (let i = 0; i <= 5; i += 1) matrix[i][8] = bit(i);
+  matrix[7][8] = bit(6);
   matrix[8][8] = bit(7);
-  matrix[7][8] = bit(8);
-  for (let i = 9; i < 15; i += 1) matrix[14 - i][8] = bit(i);
-  for (let i = 0; i < 8; i += 1) matrix[size - 1 - i][8] = bit(i);
-  for (let i = 8; i < 15; i += 1) matrix[8][size - 15 + i] = bit(i);
+  matrix[8][7] = bit(8);
+  for (let i = 9; i < 15; i += 1) matrix[8][14 - i] = bit(i);
+  for (let i = 0; i < 8; i += 1) matrix[8][size - 1 - i] = bit(i);
+  for (let i = 8; i < 15; i += 1) matrix[size - 15 + i][8] = bit(i);
   matrix[size - 8][8] = true;
 }
 
@@ -4664,6 +4707,7 @@ function renderCourseError(error) {
 // learner, or would help someone tune a forgery.
 const PROVIDER_ERROR_TEXT = Object.freeze({
   user_blocked: "accessBlocked",
+  signup_referral_invalid: "authReferralInvalid",
   payment_telegram_required: "paymentTelegramRequired",
   desktop_referral_telegram_required: "referralTelegramRequired",
 });
@@ -6065,6 +6109,10 @@ function bindEvents() {
     if (document.visibilityState === "visible") refreshDesktopSyncOnFocus();
   });
   dom.startLink.addEventListener("click", startLink);
+  dom.authReferral.addEventListener("input", () => {
+    dom.authReferral.removeAttribute("aria-invalid");
+    dom.authError.textContent = "";
+  });
   dom.authLanguage.addEventListener("change", () => {
     const language = normalizeLanguage(dom.authLanguage.value);
     setUiLanguage(language);

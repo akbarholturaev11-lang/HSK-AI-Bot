@@ -58,6 +58,9 @@
     <string name="profile_subscription_restore">Барқарор кардани обуна</string>
     <string name="profile_subscription_renew">Дароз кардани обуна</string>
     <string name="profile_subscription_play_blocked">Google Play Billing берун аз репозиторий танзим мешавад. Ҳоло ҳолати обуна нишон дода мешавад, харид баъд пайваст мешавад.</string>
+    <string name="auth_referral_code">Рамзи даъват (ихтиёрӣ)</string>
+    <string name="auth_referral_hint">Рамзи дӯстатон. Танҳо барои ҳисоби нав.</string>
+    <string name="auth_referral_invalid">Рамзи даъватро санҷед ё майдонро холӣ гузоред.</string>
     <string name="profile_referral_title">Дӯстро даъват кунед</string>
     <string name="profile_referral_progress">%1$d / %2$d дӯсти фаъол</string>
 
@@ -76,7 +79,7 @@
     <string name="error_server">Хатогии муваққатии сервер. Каме дертар кӯшиш кунед.</string>
     <string name="error_unknown">Хатогии ғайричашмдошт рух дод.</string>
     <string name="error_session_expired">Муҳлати сессия гузашт. Ба ҳисобатон аз нав ворид шавед.</string>
-    <string name="error_telegram_account_required">Ин имконият ҳоло барои ҳисобҳои ба Telegram пайвастшуда дастрас аст.</string>
+    <string name="error_telegram_account_required">Ин имконият ҳоло дастрас нест. Баъдтар боз кӯшиш кунед.</string>
     <string name="error_link_invalid">Рамз нодуруст, муҳлаташ гузашта ё аллакай истифода шудааст.</string>
     <string name="error_link_rate_limited">Кӯшишҳо аз ҳад зиёд шуданд. Пас аз чанд дақиқа кӯшиш кунед.</string>
     <string name="error_device_bound">Ин дастгоҳ ба ҳисоби дигари HSK AI пайваст аст. Аввал онро ҷудо кунед.</string>

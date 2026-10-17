@@ -21,6 +21,7 @@ from app.db.models.user import User
 from app.db.models.payment import Payment
 from app.db.models.course_progress import CourseProgress
 from app.db.models.referral import Referral
+from app.repositories.referral_repo import referral_owner_clause
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.ai_usage import AIUsageBudget
 from app.services.ai_usage_budget_service import (
@@ -783,13 +784,13 @@ async def _admin_user_info_text(session, user: User) -> str:
 
     referral_rows = await session.execute(
         select(Referral.status, func.count().label("cnt"))
-        .where(Referral.referrer_telegram_id == user.telegram_id)
+        .where(referral_owner_clause("referrer", user))
         .group_by(Referral.status)
     )
     referral_counts = {row.status: row.cnt for row in referral_rows.fetchall()}
     referral_total = sum(referral_counts.values())
     invited_by = await session.execute(
-        select(Referral).where(Referral.invited_user_telegram_id == user.telegram_id).limit(1)
+        select(Referral).where(referral_owner_clause("invited", user)).limit(1)
     )
     invited_ref = invited_by.scalar_one_or_none()
 
@@ -933,7 +934,7 @@ async def _admin_user_info_text(session, user: User) -> str:
             else "Referral sovg'asi: <b>—</b>"
         ),
         *discount_lines,
-        f"Taklif qilgan foydalanuvchi: <code>{invited_ref.referrer_telegram_id if invited_ref else '—'}</code>",
+        f"Taklif qilgan foydalanuvchi: <code>{('Account ' + str(invited_ref.referrer_user_id) if invited_ref.referrer_user_id else invited_ref.referrer_telegram_id) if invited_ref else '—'}</code>",
         "",
         "💳 <b>To'lovlar</b>",
         f"Jami arizalar: <b>{payment_count}</b>",

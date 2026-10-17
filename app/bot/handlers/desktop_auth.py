@@ -453,11 +453,15 @@ async def begin_android_link(
         return
 
     onboarding = OnboardingService(session)
+    # Only a genuinely new account receives signup attribution from the
+    # server-validated request. A returning native sign-in cannot add one.
     user, created = await onboarding.get_or_create_user(
         telegram_id=message.from_user.id,
         full_name=message.from_user.full_name if message.from_user else None,
         username=message.from_user.username if message.from_user else None,
+        referral_code=_preview.get("referral_code"),
         bot=message.bot,
+        new_account_referral_only=True,
     )
 
     await state.clear()

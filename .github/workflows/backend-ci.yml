@@ -98,3 +98,5 @@ jobs:
           tests.test_native_account_payments tests.test_native_payment_repository
           tests.test_native_payment_migration tests.test_native_payment_discounts_finance
           tests.test_payment_service_receipt_lock
+          tests.test_native_hsk30_payments tests.test_universal_referrals
+          tests.test_universal_referral_migration tests.test_universal_referral_concurrency

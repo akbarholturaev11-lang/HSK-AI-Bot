@@ -112,6 +112,39 @@ class LinkViewModelTest {
         f.model.dismissWaiting()
     }
 
+    @Test fun invalidInvitationBlocksAllSigninStartsWithoutNetworkCalls() = runTest(dispatcher) {
+        val f = Fixture()
+        f.model.updateReferralCode("ra_abcdef12?admin=true")
+        f.model.continueWithTelegram(AppLanguage.UZBEK)
+        f.model.signInWithApple(AppLanguage.RUSSIAN)
+        runCurrent()
+        assertTrue(f.model.state.value.referralInvalid)
+        assertEquals(0, f.telegramStarts)
+        assertEquals(0, f.providerStarts)
+        f.model.updateReferralCode("")
+        f.model.continueWithTelegram(AppLanguage.UZBEK)
+        runCurrent()
+        assertEquals(1, f.telegramStarts)
+        assertNull(f.lastTelegramStart?.referralCode)
+        f.model.dismissWaiting()
+    }
+
+    @Test fun invitationCanChangeForANewAttemptButNotDuringActiveApproval() = runTest(dispatcher) {
+        val f = Fixture()
+        f.model.updateReferralCode("ref_abcdef12")
+        f.model.continueWithTelegram(AppLanguage.UZBEK)
+        runCurrent()
+        assertEquals("ref_abcdef12", f.lastTelegramStart?.referralCode)
+        f.model.updateReferralCode("ra_12345678")
+        assertEquals("ref_abcdef12", f.model.state.value.referralCode)
+        f.model.dismissWaiting()
+        f.model.updateReferralCode("ra_12345678")
+        f.model.signInWithApple(AppLanguage.RUSSIAN)
+        runCurrent()
+        assertEquals("ra_12345678", f.lastProviderStart?.referralCode)
+        f.model.dismissWaiting()
+    }
+
     private class Fixture {
         var savedRefresh: String? = null
         var telegramStarts = 0

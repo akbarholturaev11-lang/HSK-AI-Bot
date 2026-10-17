@@ -82,6 +82,9 @@
     <string name="profile_subscription_restore">Obunani tiklash</string>
     <string name="profile_subscription_renew">Obunani uzaytirish</string>
     <string name="profile_subscription_play_blocked">Google Play Billing sozlamalari repo tashqarisida. Hozir obuna holati ko‘rsatiladi, xarid keyin ulanadi.</string>
+    <string name="auth_referral_code">Taklif kodi (ixtiyoriy)</string>
+    <string name="auth_referral_hint">Do‘stingiz bergan kod. Faqat yangi akkaunt uchun.</string>
+    <string name="auth_referral_invalid">Taklif kodini tekshiring yoki maydonni bo‘sh qoldiring.</string>
     <string name="profile_referral_title">Do‘st taklif qilish</string>
     <string name="profile_referral_progress">%1$d / %2$d aktiv do‘st</string>
 
@@ -102,7 +105,7 @@
     <string name="error_server">Serverda vaqtinchalik nosozlik. Birozdan so\'ng urinib ko\'ring.</string>
     <string name="error_unknown">Kutilmagan xatolik yuz berdi.</string>
     <string name="error_session_expired">Sessiya muddati tugadi. Hisobingizga qayta kiring.</string>
-    <string name="error_telegram_account_required">Bu imkoniyat hozir Telegram hisobi ulangan foydalanuvchilar uchun mavjud.</string>
+    <string name="error_telegram_account_required">Bu imkoniyat hozir mavjud emas. Keyinroq qayta urinib ko‘ring.</string>
     <string name="error_link_invalid">Kod noto\'g\'ri, eskirgan yoki allaqachon ishlatilgan.</string>
     <string name="error_link_rate_limited">Juda ko\'p urinish bo\'ldi. Bir necha daqiqadan so\'ng urinib ko\'ring.</string>
     <string name="error_device_bound">Bu qurilma boshqa HSK AI hisobiga ulangan. Avval uni uzish kerak.</string>

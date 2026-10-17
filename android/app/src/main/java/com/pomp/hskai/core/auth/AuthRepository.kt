@@ -54,9 +54,18 @@ class AuthRepository(
     private val _state = MutableStateFlow<AuthState>(AuthState.Unknown)
     val state: StateFlow<AuthState> = _state.asStateFlow()
 
+    private val _signupReferralCode = MutableStateFlow("")
+    val signupReferralCode: StateFlow<String> = _signupReferralCode.asStateFlow()
+
+    fun updateSignupReferralCode(value: String) {
+        if (_state.value is AuthState.SignedIn || accessToken != null) return
+        _signupReferralCode.value = value.take(64)
+    }
+
     // ---------------------------------------------------------------- linking
 
     suspend fun startLink(language: AppLanguage? = null): ApiResult<PendingLink> {
+        val referralCode = SignupReferral.code(_signupReferralCode.value)
         val installationKey = store.installationKey()
         return when (
             val result = apiCall {
@@ -65,6 +74,7 @@ class AuthRepository(
                         appVersion = appVersion,
                         installationKey = installationKey,
                         language = language?.backendCode,
+                        referralCode = referralCode,
                     )
                 )
             }
@@ -122,6 +132,7 @@ class AuthRepository(
                     val accepted = refreshMutex.withLock {
                         if (sessionGeneration != generation) return@withLock false
                         store.saveRefreshToken(refresh)
+                        _signupReferralCode.value = ""
                         sessionGeneration++
                         onSessionLinked()
                         accessToken = AccessToken(
@@ -231,6 +242,7 @@ class AuthRepository(
         bindToCurrentAccount: Boolean,
         language: AppLanguage?,
     ): ApiResult<PendingLink> {
+        val referralCode = SignupReferral.code(_signupReferralCode.value).takeUnless { bindToCurrentAccount }
         val body = OAuthStartRequest(
             platform = "android",
             appVersion = appVersion,
@@ -238,6 +250,7 @@ class AuthRepository(
             provider = provider.wire,
             mode = mode,
             language = language?.backendCode.takeUnless { bindToCurrentAccount },
+            referralCode = referralCode,
         )
         val result = if (bindToCurrentAccount) {
             val token = when (val access = accessToken()) {
@@ -470,6 +483,7 @@ class AuthRepository(
                         store.saveCachedAccount(AccountCache.encode(account))
                         onAuthenticated(body.device.id)
                         _state.value = AuthState.Authenticated(account)
+                        _signupReferralCode.value = ""
                         ApiResult.Success(account)
                     }
                 }

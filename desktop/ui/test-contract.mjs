@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
+import { runInNewContext } from "node:vm";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { previewInvoke } from "./js/preview-mock.js";
@@ -140,14 +141,54 @@ test("native signin bridge forwards language and rejects unsupported providers",
     await desktopBridge.linkStart("ru");
     await desktopBridge.oauthStart("apple", "tj");
     assert.deepEqual(calls, [
-      { command: "desktop_link_start", args: { language: "ru" } },
-      { command: "desktop_oauth_start", args: { provider: "apple", language: "tj" } },
+      { command: "desktop_link_start", args: { language: "ru", referralCode: null } },
+      { command: "desktop_oauth_start", args: { provider: "apple", language: "tj", referralCode: null } },
     ]);
     assert.throws(() => desktopBridge.oauthStart("unknown", "uz"));
     assert.throws(() => desktopBridge.oauthStart("google", "en"));
   } finally {
     delete globalThis.__TAURI__;
   }
+});
+
+test("signup invitations remain bounded metadata on both native starts", async () => {
+  const calls = [];
+  globalThis.__TAURI__ = { core: { invoke: async (command, args) => {
+    calls.push({ command, args });
+    return { status: "pending", expiresIn: 300 };
+  } } };
+  try {
+    const { desktopBridge } = await import("./js/bridge.js");
+    for (const code of ["abcdef12", "ref_abcdef12", "ra_abcdef12", "ri_abcdef12"]) {
+      await desktopBridge.linkStart("uz", ` ${code} `);
+      await desktopBridge.oauthStart("google", "ru", code);
+      assert.equal(calls.at(-2).args.referralCode, code);
+      assert.equal(calls.at(-1).args.referralCode, code);
+    }
+    const count = calls.length;
+    for (const code of ["abcdef", "ABCDEF12", "ra_abcdef12?admin=true", "https://evil.example/abcdef12", "x".repeat(65)]) {
+      assert.throws(() => desktopBridge.linkStart("uz", code), /signup_referral_invalid/);
+      assert.throws(() => desktopBridge.oauthStart("apple", "tj", code), /signup_referral_invalid/);
+    }
+    assert.equal(calls.length, count);
+    const link = "https://telegram-chinese-bot-production.up.railway.app/apps?ref=abcdef12&mode=trial";
+    await desktopBridge.openExternalUrl(`tg://msg_url?url=${encodeURIComponent(link)}&text=HSK%20AI`);
+    for (const bad of [`${link}&mode=discount`, `${link}&admin=true`, `${link}#fragment`, link.replace(".up.railway.app", ".evil.example")]) {
+      assert.throws(() => desktopBridge.openExternalUrl(`tg://msg_url?url=${encodeURIComponent(bad)}`));
+    }
+  } finally {
+    delete globalThis.__TAURI__;
+  }
+});
+
+test("invitation QR fits both old and universal links without truncating payload", async () => {
+  const app = await source("desktop/ui/js/app.js");
+  const helpers = app.slice(app.indexOf("function makeReferralQrDataUrl("), app.indexOf("/** The real invite button"));
+  const qr = (payload) => runInNewContext(`${helpers}\nreferralQrMatrix(${JSON.stringify(payload)})`, { TextEncoder });
+  assert.equal(qr("https://t.me/example_bot?start=abcdef12").length, 33);
+  assert.equal(qr("https://telegram-chinese-bot-production.up.railway.app/apps?ref=abcdef12&mode=trial").length, 37);
+  assert.equal(qr("x".repeat(106)).length, 37);
+  assert.equal(qr("x".repeat(107)), null);
 });
 
 test("preview responses follow production response casing", async () => {

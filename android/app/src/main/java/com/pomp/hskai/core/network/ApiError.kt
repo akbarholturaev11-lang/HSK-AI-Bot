@@ -78,6 +78,8 @@ sealed interface ApiError {
                 "desktop_link_already_approved",
                 -> R.string.error_link_invalid
 
+                "signup_referral_invalid" -> R.string.auth_referral_invalid
+
                 "desktop_link_rate_limited" -> R.string.error_link_rate_limited
                 "desktop_device_bound_to_other_user" -> R.string.error_device_bound
 

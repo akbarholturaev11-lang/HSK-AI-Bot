@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.pomp.hskai.core.auth.AuthProvider
 import com.pomp.hskai.core.auth.AuthRepository
 import com.pomp.hskai.core.auth.PendingLink
+import com.pomp.hskai.core.auth.SignupReferral
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
@@ -18,6 +19,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class LinkUiState(
+    val referralCode: String = "",
+    val referralInvalid: Boolean = false,
     val isRequestingCode: Boolean = false,
     val pending: PendingLink? = null,
     val secondsRemaining: Int = 0,
@@ -56,13 +59,34 @@ class LinkViewModel(
     private val now: () -> Long = System::currentTimeMillis,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(LinkUiState())
+    private val _state = MutableStateFlow(LinkUiState(referralCode = authRepository.signupReferralCode.value))
     val state: StateFlow<LinkUiState> = _state.asStateFlow()
 
     private var pollJob: Job? = null
     /** The in-flight start of a link, so stepping back can cancel it. */
     private var startJob: Job? = null
     private var attemptGeneration = 0L
+
+    init {
+        viewModelScope.launch {
+            authRepository.signupReferralCode.collect { code ->
+                _state.update { if (it.referralCode == code) it else it.copy(referralCode = code, referralInvalid = false) }
+            }
+        }
+    }
+
+    fun updateReferralCode(value: String) {
+        if (_state.value.busyProvider != null || _state.value.isRequestingCode) return
+        authRepository.updateSignupReferralCode(value)
+        _state.update { it.copy(referralCode = authRepository.signupReferralCode.value, referralInvalid = false) }
+    }
+
+    private fun validReferral(): Boolean {
+        val code = authRepository.signupReferralCode.value
+        val valid = code.isBlank() || SignupReferral.code(code) != null
+        if (!valid) _state.update { it.copy(referralInvalid = true) }
+        return valid
+    }
 
     /**
      * Loads the provider list.
@@ -120,7 +144,7 @@ class LinkViewModel(
     /** Steps back from a provider that was started, back to the cards. */
     fun dismissWaiting() {
         cancelAttempt()
-        _state.value = LinkUiState(providers = _state.value.providers)
+        _state.value = LinkUiState(providers = _state.value.providers, referralCode = authRepository.signupReferralCode.value)
     }
 
     private fun startProvider(
@@ -128,8 +152,9 @@ class LinkViewModel(
         start: suspend () -> ApiResult<PendingLink>,
     ) {
         if (_state.value.busyProvider != null || _state.value.isRequestingCode) return
+        if (!validReferral()) return
         val generation = cancelAttempt()
-        _state.value = LinkUiState(providers = _state.value.providers, busyProvider = provider)
+        _state.value = LinkUiState(providers = _state.value.providers, busyProvider = provider, referralCode = authRepository.signupReferralCode.value)
         startJob = viewModelScope.launch {
             val result = start()
             if (attemptGeneration != generation) return@launch
@@ -174,19 +199,21 @@ class LinkViewModel(
         language: AppLanguage? = null,
     ) {
         if (_state.value.isRequestingCode || _state.value.busyProvider != null) return
+        if (!validReferral()) return
         val generation = cancelAttempt()
         val providers = _state.value.providers
-        _state.value = LinkUiState(isRequestingCode = true, providers = providers)
+        _state.value = LinkUiState(isRequestingCode = true, providers = providers, referralCode = authRepository.signupReferralCode.value)
         startJob = viewModelScope.launch {
             val result = authRepository.startLink(language)
             if (attemptGeneration != generation) return@launch
             when (result) {
                 is ApiResult.Failure -> _state.value =
-                    LinkUiState(error = result.error, providers = providers)
+                    LinkUiState(error = result.error, providers = providers, referralCode = authRepository.signupReferralCode.value)
 
                 is ApiResult.Success -> {
                     val pending = result.value
                     _state.value = LinkUiState(
+                        referralCode = authRepository.signupReferralCode.value,
                         pending = pending,
                         secondsRemaining = remainingSeconds(pending),
                         isWaitingForApproval = true,

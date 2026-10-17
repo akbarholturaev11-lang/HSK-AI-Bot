@@ -47,6 +47,7 @@ class CourseTrackServiceTests(unittest.IsolatedAsyncioTestCase):
             payment_status="none",
             end_date=None,
         )
+        self.service._lock_owner = AsyncMock(return_value=self.user)
         self.progress = SimpleNamespace(
             level="hsk2",
             completed_lessons_count=11,
@@ -658,6 +659,7 @@ class Hsk30UnlockServiceTests(unittest.IsolatedAsyncioTestCase):
         )
         payment = SimpleNamespace(
             id=44,
+            user_id=9,
             user_telegram_id=900,
             plan_type=HSK30_UNLOCK_PLAN_TYPE,
             payment_status="approved",
@@ -670,6 +672,7 @@ class Hsk30UnlockServiceTests(unittest.IsolatedAsyncioTestCase):
             create=AsyncMock(),
         )
         service.session = SimpleNamespace(flush=AsyncMock())
+        service.payment_repo.resolve_owner = AsyncMock(return_value=user)
 
         self.assertTrue(await service.grant(user=user, payment=payment))
         self.assertIsNotNone(state.unlocked_at)

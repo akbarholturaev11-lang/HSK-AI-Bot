@@ -34,6 +34,8 @@ def _install_native_fixture(
     local_ai_ready=False,
     provider_only=False,
     checkout_telegram_required=False,
+    platform="macos",
+    hsk30_unlock=False,
 ):
     lesson_rows = []
     for lesson_order in sorted(lessons):
@@ -53,6 +55,7 @@ def _install_native_fixture(
             }
         )
     fixture = {
+        "platform": platform,
         "providerOnly": provider_only,
         "checkoutTelegramRequired": checkout_telegram_required,
         "lessons": {str(key): value for key, value in lessons.items()},
@@ -95,6 +98,12 @@ def _install_native_fixture(
         },
         "localAiReady": local_ai_ready,
     }
+    if hsk30_unlock:
+        fixture["map"]["hsk30"] = {
+            "active_track": "hsk20", "live_levels": ["nhsk1"],
+            "payment_enabled": True, "price_tjs": 10, "price_display": "10 TJS",
+            "access": {"feature_enabled": True, "allowed": False},
+        }
     encoded = json.dumps(fixture, ensure_ascii=False)
     page.add_init_script(
         script=f"""
@@ -109,7 +118,7 @@ def _install_native_fixture(
               invoke: async (command, args = {{}}) => {{
                 const fixture = window.__DESKTOP_FIXTURE__;
                 if (command === "desktop_app_info") {{
-                  return {{ productName: "HSK AI", version: "test", platform: "macos" }};
+                  return {{ productName: "HSK AI", version: "test", platform: fixture.platform }};
                 }}
                 if (command === "desktop_auth_status") {{
                   return {{
@@ -127,10 +136,11 @@ def _install_native_fixture(
                 if (command === "desktop_subscription_overview") {{
                   const paid = Boolean(fixture.map.user.is_paid);
                   const pending = fixture.subscription.pendingPayment;
+                  const unlock = args.mode === "hsk30_unlock";
                   return {{
                     ok: true,
                     source: "desktop_subscription",
-                    mode: "subscription",
+                    mode: unlock ? "hsk30_unlock" : "subscription",
                     access: {{
                       state: paid ? "paid" : "free",
                       is_paid: paid,
@@ -142,7 +152,9 @@ def _install_native_fixture(
                       : pending ? "desktop_subscription_pending" : null,
                     attempt_id: !fixture.checkoutTelegramRequired && !paid && !pending ? "desktop-e2e-attempt-1234" : null,
                     pending_payment: pending,
-                    prices: !fixture.checkoutTelegramRequired && !paid && !pending ? {{
+                    prices: !fixture.checkoutTelegramRequired && !paid && !pending ? unlock ? {{
+                      visa: {{ "hsk30_unlock": {{ final_amount: 10, currency: "TJS", discount_applied: false }} }}
+                    }} : {{
                       visa: {{
                         "10_days": {{ final_amount: 45, currency: "TJS", discount_applied: false }},
                         "1_month": {{ final_amount: 95, currency: "TJS", discount_applied: false }},
@@ -162,18 +174,19 @@ def _install_native_fixture(
                   }};
                 }}
                 if (command === "desktop_subscription_quote") {{
+                  const unlock = args.plan === "hsk30_unlock";
                   return {{
                     ok: true,
                     source: "desktop_subscription",
-                    mode: "subscription",
+                    mode: unlock ? "hsk30_unlock" : "subscription",
                     access: {{ state: "free", is_paid: false, expires_at: null }},
                     quote: {{
                       plan_type: args.plan,
                       payment_method: args.method,
                       card_country: args.country,
-                      final_amount: 95,
+                      final_amount: unlock ? 10 : 95,
                       final_currency: "TJS",
-                      pay_amount: "95",
+                      pay_amount: unlock ? "10" : "95",
                       pay_currency: "TJS",
                       discount_applied: false,
                       discount_percent: 0,
@@ -187,7 +200,7 @@ def _install_native_fixture(
                     id: 77,
                     plan_type: args.plan,
                     payment_method: args.method,
-                    amount: 95,
+                    amount: args.plan === "hsk30_unlock" ? 10 : 95,
                     currency: "TJS",
                     submitted_at: "2026-08-02T00:00:00Z"
                   }};
@@ -572,7 +585,7 @@ def test_provider_signin_keeps_language_and_retry_on_both_platforms(
     page.wait_for_function("window.__AUTH_CALLS.some(c => c.command === 'desktop_oauth_open')")
     starts = page.evaluate("window.__AUTH_CALLS.filter(c => c.command === 'desktop_oauth_start')")
     assert len(starts) == 2
-    assert all(call["args"] == {"provider": provider, "language": language} for call in starts)
+    assert all(call["args"] == {"provider": provider, "language": language, "referralCode": None} for call in starts)
     assert errors == []
 
 
@@ -656,7 +669,7 @@ def test_server_restricted_checkout_explains_payment_boundary(desktop_ui_url, br
     page.goto(desktop_ui_url, wait_until="networkidle")
     page.locator("#workspace").wait_for(state="visible")
     page.locator("#show-subscription").click()
-    page.get_by_text("To‘lov uchun Telegram bilan bog‘langan hisob talab qilinadi.", exact=False).wait_for()
+    page.get_by_text("Bu qurilmada to‘lov hozir mavjud emas.", exact=False).wait_for()
     assert page.locator('[data-testid="subscription-plan"]').count() == 0
     assert page.locator("#payment-submit").count() == 0
     assert page.evaluate("window.__DESKTOP_FIXTURE__.subscription.submissions") == 0

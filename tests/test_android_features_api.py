@@ -267,7 +267,7 @@ class AndroidReferralRouteTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(200, response.status_code)
         payload = response.json()
-        self.assertEqual("https://t.me/pomp_test_bot?start=invite42", payload["link"])
+        self.assertTrue(payload["link"].endswith("/apps?ref=invite42&mode=trial"))
         self.assertEqual(1, payload["invited"])
         self.assertEqual(1, payload["activated"])
         self.assertEqual("Li Friend", payload["items"][0]["name"])

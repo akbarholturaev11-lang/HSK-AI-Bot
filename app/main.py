@@ -73,6 +73,7 @@ from app.db.session import async_session_maker, engine, init_db
 from app.db.models.user import User
 from app.db.models.payment import Payment
 from app.db.models.referral import Referral
+from app.repositories.referral_repo import referral_owner_clause
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.release_feedback import ReleaseFeedbackDelivery
 from app.db.models.ai_usage import AIUsageBudget
@@ -1468,9 +1469,12 @@ async def _admin_access_meta(session, user, payments: list) -> dict:
 
 async def _admin_referral_meta(session, user) -> dict:
     referrer = None
-    if user.referred_by_telegram_id:
-        referrer_user = await UserRepository(session).get_by_telegram_id(user.referred_by_telegram_id)
+    if user.referrer_id or user.referred_by_telegram_id:
+        repo = UserRepository(session)
+        referrer_user = (await repo.get_by_user_id(user.referrer_id) if user.referrer_id
+                         else await repo.get_by_telegram_id(user.referred_by_telegram_id))
         referrer = {
+            "user_id": referrer_user.id if referrer_user else user.referrer_id,
             "telegram_id": referrer_user.telegram_id if referrer_user else user.referred_by_telegram_id,
             "name": (referrer_user.full_name or "Nomsiz") if referrer_user else "",
             "username": referrer_user.username if referrer_user else "",
@@ -1480,7 +1484,7 @@ async def _admin_referral_meta(session, user) -> dict:
         await session.execute(
             select(func.count())
             .select_from(Referral)
-            .where(Referral.referrer_telegram_id == user.telegram_id)
+            .where(referral_owner_clause("referrer", user))
         )
     ).scalar() or 0
     active = (
@@ -1488,7 +1492,7 @@ async def _admin_referral_meta(session, user) -> dict:
             select(func.count())
             .select_from(Referral)
             .where(
-                Referral.referrer_telegram_id == user.telegram_id,
+                referral_owner_clause("referrer", user),
                 Referral.status == "active",
             )
         )
@@ -2637,10 +2641,11 @@ async def v3_invite_payload(request: Request, lang: str = "uz"):
         service = ReferralService(session)
         await user_repo.ensure_referral_code(user)
         active_count = await service.get_trial_activation_progress(user)
-        joined_count = await service.referral_repo.count_by_referrer(user.telegram_id)
+        joined_count = await service.referral_repo.count_by_referrer(user)
         referrals = await service.list_miniapp_referrals(user, timezone_offset_minutes=tz_offset)
         bot_username = bot_username_value()
-        link = f"https://t.me/{bot_username}?start={user.referral_code}"
+        from app.services.referral_service import public_apps_url
+        link = public_apps_url(settings, user.referral_code, trial=True)
         full_lang, full_text = await service.build_trial_progress_text(user)
 
         share = {

@@ -202,6 +202,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun deliverDestination(raw: String?) {
+        com.pomp.hskai.core.auth.SignupReferral.fromUri(raw)?.let { code ->
+            (application as HskAiApplication).authRepository.updateSignupReferralCode(code)
+            return
+        }
         requestedDestination.value = DeepLinkRouter.resolve(raw)?.let { destination ->
             DestinationRequest(
                 id = UUID.randomUUID().toString(),
@@ -290,6 +294,7 @@ private fun AppRoot(
                 onBrowserUrlOpened = viewModel::browserUrlOpened,
                 onTelegramUrlOpened = viewModel::telegramUrlOpened,
                 onDismissWaiting = viewModel::dismissWaiting,
+                onReferralCodeChanged = viewModel::updateReferralCode,
             )
         }
 

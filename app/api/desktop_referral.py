@@ -21,6 +21,7 @@ from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthServi
 from app.services.referral_service import (
     REFERRAL_TRIAL_REQUIRED_ACTIVE,
     ReferralService,
+    public_apps_url,
 )
 
 
@@ -128,11 +129,8 @@ def create_desktop_referral_router(
                         "desktop_referral_user_not_found",
                         status_code=404,
                     )
-                if not user.telegram_id:
-                    raise DesktopReferralError(
-                        "desktop_referral_telegram_required", status_code=409,
-                    )
                 service = service_factory(session)
+                await service.user_repo.ensure_referral_code(user)
                 items = await service.list_miniapp_referrals(
                     user,
                     timezone_offset_minutes=timezone_offset,
@@ -147,9 +145,7 @@ def create_desktop_referral_router(
             return JSONResponse(
                 content={
                     "code": code,
-                    "link": _invite_link(
-                        getattr(settings_obj, "BOT_USERNAME", ""), code
-                    ),
+                    "link": public_apps_url(settings_obj, code, trial=True),
                     "invited": len(rows),
                     "activated": activated,
                     "trial_progress": int(trial_progress or 0),

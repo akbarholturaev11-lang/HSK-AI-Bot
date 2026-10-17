@@ -186,20 +186,17 @@ function isAllowedReferralShareLink(value) {
   } catch {
     return false;
   }
+  if (parsed.protocol !== "https:" || parsed.username || parsed.password || parsed.port || parsed.hash) return false;
+  if (parsed.origin === "https://telegram-chinese-bot-production.up.railway.app") {
+    return parsed.pathname === "/apps" &&
+      /^[0-9a-f]{8}$/.test(singleSearchValue(parsed, "ref") || "") &&
+      hasOnlySearchKeys(parsed, ["ref", "mode"]) &&
+      (["trial", "discount"].includes(singleSearchValue(parsed, "mode")) || !parsed.searchParams.has("mode"));
+  }
   const handle = parsed.pathname.replace(/^\/+|\/+$/g, "");
-  const start = parsed.searchParams.get("start") || "";
-  return (
-    parsed.protocol === "https:" &&
-    parsed.hostname === "t.me" &&
-    !parsed.username &&
-    !parsed.password &&
-    !parsed.port &&
-    !parsed.hash &&
-    /^[A-Za-z0-9_]{5,32}$/.test(handle) &&
-    /^ref_[A-Za-z0-9_-]{1,124}$/.test(start) &&
-    parsed.searchParams.getAll("start").length === 1 &&
-    [...parsed.searchParams.keys()].length === 1
-  );
+  return parsed.hostname === "t.me" && /^[A-Za-z0-9_]{5,32}$/.test(handle) &&
+    /^[A-Za-z0-9_-]{1,128}$/.test(singleSearchValue(parsed, "start") || "") &&
+    [...parsed.searchParams.keys()].length === 1;
 }
 
 function isAllowedShareText(value) {
@@ -302,6 +299,15 @@ function assertLanguage(value) {
     throw new DesktopBridgeError("desktop_language_invalid");
   }
   return language;
+}
+
+function assertSignupReferral(value) {
+  const code = String(value ?? "").trim();
+  if (!code) return null;
+  if (code.length > 64 || !/^(?:ref_|r[ai]_)?[0-9a-f]{8}$/.test(code)) {
+    throw new DesktopBridgeError("signup_referral_invalid");
+  }
+  return code;
 }
 
 function normalizedSubscriptionValue(value) {
@@ -694,9 +700,10 @@ export const desktopBridge = Object.freeze({
     return invokeCommand(COMMANDS.authStatus);
   },
 
-  linkStart(language = null) {
+  linkStart(language = null, referralCode = null) {
     return invokeCommand(COMMANDS.linkStart, {
       language: language == null ? null : assertLanguage(language),
+      referralCode: assertSignupReferral(referralCode),
     });
   },
 
@@ -712,13 +719,14 @@ export const desktopBridge = Object.freeze({
     return invokeCommand(COMMANDS.oauthProviders);
   },
 
-  oauthStart(provider, language = null) {
+  oauthStart(provider, language = null, referralCode = null) {
     if (provider !== "google" && provider !== "apple") {
       throw new DesktopBridgeError("oauth_provider_unsupported");
     }
     return invokeCommand(COMMANDS.oauthStart, {
       provider,
       language: language == null ? null : assertLanguage(language),
+      referralCode: assertSignupReferral(referralCode),
     });
   },
 

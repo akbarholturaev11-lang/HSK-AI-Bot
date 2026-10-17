@@ -157,7 +157,8 @@ class DesktopProviderAccountTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(overview.status_code, 200, overview.text)
                 self.assertTrue(overview.json()["checkout_allowed"])
                 self.assertIsNone(overview.json()["pending_payment"])
-                self.assertIsNone(overview.json()["discount"])
+                self.assertFalse(overview.json()["discount"]["referral_20_available"])
+                self.assertIn("?ref=", overview.json()["discount"]["referral_link"])
                 quote = await self.client.post("/api/v3/desktop/subscription/quote", headers=self.headers[uid],
                     json={"plan_type": "1_month", "payment_method": "visa", "card_country": "tj"})
                 self.assertEqual(quote.status_code, 200, quote.text)
@@ -192,8 +193,9 @@ class DesktopProviderAccountTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(all(event.telegram_id is None for event in events))
             self.assertEqual(await session.scalar(select(func.count()).select_from(Payment)), 3)
         response = await self.client.get("/api/v3/desktop/referral/overview", headers=self.headers[1])
-        self.assertEqual(response.status_code, 409, response.text)
-        self.assertEqual(response.json()["error"], "desktop_referral_telegram_required")
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["invited"], 0)
+        self.assertIn("?ref=", response.json()["link"])
 
     async def test_android_direct_provider_checkout_and_currency_stay_canonical(self):
         headers = self.android_headers[1]
@@ -256,21 +258,18 @@ class DesktopProviderAccountTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(await session.scalar(select(func.count()).select_from(Payment)), 0)
             self.assertEqual(await session.scalar(select(func.count()).select_from(AIUsageBudget)), 0)
 
-    async def test_provider_checkout_keeps_unsupported_hsk30_and_referral_gated(self):
+    async def test_provider_hsk30_checkout_obeys_the_server_feature_flag(self):
         async with self.sessions() as session:
             service = DesktopSubscriptionService(session, self.settings, bot=self.bot)
             token = self.headers[1]["Authorization"].removeprefix("Bearer ")
-            overview = await service.overview(token, entry_source="desktop_hsk30_onboarding")
-            self.assertFalse(overview["checkout_allowed"])
-            self.assertEqual(overview["read_only_reason"], "payment_telegram_required")
+            with self.assertRaises(DesktopSubscriptionError) as raised:
+                await service.overview(token, entry_source="desktop_hsk30_onboarding")
+            self.assertEqual(raised.exception.code, "hsk30_disabled")
             for method, args in ((service.quote, {"plan_type": "hsk30_unlock", "payment_method": "visa", "card_country": "tj"}),
                                  (service.submit, {"plan_type": "hsk30_unlock", "payment_method": "visa", "card_country": "tj", "screenshot_data_url": "unused"})):
                 with self.assertRaises(DesktopSubscriptionError) as raised:
                     await method(token, **args)
-                self.assertEqual(raised.exception.code, "payment_telegram_required")
-            with self.assertRaises(DesktopSubscriptionError) as raised:
-                await service.start_discount(token)
-            self.assertEqual(raised.exception.code, "referral_telegram_required")
+                self.assertEqual(raised.exception.code, "hsk30_disabled")
             self.assertEqual(await session.scalar(select(func.count()).select_from(Payment)), 0)
 
     async def test_checkout_refreshes_actor_and_never_treats_internal_id_as_telegram(self):

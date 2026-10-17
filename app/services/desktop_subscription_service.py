@@ -9,7 +9,7 @@ from sqlalchemy import select
 
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.services.conversion_funnel_service import ConversionFunnelService
-from app.services.account_identity import actual_telegram_id, owner_clause
+from app.services.account_identity import owner_clause
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.hsk30_unlock_service import HSK30_UNLOCK_PLAN_TYPE
 from app.services.subscription_entry_analytics_service import (
@@ -116,9 +116,6 @@ class DesktopSubscriptionService:
         if restriction:
             code, status_code = restriction
             raise DesktopSubscriptionError(code, status_code=status_code)
-        # HSK 3.0 one-time checkout remains a separate Telegram-owned product.
-        if mode == HSK30_UNLOCK_MODE and actual_telegram_id(user) is None:
-            raise DesktopSubscriptionError("payment_telegram_required", status_code=409)
 
     @staticmethod
     def _service_error(result: dict[str, Any]) -> DesktopSubscriptionError:
@@ -195,17 +192,6 @@ class DesktopSubscriptionService:
     ) -> dict[str, Any]:
         context = await self._context(access_token)
         mode = self._checkout_mode(entry_source=entry_source)
-        if mode == HSK30_UNLOCK_MODE and actual_telegram_id(context.user) is None:
-            return {
-                "ok": True, "source": self.source, "mode": mode,
-                "access": self._access_payload(context.user),
-                "checkout_allowed": False,
-                "read_only_reason": "payment_telegram_required",
-                "attempt_id": None, "pending_payment": None,
-                "offer": None, "discount": None, "prices": {},
-                "card_prices": {}, "payment_details": "",
-                "payment_details_configured": False,
-            }
         result = self._checked_result(
             await self.checkout.overview(
                 context.user,

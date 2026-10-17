@@ -35,6 +35,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -77,9 +78,8 @@ import com.pomp.hskai.core.i18n.AppLanguage
  * build or deployment without OAuth credentials shows a Telegram-only screen
  * rather than a button that fails when tapped.
  *
- * Nothing on this screen asks the learner to read, copy or type a code: the
- * Telegram card opens the bot, the bot shows one confirm button, and the
- * session arrives through the poll that is already running.
+ * Telegram approval needs no typed code. An optional invitation code is
+ * separate signup metadata and never changes account ownership.
  */
 @Composable
 fun LinkScreen(
@@ -93,6 +93,7 @@ fun LinkScreen(
     onBrowserUrlOpened: () -> Unit = {},
     onTelegramUrlOpened: () -> Unit = {},
     onDismissWaiting: () -> Unit = {},
+    onReferralCodeChanged: (String) -> Unit = {},
 ) {
     val context = LocalContext.current
     // Apple has no native SDK, so its leg runs in a Custom Tab. The result
@@ -152,6 +153,19 @@ fun LinkScreen(
                     onDismiss = onDismissWaiting,
                 )
             } else {
+                OutlinedTextField(
+                    value = state.referralCode,
+                    onValueChange = onReferralCodeChanged,
+                    label = { Text(stringResource(R.string.auth_referral_code)) },
+                    supportingText = {
+                        Text(stringResource(if (state.referralInvalid) R.string.auth_referral_invalid else R.string.auth_referral_hint))
+                    },
+                    isError = state.referralInvalid,
+                    singleLine = true,
+                    enabled = state.busyProvider == null && !state.isRequestingCode,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Spacer(Modifier.height(12.dp))
                 ProviderCards(
                     state = state,
                     onContinueWithTelegram = onContinueWithTelegram,

@@ -42,7 +42,7 @@ class DiscountService:
         self.referral_repo = ReferralRepository(session)
 
     async def sync_referral_discount_progress(self, user) -> tuple[int, bool]:
-        if not user or actual_telegram_id(user) is None:
+        if not user:
             return 0, False
 
         changed = False
@@ -67,7 +67,7 @@ class DiscountService:
             return 0, False
 
         count = await self.referral_repo.count_discount_qualified_since(
-            referrer_telegram_id=user.telegram_id,
+            referrer_telegram_id=user,
             started_at=started_at,
         )
         eligible = count >= REFERRAL_DISCOUNT_REQUIRED

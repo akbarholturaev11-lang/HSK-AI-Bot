@@ -8,45 +8,45 @@ GOOGLE_SIGNIN_PRIVACY_PAGES = {
         "lang": "uz",
         "title": "Google bilan kirish maxfiyligi — HSK AI",
         "description": "HSK AI Google bilan kirishida qaysi ma’lumotlar ishlatilishi haqida maxfiylik eslatmasi.",
-        "updated": "23 sentyabr 2026",
+        "updated": "17 oktyabr 2026",
         "h1": "Google bilan kirish: maxfiylik eslatmasi",
         "intro": "Bu eslatma HSK AI’da Google bilan kirish yoki Google hisobini mavjud HSK AI hisobiga ulash uchun qo‘llanadi.",
         "sections": [
             ("Qaysi ma’lumot ishlatiladi", "Google tasdiqlagan hisob identifikatori, email manzili, email tasdiqlanganligi holati va profil nomi olinadi. Bu ma’lumot Google bilan kirish va qaysi HSK AI hisobiga bog‘langanini ko‘rsatish uchun kerak."),
-            ("Hisoblar qanday bog‘lanadi", "Google email manzili orqali HSK AI hisobi qidirilmaydi va hisoblar birlashtirilmaydi. Google profili faqat foydalanuvchining aniq harakati bilan, avval Telegram orqali yaratilgan HSK AI hisobiga ulanadi."),
+            ("Hisob qanday yaratiladi va bog‘lanadi", "Google orqali birinchi tasdiqlangan kirishda HSK AI hisobi yaratiladi; Telegram talab qilinmaydi. Shu Google hisobi bilan qayta kirish mavjud HSK AI hisobini ochadi. Boshqa kirish usulini mavjud hisobga ulash uchun avval o‘sha HSK AI hisobiga kirib, profildan ulashni boshlang. Email manzili hisoblarni birlashtirish uchun ishlatilmaydi."),
             ("Nima saqlanadi", "Google hisobining barqaror identifikatori kalitli HMAC ko‘rinishida saqlanadi. Bog‘langan hisob uchun email, email tasdiqlanganligi, profil nomi hamda ulash va oxirgi kirish vaqtlari saqlanishi mumkin."),
             ("Tokenlar va tashqi xizmatlar", "Google access va refresh tokenlari saqlanmaydi; HSK AI foydalanuvchi nomidan Google API’lariga murojaat qilmaydi. Google autentifikatsiyasi Google orqali, ilova esa HSK AI texnik infratuzilmasi orqali qayta ishlanadi."),
-            ("Sizning tanlovingiz", "Google bilan kirishdan foydalanmaslik mumkin. Bog‘lanishni HSK AI profilidagi Sozlamalar → Kirish usullari orqali uzish mumkin; bu boshqa qurilmalardagi sessiyalarni ham yakunlaydi. Savollar uchun Telegram’dagi @darsi_chini_bot ga yozing."),
+            ("Sizning tanlovingiz", "Google bilan kirishdan foydalanmaslik mumkin. Hisobda boshqa kirish usuli qolsa, bog‘lanishni HSK AI profilidagi Sozlamalar → Kirish usullari orqali uzish mumkin; bu boshqa qurilmalardagi sessiyalarni ham yakunlaydi. Hisobni o‘chirish so‘rovini ilovada yoki /account-deletion sahifasida yuborish mumkin. Savollar uchun ilovadagi yordam bo‘limidan foydalaning."),
         ],
     },
     "/privacy/google-sign-in/ru/": {
         "lang": "ru",
         "title": "Конфиденциальность входа через Google — HSK AI",
         "description": "Уведомление HSK AI о данных, используемых при входе через Google.",
-        "updated": "23 сентября 2026",
+        "updated": "17 октября 2026",
         "h1": "Вход через Google: конфиденциальность",
         "intro": "Это уведомление относится к входу через Google в HSK AI и к привязке Google-аккаунта к существующему аккаунту HSK AI.",
         "sections": [
             ("Какие данные используются", "Мы получаем подтверждённые Google идентификатор аккаунта, email, статус подтверждения email и имя профиля. Эти данные нужны для входа через Google и отображения связанного аккаунта HSK AI."),
-            ("Как связываются аккаунты", "Мы не ищем аккаунт HSK AI по Google email и не объединяем аккаунты по email. Профиль Google можно привязать только явным действием пользователя к уже созданному через Telegram аккаунту HSK AI."),
+            ("Как создаётся и связывается аккаунт", "При первом подтверждённом входе через Google создаётся аккаунт HSK AI; Telegram не требуется. Повторный вход с тем же Google открывает существующий аккаунт HSK AI. Чтобы добавить способ входа, сначала войдите в нужный аккаунт HSK AI и начните привязку из профиля. Email не используется для объединения аккаунтов."),
             ("Что хранится", "Стабильный идентификатор Google-аккаунта хранится в виде HMAC с секретным ключом. Для привязанного аккаунта могут храниться email, статус его подтверждения, имя профиля, а также время привязки и последнего входа."),
             ("Токены и внешние сервисы", "Google access- и refresh-токены не хранятся; HSK AI не обращается к Google API от имени пользователя. Аутентификация проходит через Google, а работа приложения обрабатывается технической инфраструктурой HSK AI."),
-            ("Ваш выбор", "Вход через Google необязателен. Связь можно отключить в HSK AI: Профиль → Настройки → Способы входа; это завершит сессии на других устройствах. По вопросам напишите в Telegram-бот @darsi_chini_bot."),
+            ("Ваш выбор", "Вход через Google необязателен. Связь можно отключить в HSK AI: Профиль → Настройки → Способы входа, если остаётся другой способ входа; это завершит сессии на других устройствах. Запрос на удаление доступен в приложении и на /account-deletion. По вопросам используйте раздел поддержки в приложении."),
         ],
     },
     "/privacy/google-sign-in/tj/": {
         "lang": "tg",
         "title": "Махфияти воридшавӣ бо Google — HSK AI",
         "description": "Огоҳиномаи HSK AI дар бораи маълумоте, ки ҳангоми воридшавӣ бо Google истифода мешавад.",
-        "updated": "23 сентябри 2026",
+        "updated": "17 октябри 2026",
         "h1": "Воридшавӣ бо Google: махфият",
         "intro": "Ин огоҳинома барои воридшавӣ бо Google ба HSK AI ва пайваст кардани ҳисоби Google ба ҳисоби мавҷудаи HSK AI мебошад.",
         "sections": [
             ("Кадом маълумот истифода мешавад", "Мо шиносномаи тасдиқшудаи ҳисоби Google, email, ҳолати тасдиқи email ва номи профилро мегирем. Ин маълумот барои воридшавӣ бо Google ва нишон додани ҳисоби пайвастшудаи HSK AI лозим аст."),
-            ("Чӣ гуна ҳисобҳо пайваст мешаванд", "Мо ҳисоби HSK AI-ро аз рӯйи Google email ҷустуҷӯ ё якҷо намекунем. Профили Google танҳо бо амали ошкори корбар ба ҳисоби HSK AI, ки пештар тавассути Telegram сохта шудааст, пайваст мешавад."),
+            ("Ҳисоб чӣ гуна сохта ва пайваст мешавад", "Ҳангоми воридшавии аввалини тасдиқшуда бо Google ҳисоби HSK AI сохта мешавад; Telegram лозим нест. Воридшавии такрорӣ бо ҳамон Google ҳисоби мавҷударо мекушояд. Барои илова кардани роҳи воридшавӣ аввал ба ҳисоби лозимаи HSK AI ворид шавед ва пайвасткуниро аз профил оғоз кунед. Email барои якҷо кардани ҳисобҳо истифода намешавад."),
             ("Чӣ нигоҳ дошта мешавад", "Шиносномаи доимии ҳисоби Google ба шакли HMAC бо калиди махфӣ нигоҳ дошта мешавад. Барои ҳисоби пайвастшуда email, ҳолати тасдиқи он, номи профил ва вақти пайвастшавӣ ё воридшавии охирин нигоҳ дошта шуда метавонанд."),
             ("Токенҳо ва хизматрасониҳои беруна", "Google access ва refresh token-ҳо нигоҳ дошта намешаванд; HSK AI аз номи корбар ба Google API муроҷиат намекунад. Тасдиқи шахсият тавассути Google ва кори барнома тавассути инфрасохтори техникии HSK AI анҷом меёбад."),
-            ("Интихоби шумо", "Воридшавӣ бо Google ҳатмӣ нест. Пайвастро дар HSK AI аз Профил → Танзимот → Роҳҳои воридшавӣ ҷудо кардан мумкин аст; ин сессияҳоро дар дастгоҳҳои дигар ҳам анҷом медиҳад. Барои саволҳо ба Telegram-боти @darsi_chini_bot нависед."),
+            ("Интихоби шумо", "Воридшавӣ бо Google ҳатмӣ нест. Агар роҳи дигари воридшавӣ боқӣ монад, пайвастро аз Профил → Танзимот → Роҳҳои воридшавӣ ҷудо кардан мумкин аст; ин сессияҳоро дар дастгоҳҳои дигар ҳам анҷом медиҳад. Дархости ҳазф дар барнома ё /account-deletion дастрас аст. Барои саволҳо бахши ёрии барномаро истифода баред."),
         ],
     },
 }
@@ -54,14 +54,14 @@ GOOGLE_SIGNIN_PRIVACY_PAGES = {
 PAGES = {
     "/": {
         "lang": "tg", "title": "HSK AI — омӯзиши забони чинӣ ва HSK",
-        "description": "Забони чиниро бо курсҳои HSK 1–4, машқ ва шарҳи AI омӯзед. HSK AI дастгирии тоҷикӣ, русӣ ва ӯзбекиро дар Telegram Mini App пешниҳод мекунад.",
+        "description": "Забони чиниро бо курсҳои HSK 1–4, машқ ва шарҳи AI омӯзед. HSK AI дар Android, desktop ва Telegram Mini App тоҷикӣ, русӣ ва ӯзбекиро дастгирӣ мекунад.",
         "h1": "Забони чиниро қадам ба қадам омӯзед",
-        "intro": "HSK AI курси пайдарпайи забони чинӣ, машқи луғат ва саволу ҷавоби AI-ро дар Telegram Mini App муттаҳид мекунад. Шарҳҳоро ба тоҷикӣ, русӣ ё ӯзбекӣ интихоб кунед.",
+        "intro": "HSK AI курси пайдарпайи забони чинӣ, машқи луғат ва саволу ҷавоби AI-ро дар Android, desktop ва Telegram Mini App муттаҳид мекунад. Шарҳҳоро ба тоҷикӣ, русӣ ё ӯзбекӣ интихоб кунед.",
         "sections": [
             ("Аз курси HSK оғоз кунед", "Боти @darsi_chini_bot-ро кушоед ва ба Mini App гузаред. Дарсҳои HSK 1–4 калима, грамматика, гуфтугӯ ва санҷишро ба ҳам мепайванданд."),
             ("Шарҳро бо забони худ хонед", "Тоҷикӣ, русӣ ё ӯзбекиро интихоб кунед. Иероглиф, пинйин ва тарҷума ба шумо калимаро хондан, шунидан ва маънояшро санҷидан кӯмак мекунанд."),
             ("Бо AI ва овоз машқ кунед", "Дар бораи калима ё ҷумла саволи мушаххас диҳед, намунаи талаффузро гӯш кунед ва ҷавобро бо маводи дарс муқоиса намоед."),
-            ("Барномаи мувофиқро интихоб кунед", "Telegram Mini App роҳи оғози курс аст. Барои рӯйхати барномаҳо ва файлҳои дастрас ба саҳифаи зеркашии HSK AI гузаред."),
+            ("Барномаи мувофиқро интихоб кунед", "Барномаи Android, macOS ё Windows-ро аз саҳифаи зеркашӣ гиред. Дар барнома бо Google, Apple ё Telegram, агар пешниҳод шавад, ворид шавед. Telegram Mini App низ дастрас аст."),
         ],
     },
     "/tj/": {
@@ -73,31 +73,31 @@ PAGES = {
             ("Курсҳои HSK 1–4", "Курсҳо калима, грамматика ва гуфтугӯро бо машқ мепайванданд. Дар HSK 1 аз ибораҳои сода оғоз кунед; барои идомаи омӯзиш маводи HSK 2, HSK 3 ва HSK 4 мавҷуд аст. Пешрафти дарсҳо дар барнома нишон дода мешавад."),
             ("AI барои фаҳмидани дарс", "Дар саволу ҷавоб аз AI шарҳи калима ё ҷумла пурсед. Барои талаффуз намунаи овозиро гӯш кунед ва такрор намоед; дар машқи овозӣ гуфтугӯ кунед. AI метавонад хато кунад: ҷавоби шубҳанокро бо маводи дарс ё омӯзгор санҷед."),
             ("Санҷиш ва такрор", "Тестҳо, луғат ва бахши хатоҳо барои мустаҳкам кардани мавод ҳастанд. Танҳо тарҷумаро аз ёд накунед: калимаро дар ҷумла истифода баред ва рӯзи дигар бе нигоҳ кардан ба ҷавоб такрор кунед."),
-            ("Чӣ тавр оғоз кардан мумкин аст?", "Боти @darsi_chini_bot-ро кушоед, забонро интихоб кунед ва курси Mini App-ро оғоз намоед. Дастрасии ройгон маҳдудиятҳои рӯзона дорад; шартҳои ҷории обуна ва дастрасӣ дар бот нишон дода мешаванд."),
+            ("Чӣ тавр оғоз кардан мумкин аст?", "Барномаи HSK AI-ро гиред ё Telegram Mini App-ро кушоед, забон ва курси дастрасро интихоб кунед. Дастрасии ройгон маҳдудиятҳои рӯзона дорад; шартҳои ҷорӣ дар барнома нишон дода мешаванд."),
         ],
     },
     "/ru/": {
         "lang": "ru", "title": "Китайский язык и курсы HSK — HSK AI",
-        "description": "Изучайте китайский по курсам HSK 1–4, практикуйтесь с AI и повторяйте слова. HSK AI поддерживает русский, таджикский и узбекский в Telegram Mini App.",
+        "description": "Изучайте китайский по курсам HSK 1–4 с AI и повторением слов. HSK AI поддерживает русский, таджикский и узбекский в Android, desktop и Telegram Mini App.",
         "h1": "Учите китайский шаг за шагом",
-        "intro": "HSK AI объединяет последовательный курс китайского языка, практику лексики и ответы AI в Telegram Mini App. Выберите объяснения на русском, таджикском или узбекском.",
+        "intro": "HSK AI объединяет последовательный курс китайского языка, практику лексики и ответы AI в Android, desktop и Telegram Mini App. Выберите объяснения на русском, таджикском или узбекском.",
         "sections": [
             ("Начните с курса HSK", "Откройте @darsi_chini_bot и перейдите в Mini App. Уроки HSK 1–4 объединяют лексику, грамматику, диалоги и задания."),
             ("Читайте объяснения на своём языке", "Выберите русский, таджикский или узбекский. Иероглиф, пиньинь и перевод помогают прочитать новое слово, услышать его и проверить значение."),
             ("Практикуйтесь с AI и аудио", "Задавайте конкретные вопросы о словах и предложениях, слушайте образец произношения и сверяйте ответы с уроком."),
-            ("Выберите способ обучения", "Начать курс можно в Telegram Mini App. Список доступных приложений и файлов находится на отдельной странице загрузки HSK AI."),
+            ("Выберите способ обучения", "Скачайте приложение для Android, macOS или Windows со страницы загрузки. Войдите через Google, Apple или Telegram, если этот способ предложен. Также доступен Telegram Mini App."),
         ],
     },
     "/uz/": {
         "lang": "uz", "title": "Xitoy tili va HSK kurslari — HSK AI",
         "description": "Xitoy tilini HSK 1–4 kurslari bilan o‘rganing, AI yordamchida mashq qiling va so‘zlarni takrorlang. HSK AI o‘zbek, rus va tojik tillarini qo‘llaydi.",
         "h1": "Xitoy tilini bosqichma-bosqich o‘rganing",
-        "intro": "HSK AI xitoy tili kursi, lug‘at mashqlari va AI savol-javobini Telegram Mini App’da birlashtiradi. O‘zbekcha, ruscha yoki tojikcha izohlarni tanlang.",
+        "intro": "HSK AI xitoy tili kursi, lug‘at mashqlari va AI savol-javobini Android, desktop va Telegram Mini App’da birlashtiradi. O‘zbekcha, ruscha yoki tojikcha izohlarni tanlang.",
         "sections": [
             ("HSK kursidan boshlang", "@darsi_chini_bot botini oching va Mini App’ga o‘ting. HSK 1–4 darslari lug‘at, grammatika, dialog va topshiriqlarni birlashtiradi."),
             ("Izohlarni o‘z tilingizda o‘qing", "O‘zbek, rus yoki tojik tilini tanlang. Iyeroglif, pinyin va tarjima yangi so‘zni o‘qish, tinglash va ma’nosini tekshirishga yordam beradi."),
             ("AI va audio bilan mashq qiling", "So‘z yoki gap haqida aniq savol bering, talaffuz namunasini tinglang va javobni dars bilan solishtiring."),
-            ("O‘rganish usulini tanlang", "Kursni Telegram Mini App’da boshlash mumkin. HSK AI ilovalari va yuklab olish fayllari alohida sahifada berilgan."),
+            ("O‘rganish usulini tanlang", "Yuklab olish sahifasidan Android, macOS yoki Windows ilovasini oling. Ilovada taklif qilingan Google, Apple yoki Telegram orqali kiring. Telegram Mini App’dan ham foydalanish mumkin."),
         ],
     },
     "/tj/hsk/": {
@@ -248,7 +248,7 @@ PAGES.update({
         "Роҳнамои HSK AI",
         "Дар ин ҷо тарзи оғоз, истифодаи курс ва функсияҳо, инчунин қадамҳои обуна шарҳ дода мешаванд. Шартҳои дастрасӣ ва нархи ҷорӣ ҳамеша дар худи барнома нишон дода мешаванд.",
         [
-            ("Оғоз ва омӯзиш", "Боти @darsi_chini_bot-ро кушоед, забонро интихоб кунед ва ба Telegram Mini App гузаред. Барои омӯзиши пайдарпай аз курси дастрас оғоз кунед."),
+            ("Оғоз ва омӯзиш", "Барномаи HSK AI-ро гиред ё Telegram Mini App-ро кушоед, забонро интихоб кунед ва аз курси дастрас оғоз намоед. Дар Android ва desktop ҳисоби навро бо Google ё Apple бе Telegram сохтан мумкин аст."),
             ("Курс ва функсияҳо", "Дарсҳо луғат, грамматика ва машқро мепайванданд. Тестҳоро анҷом диҳед, талаффузро машқ кунед ва ба хатоҳо баргардед."),
             ("Обуна ва пардохт", "Муддатро интихоб кунед, нархи дар экрани пардохт нишон додашударо бинед ва танҳо бо реквизитҳои ҳамон экран пардохт кунед. Расиди пардохт барои санҷиш фиристода мешавад."),
         ],
@@ -260,7 +260,7 @@ PAGES.update({
         "Руководство HSK AI",
         "Здесь собраны инструкции по началу обучения, курсу и функциям, а также по оформлению подписки. Актуальные условия доступа и цены всегда отображаются в приложении.",
         [
-            ("Начало обучения", "Откройте бота @darsi_chini_bot, выберите язык и перейдите в Telegram Mini App. Для последовательного обучения начните с доступного вам курса."),
+            ("Начало обучения", "Скачайте HSK AI или откройте Telegram Mini App, выберите язык и начните с доступного курса. В Android и desktop новый аккаунт можно создать через Google или Apple без Telegram."),
             ("Курс и функции", "Уроки объединяют лексику, грамматику и практику. Выполняйте тесты, тренируйте произношение и возвращайтесь к ошибкам."),
             ("Подписка и оплата", "Выберите срок, проверьте цену на экране оплаты и используйте только показанные там реквизиты. Для проверки потребуется отправить подтверждение платежа."),
         ],
@@ -272,7 +272,7 @@ PAGES.update({
         "HSK AI qo‘llanmasi",
         "Bu bo‘limda o‘qishni boshlash, kurs va funksiyalardan foydalanish hamda obuna olish tartibi tushuntiriladi. Joriy kirish shartlari va narx ilovaning o‘zida ko‘rsatiladi.",
         [
-            ("O‘qishni boshlash", "@darsi_chini_bot botini oching, tilni tanlang va Telegram Mini App’ga o‘ting. Ketma-ket o‘rganish uchun o‘zingizga ochiq kursdan boshlang."),
+            ("O‘qishni boshlash", "HSK AI ilovasini oling yoki Telegram Mini App’ni oching, tilni tanlang va o‘zingizga ochiq kursdan boshlang. Android va desktop’da Google yoki Apple orqali Telegramsiz yangi hisob yaratish mumkin."),
             ("Kurs va funksiyalar", "Darslarda lug‘at, grammatika va mashqlar birlashadi. Testlarni bajaring, talaffuzni mashq qiling va xatolaringizga qayting."),
             ("Obuna va to‘lov", "Muddatni tanlang, to‘lov oynasidagi narxni tekshiring va faqat o‘sha yerda ko‘rsatilgan rekvizitlardan foydalaning. To‘lovni tekshirish uchun chek rasmi yuboriladi."),
         ],
@@ -324,12 +324,12 @@ PAGES.update({
         "Чӣ гуна обунаи HSK AI-ро харидан мумкин аст?",
         "Қадамҳои харидани обунаи HSK AI: интихоби муҳлат, дидани нархи ҷорӣ, пардохт, фиристодани расид ва тасдиқ.",
         "Обуна чӣ гуна гирифта мешавад?",
-        "Обуна дар боти HSK AI кушода мешавад. Муҳлат, нарх ва усули пардохти дастрасро пеш аз пардохт дар экрани барнома санҷед; нархи собитро аз ин саҳифа гирифта нашавад.",
+        "Обуна дар барномаи аз сайт гирифташудаи Android, desktop ё бот расмӣ мешавад. Харид ба ҳисоби HSK AI вобаста аст; Google ё Apple ҳам мувофиқанд. Дар версияи Google Play харид нест. Нарх ва усули ҷориро дар экрани пардохт бинед.",
         [
-            ("Обуна ва муҳлатро кушоед", "Ба @darsi_chini_bot дароед, аз профил бахши обунаро кушоед ва яке аз муҳлатҳои дастрасро интихоб кунед: 10 рӯз, 1 моҳ ё 3 моҳ."),
+            ("Обуна ва муҳлатро кушоед", "Ба ҳисоби лозимаи HSK AI ворид шавед ва бахши обунаро дар барномаи дорои харид кушоед. Муҳлатро интихоб кунед: 10 рӯз, 1 моҳ ё 3 моҳ. Telegram барои ҳисоби Google ё Apple лозим нест."),
             ("Нарх ва роҳи пардохтро бинед", "Нарх мувофиқи танзимоти ҷорӣ ва кишвари пардохт нишон дода мешавад. Барои корт ё Alipay/WeChat танҳо маълумот ва QR-и дохили экрани пардохтро истифода баред; имконот аз минтақа вобастаанд."),
             ("Расиди пардохтро фиристед", "Пас аз пардохт акси расидро дар ҳамин раванд бор кунед. То ҳалли дархости интизорӣ пардохти нав нафиристед; система метавонад дар як вақт пардохти дигари интизориро қабул накунад."),
-            ("Тасдиқро интизор шавед", "Расид аз тарафи админ дастӣ санҷида мешавад. Пас аз тасдиқ обуна фаъол мегардад; бот натиҷаи санҷишро хабар медиҳад."),
+            ("Тасдиқро интизор шавед", "Расид аз тарафи админ дастӣ санҷида мешавад. Пас аз тасдиқ обуна барои ҳамин ҳисоби HSK AI фаъол мегардад; ҳолатро дар барнома бинед."),
             ("Оё обуна худкор тамдид мешавад?", "Не. Барои гирифтани муҳлати нав, онро аз нав интихоб карда, пардохтро алоҳида анҷом диҳед."),
             ("Тамдид ва кушодани HSK 3.0", "Агар обунаи пулакӣ ҳоло фаъол бошад, муҳлати нав ба охири муҳлати мавҷуда илова мешавад. Якбор кушодани HSK 3.0 маҳсулоти алоҳида аст ва бо обуна омехта намешавад."),
         ],
@@ -339,12 +339,12 @@ PAGES.update({
         "Как оформить подписку HSK AI?",
         "Пошаговая инструкция: выбрать срок подписки HSK AI, проверить актуальную цену, оплатить, отправить чек и дождаться подтверждения.",
         "Как оформить подписку?",
-        "Оформление подписки открывается в боте HSK AI. Перед оплатой проверьте срок, актуальную цену и доступный способ платежа на экране приложения; фиксированные цены на этой странице не указаны.",
+        "Подписка оформляется в Android-приложении с сайта, desktop или боте. Покупка принадлежит аккаунту HSK AI; вход через Google или Apple также подходит. В версии Google Play покупок нет. Актуальная цена и способ оплаты показаны на экране платежа.",
         [
-            ("Откройте подписку и выберите срок", "Перейдите в @darsi_chini_bot, откройте подписку из профиля и выберите доступный срок: 10 дней, 1 месяц или 3 месяца."),
+            ("Откройте подписку и выберите срок", "Войдите в нужный аккаунт HSK AI и откройте подписку в версии с покупками. Выберите срок: 10 дней, 1 месяц или 3 месяца. Аккаунту Google или Apple Telegram не требуется."),
             ("Проверьте цену и способ оплаты", "Цена рассчитывается по текущим настройкам и стране оплаты. Для карты или Alipay/WeChat используйте только реквизиты и QR-код, показанные на экране оплаты; доступность зависит от региона."),
             ("Отправьте подтверждение платежа", "После оплаты загрузите фотографию чека в том же процессе. Не отправляйте новый платёж, пока предыдущий запрос ожидает проверки: система может не принять второй ожидающий платёж."),
-            ("Дождитесь проверки", "Администратор проверит чек вручную. После подтверждения подписка активируется; бот сообщит результат проверки."),
+            ("Дождитесь проверки", "Администратор проверит чек вручную. После подтверждения подписка активируется для того же аккаунта HSK AI; статус показан в приложении."),
             ("Подписка продлевается автоматически?", "Нет. Чтобы получить новый срок, выберите его и оплатите отдельно."),
             ("Продление и HSK 3.0", "Если платная подписка ещё действует, новый срок добавляется к её текущей дате окончания. Разовая разблокировка HSK 3.0 оформляется отдельно и не является подпиской."),
         ],
@@ -354,12 +354,12 @@ PAGES.update({
         "HSK AI obunasini qanday olish mumkin?",
         "HSK AI obunasini olish bo‘yicha qadamlar: muddat va joriy narxni ko‘rish, to‘lov, chekni yuborish va tasdiqni kutish.",
         "Obuna qanday olinadi?",
-        "Obuna HSK AI botida rasmiylashtiriladi. To‘lovdan oldin ilova oynasida muddat, joriy narx va siz uchun ochiq to‘lov usulini tekshiring; aniq narx shu qo‘llanmada belgilanmaydi.",
+        "Obuna saytdan olingan Android ilovasida, desktop’da yoki botda rasmiylashtiriladi. Xarid HSK AI hisobiga tegishli; Google yoki Apple bilan kirish ham mos. Google Play versiyasida xarid yo‘q. Joriy narx va to‘lov usuli to‘lov oynasida ko‘rsatiladi.",
         [
-            ("Obunani ochib, muddatni tanlang", "@darsi_chini_bot botiga kiring, profildan obuna bo‘limini oching va mavjud muddatlardan birini tanlang: 10 kun, 1 oy yoki 3 oy."),
+            ("Obunani ochib, muddatni tanlang", "Kerakli HSK AI hisobiga kiring va xarid mavjud ilovada obuna bo‘limini oching. Muddatni tanlang: 10 kun, 1 oy yoki 3 oy. Google yoki Apple hisobiga Telegram talab qilinmaydi."),
             ("Narx va to‘lov usulini tekshiring", "Narx joriy sozlamalar va to‘lov mamlakatiga qarab ko‘rsatiladi. Karta yoki Alipay/WeChat uchun faqat to‘lov oynasidagi rekvizit va QR’dan foydalaning; usullar hududga qarab farq qiladi."),
             ("To‘lov chekini yuboring", "To‘lovdan so‘ng chek rasmini shu jarayonda yuklang. Oldingi so‘rov tekshirilayotgan paytda yana to‘lov yubormang: tizim bir vaqtda ikkinchi kutilayotgan to‘lovni qabul qilmasligi mumkin."),
-            ("Tekshiruv yakunini kuting", "Chekni admin qo‘lda tekshiradi. Tasdiqlangach obuna faollashadi; bot tekshiruv natijasini xabar qiladi."),
+            ("Tekshiruv yakunini kuting", "Chekni admin qo‘lda tekshiradi. Tasdiqlangach obuna aynan shu HSK AI hisobi uchun faollashadi; holatni ilovada ko‘ring."),
             ("Obuna avtomatik uzayadimi?", "Yo‘q. Yangi muddat olish uchun uni qayta tanlab, to‘lovni alohida amalga oshiring."),
             ("Uzaytirish va HSK 3.0", "Agar pulli obunangiz hali faol bo‘lsa, yangi muddat amaldagi tugash sanasiga qo‘shiladi. HSK 3.0’ni bir marta ochish alohida mahsulot, obunaning bir qismi emas."),
         ],
@@ -388,11 +388,11 @@ PAGES.update({
         "Саволҳои маъмул",
         "Ҷавобҳои кӯтоҳ ба саволҳое, ки ҳангоми омӯзиш ва истифодаи HSK AI пайдо мешаванд. Маълумоти ҳисоби шумо ва нархи ҷорӣ дар барнома нишон дода мешаванд.",
         [
-            ("HSK AI-ро аз куҷо оғоз кунам?", "@darsi_chini_bot-ро кушоед, забонро интихоб кунед ва ба Telegram Mini App гузаред. Баъд аз курси барои шумо дастрас оғоз намоед."),
+            ("HSK AI-ро аз куҷо оғоз кунам?", "Барномаи Android ё desktop-ро гиред ва бо Google, Apple ё Telegram-и дастрас ворид шавед. Telegram Mini App низ дастрас аст. Забон ва курси худро интихоб кунед."),
             ("Обуна чӣ қадар арзиш дорад?", "Нарх аз рӯйи муҳлат, минтақа ва усули пардохт муайян шуда, пеш аз пардохт дар экран нишон дода мешавад. Нархи дар ин саҳифа навишташуда ҳисобида нашавад."),
-            ("Пас аз фиристодани расид чӣ кор кунам?", "Расидро админ месанҷад. Дархости интизориро такрор накунед; тасдиқ ё рад шудани пардохт ба воситаи бот хабар дода мешавад."),
+            ("Пас аз фиристодани расид чӣ кор кунам?", "Расидро админ месанҷад. Дархости интизориро такрор накунед; ҳолати тасдиқ ё рад шудани пардохтро дар барнома бинед."),
             ("Обуна худкор тамдид мешавад?", "Не. Барои муҳлати нав онро аз нав интихоб карда, пардохтро алоҳида анҷом диҳед."),
-            ("Оё дар барномаи Android обуна харидан мумкин аст?", "Дар версияи Google Play харид ҳоло пайваст нашудааст; он ҷо танҳо ҳолати обуна нишон дода мешавад. Пардохтро тавассути @darsi_chini_bot анҷом диҳед."),
+            ("Оё дар барномаи Android обуна харидан мумкин аст?", "Дар APK-и аз сайти HSK AI гирифташуда обуна бо пардохт ва расид дастрас аст, аз ҷумла барои ҳисоби Google ё Apple. Версияи Google Play харид надорад ва дастрасии ҳамин ҳисоби HSK AI-ро нишон медиҳад."),
             ("Оё ҷавобҳои AI ҳамеша дурустанд?", "Не. AI метавонад иштибоҳ кунад; шарҳи шубҳанокро бо маводи дарс ё омӯзгор санҷед."),
             ("Чаро ягон функсия барои ман дастрас нест?", "Баъзе функсияҳо метавонанд аз дастрасии ҳисоби шумо вобаста бошанд. Шартҳои ҷорӣ ва лимитҳоро дар профил ва бахши обуна бинед."),
         ],
@@ -404,11 +404,11 @@ PAGES.update({
         "Частые вопросы",
         "Короткие ответы на вопросы, которые возникают при обучении и использовании HSK AI. Состояние аккаунта и актуальная цена отображаются в приложении.",
         [
-            ("С чего начать в HSK AI?", "Откройте @darsi_chini_bot, выберите язык и перейдите в Telegram Mini App. Затем начните с доступного вам курса."),
+            ("С чего начать в HSK AI?", "Скачайте Android или desktop и войдите через доступный Google, Apple или Telegram. Также доступен Telegram Mini App. Выберите язык и свой курс."),
             ("Сколько стоит подписка?", "Цена зависит от срока, региона и способа оплаты и показывается перед платежом. Не используйте цену с этой страницы как актуальную."),
-            ("Что делать после отправки чека?", "Чек проверяет администратор. Не отправляйте повторный запрос, пока он ожидает проверки; бот сообщит о подтверждении или отклонении платежа."),
+            ("Что делать после отправки чека?", "Чек проверяет администратор. Не отправляйте повторный запрос, пока он ожидает проверки; статус подтверждения или отклонения показан в приложении."),
             ("Подписка продлевается автоматически?", "Нет. Чтобы получить новый срок, выберите его заново и оплатите отдельно."),
-            ("Можно ли купить подписку в Android-приложении?", "В версии из Google Play покупка пока не подключена; там отображается только статус подписки. Завершите оплату через @darsi_chini_bot."),
+            ("Можно ли купить подписку в Android-приложении?", "APK с сайта HSK AI поддерживает оплату с отправкой чека, в том числе для аккаунтов Google или Apple. Версия Google Play не содержит покупок и показывает доступ того же аккаунта HSK AI."),
             ("Ответы AI всегда точны?", "Нет. AI может ошибаться; сомнительное объяснение сверьте с материалом урока или преподавателем."),
             ("Почему функция мне недоступна?", "Доступ к некоторым функциям может зависеть от состояния аккаунта. Проверьте текущие лимиты и условия в профиле и разделе подписки."),
         ],
@@ -420,16 +420,22 @@ PAGES.update({
         "Ko‘p so‘raladigan savollar",
         "HSK AI’dan foydalanish va o‘rganish paytida ko‘p uchraydigan savollarga qisqa javoblar. Hisob holati va joriy narx ilovada ko‘rsatiladi.",
         [
-            ("HSK AI’dan foydalanishni nimadan boshlayman?", "@darsi_chini_bot botini oching, tilni tanlang va Telegram Mini App’ga o‘ting. Keyin siz uchun ochiq kursdan boshlang."),
+            ("HSK AI’dan foydalanishni nimadan boshlayman?", "Android yoki desktop ilovasini oling va mavjud Google, Apple yoki Telegram orqali kiring. Telegram Mini App’dan ham foydalanish mumkin. Til va kursingizni tanlang."),
             ("Obuna qancha turadi?", "Narx muddat, hudud va to‘lov usuliga qarab belgilanadi va to‘lovdan oldin oynada ko‘rsatiladi. Bu sahifadagi matnni joriy narx deb qabul qilmang."),
-            ("Chek yuborgandan keyin nima qilaman?", "Chekni admin tekshiradi. So‘rov tekshirilayotgan paytda uni qayta yubormang; to‘lov tasdiqlansa yoki rad qilinsa bot xabar beradi."),
+            ("Chek yuborgandan keyin nima qilaman?", "Chekni admin tekshiradi. So‘rov tekshirilayotgan paytda uni qayta yubormang; tasdiq yoki rad holatini ilovada ko‘ring."),
             ("Obuna avtomatik uzayadimi?", "Yo‘q. Yangi muddat olish uchun uni qayta tanlab, to‘lovni alohida amalga oshiring."),
-            ("Android ilovasida obuna sotib olsa bo‘ladimi?", "Google Play versiyasida xarid hozircha ulanmagan, u yerda obuna holati ko‘rsatiladi. To‘lovni @darsi_chini_bot orqali yakunlang."),
+            ("Android ilovasida obuna sotib olsa bo‘ladimi?", "HSK AI saytidan olingan APK’da to‘lov va chek orqali obuna olish mumkin, jumladan Google yoki Apple hisobi uchun ham. Google Play versiyasida xarid yo‘q; u aynan shu HSK AI hisobidagi kirish holatini ko‘rsatadi."),
             ("AI javoblari doim to‘g‘rimi?", "Yo‘q. AI xato qilishi mumkin; shubhali izohni dars materiali yoki o‘qituvchi bilan tekshiring."),
             ("Nega biror funksiya ochilmayapti?", "Ayrim funksiyalar hisobingizdagi kirish shartlariga bog‘liq bo‘lishi mumkin. Joriy limit va shartlarni profil hamda obuna bo‘limidan ko‘ring."),
         ],
     ),
 })
+
+_ACCOUNT_GUIDANCE = {
+    "uz": ("Bir HSK AI hisobi, bir nechta kirish usuli", "Android va desktop’da Google, Apple yoki Telegram orqali hisob ochish mumkin; faqat ilovada mavjud usullar taklif qilinadi. Obuna, HSK 3.0 xaridi, XP va darslar shu hisobga tegishli. Boshqa kirish usulini mavjud hisobingiz profilidan ulang. Bir xil email hisoblarni birlashtirmaydi. Telegram Mini App uchun haqiqiy Telegram hisobi kerak."),
+    "ru": ("Один аккаунт HSK AI, несколько способов входа", "В Android и desktop аккаунт можно создать через Google, Apple или Telegram; предлагаются только доступные в приложении способы. Подписка, покупка HSK 3.0, XP и уроки принадлежат этому аккаунту. Другой способ входа добавляйте из профиля существующего аккаунта. Одинаковый email не объединяет аккаунты. Telegram Mini App требует настоящий аккаунт Telegram."),
+    "tg": ("Як ҳисоби HSK AI, чанд роҳи воридшавӣ", "Дар Android ва desktop ҳисобро бо Google, Apple ё Telegram сохтан мумкин аст; танҳо роҳҳои дастрас дар барнома пешниҳод мешаванд. Обуна, хариди HSK 3.0, XP ва дарсҳо ба ҳамин ҳисоб тааллуқ доранд. Роҳи дигари воридшавиро аз профили ҳисоби мавҷуда пайваст кунед. Email-и яксон ҳисобҳоро якҷо намекунад. Telegram Mini App ҳисоби воқеии Telegram талаб мекунад."),
+}
 
 for path, page in PAGES.items():
     if path in ("/", "/tj/", "/ru/", "/uz/"):
@@ -444,6 +450,8 @@ for path, page in PAGES.items():
     elif path == "/tj/ai-chinese-teacher/":
         page.setdefault("translation_group", "ai-teacher")
         page.setdefault("content_group", "ai-teacher")
+    if page.get("content_group") in {"home", "guide", "subscription", "faq"}:
+        page["sections"].append(_ACCOUNT_GUIDANCE[page["lang"]])
 
 NAV_LABELS = {
     "tg": {"courses": "Курсҳои HSK", "guide": "Роҳнамо", "download": "Боргирӣ", "language": "Забон", "more": "Идома диҳед", "home": "Саҳифаи асосӣ"},

@@ -57,6 +57,9 @@
     <string name="profile_subscription_restore">Возобновить подписку</string>
     <string name="profile_subscription_renew">Продлить подписку</string>
     <string name="profile_subscription_play_blocked">Google Play Billing настраивается вне репозитория. Сейчас показываем статус подписки, покупка подключается позже.</string>
+    <string name="auth_referral_code">Код приглашения (необязательно)</string>
+    <string name="auth_referral_hint">Код от друга. Только для нового аккаунта.</string>
+    <string name="auth_referral_invalid">Проверьте код приглашения или оставьте поле пустым.</string>
     <string name="profile_referral_title">Пригласить друга</string>
     <string name="profile_referral_progress">%1$d / %2$d активных друзей</string>
 
@@ -75,7 +78,7 @@
     <string name="error_server">Временная ошибка сервера. Попробуйте немного позже.</string>
     <string name="error_unknown">Произошла непредвиденная ошибка.</string>
     <string name="error_session_expired">Сессия истекла. Войдите в свой аккаунт снова.</string>
-    <string name="error_telegram_account_required">Эта возможность пока доступна аккаунтам с подключённым Telegram.</string>
+    <string name="error_telegram_account_required">Эта возможность сейчас недоступна. Попробуйте позже.</string>
     <string name="error_link_invalid">Код неверный, истёк или уже использован.</string>
     <string name="error_link_rate_limited">Слишком много попыток. Попробуйте через несколько минут.</string>
     <string name="error_device_bound">Это устройство привязано к другому аккаунту HSK AI. Сначала отвяжите его.</string>

@@ -119,6 +119,7 @@ class IdentityLinkService:
         installation_key_hash: str,
         allow_create: bool = False,
         language: str | None = None,
+        referral_code: str | None = None,
     ) -> int:
         """Return the internal user id this provider identity may sign in as.
 
@@ -148,6 +149,11 @@ class IdentityLinkService:
                     user = await UserRepository(self.session).create_provider_account(
                         full_name=verified.display_name, language=language)
                     identity = await self.link_to_user(verified, user_id=user.id)
+                    if referral_code:
+                        from app.services.referral_service import ReferralService
+                        await ReferralService(self.session).attach_referral_if_needed(
+                            user, referral_code, commit=False,
+                        )
             except IntegrityError:
                 identity = await self._by_subject(verified.provider, verified.subject, lock=True)
                 if identity is None:

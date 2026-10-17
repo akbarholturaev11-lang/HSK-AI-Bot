@@ -86,16 +86,17 @@ class NativePaymentDiscountFinanceTests(unittest.IsolatedAsyncioTestCase):
             campaign.quota_total = 7
             self.assertEqual((await service.get_best_admin_discount(user=newcomer, plan_type="1_month", payment_method="visa")).source, "none")
 
-    async def test_provider_accounts_do_not_query_telegram_referral_or_feedback_rows(self):
+    async def test_provider_accounts_use_canonical_referral_and_skip_telegram_feedback_rows(self):
         async with self.sessions() as session:
             user = await session.get(User, 1)
             user.discount_offer_started_at = self.now
             user.discount_referral_count, user.discount_eligible = 99, True
             service = DiscountService(session)
-            service.referral_repo.count_discount_qualified_since = AsyncMock(side_effect=AssertionError("TG referral lookup"))
+            service.referral_repo.count_discount_qualified_since = AsyncMock(return_value=0)
             service.feedback_repo.get_available_price_offer = AsyncMock(side_effect=AssertionError("TG feedback lookup"))
             service.feedback_repo.get_latest_available_price_offer = AsyncMock(side_effect=AssertionError("TG feedback lookup"))
             self.assertEqual(await service.sync_referral_discount_progress(user), (0, False))
+            self.assertIs(service.referral_repo.count_discount_qualified_since.await_args.kwargs["referrer_telegram_id"], user)
             for feedback_id in (None, 1):
                 self.assertEqual((await service.get_feedback_price_discount(user=user, feedback_id=feedback_id)).source, "none")
             targeted = DiscountCampaign(title="TG only", percent=30, target_telegram_id=3003,

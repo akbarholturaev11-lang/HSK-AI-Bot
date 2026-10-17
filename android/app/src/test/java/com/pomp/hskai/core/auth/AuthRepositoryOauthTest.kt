@@ -27,6 +27,9 @@ import com.pomp.hskai.data.api.RefreshRequest
 import com.pomp.hskai.data.api.RefreshResponse
 import com.pomp.hskai.data.api.RevokeRequest
 import com.pomp.hskai.data.api.RevokeResponse
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.encodeToString
@@ -39,7 +42,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import retrofit2.Response
 
-private class OauthFakeStore : CredentialStore {
+private open class OauthFakeStore : CredentialStore {
     var storedRefresh: String? = null
     override suspend fun installationKey(): String = "installation-key-" + "k".repeat(40)
     override suspend fun refreshToken(): String? = storedRefresh
@@ -308,6 +311,48 @@ class AuthRepositoryOauthTest {
         assertEquals(null, oauth.lastStart?.language)
         repo.startAppleSignIn(bindToCurrentAccount = true, language = AppLanguage.TAJIK).success()
         assertEquals(null, oauth.lastStart?.language)
+    }
+
+    @Test
+    fun `invite metadata reaches both signup providers but never explicit identity linking`() = runTest {
+        val oauth = OauthFakeApi()
+        val store = OauthFakeStore().apply { storedRefresh = "pomp_r1_existing" }
+        val repo = repository(oauth = oauth, store = store)
+        repo.updateSignupReferralCode("ra_abcdef12")
+        repo.startGoogleSignIn().success()
+        assertEquals("ra_abcdef12", oauth.lastStart?.referralCode)
+        repo.startAppleSignIn().success()
+        assertEquals("ra_abcdef12", oauth.lastStart?.referralCode)
+        repo.startGoogleSignIn(bindToCurrentAccount = true).success()
+        assertEquals(null, oauth.lastStart?.referralCode)
+        assertFalse(Json.encodeToString(oauth.lastStart!!).contains("referral_code"))
+        repo.startAppleSignIn(bindToCurrentAccount = true).success()
+        assertEquals(null, oauth.lastStart?.referralCode)
+    }
+
+    @Test
+    fun `invite is captured before the first suspension and cleared only after login`() = runTest {
+        val installation = CompletableDeferred<Unit>()
+        val store = object : OauthFakeStore() {
+            override suspend fun installationKey(): String {
+                installation.await()
+                return "k".repeat(64)
+            }
+        }
+        val oauth = OauthFakeApi()
+        val repo = repository(oauth = oauth, store = store)
+        repo.updateSignupReferralCode("ref_abcdef12")
+        val attempt = async { repo.startAppleSignIn().success() }
+        runCurrent()
+        repo.updateSignupReferralCode("ra_12345678")
+        installation.complete(Unit)
+        val pending = attempt.await()
+        assertEquals("ref_abcdef12", oauth.lastStart?.referralCode)
+        assertEquals("ra_12345678", repo.signupReferralCode.value)
+        assertTrue(repo.pollLink(pending).success())
+        assertEquals("", repo.signupReferralCode.value)
+        repo.updateSignupReferralCode("abcdef12")
+        assertEquals("", repo.signupReferralCode.value)
     }
 
     @Test
