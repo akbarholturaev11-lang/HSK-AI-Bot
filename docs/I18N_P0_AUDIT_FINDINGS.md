@@ -760,19 +760,39 @@ account-state scenarios, zero-consume prefetch behavior and the
 Mini App account-switch cache verification required for P0 closure.
 All live permissions and client E2E remain unverified.
 
-### Railway staging readiness — live server still unavailable
+### Railway staging readiness — backend deployed, authenticated QA still pending
 
-A read-only Railway inventory confirmed the HSK AI Railway project
-has a `staging` environment, but it contains only an operational
-PostgreSQL service (`Postgres-Iy93`). The HSK AI app/backend and an
-HTTPS staging domain are **absent** there. The production environment
-separately runs the existing GitHub `main` backend and a database.
+**Supersedes the earlier database-only staging snapshot.** A separate
+`hsk-ai-p0-qa` backend was provisioned in Railway's existing staging
+environment alongside independent PostgreSQL `Postgres-Iy93`.
+The staging service's source is pinned to
+`c73ee00891e7be6fa8eca59d5b54e29c24c36fe4`
+on PR #179's branch; startup uses `app.staging_qa:app`, a
+staging-only FastAPI lifespan. It prevents production Telegram polling,
+campaign/notification schedulers and inherited real bot/AI secrets,
+and fails closed if the configured DB host is not the staging PostgreSQL
+host. A cryptographically randomized **fake** Telegram bot token is
+generated on each process start.
 
-Therefore the anonymous route probe **was not run** against
-any actual service. Its last CI artifact truthfully reports
-`performed_requests=0`. Authenticated Free/Trial/Pro, paid-content
-privacy, external CDN caching and account-switch QA remain open.
-No Railway changes, deployments, domains, variables, or DB schema
-were created or modified. See
-`docs/I18N_P0_STAGING_ACCESS_RUNBOOK.md` for the controlled
-staging provision/approval gate.
+The initial app deployment exposed a staging-only configuration error:
+blank canonical site origin caused `PUBLIC_SITE_URL must be an HTTPS origin`.
+Corrected by setting `PUBLIC_SITE_URL` and `MINI_APP_BASE_URL` on the
+staging service to `https://hsk-ai-p0-qa-staging.up.railway.app`.
+The latest deployment
+`cf4e66c5-8134-40e5-9f78-68b07b26b244`
+reports **SUCCESS**; Railway logs show ASGI startup complete and
+internal `GET /health` **200 OK**. Staging Postgres and API service
+are both **Online**. Production remains on the untouched `main`
+backend and its independent database.
+
+**Not yet validated:** no external anonymous status-only HTTP probe
+completed because the available execution environment could not
+resolve the new public Railway hostname. No response body or private
+answers were read. The randomized fake bot token is intentionally
+not a functioning Telegram login, so genuine Free/Trial/Pro/blocked
+test sessions still need an isolated test bot or approved disposable
+QA authentication fixtures. No real paid user, quota, cache isolation
+or client E2E test is established by this startup success. The
+[staging runbook](../docs/I18N_P0_STAGING_ACCESS_RUNBOOK.md) documents
+the exact status-only command and manual QA criteria. Staging may
+incur Railway compute charges, with sleep enabled. P0 remains open.
