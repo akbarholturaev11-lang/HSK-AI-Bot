@@ -649,6 +649,13 @@ Do not mark implementation complete based on the plan being written.
   A map with zero answer keys is **not automatically safe to publish
   every paid lesson/translation**. The legacy direct lesson route
   remains P0's priority entitlement/privacy blocker.
+- **Assessment-key naming variants:** `1a414f59301c12f31f6520544b5392e090af73f4`
+  normalizes camelCase, snake_case and kebab-case assessment field names,
+  and `b9890cb22591ee08c78c8031824ea522176c88d6` adds regression
+  fixtures containing `correctIndex`/`answer-key` variants.
+  [Fast P0 run 39011475458](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39011475458)
+  concluded **SUCCESS**. This hardens future public map leak detection;
+  current source maps still have no matching assessment keys.
 - No production behavior, published assets, lesson data, source
   translations, progress or payments changed. P0 IN PROGRESS.
 
