@@ -18,6 +18,10 @@ from urllib.parse import urlsplit
 from urllib.request import Request, HTTPRedirectHandler, build_opener
 
 TRACKS = ("hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3")
+LAST_LESSON_BY_TRACK = {
+    "hsk1": 63, "hsk2": 72, "hsk3": 109, "hsk4": 181,
+    "nhsk1": 103, "nhsk2": 73, "nhsk3": 145,
+}
 STAGING_MARKER = re.compile(r"(?:^|[.-])(?:qa|staging)(?:[.-]|$)", re.I)
 FORBIDDEN_HOST = re.compile(r"(?:^|[.-])(?:prod|production|www)(?:[.-]|$)", re.I)
 
@@ -38,6 +42,10 @@ def cases() -> list[dict]:
         items.append({
             "kind": "legacy_lesson", "track": track,
             "path": f"/course_v3_data/{track}/lesson_01.json",
+        })
+        items.append({
+            "kind": "late_legacy_lesson", "track": track,
+            "path": f"/course_v3_data/{track}/lesson_{LAST_LESSON_BY_TRACK[track]}.json",
         })
     items.append({
         "kind": "private_exam_file", "track": "n/a",
@@ -116,9 +124,9 @@ def probe(*, execute: bool = False, base_url: str = "",
             error_code = "transport_error"
         # Do not call response.read(), store headers, redirects or any body bytes.
         results.append({**item, "http_status": status, "error": error_code})
-        if item["kind"] == "legacy_lesson" and status in (200, 206):
+        if item["kind"] in ("legacy_lesson", "late_legacy_lesson") and status in (200, 206):
             findings.append({
-                "kind": "legacy_lesson", "track": item["track"],
+                "kind": item["kind"], "track": item["track"],
                 "issue": "anonymous_legacy_lesson_content_accessible",
                 "review": "entitlement_and_static_content_privacy",
             })
@@ -145,6 +153,10 @@ def probe(*, execute: bool = False, base_url: str = "",
         ),
         "anonymous_lesson_success_count": sum(
             item["kind"] == "legacy_lesson" and item["http_status"] in (200, 206)
+            for item in results
+        ),
+        "anonymous_late_lesson_success_count": sum(
+            item["kind"] == "late_legacy_lesson" and item["http_status"] in (200, 206)
             for item in results
         ),
         "native_api_denied_without_bearer_count": sum(
