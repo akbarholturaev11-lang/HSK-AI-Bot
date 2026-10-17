@@ -340,3 +340,46 @@ New public language packs must not introduce additional locked lessons or
 private exam answers until authorized delivery is designed and tested.
 Existing access/payment behavior remains unchanged in this audit.
 
+## P0 sixth audit — Mini App embedded catalog inventory (2026-10-17)
+
+Read-only `scripts/i18n_miniapp_catalog_audit.py` scans selected verified
+literal `uz/ru/tj` maps, including nested object and array keys, without
+executing JavaScript or capturing actual strings. A CI artifact records key
+paths and signatures only. The
+[expanded run 39007054885](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39007054885)
+completed the Mini App localization test/audit step successfully.
+
+| Selected Mini App page and catalog | Keys in each language |
+| --- | ---: |
+| Course `I18N` / `TRACK_UI` / `HSK30_BOOK_COPY` | 86 / 32 / 5 |
+| Subscription `I18N` | 190 |
+| Test center `L` / `EM` / `HSK30_SOON` / `PT` | 19 / 20 / 3 / 6 |
+| Mistakes `L` | 53 |
+| Pronunciation `L` | 22 |
+| Recognition `L` | 10 |
+| Onboarding `L` | 31 |
+| Voice roleplay `L` | 47 |
+| Dictionary `UI` / `practiceLabels` / `memoLabels` / `messages` | 23 / 7 / 7 / 2 |
+| Ready phrases `UI` | 15 |
+| **Total across 18 selected catalogs** | **578** |
+
+Each has three locales. **No missing key paths, named-placeholder drift,
+HTML-tag-count drift, or value-type drift** was detected. The dictionary
+`UI` contains legacy `countAll`, `countResults`, and `strokes`
+localized JavaScript functions (3 in each language). These 9 dynamic
+values are deliberate formatter functions, not plain strings. A follow-up
+scanner revision classifies their parameter signatures separately rather
+than silently converting or dropping them. Its validation reference is
+[run 39007233003](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39007233003).
+
+**False-positive test corrected:** run 39007010367 failed an incorrect
+test threshold requiring over ten keys per catalog. Small real catalogs
+with 2–7 keys make that assertion invalid. The subsequent CI step
+passed after relaxing the test in commit `1db94831`. This was a
+test-fixture issue; the Mini App runtime was not altered.
+
+**Not covered:** most inline language ternaries, dynamic/runtime-generated
+copy, all other page-local maps, rendered screenshots, language switching
+and cache invalidation, semantic translation quality, paid/locked course
+payloads, and authorization/assessment security. This remains **P0
+IN PROGRESS**. No production UI/lesson/auth/payment code changed.
