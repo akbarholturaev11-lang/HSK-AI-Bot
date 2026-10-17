@@ -27,7 +27,7 @@ class StagingAnonymousProbeTests(unittest.TestCase):
         result = probe(open_request=cannot_open)
         self.assertEqual(result["status"], "NOT_EXECUTED_STAGING_TARGET_REQUIRED")
         self.assertEqual(result["performed_requests"], 0)
-        self.assertEqual(result["planned_requests"], 2 * len(TRACKS) + 1)
+        self.assertEqual(result["planned_requests"], 2 * len(TRACKS) + 3)
         self.assertEqual(result["findings"], [])
         self.assertFalse(any(c["http_status"] is not None for c in result["cases"]))
 
@@ -54,16 +54,18 @@ class StagingAnonymousProbeTests(unittest.TestCase):
         def fake_open(request, timeout):
             self.assertEqual(timeout, 5)
             requests.append(request)
-            code = 404 if "exams/" in request.full_url else 200
+            code = (404 if "exams/" in request.full_url else
+                    401 if "/api/v3/" in request.full_url else 200)
             result = _Response(code)
             responses.append(result)
             return result
         result = probe(execute=True, base_url="https://qa.example.test",
                        confirmed_host="qa.example.test", open_request=fake_open)
-        self.assertEqual(result["performed_requests"], 15)
+        self.assertEqual(result["performed_requests"], 17)
         self.assertTrue(result["exam_404_verified"])
         self.assertEqual(result["anonymous_lesson_success_count"], 7)
-        self.assertEqual(len(responses), 15)
+        self.assertEqual(result["native_api_denied_without_bearer_count"], 2)
+        self.assertEqual(len(responses), 17)
         self.assertTrue(all(r.closed and r.body_reads == 0 for r in responses))
         self.assertEqual(len(result["findings"]), 7)
         for req in requests:
@@ -77,6 +79,8 @@ class StagingAnonymousProbeTests(unittest.TestCase):
                        open_request=lambda req, timeout: _Response(200))
         self.assertFalse(result["exam_404_verified"])
         self.assertTrue(any(f["issue"] == "staging_exam_404_not_verified"
+                            for f in result["findings"]))
+        self.assertTrue(any(f["issue"] == "native_anonymous_auth_denial_not_confirmed"
                             for f in result["findings"]))
 
     def test_transport_failure_not_claimed_to_be_secure(self):
