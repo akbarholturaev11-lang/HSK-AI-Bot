@@ -2,7 +2,8 @@
 import unittest
 
 from scripts.i18n_catalog_contract_audit import (
-    bot_catalogs, comparison, desktop_catalogs, python_tables, signature,
+    ROOT, audit, bot_catalogs, comparison, desktop_catalogs, fallback_review,
+    python_tables, signature,
 )
 
 
@@ -62,6 +63,38 @@ COURSE_I18N={"uz":{},"ru":{},"tj":{}}
 
     def test_signature_does_not_count_escaped_double_braces(self):
         self.assertEqual(signature("{{name}} {name} {count}"), [("count", 1), ("name", 1)])
+
+    def test_fallback_review_identifies_source_policy_conflict(self):
+        source = {
+            "miniapp_course": (
+                'var LANG=(new URLSearchParams(location.search).get("lang")||"ru");'
+                'if(d&&d.user&&d.user.language&&I18N[d.user.language])LANG=d.user.language'
+            ),
+            "miniapp_subscription": 'function normalizeLang(value){return "uz";}',
+            "desktop": 'return SUPPORTED_LANGUAGES.has(normalized) ? normalized : "uz";',
+            "bot": 'def t(key: str, lang: str = "ru", **kwargs): pass',
+            "android": 'val DEFAULT = RUSSIAN',
+        }
+        result = fallback_review(source, {"default_locale": "uz"})
+        self.assertTrue(result["inconsistent_defaults"])
+        self.assertEqual(result["observed_defaults"]["miniapp_course"], "ru")
+        self.assertEqual(result["observed_defaults"]["android"], "ru")
+        self.assertTrue(result["miniapp_course_account_language_override"])
+        with self.assertRaisesRegex(ValueError, "source changed"):
+            fallback_review({**source, "miniapp_course": ""}, {"default_locale": "uz"})
+
+    def test_real_three_locale_sources_have_parity_without_runtime_import(self):
+        result = audit(ROOT)
+        self.assertEqual(result["desktop"]["comparison"]["key_counts"],
+                         {"uz": 797, "ru": 797, "tj": 797})
+        for report in result["bot"]["tables"] + result["bot"]["effective"] + [
+                result["desktop"]["comparison"]]:
+            self.assertEqual(report["missing_keys"], [], report["table"])
+            self.assertEqual(report["placeholder_drift"], [], report["table"])
+            self.assertEqual(report["html_tag_count_drift"], [], report["table"])
+        self.assertEqual(result["bot"]["duplicate_literal_keys"], [])
+        self.assertEqual(result["bot"]["unrecognized_merges"], [])
+        self.assertTrue(result["fallback_review"]["inconsistent_defaults"])
 
     def test_rejects_changed_desktop_language_structure(self):
         with self.assertRaisesRegex(ValueError, "sections changed"):
