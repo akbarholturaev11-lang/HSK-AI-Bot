@@ -142,10 +142,10 @@ def flatten(value: str, path: str, leaves: dict, issues: list, depth: int = 0) -
             "tags": sorted(Counter(TAG.findall(value)).items()),
         }
     else:
-        legacy = re.match(r"^function\\s*\\(([^)]*)\\)\\s*\\{", value)
+        legacy = re.match(r"^function\s*\(([^)]*)\)\s*\{", value)
         if legacy:
             params = [x.strip() for x in legacy.group(1).split(",") if x.strip()]
-            if not all(re.fullmatch(r"[A-Za-z_$][\\w$]*", x) for x in params):
+            if not all(re.fullmatch(r"[A-Za-z_$][\w$]*", x) for x in params):
                 issues.append({"path": path, "issue": "unsupported_function_parameter"})
             leaves[path] = {"type": "legacy_callable", "parameters": params}
             issues.append({"path": path, "issue": "legacy_function_copy",
