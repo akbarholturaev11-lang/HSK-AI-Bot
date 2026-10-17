@@ -193,6 +193,12 @@ Do not mark implementation complete based on the plan being written.
   2,681 paths; 70,813 recognized locale maps; 7,951 **review candidates**;
   Android 24 parity pairs; 811 frozen files matched; 0 baseline blockers).
   Automated detection is incomplete and does not verify translation quality.
+- Frozen 3-language JSON source samples from lesson 1 of all 7 tracks:
+  `localization/baselines/lesson_locale_samples.json`. The independent guard
+  `scripts/i18n_lesson_samples.py` checks 7 lesson identities, Chinese titles,
+  first-word Chinese/pinyin, selected translated subtitles and first-word
+  meanings (21 locale-specific sample pairs) with a CI regression suite.
+  **These are authored-source samples, not UI screenshots or rendered API output.**
 - P0 remains **IN PROGRESS**. Do not activate a new language; screenshot,
   device/offline, manual translation and access-security review is outstanding.
 
