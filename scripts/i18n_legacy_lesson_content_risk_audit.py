@@ -14,7 +14,11 @@ from pathlib import Path
 import re
 import sys
 
-from scripts.i18n_public_bundle_guard import FORBIDDEN_KEYS, normalize_key
+if __package__:
+    from scripts.i18n_public_bundle_guard import FORBIDDEN_KEYS, normalize_key
+else:
+    # CLI runs as python scripts/this_file.py (scripts/ is sys.path[0]).
+    from i18n_public_bundle_guard import FORBIDDEN_KEYS, normalize_key
 
 ROOT = Path(__file__).resolve().parents[1]
 TRACKS = ("hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3")
