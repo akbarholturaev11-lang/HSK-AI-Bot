@@ -281,8 +281,12 @@ Do not mark implementation complete based on the plan being written.
   `90f164e36d4e0e2c09a5599096cacdfb576eedfc` and regression tests
   `bf71e1ea37e0532ba6eed88cc97ecb2a815836ac` now report missing/
   invalid `correct_index` positions against same-card options, including
-  current locale-keyed option lists. Do not publish answer values, change
-  quiz grading, or mutate lesson JSON. In [CI 39000552111](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39000552111),
+  current locale-keyed option lists. The archived P0 report measured
+  **6,449 answer-like field occurrences** in 746 lesson files (6,445 in
+  section cards, 4 elsewhere), with **0 option-index structural findings**.
+  This is a significant public-content review target, not confirmed
+  authorization bypass; global middleware and deployed access remain unknown.
+  Do not publish answer values, change quiz grading, or mutate lesson JSON. In [CI 39000552111](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39000552111),
   localization-specific tests completed **SUCCESS**; recheck overall workflow
   conclusion before calling the entire backend run green.
 - **Manual source review:** account-deletion bot flow
