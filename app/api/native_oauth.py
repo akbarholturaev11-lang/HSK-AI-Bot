@@ -159,25 +159,24 @@ background:#c63b33;color:#fff;text-decoration:none;font-weight:600}}
 
 
 # Static handoff only: no state, code, identity or token ever enters this URL.
-# Some Android browsers block automatic external-app launch; the visible link
-# is an explicit-gesture fallback. Desktop and account deletion never hand off.
-_ANDROID_RETURN_URL = "pomp-hsk-ai://oauth-return"
-_ANDROID_RETURN_SCRIPT = (
-    'window.setTimeout(function(){window.location.href="pomp-hsk-ai://oauth-return";},150);'
-)
+# Browsers may block automatic external-app launch; the visible link is an
+# explicit-gesture fallback. Mini App, deletion and failed callbacks never hand off.
+_NATIVE_RETURN_SCHEMES = {"pomp-hsk-ai", "pomp-hsk-ai-qa"}
 
 
-def _page(mark: str, code: str, *, open_android: bool = False) -> HTMLResponse:
+def _page(mark: str, code: str, *, return_scheme: str | None = None) -> HTMLResponse:
     safe = "".join(ch for ch in str(code or "") if ch.isalnum() or ch in "_-")[:64]
     return_link = ""
     headers = _PAGE_HEADERS
-    if open_android:
+    if isinstance(return_scheme, str) and return_scheme in _NATIVE_RETURN_SCHEMES:
+        return_url = return_scheme + "://oauth-return"
+        script = 'window.setTimeout(function(){window.location.href="' + return_url + '";},150);'
         return_link = (
-            '<a href="' + _ANDROID_RETURN_URL + '">HSK AI ↗</a>'
-            '<script>' + _ANDROID_RETURN_SCRIPT + '</script>'
+            '<a href="' + return_url + '">HSK AI ↗</a>'
+            '<script>' + script + '</script>'
         )
         script_hash = base64.b64encode(
-            hashlib.sha256(_ANDROID_RETURN_SCRIPT.encode("utf-8")).digest()
+            hashlib.sha256(script.encode("utf-8")).digest()
         ).decode("ascii")
         headers = {
             **_PAGE_HEADERS,
@@ -346,6 +345,20 @@ def create_native_oauth_router(
             logger.exception("OAuth assert failed")
             return _unavailable()
 
+    async def provider_callback_error(provider: str, state: str | None):
+        # Account deletion has its own browser-bound proof and nonce lifecycle.
+        if not state or state.startswith(STATE_PREFIX):
+            return _page("&#10005;", "oauth_cancelled")
+        try:
+            async with session_factory() as session:
+                await service_factory(session, settings_obj).cancel_callback(provider=provider, state=state)
+            return _page("&#10005;", "oauth_cancelled")
+        except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
+            return _page("&#10005;", exc.code)
+        except Exception:
+            logger.exception("Provider OAuth cancellation failed")
+            return _page("&#10005;", "oauth_unavailable")
+
     @router.get("/api/v3/native-auth/oauth/callback/google")
     async def google_callback(
         request: Request,
@@ -353,7 +366,9 @@ def create_native_oauth_router(
         code: OAuthCode | None = None,
         error: str | None = None,
     ):
-        if error or not state or not code:
+        if error:
+            return await provider_callback_error("google", state)
+        if not state or not code:
             return _page("&#10005;", "oauth_cancelled")
         try:
             async with session_factory() as session:
@@ -366,7 +381,9 @@ def create_native_oauth_router(
                     completed = await service_factory(session, settings_obj).complete_callback(
                         provider="google", state=state, code=code
                     )
-            return _page("&#10003;", "ok", open_android=completed.get("platform") == "android")
+            return _page("&#10003;", "ok", return_scheme=(
+                getattr(settings_obj, "OAUTH_NATIVE_RETURN_SCHEME", "pomp-hsk-ai")
+                if completed.get("platform") in {"android", "macos", "windows"} else None))
         except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
             return _page("&#10005;", exc.code)
         except Exception:
@@ -381,7 +398,9 @@ def create_native_oauth_router(
             return _page("&#10005;", exc.code)
         state = form.get("state") or ""
         code = form.get("code") or ""
-        if form.get("error") or not state or not code:
+        if form.get("error"):
+            return await provider_callback_error("apple", state)
+        if not state or not code:
             return _page("&#10005;", "oauth_cancelled")
         try:
             async with session_factory() as session:
@@ -397,7 +416,9 @@ def create_native_oauth_router(
                         code=code,
                         apple_user=form.get("user"),
                     )
-            return _page("&#10003;", "ok", open_android=completed.get("platform") == "android")
+            return _page("&#10003;", "ok", return_scheme=(
+                getattr(settings_obj, "OAUTH_NATIVE_RETURN_SCHEME", "pomp-hsk-ai")
+                if completed.get("platform") in {"android", "macos", "windows"} else None))
         except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
             return _page("&#10005;", exc.code)
         except Exception:
@@ -515,11 +536,13 @@ def create_native_oauth_router(
             payload = await validated_auth_payload(request, IdentityLinkStatusRequest)
             async with session_factory() as session:
                 actor, origin_session_id = await _actor(session, request)
-                result = await DesktopAuthService(session, settings_obj).cancel_telegram_identity_link(
+                result = await service_factory(session, settings_obj).cancel_link(
                     link_request_id=payload.link_request_id,
                     polling_secret=payload.polling_secret.get_secret_value(),
                     user_id=int(actor.id), session_id=origin_session_id)
             return JSONResponse(content=result, headers=_NO_STORE)
+        except (NativeOAuthError, IdentityLinkError) as exc:
+            return _oauth_error(exc)
         except DesktopAuthError as exc:
             return auth_error_response(exc)
         except Exception:

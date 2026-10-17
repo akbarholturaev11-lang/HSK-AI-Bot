@@ -112,7 +112,7 @@ class NativeAccountSignupTests(_Base):
             old_id = identity.id
             await session.commit()
         started_response = await self.client.post('/api/v3/native-auth/identities/link/start', headers=headers,
-            json=self._start_body(installation_key='N' * 48))
+            json=self._start_body())
         self.assertEqual(started_response.status_code, 200, started_response.text)
         started = started_response.json()
         async with self.sessions() as session:

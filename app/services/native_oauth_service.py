@@ -118,8 +118,12 @@ class NativeOAuthService:
         digest = hashlib.sha256(code_verifier.encode()).digest()
         return base64.urlsafe_b64encode(digest).decode().rstrip("=")
 
-    def nonce(self, link_request_id: str) -> str:
-        return self._derive("oauth-nonce", link_request_id)
+    def nonce(self, link_request_id: str, *, mode: str) -> str:
+        # The selected flow discloses only its own nonce. A browser proof must
+        # not be usable at the Android native-token endpoint (or vice versa).
+        if mode not in MODES:
+            raise NativeOAuthError("oauth_mode_unsupported", status_code=422)
+        return self._derive("oauth-nonce-" + mode, link_request_id)
 
     def state(self, link_request_id: str) -> str:
         mac = self._derive("oauth-state", link_request_id)[:STATE_MAC_CHARS]
@@ -178,6 +182,17 @@ class NativeOAuthService:
             self.settings, platform=configured_platform
         ):
             raise NativeOAuthError("oauth_provider_unconfigured", status_code=503)
+        if intent == LINK_INTENT and platform != "miniapp":
+            # Match Telegram attachment: admission lock -> owner -> origin.
+            # A caller may not describe another installation/platform while
+            # borrowing the same owner's bearer from a different device.
+            await self.auth._acquire_link_start_rate_limit_lock()
+            owner = await UserRepository(self.session).get_by_user_id(int(bind_user_id or 0), lock=True)
+            if owner is None:
+                raise IdentityLinkError("oauth_identity_not_found", status_code=404)
+            self.identities._require_not_blocked(owner)
+            await self.auth._telegram_link_origin(user_id=owner.id, session_id=bind_session_id,
+                installation_hash=self.auth._hash("installation", installation_key), platform=platform)
 
         # Reuses the existing admission path, so the advisory-lock
         # serialisation and both rate limits apply unchanged.
@@ -193,7 +208,7 @@ class NativeOAuthService:
             referral_code=referral_code,
         )
         link_request_id = started["link_request_id"]
-        nonce = self.nonce(link_request_id)
+        nonce = self.nonce(link_request_id, mode=mode)
 
         authorize_url = None
         if mode == BROWSER_REDIRECT_MODE:
@@ -227,7 +242,7 @@ class NativeOAuthService:
             DesktopLinkRequest.id == str(link_request_id or "")
         )
         if lock:
-            query = query.with_for_update()
+            query = query.with_for_update().execution_options(populate_existing=True)
         result = await self.session.execute(query)
         row = result.scalar_one_or_none()
         if row is None:
@@ -269,17 +284,7 @@ class NativeOAuthService:
             # Wait for concurrent disconnect/revocation before accepting a
             # proof started under that native session. Mini App proof uses
             # fresh signed Telegram initData instead of a native session.
-            await UserRepository(self.session).get_by_user_id(user_id, lock=True)
-            if row.bind_session_id or row.platform != "miniapp":
-                origin = (await self.session.execute(select(DesktopSession.id)
-                    .join(DesktopDevice, DesktopDevice.id == DesktopSession.device_id)
-                    .where(DesktopSession.id == row.bind_session_id,
-                           DesktopSession.revoked_at.is_(None),
-                           DesktopSession.expires_at > _utcnow(),
-                           DesktopDevice.user_id == user_id,
-                           DesktopDevice.revoked_at.is_(None)))).scalar_one_or_none()
-                if origin is None:
-                    raise DesktopAuthError("desktop_session_revoked", status_code=401)
+            await self._link_owner(row)
             await self.identities.link_to_user(verified, user_id=user_id)
             row.status = LINKED_STATUS
             row.approved_user_id = user_id
@@ -332,13 +337,15 @@ class NativeOAuthService:
             raise NativeOAuthError("oauth_state_invalid", status_code=401)
         if provider != row.flow or provider != "google":
             raise NativeOAuthError("oauth_provider_unsupported", status_code=422)
+        if row.platform != "android":
+            raise NativeOAuthError("oauth_mode_unsupported", status_code=422)
 
         verified = await self._verify_or_fail(
             row,
             google_auth.verify_android_id_token(
                 id_token,
                 settings_obj=self.settings,
-                nonce=self.nonce(row.id),
+                nonce=self.nonce(row.id, mode=NATIVE_ID_TOKEN_MODE),
                 max_age_seconds=int(
                     getattr(self.settings, "OAUTH_ID_TOKEN_MAX_AGE_SECONDS", 300)
                 ),
@@ -347,6 +354,15 @@ class NativeOAuthService:
         return await self._verify_or_fail(row, self._finish(row, verified))
 
     # --- Desktop / Apple: browser redirect -------------------------------
+    async def cancel_callback(self, *, provider: str, state: str) -> None:
+        """A verified provider-error state terminates just its pending proof."""
+        if provider not in PROVIDERS:
+            raise NativeOAuthError("oauth_provider_unsupported", status_code=422)
+        row = await self._row(self.link_request_id_from_state(state))
+        if row.flow != provider:
+            raise NativeOAuthError("oauth_state_invalid", status_code=400)
+        await self._fail(row, "oauth_cancelled")
+
     async def complete_callback(
         self,
         *,
@@ -381,7 +397,7 @@ class NativeOAuthService:
                 google_auth.verify_desktop_id_token(
                     id_token,
                     settings_obj=self.settings,
-                    nonce=self.nonce(row.id),
+                    nonce=self.nonce(row.id, mode=BROWSER_REDIRECT_MODE),
                     max_age_seconds=int(
                         getattr(self.settings, "OAUTH_ID_TOKEN_MAX_AGE_SECONDS", 300)
                     ),
@@ -405,7 +421,7 @@ class NativeOAuthService:
                 apple_auth.verify_id_token_for_service(
                     id_token,
                     settings_obj=self.settings,
-                    nonce=self.nonce(row.id),
+                    nonce=self.nonce(row.id, mode=BROWSER_REDIRECT_MODE),
                     max_age_seconds=int(
                         getattr(self.settings, "OAUTH_ID_TOKEN_MAX_AGE_SECONDS", 300)
                     ),
@@ -415,11 +431,62 @@ class NativeOAuthService:
             verified = apple_auth.merge_first_authorization_name(verified, apple_user)
 
         completed = await self._verify_or_fail(row, self._finish(row, verified))
-        # The callback page may bring ONLY its originating Android app back to
+        # The callback page may bring ONLY its originating native app back to
         # foreground; this metadata never becomes a token or a redirect target.
         return {**completed, "platform": row.platform}
 
     # --- link-intent polling (never returns tokens) ----------------------
+    async def _link_owner(self, row):
+        user = await UserRepository(self.session).get_by_user_id(int(row.bind_user_id or 0), lock=True)
+        if user is None:
+            raise IdentityLinkError("oauth_identity_not_found", status_code=404)
+        self.identities._require_not_blocked(user)
+        if row.bind_session_id or row.platform != "miniapp":
+            # Lock both proof rows: a concurrent logout must be observed before
+            # linking or cancellation can commit under its stale session.
+            origin = (await self.session.execute(select(DesktopSession.id)
+                .join(DesktopDevice, DesktopDevice.id == DesktopSession.device_id)
+                .where(DesktopSession.id == row.bind_session_id,
+                       DesktopSession.revoked_at.is_(None),
+                       DesktopSession.expires_at > _utcnow(),
+                       DesktopDevice.user_id == user.id,
+                       DesktopDevice.installation_key_hash == row.installation_key_hash,
+                       DesktopDevice.platform == row.platform,
+                       DesktopDevice.revoked_at.is_(None))
+                .with_for_update(of=(DesktopSession, DesktopDevice)))).scalar_one_or_none()
+            if origin is None:
+                raise DesktopAuthError("desktop_session_revoked", status_code=401)
+        return user
+
+    async def cancel_link(self, *, link_request_id: str, polling_secret: str,
+                          user_id: int, session_id: str | None):
+        flow = (await self.session.execute(select(DesktopLinkRequest.flow)
+            .where(DesktopLinkRequest.id == str(link_request_id or "")))).scalar_one_or_none()
+        if flow == "telegram":
+            # Preserve Telegram's existing consent/reservation and lock order.
+            return await self.auth.cancel_telegram_identity_link(
+                link_request_id=link_request_id, polling_secret=polling_secret,
+                user_id=user_id, session_id=session_id)
+        row = (await self.session.execute(select(DesktopLinkRequest)
+            .where(DesktopLinkRequest.id == str(link_request_id or ""))
+            .with_for_update().execution_options(populate_existing=True))).scalar_one_or_none()
+        if (row is None or row.flow not in PROVIDERS or row.intent != LINK_INTENT
+                or int(row.bind_user_id or 0) != int(user_id)
+                or row.bind_session_id != session_id
+                or not hmac.compare_digest(str(row.polling_secret_hash or ""),
+                    self.auth._hash("polling", polling_secret))):
+            raise NativeOAuthError("oauth_state_invalid", status_code=401)
+        await self._link_owner(row)
+        if row.status == "pending":
+            expires_at = row.expires_at
+            if expires_at.tzinfo is None:
+                expires_at = expires_at.replace(tzinfo=timezone.utc)
+            row.status = "expired" if expires_at <= _utcnow() else "denied"
+        elif row.status not in {LINKED_STATUS, FAILED_STATUS, "denied", "expired"}:
+            raise NativeOAuthError("desktop_link_consumed", status_code=409)
+        await self.session.commit()
+        return {"ok": True, "status": row.status, "provider": row.flow}
+
     async def link_status(
         self,
         *,
@@ -455,6 +522,8 @@ class NativeOAuthService:
                 "provider": row.flow,
                 "error": row.link_failure_code or "oauth_link_failed",
             }
+        if row.status in {"denied", "expired"}:
+            return {"ok": True, "status": row.status, "provider": row.flow}
         expires_at = row.expires_at
         if expires_at is not None:
             if expires_at.tzinfo is None:

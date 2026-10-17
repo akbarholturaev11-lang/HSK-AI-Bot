@@ -103,9 +103,7 @@ class _Base(unittest.IsolatedAsyncioTestCase):
 
     async def asyncSetUp(self):
         self.settings = _settings(**self.settings_overrides)
-        self.engine = create_async_engine(
-            "sqlite+aiosqlite:///:memory:", poolclass=StaticPool
-        )
+        await self._setup_engine()
         async with self.engine.begin() as connection:
             await connection.run_sync(Base.metadata.create_all)
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
@@ -121,6 +119,11 @@ class _Base(unittest.IsolatedAsyncioTestCase):
         )
         self.client = AsyncClient(
             transport=ASGITransport(app=app), base_url="http://oauth.test"
+        )
+
+    async def _setup_engine(self):
+        self.engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:", poolclass=StaticPool
         )
 
     async def asyncTearDown(self):
@@ -151,7 +154,8 @@ class _Base(unittest.IsolatedAsyncioTestCase):
             started = await service.start_link(
                 platform="android",
                 app_version="1.5.3",
-                installation_key=f"dev{telegram_id}".ljust(48, "b"),
+                installation_key=(INSTALLATION_KEY if telegram_id == 1001
+                                  else f"dev{telegram_id}".ljust(48, "b")),
             )
             await service.approve_link(
                 display_code=started["display_code"], telegram_id=telegram_id
@@ -474,7 +478,7 @@ class OAuthCallbackTests(_Base):
             self.assertNotIn(leaked, body)
         self.assertEqual(response.headers["Cache-Control"], "no-store")
         self.assertEqual(response.headers["Referrer-Policy"], "no-referrer")
-        self.assertNotIn("pomp-hsk-ai://oauth-return", body)
+        self.assertIn('href="pomp-hsk-ai://oauth-return"', body)
 
     async def test_android_google_browser_callback_reopens_app_without_tokens(self):
         _, state = await self._browser_start(platform="android")
@@ -535,13 +539,17 @@ class OAuthCallbackTests(_Base):
             )
         self.assertIn("desktop_link_consumed", second.text)
 
-    async def test_provider_cancellation_is_shown_without_touching_the_row(self):
+    async def test_provider_cancellation_terminates_its_verified_pending_row(self):
         payload, state = await self._browser_start()
         response = await self.client.get(
             "/api/v3/native-auth/oauth/callback/google",
             params={"state": state, "error": "access_denied"},
         )
         self.assertIn("oauth_cancelled", response.text)
+        async with self.sessions() as session:
+            row = await session.get(DesktopLinkRequest, payload["link_request_id"])
+            self.assertEqual(row.status, "failed")
+            self.assertEqual(row.link_failure_code, "oauth_cancelled")
 
 
 class IdentityManagementTests(_Base):
