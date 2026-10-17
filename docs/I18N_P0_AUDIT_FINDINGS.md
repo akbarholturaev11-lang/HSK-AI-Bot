@@ -661,3 +661,28 @@ All findings concern **source code**. No actual Free/Pro test user,
 production HTTP probe, reverse proxy, old APK/Desktop binary, offline
 device, currency/checkout flow or deployed authorization boundary
 was evaluated. P0 is not closed.
+
+### Android logout and account-switch cache isolation follow-up
+
+The cross-client source audit now checks the full local cache deletion
+call chain: `MainActivity`'s explicit logout callback **and**
+`AuthState.Unauthenticated` branch call
+`HskAiApplication.clearLocalData()`, which invokes
+`CourseRepository.clearCache()`, which clears both the course map
+DAO and the lesson DAO. The current `AuthRepository` session-clear
+callback itself only clears widget/notifications; the UI
+`Unauthenticated` branch and explicit logout callback are therefore
+part of the cache-isolation contract.
+
+A regression fixture attempts to remove the actual UI logout wipe,
+and a second one removes the app-to-repository cache clear.
+The first fixture initially missed its target and made the
+*test* fail; this was corrected and
+[fast P0 CI 39012928501](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39012928501)
+completed **SUCCESS**. Neither the client code nor account deletion,
+payment, or course progression was modified.
+
+This is **source-based** evidence, not demonstrated data isolation
+between real accounts on installed phones. QA still needs account A
+authorized lesson -> offline -> explicit logout or revoked session ->
+account B sign in, plus race conditions with concurrent writes.
