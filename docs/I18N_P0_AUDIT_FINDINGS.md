@@ -383,3 +383,31 @@ copy, all other page-local maps, rendered screenshots, language switching
 and cache invalidation, semantic translation quality, paid/locked course
 payloads, and authorization/assessment security. This remains **P0
 IN PROGRESS**. No production UI/lesson/auth/payment code changed.
+
+### Mini App residual source-hotspot measurements
+
+[GitHub CI 39007408199](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39007408199)
+passed the localization-specific tests and wrote source-location-only
+hotspot measurements. The 11 scanned pages contain **11** inline
+`t({uz:...})`/`tr({uz:...})` translation call candidates,
+**126** explicit `LANG` branch candidates, **54** declared JS
+locale-object candidates, and **59** HTML attribute candidates.
+These totals **include** previously scanned dictionaries and may contain
+false positives. They are not defect counts or verified unlocalized
+strings. The most concentrated sites are `course-v3.html` (125
+language branches; 38 locale-object declarations) and
+`course_v3_memorize.html` (9 inline locale-map calls).
+Only counts and file/line locations are archived; no runtime text values.
+
+The selected `hsk-lugat.html` dictionary source contains 3
+legacy JavaScript localized formatting functions in each locale:
+`countAll(n, level)`, `countResults(n)`, `strokes(n)`.
+The updated static audit records 9 such entries and **0 parameter
+signature differences** ([CI 39007233003](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39007233003)).
+They cannot be naively converted to simple language strings in P1.
+
+Further requirements before P0 closure: classify hotspot line locations,
+manually review translations and fallback precedence, inspect rendered
+screen snapshots for 3 locales, test WebView static caching/offline
+and native Desktop/Android, and resolve any static Pro/exam-content
+exposure before publishing versioned lesson locale bundles.
