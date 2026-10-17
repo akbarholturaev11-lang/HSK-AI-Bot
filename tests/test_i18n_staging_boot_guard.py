@@ -1,7 +1,7 @@
 """No real bot token or production database may pass QA startup."""
 import unittest
 from pathlib import Path
-from scripts.i18n_staging_boot_guard import validate_staging_environment
+from scripts.i18n_staging_boot_guard import normalize_staging_db_url, validate_staging_environment
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = {
@@ -15,6 +15,14 @@ BASE = {
 class StagingBootGuardTests(unittest.TestCase):
     def test_isolated_staging_connection_passes(self):
         self.assertTrue(validate_staging_environment(BASE))
+
+    def test_railway_url_conversion_is_driver_only(self):
+        input_url = "postgresql://qa:p%40ss@postgres.qa.internal:5432/qa"
+        normalized = normalize_staging_db_url(input_url)
+        self.assertEqual(normalized, "postgresql+asyncpg://" + input_url[len("postgresql://"):])
+        self.assertTrue(validate_staging_environment({**BASE, "DATABASE_URL": normalized}))
+        self.assertEqual(normalize_staging_db_url(normalized), normalized)
+        self.assertEqual(normalize_staging_db_url("https://not-a-db"), "https://not-a-db")
 
     def test_reject_prod_name_secret_and_database_host(self):
         for extra in (
