@@ -2,42 +2,42 @@
 # Local, build-time messages; backend locale names remain uz/ru/tj.
 COMMON_MESSAGES = {
   "ru": {
+    "auth.expires": "Код действует ещё {time}",
+    "common.refresh": "Обновить",
+    "lesson.continue": "Продолжить урок",
+    "lesson.locked": "Сначала завершите предыдущий урок",
+    "lesson.notFound": "Для этого уровня уроки пока не найдены.",
+    "lesson.start": "Начать урок",
     "navigation.course": "Курс",
     "navigation.practice": "Практика",
     "navigation.profile": "Профиль",
     "navigation.rating": "Рейтинг",
-    "navigation.subscription": "Подписка",
-    "lesson.start": "Начать урок",
-    "lesson.continue": "Продолжить урок",
-    "lesson.locked": "Сначала завершите предыдущий урок",
-    "lesson.notFound": "Для этого уровня уроки пока не найдены.",
-    "common.refresh": "Обновить",
-    "auth.expires": "Код действует ещё {time}"
+    "navigation.subscription": "Подписка"
   },
   "tj": {
+    "auth.expires": "Рамз боз {time} амал мекунад",
+    "common.refresh": "Навсозӣ",
+    "lesson.continue": "Идомаи дарс",
+    "lesson.locked": "Аввал дарси пешинаро анҷом диҳед",
+    "lesson.notFound": "Барои ин сатҳ ҳоло дарс ёфт нашуд.",
+    "lesson.start": "Оғози дарс",
     "navigation.course": "Курс",
     "navigation.practice": "Машқ",
     "navigation.profile": "Профил",
     "navigation.rating": "Рейтинг",
-    "navigation.subscription": "Обуна",
-    "lesson.start": "Оғози дарс",
-    "lesson.continue": "Идомаи дарс",
-    "lesson.locked": "Аввал дарси пешинаро анҷом диҳед",
-    "lesson.notFound": "Барои ин сатҳ ҳоло дарс ёфт нашуд.",
-    "common.refresh": "Навсозӣ",
-    "auth.expires": "Рамз боз {time} амал мекунад"
+    "navigation.subscription": "Обуна"
   },
   "uz": {
+    "auth.expires": "Kod {time} amal qiladi",
+    "common.refresh": "Yangilash",
+    "lesson.continue": "Darsni davom ettirish",
+    "lesson.locked": "Oldingi darsni yakunlang",
+    "lesson.notFound": "Bu daraja uchun darslar hali topilmadi.",
+    "lesson.start": "Darsni boshlash",
     "navigation.course": "Kurs",
     "navigation.practice": "Mashq",
     "navigation.profile": "Profil",
     "navigation.rating": "Reyting",
-    "navigation.subscription": "Obuna",
-    "lesson.start": "Darsni boshlash",
-    "lesson.continue": "Darsni davom ettirish",
-    "lesson.locked": "Oldingi darsni yakunlang",
-    "lesson.notFound": "Bu daraja uchun darslar hali topilmadi.",
-    "common.refresh": "Yangilash",
-    "auth.expires": "Kod {time} amal qiladi"
+    "navigation.subscription": "Obuna"
   }
 }
