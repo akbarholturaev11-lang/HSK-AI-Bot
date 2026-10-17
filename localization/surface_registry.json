@@ -23,8 +23,8 @@
         "app/static/course_v3_data/memo.js"
       ],
       "inventory_patterns": [
-        "app/static/*.html",
-        "app/static/course_v3_data/*.js"
+        "app/static/**/*.html",
+        "app/static/**/*.js"
       ],
       "review": [
         "inline HTML labels, alerts, error branches, nested per-page I18N, placeholder and accessibility text",
@@ -61,8 +61,9 @@
         "desktop/ui/js/subscription.js"
       ],
       "inventory_patterns": [
-        "desktop/ui/js/*.js",
-        "desktop/ui/*.html"
+        "desktop/ui/**/*.html",
+        "desktop/ui/**/*.js",
+        "desktop/ui/**/*.json"
       ],
       "review": [
         "797 currently matched keys per existing language; confirm current baseline at migration time",
@@ -133,7 +134,9 @@
       ],
       "inventory_patterns": [
         "scripts/**/*.py",
-        "scripts/hsk30/**/*.json"
+        "scripts/hsk30/**/*.json",
+        "scripts/build_ready_phrases.py",
+        "scripts/hsk4_upper_i18n.py"
       ],
       "review": [
         "remove hardcoded uz/ru/tj iteration only after compatibility layer and generated-asset parity",
@@ -147,12 +150,16 @@
         "app/static/course_v3_data/ready-phrases-v1.json",
         "app/static/course_v3_data/hsk30-dictionary-examples.js",
         "android/app/src/main/assets/ready-phrases-v1.json",
-        "android/app/src/main/java/com/pomp/hskai/data/repository/DictionaryRepository.kt"
+        "android/app/src/main/java/com/pomp/hskai/data/repository/DictionaryRepository.kt",
+        "scripts/ready_phrases/phrases.json",
+        "scripts/build_ready_phrases.py"
       ],
       "inventory_patterns": [
         "android/app/src/main/assets/*.json",
         "app/static/course_data/*.json",
-        "app/static/hsk-*.js"
+        "app/static/hsk-*.js",
+        "android/app/src/**/assets/**/*.json",
+        "scripts/ready_phrases/**/*.json"
       ],
       "review": [
         "asset producers, deduplication, lang-keyed dictionary cache and source attribution",
