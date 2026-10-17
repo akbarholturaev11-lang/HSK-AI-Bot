@@ -50,6 +50,23 @@ class ClientLessonTransportTests(unittest.TestCase):
         self.assertTrue(any(row["check"] == "offline_cache_limited_to_transport_failures"
                             for row in missing_fallback_guard["failures"]))
 
+        broken = dict(sources)
+        broken["android_main_activity"] = broken["android_main_activity"].replace(
+            'authRepository.logout(unlinkDevice = unlink)\\n                    app.clearLocalData()',
+            'authRepository.logout(unlinkDevice = unlink)\\n                    // wipe removed',
+        )
+        missing_logout_cleanup = contract(broken)
+        self.assertTrue(any(row["check"] == "sign_out_invokes_cache_cleanup"
+                            for row in missing_logout_cleanup["failures"]))
+
+        broken = dict(sources)
+        broken["android_app"] = broken["android_app"].replace(
+            'courseRepository.clearCache()', '// no local course cache wipe',
+        )
+        missing_app_cleanup = contract(broken)
+        self.assertTrue(any(row["check"] == "app_session_cleanup_calls_repository_clear"
+                            for row in missing_app_cleanup["failures"]))
+
     def test_source_inventory_fail_closed_on_missing_file(self):
         sources = {key: "" for key in FILES}
         sources.pop("desktop_rust")
