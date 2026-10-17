@@ -839,3 +839,42 @@ artifact was independently parsed and matched the workflow logs.
   `tests/test_i18n_staging_anon_route_probe.py`.
   Do **not** close P0 or modify the current Mini App static route
   without the staged authenticated QA and old-client compatibility plan.
+
+## P0 sixteenth audit — sampled last-lesson URL anonymity (2026-10-17)
+
+The 17-route anonymous HTTP verification was extended with
+**seven extra source-verified last-lesson paths**, not guessed
+filenames: hsk1 #63, hsk2 #72, hsk3 #109, hsk4 #181,
+nhsk1 #103, nhsk2 #73 and nhsk3 #145. Existing GitHub source
+directories confirm these files exist and lesson numbers are
+continuous for each track.
+
+[Scoped staging CI 39018359239](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39018359239)
+completed **SUCCESS**. The actual `hsk-p0-staging-anon-status`
+artifact `12095103604` was downloaded and parsed; results:
+
+| Request group | Observed status / count |
+| --- | --- |
+| First lesson per track, anonymous | **206 Partial Content**, 7/7 |
+| Final lesson per track, anonymous | **206 Partial Content**, 7/7 |
+| Seven course navigation maps | **206 Partial Content**, 7/7 |
+| Android and Desktop Bearer lesson API GET without credentials | **401 Unauthorized**, 2/2 |
+| Private exam static GET path | **404 Not Found**, 1/1 |
+
+Exactly **24 status-only anonymous GET requests** were issued to the
+isolated Railway staging origin; the initial health GET returned 200.
+The `Range: bytes=0-0` helper never read any response body, token,
+graded answer or lesson text. It recorded **14** legacy lesson
+exposure review findings covering the first and last sample in each
+track. This is **staging source access evidence**, not proof that
+every file is open, a particular lesson is Pro-only, production
+uses the same routing, or the quota/payment system was bypassed.
+
+The scanner and negative fixtures now cover late-course samples:
+`scripts/i18n_staging_anon_route_probe.py`,
+`tests/test_i18n_staging_anon_route_probe.py`. The status evidence
+is in `localization/review/staging_anonymous_http_results_20261017.json`
+with the 15/17/24-request evolution preserved. Source tests for the
+24-path version passed in fast P0 CI before this remote probe.
+P0 remains IN PROGRESS until disposable authenticated-user tests,
+quota/caching checks and reviewed migration compatibility exist.
