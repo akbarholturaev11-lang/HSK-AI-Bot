@@ -288,3 +288,42 @@ All mocked calls are local; this is **not** an actual end-to-end
 quota or billing test. Avoid implementing an auth migration merely
 because these checks are green. The remaining disposable-account
 staging access matrix and device cache QA are release blockers.
+
+## Source content sensitivity gate — do not publish raw lessons as language packs
+
+The P0 full-source structure audit found **746 lesson JSON sources
+with assessment-related fields**, comprising **6,449
+`correct_index`** and **704 `answer_tokens`** occurrences. These are
+source-key counts only, not disclosed answers; see
+`localization/review/legacy_lesson_grading_field_summary_20261017.json`
+and [source CI 39025089879](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39025089879).
+
+A future language overlay must **not** be produced by embedding or
+duplicating full `lesson_*.json` bodies into world-readable
+`/locales/` endpoints. The `i18n_public_bundle_guard.py`
+now rejects the known solution-key family including token arrays,
+even with camelCase/hyphen variants.
+
+Separate three data classes in every proposed content migration:
+
+1. **Public UI-only copy:** menu names, buttons, help, error messages,
+   locale grammar and other genuinely public strings that can live
+   locally in each client bundle. No credential, entitlement,
+   correct-index or word-order solution arrays.
+2. **Authenticated lesson presentation data:** lesson text,
+   localized prompts/dialogues and exercises with authorized
+   access to the underlying source revision, served only after the
+   appropriate learner-level check. Avoid answering by merely
+   moving private JSON to another public path.
+3. **Assessment/answer logic:** keep any grading authority/private
+   final-exam answer keys on the server; separately review existing
+   practice-card `correct_index`/`answer_tokens` usage to avoid
+   silently changing correct answers, card IDs, progress or XP.
+
+**Release validation:** include negative tests with both a
+`correct_index` card and an `answer_tokens` word-order card;
+downloaded public locale packs must reveal neither class of key,
+while authorized lesson screens must still render all three locale
+versions, preserve correct quiz behavior and support an offline policy
+that does not circumvent denied online entitlement. The old public
+Mini App URL remains a separate P0 compatibility/security blocker.
