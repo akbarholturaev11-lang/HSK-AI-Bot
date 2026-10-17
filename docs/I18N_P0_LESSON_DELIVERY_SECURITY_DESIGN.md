@@ -97,3 +97,68 @@ clients work with the replacement. Keep exam material private throughout.
 and client E2E evidence, explicit user approval for runtime/billing scope,
 green tests and rollout/rollback strategy. Until then P0 remains open;
 P1/P2/P3/P4 stay blocked.
+
+## Source-verified current client transport matrix (2026-10-17)
+
+The separate `scripts/i18n_client_lesson_compat_audit.py` inventory
+and `tests/test_i18n_client_lesson_compat_audit.py` guard the **present
+client call chains**, without running a device or an HTTP request.
+
+| Current client | Source call chain | Credentials and entitlement | Caching / migration |
+| --- | --- | --- | --- |
+| Mini App | `app/static/course-v3.html` `lessonDataUrl()` -> direct `fetch(/course_v3_data/<level>/lesson_*.json)` | **No auth header on that fetch**. Underlying static route has no handler-level entitlement dependency | In-memory per-lesson cache; N1 includes a revision parameter and `cache:no-store`. **Primary migration risk** |
+| Native Android (shared `main` sources; direct/Play packaging) | `AndroidCourseApi.kt` Retrofit `api/v3/android/course/lesson/{lessonOrder}`, `CourseRepository.lesson()` | Bearer token supplied; Android route extracts token and calls `AndroidCourseService.lesson()` / inherited `DesktopCourseService.lesson()` | Server applies lesson-order and `LessonAccessService.status(..., consume=True)`; response `Cache-Control: no-store`. Room caches previously authorized envelope, with offline/timeout-only fallback; cache cleared on logout |
+| Tauri Desktop | `desktop/ui/js/lesson.js` -> `bridge.lessonData` -> `desktop_lesson_data` Rust command | `authenticated_get_json` uses Bearer auth (including token refresh); backend `desktop_course_lesson` verifies token and calls `DesktopCourseService.lesson()` | Server enforces lesson-order and entitlement; `Cache-Control: no-store`. Any released Desktop version / desktop offline cache policy still requires QA |
+
+These findings **narrow the proposed new delivery implementation**:
+the currently checked native Android and Desktop flows **already use
+authorized lesson APIs**, so replacing their content URL is not by
+itself justified. The Mini App's unauthenticated static lesson URL is
+the primary known caller to migrate. A complete repository/build audit,
+released-binary inspection and live permission tests remain required
+before legacy route removal.
+
+### Cache and unauthorized-state invariant
+
+A previously authorized lesson copied to Android's offline Room store
+may be reopened **only on transport `Offline` or `Timeout`**.
+When the server returns an authenticated denial (401, expired,
+403, quota exhausted, lesson still locked), this source-level policy
+must not silently fall back to a cached lesson. Logging out clears
+both `course_lesson_cache` and `course_map_cache` via their DAOs.
+Offline access to already downloaded content cannot guarantee
+instant revocation without network access; define an explicit
+commercial/security policy rather than assuming otherwise.
+
+**Regressions:** source-only P0 CI fails when the current native
+lesson endpoint disappears, client auth-header contract changes,
+native server authorization or `consume=True` checks disappear,
+Android offline cache fallback broadens beyond network failures,
+or the existing Mini App loading behavior unexpectedly changes.
+The current Mini App public GET remains a **manual P0 blocker**,
+not a CI failure. These checks do not prove that deployed clients,
+upstream proxies or billing states behave as source suggests.
+
+### QA access table to execute before any runtime change
+
+For each of seven tracks, test a real allowed and a real locked
+lesson, with at least one `n=01` and a paid/advanced lesson.
+Run identical states using Mini App, Android direct, Android Play,
+and Desktop. Do not collect real user tokens or quiz answers in reports.
+
+| Identity state | Expected secure API behavior to verify | Legacy public route question |
+| --- | --- | --- |
+| Anonymous / no credentials | 401/403 from new gated API | Does static JSON remain obtainable anonymously? |
+| Authenticated Free, quota available | Only eligible lesson and policy-defined daily consumption | Can advanced lesson JSON be fetched bypassing UI? |
+| Free, quota exhausted | Deny paid/consumed lesson; no stale-cache bypass | Is the underlying static JSON still readable? |
+| Trial / active Pro | Permit only currently entitled and unlocked lesson | Is it accessible without user authentication anyway? |
+| Pending / rejected receipt | Existing established entitlement policy, not guessed from UI | Does download bypass admin approval? |
+| Blocked / expired session | Explicitly deny API access; preserve logout/cache policy | Does a direct anonymous GET bypass the account block? |
+| Offline with earlier approved lesson | Allow only policy-defined already downloaded lesson on native Android | No new network fetch; verify cache isolation per account |
+
+On denial, confirm Android does **not** use disk content when the
+server explicitly rejected the request. Test offline timeout
+separately from revoked/expired token. For all clients verify
+checkpoint and assessment IDs, language switching `uz/ru/tj`,
+level/track restoration and source revision / cache invalidation.
+**No part of this matrix was executed against QA/production yet.**
