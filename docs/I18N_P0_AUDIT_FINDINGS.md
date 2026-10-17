@@ -926,3 +926,55 @@ staging test identities to exercise actual Free/Trial/Pro/blocked
 quota behavior, and prove cache isolation in WebView and native
 clients. This audit is not a paid-access bypass confirmation
 and does not authorize runtime changes.
+
+## P0 eighteenth audit — original source files include answer-token data (2026-10-17)
+
+The separate read-only audit
+`scripts/i18n_legacy_lesson_content_risk_audit.py`
+scans the actual `app/static/course_v3_data/{track}/lesson_*.json`
+files by track and counts **only known assessment field names**.
+Unlike the earlier `correct_index` tally, it recognizes
+`answer_tokens`, used in word-order/arrangement exercise source
+objects. The scanner never emits the underlying token arrays,
+answer indices, choices, explanations, Hanzi, pinyin or translations.
+
+[Fast source CI 39025089879](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39025089879)
+**SUCCESS**; downloaded artifact `12098177455` contained
+`public-lesson-source-risk.json` with the following measured
+source counts:
+
+| Observed source property | Value |
+| --- | ---: |
+| Total source lesson JSON files across seven tracks | 746 |
+| Files with at least one named grading/solution field | 746 |
+| `correct_index` field occurrences | 6,449 |
+| `answer_tokens` field occurrences | 704 |
+| First/last source lesson samples, seven tracks | 14 |
+
+The exact field-count sample and CI provenance are preserved
+without solution values at
+`localization/review/legacy_lesson_grading_field_summary_20261017.json`.
+
+**Security meaning and limits:** sampled staging URLs for the
+first and last lesson in each track previously returned anonymous
+**HTTP 206** ([24-request run 39018359239](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39018359239)).
+The original lesson JSON sources contain assessment-related fields,
+but staging status-only probes never read response bodies and did
+not classify an individual lesson as paid. This is a compelling
+**review priority**, not proof that the final exam key, every one
+of the 746 endpoints, production URLs or payment access control
+were bypassed.
+
+**Additional P0 guard:** prospective public locale JSON pack roots
+now reject `answer_tokens`, `correct_tokens`, `solution_tokens`
+and `expected_tokens`, including camelCase and hyphen variants,
+besides existing choice grading keys. Regression fixtures preserve
+safe generic UI words such as "answer" and "correct" and do not emit
+answer contents. This protects **future public language packs** only;
+it does not close the pre-existing public Mini App route.
+
+The first audit CLI run in CI failed with a Python `scripts` package
+import-path error (the unit tests passed). Direct-script import was
+fixed in `88daad0b2cbc4d23c094981c33b22eb529c871b6`, and
+the subsequent CI run and artifact above succeeded. P0 still requires
+authenticated Free/Trial/Pro/blocked quota and real-client cache QA.
