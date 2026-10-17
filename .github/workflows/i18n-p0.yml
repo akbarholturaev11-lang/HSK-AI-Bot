@@ -60,7 +60,8 @@ jobs:
             tests.test_i18n_miniapp_storage_scope_audit \
             tests.test_i18n_build_local_catalogs \
             tests.test_i18n_common_ui_adoption \
-            tests.test_i18n_course_ui_catalog_guard
+            tests.test_i18n_course_ui_catalog_guard \
+            tests.test_i18n_build_course_catalogs
       - name: Read-only P0 source checks
         run: |
           mkdir -p /tmp/i18n-p0
@@ -83,6 +84,7 @@ jobs:
           # Local generation is deterministic and uses no server or network.
           python scripts/i18n_build_local_catalogs.py --check
           python scripts/i18n_course_ui_catalog_guard.py --output /tmp/i18n-p0/course-ui-catalog.json
+          python scripts/i18n_build_course_catalogs.py --check
           # Deliberate dry run: NO staging or production HTTP in CI.
           python scripts/i18n_staging_anon_route_probe.py --output /tmp/i18n-p0/staging-anon-probe-plan.json
       - name: Upload read-only P0 reports
