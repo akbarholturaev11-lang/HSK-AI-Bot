@@ -626,6 +626,32 @@ Do not mark implementation complete based on the plan being written.
   lesson bundle design. P1/P2/P3/P4 NOT STARTED. No runtime, grading,
   payments, lesson data or user state changed. PR #179 Draft.
 
+### P0 tenth follow-up — seven public curriculum maps classified by structure
+
+- **Map shape guard:** `2ce1dccfbf56fbc757ac6dcb2090537b853e3c1a`
+  extends `scripts/i18n_route_boundary_audit.py` to inspect seven
+  current public top-level curriculum maps without emitting their text.
+  It checks that `units[].lessons[]` remain navigable and rejects any
+  newly added private assessment answer keys in these source maps.
+  `63225c21c5d7235b61e5df4e7b77eebf11c85802` adds synthetic leak
+  tests plus existing-source regression.
+- **Verified in source and CI artifact:** [fast P0 run 39011261505](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39011261505)
+  completed **SUCCESS** and the actual `static-route-security.json`
+  was inspected. All seven track maps held **746 lesson-navigation
+  entries** (hsk1=63, hsk2=72, hsk3=109, hsk4=181,
+  nhsk1=103, nhsk2=73, nhsk3=145) and **0 private assessment key
+  occurrences**. This narrows the source risk: these top-level map
+  files are not the same as the underlying 746 lesson JSON bodies,
+  which do contain practice answer indexes.
+- **Not established:** maps still include translatable metadata,
+  lesson structure and baseline progress fields; downstream API
+  overlays and actual user-facing Pro semantics need independent review.
+  A map with zero answer keys is **not automatically safe to publish
+  every paid lesson/translation**. The legacy direct lesson route
+  remains P0's priority entitlement/privacy blocker.
+- No production behavior, published assets, lesson data, source
+  translations, progress or payments changed. P0 IN PROGRESS.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
