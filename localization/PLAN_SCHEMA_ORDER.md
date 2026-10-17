@@ -728,6 +728,53 @@ Do not mark implementation complete based on the plan being written.
   lesson JSON exposure remains a blocker. P1/P2/P3/P4 NOT STARTED,
   branch only and Draft PR #179 unchanged.
 
+### P0 twelfth implementation slice — 2026-10-17 (Mini App non-consuming fetch call sites)
+
+- **New concrete migration blocker:** Mini App's `loadLessonData()` is
+  **not** solely a user-intended paid lesson request. There are six
+  direct caller expressions in `app/static/course-v3.html`:
+  (1) `primeSalesValueContent` HSK1 lesson 3 paywall preview;
+  (2) `warmLessonPreviewAudio` pre-Continue TTS preparation;
+  (3) `prefetchNearbyLessons` idle current/next lesson prefetch;
+  (4) `startSkipTest` client-generated skip material;
+  (5) `startFoundationFromMap` Starter 0 prerequisite;
+  (6) `startLesson` after `reserveLessonStart(l)`.
+  A wholesale replacement with `consume=True` authorized GET would
+  spend Free/Trial quotas for background activity and could break
+  skip-test/foundation/sales flows.
+- **Source intent registry:** `3febda7c1807dced841a02bc57a1bddaa7a87db0`
+  created `localization/review/miniapp_lesson_fetch_calls.json`
+  with all six exact source lines, intent/policy distinctions and
+  additional indirect entrypoints (warm preview, idle prefetch,
+  paywall) for a future reviewed migration. No texts, quiz answers
+  or account details are copied into the registry.
+- **Fail-closed regression audit:** `cced9eb30596ea9f035d01dd41c2a80c7ebea46a`
+  adds `scripts/i18n_miniapp_lesson_fetch_audit.py`.
+  `1889e5356c2b85c772ea6184a4633f3ae27a5d63` adds tests
+  checking six source anchors, missing/new prefetch caller,
+  lesson reservation order and source-line drift; `8aba458faad19a1beb09207d2e3f0e885570c7d5`
+  integrates the stdlib-only test/audit into dedicated P0 CI
+  (`miniapp-fetch-intents.json` artifact).
+  [P0 CI 39013692471](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39013692471)
+  **SUCCESS** for this full source/test slice.
+- **Cache identity review:** source `LESSON_DATA_CACHE` and
+  `lessonDataKey()` are level/order keyed in page memory, and
+  persistent `lessonResumeKey()` has no `localUserScope()`,
+  while `lessonMasteryKey()` does. This is NOT proof of cross-account
+  exposure. Test WebView same-device A->B login, in-flight response
+  expiry, bfcache and revision invalidation before any protected
+  lesson caching.
+- **Security design updated:** `b9be3b0727e976efca6fbccab36a0ce2d633dfb2`
+  appended typed public-safe preview, non-consuming authorized
+  read, foundation, skip-test and deliberately started lesson policy
+  recommendations to
+  `docs/I18N_P0_LESSON_DELIVERY_SECURITY_DESIGN.md`.
+  This is only a design: **no new APIs**, no client loader rewrite,
+  no quota, payment, lesson, test, progress or TTS behavior changed.
+- **Next release blocker:** obtain QA account-state, background-consumption
+  and old installed client evidence before approving a secure Mini App
+  content route. P0 IN PROGRESS, P1/P2/P3/P4 NOT STARTED, PR Draft.
+  
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
