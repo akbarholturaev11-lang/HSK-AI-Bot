@@ -45,7 +45,9 @@ class StagingBootGuardTests(unittest.TestCase):
     def test_staging_entrypoint_does_not_start_background_bot_workers(self):
         source = (ROOT / "app/staging_qa.py").read_text(encoding="utf-8")
         self.assertIn("validate_staging_environment(os.environ)", source)
-        self.assertIn('os.environ["BOT_TOKEN"] = "100000001:"', source)
+        self.assertIn('os.environ["BOT_TOKEN"] = "100000001:" + secrets.token_urlsafe(32)', source)
+        self.assertIn("import secrets", source)
+        self.assertNotIn('"A" * 35', source)
         self.assertIn("app.router.lifespan_context = staging_qa_lifespan", source)
         self.assertNotIn("start_polling(", source)
         self.assertNotIn("create_task(", source)
