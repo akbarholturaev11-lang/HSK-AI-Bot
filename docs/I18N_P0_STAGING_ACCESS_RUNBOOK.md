@@ -8,9 +8,10 @@ disposable staging accounts only.
 ## What the automated probe can establish
 
 `scripts/i18n_staging_anon_route_probe.py` performs a
-small, **anonymous GET-status-only** check of **17 URL paths**:
-7 top-level course maps, 7 `lesson_01.json` paths, two anonymous
-native Android/Desktop lesson APIs, and one
+small, **anonymous GET-status-only** check of **24 URL paths**:
+7 top-level course maps, the first **and last** lesson file in
+all seven tracks (14 lesson URLs), two anonymous native
+Android/Desktop lesson APIs, and one
 private exam JSON path. It intentionally does **not** fetch private
 entitlement state, use authentication credentials, consume lessons, or
 read response bodies. The report records only path, HTTP status and
@@ -158,6 +159,30 @@ dummy Telegram token is deliberately not a functioning bot, so these
 require an isolated test bot or approved disposable signing fixture
 and QA permissions. An anonymous 206 means the content was served,
 not that a Pro payment bypass has been tested or established.
+
+### Additional live late-course sample — verified after the 17-path run
+
+[Staging run 39018359239](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39018359239)
+completed **SUCCESS** and its archived status-only JSON was inspected.
+It sent exactly **24** anonymous GET Range requests, returning:
+
+- **7/7 first lessons — 206**.
+- **7/7 final lessons — 206**; exact source-verified last lessons
+  `hsk1/lesson_63.json`, `hsk2/lesson_72.json`,
+  `hsk3/lesson_109.json`, `hsk4/lesson_181.json`,
+  `nhsk1/lesson_103.json`, `nhsk2/lesson_73.json` and
+  `nhsk3/lesson_145.json`.
+- **7/7 navigation maps — 206**.
+- **Android and Desktop Bearer APIs — 401 each**.
+- **Private exam route — 404**.
+
+This expands the documented staging source-exposure findings from
+seven to **14 sampled anonymously accessible lesson JSON URLs**.
+It does **not** mean every lesson was probed, that the final lessons
+are paid for each account, or that paid entitlement was bypassed.
+The remaining Free/Trial/Pro and background-consumption QA matrix is
+still required. Archive and summary:
+`localization/review/staging_anonymous_http_results_20261017.json`.
 
 For an authorized operator who can resolve staging DNS, run:
 
