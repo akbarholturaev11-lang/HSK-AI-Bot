@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import ast
 import json
+import re
 from pathlib import Path
 import sys
 
@@ -179,9 +180,15 @@ def audit(main_source: str, guard_source: str) -> dict:
 
 MAP_TRACKS = ("hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3")
 PRIVATE_ASSESSMENT_KEYS = frozenset({
-    "correct_index", "correct_answer", "correct_option_id",
-    "answer_key", "grading_key", "expected_answer",
+    "answer_id", "answer_key", "correct_answer", "correct_index",
+    "correct_option", "correct_option_id", "correct_option_index",
+    "expected_answer", "grading_key", "is_correct", "right_answer",
 })
+
+
+def _normalize_map_field(value: str) -> str:
+    name = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", value)
+    return re.sub(r"[-\s]+", "_", name).lower()
 
 
 def _assessment_key_paths(node: object, at: str = "$") -> list[str]:
@@ -189,7 +196,7 @@ def _assessment_key_paths(node: object, at: str = "$") -> list[str]:
     if isinstance(node, dict):
         for key, value in node.items():
             here = at + "." + str(key)
-            if str(key) in PRIVATE_ASSESSMENT_KEYS:
+            if _normalize_map_field(str(key)) in PRIVATE_ASSESSMENT_KEYS:
                 found.append(here)
             found.extend(_assessment_key_paths(value, here))
     elif isinstance(node, list):
