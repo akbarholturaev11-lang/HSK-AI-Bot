@@ -287,8 +287,9 @@ Do not mark implementation complete based on the plan being written.
   This is a significant public-content review target, not confirmed
   authorization bypass; global middleware and deployed access remain unknown.
   Do not publish answer values, change quiz grading, or mutate lesson JSON. In [CI 39000552111](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39000552111),
-  localization-specific tests completed **SUCCESS**; recheck overall workflow
-  conclusion before calling the entire backend run green.
+  localization-specific tests completed **SUCCESS**, and the overall
+  `Backend targeted tests` job also completed **SUCCESS** (confirmed
+  from GitHub Actions job result; no native/device test implied).
 - **Manual source review:** account-deletion bot flow
   (`app/bot/handlers/account_deletion.py`) contains user-facing Uzbek-only
   confirmation and callback text without per-locale lookup; this is a
