@@ -101,7 +101,7 @@ class IdentitiesViewModel(
                 AuthProvider.TELEGRAM -> authRepository.startTelegramIdentityLink()
             }
             if (generation != operationGeneration) {
-                if (started is ApiResult.Success) cancelPendingTelegram(started.value)
+                if (started is ApiResult.Success) authRepository.cancelIdentityLink(started.value)
                 return@launch
             }
             when (started) {
@@ -145,11 +145,7 @@ class IdentitiesViewModel(
         _state.update {
             it.copy(busyProvider = null, pendingBrowserUrl = null, telegramApprovalUrl = null, isLoading = false)
         }
-        if (abandoned != null) viewModelScope.launch { cancelPendingTelegram(abandoned) }
-    }
-
-    private suspend fun cancelPendingTelegram(pending: PendingLink) {
-        if (pending.provider == AuthProvider.TELEGRAM) authRepository.cancelIdentityLink(pending)
+        if (abandoned != null) viewModelScope.launch { authRepository.cancelIdentityLink(abandoned) }
     }
 
     fun dismissError() = _state.update { it.copy(error = null, sessionsRevoked = null) }

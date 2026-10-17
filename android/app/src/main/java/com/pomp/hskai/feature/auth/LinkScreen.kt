@@ -96,9 +96,8 @@ fun LinkScreen(
     onReferralCodeChanged: (String) -> Unit = {},
 ) {
     val context = LocalContext.current
-    // Apple has no native SDK, so its leg runs in a Custom Tab. The result
-    // comes back through the poll that is already running, which is why the
-    // app needs no inbound auth deep link and no new allowlisted destination.
+    // Google and Apple use a Custom Tab. Browser return reopens the app;
+    // the result comes only through the original request's proof poll.
     LaunchedEffect(state.pendingBrowserUrl) {
         val url = state.pendingBrowserUrl
         if (!url.isNullOrEmpty()) {

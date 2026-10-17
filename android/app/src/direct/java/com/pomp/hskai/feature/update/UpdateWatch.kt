@@ -1,6 +1,7 @@
 package com.pomp.hskai.feature.update
 
 import android.content.Context
+import com.pomp.hskai.BuildConfig
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -31,6 +32,7 @@ object UpdateWatch {
     private const val STARTUP_WORK = "app_update_check_now"
 
     fun schedule(context: Context) {
+        if (BuildConfig.QA_BUILD) return
         val manager = WorkManager.getInstance(context)
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)

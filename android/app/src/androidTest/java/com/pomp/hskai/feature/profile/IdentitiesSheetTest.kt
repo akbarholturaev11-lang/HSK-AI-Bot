@@ -1,5 +1,14 @@
 package com.pomp.hskai.feature.profile
 
+import android.app.Activity
+import android.content.ContextWrapper
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.view.ContextThemeWrapper
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalContext
+
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -11,9 +20,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.AuthProvider
+import com.pomp.hskai.core.auth.authActivity
 import com.pomp.hskai.core.auth.LinkedIdentity
 import com.pomp.hskai.core.design.PompHskAiTheme
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertSame
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,6 +35,40 @@ import org.junit.runner.RunWith
 class IdentitiesSheetTest {
     @get:Rule val compose = createComposeRule()
     private val strings = InstrumentationRegistry.getInstrumentation().targetContext.resources
+
+    @Test fun browserProviderButtonRetainsTheActivityInsideNestedThemeContexts() {
+        var selected: Activity? = null
+        var host: Activity? = null
+        compose.setContent {
+            val original = LocalContext.current
+            host = original.authActivity()
+            val wrapped = ContextWrapper(ContextThemeWrapper(original, com.pomp.hskai.R.style.Theme_PompHskAi))
+            CompositionLocalProvider(LocalContext provides wrapped) {
+                PompHskAiTheme {
+                    IdentitiesSheet(state = IdentitiesUiState(telegramLinked = true, hasLoaded = true,
+                        available = listOf(AuthProvider.GOOGLE)),
+                        profile = null, savingProfile = false, onSaveProfile = { _, _ -> },
+                        onConnect = { _, activity -> selected = activity }, onDisconnect = {},
+                        onBrowserUrlOpened = {}, onDismiss = {})
+                }
+            }
+        }
+        compose.onNodeWithTag("google-identity-connect").performScrollTo().assertIsDisplayed().performClick()
+        compose.runOnIdle {
+            assertNotNull(host)
+            assertSame(host, selected)
+        }
+    }
+
+    @Test fun oauthReturnManifestResolvesToTheExistingSingleTaskActivity() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("${com.pomp.hskai.BuildConfig.DEEP_LINK_SCHEME}://oauth-return"))
+            .addCategory(Intent.CATEGORY_BROWSABLE).setPackage(context.packageName)
+        val resolved = context.packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        assertNotNull(resolved)
+        assertEquals("com.pomp.hskai.MainActivity", resolved?.activityInfo?.name)
+        assertEquals(android.content.pm.ActivityInfo.LAUNCH_SINGLE_TASK, resolved?.activityInfo?.launchMode)
+    }
 
     private fun show(
         state: IdentitiesUiState,

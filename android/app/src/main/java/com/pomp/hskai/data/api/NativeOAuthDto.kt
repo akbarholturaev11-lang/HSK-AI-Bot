@@ -17,7 +17,7 @@ data class OAuthStartRequest(
     @SerialName("app_version") val appVersion: String,
     @SerialName("installation_key") val installationKey: String,
     @SerialName("provider") val provider: String,
-    /** `native_id_token` for Google (Credential Manager), `browser_redirect` for Apple, `telegram_approval` for attaching Telegram. */
+    /** `browser_redirect` for Google/Apple UI, optional Google `native_id_token`, or `telegram_approval` for attaching Telegram. */
     @SerialName("mode") val mode: String,
     /** Initial language for a new account; existing account preferences are server-owned. */
     @SerialName("language") val language: String? = null,

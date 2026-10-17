@@ -637,7 +637,7 @@ class AuthRepositoryTest {
             override suspend fun linkStatus(body: LinkStatusRequest): Response<LinkStatusResponse> {
                 started.complete(Unit)
                 finish.await()
-                return Response.success(LinkStatusResponse(status = "linked", refreshToken = "late", accessToken = "late-access", accessExpiresIn = 900))
+                return Response.success(LinkStatusResponse(ok = true, status = "linked", refreshToken = "late", accessToken = "late-access", accessExpiresIn = 900))
             }
         }
         val repository = AuthRepository(api, store, "test")

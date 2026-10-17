@@ -83,7 +83,8 @@ class AuthRepository(
             is ApiResult.Failure -> result
             is ApiResult.Success -> {
                 val body = result.value
-                if (!body.ok || body.linkRequestId.isEmpty() || body.displayCode.isEmpty()) {
+                if (!body.ok || body.status != "pending" || body.displayCode.isBlank() ||
+                    !isUsablePendingProof(body.linkRequestId, body.pollingSecret, body.expiresIn)) {
                     ApiResult.Failure(ApiError.Unknown)
                 } else {
                     ApiResult.Success(
@@ -126,8 +127,20 @@ class AuthRepository(
                 val body = result.value
                 val refresh = body.refreshToken
                 val access = body.accessToken
-                if (body.status != "linked" || refresh.isNullOrEmpty() || access.isNullOrEmpty()) {
+                if (!body.ok) return ApiResult.Failure(ApiError.fromCode(body.error))
+                if (body.status != "pending" && body.status != "linked") {
+                    val code = body.error ?: when (body.status) {
+                        "expired" -> "desktop_link_expired"
+                        "denied" -> "oauth_cancelled"
+                        "failed" -> "oauth_link_failed"
+                        else -> "desktop_link_invalid"
+                    }
+                    return ApiResult.Failure(ApiError.fromCode(code))
+                }
+                if (body.status == "pending") {
                     ApiResult.Success(false)
+                } else if (refresh.isNullOrBlank() || access.isNullOrBlank() || (body.accessExpiresIn ?: 0) <= 0) {
+                    ApiResult.Failure(ApiError.Unknown)
                 } else {
                     // Persist first: the server will never return these again.
                     val accepted = refreshMutex.withLock {
@@ -158,7 +171,7 @@ class AuthRepository(
             is ApiResult.Failure -> return emptyList()
             is ApiResult.Success -> if (result.value.ok) result.value.providers else return emptyList()
         }
-        return offered.mapNotNull(AuthProvider::fromWire).filter { provider ->
+        return offered.mapNotNull(AuthProvider::fromWire).distinct().filter { provider ->
             // Google additionally needs a client id compiled into this build;
             // without one the sheet would open and immediately fail.
             provider != AuthProvider.GOOGLE || googleIdTokens?.isAvailable == true
@@ -199,7 +212,7 @@ class AuthRepository(
         return when (val result = apiCall { oauth.providers("macos") }) {
             is ApiResult.Failure -> emptyList()
             is ApiResult.Success -> if (result.value.ok) {
-                result.value.providers.mapNotNull(AuthProvider::fromWire)
+                result.value.providers.mapNotNull(AuthProvider::fromWire).distinct()
             } else emptyList()
         }
     }
@@ -266,8 +279,8 @@ class AuthRepository(
 
     /**
      * Starts an Apple sign-in. The caller opens [PendingLink.authorizeUrl] in a
-     * Custom Tab and keeps polling; the browser leg finishes on the server, so
-     * no inbound deep link and no new allowlisted destination are needed.
+     * Custom Tab and keeps polling. Browser return only reopens the app;
+     * the original request proof remains the sole authentication result.
      */
     suspend fun startAppleSignIn(
         bindToCurrentAccount: Boolean = false,
@@ -331,13 +344,12 @@ class AuthRepository(
             is ApiResult.Failure -> result
             is ApiResult.Success -> {
                 val payload = result.value
-                val usable = payload.ok &&
-                    payload.linkRequestId.isNotEmpty() &&
-                    payload.pollingSecret.isNotEmpty() && payload.expiresIn > 0 &&
+                val usable = payload.ok && payload.status == "pending" &&
+                    isUsablePendingProof(payload.linkRequestId, payload.pollingSecret, payload.expiresIn) &&
                     when (mode) {
                         MODE_NATIVE_ID_TOKEN -> payload.nonce.isNotEmpty()
                         MODE_TELEGRAM_APPROVAL -> isTelegramIdentityLinkUrl(payload.authorizeUrl, payload.linkRequestId)
-                        else -> payload.authorizeUrl.startsWith("https://")
+                        else -> isProviderAuthorizationUrl(provider, payload.authorizeUrl)
                     }
                 if (!usable) {
                     ApiResult.Failure(ApiError.Unknown)
@@ -436,14 +448,18 @@ class AuthRepository(
         if (pending.sessionGeneration != null && pending.sessionGeneration != session.generation) {
             return ApiResult.Failure(ApiError.SessionExpired)
         }
-        return when (val result = apiCall {
+        val result = apiCall {
             oauth.identityLinkCancel(
                 "Bearer ${session.token}",
                 IdentityLinkStatusRequest(pending.linkRequestId, pending.pollingSecret),
             )
-        }) {
+        }
+        currentCoroutineContext().ensureActive()
+        if (!sessionIsCurrent(session.generation)) return ApiResult.Failure(ApiError.SessionExpired)
+        return when (result) {
             is ApiResult.Failure -> result
-            is ApiResult.Success -> if (result.value.ok) ApiResult.Success(result.value.status)
+            is ApiResult.Success -> if (result.value.ok && result.value.provider == pending.provider.wire &&
+                result.value.status in setOf("denied", "linked", "expired", "failed")) ApiResult.Success(result.value.status)
                 else ApiResult.Failure(ApiError.Unknown)
         }
     }
@@ -666,6 +682,23 @@ class AuthRepository(
         _state.value = AuthState.Unauthenticated
     }
 }
+
+/** Reject unusable proof envelopes before opening a browser or starting a poll. */
+internal fun isUsablePendingProof(requestId: String, pollingSecret: String, expiresIn: Int): Boolean =
+    Regex("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}").matches(requestId) &&
+        pollingSecret.length in 32..512 && !pollingSecret.any(Char::isWhitespace) && expiresIn in 1..1800
+
+/** Only the requested provider's authorization endpoint may leave this app. */
+internal fun isProviderAuthorizationUrl(provider: AuthProvider, value: String): Boolean = runCatching {
+    val uri = URI(value)
+    val endpoint = when (provider) {
+        AuthProvider.GOOGLE -> "accounts.google.com" to "/o/oauth2/v2/auth"
+        AuthProvider.APPLE -> "appleid.apple.com" to "/auth/authorize"
+        AuthProvider.TELEGRAM -> return@runCatching false
+    }
+    uri.scheme == "https" && uri.rawAuthority == endpoint.first &&
+        uri.rawPath == endpoint.second && uri.rawFragment == null
+}.getOrDefault(false)
 
 /** The account-attachment URL cannot become a generic external navigation. */
 internal fun isTelegramIdentityLinkUrl(value: String, requestId: String? = null): Boolean = runCatching {

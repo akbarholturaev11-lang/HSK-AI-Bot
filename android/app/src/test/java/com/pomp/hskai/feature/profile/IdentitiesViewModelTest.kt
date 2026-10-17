@@ -97,6 +97,7 @@ class IdentitiesViewModelTest {
                 return Response.success(OAuthStartResponse(ok = true, status = "pending",
                     linkRequestId = "3f2504e0-4f89-11d3-9a0c-0305e82c3301", pollingSecret = "s".repeat(43),
                     expiresIn = 600, authorizeUrl = if (requestedProvider == "telegram") TELEGRAM_URL
+                    else if (requestedProvider == "google") "https://accounts.google.com/o/oauth2/v2/auth?client_id=x"
                     else "https://appleid.apple.com/auth/authorize?client_id=x"))
             }
             override suspend fun identityLinkStatus(authorization: String, body: IdentityLinkStatusRequest): Response<IdentityLinkStatusResponse> {
@@ -300,6 +301,39 @@ class IdentitiesViewModelTest {
         assertEquals(1, f.linkStarts)
         assertEquals(AuthProvider.TELEGRAM, f.model.state.value.busyProvider)
         f.model.cancelConnection(); runCurrent()
+    }
+
+    @Test fun googleAndAppleBrowserAttachmentsAreCancelledWhenSheetCloses() = runTest(dispatcher) {
+        for (provider in listOf(AuthProvider.GOOGLE, AuthProvider.APPLE)) {
+            val f = Fixture(false, emptyList())
+            f.load(); runCurrent()
+            f.model.connect(provider, null); runCurrent()
+            assertEquals(provider, f.model.state.value.busyProvider)
+            assertTrue(f.model.state.value.pendingBrowserUrl.orEmpty().startsWith(
+                if (provider == AuthProvider.GOOGLE) "https://accounts.google.com/" else "https://appleid.apple.com/"))
+            f.model.cancelConnection(); runCurrent()
+            assertEquals(1, f.linkCancels)
+            assertNull(f.model.state.value.pendingBrowserUrl)
+            assertNull(f.model.state.value.busyProvider)
+            val polls = f.linkPolls
+            advanceTimeBy(4_000); runCurrent()
+            assertEquals(polls, f.linkPolls)
+        }
+    }
+
+    @Test fun lateGoogleAndAppleStartsCannotReopenClosedSheetAndAreCancelled() = runTest(dispatcher) {
+        for (provider in listOf(AuthProvider.GOOGLE, AuthProvider.APPLE)) {
+            val f = Fixture(false, emptyList())
+            f.load(); runCurrent()
+            val gate = CompletableDeferred<Unit>(); f.startGate = gate
+            f.model.connect(provider, null); runCurrent()
+            f.model.cancelConnection()
+            gate.complete(Unit); runCurrent()
+            assertEquals(1, f.linkCancels)
+            assertEquals(0, f.linkPolls)
+            assertNull(f.model.state.value.pendingBrowserUrl)
+            assertNull(f.model.state.value.busyProvider)
+        }
     }
 
     private companion object {

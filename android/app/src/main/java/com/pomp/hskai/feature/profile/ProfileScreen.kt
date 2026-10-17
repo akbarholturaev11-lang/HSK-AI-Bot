@@ -3,11 +3,11 @@ package com.pomp.hskai.feature.profile
 import android.app.Activity
 import android.content.Intent
 import android.content.Context
-import android.content.ContextWrapper
 import android.net.Uri
 import android.graphics.Bitmap
 import android.view.View
 import android.provider.Settings
+import com.pomp.hskai.core.auth.authActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -284,7 +284,7 @@ fun ProfileScreen(
                     identities = identities,
                     onConnectIdentity = { provider ->
                         identitiesOpen = true
-                        onConnectIdentity(provider, context.profileActivity())
+                        onConnectIdentity(provider, context.authActivity())
                     },
                 )
             }
@@ -1401,11 +1401,4 @@ private fun AppThemeMode.descriptionRes(): Int = when (this) {
     AppThemeMode.LIGHT -> R.string.profile_theme_light_subtitle
     AppThemeMode.DARK -> R.string.profile_theme_dark_subtitle
     AppThemeMode.SYSTEM -> R.string.profile_theme_system_subtitle
-}
-
-/** LocalContext may be wrapped by a localized/theme context. */
-private tailrec fun Context.profileActivity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.profileActivity()
-    else -> null
 }

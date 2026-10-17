@@ -1,5 +1,11 @@
 package com.pomp.hskai.feature.update
 
+import android.content.Context
+import android.content.ContextWrapper
+import android.content.Intent
+import com.pomp.hskai.BuildConfig
+import java.io.File
+
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -15,6 +21,23 @@ import org.junit.Test
  * answer arrived saying it should.
  */
 class AppUpdateTest {
+
+    @Test
+    fun `QA client cannot check download or install a production update`() {
+        if (!BuildConfig.QA_BUILD) {
+            assertFalse(BuildConfig.APPLICATION_ID.endsWith(".qa"))
+            return
+        }
+        val forbiddenContext = object : ContextWrapper(null) {
+            override fun getApplicationContext(): Context = error("QA must not read the release cache or initialize update work")
+            override fun getFilesDir(): File = error("QA must not inspect downloaded production APKs")
+            override fun startActivity(intent: Intent) = error("QA must not open an APK installer")
+        }
+        assertNull(fetchRelease(forbiddenContext))
+        UpdateWatch.schedule(forbiddenContext)
+        UpdateDownload.enqueue(forbiddenContext, UpdateRelease("next", 9999, "https://example.invalid/release.apk", 1))
+        forbiddenContext.launchInstaller(File("unused.apk"))
+    }
 
     private val body = """
         {"version_name":"1.2.0","version_code":3,

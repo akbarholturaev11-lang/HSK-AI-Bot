@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.AuthProvider
+import com.pomp.hskai.core.auth.authActivity
 import com.pomp.hskai.core.auth.isTelegramIdentityLinkUrl
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.data.api.AndroidProfileResponse
@@ -288,7 +289,7 @@ private fun TelegramAccountRow(state: IdentitiesUiState, onConnect: (AuthProvide
         }
         if (!state.telegramLinked) {
             OutlinedButton(
-                onClick = { onConnect(AuthProvider.TELEGRAM, context as? Activity) },
+                onClick = { onConnect(AuthProvider.TELEGRAM, context.authActivity()) },
                 enabled = state.busyProvider == null && !state.isLoading,
                 modifier = Modifier.testTag("telegram-identity-connect"),
             ) {
@@ -338,8 +339,9 @@ private fun ProviderAccountRow(
             }
         } else if (canConnect) {
             OutlinedButton(
-                onClick = { onConnect(provider, context as? Activity) },
+                onClick = { onConnect(provider, context.authActivity()) },
                 enabled = state.busyProvider == null && !state.isLoading,
+                modifier = Modifier.testTag("${provider.wire}-identity-connect"),
             ) {
                 Text(stringResource(R.string.profile_account_connect))
             }

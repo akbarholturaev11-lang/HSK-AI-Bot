@@ -2,6 +2,7 @@ package com.pomp.hskai.feature.update
 
 import android.content.Context
 import android.util.Log
+import com.pomp.hskai.BuildConfig
 import androidx.annotation.Keep
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
@@ -72,6 +73,7 @@ internal object UpdateDownload {
     }
 
     fun enqueue(context: Context, release: UpdateRelease) {
+        if (BuildConfig.QA_BUILD) return
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -108,6 +110,7 @@ internal class UpdateDownloadWorker(
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
+        if (BuildConfig.QA_BUILD) return Result.success()
         val release = readRelease() ?: return Result.failure()
         val directory = File(applicationContext.filesDir, "updates")
         if (!directory.exists() && !directory.mkdirs()) {

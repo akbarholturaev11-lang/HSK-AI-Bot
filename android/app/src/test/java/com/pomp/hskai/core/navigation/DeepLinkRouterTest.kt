@@ -7,32 +7,47 @@ import org.junit.Test
 class DeepLinkRouterTest {
 
     @Test
+    fun `OAuth browser return is wake up only with no callback payload`() {
+        assertEquals(true, DeepLinkRouter.isAuthReturn("${DeepLinkRouter.SCHEME}://oauth-return"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://oauth-return"))
+        listOf(
+            null, "", "https://oauth-return", "${DeepLinkRouter.SCHEME}://oauth-return/extra",
+            "${DeepLinkRouter.SCHEME}://oauth-return?access_token=untrusted", "${DeepLinkRouter.SCHEME}://oauth-return#linked",
+            "${DeepLinkRouter.SCHEME}://user@oauth-return", "${DeepLinkRouter.SCHEME}://oauth-return:443",
+            "${DeepLinkRouter.SCHEME}://oauth-return.evil", "${DeepLinkRouter.SCHEME}://auth/complete",
+        ).forEach { assertEquals(it, false, DeepLinkRouter.isAuthReturn(it)) }
+        val otherScheme = if (com.pomp.hskai.BuildConfig.QA_BUILD) "pomp-hsk-ai" else "pomp-hsk-ai-qa"
+        assertEquals(false, DeepLinkRouter.isAuthReturn("$otherScheme://oauth-return"))
+        assertNull(DeepLinkRouter.resolve("$otherScheme://course"))
+    }
+
+    @Test
     fun `allowlisted destinations resolve`() {
-        assertEquals(AppDestination.Today, DeepLinkRouter.resolve("pomp-hsk-ai://today"))
-        assertEquals(AppDestination.Course, DeepLinkRouter.resolve("pomp-hsk-ai://course"))
-        assertEquals(AppDestination.Voice, DeepLinkRouter.resolve("pomp-hsk-ai://voice"))
-        assertEquals(AppDestination.Rating, DeepLinkRouter.resolve("pomp-hsk-ai://rating"))
-        assertEquals(AppDestination.Profile, DeepLinkRouter.resolve("pomp-hsk-ai://profile"))
-        assertEquals(AppDestination.Subscription, DeepLinkRouter.resolve("pomp-hsk-ai://subscription"))
+        assertEquals(AppDestination.Today, DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://today"))
+        assertEquals(AppDestination.Course, DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://course"))
+        assertEquals(AppDestination.Voice, DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://voice"))
+        assertEquals(AppDestination.Rating, DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://rating"))
+        assertEquals(AppDestination.Profile, DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://profile"))
+        assertEquals(AppDestination.Subscription, DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://subscription"))
         assertEquals(
             AppDestination.Subscription,
             DeepLinkRouter.resolve(DeepLinkRouter.uriFor(AppDestination.Subscription)),
         )
         assertEquals(
             AppDestination.WidgetSetup,
-            DeepLinkRouter.resolve("pomp-hsk-ai://profile/widget"),
+            DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://profile/widget"),
         )
         assertEquals(
             AppDestination.CurrentLesson,
-            DeepLinkRouter.resolve("pomp-hsk-ai://lesson/current"),
+            DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson/current"),
         )
         assertEquals(
             AppDestination.Practice(PracticeTool.MISTAKES),
-            DeepLinkRouter.resolve("pomp-hsk-ai://practice/mistakes"),
+            DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://practice/mistakes"),
         )
         assertEquals(
             AppDestination.Practice(PracticeTool.RECOGNITION),
-            DeepLinkRouter.resolve("pomp-hsk-ai://practice/recognition"),
+            DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://practice/recognition"),
         )
     }
 
@@ -45,11 +60,11 @@ class DeepLinkRouterTest {
     fun `practice with no tool opens the section home`() {
         assertEquals(
             AppDestination.Practice(),
-            DeepLinkRouter.resolve("pomp-hsk-ai://practice"),
+            DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://practice"),
         )
         assertEquals(
             AppDestination.Practice(),
-            DeepLinkRouter.resolve("pomp-hsk-ai://practice/"),
+            DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://practice/"),
         )
         assertNull(AppDestination.Practice().tool)
     }
@@ -77,15 +92,15 @@ class DeepLinkRouterTest {
     fun `a specific lesson is addressable but only as a request`() {
         assertEquals(
             AppDestination.Lesson(181),
-            DeepLinkRouter.resolve("pomp-hsk-ai://lesson/181"),
+            DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson/181"),
         )
         assertEquals(
             AppDestination.Lesson(1),
-            DeepLinkRouter.resolve("pomp-hsk-ai://lesson/1"),
+            DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson/1"),
         )
         // The destination carries a number and nothing else — no entitlement,
         // no unlock flag, nothing the URI could assert about access.
-        val destination = DeepLinkRouter.resolve("pomp-hsk-ai://lesson/42")
+        val destination = DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson/42")
         assertEquals(AppDestination.Lesson(42), destination)
     }
 
@@ -95,16 +110,16 @@ class DeepLinkRouterTest {
         assertEquals(500, DeepLinkRouter.LESSON_ORDER_RANGE.last)
         assertEquals(
             AppDestination.Lesson(500),
-            DeepLinkRouter.resolve("pomp-hsk-ai://lesson/500"),
+            DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson/500"),
         )
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://lesson/501"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://lesson/0"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://lesson/-1"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://lesson/+5"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://lesson/007"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://lesson/abc"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://lesson/1e3"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://lesson"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson/501"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson/0"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson/-1"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson/+5"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson/007"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson/abc"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson/1e3"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson"))
     }
 
     /**
@@ -114,25 +129,25 @@ class DeepLinkRouterTest {
      */
     @Test
     fun `an unexpected trailing segment invalidates the uri`() {
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://lesson/current/extra"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://lesson/12/extra"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://today/extra"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://course/extra"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://voice/extra"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://profile/widget/extra"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://practice/mistakes/extra"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson/current/extra"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson/12/extra"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://today/extra"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://course/extra"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://voice/extra"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://profile/widget/extra"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://practice/mistakes/extra"))
     }
 
     @Test
     fun `foreign schemes and unknown paths are rejected`() {
         assertNull(DeepLinkRouter.resolve(null))
         assertNull(DeepLinkRouter.resolve(""))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://"))
         assertNull(DeepLinkRouter.resolve("https://evil.example.com/today"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://admin"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://practice/unknown-tool"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://rating/weekly"))
-        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://profile/billing"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://admin"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://practice/unknown-tool"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://rating/weekly"))
+        assertNull(DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://profile/billing"))
         assertNull(DeepLinkRouter.resolve("javascript:alert(1)"))
     }
 
@@ -140,19 +155,19 @@ class DeepLinkRouterTest {
     fun `case and query noise do not bypass the allowlist`() {
         assertEquals(
             AppDestination.Today,
-            DeepLinkRouter.resolve("POMP-HSK-AI://Today"),
+            DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME.uppercase()}://Today"),
         )
         assertEquals(
             AppDestination.Practice(PracticeTool.PRONUNCIATION),
-            DeepLinkRouter.resolve("pomp-hsk-ai://practice/PRONUNCIATION?src=widget"),
+            DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://practice/PRONUNCIATION?src=widget"),
         )
         assertEquals(
             AppDestination.Course,
-            DeepLinkRouter.resolve("pomp-hsk-ai://course/#top"),
+            DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://course/#top"),
         )
         assertEquals(
             AppDestination.Lesson(7),
-            DeepLinkRouter.resolve("pomp-hsk-ai://lesson/7?source=d1_recovery"),
+            DeepLinkRouter.resolve("${DeepLinkRouter.SCHEME}://lesson/7?source=d1_recovery"),
         )
     }
 

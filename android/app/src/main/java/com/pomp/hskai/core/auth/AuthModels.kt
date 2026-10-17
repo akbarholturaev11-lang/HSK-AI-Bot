@@ -80,7 +80,7 @@ enum class AuthProvider(val wire: String) {
  * never replace the current account's session.
  *
  * [displayCode] and [botDeepLink] are filled only for Telegram sign-in; [nonce]
- * only for Credential Manager. [authorizeUrl] is used for an Apple browser
+ * only for Credential Manager. [authorizeUrl] is used for a Google/Apple browser
  * flow or an explicit Telegram attachment confirmation. Secrets stay in memory.
  */
 data class PendingLink(

@@ -33,7 +33,7 @@ data class LinkUiState(
     /** A provider sheet or browser tab is in flight. */
     val busyProvider: AuthProvider? = null,
     /**
-     * Apple's authorization page, to be opened in a Custom Tab. Consumed once
+     * Google's or Apple's authorization page, opened in a Custom Tab. Consumed once
      * by the screen so a recomposition cannot reopen the browser.
      */
     val pendingBrowserUrl: String? = null,
@@ -48,7 +48,7 @@ data class LinkUiState(
 }
 
 /**
- * Drives the Telegram device-link screen.
+ * Drives Telegram approval and Google/Apple browser sign-in.
  *
  * The polling secret never reaches the UI state that gets rendered — only the
  * bot link is handed to the screen, and only to be opened. Polling stops on

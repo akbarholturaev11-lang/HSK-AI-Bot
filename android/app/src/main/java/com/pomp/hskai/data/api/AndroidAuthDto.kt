@@ -37,6 +37,7 @@ data class LinkStatusRequest(
 data class LinkStatusResponse(
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("status") val status: String = "",
+    @SerialName("error") val error: String? = null,
     @SerialName("expires_in") val expiresIn: Int = 0,
     @SerialName("access_token") val accessToken: String? = null,
     @SerialName("access_expires_in") val accessExpiresIn: Int? = null,

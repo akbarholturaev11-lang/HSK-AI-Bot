@@ -120,7 +120,8 @@ private open class OauthFakeApi : NativeOAuthApi {
                 expiresIn = 600,
                 nonce = if (body.mode == "native_id_token") "n".repeat(64) else "",
                 authorizeUrl = if (body.mode == "browser_redirect") {
-                    "https://appleid.apple.com/auth/authorize?client_id=x"
+                    if (body.provider == "google") "https://accounts.google.com/o/oauth2/v2/auth?client_id=x"
+                    else "https://appleid.apple.com/auth/authorize?client_id=x"
                 } else if (body.mode == "telegram_approval") {
                     TELEGRAM_IDENTITY_URL
                 } else {
@@ -193,6 +194,20 @@ private fun ApiResult<*>.failure(): ApiError = (this as ApiResult.Failure).error
 @OptIn(ExperimentalCoroutinesApi::class)
 class AuthRepositoryOauthTest {
 
+    @Test
+    fun `QA build keeps package credentials callback and Firebase separate`() {
+        if (com.pomp.hskai.BuildConfig.QA_BUILD) {
+            assertTrue(com.pomp.hskai.BuildConfig.APPLICATION_ID.endsWith(".qa"))
+            assertEquals("pomp-hsk-ai-qa", com.pomp.hskai.BuildConfig.DEEP_LINK_SCHEME)
+            assertEquals("", com.pomp.hskai.BuildConfig.FIREBASE_APP_ID)
+            assertEquals("", com.pomp.hskai.BuildConfig.FIREBASE_API_KEY)
+            assertTrue(com.pomp.hskai.BuildConfig.DEBUG)
+        } else {
+            assertFalse(com.pomp.hskai.BuildConfig.APPLICATION_ID.endsWith(".qa"))
+            assertEquals("pomp-hsk-ai", com.pomp.hskai.BuildConfig.DEEP_LINK_SCHEME)
+        }
+    }
+
     private var clock = 1_000_000L
 
     private fun repository(
@@ -208,6 +223,135 @@ class AuthRepositoryOauthTest {
         googleIdTokens = google,
         now = { clock },
     )
+
+    @Test
+    fun `browser start only opens the chosen provider endpoint`() = runTest {
+        for ((provider, endpoint) in listOf(
+            AuthProvider.GOOGLE to "https://accounts.google.com/o/oauth2/v2/auth",
+            AuthProvider.APPLE to "https://appleid.apple.com/auth/authorize",
+        )) {
+            val unsafe = listOf(
+                "https://example.com/authorize",
+                endpoint.replace("https://", "http://"),
+                endpoint.replace(".com/", ".com.evil.test/"),
+                endpoint.replace("https://", "https://user@"),
+                endpoint.replace(".com/", ".com:443/"),
+                "$endpoint/extra", "$endpoint#token=untrusted",
+                if (provider == AuthProvider.GOOGLE) "https://appleid.apple.com/auth/authorize"
+                else "https://accounts.google.com/o/oauth2/v2/auth",
+            )
+            for (url in unsafe) {
+                val oauth = object : OauthFakeApi() {
+                    override suspend fun oauthStart(body: OAuthStartRequest) =
+                        Response.success(super.oauthStart(body).body()!!.copy(authorizeUrl = url))
+                }
+                val repo = repository(oauth = oauth)
+                val result = if (provider == AuthProvider.GOOGLE) repo.startGoogleBrowserSignIn()
+                    else repo.startAppleSignIn()
+                assertEquals("$provider: $url", ApiError.Unknown, result.failure())
+            }
+        }
+    }
+
+    @Test
+    fun `invalid browser proof never becomes a pending request`() = runTest {
+        val valid = OAuthStartResponse(ok = true, status = "pending",
+            linkRequestId = "3f2504e0-4f89-11d3-9a0c-0305e82c3301", pollingSecret = "s".repeat(43),
+            expiresIn = 600, authorizeUrl = "https://accounts.google.com/o/oauth2/v2/auth?state=opaque")
+        for (invalid in listOf(
+            valid.copy(ok = false), valid.copy(status = "linked"), valid.copy(status = ""),
+            valid.copy(linkRequestId = "not-a-request-id"), valid.copy(linkRequestId = ""),
+            valid.copy(pollingSecret = "s".repeat(31)), valid.copy(pollingSecret = "s".repeat(513)),
+            valid.copy(pollingSecret = "s".repeat(42) + "\n"),
+            valid.copy(expiresIn = 0), valid.copy(expiresIn = -1), valid.copy(expiresIn = 1801),
+        )) {
+            val oauth = object : OauthFakeApi() {
+                override suspend fun oauthStart(body: OAuthStartRequest) = Response.success(invalid)
+            }
+            assertEquals(ApiError.Unknown, repository(oauth = oauth).startGoogleBrowserSignIn().failure())
+        }
+    }
+
+    @Test
+    fun `google browser linking uses bearer proof without asserting or minting a session`() = runTest {
+        val oauth = OauthFakeApi()
+        val auth = OauthFakeAuthApi()
+        val store = OauthFakeStore().apply { storedRefresh = "existing-refresh" }
+        val repo = repository(oauth = oauth, auth = auth, store = store)
+        val pending = repo.startGoogleBrowserSignIn(bindToCurrentAccount = true).success()
+        assertEquals(1, oauth.linkStartCalls)
+        assertEquals("browser_redirect", oauth.lastStart?.mode)
+        assertEquals(AuthProvider.GOOGLE, pending.provider)
+        assertEquals(null, oauth.lastAssert)
+        assertEquals("linked", repo.pollIdentityLink(pending).success())
+        assertEquals(0, auth.linkStatusCalls)
+        assertEquals("pomp_r1_rotated", store.storedRefresh)
+    }
+
+    @Test
+    fun `browser discovery ignores unknown and duplicate providers`() = runTest {
+        val oauth = object : OauthFakeApi() {
+            override suspend fun providers(platform: String) = Response.success(
+                ProvidersResponse(ok = true, providers = listOf("google", "google", "unknown", "apple")))
+        }
+        assertEquals(listOf(AuthProvider.GOOGLE, AuthProvider.APPLE), repository(oauth = oauth).availableBrowserProviders())
+    }
+
+    @Test
+    fun `terminal or unsuccessful sign in poll cannot persist tokens`() = runTest {
+        for (response in listOf(
+            LinkStatusResponse(ok = false, status = "linked", accessToken = "untrusted", refreshToken = "untrusted", accessExpiresIn = 900),
+            LinkStatusResponse(ok = true, status = "linked", accessToken = "access", refreshToken = "refresh", accessExpiresIn = 0),
+            LinkStatusResponse(ok = true, status = "linked", accessToken = "", refreshToken = "refresh", accessExpiresIn = 900),
+            LinkStatusResponse(ok = true, status = "denied"),
+            LinkStatusResponse(ok = true, status = "expired"),
+            LinkStatusResponse(ok = true, status = "failed", error = "user_blocked"),
+            LinkStatusResponse(ok = true, status = "unexpected"),
+        )) {
+            val auth = object : OauthFakeAuthApi() {
+                override suspend fun linkStatus(body: LinkStatusRequest) = Response.success(response)
+            }
+            val store = OauthFakeStore()
+            val repo = repository(auth = auth, store = store)
+            val pending = repo.startGoogleBrowserSignIn().success()
+            assertTrue(repo.pollLink(pending) is ApiResult.Failure)
+            assertEquals(null, store.storedRefresh)
+        }
+    }
+
+    @Test
+    fun `blocked sign in status retains the stable error instead of waiting forever`() = runTest {
+        val auth = object : OauthFakeAuthApi() {
+            override suspend fun linkStatus(body: LinkStatusRequest) = Response.success(
+                LinkStatusResponse(ok = true, status = "failed", error = "user_blocked"))
+        }
+        val repo = repository(auth = auth)
+        val error = repo.pollLink(repo.startGoogleBrowserSignIn().success()).failure()
+        assertEquals("user_blocked", (error as ApiError.Server).code)
+    }
+
+    @Test
+    fun `google and apple attachments cancel using their original authenticated proof`() = runTest {
+        for (provider in listOf(AuthProvider.GOOGLE, AuthProvider.APPLE)) {
+            var cancelled: IdentityLinkStatusRequest? = null
+            var bearer: String? = null
+            val oauth = object : OauthFakeApi() {
+                override suspend fun identityLinkCancel(authorization: String, body: IdentityLinkStatusRequest): Response<IdentityLinkStatusResponse> {
+                    bearer = authorization
+                    cancelled = body
+                    return Response.success(IdentityLinkStatusResponse(ok = true, status = "denied", provider = provider.wire))
+                }
+            }
+            val store = OauthFakeStore().apply { storedRefresh = "existing-refresh" }
+            val repo = repository(oauth = oauth, store = store)
+            val pending = if (provider == AuthProvider.GOOGLE) repo.startGoogleBrowserSignIn(bindToCurrentAccount = true).success()
+                else repo.startAppleSignIn(bindToCurrentAccount = true).success()
+            assertEquals("denied", repo.cancelIdentityLink(pending).success())
+            assertEquals("Bearer access-token", bearer)
+            assertEquals(pending.linkRequestId, cancelled?.linkRequestId)
+            assertEquals(pending.pollingSecret, cancelled?.pollingSecret)
+        }
+    }
 
     @Test
     fun `google sign-in passes the server nonce to credential manager`() = runTest {
@@ -234,7 +378,7 @@ class AuthRepositoryOauthTest {
         assertEquals("browser_redirect", oauth.lastStart?.mode)
         assertEquals("google", oauth.lastStart?.provider)
         assertEquals("uz", oauth.lastStart?.language)
-        assertTrue(pending.authorizeUrl.startsWith("https://"))
+        assertTrue(pending.authorizeUrl.startsWith("https://accounts.google.com/o/oauth2/v2/auth?"))
         assertEquals(null, google.lastNonce)
         assertEquals(null, oauth.lastAssert)
     }
