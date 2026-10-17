@@ -411,3 +411,52 @@ manually review translations and fallback precedence, inspect rendered
 screen snapshots for 3 locales, test WebView static caching/offline
 and native Desktop/Android, and resolve any static Pro/exam-content
 exposure before publishing versioned lesson locale bundles.
+
+## P0 seventh audit — CI trigger coverage and future public bundle confidentiality (2026-10-17)
+
+**P0 CI trigger gap confirmed:** the previous `Backend targeted tests`
+workflow did not watch isolated PR modifications to `localization/**`,
+`scripts/i18n_*.py`, `desktop/ui/**` or `android/app/src/**`. This is
+a build-safety gap: source translation/catalog edits could bypass the
+localization checks if no tracked backend/test source also changed.
+
+`.github/workflows/i18n-p0.yml` now runs isolated stdlib-only source
+unit tests, baseline guards and reporting on PR modifications to relevant
+catalog, client and backend source trees. There is no Gemini/OpenAI
+translation call, generated language activation, or new application HTTP
+endpoint. Source-only CI does not validate actual Android/Desktop builds.
+
+`scripts/i18n_public_bundle_guard.py` and its unit tests establish
+an explicitly **pre-publication** safety guard for JSON in the *future*
+Mini App public and generated-web locale output directories. The
+script rejects grading keys like `correct_index`/`correctIndex`,
+`answer_key`/`answerKey`, `is_correct`, and unreadable JSON, while
+allowing ordinary visible UI labels `answer`/`correct`/`solution`.
+Only file paths and JSON key paths are reported. Neither the unit
+tests nor the guard output contain user data or actual correct answers.
+
+**Verified:** [Actions run 39008015762](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39008015762)
+completed SUCCESS with all source unit tests and read-only report steps.
+The archived `public-pack-security.json` was opened directly and reports:
+
+| Field | Verified |
+| --- | --- |
+| `status` | `NO_PACKS_YET` |
+| `checked_json_packs` | `0` |
+| `findings` | `[]` |
+
+**Scope limitation is critical:** no new public language JSON was
+present to inspect. Legacy publicly served HSK 2.0/3.0 lesson JSON
+(and answer indices) remains outside this guard and its exposure
+still requires a separate authorization/deployment review. Generated
+JS, unregistered output folders, client cache semantics and actual
+billing/entitlement boundaries are not certified. A passing optional
+PR workflow only blocks merges automatically if repository branch
+rules require that check; branch-protection configuration is not
+confirmed by this audit.
+
+**Next:** classify Mini App inline language branches/attributes with
+stable source references, validate translation/HTML safety manually,
+review real API and edge-route protection, and run client-level
+locale/fallback/offline regression tests before closing P0.
+No runtime modifications were made.
