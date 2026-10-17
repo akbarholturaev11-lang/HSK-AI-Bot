@@ -153,7 +153,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         import re
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertEqual(len(html.splitlines()), 8712)
+        self.assertEqual(len(html.split("\n")), 8712)
         expected_sites = {
         "dict": 1,
         "dictSub": 1,
