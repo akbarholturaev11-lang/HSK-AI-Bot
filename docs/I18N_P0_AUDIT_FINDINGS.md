@@ -575,3 +575,36 @@ replacement authorized lesson delivery, versioned offline-aware caches
 and phased clients, then potential legacy route closure **after** testing.
 No permission or payment policy was changed and no actual production
 HTTP/proxy or native/WebView E2E tests were run. P0 remains IN PROGRESS.
+
+### P0 tenth follow-up — curriculum map content structure
+
+All seven public root `course_v3_data/{level}.json` files were parsed
+with a read-only, key-path-only scanner. The [CI source artifact for
+39011261505](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39011261505)
+was downloaded and verified:
+
+| Track map | Navigation lesson entries |
+| --- | ---: |
+| `hsk1` | 63 |
+| `hsk2` | 72 |
+| `hsk3` | 109 |
+| `hsk4` | 181 |
+| `nhsk1` | 103 |
+| `nhsk2` | 73 |
+| `nhsk3` | 145 |
+| **Total** | **746** |
+
+Result: `maps_checked=7`, `lesson_navigation_entries=746`,
+`private_assessment_key_occurrences=0`. The validator tests a
+synthetic `correct_index`/`answer_key` insertion and treats new
+private grading keys as a **release-stopping** regression.
+
+**Important distinction:** these seven public *navigation maps* have
+zero observed private grading keys, but the separate underlying
+`/course_v3_data/{level}/lesson_*.json` files contain answer indexes
+and are served by a handler without its own entitlement dependency.
+Zero map-key findings are not proof of paid lesson privacy.
+The maps contain translatable labels/content metadata and a
+`progress` template; they are not guaranteed to be free of all
+commercially restricted learner text. No live user-specific
+response/proxy or native client was tested.
