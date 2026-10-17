@@ -247,6 +247,42 @@ def extract_literal(text: str, name: str) -> tuple[str, int]:
     raise ValueError("JS catalog object not closed")
 
 
+HOTSPOT_PAGES = (
+    "course-v3.html", "subscription.html", "course_v3_test.html",
+    "course_v3_memorize.html", "course_v3_mistakes.html",
+    "course_v3_pronunciation.html", "course_v3_recognition.html",
+    "course_v3_onboarding.html", "course_v3_voice.html",
+    "hsk-lugat.html", "hsk-gaplar.html",
+)
+HOTSPOT_PATTERNS = {
+    "inline_locale_call": re.compile(r"\b(?:tr|t)\s*\(\s*\{\s*(?:uz|ru|tj)\s*:"),
+    "language_branch": re.compile(r"\bLANG\s*===?\s*['\"](?:uz|ru|tj)['\"]"),
+    "locale_object_declaration": re.compile(
+        r"\b(?:var|let|const)\s+\w+\s*=\s*\{\s*(?:uz|ru|tj)\s*:\s*\{"
+    ),
+    "markup_attribute_candidate": re.compile(
+        r"\b(?:aria-label|placeholder|title|alt)\s*=\s*['\"][^'\"<>]{2,200}['\"]",
+        re.I,
+    ),
+}
+
+
+def source_hotspots(root: Path, pages: tuple[str, ...] = HOTSPOT_PAGES) -> dict:
+    """Candidates, not confirmed defects; includes already audited catalogs."""
+    out = {}
+    for file in pages:
+        text = (root / "app/static" / file).read_text(encoding="utf-8")
+        row = {}
+        for name, pattern in HOTSPOT_PATTERNS.items():
+            matches = list(pattern.finditer(text))
+            row[name] = {
+                "candidate_count": len(matches),
+                "first_lines": [text.count("\n", 0, m.start()) + 1 for m in matches[:30]],
+            }
+        out[file] = row
+    return out
+
+
 def inventory(root: Path = ROOT) -> dict:
     reports = []
     for rel, name in TARGETS:
@@ -257,7 +293,9 @@ def inventory(root: Path = ROOT) -> dict:
     return {"schema_version": 1, "status": "manual_review_required",
             "scope": "Selected current Mini App static locale catalogs; not exhaustive UI",
             "catalogs": reports,
+            "source_hotspots": source_hotspots(root),
             "limitations": [
+                "Hotspot counts include already audited catalogs; they are not remaining error counts.",
                 "Other per-page ad hoc locale strings and runtime DOM remain to be audited.",
                 "The scanner does not execute JS, render WebView or attest translation quality.",
                 "Dynamic JS expressions are review items; no private lesson/answer content emitted.",
