@@ -269,8 +269,11 @@ automatic claim that every scanner candidate is a defect. P0 leaves
 the deletion/ownership flow unchanged pending localized bot message
 fixtures and correct user-language lookup tests.
 
-**Confirmed static exposure review target:** course lesson JSON contains
-`correct_index` keys in exercise cards, and `app/main.py`
+**Confirmed static exposure review target:** the GitHub Actions P0
+artifact reported **6,449 answer-like field occurrences** in 746 source
+lesson files: 6,445 at `$.sections[].cards[].correct_index` and four
+in other card groups; **0 out-of-range option-index findings**.
+Course lesson JSON contains `correct_index` keys, and `app/main.py`
 defines a direct static lesson route with no handler-level dependency.
 Actual unauthenticated availability, globally applied middleware,
 Pro exposure and private exam grading need independent checks. Do not
