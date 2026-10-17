@@ -10,8 +10,8 @@
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
-      "reviewed_sha1": "4766abaa898616bbf54f5844206c3364c3e68d43",
-      "reason": "Mini App loads both generated common and course local JS statically; 4 reviewed course UI keys (lang/notif/friends/helpTitle) in five profile/settings display points retain exact 3-locale inline fallbacks. All original source-line positions preserved; no lesson/quiz/access change."
+      "reviewed_sha1": "b4938fbd17e0713683659fe67393fb9a32f96814",
+      "reason": "Mini App loads generated static common/course catalogs and now routes 28 reviewed course UI keys total (previous 4 plus 24 practice/voice/help/profile keys) through exact 3-locale inline fallbacks. 8712 physical source lines, lesson fetch/assessment/access/payment unchanged."
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",

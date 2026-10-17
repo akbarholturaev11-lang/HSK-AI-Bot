@@ -148,5 +148,62 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertNotIn('courseMessage("trialLeft"', html)
         self.assertNotIn('courseMessage("correct"', html)
 
+    def test_miniapp_reviewed_practice_voice_help_copy(self):
+        """Reviewed 24 catalog keys retain exact legacy text and local fallbacks."""
+        import re
+
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertEqual(len(html.splitlines()), 8712)
+        expected_sites = {
+        "dict": 1,
+        "dictSub": 1,
+        "grammar": 2,
+        "help": 1,
+        "helpBtn": 1,
+        "helpNoContact": 1,
+        "helpText": 1,
+        "mashqSub": 1,
+        "mistakes": 2,
+        "mistakesSub": 1,
+        "nav.mashq": 1,
+        "nav.profile": 1,
+        "pron": 3,
+        "pronSub": 1,
+        "readyPhrases": 1,
+        "readyPhrasesSub": 1,
+        "recog": 1,
+        "recogSub": 1,
+        "streak": 1,
+        "testCenter": 3,
+        "testSub": 1,
+        "voiceStart": 1,
+        "voiceSub": 1,
+        "voiceTitle": 1
+}
+        for key, count in expected_sites.items():
+            with self.subTest(ui_key=key):
+                self.assertEqual(html.count('courseMessage("' + key + '",'), count)
+        # All selected values match the three current, unchanged inline catalogs.
+        lines = html.splitlines()
+        legacy = {"ru": lines[1478], "uz": lines[1479], "tj": lines[1480]}
+        for locale, source in legacy.items():
+            catalog = json.loads(
+                (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
+            )["messages"]
+            for key in expected_sites:
+                with self.subTest(locale=locale, key=key):
+                    field = key.split(".", 1)[1] if key.startswith("nav.") else key
+                    section = (re.search(r"nav:\{([^}]+)\}", source).group(1)
+                               if key.startswith("nav.") else source)
+                    match = re.search(r"(?:^|[,{}])" + re.escape(field) + r':"([^"]*)"', section)
+                    self.assertIsNotNone(match)
+                    self.assertEqual(match.group(1), catalog[key])
+        self.assertIn('window.HSKAI_COURSE_I18N', html)
+        self.assertIn('return catalog&&catalog[LANG]&&Object.prototype.hasOwnProperty.call(catalog[LANG],key)?catalog[LANG][key]:fallback', html)
+        for forbidden in ('courseMessage("correct"', 'courseMessage("wrong"',
+                          'courseMessage("trialLeft"', 'courseMessage("payTitle"'):
+            self.assertNotIn(forbidden, html)
+
+
 if __name__ == "__main__":
     unittest.main()
