@@ -775,6 +775,40 @@ Do not mark implementation complete based on the plan being written.
   and old installed client evidence before approving a secure Mini App
   content route. P0 IN PROGRESS, P1/P2/P3/P4 NOT STARTED, PR Draft.
   
+### P0 thirteenth implementation slice — 2026-10-17 (staging access QA harness; OFFLINE by default)
+
+- **Explicit staging-only anonymous-route probe:** `scripts/i18n_staging_anon_route_probe.py`
+  (commit `fcd4fc8b7cec31f5998129f9437251f799e0fce5`) plans **15**
+  anonymous GET status checks: seven `/course_v3_data/<level>.json`
+  maps, seven `lesson_01.json` paths and one private exam URL.
+  It **never reads response bodies** or emits learner texts, secrets
+  or quiz answers. Production/unconfirmed/insecure hosts are refused,
+  redirects are blocked, and `--execute` with exact HTTPS staging host
+  confirmation is required before any HTTP requests.
+- **Regression safety:** `tests/test_i18n_staging_anon_route_probe.py`
+  (commit `a7debfec81a46b945202b709cf6f8f2b67cf5566`) covers the
+  default zero-request behavior, production host rejection, body-free
+  status-only checks, absence of authorization headers, exam 404
+  regression signaling and transport failure classification.
+- **CI is OFFLINE:** `2c791067a0aeb0c2a2a2b9a3f1da2a9a574e4a8c`
+  adds these tests and archives the dry-run plan; it NEVER executes
+  the real network probe. [P0 run 39014283200](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39014283200)
+  completed **SUCCESS** and its artifact ZIP was inspected:
+  `status=NOT_EXECUTED_STAGING_TARGET_REQUIRED`,
+  `performed_requests=0`, `planned_requests=15`, `findings=[]`.
+  **No real staging HTTP result is claimed; zero findings means
+  only that the plan did not run.**
+- **QA runbook:** `docs/I18N_P0_STAGING_ACCESS_RUNBOOK.md`
+  (commit `43cb73e5daa303393c04f1bd24166dfa57f5e0d9`)
+  describes controlled staging execution with disposable test users,
+  anonymous/public route checks, Free/Trial/Pro/pending/blocked
+  entitlement scenarios, non-consuming background fetches and
+  Mini App/Android account A→B offline cache isolation.
+- **Still blocked:** no staging server or disposable QA users
+  were selected/authorized. No live HTTP requests, lesson consumption,
+  source runtime changes, login sessions, secrets or device QA.
+  P0 IN PROGRESS, P1/P2/P3/P4 NOT STARTED; PR #179 Draft.
+
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
