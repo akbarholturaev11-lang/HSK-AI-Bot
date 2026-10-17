@@ -15,6 +15,22 @@ class PublicLocalePackGuardTests(unittest.TestCase):
             "legacy": {"answer_key": "SECRET"},
         }), ["$.screens[].quiz.correctIndex", "$.legacy.answer_key"])
 
+    def test_word_order_solution_tokens_are_private_not_ui_copy(self):
+        items = {
+            "cards": [{"answer_tokens": ["SECRET_HANZI"],
+                       "answerTokens": ["SECRET_ANSWER"],
+                       "correctTokens": ["SECRET_ORDER"],
+                       "solution_tokens": ["SECRET_PHRASE"],
+                       "expected_tokens": ["SECRET_EXPECTED"]}],
+        }
+        found = answer_key_paths(items)
+        self.assertEqual(found, [
+            "$.cards[].answer_tokens", "$.cards[].answerTokens",
+            "$.cards[].correctTokens", "$.cards[].solution_tokens",
+            "$.cards[].expected_tokens",
+        ])
+        self.assertNotIn("SECRET", json.dumps(found))
+
     def test_safe_localized_labels_are_not_secret_answers(self):
         self.assertEqual(answer_key_paths({
             "answer": "Correct answer:",
