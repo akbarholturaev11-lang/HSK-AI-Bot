@@ -759,3 +759,20 @@ cannot be assessed by the anonymous status-only probe.
 account-state scenarios, zero-consume prefetch behavior and the
 Mini App account-switch cache verification required for P0 closure.
 All live permissions and client E2E remain unverified.
+
+### Railway staging readiness — live server still unavailable
+
+A read-only Railway inventory confirmed the HSK AI Railway project
+has a `staging` environment, but it contains only an operational
+PostgreSQL service (`Postgres-Iy93`). The HSK AI app/backend and an
+HTTPS staging domain are **absent** there. The production environment
+separately runs the existing GitHub `main` backend and a database.
+
+Therefore the anonymous route probe **was not run** against
+any actual service. Its last CI artifact truthfully reports
+`performed_requests=0`. Authenticated Free/Trial/Pro, paid-content
+privacy, external CDN caching and account-switch QA remain open.
+No Railway changes, deployments, domains, variables, or DB schema
+were created or modified. See
+`docs/I18N_P0_STAGING_ACCESS_RUNBOOK.md` for the controlled
+staging provision/approval gate.
