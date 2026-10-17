@@ -224,6 +224,47 @@ class AuthRepositoryOauthTest {
     }
 
     @Test
+    fun `google browser sign in skips Credential Manager and returns a browser link`() = runTest {
+        val google = FakeGoogleIdTokens(GoogleIdTokenResult.Failed)
+        val oauth = OauthFakeApi()
+        val pending = repository(oauth = oauth, google = google)
+            .startGoogleBrowserSignIn(language = AppLanguage.UZBEK).success()
+
+        assertEquals("android", oauth.lastStart?.platform)
+        assertEquals("browser_redirect", oauth.lastStart?.mode)
+        assertEquals("google", oauth.lastStart?.provider)
+        assertEquals("uz", oauth.lastStart?.language)
+        assertTrue(pending.authorizeUrl.startsWith("https://"))
+        assertEquals(null, google.lastNonce)
+        assertEquals(null, oauth.lastAssert)
+    }
+
+    @Test
+    fun `google browser sign in polls original token path`() = runTest {
+        val oauth = OauthFakeApi()
+        val auth = OauthFakeAuthApi()
+        val store = OauthFakeStore()
+        val repo = repository(oauth = oauth, auth = auth, store = store)
+        val pending = repo.startGoogleBrowserSignIn().success()
+
+        assertTrue(repo.pollLink(pending).success())
+        assertEquals(1, auth.linkStatusCalls)
+        assertEquals("pomp_r1_refresh", store.storedRefresh)
+        assertEquals(null, oauth.lastAssert)
+    }
+
+    @Test
+    fun `browser providers do not require a compiled Google client ID`() = runTest {
+        val repo = repository(
+            google = FakeGoogleIdTokens(GoogleIdTokenResult.Unavailable, isAvailable = false)
+        )
+        assertEquals(
+            listOf(AuthProvider.GOOGLE, AuthProvider.APPLE),
+            repo.availableBrowserProviders(),
+        )
+    }
+
+    @Test
     fun `oauth start always serializes its required platform`() {
         val payload = Json.encodeToString(
             OAuthStartRequest(
