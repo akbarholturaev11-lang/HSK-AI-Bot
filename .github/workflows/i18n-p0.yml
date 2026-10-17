@@ -1,0 +1,65 @@
+name: Local-first localization P0 guards
+
+# Fast stdlib-only checks. The full backend CI remains independent.
+# Changes ONLY under localization/, scripts/, Android or Desktop must not
+# bypass P0 migration and compatibility checks.
+on:
+  pull_request:
+    paths:
+      - "localization/**"
+      - "scripts/i18n_*.py"
+      - "tests/test_i18n_*.py"
+      - "app/static/**"
+      - "app/bot/**"
+      - "app/services/**"
+      - "app/api/**"
+      - "android/app/src/**"
+      - "desktop/ui/**"
+      - ".github/workflows/i18n-p0.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Unit tests for P0 source inventories and regression contracts
+        run: |
+          python -m unittest \
+            tests.test_i18n_inventory \
+            tests.test_i18n_ui_regressions \
+            tests.test_i18n_source_audit \
+            tests.test_i18n_baseline_guard \
+            tests.test_i18n_lesson_samples \
+            tests.test_i18n_review_queue \
+            tests.test_i18n_p0_contract_audit \
+            tests.test_i18n_android_resource_audit \
+            tests.test_i18n_catalog_contract_audit \
+            tests.test_i18n_miniapp_catalog_audit
+      - name: Read-only P0 source checks
+        run: |
+          mkdir -p /tmp/i18n-p0
+          python scripts/i18n_inventory.py --output /tmp/i18n-p0/source-inventory.json
+          python scripts/i18n_source_audit.py --output /tmp/i18n-p0/source-audit.json
+          python scripts/i18n_baseline_guard.py --output /tmp/i18n-p0/frozen-sources.json
+          python scripts/i18n_lesson_samples.py --output /tmp/i18n-p0/lesson-samples.json
+          python scripts/i18n_review_queue.py --source /tmp/i18n-p0/source-audit.json --output /tmp/i18n-p0/review-queue.json
+          python scripts/i18n_p0_contract_audit.py --output /tmp/i18n-p0/lesson-security.json
+          python scripts/i18n_android_resource_audit.py --output /tmp/i18n-p0/android-xml.json
+          python scripts/i18n_catalog_contract_audit.py --output /tmp/i18n-p0/bot-desktop-catalog.json
+          python scripts/i18n_miniapp_catalog_audit.py --output /tmp/i18n-p0/miniapp-catalog.json
+      - name: Upload read-only P0 reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hsk-i18n-p0-source-contracts
+          path: /tmp/i18n-p0/*.json
+          if-no-files-found: warn
+          retention-days: 14
