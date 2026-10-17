@@ -1,6 +1,7 @@
 """Deterministic local-first catalog build: source, validation, four targets."""
 import ast
 import json
+import re
 from pathlib import Path
 import shutil
 import tempfile
@@ -21,6 +22,34 @@ class CommonLocalCatalogTests(unittest.TestCase):
         self.assertEqual(catalogs["tj"]["navigation.profile"], "Профил")
         self.assertEqual(catalogs["ru"]["lesson.continue"], "Продолжить урок")
         self.assertEqual(catalogs["uz"]["auth.expires"], "Kod {time} amal qiladi")
+
+    def test_source_strings_match_existing_desktop_three_language_baseline(self):
+        source = (ROOT / "desktop/ui/js/i18n.js").read_text(encoding="utf-8")
+        mapping = {
+            "course": "navigation.course",
+            "practice": "navigation.practice",
+            "profile": "navigation.profile",
+            "rating": "navigation.rating",
+            "subscription": "navigation.subscription",
+            "startLesson": "lesson.start",
+            "continueLesson": "lesson.continue",
+            "lockedLesson": "lesson.locked",
+            "courseEmpty": "lesson.notFound",
+            "refresh": "common.refresh",
+            "authExpires": "auth.expires",
+        }
+        catalogs = read_sources(ROOT)
+        for source_key, common_key in mapping.items():
+            with self.subTest(key=source_key):
+                pattern = re.compile(
+                    r"(?m)^\\s*" + re.escape(source_key) +
+                    r":\\s*([\\"'])" + r"([^\\n]+?)\\1,?"
+                )
+                matches = [match.group(2) for match in pattern.finditer(source)]
+                self.assertEqual(
+                    matches,
+                    [catalogs[language][common_key] for language in LANGUAGES],
+                )
 
     def test_committed_generated_files_match_source_byte_for_byte(self):
         self.assertEqual(generate(ROOT, check=True), [])
