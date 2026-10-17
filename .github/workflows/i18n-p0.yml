@@ -43,7 +43,8 @@ jobs:
             tests.test_i18n_android_resource_audit \
             tests.test_i18n_catalog_contract_audit \
             tests.test_i18n_miniapp_catalog_audit \
-            tests.test_i18n_public_bundle_guard
+            tests.test_i18n_public_bundle_guard \
+            tests.test_i18n_miniapp_hotspot_triage
       - name: Read-only P0 source checks
         run: |
           mkdir -p /tmp/i18n-p0
