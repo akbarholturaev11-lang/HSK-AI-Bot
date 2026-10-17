@@ -166,6 +166,43 @@ class AuthRepository(
     }
 
     /**
+     * Browser-based Google sign-in for the shipped Android UI.
+     *
+     * The server exchanges Google's authorization code using the confidential
+     * web client and approves a pending link. The browser gets no HSK token;
+     * the existing pollLink / refresh-token flow remains the only mint path.
+     *
+     * Unlike Credential Manager, this remains usable when Google Play Services
+     * is unavailable on the device.
+     */
+    suspend fun startGoogleBrowserSignIn(
+        bindToCurrentAccount: Boolean = false,
+        language: AppLanguage? = null,
+    ): ApiResult<PendingLink> {
+        val oauth = oauthApi ?: return ApiResult.Failure(ApiError.Unknown)
+        return startProviderLink(
+            oauth = oauth,
+            provider = AuthProvider.GOOGLE,
+            mode = MODE_BROWSER_REDIRECT,
+            bindToCurrentAccount = bindToCurrentAccount,
+            language = language,
+        )
+    }
+
+    /**
+     * Providers offered by the Android browser flow. A Google browser
+     * redirect needs the server's web-client pair, not the APK's optional
+     * Credential Manager client ID. Desktop discovery uses this exact flow.
+     */
+    suspend fun availableBrowserProviders(): List<AuthProvider> {
+        val oauth = oauthApi ?: return emptyList()
+        return when (val result = apiCall { oauth.providers("macos") }) {
+            is ApiResult.Failure -> emptyList()
+            is ApiResult.Success -> result.value.providers.mapNotNull(AuthProvider::fromWire)
+        }
+    }
+
+    /**
      * Signs in with Google through Credential Manager.
      *
      * Ends by returning a [PendingLink] the caller polls exactly like the
