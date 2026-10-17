@@ -55,7 +55,8 @@ jobs:
             tests.test_i18n_miniapp_lesson_fetch_audit \
             tests.test_i18n_staging_anon_route_probe \
             tests.test_i18n_staging_boot_guard \
-            tests.test_i18n_miniapp_reservation_boundary_audit
+            tests.test_i18n_miniapp_reservation_boundary_audit \
+            tests.test_i18n_legacy_lesson_content_risk_audit
       - name: Read-only P0 source checks
         run: |
           mkdir -p /tmp/i18n-p0
@@ -65,6 +66,7 @@ jobs:
           python scripts/i18n_lesson_samples.py --output /tmp/i18n-p0/lesson-samples.json
           python scripts/i18n_review_queue.py --source /tmp/i18n-p0/source-audit.json --output /tmp/i18n-p0/review-queue.json
           python scripts/i18n_p0_contract_audit.py --output /tmp/i18n-p0/lesson-security.json
+          python scripts/i18n_legacy_lesson_content_risk_audit.py --output /tmp/i18n-p0/public-lesson-source-risk.json
           python scripts/i18n_android_resource_audit.py --output /tmp/i18n-p0/android-xml.json
           python scripts/i18n_catalog_contract_audit.py --output /tmp/i18n-p0/bot-desktop-catalog.json
           python scripts/i18n_miniapp_catalog_audit.py --output /tmp/i18n-p0/miniapp-catalog.json
