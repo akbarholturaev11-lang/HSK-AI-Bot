@@ -11,6 +11,8 @@ link row approved; the client then calls the existing, unchanged
 
 from __future__ import annotations
 
+import base64
+import hashlib
 import logging
 from typing import Annotated, Any, Callable, Literal
 
@@ -149,17 +151,45 @@ background:#faf8f5;color:#1a1a1a}}
 .mark{{font-size:44px;line-height:1}}
 .code{{margin-top:12px;font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.55;
 word-break:break-all}}
+a{{display:inline-block;margin-top:18px;padding:12px 18px;border-radius:12px;
+background:#c63b33;color:#fff;text-decoration:none;font-weight:600}}
 </style></head>
-<body><div class="card"><div class="mark">{mark}</div><div class="code">{code}</div></div></body>
+<body><div class="card"><div class="mark">{mark}</div><div class="code">{code}</div>{return_link}</div></body>
 </html>"""
 
 
-def _page(mark: str, code: str) -> HTMLResponse:
+# Static handoff only: no state, code, identity or token ever enters this URL.
+# Some Android browsers block automatic external-app launch; the visible link
+# is an explicit-gesture fallback. Desktop and account deletion never hand off.
+_ANDROID_RETURN_URL = "pomp-hsk-ai://oauth-return"
+_ANDROID_RETURN_SCRIPT = (
+    'window.setTimeout(function(){window.location.href="pomp-hsk-ai://oauth-return";},150);'
+)
+
+
+def _page(mark: str, code: str, *, open_android: bool = False) -> HTMLResponse:
     safe = "".join(ch for ch in str(code or "") if ch.isalnum() or ch in "_-")[:64]
+    return_link = ""
+    headers = _PAGE_HEADERS
+    if open_android:
+        return_link = (
+            '<a href="' + _ANDROID_RETURN_URL + '">HSK AI ↗</a>'
+            '<script>' + _ANDROID_RETURN_SCRIPT + '</script>'
+        )
+        script_hash = base64.b64encode(
+            hashlib.sha256(_ANDROID_RETURN_SCRIPT.encode("utf-8")).digest()
+        ).decode("ascii")
+        headers = {
+            **_PAGE_HEADERS,
+            "Content-Security-Policy": (
+                "default-src 'none'; style-src 'unsafe-inline'; "
+                f"script-src 'sha256-{script_hash}'"
+            ),
+        }
     return HTMLResponse(
-        content=_PAGE_TEMPLATE.format(mark=mark, code=safe),
+        content=_PAGE_TEMPLATE.format(mark=mark, code=safe, return_link=return_link),
         status_code=200,
-        headers=_PAGE_HEADERS,
+        headers=headers,
     )
 
 
@@ -333,10 +363,10 @@ def create_native_oauth_router(
                         browser=request.cookies.get(BROWSER_COOKIE))
                     return _deletion_page()
                 else:
-                    await service_factory(session, settings_obj).complete_callback(
+                    completed = await service_factory(session, settings_obj).complete_callback(
                         provider="google", state=state, code=code
                     )
-            return _page("&#10003;", "ok")
+            return _page("&#10003;", "ok", open_android=completed.get("platform") == "android")
         except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
             return _page("&#10005;", exc.code)
         except Exception:
@@ -361,13 +391,13 @@ def create_native_oauth_router(
                         browser=request.cookies.get(BROWSER_COOKIE))
                     return _deletion_page()
                 else:
-                    await service_factory(session, settings_obj).complete_callback(
+                    completed = await service_factory(session, settings_obj).complete_callback(
                         provider="apple",
                         state=state,
                         code=code,
                         apple_user=form.get("user"),
                     )
-            return _page("&#10003;", "ok")
+            return _page("&#10003;", "ok", open_android=completed.get("platform") == "android")
         except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
             return _page("&#10005;", exc.code)
         except Exception:
