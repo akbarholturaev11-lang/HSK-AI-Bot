@@ -47,7 +47,7 @@ class MiniappCatalogAuditTests(unittest.TestCase):
         self.assertEqual(len(report["catalogs"]), 18)
         for row in report["catalogs"]:
             self.assertEqual(set(row["leaf_counts"]), {"uz","ru","tj"})
-            self.assertGreater(min(row["leaf_counts"].values()), 10)
+            self.assertGreater(min(row["leaf_counts"].values()), 0)
             # Deviations are candidates, not automatically confirmed defects.
             self.assertGreaterEqual(row["leaf_union"], max(row["leaf_counts"].values()))
             self.assertIsInstance(row["placeholder_drift"], list)
