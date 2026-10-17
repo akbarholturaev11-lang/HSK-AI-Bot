@@ -43,6 +43,11 @@ def cases() -> list[dict]:
         "kind": "private_exam_file", "track": "n/a",
         "path": "/course_v3_data/exams/p0-privacy-probe.json",
     })
+    for platform in ("android", "desktop"):
+        items.append({
+            "kind": "native_lesson_api", "track": platform,
+            "path": f"/api/v3/{platform}/course/lesson/1",
+        })
     return items
 
 
@@ -123,6 +128,12 @@ def probe(*, execute: bool = False, base_url: str = "",
                 "issue": "staging_exam_404_not_verified",
                 "review": "stop_and_investigate_exam_route",
             })
+        if item["kind"] == "native_lesson_api" and status not in (401, 403):
+            findings.append({
+                "kind": "native_lesson_api", "track": item["track"],
+                "issue": "native_anonymous_auth_denial_not_confirmed",
+                "review": "stop_and_check_bearer_auth_boundary",
+            })
     return {
         "schema_version": 1,
         "status": "STAGING_ANONYMOUS_PROBED_MANUAL_REVIEW",
@@ -134,6 +145,10 @@ def probe(*, execute: bool = False, base_url: str = "",
         ),
         "anonymous_lesson_success_count": sum(
             item["kind"] == "legacy_lesson" and item["http_status"] in (200, 206)
+            for item in results
+        ),
+        "native_api_denied_without_bearer_count": sum(
+            item["kind"] == "native_lesson_api" and item["http_status"] in (401, 403)
             for item in results
         ),
         "cases": results,
