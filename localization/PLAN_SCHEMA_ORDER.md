@@ -1310,3 +1310,36 @@ For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
 Never claim tests were run unless CI/logs or local results confirm it.
 Keep GitHub's branch current without force-resetting unrelated user work.
+
+### P1 course UI static targets — 2026-10-17 (branch-only, no runtime activation)
+
+- Commit [`d7b157f2ebb5e62f6a32852573c2df8f98be2b2f`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/commit/d7b157f2ebb5e62f6a32852573c2df8f98be2b2f)
+  adds `scripts/i18n_build_course_catalogs.py`,
+  `tests/test_i18n_build_course_catalogs.py`, six generated assets
+  and the `.github/workflows/i18n-p0.yml` `--check`/test steps.
+- Exact generated destinations: Android
+  `android/app/src/main/res/values{,-ru,-tg}/hsk_course_i18n.xml`;
+  Mini App `app/static/course_v3_data/hsk-course-i18n.js`;
+  Desktop `desktop/ui/js/generated/hsk-course-i18n.js`; Bot
+  `app/bot/generated/course_i18n.py`. Generated resources are **not**
+  imported by the active course UI and do not change app language switching.
+- Inputs are the already-present 86-key `localization/ui/{uz,ru,tj}/course.json`
+  sources. The existing fail-closed course source guard runs before writing:
+  all three locales must have matching keys/named placeholders, no duplicate
+  metadata, no HTML and no grade/solution fields. Android resource names
+  normalize camelCase to lowercase snake_case with collision detection,
+  preserving `tj` for Bot and `tg` for Android.
+- [Fast localization CI 39032942050](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39032942050)
+  passed its **source-contract** job, including all new regression tests,
+  `--check` deterministic byte comparison and existing P0 audits.
+  Desktop contract/TTS-related jobs also passed at this commit.
+  **Android full CI and backend targeted CI were still running at the
+  time of this note**; never infer their outcome from P0 CI.
+- Scope deliberately excludes live app adoption, course source JSON,
+  quiz answers, XP, progress, auth, access, payments, server routes and
+  public entitlement. Existing open P0 public-lesson route and account-cache
+  isolation investigations are unchanged. P1/P2 remain partial; P3/P4
+  remain NOT STARTED, and PR #179 stays Draft against `main`.
+- **Next:** adopt one explicitly reviewed existing Mini App `course`
+  string with exact fallback parity, then audit native-device offline and
+  cross-account behavior before expanding; verify Android CI separately.
