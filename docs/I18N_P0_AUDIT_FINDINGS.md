@@ -387,8 +387,8 @@ IN PROGRESS**. No production UI/lesson/auth/payment code changed.
 ### Mini App residual source-hotspot measurements
 
 [GitHub CI 39007408199](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39007408199)
-passed the localization-specific tests and wrote source-location-only
-hotspot measurements. The 11 scanned pages contain **11** inline
+passed the localization-specific tests **and** the full Backend targeted
+tests job and wrote source-location-only hotspot measurements. The 11 scanned pages contain **11** inline
 `t({uz:...})`/`tr({uz:...})` translation call candidates,
 **126** explicit `LANG` branch candidates, **54** declared JS
 locale-object candidates, and **59** HTML attribute candidates.
