@@ -616,3 +616,48 @@ without exposing actual answer values. Verified in
 [fast P0 CI 39011475458](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39011475458),
 conclusion **SUCCESS**. This is protection for future map edits, not a
 claim that runtime Pro content access has been fixed.
+
+## P0 eleventh audit — source-level client transport compatibility (2026-10-17)
+
+A dedicated read-only `scripts/i18n_client_lesson_compat_audit.py`
+inspects the current Mini App, native Android (Retrofit and Room), Tauri
+Desktop (JS bridge/Rust), and Android/Desktop server routes/services.
+It deliberately compares **different existing delivery designs**
+instead of assuming Android and Desktop must be converted to the raw
+Mini App lesson JSON route.
+
+| Client | Existing request | Source-level server access check |
+| --- | --- | --- |
+| Mini App | Public `GET /course_v3_data/<level>/lesson_*.json` with no initData header | Static handler has no per-lesson entitlement dependency |
+| Android main-source transport | Bearer `GET /api/v3/android/course/lesson/{lessonOrder}` | Android service inherits desktop lesson logic; verifies account, sequence and `LessonAccessService.status(..., consume=True)` |
+| Tauri Desktop | `bridge.lessonData` to Rust `authenticated_get_json`, Bearer `/api/v3/desktop/course/lesson/{lessonOrder}` | Server uses verified bearer, sequence gate and the same entitlement service |
+
+Native lesson API responses are `Cache-Control: no-store`. Android
+stores a validated server-authorized lesson envelope in Room and
+falls back to it only on network `Offline`/`Timeout` errors. A
+server-denied access state must not become a cache hit. A DAO
+method exists to clear cached lessons on logout. The source under
+`android/app/src/main` supplies common lesson transport to Play and
+direct builds, but the behavior of already released clients has not
+been tested here.
+
+Regression tests specifically detect future removal of native
+`Authorization` or bearer calls, unsafe remapping of Desktop to the
+public path, and broadening Android cached fallback to non-network
+errors. The first negative-fixture version of this audit failed
+because a test string no longer matched the real Kotlin `!is`
+condition. Both audit matcher and test fixture were corrected; the
+[fast P0 run 39012530053](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39012530053)
+concluded **SUCCESS** with the updated source contract.
+
+**Resulting priority:** migrate only the Mini App's known anonymous
+static lesson fetch in a staged, separately approved implementation
+after entitlement QA; avoid needless native API replacement. The
+corresponding account-state table and cache/rollback acceptance
+criteria are in
+`docs/I18N_P0_LESSON_DELIVERY_SECURITY_DESIGN.md`.
+
+All findings concern **source code**. No actual Free/Pro test user,
+production HTTP probe, reverse proxy, old APK/Desktop binary, offline
+device, currency/checkout flow or deployed authorization boundary
+was evaluated. P0 is not closed.
