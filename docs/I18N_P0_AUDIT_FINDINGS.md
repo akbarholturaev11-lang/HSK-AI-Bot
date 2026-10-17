@@ -978,3 +978,51 @@ import-path error (the unit tests passed). Direct-script import was
 fixed in `88daad0b2cbc4d23c094981c33b22eb529c871b6`, and
 the subsequent CI run and artifact above succeeded. P0 still requires
 authenticated Free/Trial/Pro/blocked quota and real-client cache QA.
+
+## P0 nineteenth audit — Mini App browser storage identity (2026-10-17)
+
+A new read-only `scripts/i18n_miniapp_storage_scope_audit.py` and
+`tests/test_i18n_miniapp_storage_scope_audit.py` capture **22 quoted-literal
+`localStorage/sessionStorage` calls**, represented by **11 key classes**
+across the two current Mini App sources:
+`app/static/course-v3.html` and
+`app/static/course_v3_memorize.html`. They also classify five
+non-literal key-construction functions. This is **not** a guarantee
+that all dynamic JavaScript/browser persistence is inventoried.
+
+| Existing state | Code scope | P0 decision |
+| --- | --- | --- |
+| In-memory `LESSON_DATA_CACHE` and pending promises | `lessonDataKey()` uses level and lesson order only | No identity scoping; do not reuse a future *authorized* lesson body across accounts |
+| Seven-day lesson resume cursor | `lessonResumeKey()` uses course/lesson only | User-specific learning position can survive a WebView account switch; manual A→B QA required |
+| Graded mastery, mistakes and repair queue | `lessonMasteryKey()` includes `localUserScope()` | Identity-aware browser key, but actual WebView account-switch and trust boundary need QA |
+| Starter 0 completion hint | `foundationCacheKey()` includes `localUserScope()` | Keep server foundation state primary |
+| Daily setup time choice | `studySetupTimeKey()` appends Telegram user ID explicitly, not via `localUserScope()` | Not the same as a global key; preserve the explicit per-user suffix |
+| Memorization per-Hanzi score/errors/history | `hsk_memo` direct `localStorage` key | **Shared key by source**: same-origin, multi-account persistence needs isolation review |
+| Memorization style preference | `hsk_memo_pref` direct `localStorage` key | Shared preference; lower-sensitivity UX choice |
+| Course level/onboarding/audio/tour flags | Literal keys including `hsk_v3_level`, `hsk_v3_onb`, `hsk_v3_pinyin` | Classify UX flags separately from grading. Onboarding server state is primary |
+
+`localUserScope()` derives a claimed user ID from Telegram
+`initDataUnsafe`. That is useful for client cache naming, **not a
+cryptographically verified identity or proof of server entitlement**.
+Neither client-key scoping nor a server reservation alone should be
+treated as authorization for existing world-readable lesson JSON.
+
+The registry
+`localization/review/miniapp_client_storage_scope_20261017.json`
+is now fail-closed for **new quoted-literal storage operations**
+and unexpected drift in five reviewed dynamic key constructors.
+Synthetic mutation tests cover an introduced new key, removal of
+mastery identity scoping, and changes to shared memorization storage,
+without emitting actual learner content. [Fast P0 CI
+39026289977](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39026289977)
+concluded **SUCCESS**. An earlier test run failed only because the
+scanner assumed `studySetupTimeKey()` was single-line; the parser
+was corrected to accept that existing multiline constructor.
+
+**No runtime fix was deployed.** Before deciding an upgrade from
+legacy keys, test two disposable accounts using the **same Telegram
+WebView origin**: resume, mastery, memorization per-Hanzi history,
+foundation state, logout/login without app restart, bfcache and
+late-arriving fetch promises. Specify key version migration, account
+switch cancellation, cache cleanup and offline policy before any
+change. Such device QA was **not** performed in this slice.
