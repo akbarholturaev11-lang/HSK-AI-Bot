@@ -42,8 +42,8 @@ class CommonLocalCatalogTests(unittest.TestCase):
         for source_key, common_key in mapping.items():
             with self.subTest(key=source_key):
                 pattern = re.compile(
-                    r"(?m)^\\s*" + re.escape(source_key) +
-                    r":\\s*([\\"'])" + r"([^\\n]+?)\\1,?"
+                    r'(?m)^\s*' + re.escape(source_key) +
+                    r':\s*(["\x27])([^\n]+?)\1,?'
                 )
                 matches = [match.group(2) for match in pattern.finditer(source)]
                 self.assertEqual(
