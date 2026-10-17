@@ -74,6 +74,7 @@ jobs:
               f"{i['kind']}:{i['http_status'] if i['http_status'] is not None else i['error']}"
               for i in r['cases']).items())))
           print('Anonymous lessons HTTP 200/206:', r['anonymous_lesson_success_count'])
+          print('Late-course lessons HTTP 200/206:', r.get('anonymous_late_lesson_success_count', 0))
           print('Native lesson APIs HTTP 401/403:', r.get('native_api_denied_without_bearer_count', 0))
           print('Exam HTTP 404 verified:', r['exam_404_verified'])
           print('Review findings:', len(r['findings']))
