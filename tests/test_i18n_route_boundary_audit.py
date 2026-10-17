@@ -85,14 +85,17 @@ class RouteBoundaryContractTests(unittest.TestCase):
             exposed = folder / "hsk1.json"
             exposed.write_text(json.dumps({
                 "units": [{"lessons": [{"n": 1, "correct_index": 0,
-                                         "answer_key": "SECRET_ANSWER"}]}],
+                                         "answer_key": "SECRET_ANSWER",
+                                         "correctIndex": 2,
+                                         "answer-key": "SECRET_ANSWER"}]}],
             }), encoding="utf-8")
             finding = curriculum_map_shapes(root)
-            self.assertEqual(finding["private_assessment_key_occurrences"], 2)
+            self.assertEqual(finding["private_assessment_key_occurrences"], 4)
             self.assertNotIn("SECRET_ANSWER", json.dumps(finding))
             self.assertEqual(
                 finding["maps"][0]["private_assessment_key_paths"],
-                ["$.units[].lessons[].correct_index", "$.units[].lessons[].answer_key"]
+                ["$.units[].lessons[].correct_index", "$.units[].lessons[].answer_key",
+                 "$.units[].lessons[].correctIndex", "$.units[].lessons[].answer-key"]
             )
 
     def test_existing_seven_curriculum_maps_contain_navigation_not_grading_keys(self):
