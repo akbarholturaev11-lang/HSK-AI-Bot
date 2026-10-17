@@ -174,7 +174,7 @@ Do not mark implementation complete based on the plan being written.
 | Surface source registry | INITIAL | `localization/surface_registry.json` |
 | Full reviewed inventory/baselines (P0) | IN PROGRESS | supplemental source audit + git-blob baseline created; manual review, runtime screenshots and full scope still pending |
 | Generated canonical catalogs + validators (P1) | IN PROGRESS (small local common namespace) | 11 existing messages; generated Android/Mini App/Desktop/Bot artifacts + deterministic checker; full coverage and runtime adoption pending |
-| Platform runtime migrations (P2) | NOT STARTED | pending |
+| Platform runtime migrations (P2) | IN PROGRESS (one small reviewed UI slice; branch-only) | Desktop 11 common keys, Mini App rating heading; old visible copy retained as fallback, Android generated XML only, Bot generated constant only |
 | Versioned lesson locale overlays (P3) | NOT STARTED | pending |
 | Any new language enabled (P4) | NOT STARTED | prohibited until gates |
 
@@ -1172,6 +1172,53 @@ Do not mark implementation complete based on the plan being written.
   review for intentional UI source migration, and then execute real
   locale/offline/auth/lesson/Pro QA. P1 still IN PROGRESS; P2/P3/P4
   NOT STARTED. Production/runtime and `main` unchanged.
+
+### P2 first branch-only UI adoption — 2026-10-17 (same-text fallbacks)
+
+- **Desktop runtime:** `desktop/ui/js/i18n.js` now imports bundled
+  `generated/hsk-common-i18n.js` and resolves the 11 reviewed common
+  keys from the generated local catalog, retaining the original
+  `messages[activeLanguage]` values as fallbacks (commit
+  `0f71eb73a698d2ec186595558f68831ac9dcfe68`). The identical
+  Desktop JS source is bundled for macOS/Windows; no HTTP per UI key.
+  Generated browser JS includes a `typeof window` guard to remain
+  safe under Node ESM tooling (`7b59c0d6864c887ac1d4ce4351bb988e87825b6f`,
+  regenerated bundles `0f4616f9d9202907f07577cc37a72d38c32ef854`
+  and `27e70e3b47c58e0b32a1e82bb5fabd35e19b26e8`).
+- **Mini App runtime:** `app/static/course-v3.html` loads only the
+  versioned local static common JS bundle. Its `rating` heading
+  now prefers the generated `navigation.rating` translation with
+  exactly the same legacy `uz/ru/tj` fallback string in place
+  (`74792b04f9f729cd973255a9c488e76b8e9d0f27`).
+  Added the script and helper on **existing physical source lines**
+  so 60/125 tracked predicate source anchors and six prefetch
+  call-site anchors remain stable. No lesson, quiz, billing, cache or
+  language-switch code was modified.
+- **Immutable baseline preserved:** P0 `source_git_blobs.json`
+  remains unmodified. `scripts/i18n_baseline_guard.py` (commit
+  `bee4a5116c443689d20c9d928f466cba4bc1741b`) accepts *only*
+  explicitly reviewed exact new Git blob SHA-1 for
+  `ui_catalog_origins`, never source lessons. The allowlist
+  `localization/baselines/reviewed_ui_changes.json`
+  (`71aa38b3d2644ed3223d889ecae1454ba30e6058`) pins
+  old + new hashes and review reasons for precisely the two UI files.
+  `tests/test_i18n_baseline_guard.py` (commit
+  `4cf54a1fde9868011a8c1bacf0ea11860a8e6d2a`)
+  proves arbitrary drift and attempted lesson waivers are rejected.
+- **Adoption tests:** `tests/test_i18n_common_ui_adoption.py`
+  (`28ac9a950f525b5b2b735dbb986343077a2e48cb`) checks exact
+  reviewed hashes, local bundle imports, legacy fallback retention,
+  no private lesson data in generated UI JS, and no per-string fetch.
+  `222f8a9ed25a24bc7356e2d2350685f0e57ab6d4`
+  wires this test to localization CI. Original Desktop catalog
+  source-parity test now scopes only the `messages` table, not the
+  added adapter mapping (`8989aed8d9a2b524ccad6af8beec332e788a1631`).
+- **Status caution:** This is **partial code adoption**, NOT complete
+  localization migration or QA acceptance. P0 security and device
+  screenshot/access QA remains open; P1 and P2 IN PROGRESS.
+  Bot/Android UIs have not been switched to generated keys yet.
+  P3/P4 NOT STARTED. No deployment, production or main changes
+  were performed in this slice, as user requested code-first workflow.
 
 For each implementation commit, update the relevant milestone with:
 **commit SHA, exact files, passing tests, known gaps and next action**.
