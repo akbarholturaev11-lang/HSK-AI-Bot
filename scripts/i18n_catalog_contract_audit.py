@@ -203,16 +203,58 @@ def desktop_catalogs(source: str) -> dict:
             "parsing_limit": "static indented property scan, not execution of JS or rendered screenshots"}
 
 
+
+def fallback_review(sources: dict[str, str], manifest: dict) -> dict:
+    """Report source-level defaults without changing any active client's policy."""
+    patterns = {
+        "miniapp_course": r'var LANG=\(new URLSearchParams\(location\.search\)\.get\("lang"\)\|\|"([a-z]{2})"\)',
+        "miniapp_subscription": r'function normalizeLang\(value\)\s*\{[\s\S]{0,650}?return "([a-z]{2})";\s*\}',
+        "desktop": r'return SUPPORTED_LANGUAGES\.has\(normalized\)\s*\?\s*normalized\s*:\s*"([a-z]{2})";',
+        "bot": r'def t\(key: str, lang: str = "([a-z]{2})"',
+    }
+    defaults = {}
+    for surface, pattern in patterns.items():
+        match = re.search(pattern, sources[surface])
+        if not match:
+            raise ValueError("P0 fallback source changed: " + surface)
+        defaults[surface] = match.group(1)
+    android = re.search(r'val DEFAULT = (UZBEK|RUSSIAN|TAJIK)\b', sources["android"])
+    if not android:
+        raise ValueError("P0 Android default not found")
+    defaults["android"] = {"UZBEK": "uz", "RUSSIAN": "ru", "TAJIK": "tj"}[android.group(1)]
+    default = manifest.get("default_locale")
+    if default not in LOCALES:
+        raise ValueError("P0 manifest default not among existing languages")
+    defaults["manifest"] = default
+    return {
+        "observed_defaults": defaults,
+        "inconsistent_defaults": len(set(defaults.values())) > 1,
+        "miniapp_course_account_language_override": bool(
+            re.search(r'if\(d&&d\.user&&d\.user\.language&&I18N\[d\.user\.language\]\)LANG=d\.user\.language',
+                      sources["miniapp_course"])
+        ),
+        "classification": "source_level_fallback_precedence_requires_runtime_review",
+    }
+
+
 def audit(root: Path = ROOT) -> dict:
     bot = bot_catalogs((root / BOT_SOURCE).read_text(encoding="utf-8"))
     desktop = desktop_catalogs((root / DESKTOP_SOURCE).read_text(encoding="utf-8"))
+    manifest = json.loads((root / "localization/manifest.json").read_text(encoding="utf-8"))
+    fallbacks = fallback_review({
+        "miniapp_course": (root / "app/static/course-v3.html").read_text(encoding="utf-8"),
+        "miniapp_subscription": (root / "app/static/subscription.html").read_text(encoding="utf-8"),
+        "desktop": (root / DESKTOP_SOURCE).read_text(encoding="utf-8"),
+        "bot": (root / BOT_SOURCE).read_text(encoding="utf-8"),
+        "android": (root / "android/app/src/main/java/com/pomp/hskai/core/i18n/LanguageCodes.kt").read_text(encoding="utf-8"),
+    }, manifest)
     warnings = [
         "Candidate drift is not a verified translation error. Bot text may fall back to Russian.",
         "Desktop and Bot use separate fallback rules; P0 does not change runtime behavior.",
         "Bot catalog merges and overrides are source-level evidence, not payment or auth changes.",
     ]
     return {"schema_version": 1, "status": "review_required", "bot": bot,
-            "desktop": desktop, "warnings": warnings}
+            "desktop": desktop, "fallback_review": fallbacks, "warnings": warnings}
 
 
 def main() -> int:
