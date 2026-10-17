@@ -162,3 +162,33 @@ separately from revoked/expired token. For all clients verify
 checkpoint and assessment IDs, language switching `uz/ru/tj`,
 level/track restoration and source revision / cache invalidation.
 **No part of this matrix was executed against QA/production yet.**
+
+### Android account-switch cache-clear chain (source verified)
+
+This extends the offline/cache contract beyond the DAO alone:
+
+- `AuthRepository.logout()` invokes `clearLocalSession()`, and
+  `HskAiApplication` registers `onSessionCleared = ::clearWidgetSession`.
+  The widget callback by itself is **not** responsible for course data.
+- The Android screen `MainActivity.kt` calls `app.clearLocalData()`
+  after an explicit `authRepository.logout(...)`. Its
+  `AuthState.Unauthenticated` branch also calls
+  `app.clearLocalData()` on entry.
+- `HskAiApplication.clearLocalData()` invokes
+  `courseRepository.clearCache()`, which calls both
+  `dao.clear()` and `lessonDao?.clear()`. These are the
+  Room cached course maps and previously opened lesson envelopes.
+
+`scripts/i18n_client_lesson_compat_audit.py` now checks this
+full source-level chain, not merely the existence of a DELETE DAO
+method; negative regression fixtures intentionally remove the
+actual logout cleanup invocation and the app-to-repository call.
+[Fast P0 CI 39012928501](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39012928501)
+**SUCCESS**.
+
+**Not a device-level guarantee:** process death, multiple accounts,
+rapid logout/login, concurrent in-flight cache writes, interrupted
+Room clearing, older installed APKs and device security remain
+separate QA cases. Release gate: with account A's downloaded Pro
+lesson on disk, sign out (including offline), sign into B, and
+confirm A's course/lesson cache is not available to B.
