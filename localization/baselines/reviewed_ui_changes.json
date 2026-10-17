@@ -12,6 +12,11 @@
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
       "reviewed_sha1": "56617e70c28d1435f651c912580bc6340a1bc05e",
       "reason": "Mini App loads generated local common JS once, using it for reviewed rating heading with existing localized fallback and identical physical source-line positions."
+    },
+    "app/bot/utils/i18n.py": {
+      "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",
+      "reviewed_sha1": "aca144788d5376c209c86e69dc62781bc382ce10",
+      "reason": "Expose generated canonical common UI keys through a namespaced Bot t() branch; all legacy key dispatch, Gemini variant and fallback unchanged."
     }
   }
 }
