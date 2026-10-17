@@ -92,3 +92,28 @@ Do **not** merge a runtime change into `main` on the
 basis of passing source-only tests or this anonymous probe. P0 remains
 open pending these independent human checks. No accounts, deployed
 routes or billing state were touched while preparing this runbook.
+
+## Railway environment readiness — verified read-only on 2026-10-17
+
+Railway project `patient-friendship` has both `production` and
+`staging` environments. The staging environment is not currently
+a testable HSK AI backend: its inventory contains one running
+`Postgres-Iy93` service only. The HSK AI backend service does
+**not** exist in that staging environment and it has **no staging
+public HTTPS domain**. Production has the `telegram-chinese-bot`
+backend from `akbarholturaev11-lang/HSK-AI-Bot` branch `main`,
+as well as its own PostgreSQL service. Both production deployments
+were reported healthy during read-only inventory.
+
+**Conclusion:** the status-only HTTP probe must remain OFFLINE;
+there is no valid staging application origin. Never fall back to
+the production Railway URL. Do not interpret the healthy staging
+PostgreSQL service as meaning the app/API itself is deployed.
+
+**Operator decision required before live QA:** approve creating a
+separate staging backend from the agreed GitHub branch, review
+staging-only variables, database isolation/migrations and costs,
+provision a staging-only HTTPS domain, and define disposable
+Free/Trial/Pro accounts. Do not reuse production secrets or the
+production database. None of these deployment actions has been
+performed by this P0 task.
