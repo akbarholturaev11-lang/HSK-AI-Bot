@@ -44,7 +44,7 @@ class MiniappCatalogAuditTests(unittest.TestCase):
 
     def test_live_selected_sources_are_parsable_without_runtime(self):
         report = inventory()
-        self.assertEqual(len(report["catalogs"]), 4)
+        self.assertEqual(len(report["catalogs"]), 18)
         for row in report["catalogs"]:
             self.assertEqual(set(row["leaf_counts"]), {"uz","ru","tj"})
             self.assertGreater(min(row["leaf_counts"].values()), 10)
