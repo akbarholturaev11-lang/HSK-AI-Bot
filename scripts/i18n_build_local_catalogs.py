@@ -116,8 +116,9 @@ def _browser_bundle(catalogs: dict[str, dict[str, str]]) -> str:
     return (
         f"/* {AUTO_COMMENT} */\n"
         '"use strict";\n'
-        "window.HSKAI_COMMON_I18N = Object.freeze({\n"
-        + body + "\n});\n"
+        'if (typeof window !== "undefined") {\n'
+        "  window.HSKAI_COMMON_I18N = Object.freeze({\n"
+        + body + "\n  });\n}\n"
     )
 
 
