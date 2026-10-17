@@ -324,3 +324,18 @@ This slice did **not** change UI copy, callbacks, Android source resources,
 lesson JSON, user locale preference, auth, payment, access policy or runtime
 delivery. The planned shared source-of-truth catalogs and all runtime
 migrations remain **NOT STARTED**. P0 review and device QA continue.
+
+**Source-level static lesson route security addendum.** In `app/main.py`,
+the GET route `/course_v3_data/{level}/{filename}` calls
+`static_json_response` for any matching lesson path and does not have
+handler-level user/entitlement dependencies. The application's
+`BlockedUserApiMiddleware` (`app/services/blocked_user_guard.py`)
+explicitly guards only paths beginning with `/api/`, and forwards the
+other requests untouched. Therefore **the blocked-user middleware is not
+a gate on this lesson JSON route**. The source JSON also includes
+`correct_index` values. This is stronger source evidence of a potential
+content/answer exposure, but not a live-production HTTP/edge-control test.
+New public language packs must not introduce additional locked lessons or
+private exam answers until authorized delivery is designed and tested.
+Existing access/payment behavior remains unchanged in this audit.
+
