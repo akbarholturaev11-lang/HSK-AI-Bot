@@ -729,3 +729,33 @@ lost. [P0 CI 39013692471](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/ac
 completed **SUCCESS** with this guard and its 6 unit tests.
 No new runtime route or quota behavior was implemented.
 P0 is still open pending controlled staging and device-level QA.
+
+## P0 thirteenth audit — staging-only HTTP probe (not executed remotely)
+
+A dedicated Python-stdlib staging QA tool was added:
+`scripts/i18n_staging_anon_route_probe.py`. Its normal invocation
+is a **dry run**. It creates 15 proposed anonymous routes (7 course
+root maps, 7 first lesson paths and 1 private-exam path), refusing
+plain HTTP, a production domain, a mismatched confirmation host,
+embedded credentials, non-staging domains and URL redirects.
+The optional explicitly enabled staging mode records **HTTP status
+only** and never reads returned content. Therefore this tool does not
+expose lesson bodies, correct answers, session tokens or receipts.
+
+Five unit tests in `tests/test_i18n_staging_anon_route_probe.py`
+verify default zero-network operation, explicit QA hostname checks,
+no response body reads/authorization headers, exam-404 failure
+classification and network errors not counting as protection.
+[Fast P0 CI 39014283200](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39014283200)
+completed SUCCESS. Its downloaded artifact was inspected and contains
+`status=NOT_EXECUTED_STAGING_TARGET_REQUIRED`, `planned_requests=15`,
+`performed_requests=0`, `findings=[]`.
+
+**This is evidence of test readiness, NOT proof of live anonymous
+access restrictions.** No QA server was provided and the tool was
+not instructed to contact any host. Free/Trial/Pro/blocked sessions
+cannot be assessed by the anonymous status-only probe.
+`docs/I18N_P0_STAGING_ACCESS_RUNBOOK.md` describes those manual
+account-state scenarios, zero-consume prefetch behavior and the
+Mini App account-switch cache verification required for P0 closure.
+All live permissions and client E2E remain unverified.
