@@ -17,6 +17,11 @@
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",
       "reviewed_sha1": "aca144788d5376c209c86e69dc62781bc382ce10",
       "reason": "Expose generated canonical common UI keys through a namespaced Bot t() branch; all legacy key dispatch, Gemini variant and fallback unchanged."
+    },
+    "app/static/course_v3_onboarding.html": {
+      "baseline_sha1": "321c28c34cf4ed0550bb5187d8f6b680654ea51e",
+      "reviewed_sha1": "f0245ef4c55a324839005601480cfcc4838a2bf8",
+      "reason": "31 exact UZ/RU/TJ onboarding UI labels use a cached static course catalog with byte-identical original inline translations as fallback; no auth, access, account, trial, Pro, HSK track, saving, billing or scoring logic altered."
     }
   }
 }

@@ -105,6 +105,37 @@
     <string name="hsk_course_notifications_off_off" formatted="false">O\'chirish</string>
     <string name="hsk_course_notifications_off_title" formatted="false">Bildirishnomalarni o\'chirasizmi?</string>
     <string name="hsk_course_on" formatted="false">Yoq</string>
+    <string name="hsk_course_onboarding_ask" formatted="false">Xitoy tilini qanchalik bilasiz?</string>
+    <string name="hsk_course_onboarding_ask_goal" formatted="false">Xitoy tili sizga nima uchun kerak?</string>
+    <string name="hsk_course_onboarding_ask_version" formatted="false">Qaysi HSK versiyasi orqali boshlamoqchisiz?</string>
+    <string name="hsk_course_onboarding_auth_error" formatted="false">Telegram sessiyasi eskirgan. Mini App’ni yopib, bot orqali qayta oching.</string>
+    <string name="hsk_course_onboarding_back" formatted="false">Orqaga</string>
+    <string name="hsk_course_onboarding_beginner" formatted="false">Noldan boshlayman</string>
+    <string name="hsk_course_onboarding_beginner_sub" formatted="false">Avval hanzi, pinyin va tonlar</string>
+    <string name="hsk_course_onboarding_books20" formatted="false">HSK 2.0 eski darsliklari</string>
+    <string name="hsk_course_onboarding_books30" formatted="false">HSK 3.0 yangi darsliklari</string>
+    <string name="hsk_course_onboarding_boot" formatted="false">Xitoy tilini qadamma-qadam o\'rganing. O\'zingizga mos darajadan boshlang.</string>
+    <string name="hsk_course_onboarding_cont" formatted="false">Davom etish</string>
+    <string name="hsk_course_onboarding_course_version" formatted="false">Kurs versiyasi</string>
+    <string name="hsk_course_onboarding_first" formatted="false">Birinchi darsni boshlash</string>
+    <string name="hsk_course_onboarding_goal_hint" formatted="false">Kunlik rejangiz shu maqsadga mos bo\'ladi.</string>
+    <string name="hsk_course_onboarding_goal_note" formatted="false">Tayyor. Endi birinchi darsingizga o\'tamiz.</string>
+    <string name="hsk_course_onboarding_hello" formatted="false">Salom! Men Li ustozman.</string>
+    <string name="hsk_course_onboarding_hsk20" formatted="false">HSK 2.0</string>
+    <string name="hsk_course_onboarding_hsk30" formatted="false">HSK 3.0</string>
+    <string name="hsk_course_onboarding_hsk30_disabled" formatted="false">HSK 3.0 hozircha yopiq.</string>
+    <string name="hsk_course_onboarding_level_error" formatted="false">Bu yerdan darajani o‘zgartirib bo‘lmaydi. Daraja tanlashga qayting.</string>
+    <string name="hsk_course_onboarding_level_hint" formatted="false">HSK — xitoy tilini bilish darajalari.</string>
+    <string name="hsk_course_onboarding_level_note" formatted="false">O\'zingizga mos darajani tanlang.</string>
+    <string name="hsk_course_onboarding_only_hsk20" formatted="false">Hozir HSK 2.0 versiyasi mavjud. Shu versiyadan davom etamiz.</string>
+    <string name="hsk_course_onboarding_progress" formatted="false">Kursni sozlash</string>
+    <string name="hsk_course_onboarding_retry" formatted="false">Qayta urinib ko\'rish</string>
+    <string name="hsk_course_onboarding_save_error" formatted="false">Tanlov saqlanganini tasdiqlab bo‘lmadi. Qayta urinib ko‘ring.</string>
+    <string name="hsk_course_onboarding_saving" formatted="false">Saqlanmoqda…</string>
+    <string name="hsk_course_onboarding_selected" formatted="false">Darajangiz</string>
+    <string name="hsk_course_onboarding_start" formatted="false">Boshlash</string>
+    <string name="hsk_course_onboarding_version_hint" formatted="false">Tanlangan versiyaga mos darsliklardan boshlang.</string>
+    <string name="hsk_course_onboarding_welcome_note" formatted="false">3 ta qisqa savol. Keyin — birinchi dars.</string>
     <string name="hsk_course_part_sections_d" formatted="false">Dialog</string>
     <string name="hsk_course_part_sections_p" formatted="false">Mashq</string>
     <string name="hsk_course_part_sections_r" formatted="false">Takrorlash</string>

@@ -105,6 +105,37 @@
     <string name="hsk_course_notifications_off_off" formatted="false">Хомӯш кардан</string>
     <string name="hsk_course_notifications_off_title" formatted="false">Огоҳиҳоро хомӯш мекунед?</string>
     <string name="hsk_course_on" formatted="false">Фаъол</string>
+    <string name="hsk_course_onboarding_ask" formatted="false">Забони чиниро то чӣ андоза медонед?</string>
+    <string name="hsk_course_onboarding_ask_goal" formatted="false">Забони чинӣ ба шумо барои чӣ лозим аст?</string>
+    <string name="hsk_course_onboarding_ask_version" formatted="false">Бо кадом версияи HSK оғоз мекунед?</string>
+    <string name="hsk_course_onboarding_auth_error" formatted="false">Муҳлати сессияи Telegram гузашт. Мини-барномаро аз бот боз кушоед.</string>
+    <string name="hsk_course_onboarding_back" formatted="false">Бозгашт</string>
+    <string name="hsk_course_onboarding_beginner" formatted="false">Аз сифр оғоз мекунам</string>
+    <string name="hsk_course_onboarding_beginner_sub" formatted="false">Аввал ханзӣ, пинйин ва оҳангҳо</string>
+    <string name="hsk_course_onboarding_books20" formatted="false">Китобҳои кӯҳнаи HSK 2.0</string>
+    <string name="hsk_course_onboarding_books30" formatted="false">Китобҳои нави HSK 3.0</string>
+    <string name="hsk_course_onboarding_boot" formatted="false">Забони чинӣ — қадам ба қадам. Аз сатҳи мувофиқ оғоз кунед.</string>
+    <string name="hsk_course_onboarding_cont" formatted="false">Идома</string>
+    <string name="hsk_course_onboarding_course_version" formatted="false">Версияи курс</string>
+    <string name="hsk_course_onboarding_first" formatted="false">Оғози дарси аввал</string>
+    <string name="hsk_course_onboarding_goal_hint" formatted="false">Нақшаи рӯзонаи шумо ба ин мақсад мувофиқ мешавад.</string>
+    <string name="hsk_course_onboarding_goal_note" formatted="false">Тайёр. Ба дарси аввалини шумо мегузарем.</string>
+    <string name="hsk_course_onboarding_hello" formatted="false">Салом! Ман устод Ли ҳастам.</string>
+    <string name="hsk_course_onboarding_hsk20" formatted="false">HSK 2.0</string>
+    <string name="hsk_course_onboarding_hsk30" formatted="false">HSK 3.0</string>
+    <string name="hsk_course_onboarding_hsk30_disabled" formatted="false">HSK 3.0 ҳоло баста аст.</string>
+    <string name="hsk_course_onboarding_level_error" formatted="false">Ин сатҳро аз ин ҷо иваз кардан мумкин нест. Ба интихоби сатҳ баргардед.</string>
+    <string name="hsk_course_onboarding_level_hint" formatted="false">HSK — сатҳҳои дониши забони чинӣ аст.</string>
+    <string name="hsk_course_onboarding_level_note" formatted="false">Сатҳи мувофиқи худро интихоб кунед.</string>
+    <string name="hsk_course_onboarding_only_hsk20" formatted="false">Ҳоло версияи HSK 2.0 дастрас аст. Аз ҳамин версия идома медиҳем.</string>
+    <string name="hsk_course_onboarding_progress" formatted="false">Танзими курс</string>
+    <string name="hsk_course_onboarding_retry" formatted="false">Боз кӯшиш кунед</string>
+    <string name="hsk_course_onboarding_save_error" formatted="false">Сабти интихоб тасдиқ нашуд. Боз кӯшиш кунед.</string>
+    <string name="hsk_course_onboarding_saving" formatted="false">Сабт мешавад…</string>
+    <string name="hsk_course_onboarding_selected" formatted="false">Сатҳи шумо</string>
+    <string name="hsk_course_onboarding_start" formatted="false">Оғоз</string>
+    <string name="hsk_course_onboarding_version_hint" formatted="false">Китобҳо мувофиқи версияи интихобшуда иваз мешаванд.</string>
+    <string name="hsk_course_onboarding_welcome_note" formatted="false">Ҳамагӣ 3 савол — ва ба дарси аввал.</string>
     <string name="hsk_course_part_sections_d" formatted="false">Гуфтугӯ</string>
     <string name="hsk_course_part_sections_p" formatted="false">Машқ</string>
     <string name="hsk_course_part_sections_r" formatted="false">Такрор</string>

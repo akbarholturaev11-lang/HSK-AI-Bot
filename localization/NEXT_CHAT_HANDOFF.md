@@ -6,6 +6,13 @@
 **State:** source/UI catalog migration in progress; **not merged to main; not deployed**.  
 **Last handoff update:** 2026-10-18.
 
+## Onboarding local-first 31-key batch — 2026-10-18
+
+- 31 byte-identical three-language (UZ/RU/TJ) onboarding UI values moved to `onboarding.*`, catalog 172 → 203 keys per locale, with six deterministic generated assets.
+- Mini App onboarding consumes a synchronous cached static bundle and retains `ONBOARDING_LEGACY` text as fallback; no per-string API call. Auth, track, payment, entitlement, lesson completion, grading and backend requests are untouched.
+- Baseline manifest pins the reviewed onboarding HTML blob. Static source tests verify 31×3 parity; local device/WebView and all native Android/Desktop/Bot runtime usage are still open checks, not proven by generation.
+- Keep Draft PR #179. Do not merge/main/deploy. Next: Android OnboardingCopy and Desktop parity audit plus remaining UI surfaces, then versioned offline lesson overlays after content/answer security audit.
+
 ## VERIFIED STABILIZATION CHECKPOINT — 2026-10-18
 
 - **Implementation commit:** `3adb5d00eee069eef263936e1c3c037dbda7d412` — 30 reviewed finish/streak/parts copy keys in one source-level batch, six generated static targets, new regression and this handoff.

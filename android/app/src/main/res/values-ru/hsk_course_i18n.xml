@@ -105,6 +105,37 @@
     <string name="hsk_course_notifications_off_off" formatted="false">Отключить</string>
     <string name="hsk_course_notifications_off_title" formatted="false">Отключить уведомления?</string>
     <string name="hsk_course_on" formatted="false">Вкл</string>
+    <string name="hsk_course_onboarding_ask" formatted="false">Сколько китайского вы уже знаете?</string>
+    <string name="hsk_course_onboarding_ask_goal" formatted="false">Зачем вам китайский?</string>
+    <string name="hsk_course_onboarding_ask_version" formatted="false">С какой версии HSK вы хотите начать?</string>
+    <string name="hsk_course_onboarding_auth_error" formatted="false">Сессия Telegram истекла. Закройте и заново откройте мини-приложение через бота.</string>
+    <string name="hsk_course_onboarding_back" formatted="false">Назад</string>
+    <string name="hsk_course_onboarding_beginner" formatted="false">Начинаю с нуля</string>
+    <string name="hsk_course_onboarding_beginner_sub" formatted="false">Сначала ханцзы, пиньинь и тоны</string>
+    <string name="hsk_course_onboarding_books20" formatted="false">Учебники старого HSK 2.0</string>
+    <string name="hsk_course_onboarding_books30" formatted="false">Новые учебники HSK 3.0</string>
+    <string name="hsk_course_onboarding_boot" formatted="false">Китайский — шаг за шагом. Начните с того, что уже знаете.</string>
+    <string name="hsk_course_onboarding_cont" formatted="false">Продолжить</string>
+    <string name="hsk_course_onboarding_course_version" formatted="false">Версия курса</string>
+    <string name="hsk_course_onboarding_first" formatted="false">Начать первый урок</string>
+    <string name="hsk_course_onboarding_goal_hint" formatted="false">Подберём акцент в вашем плане на день.</string>
+    <string name="hsk_course_onboarding_goal_note" formatted="false">Всё готово. Перейдём к вашему первому уроку.</string>
+    <string name="hsk_course_onboarding_hello" formatted="false">Привет! Я учитель Ли.</string>
+    <string name="hsk_course_onboarding_hsk20" formatted="false">HSK 2.0</string>
+    <string name="hsk_course_onboarding_hsk30" formatted="false">HSK 3.0</string>
+    <string name="hsk_course_onboarding_hsk30_disabled" formatted="false">HSK 3.0 пока закрыт.</string>
+    <string name="hsk_course_onboarding_level_error" formatted="false">Текущий уровень нельзя изменить здесь. Вернитесь к выбору уровня.</string>
+    <string name="hsk_course_onboarding_level_hint" formatted="false">HSK — это уровни знания китайского языка.</string>
+    <string name="hsk_course_onboarding_level_note" formatted="false">Выберите свой уровень — я помогу начать.</string>
+    <string name="hsk_course_onboarding_only_hsk20" formatted="false">Сейчас доступен HSK 2.0. Продолжим с него.</string>
+    <string name="hsk_course_onboarding_progress" formatted="false">Настройка курса</string>
+    <string name="hsk_course_onboarding_retry" formatted="false">Попробовать снова</string>
+    <string name="hsk_course_onboarding_save_error" formatted="false">Не удалось подтвердить сохранение. Попробуйте снова.</string>
+    <string name="hsk_course_onboarding_saving" formatted="false">Сохраняем…</string>
+    <string name="hsk_course_onboarding_selected" formatted="false">Ваш уровень</string>
+    <string name="hsk_course_onboarding_start" formatted="false">Начать</string>
+    <string name="hsk_course_onboarding_version_hint" formatted="false">Выбранная версия определит учебники курса.</string>
+    <string name="hsk_course_onboarding_welcome_note" formatted="false">Всего 3 вопроса — и к первому уроку.</string>
     <string name="hsk_course_part_sections_d" formatted="false">Диалог</string>
     <string name="hsk_course_part_sections_p" formatted="false">Практика</string>
     <string name="hsk_course_part_sections_r" formatted="false">Повторение</string>
