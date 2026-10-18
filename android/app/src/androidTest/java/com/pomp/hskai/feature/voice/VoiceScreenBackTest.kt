@@ -1,8 +1,9 @@
 package com.pomp.hskai.feature.voice
 
+import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.test.espresso.Espresso.pressBack
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.pomp.hskai.core.design.PompHskAiTheme
 import com.pomp.hskai.data.api.VoiceStatusResponse
@@ -20,7 +21,9 @@ class VoiceScreenBackTest {
     private fun backExits(initial: VoiceUiState) {
         val state = mutableStateOf(initial)
         var ends = 0
+        var backOwner: OnBackPressedDispatcherOwner? = null
         compose.setContent {
+            backOwner = LocalOnBackPressedDispatcherOwner.current
             PompHskAiTheme {
                 VoiceScreen(
                     state = state.value,
@@ -45,7 +48,11 @@ class VoiceScreenBackTest {
             }
         }
         compose.waitForIdle()
-        pressBack()
+        // Exercise the actual Compose BackHandler dispatcher, not Espresso's
+        // focus-sensitive root picker (which fails on headless CI emulators).
+        compose.runOnIdle {
+            checkNotNull(backOwner).onBackPressedDispatcher.onBackPressed()
+        }
         compose.runOnIdle { assertEquals(1, ends) }
     }
 
