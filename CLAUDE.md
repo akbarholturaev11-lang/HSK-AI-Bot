@@ -1,8 +1,7 @@
-## Communication Rule (STRICT)
+## Communication
 
-Always communicate with the user ONLY in Uzbek. This is a strict, non-negotiable rule.
-All explanations, questions, summaries, and status updates must be written in Uzbek.
-(Code, file paths, and technical identifiers stay as-is — only the conversation language is Uzbek.)
+Repository-wide language and script policy is in `AGENTS.md`, under
+"Loyiha va aloqa". Do not impose a separate Uzbek Latin-only requirement here.
 
 ## Mandatory Project Guidance First
 
@@ -41,22 +40,12 @@ all three project languages, those are:
 Do not add new visible text in only a subset of a surface's supported languages
 unless the user explicitly approves it.
 
-Before editing Mini App UI, follow the UI audit steps in `AGENTS.md`: report the
-weak points, user impact, exact proposed changes, files, and risk. After that
-audit, proceed within the requested scope; do not ask for approval again when
-the user has already requested that UI change. Ask only when an unresolved
-choice would change product behavior, learning flow, business rules, or expand
-the requested scope. The audit applies especially to changes affecting:
-
-- layout
-- navigation
-- buttons
-- colors
-- lesson flow
-- paywall
-- profile
-- AI Voice UI
-- any visible user experience
+Before changing Mini App UI, apply the risk-based audit in `AGENTS.md`.
+For navigation, lesson flow, paywall, authentication, or a substantial UX redesign,
+report impact, proposed patch, files and risk. For a small visual/copy-only fix
+use a focused source check and relevant screen smoke test instead of a full audit.
+An explicitly requested in-scope change needs no second approval; clarify only
+materially unresolved behavior, business policy or scope.
 
 Avoid awkward UI, unnecessary animation, random badges, confusing buttons, and
 decoration without a clear user benefit.
