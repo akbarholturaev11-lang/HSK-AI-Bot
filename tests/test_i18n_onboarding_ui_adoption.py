@@ -97,7 +97,7 @@ class OnboardingCourseCatalogTests(unittest.TestCase):
             "ru": native.split("else -> OnboardingCopy(", 1)[1].split(")", 1)[0],
         }
         for locale in LOCALES:
-            values = dict(re.findall(r'(\\w+)\\s*=\\s*"([^"]*)"', bodies[locale]))
+            values = dict(re.findall(r'([A-Za-z][A-Za-z0-9]*) *= *"([^"]*)"', bodies[locale]))
             catalog = json.loads((ROOT / f"localization/ui/{locale}/course.json")
                                  .read_text(encoding="utf-8"))["messages"]
             for field, key in fields.items():
