@@ -148,8 +148,16 @@ def main(argv: list[str] | None = None, environ: Mapping[str, str] | None = None
         copy_schema(config)
         print("QA_SCHEMA_ONLY_COPY_PASS; NO_LEARNER_ROWS; REVISION=" + EXPECTED_REVISION)
         return 0
-    except (BootstrapError, subprocess.SubprocessError, OSError):
-        print("QA_BOOTSTRAP_STOPPED; see private operator logs", file=sys.stderr)
+    except BootstrapError as exc:
+        # Every BootstrapError is a static code defined in this module.
+        # Never log database URLs, passwords, SQL rows or driver exceptions.
+        print("QA_BOOTSTRAP_STOPPED; code=" + str(exc), file=sys.stderr)
+        return 2
+    except FileNotFoundError:
+        print("QA_BOOTSTRAP_STOPPED; code=postgres_client_missing", file=sys.stderr)
+        return 2
+    except (subprocess.SubprocessError, OSError):
+        print("QA_BOOTSTRAP_STOPPED; code=operator_command_failed", file=sys.stderr)
         return 2
 
 
