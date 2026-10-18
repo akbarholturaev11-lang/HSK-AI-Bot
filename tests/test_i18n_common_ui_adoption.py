@@ -22,6 +22,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertEqual(set(approved["files"]), {
             "desktop/ui/js/i18n.js", "app/static/course-v3.html",
             "app/static/course_v3_onboarding.html",
+            "app/static/course_v3_test.html",
             "app/bot/utils/i18n.py",
         })
         self.assertEqual(approved["baseline_main_commit"],
