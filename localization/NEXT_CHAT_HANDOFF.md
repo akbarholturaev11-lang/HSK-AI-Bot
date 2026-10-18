@@ -1,5 +1,11 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## P3 editorial pointer queue — per-source Git SHA (2026-10-19)
+
+- Added `scripts/i18n_lesson_locale_gap_review_queue.py`: standalone **read-only seven-track** source scanner that resolves only the 13 reviewed display text path templates and yields an exact JSON pointer per incomplete locale map, affected locale code(s), lesson path/order and the **Git blob SHA-1** for stale-source detection. No Chinese/pinyin, prompt translation, questions/options, correct answers, tokens, lesson audio, paid lesson assets, or user data are serialized. Output is a **private CI review artifact**, not public client/Pro pack.
+- `tests/test_i18n_lesson_locale_gap_review_queue.py` cross-checks the previous human-summary queue, original verified baseline **48 affected nhsk2 lessons / 272 all-empty maps / 816 locale values**; asserts pointer whitelist, exact source blob digests, no answer/content leakage on synthetic fixtures, partial/missing locale detection, and stale-review count rejection. CI writes `/tmp/i18n-p0/p3-locale-gap-pointers.json` next to full audit; old `localization/reviews/p3_nhsk2_locale_gaps_20261019.json` remains a summary. Download new CI report for editors after successful workflow.
+- **No 272 translations were authored or inserted**. Human language/content review remains required, and existing question ordering, reverse-builder/score, API, Pro/free, caching and lesson JSON must remain unchanged. Keep P3 runtime NOT STARTED; verify this change's complete CI and separate manual auth/paywall/device QA before any shipping.
+
 ## Verified P3 all-746 source inventory + human review queue (2026-10-19)
 
 - GitHub Actions `b447aac` full scan **SUCCESS / 202 P0 tests**: **746** seven-track source lessons, **698 structurally ready**, **48 blocked**, **2,094 valid locale overlays**. All **48 blocked lessons are HSK 3.0 `nhsk2`** (lesson orders listed separately in `localization/reviews/p3_nhsk2_locale_gaps_20261019.json`). Total **272 three-locale empty display maps**, 0 incomplete/invalid locale-key maps. Counts are structural, not semantic/content correctness. The other six tracks have no selected reviewed-path completeness gaps; this is NOT approval for real P3 rollout.
