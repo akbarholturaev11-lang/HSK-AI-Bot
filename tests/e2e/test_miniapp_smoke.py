@@ -35,7 +35,8 @@ def route_static_files(page):
 
     def handle_static(route):
         path = urlparse(route.request.url).path.lstrip("/") or "course-v3.html"
-        file_path = (STATIC_ROOT / path).resolve()
+        aliases = {"audio/words/index.js": "audio/words-index.js", "audio/words/client.js": "audio/words-client.js"}
+        file_path = (STATIC_ROOT / aliases.get(path, path)).resolve()
         if not str(file_path).startswith(str(static_root)) or not file_path.exists():
             route.fulfill(status=404, content_type="text/plain", body="not found")
             return
@@ -272,6 +273,10 @@ def mock_learning_audio(page):
     )
     page.route(
         re.compile(r".*/audio/tour/.*"),
+        lambda route: route.fulfill(status=200, content_type="audio/wav", body=sample_audio),
+    )
+    page.route(
+        re.compile(r".*/audio/words/[^/?]+\.mp3(?:\?.*)?$"),
         lambda route: route.fulfill(status=200, content_type="audio/wav", body=sample_audio),
     )
     # CSS @font-face declarations can still resolve CDN asset URLs even when
@@ -1635,7 +1640,7 @@ def test_course_v3_required_foundation_load_error_blocks_and_retries(page):
         else:
             route.fulfill(status=503, content_type="application/json", body="{}")
 
-    page.route("**/course_v3_data/hsk1/lesson_01.json", foundation_file)
+    page.route(re.compile(r".*/course_v3_data/hsk1/lesson_01\.json(?:\?.*)?$"), foundation_file)
     challenge_requests = []
     page.on(
         "request",

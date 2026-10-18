@@ -49,6 +49,7 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 
 ## Important decisions and operational caveats
 
+- Lesson translation tiles grade only the translated meaning; pronunciation/spelling notes belong in pinyin or the grammar explanation. Seed grammar examples feed generated tasks, so keep their translation fields clean. Fix existing task fields in place to preserve section/card material references shared with server mistake validation.
 - Keep the HSK course and canonical lesson order/content at the center of the product. Supporting features should not replace the learning path.
 - Mini App `朱雀` is a brand league; Android XP tiers remain the server-defined progression. These are separate representations, not interchangeable ranks.
 - Each Android release must use a `versionCode` greater than the latest published release; it need not increase by exactly one. Verify the artifact against the release manifest because the current workflow does not reject every equal-code/different-artifact case.

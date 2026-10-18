@@ -480,7 +480,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
 
         # Qatlamlar mavjud yopish funksiyalarini ishlatadi (yangi mantiq yo'q).
         for existing in ("App.tourEnd()", "App.closeSheet()", "closeUserProfile()",
-                         "App.closeWriter()", "App.exitFlow()"):
+                         "App.closeWriter()", "App.requestExitFlow()"):
             self.assertIn(existing, layers, existing)
 
         # Chet zonasi va threshold talab qilingan oraliqda.
@@ -494,8 +494,9 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('"touchmove",NavBack.move,{passive:false}', html)
         self.assertIn('"touchstart",NavBack.start,{passive:true}', html)
 
-        # Mavjud navigatsiya buzilmagan: eski yopish tugmalari joyida.
-        self.assertIn('onclick="App.exitFlow()"', html)
+        # Lesson exit is explicit and confirmed; forced access exits remain separate.
+        self.assertIn('onclick="App.requestExitFlow()"', html)
+        self.assertIn('onclick="App.confirmExitFlow()"', html)
         self.assertIn('onclick="closeUserProfile()"', html)
 
     def test_free_parts_end_on_a_whole_hsk_lesson_for_hsk1_and_hsk2(self):

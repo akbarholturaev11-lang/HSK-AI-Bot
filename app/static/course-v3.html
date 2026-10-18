@@ -1374,6 +1374,22 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px s
 @media (prefers-reduced-motion:reduce){.node.unlock-reveal,.node.unlock-reveal .ring,.unlock-lock-pop{animation:none!important}}
 /* Telegram owns Back only after the host BackButton callback has been registered. */
 html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
+
+#sheet.lesson-exit-confirm{align-items:center;padding:calc(16px + var(--safe-t)) 16px calc(16px + var(--safe-b))}
+#sheet.lesson-exit-confirm .si{border-radius:24px;max-height:85dvh}
+#sheet.lesson-exit-confirm .grip{display:none}
+.lesson-exit{color:var(--cin2);margin-top:12px}
+.ftop .fx.fgear{border:1px solid var(--line);background:var(--card);color:var(--ink2)}
+.fbody.has-lesson-pron{display:flex;flex-direction:column;padding-bottom:0}
+.lesson-pron{display:flex;flex-direction:column;flex:1;min-height:460px}
+.lesson-pron>.qq{text-align:center}
+.lesson-pron-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:12px 0}
+.lesson-pron-character{width:124px;height:124px;display:flex;align-items:center;justify-content:center}
+.lesson-pron-character>*{width:100%;height:100%}
+.lesson-pron-phrase{width:100%;text-align:center;padding:16px;border-radius:22px;background:#e7f1f8;border:1px solid #cfe2f1}
+.lesson-pron-phrase .au{margin:0 auto 10px}
+.lesson-pron-controls{margin-top:auto;flex-shrink:0}
+.lesson-pron-controls .pron-skip{letter-spacing:normal;font-weight:500;margin:2px 0 0;display:inline-flex}
 </style>
 <link href="/course_v3_data/desktop-download.css?v=20261003-1" rel="stylesheet">
 <link href="/course_v3_data/profile-carousel.css?v=20261017-link-cards-1" rel="stylesheet">
@@ -1446,7 +1462,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
   </div>
 
   <div class="flow" id="flow">
-    <div class="ftop"><button class="fx" onclick="App.exitFlow()"><i class="ti ti-x"></i></button><div class="fpbar"><i id="f-prog"></i></div><button class="fgear" onclick="App.pinyinSheet()" aria-label="Pinyin"><i class="ti ti-settings"></i></button><span class="fheart"><i class="ti ti-heart"></i><span id="f-hp">5</span></span></div>
+    <div class="ftop"><button class="fx fgear" onclick="App.pinyinSheet()" aria-label="Settings"><i class="ti ti-settings"></i></button><div class="fpbar"><i id="f-prog"></i></div><span class="fheart"><i class="ti ti-heart"></i><span id="f-hp">5</span></span></div>
     <div class="fstage" id="f-stage"></div>
     <div class="fcoach-dock" id="f-coach-dock"><div class="fcoach hsk-character-stage" id="f-coach" aria-hidden="true"></div><div class="fcoach-col"><p class="fcoach-bubble" id="f-coach-bubble"></p><div class="fcoach-slot" id="f-coach-slot"></div></div></div>
     <div class="fbody" id="f-body"></div>
@@ -2323,10 +2339,10 @@ var App={
       if(SIGNIN_STATE.busy&&!SIGNIN_PENDING){SIGNIN_STATE.generation++;SIGNIN_STATE.busy=""}
     }else if(SIGNIN_PENDING&&!signInPollTimer){pollSignInLink(SIGNIN_PENDING,SIGNIN_PENDING.deadline)}
     if(s==="course"&&window._pendingXpFly){var fx=window._pendingXpFly;window._pendingXpFly=0;setTimeout(function(){flyXp(fx)},350)}},
-  openSheet:function(html){var sheet=$("#sheet");if(!sheet.classList.contains("on"))SHEET_RETURN_FOCUS=document.activeElement;sheet.classList.remove("hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");$("#sheet-body").innerHTML=html;var title=sheet.querySelector("#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role='heading'],#sheet-body .shead .tr");if(title){if(!title.id)title.id="hsk-sheet-title";sheet.setAttribute("aria-labelledby",title.id)}else{sheet.setAttribute("aria-label",LANG==="ru"?"Диалог HSK AI":LANG==="tj"?"Муколамаи HSK AI":"HSK AI oynasi")}var close=sheet.querySelector(".sx");if(close)close.setAttribute("aria-label",LANG==="ru"?"Закрыть":LANG==="tj"?"Пӯшидан":"Yopish");sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.classList.add("on");setSheetBackgroundInert(true);focusSheetStart(sheet);startSheetPromo("#sheet")},
+  openSheet:function(html){var sheet=$("#sheet");if(!sheet.classList.contains("on"))SHEET_RETURN_FOCUS=document.activeElement;sheet.classList.remove("hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");$("#sheet-body").innerHTML=html;var title=sheet.querySelector("#sheet-body h1,#sheet-body h2,#sheet-body h3,#sheet-body [role='heading'],#sheet-body .shead .tr");if(title){if(!title.id)title.id="hsk-sheet-title";sheet.setAttribute("aria-labelledby",title.id)}else{sheet.setAttribute("aria-label",LANG==="ru"?"Диалог HSK AI":LANG==="tj"?"Муколамаи HSK AI":"HSK AI oynasi")}var close=sheet.querySelector(".sx");if(close)close.setAttribute("aria-label",LANG==="ru"?"Закрыть":LANG==="tj"?"Пӯшидан":"Yopish");sheet.setAttribute("role","dialog");sheet.setAttribute("aria-modal","true");sheet.classList.add("on");setSheetBackgroundInert(true);focusSheetStart(sheet);startSheetPromo("#sheet")},
   closeSheet:function(){
     SETTINGS_SHEET=false;
-    var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");sheet.removeAttribute("tabindex");stopSheetPromo();setSheetBackgroundInert(false);var returnFocus=SHEET_RETURN_FOCUS;SHEET_RETURN_FOCUS=null;if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
+    var sheet=$("#sheet");sheet.classList.remove("on","hsk30-promo-center","hsk30-book-card","course-choice-sheet","profile-apps-choice","lesson-exit-confirm");sheet.removeAttribute("role");sheet.removeAttribute("aria-modal");sheet.removeAttribute("aria-label");sheet.removeAttribute("aria-labelledby");sheet.removeAttribute("tabindex");stopSheetPromo();setSheetBackgroundInert(false);var returnFocus=SHEET_RETURN_FOCUS;SHEET_RETURN_FOCUS=null;if(returnFocus&&returnFocus.isConnected&&typeof returnFocus.focus==="function")returnFocus.focus({preventScroll:true});
     var revealUnlock=!!window._pendingUnlockAfterSheet;window._pendingUnlockAfterSheet=false;
     /* Qulf ochilishi animatsiyasi ustiga reklama chiqmaydi — u o'quvchi
        kutgan mukofot. Kechiktirilgan markaz reklamasi keyingi safar
@@ -2387,7 +2403,15 @@ var App={
     beginInternalNavigation();
     setTimeout(function(){location.href=url},40);
   },
+  requestExitFlow:function(){
+    if(!$("#flow").classList.contains("on"))return;
+    var w={uz:{title:"Darsdan chiqasizmi?",body:"Keyin shu joydan davom etishingiz mumkin.",keep:"Darsni davom ettirish",exit:"Chiqish"},ru:{title:"Выйти из урока?",body:"Позже можно продолжить с этого места.",keep:"Продолжить урок",exit:"Выйти"},tj:{title:"Аз дарс мебароед?",body:"Баъдтар метавонед аз ҳамин ҷо идома диҳед.",keep:"Идома додани дарс",exit:"Баромадан"}}[LANG];
+    App.openSheet('<div class="shead"><div class="tr" style="font-size:20px;color:var(--ink)">'+esc(w.title)+'</div><div class="tr">'+esc(w.body)+'</div></div><button class="scta" onclick="App.closeSheet()">'+esc(w.keep)+'</button><button class="scta ghost" style="margin-top:10px" onclick="App.confirmExitFlow()">'+esc(w.exit)+'</button>');
+    $("#sheet").classList.add("lesson-exit-confirm");
+  },
+  confirmExitFlow:function(){App.closeSheet();if(!Foundation.active)saveLessonResume();App.exitFlow()},
   exitFlow:function(){
+    cancelLessonPron();
     if(window.Foundation&&Foundation.active)Foundation.pause();
     stopTourAudio();
     $("#flow").classList.remove("on");edgeGlow(0);flushPendingCenterAd();
@@ -2801,7 +2825,7 @@ var App={
       tj:{h:"Пиньин (талаффуз)",all:"Дар ҳама ҷо нишон додан",nw:"Танҳо дар калимаҳои нав",off:"Пинҳон кардан"}}[LANG]||{};
     var cur=pinyinMode();
     var row=function(v,lb){return '<button class="opt-row'+(v===cur?" on":"")+'" onclick="App.setPinyin(\''+v+'\')"><i class="ti ti-abc"></i> '+esc(lb)+(v===cur?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'};
-    App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(t.h)+'</div></div>'+row("all",t.all)+row("new",t.nw)+row("off",t.off));
+    App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(LANG==="ru"?"Настройки урока":LANG==="tj"?"Танзимоти дарс":"Dars sozlamalari")+'</div><div class="tr">'+esc(t.h)+'</div></div>'+row("all",t.all)+row("new",t.nw)+row("off",t.off)+'<button class="opt-row lesson-exit" onclick="App.requestExitFlow()"><i class="ti ti-logout"></i> '+esc(LANG==="ru"?"Выйти":LANG==="tj"?"Баромадан":"Chiqish")+'</button>' );
   },
   setPinyin:function(v){try{localStorage.setItem("hsk_v3_pinyin",v)}catch(e){}App.closeSheet();applyPinyinMode()},
   goalPicker:function(){var p=pl();var opts=[20,30,40,50,80];
@@ -2874,6 +2898,7 @@ var N1_LESSON_CONTENT_REV="n1-learning-check-20261012-v2";
 function lessonDataUrl(lv,n){
   var level=normalizeLevel(lv);
   var url="/course_v3_data/"+level+"/lesson_"+String(Number(n)||0).padStart(2,"0")+".json";
+  if(level==="hsk1"&&Number(n)>=1&&Number(n)<=3)return url+"?content_rev=hsk1-translation-20261019-v1";
   return level==="nhsk1"?url+"?content_rev="+N1_LESSON_CONTENT_REV:url;
 }
 function loadLessonData(lv,n){
@@ -3725,7 +3750,7 @@ Foundation.start=function(data,opts){
   Foundation.i=restart?0:Math.max(0,Math.min(Number(saved.i||0),Math.max(0,Foundation.queue.length-1)));
   Foundation.active=true;Foundation.answered=false;Foundation.finishing=false;
   var heart=document.querySelector("#flow .fheart"),gear=document.querySelector("#flow .fgear"),close=document.querySelector("#flow .fx");
-  if(heart)heart.style.display="none";if(gear)gear.style.display="none";if(close)close.style.visibility=Foundation.required?"hidden":"visible";
+  if(heart)heart.style.display="none";if(gear)gear.style.display=Foundation.required?"none":"";if(close)close.style.visibility=Foundation.required?"hidden":"visible";
   var cta=$("#f-cta"),bar=$("#f-barbtn");if(cta)cta.onclick=Foundation.next;if(bar)bar.onclick=Foundation.next;
   setWriteBtn("");hideBar();$("#flow").classList.add("on");
   trackCourseEvent("foundation_started",{foundation_version:Number(data.version||1),foundation_id:data.id||"starter0_hsk1",dedupe_key:["foundation_started",COURSE_SESSION_ID,data.id,data.version].join(":")});
@@ -4010,7 +4035,7 @@ function trackSectionCompleted(c,nextIndex){
 }
 function setLessonFlowControls(){
   var heart=document.querySelector("#flow .fheart"),gear=document.querySelector("#flow .fgear");
-  if(heart)heart.style.display="flex";if(gear)gear.style.display="";
+  if(heart)heart.style.display="flex";if(gear){gear.style.display="";gear.setAttribute("aria-label",LANG==="ru"?"Настройки урока":LANG==="tj"?"Танзимоти дарс":"Dars sozlamalari")}
   var cta=$("#f-cta"),bar=$("#f-barbtn");if(cta)cta.onclick=Flow.next;if(bar)bar.onclick=Flow.next;
   var close=document.querySelector("#flow .fx");if(close)close.style.visibility="visible";
 }
@@ -4716,6 +4741,8 @@ function setWriteBtn(ch,meta){writeChar=ch||"";writeMeta=meta||{};var b=$("#writ
 function pinyinMode(){try{var v=localStorage.getItem("hsk_v3_pinyin");return v==="new"||v==="off"?v:"all"}catch(e){return "all"}}
 function applyPinyinMode(){var f=$("#flow");if(!f)return;var m=pinyinMode();f.classList.toggle("pyoff",m==="off");f.classList.toggle("pynew",m==="new")}
 function renderFlowCard(){
+  cancelLessonPron();
+  $("#f-body").classList.remove("has-lesson-pron");
   Flow.i=skipN1PilotRechecks(Flow.i);
   Flow.answered=false;hideBar();flowProg();
   if(Flow.i>=Flow.queue.length){var doneDock=$("#f-coach-dock");if(doneDock)doneDock.classList.remove("on");return flowDone()}
@@ -4954,17 +4981,15 @@ function foundationBuilderCard(c){
   Foundation.builderRemove=function(pos){if(Foundation.answered)return;line.splice(pos,1);draw()};draw();
 }
 function foundationSpeakCard(c){
-  var M={uz:{h:"Li ustozdan keyin takrorlang",go:"Talaffuzni tekshirish",skip:"Mikrofonsiz davom etish"},ru:{h:"Повторите за учителем Ли",go:"Проверить произношение",skip:"Продолжить без микрофона"},tj:{h:"Аз паси устод Ли такрор кунед",go:"Санҷидани талаффуз",skip:"Бе микрофон идома"}}[LANG];
-  $("#f-cta").style.display="none";$("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-microphone"></i> '+esc(foundationStepLabel(c))+'</div><div class="qq">'+esc(M.h)+'</div>'+foundationExampleHtml(c.example,true)
-    +'<button class="foundation-audio" onclick="foundationSpeak(\''+esc(c.audio_text||((c.example||{}).zh)||"")+'\')"><i class="ti ti-volume"></i></button>'
-    +'<button class="scta" id="foundation-mic" onclick="Foundation.tryMic()"><i class="ti ti-microphone"></i> '+esc(M.go)+'</button><div id="foundation-mic-hint" style="text-align:center;color:var(--ink2);font-size:13px;line-height:1.45;margin-top:9px;min-height:19px"></div>'
-    +'<button class="pron-skip" onclick="Foundation.skipSpeak()">'+esc(M.skip)+'</button>';
+  var ex=c.example||{};
+  $("#f-cta").style.display="none";
+  $("#f-body").innerHTML=lessonPronHtml(c.audio_text||ex.zh||"",ex.pinyin,tr(ex.translation||ex),"foundation-mic","foundation-mic-hint","Foundation.tryMic()","Foundation.skipSpeak()");
   Foundation.scheduleAudio(c.audio_text||((c.example||{}).zh)||"",300);
 }
 Foundation.skipSpeak=function(){Foundation.cancelMic();Foundation.next()};
 Foundation.tryMic=function(){
   var c=Foundation.queue[Foundation.i],hint=$("#foundation-mic-hint"),btn=$("#foundation-mic");
-  function say(t){if(hint)hint.textContent=t||""}function ready(){if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-microphone"></i> '+T().say}}
+  function say(t){if(hint)hint.textContent=t||""}function ready(){if(btn){btn.disabled=false;btn.setAttribute("aria-label",T().say)}}
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){say(_prL().noSupport);return}
   Foundation.cancelMic();var session={cancelled:false,stream:null,rec:null,timer:null,controller:null};Foundation._micSession=session;
   if(btn)btn.disabled=true;say(_prL().listening);
@@ -4989,6 +5014,7 @@ Foundation.tryMic=function(){
 };
 Foundation.render=function(){
   if(!Foundation.active)return;Foundation.cancelMic();Foundation.stopAudio();Foundation.answered=false;hideBar();setWriteBtn("");
+  $("#f-body").classList.remove("has-lesson-pron");
   var c=Foundation.queue[Foundation.i];if(!c)return Foundation.finish();
   $("#f-prog").style.width=Math.round(Foundation.i/Math.max(Foundation.queue.length,1)*100)+"%";
   var st=$("#f-stage");if(st)st.innerHTML='<span>'+(Foundation.i+1)+' / '+Foundation.queue.length+'</span><b>'+esc(foundationStepLabel(c))+'</b>';
@@ -5191,34 +5217,37 @@ var PRON_L={
   tj:{listening:"Гӯш мекунам…",analyzing:"Месанҷам…",micDeny:"Ба микрофон иҷозат диҳед",noSupport:"Микрофон дастгирӣ намешавад",netErr:"Хатои шабака",needTg:"Дар Telegram кушоед",retry:"Пахш карда боз гӯед",heard:"Ман чунин шунидам:"}
 };
 function _prL(){return PRON_L[LANG]||PRON_L.ru}
+var LESSON_PRON_CANCEL=null;
+function cancelLessonPron(){if(LESSON_PRON_CANCEL){var cancel=LESSON_PRON_CANCEL;LESSON_PRON_CANCEL=null;cancel()}}
+function lessonPronHtml(phrase,pinyin,translation,buttonId,hintId,record,skip){
+  var title={uz:"Li ustozdan keyin takrorlang",ru:"Повторите за учителем Ли",tj:"Аз паси устод Ли такрор кунед"}[LANG];
+  var skipText={uz:"O‘tkazib yuborish",ru:"Пропустить",tj:"Гузарондан"}[LANG];
+  $("#f-body").classList.add("has-lesson-pron");
+  return '<div class="lesson-pron"><div class="qq">'+esc(title)+'</div><div class="lesson-pron-stage"><div class="lesson-pron-phrase say-bub"><button class="au" onclick="speak(\''+esc(phrase)+'\')"><i class="ti ti-volume"></i></button><div class="z4 han">'+esc(phrase)+'</div><div class="p4">'+esc(pinyin||"")+'</div><div class="t4">'+esc(translation||"")+'</div></div><div class="lesson-pron-character">'+lessonCharacterHtml("panda","talk")+'</div></div><div class="pr-ctrl lesson-pron-controls"><div class="pr-micwrap"><button class="pr-mic" id="'+buttonId+'" aria-label="'+esc(T().say)+'" onclick="'+record+'"><i class="ti ti-microphone"></i></button></div><div class="pr-hint" role="status" id="'+hintId+'"></div><button class="pr-skip pron-skip" onclick="'+skip+'">'+esc(skipText)+' <i class="ti ti-player-skip-forward"></i></button></div></div>';
+}
 function cardPron(c){
-  /* Duolingo uslubi: ustoz (panda) nutq pufagida gapiradi — "ustozdan keyin
-     takrorlang" + gapira olmaganlar uchun jarimasiz o'tkazish. */
   $("#f-cta").style.display="none";
-  var RT={uz:{t:"Li ustozdan keyin takrorlang",skip:"HOZIR GAPIRA OLMAYMAN"},
-    ru:{t:"Повторите за учителем Ли",skip:"Я СЕЙЧАС НЕ МОГУ ГОВОРИТЬ"},
-    tj:{t:"Аз паси устод Ли такрор кунед",skip:"ҲОЗИР ГАП ЗАДА НАМЕТАВОНАМ"}}[LANG]||{t:"Takrorlang",skip:"KEYINROQ"};
-  $("#f-body").innerHTML='<div class="qq">'+esc(RT.t)+'</div>'
-    +'<div class="teach"><div class="teach-pd">'+lessonCharacterHtml("panda","talk")+'</div><div class="teach-bub say-bub"><button class="au" onclick="speak(\''+esc(c.phrase)+'\')"><i class="ti ti-volume"></i></button><div class="z4 han">'+esc(c.phrase)+'</div><div class="p4">'+esc(c.pinyin||"")+'</div>'+(c.translation?'<div class="t4">'+esc(tr(c.translation))+'</div>':'')+'</div></div>'
-    +'<button class="scta" id="pron-btn" onclick="window._pron()"><i class="ti ti-microphone"></i> '+T().say+'</button><div id="pron-hint" style="text-align:center;color:var(--ink3);font-size:13px;margin-top:8px;min-height:18px"></div>'
-    +'<button class="pron-skip" onclick="window._pronSkip()">'+esc(RT.skip)+'</button>';
-  setTimeout(function(){speak(c.phrase)},350);
-  var st={stream:null,rec:null,chunks:[],auto:null};
+  $("#f-body").innerHTML=lessonPronHtml(c.phrase,c.pinyin,tr(c.translation||""),"pron-btn","pron-hint","window._pron()","window._pronSkip()");
+  setWriteBtn("");
+  var st={stream:null,rec:null,chunks:[],auto:null,cancelled:false,busy:false};
+  var audioTimer=setTimeout(function(){if(!st.cancelled)speak(c.phrase)},350);
+  LESSON_PRON_CANCEL=function(){st.cancelled=true;clearTimeout(audioTimer);clearTimeout(st.auto);try{if(st.rec){st.rec.onstop=null;if(st.rec.state!=="inactive")st.rec.stop()}}catch(e){}release()};
   window._pronSkip=function(){
-    if(Flow.answered)return;
-    try{clearTimeout(st.auto);if(st.rec&&st.rec.state!=="inactive"){st.rec.onstop=null;st.rec.stop()}}catch(e){}
-    try{if(st.stream)st.stream.getTracks().forEach(function(t){t.stop()})}catch(e){}
+    if(Flow.answered||st.cancelled)return;
+    cancelLessonPron();
     Flow.answered=true;Flow.next();
   };
-  function setBtn(label){var b=$("#pron-btn");if(b)b.innerHTML='<i class="ti ti-microphone"></i> '+label}
+  function setBtn(label){var b=$("#pron-btn");if(b){b.setAttribute("aria-label",label);b.classList.toggle("pr-rec",label===_prL().listening)}}
   function hint(t){var h=$("#pron-hint");if(h)h.textContent=t||""}
   function release(){try{if(st.stream)st.stream.getTracks().forEach(function(t){t.stop()})}catch(e){}st.stream=null}
   function stop(){clearTimeout(st.auto);if(st.rec&&st.rec.state!=="inactive"){setBtn(_prL().analyzing);hint(_prL().analyzing);st.rec.stop()}}
   window._pron=function(){
-    if(Flow.answered)return;
+    if(Flow.answered||st.cancelled)return;
     if(st.rec&&st.rec.state!=="inactive"){stop();return;}
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){clog("mic_nosupport","",{md:!!navigator.mediaDevices,gum:!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia),mr:!!window.MediaRecorder});hint(_prL().noSupport);return;}
+    if(st.busy)return;st.busy=true;
     navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+      if(st.cancelled){stream.getTracks().forEach(function(t){t.stop()});return}
       st.stream=stream;st.chunks=[];
       var mimes=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg;codecs=opus"],mime="";
       for(var k=0;k<mimes.length;k++){if(window.MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(mimes[k])){mime=mimes[k];break}}
@@ -5226,12 +5255,14 @@ function cardPron(c){
       st.rec.ondataavailable=function(e){if(e.data&&e.data.size>0)st.chunks.push(e.data)};
       st.rec.onstop=function(){
         var _mt=(st.rec&&st.rec.mimeType)||"audio/webm";var blob=new Blob(st.chunks,{type:_mt});release();
-        if(blob.size<1200){setBtn(T().say);hint(_prL().retry);return;}
+        if(st.cancelled)return;
+        if(blob.size<1200){st.busy=false;setBtn(T().say);hint(_prL().retry);return;}
         var _e=(blob.type||_mt).toLowerCase(),_ext=/mp4|m4a|aac/.test(_e)?"mp4":(/ogg/.test(_e)?"ogg":(/mpeg|mp3/.test(_e)?"mp3":(/wav/.test(_e)?"wav":"webm")));
         var fd=new FormData();fd.append("initData",initData());fd.append("target",c.phrase||"");fd.append("target_pinyin",c.pinyin||"");fd.append("language",LANG);fd.append("level",MAP&&MAP.level||"");fd.append("audio",blob,"voice."+_ext);
         fetch("/api/voice-practice/pronounce",{method:"POST",body:fd})
           .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
           .then(function(o){
+            if(st.cancelled)return;st.busy=false;
             clog("mic_result",(o&&o.j&&o.j.ok===true)?"ok":"fail",{mime:blob.type||_mt,ext:_ext,size:blob.size,heard:((o&&o.j&&o.j.heard)||"").slice(0,24),code:(o&&o.j&&o.j.code)||""});
             if(!o.ok||!o.j||o.j.ok!==true){
               setBtn(T().say);
@@ -5243,12 +5274,12 @@ function cardPron(c){
             beep(pass?[523,659,784]:[220,180]);haptic(pass?"ok":"no");
             showBar(pass,(pass?T().correct:T().wrong)+" "+sc+"%",heard||(pass?"":esc(c.phrase)));
           })
-          .catch(function(){clog("mic_neterr","",{mime:blob.type||_mt,ext:_ext,size:blob.size});setBtn(T().say);hint(_prL().netErr)});
+          .catch(function(){if(st.cancelled)return;st.busy=false;clog("mic_neterr","",{mime:blob.type||_mt,ext:_ext,size:blob.size});setBtn(T().say);hint(_prL().netErr)});
       };
       st.rec.start(250);try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
       setBtn(_prL().listening);hint(_prL().listening);haptic("light");
       clearTimeout(st.auto);st.auto=setTimeout(stop,4000);
-    }).catch(function(err){clog("mic_deny",(err&&err.name)||"",{});hint(_prL().micDeny)});
+    }).catch(function(err){release();if(st.cancelled)return;st.busy=false;clog("mic_deny",(err&&err.name)||"",{});hint(_prL().micDeny)});
   };
 }
 Flow.next=function(){
@@ -8649,7 +8680,7 @@ var NavBack={
     {id:"writeov", close:function(){App.closeWriter()}},
     {id:"resourceov",close:function(){RESOURCE.back()}},
     {id:"secov",  close:function(){if(SECTION&&SECTION.close)SECTION.close()}},
-    {id:"flow",    close:function(){App.exitFlow()}}
+    {id:"flow",    close:function(){App.requestExitFlow()}}
   ],
   /* Bular ochiq bo'lsa orqaga qaytish UMUMAN ishlamaydi: to'lov va reklama
      gate'i hamda mukofot ketma-ketligi aylanib o'tilmasligi shart.
