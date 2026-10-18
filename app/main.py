@@ -2251,16 +2251,16 @@ async def course_v3_lesson_file(level: str, filename: str):
     return static_json_response(f"app/static/course_v3_data/{level}/{filename}")
 
 
-@app.get("/audio/tour/{lang}/{key}.mp3")
-async def course_v3_tour_audio(lang: str, key: str):
-    import os
-    import re
-    if lang not in {"uz", "ru", "tj"} or not re.fullmatch(r"[A-Za-z0-9_\-]+", key):
+@app.get("/audio/tour/{lang}/{filename}")
+async def course_v3_tour_audio(lang: str, filename: str):
+    # Source includes narration in WAV (f01..f10) and MP3.
+    from app.services.tour_audio import resolve_tour_audio
+
+    resolved = resolve_tour_audio(lang, filename)
+    if resolved is None:
         return JSONResponse(status_code=404, content={"error": "not_found"})
-    path = f"app/static/audio/tour/{lang}/{key}.mp3"
-    if not os.path.isfile(path):
-        return JSONResponse(status_code=404, content={"error": "not_found"})
-    return FileResponse(path, media_type="audio/mpeg")
+    path, media_type = resolved
+    return FileResponse(path, media_type=media_type)
 
 
 # Public pre-rendered Mandarin MP3s. This is a static file read only:
