@@ -55,8 +55,8 @@
     },
     "app/static/hsk-lugat.html": {
       "baseline_sha1": "b0bebb8df10bfe6ec91f928a48676d76adab91df",
-      "reviewed_sha1": "7051321e0664d954bc3e0621fc2dd648a0a73a83",
-      "reason": "14 UZ/RU/TJ Dictionary practice and character-memory header labels centralised through bundled local UI and preserved inline fallback for all locales on dynamic switch. Search, levels, word data, character details and audio untouched."
+      "reviewed_sha1": "0f10829fc3095ce38c1c629d737b7275d8677c80",
+      "reason": "14 UZ/RU/TJ Dictionary practice and character-memory header labels centralised through bundled local UI and preserved inline fallback for all locales on dynamic switch. Search, levels, word data, character details and audio untouched. Additional 29 exact UZ/RU/TJ display-only Dictionary main/stroke-writer UI labels centralised with bundled static UI and inline fallback. The three existing runtime counter/stroke functions, search/level filter/locale controls, learning content, stored data and audio remain untouched; physical HTML lines unchanged."
     },
     "app/static/hsk-gaplar.html": {
       "baseline_sha1": "93bd82cb79245ef34834466587ff20e72b729426",

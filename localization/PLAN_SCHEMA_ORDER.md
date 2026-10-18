@@ -1607,3 +1607,7 @@ Keep GitHub's branch current without force-resetting unrelated user work.
 ### Subscription nested UI exact-source adoption (2026-10-19)
 
 - Original nested benefits, focus, payment/country display labels and plan naming strings: +79 UZ/RU/TJ text values, total **702 course catalog keys per locale**. Source keeps all original arrays/IDs, locale fallback and literal values, while resolving bundled static resources synchronously. No changes to plan prices, billing, verification, receipt, bank details, entitlements, referrals or server requests. Added Node/frozen-SHA regression, updated strict catalog test counts, and regenerated all 6 Mini App/Desktop/Bot/Android local resources. Requires P0/Android/Backend CI and real manual checkout path QA before PR merge.
+
+## Dictionary 29 remaining display labels: local-first exact-source adoption (2026-10-19)
+
+- 20 main Dictionary static strings, 7 fast stroke writer static labels and 2 standard stroke writer status strings adopt UZ/RU/TJ local generated course keys (731 per locale), preserving inline literal fallback. Main dictionary counts and stroke label functions unchanged. HTML physical line count remains 1898; source SHA review and Node offline/override source regression, six deterministic generated resources, P0 CI updated. No word/search/level/filter/audio/storage/user state changes. Real WebView/desktop/Android QA still required prior to merge.

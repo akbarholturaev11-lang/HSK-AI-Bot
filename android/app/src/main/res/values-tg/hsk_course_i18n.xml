@@ -31,6 +31,13 @@
     <string name="hsk_course_dialog" formatted="false">Гуфтугӯ</string>
     <string name="hsk_course_dict" formatted="false">Луғати иероглиф</string>
     <string name="hsk_course_dict_sub" formatted="false">HSK 1–4 · навишт, пинйин, маъно</string>
+    <string name="hsk_course_dictionary_fast_writer_close" formatted="false">Пӯшидан</string>
+    <string name="hsk_course_dictionary_fast_writer_fallback" formatted="false">Тартиби навиш бор нашуд</string>
+    <string name="hsk_course_dictionary_fast_writer_loading" formatted="false">Тартиби навиш бор шуда истодааст…</string>
+    <string name="hsk_course_dictionary_fast_writer_next" formatted="false">Хати навбатӣ</string>
+    <string name="hsk_course_dictionary_fast_writer_pause" formatted="false">Таваққуф</string>
+    <string name="hsk_course_dictionary_fast_writer_play" formatted="false">Тартиби навиштро нишон додан</string>
+    <string name="hsk_course_dictionary_fast_writer_previous" formatted="false">Хати пешина</string>
     <string name="hsk_course_dictionary_memo_belgi" formatted="false">Калиди маъно ва овоз</string>
     <string name="hsk_course_dictionary_memo_eslab" formatted="false">Чӣ тавр дар хотир монед</string>
     <string name="hsk_course_dictionary_memo_mano" formatted="false">Калиди маъно</string>
@@ -38,6 +45,26 @@
     <string name="hsk_course_dictionary_memo_oxshash" formatted="false">Иероглифҳои монанд</string>
     <string name="hsk_course_dictionary_memo_tarkibi" formatted="false">Таркиб</string>
     <string name="hsk_course_dictionary_memo_tovush" formatted="false">Қисми овозӣ</string>
+    <string name="hsk_course_dictionary_page_all_levels" formatted="false">Ҳамаи сатҳҳо</string>
+    <string name="hsk_course_dictionary_page_all_versions" formatted="false">Ҳамаи версияҳо</string>
+    <string name="hsk_course_dictionary_page_all_words" formatted="false">Ҳамаи калимаҳо</string>
+    <string name="hsk_course_dictionary_page_clear_history" formatted="false">Тоза кардан</string>
+    <string name="hsk_course_dictionary_page_clear_search" formatted="false">Пок кардани ҷустуҷӯ</string>
+    <string name="hsk_course_dictionary_page_close" formatted="false">Пӯшидан</string>
+    <string name="hsk_course_dictionary_page_empty_sub" formatted="false">Калимаи дигар санҷед.</string>
+    <string name="hsk_course_dictionary_page_empty_title" formatted="false">Чизе ёфт нашуд.</string>
+    <string name="hsk_course_dictionary_page_filter" formatted="false">Филтр</string>
+    <string name="hsk_course_dictionary_page_grammar" formatted="false">Грамматика</string>
+    <string name="hsk_course_dictionary_page_grammar_example" formatted="false">Мисол</string>
+    <string name="hsk_course_dictionary_page_hide_filters" formatted="false">Пинҳон кардани филтрҳо</string>
+    <string name="hsk_course_dictionary_page_history_title" formatted="false">Ҷустуҷӯҳои охир</string>
+    <string name="hsk_course_dictionary_page_language" formatted="false">Забон</string>
+    <string name="hsk_course_dictionary_page_level_filter" formatted="false">Дараҷа</string>
+    <string name="hsk_course_dictionary_page_order" formatted="false">Тартиби навиш</string>
+    <string name="hsk_course_dictionary_page_placeholder" formatted="false">Ҷустуҷӯ аз рӯи маъно, пиньин ё иероглиф…</string>
+    <string name="hsk_course_dictionary_page_show_filters" formatted="false">Намоиши филтрҳо</string>
+    <string name="hsk_course_dictionary_page_title" formatted="false">Луғати иероглифҳо</string>
+    <string name="hsk_course_dictionary_page_version_filter" formatted="false">Нашри луғат</string>
     <string name="hsk_course_dictionary_practice_head" formatted="false">Машқҳо</string>
     <string name="hsk_course_dictionary_practice_mem_s" formatted="false">Машқи ҳофиза</string>
     <string name="hsk_course_dictionary_practice_mem_t" formatted="false">Зуд ёд гирифтан</string>
@@ -45,6 +72,8 @@
     <string name="hsk_course_dictionary_practice_pron_t" formatted="false">Санҷиши талаффуз</string>
     <string name="hsk_course_dictionary_practice_recog_s" formatted="false">Шинохти иероглиф</string>
     <string name="hsk_course_dictionary_practice_recog_t" formatted="false">Аз байни монандҳо ёбед</string>
+    <string name="hsk_course_dictionary_writer_status_failed" formatted="false">Тартиби навиш бор нашуд. Интернетро санҷида, дубора кӯшиш кунед.</string>
+    <string name="hsk_course_dictionary_writer_status_loading" formatted="false">Тартиби навиш бор шуда истодааст…</string>
     <string name="hsk_course_done" formatted="false">анҷом</string>
     <string name="hsk_course_download_page_all_lead" formatted="false">Версияи охирин барои ҳар дастгоҳ.</string>
     <string name="hsk_course_download_page_all_title" formatted="false">Ҳамаи боргириҳо</string>

@@ -1,5 +1,11 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## Dictionary remaining UI labels and stroke writer status — 29 keys (2026-10-19)
+
+- `app/static/hsk-lugat.html`: **20 main dictionary UI strings, 7 fast stroke writer control/status strings and 2 normal stroke writer status strings** moved as exact original UZ/RU/TJ text to `dictionaryPage.*`, `dictionaryFastWriter.*`, `dictionaryWriterStatus.*` (`702 → 731 keys per locale`). All three locales hydrate synchronously from one local generated `hsk-course-i18n.js?v=20261019-dictionary-display-v20` before render or fast-writer use, retaining original strings as fallback. Existing dynamic `countAll`, `countResults`, `strokes` functions remain unmodified; original 1898 physical HTML lines preserved.
+- Six generated Android/Mini App/Desktop/Bot course UI resources match the new 731-key catalogs. Source Git SHA review updated (`hsk-lugat.html` reviewed SHA `0f10829fc3095ce38c1c629d737b7275d8677c80`), P0 CI includes a new `tests/test_i18n_dictionary_ui_adoption.py` for 87 literal parity assertions, load order, zero-network fallback and Node-executed 3-language override/fallback. Earlier dictionary 14-label regression now accepts only the dictionary's newer JS asset version while Voice/Memorize keep v16.
+- Strictly UI-only: no dictionary word data or Chinese/pinyin/translation search indexing, filters, level IDs, localStorage, fast-writer stroke geometry/render behavior, audio, Pro, payment or user progress modified. PR #179 Draft on `codex/i18n-local-first-foundation-20261017`; main and production untouched. **Verify new commit's six CI workflows before claiming green; physical-device manual QA pending.** Previous `e485fcb9` confirmed 6/6 CI success.
+
 ## Subscription nested UI — remaining 79 exact UZ/RU/TJ labels (2026-10-19)
 
 - Continue prior `92a4a54f` 102 simple-display-key subscription stage with **79 additional original nested display-only fields per UZ/RU/TJ locale**: mode titles, plan labels, benefit/focus/perk text, card hints, and visible payment/country method names/descriptions. Catalog **623 → 702 keys/locale**, and all six platform generated resources refreshed with static `hsk-course-i18n.js?v=20261019-subscription-v19`. The source's original inline structures, keys/IDs and original values remain as synchronous offline fallback.

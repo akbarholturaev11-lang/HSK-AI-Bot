@@ -31,6 +31,13 @@
     <string name="hsk_course_dialog" formatted="false">Диалог</string>
     <string name="hsk_course_dict" formatted="false">Словарь иероглифов</string>
     <string name="hsk_course_dict_sub" formatted="false">HSK 1–4 · написание, пиньинь, значение</string>
+    <string name="hsk_course_dictionary_fast_writer_close" formatted="false">Закрыть</string>
+    <string name="hsk_course_dictionary_fast_writer_fallback" formatted="false">Порядок черт не загрузился</string>
+    <string name="hsk_course_dictionary_fast_writer_loading" formatted="false">Загружается порядок черт…</string>
+    <string name="hsk_course_dictionary_fast_writer_next" formatted="false">Следующая черта</string>
+    <string name="hsk_course_dictionary_fast_writer_pause" formatted="false">Пауза</string>
+    <string name="hsk_course_dictionary_fast_writer_play" formatted="false">Показать написание</string>
+    <string name="hsk_course_dictionary_fast_writer_previous" formatted="false">Предыдущая черта</string>
     <string name="hsk_course_dictionary_memo_belgi" formatted="false">Ключ значения и звука</string>
     <string name="hsk_course_dictionary_memo_eslab" formatted="false">Как запомнить</string>
     <string name="hsk_course_dictionary_memo_mano" formatted="false">Ключ значения</string>
@@ -38,6 +45,26 @@
     <string name="hsk_course_dictionary_memo_oxshash" formatted="false">Похожие иероглифы</string>
     <string name="hsk_course_dictionary_memo_tarkibi" formatted="false">Состав</string>
     <string name="hsk_course_dictionary_memo_tovush" formatted="false">Фонетик</string>
+    <string name="hsk_course_dictionary_page_all_levels" formatted="false">Все уровни</string>
+    <string name="hsk_course_dictionary_page_all_versions" formatted="false">Все версии</string>
+    <string name="hsk_course_dictionary_page_all_words" formatted="false">Все слова</string>
+    <string name="hsk_course_dictionary_page_clear_history" formatted="false">Очистить</string>
+    <string name="hsk_course_dictionary_page_clear_search" formatted="false">Очистить поиск</string>
+    <string name="hsk_course_dictionary_page_close" formatted="false">Закрыть</string>
+    <string name="hsk_course_dictionary_page_empty_sub" formatted="false">Попробуйте другое слово.</string>
+    <string name="hsk_course_dictionary_page_empty_title" formatted="false">Ничего не найдено.</string>
+    <string name="hsk_course_dictionary_page_filter" formatted="false">Фильтр</string>
+    <string name="hsk_course_dictionary_page_grammar" formatted="false">Грамматика</string>
+    <string name="hsk_course_dictionary_page_grammar_example" formatted="false">Пример</string>
+    <string name="hsk_course_dictionary_page_hide_filters" formatted="false">Скрыть фильтры</string>
+    <string name="hsk_course_dictionary_page_history_title" formatted="false">Последние поиски</string>
+    <string name="hsk_course_dictionary_page_language" formatted="false">Язык</string>
+    <string name="hsk_course_dictionary_page_level_filter" formatted="false">Уровень</string>
+    <string name="hsk_course_dictionary_page_order" formatted="false">Порядок черт</string>
+    <string name="hsk_course_dictionary_page_placeholder" formatted="false">Поиск по значению, пиньиню или иероглифу…</string>
+    <string name="hsk_course_dictionary_page_show_filters" formatted="false">Показать фильтры</string>
+    <string name="hsk_course_dictionary_page_title" formatted="false">Словарь иероглифов</string>
+    <string name="hsk_course_dictionary_page_version_filter" formatted="false">Версия словаря</string>
     <string name="hsk_course_dictionary_practice_head" formatted="false">Упражнения</string>
     <string name="hsk_course_dictionary_practice_mem_s" formatted="false">Тренировка памяти</string>
     <string name="hsk_course_dictionary_practice_mem_t" formatted="false">Быстрое запоминание</string>
@@ -45,6 +72,8 @@
     <string name="hsk_course_dictionary_practice_pron_t" formatted="false">Проверка произношения</string>
     <string name="hsk_course_dictionary_practice_recog_s" formatted="false">Распознавание</string>
     <string name="hsk_course_dictionary_practice_recog_t" formatted="false">Найдите среди похожих</string>
+    <string name="hsk_course_dictionary_writer_status_failed" formatted="false">Не удалось загрузить порядок черт. Проверьте интернет и попробуйте снова.</string>
+    <string name="hsk_course_dictionary_writer_status_loading" formatted="false">Загружается порядок черт…</string>
     <string name="hsk_course_done" formatted="false">завершено</string>
     <string name="hsk_course_download_page_all_lead" formatted="false">Последняя версия для каждого устройства.</string>
     <string name="hsk_course_download_page_all_title" formatted="false">Все загрузки</string>

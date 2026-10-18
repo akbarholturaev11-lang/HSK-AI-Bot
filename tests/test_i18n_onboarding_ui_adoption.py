@@ -23,7 +23,7 @@ class OnboardingCourseCatalogTests(unittest.TestCase):
                 catalog = json.loads(
                     (ROOT / f"localization/ui/{locale}/course.json").read_text(
                         encoding="utf-8"))["messages"]
-                self.assertEqual(len(catalog), 702)
+                self.assertEqual(len(catalog), 731)
                 for key in FIELDS:
                     self.assertEqual(catalog["onboarding." + key],
                                      json.loads('"' + found[key] + '"'))

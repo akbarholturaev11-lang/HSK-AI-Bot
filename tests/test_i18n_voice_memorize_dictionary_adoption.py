@@ -11,6 +11,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ("uz", "ru", "tj")
 VERSION = "hsk-course-i18n.js?v=20261019-voice-dictionary-v16"
+DICTIONARY_VERSION = "hsk-course-i18n.js?v=20261019-dictionary-display-v20"
 KEY_RE = re.compile(r"([{,]\s*)([A-Za-z_]\w*)(\s*:)")
 
 
@@ -65,7 +66,7 @@ class VoiceMemorizeDictionaryUIAdoptionTests(unittest.TestCase):
                 messages = json.loads(
                     (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
                 )["messages"]
-                self.assertEqual(len(messages), 702)
+                self.assertEqual(len(messages), 731)
                 for key, value in voice[locale].items():
                     self.assertEqual(messages["voicePage." + key], value)
                 for key, labels in limit.items():
@@ -79,11 +80,12 @@ class VoiceMemorizeDictionaryUIAdoptionTests(unittest.TestCase):
         pages = get_pages()
         for page, source in pages.items():
             with self.subTest(page=page):
-                self.assertEqual(source.count(VERSION), 1)
+                version = DICTIONARY_VERSION if page == "dictionary" else VERSION
+                self.assertEqual(source.count(version), 1)
                 before = ("var L=" if page == "voice" else
                           "var LIM=" if page == "memorize" else
                           "  var practiceLabels = ")
-                self.assertLess(source.index(VERSION), source.index(before))
+                self.assertLess(source.index(version), source.index(before))
         self.assertIn('VOICE_PAGE_UI["voicePage."+key]', pages["voice"])
         self.assertIn('if(typeof value==="string"&&value)L[key]=value', pages["voice"])
         self.assertIn('MEMORIZE_LIMIT_UI["memorizeLimit."+key]', pages["memorize"])

@@ -31,6 +31,13 @@
     <string name="hsk_course_dialog" formatted="false">Dialog</string>
     <string name="hsk_course_dict" formatted="false">Ieroglif lug\'ati</string>
     <string name="hsk_course_dict_sub" formatted="false">HSK 1–4 · yozilishi, pinyin, ma\'no</string>
+    <string name="hsk_course_dictionary_fast_writer_close" formatted="false">Yopish</string>
+    <string name="hsk_course_dictionary_fast_writer_fallback" formatted="false">Yozilish tartibi yuklanmadi</string>
+    <string name="hsk_course_dictionary_fast_writer_loading" formatted="false">Yozilish tartibi yuklanmoqda…</string>
+    <string name="hsk_course_dictionary_fast_writer_next" formatted="false">Keyingi chiziq</string>
+    <string name="hsk_course_dictionary_fast_writer_pause" formatted="false">Pauza</string>
+    <string name="hsk_course_dictionary_fast_writer_play" formatted="false">Yozilishini ko‘rsatish</string>
+    <string name="hsk_course_dictionary_fast_writer_previous" formatted="false">Oldingi chiziq</string>
     <string name="hsk_course_dictionary_memo_belgi" formatted="false">Ma\'no va tovush belgisi</string>
     <string name="hsk_course_dictionary_memo_eslab" formatted="false">Eslab qolish</string>
     <string name="hsk_course_dictionary_memo_mano" formatted="false">Ma\'no belgisi</string>
@@ -38,6 +45,26 @@
     <string name="hsk_course_dictionary_memo_oxshash" formatted="false">O\'xshash iyerogliflar</string>
     <string name="hsk_course_dictionary_memo_tarkibi" formatted="false">Tarkibi</string>
     <string name="hsk_course_dictionary_memo_tovush" formatted="false">Tovush qismi</string>
+    <string name="hsk_course_dictionary_page_all_levels" formatted="false">Barcha darajalar</string>
+    <string name="hsk_course_dictionary_page_all_versions" formatted="false">Barcha versiyalar</string>
+    <string name="hsk_course_dictionary_page_all_words" formatted="false">Barcha so‘zlar</string>
+    <string name="hsk_course_dictionary_page_clear_history" formatted="false">Tozalash</string>
+    <string name="hsk_course_dictionary_page_clear_search" formatted="false">Qidiruvni tozalash</string>
+    <string name="hsk_course_dictionary_page_close" formatted="false">Yopish</string>
+    <string name="hsk_course_dictionary_page_empty_sub" formatted="false">Boshqa so\'z bilan urinib ko\'ring.</string>
+    <string name="hsk_course_dictionary_page_empty_title" formatted="false">Hech narsa topilmadi.</string>
+    <string name="hsk_course_dictionary_page_filter" formatted="false">Filtr</string>
+    <string name="hsk_course_dictionary_page_grammar" formatted="false">Grammatika</string>
+    <string name="hsk_course_dictionary_page_grammar_example" formatted="false">Misol</string>
+    <string name="hsk_course_dictionary_page_hide_filters" formatted="false">Filtrlarni yashirish</string>
+    <string name="hsk_course_dictionary_page_history_title" formatted="false">Oxirgi qidiruvlar</string>
+    <string name="hsk_course_dictionary_page_language" formatted="false">Til</string>
+    <string name="hsk_course_dictionary_page_level_filter" formatted="false">Daraja</string>
+    <string name="hsk_course_dictionary_page_order" formatted="false">Tartib</string>
+    <string name="hsk_course_dictionary_page_placeholder" formatted="false">Ma\'no, pinyin yoki ieroglif bo\'yicha qidiring…</string>
+    <string name="hsk_course_dictionary_page_show_filters" formatted="false">Filtrlarni ko‘rsatish</string>
+    <string name="hsk_course_dictionary_page_title" formatted="false">Ierogliflar lug‘ati</string>
+    <string name="hsk_course_dictionary_page_version_filter" formatted="false">Lug‘at versiyasi</string>
     <string name="hsk_course_dictionary_practice_head" formatted="false">Mashqlar</string>
     <string name="hsk_course_dictionary_practice_mem_s" formatted="false">Yodlash mashqi</string>
     <string name="hsk_course_dictionary_practice_mem_t" formatted="false">Tez eslab qolish</string>
@@ -45,6 +72,8 @@
     <string name="hsk_course_dictionary_practice_pron_t" formatted="false">Talaffuzni tekshirish</string>
     <string name="hsk_course_dictionary_practice_recog_s" formatted="false">Ieroglifni taning</string>
     <string name="hsk_course_dictionary_practice_recog_t" formatted="false">O\'xshashlardan ajrating</string>
+    <string name="hsk_course_dictionary_writer_status_failed" formatted="false">Yozilish tartibi yuklanmadi. Internetni tekshirib, qayta urinib ko‘ring.</string>
+    <string name="hsk_course_dictionary_writer_status_loading" formatted="false">Yozilish tartibi yuklanmoqda…</string>
     <string name="hsk_course_done" formatted="false">tugallandi</string>
     <string name="hsk_course_download_page_all_lead" formatted="false">Har bir qurilma uchun oxirgi versiya.</string>
     <string name="hsk_course_download_page_all_title" formatted="false">Barcha yuklamalar</string>
