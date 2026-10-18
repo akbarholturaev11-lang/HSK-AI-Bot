@@ -444,12 +444,16 @@ function boot(){Promise.all([LV_READY,SCRIPTS_READY]).then(function(){
 /* Sessiya boshlashdan oldin kunlik limitni tekshiramiz (server tomonda). */
 function gateStart(newAttempt){
   var ref=gateRef(newAttempt!==false);
-
-  B.innerHTML=HSKStudyPreparing.render(LANG);
+  var preparing=true;
+  SCRIPTS_READY.then(function(){
+    if(preparing&&ref===ATTEMPT_REF)B.innerHTML=HSKStudyPreparing.render(LANG);
+  });
   runGate(ref).then(function(o){
+    preparing=false;
     if(ref!==ATTEMPT_REF)return;
     if(o.status===403){showLimit(o.j);return}boot();
   }).catch(function(){
+    preparing=false;
     if(ref!==ATTEMPT_REF)return;
     var t=practiceGateErrorCopy();
     B.innerHTML='<div class="done"><p>'+gateEscape(t.body)+'</p><button onclick="gateStart(false)">'+gateEscape(t.retry)+'</button><button class="ghost" onclick="goBack()">'+gateEscape(t.back)+'</button></div>';

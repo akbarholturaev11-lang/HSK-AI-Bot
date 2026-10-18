@@ -135,7 +135,8 @@ jobs:
         run: |
           python -m pip install pytest playwright
           python -m playwright install --with-deps chromium
-      - name: Check canonical admin actions at mobile and desktop widths
+      - name: Check canonical admin actions and deferred practice initialization
         run: >-
           python -m pytest -q tests/e2e/test_admin_canonical_management.py
           tests/e2e/test_miniapp_smoke.py::test_admin_control_renders_real_api_payload_without_demo_data
+          tests/e2e/test_practice_bootstrap.py

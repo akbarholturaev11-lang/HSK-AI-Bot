@@ -125,12 +125,16 @@ function showLimitNow(){
 /* Sessiya ochish (sahifa yuklanganda) — reload xavfsiz token bilan. */
 function gateStart(newAttempt){
   var ref=gateRef(newAttempt!==false);
-
-  document.getElementById("body").innerHTML=HSKStudyPreparing.render(LANG);
+  var preparing=true;
+  SCRIPTS_READY.then(function(){
+    if(preparing&&ref===ATTEMPT_REF)document.getElementById("body").innerHTML=HSKStudyPreparing.render(LANG);
+  });
   runGate(ref).then(function(o){
+    preparing=false;
     if(ref!==ATTEMPT_REF)return;
     if(o.status===403){showLimit(o.j);return}start();
   }).catch(function(){
+    preparing=false;
     if(ref!==ATTEMPT_REF)return;
     var t=practiceGateErrorCopy();
     document.getElementById("body").innerHTML='<div class="done"><p>'+gateEscape(t.body)+'</p><button onclick="gateStart(false)">'+gateEscape(t.retry)+'</button><button class="ghost" onclick="goBack()">'+gateEscape(t.back)+'</button></div>';

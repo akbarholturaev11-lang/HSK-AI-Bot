@@ -146,12 +146,17 @@ function showLimitNow(){
 }
 function gateStart(newAttempt){
   var ref=gateRef(newAttempt!==false);
+  var preparing=true;
   document.getElementById("ctrl").style.display="none";document.getElementById("done").classList.remove("on");
-  document.getElementById("stage").innerHTML=HSKStudyPreparing.render(LANG);
+  SCRIPTS_READY.then(function(){
+    if(preparing&&ref===ATTEMPT_REF)document.getElementById("stage").innerHTML=HSKStudyPreparing.render(LANG);
+  });
   runGate(ref).then(function(o){
+    preparing=false;
     if(ref!==ATTEMPT_REF)return;
     if(o.status===403){showLimit(o.j);return}start();
   }).catch(function(){
+    preparing=false;
     if(ref!==ATTEMPT_REF)return;
     var t=practiceGateErrorCopy();
     document.getElementById("stage").innerHTML='<div class="done on"><p>'+gateEscape(t.body)+'</p><button onclick="gateStart(false)">'+gateEscape(t.retry)+'</button><button class="ghost" onclick="goBack()">'+gateEscape(t.back)+'</button></div>';
