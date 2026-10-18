@@ -63,6 +63,24 @@
     <string name="hsk_course_level_picker_nhsk2" formatted="false">Стандарти нав · HSK 2</string>
     <string name="hsk_course_level_picker_nhsk3" formatted="false">Стандарти нав · HSK 3</string>
     <string name="hsk_course_level_picker_title" formatted="false">Сатҳро интихоб кунед</string>
+    <string name="hsk_course_level_stats_acc" formatted="false">ДАҚИҚӢ</string>
+    <string name="hsk_course_level_stats_time" formatted="false">ВАҚТ</string>
+    <string name="hsk_course_level_stats_xp" formatted="false">ТАҶРИБА</string>
+    <string name="hsk_course_level_up_acc" formatted="false">дақиқӣ</string>
+    <string name="hsk_course_level_up_bonus_xp" formatted="false">бонус XP</string>
+    <string name="hsk_course_level_up_chest" formatted="false">сандуқи нав</string>
+    <string name="hsk_course_level_up_combo" formatted="false">комбо</string>
+    <string name="hsk_course_level_up_cont" formatted="false">Идома</string>
+    <string name="hsk_course_level_up_cp_h" formatted="false">Дарси {n} пурра анҷом ёфт!</string>
+    <string name="hsk_course_level_up_cp_p" formatted="false">Тамоми дарс аз они шумост: калимаҳо, гуфтугӯ ва грамматика. Акнун онҳоро дар нутқ истифода бурда метавонед.</string>
+    <string name="hsk_course_level_up_lesson_h" formatted="false">Дарс анҷом ёфт!</string>
+    <string name="hsk_course_level_up_lesson_p" formatted="false">Офарин! Зинаи навбатӣ интизор аст.</string>
+    <string name="hsk_course_level_up_level_h" formatted="false">HSK 1 тамом!</string>
+    <string name="hsk_course_level_up_level_p" formatted="false">Табрик! HSK 2 кушода шуд.</string>
+    <string name="hsk_course_level_up_lvl" formatted="false">Сатҳ</string>
+    <string name="hsk_course_level_up_opened" formatted="false">кушода шуд</string>
+    <string name="hsk_course_level_up_xp_h" formatted="false">Сатҳи 5!</string>
+    <string name="hsk_course_level_up_xp_p" formatted="false">Офарин! Сатҳи нав — имкониятҳои нав.</string>
     <string name="hsk_course_listen" formatted="false">Гӯш кардан</string>
     <string name="hsk_course_locked_lesson" formatted="false">Ин дарс дар HSK AI Pro аст</string>
     <string name="hsk_course_mashq_sub" formatted="false">Мустаҳкам ва санҷиш</string>
@@ -76,6 +94,7 @@
     <string name="hsk_course_nav_voice" formatted="false">AI Voice</string>
     <string name="hsk_course_new_word" formatted="false">Калимаи нав</string>
     <string name="hsk_course_next" formatted="false">Идома</string>
+    <string name="hsk_course_next_lesson_open" formatted="false">Кушодани дарси оянда</string>
     <string name="hsk_course_notif" formatted="false">Огоҳиҳо</string>
     <string name="hsk_course_notif_times_head" formatted="false">Бот вақте огоҳӣ мефиристад, ки:</string>
     <string name="hsk_course_notif_times_item0" formatted="false">касе дар рейтинг аз шумо пеш меравад</string>
@@ -86,6 +105,12 @@
     <string name="hsk_course_notifications_off_off" formatted="false">Хомӯш кардан</string>
     <string name="hsk_course_notifications_off_title" formatted="false">Огоҳиҳоро хомӯш мекунед?</string>
     <string name="hsk_course_on" formatted="false">Фаъол</string>
+    <string name="hsk_course_part_sections_d" formatted="false">Гуфтугӯ</string>
+    <string name="hsk_course_part_sections_p" formatted="false">Машқ</string>
+    <string name="hsk_course_part_sections_r" formatted="false">Такрор</string>
+    <string name="hsk_course_part_sections_s" formatted="false">Талаффуз</string>
+    <string name="hsk_course_part_sections_w" formatted="false">Калимаҳои нав</string>
+    <string name="hsk_course_part_sections_x" formatted="false">Такрори омехта</string>
     <string name="hsk_course_pay_sub" formatted="false">Тамоми роҳи HSK</string>
     <string name="hsk_course_pay_title" formatted="false">HSK AI Pro</string>
     <string name="hsk_course_pinyin_settings_all" formatted="false">Дар ҳама ҷо нишон додан</string>
@@ -120,6 +145,10 @@
     <string name="hsk_course_say" formatted="false">Талаффуз кунед</string>
     <string name="hsk_course_stage" formatted="false">зина</string>
     <string name="hsk_course_streak" formatted="false">рӯз</string>
+    <string name="hsk_course_streak_display_cont" formatted="false">Идома</string>
+    <string name="hsk_course_streak_display_few" formatted="false">рӯз пайдарпай!</string>
+    <string name="hsk_course_streak_display_many" formatted="false">рӯз пайдарпай!</string>
+    <string name="hsk_course_streak_display_one" formatted="false">рӯз пайдарпай!</string>
     <string name="hsk_course_subscribe" formatted="false">HSK AI Pro ⭐️ гирифтан</string>
     <string name="hsk_course_test_center" formatted="false">Маркази тест</string>
     <string name="hsk_course_test_sub" formatted="false">Имтиҳонҳои HSK ва муайянкунии сатҳ</string>
@@ -140,6 +169,7 @@
     <string name="hsk_course_voice_start" formatted="false">Оғози сӯҳбат</string>
     <string name="hsk_course_voice_sub" formatted="false">Сӯҳбати зинда бо панда 阿宝.</string>
     <string name="hsk_course_voice_title" formatted="false">Бо AI сӯҳбат кунед</string>
+    <string name="hsk_course_writer_loading" formatted="false">Бор шуда истодааст...</string>
     <string name="hsk_course_wrong" formatted="false">Нодуруст</string>
     <string name="hsk_course_xp" formatted="false">XP</string>
     <string name="hsk_course_you" formatted="false">Шумо</string>

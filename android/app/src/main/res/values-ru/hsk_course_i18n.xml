@@ -63,6 +63,24 @@
     <string name="hsk_course_level_picker_nhsk2" formatted="false">Новый стандарт · HSK 2</string>
     <string name="hsk_course_level_picker_nhsk3" formatted="false">Новый стандарт · HSK 3</string>
     <string name="hsk_course_level_picker_title" formatted="false">Выберите уровень</string>
+    <string name="hsk_course_level_stats_acc" formatted="false">ТОЧНОСТЬ</string>
+    <string name="hsk_course_level_stats_time" formatted="false">ВРЕМЯ</string>
+    <string name="hsk_course_level_stats_xp" formatted="false">ОПЫТ</string>
+    <string name="hsk_course_level_up_acc" formatted="false">точность</string>
+    <string name="hsk_course_level_up_bonus_xp" formatted="false">бонус XP</string>
+    <string name="hsk_course_level_up_chest" formatted="false">новый сундук</string>
+    <string name="hsk_course_level_up_combo" formatted="false">комбо</string>
+    <string name="hsk_course_level_up_cont" formatted="false">Продолжить</string>
+    <string name="hsk_course_level_up_cp_h" formatted="false">Урок {n} полностью пройден!</string>
+    <string name="hsk_course_level_up_cp_p" formatted="false">Весь урок ваш: слова, диалог и грамматика. Теперь вы можете использовать их в речи.</string>
+    <string name="hsk_course_level_up_lesson_h" formatted="false">Урок завершён!</string>
+    <string name="hsk_course_level_up_lesson_p" formatted="false">Отличная работа! Следующий этап ждёт.</string>
+    <string name="hsk_course_level_up_level_h" formatted="false">HSK 1 пройден!</string>
+    <string name="hsk_course_level_up_level_p" formatted="false">Поздравляем! Открыт HSK 2.</string>
+    <string name="hsk_course_level_up_lvl" formatted="false">Уровень</string>
+    <string name="hsk_course_level_up_opened" formatted="false">открыт</string>
+    <string name="hsk_course_level_up_xp_h" formatted="false">Уровень 5!</string>
+    <string name="hsk_course_level_up_xp_p" formatted="false">Так держать! Новый уровень — новые возможности.</string>
     <string name="hsk_course_listen" formatted="false">Послушать</string>
     <string name="hsk_course_locked_lesson" formatted="false">Этот урок в HSK AI Pro</string>
     <string name="hsk_course_mashq_sub" formatted="false">Закрепление и проверка</string>
@@ -76,6 +94,7 @@
     <string name="hsk_course_nav_voice" formatted="false">AI Voice</string>
     <string name="hsk_course_new_word" formatted="false">Новое слово</string>
     <string name="hsk_course_next" formatted="false">Продолжить</string>
+    <string name="hsk_course_next_lesson_open" formatted="false">Открыть следующий урок</string>
     <string name="hsk_course_notif" formatted="false">Уведомления</string>
     <string name="hsk_course_notif_times_head" formatted="false">Бот пришлёт уведомление, когда:</string>
     <string name="hsk_course_notif_times_item0" formatted="false">кто-то обгоняет вас в рейтинге</string>
@@ -86,6 +105,12 @@
     <string name="hsk_course_notifications_off_off" formatted="false">Отключить</string>
     <string name="hsk_course_notifications_off_title" formatted="false">Отключить уведомления?</string>
     <string name="hsk_course_on" formatted="false">Вкл</string>
+    <string name="hsk_course_part_sections_d" formatted="false">Диалог</string>
+    <string name="hsk_course_part_sections_p" formatted="false">Практика</string>
+    <string name="hsk_course_part_sections_r" formatted="false">Повторение</string>
+    <string name="hsk_course_part_sections_s" formatted="false">Произношение</string>
+    <string name="hsk_course_part_sections_w" formatted="false">Новые слова</string>
+    <string name="hsk_course_part_sections_x" formatted="false">Смешанное повторение</string>
     <string name="hsk_course_pay_sub" formatted="false">Откройте весь путь HSK</string>
     <string name="hsk_course_pay_title" formatted="false">HSK AI Pro</string>
     <string name="hsk_course_pinyin_settings_all" formatted="false">Показывать везде</string>
@@ -120,6 +145,10 @@
     <string name="hsk_course_say" formatted="false">Произнесите</string>
     <string name="hsk_course_stage" formatted="false">этап</string>
     <string name="hsk_course_streak" formatted="false">дней</string>
+    <string name="hsk_course_streak_display_cont" formatted="false">Продолжить</string>
+    <string name="hsk_course_streak_display_few" formatted="false">дня в ударе!</string>
+    <string name="hsk_course_streak_display_many" formatted="false">дней в ударе!</string>
+    <string name="hsk_course_streak_display_one" formatted="false">день в ударе!</string>
     <string name="hsk_course_subscribe" formatted="false">Получить HSK AI Pro ⭐️</string>
     <string name="hsk_course_test_center" formatted="false">Тест-центр</string>
     <string name="hsk_course_test_sub" formatted="false">Экзамены HSK и определение уровня</string>
@@ -140,6 +169,7 @@
     <string name="hsk_course_voice_start" formatted="false">Начать разговор</string>
     <string name="hsk_course_voice_sub" formatted="false">Живой разговор с пандой 阿宝. Слушай, говори, получай исправления.</string>
     <string name="hsk_course_voice_title" formatted="false">Поговорите с AI</string>
+    <string name="hsk_course_writer_loading" formatted="false">Загрузка...</string>
     <string name="hsk_course_wrong" formatted="false">Неверно</string>
     <string name="hsk_course_xp" formatted="false">XP</string>
     <string name="hsk_course_you" formatted="false">Вы</string>

@@ -63,6 +63,24 @@
     <string name="hsk_course_level_picker_nhsk2" formatted="false">Yangi standart · HSK 2</string>
     <string name="hsk_course_level_picker_nhsk3" formatted="false">Yangi standart · HSK 3</string>
     <string name="hsk_course_level_picker_title" formatted="false">Darajani tanlang</string>
+    <string name="hsk_course_level_stats_acc" formatted="false">ANIQLIK</string>
+    <string name="hsk_course_level_stats_time" formatted="false">VAQT</string>
+    <string name="hsk_course_level_stats_xp" formatted="false">TAJRIBA</string>
+    <string name="hsk_course_level_up_acc" formatted="false">aniqlik</string>
+    <string name="hsk_course_level_up_bonus_xp" formatted="false">bonus XP</string>
+    <string name="hsk_course_level_up_chest" formatted="false">yangi sandiq</string>
+    <string name="hsk_course_level_up_combo" formatted="false">combo</string>
+    <string name="hsk_course_level_up_cont" formatted="false">Davom etish</string>
+    <string name="hsk_course_level_up_cp_h" formatted="false">{n}-dars to\'liq yakunlandi!</string>
+    <string name="hsk_course_level_up_cp_p" formatted="false">Butun dars sizniki: so\'zlar, dialog va grammatika. Endi ularni gapda ishlata olasiz.</string>
+    <string name="hsk_course_level_up_lesson_h" formatted="false">Dars tugadi!</string>
+    <string name="hsk_course_level_up_lesson_p" formatted="false">Ajoyib! Keyingi bosqich kutyapti.</string>
+    <string name="hsk_course_level_up_level_h" formatted="false">HSK 1 tugadi!</string>
+    <string name="hsk_course_level_up_level_p" formatted="false">Tabriklaymiz! HSK 2 ochildi.</string>
+    <string name="hsk_course_level_up_lvl" formatted="false">Daraja</string>
+    <string name="hsk_course_level_up_opened" formatted="false">ochildi</string>
+    <string name="hsk_course_level_up_xp_h" formatted="false">5-daraja!</string>
+    <string name="hsk_course_level_up_xp_p" formatted="false">Zo\'r! Yangi daraja — yangi imkoniyatlar.</string>
     <string name="hsk_course_listen" formatted="false">Tinglash</string>
     <string name="hsk_course_locked_lesson" formatted="false">Bu dars HSK AI Pro\'da</string>
     <string name="hsk_course_mashq_sub" formatted="false">Mustahkamlash va sinash</string>
@@ -76,6 +94,7 @@
     <string name="hsk_course_nav_voice" formatted="false">AI Voice</string>
     <string name="hsk_course_new_word" formatted="false">Yangi so\'z</string>
     <string name="hsk_course_next" formatted="false">Davom etish</string>
+    <string name="hsk_course_next_lesson_open" formatted="false">Keyingi darsni ochish</string>
     <string name="hsk_course_notif" formatted="false">Bildirishnomalar</string>
     <string name="hsk_course_notif_times_head" formatted="false">Bot quyidagi holatlarda xabar yuboradi:</string>
     <string name="hsk_course_notif_times_item0" formatted="false">Reytingda kimdir sizdan o\'zib ketsa</string>
@@ -86,6 +105,12 @@
     <string name="hsk_course_notifications_off_off" formatted="false">O\'chirish</string>
     <string name="hsk_course_notifications_off_title" formatted="false">Bildirishnomalarni o\'chirasizmi?</string>
     <string name="hsk_course_on" formatted="false">Yoq</string>
+    <string name="hsk_course_part_sections_d" formatted="false">Dialog</string>
+    <string name="hsk_course_part_sections_p" formatted="false">Mashq</string>
+    <string name="hsk_course_part_sections_r" formatted="false">Takrorlash</string>
+    <string name="hsk_course_part_sections_s" formatted="false">Talaffuz</string>
+    <string name="hsk_course_part_sections_w" formatted="false">Yangi so\'zlar</string>
+    <string name="hsk_course_part_sections_x" formatted="false">Aralash takror</string>
     <string name="hsk_course_pay_sub" formatted="false">Butun HSK yo\'lini oching</string>
     <string name="hsk_course_pay_title" formatted="false">HSK AI Pro</string>
     <string name="hsk_course_pinyin_settings_all" formatted="false">Hammasida ko\'rsatish</string>
@@ -120,6 +145,10 @@
     <string name="hsk_course_say" formatted="false">Talaffuz qiling</string>
     <string name="hsk_course_stage" formatted="false">bosqich</string>
     <string name="hsk_course_streak" formatted="false">kun</string>
+    <string name="hsk_course_streak_display_cont" formatted="false">Davom etish</string>
+    <string name="hsk_course_streak_display_few" formatted="false">kun ketma-ket!</string>
+    <string name="hsk_course_streak_display_many" formatted="false">kun ketma-ket!</string>
+    <string name="hsk_course_streak_display_one" formatted="false">kun ketma-ket!</string>
     <string name="hsk_course_subscribe" formatted="false">HSK AI Pro ⭐️ olish</string>
     <string name="hsk_course_test_center" formatted="false">Test markazi</string>
     <string name="hsk_course_test_sub" formatted="false">HSK imtihonlari va daraja aniqlash</string>
@@ -140,6 +169,7 @@
     <string name="hsk_course_voice_start" formatted="false">Suhbatni boshlash</string>
     <string name="hsk_course_voice_sub" formatted="false">Panda 阿宝 bilan jonli suhbat. Eshit, gapir, tuzatish ol.</string>
     <string name="hsk_course_voice_title" formatted="false">AI bilan gaplashing</string>
+    <string name="hsk_course_writer_loading" formatted="false">Yuklanmoqda...</string>
     <string name="hsk_course_wrong" formatted="false">Noto\'g\'ri</string>
     <string name="hsk_course_xp" formatted="false">XP</string>
     <string name="hsk_course_you" formatted="false">Siz</string>

@@ -115,7 +115,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertEqual(html.count(
-            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-intro-v9"></script>'
+            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-finish-batch-v10"></script>'
         ), 1)
         self.assertLess(html.index("hsk-course-i18n.js"),
                         html.index("function courseMessage("))
@@ -502,7 +502,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('function openSupportLink(url){', html)
         self.assertIn('+(supportUrl?', html)
         self.assertIn('courseMessage("nav."+st.s,T().nav[st.s])', html)
-        self.assertIn('hsk-course-i18n.js?v=20261018-intro-v9', html)
+        self.assertIn('hsk-course-i18n.js?v=20261018-finish-batch-v10', html)
 
 
     def test_miniapp_notifications_and_pinyin_settings_use_local_static_text(self):
@@ -544,7 +544,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('_apiPost("/api/v3/notify",{enabled:on})', html)
         self.assertIn('localStorage.setItem("hsk_v3_pinyin",v)', html)
         self.assertIn("applyPinyinMode()", html)
-        self.assertIn("hsk-course-i18n.js?v=20261018-intro-v9", html)
+        self.assertIn("hsk-course-i18n.js?v=20261018-finish-batch-v10", html)
         self.assertNotIn("fetch('/api/i18n/", html)
 
 
@@ -586,7 +586,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn("App.applyNotif(false)", html)
         self.assertIn('_apiPost("/api/v3/notify",{enabled:on})', html)
         self.assertIn("myAvatarImgHtml()", html)
-        self.assertIn("hsk-course-i18n.js?v=20261018-intro-v9", html)
+        self.assertIn("hsk-course-i18n.js?v=20261018-finish-batch-v10", html)
 
 
     def test_miniapp_course_and_practice_error_copy_local_assets(self):
@@ -632,7 +632,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('if(o.status===403&&o.j&&o.j.error==="free_feature_limit_reached")', html)
         self.assertIn('if(o.status<200||o.status>=300||!o.j||o.j.ok!==true||o.j.allowed!==true)', html)
         self.assertIn('location.reload()', html)
-        self.assertIn('hsk-course-i18n.js?v=20261018-intro-v9', html)
+        self.assertIn('hsk-course-i18n.js?v=20261018-finish-batch-v10', html)
 
 
     def test_miniapp_level_picker_copy_uses_reviewed_local_catalogs(self):
@@ -670,7 +670,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('var cur=normalizeLevel(MAP&&MAP.level||getSelectedLevel())', view)
         self.assertIn("onclick=\"App.pickLevel(", view)
         self.assertIn("pickLevel:function(lv){App.closeSheet();loadLevel(lv)}", html)
-        self.assertIn('hsk-course-i18n.js?v=20261018-intro-v9', html)
+        self.assertIn('hsk-course-i18n.js?v=20261018-finish-batch-v10', html)
         self.assertNotIn('fetch("/api/i18n/', html)
 
 
@@ -715,7 +715,54 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                           "if(bi===steps.length-1",
                           "function parseRule(t){"):
             self.assertIn(invariant, html)
-        self.assertIn('hsk-course-i18n.js?v=20261018-intro-v9', html)
+        self.assertIn('hsk-course-i18n.js?v=20261018-finish-batch-v10', html)
+
+
+    def test_finish_ui_batch_30_reviewed_keys(self):
+        """Static catalog parity for 30 finish/streak/parts labels across 3 locales."""
+        import re
+
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertEqual(len(html.split("\n")), 8712)
+        groups = (
+            ("partSections", ("w","p","s","r","d","x"), "m", "function partSecs(l){", "var m=", ";m={"),
+            ("levelUp", ("cont","lessonH","lessonP","cpH","cpP","acc","combo","levelH","levelP","opened","xpH","xpP","lvl","bonusXp","chest"), "lu", "showLevelUp:function(type,data,extra){", "var lu=", ";lu={"),
+            ("levelStats", ("xp","acc","time"), "statLbl", "showLevelUp:function(type,data,extra){", "var statLbl=", ";statLbl={"),
+            ("streakDisplay", ("one","few","many","cont"), "W", "showStreakScreen:function(next){", "var W=", ";W={"),
+        )
+        for locale in ("uz", "ru", "tj"):
+            msgs = json.loads((ROOT / f"localization/ui/{locale}/course.json")
+                              .read_text(encoding="utf-8"))["messages"]
+            self.assertEqual(len(msgs), 172)
+            for prefix, fields, var, scope, start, end in groups:
+                region = html.split(scope, 1)[1].split(start, 1)[1].split(end, 1)[0]
+                original = next((line for line in region.splitlines()
+                                 if locale + ":{" in line), None)
+                self.assertIsNotNone(original)
+                fragment = original.split(locale + ":{", 1)[1].split("},", 1)[0]
+                for field in fields:
+                    with self.subTest(locale=locale, key=prefix + "." + field):
+                        val = re.search(r"(?:^|,)" + re.escape(field)
+                                        + r':"([^"]*)"', fragment)
+                        self.assertIsNotNone(val)
+                        self.assertEqual(msgs[prefix + "." + field], val.group(1))
+                        self.assertEqual(html.count(
+                            'courseMessage("' + prefix + "." + field + '",' +
+                            var + "." + field + ')'), 1)
+            self.assertEqual(msgs["writerLoading"],
+                             {"uz":"Yuklanmoqda...", "ru":"Загрузка...",
+                              "tj":"Бор шуда истодааст..."}[locale])
+            self.assertEqual(msgs["nextLessonOpen"],
+                             {"uz":"Keyingi darsni ochish",
+                              "ru":"Открыть следующий урок",
+                              "tj":"Кушодани дарси оянда"}[locale])
+        self.assertEqual(html.count('courseMessage("nextLessonOpen",'), 2)
+        self.assertEqual(html.count('courseMessage("writerLoading",'), 1)
+        for invariant in ("if(firstCp){", "if(Flow&&Flow.graded)",
+                          "if(!ps||!n||!ps.extended)", "if(!fxOff())luRain();",
+                          "function partSecs(l){", "if(isPremiumLocked(l))"):
+            self.assertIn(invariant, html)
+        self.assertIn("hsk-course-i18n.js?v=20261018-finish-batch-v10", html)
 
 
 if __name__ == "__main__":

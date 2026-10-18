@@ -1472,7 +1472,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261017-common-v1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261018-intro-v9"></script>
+<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261017-common-v1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261018-finish-batch-v10"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -2333,7 +2333,7 @@ var App={
     if(!ch)return;
     var url="/hsk-lugat.html?theme=light&fast=1&char="+encodeURIComponent(ch)+"&lang="+LANG;
     var ov=$("#writeov"),fr=$("#writeframe"),lt=$("#write-loading-text");
-    if(lt)lt.textContent=LANG==="ru"?"Загрузка...":LANG==="tj"?"Бор шуда истодааст...":"Yuklanmoqda...";
+    if(lt)lt.textContent=courseMessage("writerLoading",LANG==="ru"?"Загрузка...":LANG==="tj"?"Бор шуда истодааст...":"Yuklanmoqda...");
     ov.classList.add("on");ov.classList.add("loading");
     fr.onload=function(){ov.classList.remove("loading");fr.onload=null};
     fr.src=url;
@@ -2343,7 +2343,7 @@ var App={
     $("#levelup").classList.remove("sales-bridge");
     var lu={ru:{cont:"Продолжить",lessonH:"Урок завершён!",lessonP:"Отличная работа! Следующий этап ждёт.",cpH:"Урок {n} полностью пройден!",cpP:"Весь урок ваш: слова, диалог и грамматика. Теперь вы можете использовать их в речи.",acc:"точность",combo:"комбо",levelH:"HSK 1 пройден!",levelP:"Поздравляем! Открыт HSK 2.",opened:"открыт",xpH:"Уровень 5!",xpP:"Так держать! Новый уровень — новые возможности.",lvl:"Уровень",bonusXp:"бонус XP",chest:"новый сундук"},
       uz:{cont:"Davom etish",lessonH:"Dars tugadi!",lessonP:"Ajoyib! Keyingi bosqich kutyapti.",cpH:"{n}-dars to'liq yakunlandi!",cpP:"Butun dars sizniki: so'zlar, dialog va grammatika. Endi ularni gapda ishlata olasiz.",acc:"aniqlik",combo:"combo",levelH:"HSK 1 tugadi!",levelP:"Tabriklaymiz! HSK 2 ochildi.",opened:"ochildi",xpH:"5-daraja!",xpP:"Zo'r! Yangi daraja — yangi imkoniyatlar.",lvl:"Daraja",bonusXp:"bonus XP",chest:"yangi sandiq"},
-      tj:{cont:"Идома",lessonH:"Дарс анҷом ёфт!",lessonP:"Офарин! Зинаи навбатӣ интизор аст.",cpH:"Дарси {n} пурра анҷом ёфт!",cpP:"Тамоми дарс аз они шумост: калимаҳо, гуфтугӯ ва грамматика. Акнун онҳоро дар нутқ истифода бурда метавонед.",acc:"дақиқӣ",combo:"комбо",levelH:"HSK 1 тамом!",levelP:"Табрик! HSK 2 кушода шуд.",opened:"кушода шуд",xpH:"Сатҳи 5!",xpP:"Офарин! Сатҳи нав — имкониятҳои нав.",lvl:"Сатҳ",bonusXp:"бонус XP",chest:"сандуқи нав"}}[LANG];
+      tj:{cont:"Идома",lessonH:"Дарс анҷом ёфт!",lessonP:"Офарин! Зинаи навбатӣ интизор аст.",cpH:"Дарси {n} пурра анҷом ёфт!",cpP:"Тамоми дарс аз они шумост: калимаҳо, гуфтугӯ ва грамматика. Акнун онҳоро дар нутқ истифода бурда метавонед.",acc:"дақиқӣ",combo:"комбо",levelH:"HSK 1 тамом!",levelP:"Табрик! HSK 2 кушода шуд.",opened:"кушода шуд",xpH:"Сатҳи 5!",xpP:"Офарин! Сатҳи нав — имкониятҳои нав.",lvl:"Сатҳ",bonusXp:"бонус XP",chest:"сандуқи нав"}}[LANG];lu={cont:courseMessage("levelUp.cont",lu.cont),lessonH:courseMessage("levelUp.lessonH",lu.lessonH),lessonP:courseMessage("levelUp.lessonP",lu.lessonP),cpH:courseMessage("levelUp.cpH",lu.cpH),cpP:courseMessage("levelUp.cpP",lu.cpP),acc:courseMessage("levelUp.acc",lu.acc),combo:courseMessage("levelUp.combo",lu.combo),levelH:courseMessage("levelUp.levelH",lu.levelH),levelP:courseMessage("levelUp.levelP",lu.levelP),opened:courseMessage("levelUp.opened",lu.opened),xpH:courseMessage("levelUp.xpH",lu.xpH),xpP:courseMessage("levelUp.xpP",lu.xpP),lvl:courseMessage("levelUp.lvl",lu.lvl),bonusXp:courseMessage("levelUp.bonusXp",lu.bonusXp),chest:courseMessage("levelUp.chest",lu.chest)};
     var curLv=(MAP&&MAP.level)||"hsk1";
     var releaseAware=type==="level"&&data&&("next_level" in data||"next_level_pending" in data);
     var nextLv=releaseAware?(data.next_level||""):((_NEXT_LEVEL&&_NEXT_LEVEL[curLv])||"");
@@ -2371,7 +2371,7 @@ var App={
     var acc=(Flow&&Flow.graded)?Math.round((Flow.correct||0)/Flow.graded*100):0;
     var doneCount=Number((MAP&&MAP.progress&&MAP.progress.completed)||0);
     /* XP · aniqlik · vaqt — uch plitka, natijani bir qarashda ko'rsatadi */
-    var statLbl={uz:{xp:"TAJRIBA",acc:"ANIQLIK",time:"VAQT"},ru:{xp:"ОПЫТ",acc:"ТОЧНОСТЬ",time:"ВРЕМЯ"},tj:{xp:"ТАҶРИБА",acc:"ДАҚИҚӢ",time:"ВАҚТ"}}[LANG]||{xp:"XP",acc:"%",time:"⏱"};
+    var statLbl={uz:{xp:"TAJRIBA",acc:"ANIQLIK",time:"VAQT"},ru:{xp:"ОПЫТ",acc:"ТОЧНОСТЬ",time:"ВРЕМЯ"},tj:{xp:"ТАҶРИБА",acc:"ДАҚИҚӢ",time:"ВАҚТ"}}[LANG]||{xp:"XP",acc:"%",time:"⏱"};statLbl={xp:courseMessage("levelStats.xp",statLbl.xp),acc:courseMessage("levelStats.acc",statLbl.acc),time:courseMessage("levelStats.time",statLbl.time)};
     var spent=Flow&&Flow.startedAt?Math.min(3600,Math.max(0,Math.round((Date.now()-Flow.startedAt)/1000))):0;
     var spentTxt=Math.floor(spent/60)+":"+String(spent%60).padStart(2,"0");
     var lessonRows=[[String(awardedXp),statLbl.xp]];
@@ -2394,7 +2394,7 @@ var App={
       var showStreak=!!(streak&&streak.extended&&Number(streak.now)>0);
       $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p>'+rewards;
       $("#lu-cta").setAttribute("onclick",(showStreak?"event.stopPropagation();":"")+(firstCp?(showStreak?"App.showStreakScreen('checkpoint')":"App.openCheckpointNext()"):(showStreak?"App.showStreakScreen()":"App.closeLevelUp()")));
-      var nextLabel=LANG==="ru"?"Открыть следующий урок":LANG==="tj"?"Кушодани дарси оянда":"Keyingi darsni ochish";
+      var nextLabel=courseMessage("nextLessonOpen",LANG==="ru"?"Открыть следующий урок":LANG==="tj"?"Кушодани дарси оянда":"Keyingi darsni ochish");
       $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+(firstCp&&!showStreak?nextLabel:lu.cont);
       $("#levelup").classList.add("on");
       setTimeout(function(){var e=document.querySelector("#lu-stage .lu-emb");if(e)e.classList.add("in")},60);
@@ -2408,7 +2408,7 @@ var App={
     if(!ps||!n||!ps.extended){if(next==="checkpoint")App.openCheckpointNext();else App.closeLevelUp();return}
     var W={ru:{one:"день в ударе!",few:"дня в ударе!",many:"дней в ударе!",cont:"Продолжить"},
       uz:{one:"kun ketma-ket!",few:"kun ketma-ket!",many:"kun ketma-ket!",cont:"Davom etish"},
-      tj:{one:"рӯз пайдарпай!",few:"рӯз пайдарпай!",many:"рӯз пайдарпай!",cont:"Идома"}}[LANG];
+      tj:{one:"рӯз пайдарпай!",few:"рӯз пайдарпай!",many:"рӯз пайдарпай!",cont:"Идома"}}[LANG];W={one:courseMessage("streakDisplay.one",W.one),few:courseMessage("streakDisplay.few",W.few),many:courseMessage("streakDisplay.many",W.many),cont:courseMessage("streakDisplay.cont",W.cont)};
     var lbl=LANG==="ru"?(n%10===1&&n%100!==11?W.one:(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?W.few:W.many)):W.one;
     var desc=streakCopy(n,!!ps.reset);
     /* Yaqin kadr: faqat panda supermen kabi osmonga uchadi va changda qo'nadi;
@@ -2420,7 +2420,7 @@ var App={
         +'<div class="sk-num">'+n+'</div><h2>'+lbl+'</h2><p>'+desc+'</p>'
         +'<div class="sk-days">'+skDaysHtml(n,true,ps)+'</div>'+skWeekGoalHtml(ps);
       $("#lu-cta").setAttribute("onclick",next==="checkpoint"?"App.openCheckpointNext()":"App.closeLevelUp()");
-      var nextLabel=LANG==="ru"?"Открыть следующий урок":LANG==="tj"?"Кушодани дарси оянда":"Keyingi darsni ochish";
+      var nextLabel=courseMessage("nextLessonOpen",LANG==="ru"?"Открыть следующий урок":LANG==="tj"?"Кушодани дарси оянда":"Keyingi darsni ochish");
       $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+(next==="checkpoint"?nextLabel:W.cont);
       $("#levelup").classList.add("on");
       if(ps.extended){setTimeout(function(){beep([392,523,659,784]);haptic("heavy")},350)}
@@ -3392,7 +3392,7 @@ function partChip(l){
 function partSecs(l){
   var m={ru:{w:"Новые слова",p:"Практика",s:"Произношение",r:"Повторение",d:"Диалог",x:"Смешанное повторение"},
     uz:{w:"Yangi so'zlar",p:"Mashq",s:"Talaffuz",r:"Takrorlash",d:"Dialog",x:"Aralash takror"},
-    tj:{w:"Калимаҳои нав",p:"Машқ",s:"Талаффуз",r:"Такрор",d:"Гуфтугӯ",x:"Такрори омехта"}}[LANG]||{};
+    tj:{w:"Калимаҳои нав",p:"Машқ",s:"Талаффуз",r:"Такрор",d:"Гуфтугӯ",x:"Такрори омехта"}}[LANG]||{};m={w:courseMessage("partSections.w",m.w),p:courseMessage("partSections.p",m.p),s:courseMessage("partSections.s",m.s),r:courseMessage("partSections.r",m.r),d:courseMessage("partSections.d",m.d),x:courseMessage("partSections.x",m.x)};
   /* Oddiy mini-dars endi yakunida oldingi+joriy so'zlar aralash takrori bilan tugaydi. */
   return l.checkpoint?[m.r,m.d,m.s]:[m.w,m.p,m.s,m.x];
 }
