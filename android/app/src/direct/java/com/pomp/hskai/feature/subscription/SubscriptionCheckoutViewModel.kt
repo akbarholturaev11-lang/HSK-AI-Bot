@@ -518,7 +518,8 @@ class SubscriptionCheckoutViewModel(
 
     fun refreshPaymentStatus() {
         val paymentId = _state.value.pendingPaymentId
-        if (paymentId <= 0 || !_state.value.isHsk30Unlock || _state.value.checkingPaymentStatus) return
+        val paymentPlan = _state.value.overview?.pendingPayment?.planType ?: _state.value.plan
+        if (paymentId <= 0 || paymentPlan.isBlank() || _state.value.checkingPaymentStatus) return
         _state.update {
             it.copy(checkingPaymentStatus = true, paymentStatusMessageRes = null, errorRes = null)
         }
@@ -530,7 +531,7 @@ class SubscriptionCheckoutViewModel(
                 is ApiResult.Success -> {
                     val status = result.value
                     if (!status.ok || status.paymentId != paymentId ||
-                        status.planType != "hsk30_unlock"
+                        status.planType != paymentPlan
                     ) {
                         _state.update {
                             it.copy(

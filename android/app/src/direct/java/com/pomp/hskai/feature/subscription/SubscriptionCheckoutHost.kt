@@ -36,6 +36,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HeadsetMic
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.AlertDialog
@@ -959,26 +960,28 @@ private fun DoneContent(
     val rejected = state.paymentDecision == "rejected"
     val approved = state.paymentDecision == "approved"
     val titleRes = when {
-        isHsk30 && rejected -> R.string.sub_hsk30_rejected_title
-        isHsk30 && approved -> R.string.sub_hsk30_approved_title
+        rejected -> if (isHsk30) R.string.sub_hsk30_rejected_title else R.string.sub_pro_rejected_title
+        approved -> if (isHsk30) R.string.sub_hsk30_approved_title else R.string.sub_pro_approved_title
         isHsk30 && pending && state.provisionalAccess -> R.string.sub_hsk30_provisional_title
         isHsk30 && pending -> R.string.sub_hsk30_pending_title
+        pending && !state.provisionalAccess -> R.string.sub_hsk30_pending_title
         pending -> R.string.sub_pro_review_title
         else -> R.string.sub_done_title
     }
     val bodyRes = when {
-        isHsk30 && rejected -> R.string.sub_hsk30_rejected_body
-        isHsk30 && approved -> R.string.sub_hsk30_approved_body
+        rejected -> R.string.sub_hsk30_rejected_body
+        approved -> if (isHsk30) R.string.sub_hsk30_approved_body else R.string.sub_pro_approved_body
         isHsk30 && pending && state.provisionalAccess -> R.string.sub_hsk30_provisional_body
         isHsk30 && pending -> R.string.sub_hsk30_pending_body
         pending && state.provisionalAccess -> R.string.sub_pro_review_access
-        pending -> R.string.sub_pro_review_wait
+        pending -> R.string.sub_hsk30_pending_body
         else -> R.string.sub_done_body
     }
     Column(Modifier.fillMaxWidth().padding(top = 54.dp), horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Box(Modifier.size(64.dp).background(if (rejected) C.accentSoft else PompColors.Jade, CircleShape), contentAlignment = Alignment.Center) {
-            Text(if (pending) "…" else if (rejected) "!" else "✓", color = if (rejected) C.accentInk else PompColors.OnJade,
+            if (pending) Icon(Icons.Filled.Schedule, contentDescription = null, tint = PompColors.OnJade, modifier = Modifier.size(34.dp))
+            else Text(if (rejected) "!" else "✓", color = if (rejected) C.accentInk else PompColors.OnJade,
                 fontSize = 34.sp, fontWeight = FontWeight.Black)
         }
         Text(copy.getString(titleRes),
@@ -989,7 +992,7 @@ private fun DoneContent(
             MessageCard(copy.getString(message))
         }
         when {
-            isHsk30 && rejected -> CheckoutButton(
+            rejected -> CheckoutButton(
                 copy.getString(R.string.sub_hsk30_retry), false, true, onRetry,
             )
             isHsk30 && approved -> CheckoutButton(
@@ -999,18 +1002,18 @@ private fun DoneContent(
                 CheckoutButton(copy.getString(R.string.sub_hsk30_open_course), false, true, onClose)
                 SmallAction(copy.getString(R.string.sub_payment_refresh), onRefreshStatus)
             }
-            isHsk30 && pending -> CheckoutButton(
+            pending && !state.provisionalAccess -> CheckoutButton(
                 copy.getString(if (state.checkingPaymentStatus) R.string.sub_payment_checking else R.string.sub_payment_refresh),
                 state.checkingPaymentStatus,
                 !state.checkingPaymentStatus,
                 onRefreshStatus,
             )
-            pending && !state.provisionalAccess -> CheckoutButton(
-                copy.getString(R.string.sub_help_button), false,
-                state.overview?.supportUrl?.isNotBlank() == true, onSupport,
-            )
             else -> CheckoutButton(copy.getString(R.string.sub_return_app), false, true, onClose)
         }
+        if (pending && !state.provisionalAccess) CheckoutButton(
+            copy.getString(R.string.sub_help_button), false,
+            state.overview?.supportUrl?.isNotBlank() == true, onSupport, secondary = true,
+        )
     }
 }
 

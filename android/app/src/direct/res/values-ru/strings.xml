@@ -164,8 +164,8 @@
     <string name="update_gate_downloaded">Загружено. Нажмите кнопку, чтобы начать установку.</string>
     <string name="update_gate_failed">Не удалось загрузить. Попробуйте ещё раз.</string>
     <string name="update_gate_permission">Разрешите установку приложения перед обновлением.</string>
-    <string name="sub_hsk30_pending_title">Платёж за HSK 3.0 проверяется</string>
-    <string name="sub_hsk30_pending_body">Заявка отправлена администратору. HSK 3.0 откроется после подтверждения. Обновите статус.</string>
+    <string name="sub_hsk30_pending_title">Ваша заявка на проверке</string>
+    <string name="sub_hsk30_pending_body">Платёж уже находится на проверке. Пожалуйста, дождитесь подтверждения. Чтобы ускорить проверку, вы можете написать администратору.</string>
     <string name="sub_hsk30_provisional_title">HSK 3.0 временно открыт</string>
     <string name="sub_hsk30_provisional_body">Первая заявка проверяется. Если платёж не подтвердят, доступ к HSK 3.0 закроется.</string>
     <string name="sub_hsk30_rejected_title">Платёж за HSK 3.0 не принят</string>
@@ -181,4 +181,7 @@
     <string name="sub_pro_review_title">Чек отправлен на проверку</string>
     <string name="sub_pro_review_access">Платёж отправлен на проверку. Пока идёт проверка, вы уже можете пользоваться Pro.</string>
     <string name="sub_pro_review_wait">Платёж отправлен на проверку. Временный доступ уже использован, поэтому Pro откроется после подтверждения администратором. Чтобы ускорить проверку, вы можете написать администратору.</string>
+    <string name="sub_pro_approved_title">Платёж подтверждён</string>
+    <string name="sub_pro_approved_body">Pro подтверждён. Можно продолжить занятия.</string>
+    <string name="sub_pro_rejected_title">Платёж не принят</string>
 </resources>

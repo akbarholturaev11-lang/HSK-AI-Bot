@@ -68,7 +68,7 @@ def test_pro_receipt_submission_reopen_and_origin_return_or_admin(page,lang,gran
     page.evaluate('submitPayment()')
     page.wait_for_function('state.pending===true && !state.busy')
     assert len(uploads)==1
-    expected=page.evaluate('state.pendingPayment.provisional_access?tr().proReviewAccess:tr().proReviewWait')
+    expected=page.evaluate('state.pendingPayment.provisional_access?tr().proReviewAccess:tr().pendingText')
     expect(page.locator('#doneText')).to_have_text(expected)
     assert page.locator('#botReturnBtn').inner_text()!=page.evaluate('tr().returnToBot')
     page.evaluate('Promise.all(document.getAnimations().filter(a=>a.effect.getTiming().iterations!==Infinity).map(a=>a.finished.catch(()=>{})))')
@@ -87,7 +87,7 @@ def test_pro_receipt_submission_reopen_and_origin_return_or_admin(page,lang,gran
         assert query['level']==['hsk2']
         assert query['lang']==[lang]
     else:
-        page.locator('#botReturnBtn').click()
+        page.locator('#reviewSupportBtn').click()
         assert page.evaluate('openedSupport')=='https://t.me/hsk_support_test'
         assert '/subscription.html' in page.url
     assert not errors
@@ -104,3 +104,51 @@ def test_pro_return_allows_only_the_original_known_practice_pages(page,origin):
     else:
         assert target.startswith('/'+origin+'?')
     assert parse_qs(urlparse(target).query)['level']==['hsk3']
+
+
+@pytest.mark.parametrize('lang', ['uz', 'ru', 'tj'])
+@pytest.mark.parametrize('plan', ['1_month', 'hsk30_unlock'])
+@pytest.mark.parametrize('decision', ['pending', 'approved', 'rejected', 'wrong_plan'])
+def test_waiting_receipt_clock_secondary_support_and_status(page, lang, plan, decision, tmp_path):
+    errors = []
+    calls = []
+    page.on('pageerror', lambda error: errors.append(str(error)))
+    mock_telegram_ready(page)
+    overview = {'ok': True, 'language': lang, 'mode': 'subscription',
+                'pending_payment': {'id': 81, 'plan_type': plan, 'provisional_access': False},
+                'support_url': 'https://t.me/hsk_support_test', 'prices': {}}
+    page.route('**/api/subscription-miniapp/overview', lambda route: json_response(route, overview))
+    def status(route):
+        calls.append(route.request.post_data_json)
+        json_response(route, {'ok': True, 'payment_id': 81,
+                             'plan_type': 'other' if decision == 'wrong_plan' else plan,
+                             'status': 'approved' if decision == 'wrong_plan' else decision})
+    page.route('**/api/subscription-miniapp/payment-status', status)
+    page.goto(app_url('/subscription.html?lang=' + lang), wait_until='networkidle')
+    expect(page.locator('#doneTitle')).to_have_text(page.evaluate('tr().pendingTitle'))
+    expect(page.locator('#doneText')).to_have_text(page.evaluate('tr().pendingText'))
+    expect(page.locator('#doneMark svg')).to_be_visible()
+    primary = page.locator('#botReturnBtn')
+    secondary = page.locator('#reviewSupportBtn')
+    expect(primary).to_have_text(page.evaluate('tr().refreshPayment'))
+    expect(secondary).to_be_visible()
+    assert 'secondary' in secondary.get_attribute('class')
+    assert secondary.bounding_box()['y'] > primary.bounding_box()['y']
+    page.evaluate('Telegram.WebApp.openTelegramLink=url=>window.openedSupport=url')
+    secondary.click()
+    assert page.evaluate('openedSupport') == overview['support_url']
+    primary.click()
+    page.wait_for_function('!state.paymentStatusChecking')
+    assert calls == [{'payment_id': 81}]
+    assert page.evaluate('state.paymentDecision') == (decision if decision in ['approved','rejected'] else '')
+    if decision in ['pending', 'wrong_plan']:
+        expect(secondary).to_be_visible()
+        expect(page.locator('#doneText')).to_have_text(page.evaluate('tr().pendingText'))
+    else:
+        expect(secondary).to_be_hidden()
+        expect(page.locator('#doneMark svg')).to_have_count(0)
+        if plan == '1_month':
+            assert 'HSK 3.0' not in page.locator('#doneTitle').inner_text()
+    if lang == 'ru' and plan == '1_month' and decision == 'pending':
+        page.screenshot(path='/Users/kaijimima1234/Downloads/HSK-AI-QA-2026-10-19/pro-review-waiting-updated.png', full_page=True)
+    assert not errors
