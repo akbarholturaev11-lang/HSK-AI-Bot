@@ -9,6 +9,11 @@
     <string name="hsk_course_complete_of" formatted="false">выполнено</string>
     <string name="hsk_course_cont" formatted="false">Продолжить</string>
     <string name="hsk_course_correct" formatted="false">Верно!</string>
+    <string name="hsk_course_course_picker_confirm" formatted="false">Подтвердить</string>
+    <string name="hsk_course_course_picker_level" formatted="false">Уровень</string>
+    <string name="hsk_course_course_picker_note" formatted="false">При смене версии прогресс сохраняется. Выбор другого уровня начнёт прогресс этой версии заново.</string>
+    <string name="hsk_course_course_picker_title" formatted="false">Выбор курса</string>
+    <string name="hsk_course_course_picker_version" formatted="false">Версия курса</string>
     <string name="hsk_course_dialog" formatted="false">Диалог</string>
     <string name="hsk_course_dict" formatted="false">Словарь иероглифов</string>
     <string name="hsk_course_dict_sub" formatted="false">HSK 1–4 · написание, пиньинь, значение</string>

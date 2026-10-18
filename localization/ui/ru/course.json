@@ -95,6 +95,11 @@
     "profile.overall": "Всего",
     "profile.pro": "Получить Pro",
     "profile.answers": "проверенных ответов",
-    "profile.note": "Только проверенные ответы · история может быть неполной"
+    "profile.note": "Только проверенные ответы · история может быть неполной",
+    "coursePicker.title": "Выбор курса",
+    "coursePicker.version": "Версия курса",
+    "coursePicker.level": "Уровень",
+    "coursePicker.note": "При смене версии прогресс сохраняется. Выбор другого уровня начнёт прогресс этой версии заново.",
+    "coursePicker.confirm": "Подтвердить"
   }
 }

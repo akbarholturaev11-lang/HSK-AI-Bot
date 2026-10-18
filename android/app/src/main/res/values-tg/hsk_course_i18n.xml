@@ -9,6 +9,11 @@
     <string name="hsk_course_complete_of" formatted="false">иҷро шуд</string>
     <string name="hsk_course_cont" formatted="false">Идома</string>
     <string name="hsk_course_correct" formatted="false">Дуруст!</string>
+    <string name="hsk_course_course_picker_confirm" formatted="false">Тасдиқ кардан</string>
+    <string name="hsk_course_course_picker_level" formatted="false">Сатҳ</string>
+    <string name="hsk_course_course_picker_note" formatted="false">Ҳангоми иваз кардани версия пешрафт нигоҳ дошта мешавад. Интихоби сатҳи дигар пешрафти ин версияро аз нав оғоз мекунад.</string>
+    <string name="hsk_course_course_picker_title" formatted="false">Интихоби курс</string>
+    <string name="hsk_course_course_picker_version" formatted="false">Версияи курс</string>
     <string name="hsk_course_dialog" formatted="false">Гуфтугӯ</string>
     <string name="hsk_course_dict" formatted="false">Луғати иероглиф</string>
     <string name="hsk_course_dict_sub" formatted="false">HSK 1–4 · навишт, пинйин, маъно</string>

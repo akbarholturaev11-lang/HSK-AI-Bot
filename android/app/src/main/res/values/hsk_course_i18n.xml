@@ -9,6 +9,11 @@
     <string name="hsk_course_complete_of" formatted="false">bajarildi</string>
     <string name="hsk_course_cont" formatted="false">Davom etish</string>
     <string name="hsk_course_correct" formatted="false">To\'g\'ri!</string>
+    <string name="hsk_course_course_picker_confirm" formatted="false">Tasdiqlash</string>
+    <string name="hsk_course_course_picker_level" formatted="false">Daraja</string>
+    <string name="hsk_course_course_picker_note" formatted="false">Versiyalar orasida almashganda o\'qigan joyingiz saqlanadi. Boshqa darajani tanlash shu versiya progressini yangidan boshlaydi.</string>
+    <string name="hsk_course_course_picker_title" formatted="false">Kursni tanlash</string>
+    <string name="hsk_course_course_picker_version" formatted="false">Kurs versiyasi</string>
     <string name="hsk_course_dialog" formatted="false">Dialog</string>
     <string name="hsk_course_dict" formatted="false">Ieroglif lug\'ati</string>
     <string name="hsk_course_dict_sub" formatted="false">HSK 1–4 · yozilishi, pinyin, ma\'no</string>

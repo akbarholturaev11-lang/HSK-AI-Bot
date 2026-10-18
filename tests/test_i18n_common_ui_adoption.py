@@ -115,7 +115,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertEqual(html.count(
-            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-profile-v2"></script>'
+            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-picker-v3"></script>'
         ), 1)
         self.assertLess(html.index("hsk-course-i18n.js"),
                         html.index("function courseMessage("))
@@ -415,6 +415,51 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('PROFILE_DETAIL&&PROFILE_DETAIL.subscription', html)
         self.assertIn('PROFILE_DETAIL.stats&&PROFILE_DETAIL.stats.answer_accuracy', html)
         self.assertNotIn("fetch('/api/i18n/", html)
+
+
+    def test_miniapp_course_picker_new_word_and_done_labels(self):
+        """Picker and display-only labels use exact local copy with legacy fallback."""
+        import re
+
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertEqual(len(html.split("\n")), 8712)
+        picker = html.split("function coursePickerCopy(){", 1)[1].split(
+            "function coursePickerSavedLevel(", 1
+        )[0]
+        self.assertIn("var legacy={", picker)
+        self.assertIn("}[LANG]||{};return {", picker)
+        names = ("title", "version", "level", "note", "confirm")
+        for key in names:
+            with self.subTest(key=key):
+                self.assertEqual(picker.count(
+                    'courseMessage("coursePicker.' + key + '",legacy.' + key + ')'), 1)
+        self.assertEqual(html.count('courseMessage("newWord",'), 1)
+        self.assertEqual(html.count('courseMessage("lessonDone",lu.lessonH)'), 1)
+        self.assertEqual(html.count('courseMessage("later",t.later)'), 1)
+        for locale in ("uz", "ru", "tj"):
+            messages = json.loads(
+                (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
+            )["messages"]
+            inline = re.search(re.escape(locale) + r':\{([^}]+)\}', picker)
+            self.assertIsNotNone(inline)
+            for name in names:
+                with self.subTest(locale=locale, label=name):
+                    found = re.search(r"(?:^|[,{}])" + re.escape(name) + r':"([^"]*)"',
+                                      inline.group(1))
+                    self.assertIsNotNone(found)
+                    self.assertEqual(messages["coursePicker." + name], found.group(1))
+            self.assertEqual(messages["newWord"],
+                             {"uz": "Yangi so'z", "ru": "Новое слово",
+                              "tj": "Калимаи нав"}[locale])
+            self.assertEqual(messages["later"],
+                             {"uz": "Keyinroq", "ru": "Позже",
+                              "tj": "Дертар"}[locale])
+        self.assertIn("lessonMotivation(acc,doneCount)||lu.lessonP", html)
+        self.assertIn("switchCourseTrack('hsk20',null)", html)
+        self.assertIn("if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}", html)
+        self.assertIn("if(Flow&&Flow.graded)", html)
+        # Russian lessonDoneSub differs from legacy punctuation and is NOT migrated.
+        self.assertNotIn('courseMessage("lessonDoneSub"', html)
 
 
 if __name__ == "__main__":

@@ -95,6 +95,11 @@
     "profile.overall": "Umumiy",
     "profile.pro": "Pro olish",
     "profile.answers": "baholangan javob",
-    "profile.note": "Faqat tekshirilgan javoblar · eski tarix to'liq bo'lmasligi mumkin"
+    "profile.note": "Faqat tekshirilgan javoblar · eski tarix to'liq bo'lmasligi mumkin",
+    "coursePicker.title": "Kursni tanlash",
+    "coursePicker.version": "Kurs versiyasi",
+    "coursePicker.level": "Daraja",
+    "coursePicker.note": "Versiyalar orasida almashganda o'qigan joyingiz saqlanadi. Boshqa darajani tanlash shu versiya progressini yangidan boshlaydi.",
+    "coursePicker.confirm": "Tasdiqlash"
   }
 }
