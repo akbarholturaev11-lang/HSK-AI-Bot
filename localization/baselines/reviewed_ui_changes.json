@@ -20,8 +20,8 @@
     },
     "app/static/course_v3_onboarding.html": {
       "baseline_sha1": "321c28c34cf4ed0550bb5187d8f6b680654ea51e",
-      "reviewed_sha1": "f0245ef4c55a324839005601480cfcc4838a2bf8",
-      "reason": "31 exact UZ/RU/TJ onboarding UI labels use a cached static course catalog with byte-identical original inline translations as fallback; no auth, access, account, trial, Pro, HSK track, saving, billing or scoring logic altered."
+      "reviewed_sha1": "9d51befb9a450fe464371f03060a7713835348f3",
+      "reason": "31 original onboard labels plus 19 exact UZ/RU/TJ HSK level and study goal option labels now read static local catalog with all inline fallbacks preserved. The only source edit is presentation-only lookup and versioned JS cache reference; HSK selection IDs, access, saving, analytics and paywall unchanged."
     }
   }
 }

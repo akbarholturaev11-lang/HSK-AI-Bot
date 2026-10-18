@@ -339,6 +339,12 @@ private fun OnboardingCopy.withBundledCatalog(context: Context, language: String
             hsk20 = localized.getString(R.string.hsk_course_onboarding_hsk20),
             hsk30 = localized.getString(R.string.hsk_course_onboarding_hsk30),
             hsk30Disabled = localized.getString(R.string.hsk_course_onboarding_hsk30_disabled),
+            notifyTitle = localized.getString(R.string.hsk_course_onboarding_notification_title),
+            notifyLessons = localized.getString(R.string.hsk_course_onboarding_notification_lessons),
+            notifyUpdates = localized.getString(R.string.hsk_course_onboarding_notification_updates),
+            notifyPayments = localized.getString(R.string.hsk_course_onboarding_notification_payments),
+            notifyAllow = localized.getString(R.string.hsk_course_onboarding_notification_allow),
+            notifyLater = localized.getString(R.string.hsk_course_onboarding_notification_later),
         )
     }.getOrDefault(this)
 }

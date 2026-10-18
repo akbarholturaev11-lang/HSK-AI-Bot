@@ -136,6 +136,31 @@
     <string name="hsk_course_onboarding_start" formatted="false">Оғоз</string>
     <string name="hsk_course_onboarding_version_hint" formatted="false">Китобҳо мувофиқи версияи интихобшуда иваз мешаванд.</string>
     <string name="hsk_course_onboarding_welcome_note" formatted="false">Ҳамагӣ 3 савол — ва ба дарси аввал.</string>
+    <string name="hsk_course_onboarding_goal_daily_communication_subtitle" formatted="false">Бештар сухан ва талаффуз</string>
+    <string name="hsk_course_onboarding_goal_daily_communication_title" formatted="false">Муоширати ҳаррӯза</string>
+    <string name="hsk_course_onboarding_goal_hsk_exam_subtitle" formatted="false">Бештар тест ва кор бар хатоҳо</string>
+    <string name="hsk_course_onboarding_goal_hsk_exam_title" formatted="false">Супоридани HSK</string>
+    <string name="hsk_course_onboarding_goal_study_china_subtitle" formatted="false">Таъкид ба курс ва луғат</string>
+    <string name="hsk_course_onboarding_goal_study_china_title" formatted="false">Таҳсил дар Чин</string>
+    <string name="hsk_course_onboarding_goal_travel_subtitle" formatted="false">Ҳолатҳо ва калимаҳои роҳ</string>
+    <string name="hsk_course_onboarding_goal_travel_title" formatted="false">Сафар</string>
+    <string name="hsk_course_onboarding_goal_work_china_subtitle" formatted="false">Сухани кории боэҳтиром</string>
+    <string name="hsk_course_onboarding_goal_work_china_title" formatted="false">Забони чинӣ барои кор</string>
+    <string name="hsk_course_onboarding_level_beginner_subtitle" formatted="false">Аввал ханзӣ, пинйин ва оҳангҳоро мефаҳмем</string>
+    <string name="hsk_course_onboarding_level_beginner_title" formatted="false">Забони чиниро тамоман намедонам</string>
+    <string name="hsk_course_onboarding_level_hsk1_subtitle" formatted="false">Каме забони чинӣ медонам</string>
+    <string name="hsk_course_onboarding_level_hsk2_subtitle" formatted="false">Муоширати асосӣ</string>
+    <string name="hsk_course_onboarding_level_hsk3_subtitle" formatted="false">Муоширати ҳаррӯза</string>
+    <string name="hsk_course_onboarding_level_hsk4_subtitle" formatted="false">Муоширати озод</string>
+    <string name="hsk_course_onboarding_level_nhsk1_subtitle" formatted="false">Стандарти нав · сатҳи 1</string>
+    <string name="hsk_course_onboarding_level_nhsk2_subtitle" formatted="false">Стандарти нав · сатҳи 2</string>
+    <string name="hsk_course_onboarding_level_nhsk3_subtitle" formatted="false">Стандарти нав · сатҳи 3</string>
+    <string name="hsk_course_onboarding_notification_allow" formatted="false">Фаъол кардан</string>
+    <string name="hsk_course_onboarding_notification_later" formatted="false">Баъдтар</string>
+    <string name="hsk_course_onboarding_notification_lessons" formatted="false">Бегоҳӣ дарсро ёдрас мекунем</string>
+    <string name="hsk_course_onboarding_notification_payments" formatted="false">Ҳангоми тасдиқ ё рад шудани пардохт хабар медиҳем</string>
+    <string name="hsk_course_onboarding_notification_title" formatted="false">Огоҳиномаҳоро фаъол кунед</string>
+    <string name="hsk_course_onboarding_notification_updates" formatted="false">Вақте версияи нав барояд, як бор хабар медиҳем</string>
     <string name="hsk_course_part_sections_d" formatted="false">Гуфтугӯ</string>
     <string name="hsk_course_part_sections_p" formatted="false">Машқ</string>
     <string name="hsk_course_part_sections_r" formatted="false">Такрор</string>

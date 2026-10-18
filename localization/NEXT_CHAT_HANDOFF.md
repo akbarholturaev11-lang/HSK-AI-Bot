@@ -1,5 +1,12 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## New P2 onboarding 25-key batch — 2026-10-18
+
+- Centralized **9 HSK level descriptors, 10 learning-goal labels and 6 native Android notification primer labels**: 25 exact original UZ/RU/TJ copies. Source catalogs now **228 keys/locale**, all six generated resources updated.
+- Mini App `LV20/LV30/GOALS` display values prefer local preloaded catalog with original inline dictionaries as synchronous fallback. Android adds six generated XML lookup fields on the existing app-language `OnboardingCopy` adapter with native fallback. No IDs, HSK gating, score/progress, payment, trial or access changes. Static JS cache version `onboarding-options-v12`.
+- `tests/test_i18n_onboarding_options.py` verifies all three languages, unchanged selectable identities and resource call sites. P0 CI includes the new tests; reviewed HTML Git blob updated. CI for this new commit and real device/WebView/offline QA require independent confirmation.
+- Previous `28ce15b4` HEAD had all six workflows **SUCCESS** including Android, Backend, Desktop, both TTS, Localization P0 (156 tests). PR #179 remains Draft, no main/production deploy.
+
 ## Android onboarding native runtime — 23 exact-copy fields (2026-10-18)
 
 - **23** of the 30 Mini App catalog fields mapped to Android `OnboardingCopy` matched UZ/RU/TJ **exactly**. Android now reads these `R.string.hsk_course_onboarding_*` values using an in-app-language-pinned `Configuration` context, not system locale. The old `OnboardingCopy.forLanguage` values remain fallback.

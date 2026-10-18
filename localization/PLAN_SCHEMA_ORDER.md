@@ -1562,3 +1562,9 @@ Keep GitHub's branch current without force-resetting unrelated user work.
 
 - Native `OnboardingCopy` UZ/RU/TJ text matched the generated Mini App source **for 23 of 30 mapped onboarding fields**; these 23 are now loaded from existing `hsk_course_onboarding_*` Android XML by app-selected language via isolated Configuration context (tg for Tajik). Original Android text remains the fallback; seven unmatching fields intentionally remain legacy.
 - Added precise Android source/resource mapping regression. No account/checkout, HSK track, consent, notification, XP, grading, progress or API behavior modified. Do not infer Android build/device QA success until CI and manual locale-switch/offline tests complete.
+
+### P2 eighteenth UI adoption slice — 2026-10-18 (25 onboarding values)
+
+- Onboarding level choices 9 and study goals 10 were copied exactly per UZ/RU/TJ from current Mini App `LV20/LV30/GOALS` display dictionaries; six native Android onboarding notification primer labels were copied from `OnboardingCopy`. 25 keys per language added to `course` source (203→228), yielding 6 static outputs.
+- Onboarding option values prefer preloaded cached JS only for display with original text as fallback. Native Android notification titles/buttons use existing app-language XML adapter and original constructor text as fallback. No per-string HTTP, no account/paywall/progress/HSK selection IDs/callbacks/payment edits. Cache `onboarding-options-v12`.
+- Regression tests check 25 UZ/RU/TJ parity pairs and source/runtime call sites; HTML source reviewed Git hash advanced. CI and device QA must be verified on new SHA, no implicit release. Keep main untouched and PR #179 Draft.

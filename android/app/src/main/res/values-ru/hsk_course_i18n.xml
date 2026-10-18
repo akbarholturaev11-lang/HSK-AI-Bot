@@ -136,6 +136,31 @@
     <string name="hsk_course_onboarding_start" formatted="false">Начать</string>
     <string name="hsk_course_onboarding_version_hint" formatted="false">Выбранная версия определит учебники курса.</string>
     <string name="hsk_course_onboarding_welcome_note" formatted="false">Всего 3 вопроса — и к первому уроку.</string>
+    <string name="hsk_course_onboarding_goal_daily_communication_subtitle" formatted="false">Больше речи и произношения</string>
+    <string name="hsk_course_onboarding_goal_daily_communication_title" formatted="false">Общаться в жизни</string>
+    <string name="hsk_course_onboarding_goal_hsk_exam_subtitle" formatted="false">Больше тестов и разбора ошибок</string>
+    <string name="hsk_course_onboarding_goal_hsk_exam_title" formatted="false">Сдать HSK</string>
+    <string name="hsk_course_onboarding_goal_study_china_subtitle" formatted="false">Упор на курс и словарный запас</string>
+    <string name="hsk_course_onboarding_goal_study_china_title" formatted="false">Учёба в Китае</string>
+    <string name="hsk_course_onboarding_goal_travel_subtitle" formatted="false">Живые ситуации и слова в дороге</string>
+    <string name="hsk_course_onboarding_goal_travel_title" formatted="false">Путешествия</string>
+    <string name="hsk_course_onboarding_goal_work_china_subtitle" formatted="false">Вежливая рабочая речь</string>
+    <string name="hsk_course_onboarding_goal_work_china_title" formatted="false">Работа с Китаем</string>
+    <string name="hsk_course_onboarding_level_beginner_subtitle" formatted="false">Сначала разберём ханцзы, пиньинь и тоны</string>
+    <string name="hsk_course_onboarding_level_beginner_title" formatted="false">Я совсем с нуля</string>
+    <string name="hsk_course_onboarding_level_hsk1_subtitle" formatted="false">Уже немного знаю китайский</string>
+    <string name="hsk_course_onboarding_level_hsk2_subtitle" formatted="false">Базовое общение</string>
+    <string name="hsk_course_onboarding_level_hsk3_subtitle" formatted="false">Повседневное общение</string>
+    <string name="hsk_course_onboarding_level_hsk4_subtitle" formatted="false">Свободное общение</string>
+    <string name="hsk_course_onboarding_level_nhsk1_subtitle" formatted="false">Новый стандарт · уровень 1</string>
+    <string name="hsk_course_onboarding_level_nhsk2_subtitle" formatted="false">Новый стандарт · уровень 2</string>
+    <string name="hsk_course_onboarding_level_nhsk3_subtitle" formatted="false">Новый стандарт · уровень 3</string>
+    <string name="hsk_course_onboarding_notification_allow" formatted="false">Включить</string>
+    <string name="hsk_course_onboarding_notification_later" formatted="false">Позже</string>
+    <string name="hsk_course_onboarding_notification_lessons" formatted="false">Вечером напомним про занятие</string>
+    <string name="hsk_course_onboarding_notification_payments" formatted="false">Сообщим, когда платёж подтвердят или отклонят</string>
+    <string name="hsk_course_onboarding_notification_title" formatted="false">Включите уведомления</string>
+    <string name="hsk_course_onboarding_notification_updates" formatted="false">Один раз сообщим, когда выйдет новая версия</string>
     <string name="hsk_course_part_sections_d" formatted="false">Диалог</string>
     <string name="hsk_course_part_sections_p" formatted="false">Практика</string>
     <string name="hsk_course_part_sections_r" formatted="false">Повторение</string>

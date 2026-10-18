@@ -136,6 +136,31 @@
     <string name="hsk_course_onboarding_start" formatted="false">Boshlash</string>
     <string name="hsk_course_onboarding_version_hint" formatted="false">Tanlangan versiyaga mos darsliklardan boshlang.</string>
     <string name="hsk_course_onboarding_welcome_note" formatted="false">3 ta qisqa savol. Keyin — birinchi dars.</string>
+    <string name="hsk_course_onboarding_goal_daily_communication_subtitle" formatted="false">Ko\'proq gapirish va talaffuz</string>
+    <string name="hsk_course_onboarding_goal_daily_communication_title" formatted="false">Kundalik muloqot</string>
+    <string name="hsk_course_onboarding_goal_hsk_exam_subtitle" formatted="false">Ko\'proq test va xatolar ustida ish</string>
+    <string name="hsk_course_onboarding_goal_hsk_exam_title" formatted="false">HSK imtihonini topshirish</string>
+    <string name="hsk_course_onboarding_goal_study_china_subtitle" formatted="false">Kursga va so\'z boyligiga urg\'u</string>
+    <string name="hsk_course_onboarding_goal_study_china_title" formatted="false">Xitoyda o\'qish</string>
+    <string name="hsk_course_onboarding_goal_travel_subtitle" formatted="false">Yo\'ldagi holatlar va so\'zlar</string>
+    <string name="hsk_course_onboarding_goal_travel_title" formatted="false">Sayohat</string>
+    <string name="hsk_course_onboarding_goal_work_china_subtitle" formatted="false">Ishchan, hurmatli nutq</string>
+    <string name="hsk_course_onboarding_goal_work_china_title" formatted="false">Ish uchun xitoy tili</string>
+    <string name="hsk_course_onboarding_level_beginner_subtitle" formatted="false">Avval hanzi, pinyin va tonlarni tushunamiz</string>
+    <string name="hsk_course_onboarding_level_beginner_title" formatted="false">Xitoy tilini umuman bilmayman</string>
+    <string name="hsk_course_onboarding_level_hsk1_subtitle" formatted="false">Biroz xitoycha bilaman</string>
+    <string name="hsk_course_onboarding_level_hsk2_subtitle" formatted="false">Asosiy suhbat</string>
+    <string name="hsk_course_onboarding_level_hsk3_subtitle" formatted="false">Kundalik muloqot</string>
+    <string name="hsk_course_onboarding_level_hsk4_subtitle" formatted="false">Erkin muloqot</string>
+    <string name="hsk_course_onboarding_level_nhsk1_subtitle" formatted="false">Yangi standart · 1-daraja</string>
+    <string name="hsk_course_onboarding_level_nhsk2_subtitle" formatted="false">Yangi standart · 2-daraja</string>
+    <string name="hsk_course_onboarding_level_nhsk3_subtitle" formatted="false">Yangi standart · 3-daraja</string>
+    <string name="hsk_course_onboarding_notification_allow" formatted="false">Yoqish</string>
+    <string name="hsk_course_onboarding_notification_later" formatted="false">Keyinroq</string>
+    <string name="hsk_course_onboarding_notification_lessons" formatted="false">Kechqurun darsni eslatib turamiz</string>
+    <string name="hsk_course_onboarding_notification_payments" formatted="false">To‘lov tasdiqlansa yoki rad etilsa xabar beramiz</string>
+    <string name="hsk_course_onboarding_notification_title" formatted="false">Bildirishnomalarni yoqing</string>
+    <string name="hsk_course_onboarding_notification_updates" formatted="false">Yangi versiya chiqqanda bir marta xabar beramiz</string>
     <string name="hsk_course_part_sections_d" formatted="false">Dialog</string>
     <string name="hsk_course_part_sections_p" formatted="false">Mashq</string>
     <string name="hsk_course_part_sections_r" formatted="false">Takrorlash</string>
