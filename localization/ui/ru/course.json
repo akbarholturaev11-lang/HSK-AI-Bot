@@ -100,6 +100,12 @@
     "coursePicker.version": "Версия курса",
     "coursePicker.level": "Уровень",
     "coursePicker.note": "При смене версии прогресс сохраняется. Выбор другого уровня начнёт прогресс этой версии заново.",
-    "coursePicker.confirm": "Подтвердить"
+    "coursePicker.confirm": "Подтвердить",
+    "authGate.title": "Откройте курс из бота",
+    "authGate.body": "Mini App не смог подтвердить подключение к Telegram. Вернитесь в бот, нажмите /start и откройте курс заново.",
+    "authGate.btn": "Вернуться в бот",
+    "blockedGate.title": "Ваш профиль заблокирован",
+    "blockedGate.body": "Доступ к курсу ограничен администратором. Для помощи напишите в поддержку.",
+    "blockedGate.btn": "Написать в поддержку"
   }
 }

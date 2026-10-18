@@ -100,6 +100,12 @@
     "coursePicker.version": "Kurs versiyasi",
     "coursePicker.level": "Daraja",
     "coursePicker.note": "Versiyalar orasida almashganda o'qigan joyingiz saqlanadi. Boshqa darajani tanlash shu versiya progressini yangidan boshlaydi.",
-    "coursePicker.confirm": "Tasdiqlash"
+    "coursePicker.confirm": "Tasdiqlash",
+    "authGate.title": "Kursni bot ichidan oching",
+    "authGate.body": "Mini App Telegram bilan real ulanishni tasdiqlay olmadi. Botga qayting, /start ni bosing va kursni qaytadan oching.",
+    "authGate.btn": "Botga qaytish",
+    "blockedGate.title": "Profilingiz bloklangan",
+    "blockedGate.body": "Kursga kirish admin tomonidan cheklangan. Yordam uchun qo'llab-quvvatlash xizmatiga yozing.",
+    "blockedGate.btn": "Supportga yozish"
   }
 }

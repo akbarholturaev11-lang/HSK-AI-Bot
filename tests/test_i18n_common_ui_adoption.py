@@ -115,7 +115,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertEqual(html.count(
-            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-picker-v3"></script>'
+            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-gates-v4"></script>'
         ), 1)
         self.assertLess(html.index("hsk-course-i18n.js"),
                         html.index("function courseMessage("))
@@ -460,6 +460,49 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn("if(Flow&&Flow.graded)", html)
         # Russian lessonDoneSub differs from legacy punctuation and is NOT migrated.
         self.assertNotIn('courseMessage("lessonDoneSub"', html)
+
+
+    def test_miniapp_login_and_blocked_gate_copy_from_local_assets(self):
+        """Six auth/status display labels preserve exact UZ/RU/TJ inline values."""
+        import re
+
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertEqual(len(html.split("\n")), 8712)
+        for function, prefix in (("authGateCopy", "authGate"),
+                                 ("blockedGateCopy", "blockedGate")):
+            view = html.split("function " + function + "(){", 1)[1].split(
+                "\nfunction ", 1
+            )[0]
+            self.assertIn("var legacy={", view)
+            self.assertIn("}[LANG]||{};return {", view)
+            for name in ("title", "body", "btn"):
+                self.assertEqual(
+                    view.count('courseMessage("' + prefix + '.' + name +
+                               '",legacy.' + name + ')'), 1)
+            for locale in ("uz", "ru", "tj"):
+                values = json.loads(
+                    (ROOT / f"localization/ui/{locale}/course.json").read_text(
+                        encoding="utf-8")
+                )["messages"]
+                original = re.search(
+                    re.escape(locale) + r':\{([^}]+)\}', view
+                )
+                self.assertIsNotNone(original)
+                for name in ("title", "body", "btn"):
+                    with self.subTest(function=function, locale=locale, key=name):
+                        field = re.search(
+                            r"(?:^|[,{}])" + re.escape(name) + r':"([^"]*)"',
+                            original.group(1))
+                        self.assertIsNotNone(field)
+                        self.assertEqual(field.group(1), values[prefix + "." + name])
+
+        self.assertIn('var c=blockedGateCopy();', html)
+        self.assertIn('var c=authGateCopy();', html)
+        self.assertIn('try{if(tg&&tg.openTelegramLink)', html)
+        self.assertIn('function openSupportLink(url){', html)
+        self.assertIn('+(supportUrl?', html)
+        self.assertIn('courseMessage("nav."+st.s,T().nav[st.s])', html)
+        self.assertIn('hsk-course-i18n.js?v=20261018-gates-v4', html)
 
 
 if __name__ == "__main__":

@@ -3,9 +3,15 @@
 if (typeof window !== "undefined") {
   window.HSKAI_COURSE_I18N = Object.freeze({
   "uz": Object.freeze({
+  "authGate.body": "Mini App Telegram bilan real ulanishni tasdiqlay olmadi. Botga qayting, /start ni bosing va kursni qaytadan oching.",
+  "authGate.btn": "Botga qaytish",
+  "authGate.title": "Kursni bot ichidan oching",
   "b1": "Barcha HSK 1–4 darslar",
   "b2": "AI Voice — cheksiz",
   "b3": "Cheksiz test va xatolar mashqi",
+  "blockedGate.body": "Kursga kirish admin tomonidan cheklangan. Yordam uchun qo'llab-quvvatlash xizmatiga yozing.",
+  "blockedGate.btn": "Supportga yozish",
+  "blockedGate.title": "Profilingiz bloklangan",
   "buildSent": "Gapni tuzing",
   "check": "Tekshirish",
   "completeOf": "bajarildi",
@@ -103,9 +109,15 @@ if (typeof window !== "undefined") {
   "you": "Siz"
 }),
   "ru": Object.freeze({
+  "authGate.body": "Mini App не смог подтвердить подключение к Telegram. Вернитесь в бот, нажмите /start и откройте курс заново.",
+  "authGate.btn": "Вернуться в бот",
+  "authGate.title": "Откройте курс из бота",
   "b1": "Все уроки HSK 1–4",
   "b2": "AI Voice — безлимит",
   "b3": "Безлимит тестов и работа над ошибками",
+  "blockedGate.body": "Доступ к курсу ограничен администратором. Для помощи напишите в поддержку.",
+  "blockedGate.btn": "Написать в поддержку",
+  "blockedGate.title": "Ваш профиль заблокирован",
   "buildSent": "Соберите предложение",
   "check": "Проверить",
   "completeOf": "выполнено",
@@ -203,9 +215,15 @@ if (typeof window !== "undefined") {
   "you": "Вы"
 }),
   "tj": Object.freeze({
+  "authGate.body": "Mini App пайвастшавии Telegram-ро тасдиқ карда натавонист. Ба бот баргардед, /start-ро пахш кунед ва курсро аз нав кушоед.",
+  "authGate.btn": "Ба бот баргаштан",
+  "authGate.title": "Курсро аз дохили бот кушоед",
   "b1": "Ҳамаи дарсҳои HSK 1–4",
   "b2": "AI Voice — бепоён",
   "b3": "Тестҳои бепоён ва кор бар хатоҳо",
+  "blockedGate.body": "Дастрасӣ ба курс аз ҷониби админ маҳдуд аст. Барои кӯмак ба дастгирӣ нависед.",
+  "blockedGate.btn": "Ба дастгирӣ навиштан",
+  "blockedGate.title": "Профили шумо баста шудааст",
   "buildSent": "Ҷумларо созед",
   "check": "Санҷидан",
   "completeOf": "иҷро шуд",

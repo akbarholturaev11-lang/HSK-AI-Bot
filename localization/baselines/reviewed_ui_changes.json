@@ -10,8 +10,8 @@
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
-      "reviewed_sha1": "e26989f199e2c648f224c60e5b3ffd2fae69b493",
-      "reason": "Reviewed course picker five labels and existing newWord/lessonDone/later copies mapped to local static source with untouched exact original UZ/RU/TJ fallback; local course JS cache version incremented. No line offsets, lesson grading, payment, entitlement or course selection state modified."
+      "reviewed_sha1": "bf9208f96ee4c5efd58299ea7d11ca7c77a55a97",
+      "reason": "Six reviewed auth/blocked gate labels use local static UZ/RU/TJ catalog with exact inline fallbacks; unchanged auth status decisions, support links, navigation and original 8712 newline segments. Mini App JS cache version gates-v4."
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",
