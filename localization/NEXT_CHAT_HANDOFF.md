@@ -1,5 +1,12 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## P3 preparation — private version-bound lesson display overlay contract (2026-10-19)
+
+- Added **read-only, in-memory** `scripts/i18n_lesson_display_overlay_contract.py` proof of P3 source/locale overlay schema; **not a deployed language pack, route, translator, generator or runtime migration**. `build_display_overlay` uses explicit safe display paths and one SHA-256 bound source revision, level, lesson ID and part. `apply_display_overlay` only changes a detached source copy's permitted locale text; it rejects unknown/extra/missing paths, stale source revisions, wrong language, and incomplete UZ/RU/TJ display maps. **No output-to-file, HTTP or API functions.**
+- Explicit exclusions: `correct_index`, `options`, `tokens`, `answer_tokens`, distractors, raw Chinese/pinyin, grading/security flags and unreviewed `reverse_builder` content. Existing 746 lesson files, seven-track source JSON, paid/Pro entitlement, Mini App reservation/prefetch, Android cache and legacy client responses untouched. Do not publish overlays until access-boundary/security review and real-client compatibility tests.
+- Existing `hsk1/lesson_01.json` and `nhsk1/lesson_01.json` have **51** and **43** permitted complete 3-locale display paths, respectively (reviewed by structural inspection), no missing allowed locale maps in these fixtures. `tests/test_i18n_lesson_display_overlay_contract.py` tests both on-disk sources, identity/answer immutability, stale source and grade fingerprint mismatch, locale parity and unreviewed answer-path fail-closed rejection. P0 workflow now includes it. Confirm CI **after new commit**; no device QA or Pro paywall regression assertion claimed.
+- Current branch-only scope, Draft PR #179, no merge/deploy. Previous `ee1c4770` completed **all six** Actions successfully, including Android, before this change.
+
 ## Main Course Voice inline display: 63 exact UZ/RU/TJ keys — 2026-10-19
 
 - `app/static/course-v3.html` embedded `var VOICE` has 60 static `LD` display texts plus 3 `LIVE_TEXT` voice UI texts. All 63 original string keys match in UZ/RU/TJ, including `turnOf` placeholder. Moved the **189 existing locale strings** exactly into `courseVoiceInline.*` without editing the literal source dictionaries.
