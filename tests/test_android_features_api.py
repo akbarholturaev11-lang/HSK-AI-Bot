@@ -9,6 +9,7 @@ the two things that *are* the adapter's responsibility:
    Entitlement still changes only after admin review.
 """
 
+import asyncio
 import json
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -1320,6 +1321,84 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(body["ad"]["available"])
         # Qachon qayta ochilishi Mini App'dagidek aytiladi.
         self.assertIn("reset_at", body)
+
+    async def test_google_only_gate_releases_user_lock_before_shadow_insert(self):
+        """A Google-only account must not time out on shadow's user FK lock.
+
+        The production gate holds users.id FOR UPDATE while reserving the free
+        attempt. Shadow writes through another DB session and requires a
+        PostgreSQL KEY SHARE lock on that same user. A commit MUST occur first.
+        """
+        from app.api import android_features
+        from app.db.models.entitlement_shadow_event import EntitlementShadowEvent
+
+        google_user = _user(2, None, "Google-only learner")
+        async with self.sessions() as session:
+            session.add(google_user)
+            await session.commit()
+
+        shadow_transaction_states = []
+        real_shadow = android_features.shadow_compare_gate
+
+        async def verify_shadow(session, **kwargs):
+            shadow_transaction_states.append(session.in_transaction())
+            await real_shadow(session, **kwargs)
+
+        with (
+            patch.object(
+                DesktopAuthService, "authenticate",
+                AsyncMock(return_value=SimpleNamespace(user=google_user)),
+            ),
+            patch.object(android_features, "shadow_compare_gate", verify_shadow),
+        ):
+            first = await asyncio.wait_for(
+                self.client.post(
+                    "/api/v3/android/practice/gate",
+                    headers=self._headers(),
+                    json={"feature": "recognition", "ref": "google-first"},
+                ), timeout=5,
+            )
+            duplicate = await asyncio.wait_for(
+                self.client.post(
+                    "/api/v3/android/practice/gate",
+                    headers=self._headers(),
+                    json={"feature": "recognition", "ref": "google-first"},
+                ), timeout=5,
+            )
+            blocked = await asyncio.wait_for(
+                self.client.post(
+                    "/api/v3/android/practice/gate",
+                    headers=self._headers(),
+                    json={"feature": "recognition", "ref": "google-second"},
+                ), timeout=5,
+            )
+
+        self.assertEqual(200, first.status_code)
+        self.assertEqual(200, duplicate.status_code)
+        self.assertEqual(403, blocked.status_code)
+        self.assertEqual("free_feature_limit_reached", blocked.json()["error"])
+        self.assertEqual([False, False, False], shadow_transaction_states)
+        async with self.sessions() as session:
+            events = (
+                await session.execute(
+                    select(CourseMiniAppEvent).where(
+                        CourseMiniAppEvent.user_id == google_user.id,
+                        CourseMiniAppEvent.event_name == "practice_daily_used",
+                    )
+                )
+            ).scalars().all()
+            shadows = (
+                await session.execute(
+                    select(EntitlementShadowEvent).where(
+                        EntitlementShadowEvent.user_id == google_user.id,
+                        EntitlementShadowEvent.client == "android",
+                    )
+                )
+            ).scalars().all()
+        self.assertEqual(1, len(events))
+        self.assertIsNone(events[0].telegram_id)
+        self.assertGreaterEqual(len(shadows), 1)
+        self.assertIsNone(shadows[0].telegram_id)
 
     async def test_a_spent_allowance_is_shown_in_the_app_not_in_telegram(self):
         """The app shows the closed door itself; Telegram stays quiet.
