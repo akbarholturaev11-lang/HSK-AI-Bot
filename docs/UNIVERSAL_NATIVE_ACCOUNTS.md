@@ -436,7 +436,11 @@ The full desktop/older Mini App UI suites also need their baseline gaps reviewed
 before claiming all project regressions green. `main` and production remain held.
 
 
-## 2026-10-17 Android OAuth failure / browser-return audit
+## Historical 2026-10-17 Android OAuth failure / browser-return audit
+
+This records the earlier inspection at `3a191ccc`. The code verification and
+completed desktop implementation below supersede its pending-code/test items;
+its production and real-client limitations remain relevant.
 
 **Production evidence (read-only Railway inspection):** current live service is
 on `main` commit `160a51d69f3324e3162375213ec61b5587b19533`,
@@ -497,3 +501,82 @@ validate Android Google/Apple auto-return/manual fallback, cancellation,
 existing account attachment, Telegram approval, session/entitlement isolation
 and installed macOS/Windows flow. Do **not** merge into `main`, deploy
 production, migrate its database or claim release-ready before sign-off.
+
+## 2026-10-18 code verification and QA handoff
+
+Reviewed all upstream fixes through `3a191ccc` and fast-forwarded the working
+branch to them before completing the remaining work. `origin/main` remained
+`160a51d6` and is already an ancestor: no main integration was missing, and
+nothing was pushed to main. Current implementation is in `eb0a5a84` (backend),
+`2823659c` (Android) and `dde0ee04` (desktop/CI).
+
+Android Google/Apple sign-in and attachment use the browser flow. Provider URLs,
+proof envelopes and terminal responses are validated before navigation or token
+storage. Dismissing any provider attachment cancels its exact proof. Desktop
+now offers configured, unlinked Google/Apple alongside Telegram using the same
+authenticated attachment path on macOS and Windows. Native generations guard
+late start, sign-in poll, refresh and logout responses against changing a newer
+account or restoring an abandoned session.
+
+Backend attachment start, callback and cancellation bind the actor's active
+session, device, installation and platform. Locked origin checks and PostgreSQL
+race regressions cover revocation and competing success/cancel/error callbacks.
+Provider-declined callbacks consume only their validated pending state and end
+polling. Native and browser nonces use separate namespaces; existing pending
+OAuth attempts will need a retry when this unreleased change is first deployed.
+There is no migration and no change to canonical account, payment or retention
+policy. Account-deletion proofs retain their separate existing flow.
+
+Successful native callbacks offer only a fixed production or QA app wake URI,
+without tokens, codes, state or identity data. The browser tries to open the app
+and keeps an explicit fallback link. The app accepts authentication only from
+its original server proof poll. QA clients use separate identities/credentials,
+the `pomp-hsk-ai-qa` protocol and disabled updaters. Android QA also disables
+Firebase and release variants. Unknown server return schemes disable handoff.
+
+Final local checks against this source:
+
+- **415 backend tests + 209 subtests, zero skipped**, including isolated local
+  PostgreSQL 15 concurrency, canonical billing, legacy access, AI/Voice,
+  identity ownership, blocked accounts, deletion/retention and migration chain.
+  This is additional code evidence, not a rerun of the earlier PostgreSQL 18
+  real-schema/backup rehearsal. An initial mismatched-installation fixture and
+  a scratch PostgreSQL seed-sequence fixture were corrected before the clean run.
+- Android: **580 Direct + 534 Play JVM tests**, **25 emulator tests**, plus
+  **57 focused QA JVM checks** passed without failures/skips. QA manifest,
+  credential/package separation, disabled updater/Firebase, production defaults,
+  invalid-origin rejection and unavailable QA release tasks were checked.
+- Desktop: **40 native Rust tests** passed for default and QA configurations;
+  **36 JavaScript contracts**, **38 provider/Telegram/sign-in browser fixtures**
+  and **10 adjacent browser smoke checks** passed. Formatting and all-target,
+  all-feature clippy checks passed. Native browser fixtures model both OSes;
+  real installed Windows/macOS protocol handling remains a manual gate.
+- **48 Mini App profile-link/account-deletion browser tests** passed.
+  Backend compilation, JSON, diff checks and the single existing Alembic head
+  `0107_canonical_referral_owners` passed. The knowledge graph was refreshed.
+
+Backend CI was dispatched for `dde0ee04`; desktop CI uses the same code plus
+the `082dd56d` checkout-only fix. Results are recorded in the
+[code-check evidence](UNIVERSAL_NATIVE_AUTH_CODE_CHECK_2026-10-18.json).
+Backend CI passed **986 test executions across 15 groups**, including the new
+provider lifecycle and canonical concurrency checks on PostgreSQL 18, without
+skips. Desktop CI also passed: **40 native tests on Windows and 40 on macOS**,
+all-target/all-feature clippy and formatting, plus **36 JS contracts and 34
+provider/Telegram browser tests**. Its initial Windows checkout failed on
+unrelated generated audio path lengths; the focused checkout fixed that before
+the successful run. These are test workflows, with no release upload or deployment.
+
+Read-only Railway recheck: production app is healthy on `160a51d6`; OAuth start
+200 followed by assert 422 is still visible for the installed old Android build,
+along with a later start 429. Bodies were not logged, so omitted `provider` is a
+reproduced contract defect rather than a proved replay of every live 422.
+Google is advertised by live discovery, but its secret values/callback operation
+were not verified. Apple configuration is absent. Staging inventory currently
+contains its database and no universal-account application deployment.
+
+Use [the QA walkthrough](UNIVERSAL_NATIVE_ACCOUNT_QA.md) for the next step.
+No staging application was deployed, no production state was changed and no
+installable QA APK/DMG/EXE was delivered: placeholder-origin checks only verify
+build isolation. A staging application with real test provider callbacks and
+credentials must exist before building/installing the QA clients for the owner.
+All seven acceptance gates and the `main`/production hold remain in force.

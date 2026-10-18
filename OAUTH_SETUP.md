@@ -216,16 +216,17 @@ APPLE_OAUTH_ENABLED=true
 
 ## 3. Tekshirish
 
-Railway o'zgaruvchilarni saqlaganda o'zi qayta deploy qiladi. Bir daqiqadan
-keyin:
+Universal kirish release hold tugamaguncha alohida staging muhitini ishlating.
+Railway o'zgaruvchilarini saqlash deploy boshlashi mumkin; production xizmatini
+o'zgartirmang. Staging backend ishga tushgach browser oqimini tekshiring:
 
 ```bash
-curl -s "https://telegram-chinese-bot-production.up.railway.app/api/v3/native-auth/providers?platform=android"
+curl -s "https://YOUR-STAGING-HOST/api/v3/native-auth/providers?platform=macos"
 ```
 
 - `{"ok":true,"providers":[]}` → hali sozlanmagan, biror qiymat bo'sh yoki xato
-- `{"ok":true,"providers":["google"]}` → Google tayyor
-- `{"ok":true,"providers":["google","apple"]}` → ikkalasi tayyor
+- `{"ok":true,"providers":["google"]}` → Google browser konfiguratsiyasi tanildi
+- `{"ok":true,"providers":["google","apple"]}` → ikkala browser konfiguratsiyasi tanildi
 
 Mini App uchun alohida `?platform=miniapp` bilan tekshiring: Android uchun
 Google ko‘rinishi Mini App browser konfiguratsiyasi tayyorligini bildirmaydi.
@@ -235,8 +236,17 @@ ulash kartalari ko‘rinadi. Ulangan provider kartasi qayta chiqmaydi;
 saqlanadi. Desktop kirish ekranida ham sozlangan provider tugmalari chiqadi.
 Bu javoblar real callback muvaffaqiyatini tasdiqlamaydi.
 
-Android Google browser kirishi va callback'dan qaytish uchun ushbu branch'dan
-yangi Android reliz APK'si kerak; hozirgi production APK avtomatik o'zgarmaydi.
+Android browser UI ham shu web client juftligini ishlatadi; eski ichki
+Credential Manager uchun `platform=android` discovery alohida qoladi.
+
+Google/Apple success callback Android, macOS va Windows ilovasini qayta
+ochishga urinadi va `HSK AI` tugmasini ham ko'rsatadi. URI login natijasi yoki
+token olib yurmaydi; natijani ilovaning avvalgi proof polling oqimi oladi.
+Production default `OAUTH_NATIVE_RETURN_SCHEME=pomp-hsk-ai`; alohida QA
+backendida `pomp-hsk-ai-qa` ishlating. Boshqa yoki bo'sh qiymat ilovani
+avtomatik ochishni o'chiradi. Har ikkala OS/client uchun mos QA build kerak.
+[Amaliy test yo'riqnomasi](docs/UNIVERSAL_NATIVE_ACCOUNT_QA.md) va client
+README'larida origin, alohida paket/bundle hamda updater sozlamalari bor.
 
 ---
 
