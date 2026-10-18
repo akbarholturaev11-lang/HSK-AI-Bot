@@ -1539,16 +1539,70 @@ function openHsk30BookSheet(html,title){
 }
 function trackUi(){return TRACK_UI[LANG]||TRACK_UI.uz}
 function currentCourseTrack(){return isHsk30Level((MAP&&MAP.level)||getSelectedLevel())?"hsk30":"hsk20"}
-var COURSE_TRACK_STATE=null,COURSE_TRACK_PROMISE=null;
+var COURSE_TRACK_STATE=null,COURSE_TRACK_PROMISE=null,COURSE_TRACK_CHECKED_AT=0;
 function courseTrackStatus(force){
   if(!INIT_DATA)return Promise.reject(new Error("auth"));
   if(COURSE_TRACK_STATE&&!force)return Promise.resolve(COURSE_TRACK_STATE);
-  if(COURSE_TRACK_PROMISE&&!force)return COURSE_TRACK_PROMISE;
+  if(COURSE_TRACK_PROMISE)return COURSE_TRACK_PROMISE;
   COURSE_TRACK_PROMISE=fetch("/api/v3/course-tracks",{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store"})
     .then(function(r){return r.json().then(function(d){if(!r.ok||!d.ok)throw new Error(d.error||"course_track_failed");return d})})
-    .then(function(d){COURSE_TRACK_STATE=d;COURSE_TRACK_PROMISE=null;return d})
+    .then(function(d){COURSE_TRACK_STATE=d;COURSE_TRACK_CHECKED_AT=Date.now();COURSE_TRACK_PROMISE=null;return d})
     .catch(function(e){COURSE_TRACK_PROMISE=null;throw e});
   return COURSE_TRACK_PROMISE;
+}
+function isHsk30AccessError(d,level){
+  var code=String(d&&d.error||"");
+  return !!(d&&d._status===403&&(code.indexOf("hsk30_")===0||
+    (isHsk30Level(level||getSelectedLevel())&&(code==="payment_rejected"||code==="payment_pending"))));
+}
+var HSK30_ACCESS_TIMER=null,HSK30_ACCESS_CHECK=null,HSK30_ACCESS_DENIED=false;
+function prepareHsk30AccessBoundary(status){
+  var t=trackUi(),access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
+  var level=normalizeLevel(status&&status.active_level||(MAP&&MAP.level)||getSelectedLevel());
+  if(!isHsk30Level(level))level="nhsk1";
+  setSelectedLevel(level);
+  // Keep persisted progress untouched; remove cached exercises from the UI.
+  MAP=Object.assign({},MAP||{},{level:level,label:courseLevelLabel(level),units:[],
+    progress:MAP&&MAP.progress||{xp:0,streak:0,completed:0},course_access_locked:true,
+    lesson_limit:{hsk30_access:access||{allowed:false}}});
+  App.exitFlow();
+  ["secov","resourceov","writeov","paywall"].forEach(function(id){var node=document.getElementById(id);if(node)node.classList.remove("on")});
+  var title=access&&access.payment_rejected?t.paymentRejectedTitle:t.hsk30Title;
+  var body=access&&access.payment_rejected?t.paymentRejectedBody:t.hsk30Body;
+  var html='<div class="htop"><h1 class="section-title">HSK 3.0</h1></div><div class="rt-invite" style="margin-top:42px">'
+    +'<p style="font-weight:600;color:var(--ink)">'+esc(title)+'</p><p>'+esc(body)+'</p>'
+    +'<button onclick="showHsk30AccessGate()">'+esc(t.tryAgain)+'</button>'
+    +'<button onclick="switchCourseTrack(\'hsk20\',null)">'+esc(t.backTo20)+'</button></div>';
+  ["s-course","s-mashq"].forEach(function(id){document.getElementById(id).innerHTML=html});
+}
+function refreshHsk30Access(){
+  if(!INIT_DATA||!MAP||currentCourseTrack()!=="hsk30"||document.visibilityState==="hidden"||CHECKOUT_NAVIGATING||internalNavigationActive())return Promise.resolve(false);
+  if(HSK30_ACCESS_CHECK)return HSK30_ACCESS_CHECK;
+  var level=MAP.level;
+  HSK30_ACCESS_CHECK=courseTrackStatus(true).then(function(status){
+    if(currentCourseTrack()!=="hsk30"||MAP.level!==level)return false;
+    var access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
+    if(!access)return false;
+    if(access.allowed===false){
+      if(!HSK30_ACCESS_DENIED){HSK30_ACCESS_DENIED=true;renderHsk30AccessGate(status)}
+      return false;
+    }
+    var restore=HSK30_ACCESS_DENIED&&MAP.course_access_locked;
+    HSK30_ACCESS_DENIED=false;
+    if(restore){App.closeSheet();return loadLevel(status.active_level||level)}
+    return true;
+  }).catch(function(){return false}).then(function(result){HSK30_ACCESS_CHECK=null;return result});
+  return HSK30_ACCESS_CHECK;
+}
+function startHsk30AccessMonitor(){
+  if(!INIT_DATA||HSK30_ACCESS_TIMER)return;
+  HSK30_ACCESS_TIMER=setInterval(function(){
+    var access=COURSE_TRACK_STATE&&COURSE_TRACK_STATE.tracks&&COURSE_TRACK_STATE.tracks.hsk30&&COURSE_TRACK_STATE.tracks.hsk30.access;
+    // Only pending review needs foreground polling. Paid/free users keep
+    // their usual navigation/visibility refresh without a permanent poll.
+    if(!access||access.payment_pending||access.provisional_access)refreshHsk30Access();
+  },3000);
+  refreshHsk30Access();
 }
 /* Return only to the original Course V3 screen, never to an arbitrary URL.
    The checkout is a separate document within the same Telegram Mini App. */
@@ -1569,6 +1623,9 @@ function openHsk30UnlockCheckout(){
 }
 function renderHsk30AccessGate(status){
   var t=trackUi(),access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
+  if(access&&access.allowed===false&&currentCourseTrack()==="hsk30"){
+    HSK30_ACCESS_DENIED=true;prepareHsk30AccessBoundary(status);
+  }
   var unlock=status&&status.hsk30_unlock||{},price=String(unlock.price_display||""),paymentEnabled=unlock.payment_enabled!==false&&Number(unlock.price_tjs||0)>0&&!!price;
   if(access&&access.feature_enabled===false){
     App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.disabled)+'</div></div><button class="sec" style="width:100%" onclick="App.closeSheet()">'+esc(t.close)+'</button>');
@@ -1585,6 +1642,7 @@ function renderHsk30AccessGate(status){
     +hsk30BookPrice(status)+'<div class="hsk30-promo-actions">'+permanentButton+leave+'</div>',c.title);
 }
 function showHsk30AccessGate(){
+  if(currentCourseTrack()==="hsk30"&&!MAP)prepareHsk30AccessBoundary();
   courseTrackStatus(true).then(renderHsk30AccessGate).catch(function(){
     var t=trackUi();
     App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.hsk30Title)+'</div><div class="tr">'+esc(t.tryAgain)+'</div></div><button class="sec" style="width:100%" onclick="showHsk30AccessGate()">'+esc(t.tryAgain)+'</button>');
@@ -1911,7 +1969,7 @@ function pingMiniAppExit(){
 try{
   document.addEventListener("visibilitychange",function(){
     if(document.visibilityState==="hidden")pingMiniAppExit();
-    else{syncCourseTelegramChrome();INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;refreshCourseProgress();queueHsk30PromoCheck()}
+    else{syncCourseTelegramChrome();INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;refreshHsk30Access();refreshCourseProgress();queueHsk30PromoCheck()}
   });
   window.addEventListener("pagehide",pingMiniAppExit);
   /* bfcache: sahifa xotiradan tiklanganda (obuna, lug'at yoki AI Voice
@@ -1925,6 +1983,7 @@ try{
     INTERNAL_NAVIGATING_UNTIL=0;EXIT_PINGED=false;clearDeferredCourseUnlock();
     if(!INIT_DATA||!MAP)return;
     _fetchCourseMap(MAP.level||getSelectedLevel()).then(function(d){
+      if(isHsk30AccessError(d,MAP.level||getSelectedLevel())){showCourseMapFailure({hsk30Gate:true,level:d.level||MAP.level});return}
       if(!d||d._parseFail||d.authenticated===false||!d.units)return;
       MAP=rememberLimitText(d);if(d.user)PROF=d.user;syncNotify();renderAll();
     }).catch(function(){});
@@ -2173,6 +2232,7 @@ function refreshCourseProgress(afterWrite){
   var deadline=new Promise(function(resolve){timer=setTimeout(function(){if(controller)controller.abort();resolve(null)},10000)});
   PROGRESS_REFRESH=Promise.race([_fetchCourseMap(level,controller?controller.signal:undefined),deadline])
     .then(function(d){
+      if(MAP===snapshot&&isHsk30AccessError(d,level)){showCourseMapFailure({hsk30Gate:true,level:d.level||level});return false}
       if(PROGRESS_REFRESH_QUEUED||MAP!==snapshot||!d||d._parseFail||d._status>=400||d.authenticated===false||!d.units||d.level!==level)return false;
       if(Object.prototype.hasOwnProperty.call(d,"today"))MAP.today=d.today;
       if(d.progress)MAP.progress=d.progress;
@@ -2226,7 +2286,7 @@ var App={
     syncCourseTelegramChrome();
     if(s==="mashq"&&isHsk30Level((MAP&&MAP.level)||getSelectedLevel())){
       var status=COURSE_TRACK_STATE,access=status&&status.tracks&&status.tracks.hsk30&&status.tracks.hsk30.access;
-      if(!access||!access.allowed){
+      if(!access||!access.allowed||Date.now()-COURSE_TRACK_CHECKED_AT>3000){
         /* Refresh cached denial after checkout, but never bypass server authorization. */
         if(MASHQ_ACCESS_PENDING)return;
         MASHQ_ACCESS_PENDING=courseTrackStatus(true).then(function(loaded){
@@ -3314,6 +3374,7 @@ function foundationEntryHtml(){
   return '<div class="foundation-entry"><span class="fi han">零</span><span class="ft"><b>'+esc(m.h)+(done?' <i class="ti ti-circle-check" style="color:var(--jade)"></i>':'')+'</b><small>'+esc(m.p)+'</small></span><button onclick="startFoundationFromMap(true)">'+esc(m.go)+'</button></div>';
 }
 function renderCourse(){
+  if(MAP&&MAP.course_access_locked)return;
   /* Daraja yagona manbadan (botdagi user.level) keladi — mini app ichida daraja
      tanlash ko'rsatilmaydi, shuning uchun bu statik yorliq (tugma emas). */
   /* Ekran uch qismga bo'linadi: sarlavha, yo'lakcha va yon ustun. Telefonda
@@ -3469,7 +3530,7 @@ function showCourseMapFailure(res){
   if(res&&res.data)return false;
   if(res&&res.blocked)showBlockedGate(res.support_url);
   else if(res&&res.hsk30Soon)showHsk30LevelSoon(res.level);
-  else if(res&&res.hsk30Gate)showHsk30AccessGate();
+  else if(res&&res.hsk30Gate){setSelectedLevel(res.level||"nhsk1");if(MAP)MAP.level=getSelectedLevel();showHsk30AccessGate()}
   else if(res&&res.auth===false)showAuthGate();
   else showCourseLoadError();
   return true;
@@ -3968,7 +4029,7 @@ function reserveLessonStart(l){
 function handleLessonStartDenied(err,idx){
   var d=(err&&err.data)||{},l=allLessons()[idx];
   rememberLimitText(d);
-  if(String(d.error||"").indexOf("hsk30_")===0){showHsk30AccessGate();return}
+  if(isHsk30AccessError(d,(MAP&&MAP.level)||getSelectedLevel())){showHsk30AccessGate();return}
   if(d.error==="free_feature_limit_reached"||d.error==="course_access_blocked"){
     if(l){
       l.locked_premium=true;l.completion_allowed=false;
@@ -4018,7 +4079,11 @@ function startLesson(idx,opts){
       dedupe_key:lessonEventKey("lesson_started",l.n)
     });
     HP=5;$("#f-hp").textContent=HP;
-    var revealLesson=function(){$("#flow").classList.add("on");renderFlowCard()};
+    var revealLesson=function(){
+      if(!MAP||MAP.level!==lv)return;
+      if(MAP.course_access_locked){showHsk30AccessGate();return}
+      $("#flow").classList.add("on");renderFlowCard();
+    };
     /* The panda preparation scene already covers entry: spend at most 1.8 s
        of that time waiting for the current card's first sound. Never block
        the course indefinitely if a TTS provider is unavailable. */
@@ -5290,12 +5355,13 @@ function loadCourseMap(lv,tries){
   return _fetchCourseMap(lv).then(function(d){
     if(d&&d._status===403&&d.error==="user_blocked")return {blocked:true,support_url:d.support_url||""};
     if(d&&d._status===403&&(d.error==="hsk30_level_not_live"||d.error==="hsk30_no_live_levels"))return {hsk30Soon:true,error:d.error,level:lv};
-    if(d&&d._status===403&&String(d.error||"").indexOf("hsk30_")===0)return {hsk30Gate:true,error:d.error};
+    if(isHsk30AccessError(d,d.level||lv))return {hsk30Gate:true,error:d.error,level:d.level||lv};
     if(d&&(d.authenticated===false||d._status===401))return {auth:false};
     if(!d||d._parseFail||(d._status&&d._status>=500)){
       if(tries<3)return _retryCourseMap(lv,tries);
       return {error:true};
     }
+    if(d._status>=400||!Array.isArray(d.units))return {error:true};
     return {data:d};
   }).catch(function(){
     if(tries<3)return _retryCourseMap(lv,tries);
@@ -5312,6 +5378,8 @@ function loadLevel(lv){
     if(!res||!res.data)hideCourseTrackSwitchPreparing();
     if(showCourseMapFailure(res))return;
     var d=res.data;
+    var access=COURSE_TRACK_STATE&&COURSE_TRACK_STATE.tracks&&COURSE_TRACK_STATE.tracks.hsk30&&COURSE_TRACK_STATE.tracks.hsk30.access;
+    if(HSK30_ACCESS_DENIED&&isHsk30Level(d.level||lv)&&access&&access.allowed===false){showHsk30AccessGate();return}
     hideAuthGate();MAP=rememberLimitText(d);adoptServerLang(d);adoptBotUsername(d);setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");
     hideCourseTrackSwitchPreparing();
     prefetchNearbyLessons();
@@ -5389,6 +5457,7 @@ function flowDone(){
     .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
     .then(function(d){
       if(!d.ok){
+        if(isHsk30AccessError(d,(MAP&&MAP.level)||getSelectedLevel())){showHsk30AccessGate();return}
         if(d.error==="free_feature_limit_reached"){
           rememberLimitText(d);
           App.exitFlow();
@@ -5427,6 +5496,7 @@ function newSectionBadge(sectionId){
   return '<span class="new-section-badge" id="'+badgeId+'" aria-label="Yangi bo‘lim">NEW</span>';
 }
 function renderMashq(){
+  if(MAP&&MAP.course_access_locked)return;
   var t=T();
   $("#s-mashq").innerHTML='<div class="htop"><h1 class="section-title">'+t.nav.mashq+'</h1></div>'
     +'<div class="phead"><div class="sub">'+t.mashqSub+'</div></div>'
@@ -8444,6 +8514,7 @@ var finishHskLaunchSplash=(function(){
 (function(){
   var bootLevel=getSelectedLevel();
   if(!INIT_DATA){showAuthGate();finishHskLaunchSplash();return;}
+  startHsk30AccessMonitor();
   loadCourseMap(bootLevel).then(function(res){
     if(showCourseMapFailure(res)){finishHskLaunchSplash();return;}
     var d=res.data;

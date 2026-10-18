@@ -2441,6 +2441,7 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
                     content={
                         "ok": False,
                         "error": hsk30_access.reason,
+                        "level": target_band,
                         "hsk30_access": hsk30_access.payload(),
                     },
                 )

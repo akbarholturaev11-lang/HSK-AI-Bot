@@ -5391,7 +5391,8 @@ def test_hsk30_onboarding_requires_access_before_course_entry(page, grant):
     expect(page.locator('.track-switch [data-track="hsk30"]')).to_have_attribute("aria-pressed", "true")
     page.locator("#cta").click()
     expect(page.locator('.lv[data-key="nhsk1"]')).to_contain_text("HSK 1")
-    expect(page.locator('.lv[data-key="nhsk1"]')).to_contain_text("NEW")
+    # NEW is reserved for rating; onboarding still verifies the HSK 3.0 band.
+    expect(page.locator('.lv[data-key="nhsk1"]')).not_to_contain_text("NEW")
     page.locator("#cta").click()
     page.locator("#cta").click()
     page.wait_for_url(re.compile(r"course-v3\.html"), wait_until="networkidle")
