@@ -71,13 +71,21 @@ async def verify_qa_tables() -> None:
                 raise RuntimeError("standalone_qa_unexpected_user_rows")
 
 
+async def _create_empty_orm_schema() -> None:
+    # The imported global AsyncEngine has a shared connection pool. Both
+    # operations MUST use the same event loop, then dispose the pool before
+    # Alembic opens a different one.
+    await ensure_database_empty()
+    from app.db.session import init_db, engine
+    await init_db()
+    await engine.dispose()
+
+
 def main() -> None:
     validate_target(dict(os.environ))
-    asyncio.run(ensure_database_empty())
-    from app.db.session import init_db
     from alembic import command
     from alembic.config import Config
-    asyncio.run(init_db())
+    asyncio.run(_create_empty_orm_schema())
     cfg = Config("alembic.ini")
     # QA ONLY. ORM-created tables model the latest empty schema; migration
     # 0102..0108 is then exercised to apply/refuse any missing constraints.
