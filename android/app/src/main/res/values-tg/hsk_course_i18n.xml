@@ -8,6 +8,10 @@
     <string name="hsk_course_b1" formatted="false">Ҳамаи дарсҳои HSK 1–4</string>
     <string name="hsk_course_b2" formatted="false">AI Voice — бепоён</string>
     <string name="hsk_course_b3" formatted="false">Тестҳои бепоён ва кор бар хатоҳо</string>
+    <string name="hsk_course_beginner_intro_kicker" formatted="false">Шиносоӣ</string>
+    <string name="hsk_course_beginner_intro_replay" formatted="false">Аз нав гӯш кардан</string>
+    <string name="hsk_course_beginner_intro_voice_off" formatted="false">Овоз хомӯш</string>
+    <string name="hsk_course_beginner_intro_voice_on" formatted="false">Овоз фаъол</string>
     <string name="hsk_course_blocked_gate_body" formatted="false">Дастрасӣ ба курс аз ҷониби админ маҳдуд аст. Барои кӯмак ба дастгирӣ нависед.</string>
     <string name="hsk_course_blocked_gate_btn" formatted="false">Ба дастгирӣ навиштан</string>
     <string name="hsk_course_blocked_gate_title" formatted="false">Профили шумо баста шудааст</string>
@@ -32,6 +36,12 @@
     <string name="hsk_course_friends" formatted="false">Дӯстон</string>
     <string name="hsk_course_goal" formatted="false">Ҳадафи рӯзона</string>
     <string name="hsk_course_grammar" formatted="false">Грамматика</string>
+    <string name="hsk_course_grammar_tutor_done" formatted="false">Фаҳмидам</string>
+    <string name="hsk_course_grammar_tutor_intro" formatted="false">Биёед якҷоя меомӯзем:</string>
+    <string name="hsk_course_grammar_tutor_negation" formatted="false">Инкор</string>
+    <string name="hsk_course_grammar_tutor_next" formatted="false">Идома</string>
+    <string name="hsk_course_grammar_tutor_structure" formatted="false">Сохт</string>
+    <string name="hsk_course_grammar_tutor_teacher" formatted="false">Устод Ли</string>
     <string name="hsk_course_help" formatted="false">Кӯмак</string>
     <string name="hsk_course_help_btn" formatted="false">Ба админ навиштан</string>
     <string name="hsk_course_help_no_contact" formatted="false">Тамоси админ ҳоло дастрас нест. Баъдтар кӯшиш кунед.</string>

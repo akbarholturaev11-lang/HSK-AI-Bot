@@ -134,6 +134,16 @@
     "levelPicker.nhsk1": "Стандарти нав · HSK 1",
     "levelPicker.nhsk2": "Стандарти нав · HSK 2",
     "levelPicker.nhsk3": "Стандарти нав · HSK 3",
-    "levelPicker.title": "Сатҳро интихоб кунед"
+    "levelPicker.title": "Сатҳро интихоб кунед",
+    "grammarTutor.teacher": "Устод Ли",
+    "grammarTutor.structure": "Сохт",
+    "grammarTutor.negation": "Инкор",
+    "grammarTutor.next": "Идома",
+    "grammarTutor.done": "Фаҳмидам",
+    "grammarTutor.intro": "Биёед якҷоя меомӯзем:",
+    "beginnerIntro.kicker": "Шиносоӣ",
+    "beginnerIntro.voiceOn": "Овоз фаъол",
+    "beginnerIntro.voiceOff": "Овоз хомӯш",
+    "beginnerIntro.replay": "Аз нав гӯш кардан"
   }
 }

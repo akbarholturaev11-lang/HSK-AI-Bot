@@ -134,6 +134,16 @@
     "levelPicker.nhsk1": "Yangi standart · HSK 1",
     "levelPicker.nhsk2": "Yangi standart · HSK 2",
     "levelPicker.nhsk3": "Yangi standart · HSK 3",
-    "levelPicker.title": "Darajani tanlang"
+    "levelPicker.title": "Darajani tanlang",
+    "grammarTutor.teacher": "Li ustoz",
+    "grammarTutor.structure": "Tuzilma",
+    "grammarTutor.negation": "Inkor",
+    "grammarTutor.next": "Davom etish",
+    "grammarTutor.done": "Tushundim",
+    "grammarTutor.intro": "Keling, birga o'rganamiz:",
+    "beginnerIntro.kicker": "Tanishuv",
+    "beginnerIntro.voiceOn": "Ovoz yoniq",
+    "beginnerIntro.voiceOff": "Ovoz o'chiq",
+    "beginnerIntro.replay": "Qayta eshitish"
   }
 }

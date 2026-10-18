@@ -134,6 +134,16 @@
     "levelPicker.nhsk1": "Новый стандарт · HSK 1",
     "levelPicker.nhsk2": "Новый стандарт · HSK 2",
     "levelPicker.nhsk3": "Новый стандарт · HSK 3",
-    "levelPicker.title": "Выберите уровень"
+    "levelPicker.title": "Выберите уровень",
+    "grammarTutor.teacher": "Учитель Ли",
+    "grammarTutor.structure": "Структура",
+    "grammarTutor.negation": "Отрицание",
+    "grammarTutor.next": "Дальше",
+    "grammarTutor.done": "Понятно",
+    "grammarTutor.intro": "Давайте разберём вместе:",
+    "beginnerIntro.kicker": "Знакомство",
+    "beginnerIntro.voiceOn": "Звук включён",
+    "beginnerIntro.voiceOff": "Звук выключен",
+    "beginnerIntro.replay": "Прослушать снова"
   }
 }

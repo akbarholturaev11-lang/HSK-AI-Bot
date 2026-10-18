@@ -8,6 +8,10 @@
     <string name="hsk_course_b1" formatted="false">Все уроки HSK 1–4</string>
     <string name="hsk_course_b2" formatted="false">AI Voice — безлимит</string>
     <string name="hsk_course_b3" formatted="false">Безлимит тестов и работа над ошибками</string>
+    <string name="hsk_course_beginner_intro_kicker" formatted="false">Знакомство</string>
+    <string name="hsk_course_beginner_intro_replay" formatted="false">Прослушать снова</string>
+    <string name="hsk_course_beginner_intro_voice_off" formatted="false">Звук выключен</string>
+    <string name="hsk_course_beginner_intro_voice_on" formatted="false">Звук включён</string>
     <string name="hsk_course_blocked_gate_body" formatted="false">Доступ к курсу ограничен администратором. Для помощи напишите в поддержку.</string>
     <string name="hsk_course_blocked_gate_btn" formatted="false">Написать в поддержку</string>
     <string name="hsk_course_blocked_gate_title" formatted="false">Ваш профиль заблокирован</string>
@@ -32,6 +36,12 @@
     <string name="hsk_course_friends" formatted="false">Друзья</string>
     <string name="hsk_course_goal" formatted="false">Дневная цель</string>
     <string name="hsk_course_grammar" formatted="false">Грамматика</string>
+    <string name="hsk_course_grammar_tutor_done" formatted="false">Понятно</string>
+    <string name="hsk_course_grammar_tutor_intro" formatted="false">Давайте разберём вместе:</string>
+    <string name="hsk_course_grammar_tutor_negation" formatted="false">Отрицание</string>
+    <string name="hsk_course_grammar_tutor_next" formatted="false">Дальше</string>
+    <string name="hsk_course_grammar_tutor_structure" formatted="false">Структура</string>
+    <string name="hsk_course_grammar_tutor_teacher" formatted="false">Учитель Ли</string>
     <string name="hsk_course_help" formatted="false">Помощь</string>
     <string name="hsk_course_help_btn" formatted="false">Написать админу</string>
     <string name="hsk_course_help_no_contact" formatted="false">Контакт админа пока недоступен. Попробуйте позже.</string>

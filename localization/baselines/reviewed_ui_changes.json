@@ -10,8 +10,8 @@
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
-      "reviewed_sha1": "fb684526e34ae40b0f1fb1d8205308a28bb49e79",
-      "reason": "Level selection screen: 8 UZ/RU/TJ level descriptions/title use local static course catalog with byte-exact inline legacy fallback. No change to progress, track or level switching, HTML line positions intact, asset version levels-v8."
+      "reviewed_sha1": "fc0e6444c95cfedb2f2ab6e0a16188580417e904",
+      "reason": "Ten beginner/grammar tutor presentation labels extracted to local UZ/RU/TJ catalog with exactly matching legacy fallback; grading/lesson progression unchanged and same source line count, bundle intro-v9."
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",

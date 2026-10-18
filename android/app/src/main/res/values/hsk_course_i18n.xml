@@ -8,6 +8,10 @@
     <string name="hsk_course_b1" formatted="false">Barcha HSK 1–4 darslar</string>
     <string name="hsk_course_b2" formatted="false">AI Voice — cheksiz</string>
     <string name="hsk_course_b3" formatted="false">Cheksiz test va xatolar mashqi</string>
+    <string name="hsk_course_beginner_intro_kicker" formatted="false">Tanishuv</string>
+    <string name="hsk_course_beginner_intro_replay" formatted="false">Qayta eshitish</string>
+    <string name="hsk_course_beginner_intro_voice_off" formatted="false">Ovoz o\'chiq</string>
+    <string name="hsk_course_beginner_intro_voice_on" formatted="false">Ovoz yoniq</string>
     <string name="hsk_course_blocked_gate_body" formatted="false">Kursga kirish admin tomonidan cheklangan. Yordam uchun qo\'llab-quvvatlash xizmatiga yozing.</string>
     <string name="hsk_course_blocked_gate_btn" formatted="false">Supportga yozish</string>
     <string name="hsk_course_blocked_gate_title" formatted="false">Profilingiz bloklangan</string>
@@ -32,6 +36,12 @@
     <string name="hsk_course_friends" formatted="false">Do\'stlar</string>
     <string name="hsk_course_goal" formatted="false">Kunlik maqsad</string>
     <string name="hsk_course_grammar" formatted="false">Grammatika</string>
+    <string name="hsk_course_grammar_tutor_done" formatted="false">Tushundim</string>
+    <string name="hsk_course_grammar_tutor_intro" formatted="false">Keling, birga o\'rganamiz:</string>
+    <string name="hsk_course_grammar_tutor_negation" formatted="false">Inkor</string>
+    <string name="hsk_course_grammar_tutor_next" formatted="false">Davom etish</string>
+    <string name="hsk_course_grammar_tutor_structure" formatted="false">Tuzilma</string>
+    <string name="hsk_course_grammar_tutor_teacher" formatted="false">Li ustoz</string>
     <string name="hsk_course_help" formatted="false">Yordam</string>
     <string name="hsk_course_help_btn" formatted="false">Adminga yozish</string>
     <string name="hsk_course_help_no_contact" formatted="false">Admin kontakti hozircha mavjud emas. Keyinroq urinib ko\'ring.</string>
