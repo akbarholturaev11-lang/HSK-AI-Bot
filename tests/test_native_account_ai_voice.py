@@ -114,7 +114,7 @@ class NativeAccountAIVoiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertGreater((await voice.user_status(bob))["remaining_voice_limit"], 0)
             self.assertEqual(await voice._pronounce_count_today(bob), 0)
 
-    def test_live_voice_native_accounts_respect_explicit_rollout_and_billing_gates(self):
+    def test_live_voice_native_accounts_respect_rollout_and_budget_gates(self):
         settings = SimpleNamespace(ANDROID_VOICE_LIVE_ENABLED=True, GEMINI_API_KEY="test-key",
             GEMINI_BILLING_TIER="paid", ANDROID_VOICE_LIVE_MODEL="gemini-3.8-live",
             ANDROID_VOICE_LIVE_SESSION_BUDGET_USD=0.15, ANDROID_VOICE_LIVE_ALLOWED_USERS="3003")
@@ -122,8 +122,14 @@ class NativeAccountAIVoiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(live_voice_available(settings, User(id=3, telegram_id=3003)))
         settings.ANDROID_VOICE_LIVE_ALLOWED_USERS = "*"
         self.assertTrue(live_voice_available(settings, User(id=1, telegram_id=None)))
+        # Gemini Live is now explicitly available with free-tier billing too.
+        # Account-scoped rollout must remain enforced independently of tier.
         settings.GEMINI_BILLING_TIER = "free"
+        self.assertTrue(live_voice_available(settings, User(id=1, telegram_id=None)))
+        settings.ANDROID_VOICE_LIVE_ALLOWED_USERS = "3003"
         self.assertFalse(live_voice_available(settings, User(id=1, telegram_id=None)))
+        settings.ANDROID_VOICE_LIVE_SESSION_BUDGET_USD = 0
+        self.assertFalse(live_voice_available(settings, User(id=3, telegram_id=3003)))
 
 
 class NativeAccountLiveTransportTests(unittest.TestCase):
