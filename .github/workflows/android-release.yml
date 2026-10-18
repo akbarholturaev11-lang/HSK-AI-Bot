@@ -9,6 +9,11 @@ name: Android release
 # already have, so the certificate fingerprint is pinned below and a mismatch
 # fails the run rather than stranding them.
 on:
+  # One-time signed QA artifact run. Exists ONLY on this isolated branch.
+  # No APK or audio publication is permitted for this push-triggered run.
+  push:
+    branches: ["codex/android-1720-signed-test-20261019"]
+    paths: [".github/workflows/android-release.yml"]
   workflow_dispatch:
     inputs:
       publish_to_r2:
@@ -91,6 +96,7 @@ jobs:
       # Static MP3s must be live on R2 before publishing a slim APK.
       # This never invokes Edge/Gemini and only uploads pre-rendered assets.
       - name: Publish and verify immutable Mandarin audio corpus on R2
+        if: ${{ inputs.publish_to_r2 }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
