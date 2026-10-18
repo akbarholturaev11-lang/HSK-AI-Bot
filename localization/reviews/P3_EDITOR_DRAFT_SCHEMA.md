@@ -60,3 +60,39 @@ content repository process, regenerate the source-bound hash, rerun the full
 Never change `correct_index`, `options`, `reverse_builder`,
 `answer_tokens`, Chinese, pinyin, pricing, Pro entitlement, progress or
 grade behavior in this workflow. P3 app runtime remains **NOT STARTED**.
+
+## Check coverage across multiple private editor drafts
+
+Keep each validated draft as a separate `.json` file in a **local private
+folder outside the Git checkout**, for example `/private/editor-drafts/`.
+These files hold unfinished translations and must **never** be uploaded to
+`app/static`, a public repository path or GitHub Actions artifacts.
+
+Run the safe, read-only coverage command after editing:
+
+```bash
+python scripts/i18n_editor_translation_batch.py --draft-dir /private/editor-drafts
+python -m unittest tests.test_i18n_editor_translation_batch
+```
+
+The first command counts how many of the **272 missing display maps / 816
+UZ/RU/TJ values** are covered by structurally valid drafts. A directory with
+no drafts is a valid incomplete state: it reports all 816 values outstanding.
+Multiple files may belong to one lesson **only when their JSON pointers do
+not overlap**. Duplicate pointers, changed source SHA, missing locale values,
+unauthorized answer fields, symlinks and files outside the draft format are
+rejected; a failed batch has no partial-success report.
+
+```bash
+python scripts/i18n_editor_translation_batch.py \
+  --draft-dir /private/editor-drafts --require-complete
+```
+
+The strict flag rejects any still-uncovered source display maps. Even a
+structurally complete batch has `ready_to_ship: false`: the human language
+review, approved content-repository integration, Pro/auth security, grade
+regressions and real-device QA remain separate requirements.
+
+The command prints **counts only**, never translated sentences, source
+answers, Chinese or pinyin. It reads current original lessons but does not
+modify them, generate a deployable pack or change the application runtime.
