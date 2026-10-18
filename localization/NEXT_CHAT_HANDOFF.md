@@ -1,5 +1,11 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## Verified P3 all-746 source inventory + human review queue (2026-10-19)
+
+- GitHub Actions `b447aac` full scan **SUCCESS / 202 P0 tests**: **746** seven-track source lessons, **698 structurally ready**, **48 blocked**, **2,094 valid locale overlays**. All **48 blocked lessons are HSK 3.0 `nhsk2`** (lesson orders listed separately in `localization/reviews/p3_nhsk2_locale_gaps_20261019.json`). Total **272 three-locale empty display maps**, 0 incomplete/invalid locale-key maps. Counts are structural, not semantic/content correctness. The other six tracks have no selected reviewed-path completeness gaps; this is NOT approval for real P3 rollout.
+- CI detected **49,528 complete reviewed-display maps**, **7,153 assessment-key occurrences**, **324 reverse-builder cards** deliberately excluded from overlay language packs. This counts source metadata only, not source answers. P0 generator still has 3 UI locales, 6 local UI resources, 0 stale. All five non-Android workflows on this commit passed; Android job result must be checked separately.
+- Review queue includes 48 lesson numbers and missing-field counts only, preserving all source strings/answer data. Manually author and review the empty UZ/RU/TJ fields in the Content repo/approved source process, then rerun source audit and auth/Pro/device QA before P3 rollout; **no automatic translation or public Pro pack**. Original 746 lesson sources and runtime paths remain untouched.
+
 ## P3 all-746 lesson overlay structural audit (2026-10-19)
 
 - Added `scripts/i18n_lesson_overlay_full_audit.py` to review **every existing lesson file** in the 7 numbered HSK 2.0/3.0 tracks (source baseline **746** files: 63, 72, 109, 181, 103, 73, 145). It reuses approved display field patterns and the SHA-256 version-bound, in-memory overlay guard, validating 3 original locales on each structurally complete source. It keeps assessment/answer and `reverse_builder` fields excluded from overlays; emits **only counts, fixed issue codes, and safe lesson filenames** for blocked sources. No new public static pack, paid lesson exposure, answer/grade serialization or changed runtime fetch/payment/auth/cache.
