@@ -2081,6 +2081,14 @@ async def desktop_download_page_script():
     )
 
 
+@app.get("/assets/telegram-web-app.js")
+async def telegram_web_app_script():
+    return static_asset_response(
+        "app/static/assets/telegram-web-app.js",
+        "application/javascript",
+    )
+
+
 @app.get("/assets/hsk-ai-avatar.webp")
 async def hsk_ai_avatar():
     return static_asset_response(
