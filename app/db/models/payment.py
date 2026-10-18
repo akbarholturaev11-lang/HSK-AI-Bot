@@ -12,7 +12,10 @@ class Payment(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    user_telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    # Financial facts outlive account deletion. No cascading users FK:
+    # account purge explicitly anonymizes ownership while preserving the facts.
+    user_id: Mapped[Optional[int]] = mapped_column(Integer, index=True, nullable=True)
+    user_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     plan_type: Mapped[str] = mapped_column(String(32), nullable=False)
     payment_method: Mapped[Optional[str]] = mapped_column(String(16), nullable=True)
     source: Mapped[str] = mapped_column(String(32), default="telegram_bot", nullable=False)

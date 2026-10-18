@@ -481,6 +481,27 @@ class DesktopAuthServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.headers.get("cache-control"), "no-store")
         self.assertNotIn(leaked_secret, response.text)
 
+    async def test_desktop_start_forwards_selected_language_on_both_platforms(self):
+        app = FastAPI()
+        app.include_router(create_desktop_auth_router(
+            session_factory=self.sessions, settings_obj=_settings(),
+        ))
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="https://desktop.test") as client:
+            for platform, language in (("macos", "ru"), ("windows", "tj")):
+                response = await client.post("/api/v3/desktop-auth/link/start", json={
+                    "platform": platform, "app_version": "1.4.3",
+                    "installation_key": platform + "x" * 48, "language": language,
+                })
+                self.assertEqual(response.status_code, 200, response.text)
+                async with self.sessions() as session:
+                    row = await session.get(DesktopLinkRequest, response.json()["link_request_id"])
+                    self.assertEqual(row.language, language)
+            response = await client.post("/api/v3/desktop-auth/link/start", json={
+                "platform": "windows", "app_version": "1.4.3",
+                "installation_key": "x" * 48, "language": "en",
+            })
+            self.assertEqual(response.status_code, 422)
+
     async def test_api_rejects_oversized_body_before_service(self):
         class _SessionFactory:
             def __call__(self):

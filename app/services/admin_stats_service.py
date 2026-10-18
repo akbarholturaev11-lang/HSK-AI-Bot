@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from sqlalchemy import case, func, select
+from sqlalchemy import case, func, or_, select
+
+from app.services.admin_analytics_identity import analytics_account_key
 
 from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
@@ -9,6 +11,7 @@ from app.db.models.payment import Payment
 from app.services.subscription_currency_service import format_subscription_price
 from app.services.hsk30_unlock_service import HSK30_UNLOCK_PLAN_TYPE
 from app.db.models.referral import Referral
+from app.repositories.referral_repo import referral_user_join
 from app.db.models.user import User
 from app.db.models.voice_practice_session import VoicePracticeSession
 
@@ -35,7 +38,7 @@ class FeatureUsage:
 class TopReferrer:
     """Eng ko'p odam taklif qilgan foydalanuvchi."""
 
-    telegram_id: int
+    telegram_id: int | None
     name: str
     total: int
     activated: int
@@ -48,52 +51,20 @@ async def top_referrers(session, limit: int = 5) -> list[TopReferrer]:
     @username, bo'lmasa to'liq ism, u ham bo'lmasa telegram_id ko'rsatiladi.
     """
     activated_expr = func.sum(case((Referral.status == "active", 1), else_=0))
-    rows = (
-        await session.execute(
-            select(
-                Referral.referrer_telegram_id.label("tid"),
-                func.count().label("total"),
-                activated_expr.label("activated"),
-            )
-            .where(Referral.referrer_telegram_id.is_not(None))
-            .group_by(Referral.referrer_telegram_id)
-            .order_by(func.count().desc(), activated_expr.desc())
-            .limit(max(1, int(limit or 1)))
-        )
-    ).fetchall()
-
-    if not rows:
-        return []
-
-    telegram_ids = [int(row.tid) for row in rows]
-    users = {
-        u.telegram_id: u
-        for u in (
-            await session.execute(select(User).where(User.telegram_id.in_(telegram_ids)))
-        ).scalars().all()
-    }
-
-    result: list[TopReferrer] = []
-    for row in rows:
-        tid = int(row.tid)
-        user = users.get(tid)
-        username = getattr(user, "username", None)
-        full_name = getattr(user, "full_name", None)
-        if username:
-            name = f"@{username}"
-        elif full_name:
-            name = full_name
-        else:
-            name = str(tid)
-        result.append(
-            TopReferrer(
-                telegram_id=tid,
-                name=name,
-                total=int(row.total or 0),
-                activated=int(row.activated or 0),
-            )
-        )
-    return result
+    telegram_display = case((User.id.is_(None), Referral.referrer_telegram_id), else_=User.telegram_id).label("telegram_id")
+    rows = (await session.execute(select(
+        User.id, telegram_display, User.username, User.full_name,
+        func.count().label("total"), activated_expr.label("activated"),
+    ).select_from(Referral).outerjoin(User, referral_user_join("referrer"))
+      .where(or_(Referral.referrer_user_id.is_not(None), Referral.referrer_telegram_id.is_not(None)))
+      .group_by(User.id, telegram_display, User.username, User.full_name)
+      .order_by(func.count().desc(), activated_expr.desc(), User.id.asc())
+      .limit(max(1, int(limit or 1))))).fetchall()
+    return [TopReferrer(
+        telegram_id=row.telegram_id,
+        name=f"@{row.username}" if row.username else row.full_name or (str(row.telegram_id) if row.telegram_id else f"Account {row.id}"),
+        total=int(row.total or 0), activated=int(row.activated or 0),
+    ) for row in rows]
 
 
 def _event_conditions(event_names: tuple[str, ...], since: datetime | None = None) -> list:
@@ -106,7 +77,7 @@ def _event_conditions(event_names: tuple[str, ...], since: datetime | None = Non
 async def _count_unique_users(session, event_names: tuple[str, ...], since: datetime | None = None) -> int:
     return (
         await session.execute(
-            select(func.count(func.distinct(CourseMiniAppEvent.telegram_id)))
+            select(func.count(func.distinct(analytics_account_key(CourseMiniAppEvent))))
             .select_from(CourseMiniAppEvent)
             .where(*_event_conditions(event_names, since))
         )
@@ -134,12 +105,13 @@ async def _count_completed_book_lessons(session, since: datetime | None = None) 
     """
     logical_completions = (
         select(
-            CourseMiniAppEvent.telegram_id,
+            analytics_account_key(CourseMiniAppEvent),
             CourseMiniAppEvent.level,
             CourseMiniAppEvent.lesson_id,
             CourseMiniAppEvent.lesson_order,
         )
         .where(
+            analytics_account_key(CourseMiniAppEvent).is_not(None),
             *_event_conditions(
                 ("book_lesson_completed", "lesson_completed"),
                 since,
@@ -197,10 +169,10 @@ async def feature_usage_stats(
         FeatureUsage(
             label="🎤 Voice roleplay",
             today_users=await _count_distinct(
-                session, VoicePracticeSession.user_telegram_id, VoicePracticeSession.started_at >= today_start
+                session, analytics_account_key(VoicePracticeSession, telegram_column="user_telegram_id"), VoicePracticeSession.started_at >= today_start
             ),
             week_users=await _count_distinct(
-                session, VoicePracticeSession.user_telegram_id, VoicePracticeSession.started_at >= week_ago
+                session, analytics_account_key(VoicePracticeSession, telegram_column="user_telegram_id"), VoicePracticeSession.started_at >= week_ago
             ),
         )
     )
@@ -211,13 +183,13 @@ async def feature_usage_stats(
             label="🤖 AI chat aktiv user",
             today_users=await _count_distinct(
                 session,
-                AIUsageEvent.user_telegram_id,
+                analytics_account_key(AIUsageEvent, telegram_column="user_telegram_id"),
                 AIUsageEvent.created_at >= today_start,
                 AIUsageEvent.source == "qa",
             ),
             week_users=await _count_distinct(
                 session,
-                AIUsageEvent.user_telegram_id,
+                analytics_account_key(AIUsageEvent, telegram_column="user_telegram_id"),
                 AIUsageEvent.created_at >= week_ago,
                 AIUsageEvent.source == "qa",
             ),

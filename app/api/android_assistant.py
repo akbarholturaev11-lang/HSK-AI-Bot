@@ -25,7 +25,7 @@ def create_android_assistant_router(*, session_factory, settings_obj):
         if not getattr(settings_obj, "ANDROID_ASSISTANT_ENABLED", True):
             raise AssistantError("assistant_disabled", 503)
         auth = await DesktopAuthService(session, settings_obj).authenticate(_access_token(request))
-        user = await UserRepository(session).get_by_telegram_id(auth.user.telegram_id)
+        user = auth.user
         if user is None or user.status == "blocked":
             raise AssistantError("access_blocked", 403)
         return user

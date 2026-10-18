@@ -86,7 +86,7 @@ function wordLvNum(w){return parseInt(String(w.lv||"").replace(/[^0-9]/g,"").sli
 function isHsk30(){return /^nhsk[1-3]$/.test(LV||"")}
 function wordSource(){return isHsk30()?(window.HSK30_WORDS||[]):(typeof WORDS!=="undefined"?WORDS:[])}
 function wordGate(h){return (isHsk30()?(window.HSK30_WORD_GATE||{}):(window.HSK_WORD_GATE||{}))[h]}
-function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_recognition_limit&mode=subscription"}
+function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_recognition_limit&mode=subscription&return_to=course&return_page=course_v3_recognition.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 /* Reklama moduli: kunlik bepul limit tugagach, user reklama ko'rib yana kira
    oladi (bo'limga kuniga 2 marta). Reklama sessiya boshi/o'rtasi/oxirida. */
 SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,initData:initData(),feature:"recognition",level:(params.get("level")||"hsk1"),onSubscribe:goPremium})});
@@ -125,12 +125,16 @@ function showLimitNow(){
 /* Sessiya ochish (sahifa yuklanganda) — reload xavfsiz token bilan. */
 function gateStart(newAttempt){
   var ref=gateRef(newAttempt!==false);
-
-  document.getElementById("body").innerHTML=HSKStudyPreparing.render(LANG);
+  var preparing=true;
+  SCRIPTS_READY.then(function(){
+    if(preparing&&ref===ATTEMPT_REF)document.getElementById("body").innerHTML=HSKStudyPreparing.render(LANG);
+  });
   runGate(ref).then(function(o){
+    preparing=false;
     if(ref!==ATTEMPT_REF)return;
     if(o.status===403){showLimit(o.j);return}start();
   }).catch(function(){
+    preparing=false;
     if(ref!==ATTEMPT_REF)return;
     var t=practiceGateErrorCopy();
     document.getElementById("body").innerHTML='<div class="done"><p>'+gateEscape(t.body)+'</p><button onclick="gateStart(false)">'+gateEscape(t.retry)+'</button><button class="ghost" onclick="goBack()">'+gateEscape(t.back)+'</button></div>';

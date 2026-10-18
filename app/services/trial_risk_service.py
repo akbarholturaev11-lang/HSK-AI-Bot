@@ -151,33 +151,33 @@ class TrialRiskService:
         fallback: TrialRiskSnapshot,
         now: datetime,
     ) -> TrialRiskSnapshot:
-        telegram_id = int(getattr(user, "telegram_id", 0) or 0)
+        user_id = int(getattr(user, "id", 0) or 0)
         prior_device = 0
         prior_ip_24h = 0
         prior_ip_7d = 0
 
-        if fallback.installation_key_hash and telegram_id:
+        if fallback.installation_key_hash and user_id:
             result = await self.session.execute(
-                select(func.count(func.distinct(TrialRiskEvent.telegram_id))).where(
+                select(func.count(func.distinct(TrialRiskEvent.user_id))).where(
                     TrialRiskEvent.installation_key_hash
                     == fallback.installation_key_hash,
-                    TrialRiskEvent.telegram_id != telegram_id,
+                    TrialRiskEvent.user_id != user_id,
                 )
             )
             prior_device = int(result.scalar() or 0)
 
-        if fallback.ip_hash and telegram_id:
+        if fallback.ip_hash and user_id:
             seven_days_ago = now - timedelta(days=7)
             one_day_ago = now - timedelta(hours=24)
             result = await self.session.execute(
                 select(
                     func.count(
-                        func.distinct(TrialRiskEvent.telegram_id)
+                        func.distinct(TrialRiskEvent.user_id)
                     ).filter(TrialRiskEvent.created_at >= one_day_ago),
-                    func.count(func.distinct(TrialRiskEvent.telegram_id)),
+                    func.count(func.distinct(TrialRiskEvent.user_id)),
                 ).where(
                     TrialRiskEvent.ip_hash == fallback.ip_hash,
-                    TrialRiskEvent.telegram_id != telegram_id,
+                    TrialRiskEvent.user_id != user_id,
                     TrialRiskEvent.created_at >= seven_days_ago,
                 )
             )
@@ -337,7 +337,7 @@ class TrialRiskService:
             decision = self.evaluate(row_snapshot)
             examples.append(
                 {
-                    "telegram_id": int(row.telegram_id),
+                    "telegram_id": int(row.telegram_id) if row.telegram_id else None,
                     "client": row.client,
                     "source": row.source,
                     "account_age_minutes": row.account_age_minutes,
@@ -381,7 +381,7 @@ class TrialRiskService:
                 self.session.add(
                     TrialRiskEvent(
                         user_id=int(user.id),
-                        telegram_id=int(user.telegram_id),
+                        telegram_id=user.telegram_id,
                         client=snapshot.client,
                         source=snapshot.source,
                         installation_key_hash=snapshot.installation_key_hash,

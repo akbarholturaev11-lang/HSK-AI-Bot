@@ -9,6 +9,8 @@ from typing import Any, Iterable, Mapping
 
 from sqlalchemy import func, select
 
+from app.services.admin_analytics_identity import analytics_account_key, analytics_row_key
+
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 
 
@@ -218,7 +220,7 @@ class DesktopAnalyticsService:
         by_user: dict[int, list[Any]] = defaultdict(list)
         for row in rows:
             event_name = str(getattr(row, "event_name", "") or "")
-            telegram_id = int(getattr(row, "telegram_id", 0) or 0)
+            telegram_id = analytics_row_key(row)
             if event_name in DESKTOP_FUNNEL_EVENTS and telegram_id:
                 by_user[telegram_id].append(row)
 
@@ -367,7 +369,7 @@ class DesktopAnalyticsService:
             event_name = str(getattr(row, "event_name", "") or "")
             if event_name not in DESKTOP_ENTRY_EVENTS:
                 continue
-            telegram_id = int(getattr(row, "telegram_id", 0) or 0)
+            telegram_id = analytics_row_key(row)
             payload = cls._payload(getattr(row, "payload_json", None))
             source = cls._row_entry_source(row, payload)
             if telegram_id and source in DESKTOP_ENTRY_SOURCES:
@@ -471,7 +473,7 @@ class DesktopAnalyticsService:
                 "desktop_download_requested",
             }:
                 continue
-            telegram_id = int(getattr(row, "telegram_id", 0) or 0)
+            telegram_id = analytics_row_key(row)
             payload = cls._payload(getattr(row, "payload_json", None))
             source = cls._row_entry_source(row, payload)
             if telegram_id and source in DESKTOP_PROMO_SOURCES:
@@ -632,7 +634,7 @@ class DesktopAnalyticsService:
 
         by_user: dict[int, list[Any]] = defaultdict(list)
         for row in relevant:
-            telegram_id = int(getattr(row, "telegram_id", 0) or 0)
+            telegram_id = analytics_row_key(row)
             if telegram_id:
                 by_user[telegram_id].append(row)
 
@@ -725,7 +727,7 @@ class DesktopAnalyticsService:
             select(
                 CourseMiniAppEvent.event_name,
                 func.count().label("events"),
-                func.count(func.distinct(CourseMiniAppEvent.telegram_id)).label("users"),
+                func.count(func.distinct(analytics_account_key(CourseMiniAppEvent))).label("users"),
             )
             .select_from(CourseMiniAppEvent)
             .where(CourseMiniAppEvent.event_name.in_(self.EVENT_NAMES))
@@ -752,7 +754,7 @@ class DesktopAnalyticsService:
         stmt = (
             select(
                 CourseMiniAppEvent.event_name,
-                CourseMiniAppEvent.telegram_id,
+                analytics_account_key(CourseMiniAppEvent).label("account_key"),
                 CourseMiniAppEvent.source,
                 CourseMiniAppEvent.session_id,
                 CourseMiniAppEvent.payload_json,
@@ -772,7 +774,7 @@ class DesktopAnalyticsService:
             select(
                 CourseMiniAppEvent.id,
                 CourseMiniAppEvent.event_name,
-                CourseMiniAppEvent.telegram_id,
+                analytics_account_key(CourseMiniAppEvent).label("account_key"),
                 CourseMiniAppEvent.source,
                 CourseMiniAppEvent.session_id,
                 CourseMiniAppEvent.payload_json,
@@ -843,7 +845,7 @@ class DesktopAnalyticsService:
 
         for row in detail_rows:
             event_name = str(getattr(row, "event_name", "") or "")
-            telegram_id = int(getattr(row, "telegram_id", 0) or 0)
+            telegram_id = analytics_row_key(row)
             created_at = cls._as_utc(getattr(row, "created_at", None))
             if not telegram_id or created_at is None or created_at < month_ago:
                 continue

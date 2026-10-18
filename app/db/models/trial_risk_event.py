@@ -24,7 +24,7 @@ class TrialRiskEvent(Base):
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False
     )
-    telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     client: Mapped[str] = mapped_column(String(16), index=True, nullable=False)
     source: Mapped[str] = mapped_column(String(32), nullable=False)
 

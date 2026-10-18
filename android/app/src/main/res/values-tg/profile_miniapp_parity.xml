@@ -46,7 +46,7 @@
     <string name="profile_delete_account">Дархости нест кардани ҳисоб</string>
     <string name="profile_app_permissions">Иҷозатҳои барнома</string>
     <string name="profile_app_permissions_desc">Микрофон ва огоҳиҳоро дар танзимоти Android идора кунед.</string>
-    <string name="profile_security_note">Ники Telegram дар ин ҷо тағйир дода намешавад. Google ва Apple танҳо ҳамчун усули иловагии вуруд ба ҳамин ҳисоби HSK AI пайваст мешаванд.</string>
+    <string name="profile_security_note">Ба ҳисоб тавассути Telegram, Google ё Apple ворид шуда метавонед. Усулҳои пайвастшуда ба як ҳисоби HSK AI, обуна ва пешрафт тааллуқ доранд.</string>
     <string name="profile_app_version">Версияи барнома</string>
     <string name="profile_promo_apps">Барномаҳои HSK AI</string>
     <string name="profile_promo_apps_body">Барномаҳо барои Android, MacBook ва Windows</string>
@@ -60,4 +60,6 @@
     <string name="profile_promo_trial_days">%1$d рӯз монд</string>
     <string name="profile_promo_trial_hours">%1$d соат монд</string>
     <string name="profile_promo_trial_soon">Камтар аз як соат монд</string>
+    <string name="profile_promo_link_body">Ба ҳамин профил бо %1$s ҳам ворид шавед. Pro ва пешрафти омӯзиш дар ҳамин ҳисоб мемонанд.</string>
+    <string name="profile_promo_page">Корти %1$d аз %2$d</string>
 </resources>

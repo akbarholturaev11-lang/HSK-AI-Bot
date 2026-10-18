@@ -79,6 +79,16 @@ class ApiErrorMappingTest {
     }
 
     @Test
+    fun `Telegram-only feature guards explain availability without expiring the provider session`() {
+        for (code in listOf("payment_telegram_required", "referral_telegram_required", "telegram_account_required")) {
+            val error = failure(403, """{"ok":false,"error":"$code"}""").toApiError()
+            assertTrue(error is ApiError.Server)
+            assertEquals(code, (error as ApiError.Server).code)
+            assertEquals(com.pomp.hskai.R.string.error_telegram_account_required, error.messageRes)
+        }
+    }
+
+    @Test
     fun `an unparsable body falls back to the status code`() {
         assertEquals(ApiError.SessionExpired, failure(401, "<html>nope</html>").toApiError())
         assertEquals(ApiError.Unknown, failure(500, "").toApiError())

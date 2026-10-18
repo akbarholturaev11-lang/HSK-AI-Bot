@@ -1604,10 +1604,15 @@ input:focus-visible {
   background: rgba(40, 123, 91, 0.07);
   text-align: left;
 }
-.referral-guide[hidden], .referral-guide a[hidden] { display: none; }
+.referral-guide[hidden], .referral-guide a[hidden], .referral-code-block[hidden] { display: none; }
 .referral-guide strong { display: block; font-size: 15px; }
 .referral-guide p { margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
 .referral-guide a { display: inline-block; margin-top: 13px; color: var(--jade); font-weight: 700; }
+.referral-code-block { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.referral-code-block label { width: 100%; font-size: 13px; color: var(--muted); }
+.referral-code-block input { min-width: 0; width: 145px; max-width: 100%; padding: 9px; border: 1px solid var(--jade); border-radius: 8px; background: var(--paper); color: var(--ink); font: inherit; }
+.referral-code-block button { padding: 9px 12px; border: 1px solid var(--jade); border-radius: 8px; background: transparent; color: var(--jade); font: inherit; cursor: pointer; }
+.referral-code-block [role="status"] { width: 100%; color: var(--muted); font-size: 13px; }
 
 /* Opening Telegram is not a download; the arrow would promise a file. */
 .download-card .download-button[data-action="open"] .download-button-icon {

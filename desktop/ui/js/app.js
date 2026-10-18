@@ -3,6 +3,7 @@ import {
   GOAL_KINDS,
   isSessionError,
   listenDesktopUpdate,
+  listenAuthReturn,
   listenLocalAi,
 } from "./bridge.js";
 import {
@@ -28,6 +29,11 @@ const dom = {
   auth: $("#auth-screen"),
   authTitle: $("#auth-title"),
   authDescription: $("#auth-description"),
+  authLanguage: $("#auth-language"),
+  authReferral: $("#auth-referral"),
+  authReferralLabel: $("#auth-referral-label"),
+  authReferralHint: $("#auth-referral-hint"),
+  authSteps: $("#auth-steps"),
   authCodeWrap: $("#auth-code-wrap"),
   authCodeLabel: $("#auth-code-label"),
   authCode: $("#auth-code"),
@@ -136,6 +142,9 @@ const state = {
   authPollTimer: null,
   authPolling: false,
   authLinkedPending: false,
+  authProvider: "telegram",
+  authGeneration: 0,
+  authStarting: false,
   telegramOpened: false,
   pendingBootstrap: null,
   railOpen: false,
@@ -165,6 +174,13 @@ const state = {
   referralModalOpen: false,
   referralPreviousFocus: null,
   referralCopied: false,
+  telegramLinked: null,
+  identityLinkedProviders: [],
+  identityProviders: [],
+  authReturnUnlisten: null,
+  identityMethodsStatus: "idle",
+  identityMethodsGeneration: 0,
+  telegramIdentityFlow: null,
   goal: null,
   onboardingOpen: false,
   onboardingStep: 0,
@@ -319,6 +335,10 @@ function applyStaticText() {
   dom.bootMessage.textContent = t("appPreparing");
   dom.authTitle.textContent = t("authTitle");
   dom.authDescription.textContent = t("authDescription");
+  dom.authLanguage.setAttribute("aria-label", t("interfaceLanguage"));
+  dom.authLanguage.value = getLanguage();
+  dom.authReferralLabel.textContent = t("authReferralCode");
+  dom.authReferralHint.textContent = t("authReferralHint");
   dom.authCodeLabel.textContent = t("authCodeLabel");
   dom.authStep1.textContent = t("authStep1");
   dom.authStep2.textContent = t("authStep2");
@@ -792,11 +812,17 @@ function clearAuthTimers() {
 
 function resetAuthForm() {
   clearAuthTimers();
+  state.authGeneration += 1;
+  state.authStarting = false;
   state.authDeadline = 0;
   state.authLinkedPending = false;
+  state.authProvider = "telegram";
   state.telegramOpened = false;
   state.pendingBootstrap = null;
   dom.authCodeWrap.hidden = true;
+  dom.authSteps.hidden = true;
+  dom.authLanguage.disabled = false;
+  dom.authReferral.disabled = false;
   dom.authCode.textContent = "";
   dom.authExpiry.textContent = "";
   dom.authStatus.textContent = "";
@@ -842,6 +868,12 @@ function showAuth({ expired = false } = {}) {
   closeAi();
   stopNotificationRefresh();
   resetAiSession();
+  closeTelegramIdentity({ restoreFocus: false });
+  state.telegramLinked = null;
+  state.identityLinkedProviders = [];
+  state.identityProviders = [];
+  state.identityMethodsStatus = "idle";
+  state.identityMethodsGeneration += 1;
   voice.dispose();
   practice.dispose();
   vocabulary.dispose();
@@ -883,24 +915,57 @@ function updateAuthCountdown() {
 
 function expireLink(message) {
   clearAuthTimers();
+  state.authGeneration += 1;
+  state.authDeadline = 0;
   dom.authExpiry.textContent = "";
   dom.authStatus.textContent = "";
   dom.authError.textContent = message;
   dom.openTelegram.hidden = true;
   dom.retryLink.hidden = false;
   dom.retryLink.disabled = false;
+  dom.startLink.hidden = false;
+  dom.startLink.disabled = false;
+  dom.authGoogle.disabled = false;
+  dom.authApple.disabled = false;
+  dom.authLanguage.disabled = false;
+  dom.authReferral.disabled = false;
+}
+
+function validSignupReferral() {
+  const code = dom.authReferral.value.trim();
+  const valid = !code || /^(?:ref_|r[ai]_)?[0-9a-f]{8}$/.test(code);
+  dom.authReferral.setAttribute("aria-invalid", valid ? "false" : "true");
+  if (!valid) {
+    dom.authError.textContent = t("authReferralInvalid");
+    dom.authReferral.focus();
+  }
+  return valid;
 }
 
 async function startLink() {
+  if (state.authStarting || state.authPolling || state.authLinkedPending) return;
+  if (!validSignupReferral()) return;
+  const referralCode = dom.authReferral.value.trim();
+  const generation = ++state.authGeneration;
+  state.authStarting = true;
   clearAuthTimers();
+  state.authProvider = "telegram";
   state.telegramOpened = false;
+  dom.authCodeWrap.hidden = true;
+  dom.authSteps.hidden = false;
+  dom.openTelegram.hidden = true;
+  dom.authLanguage.disabled = true;
+  dom.authReferral.disabled = true;
   dom.authError.textContent = "";
   dom.authStatus.textContent = t("authStarting");
   dom.startLink.disabled = true;
   dom.retryLink.disabled = true;
+  dom.authGoogle.disabled = true;
+  dom.authApple.disabled = true;
 
   try {
-    const result = await desktopBridge.linkStart();
+    const result = await desktopBridge.linkStart(getLanguage(), referralCode);
+    if (generation !== state.authGeneration) return;
     if (
       result?.status !== "pending" ||
       !result.displayCode ||
@@ -921,10 +986,19 @@ async function startLink() {
     state.authCountdownTimer = setInterval(updateAuthCountdown, 1000);
     scheduleLinkPoll(900);
   } catch (error) {
+    if (generation !== state.authGeneration) return;
     dom.startLink.disabled = false;
     dom.retryLink.disabled = false;
+    dom.authLanguage.disabled = false;
+    dom.authReferral.disabled = false;
     dom.authStatus.textContent = "";
     dom.authError.textContent = errorMessage(error);
+  } finally {
+    if (generation === state.authGeneration) {
+      state.authStarting = false;
+      dom.authGoogle.disabled = false;
+      dom.authApple.disabled = false;
+    }
   }
 }
 
@@ -937,8 +1011,20 @@ async function startLink() {
  * holds it and opens the browser itself.
  */
 async function startProviderLink(provider) {
+  if (state.authStarting || state.authPolling || state.authLinkedPending) return;
+  if (!validSignupReferral()) return;
+  const referralCode = dom.authReferral.value.trim();
+  const generation = ++state.authGeneration;
+  state.authStarting = true;
   clearAuthTimers();
+  state.authProvider = provider;
   state.telegramOpened = false;
+  dom.authCodeWrap.hidden = true;
+  dom.authCode.textContent = "";
+  dom.authSteps.hidden = true;
+  dom.openTelegram.hidden = true;
+  dom.authLanguage.disabled = true;
+  dom.authReferral.disabled = true;
   dom.authError.textContent = "";
   dom.authStatus.textContent = t("authStarting");
   dom.startLink.disabled = true;
@@ -947,7 +1033,8 @@ async function startProviderLink(provider) {
   dom.authApple.disabled = true;
 
   try {
-    const result = await desktopBridge.oauthStart(provider);
+    const result = await desktopBridge.oauthStart(provider, getLanguage(), referralCode);
+    if (generation !== state.authGeneration) return;
     if (
       result?.status !== "pending" ||
       !Number.isFinite(Number(result.expiresIn))
@@ -955,6 +1042,7 @@ async function startProviderLink(provider) {
       throw new Error("desktop_link_payload_invalid");
     }
     await desktopBridge.oauthOpen();
+    if (generation !== state.authGeneration) return;
     // A provider row has no display code: nothing to show, nothing to copy.
     dom.authCodeWrap.hidden = true;
     dom.startLink.hidden = true;
@@ -968,12 +1056,18 @@ async function startProviderLink(provider) {
     state.authCountdownTimer = setInterval(updateAuthCountdown, 1000);
     scheduleLinkPoll(2000);
   } catch (error) {
+    if (generation !== state.authGeneration) return;
     dom.startLink.disabled = false;
     dom.retryLink.disabled = false;
     dom.authGoogle.disabled = false;
     dom.authApple.disabled = false;
+    dom.authLanguage.disabled = false;
+    dom.authReferral.disabled = false;
+    dom.retryLink.hidden = false;
     dom.authStatus.textContent = "";
     dom.authError.textContent = errorMessage(error);
+  } finally {
+    if (generation === state.authGeneration) state.authStarting = false;
   }
 }
 
@@ -1011,13 +1105,18 @@ async function pollLink() {
     return;
   }
   state.authPolling = true;
+  const generation = state.authGeneration;
   try {
     const result = await desktopBridge.linkPoll();
+    if (generation !== state.authGeneration) return;
     if (result?.status === "linked") {
+      dom.authReferral.value = "";
       clearAuthTimers();
       dom.authError.textContent = "";
       dom.authStatus.textContent = t("authLinked");
       state.authLinkedPending = true;
+      dom.authGoogle.disabled = true;
+      dom.authApple.disabled = true;
       state.pendingBootstrap = result.bootstrap || null;
       dom.openTelegram.hidden = true;
       dom.retryLink.hidden = false;
@@ -1035,6 +1134,7 @@ async function pollLink() {
     }
     scheduleLinkPoll();
   } catch (error) {
+    if (generation !== state.authGeneration) return;
     if (
       error?.code === "desktop_link_expired" ||
       Date.now() >= state.authDeadline
@@ -1050,19 +1150,22 @@ async function pollLink() {
       scheduleLinkPoll(3500);
     }
   } finally {
-    state.authPolling = false;
+    if (generation === state.authGeneration) state.authPolling = false;
   }
 }
 
 async function resumeLinkedBootstrap() {
+  const generation = state.authGeneration;
   dom.retryLink.disabled = true;
   try {
     const bootstrap =
       state.pendingBootstrap || (await desktopBridge.bootstrap());
+    if (generation !== state.authGeneration) return;
     state.pendingBootstrap = null;
     state.authLinkedPending = false;
     await enterWorkspace(bootstrap);
   } catch (error) {
+    if (generation !== state.authGeneration) return;
     if (isSessionError(error)) {
       showAuth({ expired: true });
       return;
@@ -1684,6 +1787,7 @@ function toggleNotifications() {
 }
 
 function routeTo(view) {
+  if (view !== "profile") closeTelegramIdentity({ restoreFocus: false });
   if (view === "subscription") state.subscriptionMode = "subscription";
   state.view = view;
   renderActiveView();
@@ -3334,12 +3438,27 @@ function referralStartCode(code) {
 
 function referralLinkFrom(value, code) {
   const link = String(value || "").trim();
+  try {
+    const publicLink = new URL(link);
+    if (publicLink.origin === desktopBridge.apiOrigin() &&
+      publicLink.pathname === "/apps" &&
+      !publicLink.username && !publicLink.password && !publicLink.port && !publicLink.hash &&
+      publicLink.searchParams.getAll("ref").length === 1 &&
+      /^[0-9a-f]{8}$/.test(publicLink.searchParams.get("ref") || "") &&
+      publicLink.searchParams.getAll("mode").length === 1 &&
+      publicLink.searchParams.get("mode") === "trial" &&
+      [...publicLink.searchParams.keys()].every(key => ["ref", "mode"].includes(key))) {
+      return publicLink.href;
+    }
+  } catch { /* Older servers can still return the Telegram invite below. */ }
   if (/^https:\/\/t\.me\/[A-Za-z0-9_]{5,32}\?start=[A-Za-z0-9_-]+$/.test(link)) {
     return link.replace(/\?start=ref_/, "?start=");
   }
   const start = referralStartCode(code);
   if (!start) return "";
-  return `https://t.me/${referralBotUsername()}?start=${encodeURIComponent(start)}`;
+  return /^[0-9a-f]{8}$/.test(start)
+    ? `${desktopBridge.apiOrigin()}/apps?ref=${start}&mode=trial`
+    : "";
 }
 
 function currentReferralData() {
@@ -3679,8 +3798,10 @@ function makeReferralQrDataUrl(text) {
 
 function referralQrMatrix(text) {
   const bytes = new TextEncoder().encode(text);
-  const dataCodewords = 80;
-  const errorCodewords = 20;
+  // Version 5-L fits the first-party invitation URL; old short links stay v4-L.
+  const large = bytes.length > 78;
+  const dataCodewords = large ? 108 : 80;
+  const errorCodewords = large ? 26 : 20;
   const totalBits = dataCodewords * 8;
   const bits = [];
   const pushBits = (value, count) => {
@@ -3703,7 +3824,7 @@ function referralQrMatrix(text) {
   const payloadBits = [];
   payload.forEach((byte) => pushCodewordBits(payloadBits, byte));
 
-  const base = referralQrBaseMatrix();
+  const base = referralQrBaseMatrix(large ? 37 : 33);
   let best = null;
   let bestPenalty = Number.POSITIVE_INFINITY;
   for (let mask = 0; mask < 8; mask += 1) {
@@ -3723,8 +3844,7 @@ function pushCodewordBits(bits, byte) {
   for (let i = 7; i >= 0; i -= 1) bits.push((byte >>> i) & 1);
 }
 
-function referralQrBaseMatrix() {
-  const size = 33;
+function referralQrBaseMatrix(size) {
   const matrix = Array.from({ length: size }, () => Array(size).fill(false));
   const reserved = Array.from({ length: size }, () => Array(size).fill(false));
   const set = (row, col, value, reserve = true) => {
@@ -3749,7 +3869,7 @@ function referralQrBaseMatrix() {
   for (let y = -2; y <= 2; y += 1) {
     for (let x = -2; x <= 2; x += 1) {
       const distance = Math.max(Math.abs(x), Math.abs(y));
-      set(26 + y, 26 + x, distance !== 1);
+      set(size - 7 + y, size - 7 + x, distance !== 1);
     }
   }
   for (let i = 0; i < size; i += 1) {
@@ -3811,13 +3931,13 @@ function referralQrWriteFormat(matrix, mask) {
   const size = matrix.length;
   const bits = referralQrFormatBits(mask);
   const bit = (index) => Boolean((bits >>> index) & 1);
-  for (let i = 0; i <= 5; i += 1) matrix[8][i] = bit(i);
-  matrix[8][7] = bit(6);
+  for (let i = 0; i <= 5; i += 1) matrix[i][8] = bit(i);
+  matrix[7][8] = bit(6);
   matrix[8][8] = bit(7);
-  matrix[7][8] = bit(8);
-  for (let i = 9; i < 15; i += 1) matrix[14 - i][8] = bit(i);
-  for (let i = 0; i < 8; i += 1) matrix[size - 1 - i][8] = bit(i);
-  for (let i = 8; i < 15; i += 1) matrix[8][size - 15 + i] = bit(i);
+  matrix[8][7] = bit(8);
+  for (let i = 9; i < 15; i += 1) matrix[8][14 - i] = bit(i);
+  for (let i = 0; i < 8; i += 1) matrix[8][size - 1 - i] = bit(i);
+  for (let i = 8; i < 15; i += 1) matrix[size - 15 + i][8] = bit(i);
   matrix[size - 8][8] = true;
 }
 
@@ -4472,6 +4592,13 @@ function renderProfile() {
   accountHead.append(accountCopy);
 
   const accountCard = element("article", "profile-account card-panel");
+  accountCard.append(telegramIdentityRow());
+  for (const provider of ["google", "apple"]) {
+    if (state.identityMethodsStatus === "ready" &&
+        (state.identityProviders.includes(provider) || state.identityLinkedProviders.includes(provider))) {
+      accountCard.append(providerIdentityRow(provider));
+    }
+  }
   const manage = element("button", "secondary-button", t("manageSubscription"));
   manage.type = "button";
   manage.addEventListener("click", () => routeTo("subscription"));
@@ -4516,6 +4643,172 @@ function renderProfile() {
     accountHead,
     accountCard,
   );
+}
+
+function telegramIdentityRow() {
+  if (state.identityMethodsStatus === "idle") void loadIdentityMethods();
+  if (state.telegramLinked === true) {
+    return settingRow("Telegram", t("telegramIdentityConnectedBody"), element("span", "tag green", t("telegramIdentityConnected")));
+  }
+  const loading = state.identityMethodsStatus === "loading";
+  const failed = state.identityMethodsStatus === "error";
+  const button = element("button", "secondary-button", t(failed ? "retry" : "telegramIdentityConnect"));
+  button.type = "button";
+  button.dataset.role = "telegram-identity-connect";
+  button.disabled = loading;
+  button.addEventListener("click", () => {
+    if (failed) void loadIdentityMethods();
+    else openTelegramIdentity();
+  });
+  return settingRow("Telegram", t(failed ? "telegramIdentityLoadFailed" : "telegramIdentityBody"), button);
+}
+
+function providerIdentityRow(provider) {
+  const name = provider === "google" ? "Google" : "Apple";
+  if (state.identityLinkedProviders.includes(provider)) {
+    return settingRow(name, t("identityProviderConnectedBody"), element("span", "tag green", t("identityProviderConnected", { provider: name })));
+  }
+  const button = element("button", "secondary-button", t("identityProviderConnect", { provider: name }));
+  button.type = "button";
+  button.dataset.role = `${provider}-identity-connect`;
+  button.addEventListener("click", () => void openTelegramIdentity(provider));
+  return settingRow(name, t("identityProviderBody", { provider: name }), button);
+}
+
+async function loadIdentityMethods() {
+  const generation = ++state.identityMethodsGeneration;
+  state.identityMethodsStatus = "loading";
+  try {
+    const [result, available] = await Promise.all([
+      desktopBridge.identityMethods(), desktopBridge.oauthProviders().catch(() => ({ providers: [] })),
+    ]);
+    if (generation !== state.identityMethodsGeneration) return;
+    if (typeof result?.telegram_linked !== "boolean") throw new Error("desktop_api_invalid_response");
+    state.telegramLinked = result.telegram_linked;
+    const linked = result.identities ?? [];
+    if (!Array.isArray(linked) || !linked.every(provider => ["google", "apple"].includes(provider))) throw new Error("desktop_api_invalid_response");
+    state.identityLinkedProviders = [...new Set(linked)];
+    state.identityProviders = [...new Set(Array.isArray(available?.providers)
+      ? available.providers.filter(provider => ["google", "apple"].includes(provider)) : [])];
+    state.identityMethodsStatus = "ready";
+  } catch (error) {
+    if (generation !== state.identityMethodsGeneration) return;
+    if (isSessionError(error)) { showAuth({ expired: true }); return; }
+    state.identityMethodsStatus = "error";
+  }
+  if (state.view === "profile") renderProfile();
+}
+
+function closeTelegramIdentity({ restoreFocus = true, cancel = true } = {}) {
+  const flow = state.telegramIdentityFlow;
+  if (!flow) return;
+  state.telegramIdentityFlow = null;
+  window.clearTimeout(flow.timer);
+  flow.layer.remove();
+  if (cancel) void desktopBridge.identityLinkCancel(flow.attemptId).catch(() => {});
+  if (restoreFocus && flow.previousFocus?.isConnected) flow.previousFocus.focus();
+}
+
+function telegramIdentityError(error, provider = "telegram") {
+  if (["oauth_telegram_bound_to_other_user", "oauth_telegram_already_linked", "oauth_identity_bound_to_other_user", "oauth_identity_already_linked"].includes(error?.code)) {
+    return t(provider === "telegram" ? "telegramIdentityConflict" : "identityProviderConflict");
+  }
+  return errorMessage(error) || t(provider === "telegram" ? "telegramIdentityDenied" : "identityProviderDenied");
+}
+
+async function openTelegramIdentity(provider = "telegram") {
+  if (state.identityMethodsStatus !== "ready" || state.telegramIdentityFlow) return;
+  if (provider === "telegram" ? state.telegramLinked :
+      !state.identityProviders.includes(provider) || state.identityLinkedProviders.includes(provider)) return;
+  const name = provider === "google" ? "Google" : provider === "apple" ? "Apple" : "Telegram";
+  const text = (telegramKey, providerKey) => t(provider === "telegram" ? telegramKey : providerKey, { provider: name });
+  const layer = element("div", "referral-layer identity-link-layer");
+  const shell = element("section", "referral-shell identity-link-shell");
+  shell.setAttribute("role", "dialog");
+  shell.setAttribute("aria-modal", "true");
+  shell.setAttribute("aria-label", text("telegramIdentityTitle", "identityProviderTitle"));
+  const status = element("p", "muted", t("telegramIdentityPreparing"));
+  status.setAttribute("role", "status");
+  status.setAttribute("aria-live", "polite");
+  const open = element("button", "primary-button", text("telegramIdentityOpen", "identityProviderOpen"));
+  open.type = "button";
+  open.disabled = true;
+  const close = element("button", "secondary-button", t("close"));
+  close.type = "button";
+  close.addEventListener("click", () => closeTelegramIdentity());
+  const actions = element("div", "payment-methods");
+  actions.append(open, close);
+  shell.append(element("h2", "", text("telegramIdentityTitle", "identityProviderTitle")), element("p", "muted", text("telegramIdentityConfirmBody", "identityProviderConfirmBody")), status, actions);
+  layer.append(shell);
+  const flow = { attemptId: crypto.randomUUID(), provider, layer, status, open, timer: null, deadline: 0, polling: false, previousFocus: document.activeElement };
+  state.telegramIdentityFlow = flow;
+  const active = () => state.telegramIdentityFlow === flow;
+  const finish = (message) => {
+    if (!active()) return;
+    flow.finished = true;
+    window.clearTimeout(flow.timer);
+    open.disabled = true;
+    status.textContent = message;
+    void desktopBridge.identityLinkCancel(flow.attemptId).catch(() => {});
+  };
+  const openBot = async () => {
+    if (!active() || open.disabled) return;
+    try { await desktopBridge.identityLinkOpen(flow.attemptId); }
+    catch (error) { if (active()) status.textContent = telegramIdentityError(error, provider); }
+  };
+  const poll = async () => {
+    if (!active() || flow.polling || flow.finished) return;
+    if (Date.now() >= flow.deadline) { finish(t("telegramIdentityExpired")); return; }
+    flow.polling = true;
+    try {
+      const result = await desktopBridge.identityLinkPoll(flow.attemptId);
+      if (!active()) return;
+      if (result?.status === "linked") {
+        closeTelegramIdentity({ cancel: false, restoreFocus: false });
+        if (provider === "telegram") state.telegramLinked = true;
+        else state.identityLinkedProviders = [...new Set([...state.identityLinkedProviders, provider])];
+        if (state.view === "profile") renderProfile();
+        showToast(text("telegramIdentityConnected", "identityProviderConnected"));
+        void loadIdentityMethods();
+        return;
+      }
+      if (["denied", "failed", "cancelled", "expired"].includes(result?.status)) {
+        finish(result.error ? telegramIdentityError({ code: result.error }, provider) : result.status === "expired" ? t("telegramIdentityExpired") : text("telegramIdentityDenied", "identityProviderDenied"));
+        return;
+      }
+      if (result?.status !== "pending") throw new Error("desktop_api_invalid_response");
+    } catch (error) {
+      if (!active()) return;
+      if (isSessionError(error)) { showAuth({ expired: true }); return; }
+      finish(telegramIdentityError(error, provider));
+      return;
+    } finally {
+      flow.polling = false;
+    }
+    flow.timer = window.setTimeout(poll, 2000);
+  };
+  flow.poll = poll;
+  open.addEventListener("click", () => void openBot());
+  layer.addEventListener("click", (event) => { if (event.target === layer) closeTelegramIdentity(); });
+  shell.addEventListener("keydown", (event) => { if (event.key === "Tab") trapFocusWithin(shell, event); });
+  document.body.append(layer);
+  close.focus();
+  try {
+    const result = provider === "telegram" ? await desktopBridge.telegramIdentityStart(flow.attemptId)
+      : await desktopBridge.oauthIdentityStart(provider, flow.attemptId);
+    if (!active()) { void desktopBridge.identityLinkCancel(flow.attemptId).catch(() => {}); return; }
+    const expires = Number(result?.expiresIn);
+    if (result?.status !== "pending" || !Number.isInteger(expires) || expires < 1 || expires > 3600) throw new Error("desktop_api_invalid_response");
+    flow.deadline = Date.now() + expires * 1000;
+    status.textContent = text("telegramIdentityWaiting", "identityProviderWaiting");
+    open.disabled = false;
+    await openBot();
+    if (active()) void poll();
+  } catch (error) {
+    if (!active()) return;
+    if (isSessionError(error)) { showAuth({ expired: true }); return; }
+    finish(telegramIdentityError(error, provider));
+  }
 }
 
 function setReduceMotion(enabled) {
@@ -4601,8 +4894,10 @@ function renderCourseError(error) {
 // through to the generic message: the reason is either not actionable by the
 // learner, or would help someone tune a forgery.
 const PROVIDER_ERROR_TEXT = Object.freeze({
-  oauth_telegram_account_required: "authNeedsTelegram",
   user_blocked: "accessBlocked",
+  signup_referral_invalid: "authReferralInvalid",
+  payment_telegram_required: "paymentTelegramRequired",
+  desktop_referral_telegram_required: "referralTelegramRequired",
 });
 const PROVIDER_FAILURE_CODES = new Set([
   "oauth_state_invalid",
@@ -5996,15 +6291,48 @@ async function bindDesktopUpdateEvents() {
   }
 }
 
+function resumeAuthPolling() {
+  if (state.authDeadline && !state.authLinkedPending) {
+    window.clearTimeout(state.authPollTimer);
+    void pollLink();
+  }
+  const flow = state.telegramIdentityFlow;
+  if (flow?.deadline && !flow.finished) {
+    window.clearTimeout(flow.timer);
+    void flow.poll();
+  }
+}
+
 function bindEvents() {
-  window.addEventListener("focus", refreshDesktopSyncOnFocus);
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") refreshDesktopSyncOnFocus();
+  window.addEventListener("focus", () => {
+    resumeAuthPolling();
+    refreshDesktopSyncOnFocus();
   });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      resumeAuthPolling();
+      refreshDesktopSyncOnFocus();
+    }
+  });
+  void listenAuthReturn(resumeAuthPolling).then(unlisten => {
+    state.authReturnUnlisten = unlisten;
+  }).catch(() => {});
   dom.startLink.addEventListener("click", startLink);
+  dom.authReferral.addEventListener("input", () => {
+    dom.authReferral.removeAttribute("aria-invalid");
+    dom.authError.textContent = "";
+  });
+  dom.authLanguage.addEventListener("change", () => {
+    const language = normalizeLanguage(dom.authLanguage.value);
+    setUiLanguage(language);
+    saveLanguage(language);
+    applyStaticText();
+  });
   dom.retryLink.addEventListener("click", () => {
     if (state.authLinkedPending) {
       resumeLinkedBootstrap();
+    } else if (state.authProvider !== "telegram") {
+      startProviderLink(state.authProvider);
     } else {
       startLink();
     }
@@ -6074,6 +6402,8 @@ function bindEvents() {
   window.addEventListener("online", updateNetworkState);
   window.addEventListener("offline", updateNetworkState);
   window.addEventListener("beforeunload", () => {
+    state.authReturnUnlisten?.();
+    state.authReturnUnlisten = null;
     cancelAiRecording();
     clearAiAttachments({ includeMessages: true });
     if (state.updateUnlisten) {
@@ -6147,7 +6477,9 @@ function bindEvents() {
     }
     // Escape behaves like "Keyinroq": the goal stays unset, so onboarding
     // comes back on the next start instead of being lost silently.
-    if (state.referralModalOpen) {
+    if (state.telegramIdentityFlow) {
+      closeTelegramIdentity();
+    } else if (state.referralModalOpen) {
       closeReferralModal();
     } else if (state.onboardingOpen) {
       closeOnboarding();

@@ -3,10 +3,13 @@ from pathlib import Path
 
 from sqlalchemy import select
 
+from app.db.models.user import User
+
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.user_repo import UserRepository
+from app.services.account_identity import actual_telegram_id
 from app.services.course_v3_parts import source_lesson_for_part
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
@@ -505,7 +508,7 @@ class CourseMiniAppPracticeService:
 
     async def start(
         self,
-        telegram_id: int,
+        telegram_id: int | User,
         *,
         mode: str,
         level: str,
@@ -523,7 +526,7 @@ class CourseMiniAppPracticeService:
             raise ValueError("Unknown training skill")
         level = self._level(level)
 
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (telegram_id if isinstance(telegram_id, User) else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return {"ok": False, "error": "access_start_first"}
         feature = self._feature(mode)
@@ -565,7 +568,7 @@ class CourseMiniAppPracticeService:
         event_name = "training_started" if mode == "training" else "test_started"
         await CourseMiniAppAnalyticsService(self.session).record_server_event(
             event_name=event_name,
-            telegram_id=telegram_id,
+            telegram_id=actual_telegram_id(user),
             user_id=user.id,
             level=level,
             session_id=session_id,
@@ -595,7 +598,7 @@ class CourseMiniAppPracticeService:
 
     async def complete(
         self,
-        telegram_id: int,
+        telegram_id: int | User,
         *,
         session_id: str,
         mode: str,
@@ -614,7 +617,7 @@ class CourseMiniAppPracticeService:
         if mode == "training" and skill not in TRAINING_SKILLS:
             raise ValueError("Unknown training skill")
         level = self._level(level)
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (telegram_id if isinstance(telegram_id, User) else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             return {"ok": False, "error": "access_start_first"}
         feature = self._feature(mode)
@@ -721,7 +724,7 @@ class CourseMiniAppPracticeService:
         analytics = CourseMiniAppAnalyticsService(self.session)
         await analytics.record_server_event(
             event_name=event_name,
-            telegram_id=telegram_id,
+            telegram_id=actual_telegram_id(user),
             user_id=user.id,
             level=level,
             session_id=expected_session,

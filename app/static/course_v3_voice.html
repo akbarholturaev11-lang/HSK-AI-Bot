@@ -550,7 +550,7 @@ function showPaywall(){
   $("pwb").textContent=L.premiumBtn;$("pwb2").textContent=L.exit;
   $("paywall").classList.add("on");
 }
-function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_voice_limit&mode=subscription"}
+function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_voice_limit&mode=subscription&return_to=course&return_page=course_v3_voice.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 function softReset(){
   started=false;sess=null;turn=0;lessonWords=[];reviewWords=[];
   closeKb();setName();setChar("happy");setStatus("");setHold(L.holdMic);chatClear();setCnt();

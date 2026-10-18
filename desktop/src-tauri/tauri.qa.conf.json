@@ -1,0 +1,14 @@
+{
+  "productName": "HSK AI QA",
+  "identifier": "com.pomp.hskai.qa",
+  "bundle": {
+    "createUpdaterArtifacts": false
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["pomp-hsk-ai-qa"]
+      }
+    }
+  }
+}

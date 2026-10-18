@@ -9,6 +9,7 @@
   var BOT_URL = "https://t.me/darsi_chini_bot";
   var referralCode = /^[0-9a-f]{8}$/.test(String(params.get("ref") || ""))
     ? String(params.get("ref")) : "";
+  var referralMode = params.get("mode") === "trial" ? "trial" : "discount";
   // The copy keys are prefixed per platform; `macos` is historically "mac".
   var COPY_KEY = { ios: "ios", macos: "mac", android: "android", windows: "windows" };
   // The quick guide keeps one step list per platform in the DOM; the prefix
@@ -23,19 +24,18 @@
 
   var COPY = {
     uz: {
-      referralAndroidTitle: "Avval taklifni Telegramda qayd eting",
-      referralAndroidBody: "Telegram tugmasini bosib, botda Start ni bosing. Bot APK faylining o‘zini chatga yuboradi. Ilovani o‘rnatib, shu Telegram hisobini ulang. Shundan keyin taklif hisoblanadi.",
-      referralAndroidButton: "Telegram orqali davom etish",
-      referralAndroidStatus: "Botda Start ni bosing — APK fayli chatga yuboriladi.",
-      androidReferralSteps: [
-        ["Taklifni Telegramda qayd eting", "Yuqoridagi tugma botni ochadi. Botda Start ni bosing."],
-        ["APK ni o‘rnating", "Bot chatga yuborgan APK faylini ochib o‘rnating."],
-        ["Shu Telegram hisobini ulang", "Ilovadagi ulashni tasdiqlang. Shundan keyin taklif hisoblanadi."],
-      ],
-      referralIosTitle: "Do‘stingiz uchun 20% chegirma",
-      referralIosBody: "Telegram botini oching va unda 2 ta savol ishlating. Shunda taklif hisoblanadi.",
-      referralOtherTitle: "Havolani telefonda oching",
-      referralOtherBody: "Taklif Android yoki iPhone qurilmasida ochilganda mos shartlar ko‘rsatiladi.",
+      referralAndroidTitle: "Taklif bilan hisob ochish",
+      referralAndroidBody: "APK’ni o‘rnating. Yangi hisob ochishdan oldin taklif kodini kiriting, so‘ng Google, Apple yoki Telegram bilan kiring. Taklif ilovadagi kirish va qurilma tekshiruvidan keyin hisoblanadi.",
+      referralIosTitle: "Taklif qanday hisoblanadi?",
+      referralIosBody: "Telegram botini oching va unda 2 ta AI savoliga javob oling. Shunda taklif hisoblanadi.",
+      referralOtherTitle: "Chegirma taklifini telefonda oching",
+      referralOtherBody: "Bu chegirma taklifining shartlari Android ilovasida yoki iPhone’dagi Telegram botida bajariladi. Taklif havolasini o‘sha qurilmada oching.",
+      referralTrialTitle: "Do‘st taklifi bilan boshlang",
+      referralTrialBody: "Yangi hisob ochishdan oldin ilovadagi taklif kodi maydoniga quyidagi kodni kiriting. Google, Apple yoki Telegram orqali kiring va 2 ta AI savoliga javob oling. Mavjud hisobga kirish yangi taklif sifatida hisoblanmaydi.",
+      referralCodeLabel: "Taklif kodi",
+      referralCopy: "Kodni nusxalash",
+      referralOpen: "O‘rnatilgan ilovada ochish",
+      referralManual: "Kodni belgilang va qo‘lda nusxalang.",
       iosSecurityTitle: "Hech narsa o‘rnatilmaydi",
       androidSecurityTitle: "O‘rnatishda ogohlantirish chiqishi mumkin",
       macSecurityTitle: "Birinchi ochishda ogohlantirish chiqishi mumkin",
@@ -55,7 +55,7 @@
       androidSteps: [
         ["APK faylni yuklang", "Yuqoridagi tugma faylni telefoningizga saqlaydi."],
         ["Faylni oching va o‘rnating", "Yuklangan faylni bosing → «O‘rnatish»."],
-        ["Telegram hisobingizni ulang", "Ilovadagi kodni Telegram orqali tasdiqlang. Obuna va progress avtomatik keladi."],
+        ["HSK AI hisobingizga kiring", "Ilovada mavjud Google, Apple yoki Telegram bilan kiring. Oldingi obuna va progress uchun o‘sha HSK AI hisobiga bog‘langan kirish usulidan foydalaning."],
       ],
       allTitle: "Barcha yuklamalar",
       allLead: "Har bir qurilma uchun oxirgi versiya.",
@@ -89,12 +89,12 @@
       macSteps: [
         ["DMG faylni yuklang", "Yuqoridagi tugma universal Mac installerini kompyuteringizga saqlaydi."],
         ["Applications ichiga tashlang", "DMG’ni oching va HSK AI ikonkasini Applications ustiga suring."],
-        ["Telegram hisobingizni ulang", "Ilovadagi kodni Telegram orqali tasdiqlang. Obuna va progress avtomatik keladi."]
+        ["HSK AI hisobingizga kiring", "Ilovada mavjud Google, Apple yoki Telegram bilan kiring. Oldingi obuna va progress uchun o‘sha HSK AI hisobiga bog‘langan kirish usulidan foydalaning."]
       ],
       windowsSteps: [
         ["EXE setup’ni yuklang", "Yuqoridagi tugma Windows x64 installerini kompyuteringizga saqlaydi."],
         ["Install tugmasini bosing", "Setup’ni oching. Ilova joriy foydalanuvchi uchun o‘rnatiladi."],
-        ["Telegram hisobingizni ulang", "Ilovadagi kodni Telegram orqali tasdiqlang. Obuna va progress avtomatik keladi."]
+        ["HSK AI hisobingizga kiring", "Ilovada mavjud Google, Apple yoki Telegram bilan kiring. Oldingi obuna va progress uchun o‘sha HSK AI hisobiga bog‘langan kirish usulidan foydalaning."]
       ],
       securityTitle: "Birinchi ochishda ogohlantirish chiqishi mumkin",
       macSecurity: "macOS bloklasa: Applications ichida HSK AI ustida o‘ng tugma → Open → Open. Hali ham bloklansa, System Settings → Privacy & Security → Open Anyway’ni bosing.",
@@ -105,7 +105,7 @@
       quickGuideProgress: "Fayl yuklanmoqda",
       quickGuideClose: "Tushundim",
       quickGuideCloseAria: "Qo‘llanmani yopish",
-      quickGuideFooter: "Ilova ochilgach, undagi kodni Telegram orqali tasdiqlang.",
+      quickGuideFooter: "Google, Apple yoki Telegram bilan kiring. Boshqa kirish usulini mavjud hisobingiz profilidan ulang.",
       visualRightClick: "O‘ng tugma",
       visualMacOpen: "Open",
       visualOr: "yoki",
@@ -143,7 +143,7 @@
         ["Yuklangan APK’ni oching", "Bildirishnomadagi faylni bosing yoki «Yuklamalar» papkasidan HSK AI faylini toping."],
         ["Shu manbadan o‘rnatishga ruxsat bering", "Android so‘rasa: «Sozlamalar» → «Shu manbadan o‘rnatishga ruxsat berish» ni yoqing va orqaga qayting."],
         ["«O‘rnatish» ni bosing", "Play Protect tekshiruvi chiqsa «Baribir o‘rnatish» ni tanlang. Bu — HSK AI rasmiy fayli."],
-        ["Ilovani oching va Telegram hisobingizni ulang", "Ilovadagi kodni Telegram orqali tasdiqlang. Obuna va progress avtomatik keladi."]
+        ["HSK AI hisobingizga kiring", "Ilovada mavjud Google, Apple yoki Telegram bilan kiring. Oldingi obuna va progress uchun o‘sha HSK AI hisobiga bog‘langan kirish usulidan foydalaning."]
       ],
       mobileEyebrow: "Telefon orqali ochdingiz",
       mobileTitle: "Linkni kompyuteringizga yuboring",
@@ -158,19 +158,18 @@
       footer: "Kurs markazda. AI yordamchi sifatida."
     },
     ru: {
-      referralAndroidTitle: "Сначала закрепите приглашение в Telegram",
-      referralAndroidBody: "Нажмите кнопку Telegram и затем Start в боте. Бот отправит сам APK файл в чат. Установите приложение и подключите тот же аккаунт Telegram. После этого приглашение засчитается.",
-      referralAndroidButton: "Продолжить в Telegram",
-      referralAndroidStatus: "Нажмите Start в боте — APK файл придёт в чат.",
-      androidReferralSteps: [
-        ["Закрепите приглашение в Telegram", "Откройте бота кнопкой выше и нажмите Start."],
-        ["Установите APK", "Откройте APK файл, который бот отправит в чат."],
-        ["Подключите тот же аккаунт Telegram", "Подтвердите подключение в приложении. После этого приглашение засчитается."],
-      ],
+      referralAndroidTitle: "Создайте аккаунт по приглашению",
+      referralAndroidBody: "Установите APK. Перед созданием аккаунта введите код приглашения, затем войдите через Google, Apple или Telegram. Приглашение засчитается после входа и проверки устройства в приложении.",
       referralIosTitle: "Как засчитывается приглашение",
-      referralIosBody: "Откройте Telegram-бота и ответьте на 2 вопроса. После этого приглашение засчитается.",
-      referralOtherTitle: "Откройте ссылку на телефоне",
-      referralOtherBody: "Условия приглашения появятся при открытии на Android или iPhone.",
+      referralIosBody: "Откройте Telegram-бота и получите ответы на 2 вопроса к AI. После этого приглашение засчитается.",
+      referralOtherTitle: "Откройте приглашение на телефоне",
+      referralOtherBody: "Условия этого приглашения на скидку выполняются в Android-приложении или в Telegram-боте на iPhone. Откройте ссылку на соответствующем устройстве.",
+      referralTrialTitle: "Начните по приглашению друга",
+      referralTrialBody: "Перед созданием аккаунта введите указанный ниже код в поле приглашения. Войдите через Google, Apple или Telegram и получите ответы на 2 вопроса к AI. Вход в существующий аккаунт не считается новым приглашением.",
+      referralCodeLabel: "Код приглашения",
+      referralCopy: "Скопировать код",
+      referralOpen: "Открыть установленное приложение",
+      referralManual: "Выделите и скопируйте код вручную.",
       iosSecurityTitle: "Ничего устанавливать не нужно",
       androidSecurityTitle: "При установке может появиться предупреждение",
       macSecurityTitle: "При первом запуске может появиться предупреждение",
@@ -190,7 +189,7 @@
       androidSteps: [
         ["Скачайте APK", "Кнопка выше сохранит файл на телефон."],
         ["Откройте файл и установите", "Нажмите на скачанный файл → «Установить»."],
-        ["Подключите аккаунт Telegram", "Подтвердите код из приложения через Telegram. Подписка и прогресс придут автоматически."],
+        ["Войдите в HSK AI", "Войдите через доступный Google, Apple или Telegram. Для прежней подписки и прогресса используйте способ входа, связанный с тем же аккаунтом HSK AI."],
       ],
       allTitle: "Все загрузки",
       allLead: "Последняя версия для каждого устройства.",
@@ -224,12 +223,12 @@
       macSteps: [
         ["Скачайте DMG", "Кнопка выше сохранит универсальный установщик для Mac."],
         ["Перетащите в Applications", "Откройте DMG и перетащите HSK AI в папку Applications."],
-        ["Подключите Telegram", "Подтвердите код приложения в Telegram. Подписка и прогресс появятся автоматически."]
+        ["Войдите в HSK AI", "Войдите через доступный Google, Apple или Telegram. Для прежней подписки и прогресса используйте способ входа, связанный с тем же аккаунтом HSK AI."]
       ],
       windowsSteps: [
         ["Скачайте EXE", "Кнопка выше сохранит установщик Windows x64."],
         ["Нажмите Install", "Откройте setup. Приложение установится для текущего пользователя."],
-        ["Подключите Telegram", "Подтвердите код приложения в Telegram. Подписка и прогресс появятся автоматически."]
+        ["Войдите в HSK AI", "Войдите через доступный Google, Apple или Telegram. Для прежней подписки и прогресса используйте способ входа, связанный с тем же аккаунтом HSK AI."]
       ],
       securityTitle: "При первом запуске может появиться предупреждение",
       macSecurity: "Если macOS блокирует запуск: в Applications нажмите правой кнопкой на HSK AI → Open → Open. Если не помогло: System Settings → Privacy & Security → Open Anyway.",
@@ -240,7 +239,7 @@
       quickGuideProgress: "Файл загружается",
       quickGuideClose: "Понятно",
       quickGuideCloseAria: "Закрыть инструкцию",
-      quickGuideFooter: "Когда приложение откроется, подтвердите показанный код через Telegram.",
+      quickGuideFooter: "Войдите через Google, Apple или Telegram. Другой способ входа добавляйте из профиля существующего аккаунта.",
       visualRightClick: "Правый клик",
       visualMacOpen: "Открыть",
       visualOr: "или",
@@ -278,7 +277,7 @@
         ["Откройте скачанный APK", "Нажмите файл в уведомлении или найдите HSK AI в папке «Загрузки»."],
         ["Разрешите установку из этого источника", "Если Android спросит: «Настройки» → «Разрешить установку из этого источника», затем вернитесь назад."],
         ["Нажмите «Установить»", "Если появится проверка Play Protect, выберите «Всё равно установить». Это наш официальный файл."],
-        ["Откройте приложение и подключите Telegram", "Подтвердите код из приложения через Telegram. Подписка и прогресс придут автоматически."]
+        ["Войдите в HSK AI", "Войдите через доступный Google, Apple или Telegram. Для прежней подписки и прогресса используйте способ входа, связанный с тем же аккаунтом HSK AI."]
       ],
       mobileEyebrow: "Страница открыта на телефоне",
       mobileTitle: "Отправьте ссылку на компьютер",
@@ -293,19 +292,18 @@
       footer: "Курс — в центре. AI — помощник."
     },
     tj: {
-      referralAndroidTitle: "Аввал даъватро дар Telegram қайд кунед",
-      referralAndroidBody: "Тугмаи Telegram-ро пахш кунед ва дар бот Start-ро интихоб кунед. Бот худи файли APK-ро ба чат мефиристад. Барномаро насб карда, ҳамин ҳисоби Telegram-ро пайваст кунед. Баъд даъват ҳисоб мешавад.",
-      referralAndroidButton: "Идома дар Telegram",
-      referralAndroidStatus: "Дар бот Start-ро пахш кунед — файли APK ба чат меояд.",
-      androidReferralSteps: [
-        ["Даъватро дар Telegram қайд кунед", "Бо тугмаи боло ботро кушоед ва Start-ро пахш кунед."],
-        ["APK-ро насб кунед", "Файли APK-ро, ки бот ба чат мефиристад, кушоед."],
-        ["Ҳамин ҳисоби Telegram-ро пайваст кунед", "Пайвастшавиро дар барнома тасдиқ кунед. Баъд даъват ҳисоб мешавад."],
-      ],
-      referralIosTitle: "Шарти даъват барои тахфифи 20%",
-      referralIosBody: "Боти Telegram-ро кушоед ва ба 2 савол ҷавоб диҳед. Пас даъват ҳисоб мешавад.",
-      referralOtherTitle: "Пайвандро дар телефон кушоед",
-      referralOtherBody: "Шартҳои даъват дар Android ё iPhone нишон дода мешаванд.",
+      referralAndroidTitle: "Ҳисобро бо даъват созед",
+      referralAndroidBody: "APK-ро насб кунед. Пеш аз сохтани ҳисоб рамзи даъватро ворид карда, бо Google, Apple ё Telegram ворид шавед. Даъват пас аз воридшавӣ ва санҷиши дастгоҳ дар барнома ҳисоб мешавад.",
+      referralIosTitle: "Даъват чӣ гуна ҳисоб мешавад?",
+      referralIosBody: "Боти Telegram-ро кушоед ва ба 2 савол аз AI ҷавоб гиред. Баъд даъват ҳисоб мешавад.",
+      referralOtherTitle: "Даъватро дар телефон кушоед",
+      referralOtherBody: "Шартҳои ин даъвати тахфиф дар барномаи Android ё боти Telegram дар iPhone иҷро мешаванд. Пайвандро дар ҳамон дастгоҳ кушоед.",
+      referralTrialTitle: "Бо даъвати дӯст оғоз кунед",
+      referralTrialBody: "Пеш аз сохтани ҳисоб рамзи поёнро ба майдони даъват ворид кунед. Бо Google, Apple ё Telegram ворид шуда, ба 2 савол аз AI ҷавоб гиред. Воридшавӣ ба ҳисоби мавҷуда даъвати нав ҳисоб намешавад.",
+      referralCodeLabel: "Рамзи даъват",
+      referralCopy: "Нусхаи рамз",
+      referralOpen: "Дар барномаи насбшуда кушодан",
+      referralManual: "Рамзро интихоб карда дастӣ нусха гиред.",
       iosSecurityTitle: "Ҳеҷ чиз насб намешавад",
       androidSecurityTitle: "Ҳангоми насб огоҳӣ пайдо шуда метавонад",
       macSecurityTitle: "Ҳангоми кушодани аввал огоҳӣ пайдо шуда метавонад",
@@ -325,7 +323,7 @@
       androidSteps: [
         ["APK-ро боргирӣ кунед", "Тугмаи боло файлро ба телефони шумо мегузорад."],
         ["Файлро кушоед ва насб кунед", "Файли боргиришударо пахш кунед → «Насб кардан»."],
-        ["Ҳисоби Telegram-ро пайваст кунед", "Рамзи барномаро тавассути Telegram тасдиқ кунед. Обуна ва пешрафт худкор меоянд."],
+        ["Ба HSK AI ворид шавед", "Бо Google, Apple ё Telegram-и дастрас ворид шавед. Барои обуна ва пешрафти пешина роҳи ба ҳамон ҳисоби HSK AI пайвастшударо истифода баред."],
       ],
       allTitle: "Ҳамаи боргириҳо",
       allLead: "Версияи охирин барои ҳар дастгоҳ.",
@@ -359,12 +357,12 @@
       macSteps: [
         ["DMG-ро бор кунед", "Тугмаи боло насбкунандаи универсалии Mac-ро нигоҳ медорад."],
         ["Ба Applications гузаронед", "DMG-ро кушоед ва HSK AI-ро ба Applications кашед."],
-        ["Telegram-ро пайваст кунед", "Рамзи барномаро дар Telegram тасдиқ кунед. Обуна ва пешрафт худкор меоянд."]
+        ["Ба HSK AI ворид шавед", "Бо Google, Apple ё Telegram-и дастрас ворид шавед. Барои обуна ва пешрафти пешина роҳи ба ҳамон ҳисоби HSK AI пайвастшударо истифода баред."]
       ],
       windowsSteps: [
         ["EXE-ро бор кунед", "Тугмаи боло насбкунандаи Windows x64-ро нигоҳ медорад."],
         ["Install-ро пахш кунед", "Setup-ро кушоед. Барнома барои корбари ҷорӣ насб мешавад."],
-        ["Telegram-ро пайваст кунед", "Рамзи барномаро дар Telegram тасдиқ кунед. Обуна ва пешрафт худкор меоянд."]
+        ["Ба HSK AI ворид шавед", "Бо Google, Apple ё Telegram-и дастрас ворид шавед. Барои обуна ва пешрафти пешина роҳи ба ҳамон ҳисоби HSK AI пайвастшударо истифода баред."]
       ],
       securityTitle: "Ҳангоми кушодани аввал огоҳӣ баромада метавонад",
       macSecurity: "Агар macOS роҳ надиҳад: дар Applications рӯи HSK AI тугмаи рост → Open → Open. Агар ҳанӯз баста бошад: System Settings → Privacy & Security → Open Anyway.",
@@ -375,7 +373,7 @@
       quickGuideProgress: "Файл бор шуда истодааст",
       quickGuideClose: "Фаҳмо",
       quickGuideCloseAria: "Пӯшидани дастур",
-      quickGuideFooter: "Пас аз кушодани барнома, рамзи онро тавассути Telegram тасдиқ кунед.",
+      quickGuideFooter: "Бо Google, Apple ё Telegram ворид шавед. Роҳи дигари воридшавиро аз профили ҳисоби мавҷуда пайваст кунед.",
       visualRightClick: "Тугмаи рост",
       visualMacOpen: "Кушодан",
       visualOr: "ё",
@@ -413,7 +411,7 @@
         ["APK-и боршударо кушоед", "Файлро дар огоҳинома пахш кунед ё дар ҷузвдони «Боргириҳо» HSK AI-ро ёбед."],
         ["Ба насб аз ин манбаъ иҷозат диҳед", "Агар Android пурсад: «Танзимот» → «Иҷозати насб аз ин манбаъ»-ро фаъол кунед ва баргардед."],
         ["«Насб кардан»-ро пахш кунед", "Агар санҷиши Play Protect барояд, «Ба ҳар ҳол насб кардан»-ро интихоб кунед. Ин файли расмии мост."],
-        ["Барномаро кушоед ва Telegram-ро пайваст кунед", "Рамзи барномаро тавассути Telegram тасдиқ кунед. Обуна ва пешрафт худкор меоянд."]
+        ["Ба HSK AI ворид шавед", "Бо Google, Apple ё Telegram-и дастрас ворид шавед. Барои обуна ва пешрафти пешина роҳи ба ҳамон ҳисоби HSK AI пайвастшударо истифода баред."]
       ],
       mobileEyebrow: "Саҳифа дар телефон кушода шуд",
       mobileTitle: "Пайвандро ба компютер фиристед",
@@ -532,6 +530,17 @@
     }
   }
 
+  function shareDownloadUrl(platform) {
+    if (!referralCode) return transferUrl(platform);
+    if (!releaseAvailable(platform)) return "";
+    var url = new URL("/apps", window.location.origin);
+    url.searchParams.set("platform", platform);
+    url.searchParams.set("lang", state.language);
+    url.searchParams.set("ref", referralCode);
+    if (referralMode === "trial") url.searchParams.set("mode", "trial");
+    return url.toString();
+  }
+
   function downloadUrl(platform) {
     var base = transferUrl(platform);
     // A learner who arrived from the Mini App carries a request token, and
@@ -550,8 +559,7 @@
 
   function renderSteps() {
     if (supportedPlatforms.indexOf(state.platform) < 0) return;
-    var steps = referralCode && detectedPlatform() === "android" && state.platform === "android"
-      ? copy().androidReferralSteps : forPlatform(copy(), "Steps");
+    var steps = forPlatform(copy(), "Steps");
     if (!steps) return;
     ["one", "two", "three"].forEach(function (key, index) {
       var step = steps[index] || ["", ""];
@@ -693,7 +701,7 @@
         state.platform === "macos" || state.platform === "windows";
       block.hidden = !(isMobile() && desktopChoice);
     }
-    var url = transferUrl(state.platform);
+    var url = shareDownloadUrl(state.platform);
     var shareButton = document.querySelector("[data-share-link]");
     var copyButton = document.querySelector("[data-copy-link]");
     var input = document.querySelector("[data-transfer-link]");
@@ -706,8 +714,16 @@
     }
   }
 
+  function referralPayload() {
+    if (!referralCode) return "";
+    if (referralMode === "trial") return referralCode;
+    if (detectedPlatform() === "android") return "ra_" + referralCode;
+    if (detectedPlatform() === "ios") return "ri_" + referralCode;
+    return "";
+  }
+
   function referralLinkFor(platform) {
-    var prefix = platform === "android" ? "ra_" : "ri_";
+    var prefix = referralMode === "trial" ? "" : platform === "android" ? "ra_" : "ri_";
     return BOT_URL + "?start=" + prefix + referralCode;
   }
 
@@ -718,13 +734,43 @@
     if (!referralCode) return;
     var localized = copy();
     var platform = detectedPlatform();
-    var kind = platform === "android" ? "Android" : platform === "ios" ? "Ios" : "Other";
+    var kind = platform === "ios" ? "Ios" : referralMode === "trial" ? "Trial" : platform === "android" ? "Android" : "Other";
     setText("[data-referral-title]", localized["referral" + kind + "Title"]);
     setText("[data-referral-body]", localized["referral" + kind + "Body"]);
+    setText("[data-referral-code-label]", localized.referralCodeLabel);
+    setText("[data-referral-copy]", localized.referralCopy);
+    setText("[data-referral-copy-status]", "");
+    var payload = referralPayload();
+    var field = document.querySelector("[data-referral-code]");
+    var codeBlock = document.querySelector("[data-referral-code-block]");
+    if (field) field.value = payload;
+    if (codeBlock) codeBlock.hidden = !payload;
     var link = document.querySelector("[data-referral-link]");
     if (!link) return;
-    link.hidden = true;
+    link.hidden = platform !== "android" || !payload;
     link.removeAttribute("href");
+    link.textContent = localized.referralOpen;
+    if (!link.hidden) link.href = "pomp-hsk-ai://referral/" + payload;
+  }
+
+  function copyReferralCode() {
+    var field = document.querySelector("[data-referral-code]");
+    if (!field || !field.value) return;
+    var value = field.value;
+    var promise;
+    try {
+      promise = navigator.clipboard && typeof navigator.clipboard.writeText === "function"
+        ? navigator.clipboard.writeText(value) : legacyCopy(value);
+    } catch (error) {
+      promise = Promise.reject(error);
+    }
+    Promise.resolve(promise).then(function () {
+      setText("[data-referral-copy-status]", copy().copied);
+    }).catch(function () {
+      field.focus();
+      field.select();
+      setText("[data-referral-copy-status]", copy().referralManual);
+    });
   }
 
   function renderRelease() {
@@ -743,8 +789,7 @@
       setText("[data-version]", "");
       setText("[data-published]", "");
       if (!button || !status) return;
-      button.href = referralCode && detectedPlatform() === "ios"
-        ? referralLinkFor("ios") : BOT_URL;
+      button.href = referralCode ? referralLinkFor("ios") : BOT_URL;
       button.removeAttribute("aria-disabled");
       button.dataset.action = "open";
       status.dataset.state = "ready";
@@ -782,16 +827,6 @@
       return;
     }
 
-    if (referralCode && detectedPlatform() === "android" && state.platform === "android") {
-      button.href = referralLinkFor("android");
-      button.removeAttribute("aria-disabled");
-      button.dataset.action = "referral";
-      setText("[data-download-label]", localized.referralAndroidButton);
-      status.dataset.state = "ready";
-      status.lastElementChild.textContent = localized.referralAndroidStatus;
-      return;
-    }
-
     button.href = url;
     button.removeAttribute("aria-disabled");
     button.dataset.action = "download";
@@ -801,8 +836,6 @@
 
   function setPlatform(platform) {
     if (supportedPlatforms.indexOf(platform) < 0) return;
-    if (referralCode && ["android", "ios"].indexOf(detectedPlatform()) >= 0 &&
-        platform !== detectedPlatform()) return;
     state.platform = platform;
     resetTransferFeedback();
     renderPlatform();
@@ -957,7 +990,7 @@
           event.preventDefault();
           return;
         }
-        if (downloadButton.dataset.action === "referral") return;
+        if (downloadButton.dataset.action === "open") return;
         var startedPlatform = state.platform;
         setText("[data-download-label]", copy().opening);
         openQuickGuide();
@@ -979,10 +1012,13 @@
       });
     }
 
+    var referralCopyButton = document.querySelector("[data-referral-copy]");
+    if (referralCopyButton) referralCopyButton.addEventListener("click", copyReferralCode);
+
     var copyButton = document.querySelector("[data-copy-link]");
     if (copyButton) {
       copyButton.addEventListener("click", function () {
-        var url = transferUrl(state.platform);
+        var url = shareDownloadUrl(state.platform);
         if (url) copyPublicTransfer(url).catch(function () {});
       });
     }
@@ -990,7 +1026,7 @@
     var shareButton = document.querySelector("[data-share-link]");
     if (shareButton) {
       shareButton.addEventListener("click", function () {
-        var url = transferUrl(state.platform);
+        var url = shareDownloadUrl(state.platform);
         if (url) sharePublicTransfer(url).catch(function () {});
       });
     }

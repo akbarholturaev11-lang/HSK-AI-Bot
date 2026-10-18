@@ -14,6 +14,18 @@ jobs:
   targeted-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    services:
+      native-postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: native_accounts_test
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - "127.0.0.1:5432:5432"
+        options: >-
+          --health-cmd "pg_isready -U postgres -d native_accounts_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -39,6 +51,15 @@ jobs:
         run: |
           python -m unittest tests.test_i18n_inventory tests.test_i18n_ui_regressions
           python scripts/i18n_inventory.py --output /tmp/hsk-i18n-audit.json
+      - name: Guard QA schema-only bootstrap (offline, no DB credentials)
+        run: python -m unittest tests.test_qa_schema_only_bootstrap
+      - name: Guard new isolated QA project initializer
+        run: python -m unittest tests.test_qa_standalone_bootstrap
+      - name: Test bundled tour narration WAV and MP3 routes
+        run: python -m unittest tests.test_tour_audio_route
+
+      - name: Guard full staging Telegram bot against production usage
+        run: python -m unittest tests.test_qa_full_worker tests.test_qa_native_worker
       - name: Compile backend code
         run: |
           python -m compileall -q app tests
@@ -73,8 +94,58 @@ jobs:
           python -m unittest tests.test_user_device_inventory_service tests.test_desktop_download_api tests.test_android_contextual_app_promo tests.test_android_analytics_service tests.test_android_push tests.test_android_account_notices tests.test_android_apk_download tests.test_admin_panel_has_no_dead_controls
       - name: Run advertisement placement, AI localization and default preset regressions
         run: python -m unittest tests.test_ad_placement_service tests.test_course_ad_types tests.test_course_ad_translation_service tests.test_course_ads_module tests.test_profile_limit_ui_contract tests.test_profile_answer_accuracy
+      - name: Check provider proofs, browser handoff and identity isolation
+        env:
+          NATIVE_ACCOUNT_TEST_DATABASE_URL: postgresql+asyncpg://postgres@127.0.0.1:5432/native_accounts_test
+        run: >-
+          python -m unittest tests.test_native_oauth_api tests.test_native_oauth_lifecycle tests.test_oidc_verifier
+          tests.test_identity_link_service tests.test_desktop_auth_service
       - name: Check account deletion ownership, retention, migration, and public instructions
         run: >-
           python -m unittest tests.test_admin_delete_safety tests.test_account_deletion_request
           tests.test_account_deletion_api tests.test_account_deletion_cleanup
           tests.test_account_deletion_migration tests.test_public_site
+      - name: Check native signup, canonical ownership, and concurrent identity changes
+        env:
+          NATIVE_ACCOUNT_TEST_DATABASE_URL: postgresql+asyncpg://postgres@127.0.0.1:5432/native_accounts_test
+        run: >-
+          python -m unittest tests.test_native_account_signup tests.test_native_account_migration
+          tests.test_native_account_concurrency tests.test_native_account_learning
+          tests.test_native_account_ai_voice tests.test_native_account_lifecycle
+          tests.test_native_account_admin tests.test_desktop_provider_accounts
+          tests.test_native_account_acceptance tests.test_native_account_rehearsal
+          tests.test_native_account_payments tests.test_native_payment_repository
+          tests.test_native_payment_migration tests.test_native_payment_discounts_finance
+          tests.test_payment_service_receipt_lock
+          tests.test_native_hsk30_payments tests.test_universal_referrals
+          tests.test_universal_referral_migration tests.test_universal_referral_concurrency
+          tests.test_telegram_identity_link tests.test_telegram_link_acceptance
+      - name: Audit canonical billing, rewards, admin metrics and purge isolation
+        env:
+          NATIVE_ACCOUNT_TEST_DATABASE_URL: postgresql+asyncpg://postgres@127.0.0.1:5432/native_accounts_test
+        run: >-
+          python -m unittest tests.test_native_account_statistics
+          tests.test_admin_canonical_management tests.test_universal_personal_discounts
+          tests.test_partner_payment_ownership tests.test_entitlement_shadow_service
+          tests.test_native_purge_ownership tests.test_native_audit_migration
+          tests.test_native_transport_guards tests.test_limit_notification_service
+          tests.test_native_scheduler_transport tests.test_bot_block_cause_ownership
+          tests.test_course_sales_experiment_service
+
+  admin-ownership-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install browser test dependencies
+        run: |
+          python -m pip install pytest playwright
+          python -m playwright install --with-deps chromium
+      - name: Check canonical admin actions and deferred practice initialization
+        run: >-
+          python -m pytest -q tests/e2e/test_admin_canonical_management.py
+          tests/e2e/test_miniapp_smoke.py::test_admin_control_renders_real_api_payload_without_demo_data
+          tests/e2e/test_practice_bootstrap.py

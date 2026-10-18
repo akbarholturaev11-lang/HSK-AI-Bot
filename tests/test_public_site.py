@@ -242,6 +242,20 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             self.assertNotIn("telegram-web-app.js", response.text)
             self.assertEqual(response.headers["content-language"], page["lang"])
 
+    async def test_account_and_purchase_guides_cover_provider_only_accounts(self):
+        for locale in ("uz", "ru", "tj"):
+            response = await self.client.get(f"/{locale}/guide/subscription/")
+            self.assertEqual(response.status_code, 200)
+            for name in ("Google", "Apple", "HSK 3.0", "Google Play", "Android", "desktop"):
+                self.assertIn(name, response.text)
+        policy = (await self.client.get("/privacy")).text
+        terms = (await self.client.get("/terms")).text
+        self.assertIn("Google or Apple can create an account without Telegram", policy)
+        self.assertIn("Payments and invitations", policy)
+        self.assertIn("while another remains available", policy)
+        self.assertIn("independently of its sign-in method", terms)
+        self.assertIn("current Google Play app has no purchase flow", terms)
+
     def test_config_and_attribution_safety(self):
         for bad in ("http://example.com", "https://user:pass@example.com", "https://example.com/a", "https://example.com/?x=1"):
             with self.assertRaises(ValueError):

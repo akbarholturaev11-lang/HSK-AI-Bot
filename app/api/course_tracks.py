@@ -163,7 +163,7 @@ def create_course_tracks_router(*, session_factory, settings_obj) -> APIRouter:
                 ):
                     await CourseMiniAppAnalyticsService(session).record_server_event(
                         event_name="course_track_switched",
-                        user=user,
+                        user_id=user.id,
                         telegram_id=int(user.telegram_id),
                         source="course_track_miniapp",
                         level=after_level,
@@ -203,7 +203,7 @@ def create_course_tracks_router(*, session_factory, settings_obj) -> APIRouter:
                 if promo.get("recorded"):
                     await CourseMiniAppAnalyticsService(session).record_server_event(
                         event_name="hsk30_promo_shown",
-                        user=user,
+                        user_id=user.id,
                         telegram_id=int(user.telegram_id),
                         source="course_track_miniapp",
                         level=str(getattr(user, "level", "") or ""),

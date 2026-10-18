@@ -159,6 +159,7 @@ class CourseMiniAppEvent(Base):
             "dedupe_key",
             name="uq_course_miniapp_events_telegram_event_dedupe",
         ),
+        UniqueConstraint("user_id", "event_name", "dedupe_key", name="uq_course_miniapp_events_user_event_dedupe"),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -167,7 +168,7 @@ class CourseMiniAppEvent(Base):
         index=True,
         nullable=True,
     )
-    telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     event_name: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     source: Mapped[str] = mapped_column(String(40), default="course_miniapp", index=True, nullable=False)
     level: Mapped[Optional[str]] = mapped_column(String(32), index=True, nullable=True)

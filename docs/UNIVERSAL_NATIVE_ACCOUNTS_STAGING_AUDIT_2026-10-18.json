@@ -1,0 +1,143 @@
+{
+  "completed_at_utc": "2026-10-18T06:38:53.788365+00:00",
+  "date": "2026-10-18",
+  "feature_branch": "codex/universal-sign-in",
+  "release_hold": {
+    "main_push_authorized": false,
+    "production_universal_deployed": false,
+    "public_universal_registration_opened": false,
+    "real_provider_voice_and_installed_client_acceptance_complete": false
+  },
+  "staging": {
+    "application_deployed": false,
+    "backup_fingerprints": {
+      "after_0108": {
+        "bytes": 9739456,
+        "sha256": "86779a4014f3615fe398dae656c552ff1357e4391b02dca527204a753cbe429b"
+      },
+      "before_0102": {
+        "bytes": 9712076,
+        "sha256": "871a524998529853acdef032cf34222eb60045089c8a9c667ba8a0fe5a284055"
+      }
+    },
+    "canonical_duplicate_groups": 0,
+    "comparisons": {
+      "backup_after": {
+        "critical_values_preserved": {
+          "billing": true,
+          "progress": true,
+          "referrals": true,
+          "xp_rating": true
+        },
+        "failures": [],
+        "migration_head": [
+          "0108_native_audit_ownership"
+        ],
+        "mode": "restore",
+        "ok": true,
+        "owner_backfill_verified": false
+      },
+      "backup_before": {
+        "critical_values_preserved": {
+          "billing": true,
+          "progress": true,
+          "referrals": true,
+          "xp_rating": true
+        },
+        "failures": [],
+        "migration_head": [
+          "0102_payment_review_preview"
+        ],
+        "mode": "restore",
+        "ok": true,
+        "owner_backfill_verified": false
+      },
+      "migration": {
+        "critical_values_preserved": {
+          "billing": true,
+          "progress": true,
+          "referrals": true,
+          "xp_rating": true
+        },
+        "failures": [],
+        "migration_head": [
+          "0108_native_audit_ownership"
+        ],
+        "mode": "migration",
+        "ok": true,
+        "owner_backfill_verified": true
+      }
+    },
+    "evidence_directory_mode": "0700",
+    "existing_databases_replaced_or_dropped": 0,
+    "existing_owner_conflicts": 0,
+    "legacy_data_tables": 61,
+    "legacy_payments": 100,
+    "legacy_referrals": 214,
+    "legacy_rows": 190155,
+    "legacy_users": 2118,
+    "migration_schema_contract_verified": true,
+    "new_isolated_databases_created": 3,
+    "owner_backfills_by_table": {
+      "account_notice_deliveries": 0,
+      "ai_usage_budgets": 83,
+      "ai_usage_events": 13414,
+      "conversion_funnel_events": 0,
+      "course_ad_views": 0,
+      "course_miniapp_events": 0,
+      "course_pilot_events": 0,
+      "course_user_notifications": 0,
+      "discount_campaigns": 36,
+      "entitlement_shadow_events": 363,
+      "payments": 97,
+      "referrals": 428,
+      "subscription_entry_events": 0,
+      "trial_risk_events": 0,
+      "voice_practice_sessions": 311
+    },
+    "owner_backfills_verified": 14732,
+    "postgresql_major": 18,
+    "private_backups_and_full_evidence_retained_outside_git": true,
+    "private_evidence_file_mode": "0600",
+    "production_connection_made_for_this_rehearsal": false,
+    "production_writes": false,
+    "snapshot_keyed_digests": {
+      "after": {
+        "account_keys_digest": "fe49fd43cdd1e7289a43ef4d97e171cdf44506c21e3f145a07d832e936ae64a2",
+        "inventory_digest": "15db1be4942c8dd176421b2d9fce56f4e97c0c60d9e1f5b3c8ab6d6b406546cf",
+        "schema_digest": "21daf55927a5deec94387b1b15d6aa3c42d5daefe253f88dba0bb349443158d1",
+        "sequence_digest": "cbd685b4ceda541dac11d9a8f02afcd263c94ad0d6ef451c42ea41b1e373b33c"
+      },
+      "after_restored": {
+        "account_keys_digest": "fe49fd43cdd1e7289a43ef4d97e171cdf44506c21e3f145a07d832e936ae64a2",
+        "inventory_digest": "15db1be4942c8dd176421b2d9fce56f4e97c0c60d9e1f5b3c8ab6d6b406546cf",
+        "schema_digest": "21daf55927a5deec94387b1b15d6aa3c42d5daefe253f88dba0bb349443158d1",
+        "sequence_digest": "cbd685b4ceda541dac11d9a8f02afcd263c94ad0d6ef451c42ea41b1e373b33c"
+      },
+      "before": {
+        "account_keys_digest": "fe49fd43cdd1e7289a43ef4d97e171cdf44506c21e3f145a07d832e936ae64a2",
+        "inventory_digest": "15db1be4942c8dd176421b2d9fce56f4e97c0c60d9e1f5b3c8ab6d6b406546cf",
+        "schema_digest": "7117f1f859ea435c607e603389a33cb829f6f3f71618309f92b992669b5043da",
+        "sequence_digest": "cbd685b4ceda541dac11d9a8f02afcd263c94ad0d6ef451c42ea41b1e373b33c"
+      },
+      "before_restored": {
+        "account_keys_digest": "fe49fd43cdd1e7289a43ef4d97e171cdf44506c21e3f145a07d832e936ae64a2",
+        "inventory_digest": "15db1be4942c8dd176421b2d9fce56f4e97c0c60d9e1f5b3c8ab6d6b406546cf",
+        "schema_digest": "7117f1f859ea435c607e603389a33cb829f6f3f71618309f92b992669b5043da",
+        "sequence_digest": "cbd685b4ceda541dac11d9a8f02afcd263c94ad0d6ef451c42ea41b1e373b33c"
+      }
+    },
+    "source_backup_matched_prior_readonly_snapshot": true,
+    "source_revision": "0102_payment_review_preview",
+    "source_schema_columns": 835,
+    "source_schema_matched_prior_keyed_inventory_digest": true,
+    "target_revision": "0108_native_audit_ownership",
+    "target_schema_columns": 847,
+    "trusted_source_copy_verified_on": "2026-10-17"
+  },
+  "tested_source_sha256": {
+    "migration_0108": "6de0a1cc8cf7eb9434f4cb06ea2da02304cc907f90cd0e1d705c1c7d29538ac1",
+    "readonly_rehearsal_helper": "cd8f8f2111d349274e416d10d912ecf898c453ff4730f46bf8e01a021627422f"
+  },
+  "tested_worktree_base_commit": "a6893778c611bc696143ddb41840a6b910bdf694"
+}

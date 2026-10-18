@@ -1,6 +1,8 @@
 package com.pomp.hskai.feature.auth
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -67,6 +69,33 @@ class LinkScreenProviderTest {
                 )
             }
         }
+    }
+
+    @Test
+    fun invitationFieldIsOptionalAndReportsExactPayload() {
+        var code = ""
+        compose.setContent {
+            PompHskAiTheme {
+                LinkScreen(
+                    state = LinkUiState(providers = listOf(AuthProvider.GOOGLE)),
+                    onReferralCodeChanged = { code = it },
+                )
+            }
+        }
+        compose.onNodeWithText(strings.getString(R.string.auth_referral_code))
+            .performScrollTo().performTextInput("ra_abcdef12")
+        assertEquals("ra_abcdef12", code)
+    }
+
+    @Test
+    fun malformedInvitationHasLocalizedActionableFeedback() {
+        compose.setContent {
+            PompHskAiTheme {
+                LinkScreen(state = LinkUiState(referralCode = "bad", referralInvalid = true))
+            }
+        }
+        compose.onNodeWithText(strings.getString(R.string.auth_referral_invalid))
+            .performScrollTo().assertIsDisplayed()
     }
 
     @Test

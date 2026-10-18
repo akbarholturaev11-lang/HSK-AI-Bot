@@ -32,6 +32,7 @@ from sqlalchemy import func, select
 from app.bot.utils.i18n import t
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.services.entitlements.state import has_full_access, resolve_state
+from app.services.account_identity import actual_telegram_id, owner_clause
 
 
 logger = logging.getLogger(__name__)
@@ -104,7 +105,7 @@ class MiniAppHintService:
                 func.max(CourseMiniAppEvent.created_at),
             )
             .where(
-                CourseMiniAppEvent.telegram_id == int(telegram_id),
+                owner_clause(CourseMiniAppEvent, telegram_id, telegram_column="telegram_id"),
                 CourseMiniAppEvent.event_name == HINT_EVENT_NAME,
             )
             .group_by(CourseMiniAppEvent.dedupe_key)
@@ -150,7 +151,7 @@ class MiniAppHintService:
             return []
         now = now or datetime.now(timezone.utc)
         lang = getattr(user, "language", None) or "ru"
-        dismissed = await self._dismissed(int(user.telegram_id))
+        dismissed = await self._dismissed(user)
         state = resolve_state(user)
         full_access = has_full_access(state)
         existing = self._is_existing_user(user, now=now)
@@ -232,7 +233,7 @@ class MiniAppHintService:
 
         result = await CourseMiniAppAnalyticsService(self.session).record_server_event(
             event_name=HINT_EVENT_NAME,
-            telegram_id=int(getattr(user, "telegram_id", 0) or 0),
+            telegram_id=actual_telegram_id(user),
             user_id=getattr(user, "id", None),
             source=str(client or "course_v3")[:40],
             dedupe_key=self.dedupe_key(key),

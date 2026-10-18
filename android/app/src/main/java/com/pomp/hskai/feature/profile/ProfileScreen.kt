@@ -2,10 +2,12 @@ package com.pomp.hskai.feature.profile
 
 import android.app.Activity
 import android.content.Intent
+import android.content.Context
 import android.net.Uri
 import android.graphics.Bitmap
 import android.view.View
 import android.provider.Settings
+import com.pomp.hskai.core.auth.authActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -60,6 +62,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -173,6 +177,8 @@ fun ProfileScreen(
     onConnectIdentity: (AuthProvider, Activity?) -> Unit = { _, _ -> },
     onDisconnectIdentity: (String) -> Unit = {},
     onIdentitiesBrowserOpened: () -> Unit = {},
+    onCancelIdentityConnection: () -> Unit = {},
+    onReopenIdentityTelegram: () -> Unit = {},
     onSaveProfile: (String, String) -> Unit = { _, _ -> },
     profileSaving: Boolean = false,
     onOpenSubscription: (renewal: Boolean) -> Unit = {},
@@ -197,6 +203,10 @@ fun ProfileScreen(
     var notificationDetailOpen by remember { mutableStateOf(false) }
     var privacyOpen by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        // A provider/browser round trip must not cancel the active link proof.
+        if (identities.busyProvider == null) onLoadIdentities()
+    }
     var widgetInstalled by remember(context) { mutableStateOf(WidgetScheduler.hasWidgets(context)) }
     val appSettings = remember(context) { AppSettings(context) }
     val themeMode by appSettings.themeMode.collectAsState(initial = AppThemeMode.DEFAULT)
@@ -271,6 +281,11 @@ fun ProfileScreen(
                     },
                     onOpenSubscription = onOpenSubscription,
                     onStartTrial = onStartTrial,
+                    identities = identities,
+                    onConnectIdentity = { provider ->
+                        identitiesOpen = true
+                        onConnectIdentity(provider, context.authActivity())
+                    },
                 )
             }
 
@@ -390,6 +405,8 @@ fun ProfileScreen(
             onConnect = onConnectIdentity,
             onDisconnect = onDisconnectIdentity,
             onBrowserUrlOpened = onIdentitiesBrowserOpened,
+            onCancelConnection = onCancelIdentityConnection,
+            onReopenTelegram = onReopenIdentityTelegram,
             onDismiss = { identitiesOpen = false },
         )
     }

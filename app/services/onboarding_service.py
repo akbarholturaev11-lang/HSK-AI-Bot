@@ -70,6 +70,8 @@ class OnboardingService:
         username: Optional[str] = None,
         referral_code: Optional[str] = None,
         bot: Optional[Bot] = None,
+        *,
+        new_account_referral_only: bool = False,
     ) -> Tuple[User, bool]:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if user:
@@ -82,7 +84,7 @@ class OnboardingService:
                 changed = True
             if changed:
                 await self.session.commit()
-            if referral_code and can_attach_start_referral(user):
+            if referral_code and not new_account_referral_only and can_attach_start_referral(user):
                 await self._attach_referral_if_needed(
                     telegram_id=telegram_id,
                     referral_code=referral_code,

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
+import { runInNewContext } from "node:vm";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { previewInvoke } from "./js/preview-mock.js";
@@ -23,6 +24,15 @@ const expectedCommands = [
   "desktop_link_start",
   "desktop_link_poll",
   "desktop_link_open_telegram",
+  "desktop_oauth_providers",
+  "desktop_oauth_start",
+  "desktop_oauth_open",
+  "desktop_identity_methods",
+  "desktop_telegram_identity_start",
+  "desktop_oauth_identity_start",
+  "desktop_identity_link_poll",
+  "desktop_identity_link_open",
+  "desktop_identity_link_cancel",
   "desktop_open_external_url",
   "desktop_bootstrap",
   "desktop_logout",
@@ -124,6 +134,165 @@ test("frontend bridge and Rust expose the same named commands", async () => {
     assert.match(bridge, new RegExp(`"${command}"`));
     assert.match(rust, new RegExp(`\\b${command}\\b`));
   }
+});
+
+test("native signin bridge forwards language and rejects unsupported providers", async () => {
+  const calls = [];
+  globalThis.__TAURI__ = { core: { invoke: async (command, args) => {
+    calls.push({ command, args });
+    return { status: "pending", expiresIn: 300 };
+  } } };
+  try {
+    const { desktopBridge } = await import("./js/bridge.js");
+    await desktopBridge.linkStart("ru");
+    await desktopBridge.oauthStart("apple", "tj");
+    assert.deepEqual(calls, [
+      { command: "desktop_link_start", args: { language: "ru", referralCode: null } },
+      { command: "desktop_oauth_start", args: { provider: "apple", language: "tj", referralCode: null } },
+    ]);
+    assert.throws(() => desktopBridge.oauthStart("unknown", "uz"));
+    assert.throws(() => desktopBridge.oauthStart("google", "en"));
+  } finally {
+    delete globalThis.__TAURI__;
+  }
+});
+
+test("signup invitations remain bounded metadata on both native starts", async () => {
+  const calls = [];
+  globalThis.__TAURI__ = { core: { invoke: async (command, args) => {
+    calls.push({ command, args });
+    return { status: "pending", expiresIn: 300 };
+  } } };
+  try {
+    const { desktopBridge } = await import("./js/bridge.js");
+    for (const code of ["abcdef12", "ref_abcdef12", "ra_abcdef12", "ri_abcdef12"]) {
+      await desktopBridge.linkStart("uz", ` ${code} `);
+      await desktopBridge.oauthStart("google", "ru", code);
+      assert.equal(calls.at(-2).args.referralCode, code);
+      assert.equal(calls.at(-1).args.referralCode, code);
+    }
+    const count = calls.length;
+    for (const code of ["abcdef", "ABCDEF12", "ra_abcdef12?admin=true", "https://evil.example/abcdef12", "x".repeat(65)]) {
+      assert.throws(() => desktopBridge.linkStart("uz", code), /signup_referral_invalid/);
+      assert.throws(() => desktopBridge.oauthStart("apple", "tj", code), /signup_referral_invalid/);
+    }
+    assert.equal(calls.length, count);
+    const link = "https://telegram-chinese-bot-production.up.railway.app/apps?ref=abcdef12&mode=trial";
+    await desktopBridge.openExternalUrl(`tg://msg_url?url=${encodeURIComponent(link)}&text=HSK%20AI`);
+    for (const bad of [`${link}&mode=discount`, `${link}&admin=true`, `${link}#fragment`, link.replace(".up.railway.app", ".evil.example")]) {
+      assert.throws(() => desktopBridge.openExternalUrl(`tg://msg_url?url=${encodeURIComponent(bad)}`));
+    }
+  } finally {
+    delete globalThis.__TAURI__;
+  }
+});
+
+test("Telegram identity linking uses separate authenticated native commands and bounded attempts", async () => {
+  const calls = [];
+  globalThis.__TAURI__ = { core: { invoke: async (command, args) => {
+    calls.push({ command, args });
+    return { status: "pending", expiresIn: 300 };
+  } } };
+  try {
+    const { desktopBridge } = await import("./js/bridge.js");
+    const attemptId = "abcdef12-1234-5678-9012-abcdef123456";
+    await desktopBridge.identityMethods();
+    await desktopBridge.telegramIdentityStart(attemptId);
+    await desktopBridge.identityLinkOpen(attemptId);
+    await desktopBridge.identityLinkPoll(attemptId);
+    await desktopBridge.identityLinkCancel(attemptId);
+    assert.deepEqual(calls.map(({ command }) => command), [
+      "desktop_identity_methods", "desktop_telegram_identity_start", "desktop_identity_link_open", "desktop_identity_link_poll", "desktop_identity_link_cancel",
+    ]);
+    for (const entry of calls.slice(1)) assert.deepEqual(entry.args, { attemptId });
+    const count = calls.length;
+    for (const bad of [null, "", "p".repeat(36), `${attemptId}?admin=true`, attemptId.toUpperCase()]) {
+      assert.throws(() => desktopBridge.telegramIdentityStart(bad), /desktop_identity_attempt_invalid/);
+      assert.throws(() => desktopBridge.identityLinkPoll(bad), /desktop_identity_attempt_invalid/);
+      assert.throws(() => desktopBridge.identityLinkOpen(bad), /desktop_identity_attempt_invalid/);
+      assert.throws(() => desktopBridge.identityLinkCancel(bad), /desktop_identity_attempt_invalid/);
+    }
+    assert.equal(calls.length, count);
+  } finally { delete globalThis.__TAURI__; }
+});
+
+test("provider attachment uses the authenticated link command and never the signin command", async () => {
+  const calls = [];
+  globalThis.__TAURI__ = { core: { invoke: async (command, args) => {
+    calls.push({ command, args });
+    return { status: "pending", expiresIn: 300 };
+  } } };
+  try {
+    const { desktopBridge } = await import("./js/bridge.js");
+    const attemptId = "abcdef12-1234-5678-9012-abcdef123456";
+    for (const provider of ["google", "apple"]) {
+      await desktopBridge.oauthIdentityStart(provider, attemptId);
+      assert.deepEqual(calls.at(-1), { command: "desktop_oauth_identity_start", args: { provider, attemptId } });
+    }
+    for (const provider of ["telegram", "unknown", null]) {
+      assert.throws(() => desktopBridge.oauthIdentityStart(provider, attemptId), /oauth_provider_unsupported/);
+    }
+    assert.throws(() => desktopBridge.oauthIdentityStart("google", `${attemptId}?admin=true`), /desktop_identity_attempt_invalid/);
+    assert.equal(calls.length, 2);
+  } finally { delete globalThis.__TAURI__; }
+});
+
+test("QA bundle owns its protocol and preserves the IPC network boundary", async () => {
+  const qa = JSON.parse(await source("desktop/src-tauri/tauri.qa.conf.json"));
+  const production = JSON.parse(await source("desktop/src-tauri/tauri.conf.json"));
+  assert.equal(qa.identifier, "com.pomp.hskai.qa");
+  assert.deepEqual(qa.plugins["deep-link"].desktop.schemes, ["pomp-hsk-ai-qa"]);
+  assert.deepEqual(production.plugins["deep-link"].desktop.schemes, ["pomp-hsk-ai"]);
+  assert.equal(qa.bundle.createUpdaterArtifacts, false);
+  assert.equal(qa.app?.security?.csp, undefined);
+});
+
+test("build origin metadata scopes referral sharing without trusting runtime redirects", async () => {
+  let metadata = { apiOrigin: "https://hsk-qa.example.com" };
+  globalThis.__TAURI__ = {core: {invoke: async () => metadata}};
+  try {
+    const {desktopBridge} = await import("./js/bridge.js");
+    await desktopBridge.appInfo();
+    assert.equal(desktopBridge.apiOrigin(), metadata.apiOrigin);
+    const share = value => `tg://msg_url?url=${encodeURIComponent(value)}`;
+    await desktopBridge.openExternalUrl(share("https://hsk-qa.example.com/apps?ref=abcdef12&mode=trial"));
+    assert.throws(() => desktopBridge.openExternalUrl(share("https://evil.example/apps?ref=abcdef12&mode=trial")));
+    for (const origin of ["http://hsk-qa.example.com", "https://user@hsk-qa.example.com", "https://hsk-qa.example.com/", "https://hsk-qa.example.com?redirect=1"]) {
+      metadata = {apiOrigin: origin};
+      await assert.rejects(desktopBridge.appInfo(), /desktop_api_origin_invalid/);
+    }
+  } finally {
+    metadata = {};
+    const {desktopBridge} = await import("./js/bridge.js");
+    await desktopBridge.appInfo();
+    delete globalThis.__TAURI__;
+  }
+});
+
+test("browser-return event discards payload instead of authorizing a session", async () => {
+  let deliver;
+  let received;
+  globalThis.__TAURI__ = { event: { listen: async (name, callback) => {
+    assert.equal(name, "desktop-auth://return");
+    deliver = callback;
+    return () => {};
+  } } };
+  try {
+    const { listenAuthReturn } = await import("./js/bridge.js");
+    await listenAuthReturn((...args) => { received = args; });
+    deliver({ payload: { status: "linked", access_token: "spoofed", url: "https://evil.example" } });
+    assert.deepEqual(received, []);
+  } finally { delete globalThis.__TAURI__; }
+});
+
+test("invitation QR fits both old and universal links without truncating payload", async () => {
+  const app = await source("desktop/ui/js/app.js");
+  const helpers = app.slice(app.indexOf("function makeReferralQrDataUrl("), app.indexOf("/** The real invite button"));
+  const qr = (payload) => runInNewContext(`${helpers}\nreferralQrMatrix(${JSON.stringify(payload)})`, { TextEncoder });
+  assert.equal(qr("https://t.me/example_bot?start=abcdef12").length, 33);
+  assert.equal(qr("https://telegram-chinese-bot-production.up.railway.app/apps?ref=abcdef12&mode=trial").length, 37);
+  assert.equal(qr("x".repeat(106)).length, 37);
+  assert.equal(qr("x".repeat(107)), null);
 });
 
 test("preview responses follow production response casing", async () => {

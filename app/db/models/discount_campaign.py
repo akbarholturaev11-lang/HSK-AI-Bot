@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import BigInteger, Boolean, DateTime, Integer, String
+from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -28,6 +28,9 @@ class DiscountCampaign(Base):
     audience_status: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
     audience_language: Mapped[Optional[str]] = mapped_column(String(8), nullable=True)
     audience_level: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
+    target_user_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=True,
+    )
     target_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     payment_method: Mapped[Optional[str]] = mapped_column(String(16), nullable=True)
     plan_type: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)

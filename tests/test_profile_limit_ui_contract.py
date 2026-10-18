@@ -3,6 +3,7 @@
 These checks do not replace Telegram WebView screenshots or end-to-end checkout
 testing. They prevent regressions in screen hierarchy and trial/Pro CTA wiring.
 """
+import re
 import unittest
 from pathlib import Path
 
@@ -21,7 +22,7 @@ class MiniAppProfilePagodaAssetTests(unittest.TestCase):
         self.assertIn('"app/static/assets/hsk-profile-pagoda.svg",', main)
         self.assertIn('"image/svg+xml",', main)
         self.assertIn('url("/assets/hsk-profile-pagoda.svg?v=20261014-2")', css)
-        self.assertIn('profile-carousel.css?v=20261014-compact-1', PROFILE)
+        self.assertIn('profile-carousel.css?v=20261017-link-cards-1', PROFILE)
         self.assertIn("viewBox", svg_path.read_text(encoding="utf-8"))
 
 
@@ -47,10 +48,17 @@ class MiniAppProfileCarouselArtworkTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
         self.assertIn("R.drawable.profile_promo_pro", native)
         self.assertIn("R.drawable.profile_promo_pagoda", native)
-        self.assertIn('listOf("hsk30", "pro")', native)
-        self.assertNotIn('listOf("apps",', native)
+        # Card order is dynamic now. Keep the native no-download-ad invariant
+        # while Kotlin model tests exercise linked methods and Play filtering.
+        page_kinds = native.split("internal enum class ProfilePromoPage(", 1)[1].split("\n}", 1)[0]
+        keys = re.findall(r'^\s+[A-Z0-9_]+\("([^\"]+)"', page_kinds, re.MULTILINE)
+        self.assertIn("hsk30", keys)
+        self.assertIn("pro", keys)
+        self.assertNotIn("apps", keys)
+        page_policy = native.split("internal fun profilePromoPages(", 1)[1].split("\n/**", 1)[0]
+        self.assertIn("if (checkoutAvailable) add(ProfilePromoPage.PRO)", page_policy)
         self.assertTrue(Path("android/app/src/main/res/drawable/profile_promo_pro.xml").exists())
-        self.assertIn("profile-carousel.css?v=20261014-compact-1", PROFILE)
+        self.assertIn("profile-carousel.css?v=20261017-link-cards-1", PROFILE)
 
 class MiniAppCourseVersionNavigationTests(unittest.TestCase):
     def test_settings_uses_original_hsk30_book_dialog(self):
@@ -68,7 +76,7 @@ class MiniAppCourseVersionNavigationTests(unittest.TestCase):
         self.assertIn("switchCourseTrack('hsk20',null)", body)
         self.assertIn("openProfileCourseVersionBook();", carousel)
         self.assertNotIn("HskProfileCarousel.confirmHsk30()", carousel)
-        self.assertIn("profile-carousel.js?v=20261014-booksheet-2", PROFILE)
+        self.assertIn("profile-carousel.js?v=20261017-link-cards-1", PROFILE)
 
     def test_course_path_header_still_uses_compact_version_and_level_picker(self):
         course = PROFILE.split("function renderCourse(){", 1)[1].split(

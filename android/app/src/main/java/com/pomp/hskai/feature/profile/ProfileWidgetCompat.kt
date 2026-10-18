@@ -44,6 +44,8 @@ fun ProfileScreen(
     onConnectIdentity: (AuthProvider, Activity?) -> Unit = { _, _ -> },
     onDisconnectIdentity: (String) -> Unit = {},
     onIdentitiesBrowserOpened: () -> Unit = {},
+    onCancelIdentityConnection: () -> Unit = {},
+    onReopenIdentityTelegram: () -> Unit = {},
 ) {
     ProfileScreen(
         account = account,
@@ -75,5 +77,7 @@ fun ProfileScreen(
         onConnectIdentity = onConnectIdentity,
         onDisconnectIdentity = onDisconnectIdentity,
         onIdentitiesBrowserOpened = onIdentitiesBrowserOpened,
+        onCancelIdentityConnection = onCancelIdentityConnection,
+        onReopenIdentityTelegram = onReopenIdentityTelegram,
     )
 }

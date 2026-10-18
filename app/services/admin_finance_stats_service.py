@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import func, select
+from sqlalchemy import and_, func, or_, select
 
 from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.payment import Payment
@@ -61,6 +61,7 @@ _CLIENT_CHANNELS = {
     },
 }
 _CLIENT_ORDER = ("miniapp", "android", "desktop", "unknown")
+AccountKey = tuple[str, int]
 
 
 def _amount_to_usd(amount, currency: str | None) -> float | None:
@@ -97,7 +98,7 @@ def _dt(value: datetime | None) -> str:
 
 @dataclass
 class _ApprovedPayment:
-    user_id: int
+    user_id: AccountKey
     usd: float
     at: datetime
     submitted_at: datetime
@@ -122,9 +123,9 @@ class AdminFinanceStatsService:
         paid_ever = len({p.user_id for p in approved})
         active_paid_now = await self._active_paid_now(
             now,
-            telegram_ids={p.user_id for p in approved},
+            account_keys={p.user_id for p in approved},
         )
-        renewed_ever = await self._renewed_ever_count()
+        renewed_ever = await self._renewed_ever_count(approved)
         hsk30_unlock = await self._hsk30_unlock_summary()
 
         periods = []
@@ -159,10 +160,21 @@ class AdminFinanceStatsService:
 
     # ---- ma'lumot yig'ish -------------------------------------------------
 
+    @staticmethod
+    def _account_key(user_id, telegram_id, *, payment_id=None) -> AccountKey | None:
+        if user_id is not None:
+            return ("user", int(user_id))
+        if telegram_id is not None:
+            # Negative IDs identify retained, anonymized financial histories.
+            return ("telegram", int(telegram_id))
+        return ("payment", int(payment_id)) if payment_id is not None else None
+
     async def _load_approved_payments(self) -> list[_ApprovedPayment]:
         rows = (
             await self.session.execute(
                 select(
+                    Payment.id,
+                    func.coalesce(Payment.user_id, User.id),
                     Payment.user_telegram_id,
                     Payment.amount,
                     Payment.currency,
@@ -170,7 +182,7 @@ class AdminFinanceStatsService:
                     Payment.reviewed_at,
                     Payment.submitted_at,
                     Payment.source,
-                ).where(
+                ).outerjoin(User, and_(Payment.user_id.is_(None), User.telegram_id == Payment.user_telegram_id)).where(
                     Payment.payment_status == "approved",
                     Payment.plan_type != HSK30_UNLOCK_PLAN_TYPE,
                 )
@@ -178,7 +190,7 @@ class AdminFinanceStatsService:
         ).all()
 
         items: list[_ApprovedPayment] = []
-        for user_id, amount, currency, base_amount, reviewed_at, submitted_at, source in rows:
+        for payment_id, user_id, telegram_id, amount, currency, base_amount, reviewed_at, submitted_at, source in rows:
             usd = _amount_to_usd(amount, currency)
             if usd is None and base_amount:
                 usd = _amount_to_usd(base_amount, "TJS")
@@ -194,7 +206,7 @@ class AdminFinanceStatsService:
                 submitted_at = submitted_at.replace(tzinfo=timezone.utc)
             items.append(
                 _ApprovedPayment(
-                    user_id=int(user_id),
+                    user_id=self._account_key(user_id, telegram_id, payment_id=payment_id),
                     usd=float(usd),
                     at=at,
                     submitted_at=submitted_at,
@@ -207,31 +219,36 @@ class AdminFinanceStatsService:
         # Vaqt bo'yicha tartiblab, har bir foydalanuvchining 2-chi+ to'lovini
         # "yangilash" (renewal) deb belgilaymiz.
         items.sort(key=lambda p: p.at)
-        seen: set[int] = set()
+        seen: set[AccountKey] = set()
         for p in items:
             if p.user_id in seen:
                 p.is_renewal = True
             seen.add(p.user_id)
         return items
 
-    async def _source_events_by_user(self) -> dict[int, list[tuple[datetime, str]]]:
+    async def _source_events_by_user(self) -> dict[AccountKey, list[tuple[datetime, str]]]:
         """Return each user's subscription entries in chronological order."""
         rows = (
             await self.session.execute(
                 select(
+                    func.coalesce(SubscriptionEntryEvent.user_id, User.id),
                     SubscriptionEntryEvent.telegram_id,
                     SubscriptionEntryEvent.source,
                     SubscriptionEntryEvent.created_at,
-                ).order_by(SubscriptionEntryEvent.created_at.asc())
+                ).outerjoin(User, and_(SubscriptionEntryEvent.user_id.is_(None), User.telegram_id == SubscriptionEntryEvent.telegram_id))
+                .order_by(SubscriptionEntryEvent.created_at.asc())
             )
         ).all()
-        result: dict[int, list[tuple[datetime, str]]] = {}
-        for telegram_id, source, created in rows:
+        result: dict[AccountKey, list[tuple[datetime, str]]] = {}
+        for user_id, telegram_id, source, created in rows:
             if not created:
+                continue
+            account_key = self._account_key(user_id, telegram_id)
+            if account_key is None:
                 continue
             if created.tzinfo is None:
                 created = created.replace(tzinfo=timezone.utc)
-            result.setdefault(int(telegram_id), []).append(
+            result.setdefault(account_key, []).append(
                 (created, source or "unknown")
             )
         return result
@@ -242,49 +259,45 @@ class AdminFinanceStatsService:
             stmt = stmt.where(*conditions)
         return (await self.session.execute(stmt)).scalar() or 0
 
-    async def _active_paid_now(self, now: datetime, *, telegram_ids: set[int]) -> int:
-        if not telegram_ids:
+    async def _active_paid_now(self, now: datetime, *, account_keys: set[AccountKey]) -> int:
+        if not account_keys:
             return 0
         return await self._count_users(
-            User.telegram_id.in_(telegram_ids),
+            or_(
+                User.id.in_({value for kind, value in account_keys if kind == "user"}),
+                User.telegram_id.in_({value for kind, value in account_keys if kind == "telegram" and value > 0}),
+            ),
             User.payment_status == "approved",
             User.status == "active",
             User.end_date.is_not(None),
             User.end_date > now,
         )
 
-    async def _renewed_ever_count(self) -> int:
+    async def _renewed_ever_count(self, approved=None) -> int:
         """≥2 marta tasdiqlangan to'lov qilgan (kamida 1 marta yangilagan) foydalanuvchilar."""
-        sub = (
-            select(Payment.user_telegram_id)
-            .where(
-                Payment.payment_status == "approved",
-                Payment.plan_type != HSK30_UNLOCK_PLAN_TYPE,
-            )
-            .group_by(Payment.user_telegram_id)
-            .having(func.count() >= 2)
-        ).subquery()
-        return (await self.session.execute(select(func.count()).select_from(sub))).scalar() or 0
+        approved = await self._load_approved_payments() if approved is None else approved
+        return len({payment.user_id for payment in approved if payment.is_renewal})
 
     async def _hsk30_unlock_summary(self) -> dict:
-        row = (
+        rows = (
             await self.session.execute(
                 select(
-                    func.count(Payment.id).label("payments"),
-                    func.count(func.distinct(Payment.user_telegram_id)).label("users"),
-                    func.coalesce(func.sum(Payment.amount), 0).label("amount_tjs"),
-                ).where(
+                    Payment.id, func.coalesce(Payment.user_id, User.id),
+                    Payment.user_telegram_id, Payment.amount,
+                ).outerjoin(User, and_(Payment.user_id.is_(None), User.telegram_id == Payment.user_telegram_id)).where(
                     Payment.payment_status == "approved",
                     Payment.plan_type == HSK30_UNLOCK_PLAN_TYPE,
                 )
             )
-        ).one()
+        ).all()
+        paying_accounts = {self._account_key(uid, tid, payment_id=pid) for pid, uid, tid, amount in rows}
+        amount_tjs = sum(amount for _pid, _uid, _tid, amount in rows)
         return {
             "label": "HSK 3.0 ochish",
-            "payments": int(row.payments or 0),
-            "users": int(row.users or 0),
-            "amount_tjs": int(row.amount_tjs or 0),
-            "amount_text": f"{int(row.amount_tjs or 0)} TJS",
+            "payments": len(rows),
+            "users": len(paying_accounts),
+            "amount_tjs": int(amount_tjs),
+            "amount_text": f"{int(amount_tjs)} TJS",
             "note": "Bir martalik doimiy HSK 3.0 kirish; obuna daromadiga qo'shilmaydi.",
         }
 
@@ -346,7 +359,7 @@ class AdminFinanceStatsService:
         since: datetime | None,
         now: datetime,
         approved: list[_ApprovedPayment],
-        source_events_by_user: dict[int, list[tuple[datetime, str]]],
+        source_events_by_user: dict[AccountKey, list[tuple[datetime, str]]],
         total_users: int,
         active_paid_now: int,
         paid_ever: int,
@@ -514,7 +527,7 @@ class AdminFinanceStatsService:
     def _sources_paid(
         self,
         in_period: list[_ApprovedPayment],
-        source_events_by_user: dict[int, list[tuple[datetime, str]]],
+        source_events_by_user: dict[AccountKey, list[tuple[datetime, str]]],
     ) -> list[dict]:
         agg: dict[str, dict] = {}
         for p in in_period:
@@ -547,7 +560,7 @@ class AdminFinanceStatsService:
         *,
         since: datetime | None,
         approved: list[_ApprovedPayment],
-        source_events_by_user: dict[int, list[tuple[datetime, str]]],
+        source_events_by_user: dict[AccountKey, list[tuple[datetime, str]]],
         revenue_usd: float,
         approved_count: int,
         active_paid_now: int,
@@ -579,7 +592,7 @@ class AdminFinanceStatsService:
                     },
                 )
                 bucket["entries"] += 1
-                bucket["entry_users"].add(int(telegram_id))
+                bucket["entry_users"].add(telegram_id)
 
         for payment in approved:
             source = self._client_source_for_payment(

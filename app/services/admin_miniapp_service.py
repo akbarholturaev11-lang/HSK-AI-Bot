@@ -6,7 +6,9 @@ from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import and_, case, func, or_, select
+from sqlalchemy import String, and_, case, cast, func, literal, or_, select
+
+from app.services.admin_analytics_identity import analytics_account_key, analytics_identity, analytics_user_join
 
 from app.db.models.ad_campaign import AdCampaign, AdCampaignDelivery
 from app.db.models.ai_usage import AIUsageEvent
@@ -40,6 +42,8 @@ from app.services.subscription_currency_service import (
 
 
 ADMIN_MINIAPP_TZ = ZoneInfo("Asia/Shanghai")
+# Reducer tuple layouts retain their legacy identity-slot names. Database
+# reads supply namespaced canonical keys; integer callers remain compatible.
 HOT_LEAD_ACTIVITY_WINDOW = timedelta(days=2)
 HOT_LEAD_STATUSES = ("free", "trial", "expired")
 HOT_LEAD_PAYMENT_STATUSES = ("none", "draft", "rejected")
@@ -100,17 +104,17 @@ def _matured_notification_open_proxy(
         sent = _as_utc(sent_at)
         if not telegram_id or not sent or sent > now:
             continue
-        all_sends.append((index, int(telegram_id), sent))
+        all_sends.append((index, analytics_identity(telegram_id), sent))
         if sent > maturity_cutoff:
             immature += 1
             continue
-        matured.append((index, int(telegram_id), sent))
+        matured.append((index, analytics_identity(telegram_id), sent))
 
     opens_by_user: dict[int, list[datetime]] = defaultdict(list)
     for telegram_id, opened_at in open_rows:
         opened = _as_utc(opened_at)
         if telegram_id and opened and opened <= now:
-            opens_by_user[int(telegram_id)].append(opened)
+            opens_by_user[analytics_identity(telegram_id)].append(opened)
     for opens in opens_by_user.values():
         opens.sort()
 
@@ -163,14 +167,14 @@ def _payment_attempt_funnel(rows: list[tuple]) -> dict:
         attempt_id = str(data.get("attempt_id") or "").strip()
         if not attempt_id or not telegram_id:
             continue
-        attempt_key = (int(telegram_id), attempt_id)
+        attempt_key = (analytics_identity(telegram_id), attempt_id)
         if event_name == "checkout_opened":
             stage = str(data.get("stage") or "").strip()
             if not stage:
                 attempts.setdefault(
                     attempt_key,
                     {
-                        "telegram_id": int(telegram_id),
+                        "telegram_id": analytics_identity(telegram_id),
                         "opened_at": created,
                         "stages": {},
                         "payment_id": None,
@@ -178,13 +182,13 @@ def _payment_attempt_funnel(rows: list[tuple]) -> dict:
                 )
                 continue
             attempt = attempts.get(attempt_key)
-            if attempt and int(telegram_id) == attempt["telegram_id"] and created >= attempt["opened_at"]:
+            if attempt and analytics_identity(telegram_id) == attempt["telegram_id"] and created >= attempt["opened_at"]:
                 attempt["stages"].setdefault(stage, created)
             continue
 
         if event_name == "payment_screenshot_submitted":
             attempt = attempts.get(attempt_key)
-            if attempt and int(telegram_id) == attempt["telegram_id"] and created >= attempt["opened_at"]:
+            if attempt and analytics_identity(telegram_id) == attempt["telegram_id"] and created >= attempt["opened_at"]:
                 attempt["stages"].setdefault("payment_screenshot_submitted", created)
                 attempt["payment_id"] = int(payment_id) if payment_id else None
 
@@ -257,7 +261,7 @@ def _activation_funnel(rows: list[tuple], *, now: datetime) -> dict:
             payload = json.loads(row[3] or "{}") if len(row) > 3 else {}
         except (TypeError, json.JSONDecodeError):
             payload = {}
-        events_by_user[int(telegram_id)].append(
+        events_by_user[analytics_identity(telegram_id)].append(
             (str(event_name), created, payload if isinstance(payload, dict) else {})
         )
 
@@ -356,7 +360,7 @@ def _d1_recovery_experiment(
         created = _as_utc(created_at)
         if not telegram_id or not created:
             continue
-        events_by_user[int(telegram_id)].append(
+        events_by_user[analytics_identity(telegram_id)].append(
             {
                 "name": str(event_name),
                 "source": str(source or ""),
@@ -368,7 +372,7 @@ def _d1_recovery_experiment(
             }
         )
     blocked_at_by_user = {
-        int(telegram_id): _as_utc(blocked_at)
+        analytics_identity(telegram_id): _as_utc(blocked_at)
         for telegram_id, blocked_at in block_rows
         if telegram_id and _as_utc(blocked_at)
     }
@@ -586,10 +590,10 @@ def _sales_value_experiment(
             continue
         created_at = _as_utc(row[7])
         try:
-            telegram_id = int(row[1])
+            telegram_id = analytics_identity(row[1])
         except (TypeError, ValueError):
             continue
-        if not created_at or created_at > now_utc:
+        if not telegram_id or not created_at or created_at > now_utc:
             continue
         normalized_course.append(
             {
@@ -678,7 +682,7 @@ def _sales_value_experiment(
             continue
         created_at = _as_utc(row[4])
         try:
-            telegram_id = int(row[1])
+            telegram_id = analytics_identity(row[1])
         except (TypeError, ValueError):
             continue
         if telegram_id not in assignments or not created_at or created_at > now_utc:
@@ -700,7 +704,7 @@ def _sales_value_experiment(
             continue
         try:
             payment_id = int(row[0])
-            telegram_id = int(row[1])
+            telegram_id = analytics_identity(row[1])
         except (TypeError, ValueError):
             continue
         if telegram_id not in assignments:
@@ -726,7 +730,7 @@ def _sales_value_experiment(
         if len(row) < 2:
             continue
         try:
-            telegram_id = int(row[0])
+            telegram_id = analytics_identity(row[0])
         except (TypeError, ValueError):
             continue
         created_at = _as_utc(row[1])
@@ -1080,7 +1084,7 @@ def _lesson_attempt_durations(
         if not telegram_id or not created:
             continue
         lesson_ref = f"{level or 'unknown'}:{lesson_order or lesson_id or 0}"
-        grouped[(int(telegram_id), lesson_ref)].append(
+        grouped[(analytics_identity(telegram_id), lesson_ref)].append(
             (created, str(event_name), str(session_id) if session_id else None)
         )
 
@@ -1122,7 +1126,7 @@ def _miniapp_session_durations(rows: list[tuple], *, idle_minutes: int = 30) -> 
     for telegram_id, session_id, created_at in rows:
         created = _as_utc(created_at)
         if telegram_id and session_id and created:
-            events_by_session[(int(telegram_id), str(session_id))].append(created)
+            events_by_session[(analytics_identity(telegram_id), str(session_id))].append(created)
 
     session_count = 0
     durations: list[int] = []
@@ -1258,9 +1262,25 @@ def _bot_not_blocked_filter():
 
 def _no_pending_payment_filter():
     return ~select(Payment.id).where(
-        Payment.user_telegram_id == User.telegram_id,
+        _payment_user_join(),
         Payment.payment_status == "pending",
     ).exists()
+
+
+def _payment_user_join():
+    return or_(
+        Payment.user_id == User.id,
+        and_(Payment.user_id.is_(None), User.telegram_id.is_not(None),
+             Payment.user_telegram_id == User.telegram_id),
+    )
+
+
+def _payment_account_key(payment_id, user_id, telegram_id):
+    if user_id is not None:
+        return ("user", int(user_id))
+    if telegram_id is not None:
+        return ("telegram", int(telegram_id))
+    return ("payment", int(payment_id))
 
 
 def admin_miniapp_today_start(now: datetime) -> datetime:
@@ -1610,7 +1630,7 @@ class AdminMiniAppService:
                         .select_from(User)
                         .join(
                             CourseMiniAppEvent,
-                            CourseMiniAppEvent.telegram_id == User.telegram_id,
+                            analytics_user_join(CourseMiniAppEvent),
                         )
                         .where(
                             *current_filter,
@@ -1724,20 +1744,21 @@ class AdminMiniAppService:
 
     async def _approved_payment_user_count(self, since: datetime | None = None) -> int:
         conditions = [Payment.payment_status == "approved", *self._approved_payment_period_conditions(since)]
-        stmt = select(func.count(func.distinct(Payment.user_telegram_id))).select_from(Payment).where(*conditions)
-        return (await self.session.execute(stmt)).scalar() or 0
+        return len(await self._payment_account_keys(*conditions))
+
+    async def _payment_account_keys(self, *conditions):
+        rows = (await self.session.execute(
+            select(Payment.id, func.coalesce(Payment.user_id, User.id), Payment.user_telegram_id)
+            .outerjoin(User, _payment_user_join()).where(*conditions)
+        )).all()
+        return {_payment_account_key(pid, uid, tid) for pid, uid, tid in rows}
 
     async def _pending_payment_user_count(self) -> int:
-        stmt = (
-            select(func.count(func.distinct(Payment.user_telegram_id)))
-            .select_from(Payment)
-            .where(Payment.payment_status == "pending")
-        )
-        return (await self.session.execute(stmt)).scalar() or 0
+        return len(await self._payment_account_keys(Payment.payment_status == "pending"))
 
     async def _qa_user_count(self) -> int:
         stmt = (
-            select(func.count(func.distinct(AIUsageEvent.user_telegram_id)))
+            select(func.count(func.distinct(analytics_account_key(AIUsageEvent, telegram_column="user_telegram_id"))))
             .select_from(AIUsageEvent)
             .where(AIUsageEvent.source == "qa")
         )
@@ -2166,7 +2187,7 @@ class AdminMiniAppService:
             await self.session.execute(
                 select(
                     CourseMiniAppEvent.event_name,
-                    CourseMiniAppEvent.telegram_id,
+                    analytics_account_key(CourseMiniAppEvent).label("telegram_id"),
                     CourseMiniAppEvent.source,
                     CourseMiniAppEvent.level,
                     CourseMiniAppEvent.lesson_id,
@@ -2188,7 +2209,7 @@ class AdminMiniAppService:
 
         assigned_ids = tuple(
             {
-                int(row.telegram_id)
+                analytics_identity(row.telegram_id)
                 for row in assignment_rows
                 if getattr(row, "telegram_id", None)
             }
@@ -2227,7 +2248,7 @@ class AdminMiniAppService:
             await self.session.execute(
                 select(
                     CourseMiniAppEvent.event_name,
-                    CourseMiniAppEvent.telegram_id,
+                    analytics_account_key(CourseMiniAppEvent).label("telegram_id"),
                     CourseMiniAppEvent.source,
                     CourseMiniAppEvent.level,
                     CourseMiniAppEvent.lesson_id,
@@ -2235,7 +2256,7 @@ class AdminMiniAppService:
                     CourseMiniAppEvent.payload_json,
                     CourseMiniAppEvent.created_at,
                 ).where(
-                    CourseMiniAppEvent.telegram_id.in_(assigned_ids),
+                    analytics_account_key(CourseMiniAppEvent).in_(assigned_ids),
                     CourseMiniAppEvent.event_name.in_(outcome_names),
                     CourseMiniAppEvent.created_at >= earliest_assignment,
                     CourseMiniAppEvent.created_at <= now,
@@ -2246,12 +2267,12 @@ class AdminMiniAppService:
             await self.session.execute(
                 select(
                     ConversionFunnelEvent.event_name,
-                    ConversionFunnelEvent.telegram_id,
+                    analytics_account_key(ConversionFunnelEvent).label("telegram_id"),
                     ConversionFunnelEvent.payment_id,
                     ConversionFunnelEvent.payload_json,
                     ConversionFunnelEvent.created_at,
                 ).where(
-                    ConversionFunnelEvent.telegram_id.in_(assigned_ids),
+                    analytics_account_key(ConversionFunnelEvent).in_(assigned_ids),
                     ConversionFunnelEvent.event_name.in_(
                         ("checkout_opened", "payment_screenshot_submitted", "payment_approved")
                     ),
@@ -2264,26 +2285,26 @@ class AdminMiniAppService:
             await self.session.execute(
                 select(
                     Payment.id,
-                    Payment.user_telegram_id,
+                    (literal("user:") + cast(User.id, String)),
                     Payment.payment_status,
                     Payment.amount,
                     Payment.currency,
                     Payment.base_amount,
                     Payment.reviewed_at,
                     Payment.submitted_at,
-                ).where(
-                    Payment.user_telegram_id.in_(assigned_ids),
+                ).join(User, _payment_user_join()).where(
+                    (literal("user:") + cast(User.id, String)).in_(assigned_ids),
                     Payment.payment_status.in_(("pending", "approved", "rejected")),
                 )
             )
         ).all()
         error_rows = (
             await self.session.execute(
-                select(User.telegram_id, Message.created_at)
+                select((literal("user:") + cast(User.id, String)), Message.created_at)
                 .select_from(Message)
                 .join(User, User.id == Message.user_id)
                 .where(
-                    User.telegram_id.in_(assigned_ids),
+                    (literal("user:") + cast(User.id, String)).in_(assigned_ids),
                     Message.content_type == "app_error_context",
                     Message.created_at >= earliest_assignment,
                     Message.created_at <= now,
@@ -2321,7 +2342,7 @@ class AdminMiniAppService:
             await self.session.execute(
                 select(
                     CourseMiniAppEvent.event_name,
-                    CourseMiniAppEvent.telegram_id,
+                    analytics_account_key(CourseMiniAppEvent).label("telegram_id"),
                     CourseMiniAppEvent.source,
                     CourseMiniAppEvent.level,
                     CourseMiniAppEvent.lesson_id,
@@ -2332,7 +2353,7 @@ class AdminMiniAppService:
             )
         ).all()
         assigned_ids = {
-            int(row.telegram_id)
+            analytics_identity(row.telegram_id)
             for row in rows
             if row.telegram_id
             and row.event_name == "d1_recovery_assigned"
@@ -2342,8 +2363,8 @@ class AdminMiniAppService:
         if assigned_ids:
             block_rows = (
                 await self.session.execute(
-                    select(User.telegram_id, User.bot_blocked_at).where(
-                        User.telegram_id.in_(tuple(assigned_ids))
+                    select((literal("user:") + cast(User.id, String)), User.bot_blocked_at).where(
+                        (literal("user:") + cast(User.id, String)).in_(tuple(assigned_ids))
                     )
                 )
             ).all()
@@ -2368,7 +2389,7 @@ class AdminMiniAppService:
             await self.session.execute(
                 select(
                     CourseMiniAppEvent.event_name,
-                    CourseMiniAppEvent.telegram_id,
+                    analytics_account_key(CourseMiniAppEvent).label("telegram_id"),
                     CourseMiniAppEvent.created_at,
                     CourseMiniAppEvent.payload_json,
                 ).where(*conditions)
@@ -2386,17 +2407,17 @@ class AdminMiniAppService:
             if cohort_start is not None:
                 conditions.append(User.created_at > cohort_start)
             rows = (await self.session.execute(
-                select(User.telegram_id, User.created_at).where(*conditions)
+                select((literal("user:") + cast(User.id, String)), User.created_at).where(*conditions)
             )).all()
             created_by_user = {
-                int(tid): _as_utc(created) for tid, created in rows
+                analytics_identity(tid): _as_utc(created) for tid, created in rows
                 if tid and _as_utc(created)
             }
             opens_by_user: dict[int, list[datetime]] = defaultdict(list)
             if created_by_user:
                 open_rows = (await self.session.execute(
-                    select(CourseMiniAppEvent.telegram_id, CourseMiniAppEvent.created_at).where(
-                        CourseMiniAppEvent.telegram_id.in_(tuple(created_by_user)),
+                    select(analytics_account_key(CourseMiniAppEvent), CourseMiniAppEvent.created_at).where(
+                        analytics_account_key(CourseMiniAppEvent).in_(tuple(created_by_user)),
                         CourseMiniAppEvent.event_name == "miniapp_opened",
                         CourseMiniAppEvent.created_at >= min(created_by_user.values()) + timedelta(days=days),
                         CourseMiniAppEvent.created_at <= now,
@@ -2405,7 +2426,7 @@ class AdminMiniAppService:
                 for tid, opened_at in open_rows:
                     opened = _as_utc(opened_at)
                     if opened:
-                        opens_by_user[int(tid)].append(opened)
+                        opens_by_user[analytics_identity(tid)].append(opened)
             metric = _cohort_retention(
                 created_by_user=created_by_user, opens_by_user=opens_by_user,
                 days=days, now=now,
@@ -2432,7 +2453,7 @@ class AdminMiniAppService:
         rows = (
             await self.session.execute(
                 select(
-                    CourseMiniAppEvent.telegram_id,
+                    analytics_account_key(CourseMiniAppEvent).label("telegram_id"),
                     CourseMiniAppEvent.session_id,
                     CourseMiniAppEvent.created_at,
                 ).where(*conditions)
@@ -2461,7 +2482,7 @@ class AdminMiniAppService:
         rows = (
             await self.session.execute(
                 select(
-                    CourseMiniAppEvent.telegram_id,
+                    analytics_account_key(CourseMiniAppEvent).label("telegram_id"),
                     CourseMiniAppEvent.level,
                     CourseMiniAppEvent.lesson_id,
                     CourseMiniAppEvent.lesson_order,
@@ -2535,24 +2556,26 @@ class AdminMiniAppService:
         rows = (
             await self.session.execute(
                 select(
+                    Payment.id,
+                    func.coalesce(Payment.user_id, User.id),
                     Payment.user_telegram_id,
                     Payment.amount,
                     Payment.currency,
                     Payment.base_amount,
                     Payment.reviewed_at,
                     Payment.submitted_at,
-                ).where(Payment.payment_status == "approved")
+                ).outerjoin(User, _payment_user_join()).where(Payment.payment_status == "approved")
             )
         ).all()
         approved = []
-        for user_id, amount, currency, base_amount, reviewed_at, submitted_at in rows:
+        for payment_id, user_id, telegram_id, amount, currency, base_amount, reviewed_at, submitted_at in rows:
             at = _as_utc(reviewed_at or submitted_at)
             if not at:
                 continue
             usd = _amount_to_usd(amount, currency, base_amount=base_amount)
             approved.append(
                 {
-                    "user_id": int(user_id),
+                    "user_id": _payment_account_key(payment_id, user_id, telegram_id),
                     "at": at,
                     "usd": float(usd or 0.0),
                     "priced": usd is not None,
@@ -2564,7 +2587,7 @@ class AdminMiniAppService:
         paying_users = len({item["user_id"] for item in in_period})
         revenue_per_payer = revenue_usd / paying_users if paying_users else 0.0
 
-        first_by_user: dict[int, dict] = {}
+        first_by_user: dict[tuple[str, int], dict] = {}
         for item in sorted(approved, key=lambda value: value["at"]):
             first_by_user.setdefault(item["user_id"], item)
         first_in_period = [
@@ -2616,16 +2639,24 @@ class AdminMiniAppService:
             "funnel": funnel,
         }
 
-    async def _user_created_map(self, telegram_ids: list[int]) -> dict[int, datetime]:
-        ids = list({int(value) for value in telegram_ids if value})
-        if not ids:
+    async def _user_created_map(self, account_keys: list[tuple[str, int]]) -> dict:
+        user_ids = {value for kind, value in account_keys if kind == "user"}
+        telegram_ids = {value for kind, value in account_keys if kind == "telegram" and value > 0}
+        if not user_ids and not telegram_ids:
             return {}
         rows = (
             await self.session.execute(
-                select(User.telegram_id, User.created_at).where(User.telegram_id.in_(ids))
+                select(User.id, User.telegram_id, User.created_at).where(
+                    or_(User.id.in_(user_ids), User.telegram_id.in_(telegram_ids))
+                )
             )
         ).all()
-        return {int(telegram_id): _as_utc(created_at) for telegram_id, created_at in rows}
+        result = {}
+        for user_id, telegram_id, created_at in rows:
+            result[("user", user_id)] = _as_utc(created_at)
+            if telegram_id is not None:
+                result[("telegram", telegram_id)] = _as_utc(created_at)
+        return result
 
     async def _marketing_expense_usd(self, *, since: datetime | None) -> float:
         text = func.lower(func.coalesce(PortfolioTransaction.note, ""))
@@ -2656,7 +2687,7 @@ class AdminMiniAppService:
             await self.session.execute(
                 select(
                     ConversionFunnelEvent.event_name,
-                    ConversionFunnelEvent.telegram_id,
+                    analytics_account_key(ConversionFunnelEvent).label("telegram_id"),
                     ConversionFunnelEvent.payment_id,
                     ConversionFunnelEvent.payload_json,
                     ConversionFunnelEvent.created_at,
@@ -2734,9 +2765,9 @@ class AdminMiniAppService:
         user_conditions = self._paid_user_conditions(now) if paid else [self._free_user_condition(now)]
         value = (
             await self.session.execute(
-                select(func.count(func.distinct(CourseMiniAppEvent.telegram_id)))
+                select(func.count(func.distinct(User.id)))
                 .select_from(CourseMiniAppEvent)
-                .join(User, User.telegram_id == CourseMiniAppEvent.telegram_id)
+                .join(User, analytics_user_join(CourseMiniAppEvent))
                 .where(*conditions, *user_conditions)
             )
         ).scalar()
@@ -2754,9 +2785,9 @@ class AdminMiniAppService:
         user_conditions = self._paid_user_conditions(now) if paid else [self._free_user_condition(now)]
         value = (
             await self.session.execute(
-                select(func.count(func.distinct(AIUsageEvent.user_telegram_id)))
+                select(func.count(func.distinct(User.id)))
                 .select_from(AIUsageEvent)
-                .join(User, User.telegram_id == AIUsageEvent.user_telegram_id)
+                .join(User, analytics_user_join(AIUsageEvent, telegram_column="user_telegram_id"))
                 .where(*conditions, *user_conditions)
             )
         ).scalar()
@@ -2774,9 +2805,9 @@ class AdminMiniAppService:
         user_conditions = self._paid_user_conditions(now) if paid else [self._free_user_condition(now)]
         value = (
             await self.session.execute(
-                select(func.count(func.distinct(VoicePracticeSession.user_telegram_id)))
+                select(func.count(func.distinct(User.id)))
                 .select_from(VoicePracticeSession)
-                .join(User, User.telegram_id == VoicePracticeSession.user_telegram_id)
+                .join(User, analytics_user_join(VoicePracticeSession, telegram_column="user_telegram_id"))
                 .where(*conditions, *user_conditions)
             )
         ).scalar()
@@ -2804,12 +2835,12 @@ class AdminMiniAppService:
             open_conditions.append(CourseMiniAppEvent.created_at >= since)
         sent_rows = (
             await self.session.execute(
-                select(CourseMiniAppEvent.telegram_id, CourseMiniAppEvent.created_at).where(*sent_conditions)
+                select(analytics_account_key(CourseMiniAppEvent), CourseMiniAppEvent.created_at).where(*sent_conditions)
             )
         ).all()
         open_rows = (
             await self.session.execute(
-                select(CourseMiniAppEvent.telegram_id, CourseMiniAppEvent.created_at).where(*open_conditions)
+                select(analytics_account_key(CourseMiniAppEvent), CourseMiniAppEvent.created_at).where(*open_conditions)
             )
         ).all()
         result = _matured_notification_open_proxy(
@@ -3013,17 +3044,7 @@ class AdminMiniAppService:
         today_start: datetime,
         hot_since: datetime,
     ) -> list[dict]:
-        pending_user_ids = {
-            int(value)
-            for value in (
-                await self.session.execute(
-                    select(func.distinct(Payment.user_telegram_id)).where(
-                        Payment.payment_status == "pending"
-                    )
-                )
-            ).scalars().all()
-            if value
-        }
+        pending_user_ids = await self._payment_account_keys(Payment.payment_status == "pending")
         rows = (await self.session.execute(
             select(User, CourseMiniAppProfile)
             .outerjoin(CourseMiniAppProfile, CourseMiniAppProfile.user_id == User.id)
@@ -3033,6 +3054,7 @@ class AdminMiniAppService:
         return [
             {
                 "id": item.telegram_id,
+                "account_id": item.id,
                 "name": item.full_name or "Номсиз",
                 "username": item.username,
                 "language": _language_label(item.language),
@@ -3046,7 +3068,7 @@ class AdminMiniAppService:
                 "last_bot_block_check_at": _dt(item.last_bot_block_check_at),
                 "payment_status": item.payment_status,
                 "payment_label": _payment_label(item.payment_status),
-                "has_pending_payment": item.telegram_id in pending_user_ids,
+                "has_pending_payment": ("user", item.id) in pending_user_ids,
                 "plan": _plan_label(item.selected_plan_type),
                 "method": _method_label(item.payment_method),
                 "end_date": _dt(item.end_date),
@@ -3059,7 +3081,7 @@ class AdminMiniAppService:
                 "active_today": is_admin_active_today(item, today_start),
                 "hot_lead": (
                     is_admin_hot_lead(item, hot_since)
-                    and item.telegram_id not in pending_user_ids
+                    and ("user", item.id) not in pending_user_ids
                 ),
                 "questions": f"{item.questions_used}/{item.question_limit}",
                 "bonus_left": max((item.bonus_questions or 0) - (item.bonus_questions_used or 0), 0),
@@ -3073,7 +3095,7 @@ class AdminMiniAppService:
         pending_rows = (
             await self.session.execute(
                 select(Payment, User)
-                .outerjoin(User, User.telegram_id == Payment.user_telegram_id)
+                .outerjoin(User, _payment_user_join())
                 .where(Payment.payment_status == "pending")
                 .order_by(Payment.submitted_at.desc())
             )
@@ -3081,7 +3103,7 @@ class AdminMiniAppService:
         recent_rows = (
             await self.session.execute(
                 select(Payment, User)
-                .outerjoin(User, User.telegram_id == Payment.user_telegram_id)
+                .outerjoin(User, _payment_user_join())
                 .where(Payment.payment_status.in_(("approved", "rejected")))
                 .order_by(func.coalesce(Payment.reviewed_at, Payment.submitted_at).desc())
                 .limit(60)
@@ -3093,7 +3115,8 @@ class AdminMiniAppService:
             result.append(
                 {
                     "id": payment.id,
-                    "telegram_id": payment.user_telegram_id,
+                    "telegram_id": user.telegram_id if user is not None else payment.user_telegram_id,
+                    "account_id": payment.user_id if payment.user_id is not None else getattr(user, "id", None),
                     "name": getattr(user, "full_name", None) or "Номсиз",
                     "username": getattr(user, "username", None),
                     "status": payment.payment_status,

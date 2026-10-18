@@ -25,6 +25,7 @@ const previewState = {
   notificationsEnabled: true,
   courseTrack: "hsk20",
   hsk30PromoShown: 0,
+  telegramIdentityLinked: true,
 };
 
 const localized = (uz, ru, tj) => ({ uz, ru, tj });
@@ -482,6 +483,16 @@ export async function previewInvoke(command, args = {}) {
       return { status: "pending", displayCode: "", expiresIn: 300 };
     case "desktop_oauth_open":
       return { ok: true };
+    case "desktop_identity_methods":
+      return { telegram_linked: previewState.telegramIdentityLinked, identities: [] };
+    case "desktop_telegram_identity_start":
+    case "desktop_oauth_identity_start":
+      return { status: "pending", expiresIn: 300 };
+    case "desktop_identity_link_open":
+    case "desktop_identity_link_cancel":
+      return { ok: true };
+    case "desktop_identity_link_poll":
+      return { status: "pending" };
     case "desktop_open_external_url":
       return { ok: true };
     case "desktop_link_poll":

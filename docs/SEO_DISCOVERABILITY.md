@@ -16,7 +16,7 @@ Status: updated in the SEO branch; production deployment and search submission r
 - No root product landing, `/tj/`, `/ru/`, `/uz/`, robots, sitemap or IndexNow inventory existed in the isolated public router.
 - Mini App HTML had a generic HSK AI title and interactive content; the existing desktop/download page now keeps crawler-readable release status and is the indexed download destination itself.
 - Verified product evidence: `app/main.py` course/voice/practice routes, `app/static/course_v3_data/` HSK 1–4 materials and exams, `app/services/course_v3_dictionary.py` TJ/RU/UZ, `app/services/voice_practice_service.py`, `app/services/course_miniapp_analytics_service.py` progress. No fabricated student counts, ratings, results or certification claims.
-- Existing analytics require a verified Telegram ID and affect learner activity; anonymous visitors must not be inserted as fake learners.
+- Authenticated learner analytics use the canonical HSK AI account; Mini App entry still requires verified Telegram `initData`. Public visitors remain anonymous server-log events and must not be inserted as fake learners. Native account and purchase copy follows `UNIVERSAL_NATIVE_ACCOUNTS.md`; email never merges accounts.
 - Existing bot username helper defaults to `darsi_chini_bot`. Marketing CTA explicitly targets the user-requested `https://t.me/darsi_chini_bot` without adding a referral/start payload.
 - `codex/local-ai` is checked out in another worktree. No branch was switched/reset and no unrelated work was modified.
 

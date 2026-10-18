@@ -23,6 +23,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy import func, select
 
+from app.services.account_identity import owner_clause, actual_telegram_id
 from app.db.models.course_ad import CourseAdView
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services import course_daily_window
@@ -275,7 +276,7 @@ class AdPlacementService:
         since = course_daily_window.day_start(offset)
         result = await self.session.execute(
             select(func.count(CourseAdView.id)).where(
-                CourseAdView.user_telegram_id == int(user.telegram_id),
+                owner_clause(CourseAdView, user),
                 CourseAdView.placement == placement,
                 CourseAdView.created_at >= since,
             )
@@ -423,7 +424,7 @@ class AdPlacementService:
             CourseAdView(
                 ad_id=ad.id,
                 user_id=getattr(user, "id", None),
-                user_telegram_id=int(getattr(user, "telegram_id", 0) or 0),
+                user_telegram_id=actual_telegram_id(user),
                 level=str(level or "hsk1")[:16],
                 lesson_order=int(lesson_order or 0),
                 placement=placement,

@@ -191,11 +191,11 @@ def create_desktop_practice_router(
 ) -> APIRouter:
     router = APIRouter(tags=["desktop-practice"])
 
-    async def _telegram_id(session, request: Request) -> int:
+    async def _actor(session, request: Request):
         context = await DesktopAuthService(session, settings_obj).authenticate(
             _access_token(request)
         )
-        return int(context.user.telegram_id)
+        return context.user
 
     @router.post("/api/v3/desktop/practice/start")
     async def desktop_practice_start(request: Request):
@@ -203,9 +203,9 @@ def create_desktop_practice_router(
             payload = await _validated_payload(request, DesktopPracticeStartRequest)
             _validate_selection(payload)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await service_factory(session).start(
-                    telegram_id,
+                    actor,
                     mode=payload.mode,
                     level=payload.level,
                     lang=payload.language,
@@ -244,9 +244,9 @@ def create_desktop_practice_router(
                     status_code=413,
                 )
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await service_factory(session).complete(
-                    telegram_id,
+                    actor,
                     session_id=payload.session_id,
                     mode=payload.mode,
                     level=payload.level,

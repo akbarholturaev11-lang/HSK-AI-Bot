@@ -11,7 +11,7 @@ from aiogram.types import (
     InlineKeyboardButton,
     WebAppInfo,
 )
-from sqlalchemy import select, func
+from sqlalchemy import and_, or_, select, func
 from app.db.models.user import User
 
 from app.repositories.user_repo import UserRepository
@@ -787,9 +787,9 @@ async def admin_stats_handler(message: Message, session):
         )
     )).scalar() or 0
     trial_paid_after_start = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
+        select(func.count(func.distinct(User.id)))
         .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .join(User, or_(Payment.user_id == User.id, and_(Payment.user_id.is_(None), User.telegram_id > 0, User.telegram_id == Payment.user_telegram_id)))
         .where(
             Payment.payment_status == "approved",
             Payment.reviewed_at.is_not(None),
@@ -800,7 +800,7 @@ async def admin_stats_handler(message: Message, session):
     trial_revenue_after_start = (await session.execute(
         select(func.sum(Payment.amount))
         .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .join(User, or_(Payment.user_id == User.id, and_(Payment.user_id.is_(None), User.telegram_id > 0, User.telegram_id == Payment.user_telegram_id)))
         .where(
             Payment.payment_status == "approved",
             Payment.reviewed_at.is_not(None),
@@ -809,9 +809,9 @@ async def admin_stats_handler(message: Message, session):
         )
     )).scalar() or 0
     checkpoint_paid_after = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
+        select(func.count(func.distinct(User.id)))
         .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .join(User, or_(Payment.user_id == User.id, and_(Payment.user_id.is_(None), User.telegram_id > 0, User.telegram_id == Payment.user_telegram_id)))
         .where(
             Payment.payment_status == "approved",
             Payment.reviewed_at.is_not(None),
@@ -820,9 +820,9 @@ async def admin_stats_handler(message: Message, session):
         )
     )).scalar() or 0
     completed_paid_after = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
+        select(func.count(func.distinct(User.id)))
         .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .join(User, or_(Payment.user_id == User.id, and_(Payment.user_id.is_(None), User.telegram_id > 0, User.telegram_id == Payment.user_telegram_id)))
         .where(
             Payment.payment_status == "approved",
             Payment.reviewed_at.is_not(None),
@@ -837,9 +837,9 @@ async def admin_stats_handler(message: Message, session):
         select(func.count()).select_from(User).where(User.trial_course_completed_at >= week_ago)
     )).scalar() or 0
     trial_paid_week = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
+        select(func.count(func.distinct(User.id)))
         .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .join(User, or_(Payment.user_id == User.id, and_(Payment.user_id.is_(None), User.telegram_id > 0, User.telegram_id == Payment.user_telegram_id)))
         .where(
             Payment.payment_status == "approved",
             Payment.reviewed_at >= week_ago,
@@ -876,9 +876,9 @@ async def admin_stats_handler(message: Message, session):
         )
     )).scalar() or 0
     daily_completed_paid = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
+        select(func.count(func.distinct(User.id)))
         .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .join(User, or_(Payment.user_id == User.id, and_(Payment.user_id.is_(None), User.telegram_id > 0, User.telegram_id == Payment.user_telegram_id)))
         .where(
             Payment.payment_status == "approved",
             Payment.reviewed_at.is_not(None),
@@ -922,9 +922,9 @@ async def admin_stats_handler(message: Message, session):
         )
     )).scalar() or 0
     daily_completed_paid = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
+        select(func.count(func.distinct(User.id)))
         .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .join(User, or_(Payment.user_id == User.id, and_(Payment.user_id.is_(None), User.telegram_id > 0, User.telegram_id == Payment.user_telegram_id)))
         .where(
             Payment.payment_status == "approved",
             Payment.reviewed_at.is_not(None),

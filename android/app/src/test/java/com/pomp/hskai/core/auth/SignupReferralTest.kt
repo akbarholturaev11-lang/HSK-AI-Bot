@@ -1,0 +1,35 @@
+package com.pomp.hskai.core.auth
+
+import com.pomp.hskai.core.navigation.DeepLinkRouter
+
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Test
+
+class SignupReferralTest {
+    @Test fun invitationPayloadRetainsItsTrialOrDiscountMode() {
+        for (code in listOf("abcdef12", "ref_abcdef12", "ra_abcdef12", "ri_abcdef12")) {
+            assertEquals(code, SignupReferral.code(" $code "))
+            assertEquals(code, SignupReferral.fromUri("${DeepLinkRouter.SCHEME}://referral/$code"))
+        }
+    }
+
+    @Test fun onlyTheExactReferralDeepLinkCanPrefillSignup() {
+        for (uri in listOf(
+            "https://evil.example/referral/abcdef12",
+            "${DeepLinkRouter.SCHEME}://referral/abcdef12?admin=true",
+            "${DeepLinkRouter.SCHEME}://referral/abcdef12#fragment",
+            "${DeepLinkRouter.SCHEME}://referral@evil.example/abcdef12",
+            "${DeepLinkRouter.SCHEME}://referral/abcdef12/extra",
+            "${DeepLinkRouter.SCHEME}://referral/%61bcdef12",
+            "${DeepLinkRouter.SCHEME}://referral/ABCDEF12",
+            "${DeepLinkRouter.SCHEME}://referral/abcdef12\n",
+        )) assertNull(uri, SignupReferral.fromUri(uri))
+    }
+
+    @Test fun malformedOrOversizedInvitationIsNotAccepted() {
+        for (code in listOf("", "abc123", "x".repeat(65), "ref_ref_abcdef12", "ra_abcdef12?x=1")) {
+            assertNull(code, SignupReferral.code(code))
+        }
+    }
+}

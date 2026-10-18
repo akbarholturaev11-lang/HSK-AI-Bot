@@ -7,6 +7,7 @@ from app.bot.utils.course_miniapp import course_study_miniapp_url
 from app.bot.utils.i18n import t
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.android_payment_push_service import AndroidPaymentPushService
+from app.services.account_identity import actual_telegram_id
 
 HSK30_UNLOCK_APPROVED_TEXT = {
     "uz": "To'lov qabul qilindi ✅\n\nHSK 3.0 ga to'liq kirish siz uchun ochildi. Quyidagi tugmadan boshlang 👇🏽",
@@ -67,10 +68,12 @@ class PaymentNotifyService:
         if self.session is None or payment is None:
             return
         try:
+            owner = {"user_id": payment.user_id} if getattr(payment, "user_id", None) is not None else {}
             await AndroidPaymentPushService(self.session).notify(
                 telegram_id=payment.user_telegram_id,
                 payment_id=payment.id,
                 status=status,
+                **owner,
             )
         except Exception:
             # Bot delivery and the committed subscription decision must keep
@@ -81,7 +84,7 @@ class PaymentNotifyService:
 
     async def notify_payment_approved(self, bot: Bot, user, payment=None) -> None:
         try:
-            if not user:
+            if not user or actual_telegram_id(user) is None:
                 return
             lang = user.language if user.language else "ru"
             if self.session is not None and BotBlockStatusService.is_bot_blocked(user):
@@ -104,7 +107,7 @@ class PaymentNotifyService:
 
     async def notify_hsk30_unlock_approved(self, bot: Bot, user, payment=None) -> None:
         try:
-            if not user:
+            if not user or actual_telegram_id(user) is None:
                 return
             lang = user.language if user.language in {"uz", "tj", "ru"} else "ru"
             if self.session is not None and BotBlockStatusService.is_bot_blocked(user):
@@ -146,7 +149,7 @@ class PaymentNotifyService:
         payment=None,
     ) -> None:
         try:
-            if not user:
+            if not user or actual_telegram_id(user) is None:
                 return
             lang = user.language if user.language in {"uz", "tj", "ru"} else "ru"
             message = HSK30_UNLOCK_REJECTED_TEXT[lang]
@@ -177,7 +180,7 @@ class PaymentNotifyService:
 
     async def notify_payment_rejected(self, bot: Bot, user, reason: str = None, plan_type: str = None, payment=None) -> None:
         try:
-            if not user:
+            if not user or actual_telegram_id(user) is None:
                 return
             lang = user.language if user.language else "ru"
             text = t("user_payment_rejected", lang)

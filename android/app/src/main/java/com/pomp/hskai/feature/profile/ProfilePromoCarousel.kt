@@ -1,10 +1,9 @@
 package com.pomp.hskai.feature.profile
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,28 +14,37 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.Role
+import com.pomp.hskai.core.auth.AuthProvider
+import kotlinx.coroutines.launch
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -49,12 +57,33 @@ import com.pomp.hskai.feature.course.Hsk30BookTitle
 import com.pomp.hskai.feature.course.Hsk30BookDialog
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.domain.model.CourseHsk30
-import kotlinx.coroutines.delay
 import java.time.Duration
 import java.time.Instant
 
 private val PromoGold = Color(0xFFEFB32B)
 private val PromoPaper = Color(0xFF211D17)
+
+internal enum class ProfilePromoPage(val key: String, val provider: AuthProvider? = null) {
+    HSK30("hsk30"),
+    PRO("pro"),
+    TELEGRAM("telegram", AuthProvider.TELEGRAM),
+    GOOGLE("google", AuthProvider.GOOGLE),
+    APPLE("apple", AuthProvider.APPLE),
+}
+
+/** Offer account links only after an authoritative successful identity read. */
+internal fun profilePromoPages(
+    checkoutAvailable: Boolean,
+    identities: IdentitiesUiState,
+): List<ProfilePromoPage> = buildList {
+    add(ProfilePromoPage.HSK30)
+    if (checkoutAvailable) add(ProfilePromoPage.PRO)
+    if (!identities.hasLoaded || identities.isLoading || identities.error != null) return@buildList
+    if (!identities.telegramLinked) add(ProfilePromoPage.TELEGRAM)
+    val linked = identities.identities.map { it.provider }.toSet()
+    if (AuthProvider.GOOGLE in identities.available && AuthProvider.GOOGLE !in linked) add(ProfilePromoPage.GOOGLE)
+    if (AuthProvider.APPLE in identities.available && AuthProvider.APPLE !in linked) add(ProfilePromoPage.APPLE)
+}
 
 /** Native counterpart of the Mini App profile carousel; no new entitlement rules. */
 @Composable
@@ -65,20 +94,82 @@ internal fun ProfilePromoCarousel(
     onOpenHsk30: () -> Unit,
     onOpenSubscription: (Boolean) -> Unit,
     onStartTrial: () -> Unit,
+    identities: IdentitiesUiState = IdentitiesUiState(),
+    onConnectIdentity: (AuthProvider) -> Unit = {},
 ) {
-    // Do not advertise app downloads inside the installed Android app.
-    // Play continues to hide checkout/Pro, without changing purchase policy.
-    val slides = remember(checkoutAvailable) {
-        if (checkoutAvailable) listOf("hsk30", "pro") else listOf("hsk30")
+    // Play still has no Pro/checkout promotion; linking is available on both builds.
+    val pages = remember(checkoutAvailable, identities) { profilePromoPages(checkoutAvailable, identities) }
+    val pager = rememberPagerState(pageCount = { pages.size })
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(pages) {
+        // Removing a newly linked final page must never leave an invalid selection.
+        if (pager.currentPage >= pages.size) pager.scrollToPage(pages.lastIndex)
     }
-    var index by remember(slides) { mutableIntStateOf(0) }
-    LaunchedEffect(index, slides) {
-        if (slides.size > 1) {
-            delay(4800)
-            index = (index + 1) % slides.size
+    Column(modifier = Modifier.fillMaxWidth()) {
+        HorizontalPager(
+            state = pager,
+            key = { pages[it].key },
+            pageSpacing = 10.dp,
+            modifier = Modifier.fillMaxWidth().testTag("profile-promo-pager")
+                .onPreviewKeyEvent { event ->
+                    val direction = when (event.key) {
+                        Key.DirectionRight -> 1
+                        Key.DirectionLeft -> -1
+                        else -> 0
+                    }
+                    if (event.type != KeyEventType.KeyDown || direction == 0) false
+                    else {
+                        val target = (pager.currentPage + direction).coerceIn(0, pages.lastIndex)
+                        if (target == pager.currentPage) false
+                        else { scope.launch { pager.animateScrollToPage(target) }; true }
+                    }
+                }.focusable(),
+        ) { page ->
+            ProfilePromoCard(
+                kind = pages[page], state = state, accountIsPaid = accountIsPaid,
+                checkoutAvailable = checkoutAvailable, identities = identities,
+                onOpenHsk30 = onOpenHsk30, onOpenSubscription = onOpenSubscription,
+                onStartTrial = onStartTrial, onConnectIdentity = onConnectIdentity,
+            )
+        }
+        if (pages.size > 1) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                pages.forEachIndexed { index, page ->
+                    val label = stringResource(R.string.profile_promo_page, index + 1, pages.size)
+                    Box(
+                        modifier = Modifier.size(48.dp)
+                            .semantics { contentDescription = label; selected = pager.currentPage == index }
+                            .testTag("profile-promo-dot-${page.key}")
+                            .clickable(role = Role.Tab) { scope.launch { pager.animateScrollToPage(index) } },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Box(
+                            Modifier.size(width = if (pager.currentPage == index) 19.dp else 6.dp, height = 6.dp)
+                                .background(if (pager.currentPage == index) PromoGold else Color(0xFFB7AA98), CircleShape),
+                        )
+                    }
+                }
+            }
         }
     }
-    val kind = slides[index]
+}
+
+@Composable
+private fun ProfilePromoCard(
+    kind: ProfilePromoPage,
+    state: ProfileUiState,
+    accountIsPaid: Boolean,
+    checkoutAvailable: Boolean,
+    identities: IdentitiesUiState,
+    onOpenHsk30: () -> Unit,
+    onOpenSubscription: (Boolean) -> Unit,
+    onStartTrial: () -> Unit,
+    onConnectIdentity: (AuthProvider) -> Unit,
+) {
     val subscription = state.profile?.subscription
     val isPaid = subscription?.isPaid == true || accountIsPaid
     val trialActive = !isPaid && state.trial?.active == true
@@ -88,14 +179,20 @@ internal fun ProfilePromoCarousel(
     val summary: String
     val action: String
     val mark: String
+    val icon = when (kind.provider) {
+        AuthProvider.TELEGRAM -> R.drawable.ic_brand_telegram
+        AuthProvider.GOOGLE -> R.drawable.ic_brand_google
+        AuthProvider.APPLE -> R.drawable.ic_brand_apple
+        null -> null
+    }
     when (kind) {
-        "hsk30" -> {
+        ProfilePromoPage.HSK30 -> {
             title = "HSK 3.0"
             summary = stringResource(R.string.profile_promo_hsk30_body)
             action = stringResource(R.string.profile_promo_hsk30_open)
             mark = "▤"
         }
-        else -> {
+        ProfilePromoPage.PRO -> {
             title = when {
                 isPaid -> stringResource(R.string.profile_subscription_status_paid)
                 trialActive -> stringResource(R.string.profile_subscription_status_trial)
@@ -116,126 +213,87 @@ internal fun ProfilePromoCarousel(
             }
             mark = "★"
         }
+        else -> {
+            val brand = when (kind.provider) {
+                AuthProvider.TELEGRAM -> "Telegram"
+                AuthProvider.GOOGLE -> "Google"
+                else -> "Apple"
+            }
+            title = stringResource(R.string.profile_identity_connect_provider, brand)
+            summary = stringResource(R.string.profile_promo_link_body, brand)
+            action = stringResource(R.string.profile_account_connect)
+            mark = ""
+        }
     }
-    val openCard = {
+    val actionEnabled = when (kind) {
+        ProfilePromoPage.PRO -> !state.trialStarting && checkoutAvailable
+        ProfilePromoPage.HSK30 -> true
+        else -> identities.busyProvider == null && !identities.isLoading
+    }
+    val openCard: () -> Unit = {
         when (kind) {
-            "hsk30" -> onOpenHsk30()
-            else -> onOpenSubscription(isPaid)
+            ProfilePromoPage.HSK30 -> onOpenHsk30()
+            ProfilePromoPage.PRO -> onOpenSubscription(isPaid)
+            else -> kind.provider?.let(onConnectIdentity)
         }
     }
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .pointerInput(index, slides.size) {
-                var drag = 0f
-                detectHorizontalDragGestures(
-                    onDragStart = { drag = 0f },
-                    onDragEnd = {
-                        if (slides.size > 1) {
-                            if (drag < -35f) index = (index + 1) % slides.size
-                            else if (drag > 35f) index = (index + slides.size - 1) % slides.size
-                        }
-                    },
-                    onHorizontalDrag = { change, distance ->
-                        if (slides.size > 1) {
-                            change.consume()
-                            drag += distance
-                        }
-                    },
-                )
-            }
-            .clickable(onClick = openCard),
+        modifier = Modifier.fillMaxWidth().testTag("profile-promo-card-${kind.key}")
+            .clickable(enabled = actionEnabled, onClick = openCard),
         shape = RoundedCornerShape(17.dp),
         color = PromoPaper,
         shadowElevation = 0.dp,
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
-            if (kind == "hsk30" || kind == "pro") {
-                // Background-only artwork. Pro actions and Play checkout restrictions are untouched.
-                val illustratedGradient = if (kind == "hsk30") {
-                    listOf(Color(0xFF31231E), Color(0xFF854627))
-                } else {
-                    listOf(Color(0xFF241C20), Color(0xFF593728))
-                }
-                val artwork = if (kind == "hsk30") {
-                    R.drawable.profile_promo_pagoda
-                } else {
-                    R.drawable.profile_promo_pro
-                }
-                Box(
-                    Modifier.matchParentSize()
-                        .background(Brush.horizontalGradient(illustratedGradient))
-                )
-                Image(
-                    painter = painterResource(artwork),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.matchParentSize(),
-                )
-                Box(
-                    Modifier.matchParentSize().background(
-                        Brush.horizontalGradient(
-                            listOf(Color(0xDA201916), Color(0x8E2A1E19), Color(0x16251C18))
-                        )
-                    )
-                )
+            val gradient = when (kind) {
+                ProfilePromoPage.HSK30 -> listOf(Color(0xFF31231E), Color(0xFF854627))
+                ProfilePromoPage.PRO -> listOf(Color(0xFF241C20), Color(0xFF593728))
+                ProfilePromoPage.TELEGRAM -> listOf(Color(0xFF182C3B), Color(0xFF275775))
+                ProfilePromoPage.GOOGLE -> listOf(Color(0xFF28362D), Color(0xFF415C48))
+                ProfilePromoPage.APPLE -> listOf(Color(0xFF242A36), Color(0xFF4C5062))
             }
-            // Muted artwork only: labels and CTA retain full contrast.
+            Box(Modifier.matchParentSize().background(Brush.horizontalGradient(gradient)))
+            if (kind == ProfilePromoPage.HSK30 || kind == ProfilePromoPage.PRO) {
+                val artwork = if (kind == ProfilePromoPage.HSK30) R.drawable.profile_promo_pagoda else R.drawable.profile_promo_pro
+                Image(
+                    painter = painterResource(artwork), contentDescription = null,
+                    contentScale = ContentScale.FillBounds, modifier = Modifier.matchParentSize(),
+                )
+                Box(Modifier.matchParentSize().background(Brush.horizontalGradient(
+                    listOf(Color(0xDA201916), Color(0x8E2A1E19), Color(0x16251C18))
+                )))
+            }
             Box(Modifier.matchParentSize().background(Color(0x18DDD1BE)))
             Column(
                 modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp).padding(14.dp),
-                verticalArrangement = Arrangement.SpaceBetween,
+                verticalArrangement = Arrangement.spacedBy(14.dp, Alignment.Top),
             ) {
                 Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Box(
-                        modifier = Modifier.size(40.dp).background(Color.White.copy(alpha = 0.12f), RoundedCornerShape(11.dp)),
+                        modifier = Modifier.size(40.dp).background(
+                            if (icon != null) Color.White else Color.White.copy(alpha = 0.12f), RoundedCornerShape(11.dp)),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Text(mark, fontSize = 23.sp, fontWeight = FontWeight.Medium, color = PromoGold)
+                        if (icon != null) Image(painterResource(icon), contentDescription = null, modifier = Modifier.size(26.dp))
+                        else Text(mark, fontSize = 23.sp, fontWeight = FontWeight.Medium, color = PromoGold)
                     }
                     Column(Modifier.weight(1f)) {
                         Text(title, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
                         Text(
-                            summary,
-                            fontSize = 12.sp,
-                            lineHeight = 16.sp,
-                            color = Color.White.copy(alpha = 0.77f),
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
+                            summary, fontSize = 12.sp, lineHeight = 16.sp,
+                            color = Color.White.copy(alpha = 0.82f), maxLines = 3, overflow = TextOverflow.Ellipsis,
                         )
                     }
                     Text("›", color = Color.White.copy(alpha = 0.65f), fontSize = 24.sp)
                 }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                Button(
+                    enabled = actionEnabled,
+                    onClick = { if (kind == ProfilePromoPage.PRO && canTrial) onStartTrial() else openCard() },
+                    modifier = Modifier.heightIn(min = 40.dp).testTag("profile-promo-action-${kind.key}"),
+                    shape = RoundedCornerShape(11.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = PromoGold, contentColor = PromoPaper),
                 ) {
-                    Button(
-                        enabled = kind != "pro" || (!state.trialStarting && checkoutAvailable),
-                        onClick = {
-                            if (kind == "pro" && canTrial) onStartTrial()
-                            else openCard()
-                        },
-                        modifier = Modifier.weight(1f, fill = false).heightIn(min = 36.dp),
-                        shape = RoundedCornerShape(11.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = PromoGold, contentColor = PromoPaper),
-                    ) {
-                        Text(action, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, maxLines = 2)
-                    }
-                    if (slides.size > 1) {
-                        Spacer(Modifier.width(9.dp))
-                        Row(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
-                            slides.forEachIndexed { dot, _ ->
-                                Box(
-                                    Modifier
-                                        .size(width = if (dot == index) 19.dp else 6.dp, height = 6.dp)
-                                        .background(if (dot == index) PromoGold else Color.White.copy(alpha = 0.35f), CircleShape)
-                                        .clickable { index = dot },
-                                )
-                            }
-                        }
-                    }
+                    Text(action, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, maxLines = 2)
                 }
             }
         }

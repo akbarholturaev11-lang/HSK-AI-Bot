@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -31,6 +33,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,14 +49,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.AuthProvider
+import com.pomp.hskai.core.auth.authActivity
+import com.pomp.hskai.core.auth.isTelegramIdentityLinkUrl
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.data.api.AndroidProfileResponse
 
 private val PROFILE_AVATARS = listOf("panda_cheer", "panda_streak", "panda_worried")
 
 /**
- * Account/profile editor. Telegram identity is intentionally read-only; the
- * editable display name and avatar are HSK AI profile fields shared by clients.
+ * Account/profile editor. An attached Telegram identity remains read-only;
+ * provider-only accounts can attach one after explicit bot confirmation.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,6 +71,8 @@ fun IdentitiesSheet(
     onDisconnect: (String) -> Unit,
     onBrowserUrlOpened: () -> Unit,
     onDismiss: () -> Unit,
+    onCancelConnection: () -> Unit = {},
+    onReopenTelegram: () -> Unit = {},
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val context = LocalContext.current
@@ -72,9 +80,15 @@ fun IdentitiesSheet(
     var displayName by remember(user?.name) { mutableStateOf(user?.name.orEmpty()) }
     var avatarKey by remember(user?.avatarKey) { mutableStateOf(user?.avatarKey.orEmpty()) }
 
+    DisposableEffect(Unit) {
+        onDispose { onCancelConnection() }
+    }
+
     LaunchedEffect(state.pendingBrowserUrl) {
         state.pendingBrowserUrl?.takeIf { it.isNotEmpty() }?.let {
-            openProviderTab(context, it)
+            if (state.busyProvider != AuthProvider.TELEGRAM || isTelegramIdentityLinkUrl(it)) {
+                openProviderTab(context, it)
+            }
             onBrowserUrlOpened()
         }
     }
@@ -85,7 +99,8 @@ fun IdentitiesSheet(
         containerColor = PompColors.Paper,
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(bottom = 28.dp),
+            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp).padding(bottom = 28.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
@@ -161,17 +176,24 @@ fun IdentitiesSheet(
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
-            Spacer(Modifier.height(10.dp))
-            ReadOnlyField(
-                label = stringResource(R.string.profile_account_telegram),
-                value = user?.telegramUsername?.takeIf { it.isNotBlank() }?.let { "@$it" } ?: "—",
-            )
+            if (state.telegramLinked) {
+                Spacer(Modifier.height(10.dp))
+                ReadOnlyField(
+                    label = stringResource(R.string.profile_account_telegram),
+                    value = user?.telegramUsername?.takeIf { it.isNotBlank() }?.let { "@$it" } ?: "—",
+                )
+            }
             user?.phone?.takeIf { it.isNotBlank() }?.let { phone ->
                 Spacer(Modifier.height(10.dp))
                 ReadOnlyField(
                     label = stringResource(R.string.profile_account_phone),
                     value = phone,
                 )
+            }
+
+            if (!state.isLoading && state.identities.size == 1 && !state.telegramLinked) {
+                Spacer(Modifier.height(10.dp))
+                IdentityNotice(stringResource(R.string.error_oauth_last_identity))
             }
 
             Spacer(Modifier.height(16.dp))
@@ -182,6 +204,7 @@ fun IdentitiesSheet(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Column {
+                    TelegramAccountRow(state, onConnect)
                     ProviderAccountRow(
                         provider = AuthProvider.GOOGLE,
                         state = state,
@@ -194,6 +217,19 @@ fun IdentitiesSheet(
                         onConnect = onConnect,
                         onDisconnect = onDisconnect,
                     )
+                }
+            }
+
+            if (state.telegramApprovalUrl != null && state.busyProvider == AuthProvider.TELEGRAM) {
+                Spacer(Modifier.height(10.dp))
+                IdentityNotice(stringResource(R.string.profile_telegram_link_waiting))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    TextButton(onClick = onReopenTelegram, modifier = Modifier.weight(1f).testTag("telegram-link-reopen")) {
+                        Text(stringResource(R.string.auth_open_telegram_again))
+                    }
+                    TextButton(onClick = onCancelConnection, modifier = Modifier.testTag("telegram-link-cancel")) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
                 }
             }
 
@@ -235,6 +271,35 @@ private fun ReadOnlyField(label: String, value: String) {
 }
 
 @Composable
+private fun TelegramAccountRow(state: IdentitiesUiState, onConnect: (AuthProvider, Activity?) -> Unit) {
+    val context = LocalContext.current
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(stringResource(R.string.profile_identity_telegram), color = PompColors.Ink, fontSize = 14.sp)
+            Text(
+                stringResource(if (state.telegramLinked) R.string.profile_identity_connected
+                    else R.string.profile_telegram_link_hint),
+                color = PompColors.InkDisabled,
+                fontSize = 12.sp,
+            )
+        }
+        if (!state.telegramLinked) {
+            OutlinedButton(
+                onClick = { onConnect(AuthProvider.TELEGRAM, context.authActivity()) },
+                enabled = state.busyProvider == null && !state.isLoading,
+                modifier = Modifier.testTag("telegram-identity-connect"),
+            ) {
+                Text(stringResource(R.string.profile_account_connect))
+            }
+        }
+    }
+}
+
+@Composable
 private fun ProviderAccountRow(
     provider: AuthProvider,
     state: IdentitiesUiState,
@@ -268,14 +333,15 @@ private fun ProviderAccountRow(
         if (identity != null) {
             TextButton(
                 onClick = { onDisconnect(identity.id) },
-                enabled = state.busyProvider == null,
+                enabled = state.busyProvider == null && state.canUnlinkProvider,
             ) {
                 Text(stringResource(R.string.profile_account_disconnect), color = PompColors.FlameInk)
             }
         } else if (canConnect) {
             OutlinedButton(
-                onClick = { onConnect(provider, context as? Activity) },
-                enabled = state.busyProvider == null,
+                onClick = { onConnect(provider, context.authActivity()) },
+                enabled = state.busyProvider == null && !state.isLoading,
+                modifier = Modifier.testTag("${provider.wire}-identity-connect"),
             ) {
                 Text(stringResource(R.string.profile_account_connect))
             }

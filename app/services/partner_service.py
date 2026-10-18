@@ -13,7 +13,9 @@ from app.db.models.partner import Partner, PartnerCredit, PartnerPayout, Partner
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.partner_repo import PAYOUT_OPEN_STATUSES, PartnerRepository
+from app.repositories.payment_repo import PaymentRepository
 from app.repositories.user_repo import UserRepository
+from app.services.account_identity import actual_telegram_id
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.portfolio_service import PortfolioService
 from app.services.hsk30_unlock_service import HSK30_UNLOCK_PLAN_TYPE
@@ -215,9 +217,18 @@ class PartnerService:
             return None, Decimal("0.00"), False
         if str(getattr(payment, "plan_type", "") or "") == HSK30_UNLOCK_PLAN_TYPE:
             return None, Decimal("0.00"), False
+        if getattr(payment, "user_id", None) is not None:
+            owner = await PaymentRepository(self.session).get_owner(payment)
+            telegram_id = actual_telegram_id(owner) if owner is not None else None
+        else:
+            telegram_id = actual_telegram_id(getattr(payment, "user_telegram_id", None))
+        if telegram_id is None:
+            # Affiliate attribution requires the canonical owner's real Telegram
+            # identity; stale payment transport metadata never names its owner.
+            return None, Decimal("0.00"), False
         if await self.repo.get_credit_by_payment(payment.id):
             return None, Decimal("0.00"), False
-        referral = await self.repo.get_referral_by_invited_user(payment.user_telegram_id)
+        referral = await self.repo.get_referral_by_invited_user(telegram_id)
         if not referral:
             return None, Decimal("0.00"), False
         partner = await self.repo.get_by_id(referral.partner_id)

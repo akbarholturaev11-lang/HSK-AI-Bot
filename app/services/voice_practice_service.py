@@ -13,6 +13,7 @@ from sqlalchemy import func, or_, select, update
 
 from app.config import settings
 from app.db.models.voice_practice_session import VoicePracticeSession
+from app.services.account_identity import owner_clause, actual_telegram_id, account_user_id
 from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.user import User
@@ -385,7 +386,7 @@ class VoicePracticeService:
         self.progress_repo = CourseProgressRepository(session)
         self.lesson_repo = CourseLessonRepository(session)
         # Mintaqa bitta so'rov ichida o'zgarmaydi.
-        self._offset_cache: dict[int, int] = {}
+        self._offset_cache: dict[int | tuple[str, int] | None, int] = {}
 
     @staticmethod
     def _extract_words(payload: dict | None, limit: int) -> list[dict]:
@@ -556,14 +557,15 @@ class VoicePracticeService:
 
         Profil bo'lmasa 0 — eski UTC oynasi.
         """
-        key = int(telegram_id)
+        uid = account_user_id(telegram_id)
+        key = ("user", uid) if uid is not None else actual_telegram_id(telegram_id)
         cached = self._offset_cache.get(key)
         if cached is not None:
             return cached
         result = await self.session.execute(
             select(CourseMiniAppProfile.timezone_offset_minutes)
             .join(User, User.id == CourseMiniAppProfile.user_id)
-            .where(User.telegram_id == key)
+            .where(User.id == uid if uid is not None else User.telegram_id == key)
         )
         offset = course_daily_window.normalize_offset_minutes(result.scalar_one_or_none() or 0)
         self._offset_cache[key] = offset
@@ -574,7 +576,9 @@ class VoicePracticeService:
         return StudyMiniAppService.is_paid_user(user)
 
     async def _is_paid_telegram_user(self, telegram_id: int) -> bool:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
         return self._is_paid(user)
 
     async def _ensure_pending_receipt_ai_budget(self, user) -> None:
@@ -591,7 +595,7 @@ class VoicePracticeService:
                 and AIUsageBudgetService(self.session)._as_utc(end_date) > datetime.now(timezone.utc)):
             return
         result = await AIUsageBudgetService(self.session).can_use_payment_preview_ai(
-            int(user.telegram_id), int(payment_id)
+            user, int(payment_id)
         )
         if not result.allowed:
             raise VoicePracticeError(
@@ -631,7 +635,7 @@ class VoicePracticeService:
         # yaratilishi kifoya edi — AI xato bersa yoki mikrofonga ruxsat
         # berilmasa ham bepul o'quvchi kunlik slotidan ayrilardi.
         query = select(func.count(VoicePracticeSession.id)).where(
-            VoicePracticeSession.user_telegram_id == telegram_id,
+            owner_clause(VoicePracticeSession, telegram_id),
             VoicePracticeSession.turn_count > 0,
         )
         if today_only:
@@ -644,7 +648,7 @@ class VoicePracticeService:
         """Bugun shu user nechta talaffuz (STT) urinishi qilganini sanaydi."""
         offset = await self._offset_minutes(telegram_id)
         query = select(func.count(AIUsageEvent.id)).where(
-            AIUsageEvent.user_telegram_id == telegram_id,
+            owner_clause(AIUsageEvent, telegram_id),
             AIUsageEvent.source == "voice_practice_pronounce",
             AIUsageEvent.created_at >= self._day_start(offset),
         )
@@ -657,7 +661,9 @@ class VoicePracticeService:
         return (await EntitlementEngine(self.session).check(user, SPEAKING_SESSION)).remaining
 
     async def user_status(self, telegram_id: int) -> dict:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
         if not user:
             raise VoicePracticeError("USER_NOT_FOUND", "Voice Practice'ni ochishdan oldin botni /start qiling.", 404)
 
@@ -741,7 +747,9 @@ class VoicePracticeService:
         if status["is_paid"]:
             await self._ensure_budget_available(telegram_id)
 
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
         course_context = await self._course_context(user, language) if user else {
             "lesson_id": None, "lesson_order": None, "title": "", "words": [], "review_words": []
         }
@@ -749,7 +757,11 @@ class VoicePracticeService:
         await self._retire_stale_sessions(telegram_id, offset_minutes)
         item = await self._reusable_session(telegram_id, offset_minutes, mode=mode)
         if item is None:
-            item = VoicePracticeSession(id=str(uuid.uuid4()), user_telegram_id=telegram_id)
+            item = VoicePracticeSession(
+                id=str(uuid.uuid4()),
+                user_telegram_id=actual_telegram_id(user),
+                user_id=account_user_id(user),
+            )
             self.session.add(item)
         item.role = role
         item.level = level
@@ -809,7 +821,7 @@ class VoicePracticeService:
         changed = await self.session.execute(
             update(VoicePracticeSession).where(
                 VoicePracticeSession.id == session_id,
-                VoicePracticeSession.user_telegram_id == telegram_id,
+                owner_clause(VoicePracticeSession, telegram_id),
                 VoicePracticeSession.status == "active",
                 or_(VoicePracticeSession.live_connection_token.is_(None),
                     VoicePracticeSession.live_connection_expires_at < now),
@@ -830,7 +842,9 @@ class VoicePracticeService:
         now = datetime.now(timezone.utc)
         from app.services.entitlements.state import EntitlementState, resolve_state
 
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
         if user is None:
             raise VoicePracticeError("USER_NOT_FOUND", "User not found.", 404)
         state = resolve_state(user)
@@ -862,7 +876,7 @@ class VoicePracticeService:
         await self.session.execute(
             update(VoicePracticeSession)
             .where(
-                VoicePracticeSession.user_telegram_id == telegram_id,
+                owner_clause(VoicePracticeSession, telegram_id),
                 VoicePracticeSession.status == "active",
                 VoicePracticeSession.started_at < self._day_start(offset_minutes),
             )
@@ -882,7 +896,7 @@ class VoicePracticeService:
         result = await self.session.execute(
             select(VoicePracticeSession)
             .where(
-                VoicePracticeSession.user_telegram_id == telegram_id,
+                owner_clause(VoicePracticeSession, telegram_id),
                 VoicePracticeSession.turn_count == 0,
                 VoicePracticeSession.mode == mode,
                 VoicePracticeSession.started_at >= self._day_start(offset_minutes),
@@ -896,7 +910,7 @@ class VoicePracticeService:
         result = await self.session.execute(
             select(VoicePracticeSession)
             .where(VoicePracticeSession.id == session_id)
-            .where(VoicePracticeSession.user_telegram_id == telegram_id)
+            .where(owner_clause(VoicePracticeSession, telegram_id))
             .limit(1)
         )
         item = result.scalar_one_or_none()
@@ -1175,7 +1189,9 @@ class VoicePracticeService:
             # yonadi — shuning uchun chegara aynan shu yerda tekshiriladi.
             from app.services.entitlements.state import EntitlementState, resolve_state
 
-            user = await self.user_repo.get_by_telegram_id(telegram_id)
+            user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
             state = resolve_state(user)
             if state == EntitlementState.BLOCKED:
                 raise VoicePracticeError("access_blocked", "Access blocked.", 403)
@@ -1286,7 +1302,9 @@ class VoicePracticeService:
         else:
             from app.services.entitlements.state import EntitlementState, resolve_state
 
-            user = await self.user_repo.get_by_telegram_id(telegram_id)
+            user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
             state = resolve_state(user)
             if state == EntitlementState.BLOCKED:
                 raise VoicePracticeError("access_blocked", "Access blocked.", 403)
@@ -1570,7 +1588,9 @@ class VoicePracticeService:
         qo'shimcha tekshiruv kerak emas.
         """
         try:
-            user = await self.user_repo.get_by_telegram_id(telegram_id)
+            user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
             if not user:
                 return
             await CourseWordMasteryService(self.session).record_drill(
@@ -1599,7 +1619,9 @@ class VoicePracticeService:
         yozuv muvaffaqiyatsiz bo'lsa o'quvchi baribir o'z ballini ko'radi.
         """
         try:
-            user = await self.user_repo.get_by_telegram_id(telegram_id)
+            user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
             if not user:
                 return
             prompt = f"{target} ({target_pinyin})".strip() if target_pinyin else target
@@ -1668,7 +1690,9 @@ class VoicePracticeService:
                 }
             )
 
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        user = (await self.user_repo.get_by_actor(telegram_id)
+                if account_user_id(telegram_id) is not None
+                else await self.user_repo.get_by_telegram_id(telegram_id))
         # Gapirilmagan sessiya (`turn_count == 0`) uchun XP/streak berilmaydi:
         # `award` faqat `activity_ref` bo'yicha dedupe qiladi, ya'ni ochib-yopish
         # 10 XP + streak + kunlik rejaning `voice_dialog` vazifasini bergan

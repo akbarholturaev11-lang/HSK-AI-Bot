@@ -1026,6 +1026,27 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(401, saved.status_code)
 
+    async def test_public_strokes_use_bundled_data_without_auth_or_network(self):
+        with patch.object(android_course, "_android_stroke_file", new=AsyncMock()) as upstream:
+            for char in ("谢", "你", "好"):
+                response = await self.client.get("/api/v3/stroke", params={"char": char})
+                self.assertEqual(200, response.status_code)
+                data = response.json()
+                self.assertEqual(len(data["strokes"]), len(data["medians"]))
+                self.assertGreater(len(data["strokes"]), 0)
+                self.assertIn("public", response.headers["cache-control"])
+            upstream.assert_not_awaited()
+
+    async def test_public_strokes_reject_invalid_and_unknown_characters_without_fetch(self):
+        with patch.object(android_course, "_android_stroke_file", new=AsyncMock()) as upstream:
+            for char in ("", "../你", "你好", "a"):
+                response = await self.client.get("/api/v3/stroke", params={"char": char})
+                self.assertEqual(422, response.status_code)
+            with patch.object(android_course, "ANDROID_STROKE_BUNDLED_DIR", Path("/nonexistent-stroke-data")):
+                response = await self.client.get("/api/v3/stroke", params={"char": "你"})
+                self.assertEqual(404, response.status_code)
+            upstream.assert_not_awaited()
+
     async def test_stroke_requires_bearer_before_touching_the_network(self):
         response = await self.client.get("/api/v3/android/stroke?char=你")
 

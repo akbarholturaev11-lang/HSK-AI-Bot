@@ -104,7 +104,8 @@ class AdminBroadcastService:
     def deliverable_count(users, admin_ids: set[int]) -> int:
         return sum(
             1 for u in users
-            if u.status != "blocked"
+            if u.telegram_id is not None
+            and u.status != "blocked"
             and u.telegram_id not in admin_ids
             and not BotBlockStatusService.is_bot_blocked(u)
         )
@@ -189,7 +190,7 @@ class AdminBroadcastService:
         block_service = BotBlockStatusService(self.session)
         sent = failed = blocked = 0
         for user in users:
-            if user.status == "blocked" or user.telegram_id in admin_ids or BotBlockStatusService.is_bot_blocked(user):
+            if user.telegram_id is None or user.status == "blocked" or user.telegram_id in admin_ids or BotBlockStatusService.is_bot_blocked(user):
                 continue
             try:
                 markup = await build_promo_button_markup(

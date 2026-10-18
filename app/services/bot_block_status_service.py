@@ -8,6 +8,7 @@ from app.config import settings
 from app.db.models.user import User
 from app.db.models.bot_reachability_event import BotReachabilityEvent
 from app.db.models.bot_outbound_event import BotOutboundEvent
+from app.services.account_identity import actual_telegram_id
 
 
 class BotBlockStatusService:
@@ -39,6 +40,8 @@ class BotBlockStatusService:
         reason: str = "telegram_forbidden",
         checked_at: datetime | None = None,
     ) -> None:
+        if actual_telegram_id(user) is None:
+            return
         now = checked_at or datetime.now(timezone.utc)
 
         # Preserve the first timestamp/source inside one block episode.
@@ -67,6 +70,8 @@ class BotBlockStatusService:
         reason: str = "confirmed_reachable",
         checked_at: datetime | None = None,
     ) -> None:
+        if actual_telegram_id(user) is None:
+            return
         now = checked_at or datetime.now(timezone.utc)
         if self.is_bot_blocked(user):
             source = str(reason or "confirmed_reachable")[:120]
@@ -94,9 +99,12 @@ class BotBlockStatusService:
         await self.mark_user_unblocked(user, reason=reason, checked_at=checked_at)
 
     async def mark_telegram_id_unblocked(self, telegram_id: int) -> bool:
+        telegram_id = actual_telegram_id(telegram_id)
+        if telegram_id is None:
+            return False
         result = await self.session.execute(select(User).where(User.telegram_id == telegram_id))
         user = result.scalar_one_or_none()
-        if not user:
+        if not user or actual_telegram_id(user) is None:
             return False
         await self.mark_user_unblocked(user)
         return True
@@ -108,7 +116,7 @@ class BotBlockStatusService:
         reason: str = "delivery_success",
         sent_at: datetime | None = None,
     ) -> None:
-        if not user:
+        if not user or actual_telegram_id(user) is None:
             return
         now = sent_at or datetime.now(timezone.utc)
         source = str(reason or "delivery_success")[:120]
@@ -137,6 +145,9 @@ class BotBlockStatusService:
         # Only TelegramForbiddenError is reachability evidence. Timeouts,
         # rate limits and generic BadRequest must never inflate "bot blocked".
         if not isinstance(exc, TelegramForbiddenError):
+            return False
+        telegram_id = actual_telegram_id(telegram_id)
+        if telegram_id is None:
             return False
         result = await self.session.execute(select(User).where(User.telegram_id == telegram_id))
         user = result.scalar_one_or_none()
@@ -168,6 +179,7 @@ class BotBlockStatusService:
         cutoff = now - self.CHECK_INTERVAL
         query = (
             select(User)
+            .where(User.telegram_id > 0)
             .where(
                 or_(
                     User.last_bot_block_check_at.is_(None),

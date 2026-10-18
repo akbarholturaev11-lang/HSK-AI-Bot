@@ -6,9 +6,11 @@ from dataclasses import dataclass
 from datetime import datetime
 from html import escape
 
-from sqlalchemy import select
+from sqlalchemy import and_, func, select
 
 from app.db.models.subscription_entry_event import SubscriptionEntryEvent
+from app.db.models.user import User
+from app.services.account_identity import actual_telegram_id
 
 
 logger = logging.getLogger(__name__)
@@ -136,7 +138,7 @@ class SubscriptionEntryAnalyticsService:
     async def record_entry(
         self,
         *,
-        telegram_id: int,
+        telegram_id: int | None = None,
         user=None,
         source: str | None = None,
         mode: str | None = None,
@@ -145,12 +147,16 @@ class SubscriptionEntryAnalyticsService:
         campaign_id: int | None = None,
         feedback_id: int | None = None,
     ) -> bool:
-        if not telegram_id:
+        user_id = getattr(user, "id", None)
+        # The authenticated account owns this event; caller metadata cannot
+        # replace its Telegram identity or attach a native entry to another user.
+        telegram_id = actual_telegram_id(getattr(user, "telegram_id", telegram_id) if user is not None else telegram_id)
+        if user_id is None and telegram_id is None:
             return False
 
         event = SubscriptionEntryEvent(
-            user_id=getattr(user, "id", None),
-            telegram_id=int(telegram_id),
+            user_id=user_id,
+            telegram_id=telegram_id,
             source=self.normalize_source(source),
             mode=self.normalize_mode(mode),
             plan_type=(str(plan_type).strip()[:32] if plan_type else None),
@@ -175,7 +181,11 @@ class SubscriptionEntryAnalyticsService:
         stmt = select(
             SubscriptionEntryEvent.source,
             SubscriptionEntryEvent.telegram_id,
-        ).select_from(SubscriptionEntryEvent)
+            func.coalesce(SubscriptionEntryEvent.user_id, User.id).label("account_id"),
+        ).select_from(SubscriptionEntryEvent).outerjoin(User, and_(
+            SubscriptionEntryEvent.user_id.is_(None),
+            User.telegram_id == SubscriptionEntryEvent.telegram_id,
+        ))
         if since is not None:
             stmt = stmt.where(SubscriptionEntryEvent.created_at >= since)
 
@@ -184,8 +194,11 @@ class SubscriptionEntryAnalyticsService:
             group_key = self.source_group_key(str(row.source or "unknown"))
             bucket = grouped.setdefault(group_key, {"total": 0, "users": set()})
             bucket["total"] += 1
-            if row.telegram_id:
-                bucket["users"].add(int(row.telegram_id))
+            account_id = getattr(row, "account_id", None)
+            if account_id is not None:
+                bucket["users"].add(("user", int(account_id)))
+            elif row.telegram_id:
+                bucket["users"].add(("telegram", int(row.telegram_id)))
         return {
             source: (int(data["total"]), len(data["users"]))
             for source, data in grouped.items()

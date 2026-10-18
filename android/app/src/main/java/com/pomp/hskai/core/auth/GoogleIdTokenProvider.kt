@@ -2,12 +2,21 @@ package com.pomp.hskai.core.auth
 
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import kotlinx.coroutines.CancellationException
+
+/** Resolve the host Activity behind localized or themed Compose contexts. */
+internal tailrec fun Context.authActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> if (baseContext !== this) baseContext.authActivity() else null
+    else -> null
+}
 
 /**
  * Obtains a Google ID token for a server-issued nonce.
@@ -86,6 +95,8 @@ class CredentialManagerGoogleIdTokenProvider(
         } catch (failure: GetCredentialException) {
             // No account, Play Services missing or out of date, user blocked.
             GoogleIdTokenResult.Unavailable
+        } catch (cancelled: CancellationException) {
+            throw cancelled
         } catch (unexpected: Exception) {
             // The token must never be reconstructed from an exception message.
             GoogleIdTokenResult.Failed

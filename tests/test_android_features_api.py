@@ -267,7 +267,7 @@ class AndroidReferralRouteTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(200, response.status_code)
         payload = response.json()
-        self.assertEqual("https://t.me/pomp_test_bot?start=invite42", payload["link"])
+        self.assertTrue(payload["link"].endswith("/apps?ref=invite42&mode=trial"))
         self.assertEqual(1, payload["invited"])
         self.assertEqual(1, payload["activated"])
         self.assertEqual("Li Friend", payload["items"][0]["name"])
@@ -1093,6 +1093,32 @@ class AndroidChallengeRouteTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(404, response.status_code)
         self.assertEqual([], [call for call in self.calls if call[0] == "create"])
+
+    async def test_native_opponent_reference_resolves_its_internal_account(self):
+        async with self.sessions() as session:
+            session.add(_user(2, None, "Provider opponent"))
+            await session.commit()
+        board = SimpleNamespace(leaderboard=AsyncMock(return_value={
+            "leaderboard": [{"user_id": 2, "telegram_id": None, "rank": 1, "name": "Provider opponent"}],
+        }))
+        challenges = SimpleNamespace(create=AsyncMock(return_value={"ok": True, "challenge": {"id": 5}}))
+        app = FastAPI()
+        app.include_router(create_android_features_router(
+            session_factory=self.sessions, settings_obj=_settings(),
+            gamification_service_factory=lambda session: board,
+            challenge_service_factory=lambda session: challenges,
+        ))
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://android.test") as client:
+            response = await client.post("/api/v3/android/challenges", headers=self._headers(), json={
+                "opponent_ref": challenge_ref(None, _settings().DESKTOP_AUTH_SIGNING_SECRET, user_id=2),
+                "level": "hsk2", "language": "uz",
+            })
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(challenges.create.await_args.args[0], 4242)
+        opponent = challenges.create.await_args.kwargs["opponent_telegram_id"]
+        self.assertIsInstance(opponent, User)
+        self.assertEqual(opponent.id, 2)
+        self.assertIsNone(opponent.telegram_id)
 
     async def test_an_invited_friend_can_be_challenged_outside_the_leaderboard(self):
         ref = challenge_ref(778, _settings().DESKTOP_AUTH_SIGNING_SECRET)

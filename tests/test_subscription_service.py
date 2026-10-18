@@ -58,6 +58,7 @@ class ManualSubscriptionDurationTests(unittest.TestCase):
 class SubscriptionServiceManualGrantTests(unittest.IsolatedAsyncioTestCase):
     def _user(self, **overrides):
         values = {
+            "id": 1,
             "telegram_id": 123,
             "status": "free",
             "payment_status": "none",
@@ -187,7 +188,7 @@ class SubscriptionServiceManualGrantTests(unittest.IsolatedAsyncioTestCase):
             end_date=original_end,
         )
         service, session, _ = self._service(user)
-        payment = SimpleNamespace(id=77)
+        payment = SimpleNamespace(id=77, user_id=1, user_telegram_id=123)
         with (
             patch("app.services.subscription_service.AIUsageBudgetService") as budget_service,
             patch("app.services.subscription_service.PortfolioService") as portfolio_service,

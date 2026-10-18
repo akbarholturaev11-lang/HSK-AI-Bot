@@ -132,6 +132,36 @@ class SubscriptionMiniAppSubmitTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(payment.payment_status, "pending")
         self.assertEqual(payment.screenshot_file_id, "FILE_ID_1")
 
+    async def test_pro_preview_is_reported_consistently_on_submit_retry_and_reopen(self):
+        first = await self._submit(PNG_1X1_DATA_URL)
+        self.assertTrue(first["provisional_access"])
+        retry = await self._submit(PNG_1X1_DATA_URL)
+        self.assertTrue(retry["already_pending"])
+        self.assertTrue(retry["provisional_access"])
+        self.assertEqual(first["payment_id"], retry["payment_id"])
+        self.assertEqual(len(self.bot.photos), 1)
+        async with self.sessions() as session:
+            data = await SubscriptionMiniAppService(session).overview(5001)
+            self.assertTrue(data["pending_payment"]["provisional_access"])
+            user = (await session.execute(select(User))).scalar_one()
+            self.assertNotEqual(user.payment_status, "approved")
+            self.assertIsNone(user.end_date)
+
+    async def test_spent_preview_does_not_get_a_new_grant_or_claim_access(self):
+        async with self.sessions() as session:
+            user = (await session.execute(select(User))).scalar_one()
+            user.payment_preview_available = False
+            await session.commit()
+        result = await self._submit(PNG_1X1_DATA_URL)
+        self.assertTrue(result["ok"])
+        self.assertFalse(result["provisional_access"])
+        async with self.sessions() as session:
+            data = await SubscriptionMiniAppService(session).overview(5001)
+            self.assertFalse(data["pending_payment"]["provisional_access"])
+            user = (await session.execute(select(User))).scalar_one()
+            self.assertIsNone(user.payment_preview_payment_id)
+            self.assertNotEqual(user.payment_status, "approved")
+
     async def test_unsupported_image_format_is_reported_as_invalid_screenshot(self):
         # iPhone HEIC yoki brauzer ocholmagan format shu yo'l bilan keladi.
         result = await self._submit("data:image/heic;base64," + base64.b64encode(b"x" * 64).decode())

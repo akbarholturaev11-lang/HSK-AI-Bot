@@ -27,6 +27,7 @@ from aiogram.types import InlineKeyboardMarkup
 from sqlalchemy import select
 
 from app.config import settings
+from app.services.account_identity import actual_telegram_id, owner_clause
 from app.db.models.account_notice_delivery import AccountNoticeDelivery
 from app.db.models.android_push import AndroidPushToken
 from app.db.models.desktop import DesktopDevice
@@ -168,7 +169,7 @@ class NotificationDeliveryService:
                 select(AndroidPushToken.token, AndroidPushToken.device_id)
                 .join(DesktopDevice, AndroidPushToken.device_id == DesktopDevice.id)
                 .where(
-                    DesktopDevice.telegram_id == int(telegram_id),
+                    owner_clause(DesktopDevice, telegram_id, telegram_column="telegram_id"),
                     DesktopDevice.platform == "android",
                     DesktopDevice.revoked_at.is_(None),
                     AndroidPushToken.notifications_allowed.is_(True),
@@ -182,9 +183,9 @@ class NotificationDeliveryService:
 
         A learner who blocked the bot is still reachable through the app.
         """
-        if not BotBlockStatusService.is_bot_blocked(user):
+        if actual_telegram_id(user) and not BotBlockStatusService.is_bot_blocked(user):
             return True
-        return bool(await self._android_targets(int(user.telegram_id)))
+        return bool(await self._android_targets(user))
 
     async def deliver(
         self,
@@ -204,8 +205,8 @@ class NotificationDeliveryService:
         ``android`` means a phone accepted it and Telegram waits for the
         phone's confirmation; the caller should treat it as delivered.
         """
-        telegram_id = int(user.telegram_id)
-        targets = await self._android_targets(telegram_id)
+        telegram_id = actual_telegram_id(user)
+        targets = await self._android_targets(user)
         if not targets:
             return await self._send_telegram(bot, user, telegram, reason=reason)
 
@@ -252,7 +253,7 @@ class NotificationDeliveryService:
         return await self._fall_back(bot, row, user=user)
 
     async def _send_telegram(self, bot, user, notice: TelegramNotice, *, reason: str) -> str:
-        if bot is None or BotBlockStatusService.is_bot_blocked(user):
+        if bot is None or not actual_telegram_id(user) or BotBlockStatusService.is_bot_blocked(user):
             return OUTCOME_SKIPPED
         blocks = BotBlockStatusService(self.session)
         try:
@@ -267,7 +268,9 @@ class NotificationDeliveryService:
         if user is None:
             user = (
                 await self.session.execute(
-                    select(User).where(User.telegram_id == int(row.telegram_id))
+                    select(User).where(User.id == row.user_id) if row.user_id else
+                    select(User).where(User.telegram_id == row.telegram_id) if row.telegram_id else
+                    select(User).where(User.id.is_(None))
                 )
             ).scalar_one_or_none()
         now = datetime.now(timezone.utc)
@@ -308,10 +311,12 @@ class NotificationDeliveryService:
         return sent
 
     async def _owned(self, notice_id: int, telegram_id: int) -> AccountNoticeDelivery | None:
-        row = await self.session.get(AccountNoticeDelivery, int(notice_id))
-        if row is None or int(row.telegram_id) != int(telegram_id):
-            return None
-        return row
+        return (await self.session.execute(
+            select(AccountNoticeDelivery).where(
+                AccountNoticeDelivery.id == int(notice_id),
+                owner_clause(AccountNoticeDelivery, telegram_id, telegram_column="telegram_id"),
+            )
+        )).scalar_one_or_none()
 
     async def claim(self, notice_id: int, *, telegram_id: int) -> dict[str, Any] | None:
         """The notice for the phone to show, or ``show: False`` if too late.
@@ -351,6 +356,14 @@ class NotificationDeliveryService:
     ) -> bool:
         row = await self._owned(notice_id, telegram_id)
         if row is None:
+            return False
+        device = (await self.session.execute(
+            select(DesktopDevice.id).where(
+                DesktopDevice.id == str(device_id),
+                owner_clause(DesktopDevice, telegram_id, telegram_column="telegram_id"),
+            )
+        )).scalar_one_or_none()
+        if device is None:
             return False
         now = datetime.now(timezone.utc)
         if shown:

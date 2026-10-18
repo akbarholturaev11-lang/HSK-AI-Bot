@@ -16,6 +16,7 @@ from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.user import User
 from app.services.bot_block_status_service import BotBlockStatusService
+from app.services.account_identity import actual_telegram_id
 from app.services.course_notification_service import (
     CourseNotificationService,
     local_day_dedupe,
@@ -581,7 +582,7 @@ class MotivationReminderService:
             return
 
         d1_states = await self._load_d1_recovery_states(
-            [int(user.telegram_id) for _profile, user in rows],
+            [actual_telegram_id(user) for _profile, user in rows if actual_telegram_id(user) is not None],
             now,
         )
 
@@ -639,6 +640,11 @@ class MotivationReminderService:
 
         stats["considered"] = len(rows)
         for profile, user in rows:
+            # Keep all canonical learners in the league ranking above, but
+            # only Telegram-linked learners can receive these bot messages.
+            if actual_telegram_id(user) is None:
+                bump("skip_telegram_not_linked")
+                continue
             # Master switch: the user turned notifications off in the Mini App.
             if not getattr(profile, "notifications_enabled", True):
                 bump("skip_notifications_off")

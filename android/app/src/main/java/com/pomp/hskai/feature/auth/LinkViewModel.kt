@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.pomp.hskai.core.auth.AuthProvider
 import com.pomp.hskai.core.auth.AuthRepository
 import com.pomp.hskai.core.auth.PendingLink
+import com.pomp.hskai.core.auth.SignupReferral
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
@@ -18,6 +19,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class LinkUiState(
+    val referralCode: String = "",
+    val referralInvalid: Boolean = false,
     val isRequestingCode: Boolean = false,
     val pending: PendingLink? = null,
     val secondsRemaining: Int = 0,
@@ -30,7 +33,7 @@ data class LinkUiState(
     /** A provider sheet or browser tab is in flight. */
     val busyProvider: AuthProvider? = null,
     /**
-     * Apple's authorization page, to be opened in a Custom Tab. Consumed once
+     * Google's or Apple's authorization page, opened in a Custom Tab. Consumed once
      * by the screen so a recomposition cannot reopen the browser.
      */
     val pendingBrowserUrl: String? = null,
@@ -45,7 +48,7 @@ data class LinkUiState(
 }
 
 /**
- * Drives the Telegram device-link screen.
+ * Drives Telegram approval and Google/Apple browser sign-in.
  *
  * The polling secret never reaches the UI state that gets rendered — only the
  * bot link is handed to the screen, and only to be opened. Polling stops on
@@ -56,12 +59,34 @@ class LinkViewModel(
     private val now: () -> Long = System::currentTimeMillis,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(LinkUiState())
+    private val _state = MutableStateFlow(LinkUiState(referralCode = authRepository.signupReferralCode.value))
     val state: StateFlow<LinkUiState> = _state.asStateFlow()
 
     private var pollJob: Job? = null
     /** The in-flight start of a link, so stepping back can cancel it. */
     private var startJob: Job? = null
+    private var attemptGeneration = 0L
+
+    init {
+        viewModelScope.launch {
+            authRepository.signupReferralCode.collect { code ->
+                _state.update { if (it.referralCode == code) it else it.copy(referralCode = code, referralInvalid = false) }
+            }
+        }
+    }
+
+    fun updateReferralCode(value: String) {
+        if (_state.value.busyProvider != null || _state.value.isRequestingCode) return
+        authRepository.updateSignupReferralCode(value)
+        _state.update { it.copy(referralCode = authRepository.signupReferralCode.value, referralInvalid = false) }
+    }
+
+    private fun validReferral(): Boolean {
+        val code = authRepository.signupReferralCode.value
+        val valid = code.isBlank() || SignupReferral.code(code) != null
+        if (!valid) _state.update { it.copy(referralInvalid = true) }
+        return valid
+    }
 
     /**
      * Loads the provider list.
@@ -71,17 +96,17 @@ class LinkViewModel(
      */
     fun loadProviders() {
         viewModelScope.launch {
-            val providers = authRepository.availableProviders()
+            val providers = authRepository.availableBrowserProviders()
             _state.update { it.copy(providers = providers) }
         }
     }
 
-    fun signInWithGoogle(activity: Activity?) = startProvider(AuthProvider.GOOGLE) {
-        authRepository.startGoogleSignIn(activity = activity)
+    fun signInWithGoogle(activity: Activity?, language: AppLanguage? = null) = startProvider(AuthProvider.GOOGLE) {
+        authRepository.startGoogleBrowserSignIn(language = language)
     }
 
-    fun signInWithApple() = startProvider(AuthProvider.APPLE) {
-        authRepository.startAppleSignIn()
+    fun signInWithApple(language: AppLanguage? = null) = startProvider(AuthProvider.APPLE) {
+        authRepository.startAppleSignIn(language = language)
     }
 
     /** The screen calls this once it has opened the browser. */
@@ -100,9 +125,9 @@ class LinkViewModel(
      */
     fun continueWithTelegram(language: AppLanguage) {
         val current = _state.value
-        if (current.isRequestingCode) return
+        if (current.isRequestingCode || current.busyProvider?.let { it != AuthProvider.TELEGRAM } == true) return
         val pending = current.pending
-        if (pending == null || current.isExpired || remainingSeconds(pending) <= 0) {
+        if (pending == null || pending.provider != AuthProvider.TELEGRAM || current.isExpired || remainingSeconds(pending) <= 0) {
             requestCode(openTelegram = true, language = language)
             return
         }
@@ -118,28 +143,22 @@ class LinkViewModel(
 
     /** Steps back from a provider that was started, back to the cards. */
     fun dismissWaiting() {
-        startJob?.cancel()
-        _state.update {
-            it.copy(
-                isRequestingCode = false,
-                busyProvider = null,
-                pendingTelegramUrl = null,
-                error = null,
-            )
-        }
+        cancelAttempt()
+        _state.value = LinkUiState(providers = _state.value.providers, referralCode = authRepository.signupReferralCode.value)
     }
 
     private fun startProvider(
         provider: AuthProvider,
         start: suspend () -> ApiResult<PendingLink>,
     ) {
-        if (_state.value.busyProvider != null) return
-        pollJob?.cancel()
-        _state.update {
-            it.copy(busyProvider = provider, error = null, isExpired = false)
-        }
+        if (_state.value.busyProvider != null || _state.value.isRequestingCode) return
+        if (!validReferral()) return
+        val generation = cancelAttempt()
+        _state.value = LinkUiState(providers = _state.value.providers, busyProvider = provider, referralCode = authRepository.signupReferralCode.value)
         startJob = viewModelScope.launch {
-            when (val result = start()) {
+            val result = start()
+            if (attemptGeneration != generation) return@launch
+            when (result) {
                 is ApiResult.Failure -> _state.update {
                     it.copy(
                         busyProvider = null,
@@ -162,7 +181,7 @@ class LinkViewModel(
                             pendingBrowserUrl = pending.authorizeUrl.ifEmpty { null },
                         )
                     }
-                    startPolling(pending)
+                    startPolling(pending, generation)
                 }
             }
         }
@@ -179,18 +198,22 @@ class LinkViewModel(
         openTelegram: Boolean = false,
         language: AppLanguage? = null,
     ) {
-        if (_state.value.isRequestingCode) return
-        pollJob?.cancel()
+        if (_state.value.isRequestingCode || _state.value.busyProvider != null) return
+        if (!validReferral()) return
+        val generation = cancelAttempt()
         val providers = _state.value.providers
-        _state.value = LinkUiState(isRequestingCode = true, providers = providers)
+        _state.value = LinkUiState(isRequestingCode = true, providers = providers, referralCode = authRepository.signupReferralCode.value)
         startJob = viewModelScope.launch {
-            when (val result = authRepository.startLink(language)) {
+            val result = authRepository.startLink(language)
+            if (attemptGeneration != generation) return@launch
+            when (result) {
                 is ApiResult.Failure -> _state.value =
-                    LinkUiState(error = result.error, providers = providers)
+                    LinkUiState(error = result.error, providers = providers, referralCode = authRepository.signupReferralCode.value)
 
                 is ApiResult.Success -> {
                     val pending = result.value
                     _state.value = LinkUiState(
+                        referralCode = authRepository.signupReferralCode.value,
                         pending = pending,
                         secondsRemaining = remainingSeconds(pending),
                         isWaitingForApproval = true,
@@ -200,7 +223,7 @@ class LinkViewModel(
                             .ifEmpty { null }
                             .takeIf { openTelegram },
                     )
-                    startPolling(pending)
+                    startPolling(pending, generation)
                 }
             }
         }
@@ -208,9 +231,10 @@ class LinkViewModel(
 
     fun dismissError() = _state.update { it.copy(error = null) }
 
-    private fun startPolling(pending: PendingLink) {
+    private fun startPolling(pending: PendingLink, generation: Long) {
         pollJob = viewModelScope.launch {
             while (true) {
+                if (attemptGeneration != generation) return@launch
                 val remaining = remainingSeconds(pending)
                 _state.update { it.copy(secondsRemaining = remaining) }
                 if (remaining <= 0) {
@@ -223,7 +247,9 @@ class LinkViewModel(
                     }
                     return@launch
                 }
-                when (val result = authRepository.pollLink(pending)) {
+                val result = authRepository.pollLink(pending)
+                if (attemptGeneration != generation) return@launch
+                when (result) {
                     is ApiResult.Success -> if (result.value) {
                         _state.update {
                             it.copy(
@@ -263,9 +289,15 @@ class LinkViewModel(
         ((pending.expiresAtMillis - now()) / 1_000L).coerceAtLeast(0L).toInt()
 
     override fun onCleared() {
+        cancelAttempt()
+        super.onCleared()
+    }
+
+    private fun cancelAttempt(): Long {
+        attemptGeneration++
         startJob?.cancel()
         pollJob?.cancel()
-        super.onCleared()
+        return attemptGeneration
     }
 
     private companion object {

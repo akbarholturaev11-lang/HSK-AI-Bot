@@ -169,7 +169,7 @@ class CourseLessonMistakeMaterialServiceTests(unittest.TestCase):
             items=[
                 {
                     "material_ref": "lesson:hsk1:1:section:3:card:3",
-                    "selected_tokens": ["Салом", "навишта", "мешавад", "nǐ", "hǎo"],
+                    "selected_tokens": ["ту"],
                 }
             ],
         )

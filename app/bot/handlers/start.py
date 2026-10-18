@@ -50,7 +50,7 @@ async def _send_android_referral_apk(
     if (
         not referrer
         or not referral
-        or referral.referrer_telegram_id != referrer.telegram_id
+        or (referral.referrer_user_id != referrer.id if referral.referrer_user_id is not None else referral.referrer_telegram_id != referrer.telegram_id)
         or referral.discount_platform != "android"
     ):
         return False

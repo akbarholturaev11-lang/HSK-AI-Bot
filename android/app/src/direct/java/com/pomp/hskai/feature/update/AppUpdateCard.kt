@@ -185,6 +185,9 @@ internal fun fetchRelease(
     context: Context,
     nowMillis: Long = System.currentTimeMillis(),
 ): UpdateRelease? = synchronized(updateCheckLock) {
+    // QA is installed beside production. No release cache/network response may
+    // offer an APK that changes the server or collides with the release app.
+    if (BuildConfig.QA_BUILD) return@synchronized null
     val prefs = context.applicationContext.getSharedPreferences(
         UPDATE_CHECK_PREFS,
         Context.MODE_PRIVATE,
@@ -295,6 +298,7 @@ internal fun Context.openInstallPermissionSettings() {
 }
 
 internal fun Context.launchInstaller(file: File) {
+    if (BuildConfig.QA_BUILD) return
     try {
         val uri = FileProvider.getUriForFile(this, "$packageName.updates", file)
         startActivity(

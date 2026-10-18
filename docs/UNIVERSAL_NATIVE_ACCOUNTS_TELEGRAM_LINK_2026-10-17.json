@@ -1,0 +1,94 @@
+{
+  "date": "2026-10-17",
+  "branch": "codex/universal-sign-in",
+  "code_commits": {
+    "backend": "618253ff",
+    "android": "bb6ad356",
+    "desktop": "df09354a"
+  },
+  "release_hold": {
+    "main_push_authorized": false,
+    "production_deployed": false,
+    "universal_staging_app_deployed": false,
+    "real_provider_voice_and_installed_client_acceptance": "owner_run_after_code_verification",
+    "unrelated_new_identity_person_detection": "not_requested_owner_declined_extra_mechanism",
+    "existing_linked_account_block_protections": "preserved",
+    "play_purchase_mode": "consumption_only"
+  },
+  "attachment_contract": {
+    "authenticated_native_origin": true,
+    "private_bot_explicit_confirmation": true,
+    "target_and_origin_session_installation_bound": true,
+    "unused_real_telegram_only_no_merge": true,
+    "pending_cancellation_and_late_response_guards": true,
+    "new_users_or_sessions_created": false,
+    "approved_provider_signin_survives_telegram_attachment": true
+  },
+  "preservation": {
+    "exact_google_first_and_apple_first_snapshots": [
+      "Pro terms and receipt preview flags",
+      "HSK3 grant/payment",
+      "payment amounts/status/dates",
+      "course progress and XP",
+      "referral flags",
+      "AI budget and spending",
+      "existing Voice sessions"
+    ],
+    "android_windows_macos_miniapp_same_canonical_owner_fixture": true,
+    "prelink_null_telegram_metadata_history_shared": true,
+    "foreign_canonical_metadata_never_authorizes": true,
+    "historical_transport_metadata_bulk_rewritten": false
+  },
+  "database": {
+    "schema_head": "0107_canonical_referral_owners",
+    "new_migration_required": false,
+    "concurrency_engine": "PostgreSQL 15.17 in dedicated empty local test database; per-test scratch schemas",
+    "races": [
+      "same Telegram, two native targets",
+      "ordinary Telegram signup versus attachment",
+      "origin session revocation while approval waits",
+      "existing signup/unlink/payment/referral races"
+    ],
+    "prior_real_schema_migration_and_restore_evidence": "UNIVERSAL_NATIVE_ACCOUNTS_STAGING_REFERRALS_2026-10-17.json",
+    "production_writes": false
+  },
+  "validation": {
+    "backend": {
+      "tests_passed": 1224,
+      "subtests_passed": 832,
+      "skipped": 0,
+      "existing_warnings": 7
+    },
+    "android": {
+      "direct_unit_passed": 555,
+      "play_unit_passed": 510,
+      "emulator_compose_passed": 12,
+      "static_checks_passed": 9,
+      "debug_production_sources_compiled": true,
+      "both_release_kotlin_compilations_passed": true,
+      "signed_installed_client_acceptance": false
+    },
+    "desktop": {
+      "javascript_passed": 32,
+      "rust_passed": 28,
+      "attachment_browser_passed": 17,
+      "adjacent_login_referral_pro_hsk3_browser_passed": 16,
+      "platform_fixtures": [
+        "macos",
+        "windows"
+      ],
+      "installed_dmg_exe_acceptance": false
+    },
+    "miniapp_affected_browser_passed": 4,
+    "live_oidc_and_upstream_voice_tested": false,
+    "known_broader_ui_baseline_gaps": "retained in UNIVERSAL_NATIVE_ACCOUNTS.md; full unrelated UI suites not claimed green"
+  },
+  "graph": {
+    "built_from_commit": "df09354a1f60c8a890e1304aa18529b9e17b5457",
+    "nodes": 16733,
+    "edges": 51118,
+    "semantic_nodes_preserved": 59,
+    "prior_inferred_edge_records_preserved": 7293,
+    "api_tokens_used": 0
+  }
+}

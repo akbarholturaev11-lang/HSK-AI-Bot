@@ -160,7 +160,7 @@ class AndroidCourseService(DesktopCourseService):
             await CourseMiniAppAnalyticsService(self.session).record_server_event(
                 event_name="course_track_switched",
                 user_id=int(context.user.id),
-                telegram_id=int(context.user.telegram_id),
+                telegram_id=context.user.telegram_id,
                 source="android_course_track",
                 level=after_level,
                 payload={
@@ -180,7 +180,7 @@ class AndroidCourseService(DesktopCourseService):
             await CourseMiniAppAnalyticsService(self.session).record_server_event(
                 event_name="hsk30_promo_shown",
                 user_id=int(context.user.id),
-                telegram_id=int(context.user.telegram_id),
+                telegram_id=context.user.telegram_id,
                 source="android_course_track",
                 level=str(getattr(context.user, "level", "") or ""),
                 payload={"shown_count": int(result.get("shown_count") or 0)},
@@ -368,7 +368,7 @@ class AndroidCourseService(DesktopCourseService):
         analytics = CourseMiniAppAnalyticsService(self.session)
         result = await analytics.record_server_event(
             event_name="foundation_completed",
-            telegram_id=int(context.user.telegram_id),
+            telegram_id=context.user.telegram_id,
             user_id=getattr(context.user, "id", None),
             source="android_course",
             level="hsk1",
@@ -445,7 +445,7 @@ class AndroidCourseService(DesktopCourseService):
         """Complete onboarding through the exact service used by the Mini App."""
         context = await self._context(access_token)
         return await CourseMiniAppOnboardingService(self.session).complete(
-            int(context.user.telegram_id),
+            context.user,
             level=level,
             goal=goal,
             daily_minutes=daily_minutes,

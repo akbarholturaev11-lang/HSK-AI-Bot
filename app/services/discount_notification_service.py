@@ -116,7 +116,13 @@ class DiscountNotificationService:
         )
 
     async def _target_users(self, campaign: DiscountCampaign):
-        if campaign.target_telegram_id:
+        target_user_id = getattr(campaign, "target_user_id", None)
+        if target_user_id is not None:
+            user = await self.user_repo.get_by_user_id(target_user_id)
+            return [user] if user else []
+        if campaign.target_telegram_id is not None:
+            if campaign.target_telegram_id <= 0:
+                return []
             user = await self.user_repo.get_by_telegram_id(campaign.target_telegram_id)
             return [user] if user else []
         users = await self.user_repo.get_filtered_users(

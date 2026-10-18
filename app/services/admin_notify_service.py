@@ -45,7 +45,7 @@ class AdminNotifyService:
     def build_payment_review_text(
         self,
         lang: str,
-        telegram_id: int,
+        telegram_id: int | None,
         full_name: str,
         plan_type: str,
         amount: int,
@@ -65,6 +65,7 @@ class AdminNotifyService:
         exchange_rate: str = None,
         source: str = "telegram_bot",
         card_bank: str = None,
+        user_id: int | None = None,
     ) -> str:
         plan_label = {
             "10_days": "10 kunlik",
@@ -85,10 +86,13 @@ class AdminNotifyService:
             "wechat": "WeChat",
         }
 
+        account_label = str(telegram_id) if telegram_id is not None else (
+            f"Account #{user_id}" if user_id is not None else "Account unavailable"
+        )
         lines = [
             f"💳 Yangi to'lov so'rovi",
             f"",
-            f"👤 {full_name} ({telegram_id})",
+            f"👤 {escape(str(full_name))} ({account_label})",
             (
                 f"📦 Mahsulot: {plan_label}"
                 if plan_type == "hsk30_unlock"
@@ -193,6 +197,7 @@ class AdminNotifyService:
         text = self.build_payment_review_text(
             lang="uz",
             telegram_id=user.telegram_id,
+            user_id=getattr(user, "id", None),
             full_name=user.full_name or "-",
             plan_type=payment.plan_type,
             amount=payment.amount,

@@ -402,7 +402,7 @@ function showLimitNow(){
   $("limit").hidden=false;
 }
 function closeLimit(){$("limit").hidden=true}
-function goPay(){location.href="/subscription.html?lang="+LANG+"&mode=subscription&source=v3_mistake_review"}
+function goPay(){location.href="/subscription.html?lang="+LANG+"&mode=subscription&source=v3_mistake_review&return_to=course&return_page=course_v3_mistakes.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 
 function loadMoreMistakes(){loadMistakes(true)}
 function loadMistakes(append){

@@ -18,7 +18,7 @@ from typing import Any, Callable, Literal
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.api.desktop_auth import (
     AppVersion,
@@ -44,6 +44,7 @@ class AndroidLinkStartRequest(BaseModel):
     app_version: AppVersion
     installation_key: InstallationKey
     language: Literal["uz", "ru", "tj"] | None = None
+    referral_code: str | None = Field(default=None, max_length=64)
 
 
 class AndroidLinkStatusRequest(BaseModel):
@@ -88,9 +89,11 @@ def create_android_auth_router(
                     platform=ANDROID_PLATFORM,
                     app_version=payload.app_version,
                     installation_key=payload.installation_key.get_secret_value(),
+                    language=payload.language,
+                    **({"referral_code": payload.referral_code} if payload.referral_code else {}),
                 )
                 # The Android login screen already owns the signed-out language.
-                # Carry it only in the bot deep link so a brand-new Telegram
+                # Persist it for signup and carry it in the bot deep link so a brand-new Telegram
                 # account is greeted in the exact language selected in the app.
                 if payload.language and result.get("bot_deep_link"):
                     result["bot_deep_link"] = f'{result["bot_deep_link"]}_{payload.language}'
