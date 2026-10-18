@@ -28,6 +28,23 @@ class FullQaWorkerGuardTests(unittest.TestCase):
     def test_accepts_only_real_qa_config(self):
         self.assertEqual(validate_qa_settings(BASE, StubSettings()), "hsk_qa_test_bot")
 
+    def test_standalone_qa_project_isolated_from_existing_staging(self):
+        env = {
+            "RAILWAY_PROJECT_ID": "7f737cb9-be6a-45cd-b6b3-8263b41d1cfd",
+            "RAILWAY_ENVIRONMENT_NAME": "qa",
+            "HSK_QA_FULL_FEATURES_ENABLED": "true",
+        }
+        config = StubSettings(
+            DATABASE_URL="postgresql+asyncpg://qa:masked@postgres.railway.internal:5432/railway",
+            PUBLIC_SITE_URL="https://hsk-qa-api-qa.up.railway.app",
+            MINI_APP_BASE_URL="https://hsk-qa-api-qa.up.railway.app/course-v3.html",
+        )
+        self.assertEqual(validate_qa_settings(env, config), "hsk_qa_test_bot")
+        with self.assertRaises(RuntimeError):
+            validate_qa_settings(env | {"RAILWAY_PROJECT_ID": "another-project"}, config)
+        with self.assertRaises(RuntimeError):
+            validate_qa_settings(env, StubSettings())
+
     def test_rejects_wrong_environment_database_and_bot(self):
         variants = [
             ({"RAILWAY_ENVIRONMENT_NAME": "production"}, {}),
