@@ -161,6 +161,44 @@ cargo test --locked
 cargo clippy --locked --all-targets -- -D warnings
 ```
 
+### Isolated staging acceptance builds
+
+`POMP_API_ORIGIN` is captured at compile time. It accepts a canonical HTTPS
+origin without a trailing slash, credentials, port, path, query or fragment.
+The default remains production. Changing a running process environment cannot
+redirect an installed app. Nonproduction builds use an origin-specific keyring
+namespace and disable production update checks/install, so they cannot send a
+production refresh token to staging or replace themselves during acceptance.
+
+Build the paired QA bundle with the QA config as well as the staging origin:
+
+```bash
+# macOS, from desktop/
+POMP_API_ORIGIN=https://your-staging.example npm run tauri -- build --config src-tauri/tauri.qa.conf.json --bundles app,dmg
+```
+
+```powershell
+# Windows, from desktop/
+$env:POMP_API_ORIGIN = 'https://your-staging.example'
+npm run tauri -- build --config src-tauri/tauri.qa.conf.json --bundles nsis
+Remove-Item Env:POMP_API_ORIGIN
+```
+
+The QA config uses `com.pomp.hskai.qa` and only the
+`pomp-hsk-ai-qa://oauth-return` protocol. Its staging backend must set
+`OAUTH_NATIVE_RETURN_SCHEME=pomp-hsk-ai-qa`. Production retains
+`pomp-hsk-ai://oauth-return`. A callback only brings an existing pending browser
+flow to the foreground and resumes proof-authenticated polling; it never
+carries a session token or proves account ownership. macOS protocol activation
+requires the bundled app to be installed; test the Windows NSIS installation
+too. Browser policy may require clicking the visible HSK AI return link.
+
+For a distinct staging avatar host, add only that HTTPS origin to `img-src`
+through an additional local Tauri config; keep `connect-src` restricted to IPC.
+Do not publish these QA artifacts or reuse production learner data for signup
+and payment acceptance. Neither QA commands nor fixture tests clear the
+universal account production release hold.
+
 Focused backend/UI checks from the repository root:
 
 ```bash

@@ -1,5 +1,8 @@
 import { previewInvoke } from "./preview-mock.js";
 
+const DEFAULT_API_ORIGIN = "https://telegram-chinese-bot-production.up.railway.app";
+let buildApiOrigin = DEFAULT_API_ORIGIN;
+
 const COMMANDS = Object.freeze({
   appInfo: "desktop_app_info",
   authStatus: "desktop_auth_status",
@@ -11,6 +14,7 @@ const COMMANDS = Object.freeze({
   oauthOpen: "desktop_oauth_open",
   identityMethods: "desktop_identity_methods",
   telegramIdentityStart: "desktop_telegram_identity_start",
+  oauthIdentityStart: "desktop_oauth_identity_start",
   identityLinkPoll: "desktop_identity_link_poll",
   identityLinkOpen: "desktop_identity_link_open",
   identityLinkCancel: "desktop_identity_link_cancel",
@@ -198,7 +202,7 @@ function isAllowedReferralShareLink(value) {
     return false;
   }
   if (parsed.protocol !== "https:" || parsed.username || parsed.password || parsed.port || parsed.hash) return false;
-  if (parsed.origin === "https://telegram-chinese-bot-production.up.railway.app") {
+  if (parsed.origin === buildApiOrigin) {
     return parsed.pathname === "/apps" &&
       /^[0-9a-f]{8}$/.test(singleSearchValue(parsed, "ref") || "") &&
       hasOnlySearchKeys(parsed, ["ref", "mode"]) &&
@@ -678,6 +682,15 @@ export async function listenDesktopUpdate(eventName, handler) {
   }
 }
 
+export async function listenAuthReturn(handler) {
+  if (typeof handler !== "function") throw new DesktopBridgeError("desktop_operation_not_allowed");
+  const listen = globalThis.__TAURI__?.event?.listen;
+  if (typeof listen !== "function") return () => {};
+  // No URL, status or credential is accepted from this event. It only asks
+  // the existing server-authenticated polling paths to run sooner.
+  return listen("desktop-auth://return", () => handler());
+}
+
 async function invokeCommand(command, args = {}) {
   if (!ALLOWED_COMMANDS.has(command)) {
     throw new DesktopBridgeError("desktop_operation_not_allowed");
@@ -703,8 +716,20 @@ async function invokeCommand(command, args = {}) {
 export const desktopBridge = Object.freeze({
   preview: explicitPreviewEnabled(),
 
-  appInfo() {
-    return invokeCommand(COMMANDS.appInfo);
+  async appInfo() {
+    const info = await invokeCommand(COMMANDS.appInfo);
+    const origin = info?.apiOrigin ?? DEFAULT_API_ORIGIN;
+    if (typeof origin !== "string" || origin.length > 261 ||
+        !/^https:\/\/[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(origin) ||
+        origin.slice(8).split(".").some(label => !label || label.length > 63 || label.startsWith("-") || label.endsWith("-"))) {
+      throw new DesktopBridgeError("desktop_api_origin_invalid");
+    }
+    buildApiOrigin = origin;
+    return info;
+  },
+
+  apiOrigin() {
+    return buildApiOrigin;
   },
 
   authStatus() {
@@ -751,6 +776,11 @@ export const desktopBridge = Object.freeze({
 
   telegramIdentityStart(attemptId) {
     return invokeCommand(COMMANDS.telegramIdentityStart, { attemptId: assertIdentityAttempt(attemptId) });
+  },
+
+  oauthIdentityStart(provider, attemptId) {
+    if (provider !== "google" && provider !== "apple") throw new DesktopBridgeError("oauth_provider_unsupported");
+    return invokeCommand(COMMANDS.oauthIdentityStart, { provider, attemptId: assertIdentityAttempt(attemptId) });
   },
 
   identityLinkPoll(attemptId) {

@@ -29,6 +29,7 @@ const expectedCommands = [
   "desktop_oauth_open",
   "desktop_identity_methods",
   "desktop_telegram_identity_start",
+  "desktop_oauth_identity_start",
   "desktop_identity_link_poll",
   "desktop_identity_link_open",
   "desktop_identity_link_cancel",
@@ -212,6 +213,75 @@ test("Telegram identity linking uses separate authenticated native commands and 
       assert.throws(() => desktopBridge.identityLinkCancel(bad), /desktop_identity_attempt_invalid/);
     }
     assert.equal(calls.length, count);
+  } finally { delete globalThis.__TAURI__; }
+});
+
+test("provider attachment uses the authenticated link command and never the signin command", async () => {
+  const calls = [];
+  globalThis.__TAURI__ = { core: { invoke: async (command, args) => {
+    calls.push({ command, args });
+    return { status: "pending", expiresIn: 300 };
+  } } };
+  try {
+    const { desktopBridge } = await import("./js/bridge.js");
+    const attemptId = "abcdef12-1234-5678-9012-abcdef123456";
+    for (const provider of ["google", "apple"]) {
+      await desktopBridge.oauthIdentityStart(provider, attemptId);
+      assert.deepEqual(calls.at(-1), { command: "desktop_oauth_identity_start", args: { provider, attemptId } });
+    }
+    for (const provider of ["telegram", "unknown", null]) {
+      assert.throws(() => desktopBridge.oauthIdentityStart(provider, attemptId), /oauth_provider_unsupported/);
+    }
+    assert.throws(() => desktopBridge.oauthIdentityStart("google", `${attemptId}?admin=true`), /desktop_identity_attempt_invalid/);
+    assert.equal(calls.length, 2);
+  } finally { delete globalThis.__TAURI__; }
+});
+
+test("QA bundle owns its protocol and preserves the IPC network boundary", async () => {
+  const qa = JSON.parse(await source("desktop/src-tauri/tauri.qa.conf.json"));
+  const production = JSON.parse(await source("desktop/src-tauri/tauri.conf.json"));
+  assert.equal(qa.identifier, "com.pomp.hskai.qa");
+  assert.deepEqual(qa.plugins["deep-link"].desktop.schemes, ["pomp-hsk-ai-qa"]);
+  assert.deepEqual(production.plugins["deep-link"].desktop.schemes, ["pomp-hsk-ai"]);
+  assert.equal(qa.bundle.createUpdaterArtifacts, false);
+  assert.equal(qa.app?.security?.csp, undefined);
+});
+
+test("build origin metadata scopes referral sharing without trusting runtime redirects", async () => {
+  let metadata = { apiOrigin: "https://hsk-qa.example.com" };
+  globalThis.__TAURI__ = {core: {invoke: async () => metadata}};
+  try {
+    const {desktopBridge} = await import("./js/bridge.js");
+    await desktopBridge.appInfo();
+    assert.equal(desktopBridge.apiOrigin(), metadata.apiOrigin);
+    const share = value => `tg://msg_url?url=${encodeURIComponent(value)}`;
+    await desktopBridge.openExternalUrl(share("https://hsk-qa.example.com/apps?ref=abcdef12&mode=trial"));
+    assert.throws(() => desktopBridge.openExternalUrl(share("https://evil.example/apps?ref=abcdef12&mode=trial")));
+    for (const origin of ["http://hsk-qa.example.com", "https://user@hsk-qa.example.com", "https://hsk-qa.example.com/", "https://hsk-qa.example.com?redirect=1"]) {
+      metadata = {apiOrigin: origin};
+      await assert.rejects(desktopBridge.appInfo(), /desktop_api_origin_invalid/);
+    }
+  } finally {
+    metadata = {};
+    const {desktopBridge} = await import("./js/bridge.js");
+    await desktopBridge.appInfo();
+    delete globalThis.__TAURI__;
+  }
+});
+
+test("browser-return event discards payload instead of authorizing a session", async () => {
+  let deliver;
+  let received;
+  globalThis.__TAURI__ = { event: { listen: async (name, callback) => {
+    assert.equal(name, "desktop-auth://return");
+    deliver = callback;
+    return () => {};
+  } } };
+  try {
+    const { listenAuthReturn } = await import("./js/bridge.js");
+    await listenAuthReturn((...args) => { received = args; });
+    deliver({ payload: { status: "linked", access_token: "spoofed", url: "https://evil.example" } });
+    assert.deepEqual(received, []);
   } finally { delete globalThis.__TAURI__; }
 });
 

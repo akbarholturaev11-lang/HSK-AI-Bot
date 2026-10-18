@@ -1,3 +1,4 @@
+mod api_config;
 mod local_ai;
 
 use base64::{
@@ -16,6 +17,7 @@ use std::{
     time::Duration,
 };
 use tauri::{Emitter, Manager};
+use tauri_plugin_deep_link::DeepLinkExt;
 use tauri_plugin_opener::OpenerExt;
 use tauri_plugin_updater::{Update, UpdaterExt};
 
@@ -23,7 +25,12 @@ use local_ai::{
     LocalAiChatRequest, LocalAiChatResult, LocalAiManager, LocalAiPackStatus, MODEL_ID,
 };
 
-const API_ORIGIN: &str = "https://telegram-chinese-bot-production.up.railway.app";
+use api_config::{is_valid_api_origin, DEFAULT_API_ORIGIN};
+
+const API_ORIGIN: &str = match option_env!("POMP_API_ORIGIN") {
+    Some(origin) => origin,
+    None => DEFAULT_API_ORIGIN,
+};
 const KEYRING_SERVICE: &str = "com.pomp.hskai";
 const KEYRING_REFRESH_ACCOUNT: &str = "desktop-refresh-token";
 const KEYRING_INSTALLATION_ACCOUNT: &str = "desktop-installation-key";
@@ -91,6 +98,7 @@ struct PendingIdentityLink {
     link_request_id: String,
     polling_secret: String,
     authorize_url: String,
+    provider: String,
 }
 
 #[derive(Default)]
@@ -103,6 +111,7 @@ struct DesktopState {
     client: Client,
     access_token: Mutex<Option<String>>,
     pending_link: Mutex<Option<PendingLink>>,
+    signin_generation: AtomicU64,
     identity_link: Mutex<IdentityLinkState>,
     pending_update: Mutex<Option<Update>>,
     refresh_guard: tokio::sync::Mutex<()>,
@@ -122,6 +131,7 @@ impl DesktopState {
             client,
             access_token: Mutex::new(None),
             pending_link: Mutex::new(None),
+            signin_generation: AtomicU64::new(0),
             identity_link: Mutex::new(IdentityLinkState::default()),
             pending_update: Mutex::new(None),
             refresh_guard: tokio::sync::Mutex::new(()),
@@ -137,6 +147,8 @@ struct ApiError {
 
 #[derive(Deserialize)]
 struct LinkStartResponse {
+    ok: bool,
+    status: String,
     link_request_id: String,
     display_code: String,
     polling_secret: String,
@@ -146,6 +158,8 @@ struct LinkStartResponse {
 
 #[derive(Deserialize)]
 struct OAuthProvidersResponse {
+    #[serde(default)]
+    ok: bool,
     #[serde(default)]
     providers: Vec<String>,
 }
@@ -158,6 +172,8 @@ struct DesktopOAuthProviders {
 
 #[derive(Deserialize)]
 struct OAuthStartResponse {
+    ok: bool,
+    status: String,
     link_request_id: String,
     polling_secret: String,
     expires_in: u64,
@@ -167,6 +183,8 @@ struct OAuthStartResponse {
 
 #[derive(Deserialize)]
 struct LinkStatusResponse {
+    #[serde(deserialize_with = "require_auth_success")]
+    ok: bool,
     status: String,
     access_token: Option<String>,
     refresh_token: Option<String>,
@@ -174,8 +192,23 @@ struct LinkStatusResponse {
 
 #[derive(Deserialize)]
 struct RefreshResponse {
+    #[serde(deserialize_with = "require_auth_success")]
+    ok: bool,
     access_token: String,
     refresh_token: String,
+}
+
+fn require_auth_success<'de, D>(deserializer: D) -> Result<bool, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    if bool::deserialize(deserializer)? {
+        Ok(true)
+    } else {
+        Err(serde::de::Error::custom(
+            "unsuccessful native auth response",
+        ))
+    }
 }
 
 #[derive(Serialize)]
@@ -206,6 +239,7 @@ struct DesktopAppInfo {
     product_name: &'static str,
     version: &'static str,
     platform: &'static str,
+    api_origin: &'static str,
     #[serde(skip_serializing_if = "Option::is_none")]
     launch_issue: Option<&'static str>,
 }
@@ -267,6 +301,9 @@ fn bounded_timezone_query(raw_timezone: &str) -> bool {
 }
 
 fn api_url(path: &str) -> Result<String, String> {
+    if !is_valid_api_origin(API_ORIGIN) {
+        return Err("desktop_api_origin_invalid".into());
+    }
     match path {
         "/api/v3/desktop-auth/link/start"
         | "/api/v3/native-auth/oauth/start"
@@ -404,13 +441,20 @@ fn validate_language(language: &str) -> Result<&'static str, String> {
 
 fn validate_signup_referral(value: Option<&str>) -> Result<Option<&str>, String> {
     let code = value.unwrap_or("").trim();
-    if code.is_empty() { return Ok(None); }
-    let payload = code.strip_prefix("ref_")
+    if code.is_empty() {
+        return Ok(None);
+    }
+    let payload = code
+        .strip_prefix("ref_")
         .or_else(|| code.strip_prefix("ra_"))
         .or_else(|| code.strip_prefix("ri_"))
         .unwrap_or(code);
-    if code.len() > 64 || payload.len() != 8
-        || !payload.bytes().all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte)) {
+    if code.len() > 64
+        || payload.len() != 8
+        || !payload
+            .bytes()
+            .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+    {
         return Err("signup_referral_invalid".into());
     }
     Ok(Some(code))
@@ -828,16 +872,86 @@ fn is_allowed_oauth_authorize_url(url: &str) -> bool {
         && parsed.query().is_some_and(|query| !query.is_empty())
 }
 
-fn is_identity_attempt_id(value: &str) -> bool {
-    value.len() == 36 && value.bytes().enumerate().all(|(index, byte)| {
-        if [8, 13, 18, 23].contains(&index) { byte == b'-' }
-        else { byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte) }
+fn is_allowed_provider_authorize_url(url: &str, provider: &str) -> bool {
+    if !is_allowed_oauth_authorize_url(url) {
+        return false;
+    }
+    let Ok(parsed) = reqwest::Url::parse(url) else {
+        return false;
+    };
+    matches!(
+        (provider, parsed.host_str()),
+        ("google", Some("accounts.google.com")) | ("apple", Some("appleid.apple.com"))
+    )
+}
+
+fn valid_oauth_start(started: &OAuthStartResponse, provider: &str) -> bool {
+    started.ok
+        && started.status == "pending"
+        && is_identity_attempt_id(&started.link_request_id)
+        && (32..=512).contains(&started.polling_secret.len())
+        && (1..=3_600).contains(&started.expires_in)
+        && if provider == "telegram" {
+            is_allowed_telegram_identity_url(&started.authorize_url, &started.link_request_id)
+        } else {
+            is_allowed_provider_authorize_url(&started.authorize_url, provider)
+        }
+}
+
+// A browser return is only a wake-up signal. Authentication still requires the
+// native in-memory polling proof and the server's verified terminal status.
+fn is_auth_return_url(url: &str) -> bool {
+    url == if API_ORIGIN == DEFAULT_API_ORIGIN {
+        "pomp-hsk-ai://oauth-return"
+    } else {
+        "pomp-hsk-ai-qa://oauth-return"
+    }
+}
+
+fn has_pending_browser_auth(state: &DesktopState) -> bool {
+    state.pending_link.lock().ok().is_some_and(|pending| {
+        pending
+            .as_ref()
+            .is_some_and(|link| is_allowed_oauth_authorize_url(&link.authorize_url))
+    }) || state.identity_link.lock().ok().is_some_and(|current| {
+        current.pending.as_ref().is_some_and(|link| {
+            is_allowed_provider_authorize_url(&link.authorize_url, &link.provider)
+        })
     })
+}
+
+fn handle_auth_return(app: &tauri::AppHandle, urls: &[reqwest::Url]) {
+    if !urls.iter().any(|url| is_auth_return_url(url.as_str())) {
+        return;
+    }
+    // Polling may finish before the browser's delayed handoff. Always bring
+    // this exact registered protocol's window forward, even in that race.
+    if let Some(window) = app.get_webview_window("main") {
+        let _ = window.show();
+        let _ = window.unminimize();
+        let _ = window.set_focus();
+    }
+    if has_pending_browser_auth(app.state::<DesktopState>().inner()) {
+        let _ = app.emit("desktop-auth://return", ());
+    }
+}
+
+fn is_identity_attempt_id(value: &str) -> bool {
+    value.len() == 36
+        && value.bytes().enumerate().all(|(index, byte)| {
+            if [8, 13, 18, 23].contains(&index) {
+                byte == b'-'
+            } else {
+                byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte)
+            }
+        })
 }
 
 /// A link proof is a distinct bot action, never the Telegram sign-in action.
 fn is_allowed_telegram_identity_url(url: &str, request_id: &str) -> bool {
-    let Ok(parsed) = reqwest::Url::parse(url) else { return false; };
+    let Ok(parsed) = reqwest::Url::parse(url) else {
+        return false;
+    };
     let bot = parsed.path().strip_prefix('/').unwrap_or("");
     let expected = format!("tg_identity_{request_id}");
     parsed.scheme() == "https"
@@ -847,10 +961,15 @@ fn is_allowed_telegram_identity_url(url: &str, request_id: &str) -> bool {
         && parsed.password().is_none()
         && parsed.fragment().is_none()
         && (5..=32).contains(&bot.len())
-        && bot.bytes().all(|byte| byte.is_ascii_alphanumeric() || byte == b'_')
+        && bot
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || byte == b'_')
         && is_identity_attempt_id(request_id)
         && parsed.query_pairs().count() == 1
-        && parsed.query_pairs().next().is_some_and(|(key, value)| key == "start" && value == expected)
+        && parsed
+            .query_pairs()
+            .next()
+            .is_some_and(|(key, value)| key == "start" && value == expected)
 }
 
 fn has_only_query_keys(parsed: &reqwest::Url, allowed: &[&str]) -> bool {
@@ -886,14 +1005,21 @@ fn is_allowed_referral_share_link(url: &str) -> bool {
     }
     if parsed.origin().ascii_serialization() == API_ORIGIN {
         let code_ok = single_query_value(&parsed, "ref").is_some_and(|code| {
-            code.len() == 8 && code.bytes().all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+            code.len() == 8
+                && code
+                    .bytes()
+                    .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
         });
         let mode_ok = if parsed.query_pairs().any(|(key, _)| key == "mode") {
-            single_query_value(&parsed, "mode").is_some_and(|mode| mode == "trial" || mode == "discount")
+            single_query_value(&parsed, "mode")
+                .is_some_and(|mode| mode == "trial" || mode == "discount")
         } else {
             true
         };
-        return parsed.path() == "/apps" && code_ok && mode_ok && has_only_query_keys(&parsed, &["ref", "mode"]);
+        return parsed.path() == "/apps"
+            && code_ok
+            && mode_ok
+            && has_only_query_keys(&parsed, &["ref", "mode"]);
     }
     let path_ok = parsed.path_segments().is_some_and(|segments| {
         let parts = segments.filter(|part| !part.is_empty()).collect::<Vec<_>>();
@@ -981,8 +1107,17 @@ fn is_allowed_external_url(url: &str) -> bool {
 }
 
 fn keyring_entry(account: &'static str) -> Result<keyring::Entry, String> {
-    keyring::Entry::new(KEYRING_SERVICE, account)
+    keyring::Entry::new(&keyring_service_for_origin(API_ORIGIN), account)
         .map_err(|_| "desktop_secure_storage_unavailable".into())
+}
+
+fn keyring_service_for_origin(origin: &str) -> String {
+    if origin == DEFAULT_API_ORIGIN {
+        return KEYRING_SERVICE.into();
+    }
+    use sha2::{Digest, Sha256};
+    let digest = format!("{:x}", Sha256::digest(origin.as_bytes()));
+    format!("{KEYRING_SERVICE}.qa.{}", &digest[..32])
 }
 
 fn read_credential(account: &'static str) -> Result<Option<String>, String> {
@@ -1338,32 +1473,113 @@ fn store_access_token(state: &DesktopState, token: Option<String>) -> Result<(),
     Ok(())
 }
 
-fn clear_pending_link(state: &DesktopState) -> Result<(), String> {
-    *state
+fn begin_signin_attempt(state: &DesktopState) -> Result<u64, String> {
+    let mut pending = state
         .pending_link
         .lock()
-        .map_err(|_| "desktop_auth_state_unavailable".to_string())? = None;
+        .map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+    let generation = state.signin_generation.fetch_add(1, Ordering::SeqCst) + 1;
+    *pending = None;
+    Ok(generation)
+}
+
+fn store_started_signin(
+    state: &DesktopState,
+    generation: u64,
+    started: PendingLink,
+) -> Result<(), String> {
+    let mut pending = state
+        .pending_link
+        .lock()
+        .map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+    if state.signin_generation.load(Ordering::SeqCst) != generation {
+        return Err("oauth_cancelled".into());
+    }
+    *pending = Some(started);
     Ok(())
 }
 
+fn commit_signin_tokens_if_current<F>(
+    state: &DesktopState,
+    request_id: &str,
+    access_token: &str,
+    refresh_token: &str,
+    persist_refresh: F,
+) -> Result<bool, String>
+where
+    F: FnOnce(&str) -> Result<(), String>,
+{
+    let mut pending = state
+        .pending_link
+        .lock()
+        .map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+    if pending.as_ref().map(|link| link.link_request_id.as_str()) != Some(request_id) {
+        return Ok(false);
+    }
+    // Keep the ownership check and all credential writes under the same lock.
+    // Logout/replacement can never interleave between them.
+    persist_refresh(refresh_token)?;
+    store_access_token(state, Some(access_token.to_string()))?;
+    // A refresh may have snapshotted the previous owner's credentials while
+    // this replacement sign-in was pending. Commit invalidates that snapshot.
+    state.signin_generation.fetch_add(1, Ordering::SeqCst);
+    *pending = None;
+    Ok(true)
+}
+
+fn with_auth_generation<T, F>(
+    state: &DesktopState,
+    generation: u64,
+    mutation: F,
+) -> Result<T, String>
+where
+    F: FnOnce() -> Result<T, String>,
+{
+    let _pending = state
+        .pending_link
+        .lock()
+        .map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+    if state.signin_generation.load(Ordering::SeqCst) != generation {
+        return Err("oauth_cancelled".into());
+    }
+    mutation()
+}
+
+#[cfg(test)]
 fn clear_in_memory_auth(state: &DesktopState) -> Result<(), String> {
-    let access_error = store_access_token(state, None).err();
-    let pending_error = clear_pending_link(state).err();
-    let identity_error = state.identity_link.lock().map(|mut link| {
-        *link = IdentityLinkState::default();
-    }).map_err(|_| "desktop_auth_state_unavailable".to_string()).err();
-    access_error.or(pending_error).or(identity_error).map_or(Ok(()), Err)
+    clear_local_auth_with(state, || Ok(()))
 }
 
 fn clear_local_auth_with<F>(state: &DesktopState, delete_refresh: F) -> Result<(), String>
 where
     F: FnOnce() -> Result<(), String>,
 {
-    // Attempt both boundaries even if one fails. In particular, a keyring
-    // failure must not keep a usable access token alive in this process.
-    let memory_error = clear_in_memory_auth(state).err();
+    // Hold the same mutation lock through keyring deletion. A refresh cannot
+    // snapshot the old credential under a new generation midway through logout.
+    let (mut pending, pending_error) = match state.pending_link.lock() {
+        Ok(pending) => (pending, None),
+        Err(poisoned) => (
+            poisoned.into_inner(),
+            Some("desktop_auth_state_unavailable".to_string()),
+        ),
+    };
+    state.signin_generation.fetch_add(1, Ordering::SeqCst);
+    *pending = None;
+    let access_error = store_access_token(state, None).err();
+    let identity_error = state
+        .identity_link
+        .lock()
+        .map(|mut link| {
+            *link = IdentityLinkState::default();
+        })
+        .map_err(|_| "desktop_auth_state_unavailable".to_string())
+        .err();
     let credential_error = delete_refresh().err();
-    memory_error.or(credential_error).map_or(Ok(()), Err)
+    access_error
+        .or(pending_error)
+        .or(identity_error)
+        .or(credential_error)
+        .map_or(Ok(()), Err)
 }
 
 fn clear_local_auth(state: &DesktopState) -> Result<(), String> {
@@ -1383,9 +1599,10 @@ fn terminal_link_status(error: &str) -> Option<&'static str> {
         // A polling secret never leaves native memory. For a request that was
         // successfully started, the backend's intentionally opaque "invalid"
         // response means that the link was cancelled or otherwise terminated.
-        "desktop_link_cancelled" | "desktop_link_consumed" | "desktop_link_invalid" => {
-            Some("cancelled")
-        }
+        "desktop_link_cancelled"
+        | "desktop_link_consumed"
+        | "desktop_link_invalid"
+        | "oauth_cancelled" => Some("cancelled"),
         _ => None,
     }
 }
@@ -1402,8 +1619,16 @@ async fn refresh_access(
             return Ok(current);
         }
     }
-    let refresh_token = read_credential(KEYRING_REFRESH_ACCOUNT)?
-        .ok_or_else(|| "desktop_not_linked".to_string())?;
+    let (generation, refresh_token) = {
+        let _pending = state
+            .pending_link
+            .lock()
+            .map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+        let generation = state.signin_generation.load(Ordering::SeqCst);
+        let refresh_token = read_credential(KEYRING_REFRESH_ACCOUNT)?
+            .ok_or_else(|| "desktop_not_linked".to_string())?;
+        (generation, refresh_token)
+    };
     let response = state
         .client
         .post(api_url("/api/v3/desktop-auth/refresh")?)
@@ -1420,19 +1645,25 @@ async fn refresh_access(
                     | "desktop_refresh_reuse_detected"
                     | "desktop_session_revoked"
             ) {
-                let _ = delete_credential(KEYRING_REFRESH_ACCOUNT);
-                let _ = store_access_token(state, None);
+                with_auth_generation(state, generation, || {
+                    let _ = delete_credential(KEYRING_REFRESH_ACCOUNT);
+                    let _ = store_access_token(state, None);
+                    Ok(())
+                })?;
             }
             return Err(error);
         }
     };
-    if !(20..=4_096).contains(&refreshed.access_token.len())
+    if !refreshed.ok
+        || !(20..=4_096).contains(&refreshed.access_token.len())
         || !(32..=512).contains(&refreshed.refresh_token.len())
     {
         return Err("desktop_api_invalid_response".into());
     }
-    write_credential(KEYRING_REFRESH_ACCOUNT, &refreshed.refresh_token)?;
-    store_access_token(state, Some(refreshed.access_token.clone()))?;
+    with_auth_generation(state, generation, || {
+        write_credential(KEYRING_REFRESH_ACCOUNT, &refreshed.refresh_token)?;
+        store_access_token(state, Some(refreshed.access_token.clone()))
+    })?;
     Ok(refreshed.access_token)
 }
 
@@ -1901,6 +2132,7 @@ fn desktop_app_info() -> Result<DesktopAppInfo, String> {
         product_name: "HSK AI",
         version: env!("CARGO_PKG_VERSION"),
         platform: platform()?,
+        api_origin: API_ORIGIN,
         launch_issue: launch_issue(),
     })
 }
@@ -1958,6 +2190,12 @@ async fn desktop_update_check(
     app: tauri::AppHandle,
     state: tauri::State<'_, DesktopState>,
 ) -> Result<DesktopUpdateStatus, String> {
+    // QA builds must never contact the production update feed or replace
+    // themselves with a production binary mid-acceptance run.
+    if API_ORIGIN != DEFAULT_API_ORIGIN {
+        store_pending_update(&state, None)?;
+        return Ok(no_update_status());
+    }
     let _guard = state
         .update_guard
         .try_lock()
@@ -1977,6 +2215,9 @@ async fn desktop_update_install(
     state: tauri::State<'_, DesktopState>,
     local_ai: tauri::State<'_, LocalAiManager>,
 ) -> Result<(), String> {
+    if API_ORIGIN != DEFAULT_API_ORIGIN {
+        return Err("desktop_update_not_available".into());
+    }
     let _guard = state
         .update_guard
         .try_lock()
@@ -2070,7 +2311,7 @@ async fn desktop_link_start(
 ) -> Result<DesktopLinkDisplay, String> {
     let language = language.as_deref().map(validate_language).transpose()?;
     let referral_code = validate_signup_referral(referral_code.as_deref())?;
-    clear_pending_link(&state)?;
+    let generation = begin_signin_attempt(&state)?;
     let response = state
         .client
         .post(api_url("/api/v3/desktop-auth/link/start")?)
@@ -2090,12 +2331,10 @@ async fn desktop_link_start(
             .display_code
             .bytes()
             .all(|byte| byte.is_ascii_alphanumeric());
-    let request_id_valid = started.link_request_id.len() == 36
-        && started
-            .link_request_id
-            .bytes()
-            .all(|byte| byte.is_ascii_hexdigit() || byte == b'-');
-    if !display_code_valid
+    let request_id_valid = is_identity_attempt_id(&started.link_request_id);
+    if !started.ok
+        || started.status != "pending"
+        || !display_code_valid
         || !request_id_valid
         || !(32..=512).contains(&started.polling_secret.len())
         || !(1..=3_600).contains(&started.expires_in)
@@ -2116,10 +2355,7 @@ async fn desktop_link_start(
         display_code: pending.display_code.clone(),
         expires_in: pending.expires_in,
     };
-    *state
-        .pending_link
-        .lock()
-        .map_err(|_| "desktop_auth_state_unavailable".to_string())? = Some(pending);
+    store_started_signin(&state, generation, pending)?;
     Ok(display)
 }
 
@@ -2182,6 +2418,9 @@ async fn desktop_link_poll(
                 return Err(error);
             }
         };
+        if !linked.ok {
+            return Err("desktop_api_invalid_response".into());
+        }
         if linked.status == "pending" {
             return Ok(DesktopLinkPoll {
                 status: "pending".into(),
@@ -2206,9 +2445,19 @@ async fn desktop_link_poll(
             .refresh_token
             .filter(|value| (32..=512).contains(&value.len()))
             .ok_or_else(|| "desktop_api_invalid_response".to_string())?;
-        write_credential(KEYRING_REFRESH_ACCOUNT, &refresh_token)?;
-        store_access_token(&state, Some(access_token.clone()))?;
-        *current = None;
+        drop(current);
+        if !commit_signin_tokens_if_current(
+            &state,
+            &pending.link_request_id,
+            &access_token,
+            &refresh_token,
+            |token| write_credential(KEYRING_REFRESH_ACCOUNT, token),
+        )? {
+            return Ok(DesktopLinkPoll {
+                status: "cancelled".into(),
+                bootstrap: None,
+            });
+        }
         access_token
     };
     // Linking is already committed and credentials are stored. A transient
@@ -2258,6 +2507,8 @@ async fn desktop_oauth_providers(
     };
     let parsed: Result<OAuthProvidersResponse, String> = decode_response(response).await;
     let providers = parsed
+        .ok()
+        .filter(|body| body.ok)
         .map(|body| {
             body.providers
                 .into_iter()
@@ -2285,7 +2536,7 @@ async fn desktop_oauth_start(
     }
     let language = language.as_deref().map(validate_language).transpose()?;
     let referral_code = validate_signup_referral(referral_code.as_deref())?;
-    clear_pending_link(&state)?;
+    let generation = begin_signin_attempt(&state)?;
     let response = state
         .client
         .post(api_url("/api/v3/native-auth/oauth/start")?)
@@ -2302,16 +2553,7 @@ async fn desktop_oauth_start(
         .await
         .map_err(|_| "desktop_api_unavailable".to_string())?;
     let started: OAuthStartResponse = decode_response(response).await?;
-    let request_id_valid = started.link_request_id.len() == 36
-        && started
-            .link_request_id
-            .bytes()
-            .all(|byte| byte.is_ascii_hexdigit() || byte == b'-');
-    if !request_id_valid
-        || !(32..=512).contains(&started.polling_secret.len())
-        || !(1..=3_600).contains(&started.expires_in)
-        || !is_allowed_oauth_authorize_url(&started.authorize_url)
-    {
+    if !valid_oauth_start(&started, &provider) {
         return Err("desktop_api_invalid_response".into());
     }
     let pending = PendingLink {
@@ -2329,10 +2571,7 @@ async fn desktop_oauth_start(
         display_code: String::new(),
         expires_in: pending.expires_in,
     };
-    *state
-        .pending_link
-        .lock()
-        .map_err(|_| "desktop_auth_state_unavailable".to_string())? = Some(pending);
+    store_started_signin(&state, generation, pending)?;
     Ok(display)
 }
 
@@ -2371,94 +2610,205 @@ fn desktop_open_external_url(app: tauri::AppHandle, url: String) -> Result<(), S
 #[tauri::command]
 async fn desktop_identity_methods(state: tauri::State<'_, DesktopState>) -> Result<Value, String> {
     let value = authenticated_get_json(&state, "/api/v3/native-auth/identities").await?;
-    let linked = value.get("telegram_linked").and_then(Value::as_bool)
+    identity_methods_display(&value)
+}
+
+fn identity_methods_display(value: &Value) -> Result<Value, String> {
+    if value.get("ok").and_then(Value::as_bool) != Some(true) {
+        return Err("desktop_api_invalid_response".into());
+    }
+    let linked = value
+        .get("telegram_linked")
+        .and_then(Value::as_bool)
         .ok_or_else(|| "desktop_api_invalid_response".to_string())?;
-    Ok(json!({ "telegram_linked": linked }))
+    let items = value
+        .get("identities")
+        .and_then(Value::as_array)
+        .ok_or_else(|| "desktop_api_invalid_response".to_string())?;
+    // The profile only needs method names; email/subject/proof metadata stays
+    // out of the webview. Fail closed if the authoritative list is malformed.
+    let mut identities = Vec::new();
+    for item in items {
+        let provider = item
+            .get("provider")
+            .and_then(Value::as_str)
+            .ok_or_else(|| "desktop_api_invalid_response".to_string())?;
+        if matches!(provider, "google" | "apple") && !identities.contains(&provider) {
+            identities.push(provider);
+        }
+    }
+    Ok(json!({ "telegram_linked": linked, "identities": identities }))
 }
 
 async fn cancel_identity_proof(state: &DesktopState, pending: PendingIdentityLink) {
     // Cancellation is best effort when offline; expiry and the bot's explicit
     // approval remain server-owned. Never log the native proof on failure.
-    let _ = authenticated_post_json(state, "/api/v3/native-auth/identities/link/cancel", &json!({
-        "link_request_id": pending.link_request_id,
-        "polling_secret": pending.polling_secret,
-    })).await;
+    let _ = authenticated_post_json(
+        state,
+        "/api/v3/native-auth/identities/link/cancel",
+        &json!({
+            "link_request_id": pending.link_request_id,
+            "polling_secret": pending.polling_secret,
+        }),
+    )
+    .await;
 }
 
-fn take_identity_link(state: &DesktopState, attempt_id: Option<&str>) -> Result<Option<PendingIdentityLink>, String> {
-    let mut current = state.identity_link.lock().map_err(|_| "desktop_auth_state_unavailable".to_string())?;
-    if attempt_id.is_some() && current.attempt_id.as_deref() != attempt_id { return Ok(None); }
+fn take_identity_link(
+    state: &DesktopState,
+    attempt_id: Option<&str>,
+) -> Result<Option<PendingIdentityLink>, String> {
+    let mut current = state
+        .identity_link
+        .lock()
+        .map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+    if attempt_id.is_some() && current.attempt_id.as_deref() != attempt_id {
+        return Ok(None);
+    }
     current.attempt_id = None;
     Ok(current.pending.take())
 }
 
 #[tauri::command]
 async fn desktop_telegram_identity_start(
-    state: tauri::State<'_, DesktopState>, attempt_id: String,
+    state: tauri::State<'_, DesktopState>,
+    attempt_id: String,
 ) -> Result<DesktopLinkDisplay, String> {
-    if !is_identity_attempt_id(&attempt_id) { return Err("desktop_identity_attempt_invalid".into()); }
+    start_identity_link(&state, attempt_id, "telegram").await
+}
+
+#[tauri::command]
+async fn desktop_oauth_identity_start(
+    state: tauri::State<'_, DesktopState>,
+    attempt_id: String,
+    provider: String,
+) -> Result<DesktopLinkDisplay, String> {
+    if !matches!(provider.as_str(), "google" | "apple") {
+        return Err("oauth_provider_unsupported".into());
+    }
+    start_identity_link(&state, attempt_id, &provider).await
+}
+
+async fn start_identity_link(
+    state: &DesktopState,
+    attempt_id: String,
+    provider: &str,
+) -> Result<DesktopLinkDisplay, String> {
+    if !is_identity_attempt_id(&attempt_id) {
+        return Err("desktop_identity_attempt_invalid".into());
+    }
     let previous = {
-        let mut current = state.identity_link.lock().map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+        let mut current = state
+            .identity_link
+            .lock()
+            .map_err(|_| "desktop_auth_state_unavailable".to_string())?;
         current.attempt_id = Some(attempt_id.clone());
         current.pending.take()
     };
-    if let Some(pending) = previous { cancel_identity_proof(&state, pending).await; }
-    let value = authenticated_post_json(&state, "/api/v3/native-auth/identities/link/start", &json!({
-        "provider": "telegram", "mode": "telegram_approval",
+    if let Some(pending) = previous {
+        cancel_identity_proof(state, pending).await;
+    }
+    let value = authenticated_post_json(state, "/api/v3/native-auth/identities/link/start", &json!({
+        "provider": provider, "mode": if provider == "telegram" { "telegram_approval" } else { "browser_redirect" },
         "platform": platform()?, "app_version": env!("CARGO_PKG_VERSION"),
         "installation_key": installation_key()?,
     })).await?;
-    let started: OAuthStartResponse = serde_json::from_value(value)
-        .map_err(|_| "desktop_api_invalid_response".to_string())?;
-    if !is_identity_attempt_id(&started.link_request_id)
-        || !(32..=512).contains(&started.polling_secret.len())
-        || !(1..=3_600).contains(&started.expires_in)
-        || !is_allowed_telegram_identity_url(&started.authorize_url, &started.link_request_id)
-    { return Err("desktop_api_invalid_response".into()); }
+    let started: OAuthStartResponse =
+        serde_json::from_value(value).map_err(|_| "desktop_api_invalid_response".to_string())?;
+    if !valid_oauth_start(&started, provider) {
+        return Err("desktop_api_invalid_response".into());
+    }
     let pending = PendingIdentityLink {
-        link_request_id: started.link_request_id, polling_secret: started.polling_secret,
+        link_request_id: started.link_request_id,
+        polling_secret: started.polling_secret,
         authorize_url: started.authorize_url,
+        provider: provider.into(),
     };
     let abandoned = {
-        let mut current = state.identity_link.lock().map_err(|_| "desktop_auth_state_unavailable".to_string())?;
-        if current.attempt_id.as_deref() != Some(attempt_id.as_str()) { true }
-        else { current.pending = Some(pending.clone()); false }
+        let mut current = state
+            .identity_link
+            .lock()
+            .map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+        if current.attempt_id.as_deref() != Some(attempt_id.as_str()) {
+            true
+        } else {
+            current.pending = Some(pending.clone());
+            false
+        }
     };
     if abandoned {
-        cancel_identity_proof(&state, pending).await;
+        cancel_identity_proof(state, pending).await;
         return Err("oauth_cancelled".into());
     }
-    Ok(DesktopLinkDisplay { status: "pending", display_code: String::new(), expires_in: started.expires_in })
+    Ok(DesktopLinkDisplay {
+        status: "pending",
+        display_code: String::new(),
+        expires_in: started.expires_in,
+    })
 }
 
 fn identity_pending(state: &DesktopState, attempt_id: &str) -> Result<PendingIdentityLink, String> {
-    if !is_identity_attempt_id(attempt_id) { return Err("desktop_identity_attempt_invalid".into()); }
-    let current = state.identity_link.lock().map_err(|_| "desktop_auth_state_unavailable".to_string())?;
-    if current.attempt_id.as_deref() != Some(attempt_id) { return Err("oauth_cancelled".into()); }
-    current.pending.clone().ok_or_else(|| "oauth_cancelled".to_string())
+    if !is_identity_attempt_id(attempt_id) {
+        return Err("desktop_identity_attempt_invalid".into());
+    }
+    let current = state
+        .identity_link
+        .lock()
+        .map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+    if current.attempt_id.as_deref() != Some(attempt_id) {
+        return Err("oauth_cancelled".into());
+    }
+    current
+        .pending
+        .clone()
+        .ok_or_else(|| "oauth_cancelled".to_string())
 }
 
 fn identity_poll_display(value: &Value) -> Result<Value, String> {
-    let status = value.get("status").and_then(Value::as_str)
-        .filter(|status| matches!(*status, "pending" | "linked" | "denied" | "failed" | "expired" | "cancelled"))
+    let status = value
+        .get("status")
+        .and_then(Value::as_str)
+        .filter(|status| {
+            matches!(
+                *status,
+                "pending" | "linked" | "denied" | "failed" | "expired" | "cancelled"
+            )
+        })
         .ok_or_else(|| "desktop_api_invalid_response".to_string())?;
-    let error = value.get("error").and_then(Value::as_str).filter(|code| matches!(*code,
-        "oauth_identity_bound_to_other_user" | "oauth_identity_already_linked"));
+    let error = value.get("error").and_then(Value::as_str).filter(|code| {
+        matches!(
+            *code,
+            "oauth_identity_bound_to_other_user"
+                | "oauth_identity_already_linked"
+                | "oauth_cancelled"
+        )
+    });
     // Ignore every unrequested field, especially credentials or raw proof data.
     Ok(json!({ "status": status, "error": error }))
 }
 
 #[tauri::command]
 async fn desktop_identity_link_poll(
-    state: tauri::State<'_, DesktopState>, attempt_id: String,
+    state: tauri::State<'_, DesktopState>,
+    attempt_id: String,
 ) -> Result<Value, String> {
     let pending = identity_pending(&state, &attempt_id)?;
-    let result = authenticated_post_json(&state, "/api/v3/native-auth/identities/link/status", &json!({
-        "link_request_id": pending.link_request_id, "polling_secret": pending.polling_secret,
-    })).await;
+    let result = authenticated_post_json(
+        &state,
+        "/api/v3/native-auth/identities/link/status",
+        &json!({
+            "link_request_id": pending.link_request_id, "polling_secret": pending.polling_secret,
+        }),
+    )
+    .await;
     // A dismiss, logout or replacement invalidates late success and failure.
-    let mut current = state.identity_link.lock().map_err(|_| "desktop_auth_state_unavailable".to_string())?;
-    if current.attempt_id.as_deref() != Some(attempt_id.as_str()) { return Ok(json!({ "status": "cancelled" })); }
+    let mut current = state
+        .identity_link
+        .lock()
+        .map_err(|_| "desktop_auth_state_unavailable".to_string())?;
+    if current.attempt_id.as_deref() != Some(attempt_id.as_str()) {
+        return Ok(json!({ "status": "cancelled" }));
+    }
     let value = match result {
         Ok(value) => value,
         Err(error) => match terminal_link_status(&error) {
@@ -2467,7 +2817,9 @@ async fn desktop_identity_link_poll(
         },
     };
     let display = identity_poll_display(&value)?;
-    if display["status"] != "pending" { *current = IdentityLinkState::default(); }
+    if display["status"] != "pending" {
+        *current = IdentityLinkState::default();
+    }
     // Linking adds a method to the current account. Never store or return a
     // token pair, even if an unexpected API payload happens to contain one.
     Ok(display)
@@ -2475,21 +2827,32 @@ async fn desktop_identity_link_poll(
 
 #[tauri::command]
 fn desktop_identity_link_open(
-    app: tauri::AppHandle, state: tauri::State<'_, DesktopState>, attempt_id: String,
+    app: tauri::AppHandle,
+    state: tauri::State<'_, DesktopState>,
+    attempt_id: String,
 ) -> Result<(), String> {
     let pending = identity_pending(&state, &attempt_id)?;
-    if !is_allowed_telegram_identity_url(&pending.authorize_url, &pending.link_request_id) {
+    let allowed = if pending.provider == "telegram" {
+        is_allowed_telegram_identity_url(&pending.authorize_url, &pending.link_request_id)
+    } else {
+        is_allowed_provider_authorize_url(&pending.authorize_url, &pending.provider)
+    };
+    if !allowed {
         return Err("desktop_link_invalid".into());
     }
-    app.opener().open_url(pending.authorize_url, None::<&str>)
+    app.opener()
+        .open_url(pending.authorize_url, None::<&str>)
         .map_err(|_| "desktop_link_open_failed".to_string())
 }
 
 #[tauri::command]
 async fn desktop_identity_link_cancel(
-    state: tauri::State<'_, DesktopState>, attempt_id: String,
+    state: tauri::State<'_, DesktopState>,
+    attempt_id: String,
 ) -> Result<(), String> {
-    if !is_identity_attempt_id(&attempt_id) { return Err("desktop_identity_attempt_invalid".into()); }
+    if !is_identity_attempt_id(&attempt_id) {
+        return Err("desktop_identity_attempt_invalid".into());
+    }
     if let Some(pending) = take_identity_link(&state, Some(&attempt_id))? {
         cancel_identity_proof(&state, pending).await;
     }
@@ -3036,6 +3399,10 @@ async fn desktop_logout(
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let app = tauri::Builder::default()
+        // Windows forwards protocol activations to the running process. This
+        // plugin must be first so it cannot create a second pending session.
+        .plugin(tauri_plugin_single_instance::init(|_app, _args, _cwd| {}))
+        .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
@@ -3060,6 +3427,7 @@ pub fn run() {
             desktop_oauth_open,
             desktop_identity_methods,
             desktop_telegram_identity_start,
+            desktop_oauth_identity_start,
             desktop_identity_link_poll,
             desktop_identity_link_open,
             desktop_identity_link_cancel,
@@ -3092,6 +3460,15 @@ pub fn run() {
             desktop_voice_session_end,
             desktop_tts_speak,
         ])
+        .setup(|app| {
+            #[cfg(all(debug_assertions, target_os = "windows"))]
+            app.deep_link().register_all()?;
+            let handle = app.handle().clone();
+            app.deep_link().on_open_url(move |event| {
+                handle_auth_return(&handle, &event.urls());
+            });
+            Ok(())
+        })
         .build(tauri::generate_context!())
         .expect("failed to build HSK AI");
 
@@ -3119,20 +3496,20 @@ pub fn run() {
 mod tests {
     use super::{
         api_url, available_update_status, clear_local_auth_with, course_map_path,
-        current_access_token, is_allowed_external_url, is_allowed_oauth_authorize_url,
-        is_allowed_telegram_link, local_ai_analytics_payload, no_update_status,
+        current_access_token, has_pending_browser_auth, identity_methods_display, identity_pending,
+        identity_poll_display, is_allowed_external_url, is_allowed_oauth_authorize_url,
+        is_allowed_provider_authorize_url, is_allowed_referral_share_link,
+        is_allowed_telegram_identity_url, is_allowed_telegram_link, is_auth_return_url,
+        is_identity_attempt_id, local_ai_analytics_payload, no_update_status, take_identity_link,
         terminal_link_status, validate_checkout_attempt_id, validate_course_level,
         validate_course_track, validate_event_id, validate_language, validate_lesson_order,
-        validate_mistakes, validate_signup_referral, is_allowed_referral_share_link, validate_subscription_country, validate_subscription_image_data_url,
-        validate_subscription_method, validate_subscription_mode,
-        validate_subscription_overview_response, validate_subscription_plan,
-        validate_subscription_quote_response, validate_subscription_submit_response,
-        validate_tts_text, DesktopLinkDisplay, DesktopState, PendingLink, MAX_MISTAKES,
-        MAX_NATIVE_EVENT_DURATION_MS, MAX_NATIVE_EVENT_SIZE_BYTES, MAX_UPDATE_NOTES_CHARS,
-        MAX_UPDATE_VERSION_CHARS,
-        identity_pending, is_allowed_telegram_identity_url, is_identity_attempt_id,
-        take_identity_link, PendingIdentityLink,
-        identity_poll_display,
+        validate_mistakes, validate_signup_referral, validate_subscription_country,
+        validate_subscription_image_data_url, validate_subscription_method,
+        validate_subscription_mode, validate_subscription_overview_response,
+        validate_subscription_plan, validate_subscription_quote_response,
+        validate_subscription_submit_response, validate_tts_text, DesktopLinkDisplay, DesktopState,
+        PendingIdentityLink, PendingLink, MAX_MISTAKES, MAX_NATIVE_EVENT_DURATION_MS,
+        MAX_NATIVE_EVENT_SIZE_BYTES, MAX_UPDATE_NOTES_CHARS, MAX_UPDATE_VERSION_CHARS,
     };
     use serde_json::{json, to_value, Value};
 
@@ -3249,6 +3626,7 @@ mod tests {
 
     #[test]
     fn terminal_link_errors_become_explicit_ui_states() {
+        assert_eq!(terminal_link_status("oauth_cancelled"), Some("cancelled"));
         assert_eq!(
             terminal_link_status("desktop_link_expired"),
             Some("expired")
@@ -3281,7 +3659,10 @@ mod tests {
         identity.pending = Some(PendingIdentityLink {
             link_request_id: "abcdef12-1234-5678-9012-abcdef123456".into(),
             polling_secret: "p".repeat(32),
-            authorize_url: "https://t.me/test_bot?start=tg_identity_abcdef12-1234-5678-9012-abcdef123456".into(),
+            authorize_url:
+                "https://t.me/test_bot?start=tg_identity_abcdef12-1234-5678-9012-abcdef123456"
+                    .into(),
+            provider: "telegram".into(),
         });
         drop(identity);
 
@@ -3305,17 +3686,392 @@ mod tests {
         let good = format!("https://t.me/test_bot?start=tg_identity_{id}");
         assert!(is_identity_attempt_id(id));
         assert!(is_allowed_telegram_identity_url(&good, id));
-        assert!(!is_identity_attempt_id("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+        assert!(!is_identity_attempt_id(
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ));
         for bad in [
-            good.replace("https:", "http:"), good.replace("t.me/", "t.me.evil.example/"),
-            good.replace("t.me/", "evil.example@t.me/"), good.replace("t.me/", "t.me:8443/"),
-            good.replace("test_bot?", "test_bot/extra?"), good.replace("tg_identity_", "desktop_"),
-            format!("{good}&start=desktop_link"), format!("{good}&redirect=https://evil.example"),
-            format!("{good}#fragment"), "https://t.me/test_bot?start=desktop_link".into(),
-        ] { assert!(!is_allowed_telegram_identity_url(&bad, id), "unexpected bot link allowed"); }
-        assert!(!is_allowed_telegram_identity_url(&good, "abcdef12-1234-5678-9012-abcdef123457"));
+            good.replace("https:", "http:"),
+            good.replace("t.me/", "t.me.evil.example/"),
+            good.replace("t.me/", "evil.example@t.me/"),
+            good.replace("t.me/", "t.me:8443/"),
+            good.replace("test_bot?", "test_bot/extra?"),
+            good.replace("tg_identity_", "desktop_"),
+            format!("{good}&start=desktop_link"),
+            format!("{good}&redirect=https://evil.example"),
+            format!("{good}#fragment"),
+            "https://t.me/test_bot?start=desktop_link".into(),
+        ] {
+            assert!(
+                !is_allowed_telegram_identity_url(&bad, id),
+                "unexpected bot link allowed"
+            );
+        }
+        assert!(!is_allowed_telegram_identity_url(
+            &good,
+            "abcdef12-1234-5678-9012-abcdef123457"
+        ));
         // This proof cannot be used by the existing Telegram sign-in opener.
         assert!(!is_allowed_telegram_link(&good));
+    }
+
+    #[test]
+    fn provider_link_urls_match_the_requested_method() {
+        let google = "https://accounts.google.com/o/oauth2/v2/auth?state=x";
+        let apple = "https://appleid.apple.com/auth/authorize?state=x";
+        assert!(is_allowed_provider_authorize_url(google, "google"));
+        assert!(is_allowed_provider_authorize_url(apple, "apple"));
+        assert!(!is_allowed_provider_authorize_url(google, "apple"));
+        assert!(!is_allowed_provider_authorize_url(apple, "google"));
+        assert!(!is_allowed_provider_authorize_url(google, "telegram"));
+    }
+
+    #[test]
+    fn unsuccessful_or_malformed_200_start_cannot_supply_a_native_proof() {
+        let good = json!({"ok": true, "status": "pending",
+            "link_request_id": "abcdef12-1234-5678-9012-abcdef123456",
+            "polling_secret": "p".repeat(32), "expires_in": 300,
+            "authorize_url": "https://accounts.google.com/o/oauth2/v2/auth?state=x"});
+        let decode = |value: Value| {
+            serde_json::from_value::<super::OAuthStartResponse>(value).expect("typed response")
+        };
+        assert!(super::valid_oauth_start(&decode(good.clone()), "google"));
+        for (key, value) in [
+            ("ok", json!(false)),
+            ("status", json!("failed")),
+            ("link_request_id", json!("not-an-id")),
+            ("polling_secret", json!("short")),
+            ("expires_in", json!(0)),
+            (
+                "authorize_url",
+                json!("https://appleid.apple.com/auth/authorize?state=x"),
+            ),
+        ] {
+            let mut bad = good.clone();
+            bad[key] = value;
+            assert!(!super::valid_oauth_start(&decode(bad), "google"));
+        }
+        let mut missing = good;
+        missing.as_object_mut().expect("object").remove("ok");
+        assert!(serde_json::from_value::<super::OAuthStartResponse>(missing).is_err());
+    }
+
+    #[test]
+    fn unsuccessful_200_token_payloads_are_rejected_before_credential_commit() {
+        let good = json!({"ok": true, "status": "linked", "access_token": "a".repeat(32), "refresh_token": "r".repeat(32)});
+        assert!(serde_json::from_value::<super::LinkStatusResponse>(good.clone()).is_ok());
+        assert!(serde_json::from_value::<super::RefreshResponse>(good.clone()).is_ok());
+        for ok in [json!(false), json!(null), json!("true")] {
+            let mut bad = good.clone();
+            bad["ok"] = ok;
+            assert!(serde_json::from_value::<super::LinkStatusResponse>(bad.clone()).is_err());
+            assert!(serde_json::from_value::<super::RefreshResponse>(bad).is_err());
+        }
+        let mut missing = good;
+        missing.as_object_mut().expect("object").remove("ok");
+        assert!(serde_json::from_value::<super::LinkStatusResponse>(missing.clone()).is_err());
+        assert!(serde_json::from_value::<super::RefreshResponse>(missing).is_err());
+    }
+
+    #[test]
+    fn late_signin_start_never_replaces_a_new_proof_or_survives_logout() {
+        let state = DesktopState::new();
+        let proof = |id: &str| PendingLink {
+            link_request_id: id.into(),
+            polling_secret: "p".repeat(32),
+            display_code: String::new(),
+            bot_deep_link: String::new(),
+            expires_in: 300,
+            authorize_url: "https://accounts.google.com/o/oauth2/v2/auth?state=x".into(),
+        };
+        let old = super::begin_signin_attempt(&state).expect("old start");
+        let current = super::begin_signin_attempt(&state).expect("replacement start");
+        super::store_started_signin(&state, current, proof("current")).expect("current reply");
+        assert_eq!(
+            super::store_started_signin(&state, old, proof("old")),
+            Err("oauth_cancelled".into())
+        );
+        assert_eq!(
+            state
+                .pending_link
+                .lock()
+                .expect("proof")
+                .as_ref()
+                .expect("current")
+                .link_request_id,
+            "current"
+        );
+        assert!(current_access_token(&state)
+            .expect("no token minted")
+            .is_none());
+        let starting = super::begin_signin_attempt(&state).expect("before logout");
+        super::clear_in_memory_auth(&state).expect("logout clears proof");
+        assert_eq!(
+            super::store_started_signin(&state, starting, proof("late")),
+            Err("oauth_cancelled".into())
+        );
+        assert!(state.pending_link.lock().expect("logged out").is_none());
+    }
+
+    #[test]
+    fn method_list_exposes_only_names_and_requires_authoritative_structure() {
+        let display = identity_methods_display(&json!({
+            "ok": true,
+            "telegram_linked": false,
+            "identities": [
+                {"provider": "google", "email_masked": "hidden", "subject": "private"},
+                {"provider": "google"}, {"provider": "apple"}, {"provider": "unknown"},
+            ],
+            "access_token": "unexpected-token",
+        }))
+        .expect("method names");
+        assert_eq!(
+            display,
+            json!({"telegram_linked": false, "identities": ["google", "apple"]})
+        );
+        for bad in [
+            json!({}),
+            json!({"telegram_linked": true}),
+            json!({"ok": true, "telegram_linked": true, "identities": [null]}),
+            json!({"ok": true, "telegram_linked": true, "identities": {}}),
+            json!({"ok": false, "telegram_linked": true, "identities": []}),
+        ] {
+            assert!(identity_methods_display(&bad).is_err());
+        }
+    }
+
+    #[test]
+    fn stale_refresh_success_or_failure_cannot_mutate_a_replacement_session() {
+        let state = DesktopState::new();
+        let old_generation = state
+            .signin_generation
+            .load(std::sync::atomic::Ordering::SeqCst);
+        super::clear_in_memory_auth(&state).expect("logout");
+        let new_generation = super::begin_signin_attempt(&state).expect("new signin");
+        super::store_access_token(&state, Some("new-account-access".into())).expect("new session");
+        let mut mutated = false;
+        // This boundary guards both a late refresh write and an old failure's
+        // keyring/access deletion; neither callback may run for the old owner.
+        for _ in 0..2 {
+            assert_eq!(
+                super::with_auth_generation(&state, old_generation, || {
+                    mutated = true;
+                    super::store_access_token(&state, None)
+                }),
+                Err("oauth_cancelled".into())
+            );
+        }
+        assert!(!mutated);
+        assert_eq!(
+            current_access_token(&state),
+            Ok(Some("new-account-access".into()))
+        );
+        super::with_auth_generation(&state, new_generation, || {
+            super::store_access_token(&state, Some("new-account-refreshed".into()))
+        })
+        .expect("current refresh");
+        assert_eq!(
+            current_access_token(&state),
+            Ok(Some("new-account-refreshed".into()))
+        );
+    }
+
+    #[test]
+    fn logout_holds_the_mutation_lock_until_secure_credential_deletion_finishes() {
+        let state = DesktopState::new();
+        super::store_access_token(&state, Some("before-logout".into())).expect("session");
+        super::clear_local_auth_with(&state, || {
+            assert!(state.pending_link.try_lock().is_err());
+            assert!(current_access_token(&state)
+                .expect("access cleared first")
+                .is_none());
+            Ok(())
+        })
+        .expect("logout");
+        assert!(state.pending_link.try_lock().is_ok());
+    }
+
+    #[test]
+    fn signin_commit_invalidates_refreshes_started_during_its_pending_window() {
+        let state = DesktopState::new();
+        super::store_access_token(&state, Some("old-owner-access".into())).expect("old owner");
+        let generation = super::begin_signin_attempt(&state).expect("replacement begins");
+        super::store_started_signin(
+            &state,
+            generation,
+            PendingLink {
+                link_request_id: "replacement".into(),
+                polling_secret: "p".repeat(32),
+                display_code: String::new(),
+                bot_deep_link: String::new(),
+                expires_in: 300,
+                authorize_url: "https://appleid.apple.com/auth/authorize?state=x".into(),
+            },
+        )
+        .expect("replacement pending");
+        // Old-owner refresh begins after the replacement's start generation,
+        // before its proof completes, and receives a late success or failure.
+        let refresh_generation = state
+            .signin_generation
+            .load(std::sync::atomic::Ordering::SeqCst);
+        assert_eq!(refresh_generation, generation);
+        assert!(super::commit_signin_tokens_if_current(
+            &state,
+            "replacement",
+            "new-owner-access",
+            "new-owner-refresh",
+            |_| Ok(())
+        )
+        .expect("new owner signs in"));
+        for _ in 0..2 {
+            assert_eq!(
+                super::with_auth_generation(
+                    &state,
+                    refresh_generation,
+                    || -> Result<(), String> {
+                        panic!("old-owner refresh mutated committed replacement credentials");
+                    }
+                ),
+                Err("oauth_cancelled".into())
+            );
+        }
+        assert_eq!(
+            current_access_token(&state),
+            Ok(Some("new-owner-access".into()))
+        );
+    }
+
+    #[test]
+    fn stale_signin_poll_never_writes_credentials_after_replacement_or_logout() {
+        let state = DesktopState::new();
+        let proof = |id: &str| PendingLink {
+            link_request_id: id.into(),
+            polling_secret: "p".repeat(32),
+            display_code: String::new(),
+            bot_deep_link: String::new(),
+            expires_in: 300,
+            authorize_url: "https://accounts.google.com/o/oauth2/v2/auth?state=x".into(),
+        };
+        let generation = super::begin_signin_attempt(&state).expect("start");
+        super::store_started_signin(&state, generation, proof("new")).expect("new proof");
+        assert!(!super::commit_signin_tokens_if_current(
+            &state,
+            "old",
+            "old-access",
+            "old-refresh",
+            |_| panic!("stale poll wrote refresh token")
+        )
+        .expect("ignored old poll"));
+        assert!(current_access_token(&state)
+            .expect("no access token")
+            .is_none());
+        assert_eq!(
+            state
+                .pending_link
+                .lock()
+                .expect("current proof")
+                .as_ref()
+                .expect("new")
+                .link_request_id,
+            "new"
+        );
+        super::clear_in_memory_auth(&state).expect("logout");
+        assert!(!super::commit_signin_tokens_if_current(
+            &state,
+            "new",
+            "late-access",
+            "late-refresh",
+            |_| panic!("logged-out poll wrote refresh token")
+        )
+        .expect("ignored late poll"));
+        assert!(current_access_token(&state)
+            .expect("still logged out")
+            .is_none());
+        let generation = super::begin_signin_attempt(&state).expect("fresh start");
+        super::store_started_signin(&state, generation, proof("fresh")).expect("fresh proof");
+        let mut saved = None;
+        assert!(super::commit_signin_tokens_if_current(
+            &state,
+            "fresh",
+            "fresh-access",
+            "fresh-refresh",
+            |token| {
+                saved = Some(token.to_string());
+                Ok(())
+            }
+        )
+        .expect("current poll"));
+        assert_eq!(saved.as_deref(), Some("fresh-refresh"));
+        assert_eq!(
+            current_access_token(&state),
+            Ok(Some("fresh-access".into()))
+        );
+        assert!(state.pending_link.lock().expect("consumed proof").is_none());
+    }
+
+    #[test]
+    fn qa_origin_never_reuses_production_or_other_qa_credentials() {
+        let production = super::keyring_service_for_origin(super::DEFAULT_API_ORIGIN);
+        let qa = super::keyring_service_for_origin("https://qa.example.com");
+        let other = super::keyring_service_for_origin("https://other-qa.example.com");
+        assert_eq!(production, "com.pomp.hskai");
+        assert_ne!(qa, production);
+        assert_ne!(qa, other);
+        assert_eq!(
+            qa,
+            super::keyring_service_for_origin("https://qa.example.com")
+        );
+        assert!(!qa.contains("example.com"));
+    }
+
+    #[test]
+    fn browser_return_is_an_exact_wake_signal_with_a_live_native_proof() {
+        assert_eq!(
+            is_auth_return_url("pomp-hsk-ai://oauth-return"),
+            super::API_ORIGIN == super::DEFAULT_API_ORIGIN
+        );
+        assert_eq!(
+            is_auth_return_url("pomp-hsk-ai-qa://oauth-return"),
+            super::API_ORIGIN != super::DEFAULT_API_ORIGIN
+        );
+        for bad in [
+            "pomp-hsk-ai://oauth-return/",
+            "pomp-hsk-ai://oauth-return?status=linked",
+            "pomp-hsk-ai://oauth-return#token",
+            "https://oauth-return",
+            "pomp-hsk-ai://other",
+            "pomp-hsk-ai://evil@oauth-return",
+            "pomp-hsk-ai://oauth-return:443",
+        ] {
+            assert!(!is_auth_return_url(bad));
+        }
+        let state = DesktopState::new();
+        assert!(!has_pending_browser_auth(&state));
+        *state.access_token.lock().expect("existing session") =
+            Some("existing-access-token".into());
+        let id = "abcdef12-1234-5678-9012-abcdef123456";
+        {
+            let mut identity = state.identity_link.lock().expect("identity");
+            identity.attempt_id = Some(id.into());
+            identity.pending = Some(PendingIdentityLink {
+                link_request_id: id.into(),
+                polling_secret: "p".repeat(32),
+                authorize_url: "https://accounts.google.com/o/oauth2/v2/auth?state=x".into(),
+                provider: "google".into(),
+            });
+        }
+        assert!(has_pending_browser_auth(&state));
+        assert_eq!(
+            current_access_token(&state),
+            Ok(Some("existing-access-token".into()))
+        );
+        assert_eq!(
+            identity_pending(&state, id)
+                .expect("proof retained")
+                .polling_secret,
+            "p".repeat(32)
+        );
+        take_identity_link(&state, Some(id)).expect("dismiss");
+        assert!(!has_pending_browser_auth(&state));
     }
 
     #[test]
@@ -3328,16 +4084,25 @@ mod tests {
             let mut identity = state.identity_link.lock().expect("identity state");
             identity.attempt_id = Some(id.into());
             identity.pending = Some(PendingIdentityLink {
-                link_request_id: id.into(), polling_secret: "p".repeat(32),
+                link_request_id: id.into(),
+                polling_secret: "p".repeat(32),
                 authorize_url: format!("https://t.me/test_bot?start=tg_identity_{id}"),
+                provider: "telegram".into(),
             });
         }
         assert!(identity_pending(&state, other).is_err());
-        assert!(take_identity_link(&state, Some(other)).expect("stale cancel").is_none());
+        assert!(take_identity_link(&state, Some(other))
+            .expect("stale cancel")
+            .is_none());
         assert!(identity_pending(&state, id).is_ok());
-        assert!(take_identity_link(&state, Some(id)).expect("cancel").is_some());
+        assert!(take_identity_link(&state, Some(id))
+            .expect("cancel")
+            .is_some());
         assert!(identity_pending(&state, id).is_err());
-        assert_eq!(current_access_token(&state), Ok(Some("existing-access-token".into())));
+        assert_eq!(
+            current_access_token(&state),
+            Ok(Some("existing-access-token".into()))
+        );
         assert!(state.pending_link.lock().expect("signin state").is_none());
     }
 
@@ -3348,10 +4113,16 @@ mod tests {
             "refresh_token": "unrequested-secret", "polling_secret": "unrequested-secret",
             "user_id": 999, "bootstrap": {"user": {"id": 999}},
             "error": "untrusted backend text",
-        })).expect("safe status");
+        }))
+        .expect("safe status");
         assert_eq!(display, json!({"status": "linked", "error": null}));
-        assert_eq!(identity_poll_display(&json!({"status": "denied", "error": "oauth_identity_bound_to_other_user"})).expect("conflict"),
-            json!({"status": "denied", "error": "oauth_identity_bound_to_other_user"}));
+        assert_eq!(
+            identity_poll_display(
+                &json!({"status": "denied", "error": "oauth_identity_bound_to_other_user"})
+            )
+            .expect("conflict"),
+            json!({"status": "denied", "error": "oauth_identity_bound_to_other_user"})
+        );
         assert!(identity_poll_display(&json!({"status": "authenticated"})).is_err());
         assert!(identity_poll_display(&json!({"status": 1})).is_err());
     }
@@ -3486,16 +4257,35 @@ mod tests {
         for code in ["abcdef12", "ref_abcdef12", "ra_abcdef12", "ri_abcdef12"] {
             assert_eq!(validate_signup_referral(Some(code)), Ok(Some(code)));
         }
-        for code in ["abcdef", "ABCDEF12", "ref_ref_abcdef12", "abcdef12?admin=true", "https://evil.example/abcdef12"] {
+        for code in [
+            "abcdef",
+            "ABCDEF12",
+            "ref_ref_abcdef12",
+            "abcdef12?admin=true",
+            "https://evil.example/abcdef12",
+        ] {
             assert!(validate_signup_referral(Some(code)).is_err());
         }
         for suffix in ["", "&mode=trial", "&mode=discount"] {
-            assert!(is_allowed_referral_share_link(&format!("https://telegram-chinese-bot-production.up.railway.app/apps?ref=abcdef12{suffix}")));
+            assert!(is_allowed_referral_share_link(&format!(
+                "{}/apps?ref=abcdef12{suffix}",
+                super::API_ORIGIN
+            )));
         }
-        for suffix in ["&mode=trial&mode=discount", "&ref=aaaaaaaa", "&admin=true", "#fragment"] {
-            assert!(!is_allowed_referral_share_link(&format!("https://telegram-chinese-bot-production.up.railway.app/apps?ref=abcdef12{suffix}")));
+        for suffix in [
+            "&mode=trial&mode=discount",
+            "&ref=aaaaaaaa",
+            "&admin=true",
+            "#fragment",
+        ] {
+            assert!(!is_allowed_referral_share_link(&format!(
+                "{}/apps?ref=abcdef12{suffix}",
+                super::API_ORIGIN
+            )));
         }
-        assert!(!is_allowed_referral_share_link("https://evil.example/apps?ref=abcdef12&mode=trial"));
+        assert!(!is_allowed_referral_share_link(
+            "https://evil.example/apps?ref=abcdef12&mode=trial"
+        ));
     }
 
     #[test]
