@@ -156,7 +156,7 @@ var L={ru:{title:"Мои ошибки",sub:"Собираются автомат�
     loading:"Боргирӣ…",more:"Боз нишон додан",err:"Хатогӣ рух дод. Боз кӯшиш кунед.",buildHint:"Ҷумлаи дурустро созед",undo:"Қафо",clear:"Тоза кардан",check:"Санҷидан"}}[LANG];
 /* Exact local-first display copy; each original L literal remains offline fallback. */
 var MISTAKES_UI=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};
-function mistakesUILookup(key,fallback){var v=MISTAKES_UI["mistakes."+key];return typeof v==="string"&&v?v:fallback}
+function mistakesUILookup(key,fallback){var v=MISTAKES_UI["mistakesPage."+key];return typeof v==="string"&&v?v:fallback}
 Object.keys(L).forEach(function(key){
   if(typeof L[key]==="string")L[key]=mistakesUILookup(key,L[key]);
   else if(key==="cats"||key==="sources")Object.keys(L[key]).forEach(function(subkey){

@@ -35,8 +35,8 @@
     },
     "app/static/course_v3_mistakes.html": {
       "baseline_sha1": "b273a6dbf85884b99ab3c194546a6b9d4b0eecbf",
-      "reviewed_sha1": "75042e8130e2976e8d90ccdb33564bb5b08aec1d",
-      "reason": "Exactly 53 Mistakes UI display literals per UZ/RU/TJ including nested cats/sources labels moved to offline catalog with original fallback; review session access, answers, grading, audio, XP, Pro and server APIs unchanged."
+      "reviewed_sha1": "8646e5ce78ebea0b2c314195975e02a63cbbb697",
+      "reason": "Exactly 53 Mistakes UI display literals per UZ/RU/TJ including nested cats/sources labels moved to offline catalog with original fallback; review session access, answers, grading, audio, XP, Pro and server APIs unchanged. Corrected UI namespace to mistakesPage.* to avoid existing Android resource-name collision at mistakesSub."
     },
     "app/static/course_v3_pronunciation.html": {
       "baseline_sha1": "d05f5dd02da2befc4db9bc07db343a19bd1c0e32",

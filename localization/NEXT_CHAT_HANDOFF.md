@@ -1,5 +1,7 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+**CI follow-up:** First 75-label commit `bad8cdc5` failed P0 only because original `mistakes.sub` normalized to the already present Android resource name `hsk_course_mistakes_sub` (from `mistakesSub`) and because four new genuine placeholders raised the reviewed signature count 3→7. Corrected by renaming the *new* namespace `mistakes.*` to `mistakesPage.*` (all 53 labels, original values intact), updating the two source/test contracts and regenerating six artifacts. The previous HEAD's tests for original 75×3 strings and Node fallback already passed; verify the correction commit's full CI before marking completed.
+
 ## Mistakes + Pronunciation: 75 exact display labels (2026-10-18)
 
 - `course_v3_mistakes.html`: **53 exact UZ/RU/TJ display-only labels**, including 4 nested category labels and 8 source labels; original inline dictionaries remain synchronous fallback. `course_v3_pronunciation.html`: **22 exact UZ/RU/TJ display-only labels**, same fallback. Both preload `/course_v3_data/hsk-course-i18n.js?v=20261018-practice-ui-v15` once as a local static asset, no per-label backend call.

@@ -1587,3 +1587,7 @@ Keep GitHub's branch current without force-resetting unrelated user work.
 ## Mistakes + Pronunciation display UI runtime adoption (2026-10-18)
 
 - Reviewed 53 Mistakes display labels (including cats/sources nested groups) and 22 Pronunciation labels, exact UZ/RU/TJ string parity, 287 → **362** locally bundled course UI keys per locale, six deterministic generated platform outputs. Both pages preload one local JS bundle and retain every original inline literal as fallback. Locale/placeholder/contract/Node runtime regression added to P0, source Git blobs pinned; user data, server scoring, audio/STT, Pro, progress and daily access not modified. PR #179 Draft; device QA and fresh CI confirmation required.
+
+### Android UI resource-name normalization collision correction (2026-10-18)
+
+- Original `mistakes.sub` and existing unrelated `mistakesSub` both collapse to `hsk_course_mistakes_sub`; changed the new Mistakes display-only family to `mistakesPage.*` for all 53 labels to preserve the generator's fail-closed uniqueness invariant without changing existing shipped resource names. Four original localized placeholders (`reviewCount`, `reviewCat`, `progress`, `resCleared`) raise expected placeholder-bearing keys from 3 to 7. All locale/display values and Mistakes original `L` fallback unchanged; source Git blob review updated, generated outputs and CI tests regenerated.

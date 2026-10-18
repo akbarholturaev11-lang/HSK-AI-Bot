@@ -13,7 +13,7 @@ from scripts.i18n_build_course_catalogs import (
 
 
 class CourseLocalCatalogTests(unittest.TestCase):
-    def test_reviewed_277_keys_and_six_generated_targets(self):
+    def test_reviewed_362_keys_and_six_generated_targets(self):
         catalogs = read_sources(ROOT)
         self.assertEqual(set(catalogs), set(LOCALES))
         self.assertTrue(all(len(catalogs[loc]) == 362 for loc in LOCALES))

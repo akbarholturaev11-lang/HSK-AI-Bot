@@ -44,7 +44,7 @@ class PracticeUIAdoptionTests(unittest.TestCase):
                     self.assertEqual(len(old), count)
                     self.assertEqual(len(catalog), 362)
                     for key, label in old.items():
-                        self.assertEqual(catalog[f"{page}.{key}"], label)
+                        self.assertEqual(catalog[f"{'mistakesPage' if page == 'mistakes' else page}.{key}"], label)
             self.assertLess(source.index("hsk-course-i18n.js?v=20261018-practice-ui-v15"),
                             source.index("var L={"))
             self.assertEqual(source.count("var L={"), 1)
@@ -70,7 +70,7 @@ class PracticeUIAdoptionTests(unittest.TestCase):
             '"/api/voice-practice/pronounce"',
         ):
             self.assertIn(marker, pronunciation)
-        self.assertIn('MISTAKES_UI["mistakes."+key]', mistakes)
+        self.assertIn('MISTAKES_UI["mistakesPage."+key]', mistakes)
         self.assertIn('mistakesUILookup(key+"."+subkey,L[key][subkey])', mistakes)
         self.assertIn('PRONUNCIATION_UI["pronunciation."+key]', pronunciation)
         self.assertIn('if(typeof v==="string"&&v)L[key]=v', pronunciation)
@@ -96,8 +96,8 @@ process.stdout.write(JSON.stringify({
             for locale in LOCALES:
                 with self.subTest(page=page, locale=locale):
                     patch = (
-                        {"mistakes.title": "QA TITLE", "mistakes.cats.word": "QA CATEGORY",
-                         "mistakes.sources.lesson": "QA SOURCE", "mistakes.reviewSub": ""}
+                        {"mistakesPage.title": "QA TITLE", "mistakesPage.cats.word": "QA CATEGORY",
+                         "mistakesPage.sources.lesson": "QA SOURCE", "mistakesPage.reviewSub": ""}
                         if page == "mistakes" else
                         {"pronunciation.review": "QA REVIEW", "pronunciation.listen": "QA LISTEN",
                          "pronunciation.hint": ""}
