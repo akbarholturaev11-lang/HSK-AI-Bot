@@ -1,5 +1,11 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## P3 all-746 lesson overlay structural audit (2026-10-19)
+
+- Added `scripts/i18n_lesson_overlay_full_audit.py` to review **every existing lesson file** in the 7 numbered HSK 2.0/3.0 tracks (source baseline **746** files: 63, 72, 109, 181, 103, 73, 145). It reuses approved display field patterns and the SHA-256 version-bound, in-memory overlay guard, validating 3 original locales on each structurally complete source. It keeps assessment/answer and `reverse_builder` fields excluded from overlays; emits **only counts, fixed issue codes, and safe lesson filenames** for blocked sources. No new public static pack, paid lesson exposure, answer/grade serialization or changed runtime fetch/payment/auth/cache.
+- Separate P0 regression `tests/test_i18n_lesson_overlay_full_audit.py` validates 746-source accounting, seven tracks, synthetic missing locales/identity/invalid JSON, redaction and explicit known `nhsk2/lesson_73` empty-map blocker. P0 CI runs both unittest and report CLI; output is /tmp/i18n-p0/p3-all-lesson-readiness.json, a safe **read-only** artifact. Prior 14-sample report remains available unchanged. **Consult actual new CI artifact/log for verified aggregate blocker counts; do not assume 746 content translations are ready.**
+- No content files, original 794 UI catalog keys, existing clients, entitlement or Pro server actions changed. PR #179 stays Draft; `main`/production unmodified. Next: review each structural blocker, classify safe human-authored fixes, assess public/private transport separately, and then consider fully validated P3 runtime adapters with real-device/manual QA.
+
 ## P3 seven-track first/last source audit — fail-closed blocker (2026-10-19)
 
 - Added a new **read-only** `scripts/i18n_lesson_overlay_readiness_audit.py` for the first and last source JSON from each existing HSK 2.0/3.0 track (7 tracks, 14 source lessons). It invokes the private SHA-256 source-bound overlay proof across UZ/RU/TJ, checks original grading/answer field **counts only**, counts excluded `reverse_builder` cards, and emits only structural numbers / safe source filenames, never Chinese, translated content, options, grading values or learner data.
