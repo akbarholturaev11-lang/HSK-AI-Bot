@@ -1573,3 +1573,9 @@ Keep GitHub's branch current without force-resetting unrelated user work.
 
 - Android `LevelChoices` adopts seven existing exact-safe HSK description XML resources and `GoalChoices` adopts all ten goal title/description XML resources. Original native locale lists/maps remain fallbacks; the selected HSK/goal IDs and state callbacks are unchanged. Android-only beginner wording remains untouched by design.
 - App-language-pinned `Configuration` reads (tj/tg compatibility) with no per-string API. Added source/native three-locale parity regression. Android CI and actual language/offline/mobile QA still need independent confirmation; no main merge or production deploy.
+
+### P2 nineteenth UI batch — Test Center 49 static copy labels (2026-10-18)
+
+- Extended `course` UI catalog from 228 to **277 key/locale** by moving exactly 19 Test Center hub labels, 17 exam runner labels, 3 exam section titles, 6 placement UI labels, 3 HSK 3.0 placeholder labels and 1 personal-level badge; **147 UZ/RU/TJ source/display values** preserved, all six generated outputs synchronized.
+- `app/static/course_v3_test.html` loads a cacheable static catalog before its inline runtime; `L`, `EM`, `EM.sec`, `PT`, `HSK30_SOON` and `MINE_T` prefer static values and use the unmodified inline literals as fallback. No network-per-text, and no change to exam questions, answers, server grading/access, payment, progress, XP, or placement algorithm.
+- Review manifest pins the new source Git blob. Added exact locale parity, runtime lookup and gated test-source invariants; P0 CI now includes test file and updated 277-key strict contract. This is source adoption, **not** device Telegram WebView/offline or paid/free release QA. PR #179 stays Draft; main/production untouched.

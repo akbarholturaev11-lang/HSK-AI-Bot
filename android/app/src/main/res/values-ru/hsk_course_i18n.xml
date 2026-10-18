@@ -207,6 +207,55 @@
     <string name="hsk_course_streak_display_one" formatted="false">день в ударе!</string>
     <string name="hsk_course_subscribe" formatted="false">Получить HSK AI Pro ⭐️</string>
     <string name="hsk_course_test_center" formatted="false">Тест-центр</string>
+    <string name="hsk_course_test_exam_again" formatted="false">Пройти заново</string>
+    <string name="hsk_course_test_exam_fail_sub" formatted="false">Продолжайте подготовку к HSK </string>
+    <string name="hsk_course_test_exam_failed" formatted="false">Пока не пройден</string>
+    <string name="hsk_course_test_exam_listen" formatted="false">Прослушать</string>
+    <string name="hsk_course_test_exam_mistakes" formatted="false">Повторите эти ответы</string>
+    <string name="hsk_course_test_exam_of" formatted="false">из</string>
+    <string name="hsk_course_test_exam_pass_sub" formatted="false">Вы готовы к уровню HSK </string>
+    <string name="hsk_course_test_exam_passed" formatted="false">Тест пройден!</string>
+    <string name="hsk_course_test_exam_q" formatted="false">Вопрос</string>
+    <string name="hsk_course_test_exam_result" formatted="false">Результат</string>
+    <string name="hsk_course_test_exam_retry" formatted="false">Отправить ещё раз</string>
+    <string name="hsk_course_test_exam_save_err" formatted="false">Результат не сохранился. Повторите отправку.</string>
+    <string name="hsk_course_test_exam_saving" formatted="false">Проверяем на сервере…</string>
+    <string name="hsk_course_test_exam_tf_false" formatted="false">Неверно</string>
+    <string name="hsk_course_test_exam_tf_true" formatted="false">Верно</string>
+    <string name="hsk_course_test_exam_to_list" formatted="false">К списку тестов</string>
+    <string name="hsk_course_test_exam_xp" formatted="false">XP получено</string>
+    <string name="hsk_course_test_exam_section_listening" formatted="false">Аудирование</string>
+    <string name="hsk_course_test_exam_section_reading" formatted="false">Чтение</string>
+    <string name="hsk_course_test_exam_section_writing" formatted="false">Письмо</string>
+    <string name="hsk_course_test_hsk30_soon_back" formatted="false">Назад</string>
+    <string name="hsk_course_test_hsk30_soon_sub" formatted="false">Новый формат экзамена HSK 3.0 ещё готовится.</string>
+    <string name="hsk_course_test_hsk30_soon_title" formatted="false">HSK 3.0 · тесты</string>
+    <string name="hsk_course_test_hub_e_back" formatted="false">К списку</string>
+    <string name="hsk_course_test_hub_e_sub" formatted="false">Проверьте интернет и попробуйте открыть тест ещё раз.</string>
+    <string name="hsk_course_test_hub_e_title" formatted="false">Тест не загрузился</string>
+    <string name="hsk_course_test_hub_ex_head" formatted="false">Тесты HSK</string>
+    <string name="hsk_course_test_hub_lim_back" formatted="false">Назад</string>
+    <string name="hsk_course_test_hub_lim_pay" formatted="false">Получить HSK AI Pro ⭐️</string>
+    <string name="hsk_course_test_hub_lim_sub" formatted="false">Одна попытка доступна бесплатно. Оформите HSK AI Pro для безлимита или возвращайтесь завтра.</string>
+    <string name="hsk_course_test_hub_lim_title" formatted="false">Бесплатная попытка использована</string>
+    <string name="hsk_course_test_hub_listen" formatted="false">听力 Аудир.</string>
+    <string name="hsk_course_test_hub_min" formatted="false">мин</string>
+    <string name="hsk_course_test_hub_mine_level" formatted="false">Ваш уровень</string>
+    <string name="hsk_course_test_hub_p_btn" formatted="false">Тест на уровень · ~5 мин</string>
+    <string name="hsk_course_test_hub_p_sub" formatted="false">Пройдите короткий тест — мы определим подходящий уровень HSK.</string>
+    <string name="hsk_course_test_hub_p_title" formatted="false">Не знаете свой уровень?</string>
+    <string name="hsk_course_test_hub_q" formatted="false">вопросов</string>
+    <string name="hsk_course_test_hub_read" formatted="false">阅读 Чтение</string>
+    <string name="hsk_course_test_hub_start" formatted="false">Начать</string>
+    <string name="hsk_course_test_hub_sub" formatted="false">Короткие тесты по разделам HSK: аудирование, чтение и письмо</string>
+    <string name="hsk_course_test_hub_title" formatted="false">Тест-центр</string>
+    <string name="hsk_course_test_hub_write" formatted="false">书写 Письмо</string>
+    <string name="hsk_course_test_placement_back" formatted="false">Вернуться к курсу</string>
+    <string name="hsk_course_test_placement_lead" formatted="false">Выберите значение</string>
+    <string name="hsk_course_test_placement_lvl" formatted="false">HSK</string>
+    <string name="hsk_course_test_placement_rec" formatted="false">Рекомендуем</string>
+    <string name="hsk_course_test_placement_rec_sub" formatted="false">По результату вам подходит уровень HSK </string>
+    <string name="hsk_course_test_placement_retake" formatted="false">Пройти заново</string>
     <string name="hsk_course_test_sub" formatted="false">Экзамены HSK и определение уровня</string>
     <string name="hsk_course_trial_active" formatted="false">HSK AI Pro активен</string>
     <string name="hsk_course_trial_body" formatted="false">Попробуете все основные возможности. Деньги автоматически не спишутся.</string>

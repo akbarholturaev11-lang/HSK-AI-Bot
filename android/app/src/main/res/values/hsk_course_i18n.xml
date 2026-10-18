@@ -207,6 +207,55 @@
     <string name="hsk_course_streak_display_one" formatted="false">kun ketma-ket!</string>
     <string name="hsk_course_subscribe" formatted="false">HSK AI Pro ⭐️ olish</string>
     <string name="hsk_course_test_center" formatted="false">Test markazi</string>
+    <string name="hsk_course_test_exam_again" formatted="false">Qayta topshirish</string>
+    <string name="hsk_course_test_exam_fail_sub" formatted="false">Tayyorgarlikni davom ettiring: HSK </string>
+    <string name="hsk_course_test_exam_failed" formatted="false">Hozircha o\'tilmadi</string>
+    <string name="hsk_course_test_exam_listen" formatted="false">Tinglash</string>
+    <string name="hsk_course_test_exam_mistakes" formatted="false">Shu javoblarni takrorlang</string>
+    <string name="hsk_course_test_exam_of" formatted="false">/</string>
+    <string name="hsk_course_test_exam_pass_sub" formatted="false">Siz HSK darajasiga tayyorsiz: HSK </string>
+    <string name="hsk_course_test_exam_passed" formatted="false">Test topshirildi!</string>
+    <string name="hsk_course_test_exam_q" formatted="false">Savol</string>
+    <string name="hsk_course_test_exam_result" formatted="false">Natija</string>
+    <string name="hsk_course_test_exam_retry" formatted="false">Qayta yuborish</string>
+    <string name="hsk_course_test_exam_save_err" formatted="false">Natija saqlanmadi. Yana yuboring.</string>
+    <string name="hsk_course_test_exam_saving" formatted="false">Server tekshiryapti…</string>
+    <string name="hsk_course_test_exam_tf_false" formatted="false">Noto\'g\'ri</string>
+    <string name="hsk_course_test_exam_tf_true" formatted="false">To\'g\'ri</string>
+    <string name="hsk_course_test_exam_to_list" formatted="false">Testlar ro\'yxatiga</string>
+    <string name="hsk_course_test_exam_xp" formatted="false">XP olindi</string>
+    <string name="hsk_course_test_exam_section_listening" formatted="false">Tinglash</string>
+    <string name="hsk_course_test_exam_section_reading" formatted="false">O\'qish</string>
+    <string name="hsk_course_test_exam_section_writing" formatted="false">Yozish</string>
+    <string name="hsk_course_test_hsk30_soon_back" formatted="false">Orqaga</string>
+    <string name="hsk_course_test_hsk30_soon_sub" formatted="false">Yangi HSK 3.0 imtihon formati hali tayyorlanmoqda.</string>
+    <string name="hsk_course_test_hsk30_soon_title" formatted="false">HSK 3.0 · testlar</string>
+    <string name="hsk_course_test_hub_e_back" formatted="false">Ro\'yxatga</string>
+    <string name="hsk_course_test_hub_e_sub" formatted="false">Internetni tekshirib, testni yana ochib ko\'ring.</string>
+    <string name="hsk_course_test_hub_e_title" formatted="false">Test yuklanmadi</string>
+    <string name="hsk_course_test_hub_ex_head" formatted="false">HSK testlari</string>
+    <string name="hsk_course_test_hub_lim_back" formatted="false">Orqaga</string>
+    <string name="hsk_course_test_hub_lim_pay" formatted="false">HSK AI Pro ⭐️ olish</string>
+    <string name="hsk_course_test_hub_lim_sub" formatted="false">Bitta urinish bepul. Cheklovsiz ishlash uchun HSK AI Pro oling yoki ertaga qayting.</string>
+    <string name="hsk_course_test_hub_lim_title" formatted="false">Bepul urinish ishlatildi</string>
+    <string name="hsk_course_test_hub_listen" formatted="false">听力 Tinglash</string>
+    <string name="hsk_course_test_hub_min" formatted="false">daq</string>
+    <string name="hsk_course_test_hub_mine_level" formatted="false">Sizning darajangiz</string>
+    <string name="hsk_course_test_hub_p_btn" formatted="false">Daraja aniqlash testi · ~5 daq</string>
+    <string name="hsk_course_test_hub_p_sub" formatted="false">Qisqa testdan o\'ting — sizga mos HSK darajasini aytamiz.</string>
+    <string name="hsk_course_test_hub_p_title" formatted="false">Darajangizni bilmaysizmi?</string>
+    <string name="hsk_course_test_hub_q" formatted="false">savol</string>
+    <string name="hsk_course_test_hub_read" formatted="false">阅读 O\'qish</string>
+    <string name="hsk_course_test_hub_start" formatted="false">Boshlash</string>
+    <string name="hsk_course_test_hub_sub" formatted="false">HSK bo\'limlari bo\'yicha qisqa sinov: tinglash, o\'qish va yozish</string>
+    <string name="hsk_course_test_hub_title" formatted="false">Test markazi</string>
+    <string name="hsk_course_test_hub_write" formatted="false">书写 Yozish</string>
+    <string name="hsk_course_test_placement_back" formatted="false">Kursga qaytish</string>
+    <string name="hsk_course_test_placement_lead" formatted="false">Ma\'noni tanlang</string>
+    <string name="hsk_course_test_placement_lvl" formatted="false">HSK</string>
+    <string name="hsk_course_test_placement_rec" formatted="false">Tavsiya</string>
+    <string name="hsk_course_test_placement_rec_sub" formatted="false">Natijangiz bo\'yicha sizga mos daraja — HSK </string>
+    <string name="hsk_course_test_placement_retake" formatted="false">Qayta test</string>
     <string name="hsk_course_test_sub" formatted="false">HSK imtihonlari va daraja aniqlash</string>
     <string name="hsk_course_trial_active" formatted="false">HSK AI Pro faol</string>
     <string name="hsk_course_trial_body" formatted="false">Barcha asosiy imkoniyatlarni sinab ko\'rasiz. Avtomatik pul yechilmaydi.</string>

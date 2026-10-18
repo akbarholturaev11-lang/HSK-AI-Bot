@@ -1,5 +1,13 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## Test Center exact-copy local-first runtime — 49 UI labels (2026-10-18)
+
+- Exact UZ/RU/TJ display-only copy moved into `course` UI catalog: Test Center hub 19, exam runner 17, exam section titles 3, placement UI 6, HSK 3.0 placeholder 3 and current-level badge 1 = **49 keys × 3 locales**. Catalog **228 → 277 keys per locale**, all **six local generated resources** regenerated.
+- Mini App `course_v3_test.html` preloads the **single static** `hsk-course-i18n.js?v=20261018-test-center-v13` bundle, then hydrates existing inline `L`, `EM`, `EM.sec`, `PT`, `HSK30_SOON`, `MINE_T` display-only strings by exact catalog key. Original literals remain synchronous fallback, including when offline/static resource absent.
+- Intentionally untouched: `QP` placement-question array and option correctness, HSK server exam answers/session/marking, paid/free access check, placement algorithm, grade, progress, XP and TTS. No per-string fetch or server translation.
+- New `tests/test_i18n_test_center_adoption.py` checks all 147 literal pairs, source/use-site/fallback and JS bundle asset parity; existing schema tests updated to 277, P0 CI includes the regression; HTML source Git-blob SHA approved. **Check exact new commit's P0, Android, backend and desktop CI before claiming success.**
+- Previous `c0a272e2` P0 passed 161 unit tests, Backend/Desktop/TTS passed; Android's emulator instrumentation failed only two `VoiceScreenBackTest` root-window focus cases. Do not silently treat entire Android CI as pass. PR #179 remains Draft, no main or production deploy.
+
 ## Android choice runtime: 17 additional exact-copy strings (2026-10-18)
 
 - Compose `LevelChoices` and `GoalChoices` now read bundled XML for seven HSK option subtitles and ten study-goal titles/subtitles. Original maps/lists remain safe fallbacks; beginner titles/subtitles stay native because they differ from Mini App. The in-app language controls XML resolution (tj → tg).

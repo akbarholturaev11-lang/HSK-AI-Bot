@@ -207,6 +207,55 @@
     <string name="hsk_course_streak_display_one" formatted="false">рӯз пайдарпай!</string>
     <string name="hsk_course_subscribe" formatted="false">HSK AI Pro ⭐️ гирифтан</string>
     <string name="hsk_course_test_center" formatted="false">Маркази тест</string>
+    <string name="hsk_course_test_exam_again" formatted="false">Аз нав супоридан</string>
+    <string name="hsk_course_test_exam_fail_sub" formatted="false">Омодагиро давом диҳед: HSK </string>
+    <string name="hsk_course_test_exam_failed" formatted="false">Ҳоло гузаронида нашуд</string>
+    <string name="hsk_course_test_exam_listen" formatted="false">Шунидан</string>
+    <string name="hsk_course_test_exam_mistakes" formatted="false">Ин ҷавобҳоро такрор кунед</string>
+    <string name="hsk_course_test_exam_of" formatted="false">аз</string>
+    <string name="hsk_course_test_exam_pass_sub" formatted="false">Шумо ба сатҳи HSK тайёред: HSK </string>
+    <string name="hsk_course_test_exam_passed" formatted="false">Тест супорида шуд!</string>
+    <string name="hsk_course_test_exam_q" formatted="false">Савол</string>
+    <string name="hsk_course_test_exam_result" formatted="false">Натиҷа</string>
+    <string name="hsk_course_test_exam_retry" formatted="false">Боз фиристодан</string>
+    <string name="hsk_course_test_exam_save_err" formatted="false">Натиҷа сабт нашуд. Боз фиристед.</string>
+    <string name="hsk_course_test_exam_saving" formatted="false">Сервер месанҷад…</string>
+    <string name="hsk_course_test_exam_tf_false" formatted="false">Нодуруст</string>
+    <string name="hsk_course_test_exam_tf_true" formatted="false">Дуруст</string>
+    <string name="hsk_course_test_exam_to_list" formatted="false">Ба рӯйхати тестҳо</string>
+    <string name="hsk_course_test_exam_xp" formatted="false">XP гирифта шуд</string>
+    <string name="hsk_course_test_exam_section_listening" formatted="false">Шунидан</string>
+    <string name="hsk_course_test_exam_section_reading" formatted="false">Хондан</string>
+    <string name="hsk_course_test_exam_section_writing" formatted="false">Навиштан</string>
+    <string name="hsk_course_test_hsk30_soon_back" formatted="false">Бозгашт</string>
+    <string name="hsk_course_test_hsk30_soon_sub" formatted="false">Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад.</string>
+    <string name="hsk_course_test_hsk30_soon_title" formatted="false">HSK 3.0 · тестҳо</string>
+    <string name="hsk_course_test_hub_e_back" formatted="false">Ба рӯйхат</string>
+    <string name="hsk_course_test_hub_e_sub" formatted="false">Интернетро санҷида, тестро боз кушоед.</string>
+    <string name="hsk_course_test_hub_e_title" formatted="false">Тест бор нашуд</string>
+    <string name="hsk_course_test_hub_ex_head" formatted="false">Тестҳои HSK</string>
+    <string name="hsk_course_test_hub_lim_back" formatted="false">Бозгашт</string>
+    <string name="hsk_course_test_hub_lim_pay" formatted="false">HSK AI Pro ⭐️ гирифтан</string>
+    <string name="hsk_course_test_hub_lim_sub" formatted="false">Як кӯшиш ройгон аст. Барои бепоён HSK AI Pro гиред ё фардо баргардед.</string>
+    <string name="hsk_course_test_hub_lim_title" formatted="false">Кӯшиши ройгон истифода шуд</string>
+    <string name="hsk_course_test_hub_listen" formatted="false">听力 Шунидан</string>
+    <string name="hsk_course_test_hub_min" formatted="false">дақ</string>
+    <string name="hsk_course_test_hub_mine_level" formatted="false">Дараҷаи шумо</string>
+    <string name="hsk_course_test_hub_p_btn" formatted="false">Тести муайянкунии сатҳ · ~5 дақ</string>
+    <string name="hsk_course_test_hub_p_sub" formatted="false">Тести кӯтоҳро гузаред — сатҳи мувофиқи HSK-ро муайян мекунем.</string>
+    <string name="hsk_course_test_hub_p_title" formatted="false">Сатҳи худро намедонед?</string>
+    <string name="hsk_course_test_hub_q" formatted="false">савол</string>
+    <string name="hsk_course_test_hub_read" formatted="false">阅读 Хондан</string>
+    <string name="hsk_course_test_hub_start" formatted="false">Оғоз</string>
+    <string name="hsk_course_test_hub_sub" formatted="false">Санҷиши кӯтоҳ аз бахшҳои HSK: шунидан, хондан ва навиштан</string>
+    <string name="hsk_course_test_hub_title" formatted="false">Маркази тест</string>
+    <string name="hsk_course_test_hub_write" formatted="false">书写 Навиштан</string>
+    <string name="hsk_course_test_placement_back" formatted="false">Ба курс баргаштан</string>
+    <string name="hsk_course_test_placement_lead" formatted="false">Маъноро интихоб кунед</string>
+    <string name="hsk_course_test_placement_lvl" formatted="false">HSK</string>
+    <string name="hsk_course_test_placement_rec" formatted="false">Тавсия</string>
+    <string name="hsk_course_test_placement_rec_sub" formatted="false">Аз рӯи натиҷа сатҳи мувофиқ барои шумо — HSK </string>
+    <string name="hsk_course_test_placement_retake" formatted="false">Аз нав</string>
     <string name="hsk_course_test_sub" formatted="false">Имтиҳонҳои HSK ва муайянкунии сатҳ</string>
     <string name="hsk_course_trial_active" formatted="false">HSK AI Pro фаъол</string>
     <string name="hsk_course_trial_body" formatted="false">Ҳамаи имкониятҳои асосиро месанҷед. Худкор пул гирифта намешавад.</string>

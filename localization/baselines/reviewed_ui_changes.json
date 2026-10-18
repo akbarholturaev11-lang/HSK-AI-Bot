@@ -22,6 +22,11 @@
       "baseline_sha1": "321c28c34cf4ed0550bb5187d8f6b680654ea51e",
       "reviewed_sha1": "846112e11bd8fb699a815314b53e9a28a141799e",
       "reason": "31 original onboard labels plus 19 exact UZ/RU/TJ HSK level and study goal option labels now read static local catalog with all inline fallbacks preserved. The only source edit is presentation-only lookup and versioned JS cache reference; HSK selection IDs, access, saving, analytics and paywall unchanged."
+    },
+    "app/static/course_v3_test.html": {
+      "baseline_sha1": "2962e807b81cc5059dd2bf8ae2b344479d3cd19b",
+      "reviewed_sha1": "a1b5bef4056768d11cdabdae522d276f4ed55a7a",
+      "reason": "Reviewed 49 original UZ/RU/TJ Test Center display-only labels from L, EM, nested EM.sec, HSK30_SOON, PT and MINE_T, using a single local static JS bundle with original inline exact fallback. No question bank, graded answer, exam server, free gate, payment, XP scoring, placement algorithm or navigation semantics changed."
     }
   }
 }
