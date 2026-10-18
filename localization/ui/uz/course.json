@@ -126,6 +126,14 @@
     "practiceAuthRequired.body": "Mashq uchun Telegram orqali qayta kiring. Ruxsat tekshirilmaguncha mashq ochilmaydi.",
     "practiceAuthRequired.retry": "Qayta ochish",
     "practiceGateError.body": "Ruxsatni tekshirib bo'lmadi. Internetni tekshirib, qayta urining.",
-    "practiceGateError.retry": "Qayta urinish"
+    "practiceGateError.retry": "Qayta urinish",
+    "levelPicker.hsk1": "Noldan",
+    "levelPicker.hsk2": "Asosiy suhbat",
+    "levelPicker.hsk3": "Kundalik muloqot",
+    "levelPicker.hsk4": "Erkin muloqot",
+    "levelPicker.nhsk1": "Yangi standart · HSK 1",
+    "levelPicker.nhsk2": "Yangi standart · HSK 2",
+    "levelPicker.nhsk3": "Yangi standart · HSK 3",
+    "levelPicker.title": "Darajani tanlang"
   }
 }

@@ -45,6 +45,14 @@
     <string name="hsk_course_lesson_done" formatted="false">Урок завершён!</string>
     <string name="hsk_course_lesson_done_sub" formatted="false">Отличная работа. Следующий этап ждёт.</string>
     <string name="hsk_course_lessons" formatted="false">урок</string>
+    <string name="hsk_course_level_picker_hsk1" formatted="false">С нуля</string>
+    <string name="hsk_course_level_picker_hsk2" formatted="false">Базовое общение</string>
+    <string name="hsk_course_level_picker_hsk3" formatted="false">Повседневное общение</string>
+    <string name="hsk_course_level_picker_hsk4" formatted="false">Свободное общение</string>
+    <string name="hsk_course_level_picker_nhsk1" formatted="false">Новый стандарт · HSK 1</string>
+    <string name="hsk_course_level_picker_nhsk2" formatted="false">Новый стандарт · HSK 2</string>
+    <string name="hsk_course_level_picker_nhsk3" formatted="false">Новый стандарт · HSK 3</string>
+    <string name="hsk_course_level_picker_title" formatted="false">Выберите уровень</string>
     <string name="hsk_course_listen" formatted="false">Послушать</string>
     <string name="hsk_course_locked_lesson" formatted="false">Этот урок в HSK AI Pro</string>
     <string name="hsk_course_mashq_sub" formatted="false">Закрепление и проверка</string>

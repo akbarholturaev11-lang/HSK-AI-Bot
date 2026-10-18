@@ -45,6 +45,14 @@
     <string name="hsk_course_lesson_done" formatted="false">Dars tugadi!</string>
     <string name="hsk_course_lesson_done_sub" formatted="false">Ajoyib! Keyingi bosqich kutyapti.</string>
     <string name="hsk_course_lessons" formatted="false">dars</string>
+    <string name="hsk_course_level_picker_hsk1" formatted="false">Noldan</string>
+    <string name="hsk_course_level_picker_hsk2" formatted="false">Asosiy suhbat</string>
+    <string name="hsk_course_level_picker_hsk3" formatted="false">Kundalik muloqot</string>
+    <string name="hsk_course_level_picker_hsk4" formatted="false">Erkin muloqot</string>
+    <string name="hsk_course_level_picker_nhsk1" formatted="false">Yangi standart · HSK 1</string>
+    <string name="hsk_course_level_picker_nhsk2" formatted="false">Yangi standart · HSK 2</string>
+    <string name="hsk_course_level_picker_nhsk3" formatted="false">Yangi standart · HSK 3</string>
+    <string name="hsk_course_level_picker_title" formatted="false">Darajani tanlang</string>
     <string name="hsk_course_listen" formatted="false">Tinglash</string>
     <string name="hsk_course_locked_lesson" formatted="false">Bu dars HSK AI Pro\'da</string>
     <string name="hsk_course_mashq_sub" formatted="false">Mustahkamlash va sinash</string>

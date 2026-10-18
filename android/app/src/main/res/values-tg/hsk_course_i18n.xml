@@ -45,6 +45,14 @@
     <string name="hsk_course_lesson_done" formatted="false">Дарс анҷом ёфт!</string>
     <string name="hsk_course_lesson_done_sub" formatted="false">Офарин! Зинаи навбатӣ интизор аст.</string>
     <string name="hsk_course_lessons" formatted="false">дарс</string>
+    <string name="hsk_course_level_picker_hsk1" formatted="false">Аз сифр</string>
+    <string name="hsk_course_level_picker_hsk2" formatted="false">Муоширати асосӣ</string>
+    <string name="hsk_course_level_picker_hsk3" formatted="false">Муоширати ҳаррӯза</string>
+    <string name="hsk_course_level_picker_hsk4" formatted="false">Муоширати озод</string>
+    <string name="hsk_course_level_picker_nhsk1" formatted="false">Стандарти нав · HSK 1</string>
+    <string name="hsk_course_level_picker_nhsk2" formatted="false">Стандарти нав · HSK 2</string>
+    <string name="hsk_course_level_picker_nhsk3" formatted="false">Стандарти нав · HSK 3</string>
+    <string name="hsk_course_level_picker_title" formatted="false">Сатҳро интихоб кунед</string>
     <string name="hsk_course_listen" formatted="false">Гӯш кардан</string>
     <string name="hsk_course_locked_lesson" formatted="false">Ин дарс дар HSK AI Pro аст</string>
     <string name="hsk_course_mashq_sub" formatted="false">Мустаҳкам ва санҷиш</string>

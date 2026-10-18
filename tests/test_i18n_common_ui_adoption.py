@@ -115,7 +115,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertEqual(html.count(
-            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-errors-v7"></script>'
+            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-levels-v8"></script>'
         ), 1)
         self.assertLess(html.index("hsk-course-i18n.js"),
                         html.index("function courseMessage("))
@@ -502,7 +502,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('function openSupportLink(url){', html)
         self.assertIn('+(supportUrl?', html)
         self.assertIn('courseMessage("nav."+st.s,T().nav[st.s])', html)
-        self.assertIn('hsk-course-i18n.js?v=20261018-errors-v7', html)
+        self.assertIn('hsk-course-i18n.js?v=20261018-levels-v8', html)
 
 
     def test_miniapp_notifications_and_pinyin_settings_use_local_static_text(self):
@@ -544,7 +544,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('_apiPost("/api/v3/notify",{enabled:on})', html)
         self.assertIn('localStorage.setItem("hsk_v3_pinyin",v)', html)
         self.assertIn("applyPinyinMode()", html)
-        self.assertIn("hsk-course-i18n.js?v=20261018-errors-v7", html)
+        self.assertIn("hsk-course-i18n.js?v=20261018-levels-v8", html)
         self.assertNotIn("fetch('/api/i18n/", html)
 
 
@@ -586,7 +586,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn("App.applyNotif(false)", html)
         self.assertIn('_apiPost("/api/v3/notify",{enabled:on})', html)
         self.assertIn("myAvatarImgHtml()", html)
-        self.assertIn("hsk-course-i18n.js?v=20261018-errors-v7", html)
+        self.assertIn("hsk-course-i18n.js?v=20261018-levels-v8", html)
 
 
     def test_miniapp_course_and_practice_error_copy_local_assets(self):
@@ -632,7 +632,46 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('if(o.status===403&&o.j&&o.j.error==="free_feature_limit_reached")', html)
         self.assertIn('if(o.status<200||o.status>=300||!o.j||o.j.ok!==true||o.j.allowed!==true)', html)
         self.assertIn('location.reload()', html)
-        self.assertIn('hsk-course-i18n.js?v=20261018-errors-v7', html)
+        self.assertIn('hsk-course-i18n.js?v=20261018-levels-v8', html)
+
+
+    def test_miniapp_level_picker_copy_uses_reviewed_local_catalogs(self):
+        """Eight HSK-band UI descriptions map to exact original three-locale copy."""
+        import re
+
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertEqual(len(html.split("\n")), 8712)
+        view = html.split("  levelPicker:function(){", 1)[1].split(
+            "\n  courseTrackPicker:function()", 1
+        )[0]
+        self.assertIn("var legacySub={", view)
+        self.assertIn("}[LANG];var sub={", view)
+        keys = ("hsk1", "hsk2", "hsk3", "hsk4",
+                "nhsk1", "nhsk2", "nhsk3", "title")
+        for key in keys:
+            self.assertEqual(view.count(
+                'courseMessage("levelPicker.' + key + '",legacySub.' + key + ')'
+            ), 1)
+        for locale in ("uz", "ru", "tj"):
+            messages = json.loads(
+                (ROOT / f"localization/ui/{locale}/course.json").read_text(
+                    encoding="utf-8")
+            )["messages"]
+            old = re.search(re.escape(locale) + r':\{([^}]+)\}', view)
+            self.assertIsNotNone(old)
+            for key in keys:
+                with self.subTest(locale=locale, key=key):
+                    found = re.search(
+                        r"(?:^|[,{}])" + re.escape(key) + r':"([^"]*)"',
+                        old.group(1)
+                    )
+                    self.assertIsNotNone(found)
+                    self.assertEqual(found.group(1), messages["levelPicker." + key])
+        self.assertIn('var cur=normalizeLevel(MAP&&MAP.level||getSelectedLevel())', view)
+        self.assertIn("onclick=\"App.pickLevel(", view)
+        self.assertIn("pickLevel:function(lv){App.closeSheet();loadLevel(lv)}", html)
+        self.assertIn('hsk-course-i18n.js?v=20261018-levels-v8', html)
+        self.assertNotIn('fetch("/api/i18n/', html)
 
 
 if __name__ == "__main__":

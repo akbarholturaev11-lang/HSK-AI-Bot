@@ -10,8 +10,8 @@
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
-      "reviewed_sha1": "6d35f60df3b2f81b0d678248b7f8c5522e2d6c79",
-      "reason": "Three safe course-load error strings, two practice auth retry texts and two practice-gate error texts migrated to 3-locale static UI catalog, preserving all legacy inline values and original access/retry behavior. Browser cache version errors-v7. 8712 source lines retained."
+      "reviewed_sha1": "fb684526e34ae40b0f1fb1d8205308a28bb49e79",
+      "reason": "Level selection screen: 8 UZ/RU/TJ level descriptions/title use local static course catalog with byte-exact inline legacy fallback. No change to progress, track or level switching, HTML line positions intact, asset version levels-v8."
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",

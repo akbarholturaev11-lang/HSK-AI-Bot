@@ -126,6 +126,14 @@
     "practiceAuthRequired.body": "Мини-барномаро аз Telegram дубора кушоед. Бе санҷиши дастрасӣ машқ оғоз намешавад.",
     "practiceAuthRequired.retry": "Аз нав кушодан",
     "practiceGateError.body": "Дастрасӣ санҷида нашуд. Интернетро санҷед ва боз кӯшиш кунед.",
-    "practiceGateError.retry": "Боз кӯшиш кардан"
+    "practiceGateError.retry": "Боз кӯшиш кардан",
+    "levelPicker.hsk1": "Аз сифр",
+    "levelPicker.hsk2": "Муоширати асосӣ",
+    "levelPicker.hsk3": "Муоширати ҳаррӯза",
+    "levelPicker.hsk4": "Муоширати озод",
+    "levelPicker.nhsk1": "Стандарти нав · HSK 1",
+    "levelPicker.nhsk2": "Стандарти нав · HSK 2",
+    "levelPicker.nhsk3": "Стандарти нав · HSK 3",
+    "levelPicker.title": "Сатҳро интихоб кунед"
   }
 }
