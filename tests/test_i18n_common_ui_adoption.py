@@ -24,6 +24,8 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             "app/static/course_v3_onboarding.html",
             "app/static/course_v3_test.html",
             "app/static/course_v3_recognition.html",
+            "app/static/course_v3_mistakes.html",
+            "app/static/course_v3_pronunciation.html",
             "app/bot/utils/i18n.py",
         })
         self.assertEqual(approved["baseline_main_commit"],
@@ -736,7 +738,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         for locale in ("uz", "ru", "tj"):
             msgs = json.loads((ROOT / f"localization/ui/{locale}/course.json")
                               .read_text(encoding="utf-8"))["messages"]
-            self.assertEqual(len(msgs), 287)
+            self.assertEqual(len(msgs), 362)
             for prefix, fields, var, scope, start, end in groups:
                 region = html.split(scope, 1)[1].split(start, 1)[1].split(end, 1)[0]
                 original = next((line for line in region.splitlines()

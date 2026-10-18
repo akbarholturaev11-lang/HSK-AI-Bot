@@ -40,7 +40,7 @@ class TestCenterI18nAdoptionTests(unittest.TestCase):
         for locale in LOCALES:
             catalog = json.loads((ROOT / f"localization/ui/{locale}/course.json")
                                  .read_text(encoding="utf-8"))["messages"]
-            self.assertEqual(len(catalog), 287)
+            self.assertEqual(len(catalog), 362)
             for source_name, (prefix, names) in FAMILIES.items():
                 fragment = local_dict(html, source_name, locale)
                 original = fields(fragment)

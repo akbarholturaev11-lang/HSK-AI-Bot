@@ -86,6 +86,59 @@
     <string name="hsk_course_mashq_sub" formatted="false">Закрепление и проверка</string>
     <string name="hsk_course_match_pairs" formatted="false">Соедините пары</string>
     <string name="hsk_course_mistakes" formatted="false">Мои ошибки</string>
+    <string name="hsk_course_mistakes_all" formatted="false">Все</string>
+    <string name="hsk_course_mistakes_build_hint" formatted="false">Соберите правильное предложение</string>
+    <string name="hsk_course_mistakes_cats_character" formatted="false">Иероглифы</string>
+    <string name="hsk_course_mistakes_cats_grammar" formatted="false">Грамматика</string>
+    <string name="hsk_course_mistakes_cats_pronunciation" formatted="false">Произношение</string>
+    <string name="hsk_course_mistakes_cats_word" formatted="false">Слова</string>
+    <string name="hsk_course_mistakes_check" formatted="false">Проверить</string>
+    <string name="hsk_course_mistakes_clear" formatted="false">Очистить</string>
+    <string name="hsk_course_mistakes_correct" formatted="false">Верно!</string>
+    <string name="hsk_course_mistakes_done" formatted="false">Готово</string>
+    <string name="hsk_course_mistakes_empty_scope" formatted="false">Пока нечего повторять — все ошибки в этом разделе исправлены.</string>
+    <string name="hsk_course_mistakes_empty_sub" formatted="false">Проходите уроки и тесты — ошибки появятся здесь, и вы сможете их отработать.</string>
+    <string name="hsk_course_mistakes_empty_title" formatted="false">Пока ошибок нет</string>
+    <string name="hsk_course_mistakes_err" formatted="false">Произошла ошибка. Попробуйте снова.</string>
+    <string name="hsk_course_mistakes_exp" formatted="false">Пояснение</string>
+    <string name="hsk_course_mistakes_finish" formatted="false">Завершить</string>
+    <string name="hsk_course_mistakes_later" formatted="false">Позже</string>
+    <string name="hsk_course_mistakes_lesson" formatted="false">Урок</string>
+    <string name="hsk_course_mistakes_limit_btn" formatted="false">Получить HSK AI Pro ⭐️</string>
+    <string name="hsk_course_mistakes_limit_text" formatted="false">Оформите HSK AI Pro для безлимитной работы над ошибками.</string>
+    <string name="hsk_course_mistakes_limit_title" formatted="false">Бесплатная попытка использована</string>
+    <string name="hsk_course_mistakes_limit_why" formatted="false">Одна бесплатная попытка уже использована. Оформите HSK AI Pro для безлимита или возвращайтесь завтра.</string>
+    <string name="hsk_course_mistakes_load_err" formatted="false">Не удалось загрузить ошибки. Проверьте связь и повторите.</string>
+    <string name="hsk_course_mistakes_loading" formatted="false">Загрузка…</string>
+    <string name="hsk_course_mistakes_more" formatted="false">Показать ещё</string>
+    <string name="hsk_course_mistakes_next" formatted="false">Дальше</string>
+    <string name="hsk_course_mistakes_of" formatted="false">из</string>
+    <string name="hsk_course_mistakes_progress" formatted="false">{p} из {r} упражнений</string>
+    <string name="hsk_course_mistakes_q" formatted="false">Вопрос</string>
+    <string name="hsk_course_mistakes_res_all" formatted="false">Вы исправили все свои ошибки!</string>
+    <string name="hsk_course_mistakes_res_cleared" formatted="false">Полностью исправлено: {n}</string>
+    <string name="hsk_course_mistakes_res_remaining" formatted="false">Осталось ошибок</string>
+    <string name="hsk_course_mistakes_res_score" formatted="false">верно</string>
+    <string name="hsk_course_mistakes_res_title" formatted="false">Отличная работа!</string>
+    <string name="hsk_course_mistakes_retry" formatted="false">Повторить</string>
+    <string name="hsk_course_mistakes_review" formatted="false">Работа над ошибками</string>
+    <string name="hsk_course_mistakes_review_cat" formatted="false">Повторить: {cat}</string>
+    <string name="hsk_course_mistakes_review_count" formatted="false">Ошибок: {n} · каждая — в 3 разных упражнениях</string>
+    <string name="hsk_course_mistakes_review_sub" formatted="false">активных ошибок</string>
+    <string name="hsk_course_mistakes_sources_challenge" formatted="false">Дуэль</string>
+    <string name="hsk_course_mistakes_sources_lesson" formatted="false">Урок</string>
+    <string name="hsk_course_mistakes_sources_memorize" formatted="false">Запоминание</string>
+    <string name="hsk_course_mistakes_sources_pronunciation" formatted="false">Тренажёр произношения</string>
+    <string name="hsk_course_mistakes_sources_recognition" formatted="false">Иероглифы</string>
+    <string name="hsk_course_mistakes_sources_test" formatted="false">HSK тест</string>
+    <string name="hsk_course_mistakes_sources_training" formatted="false">Практика</string>
+    <string name="hsk_course_mistakes_sources_voice" formatted="false">AI Voice</string>
+    <string name="hsk_course_mistakes_start" formatted="false">Начать</string>
+    <string name="hsk_course_mistakes_sub" formatted="false">Собираются автоматически из уроков, тестов и дуэлей</string>
+    <string name="hsk_course_mistakes_title" formatted="false">Мои ошибки</string>
+    <string name="hsk_course_mistakes_to_course" formatted="false">К урокам</string>
+    <string name="hsk_course_mistakes_undo" formatted="false">Назад</string>
+    <string name="hsk_course_mistakes_wrong" formatted="false">Неверно</string>
     <string name="hsk_course_mistakes_sub" formatted="false">Работа над слабыми местами</string>
     <string name="hsk_course_nav_course" formatted="false">Курс</string>
     <string name="hsk_course_nav_mashq" formatted="false">Практика</string>
@@ -191,6 +244,28 @@
     <string name="hsk_course_profile_trial" formatted="false">Pro · Пробный</string>
     <string name="hsk_course_pron" formatted="false">Произношение</string>
     <string name="hsk_course_pron_sub" formatted="false">Слушай, повторяй, проверка тонов</string>
+    <string name="hsk_course_pronunciation_again" formatted="false">Ещё раз</string>
+    <string name="hsk_course_pronunciation_analyzing" formatted="false">Проверяю…</string>
+    <string name="hsk_course_pronunciation_answer" formatted="false">Правильно так:</string>
+    <string name="hsk_course_pronunciation_back" formatted="false">Назад</string>
+    <string name="hsk_course_pronunciation_bad" formatted="false">Неточно, попробуйте снова</string>
+    <string name="hsk_course_pronunciation_done" formatted="false">правильно</string>
+    <string name="hsk_course_pronunciation_done_sub" formatted="false">Ваше произношение становится лучше!</string>
+    <string name="hsk_course_pronunciation_heard" formatted="false">Я услышал:</string>
+    <string name="hsk_course_pronunciation_hint" formatted="false">Нажмите на микрофон и произнесите слово</string>
+    <string name="hsk_course_pronunciation_limit_sub" formatted="false">В бесплатном режиме этот раздел доступен 1 раз в день. Оформите HSK AI Pro для безлимита или возвращайтесь завтра.</string>
+    <string name="hsk_course_pronunciation_limit_title" formatted="false">Бесплатная практика на сегодня исчерпана</string>
+    <string name="hsk_course_pronunciation_listen" formatted="false">Прослушать</string>
+    <string name="hsk_course_pronunciation_listening" formatted="false">Слушаю…</string>
+    <string name="hsk_course_pronunciation_mic_deny" formatted="false">Разрешите доступ к микрофону</string>
+    <string name="hsk_course_pronunciation_need_tg" formatted="false">Откройте в Telegram</string>
+    <string name="hsk_course_pronunciation_net_err" formatted="false">Ошибка сети, попробуйте снова</string>
+    <string name="hsk_course_pronunciation_no_support" formatted="false">Микрофон не поддерживается</string>
+    <string name="hsk_course_pronunciation_ok" formatted="false">Точно произнесено!</string>
+    <string name="hsk_course_pronunciation_premium_btn" formatted="false">Получить HSK AI Pro ⭐️</string>
+    <string name="hsk_course_pronunciation_retry" formatted="false">Нажмите ещё раз</string>
+    <string name="hsk_course_pronunciation_review" formatted="false">повтор</string>
+    <string name="hsk_course_pronunciation_skip" formatted="false">Пропустить</string>
     <string name="hsk_course_rank" formatted="false">место</string>
     <string name="hsk_course_ready_phrases" formatted="false">Готовые фразы</string>
     <string name="hsk_course_ready_phrases_sub" formatted="false">Китайские фразы для повседневных ситуаций</string>

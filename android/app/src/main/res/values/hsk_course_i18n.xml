@@ -86,6 +86,59 @@
     <string name="hsk_course_mashq_sub" formatted="false">Mustahkamlash va sinash</string>
     <string name="hsk_course_match_pairs" formatted="false">Juftlarni moslang</string>
     <string name="hsk_course_mistakes" formatted="false">Xatolarim</string>
+    <string name="hsk_course_mistakes_all" formatted="false">Barchasi</string>
+    <string name="hsk_course_mistakes_build_hint" formatted="false">To\'g\'ri gapni tuzing</string>
+    <string name="hsk_course_mistakes_cats_character" formatted="false">Ieroglif</string>
+    <string name="hsk_course_mistakes_cats_grammar" formatted="false">Grammatika</string>
+    <string name="hsk_course_mistakes_cats_pronunciation" formatted="false">Talaffuz</string>
+    <string name="hsk_course_mistakes_cats_word" formatted="false">So\'zlar</string>
+    <string name="hsk_course_mistakes_check" formatted="false">Tekshirish</string>
+    <string name="hsk_course_mistakes_clear" formatted="false">Tozalash</string>
+    <string name="hsk_course_mistakes_correct" formatted="false">To\'g\'ri!</string>
+    <string name="hsk_course_mistakes_done" formatted="false">Tayyor</string>
+    <string name="hsk_course_mistakes_empty_scope" formatted="false">Hozircha takrorlanadigan xato yo\'q — bu bo\'limdagi xatolar tuzatilgan.</string>
+    <string name="hsk_course_mistakes_empty_sub" formatted="false">Darslar va testlardan o\'ting — xatolar shu yerda paydo bo\'ladi va ularni mashq qila olasiz.</string>
+    <string name="hsk_course_mistakes_empty_title" formatted="false">Hozircha xato yo\'q</string>
+    <string name="hsk_course_mistakes_err" formatted="false">Xatolik yuz berdi. Qayta urinib ko\'ring.</string>
+    <string name="hsk_course_mistakes_exp" formatted="false">Izoh</string>
+    <string name="hsk_course_mistakes_finish" formatted="false">Yakunlash</string>
+    <string name="hsk_course_mistakes_later" formatted="false">Keyinroq</string>
+    <string name="hsk_course_mistakes_lesson" formatted="false">Dars</string>
+    <string name="hsk_course_mistakes_limit_btn" formatted="false">HSK AI Pro ⭐️ olish</string>
+    <string name="hsk_course_mistakes_limit_text" formatted="false">Xatolar ustida cheksiz ishlash uchun HSK AI Pro oling.</string>
+    <string name="hsk_course_mistakes_limit_title" formatted="false">Bepul urinish ishlatildi</string>
+    <string name="hsk_course_mistakes_limit_why" formatted="false">Bir martalik bepul urinish ishlatildi. Cheklovsiz mashq uchun HSK AI Pro oling yoki ertaga qayting.</string>
+    <string name="hsk_course_mistakes_load_err" formatted="false">Xatolar yuklanmadi. Internetni tekshirib, qayta urinib ko\'ring.</string>
+    <string name="hsk_course_mistakes_loading" formatted="false">Yuklanmoqda…</string>
+    <string name="hsk_course_mistakes_more" formatted="false">Yana ko\'rsatish</string>
+    <string name="hsk_course_mistakes_next" formatted="false">Keyingi</string>
+    <string name="hsk_course_mistakes_of" formatted="false">/</string>
+    <string name="hsk_course_mistakes_progress" formatted="false">{p} / {r} mashq bajarildi</string>
+    <string name="hsk_course_mistakes_q" formatted="false">Savol</string>
+    <string name="hsk_course_mistakes_res_all" formatted="false">Barcha xatolaringizni tuzatdingiz!</string>
+    <string name="hsk_course_mistakes_res_cleared" formatted="false">To\'liq yopildi: {n}</string>
+    <string name="hsk_course_mistakes_res_remaining" formatted="false">Qolgan xatolar</string>
+    <string name="hsk_course_mistakes_res_score" formatted="false">to\'g\'ri</string>
+    <string name="hsk_course_mistakes_res_title" formatted="false">Ajoyib ish!</string>
+    <string name="hsk_course_mistakes_retry" formatted="false">Qayta urinish</string>
+    <string name="hsk_course_mistakes_review" formatted="false">Xatolar ustida ishlash</string>
+    <string name="hsk_course_mistakes_review_cat" formatted="false">{cat} bo\'yicha takrorlash</string>
+    <string name="hsk_course_mistakes_review_count" formatted="false">Xatolar: {n} · har biri 3 xil mashqda</string>
+    <string name="hsk_course_mistakes_review_sub" formatted="false">faol xato</string>
+    <string name="hsk_course_mistakes_sources_challenge" formatted="false">Bellashuv</string>
+    <string name="hsk_course_mistakes_sources_lesson" formatted="false">Dars</string>
+    <string name="hsk_course_mistakes_sources_memorize" formatted="false">Yodlash</string>
+    <string name="hsk_course_mistakes_sources_pronunciation" formatted="false">Talaffuz mashqi</string>
+    <string name="hsk_course_mistakes_sources_recognition" formatted="false">Ieroglif tanish</string>
+    <string name="hsk_course_mistakes_sources_test" formatted="false">HSK test</string>
+    <string name="hsk_course_mistakes_sources_training" formatted="false">Mashq</string>
+    <string name="hsk_course_mistakes_sources_voice" formatted="false">AI Voice</string>
+    <string name="hsk_course_mistakes_start" formatted="false">Boshlash</string>
+    <string name="hsk_course_mistakes_sub" formatted="false">Darslar, HSK testlari va bellashuvlardan avtomatik yig\'iladi</string>
+    <string name="hsk_course_mistakes_title" formatted="false">Xatolarim</string>
+    <string name="hsk_course_mistakes_to_course" formatted="false">Darslarga</string>
+    <string name="hsk_course_mistakes_undo" formatted="false">Orqaga</string>
+    <string name="hsk_course_mistakes_wrong" formatted="false">Noto\'g\'ri</string>
     <string name="hsk_course_mistakes_sub" formatted="false">Zaif joylar ustida ishlash</string>
     <string name="hsk_course_nav_course" formatted="false">Kurs</string>
     <string name="hsk_course_nav_mashq" formatted="false">Mashq</string>
@@ -191,6 +244,28 @@
     <string name="hsk_course_profile_trial" formatted="false">Pro · Sinov</string>
     <string name="hsk_course_pron" formatted="false">Talaffuz mashqi</string>
     <string name="hsk_course_pron_sub" formatted="false">Eshit, takrorla, ton tekshiruvi</string>
+    <string name="hsk_course_pronunciation_again" formatted="false">Yana mashq</string>
+    <string name="hsk_course_pronunciation_analyzing" formatted="false">Tekshiryapman…</string>
+    <string name="hsk_course_pronunciation_answer" formatted="false">To\'g\'risi shunday:</string>
+    <string name="hsk_course_pronunciation_back" formatted="false">Orqaga</string>
+    <string name="hsk_course_pronunciation_bad" formatted="false">Aniq emas, yana urinib ko\'ring</string>
+    <string name="hsk_course_pronunciation_done" formatted="false">to\'g\'ri</string>
+    <string name="hsk_course_pronunciation_done_sub" formatted="false">Talaffuzing yaxshilanyapti!</string>
+    <string name="hsk_course_pronunciation_heard" formatted="false">Men shunday eshitdim:</string>
+    <string name="hsk_course_pronunciation_hint" formatted="false">Mikrofonni bosib, so\'zni ayting</string>
+    <string name="hsk_course_pronunciation_limit_sub" formatted="false">Bepul rejimda bu bo\'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun HSK AI Pro oling yoki ertaga qayting.</string>
+    <string name="hsk_course_pronunciation_limit_title" formatted="false">Bugungi bepul mashq tugadi</string>
+    <string name="hsk_course_pronunciation_listen" formatted="false">Tinglash</string>
+    <string name="hsk_course_pronunciation_listening" formatted="false">Eshityapman…</string>
+    <string name="hsk_course_pronunciation_mic_deny" formatted="false">Mikrofonga ruxsat bering</string>
+    <string name="hsk_course_pronunciation_need_tg" formatted="false">Telegram\'da oching</string>
+    <string name="hsk_course_pronunciation_net_err" formatted="false">Tarmoq xatosi, qayta urining</string>
+    <string name="hsk_course_pronunciation_no_support" formatted="false">Mikrofon qo\'llab-quvvatlanmaydi</string>
+    <string name="hsk_course_pronunciation_ok" formatted="false">Aniq talaffuz!</string>
+    <string name="hsk_course_pronunciation_premium_btn" formatted="false">HSK AI Pro ⭐️ olish</string>
+    <string name="hsk_course_pronunciation_retry" formatted="false">Qayta bosing</string>
+    <string name="hsk_course_pronunciation_review" formatted="false">takror</string>
+    <string name="hsk_course_pronunciation_skip" formatted="false">O\'tkazib yuborish</string>
     <string name="hsk_course_rank" formatted="false">o\'rin</string>
     <string name="hsk_course_ready_phrases" formatted="false">Tayyor gaplar</string>
     <string name="hsk_course_ready_phrases_sub" formatted="false">Kundalik vaziyatlar uchun xitoycha gaplar</string>

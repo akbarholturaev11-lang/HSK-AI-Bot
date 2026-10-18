@@ -1583,3 +1583,7 @@ Keep GitHub's branch current without force-resetting unrelated user work.
 ## Recognition: exact-copy 10-label UZ/RU/TJ UI adoption (2026-10-18)
 
 - Recognition display dictionary `L` prefers local static generated course UI copy with existing literals as fallback. Central `course` UI catalog counts **287 keys per locale**. Six generated outputs include offline Android, Desktop and Mini App/Bot source artifacts; strict reviewed Git source SHA and regression added. This is UI text routing only — no change to grade, word source, free daily-gate, Pro, ads or APIs. Test on real devices before merging.
+
+## Mistakes + Pronunciation display UI runtime adoption (2026-10-18)
+
+- Reviewed 53 Mistakes display labels (including cats/sources nested groups) and 22 Pronunciation labels, exact UZ/RU/TJ string parity, 287 → **362** locally bundled course UI keys per locale, six deterministic generated platform outputs. Both pages preload one local JS bundle and retain every original inline literal as fallback. Locale/placeholder/contract/Node runtime regression added to P0, source Git blobs pinned; user data, server scoring, audio/STT, Pro, progress and daily access not modified. PR #179 Draft; device QA and fresh CI confirmation required.

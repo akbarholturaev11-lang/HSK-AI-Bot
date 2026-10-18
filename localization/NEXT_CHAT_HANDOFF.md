@@ -1,5 +1,12 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## Mistakes + Pronunciation: 75 exact display labels (2026-10-18)
+
+- `course_v3_mistakes.html`: **53 exact UZ/RU/TJ display-only labels**, including 4 nested category labels and 8 source labels; original inline dictionaries remain synchronous fallback. `course_v3_pronunciation.html`: **22 exact UZ/RU/TJ display-only labels**, same fallback. Both preload `/course_v3_data/hsk-course-i18n.js?v=20261018-practice-ui-v15` once as a local static asset, no per-label backend call.
+- Catalog **287 → 362 keys per locale** (+75, 225 original locale values). All **six** generated browser/Desktop/Bot/Android resource files updated. Source SHA review manifest pins both HTML files; new `tests/test_i18n_practice_ui_adoption.py` verifies 75×3 exact parity, JS override/fallback (Node optional), and source invariants. `i18n-p0.yml` includes new test.
+- Unchanged: server-owned mistake records and answers, mistake review/start/answer/complete, question scoring, phonetic voice/STT recording and scores, audio cache, trial/Pro, ads, daily gate, XP and network endpoints. **Verify commit P0 and all CI, then manually QA paid/free/offline paths before merging.**
+- Prior `b7cb274` Recognition update: all six GitHub CI workflows SUCCESS; 165 P0 tests; Android emulator CI SUCCESS. No device QA confirmation. Work branch only; PR #179 Draft; `main` and production unmodified.
+
 ## Recognition 10-label exact-copy runtime adoption (2026-10-18)
 
 - Recognition Mini App `app/static/course_v3_recognition.html` now preloads local `hsk-course-i18n.js?v=20261018-recognition-v14` and overlays **10 original UZ/RU/TJ display labels** onto the existing inline `L` dictionary. Legacy literal copy remains a synchronous fallback when the bundled catalog is absent, and no per-text network request is introduced.

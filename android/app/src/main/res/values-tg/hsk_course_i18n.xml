@@ -86,6 +86,59 @@
     <string name="hsk_course_mashq_sub" formatted="false">Мустаҳкам ва санҷиш</string>
     <string name="hsk_course_match_pairs" formatted="false">Ҷуфтҳоро мувофиқ кунед</string>
     <string name="hsk_course_mistakes" formatted="false">Хатоҳои ман</string>
+    <string name="hsk_course_mistakes_all" formatted="false">Ҳама</string>
+    <string name="hsk_course_mistakes_build_hint" formatted="false">Ҷумлаи дурустро созед</string>
+    <string name="hsk_course_mistakes_cats_character" formatted="false">Иероглиф</string>
+    <string name="hsk_course_mistakes_cats_grammar" formatted="false">Грамматика</string>
+    <string name="hsk_course_mistakes_cats_pronunciation" formatted="false">Талаффуз</string>
+    <string name="hsk_course_mistakes_cats_word" formatted="false">Калимаҳо</string>
+    <string name="hsk_course_mistakes_check" formatted="false">Санҷидан</string>
+    <string name="hsk_course_mistakes_clear" formatted="false">Тоза кардан</string>
+    <string name="hsk_course_mistakes_correct" formatted="false">Дуруст!</string>
+    <string name="hsk_course_mistakes_done" formatted="false">Тайёр</string>
+    <string name="hsk_course_mistakes_empty_scope" formatted="false">Ҳоло чизе барои такрор нест — хатоҳои ин бахш ислоҳ шудаанд.</string>
+    <string name="hsk_course_mistakes_empty_sub" formatted="false">Дарсҳо ва тестҳоро гузаред — хатоҳо ин ҷо пайдо мешаванд.</string>
+    <string name="hsk_course_mistakes_empty_title" formatted="false">Ҳоло хато нест</string>
+    <string name="hsk_course_mistakes_err" formatted="false">Хатогӣ рух дод. Боз кӯшиш кунед.</string>
+    <string name="hsk_course_mistakes_exp" formatted="false">Шарҳ</string>
+    <string name="hsk_course_mistakes_finish" formatted="false">Анҷом</string>
+    <string name="hsk_course_mistakes_later" formatted="false">Дертар</string>
+    <string name="hsk_course_mistakes_lesson" formatted="false">Дарс</string>
+    <string name="hsk_course_mistakes_limit_btn" formatted="false">HSK AI Pro ⭐️ гирифтан</string>
+    <string name="hsk_course_mistakes_limit_text" formatted="false">Барои кори бемаҳдуд бар хатоҳо HSK AI Pro гиред.</string>
+    <string name="hsk_course_mistakes_limit_title" formatted="false">Кӯшиши ройгон истифода шуд</string>
+    <string name="hsk_course_mistakes_limit_why" formatted="false">Кӯшиши якдафъаинаи ройгон истифода шуд. Барои бепоён HSK AI Pro гиред ё фардо баргардед.</string>
+    <string name="hsk_course_mistakes_load_err" formatted="false">Хатоҳо бор нашуданд. Интернетро санҷида, боз кӯшиш кунед.</string>
+    <string name="hsk_course_mistakes_loading" formatted="false">Боргирӣ…</string>
+    <string name="hsk_course_mistakes_more" formatted="false">Боз нишон додан</string>
+    <string name="hsk_course_mistakes_next" formatted="false">Минбаъд</string>
+    <string name="hsk_course_mistakes_of" formatted="false">аз</string>
+    <string name="hsk_course_mistakes_progress" formatted="false">{p} аз {r} машқ</string>
+    <string name="hsk_course_mistakes_q" formatted="false">Савол</string>
+    <string name="hsk_course_mistakes_res_all" formatted="false">Шумо ҳамаи хатоҳоятонро ислоҳ кардед!</string>
+    <string name="hsk_course_mistakes_res_cleared" formatted="false">Пурра ислоҳ шуд: {n}</string>
+    <string name="hsk_course_mistakes_res_remaining" formatted="false">Хатоҳои боқимонда</string>
+    <string name="hsk_course_mistakes_res_score" formatted="false">дуруст</string>
+    <string name="hsk_course_mistakes_res_title" formatted="false">Кори аъло!</string>
+    <string name="hsk_course_mistakes_retry" formatted="false">Боз кӯшиш</string>
+    <string name="hsk_course_mistakes_review" formatted="false">Кор бар хатоҳо</string>
+    <string name="hsk_course_mistakes_review_cat" formatted="false">Такрор: {cat}</string>
+    <string name="hsk_course_mistakes_review_count" formatted="false">Хатоҳо: {n} · ҳар кадом дар 3 машқи гуногун</string>
+    <string name="hsk_course_mistakes_review_sub" formatted="false">хатои фаъол</string>
+    <string name="hsk_course_mistakes_sources_challenge" formatted="false">Рақобат</string>
+    <string name="hsk_course_mistakes_sources_lesson" formatted="false">Дарс</string>
+    <string name="hsk_course_mistakes_sources_memorize" formatted="false">Ёдгирӣ</string>
+    <string name="hsk_course_mistakes_sources_pronunciation" formatted="false">Машқи талаффуз</string>
+    <string name="hsk_course_mistakes_sources_recognition" formatted="false">Шинохти иероглиф</string>
+    <string name="hsk_course_mistakes_sources_test" formatted="false">Тести HSK</string>
+    <string name="hsk_course_mistakes_sources_training" formatted="false">Машқ</string>
+    <string name="hsk_course_mistakes_sources_voice" formatted="false">AI Voice</string>
+    <string name="hsk_course_mistakes_start" formatted="false">Оғоз</string>
+    <string name="hsk_course_mistakes_sub" formatted="false">Аз дарсҳо, тестҳои HSK ва рақобатҳо худкор ҷамъ мешаванд</string>
+    <string name="hsk_course_mistakes_title" formatted="false">Хатоҳои ман</string>
+    <string name="hsk_course_mistakes_to_course" formatted="false">Ба дарсҳо</string>
+    <string name="hsk_course_mistakes_undo" formatted="false">Қафо</string>
+    <string name="hsk_course_mistakes_wrong" formatted="false">Нодуруст</string>
     <string name="hsk_course_mistakes_sub" formatted="false">Кор бар ҷойҳои заиф</string>
     <string name="hsk_course_nav_course" formatted="false">Курс</string>
     <string name="hsk_course_nav_mashq" formatted="false">Машқ</string>
@@ -191,6 +244,28 @@
     <string name="hsk_course_profile_trial" formatted="false">Pro · Озмоиш</string>
     <string name="hsk_course_pron" formatted="false">Машқи талаффуз</string>
     <string name="hsk_course_pron_sub" formatted="false">Гӯш кун, такрор кун</string>
+    <string name="hsk_course_pronunciation_again" formatted="false">Боз</string>
+    <string name="hsk_course_pronunciation_analyzing" formatted="false">Месанҷам…</string>
+    <string name="hsk_course_pronunciation_answer" formatted="false">Дурусташ ин аст:</string>
+    <string name="hsk_course_pronunciation_back" formatted="false">Бозгашт</string>
+    <string name="hsk_course_pronunciation_bad" formatted="false">Дақиқ нест, боз кӯшиш кунед</string>
+    <string name="hsk_course_pronunciation_done" formatted="false">дуруст</string>
+    <string name="hsk_course_pronunciation_done_sub" formatted="false">Талаффузи шумо беҳтар мешавад!</string>
+    <string name="hsk_course_pronunciation_heard" formatted="false">Ман чунин шунидам:</string>
+    <string name="hsk_course_pronunciation_hint" formatted="false">Микрофонро пахш карда, калимаро гӯед</string>
+    <string name="hsk_course_pronunciation_limit_sub" formatted="false">Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён HSK AI Pro гиред ё фардо баргардед.</string>
+    <string name="hsk_course_pronunciation_limit_title" formatted="false">Машқи ройгони имрӯза тамом шуд</string>
+    <string name="hsk_course_pronunciation_listen" formatted="false">Гӯш кардан</string>
+    <string name="hsk_course_pronunciation_listening" formatted="false">Гӯш мекунам…</string>
+    <string name="hsk_course_pronunciation_mic_deny" formatted="false">Ба микрофон иҷозат диҳед</string>
+    <string name="hsk_course_pronunciation_need_tg" formatted="false">Дар Telegram кушоед</string>
+    <string name="hsk_course_pronunciation_net_err" formatted="false">Хатои шабака, бозкӯшӣ кунед</string>
+    <string name="hsk_course_pronunciation_no_support" formatted="false">Микрофон дастгирӣ намешавад</string>
+    <string name="hsk_course_pronunciation_ok" formatted="false">Талаффузи дақиқ!</string>
+    <string name="hsk_course_pronunciation_premium_btn" formatted="false">HSK AI Pro ⭐️ гирифтан</string>
+    <string name="hsk_course_pronunciation_retry" formatted="false">Боз пахш кунед</string>
+    <string name="hsk_course_pronunciation_review" formatted="false">такрор</string>
+    <string name="hsk_course_pronunciation_skip" formatted="false">Гузарондан</string>
     <string name="hsk_course_rank" formatted="false">ҷой</string>
     <string name="hsk_course_ready_phrases" formatted="false">Ибораҳои омода</string>
     <string name="hsk_course_ready_phrases_sub" formatted="false">Ҷумлаҳои чинӣ барои ҳар рӯз</string>

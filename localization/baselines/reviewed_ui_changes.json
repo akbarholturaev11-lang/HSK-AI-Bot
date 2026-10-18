@@ -32,6 +32,16 @@
       "baseline_sha1": "22c2e10c99a243b9eb9992f99de0de0709c7f819",
       "reviewed_sha1": "8cef3be7fb76c6bee286449a3ffb6c7930b6867e",
       "reason": "Exact 10 UZ/RU/TJ Recognition display labels hydrate synchronously from bundled local static JS, retaining literal inline fallback; practice scoring, word gate, subscription, ads, daily-gate and APIs unchanged."
+    },
+    "app/static/course_v3_mistakes.html": {
+      "baseline_sha1": "b273a6dbf85884b99ab3c194546a6b9d4b0eecbf",
+      "reviewed_sha1": "75042e8130e2976e8d90ccdb33564bb5b08aec1d",
+      "reason": "Exactly 53 Mistakes UI display literals per UZ/RU/TJ including nested cats/sources labels moved to offline catalog with original fallback; review session access, answers, grading, audio, XP, Pro and server APIs unchanged."
+    },
+    "app/static/course_v3_pronunciation.html": {
+      "baseline_sha1": "d05f5dd02da2befc4db9bc07db343a19bd1c0e32",
+      "reviewed_sha1": "146ea3b1e32bf0f790c41754d46d4665d9632283",
+      "reason": "Exactly 22 Pronunciation display UI labels per UZ/RU/TJ via static offline bundle with original literals as fallback; mic/STT/audio, word selection, grading, Pro, ads and server access unchanged."
     }
   }
 }
