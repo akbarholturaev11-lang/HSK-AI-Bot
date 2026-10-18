@@ -297,5 +297,38 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             self.assertNotIn(forbidden, source)
 
 
+    def test_miniapp_reviewed_plan_trial_and_paywall_display_copy(self):
+        """Only text lookup changes: preserve trial and paywall decision branches."""
+        import re
+
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertEqual(len(html.split("\n")), 8712)
+        expected = {
+            "planTitle": 1, "planBody": 1, "planPay": 1, "planFree": 1,
+            "trialOn": 1, "trialFail": 2, "trialCta": 2,
+            "paySub": 1, "subscribe": 1,
+        }
+        for key, count in expected.items():
+            with self.subTest(key=key):
+                self.assertEqual(html.count('courseMessage("' + key + '",'), count)
+        for locale, line_no in (("ru", 1478), ("uz", 1479), ("tj", 1480)):
+            old_copy = html.splitlines()[line_no]
+            catalog = json.loads((ROOT / f"localization/ui/{locale}/course.json")
+                                 .read_text(encoding="utf-8"))["messages"]
+            for key in expected:
+                with self.subTest(locale=locale, key=key):
+                    found = re.search(r"(?:^|[,{}])" + re.escape(key) + r':"([^"]*)"',
+                                      old_copy)
+                    self.assertIsNotNone(found)
+                    self.assertEqual(found.group(1), catalog[key])
+        self.assertIn('if(isPaidUser())return;', html)
+        self.assertIn('if(!TRIAL_STATE||!TRIAL_STATE.eligible)return;', html)
+        self.assertIn('!isLimitPaywallContext(ctx)&&trialEligible()', html)
+        self.assertIn('isLimitPaywallContext(ctx)?', html)
+        for forbidden in ('courseMessage("trialLeft"', 'courseMessage("payTitle"',
+                          'courseMessage("correct"', 'courseMessage("wrong"'):
+            self.assertNotIn(forbidden, html)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -2964,13 +2964,13 @@ function trialStart(source){
       if(res.status===200&&res.d.ok){
         TRIAL_STATE=null;TRIAL_PROMISE=null;TRIAL_LOADED=false;
         trackCourseEvent("trial_started",{source:source||"miniapp"});
-        toast(T().trialOn||"Pro 7 kunga ochildi");
+        toast(courseMessage("trialOn",T().trialOn)||"Pro 7 kunga ochildi");
         setTimeout(function(){location.reload()},900);
         return true;
       }
-      toast(T().trialFail||"Hozir ochib bo'lmadi");
+      toast(courseMessage("trialFail",T().trialFail)||"Hozir ochib bo'lmadi");
       return false;
-    }).catch(function(){toast(T().trialFail||"Hozir ochib bo'lmadi");return false});
+    }).catch(function(){toast(courseMessage("trialFail",T().trialFail)||"Hozir ochib bo'lmadi");return false});
 }
 /* ---------- Dars yakuni reklamasi ----------
    Bepul foydalanuvchi darsni tugatib, bayram/streak/reyting ekranlarini yopgach
@@ -6318,11 +6318,11 @@ function maybeShowPlanChoice(){
   try{localStorage.setItem("hsk_v3_plan_choice","1")}catch(e){}
   var t=T();
   trackCourseEvent("plan_choice_seen",{source:"onboarding"});
-  App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(t.planTitle||"")+'</div>'
-    +'<div class="tr">'+esc(t.planBody||"")+'</div></div>'
-    +'<button class="scta" style="margin-top:12px" onclick="App.goPay(\'onboarding_plan\')"><i class="ti ti-crown"></i> '+esc(t.planPay||"")+'</button>'
-    +'<button class="scta" style="margin-top:8px;background:var(--card);color:var(--ink);border:1px solid var(--line)" onclick="App.startTrial(\'onboarding_plan\')"><i class="ti ti-gift"></i> '+esc(t.trialCta||"")+'</button>'
-    +'<button class="scta" style="margin-top:8px;background:transparent;color:var(--mut);border:none" onclick="App.closeSheet()">'+esc(t.planFree||"")+'</button>');
+  App.openSheet('<div class="shead"><div class="tr" style="font-size:17px;color:var(--ink)">'+esc(courseMessage("planTitle",t.planTitle)||"")+'</div>'
+    +'<div class="tr">'+esc(courseMessage("planBody",t.planBody)||"")+'</div></div>'
+    +'<button class="scta" style="margin-top:12px" onclick="App.goPay(\'onboarding_plan\')"><i class="ti ti-crown"></i> '+esc(courseMessage("planPay",t.planPay)||"")+'</button>'
+    +'<button class="scta" style="margin-top:8px;background:var(--card);color:var(--ink);border:1px solid var(--line)" onclick="App.startTrial(\'onboarding_plan\')"><i class="ti ti-gift"></i> '+esc(courseMessage("trialCta",t.trialCta)||"")+'</button>'
+    +'<button class="scta" style="margin-top:8px;background:transparent;color:var(--mut);border:none" onclick="App.closeSheet()">'+esc(courseMessage("planFree",t.planFree)||"")+'</button>');
 }
 /* ---------- Mayda tushuntirish blokchalari ----------
    Serverdan keladi (`MAP.hints`). Uch qoida:
@@ -6679,17 +6679,17 @@ function paywallHtml(ctx){
   if(salesValueCoursePaywall(ctx))return salesOutcomePaywallHtml(ctx);
   var t=T();var ctxTitle=getPaywallTitle(ctx);
   var showSubtitle=typeof ctx!=="object" || !ctx.lesson;
-  return '<div class="shead"><div style="width:54px;height:54px;border-radius:15px;background:var(--cin);border:2px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px" class="han">会</div><div class="tr" style="font-size:14px;color:var(--ink)">'+esc(ctxTitle)+'</div>'+(showSubtitle?'<div class="tr">'+t.paySub+'</div>':'')+'</div>'
+  return '<div class="shead"><div style="width:54px;height:54px;border-radius:15px;background:var(--cin);border:2px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px" class="han">会</div><div class="tr" style="font-size:14px;color:var(--ink)">'+esc(ctxTitle)+'</div>'+(showSubtitle?'<div class="tr">'+courseMessage("paySub",t.paySub)+'</div>':'')+'</div>'
     +payWhyHtml(ctx)
     +promoBlockHtml()
-    +'<button class="scta" onclick="App.goPay()"><i class="ti ti-lock-open"></i> '+t.subscribe+'</button>'
+    +'<button class="scta" onclick="App.goPay()"><i class="ti ti-lock-open"></i> '+courseMessage("subscribe",t.subscribe)+'</button>'
     /* 7 kunlik bepul Pro — FAQAT hisob uni hali olmagan bo'lsa.
        Olgan bo'lsa yagona tugma yuqoridagi obuna bo'lib qoladi, xuddi
        mashq limitidagi kabi. Ilgari bu taklif faqat hech qachon
        chaqirilmaydigan funksiya ichida turardi, ya'ni dars paywallida
        trial umuman ko'rinmasdi. */
     +(!isLimitPaywallContext(ctx)&&trialEligible()
-      ? '<button class="scta" style="margin-top:8px;background:var(--card);color:var(--ink);border:1px solid var(--line)" onclick="App.startTrial(\'paywall_lesson\')"><i class="ti ti-gift"></i> '+esc(t.trialCta||"")+'</button>'
+      ? '<button class="scta" style="margin-top:8px;background:var(--card);color:var(--ink);border:1px solid var(--line)" onclick="App.startTrial(\'paywall_lesson\')"><i class="ti ti-gift"></i> '+esc(courseMessage("trialCta",t.trialCta)||"")+'</button>'
       : '')
     +(isLimitPaywallContext(ctx)?'':payHintHtml());
 }
