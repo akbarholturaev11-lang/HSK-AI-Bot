@@ -10,8 +10,8 @@
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
-      "reviewed_sha1": "12718404dfe3035b83d33c1b04247bd997a1d932",
-      "reason": "Seven source profile.* values (Free/Trial, today/overall accuracy, Pro CTA, answers, note) now shared in UZ/RU/TJ local generated catalogs. Legacy profile copy stays identical as fallback; no line movement, entitlement changes or runtime lookup requests."
+      "reviewed_sha1": "fda86500dbc004dd7bf93d37dc0c574f6d036ed2",
+      "reason": "Mini App resolves 7 added profile.* UI keys from three static catalogs with byte-exact UZ/RU/TJ inline fallbacks and bumps its static course bundle URL to avoid stale cached JS. No changes to profiles, payments, entitlement conditions or source lines."
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",

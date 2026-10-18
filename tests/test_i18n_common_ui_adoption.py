@@ -115,7 +115,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertEqual(html.count(
-            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261017-course-v1"></script>'
+            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-profile-v2"></script>'
         ), 1)
         self.assertLess(html.index("hsk-course-i18n.js"),
                         html.index("function courseMessage("))
