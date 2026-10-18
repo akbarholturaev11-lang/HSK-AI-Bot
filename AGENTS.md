@@ -1,33 +1,17 @@
-# AGENTS.md
+# HSK AI — Agent ko‘rsatmalari
 
-## Kimman
+## Loyiha va aloqa
 
-Men Akbar. Telegram botlar, web loyihalar, AI servislar va avtomatlashtirish ustida ishlayman. Menga nazariya emas, ishlaydigan natija kerak. Tezlik, sifat va foyda muhim.
+HSK AI — Xitoy tilini o‘rganish platformasi: Telegram bot va Mini App, Android
+(direct/Play), macOS/Windows Desktop, public veb-sayt hamda umumiy FastAPI
+backend. Hisob, kurs progressi, to‘lov va access qarorlari platformalar bo‘ylab
+mos bo‘lishi kerak; haqiqiy kontraktni kod va tegishli testlardan tekshir.
 
-## Asosiy ish usuli
-
-- Asosiy vosita: Codex
-- Javob tili: Uzbek (lotin)
-- Kod tili: English
-- Menga yoqish uchun emas, to‘g‘ri javob ber
-- Agar fikrim zaif bo‘lsa, to‘g‘ri ayt
-- Variant ko‘paytirma, eng yaxshi yo‘lni tavsiya qil
-
----
-
-## Codex roli
-
-Sen mening senior dasturchim va texnik sherigimsan.
-
-Sen:
-
-- production-level coder
-- backend thinker
-- architecture reviewer
-- bug hunter
-- practical builder
-
-Oddiy assistant emas, natija beradigan engineer bo‘l.
+- Asosiy kod va texnik identifikatorlar: English.
+- Foydalanuvchiga odatda o‘zbek tilida javob ber; lotin yoki kirill yozuvini
+  uning joriy so‘roviga moslashtir. Boshqa tilni aniq so‘rasa, o‘sha tilda javob ber.
+- Qisqa, dalilga asoslangan yechimni tanla; taxminni tasdiqlangan fakt sifatida yozma.
+- Kod o‘zgartirishda ishlab turgan funksiyalarni saqla va vazifadan tashqari refactor qilma.
 
 ---
 
@@ -201,20 +185,6 @@ Agar AI feature qo‘shilsa:
 
 ---
 
-## Qachon meni to‘xtat
-
-Agar men:
-
-- keraksiz murakkablik so‘rasam
-- tez pul fantasy qilsam
-- yomon architecture tanlasam
-- vaqtni behuda sarflayotgan bo‘lsam
-- bir xil xatoni qaytarsam
-
-to‘g‘ri ayt va kuchliroq yo‘l ber.
-
----
-
 ## Davom ettirish qoidasi
 
 Agar men "davom et" desam:
@@ -226,33 +196,12 @@ Agar men "davom et" desam:
 
 ---
 
-## Yakuniy qoida
+# HSK AI platforma ko‘rsatmalari
 
-Maqsad chiroyli gap emas.
-
-Maqsad:
-
-- ishlaydigan kod
-- tez natija
-- kam xato
-- kuchli system
-- real progress
-
----
-
-## graphify
-
-This project has a graphify knowledge graph at graphify-out/.
-
-Rules:
-- Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
-- If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
-- For cross-module "how does X relate to Y" questions, prefer `graphify query "<question>"`, `graphify path "<A>" "<B>"`, or `graphify explain "<concept>"` over grep — these traverse the graph's EXTRACTED + INFERRED edges instead of scanning files
-- After modifying code files in this session, run `graphify update .` to keep the graph current (AST-only, no API cost)
-
-# HSK AI Codex Instructions
-
-This project is HSK AI: a Telegram Mini App and Telegram bot for Chinese learning.
+HSK AI o‘quv platformasi Telegram bot/Mini App, Android, macOS/Windows Desktop,
+public sayt va shared backend'dan iborat. Mini App uchun Telegram SDK qoidalari
+faqat shu client'ga tegishli; API, access va progress kontraktlari barcha
+client'lar uchun xavfsiz saqlansin.
 
 ## Critical rules
 
@@ -267,14 +216,15 @@ Do not break:
 - subscription/payment logic
 - referral logic
 
-Before editing UI code, first provide:
-1. weak points
-2. why they hurt learning or conversion
-3. exact proposed changes
-4. files to edit
-5. risk level
-
-Only edit after the audit unless explicitly told to patch immediately.
+UI o‘zgarishini xavfiga qarab tekshir:
+- Navigatsiya, dars/test, onboarding, paywall, to‘lov, auth yoki keng dizayn
+  o‘zgarishida avval zaif nuqtalar, user ta’siri, aniq patch, fayllar va xavfni
+  ko‘rsat; keyin so‘ralgan scope doirasida ishlagin.
+- Faqat matn, rang, spacing yoki kichik kosmetik xatoni tuzatishda mavjud
+  komponent va ta’sirlangan ekranlarni tez tekshirib, minimal patch va
+  tegishli visual smoke test yetarli. To‘liq UX audit shart emas.
+- Aniq so‘ralgan o‘zgarish uchun qayta ruxsat so‘rama; mahsulot xulqi yoki
+  scope noaniq bo‘lsa aniqlashtir.
 
 ## Skills to use
 
