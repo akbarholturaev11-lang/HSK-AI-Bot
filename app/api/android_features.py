@@ -1987,13 +1987,18 @@ def create_android_features_router(
                     ref=payload.ref.strip() or None,
                     lifetime=True,
                 )
-                # The central engine answers the same question alongside, and
-                # the difference is recorded. It decides nothing here yet.
+                # consume_daily_use locks users.id FOR UPDATE to protect free
+                # allowance counters. Shadow writes with a *second* SQL session
+                # and its FK needs a KEY SHARE lock on the same users row.
+                # Commit here BEFORE starting the shadow write: otherwise a
+                # Google-only learner (new user_id, no telegram_id) can block
+                # their own request until the Android client's 30s timeout.
+                await session.commit()
+                # Shadow is best effort; it must never hold the gate open.
                 await shadow_compare_gate(
                     session, user=user, feature=feature, legacy=result, client="android"
                 )
                 if not result.get("allowed"):
-                    await session.commit()
                     return JSONResponse(
                         status_code=403,
                         content={
@@ -2009,7 +2014,6 @@ def create_android_features_router(
                         },
                         headers={"Cache-Control": "no-store"},
                     )
-                await session.commit()
             return JSONResponse(
                 content={
                     "ok": True,
