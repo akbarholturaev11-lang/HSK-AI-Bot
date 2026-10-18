@@ -57,5 +57,61 @@ class OnboardingCourseCatalogTests(unittest.TestCase):
             self.assertIn('"onboarding.' + key + '"', mini)
 
 
+    def test_android_runtime_uses_23_exact_reviewed_onboarding_strings(self):
+        native = (ROOT / "android/app/src/main/java/com/pomp/hskai/feature/onboarding/OnboardingScreen.kt").read_text(
+            encoding="utf-8")
+        fields = {
+            "hello": "hello",
+            "boot": "boot",
+            "askLevel": "ask",
+            "levelHint": "levelHint",
+            "askVersion": "askVersion",
+            "hsk20BooksDescription": "books20",
+            "hsk30BooksDescription": "books30",
+            "start": "start",
+            "continueLabel": "cont",
+            "firstLesson": "first",
+            "retry": "retry",
+            "askGoal": "askGoal",
+            "goalHint": "goalHint",
+            "welcomeNote": "welcomeNote",
+            "levelNote": "levelNote",
+            "goalNote": "goalNote",
+            "back": "back",
+            "saving": "saving",
+            "selected": "selected",
+            "courseVersion": "courseVersion",
+            "hsk20": "hsk20",
+            "hsk30": "hsk30",
+            "hsk30Disabled": "hsk30Disabled",
+        }
+        self.assertEqual(len(fields), 23)
+        self.assertIn("LocalContext.current", native)
+        self.assertIn("OnboardingCopy.forLanguage(language).withBundledCatalog(context, language)", native)
+        self.assertIn("config.setLocale(Locale.forLanguageTag(canonicalLanguage(language)))", native)
+        self.assertIn("context.createConfigurationContext(config)", native)
+        self.assertIn("}.getOrDefault(this)", native)
+        bodies = {
+            "uz": native.split('"uz" -> OnboardingCopy(', 1)[1].split(")", 1)[0],
+            "tj": native.split('"tg", "tj" -> OnboardingCopy(', 1)[1].split(")", 1)[0],
+            "ru": native.split("else -> OnboardingCopy(", 1)[1].split(")", 1)[0],
+        }
+        for locale in LOCALES:
+            values = dict(re.findall(r'(\\w+)\\s*=\\s*"([^"]*)"', bodies[locale]))
+            catalog = json.loads((ROOT / f"localization/ui/{locale}/course.json")
+                                 .read_text(encoding="utf-8"))["messages"]
+            for field, key in fields.items():
+                with self.subTest(locale=locale, field=field):
+                    self.assertEqual(values[field], catalog["onboarding." + key])
+        lookups = native.split("private fun OnboardingCopy.withBundledCatalog(", 1)[1].split(
+            "\n@Composable", 1)[0]
+        for field, key in fields.items():
+            resource_key = "hsk_course_onboarding_" + re.sub(
+                r"(?<!^)(?=[A-Z])", "_", key).lower()
+            self.assertIn(
+                field + " = localized.getString(R.string." + resource_key + ")", lookups)
+        for skipped in ("versionHint", "saveError", "beginner", "beginnerSub"):
+            self.assertNotIn(skipped + " = localized.getString", lookups)
+
 if __name__ == "__main__":
     unittest.main()

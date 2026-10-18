@@ -1557,3 +1557,8 @@ Keep GitHub's branch current without force-resetting unrelated user work.
 - Added 31 reviewed byte-exact onboarding UZ/RU/TJ field translations under `onboarding.*`. Course UI sources become **203 keys per locale**, generating 6 local resources unchanged in format for Mini App, Desktop, Bot and Android UZ/RU/TG.
 - The Mini App onboarding displays values from static `hsk-course-i18n.js?v=20261018-onboarding-v11` where available, with all original inline translations retained as local offline fallback. No account/HSK track/billing/Pro/trial/grade/progress logic change.
 - Regression guards verify all 93 legacy labels, generated resource parity, reviewed source SHA, strict key count and source flow anchors. CI on new SHA, device WebView, Android/Desktop/Bot runtime use, offline/cold-cache and security assessment remain separate gates. PR #179 Draft and production/main unchanged.
+
+### P2 Android runtime onboarding adoption — 2026-10-18
+
+- Native `OnboardingCopy` UZ/RU/TJ text matched the generated Mini App source **for 23 of 30 mapped onboarding fields**; these 23 are now loaded from existing `hsk_course_onboarding_*` Android XML by app-selected language via isolated Configuration context (tg for Tajik). Original Android text remains the fallback; seven unmatching fields intentionally remain legacy.
+- Added precise Android source/resource mapping regression. No account/checkout, HSK track, consent, notification, XP, grading, progress or API behavior modified. Do not infer Android build/device QA success until CI and manual locale-switch/offline tests complete.

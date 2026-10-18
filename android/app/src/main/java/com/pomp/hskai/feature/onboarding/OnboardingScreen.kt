@@ -1,6 +1,8 @@
 package com.pomp.hskai.feature.onboarding
 
 import android.animation.ValueAnimator
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import android.view.HapticFeedbackConstants
 import androidx.activity.compose.BackHandler
@@ -63,6 +65,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -77,6 +80,7 @@ import androidx.compose.ui.zIndex
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.components.HskSceneSurface
 import com.pomp.hskai.core.design.PompColors
+import java.util.Locale
 
 /**
  * Native port of `app/static/course_v3_onboarding.html`.
@@ -302,6 +306,43 @@ private val goals = listOf(
     ),
 )
 
+/**
+ * Bundle only the 23 labels with exact UZ/RU/TJ source parity.
+ * Android-specific wording stays in OnboardingCopy.forLanguage as fallback.
+ */
+private fun OnboardingCopy.withBundledCatalog(context: Context, language: String): OnboardingCopy {
+    return runCatching {
+        val config = Configuration(context.resources.configuration)
+        config.setLocale(Locale.forLanguageTag(canonicalLanguage(language)))
+        val localized = context.createConfigurationContext(config)
+        copy(
+            hello = localized.getString(R.string.hsk_course_onboarding_hello),
+            boot = localized.getString(R.string.hsk_course_onboarding_boot),
+            askLevel = localized.getString(R.string.hsk_course_onboarding_ask),
+            levelHint = localized.getString(R.string.hsk_course_onboarding_level_hint),
+            askVersion = localized.getString(R.string.hsk_course_onboarding_ask_version),
+            hsk20BooksDescription = localized.getString(R.string.hsk_course_onboarding_books20),
+            hsk30BooksDescription = localized.getString(R.string.hsk_course_onboarding_books30),
+            start = localized.getString(R.string.hsk_course_onboarding_start),
+            continueLabel = localized.getString(R.string.hsk_course_onboarding_cont),
+            firstLesson = localized.getString(R.string.hsk_course_onboarding_first),
+            retry = localized.getString(R.string.hsk_course_onboarding_retry),
+            askGoal = localized.getString(R.string.hsk_course_onboarding_ask_goal),
+            goalHint = localized.getString(R.string.hsk_course_onboarding_goal_hint),
+            welcomeNote = localized.getString(R.string.hsk_course_onboarding_welcome_note),
+            levelNote = localized.getString(R.string.hsk_course_onboarding_level_note),
+            goalNote = localized.getString(R.string.hsk_course_onboarding_goal_note),
+            back = localized.getString(R.string.hsk_course_onboarding_back),
+            saving = localized.getString(R.string.hsk_course_onboarding_saving),
+            selected = localized.getString(R.string.hsk_course_onboarding_selected),
+            courseVersion = localized.getString(R.string.hsk_course_onboarding_course_version),
+            hsk20 = localized.getString(R.string.hsk_course_onboarding_hsk20),
+            hsk30 = localized.getString(R.string.hsk_course_onboarding_hsk30),
+            hsk30Disabled = localized.getString(R.string.hsk_course_onboarding_hsk30_disabled),
+        )
+    }.getOrDefault(this)
+}
+
 @Composable
 fun OnboardingScreen(
     language: String,
@@ -314,7 +355,10 @@ fun OnboardingScreen(
     modifier: Modifier = Modifier,
 ) {
     BackHandler(enabled = state.step > 0 && !state.submitting, onBack = onBack)
-    val copy = OnboardingCopy.forLanguage(language)
+    val context = LocalContext.current
+    val copy = remember(language, context) {
+        OnboardingCopy.forLanguage(language).withBundledCatalog(context, language)
+    }
     val view = LocalView.current
     val configuration = LocalConfiguration.current
     val layoutSpec = remember(configuration.screenWidthDp, configuration.screenHeightDp) {

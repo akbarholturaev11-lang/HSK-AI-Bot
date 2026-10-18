@@ -1,5 +1,10 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## Android onboarding native runtime — 23 exact-copy fields (2026-10-18)
+
+- **23** of the 30 Mini App catalog fields mapped to Android `OnboardingCopy` matched UZ/RU/TJ **exactly**. Android now reads these `R.string.hsk_course_onboarding_*` values using an in-app-language-pinned `Configuration` context, not system locale. The old `OnboardingCopy.forLanguage` values remain fallback.
+- Seven source field pairs differ or do not exist on Android; do not adopt without separate review. No account, HSK 2.0/3.0, access, payment, lesson result or notification logic touched. Static regression checks native exact parity; actual Android CI and runtime language-switch/offline QA remain required.
+
 **Repository:** `akbarholturaev11-lang/HSK-AI-Bot`  
 **Feature branch:** `codex/i18n-local-first-foundation-20261017`  
 **Draft PR:** https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/179  
