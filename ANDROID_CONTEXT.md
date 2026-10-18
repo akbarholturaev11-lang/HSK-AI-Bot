@@ -12,8 +12,9 @@ kontekst `PROJECT_MEMORY.md`da saqlanadi, u sanali changelog emas.
 ## 1. Ilova nima va qayerda
 
 Native Kotlin/Compose klient, `android/` papkasida. Bot, Mini App, macOS va
-Windows bilan **bir xil backend**, bir xil Telegram akkaunt, bir xil obuna va
-progress. Kirish — `LinkScreen` dagi uchta karta: Telegram (kodsiz,
+Windows bilan **bir xil backend**, bir xil ichki learner akkaunti, obuna va
+progress. Telegram kirish usullaridan biri; Google/Apple provider identity
+shu ichki akkauntga bog‘lanadi, email bo‘yicha akkauntlar qo‘shilmaydi. Kirish — `LinkScreen` dagi uchta karta: Telegram (kodsiz,
 botdagi bitta tasdiq), Google va Apple (server taklif qilsa).
 
 **Ikkita flavour, va bu farq muhim:**

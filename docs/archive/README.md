@@ -15,3 +15,10 @@ Bugungi holat uchun source, test va deployment dalilini tekshiring.
 Asl matn Git blob SHA orqali tahrirsiz ko‘chirildi. Eski manzillarda qisqa
 pointer qoldirildi, shuning uchun Markdown havolalar saqlanadi.
 Bu qadamda kod, DB, payment va Android artifactlari o‘zgartirilmaydi.
+
+**Tarixiy havolalar:** 2026-10-14 dagi Documentation Audit asl matni byte-for-byte
+saqlangan. Undagi nisbiy Markdown havolalar oldingi `docs/` joylashuviga
+qaratilgan, shuning uchun arxiv ko‘rinishida avtomatik ochilmasligi mumkin.
+Bunday havola uchun root `docs/` dagi eski qisqa pointer yoki shu indeks
+orqali asl maqsadga o‘ting. Tarixiy hujjat ichidagi linklarni xatoga yo‘yib,
+muayyan kod yoki loyiha funksiyasini o‘chirmang.
