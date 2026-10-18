@@ -115,7 +115,9 @@ def copy_schema(c: Settings) -> None:
                               stderr=subprocess.DEVNULL) as restore:
             assert dump.stdout is not None
             dump.stdout.close()
-            if dump.wait(timeout=180) or restore.wait(timeout=180):
+            restore_status = restore.wait(timeout=180)
+            dump_status = dump.wait(timeout=180)
+            if restore_status or dump_status:
                 raise BootstrapError("schema_copy_failed_target_quarantined")
     # This is the *only* inserted row: the verified schema's Alembic marker.
     scalar(["psql", "-X", "-qAt", "-v", "ON_ERROR_STOP=1", "-c",
