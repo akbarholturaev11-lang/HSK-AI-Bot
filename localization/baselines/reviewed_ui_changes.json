@@ -70,8 +70,8 @@
     },
     "app/static/subscription.html": {
       "baseline_sha1": "6841d29b680d21f018133fc7a60079abebd45bf0",
-      "reviewed_sha1": "86a32d7f5962ea52cf027d653d6f86391ea64a91",
-      "reason": "Exact-copy 102 UZ/RU/TJ subscription UI-only flat display labels to bundled local static catalog with unmodified inline literal fallback. No invoice, entitlement, payment, region, discount, receipt, approval, renewal, currency conversion, API, referral, pricing or checkout logic changes. Nested arrays/objects and original HTML physical line count untouched."
+      "reviewed_sha1": "299f7a3bd68d898ef9c8323a7d57990610027ecd",
+      "reason": "Exact-copy 102 UZ/RU/TJ subscription UI-only flat display labels to bundled local static catalog with unmodified inline literal fallback. No invoice, entitlement, payment, region, discount, receipt, approval, renewal, currency conversion, API, referral, pricing or checkout logic changes. Nested arrays/objects and original HTML physical line count untouched. Second pass: 79 UZ/RU/TJ nested display strings (mode titles, benefits, plan labels, focus descriptions, visible payment/country labels) adopted from static bundle with original nested arrays/keys and locale fallback; payment method IDs, values, logic unchanged."
     }
   }
 }

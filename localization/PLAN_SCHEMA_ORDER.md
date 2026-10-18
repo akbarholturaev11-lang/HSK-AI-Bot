@@ -1603,3 +1603,7 @@ Keep GitHub's branch current without force-resetting unrelated user work.
 ## Subscription UI-only exact-source adoption (2026-10-19)
 
 - Adopt 102 simple top-level per-locale subscription display strings from current inline I18N dictionary, UZ/RU/TJ byte-equivalent, into local `subscriptionPage.*` keys. Source catalog 521→**623** per locale, 19 total named-placeholder keys. JS bundle loads synchronously before original inline dictionary and is read once across all 3 languages; all literals retained as synchronous fallback. The change is text-only, never backend entitlement, pricing, referral, payment, receipt, plan calculation, region, secure data, navigation or API behavior. Strict source Git SHA pins, Node runtime parity, CI and 6 generated platform outputs required; real checkout paths need manual QA before merging.
+
+### Subscription nested UI exact-source adoption (2026-10-19)
+
+- Original nested benefits, focus, payment/country display labels and plan naming strings: +79 UZ/RU/TJ text values, total **702 course catalog keys per locale**. Source keeps all original arrays/IDs, locale fallback and literal values, while resolving bundled static resources synchronously. No changes to plan prices, billing, verification, receipt, bank details, entitlements, referrals or server requests. Added Node/frozen-SHA regression, updated strict catalog test counts, and regenerated all 6 Mini App/Desktop/Bot/Android local resources. Requires P0/Android/Backend CI and real manual checkout path QA before PR merge.

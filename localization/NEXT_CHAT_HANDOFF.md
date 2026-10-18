@@ -1,5 +1,12 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## Subscription nested UI — remaining 79 exact UZ/RU/TJ labels (2026-10-19)
+
+- Continue prior `92a4a54f` 102 simple-display-key subscription stage with **79 additional original nested display-only fields per UZ/RU/TJ locale**: mode titles, plan labels, benefit/focus/perk text, card hints, and visible payment/country method names/descriptions. Catalog **623 → 702 keys/locale**, and all six platform generated resources refreshed with static `hsk-course-i18n.js?v=20261019-subscription-v19`. The source's original inline structures, keys/IDs and original values remain as synchronous offline fallback.
+- Nested arrays/mappings `I18N.<locale>.modeTitles/modeTv/modePlans/planLabels/rows/cardHints/focus/benefits/perks/methods/countries` are hydrated in place on page initialization without altering the schema or method/country identifiers. `focus.*.ico` artwork, bank account, payment server endpoints, plan pricing, entitlement, receipt review, referral IDs and discount rules unchanged.
+- Added `tests/test_i18n_subscription_nested_ui_adoption.py` with 237 exact original display value comparisons, source checks and Node-executed three-language overlay/fallback. **No new placeholders** (still 19 named keys); source review SHA `299f7a3bd68d898ef9c8323a7d57990610027ecd`. All source, generator and test counts increased to 702; CI P0 workflow includes the added test. Real checkout/free/Pro/manual QA still required, and **check the new commit's workflow statuses** before reporting success.
+- Working branch only; Draft PR #179, no `main` merge and no production deployment. Prior first-stage subscription commit `92a4a54f` passed P0 178 tests, Desktop and both TTS at latest confirmation; Android/Backend checks were still ongoing.
+
 ## Subscription UI-only localization — 102 original UZ/RU/TJ labels (2026-10-19)
 
 - `app/static/subscription.html`: **102 exact original flat display strings × 3 locales**, new `subscriptionPage.*` source family. Catalog grows **521 → 623 keys per locale**, with 10 new existing named-placeholder keys (19 total). The page synchronously preloads local `hsk-course-i18n.js?v=20261019-subscription-v18` and hydrates all three language dictionaries once, leaving **the complete original inline strings as offline fallback**. Source physical HTML line count preserved.

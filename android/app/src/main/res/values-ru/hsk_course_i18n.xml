@@ -403,6 +403,85 @@
     <string name="hsk_course_streak_display_many" formatted="false">дней в ударе!</string>
     <string name="hsk_course_streak_display_one" formatted="false">день в ударе!</string>
     <string name="hsk_course_subscribe" formatted="false">Получить HSK AI Pro ⭐️</string>
+    <string name="hsk_course_subscription_nested_benefit0_description" formatted="false">Быстрые ответы по вопросам и упражнениям.</string>
+    <string name="hsk_course_subscription_nested_benefit0_title" formatted="false">AI-помощник</string>
+    <string name="hsk_course_subscription_nested_benefit1_description" formatted="false">Уроки по порядку, прогресс сохраняется.</string>
+    <string name="hsk_course_subscription_nested_benefit1_title" formatted="false">Курс HSK</string>
+    <string name="hsk_course_subscription_nested_benefit2_description" formatted="false">Работаете с фото и голосовыми вопросами.</string>
+    <string name="hsk_course_subscription_nested_benefit2_title" formatted="false">Фото и voice</string>
+    <string name="hsk_course_subscription_nested_benefit3_description" formatted="false">Ошибки в quiz и ответах объясняются.</string>
+    <string name="hsk_course_subscription_nested_benefit3_title" formatted="false">Разбор ошибок</string>
+    <string name="hsk_course_subscription_nested_card_hints_alif" formatted="false">Откройте приложение Алиф, нажмите кнопку «На карту», введите номер карты ниже и оплатите.</string>
+    <string name="hsk_course_subscription_nested_card_hints_foreign" formatted="false">Это таджикская VISA-карта. Если в вашем банке есть перевод на карту банка Таджикистана, используйте его. Если нет, можно оплатить через «Международный VISA».</string>
+    <string name="hsk_course_subscription_nested_card_hints_tj" formatted="false">Откройте приложение Душанбе Сити, нажмите кнопку «DC (по номеру карты)», введите номер карты ниже и оплатите.</string>
+    <string name="hsk_course_subscription_nested_countries_cn_description" formatted="false">Alipay или WeChat Pay, оплата в ¥</string>
+    <string name="hsk_course_subscription_nested_countries_cn_title" formatted="false">Китай</string>
+    <string name="hsk_course_subscription_nested_countries_other_description" formatted="false">Оплата в USD</string>
+    <string name="hsk_course_subscription_nested_countries_other_title" formatted="false">Карта другой страны</string>
+    <string name="hsk_course_subscription_nested_countries_ru_description" formatted="false">Оплата в RUB</string>
+    <string name="hsk_course_subscription_nested_countries_ru_title" formatted="false">Карта России</string>
+    <string name="hsk_course_subscription_nested_countries_tj_description" formatted="false">Оплата в TJS</string>
+    <string name="hsk_course_subscription_nested_countries_tj_title" formatted="false">Карта Таджикистана</string>
+    <string name="hsk_course_subscription_nested_countries_uz_description" formatted="false">Оплата в UZS</string>
+    <string name="hsk_course_subscription_nested_countries_uz_title" formatted="false">Карта Узбекистана</string>
+    <string name="hsk_course_subscription_nested_focus_lesson_d" formatted="false">Все уроки курса по порядку, прогресс сохраняется.</string>
+    <string name="hsk_course_subscription_nested_focus_lesson_t" formatted="false">Открываются все уроки</string>
+    <string name="hsk_course_subscription_nested_focus_memorize_d" formatted="false">Все упражнения на заучивание слов открываются без ограничений.</string>
+    <string name="hsk_course_subscription_nested_focus_memorize_t" formatted="false">Заучивание слов без лимита</string>
+    <string name="hsk_course_subscription_nested_focus_mistakes_d" formatted="false">Все ваши ошибки разбираются и отрабатываются заново.</string>
+    <string name="hsk_course_subscription_nested_focus_mistakes_t" formatted="false">Полное повторение ошибок</string>
+    <string name="hsk_course_subscription_nested_focus_photo_d" formatted="false">Отправляйте фото — AI без ограничений разбирает иероглифы и текст.</string>
+    <string name="hsk_course_subscription_nested_focus_photo_t" formatted="false">Разбор фото и иероглифов</string>
+    <string name="hsk_course_subscription_nested_focus_pronunciation_d" formatted="false">Проверяйте произношение каждого слова без ограничений.</string>
+    <string name="hsk_course_subscription_nested_focus_pronunciation_t" formatted="false">Практика произношения</string>
+    <string name="hsk_course_subscription_nested_focus_qa_d" formatted="false">Дневной лимит не заканчивается — задавайте вопросы и получайте быстрые ответы.</string>
+    <string name="hsk_course_subscription_nested_focus_qa_t" formatted="false">AI-вопросы без лимита</string>
+    <string name="hsk_course_subscription_nested_focus_recognition_d" formatted="false">Упражнения на распознавание иероглифов без ограничений.</string>
+    <string name="hsk_course_subscription_nested_focus_recognition_t" formatted="false">Распознавание иероглифов</string>
+    <string name="hsk_course_subscription_nested_focus_test_d" formatted="false">Все тесты любого уровня полностью, без ограничений.</string>
+    <string name="hsk_course_subscription_nested_focus_test_t" formatted="false">HSK-тесты без лимита</string>
+    <string name="hsk_course_subscription_nested_focus_voice_d" formatted="false">Voice-вопросы и roleplay открываются без ограничений.</string>
+    <string name="hsk_course_subscription_nested_focus_voice_t" formatted="false">Голосовой диалог и произношение</string>
+    <string name="hsk_course_subscription_nested_methods_alif_description" formatted="false">Оплата на карту Алиф</string>
+    <string name="hsk_course_subscription_nested_methods_alif_title" formatted="false">Alif</string>
+    <string name="hsk_course_subscription_nested_methods_alipay_description" formatted="false">Оплата в юанях через QR</string>
+    <string name="hsk_course_subscription_nested_methods_alipay_title" formatted="false">Alipay</string>
+    <string name="hsk_course_subscription_nested_methods_dc_city_description" formatted="false">Оплата на карту DC City</string>
+    <string name="hsk_course_subscription_nested_methods_dc_city_title" formatted="false">Dushanbe City</string>
+    <string name="hsk_course_subscription_nested_methods_wechat_description" formatted="false">Оплата в юанях через QR</string>
+    <string name="hsk_course_subscription_nested_methods_wechat_title" formatted="false">WeChat Pay</string>
+    <string name="hsk_course_subscription_nested_mode_plans_admin_discount" formatted="false">Специальный тариф</string>
+    <string name="hsk_course_subscription_nested_mode_plans_feedback_discount" formatted="false">Тариф со скидкой 20%</string>
+    <string name="hsk_course_subscription_nested_mode_plans_referral_discount" formatted="false">Тариф со скидкой</string>
+    <string name="hsk_course_subscription_nested_mode_plans_subscription" formatted="false">Тариф</string>
+    <string name="hsk_course_subscription_nested_mode_titles_admin_discount" formatted="false">Специальная скидка</string>
+    <string name="hsk_course_subscription_nested_mode_titles_feedback_discount" formatted="false">Предложение 20%</string>
+    <string name="hsk_course_subscription_nested_mode_titles_hsk30_unlock" formatted="false">HSK 3.0 · Постоянный доступ</string>
+    <string name="hsk_course_subscription_nested_mode_titles_referral_discount" formatted="false">Скидка за 3 друзей</string>
+    <string name="hsk_course_subscription_nested_mode_titles_subscription" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_subscription_nested_mode_tv_admin_discount" formatted="false">Спецпредложение админа</string>
+    <string name="hsk_course_subscription_nested_mode_tv_feedback_discount" formatted="false">Скидка для вас</string>
+    <string name="hsk_course_subscription_nested_mode_tv_referral_discount" formatted="false">Реферальная скидка</string>
+    <string name="hsk_course_subscription_nested_mode_tv_subscription" formatted="false">Что дает подписка</string>
+    <string name="hsk_course_subscription_nested_perk0" formatted="false">📚 HSK-уроки по шагам</string>
+    <string name="hsk_course_subscription_nested_perk1" formatted="false">🤖 Больше AI-вопросов и ответов</string>
+    <string name="hsk_course_subscription_nested_perk2" formatted="false">🖼 Разбор фото и иероглифов</string>
+    <string name="hsk_course_subscription_nested_perk3" formatted="false">🎙 Практика с voice-вопросами</string>
+    <string name="hsk_course_subscription_nested_perk4" formatted="false">🧩 Quiz, тесты и разбор ошибок</string>
+    <string name="hsk_course_subscription_nested_perk5" formatted="false">📈 Прогресс сохраняется в боте</string>
+    <string name="hsk_course_subscription_nested_perk6" formatted="false">⚡ Ежедневная практика быстрее</string>
+    <string name="hsk_course_subscription_nested_perk7" formatted="false">✅ На время подписки меньше ограничений</string>
+    <string name="hsk_course_subscription_nested_plan_labels_best" formatted="false">Лучший выбор</string>
+    <string name="hsk_course_subscription_nested_plan_labels_fast" formatted="false">Для пробы</string>
+    <string name="hsk_course_subscription_nested_plan_labels_hsk30" formatted="false">Одноразово</string>
+    <string name="hsk_course_subscription_nested_plan_labels_month" formatted="false">1 месяц</string>
+    <string name="hsk_course_subscription_nested_plan_labels_quarter" formatted="false">3 месяца</string>
+    <string name="hsk_course_subscription_nested_plan_labels_quarter_badge" formatted="false">Выгодно</string>
+    <string name="hsk_course_subscription_nested_plan_labels_quarter_note" formatted="false">≈ 2 TJS/день</string>
+    <string name="hsk_course_subscription_nested_plan_labels_ten" formatted="false">10 дней</string>
+    <string name="hsk_course_subscription_nested_rows_bank" formatted="false">Банк TJK</string>
+    <string name="hsk_course_subscription_nested_rows_plan" formatted="false">Тариф</string>
+    <string name="hsk_course_subscription_nested_rows_rate" formatted="false">Курс</string>
     <string name="hsk_course_subscription_page_admin_discount_text" formatted="false">Специальное предложение от админа. Подходящие тарифы и способы оплаты показаны здесь.</string>
     <string name="hsk_course_subscription_page_admin_discount_title" formatted="false">Специальная скидка {percent}%</string>
     <string name="hsk_course_subscription_page_admin_notification_failed" formatted="false">Заявку не удалось отправить. Попробуйте ещё раз.</string>

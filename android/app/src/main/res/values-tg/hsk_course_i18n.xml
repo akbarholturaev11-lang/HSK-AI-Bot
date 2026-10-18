@@ -403,6 +403,85 @@
     <string name="hsk_course_streak_display_many" formatted="false">рӯз пайдарпай!</string>
     <string name="hsk_course_streak_display_one" formatted="false">рӯз пайдарпай!</string>
     <string name="hsk_course_subscribe" formatted="false">HSK AI Pro ⭐️ гирифтан</string>
+    <string name="hsk_course_subscription_nested_benefit0_description" formatted="false">Ба саволҳо ва машқҳо зуд ҷавоб мегиред.</string>
+    <string name="hsk_course_subscription_nested_benefit0_title" formatted="false">AI ёрдамчӣ</string>
+    <string name="hsk_course_subscription_nested_benefit1_description" formatted="false">Дарсҳо паёпай, progress нигоҳ дошта мешавад.</string>
+    <string name="hsk_course_subscription_nested_benefit1_title" formatted="false">Курси HSK</string>
+    <string name="hsk_course_subscription_nested_benefit2_description" formatted="false">Бо расм ва саволҳои овозӣ кор мекунед.</string>
+    <string name="hsk_course_subscription_nested_benefit2_title" formatted="false">Фото ва voice</string>
+    <string name="hsk_course_subscription_nested_benefit3_description" formatted="false">Хатоҳои quiz ва ҷавобҳо шарҳ дода мешаванд.</string>
+    <string name="hsk_course_subscription_nested_benefit3_title" formatted="false">Таҳлили хато</string>
+    <string name="hsk_course_subscription_nested_card_hints_alif" formatted="false">Барномаи Алифро кушоед, тугмаи «На карту»-ро пахш кунед ва рақамҳои дар поён бударо монда пардохт кунед.</string>
+    <string name="hsk_course_subscription_nested_card_hints_foreign" formatted="false">Ин реквизит корти VISA-и Тоҷикистон аст. Агар дар app-и банки шумо фиристодани пул ба корти Тоҷикистон бошад, ҳамонро интихоб кунед. Агар набошад, аз варианти \'Международный VISA\' ҳам пардохт карда метавонед.</string>
+    <string name="hsk_course_subscription_nested_card_hints_tj" formatted="false">Барномаи Душанбе Ситиро кушоед, тугмаи «DC (по номеру карты)»-ро пахш кунед ва рақамҳои дар поён бударо монда пардохт кунед.</string>
+    <string name="hsk_course_subscription_nested_countries_cn_description" formatted="false">Alipay ё WeChat Pay, пардохт бо ¥</string>
+    <string name="hsk_course_subscription_nested_countries_cn_title" formatted="false">Чин</string>
+    <string name="hsk_course_subscription_nested_countries_other_description" formatted="false">Пардохт бо USD</string>
+    <string name="hsk_course_subscription_nested_countries_other_title" formatted="false">Корти дигар давлат</string>
+    <string name="hsk_course_subscription_nested_countries_ru_description" formatted="false">Пардохт бо RUB</string>
+    <string name="hsk_course_subscription_nested_countries_ru_title" formatted="false">Корти Русия</string>
+    <string name="hsk_course_subscription_nested_countries_tj_description" formatted="false">Пардохт бо TJS</string>
+    <string name="hsk_course_subscription_nested_countries_tj_title" formatted="false">Корти Тоҷикистон</string>
+    <string name="hsk_course_subscription_nested_countries_uz_description" formatted="false">Пардохт бо UZS</string>
+    <string name="hsk_course_subscription_nested_countries_uz_title" formatted="false">Корти Ӯзбекистон</string>
+    <string name="hsk_course_subscription_nested_focus_lesson_d" formatted="false">Ҳамаи дарсҳои курс пайдарпай, прогресс нигоҳ дошта мешавад.</string>
+    <string name="hsk_course_subscription_nested_focus_lesson_t" formatted="false">Ҳамаи дарсҳо кушода мешаванд</string>
+    <string name="hsk_course_subscription_nested_focus_memorize_d" formatted="false">Ҳамаи машқҳои ёдгирии калима бе маҳдудият кушода мешаванд.</string>
+    <string name="hsk_course_subscription_nested_focus_memorize_t" formatted="false">Ёд гирифтани калимаҳо бе маҳдудият</string>
+    <string name="hsk_course_subscription_nested_focus_mistakes_d" formatted="false">Ҳамаи хатоҳои шумо таҳлил ва аз нав машқ мешаванд.</string>
+    <string name="hsk_course_subscription_nested_focus_mistakes_t" formatted="false">Такрори пурраи хатоҳо</string>
+    <string name="hsk_course_subscription_nested_focus_photo_d" formatted="false">Расм фиристед — AI иероглиф ва матнро бе маҳдудият таҳлил мекунад.</string>
+    <string name="hsk_course_subscription_nested_focus_photo_t" formatted="false">Таҳлили расм ва иероглиф</string>
+    <string name="hsk_course_subscription_nested_focus_pronunciation_d" formatted="false">Талаффузи ҳар калимаро бе маҳдудият тафтиш кунед.</string>
+    <string name="hsk_course_subscription_nested_focus_pronunciation_t" formatted="false">Машқи талаффуз</string>
+    <string name="hsk_course_subscription_nested_focus_qa_d" formatted="false">Лимити рӯзона тамом намешавад — савол диҳед ва ҷавоби зуд гиред.</string>
+    <string name="hsk_course_subscription_nested_focus_qa_t" formatted="false">Саволу ҷавоби AI бе маҳдудият</string>
+    <string name="hsk_course_subscription_nested_focus_recognition_d" formatted="false">Машқҳои шинохти иероглиф бе маҳдудият кушода мешаванд.</string>
+    <string name="hsk_course_subscription_nested_focus_recognition_t" formatted="false">Шинохти иероглиф</string>
+    <string name="hsk_course_subscription_nested_focus_test_d" formatted="false">Ҳамаи тестҳои ҳар сатҳ пурра, бе маҳдудият.</string>
+    <string name="hsk_course_subscription_nested_focus_test_t" formatted="false">Тестҳои HSK бе маҳдудият</string>
+    <string name="hsk_course_subscription_nested_focus_voice_d" formatted="false">Саволҳои voice ва roleplay бе маҳдудият кушода мешаванд.</string>
+    <string name="hsk_course_subscription_nested_focus_voice_t" formatted="false">Сӯҳбати овозӣ ва талаффуз</string>
+    <string name="hsk_course_subscription_nested_methods_alif_description" formatted="false">Пардохт ба корти Алиф</string>
+    <string name="hsk_course_subscription_nested_methods_alif_title" formatted="false">Alif</string>
+    <string name="hsk_course_subscription_nested_methods_alipay_description" formatted="false">Пардохти юан бо QR</string>
+    <string name="hsk_course_subscription_nested_methods_alipay_title" formatted="false">Alipay</string>
+    <string name="hsk_course_subscription_nested_methods_dc_city_description" formatted="false">Пардохт ба корти DC City</string>
+    <string name="hsk_course_subscription_nested_methods_dc_city_title" formatted="false">Dushanbe City</string>
+    <string name="hsk_course_subscription_nested_methods_wechat_description" formatted="false">Пардохти юан бо QR</string>
+    <string name="hsk_course_subscription_nested_methods_wechat_title" formatted="false">WeChat Pay</string>
+    <string name="hsk_course_subscription_nested_mode_plans_admin_discount" formatted="false">Тарифи махсус</string>
+    <string name="hsk_course_subscription_nested_mode_plans_feedback_discount" formatted="false">Тарифи 20% тахфиф</string>
+    <string name="hsk_course_subscription_nested_mode_plans_referral_discount" formatted="false">Тарифи тахфифӣ</string>
+    <string name="hsk_course_subscription_nested_mode_plans_subscription" formatted="false">Тариф</string>
+    <string name="hsk_course_subscription_nested_mode_titles_admin_discount" formatted="false">Тахфифи махсус</string>
+    <string name="hsk_course_subscription_nested_mode_titles_feedback_discount" formatted="false">Таклифи 20%</string>
+    <string name="hsk_course_subscription_nested_mode_titles_hsk30_unlock" formatted="false">HSK 3.0 · Дастрасии доимӣ</string>
+    <string name="hsk_course_subscription_nested_mode_titles_referral_discount" formatted="false">Тахфифи 3 дӯст</string>
+    <string name="hsk_course_subscription_nested_mode_titles_subscription" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_subscription_nested_mode_tv_admin_discount" formatted="false">Пешниҳоди махсуси admin</string>
+    <string name="hsk_course_subscription_nested_mode_tv_feedback_discount" formatted="false">Тахфиф барои шумо</string>
+    <string name="hsk_course_subscription_nested_mode_tv_referral_discount" formatted="false">Тахфифи referral</string>
+    <string name="hsk_course_subscription_nested_mode_tv_subscription" formatted="false">Обуна чӣ медиҳад</string>
+    <string name="hsk_course_subscription_nested_perk0" formatted="false">📚 Дарсҳои HSK қадам ба қадам</string>
+    <string name="hsk_course_subscription_nested_perk1" formatted="false">🤖 Саволу ҷавоби AI васеъ мешавад</string>
+    <string name="hsk_course_subscription_nested_perk2" formatted="false">🖼 Таҳлили расм ва иероглиф</string>
+    <string name="hsk_course_subscription_nested_perk3" formatted="false">🎙 Practice бо саволҳои voice</string>
+    <string name="hsk_course_subscription_nested_perk4" formatted="false">🧩 Quiz, тест ва таҳлили хато</string>
+    <string name="hsk_course_subscription_nested_perk5" formatted="false">📈 Progress дар bot нигоҳ дошта мешавад</string>
+    <string name="hsk_course_subscription_nested_perk6" formatted="false">⚡ Машқи ҳаррӯза тезтар меравад</string>
+    <string name="hsk_course_subscription_nested_perk7" formatted="false">✅ Дар вақти обуна маҳдудият кам мешавад</string>
+    <string name="hsk_course_subscription_nested_plan_labels_best" formatted="false">Беҳтарин интихоб</string>
+    <string name="hsk_course_subscription_nested_plan_labels_fast" formatted="false">Барои санҷидан</string>
+    <string name="hsk_course_subscription_nested_plan_labels_hsk30" formatted="false">Якбора</string>
+    <string name="hsk_course_subscription_nested_plan_labels_month" formatted="false">1 моҳ</string>
+    <string name="hsk_course_subscription_nested_plan_labels_quarter" formatted="false">3 моҳ</string>
+    <string name="hsk_course_subscription_nested_plan_labels_quarter_badge" formatted="false">Фоиданок</string>
+    <string name="hsk_course_subscription_nested_plan_labels_quarter_note" formatted="false">≈ 2 TJS/рӯз</string>
+    <string name="hsk_course_subscription_nested_plan_labels_ten" formatted="false">10 рӯз</string>
+    <string name="hsk_course_subscription_nested_rows_bank" formatted="false">Номи банк</string>
+    <string name="hsk_course_subscription_nested_rows_plan" formatted="false">Тариф</string>
+    <string name="hsk_course_subscription_nested_rows_rate" formatted="false">Курс</string>
     <string name="hsk_course_subscription_page_admin_discount_text" formatted="false">Пешниҳоди махсуси admin. Тариф ва усули пардохти мувофиқ дар ҳамин ҷо нишон дода мешавад.</string>
     <string name="hsk_course_subscription_page_admin_discount_title" formatted="false">Тахфифи махсус {percent}%</string>
     <string name="hsk_course_subscription_page_admin_notification_failed" formatted="false">Дархости пардохт фиристода нашуд. Боз кӯшиш кунед.</string>

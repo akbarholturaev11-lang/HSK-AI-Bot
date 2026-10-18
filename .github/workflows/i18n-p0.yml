@@ -69,7 +69,8 @@ jobs:
             tests.test_i18n_practice_ui_adoption \
             tests.test_i18n_voice_memorize_dictionary_adoption \
             tests.test_i18n_phrases_download_ui_adoption \
-            tests.test_i18n_subscription_ui_adoption
+            tests.test_i18n_subscription_ui_adoption \
+            tests.test_i18n_subscription_nested_ui_adoption
       - name: Read-only P0 source checks
         run: |
           mkdir -p /tmp/i18n-p0

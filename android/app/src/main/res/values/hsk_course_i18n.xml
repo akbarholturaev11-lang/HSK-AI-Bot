@@ -403,6 +403,85 @@
     <string name="hsk_course_streak_display_many" formatted="false">kun ketma-ket!</string>
     <string name="hsk_course_streak_display_one" formatted="false">kun ketma-ket!</string>
     <string name="hsk_course_subscribe" formatted="false">HSK AI Pro ⭐️ olish</string>
+    <string name="hsk_course_subscription_nested_benefit0_description" formatted="false">Savol va mashqlarga tez javob olasiz.</string>
+    <string name="hsk_course_subscription_nested_benefit0_title" formatted="false">AI yordamchi</string>
+    <string name="hsk_course_subscription_nested_benefit1_description" formatted="false">Darslar bosqichma-bosqich, progress saqlanib boradi.</string>
+    <string name="hsk_course_subscription_nested_benefit1_title" formatted="false">HSK kursi</string>
+    <string name="hsk_course_subscription_nested_benefit2_description" formatted="false">Rasm va ovozli savollar bilan ishlaysiz.</string>
+    <string name="hsk_course_subscription_nested_benefit2_title" formatted="false">Foto va voice</string>
+    <string name="hsk_course_subscription_nested_benefit3_description" formatted="false">Quiz va javoblardagi xatolar tushuntiriladi.</string>
+    <string name="hsk_course_subscription_nested_benefit3_title" formatted="false">Xato tahlili</string>
+    <string name="hsk_course_subscription_nested_card_hints_alif" formatted="false">Alif ilovasini oching, «На карту» tugmasini bosing, pastdagi karta raqamini kiriting va to\'lov qiling.</string>
+    <string name="hsk_course_subscription_nested_card_hints_foreign" formatted="false">Karta Tojikiston VISA kartasi. Agar bankingizda Tojikiston bank kartasiga pul jo\'natish imkoni bo\'lsa, o\'sha variantdan foydalaning. Bo\'lmasa, \'Mejdunarodniy VISA\' orqali ham to\'lov qilishingiz mumkin.</string>
+    <string name="hsk_course_subscription_nested_card_hints_tj" formatted="false">Dushanbe City ilovasini oching, «DC (по номеру карты)» tugmasini bosing, pastdagi karta raqamini kiriting va to\'lov qiling.</string>
+    <string name="hsk_course_subscription_nested_countries_cn_description" formatted="false">Alipay yoki WeChat Pay, ¥ da to\'lov</string>
+    <string name="hsk_course_subscription_nested_countries_cn_title" formatted="false">Xitoy</string>
+    <string name="hsk_course_subscription_nested_countries_other_description" formatted="false">USD ekvivalentida to\'lov</string>
+    <string name="hsk_course_subscription_nested_countries_other_title" formatted="false">Boshqa davlat kartasi</string>
+    <string name="hsk_course_subscription_nested_countries_ru_description" formatted="false">RUB ekvivalentida to\'lov</string>
+    <string name="hsk_course_subscription_nested_countries_ru_title" formatted="false">Rossiya kartasi</string>
+    <string name="hsk_course_subscription_nested_countries_tj_description" formatted="false">TJS ko\'rinishida to\'lov</string>
+    <string name="hsk_course_subscription_nested_countries_tj_title" formatted="false">Tojikiston kartasi</string>
+    <string name="hsk_course_subscription_nested_countries_uz_description" formatted="false">UZS ekvivalentida to\'lov</string>
+    <string name="hsk_course_subscription_nested_countries_uz_title" formatted="false">O\'zbekiston kartasi</string>
+    <string name="hsk_course_subscription_nested_focus_lesson_d" formatted="false">Kursning hamma darslari ketma-ket, progress saqlanib boradi.</string>
+    <string name="hsk_course_subscription_nested_focus_lesson_t" formatted="false">Barcha darslar ochiladi</string>
+    <string name="hsk_course_subscription_nested_focus_memorize_d" formatted="false">Barcha so\'zlarni yodlash mashqi limitsiz ochiladi.</string>
+    <string name="hsk_course_subscription_nested_focus_memorize_t" formatted="false">So\'z yodlash cheklovsiz</string>
+    <string name="hsk_course_subscription_nested_focus_mistakes_d" formatted="false">Barcha xatolaringiz tahlil qilinib, qayta mashq qilinadi.</string>
+    <string name="hsk_course_subscription_nested_focus_mistakes_t" formatted="false">Xatolar takrori to\'liq</string>
+    <string name="hsk_course_subscription_nested_focus_photo_d" formatted="false">Foto yuborib, ieroglif va matnni AI orqali cheklovsiz tahlil qilasiz.</string>
+    <string name="hsk_course_subscription_nested_focus_photo_t" formatted="false">Rasm va ieroglif tahlili</string>
+    <string name="hsk_course_subscription_nested_focus_pronunciation_d" formatted="false">Har bir so\'z talaffuzini cheklovsiz tekshirasiz.</string>
+    <string name="hsk_course_subscription_nested_focus_pronunciation_t" formatted="false">Talaffuz mashqi to\'liq</string>
+    <string name="hsk_course_subscription_nested_focus_qa_d" formatted="false">Kunlik limit tugamaydi — istagancha savol berib, tez javob olaverasiz.</string>
+    <string name="hsk_course_subscription_nested_focus_qa_t" formatted="false">AI savol-javob cheklovsiz</string>
+    <string name="hsk_course_subscription_nested_focus_recognition_d" formatted="false">Ieroglif tanish mashqlari cheklovsiz ochiladi.</string>
+    <string name="hsk_course_subscription_nested_focus_recognition_t" formatted="false">Ieroglif tanish mashqi</string>
+    <string name="hsk_course_subscription_nested_focus_test_d" formatted="false">Barcha darajadagi testlarni to\'liq ishlaysiz, limit yo\'q.</string>
+    <string name="hsk_course_subscription_nested_focus_test_t" formatted="false">HSK testlari cheklovsiz</string>
+    <string name="hsk_course_subscription_nested_focus_voice_d" formatted="false">Ovozli savol-javob va roleplay cheklovsiz ochiladi.</string>
+    <string name="hsk_course_subscription_nested_focus_voice_t" formatted="false">Voice suhbat va talaffuz</string>
+    <string name="hsk_course_subscription_nested_methods_alif_description" formatted="false">Alif kartasiga to\'lov</string>
+    <string name="hsk_course_subscription_nested_methods_alif_title" formatted="false">Alif</string>
+    <string name="hsk_course_subscription_nested_methods_alipay_description" formatted="false">QR orqali yuan to\'lovi</string>
+    <string name="hsk_course_subscription_nested_methods_alipay_title" formatted="false">Alipay</string>
+    <string name="hsk_course_subscription_nested_methods_dc_city_description" formatted="false">DC City kartasiga to\'lov</string>
+    <string name="hsk_course_subscription_nested_methods_dc_city_title" formatted="false">Dushanbe City</string>
+    <string name="hsk_course_subscription_nested_methods_wechat_description" formatted="false">QR orqali yuan to\'lovi</string>
+    <string name="hsk_course_subscription_nested_methods_wechat_title" formatted="false">WeChat Pay</string>
+    <string name="hsk_course_subscription_nested_mode_plans_admin_discount" formatted="false">Maxsus tarif</string>
+    <string name="hsk_course_subscription_nested_mode_plans_feedback_discount" formatted="false">20% chegirmali tarif</string>
+    <string name="hsk_course_subscription_nested_mode_plans_referral_discount" formatted="false">Chegirmali tarif</string>
+    <string name="hsk_course_subscription_nested_mode_plans_subscription" formatted="false">Tarif</string>
+    <string name="hsk_course_subscription_nested_mode_titles_admin_discount" formatted="false">Maxsus chegirma</string>
+    <string name="hsk_course_subscription_nested_mode_titles_feedback_discount" formatted="false">20% taklif</string>
+    <string name="hsk_course_subscription_nested_mode_titles_hsk30_unlock" formatted="false">HSK 3.0 · Doimiy ochish</string>
+    <string name="hsk_course_subscription_nested_mode_titles_referral_discount" formatted="false">3 do\'st chegirmasi</string>
+    <string name="hsk_course_subscription_nested_mode_titles_subscription" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_subscription_nested_mode_tv_admin_discount" formatted="false">Admin maxsus taklifi</string>
+    <string name="hsk_course_subscription_nested_mode_tv_feedback_discount" formatted="false">Siz uchun chegirma</string>
+    <string name="hsk_course_subscription_nested_mode_tv_referral_discount" formatted="false">Referral chegirma</string>
+    <string name="hsk_course_subscription_nested_mode_tv_subscription" formatted="false">Obuna nima beradi</string>
+    <string name="hsk_course_subscription_nested_perk0" formatted="false">📚 HSK darslari bosqichma-bosqich</string>
+    <string name="hsk_course_subscription_nested_perk1" formatted="false">🤖 AI savol-javob kengayadi</string>
+    <string name="hsk_course_subscription_nested_perk2" formatted="false">🖼 Rasm va ieroglif tahlili</string>
+    <string name="hsk_course_subscription_nested_perk3" formatted="false">🎙 Voice savollar bilan practice</string>
+    <string name="hsk_course_subscription_nested_perk4" formatted="false">🧩 Quiz, test va xato tahlili</string>
+    <string name="hsk_course_subscription_nested_perk5" formatted="false">📈 Progress botda saqlanadi</string>
+    <string name="hsk_course_subscription_nested_perk6" formatted="false">⚡ Kunlik mashq tezroq yuradi</string>
+    <string name="hsk_course_subscription_nested_perk7" formatted="false">✅ Obuna davrida cheklovlar kamayadi</string>
+    <string name="hsk_course_subscription_nested_plan_labels_best" formatted="false">Eng yaxshi tanlov</string>
+    <string name="hsk_course_subscription_nested_plan_labels_fast" formatted="false">Sinab ko\'rish</string>
+    <string name="hsk_course_subscription_nested_plan_labels_hsk30" formatted="false">Bir martalik</string>
+    <string name="hsk_course_subscription_nested_plan_labels_month" formatted="false">1 oy</string>
+    <string name="hsk_course_subscription_nested_plan_labels_quarter" formatted="false">3 oy</string>
+    <string name="hsk_course_subscription_nested_plan_labels_quarter_badge" formatted="false">Foydali</string>
+    <string name="hsk_course_subscription_nested_plan_labels_quarter_note" formatted="false">≈ 2 TJS/kun</string>
+    <string name="hsk_course_subscription_nested_plan_labels_ten" formatted="false">10 kun</string>
+    <string name="hsk_course_subscription_nested_rows_bank" formatted="false">TJK bank nomi</string>
+    <string name="hsk_course_subscription_nested_rows_plan" formatted="false">Tarif</string>
+    <string name="hsk_course_subscription_nested_rows_rate" formatted="false">Kurs</string>
     <string name="hsk_course_subscription_page_admin_discount_text" formatted="false">Admin bergan maxsus taklif. Mos tarif va to\'lovlar shu oynada ko\'rsatiladi.</string>
     <string name="hsk_course_subscription_page_admin_discount_title" formatted="false">Maxsus chegirma {percent}%</string>
     <string name="hsk_course_subscription_page_admin_notification_failed" formatted="false">To\'lov so\'rovi yuborilmadi. Qayta urinib ko\'ring.</string>
