@@ -1,5 +1,12 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## Subscription UI-only localization — 102 original UZ/RU/TJ labels (2026-10-19)
+
+- `app/static/subscription.html`: **102 exact original flat display strings × 3 locales**, new `subscriptionPage.*` source family. Catalog grows **521 → 623 keys per locale**, with 10 new existing named-placeholder keys (19 total). The page synchronously preloads local `hsk-course-i18n.js?v=20261019-subscription-v18` and hydrates all three language dictionaries once, leaving **the complete original inline strings as offline fallback**. Source physical HTML line count preserved.
+- Intentionally unchanged: all nested subscription dictionaries/benefit arrays, referral discounts and IDs, entitlement checks, plan prices/calculation, payment method/bank instructions, country/currency conversion, receipt upload/approval, trial/Pro/subscription status, API endpoints, storage and runtime control flow. Strings are copied byte-for-byte from original, not newly translated.
+- Original subscription HTML Git blob SHA and reviewed new SHA `86a32d7f5962ea52cf027d653d6f86391ea64a91` pinned in review manifest; `tests/test_i18n_subscription_ui_adoption.py` adds source parity, order, invariants and Node-executed offline fallback/overlay. Generator output must be six checked-in browser/Desktop/Bot/Android resources. P0 CI strict review set/placeholder counts updated; **verify commit CI and manual real payment-path QA before merge**.
+- Draft PR #179 on `codex/i18n-local-first-foundation-20261017`; no `main` merge or production deployment. Previous head `c082d3b6`: P0/Backend/Desktop/TTS green; Android emulator VoiceScreenBackTest focus failures (two tests), unrelated to this UI-only change; device QA pending.
+
 ## Ready Phrases + App Downloads — 94 exact UZ/RU/TJ labels (2026-10-19)
 
 - `app/static/hsk-gaplar.html` now preloads one local static generated `hsk-course-i18n.js?v=20261019-phrases-download-v17` and uses **15 exact original UZ/RU/TJ UI labels** through `readyPhrases.*` with complete inline fallbacks. Existing phrase corpus, user-selected saved phrases, localStorage, search index, Chinese/pinyin/translation data and navigation are unchanged.

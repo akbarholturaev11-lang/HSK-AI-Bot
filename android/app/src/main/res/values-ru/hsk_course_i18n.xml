@@ -403,6 +403,108 @@
     <string name="hsk_course_streak_display_many" formatted="false">дней в ударе!</string>
     <string name="hsk_course_streak_display_one" formatted="false">день в ударе!</string>
     <string name="hsk_course_subscribe" formatted="false">Получить HSK AI Pro ⭐️</string>
+    <string name="hsk_course_subscription_page_admin_discount_text" formatted="false">Специальное предложение от админа. Подходящие тарифы и способы оплаты показаны здесь.</string>
+    <string name="hsk_course_subscription_page_admin_discount_title" formatted="false">Специальная скидка {percent}%</string>
+    <string name="hsk_course_subscription_page_admin_notification_failed" formatted="false">Заявку не удалось отправить. Попробуйте ещё раз.</string>
+    <string name="hsk_course_subscription_page_amount_label" formatted="false">Сумма к оплате</string>
+    <string name="hsk_course_subscription_page_back" formatted="false">Назад</string>
+    <string name="hsk_course_subscription_page_change_payment" formatted="false">Изменить способ оплаты</string>
+    <string name="hsk_course_subscription_page_checking_payment" formatted="false">Проверяем статус…</string>
+    <string name="hsk_course_subscription_page_close" formatted="false">Закрыть</string>
+    <string name="hsk_course_subscription_page_continue_to_payment" formatted="false">Перейти к оплате</string>
+    <string name="hsk_course_subscription_page_copied" formatted="false">Ссылка скопирована.</string>
+    <string name="hsk_course_subscription_page_copied_button" formatted="false">Скопировано</string>
+    <string name="hsk_course_subscription_page_copied_value" formatted="false">Скопировано.</string>
+    <string name="hsk_course_subscription_page_copy_failed" formatted="false">Не удалось скопировать ссылку.</string>
+    <string name="hsk_course_subscription_page_copy_link" formatted="false">Скопировать только ссылку</string>
+    <string name="hsk_course_subscription_page_copy_value" formatted="false">Copy</string>
+    <string name="hsk_course_subscription_page_country_text" formatted="false">Выберите страну вашей карты — цены будут показаны в её валюте.</string>
+    <string name="hsk_course_subscription_page_country_title" formatted="false">Из какой страны оплачиваете?</string>
+    <string name="hsk_course_subscription_page_details_hint" formatted="false">Оплатите по этим реквизитам. Чтобы скопировать номер карты, нажмите кнопку рядом.</string>
+    <string name="hsk_course_subscription_page_details_title" formatted="false">Реквизиты карты</string>
+    <string name="hsk_course_subscription_page_discount_active_text" formatted="false">Применится к этой подписке автоматически.</string>
+    <string name="hsk_course_subscription_page_discount_btn" formatted="false">Открыть скидку</string>
+    <string name="hsk_course_subscription_page_discount_invite_text" formatted="false">Пригласите 3 друзей: на Android установите приложение и привяжите Telegram, на iPhone ответьте на 2 вопроса в боте.</string>
+    <string name="hsk_course_subscription_page_discount_lock_title" formatted="false">Откройте скидку 20%</string>
+    <string name="hsk_course_subscription_page_discount_progress" formatted="false">Скидка 20%: {count}/{required} реферала</string>
+    <string name="hsk_course_subscription_page_discount_ready" formatted="false">Скидка 20% применится</string>
+    <string name="hsk_course_subscription_page_discount_used" formatted="false">Скидка 20% уже использована.</string>
+    <string name="hsk_course_subscription_page_done_text" formatted="false">Платёж отправлен на проверку. Проверка занимает примерно 5–15 минут. После подтверждения бот пришлёт вам сообщение.</string>
+    <string name="hsk_course_subscription_page_done_title" formatted="false">Заявка отправлена ✅</string>
+    <string name="hsk_course_subscription_page_download_qr" formatted="false">Открыть QR крупно</string>
+    <string name="hsk_course_subscription_page_error" formatted="false">Произошла ошибка. Попробуйте снова.</string>
+    <string name="hsk_course_subscription_page_feedback_discount_text" formatted="false">Скидка за обратную связь будет рассчитана в этом окне.</string>
+    <string name="hsk_course_subscription_page_feedback_discount_title" formatted="false">Для вас предложение 20%</string>
+    <string name="hsk_course_subscription_page_hero_text" formatted="false">Подписка открывает курс, AI-ответы, фото, voice, quiz и разбор ошибок.</string>
+    <string name="hsk_course_subscription_page_hero_title" formatted="false">Выберите тариф и оплату</string>
+    <string name="hsk_course_subscription_page_invalid_telegram" formatted="false">Откройте mini app из бота.</string>
+    <string name="hsk_course_subscription_page_invite_text" formatted="false">Ссылка покажет шаги для телефона друга. Можно скопировать только ссылку.</string>
+    <string name="hsk_course_subscription_page_invite_title" formatted="false">Реферальная ссылка готова</string>
+    <string name="hsk_course_subscription_page_load_error" formatted="false">Не удалось загрузить данные. Проверьте интернет и откройте мини-приложение заново.</string>
+    <string name="hsk_course_subscription_page_loading" formatted="false">Считаем...</string>
+    <string name="hsk_course_subscription_page_locked_pay_text" formatted="false">После подтверждения оплаты закрытый урок сразу откроется в этом курсе.</string>
+    <string name="hsk_course_subscription_page_locked_value_text" formatted="false">Продолжите начатый урок и открывайте следующие уроки HSK по порядку.</string>
+    <string name="hsk_course_subscription_page_methods_title" formatted="false">Способ оплаты</string>
+    <string name="hsk_course_subscription_page_need_screenshot" formatted="false">Сначала загрузите screenshot оплаты.</string>
+    <string name="hsk_course_subscription_page_network_error" formatted="false">Соединение прервалось. Проверьте интернет и отправьте ещё раз.</string>
+    <string name="hsk_course_subscription_page_next" formatted="false">Продолжить</string>
+    <string name="hsk_course_subscription_page_no_details" formatted="false">Реквизиты карты ещё не добавлены. Попробуйте позже.</string>
+    <string name="hsk_course_subscription_page_offer_expired" formatted="false">Это предложение закончилось или вам не подходит.</string>
+    <string name="hsk_course_subscription_page_open_hsk30" formatted="false">Открыть HSK 3.0</string>
+    <string name="hsk_course_subscription_page_pay_with_alipay" formatted="false">Оплатить через Alipay</string>
+    <string name="hsk_course_subscription_page_pay_with_wechat" formatted="false">Оплатить через WeChat Pay</string>
+    <string name="hsk_course_subscription_page_payment_approved_text" formatted="false">Платёж подтверждён. Можно начать заниматься по новым учебникам.</string>
+    <string name="hsk_course_subscription_page_payment_approved_title" formatted="false">HSK 3.0 открыт</string>
+    <string name="hsk_course_subscription_page_payment_details_missing" formatted="false">Реквизиты карты пока не готовы. Попробуйте позже.</string>
+    <string name="hsk_course_subscription_page_payment_rejected_text" formatted="false">Платёж не принят. Проверьте данные и отправьте его заново.</string>
+    <string name="hsk_course_subscription_page_payment_rejected_title" formatted="false">Платёж за HSK 3.0 не принят</string>
+    <string name="hsk_course_subscription_page_payment_still_pending" formatted="false">Платёж ещё проверяет администратор.</string>
+    <string name="hsk_course_subscription_page_pending_text" formatted="false">Платёж уже находится на проверке. Пожалуйста, дождитесь подтверждения.</string>
+    <string name="hsk_course_subscription_page_pending_title" formatted="false">Ваша заявка на проверке</string>
+    <string name="hsk_course_subscription_page_plans_title" formatted="false">Тариф</string>
+    <string name="hsk_course_subscription_page_preview" formatted="false">Preview mode: Telegram init data нет. Реальная отправка работает только внутри бота.</string>
+    <string name="hsk_course_subscription_page_preview_submit" formatted="false">Внутри реального бота заявка уйдёт админу на проверку.</string>
+    <string name="hsk_course_subscription_page_prices_loading" formatted="false">Загружаем цены тарифов...</string>
+    <string name="hsk_course_subscription_page_prices_unavailable" formatted="false">Цены тарифов сейчас не отображаются.</string>
+    <string name="hsk_course_subscription_page_provisional_text" formatted="false">Первая заявка проверяется. Если платёж не подтвердят, доступ к HSK 3.0 закроется.</string>
+    <string name="hsk_course_subscription_page_provisional_title" formatted="false">HSK 3.0 временно открыт</string>
+    <string name="hsk_course_subscription_page_qr_missing" formatted="false">QR-код пока не готов.</string>
+    <string name="hsk_course_subscription_page_qr_tap_hint" formatted="false">Нажмите на QR — появится кнопка крупного вида.</string>
+    <string name="hsk_course_subscription_page_qr_title" formatted="false">QR-код</string>
+    <string name="hsk_course_subscription_page_quote_error" formatted="false">Не удалось открыть данные оплаты. Попробуйте ещё раз.</string>
+    <string name="hsk_course_subscription_page_refresh_payment" formatted="false">Обновить статус платежа</string>
+    <string name="hsk_course_subscription_page_renewal_body" formatted="false">Текущий срок закончится {current}. Если добавить тариф «{plan}», новый срок будет до {next}.</string>
+    <string name="hsk_course_subscription_page_renewal_confirm" formatted="false">Продолжить</string>
+    <string name="hsk_course_subscription_page_renewal_current" formatted="false">Текущая подписка действует до {date}</string>
+    <string name="hsk_course_subscription_page_renewal_edit" formatted="false">Изменить тариф</string>
+    <string name="hsk_course_subscription_page_renewal_next" formatted="false">После выбранного тарифа: до {date}</string>
+    <string name="hsk_course_subscription_page_renewal_title" formatted="false">Продлить подписку?</string>
+    <string name="hsk_course_subscription_page_retry_payment" formatted="false">Отправить платёж снова</string>
+    <string name="hsk_course_subscription_page_retry_prices" formatted="false">Повторить</string>
+    <string name="hsk_course_subscription_page_return_to_bot" formatted="false">Вернуться в бот</string>
+    <string name="hsk_course_subscription_page_screenshot_format" formatted="false">Этот формат не поддерживается ({type}). Выберите screenshot в формате JPG или PNG.</string>
+    <string name="hsk_course_subscription_page_screenshot_heavy" formatted="false">Размер {size}. На медленном интернете отправка может занять много времени — по возможности подключитесь к Wi-Fi.</string>
+    <string name="hsk_course_subscription_page_screenshot_invalid" formatted="false">Это изображение не принято. Выберите другой screenshot (JPG или PNG).</string>
+    <string name="hsk_course_subscription_page_screenshot_read_failed" formatted="false">Не удалось прочитать изображение. Попробуйте выбрать ещё раз.</string>
+    <string name="hsk_course_subscription_page_screenshot_ready" formatted="false">Размер {size} — готово к отправке.</string>
+    <string name="hsk_course_subscription_page_screenshot_too_big" formatted="false">Изображение слишком большое: {size}. Предел — 8 MB. Выберите обычный screenshot (JPG) из галереи или обрежьте изображение.</string>
+    <string name="hsk_course_subscription_page_server_error" formatted="false">Сервер сейчас не ответил. Подождите немного и отправьте ещё раз.</string>
+    <string name="hsk_course_subscription_page_share_localized" formatted="false">Отправить с текстом</string>
+    <string name="hsk_course_subscription_page_share_text" formatted="false">HSK AI — учи китайский с AI. Присоединяйся, и мне откроется скидка 20% 👇</string>
+    <string name="hsk_course_subscription_page_show_less" formatted="false">Скрыть</string>
+    <string name="hsk_course_subscription_page_show_more" formatted="false">Показать полностью</string>
+    <string name="hsk_course_subscription_page_submit" formatted="false">Отправить заявку</string>
+    <string name="hsk_course_subscription_page_support_button" formatted="false">Написать админу</string>
+    <string name="hsk_course_subscription_page_support_text" formatted="false">Если возникла проблема с оплатой или mini app, коротко напишите админу и отправьте screenshot.</string>
+    <string name="hsk_course_subscription_page_support_title" formatted="false">Помощь</string>
+    <string name="hsk_course_subscription_page_timeout_error" formatted="false">Интернет слишком медленный — заявка не ушла. Попробуйте при лучшей связи.</string>
+    <string name="hsk_course_subscription_page_title" formatted="false">Подписка</string>
+    <string name="hsk_course_subscription_page_tv_focus_title" formatted="false">Именно это откроется</string>
+    <string name="hsk_course_subscription_page_tv_title" formatted="false">Что дает подписка</string>
+    <string name="hsk_course_subscription_page_upload_text" formatted="false">Нажмите сюда и выберите screenshot.</string>
+    <string name="hsk_course_subscription_page_upload_title" formatted="false">Загрузить screenshot оплаты</string>
+    <string name="hsk_course_subscription_page_uploaded" formatted="false">Screenshot выбран: {name}</string>
+    <string name="hsk_course_subscription_page_user_blocked" formatted="false">Ваш аккаунт заблокирован. Свяжитесь с поддержкой.</string>
     <string name="hsk_course_test_center" formatted="false">Тест-центр</string>
     <string name="hsk_course_test_exam_again" formatted="false">Пройти заново</string>
     <string name="hsk_course_test_exam_fail_sub" formatted="false">Продолжайте подготовку к HSK </string>

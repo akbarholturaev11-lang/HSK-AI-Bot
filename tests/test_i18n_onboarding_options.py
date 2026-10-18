@@ -51,7 +51,7 @@ class OnboardingOptionsTests(unittest.TestCase):
         self.assertEqual(len(fields), 9)
         for locale in LANGUAGES:
             catalog = source_catalog(locale)
-            self.assertEqual(len(catalog), 521)
+            self.assertEqual(len(catalog), 623)
             for key, values in fields.items():
                 with self.subTest(locale=locale, key=key):
                     self.assertEqual(catalog[key], values[locale])

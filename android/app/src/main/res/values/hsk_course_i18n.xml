@@ -403,6 +403,108 @@
     <string name="hsk_course_streak_display_many" formatted="false">kun ketma-ket!</string>
     <string name="hsk_course_streak_display_one" formatted="false">kun ketma-ket!</string>
     <string name="hsk_course_subscribe" formatted="false">HSK AI Pro ⭐️ olish</string>
+    <string name="hsk_course_subscription_page_admin_discount_text" formatted="false">Admin bergan maxsus taklif. Mos tarif va to\'lovlar shu oynada ko\'rsatiladi.</string>
+    <string name="hsk_course_subscription_page_admin_discount_title" formatted="false">Maxsus chegirma {percent}%</string>
+    <string name="hsk_course_subscription_page_admin_notification_failed" formatted="false">To\'lov so\'rovi yuborilmadi. Qayta urinib ko\'ring.</string>
+    <string name="hsk_course_subscription_page_amount_label" formatted="false">To\'lanadigan summa</string>
+    <string name="hsk_course_subscription_page_back" formatted="false">Orqaga</string>
+    <string name="hsk_course_subscription_page_change_payment" formatted="false">To‘lov turini o‘zgartirish</string>
+    <string name="hsk_course_subscription_page_checking_payment" formatted="false">Holat tekshirilmoqda…</string>
+    <string name="hsk_course_subscription_page_close" formatted="false">Yopish</string>
+    <string name="hsk_course_subscription_page_continue_to_payment" formatted="false">To\'lovga davom etish</string>
+    <string name="hsk_course_subscription_page_copied" formatted="false">Link copy qilindi.</string>
+    <string name="hsk_course_subscription_page_copied_button" formatted="false">Copy qilindi</string>
+    <string name="hsk_course_subscription_page_copied_value" formatted="false">Copy qilindi.</string>
+    <string name="hsk_course_subscription_page_copy_failed" formatted="false">Linkni copy qilib bo\'lmadi.</string>
+    <string name="hsk_course_subscription_page_copy_link" formatted="false">Faqat linkni copy qilish</string>
+    <string name="hsk_course_subscription_page_copy_value" formatted="false">Copy</string>
+    <string name="hsk_course_subscription_page_country_text" formatted="false">Kartangiz davlatini tanlang — narxlar shu davlat valyutasida ko\'rsatiladi.</string>
+    <string name="hsk_course_subscription_page_country_title" formatted="false">Qaysi davlatdan to\'laysiz?</string>
+    <string name="hsk_course_subscription_page_details_hint" formatted="false">To\'lovni shu rekvizitlarga qiling. Karta raqamini copy qilish uchun yonidagi tugmani bosing.</string>
+    <string name="hsk_course_subscription_page_details_title" formatted="false">Karta rekvizitlari</string>
+    <string name="hsk_course_subscription_page_discount_active_text" formatted="false">Bu obunaga avtomatik qo\'llanadi.</string>
+    <string name="hsk_course_subscription_page_discount_btn" formatted="false">Chegirmani ochish</string>
+    <string name="hsk_course_subscription_page_discount_invite_text" formatted="false">3 do‘st taklif qiling: Androidda ilovani o‘rnatib Telegramni ulaydi, iPhone’da botda 2 savol ishlatadi.</string>
+    <string name="hsk_course_subscription_page_discount_lock_title" formatted="false">20% chegirmani oching</string>
+    <string name="hsk_course_subscription_page_discount_progress" formatted="false">20% chegirma: {count}/{required} referral</string>
+    <string name="hsk_course_subscription_page_discount_ready" formatted="false">20% chegirma qo\'llanadi</string>
+    <string name="hsk_course_subscription_page_discount_used" formatted="false">20% chegirma allaqachon ishlatilgan.</string>
+    <string name="hsk_course_subscription_page_done_text" formatted="false">To\'lov tekshiruvga yuborildi. Tekshiruv taxminan 5–15 daqiqa davom etadi. Tasdiqlangach bot sizga xabar yuboradi.</string>
+    <string name="hsk_course_subscription_page_done_title" formatted="false">So\'rov yuborildi ✅</string>
+    <string name="hsk_course_subscription_page_download_qr" formatted="false">QR kodni kattalashtirish</string>
+    <string name="hsk_course_subscription_page_error" formatted="false">Xatolik yuz berdi. Qayta urinib ko\'ring.</string>
+    <string name="hsk_course_subscription_page_feedback_discount_text" formatted="false">Fikr bildirganingiz uchun chegirma shu oynada hisoblanadi.</string>
+    <string name="hsk_course_subscription_page_feedback_discount_title" formatted="false">Siz uchun 20% taklif</string>
+    <string name="hsk_course_subscription_page_hero_text" formatted="false">Obuna bilan kurs, AI javoblar, foto, voice, quiz va xato tahlili to\'liq ochiladi.</string>
+    <string name="hsk_course_subscription_page_hero_title" formatted="false">Tarif va to\'lov usulini tanlang</string>
+    <string name="hsk_course_subscription_page_invalid_telegram" formatted="false">Mini appni bot ichidan qayta oching.</string>
+    <string name="hsk_course_subscription_page_invite_text" formatted="false">Havola do‘stingizni telefoniga mos yo‘lga olib boradi. Xohlasangiz faqat linkni copy qiling.</string>
+    <string name="hsk_course_subscription_page_invite_title" formatted="false">Referral link tayyor</string>
+    <string name="hsk_course_subscription_page_load_error" formatted="false">Ma\'lumotni yuklab bo\'lmadi. Internetni tekshirib, mini appni qayta oching.</string>
+    <string name="hsk_course_subscription_page_loading" formatted="false">Hisoblanmoqda...</string>
+    <string name="hsk_course_subscription_page_locked_pay_text" formatted="false">To\'lov tasdiqlangach, yopilgan darsingiz shu kursda darhol ochiladi.</string>
+    <string name="hsk_course_subscription_page_locked_value_text" formatted="false">Boshlagan darsingizni davom ettiring va keyingi HSK darslarini ketma-ket oching.</string>
+    <string name="hsk_course_subscription_page_methods_title" formatted="false">To\'lov usuli</string>
+    <string name="hsk_course_subscription_page_need_screenshot" formatted="false">Avval to\'lov screenshotini yuklang.</string>
+    <string name="hsk_course_subscription_page_network_error" formatted="false">Internet uzildi. Ulanishni tekshirib, qayta yuboring.</string>
+    <string name="hsk_course_subscription_page_next" formatted="false">Davom etish</string>
+    <string name="hsk_course_subscription_page_no_details" formatted="false">Karta rekviziti hali kiritilmagan. Keyinroq qayta urinib ko\'ring.</string>
+    <string name="hsk_course_subscription_page_offer_expired" formatted="false">Bu taklif tugagan yoki sizga mos emas.</string>
+    <string name="hsk_course_subscription_page_open_hsk30" formatted="false">HSK 3.0 ni ochish</string>
+    <string name="hsk_course_subscription_page_pay_with_alipay" formatted="false">Alipay bilan to\'lash</string>
+    <string name="hsk_course_subscription_page_pay_with_wechat" formatted="false">WeChat Pay bilan to\'lash</string>
+    <string name="hsk_course_subscription_page_payment_approved_text" formatted="false">To\'lov tasdiqlandi. Yangi darsliklardan boshlashingiz mumkin.</string>
+    <string name="hsk_course_subscription_page_payment_approved_title" formatted="false">HSK 3.0 ochildi</string>
+    <string name="hsk_course_subscription_page_payment_details_missing" formatted="false">Karta rekviziti hozircha tayyor emas. Keyinroq urinib ko\'ring.</string>
+    <string name="hsk_course_subscription_page_payment_rejected_text" formatted="false">To\'lovingiz qabul qilinmadi. Ma\'lumotlarni tekshirib, to\'lovni boshidan yuboring.</string>
+    <string name="hsk_course_subscription_page_payment_rejected_title" formatted="false">HSK 3.0 to\'lovi qabul qilinmadi</string>
+    <string name="hsk_course_subscription_page_payment_still_pending" formatted="false">To\'lov hali admin tekshiruvida.</string>
+    <string name="hsk_course_subscription_page_pending_text" formatted="false">To\'lov so\'rovingiz tekshiruvda. Iltimos, tasdiq kelguncha kuting.</string>
+    <string name="hsk_course_subscription_page_pending_title" formatted="false">So\'rovingiz tekshiruvda</string>
+    <string name="hsk_course_subscription_page_plans_title" formatted="false">Tarif</string>
+    <string name="hsk_course_subscription_page_preview" formatted="false">Preview mode: Telegram init data yo\'q. Real submit faqat bot ichida ishlaydi.</string>
+    <string name="hsk_course_subscription_page_preview_submit" formatted="false">Real bot ichida ochilganda admin tekshiruvga yuboriladi.</string>
+    <string name="hsk_course_subscription_page_prices_loading" formatted="false">Tarif narxlari yuklanmoqda...</string>
+    <string name="hsk_course_subscription_page_prices_unavailable" formatted="false">Tarif narxlari hozir ko\'rinmayapti.</string>
+    <string name="hsk_course_subscription_page_provisional_text" formatted="false">Birinchi to\'lov so\'rovi tekshiruvda. Tasdiqlanmasa, HSK 3.0 ga kirish yopiladi.</string>
+    <string name="hsk_course_subscription_page_provisional_title" formatted="false">HSK 3.0 vaqtincha ochildi</string>
+    <string name="hsk_course_subscription_page_qr_missing" formatted="false">QR kod hozircha tayyor emas.</string>
+    <string name="hsk_course_subscription_page_qr_tap_hint" formatted="false">QR ustiga bosing — kattalashtirish tugmasi chiqadi.</string>
+    <string name="hsk_course_subscription_page_qr_title" formatted="false">QR kod</string>
+    <string name="hsk_course_subscription_page_quote_error" formatted="false">To\'lov ma\'lumotini hozir ochib bo\'lmadi. Qayta urinib ko\'ring.</string>
+    <string name="hsk_course_subscription_page_refresh_payment" formatted="false">To\'lov holatini yangilash</string>
+    <string name="hsk_course_subscription_page_renewal_body" formatted="false">Hozirgi muddat {current} da tugaydi. {plan} tarifini qo‘shsangiz, yangi muddat {next} gacha bo‘ladi.</string>
+    <string name="hsk_course_subscription_page_renewal_confirm" formatted="false">Davom etish</string>
+    <string name="hsk_course_subscription_page_renewal_current" formatted="false">Amaldagi obuna: {date} gacha</string>
+    <string name="hsk_course_subscription_page_renewal_edit" formatted="false">Tarifni o‘zgartirish</string>
+    <string name="hsk_course_subscription_page_renewal_next" formatted="false">Tanlangan tarifdan so‘ng: {date} gacha</string>
+    <string name="hsk_course_subscription_page_renewal_title" formatted="false">Obunani uzaytirasizmi?</string>
+    <string name="hsk_course_subscription_page_retry_payment" formatted="false">To\'lovni qayta yuborish</string>
+    <string name="hsk_course_subscription_page_retry_prices" formatted="false">Qayta urinish</string>
+    <string name="hsk_course_subscription_page_return_to_bot" formatted="false">Botga qaytish</string>
+    <string name="hsk_course_subscription_page_screenshot_format" formatted="false">Bu format qo\'llab-quvvatlanmaydi ({type}). Screenshotni JPG yoki PNG holida tanlang.</string>
+    <string name="hsk_course_subscription_page_screenshot_heavy" formatted="false">Hajmi {size}. Sekin internetda yuborish uzoq davom etishi mumkin — imkon bo\'lsa Wi-Fi ga ulaning.</string>
+    <string name="hsk_course_subscription_page_screenshot_invalid" formatted="false">Bu rasm qabul qilinmadi. Boshqa screenshot (JPG yoki PNG) tanlang.</string>
+    <string name="hsk_course_subscription_page_screenshot_read_failed" formatted="false">Rasmni o\'qib bo\'lmadi. Yana bir marta tanlab ko\'ring.</string>
+    <string name="hsk_course_subscription_page_screenshot_ready" formatted="false">Hajmi {size} — yuborishga tayyor.</string>
+    <string name="hsk_course_subscription_page_screenshot_too_big" formatted="false">Rasm juda katta: {size}. Chegara — 8 MB. Galereyadan oddiy screenshot (JPG) tanlang yoki rasmni qirqib kichraytiring.</string>
+    <string name="hsk_course_subscription_page_server_error" formatted="false">Server hozir javob bermadi. Bir oz kutib, qayta yuboring.</string>
+    <string name="hsk_course_subscription_page_share_localized" formatted="false">Xabar bilan yuborish</string>
+    <string name="hsk_course_subscription_page_share_text" formatted="false">HSK AI — xitoy tilini AI bilan o\'rgan. Qo\'shilsang menga 20% chegirma ochiladi 👇</string>
+    <string name="hsk_course_subscription_page_show_less" formatted="false">Yopish</string>
+    <string name="hsk_course_subscription_page_show_more" formatted="false">Ko\'proq</string>
+    <string name="hsk_course_subscription_page_submit" formatted="false">So\'rov yuborish</string>
+    <string name="hsk_course_subscription_page_support_button" formatted="false">Adminga yozish</string>
+    <string name="hsk_course_subscription_page_support_text" formatted="false">To\'lov yoki mini appda muammo bo\'lsa, adminga qisqa yozing va screenshot yuboring.</string>
+    <string name="hsk_course_subscription_page_support_title" formatted="false">Yordam</string>
+    <string name="hsk_course_subscription_page_timeout_error" formatted="false">Internet juda sekin — so\'rov yuborilmadi. Aloqa yaxshilanganda qayta urinib ko\'ring.</string>
+    <string name="hsk_course_subscription_page_title" formatted="false">Obuna</string>
+    <string name="hsk_course_subscription_page_tv_focus_title" formatted="false">Sizga aynan shu ochiladi</string>
+    <string name="hsk_course_subscription_page_tv_title" formatted="false">Obuna nima beradi</string>
+    <string name="hsk_course_subscription_page_upload_text" formatted="false">Bu yerni bosing va skrin tanlang.</string>
+    <string name="hsk_course_subscription_page_upload_title" formatted="false">To\'lov screenshotini yuklash</string>
+    <string name="hsk_course_subscription_page_uploaded" formatted="false">Screenshot tanlandi: {name}</string>
+    <string name="hsk_course_subscription_page_user_blocked" formatted="false">Hisobingiz bloklangan. Support bilan bog\'laning.</string>
     <string name="hsk_course_test_center" formatted="false">Test markazi</string>
     <string name="hsk_course_test_exam_again" formatted="false">Qayta topshirish</string>
     <string name="hsk_course_test_exam_fail_sub" formatted="false">Tayyorgarlikni davom ettiring: HSK </string>

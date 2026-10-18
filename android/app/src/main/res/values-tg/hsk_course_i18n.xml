@@ -403,6 +403,108 @@
     <string name="hsk_course_streak_display_many" formatted="false">рӯз пайдарпай!</string>
     <string name="hsk_course_streak_display_one" formatted="false">рӯз пайдарпай!</string>
     <string name="hsk_course_subscribe" formatted="false">HSK AI Pro ⭐️ гирифтан</string>
+    <string name="hsk_course_subscription_page_admin_discount_text" formatted="false">Пешниҳоди махсуси admin. Тариф ва усули пардохти мувофиқ дар ҳамин ҷо нишон дода мешавад.</string>
+    <string name="hsk_course_subscription_page_admin_discount_title" formatted="false">Тахфифи махсус {percent}%</string>
+    <string name="hsk_course_subscription_page_admin_notification_failed" formatted="false">Дархости пардохт фиристода нашуд. Боз кӯшиш кунед.</string>
+    <string name="hsk_course_subscription_page_amount_label" formatted="false">Маблағи пардохт</string>
+    <string name="hsk_course_subscription_page_back" formatted="false">Бозгашт</string>
+    <string name="hsk_course_subscription_page_change_payment" formatted="false">Тағйир додани усули пардохт</string>
+    <string name="hsk_course_subscription_page_checking_payment" formatted="false">Ҳолат санҷида мешавад…</string>
+    <string name="hsk_course_subscription_page_close" formatted="false">Пӯшидан</string>
+    <string name="hsk_course_subscription_page_continue_to_payment" formatted="false">Идома додан ба пардохт</string>
+    <string name="hsk_course_subscription_page_copied" formatted="false">Link copy шуд.</string>
+    <string name="hsk_course_subscription_page_copied_button" formatted="false">Copy шуд</string>
+    <string name="hsk_course_subscription_page_copied_value" formatted="false">Copy шуд.</string>
+    <string name="hsk_course_subscription_page_copy_failed" formatted="false">Link-ро copy кардан нашуд.</string>
+    <string name="hsk_course_subscription_page_copy_link" formatted="false">Танҳо link-ро copy кардан</string>
+    <string name="hsk_course_subscription_page_copy_value" formatted="false">Copy</string>
+    <string name="hsk_course_subscription_page_country_text" formatted="false">Давлати корти худро интихоб кунед — нархҳо бо асъори ҳамон давлат нишон дода мешаванд.</string>
+    <string name="hsk_course_subscription_page_country_title" formatted="false">Аз кадом давлат пардохт мекунед?</string>
+    <string name="hsk_course_subscription_page_details_hint" formatted="false">Ба ҳамин реквизит пардохт кунед. Барои copy кардани рақами корт тугмаи паҳлӯяшро пахш кунед.</string>
+    <string name="hsk_course_subscription_page_details_title" formatted="false">Реквизити корт</string>
+    <string name="hsk_course_subscription_page_discount_active_text" formatted="false">Ба ин обуна худкор татбиқ мешавад.</string>
+    <string name="hsk_course_subscription_page_discount_btn" formatted="false">Кушодани тахфиф</string>
+    <string name="hsk_course_subscription_page_discount_invite_text" formatted="false">3 дӯст даъват кунед: дар Android барномаро насб карда Telegram-ро пайваст кунанд, дар iPhone ба 2 саволи бот ҷавоб диҳанд.</string>
+    <string name="hsk_course_subscription_page_discount_lock_title" formatted="false">Тахфифи 20%-ро кушоед</string>
+    <string name="hsk_course_subscription_page_discount_progress" formatted="false">20% тахфиф: {count}/{required} referral</string>
+    <string name="hsk_course_subscription_page_discount_ready" formatted="false">20% тахфиф ҳисоб мешавад</string>
+    <string name="hsk_course_subscription_page_discount_used" formatted="false">Тахфифи 20% аллакай истифода шуд.</string>
+    <string name="hsk_course_subscription_page_done_text" formatted="false">Пардохт ба санҷиш фиристода шуд. Санҷиш тахминан 5–15 дақиқа давом мекунад. Баъд аз тасдиқ bot ба шумо хабар мефиристад.</string>
+    <string name="hsk_course_subscription_page_done_title" formatted="false">Дархост фиристода шуд ✅</string>
+    <string name="hsk_course_subscription_page_download_qr" formatted="false">QR-ро калон дидан</string>
+    <string name="hsk_course_subscription_page_error" formatted="false">Хатогӣ шуд. Боз кӯшиш кунед.</string>
+    <string name="hsk_course_subscription_page_feedback_discount_text" formatted="false">Барои feedback тахфиф дар ҳамин равзана ҳисоб мешавад.</string>
+    <string name="hsk_course_subscription_page_feedback_discount_title" formatted="false">Барои шумо таклифи 20%</string>
+    <string name="hsk_course_subscription_page_hero_text" formatted="false">Бо обуна курс, AI ҷавобҳо, фото, voice, quiz ва таҳлили хатоҳо кушода мешаванд.</string>
+    <string name="hsk_course_subscription_page_hero_title" formatted="false">Тариф ва пардохтро интихоб кунед</string>
+    <string name="hsk_course_subscription_page_invalid_telegram" formatted="false">Mini app-ро аз дохили bot кушоед.</string>
+    <string name="hsk_course_subscription_page_invite_text" formatted="false">Пайванд қадамҳои мувофиқи телефони дӯстатонро нишон медиҳад. Метавонед танҳо link-ро нусха гиред.</string>
+    <string name="hsk_course_subscription_page_invite_title" formatted="false">Referral link тайёр аст</string>
+    <string name="hsk_course_subscription_page_load_error" formatted="false">Маълумотро бор кардан нашуд. Интернетро тафтиш карда, mini app-ро аз нав кушоед.</string>
+    <string name="hsk_course_subscription_page_loading" formatted="false">Ҳисоб мешавад...</string>
+    <string name="hsk_course_subscription_page_locked_pay_text" formatted="false">Пас аз тасдиқи пардохт дарси басташуда дар ҳамин курс фавран кушода мешавад.</string>
+    <string name="hsk_course_subscription_page_locked_value_text" formatted="false">Дарси оғозкардаатонро идома диҳед ва дарсҳои навбатии HSK-ро пайдарпай кушоед.</string>
+    <string name="hsk_course_subscription_page_methods_title" formatted="false">Усули пардохт</string>
+    <string name="hsk_course_subscription_page_need_screenshot" formatted="false">Аввал screenshot-и пардохтро бор кунед.</string>
+    <string name="hsk_course_subscription_page_network_error" formatted="false">Пайваст қатъ шуд. Интернетро тафтиш карда, аз нав фиристед.</string>
+    <string name="hsk_course_subscription_page_next" formatted="false">Давом</string>
+    <string name="hsk_course_subscription_page_no_details" formatted="false">Реквизити корт ҳоло ворид нашудааст. Баъдтар боз кӯшиш кунед.</string>
+    <string name="hsk_course_subscription_page_offer_expired" formatted="false">Ин пешниҳод тамом шудааст ё ба шумо мувофиқ нест.</string>
+    <string name="hsk_course_subscription_page_open_hsk30" formatted="false">HSK 3.0-ро кушоед</string>
+    <string name="hsk_course_subscription_page_pay_with_alipay" formatted="false">Бо Alipay пардохт кардан</string>
+    <string name="hsk_course_subscription_page_pay_with_wechat" formatted="false">Бо WeChat Pay пардохт кардан</string>
+    <string name="hsk_course_subscription_page_payment_approved_text" formatted="false">Пардохт тасдиқ шуд. Метавонед аз китобҳои нав оғоз кунед.</string>
+    <string name="hsk_course_subscription_page_payment_approved_title" formatted="false">HSK 3.0 кушода шуд</string>
+    <string name="hsk_course_subscription_page_payment_details_missing" formatted="false">Реквизити корт ҳоло тайёр нест. Баъдтар кӯшиш кунед.</string>
+    <string name="hsk_course_subscription_page_payment_rejected_text" formatted="false">Пардохти шумо қабул нашуд. Маълумотро санҷида, пардохтро аз нав фиристед.</string>
+    <string name="hsk_course_subscription_page_payment_rejected_title" formatted="false">Пардохти HSK 3.0 қабул нашуд</string>
+    <string name="hsk_course_subscription_page_payment_still_pending" formatted="false">Пардохт ҳанӯз аз ҷониби администратор санҷида мешавад.</string>
+    <string name="hsk_course_subscription_page_pending_text" formatted="false">Дархости пардохти шумо дар санҷиш аст. Лутфан то тасдиқ интизор шавед.</string>
+    <string name="hsk_course_subscription_page_pending_title" formatted="false">Дархости шумо дар санҷиш аст</string>
+    <string name="hsk_course_subscription_page_plans_title" formatted="false">Тариф</string>
+    <string name="hsk_course_subscription_page_preview" formatted="false">Preview mode: Telegram init data нест. Submit-и real танҳо дар bot кор мекунад.</string>
+    <string name="hsk_course_subscription_page_preview_submit" formatted="false">Дар bot-и real дархост ба admin барои санҷиш меравад.</string>
+    <string name="hsk_course_subscription_page_prices_loading" formatted="false">Нархҳои тариф бор шуда истодаанд...</string>
+    <string name="hsk_course_subscription_page_prices_unavailable" formatted="false">Нархҳои тариф ҳоло нишон дода намешаванд.</string>
+    <string name="hsk_course_subscription_page_provisional_text" formatted="false">Дархости аввал санҷида мешавад. Агар пардохт тасдиқ нашавад, дастрасӣ ба HSK 3.0 баста мешавад.</string>
+    <string name="hsk_course_subscription_page_provisional_title" formatted="false">HSK 3.0 муваққатан кушода шуд</string>
+    <string name="hsk_course_subscription_page_qr_missing" formatted="false">QR код ҳоло тайёр нест.</string>
+    <string name="hsk_course_subscription_page_qr_tap_hint" formatted="false">QR-ро пахш кунед — тугмаи калон дидан мебарояд.</string>
+    <string name="hsk_course_subscription_page_qr_title" formatted="false">QR код</string>
+    <string name="hsk_course_subscription_page_quote_error" formatted="false">Маълумоти пардохт ҳоло кушода нашуд. Боз кӯшиш кунед.</string>
+    <string name="hsk_course_subscription_page_refresh_payment" formatted="false">Ҳолати пардохтро нав кардан</string>
+    <string name="hsk_course_subscription_page_renewal_body" formatted="false">Муҳлати ҷорӣ {current} анҷом меёбад. Агар тарифи «{plan}»-ро илова кунед, муҳлати нав то {next} мешавад.</string>
+    <string name="hsk_course_subscription_page_renewal_confirm" formatted="false">Идома додан</string>
+    <string name="hsk_course_subscription_page_renewal_current" formatted="false">Обунаи ҷорӣ то {date} фаъол аст</string>
+    <string name="hsk_course_subscription_page_renewal_edit" formatted="false">Тағйир додани тариф</string>
+    <string name="hsk_course_subscription_page_renewal_next" formatted="false">Пас аз тарифи интихобшуда: то {date}</string>
+    <string name="hsk_course_subscription_page_renewal_title" formatted="false">Обунаро дароз мекунед?</string>
+    <string name="hsk_course_subscription_page_retry_payment" formatted="false">Пардохтро аз нав фиристед</string>
+    <string name="hsk_course_subscription_page_retry_prices" formatted="false">Аз нав кӯшиш кардан</string>
+    <string name="hsk_course_subscription_page_return_to_bot" formatted="false">Ба bot баргаштан</string>
+    <string name="hsk_course_subscription_page_screenshot_format" formatted="false">Ин формат дастгирӣ намешавад ({type}). Screenshot-ро дар шакли JPG ё PNG интихоб кунед.</string>
+    <string name="hsk_course_subscription_page_screenshot_heavy" formatted="false">Ҳаҷм {size}. Дар интернети суст фиристодан дер давом карда метавонад — агар имкон бошад, ба Wi-Fi пайваст шавед.</string>
+    <string name="hsk_course_subscription_page_screenshot_invalid" formatted="false">Ин расм қабул нашуд. Screenshot-и дигар (JPG ё PNG) интихоб кунед.</string>
+    <string name="hsk_course_subscription_page_screenshot_read_failed" formatted="false">Расмро хондан нашуд. Боз як бор интихоб кунед.</string>
+    <string name="hsk_course_subscription_page_screenshot_ready" formatted="false">Ҳаҷм {size} — барои фиристодан тайёр.</string>
+    <string name="hsk_course_subscription_page_screenshot_too_big" formatted="false">Расм хеле калон аст: {size}. Ҳудуд — 8 MB. Аз галерея screenshot-и оддӣ (JPG) интихоб кунед ё расмро бурида хурд кунед.</string>
+    <string name="hsk_course_subscription_page_server_error" formatted="false">Сервер ҳозир ҷавоб надод. Каме сабр карда, аз нав фиристед.</string>
+    <string name="hsk_course_subscription_page_share_localized" formatted="false">Бо паём фиристодан</string>
+    <string name="hsk_course_subscription_page_share_text" formatted="false">HSK AI — забони хитоиро бо AI омӯз. Ҳамроҳ шав, ба ман тахфифи 20% кушода мешавад 👇</string>
+    <string name="hsk_course_subscription_page_show_less" formatted="false">Кам кардан</string>
+    <string name="hsk_course_subscription_page_show_more" formatted="false">Пурра дидан</string>
+    <string name="hsk_course_subscription_page_submit" formatted="false">Фиристодан</string>
+    <string name="hsk_course_subscription_page_support_button" formatted="false">Ба admin навиштан</string>
+    <string name="hsk_course_subscription_page_support_text" formatted="false">Агар пардохт ё mini app кор накунад, ба admin кӯтоҳ нависед ва screenshot фиристед.</string>
+    <string name="hsk_course_subscription_page_support_title" formatted="false">Ёрдам</string>
+    <string name="hsk_course_subscription_page_timeout_error" formatted="false">Интернет хеле суст аст — дархост нарафт. Ҳангоми алоқаи беҳтар боз кӯшиш кунед.</string>
+    <string name="hsk_course_subscription_page_title" formatted="false">Обуна</string>
+    <string name="hsk_course_subscription_page_tv_focus_title" formatted="false">Маҳз ҳамин кушода мешавад</string>
+    <string name="hsk_course_subscription_page_tv_title" formatted="false">Обуна чӣ медиҳад</string>
+    <string name="hsk_course_subscription_page_upload_text" formatted="false">Ин ҷоро пахш кунед ва screenshot интихоб кунед.</string>
+    <string name="hsk_course_subscription_page_upload_title" formatted="false">Screenshot-и пардохтро бор кунед</string>
+    <string name="hsk_course_subscription_page_uploaded" formatted="false">Screenshot интихоб шуд: {name}</string>
+    <string name="hsk_course_subscription_page_user_blocked" formatted="false">Ҳисоби шумо баста шудааст. Бо дастгирӣ дар тамос шавед.</string>
     <string name="hsk_course_test_center" formatted="false">Маркази тест</string>
     <string name="hsk_course_test_exam_again" formatted="false">Аз нав супоридан</string>
     <string name="hsk_course_test_exam_fail_sub" formatted="false">Омодагиро давом диҳед: HSK </string>

@@ -67,6 +67,11 @@
       "baseline_sha1": "1d0f69a7e9de869af485dbf7bf5a78180ab98b92",
       "reviewed_sha1": "bf20a203e4dc503ef2910b112c267df29c60802b",
       "reason": "Preload one local generated UZ/RU/TJ catalog asset with defer before the existing download-page script, whose 79 flat labels per locale now hydrate locally with inline fallbacks. Referral validation, release status, installer URLs, security and platform detection unchanged."
+    },
+    "app/static/subscription.html": {
+      "baseline_sha1": "6841d29b680d21f018133fc7a60079abebd45bf0",
+      "reviewed_sha1": "86a32d7f5962ea52cf027d653d6f86391ea64a91",
+      "reason": "Exact-copy 102 UZ/RU/TJ subscription UI-only flat display labels to bundled local static catalog with unmodified inline literal fallback. No invoice, entitlement, payment, region, discount, receipt, approval, renewal, currency conversion, API, referral, pricing or checkout logic changes. Nested arrays/objects and original HTML physical line count untouched."
     }
   }
 }

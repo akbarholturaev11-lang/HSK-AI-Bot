@@ -65,7 +65,7 @@ class VoiceMemorizeDictionaryUIAdoptionTests(unittest.TestCase):
                 messages = json.loads(
                     (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
                 )["messages"]
-                self.assertEqual(len(messages), 521)
+                self.assertEqual(len(messages), 623)
                 for key, value in voice[locale].items():
                     self.assertEqual(messages["voicePage." + key], value)
                 for key, labels in limit.items():
