@@ -22,7 +22,7 @@ jobs:
       run:
         working-directory: android
     env:
-      QA_ORIGIN: https://hsk-universal-qa-api-staging.up.railway.app
+      QA_ORIGIN: https://hsk-qa-api-qa.up.railway.app
       EXPECTED_QA_PACKAGE: com.pomp.hskai.qa
 
     steps:
@@ -34,7 +34,7 @@ jobs:
           test -f gradle/wrapper/gradle-wrapper.jar
           test -f gradle/wrapper/gradle-wrapper.properties
           test -x gradlew || chmod +x gradlew
-          test "$QA_ORIGIN" = "https://hsk-universal-qa-api-staging.up.railway.app"
+          test "$QA_ORIGIN" = "https://hsk-qa-api-qa.up.railway.app"
           test "$EXPECTED_QA_PACKAGE" = "com.pomp.hskai.qa"
 
       - name: Verify Gradle wrapper
@@ -68,7 +68,7 @@ jobs:
           "$aapt" dump badging "$apk" | grep -F 'HSK AI QA'
           "$aapt" dump xmltree "$apk" AndroidManifest.xml | grep -F 'pomp-hsk-ai-qa'
           # Ensure actual compiled BuildConfig is pointing only at staging.
-          grep -R -F "https://hsk-universal-qa-api-staging.up.railway.app" app/build/generated/source/buildConfig/
+          grep -R -F "https://hsk-qa-api-qa.up.railway.app" app/build/generated/source/buildConfig/
           grep -R -F 'pomp-hsk-ai-qa' app/build/generated/source/buildConfig/
           if grep -R -F 'QA_BUILD = false' app/build/generated/source/buildConfig/direct/debug/; then
             echo "ERROR: QA_BUILD is false in generated DirectDebug config"
@@ -80,7 +80,7 @@ jobs:
       - name: Upload installable QA APK
         uses: actions/upload-artifact@v4
         with:
-          name: hsk-ai-universal-signin-qa-direct-debug
+          name: hsk-ai-universal-standalone-qa-direct-debug
           path: android/app/build/outputs/apk/direct/debug/*.apk
           if-no-files-found: error
           retention-days: 7
