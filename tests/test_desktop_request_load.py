@@ -36,9 +36,13 @@ class DesktopRequestLoadTests(unittest.TestCase):
             "const NOTIFICATION_FOCUS_MIN_GAP_MS = 15_000;",
             APP,
         )
-        self.assertIn(
-            'window.addEventListener("focus", refreshDesktopSyncOnFocus)',
+        # The OAuth browser return now resumes pending approval polling on focus
+        # before the existing lightweight sync. Keep both responsibilities.
+        self.assertEqual(APP.count('window.addEventListener("focus",'), 1)
+        self.assertRegex(
             APP,
+            r'window\.addEventListener\("focus",\s*\(\)\s*=>\s*\{'
+            r'\s*resumeAuthPolling\(\);\s*refreshDesktopSyncOnFocus\(\);',
         )
         self.assertIn("await desktopBridge.syncState()", APP)
 
