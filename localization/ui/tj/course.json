@@ -279,6 +279,16 @@
     "testHsk30Soon.title": "HSK 3.0 · тестҳо",
     "testHsk30Soon.sub": "Формати нави имтиҳони HSK 3.0 ҳоло омода мешавад.",
     "testHsk30Soon.back": "Бозгашт",
-    "testHub.mineLevel": "Дараҷаи шумо"
+    "testHub.mineLevel": "Дараҷаи шумо",
+    "recognition.review": "такрор",
+    "recognition.listen": "Гӯш кардан",
+    "recognition.lead": "Аз байни монандҳо дурустро ёбед",
+    "recognition.done": "дуруст",
+    "recognition.doneSub": "Шумо иероглифҳои монандро хуб фарқ мекунед!",
+    "recognition.again": "Боз",
+    "recognition.limitTitle": "Машқи ройгони имрӯза тамом шуд",
+    "recognition.limitSub": "Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён HSK AI Pro гиред ё фардо баргардед.",
+    "recognition.premiumBtn": "HSK AI Pro ⭐️ гирифтан",
+    "recognition.back": "Бозгашт"
   }
 }

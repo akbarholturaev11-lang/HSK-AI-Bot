@@ -196,6 +196,16 @@
     <string name="hsk_course_ready_phrases_sub" formatted="false">Kundalik vaziyatlar uchun xitoycha gaplar</string>
     <string name="hsk_course_recog" formatted="false">Ieroglif tanish</string>
     <string name="hsk_course_recog_sub" formatted="false">O\'xshashlardan to\'g\'risini toping</string>
+    <string name="hsk_course_recognition_again" formatted="false">Yana mashq</string>
+    <string name="hsk_course_recognition_back" formatted="false">Orqaga</string>
+    <string name="hsk_course_recognition_done" formatted="false">to\'g\'ri</string>
+    <string name="hsk_course_recognition_done_sub" formatted="false">O\'xshash ieroglyflarni yaxshi farqlaysiz!</string>
+    <string name="hsk_course_recognition_lead" formatted="false">O\'xshashlardan to\'g\'risini toping</string>
+    <string name="hsk_course_recognition_limit_sub" formatted="false">Bepul rejimda bu bo\'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun HSK AI Pro oling yoki ertaga qaytib keling.</string>
+    <string name="hsk_course_recognition_limit_title" formatted="false">Bugungi bepul mashq tugadi</string>
+    <string name="hsk_course_recognition_listen" formatted="false">Tinglash</string>
+    <string name="hsk_course_recognition_premium_btn" formatted="false">HSK AI Pro ⭐️ olish</string>
+    <string name="hsk_course_recognition_review" formatted="false">takror</string>
     <string name="hsk_course_repeat" formatted="false">Takrorlash</string>
     <string name="hsk_course_right_ans" formatted="false">To\'g\'ri javob:</string>
     <string name="hsk_course_say" formatted="false">Talaffuz qiling</string>

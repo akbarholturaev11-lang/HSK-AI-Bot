@@ -279,6 +279,16 @@
     "testHsk30Soon.title": "HSK 3.0 · тесты",
     "testHsk30Soon.sub": "Новый формат экзамена HSK 3.0 ещё готовится.",
     "testHsk30Soon.back": "Назад",
-    "testHub.mineLevel": "Ваш уровень"
+    "testHub.mineLevel": "Ваш уровень",
+    "recognition.review": "повтор",
+    "recognition.listen": "Послушать",
+    "recognition.lead": "Найдите нужный среди похожих",
+    "recognition.done": "правильно",
+    "recognition.doneSub": "Вы хорошо различаете похожие иероглифы!",
+    "recognition.again": "Ещё раз",
+    "recognition.limitTitle": "Бесплатная практика на сегодня исчерпана",
+    "recognition.limitSub": "В бесплатном режиме этот раздел доступен 1 раз в день. Оформите HSK AI Pro для безлимита или возвращайтесь завтра.",
+    "recognition.premiumBtn": "Получить HSK AI Pro ⭐️",
+    "recognition.back": "Назад"
   }
 }

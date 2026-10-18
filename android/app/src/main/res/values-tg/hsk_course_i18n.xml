@@ -196,6 +196,16 @@
     <string name="hsk_course_ready_phrases_sub" formatted="false">Ҷумлаҳои чинӣ барои ҳар рӯз</string>
     <string name="hsk_course_recog" formatted="false">Шинохти иероглиф</string>
     <string name="hsk_course_recog_sub" formatted="false">Аз байни монандҳо дурустро ёбед</string>
+    <string name="hsk_course_recognition_again" formatted="false">Боз</string>
+    <string name="hsk_course_recognition_back" formatted="false">Бозгашт</string>
+    <string name="hsk_course_recognition_done" formatted="false">дуруст</string>
+    <string name="hsk_course_recognition_done_sub" formatted="false">Шумо иероглифҳои монандро хуб фарқ мекунед!</string>
+    <string name="hsk_course_recognition_lead" formatted="false">Аз байни монандҳо дурустро ёбед</string>
+    <string name="hsk_course_recognition_limit_sub" formatted="false">Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён HSK AI Pro гиред ё фардо баргардед.</string>
+    <string name="hsk_course_recognition_limit_title" formatted="false">Машқи ройгони имрӯза тамом шуд</string>
+    <string name="hsk_course_recognition_listen" formatted="false">Гӯш кардан</string>
+    <string name="hsk_course_recognition_premium_btn" formatted="false">HSK AI Pro ⭐️ гирифтан</string>
+    <string name="hsk_course_recognition_review" formatted="false">такрор</string>
     <string name="hsk_course_repeat" formatted="false">Такрор</string>
     <string name="hsk_course_right_ans" formatted="false">Ҷавоби дуруст:</string>
     <string name="hsk_course_say" formatted="false">Талаффуз кунед</string>

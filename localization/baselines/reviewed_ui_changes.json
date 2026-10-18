@@ -27,6 +27,11 @@
       "baseline_sha1": "2962e807b81cc5059dd2bf8ae2b344479d3cd19b",
       "reviewed_sha1": "a1b5bef4056768d11cdabdae522d276f4ed55a7a",
       "reason": "Reviewed 49 original UZ/RU/TJ Test Center display-only labels from L, EM, nested EM.sec, HSK30_SOON, PT and MINE_T, using a single local static JS bundle with original inline exact fallback. No question bank, graded answer, exam server, free gate, payment, XP scoring, placement algorithm or navigation semantics changed."
+    },
+    "app/static/course_v3_recognition.html": {
+      "baseline_sha1": "22c2e10c99a243b9eb9992f99de0de0709c7f819",
+      "reviewed_sha1": "8cef3be7fb76c6bee286449a3ffb6c7930b6867e",
+      "reason": "Exact 10 UZ/RU/TJ Recognition display labels hydrate synchronously from bundled local static JS, retaining literal inline fallback; practice scoring, word gate, subscription, ads, daily-gate and APIs unchanged."
     }
   }
 }

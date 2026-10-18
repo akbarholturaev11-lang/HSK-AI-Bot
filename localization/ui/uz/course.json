@@ -279,6 +279,16 @@
     "testHsk30Soon.title": "HSK 3.0 · testlar",
     "testHsk30Soon.sub": "Yangi HSK 3.0 imtihon formati hali tayyorlanmoqda.",
     "testHsk30Soon.back": "Orqaga",
-    "testHub.mineLevel": "Sizning darajangiz"
+    "testHub.mineLevel": "Sizning darajangiz",
+    "recognition.review": "takror",
+    "recognition.listen": "Tinglash",
+    "recognition.lead": "O'xshashlardan to'g'risini toping",
+    "recognition.done": "to'g'ri",
+    "recognition.doneSub": "O'xshash ieroglyflarni yaxshi farqlaysiz!",
+    "recognition.again": "Yana mashq",
+    "recognition.limitTitle": "Bugungi bepul mashq tugadi",
+    "recognition.limitSub": "Bepul rejimda bu bo'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun HSK AI Pro oling yoki ertaga qaytib keling.",
+    "recognition.premiumBtn": "HSK AI Pro ⭐️ olish",
+    "recognition.back": "Orqaga"
   }
 }

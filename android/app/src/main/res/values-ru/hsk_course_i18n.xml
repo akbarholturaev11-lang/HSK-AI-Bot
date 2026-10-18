@@ -196,6 +196,16 @@
     <string name="hsk_course_ready_phrases_sub" formatted="false">Китайские фразы для повседневных ситуаций</string>
     <string name="hsk_course_recog" formatted="false">Распознавание иероглифов</string>
     <string name="hsk_course_recog_sub" formatted="false">Найдите нужный среди похожих</string>
+    <string name="hsk_course_recognition_again" formatted="false">Ещё раз</string>
+    <string name="hsk_course_recognition_back" formatted="false">Назад</string>
+    <string name="hsk_course_recognition_done" formatted="false">правильно</string>
+    <string name="hsk_course_recognition_done_sub" formatted="false">Вы хорошо различаете похожие иероглифы!</string>
+    <string name="hsk_course_recognition_lead" formatted="false">Найдите нужный среди похожих</string>
+    <string name="hsk_course_recognition_limit_sub" formatted="false">В бесплатном режиме этот раздел доступен 1 раз в день. Оформите HSK AI Pro для безлимита или возвращайтесь завтра.</string>
+    <string name="hsk_course_recognition_limit_title" formatted="false">Бесплатная практика на сегодня исчерпана</string>
+    <string name="hsk_course_recognition_listen" formatted="false">Послушать</string>
+    <string name="hsk_course_recognition_premium_btn" formatted="false">Получить HSK AI Pro ⭐️</string>
+    <string name="hsk_course_recognition_review" formatted="false">повтор</string>
     <string name="hsk_course_repeat" formatted="false">Повторить</string>
     <string name="hsk_course_right_ans" formatted="false">Правильный ответ:</string>
     <string name="hsk_course_say" formatted="false">Произнесите</string>

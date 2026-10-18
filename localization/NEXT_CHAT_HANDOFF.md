@@ -1,5 +1,12 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## Recognition 10-label exact-copy runtime adoption (2026-10-18)
+
+- Recognition Mini App `app/static/course_v3_recognition.html` now preloads local `hsk-course-i18n.js?v=20261018-recognition-v14` and overlays **10 original UZ/RU/TJ display labels** onto the existing inline `L` dictionary. Legacy literal copy remains a synchronous fallback when the bundled catalog is absent, and no per-text network request is introduced.
+- Catalog **277 → 287 keys per locale**; browser Mini App + Desktop, Bot Python, and Android UZ/RU/TJ generated resources refreshed (six files). Source manifest pins HTML SHA `8cef3be7fb76c6bee286449a3ffb6c7930b6867e`; P0 test includes new exact-locale-parity and fallback regression.
+- Unchanged: recognition answer/grading selection, word gating, free/Pro practice permission, subscription flow, advertisements, server APIs, audio cache, progress and lesson content. Separate practice-gate-error copy is not part of this batch.
+- PR #179 stays Draft, working branch only; **verify the new SHA's CI before reporting success**, then device QA as needed. Previous head `20566a7f`: Backend, Desktop, both TTS and i18n P0 green; Android CI red, needs job-log isolation and follow-up.
+
 ## Test Center exact-copy local-first runtime — 49 UI labels (2026-10-18)
 
 - Exact UZ/RU/TJ display-only copy moved into `course` UI catalog: Test Center hub 19, exam runner 17, exam section titles 3, placement UI 6, HSK 3.0 placeholder 3 and current-level badge 1 = **49 keys × 3 locales**. Catalog **228 → 277 keys per locale**, all **six local generated resources** regenerated.
