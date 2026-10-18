@@ -35,6 +35,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.HeadsetMic
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Button
@@ -205,6 +206,15 @@ fun SubscriptionCheckoutHost(
                     .background(C.surface, CircleShape).clickable { supportOpen = true },
                     contentAlignment = Alignment.Center) {
                     Icon(Icons.Filled.HeadsetMic, contentDescription = copy.getString(R.string.sub_help_title),
+                        tint = C.accentInk, modifier = Modifier.size(20.dp))
+                }
+                Spacer(Modifier.width(8.dp))
+                // Always provide an explicit exit, including when an old PRO
+                // payment is pending while opened from the HSK 3.0 course.
+                Box(Modifier.size(44.dp).border(1.dp, C.line, CircleShape)
+                    .background(C.surface, CircleShape).clickable { onClose() },
+                    contentAlignment = Alignment.Center) {
+                    Icon(Icons.Filled.Close, contentDescription = copy.getString(R.string.action_close),
                         tint = C.accentInk, modifier = Modifier.size(20.dp))
                 }
             }
