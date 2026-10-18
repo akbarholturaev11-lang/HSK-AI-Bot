@@ -1396,3 +1396,45 @@ Keep GitHub's branch current without force-resetting unrelated user work.
 - [**Local-first P0 CI 39046378923**](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39046378923) completed **SUCCESS** at corrected code commit `d4899aed...`: **139 Python regression tests passed**, all source audits passed; 86 course keys per locale, 6 generated course UI targets with **0 stale files**. The first code commit's test run failed on a source line-count assertion (trailing newline vs Python `splitlines()`), corrected in `d4899aed...`; do not misclassify this as an app runtime regression.
 - Full device, Telegram WebView, screenshots, offline/cache, account switching and Free/Trial/Pro authenticated flows are **not** confirmed by these source tests. Existing legacy anonymous lesson JSON access remains an open P0 security risk to audit separately. Android full CI/Backend CI must be read independently; no production deployment or `main` merge authorized.
 - **Next:** select another strictly reviewed UI-only slice, extend exact-copy parity tests, then perform device/auth/cache release gates before any wider activation. PR #179 remains Draft against `main`.
+
+### P2 fourth UI adoption slice — 2026-10-18 (Mini App map, sheet, tour/nav)
+
+- **Code commit:** [`0bf8e353bf972ef61a32b65510014fe428e843ea`](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/commit/0bf8e353bf972ef61a32b65510014fe428e843ea).
+  Changed only `app/static/course-v3.html`,
+  `tests/test_i18n_common_ui_adoption.py`, and the Mini App
+  approved SHA in `localization/baselines/reviewed_ui_changes.json`.
+- Adopted existing statically bundled `courseMessage(key, legacyFallback)`
+  in **7 explicit view uses for six additional keys**
+  (`unit`, `lessons`, `cont`, `repeat`, `stage`,
+  `completeOf`) within course map, node badges, and lesson
+  sheet. The tab labels and onboarding tour now use dynamic
+  `courseMessage("nav."+screen, T().nav[screen])` lookups for
+  all five existing `nav.course`, `nav.mashq`, `nav.voice`,
+  `nav.rating`, `nav.profile` labels. The tour and tabs do
+  not introduce new route choices, branches or data loading.
+- **At this commit** 37 distinct course catalog keys have at
+  least one selected local Mini App use (the prior 28 plus six
+  explicit keys and three newly adopted navigation keys); the
+  generated JSON input continues to contain 86 keys for each
+  of three locales. New migration verified 11 source keys
+  × 3 languages = **33 byte-identical fallback values**, with
+  physical `course-v3.html` line count unchanged at
+  8,712 newline-split segments. Existing lesson JSON, quizzes,
+  correct-answer grading, consent/auth, progress, server
+  entitlement, payment and trial flows are unchanged.
+- [**Fast localization P0 CI 39086777956**](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39086777956)
+  **SUCCESS:** 140 Python regression tests passed; three
+  locales / six generated course assets; **0 stale outputs**.
+  Desktop, lesson TTS and persistent local TTS workflows also
+  passed on this code commit. Android full CI and Backend
+  targeted CI were still **in progress when this note was
+  written**; their conclusions must not be inferred.
+- **Deferred gates:** native/WebView visual testing, local
+  airplane mode and fresh-file/cold-start behavior, account
+  switching, payment/access and user-authenticated
+  deep-link/sheet flow verification. The pre-existing anonymous
+  lesson JSON risk remains P0-open. No `main` merge,
+  production deployment or new per-string HTTP requests.
+- **Next:** finish reviewed non-gating presentation keys and
+  document missing strings for future locale expansion;
+  keep PR #179 Draft and unrelated protected work unchanged.
