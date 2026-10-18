@@ -4,6 +4,41 @@
 saqlanadi. Kod testlari real Google/Apple, Telegram bot va o‘rnatilgan ilova
 sinovining o‘rnini bosmaydi.
 
+## 2026-10-19 — eski Telegram akkauntlari uchun yakuniy gate
+
+Egasi boshqa amaliy tekshiruvlarni bajarganini bildirdi; eski akkauntlar
+tekshiruvi hali qolgan. Production va `main` hold saqlanadi.
+
+- Amaldagi `HSK AI Universal QA / qa` bazasida faqat o‘qish orqali 3 ta user,
+  5 ta payment va 3 ta course progress/profile qatori aniqlandi. Bu baza
+  migratsiya auditidagi haqiqiy eski ma’lumotlar nusxasi emas. Yangi QA
+  akkaunti bilan o‘tgan sinov eski akkauntning saqlanishini tasdiqlamaydi.
+- [2026-10-18 audit dalili](UNIVERSAL_NATIVE_ACCOUNTS_STAGING_AUDIT_2026-10-18.json)
+  61 jadvaldagi 190 155 yozuv, 2 118 user, 100 payment va 214 referralni
+  qamraydi. `0102 → 0108` migratsiyasi hamda oldingi/keyingi backup restore
+  solishtirishlarida billing, progress, XP/reyting, referral va account kalitlari
+  saqlangan. `0103`–`0108` fayllari tekshirilgan versiya bilan bir xil;
+  `0108` va read-only audit skripti SHA-256 qiymatlari hisobotga mos.
+- Hozirgi kodda migratsiya/learning/payment/referral/subscription/progress
+  regressionlari: 73 test va 66 subtest o‘tdi, alohida PostgreSQL test URL’i
+  talab qiladigan 10 test skip qilindi. Acceptance/rehearsal/statistics
+  to‘plami: 43 test va 46 subtest o‘tdi. Bu joriy yugurishda PostgreSQL 18
+  migratsiya yoki backup restore qayta bajarildi degani emas.
+- `test_legacy_paid_learner_keeps_payment_and_shared_progress_after_provider_signin`
+  eski Pro hisobining ayni user/payment ID, status, muddat va summalarini,
+  Android’da natija saqlanishini va Windows/macOS/Mini App’da progress, XP,
+  Pro va reyting mosligini tekshiradi. Provider tasdiqlashi fixture bilan
+  almashtirilgan; bu haqiqiy o‘rnatilgan ilova sinovi emas.
+
+Qolgan amaliy qabul: egasiga tegishli tanlangan eski akkaunt nusxasi bilan
+alohida yopiq staging’da oldingi user ID, Pro status/muddatlari, tugallangan
+darslar, XP/reyting ballari, to‘lov/referral/preview qiymatlarini qayd etish;
+Mini App hamda Android/Desktop’da shu akkauntni ochish va taqqoslash; bitta
+darsdan keyin faqat kutilgan progress/XP o‘zgarishini tekshirish. Imkon bo‘lsa
+free/expired/pending va HSK 3.0 ruxsat holatlari ham qamralsin. To‘liq shaxsiy
+tarixli audit bazasini umumiy QA backend’ga ulab yubormang va hozirgi QA
+hisoblarini almashtirmang. Shu tekshiruv yakunlanmaguncha gate ochiq qoladi.
+
 ## 2026-10-18 — QA fresh database blocker / guarded bootstrap
 
 Railway `hsk-universal-qa-api` on commit `eecc56a1` built successfully but

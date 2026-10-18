@@ -57,6 +57,7 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 - Each Android release must use a `versionCode` greater than the latest published release; it need not increase by exactly one. Verify the artifact against the release manifest because the current workflow does not reject every equal-code/different-artifact case.
 - Course/onboarding use a pinned official same-origin Telegram SDK. Preserve the Telegram launch fragment when updating course URLs and navigating between these documents: iOS WebViews may not restore SDK sessionStorage. Never copy launch credentials into query parameters or localStorage; backend signature/expiry validation stays authoritative.
 - Source files and repository defaults do not prove live deployment, production environment values, provider credentials, or release status. Verify those in the owning environment before reporting them as live facts.
+- Railway SSH can omit the running container process's `LD_LIBRARY_PATH`. A native-module import failure from an SSH shell alone is not evidence of a broken application image: repeat the read-only probe with the actual application process's library path before changing build packages.
 
 ## Key files
 
