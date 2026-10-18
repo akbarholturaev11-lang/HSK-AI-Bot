@@ -27,7 +27,7 @@ until the evidence is complete.
 | Linking cannot grant access to another learner's Pro or progress | Ownership and identity/session revocation regressions cover isolation; verify the complete staged client flow as well. |
 | A blocked account cannot evade its restriction through Google/Apple | Google/Apple identities already linked to a blocked canonical account cannot sign in, consume approved proof, refresh or attach another login. Both-provider regressions pass; real staged provider walkthroughs remain required. An unrelated new provider subject cannot be inferred to belong to the same person from email. |
 | Android, desktop and Telegram Mini App show the same account data | A backend integration test checks explicitly linked Android/Windows/macOS logins plus MiniApp profile data share Pro, lesson progress, XP and rating. Installed-client comparison remains required. A Telegram-free account cannot authenticate a Telegram Mini App without a real Telegram identity. |
-| Migrations pass on a staging copy matching the real schema, and backup restore succeeds | PASS: isolated Railway PostgreSQL 18 copy matching `0102_payment_review_preview` passed upgrades through `0107`, with exact pre/post-backup restores over 61 tables and 190,155 legacy rows, including 214 referrals. Evidence below; this does not clear other release gates. |
+| Migrations pass on a staging copy matching the real schema, and backup restore succeeds | PASS: isolated Railway PostgreSQL 18 copy matching `0102_payment_review_preview` passed upgrades through `0108`, with exact pre/post-backup restores over 61 tables and 190,155 legacy rows, including 214 referrals. Evidence below; this does not clear other release gates. |
 
 Railway has an isolated staging PostgreSQL service. This feature uses fresh,
 separate migration/restore/test databases there. The universal application has
@@ -47,6 +47,19 @@ and isolated staging.
 
 ### Completed database rehearsals
 
+The full `0102 → 0108` chain passed on 2026-10-18 using three fresh isolated
+Railway PostgreSQL 18 databases and the same trusted source backup/catalog:
+61 data tables, 190,155 legacy rows, 2,118 users, 100 payments and 214 referrals.
+All 835 source column descriptors matched the restored baseline; the migrated
+schema has 847 columns. All 14,732 expected canonical owner fields were
+verified, including the new 363 shadow samples and 36 personal offers; pilot
+owners were already canonical. No owner conflicts or duplicate canonical
+groups were found. Migration and independent pre/post-backup restores passed
+exact row, schema, account-key and sequence comparisons. Billing, progress,
+XP/rating and referral digests remain unchanged. No production connection or
+application deployment was used. See
+[current sanitized evidence](UNIVERSAL_NATIVE_ACCOUNTS_STAGING_AUDIT_2026-10-18.json).
+
 The source-schema copy passed the full `0102 → 0107` chain on 2026-10-17:
 61 data tables, 190,155 legacy rows, 2,118 users, 100 payments and 214 referrals.
 All 835 source column descriptors, 682 constraints and 301 indexes matched the
@@ -56,7 +69,7 @@ keys and sequences. All 14,333 expected owner backfills were verified, including
 97 payments and 428 referral endpoints. Receipt-preview flags/pointers were
 unchanged. The trusted backup/catalog came from the verified `0102` copy made
 earlier on the same date; no new production connection was needed for `0107`.
-See [current sanitized evidence](UNIVERSAL_NATIVE_ACCOUNTS_STAGING_REFERRALS_2026-10-17.json).
+See [historical referral evidence](UNIVERSAL_NATIVE_ACCOUNTS_STAGING_REFERRALS_2026-10-17.json).
 
 The prior [`0102 → 0106` payment evidence](UNIVERSAL_NATIVE_ACCOUNTS_STAGING_PAYMENTS_2026-10-17.json)
 is retained as the exact earlier revision's record.
@@ -253,7 +266,7 @@ pre-release provider/client checks. The following production rollout runs only
 after all release gates above are satisfied; it does not authorize a production
 migration or release during the hold.
 
-1. Apply `alembic upgrade head` through `0107_canonical_referral_owners` using
+1. Apply `alembic upgrade head` through `0108_native_audit_ownership` using
    the normal deployment migration process before releasing new clients.
 2. Deploy the backend and then the tested Android/desktop clients. No new
    provider secret or redirect URI is introduced by this feature.
@@ -280,6 +293,12 @@ Migration details:
   invited-owner uniqueness; nullable real Telegram metadata and the optional
   signup code on pending sign-ins. Downgrade refuses unrepresentable native
   referrals or pending signup attribution.
+- `0108`: nullable pilot/shadow Telegram metadata, canonical pilot/shadow
+  backfills and shadow daily uniqueness; canonical personal-discount targets
+  with CASCADE deletion. Diagnostics retain SET NULL FKs. Positive real
+  Telegram IDs alone are eligible for backfill; existing canonical owners win.
+  Duplicate canonical shadow samples or unexpected existing FK contracts
+  abort before DDL. Downgrade refuses native or conflicting ownership data.
 
 The existing receipt-preview opportunity and payment pointer survive these
 migrations. Its separate capped budget now records canonical ownership while
@@ -580,3 +599,27 @@ installable QA APK/DMG/EXE was delivered: placeholder-origin checks only verify
 build isolation. A staging application with real test provider callbacks and
 credentials must exist before building/installing the QA clients for the owner.
 All seven acceptance gates and the `main`/production hold remain in force.
+
+## Deep ownership audit: 2026-10-18
+
+[The ownership audit](UNIVERSAL_ACCOUNT_OWNERSHIP_AUDIT_2026-10-18.md) closes
+remaining payment-status, personal-discount, affiliate, admin action/statistics,
+inventory, diagnostics, bot-scheduler and purge ownership gaps. Existing payment,
+referral/bonus, advertisement and experiment policies remain unchanged.
+Migration `0108` and the real-copy backup rehearsal above are part of this
+verified source. A preexisting deferred-script failure in three Mini App
+practice pages was also fixed without changing scoring or server gates.
+
+[Final source CI](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39104275053)
+passes on `a6893778`: **1,138 backend tests in 16 groups** with PostgreSQL 18,
+plus **18 admin/practice browser tests**, zero failures/skips. Four broader
+historical browser fixture failures are documented separately in the audit;
+they are not claimed as passing. Graph AST data was refreshed while preserving
+prior semantic nodes and inferred edges.
+
+The database rehearsal gate is evidenced through `0108`; real provider,
+upstream Voice, installed-client and manual purchase acceptance still remain.
+No production deployment, public registration, installable QA release or
+`main` push is implied by these results. Follow the updated
+[QA checklist](UNIVERSAL_NATIVE_ACCOUNT_QA.md) with a separate staging app/bot
+and provider credentials.

@@ -8,6 +8,9 @@ sinovining o‘rnini bosmaydi.
 
 - Universal branch’ning aynan tekshirilgan commitidan alohida staging backend
   ishlating. Hozir production eski `main`da; unda yangi oqimni sinamang.
+- Sinov bazasini `0108_native_audit_ownership`gacha migratsiya qiling. Ilova
+  startupidagi `create_all` mavjud jadvalga yangi ownership ustunlarini
+  qo‘shmaydi; formal migratsiya backend ishga tushishidan oldin bajariladi.
 - Staging uchun alohida database, bot, webhook, receipt storage va provider
   callback sozlamalari kerak. Production tokenlari, webhook yoki to‘lovlarini
   staging’ga ko‘chirmang. Oldingi migration/restore nusxalarini test akkauntlari
@@ -77,6 +80,25 @@ Android Direct, Android Play, macOS va Windows’da takrorlang:
 8. Telegram ulangach Mini App, Android va ikkala desktop’da user ID, Pro,
    XP, darslar va reyting mos kelsin. In-app va public `/account-deletion`
    orqali egalik tasdiqlanib so‘rov yuborilsin; retention qoidalari saqlansin.
+
+## Ownership auditidan keyingi qo‘shimcha tekshiruv
+
+Faqat staging’dagi disposable hisoblarda bajaring:
+
+- Google-first, Apple-first va eski Telegram hisobini alohida User ID orqali
+  admin paneldan oching. Bir xil son boshqa hisobning Telegram ID’si bo‘lsa,
+  tanlangan ichki User ID o‘zgarmasin.
+- Native hisobga qo‘lda Pro va shaxsiy chegirma bering; boshqa hisobga
+  ta’sir qilmasin. Chegirma Direct/desktop checkout’da ko‘rinsin. Qo‘lda Pro
+  berish chek, revenue, yangi AI budjet yoki preview imkoniyati yaratmasin.
+- Telegram ulashdan oldin yuborilgan native chek holati Mini App’da ulashdan
+  keyin ham o‘qilsin. Boshqa hisob cheki ochilmasin.
+- Referral/bonusni takroriy kirish yoki provider ulash bilan qayta olish
+  mumkin bo‘lmasin. XP, reyting va reklama kunlik cap’i bitta hisobga tegishli
+  bo‘lib qolsin. Adminning Android/Desktop/statistikasi shu hisobni sanasin.
+- Staging test hisobini o‘chirishda ikkinchi hisob qurilmasi, sessiyasi,
+  shaxsiy chegirmasi va tarixi saqlansin. Tasdiqlangan moliyaviy faktlar
+  mavjud retention qoidalari bo‘yicha qolishini operator tekshirsin.
 
 Har xatoda build commit/versiyasi, OS, provider, kirish yoki ulash ekani,
 vaqt/timezone va maxfiy ma’lumotsiz xato matnini yozing. OAuth code, state,

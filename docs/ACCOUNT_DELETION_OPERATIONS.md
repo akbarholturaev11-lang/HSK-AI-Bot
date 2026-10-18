@@ -88,6 +88,12 @@ sessions, push/presence, referrals and personalized discount campaigns. A null
 Telegram ID never matches unrelated null rows or global campaigns/ledger data.
 Friend referrals are removed by either canonical inviter/invited owner, including
 provider-only accounts; their optional Telegram metadata is not the owner key.
+Canonical owners also take precedence over stale/conflicting Telegram metadata
+on devices, AI/Voice history, notices, analytics, diagnostics and personal
+offers. Only unowned legacy rows use the real Telegram fallback. A personal
+discount is deleted with its canonical target; it cannot become a global offer.
+Portfolio rows associated with another account's payment are preserved even
+if their old Telegram metadata matches the account being deleted.
 
 Existing financial exceptions remain:
 
