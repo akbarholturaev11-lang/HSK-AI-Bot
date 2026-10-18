@@ -4,6 +4,80 @@
 saqlanadi. Kod testlari real Google/Apple, Telegram bot va o‘rnatilgan ilova
 sinovining o‘rnini bosmaydi.
 
+## 2026-10-18 — QA fresh database blocker / guarded bootstrap
+
+Railway `hsk-universal-qa-api` on commit `eecc56a1` built successfully but
+**FAILED to deploy** because a completely fresh PostgreSQL 18 database reaches
+migration `0011_add_course_workflow_fields` without `course_progress`.
+Old Alembic revisions do not independently create all of the historical
+course tables. Avoid rerunning `alembic upgrade head` against that partially
+migrated database and NEVER stamp it to `0102` by guesswork.
+
+Staging-only services:
+- `hsk-universal-qa-db` — isolated disposable PostgreSQL 18 database service
+- `hsk-universal-qa-api` — pinned universal sign-in QA app, failed at migration
+- `Postgres-Iy93` — older staging PostgreSQL holding a previously verified
+  `0102_payment_review_preview` restore; **contains real historical data**
+- Production `main`, bot and production PostgreSQL are out of scope.
+
+To set up a **new** account-testing database safely, an authorized operator can
+use `scripts/qa_schema_only_bootstrap.py`. This is a reviewed helper, **not
+an automatically performed copy**. Its default mode only validates the source
+revision and that the destination does not exist. Application credentials and
+database user passwords must stay in private Railway variables, never Git or
+the chat. Environment must be `staging`, and both source and destination
+must have distinct Railway private DNS hosts.
+
+Set these variables only on a staging operator service/environment:
+
+- `RAILWAY_ENVIRONMENT_NAME=staging`
+- `QA_SCHEMA_ONLY_SOURCE_APPROVED=0102_payment_review_preview`
+- `QA_SOURCE_HOST`, `QA_SOURCE_DB`, `QA_SOURCE_USER`, `QA_SOURCE_PASSWORD`
+  must be **read-only** access to the verified staging `0102` restore, NOT a
+  connection to production and NOT an account-test database
+- `QA_TARGET_HOST`, `QA_TARGET_USER`, `QA_TARGET_PASSWORD` are for the new
+  separate QA PostgreSQL 18 service
+- `QA_TARGET_DB=hsk_universal_qa_schema` must **not already exist**
+- `QA_SCHEMA_ONLY_CONFIRM=I_APPROVE_STAGING_SCHEMA_ONLY` is required for
+  the writing step, in addition to the explicit `--apply` switch
+
+Operator flow (inside an authorized, isolated staging environment):
+
+```sh
+# Read-only: verify exact 0102 source and absence of the target
+python scripts/qa_schema_only_bootstrap.py
+# Explicit action. pg_dump --schema-only copies no learner/payment/token rows
+python scripts/qa_schema_only_bootstrap.py --apply
+```
+
+The script refuses source/target host equality, unknown revisions, non-staging
+environment, existing destinations or suspicious names. It does not run in CI
+or app startup and must **not** be used on production. If import fails, the
+partially created target remains quarantined for operator review; the script
+does not delete/recreate databases.
+
+After a genuine `QA_SCHEMA_ONLY_COPY_PASS` from the real database:
+1. Verify the new target has **zero** rows in users, payments, referrals,
+   progress and all other personal-data tables; inspect `alembic_version`
+   exactly `0102_payment_review_preview`. Do not connect clients before
+   verification.
+2. Point the staging **only** API's `DATABASE_URL` to this new destination.
+   Execute formal `alembic upgrade head` to `0108_native_audit_ownership`;
+   inspect the migration head and constraints. Do not redirect the current
+   production environment or the staging source-copy service.
+3. Launch the staging HTTP-only API with Telegram polling/schedulers suppressed
+   (existing QA uses Uvicorn `--lifespan off`). Do not reuse the production bot
+   token, Telegram webhook, AI provider secrets, or receipt storage.
+4. Verify `/health`, provider discovery, malformed/expired callback behavior.
+   Then configure private staging Google/Apple OAuth credentials and callback
+   URLs; install QA Android and desktop builds; test real login, provider
+   linking, cancellation and cross-client parity.
+5. Add actual proof to the release acceptance matrix. Green source CI or a
+   schema-only copy cannot substitute for real callbacks. No `main` merge,
+   production DB changes, or public registration until all gates pass.
+
+Issue: [#181](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/issues/181).
+
 ## Test muhiti
 
 - Universal branch’ning aynan tekshirilgan commitidan alohida staging backend
