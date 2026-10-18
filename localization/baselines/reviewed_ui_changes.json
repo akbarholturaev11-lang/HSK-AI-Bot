@@ -57,6 +57,16 @@
       "baseline_sha1": "b0bebb8df10bfe6ec91f928a48676d76adab91df",
       "reviewed_sha1": "7051321e0664d954bc3e0621fc2dd648a0a73a83",
       "reason": "14 UZ/RU/TJ Dictionary practice and character-memory header labels centralised through bundled local UI and preserved inline fallback for all locales on dynamic switch. Search, levels, word data, character details and audio untouched."
+    },
+    "app/static/hsk-gaplar.html": {
+      "baseline_sha1": "93bd82cb79245ef34834466587ff20e72b729426",
+      "reviewed_sha1": "a4fa93e6f2db7e35008d0f80db3f24ab2a7f8152",
+      "reason": "Exact 15 per-locale ready phrases UI display strings from existing inline UZ/RU/TJ dictionary; local static JS overlay with byte-identical original fallback. Search, phrase corpus, saved storage, filters and navigation unchanged."
+    },
+    "app/static/desktop-download.html": {
+      "baseline_sha1": "1d0f69a7e9de869af485dbf7bf5a78180ab98b92",
+      "reviewed_sha1": "bf20a203e4dc503ef2910b112c267df29c60802b",
+      "reason": "Preload one local generated UZ/RU/TJ catalog asset with defer before the existing download-page script, whose 79 flat labels per locale now hydrate locally with inline fallbacks. Referral validation, release status, installer URLs, security and platform detection unchanged."
     }
   }
 }

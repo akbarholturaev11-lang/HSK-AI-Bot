@@ -46,6 +46,85 @@
     <string name="hsk_course_dictionary_practice_recog_s" formatted="false">Шинохти иероглиф</string>
     <string name="hsk_course_dictionary_practice_recog_t" formatted="false">Аз байни монандҳо ёбед</string>
     <string name="hsk_course_done" formatted="false">анҷом</string>
+    <string name="hsk_course_download_page_all_lead" formatted="false">Версияи охирин барои ҳар дастгоҳ.</string>
+    <string name="hsk_course_download_page_all_title" formatted="false">Ҳамаи боргириҳо</string>
+    <string name="hsk_course_download_page_all_unavailable" formatted="false">ҳанӯз нашр нашудааст</string>
+    <string name="hsk_course_download_page_android_download" formatted="false">APK-ро боргирӣ кунед</string>
+    <string name="hsk_course_download_page_android_quick_lead" formatted="false">То анҷоми боргирӣ интизор шавед. Файл дар огоҳинома ё дар ҷузвдони «Боргириҳо» пайдо мешавад.</string>
+    <string name="hsk_course_download_page_android_security" formatted="false">Android метавонад дар бораи «манбаъҳои номаълум» огоҳӣ диҳад: иҷозат диҳед ва идома диҳед. Ин файли расмии мост.</string>
+    <string name="hsk_course_download_page_android_security_title" formatted="false">Ҳангоми насб огоҳӣ пайдо шуда метавонад</string>
+    <string name="hsk_course_download_page_android_title" formatted="false">HSK AI барои Android</string>
+    <string name="hsk_course_download_page_brand_note" formatted="false">Барномаҳо</string>
+    <string name="hsk_course_download_page_checking" formatted="false">Версияи мувофиқ санҷида мешавад.</string>
+    <string name="hsk_course_download_page_copied" formatted="false">Нусха шуд</string>
+    <string name="hsk_course_download_page_copy_failed" formatted="false">Худкор нусха нашуд. Пайванди поёнро дастӣ нусха гиред.</string>
+    <string name="hsk_course_download_page_copy_link" formatted="false">Нусхаи пайванд</string>
+    <string name="hsk_course_download_page_download_again" formatted="false">Аз нав бор кардан</string>
+    <string name="hsk_course_download_page_eyebrow" formatted="false">Курс · пешрафт · ёвари AI</string>
+    <string name="hsk_course_download_page_feature_ai" formatted="false">Ёвари AI дар панели паҳлӯӣ</string>
+    <string name="hsk_course_download_page_feature_course" formatted="false">Курс ва пешрафти умумӣ</string>
+    <string name="hsk_course_download_page_feature_update" formatted="false">Навсозии автоматӣ</string>
+    <string name="hsk_course_download_page_footer" formatted="false">Курс дар марказ. AI ҳамчун ёрдамчӣ.</string>
+    <string name="hsk_course_download_page_free_download" formatted="false">Боргирии ройгон</string>
+    <string name="hsk_course_download_page_guide_eyebrow" formatted="false">Насб</string>
+    <string name="hsk_course_download_page_guide_title" formatted="false">Дар се қадам омода</string>
+    <string name="hsk_course_download_page_ios_download" formatted="false">Дар Telegram кушодан</string>
+    <string name="hsk_course_download_page_ios_security" formatted="false">Mini App дар дохили Telegram кушода мешавад. Ҳеҷ чиз насб намешавад, ҳисоб ва пешрафти шумо ҳамон ҷо мемонад.</string>
+    <string name="hsk_course_download_page_ios_security_title" formatted="false">Ҳеҷ чиз насб намешавад</string>
+    <string name="hsk_course_download_page_ios_status" formatted="false">Барномаи алоҳида барои iOS ҳанӯз нест — Mini App дар Telegram пурра кор мекунад.</string>
+    <string name="hsk_course_download_page_ios_title" formatted="false">Барои iPhone ва iPad</string>
+    <string name="hsk_course_download_page_lead" formatted="false">Дастгоҳи худро интихоб кунед</string>
+    <string name="hsk_course_download_page_loading" formatted="false">Омода мешавад…</string>
+    <string name="hsk_course_download_page_mac_download" formatted="false">DMG барои Mac</string>
+    <string name="hsk_course_download_page_mac_security" formatted="false">Агар macOS роҳ надиҳад: дар Applications рӯи HSK AI тугмаи рост → Open → Open. Агар ҳанӯз баста бошад: System Settings → Privacy &amp; Security → Open Anyway.</string>
+    <string name="hsk_course_download_page_mac_security_title" formatted="false">Ҳангоми кушодани аввал огоҳӣ пайдо шуда метавонад</string>
+    <string name="hsk_course_download_page_mac_title" formatted="false">HSK AI барои Mac</string>
+    <string name="hsk_course_download_page_manual_link_label" formatted="false">Пайванди бехатар барои компютер</string>
+    <string name="hsk_course_download_page_mobile_body" formatted="false">Аввал системаи компютерро интихоб кунед. DMG/EXE-и дар телефон боршуда ба Downloads ё Files меафтад, вале танҳо дар Mac ё Windows кушода мешавад.</string>
+    <string name="hsk_course_download_page_mobile_eyebrow" formatted="false">Саҳифа дар телефон кушода шуд</string>
+    <string name="hsk_course_download_page_mobile_title" formatted="false">Пайвандро ба компютер фиристед</string>
+    <string name="hsk_course_download_page_opening" formatted="false">Боргирӣ кушода мешавад…</string>
+    <string name="hsk_course_download_page_quick_guide_close" formatted="false">Фаҳмо</string>
+    <string name="hsk_course_download_page_quick_guide_close_aria" formatted="false">Пӯшидани дастур</string>
+    <string name="hsk_course_download_page_quick_guide_eyebrow" formatted="false">Боргирӣ оғоз шуд</string>
+    <string name="hsk_course_download_page_quick_guide_footer" formatted="false">Пас аз кушодани барнома, рамзи онро тавассути Telegram тасдиқ кунед.</string>
+    <string name="hsk_course_download_page_quick_guide_lead" formatted="false">То анҷоми боргирӣ дар нишонаи болои рости браузер интизор шавед. Ҳоло ин равзанаро напӯшед.</string>
+    <string name="hsk_course_download_page_quick_guide_progress" formatted="false">Файл бор шуда истодааст</string>
+    <string name="hsk_course_download_page_quick_guide_title" formatted="false">Пас аз боргирӣ ҳамин тавр кушоед</string>
+    <string name="hsk_course_download_page_ready" formatted="false">Файл аз сервери расмии HSK AI бор мешавад.</string>
+    <string name="hsk_course_download_page_ready_label" formatted="false">Насбкунанда омода</string>
+    <string name="hsk_course_download_page_referral_android_body" formatted="false">Тугмаи Telegram-ро пахш кунед ва дар бот Start-ро интихоб кунед. Бот худи файли APK-ро ба чат мефиристад. Барномаро насб карда, ҳамин ҳисоби Telegram-ро пайваст кунед. Баъд даъват ҳисоб мешавад.</string>
+    <string name="hsk_course_download_page_referral_android_button" formatted="false">Идома дар Telegram</string>
+    <string name="hsk_course_download_page_referral_android_status" formatted="false">Дар бот Start-ро пахш кунед — файли APK ба чат меояд.</string>
+    <string name="hsk_course_download_page_referral_android_title" formatted="false">Аввал даъватро дар Telegram қайд кунед</string>
+    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Боти Telegram-ро кушоед ва ба 2 савол ҷавоб диҳед. Пас даъват ҳисоб мешавад.</string>
+    <string name="hsk_course_download_page_referral_ios_title" formatted="false">Шарти даъват барои тахфифи 20%</string>
+    <string name="hsk_course_download_page_referral_other_body" formatted="false">Шартҳои даъват дар Android ё iPhone нишон дода мешаванд.</string>
+    <string name="hsk_course_download_page_referral_other_title" formatted="false">Пайвандро дар телефон кушоед</string>
+    <string name="hsk_course_download_page_security_title" formatted="false">Ҳангоми кушодани аввал огоҳӣ баромада метавонад</string>
+    <string name="hsk_course_download_page_select_body" formatted="false">Дастгоҳи худро интихоб кунед — файл ё пайванди мувофиқ нишон дода мешавад.</string>
+    <string name="hsk_course_download_page_select_download" formatted="false">Аввал дастгоҳро интихоб кунед</string>
+    <string name="hsk_course_download_page_select_title" formatted="false">Дастгоҳи худро интихоб кунед</string>
+    <string name="hsk_course_download_page_share_link" formatted="false">AirDrop ё фиристодан</string>
+    <string name="hsk_course_download_page_shared" formatted="false">Равзанаи фиристодан кушода шуд</string>
+    <string name="hsk_course_download_page_skip" formatted="false">Гузаштан ба боргирӣ</string>
+    <string name="hsk_course_download_page_title" formatted="false">Боргирӣ</string>
+    <string name="hsk_course_download_page_unavailable" formatted="false">Насбкунандаи ин платформа ҳоло нашр нашудааст.</string>
+    <string name="hsk_course_download_page_version" formatted="false">Версияи {version}</string>
+    <string name="hsk_course_download_page_visual_install" formatted="false">Насб кардан</string>
+    <string name="hsk_course_download_page_visual_mac_open" formatted="false">Кушодан</string>
+    <string name="hsk_course_download_page_visual_more_info" formatted="false">Маълумоти бештар</string>
+    <string name="hsk_course_download_page_visual_open_anyway" formatted="false">Ба ҳар ҳол кушодан</string>
+    <string name="hsk_course_download_page_visual_open_app" formatted="false">Кушодани барнома</string>
+    <string name="hsk_course_download_page_visual_or" formatted="false">ё</string>
+    <string name="hsk_course_download_page_visual_right_click" formatted="false">Тугмаи рост</string>
+    <string name="hsk_course_download_page_visual_run_anyway" formatted="false">Ба ҳар ҳол иҷро кардан</string>
+    <string name="hsk_course_download_page_visual_settings" formatted="false">Махфият ва амният</string>
+    <string name="hsk_course_download_page_visual_windows_blocked" formatted="false">Windows компютери шуморо ҳифз кард</string>
+    <string name="hsk_course_download_page_windows_download" formatted="false">EXE барои Windows</string>
+    <string name="hsk_course_download_page_windows_security" formatted="false">Агар SmartScreen барояд: More info → Run anyway → Yes-ро пахш кунед. Номи файли HSK AI-ро санҷед.</string>
+    <string name="hsk_course_download_page_windows_security_title" formatted="false">Ҳангоми кушодани аввал огоҳӣ пайдо шуда метавонад</string>
+    <string name="hsk_course_download_page_windows_title" formatted="false">HSK AI барои Windows</string>
     <string name="hsk_course_finish_prev" formatted="false">Дарси пешинаро анҷом диҳед</string>
     <string name="hsk_course_friends" formatted="false">Дӯстон</string>
     <string name="hsk_course_goal" formatted="false">Ҳадафи рӯзона</string>
@@ -286,6 +365,21 @@
     <string name="hsk_course_pronunciation_skip" formatted="false">Гузарондан</string>
     <string name="hsk_course_rank" formatted="false">ҷой</string>
     <string name="hsk_course_ready_phrases" formatted="false">Ибораҳои омода</string>
+    <string name="hsk_course_ready_phrases_all" formatted="false">Ҳама</string>
+    <string name="hsk_course_ready_phrases_copied" formatted="false">Нусха бардошта шуд</string>
+    <string name="hsk_course_ready_phrases_copy" formatted="false">Нусха бардоштан</string>
+    <string name="hsk_course_ready_phrases_count" formatted="false">{shown} аз {total} ҷумла</string>
+    <string name="hsk_course_ready_phrases_empty" formatted="false">Барои ин ҷустуҷӯ ҷумла ёфт нашуд. Калимаи дигарро ҷӯед.</string>
+    <string name="hsk_course_ready_phrases_load_error" formatted="false">Ибораҳо бор нашуданд. Ба интернет пайваст шуда, боз кӯшиш кунед.</string>
+    <string name="hsk_course_ready_phrases_no_saved" formatted="false">Ибораҳои нигоҳдоштаатон дар ин ҷо намоиш мешаванд.</string>
+    <string name="hsk_course_ready_phrases_removed" formatted="false">Аз нигоҳдоштаҳо бардошта шуд</string>
+    <string name="hsk_course_ready_phrases_retry" formatted="false">Аз нав кӯшиш кардан</string>
+    <string name="hsk_course_ready_phrases_save" formatted="false">Нигоҳ доштан</string>
+    <string name="hsk_course_ready_phrases_saved" formatted="false">Нигоҳдоштаҳо</string>
+    <string name="hsk_course_ready_phrases_saved_one" formatted="false">Нигоҳ дошта шуд</string>
+    <string name="hsk_course_ready_phrases_search" formatted="false">Ҷустуҷӯ бо чинӣ, пинйин ё тарҷума</string>
+    <string name="hsk_course_ready_phrases_storage_error" formatted="false">Захира карда нашуд. Танзимоти телефонро санҷед.</string>
+    <string name="hsk_course_ready_phrases_title" formatted="false">Ибораҳои омода</string>
     <string name="hsk_course_ready_phrases_sub" formatted="false">Ҷумлаҳои чинӣ барои ҳар рӯз</string>
     <string name="hsk_course_recog" formatted="false">Шинохти иероглиф</string>
     <string name="hsk_course_recog_sub" formatted="false">Аз байни монандҳо дурустро ёбед</string>

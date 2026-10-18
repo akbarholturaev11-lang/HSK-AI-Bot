@@ -1,5 +1,12 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## Ready Phrases + App Downloads — 94 exact UZ/RU/TJ labels (2026-10-19)
+
+- `app/static/hsk-gaplar.html` now preloads one local static generated `hsk-course-i18n.js?v=20261019-phrases-download-v17` and uses **15 exact original UZ/RU/TJ UI labels** through `readyPhrases.*` with complete inline fallbacks. Existing phrase corpus, user-selected saved phrases, localStorage, search index, Chinese/pinyin/translation data and navigation are unchanged.
+- `app/static/desktop-download.html` preloads that same JS asset, **deferred before** the existing `desktop-download-page.js` (strict `script-src 'self'` CSP compatible). `desktop-download-page.js` hydrates **79 existing flat display-only COPY labels per locale** via `downloadPage.*`; original strings and nested platform install/referral step arrays remain untouched, with instant local language switch. No new runtime network path. Referral validation, API release fetching, installer URLs, user platform selection and download actions unchanged.
+- Course UI source catalog **427 → 521 per locale** (+94, 282 exact original values), 9 placeholder-bearing keys total, all 6 Android/Mini App/Desktop/Bot static generated outputs updated; original HTML Git blobs pinned in reviewed manifest, strict P0 contracts updated. New `tests/test_i18n_phrases_download_ui_adoption.py` validates source literal parity, static load order, untouched flows and Node-executed override/offline fallback; included in P0 CI.
+- Current work branch `codex/i18n-local-first-foundation-20261017`, Draft PR #179, **no main merge or production deployment**. Verify resulting commit's CI (P0, Android, Backend, Desktop, TTS); **device/manual QA is still required**. Prior `9a71f612` was 6/6 CI green; head `474c8a58` had P0/Backend/Desktop/TTS green and Android pending when this batch began.
+
 ## Voice, Memorize and Dictionary UI runtime adoption — 65 keys (2026-10-19)
 
 - 47 exact UZ/RU/TJ AI Voice labels, 4 Memorize daily-limit sheet labels and 14 Dictionary practice-card / character-memory UI labels now resolve from a single synchronous **static local** JS bundle `hsk-course-i18n.js?v=20261019-voice-dictionary-v16`, preserving all original inline per-language strings as fallback. Dictionary adopts the labels for all UZ/RU/TJ dictionaries once on load so its existing client-side instant language switch works normally.

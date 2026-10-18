@@ -429,6 +429,17 @@
     }
   };
 
+  /* Synchronously hydrated from a local static asset. Original copy is fallback. */
+  var DOWNLOAD_UI=window.HSKAI_COURSE_I18N||{};
+  supportedLanguages.forEach(function(language){
+    var localized=DOWNLOAD_UI[language]||{};
+    Object.keys(COPY[language]).forEach(function(key){
+      if(typeof COPY[language][key]!=="string")return;
+      var value=localized["downloadPage."+key];
+      if(typeof value==="string"&&value)COPY[language][key]=value;
+    });
+  });
+
   var state = {
     language: initialLanguage(),
     platform: initialPlatform(),

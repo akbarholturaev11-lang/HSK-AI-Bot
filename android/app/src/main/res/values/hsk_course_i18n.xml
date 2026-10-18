@@ -46,6 +46,85 @@
     <string name="hsk_course_dictionary_practice_recog_s" formatted="false">Ieroglifni taning</string>
     <string name="hsk_course_dictionary_practice_recog_t" formatted="false">O\'xshashlardan ajrating</string>
     <string name="hsk_course_done" formatted="false">tugallandi</string>
+    <string name="hsk_course_download_page_all_lead" formatted="false">Har bir qurilma uchun oxirgi versiya.</string>
+    <string name="hsk_course_download_page_all_title" formatted="false">Barcha yuklamalar</string>
+    <string name="hsk_course_download_page_all_unavailable" formatted="false">hali chiqarilmagan</string>
+    <string name="hsk_course_download_page_android_download" formatted="false">APK yuklab olish</string>
+    <string name="hsk_course_download_page_android_quick_lead" formatted="false">Yuklab olish tugashini kuting. Fayl bildirishnomada yoki «Yuklamalar» papkasida paydo bo‘ladi.</string>
+    <string name="hsk_course_download_page_android_security" formatted="false">Android «noma’lum manbalar» haqida ogohlantirishi mumkin: ruxsat bering va davom eting. Bu — bizning rasmiy faylimiz.</string>
+    <string name="hsk_course_download_page_android_security_title" formatted="false">O‘rnatishda ogohlantirish chiqishi mumkin</string>
+    <string name="hsk_course_download_page_android_title" formatted="false">Android uchun HSK AI</string>
+    <string name="hsk_course_download_page_brand_note" formatted="false">Ilovalar</string>
+    <string name="hsk_course_download_page_checking" formatted="false">Mos versiya tekshirilmoqda.</string>
+    <string name="hsk_course_download_page_copied" formatted="false">Nusxalandi</string>
+    <string name="hsk_course_download_page_copy_failed" formatted="false">Avtomatik nusxalanmadi. Quyidagi linkni qo‘lda nusxalang.</string>
+    <string name="hsk_course_download_page_copy_link" formatted="false">Linkni nusxalash</string>
+    <string name="hsk_course_download_page_download_again" formatted="false">Qayta yuklash</string>
+    <string name="hsk_course_download_page_eyebrow" formatted="false">Kurs · progress · AI yordamchi</string>
+    <string name="hsk_course_download_page_feature_ai" formatted="false">Yon paneldagi AI yordamchi</string>
+    <string name="hsk_course_download_page_feature_course" formatted="false">Bir xil kurs va progress</string>
+    <string name="hsk_course_download_page_feature_update" formatted="false">Avtomatik yangilanish</string>
+    <string name="hsk_course_download_page_footer" formatted="false">Kurs markazda. AI yordamchi sifatida.</string>
+    <string name="hsk_course_download_page_free_download" formatted="false">Bepul yuklash</string>
+    <string name="hsk_course_download_page_guide_eyebrow" formatted="false">O‘rnatish</string>
+    <string name="hsk_course_download_page_guide_title" formatted="false">Uch qadamda tayyor</string>
+    <string name="hsk_course_download_page_ios_download" formatted="false">Telegramda ochish</string>
+    <string name="hsk_course_download_page_ios_security" formatted="false">Mini App Telegram ichida ochiladi. Hech narsa o‘rnatilmaydi, hisobingiz va progressingiz o‘sha yerda qoladi.</string>
+    <string name="hsk_course_download_page_ios_security_title" formatted="false">Hech narsa o‘rnatilmaydi</string>
+    <string name="hsk_course_download_page_ios_status" formatted="false">iOS uchun alohida ilova hozircha yo‘q — Telegram ichidagi Mini App to‘liq ishlaydi.</string>
+    <string name="hsk_course_download_page_ios_title" formatted="false">iPhone va iPad uchun</string>
+    <string name="hsk_course_download_page_lead" formatted="false">Qurilmangizni tanlang</string>
+    <string name="hsk_course_download_page_loading" formatted="false">Tayyorlanmoqda…</string>
+    <string name="hsk_course_download_page_mac_download" formatted="false">Mac uchun DMG yuklash</string>
+    <string name="hsk_course_download_page_mac_security" formatted="false">macOS bloklasa: Applications ichida HSK AI ustida o‘ng tugma → Open → Open. Hali ham bloklansa, System Settings → Privacy &amp; Security → Open Anyway’ni bosing.</string>
+    <string name="hsk_course_download_page_mac_security_title" formatted="false">Birinchi ochishda ogohlantirish chiqishi mumkin</string>
+    <string name="hsk_course_download_page_mac_title" formatted="false">Mac uchun HSK AI</string>
+    <string name="hsk_course_download_page_manual_link_label" formatted="false">Kompyuterda ochiladigan xavfsiz link</string>
+    <string name="hsk_course_download_page_mobile_body" formatted="false">Avval kompyuteringiz turini tanlang. Telefonda yuklangan DMG/EXE Downloads yoki Fayllarga tushadi, lekin faqat Mac yoki Windows’da ochiladi.</string>
+    <string name="hsk_course_download_page_mobile_eyebrow" formatted="false">Telefon orqali ochdingiz</string>
+    <string name="hsk_course_download_page_mobile_title" formatted="false">Linkni kompyuteringizga yuboring</string>
+    <string name="hsk_course_download_page_opening" formatted="false">Yuklash ochilmoqda…</string>
+    <string name="hsk_course_download_page_quick_guide_close" formatted="false">Tushundim</string>
+    <string name="hsk_course_download_page_quick_guide_close_aria" formatted="false">Qo‘llanmani yopish</string>
+    <string name="hsk_course_download_page_quick_guide_eyebrow" formatted="false">Yuklash boshlandi</string>
+    <string name="hsk_course_download_page_quick_guide_footer" formatted="false">Ilova ochilgach, undagi kodni Telegram orqali tasdiqlang.</string>
+    <string name="hsk_course_download_page_quick_guide_lead" formatted="false">Brauzerning yuqori o‘ngidagi yuklash belgisi tugashini kuting. Bu oynani hozircha yopmang.</string>
+    <string name="hsk_course_download_page_quick_guide_progress" formatted="false">Fayl yuklanmoqda</string>
+    <string name="hsk_course_download_page_quick_guide_title" formatted="false">Yuklab bo‘lgach, shunday oching</string>
+    <string name="hsk_course_download_page_ready" formatted="false">Fayl HSK AI rasmiy download serveridan yuklanadi.</string>
+    <string name="hsk_course_download_page_ready_label" formatted="false">Tayyor installer</string>
+    <string name="hsk_course_download_page_referral_android_body" formatted="false">Telegram tugmasini bosib, botda Start ni bosing. Bot APK faylining o‘zini chatga yuboradi. Ilovani o‘rnatib, shu Telegram hisobini ulang. Shundan keyin taklif hisoblanadi.</string>
+    <string name="hsk_course_download_page_referral_android_button" formatted="false">Telegram orqali davom etish</string>
+    <string name="hsk_course_download_page_referral_android_status" formatted="false">Botda Start ni bosing — APK fayli chatga yuboriladi.</string>
+    <string name="hsk_course_download_page_referral_android_title" formatted="false">Avval taklifni Telegramda qayd eting</string>
+    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Telegram botini oching va unda 2 ta savol ishlating. Shunda taklif hisoblanadi.</string>
+    <string name="hsk_course_download_page_referral_ios_title" formatted="false">Do‘stingiz uchun 20% chegirma</string>
+    <string name="hsk_course_download_page_referral_other_body" formatted="false">Taklif Android yoki iPhone qurilmasida ochilganda mos shartlar ko‘rsatiladi.</string>
+    <string name="hsk_course_download_page_referral_other_title" formatted="false">Havolani telefonda oching</string>
+    <string name="hsk_course_download_page_security_title" formatted="false">Birinchi ochishda ogohlantirish chiqishi mumkin</string>
+    <string name="hsk_course_download_page_select_body" formatted="false">Qurilmangizni tanlang — mos fayl yoki havola ko‘rsatiladi.</string>
+    <string name="hsk_course_download_page_select_download" formatted="false">Avval qurilmangizni tanlang</string>
+    <string name="hsk_course_download_page_select_title" formatted="false">Qurilmangizni tanlang</string>
+    <string name="hsk_course_download_page_share_link" formatted="false">AirDrop yoki ulashish</string>
+    <string name="hsk_course_download_page_shared" formatted="false">Ulashish oynasi ochildi</string>
+    <string name="hsk_course_download_page_skip" formatted="false">Yuklashga o‘tish</string>
+    <string name="hsk_course_download_page_title" formatted="false">Yuklab olish</string>
+    <string name="hsk_course_download_page_unavailable" formatted="false">Bu platforma uchun installer hali chiqarilmagan.</string>
+    <string name="hsk_course_download_page_version" formatted="false">Versiya {version}</string>
+    <string name="hsk_course_download_page_visual_install" formatted="false">Install</string>
+    <string name="hsk_course_download_page_visual_mac_open" formatted="false">Open</string>
+    <string name="hsk_course_download_page_visual_more_info" formatted="false">More info</string>
+    <string name="hsk_course_download_page_visual_open_anyway" formatted="false">Open Anyway</string>
+    <string name="hsk_course_download_page_visual_open_app" formatted="false">Ilovani ochish</string>
+    <string name="hsk_course_download_page_visual_or" formatted="false">yoki</string>
+    <string name="hsk_course_download_page_visual_right_click" formatted="false">O‘ng tugma</string>
+    <string name="hsk_course_download_page_visual_run_anyway" formatted="false">Run anyway</string>
+    <string name="hsk_course_download_page_visual_settings" formatted="false">Privacy &amp; Security</string>
+    <string name="hsk_course_download_page_visual_windows_blocked" formatted="false">Windows kompyuteringizni himoya qildi</string>
+    <string name="hsk_course_download_page_windows_download" formatted="false">Windows uchun EXE yuklash</string>
+    <string name="hsk_course_download_page_windows_security" formatted="false">Windows SmartScreen chiqsa: More info → Run anyway → Yes’ni bosing. Fayl nomi HSK AI ekanini tekshiring.</string>
+    <string name="hsk_course_download_page_windows_security_title" formatted="false">Birinchi ochishda ogohlantirish chiqishi mumkin</string>
+    <string name="hsk_course_download_page_windows_title" formatted="false">Windows uchun HSK AI</string>
     <string name="hsk_course_finish_prev" formatted="false">Avvalgi darsni tugating</string>
     <string name="hsk_course_friends" formatted="false">Do\'stlar</string>
     <string name="hsk_course_goal" formatted="false">Kunlik maqsad</string>
@@ -286,6 +365,21 @@
     <string name="hsk_course_pronunciation_skip" formatted="false">O\'tkazib yuborish</string>
     <string name="hsk_course_rank" formatted="false">o\'rin</string>
     <string name="hsk_course_ready_phrases" formatted="false">Tayyor gaplar</string>
+    <string name="hsk_course_ready_phrases_all" formatted="false">Barchasi</string>
+    <string name="hsk_course_ready_phrases_copied" formatted="false">Nusxalandi</string>
+    <string name="hsk_course_ready_phrases_copy" formatted="false">Nusxalash</string>
+    <string name="hsk_course_ready_phrases_count" formatted="false">{shown} / {total} ta gap</string>
+    <string name="hsk_course_ready_phrases_empty" formatted="false">Bu qidiruvga mos gap topilmadi. Boshqa so‘z bilan qidiring.</string>
+    <string name="hsk_course_ready_phrases_load_error" formatted="false">Gaplar jamlanmasi yuklanmadi. Internetga ulaning va qayta urinib ko‘ring.</string>
+    <string name="hsk_course_ready_phrases_no_saved" formatted="false">Saqlangan gaplaringiz shu yerda ko‘rinadi.</string>
+    <string name="hsk_course_ready_phrases_removed" formatted="false">Saqlanganlardan olib tashlandi</string>
+    <string name="hsk_course_ready_phrases_retry" formatted="false">Qayta urinish</string>
+    <string name="hsk_course_ready_phrases_save" formatted="false">Saqlash</string>
+    <string name="hsk_course_ready_phrases_saved" formatted="false">Saqlanganlar</string>
+    <string name="hsk_course_ready_phrases_saved_one" formatted="false">Saqlandi</string>
+    <string name="hsk_course_ready_phrases_search" formatted="false">Xitoycha, pinyin yoki tarjima bo‘yicha qidiring</string>
+    <string name="hsk_course_ready_phrases_storage_error" formatted="false">Saqlash imkoni bo‘lmadi. Telefon sozlamalarini tekshiring.</string>
+    <string name="hsk_course_ready_phrases_title" formatted="false">Tayyor gaplar</string>
     <string name="hsk_course_ready_phrases_sub" formatted="false">Kundalik vaziyatlar uchun xitoycha gaplar</string>
     <string name="hsk_course_recog" formatted="false">Ieroglif tanish</string>
     <string name="hsk_course_recog_sub" formatted="false">O\'xshashlardan to\'g\'risini toping</string>

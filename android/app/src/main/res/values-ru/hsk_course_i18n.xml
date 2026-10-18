@@ -46,6 +46,85 @@
     <string name="hsk_course_dictionary_practice_recog_s" formatted="false">Распознавание</string>
     <string name="hsk_course_dictionary_practice_recog_t" formatted="false">Найдите среди похожих</string>
     <string name="hsk_course_done" formatted="false">завершено</string>
+    <string name="hsk_course_download_page_all_lead" formatted="false">Последняя версия для каждого устройства.</string>
+    <string name="hsk_course_download_page_all_title" formatted="false">Все загрузки</string>
+    <string name="hsk_course_download_page_all_unavailable" formatted="false">ещё не выпущено</string>
+    <string name="hsk_course_download_page_android_download" formatted="false">Скачать APK</string>
+    <string name="hsk_course_download_page_android_quick_lead" formatted="false">Дождитесь окончания загрузки. Файл появится в уведомлении или в папке «Загрузки».</string>
+    <string name="hsk_course_download_page_android_security" formatted="false">Android может предупредить о «неизвестных источниках»: разрешите и продолжите. Это наш официальный файл.</string>
+    <string name="hsk_course_download_page_android_security_title" formatted="false">При установке может появиться предупреждение</string>
+    <string name="hsk_course_download_page_android_title" formatted="false">HSK AI для Android</string>
+    <string name="hsk_course_download_page_brand_note" formatted="false">Приложения</string>
+    <string name="hsk_course_download_page_checking" formatted="false">Проверяем подходящую версию.</string>
+    <string name="hsk_course_download_page_copied" formatted="false">Скопировано</string>
+    <string name="hsk_course_download_page_copy_failed" formatted="false">Не удалось скопировать автоматически. Скопируйте ссылку ниже вручную.</string>
+    <string name="hsk_course_download_page_copy_link" formatted="false">Скопировать ссылку</string>
+    <string name="hsk_course_download_page_download_again" formatted="false">Скачать ещё раз</string>
+    <string name="hsk_course_download_page_eyebrow" formatted="false">Курс · прогресс · AI-помощник</string>
+    <string name="hsk_course_download_page_feature_ai" formatted="false">AI-помощник в боковой панели</string>
+    <string name="hsk_course_download_page_feature_course" formatted="false">Единый курс и прогресс</string>
+    <string name="hsk_course_download_page_feature_update" formatted="false">Автоматические обновления</string>
+    <string name="hsk_course_download_page_footer" formatted="false">Курс — в центре. AI — помощник.</string>
+    <string name="hsk_course_download_page_free_download" formatted="false">Бесплатная загрузка</string>
+    <string name="hsk_course_download_page_guide_eyebrow" formatted="false">Установка</string>
+    <string name="hsk_course_download_page_guide_title" formatted="false">Готово за три шага</string>
+    <string name="hsk_course_download_page_ios_download" formatted="false">Открыть в Telegram</string>
+    <string name="hsk_course_download_page_ios_security" formatted="false">Mini App открывается внутри Telegram. Ничего устанавливать не нужно, аккаунт и прогресс остаются там же.</string>
+    <string name="hsk_course_download_page_ios_security_title" formatted="false">Ничего устанавливать не нужно</string>
+    <string name="hsk_course_download_page_ios_status" formatted="false">Отдельного приложения для iOS пока нет — Mini App в Telegram работает полностью.</string>
+    <string name="hsk_course_download_page_ios_title" formatted="false">Для iPhone и iPad</string>
+    <string name="hsk_course_download_page_lead" formatted="false">Выберите устройство</string>
+    <string name="hsk_course_download_page_loading" formatted="false">Подготавливаем…</string>
+    <string name="hsk_course_download_page_mac_download" formatted="false">Скачать DMG для Mac</string>
+    <string name="hsk_course_download_page_mac_security" formatted="false">Если macOS блокирует запуск: в Applications нажмите правой кнопкой на HSK AI → Open → Open. Если не помогло: System Settings → Privacy &amp; Security → Open Anyway.</string>
+    <string name="hsk_course_download_page_mac_security_title" formatted="false">При первом запуске может появиться предупреждение</string>
+    <string name="hsk_course_download_page_mac_title" formatted="false">HSK AI для Mac</string>
+    <string name="hsk_course_download_page_manual_link_label" formatted="false">Безопасная ссылка для компьютера</string>
+    <string name="hsk_course_download_page_mobile_body" formatted="false">Сначала выберите систему компьютера. Скачанный на телефон DMG/EXE попадёт в Загрузки или Файлы, но откроется только на Mac или Windows.</string>
+    <string name="hsk_course_download_page_mobile_eyebrow" formatted="false">Страница открыта на телефоне</string>
+    <string name="hsk_course_download_page_mobile_title" formatted="false">Отправьте ссылку на компьютер</string>
+    <string name="hsk_course_download_page_opening" formatted="false">Открываем загрузку…</string>
+    <string name="hsk_course_download_page_quick_guide_close" formatted="false">Понятно</string>
+    <string name="hsk_course_download_page_quick_guide_close_aria" formatted="false">Закрыть инструкцию</string>
+    <string name="hsk_course_download_page_quick_guide_eyebrow" formatted="false">Загрузка началась</string>
+    <string name="hsk_course_download_page_quick_guide_footer" formatted="false">Когда приложение откроется, подтвердите показанный код через Telegram.</string>
+    <string name="hsk_course_download_page_quick_guide_lead" formatted="false">Дождитесь завершения загрузки у значка в правом верхнем углу браузера. Пока не закрывайте это окно.</string>
+    <string name="hsk_course_download_page_quick_guide_progress" formatted="false">Файл загружается</string>
+    <string name="hsk_course_download_page_quick_guide_title" formatted="false">После загрузки откройте так</string>
+    <string name="hsk_course_download_page_ready" formatted="false">Файл загружается с официального сервера HSK AI.</string>
+    <string name="hsk_course_download_page_ready_label" formatted="false">Установщик готов</string>
+    <string name="hsk_course_download_page_referral_android_body" formatted="false">Нажмите кнопку Telegram и затем Start в боте. Бот отправит сам APK файл в чат. Установите приложение и подключите тот же аккаунт Telegram. После этого приглашение засчитается.</string>
+    <string name="hsk_course_download_page_referral_android_button" formatted="false">Продолжить в Telegram</string>
+    <string name="hsk_course_download_page_referral_android_status" formatted="false">Нажмите Start в боте — APK файл придёт в чат.</string>
+    <string name="hsk_course_download_page_referral_android_title" formatted="false">Сначала закрепите приглашение в Telegram</string>
+    <string name="hsk_course_download_page_referral_ios_body" formatted="false">Откройте Telegram-бота и ответьте на 2 вопроса. После этого приглашение засчитается.</string>
+    <string name="hsk_course_download_page_referral_ios_title" formatted="false">Как засчитывается приглашение</string>
+    <string name="hsk_course_download_page_referral_other_body" formatted="false">Условия приглашения появятся при открытии на Android или iPhone.</string>
+    <string name="hsk_course_download_page_referral_other_title" formatted="false">Откройте ссылку на телефоне</string>
+    <string name="hsk_course_download_page_security_title" formatted="false">При первом запуске может появиться предупреждение</string>
+    <string name="hsk_course_download_page_select_body" formatted="false">Выберите устройство — покажем подходящий файл или ссылку.</string>
+    <string name="hsk_course_download_page_select_download" formatted="false">Сначала выберите устройство</string>
+    <string name="hsk_course_download_page_select_title" formatted="false">Выберите устройство</string>
+    <string name="hsk_course_download_page_share_link" formatted="false">AirDrop или поделиться</string>
+    <string name="hsk_course_download_page_shared" formatted="false">Меню отправки открыто</string>
+    <string name="hsk_course_download_page_skip" formatted="false">Перейти к загрузке</string>
+    <string name="hsk_course_download_page_title" formatted="false">Загрузка</string>
+    <string name="hsk_course_download_page_unavailable" formatted="false">Установщик для этой платформы ещё не опубликован.</string>
+    <string name="hsk_course_download_page_version" formatted="false">Версия {version}</string>
+    <string name="hsk_course_download_page_visual_install" formatted="false">Установить</string>
+    <string name="hsk_course_download_page_visual_mac_open" formatted="false">Открыть</string>
+    <string name="hsk_course_download_page_visual_more_info" formatted="false">Подробнее</string>
+    <string name="hsk_course_download_page_visual_open_anyway" formatted="false">Всё равно открыть</string>
+    <string name="hsk_course_download_page_visual_open_app" formatted="false">Открыть приложение</string>
+    <string name="hsk_course_download_page_visual_or" formatted="false">или</string>
+    <string name="hsk_course_download_page_visual_right_click" formatted="false">Правый клик</string>
+    <string name="hsk_course_download_page_visual_run_anyway" formatted="false">Выполнить в любом случае</string>
+    <string name="hsk_course_download_page_visual_settings" formatted="false">Конфиденциальность и безопасность</string>
+    <string name="hsk_course_download_page_visual_windows_blocked" formatted="false">Windows защитила ваш компьютер</string>
+    <string name="hsk_course_download_page_windows_download" formatted="false">Скачать EXE для Windows</string>
+    <string name="hsk_course_download_page_windows_security" formatted="false">Если появился SmartScreen: нажмите Подробнее → Выполнить в любом случае → Да. Проверьте, что файл называется HSK AI.</string>
+    <string name="hsk_course_download_page_windows_security_title" formatted="false">При первом запуске может появиться предупреждение</string>
+    <string name="hsk_course_download_page_windows_title" formatted="false">HSK AI для Windows</string>
     <string name="hsk_course_finish_prev" formatted="false">Завершите предыдущий урок</string>
     <string name="hsk_course_friends" formatted="false">Друзья</string>
     <string name="hsk_course_goal" formatted="false">Дневная цель</string>
@@ -286,6 +365,21 @@
     <string name="hsk_course_pronunciation_skip" formatted="false">Пропустить</string>
     <string name="hsk_course_rank" formatted="false">место</string>
     <string name="hsk_course_ready_phrases" formatted="false">Готовые фразы</string>
+    <string name="hsk_course_ready_phrases_all" formatted="false">Все фразы</string>
+    <string name="hsk_course_ready_phrases_copied" formatted="false">Скопировано</string>
+    <string name="hsk_course_ready_phrases_copy" formatted="false">Копировать</string>
+    <string name="hsk_course_ready_phrases_count" formatted="false">{shown} из {total} фраз</string>
+    <string name="hsk_course_ready_phrases_empty" formatted="false">По этому запросу ничего не найдено. Попробуйте другие слова.</string>
+    <string name="hsk_course_ready_phrases_load_error" formatted="false">Не удалось загрузить фразы. Подключитесь к интернету и попробуйте ещё раз.</string>
+    <string name="hsk_course_ready_phrases_no_saved" formatted="false">Сохранённые фразы появятся здесь.</string>
+    <string name="hsk_course_ready_phrases_removed" formatted="false">Удалено из сохранённых</string>
+    <string name="hsk_course_ready_phrases_retry" formatted="false">Повторить</string>
+    <string name="hsk_course_ready_phrases_save" formatted="false">Сохранить</string>
+    <string name="hsk_course_ready_phrases_saved" formatted="false">Сохранённые</string>
+    <string name="hsk_course_ready_phrases_saved_one" formatted="false">Сохранено</string>
+    <string name="hsk_course_ready_phrases_search" formatted="false">Поиск по китайскому, пиньиню или переводу</string>
+    <string name="hsk_course_ready_phrases_storage_error" formatted="false">Не удалось сохранить. Проверьте настройки телефона.</string>
+    <string name="hsk_course_ready_phrases_title" formatted="false">Готовые фразы</string>
     <string name="hsk_course_ready_phrases_sub" formatted="false">Китайские фразы для повседневных ситуаций</string>
     <string name="hsk_course_recog" formatted="false">Распознавание иероглифов</string>
     <string name="hsk_course_recog_sub" formatted="false">Найдите нужный среди похожих</string>
