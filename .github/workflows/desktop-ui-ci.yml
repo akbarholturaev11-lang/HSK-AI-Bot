@@ -56,6 +56,12 @@ jobs:
         working-directory: desktop/src-tauri
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Native auth tests only need the desktop tree. Unrelated generated
+          # audio names exceed Windows' path limits during a full checkout.
+          sparse-checkout: |
+            desktop
+            .github/workflows
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
