@@ -2463,9 +2463,9 @@ var App={
     var r={title:RU.t,sub:passedU?RU.s.replace("{n}",esc(passedU.n||"")):rankSummary,cont:T().cont};
     var rows=[];
 	    if(aboveU)rows.push({rk:aboveU.rank,a:aboveU.a,n:aboveU.n,xp:(aboveU.weeklyXp||0).toLocaleString("ru")});
-	    if(meU)rows.push({rk:ranks.after,a:meU.a||PROF.avatar||"阿",n:T().you,xp:ratingScore(meU).toLocaleString("ru"),me:1,from:aboveU?1:0});
+	    if(meU)rows.push({rk:ranks.after,a:meU.a||PROF.avatar||"阿",n:courseMessage("you",T().you),xp:ratingScore(meU).toLocaleString("ru"),me:1,from:aboveU?1:0});
 	    if(belowU)rows.push({rk:belowU.rank,a:belowU.a,n:belowU.n,xp:(belowU.weeklyXp||0).toLocaleString("ru"),from:-1});
-	    if(!rows.length)rows=[{rk:ranks.after,a:PROF.avatar||"阿",n:T().you,xp:currentUserWeeklyXp().toLocaleString("ru"),me:1,from:0}];
+	    if(!rows.length)rows=[{rk:ranks.after,a:PROF.avatar||"阿",n:courseMessage("you",T().you),xp:currentUserWeeklyXp().toLocaleString("ru"),me:1,from:0}];
     /* Yaqin kadr: panda uzoqdan otilib chiqadi — taxta shundan keyin ochiladi */
     cinePanda("zoom","celebrate",function(){
       $("#lu-panda").innerHTML=pandaChar("celebrate");
@@ -3708,7 +3708,7 @@ Foundation.grade=function(ok){
 Foundation.feedback=function(ok,sub){
   var b=$("#f-bar");b.className="fbar show "+(ok?"ok":"no");
   $("#f-msg").innerHTML='<span class="fpanda hsk-character-stage" id="fbar-char" aria-hidden="true"></span><span>'+(ok?T().correct:T().wrong)+(sub?'<small>'+esc(sub)+'</small>':'')+'</span>';
-  $("#f-barbtn").textContent=T().next;
+  $("#f-barbtn").textContent=courseMessage("next",T().next);
   beep(ok?[523,659,784]:[220,180]);haptic(ok?"ok":"no");
   renderFeedbackCharacter($("#fbar-char"),ok?"panda":"rabbit",ok?"jump":"wrong");
 };
@@ -4251,7 +4251,7 @@ function showBar(ok,msg,sub){
   var card=flowCurrentCard(),displaySub=sub;
   if(!ok&&HP===1)displaySub=displaySub?(displaySub+" · "+oneHeartText()):oneHeartText();
   $("#f-msg").innerHTML='<span class="fpanda hsk-character-stage" id="fbar-char" aria-hidden="true"></span><span>'+msg+(displaySub?'<small>'+displaySub+'</small>':'')+'</span>';
-  $("#f-barbtn").textContent=T().next;
+  $("#f-barbtn").textContent=courseMessage("next",T().next);
   setTimeout(function(){try{b.scrollIntoView({block:"end"})}catch(e){}},20);
   Flow.streak=ok?(Flow.streak||0)+1:0;
   edgeGlow(ok?Flow.streak:0);
@@ -4647,7 +4647,7 @@ function renderFlowCard(){
   saveLessonResume();
   prefetchUpcomingAudio();
   applyPinyinMode();
-  var c=Flow.queue[Flow.i],b=$("#f-body"),cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(Flow.i<Flow.queue.length-1?T().cont:T().check);
+  var c=Flow.queue[Flow.i],b=$("#f-body"),cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(Flow.i<Flow.queue.length-1?T().cont:courseMessage("check",T().check));
   var t=c.type;
   renderLessonCoach(c,"idle");
   trackFlowCard(c);
@@ -4745,7 +4745,7 @@ function cardWordListen(c){
   opts=opts.map(function(v,i){return {v:v,sort:Math.random()+i/100}}).sort(function(a,b){return a.sort-b.sort}).map(function(x){return x.v});
   var correct=opts.indexOf(w.zh);
   var head='<div class="qcard"><button class="audio" onclick="speak(\''+esc(w.zh||"")+'\')"><i class="ti ti-volume"></i></button><div class="qpy" style="margin-top:10px">'+esc(w.pinyin||"")+'</div></div>';
-  _choiceFromWord(c,opts,correct,T().listen,{},head);setTimeout(function(){speak(w.zh||"")},250);
+  _choiceFromWord(c,opts,correct,courseMessage("listen",T().listen),{},head);setTimeout(function(){speak(w.zh||"")},250);
 }
 function cardWordMeaning(c){
   var w=c.word||{};var right=tr(w.meaning);var opts=[right].concat(_wrongWordOptions(c.words,"meaning",right)).slice(0,4);
@@ -4770,7 +4770,7 @@ function cardWord(c){
     +'<div class="nw-info" id="nwinfo">'
     +'<div class="pyrow"><span class="py">'+esc(w.pinyin||"")+'</span>'+(w.pos?'<span class="pos">'+esc(w.pos)+'</span>':'')+'</div>'
     +'<div class="mn">'+esc(tr(w.meaning))+'</div>'
-    +'<button class="wl-au" onclick="speak(\''+esc(w.zh||"")+'\')"><i class="ti ti-volume"></i>'+esc(T().listen)+'</button></div>';
+    +'<button class="wl-au" onclick="speak(\''+esc(w.zh||"")+'\')"><i class="ti ti-volume"></i>'+esc(courseMessage("listen",T().listen))+'</button></div>';
   beep([784,1046]);haptic("light");
   setTimeout(function(){speak(w.zh||"")},400);
   setTimeout(function(){var el=$("#nwinfo");if(el)el.classList.add("on");$("#f-cta").style.display="flex"},900);
@@ -4889,7 +4889,7 @@ function foundationSpeakCard(c){
 Foundation.skipSpeak=function(){Foundation.cancelMic();Foundation.next()};
 Foundation.tryMic=function(){
   var c=Foundation.queue[Foundation.i],hint=$("#foundation-mic-hint"),btn=$("#foundation-mic");
-  function say(t){if(hint)hint.textContent=t||""}function ready(){if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-microphone"></i> '+T().say}}
+  function say(t){if(hint)hint.textContent=t||""}function ready(){if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-microphone"></i> '+courseMessage("say",T().say)}}
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){say(_prL().noSupport);return}
   Foundation.cancelMic();var session={cancelled:false,stream:null,rec:null,timer:null,controller:null};Foundation._micSession=session;
   if(btn)btn.disabled=true;say(_prL().listening);
@@ -4917,7 +4917,7 @@ Foundation.render=function(){
   var c=Foundation.queue[Foundation.i];if(!c)return Foundation.finish();
   $("#f-prog").style.width=Math.round(Foundation.i/Math.max(Foundation.queue.length,1)*100)+"%";
   var st=$("#f-stage");if(st)st.innerHTML='<span>'+(Foundation.i+1)+' / '+Foundation.queue.length+'</span><b>'+esc(foundationStepLabel(c))+'</b>';
-  var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(c.type==="result"?T().check:T().cont);
+  var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(c.type==="result"?courseMessage("check",T().check):T().cont);
   if(c._repairSpacer)return foundationRepairSpacer(c);
   if(c._guided)return foundationGuidedCard(c);
   if(c.type==="choice"||c.type==="listen_choice")return foundationChoiceCard(c);
@@ -4979,7 +4979,7 @@ function cardGrammar(g){
 function cardDialogue(d){
   $("#f-cta").style.display="flex";
   var lines=(d.dialogue||[]).map(function(l){return '<div class="line '+l.speaker+'"><div class="ava">'+l.speaker+'</div><div class="bub"><button class="au" onclick="speak(\''+esc(l.zh)+'\')"><i class="ti ti-volume"></i></button><div class="z3 han">'+esc(l.zh)+'</div><div class="p3">'+esc(l.pinyin)+'</div><div class="t3">'+esc(tr(l.text))+'</div></div></div>'}).join("");
-  $("#f-body").innerHTML='<span class="kicker k-dia"><i class="ti ti-messages"></i> '+T().dialog+'</span><div class="dia"><div class="scene"><i class="ti ti-map-pin"></i> '+esc(tr(d.scene))+'</div>'+lines+'</div>';
+  $("#f-body").innerHTML='<span class="kicker k-dia"><i class="ti ti-messages"></i> '+courseMessage("dialog",T().dialog)+'</span><div class="dia"><div class="scene"><i class="ti ti-map-pin"></i> '+esc(tr(d.scene))+'</div>'+lines+'</div>';
 }
 function optText(o){return typeof o==="string"?o:tr(o)}
 function rememberLessonMistake(c,answer){
@@ -5048,7 +5048,7 @@ Flow.pick=function(el,k){
   if(!ok)rememberLessonMistake(c,{selected_index:k,selected_answer:optText(c.options&&c.options[k])});
   beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");
   if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP)}
-  var rightText=T().rightAns+" "+(c.options&&typeof c.options[c.correct_index]!=="undefined"?optText(c.options[c.correct_index]):"");
+  var rightText=courseMessage("rightAns",T().rightAns)+" "+(c.options&&typeof c.options[c.correct_index]!=="undefined"?optText(c.options[c.correct_index]):"");
   /* HSK 3.0 N1 pilot: explain WHY an answer is right or wrong. The content
      itself opts in; normal course/challenge feedback remains unchanged. */
   if((c.learning_feedback==="n1_context_v1"||(MAP&&normalizeLevel(MAP.level)==="nhsk1"&&c.explanation))&&!Flow.challenge){
@@ -5061,7 +5061,7 @@ Flow.pick=function(el,k){
 function cardBuilder(c){
   $("#f-cta").style.display="none";
   var bank=(c.tokens||[]).slice();
-  var prompt=tr(c.prompt)||tr(c.sentence)||T().buildSent;
+  var prompt=tr(c.prompt)||tr(c.sentence)||courseMessage("buildSent",T().buildSent);
   $("#f-body").innerHTML='<div class="qq">'+esc(prompt)+'</div><div class="tokens" id="bld-line"></div><div class="bank" id="bld-bank"></div>';
   var line=[]; /* chosen bank indices, in order — index-based so duplicate tiles work */
   function draw(){
@@ -5099,7 +5099,7 @@ function cardMatch(c){
   var pairs=(c.pairs||[]).slice();
   var left=pairs.map(function(p){return p[0]}),right=pairs.map(function(p){return tr(p[1])});
   var ri=right.map(function(x,i){return i}).sort(function(){return Math.random()-.5});
-  $("#f-body").innerHTML='<div class="qq">'+T().matchPairs+'</div><div class="pairs"><div class="col" id="mL"></div><div class="col" id="mR"></div></div>';
+  $("#f-body").innerHTML='<div class="qq">'+courseMessage("matchPairs",T().matchPairs)+'</div><div class="pairs"><div class="col" id="mL"></div><div class="col" id="mR"></div></div>';
   var selL=null,matched=0;
   function draw(){
     $("#mL").innerHTML=left.map(function(x,i){return '<button class="pcell han" type="button" aria-pressed="false" data-i="'+i+'" onclick="window._mL('+i+')">'+esc(x)+'</button>'}).join("");
@@ -5125,7 +5125,7 @@ function cardPron(c){
     tj:{t:"Аз паси устод Ли такрор кунед",skip:"ҲОЗИР ГАП ЗАДА НАМЕТАВОНАМ"}}[LANG]||{t:"Takrorlang",skip:"KEYINROQ"};
   $("#f-body").innerHTML='<div class="qq">'+esc(RT.t)+'</div>'
     +'<div class="teach"><div class="teach-pd">'+lessonCharacterHtml("panda","talk")+'</div><div class="teach-bub say-bub"><button class="au" onclick="speak(\''+esc(c.phrase)+'\')"><i class="ti ti-volume"></i></button><div class="z4 han">'+esc(c.phrase)+'</div><div class="p4">'+esc(c.pinyin||"")+'</div>'+(c.translation?'<div class="t4">'+esc(tr(c.translation))+'</div>':'')+'</div></div>'
-    +'<button class="scta" id="pron-btn" onclick="window._pron()"><i class="ti ti-microphone"></i> '+T().say+'</button><div id="pron-hint" style="text-align:center;color:var(--ink3);font-size:13px;margin-top:8px;min-height:18px"></div>'
+    +'<button class="scta" id="pron-btn" onclick="window._pron()"><i class="ti ti-microphone"></i> '+courseMessage("say",T().say)+'</button><div id="pron-hint" style="text-align:center;color:var(--ink3);font-size:13px;margin-top:8px;min-height:18px"></div>'
     +'<button class="pron-skip" onclick="window._pronSkip()">'+esc(RT.skip)+'</button>';
   setTimeout(function(){speak(c.phrase)},350);
   var st={stream:null,rec:null,chunks:[],auto:null};
@@ -5151,7 +5151,7 @@ function cardPron(c){
       st.rec.ondataavailable=function(e){if(e.data&&e.data.size>0)st.chunks.push(e.data)};
       st.rec.onstop=function(){
         var _mt=(st.rec&&st.rec.mimeType)||"audio/webm";var blob=new Blob(st.chunks,{type:_mt});release();
-        if(blob.size<1200){setBtn(T().say);hint(_prL().retry);return;}
+        if(blob.size<1200){setBtn(courseMessage("say",T().say));hint(_prL().retry);return;}
         var _e=(blob.type||_mt).toLowerCase(),_ext=/mp4|m4a|aac/.test(_e)?"mp4":(/ogg/.test(_e)?"ogg":(/mpeg|mp3/.test(_e)?"mp3":(/wav/.test(_e)?"wav":"webm")));
         var fd=new FormData();fd.append("initData",initData());fd.append("target",c.phrase||"");fd.append("target_pinyin",c.pinyin||"");fd.append("language",LANG);fd.append("level",MAP&&MAP.level||"");fd.append("audio",blob,"voice."+_ext);
         fetch("/api/voice-practice/pronounce",{method:"POST",body:fd})
@@ -5159,7 +5159,7 @@ function cardPron(c){
           .then(function(o){
             clog("mic_result",(o&&o.j&&o.j.ok===true)?"ok":"fail",{mime:blob.type||_mt,ext:_ext,size:blob.size,heard:((o&&o.j&&o.j.heard)||"").slice(0,24),code:(o&&o.j&&o.j.code)||""});
             if(!o.ok||!o.j||o.j.ok!==true){
-              setBtn(T().say);
+              setBtn(courseMessage("say",T().say));
               if(o.j&&o.j.code==="PRONOUNCE_LIMIT_EXCEEDED"){App.openPaywall("pronLimit");return;}
               hint((o.j&&o.j.code==="INVALID_INIT_DATA")?_prL().needTg:(o.j&&o.j.message)||_prL().netErr);return;
             }
@@ -5168,7 +5168,7 @@ function cardPron(c){
             beep(pass?[523,659,784]:[220,180]);haptic(pass?"ok":"no");
             showBar(pass,(pass?T().correct:T().wrong)+" "+sc+"%",heard||(pass?"":esc(c.phrase)));
           })
-          .catch(function(){clog("mic_neterr","",{mime:blob.type||_mt,ext:_ext,size:blob.size});setBtn(T().say);hint(_prL().netErr)});
+          .catch(function(){clog("mic_neterr","",{mime:blob.type||_mt,ext:_ext,size:blob.size});setBtn(courseMessage("say",T().say));hint(_prL().netErr)});
       };
       st.rec.start(250);try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
       setBtn(_prL().listening);hint(_prL().listening);haptic("light");
@@ -6045,7 +6045,7 @@ function renderChallengeSheet(ch){
   var c=chL(),other=(ch.other_user&&ch.other_user.name)||"?";
   var myLevel=courseLevelLabel(ch.viewer_level||((MAP&&MAP.level)||"hsk1"));
   var otherLevel=courseLevelLabel(ch.other_level||ch.level||"hsk1");
-  var head='<div class="shead"><div class="zh han" style="font-size:34px">战</div><div class="tr" style="font-size:16px;color:var(--ink);margin-top:8px">'+esc(c.title)+'</div><div class="tr">'+esc(T().you)+' · '+esc(myLevel)+'<br>'+esc(other)+' · '+esc(otherLevel)+'</div></div>'
+  var head='<div class="shead"><div class="zh han" style="font-size:34px">战</div><div class="tr" style="font-size:16px;color:var(--ink);margin-top:8px">'+esc(c.title)+'</div><div class="tr">'+esc(courseMessage("you",T().you))+' · '+esc(myLevel)+'<br>'+esc(other)+' · '+esc(otherLevel)+'</div></div>'
     +'<div class="tmpl">'+esc(c.same)+'<br>'+esc(c.mix)+'</div>';
   if(ch.status==="pending"){
     if(ch.viewer_role==="opponent"){
@@ -6067,7 +6067,7 @@ function renderChallengeSheet(ch){
     var myId=challengeViewerId(ch),won=ch.winner_user_id&&Number(ch.winner_user_id)===myId,tie=!ch.winner_user_id;
     var title=tie?c.tie:(won?c.youWon:c.youLost);
     var myRole=ch.viewer_role,otherRole=myRole==="challenger"?"opponent":"challenger";
-    App.openSheet(head+'<div class="sst"><div><b>'+esc(challengeScore(ch,myRole))+'</b><small>'+esc(T().you)+'</small></div><div><b>'+esc(challengeScore(ch,otherRole))+'</b><small>'+esc(other)+'</small></div></div>'
+    App.openSheet(head+'<div class="sst"><div><b>'+esc(challengeScore(ch,myRole))+'</b><small>'+esc(courseMessage("you",T().you))+'</small></div><div><b>'+esc(challengeScore(ch,otherRole))+'</b><small>'+esc(other)+'</small></div></div>'
       +'<div class="shead"><div class="tr" style="font-size:18px;color:var(--ink);font-weight:700">'+esc(title)+'</div><div class="tr">'+esc(c.score)+': '+esc(challengeScore(ch,"challenger"))+' vs '+esc(challengeScore(ch,"opponent"))+'</div></div>'
       +'<button class="scta" onclick="App.closeSheet();App.show(\'rating\');ratingLoaded=false;renderRating()"><i class="ti ti-trophy"></i> '+esc(c.rating)+'</button>');
     return;
@@ -6238,7 +6238,7 @@ function openInviteSheet(){
 	      tj:ahead?"Шумо "+diff.toLocaleString("ru")+" XP пеш":diff.toLocaleString("ru")+" XP қафо"}[LANG];
     var rivTitle=LANG==="ru"?"Недельный рейтинг":LANG==="tj"?"Рейтинги ҳафтаина":"Haftalik reyting";
     rivHtml='<div class="riv"><h4><i class="ti ti-swords" style="font-size:15px"></i> '+rivTitle+'</h4>'
-	      +'<div class="vn"><span>'+esc(t.you)+'</span><span>'+esc(u.n)+'</span></div>'
+	      +'<div class="vn"><span>'+esc(courseMessage("you",t.you))+'</span><span>'+esc(u.n)+'</span></div>'
 	      +'<div class="bar"><i style="width:'+mePct+'%;background:var(--cin)"></i></div>'
 	      +'<div class="vn" style="margin-top:5px"><span style="font-weight:500;color:rgba(255,255,255,.9)">'+myXp.toLocaleString("ru")+'</span><span style="font-weight:500;color:rgba(255,255,255,.9)">'+userXp.toLocaleString("ru")+'</span></div>'
 	      +'<div class="note">'+esc(rivNote)+'</div></div>';
@@ -6254,12 +6254,12 @@ function openInviteSheet(){
     '<div class="uptop"><button class="upx hsk-native-back-duplicate" onclick="closeUserProfile()"><i class="ti ti-arrow-left"></i></button>'
     +'<span style="font-size:14px;font-weight:500">'+esc(u.n)+'</span><div style="width:34px"></div></div>'
     +'<div class="uphero"><div class="av'+(isHan?" han":"")+'">'+u.a+(u.me?myAvatarImgHtml():avatarImgHtml(u.tgId))+(u.p?'<span class="cr"><i class="ti ti-crown" style="font-size:11px"></i></span>':'')+'</div>'
-    +'<div class="nm">'+esc(u.n)+'</div><div class="un">'+esc(t.league)+'</div>'
+    +'<div class="nm">'+esc(u.n)+'</div><div class="un">'+esc(courseMessage("league",t.league))+'</div>'
 	    +'<div class="badges"><span class="bg bg-lv"><i class="ti ti-bolt" style="font-size:10px"></i> '+esc(uLevel)+'</span>'
 	    +'<span class="bg bg-lg han" style="font-size:12px">朱雀</span>'
 	    +(u.p?'<span class="bg" style="background:var(--goldbg);color:var(--gold)"><i class="ti ti-crown" style="font-size:10px"></i> Premium</span>':'')+'</div></div>'
 	    +'<div class="stats" style="margin:14px 0 0">'
-	    +'<div class="stat"><b style="color:var(--cin)">'+userXp.toLocaleString("ru")+'</b><small>'+t.xp+'</small></div>'
+	    +'<div class="stat"><b style="color:var(--cin)">'+userXp.toLocaleString("ru")+'</b><small>'+courseMessage("xp",t.xp)+'</small></div>'
     +'<div class="stat"><b style="color:var(--gold)">#'+(i+1)+'</b><small>'+r.weekRank+'</small></div>'
     +'<div class="stat"><b style="color:var(--jade)">'+esc(uLevel)+'</b><small>'+lvlLbl+'</small></div></div>'
     +rivHtml+acts;
@@ -6565,7 +6565,7 @@ function renderProfile(){
   var paid=PROFILE_DETAIL&&PROFILE_DETAIL.subscription?!!PROFILE_DETAIL.subscription.is_paid:isPaidUser();
   var trialActive=!!(TRIAL_STATE&&TRIAL_STATE.active);
   var showProLink=!paid&&!trialActive;
-  var nickname=esc(PROF.name||t.you);
+  var nickname=esc(PROF.name||courseMessage("you",t.you));
   $("#s-profile").innerHTML='<div class="htop profile-head"><h1 class="profile-title">'+esc(courseMessage("nav.profile",LANG==="ru"?"Профиль":LANG==="tj"?"Профил":"Profil"))+'</h1><div class="profile-head-actions">'
     +'<button class="profile-settings" type="button" aria-label="'+esc(p.settings)+'" onclick="App.openSettings()"><i class="ti ti-settings" aria-hidden="true"></i></button></div></div>'
     +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div>'

@@ -10,8 +10,8 @@
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
-      "reviewed_sha1": "8dbbbd34dcbbc122acb117af0495d14c3d6cc141",
-      "reason": "Mini App generated common/course catalogs now route lesson map and lesson sheet unit, lessons, continue, repeat, stage, completion labels, plus nav tour/tab dynamic text via exact UZ/RU/TJ fallbacks. All original source physical line positions preserved; grading/auth/entitlements unchanged."
+      "reviewed_sha1": "c6771b1f09375f14696ef83d8a3211a30ed89f92",
+      "reason": "Mini App local generated static course/common copies; approved additional 11 display-only exercise/feedback-button/rating labels (23 call-sites) with exact three-locale I18N fallback. Kept 8712 newline segments, no grading, auth, entitlement, payment or source lessons changed."
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",

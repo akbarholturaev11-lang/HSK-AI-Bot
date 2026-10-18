@@ -251,5 +251,51 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertNotIn('courseMessage("correct"', html)
 
 
+    def test_miniapp_reviewed_presentation_and_exercise_copy(self):
+        """11 static display keys, 23 sites, with exact UZ/RU/TJ fallback parity."""
+        import re
+
+        source = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertEqual(len(source.split("\n")), 8712)
+        selections = {
+            "buildSent": 1, "dialog": 1, "listen": 2, "matchPairs": 1,
+            "say": 5, "check": 2, "next": 2, "rightAns": 1,
+            "you": 4,
+        }
+        for key, count in selections.items():
+            with self.subTest(ui_key=key, expression="T"):
+                self.assertEqual(source.count(
+                    'courseMessage("' + key + '",T().' + key + ')'
+                ), count)
+        for key, count in {"you": 2, "league": 1, "xp": 1}.items():
+            with self.subTest(ui_key=key, expression="t"):
+                self.assertEqual(source.count(
+                    'courseMessage("' + key + '",t.' + key + ')'
+                ), count)
+
+        old_copy = {"ru": source.splitlines()[1478],
+                    "uz": source.splitlines()[1479],
+                    "tj": source.splitlines()[1480]}
+        for locale, line in old_copy.items():
+            reviewed = json.loads((ROOT / f"localization/ui/{locale}/course.json")
+                                  .read_text(encoding="utf-8"))["messages"]
+            for key in (*selections, "league", "xp"):
+                with self.subTest(lang=locale, ui_key=key):
+                    found = re.search(r"(?:^|[,{}])" + re.escape(key)
+                                      + r':"([^"]*)"', line)
+                    self.assertIsNotNone(found)
+                    self.assertEqual(found.group(1), reviewed[key])
+
+        # The read-only static lookups are for display text only.
+        # Business-state / grading branches and user entitlements remain as-is.
+        for untouched in ('Flow.answered=true', 'Flow.graded=',
+                          'c.correct_index', 'if(isPremiumLocked(l))',
+                          '/api/voice-practice/pronounce'):
+            self.assertIn(untouched, source)
+        for forbidden in ('courseMessage("correct"', 'courseMessage("wrong"',
+                          'courseMessage("trialLeft"', 'courseMessage("payTitle"'):
+            self.assertNotIn(forbidden, source)
+
+
 if __name__ == "__main__":
     unittest.main()
