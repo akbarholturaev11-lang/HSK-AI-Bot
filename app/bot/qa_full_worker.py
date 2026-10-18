@@ -32,7 +32,19 @@ PRODUCTION_BOT = "darsi_chini_bot"
 
 def validate_qa_settings(env: dict[str, str], config) -> str:
     """No bot API requests or DB writes until every safety check passes."""
-    if env.get("RAILWAY_ENVIRONMENT_NAME", "").lower() != QA_ENV:
+    environment = env.get("RAILWAY_ENVIRONMENT_NAME", "").lower()
+    standalone = environment == "qa"
+    if standalone:
+        if env.get("RAILWAY_PROJECT_ID") != "7f737cb9-be6a-45cd-b6b3-8263b41d1cfd":
+            raise RuntimeError("qa_worker_wrong_project")
+        expected_host = "postgres.railway.internal"
+        expected_db = "railway"
+        expected_origin = "https://hsk-qa-api-qa.up.railway.app"
+    elif environment == QA_ENV:
+        expected_host = QA_DB_HOST
+        expected_db = QA_DB_NAME
+        expected_origin = QA_HTTPS_ORIGIN
+    else:
         raise RuntimeError("qa_worker_not_staging")
     if env.get("HSK_QA_FULL_FEATURES_ENABLED", "").lower() != "true":
         raise RuntimeError("qa_full_features_disabled")
@@ -45,11 +57,11 @@ def validate_qa_settings(env: dict[str, str], config) -> str:
         parsed = make_url(config.DATABASE_URL)
     except Exception as exc:
         raise RuntimeError("qa_worker_bad_database_url") from exc
-    if (parsed.host or "").lower() != QA_DB_HOST or parsed.database != QA_DB_NAME:
+    if (parsed.host or "").lower() != expected_host or parsed.database != expected_db:
         raise RuntimeError("qa_worker_wrong_database")
-    if getattr(config, "PUBLIC_SITE_URL", "") != QA_HTTPS_ORIGIN:
+    if getattr(config, "PUBLIC_SITE_URL", "") != expected_origin:
         raise RuntimeError("qa_worker_wrong_site_origin")
-    if getattr(config, "MINI_APP_BASE_URL", "") != QA_HTTPS_ORIGIN + "/course-v3.html":
+    if getattr(config, "MINI_APP_BASE_URL", "") != expected_origin + "/course-v3.html":
         raise RuntimeError("qa_worker_wrong_miniapp_origin")
     if getattr(config, "OAUTH_NATIVE_RETURN_SCHEME", None) != "pomp-hsk-ai-qa":
         raise RuntimeError("qa_worker_wrong_return_scheme")
