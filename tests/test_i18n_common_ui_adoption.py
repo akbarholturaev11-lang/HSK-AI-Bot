@@ -205,5 +205,51 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             self.assertNotIn(forbidden, html)
 
 
+    def test_miniapp_course_map_lesson_sheet_and_navigation_copy(self):
+        """Lesson navigation labels use static local UI with exact fallback."""
+        import re
+
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertEqual(len(html.split("\n")), 8712)
+        expected_counts = {
+            "unit": 1, "lessons": 1, "cont": 2, "repeat": 1,
+            "stage": 1, "completeOf": 1,
+        }
+        for key, count in expected_counts.items():
+            with self.subTest(key=key):
+                self.assertEqual(html.count(
+                    'courseMessage("' + key + '",T().' + key + ')'
+                ), count)
+        self.assertEqual(
+            html.count('courseMessage("nav."+st.s,T().nav[st.s])'), 1
+        )
+        self.assertEqual(
+            html.count('courseMessage("nav."+s.dataset.i,T().nav[s.dataset.i])'), 1
+        )
+        legacy = {
+            "ru": html.splitlines()[1478], "uz": html.splitlines()[1479],
+            "tj": html.splitlines()[1480],
+        }
+        nav_keys = ("nav.course", "nav.mashq", "nav.profile",
+                    "nav.rating", "nav.voice")
+        for locale, source in legacy.items():
+            catalog = json.loads(
+                (ROOT / f"localization/ui/{locale}/course.json").read_text(
+                    encoding="utf-8")
+            )["messages"]
+            for key in (*expected_counts, *nav_keys):
+                with self.subTest(locale=locale, key=key):
+                    attr = key.split(".", 1)[1] if key.startswith("nav.") else key
+                    section = (re.search(r"nav:\{([^}]+)\}", source).group(1)
+                               if key.startswith("nav.") else source)
+                    found = re.search(r"(?:^|[,{}])" + re.escape(attr) + r':"([^"]*)"', section)
+                    self.assertIsNotNone(found)
+                    self.assertEqual(found.group(1), catalog[key])
+        self.assertIn('return catalog&&catalog[LANG]&&Object.prototype.hasOwnProperty.call(catalog[LANG],key)?catalog[LANG][key]:fallback', html)
+        self.assertIn('if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}', html)
+        self.assertNotIn('courseMessage("trialLeft"', html)
+        self.assertNotIn('courseMessage("correct"', html)
+
+
 if __name__ == "__main__":
     unittest.main()

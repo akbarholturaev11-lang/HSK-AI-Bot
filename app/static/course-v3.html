@@ -3330,7 +3330,7 @@ function renderCourse(){
   var mcnt=0;
   (MAP.units||[]).forEach(function(u,ui){
     var locked=u.status==="locked";
-    var uSub=(u.no)+'-'+T().unit,uTitle=tr(u.title)||"";
+    var uSub=(u.no)+'-'+courseMessage("unit",T().unit),uTitle=tr(u.title)||"";
     /* Qism xaritasida unit = HSK darsi, sarlavhada raqam allaqachon bor
        ("7-dars · 你好") — kichik "7-bo'lim" yorlig'i ortiqcha. */
     var hasParts=!!(u.lessons&&u.lessons[0]&&u.lessons[0].src);
@@ -3358,7 +3358,7 @@ function renderCourse(){
         var st=n.l.status;cls=st;
         var isCp=!!n.l.checkpoint;
         if(st==="done")inner='<i class="ti ti-check"></i>';
-        else if(st==="current"){inner=isCp?'<i class="ti ti-flag-2"></i>':'<span class="han" style="font-size:19px">学</span>';bub='<div class="bubble">'+T().cont.toUpperCase()+'</div>'}
+        else if(st==="current"){inner=isCp?'<i class="ti ti-flag-2"></i>':'<span class="han" style="font-size:19px">学</span>';bub='<div class="bubble">'+courseMessage("cont",T().cont).toUpperCase()+'</div>'}
         else inner=isCp?'<i class="ti ti-flag-2"></i>':'<i class="ti ti-lock"></i>';
         /* Qism tugunida yorliq — shu qismning yangi so'zlari (uzun bo'lsa qisqartiriladi) */
         lbl=String(n.l.zh||"");if(lbl.length>10)lbl=lbl.slice(0,9)+"…";
@@ -3380,7 +3380,7 @@ function secNames(){var m={ru:["Новые слова","Закрепление",
 function nodeSub(l){
   if(l.checkpoint)return LANG==="ru"?"Повторение":LANG==="tj"?"Такрор":"Takrorlash";
   if(l.part&&l.src)return LANG==="ru"?("Часть "+l.part):LANG==="tj"?("Қисми "+l.part):(l.part+"-qism");
-  return (l.n||"")+"-"+T().lessons;
+  return (l.n||"")+"-"+courseMessage("lessons",T().lessons);
 }
 /* Dars varag'i sarlavhasi ostidagi "X-dars · Y-qism" belgisi. */
 function partChip(l){
@@ -3475,11 +3475,11 @@ function openLessonSheet(idx){
   var chip=partChip(l);
   /* Reklama ko'rib darsni ochish OLIB TASHLANDI — bu yerda faqat
      "davom etish" yoki "takrorlash" qoladi. */
-  var cta=l.status==="current"?'<button class="scta" onclick="startLesson('+idx+')"><i class="ti ti-player-play"></i> '+T().cont+'</button>'
-    :'<button class="scta ghost" onclick="startLesson('+idx+')"><i class="ti ti-refresh"></i> '+T().repeat+'</button>';
+  var cta=l.status==="current"?'<button class="scta" onclick="startLesson('+idx+')"><i class="ti ti-player-play"></i> '+courseMessage("cont",T().cont)+'</button>'
+    :'<button class="scta ghost" onclick="startLesson('+idx+')"><i class="ti ti-refresh"></i> '+courseMessage("repeat",T().repeat)+'</button>';
   App.openSheet('<div class="shead">'+(chip?'<div class="py" style="margin-bottom:2px">'+esc(chip)+'</div>':'')
     +'<div class="zh han">'+esc(l.zh)+'</div><div class="py">'+esc(l.py||"")+'</div><div class="tr">'+esc(tr(l.tr))+'</div>'+(Number(l.src)===1?'<div class="tr" style="margin-top:5px;color:var(--cin2)">你好 · nǐ hǎo · '+esc(LANG==="ru"?"привет":LANG==="tj"?"салом":"salom")+'</div>':'')+stars+'</div>'
-    +'<div class="pmeta"><span>'+n+' '+T().stage+'</span><span>'+prog+' / '+n+' '+T().completeOf+'</span></div><div class="secs">'+secs+'</div>'+cta);
+    +'<div class="pmeta"><span>'+n+' '+courseMessage("stage",T().stage)+'</span><span>'+prog+' / '+n+' '+courseMessage("completeOf",T().completeOf)+'</span></div><div class="secs">'+secs+'</div>'+cta);
   /* Start fetching the initial pronunciation before "Continue" is tapped. */
   warmLessonPreviewAudio((MAP&&MAP.level)||"hsk1",l.n);
 }
@@ -5241,7 +5241,7 @@ function narrate(key,text){
 function foundationSpeak(text){if(window.Foundation&&Foundation._audioTimer){clearTimeout(Foundation._audioTimer);Foundation._audioTimer=null}stopTourAudio();speak(text)}
 function tourRender(noSpeak){var st=TOUR.steps[TOUR.i];App.show(st.s);
   var t=TOUR.t,dots=TOUR.steps.map(function(_,k){return '<i class="'+(k===TOUR.i?"on":"")+'"></i>'}).join("");
-  $("#tour-coach").innerHTML='<div class="ch"><div class="pd">'+pandaChar("happy")+'</div><div class="ct"><b>'+T().nav[st.s]+'</b><small>'+(TOUR.i+1)+" / "+TOUR.steps.length+'</small></div><button class="vt '+(TOURV?"on":"")+'" onclick="App.toggleTourVoice()"><i class="ti ti-'+(TOURV?"volume":"volume-off")+'"></i> '+t.voice+'</button></div><div class="desc">'+st.d+'</div><div class="row"><div class="dots">'+dots+'</div><button class="nx" onclick="App.tourNext()">'+(TOUR.i<TOUR.steps.length-1?t.next:t.done)+'</button></div>';
+  $("#tour-coach").innerHTML='<div class="ch"><div class="pd">'+pandaChar("happy")+'</div><div class="ct"><b>'+courseMessage("nav."+st.s,T().nav[st.s])+'</b><small>'+(TOUR.i+1)+" / "+TOUR.steps.length+'</small></div><button class="vt '+(TOURV?"on":"")+'" onclick="App.toggleTourVoice()"><i class="ti ti-'+(TOURV?"volume":"volume-off")+'"></i> '+t.voice+'</button></div><div class="desc">'+st.d+'</div><div class="row"><div class="dots">'+dots+'</div><button class="nx" onclick="App.tourNext()">'+(TOUR.i<TOUR.steps.length-1?t.next:t.done)+'</button></div>';
   if(!noSpeak)tourSpeak(st.d,st.k);
   function placeSpot(){
     var el=st.sel?document.querySelector(st.sel):null;
@@ -8354,7 +8354,7 @@ return API;
 window.VOICE=VOICE;
 
 function renderAll(){
-  document.querySelectorAll("#nav [data-i]").forEach(function(s){s.textContent=T().nav[s.dataset.i]});
+  document.querySelectorAll("#nav [data-i]").forEach(function(s){s.textContent=courseMessage("nav."+s.dataset.i,T().nav[s.dataset.i])});
   if(MAP){renderCourse();renderMashq();if(SCREEN==="rating")renderRating();renderProfile();if(SCREEN==="voice")renderVoice()}
 }
 navInit();
