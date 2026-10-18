@@ -80,6 +80,10 @@ class MiniappCatalogAuditTests(unittest.TestCase):
     def test_live_selected_sources_are_parsable_without_runtime(self):
         report = inventory()
         self.assertEqual(len(report["catalogs"]), 18)
+        onboarding = next(row for row in report["catalogs"]
+                          if row["file"] == "app/static/course_v3_onboarding.html")
+        self.assertEqual(onboarding["catalog"], "ONBOARDING_LEGACY")
+        self.assertEqual(onboarding["leaf_counts"], {"uz": 31, "ru": 31, "tj": 31})
         self.assertGreater(report["source_hotspots"]["course-v3.html"]["language_branch"]["candidate_count"], 0)
         self.assertGreater(report["source_hotspots"]["course_v3_memorize.html"]["inline_locale_call"]["candidate_count"], 0)
         for row in report["catalogs"]:

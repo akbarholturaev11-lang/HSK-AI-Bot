@@ -27,7 +27,7 @@ TARGETS = (
     ("app/static/course_v3_mistakes.html", "L"),
     ("app/static/course_v3_pronunciation.html", "L"),
     ("app/static/course_v3_recognition.html", "L"),
-    ("app/static/course_v3_onboarding.html", "L"),
+    ("app/static/course_v3_onboarding.html", "ONBOARDING_LEGACY"),
     ("app/static/course_v3_voice.html", "L"),
     ("app/static/hsk-lugat.html", "UI"),
     ("app/static/hsk-lugat.html", "practiceLabels"),
