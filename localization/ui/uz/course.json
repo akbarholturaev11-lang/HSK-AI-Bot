@@ -119,6 +119,13 @@
     "notifTimes.item0": "Reytingda kimdir sizdan o'zib ketsa",
     "notifTimes.item1": "Kun tugayotganda darsni hali bajarmagan bo'lsangiz",
     "notifTimes.item2": "Ketma-ket kunlar seriyangiz uzilish xavfida bo'lsa",
-    "avatarEdit.note": "Avatar Telegram profilingizdan olinadi"
+    "avatarEdit.note": "Avatar Telegram profilingizdan olinadi",
+    "courseLoadError.title": "Kurs yuklanmadi",
+    "courseLoadError.body": "Ulanishni tekshirib, qayta urinib ko'ring.",
+    "courseLoadError.btn": "Qayta urinish",
+    "practiceAuthRequired.body": "Mashq uchun Telegram orqali qayta kiring. Ruxsat tekshirilmaguncha mashq ochilmaydi.",
+    "practiceAuthRequired.retry": "Qayta ochish",
+    "practiceGateError.body": "Ruxsatni tekshirib bo'lmadi. Internetni tekshirib, qayta urining.",
+    "practiceGateError.retry": "Qayta urinish"
   }
 }

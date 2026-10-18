@@ -1472,7 +1472,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261017-common-v1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261018-notif-v6"></script>
+<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261017-common-v1"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261018-errors-v7"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -3116,18 +3116,18 @@ function validatePracticeGate(o){
 /* Missing Telegram credentials must not silently bypass the server's lifetime limit. */
 function showPracticeAuthRequired(elementId){
   var node=document.getElementById(elementId);if(!node)return;
-  var copy={
+  var legacy={
     uz:{body:"Mashq uchun Telegram orqali qayta kiring. Ruxsat tekshirilmaguncha mashq ochilmaydi.",retry:"Qayta ochish"},
     ru:{body:"Откройте мини-приложение заново через Telegram. Без проверки доступа упражнение недоступно.",retry:"Открыть заново"},
     tj:{body:"Мини-барномаро аз Telegram дубора кушоед. Бе санҷиши дастрасӣ машқ оғоз намешавад.",retry:"Аз нав кушодан"}
-  }[LANG]||{};
+  }[LANG]||{};var copy={body:courseMessage("practiceAuthRequired.body",legacy.body),retry:courseMessage("practiceAuthRequired.retry",legacy.retry)};
   node.innerHTML='<div role="alert" style="padding:28px 18px;text-align:center;color:var(--ink2)"><p>'+esc(copy.body)+'</p><button class="sec" style="margin-top:12px" onclick="location.reload()">'+esc(copy.retry)+'</button></div>';
 }
-function practiceGateErrorCopy(){return ({
+function practiceGateErrorCopy(){var legacy=({
   uz:{body:"Ruxsatni tekshirib bo'lmadi. Internetni tekshirib, qayta urining.",retry:"Qayta urinish"},
   ru:{body:"Не удалось проверить доступ. Проверьте интернет и повторите.",retry:"Повторить"},
   tj:{body:"Дастрасӣ санҷида нашуд. Интернетро санҷед ва боз кӯшиш кунед.",retry:"Боз кӯшиш кардан"}
-})[LANG]||{body:"Access check failed. Please try again.",retry:"Retry"}}
+})[LANG]||{body:"Access check failed. Please try again.",retry:"Retry"};return {body:courseMessage("practiceGateError.body",legacy.body),retry:courseMessage("practiceGateError.retry",legacy.retry)}}
 /* Mashq bo'limlarining chegara oynasi uchun alohida xotira: bo'lim matni
    dars paywallidagi matnni almashtirib yubormasligi kerak. */
 function rememberSectionLimit(j){
@@ -3444,11 +3444,11 @@ function showAuthGate(){
 }
 function hideAuthGate(){}
 function showCourseLoadError(){
-  var c={
+  var legacy={
     ru:{title:"Курс не загрузился",body:"Проверьте подключение и попробуйте ещё раз.",btn:"Попробовать снова"},
     uz:{title:"Kurs yuklanmadi",body:"Ulanishni tekshirib, qayta urinib ko'ring.",btn:"Qayta urinish"},
     tj:{title:"Курс бор нашуд",body:"Пайвастро санҷида, боз кӯшиш кунед.",btn:"Боз кӯшиш кардан"}
-  }[LANG];
+  }[LANG];var c={title:courseMessage("courseLoadError.title",legacy.title),body:courseMessage("courseLoadError.body",legacy.body),btn:courseMessage("courseLoadError.btn",legacy.btn)};
   MAP={units:[],progress:{xp:0,streak:0,completed:0},label:"HSK",level:getSelectedLevel()};
   $("#s-course").innerHTML='<div class="htop"><h1 class="section-title">HSK AI</h1></div>'
     +'<div class="rt-invite" style="margin-top:42px"><span class="han">学</span><p style="font-weight:600;color:var(--ink);margin-bottom:6px">'+esc(c.title)+'</p><p>'+esc(c.body)+'</p><button onclick="loadLevel(getSelectedLevel())"><i class="ti ti-refresh"></i> '+esc(c.btn)+'</button></div>';

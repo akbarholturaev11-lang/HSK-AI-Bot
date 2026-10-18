@@ -16,6 +16,9 @@
     <string name="hsk_course_complete_of" formatted="false">иҷро шуд</string>
     <string name="hsk_course_cont" formatted="false">Идома</string>
     <string name="hsk_course_correct" formatted="false">Дуруст!</string>
+    <string name="hsk_course_course_load_error_body" formatted="false">Пайвастро санҷида, боз кӯшиш кунед.</string>
+    <string name="hsk_course_course_load_error_btn" formatted="false">Боз кӯшиш кардан</string>
+    <string name="hsk_course_course_load_error_title" formatted="false">Курс бор нашуд</string>
     <string name="hsk_course_course_picker_confirm" formatted="false">Тасдиқ кардан</string>
     <string name="hsk_course_course_picker_level" formatted="false">Сатҳ</string>
     <string name="hsk_course_course_picker_note" formatted="false">Ҳангоми иваз кардани версия пешрафт нигоҳ дошта мешавад. Интихоби сатҳи дигар пешрафти ин версияро аз нав оғоз мекунад.</string>
@@ -75,6 +78,10 @@
     <string name="hsk_course_plan_free" formatted="false">Ройгон оғоз кардан</string>
     <string name="hsk_course_plan_pay" formatted="false">HSK AI Pro гирифтан</string>
     <string name="hsk_course_plan_title" formatted="false">Нақшаи шахсии шумо тайёр</string>
+    <string name="hsk_course_practice_auth_required_body" formatted="false">Мини-барномаро аз Telegram дубора кушоед. Бе санҷиши дастрасӣ машқ оғоз намешавад.</string>
+    <string name="hsk_course_practice_auth_required_retry" formatted="false">Аз нав кушодан</string>
+    <string name="hsk_course_practice_gate_error_body" formatted="false">Дастрасӣ санҷида нашуд. Интернетро санҷед ва боз кӯшиш кунед.</string>
+    <string name="hsk_course_practice_gate_error_retry" formatted="false">Боз кӯшиш кардан</string>
     <string name="hsk_course_premium" formatted="false">HSK AI Pro</string>
     <string name="hsk_course_profile_answers" formatted="false">ҷавоби арзёбишуда</string>
     <string name="hsk_course_profile_free" formatted="false">Ройгон</string>

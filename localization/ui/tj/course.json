@@ -119,6 +119,13 @@
     "notifTimes.item0": "касе дар рейтинг аз шумо пеш меравад",
     "notifTimes.item1": "рӯз ба охир мерасаду дарс иҷро нашудааст",
     "notifTimes.item2": "силсилаи рӯзҳои пайдарпайи шумо дар хатар аст",
-    "avatarEdit.note": "Аватар аз профили Telegram шумо гирифта мешавад"
+    "avatarEdit.note": "Аватар аз профили Telegram шумо гирифта мешавад",
+    "courseLoadError.title": "Курс бор нашуд",
+    "courseLoadError.body": "Пайвастро санҷида, боз кӯшиш кунед.",
+    "courseLoadError.btn": "Боз кӯшиш кардан",
+    "practiceAuthRequired.body": "Мини-барномаро аз Telegram дубора кушоед. Бе санҷиши дастрасӣ машқ оғоз намешавад.",
+    "practiceAuthRequired.retry": "Аз нав кушодан",
+    "practiceGateError.body": "Дастрасӣ санҷида нашуд. Интернетро санҷед ва боз кӯшиш кунед.",
+    "practiceGateError.retry": "Боз кӯшиш кардан"
   }
 }

@@ -16,6 +16,9 @@
     <string name="hsk_course_complete_of" formatted="false">выполнено</string>
     <string name="hsk_course_cont" formatted="false">Продолжить</string>
     <string name="hsk_course_correct" formatted="false">Верно!</string>
+    <string name="hsk_course_course_load_error_body" formatted="false">Проверьте подключение и попробуйте ещё раз.</string>
+    <string name="hsk_course_course_load_error_btn" formatted="false">Попробовать снова</string>
+    <string name="hsk_course_course_load_error_title" formatted="false">Курс не загрузился</string>
     <string name="hsk_course_course_picker_confirm" formatted="false">Подтвердить</string>
     <string name="hsk_course_course_picker_level" formatted="false">Уровень</string>
     <string name="hsk_course_course_picker_note" formatted="false">При смене версии прогресс сохраняется. Выбор другого уровня начнёт прогресс этой версии заново.</string>
@@ -75,6 +78,10 @@
     <string name="hsk_course_plan_free" formatted="false">Начать бесплатно</string>
     <string name="hsk_course_plan_pay" formatted="false">Оформить HSK AI Pro</string>
     <string name="hsk_course_plan_title" formatted="false">Ваш личный план готов</string>
+    <string name="hsk_course_practice_auth_required_body" formatted="false">Откройте мини-приложение заново через Telegram. Без проверки доступа упражнение недоступно.</string>
+    <string name="hsk_course_practice_auth_required_retry" formatted="false">Открыть заново</string>
+    <string name="hsk_course_practice_gate_error_body" formatted="false">Не удалось проверить доступ. Проверьте интернет и повторите.</string>
+    <string name="hsk_course_practice_gate_error_retry" formatted="false">Повторить</string>
     <string name="hsk_course_premium" formatted="false">HSK AI Pro</string>
     <string name="hsk_course_profile_answers" formatted="false">проверенных ответов</string>
     <string name="hsk_course_profile_free" formatted="false">Бесплатно</string>

@@ -16,6 +16,9 @@
     <string name="hsk_course_complete_of" formatted="false">bajarildi</string>
     <string name="hsk_course_cont" formatted="false">Davom etish</string>
     <string name="hsk_course_correct" formatted="false">To\'g\'ri!</string>
+    <string name="hsk_course_course_load_error_body" formatted="false">Ulanishni tekshirib, qayta urinib ko\'ring.</string>
+    <string name="hsk_course_course_load_error_btn" formatted="false">Qayta urinish</string>
+    <string name="hsk_course_course_load_error_title" formatted="false">Kurs yuklanmadi</string>
     <string name="hsk_course_course_picker_confirm" formatted="false">Tasdiqlash</string>
     <string name="hsk_course_course_picker_level" formatted="false">Daraja</string>
     <string name="hsk_course_course_picker_note" formatted="false">Versiyalar orasida almashganda o\'qigan joyingiz saqlanadi. Boshqa darajani tanlash shu versiya progressini yangidan boshlaydi.</string>
@@ -75,6 +78,10 @@
     <string name="hsk_course_plan_free" formatted="false">Bepul boshlash</string>
     <string name="hsk_course_plan_pay" formatted="false">HSK AI Pro olish</string>
     <string name="hsk_course_plan_title" formatted="false">Shaxsiy rejangiz tayyor</string>
+    <string name="hsk_course_practice_auth_required_body" formatted="false">Mashq uchun Telegram orqali qayta kiring. Ruxsat tekshirilmaguncha mashq ochilmaydi.</string>
+    <string name="hsk_course_practice_auth_required_retry" formatted="false">Qayta ochish</string>
+    <string name="hsk_course_practice_gate_error_body" formatted="false">Ruxsatni tekshirib bo\'lmadi. Internetni tekshirib, qayta urining.</string>
+    <string name="hsk_course_practice_gate_error_retry" formatted="false">Qayta urinish</string>
     <string name="hsk_course_premium" formatted="false">HSK AI Pro</string>
     <string name="hsk_course_profile_answers" formatted="false">baholangan javob</string>
     <string name="hsk_course_profile_free" formatted="false">Bepul</string>

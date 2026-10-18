@@ -115,7 +115,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertEqual(html.count(
-            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-notif-v6"></script>'
+            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-errors-v7"></script>'
         ), 1)
         self.assertLess(html.index("hsk-course-i18n.js"),
                         html.index("function courseMessage("))
@@ -502,7 +502,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('function openSupportLink(url){', html)
         self.assertIn('+(supportUrl?', html)
         self.assertIn('courseMessage("nav."+st.s,T().nav[st.s])', html)
-        self.assertIn('hsk-course-i18n.js?v=20261018-notif-v6', html)
+        self.assertIn('hsk-course-i18n.js?v=20261018-errors-v7', html)
 
 
     def test_miniapp_notifications_and_pinyin_settings_use_local_static_text(self):
@@ -544,7 +544,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('_apiPost("/api/v3/notify",{enabled:on})', html)
         self.assertIn('localStorage.setItem("hsk_v3_pinyin",v)', html)
         self.assertIn("applyPinyinMode()", html)
-        self.assertIn("hsk-course-i18n.js?v=20261018-notif-v6", html)
+        self.assertIn("hsk-course-i18n.js?v=20261018-errors-v7", html)
         self.assertNotIn("fetch('/api/i18n/", html)
 
 
@@ -586,7 +586,53 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn("App.applyNotif(false)", html)
         self.assertIn('_apiPost("/api/v3/notify",{enabled:on})', html)
         self.assertIn("myAvatarImgHtml()", html)
-        self.assertIn("hsk-course-i18n.js?v=20261018-notif-v6", html)
+        self.assertIn("hsk-course-i18n.js?v=20261018-errors-v7", html)
+
+
+    def test_miniapp_course_and_practice_error_copy_local_assets(self):
+        """Local UI copy preserves all legacy fallbacks and retry/access logic."""
+        import re
+
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertEqual(len(html.split("\n")), 8712)
+        cases = (
+            ("showCourseLoadError(){", "\nfunction showCourseMapFailure(",
+             "courseLoadError", ("title", "body", "btn"), "c"),
+            ("showPracticeAuthRequired(elementId){", "\nfunction practiceGateErrorCopy(){",
+             "practiceAuthRequired", ("body", "retry"), "copy"),
+            ("practiceGateErrorCopy(){", "\n/* Mashq bo'limlarining chegara oynasi",
+             "practiceGateError", ("body", "retry"), None),
+        )
+        for start, end, prefix, keys, local in cases:
+            block = html.split(start, 1)[1].split(end, 1)[0]
+            self.assertIn("legacy=", block)
+            for field in keys:
+                with self.subTest(screen=prefix, key=field):
+                    self.assertEqual(block.count(
+                        'courseMessage("' + prefix + '.' + field + '",legacy.' + field + ')'
+                    ), 1)
+            for locale in ("uz", "ru", "tj"):
+                catalog = json.loads(
+                    (ROOT / f"localization/ui/{locale}/course.json").read_text(
+                        encoding="utf-8")
+                )["messages"]
+                old = re.search(r"(?:^|[\s,{])" + re.escape(locale) + r':\{([^}]+)\}', block)
+                self.assertIsNotNone(old)
+                for field in keys:
+                    with self.subTest(locale=locale, screen=prefix, key=field):
+                        label = re.search(
+                            r"(?:^|,)" + re.escape(field) + r':"([^"]*)"',
+                            old.group(1)
+                        )
+                        self.assertIsNotNone(label)
+                        self.assertEqual(label.group(1), catalog[prefix + "." + field])
+        self.assertIn('loadLevel(getSelectedLevel())', html)
+        self.assertIn('if(res&&res.blocked)showBlockedGate(res.support_url)', html)
+        self.assertIn('else if(res&&res.auth===false)showAuthGate()', html)
+        self.assertIn('if(o.status===403&&o.j&&o.j.error==="free_feature_limit_reached")', html)
+        self.assertIn('if(o.status<200||o.status>=300||!o.j||o.j.ok!==true||o.j.allowed!==true)', html)
+        self.assertIn('location.reload()', html)
+        self.assertIn('hsk-course-i18n.js?v=20261018-errors-v7', html)
 
 
 if __name__ == "__main__":

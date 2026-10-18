@@ -119,6 +119,13 @@
     "notifTimes.item0": "кто-то обгоняет вас в рейтинге",
     "notifTimes.item1": "день заканчивается, а урок ещё не пройден",
     "notifTimes.item2": "ваша серия дней под угрозой",
-    "avatarEdit.note": "Аватар берётся из вашего профиля Telegram"
+    "avatarEdit.note": "Аватар берётся из вашего профиля Telegram",
+    "courseLoadError.title": "Курс не загрузился",
+    "courseLoadError.body": "Проверьте подключение и попробуйте ещё раз.",
+    "courseLoadError.btn": "Попробовать снова",
+    "practiceAuthRequired.body": "Откройте мини-приложение заново через Telegram. Без проверки доступа упражнение недоступно.",
+    "practiceAuthRequired.retry": "Открыть заново",
+    "practiceGateError.body": "Не удалось проверить доступ. Проверьте интернет и повторите.",
+    "practiceGateError.retry": "Повторить"
   }
 }
