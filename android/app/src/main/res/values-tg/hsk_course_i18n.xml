@@ -4,6 +4,7 @@
     <string name="hsk_course_auth_gate_body" formatted="false">Mini App пайвастшавии Telegram-ро тасдиқ карда натавонист. Ба бот баргардед, /start-ро пахш кунед ва курсро аз нав кушоед.</string>
     <string name="hsk_course_auth_gate_btn" formatted="false">Ба бот баргаштан</string>
     <string name="hsk_course_auth_gate_title" formatted="false">Курсро аз дохили бот кушоед</string>
+    <string name="hsk_course_avatar_edit_note" formatted="false">Аватар аз профили Telegram шумо гирифта мешавад</string>
     <string name="hsk_course_b1" formatted="false">Ҳамаи дарсҳои HSK 1–4</string>
     <string name="hsk_course_b2" formatted="false">AI Voice — бепоён</string>
     <string name="hsk_course_b3" formatted="false">Тестҳои бепоён ва кор бар хатоҳо</string>
@@ -55,6 +56,10 @@
     <string name="hsk_course_new_word" formatted="false">Калимаи нав</string>
     <string name="hsk_course_next" formatted="false">Идома</string>
     <string name="hsk_course_notif" formatted="false">Огоҳиҳо</string>
+    <string name="hsk_course_notif_times_head" formatted="false">Бот вақте огоҳӣ мефиристад, ки:</string>
+    <string name="hsk_course_notif_times_item0" formatted="false">касе дар рейтинг аз шумо пеш меравад</string>
+    <string name="hsk_course_notif_times_item1" formatted="false">рӯз ба охир мерасаду дарс иҷро нашудааст</string>
+    <string name="hsk_course_notif_times_item2" formatted="false">силсилаи рӯзҳои пайдарпайи шумо дар хатар аст</string>
     <string name="hsk_course_notifications_off_body" formatted="false">Шумо ёдовариҳои ҳаррӯза ва ҳисоботи ҳафтаинаро намегиред. Онҳо барои тарк накардани омӯзиш кӯмак мекунанд.</string>
     <string name="hsk_course_notifications_off_keep" formatted="false">Фаъол мондан</string>
     <string name="hsk_course_notifications_off_off" formatted="false">Хомӯш кардан</string>

@@ -4,6 +4,7 @@
     <string name="hsk_course_auth_gate_body" formatted="false">Mini App Telegram bilan real ulanishni tasdiqlay olmadi. Botga qayting, /start ni bosing va kursni qaytadan oching.</string>
     <string name="hsk_course_auth_gate_btn" formatted="false">Botga qaytish</string>
     <string name="hsk_course_auth_gate_title" formatted="false">Kursni bot ichidan oching</string>
+    <string name="hsk_course_avatar_edit_note" formatted="false">Avatar Telegram profilingizdan olinadi</string>
     <string name="hsk_course_b1" formatted="false">Barcha HSK 1–4 darslar</string>
     <string name="hsk_course_b2" formatted="false">AI Voice — cheksiz</string>
     <string name="hsk_course_b3" formatted="false">Cheksiz test va xatolar mashqi</string>
@@ -55,6 +56,10 @@
     <string name="hsk_course_new_word" formatted="false">Yangi so\'z</string>
     <string name="hsk_course_next" formatted="false">Davom etish</string>
     <string name="hsk_course_notif" formatted="false">Bildirishnomalar</string>
+    <string name="hsk_course_notif_times_head" formatted="false">Bot quyidagi holatlarda xabar yuboradi:</string>
+    <string name="hsk_course_notif_times_item0" formatted="false">Reytingda kimdir sizdan o\'zib ketsa</string>
+    <string name="hsk_course_notif_times_item1" formatted="false">Kun tugayotganda darsni hali bajarmagan bo\'lsangiz</string>
+    <string name="hsk_course_notif_times_item2" formatted="false">Ketma-ket kunlar seriyangiz uzilish xavfida bo\'lsa</string>
     <string name="hsk_course_notifications_off_body" formatted="false">Kunlik eslatma va haftalik hisobotlar kelmaydi. Bu eslatmalar o\'qishni tashlab qo\'ymaslikka yordam beradi.</string>
     <string name="hsk_course_notifications_off_keep" formatted="false">Yoqilgan qoldirish</string>
     <string name="hsk_course_notifications_off_off" formatted="false">O\'chirish</string>

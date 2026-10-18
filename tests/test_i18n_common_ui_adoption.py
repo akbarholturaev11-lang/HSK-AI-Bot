@@ -115,7 +115,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertEqual(html.count(
-            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-settings-v5"></script>'
+            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-notif-v6"></script>'
         ), 1)
         self.assertLess(html.index("hsk-course-i18n.js"),
                         html.index("function courseMessage("))
@@ -502,7 +502,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('function openSupportLink(url){', html)
         self.assertIn('+(supportUrl?', html)
         self.assertIn('courseMessage("nav."+st.s,T().nav[st.s])', html)
-        self.assertIn('hsk-course-i18n.js?v=20261018-settings-v5', html)
+        self.assertIn('hsk-course-i18n.js?v=20261018-notif-v6', html)
 
 
     def test_miniapp_notifications_and_pinyin_settings_use_local_static_text(self):
@@ -544,8 +544,49 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('_apiPost("/api/v3/notify",{enabled:on})', html)
         self.assertIn('localStorage.setItem("hsk_v3_pinyin",v)', html)
         self.assertIn("applyPinyinMode()", html)
-        self.assertIn("hsk-course-i18n.js?v=20261018-settings-v5", html)
+        self.assertIn("hsk-course-i18n.js?v=20261018-notif-v6", html)
         self.assertNotIn("fetch('/api/i18n/", html)
+
+
+    def test_miniapp_notification_schedule_and_avatar_copy(self):
+        """Five static strings keep all UZ/RU/TJ original values and UI behavior."""
+        import re
+
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertEqual(len(html.split("\n")), 8712)
+        schedule = html.split("function notifTimesHtml(){", 1)[1].split(
+            "\nvar SHEET_RETURN_FOCUS=", 1)[0]
+        self.assertIn("var legacy=", schedule)
+        self.assertIn("var c={head:courseMessage(", schedule)
+        for key, index in (("head", None), ("item0", 0), ("item1", 1), ("item2", 2)):
+            original = "legacy.head" if index is None else "legacy.items[" + str(index) + "]"
+            self.assertEqual(schedule.count(
+                'courseMessage("notifTimes.' + key + '",' + original + ')'), 1)
+        avatar = html.split("avatarEdit:function(){", 1)[1].split(
+            "\n  /* Duolingo", 1)[0]
+        self.assertEqual(avatar.count('courseMessage("avatarEdit.note",'), 1)
+        for locale in ("uz", "ru", "tj"):
+            catalog = json.loads(
+                (ROOT / f"localization/ui/{locale}/course.json").read_text(
+                    encoding="utf-8")
+            )["messages"]
+            match = re.search(
+                re.escape(locale) + r':\{head:"([^"]+)",items:\["([^"]+)","([^"]+)","([^"]+)"\]\}',
+                schedule)
+            self.assertIsNotNone(match)
+            for key, old in zip(("head", "item0", "item1", "item2"), match.groups()):
+                with self.subTest(locale=locale, key=key):
+                    self.assertEqual(catalog["notifTimes." + key], old)
+            note = re.search(
+                r'var note=courseMessage\("avatarEdit.note",LANG==="ru"\?"([^"]+)":LANG==="tj"\?"([^"]+)":"([^"]+)"\)',
+                avatar)
+            self.assertIsNotNone(note)
+            self.assertEqual(catalog["avatarEdit.note"],
+                             note.group({"ru": 1, "tj": 2, "uz": 3}[locale]))
+        self.assertIn("App.applyNotif(false)", html)
+        self.assertIn('_apiPost("/api/v3/notify",{enabled:on})', html)
+        self.assertIn("myAvatarImgHtml()", html)
+        self.assertIn("hsk-course-i18n.js?v=20261018-notif-v6", html)
 
 
 if __name__ == "__main__":

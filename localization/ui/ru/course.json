@@ -114,6 +114,11 @@
     "pinyinSettings.h": "Пиньинь (произношение)",
     "pinyinSettings.all": "Показывать везде",
     "pinyinSettings.nw": "Только в новых словах",
-    "pinyinSettings.off": "Скрыть"
+    "pinyinSettings.off": "Скрыть",
+    "notifTimes.head": "Бот пришлёт уведомление, когда:",
+    "notifTimes.item0": "кто-то обгоняет вас в рейтинге",
+    "notifTimes.item1": "день заканчивается, а урок ещё не пройден",
+    "notifTimes.item2": "ваша серия дней под угрозой",
+    "avatarEdit.note": "Аватар берётся из вашего профиля Telegram"
   }
 }

@@ -4,6 +4,7 @@
     <string name="hsk_course_auth_gate_body" formatted="false">Mini App не смог подтвердить подключение к Telegram. Вернитесь в бот, нажмите /start и откройте курс заново.</string>
     <string name="hsk_course_auth_gate_btn" formatted="false">Вернуться в бот</string>
     <string name="hsk_course_auth_gate_title" formatted="false">Откройте курс из бота</string>
+    <string name="hsk_course_avatar_edit_note" formatted="false">Аватар берётся из вашего профиля Telegram</string>
     <string name="hsk_course_b1" formatted="false">Все уроки HSK 1–4</string>
     <string name="hsk_course_b2" formatted="false">AI Voice — безлимит</string>
     <string name="hsk_course_b3" formatted="false">Безлимит тестов и работа над ошибками</string>
@@ -55,6 +56,10 @@
     <string name="hsk_course_new_word" formatted="false">Новое слово</string>
     <string name="hsk_course_next" formatted="false">Продолжить</string>
     <string name="hsk_course_notif" formatted="false">Уведомления</string>
+    <string name="hsk_course_notif_times_head" formatted="false">Бот пришлёт уведомление, когда:</string>
+    <string name="hsk_course_notif_times_item0" formatted="false">кто-то обгоняет вас в рейтинге</string>
+    <string name="hsk_course_notif_times_item1" formatted="false">день заканчивается, а урок ещё не пройден</string>
+    <string name="hsk_course_notif_times_item2" formatted="false">ваша серия дней под угрозой</string>
     <string name="hsk_course_notifications_off_body" formatted="false">Вы перестанете получать ежедневные напоминания и еженедельный отчёт. Они помогают не бросать учёбу.</string>
     <string name="hsk_course_notifications_off_keep" formatted="false">Оставить включёнными</string>
     <string name="hsk_course_notifications_off_off" formatted="false">Отключить</string>

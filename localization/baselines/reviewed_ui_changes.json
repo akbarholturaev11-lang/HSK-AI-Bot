@@ -10,8 +10,8 @@
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
-      "reviewed_sha1": "4f3528afd2465a6ac30b4cd87b07c7b606b104ec",
-      "reason": "Settings P2: notifications-off confirmation and Pinyin options use 8 central UZ/RU/TJ static copy keys, exact legacy fallback. Notification API and toggle logic, localStorage pinyin values and UI selection unchanged, 8712 line segments retained, static bundle version settings-v5."
+      "reviewed_sha1": "05c53c507035223726510c66c6c6738c47a5c9a7",
+      "reason": "Static local course UI has 5 new notif-times and avatar display keys in UZ/RU/TJ, preserving inline fallback byte-for-byte and notification/auth/setting behavior, with unchanged 8712 HTML segments and JS cache query notif-v6."
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",

@@ -114,6 +114,11 @@
     "pinyinSettings.h": "Пиньин (талаффуз)",
     "pinyinSettings.all": "Дар ҳама ҷо нишон додан",
     "pinyinSettings.nw": "Танҳо дар калимаҳои нав",
-    "pinyinSettings.off": "Пинҳон кардан"
+    "pinyinSettings.off": "Пинҳон кардан",
+    "notifTimes.head": "Бот вақте огоҳӣ мефиристад, ки:",
+    "notifTimes.item0": "касе дар рейтинг аз шумо пеш меравад",
+    "notifTimes.item1": "рӯз ба охир мерасаду дарс иҷро нашудааст",
+    "notifTimes.item2": "силсилаи рӯзҳои пайдарпайи шумо дар хатар аст",
+    "avatarEdit.note": "Аватар аз профили Telegram шумо гирифта мешавад"
   }
 }

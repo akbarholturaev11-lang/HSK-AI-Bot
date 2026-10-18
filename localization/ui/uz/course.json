@@ -114,6 +114,11 @@
     "pinyinSettings.h": "Pinyin (talaffuz yozuvi)",
     "pinyinSettings.all": "Hammasida ko'rsatish",
     "pinyinSettings.nw": "Faqat yangi so'zlarda",
-    "pinyinSettings.off": "Yashirish"
+    "pinyinSettings.off": "Yashirish",
+    "notifTimes.head": "Bot quyidagi holatlarda xabar yuboradi:",
+    "notifTimes.item0": "Reytingda kimdir sizdan o'zib ketsa",
+    "notifTimes.item1": "Kun tugayotganda darsni hali bajarmagan bo'lsangiz",
+    "notifTimes.item2": "Ketma-ket kunlar seriyangiz uzilish xavfida bo'lsa",
+    "avatarEdit.note": "Avatar Telegram profilingizdan olinadi"
   }
 }
