@@ -115,7 +115,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
 
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertEqual(html.count(
-            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-gates-v4"></script>'
+            '<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-settings-v5"></script>'
         ), 1)
         self.assertLess(html.index("hsk-course-i18n.js"),
                         html.index("function courseMessage("))
@@ -502,7 +502,50 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('function openSupportLink(url){', html)
         self.assertIn('+(supportUrl?', html)
         self.assertIn('courseMessage("nav."+st.s,T().nav[st.s])', html)
-        self.assertIn('hsk-course-i18n.js?v=20261018-gates-v4', html)
+        self.assertIn('hsk-course-i18n.js?v=20261018-settings-v5', html)
+
+
+    def test_miniapp_notifications_and_pinyin_settings_use_local_static_text(self):
+        """Eight reviewed UI keys retain exact UZ/RU/TJ original values."""
+        import re
+
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertEqual(len(html.split("\n")), 8712)
+        groups = (
+            ("confirmNotifOff:function(){", "\n  avatarEdit:function()",
+             "notificationsOff", ("title", "body", "keep", "off"), "w"),
+            ("pinyinSheet:function(){", "\n  setPinyin:function(",
+             "pinyinSettings", ("h", "all", "nw", "off"), "t"),
+        )
+        for start, end, prefix, keys, local in groups:
+            with self.subTest(screen=prefix):
+                view = html.split(start, 1)[1].split(end, 1)[0]
+                self.assertIn("var legacy=", view)
+                self.assertIn("var " + local + "={", view)
+                for key in keys:
+                    self.assertEqual(view.count(
+                        'courseMessage("' + prefix + '.' + key + '",legacy.' + key + ')'
+                    ), 1)
+                for locale in ("uz", "ru", "tj"):
+                    source = json.loads(
+                        (ROOT / f"localization/ui/{locale}/course.json").read_text(
+                            encoding="utf-8")
+                    )["messages"]
+                    old = re.search(re.escape(locale) + r':\{([^}]+)\}', view)
+                    self.assertIsNotNone(old)
+                    for key in keys:
+                        with self.subTest(locale=locale, key=key):
+                            found = re.search(
+                                r"(?:^|,)" + re.escape(key) + r':"([^"]*)"',
+                                old.group(1))
+                            self.assertIsNotNone(found)
+                            self.assertEqual(found.group(1), source[prefix + "." + key])
+        self.assertIn("App.applyNotif(false)", html)
+        self.assertIn('_apiPost("/api/v3/notify",{enabled:on})', html)
+        self.assertIn('localStorage.setItem("hsk_v3_pinyin",v)', html)
+        self.assertIn("applyPinyinMode()", html)
+        self.assertIn("hsk-course-i18n.js?v=20261018-settings-v5", html)
+        self.assertNotIn("fetch('/api/i18n/", html)
 
 
 if __name__ == "__main__":

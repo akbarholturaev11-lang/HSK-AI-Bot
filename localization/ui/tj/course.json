@@ -106,6 +106,14 @@
     "authGate.btn": "Ба бот баргаштан",
     "blockedGate.title": "Профили шумо баста шудааст",
     "blockedGate.body": "Дастрасӣ ба курс аз ҷониби админ маҳдуд аст. Барои кӯмак ба дастгирӣ нависед.",
-    "blockedGate.btn": "Ба дастгирӣ навиштан"
+    "blockedGate.btn": "Ба дастгирӣ навиштан",
+    "notificationsOff.title": "Огоҳиҳоро хомӯш мекунед?",
+    "notificationsOff.body": "Шумо ёдовариҳои ҳаррӯза ва ҳисоботи ҳафтаинаро намегиред. Онҳо барои тарк накардани омӯзиш кӯмак мекунанд.",
+    "notificationsOff.keep": "Фаъол мондан",
+    "notificationsOff.off": "Хомӯш кардан",
+    "pinyinSettings.h": "Пиньин (талаффуз)",
+    "pinyinSettings.all": "Дар ҳама ҷо нишон додан",
+    "pinyinSettings.nw": "Танҳо дар калимаҳои нав",
+    "pinyinSettings.off": "Пинҳон кардан"
   }
 }

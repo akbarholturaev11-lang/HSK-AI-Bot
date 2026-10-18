@@ -106,6 +106,14 @@
     "authGate.btn": "Botga qaytish",
     "blockedGate.title": "Profilingiz bloklangan",
     "blockedGate.body": "Kursga kirish admin tomonidan cheklangan. Yordam uchun qo'llab-quvvatlash xizmatiga yozing.",
-    "blockedGate.btn": "Supportga yozish"
+    "blockedGate.btn": "Supportga yozish",
+    "notificationsOff.title": "Bildirishnomalarni o'chirasizmi?",
+    "notificationsOff.body": "Kunlik eslatma va haftalik hisobotlar kelmaydi. Bu eslatmalar o'qishni tashlab qo'ymaslikka yordam beradi.",
+    "notificationsOff.keep": "Yoqilgan qoldirish",
+    "notificationsOff.off": "O'chirish",
+    "pinyinSettings.h": "Pinyin (talaffuz yozuvi)",
+    "pinyinSettings.all": "Hammasida ko'rsatish",
+    "pinyinSettings.nw": "Faqat yangi so'zlarda",
+    "pinyinSettings.off": "Yashirish"
   }
 }

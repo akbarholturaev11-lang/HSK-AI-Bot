@@ -55,9 +55,17 @@
     <string name="hsk_course_new_word" formatted="false">Калимаи нав</string>
     <string name="hsk_course_next" formatted="false">Идома</string>
     <string name="hsk_course_notif" formatted="false">Огоҳиҳо</string>
+    <string name="hsk_course_notifications_off_body" formatted="false">Шумо ёдовариҳои ҳаррӯза ва ҳисоботи ҳафтаинаро намегиред. Онҳо барои тарк накардани омӯзиш кӯмак мекунанд.</string>
+    <string name="hsk_course_notifications_off_keep" formatted="false">Фаъол мондан</string>
+    <string name="hsk_course_notifications_off_off" formatted="false">Хомӯш кардан</string>
+    <string name="hsk_course_notifications_off_title" formatted="false">Огоҳиҳоро хомӯш мекунед?</string>
     <string name="hsk_course_on" formatted="false">Фаъол</string>
     <string name="hsk_course_pay_sub" formatted="false">Тамоми роҳи HSK</string>
     <string name="hsk_course_pay_title" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_pinyin_settings_all" formatted="false">Дар ҳама ҷо нишон додан</string>
+    <string name="hsk_course_pinyin_settings_h" formatted="false">Пиньин (талаффуз)</string>
+    <string name="hsk_course_pinyin_settings_nw" formatted="false">Танҳо дар калимаҳои нав</string>
+    <string name="hsk_course_pinyin_settings_off" formatted="false">Пинҳон кардан</string>
     <string name="hsk_course_plan_body" formatted="false">Интихоб кунед, ки чӣ тавр оғоз мекунед. Режими ройгон ҳамеша дастрас — бо маҳдудияти рӯзона.</string>
     <string name="hsk_course_plan_free" formatted="false">Ройгон оғоз кардан</string>
     <string name="hsk_course_plan_pay" formatted="false">HSK AI Pro гирифтан</string>

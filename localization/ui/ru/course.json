@@ -106,6 +106,14 @@
     "authGate.btn": "Вернуться в бот",
     "blockedGate.title": "Ваш профиль заблокирован",
     "blockedGate.body": "Доступ к курсу ограничен администратором. Для помощи напишите в поддержку.",
-    "blockedGate.btn": "Написать в поддержку"
+    "blockedGate.btn": "Написать в поддержку",
+    "notificationsOff.title": "Отключить уведомления?",
+    "notificationsOff.body": "Вы перестанете получать ежедневные напоминания и еженедельный отчёт. Они помогают не бросать учёбу.",
+    "notificationsOff.keep": "Оставить включёнными",
+    "notificationsOff.off": "Отключить",
+    "pinyinSettings.h": "Пиньинь (произношение)",
+    "pinyinSettings.all": "Показывать везде",
+    "pinyinSettings.nw": "Только в новых словах",
+    "pinyinSettings.off": "Скрыть"
   }
 }

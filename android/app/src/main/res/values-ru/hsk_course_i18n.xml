@@ -55,9 +55,17 @@
     <string name="hsk_course_new_word" formatted="false">Новое слово</string>
     <string name="hsk_course_next" formatted="false">Продолжить</string>
     <string name="hsk_course_notif" formatted="false">Уведомления</string>
+    <string name="hsk_course_notifications_off_body" formatted="false">Вы перестанете получать ежедневные напоминания и еженедельный отчёт. Они помогают не бросать учёбу.</string>
+    <string name="hsk_course_notifications_off_keep" formatted="false">Оставить включёнными</string>
+    <string name="hsk_course_notifications_off_off" formatted="false">Отключить</string>
+    <string name="hsk_course_notifications_off_title" formatted="false">Отключить уведомления?</string>
     <string name="hsk_course_on" formatted="false">Вкл</string>
     <string name="hsk_course_pay_sub" formatted="false">Откройте весь путь HSK</string>
     <string name="hsk_course_pay_title" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_pinyin_settings_all" formatted="false">Показывать везде</string>
+    <string name="hsk_course_pinyin_settings_h" formatted="false">Пиньинь (произношение)</string>
+    <string name="hsk_course_pinyin_settings_nw" formatted="false">Только в новых словах</string>
+    <string name="hsk_course_pinyin_settings_off" formatted="false">Скрыть</string>
     <string name="hsk_course_plan_body" formatted="false">Выберите, как начать. Бесплатно можно пользоваться всегда — с дневными лимитами.</string>
     <string name="hsk_course_plan_free" formatted="false">Начать бесплатно</string>
     <string name="hsk_course_plan_pay" formatted="false">Оформить HSK AI Pro</string>

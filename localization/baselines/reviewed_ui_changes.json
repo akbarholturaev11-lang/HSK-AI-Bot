@@ -10,8 +10,8 @@
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
-      "reviewed_sha1": "bf9208f96ee4c5efd58299ea7d11ca7c77a55a97",
-      "reason": "Six reviewed auth/blocked gate labels use local static UZ/RU/TJ catalog with exact inline fallbacks; unchanged auth status decisions, support links, navigation and original 8712 newline segments. Mini App JS cache version gates-v4."
+      "reviewed_sha1": "4f3528afd2465a6ac30b4cd87b07c7b606b104ec",
+      "reason": "Settings P2: notifications-off confirmation and Pinyin options use 8 central UZ/RU/TJ static copy keys, exact legacy fallback. Notification API and toggle logic, localStorage pinyin values and UI selection unchanged, 8712 line segments retained, static bundle version settings-v5."
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",

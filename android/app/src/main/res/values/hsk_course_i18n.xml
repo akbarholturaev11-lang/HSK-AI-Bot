@@ -55,9 +55,17 @@
     <string name="hsk_course_new_word" formatted="false">Yangi so\'z</string>
     <string name="hsk_course_next" formatted="false">Davom etish</string>
     <string name="hsk_course_notif" formatted="false">Bildirishnomalar</string>
+    <string name="hsk_course_notifications_off_body" formatted="false">Kunlik eslatma va haftalik hisobotlar kelmaydi. Bu eslatmalar o\'qishni tashlab qo\'ymaslikka yordam beradi.</string>
+    <string name="hsk_course_notifications_off_keep" formatted="false">Yoqilgan qoldirish</string>
+    <string name="hsk_course_notifications_off_off" formatted="false">O\'chirish</string>
+    <string name="hsk_course_notifications_off_title" formatted="false">Bildirishnomalarni o\'chirasizmi?</string>
     <string name="hsk_course_on" formatted="false">Yoq</string>
     <string name="hsk_course_pay_sub" formatted="false">Butun HSK yo\'lini oching</string>
     <string name="hsk_course_pay_title" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_pinyin_settings_all" formatted="false">Hammasida ko\'rsatish</string>
+    <string name="hsk_course_pinyin_settings_h" formatted="false">Pinyin (talaffuz yozuvi)</string>
+    <string name="hsk_course_pinyin_settings_nw" formatted="false">Faqat yangi so\'zlarda</string>
+    <string name="hsk_course_pinyin_settings_off" formatted="false">Yashirish</string>
     <string name="hsk_course_plan_body" formatted="false">Qanday boshlashni tanlang. Bepul rejimdan doim foydalanish mumkin — kunlik limitlar bilan.</string>
     <string name="hsk_course_plan_free" formatted="false">Bepul boshlash</string>
     <string name="hsk_course_plan_pay" formatted="false">HSK AI Pro olish</string>
