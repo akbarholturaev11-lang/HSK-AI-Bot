@@ -20,7 +20,7 @@
     },
     "app/static/course_v3_onboarding.html": {
       "baseline_sha1": "321c28c34cf4ed0550bb5187d8f6b680654ea51e",
-      "reviewed_sha1": "9d51befb9a450fe464371f03060a7713835348f3",
+      "reviewed_sha1": "846112e11bd8fb699a815314b53e9a28a141799e",
       "reason": "31 original onboard labels plus 19 exact UZ/RU/TJ HSK level and study goal option labels now read static local catalog with all inline fallbacks preserved. The only source edit is presentation-only lookup and versioned JS cache reference; HSK selection IDs, access, saving, analytics and paywall unchanged."
     }
   }

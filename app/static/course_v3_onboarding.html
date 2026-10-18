@@ -242,6 +242,9 @@ function onboardingOptionMessage(key,fallback){
   var value=ONBOARDING_CATALOG[key];
   return typeof value==="string"&&value?value:fallback;
 }
+function onboardingGoalCatalogId(id){
+  return id.replace(/_([a-z])/g,function(_,letter){return letter.toUpperCase()});
+}
 function adoptOnboardingOptionCopy(){
   LV20.forEach(function(item){
     if(item.k==="beginner"&&item.hd&&typeof item.hd==="object"){
@@ -255,8 +258,8 @@ function adoptOnboardingOptionCopy(){
     item.s[LANG]=onboardingOptionMessage("onboardingLevel."+item.k+".subtitle",item.s[LANG]);
   });
   GOALS.forEach(function(item){
-    item.hd[LANG]=onboardingOptionMessage("onboardingGoal."+item.k+".title",item.hd[LANG]);
-    item.s[LANG]=onboardingOptionMessage("onboardingGoal."+item.k+".subtitle",item.s[LANG]);
+    item.hd[LANG]=onboardingOptionMessage("onboardingGoal."+onboardingGoalCatalogId(item.k)+".title",item.hd[LANG]);
+    item.s[LANG]=onboardingOptionMessage("onboardingGoal."+onboardingGoalCatalogId(item.k)+".subtitle",item.s[LANG]);
   });
 }
 adoptOnboardingOptionCopy();

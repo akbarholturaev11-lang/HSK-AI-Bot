@@ -64,19 +64,21 @@ class OnboardingOptionsTests(unittest.TestCase):
             r'\{k:"([^"]+)".*?hd:(\{[^}]+\}),\s*s:(\{[^}]+\})', source, re.S)
         self.assertEqual(tuple(row[0] for row in rows), GOALS)
         for goal, title, subtitle in rows:
+            goal_key = re.sub(r"_([a-z])", lambda match: match.group(1).upper(), goal)
             for locale in LANGUAGES:
                 messages = source_catalog(locale)
                 with self.subTest(locale=locale, goal=goal):
-                    self.assertEqual(messages[f"onboardingGoal.{goal}.title"],
+                    self.assertEqual(messages[f"onboardingGoal.{goal_key}.title"],
                                      localized_values(title)[locale])
-                    self.assertEqual(messages[f"onboardingGoal.{goal}.subtitle"],
+                    self.assertEqual(messages[f"onboardingGoal.{goal_key}.subtitle"],
                                      localized_values(subtitle)[locale])
         self.assertIn('GOALS.some(function(o){return o.k===savedGoal})', html)
         self.assertIn('goal:goalSel', html)
         self.assertIn('level:sel', html)
         self.assertIn('adoptOnboardingOptionCopy();', html)
-        self.assertIn('item.hd[LANG]=onboardingOptionMessage("onboardingGoal."+item.k+".title"', html)
-        self.assertIn('item.s[LANG]=onboardingOptionMessage("onboardingGoal."+item.k+".subtitle"', html)
+        self.assertIn("function onboardingGoalCatalogId(id){", html)
+        self.assertIn('item.hd[LANG]=onboardingOptionMessage("onboardingGoal."+onboardingGoalCatalogId(item.k)+".title"', html)
+        self.assertIn('item.s[LANG]=onboardingOptionMessage("onboardingGoal."+onboardingGoalCatalogId(item.k)+".subtitle"', html)
         self.assertIn('item.s[LANG]=onboardingOptionMessage("onboardingLevel."+item.k+".subtitle"', html)
         self.assertIn('onboardingOptionMessage("onboardingLevel.beginner.title"', html)
         self.assertIn('hsk-course-i18n.js?v=20261018-onboarding-options-v12', html)
