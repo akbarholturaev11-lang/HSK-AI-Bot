@@ -1,0 +1,95 @@
+{
+  "completed_at_utc": "2026-10-18T21:42:36.912369+00:00",
+  "tested_backend_commit": "1c6a0c2be09600dc4d0156af05740322c56146d6",
+  "scope": "owner-selected real legacy backup rows and actual current services on isolated local PostgreSQL18; not installed-client or real-provider login",
+  "source_data_verified_on": "2026-10-17",
+  "source_before_revision": "0102_payment_review_preview",
+  "source_after_revision": "0108_native_audit_ownership",
+  "audited_backup_sha256": {
+    "before": "871a524998529853acdef032cf34222eb60045089c8a9c667ba8a0fe5a284055",
+    "after": "86779a4014f3615fe398dae656c552ff1357e4391b02dca527204a753cbe429b"
+  },
+  "postgres_major": 18,
+  "cases": [
+    {
+      "case": "legacy_free",
+      "snapshot_legacy_columns_preserved": true,
+      "owner_tables_compared": 43,
+      "same_account_id": true,
+      "owner_backfills_correct": true,
+      "current_readonly_service_checks_passed": 23,
+      "actual_client_service_checks_passed": 26,
+      "clients": [
+        "miniapp_profile",
+        "android_course_map",
+        "windows_course_map",
+        "macos_course_map"
+      ],
+      "paid_access": false,
+      "payment_rows": 0,
+      "referral_rows": 0,
+      "old_history_unchanged_on_open": true,
+      "one_lesson_write": null,
+      "unexpected_history_changes": []
+    },
+    {
+      "case": "legacy_paid",
+      "snapshot_legacy_columns_preserved": true,
+      "owner_tables_compared": 43,
+      "same_account_id": true,
+      "owner_backfills_correct": true,
+      "current_readonly_service_checks_passed": 24,
+      "actual_client_service_checks_passed": 51,
+      "clients": [
+        "miniapp_profile",
+        "android_course_map",
+        "windows_course_map",
+        "macos_course_map"
+      ],
+      "paid_access": true,
+      "payment_rows": 3,
+      "referral_rows": 163,
+      "old_history_unchanged_on_open": true,
+      "one_lesson_write": {
+        "billing_unchanged": true,
+        "completed_delta": 1,
+        "four_client_progress_parity": true,
+        "old_history_retained": true,
+        "replay_unchanged": true,
+        "xp_delta": 25
+      },
+      "unexpected_history_changes": []
+    }
+  ],
+  "additional_owner_selected_account": {
+    "covered": false,
+    "reason": "absent_in_retained_source_and_migrated_snapshot"
+  },
+  "isolation": {
+    "localhost_only": true,
+    "fresh_disposable_restore": true,
+    "external_network_disabled_for_service_probes": true,
+    "production_connection": false,
+    "production_writes": false,
+    "current_qa_database_changed": false,
+    "real_provider_signin": false,
+    "installed_clients_tested_on_legacy_snapshot": false,
+    "temporary_container_removed": true
+  },
+  "regressions": {
+    "core_passed": 116,
+    "requires_isolated_postgresql_skipped": 10,
+    "core_subtests": 112,
+    "incoming_voice_test_passed": 10,
+    "incoming_voice_subtests": 6
+  },
+  "source_scripts_sha256": {
+    "hsk_legacy_compare_owner.py": "cd0ac5584682616bfd81ab85181eef0b32bda6cd64af2045c6befd8037a0709e",
+    "hsk_legacy_service_probe.py": "796a579231fa3d75961c426d2447d0164f660c7542fdf413dd7e3e8cb60280ea",
+    "hsk_legacy_runtime_smoke.py": "3ad3035e3ef78d8259b23b43140df2b196a7ff552dec789283182c14bee0bd26"
+  },
+  "release_hold": {
+    "main_push": false,
+    "installed_legacy_acceptance_pending": true
+  }
+}

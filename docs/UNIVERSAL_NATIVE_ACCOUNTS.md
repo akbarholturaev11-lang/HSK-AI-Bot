@@ -21,7 +21,7 @@ until the evidence is complete.
 
 | Required condition | Current evidence and remaining gate |
 | --- | --- |
-| Existing Telegram Pro, XP, lessons, rating and payments stay unchanged | Backend/Android regressions and real-copy migration digests pass: all legacy billing, progress and XP/rating values are preserved. Real installed-client walkthroughs remain required. |
+| Existing Telegram Pro, XP, lessons, rating and payments stay unchanged | Backend/Android regressions and real-copy migration digests pass. The [2026-10-19 owner-selected legacy audit](UNIVERSAL_LEGACY_ACCOUNT_AUDIT_2026-10-19.json) also passes current real service reads for old free/Pro accounts, canonical payment/referral ownership, one new lesson and replay protection, with matching Mini App/Android/Windows/macOS progress. Real installed-client walkthroughs on the legacy snapshot remain required. |
 | Google/Apple users without Telegram can register, start a lesson, use AI Voice and buy Pro | Signup/learning/AI/voice and canonical manual Pro/HSK 3.0 checkout/approval have integration coverage. Direct Android and desktop need no Telegram; real provider, upstream Voice, referral and purchase walkthroughs remain required. Play consumes existing access without a purchase test in this release. |
 | Parallel registration for one Google/Apple identity creates one `users.id` | Railway staging PostgreSQL 18 passes four concurrent Google attempts and four Apple attempts: one account per exact provider identity, with no email merge. Retain this check in CI. |
 | Linking cannot grant access to another learner's Pro or progress | Ownership and identity/session revocation regressions cover isolation; verify the complete staged client flow as well. |

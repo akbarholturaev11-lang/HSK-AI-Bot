@@ -6,8 +6,10 @@ sinovining o‘rnini bosmaydi.
 
 ## 2026-10-19 — eski Telegram akkauntlari uchun yakuniy gate
 
-Egasi boshqa amaliy tekshiruvlarni bajarganini bildirdi; eski akkauntlar
-tekshiruvi hali qolgan. Production va `main` hold saqlanadi.
+Egasi boshqa amaliy tekshiruvlarni bajarganini bildirdi. Tanlangan eski
+akkauntlar bo‘yicha ma’lumot va haqiqiy backend servis sinovi quyida qayd
+etilgan; o‘rnatilgan ilovada aynan shu eski nusxa bilan yurish hali bajarilmadi.
+Production va `main` hold saqlanadi.
 
 - Amaldagi `HSK AI Universal QA / qa` bazasida faqat o‘qish orqali 3 ta user,
   5 ta payment va 3 ta course progress/profile qatori aniqlandi. Bu baza
@@ -22,22 +24,44 @@ tekshiruvi hali qolgan. Production va `main` hold saqlanadi.
 - Hozirgi kodda migratsiya/learning/payment/referral/subscription/progress
   regressionlari: 73 test va 66 subtest o‘tdi, alohida PostgreSQL test URL’i
   talab qiladigan 10 test skip qilindi. Acceptance/rehearsal/statistics
-  to‘plami: 43 test va 46 subtest o‘tdi. Bu joriy yugurishda PostgreSQL 18
-  migratsiya yoki backup restore qayta bajarildi degani emas.
+  to‘plami: 43 test va 46 subtest o‘tdi. Keyin kirib kelgan Voice testi ham
+  10 test va 6 subtest bilan o‘tdi. Quyidagi real backup sinovida restore
+  PostgreSQL 18’da qayta bajarildi; migratsiya zanjiri yangidan bajarilmadi.
 - `test_legacy_paid_learner_keeps_payment_and_shared_progress_after_provider_signin`
   eski Pro hisobining ayni user/payment ID, status, muddat va summalarini,
   Android’da natija saqlanishini va Windows/macOS/Mini App’da progress, XP,
   Pro va reyting mosligini tekshiradi. Provider tasdiqlashi fixture bilan
   almashtirilgan; bu haqiqiy o‘rnatilgan ilova sinovi emas.
 
-Qolgan amaliy qabul: egasiga tegishli tanlangan eski akkaunt nusxasi bilan
-alohida yopiq staging’da oldingi user ID, Pro status/muddatlari, tugallangan
-darslar, XP/reyting ballari, to‘lov/referral/preview qiymatlarini qayd etish;
-Mini App hamda Android/Desktop’da shu akkauntni ochish va taqqoslash; bitta
-darsdan keyin faqat kutilgan progress/XP o‘zgarishini tekshirish. Imkon bo‘lsa
-free/expired/pending va HSK 3.0 ruxsat holatlari ham qamralsin. To‘liq shaxsiy
-tarixli audit bazasini umumiy QA backend’ga ulab yubormang va hozirgi QA
-hisoblarini almashtirmang. Shu tekshiruv yakunlanmaguncha gate ochiq qoladi.
+### Haqiqiy eski qatorlar bilan qo‘shimcha sinov
+
+[Sanitizatsiya qilingan natija](UNIVERSAL_LEGACY_ACCOUNT_AUDIT_2026-10-19.json)
+ikki owner tanlagan eski hisobni qamraydi. Tekshirilgan `0102` va `0108`
+backup hash’lari tasdiqlanib, nusxalar faqat localhost’da ochilgan yangi
+PostgreSQL 18 konteyneriga tiklandi. Production va amaldagi QA bazasi
+o‘zgartirilmadi; servis probelarida tashqi tarmoq bloklandi.
+
+- Free va tasdiqlangan Pro hisoblarning asl ichki ID, eski user ustunlari,
+  progress, XP hodisalari, to‘lov, referral va preview qiymatlari saqlandi.
+  Pullik hisobdagi 3 to‘lov va 163 referral ayni egasiga tegishli bo‘lib qoldi.
+- Hozirgi kodning 47 ta read-only tekshiruvi va 77 ta haqiqiy servis tekshiruvi
+  o‘tdi. Mini App profili hamda alohida lokal sessiyalar bilan Android,
+  Windows va macOS course map servislarida progress/XP/access mos keldi.
+- Pro hisobda keyingi bitta dars haqiqiy Android completion servisi bilan
+  yakunlandi: progress `+1`, mavjud XP/streak qoidasi bo‘yicha XP `+25`.
+  Eski tarix va billing/referral saqlandi. Ayni event ID takrori qo‘shimcha
+  XP/progress bermadi; to‘rtta client servisi yangi natijani bir xil o‘qidi.
+- Profil ochishdagi kunlik reja va uning timestamp’i, darsdan keyingi
+  `last_active_at`/progress timestamp’lari kutilgan o‘zgarish sifatida
+  ajratildi; ular Pro muddati yoki eski tarixning o‘zgarishi deb hisoblanmadi.
+- Qo‘shimcha tanlangan uchinchi hisob saqlangan source va migrated backup’da
+  yo‘q edi. U bo‘yicha saqlanish yoki yo‘qolish xulosasi chiqarilmadi.
+
+Bu servis sinovlarida real Google/Apple tasdig‘i va o‘rnatilgan client UI’si
+ishlatilmadi. Eski nusxa bilan qurilmada yakuniy yurish qoladi. To‘liq shaxsiy
+tarixli audit bazasini umumiy QA backend’ga ulab yubormang; kerak bo‘lsa
+tanlangan egalar bilan yopiq, alohida qabul muhiti tayyorlansin. Amaldagi QA
+hisoblarini almashtirmang va `main` hold’ni avtomatik olib tashlamang.
 
 ## 2026-10-18 — QA fresh database blocker / guarded bootstrap
 
@@ -48,12 +72,16 @@ Old Alembic revisions do not independently create all of the historical
 course tables. Avoid rerunning `alembic upgrade head` against that partially
 migrated database and NEVER stamp it to `0102` by guesswork.
 
-Staging-only services:
+Historical staging services (retired; these are not current test targets):
 - `hsk-universal-qa-db` — isolated disposable PostgreSQL 18 database service
 - `hsk-universal-qa-api` — pinned universal sign-in QA app, failed at migration
 - `Postgres-Iy93` — older staging PostgreSQL holding a previously verified
   `0102_payment_review_preview` restore; **contains real historical data**
 - Production `main`, bot and production PostgreSQL are out of scope.
+
+2026-10-19 inventory’da ushbu eski staging muhiti qolmagan. Hozirgi test
+`HSK AI Universal QA / qa` loyihasida. Eski haqiqiy ma’lumotlar bilan sinov
+uchun tekshirilgan, maxfiy saqlangan backup’dan yangi yopiq nusxa kerak.
 
 To set up a **new** account-testing database safely, an authorized operator can
 use `scripts/qa_schema_only_bootstrap.py`. This is a reviewed helper, **not
