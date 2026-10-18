@@ -5,6 +5,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.course_pilot_event import CoursePilotEvent
+from app.services.admin_analytics_identity import analytics_account_key
 
 
 PILOT_LEVELS = {"hsk1", "hsk2", "hsk3", "hsk4"}
@@ -26,7 +27,7 @@ class CoursePilotEventRepository:
     async def record(
         self,
         *,
-        telegram_id: int,
+        telegram_id: int | None,
         level: str,
         lesson_order: int,
         event_type: str,
@@ -58,17 +59,17 @@ class CoursePilotEventRepository:
         return event
 
     async def distinct_user_count(self, event_type: str | None = None) -> int:
-        query = select(func.count(func.distinct(CoursePilotEvent.telegram_id)))
+        query = select(func.count(func.distinct(analytics_account_key(CoursePilotEvent))))
         if event_type:
             query = query.where(CoursePilotEvent.event_type == event_type)
         result = await self.session.execute(query)
         return int(result.scalar() or 0)
 
     async def lesson_breakdown(self) -> list[tuple[str, int, int, int]]:
-        opened = func.count(func.distinct(CoursePilotEvent.telegram_id)).filter(
+        opened = func.count(func.distinct(analytics_account_key(CoursePilotEvent))).filter(
             CoursePilotEvent.event_type == "opened"
         )
-        completed = func.count(func.distinct(CoursePilotEvent.telegram_id)).filter(
+        completed = func.count(func.distinct(analytics_account_key(CoursePilotEvent))).filter(
             CoursePilotEvent.event_type == "completed"
         )
         result = await self.session.execute(

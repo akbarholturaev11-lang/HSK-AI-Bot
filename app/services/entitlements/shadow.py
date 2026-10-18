@@ -205,9 +205,11 @@ class EntitlementShadowService:
         engine,
         context: dict | None,
     ) -> bool:
-        telegram_id = _int_or_none(getattr(user, "telegram_id", None))
-        if not telegram_id:
+        user_id = _int_or_none(getattr(user, "id", None))
+        if user_id is None or user_id <= 0:
             return True
+        telegram_id = _int_or_none(getattr(user, "telegram_id", None))
+        telegram_id = telegram_id if telegram_id is not None and telegram_id > 0 else None
 
         # Solishtiruvning O'ZAGI — ruxsat berildimi yoki yo'q. Qolgan sonlar
         # tashxis uchun yoziladi, lekin farq deb hisoblanmaydi: masalan eski
@@ -227,6 +229,7 @@ class EntitlementShadowService:
             }
 
         row = EntitlementShadowEvent(
+            user_id=user_id,
             telegram_id=telegram_id,
             action=str(action)[:64],
             client=str(client or "")[:16],
@@ -335,6 +338,7 @@ class EntitlementShadowService:
         )
         return [
             {
+                "user_id": row.user_id,
                 "telegram_id": row.telegram_id,
                 "state": row.state,
                 "legacy_allowed": row.legacy_allowed,

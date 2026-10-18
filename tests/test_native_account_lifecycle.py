@@ -17,11 +17,14 @@ from app.db.models.account_notice_delivery import AccountNoticeDelivery
 from app.db.models.ai_usage import AIUsageBudget
 from app.db.models.android_push import AndroidPushToken
 from app.db.models.course_ad import CourseAdCreative, CourseAdView
+from app.db.models.bot_feedback import BotFeedback
+from app.db.models.release_feedback import ReleaseFeedbackCampaign
 from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.referral import Referral
 from app.db.models.trial_risk_event import TrialRiskEvent
 from app.db.models.user import User
 from app.services.ad_placement_service import AdPlacementService, PLACEMENT_SCREEN_CENTER
+from app.services.course_ad_service import CourseAdService, COURSE_AD_PLACEMENTS
 from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.android_push_service import AndroidPushResult
 from app.api.android_auth import create_android_auth_router
@@ -35,6 +38,8 @@ from app.services.notification_delivery_service import (
 from app.services.pro_trial_service import ProTrialService, REASON_ACTIVE_BUDGET, REASON_ALREADY_USED
 from app.services.onboarding_service import OnboardingService
 from app.services.trial_risk_service import TrialRiskService
+from app.services.bot_feedback_service import BotFeedbackService
+from app.services.release_feedback_service import ReleaseFeedbackService
 
 
 class NativeAccountLifecycleTests(unittest.IsolatedAsyncioTestCase):
@@ -128,6 +133,73 @@ class NativeAccountLifecycleTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual((b["used"], b["remaining"]), (0, 1))
             row = (await session.execute(select(CourseAdView))).scalars().one()
             self.assertEqual((row.user_id, row.user_telegram_id), (1, None))
+
+    async def test_legacy_ad_helper_uses_canonical_ownership_and_optional_real_telegram(self):
+        async with self.sessions() as session:
+            alice, bob = await session.get(User, 1), await session.get(User, 2)
+            session.add(CourseAdCreative(id=1, title="Course notice", media_path="unused.mp4",
+                media_type="video", duration_seconds=7, language="all", is_active=True))
+            await session.flush()
+            ads = CourseAdService(session)
+            for placement in COURSE_AD_PLACEMENTS:
+                result = await ads.record_view(user=alice, ad_id=1, level="hsk1",
+                    lesson_order=1, placement=placement, watched_seconds=7)
+                self.assertTrue(result["ok"])
+            rows = (await session.scalars(select(CourseAdView))).all()
+            self.assertEqual({(row.user_id, row.user_telegram_id) for row in rows}, {(alice.id, None)})
+            self.assertTrue(await ads.has_completed_required_views(
+                user_telegram_id=alice, level="hsk1", lesson_order=1))
+            self.assertFalse(await ads.has_completed_required_views(
+                user_telegram_id=bob, level="hsk1", lesson_order=1))
+            self.assertFalse(await ads.has_completed_required_views(
+                user_telegram_id=None, level="hsk1", lesson_order=1))
+
+            # Attaching Telegram cannot hide the owner's earlier native views.
+            alice.telegram_id = 1001
+            await session.flush()
+            self.assertTrue(await ads.has_completed_required_views(
+                user_telegram_id=1001, level="hsk1", lesson_order=1))
+
+    async def test_ad_caps_ignore_another_canonical_owners_conflicting_telegram_metadata(self):
+        async with self.sessions() as session:
+            alice, legacy = await session.get(User, 1), await session.get(User, 3)
+            session.add(CourseAdCreative(id=1, title="Course notice", media_path="unused.mp4",
+                media_type="video", duration_seconds=7, language="all", is_active=True))
+            await session.flush()
+            for placement in COURSE_AD_PLACEMENTS:
+                session.add(CourseAdView(ad_id=1, user_id=alice.id, user_telegram_id=3003,
+                    level="hsk1", lesson_order=1, placement=placement,
+                    watched_seconds=7, completed=True))
+            session.add(CourseAdView(ad_id=1, user_id=alice.id, user_telegram_id=3003,
+                level="hsk1", lesson_order=1, placement=PLACEMENT_SCREEN_CENTER,
+                watched_seconds=7, completed=True))
+            await session.flush()
+            ads = CourseAdService(session)
+            self.assertTrue(await ads.has_completed_required_views(
+                user_telegram_id=alice, level="hsk1", lesson_order=1))
+            for actor in (legacy, 3003):
+                self.assertFalse(await ads.has_completed_required_views(
+                    user_telegram_id=actor, level="hsk1", lesson_order=1))
+            placements = AdPlacementService(session)
+            self.assertEqual(await placements.used_today(alice, placement=PLACEMENT_SCREEN_CENTER), 1)
+            self.assertEqual(await placements.used_today(legacy, placement=PLACEMENT_SCREEN_CENTER), 0)
+
+    async def test_bot_feedback_scheduler_skips_accounts_without_telegram_before_creating_prompts(self):
+        async with self.sessions() as session:
+            bot = SimpleNamespace(send_message=AsyncMock(return_value=SimpleNamespace(message_id=17)))
+            with patch("app.services.bot_feedback_service.asyncio.sleep", new=AsyncMock()):
+                sent = await BotFeedbackService(session).send_due_feedback_requests(bot)
+            self.assertEqual(sent, 1)
+            self.assertEqual([call.kwargs["chat_id"] for call in bot.send_message.await_args_list], [3003])
+            prompts = (await session.scalars(select(BotFeedback))).all()
+            self.assertEqual([(row.user_id, row.telegram_id, row.prompt_attempts) for row in prompts], [(3, 3003, 1)])
+
+    async def test_release_feedback_campaign_targets_only_real_telegram_transport(self):
+        async with self.sessions() as session:
+            campaign = ReleaseFeedbackCampaign(id=1, title="Existing Telegram campaign")
+            with patch("app.services.release_feedback_service.settings", SimpleNamespace(admin_id_list=[])):
+                targets = await ReleaseFeedbackService(session).target_users(campaign)
+            self.assertEqual([(user.id, user.telegram_id) for user in targets], [(3, 3003)])
 
     async def _devices(self, session):
         for uid in (1, 2):

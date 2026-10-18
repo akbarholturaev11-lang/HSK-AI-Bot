@@ -9,6 +9,7 @@ from app.db.base import Base
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.desktop import DesktopDevice
 from app.db.models.user import User
+from app.db.models.user_client_presence import UserClientPresence
 from app.services.app_promo_decision_service import AppPromoDecisionService
 from app.services.user_device_inventory_service import (
     UserDeviceInventoryService,
@@ -231,6 +232,60 @@ class DeviceIntelligenceDatabaseTests(unittest.IsolatedAsyncioTestCase):
             row for row in snapshot["native_devices"] if row["last_foreground_at"]
         ]
         self.assertEqual(len(foreground_rows), 1)
+
+    async def test_provider_only_device_and_foreground_inventory_is_per_canonical_account(self):
+        async with self.sessions() as session:
+            alice, bob = await session.get(User, 1), await session.get(User, 2)
+            alice.telegram_id = bob.telegram_id = None
+            session.add_all([
+                _device(device_id="native-alice", user_id=1, telegram_id=None, platform="android", version="alice"),
+                _device(device_id="native-bob", user_id=2, telegram_id=None, platform="windows", version="bob"),
+                _device(device_id="revoked-alice", user_id=1, telegram_id=None, platform="macos", revoked=True),
+                CourseMiniAppEvent(user_id=1, telegram_id=None, event_name="android_app_opened",
+                    source="android_app", payload_json='{"device_id":"native-alice"}', created_at=NOW),
+                # An unrelated account cannot make Alice's device appear to open later.
+                CourseMiniAppEvent(user_id=2, telegram_id=None, event_name="android_app_opened",
+                    source="android_app", payload_json='{"device_id":"native-alice"}', created_at=NOW + timedelta(hours=1)),
+            ])
+            await session.commit()
+            service = UserDeviceInventoryService(session)
+            snapshot = await service.snapshot(alice)
+            self.assertEqual(await service.installed_native_platforms(alice), {"android"})
+            self.assertEqual(snapshot["installed_native_platforms"], ["android"])
+            self.assertEqual({row["platform"] for row in snapshot["native_devices"]}, {"android", "macos"})
+            android = next(row for row in snapshot["native_devices"] if row["platform"] == "android")
+            self.assertTrue(android["last_foreground_at"])
+            self.assertEqual(datetime.fromisoformat(android["last_foreground_at"]).replace(tzinfo=timezone.utc), NOW)
+            self.assertEqual((await service.snapshot(bob))["installed_native_platforms"], ["windows"])
+            self.assertEqual((await service.snapshot(None))["native_devices"], [])
+
+    async def test_telegram_attachment_preserves_native_inventory_and_excludes_foreign_metadata(self):
+        async with self.sessions() as session:
+            alice = await session.get(User, 1)
+            alice.telegram_id = None
+            session.add_all([
+                _device(device_id="prelink-alice", user_id=1, telegram_id=None, platform="android", version="alice"),
+                _device(device_id="stale-bob", user_id=2, telegram_id=1001, platform="windows", version="bob"),
+                CourseMiniAppEvent(user_id=1, telegram_id=None, event_name="android_app_opened",
+                    source="android_app", payload_json='{"device_id":"prelink-alice"}', created_at=NOW),
+                CourseMiniAppEvent(user_id=2, telegram_id=1001, event_name="android_app_opened",
+                    source="android_app", payload_json='{"device_id":"prelink-alice"}', created_at=NOW + timedelta(hours=1)),
+                UserClientPresence(user_id=2, telegram_id=1001, surface="telegram_miniapp", platform="ios"),
+            ])
+            await session.commit()
+            service = UserDeviceInventoryService(session)
+            before = await service.snapshot(alice)
+            alice.telegram_id = 1001
+            session.add(UserClientPresence(user_id=1, telegram_id=1001, surface="telegram_miniapp", platform="android"))
+            await session.commit()
+            after = await service.snapshot(1001)
+            self.assertEqual(after["native_devices"], before["native_devices"])
+            self.assertEqual(after["installed_native_platforms"], ["android"])
+            self.assertEqual(await service.installed_native_platforms(1001), {"android"})
+            self.assertEqual([row["platform"] for row in after["presences"]], ["android"])
+            # Integer arguments are actual Telegram IDs, never guessed account IDs.
+            self.assertEqual((await service.snapshot(alice.id))["native_devices"], [])
+            self.assertEqual(await service.installed_native_platforms(alice.id), set())
 
     async def test_aggregate_splits_miniapp_only_native_only_and_both(self):
         async with self.sessions() as session:

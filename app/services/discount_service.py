@@ -6,7 +6,7 @@ from app.db.models.discount_campaign import DiscountCampaign
 from app.repositories.bot_feedback_repo import BotFeedbackRepository
 from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.referral_repo import ReferralRepository
-from app.services.account_identity import actual_telegram_id
+from app.services.account_identity import account_user_id, actual_telegram_id
 
 
 REFERRAL_DISCOUNT_REQUIRED = 3
@@ -202,8 +202,13 @@ class DiscountService:
         plan_type: str,
         payment_method: Optional[str],
     ) -> bool:
-        if campaign.target_telegram_id and campaign.target_telegram_id != user.telegram_id:
-            return False
+        target_user_id = getattr(campaign, "target_user_id", None)
+        if target_user_id is not None:
+            if target_user_id != account_user_id(user):
+                return False
+        elif campaign.target_telegram_id is not None:
+            if campaign.target_telegram_id != actual_telegram_id(user):
+                return False
 
         checks = [
             (campaign.audience_status, getattr(user, "status", None)),

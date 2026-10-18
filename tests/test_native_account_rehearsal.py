@@ -30,6 +30,12 @@ def table(table_name, *, migrated=False, mutate=None):
             row["user_id"] = 7 if migrated else None
         if table_name in helper.DEDUPE:
             row.update({helper.DEDUPE[table_name]: "opened", "dedupe_key": "dedupe"})
+    if table_name == "entitlement_shadow_events":
+        row.update(action="practice.recognition", client="android", day_key="2026-10-18", agree=True)
+    if table_name == "discount_campaigns":
+        row["target_telegram_id"] = 1001
+        if migrated:
+            row["target_user_id"] = 7
     if table_name == "desktop_link_requests":
         row.update(intent="link", status="expired" if migrated else "pending")
         if migrated:
@@ -42,7 +48,8 @@ def table(table_name, *, migrated=False, mutate=None):
     baseline_columns = sorted(name for name in row if not (
         migrated and ((table_name in helper.NEW_OWNER_COLUMNS and name == "user_id") or
                       (table_name == "desktop_link_requests" and name in ("language", "bind_session_id", "approved_identity_id", "referral_code")) or
-                      (table_name == "referrals" and name in helper.REFERRAL_OWNERS))))
+                      (table_name == "referrals" and name in helper.REFERRAL_OWNERS) or
+                      (table_name == "discount_campaigns" and name == "target_user_id"))))
     if mutate:
         mutate(row)
     summary = helper.TableSummary(table_name, sorted(row), baseline_columns, {1001: 7, 1002: 8}, KEY, not migrated)
@@ -53,6 +60,7 @@ def table(table_name, *, migrated=False, mutate=None):
 def snapshots():
     names = set(helper.OWNERS) | {"desktop_link_requests", "desktop_devices"}
     names |= {table for group in helper.CRITICAL.values() for table in group}
+    names.add("discount_campaigns")
     before_tables = {name: table(name) for name in names}
     after_tables = {name: table(name, migrated=True) for name in names}
     before_schema = {name + "." + column: {"type": "int4", "nullable": False}
@@ -68,6 +76,7 @@ def snapshots():
         after_schema[name + ".user_id"] = {"type": "int4", "nullable": True}
     for name in helper.REFERRAL_OWNERS:
         after_schema["referrals." + name] = {"type": "int4", "nullable": True}
+    after_schema["discount_campaigns.target_user_id"] = {"type": "int4", "nullable": True}
     def report(tables, schema, migrated):
         constraints = {"users.users_telegram_id_key": {"kind": "u", "columns": ["telegram_id"], "definition_digest": "unique-tg"},
                        "course_progress.course_progress_user_id_fkey": {"kind": "f", "columns": ["user_id"], "definition_digest": "progress-fk"}}
@@ -152,9 +161,21 @@ class DestinationSafetyTests(unittest.TestCase):
 
 
 class PreservationTests(unittest.TestCase):
+    def test_audit_owner_backfill_never_resolves_anonymous_negative_telegram_ids(self):
+        for name, owner, telegram in (("course_pilot_events", "user_id", "telegram_id"),
+                ("entitlement_shadow_events", "user_id", "telegram_id"),
+                ("discount_campaigns", "target_user_id", "target_telegram_id")):
+            with self.subTest(table=name):
+                row = {"id": 1, owner: None, telegram: -9}
+                summary = helper.TableSummary(name, sorted(row), sorted(row), {-9: 9}, KEY, False)
+                summary.add(row)
+                result = summary.finish()["owners"]
+                self.assertEqual(result["actual_digest"], result["expected_digest"])
+                self.assertEqual(result["backfillable_rows"], 0)
+
     def test_current_preview_inventory_is_required_and_stale_inventory_is_refused(self):
         self.assertEqual(helper.BASE_REVISION, "0102_payment_review_preview")
-        self.assertEqual(helper.HEAD_REVISION, "0107_canonical_referral_owners")
+        self.assertEqual(helper.HEAD_REVISION, "0108_native_audit_ownership")
         before, _ = snapshots()
         inventory = {"read_only": True, "alembic_revisions": [helper.BASE_REVISION], "columns": [
             {"table_name": name.split(".")[0], "column_name": name.split(".")[1]}

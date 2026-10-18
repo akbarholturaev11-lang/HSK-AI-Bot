@@ -5,6 +5,7 @@ from sqlalchemy import (
     BigInteger,
     Boolean,
     DateTime,
+    ForeignKey,
     Integer,
     String,
     Text,
@@ -38,10 +39,17 @@ class EntitlementShadowEvent(Base):
             "agree",
             name="uq_entitlement_shadow_events_daily",
         ),
+        UniqueConstraint(
+            "user_id", "action", "client", "day_key", "agree",
+            name="uq_entitlement_shadow_user_daily",
+        ),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    user_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), index=True, nullable=True,
+    )
+    telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     action: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     client: Mapped[str] = mapped_column(String(16), index=True, nullable=False)
     agree: Mapped[bool] = mapped_column(Boolean, index=True, nullable=False)

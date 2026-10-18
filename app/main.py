@@ -246,6 +246,7 @@ from app.services.ai_provider import (
 )
 from app.repositories.course_audio_repo import CourseAudioRepository
 from app.repositories.user_repo import UserRepository
+from app.services.admin_user_target import parse_admin_user_target, resolve_admin_user_target
 from app.repositories.payment_repo import PaymentRepository
 from app.repositories.release_feedback_repo import ReleaseFeedbackRepository, decode_languages as decode_feedback_languages
 from app.repositories.discount_campaign_repo import DiscountCampaignRepository
@@ -1418,7 +1419,8 @@ async def _admin_access_meta(session, user, payments: list) -> dict:
                 await session.execute(
                     select(ReleaseFeedbackDelivery)
                     .where(
-                        ReleaseFeedbackDelivery.user_telegram_id == user.telegram_id,
+                        (ReleaseFeedbackDelivery.user_telegram_id == user.telegram_id
+                         if user.telegram_id else False),
                         ReleaseFeedbackDelivery.trial_granted_until.is_not(None),
                     )
                     .order_by(ReleaseFeedbackDelivery.try_clicked_at.desc())
@@ -1437,7 +1439,7 @@ async def _admin_access_meta(session, user, payments: list) -> dict:
                     await session.execute(
                         select(BotFeedback)
                         .where(
-                            BotFeedback.telegram_id == user.telegram_id,
+                            owner_clause(BotFeedback, user, telegram_column="telegram_id"),
                             BotFeedback.reward_granted_at.is_not(None),
                         )
                         .order_by(BotFeedback.reward_granted_at.desc())
@@ -1527,7 +1529,7 @@ async def _admin_user_payload(session, user) -> dict:
         (
             await session.execute(
                 select(BotReachabilityEvent)
-                .where(BotReachabilityEvent.telegram_id == user.telegram_id)
+                .where(owner_clause(BotReachabilityEvent, user, telegram_column="telegram_id"))
                 .order_by(BotReachabilityEvent.created_at.desc(), BotReachabilityEvent.id.desc())
                 .limit(12)
             )
@@ -1552,7 +1554,7 @@ async def _admin_user_payload(session, user) -> dict:
                     func.max(CourseMiniAppEvent.created_at).label("last_at"),
                 )
                 .where(
-                    CourseMiniAppEvent.telegram_id == user.telegram_id,
+                    owner_clause(CourseMiniAppEvent, user, telegram_column="telegram_id"),
                     CourseMiniAppEvent.created_at >= user.bot_blocked_at,
                     CourseMiniAppEvent.event_name.in_(activity_names),
                 )
@@ -1566,7 +1568,7 @@ async def _admin_user_payload(session, user) -> dict:
             "desktop_opened_at": _mini_dt(activity_by_name.get("desktop_app_opened")),
         }
     block_cause = await BotBlockCauseService(session).analyze(user)
-    devices = await UserDeviceInventoryService(session).snapshot(user.telegram_id)
+    devices = await UserDeviceInventoryService(session).snapshot(user)
     now = datetime.now(timezone.utc)
     today_start = admin_miniapp_today_start(now)
     hot_since = now - HOT_LEAD_ACTIVITY_WINDOW
@@ -1574,6 +1576,7 @@ async def _admin_user_payload(session, user) -> dict:
         "ok": True,
         "user": {
             "id": user.telegram_id,
+            "account_id": user.id,
             "name": user.full_name or "Nomsiz",
             "username": user.username,
             "language": user.language,
@@ -3722,8 +3725,12 @@ async def admin_miniapp_users_search(request: Request):
 
         if query_text:
             value = query_text[1:] if query_text.startswith("@") else query_text
-            if value.isdigit():
-                stmt = stmt.where(User.telegram_id == int(value))
+            if value.isascii() and value.isdigit():
+                number = int(value) if len(value) <= 19 else 0
+                stmt = stmt.where(or_(
+                    User.id == number if 0 < number <= 2**31 - 1 else False,
+                    User.telegram_id == number if 0 < number <= 2**63 - 1 else False,
+                ))
             else:
                 pattern = f"%{value.lower()}%"
                 stmt = stmt.where(
@@ -3803,11 +3810,14 @@ async def admin_miniapp_user_detail(request: Request):
         return auth_error
     try:
         payload = await request.json()
-        target_id = int(payload.get("telegram_id") or 0)
+        target = parse_admin_user_target(payload)
     except (TypeError, ValueError):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_user_payload"})
     async with async_session_maker() as session:
-        user = await UserRepository(session).get_by_telegram_id(target_id)
+        try:
+            user = await resolve_admin_user_target(session, target)
+        except ValueError as exc:
+            return JSONResponse(status_code=400, content={"ok": False, "error": str(exc)})
         if not user:
             return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
         data = await _admin_user_payload(session, user)
@@ -3847,7 +3857,7 @@ async def admin_miniapp_user_give_access(request: Request):
         return auth_error
     try:
         payload = await request.json()
-        target_id = int(payload.get("telegram_id") or 0)
+        target = parse_admin_user_target(payload)
         plan = str(payload.get("plan") or "").strip()
     except (AttributeError, TypeError, ValueError):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_access_payload"})
@@ -3856,29 +3866,36 @@ async def admin_miniapp_user_give_access(request: Request):
         duration_days = normalize_manual_subscription_days(payload.get("duration_days"))
     else:
         duration_days = PLAN_DURATIONS.get(plan)
-    if target_id <= 0 or duration_days is None:
+    if duration_days is None:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_access_payload"})
 
     async with async_session_maker() as session:
-        grant = await SubscriptionService(session).grant_manual_paid_access(target_id, duration_days)
+        try:
+            target_user = await resolve_admin_user_target(session, target, lock=True)
+        except ValueError as exc:
+            return JSONResponse(status_code=400, content={"ok": False, "error": str(exc)})
+        grant = (await SubscriptionService(session).grant_manual_paid_access(target_user, duration_days)
+                 if target_user else None)
         if not grant:
             await session.rollback()
             return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
         user, extended = grant
+        target_id = user.id
         await session.commit()
         # Qo'lda obuna berilganini user bilmasa, ochilgan narsadan
         # foydalanmaydi. Xabar yuborilmasa ham amal bajarilgan bo'ladi.
         try:
-            await bot.send_message(
-                chat_id=target_id,
-                text=t(
-                    "admin_access_granted_notice",
-                    user.language or "ru",
-                    days=duration_days,
-                    end_date=user.end_date.strftime("%d.%m.%Y") if user.end_date else "—",
-                ),
-                parse_mode="HTML",
-            )
+            if user.telegram_id:
+                await bot.send_message(
+                    chat_id=user.telegram_id,
+                    text=t(
+                        "admin_access_granted_notice",
+                        user.language or "ru",
+                        days=duration_days,
+                        end_date=user.end_date.strftime("%d.%m.%Y") if user.end_date else "—",
+                    ),
+                    parse_mode="HTML",
+                )
         except Exception:
             logger.exception("Manual subscription notice not delivered to %s", target_id)
     logger.info(
@@ -3908,17 +3925,25 @@ async def admin_miniapp_user_delete(request: Request):
         return auth_error
     try:
         payload = await request.json()
-        target_id = int(payload.get("telegram_id") or 0)
+        target = parse_admin_user_target(payload)
         confirm = str(payload.get("confirm") or "").strip()
     except (TypeError, ValueError):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_delete_payload"})
-    if target_id <= 0 or confirm != str(target_id):
+    if confirm != str(target[0] if target[0] is not None else target[1]):
         return JSONResponse(status_code=400, content={"ok": False, "error": "delete_confirmation_required"})
-    if _is_admin_id(target_id):
-        return JSONResponse(status_code=400, content={"ok": False, "error": "cannot_delete_admin"})
+    target_id = None
     try:
         async with async_session_maker() as session:
-            deleted = await UserRepository(session).delete_by_telegram_id(target_id)
+            try:
+                user = await resolve_admin_user_target(session, target, lock=True)
+            except ValueError as exc:
+                return JSONResponse(status_code=400, content={"ok": False, "error": str(exc)})
+            if not user:
+                return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
+            target_id, target_user_id = user.telegram_id, user.id
+            if target_id and _is_admin_id(target_id):
+                return JSONResponse(status_code=400, content={"ok": False, "error": "cannot_delete_admin"})
+            deleted = await UserRepository(session).delete_by_user_id(target_user_id)
             if not deleted:
                 return JSONResponse(
                     status_code=404,
@@ -3938,13 +3963,14 @@ async def admin_miniapp_user_delete(request: Request):
 
     # Commitdan keyingina process-local guard cache tozalanadi. Commit yiqilsa
     # old account holati cache bilan birga o'zgarishsiz qoladi.
-    invalidate_block_cache(target_id)
+    if target_id:
+        invalidate_block_cache(target_id)
     logger.info(
         "admin_user_deleted admin_id=%s target_id=%s",
         telegram_id,
         target_id,
     )
-    return JSONResponse(content={"ok": True, "telegram_id": target_id})
+    return JSONResponse(content={"ok": True, "user_id": target_user_id, "telegram_id": target_id})
 
 
 @app.post("/api/admin-miniapp/users/block")
@@ -3955,25 +3981,30 @@ async def admin_miniapp_user_block(request: Request):
         return auth_error
     try:
         payload = await request.json()
-        target_id = int(payload.get("telegram_id") or 0)
-        blocked = bool(payload.get("blocked"))
+        target = parse_admin_user_target(payload)
+        blocked = payload.get("blocked")
     except (TypeError, ValueError):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_block_payload"})
-    if target_id <= 0:
+    if not isinstance(blocked, bool):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_block_payload"})
-    if _is_admin_id(target_id):
-        return JSONResponse(status_code=400, content={"ok": False, "error": "cannot_block_admin"})
     async with async_session_maker() as session:
-        user = await UserRepository(session).set_blocked(target_id, blocked)
+        try:
+            user = await resolve_admin_user_target(session, target, lock=True)
+        except ValueError as exc:
+            return JSONResponse(status_code=400, content={"ok": False, "error": str(exc)})
         if not user:
             await session.rollback()
             return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
+        target_id = user.telegram_id
+        if target_id and _is_admin_id(target_id):
+            return JSONResponse(status_code=400, content={"ok": False, "error": "cannot_block_admin"})
+        user = await UserRepository(session).set_blocked(user, blocked)
         await session.commit()
         status = user.status
         # Bloklashda xabar yuborilmaydi: blok odatda suiiste'mol uchun qo'yiladi
         # va ogohlantirish bahs hamda yangi akkaunt ochishga turtki beradi.
         # Blokdan chiqarish esa yaxshi xabar — user qaytib kelishi kerak.
-        if not blocked:
+        if not blocked and target_id:
             try:
                 await bot.send_message(
                     chat_id=target_id,
@@ -3983,7 +4014,8 @@ async def admin_miniapp_user_block(request: Request):
             except Exception:
                 logger.exception("Unblock notice not delivered to %s", target_id)
     # Mini App guard cache'i eskirmasin: blok/blokdan chiqarish darhol ishlasin.
-    invalidate_block_cache(target_id)
+    if target_id:
+        invalidate_block_cache(target_id)
     return JSONResponse(content={"ok": True, "status": status, "blocked": status == "blocked"})
 
 
@@ -4004,10 +4036,8 @@ async def admin_miniapp_user_message(request: Request):
     except ValueError:
         payload = {}
     try:
-        target_id = int(payload.get("telegram_id") or 0)
+        target = parse_admin_user_target(payload)
     except (TypeError, ValueError):
-        target_id = 0
-    if target_id <= 0:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_user_payload"})
     checked = _broadcast_validate_message(payload)
     if isinstance(checked, JSONResponse):
@@ -4016,11 +4046,16 @@ async def admin_miniapp_user_message(request: Request):
     button_config = parse_button_config(payload.get("button"))
     translate = bool(payload.get("translate"))
     async with async_session_maker() as session:
-        user = await UserRepository(session).get_by_telegram_id(target_id)
+        try:
+            user = await resolve_admin_user_target(session, target)
+        except ValueError as exc:
+            return JSONResponse(status_code=400, content={"ok": False, "error": str(exc)})
         if not user:
             return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
         if user.status == "blocked":
             return JSONResponse(status_code=400, content={"ok": False, "error": "user_is_blocked"})
+        if not user.telegram_id:
+            return JSONResponse(status_code=409, content={"ok": False, "error": "telegram_not_linked"})
         service = AdminBroadcastService(bot, session)
         sent, failed, blocked = await service.deliver(
             [user],
@@ -4560,6 +4595,8 @@ async def admin_miniapp_campaign_create(request: Request):
         payload = await request.json()
     except ValueError:
         payload = {}
+    if not isinstance(payload, dict):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_campaign_payload"})
     kind = str(payload.get("kind") or "").strip()
     title = str(payload.get("title") or "").strip()[:120]
     text = str(payload.get("text") or "").strip()
@@ -4609,17 +4646,20 @@ async def admin_miniapp_campaign_create(request: Request):
             percent = max(1, min(int(payload.get("percent") or 20), 90))
             languages = filters.get("languages") or []
             quota_raw = int(payload.get("quota_total") or 0)
-            try:
-                target_id = int(payload.get("target_telegram_id") or 0) or None
-            except (TypeError, ValueError):
-                target_id = None
-            if target_id:
-                target_user = await UserRepository(session).get_by_telegram_id(target_id)
+            target_user = None
+            if "target_user_id" in payload or "target_telegram_id" in payload:
+                try:
+                    target = parse_admin_user_target({key.removeprefix("target_"): payload[key]
+                        for key in ("target_user_id", "target_telegram_id") if key in payload})
+                    target_user = await resolve_admin_user_target(session, target, lock=True)
+                except ValueError as exc:
+                    return JSONResponse(status_code=400, content={"ok": False, "error": str(exc)})
                 if not target_user:
                     return JSONResponse(
                         status_code=404,
                         content={"ok": False, "error": "target_user_not_found"},
                     )
+            target_id = target_user.id if target_user else None
             # Sarlavha va sabab uch tilga o'giriladi — aks holda tojik/rus
             # foydalanuvchiga admin yozgan xom matn borardi. Bot admin oqimi
             # ham shunday qiladi (`admin_discount.py:161`). AI o'chiq bo'lsa
@@ -4649,7 +4689,8 @@ async def admin_miniapp_campaign_create(request: Request):
                 audience_status=None if target_id else filters.get("status"),
                 audience_language=None if target_id else (languages[0] if languages else None),
                 audience_level=None if target_id else filters.get("level"),
-                target_telegram_id=target_id,
+                target_user_id=target_id,
+                target_telegram_id=target_user.telegram_id if target_user else None,
                 payment_method=None if target_id else filters.get("payment_method"),
                 plan_type=None if target_id else filters.get("plan"),
                 quota_total=None if target_id else (quota_raw if quota_raw > 0 else None),
@@ -5762,8 +5803,8 @@ async def subscription_miniapp_payment_status(request: Request):
         )
 
     async with async_session_maker() as session:
-        payment = await PaymentRepository(session).get_by_id(payment_id)
-        if payment is None or int(payment.user_telegram_id) != int(telegram_id):
+        payment = await PaymentRepository(session).get_by_id(payment_id, actor=telegram_id)
+        if payment is None:
             return JSONResponse(
                 status_code=404,
                 content={"ok": False, "error": "payment_not_found"},

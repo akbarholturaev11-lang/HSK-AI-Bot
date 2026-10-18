@@ -3,6 +3,8 @@ from datetime import datetime
 
 from sqlalchemy import case, func, or_, select
 
+from app.services.admin_analytics_identity import analytics_account_key
+
 from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.payment import Payment
@@ -75,7 +77,7 @@ def _event_conditions(event_names: tuple[str, ...], since: datetime | None = Non
 async def _count_unique_users(session, event_names: tuple[str, ...], since: datetime | None = None) -> int:
     return (
         await session.execute(
-            select(func.count(func.distinct(CourseMiniAppEvent.telegram_id)))
+            select(func.count(func.distinct(analytics_account_key(CourseMiniAppEvent))))
             .select_from(CourseMiniAppEvent)
             .where(*_event_conditions(event_names, since))
         )
@@ -103,12 +105,13 @@ async def _count_completed_book_lessons(session, since: datetime | None = None) 
     """
     logical_completions = (
         select(
-            CourseMiniAppEvent.telegram_id,
+            analytics_account_key(CourseMiniAppEvent),
             CourseMiniAppEvent.level,
             CourseMiniAppEvent.lesson_id,
             CourseMiniAppEvent.lesson_order,
         )
         .where(
+            analytics_account_key(CourseMiniAppEvent).is_not(None),
             *_event_conditions(
                 ("book_lesson_completed", "lesson_completed"),
                 since,
@@ -166,10 +169,10 @@ async def feature_usage_stats(
         FeatureUsage(
             label="🎤 Voice roleplay",
             today_users=await _count_distinct(
-                session, VoicePracticeSession.user_telegram_id, VoicePracticeSession.started_at >= today_start
+                session, analytics_account_key(VoicePracticeSession, telegram_column="user_telegram_id"), VoicePracticeSession.started_at >= today_start
             ),
             week_users=await _count_distinct(
-                session, VoicePracticeSession.user_telegram_id, VoicePracticeSession.started_at >= week_ago
+                session, analytics_account_key(VoicePracticeSession, telegram_column="user_telegram_id"), VoicePracticeSession.started_at >= week_ago
             ),
         )
     )
@@ -180,13 +183,13 @@ async def feature_usage_stats(
             label="🤖 AI chat aktiv user",
             today_users=await _count_distinct(
                 session,
-                AIUsageEvent.user_telegram_id,
+                analytics_account_key(AIUsageEvent, telegram_column="user_telegram_id"),
                 AIUsageEvent.created_at >= today_start,
                 AIUsageEvent.source == "qa",
             ),
             week_users=await _count_distinct(
                 session,
-                AIUsageEvent.user_telegram_id,
+                analytics_account_key(AIUsageEvent, telegram_column="user_telegram_id"),
                 AIUsageEvent.created_at >= week_ago,
                 AIUsageEvent.source == "qa",
             ),

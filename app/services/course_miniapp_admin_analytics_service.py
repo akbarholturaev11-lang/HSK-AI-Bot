@@ -8,6 +8,8 @@ from typing import Any, Iterable
 
 from sqlalchemy import func, select
 
+from app.services.admin_analytics_identity import analytics_account_key, analytics_identity
+
 from app.db.models.course_miniapp_event import COURSE_MINIAPP_EVENT_NAMES, CourseMiniAppEvent
 from app.db.models.course_xp_event import CourseXpEvent
 
@@ -90,9 +92,10 @@ def _is_checkpoint_paywall_source(source: Any) -> bool:
 def build_foundation_metrics(rows: Iterable[tuple], *, now: datetime) -> dict[str, Any]:
     """Build Starter 0 cohort metrics from the existing event stream.
 
-    Tuple shape: ``(event_name, telegram_id, source, level, lesson_order,
+    Tuple shape: ``(event_name, account_key, source, level, lesson_order,
     payload_json, created_at)``. Conversions are chronological and version-bound;
     a completion without a matching earlier start is deliberately excluded.
+    The identity slot also accepts legacy integer callers.
     """
 
     now_utc = _as_utc(now) or datetime.now(timezone.utc)
@@ -101,7 +104,7 @@ def build_foundation_metrics(rows: Iterable[tuple], *, now: datetime) -> dict[st
         if len(row) < 7:
             continue
         created_at = _as_utc(row[6])
-        telegram_id = _int(row[1])
+        telegram_id = analytics_identity(row[1])
         if not created_at or not telegram_id:
             continue
         events.append(
@@ -337,7 +340,7 @@ class CourseMiniAppAdminAnalyticsService:
 
     async def _counts_by_event(self, *, since: datetime | None = None, unique: bool = False) -> dict[str, int]:
         count_expr = (
-            func.count(func.distinct(CourseMiniAppEvent.telegram_id))
+            func.count(func.distinct(analytics_account_key(CourseMiniAppEvent)))
             if unique
             else func.count()
         )
@@ -367,7 +370,7 @@ class CourseMiniAppAdminAnalyticsService:
                 CourseMiniAppEvent.level,
                 CourseMiniAppEvent.lesson_order,
                 CourseMiniAppEvent.event_name,
-                func.count(func.distinct(CourseMiniAppEvent.telegram_id)).label("cnt"),
+                func.count(func.distinct(analytics_account_key(CourseMiniAppEvent))).label("cnt"),
             )
             .select_from(CourseMiniAppEvent)
             .where(
@@ -406,7 +409,7 @@ class CourseMiniAppAdminAnalyticsService:
         since: datetime | None,
         now: datetime,
     ) -> dict[str, Any]:
-        cohort = select(CourseMiniAppEvent.telegram_id).where(
+        cohort = select(analytics_account_key(CourseMiniAppEvent)).where(
             CourseMiniAppEvent.event_name == "foundation_started",
             CourseMiniAppEvent.created_at <= now,
         )
@@ -416,7 +419,7 @@ class CourseMiniAppAdminAnalyticsService:
 
         conditions = [
             CourseMiniAppEvent.event_name.in_(FOUNDATION_FUNNEL_EVENT_NAMES),
-            CourseMiniAppEvent.telegram_id.in_(cohort),
+            analytics_account_key(CourseMiniAppEvent).in_(cohort),
             CourseMiniAppEvent.created_at <= now,
         ]
         if since is not None:
@@ -425,7 +428,7 @@ class CourseMiniAppAdminAnalyticsService:
             await self.session.execute(
                 select(
                     CourseMiniAppEvent.event_name,
-                    CourseMiniAppEvent.telegram_id,
+                    analytics_account_key(CourseMiniAppEvent),
                     CourseMiniAppEvent.source,
                     CourseMiniAppEvent.level,
                     CourseMiniAppEvent.lesson_order,

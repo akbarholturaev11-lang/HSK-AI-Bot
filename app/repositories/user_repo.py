@@ -351,7 +351,7 @@ class UserRepository:
         level: Optional[str] = None,
         include_active_subscribers: bool = False,
     ) -> list[User]:
-        query = select(User).where(User.status != "blocked")
+        query = select(User).where(User.status != "blocked", User.telegram_id > 0)
         if languages:
             query = query.where(User.language.in_(languages))
         if course_track == "hsk30":
@@ -478,13 +478,9 @@ class UserRepository:
         # Bu ustunlar tarixan FK emas, shuning uchun DB CASCADE yordam bermaydi.
         await self.session.execute(
             sql_update(User)
-            .where(User.referrer_id == uid)
-            .values(referrer_id=None)
-        )
-        await self.session.execute(
-            sql_update(User)
-            .where(telegram_match(User.referred_by_telegram_id))
-            .values(referred_by_telegram_id=None)
+            .where(or_(User.referrer_id == uid, and_(User.referrer_id.is_(None),
+                telegram_match(User.referred_by_telegram_id))))
+            .values(referrer_id=None, referred_by_telegram_id=None)
         )
 
         # Tasdiqlangan to'lovlar kompaniyaning accounting/business tarixi.
@@ -501,9 +497,8 @@ class UserRepository:
             payment_owner,
             Payment.payment_status == "approved",
         )
-        other_canonical_payment_ids = select(Payment.id).where(
-            Payment.user_id.is_not(None), Payment.user_id != uid,
-        )
+        owned_payment_ids = select(Payment.id).where(payment_owner)
+        all_payment_ids = select(Payment.id)
         await self.session.execute(
             sql_update(PortfolioTransaction)
             .where(
@@ -511,7 +506,8 @@ class UserRepository:
                     and_(
                         telegram_match(PortfolioTransaction.user_telegram_id),
                         or_(PortfolioTransaction.payment_id.is_(None),
-                            PortfolioTransaction.payment_id.not_in(other_canonical_payment_ids)),
+                            PortfolioTransaction.payment_id.in_(owned_payment_ids),
+                            PortfolioTransaction.payment_id.not_in(all_payment_ids)),
                     ),
                     PortfolioTransaction.payment_id.in_(approved_payment_ids),
                 )
@@ -565,10 +561,7 @@ class UserRepository:
         # Native/desktop auth zanjiri. SQLite test muhitida ham FK CASCADEga
         # suyanib qolmaslik uchun child rowlar aniq tartibda o'chiriladi.
         device_ids = select(DesktopDevice.id).where(
-            or_(
-                DesktopDevice.user_id == uid,
-                telegram_match(DesktopDevice.telegram_id),
-            )
+            owner_clause(DesktopDevice, user, telegram_column="telegram_id")
         )
         await self.session.execute(
             sql_delete(AndroidPushToken).where(AndroidPushToken.device_id.in_(device_ids))
@@ -578,10 +571,7 @@ class UserRepository:
         )
         await self.session.execute(
             sql_delete(DesktopDevice).where(
-                or_(
-                    DesktopDevice.user_id == uid,
-                    telegram_match(DesktopDevice.telegram_id),
-                )
+                owner_clause(DesktopDevice, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
@@ -589,7 +579,9 @@ class UserRepository:
                 or_(
                     DesktopLinkRequest.bind_user_id == uid,
                     DesktopLinkRequest.approved_user_id == uid,
-                    telegram_match(DesktopLinkRequest.approved_telegram_id),
+                    and_(DesktopLinkRequest.bind_user_id.is_(None),
+                         DesktopLinkRequest.approved_user_id.is_(None),
+                         telegram_match(DesktopLinkRequest.approved_telegram_id)),
                 )
             )
         )
@@ -640,65 +632,45 @@ class UserRepository:
         ]
         for model, column in by_telegram_id:
             await self.session.execute(
-                sql_delete(model).where(telegram_match(column))
+                sql_delete(model).where(owner_clause(model, user, telegram_column=column.key)
+                    if hasattr(model, "user_id") else telegram_match(column))
             )
 
         # user_id SET NULL bo'lishi mumkin bo'lgan yoki legacy rowlarda user_id
         # yo'q bo'lib, Telegram ID saqlanib qolishi mumkin bo'lgan jadvallar.
         await self.session.execute(
             sql_delete(AccountNoticeDelivery).where(
-                or_(
-                    AccountNoticeDelivery.user_id == uid,
-                    telegram_match(AccountNoticeDelivery.telegram_id),
-                )
+                owner_clause(AccountNoticeDelivery, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(BotOutboundEvent).where(
-                or_(
-                    BotOutboundEvent.user_id == uid,
-                    telegram_match(BotOutboundEvent.telegram_id),
-                )
+                owner_clause(BotOutboundEvent, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(BotReachabilityEvent).where(
-                or_(
-                    BotReachabilityEvent.user_id == uid,
-                    telegram_match(BotReachabilityEvent.telegram_id),
-                )
+                owner_clause(BotReachabilityEvent, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(ConversionFunnelEvent).where(
-                or_(
-                    ConversionFunnelEvent.user_id == uid,
-                    telegram_match(ConversionFunnelEvent.telegram_id),
-                )
+                owner_clause(ConversionFunnelEvent, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(CourseMiniAppEvent).where(
-                or_(
-                    CourseMiniAppEvent.user_id == uid,
-                    telegram_match(CourseMiniAppEvent.telegram_id),
-                )
+                owner_clause(CourseMiniAppEvent, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(CoursePilotEvent).where(
-                or_(
-                    CoursePilotEvent.user_id == uid,
-                    telegram_match(CoursePilotEvent.telegram_id),
-                )
+                owner_clause(CoursePilotEvent, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(CourseUserNotification).where(
-                or_(
-                    CourseUserNotification.user_id == uid,
-                    telegram_match(CourseUserNotification.telegram_id),
-                )
+                owner_clause(CourseUserNotification, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
@@ -708,26 +680,17 @@ class UserRepository:
         )
         await self.session.execute(
             sql_delete(TrialRiskEvent).where(
-                or_(
-                    TrialRiskEvent.user_id == uid,
-                    telegram_match(TrialRiskEvent.telegram_id),
-                )
+                owner_clause(TrialRiskEvent, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(BotFeedback).where(
-                or_(
-                    BotFeedback.user_id == uid,
-                    telegram_match(BotFeedback.telegram_id),
-                )
+                owner_clause(BotFeedback, user, telegram_column="telegram_id")
             )
         )
         await self.session.execute(
             sql_delete(CourseAdView).where(
-                or_(
-                    CourseAdView.user_id == uid,
-                    telegram_match(CourseAdView.user_telegram_id),
-                )
+                owner_clause(CourseAdView, user, telegram_column="user_telegram_id")
             )
         )
 
@@ -763,7 +726,9 @@ class UserRepository:
         # (NULL target) and campaigns for every other learner are preserved.
         await self.session.execute(
             sql_delete(DiscountCampaign).where(
-                telegram_match(DiscountCampaign.target_telegram_id)
+                or_(DiscountCampaign.target_user_id == uid,
+                    and_(DiscountCampaign.target_user_id.is_(None),
+                         telegram_match(DiscountCampaign.target_telegram_id)))
             )
         )
 
@@ -771,13 +736,13 @@ class UserRepository:
         await self.session.flush()
         return True
 
-    async def set_blocked(self, telegram_id: int, blocked: bool) -> Optional[User]:
+    async def set_blocked(self, telegram_id: int | User, blocked: bool) -> Optional[User]:
         """Foydalanuvchini admin tomonidan bloklaydi yoki blokdan chiqaradi.
 
         Blokdan chiqarilganda holat obuna muddatiga qarab tiklanadi:
         muddati o'tmagan tasdiqlangan obuna bo'lsa "active", aks holda "free".
         """
-        user = await self.get_by_telegram_id(telegram_id)
+        user = await self.get_by_actor(telegram_id)
         if not user:
             return None
         if blocked:

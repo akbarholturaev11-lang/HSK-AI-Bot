@@ -2567,7 +2567,7 @@ async def admin_broadcast_handler(message: Message, session):
         await message.answer("Foydalanish: <code>/broadcast_all Xabar matni</code>", parse_mode="HTML")
         return
 
-    result = await session.execute(select(User.telegram_id))
+    result = await session.execute(select(User.telegram_id).where(User.telegram_id.is_not(None)))
     all_ids = [row.telegram_id for row in result.fetchall()]
 
     sent = 0

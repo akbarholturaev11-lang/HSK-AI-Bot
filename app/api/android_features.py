@@ -2181,7 +2181,8 @@ def create_android_features_router(
             message = (
                 f"{heading}\n"
                 f"👤 {escape(str(user.full_name or '-'))}\n"
-                f"🆔 Telegram: {user.telegram_id}\n"
+                f"🆔 User ID: {user.id}\n"
+                f"Telegram: {user.telegram_id or '—'}\n"
                 f"📱 Versiya: {escape(report.app_version)}\n"
                 f"📍 Ekran: {escape(report.screen)}\n\n"
                 f"📝 {escape(report.description)}"

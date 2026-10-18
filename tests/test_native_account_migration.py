@@ -24,10 +24,11 @@ def migration(number):
 class NativeAccountMigrationTests(unittest.TestCase):
     def test_revision_chain_has_one_complete_head(self):
         scripts = ScriptDirectory.from_config(Config('alembic.ini'))
-        self.assertEqual(scripts.get_heads(), ['0107_canonical_referral_owners'])
+        self.assertEqual(scripts.get_heads(), ['0108_native_audit_ownership'])
         self.assertLessEqual(len(scripts.get_heads()[0]), 32)
         self.assertEqual([r.revision for r in scripts.iterate_revisions(
-            '0107_canonical_referral_owners', '0101_account_deletion_requests')], [
+            '0108_native_audit_ownership', '0101_account_deletion_requests')], [
+                '0108_native_audit_ownership',
                 '0107_canonical_referral_owners', '0106_canonical_payment_ownership', '0105_native_ai_voice_ownership', '0104_native_account_foundation',
                 '0103_native_identity_accounts', '0102_payment_review_preview'])
 

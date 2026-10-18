@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import defer
 
 from app.db.models.course_ad import CourseAdCreative, CourseAdView
+from app.services.account_identity import actual_telegram_id, owner_clause
 from app.services.course_ad_translation_service import localize_ad_copy
 
 
@@ -612,7 +613,7 @@ class CourseAdService:
         view = CourseAdView(
             ad_id=ad.id,
             user_id=getattr(user, "id", None),
-            user_telegram_id=int(getattr(user, "telegram_id", 0) or 0),
+            user_telegram_id=actual_telegram_id(user),
             level=str(level or "hsk1")[:16],
             lesson_order=int(lesson_order or 0),
             placement=placement,
@@ -631,13 +632,14 @@ class CourseAdService:
     async def has_completed_required_views(
         self,
         *,
-        user_telegram_id: int,
+        user_telegram_id,
         level: str,
         lesson_order: int,
     ) -> bool:
+        """Accept the canonical account or a legacy real Telegram ID."""
         result = await self.session.execute(
             select(distinct(CourseAdView.placement))
-            .where(CourseAdView.user_telegram_id == int(user_telegram_id))
+            .where(owner_clause(CourseAdView, user_telegram_id))
             .where(CourseAdView.level == str(level or "hsk1")[:16])
             .where(CourseAdView.lesson_order == int(lesson_order or 0))
             .where(CourseAdView.completed.is_(True))

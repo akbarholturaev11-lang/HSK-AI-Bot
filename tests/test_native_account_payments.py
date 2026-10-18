@@ -16,6 +16,7 @@ from app.db.models.ai_usage import AIUsageBudget
 from app.db.models.android_push import AndroidPushToken
 from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.payment import Payment
+from app.db.models.portfolio import PortfolioTransaction
 from app.db.models.user import User
 from app.services.ai_usage_budget_service import AIUsageBudgetService, PAYMENT_PREVIEW_PLAN_TYPE
 from app.services.android_payment_push_service import AndroidPaymentPushService
@@ -107,6 +108,77 @@ class NativePaymentActivationTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(neighbour.payment_preview_payment_id, other.id)
             self.assertEqual(UserAccessStateService.classify(neighbour), UserAccessState.TEMPORARY_TRIAL)
 
+    async def test_paid_terms_budgets_and_revenue_match_for_provider_and_telegram_accounts(self):
+        now = datetime.now(timezone.utc)
+        for uid in (1, 2, 3):
+            for plan_type, days in (("10_days", 10), ("1_month", 30), ("3_months", 90)):
+                for initial_state in ("free", "temporary", "paid", "expired"):
+                    with self.subTest(uid=uid, plan_type=plan_type, initial_state=initial_state):
+                        async with self.sessions() as session:
+                            user = await session.get(User, uid)
+                            user.status = "free" if initial_state == "free" else "active"
+                            user.payment_status = "approved" if initial_state in {"paid", "expired"} else "none"
+                            original_start = now - timedelta(days=5)
+                            original_end = now + timedelta(days=4) if initial_state != "expired" else now - timedelta(days=1)
+                            user.start_date = original_start
+                            user.end_date = original_end if initial_state != "free" else None
+                            user.payment_preview_available = False
+                            user.payment_preview_payment_id = None
+                            user.trial_used = False
+                            user.discount_used = False
+                            user.discount_eligible = True
+                            payment = Payment(user_id=uid, user_telegram_id=user.telegram_id,
+                                plan_type=plan_type, amount=100, currency="TJS", payment_status="approved")
+                            session.add(payment)
+                            await session.flush()
+                            # A real legacy integer remains Telegram transport; provider
+                            # calls carry the authenticated User rather than its bare ID.
+                            actor = user.telegram_id if uid == 3 else user
+                            with patch.object(AIUsageBudgetService, "_live_or_manual_usd_rates",
+                                              new=AsyncMock(return_value={"tjs": 10, "cny": 7})):
+                                self.assertTrue(await SubscriptionService(session).activate_plan(
+                                    actor, plan_type, payment=payment))
+                            actual_start = UserAccessStateService.as_utc(user.start_date)
+                            actual_end = UserAccessStateService.as_utc(user.end_date)
+                            if initial_state == "paid":
+                                self.assertEqual(actual_start, original_start)
+                                self.assertEqual(actual_end, original_end + timedelta(days=days))
+                            else:
+                                self.assertGreaterEqual(actual_start, now)
+                                self.assertEqual(actual_end - actual_start, timedelta(days=days))
+                            self.assertEqual(UserAccessStateService.classify(user), UserAccessState.PAID)
+                            self.assertTrue(user.payment_preview_available)
+                            self.assertEqual((user.discount_used, user.discount_eligible), (False, True))
+                            budget = await session.scalar(select(AIUsageBudget).where(AIUsageBudget.payment_id == payment.id))
+                            self.assertEqual((budget.user_id, budget.user_telegram_id), (uid, user.telegram_id))
+                            self.assertEqual(budget.total_budget_usd, 5.0)
+                            self.assertEqual(budget.ends_at - budget.starts_at, timedelta(days=days))
+                            self.assertEqual(UserAccessStateService.as_utc(budget.ends_at), actual_end)
+                            transaction = await session.scalar(select(PortfolioTransaction).where(
+                                PortfolioTransaction.payment_id == payment.id))
+                            self.assertIsNotNone(transaction)
+                            self.assertEqual(transaction.original_amount, 100)
+                            # Isolate each lifecycle case while keeping all three real
+                            # account shapes in the same schema.
+                            await session.rollback()
+
+    async def test_manual_native_grant_preserves_preview_ticket_without_creating_billing_or_budget(self):
+        for uid in (1, 2):
+            with self.subTest(uid=uid):
+                async with self.sessions() as session:
+                    user = await session.get(User, uid)
+                    original_end = datetime.now(timezone.utc) + timedelta(days=5)
+                    user.status, user.payment_status = "active", "approved"
+                    user.end_date = original_end
+                    user.payment_preview_available = False
+                    self.assertIsNotNone(await SubscriptionService(session).grant_manual_paid_access(user, 17))
+                    self.assertEqual(user.end_date, original_end + timedelta(days=17))
+                    self.assertFalse(user.payment_preview_available)
+                    self.assertIsNone(await session.scalar(select(Payment)))
+                    self.assertIsNone(await session.scalar(select(PortfolioTransaction)))
+                    self.assertIsNone(await session.scalar(select(AIUsageBudget)))
+                    await session.rollback()
+
     async def test_receipt_approval_cannot_silently_unblock_a_canonical_account(self):
         async with self.sessions() as session:
             payment = await self._payment(session, preview=False)
@@ -193,6 +265,52 @@ class NativePaymentActivationTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(response.status_code, 404, response.text)
             response = await client.get(f"/api/v3/android/subscription/payments/{other.id}/status?user_id=2")
             self.assertEqual(response.status_code, 422, response.text)
+
+    async def test_miniapp_status_uses_canonical_owner_after_telegram_attachment(self):
+        from tests.test_main_imports import MainModuleImportTests
+        main = MainModuleImportTests._import_main()
+        async with self.sessions() as session:
+            owner = await session.get(User, 1)
+            # Payment predates the user's explicit Telegram attachment.
+            own = await self._payment(session, preview=False)
+            owner.telegram_id = 7001
+            legacy = Payment(user_id=None, user_telegram_id=7001, plan_type="10_days",
+                amount=20, currency="TJS", payment_status="approved")
+            session.add(legacy)
+            await session.commit()
+            own_id, legacy_id = own.id, legacy.id
+
+        with (
+            patch.object(main, "async_session_maker", self.sessions),
+            patch.object(main, "extract_verified_webapp_user_id", return_value=7001),
+        ):
+            async with AsyncClient(transport=ASGITransport(app=main.app), base_url="https://native.test") as client:
+                for payment_id, status in ((own_id, "pending"), (legacy_id, "approved")):
+                    with self.subTest(payment_id=payment_id):
+                        response = await client.post("/api/subscription-miniapp/payment-status",
+                            json={"payment_id": payment_id})
+                        self.assertEqual(response.status_code, 200, response.text)
+                        self.assertEqual(response.json()["status"], status)
+                        self.assertEqual(response.headers["cache-control"], "no-store")
+
+    async def test_miniapp_status_never_authorizes_foreign_canonical_payment_by_telegram_metadata(self):
+        from tests.test_main_imports import MainModuleImportTests
+        main = MainModuleImportTests._import_main()
+        async with self.sessions() as session:
+            native = await self._payment(session, uid=2, preview=False)
+            conflicting = await self._payment(session, uid=2, preview=False, telegram_id=3003)
+            payment_ids = (native.id, conflicting.id)
+        with (
+            patch.object(main, "async_session_maker", self.sessions),
+            patch.object(main, "extract_verified_webapp_user_id", return_value=3003),
+        ):
+            async with AsyncClient(transport=ASGITransport(app=main.app), base_url="https://native.test") as client:
+                for payment_id in payment_ids:
+                    with self.subTest(payment_id=payment_id):
+                        response = await client.post("/api/subscription-miniapp/payment-status",
+                            json={"payment_id": payment_id})
+                        self.assertEqual(response.status_code, 404, response.text)
+                        self.assertEqual(response.json(), {"ok": False, "error": "payment_not_found"})
 
     async def test_paid_native_expiry_keeps_canonical_notice_target_and_other_paid_account(self):
         from tests.test_main_imports import MainModuleImportTests

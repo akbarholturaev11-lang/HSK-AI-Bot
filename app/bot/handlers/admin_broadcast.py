@@ -164,7 +164,7 @@ async def _get_target_users(session, data: dict) -> list:
     if target_user_id:
         target_user = await user_repo.get_by_telegram_id(int(target_user_id))
         return [target_user] if target_user else []
-    return await user_repo.get_filtered_users(
+    users = await user_repo.get_filtered_users(
         languages=_selected_languages(data) or None,
         status=data.get("status_filter"),
         course_track=data.get("track_filter"),
@@ -177,6 +177,7 @@ async def _get_target_users(session, data: dict) -> list:
         course_promo_filter=data.get("course_promo_filter"),
         activity_filter=data.get("activity_filter"),
     )
+    return [user for user in users if user.telegram_id is not None]
 
 
 async def _send_broadcast_payload(
