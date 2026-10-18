@@ -1,5 +1,10 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## Android choice runtime: 17 additional exact-copy strings (2026-10-18)
+
+- Compose `LevelChoices` and `GoalChoices` now read bundled XML for seven HSK option subtitles and ten study-goal titles/subtitles. Original maps/lists remain safe fallbacks; beginner titles/subtitles stay native because they differ from Mini App. The in-app language controls XML resolution (tj → tg).
+- Stable option ID values (`hsk_exam`, `daily_communication`, etc.), callback handlers, HSK access and progress, Pro, payment and scoring remain unchanged. Source regressions validate native UZ/RU/TJ parity and use sites. Verify Android CI separately.
+
 ## New P2 onboarding 25-key batch — 2026-10-18
 
 - Centralized **9 HSK level descriptors, 10 learning-goal labels and 6 native Android notification primer labels**: 25 exact original UZ/RU/TJ copies. Source catalogs now **228 keys/locale**, all six generated resources updated.

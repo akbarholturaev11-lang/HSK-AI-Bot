@@ -889,6 +889,44 @@ private fun CourseVersionSwitch(
     }
 }
 
+/* Replace exact-safe display labels only; HSK and goal option IDs are immutable. */
+private val onboardingLevelSubtitleIds = mapOf(
+    "hsk1" to R.string.hsk_course_onboarding_level_hsk1_subtitle,
+    "hsk2" to R.string.hsk_course_onboarding_level_hsk2_subtitle,
+    "hsk3" to R.string.hsk_course_onboarding_level_hsk3_subtitle,
+    "hsk4" to R.string.hsk_course_onboarding_level_hsk4_subtitle,
+    "nhsk1" to R.string.hsk_course_onboarding_level_nhsk1_subtitle,
+    "nhsk2" to R.string.hsk_course_onboarding_level_nhsk2_subtitle,
+    "nhsk3" to R.string.hsk_course_onboarding_level_nhsk3_subtitle,
+)
+private val onboardingGoalTextIds = mapOf(
+    "hsk_exam" to Pair(
+        R.string.hsk_course_onboarding_goal_hsk_exam_title,
+        R.string.hsk_course_onboarding_goal_hsk_exam_subtitle,
+    ),
+    "daily_communication" to Pair(
+        R.string.hsk_course_onboarding_goal_daily_communication_title,
+        R.string.hsk_course_onboarding_goal_daily_communication_subtitle,
+    ),
+    "travel" to Pair(
+        R.string.hsk_course_onboarding_goal_travel_title,
+        R.string.hsk_course_onboarding_goal_travel_subtitle,
+    ),
+    "work_china" to Pair(
+        R.string.hsk_course_onboarding_goal_work_china_title,
+        R.string.hsk_course_onboarding_goal_work_china_subtitle,
+    ),
+    "study_china" to Pair(
+        R.string.hsk_course_onboarding_goal_study_china_title,
+        R.string.hsk_course_onboarding_goal_study_china_subtitle,
+    ),
+)
+private fun Context.bundledOnboardingOptions(language: String): Context? = runCatching {
+    val config = Configuration(resources.configuration)
+    config.setLocale(Locale.forLanguageTag(canonicalLanguage(language)))
+    createConfigurationContext(config)
+}.getOrNull()
+
 @Composable
 private fun LevelChoices(
     language: String,
@@ -902,6 +940,8 @@ private fun LevelChoices(
     onSelected: (String) -> Unit,
 ) {
     val lang = canonicalLanguage(language)
+    val context = LocalContext.current
+    val optionContext = remember(context, language) { context.bundledOnboardingOptions(language) }
     val descriptions = when (lang) {
         "uz" -> listOf("Biroz xitoycha bilaman", "Asosiy suhbat", "Kundalik muloqot", "Erkin muloqot")
         "tg" -> listOf("Каме забони чинӣ медонам", "Муоширати асосӣ", "Муоширати ҳаррӯза", "Муоширати озод")
@@ -935,7 +975,9 @@ private fun LevelChoices(
                 motionEnabled = motionEnabled,
                 layoutSpec = layoutSpec,
                 title = option.title,
-                subtitle = option.subtitle,
+                subtitle = onboardingLevelSubtitleIds[option.key]?.let { resourceId ->
+                    runCatching { optionContext?.getString(resourceId) }.getOrNull()
+                } ?: option.subtitle,
                 leading = { LevelBars(active = index) },
                 onClick = { onSelected(option.key) },
                 badge = null,
@@ -974,6 +1016,8 @@ private fun GoalChoices(
     onSelected: (String) -> Unit,
 ) {
     val lang = canonicalLanguage(language)
+    val context = LocalContext.current
+    val optionContext = remember(context, language) { context.bundledOnboardingOptions(language) }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         goals.forEach { goal ->
             ChoiceCard(
@@ -981,8 +1025,12 @@ private fun GoalChoices(
                 enabled = enabled,
                 motionEnabled = motionEnabled,
                 layoutSpec = layoutSpec,
-                title = goal.titles[lang] ?: goal.titles.getValue("ru"),
-                subtitle = goal.subtitles[lang] ?: goal.subtitles.getValue("ru"),
+                title = onboardingGoalTextIds[goal.key]?.first?.let { resourceId ->
+                    runCatching { optionContext?.getString(resourceId) }.getOrNull()
+                } ?: (goal.titles[lang] ?: goal.titles.getValue("ru")),
+                subtitle = onboardingGoalTextIds[goal.key]?.second?.let { resourceId ->
+                    runCatching { optionContext?.getString(resourceId) }.getOrNull()
+                } ?: (goal.subtitles[lang] ?: goal.subtitles.getValue("ru")),
                 leading = {
                     Box(Modifier.size(36.dp), contentAlignment = Alignment.Center) {
                         MiniAppOnboardingIcon(

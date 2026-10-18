@@ -111,5 +111,53 @@ class OnboardingOptionsTests(unittest.TestCase):
         self.assertIn("}.getOrDefault(this)", native)
 
 
+    def test_android_17_reviewed_option_resources_used_by_compose(self):
+        native = (ROOT / "android/app/src/main/java/com/pomp/hskai/feature/onboarding/OnboardingScreen.kt").read_text(encoding="utf-8")
+        level_keys = ("hsk1", "hsk2", "hsk3", "hsk4", "nhsk1", "nhsk2", "nhsk3")
+        for level in level_keys:
+            self.assertIn(f'"{level}" to R.string.hsk_course_onboarding_level_{level}_subtitle,', native)
+        for goal in GOALS:
+            self.assertIn(f'"{goal}" to Pair(', native)
+            for suffix in ("title", "subtitle"):
+                self.assertIn(f"R.string.hsk_course_onboarding_goal_{goal}_{suffix}", native)
+        self.assertIn("private fun Context.bundledOnboardingOptions(language: String)", native)
+        self.assertIn("config.setLocale(Locale.forLanguageTag(canonicalLanguage(language)))", native)
+        self.assertIn("runCatching { optionContext?.getString(resourceId) }.getOrNull()", native)
+        self.assertIn("} ?: option.subtitle,", native)
+        self.assertIn('} ?: (goal.titles[lang] ?: goal.titles.getValue("ru")),', native)
+        self.assertIn('} ?: (goal.subtitles[lang] ?: goal.subtitles.getValue("ru")),', native)
+        self.assertIn("onClick = { onSelected(option.key) }", native)
+        self.assertIn("onClick = { onSelected(goal.key) }", native)
+
+    def test_android_option_fallback_parity_for_all_three_locales(self):
+        native = (ROOT / "android/app/src/main/java/com/pomp/hskai/feature/onboarding/OnboardingScreen.kt").read_text(encoding="utf-8")
+        rows = re.findall(
+            r'GoalOption\(\s*"([^"]+)",\s*'
+            r'mapOf\("uz" to "([^"]+)", "ru" to "([^"]+)", "tg" to "([^"]+)"\),\s*'
+            r'mapOf\("uz" to "([^"]+)", "ru" to "([^"]+)", "tg" to "([^"]+)"\)',
+            native)
+        self.assertEqual(len(rows), 5)
+        for key, u_t, r_t, t_t, u_s, r_s, t_s in rows:
+            canonical = re.sub(r"_([a-z])", lambda m: m.group(1).upper(), key)
+            for locale, title, subtitle in (("uz", u_t, u_s),
+                                            ("ru", r_t, r_s),
+                                            ("tj", t_t, t_s)):
+                self.assertEqual(source_catalog(locale)[f"onboardingGoal.{canonical}.title"], title)
+                self.assertEqual(source_catalog(locale)[f"onboardingGoal.{canonical}.subtitle"], subtitle)
+        for anchor, keys in (
+            ("val descriptions = when (lang) {", ("hsk1", "hsk2", "hsk3", "hsk4")),
+            ("val hsk30Descriptions = when (lang) {", ("nhsk1", "nhsk2", "nhsk3")),
+        ):
+            region = native.split(anchor, 1)[1].split("}", 1)[0]
+            groups = re.findall(r'("uz"|"tg"|else) -> listOf\(([^)]+)\)', region)
+            self.assertEqual(len(groups), 3)
+            for lang, values in groups:
+                locale = {"\"uz\"": "uz", "\"tg\"": "tj", "else": "ru"}[lang]
+                originals = re.findall(r'"([^"]+)"', values)
+                self.assertEqual(len(originals), len(keys))
+                for key, value in zip(keys, originals):
+                    self.assertEqual(source_catalog(locale)[f"onboardingLevel.{key}.subtitle"], value)
+
+
 if __name__ == "__main__":
     unittest.main()
