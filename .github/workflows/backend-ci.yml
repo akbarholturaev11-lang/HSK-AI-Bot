@@ -53,6 +53,9 @@ jobs:
           python scripts/i18n_inventory.py --output /tmp/hsk-i18n-audit.json
       - name: Guard QA schema-only bootstrap (offline, no DB credentials)
         run: python -m unittest tests.test_qa_schema_only_bootstrap
+      - name: Test bundled tour narration WAV and MP3 routes
+        run: python -m unittest tests.test_tour_audio_route
+
       - name: Guard full staging Telegram bot against production usage
         run: python -m unittest tests.test_qa_full_worker tests.test_qa_native_worker
       - name: Compile backend code
