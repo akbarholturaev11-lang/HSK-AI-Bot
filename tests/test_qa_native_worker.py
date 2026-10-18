@@ -1,7 +1,5 @@
 """Offline safety tests; never call Telegram or Railway from CI."""
 from unittest import TestCase
-from unittest.mock import patch
-
 from app.bot.qa_native_worker import (
     QA_FLAG, assert_qa_runtime, create_qa_dispatcher,
 )
@@ -39,10 +37,8 @@ class QANativeWorkerTests(TestCase):
 
     def test_no_normal_onboarding_or_schedulers_are_registered(self):
         dp = create_qa_dispatcher()
-        self.assertEqual(
-            [router.name for router in dp.sub_routers],
-            ["0x" if False else dp.sub_routers[0].name, "qa_native_start"],
-        )
+        self.assertEqual(len(dp.sub_routers), 2)
+        self.assertEqual(dp.sub_routers[1].name, "qa_native_start")
         # The explicit Telegram link router is mounted; the broadcast,
         # payment, course, admin and ordinary /start routers are not.
         from app.bot.handlers.desktop_auth import router as native
