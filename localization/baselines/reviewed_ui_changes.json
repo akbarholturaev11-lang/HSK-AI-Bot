@@ -50,8 +50,8 @@
     },
     "app/static/course_v3_memorize.html": {
       "baseline_sha1": "c0ec27bbeb8e8dd3aaf25f345548b0135fefc96e",
-      "reviewed_sha1": "728e8bf1414120b6f5368770b4a74e0a0487141f",
-      "reason": "Four original UZ/RU/TJ Memorize daily-limit sheet display strings use local catalogue with inline language-map fallback, without changing gating, audio, practice, payment or progress."
+      "reviewed_sha1": "03adea2aae9ab2eaa248509ab224f3d0cfa257fa",
+      "reason": "Four original UZ/RU/TJ Memorize daily-limit sheet display strings use local catalogue with inline language-map fallback, without changing gating, audio, practice, payment or progress. Inline hydration keeps original physical line numbers unchanged to preserve the nine reviewed dynamic memorization locale-call locations."
     },
     "app/static/hsk-lugat.html": {
       "baseline_sha1": "b0bebb8df10bfe6ec91f928a48676d76adab91df",

@@ -45,7 +45,7 @@ def snippet(page, source):
     if page == "voice":
         return "var L=" + source.split("var L=", 1)[1].split("\nvar tg=", 1)[0]
     if page == "memorize":
-        return "var LIM=" + source.split("var LIM=", 1)[1].split("\nfunction initData()", 1)[0]
+        return "var LIM=" + source.split("var LIM=", 1)[1].split("\nfunction goPremium()", 1)[0]
     return ("var practiceLabels = "
             + source.split("  var practiceLabels = ", 1)[1]
                     .split("\n  function normalizeLang(value)", 1)[0])
