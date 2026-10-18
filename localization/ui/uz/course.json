@@ -88,6 +88,13 @@
     "b3": "Cheksiz test va xatolar mashqi",
     "subscribe": "HSK AI Pro ⭐️ olish",
     "later": "Keyinroq",
-    "lockedLesson": "Bu dars HSK AI Pro'da"
+    "lockedLesson": "Bu dars HSK AI Pro'da",
+    "profile.free": "Bepul",
+    "profile.trial": "Pro · Sinov",
+    "profile.today": "Bugun",
+    "profile.overall": "Umumiy",
+    "profile.pro": "Pro olish",
+    "profile.answers": "baholangan javob",
+    "profile.note": "Faqat tekshirilgan javoblar · eski tarix to'liq bo'lmasligi mumkin"
   }
 }

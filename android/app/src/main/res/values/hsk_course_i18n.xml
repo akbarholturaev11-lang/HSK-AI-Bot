@@ -52,6 +52,13 @@
     <string name="hsk_course_plan_pay" formatted="false">HSK AI Pro olish</string>
     <string name="hsk_course_plan_title" formatted="false">Shaxsiy rejangiz tayyor</string>
     <string name="hsk_course_premium" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_profile_answers" formatted="false">baholangan javob</string>
+    <string name="hsk_course_profile_free" formatted="false">Bepul</string>
+    <string name="hsk_course_profile_note" formatted="false">Faqat tekshirilgan javoblar · eski tarix to\'liq bo\'lmasligi mumkin</string>
+    <string name="hsk_course_profile_overall" formatted="false">Umumiy</string>
+    <string name="hsk_course_profile_pro" formatted="false">Pro olish</string>
+    <string name="hsk_course_profile_today" formatted="false">Bugun</string>
+    <string name="hsk_course_profile_trial" formatted="false">Pro · Sinov</string>
     <string name="hsk_course_pron" formatted="false">Talaffuz mashqi</string>
     <string name="hsk_course_pron_sub" formatted="false">Eshit, takrorla, ton tekshiruvi</string>
     <string name="hsk_course_rank" formatted="false">o\'rin</string>

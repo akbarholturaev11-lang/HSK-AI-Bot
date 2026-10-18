@@ -6529,11 +6529,11 @@ function pollSignInLink(pending,deadline){
 var PROFILE_DETAIL=null;
 var PROFILE_DETAIL_PENDING=false;
 function profileCopy(){
-  return ({
+  var legacy=({
     tj:{free:"Ройгон",trial:"Pro · Озмоиш",today:"Имрӯз",overall:"Ҳамагӣ",pro:"Гирифтани Pro",answers:"ҷавоби арзёбишуда",note:"Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад"},
     ru:{free:"Бесплатно",trial:"Pro · Пробный",today:"Сегодня",overall:"Всего",pro:"Получить Pro",answers:"проверенных ответов",note:"Только проверенные ответы · история может быть неполной"},
     uz:{free:"Bepul",trial:"Pro · Sinov",today:"Bugun",overall:"Umumiy",pro:"Pro olish",answers:"baholangan javob",note:"Faqat tekshirilgan javoblar · eski tarix to'liq bo'lmasligi mumkin"}
-  })[LANG]||{};
+  })[LANG]||{};return {free:courseMessage("profile.free",legacy.free),trial:courseMessage("profile.trial",legacy.trial),today:courseMessage("profile.today",legacy.today),overall:courseMessage("profile.overall",legacy.overall),pro:courseMessage("profile.pro",legacy.pro),answers:courseMessage("profile.answers",legacy.answers),note:courseMessage("profile.note",legacy.note)};
 }
 function loadProfileDetail(){
   if(PROFILE_DETAIL_PENDING)return;

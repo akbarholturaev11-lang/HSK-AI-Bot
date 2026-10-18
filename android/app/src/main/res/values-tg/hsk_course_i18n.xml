@@ -52,6 +52,13 @@
     <string name="hsk_course_plan_pay" formatted="false">HSK AI Pro гирифтан</string>
     <string name="hsk_course_plan_title" formatted="false">Нақшаи шахсии шумо тайёр</string>
     <string name="hsk_course_premium" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_profile_answers" formatted="false">ҷавоби арзёбишуда</string>
+    <string name="hsk_course_profile_free" formatted="false">Ройгон</string>
+    <string name="hsk_course_profile_note" formatted="false">Танҳо ҷавобҳои санҷидашуда · маълумоти кӯҳна метавонад нопурра бошад</string>
+    <string name="hsk_course_profile_overall" formatted="false">Ҳамагӣ</string>
+    <string name="hsk_course_profile_pro" formatted="false">Гирифтани Pro</string>
+    <string name="hsk_course_profile_today" formatted="false">Имрӯз</string>
+    <string name="hsk_course_profile_trial" formatted="false">Pro · Озмоиш</string>
     <string name="hsk_course_pron" formatted="false">Машқи талаффуз</string>
     <string name="hsk_course_pron_sub" formatted="false">Гӯш кун, такрор кун</string>
     <string name="hsk_course_rank" formatted="false">ҷой</string>

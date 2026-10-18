@@ -52,6 +52,13 @@
     <string name="hsk_course_plan_pay" formatted="false">Оформить HSK AI Pro</string>
     <string name="hsk_course_plan_title" formatted="false">Ваш личный план готов</string>
     <string name="hsk_course_premium" formatted="false">HSK AI Pro</string>
+    <string name="hsk_course_profile_answers" formatted="false">проверенных ответов</string>
+    <string name="hsk_course_profile_free" formatted="false">Бесплатно</string>
+    <string name="hsk_course_profile_note" formatted="false">Только проверенные ответы · история может быть неполной</string>
+    <string name="hsk_course_profile_overall" formatted="false">Всего</string>
+    <string name="hsk_course_profile_pro" formatted="false">Получить Pro</string>
+    <string name="hsk_course_profile_today" formatted="false">Сегодня</string>
+    <string name="hsk_course_profile_trial" formatted="false">Pro · Пробный</string>
     <string name="hsk_course_pron" formatted="false">Произношение</string>
     <string name="hsk_course_pron_sub" formatted="false">Слушай, повторяй, проверка тонов</string>
     <string name="hsk_course_rank" formatted="false">место</string>

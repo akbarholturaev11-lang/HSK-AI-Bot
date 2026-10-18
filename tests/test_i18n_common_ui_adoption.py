@@ -382,5 +382,40 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
             self.assertNotIn(forbidden, html)
 
 
+    def test_miniapp_profile_copy_moves_from_inline_to_local_catalog(self):
+        """Seven existing profile labels gain local source keys with exact copy."""
+        import re
+
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertEqual(len(html.split("\n")), 8712)
+        body = html.split("function profileCopy(){", 1)[1].split(
+            "function loadProfileDetail(){", 1
+        )[0]
+        self.assertIn("var legacy=({", body)
+        self.assertIn("})[LANG]||{};return {", body)
+        fields = ("free", "trial", "today", "overall", "pro", "answers", "note")
+        for name in fields:
+            self.assertEqual(
+                body.count('courseMessage("profile.' + name + '",legacy.' + name + ')'), 1
+            )
+        for locale in ("uz", "ru", "tj"):
+            catalog = json.loads(
+                (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
+            )["messages"]
+            original = re.search(re.escape(locale) + r':\{([^}]+)\}', body)
+            self.assertIsNotNone(original)
+            for name in fields:
+                with self.subTest(locale=locale, label=name):
+                    value = re.search(
+                        r"(?:^|[,{}])" + re.escape(name) + r':"([^"]*)"',
+                        original.group(1),
+                    )
+                    self.assertIsNotNone(value)
+                    self.assertEqual(value.group(1), catalog["profile." + name])
+        self.assertIn('PROFILE_DETAIL&&PROFILE_DETAIL.subscription', html)
+        self.assertIn('PROFILE_DETAIL.stats&&PROFILE_DETAIL.stats.answer_accuracy', html)
+        self.assertNotIn("fetch('/api/i18n/", html)
+
+
 if __name__ == "__main__":
     unittest.main()
