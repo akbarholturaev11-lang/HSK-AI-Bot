@@ -72,7 +72,7 @@ class DictionaryUIAdoptionTests(unittest.TestCase):
         self.assertIn('if(typeof value==="string"&&value)UI[lang][key]=value', html)
         self.assertIn('if(typeof value==="string"&&value)labels[key]=value', html)
         self.assertIn('if(typeof value==="string"&&value)messages[lang][key]=value', html)
-        self.assertEqual(len(html.splitlines()), 1898)
+        self.assertEqual(len(html.split("\n")), 1898)
         for marker in (
             "function initFastWriter(fastParams){",
             "function normalizeLevel(value){",
