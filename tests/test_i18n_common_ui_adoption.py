@@ -145,8 +145,8 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                     self.assertEqual(found.group(1), catalog[key])
         # Quiz, premium and account-state copy is deliberately not routed by
         # this very small profile/settings migration.
-        self.assertNotIn('courseMessage("trialLeft"', html)
-        self.assertNotIn('courseMessage("correct"', html)
+        self.assertNotIn('courseMessage("answer_key"', html)
+        self.assertNotIn('courseMessage("correct_index"', html)
 
     def test_miniapp_reviewed_practice_voice_help_copy(self):
         """Reviewed 24 catalog keys retain exact legacy text and local fallbacks."""
@@ -200,8 +200,8 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                     self.assertEqual(match.group(1), catalog[key])
         self.assertIn('window.HSKAI_COURSE_I18N', html)
         self.assertIn('return catalog&&catalog[LANG]&&Object.prototype.hasOwnProperty.call(catalog[LANG],key)?catalog[LANG][key]:fallback', html)
-        for forbidden in ('courseMessage("correct"', 'courseMessage("wrong"',
-                          'courseMessage("trialLeft"', 'courseMessage("payTitle"'):
+        for forbidden in ('courseMessage("answer_key"', 'courseMessage("correct_index"',
+                          'courseMessage("payment_status"', 'courseMessage("is_paid"'):
             self.assertNotIn(forbidden, html)
 
 
@@ -247,8 +247,8 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                     self.assertEqual(found.group(1), catalog[key])
         self.assertIn('return catalog&&catalog[LANG]&&Object.prototype.hasOwnProperty.call(catalog[LANG],key)?catalog[LANG][key]:fallback', html)
         self.assertIn('if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}', html)
-        self.assertNotIn('courseMessage("trialLeft"', html)
-        self.assertNotIn('courseMessage("correct"', html)
+        self.assertNotIn('courseMessage("answer_key"', html)
+        self.assertNotIn('courseMessage("correct_index"', html)
 
 
     def test_miniapp_reviewed_presentation_and_exercise_copy(self):
@@ -292,8 +292,8 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                           'c.correct_index', 'if(isPremiumLocked(l))',
                           '/api/voice-practice/pronounce'):
             self.assertIn(untouched, source)
-        for forbidden in ('courseMessage("correct"', 'courseMessage("wrong"',
-                          'courseMessage("trialLeft"', 'courseMessage("payTitle"'):
+        for forbidden in ('courseMessage("answer_key"', 'courseMessage("correct_index"',
+                          'courseMessage("payment_status"', 'courseMessage("is_paid"'):
             self.assertNotIn(forbidden, source)
 
 
@@ -325,8 +325,60 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         self.assertIn('if(!TRIAL_STATE||!TRIAL_STATE.eligible)return;', html)
         self.assertIn('!isLimitPaywallContext(ctx)&&trialEligible()', html)
         self.assertIn('isLimitPaywallContext(ctx)?', html)
-        for forbidden in ('courseMessage("trialLeft"', 'courseMessage("payTitle"',
-                          'courseMessage("correct"', 'courseMessage("wrong"'):
+        for forbidden in ('courseMessage("answer_key"', 'courseMessage("correct_index"',
+                          'courseMessage("payment_status"', 'courseMessage("is_paid"'):
+            self.assertNotIn(forbidden, html)
+
+
+    def test_miniapp_reviewed_feedback_and_trial_countdown_copy(self):
+        """Static UI labels change without grading, timer or paywall decisions."""
+        import re
+
+        html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertEqual(len(html.split("\n")), 8712)
+        from_global = {"correct": 9, "wrong": 6}
+        from_local = {
+            "trialLeft": 1, "trialLeftHours": 1, "trialLeftSoon": 2,
+            "lockedLesson": 1, "payTitle": 1,
+        }
+        for key, count in from_global.items():
+            with self.subTest(key=key, source="T"):
+                self.assertEqual(html.count(
+                    'courseMessage("' + key + '",T().' + key + ')'
+                ), count)
+        for key, count in from_local.items():
+            with self.subTest(key=key, source="t"):
+                self.assertEqual(html.count(
+                    'courseMessage("' + key + '",t.' + key + ')'
+                ), count)
+        for locale, index in (("ru", 1478), ("uz", 1479), ("tj", 1480)):
+            inline = html.splitlines()[index]
+            msgs = json.loads(
+                (ROOT / f"localization/ui/{locale}/course.json").read_text(
+                    encoding="utf-8")
+            )["messages"]
+            for key in (*from_global, *from_local):
+                with self.subTest(locale=locale, key=key):
+                    found = re.search(r"(?:^|[,{}])" + re.escape(key)
+                                      + r':"([^"]*)"', inline)
+                    self.assertIsNotNone(found)
+                    self.assertEqual(msgs[key], found.group(1))
+                    if "{n}" in msgs[key]:
+                        self.assertEqual(msgs[key].count("{n}"), 1)
+        for preserved in (
+            'var ok=k===c.correct_index',
+            'Flow.correct=(Flow.correct||0)+1',
+            'if(!ok)rememberLessonMistake(c,',
+            'if(!(ms>0))',
+            'if(ms>86400000)',
+            'if(hours<1)',
+            'return ctx==="lockedLesson"?',
+        ):
+            self.assertIn(preserved, html)
+        for forbidden in ('courseMessage("answer_key"',
+                          'courseMessage("correct_index"',
+                          'courseMessage("payment_status"',
+                          'courseMessage("is_paid"'):
             self.assertNotIn(forbidden, html)
 
 

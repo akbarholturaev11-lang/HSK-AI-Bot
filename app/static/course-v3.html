@@ -3707,7 +3707,7 @@ Foundation.grade=function(ok){
 };
 Foundation.feedback=function(ok,sub){
   var b=$("#f-bar");b.className="fbar show "+(ok?"ok":"no");
-  $("#f-msg").innerHTML='<span class="fpanda hsk-character-stage" id="fbar-char" aria-hidden="true"></span><span>'+(ok?T().correct:T().wrong)+(sub?'<small>'+esc(sub)+'</small>':'')+'</span>';
+  $("#f-msg").innerHTML='<span class="fpanda hsk-character-stage" id="fbar-char" aria-hidden="true"></span><span>'+(ok?courseMessage("correct",T().correct):courseMessage("wrong",T().wrong))+(sub?'<small>'+esc(sub)+'</small>':'')+'</span>';
   $("#f-barbtn").textContent=courseMessage("next",T().next);
   beep(ok?[523,659,784]:[220,180]);haptic(ok?"ok":"no");
   renderFeedbackCharacter($("#fbar-char"),ok?"panda":"rabbit",ok?"jump":"wrong");
@@ -4701,7 +4701,7 @@ function cardGuidedRepair(c){
     +'<div class="guided-card"><b>'+esc(answer)+'</b><p>'+esc(tr(c.explanation)||M.p)+'</p><button onclick="window._guidedCorrect()"><i class="ti ti-check"></i> '+esc(M.go)+'</button></div>';
   window._guidedCorrect=function(){
     if(Flow.answered)return;Flow.answered=true;Flow.graded=(Flow.graded||0)+1;Flow.correct=(Flow.correct||0)+1;
-    beep([523,659,784]);haptic("ok");showBar(true,T().correct,answer);
+    beep([523,659,784]);haptic("ok");showBar(true,courseMessage("correct",T().correct),answer);
   };
 }
 function teachContinue(){var cta=$("#f-cta");cta.style.display="flex"}
@@ -4907,7 +4907,7 @@ Foundation.tryMic=function(){
       say(_prL().analyzing);var fd=new FormData(),target=c.audio_text||((c.example||{}).zh)||"你好",mt=(blob.type||rec.mimeType||mime||"audio/webm").toLowerCase(),ext=/mp4|m4a|aac/.test(mt)?"mp4":(/ogg/.test(mt)?"ogg":(/mpeg|mp3/.test(mt)?"mp3":(/wav/.test(mt)?"wav":"webm")));fd.append("initData",initData());fd.append("target",target);fd.append("target_pinyin",((c.example||{}).pinyin)||"");fd.append("language",LANG);fd.append("level","hsk1");fd.append("audio",blob,"voice."+ext);
       session.controller=window.AbortController?new AbortController():null;
       fetch("/api/voice-practice/pronounce",{method:"POST",body:fd,signal:session.controller?session.controller.signal:undefined}).then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})}).then(function(o){
-        if(session.cancelled||Foundation._micSession!==session)return;Foundation._micSession=null;ready();var score=Number(o.j&&o.j.score||0);if(o.ok&&o.j&&o.j.ok===true&&score>=60){Foundation.speakingBonus=true;Foundation.save();say(T().correct+" "+score+"%");beep([523,659,784]);haptic("ok")}else say((o.j&&o.j.message)||_prL().retry);
+        if(session.cancelled||Foundation._micSession!==session)return;Foundation._micSession=null;ready();var score=Number(o.j&&o.j.score||0);if(o.ok&&o.j&&o.j.ok===true&&score>=60){Foundation.speakingBonus=true;Foundation.save();say(courseMessage("correct",T().correct)+" "+score+"%");beep([523,659,784]);haptic("ok")}else say((o.j&&o.j.message)||_prL().retry);
       }).catch(function(err){if(session.cancelled||err&&err.name==="AbortError")return;Foundation._micSession=null;ready();say(_prL().netErr)});
     };rec.start();session.timer=setTimeout(function(){try{if(!session.cancelled&&rec.state!=="inactive")rec.stop()}catch(e){}},2600);
   }).catch(function(){if(session.cancelled)return;Foundation._micSession=null;ready();say(_prL().micDeny)});
@@ -5053,9 +5053,9 @@ Flow.pick=function(el,k){
      itself opts in; normal course/challenge feedback remains unchanged. */
   if((c.learning_feedback==="n1_context_v1"||(MAP&&normalizeLevel(MAP.level)==="nhsk1"&&c.explanation))&&!Flow.challenge){
     var why=tr(c.explanation);
-    showBar(ok,ok?T().correct:T().wrong,ok?esc(why):esc(rightText)+" · "+esc(why));
+    showBar(ok,ok?courseMessage("correct",T().correct):courseMessage("wrong",T().wrong),ok?esc(why):esc(rightText)+" · "+esc(why));
   }else{
-    showBar(ok,ok?T().correct:T().wrong,ok?tr(c.explanation):rightText);
+    showBar(ok,ok?courseMessage("correct",T().correct):courseMessage("wrong",T().wrong),ok?tr(c.explanation):rightText);
   }
 };
 function cardBuilder(c){
@@ -5070,7 +5070,7 @@ function cardBuilder(c){
   }
   window._bldAdd=function(i){if(Flow.answered)return;if(line.indexOf(i)>=0)return;line.push(i);draw();if(line.length===(c.answer_tokens||[]).length){check()}};
   window._bldUn=function(pos){if(Flow.answered)return;line.splice(pos,1);draw()};
-  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=JSON.stringify(built)===JSON.stringify(c.answer_tokens);Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP);rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,c.learning_feedback==="n1_context_v1"?(esc((c.answer_tokens||[]).join(" "))+" — "+esc(tr(c.explanation))):((c.answer_tokens||[]).join(" ")+" — "+tr(c.explanation)))}
+  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=JSON.stringify(built)===JSON.stringify(c.answer_tokens);Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP);rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?courseMessage("correct",T().correct):courseMessage("wrong",T().wrong),c.learning_feedback==="n1_context_v1"?(esc((c.answer_tokens||[]).join(" "))+" — "+esc(tr(c.explanation))):((c.answer_tokens||[]).join(" ")+" — "+tr(c.explanation)))}
   draw();
 }
 function cardReverse(c){
@@ -5091,7 +5091,7 @@ function cardReverse(c){
   }
   window._bldAdd=function(i){if(Flow.answered)return;if(line.indexOf(i)>=0)return;line.push(i);draw();if(line.length===ans.length){check()}};
   window._bldUn=function(pos){if(Flow.answered)return;line.splice(pos,1);draw()};
-  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=built.join(" ")===ans.join(" ");Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP);rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,c.learning_feedback==="n1_context_v1"?(esc(ans.join(" "))+" — "+esc(tr(c.explanation))):(ans.join(" ")+" — "+(c.zh||"")))}
+  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=built.join(" ")===ans.join(" ");Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){var prevHp=HP;HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;animateHeartState(prevHp,HP);rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?courseMessage("correct",T().correct):courseMessage("wrong",T().wrong),c.learning_feedback==="n1_context_v1"?(esc(ans.join(" "))+" — "+esc(tr(c.explanation))):(ans.join(" ")+" — "+(c.zh||"")))}
   draw();
 }
 function cardMatch(c){
@@ -5106,7 +5106,7 @@ function cardMatch(c){
     $("#mR").innerHTML=ri.map(function(idx){return '<button class="pcell sm" type="button" aria-pressed="false" data-i="'+idx+'" onclick="window._mR('+idx+')">'+esc(right[idx])+'</button>'}).join("");
   }
   window._mL=function(i){if(Flow.answered)return;selL=i;document.querySelectorAll("#mL .pcell").forEach(function(b){var selected=+b.dataset.i===i&&!b.classList.contains("ok");b.classList.toggle("sel",selected);b.setAttribute("aria-pressed",String(selected||b.classList.contains("ok")))})};
-  window._mR=function(i){if(Flow.answered||selL===null)return;if(i===selL){document.querySelectorAll("#mL .pcell").forEach(function(b){if(+b.dataset.i===i){b.classList.add("ok");b.classList.remove("sel");b.setAttribute("aria-pressed","true")}});document.querySelectorAll("#mR .pcell").forEach(function(b){if(+b.dataset.i===i){b.classList.add("ok");b.setAttribute("aria-pressed","true")}});selL=null;matched++;beep([660,880]);if(matched===left.length){Flow.answered=true;Flow.graded=(Flow.graded||0)+1;Flow.correct=(Flow.correct||0)+1;haptic("ok");showBar(true,T().correct,"")}}else{beep([200,150]);haptic("no");flashLessonReaction("monkey","wrong");document.querySelectorAll("#mL .pcell").forEach(function(b){b.classList.remove("sel");b.setAttribute("aria-pressed",String(b.classList.contains("ok")))});selL=null}};
+  window._mR=function(i){if(Flow.answered||selL===null)return;if(i===selL){document.querySelectorAll("#mL .pcell").forEach(function(b){if(+b.dataset.i===i){b.classList.add("ok");b.classList.remove("sel");b.setAttribute("aria-pressed","true")}});document.querySelectorAll("#mR .pcell").forEach(function(b){if(+b.dataset.i===i){b.classList.add("ok");b.setAttribute("aria-pressed","true")}});selL=null;matched++;beep([660,880]);if(matched===left.length){Flow.answered=true;Flow.graded=(Flow.graded||0)+1;Flow.correct=(Flow.correct||0)+1;haptic("ok");showBar(true,courseMessage("correct",T().correct),"")}}else{beep([200,150]);haptic("no");flashLessonReaction("monkey","wrong");document.querySelectorAll("#mL .pcell").forEach(function(b){b.classList.remove("sel");b.setAttribute("aria-pressed",String(b.classList.contains("ok")))});selL=null}};
   draw();
 }
 function initData(){return (tg&&tg.initData)?tg.initData:""}
@@ -5166,7 +5166,7 @@ function cardPron(c){
             var sc=Number(o.j.score)||0,pass=sc>=60,heard=o.j.heard?(_prL().heard+" "+esc(o.j.heard)):"";
             Flow.answered=true;Flow.graded=(Flow.graded||0)+1;if(pass)Flow.correct=(Flow.correct||0)+1;
             beep(pass?[523,659,784]:[220,180]);haptic(pass?"ok":"no");
-            showBar(pass,(pass?T().correct:T().wrong)+" "+sc+"%",heard||(pass?"":esc(c.phrase)));
+            showBar(pass,(pass?courseMessage("correct",T().correct):courseMessage("wrong",T().wrong))+" "+sc+"%",heard||(pass?"":esc(c.phrase)));
           })
           .catch(function(){clog("mic_neterr","",{mime:blob.type||_mt,ext:_ext,size:blob.size});setBtn(courseMessage("say",T().say));hint(_prL().netErr)});
       };
@@ -6381,11 +6381,11 @@ function trialLeftText(ends){
   // Sana kelmagan bo'lsa jim qolamiz: "1 soatdan kam" deb yozish yolg'on bo'lardi.
   if(!ends)return "";
   var t=T(),ms=new Date(ends)-new Date();
-  if(!(ms>0))return String(t.trialLeftSoon||"");
-  if(ms>86400000)return String(t.trialLeft||"{n}").replace("{n}",Math.ceil(ms/86400000));
+  if(!(ms>0))return String(courseMessage("trialLeftSoon",t.trialLeftSoon)||"");
+  if(ms>86400000)return String(courseMessage("trialLeft",t.trialLeft)||"{n}").replace("{n}",Math.ceil(ms/86400000));
   var hours=Math.floor(ms/3600000);
-  if(hours<1)return String(t.trialLeftSoon||"");
-  return String(t.trialLeftHours||"{n}").replace("{n}",hours);
+  if(hours<1)return String(courseMessage("trialLeftSoon",t.trialLeftSoon)||"");
+  return String(courseMessage("trialLeftHours",t.trialLeftHours)||"{n}").replace("{n}",hours);
 }
 /* ---------- Kirish usullari (Google / Apple) + ijtimoiy tarmoqlar ---------- */
 
@@ -6643,7 +6643,7 @@ function getPaywallTitle(ctx){
     var idx=Math.min(lessonNum%5,msgs.length-1);
     return msgs[Math.max(0,idx)];
   }
-  return ctx==="lockedLesson"?t.lockedLesson:t.payTitle;
+  return ctx==="lockedLesson"?courseMessage("lockedLesson",t.lockedLesson):courseMessage("payTitle",t.payTitle);
 }
 /* "Nega bu oyna chiqdi?" — user hayron bo'lmasligi uchun sababni ochiq aytamiz
    va darhol obunaning foydasiga bog'laymiz. Profil (user o'zi ochgan) va
