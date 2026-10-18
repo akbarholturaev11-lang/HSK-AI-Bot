@@ -42,7 +42,7 @@ class MiniappLiveVoiceTests(unittest.TestCase):
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
         asyncio.run(self.seed())
         self.settings = SimpleNamespace(
-            BOT_TOKEN=BOT_TOKEN, GEMINI_API_KEY="test-only", GEMINI_BILLING_TIER="paid",
+            BOT_TOKEN=BOT_TOKEN, GEMINI_API_KEY="test-only", GEMINI_BILLING_TIER="free",
             ANDROID_VOICE_LIVE_ENABLED=True, ANDROID_VOICE_LIVE_ALLOWED_USERS="4242,4243",
             ANDROID_VOICE_LIVE_MODEL="gemini-3.8-live", ANDROID_VOICE_LIVE_MAX_SECONDS=180,
             ANDROID_VOICE_LIVE_SESSION_BUDGET_USD=0.15,

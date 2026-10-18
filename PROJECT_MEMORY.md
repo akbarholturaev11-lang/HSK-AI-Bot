@@ -43,6 +43,8 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 - Universal-registration release is on hold: do not merge/push it to `main` or open registration until all seven owner acceptance gates in `docs/UNIVERSAL_NATIVE_ACCOUNTS.md` are evidenced, including Telegram-free Pro purchase, existing-account and cross-client parity, and real-schema staging migration plus backup restore. Unit/integration fixtures alone do not satisfy real provider/staging checks.
 - The owner will perform real provider, upstream Voice and installed-client acceptance after code verification. Do not add person-level blocking/fingerprinting for unrelated new Google/Apple identities; the existing canonical account block and linked-provider protections remain.
 
+- Gemini Live supports both provider billing tiers; `GEMINI_BILLING_TIER` records real billing and must not be falsified to enable Live. Explicit Live flag, test Telegram allowlist, authenticated ownership/access checks, time and budget caps still apply to Mini App and native relay. Default rollout remains disabled.
+
 ## Important decisions and operational caveats
 
 - Keep the HSK course and canonical lesson order/content at the center of the product. Supporting features should not replace the learning path.

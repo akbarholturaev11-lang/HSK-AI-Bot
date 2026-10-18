@@ -5,7 +5,7 @@ from typing import List, Literal
 
 class Settings(BaseSettings):
     ANDROID_ASSISTANT_ENABLED: bool = True
-    # Android live voice requires paid billing and an explicit user allowlist;
+    # Live voice supports free/paid billing and requires an explicit user allowlist;
     # the allowlist value "*" is the deliberate all-user rollout switch.
     ANDROID_VOICE_LIVE_ENABLED: bool = False
     ANDROID_VOICE_LIVE_ALLOWED_USERS: str = ""
