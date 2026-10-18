@@ -65,7 +65,11 @@ async def seed_courses() -> None:
 async def run_full_qa_worker() -> None:
     username = validate_qa_settings(dict(os.environ), settings)
 
-    # app.main already constructs the one full dispatcher at module import.\n    # Calling create_bot() again attaches singleton routers twice and raises.\n    import app.main as hsk_server\n    bot, dp = hsk_server.bot, hsk_server.dp\n    background_tasks: list[asyncio.Task] = []
+    # app.main already constructs the one full dispatcher at module import.
+    # Calling create_bot() again attaches singleton routers twice and raises.
+    import app.main as hsk_server
+    bot, dp = hsk_server.bot, hsk_server.dp
+    background_tasks: list[asyncio.Task] = []
     try:
         identity = await bot.get_me()
         if not identity.is_bot or (identity.username or "").lower() != username:
@@ -76,7 +80,8 @@ async def run_full_qa_worker() -> None:
             raise RuntimeError("qa_worker_webhook_already_set")
 
         await init_db()  # Writes only to verified isolated staging DB.
-        # Reuse the already-loaded module; do not rebuild dispatcher/routers.\n        background_tasks.append(asyncio.create_task(seed_courses(), name="qa-seed-courses"))
+        # Reuse the already-loaded module; do not rebuild dispatcher/routers.
+        background_tasks.append(asyncio.create_task(seed_courses(), name="qa-seed-courses"))
         if os.environ.get("HSK_QA_SCHEDULER_ENABLED", "").lower() == "true":
             background_tasks.append(asyncio.create_task(
                 hsk_server._background_scheduler(bot), name="qa-all-reminder-jobs",
