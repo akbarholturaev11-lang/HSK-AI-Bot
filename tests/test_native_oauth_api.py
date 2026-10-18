@@ -201,7 +201,7 @@ class ProviderAvailabilityTests(_Base):
         )
         self.assertEqual(response.json()["providers"], ["google"])
 
-    async def test_miniapp_google_is_available_with_browser_only_configuration(self):
+    async def test_miniapp_and_android_google_are_available_with_browser_only_configuration(self):
         self.settings.GOOGLE_ANDROID_WEB_CLIENT_ID = ""
         response = await self.client.get(
             "/api/v3/native-auth/providers?platform=miniapp"
@@ -210,7 +210,16 @@ class ProviderAvailabilityTests(_Base):
         response = await self.client.get(
             "/api/v3/native-auth/providers?platform=android"
         )
-        self.assertEqual(response.json()["providers"], [])
+        self.assertEqual(response.json()["providers"], ["google"])
+
+    async def test_android_browser_discovery_requires_complete_browser_pair_without_native_id(self):
+        self.settings.GOOGLE_ANDROID_WEB_CLIENT_ID = ""
+        for field in ("GOOGLE_DESKTOP_CLIENT_ID", "GOOGLE_DESKTOP_CLIENT_SECRET"):
+            original = getattr(self.settings, field)
+            setattr(self.settings, field, "")
+            response = await self.client.get("/api/v3/native-auth/providers?platform=android")
+            self.assertEqual(response.json()["providers"], [])
+            setattr(self.settings, field, original)
 
     async def test_apple_is_hidden_while_unconfigured(self):
         response = await self.client.get("/api/v3/native-auth/providers")
@@ -234,6 +243,21 @@ class UnconfiguredProviderTests(_Base):
 
 
 class OAuthStartTests(_Base):
+    async def test_browser_only_android_configuration_cannot_start_native_token_mode(self):
+        self.settings.GOOGLE_ANDROID_WEB_CLIENT_ID = ""
+        native = await self.client.post(
+            "/api/v3/native-auth/oauth/start", json=self._start_body()
+        )
+        self.assertEqual(native.status_code, 503)
+        self.assertEqual(native.json()["error"], "oauth_provider_unconfigured")
+        async with self.sessions() as session:
+            self.assertEqual((await session.execute(select(DesktopLinkRequest))).scalars().all(), [])
+        browser = await self.client.post(
+            "/api/v3/native-auth/oauth/start", json=self._start_body(mode="browser_redirect")
+        )
+        self.assertEqual(browser.status_code, 200)
+        self.assertIn("authorize_url", browser.json())
+
     async def test_native_mode_returns_a_nonce_and_no_authorize_url(self):
         response = await self.client.post(
             "/api/v3/native-auth/oauth/start", json=self._start_body()

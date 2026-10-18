@@ -170,6 +170,8 @@ class NativeOAuthService:
             provider != "google" or platform != "android"
         ):
             raise NativeOAuthError("oauth_mode_unsupported", status_code=422)
+        if mode == NATIVE_ID_TOKEN_MODE and not google_auth.android_client_id(self.settings):
+            raise NativeOAuthError("oauth_provider_unconfigured", status_code=503)
         # An Android browser redirect uses the confidential *web* client,
         # exactly as desktop does. Check its credentials BEFORE reserving a
         # one-time link row; the native Credential Manager audience stays
