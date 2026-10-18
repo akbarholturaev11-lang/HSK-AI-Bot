@@ -31,6 +31,20 @@
     <string name="hsk_course_dialog" formatted="false">Диалог</string>
     <string name="hsk_course_dict" formatted="false">Словарь иероглифов</string>
     <string name="hsk_course_dict_sub" formatted="false">HSK 1–4 · написание, пиньинь, значение</string>
+    <string name="hsk_course_dictionary_memo_belgi" formatted="false">Ключ значения и звука</string>
+    <string name="hsk_course_dictionary_memo_eslab" formatted="false">Как запомнить</string>
+    <string name="hsk_course_dictionary_memo_mano" formatted="false">Ключ значения</string>
+    <string name="hsk_course_dictionary_memo_misol" formatted="false">Пример</string>
+    <string name="hsk_course_dictionary_memo_oxshash" formatted="false">Похожие иероглифы</string>
+    <string name="hsk_course_dictionary_memo_tarkibi" formatted="false">Состав</string>
+    <string name="hsk_course_dictionary_memo_tovush" formatted="false">Фонетик</string>
+    <string name="hsk_course_dictionary_practice_head" formatted="false">Упражнения</string>
+    <string name="hsk_course_dictionary_practice_mem_s" formatted="false">Тренировка памяти</string>
+    <string name="hsk_course_dictionary_practice_mem_t" formatted="false">Быстрое запоминание</string>
+    <string name="hsk_course_dictionary_practice_pron_s" formatted="false">Скажите боту</string>
+    <string name="hsk_course_dictionary_practice_pron_t" formatted="false">Проверка произношения</string>
+    <string name="hsk_course_dictionary_practice_recog_s" formatted="false">Распознавание</string>
+    <string name="hsk_course_dictionary_practice_recog_t" formatted="false">Найдите среди похожих</string>
     <string name="hsk_course_done" formatted="false">завершено</string>
     <string name="hsk_course_finish_prev" formatted="false">Завершите предыдущий урок</string>
     <string name="hsk_course_friends" formatted="false">Друзья</string>
@@ -85,6 +99,10 @@
     <string name="hsk_course_locked_lesson" formatted="false">Этот урок в HSK AI Pro</string>
     <string name="hsk_course_mashq_sub" formatted="false">Закрепление и проверка</string>
     <string name="hsk_course_match_pairs" formatted="false">Соедините пары</string>
+    <string name="hsk_course_memorize_limit_back" formatted="false">Назад</string>
+    <string name="hsk_course_memorize_limit_pay" formatted="false">Получить HSK AI Pro ⭐️</string>
+    <string name="hsk_course_memorize_limit_sub" formatted="false">В бесплатном режиме этот раздел доступен 1 раз в день. Оформите HSK AI Pro для безлимита или возвращайтесь завтра.</string>
+    <string name="hsk_course_memorize_limit_title" formatted="false">Бесплатная практика на сегодня исчерпана</string>
     <string name="hsk_course_mistakes" formatted="false">Мои ошибки</string>
     <string name="hsk_course_mistakes_page_all" formatted="false">Все</string>
     <string name="hsk_course_mistakes_page_build_hint" formatted="false">Соберите правильное предложение</string>
@@ -356,6 +374,53 @@
     <string name="hsk_course_unlock_btn" formatted="false">HSK AI Pro ⭐️</string>
     <string name="hsk_course_unlock_sub" formatted="false">AI Voice, все уроки HSK 1–4 и безлимит</string>
     <string name="hsk_course_unlock_title" formatted="false">Откройте всё</string>
+    <string name="hsk_course_voice_page_again" formatted="false">Ещё разговор</string>
+    <string name="hsk_course_voice_page_analyzing" formatted="false">Анализирую…</string>
+    <string name="hsk_course_voice_page_bao_name" formatted="false">阿宝 · Aobao</string>
+    <string name="hsk_course_voice_page_connecting" formatted="false">Соединение…</string>
+    <string name="hsk_course_voice_page_corr_title" formatted="false">Что подправить</string>
+    <string name="hsk_course_voice_page_done_title" formatted="false">Хороший разговор!</string>
+    <string name="hsk_course_voice_page_empty_chat" formatted="false">Здесь появится ваш диалог</string>
+    <string name="hsk_course_voice_page_exit" formatted="false">Выйти</string>
+    <string name="hsk_course_voice_page_fix_label" formatted="false">Правильно:</string>
+    <string name="hsk_course_voice_page_heard" formatted="false">Вы:</string>
+    <string name="hsk_course_voice_page_hide_dialog" formatted="false">Скрыть диалог</string>
+    <string name="hsk_course_voice_page_hint_phrases" formatted="false">Полезные фразы</string>
+    <string name="hsk_course_voice_page_hint_title" formatted="false">Что можно сказать</string>
+    <string name="hsk_course_voice_page_hint_words" formatted="false">Слова этого урока</string>
+    <string name="hsk_course_voice_page_hold_longer" formatted="false">Держите чуть дольше</string>
+    <string name="hsk_course_voice_page_hold_mic" formatted="false">Держите микрофон, чтобы говорить</string>
+    <string name="hsk_course_voice_page_kb_placeholder" formatted="false">Напишите…</string>
+    <string name="hsk_course_voice_page_learn_badge" formatted="false">Ух ты, я уже говорю по-китайски!</string>
+    <string name="hsk_course_voice_page_li_name" formatted="false">李老师 · Li Laoshi</string>
+    <string name="hsk_course_voice_page_limit_sub" formatted="false">С HSK AI Pro говорите с 阿宝 каждый день — без лимита.</string>
+    <string name="hsk_course_voice_page_limit_title" formatted="false">Пробный разговор завершён</string>
+    <string name="hsk_course_voice_page_limit_why" formatted="false">В бесплатном режиме AI Voice даётся 1 пробный разговор — вы его уже использовали. С подпиской говорите с 阿宝 хоть каждый день: живая речь — самый быстрый способ заговорить по-китайски.</string>
+    <string name="hsk_course_voice_page_listening" formatted="false">Слушаю вас…</string>
+    <string name="hsk_course_voice_page_mic_deny" formatted="false">Разрешите доступ к микрофону в настройках Telegram.</string>
+    <string name="hsk_course_voice_page_no_mistakes" formatted="false">Без ошибок — отличная работа!</string>
+    <string name="hsk_course_voice_page_no_support" formatted="false">Запись голоса недоступна на этом устройстве.</string>
+    <string name="hsk_course_voice_page_off" formatted="false">выкл</string>
+    <string name="hsk_course_voice_page_on" formatted="false">вкл</string>
+    <string name="hsk_course_voice_page_opt_persona" formatted="false">Собеседник</string>
+    <string name="hsk_course_voice_page_opt_rate" formatted="false">Скорость речи</string>
+    <string name="hsk_course_voice_page_opt_sub" formatted="false">Пиньинь и перевод</string>
+    <string name="hsk_course_voice_page_premium_btn" formatted="false">Получить HSK AI Pro ⭐️</string>
+    <string name="hsk_course_voice_page_rate_normal" formatted="false">обычная</string>
+    <string name="hsk_course_voice_page_rate_slow" formatted="false">медленно</string>
+    <string name="hsk_course_voice_page_release_mic" formatted="false">Отпустите, чтобы отправить</string>
+    <string name="hsk_course_voice_page_repl_word" formatted="false">реплик</string>
+    <string name="hsk_course_voice_page_replay" formatted="false">Ещё раз</string>
+    <string name="hsk_course_voice_page_saved_to_mistakes" formatted="false">Ошибки добавлены в раздел «Мои ошибки»</string>
+    <string name="hsk_course_voice_page_send_err" formatted="false">Ошибка. Попробуйте ещё раз.</string>
+    <string name="hsk_course_voice_page_settings" formatted="false">Настройки</string>
+    <string name="hsk_course_voice_page_show_dialog" formatted="false">Посмотреть весь диалог</string>
+    <string name="hsk_course_voice_page_speaking" formatted="false">Говорит…</string>
+    <string name="hsk_course_voice_page_start_bot" formatted="false">Сначала откройте бота и нажмите /start.</string>
+    <string name="hsk_course_voice_page_stat_good" formatted="false">удачных реплик</string>
+    <string name="hsk_course_voice_page_stat_mistake" formatted="false">на доработку</string>
+    <string name="hsk_course_voice_page_too_short" formatted="false">Слишком коротко. Скажите ещё раз.</string>
+    <string name="hsk_course_voice_page_what_to_say" formatted="false">Что сказать?</string>
     <string name="hsk_course_voice_start" formatted="false">Начать разговор</string>
     <string name="hsk_course_voice_sub" formatted="false">Живой разговор с пандой 阿宝. Слушай, говори, получай исправления.</string>
     <string name="hsk_course_voice_title" formatted="false">Поговорите с AI</string>

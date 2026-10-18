@@ -31,6 +31,20 @@
     <string name="hsk_course_dialog" formatted="false">Dialog</string>
     <string name="hsk_course_dict" formatted="false">Ieroglif lug\'ati</string>
     <string name="hsk_course_dict_sub" formatted="false">HSK 1–4 · yozilishi, pinyin, ma\'no</string>
+    <string name="hsk_course_dictionary_memo_belgi" formatted="false">Ma\'no va tovush belgisi</string>
+    <string name="hsk_course_dictionary_memo_eslab" formatted="false">Eslab qolish</string>
+    <string name="hsk_course_dictionary_memo_mano" formatted="false">Ma\'no belgisi</string>
+    <string name="hsk_course_dictionary_memo_misol" formatted="false">Misol</string>
+    <string name="hsk_course_dictionary_memo_oxshash" formatted="false">O\'xshash iyerogliflar</string>
+    <string name="hsk_course_dictionary_memo_tarkibi" formatted="false">Tarkibi</string>
+    <string name="hsk_course_dictionary_memo_tovush" formatted="false">Tovush qismi</string>
+    <string name="hsk_course_dictionary_practice_head" formatted="false">Mashqlar</string>
+    <string name="hsk_course_dictionary_practice_mem_s" formatted="false">Yodlash mashqi</string>
+    <string name="hsk_course_dictionary_practice_mem_t" formatted="false">Tez eslab qolish</string>
+    <string name="hsk_course_dictionary_practice_pron_s" formatted="false">Bot bilan ayting</string>
+    <string name="hsk_course_dictionary_practice_pron_t" formatted="false">Talaffuzni tekshirish</string>
+    <string name="hsk_course_dictionary_practice_recog_s" formatted="false">Ieroglifni taning</string>
+    <string name="hsk_course_dictionary_practice_recog_t" formatted="false">O\'xshashlardan ajrating</string>
     <string name="hsk_course_done" formatted="false">tugallandi</string>
     <string name="hsk_course_finish_prev" formatted="false">Avvalgi darsni tugating</string>
     <string name="hsk_course_friends" formatted="false">Do\'stlar</string>
@@ -85,6 +99,10 @@
     <string name="hsk_course_locked_lesson" formatted="false">Bu dars HSK AI Pro\'da</string>
     <string name="hsk_course_mashq_sub" formatted="false">Mustahkamlash va sinash</string>
     <string name="hsk_course_match_pairs" formatted="false">Juftlarni moslang</string>
+    <string name="hsk_course_memorize_limit_back" formatted="false">Orqaga</string>
+    <string name="hsk_course_memorize_limit_pay" formatted="false">HSK AI Pro ⭐️ olish</string>
+    <string name="hsk_course_memorize_limit_sub" formatted="false">Bepul rejimda bu bo\'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun HSK AI Pro oling yoki ertaga qaytib keling.</string>
+    <string name="hsk_course_memorize_limit_title" formatted="false">Bugungi bepul mashq tugadi</string>
     <string name="hsk_course_mistakes" formatted="false">Xatolarim</string>
     <string name="hsk_course_mistakes_page_all" formatted="false">Barchasi</string>
     <string name="hsk_course_mistakes_page_build_hint" formatted="false">To\'g\'ri gapni tuzing</string>
@@ -356,6 +374,53 @@
     <string name="hsk_course_unlock_btn" formatted="false">HSK AI Pro ⭐️</string>
     <string name="hsk_course_unlock_sub" formatted="false">AI Voice, barcha HSK 1–4 darslar va cheksiz</string>
     <string name="hsk_course_unlock_title" formatted="false">Hammasini oching</string>
+    <string name="hsk_course_voice_page_again" formatted="false">Yana suhbat</string>
+    <string name="hsk_course_voice_page_analyzing" formatted="false">Tahlil qilyapman…</string>
+    <string name="hsk_course_voice_page_bao_name" formatted="false">阿宝 · Aobao</string>
+    <string name="hsk_course_voice_page_connecting" formatted="false">Ulanyapti…</string>
+    <string name="hsk_course_voice_page_corr_title" formatted="false">Nimani tuzatamiz</string>
+    <string name="hsk_course_voice_page_done_title" formatted="false">Yaxshi suhbat!</string>
+    <string name="hsk_course_voice_page_empty_chat" formatted="false">Suhbatingiz shu yerda ko\'rinadi</string>
+    <string name="hsk_course_voice_page_exit" formatted="false">Chiqish</string>
+    <string name="hsk_course_voice_page_fix_label" formatted="false">To\'g\'ri:</string>
+    <string name="hsk_course_voice_page_heard" formatted="false">Siz:</string>
+    <string name="hsk_course_voice_page_hide_dialog" formatted="false">Dialogni yashirish</string>
+    <string name="hsk_course_voice_page_hint_phrases" formatted="false">Foydali iboralar</string>
+    <string name="hsk_course_voice_page_hint_title" formatted="false">Nima deyish mumkin</string>
+    <string name="hsk_course_voice_page_hint_words" formatted="false">Shu darsning so\'zlari</string>
+    <string name="hsk_course_voice_page_hold_longer" formatted="false">Sal uzoqroq bosib turing</string>
+    <string name="hsk_course_voice_page_hold_mic" formatted="false">Gapirish uchun mikrofonni bosib turing</string>
+    <string name="hsk_course_voice_page_kb_placeholder" formatted="false">Yozing…</string>
+    <string name="hsk_course_voice_page_learn_badge" formatted="false">Voy, men xitoycha gapiryapman!</string>
+    <string name="hsk_course_voice_page_li_name" formatted="false">李老师 · Li Laoshi</string>
+    <string name="hsk_course_voice_page_limit_sub" formatted="false">HSK AI Pro bilan 阿宝 bilan har kuni gaplashasiz — cheksiz.</string>
+    <string name="hsk_course_voice_page_limit_title" formatted="false">Sinov suhbati tugadi</string>
+    <string name="hsk_course_voice_page_limit_why" formatted="false">Bepul rejimda AI Voice 1 marta sinab ko\'riladi — sinov suhbatingdan foydalanding. Obuna bilan 阿宝 bilan har kuni gaplashasan: jonli gapirish — xitoychada tez tili chiqishning eng qisqa yo\'li.</string>
+    <string name="hsk_course_voice_page_listening" formatted="false">Sizni tinglayapman…</string>
+    <string name="hsk_course_voice_page_mic_deny" formatted="false">Telegram sozlamalaridan mikrofonga ruxsat bering.</string>
+    <string name="hsk_course_voice_page_no_mistakes" formatted="false">Xatosiz — ajoyib!</string>
+    <string name="hsk_course_voice_page_no_support" formatted="false">Bu qurilmada ovoz yozish qo\'llab-quvvatlanmaydi.</string>
+    <string name="hsk_course_voice_page_off" formatted="false">o\'chirilgan</string>
+    <string name="hsk_course_voice_page_on" formatted="false">yoqilgan</string>
+    <string name="hsk_course_voice_page_opt_persona" formatted="false">Suhbatdosh</string>
+    <string name="hsk_course_voice_page_opt_rate" formatted="false">Nutq tezligi</string>
+    <string name="hsk_course_voice_page_opt_sub" formatted="false">Pinyin va tarjima</string>
+    <string name="hsk_course_voice_page_premium_btn" formatted="false">HSK AI Pro ⭐️ olish</string>
+    <string name="hsk_course_voice_page_rate_normal" formatted="false">oddiy</string>
+    <string name="hsk_course_voice_page_rate_slow" formatted="false">sekin</string>
+    <string name="hsk_course_voice_page_release_mic" formatted="false">Yuborish uchun qo\'yib yuboring</string>
+    <string name="hsk_course_voice_page_repl_word" formatted="false">javob</string>
+    <string name="hsk_course_voice_page_replay" formatted="false">Yana eshitish</string>
+    <string name="hsk_course_voice_page_saved_to_mistakes" formatted="false">Xatolar «Xatolarim» bo\'limiga qo\'shildi</string>
+    <string name="hsk_course_voice_page_send_err" formatted="false">Xatolik. Qaytadan urinib ko\'ring.</string>
+    <string name="hsk_course_voice_page_settings" formatted="false">Sozlamalar</string>
+    <string name="hsk_course_voice_page_show_dialog" formatted="false">To\'liq dialogni ko\'rish</string>
+    <string name="hsk_course_voice_page_speaking" formatted="false">Gapiryapti…</string>
+    <string name="hsk_course_voice_page_start_bot" formatted="false">Avval botni oching va /start bosing.</string>
+    <string name="hsk_course_voice_page_stat_good" formatted="false">zo\'r javob</string>
+    <string name="hsk_course_voice_page_stat_mistake" formatted="false">tuzatish</string>
+    <string name="hsk_course_voice_page_too_short" formatted="false">Juda qisqa. Yana bir bor gapiring.</string>
+    <string name="hsk_course_voice_page_what_to_say" formatted="false">Nima deyish?</string>
     <string name="hsk_course_voice_start" formatted="false">Suhbatni boshlash</string>
     <string name="hsk_course_voice_sub" formatted="false">Panda 阿宝 bilan jonli suhbat. Eshit, gapir, tuzatish ol.</string>
     <string name="hsk_course_voice_title" formatted="false">AI bilan gaplashing</string>

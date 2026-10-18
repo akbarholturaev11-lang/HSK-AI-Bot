@@ -42,6 +42,21 @@
       "baseline_sha1": "d05f5dd02da2befc4db9bc07db343a19bd1c0e32",
       "reviewed_sha1": "146ea3b1e32bf0f790c41754d46d4665d9632283",
       "reason": "Exactly 22 Pronunciation display UI labels per UZ/RU/TJ via static offline bundle with original literals as fallback; mic/STT/audio, word selection, grading, Pro, ads and server access unchanged."
+    },
+    "app/static/course_v3_voice.html": {
+      "baseline_sha1": "ddbca0976c0c1d25c86383653ab274129f33dcd7",
+      "reviewed_sha1": "3e00c32bcf45135d6c3bf648af91b1117eff2f10",
+      "reason": "47 exact AI Voice UI presentation labels use bundled local UZ/RU/TJ catalogue with original inline fallback. No microphone, transcription, session, audio, response scoring, Pro, settings persistence or server API changes."
+    },
+    "app/static/course_v3_memorize.html": {
+      "baseline_sha1": "c0ec27bbeb8e8dd3aaf25f345548b0135fefc96e",
+      "reviewed_sha1": "728e8bf1414120b6f5368770b4a74e0a0487141f",
+      "reason": "Four original UZ/RU/TJ Memorize daily-limit sheet display strings use local catalogue with inline language-map fallback, without changing gating, audio, practice, payment or progress."
+    },
+    "app/static/hsk-lugat.html": {
+      "baseline_sha1": "b0bebb8df10bfe6ec91f928a48676d76adab91df",
+      "reviewed_sha1": "7051321e0664d954bc3e0621fc2dd648a0a73a83",
+      "reason": "14 UZ/RU/TJ Dictionary practice and character-memory header labels centralised through bundled local UI and preserved inline fallback for all locales on dynamic switch. Search, levels, word data, character details and audio untouched."
     }
   }
 }

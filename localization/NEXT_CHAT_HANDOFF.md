@@ -1,5 +1,11 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## Voice, Memorize and Dictionary UI runtime adoption — 65 keys (2026-10-19)
+
+- 47 exact UZ/RU/TJ AI Voice labels, 4 Memorize daily-limit sheet labels and 14 Dictionary practice-card / character-memory UI labels now resolve from a single synchronous **static local** JS bundle `hsk-course-i18n.js?v=20261019-voice-dictionary-v16`, preserving all original inline per-language strings as fallback. Dictionary adopts the labels for all UZ/RU/TJ dictionaries once on load so its existing client-side instant language switch works normally.
+- The strict `course` catalog rises from **362 to 427 keys/locale**, all **six** generated Mini App/Desktop/Bot/Android assets must match. Reviewed original Git blob SHAs: `course_v3_voice.html`, `course_v3_memorize.html`, `hsk-lugat.html` with an explicit new reviewed source SHA each. New `tests/test_i18n_voice_memorize_dictionary_adoption.py` covers 195 exact literal values, static load order, untouched voice/access/search code and Node-based fallback/override execution; included in P0 workflow.
+- Strictly display-only: no voice recording/STT/TTS, voice session lifecycle, graded answers, XP, app entitlement, paywalls, daily-gate, dictionary words/filter/index/search, offline character/audio files, per-text API fetches or locale preference semantics changed. PR #179 still Draft and on `codex/i18n-local-first-foundation-20261017`. **Verify CI on the commit SHA and manual device QA before any merge or production claim**. Prior commit `9a71f612` has 6/6 green CI including Android and Backend, P0 168 tests.
+
 **CI follow-up:** First 75-label commit `bad8cdc5` failed P0 only because original `mistakes.sub` normalized to the already present Android resource name `hsk_course_mistakes_sub` (from `mistakesSub`) and because four new genuine placeholders raised the reviewed signature count 3→7. Corrected by renaming the *new* namespace `mistakes.*` to `mistakesPage.*` (all 53 labels, original values intact), updating the two source/test contracts and regenerating six artifacts. The previous HEAD's tests for original 75×3 strings and Node fallback already passed; verify the correction commit's full CI before marking completed.
 
 ## Mistakes + Pronunciation: 75 exact display labels (2026-10-18)

@@ -1591,3 +1591,7 @@ Keep GitHub's branch current without force-resetting unrelated user work.
 ### Android UI resource-name normalization collision correction (2026-10-18)
 
 - Original `mistakes.sub` and existing unrelated `mistakesSub` both collapse to `hsk_course_mistakes_sub`; changed the new Mistakes display-only family to `mistakesPage.*` for all 53 labels to preserve the generator's fail-closed uniqueness invariant without changing existing shipped resource names. Four original localized placeholders (`reviewCount`, `reviewCat`, `progress`, `resCleared`) raise expected placeholder-bearing keys from 3 to 7. All locale/display values and Mistakes original `L` fallback unchanged; source Git blob review updated, generated outputs and CI tests regenerated.
+
+## Voice + Memorize limit + Dictionary UI adoption (2026-10-19)
+
+- Centralized 65 exact display-only UZ/RU/TJ strings: Voice 47, Memorize paywall sheet 4, Dictionary practice cards 7, Dictionary character-memory headings 7. The `course` UI catalog rises from 362 to **427 keys/locale**, and six offline/local platform resources are regenerated deterministically. New static JS preloads and synchronous hydration retain original inline fallback. Dictionary keeps all 3 locale dictionaries hydrated for instant language switches. Source HTML Git blob SHAs are explicitly reviewed and Python/Node regression is in P0. No audio, grades, gating, paywall, voice sessions, dictionary search/index or course content logic changed. PR #179 Draft, no `main` merge; device QA is still required.
