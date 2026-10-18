@@ -212,6 +212,7 @@ async def _android_tts_file(text: str) -> Path:
 
 ANDROID_STROKE_SOURCE = "https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0.1"
 ANDROID_STROKE_CACHE_DIR = Path(tempfile.gettempdir()) / "pomp-hsk-ai-android-strokes"
+ANDROID_STROKE_BUNDLED_DIR = Path(__file__).resolve().parents[2] / "android/app/src/main/assets/strokes"
 ANDROID_STROKE_HEADERS = {
     "Cache-Control": "private, max-age=604800",
     "X-Content-Type-Options": "nosniff",
@@ -234,14 +235,19 @@ def _android_stroke_char(value: str) -> str:
 async def _android_stroke_file(char: str) -> Path:
     """The stroke outlines for one character, cached on disk.
 
-    The Mini App reads these straight from a public CDN. The Android client
-    cannot: it is pinned to this origin on purpose, and opening a second host
-    would give that guard away. So the server fetches once and serves it.
+    Android prefers its versioned offline dataset and can fetch/cache an
+    additional character on the server. The public Mini App endpoint serves
+    only bundled data and never starts anonymous upstream requests.
     """
     ANDROID_STROKE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
     path = ANDROID_STROKE_CACHE_DIR / f"{ord(char)}.json"
     if path.is_file() and path.stat().st_size > 0:
         return path
+
+    # Reuse the versioned, offline dataset already shipped with Android.
+    bundled = ANDROID_STROKE_BUNDLED_DIR / f"{ord(char)}.json"
+    if bundled.is_file():
+        return bundled
 
     async with _ANDROID_STROKE_LOCK:
         if path.is_file() and path.stat().st_size > 0:
@@ -521,6 +527,21 @@ def create_android_course_router(
         except Exception:
             logger.exception("Android TTS failed")
             return _unavailable()
+
+    @router.get("/api/v3/stroke")
+    async def public_stroke(char: str = ""):
+        """Public teaching data; no account, progress or entitlement information."""
+        try:
+            character = _android_stroke_char(char)
+            path = ANDROID_STROKE_BUNDLED_DIR / f"{ord(character)}.json"
+            if not path.is_file():
+                raise DesktopCourseError("stroke_not_found", status_code=404)
+            return FileResponse(path, media_type="application/json", headers={
+                "Cache-Control": "public, max-age=604800",
+                "X-Content-Type-Options": "nosniff",
+            })
+        except DesktopCourseError as exc:
+            return course_error_response(exc)
 
     @router.get("/api/v3/android/stroke")
     async def android_stroke(request: Request, char: str = ""):

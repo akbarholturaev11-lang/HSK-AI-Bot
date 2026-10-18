@@ -494,7 +494,7 @@ class SubscriptionCheckoutViewModel(
             when (result) {
                 is ApiResult.Success -> {
                     val success = result.value.ok && result.value.status == "pending"
-                    val provisional = success && current.isHsk30Unlock && result.value.provisionalAccess
+                    val provisional = success && result.value.provisionalAccess
                     if (success) {
                         clearReceipt()
                     }
@@ -507,7 +507,7 @@ class SubscriptionCheckoutViewModel(
                         paymentStatusMessageRes = null,
                         step = if (success) CheckoutStep.DONE else it.step,
                         errorRes = if (success) null else R.string.sub_unavailable) }
-                    if (provisional && !result.value.alreadyPending) _provisionalAccess.tryEmit(Unit)
+                    if (provisional && current.isHsk30Unlock && !result.value.alreadyPending) _provisionalAccess.tryEmit(Unit)
                 }
                 is ApiResult.Failure -> _state.update {
                     it.copy(submitting = false, errorRes = result.error.messageRes)

@@ -89,6 +89,18 @@ class SubscriptionCheckoutPaymentReviewTest {
         }
 
     @Test
+    fun `ordinary pending Pro receipt preserves its own provisional grant`() =
+        runTest(dispatcher) {
+            overviews.add(pending("subscription", "1_month", provisional = true))
+            val model = model()
+            model.load()
+            advanceUntilIdle()
+            assertFalse(model.state.value.isHsk30Unlock)
+            assertTrue(model.state.value.provisionalAccess)
+            assertFalse(model.state.value.isWaitingForHsk30Review)
+        }
+
+    @Test
     fun `existing provisional HSK payment keeps its course return action from ordinary checkout`() =
         runTest(dispatcher) {
             overviews.add(pending("subscription", "hsk30_unlock", provisional = true))

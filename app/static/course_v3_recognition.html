@@ -86,7 +86,7 @@ function wordLvNum(w){return parseInt(String(w.lv||"").replace(/[^0-9]/g,"").sli
 function isHsk30(){return /^nhsk[1-3]$/.test(LV||"")}
 function wordSource(){return isHsk30()?(window.HSK30_WORDS||[]):(typeof WORDS!=="undefined"?WORDS:[])}
 function wordGate(h){return (isHsk30()?(window.HSK30_WORD_GATE||{}):(window.HSK_WORD_GATE||{}))[h]}
-function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_recognition_limit&mode=subscription"}
+function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_recognition_limit&mode=subscription&return_to=course&return_page=course_v3_recognition.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 /* Reklama moduli: kunlik bepul limit tugagach, user reklama ko'rib yana kira
    oladi (bo'limga kuniga 2 marta). Reklama sessiya boshi/o'rtasi/oxirida. */
 SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,initData:initData(),feature:"recognition",level:(params.get("level")||"hsk1"),onSubscribe:goPremium})});

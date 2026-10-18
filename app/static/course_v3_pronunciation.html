@@ -98,7 +98,7 @@ var L={ru:{review:"повтор",answer:"Правильно так:",hint:"На�
   tj:{review:"такрор",answer:"Дурусташ ин аст:",hint:"Микрофонро пахш карда, калимаро гӯед",listen:"Гӯш кардан",ok:"Талаффузи дақиқ!",bad:"Дақиқ нест, боз кӯшиш кунед",heard:"Ман чунин шунидам:",retry:"Боз пахш кунед",done:"дуруст",doneSub:"Талаффузи шумо беҳтар мешавад!",again:"Боз",listening:"Гӯш мекунам…",analyzing:"Месанҷам…",micDeny:"Ба микрофон иҷозат диҳед",noSupport:"Микрофон дастгирӣ намешавад",netErr:"Хатои шабака, бозкӯшӣ кунед",needTg:"Дар Telegram кушоед",limitTitle:"Машқи ройгони имрӯза тамом шуд",limitSub:"Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён HSK AI Pro гиред ё фардо баргардед.",premiumBtn:"HSK AI Pro ⭐️ гирифтан",back:"Бозгашт",skip:"Гузарондан"}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
-function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription"}
+function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription&return_to=course&return_page=course_v3_pronunciation.html&return_level="+encodeURIComponent(new URLSearchParams(location.search).get("level")||"")}
 /* Foydalanuvchi darajasi: URL param faqat boshlang'ich qiymat, server (users.level)
    asosiy manba — mashq har doim userning haqiqiy HSK darajasiga mos chiqadi.
    CUR — joriy dars (tugatilgan+1): faqat O'RGANILGAN darslar so'zlari chiqadi. */

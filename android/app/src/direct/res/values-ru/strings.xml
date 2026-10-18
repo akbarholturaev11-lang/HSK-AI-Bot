@@ -178,4 +178,7 @@
     <string name="sub_payment_checking">Проверяем статус…</string>
     <string name="sub_payment_still_pending">Платёж ещё проверяет администратор.</string>
     <string name="sub_status_check_failed">Не удалось проверить статус. Проверьте интернет и попробуйте снова.</string>
+    <string name="sub_pro_review_title">Чек отправлен на проверку</string>
+    <string name="sub_pro_review_access">Платёж отправлен на проверку. Пока идёт проверка, вы уже можете пользоваться Pro.</string>
+    <string name="sub_pro_review_wait">Платёж отправлен на проверку. Временный доступ уже использован, поэтому Pro откроется после подтверждения администратором. Чтобы ускорить проверку, вы можете написать администратору.</string>
 </resources>

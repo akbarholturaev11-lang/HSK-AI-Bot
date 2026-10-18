@@ -128,10 +128,7 @@ class SubscriptionMiniAppService:
         pending_payment = await self.payment_repo.get_latest_pending_by_user(user)
         if pending_payment:
             pending_payload = self._pending_payment_payload(pending_payment)
-            if str(pending_payment.plan_type or "") == HSK30_UNLOCK_PLAN_TYPE:
-                pending_payload["provisional_access"] = await Hsk30UnlockService(
-                    self.session
-                ).is_provisional_payment(user, pending_payment)
+            pending_payload["provisional_access"] = await self._provisional_access(user, pending_payment)
             return {
                 "ok": True,
                 "language": getattr(user, "language", None) or "uz",
@@ -346,14 +343,7 @@ class SubscriptionMiniAppService:
                 "payment_id": pending_payment.id,
                 "status": "pending",
                 "already_pending": True,
-                "provisional_access": (
-                    await Hsk30UnlockService(self.session).is_provisional_payment(
-                        user,
-                        pending_payment,
-                    )
-                    if str(pending_payment.plan_type or "") == HSK30_UNLOCK_PLAN_TYPE
-                    else False
-                ),
+                "provisional_access": await self._provisional_access(user, pending_payment),
             }
 
         screenshot, reject_reason = self._decode_screenshot(screenshot_data_url)
@@ -455,11 +445,7 @@ class SubscriptionMiniAppService:
         await PaymentReviewPreviewService(self.session).claim(user, payment)
         await self.session.commit()
 
-        provisional_access = (
-            await Hsk30UnlockService(self.session).is_provisional_payment(user, payment)
-            if str(payment.plan_type or "") == HSK30_UNLOCK_PLAN_TYPE
-            else False
-        )
+        provisional_access = await self._provisional_access(user, payment)
 
         return {
             "ok": True,
@@ -467,6 +453,11 @@ class SubscriptionMiniAppService:
             "status": "pending",
             "provisional_access": provisional_access,
         }
+
+    async def _provisional_access(self, user, payment) -> bool:
+        if str(payment.plan_type or "") == HSK30_UNLOCK_PLAN_TYPE:
+            return await Hsk30UnlockService(self.session).is_provisional_payment(user, payment)
+        return PaymentReviewPreviewService.is_active(user, payment)
 
     async def _prices_payload(
         self,

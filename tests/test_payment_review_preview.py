@@ -74,6 +74,19 @@ class PaymentReviewPreviewTests(unittest.IsolatedAsyncioTestCase):
                 session, payment_id=payment.id, action="reject", reason="Invalid receipt",
             )
 
+    def test_active_preview_requires_persisted_receipt_exact_owner_and_unblocked_account(self):
+        user = User(id=11, status="free", payment_preview_payment_id=None)
+        payment = Payment(user_id=11, plan_type="1_month", payment_status="pending")
+        self.assertFalse(PaymentReviewPreviewService.is_active(user, payment))
+        payment.id = 55
+        user.payment_preview_payment_id = 55
+        self.assertTrue(PaymentReviewPreviewService.is_active(user, payment))
+        payment.user_id = 12
+        self.assertFalse(PaymentReviewPreviewService.is_active(user, payment))
+        payment.user_id = 11
+        user.status = "blocked"
+        self.assertFalse(PaymentReviewPreviewService.is_active(user, payment))
+
     async def test_admin_miniapp_rejection_revokes_preview_without_recharging_ticket(self):
         async with self.sessions() as session:
             user = await self._user(session)

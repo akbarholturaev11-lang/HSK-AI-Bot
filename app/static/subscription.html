@@ -385,6 +385,12 @@ function courseReturnUrl(){
   const tab=["course","mashq","voice","rating","profile"].includes(requestedTab)?requestedTab:"course";
   const query=new URLSearchParams({lang:["ru","uz","tj"].includes(lang)?lang:"uz",tab});
   if(/^(?:hsk[1-4]|nhsk[1-3])$/.test(level||""))query.set("level",level);
+  const requestedPage=PARAMS.get("return_page");
+  const practicePages=["course_v3_voice.html","course_v3_recognition.html","course_v3_memorize.html","course_v3_pronunciation.html","course_v3_mistakes.html","course_v3_test.html"];
+  if(practicePages.includes(requestedPage)){
+    query.delete("tab");
+    return "/"+requestedPage+"?"+query.toString();
+  }
   return "/course-v3.html?"+query.toString();
 }
 function returnToCourseFromCheckout(){
@@ -567,6 +573,11 @@ const I18N={
     openHsk30:"HSK 3.0 ni ochish",
     retryPayment:"To'lovni qayta yuborish",
     returnToBot:"Botga qaytish",
+    proReviewTitle:"Chek tekshiruvga yuborildi",
+    proReviewAccess:"To‘lov tekshiruvga yuborildi. Tekshiruv davomida Pro imkoniyatlaridan foydalanishni boshlashingiz mumkin.",
+    proReviewWait:"To‘lov tekshiruvga yuborildi. Avvalgi vaqtinchalik ruxsat ishlatilgan, shu sababli Pro admin tasdig‘idan keyin ochiladi. Jarayon tezroq bo‘lishini xohlasangiz, adminga yozishingiz mumkin.",
+    proReturn:"Ilovaga qaytish",
+
     error:"Xatolik yuz berdi. Qayta urinib ko'ring.",
     loadError:"Ma'lumotni yuklab bo'lmadi. Internetni tekshirib, mini appni qayta oching.",
     quoteError:"To'lov ma'lumotini hozir ochib bo'lmadi. Qayta urinib ko'ring.",
@@ -712,6 +723,11 @@ const I18N={
     openHsk30:"Открыть HSK 3.0",
     retryPayment:"Отправить платёж снова",
     returnToBot:"Вернуться в бот",
+    proReviewTitle:"Чек отправлен на проверку",
+    proReviewAccess:"Платёж отправлен на проверку. Пока идёт проверка, вы уже можете пользоваться Pro.",
+    proReviewWait:"Платёж отправлен на проверку. Временный доступ уже использован, поэтому Pro откроется после подтверждения администратором. Чтобы ускорить проверку, вы можете написать администратору.",
+    proReturn:"Вернуться в приложение",
+
     error:"Произошла ошибка. Попробуйте снова.",
     loadError:"Не удалось загрузить данные. Проверьте интернет и откройте мини-приложение заново.",
     quoteError:"Не удалось открыть данные оплаты. Попробуйте ещё раз.",
@@ -857,6 +873,11 @@ const I18N={
     openHsk30:"HSK 3.0-ро кушоед",
     retryPayment:"Пардохтро аз нав фиристед",
     returnToBot:"Ба bot баргаштан",
+    proReviewTitle:"Расид барои санҷиш фиристода шуд",
+    proReviewAccess:"Пардохт барои санҷиш фиристода шуд. Ҳангоми санҷиш шумо метавонед аз Pro истифода баред.",
+    proReviewWait:"Пардохт барои санҷиш фиристода шуд. Дастрасии муваққатӣ аллакай истифода шудааст, бинобар ин Pro пас аз тасдиқи маъмур кушода мешавад. Барои тезонидани санҷиш метавонед ба маъмур нависед.",
+    proReturn:"Ба барнома баргаштан",
+
     error:"Хатогӣ шуд. Боз кӯшиш кунед.",
     loadError:"Маълумотро бор кардан нашуд. Интернетро тафтиш карда, mini app-ро аз нав кушоед.",
     quoteError:"Маълумоти пардохт ҳоло кушода нашуд. Боз кӯшиш кунед.",
@@ -1491,17 +1512,17 @@ function renderDiscount(text){
 function renderDone(text){
   const pending=Boolean(state.pending&&!state.done);
   const hsk30=isHsk30Unlock();
-  const provisional=Boolean(pending&&hsk30&&state.pendingPayment?.provisional_access);
+  const provisional=Boolean(pending&&state.pendingPayment?.provisional_access);
   const rejected=state.paymentDecision==="rejected";
   const approved=state.paymentDecision==="approved";
   $("#doneMark").textContent=pending?"…":rejected?"!":"✓";
   $("#doneTitle").textContent=rejected?text.paymentRejectedTitle:approved?text.paymentApprovedTitle:
-    (provisional?text.provisionalTitle:(pending?text.pendingTitle:text.doneTitle));
+    (provisional?(hsk30?text.provisionalTitle:text.proReviewTitle):(pending?(hsk30?text.pendingTitle:text.proReviewTitle):text.doneTitle));
   $("#doneText").textContent=rejected?text.paymentRejectedText:approved?text.paymentApprovedText:
-    (state.paymentStillPending?text.paymentStillPending:(provisional?text.provisionalText:(pending?text.pendingText:text.doneText)));
+    (state.paymentStillPending?text.paymentStillPending:(provisional?(hsk30?text.provisionalText:text.proReviewAccess):(pending?(hsk30?text.pendingText:text.proReviewWait):text.doneText)));
   $("#botReturnBtn").textContent=state.paymentStatusChecking?text.checkingPayment:
     (rejected?text.retryPayment:(hsk30&&pending&&!provisional?text.refreshPayment:
-      ((hsk30&&(pending||approved))?text.openHsk30:text.returnToBot)));
+      ((hsk30&&(pending||approved))?text.openHsk30:(pending?(provisional?text.proReturn:text.supportButton):text.returnToBot))));
   $("#botReturnBtn").disabled=state.paymentStatusChecking;
 }
 function renderCountry(text){
@@ -1846,9 +1867,9 @@ async function submitPayment(){
       };
       state.done=false;
     }else{
-      state.pending=Boolean(data.already_pending);
-      state.pendingPayment=data.already_pending?data:null;
-      state.done=!state.pending;
+      state.pending=true;
+      state.pendingPayment={id:Number(data.payment_id||0),plan_type:state.plan,provisional_access:Boolean(data.provisional_access)};
+      state.done=false;
     }
     state.paymentDecision="";
     state.paymentStillPending=false;
@@ -1986,6 +2007,10 @@ $("#botReturnBtn").addEventListener("click",()=>{
     if(state.pending&&!state.pendingPayment?.provisional_access){refreshPaymentStatus();return}
     openHsk30Course();
     return;
+  }
+  if(state.pending){
+    if(state.pendingPayment?.provisional_access){returnToCourseFromCheckout();return}
+    openSupportChat();return;
   }
   closeMiniApp();
 });

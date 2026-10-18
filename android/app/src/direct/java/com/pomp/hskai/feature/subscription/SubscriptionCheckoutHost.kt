@@ -35,7 +35,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.HeadsetMic
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -43,7 +42,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -60,7 +58,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -209,14 +206,6 @@ fun SubscriptionCheckoutHost(
                     Icon(Icons.Filled.HeadsetMic, contentDescription = copy.getString(R.string.sub_help_title),
                         tint = C.accentInk, modifier = Modifier.size(20.dp))
                 }
-                if (state.isWaitingForHsk30Review) {
-                    Spacer(Modifier.size(44.dp))
-                } else {
-                    IconButton(onClick = onClose, modifier = Modifier.size(44.dp)) {
-                        Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.action_close),
-                            tint = C.muted, modifier = Modifier.size(19.dp))
-                    }
-                }
             }
             Spacer(Modifier.height(16.dp))
 
@@ -233,6 +222,7 @@ fun SubscriptionCheckoutHost(
                     onClose = onClose,
                     onRefreshStatus = model::refreshPaymentStatus,
                     onRetry = model::retryAfterRejection,
+                    onSupport = { openUrl(context, state.overview?.supportUrl.orEmpty()) },
                 )
             } else if (state.overview?.checkoutAllowed != true) {
                 MessageCard(copy.getString(R.string.sub_unavailable))
@@ -283,6 +273,7 @@ fun SubscriptionCheckoutHost(
                         onClose = onClose,
                         onRefreshStatus = model::refreshPaymentStatus,
                         onRetry = model::retryAfterRejection,
+                        onSupport = { openUrl(context, state.overview?.supportUrl.orEmpty()) },
                     )
                 }
             }
@@ -960,6 +951,7 @@ private fun DoneContent(
     onClose: () -> Unit,
     onRefreshStatus: () -> Unit,
     onRetry: () -> Unit,
+    onSupport: () -> Unit,
 ) {
     val isHsk30 = state.isHsk30Unlock
     val pending = state.paymentDecision.isBlank() &&
@@ -971,7 +963,7 @@ private fun DoneContent(
         isHsk30 && approved -> R.string.sub_hsk30_approved_title
         isHsk30 && pending && state.provisionalAccess -> R.string.sub_hsk30_provisional_title
         isHsk30 && pending -> R.string.sub_hsk30_pending_title
-        pending -> R.string.sub_pending_title
+        pending -> R.string.sub_pro_review_title
         else -> R.string.sub_done_title
     }
     val bodyRes = when {
@@ -979,7 +971,8 @@ private fun DoneContent(
         isHsk30 && approved -> R.string.sub_hsk30_approved_body
         isHsk30 && pending && state.provisionalAccess -> R.string.sub_hsk30_provisional_body
         isHsk30 && pending -> R.string.sub_hsk30_pending_body
-        pending -> R.string.sub_pending_body
+        pending && state.provisionalAccess -> R.string.sub_pro_review_access
+        pending -> R.string.sub_pro_review_wait
         else -> R.string.sub_done_body
     }
     Column(Modifier.fillMaxWidth().padding(top = 54.dp), horizontalAlignment = Alignment.CenterHorizontally,
@@ -1011,6 +1004,10 @@ private fun DoneContent(
                 state.checkingPaymentStatus,
                 !state.checkingPaymentStatus,
                 onRefreshStatus,
+            )
+            pending && !state.provisionalAccess -> CheckoutButton(
+                copy.getString(R.string.sub_help_button), false,
+                state.overview?.supportUrl?.isNotBlank() == true, onSupport,
             )
             else -> CheckoutButton(copy.getString(R.string.sub_return_app), false, true, onClose)
         }

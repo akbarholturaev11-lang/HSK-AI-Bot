@@ -179,4 +179,7 @@
     <string name="sub_payment_checking">Ҳолат санҷида мешавад…</string>
     <string name="sub_payment_still_pending">Пардохт ҳанӯз аз ҷониби администратор санҷида мешавад.</string>
     <string name="sub_status_check_failed">Ҳолатро санҷида нашуд. Интернетро тафтиш карда, боз кӯшиш кунед.</string>
+    <string name="sub_pro_review_title">Расид барои санҷиш фиристода шуд</string>
+    <string name="sub_pro_review_access">Пардохт барои санҷиш фиристода шуд. Ҳангоми санҷиш шумо метавонед аз Pro истифода баред.</string>
+    <string name="sub_pro_review_wait">Пардохт барои санҷиш фиристода шуд. Дастрасии муваққатӣ аллакай истифода шудааст, бинобар ин Pro пас аз тасдиқи маъмур кушода мешавад. Барои тезонидани санҷиш метавонед ба маъмур нависед.</string>
 </resources>

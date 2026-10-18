@@ -32,6 +32,15 @@ class PaymentReviewPreviewService:
             and user.status != "blocked"
         )
 
+    @classmethod
+    def is_active(cls, user, payment) -> bool:
+        """Report this receipt's existing grant without claiming another ticket."""
+        return bool(
+            cls._eligible(user, payment)
+            and payment.id is not None
+            and getattr(user, "payment_preview_payment_id", None) == payment.id
+        )
+
     async def claim(self, user, payment) -> bool:
         """Call within the same transaction as the receipt submission."""
         if not self._eligible(user, payment):

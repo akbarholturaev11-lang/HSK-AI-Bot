@@ -179,4 +179,7 @@
     <string name="sub_payment_checking">Holat tekshirilmoqda…</string>
     <string name="sub_payment_still_pending">To‘lov hali admin tekshiruvida.</string>
     <string name="sub_status_check_failed">Holatni tekshirib bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.</string>
+    <string name="sub_pro_review_title">Chek tekshiruvga yuborildi</string>
+    <string name="sub_pro_review_access">To‘lov tekshiruvga yuborildi. Tekshiruv davomida Pro imkoniyatlaridan foydalanishni boshlashingiz mumkin.</string>
+    <string name="sub_pro_review_wait">To‘lov tekshiruvga yuborildi. Avvalgi vaqtinchalik ruxsat ishlatilgan, shu sababli Pro admin tasdig‘idan keyin ochiladi. Jarayon tezroq bo‘lishini xohlasangiz, adminga yozishingiz mumkin.</string>
 </resources>
