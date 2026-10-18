@@ -53,6 +53,8 @@ jobs:
           python scripts/i18n_inventory.py --output /tmp/hsk-i18n-audit.json
       - name: Guard QA schema-only bootstrap (offline, no DB credentials)
         run: python -m unittest tests.test_qa_schema_only_bootstrap
+      - name: Guard new isolated QA project initializer
+        run: python -m unittest tests.test_qa_standalone_bootstrap
       - name: Test bundled tour narration WAV and MP3 routes
         run: python -m unittest tests.test_tour_audio_route
 
