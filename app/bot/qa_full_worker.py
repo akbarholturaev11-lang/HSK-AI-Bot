@@ -17,7 +17,6 @@ import os
 from sqlalchemy.engine import make_url
 from aiogram import Bot
 
-from app.bot.create_bot import create_bot
 from app.config import settings
 from app.db.session import async_session_maker, engine, init_db
 from app.services.course_seed_service import CourseSeedService
@@ -66,8 +65,7 @@ async def seed_courses() -> None:
 async def run_full_qa_worker() -> None:
     username = validate_qa_settings(dict(os.environ), settings)
 
-    bot, dp = create_bot(settings)  # All existing routes and middleware.
-    background_tasks: list[asyncio.Task] = []
+    # app.main already constructs the one full dispatcher at module import.\n    # Calling create_bot() again attaches singleton routers twice and raises.\n    import app.main as hsk_server\n    bot, dp = hsk_server.bot, hsk_server.dp\n    background_tasks: list[asyncio.Task] = []
     try:
         identity = await bot.get_me()
         if not identity.is_bot or (identity.username or "").lower() != username:
@@ -78,14 +76,13 @@ async def run_full_qa_worker() -> None:
             raise RuntimeError("qa_worker_webhook_already_set")
 
         await init_db()  # Writes only to verified isolated staging DB.
-        from app.main import _background_scheduler, _desktop_auth_retention_scheduler
-        background_tasks.append(asyncio.create_task(seed_courses(), name="qa-seed-courses"))
+        # Reuse the already-loaded module; do not rebuild dispatcher/routers.\n        background_tasks.append(asyncio.create_task(seed_courses(), name="qa-seed-courses"))
         if os.environ.get("HSK_QA_SCHEDULER_ENABLED", "").lower() == "true":
             background_tasks.append(asyncio.create_task(
-                _background_scheduler(bot), name="qa-all-reminder-jobs",
+                hsk_server._background_scheduler(bot), name="qa-all-reminder-jobs",
             ))
             background_tasks.append(asyncio.create_task(
-                _desktop_auth_retention_scheduler(), name="qa-auth-retention",
+                hsk_server._desktop_auth_retention_scheduler(), name="qa-auth-retention",
             ))
         log.info("Full HSK QA Telegram bot starting: @%s, schedulers=%s",
                  username, len(background_tasks) > 1)
