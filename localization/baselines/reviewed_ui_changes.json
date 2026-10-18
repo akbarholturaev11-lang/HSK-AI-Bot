@@ -10,8 +10,8 @@
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",
-      "reviewed_sha1": "64992e95e52e67177827680095f6fbbcc4efcb42",
-      "reason": "Reviewed single 30-key batch centralizing part-section captions, lesson finish text, award stats, streak phrasing, writer loading and next-lesson CTA across UZ/RU/TJ, preserving byte-identical old inline locale fallback and 8712 physical line segments. No grading/access/payment changes; static JS cache version v10."
+      "reviewed_sha1": "21d990b6e49403d4509fd2d6e12eafbc08c8c304",
+      "reason": "Reviewed single 30-key batch centralizing part-section captions, lesson finish text, award stats, streak phrasing, writer loading and next-lesson CTA across UZ/RU/TJ, preserving byte-identical old inline locale fallback and 8712 physical line segments. No grading/access/payment changes; static JS cache version v10. Additional exact-source 63 voice inline + Live display labels from the 3 locale LD/LIVE_TEXT dictionaries; bundled values overlay each LD locale only after original merge with original fallback and no voice/gating/Pro/state/API logic changes. 8712 physical source lines preserved."
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",

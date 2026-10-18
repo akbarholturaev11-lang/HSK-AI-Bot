@@ -1,5 +1,13 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## Main Course Voice inline display: 63 exact UZ/RU/TJ keys — 2026-10-19
+
+- `app/static/course-v3.html` embedded `var VOICE` has 60 static `LD` display texts plus 3 `LIVE_TEXT` voice UI texts. All 63 original string keys match in UZ/RU/TJ, including `turnOf` placeholder. Moved the **189 existing locale strings** exactly into `courseVoiceInline.*` without editing the literal source dictionaries.
+- The existing single local `hsk-course-i18n.js?v=20261019-course-voice-v21` is loaded before the Voice module. After the original `LIVE_TEXT` merge and before `var L=LD[LANG]||LD.ru`, a synchronous read of the local catalog overrides display strings where present. The old dictionaries, all fallback values, original Voice procedures and `8,712` HTML lines remain. No new network calls.
+- Catalog **731 → 794 keys per locale**, **six** static Mini App/Desktop/Bot/Android resource targets regenerated in their existing exact deterministic formats, no normalized Android name collisions. Named-placeholder count 19 → 20 (new `courseVoiceInline.turnOf`). Strict frozen `course-v3.html` reviewed source blob updated to `21d990b6e49403d4509fd2d6e12eafbc08c8c304`. New `tests/test_i18n_course_voice_inline_adoption.py` checks 63×3 exact source parity, asset preload, original flow anchors and Node-executed override/offline fallback for all three locales.
+- The audio pipeline (mic/WebRTC/STT/TTS/cache), AI prompts, limits, subscriptions, referral, session/progress/results, saved corrections, error handling, payments and API paths are untouched. PR #179 remains Draft; no main push/deploy. **Verify the new commit's P0/Android/Backend/Desktop/TTS CI before claiming green; independent device/WebView/free/Pro/offline QA still required.**
+- Prior head `012a536b`: all six GitHub Actions workflows SUCCESS; preceding Dictionary 29-display-label batch left the catalog at 731 keys/locale.
+
 ## Dictionary remaining UI labels and stroke writer status — 29 keys (2026-10-19)
 
 - `app/static/hsk-lugat.html`: **20 main dictionary UI strings, 7 fast stroke writer control/status strings and 2 normal stroke writer status strings** moved as exact original UZ/RU/TJ text to `dictionaryPage.*`, `dictionaryFastWriter.*`, `dictionaryWriterStatus.*` (`702 → 731 keys per locale`). All three locales hydrate synchronously from one local generated `hsk-course-i18n.js?v=20261019-dictionary-display-v20` before render or fast-writer use, retaining original strings as fallback. Existing dynamic `countAll`, `countResults`, `strokes` functions remain unmodified; original 1898 physical HTML lines preserved.

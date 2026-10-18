@@ -28,6 +28,69 @@
     <string name="hsk_course_course_picker_note" formatted="false">Ҳангоми иваз кардани версия пешрафт нигоҳ дошта мешавад. Интихоби сатҳи дигар пешрафти ин версияро аз нав оғоз мекунад.</string>
     <string name="hsk_course_course_picker_title" formatted="false">Интихоби курс</string>
     <string name="hsk_course_course_picker_version" formatted="false">Версияи курс</string>
+    <string name="hsk_course_course_voice_inline_a11y_close" formatted="false">пӯшидан</string>
+    <string name="hsk_course_course_voice_inline_a11y_keyboard" formatted="false">клавиатура</string>
+    <string name="hsk_course_course_voice_inline_a11y_mic" formatted="false">гап задан</string>
+    <string name="hsk_course_course_voice_inline_a11y_send" formatted="false">фиристодан</string>
+    <string name="hsk_course_course_voice_inline_a11y_settings" formatted="false">танзимот</string>
+    <string name="hsk_course_course_voice_inline_again" formatted="false">Боз сӯҳбат</string>
+    <string name="hsk_course_course_voice_inline_analyzing" formatted="false">Таҳлил мекунам…</string>
+    <string name="hsk_course_course_voice_inline_bao_name" formatted="false">阿宝 · Aobao</string>
+    <string name="hsk_course_course_voice_inline_connecting" formatted="false">Пайвастшавӣ…</string>
+    <string name="hsk_course_course_voice_inline_corr_title" formatted="false">Чиро ислоҳ кунем</string>
+    <string name="hsk_course_course_voice_inline_done_title" formatted="false">Сӯҳбати хуб!</string>
+    <string name="hsk_course_course_voice_inline_empty_chat" formatted="false">Гуфтугӯи шумо дар ин ҷо пайдо мешавад</string>
+    <string name="hsk_course_course_voice_inline_err_grammar" formatted="false">грамматика</string>
+    <string name="hsk_course_course_voice_inline_err_pron" formatted="false">талаффуз</string>
+    <string name="hsk_course_course_voice_inline_err_word" formatted="false">калима</string>
+    <string name="hsk_course_course_voice_inline_exit" formatted="false">Баромадан</string>
+    <string name="hsk_course_course_voice_inline_fix_label" formatted="false">Дуруст:</string>
+    <string name="hsk_course_course_voice_inline_heard" formatted="false">Шумо:</string>
+    <string name="hsk_course_course_voice_inline_hide_dialog" formatted="false">Пинҳон кардани гуфтугӯ</string>
+    <string name="hsk_course_course_voice_inline_hint_phrases" formatted="false">Ибораҳои муфид</string>
+    <string name="hsk_course_course_voice_inline_hint_title" formatted="false">Чӣ гуфтан мумкин</string>
+    <string name="hsk_course_course_voice_inline_hint_words" formatted="false">Калимаҳои ин дарс</string>
+    <string name="hsk_course_course_voice_inline_hold_longer" formatted="false">Каме дарозтар нигоҳ доред</string>
+    <string name="hsk_course_course_voice_inline_hold_mic" formatted="false">Барои гап задан микрофонро пахш карда нигоҳ доред</string>
+    <string name="hsk_course_course_voice_inline_kb_placeholder" formatted="false">Нависед…</string>
+    <string name="hsk_course_course_voice_inline_learn_badge" formatted="false">Оҳ, ман чинӣ гап зада истодаам!</string>
+    <string name="hsk_course_course_voice_inline_left_today" formatted="false">Имрӯз мондааст</string>
+    <string name="hsk_course_course_voice_inline_li_name" formatted="false">李老师 · Li Laoshi</string>
+    <string name="hsk_course_course_voice_inline_limit_sub" formatted="false">Бо HSK AI Pro ҳар рӯз бо 阿宝 гап мезанед — бе лимит.</string>
+    <string name="hsk_course_course_voice_inline_limit_title" formatted="false">Сӯҳбати озмоишӣ анҷом ёфт</string>
+    <string name="hsk_course_course_voice_inline_limit_why" formatted="false">Дар ҳолати ройгон AI Voice 1 маротиба санҷида мешавад — сӯҳбати озмоишиатро истифода кардӣ. Бо обуна ҳар рӯз бо 阿宝 гап мезанӣ: сухани зинда — роҳи кӯтоҳтарини ба забон омадан бо чинӣ.</string>
+    <string name="hsk_course_course_voice_inline_listening" formatted="false">Шуморо гӯш мекунам…</string>
+    <string name="hsk_course_course_voice_inline_live_fallback" formatted="false">Live дастрас нест. Барои гап задан микрофонро нигоҳ доред.</string>
+    <string name="hsk_course_course_voice_inline_mic_deny" formatted="false">Аз танзимоти Telegram ба микрофон иҷозат диҳед.</string>
+    <string name="hsk_course_course_voice_inline_no_mistakes" formatted="false">Бе хато — офарин!</string>
+    <string name="hsk_course_course_voice_inline_no_support" formatted="false">Дар ин дастгоҳ сабти овоз дастрас нест.</string>
+    <string name="hsk_course_course_voice_inline_off" formatted="false">хомӯш</string>
+    <string name="hsk_course_course_voice_inline_on" formatted="false">фаъол</string>
+    <string name="hsk_course_course_voice_inline_opt_persona" formatted="false">Ҳамсӯҳбат</string>
+    <string name="hsk_course_course_voice_inline_opt_rate" formatted="false">Суръати нутқ</string>
+    <string name="hsk_course_course_voice_inline_opt_sub" formatted="false">Пинйин ва тарҷума</string>
+    <string name="hsk_course_course_voice_inline_premium_btn" formatted="false">HSK AI Pro ⭐️ гирифтан</string>
+    <string name="hsk_course_course_voice_inline_rate_normal" formatted="false">муқаррарӣ</string>
+    <string name="hsk_course_course_voice_inline_rate_slow" formatted="false">оҳиста</string>
+    <string name="hsk_course_course_voice_inline_release_mic" formatted="false">Барои фиристодан сар диҳед</string>
+    <string name="hsk_course_course_voice_inline_repl_word" formatted="false">ҷавоб</string>
+    <string name="hsk_course_course_voice_inline_replay" formatted="false">Боз шунидан</string>
+    <string name="hsk_course_course_voice_inline_saved_to_mistakes" formatted="false">Хатоҳо ба бахши «Хатоҳои ман» илова шуданд</string>
+    <string name="hsk_course_course_voice_inline_scenario_prefix" formatted="false">Машқ: </string>
+    <string name="hsk_course_course_voice_inline_send_err" formatted="false">Хатогӣ. Бори дигар кӯшиш кунед.</string>
+    <string name="hsk_course_course_voice_inline_settings" formatted="false">Танзимот</string>
+    <string name="hsk_course_course_voice_inline_show_dialog" formatted="false">Дидани гуфтугӯи пурра</string>
+    <string name="hsk_course_course_voice_inline_speaking" formatted="false">Сухан мегӯяд…</string>
+    <string name="hsk_course_course_voice_inline_start_bot" formatted="false">Аввал ботро кушоед ва /start пахш кунед.</string>
+    <string name="hsk_course_course_voice_inline_start_live" formatted="false">Барои гуфтугӯи зинда пахш кунед</string>
+    <string name="hsk_course_course_voice_inline_stat_good" formatted="false">ҷавоби хуб</string>
+    <string name="hsk_course_course_voice_inline_stat_mistake" formatted="false">ислоҳ</string>
+    <string name="hsk_course_course_voice_inline_stat_words" formatted="false">калимаи дарс</string>
+    <string name="hsk_course_course_voice_inline_stop_live" formatted="false">Микрофон фаъол · Барои анҷом пахш кунед</string>
+    <string name="hsk_course_course_voice_inline_too_short" formatted="false">Хеле кӯтоҳ. Бори дигар гап занед.</string>
+    <string name="hsk_course_course_voice_inline_turn_of" formatted="false">Ҷавоби {n}</string>
+    <string name="hsk_course_course_voice_inline_unlimited" formatted="false">бе лимит</string>
+    <string name="hsk_course_course_voice_inline_what_to_say" formatted="false">Чӣ гӯям?</string>
     <string name="hsk_course_dialog" formatted="false">Гуфтугӯ</string>
     <string name="hsk_course_dict" formatted="false">Луғати иероглиф</string>
     <string name="hsk_course_dict_sub" formatted="false">HSK 1–4 · навишт, пинйин, маъно</string>

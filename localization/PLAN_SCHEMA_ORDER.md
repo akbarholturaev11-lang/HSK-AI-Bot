@@ -1611,3 +1611,8 @@ Keep GitHub's branch current without force-resetting unrelated user work.
 ## Dictionary 29 remaining display labels: local-first exact-source adoption (2026-10-19)
 
 - 20 main Dictionary static strings, 7 fast stroke writer static labels and 2 standard stroke writer status strings adopt UZ/RU/TJ local generated course keys (731 per locale), preserving inline literal fallback. Main dictionary counts and stroke label functions unchanged. HTML physical line count remains 1898; source SHA review and Node offline/override source regression, six deterministic generated resources, P0 CI updated. No word/search/level/filter/audio/storage/user state changes. Real WebView/desktop/Android QA still required prior to merge.
+
+### P2 Main Course Voice embedded UI exact source adoption — 2026-10-19
+
+- In `app/static/course-v3.html`, 60 `VOICE.LD` labels + 3 `VOICE.LIVE_TEXT` labels (63 keys × UZ/RU/TJ) now use `courseVoiceInline.*` bundled static course UI resources when available, retaining all exact original inline literals and three-language fallback when resource is absent. Load once before module; no per-label server traffic. Catalog **794 keys per locale** and six platform bundles deterministic.
+- Added source/fallback/Node runtime regression, Android resource collision protection, strict frozen source SHA review and 20-placeholder signature contract (including `courseVoiceInline.turnOf`). Original Voice mic, Live, STT, TTS, playback, API, AI prompts, grade, saved mistakes, limits/Pro and progress remain unchanged. `course-v3.html` line count 8712 preserved. Device and emulator QA still required; PR #179 remains Draft, main/production untouched.

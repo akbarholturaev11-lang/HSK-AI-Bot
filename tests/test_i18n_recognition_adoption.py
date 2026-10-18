@@ -27,7 +27,7 @@ class RecognitionUIAdoptionTests(unittest.TestCase):
                 catalog = json.loads(
                     (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
                 )["messages"]
-                self.assertEqual(len(catalog), 731)
+                self.assertEqual(len(catalog), 794)
                 for key in KEYS:
                     self.assertEqual(catalog["recognition." + key], literal[key])
 

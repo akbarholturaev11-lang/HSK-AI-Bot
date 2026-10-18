@@ -16,7 +16,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ("uz", "ru", "tj")
 SOURCE = "localization/ui"
-EXPECTED_COUNT = 731
+EXPECTED_COUNT = 794
 KEY_NAME = re.compile(r"[a-z][a-zA-Z0-9]*(?:\.[a-z][a-zA-Z0-9]*)*")
 PLACEHOLDER = re.compile(r"\{([A-Za-z][A-Za-z0-9_]*)\}")
 GRADING_KEYS = {
