@@ -1,5 +1,12 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## P3 seven-track first/last source audit — fail-closed blocker (2026-10-19)
+
+- Added a new **read-only** `scripts/i18n_lesson_overlay_readiness_audit.py` for the first and last source JSON from each existing HSK 2.0/3.0 track (7 tracks, 14 source lessons). It invokes the private SHA-256 source-bound overlay proof across UZ/RU/TJ, checks original grading/answer field **counts only**, counts excluded `reverse_builder` cards, and emits only structural numbers / safe source filenames, never Chinese, translated content, options, grading values or learner data.
+- Structural sample review: **13 of 14** source lessons have complete reviewed-display-locale maps; **1 blocked sample**: `nhsk2/lesson_73.json` contains **9 grammar-example translation maps with three empty locale strings**. For this sample the existing overlay contract refuses generation rather than silently falling back or fabricating text. Do not consider P3 production-ready. Sample-only coverage is NOT a 746-lesson parity claim.
+- Added `tests/test_i18n_lesson_overlay_readiness_audit.py` to P0 with checks for all seven first/last lessons, expected locale gap, synthetic redaction, reverse-builder exclusion, immutable answer/lesson content and no public pack/route. CI writes safe diagnostic JSON to `/tmp/i18n-p0/p3-overlay-readiness.json` artifact. Old lesson assets, protected Pro content, paywall/auth/grade/session and app clients are unchanged.
+- Next: inspect ALL **746** source lessons for schema/locale validity using report-only mode; do NOT publish source answers/Pro packs. Fix 9 empty locale translations only in separately approved content-source task after authoring/human review. P3 runtime STILL NOT STARTED. Verify all workflow outcomes for this commit; manual QA still pending.
+
 ## P3 preparation — private version-bound lesson display overlay contract (2026-10-19)
 
 - Added **read-only, in-memory** `scripts/i18n_lesson_display_overlay_contract.py` proof of P3 source/locale overlay schema; **not a deployed language pack, route, translator, generator or runtime migration**. `build_display_overlay` uses explicit safe display paths and one SHA-256 bound source revision, level, lesson ID and part. `apply_display_overlay` only changes a detached source copy's permitted locale text; it rejects unknown/extra/missing paths, stale source revisions, wrong language, and incomplete UZ/RU/TJ display maps. **No output-to-file, HTTP or API functions.**
