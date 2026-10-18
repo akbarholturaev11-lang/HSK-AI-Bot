@@ -64,6 +64,9 @@ class FullQaWorkerGuardTests(unittest.TestCase):
         self.assertIn("get_webhook_info()", src)
         self.assertIn("_background_scheduler(bot)", src)
         self.assertIn("_desktop_auth_retention_scheduler()", src)
+        self.assertIn("bot, dp = hsk_server.bot, hsk_server.dp", src)
+        self.assertNotIn("bot, dp = create_bot(settings)", src)
+
 
 
 if __name__ == "__main__":
