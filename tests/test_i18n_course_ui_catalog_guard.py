@@ -15,8 +15,17 @@ class CourseUICatalogGuardTests(unittest.TestCase):
         self.assertEqual(result["status"], "SOURCE_CONTRACT_VALID_RUNTIME_NOT_TESTED")
         self.assertEqual(result["message_keys"], 172)
         self.assertEqual(result["locales"], list(LOCALES))
-        self.assertEqual(result["placeholder_keys"], 2)
+        self.assertEqual(result["placeholder_keys"], 3)
         self.assertEqual(len(result["sources"]), 3)
+        for locale in LOCALES:
+            source = json.loads(
+                (ROOT / "localization/ui" / locale / "course.json").read_text(
+                    encoding="utf-8")
+            )["messages"]
+            actual = {key for key, value in source.items() if signature(value)}
+            self.assertEqual(actual, {
+                "trialLeft", "trialLeftHours", "levelUp.cpH",
+            })
         self.assertNotIn("HSK AI Pro открыт", str(result))
 
     def test_placeholders_are_multisets_not_just_names(self):
