@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#FDF9F0">
 <title>HSK AI</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="/assets/telegram-web-app.js?v=20261019-1"></script>
 <!-- Fast static Mandarin MP3 index; cached across Mini App visits. -->
 <script defer src="/audio/words/index.js?v=20261014-offline-1"></script>
 <script defer src="/audio/words/client.js?v=20261014-persist-1"></script>
@@ -1945,7 +1945,7 @@ function getSelectedLevel(){var p=new URLSearchParams(location.search);return no
 function setSelectedLevel(lv){
   lv=normalizeLevel(lv);
   try{localStorage.setItem("hsk_v3_level",lv)}catch(e){}
-  try{var u=new URL(location.href);u.searchParams.set("level",lv);history.replaceState(null,"",u.pathname+"?"+u.searchParams.toString())}catch(e){}
+  try{var u=new URL(location.href);u.searchParams.set("level",lv);history.replaceState(null,"",u.pathname+"?"+u.searchParams.toString()+u.hash)}catch(e){}
   return lv;
 }
 var tg=window.Telegram&&window.Telegram.WebApp;
@@ -3849,7 +3849,7 @@ Foundation.finish=function(){
     var serverState=foundationMapState();serverState.id=Foundation.data.id||"starter0_hsk1";serverState.version=Number(Foundation.data.version||1);serverState.completed=true;serverState.required=false;serverState.status="completed";
     var cb=Foundation.afterComplete;Foundation.afterComplete=null;Foundation.active=false;Foundation.finishing=false;$("#flow").classList.remove("on");
     var close=document.querySelector("#flow .fx");if(close)close.style.visibility="visible";if(cta)cta.disabled=false;renderCourse();
-    try{var u=new URL(location.href);u.searchParams.delete("foundation");history.replaceState(null,"",u.pathname+"?"+u.searchParams.toString())}catch(e){}
+    try{var u=new URL(location.href);u.searchParams.delete("foundation");history.replaceState(null,"",u.pathname+"?"+u.searchParams.toString()+u.hash)}catch(e){}
     if(typeof cb==="function")setTimeout(cb,80);
   });
 };
@@ -8555,13 +8555,13 @@ var finishHskLaunchSplash=(function(){
        qurilma yoki cache tozalanganda server holati noto'g'ri redirectni to'xtatadi. */
     if(d.user&&d.user.onboarding_completed===false){
       var onbQuery=new URLSearchParams(bootParams.toString());onbQuery.set("lang",LANG);
-      finishHskLaunchSplash();beginInternalNavigation();location.replace("/course_v3_onboarding.html?"+onbQuery.toString());return;
+      finishHskLaunchSplash();beginInternalNavigation();location.replace("/course_v3_onboarding.html?"+onbQuery.toString()+location.hash);return;
     }
     if(d.user&&typeof d.user.onboarding_completed!=="boolean"){
       var cachedOnboarding=false;try{cachedOnboarding=!!localStorage.getItem("hsk_v3_onb")}catch(e){}
       if(!cachedOnboarding&&!bootParams.get("onboarded")){
         var fallbackQuery=new URLSearchParams(bootParams.toString());fallbackQuery.set("lang",LANG);
-        finishHskLaunchSplash();beginInternalNavigation();location.replace("/course_v3_onboarding.html?"+fallbackQuery.toString());return;
+        finishHskLaunchSplash();beginInternalNavigation();location.replace("/course_v3_onboarding.html?"+fallbackQuery.toString()+location.hash);return;
       }
     }
     if(d.user&&d.user.onboarding_completed===true){try{localStorage.setItem("hsk_v3_onb","1")}catch(e){}}

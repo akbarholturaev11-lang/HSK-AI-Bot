@@ -15,6 +15,7 @@ sync_playwright = playwright_api.sync_playwright
 APP_ROOT = Path(__file__).resolve().parents[2]
 STATIC_ROOT = APP_ROOT / "app/static"
 STATIC_BASE_URL = "http://hsk-ai.local"
+TELEGRAM_SDK_ROUTE = re.compile(r".*/(?:js|assets)/telegram-web-app\.js(?:\?.*)?$")
 BASE_URL = os.getenv("MINIAPP_E2E_BASE_URL", STATIC_BASE_URL).rstrip("/")
 
 
@@ -64,7 +65,7 @@ def route_static_files(page):
 
     page.route(re.compile(r"^http://hsk-ai\.local/(?!api/).*"), handle_static)
     page.route(
-        "https://telegram.org/js/telegram-web-app.js",
+        TELEGRAM_SDK_ROUTE,
         lambda route: route.fulfill(
             status=200,
             content_type="application/javascript",
@@ -152,7 +153,7 @@ def mock_telegram_ready(page, init_data="query_id=smoke"):
     """Telegram WebApp stub'ni bo'sh bo'lmagan initData bilan qaytaradi, shunda
     Mini App auth-gate ko'rsatmasdan map'ni yuklaydi (static rejim)."""
     page.route(
-        "https://telegram.org/js/telegram-web-app.js",
+        TELEGRAM_SDK_ROUTE,
         lambda route: route.fulfill(
             status=200,
             content_type="application/javascript",
@@ -184,7 +185,7 @@ def mock_telegram_desktop_download(
     )
     confirm_value = "true" if confirm else "false"
     page.route(
-        "https://telegram.org/js/telegram-web-app.js",
+        TELEGRAM_SDK_ROUTE,
         lambda route: route.fulfill(
             status=200,
             content_type="application/javascript",
@@ -390,6 +391,10 @@ def test_course_v3_onboarding_asks_level_then_goal_and_sends_both(page):
     testda qotiriladi.
     """
     mock_telegram_ready(page)
+    page.route("**/api/v3/course-tracks", lambda route: json_response(route, {
+        "ok": True, "active_track": "hsk20",
+        "tracks": {"hsk30": {"access": {"feature_enabled": False}}},
+    }))
     sent = []
     page.route(
         "**/api/miniapp/event",
@@ -409,6 +414,8 @@ def test_course_v3_onboarding_asks_level_then_goal_and_sends_both(page):
 
     # 1-ekran: xush kelibsiz
     page.get_by_role("button", name="Boshlash").click()
+    # The existing course-version step precedes level selection.
+    page.get_by_role("button", name="Davom etish").click()
 
     # 2-ekran: daraja
     expect(page.locator("#stage")).to_contain_text("Xitoy tilini qanchalik bilasiz")
@@ -433,6 +440,11 @@ def test_course_v3_onboarding_asks_level_then_goal_and_sends_both(page):
 
 def test_course_v3_onboarding_save_locks_choices_and_retries_server_error(page):
     mock_telegram_ready(page)
+    page.route("**/api/miniapp/onboarding/status?*", lambda route: json_response(route, {"ok": True, "saved": False}))
+    page.route("**/api/v3/course-tracks", lambda route: json_response(route, {
+        "ok": True, "active_track": "hsk20",
+        "tracks": {"hsk30": {"access": {"feature_enabled": False}}},
+    }))
     page.route("**/api/miniapp/event", lambda route: json_response(route, {"ok": True}))
     page.route(
         "**/course-v3.html?*",
@@ -452,6 +464,8 @@ def test_course_v3_onboarding_save_locks_choices_and_retries_server_error(page):
         wait_until="networkidle",
     )
     page.get_by_role("button", name="Boshlash").click()
+    # The existing course-version step precedes level selection.
+    page.get_by_role("button", name="Davom etish").click()
     page.locator(".lv", has_text="HSK 2").click()
     page.get_by_role("button", name="Davom etish").click()
     travel = page.locator(".lv", has_text="Sayohat")
@@ -505,19 +519,27 @@ def test_course_v3_onboarding_save_locks_choices_and_retries_server_error(page):
 
 def test_course_v3_onboarding_timeout_restores_controls_and_ignores_late_success(page):
     mock_telegram_ready(page)
+    page.route("**/api/v3/course-tracks", lambda route: json_response(route, {
+        "ok": True, "active_track": "hsk20",
+        "tracks": {"hsk30": {"access": {"feature_enabled": False}}},
+    }))
     page.route("**/api/miniapp/event", lambda route: json_response(route, {"ok": True}))
     pending = []
     page.route("**/api/miniapp/onboarding", lambda route: pending.append(route))
+    page.route("**/api/miniapp/onboarding/status?*", lambda route: json_response(route, {"ok": True, "saved": False}))
     # Older WebViews cannot abort fetch; a late success must still be ignored.
     page.add_init_script("window.AbortController = undefined")
     page.clock.install()
     page.goto(app_url("/course_v3_onboarding.html?lang=uz"), wait_until="networkidle")
     page.get_by_role("button", name="Boshlash").click()
+    # The existing course-version step precedes level selection.
+    page.get_by_role("button", name="Davom etish").click()
     page.get_by_role("button", name="Davom etish").click()
     with page.expect_request("**/api/miniapp/onboarding"):
         page.get_by_role("button", name="Birinchi darsni boshlash").click()
     expect(page.locator("#cta")).to_be_disabled()
     page.clock.fast_forward(12001)
+    page.clock.run_for(350)  # Read-only save reconciliation runs after the timeout.
 
     expect(page.locator("#error")).to_be_visible()
     expect(page.locator("#cta")).to_be_enabled()
@@ -2600,9 +2622,9 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page, viewport
     )
     # Admin JS must remain safe in a normal browser where Telegram.WebApp is
     # absent; API routes below are mocked independently of Telegram auth.
-    page.unroute("https://telegram.org/js/telegram-web-app.js")
+    page.unroute(TELEGRAM_SDK_ROUTE)
     page.route(
-        "https://telegram.org/js/telegram-web-app.js",
+        TELEGRAM_SDK_ROUTE,
         lambda route: route.fulfill(
             status=200,
             content_type="application/javascript",
