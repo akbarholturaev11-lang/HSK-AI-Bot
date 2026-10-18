@@ -1010,10 +1010,15 @@ private fun DoneContent(
             )
             else -> CheckoutButton(copy.getString(R.string.sub_return_app), false, true, onClose)
         }
-        if (pending && !state.provisionalAccess) CheckoutButton(
-            copy.getString(R.string.sub_help_button), false,
-            state.overview?.supportUrl?.isNotBlank() == true, onSupport, secondary = true,
-        )
+        if (pending && !state.provisionalAccess) {
+            // An ordinary PRO payment opened from the HSK 3.0 entry must
+            // retain a working way back; status refresh is not navigation.
+            SmallAction(copy.getString(R.string.sub_return_app), onClose)
+            CheckoutButton(
+                copy.getString(R.string.sub_help_button), false,
+                state.overview?.supportUrl?.isNotBlank() == true, onSupport, secondary = true,
+            )
+        }
     }
 }
 
