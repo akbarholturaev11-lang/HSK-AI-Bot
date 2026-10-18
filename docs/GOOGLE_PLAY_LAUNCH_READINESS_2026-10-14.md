@@ -7,8 +7,12 @@ document.
 
 ## Verified in the repository
 
-- Android `applicationId`: `com.pomp.hskai`; version: `1.7.13`,
-  `versionCode=44` at audit time. Increase versionCode before the next release.
+- Android `applicationId`: `com.pomp.hskai`. **2026-10-14 audit snapshot:**
+  version `1.7.13`, `versionCode=44`. **2026-10-18 main source check:**
+  `android/app/build.gradle.kts` has `1.7.17`, `versionCode=48`.
+  Neither value proves the latest *published* APK or Play release.
+  For each new release verify Gradle source, published manifest and signing,
+  and use a `versionCode` greater than the last published release.
 - `direct`: sideload APK, checkout and user-confirmed APK updater.
 - `play`: no external checkout or APK install permission, access status
   synchronized through the same backend, no self-updater.

@@ -1,7 +1,11 @@
 # Google / Apple kirishni yoqish
 
-Kod tayyor va productionda. Faqat credential'lar yo'q, shuning uchun tugmalar
-ko'rinmaydi (fail-closed). Quyidagilarni to'ldirgach o'zi ochiladi.
+Repoda Google/Apple OAuth uchun backend va klient oqimlari mavjud. Bu source
+darajasidagi holat, **production'da ishlayotganini yoki kerakli credential
+qiymatlari o‘rnatilganini isbotlamaydi**. Provider tugmalari va browser
+callback ishlashini production konfiguratsiyasi, server loglari va haqiqiy
+Android/Desktop/Mini App sinovi bilan alohida tekshiring. Quyidagi sozlash
+qadamlari deploy tasdig‘i emas.
 
 Production domeni: `telegram-chinese-bot-production.up.railway.app`
 
