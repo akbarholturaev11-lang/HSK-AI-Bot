@@ -13,20 +13,25 @@
 
 ---
 
-## E2E Smoke Test Rule
+## Scope- and risk-based testing
 
-After important updates to the Telegram Mini App, course/lesson flow, quiz flow, backend progress events, subscription/paywall, or payment/access logic, verify the main flows with Playwright E2E smoke tests.
+Select checks by feature and regression risk rather than running every Mini App
+flow after any change. For important changes, include the affected API/unit
+tests, smoke/e2e path, and relevant security or business-flow regression.
 
-Cover at least:
-- App opens successfully.
-- `?lesson=5` routing works.
-- `?tab=` routing works for the current navigation IDs: `course`, `mashq`, `profile`, `rating`, and `voice`.
-- Quiz can be completed and shows a score.
-- Backend progress events are sent/saved.
-- API errors fall back to `localStorage` where the Mini App supports fallback.
-- Subscription/paywall state is shown correctly.
-- Payment approval opens access.
-- Return-to-bot button/event works.
+- UI/navigation: changed viewport and route render without console errors.
+- Lesson/quiz/homework: changed route, answer/score/submission and backend
+  progress persistence.
+- Telegram/auth: changed login/return-to-bot route and safe non-Telegram fallback
+  where supported.
+- Paywall/payment/access: relevant free/pending/approved/rejected cases with
+  server-authoritative access decisions.
+- Offline/localStorage: check fallback only where the client implements it.
+- Query parameters like `?lesson=5` or `?tab=` when related routing changes.
+
+Run broad Playwright E2E only for cross-cutting changes involving multiple
+flows. Documentation-only edits need Markdown/reference/diff checks, not
+unrelated browser E2E. Never report unexecuted tests as passed.
 
 ---
 

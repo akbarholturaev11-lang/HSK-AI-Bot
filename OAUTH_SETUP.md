@@ -179,8 +179,9 @@ APPLE_SERVICE_ID=<Services ID, masalan com.pomp.hskai.web>
 
 > **Diqqat — domen tasdiqlash.** Apple domenni tasdiqlash uchun fayl beradi va
 > uni `https://<domen>/.well-known/apple-developer-domain-association.txt`
-> manzilida ko'rsatishni talab qiladi. Hozir bu fayl serverda YO'Q. Apple
-> shuni so'rasa ayting — men uni serverga qo'shib beraman (kichik ish).
+> manzilida ko'rsatishni talab qilishi mumkin. Fayl production'da
+> mavjudligi bu hujjatdan ma'lum emas: kerak bo'lsa hosting route'ini va
+> Apple Developer konfiguratsiyasini amaldagi deployment'da tekshiring.
 
 ### 2.3 Kalit
 

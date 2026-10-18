@@ -5,7 +5,7 @@ Native Kotlin/Compose client of the existing HSK AI backend. One canonical
 across Android, macOS, Windows and explicitly linked Telegram clients.
 Google or Apple can create an account without Telegram. Add another sign-in
 method from the existing account's profile; equal email addresses do not merge
-accounts. The Android client reuses the shared backend auth and course contracts.
+accounts. Verify provider availability at runtime. The Android client reuses the shared backend auth and course contracts.
 
 The current Play flavor has no purchase flow. The website-distributed Direct
 APK keeps manual payment and receipt review for every sign-in method. Universal

@@ -2,6 +2,13 @@
 
 Status: updated in the SEO branch; production deployment and search submission remain manual.
 
+> **2026-10-18 documentation review (not a website deployment):** The original
+> public pages, SEO titles and Telegram CTA described below are a 2026-09-20
+> source/deployment snapshot. The next site direction is a multi-platform
+> HSK AI **information and knowledge hub**, not a Telegram-bot-only landing
+> page. Keep existing `/download` routes and crawler/security controls.
+> Section D proposes metadata only; do not claim it has been deployed.
+
 ## A. Audit before implementation
 
 - Backend: FastAPI in `app/main.py`; aiogram bot and DB/background jobs share its lifespan. No Flask server.
@@ -49,18 +56,32 @@ Current repository default origin (configuration evidence, not a live deployment
 
 Root is a distinct Tajik product/language entry page with its own canonical and x-default alternate. `/tj/`, `/ru/`, `/uz/` are reciprocal home variants. `/download` is the existing HSK AI Apps / Download page itself, not a separate explanatory landing page. `/desktop-download?lang=uz` remains functional and points its canonical to `/download`. Tajik uses ISO language code `tg`, while URLs retain requested `/tj/`. Intent guides are unique Tajik articles with self hreflang only; unrelated pages are not falsely marked as translations. No RU intent duplicates were needed.
 
-## D. Page title and description
+## D. Information-hub metadata — proposed, not yet deployed
 
-| Path | Title | Meta description |
+The old page metadata described HSK AI mainly as a Telegram learning product.
+It remains a historical 2026-09-20 source snapshot, **not** the target website
+copy. The next public site leads with verified information about HSK levels,
+curricula, vocabulary/dictionary, AI learning, platform availability and
+documentation, grouped by category. Telegram bot/Mini App is one access method.
+
+| Route | Proposed title | Proposed description |
 |---|---|---|
-| `/` | HSK AI — забони чинӣ дар Telegram | HSK AI: платформаи омӯзиши забони чинӣ бо ёрии AI. Бо тоҷикӣ оғоз кунед ё русӣ ва ӯзбекиро интихоб намоед. Курсҳои HSK 1–4 дар Telegram. |
-| `/tj/` | Омӯзиши забони чинӣ ба тоҷикӣ — HSK AI | Забони чиниро ба тоҷикӣ бо HSK AI омӯзед: курсҳои HSK 1–4, шарҳи AI, машқи талаффуз, луғат ва тестҳо дар Telegram Mini App. |
-| `/ru/` | Китайский язык для таджиков — HSK AI в Telegram | HSK AI — китайский язык с объяснениями на таджикском, русском и узбекском. Курсы HSK 1–4, AI-помощник, произношение, словарь и тесты в Telegram. |
-| `/uz/` | Xitoy tilini o‘rganish — HSK AI Telegram kurslari | HSK AI bilan xitoy tilini o‘rganing: HSK 1–4 kurslari, AI yordamchi, talaffuz mashqi, lug‘at va testlar. Tojik, rus va o‘zbek tillarida Telegram’da. |
-| `/download` | HSK AI Apps / Download — macOS, Windows va Android | HSK AI download sahifasi: macOS, Windows va Android uchun rasmiy release mavjud bo‘lsa yuklab oling. iPhone/iPad uchun Telegram Mini App orqali davom eting. |
-| `/tj/hsk/` | HSK ба тоҷикӣ: курсҳои HSK 1–4 — HSK AI | Барои омӯзиши HSK ба тоҷикӣ аз куҷо оғоз кунем? Роҳнамои интихоби маводи HSK 1–4, машқи калимаҳо ва такрори дарсҳо дар HSK AI. |
-| `/tj/learn-chinese/` | Омӯзиши забони чинӣ аз сифр ба тоҷикӣ — HSK AI | Забони чиниро аз сифр оғоз кунед: пинйин, оҳангҳо, иероглиф ва ҷумлаи аввал. Роҳнамои кӯтоҳи тоҷикӣ бо намуна ва машқи мустақилона. |
-| `/tj/ai-chinese-teacher/` | Ёрдамчии AI барои забони чинӣ ба тоҷикӣ — HSK AI | Аз AI барои омӯзиши чинӣ чӣ гуна истифода барем? Намунаи саволҳо ба тоҷикӣ, таҳлили ҷумла, машқи овозӣ ва санҷидани ҷавобҳои AI дар HSK AI. |
+| `/` | HSK AI — омӯзиши забони чинӣ ва дастурҳои HSK | Маълумоти равшан дар бораи курсҳои HSK, луғат, машқҳо, ёрдамчии AI ва барномаҳои Android/Desktop бо интихоби забон. |
+| `/tj/` | HSK AI — омӯзиши забони чинӣ ва курсҳои HSK | Дарсҳои HSK, луғат, машқ, AI ва дастурҳои мобилӣ ё компютерӣ; роҳнамоҳои равшан ба тоҷикӣ. |
+| `/ru/` | HSK AI — курсы китайского языка, словарь и практика | Курсы HSK, тренировка, словарь, AI-помощник и информация о приложениях для Android и компьютера. |
+| `/uz/` | HSK AI — хитой тили курслари ва луғат | HSK дарслари, машқлар, луғат, AI ва мобил/компьютер иловалари ҳақида маълумот. |
+| `/download` | HSK AI — расмий иловалар ва юклаб олиш | Android, macOS ва Windows учун мавжуд расмий версиялар, ўрнатиш тартиби ва хавфсизлик маълумотлари. |
+
+Preserve existing distinct educational guides `/tj/hsk/`, `/tj/learn-chinese/`
+and `/tj/ai-chinese-teacher/` as information-rich articles, not duplicated
+promotional pages. Every future section needs grounded product information,
+clear internal navigation, correct locale/hreflang and unique metadata.
+Retain the current download page and its crawlable release status.
+
+**Implementation gate:** This is documentation-only. Review product facts and
+all locale variants, update `app/public_site/content.py`, rendering, schema,
+browser and SEO tests **in a separate website task**. Do not claim new routes,
+indexing, Google/AI visibility or deployment from these proposed strings.
 
 ## E. robots.txt
 

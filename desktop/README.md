@@ -1,8 +1,11 @@
 # HSK AI Desktop
 
-This directory is the canonical Tauri v2 desktop client inside the shared
-`HSK AI bot` repository. Telegram bot, Mini App, backend, subscription,
-progress, referrals, analytics and desktop remain one product ecosystem.
+This directory is the canonical Tauri v2 desktop client in the HSK AI
+multi-platform repository. Telegram bot/Mini App, Android, desktop, public site
+and backend form one product ecosystem. Authenticated clients share the same
+internal learner identity, subscription, course progress and access decisions.
+Google/Apple provider identities may be linked to that internal account;
+provider email is not proof for automatic account merging.
 
 ## Desktop client capabilities
 
