@@ -206,12 +206,65 @@ assert.equal(mappings,408);
         self.assertIn('P3_RESERVED_GRAMMAR=null;', fragment)
         self.assertIn('return reserveCompletedP3Grammar(l);', fragment)
         self.assertIn('P3_RESERVED_GRAMMAR=d.p3_grammar||null;', fragment)
-        self.assertIn('if(!r.ok||!d.ok||d.allowed===false)', fragment)
-        self.assertLess(fragment.index('if(!r.ok||!d.ok||d.allowed===false)'),
+        self.assertIn('if(!r.ok||d.ok!==true||d.allowed!==true)', fragment)
+        self.assertLess(fragment.index('if(!r.ok||d.ok!==true||d.allowed!==true)'),
                         fragment.index('P3_RESERVED_GRAMMAR=d.p3_grammar||null;'))
         self.assertIn("d=applyReservedP3Grammar(d,lv,l.n);", html)
         self.assertLess(html.index("d=applyReservedP3Grammar(d,lv,l.n);"),
                         html.index("Flow.queue=buildQueue(d);"))
+
+    @unittest.skipUnless(shutil.which("node"), "Node required for current-lesson grant regression")
+    def test_current_reservation_requires_explicit_http_and_body_grant(self):
+        html = HTML.read_text(encoding="utf-8")
+        start = html.index("function reserveLessonStart(l){")
+        end = html.index("function handleLessonStartDenied(", start)
+        code = html[start:end]
+        js = r"""
+const assert=require("node:assert/strict"),vm=require("node:vm");
+const fragment=JSON.parse(process.argv[1]);
+const env={
+  INIT_DATA:"synthetic-verified-by-server",
+  MAP:{level:"nhsk2"},
+  LANG:"uz",
+  P3_RESERVED_GRAMMAR:null,
+  normalizeLevel:x=>x,getSelectedLevel:()=> "nhsk2",
+  _apiPost:()=>Promise.reject(new Error("mock missing")),
+};
+vm.runInNewContext(fragment,env);
+(async()=>{
+  for(const [httpOk,data] of [
+    [true,{ok:true}],                       // no explicit allowed:true
+    [true,{ok:true,allowed:false}],
+    [true,{ok:false,allowed:true}],
+    [false,{ok:true,allowed:true}],
+    [true,{}],
+  ]){
+    env.P3_RESERVED_GRAMMAR={version:99};
+    env._apiPost=()=>Promise.resolve({
+      ok:httpOk,status:httpOk?200:403,json:()=>Promise.resolve(data)
+    });
+    await assert.rejects(
+      env.reserveLessonStart({n:16,status:"current"}),
+      err=>err.status===(httpOk?200:403)
+    );
+    assert.equal(env.P3_RESERVED_GRAMMAR,null);
+  }
+  const patch={version:1,level:"nhsk2",lesson_order:16};
+  env._apiPost=()=>Promise.resolve({
+    ok:true,status:200,json:()=>Promise.resolve({
+      ok:true,allowed:true,p3_grammar:patch
+    })
+  });
+  const allowed=await env.reserveLessonStart({n:16,status:"current"});
+  assert.equal(allowed.allowed,true);
+  assert.equal(env.P3_RESERVED_GRAMMAR,patch);
+})().catch(err=>{console.error(err);process.exitCode=1});
+"""
+        result = subprocess.run(
+            ["node", "-e", js, json.dumps(code)],
+            text=True, capture_output=True, timeout=15,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr[-2500:])
 
     @unittest.skipUnless(shutil.which("node"), "Node is needed for JavaScript runtime smoke")
     def test_js_atomic_patch_applies_only_to_matching_zh_and_preserves_cache(self):
