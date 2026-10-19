@@ -395,3 +395,45 @@ Original answer tokens, assessment fields and Pro/auth/grade data are never
 added to the backlog or modified. The backlog itself can contain gated
 Chinese content and MUST NEVER be uploaded to public GitHub, Actions,
 storage, client bundles or unauthenticated routes. P3 runtime stays OFF.
+
+
+## Complete private candidate set prepared for language review (2026-10-19)
+
+A complete AI-suggestion set is available locally as
+`HSK_P3_nhsk2_136_PRIVATE_AI_CANDIDATES_20261019.zip`, outside Git. It covers
+136 unique contexts, 408 independent UZ/RU/TJ suggestions, and all 272
+original source-map placements after exact-context reuse. It is **not
+human-approved and not shippable**. Do not commit, upload to Actions, or copy
+any text into source lessons, generated resources, runtime packs or public
+course routes.
+
+After extracting the private ZIP, validate the `drafts/` directory against
+the current checkout before a qualified reviewer edits it:
+
+```bash
+python scripts/i18n_editor_translation_batch.py \
+  --draft-dir /private/extracted-candidates/drafts --require-complete
+python scripts/i18n_editor_context_progress.py \
+  --draft-dir /private/extracted-candidates/drafts
+```
+
+The verified current set reports 272/272 maps, 816/816 locale values,
+136/136 unique contexts, 136 mirrored card maps checked and 0 human-approved
+contexts. The private backlog can also distinguish review work from missing
+authoring:
+
+```bash
+python scripts/i18n_editor_backlog.py \
+  --draft-dir /private/extracted-candidates/drafts \
+  --private-dir /private/new-candidate-aware-backlog
+```
+
+Source grammar examples have no pinyin field in 136/136 contexts; none was
+invented. The private reviewer table flags provisional Chinese name readings,
+Russian gender alternatives and context-sensitive aspect/direction phrases.
+Review Chinese meaning first, then grammar and natural UZ/RU/TJ. A passing
+structural audit does not approve language quality. After review, update only
+private drafts and rerun all SHA, batch, exact-context and mirror checks. A
+separate source synchronization/apply adapter, public-content exposure review,
+access/assessment review and client QA are still required before considering
+lesson integration. P3 runtime remains OFF.
