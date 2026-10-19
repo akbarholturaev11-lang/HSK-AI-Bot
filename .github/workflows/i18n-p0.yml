@@ -4,7 +4,20 @@ name: Local-first localization P0 guards
 # Changes ONLY under localization/, scripts/, Android or Desktop must not
 # bypass P0 migration and compatibility checks.
 on:
-  pull_request:
+  push:
+    branches:
+      - codex/i18n-local-first-foundation-20261017
+    paths:
+      - "localization/**"
+      - "scripts/i18n_*.py"
+      - "tests/test_i18n_*.py"
+      - "app/static/**"
+      - "app/bot/**"
+      - "app/services/**"
+      - "app/api/**"
+      - "android/app/src/**"
+      - "desktop/ui/**"
+      - ".github/workflows/i18n-p0.yml"  pull_request:
     paths:
       - "localization/**"
       - "scripts/i18n_*.py"
