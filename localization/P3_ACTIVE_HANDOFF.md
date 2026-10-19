@@ -1,6 +1,15 @@
 # HSK AI P3 — ACTIVE handoff for a new ChatGPT agent
 Updated: 2026-10-19. **Current working status is here; historical log remains in `localization/NEXT_CHAT_HANDOFF.md`.**
 
+## 2026-10-20 — Current-lesson Mini App fail-closed auth follow-up
+
+- **New client security bug**: `reserveLessonStart(l)` for ordinary current lessons allowed a 200 `{ok:true}` payload with omitted `allowed`. The existing strict completed-review API path was correct, but the normal path used the weaker `d.allowed===false` check. Do not weaken any reservation path or assume HTTP success implies entitlement.
+- `app/static/course-v3.html` commit `8573908`: now `if(!r.ok||d.ok!==true||d.allowed!==true)` denies malformed, missing/false allowed, missing/false ok and non-2xx. Same physical line, **8712 lines invariant intact**. Original server signed initData and consuming entitlement remain unchanged.
+- Node regression `0763c13` in `tests/test_i18n_miniapp_grammar_reservation.py` executes exact extracted current lesson reservation JS against HTTP 200 incomplete body, 200 explicit deny, 200 `ok:false`, HTTP 403, malformed body and true explicit grant; also validates stale P3 patch reset.
+- Manifest `localization/baselines/reviewed_ui_changes.json` commit `922161c` exactly pins new source blob `4d40834086f9cda19dcafbc53df590d4974f4eff` with reviewed reason; no lesson/answer/pinyin/public P3 pack changes. Cause, prevention, scope and tests recorded in `localization/AI_CONTENT_QA_POLICY.md` commit `3ce102f`.
+- Latest **verified green** semantic-batch HEAD `28efee5` at GitHub [P0 run 39289884483](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39289884483) SUCCESS. New HTML security batch Actions `39290323039` (at `922161c`) was still in progress and `39290459098` (at `3ce102f`) pending when checked; **do not claim newest HEAD green** before checking actual run, tests and reports.
+- PR #179 remains Draft, dirty; **main is not merged/deployed**. Next must verify current-head P0, investigate any failure, then integrate main identity/schema ownership changes in a conflict-safe way before authenticated old/Google/Apple/Free/Pro device/WebView QA. Legacy unauthenticated static JSON access risk is separate and not solved by this change.
+
 ## 2026-10-20 — P0 passed; 136-context independent semantics pass
 
 - Verified **exact previous code HEAD** `7cf426c`: [P0 run 39285039089](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39285039089) finished **SUCCESS**; job `118168471002` and all steps including `tests.test_i18n_miniapp_grammar_reservation` passed, which includes actual Node execution of 48 source JSONs / 408 full and partial P3 patches. Backend [run 39281476374](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39281476374) @ `abddd4b` also ended **SUCCESS**, including P3 authenticated native and HSK3 tests.
