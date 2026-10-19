@@ -325,3 +325,33 @@ Chinese/pinyin, answers/grading and subscription checks remain untouched;
 full P0 and authenticated device/WebView QA must still be reconfirmed
 on the new HEAD. All 408 independent text cells were read in this pass,
 but semantic review should continue when new contextual evidence appears.
+
+## Current-lesson HTTP-200 entitlement responses must be explicit
+
+Root cause (2026-10-20): the normal Mini App current-lesson
+`reserveLessonStart(l)` browser branch previously checked
+`!r.ok || !d.ok || d.allowed === false`. A syntactically successful
+HTTP 200 body with `ok: true` but **without any `allowed` field**
+therefore resolved as a permitted reservation. The completed-lesson
+P3 branch was already fail-closed; the ordinary current branch was not.
+The actual server `LessonAccessService.status(..., consume=True)`
+returns an explicit access decision, so a missing decision is a malformed
+response, not permission.
+
+Fix: require all of `HTTP response.ok`, `body.ok === true` and
+`body.allowed === true` on current reservations. Do not turn an HTTP
+failure or malformed 200 into an offline grant. The signed server remains
+the authority; do not consume a second time or modify the course
+lesson/quiz/Pro rules. The change is **same-line only** in
+`app/static/course-v3.html`, preserving 8712 physical lines and
+all classified anchor positions. The exact new reviewed Git blob
+`4d40834086f9cda19dcafbc53df590d4974f4eff` is pinned in
+`localization/baselines/reviewed_ui_changes.json`.
+
+Regression: `tests/test_i18n_miniapp_grammar_reservation.py`
+executes the real extracted current reservation JS via Node. It tests
+HTTP 200 with missing `allowed`, explicit deny, missing `ok`, HTTP 403,
+malformed success, and valid explicit 200 grant, as well as clearing
+stale P3 state. Keep this test in P0 CI. Legacy anonymous/offline
+static lesson JSON remains a *separate unresolved security review risk*;
+this narrow fix does not make publicly served lesson JSON private.
