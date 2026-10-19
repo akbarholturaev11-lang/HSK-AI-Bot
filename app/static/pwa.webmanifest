@@ -1,0 +1,20 @@
+{
+  "id": "/hsk-ai-pwa",
+  "name": "HSK AI — Chinese Learning",
+  "short_name": "HSK AI",
+  "description": "HSK AI Chinese learning app. Standalone browser sign-in is coming after universal-account QA.",
+  "lang": "uz",
+  "start_url": "/course-v3.html?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FDF9F0",
+  "theme_color": "#FDF9F0",
+  "icons": [
+    {
+      "src": "/assets/hsk-ai-logo-256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
