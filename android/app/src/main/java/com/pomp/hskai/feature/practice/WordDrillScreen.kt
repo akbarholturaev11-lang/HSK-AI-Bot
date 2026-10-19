@@ -395,7 +395,7 @@ private fun PronunciationStage(
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = Icons.Filled.Mic,
-                        contentDescription = stringResource(R.string.voice_a11y_mic),
+                        contentDescription = stringResource(R.string.hsk_course_course_voice_inline_a11y_mic),
                         tint = PompColors.Paper,
                         modifier = Modifier.size(36.dp),
                     )
