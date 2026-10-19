@@ -26,6 +26,13 @@ on:
       - "app/services/payment_service.py"
       - "app/services/payment_review_preview_service.py"
       - "alembic/versions/0106_canonical_payment_ownership.py"
+      - "alembic/versions/0107_canonical_referral_ownership.py"
+      - "app/db/models/referral.py"
+      - "app/repositories/referral_repo.py"
+      - "app/services/referral_service.py"
+      - "tests/test_i18n_native_referral_migration.py"
+      - "tests/test_i18n_native_referral_ownership.py"
+      - "tests/test_i18n_native_referral_concurrency.py"
       - "tests/test_i18n_native_payment_migration.py"
       - "tests/test_i18n_native_payment_repository.py"
       - "tests/test_i18n_native_ai_voice_ownership.py"
@@ -92,6 +99,12 @@ jobs:
         run: python -m unittest tests.test_hsk30_lesson_limits tests.test_course_track_service tests.test_hsk30_promo_service tests.test_hsk30_switch_ui_contract tests.test_android_payment_method_dialog_contract
       - name: Verify synthetic Mini App lesson reservation auth and quota boundary
         run: python -m unittest tests.test_i18n_miniapp_reservation_asgi
+      - name: Test 0107 referrals, native owner isolation and signup attribution migration
+        run: |
+          python -m unittest \
+            tests.test_i18n_native_referral_migration \
+            tests.test_i18n_native_referral_ownership \
+            tests.test_i18n_native_referral_concurrency
       - name: Test 0106 canonical financial migration and ownership isolation
         run: |
           python -m unittest tests.test_i18n_native_payment_migration tests.test_i18n_native_payment_repository tests.test_payment_review_preview
