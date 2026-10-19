@@ -43,6 +43,7 @@ from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_today_service import CourseTodayService
 from app.services.course_track_service import CourseTrackError, CourseTrackService
 from app.services.course_v3_parts import total_parts
+from app.services.course_p3_grammar_localization import apply_native_grammar_locales
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.hsk30_feature_service import Hsk30FeatureService
 from app.services.hsk30_promo_service import Hsk30PromoService
@@ -559,6 +560,13 @@ class DesktopCourseService:
                 "course_lesson_load_failed",
                 status_code=500,
             )
+        # Agent-checked P3 grammar display text is inserted only after the
+        # existing lesson unlock and entitlement decisions have allowed access.
+        # Source SHA mismatch preserves the old lesson payload, never grades.
+        lesson = apply_native_grammar_locales(
+            lesson, level=level, lesson_order=lesson_order,
+            course_data_root=COURSE_V3_DATA_ROOT,
+        )
         preview_card_limit = (
             max(1, total_cards // 2) if preview_half else total_cards
         )

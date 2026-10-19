@@ -110,7 +110,8 @@ jobs:
             tests.test_i18n_editor_source_staging \
             tests.test_i18n_editor_semantic_guard \
             tests.test_i18n_editor_grammar_local_catalog \
-            tests.test_i18n_canonical_grammar_catalog
+            tests.test_i18n_canonical_grammar_catalog \
+            tests.test_i18n_native_grammar_localization
       - name: Read-only P0 source checks
         run: |
           mkdir -p /tmp/i18n-p0
