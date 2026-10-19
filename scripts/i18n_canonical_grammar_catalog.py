@@ -1,8 +1,16 @@
 #!/usr/bin/env python3
 """Check central UZ/RU/TJ grammar translations against all original HSK sources."""
 import csv
+import hashlib
+import json
 from pathlib import Path
+import re
+import sys
 import unicodedata
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from scripts.i18n_legacy_lesson_content_risk_audit import ROOT
 from scripts.i18n_grammar_private_review_queue import assemble_private_review_queue
 from scripts.i18n_editor_translation_draft import _validate
@@ -16,32 +24,74 @@ CATALOG = "localization/lessons/nhsk2_grammar_uz_ru_tj.tsv"
 LANGS = ("uz", "ru", "tj")
 
 
-def audit_canonical_grammar(root=ROOT):
-    with (root / CATALOG).open(encoding="utf-8", newline="") as stream:
-        rows = list(csv.DictReader(stream, delimiter="\t"))
+def context_source_sha256(context):
+    """Pin a locale row to the complete source context and every occurrence."""
+    identity = {
+        "review_id": context["review_id"],
+        "grammar": context["grammar"],
+        "chinese_example": context["chinese_example"],
+        "pinyin": context["pinyin"],
+        "occurrences": sorted(
+            ({
+                "source_file": item["source_file"],
+                "source_git_blob_sha1": item["source_git_blob_sha1"],
+                "pointer": item["pointer"],
+                "mirrored_paths": sorted(item["mirrored_paths"]),
+            } for item in context["occurrences"]),
+            key=lambda item: (item["source_file"], item["pointer"]),
+        ),
+    }
+    raw = json.dumps(identity, ensure_ascii=False, sort_keys=True,
+                     separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def read_canonical_catalog(path):
+    with path.open(encoding="utf-8", newline="") as stream:
+        reader = csv.DictReader(stream, delimiter="\t")
+        if reader.fieldnames != ["review_id", "context_sha256", *LANGS]:
+            raise ValueError("canonical catalog schema invalid")
+        rows = list(reader)
+    if any(None in item for item in rows):
+        raise ValueError("canonical catalog row has extra columns")
     if len(rows) != 136:
         raise ValueError("136 unique contexts required")
     reviewed = {}
     for i, item in enumerate(rows, 1):
         key = f"G{i:03d}"
-        if set(item) != {"review_id", *LANGS} or item["review_id"] != key:
+        if item.get("review_id") != key:
             raise ValueError("missing, reordered or duplicate context")
-        for lc in LANGS:
-            value = item[lc]
-            if not isinstance(value, str) or not value.strip() or value != value.strip():
+        digest = item.get("context_sha256", "")
+        if not re.fullmatch(r"[0-9a-f]{64}", digest):
+            raise ValueError("invalid context source SHA-256")
+        values = {}
+        for locale in LANGS:
+            value = item.get(locale)
+            if (not isinstance(value, str) or not value.strip()
+                    or value != value.strip() or "\n" in value or "\r" in value
+                    or "\t" in value):
                 raise ValueError("empty/invalid translation")
             if unicodedata.normalize("NFC", value) != value:
                 raise ValueError("non-NFC translation")
-        reviewed[key] = {lc: item[lc] for lc in LANGS}
+            values[locale] = value
+        reviewed[key] = {"context_sha256": digest, "translations": values}
+    return reviewed
+
+
+def audit_canonical_grammar(root=ROOT):
+    reviewed = read_canonical_catalog(root / CATALOG)
     queue, _ = assemble_private_review_queue(root)
     if queue["unique_exact_contexts"] != 136 or queue["missing_original_maps"] != 272:
         raise ValueError("original source review inventory changed")
     drafts = {}
     for ctx in queue["contexts"]:
         key = ctx["review_id"]
-        values = reviewed.get(key)
-        if values is None:
+        entry = reviewed.get(key)
+        if entry is None:
             raise ValueError("unmatched Chinese grammar context")
+        if entry["context_sha256"] != context_source_sha256(ctx):
+            raise ValueError("source context SHA-256 changed")
+        values = entry["translations"]
         zh = ctx["chinese_example"]
         if RUSSIAN_GENDER_PLACEHOLDER.search(values["ru"]):
             raise ValueError("Russian placeholder regression")
@@ -77,6 +127,15 @@ def audit_canonical_grammar(root=ROOT):
                     "mirror_maps": mirror_count, "source_files_written": 0}
 
 
-if __name__ == "__main__":
-    drafts, status = audit_canonical_grammar()
+def main():
+    try:
+        _, status = audit_canonical_grammar()
+    except (OSError, ValueError, TypeError, KeyError, IndexError, UnicodeError):
+        print("Canonical grammar catalog REJECTED (content withheld)", file=sys.stderr)
+        return 1
     print("Canonical UZ/RU/TJ grammar verified:", status)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
