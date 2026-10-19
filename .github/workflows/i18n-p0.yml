@@ -78,7 +78,8 @@ jobs:
             tests.test_i18n_lesson_overlay_full_audit \
             tests.test_i18n_lesson_locale_gap_review_queue \
             tests.test_i18n_editor_translation_draft \
-            tests.test_i18n_editor_translation_batch
+            tests.test_i18n_editor_translation_batch \
+            tests.test_i18n_editor_preview_integrity
       - name: Read-only P0 source checks
         run: |
           mkdir -p /tmp/i18n-p0

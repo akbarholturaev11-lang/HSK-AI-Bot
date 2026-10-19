@@ -1644,3 +1644,17 @@ Keep GitHub's branch current without force-resetting unrelated user work.
 ### P3 multi-editor local draft coverage validator (2026-10-19)
 
 - Add no-side-effect batch validator over a private folder of approved-editor JSON drafts, using exactly the existing source SHA/pointer/locale rules. Supports incremental work or strict `--require-complete` 272/816 structural coverage, rejects duplicates, symlinks, stale SHA and drafts inside the Git checkout. Output is only safe counts/status, never values; even complete structural validation does NOT authorize translation publishing, lesson runtime, Pro entitlement or shipping. Original 746 lesson JSON and client/server behavior remain identical. See `localization/reviews/P3_EDITOR_DRAFT_SCHEMA.md`; CI regression module `tests.test_i18n_editor_translation_batch` added.
+
+### P3 editor-preview full-tree invariance attestation (2026-10-19)
+
+- Add separate private in-memory integrity verification after editor draft
+  structural validation, before any content integration. Compare a proposed
+  lesson preview to the exact pinned original JSON: restore **only** the
+  explicitly approved previously blank UZ/RU/TJ maps and type-compare the
+  entire remainder, rejecting any grading/correct_index, builder answer,
+  option order, Chinese/pinyin, lock/Pro, unexpected key or unreviewed
+  translation mutation. Return only structural counts; never return or
+  publish translated strings/source answers through this proof. Tested
+  with positive/adversarial synthetic payloads in P0, no runtime adapter,
+  no lesson source writes. Human translation approval/entitlement/manual
+  QA still pending; P3 runtime NOT STARTED.

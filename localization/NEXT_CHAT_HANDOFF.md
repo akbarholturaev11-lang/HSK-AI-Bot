@@ -1,5 +1,11 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## P3 preview full-tree integrity proof, without editing lessons (2026-10-19)
+
+- Added `scripts/i18n_editor_preview_integrity.py`: a **private, in-memory source-diff guard** for approved UZ/RU/TJ editor drafts. Runs existing SHA-pinned `_validate` and, for any proposed preview, first enforces exact expected strings on whitelisted previously empty locale maps. It restores only those approved display fields on a private copy, then compares the entire remainder of the JSON **type-sensitively**, including array order, dictionary shapes, `correct_index`, `options`, `reverse_builder` tokens, grading booleans and embedded Pro/lock flags. Any other alteration is fail-closed.
+- `attest_editor_preview(source_bytes, draft)` verifies the existing private preview path. `verify_approved_preview(source_bytes, draft, candidate)` independently rejects tampered previews. Both return **count-only metadata** and `ready_to_ship=False`, with no source contents or draft translations; no file writes/HTTP/published packs. New `tests/test_i18n_editor_preview_integrity.py` exercises 7 synthetic positive/adversarial cases and is included in P0. Editor usage documented in `localization/reviews/P3_EDITOR_DRAFT_SCHEMA.md`.
+- No source lesson JSON, answer/grade/Pro checks, app runtime or original **48 lessons / 272 maps / 816 values** changed. This is **not** a translation quality approval or production entitlement test. PR #179 Draft; `main`/production untouched. Recent low-level GitHub App commits have not triggered Actions; require genuine CI result for this commit before marking checks successful.
+
 ## P3 editor translation batch progress — private/read-only (2026-10-19)
 
 - Added `scripts/i18n_editor_translation_batch.py` for multiple **human-authored** JSON drafts in one **local/private directory outside the repository**. Reads the current original seven-track 746-lesson source review queue and verifies every draft with existing `validate_editor_draft`: canonical source path, Git blob SHA, exact approved blank display pointer, three nonempty UZ/RU/TJ values, no unauthorized fields, duplicates or stale source versions. Draft subsets are supported for incremental editors; `--require-complete` refuses a partial set. Symlinks, unexpected files and checkout-located drafts are rejected.

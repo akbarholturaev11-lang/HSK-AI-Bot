@@ -96,3 +96,36 @@ regressions and real-device QA remain separate requirements.
 The command prints **counts only**, never translated sentences, source
 answers, Chinese or pinyin. It reads current original lessons but does not
 modify them, generate a deployable pack or change the application runtime.
+
+## Prove preview integrity before human approval
+
+A structurally valid translation draft is NOT enough to allow applying an
+edited lesson payload. The independent library-only invariant check compares
+the original lesson with a proposed **in-memory** preview, restores only
+explicitly whitelisted draft translation maps, then compares **all remaining
+JSON fields and types** with the original. The check rejects modified
+Chinese/pinyin, question options or their order, `correct_index`, builder
+answer tokens, grading booleans/weights, embedded Pro flags, extra/missing
+fields, unreviewed translations and even changing integer types to boolean.
+
+```python
+from scripts.i18n_editor_preview_integrity import (
+    attest_editor_preview, verify_approved_preview,
+)
+
+# source_bytes = original raw lesson file bytes (trusted local editor only)
+# draft = JSON object that has passed the private translator review workflow
+proof = attest_editor_preview(source_bytes, draft)
+assert proof["all_nonapproved_source_fields_unchanged"]
+assert not proof["ready_to_ship"]
+
+# Optional independent verification of a proposed private in-memory preview:
+# proof = verify_approved_preview(source_bytes, draft, proposed_preview)
+```
+
+The returned proof contains only safe metadata, including Git source SHA and
+the number of checked UZ/RU/TJ fields. It contains **no translations, answer
+values or protected lesson content**. No public/Pro pack or file is generated,
+and no app/runtime/API code is modified. This is an integrity proof **only**:
+semantic language approval, paid-content/auth boundaries, and real-device
+regressions still require separate review. P3 runtime remains NOT STARTED.
