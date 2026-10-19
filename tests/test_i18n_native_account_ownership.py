@@ -19,6 +19,11 @@ from sqlalchemy.pool import StaticPool
 
 from app.db import models  # noqa: F401 — register related table metadata
 from app.db.base import Base
+from app.db.models.account_notice_delivery import AccountNoticeDelivery
+from app.db.models.conversion_funnel_event import ConversionFunnelEvent
+from app.db.models.course_ad import CourseAdView
+from app.db.models.course_user_notification import CourseUserNotification
+from app.db.models.trial_risk_event import TrialRiskEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user import User
 from app.services.account_identity import owner_clause
@@ -178,6 +183,19 @@ class NativeP3OwnershipTests(unittest.IsolatedAsyncioTestCase):
     def test_native_schema_contract_and_linear_migration_head(self):
         self.assertTrue(User.__table__.c.telegram_id.nullable)
         self.assertTrue(CourseMiniAppEvent.__table__.c.telegram_id.nullable)
+        for model, column in (
+            (AccountNoticeDelivery, "telegram_id"),
+            (ConversionFunnelEvent, "telegram_id"),
+            (CourseAdView, "user_telegram_id"),
+            (CourseUserNotification, "telegram_id"),
+            (TrialRiskEvent, "telegram_id"),
+        ):
+            with self.subTest(model=model.__name__):
+                self.assertTrue(model.__table__.c[column].nullable)
+        self.assertIn(
+            "uq_course_user_notifications_user_key_dedupe",
+            {c.name for c in CourseUserNotification.__table__.constraints},
+        )
         self.assertIn(
             "uq_course_miniapp_events_user_event_dedupe",
             {c.name for c in CourseMiniAppEvent.__table__.constraints},
