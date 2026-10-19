@@ -213,3 +213,31 @@ The preview object itself still contains whole lessons and grading material.
 **Never write it to `app/static/`, public GitHub files, CI artifacts or
 unauthenticated endpoints.** This check does not authorize updating the source,
 payment/access gates, live runtime or human language sign-off.
+
+## Reuse exact original grammar contexts in another lesson (editor-only)
+
+The same original grammar examples can appear in multiple lessons. The source
+deduplication audit confirmed 272 blank grammar maps but only 136 distinct
+contexts. Reusing one HUMAN-REVIEWED translation is allowed only in a PRIVATE
+editor draft when original grammar number, title, rule, Chinese and pinyin
+all match byte-for-byte at the JSON value level. Context reuse is not
+authorization to publish or merge lesson JSON.
+
+Example for HSK 3.0 Level 2 lesson 20:
+
+```bash
+python scripts/i18n_editor_translation_reuse.py \
+  --source-draft /private/lesson_16/editor_draft.json \
+  --source-draft /private/lesson_17/editor_draft.json \
+  --source-draft /private/lesson_18/editor_draft.json \
+  --target-track nhsk2 --target-lesson 20 \
+  --private-output-dir /private/new-lesson20-review
+```
+
+All source drafts must be private files outside Git checkout, and the output
+directory must be new and private. The tool checks original/target source SHA,
+approved grammar display paths, conflict-free texts and entire private mirror
+preview integrity. It outputs two files: editor_draft.json (still UNAPPROVED)
+and reuse_provenance.json (safe source refs/counts), never a public pack.
+Even structurally valid drafts still need language review, auth/Pro and
+graded-content QA. The original HSK JSON and runtime are unchanged.

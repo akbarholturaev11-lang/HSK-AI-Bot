@@ -1678,3 +1678,8 @@ Keep GitHub's branch current without force-resetting unrelated user work.
 ### Seven-track duplicate grammar source audit — do not retranslate exact contexts (2026-10-19)
 
 - New `scripts/i18n_grammar_translation_reuse_audit.py` creates a redacted report for human editorial batching: groups originally blank UZ/RU/TJ grammar-example display maps by exact Chinese source, pinyin, grammar `no`, title, `title_zh` and rule. It emits only source file locations, indexes and counts. 20th nhsk2 lesson's 12 examples are exact repeats of 16 (6), 17 (3), 18 (3), so those three draft sources can be re-used as an **unapproved private editor draft** for lesson20 with its own Git blob SHA. The audit reports count of distinct contexts to target human-review effort; human linguistic signoff, source integrity, Pro safety and manual QA remain mandatory. No source modification, no runtime integration.
+
+### P3 safe grammar translation reuse generator (2026-10-19)
+
+- Audit baseline: 746 lessons, 272 original blank grammar maps, 136 distinct exact contexts, 136 source repeats, 136 additional blank `_grammar` card mirrors, no divergence. Only 408 independent locale texts may need authoring, but 816 target locale placements remain.
+- New `scripts/i18n_editor_translation_reuse.py` converts SHA-validated private source drafts into a private target draft only after exact Chinese/pinyin/title/rule/grammar-no equality, conflict checks, all target gaps covered and protected full-source in-memory mirror integrity. Lesson20 can reuse 36 locale cells from 16/17/18. Editor content and preview must never be exposed as static/browser assets; no content integration or runtime changes. Tests in `tests/test_i18n_editor_translation_reuse.py` and P0.
