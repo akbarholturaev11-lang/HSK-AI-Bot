@@ -107,6 +107,37 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
                          "common.not_approved")
         self.assertEqual(t("welcome", lang="uz", name="QA"), "Xush kelibsiz, QA!")
 
+    def test_bot_shared_navigation_aliases_use_exact_local_catalog_values(self):
+        from app.bot.generated.common_i18n import COMMON_MESSAGES
+        from app.bot.generated.course_i18n import COURSE_MESSAGES
+        from app.bot.utils.i18n import (
+            BOT_SHARED_COMMON_KEYS, BOT_SHARED_COURSE_KEYS, TEXTS, t,
+        )
+
+        expected_common = {
+            "hint_section_course_title": "navigation.course",
+            "hint_section_practice_title": "navigation.practice",
+            "hint_section_profile_title": "navigation.profile",
+            "hint_section_rating_title": "navigation.rating",
+        }
+        expected_course = {"hint_section_voice_title": "nav.voice"}
+        self.assertEqual(BOT_SHARED_COMMON_KEYS, expected_common)
+        self.assertEqual(BOT_SHARED_COURSE_KEYS, expected_course)
+        for bot_key, catalog_key, catalog in (
+            *((key, value, COMMON_MESSAGES) for key, value in expected_common.items()),
+            *((key, value, COURSE_MESSAGES) for key, value in expected_course.items()),
+        ):
+            for locale in ("uz", "ru", "tj"):
+                with self.subTest(bot_key=bot_key, locale=locale):
+                    self.assertEqual(
+                        catalog[locale][catalog_key],
+                        TEXTS[locale][bot_key],
+                    )
+                    self.assertEqual(t(bot_key, lang=locale), TEXTS[locale][bot_key])
+        # An unrelated Bot hint remains owned by the legacy Bot table.
+        self.assertEqual(t("hint_section_course_body", lang="uz"),
+                         TEXTS["uz"]["hint_section_course_body"])
+
     def test_platform_bundles_contain_only_ui_not_lessons_or_entitlements(self):
         for file in (
             "desktop/ui/js/generated/hsk-common-i18n.js",

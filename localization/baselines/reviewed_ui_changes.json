@@ -15,8 +15,8 @@
     },
     "app/bot/utils/i18n.py": {
       "baseline_sha1": "dc488c39038281e41f25736c3203be71a6bbb47d",
-      "reviewed_sha1": "aca144788d5376c209c86e69dc62781bc382ce10",
-      "reason": "Expose generated canonical common UI keys through a namespaced Bot t() branch; all legacy key dispatch, Gemini variant and fallback unchanged."
+      "reviewed_sha1": "03e67fbf499217a0426d31dd6976ae592e21c4f1",
+      "reason": "Expose generated canonical common UI keys through a namespaced Bot t() branch and route four exact UZ/RU/TJ navigation-title aliases through the common bundle plus the exact AI Voice alias through the course bundle, retaining Bot dictionaries as fallback. Other legacy key dispatch, Gemini variants, and fallback behavior stay unchanged."
     },
     "app/static/course_v3_onboarding.html": {
       "baseline_sha1": "321c28c34cf4ed0550bb5187d8f6b680654ea51e",
