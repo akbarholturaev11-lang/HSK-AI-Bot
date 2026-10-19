@@ -63,7 +63,7 @@ class CanonicalGrammarCatalogTests(unittest.TestCase):
         translations = read_canonical_catalog(self.catalog_path)["G131"]["translations"]
         self.assertIn("o‘rdak", translations["uz"])
         self.assertIn("утки", translations["ru"])
-        self.assertIn("мурғобӣ", translations["tj"])
+        self.assertIn("мурғобии", translations["tj"])
         self.assertNotIn("мурғи бирён", translations["tj"])
 
     def test_g128_tajik_repeat_visit_is_idiomatic(self):
