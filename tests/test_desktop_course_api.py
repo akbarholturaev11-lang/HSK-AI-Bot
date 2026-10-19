@@ -252,6 +252,56 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(promo.status_code, 200, promo.text)
         self.assertTrue(promo.json()["ok"])
 
+    async def test_authenticated_hsk30_p3_lesson_keeps_grammar_mirror_and_access(self):
+        """Real SQLite + bearer auth, not a mocked native course service."""
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            user.level = "nhsk2"
+            user.status = "active"
+            user.payment_status = "approved"
+            user.end_date = datetime.now(timezone.utc) + timedelta(days=7)
+            session.add(CourseProgress(
+                user_id=user.id,
+                level="nhsk2",
+                completed_lessons_count=15,
+                current_step="intro",
+                waiting_for="none",
+            ))
+            await BotSettingRepository(session).set_bool(
+                HSK30_ENABLED_SETTINGS_KEY, True
+            )
+            await session.commit()
+
+        route = "/api/v3/desktop/course/lesson/16"
+        anonymous = await self.client.get(route)
+        self.assertEqual(anonymous.status_code, 401)
+        ahead = await self.client.get(
+            "/api/v3/desktop/course/lesson/17", headers=self.auth_headers,
+        )
+        self.assertEqual(ahead.status_code, 403)
+        allowed = await self.client.get(route, headers=self.auth_headers)
+        self.assertEqual(allowed.status_code, 200, allowed.text[:500])
+        self.assertEqual(allowed.headers.get("cache-control"), "no-store")
+        payload = allowed.json()
+        self.assertEqual(payload["level"], "nhsk2")
+        self.assertEqual(payload["lesson_order"], 16)
+        lesson = payload["lesson"]
+        self.assertEqual(lesson["lesson_id"], 16)
+        originals = lesson["grammar"][0]["examples"]
+        mirror_cards = [
+            card for section in lesson["sections"]
+            for card in section.get("cards", [])
+            if card.get("type") == "_grammar"
+        ]
+        self.assertEqual(len(originals), 6)
+        self.assertTrue(mirror_cards)
+        mirrors = mirror_cards[0]["g"]["examples"]
+        self.assertEqual(len(mirrors), len(originals))
+        for source, mirror in zip(originals, mirrors):
+            self.assertEqual(source["translation"], mirror["translation"])
+            for locale in ("uz", "ru", "tj"):
+                self.assertTrue(source["translation"][locale])
+
     async def test_hsk30_map_preserves_native_level_when_permanently_unlocked(self):
         async with self.sessions() as session:
             user = await session.get(User, 1)
