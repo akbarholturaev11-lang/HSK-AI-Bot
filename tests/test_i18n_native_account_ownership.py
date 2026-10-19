@@ -3,11 +3,16 @@
 This stage validates canonical user-owned event semantics and migration/model
 contracts without simulating provider OAuth, payments or production migration.
 """
+import importlib.util
+from pathlib import Path
 import unittest
 from datetime import datetime, timezone
 
 from alembic.config import Config
+from alembic.migration import MigrationContext
+from alembic.operations import Operations
 from alembic.script import ScriptDirectory
+import sqlalchemy as sa
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
@@ -105,6 +110,70 @@ class NativeP3OwnershipTests(unittest.IsolatedAsyncioTestCase):
                 owner_clause(CourseMiniAppEvent, google, telegram_column="telegram_id")
             ))).scalars().all()
             self.assertEqual([item.dedupe_key for item in google_owned], ["stale-transport-must-not-win"])
+
+    def test_legacy_0103_0104_migrations_backfill_and_keep_accounts_distinct(self):
+        """Rehearse legacy Telegram storage on SQLite, without user-data access."""
+        root = Path(__file__).resolve().parents[1] / "alembic" / "versions"
+
+        def revision(prefix):
+            location = next(root.glob(f"{prefix}_*.py"))
+            spec = importlib.util.spec_from_file_location(f"test_{prefix}", location)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            return module
+
+        identity = revision("0103")
+        foundation = revision("0104")
+        engine = sa.create_engine("sqlite:///:memory:")
+        with engine.begin() as connection:
+            connection.execute(sa.text(
+                "CREATE TABLE users (id INTEGER PRIMARY KEY, telegram_id BIGINT UNIQUE NOT NULL)"
+            ))
+            connection.execute(sa.text(
+                "CREATE TABLE desktop_devices (id TEXT PRIMARY KEY, telegram_id BIGINT NOT NULL)"
+            ))
+            connection.execute(sa.text(
+                "CREATE TABLE desktop_link_requests (id TEXT PRIMARY KEY, intent TEXT, status TEXT)"
+            ))
+            connection.execute(sa.text(
+                "INSERT INTO users VALUES (1,1001),(2,1002)"
+            ))
+            connection.execute(sa.text(
+                "INSERT INTO desktop_devices VALUES ('old-device',1001)"
+            ))
+            connection.execute(sa.text(
+                "INSERT INTO desktop_link_requests VALUES ('old-proof','link','pending')"
+            ))
+            for table, column in foundation.TABLES.items():
+                connection.execute(sa.text(
+                    f"CREATE TABLE {table} (id INTEGER PRIMARY KEY, user_id INTEGER, "
+                    f"{column} BIGINT NOT NULL, event_name TEXT, key TEXT, dedupe_key TEXT)"
+                ))
+                connection.execute(sa.text(
+                    f"INSERT INTO {table} (id,{column},event_name,key,dedupe_key) "
+                    "VALUES (1,1001,'lesson_completed','notice','legacy')"
+                ))
+            with Operations.context(MigrationContext.configure(connection)):
+                identity.upgrade()
+                foundation.upgrade()
+                foundation.upgrade()  # rerun must be idempotent
+            self.assertEqual(connection.execute(sa.text(
+                "SELECT status FROM desktop_link_requests WHERE id='old-proof'"
+            )).scalar_one(), "expired")
+            for table, column in foundation.TABLES.items():
+                self.assertEqual(connection.execute(sa.text(
+                    f"SELECT user_id,{column} FROM {table}"
+                )).one(), (1, 1001))
+                self.assertTrue({c["name"]: c for c in sa.inspect(connection).get_columns(table)}[column]["nullable"])
+            self.assertTrue({c["name"]: c for c in sa.inspect(connection).get_columns("users")}["telegram_id"]["nullable"])
+            self.assertTrue({c["name"]: c for c in sa.inspect(connection).get_columns("desktop_devices")}["telegram_id"]["nullable"])
+            connection.execute(sa.text(
+                "INSERT INTO users VALUES (3,NULL)"
+            ))
+            with Operations.context(MigrationContext.configure(connection)):
+                with self.assertRaisesRegex(RuntimeError, "Provider-only"):
+                    identity.downgrade()
+        engine.dispose()
 
     def test_native_schema_contract_and_linear_migration_head(self):
         self.assertTrue(User.__table__.c.telegram_id.nullable)
