@@ -73,6 +73,7 @@ on:
       - "tests/native_postgres_deadlines.py"
       - "tests/test_i18n_native_payment_migration.py"
       - "tests/test_i18n_native_payment_repository.py"
+      - "tests/test_subscription_service.py"
       - "tests/test_i18n_native_ai_voice_ownership.py"
       - "app/services/course_miniapp_analytics_service.py"
       - "app/db/models/user.py"
