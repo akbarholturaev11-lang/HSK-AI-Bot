@@ -2,6 +2,14 @@
 
 ## CURRENT STATE — read this first (2026-10-19)
 
+## P3 completed-lesson explicit denial and 48-lesson parity (2026-10-19)
+
+- Fixed `app/static/course_v3_data/p3-grammar-reservation.js` handling of an authoritative server denial for `review_only` completed lessons: HTTP 401/403 and explicit `allowed:false` now throw instead of being converted into `{ok:true,allowed:true}`. Real network failure retains the existing offline completed-lesson fallback. The signed server access decision is binding even if the cached client shows `status:"done"`. Node regression tests in `tests/test_i18n_miniapp_grammar_reservation.py` exercise 401/403/200-denial and offline. Implementation commit `c100fa06080fa1b4a1be76827bcedc2a35a5037a`; P0 run [39274319969](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39274319969) **SUCCESS**.
+- Added exhaustive all-48 original-source real-data parity test for Mini App `miniapp_reserved_grammar_patch` against Android/Desktop `apply_native_grammar_locales`. Tests that the 272 original grammar + 136 mirrored = 408 display pointers yield 1,224 UZ/RU/TJ strings, are source-SHA pinned, no original byte changes, no unrelated source fields. Commit `91317f28a9058dba055c45fa4907ba43309602e6`; P0 [39274617827](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39274617827). Verify exact-head status after docs update, do not infer production deploy.
+- Root cause and preventive rule recorded in `localization/AI_CONTENT_QA_POLICY.md`. Draft PR #179 still not merged; no `main`/production change. Next: confirm both source/P0/backend CI, investigate remaining client auth/offline/device QA, and reconcile PR conflicts safely without relaxing protected content, entitlement or user-account gates.
+
+
+
 ## Mini App P3 authenticated grammar adoption — 2026-10-19 (latest)
 
 - **Implemented on the SAME feature branch, not main/production:** `app/api/miniapp_entitlements.py` adds a small P3 UZ/RU/TJ display-only patch to the **existing** `POST /api/v3/lesson/start` response, ONLY after signed Telegram initData verification, user lookup, lesson-sequence bound, and `LessonAccessService.status(...consume=True)` returns allowed. Denial responses (401/403) never call or expose the patch. `Cache-Control: no-store`. No extra HTTP call, anonymous public locale asset, token leakage or grading/Pro logic change.

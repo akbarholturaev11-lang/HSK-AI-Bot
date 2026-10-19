@@ -157,3 +157,26 @@ update `localization/baselines/reviewed_ui_changes.json` to exactly pin
 the new source Git blob. Existing 58-failure CI regression was repaired this
 way and P0 passed 331 tests. ASGI 200/403 Mini App entitlement tests plus
 Node atomic-patch smoke belong to the required code review gates.
+
+## Completed Mini App lesson review must honor explicit server denial
+
+Regression discovered 2026-10-19: `reserveCompletedP3Grammar()` previously
+returned `allowed:true` even when the authenticated reservation endpoint
+explicitly returned HTTP 401/403 or `allowed:false`. A client-side
+`status==="done"` snapshot is not authoritative when server progress,
+account or entitlement state differs. The agent fixed this in
+`app/static/course_v3_data/p3-grammar-reservation.js`: explicit server denial
+throws a structured lesson-access error that the existing lesson-start UI
+handles; **only genuine network/service failures retain the old offline
+completed-lesson fallback**. Tests must cover both 401 and 403, an explicit
+200 with `allowed:false`, offline, and no residual P3 patch. Do not
+reintroduce unconditional `.catch(() => ({allowed:true}))` or weaken the
+signed Telegram server gate to improve translation availability.
+
+Cross-platform P3 parity regression: test **all 48 affected lessons**,
+not only lesson 16. For every returned Mini App display pointer confirm
+the authenticated native adapter produces exactly the same UZ/RU/TJ value,
+the original source still has an empty display map, and no assessed/Pro
+fields are exposed. Expected totals: 272 original display maps, 136 mirrored
+maps and 1,224 locale display values. Any new mapping failure must become a
+scoped regression test before an agent can call P3 released.
