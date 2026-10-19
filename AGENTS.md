@@ -121,6 +121,8 @@ Har taskdan keyin kunlik log yaratish shart emas.
 
 ## HSK AI P3 localization — agent-owned QA
 
+Current P3 cross-session execution entry point: `localization/P3_ACTIVE_HANDOFF.md`. Read it before touching P3; the large `localization/NEXT_CHAT_HANDOFF.md` is historical detail.
+
 For existing UZ/RU/TJ course translation work, follow
 `localization/AI_CONTENT_QA_POLICY.md`. The agent checks and fixes the
 Chinese-context meaning, grammar and natural UZ/RU/TJ, migrates verified

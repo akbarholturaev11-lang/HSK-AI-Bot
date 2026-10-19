@@ -34,6 +34,8 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 
 ## Agent-owned Chinese-course translation QA (owner direction, 2026-10-19)
 
+**Current resume state:** `localization/P3_ACTIVE_HANDOFF.md` (read first; historical progress in `localization/NEXT_CHAT_HANDOFF.md`).
+
 For existing UZ/RU/TJ course texts, coding agents own semantic and grammar QA,
 actual corrections, source-safe centralization, all three client checks, and
 regression knowledge. Do not ask the owner to validate Chinese/UZ/RU/TJ or
