@@ -3,6 +3,8 @@ package com.pomp.hskai.feature.foundation
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -183,6 +185,7 @@ private fun FoundationTopBar(progress: Float, required: Boolean, index: Int, tot
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun FoundationCardBody(
     card: FoundationCard,
@@ -298,21 +301,20 @@ private fun FoundationCardBody(
             }
         }
         "builder" -> {
-            HskGlassSurface(
-                modifier = Modifier.fillMaxWidth().heightIn(min = 76.dp),
-                shape = RoundedCornerShape(16.dp),
-                shadowElevation = 5.dp,
+            FlowRow(
+                modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Row(
-                    modifier = Modifier.padding(14.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    state.builderTokens.forEach { token -> HanziToken(token, onUndoBuilderToken) }
-                }
+                state.builderTokens.forEach { token -> HanziToken(token, onUndoBuilderToken) }
             }
+            HorizontalDivider(color = PompColors.Divider)
             Spacer(Modifier.height(14.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
                 card.tokens.forEach { token ->
                     HanziToken(token) { onAddBuilderToken(token) }
                 }
@@ -321,9 +323,7 @@ private fun FoundationCardBody(
             FoundationAction(
                 enabled = state.builderTokens.size == card.answerTokens.size,
                 onClick = onSubmitBuilder,
-                text = state.builderTokens.joinToString("").ifBlank {
-                    stringResource(R.string.lesson_check)
-                },
+                text = stringResource(R.string.lesson_check),
                 secondary = true,
             )
         }

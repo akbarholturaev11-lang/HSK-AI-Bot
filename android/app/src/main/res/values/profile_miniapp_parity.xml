@@ -23,6 +23,7 @@
 
     <string name="profile_account_title">Hisob</string>
     <string name="profile_account_subtitle">Profil va ulangan kirish usullari</string>
+    <string name="profile_account_sign_in_methods">Kirish usullari</string>
     <string name="profile_account_name">Ism</string>
     <string name="profile_account_telegram">Telegram nik</string>
     <string name="profile_account_phone">Telefon</string>

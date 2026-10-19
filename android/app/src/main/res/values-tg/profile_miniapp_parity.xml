@@ -23,6 +23,7 @@
 
     <string name="profile_account_title">Ҳисоб</string>
     <string name="profile_account_subtitle">Профил ва усулҳои пайвастшудаи вуруд</string>
+    <string name="profile_account_sign_in_methods">Усулҳои вуруд</string>
     <string name="profile_account_name">Ном</string>
     <string name="profile_account_telegram">Ники Telegram</string>
     <string name="profile_account_phone">Телефон</string>
