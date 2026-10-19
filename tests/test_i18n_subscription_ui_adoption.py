@@ -38,7 +38,7 @@ class SubscriptionUIAdoptionTests(unittest.TestCase):
                 catalog = json.loads(
                     (ROOT / f"localization/ui/{locale}/course.json").read_text(encoding="utf-8")
                 )["messages"]
-                self.assertEqual(len(catalog), 794)
+                self.assertEqual(len(catalog), 797)
                 for key, value in scalar.items():
                     self.assertEqual(catalog["subscriptionPage." + key], value)
 

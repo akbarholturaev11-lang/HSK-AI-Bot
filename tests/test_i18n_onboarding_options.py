@@ -51,7 +51,7 @@ class OnboardingOptionsTests(unittest.TestCase):
         self.assertEqual(len(fields), 9)
         for locale in LANGUAGES:
             catalog = source_catalog(locale)
-            self.assertEqual(len(catalog), 794)
+            self.assertEqual(len(catalog), 797)
             for key, values in fields.items():
                 with self.subTest(locale=locale, key=key):
                     self.assertEqual(catalog[key], values[locale])
@@ -113,6 +113,32 @@ class OnboardingOptionsTests(unittest.TestCase):
         self.assertIn("}.getOrDefault(this)", native)
         self.assertIn("OnboardingCopy.forLanguage(language).withBundledCatalog(context, language)", primer)
         self.assertIn("val context = LocalContext.current", primer)
+
+    def test_android_only_active_onboarding_copy_uses_local_catalog(self):
+        native = (ROOT / "android/app/src/main/java/com/pomp/hskai/feature/onboarding/OnboardingScreen.kt").read_text(
+            encoding="utf-8")
+        parts = {
+            "uz": native.split('"uz" -> OnboardingCopy(', 1)[1].split(")", 1)[0],
+            "tj": native.split('"tg", "tj" -> OnboardingCopy(', 1)[1].split(")", 1)[0],
+            "ru": native.split("else -> OnboardingCopy(", 1)[1].split(")", 1)[0],
+        }
+        lookups = native.split("fun OnboardingCopy.withBundledCatalog(", 1)[1].split(
+            "\n@Composable", 1)[0]
+        fields = ("beginner", "beginnerSub", "saveError")
+        for field in fields:
+            resource_name = re.sub(r"(?<!^)(?=[A-Z])", "_", field).lower()
+            lookup = (
+                field + " = localized.getString(R.string.hsk_course_android_onboarding_"
+                + resource_name + ")"
+            )
+            self.assertEqual(lookups.count(lookup), 1)
+            for locale in LANGUAGES:
+                match = re.search(r"\b" + re.escape(field) + r' = "([^"]+)"', parts[locale])
+                self.assertIsNotNone(match)
+                catalog = source_catalog(locale)
+                self.assertEqual(
+                    catalog["androidOnboarding." + field], match.group(1),
+                )
 
 
     def test_android_17_reviewed_option_resources_used_by_compose(self):

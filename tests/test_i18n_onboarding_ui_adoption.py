@@ -23,7 +23,7 @@ class OnboardingCourseCatalogTests(unittest.TestCase):
                 catalog = json.loads(
                     (ROOT / f"localization/ui/{locale}/course.json").read_text(
                         encoding="utf-8"))["messages"]
-                self.assertEqual(len(catalog), 794)
+                self.assertEqual(len(catalog), 797)
                 for key in FIELDS:
                     self.assertEqual(catalog["onboarding." + key],
                                      json.loads('"' + found[key] + '"'))
@@ -110,7 +110,7 @@ class OnboardingCourseCatalogTests(unittest.TestCase):
                 r"(?<!^)(?=[A-Z])", "_", key).lower()
             self.assertIn(
                 field + " = localized.getString(R.string." + resource_key + ")", lookups)
-        for skipped in ("versionHint", "saveError", "beginner", "beginnerSub"):
+        for skipped in ("versionHint",):
             self.assertNotIn(skipped + " = localized.getString", lookups)
 
 if __name__ == "__main__":

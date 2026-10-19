@@ -2,6 +2,9 @@
 # Bundled at deploy time; legacy Bot tj locale retained.
 COURSE_MESSAGES = {
   "ru": {
+    "androidOnboarding.beginner": "Я совсем с нуля",
+    "androidOnboarding.beginnerSub": "Сначала разберём ханцзы, пиньинь и тоны",
+    "androidOnboarding.saveError": "Не удалось сохранить выбор. Проверьте соединение и попробуйте снова.",
     "authGate.body": "Mini App не смог подтвердить подключение к Telegram. Вернитесь в бот, нажмите /start и откройте курс заново.",
     "authGate.btn": "Вернуться в бот",
     "authGate.title": "Откройте курс из бота",
@@ -798,6 +801,9 @@ COURSE_MESSAGES = {
     "you": "Вы"
   },
   "tj": {
+    "androidOnboarding.beginner": "Забони чиниро тамоман намедонам",
+    "androidOnboarding.beginnerSub": "Аввал ханзӣ, пинйин ва оҳангҳоро мефаҳмем",
+    "androidOnboarding.saveError": "Интихоб сабт нашуд. Пайвастро санҷида, боз кӯшиш кунед.",
     "authGate.body": "Mini App пайвастшавии Telegram-ро тасдиқ карда натавонист. Ба бот баргардед, /start-ро пахш кунед ва курсро аз нав кушоед.",
     "authGate.btn": "Ба бот баргаштан",
     "authGate.title": "Курсро аз дохили бот кушоед",
@@ -1594,6 +1600,9 @@ COURSE_MESSAGES = {
     "you": "Шумо"
   },
   "uz": {
+    "androidOnboarding.beginner": "Xitoy tilini umuman bilmayman",
+    "androidOnboarding.beginnerSub": "Avval hanzi, pinyin va tonlarni tushunamiz",
+    "androidOnboarding.saveError": "Tanlov saqlanmadi. Internetni tekshirib, qayta urinib ko'ring.",
     "authGate.body": "Mini App Telegram bilan real ulanishni tasdiqlay olmadi. Botga qayting, /start ni bosing va kursni qaytadan oching.",
     "authGate.btn": "Botga qaytish",
     "authGate.title": "Kursni bot ichidan oching",

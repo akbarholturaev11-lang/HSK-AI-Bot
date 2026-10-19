@@ -744,7 +744,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
         for locale in ("uz", "ru", "tj"):
             msgs = json.loads((ROOT / f"localization/ui/{locale}/course.json")
                               .read_text(encoding="utf-8"))["messages"]
-            self.assertEqual(len(msgs), 794)
+            self.assertEqual(len(msgs), 797)
             for prefix, fields, var, scope, start, end in groups:
                 region = html.split(scope, 1)[1].split(start, 1)[1].split(end, 1)[0]
                 original = next((line for line in region.splitlines()
