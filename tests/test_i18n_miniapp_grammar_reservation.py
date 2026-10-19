@@ -43,6 +43,62 @@ class MiniAppP3ReservationTests(unittest.TestCase):
                       '"options"', '"bank"', '"scoring"', '"is_paid"'):
             self.assertNotIn(token, serialized)
 
+    def test_all_48_miniapp_patches_match_native_display_only(self):
+        """Exercise EVERY affected lesson, not just lesson 16.
+
+        Catch runtime adapter drift across repeated contexts, mixed
+        _grammar cards, and native/Mini App parity without API tokens.
+        """
+        from app.services.course_p3_grammar_localization import (
+            apply_native_grammar_locales,
+        )
+
+        _source_pinned_drafts.cache_clear()
+        drafts = _source_pinned_drafts()
+        self.assertEqual(len(drafts), 48)
+        total_display_maps = 0
+        original_maps = 0
+        for relative, draft in sorted(drafts.items()):
+            number = int(Path(relative).stem.split("_")[-1])
+            before = (ROOT / relative).read_bytes()
+            original = json.loads(before)
+            mini = miniapp_reserved_grammar_patch(
+                level="nhsk2", lesson_order=number,
+            )
+            self.assertIsNotNone(mini, relative)
+            self.assertEqual(mini["source_git_blob_sha1"],
+                             draft["source_git_blob_sha1"])
+            native = apply_native_grammar_locales(
+                original, level="nhsk2", lesson_order=number,
+            )
+            self.assertIsNot(native, original, relative)
+            self.assertEqual(mini["lesson_order"], number)
+            locations = set()
+            for patch in mini["display_translations"]:
+                pointer = patch["pointer"]
+                self.assertNotIn(pointer, locations)
+                locations.add(pointer)
+                keys = pointer.split("/")[1:-1]
+                src_example, translated_example = original, native
+                for segment in keys:
+                    k = int(segment) if isinstance(src_example, list) else segment
+                    src_example = src_example[k]
+                    translated_example = translated_example[k]
+                self.assertEqual(src_example["zh"], patch["zh"])
+                self.assertEqual(src_example.get("pinyin", ""), patch["pinyin"])
+                self.assertEqual(src_example["translation"],
+                                 {"uz": "", "ru": "", "tj": ""})
+                self.assertEqual(translated_example["translation"],
+                                 patch["values"])
+                self.assertEqual(set(patch["values"]), {"uz", "ru", "tj"})
+                self.assertTrue(all(patch["values"].values()))
+            original_maps += len(draft["translations"])
+            total_display_maps += len(locations)
+            self.assertEqual((ROOT / relative).read_bytes(), before)
+        self.assertEqual(original_maps, 272)
+        self.assertEqual(total_display_maps, 408)
+        self.assertEqual(total_display_maps * 3, 1224)
+
     def test_wrong_level_source_revision_and_no_gap_return_none(self):
         self.assertIsNone(miniapp_reserved_grammar_patch(level="nhsk1", lesson_order=16))
         self.assertIsNone(miniapp_reserved_grammar_patch(level="nhsk2", lesson_order=1))
