@@ -67,7 +67,7 @@ class ConversionFunnelEvent(Base):
         nullable=True,
         index=True,
     )
-    telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     event_name: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     source: Mapped[Optional[str]] = mapped_column(String(80), index=True, nullable=True)
     lesson_id: Mapped[Optional[int]] = mapped_column(

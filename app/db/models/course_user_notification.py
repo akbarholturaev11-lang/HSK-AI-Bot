@@ -25,6 +25,7 @@ class CourseUserNotification(Base):
             "dedupe_key",
             name="uq_course_user_notifications_telegram_key_dedupe",
         ),
+        UniqueConstraint("user_id", "key", "dedupe_key", name="uq_course_user_notifications_user_key_dedupe"),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -33,7 +34,7 @@ class CourseUserNotification(Base):
         index=True,
         nullable=True,
     )
-    telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     key: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     source: Mapped[str] = mapped_column(String(40), default="course_notification", index=True, nullable=False)
     language: Mapped[str] = mapped_column(String(8), default="ru", nullable=False)
