@@ -52,7 +52,12 @@ class NativeGrammarLocalizationTests(unittest.TestCase):
     def test_wrong_revision_and_protected_field_fall_back_unchanged(self):
         old = json.loads(LESSON16.read_bytes())
         changed = json.loads(LESSON16.read_bytes())
-        changed["sections"][0]["cards"][0]["g"]["examples"][0]["zh"] = "CHANGED"
+        grammar_card = next(
+            card for section in changed["sections"]
+            for card in section.get("cards", [])
+            if card.get("type") == "_grammar"
+        )
+        grammar_card["g"]["examples"][0]["zh"] = "CHANGED"
         self.assertIs(apply_native_grammar_locales(
             changed, level="nhsk2", lesson_order=16), changed)
         self.assertEqual(old["grammar"][0]["examples"][0]["translation"]["uz"], "")
