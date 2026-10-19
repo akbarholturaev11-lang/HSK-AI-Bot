@@ -358,3 +358,40 @@ Blank templates, unreviewed draft conflicts or exhausted reuse opportunities
 must not yield empty or public packs. **All candidate translations remain
 UNAPPROVED; the helper is not content publishing, Pro/grade/auth integration,
 client runtime migration or production deployment.**
+
+
+## Candidate-aware private editorial backlog: outstanding authoring vs review
+
+The complete 136-context queue does not distinguish empty translation
+authoring from an existing, structurally valid but HUMAN-UNAPPROVED draft.
+Use this new local-only workflow to prepare an editor's next batch:
+
+```bash
+python scripts/i18n_editor_backlog.py \
+  --draft-dir /private/filled-candidate-drafts \
+  --private-dir /private/new-editor-backlog
+```
+
+To start without available prior drafts, omit `--draft-dir`. This produces
+all 136 unique contexts for candidate authoring. The original editor drafts
+must be complete UZ/RU/TJ JSON files outside the checkout; the whole 746-
+source draft batch, source SHA, original exact-context collisions and mirror
+integrity are validated before any output folder is created. Conflicts,
+stale source SHA, symlink entries or partially empty values fail closed.
+
+Private `editor_backlog.json` contains two editorial queues: contexts still
+needing a new translation candidate (including original Chinese/pinyin/
+grammar context) and contexts with one or more candidate source file/pointer
+references that STILL REQUIRE HUMAN SEMANTIC REVIEW. Only missing candidate
+contexts receive empty source-SHA-bound representative worksheets in the
+private `drafts/` folder. Those blank worksheets intentionally fail the
+existing structural translator-draft checker until all three values are
+authored; no AI candidate strings are copied into the queue, and there is
+no presumed approval. A previously proposed value is NOT a human approval.
+
+The new output folder must be absent and outside both the Git checkout and
+input draft folder, with 0700/0600 permissions. CLI prints counts only.
+Original answer tokens, assessment fields and Pro/auth/grade data are never
+added to the backlog or modified. The backlog itself can contain gated
+Chinese content and MUST NEVER be uploaded to public GitHub, Actions,
+storage, client bundles or unauthenticated routes. P3 runtime stays OFF.
