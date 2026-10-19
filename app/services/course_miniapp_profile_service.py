@@ -3,6 +3,8 @@ from datetime import datetime, timezone
 
 from sqlalchemy import select
 
+from app.services.account_identity import owner_clause
+
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.user import User
@@ -68,13 +70,14 @@ class CourseMiniAppProfileService:
     async def foundation_status(self, user) -> dict:
         """Return server-backed Starter 0 state without adding a new table."""
         learner_level = str(getattr(user, "level", "") or "").strip().lower()
-        telegram_id = getattr(user, "telegram_id", None)
         completed = False
-        if telegram_id:
+        # Read by canonical user identity for native Google/Apple accounts;
+        # owner_clause also honors unowned historical Telegram events.
+        if user is not None:
             result = await self.session.execute(
                 select(CourseMiniAppEvent.payload_json)
                 .where(
-                    CourseMiniAppEvent.telegram_id == int(telegram_id),
+                    owner_clause(CourseMiniAppEvent, user, telegram_column="telegram_id"),
                     CourseMiniAppEvent.event_name == "foundation_completed",
                 )
             )

@@ -1400,6 +1400,32 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
         self.assertGreaterEqual(len(shadows), 1)
         self.assertIsNone(shadows[0].telegram_id)
 
+    async def test_practice_gate_commits_before_shadow_audit(self):
+        """The audit's independent DB transaction must never wait on the gate's
+        uncommitted FOR UPDATE user lock (Google-only accounts especially).
+        """
+        called = []
+
+        async def verify_shadow_order(session, **_kwargs):
+            called.append(True)
+            self.assertFalse(
+                session.in_transaction(),
+                "The free-allowance write must commit before the shadow audit",
+            )
+
+        with patch(
+            "app.api.android_features.shadow_compare_gate",
+            new=verify_shadow_order,
+        ):
+            result = await self.client.post(
+                "/api/v3/android/practice/gate",
+                headers=self._headers(),
+                json={"feature": "recognition", "ref": "shadow-lock-check"},
+            )
+        self.assertEqual(200, result.status_code)
+        self.assertTrue(result.json()["allowed"])
+        self.assertEqual([True], called)
+
     async def test_a_spent_allowance_is_shown_in_the_app_not_in_telegram(self):
         """The app shows the closed door itself; Telegram stays quiet.
 
