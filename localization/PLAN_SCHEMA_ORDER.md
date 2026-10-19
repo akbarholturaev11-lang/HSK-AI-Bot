@@ -19,8 +19,7 @@ and cross-platform QA remain pending.
 > `docs/I18N_MULTILANGUAGE_MIGRATION.md`, and
 > `localization/surface_registry.json`.
 >
-> Status: **P0 REVIEW OPEN; P1 CODE GENERATOR IN PROGRESS (BRANCH ONLY)**. This file documents architecture and execution
-> order; it does not mean client locales or course content have been migrated.
+> Status: **P0 source guards and P1 local catalogs implemented; P2 UI adoption remains in progress; P3 translations remain private and runtime integration is gated by entitlement review. Branch only.** This file documents architecture and execution order; it does not mean client locales or course content have been fully migrated.
 
 ## 0. Where to resume
 
@@ -31,9 +30,7 @@ and cross-platform QA remain pending.
   the repository's testing rules and an explicit implementation scope.
 - Baseline languages: `uz`, `ru`, `tj`; Android/BCP-47 Tajik is `tg`.
 - Read `AGENTS.md`, `AI_RULES.md` and `PROJECT_MEMORY.md` before editing.
-- **Next concrete action:** make the source inventory reliable, establish
-  frozen baseline snapshots for all 3 existing languages, and run their tests.
-  Do **not** start by activating a fourth language or replacing all HTML at once.
+- **Next concrete action:** record the running Android CI result for `1ee7fc8b`; continue remaining local-first runtime work only within the existing source-version and entitlement boundaries. Keep all work on this branch; do not add public lesson overlays while route review is open.
 
 ## 1. Architecture / schema
 
@@ -108,7 +105,7 @@ Do not claim full Mini App offline without independently testing WebView caching
 
 ## 2. Required execution order
 
-### P0 — discovery and frozen baseline [NEXT; not completed]
+### P0 — discovery and frozen baseline [SOURCE GUARDS IMPLEMENTED; route exposure review open]
 1. Extend `scripts/i18n_inventory.py` beyond regex-only root HTML paths:
    generated sources, nested JS, Android Compose/strings/flavors,
    Desktop, Bot, notifications, phrases, lesson text and accessibility.
@@ -123,7 +120,7 @@ Do not claim full Mini App offline without independently testing WebView caching
 **Exit:** complete reviewable file/locale/source coverage report and repeatable
 baseline tests, not a 100%-coverage claim from a regex scan.
 
-### P1 — catalog and validation [BLOCKED ON P0]
+### P1 — catalog and validation [IMPLEMENTED; current generators pass]
 1. Define stable namespaced message keys, context/HTML-safety metadata,
    named placeholders, plurals, locale normalization and fallback rules.
 2. Move a *small reviewed set* of common/error strings into source catalogs
@@ -134,7 +131,7 @@ baseline tests, not a 100%-coverage claim from a regex scan.
 **Exit:** change one source key, regenerate 4 local targets (Android,
 Mini App, Desktop, Bot), prove no new runtime per-string API request.
 
-### P2 — incremental UI adoption [BLOCKED ON P1]
+### P2 — incremental UI adoption [IN PROGRESS; remaining context-specific UI surfaces and functional QA open]
 1. Android: generated standard resources, then Kotlin-inline copy.
    Preserve `direct` and `play` payment strings and APK offline startup.
 2. Mini App: adopt cached catalogs screen-by-screen; preserve deep links,
@@ -145,7 +142,7 @@ Mini App, Desktop, Bot), prove no new runtime per-string API request.
 **Exit:** screenshots and baseline text parity for all 3 original languages,
 mobile + browser + desktop flows tested.
 
-### P3 — lesson localization overlays [BLOCKED ON P1, after safe UI slice]
+### P3 — lesson localization overlays [PRIVATE CANDIDATES AND GENERATOR VERIFIED; runtime delivery gated on entitlement review]
 1. Split authored source from translation overlays by stable ID/version.
 2. Update course generators (including locale-specific reverse-builder tiles),
    dictionary/phrases and compatibility lesson-envelope emitters.
