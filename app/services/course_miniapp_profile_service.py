@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timezone
 
-from sqlalchemy import select
+from sqlalchemy import and_, or_, select
 
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
@@ -68,13 +68,27 @@ class CourseMiniAppProfileService:
     async def foundation_status(self, user) -> dict:
         """Return server-backed Starter 0 state without adding a new table."""
         learner_level = str(getattr(user, "level", "") or "").strip().lower()
+        user_id = getattr(user, "id", None)
         telegram_id = getattr(user, "telegram_id", None)
         completed = False
-        if telegram_id:
+        # All new native sign-ins have users.id, but Google-only users have no
+        # Telegram ID. Prioritize canonical ownership; only accept a Telegram
+        # match on unowned historical events to preserve old account progress.
+        owner = (
+            CourseMiniAppEvent.user_id == int(user_id)
+            if user_id is not None else None
+        )
+        if telegram_id is not None:
+            legacy = and_(
+                CourseMiniAppEvent.user_id.is_(None),
+                CourseMiniAppEvent.telegram_id == int(telegram_id),
+            )
+            owner = or_(owner, legacy) if owner is not None else legacy
+        if owner is not None:
             result = await self.session.execute(
                 select(CourseMiniAppEvent.payload_json)
                 .where(
-                    CourseMiniAppEvent.telegram_id == int(telegram_id),
+                    owner,
                     CourseMiniAppEvent.event_name == "foundation_completed",
                 )
             )
