@@ -233,3 +233,29 @@ Prevention: when a Chinese noun has multiple meanings or names an animal
 or dish, read the enumerated objects and grammatical context rather than
 translating token by token. This focused fix does not certify all 408
 independent values or real-device display QA.
+
+## Additional source-aligned fixes: G051, G109 (2026-10-19)
+
+- `G051` `我看网上说……`: Russian omitted the learner's
+  observation entirely (`В интернете пишут...`). The central Russian
+  version now uses a neutral first-person experiencer
+  (`Мне попадалось в интернете...`) rather than inserting a
+  masculine `Я прочитал` the Chinese does not require.
+- `G109` `他卖给我一本中文书。`: Uzbek `kitobni sotdi`
+  incorrectly made the object definite and dropped `一本`. The
+  localized text now says `xitoy tilidagi bir kitob sotdi`.
+- The same pinned 136-context canonical TSV and
+  `tests/test_i18n_canonical_grammar_catalog.py` carry these
+  corrections. Whenever correcting explicit subject/quantity or
+  aspect semantics, independently check gender, definiteness and
+  tense introduced in the target language.
+
+Local isolated executable JS smoke evidence (NOT GitHub CI):
+`app/static/course_v3_data/p3-grammar-reservation.js` was matched
+byte-for-byte by Git blob hash `ab2956e4b6a7da339ddb6531b0b5a8acfa8cd291`
+and passed Node 22 `--check` plus nine runtime scenarios: explicit
+grant, 401, 403, 500, HTTP-200 explicit deny, HTTP-200 malformed
+response, network offline fallback without P3, isolated successful
+locale patch, and changed-Chinese target rejection. Backend ASGI,
+Android/Desktop emulator, real Telegram WebView and latest GitHub CI
+still require independent execution.
