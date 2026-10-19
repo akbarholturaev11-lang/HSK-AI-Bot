@@ -35,21 +35,21 @@ function applyReservedP3Grammar(lesson,level,number){
 /* Read-only grammar copy for already COMPLETED lessons only. Server checks
    signed Telegram initData and completed progress; no limit consumption. */
 function reserveCompletedP3Grammar(l){
+  P3_RESERVED_GRAMMAR=null;
   return _apiPost("/api/v3/lesson/start",{lesson_id:l.n,review_only:true})
     .then(function(r){return r.json().catch(function(){return{}}).then(function(d){
-      /* An explicit server access rejection is authoritative even when the
-         cached Mini App lists this lesson as completed. Never turn 401/403
-         or allowed:false into the legacy offline fallback. */
-      if(r.status===401||r.status===403||d.allowed===false){
-        var err=new Error(d.error||"course_lesson_not_unlocked");
+      /* Only an explicit server grant authorizes completed-lesson review.
+         HTTP errors and malformed replies must never become offline grants. */
+      if(!r.ok||!d||d.ok!==true||d.allowed!==true){
+        var err=new Error((d&&d.error)||"course_lesson_not_unlocked");
         err.data=d;err.status=r.status;err.lessonAccessDenied=true;
         throw err;
       }
-      if(r.ok&&d.ok&&d.allowed===true)P3_RESERVED_GRAMMAR=d.p3_grammar||null;
+      P3_RESERVED_GRAMMAR=d.p3_grammar||null;
       return {ok:true,allowed:true};
     })}).catch(function(err){
       if(err&&err.lessonAccessDenied)throw err;
-      /* Network failures must not break old completed offline lessons. */
+      /* Only transport failures retain legacy offline completed-lesson access. */
       return {ok:true,allowed:true};
     });
 }
