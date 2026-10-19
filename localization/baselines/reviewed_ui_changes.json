@@ -5,8 +5,8 @@
   "files": {
     "desktop/ui/js/i18n.js": {
       "baseline_sha1": "30e85aad8aa00689c6bba01980a56eadc928638e",
-      "reviewed_sha1": "3f22321d3b88bf633110495422585cc85ad09ce9",
-      "reason": "Desktop eleven common keys now prefer generated local JS bundled copy; old messages remain identical fallbacks. Shared Tauri macOS/Windows source."
+      "reviewed_sha1": "e101c5342464215b7b14139863004aa8f9ce7f1e",
+      "reason": "Desktop eleven common keys plus 39 exact UZ/RU/TJ course-copy keys now prefer generated local JS bundles; all original messages remain exact fallbacks. No per-string requests. Shared Tauri macOS/Windows source."
     },
     "app/static/course-v3.html": {
       "baseline_sha1": "825d7676dea8f4334deab4a941dc7781162b51cd",

@@ -1,4 +1,5 @@
 import "./generated/hsk-common-i18n.js";
+import "./generated/hsk-course-i18n.js";
 
 const SUPPORTED_LANGUAGES = new Set(["uz", "ru", "tj"]);
 
@@ -2525,19 +2526,68 @@ const SHARED_COMMON_KEY = Object.freeze({
   continueLesson: "lesson.continue",
   lockedLesson: "lesson.locked",
   courseEmpty: "lesson.notFound",
+  profileTitle: "navigation.profile",
   refresh: "common.refresh",
   authExpires: "auth.expires",
 });
 
+const SHARED_COURSE_KEY = Object.freeze({
+  aiYou: "you",
+  authProviderDivider: "downloadPage.visualOr",
+  back: "testHsk30Soon.back",
+  check: "mistakesPage.check",
+  close: "dictionaryFastWriter.close",
+  continue: "onboarding.cont",
+  courseLegendReview: "partSections.r",
+  drill_pronunciation: "mistakesPage.cats.pronunciation",
+  drill_writing: "testExamSection.writing",
+  hsk30TestSoonBody: "testHsk30Soon.sub",
+  hsk30TrackSwitch: "coursePicker.version",
+  inviteCopiedButton: "downloadPage.copied",
+  method_alipay: "subscriptionNested.methods.alipay.title",
+  method_wechat: "subscriptionNested.methods.wechat.title",
+  minutesShort: "testHub.min",
+  onboardingBack: "testHsk30Soon.back",
+  onboardingLater: "onboardingNotification.later",
+  onboardingNext: "onboarding.cont",
+  onboardingStart: "onboarding.start",
+  planFree: "profile.free",
+  planPaid: "subscriptionNested.modeTitles.subscription",
+  plan_10_days: "subscriptionNested.planLabels.ten",
+  plan_1_month: "subscriptionNested.planLabels.month",
+  plan_3_months: "subscriptionNested.planLabels.quarter",
+  practiceQuit: "voicePage.exit",
+  practiceStartDrill: "onboarding.start",
+  practiceStartShort: "onboarding.start",
+  settings: "courseVoiceInline.settings",
+  today: "profile.today",
+  todayReviewEyebrow: "partSections.r",
+  updateRetry: "practiceGateError.retry",
+  vocabularyFilterReview: "partSections.r",
+  voice: "nav.voice",
+  voicePlanPremium: "subscriptionNested.modeTitles.subscription",
+  voiceRole_social: "voicePage.optPersona",
+  voiceRole_teacher_li: "grammarTutor.teacher",
+  voiceStart: "voiceStart",
+  voiceYou: "you",
+});
+
 export function t(key, variables = {}) {
   const generatedKey = SHARED_COMMON_KEY[key];
+  const generatedCourseKey = SHARED_COURSE_KEY[key];
   const catalog = typeof window === "undefined"
     ? null
     : window.HSKAI_COMMON_I18N;
+  const courseCatalog = typeof window === "undefined"
+    ? null
+    : window.HSKAI_COURSE_I18N;
   const generated = generatedKey
     ? catalog?.[activeLanguage]?.[generatedKey]
     : undefined;
-  const template = generated ??
+  const generatedCourse = generatedCourseKey
+    ? courseCatalog?.[activeLanguage]?.[generatedCourseKey]
+    : undefined;
+  const template = generated ?? generatedCourse ??
     messages[activeLanguage]?.[key] ?? messages.uz[key] ?? String(key || "");
   return String(template).replace(/\{([a-zA-Z0-9_]+)\}/g, (match, name) =>
     Object.prototype.hasOwnProperty.call(variables, name)

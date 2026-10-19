@@ -963,3 +963,111 @@ test("every user-facing key exists in all three languages", async () => {
     assert.deepEqual(extra, [], `${code} has keys uz does not`);
   }
 });
+
+test("every user-facing key uses exact local course catalog copy when mapped", async () => {
+  const i18n = await source("desktop/ui/js/i18n.js");
+  const expected = {
+    aiYou: "you",
+    authProviderDivider: "downloadPage.visualOr",
+    back: "testHsk30Soon.back",
+    check: "mistakesPage.check",
+    close: "dictionaryFastWriter.close",
+    continue: "onboarding.cont",
+    courseLegendReview: "partSections.r",
+    drill_pronunciation: "mistakesPage.cats.pronunciation",
+    drill_writing: "testExamSection.writing",
+    hsk30TestSoonBody: "testHsk30Soon.sub",
+    hsk30TrackSwitch: "coursePicker.version",
+    inviteCopiedButton: "downloadPage.copied",
+    method_alipay: "subscriptionNested.methods.alipay.title",
+    method_wechat: "subscriptionNested.methods.wechat.title",
+    minutesShort: "testHub.min",
+    onboardingBack: "testHsk30Soon.back",
+    onboardingLater: "onboardingNotification.later",
+    onboardingNext: "onboarding.cont",
+    onboardingStart: "onboarding.start",
+    planFree: "profile.free",
+    planPaid: "subscriptionNested.modeTitles.subscription",
+    plan_10_days: "subscriptionNested.planLabels.ten",
+    plan_1_month: "subscriptionNested.planLabels.month",
+    plan_3_months: "subscriptionNested.planLabels.quarter",
+    practiceQuit: "voicePage.exit",
+    practiceStartDrill: "onboarding.start",
+    practiceStartShort: "onboarding.start",
+    settings: "courseVoiceInline.settings",
+    today: "profile.today",
+    todayReviewEyebrow: "partSections.r",
+    updateRetry: "practiceGateError.retry",
+    vocabularyFilterReview: "partSections.r",
+    voice: "nav.voice",
+    voicePlanPremium: "subscriptionNested.modeTitles.subscription",
+    voiceRole_social: "voicePage.optPersona",
+    voiceRole_teacher_li: "grammarTutor.teacher",
+    voiceStart: "voiceStart",
+    voiceYou: "you",
+  };
+  const mapStart = i18n.indexOf("const SHARED_COURSE_KEY = Object.freeze({");
+  assert.ok(mapStart >= 0, "course catalog map is missing");
+  const mapEnd = i18n.indexOf("\n});", mapStart);
+  const actual = Object.fromEntries(
+    [...i18n.slice(mapStart, mapEnd).matchAll(/^  ([A-Za-z_][A-Za-z0-9_]*): "([^"]+)",?$/gm)]
+      .map((match) => [match[1], match[2]]),
+  );
+  assert.deepEqual(actual, expected);
+  assert.match(i18n, /import "\.\/generated\/hsk-course-i18n\.js";/);
+
+  const catalogs = {};
+  for (const locale of ["uz", "ru", "tj"]) {
+    catalogs[locale] = JSON.parse(
+      await source(`localization/ui/${locale}/course.json`),
+    ).messages;
+  }
+  const originalMessage = (locale, key) => {
+    const start = i18n.search(new RegExp(`^  ${locale}: \\{$`, "m"));
+    const rest = i18n.slice(start);
+    const blockEnd = rest.indexOf("\n  },");
+    const block = rest.slice(0, blockEnd);
+    const match = block.match(
+      new RegExp(`^    ${key}: ("(?:\\\\.|[^"\\\\])*")`, "m"),
+    );
+    assert.ok(match, `missing Desktop fallback ${locale}.${key}`);
+    return JSON.parse(match[1]);
+  };
+
+  for (const [desktopKey, courseKey] of Object.entries(expected)) {
+    for (const locale of ["uz", "ru", "tj"]) {
+      assert.equal(
+        originalMessage(locale, desktopKey),
+        catalogs[locale][courseKey],
+        `${locale}.${desktopKey} must exactly match ${courseKey}`,
+      );
+    }
+  }
+
+  const oldWindow = globalThis.window;
+  const oldDocument = globalThis.document;
+  try {
+    globalThis.window = {};
+    globalThis.document = { documentElement: {} };
+    const generatedUrl = `${pathToFileURL(path.join(uiRoot, "js/generated/hsk-course-i18n.js")).href}?desktop-course-contract`;
+    await import(generatedUrl);
+    const moduleUrl = `${pathToFileURL(path.join(uiRoot, "js/i18n.js")).href}?desktop-course-contract`;
+    const { setLanguage, t } = await import(moduleUrl);
+    for (const locale of ["uz", "ru", "tj"]) {
+      setLanguage(locale);
+      for (const [desktopKey, courseKey] of Object.entries(expected)) {
+        assert.equal(t(desktopKey), catalogs[locale][courseKey], `${locale}.${desktopKey}`);
+      }
+    }
+    const bundle = globalThis.window.HSKAI_COURSE_I18N;
+    globalThis.window.HSKAI_COURSE_I18N = undefined;
+    setLanguage("ru");
+    assert.equal(t("today"), originalMessage("ru", "today"));
+    globalThis.window.HSKAI_COURSE_I18N = bundle;
+  } finally {
+    if (oldWindow === undefined) delete globalThis.window;
+    else globalThis.window = oldWindow;
+    if (oldDocument === undefined) delete globalThis.document;
+    else globalThis.document = oldDocument;
+  }
+});
