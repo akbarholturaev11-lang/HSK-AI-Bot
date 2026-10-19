@@ -87,6 +87,34 @@ class CanonicalGrammarCatalogTests(unittest.TestCase):
         self.assertIn("bir kitob", uzbek)
         self.assertNotIn("kitobni sotdi", uzbek)
 
+    def test_g019_polite_gift_response_not_plain_kindness(self):
+        context = next(c for c in self.queue["contexts"] if c["review_id"] == "G019")
+        self.assertIn("太客气了", context["chinese_example"])
+        self.assertIn("礼物", context["chinese_example"])
+        tr = read_canonical_catalog(self.catalog_path)["G019"]["translations"]
+        self.assertIn("ovora bo‘libsizlar", tr["uz"])
+        self.assertNotIn("mehribonsizlar", tr["uz"])
+        self.assertIn("ташвиш кашидаед", tr["tj"])
+        self.assertNotIn("меҳрубонед", tr["tj"])
+
+    def test_g023_told_child_to_buy_food_not_permission_only(self):
+        context = next(c for c in self.queue["contexts"] if c["review_id"] == "G023")
+        self.assertIn("让小雪自己去买点儿吃的", context["chinese_example"])
+        tr = read_canonical_catalog(self.catalog_path)["G023"]["translations"]
+        self.assertIn("sotib olishni aytdi", tr["uz"])
+        self.assertNotIn("ruxsat berdi", tr["uz"])
+        self.assertIn("сказала Сяосюэ", tr["ru"])
+        self.assertNotIn("разрешила", tr["ru"])
+        self.assertIn("ба Сяосюэ гуфт", tr["tj"])
+        self.assertNotIn("иҷозат дод", tr["tj"])
+
+    def test_g135_age_assumption_not_confirmed_birthday(self):
+        context = next(c for c in self.queue["contexts"] if c["review_id"] == "G135")
+        self.assertIn("今年有10岁了吧", context["chinese_example"])
+        uzbek = read_canonical_catalog(self.catalog_path)["G135"]["translations"]["uz"]
+        self.assertIn("bo‘lsa kerak", uzbek)
+        self.assertNotIn("kirdimi", uzbek)
+
     def test_context_hash_changes_with_source_rule_or_occurrence(self):
         original = context_source_sha256(self.first_context)
         mutations = []
