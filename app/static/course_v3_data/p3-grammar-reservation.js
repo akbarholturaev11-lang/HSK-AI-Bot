@@ -37,7 +37,19 @@ function applyReservedP3Grammar(lesson,level,number){
 function reserveCompletedP3Grammar(l){
   return _apiPost("/api/v3/lesson/start",{lesson_id:l.n,review_only:true})
     .then(function(r){return r.json().catch(function(){return{}}).then(function(d){
+      /* An explicit server access rejection is authoritative even when the
+         cached Mini App lists this lesson as completed. Never turn 401/403
+         or allowed:false into the legacy offline fallback. */
+      if(r.status===401||r.status===403||d.allowed===false){
+        var err=new Error(d.error||"course_lesson_not_unlocked");
+        err.data=d;err.status=r.status;err.lessonAccessDenied=true;
+        throw err;
+      }
       if(r.ok&&d.ok&&d.allowed===true)P3_RESERVED_GRAMMAR=d.p3_grammar||null;
       return {ok:true,allowed:true};
-    })}).catch(function(){return {ok:true,allowed:true}});
+    })}).catch(function(err){
+      if(err&&err.lessonAccessDenied)throw err;
+      /* Network failures must not break old completed offline lessons. */
+      return {ok:true,allowed:true};
+    });
 }

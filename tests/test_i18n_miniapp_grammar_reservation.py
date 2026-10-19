@@ -177,8 +177,26 @@ vm.runInNewContext(JSON.parse(process.argv[1]),env);
   env._apiPost=(url,data)=>Promise.resolve({
     ok:false,json:()=>Promise.resolve({ok:false,error:"course_lesson_not_unlocked"})
   });
-  const denied=await env.reserveCompletedP3Grammar({n:17});
-  assert.equal(denied.allowed,true);
+  env._apiPost=()=>Promise.resolve({
+    ok:false,status:403,json:()=>Promise.resolve({
+      ok:false,allowed:false,error:"course_lesson_not_unlocked"
+    })
+  });
+  await assert.rejects(env.reserveCompletedP3Grammar({n:17}),err=>
+    err.lessonAccessDenied===true&&err.status===403&&
+    err.data.error==="course_lesson_not_unlocked");
+  assert.equal(env.P3_RESERVED_GRAMMAR,null);
+  env._apiPost=()=>Promise.resolve({
+    ok:false,status:401,json:()=>Promise.resolve({ok:false,error:"unauthorized"})
+  });
+  await assert.rejects(env.reserveCompletedP3Grammar({n:16}),err=>
+    err.lessonAccessDenied===true&&err.status===401);
+  assert.equal(env.P3_RESERVED_GRAMMAR,null);
+  env._apiPost=()=>Promise.resolve({
+    ok:true,status:200,json:()=>Promise.resolve({ok:true,allowed:false})
+  });
+  await assert.rejects(env.reserveCompletedP3Grammar({n:16}),err=>
+    err.lessonAccessDenied===true);
   assert.equal(env.P3_RESERVED_GRAMMAR,null);
   env._apiPost=()=>Promise.reject(new Error("offline"));
   const offline=await env.reserveCompletedP3Grammar({n:16});
