@@ -114,7 +114,11 @@ class NativeP3OwnershipTests(unittest.IsolatedAsyncioTestCase):
             {c.name for c in CourseMiniAppEvent.__table__.constraints},
         )
         script = ScriptDirectory.from_config(Config("alembic.ini"))
-        self.assertEqual(script.get_heads(), ["0104_native_account_foundation"])
+        self.assertEqual(len(script.get_heads()), 1)
+        self.assertEqual(
+            script.get_revision("0104_native_account_foundation").down_revision,
+            "0103_native_identity_accounts",
+        )
 
 
 if __name__ == "__main__":
