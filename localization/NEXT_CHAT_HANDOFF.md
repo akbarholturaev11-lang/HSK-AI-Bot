@@ -1,5 +1,11 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## P3 all-context private linguistic review queue (2026-10-19)
+
+- New `scripts/i18n_grammar_private_review_queue.py` and P0 tests: enumerate seven original tracks, fail closed on any unclassified/partial locale gap, group exact Chinese/pinyin/grammar contexts, and prepare a reviewer-only queue including source SHA, original grammar context, every source pointer and informative `_grammar` mirror positions. It also generates source-SHA-bound **blank** representative lesson drafts. Files must be created outside the checkout in an exclusive private 0700/0600 directory; source/answer/Pro/runtime content is not written. CLI prints counts only; templates intentionally fail validation until human translations exist.
+- Baseline expected from previous P0: 746 lessons, 48 affected, 272 blank originals, 136 unique contexts, 408 independent locale cells, 816 original target cells. These counts MUST be reconfirmed by new P0; no language signoff, draft upload or lesson edits occurred. The 36 earlier pilot strings are NOT on GitHub and must be recovered from the private prior-chat ZIPs (or separately recreated and reviewed), not reconstructed by guess.
+- CLI: `python scripts/i18n_grammar_private_review_queue.py --private-dir /private/new-p3-review`. Next: inspect human-reviewed texts, validate filled private drafts by SHA and mirror preview, safely reuse per target lesson, and obtain explicit content approval. **CI for this commit pending verification**. PR #179 stays Draft; `main`/production untouched.
+
 ## CURRENT STATE — read this first (2026-10-19)
 
 - **Repo** `akbarholturaev11-lang/HSK-AI-Bot`; **working branch** `codex/i18n-local-first-foundation-20261017`; **Draft PR** https://github.com/akbarholturaev11-lang/HSK-AI-Bot/pull/179. Latest checked feature HEAD before this documentation update: `e52002ab53cb6e751fec53348a75069519213701`. Do not merge main or deploy production without the user's explicit permission.

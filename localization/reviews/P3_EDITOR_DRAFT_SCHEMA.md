@@ -241,3 +241,37 @@ preview integrity. It outputs two files: editor_draft.json (still UNAPPROVED)
 and reuse_provenance.json (safe source refs/counts), never a public pack.
 Even structurally valid drafts still need language review, auth/Pro and
 graded-content QA. The original HSK JSON and runtime are unchanged.
+
+
+## Build one private human-review queue for all unique grammar contexts
+
+Use this after the read-only reuse audit. **This command creates private
+editorial data, not a CI artifact**. The review file holds real Chinese
+examples, pinyin, original grammar titles/rules, pointers and revision SHAs;
+it may include gated course sentences and must never enter GitHub/public
+static assets. Create the destination outside the checkout (not existing):
+
+```bash
+python scripts/i18n_grammar_private_review_queue.py \
+  --private-dir /private/new-p3-136-context-review
+```
+
+The command groups all originally blank grammar fields by the existing
+strict in-memory grammar-context identity, records **every** source
+occurrence with its original SHA, and prepares one blank SHA-bound
+representative editor draft per lesson containing first occurrences. Read
+the private `review_queue.json` and fill the corresponding
+`drafts/*.json` in the editor's private working directory;
+each UZ/RU/TJ sentence requires Chinese/pinyin/grammar-aware human review.
+The representative drafts are deliberately INVALID until filled. Validate
+each edited draft with the existing `i18n_editor_translation_draft.py`
+tool, then use the existing exact-context private reuse tool to prepare
+separately SHA-bound target lesson drafts for repeated contexts. There is no
+automatic linguistic signoff or approval-state mutation.
+
+All source gaps must be recognized original grammar-display fields; partial,
+unsupported or changed gaps fail closed. Private folders/files are 0700/0600
+and exclusive-create. The CLI prints counts only, not source text. Existing
+lesson JSON, Pro/auth/grade, public bundles, and production remain unchanged.
+The generated drafts themselves are NEVER committed. Even successful
+structural validation is not authorization to ship.
