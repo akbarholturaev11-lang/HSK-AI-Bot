@@ -23,6 +23,7 @@ from fastapi.responses import JSONResponse
 from app.repositories.user_repo import UserRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.entitlements.lesson_access import LessonAccessService
+from app.services.course_p3_grammar_localization import miniapp_reserved_grammar_patch
 from app.services.course_v3_parts import total_parts
 from app.services.course_levels import content_level
 from app.services.course_access_policy_service import CourseAccessPolicyService
@@ -213,7 +214,19 @@ def create_miniapp_entitlements_router(
                 user, level=level, lesson_order=order, completed=completed, consume=True,
             )
             await session.commit()
-            return JSONResponse(status_code=200 if result["allowed"] else 403, content=result)
+            # Display-only grammar translations are returned ONLY after the
+            # existing authenticated, unlocked, successful consume=True gate.
+            # Denials, direct static GETs and speculative prefetch get none.
+            if result["allowed"] and level == "nhsk2":
+                localized = miniapp_reserved_grammar_patch(
+                    level=level, lesson_order=order,
+                )
+                if localized is not None:
+                    result = {**result, "p3_grammar": localized}
+            return JSONResponse(
+                status_code=200 if result["allowed"] else 403,
+                content=result, headers={"Cache-Control": "no-store"},
+            )
 
 
     @router.post("/api/v3/limits/status")

@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.i18n_canonical_grammar_catalog import audit_canonical_grammar
+from scripts.i18n_grammar_editor_workspace import _mirrored_grammar_pointers
 from scripts.i18n_editor_grammar_mirror_integrity import (
     _approved_mirrored_preview, verify_mirrored_grammar_preview,
 )
@@ -76,3 +77,64 @@ def apply_native_grammar_locales(
         logger.error("P3 native grammar fallback: invalid source/catalog for %s/%02d",
                      level, lesson_order)
         return lesson
+
+def miniapp_reserved_grammar_patch(
+    *, level: str, lesson_order: int, course_data_root: Path | None = None,
+) -> dict[str, Any] | None:
+    """Small display-only patch for a VERIFIED, ALLOWED lesson reservation.
+
+    Caller must run and commit the existing Telegram auth, unlock and
+    LessonAccessService(consume=True) decision BEFORE using this function.
+    Never serve as a public GET/prefetch route.
+    """
+    if level != "nhsk2" or type(lesson_order) is not int or not 1 <= lesson_order <= 73:
+        return None
+    filename = f"lesson_{lesson_order:02d}.json"
+    relative = f"app/static/course_v3_data/nhsk2/{filename}"
+    try:
+        draft = _source_pinned_drafts().get(relative)
+        if not draft:
+            return None
+        path = (course_data_root or (ROOT / "app/static/course_v3_data")) / "nhsk2" / filename
+        original_bytes = path.read_bytes()
+        original, preview, sha, original_count, mirror_count = (
+            _approved_mirrored_preview(original_bytes, draft)
+        )
+        proof = verify_mirrored_grammar_preview(original_bytes, draft, preview)
+        if (not proof["all_other_fields_unchanged"]
+                or proof["verified_original_display_maps"] != original_count
+                or proof["verified_mirrored_card_maps"] != mirror_count
+                or sha != draft["source_git_blob_sha1"]):
+            raise ValueError("P3 original source revision or display mirror mismatch")
+
+        def source_example(pointer: str) -> dict[str, Any]:
+            parent: Any = original
+            for part in pointer.split("/")[1:-1]:
+                parent = parent[int(part)] if type(parent) is list else parent[part]
+            if type(parent) is not dict or not isinstance(parent.get("zh"), str):
+                raise ValueError("invalid protected grammar example")
+            return parent
+
+        translations = []
+        for item in draft["translations"]:
+            pointer = item["pointer"]
+            mirror_paths = _mirrored_grammar_pointers(original, pointer)
+            for source_pointer in (pointer, *mirror_paths):
+                example = source_example(source_pointer)
+                translations.append({
+                    "pointer": source_pointer,
+                    "zh": example["zh"],
+                    "pinyin": example.get("pinyin", ""),
+                    "values": dict(item["values"]),
+                })
+        if len(translations) != original_count + mirror_count:
+            raise ValueError("incorrect grammar patch count")
+        return {
+            "version": 1, "level": level, "lesson_order": lesson_order,
+            "source_git_blob_sha1": draft["source_git_blob_sha1"],
+            "display_translations": translations,
+        }
+    except (OSError, ValueError, TypeError, KeyError, IndexError, UnicodeError):
+        logger.error("P3 Mini App reservation patch unavailable %s/%02d",
+                     level, lesson_order)
+        return None
