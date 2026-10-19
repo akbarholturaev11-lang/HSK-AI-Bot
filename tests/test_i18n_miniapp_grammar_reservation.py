@@ -59,10 +59,16 @@ class MiniAppP3ReservationTests(unittest.TestCase):
         block = api[start:stop]
         self.assertLess(block.index("extract_verified_webapp_user_id"),
                         block.index("miniapp_reserved_grammar_patch("))
-        self.assertLess(block.index("order > completed + 1"),
-                        block.index("miniapp_reserved_grammar_patch("))
-        self.assertLess(block.index("consume=True"),
-                        block.index("miniapp_reserved_grammar_patch("))
+        review = block[block.index('if payload.get("review_only") is True:'):
+                       block.index('if order < 1 or order > total_parts(level)', 
+                                   block.index('if payload.get("review_only") is True:'))]
+        self.assertLess(review.index("order > completed"),
+                        review.index("miniapp_reserved_grammar_patch("))
+        self.assertNotIn("consume=True", review)
+        # The current lesson, by contrast, MUST consume its existing gate.
+        reserved = block[block.index("result = await LessonAccessService(session).status("):]
+        self.assertLess(reserved.index("consume=True"),
+                        reserved.index("miniapp_reserved_grammar_patch("))
         self.assertLess(block.index("await session.commit()"),
                         block.index('if result["allowed"] and level == "nhsk2":'))
         self.assertIn('headers={"Cache-Control": "no-store"}', block)

@@ -222,6 +222,20 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
             self.lesson_service.status.assert_not_awaited()
             self.session.commit.assert_not_awaited()
 
+    async def test_non_nhsk2_track_cannot_request_p3_review(self):
+        self.user.level = "hsk1"
+        self.progress.level = "hsk1"
+        self.progress.completed_lessons_count = 1
+        with patch("app.api.miniapp_entitlements.miniapp_reserved_grammar_patch") as adapter:
+            result = await self._start(
+                1, {"X-Telegram-Init-Data": synthetic_init_data()},
+                review_only=True,
+            )
+            self.assertEqual(result.status_code, 403)
+            self.assertNotIn("p3_grammar", result.json())
+            adapter.assert_not_called()
+            self.lesson_service.status.assert_not_awaited()
+
     async def test_unsigned_p3_review_request_cannot_get_translation_patch(self):
         with patch("app.api.miniapp_entitlements.miniapp_reserved_grammar_patch") as adapter:
             response = await self._start(16, review_only=True)
