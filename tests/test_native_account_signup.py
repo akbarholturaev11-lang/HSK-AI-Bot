@@ -1,13 +1,98 @@
 """Real persistence/session contracts for first-time native account creation."""
+from urllib.parse import parse_qs, urlparse
 from unittest.mock import patch
 from sqlalchemy import func, select
 
-from app.db.models.desktop import DesktopDevice
+from app.db.models.desktop import DesktopDevice, DesktopSession
 from app.db.models.user import User
 from app.db.models.user_identity import UserIdentity
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
 from app.services.identity_link_service import IdentityLinkError, IdentityLinkService
+from app.services.native_oauth_service import NativeOAuthService
 from tests.test_native_oauth_api import _Base, _verified
+
+
+class NativeBrowserAccountSignupTests(_Base):
+    settings_overrides = {
+        'APPLE_OAUTH_ENABLED': True, 'APPLE_SERVICE_ID': 'apple.service.test',
+        'APPLE_TEAM_ID': 'TESTTEAMID', 'APPLE_KEY_ID': 'TESTKEYID',
+        'APPLE_PRIVATE_KEY': 'fixture-key-not-used-by-mocked-provider',
+    }
+
+    async def test_browser_signup_keeps_each_provider_owner_across_native_platforms(self):
+        owners = {}
+        for provider in ('google', 'apple'):
+            # Identical subject text and email across providers must still
+            # create distinct accounts. Repeat each identity on every client.
+            verified = _verified(subject='shared-browser-subject', provider=provider)
+            verify_method = ('verify_desktop_id_token' if provider == 'google'
+                             else 'verify_id_token_for_service')
+            for platform in ('android', 'windows', 'macos'):
+                with self.subTest(provider=provider, platform=platform):
+                    start = await self.client.post('/api/v3/native-auth/oauth/start', json=self._start_body(
+                        provider=provider, mode='browser_redirect', platform=platform,
+                        installation_key=f'{provider}-{platform}'.ljust(48, 'x'), language='uz'))
+                    self.assertEqual(start.status_code, 200, start.text)
+                    started = start.json()
+                    state = parse_qs(urlparse(started['authorize_url']).query)['state'][0]
+                    async with self.sessions() as session:
+                        service = NativeOAuthService(session, self.settings)
+                        self.assertEqual(service.link_request_id_from_state(state), started['link_request_id'])
+                        auth = DesktopAuthService(session, self.settings)
+                        self.assertEqual((await auth.poll_link(
+                            link_request_id=started['link_request_id'],
+                            polling_secret=started['polling_secret']))['status'], 'pending')
+                        session_count = await session.scalar(select(func.count(DesktopSession.id)))
+
+                    path = '/api/v3/native-auth/oauth/callback/' + provider
+                    values = {'state': state, 'code': 'fixture-browser-code'}
+                    with patch(f'app.services.{provider}_auth.exchange_code', return_value='fixture-id-token'), \
+                         patch(f'app.services.{provider}_auth.{verify_method}', return_value=verified):
+                        if provider == 'apple':
+                            callback = await self.client.post(path, data=values)
+                        else:
+                            callback = await self.client.get(path, params=values)
+                    self.assertEqual(callback.status_code, 200, callback.text)
+                    self.assertIn('pomp-hsk-ai://oauth-return', callback.text)
+                    self.assertEqual(callback.headers['Cache-Control'], 'no-store')
+                    for secret in (state, started['link_request_id'], started['polling_secret'],
+                                   'fixture-browser-code', 'fixture-id-token', 'access_token',
+                                   'refresh_token', verified.subject, verified.email):
+                        self.assertNotIn(secret, callback.text)
+
+                    async with self.sessions() as session:
+                        # Callback only approves the original proof; the
+                        # existing poll is still the sole session mint path.
+                        self.assertEqual(await session.scalar(select(func.count(DesktopSession.id))), session_count)
+                        auth = DesktopAuthService(session, self.settings)
+                        tokens = await auth.poll_link(link_request_id=started['link_request_id'],
+                            polling_secret=started['polling_secret'])
+                        context = await auth.authenticate(tokens['access_token'])
+                        owners.setdefault(provider, context.user.id)
+                        self.assertEqual(context.user.id, owners[provider])
+                        self.assertNotIn(context.user.id, {1, 2})
+                        self.assertEqual(context.device.platform, platform)
+                        self.assertIsNone(context.user.telegram_id)
+                        self.assertEqual(context.user.language, 'uz')
+                        self.assertEqual(context.user.status, 'trial')
+                        self.assertNotEqual(context.user.payment_status, 'approved')
+                        self.assertIsNone(context.user.end_date)
+                        self.assertIsNone(context.user.pro_trial_started_at)
+                        refreshed = await auth.refresh(tokens['refresh_token'])
+                        self.assertEqual((await auth.authenticate(refreshed['access_token'])).user.id,
+                            owners[provider])
+                        for token in (tokens['access_token'], tokens['refresh_token'],
+                                      refreshed['access_token'], refreshed['refresh_token']):
+                            self.assertNotIn(token, callback.text)
+
+        self.assertNotEqual(owners['google'], owners['apple'])
+        async with self.sessions() as session:
+            self.assertEqual(await session.scalar(select(func.count(User.id))), 4)
+            self.assertEqual(await session.scalar(select(func.count(UserIdentity.id))), 2)
+            devices = (await session.scalars(select(DesktopDevice))).all()
+            self.assertEqual(len(devices), 6)
+            self.assertEqual({device.user_id for device in devices}, set(owners.values()))
+            self.assertTrue(all(device.telegram_id is None for device in devices))
 
 
 class NativeAccountSignupTests(_Base):
