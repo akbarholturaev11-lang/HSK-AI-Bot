@@ -125,7 +125,8 @@ def stage_private_grammar_lessons(
     try:
         dest.mkdir(mode=0o700)
         for relative, preview in sorted(planned.items()):
-            _, _, track, filename = relative.split("/")
+            track, _ = _source_identity(relative)
+            filename = Path(relative).name
             private_track = dest / track
             if not private_track.exists():
                 private_track.mkdir(mode=0o700)
