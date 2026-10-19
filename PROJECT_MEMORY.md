@@ -32,6 +32,19 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 - Each Android release must use a `versionCode` greater than the latest published release; it need not increase by exactly one. Verify the artifact against the release manifest because the current workflow does not reject every equal-code/different-artifact case.
 - Source files and repository defaults do not prove live deployment, production environment values, provider credentials, or release status. Verify those in the owning environment before reporting them as live facts.
 
+## Agent-owned Chinese-course translation QA (owner direction, 2026-10-19)
+
+For existing UZ/RU/TJ course texts, coding agents own semantic and grammar QA,
+actual corrections, source-safe centralization, all three client checks, and
+regression knowledge. Do not ask the owner to validate Chinese/UZ/RU/TJ or
+treat independent human linguistic approval as the required release gate.
+`localization/AI_CONTENT_QA_POLICY.md` supersedes historical manual-review
+phrases in the P3 backlog. AI self-review is not evidence of native-speaker
+certification; fail closed on unresolved wrong meaning and preserve P0 source,
+mirror, quiz/grade, Pro and auth guards. Draft PR #179 is isolated until
+applicable CI and client QA pass. A 136-context candidate ZIP or private
+integration preview is not proof of a completed runtime migration.
+
 ## Key files
 
 - Application and database: `app/main.py`, `app/config.py`, `app/db/session.py`, `app/db/models/`, `alembic/versions/`

@@ -2,6 +2,21 @@
 
 ## CURRENT STATE — read this first (2026-10-19)
 
+**LATEST OWNER DIRECTION OVERRIDES LEGACY MANUAL LANGUAGE REVIEW WORDING:**
+The coding agent, not the user or an external editor, owns actual Chinese
+meaning/grammar review for UZ/RU/TJ, fixes, local-first content integration,
+client QA and regression prevention. Read
+`localization/AI_CONTENT_QA_POLICY.md` before continuing. Old "human
+review required" flags simply indicate private drafts are not approved by
+the agent's complete QA/release gates. Do not treat a full 136-context AI ZIP
+or structural CI as a verified production translation. Keep source SHA,
+mirror, entitlement, grading, deterministic catalog and device QA gates.
+The private self-reviewed candidate ZIP is located in this conversation's
+files/Library, not in GitHub; do NOT publish it as a CI artifact.
+The present protected source-preview adapter is NOT runtime integration.
+Keep Draft PR #179 isolated until verified and compatible with main.
+
+
 - Repository: `akbarholturaev11-lang/HSK-AI-Bot`; branch: `codex/i18n-local-first-foundation-20261017`; Draft PR #179 remains open. Latest pushed head before this Android Practice batch: `b7f3047f3cd8fe09c8acf79b360835fd0d0b11b1`. Do not merge to `main` or deploy production.
 - Exact-head P0 on `b7f3047f`: run [39238538882](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39238538882) **SUCCESS** (298 tests). The local Android Practice batch adds two tests; full local P0 now passes **300 tests**, and every read-only P0 audit command completed with exit 0. Android CI must be checked on the pushed Practice head; local Android SDK is unavailable. Desktop contract [39235781998](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39235781998) remains **SUCCESS** on `2f8e4a94`. Generated catalogs: 3 locales, 6 artifacts, 0 stale outputs; 797 course keys per locale. These are structural checks, not linguistic approval or device QA.
 - Lesson source inventory remains 746 lessons, 48 affected, 272 blank grammar display maps, 136 unique contexts and 816 target locale cells. Both private archives were found in Downloads and independently checked with current validators: the original `HSK_P3_nhsk2_136_PRIVATE_AI_CANDIDATES_20261019.zip` and its `PRECHECK` variant each contain **48 valid drafts, 272/272 source maps, 136/136 exact contexts, 136 mirrored maps, 0 outstanding candidate cells**. PRECHECK SHA-256: `b027718c79371d2de2761abeeea79188df5eea5b37665e3b94feca23ab270fe3`. Drafts were extracted only into mode-0700 private `/tmp` directories outside Git. Structural validation does not approve language quality.

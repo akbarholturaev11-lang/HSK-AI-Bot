@@ -1,3 +1,16 @@
+## Controlling P3 language QA decision — 2026-10-19
+
+The owner delegates existing UZ/RU/TJ translation correctness and migration
+to the engineering agent; **no manual/human translation-review prerequisite**.
+Follow `localization/AI_CONTENT_QA_POLICY.md` for independent source-context
+semantic review, fixes, duplicate/mirror sync, protected-source diff, local-first
+content migration and regression tests. Historical references below to "human
+review required" are legacy wording superseded ONLY for the linguistic
+reviewer identity. They do NOT waive source SHA, safety, QA, CI or release
+gates. The current 136-context private candidate bundle is NOT automatically
+approved merely for being complete. Work on the feature branch while guards
+and cross-platform QA remain pending.
+
 # HSK AI i18n — Plan / Schema / Execution Order
 
 > **Canonical handoff for the local-first multilingual migration.**

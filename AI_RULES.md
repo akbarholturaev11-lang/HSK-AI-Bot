@@ -13,6 +13,16 @@
 
 ---
 
+## Existing course localization ownership
+
+The project owner delegates UZ/RU/TJ Chinese lesson semantic review,
+self-correction, local-first integration and regression prevention to the
+coding agent. **No mandatory human linguistic approval gate or user-side
+translation checking.** Apply the specific fail-closed QA procedure in
+`localization/AI_CONTENT_QA_POLICY.md`; never confuse structure validation
+with verified semantics. Preserve Chinese source and graded/Pro/auth
+fields, and do not claim a release without applicable CI and functional QA.
+
 ## E2E Smoke Test Rule
 
 After important updates to the Telegram Mini App, course/lesson flow, quiz flow, backend progress events, subscription/paywall, or payment/access logic, verify the main flows with Playwright E2E smoke tests.

@@ -1,3 +1,14 @@
+## Agent-owned linguistic review policy supersedes legacy worksheet wording
+
+The product owner delegates source-context translation QA, corrections and
+migration to the coding agent. Do not require the user or a third-party human
+to review Chinese/UZ/RU/TJ. Existing `HUMAN_REVIEW_REQUIRED` schema strings
+are historical descriptions of **uncertified private drafts**, not an
+authorization blocker once the agent performs documented semantic QA and
+all protected-source/client checks. Follow
+`localization/AI_CONTENT_QA_POLICY.md`. A structurally valid draft is NOT
+an agent-checked or releasable lesson; unverified strings stay unpublished.
+
 # P3 editor translation drafts — private structural validator
 
 This is an **editor-only, local verification contract**, not a translation
