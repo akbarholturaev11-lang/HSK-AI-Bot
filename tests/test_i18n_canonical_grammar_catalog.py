@@ -46,6 +46,17 @@ class CanonicalGrammarCatalogTests(unittest.TestCase):
             )
             self.assertEqual(set(reviewed[context["review_id"]]["translations"]), set(LANGS))
 
+    def test_g030_family_not_house_in_russian(self):
+        context = next(c for c in self.queue["contexts"] if c["review_id"] == "G030")
+        self.assertEqual(
+            context["chinese_example"],
+            "画我们的家！有爸爸、妈妈、弟弟，还有黑色的狗、白色的猫什么的。",
+        )
+        russian = read_canonical_catalog(self.catalog_path)["G030"]["translations"]["ru"]
+        # Enumerated family members and pets, not the building.
+        self.assertIn("нашу семью", russian)
+        self.assertNotIn("наш дом", russian)
+
     def test_context_hash_changes_with_source_rule_or_occurrence(self):
         original = context_source_sha256(self.first_context)
         mutations = []
