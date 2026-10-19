@@ -275,3 +275,27 @@ and exclusive-create. The CLI prints counts only, not source text. Existing
 lesson JSON, Pro/auth/grade, public bundles, and production remain unchanged.
 The generated drafts themselves are NEVER committed. Even successful
 structural validation is not authorization to ship.
+
+
+## Audit independent candidate coverage (private only)
+
+Existing batch coverage measures original lesson placements, not distinct
+Chinese/pinyin/grammar contexts. To check SHA-pinned AI/editor candidate
+drafts without uploading or publishing any content, place only valid filled
+draft JSON files in a private directory outside Git checkout and run:
+
+```bash
+python scripts/i18n_editor_context_progress.py --draft-dir /private/editor-candidates
+```
+
+The checker first runs the existing 746-source batch validator, then tests
+each candidate against the exact original grammar context inventory,
+unchanged Git source SHA and private in-memory mirrored-card integrity.
+Different UZ/RU/TJ suggestions for one repeated original context fail
+closed, as do stale revisions, duplicate pointers, partial translations,
+symlinked files and any other non-draft entries. The CLI emits only counts:
+distinct candidate-covered contexts (out of 136), original source maps
+(out of 272), outstanding independent text values, and further exact-context
+reuse opportunities. Private source copies and draft strings never enter
+public assets, logs, GitHub artifacts or this count report. Any original
+candidate remains HUMAN_REVIEW_REQUIRED; no automatic approval is recorded.

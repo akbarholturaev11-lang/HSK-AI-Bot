@@ -99,7 +99,8 @@ jobs:
             tests.test_i18n_grammar_mirror_source_audit \
             tests.test_i18n_grammar_translation_reuse_audit \
             tests.test_i18n_editor_translation_reuse \
-            tests.test_i18n_grammar_private_review_queue
+            tests.test_i18n_grammar_private_review_queue \
+            tests.test_i18n_editor_context_progress
       - name: Read-only P0 source checks
         run: |
           mkdir -p /tmp/i18n-p0
