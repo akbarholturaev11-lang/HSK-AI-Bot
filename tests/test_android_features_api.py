@@ -1400,6 +1400,46 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
         self.assertGreaterEqual(len(shadows), 1)
         self.assertIsNone(shadows[0].telegram_id)
 
+    async def test_google_only_gate_still_opens_if_shadow_diagnostics_stall(self):
+        """A slow optional audit must not time out a Google-only learner."""
+        google_user = _user(4, None, "Google-only shadow timeout")
+        async with self.sessions() as session:
+            session.add(google_user)
+            await session.commit()
+
+        async def stalled_shadow(_session, **_kwargs):
+            await asyncio.sleep(5)
+
+        with (
+            patch.object(
+                DesktopAuthService, "authenticate",
+                AsyncMock(return_value=SimpleNamespace(user=google_user)),
+            ),
+            patch("app.api.android_features.ANDROID_SHADOW_TIMEOUT_SECONDS", 0.02),
+            patch("app.api.android_features.shadow_compare_gate", stalled_shadow),
+        ):
+            response = await asyncio.wait_for(
+                self.client.post(
+                    "/api/v3/android/practice/gate",
+                    headers=self._headers(),
+                    json={"feature": "recognition", "ref": "google-slow-audit"},
+                ),
+                timeout=2,
+            )
+
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(response.json()["allowed"])
+        async with self.sessions() as session:
+            usages = (
+                await session.execute(
+                    select(CourseMiniAppEvent).where(
+                        CourseMiniAppEvent.user_id == google_user.id,
+                        CourseMiniAppEvent.event_name == "practice_daily_used",
+                    )
+                )
+            ).scalars().all()
+        self.assertEqual(1, len(usages))
+
     async def test_practice_gate_commits_before_shadow_audit(self):
         """The audit's independent DB transaction must never wait on the gate's
         uncommitted FOR UPDATE user lock (Google-only accounts especially).
