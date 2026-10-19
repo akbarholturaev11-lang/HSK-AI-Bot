@@ -145,5 +145,47 @@ assert.equal(JSON.stringify(original),untouched);
         self.assertEqual(completed.returncode, 0, completed.stderr[-2500:])
 
 
+    @unittest.skipUnless(shutil.which("node"), "Node is needed for JavaScript runtime smoke")
+    def test_completed_review_fetches_once_with_safe_fallback(self):
+        helper = HELPER.read_text(encoding="utf-8")
+        js = """
+const vm=require("node:vm");
+const assert=require("node:assert/strict");
+const calls=[];
+const env={_apiPost:(url,data)=>{
+  calls.push({url,data});
+  return Promise.resolve({ok:true,json:()=>Promise.resolve({
+    ok:true,allowed:true,p3_grammar:{version:1,level:"nhsk2",lesson_order:16}
+  })});
+}};
+vm.runInNewContext(JSON.parse(process.argv[1]),env);
+(async()=>{
+  const granted=await env.reserveCompletedP3Grammar({n:16});
+  assert.equal(granted.allowed,true);
+  assert.equal(calls.length,1);
+  assert.equal(calls[0].url,"/api/v3/lesson/start");
+  assert.equal(calls[0].data.review_only,true);
+  assert.equal(calls[0].data.lesson_id,16);
+  assert.equal(env.P3_RESERVED_GRAMMAR.version,1);
+  env.P3_RESERVED_GRAMMAR=null;
+  env._apiPost=(url,data)=>Promise.resolve({
+    ok:false,json:()=>Promise.resolve({ok:false,error:"course_lesson_not_unlocked"})
+  });
+  const denied=await env.reserveCompletedP3Grammar({n:17});
+  assert.equal(denied.allowed,true);
+  assert.equal(env.P3_RESERVED_GRAMMAR,null);
+  env._apiPost=()=>Promise.reject(new Error("offline"));
+  const offline=await env.reserveCompletedP3Grammar({n:16});
+  assert.equal(offline.allowed,true);
+  assert.equal(env.P3_RESERVED_GRAMMAR,null);
+})().catch(err=>{console.error(err);process.exitCode=1});
+"""
+        result = subprocess.run(
+            ["node", "-e", js, json.dumps(helper)],
+            text=True, capture_output=True, timeout=15,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr[-2500:])
+
+
 if __name__ == "__main__":
     unittest.main()
