@@ -1,6 +1,16 @@
 name: Backend targeted tests
 
 on:
+  # This GitHub-App feature branch needs the same backend/API authentication
+  # smoke checks on pushes; PR-only events do not cover every ref update.
+  push:
+    branches:
+      - codex/i18n-local-first-foundation-20261017
+    paths:
+      - "app/api/miniapp_entitlements.py"
+      - "app/services/course_p3_grammar_localization.py"
+      - "tests/test_i18n_miniapp_reservation_asgi.py"
+      - ".github/workflows/backend-ci.yml"
   pull_request:
     paths:
       - "app/**"
