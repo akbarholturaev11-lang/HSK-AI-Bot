@@ -99,6 +99,65 @@ class MiniAppP3ReservationTests(unittest.TestCase):
         self.assertEqual(total_display_maps, 408)
         self.assertEqual(total_display_maps * 3, 1224)
 
+    @unittest.skipUnless(shutil.which("node"), "Node is needed for 48-lesson runtime verification")
+    def test_all_48_patches_render_atomically_in_real_js_runtime(self):
+        """Real JSON source + actual authenticated-adapter patch, not synthetic cards.
+
+        Patches are supplied over stdin so gated lesson contents and learner
+        translations never appear in process arguments or CI logs.
+        """
+        _source_pinned_drafts.cache_clear()
+        cases = []
+        for relative in sorted(_source_pinned_drafts()):
+            number = int(Path(relative).stem.split("_")[-1])
+            patch = miniapp_reserved_grammar_patch(
+                level="nhsk2", lesson_order=number,
+            )
+            self.assertIsNotNone(patch, relative)
+            cases.append({"path": relative, "number": number, "patch": patch})
+        self.assertEqual(len(cases), 48)
+        js = r"""
+const fs=require("node:fs"),vm=require("node:vm"),assert=require("node:assert/strict");
+const env={normalizeLevel:x=>x,cloneJson:x=>JSON.parse(JSON.stringify(x))};
+vm.runInNewContext(fs.readFileSync(process.argv[1],"utf8"),env);
+const cases=JSON.parse(fs.readFileSync(0,"utf8"));
+let mappings=0;
+for(const item of cases){
+  const source=JSON.parse(fs.readFileSync(item.path,"utf8"));
+  const before=JSON.stringify(source);
+  env.P3_RESERVED_GRAMMAR=item.patch;
+  const updated=env.applyReservedP3Grammar(source,"nhsk2",item.number);
+  assert.notStrictEqual(updated,source,"valid patch rejected for "+item.number);
+  assert.equal(env.P3_RESERVED_GRAMMAR,null);
+  assert.equal(JSON.stringify(source),before,"original lesson mutated");
+  for(const row of item.patch.display_translations){
+    const parts=row.pointer.split("/").slice(1);
+    let target=updated;
+    for(const part of parts)target=target[part];
+    for(const locale of ["uz","ru","tj"])
+      assert.equal(target[locale],row.values[locale],"wrong translation");
+    mappings++;
+  }
+  const incomplete=JSON.parse(JSON.stringify(item.patch));
+  incomplete.display_translations.pop();
+  env.P3_RESERVED_GRAMMAR=incomplete;
+  assert.strictEqual(
+    env.applyReservedP3Grammar(source,"nhsk2",item.number),source,
+    "partial patch must fail closed for "+item.number
+  );
+  assert.equal(env.P3_RESERVED_GRAMMAR,null);
+  assert.equal(JSON.stringify(source),before);
+}
+assert.equal(cases.length,48);
+assert.equal(mappings,408);
+"""
+        result = subprocess.run(
+            ["node", "-e", js, str(HELPER)],
+            cwd=ROOT, input=json.dumps(cases, ensure_ascii=False),
+            text=True, capture_output=True, timeout=90,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr[-1800:])
+
     def test_wrong_level_source_revision_and_no_gap_return_none(self):
         self.assertIsNone(miniapp_reserved_grammar_patch(level="nhsk1", lesson_order=16))
         self.assertIsNone(miniapp_reserved_grammar_patch(level="nhsk2", lesson_order=1))
