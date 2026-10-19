@@ -260,13 +260,20 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             user.status = "active"
             user.payment_status = "approved"
             user.end_date = datetime.now(timezone.utc) + timedelta(days=7)
-            session.add(CourseProgress(
-                user_id=user.id,
-                level="nhsk2",
-                completed_lessons_count=15,
-                current_step="intro",
-                waiting_for="none",
-            ))
+            progress = (
+                await session.execute(
+                    select(CourseProgress).where(CourseProgress.user_id == user.id)
+                )
+            ).scalar_one_or_none()
+            if progress is None:
+                session.add(CourseProgress(
+                    user_id=user.id, level="nhsk2",
+                    completed_lessons_count=15,
+                    current_step="intro", waiting_for="none",
+                ))
+            else:
+                progress.level = "nhsk2"
+                progress.completed_lessons_count = 15
             await BotSettingRepository(session).set_bool(
                 HSK30_ENABLED_SETTINGS_KEY, True
             )
