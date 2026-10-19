@@ -87,11 +87,12 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
     async def asyncTearDown(self):
         await self.client.aclose()
 
-    async def _start(self, order, headers=None):
+    async def _start(self, order, headers=None, *, review_only=False):
+        data = {"lesson_id": order, "level": "hsk1", "lang": "uz"}
+        if review_only:
+            data["review_only"] = True
         return await self.client.post(
-            "/api/v3/lesson/start",
-            headers=headers or {},
-            json={"lesson_id": order, "level": "hsk1", "lang": "uz"},
+            "/api/v3/lesson/start", headers=headers or {}, json=data,
         )
 
     async def test_no_initdata_cannot_reserve_or_use_session(self):
@@ -185,6 +186,49 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
             self.assertNotIn("p3_grammar", response.json())
             localized.assert_not_called()
             self.lesson_service.status.assert_not_awaited()
+
+    async def test_finished_lesson_p3_read_is_authenticated_and_non_consuming(self):
+        self.user.level = "nhsk2"
+        self.progress.level = "nhsk2"
+        self.progress.completed_lessons_count = 16
+        localized = {"version": 1, "level": "nhsk2", "lesson_order": 16,
+                     "source_git_blob_sha1": "a" * 40,
+                     "display_translations": []}
+        with patch("app.api.miniapp_entitlements.miniapp_reserved_grammar_patch",
+                   return_value=localized) as adapter:
+            response = await self._start(
+                16, {"X-Telegram-Init-Data": synthetic_init_data()},
+                review_only=True,
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json()["p3_grammar"], localized)
+            self.assertEqual(response.headers["cache-control"], "no-store")
+            adapter.assert_called_once_with(level="nhsk2", lesson_order=16)
+            self.lesson_service.status.assert_not_awaited()
+            self.session.commit.assert_not_awaited()
+
+    async def test_uncompleted_lesson_cannot_use_p3_review_only(self):
+        self.user.level = "nhsk2"
+        self.progress.level = "nhsk2"
+        self.progress.completed_lessons_count = 15
+        with patch("app.api.miniapp_entitlements.miniapp_reserved_grammar_patch") as adapter:
+            response = await self._start(
+                16, {"X-Telegram-Init-Data": synthetic_init_data()},
+                review_only=True,
+            )
+            self.assertEqual(response.status_code, 403)
+            self.assertNotIn("p3_grammar", response.json())
+            adapter.assert_not_called()
+            self.lesson_service.status.assert_not_awaited()
+            self.session.commit.assert_not_awaited()
+
+    async def test_unsigned_p3_review_request_cannot_get_translation_patch(self):
+        with patch("app.api.miniapp_entitlements.miniapp_reserved_grammar_patch") as adapter:
+            response = await self._start(16, review_only=True)
+            self.assertEqual(response.status_code, 401)
+            self.assertNotIn("p3_grammar", response.json())
+            adapter.assert_not_called()
+            self.assertEqual(self.entered_session, 0)
 
     async def test_skip_ahead_denied_without_consumption(self):
         response = await self._start(3, {
