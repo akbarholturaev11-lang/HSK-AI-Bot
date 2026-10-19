@@ -15,7 +15,7 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 
 ## Data model and business logic
 
-- `users` is the internal learner account, keyed by unique `telegram_id`. Subscription state includes `status`, `payment_status`, `start_date`, and `end_date`; there is no `subscription_until` column.
+- `users.id` is the canonical internal learner-account owner. In P3's **feature branch only**, migrations `0103_native_identity_accounts` and `0104_native_account_foundation` and matching SQLAlchemy models have been staged from current `main`: `telegram_id` becomes optional for provider-only Google/Apple accounts while existing real Telegram IDs remain unique. This foundation is **not full Universal Login integration or a production migration**; `main` has further ownership migrations through `0108` plus auth/payment/referral changes still to reconcile. Subscription state includes `status`, `payment_status`, `start_date`, and `end_date`; there is no `subscription_until` column.
 - `payments` records the learner, plan, amount/currency, `payment_status`, submission/review timestamps, and payment evidence or discount metadata. Check `app/db/models/payment.py` for the current schema before changing payment code.
 - Paid access requires approved payment state and an unexpired `end_date`. `app/services/subscription_service.py` owns paid-term activation and renewal; `app/services/user_access_state_service.py` distinguishes paid access from temporary trials and free/expired states.
 - Temporary trial and referral benefits are not paid billing records. Keep their access predicates distinct from paid subscription checks.
