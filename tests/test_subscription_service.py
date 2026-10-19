@@ -187,7 +187,7 @@ class SubscriptionServiceManualGrantTests(unittest.IsolatedAsyncioTestCase):
             end_date=original_end,
         )
         service, session, _ = self._service(user)
-        payment = SimpleNamespace(id=77)
+        payment = SimpleNamespace(id=77, user_telegram_id=123)
         with (
             patch("app.services.subscription_service.AIUsageBudgetService") as budget_service,
             patch("app.services.subscription_service.PortfolioService") as portfolio_service,
@@ -204,6 +204,22 @@ class SubscriptionServiceManualGrantTests(unittest.IsolatedAsyncioTestCase):
             preserve_existing=True,
         )
         self.assertEqual(user.end_date, original_end + timedelta(days=30))
+
+
+    async def test_paid_activation_rejects_receipt_without_a_proven_owner(self):
+        user = self._user(status="free", payment_status="none")
+        service, session, _ = self._service(user)
+        for payment in (
+            SimpleNamespace(id=78),
+            SimpleNamespace(id=79, user_telegram_id=987),
+            SimpleNamespace(id=80, user_id=987, user_telegram_id=123),
+        ):
+            with self.subTest(payment_id=payment.id):
+                self.assertFalse(await service.activate_plan(123, "1_month", payment=payment))
+                self.assertEqual(user.status, "free")
+                self.assertEqual(user.payment_status, "none")
+                self.assertIsNone(user.end_date)
+        self.assertEqual(session.flush_count, 0)
 
 
 if __name__ == "__main__":
