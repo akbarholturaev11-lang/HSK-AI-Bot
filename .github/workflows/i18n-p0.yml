@@ -17,7 +17,8 @@ on:
       - "app/api/**"
       - "android/app/src/**"
       - "desktop/ui/**"
-      - ".github/workflows/i18n-p0.yml"  pull_request:
+      - ".github/workflows/i18n-p0.yml"
+  pull_request:
     paths:
       - "localization/**"
       - "scripts/i18n_*.py"
