@@ -7,6 +7,7 @@ from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.portfolio_service import PortfolioService
 from app.services.subscription_churn_service import SubscriptionChurnService
+from app.services.account_identity import account_user_id, actual_telegram_id
 
 
 PLAN_DURATIONS = {
@@ -44,6 +45,15 @@ class SubscriptionService:
         self.user_repo = UserRepository(session)
         self.feedback_repo = BotFeedbackRepository(session)
 
+    async def _locked_user(self, actor):
+        canonical_id = account_user_id(actor)
+        if canonical_id is not None:
+            return await self.user_repo.get_by_user_id(canonical_id, lock=True)
+        telegram_id = actual_telegram_id(actor)
+        if telegram_id is not None:
+            return await self.user_repo.get_by_telegram_id_for_update(telegram_id)
+        return None
+
     async def activate_plan(
         self,
         telegram_id: int,
@@ -54,9 +64,20 @@ class SubscriptionService:
         # Admin approval may process two different payments for the same
         # learner at nearly the same time. Lock the account so both renewals
         # extend the latest expiry instead of overwriting one another.
-        user = await self.user_repo.get_by_telegram_id_for_update(telegram_id)
-        if not user:
+        user = await self._locked_user(telegram_id)
+        if not user or user.status == "blocked":
             return False
+
+        if payment is not None:
+            payment_user_id = getattr(payment, "user_id", None)
+            if payment_user_id is not None:
+                if payment_user_id != getattr(user, "id", None):
+                    return False
+            elif (
+                actual_telegram_id(user) is None
+                or getattr(payment, "user_telegram_id", None) != actual_telegram_id(user)
+            ):
+                return False
 
         duration_days = PLAN_DURATIONS.get(plan_type)
         if not duration_days:
@@ -94,8 +115,8 @@ class SubscriptionService:
             user.discount_used = True
             user.discount_eligible = False
 
-        if discount_source == "feedback_price_offer":
-            await self.feedback_repo.mark_latest_price_offer_used(telegram_id)
+        if discount_source == "feedback_price_offer" and actual_telegram_id(user) is not None:
+            await self.feedback_repo.mark_latest_price_offer_used(actual_telegram_id(user))
 
         if payment is not None:
             # Only a real admin-approved subscription replenishes the one slot.
@@ -135,7 +156,7 @@ class SubscriptionService:
         if days is None:
             return None
 
-        user = await self.user_repo.get_by_telegram_id_for_update(telegram_id)
+        user = await self._locked_user(telegram_id)
         if not user:
             return None
 

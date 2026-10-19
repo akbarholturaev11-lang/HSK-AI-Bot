@@ -1,10 +1,11 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import field_validator
 from typing import List, Literal
 
 
 class Settings(BaseSettings):
     ANDROID_ASSISTANT_ENABLED: bool = True
-    # Android live voice requires paid billing and an explicit user allowlist;
+    # Live voice supports free/paid billing and requires an explicit user allowlist;
     # the allowlist value "*" is the deliberate all-user rollout switch.
     ANDROID_VOICE_LIVE_ENABLED: bool = False
     ANDROID_VOICE_LIVE_ALLOWED_USERS: str = ""
@@ -136,9 +137,17 @@ class Settings(BaseSettings):
     # https origin only, no path or query. Provider redirect URIs are built
     # from this, and both Google and Apple reject non-https redirects.
     OAUTH_REDIRECT_BASE_URL: str = ""
+    # The isolated QA clients must not reopen an installed production client.
+    # Unknown/empty values disable handoff without breaking authentication.
+    OAUTH_NATIVE_RETURN_SCHEME: Literal["pomp-hsk-ai", "pomp-hsk-ai-qa"] | None = "pomp-hsk-ai"
     OAUTH_JWKS_CACHE_TTL_SECONDS: int = 3600
     OAUTH_HTTP_TIMEOUT_SECONDS: float = 8.0
     OAUTH_ID_TOKEN_MAX_AGE_SECONDS: int = 300
+
+    @field_validator("OAUTH_NATIVE_RETURN_SCHEME", mode="before")
+    @classmethod
+    def native_return_scheme(cls, value):
+        return value if isinstance(value, str) and value in {"pomp-hsk-ai", "pomp-hsk-ai-qa"} else None
 
     DEFAULT_LANGUAGE: str = "tj"
     LOG_LEVEL: str = "INFO"

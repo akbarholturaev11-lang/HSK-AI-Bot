@@ -9,6 +9,7 @@ from sqlalchemy import select
 
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.services.conversion_funnel_service import ConversionFunnelService
+from app.services.account_identity import owner_clause
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.hsk30_unlock_service import HSK30_UNLOCK_PLAN_TYPE
 from app.services.subscription_entry_analytics_service import (
@@ -107,7 +108,7 @@ class DesktopSubscriptionService:
             return "desktop_subscription_blocked", 403
         return None
 
-    def _ensure_checkout_allowed(self, user) -> None:
+    def _ensure_checkout_allowed(self, user, *, mode: str = DESKTOP_SUBSCRIPTION_MODE) -> None:
         restriction = self._checkout_restriction(
             user,
             allow_active_paid=self.allow_active_paid,
@@ -121,6 +122,9 @@ class DesktopSubscriptionService:
         code = str(result.get("error") or "desktop_subscription_failed")
         status_by_code = {
             "access_start_first": 401,
+            "user_blocked": 403,
+            "payment_telegram_required": 409,
+            "referral_telegram_required": 409,
             "payment_invalid_plan": 422,
             "invalid_screenshot": 422,
             "payment_details_missing": 503,
@@ -174,7 +178,7 @@ class DesktopSubscriptionService:
 
     async def trial_start(self, access_token: str) -> dict[str, Any]:
         """Trialni boshlaydi. Qaror va cheklovlar SERVERDA — klient faqat
-        so'raydi (bir Telegram akkaunt bir marta)."""
+        so'raydi (bir hisob bir marta)."""
         context = await self._context(access_token)
         return await ProTrialService(self.session).start(
             context.user, source="desktop_trial", client="desktop"
@@ -190,7 +194,7 @@ class DesktopSubscriptionService:
         mode = self._checkout_mode(entry_source=entry_source)
         result = self._checked_result(
             await self.checkout.overview(
-                context.user.telegram_id,
+                context.user,
                 bot=self.bot,
                 mode=mode,
             )
@@ -248,7 +252,7 @@ class DesktopSubscriptionService:
         self._ensure_checkout_allowed(context.user)
         result = self._checked_result(
             await self.checkout.start_discount(
-                context.user.telegram_id,
+                context.user,
                 bot=self.bot,
             )
         )
@@ -271,16 +275,16 @@ class DesktopSubscriptionService:
         card_bank: str | None = None,
     ) -> dict[str, Any]:
         context = await self._context(access_token)
-        self._ensure_checkout_allowed(context.user)
+        mode = self._checkout_mode(plan_type=plan_type)
+        self._ensure_checkout_allowed(context.user, mode=mode)
         if payment_method != "visa" and (card_country is not None or card_bank is not None):
             raise DesktopSubscriptionError(
                 "desktop_subscription_request_invalid",
                 status_code=422,
             )
-        mode = self._checkout_mode(plan_type=plan_type)
         result = self._checked_result(
             await self.checkout.quote(
-                telegram_id=context.user.telegram_id,
+                telegram_id=context.user,
                 plan_type=plan_type,
                 payment_method=payment_method,
                 card_country=card_country,
@@ -308,7 +312,8 @@ class DesktopSubscriptionService:
         payment_method: str,
     ) -> dict[str, Any]:
         context = await self._context(access_token)
-        self._ensure_checkout_allowed(context.user)
+        mode = self._checkout_mode(plan_type=plan_type)
+        self._ensure_checkout_allowed(context.user, mode=mode)
         if stage not in DESKTOP_SUBSCRIPTION_STAGES:
             raise DesktopSubscriptionError(
                 "invalid_subscription_stage",
@@ -324,8 +329,7 @@ class DesktopSubscriptionService:
             await self.session.execute(
                 select(ConversionFunnelEvent.id)
                 .where(
-                    ConversionFunnelEvent.telegram_id
-                    == int(context.user.telegram_id),
+                    owner_clause(ConversionFunnelEvent, context.user, telegram_column="telegram_id"),
                     ConversionFunnelEvent.event_name == "checkout_opened",
                     # Android checkout-open events use the originating section
                     # (for attribution), while follow-up stages use this
@@ -345,7 +349,6 @@ class DesktopSubscriptionService:
                 status_code=409,
             )
 
-        mode = self._checkout_mode(plan_type=plan_type)
         recorded = await ConversionFunnelService().record(
             event_name="checkout_opened",
             user=context.user,
@@ -376,16 +379,16 @@ class DesktopSubscriptionService:
         card_bank: str | None = None,
     ) -> dict[str, Any]:
         context = await self._context(access_token)
-        self._ensure_checkout_allowed(context.user)
+        mode = self._checkout_mode(plan_type=plan_type)
+        self._ensure_checkout_allowed(context.user, mode=mode)
         if payment_method != "visa" and (card_country is not None or card_bank is not None):
             raise DesktopSubscriptionError(
                 "desktop_subscription_request_invalid",
                 status_code=422,
             )
-        mode = self._checkout_mode(plan_type=plan_type)
         result = self._checked_result(
             await self.checkout.submit(
-                telegram_id=context.user.telegram_id,
+                telegram_id=context.user,
                 plan_type=plan_type,
                 payment_method=payment_method,
                 card_country=card_country,
