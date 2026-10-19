@@ -11,6 +11,7 @@ from app.services.course_p3_grammar_localization import (
 
 ROOT = Path(__file__).resolve().parents[1]
 HTML = ROOT / "app/static/course-v3.html"
+HELPER = ROOT / "app/static/course_v3_data/p3-grammar-reservation.js"
 API = ROOT / "app/api/miniapp_entitlements.py"
 SOURCE = ROOT / "app/static/course_v3_data/nhsk2/lesson_16.json"
 
@@ -70,6 +71,8 @@ class MiniAppP3ReservationTests(unittest.TestCase):
 
     def test_miniapp_does_not_change_prefetch_or_cached_json_paths(self):
         html = HTML.read_text(encoding="utf-8")
+        self.assertIn("p3-grammar-reservation.js?v=20261019-p3-1", html)
+        self.assertEqual(len(html.split("\n")), 8712)
         self.assertIn("fetch(lessonDataUrl(lv,n),", html)
         self.assertIn("LESSON_DATA_CACHE[key]=d;", html)
         self.assertIn(
@@ -90,10 +93,7 @@ class MiniAppP3ReservationTests(unittest.TestCase):
 
     @unittest.skipUnless(shutil.which("node"), "Node is needed for JavaScript runtime smoke")
     def test_js_atomic_patch_applies_only_to_matching_zh_and_preserves_cache(self):
-        html = HTML.read_text(encoding="utf-8")
-        start = html.index("var P3_RESERVED_GRAMMAR=null;")
-        end = html.index("function reserveLessonStart(l){", start)
-        helper = html[start:end]
+        helper = HELPER.read_text(encoding="utf-8")
         js = """
 const assert=require("node:assert/strict");
 const vm=require("node:vm");

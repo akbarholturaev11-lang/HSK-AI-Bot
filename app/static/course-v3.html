@@ -1472,7 +1472,7 @@ html.hsk-telegram-back-active .hsk-native-back-duplicate{display:none!important}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
 <script src="/voice-live.js?v=1"></script>
-<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-android-common-v2"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261019-course-voice-v21"></script>
+<script defer src="/course_v3_data/ads.js?v=20261013-limit-sheet-v4"></script><script src="/course_v3_data/hsk-common-i18n.js?v=20261019-android-common-v2"></script><script src="/course_v3_data/hsk-course-i18n.js?v=20261019-course-voice-v21"></script><script src="/course_v3_data/p3-grammar-reservation.js?v=20261019-p3-1"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -3943,43 +3943,7 @@ function setLessonFlowControls(){
   var cta=$("#f-cta"),bar=$("#f-barbtn");if(cta)cta.onclick=Flow.next;if(bar)bar.onclick=Flow.next;
   var close=document.querySelector("#flow .fx");if(close)close.style.visibility="visible";
 }
-/* P3 display-only text supplied by the SAME authenticated lesson/start
-   response, never by an anonymous static translation pack or a prefetch.
-   A failed/mismatched patch preserves the exact legacy lesson. */
-var P3_RESERVED_GRAMMAR=null;
-function applyReservedP3Grammar(lesson,level,number){
-  var patch=P3_RESERVED_GRAMMAR;
-  P3_RESERVED_GRAMMAR=null;
-  if(!patch||patch.version!==1||normalizeLevel(level)!=="nhsk2"||
-     patch.level!=="nhsk2"||patch.lesson_order!==Number(number)||
-     !lesson||lesson.level!=="nhsk2"||lesson.lesson_id!==Number(number)||
-     !/^[0-9a-f]{40}$/.test(String(patch.source_git_blob_sha1||"")))return lesson;
-  var rows=patch.display_translations;
-  if(!Array.isArray(rows)||rows.length<1||rows.length>128)return lesson;
-  var out=cloneJson(lesson),seen={};
-  for(var i=0;i<rows.length;i++){
-    var item=rows[i],p=item&&item.pointer;
-    if(typeof p!=="string"||seen[p]||!/^\/(?:grammar\/\d+\/examples\/\d+|sections\/\d+\/cards\/\d+\/g\/examples\/\d+)\/translation$/.test(p))return lesson;
-    seen[p]=true;
-    var v=item.values;
-    if(!v||Object.keys(v).length!==3||!["uz","ru","tj"].every(function(lang){
-      return typeof v[lang]==="string"&&v[lang].trim()===v[lang]&&v[lang].length>0;
-    }))return lesson;
-    var parts=p.split("/").slice(1,-1),ex=out;
-    for(var j=0;j<parts.length;j++){
-      var token=parts[j],key=Array.isArray(ex)?Number(token):token;
-      if(!ex||!Object.prototype.hasOwnProperty.call(ex,key))return lesson;
-      ex=ex[key];
-    }
-    if(!ex||ex.zh!==item.zh||String(ex.pinyin||"")!==String(item.pinyin||"")||
-       !ex.translation||Object.keys(ex.translation).length!==3||
-       !["uz","ru","tj"].every(function(lang){return ex.translation[lang]==="";}))return lesson;
-    ex.translation={uz:v.uz,ru:v.ru,tj:v.tj};
-  }
-  return out;
-}
-function reserveLessonStart(l){
-  P3_RESERVED_GRAMMAR=null;
+function reserveLessonStart(l){P3_RESERVED_GRAMMAR=null;
   if(!INIT_DATA||!l||l.status!=="current")return Promise.resolve({ok:true,allowed:true});
   return _apiPost("/api/v3/lesson/start",{lesson_id:l.n,level:(MAP&&MAP.level)||"hsk1",lang:LANG})
     .then(function(r){return r.json().catch(function(){return{}}).then(function(d){
@@ -3988,8 +3952,7 @@ function reserveLessonStart(l){
         var err=new Error(d.error||"lesson_start_denied");
         err.data=d;err.status=r.status;throw err;
       }
-      P3_RESERVED_GRAMMAR=d.p3_grammar||null;
-      return d;
+      P3_RESERVED_GRAMMAR=d.p3_grammar||null;return d;
     })});
 }
 function handleLessonStartDenied(err,idx){
@@ -4029,8 +3992,7 @@ function startLesson(idx,opts){
   var lessonEntry=(window.HSKLessonPresentation&&HSKLessonPresentation.beginLessonEntry)
     ?HSKLessonPresentation.beginLessonEntry({lang:LANG,character:"panda"}):null;
   var lv=MAP.level||"hsk1";
-  reserveLessonStart(l).then(function(){return loadLessonData(lv,l.n)}).then(function(d){
-    d=applyReservedP3Grammar(d,lv,l.n);
+  reserveLessonStart(l).then(function(){return loadLessonData(lv,l.n)}).then(function(d){d=applyReservedP3Grammar(d,lv,l.n);
     Flow.queue=buildQueue(d);Flow.exitRequired=((d.exit_ticket&&d.exit_ticket.required_objectives)||[]).slice();Flow.queue=restoreLessonMastery(lv,l.n,Flow.queue);Flow.i=typeof Flow._restoredResumeIndex==="number"?Flow._restoredResumeIndex:loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;Flow.startedAt=Date.now();
     Flow.salesOutcome=d.outcome||null;Flow.salesNextOutcome=d.next_outcome_preview||null;rememberSalesValueContent(d);
     setLessonFlowControls();
