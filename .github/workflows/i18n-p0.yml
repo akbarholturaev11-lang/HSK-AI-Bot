@@ -103,7 +103,8 @@ jobs:
             tests.test_i18n_grammar_private_review_queue \
             tests.test_i18n_editor_context_progress \
             tests.test_i18n_editor_bulk_reuse \
-            tests.test_i18n_editor_backlog
+            tests.test_i18n_editor_backlog \
+            tests.test_i18n_editor_source_staging
       - name: Read-only P0 source checks
         run: |
           mkdir -p /tmp/i18n-p0
