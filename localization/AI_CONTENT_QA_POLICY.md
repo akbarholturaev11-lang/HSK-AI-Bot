@@ -93,3 +93,27 @@ Implementation regression found by Python 3.11 CI: `\b?` is invalid because
 the regex engine does not allow quantifying a zero-width word boundary.
 Terminate the Russian placeholder with an explicit `(?:$|\W)` boundary and
 keep the P0 import/behavior tests in the supported CI Python version.
+
+## Offline grammar display-only locale generation (P3)
+
+`scripts/i18n_editor_grammar_local_catalog.py` generates UZ/RU/TJ
+source-SHA-pinned, private local-first grammar display overlays, including
+only the verified `_grammar` mirrors. Run with:
+
+```bash
+python scripts/i18n_editor_grammar_local_catalog.py \
+  --draft-dir /private/source-pinned-editor-drafts \
+  --private-output-dir /private/locale-display-overlays
+```
+
+Default requires full 136-context/272-original-map coverage. Expected full
+batch: 48 lessons × 3 languages = **144 private locale JSON files**,
+covering (272 original maps + 136 mirrored copies) × 3 = **1,224 display
+locale values**. Every generated overlay excludes Chinese, pinyin, answers,
+option banks, grading, Pro and account fields. The output must remain private
+until the agent wires it into source-version-pinned local clients with correct
+entitlement boundaries and E2E QA; it is not a public pack nor a release.
+The limited regression guard detects known errors but does not replace
+source-context semantic checking. Agent carries this responsibility, NOT user.
+
+Verified on [P0 run 39241612582](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39241612582): **313 tests SUCCESS**.
