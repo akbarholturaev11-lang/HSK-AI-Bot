@@ -88,3 +88,8 @@ This detector is deliberately NOT a replacement for the agent's full
 source-context semantic check; it only captures previous reproducible bugs.
 CLI suppresses private text and user data. `--allow-partial` is only for
 incomplete private editorial pilots, not a release gate.
+
+Implementation regression found by Python 3.11 CI: `\b?` is invalid because
+the regex engine does not allow quantifying a zero-width word boundary.
+Terminate the Russian placeholder with an explicit `(?:$|\W)` boundary and
+keep the P0 import/behavior tests in the supported CI Python version.
