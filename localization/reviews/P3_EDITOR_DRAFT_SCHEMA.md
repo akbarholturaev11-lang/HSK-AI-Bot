@@ -325,3 +325,36 @@ provenance summary identifies filled/uncovered source map counts and never
 serializes original Chinese, source answers or translated strings. The original
 lesson stays unchanged. Any candidate is **UNAPPROVED**; no source editing,
 release, auth/Pro/grade/API change or runtime integration is authorized.
+
+
+## Reuse all matched source grammar contexts into private lesson drafts
+
+Once a private directory contains **only complete, structurally valid**
+source-SHA-pinned candidate JSON drafts, the bulk helper finds all remaining
+exactly repeated Chinese/pinyin/grammar contexts across the 746-source
+inventory. It excludes every source pointer that is already covered by an
+input draft, avoiding duplicate draft pointers when both sets are combined.
+
+```bash
+python scripts/i18n_editor_bulk_reuse.py \
+  --draft-dir /private/filled-candidate-drafts \
+  --private-output-dir /private/new-bulk-reuse-drafts
+```
+
+The entire private input candidate batch is revalidated before any output.
+Exact-context conflicts, stale Git SHAs, non-grammar pointers, symlinks,
+unknown input files and mismatched `_grammar` mirror cards fail closed.
+Every generated destination draft is validated against its own original
+source SHA, including full-tree mirrored-preview integrity. Original lesson
+JSON files are never rewritten or committed. The new destination must not
+exist, must be outside Git checkout and must not be nested in the input
+draft directory. Created folders/files are mode 0700/0600; the output holds
+only valid editor draft JSON files, not provenance summaries. It is compatible
+with the existing source-map coverage checker without changes.
+
+The command emits counts only: independent candidate contexts, newly reused
+original source maps, new draft files and remaining missing locale values.
+Blank templates, unreviewed draft conflicts or exhausted reuse opportunities
+must not yield empty or public packs. **All candidate translations remain
+UNAPPROVED; the helper is not content publishing, Pro/grade/auth integration,
+client runtime migration or production deployment.**
