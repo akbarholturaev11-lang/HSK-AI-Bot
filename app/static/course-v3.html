@@ -3948,7 +3948,7 @@ function reserveLessonStart(l){P3_RESERVED_GRAMMAR=null;if(INIT_DATA&&l&&l.statu
   return _apiPost("/api/v3/lesson/start",{lesson_id:l.n,level:(MAP&&MAP.level)||"hsk1",lang:LANG})
     .then(function(r){return r.json().catch(function(){return{}}).then(function(d){
       d._status=r.status;
-      if(!r.ok||!d.ok||d.allowed===false){
+      if(!r.ok||d.ok!==true||d.allowed!==true){
         var err=new Error(d.error||"lesson_start_denied");
         err.data=d;err.status=r.status;throw err;
       }
