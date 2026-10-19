@@ -16,7 +16,7 @@ class CoursePilotEvent(Base):
         nullable=True,
         index=True,
     )
-    telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     lesson_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("course_lessons.id", ondelete="SET NULL"),
         nullable=True,
