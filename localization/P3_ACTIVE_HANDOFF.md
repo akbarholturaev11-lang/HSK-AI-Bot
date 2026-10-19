@@ -1,6 +1,15 @@
 # HSK AI P3 — ACTIVE handoff for a new ChatGPT agent
 Updated: 2026-10-19. **Current working status is here; historical log remains in `localization/NEXT_CHAT_HANDOFF.md`.**
 
+## 2026-10-20 — P0 passed; 136-context independent semantics pass
+
+- Verified **exact previous code HEAD** `7cf426c`: [P0 run 39285039089](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39285039089) finished **SUCCESS**; job `118168471002` and all steps including `tests.test_i18n_miniapp_grammar_reservation` passed, which includes actual Node execution of 48 source JSONs / 408 full and partial P3 patches. Backend [run 39281476374](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39281476374) @ `abddd4b` also ended **SUCCESS**, including P3 authenticated native and HSK3 tests.
+- Agent compared **all 136 Chinese source grammar contexts** from the actual 48 lesson JSONs with all 408 UZ/RU/TJ canonical TSV strings (four 12-lesson batches, verifying canonical G001–G136 context ordering via full grammar identifiers). Contexts remain SHA-pinned, source files remain frozen. This is a first independent full semantic reading, **not third-party/native speaker QA certification**.
+- Six changed locale values in three high-confidence examples at TSV commit `ece22f3`: **G019** UZ/TJ `太客气` social embarrassment at excessive gift-giving (not just being kind); **G023** UZ/RU/TJ `让小雪自己去买` mother directs child to buy food herself (not explicit permission grant); **G135** UZ age presupposition `今年有10岁了吧` vs assertion of a birthday already completed. RU/TJ unchanged when correct.
+- Source-bound regression tests `285c97d` were added to `tests/test_i18n_canonical_grammar_catalog.py` for all three; prevention documented in `localization/AI_CONTENT_QA_POLICY.md` at `3708150`.
+- GitHub live code/CI check at `3708150` verified 136 catalog rows, changed source-bound cells and tests present. New P0 run **39289704022 was QUEUED**, not yet green for latest semantic batch. Check run completion and fix any failures before a main merge. PR #179 remains Draft / not mergeable.
+- Remaining major open gate: reconcile `main` identity/auth schema (+0103–0108 migrations, user-owned events) with old P3 branch without bypassing signing, quota, scoring or cached lesson source; then old/Google/Apple account API tests and real Android/Desktop/WebView offline tests. Do not release/merge merely because P0 translation invariants are green.
+
 ## 2026-10-20 P3 complete-patch guard and CI evidence
 
 - Code HEAD before this documentation commit: 41b3c8b7023267017c6051eeb4092f7e327b8706. PR #179 remains Draft/dirty; main and production untouched.
