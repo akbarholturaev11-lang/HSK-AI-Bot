@@ -292,3 +292,36 @@ Prevention: the frontend must verify **whole-set completeness** independently
 of any server-declared count, not just validity of individual source pointers.
 Reject a partial response as a whole; never publish mixed blank/localized
 course grammar. Keep source/graded payload bytes untouched.
+
+## Independent 136-context source reading: 2026-10-20
+
+The agent read all 136 unique grammar examples against the original nHSK2
+lesson source (48 affected lessons, including repeated checkpoint contexts),
+with each associated UZ/RU/TJ row from the source-hash-pinned canonical TSV.
+This is a first complete independent Chinese-context semantic pass, NOT
+native-speaker certification or device acceptance. The pass identified and
+fixed six locale cells across three contexts, in the canonical catalog only:
+
+- `G019` `你们太客气了，还拿这么多礼物来！`: `客气` in the
+  gift-receiving social context indicates excessive courtesy or trouble
+  taken, not simply the personality trait `kind`. UZ now refers to taking
+  trouble (`ovora bo‘libsizlar`) and Tajik to effort/trouble (`ташвиш
+  кашидаед`); the existing idiomatic Russian social response was retained.
+- `G023` `妈妈拿出了二十块钱，让小雪自己去买点儿吃的。`:
+  the causative request/instruction `让...自己去买` in this context does
+  not explicitly say `gave permission`. Replaced permission-only readings
+  in **UZ, RU, TJ** with the mother telling Xiaoxue to buy something to
+  eat by herself. Do not misinterpret every `让` as `permit`, `ask`, or
+  `force` in isolation; use the full subject/verb setting.
+- `G135` `你女儿今年有10岁了吧？`: clause-final `吧` is an
+  expectation/confirmation, not a neutral direct yes/no question and does
+  not prove the exact day the child turned ten. UZ now says the daughter
+  is probably ten this year (`bo‘lsa kerak, shundaymi?`). RU/TJ already
+  preserved confirmation and remain unchanged.
+
+`tests/test_i18n_canonical_grammar_catalog.py` binds these specific
+Chinese source contexts to the corrected meanings. Frozen lesson JSON,
+Chinese/pinyin, answers/grading and subscription checks remain untouched;
+full P0 and authenticated device/WebView QA must still be reconfirmed
+on the new HEAD. All 408 independent text cells were read in this pass,
+but semantic review should continue when new contextual evidence appears.
