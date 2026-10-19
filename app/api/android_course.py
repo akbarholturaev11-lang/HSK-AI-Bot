@@ -12,7 +12,6 @@ to look like ``android:<uuid>``, which already fits the shared pattern.
 from __future__ import annotations
 
 import asyncio
-import hashlib
 import json
 import logging
 import os
@@ -34,7 +33,6 @@ from app.api.desktop_course import (
     course_error_response,
     validated_course_payload,
 )
-from app.repositories.user_repo import UserRepository
 from app.services.android_course_service import AndroidCourseService
 from app.services.course_v3_dictionary import (
     dictionary_for_language,

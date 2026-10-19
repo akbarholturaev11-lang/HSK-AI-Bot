@@ -671,9 +671,6 @@ class VoicePracticeService:
         from app.services.entitlements.actions import SPEAKING_SESSION
         decision = await EntitlementEngine(self.session).check(user, SPEAKING_SESSION)
         paid = self._is_paid(user)
-        limit = decision.limit
-        used = decision.used
-
         # Kurs progressi: user o'z HSK bandida nechta darsni tugatgan. Mashq
         # sahifalari (ieroglif tanish / talaffuz / yodlash) kontentni o'rganilgan
         # darslar bilan cheklashi uchun ishlatiladi. Band mos kelmasa 0.

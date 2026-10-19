@@ -12,7 +12,6 @@ import time
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from types import SimpleNamespace
 from typing import Callable
 from urllib.parse import urlparse
 

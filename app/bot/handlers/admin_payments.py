@@ -38,7 +38,6 @@ async def admin_payment_approve_handler(callback: CallbackQuery, session):
         await callback.answer()
         return
     payment_repo = PaymentRepository(session)
-    user_repo = UserRepository(session)
     subscription_service = SubscriptionService(session)
     payment_notify_service = PaymentNotifyService(session)
 
@@ -168,7 +167,6 @@ async def admin_payment_reject_handler(callback: CallbackQuery, session):
         await callback.answer()
         return
     payment_repo = PaymentRepository(session)
-    user_repo = UserRepository(session)
     payment_notify_service = PaymentNotifyService(session)
 
     parts = callback.data.split(":")
@@ -187,6 +185,7 @@ async def admin_payment_reject_handler(callback: CallbackQuery, session):
         await callback.answer("Bu to'lov allaqachon ko'rib chiqilgan", show_alert=True)
         return
     if user and payment.plan_type != HSK30_UNLOCK_PLAN_TYPE:
+        user_repo = UserRepository(session)
         await user_repo.set_selected_plan_type(user, None)
         await PaymentReviewPreviewService(session).review(user, payment, approved=False)
     await session.commit()

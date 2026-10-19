@@ -15,7 +15,6 @@ import logging
 import os
 
 from sqlalchemy.engine import make_url
-from aiogram import Bot
 
 from app.config import settings
 from app.db.session import async_session_maker, engine, init_db

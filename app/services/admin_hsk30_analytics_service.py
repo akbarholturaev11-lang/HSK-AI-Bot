@@ -239,8 +239,6 @@ class AdminHsk30AnalyticsService:
             )
             if track_at is not None:
                 course_reached["track_activated"].add(telegram_id)
-        promo_users = course_reached["promo_shown"]
-        promo_cta_users = course_reached["promo_cta"]
         selected_level_users = course_reached["level_selected"]
         track_users = course_reached["track_activated"]
 

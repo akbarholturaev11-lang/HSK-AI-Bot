@@ -16,7 +16,6 @@ from app.bot.keyboards.release_feedback import (
     release_feedback_feature_keyboard,
     release_feedback_list_keyboard,
     release_feedback_panel_keyboard,
-    release_feedback_rating_keyboard,
     release_feedback_send_time_keyboard,
     release_feedback_stats_keyboard,
     release_feedback_test_rating_keyboard,
@@ -28,7 +27,6 @@ from app.config import settings
 from app.repositories.release_feedback_repo import (
     ReleaseFeedbackRepository,
     decode_languages,
-    encode_languages,
 )
 from app.repositories.user_repo import UserRepository
 from app.services.broadcast_translation_service import (

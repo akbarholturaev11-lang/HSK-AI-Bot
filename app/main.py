@@ -146,7 +146,6 @@ from app.services.course_hsk_exam_service import CourseHskExamService
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_challenge_service import CourseChallengeService
 from app.services.course_miniapp_access_service import (
-    COURSE_AI_PRACTICE_FEATURES,
     CourseMiniAppAccessService,
 )
 from app.services.course_access_policy_service import (
@@ -197,10 +196,8 @@ from app.services.admin_miniapp_service import (
     is_admin_hot_lead,
 )
 from app.services.admin_finance_stats_service import AdminFinanceStatsService
-from app.services.broadcast_translation_service import localized_broadcast_text_for_language
 from app.services.admin_broadcast_service import (
     AdminBroadcastService,
-    BROADCAST_FILTER_OPTIONS,
     parse_broadcast_filters,
     parse_button_config,
 )
@@ -2655,7 +2652,6 @@ async def v3_invite_payload(request: Request, lang: str = "uz"):
         active_count = await service.get_trial_activation_progress(user)
         joined_count = await service.referral_repo.count_by_referrer(user)
         referrals = await service.list_miniapp_referrals(user, timezone_offset_minutes=tz_offset)
-        bot_username = bot_username_value()
         from app.services.referral_service import public_apps_url
         link = public_apps_url(settings, user.referral_code, trial=True)
         full_lang, full_text = await service.build_trial_progress_text(user)
@@ -2867,10 +2863,6 @@ async def v3_course_lesson_unlock(request: Request):
         lesson_repo = CourseLessonRepository(session)
         lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
 
-        access = CourseMiniAppAccessService(session)
-        # Vaqtinchalik bonus (otziv 30 daqiqasi va h.k.) ham limitsiz hisoblanadi.
-        is_paid = access.has_unlimited_course_access(user)
-        access_policy = await CourseAccessPolicyService(session).get_policy()
         limit_status = await LessonAccessService(session).status(
             user, level=resolved_level, lesson_order=lesson_order,
         )
@@ -2934,7 +2926,6 @@ async def v3_course_lesson_complete(request: Request):
         payload = await request.json()
         lesson_order = int(payload.get("lesson_id") or payload.get("lesson_order") or 0)
         lesson_session_id = _checkout_text(payload.get("session_id"), 80) or None
-        access_ref = str(payload.get("access_ref") or "").strip()
         lesson_mistakes = payload.get("mistakes") if isinstance(payload.get("mistakes"), list) else []
         lesson_mistakes = [item for item in lesson_mistakes[:50] if isinstance(item, dict)]
     except (TypeError, ValueError):
@@ -2961,9 +2952,9 @@ async def v3_course_lesson_complete(request: Request):
         lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
 
         access = CourseMiniAppAccessService(session)
-        # Vaqtinchalik bonus (otziv 30 daqiqasi va h.k.) ham limitsiz hisoblanadi.
+        # Analitika uchun kengroq course accessni saqlaymiz; darsga ruxsatni
+        # esa yuqoridagi LessonAccessService yagona manbadan hal qiladi.
         is_paid = access.has_unlimited_course_access(user)
-        access_policy = await CourseAccessPolicyService(session).get_policy()
         progress_repo = CourseProgressRepository(session)
         progress = await progress_repo.get_by_user_id(user.id, for_update=True)
         if not progress:

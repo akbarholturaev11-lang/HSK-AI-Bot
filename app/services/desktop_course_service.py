@@ -28,9 +28,6 @@ from app.services.course_lesson_mistake_material_service import (
 )
 from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.entitlements.state import has_full_access, resolve_state
-from app.services.course_miniapp_access_service import (
-    CourseMiniAppAccessService,
-)
 from app.services.course_miniapp_analytics_service import (
     CourseMiniAppAnalyticsService,
 )
@@ -291,10 +288,7 @@ class DesktopCourseService:
             user,
             profile=profile,
         )
-        # Kontent qulfi uchun YAGONA predikat. Ilgari bu yerda tor
-        # `is_paid_user` turardi, Mini App esa kengrog'ini ishlatardi —
-        # shuning uchun referral yoki otziv bonusi olgan odam telefonda
-        # darsni ochardi, desktopda esa ocholmasdi.
+        # Darsga ruxsatni barcha klientlar uchun umumiy LessonAccessService hal qiladi.
         access_state = resolve_state(user)
         is_paid = has_full_access(access_state)
         data = self._read_json(
@@ -528,7 +522,6 @@ class DesktopCourseService:
         # `is_paid_user` turardi, Mini App esa kengrog'ini ishlatardi —
         # shuning uchun referral yoki otziv bonusi olgan odam telefonda
         # darsni ochardi, desktopda esa ocholmasdi.
-        is_paid = has_full_access(resolve_state(user))
         # No bot: every client shows the limit on its own screen, so the
         # learner is not also told in Telegram (owner decision 2026-09-29).
         limit_status = await LessonAccessService(self.session).status(
@@ -643,13 +636,9 @@ class DesktopCourseService:
             level,
             lesson_order,
         )
-        access = CourseMiniAppAccessService(self.session)
-        # Kontent qulfi uchun YAGONA predikat. Ilgari bu yerda tor
-        # `is_paid_user` turardi, Mini App esa kengrog'ini ishlatardi —
-        # shuning uchun referral yoki otziv bonusi olgan odam telefonda
-        # darsni ochardi, desktopda esa ocholmasdi.
+        # Analitika uchun barcha klientlarda bir xil kengaytirilgan kirishni qayd etamiz.
+        # Kontent qulfi uchun esa yagona LessonAccessService ishlaydi.
         is_paid = has_full_access(resolve_state(user))
-
         progress_repository = CourseProgressRepository(self.session)
         progress = await self._progress(user, for_update=True)
         completed = int(progress.completed_lessons_count or 0)
