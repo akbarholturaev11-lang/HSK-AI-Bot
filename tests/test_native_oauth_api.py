@@ -103,9 +103,7 @@ class _Base(unittest.IsolatedAsyncioTestCase):
 
     async def asyncSetUp(self):
         self.settings = _settings(**self.settings_overrides)
-        self.engine = create_async_engine(
-            "sqlite+aiosqlite:///:memory:", poolclass=StaticPool
-        )
+        await self._setup_engine()
         async with self.engine.begin() as connection:
             await connection.run_sync(Base.metadata.create_all)
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
@@ -121,6 +119,11 @@ class _Base(unittest.IsolatedAsyncioTestCase):
         )
         self.client = AsyncClient(
             transport=ASGITransport(app=app), base_url="http://oauth.test"
+        )
+
+    async def _setup_engine(self):
+        self.engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:", poolclass=StaticPool
         )
 
     async def asyncTearDown(self):
@@ -151,7 +154,8 @@ class _Base(unittest.IsolatedAsyncioTestCase):
             started = await service.start_link(
                 platform="android",
                 app_version="1.5.3",
-                installation_key=f"dev{telegram_id}".ljust(48, "b"),
+                installation_key=(INSTALLATION_KEY if telegram_id == 1001
+                                  else f"dev{telegram_id}".ljust(48, "b")),
             )
             await service.approve_link(
                 display_code=started["display_code"], telegram_id=telegram_id
@@ -169,6 +173,53 @@ class ProviderAvailabilityTests(_Base):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["providers"], ["google"])
         self.assertEqual(response.headers["Cache-Control"], "no-store")
+
+    async def test_miniapp_google_requires_the_browser_client_pair(self):
+        # Credential Manager configuration cannot complete a Mini App browser
+        # redirect. Discovery must not offer a card that can only fail later.
+        for client_id, client_secret, expected in (
+            ("", "", []),
+            ("222-desktop.apps.googleusercontent.com", "", []),
+            ("", "desktop-secret", []),
+            ("222-desktop.apps.googleusercontent.com", "desktop-secret", ["google"]),
+        ):
+            with self.subTest(client_id=bool(client_id), secret=bool(client_secret)):
+                self.settings.GOOGLE_DESKTOP_CLIENT_ID = client_id
+                self.settings.GOOGLE_DESKTOP_CLIENT_SECRET = client_secret
+                response = await self.client.get(
+                    "/api/v3/native-auth/providers?platform=miniapp"
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.json()["providers"], expected)
+                self.assertEqual(response.headers["Cache-Control"], "no-store")
+
+        # Existing Android native discovery keeps its independent audience.
+        self.settings.GOOGLE_DESKTOP_CLIENT_ID = ""
+        self.settings.GOOGLE_DESKTOP_CLIENT_SECRET = ""
+        response = await self.client.get(
+            "/api/v3/native-auth/providers?platform=android"
+        )
+        self.assertEqual(response.json()["providers"], ["google"])
+
+    async def test_miniapp_and_android_google_are_available_with_browser_only_configuration(self):
+        self.settings.GOOGLE_ANDROID_WEB_CLIENT_ID = ""
+        response = await self.client.get(
+            "/api/v3/native-auth/providers?platform=miniapp"
+        )
+        self.assertEqual(response.json()["providers"], ["google"])
+        response = await self.client.get(
+            "/api/v3/native-auth/providers?platform=android"
+        )
+        self.assertEqual(response.json()["providers"], ["google"])
+
+    async def test_android_browser_discovery_requires_complete_browser_pair_without_native_id(self):
+        self.settings.GOOGLE_ANDROID_WEB_CLIENT_ID = ""
+        for field in ("GOOGLE_DESKTOP_CLIENT_ID", "GOOGLE_DESKTOP_CLIENT_SECRET"):
+            original = getattr(self.settings, field)
+            setattr(self.settings, field, "")
+            response = await self.client.get("/api/v3/native-auth/providers?platform=android")
+            self.assertEqual(response.json()["providers"], [])
+            setattr(self.settings, field, original)
 
     async def test_apple_is_hidden_while_unconfigured(self):
         response = await self.client.get("/api/v3/native-auth/providers")
@@ -192,6 +243,21 @@ class UnconfiguredProviderTests(_Base):
 
 
 class OAuthStartTests(_Base):
+    async def test_browser_only_android_configuration_cannot_start_native_token_mode(self):
+        self.settings.GOOGLE_ANDROID_WEB_CLIENT_ID = ""
+        native = await self.client.post(
+            "/api/v3/native-auth/oauth/start", json=self._start_body()
+        )
+        self.assertEqual(native.status_code, 503)
+        self.assertEqual(native.json()["error"], "oauth_provider_unconfigured")
+        async with self.sessions() as session:
+            self.assertEqual((await session.execute(select(DesktopLinkRequest))).scalars().all(), [])
+        browser = await self.client.post(
+            "/api/v3/native-auth/oauth/start", json=self._start_body(mode="browser_redirect")
+        )
+        self.assertEqual(browser.status_code, 200)
+        self.assertIn("authorize_url", browser.json())
+
     async def test_native_mode_returns_a_nonce_and_no_authorize_url(self):
         response = await self.client.post(
             "/api/v3/native-auth/oauth/start", json=self._start_body()
@@ -218,6 +284,22 @@ class OAuthStartTests(_Base):
         self.assertIn("222-desktop.apps.googleusercontent.com", url)
         # The desktop client secret must never reach a URL.
         self.assertNotIn("desktop-secret", url)
+
+    async def test_android_google_browser_requires_confidential_web_client(self):
+        # Android browser Google code exchange uses the desktop/web client pair,
+        # never the native ID-token client; fail before reserving a link row.
+        self.settings.GOOGLE_DESKTOP_CLIENT_SECRET = ""
+        response = await self.client.post(
+            "/api/v3/native-auth/oauth/start",
+            json=self._start_body(platform="android", mode="browser_redirect"),
+        )
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json()["error"], "oauth_provider_unconfigured")
+        async with self.sessions() as session:
+            self.assertEqual(
+                (await session.execute(select(DesktopLinkRequest))).scalars().all(),
+                [],
+            )
 
     async def test_credential_manager_mode_is_android_and_google_only(self):
         for label, body in (
@@ -261,7 +343,7 @@ class OAuthAssertTests(_Base):
         )
         return response.json()
 
-    async def test_unknown_identity_is_told_to_use_telegram_first(self):
+    async def test_unknown_verified_identity_creates_account_without_returning_tokens(self):
         started = await self._start()
         with patch(
             "app.services.google_auth.verify_android_id_token",
@@ -276,10 +358,14 @@ class OAuthAssertTests(_Base):
                     "id_token": "t" * 64,
                 },
             )
-        self.assertEqual(response.status_code, 409)
-        self.assertEqual(
-            response.json()["error"], "oauth_telegram_account_required"
-        )
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("access_token", response.json())
+        self.assertNotIn("refresh_token", response.json())
+        async with self.sessions() as session:
+            identity = (await session.execute(select(UserIdentity))).scalars().one()
+            user = await session.get(User, identity.user_id)
+            self.assertIsNone(user.telegram_id)
+            self.assertNotIn(user.id, {1, 2})
 
     async def test_linked_identity_approves_the_row_without_returning_tokens(self):
         async with self.sessions() as session:
@@ -380,10 +466,10 @@ class OAuthAssertTests(_Base):
 
 
 class OAuthCallbackTests(_Base):
-    async def _browser_start(self):
+    async def _browser_start(self, platform="macos"):
         response = await self.client.post(
             "/api/v3/native-auth/oauth/start",
-            json=self._start_body(platform="macos", mode="browser_redirect"),
+            json=self._start_body(platform=platform, mode="browser_redirect"),
         )
         payload = response.json()
         async with self.sessions() as session:
@@ -416,6 +502,27 @@ class OAuthCallbackTests(_Base):
             self.assertNotIn(leaked, body)
         self.assertEqual(response.headers["Cache-Control"], "no-store")
         self.assertEqual(response.headers["Referrer-Policy"], "no-referrer")
+        self.assertIn('href="pomp-hsk-ai://oauth-return"', body)
+
+    async def test_android_google_browser_callback_reopens_app_without_tokens(self):
+        _, state = await self._browser_start(platform="android")
+        with patch(
+            "app.services.google_auth.exchange_code", return_value="id-token"
+        ), patch(
+            "app.services.google_auth.verify_desktop_id_token",
+            return_value=_verified(),
+        ):
+            response = await self.client.get(
+                "/api/v3/native-auth/oauth/callback/google",
+                params={"state": state, "code": "auth-code"},
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("pomp-hsk-ai://oauth-return", response.text)
+        self.assertIn('href="pomp-hsk-ai://oauth-return"', response.text)
+        self.assertIn("script-src 'sha256-", response.headers["Content-Security-Policy"])
+        for forbidden in ("id-token", "auth-code", state, "alice@example.com"):
+            self.assertNotIn(forbidden, response.text)
+        self.assertEqual(response.headers["Cache-Control"], "no-store")
 
     async def test_tampered_state_is_refused(self):
         payload, state = await self._browser_start()
@@ -428,6 +535,7 @@ class OAuthCallbackTests(_Base):
             )
         self.assertEqual(response.status_code, 200)
         self.assertIn("oauth_state_invalid", response.text)
+        self.assertNotIn("pomp-hsk-ai://oauth-return", response.text)
         exchange.assert_not_called()
 
     async def test_state_from_another_request_cannot_be_replayed(self):
@@ -455,13 +563,17 @@ class OAuthCallbackTests(_Base):
             )
         self.assertIn("desktop_link_consumed", second.text)
 
-    async def test_provider_cancellation_is_shown_without_touching_the_row(self):
+    async def test_provider_cancellation_terminates_its_verified_pending_row(self):
         payload, state = await self._browser_start()
         response = await self.client.get(
             "/api/v3/native-auth/oauth/callback/google",
             params={"state": state, "error": "access_denied"},
         )
         self.assertIn("oauth_cancelled", response.text)
+        async with self.sessions() as session:
+            row = await session.get(DesktopLinkRequest, payload["link_request_id"])
+            self.assertEqual(row.status, "failed")
+            self.assertEqual(row.link_failure_code, "oauth_cancelled")
 
 
 class IdentityManagementTests(_Base):
@@ -716,6 +828,21 @@ class MiniAppLinkTests(_Base):
             ).scalars().one()
         self.assertEqual(row.intent, "link")
         self.assertEqual(row.bind_user_id, 1)
+
+    async def test_miniapp_browser_start_refuses_android_only_configuration(self):
+        self.settings.GOOGLE_DESKTOP_CLIENT_ID = ""
+        self.settings.GOOGLE_DESKTOP_CLIENT_SECRET = ""
+        response = await self.client.post(
+            "/api/v3/native-auth/identities/link/start",
+            json=self._miniapp_body(),
+            headers={"X-Telegram-Init-Data": self._init_data()},
+        )
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json()["error"], "oauth_provider_unconfigured")
+        # Refuse before making a pending proof that cannot be completed.
+        async with self.sessions() as session:
+            rows = (await session.execute(select(DesktopLinkRequest))).scalars().all()
+        self.assertEqual(rows, [])
 
     async def test_a_miniapp_row_can_never_become_a_session(self):
         started = (
