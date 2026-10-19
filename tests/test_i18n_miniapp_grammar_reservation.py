@@ -182,6 +182,24 @@ assert.equal(result.grammar[0].examples[0].translation.ru,vals.ru);
 assert.equal(result.sections[0].cards[0].g.examples[0].translation.tj,vals.tj);
 assert.equal(JSON.stringify(original),untouched);
 assert.equal(env.P3_RESERVED_GRAMMAR,null);
+// A valid but incomplete server patch must not create a half-localized lesson.
+const partial=JSON.parse(JSON.stringify(patch));
+partial.display_translations.pop();
+env.P3_RESERVED_GRAMMAR=partial;
+assert.equal(env.applyReservedP3Grammar(original,"nhsk2",16),original);
+assert.equal(JSON.stringify(original),untouched);
+assert.equal(env.P3_RESERVED_GRAMMAR,null);
+// Extra non-grammar display paths must not replace a missing mirror.
+const missingMirror=JSON.parse(JSON.stringify(patch));
+missingMirror.display_translations[1].pointer=
+  "/sections/0/cards/1/g/examples/0/translation";
+const otherCard=JSON.parse(JSON.stringify(original));
+otherCard.sections[0].cards.push({type:"meaning_guess",g:{examples:[example]}});
+const originalOther=JSON.stringify(otherCard);
+env.P3_RESERVED_GRAMMAR=missingMirror;
+assert.equal(env.applyReservedP3Grammar(otherCard,"nhsk2",16),otherCard);
+assert.equal(JSON.stringify(otherCard),originalOther);
+assert.equal(env.P3_RESERVED_GRAMMAR,null);
 // Atomic fail-closed: a changed mirror Chinese prevents all mutations.
 const invalid=JSON.parse(JSON.stringify(patch));
 invalid.display_translations[1].zh="篡改";
