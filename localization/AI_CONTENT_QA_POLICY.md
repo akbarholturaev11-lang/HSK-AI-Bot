@@ -180,3 +180,36 @@ the original source still has an empty display map, and no assessed/Pro
 fields are exposed. Expected totals: 272 original display maps, 136 mirrored
 maps and 1,224 locale display values. Any new mapping failure must become a
 scoped regression test before an agent can call P3 released.
+
+## Completed P3 reviews must retain shared entitlement and explicit HTTP grants
+
+Root cause (2026-10-19): Mini App `review_only:true` checked signed
+Telegram identity and completed progress, but skipped the shared
+`LessonAccessService.status` check. Unlike native/Desktop, a blocked user
+or an account whose HSK 3.0 track is no longer entitled could reach
+the P3 display patch. Another browser-side path converted any response
+other than an explicit 401/403 into `allowed:true` even for HTTP 500 or
+malformed HTTP 200; its reserved patch was not cleared inside the
+completed-review helper before starting a new request.
+
+Fix: After signed identity, server-completed progress and lesson-order
+checks, call the **existing** `LessonAccessService.status(..., consume=False)`
+and fail with HTTP 403/no P3 patch if denied. Do not spend a quota slot on
+completed revisit. At the browser call site, clear stale reserved translations,
+accept **only** `response.ok && body.ok === true && body.allowed === true`,
+and propagate all other HTTP decisions as access errors. Retain legacy
+offline already-completed reading **only** for real rejected network/transport
+promises, and never adopt P3 while offline.
+
+Regression: `tests/test_i18n_miniapp_reservation_asgi.py` covers the
+read-only service decision, quota-free completed review, revoked/blocked
+denials with zero P3 data, signed auth and non-object JSON bodies.
+`tests/test_i18n_miniapp_grammar_reservation.py` executes JS response
+denial, malformed success, stale-patch clearing and offline fallback.
+These synthetic tests do not prove real payment/track configurations, devices,
+or production session policy. Repeat with real authenticated test accounts.
+
+Prevention: **progress proves completion, not entitlement**. No P3
+translation read path may skip the shared blocked/track/access gate.
+Only an explicit successful HTTP entitlement decision may authorize
+localized reading; non-network HTTP errors must never become offline grants.
