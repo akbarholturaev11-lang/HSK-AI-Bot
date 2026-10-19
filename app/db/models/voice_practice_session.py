@@ -11,7 +11,8 @@ class VoicePracticeSession(Base):
     __tablename__ = "voice_practice_sessions"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True)
-    user_telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    user_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=True)
+    user_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     role: Mapped[str] = mapped_column(String(24), nullable=False)
     level: Mapped[str] = mapped_column(String(24), nullable=False)
     language: Mapped[str] = mapped_column(String(8), nullable=False)
