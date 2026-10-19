@@ -479,3 +479,15 @@ code HEAD, so green CI for these new commits has NOT been established.
 Next: verify current GitHub Actions P0 + Backend actual job outcomes, run
 real authenticated client QA, finish Chinese-context review, then
 carefully reconcile PR conflicts and re-run release gates. No main/prod.
+
+## 2026-10-20 P3 complete-patch guard and CI evidence
+
+- Code HEAD before this documentation commit: 41b3c8b7023267017c6051eeb4092f7e327b8706. PR #179 remains Draft/dirty; main and production untouched.
+- Fix 1df63c4: Mini App JS now derives ALL originally blank grammar and genuine _grammar mirror paths from the loaded lesson; any missing, extra or wrong-card pointer rejects the entire P3 overlay without touching cached/graded source.
+- Tests aeefdc7 (partial/misplaced patch) and 3bb4456 (Node-runtime real source + server patch for all 48 lessons, 408 locale display targets). The latter is committed, but its GitHub Actions result is NOT confirmed green.
+- Direct GitHub source audit: 48 affected lessons, 272 root blank translation maps + 136 _grammar mirror maps = 408 expected patch rows. Repeated checkpoint lessons may have zero mirror cards.
+- Local Node 22 verified exact Git blob a90dfa1a07b585bcb236d85dc815612415417e8c: syntax, complete grant, missing mirror, wrong card, mismatched Chinese and source-cache immutability PASS. Prevention recorded in localization/AI_CONTENT_QA_POLICY.md at 41b3c8b.
+- Actions evidence: older P0 39280097210 @62672af and 39281706410 @34d3db0 SUCCESS. Backend run 39281476374 @abddd4b: targeted-tests job 118156968244 and all listed steps SUCCESS, including authenticated native P3 and Mini App ASGI gates; run header still in_progress when observed. P0 run 39283978059 @41b3c8b QUEUED at last check. No full-new-head CI claim.
+- Merge conflict still requires coherent reconciliation of main's account_identity.py, 0103–0108 migrations, nullable CourseMiniAppEvent.telegram_id, owner_clause event reads and analytics; no isolated partial cherry-pick or main merge.
+- NEXT: check exact-head P0 for 48-case JS test, fix failures, then native/Telegram WebView device E2E, old/Google/Apple/Free/Pro auth, independent 408-text semantic QA and safe identity-schema conflict resolution before merge.
+
