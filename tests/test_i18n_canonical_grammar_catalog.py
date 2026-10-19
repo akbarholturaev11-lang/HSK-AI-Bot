@@ -73,6 +73,20 @@ class CanonicalGrammarCatalogTests(unittest.TestCase):
         self.assertIn("боз ҳам бисёр мехоҳам", tajik)
         self.assertNotIn("рафтанам хеле мехоҳад", tajik)
 
+    def test_g051_russian_retains_observer_without_inventing_gender(self):
+        context = next(c for c in self.queue["contexts"] if c["review_id"] == "G051")
+        self.assertTrue(context["chinese_example"].startswith("我看网上说"))
+        russian = read_canonical_catalog(self.catalog_path)["G051"]["translations"]["ru"]
+        self.assertIn("Мне попадалось в интернете", russian)
+        self.assertNotIn("Я прочитал", russian)
+
+    def test_g109_uzbek_preserves_indefinite_one_book(self):
+        context = next(c for c in self.queue["contexts"] if c["review_id"] == "G109")
+        self.assertIn("一本中文书", context["chinese_example"])
+        uzbek = read_canonical_catalog(self.catalog_path)["G109"]["translations"]["uz"]
+        self.assertIn("bir kitob", uzbek)
+        self.assertNotIn("kitobni sotdi", uzbek)
+
     def test_context_hash_changes_with_source_rule_or_occurrence(self):
         original = context_source_sha256(self.first_context)
         mutations = []
