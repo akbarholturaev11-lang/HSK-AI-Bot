@@ -29,6 +29,12 @@ class DesktopLinkRequest(Base):
     installation_key_hash: Mapped[str] = mapped_column(String(64), nullable=False)
     platform: Mapped[str] = mapped_column(String(16), nullable=False)
     app_version: Mapped[str] = mapped_column(String(40), nullable=False)
+    language: Mapped[Optional[str]] = mapped_column(String(8), nullable=True)
+    referral_code: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    # Proof snapshots are deliberately not FKs: identity removal must not
+    # lock pending request rows in reverse order. Consumers revalidate them.
+    bind_session_id: Mapped[Optional[str]] = mapped_column(String(36), nullable=True)
+    approved_identity_id: Mapped[Optional[str]] = mapped_column(String(36), nullable=True)
     # How this row is approved. "telegram" is the bot confirmation flow;
     # "google"/"apple" are approved by a verified provider token. The Telegram
     # bot must never approve a non-telegram row and an OAuth callback must
@@ -83,7 +89,7 @@ class DesktopDevice(Base):
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False
     )
-    telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     installation_key_hash: Mapped[str] = mapped_column(
         String(64), unique=True, index=True, nullable=False
     )
