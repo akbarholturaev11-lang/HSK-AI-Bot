@@ -279,7 +279,7 @@ private fun Centered(content: @Composable () -> Unit) {
 private fun lessonHeading(card: LessonCard, section: String): String? {
     val listenTitle = stringResource(R.string.lesson_listen_and_choose)
     val repeatTitle = stringResource(R.string.lesson_repeat_after_teacher)
-    val pairsTitle = stringResource(R.string.lesson_match_pairs)
+    val pairsTitle = stringResource(R.string.hsk_course_match_pairs)
     return when (card) {
         is ChoiceCard -> card.title.ifBlank { if (card.kind == ChoiceKind.LISTENING) listenTitle else section }
         is PronunciationCard -> repeatTitle
@@ -933,7 +933,7 @@ private fun FooterBar(
     when {
         card is ChoiceCard -> Box(modifier = footer) {
             HskDepthButton(
-                text = stringResource(R.string.lesson_check),
+                text = stringResource(R.string.hsk_course_check),
                 color = PompColors.Cinnabar,
                 onClick = onCheckChoice,
                 enabled = selectedChoice != null,
@@ -988,7 +988,7 @@ private fun FeedbackPanel(
                     modifier = Modifier.size(30.dp),
                 )
                 Text(
-                    text = stringResource(if (answer.isCorrect) R.string.lesson_correct else R.string.lesson_wrong),
+                    text = stringResource(if (answer.isCorrect) R.string.hsk_course_test_exam_tf_true else R.string.hsk_course_test_exam_tf_false),
                     fontSize = 22.sp,
                     lineHeight = 28.sp,
                     fontWeight = FontWeight.Bold,

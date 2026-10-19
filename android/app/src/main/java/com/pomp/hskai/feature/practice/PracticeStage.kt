@@ -93,7 +93,7 @@ internal fun PracticeCheckFooter(
 ) {
     Box(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp + bottomInset)) {
         HskDepthButton(
-            text = stringResource(R.string.lesson_check),
+            text = stringResource(R.string.hsk_course_check),
             color = PompColors.Cinnabar,
             onClick = onCheck,
             enabled = enabled,
@@ -136,7 +136,7 @@ internal fun PracticeFeedbackPanel(
                     modifier = Modifier.size(30.dp),
                 )
                 Text(
-                    text = stringResource(if (isCorrect) R.string.lesson_correct else R.string.lesson_wrong) + verdictSuffix,
+                    text = stringResource(if (isCorrect) R.string.hsk_course_test_exam_tf_true else R.string.hsk_course_test_exam_tf_false) + verdictSuffix,
                     fontSize = 22.sp,
                     lineHeight = 28.sp,
                     fontWeight = FontWeight.Bold,

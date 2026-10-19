@@ -258,7 +258,7 @@ private fun NewWordInfo(
                     )
                 }
                 Text(
-                    text = stringResource(R.string.lesson_listen),
+                    text = stringResource(R.string.hsk_course_listen),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     color = PompColors.CinnabarDark,
@@ -491,7 +491,7 @@ internal fun ChoiceCardMaterial(
         CardTitle(card.title)
         when (card.kind) {
             ChoiceKind.LISTENING -> {
-                Text(text = stringResource(R.string.lesson_listen_and_choose), style = MaterialTheme.typography.titleLarge, color = PompColors.Ink)
+                Text(text = stringResource(R.string.hsk_course_listen_and_choose), style = MaterialTheme.typography.titleLarge, color = PompColors.Ink)
                 // The pinyin of what is being said used to sit here whenever the
                 // learner had pinyin switched on — which is the answer, written out
                 // above the options. The Mini App shows the audio button and nothing
@@ -775,7 +775,7 @@ private fun GapBuilder(
 
         Spacer(Modifier.height(20.dp))
         PrimaryAction(
-            text = stringResource(R.string.lesson_check),
+            text = stringResource(R.string.hsk_course_check),
             enabled = !isAnswered && filled.size == plan.blanks.size,
             onClick = {
                 val built = card.answerTokens.toMutableList()
@@ -866,7 +866,7 @@ private fun TokenBuilder(
         }
         Spacer(Modifier.height(20.dp))
         PrimaryAction(
-            text = stringResource(R.string.lesson_check),
+            text = stringResource(R.string.hsk_course_check),
             enabled = !isAnswered && chosen.isNotEmpty(),
             onClick = { onSubmit(chosen.map { tokens[it] }) },
         )

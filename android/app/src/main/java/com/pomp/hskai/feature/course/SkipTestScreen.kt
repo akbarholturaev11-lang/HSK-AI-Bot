@@ -229,7 +229,7 @@ private fun SkipTestQuestion(
         }
         HskPrimaryButton(
             text = if (state.isLastQuestion) {
-                stringResource(R.string.practice_finish)
+                stringResource(R.string.hsk_course_mistakes_page_finish)
             } else {
                 stringResource(R.string.lesson_next)
             },
