@@ -43,6 +43,7 @@ from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_today_service import CourseTodayService
 from app.services.course_track_service import CourseTrackError, CourseTrackService
 from app.services.course_v3_parts import total_parts
+from app.services.account_identity import owner_clause
 from app.services.course_p3_grammar_localization import apply_native_grammar_locales
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.hsk30_feature_service import Hsk30FeatureService
@@ -462,7 +463,7 @@ class DesktopCourseService:
             await CourseMiniAppAnalyticsService(self.session).record_server_event(
                 event_name="course_track_switched",
                 user_id=int(user.id),
-                telegram_id=int(user.telegram_id),
+                telegram_id=user.telegram_id,
                 source="desktop_course_track",
                 level=after_level,
                 payload={
@@ -486,7 +487,7 @@ class DesktopCourseService:
             await CourseMiniAppAnalyticsService(self.session).record_server_event(
                 event_name="hsk30_promo_shown",
                 user_id=int(user.id),
-                telegram_id=int(user.telegram_id),
+                telegram_id=user.telegram_id,
                 source="desktop_course_track",
                 level=str(getattr(user, "level", "") or ""),
                 payload={"shown_count": int(result.get("shown_count") or 0)},
@@ -606,7 +607,7 @@ class DesktopCourseService:
 
         existing_result = await self.session.execute(
             select(CourseMiniAppEvent).where(
-                CourseMiniAppEvent.telegram_id == int(user.telegram_id),
+                owner_clause(CourseMiniAppEvent, user, telegram_column="telegram_id"),
                 CourseMiniAppEvent.event_name == "lesson_completed",
                 CourseMiniAppEvent.dedupe_key == event_dedupe_key,
             )
@@ -786,7 +787,7 @@ class DesktopCourseService:
         persisted_event = (
             await self.session.execute(
                 select(CourseMiniAppEvent.id).where(
-                    CourseMiniAppEvent.telegram_id == int(user.telegram_id),
+                    owner_clause(CourseMiniAppEvent, user, telegram_column="telegram_id"),
                     CourseMiniAppEvent.event_name == "lesson_completed",
                     CourseMiniAppEvent.dedupe_key == event_dedupe_key,
                 )
