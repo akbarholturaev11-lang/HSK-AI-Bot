@@ -71,7 +71,7 @@ class MiniAppP3ReservationTests(unittest.TestCase):
 
     def test_miniapp_does_not_change_prefetch_or_cached_json_paths(self):
         html = HTML.read_text(encoding="utf-8")
-        self.assertIn("p3-grammar-reservation.js?v=20261019-p3-1", html)
+        self.assertIn("p3-grammar-reservation.js?v=20261019-p3-2", html)
         self.assertEqual(len(html.split("\n")), 8712)
         self.assertIn("fetch(lessonDataUrl(lv,n),", html)
         self.assertIn("LESSON_DATA_CACHE[key]=d;", html)
@@ -83,6 +83,7 @@ class MiniAppP3ReservationTests(unittest.TestCase):
         end = html.index("function handleLessonStartDenied(", start)
         fragment = html[start:end]
         self.assertIn('P3_RESERVED_GRAMMAR=null;', fragment)
+        self.assertIn('return reserveCompletedP3Grammar(l);', fragment)
         self.assertIn('P3_RESERVED_GRAMMAR=d.p3_grammar||null;', fragment)
         self.assertIn('if(!r.ok||!d.ok||d.allowed===false)', fragment)
         self.assertLess(fragment.index('if(!r.ok||!d.ok||d.allowed===false)'),
