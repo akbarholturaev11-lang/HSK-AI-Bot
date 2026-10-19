@@ -129,3 +129,38 @@ values or protected lesson content**. No public/Pro pack or file is generated,
 and no app/runtime/API code is modified. This is an integrity proof **only**:
 semantic language approval, paid-content/auth boundaries, and real-device
 regressions still require separate review. P3 runtime remains NOT STARTED.
+
+## Prepare the first real editor worksheet — HSK 3.0 Level 2, lesson 16
+
+This is an **editor-only local action**; work in a private, access-controlled
+folder outside the Git checkout. The first affected source,
+`app/static/course_v3_data/nhsk2/lesson_16.json`, has **six** blank grammar
+example translation maps (18 UZ/RU/TJ text cells).
+
+```bash
+python scripts/i18n_grammar_editor_workspace.py \
+  --track nhsk2 --lesson 16 \
+  --private-dir /private/p3-lesson16-new-worksheet
+```
+
+The destination directory **must not exist yet**, and its parent must exist
+outside the repository. The generator creates a private `worksheet.json`
+containing exactly the six original grammar-example Chinese sentences,
+the corresponding JSON pointers and original Git blob SHA. It also creates
+`editor_draft.json` with six matching UZ/RU/TJ **empty values**.
+
+The blank draft is *intentionally rejected* by the validator until a
+translator writes all three genuine text values for each pointer.
+
+```bash
+python scripts/i18n_editor_translation_draft.py \
+  --draft /private/p3-lesson16-new-worksheet/editor_draft.json
+```
+
+The directory is created with private (0700) permissions and both files are
+created 0600 with exclusive create, never overwritten. No lesson JSON is
+changed; the CLI prints **counts only**, not the Chinese example sentences,
+answers or draft translations. Do not commit, upload, or share the worksheet
+as a public lesson/course/CI artifact. Source context is for authorized
+human language reviewers only. Structural validation and in-memory preview
+integrity still require separate editorial signoff; P3 runtime NOT STARTED.

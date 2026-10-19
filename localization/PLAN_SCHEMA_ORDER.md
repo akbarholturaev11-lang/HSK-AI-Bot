@@ -1658,3 +1658,7 @@ Keep GitHub's branch current without force-resetting unrelated user work.
   with positive/adversarial synthetic payloads in P0, no runtime adapter,
   no lesson source writes. Human translation approval/entitlement/manual
   QA still pending; P3 runtime NOT STARTED.
+
+### P3 HSK 3.0 Level 2 lesson-16 human worksheet pilot (2026-10-19)
+
+- New private-only CLI `scripts/i18n_grammar_editor_workspace.py`: safely select a canonical existing lesson and ONLY original already-empty UZ/RU/TJ grammar-example display maps. Produce an editor worksheet with Chinese grammar-example sentence/pinyin and original Git blob SHA, plus separate blank editor draft with six JSON pointers for nhsk2 lesson 16 (18 human-translation cells). Files stay outside checkout (private 0700/0600), no overwrite/answer/Pro disclosures to public CI or CLI. Blank draft must FAIL existing validator until authored. P0 tests include real lesson-16 coverage, safe synthetics and source immutability. Do not mistake worksheet setup for translation quality approval or completed content; runtime remains NOT STARTED.

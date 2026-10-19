@@ -1,5 +1,11 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## P3 first real private grammar editor worksheet (2026-10-19)
+
+- Added `scripts/i18n_grammar_editor_workspace.py` for the first affected `nhsk2/lesson_16.json`: creates exactly **6** Chinese grammar-example context records and a separate matching **6-field / 18-empty-locale** editor draft, pinned to the unchanged original lesson's Git blob SHA. Both artifacts are **local/private only**, under an explicitly new folder **outside the repository**, 0700 folder / 0600 files, no overwrites. The draft intentionally fails validation until UZ/RU/TJ text is authored and reviewed. CLI emits only structural counts; it cannot export answer options, grade tokens, Pro flags or lesson packs.
+- Added `tests/test_i18n_grammar_editor_workspace.py` with real lesson 16 SHA/pointer coverage, private file permissions, answer redaction, synthetic context, overwrite/public-folder/invalid-locale rejection and original source byte invariance. Included in P0 CI. Instructions added to `localization/reviews/P3_EDITOR_DRAFT_SCHEMA.md`.
+- Existing **48 affected nhsk2 lessons / 272 empty maps / 816 locale values** remain unmodified/unapproved. No source JSON changes, no P3 runtime or public client bundles; human review still required. Prior code `6c725a6` GitHub Actions had no runs, and CI for this commit must be verified independently. PR #179 remains Draft, `main` and production unchanged.
+
 ## P3 preview full-tree integrity proof, without editing lessons (2026-10-19)
 
 - Added `scripts/i18n_editor_preview_integrity.py`: a **private, in-memory source-diff guard** for approved UZ/RU/TJ editor drafts. Runs existing SHA-pinned `_validate` and, for any proposed preview, first enforces exact expected strings on whitelisted previously empty locale maps. It restores only those approved display fields on a private copy, then compares the entire remainder of the JSON **type-sensitively**, including array order, dictionary shapes, `correct_index`, `options`, `reverse_builder` tokens, grading booleans and embedded Pro/lock flags. Any other alteration is fail-closed.
