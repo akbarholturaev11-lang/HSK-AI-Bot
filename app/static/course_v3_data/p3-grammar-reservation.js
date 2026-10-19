@@ -31,3 +31,13 @@ function applyReservedP3Grammar(lesson,level,number){
   }
   return out;
 }
+
+/* Read-only grammar copy for already COMPLETED lessons only. Server checks
+   signed Telegram initData and completed progress; no limit consumption. */
+function reserveCompletedP3Grammar(l){
+  return _apiPost("/api/v3/lesson/start",{lesson_id:l.n,review_only:true})
+    .then(function(r){return r.json().catch(function(){return{}}).then(function(d){
+      if(r.ok&&d.ok&&d.allowed===true)P3_RESERVED_GRAMMAR=d.p3_grammar||null;
+      return {ok:true,allowed:true};
+    })}).catch(function(){return {ok:true,allowed:true}});
+}

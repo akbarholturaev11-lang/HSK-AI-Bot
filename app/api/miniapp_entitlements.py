@@ -208,6 +208,21 @@ def create_miniapp_entitlements_router(
             level = content_level(user.level)
             progress = await CourseProgressRepository(session).get_by_user_id(user.id, for_update=True)
             completed = int(progress.completed_lessons_count or 0) if progress and progress.level == level else 0
+            # Completed lessons may be revisited without re-consuming a
+            # limited free lesson. This read-only localization path requires
+            # the same signed identity and server-stored completed progress.
+            if payload.get("review_only") is True:
+                if level != "nhsk2" or order < 1 or order > completed or order > total_parts(level):
+                    return JSONResponse(
+                        status_code=403,
+                        content={"ok": False, "error": "course_lesson_not_unlocked"},
+                        headers={"Cache-Control": "no-store"},
+                    )
+                localized = miniapp_reserved_grammar_patch(level=level, lesson_order=order)
+                response = {"ok": True, "allowed": True}
+                if localized is not None:
+                    response["p3_grammar"] = localized
+                return JSONResponse(content=response, headers={"Cache-Control": "no-store"})
             if order < 1 or order > total_parts(level) or order > completed + 1:
                 return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"})
             result = await LessonAccessService(session).status(
