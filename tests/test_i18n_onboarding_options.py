@@ -87,12 +87,14 @@ class OnboardingOptionsTests(unittest.TestCase):
     def test_android_notification_strings_match_exact_native_fallbacks(self):
         native = (ROOT / "android/app/src/main/java/com/pomp/hskai/feature/onboarding/OnboardingScreen.kt").read_text(
             encoding="utf-8")
+        primer = (ROOT / "android/app/src/main/java/com/pomp/hskai/feature/onboarding/NotificationPrimerScreen.kt").read_text(
+            encoding="utf-8")
         parts = {
             "uz": native.split('"uz" -> OnboardingCopy(', 1)[1].split(")", 1)[0],
             "tj": native.split('"tg", "tj" -> OnboardingCopy(', 1)[1].split(")", 1)[0],
             "ru": native.split("else -> OnboardingCopy(", 1)[1].split(")", 1)[0],
         }
-        lookups = native.split("private fun OnboardingCopy.withBundledCatalog(", 1)[1].split(
+        lookups = native.split("fun OnboardingCopy.withBundledCatalog(", 1)[1].split(
             "\n@Composable", 1)[0]
         for field, name in NOTIFICATIONS.items():
             expected = (
@@ -109,6 +111,8 @@ class OnboardingOptionsTests(unittest.TestCase):
                 )
         self.assertIn("config.setLocale(Locale.forLanguageTag(canonicalLanguage(language)))", native)
         self.assertIn("}.getOrDefault(this)", native)
+        self.assertIn("OnboardingCopy.forLanguage(language).withBundledCatalog(context, language)", primer)
+        self.assertIn("val context = LocalContext.current", primer)
 
 
     def test_android_17_reviewed_option_resources_used_by_compose(self):

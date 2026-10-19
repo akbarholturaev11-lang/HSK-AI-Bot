@@ -307,10 +307,10 @@ private val goals = listOf(
 )
 
 /**
- * Bundle only the 23 labels with exact UZ/RU/TJ source parity.
+ * Bundle only labels with exact UZ/RU/TJ source parity.
  * Android-specific wording stays in OnboardingCopy.forLanguage as fallback.
  */
-private fun OnboardingCopy.withBundledCatalog(context: Context, language: String): OnboardingCopy {
+internal fun OnboardingCopy.withBundledCatalog(context: Context, language: String): OnboardingCopy {
     return runCatching {
         val config = Configuration(context.resources.configuration)
         config.setLocale(Locale.forLanguageTag(canonicalLanguage(language)))

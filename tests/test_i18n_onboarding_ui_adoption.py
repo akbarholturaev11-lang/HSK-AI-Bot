@@ -103,7 +103,7 @@ class OnboardingCourseCatalogTests(unittest.TestCase):
             for field, key in fields.items():
                 with self.subTest(locale=locale, field=field):
                     self.assertEqual(values[field], catalog["onboarding." + key])
-        lookups = native.split("private fun OnboardingCopy.withBundledCatalog(", 1)[1].split(
+        lookups = native.split("fun OnboardingCopy.withBundledCatalog(", 1)[1].split(
             "\n@Composable", 1)[0]
         for field, key in fields.items():
             resource_key = "hsk_course_onboarding_" + re.sub(
