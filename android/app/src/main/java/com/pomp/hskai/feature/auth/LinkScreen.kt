@@ -35,7 +35,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -78,8 +77,8 @@ import com.pomp.hskai.core.i18n.AppLanguage
  * build or deployment without OAuth credentials shows a Telegram-only screen
  * rather than a button that fails when tapped.
  *
- * Telegram approval needs no typed code. An optional invitation code is
- * separate signup metadata and never changes account ownership.
+ * Invitation attribution comes from the launch link and stays outside this
+ * screen; signing in must not ask the learner to type a code.
  */
 @Composable
 fun LinkScreen(
@@ -93,7 +92,6 @@ fun LinkScreen(
     onBrowserUrlOpened: () -> Unit = {},
     onTelegramUrlOpened: () -> Unit = {},
     onDismissWaiting: () -> Unit = {},
-    onReferralCodeChanged: (String) -> Unit = {},
 ) {
     val context = LocalContext.current
     // Google and Apple use a Custom Tab. Browser return reopens the app;
@@ -152,19 +150,6 @@ fun LinkScreen(
                     onDismiss = onDismissWaiting,
                 )
             } else {
-                OutlinedTextField(
-                    value = state.referralCode,
-                    onValueChange = onReferralCodeChanged,
-                    label = { Text(stringResource(R.string.auth_referral_code)) },
-                    supportingText = {
-                        Text(stringResource(if (state.referralInvalid) R.string.auth_referral_invalid else R.string.auth_referral_hint))
-                    },
-                    isError = state.referralInvalid,
-                    singleLine = true,
-                    enabled = state.busyProvider == null && !state.isRequestingCode,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                Spacer(Modifier.height(12.dp))
                 ProviderCards(
                     state = state,
                     onContinueWithTelegram = onContinueWithTelegram,

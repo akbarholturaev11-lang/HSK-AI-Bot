@@ -1,8 +1,6 @@
 package com.pomp.hskai.feature.auth
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.performTextInput
-import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -72,30 +70,31 @@ class LinkScreenProviderTest {
     }
 
     @Test
-    fun invitationFieldIsOptionalAndReportsExactPayload() {
-        var code = ""
+    fun invitationCodeStaysOutOfSignInScreen() {
         compose.setContent {
             PompHskAiTheme {
                 LinkScreen(
-                    state = LinkUiState(providers = listOf(AuthProvider.GOOGLE)),
-                    onReferralCodeChanged = { code = it },
+                    state = LinkUiState(providers = listOf(AuthProvider.GOOGLE), referralCode = "ra_abcdef12"),
                 )
             }
         }
         compose.onNodeWithText(strings.getString(R.string.auth_referral_code))
-            .performScrollTo().performTextInput("ra_abcdef12")
-        assertEquals("ra_abcdef12", code)
+            .assertDoesNotExist()
+        compose.onNodeWithText(strings.getString(R.string.auth_continue_google_short))
+            .assertIsDisplayed()
     }
 
     @Test
-    fun malformedInvitationHasLocalizedActionableFeedback() {
+    fun malformedInvitationDoesNotBlockProviderChoices() {
         compose.setContent {
             PompHskAiTheme {
                 LinkScreen(state = LinkUiState(referralCode = "bad", referralInvalid = true))
             }
         }
         compose.onNodeWithText(strings.getString(R.string.auth_referral_invalid))
-            .performScrollTo().assertIsDisplayed()
+            .assertDoesNotExist()
+        compose.onNodeWithText(strings.getString(R.string.auth_continue_telegram))
+            .assertIsDisplayed()
     }
 
     @Test

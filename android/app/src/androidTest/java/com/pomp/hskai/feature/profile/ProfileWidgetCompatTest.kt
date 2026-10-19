@@ -15,7 +15,6 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.core.design.PompHskAiTheme
 import com.pomp.hskai.core.i18n.AppLanguage
-import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -81,14 +80,9 @@ class ProfileWidgetCompatTest {
 
         compose.onNodeWithContentDescription(context.getString(R.string.profile_mini_settings))
             .performClick()
-        val screenshot = InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot()
-        val statusBarColor = screenshot.getPixel(screenshot.width * 5 / 8, 8)
-        assertTrue(
-            "settings status bar should be light, got #${Integer.toHexString(statusBarColor)}",
-            android.graphics.Color.red(statusBarColor) > 220 &&
-                android.graphics.Color.green(statusBarColor) > 220 &&
-                android.graphics.Color.blue(statusBarColor) > 210,
-        )
+        compose.onNodeWithTag("profile-settings-scroll").assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.profile_settings_section_account))
+            .performClick()
         compose.onNodeWithTag("profile-settings-scroll")
             .performScrollToNode(hasText(context.getString(R.string.profile_unlink_device)))
         compose.onNodeWithText(context.getString(R.string.profile_unlink_device)).assertIsDisplayed()

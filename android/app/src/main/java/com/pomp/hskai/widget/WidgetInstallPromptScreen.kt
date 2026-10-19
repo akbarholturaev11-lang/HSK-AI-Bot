@@ -326,21 +326,20 @@ fun WidgetInstallPromptScreen(
                 }
             }
 
-            TextButton(
-                onClick = onDismiss,
-                enabled = !requesting,
-                modifier = Modifier.padding(top = 8.dp),
-            ) {
-                Text(
-                    text = stringResource(
-                        if (installed) R.string.widget_setup_done
-                        else R.string.widget_prompt_not_now
-                    ),
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 0.6.sp,
-                )
+            if (!installed) {
+                TextButton(
+                    onClick = onDismiss,
+                    enabled = !requesting,
+                    modifier = Modifier.padding(top = 8.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.widget_prompt_not_now),
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 0.6.sp,
+                    )
+                }
             }
         }
     }

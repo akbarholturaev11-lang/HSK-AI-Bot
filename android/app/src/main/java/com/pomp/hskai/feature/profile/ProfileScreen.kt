@@ -57,7 +57,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -197,11 +196,7 @@ fun ProfileScreen(
     }
     var profileHsk30BookOpen by remember { mutableStateOf(false) }
     var profileHsk30LevelOpen by remember { mutableStateOf(false) }
-    var appearancePickerOpen by remember { mutableStateOf(false) }
     var identitiesOpen by remember { mutableStateOf(false) }
-    var notificationsOpen by remember { mutableStateOf(false) }
-    var notificationDetailOpen by remember { mutableStateOf(false) }
-    var privacyOpen by remember { mutableStateOf(false) }
     val context = LocalContext.current
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         // A provider/browser round trip must not cancel the active link proof.
@@ -325,8 +320,8 @@ fun ProfileScreen(
                 settingsOpen = false
                 profileHsk30BookOpen = true
             },
-            onOpenAppearance = { settingsOpen = false; appearancePickerOpen = true },
-            onOpenNotifications = { settingsOpen = false; notificationsOpen = true },
+            onSetThemeMode = { mode -> scope.launch { appSettings.setThemeMode(mode) } },
+            onToggleNotifications = onToggleNotifications,
             widgetInstalled = widgetInstalled,
             onOpenWidget = {
                 widgetInstalled = WidgetScheduler.hasWidgets(context)
@@ -353,7 +348,13 @@ fun ProfileScreen(
                 identitiesOpen = true
                 onLoadIdentities()
             },
-            onOpenPrivacy = { settingsOpen = false; privacyOpen = true },
+            onTerms = { settingsOpen = false; onOpenSupport(BuildConfig.API_ORIGIN.trimEnd('/') + "/terms") },
+            onPrivacyPolicy = { settingsOpen = false; onOpenSupport(BuildConfig.API_ORIGIN.trimEnd('/') + "/privacy") },
+            onDeleteAccount = { settingsOpen = false; onRequestAccountDeletion() },
+            onPermissions = {
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}"))
+                runCatching { context.startActivity(intent) }
+            },
             onLogout = { settingsOpen = false; onLogout() },
             onUnlinkDevice = { settingsOpen = false; onUnlinkDevice() },
         )
@@ -411,50 +412,6 @@ fun ProfileScreen(
         )
     }
 
-    if (notificationsOpen) {
-        NotificationsCategoriesSheet(
-            enabled = notificationsEnabled,
-            onOpenStudy = {
-                notificationsOpen = false
-                notificationDetailOpen = true
-            },
-            onDismiss = { notificationsOpen = false },
-        )
-    }
-
-    if (notificationDetailOpen) {
-        StudyReminderSettingsSheet(
-            enabled = notificationsEnabled,
-            onToggle = onToggleNotifications,
-            onDismiss = { notificationDetailOpen = false },
-        )
-    }
-
-    if (privacyOpen) {
-        PrivacySecuritySheet(
-            onTerms = {
-                privacyOpen = false
-                onOpenSupport(BuildConfig.API_ORIGIN.trimEnd('/') + "/terms")
-            },
-            onPrivacyPolicy = {
-                privacyOpen = false
-                onOpenSupport(BuildConfig.API_ORIGIN.trimEnd('/') + "/privacy")
-            },
-            onDeleteAccount = {
-                privacyOpen = false
-                onRequestAccountDeletion()
-            },
-            onPermissions = {
-                val intent = Intent(
-                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                    Uri.parse("package:${context.packageName}"),
-                )
-                runCatching { context.startActivity(intent) }
-            },
-            onDismiss = { privacyOpen = false },
-        )
-    }
-
     if (accountDeletion.isOpen) {
         AccountDeletionDialog(
             state = accountDeletion,
@@ -468,16 +425,6 @@ fun ProfileScreen(
         )
     }
 
-    if (appearancePickerOpen) {
-        AppearancePicker(
-            current = themeMode,
-            onPick = { mode ->
-                scope.launch { appSettings.setThemeMode(mode) }
-                appearancePickerOpen = false
-            },
-            onDismiss = { appearancePickerOpen = false },
-        )
-    }
 }
 
 @Composable
@@ -566,19 +513,17 @@ private fun ProfileHero(
                 ?: account.displayName.takeIf { it.isNotBlank() }
                 ?: profile?.user?.telegramUsername?.takeIf { it.isNotBlank() }
                 ?: "HSK AI"
-            Row(
+            Column(
                 modifier = Modifier.padding(start = 12.dp).weight(1f),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(5.dp),
             ) {
                 Text(
                     text = nickname,
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
                     color = PompColors.Ink,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f),
                 )
                 AccessPill(
                     isPaid = profile?.subscription?.isPaid == true || account.isPaid,
@@ -776,6 +721,14 @@ private fun LevelLeaguePill(level: String, league: String) {
     }
 }
 
+private enum class ProfileSettingsPage { ROOT, LEARNING, APP, ACCOUNT, APPEARANCE, NOTIFICATIONS, PRIVACY }
+
+private fun parentSettingsPage(page: ProfileSettingsPage): ProfileSettingsPage = when (page) {
+    ProfileSettingsPage.APPEARANCE, ProfileSettingsPage.NOTIFICATIONS -> ProfileSettingsPage.APP
+    ProfileSettingsPage.PRIVACY -> ProfileSettingsPage.ACCOUNT
+    else -> ProfileSettingsPage.ROOT
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ProfileSettingsScreen(
@@ -790,8 +743,8 @@ private fun ProfileSettingsScreen(
     onDismiss: () -> Unit,
     onOpenLanguage: () -> Unit,
     onOpenCourseVersion: () -> Unit,
-    onOpenAppearance: () -> Unit,
-    onOpenNotifications: () -> Unit,
+    onSetThemeMode: (AppThemeMode) -> Unit,
+    onToggleNotifications: (Boolean) -> Unit,
     widgetInstalled: Boolean,
     onOpenWidget: () -> Unit,
     onOpenGoal: () -> Unit,
@@ -800,14 +753,21 @@ private fun ProfileSettingsScreen(
     shakeToReport: Boolean,
     onSetShakeToReport: (Boolean) -> Unit,
     onOpenAccount: () -> Unit,
-    onOpenPrivacy: () -> Unit,
+    onTerms: () -> Unit,
+    onPrivacyPolicy: () -> Unit,
+    onDeleteAccount: () -> Unit,
+    onPermissions: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
 ) {
     val supportUrl = state.profile?.supportUrl.orEmpty()
     var confirmUnlink by remember { mutableStateOf(false) }
+    var page by remember { mutableStateOf(ProfileSettingsPage.ROOT) }
     Dialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = {
+            if (page == ProfileSettingsPage.ROOT) onDismiss()
+            else page = parentSettingsPage(page)
+        },
         properties = DialogProperties(
             usePlatformDefaultWidth = false,
             decorFitsSystemWindows = false,
@@ -820,8 +780,8 @@ private fun ProfileSettingsScreen(
                 dialogWindow.statusBarColor = android.graphics.Color.TRANSPARENT
                 dialogWindow.navigationBarColor = android.graphics.Color.TRANSPARENT
                 WindowCompat.getInsetsController(dialogWindow, view).apply {
-                    isAppearanceLightStatusBars = true
-                    isAppearanceLightNavigationBars = true
+                    isAppearanceLightStatusBars = !PompColors.IsDark
+                    isAppearanceLightNavigationBars = !PompColors.IsDark
                 }
             }
             onDispose { }
@@ -837,7 +797,10 @@ private fun ProfileSettingsScreen(
                         color = PompColors.CardSurface,
                         shape = CircleShape,
                         border = BorderStroke(1.dp, PompColors.Divider),
-                        modifier = Modifier.size(48.dp).clickable(role = Role.Button, onClick = onDismiss),
+                        modifier = Modifier.size(48.dp).clickable(role = Role.Button) {
+                            if (page == ProfileSettingsPage.ROOT) onDismiss()
+                            else page = parentSettingsPage(page)
+                        },
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
@@ -850,18 +813,28 @@ private fun ProfileSettingsScreen(
                     }
                     Column(Modifier.weight(1f)) {
                         Text(
-                            stringResource(R.string.profile_mini_settings),
+                            stringResource(when (page) {
+                                ProfileSettingsPage.ROOT -> R.string.profile_mini_settings
+                                ProfileSettingsPage.LEARNING -> R.string.profile_settings_section_learning
+                                ProfileSettingsPage.APP -> R.string.profile_settings_section_app
+                                ProfileSettingsPage.ACCOUNT -> R.string.profile_settings_section_account
+                                ProfileSettingsPage.APPEARANCE -> R.string.profile_appearance
+                                ProfileSettingsPage.NOTIFICATIONS -> R.string.profile_notifications
+                                ProfileSettingsPage.PRIVACY -> R.string.profile_privacy_security
+                            }),
                             color = PompColors.Ink,
                             fontSize = 21.sp,
                             fontWeight = FontWeight.SemiBold,
                         )
-                        Text(
-                            stringResource(R.string.profile_settings_intro),
-                            color = PompColors.InkSecondary,
-                            fontSize = 12.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                        if (page == ProfileSettingsPage.ROOT) {
+                            Text(
+                                stringResource(R.string.profile_settings_intro),
+                                color = PompColors.InkSecondary,
+                                fontSize = 12.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
                     }
                 }
                 Box(Modifier.fillMaxWidth().height(1.dp).background(PompColors.Divider))
@@ -869,10 +842,35 @@ private fun ProfileSettingsScreen(
                     modifier = Modifier.weight(1f).fillMaxWidth().navigationBarsPadding()
                         .testTag("profile-settings-scroll"),
                     contentPadding = PaddingValues(start = 18.dp, top = 18.dp, end = 18.dp, bottom = 28.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
+                    if (page == ProfileSettingsPage.ROOT) {
+                        item {
+                            ProfileSettingsItem(
+                                Icons.Filled.TrackChanges,
+                                stringResource(R.string.profile_settings_section_learning),
+                                null,
+                                true,
+                            ) { page = ProfileSettingsPage.LEARNING }
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(
+                                Icons.Filled.Settings,
+                                stringResource(R.string.profile_settings_section_app),
+                                null,
+                                true,
+                            ) { page = ProfileSettingsPage.APP }
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(
+                                Icons.Filled.PersonOutline,
+                                stringResource(R.string.profile_settings_section_account),
+                                null,
+                                true,
+                            ) { page = ProfileSettingsPage.ACCOUNT }
+                        }
+                    }
+                    if (page == ProfileSettingsPage.LEARNING) {
                     item {
-                        SettingsCategory(stringResource(R.string.profile_settings_section_learning), Icons.Filled.TrackChanges) {
+                        SettingsRows {
                             ProfileSettingsItem(
                                 Icons.Filled.Language,
                                 stringResource(R.string.profile_language),
@@ -900,15 +898,16 @@ private fun ProfileSettingsScreen(
                             )
                         }
                     }
+                    }
+                    if (page == ProfileSettingsPage.APP) {
                     item {
-                        SettingsCategory(stringResource(R.string.profile_settings_section_app), Icons.Filled.Settings) {
+                        SettingsRows {
                             ProfileSettingsItem(
                                 Icons.Filled.Settings,
                                 stringResource(R.string.profile_appearance),
                                 stringResource(themeMode.labelRes()),
                                 true,
-                                onOpenAppearance,
-                            )
+                            ) { page = ProfileSettingsPage.APPEARANCE }
                             ProfileSettingsDivider()
                             ProfileSettingsItem(
                                 Icons.Filled.Notifications,
@@ -918,8 +917,7 @@ private fun ProfileSettingsScreen(
                                     else R.string.profile_notifications_status_off,
                                 ),
                                 true,
-                                onOpenNotifications,
-                            )
+                            ) { page = ProfileSettingsPage.NOTIFICATIONS }
                             ProfileSettingsDivider()
                             ProfileSettingsItem(
                                 Icons.Filled.Widgets,
@@ -933,8 +931,10 @@ private fun ProfileSettingsScreen(
                             )
                         }
                     }
+                    }
+                    if (page == ProfileSettingsPage.ACCOUNT) {
                     item {
-                        SettingsCategory(stringResource(R.string.profile_settings_section_account), Icons.Filled.PersonOutline) {
+                        SettingsRows {
                             ProfileSettingsItem(
                                 Icons.Filled.PersonOutline,
                                 stringResource(R.string.profile_account_title),
@@ -948,8 +948,7 @@ private fun ProfileSettingsScreen(
                                 stringResource(R.string.profile_privacy_security),
                                 null,
                                 true,
-                                onOpenPrivacy,
-                            )
+                            ) { page = ProfileSettingsPage.PRIVACY }
                             ProfileSettingsDivider()
                             ProfileSettingsItem(
                                 Icons.AutoMirrored.Filled.HelpOutline,
@@ -997,20 +996,14 @@ private fun ProfileSettingsScreen(
                             ErrorPill(stringResource(error.messageRes))
                             Spacer(Modifier.height(12.dp))
                         }
-                        Surface(
-                            color = PompColors.CardSurface,
-                            shape = RoundedCornerShape(14.dp),
-                            border = BorderStroke(1.dp, PompColors.Divider),
-                            modifier = Modifier.fillMaxWidth(),
+                        ProfileSettingsDivider()
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 14.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 13.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                            ) {
-                                Text(stringResource(R.string.profile_app_version), color = PompColors.InkSecondary, fontSize = 13.sp)
-                                Text(BuildConfig.VERSION_NAME, color = PompColors.Ink, fontSize = 13.sp, fontWeight = FontWeight.Medium)
-                            }
+                            Text(stringResource(R.string.profile_app_version), color = PompColors.InkSecondary, fontSize = 13.sp)
+                            Text(BuildConfig.VERSION_NAME, color = PompColors.Ink, fontSize = 13.sp, fontWeight = FontWeight.Medium)
                         }
                     }
                     item { SocialLinksRow(onOpen = onOpenSupport) }
@@ -1031,6 +1024,78 @@ private fun ProfileSettingsScreen(
                             ) {
                                 Text(stringResource(R.string.profile_unlink_device), color = PompColors.FlameInk)
                             }
+                        }
+                    }
+                    }
+                    if (page == ProfileSettingsPage.APPEARANCE) {
+                        item {
+                            AppThemeMode.entries.forEach { mode ->
+                                MiniSettingsRow(
+                                    Icons.Filled.Settings,
+                                    stringResource(mode.labelRes()),
+                                    true,
+                                    { onSetThemeMode(mode) },
+                                ) {
+                                    if (mode == themeMode) Text("✓", color = PompColors.Cinnabar, fontSize = 20.sp)
+                                }
+                                Text(
+                                    stringResource(mode.descriptionRes()),
+                                    color = PompColors.InkSecondary,
+                                    fontSize = 12.sp,
+                                    modifier = Modifier.padding(start = 45.dp, end = 14.dp, bottom = 10.dp),
+                                )
+                                ProfileSettingsDivider()
+                            }
+                        }
+                    }
+                    if (page == ProfileSettingsPage.NOTIFICATIONS) {
+                        item {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(14.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            ) {
+                                Icon(Icons.Filled.Notifications, contentDescription = null, tint = PompColors.InkSecondary, modifier = Modifier.size(19.dp))
+                                Text(
+                                    stringResource(R.string.profile_notifications_category_study),
+                                    color = PompColors.Ink,
+                                    fontSize = 14.sp,
+                                    modifier = Modifier.weight(1f),
+                                )
+                                Switch(checked = notificationsEnabled, onCheckedChange = onToggleNotifications)
+                            }
+                            Text(
+                                stringResource(R.string.profile_notifications_detail_intro),
+                                color = PompColors.InkSecondary,
+                                fontSize = 12.sp,
+                                modifier = Modifier.padding(start = 45.dp, end = 14.dp, top = 4.dp, bottom = 12.dp),
+                            )
+                            if (notificationsEnabled) {
+                                Column(
+                                    modifier = Modifier.padding(start = 45.dp, end = 14.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    NotificationBullet(stringResource(R.string.profile_notifications_goal))
+                                    NotificationBullet(stringResource(R.string.profile_notifications_streak))
+                                }
+                            }
+                        }
+                    }
+                    if (page == ProfileSettingsPage.PRIVACY) {
+                        item {
+                            ProfileSettingsItem(Icons.Filled.Lock, stringResource(R.string.profile_terms_of_use), null, true, onTerms)
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(Icons.Filled.Lock, stringResource(R.string.profile_privacy_policy), null, true, onPrivacyPolicy)
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(Icons.Filled.PersonOutline, stringResource(R.string.profile_delete_account), null, true, onDeleteAccount)
+                            ProfileSettingsDivider()
+                            ProfileSettingsItem(
+                                Icons.Filled.Settings,
+                                stringResource(R.string.profile_app_permissions),
+                                stringResource(R.string.profile_app_permissions_desc),
+                                true,
+                                onPermissions,
+                            )
                         }
                     }
                 }
@@ -1057,25 +1122,8 @@ private fun ProfileSettingsScreen(
 }
 
 @Composable
-private fun SettingsCategory(
-    title: String,
-    icon: ImageVector,
-    content: @Composable ColumnScope.() -> Unit,
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Icon(icon, contentDescription = null, tint = PompColors.CinnabarInk, modifier = Modifier.size(18.dp))
-            Text(title, color = PompColors.Ink, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-        }
-        Surface(
-            color = PompColors.CardSurface,
-            shape = RoundedCornerShape(18.dp),
-            border = BorderStroke(1.dp, PompColors.Divider),
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Column(content = content)
-        }
-    }
+private fun SettingsRows(content: @Composable ColumnScope.() -> Unit) {
+    Column(content = content)
 }
 
 @Composable
@@ -1132,152 +1180,6 @@ private fun ProfileSettingsDivider() {
             .height(1.dp)
             .background(PompColors.Divider),
     )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun NotificationsCategoriesSheet(
-    enabled: Boolean,
-    onOpenStudy: () -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = PompColors.Paper) {
-        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp).padding(bottom = 28.dp)) {
-            Text(stringResource(R.string.profile_notifications), color = PompColors.Ink, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
-            Spacer(Modifier.height(14.dp))
-            Surface(
-                color = PompColors.CardSurface,
-                shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(1.dp, PompColors.Divider),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                MiniSettingsRow(Icons.Filled.Notifications, stringResource(R.string.profile_notifications_category_study), true, onOpenStudy) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            stringResource(if (enabled) R.string.profile_notifications_status_on else R.string.profile_notifications_status_off),
-                            color = PompColors.InkDisabled,
-                            fontSize = 12.sp,
-                        )
-                        Spacer(Modifier.width(4.dp)); SettingsChevron()
-                    }
-                }
-            }
-            Text(
-                stringResource(R.string.profile_notifications_category_study_desc),
-                color = PompColors.InkSecondary,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 10.dp),
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun StudyReminderSettingsSheet(
-    enabled: Boolean,
-    onToggle: (Boolean) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = PompColors.Paper) {
-        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp).padding(bottom = 28.dp)) {
-            Text(
-                stringResource(R.string.profile_notifications_category_study),
-                color = PompColors.Ink,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Text(
-                stringResource(R.string.profile_notifications_detail_intro),
-                color = PompColors.InkSecondary,
-                fontSize = 13.sp,
-                modifier = Modifier.padding(top = 5.dp, bottom = 14.dp),
-            )
-            Surface(
-                color = PompColors.CardSurface,
-                shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(1.dp, PompColors.Divider),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        stringResource(R.string.profile_notifications_category_study),
-                        color = PompColors.Ink,
-                        fontSize = 14.sp,
-                        modifier = Modifier.weight(1f),
-                    )
-                    Switch(
-                        checked = enabled,
-                        onCheckedChange = onToggle,
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = Color.White,
-                            checkedTrackColor = PompColors.Jade,
-                            uncheckedThumbColor = Color.White,
-                            uncheckedTrackColor = PompColors.InkDisabled,
-                            uncheckedBorderColor = Color.Transparent,
-                        ),
-                    )
-                }
-            }
-            if (enabled) {
-                Column(Modifier.padding(horizontal = 8.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    NotificationBullet(stringResource(R.string.profile_notifications_goal))
-                    NotificationBullet(stringResource(R.string.profile_notifications_streak))
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun PrivacySecuritySheet(
-    onTerms: () -> Unit,
-    onPrivacyPolicy: () -> Unit,
-    onDeleteAccount: () -> Unit,
-    onPermissions: () -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = PompColors.Paper) {
-        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp).padding(bottom = 28.dp)) {
-            Text(stringResource(R.string.profile_privacy_security), color = PompColors.Ink, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
-            Spacer(Modifier.height(14.dp))
-            Surface(
-                color = PompColors.CardSurface,
-                shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(1.dp, PompColors.Divider),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Column {
-                    MiniSettingsRow(Icons.Filled.Lock, stringResource(R.string.profile_terms_of_use), true, onTerms) { SettingsChevron() }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.Lock, stringResource(R.string.profile_privacy_policy), true, onPrivacyPolicy) { SettingsChevron() }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.PersonOutline, stringResource(R.string.profile_delete_account), true, onDeleteAccount) { SettingsChevron() }
-                    SettingsDivider()
-                    MiniSettingsRow(Icons.Filled.Settings, stringResource(R.string.profile_app_permissions), true, onPermissions) { SettingsChevron() }
-                }
-            }
-            Text(
-                stringResource(R.string.profile_app_permissions_desc),
-                color = PompColors.InkSecondary,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 10.dp),
-            )
-            Text(
-                stringResource(R.string.profile_security_note),
-                color = PompColors.InkSecondary,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-            )
-        }
-    }
 }
 
 /** HSK AI rasmiy sahifalari, Mini App profilidagi qator bilan bir xil. */
@@ -1343,39 +1245,8 @@ private fun MiniSettingsRow(icon: ImageVector, label: String, enabled: Boolean, 
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun AppearancePicker(current: AppThemeMode, onPick: (AppThemeMode) -> Unit, onDismiss: () -> Unit) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = PompColors.Paper) {
-        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp).padding(bottom = 20.dp)) {
-            Text(stringResource(R.string.profile_theme_picker_title), color = PompColors.Ink, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
-            Spacer(Modifier.height(12.dp))
-            AppThemeMode.entries.forEach { mode ->
-                val selected = mode == current
-                Surface(
-                    color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
-                    shape = RoundedCornerShape(14.dp),
-                    border = BorderStroke(1.dp, if (selected) PompColors.Cinnabar else PompColors.Divider),
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 58.dp).padding(vertical = 4.dp).clickable { onPick(mode) },
-                ) {
-                    Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(stringResource(mode.labelRes()), color = if (selected) PompColors.CinnabarDark else PompColors.Ink, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
-                            Spacer(Modifier.height(2.dp)); Text(stringResource(mode.descriptionRes()), color = PompColors.InkSecondary, fontSize = 12.sp)
-                        }
-                        if (selected) Text("✓", color = PompColors.Cinnabar, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                    }
-                }
-            }
-            Spacer(Modifier.height(8.dp))
-        }
-    }
-}
-
 @Composable private fun NotificationBullet(text: String) { Text("• $text", color = PompColors.InkSecondary, fontSize = 12.sp, lineHeight = 17.sp) }
 @Composable private fun SettingsChevron() { Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = PompColors.InkDisabled, modifier = Modifier.size(17.dp)) }
-@Composable private fun SettingsDivider() { Box(Modifier.fillMaxWidth().padding(start = 45.dp).height(1.dp).background(PompColors.Divider)) }
 
 @Composable
 private fun ErrorPill(text: String, onClick: (() -> Unit)? = null) {

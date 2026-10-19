@@ -23,6 +23,7 @@
 
     <string name="profile_account_title">Аккаунт</string>
     <string name="profile_account_subtitle">Профиль и подключённые способы входа</string>
+    <string name="profile_account_sign_in_methods">Способы входа</string>
     <string name="profile_account_name">Имя</string>
     <string name="profile_account_telegram">Ник в Telegram</string>
     <string name="profile_account_phone">Телефон</string>

@@ -298,7 +298,6 @@ private fun AppRoot(
                 onBrowserUrlOpened = viewModel::browserUrlOpened,
                 onTelegramUrlOpened = viewModel::telegramUrlOpened,
                 onDismissWaiting = viewModel::dismissWaiting,
-                onReferralCodeChanged = viewModel::updateReferralCode,
             )
         }
 
