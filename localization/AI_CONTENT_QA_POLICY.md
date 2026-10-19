@@ -259,3 +259,36 @@ response, network offline fallback without P3, isolated successful
 locale patch, and changed-Chinese target rejection. Backend ASGI,
 Android/Desktop emulator, real Telegram WebView and latest GitHub CI
 still require independent execution.
+
+## Mini App P3 must reject incomplete-but-valid locale patch sets
+
+Root cause (2026-10-20): `applyReservedP3Grammar` validated each received
+`/grammar/...` or `/_grammar`-mirror path independently, but never verified
+that **every** originally blank source display map was represented. Dropping
+a mirrored row left a syntactically valid subset and returned a partially
+localized lesson; another accepted pointer could target an unrelated card's
+`g.examples` field despite the `_grammar` type invariant.
+
+Fix: derive a strict whitelist of **all and only** originally blank grammar
+example and `type === "_grammar"` mirror translation paths from the loaded
+lesson. Reject unless the response row count matches that expected set and
+**every** pointer belongs to it; preserve the existing duplicate, Chinese,
+pinyin, three-language, source-id and atomic-clone guards. This check remains
+local and synchronous; no new request, static pack or grading/Pro change.
+For verified affected source files, 48 lessons contain 272 root gaps and 136
+mirrored card gaps (408 total patch locations). Some repeated checkpoint
+lessons contain no additional `_grammar` mirror, so **never** assume a fixed
+2× multiplier per lesson.
+
+Regression: `tests/test_i18n_miniapp_grammar_reservation.py` rejects a
+missing mirror row, an unrelated `meaning_guess` card pointer, changed
+Chinese and attempts to run all 48 original lessons with their actual
+source-pinned patches in Node (stdin, no gated text in CLI output). Direct
+Node syntax/runtime smoke was run against Git blob
+`a90dfa1a07b585bcb236d85dc815612415417e8c` for the core rejection
+cases. Latest GitHub Actions/real device CI must still be verified separately.
+
+Prevention: the frontend must verify **whole-set completeness** independently
+of any server-declared count, not just validity of individual source pointers.
+Reject a partial response as a whole; never publish mixed blank/localized
+course grammar. Keep source/graded payload bytes untouched.
