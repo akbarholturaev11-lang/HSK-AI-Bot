@@ -44,7 +44,7 @@ SNOW_REQUIRED = {
 # Phrases like "не возвращался(ась)" and "читал(а)" are draft-editor
 # placeholders, not polished Russian learner-facing translation.
 RUSSIAN_GENDER_PLACEHOLDER = re.compile(
-    r"\b[А-Яа-яЁё]+\((?:а|ась|ся|ый|ая|ё?л|ла)\)\b?"
+    r"\b[А-Яа-яЁё]+\((?:а|ась|ся|ый|ая|ё?л|ла)\)"
 )
 
 
