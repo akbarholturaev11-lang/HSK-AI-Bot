@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "namespace": "common",
+  "locale": "uz",
+  "messages": {
+    "auth.expires": "Kirishni tasdiqlash uchun {time} qoldi",
+    "common.refresh": "Yangilash",
+    "lesson.continue": "Darsni davom ettirish",
+    "lesson.locked": "Oldingi darsni yakunlang",
+    "lesson.notFound": "Bu daraja uchun darslar hali topilmadi.",
+    "lesson.start": "Darsni boshlash",
+    "navigation.course": "Kurs",
+    "navigation.practice": "Mashq",
+    "navigation.profile": "Profil",
+    "navigation.rating": "Reyting",
+    "navigation.subscription": "Obuna"
+  }
+}

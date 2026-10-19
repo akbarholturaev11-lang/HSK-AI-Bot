@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "namespace": "common",
+  "locale": "ru",
+  "messages": {
+    "auth.expires": "На подтверждение входа осталось {time}",
+    "common.refresh": "Обновить",
+    "lesson.continue": "Продолжить урок",
+    "lesson.locked": "Сначала завершите предыдущий урок",
+    "lesson.notFound": "Для этого уровня уроки пока не найдены.",
+    "lesson.start": "Начать урок",
+    "navigation.course": "Курс",
+    "navigation.practice": "Практика",
+    "navigation.profile": "Профиль",
+    "navigation.rating": "Рейтинг",
+    "navigation.subscription": "Подписка"
+  }
+}

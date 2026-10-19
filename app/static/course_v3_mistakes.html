@@ -6,6 +6,7 @@
 <title>Мои ошибки</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="/course_v3_data/hsk-course-i18n.js?v=20261018-practice-ui-v15"></script>
 <style>
 :root{--ink:#211D17;--ink2:#665D50;--ink3:#A89E8E;--paper:#FDF9F0;--card:#FFFFFF;--line:#EAE0CC;--cin:#E04A40;--cin2:#B23530;--cinbg:#FDEBE7;--gold:#E9A916;--jade:#2FA06A;--jadebg:#E3F4EA;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -153,6 +154,15 @@ var L={ru:{title:"Мои ошибки",sub:"Собираются автомат�
     limitTitle:"Кӯшиши ройгон истифода шуд",limitText:"Барои кори бемаҳдуд бар хатоҳо HSK AI Pro гиред.",limitBtn:"HSK AI Pro ⭐️ гирифтан",later:"Дертар",
     limitWhy:"Кӯшиши якдафъаинаи ройгон истифода шуд. Барои бепоён HSK AI Pro гиред ё фардо баргардед.",
     loading:"Боргирӣ…",more:"Боз нишон додан",err:"Хатогӣ рух дод. Боз кӯшиш кунед.",buildHint:"Ҷумлаи дурустро созед",undo:"Қафо",clear:"Тоза кардан",check:"Санҷидан"}}[LANG];
+/* Exact local-first display copy; each original L literal remains offline fallback. */
+var MISTAKES_UI=(window.HSKAI_COURSE_I18N&&window.HSKAI_COURSE_I18N[LANG])||{};
+function mistakesUILookup(key,fallback){var v=MISTAKES_UI["mistakesPage."+key];return typeof v==="string"&&v?v:fallback}
+Object.keys(L).forEach(function(key){
+  if(typeof L[key]==="string")L[key]=mistakesUILookup(key,L[key]);
+  else if(key==="cats"||key==="sources")Object.keys(L[key]).forEach(function(subkey){
+    L[key][subkey]=mistakesUILookup(key+"."+subkey,L[key][subkey]);
+  });
+});
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 var INIT_DATA=(tg&&tg.initData)||"";
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}

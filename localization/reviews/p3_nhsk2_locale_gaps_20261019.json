@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "kind": "p3_source_locale_gap_review_queue",
+  "source_commit": "b447aac9590b028fde19ccac3be6596e34deb550",
+  "generated_from": "GitHub Actions Local-first localization P0 guards / p3-all-lesson-readiness.json",
+  "scope": "read_only_source_structural_audit",
+  "track": "nhsk2",
+  "total_track_lessons": 73,
+  "affected_lessons": 48,
+  "all_empty_three_locale_display_maps": 272,
+  "affected_locales": [
+    "uz",
+    "ru",
+    "tj"
+  ],
+  "lessons": [
+    {
+      "lesson_number": 16,
+      "all_empty_locale_maps": 6
+    },
+    {
+      "lesson_number": 17,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 18,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 20,
+      "all_empty_locale_maps": 12
+    },
+    {
+      "lesson_number": 21,
+      "all_empty_locale_maps": 6
+    },
+    {
+      "lesson_number": 22,
+      "all_empty_locale_maps": 5
+    },
+    {
+      "lesson_number": 23,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 26,
+      "all_empty_locale_maps": 14
+    },
+    {
+      "lesson_number": 27,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 28,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 30,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 31,
+      "all_empty_locale_maps": 9
+    },
+    {
+      "lesson_number": 32,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 34,
+      "all_empty_locale_maps": 6
+    },
+    {
+      "lesson_number": 35,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 36,
+      "all_empty_locale_maps": 12
+    },
+    {
+      "lesson_number": 37,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 38,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 39,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 41,
+      "all_empty_locale_maps": 9
+    },
+    {
+      "lesson_number": 42,
+      "all_empty_locale_maps": 5
+    },
+    {
+      "lesson_number": 43,
+      "all_empty_locale_maps": 12
+    },
+    {
+      "lesson_number": 44,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 46,
+      "all_empty_locale_maps": 20
+    },
+    {
+      "lesson_number": 47,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 48,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 49,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 51,
+      "all_empty_locale_maps": 9
+    },
+    {
+      "lesson_number": 53,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 54,
+      "all_empty_locale_maps": 6
+    },
+    {
+      "lesson_number": 55,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 56,
+      "all_empty_locale_maps": 12
+    },
+    {
+      "lesson_number": 57,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 58,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 59,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 60,
+      "all_empty_locale_maps": 9
+    },
+    {
+      "lesson_number": 61,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 62,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 63,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 65,
+      "all_empty_locale_maps": 9
+    },
+    {
+      "lesson_number": 66,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 67,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 68,
+      "all_empty_locale_maps": 6
+    },
+    {
+      "lesson_number": 69,
+      "all_empty_locale_maps": 12
+    },
+    {
+      "lesson_number": 70,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 71,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 72,
+      "all_empty_locale_maps": 3
+    },
+    {
+      "lesson_number": 73,
+      "all_empty_locale_maps": 9
+    }
+  ],
+  "review_requirements": [
+    "Author and human-review the 3 missing source translations in each empty field; no automatic cross-language fallback.",
+    "Do not modify Chinese, pinyin, correct_index, options, reverse_builder tokens, grading, lesson order, entitlement or Pro access.",
+    "Rerun all-seven-track source audit and original client/entitlement tests before proposing a versioned overlay runtime.",
+    "This snapshot has no source text, answers, user data or translations; it becomes stale when source lessons are edited."
+  ],
+  "ready_to_ship": false
+}

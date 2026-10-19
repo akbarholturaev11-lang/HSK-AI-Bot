@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "namespace": "common",
+  "locale": "tj",
+  "messages": {
+    "auth.expires": "Барои тасдиқи вуруд {time} монд",
+    "common.refresh": "Навсозӣ",
+    "lesson.continue": "Идомаи дарс",
+    "lesson.locked": "Аввал дарси пешинаро анҷом диҳед",
+    "lesson.notFound": "Барои ин сатҳ ҳоло дарс ёфт нашуд.",
+    "lesson.start": "Оғози дарс",
+    "navigation.course": "Курс",
+    "navigation.practice": "Машқ",
+    "navigation.profile": "Профил",
+    "navigation.rating": "Рейтинг",
+    "navigation.subscription": "Обуна"
+  }
+}

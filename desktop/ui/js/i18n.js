@@ -1,3 +1,5 @@
+import "./generated/hsk-common-i18n.js";
+
 const SUPPORTED_LANGUAGES = new Set(["uz", "ru", "tj"]);
 
 const messages = {
@@ -2594,8 +2596,29 @@ export function getLanguage() {
   return activeLanguage;
 }
 
+const SHARED_COMMON_KEY = Object.freeze({
+  course: "navigation.course",
+  practice: "navigation.practice",
+  profile: "navigation.profile",
+  rating: "navigation.rating",
+  subscription: "navigation.subscription",
+  startLesson: "lesson.start",
+  continueLesson: "lesson.continue",
+  lockedLesson: "lesson.locked",
+  courseEmpty: "lesson.notFound",
+  refresh: "common.refresh",
+  authExpires: "auth.expires",
+});
+
 export function t(key, variables = {}) {
-  const template =
+  const generatedKey = SHARED_COMMON_KEY[key];
+  const catalog = typeof window === "undefined"
+    ? null
+    : window.HSKAI_COMMON_I18N;
+  const generated = generatedKey
+    ? catalog?.[activeLanguage]?.[generatedKey]
+    : undefined;
+  const template = generated ??
     messages[activeLanguage]?.[key] ?? messages.uz[key] ?? String(key || "");
   return String(template).replace(/\{([a-zA-Z0-9_]+)\}/g, (match, name) =>
     Object.prototype.hasOwnProperty.call(variables, name)
