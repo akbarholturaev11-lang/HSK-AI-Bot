@@ -96,7 +96,8 @@ jobs:
             tests.test_i18n_editor_preview_integrity \
             tests.test_i18n_grammar_editor_workspace \
             tests.test_i18n_editor_grammar_mirror_integrity \
-            tests.test_i18n_grammar_mirror_source_audit
+            tests.test_i18n_grammar_mirror_source_audit \
+            tests.test_i18n_grammar_translation_reuse_audit
       - name: Read-only P0 source checks
         run: |
           mkdir -p /tmp/i18n-p0
@@ -111,6 +112,7 @@ jobs:
           python scripts/i18n_lesson_overlay_full_audit.py --output /tmp/i18n-p0/p3-all-lesson-readiness.json
           python scripts/i18n_lesson_locale_gap_review_queue.py --output /tmp/i18n-p0/p3-locale-gap-pointers.json --verify-count-queue localization/reviews/p3_nhsk2_locale_gaps_20261019.json
           python scripts/i18n_grammar_mirror_source_audit.py --output /tmp/i18n-p0/p3-grammar-mirror-readiness.json
+          python scripts/i18n_grammar_translation_reuse_audit.py --output /tmp/i18n-p0/p3-grammar-reuse-opportunities.json
           python scripts/i18n_android_resource_audit.py --output /tmp/i18n-p0/android-xml.json
           python scripts/i18n_catalog_contract_audit.py --output /tmp/i18n-p0/bot-desktop-catalog.json
           python scripts/i18n_miniapp_catalog_audit.py --output /tmp/i18n-p0/miniapp-catalog.json
