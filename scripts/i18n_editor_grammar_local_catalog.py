@@ -7,6 +7,10 @@ import os
 from pathlib import Path
 import sys
 
+if __package__ in (None, ""):
+    # Keep the documented `python scripts/...` entry point runnable from repo root.
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from scripts.i18n_legacy_lesson_content_risk_audit import ROOT
 from scripts.i18n_editor_translation_batch import _private_draft_directory
 from scripts.i18n_editor_translation_draft import _source_identity, _unique_json_keys, _validate

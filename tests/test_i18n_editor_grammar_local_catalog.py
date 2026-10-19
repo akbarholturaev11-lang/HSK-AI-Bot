@@ -2,6 +2,8 @@
 import json
 from pathlib import Path
 import stat
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -33,6 +35,15 @@ def private_fixture():
 
 
 class LocalGrammarOverlayTests(unittest.TestCase):
+    def test_documented_script_entrypoint_imports_from_repository_root(self):
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/i18n_editor_grammar_local_catalog.py"),
+             "--help"],
+            cwd=ROOT, capture_output=True, text=True, check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("--private-output-dir", result.stdout)
+
     def test_three_local_first_overlay_files_include_checked_mirrors(self):
         original = (ROOT / "app/static/course_v3_data/nhsk2/lesson_16.json").read_bytes()
         with tempfile.TemporaryDirectory() as tmp:
