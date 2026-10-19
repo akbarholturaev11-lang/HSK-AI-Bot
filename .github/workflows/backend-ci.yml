@@ -36,6 +36,18 @@ on:
       - "app/services/entitlements/shadow.py"
       - "tests/test_i18n_native_audit_migration.py"
       - "tests/test_i18n_native_discount_ownership.py"
+      - "app/services/desktop_auth_service.py"
+      - "app/services/native_oauth_service.py"
+      - "app/services/identity_link_service.py"
+      - "app/api/native_oauth.py"
+      - "app/api/desktop_auth.py"
+      - "app/api/android_auth.py"
+      - "app/bot/handlers/desktop_auth.py"
+      - "tests/test_native_oauth_api.py"
+      - "tests/test_native_account_signup.py"
+      - "tests/test_desktop_provider_accounts.py"
+      - "tests/test_native_oauth_lifecycle.py"
+      - "tests/test_identity_link_service.py"
       - "app/db/models/referral.py"
       - "app/repositories/referral_repo.py"
       - "app/services/referral_service.py"
@@ -109,6 +121,14 @@ jobs:
         run: python -m unittest tests.test_hsk30_lesson_limits tests.test_course_track_service tests.test_hsk30_promo_service tests.test_hsk30_switch_ui_contract tests.test_android_payment_method_dialog_contract
       - name: Verify synthetic Mini App lesson reservation auth and quota boundary
         run: python -m unittest tests.test_i18n_miniapp_reservation_asgi
+      - name: Test canonical Google Apple Telegram native sign-in and identity linking
+        run: |
+          python -m unittest \
+            tests.test_native_oauth_api \
+            tests.test_native_account_signup \
+            tests.test_desktop_provider_accounts \
+            tests.test_native_oauth_lifecycle \
+            tests.test_identity_link_service
       - name: Test 0108 native audit facts and personal discount account isolation
         run: |
           python -m unittest \
