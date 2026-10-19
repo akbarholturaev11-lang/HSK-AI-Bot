@@ -125,6 +125,67 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
         self.assertIs(kwargs["consume"], True)
         self.session.commit.assert_awaited_once()
 
+    async def test_p3_patch_returned_only_after_authenticated_unlocked_reservation(self):
+        self.user.level = "nhsk2"
+        self.progress.level = "nhsk2"
+        self.progress.completed_lessons_count = 15
+        patch_data = {
+            "version": 1, "level": "nhsk2", "lesson_order": 16,
+            "source_git_blob_sha1": "a" * 40,
+            "display_translations": [{
+                "pointer": "/grammar/0/examples/0/translation",
+                "zh": "她去过中国。", "pinyin": "",
+                "values": {"uz": "U Xitoyda bo‘lgan.",
+                           "ru": "Она бывала в Китае.",
+                           "tj": "Ӯ ба Чин рафтааст."},
+            }],
+        }
+        with patch("app.api.miniapp_entitlements.miniapp_reserved_grammar_patch",
+                   return_value=patch_data) as localized:
+            response = await self._start(16, {
+                "X-Telegram-Init-Data": synthetic_init_data()
+            })
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json()["p3_grammar"], patch_data)
+            self.assertEqual(response.headers["cache-control"], "no-store")
+            localized.assert_called_once_with(level="nhsk2", lesson_order=16)
+            self.lesson_service.status.assert_awaited_once()
+            kwargs = self.lesson_service.status.await_args.kwargs
+            self.assertEqual(kwargs["level"], "nhsk2")
+            self.assertEqual(kwargs["lesson_order"], 16)
+            self.assertIs(kwargs["consume"], True)
+            self.session.commit.assert_awaited_once()
+
+    async def test_p3_quota_denied_never_fetches_or_leaks_translations(self):
+        self.user.level = "nhsk2"
+        self.progress.level = "nhsk2"
+        self.progress.completed_lessons_count = 15
+        self.lesson_service.status.return_value = {
+            "ok": False, "allowed": False, "error": "free_feature_limit_reached"
+        }
+        with patch("app.api.miniapp_entitlements.miniapp_reserved_grammar_patch") as localized:
+            response = await self._start(16, {
+                "X-Telegram-Init-Data": synthetic_init_data()
+            })
+            self.assertEqual(response.status_code, 403)
+            self.assertEqual(response.json()["error"], "free_feature_limit_reached")
+            self.assertNotIn("p3_grammar", response.json())
+            localized.assert_not_called()
+            self.session.commit.assert_awaited_once()
+
+    async def test_p3_skip_ahead_denied_before_localization(self):
+        self.user.level = "nhsk2"
+        self.progress.level = "nhsk2"
+        self.progress.completed_lessons_count = 14
+        with patch("app.api.miniapp_entitlements.miniapp_reserved_grammar_patch") as localized:
+            response = await self._start(16, {
+                "X-Telegram-Init-Data": synthetic_init_data()
+            })
+            self.assertEqual(response.status_code, 403)
+            self.assertNotIn("p3_grammar", response.json())
+            localized.assert_not_called()
+            self.lesson_service.status.assert_not_awaited()
+
     async def test_skip_ahead_denied_without_consumption(self):
         response = await self._start(3, {
             "X-Telegram-Init-Data": synthetic_init_data()
