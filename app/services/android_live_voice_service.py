@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 
+from app.services.account_identity import actual_telegram_id
 from app.services.voice_practice_service import (
     LANGUAGE_NAMES,
     ROLE_PROMPTS,
@@ -13,7 +14,7 @@ from app.services.voice_practice_service import (
 
 
 def live_voice_available(settings_obj, telegram_id: int) -> bool:
-    """Require paid billing and an explicit user allowlist or global rollout."""
+    """Require explicit rollout and limits; Gemini Live supports the free tier."""
     raw_allowed_users = str(
         getattr(settings_obj, "ANDROID_VOICE_LIVE_ALLOWED_USERS", "") or ""
     ).strip()
@@ -36,10 +37,9 @@ def live_voice_available(settings_obj, telegram_id: int) -> bool:
     return bool(
         getattr(settings_obj, "ANDROID_VOICE_LIVE_ENABLED", False)
         and getattr(settings_obj, "GEMINI_API_KEY", "")
-        and getattr(settings_obj, "GEMINI_BILLING_TIER", "free") == "paid"
         and str(getattr(settings_obj, "ANDROID_VOICE_LIVE_MODEL", "")) == "gemini-3.8-live"
         and session_budget > 0
-        and (allow_all_users or int(telegram_id) in allowed)
+        and (allow_all_users or actual_telegram_id(telegram_id) in allowed)
     )
 
 
