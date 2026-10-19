@@ -254,6 +254,21 @@ vm.runInNewContext(JSON.parse(process.argv[1]),env);
   await assert.rejects(env.reserveCompletedP3Grammar({n:16}),err=>
     err.lessonAccessDenied===true);
   assert.equal(env.P3_RESERVED_GRAMMAR,null);
+  // A failed or malformed HTTP response is not a network outage grant.
+  env.P3_RESERVED_GRAMMAR={version:99};
+  env._apiPost=()=>Promise.resolve({
+    ok:false,status:500,json:()=>Promise.resolve({error:"service_unavailable"})
+  });
+  await assert.rejects(env.reserveCompletedP3Grammar({n:16}),err=>
+    err.lessonAccessDenied===true&&err.status===500);
+  assert.equal(env.P3_RESERVED_GRAMMAR,null);
+  env.P3_RESERVED_GRAMMAR={version:99};
+  env._apiPost=()=>Promise.resolve({
+    ok:true,status:200,json:()=>Promise.resolve({ok:true})
+  });
+  await assert.rejects(env.reserveCompletedP3Grammar({n:16}),err=>
+    err.lessonAccessDenied===true&&err.status===200);
+  assert.equal(env.P3_RESERVED_GRAMMAR,null);
   env._apiPost=()=>Promise.reject(new Error("offline"));
   const offline=await env.reserveCompletedP3Grammar({n:16});
   assert.equal(offline.allowed,true);
