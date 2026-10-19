@@ -10,6 +10,7 @@ on:
       - "app/api/miniapp_entitlements.py"
       - "app/services/course_p3_grammar_localization.py"
       - "app/services/entitlements/lesson_access.py"
+      - "app/services/entitlements/engine.py"
       - "app/services/desktop_course_service.py"
       - "app/services/account_identity.py"
       - "app/services/ai_usage_budget_service.py"
