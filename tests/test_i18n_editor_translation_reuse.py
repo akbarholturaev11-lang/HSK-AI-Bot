@@ -7,6 +7,7 @@ import unittest
 
 from scripts.i18n_editor_translation_reuse import prepare_translation_reuse
 from scripts.i18n_editor_translation_draft import validate_editor_draft
+from scripts.i18n_editor_grammar_mirror_integrity import attest_mirrored_grammar_preview
 from scripts.i18n_lesson_locale_gap_review_queue import _git_blob_sha1
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -121,6 +122,112 @@ class EditorTranslationReuseTests(unittest.TestCase):
             file.write_text(json.dumps(_editor_draft(ROOT, 16)), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "uncovered"):
                 prepare_translation_reuse([file], "nhsk2", 17)
+
+
+    def test_partial_reuse_from_lesson16_into_20_still_needs_human_review(self):
+        target_file = ROOT / "app/static/course_v3_data/nhsk2/lesson_20.json"
+        original = target_file.read_bytes()
+        with tempfile.TemporaryDirectory() as folder:
+            source_file = Path(folder) / "lesson_16.json"
+            source_file.write_text(json.dumps(_editor_draft(ROOT, 16)))
+            with self.assertRaisesRegex(ValueError, "uncovered"):
+                prepare_translation_reuse([source_file], "nhsk2", 20)
+            partial, report = prepare_translation_reuse(
+                [source_file], "nhsk2", 20, allow_partial=True,
+            )
+        self.assertEqual(report["reuse_scope"], "PARTIAL_PRIVATE_REVIEW")
+        self.assertEqual(report["target_display_maps_total"], 12)
+        self.assertEqual(report["target_display_maps_reused"], 6)
+        self.assertEqual(report["target_display_maps_uncovered"], 6)
+        self.assertEqual(report["target_locale_values_reused"], 18)
+        self.assertEqual(report["target_locale_values_uncovered"], 18)
+        self.assertEqual(len(partial["translations"]), 6)
+        self.assertEqual(
+            validate_editor_draft(original, partial)["validated_display_maps"], 6
+        )
+        self.assertTrue(
+            attest_mirrored_grammar_preview(original, partial)["all_other_fields_unchanged"]
+        )
+        self.assertFalse(report["ready_to_ship"])
+        self.assertEqual(target_file.read_bytes(), original)
+
+    def test_partial_no_matching_context_and_invalid_mode_rejected(self):
+        with tempfile.TemporaryDirectory() as folder:
+            file = Path(folder) / "source.json"
+            file.write_text(json.dumps(_editor_draft(ROOT, 16)))
+            with self.assertRaisesRegex(ValueError, "no matching"):
+                prepare_translation_reuse(
+                    [file], "nhsk2", 17, allow_partial=True,
+                )
+            with self.assertRaisesRegex(ValueError, "invalid partial"):
+                prepare_translation_reuse(
+                    [file], "nhsk2", 20, allow_partial=1,
+                )
+
+    def test_partial_mirror_sync_and_nonmatched_examples_remain_untouched(self):
+        # Synthetic lesson 1 provides source context; lesson 2 has two examples
+        # with the first repeated, and a verified _grammar card mirror.
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder) / "checkout"
+            source_dir = root / "app/static/course_v3_data/nhsk2"
+            source_dir.mkdir(parents=True)
+            def grammar(examples):
+                return {
+                    "no": 1,
+                    "title": {"uz": "RULE", "ru": "RULE", "tj": "RULE"},
+                    "title_zh": "规则",
+                    "rule": {"uz": "RULE", "ru": "RULE", "tj": "RULE"},
+                    "examples": [
+                        {"zh": zh, "pinyin": pinyin,
+                         "translation": {"uz": "", "ru": "", "tj": ""}}
+                        for zh, pinyin in examples
+                    ],
+                }
+            g1 = grammar([("来", "lái")])
+            g2 = grammar([("来", "lái"), ("去", "qù")])
+            def lesson(number, group, mirror):
+                return {
+                    "schema_version": 2, "level": "nhsk2",
+                    "lesson_id": number, "part_no": 1,
+                    "grammar": [group],
+                    "sections": [{"cards": [
+                        {"type": "_grammar", "g": deepcopy(group)},
+                        {"type": "reverse_builder",
+                         "answer_tokens": ["PROTECTED"], "correct_index": 0},
+                    ]}] if mirror else [],
+                }
+            source_file = source_dir / "lesson_01.json"
+            target_file = source_dir / "lesson_02.json"
+            source_file.write_text(
+                json.dumps(lesson(1, g1, False), ensure_ascii=False), encoding="utf-8"
+            )
+            target_file.write_text(
+                json.dumps(lesson(2, g2, True), ensure_ascii=False), encoding="utf-8"
+            )
+            original_target = target_file.read_bytes()
+            private_file = Path(folder) / "draft.json"
+            draft = {
+                "schema_version": 1, "kind": "p3_editor_translation_draft",
+                "source_file": "app/static/course_v3_data/nhsk2/lesson_01.json",
+                "source_git_blob_sha1": _git_blob_sha1(source_file.read_bytes()),
+                "translations": [{
+                    "pointer": "/grammar/0/examples/0/translation",
+                    "values": {"uz": "Kelyapti", "ru": "Приходит", "tj": "Меояд"},
+                }],
+            }
+            private_file.write_text(json.dumps(draft, ensure_ascii=False))
+            subset, report = prepare_translation_reuse(
+                [private_file], "nhsk2", 2, root=root, allow_partial=True
+            )
+            self.assertEqual(
+                [x["pointer"] for x in subset["translations"]],
+                ["/grammar/0/examples/0/translation"]
+            )
+            self.assertEqual(report["target_mirrored_card_maps"], 1)
+            self.assertEqual(report["target_display_maps_uncovered"], 1)
+            self.assertEqual(report["target_locale_values_uncovered"], 3)
+            self.assertEqual(target_file.read_bytes(), original_target)
+            self.assertNotIn("PROTECTED", json.dumps(report))
 
     def test_private_reuse_module_never_publishes_a_lesson_or_answers(self):
         source = (ROOT / "scripts/i18n_editor_translation_reuse.py").read_text(

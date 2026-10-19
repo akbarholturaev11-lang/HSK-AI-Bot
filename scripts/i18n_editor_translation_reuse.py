@@ -86,9 +86,11 @@ def _safe_private_input(root: Path, file: Path) -> None:
 
 def prepare_translation_reuse(
     source_drafts: list[Path], track: str, lesson_number: int,
-    *, root: Path = ROOT,
+    *, root: Path = ROOT, allow_partial: bool = False,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Return source-pinned private draft+metadata. Caller MUST keep them private."""
+    """Return only exactly matched target fields; strict full target by default."""
+    if type(allow_partial) is not bool:
+        raise ValueError("invalid partial-reuse policy")
     if not isinstance(source_drafts, list) or not (1 <= len(source_drafts) <= 100):
         raise ValueError("invalid original draft count")
     target_rel = _source_path(root, track, lesson_number)
@@ -139,7 +141,9 @@ def prepare_translation_reuse(
     safe_locations = []
     for key, pointer in needed:
         if key not in proposals:
-            raise ValueError("uncovered grammar context; human authoring required")
+            if not allow_partial:
+                raise ValueError("uncovered grammar context; human authoring required")
+            continue
         output_fields.append({
             "pointer": pointer,
             "values": dict(proposals[key]),
@@ -149,6 +153,8 @@ def prepare_translation_reuse(
             "origin_locations": provenance[key],
         })
 
+    if not output_fields:
+        raise ValueError("no matching target grammar contexts available for reuse")
     draft = {
         "schema_version": 1,
         "kind": "p3_editor_translation_draft",
@@ -159,8 +165,8 @@ def prepare_translation_reuse(
     validation = validate_editor_draft(original_target, draft)
     proof = attest_mirrored_grammar_preview(original_target, draft)
     if (
-        validation["validated_display_maps"] != len(needed)
-        or proof["verified_original_display_maps"] != len(needed)
+        validation["validated_display_maps"] != len(output_fields)
+        or proof["verified_original_display_maps"] != len(output_fields)
         or not proof["all_other_fields_unchanged"]
     ):
         raise ValueError("target preview integrity proof did not match")
@@ -172,8 +178,15 @@ def prepare_translation_reuse(
         "source_git_blob_sha1": draft["source_git_blob_sha1"],
         "origin_draft_files_validated": len(source_drafts),
         "distinct_origin_source_lessons": len(origins),
-        "target_display_maps_reused": len(needed),
-        "target_locale_values_reused": len(needed) * 3,
+        "reuse_scope": (
+            "PARTIAL_PRIVATE_REVIEW" if len(output_fields) < len(needed)
+            else "COMPLETE_PRIVATE_REVIEW"
+        ),
+        "target_display_maps_total": len(needed),
+        "target_display_maps_reused": len(output_fields),
+        "target_display_maps_uncovered": len(needed) - len(output_fields),
+        "target_locale_values_reused": len(output_fields) * 3,
+        "target_locale_values_uncovered": (len(needed) - len(output_fields)) * 3,
         "target_mirrored_card_maps": proof["verified_mirrored_card_maps"],
         "original_source_unchanged": True,
         "ready_to_ship": False,
@@ -194,11 +207,14 @@ def main() -> int:
     ap.add_argument("--target-track", type=str, required=True)
     ap.add_argument("--target-lesson", type=int, required=True)
     ap.add_argument("--private-output-dir", type=Path, required=True)
+    ap.add_argument("--allow-partial", action="store_true",
+                    help="Reuse only exact matches; leave other source gaps unedited")
     args = ap.parse_args()
     try:
         folder = _private_new_directory(ROOT, args.private_output_dir)
         draft, report = prepare_translation_reuse(
-            args.source_draft, args.target_track, args.target_lesson, root=ROOT,
+            args.source_draft, args.target_track, args.target_lesson,
+            root=ROOT, allow_partial=args.allow_partial,
         )
         oldmask = os.umask(0o077)
         try:
@@ -214,7 +230,9 @@ def main() -> int:
     print(
         "P3 source-pinned draft created privately:",
         report["target_display_maps_reused"], "source fields,",
-        report["target_locale_values_reused"], "UZ-RU-TJ values; NOT APPROVED",
+        report["target_locale_values_reused"], "UZ-RU-TJ values;",
+        report["target_locale_values_uncovered"],
+        "target locale values still missing; NOT APPROVED",
     )
     return 0
 

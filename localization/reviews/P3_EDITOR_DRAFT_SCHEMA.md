@@ -299,3 +299,29 @@ distinct candidate-covered contexts (out of 136), original source maps
 reuse opportunities. Private source copies and draft strings never enter
 public assets, logs, GitHub artifacts or this count report. Any original
 candidate remains HUMAN_REVIEW_REQUIRED; no automatic approval is recorded.
+
+
+### Reuse only matching contexts in an incomplete target (private opt-in)
+
+The default reuse tool remains strict: **every** originally empty source
+grammar map in the target lesson must have an exact matching reviewed source
+draft. When a lesson has only some candidate contexts available, use the
+explicit `--allow-partial` flag and an unused private output directory:
+
+```bash
+python scripts/i18n_editor_translation_reuse.py \
+  --source-draft /private/lesson16/editor_draft.json \
+  --target-track nhsk2 --target-lesson 20 \
+  --allow-partial --private-output-dir /private/lesson20-partial
+```
+
+This creates a source-SHA-bound draft with **only exact matching** Chinese,
+pinyin, grammar-number/title/rule fields. Nonmatching originally blank
+maps are NOT filled with guesses and are excluded from the draft. At least
+one match is required; zero matches, stale sources, conflicting suggestions,
+unsafe pointers and mirror divergence fail closed. Full-tree original and
+`_grammar` mirror integrity still run on the accepted subset. A count-only
+provenance summary identifies filled/uncovered source map counts and never
+serializes original Chinese, source answers or translated strings. The original
+lesson stays unchanged. Any candidate is **UNAPPROVED**; no source editing,
+release, auth/Pro/grade/API change or runtime integration is authorized.
