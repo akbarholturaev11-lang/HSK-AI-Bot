@@ -1,6 +1,16 @@
 # HSK AI P3 — ACTIVE handoff for a new ChatGPT agent
 Updated: 2026-10-19. **Current working status is here; historical log remains in `localization/NEXT_CHAT_HANDOFF.md`.**
 
+## Follow-up: P3 API regressions and main identity-integration blocker
+
+- Source ref checked: PR #179 HEAD `abddd4b9c76153c115b6bc217c77beb0e5fafdbe`, base main `160a51d69f3324e3162375213ec61b5587b19533`; still Draft, mergeable=false. Keep branch; do not merge/deploy.
+- Pushed shared **real** `LessonAccessService.status` test `46ada872` in `tests/test_hsk30_lesson_limits.py`: for a server-completed nhsk2 lesson, a spent free quota remains read-only reviewable when HSK3 track is authorized, but revoked track/disabled level denies P3; `consume=False`, no quota event, no locking SQL.
+- Pushed bearer-authenticated FastAPI + in-memory SQLite native Desktop P3 integration test `0ef33a24` (fixture refinement `abddd4b9`) in `tests/test_desktop_course_api.py`: authenticated Pro nhsk2 lesson 16 with completed=15 must return six grammar examples and equivalent localized `_grammar` mirror; anonymous lesson request and lesson-17 skip-ahead must be denied.
+- `backend-ci.yml` commit `53fffbd9` adds these targeted real native/entitlement regressions and push path coverage for shared access/native course service changes. This is a **configured gate**, NOT a verified passing CI run. Current connector returns zero workflows/statuses for HEAD (even historical successful commits); obtain actual Actions jobs before declaring green.
+- **Identity/merge blocker:** Current `main` added `app/services/account_identity.py` (`owner_clause`) plus `alembic/versions/0103_native_identity_accounts.py` through `0108_native_audit_ownership.py`; its `CourseMiniAppEvent.telegram_id` is nullable and has a new owner+dedupe unique constraint. Feature branch currently lacks that helper/migrations and retains non-null Telegram event metadata and three Telegram-only equality lookups in `DesktopCourseService`. Simply copy-pasting `owner_clause` would crash or violate DB compatibility. Resolve **schema, auth, analytics writes and exact event read/dedupe semantics together**, preserving P3 post-entitlement localization hook; do not transplant only a single source method.
+- Read-only comparison also found 119 main-only commits and 27 same-path edit candidates (not all textual conflicts). No main merge, migration or deploy attempted. Exact production/old-account device behavior remains unverified.
+- Next: inspect actual new CI jobs; fix real failures if present; run authenticated API integration on genuine old/Google/Apple/Pro/Free fixtures after reconciling identity architecture in a safe integration stage. Follow with Android/Desktop/WebView device QA and source-semantic completion; preserve Draft.
+
 ## Session delta: authenticated completed-review hardening + targeted semantic QA
 
 - Live PR HEAD before this documentation write: `f3e343e3e00eb622362858ca1f3f4fd4a5ed00b1`. The doc write advances HEAD; **always re-read** PR before further edits. Draft PR #179 remains `mergeable=false`, main/production untouched.
