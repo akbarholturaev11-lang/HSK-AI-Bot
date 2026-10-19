@@ -117,3 +117,17 @@ The limited regression guard detects known errors but does not replace
 source-context semantic checking. Agent carries this responsibility, NOT user.
 
 Verified on [P0 run 39241612582](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39241612582): **313 tests SUCCESS**.
+
+## Native P3 regression: do not assume card order
+
+Native authenticated lesson payloads use the common
+`DesktopCourseService.lesson` access gate. `nhsk2` original grammar texts
+are overlaid only after the existing successful unlock/entitlement checks,
+with exact source SHA plus protected-diff mirror verification; failures fall
+back to the original lesson. Do not expose the same new data through
+unauthenticated static JSON or change answer/score/Pro logic to make
+localization easier. Lesson `_grammar` cards can appear at different
+indexes. Tests/clients MUST select cards using `type == "_grammar"`, not
+`sections[0].cards[0]`; the mistaken index caused P0 test failure.
+Android and Desktop share this service; Mini App still needs its
+entitlement-safe localized read path and app QA.

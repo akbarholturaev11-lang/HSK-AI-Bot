@@ -2,6 +2,16 @@
 
 ## CURRENT STATE — read this first (2026-10-19)
 
+## Authenticated native P3 grammar runtime adoption (2026-10-19)
+
+- Added `app/services/course_p3_grammar_localization.py` to resolve the **source-context-hashed, 136-context canonical TSV** via a cached, source-SHA/mirror-verified in-memory review map. No API per string or new public static grammar pack.
+- Wired `DesktopCourseService.lesson` to call `apply_native_grammar_locales` **only after existing progress/unlock + `LessonAccessService.status(...consume=True)` passes and the existing lesson JSON identity/card-count checks pass**. Android inherits this shared service; Desktop uses it directly. All three UZ/RU/TJ example display values and their verified `_grammar` mirrors are populated in the returned native lesson payload for eligible `nhsk2` source lessons. No Chinese/pinyin, answers, grades, XP, Pro, account or original lesson JSON is modified. Non-nhsk2 levels return unchanged data. Invalid/moved source, protected-tree differences or unavailable catalog triggers a logged count-only **legacy lesson fallback** (previous blanks) rather than corrupting native content or opening a new route.
+- Files: `app/services/course_p3_grammar_localization.py`, `app/services/desktop_course_service.py`, `tests/test_i18n_native_grammar_localization.py`, and P0 workflow. GitHub CI initially failed because the new regression test assumed the `_grammar` card was the first card in `sections[0]`. **Root cause:** lesson cards have mixed types and variable ordering. **Fix:** find by `card.type == "_grammar"` across all sections, never by hard-coded index. Commit `9b9df9924dce855e9ac0afda774a87b3db98352c`; verify its exact-head P0 before claiming test success.
+- THIS IS PARTIAL P3 RUNTIME INTEGRATION on the feature branch only. Native authenticated lesson responses can receive translations after backend deployment but code is NOT on `main` or production. Mini App still uses its existing *public* static lesson JSON fetch and is NOT integrated: avoid placing unreviewed/gated translation packs into open static routes. Mini App route entitlement/prefetch classification, functional Android/Desktop API authorization QA, PR #179 merge conflicts and production release remain outstanding.
+- Next: confirm exact-head P0; run native API/auth/entitlement integration tests in backend CI with dependencies; then safely integrate Mini App translations behind its existing access boundary. Do not require the user to review Chinese translations.
+
+
+
 **OWNER DIRECTION:** The coding agent owns Chinese-context and UZ/RU/TJ
 semantic QA, corrections, content integration, client QA and regression
 prevention. The user cannot review Chinese; do not assign them linguistic
