@@ -2,28 +2,55 @@
 
 ## CURRENT STATE — read this first (2026-10-19)
 
-**LATEST OWNER DIRECTION OVERRIDES LEGACY MANUAL LANGUAGE REVIEW WORDING:**
-The coding agent, not the user or an external editor, owns actual Chinese
-meaning/grammar review for UZ/RU/TJ, fixes, local-first content integration,
-client QA and regression prevention. Read
-`localization/AI_CONTENT_QA_POLICY.md` before continuing. Old "human
-review required" flags simply indicate private drafts are not approved by
-the agent's complete QA/release gates. Do not treat a full 136-context AI ZIP
-or structural CI as a verified production translation. Keep source SHA,
-mirror, entitlement, grading, deterministic catalog and device QA gates.
-The private self-reviewed candidate ZIP is located in this conversation's
-files/Library, not in GitHub; do NOT publish it as a CI artifact.
-The present protected source-preview adapter is NOT runtime integration.
-Keep Draft PR #179 isolated until verified and compatible with main.
+**OWNER DIRECTION:** The coding agent owns Chinese-context and UZ/RU/TJ
+semantic QA, corrections, content integration, client QA and regression
+prevention. The user cannot review Chinese; do not assign them linguistic
+homework. Follow `localization/AI_CONTENT_QA_POLICY.md`. Historical
+"human-review required" wording is superseded for linguistic signoff only;
+source identity, protected fields, access, grading, client and release gates
+still apply. Do not claim native-speaker certification.
 
-- Repository: `akbarholturaev11-lang/HSK-AI-Bot`; feature branch: `codex/i18n-local-first-foundation-20261017`; Draft PR #179 stays open. Latest pushed SHA: `1ee7fc8b88176e4eaa7b97237817433c862f8729`. No `main` merge or production deploy.
-- Current SHA local verification: exact workflow P0 suite **316 tests passed**; focused HSK 3.0 profile contract **11 passed**; common/course catalog checks **3 locales, 6 generated artifacts, 0 stale**, course catalog **797 keys per locale**; frozen baseline **811 sources / 746 lessons / 0 review blockers**. Full Android source scan found **0 remaining exact UZ/RU/TJ matches** between used legacy `R.string` values and generated common/course resources.
-- GitHub P0 run [39244166174](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39244166174) **SUCCESS on exact SHA `1ee7fc8b` (316 tests)**. Manually dispatched Android CI [39244193222](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39244193222) is still running on that SHA; recheck before claiming native CI success. Android local Gradle build is unavailable (`ANDROID_HOME` unset; no `android/local.properties`).
-- Android exact-copy adoption in `1ee7fc8b`: **31 legacy labels / 60 Kotlin call sites** now use generated local common/course resources. Added nine canonical common labels in UZ/RU/TJ, regenerated all six artifacts, bumped the static common bundle cache URL, and added a 3-locale exact parity/call-site regression. Existing `strings.xml` values remain as fallback. The old Android run [39241031998](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39241031998) failed one backend source-contract test because it expected the old `profile_course_version` resource; `ProfileScreen` had already moved to the generated `hsk_course_course_picker_version`. Updated that assertion; current Android CI must confirm.
-- P3 agent-owned contextual QA is complete for **136 unique contexts / 408 UZ-RU-TJ values**, including synchronization to all **272 original maps** and 136 verified mirrors. The limited semantic guard reports 0 known regression patterns; this is agent QA, not native-speaker certification. The user's requested independent review remains an additional check; do not ask the user to judge Chinese text.
-- New private local overlay generator CLI was verified on the actual SHA-pinned drafts: **144 private locale JSON files / 1,224 display values**, mode-restricted outside the checkout; originals unchanged. They are not in Git, CI artifacts or runtime.
-- P3 runtime/content release remains blocked on the source-level entitlement boundary. The read-only route audit reports two manual-review findings: lesson JSON route serves files without a route dependency, and the static curriculum map also needs payload classification. This source analysis does **not** prove a deployed vulnerability or billing bypass, but no new public locale/lesson pack should be added until delivery and entitlement are resolved. Source lesson JSON, answers, grading, Pro/auth logic, `main` and production remain unchanged.
-- Next: record the Android CI outcome for `1ee7fc8b`, then continue the gated local-content delivery work on this branch. Preserve the Draft PR and do not merge/deploy.
+- Repository `akbarholturaev11-lang/HSK-AI-Bot`; working branch
+  `codex/i18n-local-first-foundation-20261017`; PR #179 remains open/Draft.
+  Latest pushed SHA: `6afb1176b967b02a835e486160f7927d0ef77aa2`.
+  No `main` merge or production deployment.
+- Exact-head P0 run [39246448037](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39246448037)
+  **SUCCESS on `6afb1176`**. Local workflow-equivalent suite: **322 tests**;
+  canonical grammar audit: 136 contexts / 408 locale values / 48 lessons /
+  272 original maps / 136 mirrors, zero source writes. Frozen baseline:
+  811 sources / 746 lessons / 0 blockers; common and course UI: 3 locales,
+  6 artifacts each, 0 stale.
+- Android CI [39244193222](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39244193222)
+  **SUCCESS on `1ee7fc8b`**. No Android source changed in later commits.
+  Local Gradle is unavailable (`ANDROID_HOME` unset and no
+  `android/local.properties`).
+- P3 contextual QA is complete for **136 exact contexts / 408 UZ-RU-TJ
+  values**. The central source is
+  `localization/lessons/nhsk2_grammar_uz_ru_tj.tsv`; each row is pinned to
+  grammar title/rule, Chinese example, pinyin, every occurrence, source blob,
+  pointer and mirror paths by `context_sha256`. Reconciled the remaining
+  differences against the source context; repeated translations stay
+  consistent. The agent's QA is not a claim of native-speaker certification.
+- The independent audit attachment checked source/mirror integrity in 8
+  lessons but explicitly assessed **0 translation strings** because it could
+  not read the private candidate archive. Treat it as a structural audit, not
+  a second linguistic review. The user's later independent audit remains an
+  additional check, not the agent's release gate.
+- Canonical rows were materialized only into new private `/tmp` drafts and
+  previews: strict batch **272/272 maps complete**, private source staging
+  **48 lessons / 272 original maps / 136 mirrors**, private local packs
+  **144 files / 1,224 display values**. All source lesson JSON stayed byte
+  unchanged; outputs were outside Git with 0700 directories and 0600 files.
+- **P3 runtime is still not integrated.** The existing Mini App lesson-file
+  route returns lesson JSON without a route dependency, and the public
+  curriculum-map route still needs payload classification. This source
+  finding is not proof of a deployed vulnerability or billing bypass. Do not
+  publish a generated lesson overlay until its delivery respects existing
+  Free/Trial/Pro rules and the old-client contract. Continue source/security
+  analysis and a safe delivery design on this branch; do not change access or
+  grading behavior as a localization shortcut.
+- P2/UI adoption and real device/WebView/payment-flow QA also remain in
+  progress. Preserve PR #179; do not merge, push `main`, or deploy.
 ## P3 author-led linguistic QA and private source staging (2026-10-19)
 
 - The user explicitly delegated translation meaning/grammar consistency and integration quality checks to the coding agent. Do NOT ask the user, who cannot verify Chinese/Ukrainian/Russian/Tajik grammar, to personally review texts. This does not justify false claims of native-speaker certification or pushing unresolved content to production.
@@ -369,3 +396,26 @@ Keep Draft PR #179 isolated until verified and compatible with main.
 - Preserve PR #179 and its source commits. **Do not squash/rebase/force-push/delete** the working branch merely to shorten a 250+ commit history; doing so risks orphaning concurrent work. Do not merge PR #179 just for cleanliness.
 - Keep implementation notes in `localization/PLAN_SCHEMA_ORDER.md`; use this file as the single compact next-chat index. Avoid redundant daily diary or repeated full audits. Use optimistic SHA/lease checks on writes.
 - At the end: report live commit SHA, actual CI conclusions, exact changed files and count, outstanding risks, next concrete large batch. Do not claim Android build/device deployment from source-only tests.
+
+## P3 canonical grammar source + source-bound validator (2026-10-19)
+
+- `localization/lessons/nhsk2_grammar_uz_ru_tj.tsv` now holds the reconciled
+  136-context / 408-value UZ/RU/TJ catalog. Each row is pinned by
+  `context_sha256` over grammar title/rule, Chinese example, pinyin, every
+  source occurrence, source blob, pointer and mirrored paths. The validator
+  rejects schema/order/duplicate/empty/non-NFC/extra-column/stale-context
+  inputs; direct-script invocation works and reports counts only.
+- `tests/test_i18n_canonical_grammar_catalog.py` adds six P0 regressions;
+  `i18n-p0.yml` runs them. Local workflow-equivalent P0: **322 passed**;
+  exact-head GitHub P0 [39246448037](https://github.com/akbarholturaev11-lang/HSK-AI-Bot/actions/runs/39246448037)
+  **SUCCESS on `6afb1176`**. The 746 lesson sources remain byte unchanged.
+- Strict private batch, source staging and local-pack generation passed from
+  the canonical TSV: 272/272 maps complete; 48 private previews; 144 private
+  locale files / 1,224 display values. No private full-lesson preview or pack
+  is in Git or runtime.
+- Commit `6afb1176b967b02a835e486160f7927d0ef77aa2` is pushed to the feature
+  branch. The attached independent audit validated source/mirror structure in
+  8 lessons but read 0 translation strings; it is not a linguistic audit.
+  Next: resolve the lesson/map delivery boundary, then integrate reviewed
+  overlays without changing existing access, grading or client contracts;
+  continue P2 runtime/client checks. No main merge or deployment.

@@ -19,7 +19,7 @@ and cross-platform QA remain pending.
 > `docs/I18N_MULTILANGUAGE_MIGRATION.md`, and
 > `localization/surface_registry.json`.
 >
-> Status: **P0 source guards and P1 local catalogs implemented; P2 UI adoption remains in progress; P3 translations remain private and runtime integration is gated by entitlement review. Branch only.** This file documents architecture and execution order; it does not mean client locales or course content have been fully migrated.
+> Status: **P0 source guards and P1 local catalogs implemented; P2 UI adoption remains in progress; P3 agent-owned QA and the 136-context canonical catalog are in Git with source-bound validation, while runtime delivery remains gated on lesson/map access classification. Branch only.** This file documents architecture and execution order; it does not mean client locales or course content have been fully migrated.
 
 ## 0. Where to resume
 
@@ -30,7 +30,8 @@ and cross-platform QA remain pending.
   the repository's testing rules and an explicit implementation scope.
 - Baseline languages: `uz`, `ru`, `tj`; Android/BCP-47 Tajik is `tg`.
 - Read `AGENTS.md`, `AI_RULES.md` and `PROJECT_MEMORY.md` before editing.
-- **Next concrete action:** record the running Android CI result for `1ee7fc8b`; continue remaining local-first runtime work only within the existing source-version and entitlement boundaries. Keep all work on this branch; do not add public lesson overlays while route review is open.
+- **Latest verified head:** `6afb1176b967b02a835e486160f7927d0ef77aa2`; exact-head P0 run `39246448037` SUCCESS (322 local regression tests). Android CI `39244193222` SUCCESS on `1ee7fc8b`; no Android source changed after that SHA.
+- **Next concrete action:** resolve the existing lesson-file and curriculum-map delivery boundary before runtime overlay publication; continue remaining P2 adoption/client checks on this branch. Preserve Free/Trial/Pro, grading and old-client behavior; no main merge or deployment.
 
 ## 1. Architecture / schema
 
