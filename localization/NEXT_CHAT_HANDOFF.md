@@ -1,5 +1,12 @@
 # HSK AI Local-First i18n — next-chat execution handoff
 
+## P3 HSK3.0 16-дарсда `_grammar` дубликатлари (2026-10-19)
+
+- Real source `nhsk2/lesson_16.json` contains **6** originally blank `grammar[0].examples[].translation` maps and **6 identical mirrors** at `sections[1].cards[0].g.examples[].translation` under `_grammar` card. Editing only main `grammar` could leave a runtime card blank. Additional sampled lessons (17, 18, 21, 22) also have mirrors; other sampled lessons (20, 26, 73) do not. Do NOT assume every lesson has the same duplication layout or automatically count mirrors as 816 new independent translations.
+- Updated private `scripts/i18n_grammar_editor_workspace.py` to include `mirrored_paths` as INFORMATIONAL, source-checked original Chinese + locale-map parity for each blank grammar example; divergent mirrors fail closed. The **editable** `editor_draft.json` STILL ONLY holds original `/grammar/.../translation` whitelist pointers (6 fields, 18 human UZ/RU/TJ values), no mirrored fields or answer data. The new code does **not** change source JSON, Pro, grading, clients or runtime.
+- Updated real first-lesson test and added two synthetic regression cases (mirror discovered but not copied into editor draft; mismatched mirror blocks). The previously strict display-preview validator intentionally rejects unreviewed changes to mirrors. Before any approved source integration, add a **separate reviewed sync/apply adapter** that updates validated mirrors atomically only after human approval and scoring/Pro/old client QA. This is an outstanding P3 release blocker.
+- AI-generated pilot draft translation text, if created for editor review, must stay outside the repository with `HUMAN_REVIEW_REQUIRED`. Do not claim language approval or production readiness; PR #179 remains Draft and previous source content remains unchanged.
+
 ## P3 first real private grammar editor worksheet (2026-10-19)
 
 - Added `scripts/i18n_grammar_editor_workspace.py` for the first affected `nhsk2/lesson_16.json`: creates exactly **6** Chinese grammar-example context records and a separate matching **6-field / 18-empty-locale** editor draft, pinned to the unchanged original lesson's Git blob SHA. Both artifacts are **local/private only**, under an explicitly new folder **outside the repository**, 0700 folder / 0600 files, no overwrites. The draft intentionally fails validation until UZ/RU/TJ text is authored and reviewed. CLI emits only structural counts; it cannot export answer options, grade tokens, Pro flags or lesson packs.

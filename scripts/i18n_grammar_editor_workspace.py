@@ -52,6 +52,52 @@ def _approved_context(source: dict[str, Any], pointer: str) -> dict[str, str]:
     return {"pointer": pointer, "chinese_example": zh, "pinyin": pinyin}
 
 
+def _mirrored_grammar_pointers(
+    source: dict[str, Any], pointer: str,
+) -> list[str]:
+    """Discover identical display copies in _grammar cards, never answer fields.
+
+    Mirror paths are informational ONLY. They must not be added to the
+    translator's approved draft until an independent content-integration
+    review covers mirrored lessons and downstream clients.
+    """
+    match = GRAMMAR_POINTER.fullmatch(pointer)
+    if not match:
+        raise ValueError("non-grammar display pointer")
+    grammar_index, example_index = map(int, match.groups())
+    original_group = source["grammar"][grammar_index]
+    original_example = original_group["examples"][example_index]
+    results: list[str] = []
+    for si, section in enumerate(source.get("sections", [])):
+        if type(section) is not dict:
+            continue
+        cards = section.get("cards", [])
+        if type(cards) is not list:
+            continue
+        for ci, card in enumerate(cards):
+            if type(card) is not dict or card.get("type") != "_grammar":
+                continue
+            mirror_group = card.get("g")
+            if type(mirror_group) is not dict:
+                raise ValueError("malformed mirrored grammar card")
+            if mirror_group.get("no") != original_group.get("no"):
+                continue
+            entries = mirror_group.get("examples")
+            if type(entries) is not list or len(entries) <= example_index:
+                raise ValueError("mirrored grammar example missing")
+            mirror = entries[example_index]
+            if (
+                type(mirror) is not dict
+                or mirror.get("zh") != original_example.get("zh")
+                or mirror.get("translation") != original_example.get("translation")
+            ):
+                raise ValueError("mirrored grammar source differs; integration review required")
+            results.append(
+                f"/sections/{si}/cards/{ci}/g/examples/{example_index}/translation"
+            )
+    return results
+
+
 def _private_new_directory(root: Path, path: Path) -> Path:
     checkout = root.resolve(strict=True)
     candidate = path.resolve(strict=False)
@@ -111,7 +157,11 @@ def prepare_grammar_editor_workspace(
         for item in missing
     ):
         raise ValueError("partial or invalid locale maps need separate human resolution")
-    contexts = [_approved_context(source, item["pointer"]) for item in missing]
+    contexts = [
+        {**_approved_context(source, item["pointer"]),
+         "mirrored_paths": _mirrored_grammar_pointers(source, item["pointer"])}
+        for item in missing
+    ]
     if len({item["pointer"] for item in contexts}) != len(contexts):
         raise ValueError("repeated source pointer")
     blob_sha = _git_blob_sha1(source_bytes)
@@ -139,6 +189,7 @@ def prepare_grammar_editor_workspace(
             "Fill the matching values in editor_draft.json; do not alter its source SHA or pointers.",
             "Validate privately with scripts/i18n_editor_translation_draft.py.",
             "A passing validator is not a human language approval or publish permission.",
+            "Mirrored _grammar card paths are informational and need separate approved synchronization.",
         ],
     }
     folder = _private_new_directory(root, destination)
@@ -154,6 +205,7 @@ def prepare_grammar_editor_workspace(
         "source_git_blob_sha1": blob_sha,
         "pending_display_maps": len(contexts),
         "pending_locale_values": len(contexts) * 3,
+        "mirrored_display_paths": sum(len(item["mirrored_paths"]) for item in contexts),
         "private_files_created": 2,
         "ready_to_ship": False,
         "original_lesson_unchanged": True,

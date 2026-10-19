@@ -23,6 +23,7 @@ class GrammarEditorWorkspaceTests(unittest.TestCase):
             )
             self.assertEqual(status["pending_display_maps"], 6)
             self.assertEqual(status["pending_locale_values"], 18)
+            self.assertEqual(status["mirrored_display_paths"], 6)
             self.assertFalse(status["ready_to_ship"])
             self.assertEqual(status["source_git_blob_sha1"], _git_blob_sha1(before))
             ws = json.loads((dest / "worksheet.json").read_text(encoding="utf-8"))
@@ -35,7 +36,9 @@ class GrammarEditorWorkspaceTests(unittest.TestCase):
             for entry in ws["examples"]:
                 self.assertRegex(entry["pointer"], r"^/grammar/\d+/examples/\d+/translation$")
                 self.assertTrue(entry["chinese_example"])
-                self.assertEqual(set(entry), {"pointer", "chinese_example", "pinyin"})
+                self.assertEqual(set(entry), {"pointer", "chinese_example", "pinyin", "mirrored_paths"})
+                self.assertEqual(len(entry["mirrored_paths"]), 1)
+                self.assertTrue(entry["mirrored_paths"][0].startswith("/sections/"))
             self.assertFalse(any(
                 bad in json.dumps(ws, ensure_ascii=False)
                 for bad in ("correct_index", "answer_tokens", "requires_pro",
@@ -132,6 +135,62 @@ class GrammarEditorWorkspaceTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "partial"):
                 prepare_grammar_editor_workspace(
                     "nhsk2", 1, Path(top)/"partial", root=root
+                )
+
+    def test_synthetic_duplicate_grammar_path_included_as_information_only(self):
+        with tempfile.TemporaryDirectory() as top:
+            root = Path(top) / "repo"
+            folder = root / "app/static/course_v3_data/nhsk2"
+            folder.mkdir(parents=True)
+            group = {
+                "no": 1,
+                "examples": [{"zh": "例句", "pinyin": "",
+                              "translation": {"uz": "", "ru": "", "tj": ""}}]
+            }
+            original = {
+                "schema_version": 2, "level": "nhsk2", "lesson_id": 1,
+                "part_no": 1, "grammar": [group],
+                "sections": [{"cards": [
+                    {"type": "_grammar", "g": json.loads(json.dumps(group))},
+                    {"type": "reverse_builder", "answer_tokens": ["SECRET_TOKEN"],
+                     "correct_index": 0},
+                ]}],
+            }
+            source = folder / "lesson_01.json"
+            source.write_text(json.dumps(original), encoding="utf-8")
+            private = Path(top) / "review"
+            report = prepare_grammar_editor_workspace("nhsk2", 1, private, root=root)
+            self.assertEqual(report["mirrored_display_paths"], 1)
+            ws = json.loads((private / "worksheet.json").read_text(encoding="utf-8"))
+            draft = json.loads((private / "editor_draft.json").read_text(encoding="utf-8"))
+            self.assertEqual(ws["examples"][0]["mirrored_paths"], [
+                "/sections/0/cards/0/g/examples/0/translation"
+            ])
+            self.assertEqual([x["pointer"] for x in draft["translations"]], [
+                "/grammar/0/examples/0/translation"
+            ])
+            self.assertNotIn("SECRET_TOKEN", json.dumps(ws))
+            self.assertEqual(json.loads(source.read_text()), original)
+
+    def test_mismatched_grammar_mirror_is_blocked(self):
+        with tempfile.TemporaryDirectory() as top:
+            root = Path(top) / "repo"
+            folder = root / "app/static/course_v3_data/nhsk2"
+            folder.mkdir(parents=True)
+            original_group = {
+                "no": 1, "examples": [{"zh": "原句",
+                                      "translation": {"uz": "", "ru": "", "tj": ""}}],
+            }
+            bad_mirror = json.loads(json.dumps(original_group))
+            bad_mirror["examples"][0]["zh"] = "WRONG"
+            (folder / "lesson_01.json").write_text(json.dumps({
+                "schema_version": 2, "level": "nhsk2", "lesson_id": 1,
+                "part_no": 1, "grammar": [original_group],
+                "sections": [{"cards": [{"type": "_grammar", "g": bad_mirror}]}],
+            }), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "mirrored grammar source differs"):
+                prepare_grammar_editor_workspace(
+                    "nhsk2", 1, Path(top) / "private", root=root,
                 )
 
     def test_no_automatic_translation_or_public_write(self):

@@ -164,3 +164,23 @@ answers or draft translations. Do not commit, upload, or share the worksheet
 as a public lesson/course/CI artifact. Source context is for authorized
 human language reviewers only. Structural validation and in-memory preview
 integrity still require separate editorial signoff; P3 runtime NOT STARTED.
+
+## Duplicate grammar card display fields: explicit review requirement
+
+The existing Level 2 lesson 16 file stores six example translations twice:
+- approved editor source: `/grammar/0/examples/{0..5}/translation`
+- **derived mirror for course card display:**
+  `/sections/1/cards/0/g/examples/{0..5}/translation`
+
+The private `worksheet.json` now lists `mirrored_paths` alongside the
+original Chinese example. **These are informational review locations only**;
+the accompanying `editor_draft.json` must include *only* the whitelisted
+`/grammar/...` pointers. Editor translations are authored only once.
+
+Before integrating any approved content, a separate strictly reviewed source
+adapter must synchronize matched mirrored display fields (after validating
+original Chinese, original locale-map equality, grade/correct_index/options,
+Pro access and client compatibility). The existing private preview integrity
+checker intentionally rejects unapproved mirror edits. No synchronizer is
+activated here. Do not treat a structurally valid draft as a working course
+UI patch without this integration review.
