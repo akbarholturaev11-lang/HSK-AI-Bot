@@ -198,6 +198,8 @@ def create_miniapp_entitlements_router(
             return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
         try:
             payload = await request.json()
+            if not isinstance(payload, dict):
+                raise ValueError("lesson payload must be an object")
             order = int(payload.get("lesson_id") or 0)
         except (TypeError, ValueError):
             return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
@@ -216,6 +218,18 @@ def create_miniapp_entitlements_router(
                     return JSONResponse(
                         status_code=403,
                         content={"ok": False, "error": "course_lesson_not_unlocked"},
+                        headers={"Cache-Control": "no-store"},
+                    )
+                # A signed completed-lesson read is quota-free, but must
+                # still pass the SAME blocked-user and HSK 3.0 track gates
+                # as native/Desktop. Progress alone is not an entitlement.
+                review_status = await LessonAccessService(session).status(
+                    user, level=level, lesson_order=order,
+                    completed=completed, consume=False,
+                )
+                if not review_status["allowed"]:
+                    return JSONResponse(
+                        status_code=403, content=review_status,
                         headers={"Cache-Control": "no-store"},
                     )
                 localized = miniapp_reserved_grammar_patch(level=level, lesson_order=order)
