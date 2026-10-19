@@ -123,7 +123,7 @@ internal fun PracticeStreakStep(
                     }
                     HskFadeIn(durationMillis = 400) {
                         HskPrimaryButton(
-                            text = stringResource(R.string.lesson_next),
+                            text = stringResource(R.string.hsk_common_action_continue),
                             onClick = onDone,
                             modifier = Modifier.fillMaxWidth(),
                         )

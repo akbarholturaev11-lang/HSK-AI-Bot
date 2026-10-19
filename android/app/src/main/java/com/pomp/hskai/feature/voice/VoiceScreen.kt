@@ -292,7 +292,7 @@ private fun VoiceBox(
     val boxInk = if (PompColors.IsDark) PompColors.Ink else PompColors.Paper
     val boxMuted = if (PompColors.IsDark) PompColors.InkSecondary else Color.White.copy(alpha = 0.72f)
     val quotaText = when {
-        state.isLoading -> stringResource(R.string.state_loading)
+        state.isLoading -> stringResource(R.string.hsk_common_state_loading)
         state.status == null -> stringResource(R.string.error_voice_unavailable)
         state.status?.isPaid == true -> stringResource(R.string.voice_limit_premium)
         else -> stringResource(

@@ -173,7 +173,7 @@ fun ReadyPhrasesScreen(
         ) {
             Icon(
                 Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.ready_phrases_back),
+                contentDescription = stringResource(R.string.hsk_common_action_back),
             )
         }
         OutlinedTextField(

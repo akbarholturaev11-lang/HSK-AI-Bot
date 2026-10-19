@@ -394,7 +394,7 @@ private fun PracticeHome(
                             ToolDivider()
                             ToolRow("句", null, TintJade, stringResource(R.string.hsk_course_ready_phrases_title), stringResource(R.string.practice_ready_phrases_body), true, newSectionId = READY_PHRASES_SECTION_ID, onClick = onOpenReadyPhrases)
                             ToolDivider()
-                            ToolRow(null, Icons.Filled.Visibility, TintBlue, stringResource(R.string.practice_characters_title), stringResource(R.string.practice_recognition_group_body), toolsEnabled) { onOpenDrill(DrillMode.RECOGNITION) }
+                            ToolRow(null, Icons.Filled.Visibility, TintBlue, stringResource(R.string.hsk_course_mistakes_page_sources_recognition), stringResource(R.string.practice_recognition_group_body), toolsEnabled) { onOpenDrill(DrillMode.RECOGNITION) }
                             ToolDivider()
                             ToolRow(null, Icons.Filled.Mic, TintJade, stringResource(R.string.practice_pronunciation_row_title), stringResource(R.string.practice_pronunciation_row_body), toolsEnabled) { onOpenDrill(DrillMode.PRONUNCIATION) }
                         }
@@ -780,7 +780,7 @@ private fun PracticeRun(state: PracticeUiState, language: String, onSelect: (Int
                     continueText = if (state.questionIndex == session.questions.lastIndex) {
                         stringResource(R.string.hsk_course_mistakes_page_finish)
                     } else {
-                        stringResource(R.string.lesson_next)
+                        stringResource(R.string.hsk_common_action_continue)
                     },
                     loading = state.isCompleting,
                     onContinue = { onAdvance(language) },
@@ -884,7 +884,7 @@ private fun ExamRun(state: PracticeUiState, language: String, onSelect: (Int) ->
             PracticeErrorPill(stringResource(state.error.messageRes))
         }
         PrimaryAction(
-            text = if (state.examIndex == session.questions.lastIndex) stringResource(R.string.hsk_course_mistakes_page_finish) else stringResource(R.string.lesson_next),
+            text = if (state.examIndex == session.questions.lastIndex) stringResource(R.string.hsk_course_mistakes_page_finish) else stringResource(R.string.hsk_common_action_continue),
             enabled = state.examSelectedIndex != null,
             loading = state.isCompleting,
         ) { onAdvance(language) }
@@ -948,7 +948,7 @@ private fun QuestionShell(title: String, onCancel: () -> Unit, content: @Composa
                 Text(title, style = MaterialTheme.typography.titleMedium, color = PompColors.Ink)
             }
             HskGlassButton(
-                text = stringResource(R.string.action_close),
+                text = stringResource(R.string.hsk_common_action_close),
                 onClick = onCancel,
             )
         }
@@ -1102,7 +1102,7 @@ private fun CompletionSummaryShell(
                 Column { extra() }
                 PrimaryAction(
                     text = if (outcome.hasStreakEvent) {
-                        stringResource(R.string.lesson_next)
+                        stringResource(R.string.hsk_common_action_continue)
                     } else {
                         stringResource(R.string.practice_back_to_tools)
                     },

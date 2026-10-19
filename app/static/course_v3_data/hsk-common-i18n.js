@@ -3,6 +3,14 @@
 if (typeof window !== "undefined") {
   window.HSKAI_COMMON_I18N = Object.freeze({
   "uz": Object.freeze({
+  "action.back": "Orqaga",
+  "action.close": "Yopish",
+  "action.continue": "Davom etish",
+  "action.done": "Tayyor",
+  "action.exit": "Chiqish",
+  "action.finish": "Yakunlash",
+  "action.logout": "Chiqish",
+  "action.start": "Boshlash",
   "auth.expires": "Kod {time} amal qiladi",
   "common.refresh": "Yangilash",
   "lesson.continue": "Darsni davom ettirish",
@@ -13,9 +21,18 @@ if (typeof window !== "undefined") {
   "navigation.practice": "Mashq",
   "navigation.profile": "Profil",
   "navigation.rating": "Reyting",
-  "navigation.subscription": "Obuna"
+  "navigation.subscription": "Obuna",
+  "state.loading": "Yuklanmoqda…"
 }),
   "ru": Object.freeze({
+  "action.back": "Назад",
+  "action.close": "Закрыть",
+  "action.continue": "Продолжить",
+  "action.done": "Готово",
+  "action.exit": "Выйти",
+  "action.finish": "Завершить",
+  "action.logout": "Выйти",
+  "action.start": "Начать",
   "auth.expires": "Код действует ещё {time}",
   "common.refresh": "Обновить",
   "lesson.continue": "Продолжить урок",
@@ -26,9 +43,18 @@ if (typeof window !== "undefined") {
   "navigation.practice": "Практика",
   "navigation.profile": "Профиль",
   "navigation.rating": "Рейтинг",
-  "navigation.subscription": "Подписка"
+  "navigation.subscription": "Подписка",
+  "state.loading": "Загрузка…"
 }),
   "tj": Object.freeze({
+  "action.back": "Бозгашт",
+  "action.close": "Пӯшидан",
+  "action.continue": "Идома додан",
+  "action.done": "Тайёр",
+  "action.exit": "Баромадан",
+  "action.finish": "Анҷом",
+  "action.logout": "Баромадан",
+  "action.start": "Оғоз",
   "auth.expires": "Рамз боз {time} амал мекунад",
   "common.refresh": "Навсозӣ",
   "lesson.continue": "Идомаи дарс",
@@ -39,7 +65,8 @@ if (typeof window !== "undefined") {
   "navigation.practice": "Машқ",
   "navigation.profile": "Профил",
   "navigation.rating": "Рейтинг",
-  "navigation.subscription": "Обуна"
+  "navigation.subscription": "Обуна",
+  "state.loading": "Боргирӣ…"
 })
   });
 }

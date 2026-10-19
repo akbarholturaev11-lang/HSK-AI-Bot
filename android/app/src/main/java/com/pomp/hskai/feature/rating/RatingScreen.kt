@@ -520,7 +520,7 @@ private fun RatingScreenHeader(title: String, onBack: () -> Unit) {
     ) {
         HskGlassIconButton(
             icon = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = stringResource(R.string.action_back),
+            contentDescription = stringResource(R.string.hsk_common_action_back),
             onClick = onBack,
             iconSize = 24.dp,
             tint = PompColors.Ink,
@@ -849,7 +849,7 @@ private fun ActiveChallengeRow(duel: ChallengeDto, onStart: (ChallengeDto) -> Un
             color = PompColors.Cinnabar,
         ) {
             Text(
-                text = stringResource(R.string.challenge_start),
+                text = stringResource(R.string.hsk_common_action_start),
                 style = MaterialTheme.typography.labelLarge,
                 color = PompColors.Paper,
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),

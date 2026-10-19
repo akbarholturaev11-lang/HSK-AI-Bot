@@ -1076,6 +1076,6 @@ fun UnsupportedCardView(card: UnsupportedCard, onSkip: () -> Unit) {
         Spacer(Modifier.height(8.dp))
         Text(text = stringResource(R.string.lesson_card_unsupported_hint), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary, textAlign = TextAlign.Center)
         Spacer(Modifier.height(20.dp))
-        SecondaryAction(text = stringResource(R.string.lesson_skip_card), onClick = onSkip)
+        SecondaryAction(text = stringResource(R.string.hsk_course_pronunciation_skip), onClick = onSkip)
     }
 }

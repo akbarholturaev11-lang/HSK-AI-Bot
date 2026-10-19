@@ -1700,7 +1700,7 @@ private fun AppRoot(
                     },
                     dismissButton = {
                         TextButton(onClick = courseViewModel::consumeTrackError) {
-                            Text(stringResource(R.string.action_close))
+                            Text(stringResource(R.string.hsk_common_action_close))
                         }
                     },
                     containerColor = PompColors.Paper,

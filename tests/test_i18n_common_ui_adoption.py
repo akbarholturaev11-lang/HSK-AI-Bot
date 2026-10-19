@@ -65,7 +65,7 @@ class ReviewedCommonUIAdoptionTests(unittest.TestCase):
     def test_miniapp_loads_only_static_local_ui_bundle(self):
         html = (ROOT / "app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertIn(
-            '<script src="/course_v3_data/hsk-common-i18n.js?v=20261017-common-v1"></script>',
+            '<script src="/course_v3_data/hsk-common-i18n.js?v=20261019-android-common-v2"></script>',
             html,
         )
         self.assertLess(html.index("hsk-common-i18n.js"),

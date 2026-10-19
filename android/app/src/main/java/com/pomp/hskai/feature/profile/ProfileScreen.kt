@@ -584,7 +584,7 @@ private fun AvatarNoteSheet(onDismiss: () -> Unit) {
     val sheetState = rememberModalBottomSheetState()
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = PompColors.PaperRaised) {
         Text(
-            text = stringResource(R.string.profile_avatar_note),
+            text = stringResource(R.string.hsk_course_avatar_edit_note),
             style = MaterialTheme.typography.bodyLarge,
             color = PompColors.InkSecondary,
             textAlign = TextAlign.Center,
@@ -825,7 +825,7 @@ private fun ProfileSettingsScreen(
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.action_back),
+                                contentDescription = stringResource(R.string.hsk_common_action_back),
                                 tint = PompColors.Ink,
                                 modifier = Modifier.size(22.dp),
                             )
@@ -936,7 +936,7 @@ private fun ProfileSettingsScreen(
                             ProfileSettingsDivider()
                             ProfileSettingsItem(
                                 Icons.AutoMirrored.Filled.HelpOutline,
-                                stringResource(R.string.profile_help),
+                                stringResource(R.string.hsk_course_help),
                                 stringResource(
                                     if (supportUrl.isBlank()) R.string.profile_help_unavailable
                                     else R.string.hsk_course_help_btn,
@@ -1004,7 +1004,7 @@ private fun ProfileSettingsScreen(
                                 modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp),
                                 shape = RoundedCornerShape(15.dp),
                             ) {
-                                Text(stringResource(R.string.profile_logout), color = PompColors.Ink)
+                                Text(stringResource(R.string.hsk_common_action_logout), color = PompColors.Ink)
                             }
                             OutlinedButton(
                                 onClick = { confirmUnlink = true },

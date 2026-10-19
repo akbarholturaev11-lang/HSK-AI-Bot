@@ -13,6 +13,15 @@
     "lesson.locked": "Сначала завершите предыдущий урок",
     "lesson.notFound": "Для этого уровня уроки пока не найдены.",
     "common.refresh": "Обновить",
-    "auth.expires": "Код действует ещё {time}"
+    "auth.expires": "Код действует ещё {time}",
+    "action.back": "Назад",
+    "action.close": "Закрыть",
+    "action.continue": "Продолжить",
+    "action.done": "Готово",
+    "action.exit": "Выйти",
+    "action.finish": "Завершить",
+    "action.logout": "Выйти",
+    "action.start": "Начать",
+    "state.loading": "Загрузка…"
   }
 }

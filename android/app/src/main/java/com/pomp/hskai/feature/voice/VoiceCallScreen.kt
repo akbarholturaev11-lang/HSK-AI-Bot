@@ -494,7 +494,7 @@ private fun CallDock(
                         )
                         Spacer(Modifier.width(6.dp))
                         Text(
-                            text = stringResource(R.string.voice_what_to_say),
+                            text = stringResource(R.string.hsk_course_voice_page_what_to_say),
                             style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp),
                             color = PompColors.CinnabarDark,
                         )

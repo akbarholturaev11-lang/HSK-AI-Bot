@@ -177,7 +177,7 @@ fun LessonScreen(
                         textAlign = TextAlign.Center,
                     )
                     Spacer(Modifier.height(16.dp))
-                    SecondaryAction(stringResource(R.string.action_close), onExit)
+                    SecondaryAction(stringResource(R.string.hsk_common_action_close), onExit)
                 }
                 outcome is LessonOutcome.PreviewExhausted -> PreviewEndBlock(onExit)
                 outcome is LessonOutcome.Completed ->
@@ -664,7 +664,7 @@ private fun LessonTopBar(
     ) {
         HskGlassIconButton(
             icon = Icons.Filled.Close,
-            contentDescription = stringResource(R.string.action_close),
+            contentDescription = stringResource(R.string.hsk_common_action_close),
             onClick = onExit,
             size = 40.dp,
             iconSize = 24.dp,
@@ -941,7 +941,7 @@ private fun FooterBar(
         }
         (card is NewWordCard || card is GrammarCard) && acknowledgeReady -> Box(modifier = footer) {
             HskDepthButton(
-                text = stringResource(R.string.lesson_next),
+                text = stringResource(R.string.hsk_common_action_continue),
                 color = PompColors.Cinnabar,
                 onClick = onAcknowledge,
             )
@@ -1022,7 +1022,7 @@ private fun FeedbackPanel(
             }
             Spacer(Modifier.height(14.dp))
             HskDepthButton(
-                text = stringResource(R.string.lesson_next),
+                text = stringResource(R.string.hsk_common_action_continue),
                 color = accent,
                 onClick = onAdvance,
                 enabled = !submitting,
@@ -1050,7 +1050,7 @@ private fun PreviewEndBlock(onExit: () -> Unit) {
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(24.dp))
-        SecondaryAction(stringResource(R.string.action_close), onExit)
+        SecondaryAction(stringResource(R.string.hsk_common_action_close), onExit)
     }
 }
 
@@ -1092,6 +1092,6 @@ private fun FailedBlock(
         Spacer(Modifier.height(20.dp))
         PrimaryAction(stringResource(R.string.action_retry), onClick = onRetry)
         Spacer(Modifier.height(8.dp))
-        SecondaryAction(stringResource(R.string.action_close), onExit)
+        SecondaryAction(stringResource(R.string.hsk_common_action_close), onExit)
     }
 }

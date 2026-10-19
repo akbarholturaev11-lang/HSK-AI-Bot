@@ -81,6 +81,7 @@ jobs:
             tests.test_i18n_android_voice_ui_adoption \
             tests.test_i18n_android_practice_ui_adoption \
             tests.test_i18n_android_profile_course_ui_adoption \
+            tests.test_i18n_android_remaining_exact_copy_adoption \
             tests.test_i18n_test_center_adoption \
             tests.test_i18n_recognition_adoption \
             tests.test_i18n_practice_ui_adoption \

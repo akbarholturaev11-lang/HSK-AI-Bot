@@ -278,7 +278,7 @@ private fun RevealedScene(
                     text = if (isLast) {
                         stringResource(R.string.lesson_back_to_course)
                     } else {
-                        stringResource(R.string.lesson_next)
+                        stringResource(R.string.hsk_common_action_continue)
                     },
                     onClick = onNext,
                 )

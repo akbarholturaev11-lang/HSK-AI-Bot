@@ -394,7 +394,7 @@ fun CourseScreen(
                                     contentColor = PompColors.OnCinnabar,
                                 ),
                             ) {
-                                Text(stringResource(R.string.action_continue))
+                                Text(stringResource(R.string.hsk_common_action_continue))
                             }
                         },
                         dismissButton = {
@@ -1636,7 +1636,7 @@ private fun RewardChestOverlay(rewardXp: Int, onContinue: () -> Unit) {
                     )
                     Spacer(Modifier.height(18.dp))
                     HskPrimaryButton(
-                        text = stringResource(R.string.action_continue),
+                        text = stringResource(R.string.hsk_common_action_continue),
                         onClick = onContinue,
                         modifier = Modifier.fillMaxWidth(),
                     )

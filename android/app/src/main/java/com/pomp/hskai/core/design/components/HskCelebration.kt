@@ -146,7 +146,7 @@ fun HskStreakCelebration(gamification: CourseGamificationDto) {
         }
         HskReveal(delayMillis = 170) {
             Text(
-                text = stringResource(R.string.lesson_streak_days),
+                text = stringResource(R.string.hsk_course_streak_display_many),
                 style = MaterialTheme.typography.headlineSmall,
                 color = HskStageInkOn,
                 fontWeight = FontWeight.Bold,

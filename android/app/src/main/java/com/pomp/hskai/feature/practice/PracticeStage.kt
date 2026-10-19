@@ -70,7 +70,7 @@ internal fun PracticeStageTopBar(progress: Float, onClose: () -> Unit, modifier:
     ) {
         HskGlassIconButton(
             icon = Icons.Filled.Close,
-            contentDescription = stringResource(R.string.action_close),
+            contentDescription = stringResource(R.string.hsk_common_action_close),
             onClick = onClose,
             size = 40.dp,
             iconSize = 24.dp,
