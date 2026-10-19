@@ -14,6 +14,8 @@ on:
       - "app/services/account_identity.py"
       - "app/services/ai_usage_budget_service.py"
       - "app/services/voice_practice_service.py"
+      - "app/services/android_live_voice_service.py"
+      - "app/repositories/user_repo.py"
       - "app/db/models/ai_usage.py"
       - "app/db/models/voice_practice_session.py"
       - "alembic/versions/0105_native_ai_voice_ownership.py"
