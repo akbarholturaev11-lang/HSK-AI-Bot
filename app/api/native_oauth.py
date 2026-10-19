@@ -11,6 +11,8 @@ link row approved; the client then calls the existing, unchanged
 
 from __future__ import annotations
 
+import base64
+import hashlib
 import logging
 from typing import Annotated, Any, Callable, Literal
 
@@ -30,6 +32,7 @@ from app.api.desktop_auth import (
 from app.services.desktop_auth_service import (
     LINK_INTENT,
     SIGNIN_INTENT,
+    TELEGRAM_APPROVAL_MODE,
     DesktopAuthError,
     DesktopAuthService,
 )
@@ -75,6 +78,8 @@ class OAuthStartRequest(BaseModel):
     installation_key: InstallationKey
     provider: Provider
     mode: Literal["native_id_token", "browser_redirect"]
+    language: Literal["uz", "ru", "tj"] | None = None
+    referral_code: str | None = Field(default=None, max_length=64)
 
 
 class OAuthAssertRequest(BaseModel):
@@ -95,8 +100,8 @@ class IdentityLinkStartRequest(BaseModel):
     # per-account value so the existing per-installation rate limit still
     # applies. Native clients must still send their real key.
     installation_key: InstallationKey | None = None
-    provider: Provider
-    mode: Literal["native_id_token", "browser_redirect"]
+    provider: Literal["google", "apple", "telegram"]
+    mode: Literal["native_id_token", "browser_redirect", "telegram_approval"]
 
 
 class IdentityLinkStatusRequest(BaseModel):
@@ -146,17 +151,44 @@ background:#faf8f5;color:#1a1a1a}}
 .mark{{font-size:44px;line-height:1}}
 .code{{margin-top:12px;font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.55;
 word-break:break-all}}
+a{{display:inline-block;margin-top:18px;padding:12px 18px;border-radius:12px;
+background:#c63b33;color:#fff;text-decoration:none;font-weight:600}}
 </style></head>
-<body><div class="card"><div class="mark">{mark}</div><div class="code">{code}</div></div></body>
+<body><div class="card"><div class="mark">{mark}</div><div class="code">{code}</div>{return_link}</div></body>
 </html>"""
 
 
-def _page(mark: str, code: str) -> HTMLResponse:
+# Static handoff only: no state, code, identity or token ever enters this URL.
+# Browsers may block automatic external-app launch; the visible link is an
+# explicit-gesture fallback. Mini App, deletion and failed callbacks never hand off.
+_NATIVE_RETURN_SCHEMES = {"pomp-hsk-ai", "pomp-hsk-ai-qa"}
+
+
+def _page(mark: str, code: str, *, return_scheme: str | None = None) -> HTMLResponse:
     safe = "".join(ch for ch in str(code or "") if ch.isalnum() or ch in "_-")[:64]
+    return_link = ""
+    headers = _PAGE_HEADERS
+    if isinstance(return_scheme, str) and return_scheme in _NATIVE_RETURN_SCHEMES:
+        return_url = return_scheme + "://oauth-return"
+        script = 'window.setTimeout(function(){window.location.href="' + return_url + '";},150);'
+        return_link = (
+            '<a href="' + return_url + '">HSK AI ↗</a>'
+            '<script>' + script + '</script>'
+        )
+        script_hash = base64.b64encode(
+            hashlib.sha256(script.encode("utf-8")).digest()
+        ).decode("ascii")
+        headers = {
+            **_PAGE_HEADERS,
+            "Content-Security-Policy": (
+                "default-src 'none'; style-src 'unsafe-inline'; "
+                f"script-src 'sha256-{script_hash}'"
+            ),
+        }
     return HTMLResponse(
-        content=_PAGE_TEMPLATE.format(mark=mark, code=safe),
+        content=_PAGE_TEMPLATE.format(mark=mark, code=safe, return_link=return_link),
         status_code=200,
-        headers=_PAGE_HEADERS,
+        headers=headers,
     )
 
 
@@ -247,7 +279,7 @@ def create_native_oauth_router(
 
     @router.get("/api/v3/native-auth/providers")
     async def providers(platform: str | None = None):
-        normalized = platform if platform in {"android", "macos", "windows"} else None
+        normalized = platform if platform in {"android", "macos", "windows", MINIAPP_PLATFORM} else None
         return JSONResponse(
             content={
                 "ok": True,
@@ -268,6 +300,8 @@ def create_native_oauth_router(
                     app_version=payload.app_version,
                     installation_key=payload.installation_key.get_secret_value(),
                     intent=SIGNIN_INTENT,
+                    language=payload.language,
+                    **({"referral_code": payload.referral_code} if payload.referral_code else {}),
                 )
             content: dict[str, Any] = {
                 "ok": True,
@@ -311,6 +345,20 @@ def create_native_oauth_router(
             logger.exception("OAuth assert failed")
             return _unavailable()
 
+    async def provider_callback_error(provider: str, state: str | None):
+        # Account deletion has its own browser-bound proof and nonce lifecycle.
+        if not state or state.startswith(STATE_PREFIX):
+            return _page("&#10005;", "oauth_cancelled")
+        try:
+            async with session_factory() as session:
+                await service_factory(session, settings_obj).cancel_callback(provider=provider, state=state)
+            return _page("&#10005;", "oauth_cancelled")
+        except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
+            return _page("&#10005;", exc.code)
+        except Exception:
+            logger.exception("Provider OAuth cancellation failed")
+            return _page("&#10005;", "oauth_unavailable")
+
     @router.get("/api/v3/native-auth/oauth/callback/google")
     async def google_callback(
         request: Request,
@@ -318,7 +366,9 @@ def create_native_oauth_router(
         code: OAuthCode | None = None,
         error: str | None = None,
     ):
-        if error or not state or not code:
+        if error:
+            return await provider_callback_error("google", state)
+        if not state or not code:
             return _page("&#10005;", "oauth_cancelled")
         try:
             async with session_factory() as session:
@@ -328,10 +378,12 @@ def create_native_oauth_router(
                         browser=request.cookies.get(BROWSER_COOKIE))
                     return _deletion_page()
                 else:
-                    await service_factory(session, settings_obj).complete_callback(
+                    completed = await service_factory(session, settings_obj).complete_callback(
                         provider="google", state=state, code=code
                     )
-            return _page("&#10003;", "ok")
+            return _page("&#10003;", "ok", return_scheme=(
+                getattr(settings_obj, "OAUTH_NATIVE_RETURN_SCHEME", "pomp-hsk-ai")
+                if completed.get("platform") in {"android", "macos", "windows"} else None))
         except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
             return _page("&#10005;", exc.code)
         except Exception:
@@ -346,7 +398,9 @@ def create_native_oauth_router(
             return _page("&#10005;", exc.code)
         state = form.get("state") or ""
         code = form.get("code") or ""
-        if form.get("error") or not state or not code:
+        if form.get("error"):
+            return await provider_callback_error("apple", state)
+        if not state or not code:
             return _page("&#10005;", "oauth_cancelled")
         try:
             async with session_factory() as session:
@@ -356,13 +410,15 @@ def create_native_oauth_router(
                         browser=request.cookies.get(BROWSER_COOKIE))
                     return _deletion_page()
                 else:
-                    await service_factory(session, settings_obj).complete_callback(
+                    completed = await service_factory(session, settings_obj).complete_callback(
                         provider="apple",
                         state=state,
                         code=code,
                         apple_user=form.get("user"),
                     )
-            return _page("&#10003;", "ok")
+            return _page("&#10003;", "ok", return_scheme=(
+                getattr(settings_obj, "OAUTH_NATIVE_RETURN_SCHEME", "pomp-hsk-ai")
+                if completed.get("platform") in {"android", "macos", "windows"} else None))
         except (NativeOAuthError, IdentityLinkError, DesktopAuthError) as exc:
             return _page("&#10005;", exc.code)
         except Exception:
@@ -398,7 +454,7 @@ def create_native_oauth_router(
         try:
             payload = await validated_auth_payload(request, IdentityLinkStartRequest)
             async with session_factory() as session:
-                actor, _ = await _actor(session, request)
+                actor, origin_session_id = await _actor(session, request)
                 if payload.platform == MINIAPP_PLATFORM:
                     if payload.mode != BROWSER_REDIRECT_MODE:
                         raise NativeOAuthError(
@@ -416,6 +472,14 @@ def create_native_oauth_router(
                     )
                 else:
                     installation_key = payload.installation_key.get_secret_value()
+                if payload.provider == "telegram":
+                    if payload.mode != TELEGRAM_APPROVAL_MODE or payload.platform == MINIAPP_PLATFORM:
+                        raise NativeOAuthError("oauth_mode_unsupported", status_code=422)
+                    started = await DesktopAuthService(session, settings_obj).start_telegram_identity_link(
+                        user_id=int(actor.id), session_id=origin_session_id,
+                        platform=payload.platform, app_version=payload.app_version,
+                        installation_key=installation_key)
+                    return JSONResponse(content=started, headers=_NO_STORE)
                 started = await service_factory(session, settings_obj).start(
                     provider=payload.provider,
                     mode=payload.mode,
@@ -424,6 +488,7 @@ def create_native_oauth_router(
                     installation_key=installation_key,
                     intent=LINK_INTENT,
                     bind_user_id=int(actor.id),
+                    bind_session_id=origin_session_id,
                 )
             content: dict[str, Any] = {
                 "ok": True,
@@ -463,6 +528,25 @@ def create_native_oauth_router(
             return auth_error_response(exc)
         except Exception:
             logger.exception("Identity link status failed")
+            return _unavailable()
+
+    @router.post("/api/v3/native-auth/identities/link/cancel")
+    async def identity_link_cancel(request: Request):
+        try:
+            payload = await validated_auth_payload(request, IdentityLinkStatusRequest)
+            async with session_factory() as session:
+                actor, origin_session_id = await _actor(session, request)
+                result = await service_factory(session, settings_obj).cancel_link(
+                    link_request_id=payload.link_request_id,
+                    polling_secret=payload.polling_secret.get_secret_value(),
+                    user_id=int(actor.id), session_id=origin_session_id)
+            return JSONResponse(content=result, headers=_NO_STORE)
+        except (NativeOAuthError, IdentityLinkError) as exc:
+            return _oauth_error(exc)
+        except DesktopAuthError as exc:
+            return auth_error_response(exc)
+        except Exception:
+            logger.exception("Identity link cancellation failed")
             return _unavailable()
 
     @router.post("/api/v3/native-auth/identities/unlink")
