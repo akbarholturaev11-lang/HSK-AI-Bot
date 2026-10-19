@@ -72,3 +72,19 @@ keys, account data or private drafts in public CI. `AI_QA_PASSED` means
 agent-checked within described limits, not third-party certified. "DONE"
 requires integrated reviewed content, correct client rendering and green
 applicable CI and functional QA, not just a draft ZIP or private preview.
+
+## Repeatable known-error detector
+
+Before centralizing a completed private draft directory, run:
+
+```bash
+python scripts/i18n_editor_semantic_guard.py --draft-dir /private/drafts
+```
+
+It rejects Russian gender-placeholders such as `был(а)`, unsupported
+rain/snow claims for the ambiguous `昨天比今天下得大。`, and missing snow
+meaning when the Chinese explicitly says `下雪` or `下着雪`.
+This detector is deliberately NOT a replacement for the agent's full
+source-context semantic check; it only captures previous reproducible bugs.
+CLI suppresses private text and user data. `--allow-partial` is only for
+incomplete private editorial pilots, not a release gate.
