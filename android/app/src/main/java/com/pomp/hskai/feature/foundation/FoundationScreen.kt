@@ -322,7 +322,7 @@ private fun FoundationCardBody(
                 enabled = state.builderTokens.size == card.answerTokens.size,
                 onClick = onSubmitBuilder,
                 text = state.builderTokens.joinToString("").ifBlank {
-                    stringResource(R.string.lesson_check)
+                    stringResource(R.string.hsk_course_check)
                 },
                 secondary = true,
             )

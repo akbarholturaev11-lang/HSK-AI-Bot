@@ -226,7 +226,7 @@ fun LessonScreen(
         val spent = state.error as? ApiError.LimitReached
         if (spent != null && limit != null) {
             SectionLimitOverlay(
-                sectionTitle = stringResource(R.string.nav_course),
+                sectionTitle = stringResource(R.string.hsk_common_navigation_course),
                 sourceKey = "course_lesson_limit",
                 limit = limit,
                 reason = spent.limitText ?: stringResource(R.string.limit_lesson_reason),
@@ -675,7 +675,7 @@ private fun LessonTopBar(
 
         HskGlassIconButton(
             icon = Icons.Filled.Settings,
-            contentDescription = stringResource(R.string.lesson_pinyin_title),
+            contentDescription = stringResource(R.string.hsk_course_pinyin_settings_h),
             onClick = onOpenPinyinSettings,
             size = 40.dp,
             iconSize = 22.dp,

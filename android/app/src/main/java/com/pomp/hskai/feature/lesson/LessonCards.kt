@@ -271,7 +271,7 @@ private fun NewWordInfo(
 @Composable
 fun GrammarCardView(card: GrammarCard, pinyin: PinyinVisibility) {
     Column {
-        CardTitle(card.titleZh.ifBlank { stringResource(R.string.lesson_grammar) })
+        CardTitle(card.titleZh.ifBlank { stringResource(R.string.hsk_course_grammar) })
         Text(text = card.title, style = MaterialTheme.typography.titleLarge, color = PompColors.Ink)
         Spacer(Modifier.height(12.dp))
         Text(text = card.rule, style = MaterialTheme.typography.bodyLarge, color = PompColors.InkSecondary)
@@ -491,7 +491,7 @@ internal fun ChoiceCardMaterial(
         CardTitle(card.title)
         when (card.kind) {
             ChoiceKind.LISTENING -> {
-                Text(text = stringResource(R.string.hsk_course_listen_and_choose), style = MaterialTheme.typography.titleLarge, color = PompColors.Ink)
+                Text(text = stringResource(R.string.lesson_listen_and_choose), style = MaterialTheme.typography.titleLarge, color = PompColors.Ink)
                 // The pinyin of what is being said used to sit here whenever the
                 // learner had pinyin switched on — which is the answer, written out
                 // above the options. The Mini App shows the audio button and nothing

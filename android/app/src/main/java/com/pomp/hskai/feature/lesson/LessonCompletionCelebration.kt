@@ -331,19 +331,19 @@ private fun CompletionScene(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 StatTile(
-                    label = stringResource(R.string.lesson_stat_xp),
+                    label = stringResource(R.string.hsk_course_level_stats_xp),
                     value = if (outcome.duplicate) "0" else "${gamification.awardedXp}",
                     accent = PompColors.Gold,
                     modifier = Modifier.weight(1f),
                 )
                 if (accuracy >= 0) StatTile(
-                    label = stringResource(R.string.lesson_stat_accuracy),
+                    label = stringResource(R.string.hsk_course_level_stats_acc),
                     value = "$accuracy%",
                     accent = PompColors.Jade,
                     modifier = Modifier.weight(1f),
                 )
                 StatTile(
-                    label = stringResource(R.string.lesson_stat_time),
+                    label = stringResource(R.string.hsk_course_level_stats_time),
                     value = formatElapsed(outcome.elapsedSeconds),
                     accent = PompColors.Blue,
                     modifier = Modifier.weight(1f),

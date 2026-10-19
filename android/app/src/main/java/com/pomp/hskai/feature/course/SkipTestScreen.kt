@@ -102,7 +102,7 @@ internal fun SkipTestScreen(
                         else R.string.skip_test_fail_body,
                         finished ?: state.score,
                     ),
-                    primaryLabel = stringResource(R.string.skip_test_start_lesson),
+                    primaryLabel = stringResource(R.string.hsk_common_lesson_start),
                     onPrimary = onOpenLesson,
                 )
 

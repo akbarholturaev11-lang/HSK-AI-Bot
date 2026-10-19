@@ -1,5 +1,6 @@
 """Exact-copy Android practice and Test Center adoption from local catalogs."""
 from pathlib import Path
+import re
 import unittest
 import xml.etree.ElementTree as ET
 
@@ -89,7 +90,7 @@ class AndroidPracticeUICatalogTests(unittest.TestCase):
                 generated_key = RESOURCES[old_key][1]
                 with self.subTest(file=file_name, key=old_key):
                     self.assertIn(f"R.string.{generated_key}", source)
-                    self.assertNotIn(f"R.string.{old_key}", source)
+                    self.assertNotRegex(source, rf"R\.string\.{re.escape(old_key)}(?![A-Za-z0-9_])")
         stage = (ROOT / "android/app/src/main/java/com/pomp/hskai/feature/practice/PracticeStage.kt").read_text(encoding="utf-8")
         lesson = (ROOT / "android/app/src/main/java/com/pomp/hskai/feature/lesson/LessonScreen.kt").read_text(encoding="utf-8")
         practice = (ROOT / "android/app/src/main/java/com/pomp/hskai/feature/practice/PracticeScreen.kt").read_text(encoding="utf-8")

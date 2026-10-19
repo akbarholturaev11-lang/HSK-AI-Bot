@@ -474,7 +474,7 @@ private fun ProfileToolbar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = stringResource(R.string.nav_profile),
+            text = stringResource(R.string.hsk_common_navigation_profile),
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             color = PompColors.Ink,
@@ -625,7 +625,7 @@ private fun StatsGrid(state: ProfileUiState) {
             modifier = Modifier.fillMaxWidth().padding(horizontal = PompSpacing.Small, vertical = PompSpacing.Large),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            StatMetric(stringResource(R.string.profile_xp), (stats?.xp ?: 0).toString(), Modifier.weight(1f))
+            StatMetric(stringResource(R.string.hsk_course_xp), (stats?.xp ?: 0).toString(), Modifier.weight(1f))
             StatMetric(stringResource(R.string.profile_lessons), (stats?.completedLessons ?: 0).toString(), Modifier.weight(1f))
             StatMetric(stringResource(R.string.profile_mistakes), (stats?.mistakes ?: 0).toString(), Modifier.weight(1f))
         }
@@ -858,7 +858,7 @@ private fun ProfileSettingsScreen(
                         SettingsCategory(stringResource(R.string.profile_settings_section_learning), Icons.Filled.TrackChanges) {
                             ProfileSettingsItem(
                                 Icons.Filled.Language,
-                                stringResource(R.string.profile_language),
+                                stringResource(R.string.hsk_course_lang),
                                 account.language.backendCode.uppercase(),
                                 !settings.isBusy,
                                 onOpenLanguage,
@@ -867,7 +867,7 @@ private fun ProfileSettingsScreen(
                                 ProfileSettingsDivider()
                                 ProfileSettingsItem(
                                     Icons.Filled.TrackChanges,
-                                    stringResource(R.string.profile_course_version),
+                                    stringResource(R.string.hsk_course_course_picker_version),
                                     if (courseTrack == "hsk30") "HSK 3.0" else "HSK 2.0",
                                     true,
                                     onOpenCourseVersion,
@@ -895,7 +895,7 @@ private fun ProfileSettingsScreen(
                             ProfileSettingsDivider()
                             ProfileSettingsItem(
                                 Icons.Filled.Notifications,
-                                stringResource(R.string.profile_notifications),
+                                stringResource(R.string.hsk_course_notif),
                                 stringResource(
                                     if (notificationsEnabled) R.string.profile_notifications_status_on
                                     else R.string.profile_notifications_status_off,
@@ -939,7 +939,7 @@ private fun ProfileSettingsScreen(
                                 stringResource(R.string.profile_help),
                                 stringResource(
                                     if (supportUrl.isBlank()) R.string.profile_help_unavailable
-                                    else R.string.profile_help_action,
+                                    else R.string.hsk_course_help_btn,
                                 ),
                                 supportUrl.isNotBlank(),
                             ) { if (supportUrl.isNotBlank()) onOpenSupport(supportUrl) }
@@ -1127,7 +1127,7 @@ private fun NotificationsCategoriesSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = PompColors.Paper) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp).padding(bottom = 28.dp)) {
-            Text(stringResource(R.string.profile_notifications), color = PompColors.Ink, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.hsk_course_notif), color = PompColors.Ink, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(14.dp))
             Surface(
                 color = PompColors.CardSurface,

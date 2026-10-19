@@ -48,9 +48,9 @@ internal fun ProfileAccuracyRings(accuracy: AndroidProfileAccuracyDto?) {
     ) {
         Column {
             Row(modifier = Modifier.fillMaxWidth().padding(vertical = 11.dp)) {
-                AccuracyRing(overall, stringResource(R.string.profile_accuracy_overall), Modifier.weight(1f))
+                AccuracyRing(overall, stringResource(R.string.hsk_course_profile_overall), Modifier.weight(1f))
                 Box(Modifier.width(1.dp).height(118.dp).background(PompColors.Divider))
-                AccuracyRing(today, stringResource(R.string.profile_accuracy_today), Modifier.weight(1f))
+                AccuracyRing(today, stringResource(R.string.hsk_course_profile_today), Modifier.weight(1f))
             }
 
         }
@@ -97,7 +97,7 @@ internal fun ProfileProCta(onClick: () -> Unit) {
         ) {
             Text("♛", fontSize = 23.sp, color = PompColors.Gold)
             Spacer(Modifier.width(11.dp))
-            Text(stringResource(R.string.profile_buy_pro), fontSize = 13.sp,
+            Text(stringResource(R.string.hsk_course_profile_pro), fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold, color = PompColors.Ink, modifier = Modifier.weight(1f))
             Icon(Icons.Filled.ChevronRight, contentDescription = null,
                 tint = PompColors.Gold, modifier = Modifier.size(19.dp))

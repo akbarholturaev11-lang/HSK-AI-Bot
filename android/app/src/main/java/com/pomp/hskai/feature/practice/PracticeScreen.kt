@@ -473,7 +473,7 @@ private fun Hsk30TestSoonCard() {
             )
             Spacer(Modifier.height(6.dp))
             Text(
-                stringResource(R.string.hsk30_test_soon_body),
+                stringResource(R.string.hsk_course_test_hsk30_soon_sub),
                 style = MaterialTheme.typography.bodyMedium,
                 color = PompColors.InkSecondary,
                 textAlign = TextAlign.Center,

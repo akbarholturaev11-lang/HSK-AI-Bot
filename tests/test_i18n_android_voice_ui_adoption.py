@@ -73,6 +73,15 @@ class AndroidVoiceUIAdoptionTests(unittest.TestCase):
         for callback in ("onToggleRecording", "onSendText", "onEndSession"):
             self.assertIn(callback, call_screen)
 
+    def test_listen_and_choose_keeps_legacy_resource_without_exact_catalog_match(self):
+        lesson_cards = (ROOT / VOICE_FILES[3]).read_text(encoding="utf-8")
+        self.assertIn("R.string.lesson_listen_and_choose", lesson_cards)
+        self.assertNotIn("R.string.hsk_course_listen_and_choose", lesson_cards)
+        for directory in LOCALES.values():
+            original = read_android_strings(directory, "strings.xml")
+            generated = read_android_strings(directory, "hsk_course_i18n.xml")
+            self.assertNotIn(original["lesson_listen_and_choose"], generated.values())
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -100,7 +100,7 @@ internal fun ProfilePromoCarousel(
                 isPaid -> stringResource(R.string.profile_subscription_status_paid)
                 trialActive -> stringResource(R.string.profile_subscription_status_trial)
                 isTemporary -> stringResource(R.string.profile_subscription_status_temporary)
-                else -> stringResource(R.string.profile_subscription_title)
+                else -> stringResource(R.string.hsk_common_navigation_subscription)
             }
             summary = when {
                 isPaid || isTemporary ->
@@ -277,7 +277,7 @@ internal fun ProfileHsk30BookEntryDialog(
         when {
             on30 -> {
                 Hsk30BookTitle(
-                    title = stringResource(R.string.profile_course_version),
+                    title = stringResource(R.string.hsk_course_course_picker_version),
                     body = stringResource(R.string.profile_course_version_confirm_body),
                 )
                 Spacer(Modifier.height(20.dp))
