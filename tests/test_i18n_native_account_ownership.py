@@ -27,6 +27,8 @@ from app.db.models.trial_risk_event import TrialRiskEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user import User
 from app.services.account_identity import owner_clause
+from app.services.entitlements.lesson_access import LessonAccessService
+from app.services.course_miniapp_access_service import COURSE_DAILY_EVENT_NAME
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 
 
@@ -85,6 +87,22 @@ class NativeP3OwnershipTests(unittest.IsolatedAsyncioTestCase):
                 )).scalars().all()
                 self.assertEqual(len(mine), 1)
                 self.assertEqual(mine[0].user_id, uid)
+
+    async def test_lesson_reservation_does_not_reuse_other_native_accounts_slot(self):
+        """Two NULL Telegram accounts must never share one reserved lesson."""
+        async with self.sessions() as session:
+            session.add(CourseMiniAppEvent(
+                user_id=1, telegram_id=None, event_name=COURSE_DAILY_EVENT_NAME,
+                session_id="lesson", dedupe_key="day:ref:lesson:nhsk2:16",
+            ))
+            await session.commit()
+            reservations = LessonAccessService(session)
+            google = await session.get(User, 1)
+            apple = await session.get(User, 2)
+            self.assertTrue(await reservations._reserved(
+                google, reservations.reference("nhsk2", 16)))
+            self.assertFalse(await reservations._reserved(
+                apple, reservations.reference("nhsk2", 16)))
 
     async def test_telegram_legacy_fallback_cannot_override_another_owner(self):
         async with self.sessions() as session:
