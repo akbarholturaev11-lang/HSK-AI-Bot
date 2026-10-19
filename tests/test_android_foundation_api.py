@@ -4,6 +4,7 @@ import json
 import unittest
 from datetime import datetime, timezone
 from types import SimpleNamespace
+from unittest.mock import AsyncMock, patch
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
@@ -222,6 +223,110 @@ class AndroidFoundationApiTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(200, lesson_response.status_code)
         self.assertTrue(lesson_response.json()["ok"])
+
+    async def test_google_only_foundation_is_saved_by_canonical_user_id(self):
+        """Google sign-in has users.id but no telegram_id. Starter 0 must
+        report completion and unlock the first lesson after the POST returns.
+        """
+        google_user = _user()
+        google_user.id = 2
+        google_user.telegram_id = None
+        google_user.full_name = "Google Starter"
+        async with self.sessions() as session:
+            session.add(google_user)
+            await session.commit()
+
+        with patch.object(
+            DesktopAuthService,
+            "authenticate",
+            new=AsyncMock(return_value=SimpleNamespace(user=google_user)),
+        ):
+            headers = {"Authorization": "Bearer google-native-token"}
+            before = await self.client.get(
+                "/api/v3/android/course/foundation", headers=headers,
+            )
+            self.assertEqual(200, before.status_code)
+            self.assertTrue(before.json()["status"]["required"])
+            self.assertFalse(before.json()["status"]["completed"])
+
+            completed = await self._complete_foundation(headers, suffix="g")
+            self.assertEqual(200, completed.status_code)
+            self.assertTrue(completed.json()["ok"])
+            self.assertTrue(completed.json()["foundation"]["completed"])
+
+            repeated = await self._complete_foundation(headers, suffix="g")
+            self.assertEqual(200, repeated.status_code)
+            self.assertTrue(repeated.json()["duplicate"])
+            self.assertTrue(repeated.json()["foundation"]["completed"])
+
+            status = await self.client.get(
+                "/api/v3/android/course/foundation", headers=headers,
+            )
+            self.assertEqual(200, status.status_code)
+            self.assertTrue(status.json()["status"]["completed"])
+
+            course_map = await self.client.get(
+                "/api/v3/android/course/map", headers=headers,
+            )
+            self.assertEqual(200, course_map.status_code)
+            self.assertTrue(course_map.json()["foundation"]["completed"])
+            self.assertEqual("current", course_map.json()["units"][0]["lessons"][0]["status"])
+
+        async with self.sessions() as session:
+            rows = (await session.execute(select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.user_id == 2,
+                CourseMiniAppEvent.event_name == "foundation_completed",
+            ))).scalars().all()
+        self.assertEqual(1, len(rows))
+        self.assertIsNone(rows[0].telegram_id)
+
+    async def test_legacy_telegram_event_without_canonical_owner_stays_visible(self):
+        """Reading legacy Telegram progress must not depend on a backfill."""
+        async with self.sessions() as session:
+            session.add(CourseMiniAppEvent(
+                user_id=None,
+                telegram_id=1001,
+                event_name="foundation_completed",
+                source="course_v3",
+                dedupe_key="legacy-foundation",
+                payload_json=json.dumps({
+                    "foundation_id": "starter0_hsk1",
+                    "foundation_version": 1,
+                }),
+            ))
+            await session.commit()
+        headers = await self._bearer()
+        result = await self.client.get(
+            "/api/v3/android/course/foundation", headers=headers,
+        )
+        self.assertEqual(200, result.status_code)
+        self.assertTrue(result.json()["status"]["completed"])
+
+    async def test_another_account_cannot_claim_foundation_using_stale_telegram_metadata(self):
+        """A foreign canonical user_id wins over stale telegram_id metadata."""
+        other = _user()
+        other.id = 2
+        other.telegram_id = None
+        async with self.sessions() as session:
+            session.add(other)
+            session.add(CourseMiniAppEvent(
+                user_id=2,
+                telegram_id=1001,
+                event_name="foundation_completed",
+                source="course_v3",
+                dedupe_key="foreign-user-owned",
+                payload_json=json.dumps({
+                    "foundation_id": "starter0_hsk1",
+                    "foundation_version": 1,
+                }),
+            ))
+            await session.commit()
+        headers = await self._bearer()
+        response = await self.client.get(
+            "/api/v3/android/course/foundation", headers=headers,
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertFalse(response.json()["status"]["completed"])
 
     async def test_foundation_rejects_query_identity_or_overrides(self):
         headers = await self._bearer()
