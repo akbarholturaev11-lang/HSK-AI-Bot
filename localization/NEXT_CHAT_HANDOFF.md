@@ -450,3 +450,32 @@ still apply. Do not claim native-speaker certification.
   Next: resolve the lesson/map delivery boundary, then integrate reviewed
   overlays without changing existing access, grading or client contracts;
   continue P2 runtime/client checks. No main merge or deployment.
+
+## P3 Mini App completed-review entitlement + contextual translation follow-up (2026-10-19)
+
+See `localization/P3_ACTIVE_HANDOFF.md` for the current executable steps.
+After re-reading PR #179, found a completed-lesson `review_only`
+entitlement bypass relative to native/Desktop (server-completed progress
+was treated as sufficient for blocked/HSK 3.0 users). Fixed via the existing
+shared read-only `LessonAccessService.status(..., consume=False)`, with no
+new endpoint or quota consumption. The Mini App browser now accepts only
+explicit 2xx `ok/allowed` grants; stale P3 patches are cleared and non-2xx/
+malformed responses are denied, reserving offline fallback for transport
+failure. Non-object API JSON returns 400 rather than 500. Added synthetic
+ASGI/Node regressions and documented prevention in
+`localization/AI_CONTENT_QA_POLICY.md`.
+
+Compared real Chinese sources: `G030` Russian family-vs-house, `G131`
+roast duck (not Tajik chicken), and `G128` unnatural Tajik revisiting
+expression were corrected in the 136-row central TSV with focused source
+regressions. This is not full independent 408-translation semantic
+certification, and device/real-auth/live quota QA remains outstanding.
+
+Implementation/QA commit chain ends at `f3e343e`; active handoff update
+commit `ef14cc8`. All changes feature branch only. PR remains draft/dirty,
+119 main-only commits and 27 shared changed-path candidates. Connector CI
+lookups returned no workflow/status entries even for a previously green
+code HEAD, so green CI for these new commits has NOT been established.
+Next: verify current GitHub Actions P0 + Backend actual job outcomes, run
+real authenticated client QA, finish Chinese-context review, then
+carefully reconcile PR conflicts and re-run release gates. No main/prod.
