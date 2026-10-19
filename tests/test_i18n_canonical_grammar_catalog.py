@@ -57,6 +57,22 @@ class CanonicalGrammarCatalogTests(unittest.TestCase):
         self.assertIn("нашу семью", russian)
         self.assertNotIn("наш дом", russian)
 
+    def test_g131_roasted_duck_not_chicken_in_any_locale(self):
+        context = next(c for c in self.queue["contexts"] if c["review_id"] == "G131")
+        self.assertIn("烤鸭", context["chinese_example"])
+        translations = read_canonical_catalog(self.catalog_path)["G131"]["translations"]
+        self.assertIn("o‘rdak", translations["uz"])
+        self.assertIn("утки", translations["ru"])
+        self.assertIn("мурғобӣ", translations["tj"])
+        self.assertNotIn("мурғи бирён", translations["tj"])
+
+    def test_g128_tajik_repeat_visit_is_idiomatic(self):
+        context = next(c for c in self.queue["contexts"] if c["review_id"] == "G128")
+        self.assertIn("再去一次", context["chinese_example"])
+        tajik = read_canonical_catalog(self.catalog_path)["G128"]["translations"]["tj"]
+        self.assertIn("боз ҳам бисёр мехоҳам", tajik)
+        self.assertNotIn("рафтанам хеле мехоҳад", tajik)
+
     def test_context_hash_changes_with_source_rule_or_occurrence(self):
         original = context_source_sha256(self.first_context)
         mutations = []
