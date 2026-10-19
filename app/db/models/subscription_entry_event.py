@@ -16,7 +16,7 @@ class SubscriptionEntryEvent(Base):
         index=True,
         nullable=True,
     )
-    telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
+    telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, index=True, nullable=True)
     source: Mapped[str] = mapped_column(String(80), index=True, nullable=False)
     mode: Mapped[str] = mapped_column(String(40), index=True, nullable=False, default="subscription")
     plan_type: Mapped[Optional[str]] = mapped_column(String(32), index=True, nullable=True)
