@@ -204,8 +204,49 @@ class MiniAppLessonStartASGITests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(response.json()["p3_grammar"], localized)
             self.assertEqual(response.headers["cache-control"], "no-store")
             adapter.assert_called_once_with(level="nhsk2", lesson_order=16)
-            self.lesson_service.status.assert_not_awaited()
+            self.lesson_service.status.assert_awaited_once()
+            kwargs = self.lesson_service.status.await_args.kwargs
+            self.assertEqual(kwargs["level"], "nhsk2")
+            self.assertEqual(kwargs["lesson_order"], 16)
+            self.assertEqual(kwargs["completed"], 16)
+            self.assertIs(kwargs["consume"], False)
             self.session.commit.assert_not_awaited()
+
+    async def test_completed_review_denied_by_shared_access_has_no_p3(self):
+        self.user.level = "nhsk2"
+        self.progress.level = "nhsk2"
+        self.progress.completed_lessons_count = 16
+        # Covers blocked identity, revoked HSK 3.0 track or level-disabled
+        # access returned by LessonAccessService without consuming quota.
+        for reason in ("blocked", "hsk30_access_required", "hsk30_level_not_live"):
+            with self.subTest(reason=reason):
+                self.lesson_service.status.reset_mock()
+                self.lesson_service.status.return_value = {
+                    "ok": False, "allowed": False, "error": reason,
+                }
+                with patch("app.api.miniapp_entitlements.miniapp_reserved_grammar_patch") as adapter:
+                    response = await self._start(
+                        16, {"X-Telegram-Init-Data": synthetic_init_data()},
+                        review_only=True,
+                    )
+                    self.assertEqual(response.status_code, 403)
+                    self.assertEqual(response.json()["error"], reason)
+                    self.assertNotIn("p3_grammar", response.json())
+                    self.assertEqual(response.headers["cache-control"], "no-store")
+                    adapter.assert_not_called()
+                self.assertIs(self.lesson_service.status.await_args.kwargs["consume"], False)
+                self.session.commit.assert_not_awaited()
+
+    async def test_non_object_lesson_start_body_returns_400_not_500(self):
+        signed = {"X-Telegram-Init-Data": synthetic_init_data()}
+        for payload in ([], [16], "16", None):
+            with self.subTest(payload=payload):
+                response = await self.client.post(
+                    "/api/v3/lesson/start", headers=signed, json=payload,
+                )
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(response.json()["error"], "invalid_lesson_payload")
+        self.lesson_service.status.assert_not_awaited()
 
     async def test_uncompleted_lesson_cannot_use_p3_review_only(self):
         self.user.level = "nhsk2"
