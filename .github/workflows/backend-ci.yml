@@ -17,6 +17,14 @@ on:
       - "app/db/models/ai_usage.py"
       - "app/db/models/voice_practice_session.py"
       - "alembic/versions/0105_native_ai_voice_ownership.py"
+      - "app/db/models/payment.py"
+      - "app/db/models/subscription_entry_event.py"
+      - "app/repositories/payment_repo.py"
+      - "app/services/payment_service.py"
+      - "app/services/payment_review_preview_service.py"
+      - "alembic/versions/0106_canonical_payment_ownership.py"
+      - "tests/test_i18n_native_payment_migration.py"
+      - "tests/test_i18n_native_payment_repository.py"
       - "tests/test_i18n_native_ai_voice_ownership.py"
       - "app/services/course_miniapp_analytics_service.py"
       - "app/db/models/user.py"
@@ -81,6 +89,9 @@ jobs:
         run: python -m unittest tests.test_hsk30_lesson_limits tests.test_course_track_service tests.test_hsk30_promo_service tests.test_hsk30_switch_ui_contract tests.test_android_payment_method_dialog_contract
       - name: Verify synthetic Mini App lesson reservation auth and quota boundary
         run: python -m unittest tests.test_i18n_miniapp_reservation_asgi
+      - name: Test 0106 canonical financial migration and ownership isolation
+        run: |
+          python -m unittest tests.test_i18n_native_payment_migration tests.test_i18n_native_payment_repository tests.test_payment_review_preview
       - name: Test provider-only AI budgets, Voice sessions and 0105 migration
         run: python -m unittest tests.test_i18n_native_ai_voice_ownership
       - name: Test canonical native account ownership and migration foundation
