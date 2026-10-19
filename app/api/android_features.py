@@ -44,7 +44,6 @@ from app.api.desktop_rating import (
 )
 from app.api.desktop_referral import (
     MAX_REFERRAL_ITEMS,
-    _invite_link,
     _public_item as _public_referral_item,
 )
 from app.api.desktop_subscription import (
@@ -65,8 +64,8 @@ from app.api.desktop_voice import (
     _validated_payload as _validated_voice_payload,
 )
 from app.repositories.user_repo import UserRepository
+from app.services.account_identity import actual_telegram_id
 from app.services.assistant_assessment_service import assessment_started, assessment_finished, assessment_abandoned
-from app.services.course_ad_service import CourseAdService
 from app.services.course_challenge_service import CourseChallengeService
 from app.services.course_drill_signal_service import CourseDrillSignalService
 from app.services.course_gamification_service import CourseGamificationService
@@ -94,6 +93,7 @@ from app.services.trial_risk_service import TrialRiskService
 from app.services.referral_service import (
     REFERRAL_TRIAL_REQUIRED_ACTIVE,
     ReferralService,
+    public_apps_url,
 )
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.subscription_entry_analytics_service import (
@@ -561,7 +561,7 @@ def _public_android_referral_item(entry: dict[str, Any], *, secret: str) -> dict
             "username": str(entry.get("username") or "").strip().lstrip("@")[:32],
             "xp": int(entry.get("xp") or entry.get("league_points") or 0),
             "total_xp": int(entry.get("total_xp") or 0),
-            "challenge_ref": challenge_ref(entry.get("telegram_id"), secret),
+            "challenge_ref": challenge_ref(entry.get("telegram_id"), secret, user_id=entry.get("user_id")),
         }
     )
     return row
@@ -695,22 +695,31 @@ def create_android_features_router(
 
     async def _user(session, request: Request):
         context = await _context(session, request)
-        user = await UserRepository(session).get_by_telegram_id(
-            int(context.user.telegram_id)
-        )
+        telegram_id = actual_telegram_id(context.user)
+        user = (await UserRepository(session).get_by_telegram_id(telegram_id)
+                if telegram_id is not None else context.user)
         if not user:
             raise AndroidFeatureError("android_user_not_found", status_code=404)
         return user
 
-    async def _telegram_id(session, request: Request) -> int:
+    async def _actor(session, request: Request):
         context = await _context(session, request)
-        return int(context.user.telegram_id)
+        # Keep the established Telegram service contract. Only accounts that
+        # lack that real identity need the canonical authenticated User actor.
+        telegram_id = actual_telegram_id(context.user)
+        return telegram_id if telegram_id is not None else context.user
+
+    async def _telegram_id(session, request: Request) -> int:
+        telegram_id = actual_telegram_id(await _actor(session, request))
+        if telegram_id is None:
+            raise AndroidFeatureError("telegram_account_required", status_code=409)
+        return telegram_id
 
     async def _optional_user(session, request: Request):
         context = await _context(session, request)
-        return await UserRepository(session).get_by_telegram_id(
-            int(context.user.telegram_id)
-        )
+        telegram_id = actual_telegram_id(context.user)
+        return (await UserRepository(session).get_by_telegram_id(telegram_id)
+                if telegram_id is not None else context.user)
 
     def _ad_channel(request: Request) -> str:
         raw = str(request.query_params.get("channel") or "").strip().lower()
@@ -831,7 +840,7 @@ def create_android_features_router(
                     raise AndroidFeatureError(str(result["error"]), status_code=404)
                 await CourseMiniAppAnalyticsService(session).record_server_event(
                     event_name="course_ad_viewed",
-                    telegram_id=int(user.telegram_id),
+                    telegram_id=actual_telegram_id(user),
                     user_id=getattr(user, "id", None),
                     source="android_ad",
                     level=level,
@@ -864,9 +873,9 @@ def create_android_features_router(
         try:
             async with session_factory() as session:
                 context = await _context(session, request)
-                user = await UserRepository(session).get_by_telegram_id(
-                    int(context.user.telegram_id)
-                )
+                telegram_id = actual_telegram_id(context.user)
+                user = (await UserRepository(session).get_by_telegram_id(telegram_id)
+                        if telegram_id is not None else context.user)
                 if not user:
                     raise AndroidFeatureError("android_user_not_found", status_code=404)
                 risk_service = TrialRiskService(session, settings_obj)
@@ -919,9 +928,9 @@ def create_android_features_router(
         try:
             async with session_factory() as session:
                 context = await _context(session, request)
-                user = await UserRepository(session).get_by_telegram_id(
-                    int(context.user.telegram_id)
-                )
+                telegram_id = actual_telegram_id(context.user)
+                user = (await UserRepository(session).get_by_telegram_id(telegram_id)
+                        if telegram_id is not None else context.user)
                 if not user:
                     raise AndroidFeatureError("android_user_not_found", status_code=404)
                 verdict = await ProTrialService(session).eligibility(user)
@@ -992,9 +1001,9 @@ def create_android_features_router(
             if request.query_params:
                 raise AndroidFeatureError("android_request_invalid", status_code=422)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await StudyMiniAppService(session).get_profile_payload(
-                    telegram_id
+                    actor
                 )
                 await session.commit()
             return _service_response(result)
@@ -1026,7 +1035,7 @@ def create_android_features_router(
                 profile.avatar_key = avatar_key
                 await session.flush()
                 result = await StudyMiniAppService(session).get_profile_payload(
-                    int(user.telegram_id)
+                    user
                 )
                 await session.commit()
             return _service_response(result)
@@ -1140,7 +1149,7 @@ def create_android_features_router(
                         status_code=409,
                     )
                 price_overview = await checkout.checkout.overview(
-                    user.telegram_id,
+                    user,
                     bot=bot,
                     mode="subscription",
                 )
@@ -1265,9 +1274,7 @@ def create_android_features_router(
                 raise AndroidFeatureError("android_request_invalid", status_code=422)
             async with session_factory() as session:
                 user = await _user(session, request)
-                profile = await StudyMiniAppService(session).get_profile_payload(
-                    int(user.telegram_id)
-                )
+                profile = await StudyMiniAppService(session).get_profile_payload(user)
                 await session.commit()
             return JSONResponse(
                 content=_subscription_payload(user, profile, settings_obj),
@@ -1302,7 +1309,9 @@ def create_android_features_router(
                 )
             async with session_factory() as session:
                 user = await _user(session, request)
-                telegram_id = int(user.telegram_id)
+                telegram_id = actual_telegram_id(user)
+                if telegram_id is None:
+                    raise AndroidFeatureError("payment_telegram_required", status_code=409)
                 await SubscriptionEntryAnalyticsService(session).record_entry(
                     telegram_id=telegram_id,
                     user=user,
@@ -1343,12 +1352,12 @@ def create_android_features_router(
             )
             _validate_practice_selection(payload)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 # Bot berilmaydi: limit ilova ekranida ko'rsatiladi, Telegram'ga
                 # alohida xabar ketmaydi (egasi qarori, 2026-09-29).
                 practice = practice_service_factory(session)
                 result = await practice.start(
-                    telegram_id,
+                    actor,
                     mode=payload.mode,
                     level=payload.level,
                     lang=payload.language,
@@ -1379,12 +1388,12 @@ def create_android_features_router(
             )
             _validate_practice_selection(payload)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 # Bot berilmaydi: limit ilova ekranida ko'rsatiladi, Telegram'ga
                 # alohida xabar ketmaydi (egasi qarori, 2026-09-29).
                 practice = practice_service_factory(session)
                 result = await practice.complete(
-                    telegram_id,
+                    actor,
                     session_id=payload.session_id,
                     mode=payload.mode,
                     level=payload.level,
@@ -1425,9 +1434,9 @@ def create_android_features_router(
         try:
             payload = await _validated_payload(request, AndroidExamStartRequest)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await exam_service_factory(session).start(
-                    telegram_id,
+                    actor,
                     level=payload.level,
                     lang=payload.language,
                     access_ref=payload.access_ref,
@@ -1460,12 +1469,12 @@ def create_android_features_router(
                 max_body_bytes=MAX_DESKTOP_PRACTICE_COMPLETE_BODY_BYTES,
             )
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 user = await _optional_user(session, request)
                 if user and await assessment_abandoned(session, user.id, payload.session_id):
                     raise AndroidFeatureError("assistant_assessment_abandoned", status_code=409)
                 result = await exam_service_factory(session).complete(
-                    telegram_id,
+                    actor,
                     session_id=payload.session_id,
                     answers=[
                         {
@@ -1505,9 +1514,9 @@ def create_android_features_router(
             if category == "all":
                 category = ""
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await mistake_service_factory(session).overview(
-                    telegram_id,
+                    actor,
                     category=category or None,
                     limit=request.query_params.get("limit", "30"),
                     offset=request.query_params.get("offset", "0"),
@@ -1528,9 +1537,9 @@ def create_android_features_router(
         try:
             payload = await _validated_payload(request, AndroidMistakeReviewStartRequest)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await mistake_service_factory(session).start_review(
-                    telegram_id,
+                    actor,
                     ad_supported=payload.ad_supported,
                     access_ref=payload.access_ref,
                     category=payload.category,
@@ -1551,9 +1560,9 @@ def create_android_features_router(
         try:
             payload = await _validated_payload(request, AndroidMistakeReviewAnswerRequest)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await mistake_service_factory(session).answer_review_question(
-                    telegram_id,
+                    actor,
                     session_id=payload.session_id,
                     question_id=payload.question_id,
                     selected_index=(
@@ -1579,9 +1588,9 @@ def create_android_features_router(
                 AndroidMistakeReviewCompleteRequest,
             )
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await mistake_service_factory(session).complete_review(
-                    telegram_id,
+                    actor,
                     session_id=payload.session_id,
                     answers=[
                         {
@@ -1664,7 +1673,7 @@ def create_android_features_router(
                 content={
                     "ok": True,
                     "code": code,
-                    "link": _invite_link(getattr(settings_obj, "BOT_USERNAME", ""), code),
+                    "link": public_apps_url(settings_obj, code, trial=True),
                     "invited": len(rows),
                     "activated": activated,
                     "trial_progress": int(trial_progress or 0),
@@ -1691,9 +1700,9 @@ def create_android_features_router(
                     422,
                 )
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
-                result = await voice_service_factory(session).user_status(telegram_id)
-                result["live_available"] = live_voice_available(settings_obj, telegram_id)
+                actor = await _actor(session, request)
+                result = await voice_service_factory(session).user_status(actor)
+                result["live_available"] = live_voice_available(settings_obj, actual_telegram_id(actor))
             return JSONResponse(content={"ok": True, **result}, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, VoicePracticeError) as exc:
             return _error_response(exc)
@@ -1716,8 +1725,8 @@ def create_android_features_router(
             if payload.role not in ROLE_PROMPTS:
                 raise VoicePracticeError("INVALID_ROLE", "Unknown conversation role.", 422)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
-                if payload.mode == "live" and not live_voice_available(settings_obj, telegram_id):
+                actor = await _actor(session, request)
+                if payload.mode == "live" and not live_voice_available(settings_obj, actual_telegram_id(actor)):
                     raise VoicePracticeError("LIVE_UNAVAILABLE", "Live Voice is not available.", 503)
                 start_args = {
                     "role": payload.role,
@@ -1728,7 +1737,7 @@ def create_android_features_router(
                 if payload.mode == "live":
                     start_args["mode"] = "live"
                 result = await voice_service_factory(session).start_session(
-                    telegram_id,
+                    actor,
                     **start_args,
                 )
             return JSONResponse(content={"ok": True, **result}, headers={"Cache-Control": "no-store"})
@@ -1754,9 +1763,9 @@ def create_android_features_router(
             else:
                 audio_bytes, filename = _decode_audio_data_url(payload.audio_data_url)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await voice_service_factory(session).process_message(
-                    telegram_id,
+                    actor,
                     session_id=payload.session_id,
                     audio_bytes=audio_bytes,
                     filename=filename,
@@ -1777,8 +1786,8 @@ def create_android_features_router(
     async def android_challenges(request: Request):
         try:
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
-                result = await challenge_service_factory(session).list_for_user(telegram_id)
+                actor = await _actor(session, request)
+                result = await challenge_service_factory(session).list_for_user(actor)
             return _service_response(result)
         except (DesktopAuthError, AndroidFeatureError) as exc:
             return _error_response(exc)
@@ -1794,7 +1803,6 @@ def create_android_features_router(
             payload = await _validated_payload(request, AndroidChallengeCreateRequest)
             async with session_factory() as session:
                 user = await _user(session, request)
-                telegram_id = int(user.telegram_id)
                 # A reference is resolved only inside the caller's visible
                 # leaderboard or invited-friends list. It cannot identify or
                 # challenge an arbitrary Telegram user.
@@ -1805,14 +1813,23 @@ def create_android_features_router(
                 secret = str(
                     getattr(settings_obj, "DESKTOP_AUTH_SIGNING_SECRET", "") or ""
                 )
-                opponent_id = 0
+                opponent = None
                 for row in board.get("leaderboard") or []:
                     if not isinstance(row, dict):
                         continue
-                    if challenge_ref(row.get("telegram_id"), secret) == payload.opponent_ref:
-                        opponent_id = int(row.get("telegram_id") or 0)
-                        break
-                if opponent_id <= 0:
+                    ref = challenge_ref(
+                        row.get("telegram_id"), secret, user_id=row.get("user_id")
+                    )
+                    if payload.opponent_ref not in {
+                        ref, challenge_ref(row.get("telegram_id"), secret)
+                    }:
+                        continue
+                    if actual_telegram_id(row.get("telegram_id")):
+                        opponent = int(row["telegram_id"])
+                    elif row.get("user_id"):
+                        opponent = await UserRepository(session).get_by_user_id(int(row["user_id"]))
+                    break
+                if opponent is None and actual_telegram_id(user):
                     referrals = await referral_service_factory(
                         session
                     ).list_miniapp_referrals(
@@ -1823,15 +1840,15 @@ def create_android_features_router(
                         if not isinstance(row, dict):
                             continue
                         if challenge_ref(row.get("telegram_id"), secret) == payload.opponent_ref:
-                            opponent_id = int(row.get("telegram_id") or 0)
+                            opponent = actual_telegram_id(row.get("telegram_id"))
                             break
-                if opponent_id <= 0:
+                if opponent is None:
                     raise AndroidFeatureError(
                         "challenge_opponent_not_found", status_code=404
                     )
                 result = await challenge_service_factory(session).create(
-                    telegram_id,
-                    opponent_telegram_id=opponent_id,
+                    actual_telegram_id(user) or user,
+                    opponent_telegram_id=opponent,
                     level=payload.level,
                     lang=payload.language,
                     bot=bot,
@@ -1851,9 +1868,9 @@ def create_android_features_router(
         try:
             payload = await _validated_payload(request, AndroidChallengeRespondRequest)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await challenge_service_factory(session).respond(
-                    telegram_id,
+                    actor,
                     int(challenge_id),
                     payload.action,
                     bot=bot,
@@ -1872,12 +1889,12 @@ def create_android_features_router(
     async def android_challenge_start(challenge_id: int, request: Request):
         try:
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 user = await _user(session, request)
                 if await assessment_abandoned(session, user.id, f"challenge:{challenge_id}:{user.id}"):
                     raise AndroidFeatureError("assistant_assessment_abandoned", status_code=409)
                 result = await challenge_service_factory(session).start(
-                    telegram_id,
+                    actor,
                     int(challenge_id),
                 )
                 await assessment_started(session, user.id, "challenge", result)
@@ -1896,12 +1913,12 @@ def create_android_features_router(
         try:
             payload = await _validated_payload(request, AndroidChallengeSubmitRequest)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 user = await _user(session, request)
                 if await assessment_abandoned(session, user.id, f"challenge:{challenge_id}:{user.id}"):
                     raise AndroidFeatureError("assistant_assessment_abandoned", status_code=409)
                 result = await challenge_service_factory(session).submit(
-                    telegram_id,
+                    actor,
                     int(challenge_id),
                     [
                         {
@@ -1968,13 +1985,18 @@ def create_android_features_router(
                     ref=payload.ref.strip() or None,
                     lifetime=True,
                 )
-                # The central engine answers the same question alongside, and
-                # the difference is recorded. It decides nothing here yet.
+                # consume_daily_use locks users.id FOR UPDATE to protect free
+                # allowance counters. Shadow writes with a *second* SQL session
+                # and its FK needs a KEY SHARE lock on the same users row.
+                # Commit here BEFORE starting the shadow write: otherwise a
+                # Google-only learner (new user_id, no telegram_id) can block
+                # their own request until the Android client's 30s timeout.
+                await session.commit()
+                # Shadow is best effort; it must never hold the gate open.
                 await shadow_compare_gate(
                     session, user=user, feature=feature, legacy=result, client="android"
                 )
                 if not result.get("allowed"):
-                    await session.commit()
                     return JSONResponse(
                         status_code=403,
                         content={
@@ -1990,7 +2012,6 @@ def create_android_features_router(
                         },
                         headers={"Cache-Control": "no-store"},
                     )
-                await session.commit()
             return JSONResponse(
                 content={
                     "ok": True,
@@ -2099,9 +2120,9 @@ def create_android_features_router(
             )
             audio_bytes, filename = _decode_audio_data_url(payload.audio_data_url)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await voice_service_factory(session).score_pronunciation(
-                    telegram_id,
+                    actor,
                     target=payload.target,
                     target_pinyin=payload.target_pinyin,
                     audio_bytes=audio_bytes,
@@ -2123,9 +2144,9 @@ def create_android_features_router(
         try:
             payload = await _validated_voice_payload(request, DesktopVoiceEndRequest)
             async with session_factory() as session:
-                telegram_id = await _telegram_id(session, request)
+                actor = await _actor(session, request)
                 result = await voice_service_factory(session).end_session(
-                    telegram_id,
+                    actor,
                     payload.session_id,
                 )
             return JSONResponse(content={"ok": True, **result}, headers={"Cache-Control": "no-store"})
@@ -2162,7 +2183,8 @@ def create_android_features_router(
             message = (
                 f"{heading}\n"
                 f"👤 {escape(str(user.full_name or '-'))}\n"
-                f"🆔 Telegram: {user.telegram_id}\n"
+                f"🆔 User ID: {user.id}\n"
+                f"Telegram: {user.telegram_id or '—'}\n"
                 f"📱 Versiya: {escape(report.app_version)}\n"
                 f"📍 Ekran: {escape(report.screen)}\n\n"
                 f"📝 {escape(report.description)}"

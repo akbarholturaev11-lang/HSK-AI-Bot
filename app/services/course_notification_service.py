@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.course_user_notification import CourseUserNotification
 from app.db.models.user import User
+from app.services.account_identity import owner_clause
 from app.services.notification_template_service import (
     KEY_DAILY_GOAL,
     KEY_D1_RECOVERY,
@@ -202,7 +203,7 @@ class CourseNotificationService:
     async def list_for_user(self, user: User, *, limit: int = MAX_FEED_ITEMS) -> list[dict[str, Any]]:
         result = await self.session.execute(
             select(CourseUserNotification)
-            .where(CourseUserNotification.telegram_id == int(user.telegram_id))
+            .where(owner_clause(CourseUserNotification, user, telegram_column="telegram_id"))
             .order_by(CourseUserNotification.created_at.desc(), CourseUserNotification.id.desc())
             .limit(max(1, min(20, int(limit or MAX_FEED_ITEMS))))
         )
@@ -286,7 +287,7 @@ class CourseNotificationService:
 
         row = CourseUserNotification(
             user_id=getattr(user, "id", None),
-            telegram_id=int(user.telegram_id),
+            telegram_id=user.telegram_id,
             key=key,
             source=str(source or "telegram_reminder")[:40],
             language=lang,
