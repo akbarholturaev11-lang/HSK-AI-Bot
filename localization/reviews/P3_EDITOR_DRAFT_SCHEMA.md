@@ -184,3 +184,32 @@ Pro access and client compatibility). The existing private preview integrity
 checker intentionally rejects unapproved mirror edits. No synchronizer is
 activated here. Do not treat a structurally valid draft as a working course
 UI patch without this integration review.
+
+## Verify mirrored grammar cards (private, in-memory only)
+
+Some lessons embed duplicated `_grammar` cards. For example, HSK 3.0 Level
+2 lesson 16 has **six original** `/grammar/.../translation` maps and **six
+mirrored** `/sections/1/cards/0/g/examples/.../translation` maps. The editor
+draft must still contain only the **six original grammar** JSON pointers: it
+requires 18 UZ/RU/TJ values, **not 36 different translations**.
+
+A separate preview proof finds the mirror positions from the **unchanged
+source**, verifies identical original Chinese text and empty locale maps, and
+applies each approved translation to **both** source-aligned display copies
+inside a detached Python dictionary. Any changed `correct_index`, options,
+builder tokens, grade, Pro/lock flag, pinyin, Chinese text, or mismatched mirror
+is rejected by exact full-JSON comparison.
+
+```python
+from scripts.i18n_editor_grammar_mirror_integrity import (
+    attest_mirrored_grammar_preview, verify_mirrored_grammar_preview,
+)
+proof = attest_mirrored_grammar_preview(original_source_bytes, approved_editor_draft)
+assert proof["all_other_fields_unchanged"]
+assert not proof["ready_to_ship"]
+```
+
+The preview object itself still contains whole lessons and grading material.
+**Never write it to `app/static/`, public GitHub files, CI artifacts or
+unauthenticated endpoints.** This check does not authorize updating the source,
+payment/access gates, live runtime or human language sign-off.
