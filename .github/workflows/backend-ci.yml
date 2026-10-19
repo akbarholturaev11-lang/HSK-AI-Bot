@@ -12,6 +12,12 @@ on:
       - "app/services/entitlements/lesson_access.py"
       - "app/services/desktop_course_service.py"
       - "app/services/account_identity.py"
+      - "app/services/ai_usage_budget_service.py"
+      - "app/services/voice_practice_service.py"
+      - "app/db/models/ai_usage.py"
+      - "app/db/models/voice_practice_session.py"
+      - "alembic/versions/0105_native_ai_voice_ownership.py"
+      - "tests/test_i18n_native_ai_voice_ownership.py"
       - "app/services/course_miniapp_analytics_service.py"
       - "app/db/models/user.py"
       - "app/db/models/course_miniapp_event.py"
@@ -75,6 +81,8 @@ jobs:
         run: python -m unittest tests.test_hsk30_lesson_limits tests.test_course_track_service tests.test_hsk30_promo_service tests.test_hsk30_switch_ui_contract tests.test_android_payment_method_dialog_contract
       - name: Verify synthetic Mini App lesson reservation auth and quota boundary
         run: python -m unittest tests.test_i18n_miniapp_reservation_asgi
+      - name: Test provider-only AI budgets, Voice sessions and 0105 migration
+        run: python -m unittest tests.test_i18n_native_ai_voice_ownership
       - name: Test canonical native account ownership and migration foundation
         run: python -m unittest tests.test_i18n_native_account_ownership
       - name: Test bearer-authenticated P3 native lesson and completed entitlement contracts
