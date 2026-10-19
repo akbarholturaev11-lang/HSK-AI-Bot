@@ -213,3 +213,23 @@ Prevention: **progress proves completion, not entitlement**. No P3
 translation read path may skip the shared blocked/track/access gate.
 Only an explicit successful HTTP entitlement decision may authorize
 localized reading; non-network HTTP errors must never become offline grants.
+
+## Chinese-context semantic corrections: G030, G128, G131 (2026-10-19)
+
+- `G030`, `画我们的家！有爸爸、妈妈、弟弟……`: family members
+  and pets are being drawn; Russian `наш дом` falsely points to a building.
+  The canonical RU cell now says `нашу семью`.
+- `G131`, `烤鸭` (*kǎoyā*): roast **duck**, not chicken; the
+  previous Tajik `мурғи бирён` implied chicken. Keep duck species in all
+  three locales, and distinguish roasting from pan-frying. Current UZ,
+  RU and TJ canonical entries have been updated accordingly.
+- `G128`, `虽然去过一次，但是很想再去一次`: preserve the
+  desire to **visit again** and use natural Tajik wording, not the
+  calqued `боз рафтанам хеле мехоҳад`.
+
+These corrections are pinned by the existing Chinese-context SHA and
+`tests/test_i18n_canonical_grammar_catalog.py` semantic regressions.
+Prevention: when a Chinese noun has multiple meanings or names an animal
+or dish, read the enumerated objects and grammatical context rather than
+translating token by token. This focused fix does not certify all 408
+independent values or real-device display QA.
