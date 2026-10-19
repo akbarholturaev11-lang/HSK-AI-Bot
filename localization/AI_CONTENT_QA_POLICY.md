@@ -131,3 +131,29 @@ indexes. Tests/clients MUST select cards using `type == "_grammar"`, not
 `sections[0].cards[0]`; the mistaken index caused P0 test failure.
 Android and Desktop share this service; Mini App still needs its
 entitlement-safe localized read path and app QA.
+
+## Mini App P3 reservation-only integration (protected runtime gate)
+
+Mini App P3 translation display values are supplied by the existing signed
+`POST /api/v3/lesson/start` **allowed** response, never an anonymous
+public lesson-content pack. The server must validate Telegram initData,
+user track/lesson unlock and the existing consume=True entitlement BEFORE
+returning any P3 translation values. Denied responses carry no locale patch.
+No extra per-string request. The browser must apply to an isolated copy
+after successful reservation, check all original Chinese+pinyin targets
+and whitelisted, previously blank grammar/mirror display slots atomically,
+and fall back to its unchanged legacy cached lesson on any mismatch.
+Preserve the original direct static JSON prefetch and its purpose; it does
+not authorize translation access. Native/Desktop continue using their
+shared auth-gated course service. Do not claim production deployment merely
+from source CI.
+
+Regression prevention: the giant `app/static/course-v3.html` file has
+exact physical line anchors (8712 lines) and a reviewed original/new blob
+manifest. NEVER insert line breaks casually into the live HTML or relax
+existing line-classification tests just to pass migration. Use a small
+versioned local JS asset and minimal same-line call-site edits, then
+update `localization/baselines/reviewed_ui_changes.json` to exactly pin
+the new source Git blob. Existing 58-failure CI regression was repaired this
+way and P0 passed 331 tests. ASGI 200/403 Mini App entitlement tests plus
+Node atomic-patch smoke belong to the required code review gates.
