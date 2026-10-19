@@ -13,18 +13,34 @@ class UserRepository:
         self.session = session
 
     async def get_by_telegram_id(self, telegram_id: int) -> Optional[User]:
+        if telegram_id is None or int(telegram_id) <= 0:
+            return None
         result = await self.session.execute(
             select(User).where(User.telegram_id == telegram_id)
         )
         return result.scalar_one_or_none()
 
     async def get_by_telegram_id_for_update(self, telegram_id: int) -> Optional[User]:
+        if telegram_id is None or int(telegram_id) <= 0:
+            return None
         result = await self.session.execute(
             select(User)
             .where(User.telegram_id == telegram_id)
             .with_for_update()
         )
         return result.scalar_one_or_none()
+
+    async def get_by_user_id(self, user_id: int, *, lock: bool = False) -> Optional[User]:
+        query = select(User).where(User.id == int(user_id))
+        if lock:
+            query = query.with_for_update()
+        return (await self.session.execute(query.execution_options(populate_existing=True))).scalar_one_or_none()
+
+    async def get_by_actor(self, actor) -> Optional[User]:
+        """Resolve native User objects by canonical ID; numbers remain actual Telegram IDs."""
+        if hasattr(actor, "id") and hasattr(actor, "telegram_id"):
+            return await self.get_by_user_id(actor.id)
+        return await self.get_by_telegram_id(actor)
 
     async def find_by_identifier(self, identifier: str) -> Optional[User]:
         value = (identifier or "").strip()
