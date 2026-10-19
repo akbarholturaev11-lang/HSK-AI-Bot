@@ -27,6 +27,15 @@ on:
       - "app/services/payment_review_preview_service.py"
       - "alembic/versions/0106_canonical_payment_ownership.py"
       - "alembic/versions/0107_canonical_referral_ownership.py"
+      - "alembic/versions/0108_native_audit_ownership.py"
+      - "app/db/models/course_pilot_event.py"
+      - "app/db/models/entitlement_shadow_event.py"
+      - "app/db/models/discount_campaign.py"
+      - "app/repositories/discount_campaign_repo.py"
+      - "app/services/discount_service.py"
+      - "app/services/entitlements/shadow.py"
+      - "tests/test_i18n_native_audit_migration.py"
+      - "tests/test_i18n_native_discount_ownership.py"
       - "app/db/models/referral.py"
       - "app/repositories/referral_repo.py"
       - "app/services/referral_service.py"
@@ -100,6 +109,11 @@ jobs:
         run: python -m unittest tests.test_hsk30_lesson_limits tests.test_course_track_service tests.test_hsk30_promo_service tests.test_hsk30_switch_ui_contract tests.test_android_payment_method_dialog_contract
       - name: Verify synthetic Mini App lesson reservation auth and quota boundary
         run: python -m unittest tests.test_i18n_miniapp_reservation_asgi
+      - name: Test 0108 native audit facts and personal discount account isolation
+        run: |
+          python -m unittest \
+            tests.test_i18n_native_audit_migration \
+            tests.test_i18n_native_discount_ownership
       - name: Test 0107 referrals, native owner isolation and signup attribution migration
         run: |
           python -m unittest \
