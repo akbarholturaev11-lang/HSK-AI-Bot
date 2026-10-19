@@ -13,6 +13,23 @@ Updated: 2026-10-19. **Current working status is here; historical log remains in
 - Merge prep: compare with `main` found 119 main-only commits and 27 same-path edits across sides, **potential collision candidates only**; the PR reports dirty. No merge, main overwrite, reset, rebase, force-push or deployment was attempted.
 - NEXT: obtain and evaluate latest `i18n-p0.yml` and `backend-ci.yml` runs (including synthetic ASGI/Node regressions), fix any failure; finish independent semantic checks against Chinese source for **all 136 contexts**, then run live signed-auth/Free/Pro/HSK30/old account/API and Android/Desktop/WebView/offline tests; resolve the actual merge hunks conservatively and rerun all release gates before main.
 
+## Later same-session source-check and executable runtime evidence
+
+- After the first handoff delta, additional semantic fixes were pushed:
+  `G051` Russian preserves the observer `我看` without adding unsupported
+  masculine gender; `G109` Uzbek preserves indefinite `一本中文书`.
+  Source catalog commits `4c8fa02`, `f5bce78`; targeted regression
+  `cfbc37d`, preventive note `14e20ca`.
+- The exact committed P3 reservation JS blob `ab2956e4b6a7da339ddb6531b0b5a8acfa8cd291`
+  was reconstructed and `git hash-object` checked, then passed Node 22
+  syntax and **nine executable isolated VM scenarios** (allow, 401,
+  403, HTTP 500, denied/malformed HTTP 200, genuine network offline,
+  localized isolated copy, changed-Chinese fail closed).
+  This **does not establish latest Actions CI or native device QA**.
+- Current main/P3 branch integration is still blocked by Draft PR dirty
+  state and new full CI/device/E2E prerequisites. Always re-read HEAD
+  before writes; this documentation commit advances it.
+
 ## Source of truth and scope
 
 - Repo: `akbarholturaev11-lang/HSK-AI-Bot`.
