@@ -1,6 +1,18 @@
 # HSK AI P3 — ACTIVE handoff for a new ChatGPT agent
 Updated: 2026-10-19. **Current working status is here; historical log remains in `localization/NEXT_CHAT_HANDOFF.md`.**
 
+## Session delta: authenticated completed-review hardening + targeted semantic QA
+
+- Live PR HEAD before this documentation write: `f3e343e3e00eb622362858ca1f3f4fd4a5ed00b1`. The doc write advances HEAD; **always re-read** PR before further edits. Draft PR #179 remains `mergeable=false`, main/production untouched.
+- API fix `ed9984e`: completed Mini App P3 `review_only` now invokes shared `LessonAccessService.status(..., consume=False)` after signed-auth/server-completion checks, rejecting blocked or unauthorized HSK 3.0 accounts without quota spending. Non-object JSON returns 400 rather than 500.
+- Browser fix `f7a46ac`: completed P3 review accepts only explicit `HTTP ok && body.ok && body.allowed`; rejects HTTP errors/malformed success and resets stale P3 patch. True rejected fetch promises retain existing completed-lesson offline reading, without P3.
+- Regressions: `73fef49` ASGI auth/quota/revocation/malformed payload; `35032db` Node HTTP denial/stale patch/offline; `4cb2edb`, `f165963`, `78365ec` source-bound semantic checks. Prevention recorded in `localization/AI_CONTENT_QA_POLICY.md` (`f77e216`, `f3e343e`).
+- Chinese-context translation fixes: `G030` RU family-vs-house (`3e623de`); `G131` `烤鸭` duck rather than chicken and proper roast UZ/RU/TJ, `G128` natural TJ repeated-visit expression (`bc36689`). All are in canonical TSV; original Chinese/pinyin/lesson JSON untouched.
+- Read-only Android/Desktop routing check: Android's `AndroidCourseService.lesson` requires foundation completion and then calls `super().lesson`; the shared Desktop service performs entitlement before `apply_native_grammar_locales`. Both route responses have `Cache-Control:no-store`. This is **source-verified, not emulator/device verified**.
+- Current HEAD workflow run query AND combined status query returned **no records**, including on earlier previously successful `c98a04d` code HEAD. This tool's result CANNOT establish CI success/failure for new commits. Do not mark this batch tested green without obtaining actual Actions P0 + Backend run/job results. Real authenticated test account/device/WebView QA remains OPEN.
+- Merge prep: compare with `main` found 119 main-only commits and 27 same-path edits across sides, **potential collision candidates only**; the PR reports dirty. No merge, main overwrite, reset, rebase, force-push or deployment was attempted.
+- NEXT: obtain and evaluate latest `i18n-p0.yml` and `backend-ci.yml` runs (including synthetic ASGI/Node regressions), fix any failure; finish independent semantic checks against Chinese source for **all 136 contexts**, then run live signed-auth/Free/Pro/HSK30/old account/API and Android/Desktop/WebView/offline tests; resolve the actual merge hunks conservatively and rerun all release gates before main.
+
 ## Source of truth and scope
 
 - Repo: `akbarholturaev11-lang/HSK-AI-Bot`.
