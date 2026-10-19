@@ -33,6 +33,7 @@ on:
       - "tests/test_i18n_native_referral_migration.py"
       - "tests/test_i18n_native_referral_ownership.py"
       - "tests/test_i18n_native_referral_concurrency.py"
+      - "tests/native_postgres_deadlines.py"
       - "tests/test_i18n_native_payment_migration.py"
       - "tests/test_i18n_native_payment_repository.py"
       - "tests/test_i18n_native_ai_voice_ownership.py"
