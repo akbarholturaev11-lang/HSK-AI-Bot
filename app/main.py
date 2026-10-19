@@ -20,6 +20,7 @@ from sqlalchemy.orm import defer
 from starlette.middleware.gzip import GZipMiddleware
 
 from app.api.public_site import create_public_site_router
+from app.api.pwa import create_pwa_router
 from app.config import settings
 from app.api.android_auth import create_android_auth_router
 from app.api.course_tracks import create_course_tracks_router
@@ -667,6 +668,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(create_public_site_router(settings_obj=settings))
+app.include_router(create_pwa_router())  # PWA install assets only; no auth/routes changed
 app.include_router(create_account_deletion_router(
     session_factory=async_session_maker, settings_obj=settings,
     notifier=lambda result: notify_deletion_request(bot, settings, result),

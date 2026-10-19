@@ -13,6 +13,9 @@ HSK AI helps Uzbek-, Russian-, and Tajik-speaking learners study Chinese through
 - Persistence uses async SQLAlchemy models under `app/db/models/`; schema changes use `alembic/versions/`. Database settings and sessions live in `app/config.py` and `app/db/session.py`.
 - AI provider calls are centralized in `app/services/ai_provider.py`; the current source uses Gemini first and OpenAI as fallback where supported. Feature services may set their own models and limits.
 
+## Mini App + PWA (isolated foundation)
+- The shared web course UI remains `app/static/course-v3.html`: Telegram Mini App and future standalone PWA must reuse one frontend, not copy the page or create separate learner/payment logic. The isolated PWA foundation branch adds only web app metadata, a public-branding-only service worker and host detection; browser authentication and native-to-web API actor adapters are **not implemented**. Read `docs/PWA_MINIAPP_HANDOFF.md` before building PWA auth. Do not merge to `main` or deploy until universal sign-in, localization, and cross-client acceptance are completed.
+
 ## Data model and business logic
 
 - `users.id` is the canonical learner account key; unique `telegram_id` is optional and always a real Telegram identity. Subscription state includes `status`, `payment_status`, `start_date`, and `end_date`; there is no `subscription_until` column.
